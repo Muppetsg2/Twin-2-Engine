@@ -4,25 +4,32 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <map>
+#include <vector>
 
-#define KEYS_MAX_NUM 349
-#define MOUSE_BUTTONS_MAX_NUM 8
+#define KEYS_MAX_NUM GLFW_KEY_LAST + 1
+#define MOUSE_BUTTONS_MAX_NUM GLFW_MOUSE_BUTTON_LAST + 1
+
+enum INPUT_STATE {
+	NONE = 0,
+	RELEASED = 1,
+	PRESSED = 3,
+	HOLD = 5
+};
 
 class Input {
 private:
 	static GLFWwindow* _mainWindow;
 	
-	static std::map<GLFWwindow*, bool*> _mouseButtonPressed;
-	static std::map<GLFWwindow*, bool*> _mouseButtonHolded;
-
-	static std::map<GLFWwindow*, bool*> _keyPressed;
-	static std::map<GLFWwindow*, bool*> _keyHolded;
+	static std::vector<GLFWwindow*> _windows;
+	static std::map<GLFWwindow*, int*> _mouseButtonStates;
+	static std::map<GLFWwindow*, int*> _keyStates;
 
 	static void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods);
 	static void mouse_button_callback(GLFWwindow* win, int button, int action, int mods);
 public:
 	static void initForWindow(GLFWwindow* window, bool mainWindow = false);
 	static void freeWindow(GLFWwindow* window);
+	static void freeAllWindows();
 	static constexpr void setMainWindow(GLFWwindow* window);
 	static constexpr GLFWwindow* getMainWindow();
 	

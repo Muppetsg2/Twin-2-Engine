@@ -24,6 +24,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+// HID
+#include <Input/Input.h>
+
 #pragma region OpenGLCallbackFunctions
 
 static void glfw_error_callback(int error, const char* description)
@@ -72,7 +75,9 @@ float fmapf(float input, float currStart, float currEnd, float expectedStart, fl
 constexpr int32_t WINDOW_WIDTH  = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
 const char* WINDOW_NAME = "Twin^2 Engine";
+constexpr bool fullscreen = false;
 
+GLFWmonitor* monitor = nullptr;
 GLFWwindow* window = nullptr;
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
@@ -159,6 +164,7 @@ int main(int, char**)
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
+    Input::freeAllWindows();
     glfwDestroyWindow(window);
     glfwTerminate();
 
@@ -181,8 +187,16 @@ bool init()
     glfwWindowHint(GLFW_OPENGL_PROFILE,        GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 
+    // Creates Monitor
+    if (fullscreen) {
+        monitor = glfwGetPrimaryMonitor();
+        if (monitor == NULL) {
+            spdlog::warn("Failed to create GLFW Monitor");
+        }
+    }
+
     // Create window with graphics context
-    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME, NULL, NULL);
+    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME, monitor, NULL);
     if (window == NULL)
     {
         spdlog::error("Failed to create GLFW Window!");
@@ -193,6 +207,7 @@ bool init()
     glfwMakeContextCurrent(window);
     //glfwSwapInterval(1); // Enable VSync - fixes FPS at the refresh rate of your screen
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    Input::initForWindow(window, true);
 
     bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
@@ -253,7 +268,9 @@ void init_imgui()
 
 void input(float deltaTime)
 {
-
+    if (Input::isKeyPressed(GLFW_KEY_W) && !Input::isKeyHold(GLFW_KEY_W)) {
+        spdlog::info("KEY CLICKED");
+    }
 }
 
 void update(float deltaTime)

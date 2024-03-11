@@ -4,55 +4,53 @@ using namespace std;
 
 GLFWwindow* Input::_mainWindow = nullptr;
 
-map<GLFWwindow*, bool*> Input::_mouseButtonPressed = map<GLFWwindow*, bool*>();
-map<GLFWwindow*, bool*> Input::_mouseButtonHolded = map<GLFWwindow*, bool*>();
+std::vector<GLFWwindow*> Input::_windows = std::vector<GLFWwindow*>();
 
-map<GLFWwindow*, bool*> Input::_keyPressed = map<GLFWwindow*, bool*>();
-map<GLFWwindow*, bool*> Input::_keyHolded = map<GLFWwindow*, bool*>();
+map<GLFWwindow*, int*> Input::_mouseButtonStates = map<GLFWwindow*, int*>();
+
+map<GLFWwindow*, int*> Input::_keyStates = map<GLFWwindow*, int*>();
 
 void Input::key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_UNKNOWN) return; // Don't accept unknown keys
 	if (action == GLFW_PRESS) {
-		if (_keyPressed[win][key]) {
-			_keyHolded[win][key] = true;
-		}
-		else {
-			_keyPressed[win][key] = true;
-		}
+		_keyStates[win][key] = INPUT_STATE::PRESSED;
 	}
 	else if (action == GLFW_RELEASE) {
-		_keyPressed[win][key] = false;
-		_keyHolded[win][key] = false;
+		_keyStates[win][key] = INPUT_STATE::RELEASED;
+	}
+	else if (action == GLFW_REPEAT) {
+		if (isKeyPressed(win, key)) {
+			_keyStates[win][key] |= INPUT_STATE::HOLD;
+		}
 	}
 }
 
 void Input::mouse_button_callback(GLFWwindow* win, int button, int action, int mods)
 {
 	if (action == GLFW_PRESS) {
-		if (_mouseButtonPressed[win][button]) {
-			_mouseButtonHolded[win][button] = true;
+		if (isMouseButtonPressed(win, button)) {
+			_mouseButtonStates[win][button] |= INPUT_STATE::HOLD;
 		}
 		else {
-			_mouseButtonPressed[win][button] = true;
+			_mouseButtonStates[win][button] = INPUT_STATE::PRESSED;
 		}
 	}
 	else if (action == GLFW_RELEASE) {
-		_mouseButtonPressed[win][button] = false;
-		_mouseButtonHolded[win][button] = false;
+		_mouseButtonStates[win][button] = INPUT_STATE::RELEASED;
 	}
 }
 
 void Input::initForWindow(GLFWwindow* window, bool mainWindow)
 {
 	// Init keys tables
-	_keyPressed[window] = new bool[KEYS_MAX_NUM];
-	_keyHolded[window] = new bool[KEYS_MAX_NUM];
+	_keyStates[window] = new int[KEYS_MAX_NUM](INPUT_STATE::NONE);
 	glfwSetKeyCallback(window, key_callback);
 	// Init mouse tables
-	_mouseButtonPressed[window] = new bool[KEYS_MAX_NUM];
-	_mouseButtonHolded[window] = new bool[KEYS_MAX_NUM];
+	_mouseButtonStates[window] = new int[MOUSE_BUTTONS_MAX_NUM](INPUT_STATE::NONE);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
+
+	_windows.push_back(window);
 
 	// Main Window
 	if (mainWindow || _mainWindow == nullptr) setMainWindow(window);
@@ -61,16 +59,26 @@ void Input::initForWindow(GLFWwindow* window, bool mainWindow)
 void Input::freeWindow(GLFWwindow* window)
 {
 	// Delete Keys Tables
-	delete[] _keyPressed[window];
-	delete[] _keyHolded[window];
-	_keyPressed.erase(window);
-	_keyHolded.erase(window);
+	delete[] _keyStates[window];
+	_keyStates.erase(window);
 
 	// Delete Mouse Buttons Tables
-	delete[] _mouseButtonPressed[window];
-	delete[] _mouseButtonHolded[window];
-	_mouseButtonPressed.erase(window);
-	_mouseButtonHolded.erase(window);
+	delete[] _mouseButtonStates[window];
+	_mouseButtonStates.erase(window);
+
+	for (size_t i = 0; i < _windows.size(); ++i) {
+		if (_windows[i] == window) {
+			_windows.erase(_windows.begin() + i);
+			break;
+		}
+	}
+}
+
+void Input::freeAllWindows()
+{
+	while (_windows.size() > 0) {
+		freeWindow(_windows[0]);
+	}
 }
 
 constexpr void Input::setMainWindow(GLFWwindow* window)
@@ -113,32 +121,32 @@ glm::vec2 Input::getMousePos(GLFWwindow* window)
 
 bool Input::isMouseButtonPressed(GLFWwindow* window, int button)
 {
-	return _mouseButtonPressed[window][button];
+	return (_mouseButtonStates[window][button] & INPUT_STATE::PRESSED) != 0;
 }
 
 bool Input::isMouseButtonReleased(GLFWwindow* window, int button)
 {
-	return !_mouseButtonPressed[window][button];
+	return (_mouseButtonStates[window][button] & INPUT_STATE::RELEASED) != 0;
 }
 
 bool Input::isMouseButtonHold(GLFWwindow* window, int button)
 {
-	return _mouseButtonHolded[window][button];
+	return (_mouseButtonStates[window][button] & INPUT_STATE::HOLD) != 0;
 }
 
 bool Input::isKeyPressed(GLFWwindow* window, int key)
 {
-	return _keyPressed[window][key];
+	return (_keyStates[window][key] & INPUT_STATE::PRESSED) != 0;
 }
 
 bool Input::isKeyReleased(GLFWwindow* window, int key)
 {
-	return !_keyPressed[window][key];
+	return (_keyStates[window][key] & INPUT_STATE::RELEASED) != 0;
 }
 
 bool Input::isKeyHold(GLFWwindow* window, int key)
 {
-	return _keyHolded[window][key];
+	return (_keyStates[window][key] & INPUT_STATE::HOLD) != 0;
 }
 
 void Input::hideAndLockCursor()

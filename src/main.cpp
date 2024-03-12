@@ -274,6 +274,16 @@ void input(float deltaTime)
     if (Input::isKeyReleased(GLFW_KEY_W)) {
         spdlog::info("KEY RELEASED");
     }*/
+    int state = glfwGetKey(window, GLFW_KEY_W);
+    if (state == GLFW_PRESS) {
+        spdlog::info("PRESS");
+    }
+    else if (state == GLFW_RELEASE) {
+        spdlog::info("RELEASE");
+    }
+    else if (state == GLFW_REPEAT) {
+        spdlog::info("REPEAT");
+    }
 }
 
 void update(float deltaTime)

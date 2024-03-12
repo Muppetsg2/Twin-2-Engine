@@ -27,7 +27,7 @@ void Input::key_callback(GLFWwindow* win, int key, int scancode, int action, int
 		atype = "Repeat";
 	}
 
-	printf(std::string("Action: "s + atype + "\n"s).c_str());
+	//printf(std::string("Action: "s + atype + "\n"s).c_str());
 	/*else if (action == GLFW_REPEAT) {
 		if (isKeyPressed(win, key)) {
 			_keyStates[win][key] |= INPUT_STATE::HOLD;

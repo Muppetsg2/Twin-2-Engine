@@ -1,4 +1,5 @@
 #include "Input/Input.h"
+#include <string>
 
 using namespace std;
 
@@ -13,17 +14,25 @@ map<GLFWwindow*, int*> Input::_keyStates = map<GLFWwindow*, int*>();
 void Input::key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_UNKNOWN) return; // Don't accept unknown keys
+	std::string atype = "";
 	if (action == GLFW_PRESS) {
 		_keyStates[win][key] = INPUT_STATE::PRESSED;
+		atype = "Press";
 	}
 	else if (action == GLFW_RELEASE) {
 		_keyStates[win][key] = INPUT_STATE::RELEASED;
+		atype = "Released";
 	}
 	else if (action == GLFW_REPEAT) {
+		atype = "Repeat";
+	}
+
+	printf(std::string("Action: "s + atype + "\n"s).c_str());
+	/*else if (action == GLFW_REPEAT) {
 		if (isKeyPressed(win, key)) {
 			_keyStates[win][key] |= INPUT_STATE::HOLD;
 		}
-	}
+	}*/
 }
 
 void Input::mouse_button_callback(GLFWwindow* win, int button, int action, int mods)
@@ -136,17 +145,23 @@ bool Input::isMouseButtonHold(GLFWwindow* window, int button)
 
 bool Input::isKeyPressed(GLFWwindow* window, int key)
 {
-	return (_keyStates[window][key] & INPUT_STATE::PRESSED) != 0;
+	//return (_keyStates[window][key] & INPUT_STATE::PRESSED) != 0;
+	int state = glfwGetKey(window, key);
+	return state == GLFW_PRESS;
 }
 
 bool Input::isKeyReleased(GLFWwindow* window, int key)
 {
-	return (_keyStates[window][key] & INPUT_STATE::RELEASED) != 0;
+	//return (_keyStates[window][key] & INPUT_STATE::RELEASED) != 0;
+	int state = glfwGetKey(window, key);
+	return state == GLFW_RELEASE;
 }
 
 bool Input::isKeyHold(GLFWwindow* window, int key)
 {
-	return (_keyStates[window][key] & INPUT_STATE::HOLD) != 0;
+	//return (_keyStates[window][key] & INPUT_STATE::HOLD) != 0;
+	int state = glfwGetKey(window, key);
+	return (_keyStates[window][key] & INPUT_STATE::PRESSED) != 0 && state == GLFW_PRESS;
 }
 
 void Input::hideAndLockCursor()

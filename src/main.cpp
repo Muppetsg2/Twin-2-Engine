@@ -268,9 +268,12 @@ void init_imgui()
 
 void input(float deltaTime)
 {
-    if (Input::isKeyPressed(GLFW_KEY_W) && !Input::isKeyHold(GLFW_KEY_W)) {
+    /*if (Input::isKeyPressed(GLFW_KEY_W) && !Input::isKeyHold(GLFW_KEY_W)) {
         spdlog::info("KEY CLICKED");
     }
+    if (Input::isKeyReleased(GLFW_KEY_W)) {
+        spdlog::info("KEY RELEASED");
+    }*/
 }
 
 void update(float deltaTime)

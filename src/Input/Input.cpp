@@ -14,30 +14,20 @@ map<GLFWwindow*, int*> Input::_keyStates = map<GLFWwindow*, int*>();
 void Input::key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_UNKNOWN) return; // Don't accept unknown keys
-	std::string atype = "";
 	if (action == GLFW_PRESS) {
 		_keyStates[win][key] = INPUT_STATE::PRESSED;
-		atype = "Press";
 	}
 	else if (action == GLFW_RELEASE) {
 		_keyStates[win][key] = INPUT_STATE::RELEASED;
-		atype = "Released";
 	}
 	else if (action == GLFW_REPEAT) {
-		atype = "Repeat";
+		_keyStates[win][key] = INPUT_STATE::HOLD;
 	}
-
-	//printf(std::string("Action: "s + atype + "\n"s).c_str());
-	/*else if (action == GLFW_REPEAT) {
-		if (isKeyPressed(win, key)) {
-			_keyStates[win][key] |= INPUT_STATE::HOLD;
-		}
-	}*/
 }
 
 void Input::mouse_button_callback(GLFWwindow* win, int button, int action, int mods)
 {
-	if (action == GLFW_PRESS) {
+	/*if (action == GLFW_PRESS) {
 		if (isMouseButtonPressed(win, button)) {
 			_mouseButtonStates[win][button] |= INPUT_STATE::HOLD;
 		}
@@ -47,7 +37,7 @@ void Input::mouse_button_callback(GLFWwindow* win, int button, int action, int m
 	}
 	else if (action == GLFW_RELEASE) {
 		_mouseButtonStates[win][button] = INPUT_STATE::RELEASED;
-	}
+	}*/
 }
 
 void Input::initForWindow(GLFWwindow* window, bool mainWindow)
@@ -100,6 +90,19 @@ constexpr GLFWwindow* Input::getMainWindow()
 	return _mainWindow;
 }
 
+constexpr void Input::pollEvents()
+{
+	// Mo¿na zaktualizowaæ inne przyciski (znamy kiedy klatka siê kolejna zaczyna)
+	for (const auto& keyStates : _keyStates) {
+		for (size_t i = 0; i < KEYS_MAX_NUM; ++i) {
+			if ((keyStates.second[i] & INPUT_STATE::RELEASED) != 0) {
+				keyStates.second[i] = INPUT_STATE::NONE;
+			}
+		}
+	}
+	glfwPollEvents();
+}
+
 void Input::hideAndLockCursor(GLFWwindow* window)
 {
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -120,7 +123,7 @@ void Input::showCursor(GLFWwindow* window)
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
-glm::vec2 Input::getMousePos(GLFWwindow* window)
+/*glm::vec2 Input::getMousePos(GLFWwindow* window)
 {
 	double x = 0;
 	double y = 0;
@@ -141,27 +144,31 @@ bool Input::isMouseButtonReleased(GLFWwindow* window, int button)
 bool Input::isMouseButtonHold(GLFWwindow* window, int button)
 {
 	return (_mouseButtonStates[window][button] & INPUT_STATE::HOLD) != 0;
-}
+}*/
 
 bool Input::isKeyPressed(GLFWwindow* window, int key)
 {
-	//return (_keyStates[window][key] & INPUT_STATE::PRESSED) != 0;
-	int state = glfwGetKey(window, key);
-	return state == GLFW_PRESS;
+	return (_keyStates[window][key] & INPUT_STATE::PRESSED) != 0;
 }
 
 bool Input::isKeyReleased(GLFWwindow* window, int key)
 {
-	//return (_keyStates[window][key] & INPUT_STATE::RELEASED) != 0;
-	int state = glfwGetKey(window, key);
-	return state == GLFW_RELEASE;
+	return (_keyStates[window][key] & INPUT_STATE::RELEASED) != 0;
 }
 
-bool Input::isKeyHold(GLFWwindow* window, int key)
+bool Input::isKeyHolded(GLFWwindow* window, int key)
 {
-	//return (_keyStates[window][key] & INPUT_STATE::HOLD) != 0;
-	int state = glfwGetKey(window, key);
-	return (_keyStates[window][key] & INPUT_STATE::PRESSED) != 0 && state == GLFW_PRESS;
+	return (_keyStates[window][key] & INPUT_STATE::HOLD) != 0;
+}
+
+bool Input::isKeyDown(GLFWwindow* window, int key)
+{
+	return (_keyStates[window][key] & INPUT_STATE::PRESSED) != 0 || (_keyStates[window][key] & INPUT_STATE::HOLD) != 0;
+}
+
+bool Input::isKeyUp(GLFWwindow* window, int key)
+{
+	return (_keyStates[window][key] & INPUT_STATE::RELEASED) != 0 || (_keyStates[window][key] & INPUT_STATE::NONE) != 0;
 }
 
 void Input::hideAndLockCursor()
@@ -184,7 +191,7 @@ void Input::showCursor()
 	showCursor(_mainWindow);
 }
 
-glm::vec2 Input::getMousePos()
+/*glm::vec2 Input::getMousePos()
 {
 	return getMousePos(_mainWindow);
 }
@@ -202,7 +209,7 @@ bool Input::isMouseButtonReleased(int button)
 bool Input::isMouseButtonHold(int button)
 {
 	return isMouseButtonHold(_mainWindow, button);
-}
+}*/
 
 bool Input::isKeyPressed(int key)
 {
@@ -214,7 +221,17 @@ bool Input::isKeyReleased(int key)
 	return isKeyReleased(_mainWindow, key);
 }
 
-bool Input::isKeyHold(int key)
+bool Input::isKeyHolded(int key)
 {
-	return isKeyHold(_mainWindow, key);
+	return isKeyHolded(_mainWindow, key);
+}
+
+bool Input::isKeyDown(int key)
+{
+	return isKeyDown(_mainWindow, key);
+}
+
+bool Input::isKeyUp(int key)
+{
+	return isKeyUp(_mainWindow, key);
 }

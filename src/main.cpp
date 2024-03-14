@@ -268,22 +268,7 @@ void init_imgui()
 
 void input(float deltaTime)
 {
-    /*if (Input::isKeyPressed(GLFW_KEY_W) && !Input::isKeyHold(GLFW_KEY_W)) {
-        spdlog::info("KEY CLICKED");
-    }
-    if (Input::isKeyReleased(GLFW_KEY_W)) {
-        spdlog::info("KEY RELEASED");
-    }*/
-    int state = glfwGetKey(window, GLFW_KEY_W);
-    if (state == GLFW_PRESS) {
-        spdlog::info("PRESS");
-    }
-    else if (state == GLFW_RELEASE) {
-        spdlog::info("RELEASE");
-    }
-    else if (state == GLFW_REPEAT) {
-        spdlog::info("REPEAT");
-    }
+
 }
 
 void update(float deltaTime)
@@ -333,7 +318,7 @@ void end_frame()
     // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
     // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
     // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-    glfwPollEvents();
+    Input::pollEvents();
     glfwMakeContextCurrent(window);
     glfwSwapBuffers(window);
 }

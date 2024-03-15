@@ -30,6 +30,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+// HID
+#include <Input/Input.h>
+
 #pragma region OpenGLCallbackFunctions
 
 static void glfw_error_callback(int error, const char* description)
@@ -78,7 +81,9 @@ float fmapf(float input, float currStart, float currEnd, float expectedStart, fl
 constexpr int32_t WINDOW_WIDTH  = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
 const char* WINDOW_NAME = "Twin^2 Engine";
+constexpr bool fullscreen = false;
 
+GLFWmonitor* monitor = nullptr;
 GLFWwindow* window = nullptr;
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
@@ -191,6 +196,7 @@ int main(int, char**)
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
+    Input::freeAllWindows();
     glfwDestroyWindow(window);
     glfwTerminate();
 
@@ -213,8 +219,16 @@ bool init()
     glfwWindowHint(GLFW_OPENGL_PROFILE,        GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 
+    // Creates Monitor
+    if (fullscreen) {
+        monitor = glfwGetPrimaryMonitor();
+        if (monitor == NULL) {
+            spdlog::warn("Failed to create GLFW Monitor");
+        }
+    }
+
     // Create window with graphics context
-    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME, NULL, NULL);
+    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME, monitor, NULL);
     if (window == NULL)
     {
         spdlog::error("Failed to create GLFW Window!");
@@ -225,6 +239,7 @@ bool init()
     glfwMakeContextCurrent(window);
     //glfwSwapInterval(1); // Enable VSync - fixes FPS at the refresh rate of your screen
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    Input::initForWindow(window, true);
 
     bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
@@ -235,9 +250,11 @@ bool init()
     }
     spdlog::info("Successfully initialized OpenGL loader!");
 
+#ifdef _DEBUG
     // Debugging
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(ErrorMessageCallback, 0);
+#endif
 
     // Depth Test
     glEnable(GL_DEPTH_TEST);
@@ -285,7 +302,28 @@ void init_imgui()
 
 void input(float deltaTime)
 {
+    /*if (Input::isMouseButtonPressed(LEFT)) {
+        spdlog::info("Pressed");
+    }*/
 
+    /*if (Input::isKeyPressed(KEY::W)) {
+        spdlog::info("PRESSED");
+    }
+    if (Input::isKeyDown(KEY::W)) {
+        spdlog::info("DOWN OR PRESSED");
+    }
+    if (Input::isKeyHeldDown(KEY::W)) {
+        spdlog::info("DOWN");
+    }
+    if (Input::isKeyReleased(KEY::W)) {
+        spdlog::info("RELEASE");
+    }
+    if (Input::isKeyUp(KEY::W)) {
+        spdlog::info("UP OR RELEASED");
+    }
+    if (Input::isKeyHeldUp(KEY::W)) {
+        spdlog::info("UP");
+    }*/
 }
 
 void update(float deltaTime)
@@ -357,7 +395,7 @@ void end_frame()
     // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
     // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
     // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-    glfwPollEvents();
+    Input::pollEvents();
     glfwMakeContextCurrent(window);
     glfwSwapBuffers(window);
 }

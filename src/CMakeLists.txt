@@ -24,20 +24,57 @@ add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${ASSETS_FILES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE GLFW_INCLUDE_NONE)
 target_compile_definitions(${PROJECT_NAME} PRIVATE LIBRARY_SUFFIX="")
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-												  ${glad_SOURCE_DIR}
-												  ${stb_image_SOURCE_DIR}
-												  ${soloud_SOURCE_DIR}
-												  ${imgui_SOURCE_DIR})
+get_property(is_miniaudio GLOBAL PROPERTY ISMINIAUDIO)
+get_property(is_imgui GLOBAL PROPERTY USEIMGUI)
+
+if(is_miniaudio)
+	if(is_imgui)
+		target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+														  ${glad_SOURCE_DIR}
+														  ${stb_image_SOURCE_DIR}
+														  ${freetype_SOURCE_DIR}
+														  ${miniaudio_SOURCE_DIR}
+														  ${imgui_SOURCE_DIR})
+		
+		target_link_libraries(${PROJECT_NAME} imgui)
+	else()
+		target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+														${glad_SOURCE_DIR}
+														${stb_image_SOURCE_DIR}
+														${freetype_SOURCE_DIR}
+														${miniaudio_SOURCE_DIR})
+	endif()
+
+	target_link_libraries(${PROJECT_NAME} miniaudio)
+else()
+	if(is_imgui)
+		target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+														  ${glad_SOURCE_DIR}
+														  ${stb_image_SOURCE_DIR}
+														  ${soloud_SOURCE_DIR}
+														  ${freetype_SOURCE_DIR}
+														  ${imgui_SOURCE_DIR})
+
+		target_link_libraries(${PROJECT_NAME} imgui)
+	else()
+		target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+													${glad_SOURCE_DIR}
+													${stb_image_SOURCE_DIR}
+													${soloud_SOURCE_DIR}
+													${freetype_SOURCE_DIR})
+	endif()
+	
+	target_link_libraries(${PROJECT_NAME} soloud)
+endif()
 
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} glad)
 target_link_libraries(${PROJECT_NAME} stb_image)
 target_link_libraries(${PROJECT_NAME} assimp)
 target_link_libraries(${PROJECT_NAME} glfw)
-target_link_libraries(${PROJECT_NAME} imgui)
 target_link_libraries(${PROJECT_NAME} spdlog)
-target_link_libraries(${PROJECT_NAME} soloud)
+target_link_libraries(${PROJECT_NAME} yaml-cpp)
+target_link_libraries(${PROJECT_NAME} freetype)
 target_link_libraries(${PROJECT_NAME} glm::glm)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD 

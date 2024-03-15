@@ -218,9 +218,11 @@ bool init()
     }
     spdlog::info("Successfully initialized OpenGL loader!");
 
+#ifdef _DEBUG
     // Debugging
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(ErrorMessageCallback, 0);
+#endif
 
     // Depth Test
     glEnable(GL_DEPTH_TEST);
@@ -268,7 +270,28 @@ void init_imgui()
 
 void input(float deltaTime)
 {
+    /*if (Input::isMouseButtonPressed(LEFT)) {
+        spdlog::info("Pressed");
+    }*/
 
+    /*if (Input::isKeyPressed(KEY::W)) {
+        spdlog::info("PRESSED");
+    }
+    if (Input::isKeyDown(KEY::W)) {
+        spdlog::info("DOWN OR PRESSED");
+    }
+    if (Input::isKeyHeldDown(KEY::W)) {
+        spdlog::info("DOWN");
+    }
+    if (Input::isKeyReleased(KEY::W)) {
+        spdlog::info("RELEASE");
+    }
+    if (Input::isKeyUp(KEY::W)) {
+        spdlog::info("UP OR RELEASED");
+    }
+    if (Input::isKeyHeldUp(KEY::W)) {
+        spdlog::info("UP");
+    }*/
 }
 
 void update(float deltaTime)

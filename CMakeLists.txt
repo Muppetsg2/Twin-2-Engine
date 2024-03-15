@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 project(OpenGLGP VERSION 2.0)
 
+set_property(GLOBAL PROPERTY ISMINIAUDIO false)
+set_property(GLOBAL PROPERTY USEIMGUI true)
+
 IF (WIN32)
   message(NOTICE "\n")
   message(NOTICE "********************** IMPORTANT NOTICE ****************************\n")

@@ -19,6 +19,12 @@
 #include <soloud.h>
 #include <soloud_wav.h>
 
+/*
+// Miniaudio
+#define MINIAUDIO_IMPLEMENTATION
+#include "miniaudio.h"
+*/
+
 // OpenGL Mathematics
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -90,6 +96,16 @@ ImVec4 clear_color = ImVec4(.1f, .1f, .1f, 1.f);
 GLuint UBOMatrices;
 
 SoLoud::Soloud soloud;
+SoLoud::Wav sample;
+SoLoud::handle sampleHandle = 0;
+bool first = true;
+
+/*
+ma_engine engine;
+ma_sound sound;
+*/
+
+bool musicPlaying = false;
 
 int main(int, char**)
 {
@@ -104,9 +120,25 @@ int main(int, char**)
 
     init_imgui();
     spdlog::info("Initialized ImGui.");
-
+    
     soloud.init();
     spdlog::info("Initialized SoLoud.");
+
+    sample.load("./res/music/FurElise.wav");
+
+    /*
+    ma_result result;
+    result = ma_engine_init(NULL, &engine);
+    if (result != MA_SUCCESS) {
+        return EXIT_FAILURE;
+    }
+    spdlog::info("Initialized MiniAudio.");
+
+    result = ma_sound_init_from_file(&engine, "./res/music/FurElise.wav", 0, NULL, NULL, &sound);
+    if (result != MA_SUCCESS) {
+        return result;
+    }
+    */
 
     GLfloat deltaTime = 0.0f; // Czas pomiêdzy obecn¹ i poprzedni¹ klatk¹  
     GLfloat lastFrame = 0.0f; // Czas ostatniej ramki
@@ -320,6 +352,28 @@ void imgui_render()
             ImGui::Begin("Twin^2 Engine");
 
             ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Hello World!");
+
+            if (ImGui::Button("Play Song")) {
+                if (!musicPlaying) {
+                    //ma_sound_start(&sound);
+                    if (first) {
+                        sampleHandle = soloud.play(sample);
+                        first = false;
+                    }
+                    else {
+                        soloud.setPause(sampleHandle, false);
+                    }
+                    musicPlaying = true;
+                }
+            }
+
+            if (ImGui::Button("Stop Song")) {
+                if (musicPlaying) {
+                    //ma_sound_stop(&sound);
+                    soloud.setPause(sampleHandle, true);
+                    musicPlaying = false;
+                }
+            }
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::End();

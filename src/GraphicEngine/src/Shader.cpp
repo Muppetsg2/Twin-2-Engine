@@ -154,6 +154,55 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
     glDeleteShader(vertexShaderID);
     glDeleteShader(fragmentShaderID);
 }
+
+
+Shader::Shader(const GLchar* shaderPath)
+{
+    std::ifstream file(shaderPath, std::ios::binary | std::ios::ate);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file: " << shaderPath << std::endl;
+        //return {};
+    }
+
+    std::streamsize fileSize = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    std::vector<char> buffer(fileSize);
+    if (!file.read(buffer.data(), fileSize)) {
+        std::cerr << "Failed to read file: " << shaderPath << std::endl;
+        //return {};
+    }
+    std::vector<char> shaderBinary = buffer;
+    if (shaderBinary.empty()) {
+        std::cerr << "Failed to read shader program binary" << std::endl;
+        //return -1;
+    }
+
+    shaderProgramID = glCreateProgram();
+    if (!shaderProgramID) {
+        std::cerr << "Failed to create shader program" << std::endl;
+        //return 0;
+    }
+
+    //glProgramBinary(shaderProgramID, GL_PROGRAM_BINARY_RETRIEVABLE_HINT, shaderBinary.data(), shaderBinary.size());
+    //glProgramBinary(shaderProgramID, GL_PROGRAM_BINARY_FORMAT_MESA, shaderBinary.data(), shaderBinary.size());
+    glProgramBinary(shaderProgramID, 1, shaderBinary.data(), shaderBinary.size());
+    std::cout << glGetError() << std::endl;
+    //checkShaderCompilationSuccess(shaderProgramID);
+    //checkProgramLinkingSuccess(shaderProgramID);
+    glLinkProgram(shaderProgramID);
+    GLint success;
+    glGetProgramiv(shaderProgramID, GL_LINK_STATUS, &success);
+    if (!success) {
+        GLchar infoLog[512];
+        glGetProgramInfoLog(shaderProgramID, sizeof(infoLog), nullptr, infoLog);
+        std::cerr << "Error linking shader program: " << infoLog << std::endl;
+        glDeleteProgram(shaderProgramID);
+        //return 0;
+    }
+}
+
+
 // aktywuj shader  
 void Shader::use()
 {

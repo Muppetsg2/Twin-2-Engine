@@ -8,9 +8,12 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <vector>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 
 class Shader
 {
@@ -21,10 +24,12 @@ private:
 public:
     // ID program object  
     unsigned int shaderProgramID;
+    
 
     // konstruktor czyta plik shadera z dysku i tworzy go  
     Shader(const GLchar* vertexPath, const GLchar* geometryPath, const GLchar* fragmentPath);
     Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
+    Shader(const GLchar* shaderPath);
     // aktywuj shader  
     void use();
     // funkcje operuj¹ce na uniformach  

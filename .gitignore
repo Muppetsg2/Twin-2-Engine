@@ -10,5 +10,6 @@ CTestTestfile.cmake
 
 [Bb]uild/
 /[Oo]ut/
+#/[Tt]ools/
 
 /\.vs/

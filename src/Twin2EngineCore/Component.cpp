@@ -2,17 +2,23 @@
 
 using namespace Twin2EngineCore;
 
-static size_t GetNewComponentId() {
+static size_t GetUniqueComponentId() {
 	static size_t id = 0;
 	return id++;
 }
 
 Component::Component()
 {
-	_id = GetNewComponentId();
+	_id = GetUniqueComponentId();
 	_gameObject = nullptr;
 	_enabled = true;
 	Inizialize();
+}
+
+Component::~Component()
+{
+	OnDestroy();
+	_gameObject = nullptr;
 }
 
 void Component::Inizialize()
@@ -28,6 +34,10 @@ void Component::OnEnable()
 }
 
 void Component::OnDisable()
+{
+}
+
+void Component::OnDestroy()
 {
 }
 

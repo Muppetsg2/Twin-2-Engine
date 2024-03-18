@@ -11,16 +11,16 @@ namespace Twin2EngineCore
 		GameObject* _gameObject;
 		bool _enabled;
 
-	protected:
-		Component(); // Powoduje ¿e klasa jest jakby abstrakcyjna no chyba ¿e bêdzie dziedziczona
 	public:
-		virtual ~Component() = default;
+		Component();
+		virtual ~Component();
 
 #pragma region VirtualMethods
 		virtual void Inizialize();
 		virtual void Update();
 		virtual void OnEnable();
 		virtual void OnDisable();
+		virtual void OnDestroy();
 #pragma endregion
 
 #pragma region Setters

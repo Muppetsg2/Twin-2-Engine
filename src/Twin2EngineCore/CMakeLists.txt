@@ -1,42 +1,80 @@
-set(TWIN2ENGINE_CORE_DIR ${CMAKE_CURRENT_LIST_DIR})
-set(TWIN2ENGINE_CORE_SOURCE_DIR ${TWIN2ENGINE_CORE_DIR})
-set(TWIN2ENGINE_CORE_INCLUDE_DIR ${TWIN2ENGINE_CORE_DIR})
+project(Twin2EngineCore VERSION 1.0)
 
-file(GLOB_RECURSE TWIN2ENGINE_CORE_SOURCE_FILES 
-                        #${GRAPHIC_ENGINE_DIR}/src/*.cpp
-                        #${GRAPHIC_ENGINE_DIR}/src/*.c)
-                        ${TWIN2ENGINE_CORE_SOURCE_DIR}/*.cpp
-                        ${TWIN2ENGINE_CORE_SOURCE_DIR}/*.c)
-		
-
-file(GLOB_RECURSE TWIN2ENGINE_CORE_PUBLIC_INCLUDE_FILES 
-                        #${TWIN2ENGINE_CORE_SOURCE_DIR}/include}/*.h)
-                        ${TWIN2ENGINE_CORE_INCLUDE_DIR}/*.h)
-						
-#file(GLOB_RECURSE TWIN2ENGINE_CORE_PRIVATE_INCLUDE_FILES  
-#                        #${TWIN2ENGINE_CORE_SOURCE_DIR}/src/*.h)
-#                        ${TWIN2ENGINE_CORE_SOURCE_DIR}/*.h)
+# Add source files
+file(GLOB_RECURSE SOURCE_FILES 
+	 *.c
+	 *.cpp)
+	
+# Add header files
+file(GLOB_RECURSE HEADER_FILES
+	 *.h
+	 *.hpp)
 	 
-source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${TWIN2ENGINE_CORE_SOURCE_FILES})						   
-source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${TWIN2ENGINE_CORE_PUBLIC_INCLUDE_FILES})
-#source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${TWIN2ENGINE_CORE_PRIVATE_INCLUDE_FILES})
+# Search for the assets files
+file(GLOB_RECURSE ASSETS_FILES 
+	 ${CMAKE_SOURCE_DIR}/res/*.*)
 
-# Defining library
-add_library(Twin2EngineCore STATIC ${TWIN2ENGINE_CORE_SOURCE_FILES})
-#add_library(Twin2EngineCore $<TARGET_OBJECTS:>)
+set_source_files_properties(${ASSETS_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
 
-# Adding include to library
-target_include_directories(Twin2EngineCore
-						PUBLIC 
-						${TWIN2ENGINE_CORE_INCLUDE_DIR}
-						${glad_SOURCE_DIR}
-						
-						#PRIVATE
-						#${TWIN2ENGINE_CORE_SOURCE_DIR}
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})						   
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${HEADER_FILES})
+source_group(TREE ${CMAKE_SOURCE_DIR}         FILES ${ASSETS_FILES})
 
-)
+# ---- Dependency ----
+add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES} ${ASSETS_FILES})
 
-target_link_libraries(Twin2EngineCore PRIVATE 
-										glad
-										glm::glm
-)
+target_compile_definitions(${PROJECT_NAME} PRIVATE GLFW_INCLUDE_NONE)
+target_compile_definitions(${PROJECT_NAME} PRIVATE LIBRARY_SUFFIX="")
+
+get_property(is_miniaudio GLOBAL PROPERTY ISMINIAUDIO)
+get_property(is_imgui GLOBAL PROPERTY USEIMGUI)
+
+if(is_miniaudio)
+	if(is_imgui)
+		target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+														  ${glad_SOURCE_DIR}
+														  ${stb_image_SOURCE_DIR}
+														  ${freetype_SOURCE_DIR}
+														  ${miniaudio_SOURCE_DIR}
+														  ${imgui_SOURCE_DIR})
+		
+		target_link_libraries(${PROJECT_NAME} imgui)
+	else()
+		target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+														${glad_SOURCE_DIR}
+														${stb_image_SOURCE_DIR}
+														${freetype_SOURCE_DIR}
+														${miniaudio_SOURCE_DIR})
+	endif()
+
+	target_link_libraries(${PROJECT_NAME} miniaudio)
+else()
+	if(is_imgui)
+		target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+														  ${glad_SOURCE_DIR}
+														  ${stb_image_SOURCE_DIR}
+														  ${soloud_SOURCE_DIR}
+														  ${freetype_SOURCE_DIR}
+														  ${imgui_SOURCE_DIR})
+
+		target_link_libraries(${PROJECT_NAME} imgui)
+	else()
+		target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+													${glad_SOURCE_DIR}
+													${stb_image_SOURCE_DIR}
+													${soloud_SOURCE_DIR}
+													${freetype_SOURCE_DIR})
+	endif()
+	
+	target_link_libraries(${PROJECT_NAME} soloud)
+endif()
+
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} glad)
+target_link_libraries(${PROJECT_NAME} stb_image)
+target_link_libraries(${PROJECT_NAME} assimp)
+target_link_libraries(${PROJECT_NAME} glfw)
+target_link_libraries(${PROJECT_NAME} spdlog)
+target_link_libraries(${PROJECT_NAME} yaml-cpp)
+target_link_libraries(${PROJECT_NAME} freetype)
+target_link_libraries(${PROJECT_NAME} glm::glm)

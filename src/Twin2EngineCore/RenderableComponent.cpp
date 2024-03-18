@@ -1,4 +1,4 @@
-#include "RenderableComponent.h"
+#include <inc/RenderableComponent.h>
 
 using namespace Twin2EngineCore;
 

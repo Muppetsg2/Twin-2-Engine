@@ -1,4 +1,4 @@
-#include "GameObject.h"
+#include <inc/GameObject.h>
 
 unsigned int Twin2EngineCore::GameObject::_currentFreeId = 1;
 

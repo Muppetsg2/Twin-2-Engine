@@ -1,4 +1,4 @@
-#include "ColliderComponent.h"
+#include <inc/ColliderComponent.h>
 
 using namespace Twin2EngineCore;
 

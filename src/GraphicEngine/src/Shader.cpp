@@ -149,7 +149,8 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
     glAttachShader(shaderProgramID, fragmentShaderID);
     glLinkProgram(shaderProgramID);
 
-    checkShaderCompilationSuccess(shaderProgramID);
+    checkProgramLinkingSuccess(shaderProgramID);
+    //checkShaderCompilationSuccess(shaderProgramID);
 
     glDeleteShader(vertexShaderID);
     glDeleteShader(fragmentShaderID);
@@ -262,7 +263,7 @@ Shader::Shader(const GLchar* shaderPath)
     //glProgramBinary(shaderProgramID, GL_PROGRAM_BINARY_RETRIEVABLE_HINT, shaderBinary.data(), shaderBinary.size());
     //glProgramBinary(shaderProgramID, GL_PROGRAM_BINARY_FORMAT_MESA, shaderBinary.data(), shaderBinary.size());
     glProgramBinary(shaderProgramID, 1, shaderBinary.data(), shaderBinary.size());
-    std::cout << glGetError() << std::endl;
+    std::cout << "Error: " << glGetError() << std::endl;
     //checkShaderCompilationSuccess(shaderProgramID);
     //checkProgramLinkingSuccess(shaderProgramID);
     //glLinkProgram(shaderProgramID);

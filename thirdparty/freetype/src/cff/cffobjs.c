@@ -1053,7 +1053,7 @@
                cmap->encoding_id == TT_MS_ID_UNICODE_CS   )
             goto Skip_Unicode;
 
-          /* Apple Unicode platform id? */
+          /* Apple Unicode platform _id? */
           if ( cmap->platform_id == TT_PLATFORM_APPLE_UNICODE )
             goto Skip_Unicode; /* Apple Unicode */
         }
@@ -1090,7 +1090,7 @@
 
 
           cmaprec.face        = cffface;
-          cmaprec.platform_id = TT_PLATFORM_ADOBE;  /* Adobe platform id */
+          cmaprec.platform_id = TT_PLATFORM_ADOBE;  /* Adobe platform _id */
 
           if ( encoding->offset == 0 )
           {

@@ -6169,7 +6169,7 @@ drflac_bool32 drflac__read_and_decode_metadata(drflac_read_proc onRead, drflac_s
 
 drflac_bool32 drflac__init_private__native(drflac_init_info* pInit, drflac_read_proc onRead, drflac_seek_proc onSeek, drflac_meta_proc onMeta, void* pUserData, void* pUserDataMD, drflac_bool32 relaxed)
 {
-    /* Pre Condition: The bit stream should be sitting just past the 4-byte id header. */
+    /* Pre Condition: The bit stream should be sitting just past the 4-byte _id header. */
 
     drflac_uint8 isLastBlock;
     drflac_uint8 blockType;

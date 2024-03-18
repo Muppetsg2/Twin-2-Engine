@@ -24,9 +24,6 @@ add_subdirectory(Twin2EngineCore)
 # Define the executable
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${ASSETS_FILES})
 
-#target_include_directories(${PROJECT_NAME} PUBLIC ${TWIN2ENGINE_CORE_INCLUDE_DIR});
-target_link_libraries(${PROJECT_NAME} Twin2EngineCore)
-
 target_compile_definitions(${PROJECT_NAME} PRIVATE GLFW_INCLUDE_NONE)
 target_compile_definitions(${PROJECT_NAME} PRIVATE LIBRARY_SUFFIX="")
 
@@ -82,6 +79,8 @@ target_link_libraries(${PROJECT_NAME} spdlog)
 target_link_libraries(${PROJECT_NAME} yaml-cpp)
 target_link_libraries(${PROJECT_NAME} freetype)
 target_link_libraries(${PROJECT_NAME} glm::glm)
+#target_include_directories(${PROJECT_NAME} PUBLIC ${TWIN2ENGINE_CORE_INCLUDE_DIR});
+target_link_libraries(${PROJECT_NAME} Twin2EngineCore)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD 
 				   COMMAND ${CMAKE_COMMAND} -E create_symlink 

@@ -1,8 +1,10 @@
 #pragma once
+#include <string>
 
 namespace Twin2EngineCore
 {
 	class GameObject;
+	class Transform;
 
 	class Component
 	{
@@ -11,8 +13,9 @@ namespace Twin2EngineCore
 		GameObject* _gameObject;
 		bool _enabled;
 
-	public:
+	protected:
 		Component();
+	public:
 		virtual ~Component();
 
 #pragma region VirtualMethods
@@ -24,9 +27,6 @@ namespace Twin2EngineCore
 #pragma endregion
 
 #pragma region Setters
-	private:
-		void setGameObject(GameObject* obj);
-	public:
 		void setEnable(bool enable);
 #pragma endregion
 
@@ -34,8 +34,18 @@ namespace Twin2EngineCore
 		size_t getId() const;
 		GameObject* getGameObject() const;
 		bool isEnable() const;
+
+		//Transform* getTransform() const;
+		//std::string getName() const;
+		//getTag() const;
+		//getLayer() const;
 #pragma endregion
 
+#pragma region FriendMethods
+	private:
+		void Init(GameObject* obj);
+	public:
 		friend GameObject;
+#pragma endregion
 	};
 }

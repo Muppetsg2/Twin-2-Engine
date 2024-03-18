@@ -1,6 +1,8 @@
-#include <Component.h>
+#include "Component.h"
+#include "GameObject.h"
 
 using namespace Twin2EngineCore;
+using namespace std;
 
 static size_t GetUniqueComponentId() {
 	static size_t id = 0;
@@ -9,10 +11,9 @@ static size_t GetUniqueComponentId() {
 
 Component::Component()
 {
-	_id = GetUniqueComponentId();
+	_id = 0;
 	_gameObject = nullptr;
 	_enabled = true;
-	Inizialize();
 }
 
 Component::~Component()
@@ -41,11 +42,6 @@ void Component::OnDestroy()
 {
 }
 
-void Component::setGameObject(GameObject* obj)
-{
-	_gameObject = obj;
-}
-
 void Component::setEnable(bool enable)
 {
 	if (_enabled == enable) return;
@@ -68,4 +64,23 @@ GameObject* Component::getGameObject() const
 bool Component::isEnable() const
 {
 	return _enabled;
+}
+
+/*Transform* Component::getTransform() const
+{
+	return _gameObject->getTransform();
+}*/
+
+/*string Component::getName() const
+{
+	return _gameObject->getName();
+}*/
+
+void Component::Init(GameObject* obj)
+{
+	_id = GetUniqueComponentId();
+	_gameObject = obj;
+	_enabled = true;
+	Inizialize();
+	OnEnable();
 }

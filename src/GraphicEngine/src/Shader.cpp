@@ -208,7 +208,7 @@ Shader::Shader(bool create, const GLchar* vertexPath, const GLchar* fragmentPath
     glLinkProgram(shaderProgramID);
 
     std::cout << "Tutaj2" << std::endl;
-    checkShaderCompilationSuccess(shaderProgramID);
+    //checkShaderCompilationSuccess(shaderProgramID);
     std::cout << "Tutaj2" << std::endl;
     checkProgramLinkingSuccess(shaderProgramID);
 
@@ -216,18 +216,19 @@ Shader::Shader(bool create, const GLchar* vertexPath, const GLchar* fragmentPath
     glDeleteShader(fragmentShaderID);
 
 
-    //GLint binaryLength;
-    //glGetProgramiv(shaderProgramID, GL_PROGRAM_BINARY_LENGTH, &binaryLength);
-    //std::vector<GLchar> binaryData(binaryLength);
-    //GLenum binaryFormat;
-    //glGetProgramBinary(shaderProgramID, binaryLength, nullptr, &binaryFormat, binaryData.data());
-    //
-    //
-    //unsigned int tempId = glCreateProgram();
-    //glProgramBinary(tempId, 1, binaryData.data(), binaryData.size());
-    //
-    //glDeleteProgram(shaderProgramID);
-    //shaderProgramID = tempId;
+    GLint binaryLength;
+    glGetProgramiv(shaderProgramID, GL_PROGRAM_BINARY_LENGTH, &binaryLength);
+    std::vector<GLchar> binaryData(binaryLength);
+    GLenum binaryFormat;
+    glGetProgramBinary(shaderProgramID, binaryLength, nullptr, &binaryFormat, binaryData.data());
+    
+    
+    unsigned int tempId = glCreateProgram();
+    glProgramBinary(tempId, 1, binaryData.data(), binaryData.size());
+    
+    glDeleteProgram(shaderProgramID);
+    shaderProgramID = tempId;
+    checkProgramLinkingSuccess(shaderProgramID);
 }
 
 Shader::Shader(const GLchar* shaderPath)

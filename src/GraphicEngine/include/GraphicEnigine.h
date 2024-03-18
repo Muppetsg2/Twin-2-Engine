@@ -82,11 +82,11 @@ namespace GraphicEngine
 			mesh = new Mesh(vertexes, indices, textures);
 			//shader = new Shader("C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\Basic.shpr");
 			std::cout << "Tutaj" << std::endl;
-			//shader = new Shader("C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
-			//					"C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\fargmentShader.frag");
+			shader = new Shader(true, "C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
+								"C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\fargmentShader.frag");
 
-			shader2 = new Shader2("C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
-				"C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\fargmentShader.frag");
+			//shader2 = new Shader2("C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
+			//	"C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\fargmentShader.frag");
 			std::cout << "Tutaj" << std::endl;
 
 			//instance = this;
@@ -100,10 +100,10 @@ namespace GraphicEngine
 
 		void Render(glm::mat4& view, glm::mat4& projection)
 		{
-			//shader->use();
-			//shader->setMat4("view", view);
-			//shader->setMat4("projection", projection);
-			//
+			shader->use();
+			shader->setMat4("view", view);
+			shader->setMat4("projection", projection);
+			
 			//glm::mat4 model(1.0f);
 			//shader->setMat4("model", model);
 			//shader->setMat4("normalModel", model);

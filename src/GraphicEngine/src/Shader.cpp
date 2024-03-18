@@ -155,6 +155,80 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
     glDeleteShader(fragmentShaderID);
 }
 
+Shader::Shader(bool create, const GLchar* vertexPath, const GLchar* fragmentPath)
+{
+    std::string vertexCode;
+    std::string fragmentCode;
+    std::ifstream vShaderFile;
+    std::ifstream fShaderFile;
+    // zapewnij by obiekt ifstream móg³ rzucaæ wyj¹tkami  
+    vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    try
+    {
+        // otwórz pliki  
+        vShaderFile.open(vertexPath);
+        fShaderFile.open(fragmentPath);
+        std::stringstream vShaderStream, fShaderStream; ///
+        // zapisz zawartoœæ bufora pliku do strumieni  
+        vShaderStream << vShaderFile.rdbuf();
+        fShaderStream << fShaderFile.rdbuf();
+        // zamknij uchtywy do plików  
+        vShaderFile.close();
+        fShaderFile.close();
+        // zamieñ strumieñ w ³añcuch znaków  
+        vertexCode = vShaderStream.str();
+        fragmentCode = fShaderStream.str();
+    }
+    catch (std::ifstream::failure e)
+    {
+        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+    }
+
+    //VERTEX
+    unsigned int vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+    const GLchar* const vertexShaderSource = (const GLchar*)vertexCode.c_str();
+    glShaderSource(vertexShaderID, 1, &vertexShaderSource, NULL);
+    glCompileShader(vertexShaderID);
+
+    //FRAGMENT
+    const GLchar* const fragmentShaderSource = (const GLchar*)fragmentCode.c_str();
+    unsigned int fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShaderID, 1, &fragmentShaderSource, NULL);
+    glCompileShader(fragmentShaderID);
+
+    checkShaderCompilationSuccess(vertexShaderID);
+    checkShaderCompilationSuccess(fragmentShaderID);
+    
+    shaderProgramID = glCreateProgram();
+
+    //Do³¹czanie shaderów
+    glAttachShader(shaderProgramID, vertexShaderID);
+    glAttachShader(shaderProgramID, fragmentShaderID);
+    glLinkProgram(shaderProgramID);
+
+    std::cout << "Tutaj2" << std::endl;
+    checkShaderCompilationSuccess(shaderProgramID);
+    std::cout << "Tutaj2" << std::endl;
+    checkProgramLinkingSuccess(shaderProgramID);
+
+    glDeleteShader(vertexShaderID);
+    glDeleteShader(fragmentShaderID);
+
+
+    //GLint binaryLength;
+    //glGetProgramiv(shaderProgramID, GL_PROGRAM_BINARY_LENGTH, &binaryLength);
+    //std::vector<GLchar> binaryData(binaryLength);
+    //GLenum binaryFormat;
+    //glGetProgramBinary(shaderProgramID, binaryLength, nullptr, &binaryFormat, binaryData.data());
+    //
+    //
+    //unsigned int tempId = glCreateProgram();
+    //glProgramBinary(tempId, 1, binaryData.data(), binaryData.size());
+    //
+    //glDeleteProgram(shaderProgramID);
+    //shaderProgramID = tempId;
+}
 
 Shader::Shader(const GLchar* shaderPath)
 {
@@ -190,7 +264,7 @@ Shader::Shader(const GLchar* shaderPath)
     std::cout << glGetError() << std::endl;
     //checkShaderCompilationSuccess(shaderProgramID);
     //checkProgramLinkingSuccess(shaderProgramID);
-    glLinkProgram(shaderProgramID);
+    //glLinkProgram(shaderProgramID);
     GLint success;
     glGetProgramiv(shaderProgramID, GL_LINK_STATUS, &success);
     if (!success) {

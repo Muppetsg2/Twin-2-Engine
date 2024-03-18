@@ -160,7 +160,9 @@ int main(int, char**)
         std::cout << format << std::endl;
     }
 
+    std::cout << "Tutaj" << std::endl;
     graphicEngine = new GraphicEngine::GraphicEngine();
+    std::cout << "Tutaj" << std::endl;
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
     glm::mat4 view = glm::lookAt(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 

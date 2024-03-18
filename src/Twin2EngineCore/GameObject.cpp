@@ -29,7 +29,6 @@ Twin2EngineCore::GameObject::~GameObject()
 	}
 }
 
-
 unsigned int Twin2EngineCore::GameObject::Id()
 {
 	return _id;

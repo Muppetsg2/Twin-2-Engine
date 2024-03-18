@@ -13,6 +13,7 @@ using std::string;
 #include <Transform.h>
 
 using Twin2EngineCore::Component;
+//using Twin2EngineCore::Transform;
 
 
 namespace Twin2EngineCore
@@ -21,9 +22,9 @@ namespace Twin2EngineCore
 	{
 		static unsigned int _currentFreeId;
 		unsigned int _id;
-		string name;
+		string _name;
 
-		Transform* transform;
+		Transform* _transform;
 		list<Component*> components;
 
 		bool _activeSelf;
@@ -39,13 +40,18 @@ namespace Twin2EngineCore
 
 		virtual ~GameObject();
 
-		inline unsigned int Id();
+		inline unsigned int Id() const;
 
 		bool GetActive();
 		void SetActive(bool active);
 
-		bool GetIsStatic();
+		bool GetIsStatic() const;
 		void SetIsStatic(bool isStatic);
+
+		Transform* GetTransform() const;
+
+		string GetName() const;
+		void SetName(const string& name);
 
 		template<class T>
 		typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type

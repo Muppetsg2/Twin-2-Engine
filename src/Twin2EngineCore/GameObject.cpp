@@ -15,10 +15,10 @@ Twin2EngineCore::GameObject::GameObject()
 	_isStatic = false;
 
 	// Setting default name
-	name = "New GameObject";
+	_name = "New GameObject";
 
-	transform = new Transform();
-	components.push_back(transform);
+	_transform = new Transform();
+	components.push_back(_transform);
 }
 
 Twin2EngineCore::GameObject::~GameObject()
@@ -29,12 +29,12 @@ Twin2EngineCore::GameObject::~GameObject()
 	}
 }
 
-unsigned int Twin2EngineCore::GameObject::Id()
+unsigned int Twin2EngineCore::GameObject::Id() const
 {
 	return _id;
 }
 
-bool Twin2EngineCore::GameObject::GetActive()
+bool Twin2EngineCore::GameObject::GetActive() const
 {
 	return _activeSelf && _activeInHierarchy;
 }
@@ -61,13 +61,30 @@ void Twin2EngineCore::GameObject::SetActive(bool active)
 
 
 
-bool Twin2EngineCore::GameObject::GetIsStatic()
+bool Twin2EngineCore::GameObject::GetIsStatic() const
 {
 	return _isStatic;
 }
 void Twin2EngineCore::GameObject::SetIsStatic(bool isStatic)
 {
 	_isStatic = isStatic;
+}
+
+
+Twin2EngineCore::Transform* Twin2EngineCore::GameObject::GetTransform() const
+{
+	return _transform;
+}
+
+string Twin2EngineCore::GameObject::GetName() const
+{
+	return _name;
+}
+
+
+void Twin2EngineCore::GameObject::SetName(const string& name)
+{
+	_name = name;
 }
 
 

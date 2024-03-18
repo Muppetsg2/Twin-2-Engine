@@ -35,8 +35,8 @@ namespace Twin2EngineCore
 		GameObject* getGameObject() const;
 		bool isEnable() const;
 
-		//Transform* getTransform() const;
-		//std::string getName() const;
+		Transform* getTransform() const;
+		std::string getName() const;
 		//getTag() const;
 		//getLayer() const;
 #pragma endregion

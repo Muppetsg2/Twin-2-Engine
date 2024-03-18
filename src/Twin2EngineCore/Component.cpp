@@ -66,15 +66,15 @@ bool Component::isEnable() const
 	return _enabled;
 }
 
-/*Transform* Component::getTransform() const
+Transform* Component::getTransform() const
 {
-	return _gameObject->getTransform();
-}*/
+	return _gameObject->GetTransform();
+}
 
-/*string Component::getName() const
+string Component::getName() const
 {
-	return _gameObject->getName();
-}*/
+	return _gameObject->GetName();
+}
 
 void Component::Init(GameObject* obj)
 {

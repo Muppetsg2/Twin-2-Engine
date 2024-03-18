@@ -1,86 +1,12 @@
-# Add source files
-file(GLOB_RECURSE SOURCE_FILES 
-	 *.c
-	 *.cpp)
-	
-# Add header files
-file(GLOB_RECURSE HEADER_FILES 
-	 *.h
-	 *.hpp)
-	 
-# Search for the assets files
-file(GLOB_RECURSE ASSETS_FILES 
-	 ${CMAKE_SOURCE_DIR}/res/*.*)
-
-set_source_files_properties(${ASSETS_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
-
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})						   
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${HEADER_FILES})
-source_group(TREE ${CMAKE_SOURCE_DIR}         FILES ${ASSETS_FILES})
-
 # ---- Dependency ----
 add_subdirectory(Twin2EngineCore)
+add_subdirectory(Game)
 
 # Define the executable
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${ASSETS_FILES})
+add_executable(${PROJECT_NAME} main.cpp)
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE GLFW_INCLUDE_NONE)
-target_compile_definitions(${PROJECT_NAME} PRIVATE LIBRARY_SUFFIX="")
-
-get_property(is_miniaudio GLOBAL PROPERTY ISMINIAUDIO)
-get_property(is_imgui GLOBAL PROPERTY USEIMGUI)
-
-if(is_miniaudio)
-	if(is_imgui)
-		target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-														  ${glad_SOURCE_DIR}
-														  ${stb_image_SOURCE_DIR}
-														  ${freetype_SOURCE_DIR}
-														  ${miniaudio_SOURCE_DIR}
-														  ${imgui_SOURCE_DIR})
-		
-		target_link_libraries(${PROJECT_NAME} imgui)
-	else()
-		target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-														${glad_SOURCE_DIR}
-														${stb_image_SOURCE_DIR}
-														${freetype_SOURCE_DIR}
-														${miniaudio_SOURCE_DIR})
-	endif()
-
-	target_link_libraries(${PROJECT_NAME} miniaudio)
-else()
-	if(is_imgui)
-		target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-														  ${glad_SOURCE_DIR}
-														  ${stb_image_SOURCE_DIR}
-														  ${soloud_SOURCE_DIR}
-														  ${freetype_SOURCE_DIR}
-														  ${imgui_SOURCE_DIR})
-
-		target_link_libraries(${PROJECT_NAME} imgui)
-	else()
-		target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-													${glad_SOURCE_DIR}
-													${stb_image_SOURCE_DIR}
-													${soloud_SOURCE_DIR}
-													${freetype_SOURCE_DIR})
-	endif()
-	
-	target_link_libraries(${PROJECT_NAME} soloud)
-endif()
-
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} glad)
-target_link_libraries(${PROJECT_NAME} stb_image)
-target_link_libraries(${PROJECT_NAME} assimp)
-target_link_libraries(${PROJECT_NAME} glfw)
-target_link_libraries(${PROJECT_NAME} spdlog)
-target_link_libraries(${PROJECT_NAME} yaml-cpp)
-target_link_libraries(${PROJECT_NAME} freetype)
-target_link_libraries(${PROJECT_NAME} glm::glm)
-#target_include_directories(${PROJECT_NAME} PUBLIC ${TWIN2ENGINE_CORE_INCLUDE_DIR});
-target_link_libraries(${PROJECT_NAME} Twin2EngineCore)
+target_include_directories(${PROJECT_NAME} PUBLIC ${Game_SOURCE_DIR})
+target_link_libraries(${PROJECT_NAME} Game)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD 
 				   COMMAND ${CMAKE_COMMAND} -E create_symlink 

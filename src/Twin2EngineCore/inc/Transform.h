@@ -1,7 +1,7 @@
 #ifndef _TRANSFORM_H_
 #define _TRANSFORM_H_
 
-#include <Component.h>
+#include <inc/Component.h>
 
 namespace Twin2EngineCore
 {

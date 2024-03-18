@@ -31,7 +31,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // HID
-#include <Input/Input.h>
+#include <inc/Input.h>
 
 #pragma region OpenGLCallbackFunctions
 

@@ -17,6 +17,8 @@ namespace Twin2EngineCore
 	class Transform : public Component
 	{
 	private:
+		static Transform* originTransform;
+
 		glm::vec3 _localPosition;
 		glm::vec3 _localRotation;
 		glm::quat _localRotationQuat;
@@ -88,13 +90,13 @@ namespace Twin2EngineCore
 		size_t GetChildCount() const;
 
 		void SetLocalPosition(const glm::vec3& localPosition);
-		glm::vec3 GetLocalPosition() const;
+		glm::vec3 GetLocalPosition();
 		void SetLocalRotation(const glm::vec3& localRotation);
 		glm::vec3 GetLocalRotation();
 		void SetLocalRotation(const glm::quat& localRotation);
 		glm::quat GetLocalRotationQuat();
 		void SetLocalScale(const glm::vec3& localScale);
-		glm::vec3 GetLocalScale() const;
+		glm::vec3 GetLocalScale();
 
 		void SetGlobalPosition(const glm::vec3& globalPosition);
 		glm::vec3 GetGlobalPosition();

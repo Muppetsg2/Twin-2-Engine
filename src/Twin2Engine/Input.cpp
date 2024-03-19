@@ -1,4 +1,4 @@
-#include <inc/Input.h>
+#include <core/Input.h>
 #include <string>
 
 using namespace std;

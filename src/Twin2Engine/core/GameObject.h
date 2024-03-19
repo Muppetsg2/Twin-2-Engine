@@ -9,8 +9,8 @@
 using std::list;
 using std::string;
 
-#include <inc/Component.h>
-#include <inc/Transform.h>
+#include "Component.h"
+#include "Transform.h"
 
 using Twin2EngineCore::Component;
 //using Twin2EngineCore::Transform;

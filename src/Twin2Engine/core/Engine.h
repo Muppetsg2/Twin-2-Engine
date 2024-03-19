@@ -32,10 +32,10 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // HID
-#include <inc/Input.h>
+#include "Input.h"
 
 // TIME
-#include <inc/Time.h>
+#include "Time.h"
 
 constexpr int32_t WINDOW_WIDTH = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;

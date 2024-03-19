@@ -1,4 +1,4 @@
-#include <inc/Time.h>
+#include <core/Time.h>
 #include <GLFW/glfw3.h>
 
 using namespace Twin2EngineCore;

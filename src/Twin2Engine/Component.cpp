@@ -1,5 +1,5 @@
-#include <inc/Component.h>
-#include <inc/GameObject.h>
+#include <core/Component.h>
+#include <core/GameObject.h>
 
 using namespace Twin2EngineCore;
 using namespace std;

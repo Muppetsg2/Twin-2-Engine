@@ -31,10 +31,10 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // HID
-#include <inc/Input.h>
+#include <core/Input.h>
 
 // TIME
-#include <inc/Time.h>
+#include <core/Time.h>
 
 #pragma region OpenGLCallbackFunctions
 

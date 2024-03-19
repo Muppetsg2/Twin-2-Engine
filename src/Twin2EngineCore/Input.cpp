@@ -2,6 +2,7 @@
 #include <string>
 
 using namespace std;
+using namespace glm;
 using namespace Twin2EngineCore;
 
 GLFWwindow* Input::_mainWindow = nullptr;
@@ -51,7 +52,7 @@ void Input::InitForWindow(GLFWwindow* window, bool mainWindow)
 	_windows.push_back(window);
 
 	// Main Window
-	if (mainWindow || _mainWindow == nullptr) setMainWindow(window);
+	if (mainWindow || _mainWindow == nullptr) SetMainWindow(window);
 }
 
 void Input::FreeWindow(GLFWwindow* window)
@@ -134,12 +135,12 @@ void Input::ShowCursor(GLFWwindow* window)
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
-glm::vec2 Input::GetMousePos(GLFWwindow* window)
+vec2 Input::GetMousePos(GLFWwindow* window)
 {
 	double x = 0;
 	double y = 0;
 	glfwGetCursorPos(window, &x, &y);
-	return glm::vec2(x, y);
+	return vec2(x, y);
 }
 
 bool Input::IsMouseButtonPressed(GLFWwindow* window, MOUSE_BUTTON button)
@@ -222,7 +223,7 @@ void Input::ShowCursor()
 	ShowCursor(_mainWindow);
 }
 
-glm::vec2 Input::GetMousePos()
+vec2 Input::GetMousePos()
 {
 	return GetMousePos(_mainWindow);
 }

@@ -1,19 +1,18 @@
 #include <inc/Time.h>
-#include <chrono>
+#include <GLFW/glfw3.h>
 
 using namespace Twin2EngineCore;
-using namespace std::chrono;
 
 float Time::_updateDeltaTime = 0.f;
 
 void Time::Update()
 {
-	static float t1 = system_clock::now();
-	static float t2 = system_clock::now();
+	static float t1 = glfwGetTime();
+	static float t2 = glfwGetTime();
 
 	t1 = t2;
-	t2 = system_clock::now();
-	_updateDeltaTime = (t2 - t1).count();
+	t2 = glfwGetTime();
+	_updateDeltaTime = t2 - t1;
 }
 
 float Time::GetDeltaTime()

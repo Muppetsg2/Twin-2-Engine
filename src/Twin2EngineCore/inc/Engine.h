@@ -34,6 +34,9 @@
 // HID
 #include <inc/Input.h>
 
+// TIME
+#include <inc/Time.h>
+
 constexpr int32_t WINDOW_WIDTH = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
 const char* WINDOW_NAME = "Twin^2 Engine";
@@ -68,8 +71,8 @@ namespace Twin2EngineCore {
 	private:
 		bool Init();
 		void Init_Imgui();
+		void Init_SoLoud();
 
-		void Input();
 		void Update();
 		void Render();
 
@@ -80,6 +83,6 @@ namespace Twin2EngineCore {
 		void End_Frame();
 
 	public:
-		void GameLoop();
+		int GameLoop();
 	};
 }

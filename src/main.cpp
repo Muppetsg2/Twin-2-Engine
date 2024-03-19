@@ -33,11 +33,14 @@
 // HID
 #include <inc/Input.h>
 
+// TIME
+#include <inc/Time.h>
+
 #pragma region OpenGLCallbackFunctions
 
 static void glfw_error_callback(int error, const char* description)
 {
-    fprintf(stderr, "Glfw Error %d: %s\n", error, description);
+    spdlog::error("Glfw Error {0}: {1}\n", error, description);
 }
 
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -47,14 +50,7 @@ static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
-    fprintf(
-        stderr,
-        "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-        (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-        type,
-        severity,
-        message
-    );
+    spdlog::error("GL CALLBACK: {0} type = 0x{1:x}, severity = 0x{2:x}, message = {3}\n", (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
 }
 
 #pragma endregion
@@ -64,9 +60,9 @@ static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint i
 bool init();
 void init_imgui();
 
-void input(float deltaTime);
-void update(float deltaTime);
-void render(float deltaTime);
+void input();
+void update();
+void render();
 
 void imgui_begin();
 void imgui_render();
@@ -140,9 +136,6 @@ int main(int, char**)
     }
     */
 
-    GLfloat deltaTime = 0.0f; // Czas pomiêdzy obecn¹ i poprzedni¹ klatk¹  
-    GLfloat lastFrame = 0.0f; // Czas ostatniej ramki
-
 #pragma endregion
 
 #pragma region MatricesUBO
@@ -165,22 +158,17 @@ int main(int, char**)
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
-        // Update game time value
-        GLfloat currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-
         // Process I/O operations here
-        input(deltaTime);
+        input();
 
         glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Update game objects' state here
-        update(deltaTime);
+        update();
 
         // OpenGL rendering code here
-        render(deltaTime);
+        render();
 
         // Draw ImGui
         imgui_begin();
@@ -196,7 +184,7 @@ int main(int, char**)
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    Input::freeAllWindows();
+    Twin2EngineCore::Input::FreeAllWindows();
     glfwDestroyWindow(window);
     glfwTerminate();
 
@@ -239,7 +227,7 @@ bool init()
     glfwMakeContextCurrent(window);
     //glfwSwapInterval(1); // Enable VSync - fixes FPS at the refresh rate of your screen
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    Input::initForWindow(window, true);
+    Twin2EngineCore::Input::InitForWindow(window);
 
     bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
@@ -300,38 +288,19 @@ void init_imgui()
     //IM_ASSERT(font != NULL);
 }
 
-void input(float deltaTime)
+void input()
 {
-    /*if (Input::isMouseButtonPressed(LEFT)) {
-        spdlog::info("Pressed");
-    }*/
-
-    /*if (Input::isKeyPressed(KEY::W)) {
-        spdlog::info("PRESSED");
+    if (Twin2EngineCore::Input::IsKeyPressed(Twin2EngineCore::KEY::W)) {
+        spdlog::info("Delta Time: {}\n", Twin2EngineCore::Time::GetDeltaTime());
     }
-    if (Input::isKeyDown(KEY::W)) {
-        spdlog::info("DOWN OR PRESSED");
-    }
-    if (Input::isKeyHeldDown(KEY::W)) {
-        spdlog::info("DOWN");
-    }
-    if (Input::isKeyReleased(KEY::W)) {
-        spdlog::info("RELEASE");
-    }
-    if (Input::isKeyUp(KEY::W)) {
-        spdlog::info("UP OR RELEASED");
-    }
-    if (Input::isKeyHeldUp(KEY::W)) {
-        spdlog::info("UP");
-    }*/
 }
 
-void update(float deltaTime)
+void update()
 {
     // Update game objects' state here
 }
 
-void render(float deltaTime)
+void render()
 {
     // OpenGL Rendering code goes here
 }
@@ -395,7 +364,8 @@ void end_frame()
     // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
     // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
     // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-    Input::pollEvents();
+    Twin2EngineCore::Time::Update();
+    Twin2EngineCore::Input::Update();
     glfwMakeContextCurrent(window);
     glfwSwapBuffers(window);
 }

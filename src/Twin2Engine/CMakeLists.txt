@@ -1,4 +1,4 @@
-project(Twin2EngineCore VERSION 1.0)
+project(Twin2Engine VERSION 1.0)
 
 # Add source files
 file(GLOB_RECURSE SOURCE_FILES 

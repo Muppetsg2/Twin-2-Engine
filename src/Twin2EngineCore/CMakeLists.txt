@@ -69,6 +69,7 @@ else()
 	target_link_libraries(${PROJECT_NAME} soloud)
 endif()
 
+
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} glad)
 target_link_libraries(${PROJECT_NAME} stb_image)

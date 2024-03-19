@@ -42,8 +42,8 @@ namespace Twin2EngineCore
 		bool _dirtyFlagGlobalScale = false;
 		bool _dirtyFlagLocalScale = false;
 
-		//bool _dirtyFlagLocalRotationQuat2Euler;
 		bool _dirtyFlagGlobalRotationQuat2Euler = false;
+		//bool _dirtyFlagLocalRotationQuat2Euler = false;
 
 		glm::mat4 _localTransformMatrix;
 		glm::mat4 _globalTransformMatrix;
@@ -53,11 +53,10 @@ namespace Twin2EngineCore
 		std::vector<Transform*> _children;
 
 
-		void JustAddChild(Transform* child);
-		void JustRemoveChild(Transform* child);
+		inline void JustAddChild(Transform* child);
+		inline void JustRemoveChild(Transform* child);
 
 		void SetDirtyFlagInChildren();
-		//void ClearDirtyFlagInParents();
 		void SetDirtyFlagGlobalPositionInChildren();
 		void SetDirtyFlagGlobalRotationInChildren();
 		void SetDirtyFlagGlobalScaleInChildren();

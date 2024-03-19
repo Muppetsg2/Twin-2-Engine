@@ -45,7 +45,7 @@ public:
         setupMesh();
     }
 
-    void Draw(Shader shader)
+    void Draw(Shader* shader)
     {
         unsigned int diffuseNr = 1;
         unsigned int specularNr = 1;
@@ -63,7 +63,7 @@ public:
             //printf("Textures id %d\n", textures[i].id);
             //printf("Textures name %s\n", (name + number).c_str());
             //shader.setFloat(("material." + name + number).c_str(), i);
-            shader.setInt((name + number).c_str(), i);
+            shader->setInt((name + number).c_str(), i);
             //shader.setInt((name + number).c_str(), textures[i].id);
             glBindTexture(GL_TEXTURE_2D, textures[i].id);
         }

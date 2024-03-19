@@ -30,7 +30,7 @@ public:
 
         meshes.push_back(mesh);
     }
-    void Draw(Shader shader)
+    void Draw(Shader* shader)
     {
         for (unsigned int i = 0; i < meshes.size(); i++)
             meshes[i].Draw(shader);

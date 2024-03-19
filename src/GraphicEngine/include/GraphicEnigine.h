@@ -6,7 +6,6 @@
 #include <glm/glm.hpp>
 
 #include <Mesh.h>
-#include <Shader2.h>
 
 using std::vector;
 
@@ -16,7 +15,6 @@ namespace GraphicEngine
 	{
 		Mesh* mesh;
 		Shader* shader;
-		Shader2* shader2;
 		//static GraphicEngine* instance;
 
 	public:
@@ -86,8 +84,6 @@ namespace GraphicEngine
 			//shader = new Shader("C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
 			//					"C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\fargmentShader.frag");
 
-			//shader2 = new Shader2("C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
-			//	"C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\fargmentShader.frag");
 			std::cout << "Tutaj" << std::endl;
 
 			//instance = this;
@@ -109,7 +105,7 @@ namespace GraphicEngine
 			shader->setMat4("model", model);
 			//shader->setMat4("normalModel", model);
 			
-			mesh->Draw(*shader);
+			mesh->Draw(shader);
 		}
 	};
 }

@@ -8,7 +8,11 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <list>
+#include <set>
 #include <vector>
+
+
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -18,6 +22,21 @@
 class Shader
 {
 private:
+    struct ShaderProgramData
+    {
+        size_t shaderPathHash;
+        int shaderProgramId;
+        int useNumber;
+        bool operator<(const ShaderProgramData& other) const {
+            return shaderPathHash < other.shaderPathHash;
+        }
+    };
+    static std::hash<std::string> stringHash;
+    static std::list<ShaderProgramData*> loadedShaders;
+    static int getShaderProgramById(int shaderProgramId);
+    static int loadShaderProgram(const GLchar* shaderPath);
+    static void unloadShaderProgram(int shaderProgramID);
+
     void checkShaderCompilationSuccess(GLuint shaderId);
 
     void checkProgramLinkingSuccess(GLuint programId);
@@ -27,10 +46,16 @@ public:
     
 
     // konstruktor czyta plik shadera z dysku i tworzy go  
-    Shader(const GLchar* vertexPath, const GLchar* geometryPath, const GLchar* fragmentPath);
-    Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
-    Shader(bool create, const GLchar* vertexPath, const GLchar* fragmentPath);
+    //Shader(const GLchar* vertexPath, const GLchar* geometryPath, const GLchar* fragmentPath);
+    //Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
+    //Shader(bool create, const GLchar* vertexPath, const GLchar* fragmentPath);
+
     Shader(const GLchar* shaderPath);
+    Shader(const Shader&& shader);
+    Shader(const Shader& shader);
+
+    ~Shader();
+
     // aktywuj shader  
     void use();
     // funkcje operuj¹ce na uniformach  

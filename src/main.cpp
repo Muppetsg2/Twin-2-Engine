@@ -305,6 +305,10 @@ void update(float deltaTime)
 void render(float deltaTime)
 {
     // OpenGL Rendering code goes here
+    glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 5.0f);
+    glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 view = glm::lookAt(cameraPosition, cameraPosition + cameraDirection, glm::vec3(0.0f, 1.0f, 0.0f));
 
     graphicEngine->Render(view, projection);
 }

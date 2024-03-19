@@ -5,7 +5,8 @@ project(ShaderCompiler)
 # Generate a header file with the ORIGIN_FOLDER variable
 configure_file(config.h.in config.h)
 
-message("Shader origin directory: ${SHADER_ORIGIN_FOLDER}")
+message("ShaderCompiler origin directory: ${SHADER_ORIGIN_FOLDER}")
+message("ShaderCompiler build destination directory: ${CMAKE_BINARY_DIR}")
 
 add_executable(SHADER_COMPILER ShaderCompiler.cpp)
 #add_compile_definitions(ORIGIN_FOLDER ${SHADER_ORIGIN_FOLDER})
@@ -17,3 +18,4 @@ target_link_libraries(SHADER_COMPILER PRIVATE ${OPENGL_LIBRARIES})
 target_link_libraries(SHADER_COMPILER PRIVATE glad
 											  glfw
 )
+

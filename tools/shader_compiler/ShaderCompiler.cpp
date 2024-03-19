@@ -4,6 +4,8 @@
 #include <vector>
 #include <filesystem>
 
+using std::string;
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "config.h"
@@ -102,6 +104,14 @@ void checkProgramLinkingSuccess(GLuint programId)
     }
 }
 
+bool isWhitespace(char c) {
+    return std::isspace(static_cast<unsigned char>(c));
+}
+
+bool isEmptyOrWhitespace(const std::string& str) {
+    return std::all_of(str.begin(), str.end(), isWhitespace);
+}
+
 int main() {// Initialize GLFW
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -144,44 +154,96 @@ int main() {// Initialize GLFW
                 std::ifstream shaderFile(entry.path());
                 if (shaderFile.is_open()) {
                     // Read shader program file
-                    std::string shaderProgramName, vertexShaderPath, fragmentShaderPath;
+                    std::string shaderProgramName;// , vertexShaderPath, fragmentShaderPath;
                     std::getline(shaderFile, shaderProgramName);
-                    std::getline(shaderFile, vertexShaderPath);
-                    std::getline(shaderFile, fragmentShaderPath);
+                    //std::getline(shaderFile, vertexShaderPath);
+                    //std::getline(shaderFile, fragmentShaderPath);
 
-                    // Load shader sources
-                    std::string vertexSource = loadShaderSource(folder + "/" + vertexShaderPath);
-                    std::string fragmentSource = loadShaderSource(folder + "/" + fragmentShaderPath);
-
-
-                    //VERTEX
-                    unsigned int vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-                    const GLchar* const vertexShaderSource = (const GLchar*)vertexSource.c_str();
-                    glShaderSource(vertexShaderID, 1, &vertexShaderSource, NULL);
-                    glCompileShader(vertexShaderID);
-
-                    //FRAGMENT
-                    const GLchar* const fragmentShaderSource = (const GLchar*)fragmentSource.c_str();
-                    unsigned int fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
-                    glShaderSource(fragmentShaderID, 1, &fragmentShaderSource, NULL);
-                    glCompileShader(fragmentShaderID);
-
-                    checkShaderCompilationSuccess(vertexShaderID);
-                    checkShaderCompilationSuccess(fragmentShaderID);
-                    // Create shader program
-                    //GLuint shaderProgram = createShaderProgram(vertexSource, fragmentSource);
                     GLuint shaderProgram = glCreateProgram();
 
-                    //Do³¹czanie shaderów
-                    glAttachShader(shaderProgram, vertexShaderID);
-                    glAttachShader(shaderProgram, fragmentShaderID);
+                    std::string line;
+                    std::list<unsigned int> shaderIds;
+                    while (!shaderFile.eof())
+                    {
+                        std::getline(shaderFile, line);
+
+                        std::cout << line << std::endl;
+                        if (isEmptyOrWhitespace(line))
+                        {
+                            continue;
+                        }
+
+                        string extension = line.substr(line.size() - 4, 4);
+
+                        unsigned int shaderType;
+                        if (extension == "vert")
+                        {
+                            shaderType = GL_VERTEX_SHADER;
+                        }
+                        else if (extension == "frag")
+                        {
+                            shaderType = GL_FRAGMENT_SHADER;
+                        }
+                        else if (extension == "geom")
+                        {
+                            shaderType = GL_GEOMETRY_SHADER;
+                        }
+                        else
+                        {
+                            std::cerr << "Unrecogniced extension in shader program encountered.\n" << "Path: " << entry.path() << std::endl;
+                            return 1;
+                        }
+
+                        std::string shaderSource = loadShaderSource(folder + "/" + line);
+
+                        unsigned int shaderId = glCreateShader(shaderType);
+                        const GLchar* const cstrShaderSource = (const GLchar*)shaderSource.c_str();
+                        glShaderSource(shaderId, 1, &cstrShaderSource, NULL);
+                        glCompileShader(shaderId);
+
+                        checkShaderCompilationSuccess(shaderId);
+
+                        glAttachShader(shaderProgram, shaderId);
+
+                        shaderIds.push_back(shaderId);
+                    }
                     glLinkProgram(shaderProgram);
-                    checkShaderCompilationSuccess(shaderProgram);
                     checkProgramLinkingSuccess(shaderProgram);
 
+                    //// Load shader sources
+                    //std::string vertexSource = loadShaderSource(folder + "/" + vertexShaderPath);
+                    //std::string fragmentSource = loadShaderSource(folder + "/" + fragmentShaderPath);
+                    //
+                    //
+                    ////VERTEX
+                    //unsigned int vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+                    //const GLchar* const vertexShaderSource = (const GLchar*)vertexSource.c_str();
+                    //glShaderSource(vertexShaderID, 1, &vertexShaderSource, NULL);
+                    //glCompileShader(vertexShaderID);
+                    //
+                    ////FRAGMENT
+                    //const GLchar* const fragmentShaderSource = (const GLchar*)fragmentSource.c_str();
+                    //unsigned int fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+                    //glShaderSource(fragmentShaderID, 1, &fragmentShaderSource, NULL);
+                    //glCompileShader(fragmentShaderID);
+                    //
+                    //checkShaderCompilationSuccess(vertexShaderID);
+                    //checkShaderCompilationSuccess(fragmentShaderID);
+                    
+                    // Create shader program
+                    //GLuint shaderProgram = createShaderProgram(vertexSource, fragmentSource);
 
-                    glDeleteShader(vertexShaderID);
-                    glDeleteShader(fragmentShaderID);
+                    //Do³¹czanie shaderów
+                    //glAttachShader(shaderProgram, vertexShaderID);
+                    //glAttachShader(shaderProgram, fragmentShaderID);
+                    //glLinkProgram(shaderProgram);
+                    //checkShaderCompilationSuccess(shaderProgram);
+
+                    for (unsigned int id : shaderIds)
+                    {
+                        glDeleteShader(id);
+                    }
+                    //glDeleteShader(fragmentShaderID);
 
                     if (shaderProgram != 0) {
                         //glLinkProgram(shaderProgram);
@@ -193,8 +255,7 @@ int main() {// Initialize GLFW
                         glGetProgramBinary(shaderProgram, binaryLength, nullptr, &binaryFormat, binaryData.data());
 
                         // Save binary to file
-                        std::string outputFilePath = ORIGIN_FOLDER + std::string("/Shaders/") + shaderProgramName + SHADER_BINARY_EXTENSION;
-                        std::cout << "Binary format: " << binaryFormat << std::endl;
+                        std::string outputFilePath = ORIGIN_FOLDER + std::string("/res/CompiledShaders/") + shaderProgramName + SHADER_BINARY_EXTENSION;
                         std::ofstream binaryFile;// (outputFilePath, std::ios::binary);
                         try {
                             std::filesystem::create_directories(outputFilePath.substr(0, outputFilePath.find_last_of('/')));
@@ -207,7 +268,7 @@ int main() {// Initialize GLFW
                         binaryFile.open(outputFilePath, std::ios::binary);
                         if (binaryFile.is_open())
                         {
-                            std::cout << "Output file opened\n";
+                            //std::cout << "Output file opened\n";
                         }
                         else
                         {
@@ -217,7 +278,8 @@ int main() {// Initialize GLFW
                         binaryFile.write(binaryData.data(), binaryLength);
                         binaryFile.close();
 
-                        std::cout << "Compiled and saved shader program binary: " << outputFilePath << " | " << entry.path() << std::endl;
+                        std::cout << "Compiled and saved shader program binary: " << outputFilePath << std::endl;
+                        std::cout << "Binary format: " << binaryFormat << std::endl;
 
                         // Cleanup
                         glDeleteProgram(shaderProgram);

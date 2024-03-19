@@ -5,6 +5,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 
 #include <vector>
@@ -18,16 +19,32 @@ namespace Twin2EngineCore
 	private:
 		glm::vec3 _localPosition;
 		glm::vec3 _localRotation;
+		glm::quat _localRotationQuat;
 		glm::vec3 _localScale;
 
 
 		glm::vec3 _globalPosition;
 		glm::vec3 _globalRotation;
+		glm::quat _globalRotationQuat;
 		glm::vec3 _globalScale;
 
-		bool dirtyFlag;
+		bool _dirtyFlag = false;
+		bool _dirtyFlagInHierarchy = false;
 
-		glm::mat4 _transformMatrix;
+		bool _dirtyFlagGlobalPosition = false;
+		bool _dirtyFlagLocalPosition = false;
+
+		bool _dirtyFlagGlobalRotation = false;
+		bool _dirtyFlagLocalRotation = false;
+
+		bool _dirtyFlagGlobalScale = false;
+		bool _dirtyFlagLocalScale = false;
+
+		//bool _dirtyFlagLocalRotationQuat2Euler;
+		bool _dirtyFlagGlobalRotationQuat2Euler = false;
+
+		glm::mat4 _localTransformMatrix;
+		glm::mat4 _globalTransformMatrix;
 
 		Transform* _parent;
 
@@ -36,6 +53,23 @@ namespace Twin2EngineCore
 
 		void JustAddChild(Transform* child);
 		void JustRemoveChild(Transform* child);
+
+		void SetDirtyFlagInChildren();
+		//void ClearDirtyFlagInParents();
+		void SetDirtyFlagGlobalPositionInChildren();
+		void SetDirtyFlagGlobalRotationInChildren();
+		void SetDirtyFlagGlobalScaleInChildren();
+
+		void RecalculateTransformMatrix();
+
+		void RecalculateGlobalPosition();
+		void RecalculateLocalPosition();
+
+		void RecalculateGlobalRotation();
+		void RecalculateLocalRotation();
+
+		void RecalculateGlobalScale();
+		void RecalculateLocalScale();
 
 	public:
 		Transform();
@@ -56,16 +90,19 @@ namespace Twin2EngineCore
 		void SetLocalPosition(const glm::vec3& localPosition);
 		glm::vec3 GetLocalPosition() const;
 		void SetLocalRotation(const glm::vec3& localRotation);
-		glm::vec3 GetLocalRotation() const;
+		glm::vec3 GetLocalRotation();
+		void SetLocalRotation(const glm::quat& localRotation);
+		glm::quat GetLocalRotationQuat();
 		void SetLocalScale(const glm::vec3& localScale);
 		glm::vec3 GetLocalScale() const;
 
 		void SetGlobalPosition(const glm::vec3& globalPosition);
-		glm::vec3 GetGlobalPosition() const;
+		glm::vec3 GetGlobalPosition();
 		void SetGlobalRotation(const glm::vec3& globalRotation);
-		glm::vec3 GetGlobalRotation() const;
+		glm::vec3 GetGlobalRotation();
+		glm::quat GetGlobalRotationQuat();
 		void SetGlobalScale(const glm::vec3& globalScale);
-		glm::vec3 GetGlobalScale() const;
+		glm::vec3 GetGlobalScale();
 
 		glm::mat4 GetTransformMatrix();
 	};

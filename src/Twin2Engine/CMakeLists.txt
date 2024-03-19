@@ -1,4 +1,4 @@
-project(Twin2EngineCore VERSION 1.0)
+project(Twin2Engine VERSION 1.0)
 
 # Add source files
 file(GLOB_RECURSE SOURCE_FILES 
@@ -7,8 +7,8 @@ file(GLOB_RECURSE SOURCE_FILES
 	
 # Add header files
 file(GLOB_RECURSE HEADER_FILES
-	 *.h
-	 *.hpp)
+	 inc/*.h
+	 inc/*.hpp)
 	 
 # Search for the assets files
 file(GLOB_RECURSE ASSETS_FILES 

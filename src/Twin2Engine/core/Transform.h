@@ -7,10 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-
 #include <vector>
-
-
 
 namespace Twin2Engine
 {
@@ -88,6 +85,11 @@ namespace Twin2Engine
 			*/
 			Transform* GetChildAt(size_t index) const;
 			size_t GetChildCount() const;
+
+			void Translate(const glm::vec3& translation);
+			void Rotate(const glm::vec3& rotation);
+			void Rotate(const glm::quat& rotation);
+			void Scale(const glm::vec3& scaling);
 
 			void SetLocalPosition(const glm::vec3& localPosition);
 			glm::vec3 GetLocalPosition();

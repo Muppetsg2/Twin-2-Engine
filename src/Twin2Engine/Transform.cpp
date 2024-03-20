@@ -77,7 +77,7 @@ Twin2Engine::Core::Transform::Transform()
 
 #pragma region TRANSFORMATING_METHODS
 
-void Twin2EngineCore::Transform::Translate(const glm::vec3& translation)
+void Twin2Engine::Core::Transform::Translate(const glm::vec3& translation)
 {
 	RecalculateLocalPosition();
 
@@ -90,7 +90,7 @@ void Twin2EngineCore::Transform::Translate(const glm::vec3& translation)
 	SetDirtyFlagGlobalPositionInChildren();
 }
 
-void Twin2EngineCore::Transform::Rotate(const glm::vec3& rotation)
+void Twin2Engine::Core::Transform::Rotate(const glm::vec3& rotation)
 {
 	RecalculateLocalRotation();
 
@@ -104,7 +104,7 @@ void Twin2EngineCore::Transform::Rotate(const glm::vec3& rotation)
 	SetDirtyFlagGlobalRotationInChildren();
 }
 
-void Twin2EngineCore::Transform::Rotate(const glm::quat& rotation)
+void Twin2Engine::Core::Transform::Rotate(const glm::quat& rotation)
 {
 	RecalculateLocalRotation();
 
@@ -118,7 +118,7 @@ void Twin2EngineCore::Transform::Rotate(const glm::quat& rotation)
 	SetDirtyFlagGlobalRotationInChildren();
 }
 
-void Twin2EngineCore::Transform::Scale(const glm::vec3& scaling)
+void Twin2Engine::Core::Transform::Scale(const glm::vec3& scaling)
 {
 	RecalculateLocalScale();
 

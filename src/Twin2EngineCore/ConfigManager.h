@@ -1,23 +1,33 @@
+#pragma once
+
 #include <iostream>
 #include <fstream>
 #include <yaml-cpp/yaml.h>
 
 
-
-class ConfigManager {
+class ConfigManager 
+{
+private:
+    static std::string _filePath;
+    static YAML::Node _config;
 public:
-    ConfigManager(const std::string& filePath) : m_filePath(filePath) {}
+    //ConfigManager(const std::string& filePath) : _filePath(filePath) {}
+
+    static void OpenConfig(const std::string& filePath)
+    {
+        _filePath = filePath;
+    }
 
     // Read configuration from file
-    bool readConfig() {
+    static bool ReadConfig() {
         try {
-            std::ifstream fin(m_filePath);
+            std::ifstream fin(_filePath);
             if (!fin) {
                 std::cerr << "Error: Unable to open config file for reading\n";
                 return false;
             }
 
-            m_config = YAML::Load(fin);
+            _config = YAML::Load(fin);
             fin.close();
             return true;
         }
@@ -28,15 +38,15 @@ public:
     }
 
     // Write configuration to file
-    bool writeConfig() {
+    static bool WriteConfig() {
         try {
-            std::ofstream fout(m_filePath);
+            std::ofstream fout(_filePath);
             if (!fout) {
                 std::cerr << "Error: Unable to open config file for writing\n";
                 return false;
             }
 
-            fout << m_config;
+            fout << _config;
             fout.close();
             return true;
         }
@@ -48,17 +58,14 @@ public:
 
     // Access specific configuration values
     template<typename T>
-    T getValue(const std::string& key) const {
-        return m_config[key].as<T>();
+    static T GetValue(const std::string& key) {
+        return _config[key].as<T>();
     }
 
     // Set specific configuration values
     template<typename T>
-    void setValue(const std::string& key, const T& value) {
-        m_config[key] = value;
+    static void SetValue(const std::string& key, const T& value) {
+        _config[key] = value;
     }
 
-private:
-    std::string m_filePath;
-    YAML::Node m_config;
 };

@@ -80,15 +80,16 @@ namespace GraphicEngine
 			vector<Texture> textures;
 
 			mesh = new Mesh(vertexes, indices, textures);
-			std::cout << "Tutaj" << std::endl;
+			//std::cout << "Tutaj" << std::endl;
 			//shader = new Shader("C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\CompiledShaders\\origin\\Basic.shdr");
 			//shader = new Shader("res/CompiledShaders/origin/Basic.shdr");
+			ShaderManager::Init();
 			shader = ShaderManager::GetShaderProgram("res/CompiledShaders/origin/Basic.shdr");
 			//shader = new Shader(true, "C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
 			//shader = new Shader("C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
 			//					"C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\fargmentShader.frag");
 
-			std::cout << "Tutaj" << std::endl;
+			//std::cout << "Tutaj" << std::endl;
 
 			//instance = this;
 		}

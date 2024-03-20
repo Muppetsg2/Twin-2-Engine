@@ -291,9 +291,43 @@ void GraphicEngine::ShaderManager::CheckProgramLinkingSuccess(GLuint programId)
 
 void GraphicEngine::ShaderManager::Init()
 {
-    ConfigManager configManager("GameConfig.yaml");
+    //ConfigManager configManager("GameConfig.yaml");
+    ConfigManager::OpenConfig("GameConfig.yaml");
+    ConfigManager::ReadConfig();
 
-    std::cout << "BinaryFormat: " << configManager.getValue<unsigned int>("binaryFormat") << std::endl;
+    //std::cout << "BinaryFormat: " << configManager.GetValue<int>("binaryFormat") << std::endl;
+
+    binaryFormat = ConfigManager::GetValue<unsigned int>("binaryFormat");
+
+    GLint numFormats;
+    glGetIntegerv(GL_NUM_PROGRAM_BINARY_FORMATS, &numFormats);
+    if (numFormats == 0) {
+        std::cerr << "No supported binary formats found" << std::endl;
+        //glfwTerminate();
+        //return -1;
+    }
+
+
+    std::vector<GLint> formats(numFormats);
+    glGetIntegerv(GL_PROGRAM_BINARY_FORMATS, formats.data());
+    //std::cout << "Supported binary formats:" << std::endl;
+    bool correctFormat = false;
+    for (GLint format : formats) {
+        //std::cout << format << std::endl;
+        if (binaryFormat == format)
+        {
+            correctFormat = true;
+            break;
+        }
+    }
+
+    if (!correctFormat)
+    {
+        std::cout << "Precompiling shaders" << std::endl;
+        PrecompileShaders();
+        ConfigManager::SetValue<unsigned int>("binaryFormat", binaryFormat);
+        ConfigManager::WriteConfig();
+    }
 
 }
 

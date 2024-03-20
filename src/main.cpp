@@ -251,25 +251,9 @@ int main(int, char**)
     //glGetIntegerv(GL_PROGRAM_BINARY_FORMATS, &value);
     //printf("GL_PROGRAM_BINARY_FORMATS %d\n", value);
 
-    GLint numFormats;
-    glGetIntegerv(GL_NUM_PROGRAM_BINARY_FORMATS, &numFormats);
-    if (numFormats == 0) {
-        std::cerr << "No supported binary formats found" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-
-    // Retrieve and print the supported binary formats
-    std::vector<GLint> formats(numFormats);
-    glGetIntegerv(GL_PROGRAM_BINARY_FORMATS, formats.data());
-    std::cout << "Supported binary formats:" << std::endl;
-    for (GLint format : formats) {
-        std::cout << format << std::endl;
-    }
-
-    std::cout << "Tutaj" << std::endl;
+    //std::cout << "Tutaj" << std::endl;
     graphicEngine = new GraphicEngine::GraphicEngine();
-    std::cout << "Tutaj" << std::endl;
+    //std::cout << "Tutaj" << std::endl;
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
     glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 

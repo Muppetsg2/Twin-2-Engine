@@ -60,6 +60,7 @@ target_include_directories(GraphicEngine
 target_link_libraries(GraphicEngine PRIVATE 
 										glad
 										glm::glm
+										yaml-cpp
 )
 
 #message("GraphicEngine Public Include Files:")

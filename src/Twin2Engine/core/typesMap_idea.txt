@@ -1,0 +1,9 @@
+enable_if<(sizeof...(Args) > 0), bool> = true
+
+has_type<typename T> : std::false_type
+has_type<typename T, typename... Types> : std::true_type
+has_type<typename T, typename U, typename... Types>::value => has_type<T, Types>
+
+std::tuple_element<idx, std::tuple<Types...>>::type
+
+std::is_same<T, U>::value

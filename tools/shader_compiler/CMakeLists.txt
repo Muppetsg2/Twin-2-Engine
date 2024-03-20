@@ -3,7 +3,9 @@
 project(ShaderCompiler)
 
 # Generate a header file with the ORIGIN_FOLDER variable
-configure_file(config.h.in config.h)
+#configure_file(config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/config.h COPYONLY)
+file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_BINARY_DIR}/ShadersOrigin SYMBOLIC)
+file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_SOURCE_DIR}/ShadersOrigin SYMBOLIC)
 
 message("ShaderCompiler origin directory: ${SHADER_ORIGIN_FOLDER}")
 message("ShaderCompiler build destination directory: ${CMAKE_BINARY_DIR}")

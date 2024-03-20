@@ -1,4 +1,8 @@
 # Add source files
+#file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_SOURCE_DIR}/ShadersOrigin SYMBOLIC)
+file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_BINARY_DIR}/ShadersOrigin SYMBOLIC)
+configure_file(GameConfig.yaml.in GameConfig.yaml)
+
 file(GLOB_RECURSE SOURCE_FILES 
 	 *.c
 	 *.cpp)
@@ -21,7 +25,7 @@ source_group(TREE ${CMAKE_SOURCE_DIR}         FILES ${ASSETS_FILES})
 add_subdirectory(GraphicEngine)
 
 # Define the executable
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${ASSETS_FILES})
+add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${ASSETS_FILES} )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE GraphicEngine)
 

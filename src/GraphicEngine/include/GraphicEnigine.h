@@ -6,6 +6,8 @@
 #include <glm/glm.hpp>
 
 #include <Mesh.h>
+#include <Shader.h>
+#include <ShaderManager.h>
 
 using std::vector;
 
@@ -80,7 +82,8 @@ namespace GraphicEngine
 			mesh = new Mesh(vertexes, indices, textures);
 			std::cout << "Tutaj" << std::endl;
 			//shader = new Shader("C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\CompiledShaders\\origin\\Basic.shdr");
-			shader = new Shader("res/CompiledShaders/origin/Basic.shdr");
+			//shader = new Shader("res/CompiledShaders/origin/Basic.shdr");
+			shader = ShaderManager::GetShaderProgram("res/CompiledShaders/origin/Basic.shdr");
 			//shader = new Shader(true, "C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
 			//shader = new Shader("C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
 			//					"C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\fargmentShader.frag");

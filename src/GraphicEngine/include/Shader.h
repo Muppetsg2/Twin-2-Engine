@@ -18,59 +18,47 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <ShaderManager.h>
 
-class Shader
+namespace GraphicEngine
 {
-private:
-    struct ShaderProgramData
+    class Shader
     {
-        size_t shaderPathHash;
-        int shaderProgramId;
-        int useNumber;
-        bool operator<(const ShaderProgramData& other) const {
-            return shaderPathHash < other.shaderPathHash;
-        }
+    private:
+        friend class ShaderManager;
+
+        Shader(const GLchar* shaderPath);
+    public:
+        // ID program object  
+        unsigned int shaderProgramID;
+        Shader(const Shader&& shader);
+        Shader(const Shader& shader);
+        Shader(unsigned int shaderProgramId);
+
+
+        // konstruktor czyta plik shadera z dysku i tworzy go  
+        //Shader(const GLchar* vertexPath, const GLchar* geometryPath, const GLchar* fragmentPath);
+        //Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
+        //Shader(bool create, const GLchar* vertexPath, const GLchar* fragmentPath);
+
+
+        ~Shader();
+
+        // aktywuj shader  
+        void use();
+        // funkcje operuj¹ce na uniformach  
+        void setBool(const std::string& name, bool value) const;
+
+        void setInt(const std::string& name, int value) const;
+
+        void setFloat(const std::string& name, float value) const;
+
+        void setVec4(const std::string& name, float* value) const;
+
+        void setVec3(const std::string& name, float* value) const;
+
+        void setMat4(const std::string& name, glm::mat4& value) const;
     };
-    static std::hash<std::string> stringHash;
-    static std::list<ShaderProgramData*> loadedShaders;
-    static int getShaderProgramById(int shaderProgramId);
-    static int loadShaderProgram(const GLchar* shaderPath);
-    static void unloadShaderProgram(int shaderProgramID);
-
-    void checkShaderCompilationSuccess(GLuint shaderId);
-
-    void checkProgramLinkingSuccess(GLuint programId);
-public:
-    // ID program object  
-    unsigned int shaderProgramID;
-    
-
-    // konstruktor czyta plik shadera z dysku i tworzy go  
-    //Shader(const GLchar* vertexPath, const GLchar* geometryPath, const GLchar* fragmentPath);
-    //Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
-    //Shader(bool create, const GLchar* vertexPath, const GLchar* fragmentPath);
-
-    Shader(const GLchar* shaderPath);
-    Shader(const Shader&& shader);
-    Shader(const Shader& shader);
-
-    ~Shader();
-
-    // aktywuj shader  
-    void use();
-    // funkcje operuj¹ce na uniformach  
-    void setBool(const std::string& name, bool value) const;
-
-    void setInt(const std::string& name, int value) const;
-
-    void setFloat(const std::string& name, float value) const;
-
-    void setVec4(const std::string& name, float* value) const;
-
-    void setVec3(const std::string& name, float* value) const;
-
-    void setMat4(const std::string& name, glm::mat4& value) const;
-};
-
+}
 
 #endif // !SHADER_H

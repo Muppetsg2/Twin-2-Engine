@@ -8,12 +8,12 @@ using std::string;
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "config.h"
+//#include "config.h"
 
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 
 //#include "config.h"
-
+#define ORIGIN_FOLDER "./ShadersOrigin/"
 
 // Define the file extension for shader program files
 constexpr char SHADER_PROGRAM_EXTENSION[] = ".shpr";
@@ -112,6 +112,7 @@ bool isEmptyOrWhitespace(const std::string& str) {
     return std::all_of(str.begin(), str.end(), isWhitespace);
 }
 
+
 int main() {// Initialize GLFW
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -144,12 +145,15 @@ int main() {// Initialize GLFW
     //    return false;
     //}
     // Define origin folders to search for shader program files
-    std::vector<std::string> originFolders = { ORIGIN_FOLDER };
+    //std::vector<std::string> originFolders = { ORIGIN_FOLDER };
+    //std::cout << "Path: " << std::filesystem::current_path();
+    std::vector<std::string> originFolders = { "ShadersOrigin" };
     //std::vector<std::string> originFolders = { "C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine"};
 
     // Search for shader program files
     for (const auto& folder : originFolders) {
-        for (const auto& entry : std::filesystem::recursive_directory_iterator(folder)) {
+        std::filesystem::path path = folder;
+        for (const auto& entry : std::filesystem::recursive_directory_iterator(path)) {
             if (entry.path().extension() == SHADER_PROGRAM_EXTENSION) {
                 std::ifstream shaderFile(entry.path());
                 if (shaderFile.is_open()) {

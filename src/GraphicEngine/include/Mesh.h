@@ -3,6 +3,8 @@
 
 
 #include "Shader.h"
+using GraphicEngine::Shader;
+
 
 #include <vector>
 #include <string>

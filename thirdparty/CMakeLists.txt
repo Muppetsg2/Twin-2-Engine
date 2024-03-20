@@ -32,6 +32,7 @@ CPMAddPackage("gh:glfw/glfw#3.4")
 CPMAddPackage("gh:g-truc/glm#1.0.1")
 CPMAddPackage("gh:ocornut/imgui@1.90.4")
 CPMAddPackage("gh:gabime/spdlog@1.13.0")
+CPMAddPackage("gh:jbeder/yaml-cpp#0.8.0")
 
 set(imgui_SOURCE_DIR ${imgui_SOURCE_DIR} CACHE INTERNAL "")
 add_library(imgui STATIC ${imgui_SOURCE_DIR}/imgui.cpp
@@ -47,7 +48,8 @@ set_target_properties(glad
                       glm 
                       imgui
                       spdlog 
-                      soloud PROPERTIES FOLDER "thirdparty")
+                      soloud
+                      yaml-cpp PROPERTIES FOLDER "thirdparty")
 
 if (TARGET zlibstatic)
     set_target_properties(zlibstatic PROPERTIES FOLDER "thirdparty")

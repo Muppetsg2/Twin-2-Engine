@@ -174,17 +174,17 @@ std::vector<Vertex> cubeVertexes = {
 std::vector<Vertex> quadVertexes = {
     // POSITION						// TEX COORD			// NORMALS
     // First Triangle
-    { { -.5f, -.5f, 0.f },			{ 0.f, 100.f },			{ 0.f, 0.f, 1.f } },
-    { { -.5f, .5f, 0.f },			{ 0.f, 0.f },			{ 0.f, 0.f, 1.f } },
-    { { .5f, -.5f, 0.f },			{ 100.f, 100.f },		{ 0.f, 0.f, 1.f } },
+    { { -1.f, -1.f, 0.f },			{ 0.f, 100.f },			{ 0.f, 0.f, 1.f } },
+    { { -1.f, -.5f, 0.f },			{ 0.f, 0.f },			{ 0.f, 0.f, 1.f } },
+    { { -.5f, -1.f, 0.f },			{ 100.f, 100.f },		{ 0.f, 0.f, 1.f } },
 
     // Second Triangle
-    { { .5f, -.5f, 0.f },			{ 100.f, 100.f },		{ 0.f, 0.f, 1.f } },
-    { { -.5f, .5f, 0.f },			{ 0.f, 0.f },			{ 0.f, 0.f, 1.f } },
-    { { .5f, .5f, 0.f },			{ 100.f, 0.f },			{ 0.f, 0.f, 1.f } }
+    { { -.5f, -1.f, 0.f },			{ 100.f, 100.f },		{ 0.f, 0.f, 1.f } },
+    { { -1.f, -.5f, 0.f },			{ 0.f, 0.f },			{ 0.f, 0.f, 1.f } },
+    { { -.5f, -.5f, 0.f },			{ 100.f, 0.f },			{ 0.f, 0.f, 1.f } }
 };
 
-glm::vec3 cubePos{ 0.f, -10.f, 0.f };
+glm::vec3 cubePos{ 0.f, 0.f, -50.f };
 glm::vec3 cubeScale{ 10.f, 10.f, 10.f };
 
 #pragma endregion
@@ -312,27 +312,25 @@ int main(int, char**)
         glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glBindVertexArray(cubeVAO);
-
         shader.use();
 
         glm::mat4 trans = glm::mat4(1.f);
         trans = glm::translate(trans, cubePos);
-        trans = glm::rotate(trans, 25.f, glm::vec3{ 0.f, 1.f, 0.f });
+        trans = glm::rotate(trans, 45.f, glm::vec3{ 1.f, 1.f, 0.f });
         trans = glm::scale(trans, cubeScale);
         shader.setMat4("model", trans);
         shader.setMat4("normalModel", glm::mat4(glm::mat3(glm::transpose(glm::inverse(trans)))));
-        shader.setVec3("color", glm::vec3{ 1.f, 1.f, 1.f });
+        shader.setVec3("color", glm::vec3{ .05f, .6f, 1.f });
         shader.setVec3("lightDirection", glm::vec3{ 0.f, 0.f, -1.f });
 
+        glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, cubeVertexes.size());
         glBindVertexArray(0);
 
-        glBindVertexArray(quadVAO);
-
         shader2d.use();
-        shader2d.setVec3("color", glm::vec3{ 1.f, 1.f, 1.f });
+        shader2d.setVec3("color", glm::vec3{ 1.f, 0.f, 0.f });
 
+        glBindVertexArray(quadVAO);
         glDrawArrays(GL_TRIANGLES, 0, quadVertexes.size());
         glBindVertexArray(0);
 
@@ -415,7 +413,6 @@ bool init()
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(ErrorMessageCallback, 0);
 #endif
-
     // Depth Test
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -423,7 +420,7 @@ bool init()
     // Face Culling
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
+    glFrontFace(GL_CW);
 
     return true;
 }

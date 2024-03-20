@@ -75,6 +75,72 @@ Twin2EngineCore::Transform::Transform()
 
 }
 
+#pragma region TRANSFORMATING_METHODS
+
+void Twin2EngineCore::Transform::Translate(const glm::vec3& translation)
+{
+	RecalculateLocalPosition();
+
+	_localPosition += translation;
+
+	_dirtyFlag = true;
+	_dirtyFlagGlobalPosition = true;
+	_dirtyFlagLocalPosition = false;
+
+	SetDirtyFlagGlobalPositionInChildren();
+}
+
+void Twin2EngineCore::Transform::Rotate(const glm::vec3& rotation)
+{
+	RecalculateLocalRotation();
+
+	_localRotation += rotation;
+	_localRotationQuat = glm::quat(_localRotation);
+
+	_dirtyFlag = true;
+	_dirtyFlagGlobalRotation = true;
+	_dirtyFlagLocalRotation = false;
+
+	SetDirtyFlagGlobalRotationInChildren();
+}
+
+void Twin2EngineCore::Transform::Rotate(const glm::quat& rotation)
+{
+	RecalculateLocalRotation();
+
+	_localRotationQuat *= rotation;
+	_localRotation = glm::eulerAngles(_localRotationQuat);
+
+	_dirtyFlag = true;
+	_dirtyFlagGlobalRotation = true;
+	_dirtyFlagLocalRotation = false;
+
+	SetDirtyFlagGlobalRotationInChildren();
+}
+
+void Twin2EngineCore::Transform::Scale(const glm::vec3& scaling)
+{
+	RecalculateLocalScale();
+
+	_localScale *= scaling;
+
+	_dirtyFlag = true;
+	_dirtyFlagGlobalScale = true;
+	_dirtyFlagLocalScale = false;
+
+	//RecalculateGlobalScale();
+	// 
+	//_globalScale *= scaling;
+	//
+	//_dirtyFlag = true;
+	//_dirtyFlagLocalScale = true;
+	//_dirtyFlagGlobalScale = false;
+
+	SetDirtyFlagGlobalScaleInChildren();
+}
+
+#pragma endregion
+
 #pragma region MANAGING_HIERARCHY
 
 void Twin2EngineCore::Transform::AddChild(Transform* child)

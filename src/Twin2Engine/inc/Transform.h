@@ -88,6 +88,11 @@ namespace Twin2EngineCore
 		Transform* GetChildAt(size_t index) const;
 		size_t GetChildCount() const;
 
+		void Translate(const glm::vec3& translation);
+		void Rotate(const glm::vec3& rotation);
+		void Rotate(const glm::quat& rotation);
+		void Scale(const glm::vec3& scaling);
+
 		void SetLocalPosition(const glm::vec3& localPosition);
 		glm::vec3 GetLocalPosition();
 		void SetLocalRotation(const glm::vec3& localRotation);

@@ -1,5 +1,6 @@
 #include "ui/Button.h"
 #include <core/GameObject.h>
+#include <core/Input.h>
 
 using namespace Twin2Engine::UI;
 using namespace Twin2Engine::Core;
@@ -35,6 +36,21 @@ const MethodEventHandler& Button::GetOnClickEvent() const {
 void Button::Update()
 {
 	if (!_interactable) return;
+	if (!_notHold && Input::IsMouseButtonHeldUp(MOUSE_BUTTON::LEFT)) {
+		_notHold = true;
+		return;
+	}
 
 	Transform* t = getTransform();
+	glm::mat4 inv = glm::inverse(t->GetTransformMatrix());
+	glm::vec4 mPos = glm::vec4(Input::GetMousePos(), 0.f, 1.f);
+	glm::vec3 btnLocalMPos = inv * mPos;
+	if (btnLocalMPos.x >= -_width / 2.f && btnLocalMPos.x <= _width / 2.f && btnLocalMPos.y >= -_height / 2.f && btnLocalMPos.y <= _height / 2.f) {
+		if (Input::IsMouseButtonDown(MOUSE_BUTTON::LEFT)) {
+			_notHold = false;
+		}
+		else if (Input::IsMouseButtonReleased(MOUSE_BUTTON::LEFT) && _notHold) {
+			_onClickEvent.Invoke();
+		}
+	}
 }

@@ -11,6 +11,7 @@ namespace Twin2Engine {
 			float _height = 0.f;
 			bool _interactable = true;
 			MethodEventHandler _onClickEvent = MethodEventHandler();
+			bool _notHold = true;
 
 		public:
 			void SetWidth(float width);

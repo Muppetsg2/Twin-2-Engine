@@ -101,11 +101,19 @@ namespace GraphicEngine
 			shader->use();
 			shader->setMat4("projection", projection);
 			shader->setMat4("view", view);
+			glm::vec4 color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
+			shader->setVec4("uColor", (float*)(&color));
 			
 			glm::mat4 model(1.0f);
 			shader->setMat4("model", model);
 			//shader->setMat4("normalModel", model);
 			
+			mesh->Draw(shader);
+			glm::mat4 newview(1.0f);
+			shader->setMat4("view", newview);
+			shader->setMat4("projection", newview);
+			color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			shader->setVec4("uColor", (float*)(&color));
 			mesh->Draw(shader);
 		}
 	};

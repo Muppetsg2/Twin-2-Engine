@@ -12,12 +12,5 @@ uniform sampler2D texture_diffuse1;
 
 void main()
 {
-	if (uNoTexture)
-	{
-		FragColor = vec4(0.0, 1.0, 1.0, 1.0);
-	}
-	else
-	{
-		FragColor = vec4(1.0, 1.0, 1.0, 1.0);// * texture(texture_diffuse1, texCoords);
-	}
+	FragColor = uColor;
 }

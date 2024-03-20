@@ -1,5 +1,6 @@
 project(Twin2Engine VERSION 1.0)
 
+set(TWIN2ENGINE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/inc)
 # Add source files
 file(GLOB_RECURSE SOURCE_FILES 
 	 *.c
@@ -68,6 +69,7 @@ else()
 	
 	target_link_libraries(${PROJECT_NAME} soloud)
 endif()
+		#target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc)
 
 
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})

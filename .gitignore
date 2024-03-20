@@ -10,6 +10,9 @@ CTestTestfile.cmake
 
 [Bb]uild/
 /[Oo]ut/
+<<<<<<< HEAD
 #/[Tt]ools/
+=======
+>>>>>>> b10c631e9ef0aba1a88b078d143d87cdfc223229
 
 /\.vs/

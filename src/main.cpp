@@ -19,128 +19,148 @@
 #include <soloud.h>
 #include <soloud_wav.h>
 
+/*
+// Miniaudio
+#define MINIAUDIO_IMPLEMENTATION
+#include "miniaudio.h"
+*/
+
 // OpenGL Mathematics
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
-#include <GraphicEngine/include/GraphicEnigine.h>
-#pragma region CAMERA_CONTROLLING
-
 glm::vec3 cameraPos(-5.0f, 0.0f, -5.0f);
 glm::vec3 cameraFront(1.0f, 0.0f, 1.0f);
 glm::vec3 cameraUp(0.0f, 1.0f, 0.0f);
+//<<<<<<< HEAD
+//
+//#include <GraphicEngine/include/GraphicEnigine.h>
+//#pragma region CAMERA_CONTROLLING
+//
+//glm::vec3 cameraPos(-5.0f, 0.0f, -5.0f);
+//glm::vec3 cameraFront(1.0f, 0.0f, 1.0f);
+//glm::vec3 cameraUp(0.0f, 1.0f, 0.0f);
+//
+//double lastX = 0.0f;
+//double lastY = 0.0f;
+//
+//float yaw = 45.0f;
+//float pitch = 0.0f;
+//
+//GLFWcursorposfun lastMouseCallback;
+//
+//bool mouseUsingStarted = false;
+//
+//void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+//{
+//    if (mouseUsingStarted)
+//    {
+//        lastX = xpos;
+//        lastY = ypos;
+//        mouseUsingStarted = false;
+//    }
+//    GLfloat xoffset = xpos - lastX;
+//    GLfloat yoffset = ypos - lastY; // Odwrócone, poniewa¿ wspó³rzêdne zmieniaj¹ siê od do³u do góry  
+//    lastX = xpos;
+//    lastY = ypos;
+//
+//    //printf("MPosX: %f MPosY: %f\n", xpos, ypos);
+//
+//    GLfloat sensitivity = 0.1f;
+//    xoffset *= sensitivity;
+//    yoffset *= sensitivity;
+//
+//
+//    yaw += xoffset;
+//    pitch -= yoffset;
+//
+//    if (pitch > 89.0f)
+//        pitch = 89.0f;
+//    if (pitch < -89.0f)
+//        pitch = -89.0f;
+//
+//    glm::vec3 front;
+//    front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
+//    front.y = sin(glm::radians(pitch));
+//    front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
+//    cameraFront = glm::normalize(front);
+//}
+//
+//
+//
+//void processInput(GLFWwindow* window, float deltaTime)
+//{
+//    float cameraSpeed = 1.0f; // dopasuj do swoich potrzeb  
+//    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+//    {
+//        cameraPos += cameraSpeed * cameraFront * deltaTime;
+//    }
+//    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+//    {
+//        cameraPos -= cameraSpeed * cameraFront * deltaTime;
+//    }
+//    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+//    {
+//        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * deltaTime;
+//    }
+//    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+//    {
+//        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * deltaTime;
+//    }
+//    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+//    {
+//        cameraPos -= cameraUp * cameraSpeed * deltaTime;
+//    }
+//    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+//    {
+//        cameraPos += cameraUp * cameraSpeed * deltaTime;
+//    }
+//    static bool cursorToggle = false;
+//
+//    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS)
+//    {
+//        if (!cursorToggle)
+//        {
+//            lastMouseCallback = glfwSetCursorPosCallback(window, mouse_callback);
+//            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+//            cursorToggle = !cursorToggle;
+//            mouseUsingStarted = true;
+//        }
+//    }
+//    else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_RELEASE)
+//    {
+//        if (cursorToggle)
+//        {
+//            glfwSetCursorPosCallback(window, lastMouseCallback);
+//            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+//            cursorToggle = !cursorToggle;
+//        }
+//    }
+//
+//
+//}
+//
+//
+//
+//#pragma endregion
+//
+//=======
+// HID
+#include <inc/Input.h>
 
-double lastX = 0.0f;
-double lastY = 0.0f;
+// TIME
+#include <inc/Time.h>
+//>>>>>>> b10c631e9ef0aba1a88b078d143d87cdfc223229
 
-float yaw = 45.0f;
-float pitch = 0.0f;
-
-GLFWcursorposfun lastMouseCallback;
-
-bool mouseUsingStarted = false;
-
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-    if (mouseUsingStarted)
-    {
-        lastX = xpos;
-        lastY = ypos;
-        mouseUsingStarted = false;
-    }
-    GLfloat xoffset = xpos - lastX;
-    GLfloat yoffset = ypos - lastY; // Odwrócone, poniewa¿ wspó³rzêdne zmieniaj¹ siê od do³u do góry  
-    lastX = xpos;
-    lastY = ypos;
-
-    //printf("MPosX: %f MPosY: %f\n", xpos, ypos);
-
-    GLfloat sensitivity = 0.1f;
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
-
-    yaw += xoffset;
-    pitch -= yoffset;
-
-    if (pitch > 89.0f)
-        pitch = 89.0f;
-    if (pitch < -89.0f)
-        pitch = -89.0f;
-
-    glm::vec3 front;
-    front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
-    front.y = sin(glm::radians(pitch));
-    front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
-    cameraFront = glm::normalize(front);
-}
-
-
-
-void processInput(GLFWwindow* window, float deltaTime)
-{
-    float cameraSpeed = 1.0f; // dopasuj do swoich potrzeb  
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-    {
-        cameraPos += cameraSpeed * cameraFront * deltaTime;
-    }
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-    {
-        cameraPos -= cameraSpeed * cameraFront * deltaTime;
-    }
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-    {
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * deltaTime;
-    }
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-    {
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * deltaTime;
-    }
-    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-    {
-        cameraPos -= cameraUp * cameraSpeed * deltaTime;
-    }
-    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-    {
-        cameraPos += cameraUp * cameraSpeed * deltaTime;
-    }
-    static bool cursorToggle = false;
-
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS)
-    {
-        if (!cursorToggle)
-        {
-            lastMouseCallback = glfwSetCursorPosCallback(window, mouse_callback);
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            cursorToggle = !cursorToggle;
-            mouseUsingStarted = true;
-        }
-    }
-    else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_RELEASE)
-    {
-        if (cursorToggle)
-        {
-            glfwSetCursorPosCallback(window, lastMouseCallback);
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            cursorToggle = !cursorToggle;
-        }
-    }
-
-
-}
-
-
-
-#pragma endregion
-
+// GRAPHIC_ENGINE
+#include <GraphicEnigine.h>
 
 #pragma region OpenGLCallbackFunctions
 
 static void glfw_error_callback(int error, const char* description)
 {
-    fprintf(stderr, "Glfw Error %d: %s\n", error, description);
+    spdlog::error("Glfw Error {0}: {1}\n", error, description);
 }
 
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -150,14 +170,7 @@ static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
-    fprintf(
-        stderr,
-        "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-        (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-        type,
-        severity,
-        message
-    );
+    spdlog::error("GL CALLBACK: {0} type = 0x{1:x}, severity = 0x{2:x}, message = {3}\n", (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
 }
 
 #pragma endregion
@@ -167,9 +180,9 @@ static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint i
 bool init();
 void init_imgui();
 
-void input(float deltaTime);
-void update(float deltaTime);
-void render(float deltaTime);
+void input();
+void update();
+void render();
 
 void imgui_begin();
 void imgui_render();
@@ -184,7 +197,9 @@ float fmapf(float input, float currStart, float currEnd, float expectedStart, fl
 constexpr int32_t WINDOW_WIDTH  = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
 const char* WINDOW_NAME = "Twin^2 Engine";
+constexpr bool fullscreen = false;
 
+GLFWmonitor* monitor = nullptr;
 GLFWwindow* window = nullptr;
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
@@ -197,6 +212,16 @@ ImVec4 clear_color = ImVec4(.1f, .1f, .1f, 1.f);
 GLuint UBOMatrices;
 
 SoLoud::Soloud soloud;
+SoLoud::Wav sample;
+SoLoud::handle sampleHandle = 0;
+bool first = true;
+
+/*
+ma_engine engine;
+ma_sound sound;
+*/
+
+bool musicPlaying = false;
 
 
 GraphicEngine::GraphicEngine* graphicEngine;
@@ -217,12 +242,25 @@ int main(int, char**)
 
     init_imgui();
     spdlog::info("Initialized ImGui.");
-
+    
     soloud.init();
     spdlog::info("Initialized SoLoud.");
 
-    GLfloat deltaTime = 0.0f; // Czas pomiêdzy obecn¹ i poprzedni¹ klatk¹  
-    GLfloat lastFrame = 0.0f; // Czas ostatniej ramki
+    sample.load("./res/music/FurElise.wav");
+
+    /*
+    ma_result result;
+    result = ma_engine_init(NULL, &engine);
+    if (result != MA_SUCCESS) {
+        return EXIT_FAILURE;
+    }
+    spdlog::info("Initialized MiniAudio.");
+
+    result = ma_sound_init_from_file(&engine, "./res/music/FurElise.wav", 0, NULL, NULL, &sound);
+    if (result != MA_SUCCESS) {
+        return result;
+    }
+    */
 
 #pragma endregion
 
@@ -264,23 +302,23 @@ int main(int, char**)
     while (!glfwWindowShouldClose(window))
     {
         // Update game time value
-        GLfloat currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
+        //GLfloat currentFrame = glfwGetTime();
+        //deltaTime = currentFrame - lastFrame;
+        //lastFrame = currentFrame;
 
-        processInput(window, deltaTime);
+        //processInput(window, deltaTime);
 
         // Process I/O operations here
-        input(deltaTime);
+        input();
 
         glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Update game objects' state here
-        update(deltaTime);
+        update();
 
         // OpenGL rendering code here
-        render(deltaTime);
+        render();
 
         // Draw ImGui
         imgui_begin();
@@ -296,6 +334,7 @@ int main(int, char**)
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
+    Twin2EngineCore::Input::FreeAllWindows();
     glfwDestroyWindow(window);
     glfwTerminate();
 
@@ -318,8 +357,16 @@ bool init()
     glfwWindowHint(GLFW_OPENGL_PROFILE,        GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 
+    // Creates Monitor
+    if (fullscreen) {
+        monitor = glfwGetPrimaryMonitor();
+        if (monitor == NULL) {
+            spdlog::warn("Failed to create GLFW Monitor");
+        }
+    }
+
     // Create window with graphics context
-    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME, NULL, NULL);
+    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME, monitor, NULL);
     if (window == NULL)
     {
         spdlog::error("Failed to create GLFW Window!");
@@ -330,6 +377,7 @@ bool init()
     glfwMakeContextCurrent(window);
     //glfwSwapInterval(1); // Enable VSync - fixes FPS at the refresh rate of your screen
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    Twin2EngineCore::Input::InitForWindow(window);
 
     bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
@@ -340,9 +388,11 @@ bool init()
     }
     spdlog::info("Successfully initialized OpenGL loader!");
 
+#ifdef _DEBUG
     // Debugging
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(ErrorMessageCallback, 0);
+#endif
 
     // Depth Test
     glEnable(GL_DEPTH_TEST);
@@ -388,17 +438,19 @@ void init_imgui()
     //IM_ASSERT(font != NULL);
 }
 
-void input(float deltaTime)
+void input()
 {
-
+    if (Twin2EngineCore::Input::IsKeyPressed(Twin2EngineCore::KEY::W)) {
+        spdlog::info("Delta Time: {}\n", Twin2EngineCore::Time::GetDeltaTime());
+    }
 }
 
-void update(float deltaTime)
+void update()
 {
     // Update game objects' state here
 }
 
-void render(float deltaTime)
+void render()
 {
     // OpenGL Rendering code goes here
     glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 5.0f);
@@ -426,6 +478,28 @@ void imgui_render()
 
             ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Hello World!");
 
+            if (ImGui::Button("Play Song")) {
+                if (!musicPlaying) {
+                    //ma_sound_start(&sound);
+                    if (first) {
+                        sampleHandle = soloud.play(sample);
+                        first = false;
+                    }
+                    else {
+                        soloud.setPause(sampleHandle, false);
+                    }
+                    musicPlaying = true;
+                }
+            }
+
+            if (ImGui::Button("Stop Song")) {
+                if (musicPlaying) {
+                    //ma_sound_stop(&sound);
+                    soloud.setPause(sampleHandle, true);
+                    musicPlaying = false;
+                }
+            }
+
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::End();
         }
@@ -446,7 +520,8 @@ void end_frame()
     // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
     // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
     // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-    glfwPollEvents();
+    Twin2EngineCore::Time::Update();
+    Twin2EngineCore::Input::Update();
     glfwMakeContextCurrent(window);
     glfwSwapBuffers(window);
 }

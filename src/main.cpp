@@ -36,6 +36,8 @@
 // TIME
 #include <inc/Time.h>
 
+#include <inc/Shader.h>
+
 #pragma region OpenGLCallbackFunctions
 
 static void glfw_error_callback(int error, const char* description)
@@ -87,7 +89,7 @@ const     char*   glsl_version     = "#version 450";
 constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 5;
 
-ImVec4 clear_color = ImVec4(.1f, .1f, .1f, 1.f);
+ImVec4 clear_color = ImVec4(.3f, .3f, .3f, 1.f);
 
 GLuint UBOMatrices;
 
@@ -102,6 +104,91 @@ ma_sound sound;
 */
 
 bool musicPlaying = false;
+
+#pragma region Objects
+
+struct Vertex
+{
+    glm::vec3 position;
+    glm::vec2 TexCoord;
+    glm::vec3 Normal;
+};
+
+std::vector<Vertex> cubeVertexes = {
+    // POSITION						// TEX COORD		// NORMALS
+    // Front Face
+    { { -.5f, -.5f, .5f },			{ 0.f, 1.f },		{ 0.f, 0.f, 1.f } },
+    { { -.5f, .5f, .5f },			{ 0.f, 0.f },		{ 0.f, 0.f, 1.f } },
+    { { .5f, -.5f, .5f },			{ 1.f, 1.f },		{ 0.f, 0.f, 1.f } },
+
+    { { .5f, -.5f, .5f },			{ 1.f, 1.f },		{ 0.f, 0.f, 1.f } },
+    { { -.5f, .5f, .5f },			{ 0.f, 0.f },		{ 0.f, 0.f, 1.f } },
+    { { .5f, .5f, .5f },			{ 1.f, 0.f },		{ 0.f, 0.f, 1.f } },
+
+    // Back Face
+    { { .5f, -.5f, -.5f },			{ 0.f, 1.f },		{ 0.f, 0.f, -1.f } },
+    { { .5f, .5f, -.5f },			{ 0.f, 0.f },		{ 0.f, 0.f, -1.f } },
+    { { -.5f, -.5f, -.5f },			{ 1.f, 1.f },		{ 0.f, 0.f, -1.f } },
+
+    { { -.5f, -.5f, -.5f },			{ 1.f, 1.f },		{ 0.f, 0.f, -1.f } },
+    { { .5f, .5f, -.5f },			{ 0.f, 0.f },		{ 0.f, 0.f, -1.f } },
+    { { -.5f, .5f, -.5f },			{ 1.f, 0.f },		{ 0.f, 0.f, -1.f } },
+
+    // Left Face
+    { { -.5f, -.5f, -.5f },			{ 0.f, 1.f },		{ -1.f, 0.f, 0.f } },
+    { { -.5f, .5f, -.5f },			{ 0.f, 0.f },		{ -1.f, 0.f, 0.f } },
+    { { -.5f, -.5f, .5f },			{ 1.f, 1.f },		{ -1.f, 0.f, 0.f } },
+
+    { { -.5f, -.5f, .5f },			{ 1.f, 1.f },		{ -1.f, 0.f, 0.f } },
+    { { -.5f, .5f, -.5f },			{ 0.f, 0.f },		{ -1.f, 0.f, 0.f } },
+    { { -.5f, .5f, .5f },			{ 1.f, 0.f },		{ -1.f, 0.f, 0.f } },
+
+    // Right Face
+    { { .5f, -.5f, .5f },			{ 0.f, 1.f },		{ 1.f, 0.f, 0.f } },
+    { { .5f, .5f, .5f },			{ 0.f, 0.f },		{ 1.f, 0.f, 0.f } },
+    { { .5f, -.5f, -.5f },			{ 1.f, 1.f },		{ 1.f, 0.f, 0.f } },
+
+    { { .5f, -.5f, -.5f },			{ 1.f, 1.f },		{ 1.f, 0.f, 0.f } },
+    { { .5f, .5f, .5f },			{ 0.f, 0.f },		{ 1.f, 0.f, 0.f } },
+    { { .5f, .5f, -.5f },			{ 1.f, 0.f },		{ 1.f, 0.f, 0.f } },
+
+    // Top Face
+    { { -.5f, .5f, .5f },			{ 0.f, 1.f },		{ 0.f, 1.f, 0.f } },
+    { { -.5f, .5f, -.5f },			{ 0.f, 0.f },		{ 0.f, 1.f, 0.f } },
+    { { .5f, .5f, .5f },			{ 1.f, 1.f },		{ 0.f, 1.f, 0.f } },
+
+    { { .5f, .5f, .5f },			{ 1.f, 1.f },		{ 0.f, 1.f, 0.f } },
+    { { -.5f, .5f, -.5f },			{ 0.f, 0.f },		{ 0.f, 1.f, 0.f } },
+    { { .5f, .5f, -.5f },			{ 1.f, 0.f },		{ 0.f, 1.f, 0.f } },
+
+    // Bottom Face
+    { { -.5f, -.5f, -.5f },			{ 0.f, 1.f },		{ 0.f, -1.f, 0.f } },
+    { { -.5f, -.5f, .5f },			{ 0.f, 0.f },		{ 0.f, -1.f, 0.f } },
+    { { .5f, -.5f, -.5f },			{ 1.f, 1.f },		{ 0.f, -1.f, 0.f } },
+
+    { { .5f, -.5f, -.5f },			{ 1.f, 1.f },		{ 0.f, -1.f, 0.f } },
+    { { -.5f, -.5f, .5f },			{ 0.f, 0.f },		{ 0.f, -1.f, 0.f } },
+    { { .5f, -.5f, .5f },			{ 1.f, 0.f },		{ 0.f, -1.f, 0.f } }
+};
+
+std::vector<Vertex> quadVertexes = {
+    // POSITION						// TEX COORD			// NORMALS
+    // First Triangle
+    { { -.5f, -.5f, 0.f },			{ 0.f, 100.f },			{ 0.f, 0.f, 1.f } },
+    { { -.5f, .5f, 0.f },			{ 0.f, 0.f },			{ 0.f, 0.f, 1.f } },
+    { { .5f, -.5f, 0.f },			{ 100.f, 100.f },		{ 0.f, 0.f, 1.f } },
+
+    // Second Triangle
+    { { .5f, -.5f, 0.f },			{ 100.f, 100.f },		{ 0.f, 0.f, 1.f } },
+    { { -.5f, .5f, 0.f },			{ 0.f, 0.f },			{ 0.f, 0.f, 1.f } },
+    { { .5f, .5f, 0.f },			{ 100.f, 0.f },			{ 0.f, 0.f, 1.f } }
+};
+
+glm::vec3 cubePos{ 0.f, -10.f, 0.f };
+glm::vec3 cubeScale{ 10.f, 10.f, 10.f };
+
+#pragma endregion
+
 
 int main(int, char**)
 {
@@ -150,10 +237,71 @@ int main(int, char**)
 
     glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
     glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(glm::perspective(glm::radians(45.f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 1000.0f)));
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(glm::mat4(1.f)));
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(glm::lookAt(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f) + glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f))));
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 #pragma endregion
+
+#pragma region ObjectsInitialization
+
+    GLuint cubeVBO;
+    GLuint cubeVAO;
+    glGenBuffers(1, &cubeVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+    glBufferData(GL_ARRAY_BUFFER, cubeVertexes.size() * sizeof(Vertex), cubeVertexes.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glGenVertexArrays(1, &cubeVAO);
+    glBindVertexArray(cubeVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+
+    // pozycje wierzcho³ków
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // pozycje tekstury wierzcho³ków
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoord));
+    glEnableVertexAttribArray(1);
+
+    // normalne wierzcho³ków
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+    glEnableVertexAttribArray(2);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    GLuint quadVBO;
+    GLuint quadVAO;
+    glGenBuffers(1, &quadVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBufferData(GL_ARRAY_BUFFER, quadVertexes.size() * sizeof(Vertex), quadVertexes.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glGenVertexArrays(1, &quadVAO);
+    glBindVertexArray(quadVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+
+    // pozycje wierzcho³ków
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // pozycje tekstury wierzcho³ków
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoord));
+    glEnableVertexAttribArray(1);
+
+    // normalne wierzcho³ków
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+    glEnableVertexAttribArray(2);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+#pragma endregion
+
+    Shader shader = Shader("./res/shaders/basic.vert", "./res/shaders/basic.frag");
+    Shader shader2d = Shader("./res/shaders/2d.vert", "./res/shaders/2d.frag");
 
     // Main loop
     while (!glfwWindowShouldClose(window))
@@ -163,6 +311,30 @@ int main(int, char**)
 
         glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glBindVertexArray(cubeVAO);
+
+        shader.use();
+
+        glm::mat4 trans = glm::mat4(1.f);
+        trans = glm::translate(trans, cubePos);
+        trans = glm::rotate(trans, 25.f, glm::vec3{ 0.f, 1.f, 0.f });
+        trans = glm::scale(trans, cubeScale);
+        shader.setMat4("model", trans);
+        shader.setMat4("normalModel", glm::mat4(glm::mat3(glm::transpose(glm::inverse(trans)))));
+        shader.setVec3("color", glm::vec3{ 1.f, 1.f, 1.f });
+        shader.setVec3("lightDirection", glm::vec3{ 0.f, 0.f, -1.f });
+
+        glDrawArrays(GL_TRIANGLES, 0, cubeVertexes.size());
+        glBindVertexArray(0);
+
+        glBindVertexArray(quadVAO);
+
+        shader2d.use();
+        shader2d.setVec3("color", glm::vec3{ 1.f, 1.f, 1.f });
+
+        glDrawArrays(GL_TRIANGLES, 0, quadVertexes.size());
+        glBindVertexArray(0);
 
         // Update game objects' state here
         update();

@@ -33,8 +33,8 @@ namespace Twin2Engine {
 			}
 
 			void Invoke(Args... args) const {
-				for (Action<Args...>& action : _actions) {
-					action(args);
+				for (Action<Args...> action : _actions) {
+					action(args...);
 				}
 			}
 

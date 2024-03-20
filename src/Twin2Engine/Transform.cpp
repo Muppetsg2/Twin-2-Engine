@@ -125,13 +125,13 @@ void Twin2Engine::Core::Transform::JustRemoveChild(Transform* child)
 }
 
 
-Twin2Engine::Core::Transform* Twin2EngineCore::Transform::GetParent() const
+Twin2Engine::Core::Transform* Twin2Engine::Core::Transform::GetParent() const
 {
 	return _parent;
 }
 
 
-Twin2Engine::Core::Transform* Twin2EngineCore::Transform::GetChildAt(size_t index) const
+Twin2Engine::Core::Transform* Twin2Engine::Core::Transform::GetChildAt(size_t index) const
 {
 	if (index >= _children.size())
 	{

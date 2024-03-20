@@ -3,17 +3,19 @@
 #include "Component.h"
 #include <vector>
 
-namespace Twin2EngineCore {
-	class RenderableComponent;
+namespace Twin2Engine {
+	namespace Core {
+		class RenderableComponent;
 
-	std::vector<RenderableComponent*> renderableComponents = std::vector<RenderableComponent*>();
+		std::vector<RenderableComponent*> renderableComponents = std::vector<RenderableComponent*>();
 
-	class RenderableComponent : public Component {
-	protected:
-		RenderableComponent(); // Powoduje ¿e klasa jest jakby abstrakcyjna no chyba ¿e bêdzie dziedziczona
-	public:
-		virtual ~RenderableComponent();
+		class RenderableComponent : public Component {
+		protected:
+			RenderableComponent(); // Powoduje ¿e klasa jest jakby abstrakcyjna no chyba ¿e bêdzie dziedziczona
+		public:
+			virtual ~RenderableComponent();
 
-		virtual void Render();
-	};
+			virtual void Render();
+		};
+	}
 }

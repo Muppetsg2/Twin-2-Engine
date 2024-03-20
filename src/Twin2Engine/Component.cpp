@@ -1,7 +1,7 @@
 #include <core/Component.h>
 #include <core/GameObject.h>
 
-using namespace Twin2EngineCore;
+using namespace Twin2Engine::Core;
 using namespace std;
 
 static size_t GetUniqueComponentId() {

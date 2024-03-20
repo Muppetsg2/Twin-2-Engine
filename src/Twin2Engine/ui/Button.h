@@ -5,7 +5,7 @@
 
 namespace Twin2Engine {
 	namespace UI {
-		class Button : public Twin2EngineCore::Component {
+		class Button : public Twin2Engine::Core::Component {
 		private:
 			float _width = 0.f;
 			float _height = 0.f;
@@ -22,7 +22,6 @@ namespace Twin2Engine {
 			bool IsInteractable() const;
 			const MethodEventHandler& GetOnClickEvent() const;
 
-			void Inizialize() override;
 			void Update() override;
 		};
 	}

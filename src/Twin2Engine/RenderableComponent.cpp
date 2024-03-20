@@ -1,6 +1,6 @@
 #include <core/RenderableComponent.h>
 
-using namespace Twin2EngineCore;
+using namespace Twin2Engine::Core;
 
 RenderableComponent::RenderableComponent()
 {

@@ -3,12 +3,14 @@
 
 #include "Component.h"
 
-namespace Twin2EngineCore
+namespace Twin2Engine
 {
-	class Transform : public Component
-	{
+	namespace Core {
+		class Transform : public Component
+		{
 
-	};
+		};
+	}
 }
 
 #endif

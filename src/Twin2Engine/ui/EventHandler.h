@@ -4,13 +4,14 @@
 
 namespace Twin2Engine {
 	namespace UI {
-		template<typename T> concept args_t = true;
+		template<typename Ty> using is_void = std::is_same<Ty, void>;
+		template<typename Ty, typename T, typename F> using if_void = std::conditional<is_void<Ty>::value, T, F>::type;
 
-		template<typename Ret, args_t... Args> using Func = std::function<Ret(Args)>;
-		template<args_t... Args> using Action = Func<void, Args>;
+		template<typename... Args> using Action = if_void<Args..., std::function<void(void)>, std::function<void(Args...)>>;
 		using Method = Action<void>;
+		template<typename Ret, typename... Args> using Func = if_void<Args..., std::function<Ret(void)>, if_void<Ret, Action<Args>, std::function<Ret(Args...)>>>;
 
-		template<args_t... Args>
+		template<typename... Args>
 		class EventHandler {
 		private:
 			std::vector<Action<Args>> _actions = std::vector<Action<Args>>();
@@ -34,6 +35,7 @@ namespace Twin2Engine {
 				_actions.clear();
 			}
 
+
 			void Invoke(Args... args) const {
 				for (Action<Args>& action : _actions) {
 					action(args);
@@ -48,7 +50,6 @@ namespace Twin2Engine {
 				return *this;
 			}
 		};
-
 		using MethodEventHandler = EventHandler<void>;
 	}
 }

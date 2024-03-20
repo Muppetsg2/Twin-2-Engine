@@ -1,6 +1,6 @@
 #include <core/ColliderComponent.h>
 
-using namespace Twin2EngineCore;
+using namespace Twin2Engine::Core;
 
 ColliderComponent::ColliderComponent()
 {

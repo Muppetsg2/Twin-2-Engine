@@ -1,6 +1,6 @@
 #include <core/Engine.h>
 
-using namespace Twin2EngineCore;
+using namespace Twin2Engine::Core;
 using namespace ImGui;
 using namespace spdlog;
 
@@ -23,7 +23,7 @@ static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint i
 
 #pragma endregion
 
-bool Twin2Engine::Init()
+bool Engine::Init()
 {
     // Setup window
     glfwSetErrorCallback(glfw_error_callback);
@@ -88,7 +88,7 @@ bool Twin2Engine::Init()
     return true;
 }
 
-void Twin2Engine::Init_Imgui()
+void Engine::Init_Imgui()
 {
     // Setup Dear ImGui binding
     IMGUI_CHECKVERSION();
@@ -120,20 +120,20 @@ void Twin2Engine::Init_Imgui()
     //IM_ASSERT(font != NULL);
 }
 
-void Twin2Engine::Init_SoLoud()
+void Engine::Init_SoLoud()
 {
     soloud.init();
 }
 
-void Twin2Engine::Update()
+void Engine::Update()
 {
 }
 
-void Twin2Engine::Render()
+void Engine::Render()
 {
 }
 
-void Twin2Engine::Imgui_Begin()
+void Engine::Imgui_Begin()
 {
     // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
@@ -141,7 +141,7 @@ void Twin2Engine::Imgui_Begin()
     ImGui::NewFrame();
 }
 
-void Twin2Engine::Imgui_Render()
+void Engine::Imgui_Render()
 {
     if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL)
     {
@@ -178,14 +178,14 @@ void Twin2Engine::Imgui_Render()
     }
 }
 
-void Twin2Engine::Imgui_End()
+void Engine::Imgui_End()
 {
     ImGui::Render();
     glfwMakeContextCurrent(window);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void Twin2Engine::End_Frame()
+void Engine::End_Frame()
 {
     // Poll and handle events (inputs, window resize, etc.)
 // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
@@ -198,7 +198,7 @@ void Twin2Engine::End_Frame()
     glfwSwapBuffers(window);
 }
 
-int Twin2Engine::GameLoop()
+int Engine::GameLoop()
 {
     if (!Init())
     {

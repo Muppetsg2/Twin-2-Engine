@@ -2,12 +2,8 @@
 #include <core/GameObject.h>
 #include <core/Input.h>
 
-#include <core/TypesMap.h>
-
 using namespace Twin2Engine::UI;
 using namespace Twin2Engine::Core;
-
-TypesMap<> tMap = TypesMap<>();
 
 void Button::SetWidth(float width) {
 	_width = width;

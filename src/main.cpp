@@ -437,9 +437,9 @@ void init_imgui()
 void input()
 {
     processInput(window);
-    if (Twin2EngineCore::Input::IsKeyPressed(Twin2EngineCore::KEY::W)) {
+    /*if (Twin2EngineCore::Input::IsKeyPressed(Twin2EngineCore::KEY::W)) {
         spdlog::info("Delta Time: {}\n", Twin2EngineCore::Time::GetDeltaTime());
-    }
+    }*/
 }
 
 void update()

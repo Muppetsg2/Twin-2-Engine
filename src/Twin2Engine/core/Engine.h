@@ -32,10 +32,10 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // HID
-#include <inc/Input.h>
+#include "Input.h"
 
 // TIME
-#include <inc/Time.h>
+#include "Time.h"
 
 constexpr int32_t WINDOW_WIDTH = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
@@ -66,23 +66,25 @@ ma_sound sound;
 
 bool musicPlaying = false;
 
-namespace Twin2EngineCore {
-	class Twin2Engine {
-	private:
-		bool Init();
-		void Init_Imgui();
-		void Init_SoLoud();
+namespace Twin2Engine {
+	namespace Core {
+		class Engine {
+		private:
+			bool Init();
+			void Init_Imgui();
+			void Init_SoLoud();
 
-		void Update();
-		void Render();
+			void Update();
+			void Render();
 
-		void Imgui_Begin();
-		void Imgui_Render();
-		void Imgui_End();
+			void Imgui_Begin();
+			void Imgui_Render();
+			void Imgui_End();
 
-		void End_Frame();
+			void End_Frame();
 
-	public:
-		int GameLoop();
-	};
+		public:
+			int GameLoop();
+		};
+	}
 }

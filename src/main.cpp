@@ -31,10 +31,10 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // HID
-#include <inc/Input.h>
+#include <core/Input.h>
 
 // TIME
-#include <inc/Time.h>
+#include <core/Time.h>
 
 // GRAPHIC_ENGINE
 #include <GraphicEnigine.h>
@@ -64,7 +64,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
         mouseUsingStarted = false;
     }
     GLfloat xoffset = xpos - lastX;
-    GLfloat yoffset = ypos - lastY; // Odwrócone, poniewa¿ wspó³rzêdne zmieniaj¹ siê od do³u do góry  
+    GLfloat yoffset = ypos - lastY; // Odwrï¿½cone, poniewaï¿½ wspï¿½rzï¿½dne zmieniajï¿½ siï¿½ od doï¿½u do gï¿½ry  
     lastX = xpos;
     lastY = ypos;
 
@@ -330,7 +330,7 @@ int main(int, char**)
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    Twin2EngineCore::Input::FreeAllWindows();
+    Twin2Engine::Core::Input::FreeAllWindows();
     glfwDestroyWindow(window);
     glfwTerminate();
 
@@ -373,7 +373,7 @@ bool init()
     glfwMakeContextCurrent(window);
     //glfwSwapInterval(1); // Enable VSync - fixes FPS at the refresh rate of your screen
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    Twin2EngineCore::Input::InitForWindow(window);
+    Twin2Engine::Core::Input::InitForWindow(window);
 
     bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
@@ -437,9 +437,9 @@ void init_imgui()
 void input()
 {
     processInput(window);
-    if (Twin2EngineCore::Input::IsKeyPressed(Twin2EngineCore::KEY::W)) {
+    /*if (Twin2EngineCore::Input::IsKeyPressed(Twin2EngineCore::KEY::W)) {
         spdlog::info("Delta Time: {}\n", Twin2EngineCore::Time::GetDeltaTime());
-    }
+    }*/
 }
 
 void update()
@@ -517,8 +517,8 @@ void end_frame()
     // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
     // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
     // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-    Twin2EngineCore::Time::Update();
-    Twin2EngineCore::Input::Update();
+    Twin2Engine::Core::Time::Update();
+    Twin2Engine::Core::Input::Update();
     glfwMakeContextCurrent(window);
     glfwSwapBuffers(window);
 }

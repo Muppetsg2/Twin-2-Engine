@@ -1,7 +1,7 @@
-#include <inc/Time.h>
+#include <core/Time.h>
 #include <GLFW/glfw3.h>
 
-using namespace Twin2EngineCore;
+using namespace Twin2Engine::Core;
 
 float Time::_updateDeltaTime = 0.f;
 

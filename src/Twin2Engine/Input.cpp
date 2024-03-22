@@ -1,9 +1,9 @@
-#include <inc/Input.h>
+#include <core/Input.h>
 #include <string>
 
 using namespace std;
 using namespace glm;
-using namespace Twin2EngineCore;
+using namespace Twin2Engine::Core;
 
 GLFWwindow* Input::_mainWindow = nullptr;
 

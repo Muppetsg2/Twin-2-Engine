@@ -83,49 +83,52 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     if (pitch < -89.0f)
         pitch = -89.0f;
 
-    glm::vec3 front;
+    glm::vec3 front(0.f);
     front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
     front.y = sin(glm::radians(pitch));
     front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
     cameraFront = glm::normalize(front);
 }
 
-using Twin2EngineCore::Input;
+using Twin2Engine::Core::Input;
+using Twin2Engine::Core::KEY;
+using Twin2Engine::Core::MOUSE_BUTTON;
+using Twin2Engine::Core::Time;
 
 void processInput(GLFWwindow* window)
 {
     float cameraSpeed = 1.0f; // dopasuj do swoich potrzeb  
-    if (Input::IsKeyHeldDown(Twin2EngineCore::KEY::W)) {
-        spdlog::info("Delta Time: {}\n", Twin2EngineCore::Time::GetDeltaTime());
+    if (Input::IsKeyHeldDown(KEY::W)) {
+        spdlog::info("Delta Time: {}\n", Time::GetDeltaTime());
     }
-    if (Input::IsKeyHeldDown(Twin2EngineCore::KEY::W))
+    if (Input::IsKeyHeldDown(KEY::W))
     {
-        cameraPos += cameraSpeed * cameraFront * Twin2EngineCore::Time::GetDeltaTime();
+        cameraPos += cameraSpeed * cameraFront * Time::GetDeltaTime();
     }
-    if (Input::IsKeyHeldDown(Twin2EngineCore::KEY::S))
+    if (Input::IsKeyHeldDown(KEY::S))
     {
-        cameraPos -= cameraSpeed * cameraFront * Twin2EngineCore::Time::GetDeltaTime();
+        cameraPos -= cameraSpeed * cameraFront * Time::GetDeltaTime();
     }
-    if (Input::IsKeyHeldDown(Twin2EngineCore::KEY::A))
+    if (Input::IsKeyHeldDown(KEY::A))
     {
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * Twin2EngineCore::Time::GetDeltaTime();
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * Time::GetDeltaTime();
     }
-    if (Input::IsKeyHeldDown(Twin2EngineCore::KEY::D))
+    if (Input::IsKeyHeldDown(KEY::D))
     {
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * Twin2EngineCore::Time::GetDeltaTime();
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * Time::GetDeltaTime();
     }
-    if (Input::IsKeyHeldDown(Twin2EngineCore::KEY::Q))
+    if (Input::IsKeyHeldDown(KEY::Q))
     {
-        cameraPos -= cameraUp * cameraSpeed * Twin2EngineCore::Time::GetDeltaTime();
+        cameraPos -= cameraUp * cameraSpeed * Time::GetDeltaTime();
     }
-    if (Input::IsKeyHeldDown(Twin2EngineCore::KEY::E))
+    if (Input::IsKeyHeldDown(KEY::E))
     {
-        cameraPos += cameraUp * cameraSpeed * Twin2EngineCore::Time::GetDeltaTime();
+        cameraPos += cameraUp * cameraSpeed * Time::GetDeltaTime();
     }
     static bool cursorToggle = false;
 
     //if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS)
-    if (Input::IsMouseButtonPressed(Twin2EngineCore::MOUSE_BUTTON::MIDDLE))
+    if (Input::IsMouseButtonPressed(MOUSE_BUTTON::MIDDLE))
     {
         if (!cursorToggle)
         {
@@ -136,7 +139,7 @@ void processInput(GLFWwindow* window)
         }
     }
     //else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_RELEASE)
-    else if (Input::IsMouseButtonReleased(Twin2EngineCore::MOUSE_BUTTON::MIDDLE))
+    else if (Input::IsMouseButtonReleased(MOUSE_BUTTON::MIDDLE))
     {
         if (cursorToggle)
         {

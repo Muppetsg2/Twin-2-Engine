@@ -1,6 +1,6 @@
 #include "ShaderManager.h"
 
-#include "../../Twin2Engine/inc/ConfigManager.h"
+#include "../../Twin2Engine/core/ConfigManager.h"
 
 
 

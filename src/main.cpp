@@ -36,6 +36,123 @@
 // TIME
 #include <core/Time.h>
 
+// GRAPHIC_ENGINE
+#include <GraphicEnigine.h>
+
+#pragma region CAMERA_CONTROLLING
+
+glm::vec3 cameraPos(-5.0f, 0.0f, -5.0f);
+glm::vec3 cameraFront(1.0f, 0.0f, 1.0f);
+glm::vec3 cameraUp(0.0f, 1.0f, 0.0f);
+
+double lastX = 0.0f;
+double lastY = 0.0f;
+
+float yaw = 45.0f;
+float pitch = 0.0f;
+
+GLFWcursorposfun lastMouseCallback;
+
+bool mouseUsingStarted = false;
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    if (mouseUsingStarted)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        mouseUsingStarted = false;
+    }
+    GLfloat xoffset = xpos - lastX;
+    GLfloat yoffset = ypos - lastY; // Odwr�cone, poniewa� wsp�rz�dne zmieniaj� si� od do�u do g�ry  
+    lastX = xpos;
+    lastY = ypos;
+
+    //printf("MPosX: %f MPosY: %f\n", xpos, ypos);
+
+    GLfloat sensitivity = 0.1f;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+
+    yaw += xoffset;
+    pitch -= yoffset;
+
+    if (pitch > 89.0f)
+        pitch = 89.0f;
+    if (pitch < -89.0f)
+        pitch = -89.0f;
+
+    glm::vec3 front;
+    front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
+    front.y = sin(glm::radians(pitch));
+    front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
+    cameraFront = glm::normalize(front);
+}
+
+using Twin2EngineCore::Input;
+
+void processInput(GLFWwindow* window)
+{
+    float cameraSpeed = 1.0f; // dopasuj do swoich potrzeb  
+    if (Input::IsKeyHeldDown(Twin2EngineCore::KEY::W)) {
+        spdlog::info("Delta Time: {}\n", Twin2EngineCore::Time::GetDeltaTime());
+    }
+    if (Input::IsKeyHeldDown(Twin2EngineCore::KEY::W))
+    {
+        cameraPos += cameraSpeed * cameraFront * Twin2EngineCore::Time::GetDeltaTime();
+    }
+    if (Input::IsKeyHeldDown(Twin2EngineCore::KEY::S))
+    {
+        cameraPos -= cameraSpeed * cameraFront * Twin2EngineCore::Time::GetDeltaTime();
+    }
+    if (Input::IsKeyHeldDown(Twin2EngineCore::KEY::A))
+    {
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * Twin2EngineCore::Time::GetDeltaTime();
+    }
+    if (Input::IsKeyHeldDown(Twin2EngineCore::KEY::D))
+    {
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * Twin2EngineCore::Time::GetDeltaTime();
+    }
+    if (Input::IsKeyHeldDown(Twin2EngineCore::KEY::Q))
+    {
+        cameraPos -= cameraUp * cameraSpeed * Twin2EngineCore::Time::GetDeltaTime();
+    }
+    if (Input::IsKeyHeldDown(Twin2EngineCore::KEY::E))
+    {
+        cameraPos += cameraUp * cameraSpeed * Twin2EngineCore::Time::GetDeltaTime();
+    }
+    static bool cursorToggle = false;
+
+    //if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS)
+    if (Input::IsMouseButtonPressed(Twin2EngineCore::MOUSE_BUTTON::MIDDLE))
+    {
+        if (!cursorToggle)
+        {
+            lastMouseCallback = glfwSetCursorPosCallback(window, mouse_callback);
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            cursorToggle = !cursorToggle;
+            mouseUsingStarted = true;
+        }
+    }
+    //else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_RELEASE)
+    else if (Input::IsMouseButtonReleased(Twin2EngineCore::MOUSE_BUTTON::MIDDLE))
+    {
+        if (cursorToggle)
+        {
+            glfwSetCursorPosCallback(window, lastMouseCallback);
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            cursorToggle = !cursorToggle;
+        }
+    }
+
+
+}
+
+
+
+#pragma endregion
+
 #pragma region OpenGLCallbackFunctions
 
 static void glfw_error_callback(int error, const char* description)
@@ -103,6 +220,12 @@ ma_sound sound;
 
 bool musicPlaying = false;
 
+
+GraphicEngine::GraphicEngine* graphicEngine;
+
+glm::mat4 projection;
+glm::mat4 view;
+
 int main(int, char**)
 {
 #pragma region Initialization
@@ -155,9 +278,32 @@ int main(int, char**)
 
 #pragma endregion
 
+    //int value;
+    //glGetIntegerv(GL_NUM_PROGRAM_BINARY_FORMATS, &value);
+    //printf("GL_NUM_PROGRAM_BINARY_FORMATS %d\n", value);
+    //glGetIntegerv(GL_PROGRAM_BINARY_FORMATS, &value);
+    //printf("GL_PROGRAM_BINARY_FORMATS %d\n", value);
+    //glGetIntegerv(GL_PROGRAM_BINARY_FORMATS, &value);
+    //printf("GL_PROGRAM_BINARY_FORMATS %d\n", value);
+
+    //std::cout << "Tutaj" << std::endl;
+    graphicEngine = new GraphicEngine::GraphicEngine();
+    //std::cout << "Tutaj" << std::endl;
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+
+    glEnable(GL_DEPTH_TEST);
+
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
+        // Update game time value
+        //GLfloat currentFrame = glfwGetTime();
+        //deltaTime = currentFrame - lastFrame;
+        //lastFrame = currentFrame;
+
+
         // Process I/O operations here
         input();
 
@@ -290,8 +436,9 @@ void init_imgui()
 
 void input()
 {
-    if (Twin2Engine::Core::Input::IsKeyPressed(Twin2Engine::Core::KEY::W)) {
-        spdlog::info("Delta Time: {}\n", Twin2Engine::Core::Time::GetDeltaTime());
+    processInput(window);
+    if (Twin2EngineCore::Input::IsKeyPressed(Twin2EngineCore::KEY::W)) {
+        spdlog::info("Delta Time: {}\n", Twin2EngineCore::Time::GetDeltaTime());
     }
 }
 
@@ -303,6 +450,12 @@ void update()
 void render()
 {
     // OpenGL Rendering code goes here
+    glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 5.0f);
+    glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+    graphicEngine->Render(view, projection);
 }
 
 void imgui_begin()

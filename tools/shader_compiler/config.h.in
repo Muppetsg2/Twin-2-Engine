@@ -1,0 +1,7 @@
+// config.h.in
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define ORIGIN_FOLDER "@SHADER_ORIGIN_FOLDER@"
+
+#endif // CONFIG_H

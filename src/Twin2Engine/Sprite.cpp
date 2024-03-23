@@ -2,8 +2,13 @@
 
 using namespace Twin2Engine::Core;
 
-Sprite::Sprite(Texture2D* tex, unsigned int xof, unsigned int yof, unsigned int width, unsigned int height)
-	: _tex(tex), _xof(xof), _yof(yof), _width(width), _height(height) {}
+Sprite::Sprite(size_t managerId, Texture2D* tex, unsigned int xof, unsigned int yof, unsigned int width, unsigned int height)
+	: _managerId(managerId), _tex(tex), _xof(xof), _yof(yof), _width(width), _height(height) {}
+
+constexpr size_t Sprite::GetManagerId() const
+{
+	return _managerId;
+}
 
 constexpr Texture2D* Sprite::GetTexture() const
 {

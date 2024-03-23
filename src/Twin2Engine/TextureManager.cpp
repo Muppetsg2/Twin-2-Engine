@@ -8,6 +8,14 @@ using namespace std;
 
 map<size_t, Texture2D*> TextureManager::_loadedTextures = map<size_t, Texture2D*>();
 
+Texture2D* TextureManager::GetTexture2D(size_t managerId)
+{
+    if (_loadedTextures.find(managerId) != _loadedTextures.end()) {
+        return _loadedTextures[managerId];
+    }
+    return nullptr;
+}
+
 Texture2D* TextureManager::LoadTexture2D(const string& path)
 {
     size_t h = hash<string>{}(path);
@@ -81,7 +89,7 @@ Texture2D* TextureManager::LoadTexture2D(const string& path, const TextureWrapMo
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(data);
 
-    Texture2D* tex = new Texture2D(id, (unsigned int)width, (unsigned int)height, (unsigned int)channelsNr, form, sWrapMode, tWrapMode, minFilterMode, magFilterMode);
+    Texture2D* tex = new Texture2D(h, id, (unsigned int)width, (unsigned int)height, (unsigned int)channelsNr, form, sWrapMode, tWrapMode, minFilterMode, magFilterMode);
     _loadedTextures[h] = tex;
     return tex;
 }
@@ -154,7 +162,7 @@ Texture2D* TextureManager::LoadTexture2D(const string& path, const TextureFileFo
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(data);
 
-    Texture2D* tex = new Texture2D(id, (unsigned int)width, (unsigned int)height, (unsigned int)nrChannels, format, sWrapMode, tWrapMode, minFilterMode, magFilterMode);
+    Texture2D* tex = new Texture2D(h, id, (unsigned int)width, (unsigned int)height, (unsigned int)nrChannels, format, sWrapMode, tWrapMode, minFilterMode, magFilterMode);
     _loadedTextures[h] = tex;
     return tex;
 }

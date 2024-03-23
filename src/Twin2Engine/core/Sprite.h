@@ -11,17 +11,20 @@ namespace Twin2Engine {
 
 		class Sprite {
 		private:
+			size_t _managerId;
+
 			Texture2D* _tex;
 			unsigned int _xof; // x offset
 			unsigned int _yof; // y offset
 			unsigned int _width; // width of sprite
 			unsigned int _height; // height of sprite
 
-			Sprite(Texture2D* tex, unsigned int xof, unsigned int yof, unsigned int width, unsigned int height);
+			Sprite(size_t managerId, Texture2D* tex, unsigned int xof, unsigned int yof, unsigned int width, unsigned int height);
 
 		public:
 			virtual ~Sprite() = default;
 
+			constexpr size_t GetManagerId() const;
 			constexpr Texture2D* GetTexture() const;
 			constexpr unsigned int GetXOffset() const;
 			constexpr unsigned int GetYOffset() const;

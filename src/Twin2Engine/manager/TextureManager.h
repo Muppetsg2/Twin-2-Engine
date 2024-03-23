@@ -95,6 +95,7 @@ namespace Twin2Engine {
 			static std::map<size_t, Core::Texture2D*> _loadedTextures;
 
 		public:
+			static Core::Texture2D* GetTexture2D(size_t managerId);
 			static Core::Texture2D* LoadTexture2D(const std::string& path);
 			static Core::Texture2D* LoadTexture2D(const std::string& path, const Core::TextureWrapMode& sWrapMode, const Core::TextureWrapMode& tWrapMode);
 			static Core::Texture2D* LoadTexture2D(const std::string& path, const Core::TextureFilterMode& minFilterMode, const Core::TextureFilterMode& magFilterMode);

@@ -2,10 +2,10 @@
 
 using namespace Twin2Engine::Core;
 
-Texture2D::Texture2D(unsigned int id, unsigned int width, unsigned int height, unsigned int channelsNum, 
+Texture2D::Texture2D(size_t managerId, unsigned int id, unsigned int width, unsigned int height, unsigned int channelsNum, 
 	const TextureFormat& format, const TextureWrapMode& sWrapMode, const TextureWrapMode& tWrapMode, 
 	const TextureFilterMode& minFilterMode, const TextureFilterMode& magFilterMode)
-	: _id(id), _width(width), _height(height), _channelsNum(channelsNum),
+	: _managerId(managerId), _id(id), _width(width), _height(height), _channelsNum(channelsNum),
 	_format(format), _sWrapMode(sWrapMode), _tWrapMode(tWrapMode),
 	_minFilterMode(minFilterMode), _magFilterMode(magFilterMode) {}
 
@@ -39,6 +39,11 @@ void Texture2D::SetMagFilterMode(const TextureFilterMode& mode)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mode);
 	_magFilterMode = mode;
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+constexpr size_t Texture2D::GetManagerId() const
+{
+	return _managerId;
 }
 
 constexpr unsigned int Texture2D::GetId() const

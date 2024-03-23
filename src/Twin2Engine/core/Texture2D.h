@@ -46,6 +46,8 @@ namespace Twin2Engine {
 
 		class Texture2D {
 		private:
+			size_t _managerId;
+
 			unsigned int _id;
 			unsigned int _width;
 			unsigned int _height;
@@ -57,7 +59,7 @@ namespace Twin2Engine {
 			TextureFilterMode _minFilterMode;
 			TextureFilterMode _magFilterMode;
 
-			Texture2D(unsigned int id, unsigned int width, unsigned int height, unsigned int channelsNum, const TextureFormat& format, const TextureWrapMode& sWrapMode, const TextureWrapMode& tWrapMode, const TextureFilterMode& minFilterMode, const TextureFilterMode& magFilterMode);
+			Texture2D(size_t managerId, unsigned int id, unsigned int width, unsigned int height, unsigned int channelsNum, const TextureFormat& format, const TextureWrapMode& sWrapMode, const TextureWrapMode& tWrapMode, const TextureFilterMode& minFilterMode, const TextureFilterMode& magFilterMode);
 
 		public:
 			virtual ~Texture2D() = default;
@@ -67,6 +69,7 @@ namespace Twin2Engine {
 			void SetMinFilterMode(const TextureFilterMode& mode);
 			void SetMagFilterMode(const TextureFilterMode& mode);
 
+			constexpr size_t GetManagerId() const;
 			constexpr unsigned int GetId() const;
 			constexpr unsigned int GetWidth() const;
 			constexpr unsigned int GetHeight() const;

@@ -65,6 +65,8 @@ namespace GraphicEngine
 
 		static Shader* GetShaderProgram(const std::string& shaderName);
 
+		static Shader* GetShader(const std::string& vertexPath);
+		static Shader* LoadShader(const std::string& vertexPath, const std::string& fragPath);
 	};
 }
 

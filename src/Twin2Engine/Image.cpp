@@ -44,7 +44,8 @@ void Image::Render()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-	Shader* uiShader = ShaderManager::GetShaderProgram("origin/UI");
+	//Shader* uiShader = ShaderManager::GetShaderProgram("origin/UI");
+	Shader* uiShader = ShaderManager::GetShader("../../../../res/shaders/ui.vert");
 	uiShader->use();
 	uiShader->setVec4("sprite.color", (float*)&_color);
 	uiShader->setFloat("sprite.width", (float)_sprite->GetWidth());

@@ -346,3 +346,52 @@ Shader* GraphicEngine::ShaderManager::GetShaderProgram(const std::string& shader
 
     return (*found)->shader;
 }
+
+Shader* GraphicEngine::ShaderManager::GetShader(const std::string& vertexPath) {
+    size_t h = std::hash<std::string>()(vertexPath);
+    std::list<ShaderProgramData*>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [&](ShaderProgramData* data) { return data->shaderPathHash == h; });
+    return (*found)->shader;
+}
+
+Shader* GraphicEngine::ShaderManager::LoadShader(const std::string& vertexPath, const std::string& fragPath) {
+    GLuint shaderProgram = glCreateProgram();
+    std::list<unsigned int> shaderIds = std::list<unsigned int>();
+    
+    // VERTEX SHADER
+    std::string shaderSource = LoadShaderSource(vertexPath);
+    unsigned int shaderId = glCreateShader(GL_VERTEX_SHADER);
+    const GLchar* cstrShaderSource = (const GLchar*)shaderSource.c_str();
+    glShaderSource(shaderId, 1, &cstrShaderSource, NULL);
+    glCompileShader(shaderId);
+
+    CheckShaderCompilationSuccess(shaderId);
+
+    glAttachShader(shaderProgram, shaderId);
+
+    shaderIds.push_back(shaderId);
+
+    // FRAGMENT SHADER
+    shaderSource = LoadShaderSource(fragPath);
+    shaderId = glCreateShader(GL_VERTEX_SHADER);
+    cstrShaderSource = (const GLchar*)shaderSource.c_str();
+    glShaderSource(shaderId, 1, &cstrShaderSource, NULL);
+    glCompileShader(shaderId);
+
+    CheckShaderCompilationSuccess(shaderId);
+
+    glAttachShader(shaderProgram, shaderId);
+
+    shaderIds.push_back(shaderId);
+
+    glLinkProgram(shaderProgram);
+    CheckProgramLinkingSuccess(shaderProgram);
+
+    for (unsigned int id : shaderIds)
+    {
+        glDeleteShader(id);
+    }
+
+    Shader* s = new Shader(shaderProgram);
+    loadedShaders.push_back(new ShaderProgramData{ .shaderPathHash = std::hash<std::string>()(vertexPath), .shaderProgramId = (int)shaderProgram, .useNumber = 1, .shader = s});
+    return s;
+}

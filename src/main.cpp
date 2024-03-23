@@ -37,11 +37,15 @@
 #include <core/Time.h>
 
 // MANAGERS
-#include <manager/TextureManager.h>
-#include <manager/SpriteManager.h>
+//#include <manager/TextureManager.h>
+//#include <manager/SpriteManager.h>
+
+// GAME OBJECT
+#include <core/GameObject.h>
+//#include <ui/Image.h>
 
 // GRAPHIC_ENGINE
-#include <GraphicEnigine.h>
+//#include <GraphicEnigine.h>
 
 #pragma region CAMERA_CONTROLLING
 
@@ -98,6 +102,9 @@ using Twin2Engine::Core::Input;
 using Twin2Engine::Core::KEY;
 using Twin2Engine::Core::MOUSE_BUTTON;
 using Twin2Engine::Core::Time;
+//using namespace Twin2Engine::Manager;
+using namespace Twin2Engine::Core;
+//using namespace Twin2Engine::UI;
 
 void processInput(GLFWwindow* window)
 {
@@ -228,10 +235,12 @@ ma_sound sound;
 bool musicPlaying = false;
 
 
-GraphicEngine::GraphicEngine* graphicEngine;
+//GraphicEngine::GraphicEngine* graphicEngine;
 
 glm::mat4 projection;
 glm::mat4 view;
+
+GameObject* imageObj;
 
 int main(int, char**)
 {
@@ -299,6 +308,13 @@ int main(int, char**)
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
     glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
+    //GraphicEngine::ShaderManager::LoadShader("../../../../res/shaders/ui.vert", "../../../../res/shaders/ui.frag");
+    //Texture2D* tex = TextureManager::LoadTexture2D("../../../../res/textures/stone.jpg");
+    //Sprite* s = SpriteManager::MakeSprite(tex, "stone1", 0, 0, tex->GetWidth(), tex->GetHeight());
+
+    GameObject* ob = new GameObject();
+    //Image* img = ob->AddComponent<Image>();
+    //img->SetSprite(s);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -333,6 +349,10 @@ int main(int, char**)
     }
 
     // Cleanup
+    delete imageObj;
+    //SpriteManager::UnloadAll();
+    //TextureManager::UnloadAll();
+
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
@@ -462,7 +482,10 @@ void render()
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
     glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-    graphicEngine->Render(view, projection);
+    //graphicEngine->Render(view, projection);
+    /*for (auto& comp : renderableComponents) {
+        comp->Render();
+    }*/
 }
 
 void imgui_begin()

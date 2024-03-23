@@ -9,6 +9,16 @@ using namespace std;
 
 map<size_t, Sprite*> SpriteManager::_sprites = map<size_t, Sprite*>();
 
+Sprite* SpriteManager::MakeSprite(Texture2D* tex, const string& spriteAlias)
+{
+    return MakeSprite(tex, spriteAlias, 0, 0, tex->GetWidth(), tex->GetHeight());
+}
+
+Sprite* SpriteManager::MakeSprite(size_t texManagerId, const string& spriteAlias)
+{
+    return MakeSprite(TextureManager::GetTexture2D(texManagerId), spriteAlias);
+}
+
 Sprite* SpriteManager::MakeSprite(Texture2D* tex, const string& spriteAlias, unsigned int xOffset, unsigned int yOffset, unsigned int width, unsigned int height)
 {
     size_t sH = hash<string>()(spriteAlias);

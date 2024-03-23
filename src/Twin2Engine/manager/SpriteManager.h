@@ -11,6 +11,8 @@ namespace Twin2Engine {
 			static std::map<size_t, Core::Sprite*> _sprites;
 
 		public:
+			static Core::Sprite* MakeSprite(Core::Texture2D* tex, const std::string& spriteAlias);
+			static Core::Sprite* MakeSprite(size_t texManagerId, const std::string& spriteAlias);
 			static Core::Sprite* MakeSprite(Core::Texture2D* tex, const std::string& spriteAlias, unsigned int xOffset, unsigned int yOffset, unsigned int width, unsigned int height);
 			static Core::Sprite* MakeSprite(size_t texManagerId, const std::string& spriteAlias, unsigned int xOffset, unsigned int yOffset, unsigned int width, unsigned int height);
 			

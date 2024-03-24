@@ -1,5 +1,6 @@
 #include <manager/TextureManager.h>
 #include <spdlog/spdlog.h>
+#include <stb_image.h>
 
 using namespace Twin2Engine;
 using namespace Core;
@@ -80,7 +81,7 @@ Texture2D* TextureManager::LoadTexture2D(const string& path, const TextureWrapMo
     }
 
     TextureFormat form = TextureFormat::RGB;
-    if (channelsNr == 1) form = TextureFormat::R;
+    if (channelsNr == 1) form = TextureFormat::RED;
     else if (channelsNr == 2) form = TextureFormat::RG;
     else if (channelsNr == 3) form = TextureFormat::RGB;
     else if (channelsNr == 4) form = TextureFormat::RGBA;

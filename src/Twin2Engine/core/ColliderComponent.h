@@ -6,7 +6,7 @@
 namespace Twin2Engine {
 	namespace Core {
 		class ColliderComponent;
-		std::vector<ColliderComponent*> colliderComponents = std::vector<ColliderComponent*>();
+		static std::vector<ColliderComponent*> colliderComponents = std::vector<ColliderComponent*>();
 
 		class ColliderComponent : public Component {
 		protected:

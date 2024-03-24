@@ -9,7 +9,7 @@ namespace Twin2Engine {
 		enum TextureFileFormat {
 			DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
 			DEPTH_STENCIL = GL_DEPTH_STENCIL,
-			R = GL_RED,
+			RED = GL_RED,
 			RG = GL_RG,
 			RGB = GL_RGB,
 			RGBA = GL_RGBA,

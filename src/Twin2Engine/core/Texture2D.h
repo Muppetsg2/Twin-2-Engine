@@ -1,6 +1,4 @@
 #pragma once
-
-#include <stb_image.h>
 #include <glad/glad.h>
 
 namespace Twin2Engine {
@@ -10,7 +8,7 @@ namespace Twin2Engine {
 
 	namespace Core {
 		enum TextureFormat {
-			R = GL_RED,
+			RED = GL_RED,
 			RG = GL_RG,
 			RGB = GL_RGB,
 			BGR = GL_BGR,
@@ -69,15 +67,15 @@ namespace Twin2Engine {
 			void SetMinFilterMode(const TextureFilterMode& mode);
 			void SetMagFilterMode(const TextureFilterMode& mode);
 
-			constexpr size_t GetManagerId() const;
-			constexpr unsigned int GetId() const;
-			constexpr unsigned int GetWidth() const;
-			constexpr unsigned int GetHeight() const;
-			constexpr unsigned int GetChannelsNum() const;
-			constexpr TextureWrapMode GetWrapModeS() const;
-			constexpr TextureWrapMode GetWrapModeT() const;
-			constexpr TextureFilterMode GetMinFilterMode() const;
-			constexpr TextureFilterMode GetMagFilterMode() const;
+			size_t GetManagerId() const;
+			unsigned int GetId() const;
+			unsigned int GetWidth() const;
+			unsigned int GetHeight() const;
+			unsigned int GetChannelsNum() const;
+			TextureWrapMode GetWrapModeS() const;
+			TextureWrapMode GetWrapModeT() const;
+			TextureFilterMode GetMinFilterMode() const;
+			TextureFilterMode GetMagFilterMode() const;
 
 			void Use(unsigned int samplerId = 0) const;
 

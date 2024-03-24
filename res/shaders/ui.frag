@@ -6,7 +6,7 @@ in VS_OUT {
     vec3 fragPos;
 } fs_in;
 
-SPRITE {
+struct SPRITE {
     vec4 color;
     float width;
     float height;
@@ -38,5 +38,5 @@ void main()
     vec2 uvMin = vec2(sprite.x / sprite.texWidth, sprite.y / sprite.texHeight);
     vec2 uvMax = vec2((sprite.x + sprite.width) / sprite.texWidth, (sprite.y + sprite.height) / sprite.texHeight);
     vec2 uv = map(fs_in.texCoord, vec2(0.0, 0.0), vec2(1.0, 1.0), uvMin, uvMax);
-    Color = vec4(texture2D(sprite.img, uv), 1.0) * sprite.color;
+    Color = texture(sprite.img, uv) * sprite.color;
 }

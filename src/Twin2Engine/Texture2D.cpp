@@ -41,47 +41,47 @@ void Texture2D::SetMagFilterMode(const TextureFilterMode& mode)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-constexpr size_t Texture2D::GetManagerId() const
+size_t Texture2D::GetManagerId() const
 {
 	return _managerId;
 }
 
-constexpr unsigned int Texture2D::GetId() const
+unsigned int Texture2D::GetId() const
 {
 	return _id;
 }
 
-constexpr unsigned int Texture2D::GetWidth() const
+unsigned int Texture2D::GetWidth() const
 {
 	return _width;
 }
 
-constexpr unsigned int Texture2D::GetHeight() const
+unsigned int Texture2D::GetHeight() const
 {
 	return _height;
 }
 
-constexpr unsigned int Texture2D::GetChannelsNum() const
+unsigned int Texture2D::GetChannelsNum() const
 {
 	return _channelsNum;
 }
 
-constexpr TextureWrapMode Texture2D::GetWrapModeS() const
+TextureWrapMode Texture2D::GetWrapModeS() const
 {
 	return _sWrapMode;
 }
 
-constexpr TextureWrapMode Texture2D::GetWrapModeT() const
+TextureWrapMode Texture2D::GetWrapModeT() const
 {
 	return _tWrapMode;
 }
 
-constexpr TextureFilterMode Texture2D::GetMinFilterMode() const
+TextureFilterMode Texture2D::GetMinFilterMode() const
 {
 	return _minFilterMode;
 }
 
-constexpr TextureFilterMode Texture2D::GetMagFilterMode() const
+TextureFilterMode Texture2D::GetMagFilterMode() const
 {
 	return _magFilterMode;
 }

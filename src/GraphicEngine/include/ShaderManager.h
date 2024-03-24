@@ -56,17 +56,14 @@ namespace GraphicEngine
 		static GLuint CompileShader(GLenum type, const std::string& source);
 		static void CheckShaderCompilationSuccess(GLuint shaderId);
 		static void CheckProgramLinkingSuccess(GLuint programId);
-		static void PrecompileShaders();
 
 	public:
 		//ShaderManager();
 		static void Init();
+		static void PrecompileShaders();
 		static void End();
 
 		static Shader* GetShaderProgram(const std::string& shaderName);
-
-		static Shader* GetShader(const std::string& vertexPath);
-		static Shader* LoadShader(const std::string& vertexPath, const std::string& fragPath);
 	};
 }
 

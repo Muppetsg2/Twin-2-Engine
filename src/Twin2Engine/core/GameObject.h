@@ -91,9 +91,9 @@ template<class T>
 typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
 Twin2Engine::Core::GameObject::AddComponent()
 {
-	Component* component = new T();
+	T* component = new T();
 
-	component.Inizialize();
+	component->Inizialize();
 
 	components.push_back(component);
 

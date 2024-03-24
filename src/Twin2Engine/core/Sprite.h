@@ -24,12 +24,12 @@ namespace Twin2Engine {
 		public:
 			virtual ~Sprite() = default;
 
-			constexpr size_t GetManagerId() const;
-			constexpr Texture2D* GetTexture() const;
-			constexpr unsigned int GetXOffset() const;
-			constexpr unsigned int GetYOffset() const;
-			constexpr unsigned int GetWidth() const;
-			constexpr unsigned int GetHeight() const;
+			size_t GetManagerId() const;
+			Texture2D* GetTexture() const;
+			unsigned int GetXOffset() const;
+			unsigned int GetYOffset() const;
+			unsigned int GetWidth() const;
+			unsigned int GetHeight() const;
 
 			void Use(unsigned int samplerId = 0) const;
 

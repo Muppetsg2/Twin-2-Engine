@@ -22,7 +22,7 @@ Component::~Component()
 	_gameObject = nullptr;
 }
 
-void Component::Inizialize()
+void Component::Initialize()
 {
 }
 
@@ -81,6 +81,6 @@ void Component::Init(GameObject* obj)
 	_id = GetUniqueComponentId();
 	_gameObject = obj;
 	_enabled = true;
-	Inizialize();
+	Initialize();
 	OnEnable();
 }

@@ -31,11 +31,13 @@ file(GLOB_RECURSE GRAPHIC_ENGINE_SOURCE_FILES
 
 file(GLOB_RECURSE GRAPHIC_ENGINE_PUBLIC_INCLUDE_FILES 
                         #${GRAPHIC_ENGINE_DIR}/include}/*.h)
-                        ${GRAPHIC_ENGINE_INCLUDE_DIR}/*.h)
+                        ${GRAPHIC_ENGINE_INCLUDE_DIR}/*.h
+                        ${GRAPHIC_ENGINE_INCLUDE_DIR}/*.hpp)
 						
 file(GLOB_RECURSE GRAPHIC_ENGINE_PRIVATE_INCLUDE_FILES  
                         #${GRAPHIC_ENGINE_DIR}/src/*.h)
-                        ${GRAPHIC_ENGINE_SOURCE_DIR}/*.h)
+                        ${GRAPHIC_ENGINE_SOURCE_DIR}/*.h
+                        ${GRAPHIC_ENGINE_SOURCE_DIR}/*.hpp)
 	 
 source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${GRAPHIC_ENGINE_SOURCE_FILES})						   
 source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${GRAPHIC_ENGINE_PUBLIC_INCLUDE_FILES})
@@ -50,6 +52,7 @@ target_include_directories(GraphicEngine
 						#${GRAPHIC_ENGINE_PUBLIC_INCLUDE_FILES}
 						${GRAPHIC_ENGINE_INCLUDE_DIR}
 						${glad_SOURCE_DIR}
+						${stb_image_SOURCE_DIR}
 						#${GRAPHIC_ENGINE_DIR}
 						
 						PRIVATE
@@ -59,8 +62,13 @@ target_include_directories(GraphicEngine
 
 target_link_libraries(GraphicEngine PRIVATE 
 										glad
+										#stb_image
+										assimp
+										glfw
 										glm::glm
 										yaml-cpp
+										spdlog
+										Twin2Engine
 )
 
 #message("GraphicEngine Public Include Files:")

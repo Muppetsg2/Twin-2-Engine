@@ -36,10 +36,14 @@ add_subdirectory(GraphicEngine)
 #=======
 add_executable(${PROJECT_NAME} main.cpp)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${GRAPHIC_ENGINE_INCLUDE_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_SOURCE_DIR})
-target_link_libraries(${PROJECT_NAME} PRIVATE GraphicEngine)
 target_link_libraries(${PROJECT_NAME} PUBLIC Twin2Engine)
+
+target_include_directories(${PROJECT_NAME} PUBLIC ${GRAPHIC_ENGINE_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} PRIVATE GraphicEngine)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC spdlog)
+target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD 
 				   COMMAND ${CMAKE_COMMAND} -E create_symlink 

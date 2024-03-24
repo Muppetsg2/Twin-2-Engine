@@ -39,6 +39,12 @@
 // GRAPHIC_ENGINE
 #include <GraphicEnigine.h>
 
+//LOGGER
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+
+#include <memory>
+
 #pragma region CAMERA_CONTROLLING
 
 glm::vec3 cameraPos(-5.0f, 0.0f, -5.0f);
@@ -95,9 +101,7 @@ using Twin2EngineCore::Input;
 void processInput(GLFWwindow* window)
 {
     float cameraSpeed = 1.0f; // dopasuj do swoich potrzeb  
-    if (Input::IsKeyHeldDown(Twin2EngineCore::KEY::W)) {
-        spdlog::info("Delta Time: {}\n", Twin2EngineCore::Time::GetDeltaTime());
-    }
+
     if (Input::IsKeyHeldDown(Twin2EngineCore::KEY::W))
     {
         cameraPos += cameraSpeed * cameraFront * Twin2EngineCore::Time::GetDeltaTime();
@@ -260,6 +264,17 @@ int main(int, char**)
     */
 
 #pragma endregion
+
+    // Initialize stdout color sink
+    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+    console_sink->set_level(spdlog::level::debug);
+
+    // Create a logger with the stdout color sink
+    auto logger = std::make_shared<spdlog::logger>("logger", console_sink);
+    spdlog::register_logger(logger);
+
+    // Set global log level to debug
+    spdlog::set_level(spdlog::level::debug);
 
 #pragma region MatricesUBO
 

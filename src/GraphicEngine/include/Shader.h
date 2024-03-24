@@ -27,10 +27,12 @@ namespace GraphicEngine
     private:
         friend class ShaderManager;
 
-        Shader(const GLchar* shaderPath);
+        //Shader(const GLchar* shaderPath);
+        unsigned int shaderProgramID;
+        unsigned int ssboID;
+        unsigned int uboID;
     public:
         // ID program object  
-        unsigned int shaderProgramID;
         Shader(const Shader&& shader);
         Shader(const Shader& shader);
         Shader(unsigned int shaderProgramId);
@@ -58,6 +60,9 @@ namespace GraphicEngine
         void setVec3(const std::string& name, float* value) const;
 
         void setMat4(const std::string& name, glm::mat4& value) const;
+
+        GLuint GetUBO() const;
+        GLuint GetSSBO() const;
     };
 }
 

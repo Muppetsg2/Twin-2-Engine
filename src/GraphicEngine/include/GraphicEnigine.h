@@ -9,6 +9,9 @@
 #include <Shader.h>
 #include <ShaderManager.h>
 
+#include <Material.h>
+#include <ModelsManager.h>
+
 using std::vector;
 
 namespace GraphicEngine
@@ -17,6 +20,8 @@ namespace GraphicEngine
 	{
 		Mesh* mesh;
 		Shader* shader;
+		Material material;
+		InstatiatingModel modelMesh;
 		//static GraphicEngine* instance;
 
 	public:
@@ -90,7 +95,14 @@ namespace GraphicEngine
 			//					"C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\fargmentShader.frag");
 
 			//std::cout << "Tutaj" << std::endl;
+			shader->use();
+			glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			shader->setVec4("uColor", (float*)(&color));
+			color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
+			shader->setVec4("uColor", (float*)(&color));
 
+			modelMesh = ModelsManager::CreateModel("NewModel", vertexes, indices, textures);
+			material = MaterialsManager::CreateMaterial("new", "res/CompiledShaders/origin/Basic.shdr");
 			//instance = this;
 		}
 
@@ -105,20 +117,19 @@ namespace GraphicEngine
 			shader->use();
 			shader->setMat4("projection", projection);
 			shader->setMat4("view", view);
-			glm::vec4 color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
-			shader->setVec4("uColor", (float*)(&color));
 			
 			glm::mat4 model(1.0f);
 			shader->setMat4("model", model);
 			//shader->setMat4("normalModel", model);
 			
-			mesh->Draw(shader);
+			//mesh->Draw(shader);
+			modelMesh.Draw(shader);
+
 			glm::mat4 newview(1.0f);
 			shader->setMat4("view", newview);
 			shader->setMat4("projection", newview);
-			color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-			shader->setVec4("uColor", (float*)(&color));
-			mesh->Draw(shader);
+			//mesh->Draw(shader);
+			modelMesh.Draw(shader);
 		}
 	};
 }

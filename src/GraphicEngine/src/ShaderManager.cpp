@@ -2,10 +2,12 @@
 
 #include "../../Twin2Engine/inc/ConfigManager.h"
 
+#include <spdlog/spdlog.h>
+
 
 
 #include <iostream>
-;
+
 using namespace GraphicEngine;
 
 GLenum GraphicEngine::ShaderManager::binaryFormat = 1;
@@ -23,34 +25,34 @@ unsigned int GraphicEngine::ShaderManager::LoadShaderProgram(const std::string& 
 
     if (found == loadedShaders.end())
     {
+        SPDLOG_INFO("Loading shader: {}!", shaderPath);
+
         std::ifstream file(shaderPath, std::ios::binary | std::ios::ate);
         if (!file.is_open()) {
-            std::cerr << "Failed to open file: " << shaderPath << std::endl;
+            SPDLOG_ERROR("Failed to open file: {}!", shaderPath);
             return 0;
         }
 
         std::streamsize fileSize = file.tellg();
         file.seekg(0, std::ios::beg);
 
-        std::vector<char> buffer(fileSize);
-        if (!file.read(buffer.data(), fileSize)) {
-            std::cerr << "Failed to read file: " << shaderPath << std::endl;
+        std::vector<char> shaderBinary(fileSize);
+        if (!file.read(shaderBinary.data(), fileSize)) {
+            SPDLOG_ERROR("Failed to read file: {}!", shaderPath);
             return 0;
         }
-        std::vector<char> shaderBinary = buffer;
+        //std::vector<char> shaderBinary = buffer;
         if (shaderBinary.empty()) {
-            std::cerr << "Failed to read shader program binary" << std::endl;
+            SPDLOG_ERROR("Failed to read shader program binary");
             return 0;
         }
 
         shaderProgramID = glCreateProgram();
         if (!shaderProgramID) {
-            std::cerr << "Failed to create shader program" << std::endl;
+            SPDLOG_ERROR("Failed to create shader program");
             return 0;
         }
 
-        //glProgramBinary(shaderProgramID, GL_PROGRAM_BINARY_RETRIEVABLE_HINT, shaderBinary.data(), shaderBinary.size());
-        //glProgramBinary(shaderProgramID, GL_PROGRAM_BINARY_FORMAT_MESA, shaderBinary.data(), shaderBinary.size());
         glProgramBinary(shaderProgramID, binaryFormat, shaderBinary.data(), shaderBinary.size());
 
         GLint success;
@@ -58,7 +60,8 @@ unsigned int GraphicEngine::ShaderManager::LoadShaderProgram(const std::string& 
         if (!success) {
             GLchar infoLog[512];
             glGetProgramInfoLog(shaderProgramID, sizeof(infoLog), nullptr, infoLog);
-            std::cerr << "Error linking shader program: " << infoLog << std::endl;
+            SPDLOG_ERROR("Error linking shader program: ", infoLog);
+            //std::cerr << "Error linking shader program: " << infoLog << std::endl;
             glDeleteProgram(shaderProgramID);
             return 0;
         }
@@ -67,6 +70,7 @@ unsigned int GraphicEngine::ShaderManager::LoadShaderProgram(const std::string& 
     }
     else
     {
+        SPDLOG_INFO("Shader already loaded: {}!", shaderPath);
         shaderProgramID = (*found)->shaderProgramId;
         (*found)->useNumber++;
     }
@@ -88,7 +92,8 @@ void GraphicEngine::ShaderManager::UnloadShaderProgram(int shaderProgramID)
 
     if (found == loadedShaders.end())
     {
-        std::cerr << "Error during unloading ShaderProgram!\n";
+        SPDLOG_ERROR("Error during unloading ShaderProgram!");
+        //std::cerr << "Error during unloading ShaderProgram!\n";
         return;
     }
 
@@ -100,6 +105,12 @@ void GraphicEngine::ShaderManager::UnloadShaderProgram(int shaderProgramID)
     {
         glDeleteProgram(data->shaderProgramId);
         loadedShaders.erase(found);
+
+        GLuint ssboID = data->shader->GetSSBO();
+        glDeleteBuffers(1, &ssboID);
+        GLuint uboID = data->shader->GetUBO();
+        glDeleteBuffers(1, &uboID);
+
         delete data;
     }
 }
@@ -162,6 +173,7 @@ void GraphicEngine::ShaderManager::PrecompileShaders()
                         }
                         else
                         {
+                            //SPDLOG_ERROR("Unrecogniced extension in shader program encountered. Path: {}", entry.path());
                             std::cerr << "Unrecogniced extension in shader program encountered.\n" << "Path: " << entry.path() << std::endl;
                             return;
                         }
@@ -203,7 +215,8 @@ void GraphicEngine::ShaderManager::PrecompileShaders()
                             // return true;
                         }
                         catch (const std::filesystem::filesystem_error& e) {
-                            std::cerr << "Failed to create directories: " << e.what() << std::endl;
+                            SPDLOG_ERROR("Failed to create directories: {}", e.what());
+                            //std::cerr << "Failed to create directories: " << e.what() << std::endl;
                             //return false;
                         }
                         binaryFile.open(outputFilePath, std::ios::binary);
@@ -213,20 +226,23 @@ void GraphicEngine::ShaderManager::PrecompileShaders()
                         }
                         else
                         {
-
-                            std::cout << "Output file not opened\n";
+                            SPDLOG_ERROR("SHDER output file not opened: {}", outputFilePath);
+                            //std::cout << "Output file not opened\n";
                         }
                         binaryFile.write(binaryData.data(), binaryLength);
                         binaryFile.close();
 
-                        std::cout << "Compiled and saved shader program binary: " << outputFilePath << std::endl;
-                        std::cout << "Binary format: " << binaryFormat << std::endl;
+                        SPDLOG_INFO("Compiled and saved shader program binary: {}", outputFilePath);
+                        SPDLOG_INFO("Binary format: {}", binaryFormat);
+                        //std::cout << "Compiled and saved shader program binary: " << outputFilePath << std::endl;
+                        //std::cout << "Binary format: " << binaryFormat << std::endl;
 
                         // Cleanup
                         glDeleteProgram(shaderProgram);
                     }
                 }
                 else {
+                    //SPDLOG_ERROR("Failed to open shader program file: {}", std::string(entry.path()));
                     std::cerr << "Failed to open shader program file: " << entry.path() << std::endl;
                 }
             }
@@ -304,32 +320,41 @@ void GraphicEngine::ShaderManager::Init()
     GLint numFormats;
     glGetIntegerv(GL_NUM_PROGRAM_BINARY_FORMATS, &numFormats);
     if (numFormats == 0) {
-        std::cerr << "No supported binary formats found" << std::endl;
+        SPDLOG_ERROR("No supported binary formats found!");
+        //std::cerr << "No supported binary formats found" << std::endl;
         //glfwTerminate();
         //return -1;
     }
 
+    ///Ustawienie prekompilacji za ka¿dym razem gdy¿ mo¿e dojœæ do zmiany shaderów a weryfikacja tylko formatu sprawi, i¿ nowe shadery nie zostan¹ uwzglêdnione
 
-    std::vector<GLint> formats(numFormats);
-    glGetIntegerv(GL_PROGRAM_BINARY_FORMATS, formats.data());
-    //std::cout << "Supported binary formats:" << std::endl;
-    bool correctFormat = false;
-    for (GLint format : formats) {
-        //std::cout << format << std::endl;
-        if (binaryFormat == format)
-        {
-            correctFormat = true;
-            break;
-        }
-    }
+    //std::vector<GLint> formats(numFormats);
+    //glGetIntegerv(GL_PROGRAM_BINARY_FORMATS, formats.data());
+    ////std::cout << "Supported binary formats:" << std::endl;
+    //bool correctFormat = false;
+    //for (GLint format : formats) {
+    //    //std::cout << format << std::endl;
+    //    if (binaryFormat == format)
+    //    {
+    //        correctFormat = true;
+    //        break;
+    //    }
+    //}
 
-    if (!correctFormat)
+    //if (!correctFormat)
     {
-        std::cout << "Precompiling shaders" << std::endl;
+        SPDLOG_INFO("Shaders precompilation started!");
+        //std::cout << "Shaders precompilation started" << std::endl;
         PrecompileShaders();
         ConfigManager::SetValue<unsigned int>("binaryFormat", binaryFormat);
         ConfigManager::WriteConfig();
+        //std::cout << "Shaders precompilation finished" << std::endl;
+        SPDLOG_INFO("Shaders precompilation finished!");
     }
+    //else
+    //{
+    //    SPDLOG_INFO("Shaders already precompiled with correct binary format!");
+    //}
 
 }
 

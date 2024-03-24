@@ -2,55 +2,76 @@
 #define INSTANTIATING_MODEL
 
 #include "Model.h"
-#include "InstatiatingMesh.h"
-#include "Transform.h"
+#include <InstatiatingMesh.h>
+#include <glad/glad.h>
 
-class InstatiatingModel
+
+#include "../../Twin2Engine/inc/Transform.h"
+//#include <Transform.h>
+
+using Twin2EngineCore::Transform;
+
+namespace GraphicEngine
 {
-    Model* model = nullptr;
-    vector<InstatiatingMesh> meshes;
+    class Model;
 
-    void setupModel(const vector<glm::mat4>& transforms)
+    //class ModelsManager;
+    struct ModelData
     {
-        for (Mesh& mesh : model->meshes)
-        {
-            meshes.push_back(InstatiatingMesh(&mesh, transforms));
+        size_t modelHash;
+        int useNumber;
+        GraphicEngine::Model* model;
+        GLuint ssboId;
+        vector<InstatiatingMesh> meshes;
+
+        bool operator<(const ModelData& other) const {
+            return modelHash < other.modelHash;
         }
-    }
+    };
 
-public:
-
-    InstatiatingModel(const char* path, const vector<glm::mat4>& transforms)
+    class InstatiatingModel
     {
-        model = new Model(path);
+    private:
 
-        setupModel(transforms);
-    }
-    ~InstatiatingModel()
-    {
-        delete model;
-    }
+        friend class ModelsManager;
 
-    void Draw(Shader* shaderProgram)
-    {
-        for (unsigned int i = 0; i < meshes.size(); i++)
-            meshes[i].Draw(shaderProgram);
-    }
 
-    void SetTransform(unsigned int meshIndex, const vector<Transform*> transforms)
-    {
-        vector<glm::mat4> transformsMatrixes;
-        for (Transform* transform : transforms)
-        {
-            transform->RecalculateTransform();
-            if (transform->GerHierachyActive())
-            {
-                transformsMatrixes.push_back(transform->transform);
-            }
-        }
 
-        meshes[meshIndex].SetNewTransforms(transformsMatrixes);
-    }
-};
+        //Model* model = nullptr;
+        //vector<InstatiatingMesh> meshes;
+
+        ModelData* modelData;
+
+        void setupModel(const vector<glm::mat4>& transforms);
+
+        //static InstatiatingModel CreateModel(ModelData* modelData);
+        InstatiatingModel(ModelData* modelData);
+
+    public:
+        InstatiatingModel(const InstatiatingModel&);
+        InstatiatingModel(InstatiatingModel&&);
+        InstatiatingModel();
+
+        //InstatiatingModel(const char* path, const vector<glm::mat4>& transforms);
+        ~InstatiatingModel();
+
+        size_t GetMeshCount() const;
+        InstatiatingMesh* GetMesh(size_t index) const;
+
+        void Draw(Shader* shaderProgram);
+
+        void SetTransform(unsigned int meshIndex, const vector<Transform*> transforms);
+
+        InstatiatingModel& operator=(const InstatiatingModel& other);
+        InstatiatingModel& operator=(InstatiatingModel&& other);
+        InstatiatingModel& operator=(std::nullptr_t);
+        bool operator==(std::nullptr_t);
+        bool operator!=(std::nullptr_t);
+        bool operator==(const InstatiatingModel& other);
+        bool operator!=(const InstatiatingModel& other);
+    };
+}
+
+//#include <ModelsManager.h>
 
 #endif // !INSTANTIATING_MODEL

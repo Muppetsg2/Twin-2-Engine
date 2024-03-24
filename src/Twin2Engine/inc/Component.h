@@ -19,7 +19,7 @@ namespace Twin2EngineCore
 		virtual ~Component();
 
 #pragma region VirtualMethods
-		virtual void Inizialize();
+		virtual void Initialize();
 		virtual void Update();
 		virtual void OnEnable();
 		virtual void OnDisable();

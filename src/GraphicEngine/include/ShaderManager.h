@@ -48,10 +48,12 @@ namespace GraphicEngine
 		static std::hash<std::string> stringHash;
 		static std::list<ShaderProgramData*> loadedShaders;
 
+		//Runtime methods
 		static unsigned int LoadShaderProgram(const std::string& shaderPath);
 		static void UnloadShaderProgram(int shaderProgramID);
 		static void IncrementUseNumber(int shaderProgramID);
 
+		//Precompilation methods
 		static std::string LoadShaderSource(const std::string& filePath);
 		static GLuint CompileShader(GLenum type, const std::string& source);
 		static void CheckShaderCompilationSuccess(GLuint shaderId);

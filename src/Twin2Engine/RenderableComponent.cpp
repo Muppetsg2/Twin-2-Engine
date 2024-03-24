@@ -20,3 +20,13 @@ RenderableComponent::~RenderableComponent()
 void RenderableComponent::Render()
 {
 }
+
+bool Twin2Engine::Core::RenderableComponent::IsTransparent() const
+{
+	return _isTransparent;
+}
+
+void Twin2Engine::Core::RenderableComponent::SetIsTransparent(bool value)
+{
+	_isTransparent = value;
+}

@@ -152,8 +152,6 @@ void processInput(GLFWwindow* window)
 
 }
 
-
-
 #pragma endregion
 
 #pragma region OpenGLCallbackFunctions

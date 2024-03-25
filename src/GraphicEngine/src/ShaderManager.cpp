@@ -107,8 +107,8 @@ void GraphicEngine::ShaderManager::UnloadShaderProgram(int shaderProgramID)
         glDeleteProgram(data->shaderProgramId);
         loadedShaders.erase(found);
 
-        GLuint _instanceDataUBO = data->shader->GetInstanceDataUBO();
-        glDeleteBuffers(1, &_instanceDataUBO);
+        GLuint _instanceDataSSBO = data->shader->GetInstanceDataSSBO();
+        glDeleteBuffers(1, &_instanceDataSSBO);
         GLuint _materialInputUBO = data->shader->GetMaterialInputUBO();
         glDeleteBuffers(1, &_materialInputUBO);
 

@@ -19,7 +19,7 @@ namespace GraphicEngine
         unsigned int instancesTransformsVBO;
         unsigned int amount;
 
-        GLuint _instanceDataUBO;
+        GLuint _instanceDataSSBO;
         GLuint _materialInputUBO;
 
         void setupMesh(const vector<glm::mat4>& transforms);
@@ -27,7 +27,7 @@ namespace GraphicEngine
     public:
         InstatiatingMesh(Mesh* mesh, GLuint instanceDataUBO);
 
-        void SetInstanceDataUBO(GLuint instanceDataUBO);
+        void SetInstanceDataSSBO(GLuint instanceDataSSBO);
         void SetMaterialInputUBO(GLuint materialInputUBO);
 
         void Draw(Shader* shader, unsigned int number);

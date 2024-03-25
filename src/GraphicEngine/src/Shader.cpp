@@ -11,7 +11,7 @@ using namespace GraphicEngine;
 Shader::Shader(const Shader&& shader)
 {
     shaderProgramID = shader.shaderProgramID;
-    _instanceDataUBO = shader._instanceDataUBO;
+    _instanceDataSSBO = shader._instanceDataSSBO;
     _materialInputUBO = shader._materialInputUBO;
 
     ShaderManager::IncrementUseNumber(shaderProgramID);
@@ -20,7 +20,7 @@ Shader::Shader(const Shader&& shader)
 Shader::Shader(const Shader& shader)
 {
     shaderProgramID = shader.shaderProgramID;
-    _instanceDataUBO = shader._instanceDataUBO;
+    _instanceDataSSBO = shader._instanceDataSSBO;
     _materialInputUBO = shader._materialInputUBO;
 
     ShaderManager::IncrementUseNumber(shaderProgramID);
@@ -31,8 +31,8 @@ Shader::Shader(unsigned int shaderProgramId)
     shaderProgramID = shaderProgramId;
 
     // SSBO creation
-    glGenBuffers(1, &_instanceDataUBO);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataUBO);
+    glGenBuffers(1, &_instanceDataSSBO);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
     // UBO creation
@@ -83,10 +83,10 @@ void Shader::setMat4(const std::string& name, glm::mat4& value) const
 
 GLuint Shader::GetMaterialInputUBO() const
 {
-    return _instanceDataUBO;
+    return _instanceDataSSBO;
 }
 
-GLuint Shader::GetInstanceDataUBO() const
+GLuint Shader::GetInstanceDataSSBO() const
 {
     return _materialInputUBO;
 }

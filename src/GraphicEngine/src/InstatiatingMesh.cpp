@@ -38,15 +38,15 @@ void GraphicEngine::InstatiatingMesh::setupMesh(const vector<glm::mat4>& transfo
 GraphicEngine::InstatiatingMesh::InstatiatingMesh(Mesh* mesh, GLuint instanceDataUBO)
 {
     this->mesh = mesh;
-    SetInstanceDataUBO(instanceDataUBO);
+    SetInstanceDataSSBO(instanceDataUBO);
 }
 
-void GraphicEngine::InstatiatingMesh::SetInstanceDataUBO(GLuint instanceDataUBO)
+void GraphicEngine::InstatiatingMesh::SetInstanceDataSSBO(GLuint instanceDataSSBO)
 {
-    _instanceDataUBO = instanceDataUBO;
+    _instanceDataSSBO = instanceDataSSBO;
     glBindVertexArray(mesh->VAO);
 
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, instanceDataUBO);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, instanceDataSSBO);
 
     glBindVertexArray(0);
 }

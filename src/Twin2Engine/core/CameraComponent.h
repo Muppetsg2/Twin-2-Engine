@@ -56,7 +56,7 @@ namespace Twin2Engine {
 			void SetIsMain(bool value);
 
 			/*
-			virtual void Inizialize();
+			virtual void Initialize();
 			virtual void Update();
 			virtual void OnEnable();
 			virtual void OnDisable();

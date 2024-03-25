@@ -39,6 +39,12 @@
 // GRAPHIC_ENGINE
 #include <GraphicEnigine.h>
 
+//LOGGER
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+
+#include <memory>
+
 #pragma region CAMERA_CONTROLLING
 
 glm::vec3 cameraPos(-5.0f, 0.0f, -5.0f);
@@ -98,10 +104,8 @@ using Twin2Engine::Core::Time;
 void processInput(GLFWwindow* window)
 {
     float cameraSpeed = 1.0f; // dopasuj do swoich potrzeb  
-    if (Input::IsKeyHeldDown(KEY::W)) {
-        spdlog::info("Delta Time: {}\n", Time::GetDeltaTime());
-    }
-    if (Input::IsKeyHeldDown(KEY::W))
+
+    if (Input::IsKeyHeldDown(Twin2Engine::Core::KEY::W))
     {
         cameraPos += cameraSpeed * cameraFront * Time::GetDeltaTime();
     }
@@ -210,7 +214,7 @@ ImVec4 clear_color = ImVec4(.1f, .1f, .1f, 1.f);
 GLuint UBOMatrices;
 
 SoLoud::Soloud soloud;
-SoLoud::Wav sample;
+SoLoud::Wav smusicSmple;
 SoLoud::handle sampleHandle = 0;
 bool first = true;
 
@@ -244,7 +248,7 @@ int main(int, char**)
     soloud.init();
     spdlog::info("Initialized SoLoud.");
 
-    sample.load("./res/music/FurElise.wav");
+    smusicSmple.load("./res/music/FurElise.wav");
 
     /*
     ma_result result;
@@ -261,6 +265,17 @@ int main(int, char**)
     */
 
 #pragma endregion
+
+    // Initialize stdout color sink
+    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+    console_sink->set_level(spdlog::level::debug);
+
+    // Create a logger with the stdout color sink
+    auto logger = std::make_shared<spdlog::logger>("logger", console_sink);
+    spdlog::register_logger(logger);
+
+    // Set global log level to debug
+    spdlog::set_level(spdlog::level::debug);
 
 #pragma region MatricesUBO
 
@@ -480,7 +495,7 @@ void imgui_render()
                 if (!musicPlaying) {
                     //ma_sound_start(&sound);
                     if (first) {
-                        sampleHandle = soloud.play(sample);
+                        sampleHandle = soloud.play(smusicSmple);
                         first = false;
                     }
                     else {

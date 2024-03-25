@@ -9,8 +9,8 @@
 using std::list;
 using std::string;
 
-#include "Component.h"
-#include "Transform.h"
+#include <core/Component.h>
+#include <core/Transform.h>
 
 using Twin2Engine::Core::Component;
 //using Twin2EngineCore::Transform;
@@ -26,7 +26,7 @@ namespace Twin2Engine
 			string _name;
 
 			Transform* _transform;
-			list<Component*> components;
+			std::list<Component*> components;
 
 			bool _activeSelf;
 			bool _activeInHierarchy;
@@ -55,8 +55,8 @@ namespace Twin2Engine
 			void SetName(const string& name);
 
 			template<class T>
-			typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
-				AddComponent();
+			//typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
+			T* AddComponent();
 
 			template<class T>
 			T* GetComponent();
@@ -80,12 +80,13 @@ namespace Twin2Engine
 
 
 template<class T>
-typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
-Twin2Engine::Core::GameObject::AddComponent()
+//typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
+T* Twin2Engine::Core::GameObject::AddComponent()
 {
-	Component* component = new T();
+	T* component = new T();
 
-	//component.Awake();
+	component->Initialize();
+	component->Init(this);
 
 	components.push_back(component);
 
@@ -96,6 +97,7 @@ template<class T>
 T* Twin2Engine::Core::GameObject::GetComponent()
 {
 	list<Component*>::iterator itr = std::find_if(components.begin(), components.end(), [](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
+	//std::vector<Component*>::iterator itr = std::find_if(components.begin(), components.end(), [](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
 
 	if (itr == components.end())
 	{
@@ -141,6 +143,7 @@ template<class T>
 void Twin2Engine::Core::GameObject::RemoveComponents()
 {
 	components.remove_if([](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
+	//std::remove_if(components.begin(), components.end(), [](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
 }
 
 

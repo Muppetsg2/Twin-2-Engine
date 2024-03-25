@@ -107,37 +107,31 @@ void GraphicEngine::MeshRenderingManager::Render()
 			//SPDLOG_INFO("Instancing objects: {}!", indexes.at(0));
 			//SPDLOG_INFO("Instancing objects: {}!", indexes.at(1));
 
+			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
 			GLuint ssboId = shaderPair.first->GetInstanceDataSSBO();
-			GLuint materialIndexSSBO = shaderPair.first->GetMaterialIndexSSBO();
 
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboId);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * index, transforms.data(), GL_DYNAMIC_DRAW);
 
-			//glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(InstanceData) * index, instanceData.data(), GL_DYNAMIC_DRAW);
-
-			//size_t matrixSize = transforms.size() * sizeof(glm::mat4);
-			//size_t intSize = indexes.size() * sizeof(unsigned int);
-			//size_t bufferSize = matrixSize + intSize;
-			//glBufferData(GL_SHADER_STORAGE_BUFFER, bufferSize, nullptr, GL_DYNAMIC_DRAW);
-			//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, matrixSize, transforms.data());
-			//glBufferSubData(GL_SHADER_STORAGE_BUFFER, matrixSize, intSize, indexes.data());
-
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 			meshPair.first->SetInstanceDataSSBO(ssboId);
 
+			//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
+			GLuint materialIndexSSBO = shaderPair.first->GetMaterialIndexSSBO();
+
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, materialIndexSSBO);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(unsigned int) * index, indexes.data(), GL_DYNAMIC_DRAW);
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 			meshPair.first->SetMaterialIndexSSBO(materialIndexSSBO);
 
+			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
 			GLuint uboId = shaderPair.first->GetMaterialInputUBO();
 
 			glBindBuffer(GL_UNIFORM_BUFFER, uboId);
 			glBufferData(GL_UNIFORM_BUFFER, materialData.size(), materialData.data(), GL_DYNAMIC_DRAW);
-			//glBindBufferBase(GL_UNIFORM_BUFFER, 1, uboId);
-			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
+			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 			meshPair.first->SetMaterialInputUBO(uboId);
 
 			shaderPair.first->use();

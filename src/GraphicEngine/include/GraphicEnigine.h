@@ -33,6 +33,7 @@ namespace GraphicEngine
 		InstatiatingModel modelMesh;
 		GameObject* gameObject;
 		GameObject* gameObject2;
+		GameObject* gameObject3;
 		
 		//static GraphicEngine* instance;
 
@@ -132,20 +133,22 @@ namespace GraphicEngine
 
 			gameObject = new GameObject();
 			auto comp = gameObject->AddComponent<MeshRenderer>();
-
-			//std::cout << "Tutaj5\n";
 			comp->AddMaterial(material);
-			//std::cout << "Tutaj3\n";
 			comp->SetModel(modelMesh);
 
 			gameObject2 = new GameObject();
+			gameObject2->GetTransform()->Translate(glm::vec3(2, 1, 0));
 			comp = gameObject2->AddComponent<MeshRenderer>();
-			//std::cout << "Tutaj5\n";
 			comp->AddMaterial(material2);
-			//std::cout << "Tutaj3\n";
 			comp->SetModel(modelMesh);
 
-			gameObject2->GetTransform()->Translate(glm::vec3(2, 1, 0));
+
+			gameObject3 = new GameObject();
+			gameObject3->GetTransform()->Translate(glm::vec3(0, -1, 0));
+			comp = gameObject3->AddComponent<MeshRenderer>();
+			comp->AddMaterial(material2);
+			comp->SetModel(modelMesh);
+
 			//std::cout << "Tutaj4\n";
 			//instance = this;
 		}

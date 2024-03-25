@@ -11,7 +11,7 @@ namespace Twin2Engine {
 			glm::vec4 _color = glm::vec4(1.f);
 
 		public:
-			virtual void Inizialize() override;
+			virtual void Initialize() override;
 			virtual void Render() override;
 			virtual void OnDestroy() override;
 

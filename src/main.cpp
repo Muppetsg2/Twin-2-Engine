@@ -321,6 +321,7 @@ int main(int, char**)
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
     glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
+    Shader* sh = GraphicEngine::ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/UI.shdr", "shaders/ui.vert", "shaders/ui.frag");
     Texture2D* tex = TextureManager::LoadTexture2D("res/textures/stone.jpg");
     Sprite* s = SpriteManager::MakeSprite(tex, "stone1", 0, 0, tex->GetWidth(), tex->GetHeight());
 
@@ -489,7 +490,7 @@ void render()
     glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
     graphicEngine->Render(view, projection);
-    for (auto& comp : renderableComponents) {
+    for (auto& comp : RenderableComponent::renderableComponents) {
         comp->Render();
     }
 }

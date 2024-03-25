@@ -172,12 +172,4 @@ Twin2Engine::Core::GameObject::GetComponentsInParent()
 	return parent->getGameObject()->GetComponents<T>();
 }
 
-template<class T>
-void Twin2Engine::Core::GameObject::RemoveComponents()
-{
-	components.remove_if([](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
-	//std::remove_if(components.begin(), components.end(), [](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
-}
-
-
 #endif

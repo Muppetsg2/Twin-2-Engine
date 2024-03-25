@@ -5,10 +5,6 @@
 
 namespace Twin2Engine {
 	namespace Core {
-		class RenderableComponent;
-
-		static std::vector<RenderableComponent*> renderableComponents = std::vector<RenderableComponent*>();
-
 		class RenderableComponent : public Component {
 		private:
 			bool _isTransparent = false;
@@ -21,6 +17,8 @@ namespace Twin2Engine {
 
 			bool IsTransparent() const;
 			void SetIsTransparent(bool value);
+
+			static std::vector<RenderableComponent*> renderableComponents;
 		};
 	}
 }

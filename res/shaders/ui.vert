@@ -20,8 +20,8 @@ uniform mat4 normalModel;
 
 void main()  
 {  
-  gl_Position = model * vec4(position, 1.f);
+  gl_Position = projection * view * model * vec4(position.xy, -1.0, 1.0);
   vs_out.texCoord = texCoord;
   vs_out.normal = mat3(normalModel) * normal;
-  vs_out.fragPos = vec3(model * vec4(position, 1.f));
+  vs_out.fragPos = vec3(model * vec4(position.xy, -1.0, 1.0));
 }

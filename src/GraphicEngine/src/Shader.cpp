@@ -11,8 +11,8 @@ using namespace GraphicEngine;
 Shader::Shader(const Shader&& shader)
 {
     shaderProgramID = shader.shaderProgramID;
-    ssboID = shader.ssboID;
-    uboID = shader.uboID;
+    _instanceDataUBO = shader._instanceDataUBO;
+    _materialInputUBO = shader._materialInputUBO;
 
     ShaderManager::IncrementUseNumber(shaderProgramID);
 }
@@ -20,8 +20,8 @@ Shader::Shader(const Shader&& shader)
 Shader::Shader(const Shader& shader)
 {
     shaderProgramID = shader.shaderProgramID;
-    ssboID = shader.ssboID;
-    uboID = shader.uboID;
+    _instanceDataUBO = shader._instanceDataUBO;
+    _materialInputUBO = shader._materialInputUBO;
 
     ShaderManager::IncrementUseNumber(shaderProgramID);
 }
@@ -31,13 +31,13 @@ Shader::Shader(unsigned int shaderProgramId)
     shaderProgramID = shaderProgramId;
 
     // SSBO creation
-    glGenBuffers(1, &ssboID);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboID);
+    glGenBuffers(1, &_instanceDataUBO);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataUBO);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
     // UBO creation
-    glGenBuffers(1, &uboID);
-    glBindBuffer(GL_UNIFORM_BUFFER, uboID);
+    glGenBuffers(1, &_materialInputUBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
@@ -81,12 +81,12 @@ void Shader::setMat4(const std::string& name, glm::mat4& value) const
     glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 }
 
-GLuint Shader::GetUBO() const
+GLuint Shader::GetMaterialInputUBO() const
 {
-    return ssboID;
+    return _instanceDataUBO;
 }
 
-GLuint Shader::GetSSBO() const
+GLuint Shader::GetInstanceDataUBO() const
 {
-    return uboID;
+    return _materialInputUBO;
 }

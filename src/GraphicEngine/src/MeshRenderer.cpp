@@ -6,9 +6,9 @@ using namespace GraphicEngine;
 
 void MeshRenderer::ReloadMesh()
 {
-	std::cout << "Tutaj9\n";
+	//std::cout << "Tutaj9\n";
 	MeshRenderingManager::Unregister(this);
-	std::cout << "Tutaj10\n";
+	//std::cout << "Tutaj10\n";
 	MeshRenderingManager::Register(this);
 }
 

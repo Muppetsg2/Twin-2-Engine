@@ -65,8 +65,8 @@ void GraphicEngine::MeshRenderingManager::Render()
 		for (auto& shaderPair : meshPair.second)
 		{
 
-			GLuint ssboId = shaderPair.first->GetSSBO();
-			GLuint uboId = shaderPair.first->GetUBO();
+			GLuint ssboId = shaderPair.first->GetInstanceDataUBO();
+			GLuint uboId = shaderPair.first->GetMaterialInputUBO();
 
 			unsigned int count = 0;
 

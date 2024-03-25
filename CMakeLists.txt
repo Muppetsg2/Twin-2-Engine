@@ -17,20 +17,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 include(global_settings)
 
-# 
-#set(GLSLANG_VALIDATOR_EXECUTABLE "/tools/glslang/bin/glslangValidator.exe")
-#execute_process(
-#
-#    COMMAND ${GLSLANG_VALIDATOR_EXECUTABLE} -V ${CMAKE_CURRENT_SOURCE_DIR}/vertex_shader.vert -o ${CMAKE_CURRENT_BINARY_DIR}/vertex_shader.spv
-#    RESULT_VARIABLE result
-#    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-#)
-## Check the result variable to determine if the command succeeded or failed
-#if(result EQUAL 0)
-#    message(STATUS "glslangValidator succeeded")
-#else()
-#    message(FATAL_ERROR "glslangValidator failed with error code ${result}")
-#endif()
+
 
 set(SHADER_ORIGIN_FOLDER ${CMAKE_CURRENT_SOURCE_DIR})
 

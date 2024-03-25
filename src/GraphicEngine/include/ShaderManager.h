@@ -23,7 +23,7 @@ namespace GraphicEngine
 	constexpr char SHADER_BINARY_EXTENSION[] = ".shdr";
 
 	/// <summary>
-	/// Shader Manager obs³uguje:
+	/// Shader Manager obsï¿½uguje:
 	/// * vertex shader
 	/// * geometry shader
 	/// * fragment shader
@@ -48,10 +48,13 @@ namespace GraphicEngine
 		static std::hash<std::string> stringHash;
 		static std::list<ShaderProgramData*> loadedShaders;
 
+		//Runtime methods
 		static unsigned int LoadShaderProgram(const std::string& shaderPath);
 		static void UnloadShaderProgram(int shaderProgramID);
 		static void IncrementUseNumber(int shaderProgramID);
 
+		//Precompilation methods
+		static void PrecompileShaders();
 		static std::string LoadShaderSource(const std::string& filePath);
 		static GLuint CompileShader(GLenum type, const std::string& source);
 		static void CheckShaderCompilationSuccess(GLuint shaderId);
@@ -60,10 +63,11 @@ namespace GraphicEngine
 	public:
 		//ShaderManager();
 		static void Init();
-		static void PrecompileShaders();
 		static void End();
 
 		static Shader* GetShaderProgram(const std::string& shaderName);
+		static Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);
+
 	};
 }
 

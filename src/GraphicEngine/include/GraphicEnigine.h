@@ -9,6 +9,17 @@
 #include <Shader.h>
 #include <ShaderManager.h>
 
+#include <Material.h>
+#include <ModelsManager.h>
+#include <MeshRenderer.h>
+#include <MeshRenderingManager.h>
+
+#include <core/GameObject.h>
+#include <core/Transform.h>
+
+using Twin2Engine::Core::GameObject;
+using Twin2Engine::Core::Transform;
+
 using std::vector;
 
 namespace GraphicEngine
@@ -17,6 +28,11 @@ namespace GraphicEngine
 	{
 		Mesh* mesh;
 		Shader* shader;
+		Material material;
+		InstatiatingModel modelMesh;
+		GameObject* gameObject;
+		GameObject* gameObject2;
+		
 		//static GraphicEngine* instance;
 
 	public:
@@ -34,12 +50,12 @@ namespace GraphicEngine
 
 			vector<unsigned int> indices;
 
-			indices.push_back(0);
+			indices.push_back(2);
 			indices.push_back(1);
+			indices.push_back(0);
+			indices.push_back(3);
 			indices.push_back(2);
 			indices.push_back(0);
-			indices.push_back(2);
-			indices.push_back(3);
 
 			indices.push_back(0);
 			indices.push_back(4);
@@ -75,23 +91,54 @@ namespace GraphicEngine
 			indices.push_back(1);
 			indices.push_back(6);
 			indices.push_back(5);
+			//indices.push_back(6);
+			//indices.push_back(2);
+			//indices.push_back(1);
+			//indices.push_back(5);
+			//indices.push_back(6);
+			//indices.push_back(1);
 
 
 			vector<Texture> textures;
 
 			mesh = new Mesh(vertexes, indices, textures);
-			//std::cout << "Tutaj" << std::endl;
+			////std::cout << "Tutaj" << std::endl;
 			//shader = new Shader("C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\CompiledShaders\\origin\\Basic.shdr");
 			//shader = new Shader("res/CompiledShaders/origin/Basic.shdr");
 			ShaderManager::Init();
-			ShaderManager::PrecompileShaders();
-			shader = ShaderManager::GetShaderProgram("res/CompiledShaders/origin/Basic.shdr");
+			//shader = ShaderManager::GetShaderProgram("res/CompiledShaders/origin/Basic.shdr");
+			shader = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/Basic.shdr", "shaders/normalVert.vert", "shaders/fargmentShader.frag");
 			//shader = new Shader(true, "C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
 			//shader = new Shader("C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
 			//					"C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\fargmentShader.frag");
 
-			//std::cout << "Tutaj" << std::endl;
+			////std::cout << "Tutaj" << std::endl;
+			shader->use();
+			glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			shader->setVec4("uColor", (float*)(&color));
+			color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
+			shader->setVec4("uColor", (float*)(&color));
 
+			modelMesh = ModelsManager::CreateModel("NewModel", vertexes, indices, textures);
+			material = MaterialsManager::CreateMaterial("new", "res/CompiledShaders/origin/Basic.shdr");
+
+			gameObject = new GameObject();
+			auto comp = gameObject->AddComponent<MeshRenderer>();
+
+			//std::cout << "Tutaj5\n";
+			comp->AddMaterial(material);
+			//std::cout << "Tutaj3\n";
+			comp->SetModel(modelMesh);
+
+			gameObject2 = new GameObject();
+			comp = gameObject2->AddComponent<MeshRenderer>();
+			//std::cout << "Tutaj5\n";
+			comp->AddMaterial(material);
+			//std::cout << "Tutaj3\n";
+			comp->SetModel(modelMesh);
+
+			gameObject2->GetTransform()->Translate(glm::vec3(1, 1, 0));
+			//std::cout << "Tutaj4\n";
 			//instance = this;
 		}
 
@@ -106,20 +153,22 @@ namespace GraphicEngine
 			shader->use();
 			shader->setMat4("projection", projection);
 			shader->setMat4("view", view);
-			glm::vec4 color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
-			shader->setVec4("uColor", (float*)(&color));
 			
 			glm::mat4 model(1.0f);
 			shader->setMat4("model", model);
+			//std::cout << "Tutaj1\n";
+			MeshRenderingManager::Render();
+			//std::cout << "Tutaj2\n";
 			//shader->setMat4("normalModel", model);
-			
-			mesh->Draw(shader);
-			glm::mat4 newview(1.0f);
-			shader->setMat4("view", newview);
-			shader->setMat4("projection", newview);
-			color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-			shader->setVec4("uColor", (float*)(&color));
-			mesh->Draw(shader);
+			//
+			////mesh->Draw(shader);
+			//modelMesh.Draw(shader);
+			//
+			//glm::mat4 newview(1.0f);
+			//shader->setMat4("view", newview);
+			//shader->setMat4("projection", newview);
+			////mesh->Draw(shader);
+			//modelMesh.Draw(shader);
 		}
 	};
 }

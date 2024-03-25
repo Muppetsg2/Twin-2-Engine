@@ -3,14 +3,16 @@
 using namespace GraphicEngine;
 
 
-Shader::Shader(const GLchar* shaderPath)
-{
-    shaderProgramID = ShaderManager::LoadShaderProgram(shaderPath);
-}
+//Shader::Shader(const GLchar* shaderPath)
+//{
+//    shaderProgramID = ShaderManager::LoadShaderProgram(shaderPath);
+//}
 
 Shader::Shader(const Shader&& shader)
 {
     shaderProgramID = shader.shaderProgramID;
+    ssboID = shader.ssboID;
+    uboID = shader.uboID;
 
     ShaderManager::IncrementUseNumber(shaderProgramID);
 }
@@ -18,6 +20,8 @@ Shader::Shader(const Shader&& shader)
 Shader::Shader(const Shader& shader)
 {
     shaderProgramID = shader.shaderProgramID;
+    ssboID = shader.ssboID;
+    uboID = shader.uboID;
 
     ShaderManager::IncrementUseNumber(shaderProgramID);
 }
@@ -25,6 +29,16 @@ Shader::Shader(const Shader& shader)
 Shader::Shader(unsigned int shaderProgramId)
 {
     shaderProgramID = shaderProgramId;
+
+    // SSBO creation
+    glGenBuffers(1, &ssboID);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboID);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+    // UBO creation
+    glGenBuffers(1, &uboID);
+    glBindBuffer(GL_UNIFORM_BUFFER, uboID);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 Shader::~Shader()
@@ -65,4 +79,14 @@ void Shader::setVec3(const std::string& name, float* value) const
 void Shader::setMat4(const std::string& name, glm::mat4& value) const
 {
     glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+}
+
+GLuint Shader::GetUBO() const
+{
+    return ssboID;
+}
+
+GLuint Shader::GetSSBO() const
+{
+    return uboID;
 }

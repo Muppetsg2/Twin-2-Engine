@@ -9,8 +9,8 @@
 using std::list;
 using std::string;
 
-#include "Component.h"
-#include "Transform.h"
+#include <core/Component.h>
+#include <core/Transform.h>
 
 using Twin2Engine::Core::Component;
 //using Twin2EngineCore::Transform;
@@ -26,7 +26,7 @@ namespace Twin2Engine
 			string _name;
 
 			Transform* _transform;
-			list<Component*> components;
+			std::list<Component*> components;
 
 			bool _activeSelf;
 			bool _activeInHierarchy;
@@ -55,8 +55,8 @@ namespace Twin2Engine
 			void SetName(const string& name);
 
 			template<class T>
-			typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
-				AddComponent();
+			//typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
+			T* AddComponent();
 
 			template<class T>
 			typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
@@ -88,12 +88,13 @@ namespace Twin2Engine
 
 
 template<class T>
-typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
-Twin2Engine::Core::GameObject::AddComponent()
+//typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
+T* Twin2Engine::Core::GameObject::AddComponent()
 {
 	T* component = new T();
 
-	component->Inizialize();
+	component->Initialize();
+	component->Init(this);
 
 	components.push_back(component);
 
@@ -104,7 +105,8 @@ template<class T>
 typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
 Twin2Engine::Core::GameObject::GetComponent()
 {
-	list<Component*>::iterator itr = std::find_if([](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
+	list<Component*>::iterator itr = std::find_if(components.begin(), components.end(), [](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
+	//std::vector<Component*>::iterator itr = std::find_if(components.begin(), components.end(), [](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
 
 	if (itr == components.end())
 	{
@@ -143,7 +145,7 @@ template<class T>
 list<typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type>
 Twin2Engine::Core::GameObject::GetComponentsInChildren()
 {
-	// Przeszukiwanie w g³¹b
+	// Przeszukiwanie w gï¿½ï¿½b
 	list<T*> comps = list<T*>();
 	for (size_t i = 0; i < _transform->GetChildCount(); ++i) {
 		GameObject* obj = _transform->GetChildAt(i)->getGameObject();
@@ -170,5 +172,13 @@ Twin2Engine::Core::GameObject::GetComponentsInParent()
 	if (parent == nullptr) return nullptr;
 	return parent->getGameObject()->GetComponents<T>();
 }
+
+template<class T>
+void Twin2Engine::Core::GameObject::RemoveComponents()
+{
+	components.remove_if([](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
+	//std::remove_if(components.begin(), components.end(), [](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
+}
+
 
 #endif

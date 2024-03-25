@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Component.h"
+#include <core/Component.h>
 #include <vector>
 
 namespace Twin2Engine {
@@ -10,12 +10,17 @@ namespace Twin2Engine {
 		static std::vector<RenderableComponent*> renderableComponents = std::vector<RenderableComponent*>();
 
 		class RenderableComponent : public Component {
+		private:
+			bool _isTransparent = false;
 		protected:
-			RenderableComponent(); // Powoduje ¿e klasa jest jakby abstrakcyjna no chyba ¿e bêdzie dziedziczona
+			RenderableComponent(); // Powoduje ï¿½e klasa jest jakby abstrakcyjna no chyba ï¿½e bï¿½dzie dziedziczona
 		public:
 			virtual ~RenderableComponent();
 
 			virtual void Render();
+
+			bool IsTransparent() const;
+			void SetIsTransparent(bool value);
 		};
 	}
 }

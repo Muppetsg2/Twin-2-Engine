@@ -25,6 +25,7 @@ unsigned int GraphicEngine::ShaderManager::LoadShaderProgram(const std::string& 
 
     if (found == loadedShaders.end())
     {
+        //SPDLOG_INFO("Directory shader: {}!", std::filesystem::current_path().c_str());
         SPDLOG_INFO("Loading shader: {}!", shaderPath);
 
         std::ifstream file(shaderPath, std::ios::binary | std::ios::ate);
@@ -60,7 +61,7 @@ unsigned int GraphicEngine::ShaderManager::LoadShaderProgram(const std::string& 
         if (!success) {
             GLchar infoLog[512];
             glGetProgramInfoLog(shaderProgramID, sizeof(infoLog), nullptr, infoLog);
-            SPDLOG_ERROR("Error linking shader program: ", infoLog);
+            SPDLOG_ERROR("Error linking shader program: {}", infoLog);
             //std::cerr << "Error linking shader program: " << infoLog << std::endl;
             glDeleteProgram(shaderProgramID);
             return 0;
@@ -370,4 +371,39 @@ Shader* GraphicEngine::ShaderManager::GetShaderProgram(const std::string& shader
 
 
     return (*found)->shader;
+}
+
+Shader* GraphicEngine::ShaderManager::CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader)
+{
+
+    unsigned int vertexId = glCreateShader(GL_VERTEX_SHADER);
+    std::string shaderSource = LoadShaderSource("ShadersOrigin/" + vertexShader);
+    const GLchar* const cstrShaderSource = (const GLchar*)shaderSource.c_str();
+    glShaderSource(vertexId, 1, &cstrShaderSource, NULL);
+    glCompileShader(vertexId);
+
+
+    unsigned int fragmentId = glCreateShader(GL_FRAGMENT_SHADER);
+    shaderSource = LoadShaderSource("ShadersOrigin/" + fragmentShader);
+    const GLchar* const cstrShaderSource2 = (const GLchar*)shaderSource.c_str();
+    glShaderSource(fragmentId, 1, &cstrShaderSource2, NULL);
+    glCompileShader(fragmentId);
+
+    GLuint shaderProgram = glCreateProgram();
+
+   
+    glAttachShader(shaderProgram, vertexId);
+    glAttachShader(shaderProgram, fragmentId);
+    glLinkProgram(shaderProgram);
+    CheckProgramLinkingSuccess(shaderProgram);
+
+    glDeleteShader(vertexId);
+    glDeleteShader(fragmentId);
+
+    Shader* shader = new Shader(shaderProgram);
+
+    size_t strHash = stringHash(shaderName);
+    loadedShaders.push_back(new ShaderProgramData{ .shaderPathHash = strHash, .shaderProgramId = (int)shaderProgram, .useNumber = 1, .shader = shader });
+
+    return shader;
 }

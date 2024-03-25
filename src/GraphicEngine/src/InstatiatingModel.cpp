@@ -52,11 +52,21 @@ GraphicEngine::InstatiatingModel::~InstatiatingModel()
 
 size_t GraphicEngine::InstatiatingModel::GetMeshCount() const
 {
+    if (modelData == nullptr)
+    {
+        return 0;
+    }
+
     return modelData->meshes.size();
 }
 
 GraphicEngine::InstatiatingMesh* GraphicEngine::InstatiatingModel::GetMesh(size_t index) const
 {
+    if (modelData == nullptr)
+    {
+        return nullptr;
+    }
+
     if (index >= modelData->meshes.size())
     {
         index = modelData->meshes.size() - 1;

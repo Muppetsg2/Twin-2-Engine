@@ -25,7 +25,7 @@ namespace Twin2EngineCore
 		string _name;
 
 		Transform* _transform;
-		list<Component*> components;
+		std::list<Component*> components;
 
 		bool _activeSelf;
 		bool _activeInHierarchy;
@@ -54,8 +54,8 @@ namespace Twin2EngineCore
 		void SetName(const string& name);
 
 		template<class T>
-		typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
-		AddComponent();
+		//typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
+		T* AddComponent();
 
 		template<class T>
 		T* GetComponent();
@@ -78,12 +78,13 @@ namespace Twin2EngineCore
 
 
 template<class T>
-typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
-Twin2EngineCore::GameObject::AddComponent()
+//typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
+T* Twin2EngineCore::GameObject::AddComponent()
 {
-	Component* component = new T();
+	T* component = new T();
 
-	//component.Awake();
+	component->Initialize();
+	component->Init(this);
 
 	components.push_back(component);
 
@@ -94,6 +95,7 @@ template<class T>
 T* Twin2EngineCore::GameObject::GetComponent()
 {
 	list<Component*>::iterator itr = std::find_if(components.begin(), components.end(), [](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
+	//std::vector<Component*>::iterator itr = std::find_if(components.begin(), components.end(), [](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
 
 	if (itr == components.end())
 	{
@@ -139,6 +141,7 @@ template<class T>
 void Twin2EngineCore::GameObject::RemoveComponents()
 {
 	components.remove_if([](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
+	//std::remove_if(components.begin(), components.end(), [](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
 }
 
 

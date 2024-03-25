@@ -1,15 +1,27 @@
 #include <MeshRenderer.h>
 
+#include <spdlog/spdlog.h>
+
 using namespace GraphicEngine;
+
+void MeshRenderer::ReloadMesh()
+{
+	std::cout << "Tutaj9\n";
+	MeshRenderingManager::Unregister(this);
+	std::cout << "Tutaj10\n";
+	MeshRenderingManager::Register(this);
+}
 
 void MeshRenderer::Initialize()
 {
-	//MeshRenderingManager::Register(this);
+	SPDLOG_INFO("Initializing!");
+	MeshRenderingManager::Register(this);
+	SPDLOG_INFO("EndInitializing!");
 }
 
 void MeshRenderer::OnDestroy()
 {
-	//MeshRenderingManager::Unregister(this);
+	MeshRenderingManager::Unregister(this);
 }
 
 InstatiatingModel GraphicEngine::MeshRenderer::GetModel() const
@@ -29,7 +41,7 @@ GraphicEngine::InstatiatingMesh* GraphicEngine::MeshRenderer::GetMesh(size_t ind
 
 Material GraphicEngine::MeshRenderer::GetMaterial(size_t index) const
 {
-	if (_materials.size())
+	if (_materials.size() == 0)
 	{
 		return nullptr;
 	}
@@ -50,6 +62,7 @@ size_t GraphicEngine::MeshRenderer::GetMaterialCount() const
 void GraphicEngine::MeshRenderer::AddMaterial(Material material)
 {
 	_materials.push_back(material);
+	ReloadMesh();
 }
 
 void GraphicEngine::MeshRenderer::SetMaterial(size_t index, Material material)
@@ -57,10 +70,12 @@ void GraphicEngine::MeshRenderer::SetMaterial(size_t index, Material material)
 	if (index < _materials.size())
 	{
 		_materials[index] = material;
+		ReloadMesh();
 	}
 }
 
 void GraphicEngine::MeshRenderer::SetModel(const InstatiatingModel& model)
 {
 	_model = model;
+	ReloadMesh();
 }

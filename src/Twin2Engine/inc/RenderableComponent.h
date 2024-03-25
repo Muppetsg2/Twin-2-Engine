@@ -6,7 +6,7 @@
 namespace Twin2EngineCore {
 	class RenderableComponent;
 
-	std::vector<RenderableComponent*> renderableComponents = std::vector<RenderableComponent*>();
+	//std::vector<RenderableComponent*> renderableComponents = std::vector<RenderableComponent*>();
 
 	class RenderableComponent : public Component {
 	protected:

@@ -19,13 +19,16 @@ namespace GraphicEngine
         Model* model;
         GLuint ssboId;
         vector<InstatiatingMesh> meshes;
-
+        bool operator<(const ModelData& data2) const
+        {
+            return modelHash < data2.modelHash;
+        }
     };
 
-    bool operator<(const ModelData& data1, const ModelData& data2)
-    {
-        return data1.modelHash < data2.modelHash;
-    }
+    //bool operator<(const ModelData& data1, const ModelData& data2)
+    //{
+    //    return data1.modelHash < data2.modelHash;
+    //}
 }
 
 #endif

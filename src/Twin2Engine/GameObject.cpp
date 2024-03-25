@@ -17,7 +17,11 @@ Twin2EngineCore::GameObject::GameObject()
 	// Setting default name
 	_name = "New GameObject";
 
+
 	_transform = new Transform();
+
+	//components = list<Component*>();
+	components = std::list<Component*>();
 	components.push_back(_transform);
 }
 
@@ -91,4 +95,5 @@ void Twin2EngineCore::GameObject::SetName(const string& name)
 void Twin2EngineCore::GameObject::RemoveComponent(Component* component)
 {
 	components.remove(component);
+	//std::remove_if(components.begin(), components.end(), [component](Component* comp) { return comp == component; });
 }

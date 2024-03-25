@@ -30,7 +30,7 @@ namespace GraphicEngine
         void SetSSBO(GLuint ssboId);
         void SetUBO(GLuint uboId);
 
-        void Draw(Shader* shader);
+        void Draw(Shader* shader, unsigned int number);
     };
 
 }

@@ -61,14 +61,29 @@ GraphicEngine::ModelData* GraphicEngine::ModelsManager::LoadModel(const std::str
 
 void GraphicEngine::ModelsManager::UnloadModel(GraphicEngine::ModelData* modelData)
 {
-    modelData->useNumber--;
-    if (modelData->useNumber == 0)
+    //std::cout << "Tutaj6\n";
+    if (modelData != nullptr)
     {
-        std::list<GraphicEngine::ModelData*>::iterator found = std::find_if(loadedModels.begin(), loadedModels.end(), [modelData](GraphicEngine::ModelData* data) { return data == modelData; });
+        //std::cout << "Tutaj7\n";
+        modelData->useNumber--;
+        if (modelData->useNumber == 0)
+        {
+            //std::cout << "Tutaj8\n";
+            std::list<GraphicEngine::ModelData*>::iterator found = std::find_if(loadedModels.begin(), loadedModels.end(), [modelData](GraphicEngine::ModelData* data) { return data == modelData; });
 
-        delete (*found)->model;
+            if (found != loadedModels.end())
+            {
+                loadedModels.erase(found);
 
-        loadedModels.erase(found);
+                delete (*found)->model;
+                delete (*found);
+            }
+            else
+            {
+
+                SPDLOG_ERROR("THIS INSTRUCTION SHOULDNT HAPPEND");
+            }
+        }
     }
 }
 
@@ -136,7 +151,6 @@ InstatiatingModel GraphicEngine::ModelsManager::CreateModel(const std::string& m
     }
 
     return modelData;
-    return nullptr;
 }
 
 //void GraphicEngine::ModelsManager::FreeModel(InstatiatingModel*& model)

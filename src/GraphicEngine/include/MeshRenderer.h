@@ -14,6 +14,8 @@ namespace GraphicEngine
 
 		std::vector<Material> _materials;
 
+		void ReloadMesh();
+
 	public:
 		virtual void Initialize() override;
 		virtual void OnDestroy() override;

@@ -16,9 +16,13 @@ void MaterialsManager::UnloadMaterial(Material& material)
 			std::list<MaterialData*>::iterator found =
 				std::find_if(loadedMaterials.begin(), loadedMaterials.end(), [material](MaterialData* data) { return data->id == material.GetId(); });
 
-			loadedMaterials.erase(found);
+			if (found != loadedMaterials.end())
+			{
+				loadedMaterials.erase(found);
 
-			delete material._materialData;
+				delete material._materialData;
+			}
+
 		}
 
 		//material = nullptr;
@@ -35,6 +39,7 @@ Material MaterialsManager::GetMaterial(const std::string& name)
 
 	if (found != loadedMaterials.end())
 	{
+		(*found)->useNumber++;
 		return Material(*found);
 	}
 	else
@@ -64,6 +69,7 @@ Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, co
 	else
 	{
 		data = (*found);
+		data->useNumber++;
 	}
 	
 	return Material(data);

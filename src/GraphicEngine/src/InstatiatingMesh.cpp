@@ -63,7 +63,7 @@ void GraphicEngine::InstatiatingMesh::SetUBO(GLuint uboId)
 }
 
 
-void GraphicEngine::InstatiatingMesh::Draw(Shader* shader)
+void GraphicEngine::InstatiatingMesh::Draw(Shader* shader, unsigned int number)
 {
     //printf("Drawing mesh %d\n", mesh->VAO);
     //printf("Drawing mesh %d\n", mesh->vertices.size());
@@ -95,6 +95,7 @@ void GraphicEngine::InstatiatingMesh::Draw(Shader* shader)
     // narysuj siatkê
     glBindVertexArray(mesh->VAO);
     //glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-    glDrawElementsInstanced(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0, amount);
+    //glDrawElementsInstanced(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0, amount);
+    glDrawElementsInstanced(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0, number);
     glBindVertexArray(0);
 }

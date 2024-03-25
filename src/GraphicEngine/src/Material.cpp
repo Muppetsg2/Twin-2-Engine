@@ -93,11 +93,21 @@ bool Material::operator!=(const Material& other)
 
 Shader* GraphicEngine::Material::GetShader() const
 {
+	if (_materialData == nullptr)
+	{
+		return 0;
+	}
+
 	return _materialData->shader;
 }
 
 unsigned int GraphicEngine::Material::GetId() const
 {
+	if (_materialData == nullptr)
+	{
+		return 0;
+	}
+
 	return _materialData->id;
 }
 

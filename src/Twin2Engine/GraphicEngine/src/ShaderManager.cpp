@@ -1,6 +1,8 @@
 #include "ShaderManager.h"
 
-#include "../../Twin2Engine/core/ConfigManager.h"
+//#include "../../Twin2Engine/core/ConfigManager.h"
+
+#include <core/ConfigManager.h>
 
 #include <spdlog/spdlog.h>
 
@@ -8,14 +10,14 @@
 
 #include <iostream>
 
-using namespace GraphicEngine;
+using namespace Twin2Engine::GraphicEngine;
 
-GLenum GraphicEngine::ShaderManager::binaryFormat = 1;
+GLenum Twin2Engine::GraphicEngine::ShaderManager::binaryFormat = 1;
 
-std::hash<std::string> GraphicEngine::ShaderManager::stringHash;
-std::list<GraphicEngine::ShaderManager::ShaderProgramData*> GraphicEngine::ShaderManager::loadedShaders;
+std::hash<std::string> Twin2Engine::GraphicEngine::ShaderManager::stringHash;
+std::list<Twin2Engine::GraphicEngine::ShaderManager::ShaderProgramData*> Twin2Engine::GraphicEngine::ShaderManager::loadedShaders;
 
-unsigned int GraphicEngine::ShaderManager::LoadShaderProgram(const std::string& shaderPath)
+unsigned int Twin2Engine::GraphicEngine::ShaderManager::LoadShaderProgram(const std::string& shaderPath)
 {
     size_t strHash = stringHash(shaderPath);
 
@@ -87,7 +89,7 @@ void ShaderManager::IncrementUseNumber(int shaderProgramID)
     (*found)->useNumber++;
 }
 
-void GraphicEngine::ShaderManager::UnloadShaderProgram(int shaderProgramID)
+void Twin2Engine::GraphicEngine::ShaderManager::UnloadShaderProgram(int shaderProgramID)
 {
     std::list<ShaderProgramData*>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [shaderProgramID](ShaderProgramData* data) { return data->shaderProgramId == shaderProgramID; });
 
@@ -125,7 +127,7 @@ bool isEmptyOrWhitespace(const std::string& str) {
 }
 
 
-void GraphicEngine::ShaderManager::PrecompileShaders()
+void Twin2Engine::GraphicEngine::ShaderManager::PrecompileShaders()
 {
     std::vector<std::string> originFolders = { "ShadersOrigin" };
     //std::vector<std::string> originFolders = { "C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine"};
@@ -251,7 +253,7 @@ void GraphicEngine::ShaderManager::PrecompileShaders()
     }
 }
 
-std::string GraphicEngine::ShaderManager::LoadShaderSource(const std::string& filePath)
+std::string Twin2Engine::GraphicEngine::ShaderManager::LoadShaderSource(const std::string& filePath)
 {
     std::ifstream file(filePath);
     if (!file) {
@@ -264,7 +266,7 @@ std::string GraphicEngine::ShaderManager::LoadShaderSource(const std::string& fi
     return buffer.str();
 }
 
-GLuint GraphicEngine::ShaderManager::CompileShader(GLenum type, const std::string& source)
+GLuint Twin2Engine::GraphicEngine::ShaderManager::CompileShader(GLenum type, const std::string& source)
 {
     GLuint shader = glCreateShader(type);
     const char* src = source.c_str();
@@ -285,7 +287,7 @@ GLuint GraphicEngine::ShaderManager::CompileShader(GLenum type, const std::strin
     return shader;
 }
 
-void GraphicEngine::ShaderManager::CheckShaderCompilationSuccess(GLuint shaderId)
+void Twin2Engine::GraphicEngine::ShaderManager::CheckShaderCompilationSuccess(GLuint shaderId)
 {
     GLint success;
     GLchar infoLog[512];
@@ -297,7 +299,7 @@ void GraphicEngine::ShaderManager::CheckShaderCompilationSuccess(GLuint shaderId
     }
 }
 
-void GraphicEngine::ShaderManager::CheckProgramLinkingSuccess(GLuint programId)
+void Twin2Engine::GraphicEngine::ShaderManager::CheckProgramLinkingSuccess(GLuint programId)
 {
     GLint success;
     GLchar infoLog[512];
@@ -308,7 +310,7 @@ void GraphicEngine::ShaderManager::CheckProgramLinkingSuccess(GLuint programId)
     }
 }
 
-void GraphicEngine::ShaderManager::Init()
+void Twin2Engine::GraphicEngine::ShaderManager::Init()
 {
     //ConfigManager configManager("GameConfig.yaml");
     ConfigManager::OpenConfig("GameConfig.yaml");
@@ -359,11 +361,11 @@ void GraphicEngine::ShaderManager::Init()
 
 }
 
-void GraphicEngine::ShaderManager::End()
+void Twin2Engine::GraphicEngine::ShaderManager::End()
 {
 }
 
-Shader* GraphicEngine::ShaderManager::GetShaderProgram(const std::string& shaderName)
+Shader* Twin2Engine::GraphicEngine::ShaderManager::GetShaderProgram(const std::string& shaderName)
 {
     unsigned int shaderProgramId = LoadShaderProgram(shaderName);
 
@@ -373,7 +375,7 @@ Shader* GraphicEngine::ShaderManager::GetShaderProgram(const std::string& shader
     return (*found)->shader;
 }
 
-Shader* GraphicEngine::ShaderManager::CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader)
+Shader* Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader)
 {
 
     unsigned int vertexId = glCreateShader(GL_VERTEX_SHADER);

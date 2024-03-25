@@ -1,8 +1,8 @@
 #include <InstatiatingMesh.h>
 
-using namespace GraphicEngine;
+using namespace Twin2Engine::GraphicEngine;
 
-void GraphicEngine::InstatiatingMesh::setupMesh(const vector<glm::mat4>& transforms)
+void Twin2Engine::GraphicEngine::InstatiatingMesh::setupMesh(const vector<glm::mat4>& transforms)
 {
     //unsigned int instancesTransformsVBO;
     glGenBuffers(1, &instancesTransformsVBO);
@@ -35,13 +35,13 @@ void GraphicEngine::InstatiatingMesh::setupMesh(const vector<glm::mat4>& transfo
 
 
 
-GraphicEngine::InstatiatingMesh::InstatiatingMesh(Mesh* mesh, GLuint instanceDataUBO)
+Twin2Engine::GraphicEngine::InstatiatingMesh::InstatiatingMesh(Mesh* mesh, GLuint instanceDataUBO)
 {
     this->mesh = mesh;
     SetInstanceDataSSBO(instanceDataUBO);
 }
 
-void GraphicEngine::InstatiatingMesh::SetInstanceDataSSBO(GLuint instanceDataSSBO)
+void Twin2Engine::GraphicEngine::InstatiatingMesh::SetInstanceDataSSBO(GLuint instanceDataSSBO)
 {
     _instanceDataSSBO = instanceDataSSBO;
     glBindVertexArray(mesh->VAO);
@@ -51,7 +51,7 @@ void GraphicEngine::InstatiatingMesh::SetInstanceDataSSBO(GLuint instanceDataSSB
     glBindVertexArray(0);
 }
 
-void GraphicEngine::InstatiatingMesh::SetMaterialIndexSSBO(GLuint materialIndexSSBO)
+void Twin2Engine::GraphicEngine::InstatiatingMesh::SetMaterialIndexSSBO(GLuint materialIndexSSBO)
 {
     _materialIndexSSBO = materialIndexSSBO;
     glBindVertexArray(mesh->VAO);
@@ -61,7 +61,7 @@ void GraphicEngine::InstatiatingMesh::SetMaterialIndexSSBO(GLuint materialIndexS
     glBindVertexArray(0);
 }
 
-void GraphicEngine::InstatiatingMesh::SetMaterialInputUBO(GLuint materialInputUBO)
+void Twin2Engine::GraphicEngine::InstatiatingMesh::SetMaterialInputUBO(GLuint materialInputUBO)
 {
     _materialInputUBO = materialInputUBO;
     glBindVertexArray(mesh->VAO);
@@ -73,7 +73,7 @@ void GraphicEngine::InstatiatingMesh::SetMaterialInputUBO(GLuint materialInputUB
 }
 
 
-void GraphicEngine::InstatiatingMesh::Draw(Shader* shader, unsigned int number)
+void Twin2Engine::GraphicEngine::InstatiatingMesh::Draw(Shader* shader, unsigned int number)
 {
     //printf("Drawing mesh %d\n", mesh->VAO);
     //printf("Drawing mesh %d\n", mesh->vertices.size());

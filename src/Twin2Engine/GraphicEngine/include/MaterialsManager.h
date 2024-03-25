@@ -4,7 +4,7 @@
 #include <Material.h>
 #include <ShaderManager.h>
 
-namespace GraphicEngine
+namespace Twin2Engine::GraphicEngine
 {
 	class Material;
 	struct MaterialData;

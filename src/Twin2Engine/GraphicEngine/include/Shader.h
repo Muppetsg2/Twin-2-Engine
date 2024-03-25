@@ -20,7 +20,7 @@
 
 #include <ShaderManager.h>
 
-namespace GraphicEngine
+namespace Twin2Engine::GraphicEngine
 {
     class Shader
     {

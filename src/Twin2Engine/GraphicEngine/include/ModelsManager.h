@@ -10,7 +10,7 @@
 #include <list>
 #include <string>
 
-namespace GraphicEngine
+namespace Twin2Engine::GraphicEngine
 {
 	class InstatiatingModel;
 	struct ModelData;

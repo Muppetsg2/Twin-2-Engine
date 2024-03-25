@@ -10,7 +10,7 @@
 #include <map>
 #include <vector>
 
-namespace GraphicEngine
+namespace Twin2Engine::GraphicEngine
 {
 	class Material;
 	class MeshRenderer;

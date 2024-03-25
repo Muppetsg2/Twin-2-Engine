@@ -12,7 +12,7 @@
 
 using Twin2Engine::Core::Transform;
 
-namespace GraphicEngine
+namespace Twin2Engine::GraphicEngine
 {
     class Model;
 

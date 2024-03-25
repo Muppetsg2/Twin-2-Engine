@@ -1,6 +1,6 @@
 #include <Mesh.h>
 
-using namespace GraphicEngine;
+using namespace Twin2Engine::GraphicEngine;
 
 Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
 {

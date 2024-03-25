@@ -7,7 +7,7 @@
 
 #include <vector>
 
-namespace GraphicEngine
+namespace Twin2Engine::GraphicEngine
 {
     class Model;
     class InstatiatingMesh;

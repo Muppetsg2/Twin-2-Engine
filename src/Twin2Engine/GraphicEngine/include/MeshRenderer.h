@@ -6,7 +6,7 @@
 
 #include <core/RenderableComponent.h>
 
-namespace GraphicEngine
+namespace Twin2Engine::GraphicEngine
 {
 	class MeshRenderer : public Twin2Engine::Core::RenderableComponent
 	{

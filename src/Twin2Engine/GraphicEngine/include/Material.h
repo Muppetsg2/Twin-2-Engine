@@ -7,7 +7,7 @@
 
 #include <unordered_map>
 
-namespace GraphicEngine
+namespace Twin2Engine::GraphicEngine
 {
 	class MaterialValues
 	{

@@ -18,7 +18,7 @@ using namespace std;
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-namespace GraphicEngine
+namespace Twin2Engine::GraphicEngine
 {
     class InstatiatingModel;
     class ModelsManager;

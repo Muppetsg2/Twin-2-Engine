@@ -1,6 +1,6 @@
 #include <Model.h>
 
-using namespace GraphicEngine;
+using namespace Twin2Engine::GraphicEngine;
 
 Model::Model(const char* path)
 {

@@ -2,10 +2,10 @@
 
 #include <spdlog/spdlog.h>
 
-using namespace GraphicEngine;
+using namespace Twin2Engine::GraphicEngine;
 
 std::hash<std::string> MaterialsManager::stringHash;
-std::list<GraphicEngine::MaterialData*> MaterialsManager::loadedMaterials;
+std::list<Twin2Engine::GraphicEngine::MaterialData*> MaterialsManager::loadedMaterials;
 
 void MaterialsManager::UnloadMaterial(Material& material)
 {

@@ -4,9 +4,9 @@
 
 #include <spdlog/spdlog.h>
 
-using namespace GraphicEngine;
+using namespace Twin2Engine::GraphicEngine;
 
-std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::vector<GraphicEngine::MeshRenderer*>>>> GraphicEngine::MeshRenderingManager::renderingData;
+std::map<Twin2Engine::GraphicEngine::InstatiatingMesh*, std::map<Twin2Engine::GraphicEngine::Shader*, std::map<Twin2Engine::GraphicEngine::Material, std::vector<Twin2Engine::GraphicEngine::MeshRenderer*>>>> Twin2Engine::GraphicEngine::MeshRenderingManager::renderingData;
 
 void MeshRenderingManager::Register(MeshRenderer* meshRenderer)
 {
@@ -26,7 +26,7 @@ void MeshRenderingManager::Register(MeshRenderer* meshRenderer)
 	}
 }
 
-void GraphicEngine::MeshRenderingManager::Unregister(MeshRenderer* meshRenderer)
+void Twin2Engine::GraphicEngine::MeshRenderingManager::Unregister(MeshRenderer* meshRenderer)
 {
 	for (int i = 0; i < meshRenderer->GetMeshCount(); i++)
 	{
@@ -58,7 +58,7 @@ void GraphicEngine::MeshRenderingManager::Unregister(MeshRenderer* meshRenderer)
 	}
 }
 
-void GraphicEngine::MeshRenderingManager::Render()
+void Twin2Engine::GraphicEngine::MeshRenderingManager::Render()
 {
 	for (auto& meshPair : renderingData)
 	{

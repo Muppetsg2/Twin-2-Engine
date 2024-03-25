@@ -1,6 +1,6 @@
 #include "Shader.h"
 
-using namespace GraphicEngine;
+using namespace Twin2Engine::GraphicEngine;
 
 
 //Shader::Shader(const GLchar* shaderPath)

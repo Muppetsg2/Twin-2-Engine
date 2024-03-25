@@ -3,7 +3,7 @@
 
 
 #include "Shader.h"
-using GraphicEngine::Shader;
+using Twin2Engine::GraphicEngine::Shader;
 
 
 #include <vector>
@@ -17,7 +17,7 @@ using std::vector;
 using std::string;
 
 
-namespace GraphicEngine
+namespace Twin2Engine::GraphicEngine
 {
     struct Vertex {
         glm::vec3 Position;

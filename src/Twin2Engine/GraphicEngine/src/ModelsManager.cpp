@@ -5,13 +5,13 @@
 
 //using ModelData;
 
-using namespace GraphicEngine;
+using namespace Twin2Engine::GraphicEngine;
 
 std::hash<std::string> ModelsManager::stringHash;
 std::list<ModelData*> ModelsManager::loadedModels;
 
 
-GraphicEngine::ModelData* GraphicEngine::ModelsManager::LoadModel(const std::string& modelPath)
+Twin2Engine::GraphicEngine::ModelData* Twin2Engine::GraphicEngine::ModelsManager::LoadModel(const std::string& modelPath)
 {
     size_t strHash = stringHash(modelPath);
 
@@ -59,7 +59,7 @@ GraphicEngine::ModelData* GraphicEngine::ModelsManager::LoadModel(const std::str
 
 }
 
-void GraphicEngine::ModelsManager::UnloadModel(GraphicEngine::ModelData* modelData)
+void Twin2Engine::GraphicEngine::ModelsManager::UnloadModel(Twin2Engine::GraphicEngine::ModelData* modelData)
 {
     //std::cout << "Tutaj6\n";
     if (modelData != nullptr)
@@ -69,7 +69,7 @@ void GraphicEngine::ModelsManager::UnloadModel(GraphicEngine::ModelData* modelDa
         if (modelData->useNumber == 0)
         {
             //std::cout << "Tutaj8\n";
-            std::list<GraphicEngine::ModelData*>::iterator found = std::find_if(loadedModels.begin(), loadedModels.end(), [modelData](GraphicEngine::ModelData* data) { return data == modelData; });
+            std::list<Twin2Engine::GraphicEngine::ModelData*>::iterator found = std::find_if(loadedModels.begin(), loadedModels.end(), [modelData](Twin2Engine::GraphicEngine::ModelData* data) { return data == modelData; });
 
             if (found != loadedModels.end())
             {
@@ -87,17 +87,17 @@ void GraphicEngine::ModelsManager::UnloadModel(GraphicEngine::ModelData* modelDa
     }
 }
 
-void GraphicEngine::ModelsManager::Init()
+void Twin2Engine::GraphicEngine::ModelsManager::Init()
 {
 
 }
 
-void GraphicEngine::ModelsManager::End()
+void Twin2Engine::GraphicEngine::ModelsManager::End()
 {
 
 }
 
-GraphicEngine::InstatiatingModel GraphicEngine::ModelsManager::GetModel(const std::string& modelPath)
+Twin2Engine::GraphicEngine::InstatiatingModel Twin2Engine::GraphicEngine::ModelsManager::GetModel(const std::string& modelPath)
 {
     ModelData* modelData = LoadModel(modelPath);
 
@@ -106,7 +106,7 @@ GraphicEngine::InstatiatingModel GraphicEngine::ModelsManager::GetModel(const st
     return model;
 }
 
-InstatiatingModel GraphicEngine::ModelsManager::CreateModel(const std::string& modelName, vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
+InstatiatingModel Twin2Engine::GraphicEngine::ModelsManager::CreateModel(const std::string& modelName, vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
 {
     size_t strHash = stringHash(modelName);
 

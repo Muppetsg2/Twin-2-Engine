@@ -15,7 +15,7 @@ using std::string;
 
 #include <Shader.h>
 
-namespace GraphicEngine
+namespace Twin2Engine::GraphicEngine
 {
 	// Define the file extension for shader program files
 	constexpr char SHADER_PROGRAM_EXTENSION[] = ".shpr";

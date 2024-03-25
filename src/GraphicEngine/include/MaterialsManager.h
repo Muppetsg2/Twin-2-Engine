@@ -21,7 +21,7 @@ namespace GraphicEngine
 	public:
 
 		static Material GetMaterial(const std::string& name);
-		static Material CreateMaterial(const std::string& newMaterialName, const std::string& shaderName);
+		static Material CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, const std::vector<string>& materialParameters);
 	};
 }
 

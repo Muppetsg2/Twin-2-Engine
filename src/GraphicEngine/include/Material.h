@@ -14,7 +14,7 @@ namespace GraphicEngine
 		std::unordered_map<size_t, std::vector<char>> _variablesValuesMappings;
 
 	public:
-		MaterialValues(std::vector<string> variableNames)
+		MaterialValues(const std::vector<string>& variableNames)
 		{
 			std::hash<string> hasher;
 
@@ -31,12 +31,15 @@ namespace GraphicEngine
 			std::hash<string> hasher;
 			size_t hashed = hasher(variableName);
 
-			auto it = _variablesValuesMappings.find(hashed);
+			//auto it = _variablesValuesMappings.find(hashed);
 
 			//if (it != _variablesValuesMappings.end())
 			if (_variablesValuesMappings.contains(hashed))
 			{
-				_variablesValuesMappings[hashed] = reinterpret_cast<std::vector<char>*>(&value);
+				const char* ptr = reinterpret_cast<const char*>(&value);
+				std::vector<char> result(ptr, ptr + sizeof(value));
+				//_variablesValuesMappings[hashed] = *(reinterpret_cast<std::vector<char>*>(&value));
+				_variablesValuesMappings[hashed] = result;
 				return true;
 			}
 			return false;
@@ -69,7 +72,7 @@ namespace GraphicEngine
 		size_t id;
 		int useNumber;
 		Shader* shader;
-
+		MaterialValues* materialParameters;
 	};
 
 	class Material
@@ -103,6 +106,7 @@ namespace GraphicEngine
 
 		Shader* GetShader() const;
 		unsigned int GetId() const;
+		MaterialValues* GetMaterialParameters() const;
 	};
 
 	bool operator<(const Material& material1, const Material& material2);

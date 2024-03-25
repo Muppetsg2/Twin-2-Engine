@@ -16,6 +16,12 @@ namespace GraphicEngine
 	class MeshRenderer;
 	class InstatiatingMesh;
 	class Shader;
+
+	struct InstanceData
+	{
+		glm::mat4 transformMatrix;
+		unsigned int materialInputId;
+	};
 	
 	class MeshRenderingManager
 	{

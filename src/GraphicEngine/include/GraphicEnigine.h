@@ -29,6 +29,7 @@ namespace GraphicEngine
 		Mesh* mesh;
 		Shader* shader;
 		Material material;
+		Material material2;
 		InstatiatingModel modelMesh;
 		GameObject* gameObject;
 		GameObject* gameObject2;
@@ -113,14 +114,21 @@ namespace GraphicEngine
 			//					"C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\fargmentShader.frag");
 
 			////std::cout << "Tutaj" << std::endl;
-			shader->use();
-			glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-			shader->setVec4("uColor", (float*)(&color));
-			color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
-			shader->setVec4("uColor", (float*)(&color));
+			//shader->use();
+			//glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			//shader->setVec4("uColor", (float*)(&color));
+			//color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
+			//shader->setVec4("uColor", (float*)(&color));
 
 			modelMesh = ModelsManager::CreateModel("NewModel", vertexes, indices, textures);
-			material = MaterialsManager::CreateMaterial("new", "res/CompiledShaders/origin/Basic.shdr");
+
+			material = MaterialsManager::CreateMaterial("new", "res/CompiledShaders/origin/Basic.shdr", std::vector<string>{ "color1", "color2" });
+			material.GetMaterialParameters()->Set("color1", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+			material.GetMaterialParameters()->Set("color2", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+
+			material2 = MaterialsManager::CreateMaterial("new2", "res/CompiledShaders/origin/Basic.shdr", std::vector<string>{ "color1", "color2" });
+			material2.GetMaterialParameters()->Set("color1", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+			material2.GetMaterialParameters()->Set("color2", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 
 			gameObject = new GameObject();
 			auto comp = gameObject->AddComponent<MeshRenderer>();
@@ -133,11 +141,11 @@ namespace GraphicEngine
 			gameObject2 = new GameObject();
 			comp = gameObject2->AddComponent<MeshRenderer>();
 			//std::cout << "Tutaj5\n";
-			comp->AddMaterial(material);
+			comp->AddMaterial(material2);
 			//std::cout << "Tutaj3\n";
 			comp->SetModel(modelMesh);
 
-			gameObject2->GetTransform()->Translate(glm::vec3(1, 1, 0));
+			gameObject2->GetTransform()->Translate(glm::vec3(2, 1, 0));
 			//std::cout << "Tutaj4\n";
 			//instance = this;
 		}

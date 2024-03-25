@@ -1,5 +1,7 @@
 #include <MaterialsManager.h>
 
+#include <spdlog/spdlog.h>
+
 using namespace GraphicEngine;
 
 std::hash<std::string> MaterialsManager::stringHash;
@@ -20,6 +22,7 @@ void MaterialsManager::UnloadMaterial(Material& material)
 			{
 				loadedMaterials.erase(found);
 
+				delete material._materialData->materialParameters;
 				delete material._materialData;
 			}
 
@@ -48,7 +51,7 @@ Material MaterialsManager::GetMaterial(const std::string& name)
 	}
 }
 
-Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, const std::string& shaderName)
+Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, const std::vector<string>& materialParameters)
 {
 	size_t hashed = stringHash(newMaterialName);
 
@@ -58,16 +61,21 @@ Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, co
 	MaterialData* data;
 	if (found == loadedMaterials.end())
 	{
+		SPDLOG_INFO("Creating new material: {}!", newMaterialName);
+
 		data = new MaterialData{
 			.id = hashed,
 			.useNumber = 1,
-			.shader = ShaderManager::GetShaderProgram(shaderName)
+			.shader = ShaderManager::GetShaderProgram(shaderName),
+			.materialParameters = new MaterialValues(materialParameters)
+			
 		};
 
 		loadedMaterials.push_back(data);
 	}
 	else
 	{
+		SPDLOG_INFO("Material already exists: {}!", newMaterialName);
 		data = (*found);
 		data->useNumber++;
 	}

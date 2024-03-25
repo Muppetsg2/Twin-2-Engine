@@ -51,12 +51,22 @@ void GraphicEngine::InstatiatingMesh::SetInstanceDataSSBO(GLuint instanceDataSSB
     glBindVertexArray(0);
 }
 
+void GraphicEngine::InstatiatingMesh::SetMaterialIndexSSBO(GLuint materialIndexSSBO)
+{
+    _materialIndexSSBO = materialIndexSSBO;
+    glBindVertexArray(mesh->VAO);
+
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, materialIndexSSBO);
+
+    glBindVertexArray(0);
+}
+
 void GraphicEngine::InstatiatingMesh::SetMaterialInputUBO(GLuint materialInputUBO)
 {
     _materialInputUBO = materialInputUBO;
     glBindVertexArray(mesh->VAO);
 
-    glBindBufferBase(GL_UNIFORM_BUFFER, 1, materialInputUBO);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 2, materialInputUBO);
 
     glBindVertexArray(0);
 

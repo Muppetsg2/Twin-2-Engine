@@ -34,7 +34,10 @@ Shader::Shader(unsigned int shaderProgramId)
     glGenBuffers(1, &_instanceDataSSBO);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
+    
+    glGenBuffers(1, &_materialIndexSSBO);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
     // UBO creation
     glGenBuffers(1, &_materialInputUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
@@ -84,6 +87,11 @@ void Shader::setMat4(const std::string& name, glm::mat4& value) const
 GLuint Shader::GetMaterialInputUBO() const
 {
     return _instanceDataSSBO;
+}
+
+GLuint Shader::GetMaterialIndexSSBO() const
+{
+    return _materialIndexSSBO;
 }
 
 GLuint Shader::GetInstanceDataSSBO() const

@@ -30,6 +30,7 @@ namespace GraphicEngine
         //Shader(const GLchar* shaderPath);
         unsigned int shaderProgramID;
         unsigned int _instanceDataSSBO;
+        unsigned int _materialIndexSSBO;
         unsigned int _materialInputUBO;
     public:
         // ID program object  
@@ -62,6 +63,7 @@ namespace GraphicEngine
         void setMat4(const std::string& name, glm::mat4& value) const;
 
         GLuint GetInstanceDataSSBO() const;
+        GLuint GetMaterialIndexSSBO() const;
         GLuint GetMaterialInputUBO() const;
     };
 }

@@ -111,6 +111,10 @@ unsigned int GraphicEngine::Material::GetId() const
 	return _materialData->id;
 }
 
+MaterialValues* GraphicEngine::Material::GetMaterialParameters() const
+{
+	return _materialData->materialParameters;
+}
 
 bool GraphicEngine::operator<(const Material& material1, const Material& material2)
 {

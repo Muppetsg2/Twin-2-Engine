@@ -22,7 +22,7 @@ struct MaterialInput
 };
 
 layout(std140, binding = 2) uniform MaterialInputBuffer {
-    MaterialInput materialInput[];
+    MaterialInput materialInput[3];
 };
 
 void main()

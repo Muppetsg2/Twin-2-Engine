@@ -97,7 +97,7 @@ void GraphicEngine::MeshRenderingManager::Render()
 			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * 16 * index, transforms.data(), GL_DYNAMIC_DRAW);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssboId);
 
-			meshPair.first->SetSSBO(ssboId);
+			meshPair.first->SetInstanceDataUBO(ssboId);
 
 			//glBindBuffer(GL_UNIFORM_BUFFER, uboId);
 			//glBufferData(GL_UNIFORM_BUFFER, sizeof(float) * 4, NULL, GL_DYNAMIC_DRAW);

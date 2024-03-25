@@ -35,28 +35,28 @@ void GraphicEngine::InstatiatingMesh::setupMesh(const vector<glm::mat4>& transfo
 
 
 
-GraphicEngine::InstatiatingMesh::InstatiatingMesh(Mesh* mesh, GLuint ssboId)
+GraphicEngine::InstatiatingMesh::InstatiatingMesh(Mesh* mesh, GLuint instanceDataUBO)
 {
     this->mesh = mesh;
-    SetSSBO(ssboId);
+    SetInstanceDataUBO(instanceDataUBO);
 }
 
-void GraphicEngine::InstatiatingMesh::SetSSBO(GLuint ssboId)
+void GraphicEngine::InstatiatingMesh::SetInstanceDataUBO(GLuint instanceDataUBO)
 {
-    _ssboId = ssboId;
+    _instanceDataUBO = instanceDataUBO;
     glBindVertexArray(mesh->VAO);
 
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssboId);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, instanceDataUBO);
 
     glBindVertexArray(0);
 }
 
-void GraphicEngine::InstatiatingMesh::SetUBO(GLuint uboId)
+void GraphicEngine::InstatiatingMesh::SetMaterialInputUBO(GLuint materialInputUBO)
 {
-    _uboId = uboId;
+    _materialInputUBO = materialInputUBO;
     glBindVertexArray(mesh->VAO);
 
-    glBindBufferBase(GL_UNIFORM_BUFFER, 1, uboId);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 1, materialInputUBO);
 
     glBindVertexArray(0);
 

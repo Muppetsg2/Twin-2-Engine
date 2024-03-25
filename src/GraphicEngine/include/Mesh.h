@@ -16,39 +16,42 @@ using GraphicEngine::Shader;
 using std::vector;
 using std::string;
 
-struct Vertex {
-    glm::vec3 Position;
-    glm::vec3 Normal;
-    glm::vec2 TexCoords;
-};
 
-struct Texture {
-    unsigned int id;
-    string type;
-    string path;
-};
+namespace GraphicEngine
+{
+    struct Vertex {
+        glm::vec3 Position;
+        glm::vec3 Normal;
+        glm::vec2 TexCoords;
+    };
 
-class Mesh {
+    struct Texture {
+        unsigned int id;
+        string type;
+        string path;
+    };
 
-    friend class InstatiatingMesh;
+    class Mesh {
 
-public:
-    /*  dane klasy Mesh  */
-    vector<Vertex> vertices;
-    vector<unsigned int> indices;
-    vector<Texture> textures;
-    /*  Funkcje  */
-    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures);
+        friend class InstatiatingMesh;
 
-    void Draw(Shader* shader);
+    public:
+        /*  dane klasy Mesh  */
+        vector<Vertex> vertices;
+        vector<unsigned int> indices;
+        vector<Texture> textures;
+        /*  Funkcje  */
+        Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures);
 
-private:
-    /*  Dane renderowania  */
-    unsigned int VAO, VBO, EBO;
-    /*  Funkcje    */
-    void SetupMesh();
-};
+        void Draw(Shader* shader);
 
+    private:
+        /*  Dane renderowania  */
+        unsigned int VAO, VBO, EBO;
+        /*  Funkcje    */
+        void SetupMesh();
+    };
+}
 #include "InstatiatingMesh.h"
 
 #endif

@@ -78,7 +78,7 @@ bool Material::operator!=(std::nullptr_t)
 
 bool Material::operator==(const Material& other)
 {
-	return _materialData = other._materialData;
+	return _materialData == other._materialData;
 }
 
 bool Material::operator!=(const Material& other)
@@ -86,10 +86,10 @@ bool Material::operator!=(const Material& other)
 	return _materialData != other._materialData;
 }
 
-bool Material::operator<(const Material& other)
-{
-	return _materialData < other._materialData;
-}
+//bool Material::operator<(const Material& other)
+//{
+//	return _materialData->id < other._materialData->id;
+//}
 
 Shader* GraphicEngine::Material::GetShader() const
 {
@@ -99,4 +99,10 @@ Shader* GraphicEngine::Material::GetShader() const
 unsigned int GraphicEngine::Material::GetId() const
 {
 	return _materialData->id;
+}
+
+
+bool GraphicEngine::operator<(const Material& material1, const Material& material2)
+{
+	return material1.GetId() < material2.GetId();
 }

@@ -21,7 +21,7 @@ namespace GraphicEngine
 		Mesh* mesh;
 		Shader* shader;
 		Material material;
-		InstatiatingModel modelMesh;
+		//InstatiatingModel modelMesh;
 		//static GraphicEngine* instance;
 
 	public:
@@ -101,7 +101,7 @@ namespace GraphicEngine
 			color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
 			shader->setVec4("uColor", (float*)(&color));
 
-			modelMesh = ModelsManager::CreateModel("NewModel", vertexes, indices, textures);
+			//modelMesh = ModelsManager::CreateModel("NewModel", vertexes, indices, textures);
 			material = MaterialsManager::CreateMaterial("new", "res/CompiledShaders/origin/Basic.shdr");
 			//instance = this;
 		}
@@ -123,13 +123,13 @@ namespace GraphicEngine
 			//shader->setMat4("normalModel", model);
 			
 			//mesh->Draw(shader);
-			modelMesh.Draw(shader);
+			//modelMesh.Draw(shader);
 
 			glm::mat4 newview(1.0f);
 			shader->setMat4("view", newview);
 			shader->setMat4("projection", newview);
 			//mesh->Draw(shader);
-			modelMesh.Draw(shader);
+			//modelMesh.Draw(shader);
 		}
 	};
 }

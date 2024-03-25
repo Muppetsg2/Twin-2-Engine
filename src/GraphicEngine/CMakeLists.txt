@@ -55,21 +55,31 @@ target_include_directories(GraphicEngine
 						${stb_image_SOURCE_DIR}
 						#${GRAPHIC_ENGINE_DIR}
 						
-						PRIVATE
-						${GRAPHIC_ENGINE_SOURCE_DIR}
+						#PRIVATE
+						#${GRAPHIC_ENGINE_SOURCE_DIR}
 
 )
 
-target_link_libraries(GraphicEngine PRIVATE 
-										glad
-										#stb_image
-										assimp
-										glfw
-										glm::glm
-										yaml-cpp
-										spdlog
-										Twin2Engine
-)
+#target_link_libraries(GraphicEngine PRIVATE 
+#										#glad
+#										##stb_image
+#										#assimp
+#										#glfw
+#										#glm::glm
+#										#yaml-cpp
+#										#spdlog
+#										Twin2Engine
+#)
+target_link_libraries(GraphicEngine ${OPENGL_LIBRARIES})
+target_link_libraries(GraphicEngine glad)
+target_link_libraries(GraphicEngine stb_image)
+target_link_libraries(GraphicEngine assimp)
+target_link_libraries(GraphicEngine glfw)
+target_link_libraries(GraphicEngine spdlog)
+target_link_libraries(GraphicEngine yaml-cpp)
+target_link_libraries(GraphicEngine Twin2Engine)
+target_link_libraries(GraphicEngine freetype)
+target_link_libraries(GraphicEngine glm::glm)
 
 #message("GraphicEngine Public Include Files:")
 #foreach(FILE_PATH ${GRAPHIC_ENGINE_PUBLIC_INCLUDE_FILES})

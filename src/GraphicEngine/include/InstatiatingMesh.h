@@ -1,7 +1,7 @@
 #ifndef INSTATIATING_MESH
 #define INSTATIATING_MESH
 
-#include "Mesh.h"
+#include <Mesh.h>
 
 #include <vector>
 
@@ -10,25 +10,29 @@
 
 using std::vector;
 
-class InstatiatingMesh
+namespace GraphicEngine
 {
-	Mesh* mesh;
-    unsigned int instancesTransformsVBO;
-    unsigned int amount;
 
-    GLuint _ssboId;
-    GLuint _uboId;
+    class InstatiatingMesh
+    {
+        Mesh* mesh;
+        unsigned int instancesTransformsVBO;
+        unsigned int amount;
 
-    void setupMesh(const vector<glm::mat4>& transforms);
+        GLuint _ssboId;
+        GLuint _uboId;
 
-public:
-    InstatiatingMesh(Mesh* mesh, GLuint ssboId);
+        void setupMesh(const vector<glm::mat4>& transforms);
 
-    void SetSSBO(GLuint ssboId);
-    void SetUBO(GLuint uboId);
+    public:
+        InstatiatingMesh(Mesh* mesh, GLuint ssboId);
 
-    void Draw(Shader* shader);
-};
+        void SetSSBO(GLuint ssboId);
+        void SetUBO(GLuint uboId);
 
+        void Draw(Shader* shader);
+    };
+
+}
 
 #endif // !INSTATIATING_MESH

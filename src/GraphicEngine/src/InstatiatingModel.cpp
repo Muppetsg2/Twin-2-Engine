@@ -55,7 +55,7 @@ size_t GraphicEngine::InstatiatingModel::GetMeshCount() const
     return modelData->meshes.size();
 }
 
-InstatiatingMesh* GraphicEngine::InstatiatingModel::GetMesh(size_t index) const
+GraphicEngine::InstatiatingMesh* GraphicEngine::InstatiatingModel::GetMesh(size_t index) const
 {
     if (index >= modelData->meshes.size())
     {
@@ -88,7 +88,7 @@ void GraphicEngine::InstatiatingModel::SetTransform(unsigned int meshIndex, cons
     //meshes[meshIndex].SetNewTransforms(transformsMatrixes);
 }
 
-InstatiatingModel& InstatiatingModel::operator=(const InstatiatingModel& other)
+GraphicEngine::InstatiatingModel& GraphicEngine::InstatiatingModel::operator=(const InstatiatingModel& other)
 {
     GraphicEngine::ModelsManager::UnloadModel(modelData);
     modelData = other.modelData;
@@ -96,7 +96,7 @@ InstatiatingModel& InstatiatingModel::operator=(const InstatiatingModel& other)
     return *this;
 }
 
-InstatiatingModel& InstatiatingModel::operator=(InstatiatingModel&& other)
+GraphicEngine::InstatiatingModel& GraphicEngine::InstatiatingModel::operator=(InstatiatingModel&& other)
 {
     GraphicEngine::ModelsManager::UnloadModel(modelData);
     modelData = other.modelData;
@@ -105,29 +105,29 @@ InstatiatingModel& InstatiatingModel::operator=(InstatiatingModel&& other)
     return *this;
 }
 
-InstatiatingModel& InstatiatingModel::operator=(std::nullptr_t)
+GraphicEngine::InstatiatingModel& GraphicEngine::InstatiatingModel::operator=(std::nullptr_t)
 {
     GraphicEngine::ModelsManager::UnloadModel(modelData);
 
     return *this;
 }
 
-bool InstatiatingModel::operator==(std::nullptr_t)
+bool GraphicEngine::InstatiatingModel::operator==(std::nullptr_t)
 {
     return modelData == nullptr;
 }
 
-bool InstatiatingModel::operator!=(std::nullptr_t)
+bool GraphicEngine::InstatiatingModel::operator!=(std::nullptr_t)
 {
     return modelData != nullptr;
 }
 
-bool InstatiatingModel::operator==(const InstatiatingModel& other)
+bool GraphicEngine::InstatiatingModel::operator==(const InstatiatingModel& other)
 {
     return modelData == other.modelData;
 }
 
-bool InstatiatingModel::operator!=(const InstatiatingModel& other)
+bool GraphicEngine::InstatiatingModel::operator!=(const InstatiatingModel& other)
 {
     return modelData != other.modelData;
 }

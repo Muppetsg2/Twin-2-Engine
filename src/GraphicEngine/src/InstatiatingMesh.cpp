@@ -1,6 +1,8 @@
 #include <InstatiatingMesh.h>
 
-void InstatiatingMesh::setupMesh(const vector<glm::mat4>& transforms)
+using namespace GraphicEngine;
+
+void GraphicEngine::InstatiatingMesh::setupMesh(const vector<glm::mat4>& transforms)
 {
     //unsigned int instancesTransformsVBO;
     glGenBuffers(1, &instancesTransformsVBO);
@@ -33,13 +35,13 @@ void InstatiatingMesh::setupMesh(const vector<glm::mat4>& transforms)
 
 
 
-InstatiatingMesh::InstatiatingMesh(Mesh* mesh, GLuint ssboId)
+GraphicEngine::InstatiatingMesh::InstatiatingMesh(Mesh* mesh, GLuint ssboId)
 {
     this->mesh = mesh;
     SetSSBO(ssboId);
 }
 
-void InstatiatingMesh::SetSSBO(GLuint ssboId)
+void GraphicEngine::InstatiatingMesh::SetSSBO(GLuint ssboId)
 {
     _ssboId = ssboId;
     glBindVertexArray(mesh->VAO);
@@ -49,7 +51,7 @@ void InstatiatingMesh::SetSSBO(GLuint ssboId)
     glBindVertexArray(0);
 }
 
-void InstatiatingMesh::SetUBO(GLuint uboId)
+void GraphicEngine::InstatiatingMesh::SetUBO(GLuint uboId)
 {
     _uboId = uboId;
     glBindVertexArray(mesh->VAO);
@@ -61,7 +63,7 @@ void InstatiatingMesh::SetUBO(GLuint uboId)
 }
 
 
-void InstatiatingMesh::Draw(Shader* shader)
+void GraphicEngine::InstatiatingMesh::Draw(Shader* shader)
 {
     //printf("Drawing mesh %d\n", mesh->VAO);
     //printf("Drawing mesh %d\n", mesh->vertices.size());

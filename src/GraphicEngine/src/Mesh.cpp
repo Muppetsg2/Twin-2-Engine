@@ -1,5 +1,7 @@
 #include <Mesh.h>
 
+using namespace GraphicEngine;
+
 Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
 {
     this->vertices = vertices;

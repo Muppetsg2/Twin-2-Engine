@@ -99,11 +99,13 @@ namespace GraphicEngine
 		bool operator!=(std::nullptr_t);
 		bool operator==(const Material& other);
 		bool operator!=(const Material& other);
-		bool operator<(const Material& other);
+		//bool operator<(const Material& other);
 
 		Shader* GetShader() const;
 		unsigned int GetId() const;
 	};
+
+	bool operator<(const Material& material1, const Material& material2);
 
 }
 

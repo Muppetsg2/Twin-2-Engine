@@ -1,13 +1,15 @@
 #include <ModelsManager.h>
 
 #include <spdlog/spdlog.h>
+#include <InstatiatingMesh.h>
 
 //using ModelData;
 
-std::hash<std::string> GraphicEngine::ModelsManager::stringHash;
-std::list<GraphicEngine::ModelData*> GraphicEngine::ModelsManager::loadedModels;
-
 using namespace GraphicEngine;
+
+std::hash<std::string> ModelsManager::stringHash;
+std::list<ModelData*> ModelsManager::loadedModels;
+
 
 GraphicEngine::ModelData* GraphicEngine::ModelsManager::LoadModel(const std::string& modelPath)
 {

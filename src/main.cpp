@@ -213,7 +213,7 @@ ImVec4 clear_color = ImVec4(.1f, .1f, .1f, 1.f);
 GLuint UBOMatrices;
 
 SoLoud::Soloud soloud;
-SoLoud::Wav sample;
+SoLoud::Wav smusicSmple;
 SoLoud::handle sampleHandle = 0;
 bool first = true;
 
@@ -247,7 +247,7 @@ int main(int, char**)
     soloud.init();
     spdlog::info("Initialized SoLoud.");
 
-    sample.load("./res/music/FurElise.wav");
+    smusicSmple.load("./res/music/FurElise.wav");
 
     /*
     ma_result result;
@@ -494,7 +494,7 @@ void imgui_render()
                 if (!musicPlaying) {
                     //ma_sound_start(&sound);
                     if (first) {
-                        sampleHandle = soloud.play(sample);
+                        sampleHandle = soloud.play(smusicSmple);
                         first = false;
                     }
                     else {

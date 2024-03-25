@@ -1,7 +1,8 @@
 #ifndef INSTANTIATING_MODEL
 #define INSTANTIATING_MODEL
 
-#include "Model.h"
+#include <Model.h>
+#include <ModelData.h>
 #include <InstatiatingMesh.h>
 #include <glad/glad.h>
 
@@ -14,20 +15,6 @@ using Twin2EngineCore::Transform;
 namespace GraphicEngine
 {
     class Model;
-
-    //class ModelsManager;
-    struct ModelData
-    {
-        size_t modelHash;
-        int useNumber;
-        GraphicEngine::Model* model;
-        GLuint ssboId;
-        vector<InstatiatingMesh> meshes;
-
-        bool operator<(const ModelData& other) const {
-            return modelHash < other.modelHash;
-        }
-    };
 
     class InstatiatingModel
     {

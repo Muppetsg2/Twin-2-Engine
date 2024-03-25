@@ -4,30 +4,30 @@ using namespace GraphicEngine;
 
 void MeshRenderer::Initialize()
 {
-	MeshRenderingManager::Register(this);
+	//MeshRenderingManager::Register(this);
 }
 
 void MeshRenderer::OnDestroy()
 {
-	MeshRenderingManager::Unregister(this);
+	//MeshRenderingManager::Unregister(this);
 }
 
-InstatiatingModel MeshRenderer::GetModel() const
+InstatiatingModel GraphicEngine::MeshRenderer::GetModel() const
 {
 	return _model;
 }
 
-size_t MeshRenderer::GetMeshCount() const
+size_t GraphicEngine::MeshRenderer::GetMeshCount() const
 {
 	return _model.GetMeshCount();
 }
 
-InstatiatingMesh* MeshRenderer::GetMesh(size_t index) const
+GraphicEngine::InstatiatingMesh* GraphicEngine::MeshRenderer::GetMesh(size_t index) const
 {
 	return _model.GetMesh(index);
 }
 
-Material MeshRenderer::GetMaterial(size_t index) const
+Material GraphicEngine::MeshRenderer::GetMaterial(size_t index) const
 {
 	if (_materials.size())
 	{
@@ -42,17 +42,17 @@ Material MeshRenderer::GetMaterial(size_t index) const
 	return _materials[index];
 }
 
-size_t MeshRenderer::GetMaterialCount() const
+size_t GraphicEngine::MeshRenderer::GetMaterialCount() const
 {
 	return _materials.size();
 }
 
-void MeshRenderer::AddMaterial(Material material)
+void GraphicEngine::MeshRenderer::AddMaterial(Material material)
 {
 	_materials.push_back(material);
 }
 
-void MeshRenderer::SetMaterial(size_t index, Material material)
+void GraphicEngine::MeshRenderer::SetMaterial(size_t index, Material material)
 {
 	if (index < _materials.size())
 	{
@@ -60,7 +60,7 @@ void MeshRenderer::SetMaterial(size_t index, Material material)
 	}
 }
 
-void MeshRenderer::SetModel(const InstatiatingModel& model)
+void GraphicEngine::MeshRenderer::SetModel(const InstatiatingModel& model)
 {
 	_model = model;
 }

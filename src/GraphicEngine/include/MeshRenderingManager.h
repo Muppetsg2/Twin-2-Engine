@@ -7,20 +7,24 @@
 #include <Shader.h>
 
 #include <unordered_map>
+#include <map>
 #include <vector>
 
 namespace GraphicEngine
 {
+	class Material;
 	class MeshRenderer;
-
+	class InstatiatingMesh;
+	class Shader;
+	
 	class MeshRenderingManager
 	{
-		static std::unordered_map<InstatiatingMesh*, std::unordered_map<Shader*, std::unordered_map<Material, std::vector<MeshRenderer*>>>>  renderingData;
-
+		static std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::vector<MeshRenderer*>>>>  renderingData;
+	
 	public:
 		static void Register(MeshRenderer* meshRenderer);
 		static void Unregister(MeshRenderer* meshRenderer);
-
+	
 		static void Render();
 	};
 }

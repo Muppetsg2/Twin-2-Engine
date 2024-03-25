@@ -1,8 +1,10 @@
 #include <MeshRenderingManager.h>
 
+#include <InstatiatingMesh.h>
+
 using namespace GraphicEngine;
 
-std::unordered_map<InstatiatingMesh*, std::unordered_map<Shader*, std::unordered_map<Material, std::vector<MeshRenderer*>>>> MeshRenderingManager::renderingData;
+std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::vector<GraphicEngine::MeshRenderer*>>>> GraphicEngine::MeshRenderingManager::renderingData;
 
 void MeshRenderingManager::Register(MeshRenderer* meshRenderer)
 {
@@ -15,7 +17,7 @@ void MeshRenderingManager::Register(MeshRenderer* meshRenderer)
 	}
 }
 
-void MeshRenderingManager::Unregister(MeshRenderer* meshRenderer)
+void GraphicEngine::MeshRenderingManager::Unregister(MeshRenderer* meshRenderer)
 {
 	for (int i = 0; i < meshRenderer->GetMeshCount(); i++)
 	{
@@ -42,7 +44,7 @@ void MeshRenderingManager::Unregister(MeshRenderer* meshRenderer)
 	}
 }
 
-void MeshRenderingManager::Render()
+void GraphicEngine::MeshRenderingManager::Render()
 {
 	for (auto& meshPair : renderingData)
 	{

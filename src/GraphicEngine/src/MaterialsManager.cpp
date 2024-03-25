@@ -7,19 +7,22 @@ std::list<GraphicEngine::MaterialData*> MaterialsManager::loadedMaterials;
 
 void MaterialsManager::UnloadMaterial(Material& material)
 {
-	material._materialData->useNumber--;
-
-	if (material._materialData->useNumber == 0)
+	if (material != nullptr)
 	{
-		std::list<MaterialData*>::iterator found =
-			std::find_if(loadedMaterials.begin(), loadedMaterials.end(), [material](MaterialData* data) { return data->id == material.GetId(); });
+		material._materialData->useNumber--;
 
-		loadedMaterials.erase(found);
+		if (material._materialData->useNumber == 0)
+		{
+			std::list<MaterialData*>::iterator found =
+				std::find_if(loadedMaterials.begin(), loadedMaterials.end(), [material](MaterialData* data) { return data->id == material.GetId(); });
 
-		delete material._materialData;
+			loadedMaterials.erase(found);
+
+			delete material._materialData;
+		}
+
+		//material = nullptr;
 	}
-
-	material = nullptr;
 }
 
 Material MaterialsManager::GetMaterial(const std::string& name)

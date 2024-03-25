@@ -91,8 +91,10 @@ void GraphicEngine::MeshRenderingManager::Render()
 				}
 			}
 
+			SPDLOG_INFO("Instancing objects: {}!", index);
+
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboId);
-			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * 16, transforms.data(), GL_DYNAMIC_DRAW);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * 16 * index, transforms.data(), GL_DYNAMIC_DRAW);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssboId);
 
 			meshPair.first->SetSSBO(ssboId);
@@ -102,7 +104,8 @@ void GraphicEngine::MeshRenderingManager::Render()
 			//glBindBufferBase(GL_UNIFORM_BUFFER, 1, uboId);
 
 			shaderPair.first->use();
-			meshPair.first->Draw(shaderPair.first, transforms.size());
+			//meshPair.first->Draw(shaderPair.first, transforms.size());
+			meshPair.first->Draw(shaderPair.first, index);
 		}
 	}
 }

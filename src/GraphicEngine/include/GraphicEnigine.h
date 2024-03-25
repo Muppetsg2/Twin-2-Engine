@@ -31,6 +31,7 @@ namespace GraphicEngine
 		Material material;
 		InstatiatingModel modelMesh;
 		GameObject* gameObject;
+		GameObject* gameObject2;
 		
 		//static GraphicEngine* instance;
 
@@ -49,12 +50,12 @@ namespace GraphicEngine
 
 			vector<unsigned int> indices;
 
-			indices.push_back(0);
+			indices.push_back(2);
 			indices.push_back(1);
+			indices.push_back(0);
+			indices.push_back(3);
 			indices.push_back(2);
 			indices.push_back(0);
-			indices.push_back(2);
-			indices.push_back(3);
 
 			indices.push_back(0);
 			indices.push_back(4);
@@ -90,6 +91,12 @@ namespace GraphicEngine
 			indices.push_back(1);
 			indices.push_back(6);
 			indices.push_back(5);
+			//indices.push_back(6);
+			//indices.push_back(2);
+			//indices.push_back(1);
+			//indices.push_back(5);
+			//indices.push_back(6);
+			//indices.push_back(1);
 
 
 			vector<Texture> textures;
@@ -122,6 +129,15 @@ namespace GraphicEngine
 			comp->AddMaterial(material);
 			//std::cout << "Tutaj3\n";
 			comp->SetModel(modelMesh);
+
+			gameObject2 = new GameObject();
+			comp = gameObject2->AddComponent<MeshRenderer>();
+			//std::cout << "Tutaj5\n";
+			comp->AddMaterial(material);
+			//std::cout << "Tutaj3\n";
+			comp->SetModel(modelMesh);
+
+			gameObject2->GetTransform()->Translate(glm::vec3(1, 1, 0));
 			//std::cout << "Tutaj4\n";
 			//instance = this;
 		}

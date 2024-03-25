@@ -25,6 +25,6 @@ void main()
     texCoords = aTexCoords;
     //gl_Position = projection * view * model * vec4(aPos, 1.0);
     //gl_Position = projection * view * model * vec4(aPos, 1.0);
-    gl_Position = projection * view * instanceData.transform[0] * vec4(aPos, 1.0);
+    gl_Position = projection * view * instanceData.transform[gl_InstanceID] * vec4(aPos, 1.0);
     //gl_Position = vec4(aPos, 1.0);
 }

@@ -1,6 +1,6 @@
 #include <ui/Image.h>
-#include "../GraphicEngine/include/ShaderManager.h"
-#include "../GraphicEngine/include/Shader.h"
+#include <ShaderManager.h>
+#include <Shader.h>
 #include <vector>
 #include <core/Transform.h>
 

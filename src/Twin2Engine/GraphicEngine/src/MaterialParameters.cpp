@@ -20,6 +20,15 @@ MaterialParameters::MaterialParameters(const std::vector<std::string>& variableN
 
 }
 
+void MaterialParameters::Add(const std::string& variableName, size_t size, void* value)
+{
+	size_t hashed = hasher(variableName);
+
+	const char* ptr = reinterpret_cast<const char*>(value);
+	std::vector<char> result(ptr, ptr + size);
+	_variablesValuesMappings[hashed] = result;
+}
+
 
 std::vector<char> MaterialParameters::GetData() const
 {

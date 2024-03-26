@@ -1,4 +1,6 @@
 #include "ShaderManager.h"
+#include "ShaderManager.h"
+#include "ShaderManager.h"
 
 //#include "../../Twin2Engine/core/ConfigManager.h"
 
@@ -16,6 +18,13 @@ GLenum Twin2Engine::GraphicEngine::ShaderManager::binaryFormat = 1;
 
 std::hash<std::string> Twin2Engine::GraphicEngine::ShaderManager::stringHash;
 std::list<Twin2Engine::GraphicEngine::ShaderManager::ShaderProgramData*> Twin2Engine::GraphicEngine::ShaderManager::loadedShaders;
+
+const std::unordered_map<size_t, int> ShaderManager::shaderTypeMapping
+{
+    { ShaderManager::stringHash("vert"), GL_VERTEX_SHADER },
+    { ShaderManager::stringHash("geom"), GL_GEOMETRY_SHADER },
+    { ShaderManager::stringHash("frag"), GL_FRAGMENT_SHADER }
+};
 
 unsigned int Twin2Engine::GraphicEngine::ShaderManager::LoadShaderProgram(const std::string& shaderName)
 {
@@ -162,17 +171,29 @@ void Twin2Engine::GraphicEngine::ShaderManager::PrecompileShaders()
                         string extension = line.substr(line.size() - 4, 4);
 
                         unsigned int shaderType;
-                        if (extension == "vert")
+                        //if (extension == "vert")
+                        //{
+                        //    shaderType = GL_VERTEX_SHADER;
+                        //}
+                        //else if (extension == "frag")
+                        //{
+                        //    shaderType = GL_FRAGMENT_SHADER;
+                        //}
+                        //else if (extension == "geom")
+                        //{
+                        //    shaderType = GL_GEOMETRY_SHADER;
+                        //}
+                        //else
+                        //{
+                        //    //SPDLOG_ERROR("Unrecogniced extension in shader program encountered. Path: {}", entry.path());
+                        //    std::cerr << "Unrecogniced extension in shader program encountered.\n" << "Path: " << entry.path() << std::endl;
+                        //    return;
+                        //}
+
+                        size_t extensionHash = stringHash(extension);
+                        if (shaderTypeMapping.contains(extensionHash))
                         {
-                            shaderType = GL_VERTEX_SHADER;
-                        }
-                        else if (extension == "frag")
-                        {
-                            shaderType = GL_FRAGMENT_SHADER;
-                        }
-                        else if (extension == "geom")
-                        {
-                            shaderType = GL_GEOMETRY_SHADER;
+                            shaderType = shaderTypeMapping.at(extensionHash);
                         }
                         else
                         {
@@ -180,15 +201,16 @@ void Twin2Engine::GraphicEngine::ShaderManager::PrecompileShaders()
                             std::cerr << "Unrecogniced extension in shader program encountered.\n" << "Path: " << entry.path() << std::endl;
                             return;
                         }
+                        //std::string shaderSource = LoadShaderSource(folder + "/" + line);
+                        //
+                        //unsigned int shaderId = glCreateShader(shaderType);
+                        //const GLchar* const cstrShaderSource = (const GLchar*)shaderSource.c_str();
+                        //glShaderSource(shaderId, 1, &cstrShaderSource, NULL);
+                        //glCompileShader(shaderId);
+                        //
+                        //CheckShaderCompilationSuccess(shaderId);
+                        GLuint shaderId = CompileShader(shaderType, LoadShaderSource(folder + "/" + line));
 
-                        std::string shaderSource = LoadShaderSource(folder + "/" + line);
-
-                        unsigned int shaderId = glCreateShader(shaderType);
-                        const GLchar* const cstrShaderSource = (const GLchar*)shaderSource.c_str();
-                        glShaderSource(shaderId, 1, &cstrShaderSource, NULL);
-                        glCompileShader(shaderId);
-
-                        CheckShaderCompilationSuccess(shaderId);
 
                         glAttachShader(shaderProgram, shaderId);
 
@@ -250,6 +272,7 @@ void Twin2Engine::GraphicEngine::ShaderManager::PrecompileShaders()
         }
     }
 }
+
 
 std::string Twin2Engine::GraphicEngine::ShaderManager::LoadShaderSource(const std::string& filePath)
 {
@@ -373,6 +396,19 @@ Shader* Twin2Engine::GraphicEngine::ShaderManager::GetShaderProgram(const std::s
 
 
     return (*found)->shader;
+}
+
+Shader* Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgram(const std::string& shaderName)
+{
+    return nullptr;
+}
+
+GLuint Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgramFromFile(const std::string& shaderName)
+{
+    string shaderProgramPath = shaderName;
+
+
+    return GLuint();
 }
 
 Shader* Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader)

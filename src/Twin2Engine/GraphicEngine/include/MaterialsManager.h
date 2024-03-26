@@ -17,15 +17,15 @@ namespace Twin2Engine::GraphicEngine
 	class MaterialsManager
 	{
 		friend class Material;
-		//static 
+
 		static std::hash<std::string> stringHash;
-		static std::unordered_map<size_t, int> typeSizeMap;
-		static std::unordered_map<size_t, int> typeHandleMap;
+		//const static std::unordered_map<size_t, int> typeSizeMap;
+		static const std::unordered_map<size_t, int> typeHandleMap;
 		static std::list<MaterialData*> loadedMaterials;
 
 		static void UnloadMaterial(Material& material);
 		static Material LoadMaterial(const string& materialName);
-		static int DetermineSize(const std::string& type);
+		//static int DetermineSize(const std::string& type);
 	public:
 
 		static Material GetMaterial(const std::string& name);

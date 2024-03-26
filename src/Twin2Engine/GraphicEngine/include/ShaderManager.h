@@ -45,6 +45,8 @@ namespace Twin2Engine::GraphicEngine
 
 		static GLenum binaryFormat;
 
+		static const std::unordered_map<size_t, int> shaderTypeMapping;
+
 		static std::hash<std::string> stringHash;
 		static std::list<ShaderProgramData*> loadedShaders;
 
@@ -60,12 +62,15 @@ namespace Twin2Engine::GraphicEngine
 		static void CheckProgramLinkingSuccess(GLuint programId);
 		static void PrecompileShaders();
 
+		//Dynamic creation
+		static GLuint CreateShaderProgramFromFile(const std::string& shaderName);
 	public:
 		//ShaderManager();
 		static void Init();
 		static void End();
 
 		static Shader* GetShaderProgram(const std::string& shaderName);
+		static Shader* CreateShaderProgram(const std::string& shaderName);
 		static Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);
 
 	};

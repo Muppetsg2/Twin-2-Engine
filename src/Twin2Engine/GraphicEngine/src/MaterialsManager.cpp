@@ -7,23 +7,23 @@ using namespace Twin2Engine::GraphicEngine;
 std::hash<std::string> MaterialsManager::stringHash;
 std::list<Twin2Engine::GraphicEngine::MaterialData*> MaterialsManager::loadedMaterials;
 
-std::unordered_map<size_t, int> MaterialsManager::typeSizeMap
-{
-	{ MaterialsManager::stringHash("int"), 4 },
-	{ MaterialsManager::stringHash("uint"), 4 },
-	{ MaterialsManager::stringHash("float"), 4 },
-	{ MaterialsManager::stringHash("double"), 8 },
-	{ MaterialsManager::stringHash("bool"), 1 },
-	{ MaterialsManager::stringHash("vec2"), 8 },
-	{ MaterialsManager::stringHash("vec3"), 12 },
-	{ MaterialsManager::stringHash("vec4"), 16 },
-	{ MaterialsManager::stringHash("ivec2"), 8 },
-	{ MaterialsManager::stringHash("ivec3"), 12 },
-	{ MaterialsManager::stringHash("ivec4"), 16 },
-	{ MaterialsManager::stringHash("mat2"), 16 },
-	{ MaterialsManager::stringHash("mat3"), 36 },
-	{ MaterialsManager::stringHash("mat4"), 64 }
-};
+//sconst td::unordered_map<size_t, int> MaterialsManager::typeSizeMap
+//{
+//	{ MaterialsManager::stringHash("int"), 4 },
+//	{ MaterialsManager::stringHash("uint"), 4 },
+//	{ MaterialsManager::stringHash("float"), 4 },
+//	{ MaterialsManager::stringHash("double"), 8 },
+//	{ MaterialsManager::stringHash("bool"), 1 },
+//	{ MaterialsManager::stringHash("vec2"), 8 },
+//	{ MaterialsManager::stringHash("vec3"), 12 },
+//	{ MaterialsManager::stringHash("vec4"), 16 },
+//	{ MaterialsManager::stringHash("ivec2"), 8 },
+//	{ MaterialsManager::stringHash("ivec3"), 12 },
+//	{ MaterialsManager::stringHash("ivec4"), 16 },
+//	{ MaterialsManager::stringHash("mat2"), 16 },
+//	{ MaterialsManager::stringHash("mat3"), 36 },
+//	{ MaterialsManager::stringHash("mat4"), 64 }
+//};
 
 #define TYPE_MAP_INT_HANDLE		0
 #define TYPE_MAP_UINT_HANDLE	1
@@ -40,7 +40,7 @@ std::unordered_map<size_t, int> MaterialsManager::typeSizeMap
 #define TYPE_MAP_MAT3_HANDLE	12
 #define TYPE_MAP_MAT4_HANDLE	13
 
-std::unordered_map<size_t, int> MaterialsManager::typeHandleMap
+const std::unordered_map<size_t, int> MaterialsManager::typeHandleMap
 {
 	{ MaterialsManager::stringHash("int"),		TYPE_MAP_INT_HANDLE		 },
 	{ MaterialsManager::stringHash("uint"),		TYPE_MAP_UINT_HANDLE	 },
@@ -129,23 +129,31 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 	std::string name = materialNode["name"].as<std::string>();
 	std::string shader = materialNode["shader"].as<std::string>();
 	SPDLOG_INFO("Used shader: {}.", shader);
-	std::vector<std::string> parametersNames;
-	std::vector<std::string> parametersTypes;
-	std::vector<int> propertiesSizes;
+	//std::vector<std::string> parametersNames;
+	//std::vector<std::string> parametersTypes;
+	//std::vector<int> propertiesSizes;
 
 	MaterialParameters* materialParameters = new MaterialParameters();
 
 	for (const auto& parameterNode : materialNode["parameters"]) {
 		std::string parameterName = parameterNode["name"].as<std::string>();
-		parametersNames.push_back(parameterName);
 		std::string parameterType = parameterNode["type"].as<std::string>();
-		parametersTypes.push_back(parameterType);
-		// Determine size based on type
-		int size = DetermineSize(parameterType);
-		propertiesSizes.push_back(size);
+		//parametersNames.push_back(parameterName);
+		//parametersTypes.push_back(parameterType);
+		//int size = DetermineSize(parameterType);
+		//propertiesSizes.push_back(size);
 
 		const YAML::Node& parameterValue = parameterNode["value"];
-		switch (typeHandleMap[stringHash(parameterType)])
+
+		size_t parameterTypeHash = stringHash(parameterType);
+
+		if (!typeHandleMap.contains(parameterTypeHash))
+		{
+			SPDLOG_ERROR("Incorrect parameter type of loaded material. Parameter name: {}", parameterName);
+			break;
+		}
+
+		switch (typeHandleMap.at(parameterTypeHash))
 		{
 		case TYPE_MAP_INT_HANDLE:
 			materialParameters->Add(parameterName, parameterValue.as<int>());
@@ -217,10 +225,10 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 	return Material(materialData);
 }
 
-int MaterialsManager::DetermineSize(const std::string& type)
-{
-	return typeSizeMap[stringHash(type)];
-}
+//int MaterialsManager::DetermineSize(const std::string& type)
+//{
+//	return typeSizeMap[stringHash(type)];
+//}
 
 Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, const std::vector<string>& materialParameters)
 {

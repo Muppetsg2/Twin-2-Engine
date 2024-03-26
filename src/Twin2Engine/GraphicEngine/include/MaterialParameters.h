@@ -14,14 +14,13 @@ namespace Twin2Engine::GraphicEngine
 	{
 		friend MaterialsManager;
 
-		static std::hash<std::string> hasher;
 		std::map<size_t, std::vector<char>> _variablesValuesMappings;
+		static std::hash<std::string> hasher;
 
 		MaterialParameters();
 		template<class T>
 		void Add(const std::string& variableName, T value);
-		template<class T>
-		void Add(const std::string& variableName, size_t size, T value);
+		void Add(const std::string& variableName, size_t size, void* value);
 
 	public:
 		MaterialParameters(const std::vector<std::string>& variableNames);
@@ -54,15 +53,6 @@ namespace Twin2Engine::GraphicEngine
 		
 		const char* ptr = reinterpret_cast<const char*>(&value);
 		std::vector<char> result(ptr, ptr + sizeof(value));
-		_variablesValuesMappings[hashed] = result;
-	}
-	template<class T>
-	void MaterialParameters::Add(const std::string& variableName, size_t size, T value)
-	{
-		size_t hashed = hasher(variableName);
-
-		const char* ptr = reinterpret_cast<const char*>(value);
-		std::vector<char> result(ptr, ptr + size);
 		_variablesValuesMappings[hashed] = result;
 	}
 

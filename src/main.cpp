@@ -45,6 +45,11 @@
 
 #include <memory>
 
+#include "CollisionManager.h"
+#include "core/BoxColliderComponent.h"
+#include "core/CapsuleColliderComponent.h"
+#include "core/SphereColliderComponent.h"
+
 #pragma region CAMERA_CONTROLLING
 
 glm::vec3 cameraPos(-5.0f, 0.0f, -5.0f);
@@ -310,6 +315,23 @@ int main(int, char**)
 
 
     glEnable(GL_DEPTH_TEST);
+
+
+    GameObject go1;
+    GameObject go2;
+    go1.GetTransform()->SetLocalPosition(glm::vec3(1.0f, 0.0f, 0.0f));
+    go2.GetTransform()->SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
+    Twin2Engine::Core::BoxColliderComponent* bc1 = go1.AddComponent<Twin2Engine::Core::BoxColliderComponent>();
+    Twin2Engine::Core::BoxColliderComponent* bc2 = go2.AddComponent<Twin2Engine::Core::BoxColliderComponent>();
+    bc1->colliderId = 1;
+    bc2->colliderId = 2;
+    bc1->Invoke();
+    bc2->Invoke();
+    bc1->Update();
+    bc2->Update();
+
+    CollisionSystem::CollisionManager::Instance()->PerformCollisions();
+
 
     // Main loop
     while (!glfwWindowShouldClose(window))

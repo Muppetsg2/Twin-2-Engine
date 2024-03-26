@@ -6,6 +6,7 @@
 
 #include <unordered_map>
 
+#include <glm/glm.hpp>
 #include <yaml-cpp/yaml.h>
 
 namespace Twin2Engine::GraphicEngine
@@ -19,10 +20,11 @@ namespace Twin2Engine::GraphicEngine
 		//static 
 		static std::hash<std::string> stringHash;
 		static std::unordered_map<size_t, int> typeSizeMap;
+		static std::unordered_map<size_t, int> typeHandleMap;
 		static std::list<MaterialData*> loadedMaterials;
 
 		static void UnloadMaterial(Material& material);
-		static Material LoadMaterial(const string& materialPath);
+		static Material LoadMaterial(const string& materialName);
 		static int DetermineSize(const std::string& type);
 	public:
 

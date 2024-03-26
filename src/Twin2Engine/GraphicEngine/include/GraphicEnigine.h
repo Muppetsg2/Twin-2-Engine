@@ -113,7 +113,9 @@ namespace Twin2Engine
 				//shader = ShaderManager::GetShaderProgram("res/CompiledShaders/origin/Basic.shdr");
 
 				//shader = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/Basic.shdr", "shaders/normalVert.vert", "shaders/fargmentShader.frag");
-				shader = ShaderManager::CreateShaderProgram("origin/Basic.shdr", "shaders/normalVert.vert", "shaders/fargmentShader.frag");
+
+				//shader = ShaderManager::CreateShaderProgram("origin/Basic.shdr", "shaders/normalVert.vert", "shaders/fargmentShader.frag");
+				shader = ShaderManager::CreateShaderProgram("origin/Basic", "shaders/normalVert.vert", "shaders/fargmentShader.frag");
 
 				//shader = new Shader(true, "C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
 				//shader = new Shader("C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
@@ -129,14 +131,21 @@ namespace Twin2Engine
 				modelMesh = ModelsManager::CreateModel("NewModel", vertexes, indices, textures);
 
 				//material = MaterialsManager::CreateMaterial("new", "res/CompiledShaders/origin/Basic.shdr", std::vector<string>{ "color1", "color2" });
-				material = MaterialsManager::CreateMaterial("new", "origin/Basic.shdr", std::vector<string>{ "color1", "color2" });
-				material.GetMaterialParameters()->Set("color1", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-				material.GetMaterialParameters()->Set("color2", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+
+				material = MaterialsManager::GetMaterial("Basic");
+				 
+				//material = MaterialsManager::CreateMaterial("new", "origin/Basic", std::vector<string>{ "color1", "color2" });
+				//material.GetMaterialParameters()->Set("color1", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+				//material.GetMaterialParameters()->Set("color2", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 
 				//material2 = MaterialsManager::CreateMaterial("new2", "res/CompiledShaders/origin/Basic.shdr", std::vector<string>{ "color1", "color2" });
-				material2 = MaterialsManager::CreateMaterial("new2", "origin/Basic.shdr", std::vector<string>{ "color1", "color2" });
-				material2.GetMaterialParameters()->Set("color1", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-				material2.GetMaterialParameters()->Set("color2", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+
+				//material2 = MaterialsManager::CreateMaterial("Basic2", "origin/Basic.shdr", std::vector<string>{ "color1", "color2" });
+				//material2 = MaterialsManager::CreateMaterial("new2", "origin/Basic", std::vector<string>{ "color1", "color2" });
+				//material2.GetMaterialParameters()->Set("color1", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+				//material2.GetMaterialParameters()->Set("color2", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+
+				material2 = MaterialsManager::GetMaterial("Basic2");
 
 				gameObject = new GameObject();
 				auto comp = gameObject->AddComponent<MeshRenderer>();

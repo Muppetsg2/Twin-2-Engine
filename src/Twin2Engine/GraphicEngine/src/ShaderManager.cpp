@@ -25,7 +25,8 @@ unsigned int Twin2Engine::GraphicEngine::ShaderManager::LoadShaderProgram(const 
 
     int shaderProgramID;
 
-    std::string shaderPath = "ShadersOrigin/CompiledShaders/" + shaderName;
+    //std::string shaderPath = "ShadersOrigin/CompiledShaders/" + shaderName;
+    std::string shaderPath = "ShadersOrigin/CompiledShaders/" + shaderName + ".shdr";
 
     if (found == loadedShaders.end())
     {

@@ -49,7 +49,7 @@ namespace Twin2Engine::GraphicEngine
 		static std::list<ShaderProgramData*> loadedShaders;
 
 		//Runtime methods
-		static unsigned int LoadShaderProgram(const std::string& shaderPath);
+		static unsigned int LoadShaderProgram(const std::string& shaderName);
 		static void UnloadShaderProgram(int shaderProgramID);
 		static void IncrementUseNumber(int shaderProgramID);
 

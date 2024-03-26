@@ -17,13 +17,15 @@ GLenum Twin2Engine::GraphicEngine::ShaderManager::binaryFormat = 1;
 std::hash<std::string> Twin2Engine::GraphicEngine::ShaderManager::stringHash;
 std::list<Twin2Engine::GraphicEngine::ShaderManager::ShaderProgramData*> Twin2Engine::GraphicEngine::ShaderManager::loadedShaders;
 
-unsigned int Twin2Engine::GraphicEngine::ShaderManager::LoadShaderProgram(const std::string& shaderPath)
+unsigned int Twin2Engine::GraphicEngine::ShaderManager::LoadShaderProgram(const std::string& shaderName)
 {
-    size_t strHash = stringHash(shaderPath);
+    size_t strHash = stringHash(shaderName);
 
     std::list<ShaderProgramData*>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [strHash](ShaderProgramData* data) { return data->shaderPathHash == strHash; });
 
     int shaderProgramID;
+
+    std::string shaderPath = "ShadersOrigin/CompiledShaders/" + shaderName;
 
     if (found == loadedShaders.end())
     {
@@ -130,7 +132,6 @@ bool isEmptyOrWhitespace(const std::string& str) {
 void Twin2Engine::GraphicEngine::ShaderManager::PrecompileShaders()
 {
     std::vector<std::string> originFolders = { "ShadersOrigin" };
-    //std::vector<std::string> originFolders = { "C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine"};
 
     // Search for shader program files
     for (const auto& folder : originFolders) {
@@ -140,10 +141,8 @@ void Twin2Engine::GraphicEngine::ShaderManager::PrecompileShaders()
                 std::ifstream shaderFile(entry.path());
                 if (shaderFile.is_open()) {
                     // Read shader program file
-                    std::string shaderProgramName;// , vertexShaderPath, fragmentShaderPath;
+                    std::string shaderProgramName;
                     std::getline(shaderFile, shaderProgramName);
-                    //std::getline(shaderFile, vertexShaderPath);
-                    //std::getline(shaderFile, fragmentShaderPath);
 
                     GLuint shaderProgram = glCreateProgram();
 
@@ -237,8 +236,6 @@ void Twin2Engine::GraphicEngine::ShaderManager::PrecompileShaders()
 
                         SPDLOG_INFO("Compiled and saved shader program binary: {}", outputFilePath);
                         SPDLOG_INFO("Binary format: {}", binaryFormat);
-                        //std::cout << "Compiled and saved shader program binary: " << outputFilePath << std::endl;
-                        //std::cout << "Binary format: " << binaryFormat << std::endl;
 
                         // Cleanup
                         glDeleteProgram(shaderProgram);

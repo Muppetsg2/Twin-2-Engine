@@ -4,6 +4,10 @@
 #include <Material.h>
 #include <ShaderManager.h>
 
+#include <unordered_map>
+
+#include <yaml-cpp/yaml.h>
+
 namespace Twin2Engine::GraphicEngine
 {
 	class Material;
@@ -14,10 +18,12 @@ namespace Twin2Engine::GraphicEngine
 		friend class Material;
 		//static 
 		static std::hash<std::string> stringHash;
+		static std::unordered_map<size_t, int> typeSizeMap;
 		static std::list<MaterialData*> loadedMaterials;
 
 		static void UnloadMaterial(Material& material);
-
+		static Material LoadMaterial(const string& materialPath);
+		static int DetermineSize(const std::string& type);
 	public:
 
 		static Material GetMaterial(const std::string& name);

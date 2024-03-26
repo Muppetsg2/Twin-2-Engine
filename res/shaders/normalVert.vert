@@ -29,7 +29,7 @@ out vec2 texCoords;
 out vec4 color1;
 out vec4 color2;
 
-out uint materialIndex;
+flat out uint materialIndex;
 
 uniform mat4 model;
 uniform mat4 view;

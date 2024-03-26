@@ -231,7 +231,7 @@ ma_sound sound;
 bool musicPlaying = false;
 
 
-GraphicEngine::GraphicEngine* graphicEngine;
+Twin2Engine::GraphicEngine::GraphicEngine* graphicEngine;
 
 glm::mat4 projection;
 glm::mat4 view;
@@ -308,7 +308,7 @@ int main(int, char**)
     //printf("GL_PROGRAM_BINARY_FORMATS %d\n", value);
 
     //std::cout << "Tutaj" << std::endl;
-    graphicEngine = new GraphicEngine::GraphicEngine();
+    graphicEngine = new Twin2Engine::GraphicEngine::GraphicEngine();
     //std::cout << "Tutaj" << std::endl;
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
     glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));

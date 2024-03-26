@@ -104,6 +104,7 @@ Collision* Collider::BoxBoxCollision(Collider* box1, Collider* box2, bool separa
 	//collision->position = (sphereData1->Radius * sphereData1->Position + sphereData2->Radius * sphereData2->Position) / radiusSum;
 
 	if (separate) {
+		collision->separation = glm::vec3(0.0f, 0.0f, 0.0f);
 		//collision->separation = glm::normalize(sphereData1->Position - sphereData2->Position) * ((radiusSum - glm::sqrt(distanceSqr)) / 2.0f);
 	}
 

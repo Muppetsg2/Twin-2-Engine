@@ -20,6 +20,9 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${HEADER_FILES})
 source_group(TREE ${CMAKE_SOURCE_DIR}         FILES ${ASSETS_FILES})
 
+
+add_subdirectory(GraphicEngine)
+
 # ---- Dependency ----
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES} ${ASSETS_FILES})
 
@@ -28,6 +31,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE LIBRARY_SUFFIX="")
 
 get_property(is_miniaudio GLOBAL PROPERTY ISMINIAUDIO)
 get_property(is_imgui GLOBAL PROPERTY USEIMGUI)
+
 
 if(is_miniaudio)
 	if(is_imgui)
@@ -81,3 +85,7 @@ target_link_libraries(${PROJECT_NAME} yaml-cpp)
 target_link_libraries(${PROJECT_NAME} freetype)
 target_link_libraries(${PROJECT_NAME} glm::glm)
 target_link_libraries(${PROJECT_NAME} CollisionSystem)
+
+
+target_include_directories(${PROJECT_NAME} PUBLIC ${GRAPHIC_ENGINE_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} GraphicEngine)

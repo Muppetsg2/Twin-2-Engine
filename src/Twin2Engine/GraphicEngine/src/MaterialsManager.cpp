@@ -168,7 +168,6 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 			break;
 
 		case TYPE_MAP_VEC2_HANDLE:
-			//materialParameters->Add(name, parameterValue.as<glm::vec2>());
 			materialParameters->Add(parameterName, 8ull, parameterValue.as<std::vector<float>>().data());
 			break;
 		
@@ -177,7 +176,6 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 			break;
 		
 		case TYPE_MAP_VEC4_HANDLE:
-			//materialParameters->Add(parameterName, 16ull, parameterValue.as<std::vector<float>>().data());
 			materialParameters->Add(parameterName, 16ull, parameterValue.as<std::vector<float>>().data());
 			break;
 		

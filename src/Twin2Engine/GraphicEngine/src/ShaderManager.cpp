@@ -255,7 +255,8 @@ std::string Twin2Engine::GraphicEngine::ShaderManager::LoadShaderSource(const st
 {
     std::ifstream file(filePath);
     if (!file) {
-        std::cerr << "Failed to open file: " << filePath << std::endl;
+        SPDLOG_ERROR("Failed to open shader source file: {}", filePath);
+        //std::cerr << "Failed to open file: " << filePath << std::endl;
         return "";
     }
 
@@ -277,7 +278,8 @@ GLuint Twin2Engine::GraphicEngine::ShaderManager::CompileShader(GLenum type, con
     if (!success) {
         GLchar infoLog[512];
         glGetShaderInfoLog(shader, sizeof(infoLog), nullptr, infoLog);
-        std::cerr << "Error compiling shader: " << infoLog << std::endl;
+        SPDLOG_ERROR("Error compiling shader: {}", infoLog);
+        //std::cerr << "Error compiling shader: " << infoLog << std::endl;
         glDeleteShader(shader);
         return 0;
     }
@@ -375,25 +377,15 @@ Shader* Twin2Engine::GraphicEngine::ShaderManager::GetShaderProgram(const std::s
 
 Shader* Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader)
 {
+    unsigned int vertexId = CompileShader(GL_VERTEX_SHADER, LoadShaderSource("ShadersOrigin/" + vertexShader));
 
-    unsigned int vertexId = glCreateShader(GL_VERTEX_SHADER);
-    std::string shaderSource = LoadShaderSource("ShadersOrigin/" + vertexShader);
-    const GLchar* const cstrShaderSource = (const GLchar*)shaderSource.c_str();
-    glShaderSource(vertexId, 1, &cstrShaderSource, NULL);
-    glCompileShader(vertexId);
-
-
-    unsigned int fragmentId = glCreateShader(GL_FRAGMENT_SHADER);
-    shaderSource = LoadShaderSource("ShadersOrigin/" + fragmentShader);
-    const GLchar* const cstrShaderSource2 = (const GLchar*)shaderSource.c_str();
-    glShaderSource(fragmentId, 1, &cstrShaderSource2, NULL);
-    glCompileShader(fragmentId);
+    unsigned int fragmentId = CompileShader(GL_FRAGMENT_SHADER, LoadShaderSource("ShadersOrigin/" + fragmentShader));
 
     GLuint shaderProgram = glCreateProgram();
 
-   
     glAttachShader(shaderProgram, vertexId);
     glAttachShader(shaderProgram, fragmentId);
+
     glLinkProgram(shaderProgram);
     CheckProgramLinkingSuccess(shaderProgram);
 

@@ -6,8 +6,6 @@
 #include <map>
 #include <vector>
 
-#include <spdlog/spdlog.h>
-
 namespace Twin2Engine::GraphicEngine
 {
 	class MaterialsManager;
@@ -62,9 +60,6 @@ namespace Twin2Engine::GraphicEngine
 	void MaterialParameters::Add(const std::string& variableName, size_t size, T value)
 	{
 		size_t hashed = hasher(variableName);
-
-		SPDLOG_INFO("Variable name: {}", variableName);
-		SPDLOG_INFO("Variable hash: {}", hashed);
 
 		const char* ptr = reinterpret_cast<const char*>(value);
 		std::vector<char> result(ptr, ptr + size);

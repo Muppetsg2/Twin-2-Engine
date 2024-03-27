@@ -56,73 +56,44 @@
 
 #include <memory>
 
-#include "CollisionManager.h"
-#include "core/BoxColliderComponent.h"
-#include "core/CapsuleColliderComponent.h"
-#include "core/SphereColliderComponent.h"
+#include <CollisionManager.h>
+#include <core/BoxColliderComponent.h>
+#include <core/CapsuleColliderComponent.h>
+#include <core/SphereColliderComponent.h>
+#include <core/CameraComponent.h>
 
-#pragma region CAMERA_CONTROLLING
-
-glm::vec3 cameraPos(-5.0f, 0.0f, -5.0f);
-glm::vec3 cameraFront(1.0f, 0.0f, 1.0f);
-glm::vec3 cameraUp(0.0f, 1.0f, 0.0f);
-
-double lastX = 0.0f;
-double lastY = 0.0f;
-
-float yaw = 45.0f;
-float pitch = 0.0f;
-
-GLFWcursorposfun lastMouseCallback;
-
-bool mouseUsingStarted = false;
-
-static void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-    if (mouseUsingStarted)
-    {
-        lastX = xpos;
-        lastY = ypos;
-        mouseUsingStarted = false;
-    }
-    GLfloat xoffset = xpos - lastX;
-    GLfloat yoffset = ypos - lastY; // Odwr�cone, poniewa� wsp�rz�dne zmieniaj� si� od do�u do g�ry  
-    lastX = xpos;
-    lastY = ypos;
-
-    //printf("MPosX: %f MPosY: %f\n", xpos, ypos);
-
-    GLfloat sensitivity = 0.1f;
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
-
-    yaw += xoffset;
-    pitch -= yoffset;
-
-    if (pitch > 89.0f)
-        pitch = 89.0f;
-    if (pitch < -89.0f)
-        pitch = -89.0f;
-
-    glm::vec3 front(0.f);
-    front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
-    front.y = sin(glm::radians(pitch));
-    front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
-    cameraFront = glm::normalize(front);
-}
-
-#pragma endregion
+using namespace Twin2Engine::Manager;
+using namespace Twin2Engine::Core;
+using namespace Twin2Engine::UI;
+using namespace Twin2Engine::GraphicEngine;
 
 using Twin2Engine::Core::Input;
 using Twin2Engine::Core::KEY;
 using Twin2Engine::Core::MOUSE_BUTTON;
 using Twin2Engine::Core::CURSOR_STATE;
 using Twin2Engine::Core::Time;
-using namespace Twin2Engine::Manager;
-using namespace Twin2Engine::Core;
-using namespace Twin2Engine::UI;
-using namespace Twin2Engine::GraphicEngine;
+
+#pragma region CAMERA_CONTROLLING
+
+GameObject Camera;
+
+glm::vec3 cameraPos(0.f, 0.f, 5.f);
+
+double lastX = 0.0f;
+double lastY = 0.0f;
+
+float cameraSpeed = 40.0f;
+float sensitivity = 0.1f;
+
+//float yaw2 = 45.0f;
+//float pitch2 = 0.0f;
+
+//GLFWcursorposfun lastMouseCallback;
+
+//bool mouseUsingStarted = false;
+bool mouseNotUsed = true;
+
+#pragma endregion
 
 #pragma region OpenGLCallbackFunctions
 
@@ -149,6 +120,7 @@ bool init();
 void init_imgui();
 
 void input();
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void update();
 void render();
 
@@ -189,12 +161,7 @@ ma_sound sound;
 
 bool musicPlaying = false;
 
-
 GraphicEngine* graphicEngine;
-
-glm::mat4 projection;
-glm::mat4 view;
-
 GameObject* imageObj;
 
 int main(int, char**)
@@ -261,8 +228,6 @@ int main(int, char**)
 #pragma endregion
 
     graphicEngine = new GraphicEngine();
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
-    glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
     Shader* sh = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/UI.shdr", "shaders/ui.vert", "shaders/ui.frag");
     Texture2D* tex = TextureManager::LoadTexture2D("res/textures/stone.jpg");
@@ -271,9 +236,15 @@ int main(int, char**)
     GameObject* ob = new GameObject();
     Image* img = ob->AddComponent<Image>();
     img->SetSprite(s);
+    
+    Camera.GetTransform()->SetLocalPosition(cameraPos);
+    Camera.GetTransform()->SetLocalRotation(glm::vec3(0.f, -90.f, 0.f));
+    CameraComponent* c = Camera.AddComponent<CameraComponent>();
+    c->SetIsMain(true);
+    c->SetWindowSize(glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
+    c->SetFOV(45.f);
 
     glEnable(GL_DEPTH_TEST);
-
 
     GameObject go1;
     GameObject go2;
@@ -289,7 +260,6 @@ int main(int, char**)
     bc2->Update();
 
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();
-
 
     // Main loop
     while (!window->IsClosed())
@@ -409,24 +379,31 @@ void init_imgui()
 
 void input()
 {
-    float cameraSpeed = 1.0f; // dopasuj do swoich potrzeb  
+    if (Input::IsKeyPressed(KEY::ESCAPE)) 
+    {
+        window->Close();
+        return;
+    }
 
-    if (Input::IsKeyHeldDown(KEY::W))
+    CameraComponent* c = Camera.GetComponent<CameraComponent>();        
+
+    if (!Input::IsKeyUp(KEY::W))
     {
-        cameraPos += cameraSpeed * cameraFront * Time::GetDeltaTime();
+        Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
-    if (Input::IsKeyHeldDown(KEY::S))
+    if (!Input::IsKeyUp(KEY::S))
     {
-        cameraPos -= cameraSpeed * cameraFront * Time::GetDeltaTime();
+        Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
-    if (Input::IsKeyHeldDown(KEY::A))
+    if (!Input::IsKeyUp(KEY::A))
     {
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * Time::GetDeltaTime();
+        Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
-    if (Input::IsKeyHeldDown(KEY::D))
+    if (!Input::IsKeyUp(KEY::D))
     {
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * Time::GetDeltaTime();
+        Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
+    /*
     if (Input::IsKeyHeldDown(KEY::Q))
     {
         cameraPos -= cameraUp * cameraSpeed * Time::GetDeltaTime();
@@ -435,6 +412,9 @@ void input()
     {
         cameraPos += cameraUp * cameraSpeed * Time::GetDeltaTime();
     }
+    */
+
+    /*
     static bool cursorToggle = false;
 
     if (Input::IsMouseButtonPressed(MOUSE_BUTTON::MIDDLE))
@@ -456,6 +436,71 @@ void input()
             cursorToggle = !cursorToggle;
         }
     }
+    */
+
+    if (Input::IsKeyPressed(KEY::LEFT_ALT)) 
+    {
+        mouseNotUsed = true;
+        if (Input::GetCursorState() == CURSOR_STATE::DISABLED) 
+        {
+            Input::ShowCursor();
+            glfwSetCursorPosCallback(window->GetWindow(), ImGui_ImplGlfw_CursorPosCallback);
+        }
+        else
+        {
+            Input::HideAndLockCursor();
+            glfwSetCursorPosCallback(window->GetWindow(), mouse_callback);
+        }
+    }
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    if (mouseNotUsed)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        mouseNotUsed = false;
+    }
+
+    GLfloat xoffset = xpos - lastX;
+    GLfloat yoffset = lastY - ypos; // Odwrocone, poniewaz wsporzedne zmieniaja sie od dolu do gory  
+    lastX = xpos;
+    lastY = ypos;
+
+    //printf("MPosX: %f MPosY: %f\n", xpos, ypos);
+
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    //yaw += xoffset;
+    //pitch += yoffset;
+
+    glm::vec3 rot = Camera.GetTransform()->GetLocalRotation();
+
+    // YAW = ROT Y
+    // PITCH = ROT X
+    // ROLL = ROT Z
+
+    Camera.GetTransform()->SetLocalRotation(glm::vec3(rot.x + yoffset, rot.y + xoffset, rot.z));
+
+    rot = Camera.GetTransform()->GetLocalRotation();
+
+    if (rot.x > 89.0f) {
+        Camera.GetTransform()->SetLocalRotation(glm::vec3(89.f, rot.y, rot.z));
+    }
+    if (rot.x < -89.0f)
+    {
+        Camera.GetTransform()->SetLocalRotation(glm::vec3(-89.f, rot.y, rot.z));
+    }
+
+    rot = Camera.GetTransform()->GetLocalRotation();
+
+    glm::vec3 front{};
+    front.x = cos(glm::radians(rot.y)) * cos(glm::radians(rot.x));
+    front.y = sin(glm::radians(rot.x));
+    front.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
+    Camera.GetComponent<CameraComponent>()->SetFrontDir(glm::normalize(front));
 }
 
 void update()
@@ -466,15 +511,12 @@ void update()
 void render()
 {
     // OpenGL Rendering code goes here
-    glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 5.0f);
-    glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
-    glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
-    graphicEngine->Render(view, projection);
+    graphicEngine->Render(Camera.GetComponent<CameraComponent>()->GetViewMatrix(), Camera.GetComponent<CameraComponent>()->GetProjectionMatrix());
+    /*
     for (auto& comp : RenderableComponent::renderableComponents) {
         comp->Render();
     }
+    */
 }
 
 void imgui_begin()
@@ -644,6 +686,7 @@ void end_frame()
     window->Update();
 }
 
-float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd) {
+float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd) 
+{
     return expectedStart + ((expectedEnd - expectedStart) / (currEnd - currStart)) * (input - currStart);
 }

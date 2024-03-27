@@ -325,6 +325,11 @@ void Window::Focus()
 	glfwFocusWindow(_window);
 }
 
+void Window::Close()
+{
+	glfwSetWindowShouldClose(_window, true);
+}
+
 void Window::RequestAttention()
 {
 	glfwRequestWindowAttention(_window);

@@ -498,23 +498,28 @@ void Twin2Engine::Core::Transform::RecalculateTransformMatrix()
 		//_dirtyFlag = false;
 	}
 
-
 	if (_dirtyFlagInHierarchy)
 	{
-		if (_parent != originTransform)
-		{
-			_parent->RecalculateTransformMatrix();
-			//_globalTransformMatrix = _parent->GetTransformMatrix() * _localTransformMatrix;
-		}
+		if (_parent != nullptr) {
+
+			if (_parent != originTransform)
+			{
+				_parent->RecalculateTransformMatrix();
+				//_globalTransformMatrix = _parent->GetTransformMatrix() * _localTransformMatrix;
+			}
 	
-		//_dirtyFlagInHierarchy = false;
+			//_dirtyFlagInHierarchy = false;
+		}
 	}
 
 	if (_dirtyFlag || _dirtyFlagInHierarchy)
 	{
-		if (_parent != originTransform)
-		{
-			_globalTransformMatrix = _parent->GetTransformMatrix() * _localTransformMatrix;
+		if (_parent != nullptr) {
+
+			if (_parent != originTransform)
+			{
+				_globalTransformMatrix = _parent->GetTransformMatrix() * _localTransformMatrix;
+			}
 		}
 		else
 		{

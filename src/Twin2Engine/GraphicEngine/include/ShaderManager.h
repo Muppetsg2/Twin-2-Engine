@@ -58,7 +58,6 @@ namespace Twin2Engine::GraphicEngine
 		static void IncrementUseNumber(int shaderProgramID);
 
 		//Precompilation methods
-		static void PrecompileShaders();
 		static std::string LoadShaderSource(const std::string& filePath);
 		static GLuint CompileShader(GLenum type, const std::string& source);
 		static inline bool CheckShaderCompilationSuccess(GLuint shaderId);

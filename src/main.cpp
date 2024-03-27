@@ -36,6 +36,9 @@
 // TIME
 #include <core/Time.h>
 
+// WINDOW
+#include <core/Window.h>
+
 // MANAGERS
 #include <manager/TextureManager.h>
 #include <manager/SpriteManager.h>
@@ -69,7 +72,7 @@ GLFWcursorposfun lastMouseCallback;
 
 bool mouseUsingStarted = false;
 
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+static void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
     if (mouseUsingStarted)
     {
@@ -104,81 +107,28 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     cameraFront = glm::normalize(front);
 }
 
+#pragma endregion
+
 using Twin2Engine::Core::Input;
 using Twin2Engine::Core::KEY;
 using Twin2Engine::Core::MOUSE_BUTTON;
+using Twin2Engine::Core::CURSOR_STATE;
 using Twin2Engine::Core::Time;
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
-
-void processInput(GLFWwindow* window)
-{
-    float cameraSpeed = 1.0f; // dopasuj do swoich potrzeb  
-
-    if (Input::IsKeyHeldDown(Twin2Engine::Core::KEY::W))
-    {
-        cameraPos += cameraSpeed * cameraFront * Time::GetDeltaTime();
-    }
-    if (Input::IsKeyHeldDown(KEY::S))
-    {
-        cameraPos -= cameraSpeed * cameraFront * Time::GetDeltaTime();
-    }
-    if (Input::IsKeyHeldDown(KEY::A))
-    {
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * Time::GetDeltaTime();
-    }
-    if (Input::IsKeyHeldDown(KEY::D))
-    {
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * Time::GetDeltaTime();
-    }
-    if (Input::IsKeyHeldDown(KEY::Q))
-    {
-        cameraPos -= cameraUp * cameraSpeed * Time::GetDeltaTime();
-    }
-    if (Input::IsKeyHeldDown(KEY::E))
-    {
-        cameraPos += cameraUp * cameraSpeed * Time::GetDeltaTime();
-    }
-    static bool cursorToggle = false;
-
-    //if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS)
-    if (Input::IsMouseButtonPressed(MOUSE_BUTTON::MIDDLE))
-    {
-        if (!cursorToggle)
-        {
-            lastMouseCallback = glfwSetCursorPosCallback(window, mouse_callback);
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            cursorToggle = !cursorToggle;
-            mouseUsingStarted = true;
-        }
-    }
-    //else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_RELEASE)
-    else if (Input::IsMouseButtonReleased(MOUSE_BUTTON::MIDDLE))
-    {
-        if (cursorToggle)
-        {
-            glfwSetCursorPosCallback(window, lastMouseCallback);
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            cursorToggle = !cursorToggle;
-        }
-    }
-
-
-}
-
-#pragma endregion
+using namespace Twin2Engine::GraphicEngine;
 
 #pragma region OpenGLCallbackFunctions
-
-static void glfw_error_callback(int error, const char* description)
-{
-    spdlog::error("Glfw Error {0}: {1}\n", error, description);
-}
 
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
+}
+
+static void glfw_error_callback(int error, const char* description)
+{
+    spdlog::error("Glfw Error {0}: {1}\n", error, description);
 }
 
 static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
@@ -210,10 +160,9 @@ float fmapf(float input, float currStart, float currEnd, float expectedStart, fl
 constexpr int32_t WINDOW_WIDTH  = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
 const char* WINDOW_NAME = "Twin^2 Engine";
-constexpr bool fullscreen = false;
+bool fullscreen = false;
 
-GLFWmonitor* monitor = nullptr;
-GLFWwindow* window = nullptr;
+Window* window = nullptr;
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
 const     char*   glsl_version     = "#version 450";
@@ -237,7 +186,7 @@ ma_sound sound;
 bool musicPlaying = false;
 
 
-Twin2Engine::GraphicEngine::GraphicEngine* graphicEngine;
+GraphicEngine* graphicEngine;
 
 glm::mat4 projection;
 glm::mat4 view;
@@ -307,21 +256,11 @@ int main(int, char**)
 
 #pragma endregion
 
-    //int value;
-    //glGetIntegerv(GL_NUM_PROGRAM_BINARY_FORMATS, &value);
-    //printf("GL_NUM_PROGRAM_BINARY_FORMATS %d\n", value);
-    //glGetIntegerv(GL_PROGRAM_BINARY_FORMATS, &value);
-    //printf("GL_PROGRAM_BINARY_FORMATS %d\n", value);
-    //glGetIntegerv(GL_PROGRAM_BINARY_FORMATS, &value);
-    //printf("GL_PROGRAM_BINARY_FORMATS %d\n", value);
-
-    //std::cout << "Tutaj" << std::endl;
-    graphicEngine = new Twin2Engine::GraphicEngine::GraphicEngine();
-    //std::cout << "Tutaj" << std::endl;
+    graphicEngine = new GraphicEngine();
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
     glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-    Shader* sh = Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/UI.shdr", "shaders/ui.vert", "shaders/ui.frag");
+    Shader* sh = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/UI.shdr", "shaders/ui.vert", "shaders/ui.frag");
     Texture2D* tex = TextureManager::LoadTexture2D("res/textures/stone.jpg");
     Sprite* s = SpriteManager::MakeSprite(tex, "stone1", 0, 0, tex->GetWidth(), tex->GetHeight());
 
@@ -332,7 +271,7 @@ int main(int, char**)
     glEnable(GL_DEPTH_TEST);
 
     // Main loop
-    while (!glfwWindowShouldClose(window))
+    while (!window->IsClosed())
     {
         // Process I/O operations here
         input();
@@ -364,8 +303,7 @@ int main(int, char**)
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    Twin2Engine::Core::Input::FreeAllWindows();
-    glfwDestroyWindow(window);
+    delete window;
     glfwTerminate();
 
     return 0;
@@ -375,7 +313,7 @@ bool init()
 {
     // Setup window
     glfwSetErrorCallback(glfw_error_callback);
-    if (!glfwInit()) 
+    if (!glfwInit())
     {
         spdlog::error("Failed to initalize GLFW!");
         return false;
@@ -387,30 +325,10 @@ bool init()
     glfwWindowHint(GLFW_OPENGL_PROFILE,        GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 
-    // Creates Monitor
-    if (fullscreen) {
-        monitor = glfwGetPrimaryMonitor();
-        if (monitor == NULL) {
-            spdlog::warn("Failed to create GLFW Monitor");
-        }
-    }
-
-    // Create window with graphics context
-    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME, monitor, NULL);
-    if (window == NULL)
-    {
-        spdlog::error("Failed to create GLFW Window!");
-        return false;
-    }
-    spdlog::info("Successfully created GLFW Window!");
-
-    glfwMakeContextCurrent(window);
-    //glfwSwapInterval(1); // Enable VSync - fixes FPS at the refresh rate of your screen
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    Twin2Engine::Core::Input::InitForWindow(window);
+    window = new Window(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT });
+    glfwSetFramebufferSizeCallback(window->GetWindow(), framebuffer_size_callback);
 
     bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-
     if (err)
     {
         spdlog::error("Failed to initialize OpenGL loader!");
@@ -445,7 +363,7 @@ void init_imgui()
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
 
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplGlfw_InitForOpenGL(window->GetWindow(), true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     // Setup style
@@ -470,10 +388,53 @@ void init_imgui()
 
 void input()
 {
-    processInput(window);
-    /*if (Twin2EngineCore::Input::IsKeyPressed(Twin2EngineCore::KEY::W)) {
-        spdlog::info("Delta Time: {}\n", Twin2EngineCore::Time::GetDeltaTime());
-    }*/
+    float cameraSpeed = 1.0f; // dopasuj do swoich potrzeb  
+
+    if (Input::IsKeyHeldDown(KEY::W))
+    {
+        cameraPos += cameraSpeed * cameraFront * Time::GetDeltaTime();
+    }
+    if (Input::IsKeyHeldDown(KEY::S))
+    {
+        cameraPos -= cameraSpeed * cameraFront * Time::GetDeltaTime();
+    }
+    if (Input::IsKeyHeldDown(KEY::A))
+    {
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * Time::GetDeltaTime();
+    }
+    if (Input::IsKeyHeldDown(KEY::D))
+    {
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * Time::GetDeltaTime();
+    }
+    if (Input::IsKeyHeldDown(KEY::Q))
+    {
+        cameraPos -= cameraUp * cameraSpeed * Time::GetDeltaTime();
+    }
+    if (Input::IsKeyHeldDown(KEY::E))
+    {
+        cameraPos += cameraUp * cameraSpeed * Time::GetDeltaTime();
+    }
+    static bool cursorToggle = false;
+
+    if (Input::IsMouseButtonPressed(MOUSE_BUTTON::MIDDLE))
+    {
+        if (!cursorToggle)
+        {
+            lastMouseCallback = glfwSetCursorPosCallback(window->GetWindow(), mouse_callback);
+            Input::HideAndLockCursor();
+            cursorToggle = !cursorToggle;
+            mouseUsingStarted = true;
+        }
+    }
+    else if (Input::IsMouseButtonReleased(MOUSE_BUTTON::MIDDLE))
+    {
+        if (cursorToggle)
+        {
+            glfwSetCursorPosCallback(window->GetWindow(), lastMouseCallback);
+            Input::ShowCursor();
+            cursorToggle = !cursorToggle;
+        }
+    }
 }
 
 void update()
@@ -505,45 +466,71 @@ void imgui_begin()
 
 void imgui_render()
 {
-    if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL)
+    if (Input::GetCursorState() == NORMAL)
     {
-        {
-            ImGui::Begin("Twin^2 Engine");
+        ImGui::Begin("Twin^2 Engine");
 
-            ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Hello World!");
+        ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Hello World!");
 
-            if (ImGui::Button("Play Song")) {
-                if (!musicPlaying) {
-                    //ma_sound_start(&sound);
-                    if (first) {
-                        sampleHandle = soloud.play(smusicSmple);
-                        first = false;
-                    }
-                    else {
-                        soloud.setPause(sampleHandle, false);
-                    }
-                    musicPlaying = true;
+        if (ImGui::Button("Play Song")) {
+            if (!musicPlaying) {
+                //ma_sound_start(&sound);
+                if (first) {
+                    sampleHandle = soloud.play(smusicSmple);
+                    first = false;
                 }
-            }
-
-            if (ImGui::Button("Stop Song")) {
-                if (musicPlaying) {
-                    //ma_sound_stop(&sound);
-                    soloud.setPause(sampleHandle, true);
-                    musicPlaying = false;
+                else {
+                    soloud.setPause(sampleHandle, false);
                 }
+                musicPlaying = true;
             }
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
         }
+
+        if (ImGui::Button("Stop Song")) {
+            if (musicPlaying) {
+                //ma_sound_stop(&sound);
+                soloud.setPause(sampleHandle, true);
+                musicPlaying = false;
+            }
+        }
+
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+        ImGui::Separator();
+        // Window Settings
+        if (!fullscreen) {
+            int monitorsCount;
+            GLFWmonitor** monitors = glfwGetMonitors(&monitorsCount);
+
+            for (int i = 0; i < monitorsCount; ++i) {
+                int x, y, mw, mh;
+
+                glfwGetMonitorPos(monitors[i], &x, &y);
+                const GLFWvidmode* vid = glfwGetVideoMode(monitors[i]);
+                const char* name = glfwGetMonitorName(monitors[i]);
+                glfwGetMonitorPhysicalSize(monitors[i], &mw, &mh);
+                std::string btnText = std::to_string(i) + ": " + std::to_string(mw) + "x" + std::to_string(mh);
+                if (ImGui::Button(btnText.c_str())) {
+                    window->SetFullscreen(monitors[i], { WINDOW_WIDTH, WINDOW_HEIGHT }, 60);
+                    fullscreen = true;
+                }
+            }
+        }
+        else {
+            if (ImGui::Button("Windowed")) {
+                window->SetWindowed({ 0, 0 }, { WINDOW_WIDTH, WINDOW_HEIGHT });
+                fullscreen = false;
+            }
+        }
+
+        ImGui::End();
     }
 }
 
 void imgui_end()
 {
     ImGui::Render();
-    glfwMakeContextCurrent(window);
+    window->Use();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
@@ -554,10 +541,9 @@ void end_frame()
     // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
     // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
     // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-    Twin2Engine::Core::Time::Update();
-    Twin2Engine::Core::Input::Update();
-    glfwMakeContextCurrent(window);
-    glfwSwapBuffers(window);
+    Time::Update();
+    Input::Update();
+    window->Update();
 }
 
 float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd) {

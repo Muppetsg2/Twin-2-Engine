@@ -1,4 +1,5 @@
 #include <core/Input.h>
+#include <core/Window.h>
 #include <string>
 
 using namespace std;
@@ -55,6 +56,11 @@ void Input::InitForWindow(GLFWwindow* window, bool mainWindow)
 	if (mainWindow || _mainWindow == nullptr) SetMainWindow(window);
 }
 
+void Input::InitForWindow(Window* window, bool mainWindow)
+{
+	InitForWindow(window->GetWindow(), mainWindow);
+}
+
 void Input::FreeWindow(GLFWwindow* window)
 {
 	// Delete Keys Tables
@@ -73,6 +79,11 @@ void Input::FreeWindow(GLFWwindow* window)
 	}
 }
 
+void Input::FreeWindow(Window* window)
+{
+	FreeWindow(window->GetWindow());
+}
+
 void Input::FreeAllWindows()
 {
 	while (_windows.size() > 0) {
@@ -80,12 +91,17 @@ void Input::FreeAllWindows()
 	}
 }
 
-constexpr void Input::SetMainWindow(GLFWwindow* window)
+void Input::SetMainWindow(GLFWwindow* window)
 {
 	_mainWindow = window;
 }
 
-constexpr GLFWwindow* Input::GetMainWindow()
+void Input::SetMainWindow(Window* window)
+{
+	SetMainWindow(window->GetWindow());
+}
+
+GLFWwindow* Input::GetMainWindow()
 {
 	return _mainWindow;
 }
@@ -133,6 +149,11 @@ void Input::KeepCursorInWindow(GLFWwindow* window)
 void Input::ShowCursor(GLFWwindow* window)
 {
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+
+CURSOR_STATE Input::GetCursorState(GLFWwindow* window)
+{
+	return (CURSOR_STATE)glfwGetInputMode(window, GLFW_CURSOR);
 }
 
 vec2 Input::GetMousePos(GLFWwindow* window)
@@ -203,6 +224,96 @@ bool Input::IsKeyHeldUp(GLFWwindow* window, KEY key)
 	return _keyStates[window][key] == INPUT_STATE::UP;
 }
 
+void Input::HideAndLockCursor(Window* window)
+{
+	return HideAndLockCursor(window->GetWindow());
+}
+
+void Input::HideCursor(Window* window)
+{
+	HideCursor(window->GetWindow());
+}
+
+void Input::KeepCursorInWindow(Window* window)
+{
+	KeepCursorInWindow(window->GetWindow());
+}
+
+void Input::ShowCursor(Window* window)
+{
+	ShowCursor(window->GetWindow());
+}
+
+CURSOR_STATE Input::GetCursorState(Window* window)
+{
+	return GetCursorState(window->GetWindow());
+}
+
+vec2 Input::GetMousePos(Window* window)
+{
+	return GetMousePos(window->GetWindow());
+}
+
+bool Input::IsMouseButtonPressed(Window* window, MOUSE_BUTTON button)
+{
+	return IsMouseButtonPressed(window->GetWindow(), button);
+}
+
+bool Input::IsMouseButtonReleased(Window* window, MOUSE_BUTTON button)
+{
+	return IsMouseButtonReleased(window->GetWindow(), button);
+}
+
+bool Input::IsMouseButtonDown(Window* window, MOUSE_BUTTON button)
+{
+	return IsMouseButtonDown(window->GetWindow(), button);
+}
+
+bool Input::IsMouseButtonHeldDown(Window* window, MOUSE_BUTTON button)
+{
+	return IsMouseButtonHeldDown(window->GetWindow(), button);
+}
+
+bool Input::IsMouseButtonUp(Window* window, MOUSE_BUTTON button)
+{
+	return IsMouseButtonUp(window->GetWindow(), button);
+}
+
+bool Input::IsMouseButtonHeldUp(Window* window, MOUSE_BUTTON button)
+{
+	return IsMouseButtonHeldUp(window->GetWindow(), button);
+}
+
+bool Input::IsKeyPressed(Window* window, KEY key)
+{
+	return IsKeyPressed(window->GetWindow(), key);
+}
+
+bool Input::IsKeyReleased(Window* window, KEY key)
+{
+	return IsKeyReleased(window->GetWindow(), key);
+}
+
+bool Input::IsKeyDown(Window* window, KEY key)
+{
+	return IsKeyDown(window->GetWindow(), key);
+}
+
+bool Input::IsKeyHeldDown(Window* window, KEY key)
+{
+	return IsKeyHeldDown(window->GetWindow(), key);
+}
+
+bool Input::IsKeyUp(Window* window, KEY key)
+{
+	return IsKeyUp(window->GetWindow(), key);
+}
+
+bool Input::IsKeyHeldUp(Window* window, KEY key)
+{
+	return IsKeyHeldUp(window->GetWindow(), key);
+}
+
 void Input::HideAndLockCursor()
 {
 	HideAndLockCursor(_mainWindow);
@@ -221,6 +332,11 @@ void Input::KeepCursorInWindow()
 void Input::ShowCursor()
 {
 	ShowCursor(_mainWindow);
+}
+
+CURSOR_STATE Input::GetCursorState()
+{
+	return GetCursorState(_mainWindow);
 }
 
 vec2 Input::GetMousePos()

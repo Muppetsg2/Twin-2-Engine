@@ -3,6 +3,7 @@
 #include <Shader.h>
 #include <vector>
 #include <core/Transform.h>
+#include <UIRenderingManager.h>
 
 using namespace Twin2Engine;
 using namespace UI;
@@ -26,6 +27,8 @@ vector<float> verticies{
 
 void Image::Initialize()
 {
+	UIRenderingManager::Register(this);
+
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 	glGenBuffers(1, &VBO);
@@ -40,7 +43,7 @@ void Image::Initialize()
 	glEnableVertexAttribArray(2);
 }
 
-void Image::Render()
+void Image::Render(const Window* window)
 {
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -58,6 +61,12 @@ void Image::Render()
 	_sprite->Use(0);
 	uiShader->setInt("sprite.img", 0);
 
+	ivec2 canvasSize = window->GetWindowSize();
+	uiShader->setFloat("canvas.width", canvasSize.x);
+	uiShader->setFloat("canvas.height", canvasSize.y);
+	uiShader->setFloat("canvas.elemWidth", _width);
+	uiShader->setFloat("canvas.elemHeight", _height);
+
 	mat4 model = getTransform()->GetTransformMatrix();
 	mat4 normalModel = mat4(mat3(transpose(inverse(model))));
 	uiShader->setMat4("model", model);
@@ -69,6 +78,7 @@ void Image::Render()
 void Image::OnDestroy()
 {
 	_sprite = nullptr;
+	UIRenderingManager::Unregister(this);
 }
 
 void Image::SetSprite(Sprite* sprite)
@@ -81,6 +91,16 @@ void Image::SetColor(const vec4& color)
 	_color = color;
 }
 
+void Image::SetWidth(float width)
+{
+	_width = width;
+}
+
+void Image::SetHeight(float height)
+{
+	_height = height;
+}
+
 constexpr Sprite* Image::GetSprite() const
 {
 	return _sprite;
@@ -89,4 +109,14 @@ constexpr Sprite* Image::GetSprite() const
 vec4 Image::GetColor() const
 {
 	return _color;
+}
+
+float Image::GetWidth() const
+{
+	return _width;
+}
+
+float Image::GetHeight() const
+{
+	return _height;
 }

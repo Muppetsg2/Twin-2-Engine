@@ -14,11 +14,15 @@
 #include <MeshRenderer.h>
 #include <MeshRenderingManager.h>
 
+#include <UIRenderingManager.h>
+
 #include <core/GameObject.h>
 #include <core/Transform.h>
+#include <core/Window.h>
 
 using Twin2Engine::Core::GameObject;
 using Twin2Engine::Core::Transform;
+using Twin2Engine::Core::Window;
 
 using std::vector;
 
@@ -150,7 +154,7 @@ namespace Twin2Engine
 			//	return instance;
 			//}
 
-			void Render(glm::mat4& view, glm::mat4& projection)
+			void Render(const Window* window, glm::mat4& view, glm::mat4& projection)
 			{
 				shader->use();
 				shader->setMat4("projection", projection);
@@ -160,6 +164,7 @@ namespace Twin2Engine
 				shader->setMat4("model", model);
 				//std::cout << "Tutaj1\n";
 				MeshRenderingManager::Render();
+				UIRenderingManager::Render(window);
 			}
 		};
 	}

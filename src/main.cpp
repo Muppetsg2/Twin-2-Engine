@@ -269,6 +269,7 @@ int main(int, char**)
     Sprite* s = SpriteManager::MakeSprite(tex, "stone1", 0, 0, tex->GetWidth(), tex->GetHeight());
 
     GameObject* ob = new GameObject();
+    ob->GetTransform()->SetLocalPosition(glm::vec3(1920.f / 2.f, 1080.f / 2.f, 0.f));
     Image* img = ob->AddComponent<Image>();
     img->SetSprite(s);
 
@@ -471,10 +472,7 @@ void render()
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
     glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-    graphicEngine->Render(view, projection);
-    for (auto& comp : RenderableComponent::renderableComponents) {
-        comp->Render();
-    }
+    graphicEngine->Render(window, view, projection);
 }
 
 void imgui_begin()

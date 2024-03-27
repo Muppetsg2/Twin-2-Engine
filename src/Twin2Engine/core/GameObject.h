@@ -112,7 +112,7 @@ Twin2Engine::Core::GameObject::GetComponent()
 		return nullptr;
 	}
 
-	return *itr;
+	return static_cast<T*>(*itr);
 }
 
 template<class T>

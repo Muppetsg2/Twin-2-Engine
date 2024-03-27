@@ -1,14 +1,7 @@
 #include <core/CameraComponent.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/glm.hpp>
 #include <core/Transform.h>
-
-Twin2Engine::Core::CameraComponent::CameraComponent()
-{
-}
-
-Twin2Engine::Core::CameraComponent::~CameraComponent()
-{
-}
 
 Twin2Engine::Core::CameraType Twin2Engine::Core::CameraComponent::GetCameraType()
 {
@@ -63,6 +56,26 @@ mat4 Twin2Engine::Core::CameraComponent::GetProjectionMatrix()
 			break;
 		}
 	}
+}
+
+Frustum Twin2Engine::Core::CameraComponent::GetFrustum()
+{
+	Frustum frustum;
+	float halfVSide = _far * tanf(_fov * .5f);
+	float aspect = (float)_w_width / (float)_w_height;
+	float halfHSide = halfVSide * aspect;
+	vec3 frontMultFar = _far * _front;
+
+	vec3 pos = getTransform()->GetGlobalPosition();
+
+	frustum.nearFace = { pos + _near * _front, _front };
+	frustum.farFace = { pos + frontMultFar, -_front };
+	frustum.rightFace = { pos, cross(frontMultFar - _right * halfHSide, _up) };
+	frustum.leftFace = { pos, cross(_up, frontMultFar + _right * halfHSide) };
+	frustum.topFace = { pos, cross(_right, frontMultFar - _up * halfVSide) };
+	frustum.bottomFace = { pos, cross(frontMultFar + _up * halfVSide, _right) };
+
+	return frustum;
 }
 
 bool Twin2Engine::Core::CameraComponent::IsMain() const

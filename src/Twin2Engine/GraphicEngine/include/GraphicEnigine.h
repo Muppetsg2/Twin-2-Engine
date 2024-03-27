@@ -154,7 +154,7 @@ namespace Twin2Engine
 			//	return instance;
 			//}
 
-			void Render(const Window* window, glm::mat4& view, glm::mat4& projection)
+			void Render(const Window* window, glm::mat4 view, glm::mat4 projection)
 			{
 				shader->use();
 				shader->setMat4("projection", projection);

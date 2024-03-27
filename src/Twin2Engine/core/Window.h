@@ -57,6 +57,7 @@ namespace Twin2Engine {
 			void Hide();
 			void Show();
 			void Focus();
+			void Close();
 			void RequestAttention();
 #pragma endregion
 #pragma endregion

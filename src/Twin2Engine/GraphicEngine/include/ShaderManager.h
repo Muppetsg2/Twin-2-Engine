@@ -60,7 +60,7 @@ namespace Twin2Engine::GraphicEngine
 		//Precompilation methods
 		static std::string LoadShaderSource(const std::string& filePath);
 		static GLuint CompileShader(GLenum type, const std::string& source);
-		static void CheckShaderCompilationSuccess(GLuint shaderId);
+		static inline bool CheckShaderCompilationSuccess(GLuint shaderId);
 		static void CheckProgramLinkingSuccess(GLuint programId);
 		static inline void PrecompileShaders();
 

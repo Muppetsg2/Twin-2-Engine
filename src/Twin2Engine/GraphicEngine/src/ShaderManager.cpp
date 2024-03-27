@@ -147,12 +147,11 @@ void Twin2Engine::GraphicEngine::ShaderManager::PrecompileShaders()
     // Search for shader program files
     //for (const auto& folder : originFolders)
     {
-        const string folder = SHADERS_ORIGIN_DIRETORY;
-        //std::filesystem::path path = folder;
-        std::filesystem::path path = folder;
-        for (const auto& entry : std::filesystem::recursive_directory_iterator(path)) {
-            if (entry.path().extension() == SHADER_PROGRAM_EXTENSION) {
-
+        std::filesystem::path path = SHADERS_ORIGIN_DIRETORY;
+        for (const auto& entry : std::filesystem::recursive_directory_iterator(path))
+        {
+            if (entry.path().extension() == SHADER_PROGRAM_EXTENSION) 
+            {
                 string shaderName;
                 GLuint shaderProgramId = CreateShaderProgramFromFile(entry.path().string(), shaderName);
 
@@ -163,89 +162,6 @@ void Twin2Engine::GraphicEngine::ShaderManager::PrecompileShaders()
                     // Cleanup
                     glDeleteProgram(shaderProgramId);
                 }
-                //std::ifstream shaderFile(entry.path());
-                //if (shaderFile.is_open()) {
-                //    // Read shader program file
-                //    std::string shaderProgramName;
-                //    std::getline(shaderFile, shaderProgramName);
-                //
-                //    GLuint shaderProgram = glCreateProgram();
-                //
-                //    std::string line;
-                //    std::list<unsigned int> shaderIds;
-                //    while (!shaderFile.eof())
-                //    {
-                //        std::getline(shaderFile, line);
-                //
-                //        std::cout << line << std::endl;
-                //        if (isEmptyOrWhitespace(line))
-                //        {
-                //            continue;
-                //        }
-                //
-                //        size_t extensionHash = stringHash(line.substr(line.size() - 4, 4));
-                //        if (!shaderTypeMapping.contains(extensionHash))
-                //        {
-                //            SPDLOG_ERROR("Unrecogniced extension in shader program encountered. Path: {} in ShaderProgram {}", line, shaderProgramName);
-                //            return;
-                //        }
-                //
-                //        GLuint shaderId = CompileShader(shaderTypeMapping.at(extensionHash), LoadShaderSource(folder + "/" + line));
-                //
-                //        glAttachShader(shaderProgram, shaderId);
-                //
-                //        shaderIds.push_back(shaderId);
-                //    }
-                //    glLinkProgram(shaderProgram);
-                //    CheckProgramLinkingSuccess(shaderProgram);
-                //
-                //    for (unsigned int id : shaderIds)
-                //    {
-                //        glDeleteShader(id);
-                //    }
-                //
-                //    if (shaderProgram != 0) {
-                //        // Get program binary
-                //        GLint binaryLength;
-                //        glGetProgramiv(shaderProgram, GL_PROGRAM_BINARY_LENGTH, &binaryLength);
-                //        std::vector<GLchar> binaryData(binaryLength);
-                //
-                //        glGetProgramBinary(shaderProgram, binaryLength, nullptr, &binaryFormat, binaryData.data());
-                //
-                //        // Save binary to file
-                //        std::string outputFilePath = folder + std::string("/CompiledShaders/") + shaderProgramName + SHADER_BINARY_EXTENSION;
-                //        std::ofstream binaryFile;// (outputFilePath, std::ios::binary);
-                //        try {
-                //            std::filesystem::create_directories(outputFilePath.substr(0, outputFilePath.find_last_of('/')));
-                //            // return true;
-                //        }
-                //        catch (const std::filesystem::filesystem_error& e) {
-                //            SPDLOG_ERROR("Failed to create directories: {}", e.what());
-                //            //std::cerr << "Failed to create directories: " << e.what() << std::endl;
-                //            //return false;
-                //        }
-                //        binaryFile.open(outputFilePath, std::ios::binary);
-                //        if (binaryFile.is_open())
-                //        {
-                //            //std::cout << "Output file opened\n";
-                //        }
-                //        else
-                //        {
-                //            SPDLOG_ERROR("SHADER output file not opened: {}", outputFilePath);
-                //        }
-                //        binaryFile.write(binaryData.data(), binaryLength);
-                //        binaryFile.close();
-                //
-                //        SPDLOG_INFO("Compiled and saved shader program binary: {}", outputFilePath);
-                //        SPDLOG_INFO("Binary format: {}", binaryFormat);
-                //
-                //        // Cleanup
-                //        glDeleteProgram(shaderProgram);
-                //    }
-                //}
-                //else {
-                //    SPDLOG_ERROR("Failed to open shader program file: {}", entry.path().string());
-                //}
             }
         }
     }
@@ -257,7 +173,6 @@ std::string Twin2Engine::GraphicEngine::ShaderManager::LoadShaderSource(const st
     std::ifstream file(filePath);
     if (!file) {
         SPDLOG_ERROR("Failed to open shader source file: {}", filePath);
-        //std::cerr << "Failed to open file: " << filePath << std::endl;
         return "";
     }
 
@@ -268,36 +183,31 @@ std::string Twin2Engine::GraphicEngine::ShaderManager::LoadShaderSource(const st
 
 GLuint Twin2Engine::GraphicEngine::ShaderManager::CompileShader(GLenum type, const std::string& source)
 {
-    GLuint shader = glCreateShader(type);
+    GLuint shaderId = glCreateShader(type);
     const char* src = source.c_str();
-    glShaderSource(shader, 1, &src, nullptr);
-    glCompileShader(shader);
+    glShaderSource(shaderId, 1, &src, nullptr);
+    glCompileShader(shaderId);
 
-    // Check for compilation errors
-    GLint success;
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        GLchar infoLog[512];
-        glGetShaderInfoLog(shader, sizeof(infoLog), nullptr, infoLog);
-        SPDLOG_ERROR("Error compiling shader: {}", infoLog);
-        //std::cerr << "Error compiling shader: " << infoLog << std::endl;
-        glDeleteShader(shader);
-        return 0;
+    if (!CheckShaderCompilationSuccess(shaderId)) 
+    {
+        glDeleteShader(shaderId);
+        shaderId = 0;
     }
 
-    return shader;
+    return shaderId;
 }
 
-void Twin2Engine::GraphicEngine::ShaderManager::CheckShaderCompilationSuccess(GLuint shaderId)
+bool Twin2Engine::GraphicEngine::ShaderManager::CheckShaderCompilationSuccess(GLuint shaderId)
 {
     GLint success;
-    GLchar infoLog[512];
     glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success);
     if (!success)
     {
+        GLchar infoLog[512];
         glGetShaderInfoLog(shaderId, 512, NULL, infoLog);
         std::cout << shaderId << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << "\n";
     }
+    return success;
 }
 
 void Twin2Engine::GraphicEngine::ShaderManager::CheckProgramLinkingSuccess(GLuint programId)
@@ -373,7 +283,6 @@ Shader* Twin2Engine::GraphicEngine::ShaderManager::GetShaderProgram(const std::s
 
     std::list<ShaderProgramData*>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [shaderProgramId](ShaderProgramData* data) { return data->shaderProgramId == shaderProgramId; });
 
-
     return (*found)->shader;
 }
 
@@ -409,7 +318,7 @@ Shader* Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgram(const std
 
     GLuint shaderProgramId = 0;
 
-    Shader* shader;
+    Shader* shader = nullptr;
 
     std::ifstream shaderFile(shaderProgramPath);
     if (shaderFile.is_open())
@@ -418,7 +327,6 @@ Shader* Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgram(const std
         std::getline(shaderFile, shaderName);
 
         size_t strHash = stringHash(shaderName);
-        
         std::list<ShaderProgramData*>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [strHash](ShaderProgramData* data) { return data->shaderPathHash == strHash; });
         
         if (found == loadedShaders.end())
@@ -544,30 +452,28 @@ void Twin2Engine::GraphicEngine::ShaderManager::SaveShaderProgramToFile(GLuint s
         // Get program binary
         GLint binaryLength;
         glGetProgramiv(shaderProgramId, GL_PROGRAM_BINARY_LENGTH, &binaryLength);
-        std::vector<GLchar> binaryData(binaryLength);
 
+        std::vector<GLchar> binaryData(binaryLength);
         glGetProgramBinary(shaderProgramId, binaryLength, nullptr, &binaryFormat, binaryData.data());
 
-        // Save binary to file
-        std::string outputFilePath = SHADERS_ORIGIN_DIRETORY + std::string("/CompiledShaders/") + shaderName + SHADER_BINARY_EXTENSION;
-        std::ofstream binaryFile;// (outputFilePath, std::ios::binary);
-        try {
-            std::filesystem::create_directories(outputFilePath.substr(0, outputFilePath.find_last_of('/')));
-            // return true;
-        }
-        catch (const std::filesystem::filesystem_error& e) {
-            SPDLOG_ERROR("Failed to create directories: {}", e.what());
-            //std::cerr << "Failed to create directories: " << e.what() << std::endl;
-            //return false;
-        }
-        binaryFile.open(outputFilePath, std::ios::binary);
-        if (binaryFile.is_open())
+        // Creating folders for saved .shdr file
+        std::string outputFilePath = SHADERS_ORIGIN_DIRETORY + ("/CompiledShaders/" + shaderName) + SHADER_BINARY_EXTENSION;
+        try 
         {
-            //std::cout << "Output file opened\n";
+            std::filesystem::create_directories(outputFilePath.substr(0, outputFilePath.find_last_of('/')));
         }
-        else
+        catch (const std::filesystem::filesystem_error& e) 
+        {
+            SPDLOG_ERROR("Failed to create directories: {}", e.what());
+            return;
+        }
+
+        // Saving to file
+        std::ofstream binaryFile(outputFilePath, std::ios::binary);
+        if (!binaryFile.is_open())
         {
             SPDLOG_ERROR("SHADER output file not opened: {}", outputFilePath);
+            return;
         }
         binaryFile.write(binaryData.data(), binaryLength);
         binaryFile.close();
@@ -585,9 +491,7 @@ Shader* Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgram(const std
     Shader* shader;
     if (found == loadedShaders.end())
     {
-
         unsigned int vertexId = CompileShader(GL_VERTEX_SHADER, LoadShaderSource("ShadersOrigin/" + vertexShader));
-
         unsigned int fragmentId = CompileShader(GL_FRAGMENT_SHADER, LoadShaderSource("ShadersOrigin/" + fragmentShader));
 
         GLuint shaderProgram = glCreateProgram();
@@ -603,7 +507,6 @@ Shader* Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgram(const std
 
         shader = new Shader(shaderProgram);
 
-        size_t strHash = stringHash(shaderName);
         loadedShaders.push_back(new ShaderProgramData{ .shaderPathHash = strHash, .shaderProgramId = (int)shaderProgram, .useNumber = 1, .shader = shader });
     }
     else

@@ -238,13 +238,16 @@ int main(int, char**)
 
     Shader* sh = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/UI.shdr", "shaders/ui.vert", "shaders/ui.frag");
     Texture2D* tex = TextureManager::LoadTexture2D("res/textures/stone.jpg");
-    Sprite* s = SpriteManager::MakeSprite(tex, "stone1", 0, 0, tex->GetWidth(), tex->GetHeight());
+    Sprite* s = SpriteManager::MakeSprite(tex, "stone", 0, 0, tex->GetWidth(), tex->GetHeight());
+
+    Texture2D* tex2 = TextureManager::LoadTexture2D("res/textures/grass.png");
+    Sprite* s2 = SpriteManager::MakeSprite(tex2, "grass");
 
     GameObject* ob = new GameObject();
     Image* img = ob->AddComponent<Image>();
     img->SetSprite(s);
-
-    glEnable(GL_DEPTH_TEST);
+    Image* img2 = ob->AddComponent<Image>();
+    img2->SetSprite(s2);
 
     GameObject go1;
     GameObject go2;
@@ -333,9 +336,13 @@ bool init()
     glDebugMessageCallback(ErrorMessageCallback, 0);
 #endif
 
+    // Blending
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     // Depth Test
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LEQUAL);
 
     // Face Culling
     glEnable(GL_CULL_FACE);

@@ -62,7 +62,7 @@ bool Window::IsFullscreen() const
 
 bool Window::IsWindowed() const
 {
-	return !isFullscreen();
+	return !IsFullscreen();
 }
 
 GLFWmonitor* Window::GetMonitor() const
@@ -120,6 +120,31 @@ bool Window::IsVisible() const
 bool Window::IsResizable() const
 {
 	return glfwGetWindowAttrib(_window, GLFW_RESIZABLE) == GLFW_TRUE;
+}
+
+bool Window::IsDecorated() const
+{
+	return glfwGetWindowAttrib(_window, GLFW_DECORATED) == GLFW_TRUE;
+}
+
+bool Window::IsTransparent() const
+{
+	return glfwGetWindowAttrib(_window, GLFW_TRANSPARENT_FRAMEBUFFER) == GLFW_TRUE;
+}
+
+float Window::GetOpacity() const
+{
+	return glfwGetWindowOpacity(_window);
+}
+
+bool Window::IsFloating() const
+{
+	return glfwGetWindowAttrib(_window, GLFW_FLOATING) == GLFW_TRUE;
+}
+
+bool Window::IsMousePassThrought() const
+{
+	return glfwGetWindowAttrib(_window, GLFW_MOUSE_PASSTHROUGH) == GLFW_TRUE;
 }
 
 void Window::SetTitle(const string& title)
@@ -218,6 +243,31 @@ void Window::RequestAttention()
 void Window::EnableResizability(bool enabled)
 {
 	glfwSetWindowAttrib(_window, GLFW_RESIZABLE, enabled ? GLFW_TRUE : GLFW_FALSE);
+}
+
+void Window::EnableDecorations(bool enabled)
+{
+	glfwSetWindowAttrib(_window, GLFW_DECORATED, enabled ? GLFW_TRUE : GLFW_FALSE);
+}
+
+void Window::EnableTransparency(bool enabled)
+{
+	glfwSetWindowAttrib(_window, GLFW_TRANSPARENT_FRAMEBUFFER, enabled ? GLFW_TRUE : GLFW_FALSE);
+}
+
+void Window::SetOpacity(float opacity)
+{
+	glfwSetWindowOpacity(_window, opacity);
+}
+
+void Window::EnableFloating(bool enabled)
+{
+	glfwSetWindowAttrib(_window, GLFW_FLOATING, enabled ? GLFW_TRUE : GLFW_FALSE);
+}
+
+void Window::EnableMousePassThrought(bool enabled)
+{
+	glfwSetWindowAttrib(_window, GLFW_MOUSE_PASSTHROUGH, enabled ? GLFW_TRUE : GLFW_FALSE);
 }
 
 void Window::Use() const

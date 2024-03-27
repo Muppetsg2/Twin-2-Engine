@@ -5,7 +5,6 @@
 #include <vector>
 
 // DODAÆ TRANSPARENCY i DECORATION ORAZ FLOATING i MOUSE_PASS_THROUGHT
-
 namespace Twin2Engine {
 	namespace Core {
 		class Window {
@@ -34,6 +33,11 @@ namespace Twin2Engine {
 			bool IsHovered() const;
 			bool IsVisible() const;
 			bool IsResizable() const;
+			bool IsDecorated() const;
+			bool IsTransparent() const;
+			float GetOpacity() const;
+			bool IsFloating() const;
+			bool IsMousePassThrought() const;
 
 			void SetTitle(const std::string& title);
 			void SetWindowSize(const glm::ivec2& size);
@@ -54,6 +58,11 @@ namespace Twin2Engine {
 			void Focus();
 			void RequestAttention();
 			void EnableResizability(bool enabled = true);
+			void EnableDecorations(bool enabled = true);
+			void EnableTransparency(bool enabled = true);
+			void SetOpacity(float opacity);
+			void EnableFloating(bool enabled = true);
+			void EnableMousePassThrought(bool enabled = true);
 
 			void Use() const;
 			void Update() const;

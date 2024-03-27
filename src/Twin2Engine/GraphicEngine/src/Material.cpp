@@ -111,7 +111,7 @@ unsigned int Twin2Engine::GraphicEngine::Material::GetId() const
 	return _materialData->id;
 }
 
-MaterialValues* Twin2Engine::GraphicEngine::Material::GetMaterialParameters() const
+MaterialParameters* Twin2Engine::GraphicEngine::Material::GetMaterialParameters() const
 {
 	return _materialData->materialParameters;
 }

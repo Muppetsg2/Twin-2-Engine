@@ -494,15 +494,13 @@ void Twin2Engine::Core::Transform::RecalculateTransformMatrix()
 		_localTransformMatrix = glm::rotate(_localTransformMatrix, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
 		_localTransformMatrix = glm::rotate(_localTransformMatrix, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 		_localTransformMatrix = glm::scale(_localTransformMatrix, GetLocalScale());
-
-		//_dirtyFlag = false;
 	}
 
 	if (_dirtyFlagInHierarchy)
 	{
 		if (_parent != nullptr) {
 
-			if (_parent != originTransform)
+			//if (_parent != originTransform)
 			{
 				_parent->RecalculateTransformMatrix();
 				//_globalTransformMatrix = _parent->GetTransformMatrix() * _localTransformMatrix;
@@ -516,7 +514,7 @@ void Twin2Engine::Core::Transform::RecalculateTransformMatrix()
 	{
 		if (_parent != nullptr) {
 
-			if (_parent != originTransform)
+			//if (_parent != originTransform)
 			{
 				_globalTransformMatrix = _parent->GetTransformMatrix() * _localTransformMatrix;
 			}

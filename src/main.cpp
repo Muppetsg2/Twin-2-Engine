@@ -228,7 +228,7 @@ int main(int, char**)
     glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBOMatrices, 0, 2 * sizeof(glm::mat4));
 
     glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(c->GetProjectionMatrix())));
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(c->GetProjectionMatrix()));
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(c->GetViewMatrix()));
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -241,7 +241,6 @@ int main(int, char**)
     Sprite* s = SpriteManager::MakeSprite(tex, "stone1", 0, 0, tex->GetWidth(), tex->GetHeight());
 
     GameObject* ob = new GameObject();
-    ob->GetTransform()->SetLocalPosition(glm::vec3(1920.f / 2.f, 1080.f / 2.f, 0.f));
     Image* img = ob->AddComponent<Image>();
     img->SetSprite(s);
 
@@ -317,7 +316,7 @@ bool init()
     glfwWindowHint(GLFW_OPENGL_PROFILE,        GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 
-    window = new Window(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT });
+    window = new Window(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT }, false);
     glfwSetFramebufferSizeCallback(window->GetWindow(), framebuffer_size_callback);
 
     bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);

@@ -37,7 +37,7 @@ void main()
 	vec2 canvasPos = vec2(position.x * canvas.elemWidth, position.y * canvas.elemHeight);
 	vec2 tpos = vec2(model * vec4(canvasPos, 1.0, 1.0));
 
-	gl_Position = vec4(map(tpos, vec2(0, 0), vec2(canvas.width, canvas.height), vec2(-1, -1), vec2(1, 1)), 0.0, 1.0);
+	gl_Position = vec4(map(tpos, vec2(-canvas.width / 2.0, -canvas.height / 2.0), vec2(canvas.width / 2.0, canvas.height / 2.0), vec2(-1, -1), vec2(1, 1)), 0.0, 1.0);
 	vs_out.texCoord = texCoord;
 	vs_out.fragPos = vec3(tpos, 0.0);
 }

@@ -14,9 +14,9 @@ void MeshRenderer::ReloadMesh()
 
 void MeshRenderer::Initialize()
 {
-	SPDLOG_INFO("Initializing!");
+	//SPDLOG_INFO("Initializing!");
 	MeshRenderingManager::Register(this);
-	SPDLOG_INFO("EndInitializing!");
+	//SPDLOG_INFO("EndInitializing!");
 }
 
 void MeshRenderer::OnDestroy()

@@ -10,6 +10,8 @@ add_subdirectory(Twin2Engine)
 
 #add_subdirectory(GraphicEngine)
 
+add_subdirectory(CollisionSystem)
+
 add_executable(${PROJECT_NAME} main.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_SOURCE_DIR})
@@ -20,6 +22,9 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Twin2Engine)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog)
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
+
+target_include_directories(${PROJECT_NAME} PUBLIC ${COLLISION_SYSTEM_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} PUBLIC CollisionSystem)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD 
 				   COMMAND ${CMAKE_COMMAND} -E create_symlink 

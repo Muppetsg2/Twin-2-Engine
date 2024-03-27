@@ -8,15 +8,7 @@ using namespace glm;
 
 Window::Window(const string& title, const ivec2& size, bool fullscreen)
 {
-	GLFWmonitor* monitor = NULL;
-	if (fullscreen) {
-		monitor = glfwGetPrimaryMonitor();
-		if (monitor == NULL) {
-			spdlog::warn("Failed to create GLFW Monitor");
-		}
-	}
-
-	_window = glfwCreateWindow(size.x, size.y, title.c_str(), monitor, NULL);
+	_window = glfwCreateWindow(size.x, size.y, title.c_str(), NULL, NULL);
 	if (_window == NULL)
 	{
 		spdlog::error("Failed to create GLFW Window!");
@@ -25,6 +17,15 @@ Window::Window(const string& title, const ivec2& size, bool fullscreen)
 
 	Input::InitForWindow(_window);
 	Use();
+
+	if (fullscreen) {
+		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+		if (monitor == NULL) {
+			spdlog::warn("Failed to create GLFW Monitor");
+			return;
+		}
+		SetFullscreen(monitor);
+	}
 }
 
 Window::~Window()
@@ -154,6 +155,10 @@ int Window::GetRefreshRate() const
 
 void Window::SetTitle(const string& title)
 {
+	if (IsFullscreen()) {
+		spdlog::warn("Window::SetTitle can't be used when window is in Fullscreen Mode");
+		return;
+	}
 	glfwSetWindowTitle(_window, title.c_str());
 }
 
@@ -209,6 +214,10 @@ void Window::EnableVSync(bool enabled)
 
 void Window::SetWindowPos(const ivec2& pos)
 {
+	if (IsFullscreen()) {
+		spdlog::warn("Window::SetWindowPos can't be used when window is in Fullscreen mode");
+		return;
+	}
 	glfwSetWindowPos(_window, pos.x, pos.y);
 }
 
@@ -234,6 +243,10 @@ void Window::Restore()
 
 void Window::Maximize()
 {
+	if (IsFullscreen()) {
+		spdlog::warn("Window::Maximize can't be used when window is in Fullscreen mode");
+		return;
+	}
 	glfwMaximizeWindow(_window);
 }
 
@@ -259,11 +272,19 @@ void Window::RequestAttention()
 
 void Window::EnableResizability(bool enabled)
 {
+	if (IsFullscreen()) {
+		spdlog::warn("Window::EnableResizability can't be used when window is in Fullscreen mode");
+		return;
+	}
 	glfwSetWindowAttrib(_window, GLFW_RESIZABLE, enabled ? GLFW_TRUE : GLFW_FALSE);
 }
 
 void Window::EnableDecorations(bool enabled)
 {
+	if (IsFullscreen()) {
+		spdlog::warn("Window::EnableDecorations can't be used when window is in Fullscreen mode");
+		return;
+	}
 	glfwSetWindowAttrib(_window, GLFW_DECORATED, enabled ? GLFW_TRUE : GLFW_FALSE);
 }
 
@@ -274,11 +295,19 @@ void Window::EnableTransparency(bool enabled)
 
 void Window::SetOpacity(float opacity)
 {
+	if (IsFullscreen()) {
+		spdlog::warn("Window::SetOpacity can't be used when window is in Fullscreen mode");
+		return;
+	}
 	glfwSetWindowOpacity(_window, opacity);
 }
 
 void Window::EnableFloating(bool enabled)
 {
+	if (IsFullscreen()) {
+		spdlog::warn("Window::EnableFloating can't be used when window is in Fullscreen mode");
+		return;
+	}
 	glfwSetWindowAttrib(_window, GLFW_FLOATING, enabled ? GLFW_TRUE : GLFW_FALSE);
 }
 
@@ -289,6 +318,10 @@ void Window::EnableMousePassThrought(bool enabled)
 
 void Window::SetRefreshRate(int refreshRate)
 {
+	if (IsWindowed()) {
+		spdlog::warn("Window::SetRefreshRate can't be used when window is in Windowed mode");
+		return;
+	}
 	SetFullscreen(GetMonitor(), GetWindowSize(), refreshRate);
 }
 

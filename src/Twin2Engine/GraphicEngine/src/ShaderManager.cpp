@@ -73,7 +73,7 @@ unsigned int Twin2Engine::GraphicEngine::ShaderManager::LoadShaderProgram(const 
     }
     else
     {
-        SPDLOG_INFO("Shader already loaded: {}!", shaderPath);
+        //SPDLOG_INFO("Shader already loaded: {}!", shaderPath); // Dużo razy jest wywoływane
         shaderProgramID = (*found)->shaderProgramId;
         (*found)->useNumber++;
     }

@@ -4,7 +4,6 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-// DODAÆ TRANSPARENCY i DECORATION ORAZ FLOATING i MOUSE_PASS_THROUGHT
 namespace Twin2Engine {
 	namespace Core {
 		class Window {
@@ -42,15 +41,15 @@ namespace Twin2Engine {
 			int GetRefreshRate() const;
 
 			void SetTitle(const std::string& title);
-			void SetWindowSize(const glm::ivec2& size);
-			void SetAspectRatio(const glm::ivec2& ratio);
-			void SetSizeMaxLimits(const glm::ivec2& max = { GLFW_DONT_CARE, GLFW_DONT_CARE });
-			void SetSizeMinLimits(const glm::ivec2& min = { GLFW_DONT_CARE, GLFW_DONT_CARE });
+			void SetWindowSize(const glm::ivec2& size); // Sprawdziæ dla Fullscreen
+			void SetAspectRatio(const glm::ivec2& ratio); // Sprawdziæ dla Fullscreen
+			void SetSizeMaxLimits(const glm::ivec2& max = { GLFW_DONT_CARE, GLFW_DONT_CARE }); // Sprawdziæ dla Fullscreen
+			void SetSizeMinLimits(const glm::ivec2& min = { GLFW_DONT_CARE, GLFW_DONT_CARE }); // Sprawdziæ dla Fullscreen
 			void SetFullscreen(GLFWmonitor* monitor, const glm::ivec2& size, int refreshRate = 60);
 			void SetFullscreen(GLFWmonitor* monitor);
 			void SetWindowed(const glm::ivec2& pos, const glm::ivec2& size);
 			void SetWindowed();
-			void EnableVSync(bool enabled = true);
+			void EnableVSync(bool enabled = true); // Sprawdziæ
 			void SetWindowPos(const glm::ivec2& pos);
 			void SetWindowIcons(const std::vector<GLFWimage>& icons);
 			void ResetWindowIcon();
@@ -66,7 +65,7 @@ namespace Twin2Engine {
 			void EnableTransparency(bool enabled = true);
 			void SetOpacity(float opacity);
 			void EnableFloating(bool enabled = true);
-			void EnableMousePassThrought(bool enabled = true);
+			void EnableMousePassThrought(bool enabled = true); // Sprawdziæ dla Fullscreen
 			void SetRefreshRate(int refreshRate);
 
 			void Use() const;

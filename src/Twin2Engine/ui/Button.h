@@ -1,7 +1,7 @@
 #pragma once
 
 #include <core/Component.h>
-#include "EventHandler.h"
+#include <core/EventHandler.h>
 
 namespace Twin2Engine {
 	namespace UI {

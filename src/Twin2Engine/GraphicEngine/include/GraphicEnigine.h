@@ -109,9 +109,10 @@ namespace Twin2Engine
 
 				ShaderManager::Init();
 
-				shader = ShaderManager::CreateShaderProgram("origin/Basic", "shaders/normalVert.vert", "shaders/fargmentShader.frag");
-				//shader = ShaderManager::GetShaderProgram("origin/Basic");
 
+				shader = ShaderManager::CreateShaderProgram("res/shaders/Basic.shpr");
+				//shader = ShaderManager::CreateShaderProgram("origin/Basic", "shaders/normalVert.vert", "shaders/fargmentShader.frag");
+				//shader = ShaderManager::GetShaderProgram("origin/Basic");
 				
 
 				modelMesh = ModelsManager::CreateModel("NewModel", vertexes, indices, textures);

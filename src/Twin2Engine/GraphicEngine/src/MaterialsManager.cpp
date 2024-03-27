@@ -128,20 +128,12 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 
 	std::string name = materialNode["name"].as<std::string>();
 	std::string shader = materialNode["shader"].as<std::string>();
-	SPDLOG_INFO("Used shader: {}.", shader);
-	//std::vector<std::string> parametersNames;
-	//std::vector<std::string> parametersTypes;
-	//std::vector<int> propertiesSizes;
 
 	MaterialParameters* materialParameters = new MaterialParameters();
 
 	for (const auto& parameterNode : materialNode["parameters"]) {
 		std::string parameterName = parameterNode["name"].as<std::string>();
 		std::string parameterType = parameterNode["type"].as<std::string>();
-		//parametersNames.push_back(parameterName);
-		//parametersTypes.push_back(parameterType);
-		//int size = DetermineSize(parameterType);
-		//propertiesSizes.push_back(size);
 
 		const YAML::Node& parameterValue = parameterNode["value"];
 

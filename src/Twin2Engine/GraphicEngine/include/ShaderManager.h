@@ -22,6 +22,8 @@ namespace Twin2Engine::GraphicEngine
 	// Define the file extension for compiled shader binary files
 	constexpr char SHADER_BINARY_EXTENSION[] = ".shdr";
 
+	constexpr char SHADERS_ORIGIN_DIRETORY[] = "ShadersOrigin";
+
 	/// <summary>
 	/// Shader Manager obs³uguje:
 	/// * vertex shader
@@ -60,17 +62,19 @@ namespace Twin2Engine::GraphicEngine
 		static GLuint CompileShader(GLenum type, const std::string& source);
 		static void CheckShaderCompilationSuccess(GLuint shaderId);
 		static void CheckProgramLinkingSuccess(GLuint programId);
-		static void PrecompileShaders();
+		static inline void PrecompileShaders();
 
 		//Dynamic creation
-		static GLuint CreateShaderProgramFromFile(const std::string& shaderName);
+		static inline GLuint CreateShaderProgramFromFile(const std::string& shaderProgramName, std::string& shaderName);
+		static inline void SaveShaderProgramToFile(GLuint shaderProgramId, const std::string& shaderName);
+
 	public:
 		//ShaderManager();
 		static void Init();
 		static void End();
 
 		static Shader* GetShaderProgram(const std::string& shaderName);
-		static Shader* CreateShaderProgram(const std::string& shaderName);
+		static Shader* CreateShaderProgram(const std::string& shaderProgramName);
 		static Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);
 
 	};

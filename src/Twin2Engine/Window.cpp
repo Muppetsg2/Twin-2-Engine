@@ -147,6 +147,11 @@ bool Window::IsMousePassThrought() const
 	return glfwGetWindowAttrib(_window, GLFW_MOUSE_PASSTHROUGH) == GLFW_TRUE;
 }
 
+int Window::GetRefreshRate() const
+{
+	return _refreshRate;
+}
+
 void Window::SetTitle(const string& title)
 {
 	glfwSetWindowTitle(_window, title.c_str());
@@ -176,12 +181,24 @@ void Window::SetSizeMinLimits(const ivec2& min)
 
 void Window::SetFullscreen(GLFWmonitor* monitor, const ivec2& size, int refreshRate)
 {
+	_refreshRate = refreshRate;
 	glfwSetWindowMonitor(_window, monitor, 0, 0, size.x, size.y, refreshRate);
+}
+
+void Window::SetFullscreen(GLFWmonitor* monitor)
+{
+	const GLFWvidmode* vid = glfwGetVideoMode(monitor);
+	SetFullscreen(monitor, { vid->width, vid->height }, vid->refreshRate);
 }
 
 void Window::SetWindowed(const ivec2& pos, const ivec2& size)
 {
 	glfwSetWindowMonitor(_window, NULL, pos.x, pos.y, size.x, size.y, 0);
+}
+
+void Window::SetWindowed()
+{
+	SetWindowed({ 0, 0 }, GetWindowSize());
 }
 
 // Enable VSync - fixes FPS at the refresh rate of your screen
@@ -268,6 +285,11 @@ void Window::EnableFloating(bool enabled)
 void Window::EnableMousePassThrought(bool enabled)
 {
 	glfwSetWindowAttrib(_window, GLFW_MOUSE_PASSTHROUGH, enabled ? GLFW_TRUE : GLFW_FALSE);
+}
+
+void Window::SetRefreshRate(int refreshRate)
+{
+	SetFullscreen(GetMonitor(), GetWindowSize(), refreshRate);
 }
 
 void Window::Use() const

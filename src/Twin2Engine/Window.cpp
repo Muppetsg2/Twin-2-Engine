@@ -76,6 +76,11 @@ GLFWwindow* Window::GetWindow() const
 	return _window;
 }
 
+ivec2 Window::GetAspectRatio() const
+{
+	return _aspectRatio;
+}
+
 bool Window::IsClosed() const
 {
 	return glfwWindowShouldClose(_window);
@@ -86,6 +91,16 @@ ivec2 Window::GetWindowPos() const
 	ivec2 pos{};
 	glfwGetWindowPos(_window, &pos.x, &pos.y);
 	return pos;
+}
+
+ivec2 Window::GetMaxSizeLimits() const
+{
+	return _maxSizeLimits;
+}
+
+ivec2 Window::GetMinSizeLimits() const
+{
+	return _minSizeLimits;
 }
 
 bool Window::IsMinimized() const
@@ -133,6 +148,11 @@ bool Window::IsTransparent() const
 	return glfwGetWindowAttrib(_window, GLFW_TRANSPARENT_FRAMEBUFFER) == GLFW_TRUE;
 }
 
+bool Window::IsVSyncOn() const
+{
+	return _vsyncOn;
+}
+
 float Window::GetOpacity() const
 {
 	return glfwGetWindowOpacity(_window);
@@ -143,7 +163,7 @@ bool Window::IsFloating() const
 	return glfwGetWindowAttrib(_window, GLFW_FLOATING) == GLFW_TRUE;
 }
 
-bool Window::IsMousePassThrought() const
+bool Window::IsMousePassThrough() const
 {
 	return glfwGetWindowAttrib(_window, GLFW_MOUSE_PASSTHROUGH) == GLFW_TRUE;
 }
@@ -169,19 +189,59 @@ void Window::SetWindowSize(const ivec2& size)
 
 void Window::SetAspectRatio(const ivec2& ratio)
 {
+	if (IsFullscreen()) {
+		spdlog::warn("Window::SetAspectRatio can't be used when window is in Fullscreen mode");
+		return;
+	}
 	glfwSetWindowAspectRatio(_window, ratio.x, ratio.y);
+	_aspectRatio = ratio;
+}
+
+void Window::ResetAspectRatio()
+{
+	if (IsFullscreen()) {
+		spdlog::warn("Window::ResetAspectRatio can't be used when window is in Fullscreen mode");
+		return;
+	}
+	SetAspectRatio({ GLFW_DONT_CARE, GLFW_DONT_CARE });
 }
 
 void Window::SetSizeMaxLimits(const ivec2& max)
 {
+	if (IsFullscreen()) {
+		spdlog::warn("Window::SetSizeMaxLimits can't be used when window is in Fullscreen mode");
+		return;
+	}
 	glfwSetWindowSizeLimits(_window, _minSizeLimits.x, _minSizeLimits.y, max.x, max.y);
 	_maxSizeLimits = max;
 }
 
+void Window::ResetSizeMaxLimits()
+{
+	if (IsFullscreen()) {
+		spdlog::warn("Window::ResetSizeMaxLimits can't be used when window is in Fullscreen mode");
+		return;
+	}
+	SetSizeMaxLimits({ GLFW_DONT_CARE, GLFW_DONT_CARE });
+}
+
 void Window::SetSizeMinLimits(const ivec2& min)
 {
+	if (IsFullscreen()) {
+		spdlog::warn("Window::SetSizeMinLimits can't be used when window is in Fullscreen mode");
+		return;
+	}
 	glfwSetWindowSizeLimits(_window, min.x, min.y, _maxSizeLimits.x, _maxSizeLimits.y);
 	_minSizeLimits = min;
+}
+
+void Window::ResetSizeMinLimits()
+{
+	if (IsFullscreen()) {
+		spdlog::warn("Window::ResetSizeMinLimits can't be used when window is in Fullscreen mode");
+		return;
+	}
+	SetSizeMinLimits({ GLFW_DONT_CARE, GLFW_DONT_CARE });
 }
 
 void Window::SetFullscreen(GLFWmonitor* monitor, const ivec2& size, int refreshRate)
@@ -206,10 +266,10 @@ void Window::SetWindowed()
 	SetWindowed({ 0, 0 }, GetWindowSize());
 }
 
-// Enable VSync - fixes FPS at the refresh rate of your screen
 void Window::EnableVSync(bool enabled)
 {
 	glfwSwapInterval(enabled ? 1 : 0);
+	_vsyncOn = enabled;
 }
 
 void Window::SetWindowPos(const ivec2& pos)
@@ -226,7 +286,7 @@ void Window::SetWindowIcons(const std::vector<GLFWimage>& icons)
 	glfwSetWindowIcon(_window, icons.size(), icons.data());
 }
 
-void Window::ResetWindowIcon()
+void Window::ResetWindowIcons()
 {
 	glfwSetWindowIcon(_window, 0, NULL);
 }
@@ -311,7 +371,7 @@ void Window::EnableFloating(bool enabled)
 	glfwSetWindowAttrib(_window, GLFW_FLOATING, enabled ? GLFW_TRUE : GLFW_FALSE);
 }
 
-void Window::EnableMousePassThrought(bool enabled)
+void Window::EnableMousePassThrough(bool enabled)
 {
 	glfwSetWindowAttrib(_window, GLFW_MOUSE_PASSTHROUGH, enabled ? GLFW_TRUE : GLFW_FALSE);
 }

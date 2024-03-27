@@ -495,8 +495,9 @@ void imgui_render()
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
-        ImGui::Separator();
+        
 #pragma region IMGUI_WINDOW_SETUP
+        ImGui::Separator();
         ImGui::Text("Window Setup");
         // Window Settings
         if (window->IsWindowed()) {
@@ -522,7 +523,6 @@ void imgui_render()
                     ", Scale " + std::to_string(sx) + "x" + std::to_string(sy) + \
                     ", Refresh " + std::to_string(vid->refreshRate) + " Hz";
                 if (ImGui::Button(btnText.c_str())) {
-                    //window->SetFullscreen(monitors[i], { WINDOW_WIDTH, WINDOW_HEIGHT }, 60);
                     window->SetFullscreen(monitors[i]);
                 }
             }
@@ -561,6 +561,13 @@ void imgui_render()
             if (opacity != window->GetOpacity()) {
                 window->SetOpacity(opacity);
             }
+
+            static glm::ivec2 ratio = window->GetAspectRatio();
+            ImGui::InputInt2("Aspect Ratio", (int*)&ratio);
+            if (ImGui::Button("Apply")) {
+                window->SetAspectRatio(ratio);
+                ratio = window->GetAspectRatio();
+            }
         }
         else {
             ImGui::Text("Current State: Fullscreen");
@@ -568,16 +575,29 @@ void imgui_render()
                 window->SetWindowed({ 0, 30 }, { WINDOW_WIDTH, WINDOW_HEIGHT - 50 });
             }
 
-            static int refreshRate = 60;
+            static int refreshRate = window->GetRefreshRate();
             ImGui::InputInt("Refresh Rate", &refreshRate);
-            if (refreshRate != window->GetRefreshRate()) {
+            if (ImGui::Button("Apply")) {
                 window->SetRefreshRate(refreshRate);
+                refreshRate = window->GetRefreshRate();
             }
         }
 
         if (ImGui::Button("Minimize")) {
             window->Minimize();
         }
+
+        static glm::ivec2 size = window->GetWindowSize();
+        ImGui::InputInt2("Window Size", (int*)&size);
+        if (ImGui::Button("Apply")) {
+            window->SetWindowSize(size);
+            size = window->GetWindowSize();
+        }
+
+        if (ImGui::Button(((window->IsVSyncOn() ? "Disable"s : "Enable"s) + " VSync"s).c_str())) {
+            window->EnableVSync(!window->IsVSyncOn());
+        }
+
 #pragma endregion
         ImGui::End();
     }

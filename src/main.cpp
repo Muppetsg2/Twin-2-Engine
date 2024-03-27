@@ -210,6 +210,13 @@ int main(int, char**)
     // Set global log level to debug
     spdlog::set_level(spdlog::level::debug);
 
+    Camera.GetTransform()->SetLocalPosition(cameraPos);
+    Camera.GetTransform()->SetLocalRotation(glm::vec3(0.f, -90.f, 0.f));
+    CameraComponent* c = Camera.AddComponent<CameraComponent>();
+    c->SetIsMain(true);
+    c->SetWindowSize(glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
+    c->SetFOV(45.f);
+
 #pragma region MatricesUBO
 
     glGenBuffers(1, &UBOMatrices);
@@ -221,8 +228,8 @@ int main(int, char**)
     glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBOMatrices, 0, 2 * sizeof(glm::mat4));
 
     glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(glm::perspective(glm::radians(45.f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 1000.0f)));
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(glm::mat4(1.f)));
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(c->GetProjectionMatrix())));
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(c->GetViewMatrix()));
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 #pragma endregion
@@ -236,13 +243,6 @@ int main(int, char**)
     GameObject* ob = new GameObject();
     Image* img = ob->AddComponent<Image>();
     img->SetSprite(s);
-    
-    Camera.GetTransform()->SetLocalPosition(cameraPos);
-    Camera.GetTransform()->SetLocalRotation(glm::vec3(0.f, -90.f, 0.f));
-    CameraComponent* c = Camera.AddComponent<CameraComponent>();
-    c->SetIsMain(true);
-    c->SetWindowSize(glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
-    c->SetFOV(45.f);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -385,22 +385,28 @@ void input()
         return;
     }
 
+    bool camDirty = false;
+
     CameraComponent* c = Camera.GetComponent<CameraComponent>();        
 
     if (!Input::IsKeyUp(KEY::W))
     {
+        camDirty = true;
         Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
     if (!Input::IsKeyUp(KEY::S))
     {
+        camDirty = true;
         Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
     if (!Input::IsKeyUp(KEY::A))
     {
+        camDirty = true;
         Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
     if (!Input::IsKeyUp(KEY::D))
     {
+        camDirty = true;
         Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
     /*
@@ -437,6 +443,13 @@ void input()
         }
     }
     */
+
+    if (camDirty) 
+    {
+        glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Camera.GetComponent<CameraComponent>()->GetViewMatrix()));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
 
     if (Input::IsKeyPressed(KEY::LEFT_ALT)) 
     {
@@ -501,6 +514,10 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     front.y = sin(glm::radians(rot.x));
     front.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
     Camera.GetComponent<CameraComponent>()->SetFrontDir(glm::normalize(front));
+
+    glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Camera.GetComponent<CameraComponent>()->GetViewMatrix()));
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 void update()

@@ -17,28 +17,48 @@ namespace Twin2Engine {
 			Window(const std::string& title, const glm::ivec2& size, bool fullscreen = false);
 			virtual ~Window();
 
+#pragma region GLOBAL
+#pragma region GLOBAL_GETTERS
 			std::string GetTitle() const;
 			glm::ivec2 GetContentSize() const;
 			glm::ivec2 GetWindowSize() const;
-			bool IsFullscreen() const;
-			bool IsWindowed() const;
 			GLFWmonitor* GetMonitor() const;
 			GLFWwindow* GetWindow() const;
+			bool IsFullscreen() const;
+			bool IsWindowed() const;
 			bool IsClosed() const;
-			glm::ivec2 GetWindowPos() const;
 			bool IsMinimized() const;
-			bool IsMaximized() const;
 			bool IsHidden() const;
 			bool IsFocused() const;
 			bool IsHovered() const;
 			bool IsVisible() const;
+			bool IsTransparent() const;
+#pragma endregion
+#pragma region GLOBAL_SETTERS
+
+#pragma endregion
+#pragma endregion
+
+#pragma region WINDOWED
+#pragma region WINDOWED_GETTERS
+			glm::ivec2 GetWindowPos() const;
+			float GetOpacity() const;
+			bool IsMaximized() const;
 			bool IsResizable() const;
 			bool IsDecorated() const;
-			bool IsTransparent() const;
-			float GetOpacity() const;
 			bool IsFloating() const;
 			bool IsMousePassThrought() const;
+#pragma endregion
+#pragma region WINDOWED_SETTERS
+
+#pragma endregion
+#pragma endregion
+			
+#pragma region FULLSCREEN
+#pragma region FULLSCREEN_GETTERS
 			int GetRefreshRate() const;
+#pragma endregion
+#pragma endregion
 
 			void SetTitle(const std::string& title);
 			void SetWindowSize(const glm::ivec2& size); // Sprawdziæ dla Fullscreen

@@ -38,7 +38,7 @@ endif()
 # Set the directory paths
 #set(SHADERS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/res/shaders")
 #set(SHADERS_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/res/CompiledShaders/SPIRV")
-set(SHADERS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/res/shaders")
+set(SHADERS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/res/shaders/SPIRV")
 set(SHADERS_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/res/CompiledShaders/SPIRV")
 
 find_program(GLSLANG_VALIDATOR NAMES glslangValidator)

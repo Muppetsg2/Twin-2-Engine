@@ -210,8 +210,8 @@ int main(int, char**)
     // Set global log level to debug
     spdlog::set_level(spdlog::level::debug);
 
-    Camera.GetTransform()->SetLocalPosition(cameraPos);
-    Camera.GetTransform()->SetLocalRotation(glm::vec3(0.f, -90.f, 0.f));
+    Camera.GetTransform()->SetGlobalPosition(cameraPos);
+    Camera.GetTransform()->SetGlobalRotation(glm::vec3(0.f, -90.f, 0.f));
     CameraComponent* c = Camera.AddComponent<CameraComponent>();
     c->SetIsMain(true);
     c->SetWindowSize(glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -399,22 +399,22 @@ void input()
     if (!Input::IsKeyUp(KEY::W))
     {
         camDirty = true;
-        Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
     if (!Input::IsKeyUp(KEY::S))
     {
         camDirty = true;
-        Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
     if (!Input::IsKeyUp(KEY::A))
     {
         camDirty = true;
-        Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
     if (!Input::IsKeyUp(KEY::D))
     {
         camDirty = true;
-        Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
     /*
     if (Input::IsKeyHeldDown(KEY::Q))
@@ -496,25 +496,25 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     //yaw += xoffset;
     //pitch += yoffset;
 
-    glm::vec3 rot = Camera.GetTransform()->GetLocalRotation();
+    glm::vec3 rot = Camera.GetTransform()->GetGlobalRotation();
 
     // YAW = ROT Y
     // PITCH = ROT X
     // ROLL = ROT Z
 
-    Camera.GetTransform()->SetLocalRotation(glm::vec3(rot.x + yoffset, rot.y + xoffset, rot.z));
+    Camera.GetTransform()->SetGlobalRotation(glm::vec3(rot.x + yoffset, rot.y + xoffset, rot.z));
 
-    rot = Camera.GetTransform()->GetLocalRotation();
+    rot = Camera.GetTransform()->GetGlobalRotation();
 
     if (rot.x > 89.0f) {
-        Camera.GetTransform()->SetLocalRotation(glm::vec3(89.f, rot.y, rot.z));
+        Camera.GetTransform()->SetGlobalRotation(glm::vec3(89.f, rot.y, rot.z));
     }
     if (rot.x < -89.0f)
     {
-        Camera.GetTransform()->SetLocalRotation(glm::vec3(-89.f, rot.y, rot.z));
+        Camera.GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
     }
 
-    rot = Camera.GetTransform()->GetLocalRotation();
+    rot = Camera.GetTransform()->GetGlobalRotation();
 
     glm::vec3 front{};
     front.x = cos(glm::radians(rot.y)) * cos(glm::radians(rot.x));

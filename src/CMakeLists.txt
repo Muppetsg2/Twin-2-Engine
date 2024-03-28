@@ -34,3 +34,63 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 if(MSVC)
     target_compile_definitions(${PROJECT_NAME} PUBLIC NOMINMAX)
 endif()
+
+# Set the directory paths
+#set(SHADERS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/res/shaders")
+#set(SHADERS_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/res/CompiledShaders/SPIRV")
+set(SHADERS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/res/shaders")
+set(SHADERS_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/res/CompiledShaders/SPIRV")
+
+find_program(GLSLANG_VALIDATOR NAMES glslangValidator)
+
+# Add a target to compile all shaders
+#add_custom_target(CompileShaders)
+
+## Optionally, add the custom target to the default build target
+#add_dependencies(Twin2Engine CompileShaders)
+# Function to compile shaders using glslangValidator
+function(compile_shader shader_path)
+    get_filename_component(shader_name ${shader_path} NAME_WE)
+    get_filename_component(shader_ext ${shader_path} EXT)
+
+    set(output_file "${SHADERS_OUTPUT_DIR}/${shader_name}${shader_ext}")
+
+    # Create output directory
+    file(MAKE_DIRECTORY ${SHADERS_OUTPUT_DIR})
+    
+    message("Shader to compile: ${shader_file}")
+    message("Shader compiled: ${output_file}\n")
+    # Execute glslangValidator to compile the shader
+    add_custom_command(
+        #OUTPUT ${output_file}
+        #TARGET CompileShaders POST_BUILD 
+        TARGET ${PROJECT_NAME} PRE_BUILD  
+        COMMAND C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\tools\\glslang\\bin\\glslangValidator.exe -G ${shader_path} -o ${output_file}
+        #COMMAND ../tools/glslang/bin/glslangValidator.exe -V ${shader_path} -o ${output_file}
+        #COMMAND ${CMAKE_EXECUTE_PROCESS_COMMAND_ECHO} "Result: echo"
+		#		   COMMAND ${CMAKE_COMMAND} -E create_symlink 
+		#		   ${CMAKE_SOURCE_DIR}/res 
+		#		   ${CMAKE_CURRENT_BINARY_DIR}/res2
+        #COMMAND ${GLSLANG_VALIDATOR} -V ${shader_path} -o ${output_file}
+        DEPENDS ${shader_path}
+        COMMENT "Compiling ${shader_name}.${shader_ext} to SPIR-V"
+        VERBATIM
+    )
+
+    # Return the compiled shader file path
+    set(${shader_path} ${output_file} PARENT_SCOPE)
+endfunction()
+
+# Function to recursively find shader files
+function(find_shader_files dir)
+    file(GLOB_RECURSE shader_files LIST_DIRECTORIES false "${dir}/*.vert" "${dir}/*.frag" "${dir}/*.geom" "${dir}/*.tesc" "${dir}/*.tese" "${dir}/*.comp")
+    set(shader_files ${shader_files} PARENT_SCOPE)
+endfunction()
+
+# Find all shader files
+find_shader_files(${SHADERS_SOURCE_DIR})
+
+# Compile each shader file
+foreach(shader_file ${shader_files})
+    compile_shader(${shader_file})
+endforeach()

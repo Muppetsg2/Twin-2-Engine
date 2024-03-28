@@ -52,7 +52,7 @@ namespace Twin2Engine::GraphicEngine
 		size_t hashed = hasher(variableName);
 		
 		const char* ptr = reinterpret_cast<const char*>(&value);
-		std::vector<char> result(ptr, ptr + sizeof(value));
+		std::vector<char> result(ptr, ptr + sizeof(T));
 		_variablesValuesMappings[hashed] = result;
 	}
 

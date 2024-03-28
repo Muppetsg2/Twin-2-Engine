@@ -120,7 +120,7 @@ InstatiatingModel Twin2Engine::GraphicEngine::ModelsManager::CreateModel(const s
 
         Model* model = new Model(vertices, indices, textures);
 
-        //Creating SSBO
+        //Creating SSBO do usuniêcia
 
         GLuint ssbo;
         glGenBuffers(1, &ssbo);

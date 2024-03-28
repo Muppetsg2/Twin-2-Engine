@@ -13,7 +13,7 @@
 
 using std::string;
 
-#include "Shader.h"
+#include <Shader.h>
 
 namespace Twin2Engine::GraphicEngine
 {
@@ -25,7 +25,7 @@ namespace Twin2Engine::GraphicEngine
 	constexpr char SHADERS_ORIGIN_DIRETORY[] = "ShadersOrigin";
 
 	/// <summary>
-	/// Shader Manager obsï¿½uguje:
+	/// Shader Manager obs³uguje:
 	/// * vertex shader
 	/// * geometry shader
 	/// * fragment shader
@@ -60,6 +60,13 @@ namespace Twin2Engine::GraphicEngine
 		//Precompilation methods
 		static std::string LoadShaderSource(const std::string& filePath);
 		static GLuint CompileShader(GLenum type, const std::string& source);
+
+		static std::vector<char> LoadBinarySource(const std::string& filePath);
+		//static GLuint CompileShaderSPIRV(GLenum type, const std::vector<char>& source);
+		static GLuint CompileShaderSPIRV(GLenum type, const string& filePath);
+		//static std::vector<unsigned int> LoadBinarySource(const std::string& filePath);
+		//static GLuint CompileShaderSPIRV(GLenum type, const std::vector<unsigned int>& source);
+
 		static inline bool CheckShaderCompilationSuccess(GLuint shaderId);
 		static void CheckProgramLinkingSuccess(GLuint programId);
 		static inline void PrecompileShaders();

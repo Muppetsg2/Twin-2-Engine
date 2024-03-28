@@ -231,12 +231,12 @@ GLuint Twin2Engine::GraphicEngine::ShaderManager::CompileShaderSPIRV(GLenum type
         //return std::vector<unsigned int>();
         return 0;
     }
-    std::vector<char>source ((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    std::vector<unsigned int>source ((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     // Create shader object and load SPIRV code
     GLuint shaderId = glCreateShader(type);
     SPDLOG_INFO("SPIR-V shader binary format GL_SHADER_BINARY_FORMAT_SPIR_V: {}", GL_SHADER_BINARY_FORMAT_SPIR_V);
-    glShaderBinary(1, &shaderId, GL_SHADER_BINARY_FORMAT_SPIR_V, source.data(), source.size());
-    //glShaderBinary(1, &shaderId, GL_SHADER_BINARY_FORMAT_SPIR_V, source.data(), source.size() * sizeof(unsigned int));
+    //glShaderBinary(1, &shaderId, GL_SHADER_BINARY_FORMAT_SPIR_V, source.data(), source.size());
+    glShaderBinary(1, &shaderId, GL_SHADER_BINARY_FORMAT_SPIR_V, source.data(), source.size() * sizeof(unsigned int));
     //glShaderBinary(1, &shaderId, GL_SHADER_BINARY_FORMAT_SPIR_V, source.data(), source.size() * sizeof(unsigned int));
 
     //const unsigned int* ptr = reinterpret_cast<const unsigned int*>(source.data());
@@ -244,14 +244,19 @@ GLuint Twin2Engine::GraphicEngine::ShaderManager::CompileShaderSPIRV(GLenum type
     //glShaderBinary(1, &shader, GL_SHADER_BINARY_FORMAT_SPIR_V, source.data(), source.size() * sizeof(unsigned int));
     //const unsigned int indexes[0] = {};
     //const unsigned int bindinds[0] = {};
-    glSpecializeShader(shaderId, "main", 0, 0, 0);
+    SPDLOG_INFO("Checking glSpecializeShader: {}", glSpecializeShader == NULL);
 
+    SPDLOG_INFO("TU4");
+    glSpecializeShader(shaderId, "main", 0, 0, 0); //Powodem b³êdów jest to ¿e to jest nullem
+
+    SPDLOG_INFO("TU2");
     if (!CheckShaderCompilationSuccess(shaderId))
     {
         glDeleteShader(shaderId);
         shaderId = 0;
     }
 
+    SPDLOG_INFO("TU3");
     return shaderId;
 }
 
@@ -486,11 +491,13 @@ GLuint Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgramFromFile(co
             //GLuint shaderId = CompileShaderSPIRV(shaderTypeMapping.at(extensionHash), LoadBinarySource(SHADERS_ORIGIN_DIRETORY + ("/CompiledShaders/SPIRV/" + line)));
             GLuint shaderId = CompileShaderSPIRV(shaderTypeMapping.at(extensionHash), SHADERS_ORIGIN_DIRETORY + ("/CompiledShaders/SPIRV/" + line));
 
+            SPDLOG_INFO("TU1");
             glAttachShader(shaderProgram, shaderId);
 
             shaderIds.push_back(shaderId);
         }
 
+        SPDLOG_INFO("Before linking");
         glLinkProgram(shaderProgram);
         CheckProgramLinkingSuccess(shaderProgram);
 

@@ -4,11 +4,8 @@
 #include <Model.h>
 #include <ModelData.h>
 #include <InstatiatingMesh.h>
-#include <glad/glad.h>
-
 
 #include <core/Transform.h>
-//#include <Transform.h>
 
 using Twin2Engine::Core::Transform;
 

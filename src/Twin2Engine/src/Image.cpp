@@ -1,7 +1,6 @@
 #include <ui/Image.h>
 #include <ShaderManager.h>
 #include <Shader.h>
-#include <vector>
 #include <core/Transform.h>
 #include <UIRenderingManager.h>
 

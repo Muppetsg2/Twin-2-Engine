@@ -14,7 +14,7 @@ add_subdirectory(CollisionSystem)
 
 add_executable(${PROJECT_NAME} main.cpp)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_SOURCE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC Twin2Engine)
 
 #target_include_directories(${PROJECT_NAME} PUBLIC ${GRAPHIC_ENGINE_INCLUDE_DIR})

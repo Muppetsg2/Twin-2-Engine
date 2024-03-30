@@ -1,7 +1,6 @@
 #pragma once
 #include <core/RenderableComponent.h>
 #include <core/Sprite.h>
-#include <glm/glm.hpp>
 
 namespace Twin2Engine {
 	namespace UI {

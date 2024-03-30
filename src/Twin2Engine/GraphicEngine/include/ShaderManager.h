@@ -1,19 +1,12 @@
 #ifndef SHADER_MANAGER_H
 #define SHADER_MANAGER_H
 
-#include <iostream>
-#include <filesystem>
-#include <fstream>
-#include <functional>
-#include <sstream>
 #include <string>
-#include <vector>
-
-#include <glad/glad.h>
+#include <unordered_map>
 
 using std::string;
 
-#include "Shader.h"
+#include <Shader.h>
 
 namespace Twin2Engine::GraphicEngine
 {

@@ -1,6 +1,4 @@
 #include <ModelsManager.h>
-
-#include <spdlog/spdlog.h>
 #include <InstatiatingMesh.h>
 
 //using ModelData;

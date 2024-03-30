@@ -5,11 +5,6 @@
 #include <InstatiatingModel.h>
 #include <ModelData.h>
 
-#include <glad/glad.h>
-
-#include <list>
-#include <string>
-
 namespace Twin2Engine::GraphicEngine
 {
 	class InstatiatingModel;

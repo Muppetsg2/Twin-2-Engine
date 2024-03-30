@@ -1,5 +1,4 @@
 #pragma once
-#include <glad/glad.h>
 
 namespace Twin2Engine {
 	namespace Manager {

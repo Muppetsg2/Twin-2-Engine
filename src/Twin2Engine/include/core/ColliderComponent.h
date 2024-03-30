@@ -1,9 +1,7 @@
 #ifndef _COLLIDERCOMPONENT_H_
 #define _COLLIDERCOMPONENT_H_
 
-//#include "Component.h"
 #include <core/Component.h>
-#include <vector>
 #include <GameCollider.h>
 #include <BoundingVolume.h>
 #include <core/EventHandler.h>
@@ -16,7 +14,6 @@ namespace CollisionSystem {
 namespace Twin2Engine::Core {
 	//class GameCollider;
 	class ColliderComponent;
-	//std::vector<ColliderComponent*> colliderComponents = std::vector<ColliderComponent*>();
 
 	struct Collision {
 		ColliderComponent* collider;
@@ -58,24 +55,3 @@ namespace Twin2Engine::Core {
 }
 
 #endif // !_COLLIDERCOMPONENT_H_
-
-
-
-/*/#pragma once
-
-#include "Component.h"
-#include <vector>
-
-namespace Twin2Engine {
-	namespace Core {
-		class ColliderComponent;
-		static std::vector<ColliderComponent*> colliderComponents = std::vector<ColliderComponent*>();
-
-		class ColliderComponent : public Component {
-		protected:
-			ColliderComponent(); // Powoduje ¿e klasa jest jakby abstrakcyjna no chyba ¿e bêdzie dziedziczona
-		public:
-			virtual ~ColliderComponent();
-		};
-	}
-}/**/

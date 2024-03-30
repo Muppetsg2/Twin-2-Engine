@@ -1,7 +1,5 @@
 #include <MaterialsManager.h>
 
-#include <spdlog/spdlog.h>
-
 using namespace Twin2Engine::GraphicEngine;
 
 std::hash<std::string> MaterialsManager::stringHash;

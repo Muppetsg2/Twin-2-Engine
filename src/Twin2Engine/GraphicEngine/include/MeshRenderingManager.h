@@ -6,10 +6,6 @@
 #include <MeshRenderer.h>
 #include <Shader.h>
 
-#include <unordered_map>
-#include <map>
-#include <vector>
-
 namespace Twin2Engine::GraphicEngine
 {
 	class Material;

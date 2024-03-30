@@ -1,6 +1,4 @@
 #include <manager/TextureManager.h>
-#include <spdlog/spdlog.h>
-#include <stb_image.h>
 
 using namespace Twin2Engine;
 using namespace Core;

@@ -1,5 +1,3 @@
-#include <glm/glm.hpp>
-
 using namespace glm;
 
 struct FrustumPlane {

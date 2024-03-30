@@ -1,7 +1,5 @@
 #pragma once
 
-#include <functional>
-
 namespace Twin2Engine::Core {
 	template<typename Ret, typename... Args> using Func = std::function<Ret(Args...)>;
 	template<typename... Args> using Action = Func<void, Args...>;

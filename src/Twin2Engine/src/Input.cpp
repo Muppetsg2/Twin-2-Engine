@@ -1,6 +1,5 @@
 #include <core/Input.h>
 #include <core/Window.h>
-#include <string>
 
 using namespace std;
 using namespace glm;

@@ -1,11 +1,6 @@
 #ifndef _MATERIAL_PARAMETERS_H_
 #define _MATERIAL_PARAMETERS_H_
 
-#include <string>
-#include <unordered_map>
-#include <map>
-#include <vector>
-
 namespace Twin2Engine::GraphicEngine
 {
 	class MaterialsManager;

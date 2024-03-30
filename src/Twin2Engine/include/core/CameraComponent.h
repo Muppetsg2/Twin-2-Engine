@@ -2,7 +2,6 @@
 
 #include <core/Component.h>
 #include <core/Frustum.h>
-#include <glm/glm.hpp>
 
 using namespace glm;
 

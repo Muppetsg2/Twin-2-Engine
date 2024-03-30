@@ -1,17 +1,6 @@
-#include "ShaderManager.h"
-#include "ShaderManager.h"
-#include "ShaderManager.h"
-#include "ShaderManager.h"
-
-//#include "../../Twin2Engine/core/ConfigManager.h"
+#include <ShaderManager.h>
 
 #include <core/ConfigManager.h>
-
-#include <spdlog/spdlog.h>
-
-
-
-#include <iostream>
 
 using namespace Twin2Engine::GraphicEngine;
 

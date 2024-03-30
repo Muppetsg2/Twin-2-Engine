@@ -1,8 +1,6 @@
 #pragma once
 
-#include <map>
 #include <vector>
-#include <functional>
 #include <core/RenderableComponent.h>
 
 namespace Twin2Engine::GraphicEngine

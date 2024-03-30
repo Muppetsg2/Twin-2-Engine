@@ -6,8 +6,6 @@
 #include <MaterialsManager.h>
 #include <MaterialParameters.h>
 
-#include <unordered_map>
-
 namespace Twin2Engine::GraphicEngine
 {
 	//class MaterialParameters

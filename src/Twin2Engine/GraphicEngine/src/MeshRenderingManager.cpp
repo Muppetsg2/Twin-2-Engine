@@ -1,8 +1,5 @@
 #include <MeshRenderingManager.h>
-
 #include <InstatiatingMesh.h>
-
-#include <spdlog/spdlog.h>
 
 using namespace Twin2Engine::GraphicEngine;
 

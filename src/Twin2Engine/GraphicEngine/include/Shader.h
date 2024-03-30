@@ -1,24 +1,9 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-
-#include <glad/glad.h>// do³¹cz glad, by móc korzystaæ w wszystkich wymaganych przez OpenGL funkcji</glad>
-
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <list>
-#include <set>
-#include <vector>
-
-
-
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
-#include "ShaderManager.h"
+#include <ShaderManager.h>
 
 namespace Twin2Engine::GraphicEngine
 {

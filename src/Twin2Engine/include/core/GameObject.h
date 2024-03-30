@@ -1,11 +1,6 @@
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
-#include <algorithm>
-#include <iterator>
-#include <list>
-#include <string>
-
 using std::list;
 using std::string;
 

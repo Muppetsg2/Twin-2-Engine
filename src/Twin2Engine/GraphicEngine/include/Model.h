@@ -1,22 +1,15 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include "Mesh.h"
+#include <Mesh.h>
 
 #include <ModelsManager.h>
 
-#include <vector>
-#include <iostream>
-
 using namespace std;
 
-
+// Mo¿na u¿yæ TextureManagera skoro ju¿ go zrobi³em (Patryk)
 //#include "stb_image.h"
 //#include <stb_image.h>
-
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 
 namespace Twin2Engine::GraphicEngine
 {

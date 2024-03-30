@@ -1,10 +1,6 @@
 #ifndef GRAPHIC_ENGINE_H
 #define GRAPHIC_ENGINE_H
 
-#include <vector>
-
-#include <glm/glm.hpp>
-
 #include <Mesh.h>
 #include <Shader.h>
 #include <ShaderManager.h>

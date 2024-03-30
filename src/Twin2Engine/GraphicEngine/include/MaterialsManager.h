@@ -4,11 +4,6 @@
 #include <Material.h>
 #include <ShaderManager.h>
 
-#include <unordered_map>
-
-#include <glm/glm.hpp>
-#include <yaml-cpp/yaml.h>
-
 namespace Twin2Engine::GraphicEngine
 {
 	class Material;

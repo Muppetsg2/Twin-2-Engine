@@ -1,8 +1,5 @@
 #include <InstatiatingModel.h>
-
 #include <ModelsManager.h>
-
-#include <spdlog/spdlog.h>
 
 using namespace Twin2Engine::GraphicEngine;
 

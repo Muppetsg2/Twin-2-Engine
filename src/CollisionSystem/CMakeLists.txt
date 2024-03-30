@@ -3,6 +3,7 @@
 set(COLLISION_SYSTEM_DIR ${CMAKE_CURRENT_LIST_DIR})
 set(COLLISION_SYSTEM_SOURCE_DIR ${COLLISION_SYSTEM_DIR}/src)
 set(COLLISION_SYSTEM_INCLUDE_DIR ${COLLISION_SYSTEM_DIR}/include)
+set(COLLISION_SYSTEM_PRECOMPILE_HEADER ${COLLISION_SYSTEM_DIR}/pch.h)
 
 file(GLOB_RECURSE COLLISION_SYSTEM_SOURCE_FILES 
                         #${GRAPHIC_ENGINE_DIR}/src/.cpp
@@ -26,6 +27,9 @@ source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${COLLISION_SYSTEM_PRIVATE_INC
 
 #Defining library
 add_library(CollisionSystem STATIC ${COLLISION_SYSTEM_SOURCE_FILES})
+
+#Adding precompile header
+target_precompile_headers(CollisionSystem PUBLIC ${COLLISION_SYSTEM_PRECOMPILE_HEADER})
 
 #Adding include to library
 target_include_directories(CollisionSystem

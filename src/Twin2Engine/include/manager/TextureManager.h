@@ -1,8 +1,7 @@
 #pragma once
 
+#include <stb_image.h>
 #include <core/Texture2D.h>
-#include <map>
-#include <string>
 
 namespace Twin2Engine {
 	namespace Manager {

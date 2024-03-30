@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Texture2D.h"
+#include <core/Texture2D.h>
 
 namespace Twin2Engine {
 	namespace Manager {

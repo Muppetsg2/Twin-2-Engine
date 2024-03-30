@@ -1,8 +1,6 @@
 #ifndef _LAYERSDATA_H_
 #define _LAYERSDATA_H_
 
-#include <cstdint>
-
 enum Layer : uint8_t { DEFAULT, IGNORE_RAYCAST, IGNORE_COLLISION, UI, LAYER_1, LAYER_2, LAYER_3, LAYER_4 };
 
 

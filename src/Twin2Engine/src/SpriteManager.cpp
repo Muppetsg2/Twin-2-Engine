@@ -1,6 +1,5 @@
 #include <manager/SpriteManager.h>
 #include <manager/TextureManager.h>
-#include <spdlog/spdlog.h>
 
 using namespace Twin2Engine;
 using namespace Core;

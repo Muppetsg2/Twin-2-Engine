@@ -1,6 +1,4 @@
 #include <core/CameraComponent.h>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/glm.hpp>
 #include <core/Transform.h>
 
 Twin2Engine::Core::CameraType Twin2Engine::Core::CameraComponent::GetCameraType()

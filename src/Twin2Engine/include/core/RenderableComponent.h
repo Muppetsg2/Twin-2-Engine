@@ -2,7 +2,6 @@
 
 #include <core/Component.h>
 #include <core/Window.h>
-#include <vector>
 
 namespace Twin2Engine::Core {
 	class RenderableComponent : public Component {

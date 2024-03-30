@@ -1,7 +1,5 @@
 #include <MeshRenderer.h>
 
-#include <spdlog/spdlog.h>
-
 using namespace Twin2Engine::GraphicEngine;
 
 void MeshRenderer::ReloadMesh()

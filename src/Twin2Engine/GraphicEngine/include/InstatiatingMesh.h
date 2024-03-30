@@ -3,11 +3,6 @@
 
 #include <Mesh.h>
 
-#include <vector>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 using std::vector;
 
 namespace Twin2Engine

@@ -1,41 +1,19 @@
 #pragma once
 
-// If you are new to dear imgui, see examples/README.txt and documentation at the top of imgui.cpp.
-// (GLFW is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan graphics context creation, etc.)
-
-#include "imgui.h"
-#include "imgui_impl/imgui_impl_glfw.h"
-#include "imgui_impl/imgui_impl_opengl3.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-
-#define IMGUI_IMPL_OPENGL_LOADER_GLAD
-
-#include <glad/glad.h>  // Initialize with gladLoadGL()
-#include <GLFW/glfw3.h> // Include glfw3.h after our OpenGL definitions
-#include <spdlog/spdlog.h>
+// IMGUI
+#include <imgui.h>
+#include "../imgui_impl/imgui_impl_glfw.h"
+#include "../imgui_impl/imgui_impl_opengl3.h"
 
 // Soloud
 #include <soloud.h>
 #include <soloud_wav.h>
 
-/*
-// Miniaudio
-#define MINIAUDIO_IMPLEMENTATION
-#include "miniaudio.h"
-*/
-
-// OpenGL Mathematics
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 // HID
-#include "Input.h"
+#include <core/Input.h>
 
 // TIME
-#include "Time.h"
+#include <core/Time.h>
 
 constexpr int32_t WINDOW_WIDTH = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;

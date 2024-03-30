@@ -1,14 +1,18 @@
 project(Twin2Engine VERSION 1.0)
 
+set(Twin2Engine_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(Twin2Engine_HEADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(Twin2Engine_PRECOMPILE_HEADERS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)
+
 # Add source files
 file(GLOB_RECURSE SOURCE_FILES 
-	 *.c
-	 *.cpp)
+	 ${Twin2Engine_SOURCE_DIR}/*.c
+	 ${Twin2Engine_SOURCE_DIR}/*.cpp)
 	
 # Add header files
 file(GLOB_RECURSE HEADER_FILES
-	 *.h
-	 *.hpp)
+	 ${Twin2Engine_HEADER_DIR}/*.h
+	 ${Twin2Engine_HEADER_DIR}/*.hpp)
 	 
 # Search for the assets files
 file(GLOB_RECURSE ASSETS_FILES 
@@ -32,10 +36,11 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE LIBRARY_SUFFIX="")
 get_property(is_miniaudio GLOBAL PROPERTY ISMINIAUDIO)
 get_property(is_imgui GLOBAL PROPERTY USEIMGUI)
 
+target_precompile_headers(${PROJECT_NAME} PUBLIC ${PRECOMPILE_HEADERS_FILE})
 
 if(is_miniaudio)
 	if(is_imgui)
-		target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+		target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR}
 														  ${glad_SOURCE_DIR}
 														  ${stb_image_SOURCE_DIR}
 														  ${freetype_SOURCE_DIR}
@@ -44,7 +49,7 @@ if(is_miniaudio)
 		
 		target_link_libraries(${PROJECT_NAME} imgui)
 	else()
-		target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+		target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR}
 														${glad_SOURCE_DIR}
 														${stb_image_SOURCE_DIR}
 														${freetype_SOURCE_DIR}
@@ -54,7 +59,7 @@ if(is_miniaudio)
 	target_link_libraries(${PROJECT_NAME} miniaudio)
 else()
 	if(is_imgui)
-		target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+		target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR}
 														  ${glad_SOURCE_DIR}
 														  ${stb_image_SOURCE_DIR}
 														  ${soloud_SOURCE_DIR}
@@ -63,7 +68,7 @@ else()
 
 		target_link_libraries(${PROJECT_NAME} imgui)
 	else()
-		target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+		target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR}
 													${glad_SOURCE_DIR}
 													${stb_image_SOURCE_DIR}
 													${soloud_SOURCE_DIR}

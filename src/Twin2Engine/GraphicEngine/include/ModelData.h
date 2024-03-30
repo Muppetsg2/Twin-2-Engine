@@ -3,9 +3,6 @@
 
 #include <InstatiatingMesh.h>
 #include <Model.h>
-#include <glad/glad.h>
-
-#include <vector>
 
 namespace Twin2Engine::GraphicEngine
 {

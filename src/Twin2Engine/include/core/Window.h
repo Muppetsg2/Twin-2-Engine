@@ -1,8 +1,4 @@
 #pragma once
-#include <GLFW/glfw3.h>
-#include <string>
-#include <glm/glm.hpp>
-#include <vector>
 
 namespace Twin2Engine {
 	namespace Core {

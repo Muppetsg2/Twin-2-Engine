@@ -2,6 +2,7 @@
 set(GRAPHIC_ENGINE_DIR ${CMAKE_CURRENT_LIST_DIR})
 set(GRAPHIC_ENGINE_SOURCE_DIR ${GRAPHIC_ENGINE_DIR}/src)
 set(GRAPHIC_ENGINE_INCLUDE_DIR ${GRAPHIC_ENGINE_DIR}/include)
+set(GRAPHIC_ENGINE_PRECOMPILE_HEADER ${GRAPHIC_ENGINE_DIR}/pch.h)
 
 file(GLOB_RECURSE GRAPHIC_ENGINE_SOURCE_FILES 
                         ${GRAPHIC_ENGINE_SOURCE_DIR}/*.cpp
@@ -34,8 +35,10 @@ target_include_directories(GraphicEngine
 						
 						#PRIVATE
 						#${GRAPHIC_ENGINE_SOURCE_DIR}
-
 )
+
+# Adding precompile Headers to library
+target_precompile_headers(GraphicEngine PUBLIC ${GRAPHIC_ENGINE_PRECOMPILE_HEADER})
 
 #target_link_libraries(GraphicEngine PRIVATE 
 #										#glad

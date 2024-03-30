@@ -1,6 +1,5 @@
 #include <core/Window.h>
 #include <core/Input.h>
-#include <spdlog/spdlog.h>
 
 using namespace Twin2Engine::Core;
 using namespace std;

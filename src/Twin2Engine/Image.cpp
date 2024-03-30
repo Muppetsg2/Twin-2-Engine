@@ -12,8 +12,9 @@ using namespace GraphicEngine;
 using namespace glm;
 using namespace std;
 
-unsigned int VAO;
-unsigned int VBO;
+unsigned int imageVAO;
+unsigned int imageVBO;
+bool imageVAOInit = false;
 
 vector<float> verticies{
 	-.5f, .5f, 0.f,		0.f, 0.f,	0.f, 0.f, 1.f,
@@ -29,24 +30,26 @@ void Image::Initialize()
 {
 	UIRenderingManager::Register(this);
 
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, verticies.size() * sizeof(float), verticies.data(), GL_STATIC_DRAW);
+	if (!imageVAOInit) {
+		glGenVertexArrays(1, &imageVAO);
+		glBindVertexArray(imageVAO);
+		glGenBuffers(1, &imageVBO);
+		glBindBuffer(GL_ARRAY_BUFFER, imageVBO);
+		glBufferData(GL_ARRAY_BUFFER, verticies.size() * sizeof(float), verticies.data(), GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
-	glEnableVertexAttribArray(2);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+	}
 }
 
 void Image::Render(const Window* window)
 {
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindVertexArray(imageVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, imageVBO);
 
 	Shader* uiShader = ShaderManager::GetShaderProgram("res/CompiledShaders/origin/UI.shdr");
 	uiShader->use();

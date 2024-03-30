@@ -3,8 +3,8 @@
 // (GLFW is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan graphics context creation, etc.)
 
 #include "imgui.h"
-#include "imgui_impl/imgui_impl_glfw.h"
-#include "imgui_impl/imgui_impl_opengl3.h"
+#include "Twin2Engine/imgui_impl/imgui_impl_glfw.h"
+#include "Twin2Engine/imgui_impl/imgui_impl_opengl3.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -42,10 +42,12 @@
 // MANAGERS
 #include <manager/TextureManager.h>
 #include <manager/SpriteManager.h>
+#include <manager/FontManager.h>
 
 // GAME OBJECT
 #include <core/GameObject.h>
 #include <ui/Image.h>
+#include <ui/Text.h>
 
 // GRAPHIC_ENGINE
 #include <GraphicEnigine.h>
@@ -54,12 +56,16 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
+// STANDARD LIBRARY
 #include <memory>
 
+// COLLISIONS
 #include <CollisionManager.h>
 #include <core/BoxColliderComponent.h>
 #include <core/CapsuleColliderComponent.h>
 #include <core/SphereColliderComponent.h>
+
+// CAMERA
 #include <core/CameraComponent.h>
 
 using namespace Twin2Engine::Manager;
@@ -163,6 +169,7 @@ bool musicPlaying = false;
 
 GraphicEngine* graphicEngine;
 GameObject* imageObj;
+GameObject* textObj;
 
 int main(int, char**)
 {
@@ -243,11 +250,20 @@ int main(int, char**)
     Texture2D* tex2 = TextureManager::LoadTexture2D("res/textures/grass.png");
     Sprite* s2 = SpriteManager::MakeSprite(tex2, "grass");
 
-    GameObject* ob = new GameObject();
-    Image* img = ob->AddComponent<Image>();
+    imageObj = new GameObject();
+    Image* img = imageObj->AddComponent<Image>();
     img->SetSprite(s);
-    Image* img2 = ob->AddComponent<Image>();
+    Image* img2 = imageObj->AddComponent<Image>();
     img2->SetSprite(s2);
+
+    Shader* sh2 = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/Text.shdr", "shaders/text.vert", "shaders/text.frag");
+    FontManager::LoadFont("res/fonts/arial.ttf", 48);
+
+    textObj = new GameObject();
+    Text* text = textObj->AddComponent<Text>();
+    text->SetText("Text");
+    text->SetSize(48);
+    text->SetFontPath("res/fonts/arial.ttf");
 
     GameObject go1;
     GameObject go2;

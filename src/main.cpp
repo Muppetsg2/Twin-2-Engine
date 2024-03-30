@@ -178,7 +178,11 @@ int main(int, char**)
     init_imgui();
     spdlog::info("Initialized ImGui.");
     
-    soloud.init();
+    SoLoud::result res = soloud.init();
+    if (res != 0) {
+        spdlog::error(soloud.getErrorString(res));
+        return EXIT_FAILURE;
+    }
     spdlog::info("Initialized SoLoud.");
 
     smusicSmple.load("./res/music/FurElise.wav");
@@ -290,6 +294,7 @@ int main(int, char**)
 
     // Cleanup
     delete imageObj;
+    soloud.deinit();
     SpriteManager::UnloadAll();
     TextureManager::UnloadAll();
 

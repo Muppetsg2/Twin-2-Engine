@@ -1,7 +1,13 @@
-// IMGUI
-#include <imgui.h>
+// dear imgui: standalone example application for GLFW + OpenGL 3, using programmable pipeline
+// If you are new to dear imgui, see examples/README.txt and documentation at the top of imgui.cpp.
+// (GLFW is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan graphics context creation, etc.)
+
+#include "imgui.h"
 #include "Twin2Engine/imgui_impl/imgui_impl_glfw.h"
 #include "Twin2Engine/imgui_impl/imgui_impl_opengl3.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 #include <glad/glad.h>
@@ -27,13 +33,19 @@
 // MANAGERS
 #include <manager/TextureManager.h>
 #include <manager/SpriteManager.h>
+#include <manager/FontManager.h>
 
 // GAME OBJECT
 #include <core/GameObject.h>
 #include <ui/Image.h>
+#include <ui/Text.h>
 
 // GRAPHIC_ENGINE
 #include <GraphicEnigine.h>
+
+//LOGGER
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 // STANDARD LIBRARY
 #include <memory>
@@ -43,6 +55,8 @@
 #include <core/BoxColliderComponent.h>
 #include <core/CapsuleColliderComponent.h>
 #include <core/SphereColliderComponent.h>
+
+// CAMERA
 #include <core/CameraComponent.h>
 
 using namespace Twin2Engine::Manager;
@@ -146,6 +160,8 @@ bool musicPlaying = false;
 
 GraphicEngine* graphicEngine;
 GameObject* imageObj;
+GameObject* textObj;
+Text* text;
 
 int main(int, char**)
 {
@@ -193,8 +209,8 @@ int main(int, char**)
     // Set global log level to debug
     spdlog::set_level(spdlog::level::debug);
 
-    Camera.GetTransform()->SetLocalPosition(cameraPos);
-    Camera.GetTransform()->SetLocalRotation(glm::vec3(0.f, -90.f, 0.f));
+    Camera.GetTransform()->SetGlobalPosition(cameraPos);
+    Camera.GetTransform()->SetGlobalRotation(glm::vec3(0.f, -90.f, 0.f));
     CameraComponent* c = Camera.AddComponent<CameraComponent>();
     c->SetIsMain(true);
     c->SetWindowSize(glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -226,11 +242,22 @@ int main(int, char**)
     Texture2D* tex2 = TextureManager::LoadTexture2D("res/textures/grass.png");
     Sprite* s2 = SpriteManager::MakeSprite(tex2, "grass");
 
-    GameObject* ob = new GameObject();
-    Image* img = ob->AddComponent<Image>();
+    imageObj = new GameObject();
+    Image* img = imageObj->AddComponent<Image>();
     img->SetSprite(s);
-    Image* img2 = ob->AddComponent<Image>();
+    Image* img2 = imageObj->AddComponent<Image>();
     img2->SetSprite(s2);
+
+    Shader* sh2 = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/Text.shdr", "shaders/text.vert", "shaders/text.frag");
+    FontManager::LoadFont("res/fonts/arial.ttf", 48);
+
+    textObj = new GameObject();
+    textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
+    text = textObj->AddComponent<Text>();
+    text->SetColor(glm::vec4(1.f));
+    text->SetText("Text");
+    text->SetSize(48);
+    text->SetFontPath("res/fonts/arial.ttf");
 
     GameObject go1;
     GameObject go2;
@@ -382,22 +409,22 @@ void input()
     if (!Input::IsKeyUp(KEY::W))
     {
         camDirty = true;
-        Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
     if (!Input::IsKeyUp(KEY::S))
     {
         camDirty = true;
-        Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
     if (!Input::IsKeyUp(KEY::A))
     {
         camDirty = true;
-        Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
     if (!Input::IsKeyUp(KEY::D))
     {
         camDirty = true;
-        Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
     /*
     if (Input::IsKeyHeldDown(KEY::Q))
@@ -479,25 +506,25 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     //yaw += xoffset;
     //pitch += yoffset;
 
-    glm::vec3 rot = Camera.GetTransform()->GetLocalRotation();
+    glm::vec3 rot = Camera.GetTransform()->GetGlobalRotation();
 
     // YAW = ROT Y
     // PITCH = ROT X
     // ROLL = ROT Z
 
-    Camera.GetTransform()->SetLocalRotation(glm::vec3(rot.x + yoffset, rot.y + xoffset, rot.z));
+    Camera.GetTransform()->SetGlobalRotation(glm::vec3(rot.x + yoffset, rot.y + xoffset, rot.z));
 
-    rot = Camera.GetTransform()->GetLocalRotation();
+    rot = Camera.GetTransform()->GetGlobalRotation();
 
     if (rot.x > 89.0f) {
-        Camera.GetTransform()->SetLocalRotation(glm::vec3(89.f, rot.y, rot.z));
+        Camera.GetTransform()->SetGlobalRotation(glm::vec3(89.f, rot.y, rot.z));
     }
     if (rot.x < -89.0f)
     {
-        Camera.GetTransform()->SetLocalRotation(glm::vec3(-89.f, rot.y, rot.z));
+        Camera.GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
     }
 
-    rot = Camera.GetTransform()->GetLocalRotation();
+    rot = Camera.GetTransform()->GetGlobalRotation();
 
     glm::vec3 front{};
     front.x = cos(glm::radians(rot.y)) * cos(glm::radians(rot.x));
@@ -513,6 +540,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void update()
 {
     // Update game objects' state here
+    text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
 }
 
 void render()

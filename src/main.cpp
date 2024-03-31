@@ -159,7 +159,7 @@ ma_engine engine;
 ma_sound sound;
 */
 
-bool musicPlaying = false;
+//bool musicPlaying = false;
 
 GraphicEngine* graphicEngine;
 GameObject* imageObj;
@@ -560,25 +560,37 @@ void imgui_render()
         ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Hello World!");
 
         if (ImGui::Button("Play Song")) {
-            if (!musicPlaying) {
-                //ma_sound_start(&sound);
-                if (first) {
-                    sampleHandle = soloud.play(smusicSmple);
-                    first = false;
-                }
-                else {
+            if (soloud.isValidVoiceHandle(sampleHandle)) {
+                if (soloud.getPause(sampleHandle)) {
                     soloud.setPause(sampleHandle, false);
                 }
+            }
+            else 
+            {
+                sampleHandle = soloud.play(smusicSmple);
+            }
+
+            /*
+            if (!musicPlaying) {
+                ma_sound_start(&sound);
                 musicPlaying = true;
             }
+            */
         }
 
-        if (ImGui::Button("Stop Song")) {
+        if (ImGui::Button("Pause Song")) {
+            if (soloud.isValidVoiceHandle(sampleHandle)) {
+                if (!soloud.getPause(sampleHandle)) {
+                    soloud.setPause(sampleHandle, true);
+                }
+            }
+
+            /*
             if (musicPlaying) {
-                //ma_sound_stop(&sound);
-                soloud.setPause(sampleHandle, true);
+                ma_sound_stop(&sound);
                 musicPlaying = false;
             }
+            */
         }
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);

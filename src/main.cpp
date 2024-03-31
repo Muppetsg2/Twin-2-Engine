@@ -260,7 +260,9 @@ int main(int, char**)
     FontManager::LoadFont("res/fonts/arial.ttf", 48);
 
     textObj = new GameObject();
+    textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
     Text* text = textObj->AddComponent<Text>();
+    text->SetColor(glm::vec4(1.f));
     text->SetText("Text");
     text->SetSize(48);
     text->SetFontPath("res/fonts/arial.ttf");

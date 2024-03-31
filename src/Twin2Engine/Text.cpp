@@ -18,7 +18,7 @@ unsigned int textVAO = 0;
 unsigned int textVBO = 0;
 bool textVAOInit = false;
 
-vector<float> verticies{
+vector<float> textVerticies{
 	-.5f, .5f, 0.f,		0.f, 0.f,	0.f, 0.f, 1.f,
 	-.5f, -.5f, 0.f,	0.f, 1.f,	0.f, 0.f, 1.f,
 	.5f, .5f, 0.f,		1.f, 0.f,	0.f, 0.f, 1.f,
@@ -44,7 +44,7 @@ void Text::Initialize()
 		glBindVertexArray(textVAO);
 		glGenBuffers(1, &textVBO);
 		glBindBuffer(GL_ARRAY_BUFFER, textVBO);
-		glBufferData(GL_ARRAY_BUFFER, verticies.size() * sizeof(float), verticies.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, textVerticies.size() * sizeof(float), textVerticies.data(), GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
@@ -99,7 +99,7 @@ void Text::Render(const Window* window)
 		// update content of VBO memory
 		glBindBuffer(GL_ARRAY_BUFFER, textVBO);
 		// render quad
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawArrays(GL_TRIANGLES, 0, textVerticies.size() / 8);
 		// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
 		x += (c->Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
 	}

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ft2build.h>
-#include <freetype/freetype.h>
+#include FT_FREETYPE_H
 #include <map>
 #include <core/Font.h>
 

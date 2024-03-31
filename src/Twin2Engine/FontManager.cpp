@@ -7,7 +7,7 @@ using namespace Manager;
 
 using namespace std;
 
-map<size_t, map<uint32_t, Font*>> _fonts = map<size_t, map<uint32_t, Font*>>();
+map<size_t, map<uint32_t, Font*>> FontManager::_fonts = map<size_t, map<uint32_t, Font*>>();
 
 void FontManager::LoadFont(const string& fontPath, uint32_t size) {
 	size_t h = hash<string>()(fontPath);

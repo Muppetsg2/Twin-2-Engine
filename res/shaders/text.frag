@@ -3,6 +3,7 @@ out vec4 color;
 
 in VS_OUT {
 	vec2 texCoord;
+    vec3 fragPos;
 } fs_in;
 
 struct TEXT {

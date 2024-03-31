@@ -16,7 +16,7 @@ unsigned int imageVAO;
 unsigned int imageVBO;
 bool imageVAOInit = false;
 
-vector<float> verticies{
+vector<float> imageVerticies {
 	-.5f, .5f, 0.f,		0.f, 0.f,	0.f, 0.f, 1.f,
 	-.5f, -.5f, 0.f,	0.f, 1.f,	0.f, 0.f, 1.f,
 	.5f, .5f, 0.f,		1.f, 0.f,	0.f, 0.f, 1.f,
@@ -35,7 +35,7 @@ void Image::Initialize()
 		glBindVertexArray(imageVAO);
 		glGenBuffers(1, &imageVBO);
 		glBindBuffer(GL_ARRAY_BUFFER, imageVBO);
-		glBufferData(GL_ARRAY_BUFFER, verticies.size() * sizeof(float), verticies.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, imageVerticies.size() * sizeof(float), imageVerticies.data(), GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
@@ -75,7 +75,7 @@ void Image::Render(const Window* window)
 	uiShader->setMat4("model", model);
 	uiShader->setMat4("normalModel", normalModel);
 
-	glDrawArrays(GL_TRIANGLES, 0, verticies.size() / 8);
+	glDrawArrays(GL_TRIANGLES, 0, imageVerticies.size() / 8);
 }
 
 void Image::OnDestroy()

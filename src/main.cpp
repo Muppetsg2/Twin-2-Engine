@@ -170,6 +170,7 @@ bool musicPlaying = false;
 GraphicEngine* graphicEngine;
 GameObject* imageObj;
 GameObject* textObj;
+Text* text;
 
 int main(int, char**)
 {
@@ -261,7 +262,7 @@ int main(int, char**)
 
     textObj = new GameObject();
     textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
-    Text* text = textObj->AddComponent<Text>();
+    text = textObj->AddComponent<Text>();
     text->SetColor(glm::vec4(1.f));
     text->SetText("Text");
     text->SetSize(48);
@@ -548,6 +549,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void update()
 {
     // Update game objects' state here
+    text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
 }
 
 void render()

@@ -78,18 +78,18 @@ void Text::Render(const Window* window)
 	uiShader->setMat4("normalModel", normalModel);
 
 	// iterate through all characters
-	float x = -_text.size() / 2.f;
+	float x = 0.f;
 	float y = 0.f;
 	float scale = 1.f;
 	for (auto& c : _textTextures)
 	{
+		float xpos = x + c->Bearing.x * scale;
+		float ypos = y - (c->Size.y - c->Bearing.y) * scale;
+
 		float w = c->Size.x * scale;
 		float h = c->Size.y * scale;
 
-		float xpos = x * w + c->Bearing.x * scale;
-		float ypos = y * h - (c->Size.y - c->Bearing.y) * scale;
-
-		glm::mat4 tempModel = glm::translate(model, glm::vec3(xpos, ypos, 0.f));
+		glm::mat4 tempModel = glm::translate(model, glm::vec3(xpos + w / 2.f, ypos + h / 2.f, 0.f));
 		uiShader->setFloat("canvas.elemWidth", w);
 		uiShader->setFloat("canvas.elemHeight", h);
 		uiShader->setMat4("model", tempModel);

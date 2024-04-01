@@ -91,10 +91,10 @@ void Twin2Engine::GraphicEngine::MeshRenderingManager::Render()
 
 				for (auto& renderer : material.second)
 				{
-					transforms[index] = renderer->getTransform()->GetTransformMatrix();
+					transforms[index] = renderer->GetTransform()->GetTransformMatrix();
 					indexes[index] = materialIndex;
 
-					instanceData[index].transformMatrix = renderer->getTransform()->GetTransformMatrix();
+					instanceData[index].transformMatrix = renderer->GetTransform()->GetTransformMatrix();
 					instanceData[index].materialInputId = materialIndex;
 
 					index++;

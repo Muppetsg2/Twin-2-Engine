@@ -29,18 +29,18 @@ namespace Twin2Engine
 #pragma endregion
 
 #pragma region Setters
-			void setEnable(bool enable);
+			void SetEnable(bool enable);
 #pragma endregion
 
 #pragma region Getters
-			size_t getId() const;
-			GameObject* getGameObject() const;
-			bool isEnable() const;
+			size_t GetId() const;
+			GameObject* GetGameObject() const;
+			bool IsEnable() const;
 
-			Transform* getTransform() const;
-			std::string getName() const;
-			//getTag() const;
-			//getLayer() const;
+			Transform* GetTransform() const;
+			std::string GetName() const;
+			//GetTag() const;
+			//GetLayer() const;
 #pragma endregion
 
 #pragma region FriendMethods

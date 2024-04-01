@@ -8,13 +8,18 @@
 using namespace SoLoud;
 using namespace std;
 
-namespace Twin2Engine::Manager {
+namespace Twin2Engine::Core {
 	class AudioManager {
 	private:
 		static Soloud _soloud;
-		static map<size_t, Wav> _loadedAudio;
+		static map<size_t, Wav*> _loadedAudio;
+
+		static bool _init;
 
 	public:
+		static result Init();
+		static const char* GetErrorString(result errorCode);
+
 		static size_t LoadAudio(string path);
 
 		static handle GetAudioHandle(string path);
@@ -35,6 +40,8 @@ namespace Twin2Engine::Manager {
 		static float GetVolume(handle h);
 		static SoLoud::time GetAudioTime(string path);
 		static SoLoud::time GetAudioTime(size_t id);
+		static SoLoud::time GetPlayTime(handle h);
+		static SoLoud::time GetPlayPosition(handle h);
 		static bool IsPaused(handle h);
 		static bool IsHandleValid(handle h);
 		static bool IsLooping(handle h);

@@ -40,7 +40,7 @@ vec3 Twin2Engine::Core::CameraComponent::GetRight() const
 
 mat4 Twin2Engine::Core::CameraComponent::GetViewMatrix() const
 {
-	vec3 pos = getTransform()->GetGlobalPosition();
+	vec3 pos = GetTransform()->GetGlobalPosition();
 	return lookAt(pos, pos + _front, _up);
 }
 
@@ -66,7 +66,7 @@ Frustum Twin2Engine::Core::CameraComponent::GetFrustum()
 	float halfHSide = halfVSide * aspect;
 	vec3 frontMultFar = _far * _front;
 
-	vec3 pos = getTransform()->GetGlobalPosition();
+	vec3 pos = GetTransform()->GetGlobalPosition();
 
 	frustum.nearFace = { pos + _near * _front, _front };
 	frustum.farFace = { pos + frontMultFar, -_front };

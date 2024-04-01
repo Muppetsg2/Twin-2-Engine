@@ -73,7 +73,7 @@ void Text::Render(const Window* window)
 	uiShader->setFloat("canvas.width", canvasSize.x);
 	uiShader->setFloat("canvas.height", canvasSize.y);
 
-	mat4 model = getTransform()->GetTransformMatrix();
+	mat4 model = GetTransform()->GetTransformMatrix();
 	mat4 normalModel = mat4(mat3(transpose(inverse(model))));
 	uiShader->setMat4("normalModel", normalModel);
 

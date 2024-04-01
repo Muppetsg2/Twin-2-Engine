@@ -9,6 +9,7 @@ namespace Twin2Engine::GraphicEngine
 
 	struct UIElement {
 		uint32_t textureID;
+		bool isText;
 		glm::ivec2 spriteSize;
 		glm::ivec2 spriteOffset;
 		glm::ivec2 textureSize;

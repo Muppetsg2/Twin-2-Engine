@@ -17,6 +17,7 @@ struct SPRITE {
 };
 
 uniform SPRITE sprite;
+uniform bool isText;
 
 out vec4 Color;
 
@@ -33,5 +34,10 @@ void main()
     vec2 uvMin = vec2(sprite.x / sprite.texWidth, sprite.y / sprite.texHeight);
     vec2 uvMax = vec2((sprite.x + sprite.width) / sprite.texWidth, (sprite.y + sprite.height) / sprite.texHeight);
     vec2 uv = map(fs_in.texCoord, vec2(0.0, 0.0), vec2(1.0, 1.0), uvMin, uvMax);
-    Color = texture(sprite.img, uv) * sprite.color;
+    if (!isText) {
+        Color = texture(sprite.img, uv) * sprite.color;
+    }
+    else {
+        Color = vec4(1.0, 1.0, 1.0, texture(sprite.img, uv).r) * sprite.color;
+    }
 }

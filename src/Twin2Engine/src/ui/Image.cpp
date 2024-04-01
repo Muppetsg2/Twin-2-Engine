@@ -12,6 +12,7 @@ using namespace std;
 void Image::Render(const Window* window)
 {
 	UIElement elem{};
+	elem.isText = false;
 	elem.textureID = _sprite->GetTexture()->GetId();
 	elem.textureSize = { _sprite->GetTexture()->GetWidth(), _sprite->GetTexture()->GetHeight() };
 	elem.spriteSize = { _sprite->GetWidth(), _sprite->GetHeight() };

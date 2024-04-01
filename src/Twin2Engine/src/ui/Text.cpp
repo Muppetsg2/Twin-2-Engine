@@ -23,6 +23,7 @@ void Text::UpdateTextTextures()
 void Text::Render(const Window* window)
 {
 	UIElement elem{};
+	elem.isText = true;
 	elem.color = _color;
 	elem.spriteOffset = { 0, 0 };
 

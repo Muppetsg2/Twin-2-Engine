@@ -49,6 +49,8 @@ void UIRenderingManager::Render(const Window* window)
 	while (_renderQueue.size() > 0) {
 		UIElement elem = _renderQueue.front();
 		
+		uiShader->setBool("isText", elem.isText);
+
 		uiShader->setVec4("sprite.color", (float*)&elem.color);
 		uiShader->setFloat("sprite.width", (float)elem.spriteSize.x);
 		uiShader->setFloat("sprite.height", (float)elem.spriteSize.y);

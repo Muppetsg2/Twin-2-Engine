@@ -3,18 +3,15 @@
 
 #include <core/ColliderComponent.h>
 
-namespace Twin2Engine {
-	namespace Core {
-		class CapsuleColliderComponent : public ColliderComponent {
-			//protected: 
-			public:
-				CapsuleColliderComponent();
-				void SetEndPosition(float x, float y, float z);
-				void SetRadius(float radius);
-	
-		};
-	}
-	
+namespace Twin2Engine::Core {
+	class CapsuleColliderComponent : public ColliderComponent {
+		//protected: 
+	public:
+		CapsuleColliderComponent();
+		void SetEndPosition(float x, float y, float z);
+		void SetRadius(float radius);
+
+	};
 }
 
 #endif // !_CAPSULECOLLIDERCOMPONENT_H_

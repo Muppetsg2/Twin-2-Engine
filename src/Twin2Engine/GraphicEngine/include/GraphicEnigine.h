@@ -1,24 +1,22 @@
 #ifndef GRAPHIC_ENGINE_H
 #define GRAPHIC_ENGINE_H
 
-#include <Mesh.h>
-#include <Shader.h>
-#include <ShaderManager.h>
+#include <graphic/Mesh.h>
+#include <graphic/Shader.h>
+#include <graphic/ShaderManager.h>
 
-#include <Material.h>
-#include <ModelsManager.h>
-#include <MeshRenderer.h>
-#include <MeshRenderingManager.h>
+#include <graphic/Material.h>
+#include <graphic/ModelsManager.h>
+#include <graphic/MeshRenderingManager.h>
 
-#include <UIRenderingManager.h>
+#include <graphic/UIRenderingManager.h>
 
-#include <core/GameObject.h>
-#include <core/Transform.h>
-#include <core/Window.h>
+/*#include <core/GameObject.h>
+#include <core/Transform.h>*/
+#include <graphic/Window.h>
 
-using Twin2Engine::Core::GameObject;
-using Twin2Engine::Core::Transform;
-using Twin2Engine::Core::Window;
+/*using Twin2Engine::Core::GameObject;
+using Twin2Engine::Core::Transform;*/
 
 using std::vector;
 
@@ -33,9 +31,9 @@ namespace Twin2Engine
 			Material material;
 			Material material2;
 			InstatiatingModel modelMesh;
-			GameObject* gameObject;
+			/*GameObject* gameObject;
 			GameObject* gameObject2;
-			GameObject* gameObject3;
+			GameObject* gameObject3;*/
 
 			//static GraphicEngine* instance;
 
@@ -122,7 +120,7 @@ namespace Twin2Engine
 
 				material2 = MaterialsManager::GetMaterial("Basic2");
 
-				gameObject = new GameObject();
+				/*gameObject = new GameObject();
 				auto comp = gameObject->AddComponent<MeshRenderer>();
 				comp->AddMaterial(material);
 				comp->SetModel(modelMesh);
@@ -138,7 +136,7 @@ namespace Twin2Engine
 				gameObject3->GetTransform()->Translate(glm::vec3(0, -1, 0));
 				comp = gameObject3->AddComponent<MeshRenderer>();
 				comp->AddMaterial(material2);
-				comp->SetModel(modelMesh);
+				comp->SetModel(modelMesh);*/
 
 				//std::cout << "Tutaj4\n";
 				//instance = this;

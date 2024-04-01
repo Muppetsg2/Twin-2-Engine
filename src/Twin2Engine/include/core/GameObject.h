@@ -11,74 +11,72 @@ using Twin2Engine::Core::Component;
 //using Twin2EngineCore::Transform;
 
 
-namespace Twin2Engine
+namespace Twin2Engine::Core
 {
-	namespace Core {
-		class GameObject
-		{
-			static unsigned int _currentFreeId;
-			unsigned int _id;
-			string _name;
+	class GameObject
+	{
+		static unsigned int _currentFreeId;
+		unsigned int _id;
+		string _name;
 
-			Transform* _transform;
-			std::list<Component*> components;
+		Transform* _transform;
+		std::list<Component*> components;
 
-			bool _activeSelf;
-			bool _activeInHierarchy;
+		bool _activeSelf;
+		bool _activeInHierarchy;
 
-			bool _isStatic;
+		bool _isStatic;
 
-			//Layer
-			//Tag
+		//Layer
+		//Tag
 
-		public:
-			GameObject();
+	public:
+		GameObject();
 
-			virtual ~GameObject();
+		virtual ~GameObject();
 
-			inline unsigned int Id() const;
+		inline unsigned int Id() const;
 
-			bool GetActive() const;
-			void SetActive(bool active);
+		bool GetActive() const;
+		void SetActive(bool active);
 
-			bool GetIsStatic() const;
-			void SetIsStatic(bool isStatic);
+		bool GetIsStatic() const;
+		void SetIsStatic(bool isStatic);
 
-			Transform* GetTransform() const;
+		Transform* GetTransform() const;
 
-			string GetName() const;
-			void SetName(const string& name);
+		string GetName() const;
+		void SetName(const string& name);
 
-			template<class T>
-			//typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
-			T* AddComponent();
+		template<class T>
+		//typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
+		T* AddComponent();
 
-			template<class T>
-			typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
-				GetComponent();
-			template<class T>
-			list<typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type>
-				GetComponents();
-			template<class T>
-			typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
-				GetComponentInChildren();
-			template<class T>
-			list<typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type>
-				GetComponentsInChildren();
-			template<class T>
-			typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
-				GetComponentInParent();
-			template<class T>
-			list<typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type>
-				GetComponentsInParent();
+		template<class T>
+		typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
+			GetComponent();
+		template<class T>
+		list<typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type>
+			GetComponents();
+		template<class T>
+		typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
+			GetComponentInChildren();
+		template<class T>
+		list<typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type>
+			GetComponentsInChildren();
+		template<class T>
+		typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
+			GetComponentInParent();
+		template<class T>
+		list<typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type>
+			GetComponentsInParent();
 
-			void RemoveComponent(Component* component);
-			template<class T, std::enable_if<std::is_base_of<Component, T>::value, bool>::type = true>
-			void RemoveComponents() {
-				components.remove_if([](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
-			}
-		};
-	}
+		void RemoveComponent(Component* component);
+		template<class T, std::enable_if<std::is_base_of<Component, T>::value, bool>::type = true>
+		void RemoveComponents() {
+			components.remove_if([](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
+		}
+	};
 }
 
 
@@ -155,7 +153,7 @@ Twin2Engine::Core::GameObject::GetComponentInParent()
 {
 	Transform* parent = _transform->GetParent();
 	if (parent == nullptr) return nullptr;
-	return parent->getGameObject()->GetComponent<T>();
+	return parent->GetGameObject()->GetComponent<T>();
 }
 
 template<class T>
@@ -164,7 +162,7 @@ Twin2Engine::Core::GameObject::GetComponentsInParent()
 {
 	Transform* parent = _transform->GetParent();
 	if (parent == nullptr) return nullptr;
-	return parent->getGameObject()->GetComponents<T>();
+	return parent->GetGameObject()->GetComponents<T>();
 }
 
 #endif

@@ -12,6 +12,7 @@
 #include <string>
 #include <list>
 #include <set>
+#include <queue>
 
 // GLAD
 #include <glad/glad.h>

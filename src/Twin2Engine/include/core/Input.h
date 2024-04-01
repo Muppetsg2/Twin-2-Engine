@@ -1,9 +1,11 @@
 #pragma once
 
 namespace Twin2Engine {
-	namespace Core {
+	namespace GraphicEngine {
 		class Window;
+	}
 
+	namespace Core {
 		enum INPUT_STATE {
 			UP = 0,
 			DOWN = 1,
@@ -170,12 +172,12 @@ namespace Twin2Engine {
 			static void mouse_button_callback(GLFWwindow* win, int button, int action, int mods);
 		public:
 			static void InitForWindow(GLFWwindow* window, bool mainWindow = false);
-			static void InitForWindow(Window* window, bool mainWindow = false);
+			static void InitForWindow(GraphicEngine::Window* window, bool mainWindow = false);
 			static void FreeWindow(GLFWwindow* window);
-			static void FreeWindow(Window* window);
+			static void FreeWindow(GraphicEngine::Window* window);
 			static void FreeAllWindows();
 			static void SetMainWindow(GLFWwindow* window);
-			static void SetMainWindow(Window* window);
+			static void SetMainWindow(GraphicEngine::Window* window);
 			static GLFWwindow* GetMainWindow();
 			static void Update();
 
@@ -207,28 +209,28 @@ namespace Twin2Engine {
 
 #pragma region WITH_WINDOW_CLASS
 			// CURSOR
-			static void HideAndLockCursor(Window* window);
-			static void HideCursor(Window* window);
-			static void KeepCursorInWindow(Window* window);
-			static void ShowCursor(Window* window);
-			static CURSOR_STATE GetCursorState(Window* window);
+			static void HideAndLockCursor(GraphicEngine::Window* window);
+			static void HideCursor(GraphicEngine::Window* window);
+			static void KeepCursorInWindow(GraphicEngine::Window* window);
+			static void ShowCursor(GraphicEngine::Window* window);
+			static CURSOR_STATE GetCursorState(GraphicEngine::Window* window);
 
 			// MOUSE
-			static glm::vec2 GetMousePos(Window* window);
-			static bool IsMouseButtonPressed(Window* window, MOUSE_BUTTON button);
-			static bool IsMouseButtonReleased(Window* window, MOUSE_BUTTON button);
-			static bool IsMouseButtonDown(Window* window, MOUSE_BUTTON button);
-			static bool IsMouseButtonHeldDown(Window* window, MOUSE_BUTTON button);
-			static bool IsMouseButtonUp(Window* window, MOUSE_BUTTON button);
-			static bool IsMouseButtonHeldUp(Window* window, MOUSE_BUTTON button);
+			static glm::vec2 GetMousePos(GraphicEngine::Window* window);
+			static bool IsMouseButtonPressed(GraphicEngine::Window* window, MOUSE_BUTTON button);
+			static bool IsMouseButtonReleased(GraphicEngine::Window* window, MOUSE_BUTTON button);
+			static bool IsMouseButtonDown(GraphicEngine::Window* window, MOUSE_BUTTON button);
+			static bool IsMouseButtonHeldDown(GraphicEngine::Window* window, MOUSE_BUTTON button);
+			static bool IsMouseButtonUp(GraphicEngine::Window* window, MOUSE_BUTTON button);
+			static bool IsMouseButtonHeldUp(GraphicEngine::Window* window, MOUSE_BUTTON button);
 
 			// KEYS
-			static bool IsKeyPressed(Window* window, KEY key);
-			static bool IsKeyReleased(Window* window, KEY key);
-			static bool IsKeyDown(Window* window, KEY key);
-			static bool IsKeyHeldDown(Window* window, KEY key);
-			static bool IsKeyUp(Window* window, KEY key);
-			static bool IsKeyHeldUp(Window* window, KEY key);
+			static bool IsKeyPressed(GraphicEngine::Window* window, KEY key);
+			static bool IsKeyReleased(GraphicEngine::Window* window, KEY key);
+			static bool IsKeyDown(GraphicEngine::Window* window, KEY key);
+			static bool IsKeyHeldDown(GraphicEngine::Window* window, KEY key);
+			static bool IsKeyUp(GraphicEngine::Window* window, KEY key);
+			static bool IsKeyHeldUp(GraphicEngine::Window* window, KEY key);
 #pragma endregion
 
 #pragma region WITH_MAIN_WINDOW

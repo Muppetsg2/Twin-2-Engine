@@ -57,7 +57,6 @@ target_link_libraries(GraphicEngine assimp)
 target_link_libraries(GraphicEngine glfw)
 target_link_libraries(GraphicEngine spdlog)
 target_link_libraries(GraphicEngine yaml-cpp)
-target_link_libraries(GraphicEngine Twin2Engine)
 target_link_libraries(GraphicEngine freetype)
 target_link_libraries(GraphicEngine glm::glm)
 

@@ -36,7 +36,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE LIBRARY_SUFFIX="")
 get_property(is_miniaudio GLOBAL PROPERTY ISMINIAUDIO)
 get_property(is_imgui GLOBAL PROPERTY USEIMGUI)
 
-target_precompile_headers(${PROJECT_NAME} PUBLIC ${PRECOMPILE_HEADERS_FILE})
+target_precompile_headers(${PROJECT_NAME} PUBLIC ${Twin2Engine_PRECOMPILE_HEADERS_FILE})
 
 if(is_miniaudio)
 	if(is_imgui)

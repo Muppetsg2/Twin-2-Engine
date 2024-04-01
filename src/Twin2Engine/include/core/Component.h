@@ -1,52 +1,50 @@
 #pragma once
 
-namespace Twin2Engine
+namespace Twin2Engine::Core
 {
-	namespace Core {
-		class GameObject;
-		class Transform;
+	class GameObject;
+	class Transform;
 
-		class Component
-		{
-		private:
-			size_t _id;
-			GameObject* _gameObject;
-			bool _enabled;
+	class Component
+	{
+	private:
+		size_t _id;
+		GameObject* _gameObject;
+		bool _enabled;
 
-		protected:
-			Component();
-		public:
-			virtual ~Component();
+	protected:
+		Component();
+	public:
+		virtual ~Component();
 
 #pragma region VirtualMethods
-			virtual void Initialize();
-			virtual void Update();
-			virtual void OnEnable();
-			virtual void OnDisable();
-			virtual void OnDestroy();
+		virtual void Initialize();
+		virtual void Update();
+		virtual void OnEnable();
+		virtual void OnDisable();
+		virtual void OnDestroy();
 #pragma endregion
 
 #pragma region Setters
-			void setEnable(bool enable);
+		void SetEnable(bool enable);
 #pragma endregion
 
 #pragma region Getters
-			size_t getId() const;
-			GameObject* getGameObject() const;
-			bool isEnable() const;
+		size_t GetId() const;
+		GameObject* GetGameObject() const;
+		bool IsEnable() const;
 
-			Transform* getTransform() const;
-			std::string getName() const;
-			//getTag() const;
-			//getLayer() const;
+		Transform* GetTransform() const;
+		std::string GetName() const;
+		//GetTag() const;
+		//GetLayer() const;
 #pragma endregion
 
 #pragma region FriendMethods
-		private:
-			void Init(GameObject* obj);
-		public:
-			friend GameObject;
+	private:
+		void Init(GameObject* obj);
+	public:
+		friend GameObject;
 #pragma endregion
-		};
-	}
+	};
 }

@@ -1,13 +1,13 @@
 #pragma once
 #include <core/RenderableComponent.h>
-#include <core/Font.h>
+#include <graphic/Font.h>
 #include <glm/glm.hpp>
 
 namespace Twin2Engine::UI {
 	class Text : public Core::RenderableComponent {
 	private:
 		std::string _text = "";
-		std::vector<Core::Character*> _textTextures = std::vector<Core::Character*>();
+		std::vector<GraphicEngine::Character*> _textTextures = std::vector<GraphicEngine::Character*>();
 
 		std::string _fontPath = "";
 
@@ -18,9 +18,7 @@ namespace Twin2Engine::UI {
 		void UpdateTextTextures();
 
 	public:
-		virtual void Initialize() override;
-		virtual void Render(const Core::Window* window) override;
-		virtual void OnDestroy() override;
+		virtual void Render(const GraphicEngine::Window* window) override;
 
 		void SetColor(const glm::vec4& color);
 		void SetText(const std::string& text);

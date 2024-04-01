@@ -2,20 +2,15 @@
 // If you are new to dear imgui, see examples/README.txt and documentation at the top of imgui.cpp.
 // (GLFW is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan graphics context creation, etc.)
 
-#include "imgui.h"
-#include "Twin2Engine/imgui_impl/imgui_impl_glfw.h"
-#include "Twin2Engine/imgui_impl/imgui_impl_opengl3.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-
-#define IMGUI_IMPL_OPENGL_LOADER_GLAD
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-// LOGGER
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
+#define IMGUI_IMPL_OPENGL_LOADER_GLAD
+#include <imgui.h>
+#include <imgui_impl/imgui_impl_glfw.h>
+#include <imgui_impl/imgui_impl_opengl3.h>
+
+#include <stb_image.h>
 
 // Soloud
 #include <soloud.h>
@@ -28,12 +23,13 @@
 #include <core/Time.h>
 
 // WINDOW
-#include <core/Window.h>
+#include <graphic/Window.h>
 
 // MANAGERS
 #include <manager/TextureManager.h>
 #include <manager/SpriteManager.h>
 #include <manager/FontManager.h>
+#include <graphic/ShaderManager.h>
 
 // GAME OBJECT
 #include <core/GameObject.h>
@@ -302,6 +298,7 @@ int main(int, char**)
     delete imageObj;
     SpriteManager::UnloadAll();
     TextureManager::UnloadAll();
+    Input::FreeAllWindows();
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
@@ -331,6 +328,7 @@ bool init()
 
     window = new Window(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT }, false);
     glfwSetFramebufferSizeCallback(window->GetWindow(), framebuffer_size_callback);
+    Input::InitForWindow(window);
 
     bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     if (err)
@@ -546,6 +544,9 @@ void update()
 void render()
 {
     // OpenGL Rendering code goes here
+    for (auto& comp : RenderableComponent::_components) {
+        comp->Render(window);
+    }
     graphicEngine->Render(window, Camera.GetComponent<CameraComponent>()->GetViewMatrix(), Camera.GetComponent<CameraComponent>()->GetProjectionMatrix());
 }
 

@@ -3,16 +3,14 @@
 
 #include <core/ColliderComponent.h>
 
-namespace Twin2Engine {
-	namespace Core {
-		class SphereColliderComponent : public ColliderComponent {
-			//protected:
+namespace Twin2Engine::Core {
+	class SphereColliderComponent : public ColliderComponent {
+		//protected:
 
-			public:
-				SphereColliderComponent();
-				void SetRadius(float radius);
-		};
-	}
+	public:
+		SphereColliderComponent();
+		void SetRadius(float radius);
+	};
 }
 
 

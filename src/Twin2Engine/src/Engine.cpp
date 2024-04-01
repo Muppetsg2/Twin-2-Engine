@@ -1,6 +1,7 @@
-#include <core/Engine.h>
+#include <Engine.h>
 
-using namespace Twin2Engine::Core;
+using namespace Twin2Engine;
+using namespace Core;
 using namespace ImGui;
 using namespace spdlog;
 

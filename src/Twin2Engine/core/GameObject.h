@@ -160,7 +160,7 @@ Twin2Engine::Core::GameObject::GetComponentInParent()
 {
 	Transform* parent = _transform->GetParent();
 	if (parent == nullptr) return nullptr;
-	return parent->getGameObject()->GetComponent<T>();
+	return parent->GetGameObject()->GetComponent<T>();
 }
 
 template<class T>
@@ -169,7 +169,7 @@ Twin2Engine::Core::GameObject::GetComponentsInParent()
 {
 	Transform* parent = _transform->GetParent();
 	if (parent == nullptr) return nullptr;
-	return parent->getGameObject()->GetComponents<T>();
+	return parent->GetGameObject()->GetComponents<T>();
 }
 
 #endif

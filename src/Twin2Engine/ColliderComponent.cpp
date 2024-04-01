@@ -90,7 +90,7 @@ void Twin2Engine::Core::ColliderComponent::Invoke()
 
 void Twin2Engine::Core::ColliderComponent::Update()
 {
-	collider->shapeColliderData->Position = collider->shapeColliderData->LocalPosition + getGameObject()->GetTransform()->GetGlobalPosition();
+	collider->shapeColliderData->Position = collider->shapeColliderData->LocalPosition + GetGameObject()->GetTransform()->GetGlobalPosition();
 }
 
 

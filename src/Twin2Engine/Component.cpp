@@ -42,7 +42,7 @@ void Component::OnDestroy()
 {
 }
 
-void Component::setEnable(bool enable)
+void Component::SetEnable(bool enable)
 {
 	if (_enabled == enable) return;
 
@@ -51,27 +51,27 @@ void Component::setEnable(bool enable)
 	else OnDisable();
 }
 
-size_t Component::getId() const
+size_t Component::GetId() const
 {
 	return _id;
 }
 
-GameObject* Component::getGameObject() const
+GameObject* Component::GetGameObject() const
 {
 	return _gameObject;
 }
 
-bool Component::isEnable() const
+bool Component::IsEnable() const
 {
 	return _enabled;
 }
 
-Transform* Component::getTransform() const
+Transform* Component::GetTransform() const
 {
 	return _gameObject->GetTransform();
 }
 
-string Component::getName() const
+string Component::GetName() const
 {
 	return _gameObject->GetName();
 }

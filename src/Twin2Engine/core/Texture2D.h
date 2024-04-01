@@ -60,7 +60,7 @@ namespace Twin2Engine {
 			Texture2D(size_t managerId, unsigned int id, unsigned int width, unsigned int height, unsigned int channelsNum, const TextureFormat& format, const TextureWrapMode& sWrapMode, const TextureWrapMode& tWrapMode, const TextureFilterMode& minFilterMode, const TextureFilterMode& magFilterMode);
 
 		public:
-			virtual ~Texture2D() = default;
+			virtual ~Texture2D();
 
 			void SetWrapModeS(const TextureWrapMode& mode);
 			void SetWrapModeT(const TextureWrapMode& mode);

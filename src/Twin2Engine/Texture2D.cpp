@@ -9,6 +9,11 @@ Texture2D::Texture2D(size_t managerId, unsigned int id, unsigned int width, unsi
 	_format(format), _sWrapMode(sWrapMode), _tWrapMode(tWrapMode),
 	_minFilterMode(minFilterMode), _magFilterMode(magFilterMode) {}
 
+Texture2D::~Texture2D()
+{
+	glDeleteTextures(1, &_id);
+}
+
 void Texture2D::SetWrapModeS(const TextureWrapMode& mode)
 {
 	glBindTexture(GL_TEXTURE_2D, _id);

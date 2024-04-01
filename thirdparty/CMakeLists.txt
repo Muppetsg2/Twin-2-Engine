@@ -16,12 +16,6 @@ set(stb_image_SOURCE_DIR ${STB_IMAGE_DIR} CACHE INTERNAL "")
 add_library(stb_image STATIC ${STB_IMAGE_DIR}/stb_image.cpp)
 target_include_directories(stb_image PRIVATE ${STB_IMAGE_DIR})
 
-# free type
-set(FREETYPE_DIR ${CMAKE_CURRENT_LIST_DIR}/freetype)
-set(freetype_SOURCE_DIR ${FREETYPE_DIR}/include CACHE INTERNAL "")
-add_library(freetype STATIC ${FREETYPE_DIR}/src/freetype.cpp)
-target_include_directories(freetype PRIVATE ${FREETYPE_DIR}/include)
-
 get_property(is_miniaudio GLOBAL PROPERTY ISMINIAUDIO)
 
 if(is_miniaudio)
@@ -51,6 +45,7 @@ CPMAddPackage("gh:glfw/glfw#3.4")
 CPMAddPackage("gh:g-truc/glm#1.0.1")
 CPMAddPackage("gh:gabime/spdlog@1.13.0")
 CPMAddPackage("gh:jbeder/yaml-cpp#0.8.0")
+CPMAddPackage("gh:freetype/freetype#VER-2-13-2")
 
 get_property(is_imgui GLOBAL PROPERTY USEIMGUI)
 

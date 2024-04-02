@@ -58,7 +58,7 @@ void Twin2Engine::GraphicEngine::MeshRenderingManager::Unregister(MeshRenderer* 
 	}
 }
 
-void Twin2Engine::GraphicEngine::MeshRenderingManager::Render()
+void Twin2Engine::GraphicEngine::MeshRenderingManager::Render(const glm::mat4& projectionView)
 {
 	for (auto& meshPair : renderingData)
 	{
@@ -91,10 +91,10 @@ void Twin2Engine::GraphicEngine::MeshRenderingManager::Render()
 
 				for (auto& renderer : material.second)
 				{
-					transforms[index] = renderer->getTransform()->GetTransformMatrix();
+					transforms[index] = projectionView * renderer->getTransform()->GetTransformMatrix();
 					indexes[index] = materialIndex;
 
-					instanceData[index].transformMatrix = renderer->getTransform()->GetTransformMatrix();
+					instanceData[index].transformMatrix = transforms[index];//projectionView * renderer->getTransform()->GetTransformMatrix();
 					instanceData[index].materialInputId = materialIndex;
 
 					index++;

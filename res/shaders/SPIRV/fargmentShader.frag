@@ -17,8 +17,8 @@ layout (location = 0) out vec4 FragColor;
 
 struct MaterialInput
 {
-   vec4 color1;
-   vec4 color2;
+   vec3 color1;
+   vec3 color2;
 };
 
 layout(std140, binding = 2) uniform MaterialInputBuffer {
@@ -29,5 +29,6 @@ void main()
 {
 	//FragColor = uColor;
 	//FragColor = color1 + color2;
-	FragColor = materialInput[materialIndex].color1 + materialInput[materialIndex].color2;
+	//FragColor = materialInput[materialIndex].color1 + materialInput[materialIndex].color2;
+	FragColor = vec4(materialInput[materialIndex].color1 + materialInput[materialIndex].color2, 1.0);
 }

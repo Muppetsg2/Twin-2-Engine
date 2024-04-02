@@ -162,7 +162,7 @@ namespace Twin2Engine
 				glm::mat4 model(1.0f);
 				shader->setMat4("model", model);
 				//std::cout << "Tutaj1\n";
-				MeshRenderingManager::Render();
+				MeshRenderingManager::Render(projection * view);
 				UIRenderingManager::Render(window);
 			}
 		};

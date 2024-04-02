@@ -149,46 +149,56 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 		{
 		case TYPE_MAP_INT_HANDLE:
 			materialParameters->Add(parameterName, parameterValue.as<int>());
+			//int valueInt = parameterValue.as<int>();
+			//materialParameters->Add(parameterName, 4, &valueInt);
 			break;
 
 		case TYPE_MAP_UINT_HANDLE:
 			materialParameters->Add(parameterName, parameterValue.as<unsigned int>());
+			//unsigned int valueUint = parameterValue.as<unsigned int>();
+			//materialParameters->Add(parameterName, 4, &valueUint);
 			break;
 
 		case TYPE_MAP_FLOAT_HANDLE:
 			materialParameters->Add(parameterName, parameterValue.as<float>());
+			//float valueFloat = parameterValue.as<float>();
+			//materialParameters->Add(parameterName, 4, &valueFloat);
 			break;
 
 		case TYPE_MAP_DOUBLE_HANDLE:
 			materialParameters->Add(parameterName, parameterValue.as<double>());
+			//double valueDouble = parameterValue.as<double>();
+			//materialParameters->Add(parameterName, 8, &valueDouble);
 			break;
 
 		case TYPE_MAP_BOOL_HANDLE:
 			materialParameters->Add(parameterName, parameterValue.as<bool>());
+			//bool valueBool = parameterValue.as<bool>();
+			//materialParameters->Add(parameterName, 4, &valueBool);
 			break;
 
 		case TYPE_MAP_VEC2_HANDLE:
-			materialParameters->Add(parameterName, 8ull, parameterValue.as<std::vector<float>>().data());
+			materialParameters->Add(parameterName, 8, parameterValue.as<std::vector<float>>().data());
 			break;
 		
 		case TYPE_MAP_VEC3_HANDLE:
-			materialParameters->Add(parameterName, 12ull, parameterValue.as<std::vector<float>>().data());
+			materialParameters->Add(parameterName, 12, parameterValue.as<std::vector<float>>().data());
 			break;
 		
 		case TYPE_MAP_VEC4_HANDLE:
-			materialParameters->Add(parameterName, 16ull, parameterValue.as<std::vector<float>>().data());
+			materialParameters->Add(parameterName, 16, parameterValue.as<std::vector<float>>().data());
 			break;
 		
 		case TYPE_MAP_IVEC2_HANDLE:
-			materialParameters->Add(parameterName, 8ull, parameterValue.as<std::vector<int>>().data());
+			materialParameters->Add(parameterName, 8, parameterValue.as<std::vector<int>>().data());
 			break;
 		
 		case TYPE_MAP_IVEC3_HANDLE:
-			materialParameters->Add(parameterName, 12ull, parameterValue.as<std::vector<int>>().data());
+			materialParameters->Add(parameterName, 12, parameterValue.as<std::vector<int>>().data());
 			break;
 		
 		case TYPE_MAP_IVEC4_HANDLE:
-			materialParameters->Add(parameterName, 16ull, parameterValue.as<std::vector<int>>().data());
+			materialParameters->Add(parameterName, 16, parameterValue.as<std::vector<int>>().data());
 			break;
 		
 		//case TYPE_MAP_MAT2_HANDLE:

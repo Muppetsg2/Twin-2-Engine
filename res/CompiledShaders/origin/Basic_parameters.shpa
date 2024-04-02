@@ -1,0 +1,7 @@
+parameters:
+  - name: color1
+    type: vec3
+    value: [1.0, 1.0, 1.0, 1.0]
+  - name: color2
+    type: vec3
+    value: [1.0, 1.0, 1.0, 1.0]

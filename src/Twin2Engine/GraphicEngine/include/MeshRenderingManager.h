@@ -31,7 +31,7 @@ namespace Twin2Engine::GraphicEngine
 		static void Register(MeshRenderer* meshRenderer);
 		static void Unregister(MeshRenderer* meshRenderer);
 	
-		static void Render();
+		static void Render(const glm::mat4& projectionView);
 	};
 }
 

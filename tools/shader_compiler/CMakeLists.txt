@@ -2,22 +2,14 @@
 
 project(ShaderCompiler)
 
-# Generate a header file with the ORIGIN_FOLDER variable
-#configure_file(config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/config.h COPYONLY)
-file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_BINARY_DIR}/ShadersOrigin SYMBOLIC)
+file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_SOURCE_DIR}/bin/ShadersOrigin SYMBOLIC)
 file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_SOURCE_DIR}/ShadersOrigin SYMBOLIC)
 
-message("ShaderCompiler origin directory: ${SHADER_ORIGIN_FOLDER}")
-message("ShaderCompiler build destination directory: ${CMAKE_BINARY_DIR}")
+add_executable(${PROJECT_NAME} ShaderCompiler.cpp)
 
-add_executable(SHADER_COMPILER ShaderCompiler.cpp)
-#add_compile_definitions(ORIGIN_FOLDER ${SHADER_ORIGIN_FOLDER})
+target_link_libraries(${PROJECT_NAME} PRIVATE yaml-cpp)
 
-target_include_directories(SHADER_COMPILER PUBLIC ${glad_SOURCE_DIR}
-)
+set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
-target_link_libraries(SHADER_COMPILER PRIVATE ${OPENGL_LIBRARIES})
-target_link_libraries(SHADER_COMPILER PRIVATE glad
-											  glfw
-)
+set(SHADER_COMPILER_EXE ${CMAKE_CURRENT_SOURCE_DIR}/bin/${PROJECT_NAME}.exe CACHE STRING "Description" FORCE)
 

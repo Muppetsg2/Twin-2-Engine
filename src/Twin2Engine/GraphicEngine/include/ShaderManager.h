@@ -15,6 +15,8 @@ using std::string;
 
 #include <Shader.h>
 
+//#define ENTIRE_SHADER_PROGRAM_PRECOMPILATION
+
 namespace Twin2Engine::GraphicEngine
 {
 	// Define the file extension for shader program files
@@ -69,11 +71,13 @@ namespace Twin2Engine::GraphicEngine
 
 		static inline bool CheckShaderCompilationSuccess(GLuint shaderId);
 		static void CheckProgramLinkingSuccess(GLuint programId);
-		static inline void PrecompileShaders();
+		//static inline void PrecompileShaders();
 
 		//Dynamic creation
-		static inline GLuint CreateShaderProgramFromFile(const std::string& shaderProgramName, std::string& shaderName);
-		static inline void SaveShaderProgramToFile(GLuint shaderProgramId, const std::string& shaderName);
+		//static inline GLuint CreateShaderProgramFromFile(const std::string& shaderProgramName, std::string& shaderName);
+		static inline Shader* LoadShaderProgramSHPR(const std::string& shaderName);
+		static inline GLuint CreateShaderProgramFromFile(const std::string& shaderProgramName);
+		//static inline void SaveShaderProgramToFile(GLuint shaderProgramId, const std::string& shaderName);
 
 	public:
 		//ShaderManager();

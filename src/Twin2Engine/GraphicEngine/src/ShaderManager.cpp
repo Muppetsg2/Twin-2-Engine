@@ -1,9 +1,4 @@
 #include "ShaderManager.h"
-#include "ShaderManager.h"
-#include "ShaderManager.h"
-#include "ShaderManager.h"
-#include "ShaderManager.h"
-#include "ShaderManager.h"
 
 //#include "../../Twin2Engine/core/ConfigManager.h"
 
@@ -77,7 +72,8 @@ unsigned int Twin2Engine::GraphicEngine::ShaderManager::LoadShaderProgram(const 
         //glGetProgramBinary(shaderProgramID, 0, &len, &binaryFormat, binaryData.data());
         //SPDLOG_INFO("Binary format during loading2: {}", binaryFormat);
         //glProgramBinary(shaderProgramID, binaryFormat, shaderBinary.data(), shaderBinary.size());
-        glProgramBinary(shaderProgramID, GL_SPIR_V_BINARY, shaderBinary.data(), shaderBinary.size());
+        //glProgramBinary(shaderProgramID, GL_SPIR_V_BINARY, shaderBinary.data(), shaderBinary.size());
+        glProgramBinary(shaderProgramID, GL_SPIR_V_BINARY_ARB, shaderBinary.data(), shaderBinary.size());
 
         GLint success;
         glGetProgramiv(shaderProgramID, GL_LINK_STATUS, &success);
@@ -131,6 +127,8 @@ void Twin2Engine::GraphicEngine::ShaderManager::UnloadShaderProgram(int shaderPr
 
         GLuint _instanceDataSSBO = data->shader->GetInstanceDataSSBO();
         glDeleteBuffers(1, &_instanceDataSSBO);
+        GLuint _MaterialIndexSSBO = data->shader->GetMaterialIndexSSBO();
+        glDeleteBuffers(1, &_MaterialIndexSSBO);
         GLuint _materialInputUBO = data->shader->GetMaterialInputUBO();
         glDeleteBuffers(1, &_materialInputUBO);
 
@@ -147,32 +145,32 @@ bool isEmptyOrWhitespace(const std::string& str) {
 }
 
 
-void Twin2Engine::GraphicEngine::ShaderManager::PrecompileShaders()
-{
-    //std::vector<std::string> originFolders = { "ShadersOrigin" };
-
-    // Search for shader program files
-    //for (const auto& folder : originFolders)
-    {
-        std::filesystem::path path = SHADERS_ORIGIN_DIRETORY;
-        for (const auto& entry : std::filesystem::recursive_directory_iterator(path))
-        {
-            if (entry.path().extension() == SHADER_PROGRAM_EXTENSION) 
-            {
-                string shaderName;
-                GLuint shaderProgramId = CreateShaderProgramFromFile(entry.path().string(), shaderName);
-
-                if (shaderProgramId != 0)
-                {
-                    SaveShaderProgramToFile(shaderProgramId, shaderName);
-                
-                    // Cleanup
-                    glDeleteProgram(shaderProgramId);
-                }
-            }
-        }
-    }
-}
+//void Twin2Engine::GraphicEngine::ShaderManager::PrecompileShaders()
+//{
+//    //std::vector<std::string> originFolders = { "ShadersOrigin" };
+//
+//    // Search for shader program files
+//    //for (const auto& folder : originFolders)
+//    {
+//        std::filesystem::path path = SHADERS_ORIGIN_DIRETORY;
+//        for (const auto& entry : std::filesystem::recursive_directory_iterator(path))
+//        {
+//            if (entry.path().extension() == SHADER_PROGRAM_EXTENSION) 
+//            {
+//                string shaderName;
+//                GLuint shaderProgramId = CreateShaderProgramFromFile(entry.path().string());
+//
+//                if (shaderProgramId != 0)
+//                {
+//                    SaveShaderProgramToFile(shaderProgramId, shaderName);
+//                
+//                    // Cleanup
+//                    glDeleteProgram(shaderProgramId);
+//                }
+//            }
+//        }
+//    }
+//}
 
 
 std::string Twin2Engine::GraphicEngine::ShaderManager::LoadShaderSource(const std::string& filePath)
@@ -231,23 +229,27 @@ GLuint Twin2Engine::GraphicEngine::ShaderManager::CompileShaderSPIRV(GLenum type
         //return std::vector<unsigned int>();
         return 0;
     }
-    std::vector<unsigned int>source ((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    std::vector<char>source ((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     // Create shader object and load SPIRV code
     GLuint shaderId = glCreateShader(type);
     SPDLOG_INFO("SPIR-V shader binary format GL_SHADER_BINARY_FORMAT_SPIR_V: {}", GL_SHADER_BINARY_FORMAT_SPIR_V);
-    //glShaderBinary(1, &shaderId, GL_SHADER_BINARY_FORMAT_SPIR_V, source.data(), source.size());
-    glShaderBinary(1, &shaderId, GL_SHADER_BINARY_FORMAT_SPIR_V, source.data(), source.size() * sizeof(unsigned int));
+    SPDLOG_INFO("SPIR-V shader binary format GL_SHADER_BINARY_FORMAT_SPIR_V_ARB: {}", GL_SHADER_BINARY_FORMAT_SPIR_V_ARB);
+    glShaderBinary(1, &shaderId, GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, source.data(), source.size());
+    //glShaderBinary(1, &shaderId, GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, source.data(), source.size() * sizeof(unsigned int));
     //glShaderBinary(1, &shaderId, GL_SHADER_BINARY_FORMAT_SPIR_V, source.data(), source.size() * sizeof(unsigned int));
 
     //const unsigned int* ptr = reinterpret_cast<const unsigned int*>(source.data());
     //std::vector<unsigned int> spirv(ptr, ptr + (source.data() / 4));
     //glShaderBinary(1, &shader, GL_SHADER_BINARY_FORMAT_SPIR_V, source.data(), source.size() * sizeof(unsigned int));
-    //const unsigned int indexes[0] = {};
-    //const unsigned int bindinds[0] = {};
-    SPDLOG_INFO("Checking glSpecializeShader: {}", glSpecializeShader == NULL);
+    const unsigned int indexes[1] = { 0};
+    const unsigned int bindinds[1] = { 0};
+    //SPDLOG_INFO("Checking glSpecializeShader: {}", (glSpecializeShader == 0));
+    //SPDLOG_INFO("Shader ID: {}", shaderId);
+    //SPDLOG_INFO("GLAD_GL_VERSION_4_6: {}", GLAD_GL_VERSION_4_6);
 
     SPDLOG_INFO("TU4");
-    glSpecializeShader(shaderId, "main", 0, 0, 0); //Powodem b³êdów jest to ¿e to jest nullem
+    //glSpecializeShader(shaderId, "main", 0, 0, 0); //Powodem b³êdów jest to ¿e to jest nullem
+    glSpecializeShader(shaderId, "main", 0, nullptr, nullptr); //Powodem b³êdów jest to ¿e to jest nullem
 
     SPDLOG_INFO("TU2");
     if (!CheckShaderCompilationSuccess(shaderId))
@@ -256,7 +258,6 @@ GLuint Twin2Engine::GraphicEngine::ShaderManager::CompileShaderSPIRV(GLenum type
         shaderId = 0;
     }
 
-    SPDLOG_INFO("TU3");
     return shaderId;
 }
 
@@ -287,51 +288,51 @@ void Twin2Engine::GraphicEngine::ShaderManager::CheckProgramLinkingSuccess(GLuin
 void Twin2Engine::GraphicEngine::ShaderManager::Init()
 {
     //ConfigManager configManager("GameConfig.yaml");
-    ConfigManager::OpenConfig("GameConfig.yaml");
-    ConfigManager::ReadConfig();
-
-    //std::cout << "BinaryFormat: " << configManager.GetValue<int>("binaryFormat") << std::endl;
-
-    binaryFormat = ConfigManager::GetValue<unsigned int>("binaryFormat");
-
-    GLint numFormats;
-    glGetIntegerv(GL_NUM_PROGRAM_BINARY_FORMATS, &numFormats);
-    if (numFormats == 0) {
-        SPDLOG_ERROR("No supported binary formats found!");
-        //std::cerr << "No supported binary formats found" << std::endl;
-        //glfwTerminate();
-        //return -1;
-    }
-
-    ///Ustawienie prekompilacji za ka¿dym razem gdy¿ mo¿e dojœæ do zmiany shaderów a weryfikacja tylko formatu sprawi, i¿ nowe shadery nie zostan¹ uwzglêdnione
-
-    //std::vector<GLint> formats(numFormats);
-    //glGetIntegerv(GL_PROGRAM_BINARY_FORMATS, formats.data());
-    ////std::cout << "Supported binary formats:" << std::endl;
-    //bool correctFormat = false;
-    //for (GLint format : formats) {
-    //    //std::cout << format << std::endl;
-    //    if (binaryFormat == format)
-    //    {
-    //        correctFormat = true;
-    //        break;
-    //    }
+    //ConfigManager::OpenConfig("GameConfig.yaml");
+    //ConfigManager::ReadConfig();
+    //
+    ////std::cout << "BinaryFormat: " << configManager.GetValue<int>("binaryFormat") << std::endl;
+    //
+    //binaryFormat = ConfigManager::GetValue<unsigned int>("binaryFormat");
+    //
+    //GLint numFormats;
+    //glGetIntegerv(GL_NUM_PROGRAM_BINARY_FORMATS, &numFormats);
+    //if (numFormats == 0) {
+    //    SPDLOG_ERROR("No supported binary formats found!");
+    //    //std::cerr << "No supported binary formats found" << std::endl;
+    //    //glfwTerminate();
+    //    //return -1;
     //}
-
-    //if (!correctFormat)
-    {
-        SPDLOG_INFO("Shaders precompilation started!");
-        //std::cout << "Shaders precompilation started" << std::endl;
-        PrecompileShaders();
-        ConfigManager::SetValue<unsigned int>("binaryFormat", binaryFormat);
-        ConfigManager::WriteConfig();
-        //std::cout << "Shaders precompilation finished" << std::endl;
-        SPDLOG_INFO("Shaders precompilation finished!");
-    }
-    //else
+    //
+    /////Ustawienie prekompilacji za ka¿dym razem gdy¿ mo¿e dojœæ do zmiany shaderów a weryfikacja tylko formatu sprawi, i¿ nowe shadery nie zostan¹ uwzglêdnione
+    //
+    ////std::vector<GLint> formats(numFormats);
+    ////glGetIntegerv(GL_PROGRAM_BINARY_FORMATS, formats.data());
+    //////std::cout << "Supported binary formats:" << std::endl;
+    ////bool correctFormat = false;
+    ////for (GLint format : formats) {
+    ////    //std::cout << format << std::endl;
+    ////    if (binaryFormat == format)
+    ////    {
+    ////        correctFormat = true;
+    ////        break;
+    ////    }
+    ////}
+    //
+    ////if (!correctFormat)
     //{
-    //    SPDLOG_INFO("Shaders already precompiled with correct binary format!");
+    //    SPDLOG_INFO("Shaders precompilation started!");
+    //    //std::cout << "Shaders precompilation started" << std::endl;
+    //    PrecompileShaders();
+    //    ConfigManager::SetValue<unsigned int>("binaryFormat", binaryFormat);
+    //    ConfigManager::WriteConfig();
+    //    //std::cout << "Shaders precompilation finished" << std::endl;
+    //    SPDLOG_INFO("Shaders precompilation finished!");
     //}
+    ////else
+    ////{
+    ////    SPDLOG_INFO("Shaders already precompiled with correct binary format!");
+    ////}
 
 }
 
@@ -342,11 +343,16 @@ void Twin2Engine::GraphicEngine::ShaderManager::End()
 
 Shader* Twin2Engine::GraphicEngine::ShaderManager::GetShaderProgram(const std::string& shaderName)
 {
+#ifdef ENTIRE_SHADER_PROGRAM_PRECOMPILATION
     unsigned int shaderProgramId = LoadShaderProgram(shaderName);
+#else
+    Shader* shader = LoadShaderProgramSHPR(shaderName);
+#endif
 
-    std::list<ShaderProgramData*>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [shaderProgramId](ShaderProgramData* data) { return data->shaderProgramId == shaderProgramId; });
+    //std::list<ShaderProgramData*>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [shaderProgramId](ShaderProgramData* data) { return data->shaderProgramId == shaderProgramId; });
 
-    return (*found)->shader;
+    //return (*found)->shader;
+    return shader;
 }
 
 Shader* Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgram(const std::string& shaderProgramName)
@@ -452,107 +458,208 @@ Shader* Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgram(const std
     return shader;
 }
 
-GLuint Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgramFromFile(const std::string& shaderProgramName, std::string& shaderName)
+inline Shader* Twin2Engine::GraphicEngine::ShaderManager::LoadShaderProgramSHPR(const std::string& shaderName)
 {
-    string shaderProgramPath = shaderProgramName;
+    size_t strHash = stringHash(shaderName);
 
+    std::list<ShaderProgramData*>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [strHash](ShaderProgramData* data) { return data->shaderPathHash == strHash; });
+    Shader* shader;
+    if (found == loadedShaders.end())
+    {
+        GLuint shaderProgram = CreateShaderProgramFromFile(shaderName);
+
+        shader = new Shader(shaderProgram);
+
+        loadedShaders.push_back(new ShaderProgramData{ .shaderPathHash = strHash, .shaderProgramId = (int)shaderProgram, .useNumber = 1, .shader = shader });
+    }
+    else
+    {
+        SPDLOG_INFO("Shader already created: {}!", shaderName);
+        (*found)->useNumber++;
+        shader = (*found)->shader;
+    }
+    return shader;
+}
+
+GLuint Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgramFromFile(const std::string& shaderProgramName)
+{
+    //string shaderProgramPath = "res/CompiledShaders/" + shaderProgramName + ".shpr";
+    //
+    //GLuint shaderProgram = 0;
+    //
+    //std::ifstream shaderFile(shaderProgramPath);
+    //
+    //string shaderName;
+    //if (shaderFile.is_open())
+    //{
+    //    std::getline(shaderFile, shaderName);
+    //
+    //    shaderProgram = glCreateProgram();
+    //
+    //    std::string line;
+    //    std::list<unsigned int> shaderIds;
+    //
+    //    while (!shaderFile.eof())
+    //    {
+    //        std::getline(shaderFile, line);
+    //
+    //        //std::cout << line << std::endl;
+    //        SPDLOG_INFO("Compiled shader object: {}", line);
+    //        if (isEmptyOrWhitespace(line))
+    //        {
+    //            continue;
+    //        }
+    //
+    //        size_t extensionHash = stringHash(line.substr(line.size() - 4, 4));
+    //        if (!shaderTypeMapping.contains(extensionHash))
+    //        {
+    //            SPDLOG_ERROR("Unrecogniced extension in shader program encountered. Path: {} in ShaderProgram {}", line, shaderProgramName);
+    //            return 0;
+    //        }
+    //
+    //        //GLuint shaderId = CompileShader(shaderTypeMapping.at(extensionHash), LoadShaderSource(SHADERS_ORIGIN_DIRETORY + ("/" + line)));
+    //        //GLuint shaderId = CompileShaderSPIRV(shaderTypeMapping.at(extensionHash), LoadBinarySource(SHADERS_ORIGIN_DIRETORY + ("/CompiledShaders/SPIRV/" + line)));
+    //        GLuint shaderId = CompileShaderSPIRV(shaderTypeMapping.at(extensionHash), SHADERS_ORIGIN_DIRETORY + ("/CompiledShaders/SPIRV/" + line));
+    //
+    //        SPDLOG_INFO("TU1");
+    //        glAttachShader(shaderProgram, shaderId);
+    //
+    //        shaderIds.push_back(shaderId);
+    //    }
+    //
+    //    SPDLOG_INFO("Before linking");
+    //    glLinkProgram(shaderProgram);
+    //    CheckProgramLinkingSuccess(shaderProgram);
+    //
+    //    for (unsigned int id : shaderIds)
+    //    {
+    //        glDeleteShader(id);
+    //    }
+    //}
+    //else 
+    //{
+    //    SPDLOG_ERROR("Failed to open .shpr file to read: {}", shaderProgramPath);
+    //}
+    //
+    //return shaderProgram;
+
+
+    /////
+    string shaderProgramPath = "res/CompiledShaders/" + shaderProgramName + ".shpr";
+    
     GLuint shaderProgram = 0;
-
-    std::ifstream shaderFile(shaderProgramPath);
-
-    if (shaderFile.is_open())
-    {
-        std::getline(shaderFile, shaderName);
-
-        shaderProgram = glCreateProgram();
-
-        std::string line;
-        std::list<unsigned int> shaderIds;
-
-        while (!shaderFile.eof())
-        {
-            std::getline(shaderFile, line);
-
-            //std::cout << line << std::endl;
-            SPDLOG_INFO("Compiled shader object: {}", line);
-            if (isEmptyOrWhitespace(line))
-            {
-                continue;
-            }
-
-            size_t extensionHash = stringHash(line.substr(line.size() - 4, 4));
-            if (!shaderTypeMapping.contains(extensionHash))
-            {
-                SPDLOG_ERROR("Unrecogniced extension in shader program encountered. Path: {} in ShaderProgram {}", line, shaderProgramName);
-                return 0;
-            }
-
-            //GLuint shaderId = CompileShader(shaderTypeMapping.at(extensionHash), LoadShaderSource(SHADERS_ORIGIN_DIRETORY + ("/" + line)));
-            //GLuint shaderId = CompileShaderSPIRV(shaderTypeMapping.at(extensionHash), LoadBinarySource(SHADERS_ORIGIN_DIRETORY + ("/CompiledShaders/SPIRV/" + line)));
-            GLuint shaderId = CompileShaderSPIRV(shaderTypeMapping.at(extensionHash), SHADERS_ORIGIN_DIRETORY + ("/CompiledShaders/SPIRV/" + line));
-
-            SPDLOG_INFO("TU1");
-            glAttachShader(shaderProgram, shaderId);
-
-            shaderIds.push_back(shaderId);
+    
+    YAML::Node fileNode;
+    try {
+        std::ifstream fin(shaderProgramPath);
+        if (!fin) {
+            SPDLOG_ERROR("Unable to open shader program file for reading. File path: {}", shaderProgramPath);
+    
+            return 0;
         }
-
-        SPDLOG_INFO("Before linking");
-        glLinkProgram(shaderProgram);
-        CheckProgramLinkingSuccess(shaderProgram);
-
-        for (unsigned int id : shaderIds)
-        {
-            glDeleteShader(id);
-        }
+    
+        fileNode = YAML::Load(fin);
+        fin.close();
     }
-    else 
+    catch (const YAML::Exception& e) {
+        SPDLOG_ERROR("Exception occured during reading shader program file: {}. YAML Exception: {}", shaderProgramPath, e.what());
+        return 0;
+    }
+    
+    SPDLOG_INFO("Loading shader program: {}!", shaderProgramName);
+    
+    const YAML::Node& shaderProgramNode = fileNode["shaderprogram"];
+    
+    std::string name = shaderProgramNode["name"].as<std::string>();
+    //std::string shader = materialNode["shaders"].as<std::string>();
+    
+    shaderProgram = glCreateProgram();
+    
+    std::string shaderName;
+    std::list<unsigned int> shaderIds;
+    
+    for (auto shader : shaderProgramNode["shaders"])
     {
-        SPDLOG_ERROR("Failed to open .shpr file to read: {}", shaderProgramPath);
+        shaderName = shader.as<std::string>();
+    
+        size_t extensionHash = stringHash(shaderName.substr(shaderName.size() - 4, 4));
+    
+        GLuint shaderId = CompileShaderSPIRV(shaderTypeMapping.at(extensionHash), SHADERS_ORIGIN_DIRETORY + ("/CompiledShaders/SPIRV/" + shaderName));
+    
+        SPDLOG_INFO("TU1");
+        glAttachShader(shaderProgram, shaderId);
+    
+        shaderIds.push_back(shaderId);
     }
-
+    
+    SPDLOG_INFO("Before linking");
+    glLinkProgram(shaderProgram);
+    CheckProgramLinkingSuccess(shaderProgram);
+    
+    for (unsigned int id : shaderIds)
+    {
+        glDeleteShader(id);
+    }
+    
+    //// Saving to file parapeters
+    //std::stringstream yamlStream;
+    //yamlStream << shaderProgramNode["parameters"];
+    //
+    //string shaderProgramPath = "res/CompiledShaders/" + shaderProgramName + "_parameters.shpa";
+    //std::ofstream file(shaderProgramPath);
+    //
+    //if (file.is_open()) {
+    //    file << yamlStream.str();
+    //    file.close();
+    //    std::cout << "YAML content saved to file: output.yaml" << std::endl;
+    //}
+    //else {
+    //    std::cerr << "Failed to open file for writing." << std::endl;
+    //    return 1;
+    //}
+    
     return shaderProgram;
 }
 
-void Twin2Engine::GraphicEngine::ShaderManager::SaveShaderProgramToFile(GLuint shaderProgramId, const std::string& shaderName)
-{
-    if (shaderProgramId != 0) {
-        // Get program binary
-        GLint binaryLength;
-        glGetProgramiv(shaderProgramId, GL_PROGRAM_BINARY_LENGTH, &binaryLength);
-
-        binaryFormat = GL_SPIR_V_BINARY;
-
-        std::vector<GLchar> binaryData(binaryLength);
-        glGetProgramBinary(shaderProgramId, binaryLength, nullptr, &binaryFormat, binaryData.data());
-        
-        
-        // Creating folders for saved .shdr file
-        std::string outputFilePath = SHADERS_ORIGIN_DIRETORY + ("/CompiledShaders/" + shaderName) + SHADER_BINARY_EXTENSION;
-        try 
-        {
-            std::filesystem::create_directories(outputFilePath.substr(0, outputFilePath.find_last_of('/')));
-        }
-        catch (const std::filesystem::filesystem_error& e) 
-        {
-            SPDLOG_ERROR("Failed to create directories: {}", e.what());
-            return;
-        }
-
-        // Saving to file
-        std::ofstream binaryFile(outputFilePath, std::ios::binary);
-        if (!binaryFile.is_open())
-        {
-            SPDLOG_ERROR("SHADER output file not opened: {}", outputFilePath);
-            return;
-        }
-        binaryFile.write(binaryData.data(), binaryLength);
-        binaryFile.close();
-
-        SPDLOG_INFO("Compiled and saved shader program binary: {}", outputFilePath);
-        SPDLOG_INFO("Binary format: {}", binaryFormat);
-    }
-}
+//void Twin2Engine::GraphicEngine::ShaderManager::SaveShaderProgramToFile(GLuint shaderProgramId, const std::string& shaderName)
+//{
+//    if (shaderProgramId != 0) {
+//        // Get program binary
+//        GLint binaryLength;
+//        glGetProgramiv(shaderProgramId, GL_PROGRAM_BINARY_LENGTH, &binaryLength);
+//
+//        binaryFormat = GL_SPIR_V_BINARY;
+//
+//        std::vector<GLchar> binaryData(binaryLength);
+//        glGetProgramBinary(shaderProgramId, binaryLength, nullptr, &binaryFormat, binaryData.data());
+//        
+//        
+//        // Creating folders for saved .shdr file
+//        std::string outputFilePath = SHADERS_ORIGIN_DIRETORY + ("/CompiledShaders/" + shaderName) + SHADER_BINARY_EXTENSION;
+//        try 
+//        {
+//            std::filesystem::create_directories(outputFilePath.substr(0, outputFilePath.find_last_of('/')));
+//        }
+//        catch (const std::filesystem::filesystem_error& e) 
+//        {
+//            SPDLOG_ERROR("Failed to create directories: {}", e.what());
+//            return;
+//        }
+//
+//        // Saving to file
+//        std::ofstream binaryFile(outputFilePath, std::ios::binary);
+//        if (!binaryFile.is_open())
+//        {
+//            SPDLOG_ERROR("SHADER output file not opened: {}", outputFilePath);
+//            return;
+//        }
+//        binaryFile.write(binaryData.data(), binaryLength);
+//        binaryFile.close();
+//
+//        SPDLOG_INFO("Compiled and saved shader program binary: {}", outputFilePath);
+//        SPDLOG_INFO("Binary format: {}", binaryFormat);
+//    }
+//}
 
 Shader* Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader)
 {

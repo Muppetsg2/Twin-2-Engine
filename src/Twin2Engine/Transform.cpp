@@ -1,4 +1,5 @@
 #include <core/Transform.h>
+#include <core/GameObject.h>
 //#include "Transform.h"
 
 //Nie mo�e by� nullptr gdy� niekt�re warunki w set parent mog� si� posypa�
@@ -179,11 +180,15 @@ void Twin2Engine::Core::Transform::SetParent(Transform* parent)
 	parent->JustAddChild(this);
 	_parent = parent;
 
-
 	//_dirtyFlag = true;
 	_dirtyFlagInHierarchy = true;
 	
 	SetDirtyFlagInChildren();
+
+	if (parent != originTransform)
+	{
+		getGameObject()->SetActiveInHierarchy(parent->getGameObject()->GetActive());
+	}
 }
 
 void Twin2Engine::Core::Transform::JustAddChild(Transform* child)

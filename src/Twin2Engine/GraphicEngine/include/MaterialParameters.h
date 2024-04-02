@@ -55,7 +55,6 @@ namespace Twin2Engine::GraphicEngine
 		std::vector<char> result(ptr, ptr + sizeof(T));
 		_variablesValuesMappings[hashed] = result;
 	}
-
 }
 
 #endif

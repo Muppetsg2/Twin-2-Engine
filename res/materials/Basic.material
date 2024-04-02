@@ -4,8 +4,8 @@ material:
   shader: origin/Basic
   parameters:
     - name: color1
-      type: vec4
+      type: vec3
       value: [1.0, 0.0, 0.0, 1.0]
     - name: color2
-      type: vec4
+      type: vec3
       value: [0.0, 1.0, 0.0, 1.0]

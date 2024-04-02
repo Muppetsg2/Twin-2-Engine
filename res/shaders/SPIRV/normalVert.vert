@@ -14,8 +14,8 @@ layout (std430, binding = 1) buffer MaterialIndexes {
 
 struct MaterialInput
 {
-   vec4 color1;
-   vec4 color2;
+   vec3 color1;
+   vec3 color2;
 };
 
 layout(std140, binding = 2) uniform MaterialInputBuffer {
@@ -32,6 +32,8 @@ layout (location = 2) out vec2 texCoords;
 layout (location = 3) flat out uint materialIndex;
 
 //uniform mat4 model;
+//uniform mat4 view;
+//uniform mat4 projection;
 
 void main()
 {

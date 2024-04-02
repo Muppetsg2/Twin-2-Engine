@@ -21,6 +21,8 @@ namespace Twin2Engine
 	namespace Core {
 		class GameObject
 		{
+			friend Transform;
+
 			static unsigned int _currentFreeId;
 			unsigned int _id;
 			string _name;
@@ -35,6 +37,7 @@ namespace Twin2Engine
 
 			//Layer
 			//Tag
+			void SetActiveInHierarchy(bool activeInHierarchy);
 
 		public:
 			GameObject();
@@ -43,6 +46,7 @@ namespace Twin2Engine
 
 			inline unsigned int Id() const;
 
+			bool GetActiveInHierarchy() const;
 			bool GetActive() const;
 			void SetActive(bool active);
 

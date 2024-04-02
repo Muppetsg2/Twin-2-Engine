@@ -1,5 +1,7 @@
 #include <MaterialParameters.h>
 
+#include <spdlog/spdlog.h>
+
 using namespace Twin2Engine::GraphicEngine;
 
  std::hash<std::string> MaterialParameters::hasher;
@@ -24,8 +26,26 @@ void MaterialParameters::Add(const std::string& variableName, size_t size, void*
 {
 	size_t hashed = hasher(variableName);
 
+	size_t paramSize = size;
+	
+	if (size % 2 == 0)
+	{
+		// Jest to pusty przebieg, aby przy wiêkszoœci przypadków, w których to size jest podzielny przez 2, ¿eby ci¹g warunków zawsze spradzanych by³ krótki
+	}
+	if (size == 12)
+	{
+		paramSize = 16;
+	}
+	else if (size == 36)
+	{
+		paramSize = 64;
+	}
+
 	const char* ptr = reinterpret_cast<const char*>(value);
-	std::vector<char> result(ptr, ptr + size);
+	std::vector<char> result(paramSize); //(ptr, ptr + size);
+	memcpy(result.data(), ptr, size);
+
+
 	_variablesValuesMappings[hashed] = result;
 }
 

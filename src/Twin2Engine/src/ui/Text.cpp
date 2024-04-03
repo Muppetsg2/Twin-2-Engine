@@ -13,13 +13,6 @@ using namespace Manager;
 using namespace glm;
 using namespace std;
 
-void Text::UpdateTextTextures()
-{
-	if (_fontPath != "" && _size != 0) {
-		_textTextures = FontManager::GetText(_fontPath, _size, _text);
-	}
-}
-
 void Text::Render()
 {
 	UIElement elem{};
@@ -33,7 +26,8 @@ void Text::Render()
 	float x = 0.f;
 	float y = 0.f;
 	float scale = 1.f;
-	for (auto& c : _textTextures)
+	vector<Character*> characters = _font->GetText(_text, _size);
+	for (auto& c : characters)
 	{
 		float xpos = x + c->Bearing.x * scale;
 		float ypos = y - (c->Size.y - c->Bearing.y) * scale;
@@ -62,26 +56,22 @@ void Text::SetColor(const vec4& color)
 
 void Text::SetText(const string& text)
 {
-	if (_text != text) {
-		_text = text;
-		UpdateTextTextures();
-	}
+	_text = text;
 }
 
 void Text::SetSize(uint32_t size)
 {
-	if (_size != size) {
-		_size = size;
-		UpdateTextTextures();
-	}
+	_size = size;
 }
 
-void Text::SetFontPath(const std::string& fontPath)
+void Text::SetFont(const string& fontPath)
 {
-	if (_fontPath != fontPath) {
-		_fontPath = fontPath;
-		UpdateTextTextures();
-	}
+	_font = FontManager::LoadFont(fontPath);
+}
+
+void Text::SetFont(Font* font)
+{
+	_font = font;
 }
 
 vec4 Text::GetColor() const
@@ -99,7 +89,7 @@ uint32_t Text::GetSize() const
 	return _size;
 }
 
-string Text::GetFontPath() const
+Font* Text::GetFont() const
 {
-	return _fontPath;
+	return _font;
 }

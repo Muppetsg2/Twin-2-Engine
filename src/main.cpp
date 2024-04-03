@@ -251,15 +251,13 @@ int main(int, char**)
     Image* img2 = imageObj->AddComponent<Image>();
     img2->SetSprite(SpriteManager::MakeSprite("grass", "res/textures/grass.png"));
 
-    FontManager::LoadFont("res/fonts/arial.ttf", 48);
-
     textObj = new GameObject();
     textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
     text = textObj->AddComponent<Text>();
     text->SetColor(glm::vec4(1.f));
     text->SetText("Text");
     text->SetSize(48);
-    text->SetFontPath("res/fonts/arial.ttf");
+    text->SetFont("res/fonts/arial.ttf");
 
     GameObject go1;
     GameObject go2;
@@ -299,10 +297,10 @@ int main(int, char**)
 
     // Cleanup
     delete imageObj;
-    //soloud.deinit();
     SpriteManager::UnloadAll();
     TextureManager::UnloadAll();
     AudioManager::UnloadAll();
+    FontManager::UnloadAll();
     Input::FreeAllWindows();
 
     ImGui_ImplOpenGL3_Shutdown();

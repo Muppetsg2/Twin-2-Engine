@@ -1,5 +1,8 @@
 #pragma once
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 namespace Twin2Engine {
 
 	namespace Manager {
@@ -16,16 +19,20 @@ namespace Twin2Engine {
 
 		class Font {
 		private:
-			std::map<char, Character*> _glyphs;
+			std::map<uint32_t, std::map<char, Character*>> _glyphs = std::map<uint32_t, std::map<char, Character*>>();
+			FT_Library _lib;
+			FT_Face _face;
 
 		private:
-			Font(std::map<char, Character*> glyphs);
+			Font(FT_Library lib, FT_Face face);
+
+			void LoadCharacter(char character, uint32_t size);
 
 		public:
 			virtual ~Font();
 
-			Character* GetCharacter(char character);
-			std::vector<Character*> GetText(const std::string& text);
+			Character* GetCharacter(char character, uint32_t size);
+			std::vector<Character*> GetText(const std::string& text, uint32_t size);
 
 			friend class Manager::FontManager;
 		};

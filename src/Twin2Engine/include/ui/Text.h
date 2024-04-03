@@ -7,15 +7,12 @@ namespace Twin2Engine::UI {
 	class Text : public Core::RenderableComponent {
 	private:
 		std::string _text = "";
-		std::vector<GraphicEngine::Character*> _textTextures = std::vector<GraphicEngine::Character*>();
 
-		std::string _fontPath = "";
+		GraphicEngine::Font* _font = nullptr;
 
 		uint32_t _size = 0;
 
 		glm::vec4 _color = glm::vec4(0.f);
-
-		void UpdateTextTextures();
 
 	public:
 		virtual void Render() override;
@@ -23,11 +20,12 @@ namespace Twin2Engine::UI {
 		void SetColor(const glm::vec4& color);
 		void SetText(const std::string& text);
 		void SetSize(uint32_t size);
-		void SetFontPath(const std::string& fontPath);
+		void SetFont(const std::string& fontPath);
+		void SetFont(GraphicEngine::Font* font);
 
 		glm::vec4 GetColor() const;
 		std::string GetText() const;
 		uint32_t GetSize() const;
-		std::string GetFontPath() const;
+		GraphicEngine::Font* GetFont() const;
 	};
 }

@@ -8,7 +8,7 @@
 using namespace SoLoud;
 using namespace std;
 
-namespace Twin2Engine::Core {
+namespace Twin2Engine::Manager {
 	class AudioManager {
 	private:
 		static Soloud _soloud;

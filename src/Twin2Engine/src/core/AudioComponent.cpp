@@ -1,8 +1,9 @@
 #include <core/AudioComponent.h>
-#include <core/AudioManager.h>
+#include <manager/AudioManager.h>
 #include <spdlog/spdlog.h>
 
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Manager;
 
 void AudioComponent::SetAudio(string path)
 {

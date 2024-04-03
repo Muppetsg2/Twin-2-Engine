@@ -1,7 +1,7 @@
-#include <core/AudioManager.h>
+#include <manager/AudioManager.h>
 #include <spdlog/spdlog.h>
 
-using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Manager;
 
 Soloud AudioManager::_soloud = Soloud();
 map<size_t, Wav*> AudioManager::_loadedAudio = map<size_t, Wav*>();

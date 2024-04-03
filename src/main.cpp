@@ -32,12 +32,16 @@
 #include <graphic/manager/ShaderManager.h>
 #include <graphic/manager/MaterialsManager.h>
 #include <graphic/manager/ModelsManager.h>
+#include <manager/AudioManager.h>
 
 // GAME OBJECT
 #include <core/GameObject.h>
 #include <core/MeshRenderer.h>
 #include <ui/Image.h>
 #include <ui/Text.h>
+
+// AUDIO
+#include <core/AudioComponent.h>
 
 // GRAPHIC_ENGINE
 #include <GraphicEnigine.h>
@@ -57,8 +61,6 @@
 
 // CAMERA
 #include <core/CameraComponent.h>
-#include <core/AudioComponent.h>
-#include <core/AudioManager.h>
 
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;

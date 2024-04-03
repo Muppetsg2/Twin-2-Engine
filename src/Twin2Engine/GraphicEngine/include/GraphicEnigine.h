@@ -5,7 +5,7 @@
 
 #include <glm/glm.hpp>
 
-#include <Mesh.h>
+//#include <Mesh.h>
 #include <Shader.h>
 #include <ShaderManager.h>
 
@@ -31,11 +31,13 @@ namespace Twin2Engine
 	{
 		class GraphicEngine
 		{
-			Mesh* mesh;
+			//Mesh* mesh;
+			InstatiatingMesh* mesh;
 			Shader* shader;
 			Material material;
 			Material material2;
-			InstatiatingModel modelMesh;
+			InstatiatingModel modelMesh1;
+			InstatiatingModel modelMesh2;
 			GameObject* gameObject;
 			GameObject* gameObject2;
 			GameObject* gameObject3;
@@ -106,9 +108,9 @@ namespace Twin2Engine
 				//indices.push_back(1);
 
 
-				vector<Texture> textures;
+				//vector<Texture> textures;
 
-				mesh = new Mesh(vertexes, indices, textures);
+				//mesh = new InstatiatingMesh(vertexes, indices);
 
 				ShaderManager::Init();
 
@@ -118,7 +120,9 @@ namespace Twin2Engine
 				shader = ShaderManager::GetShaderProgram("origin/Basic");
 				
 
-				modelMesh = ModelsManager::CreateModel("NewModel", vertexes, indices, textures);
+				//modelMesh = ModelsManager::CreateModel("NewModel", vertexes, indices, textures);
+				modelMesh1 = ModelsManager::CreateModel("NewModel", vertexes, indices);
+				modelMesh2 = ModelsManager::GetModel("res/models/castle.obj");
 
 
 				material = MaterialsManager::GetMaterial("Basic");
@@ -128,20 +132,20 @@ namespace Twin2Engine
 				gameObject = new GameObject();
 				auto comp = gameObject->AddComponent<MeshRenderer>();
 				comp->AddMaterial(material);
-				comp->SetModel(modelMesh);
+				comp->SetModel(modelMesh2);
 
 				gameObject2 = new GameObject();
 				gameObject2->GetTransform()->Translate(glm::vec3(2, 1, 0));
 				comp = gameObject2->AddComponent<MeshRenderer>();
 				comp->AddMaterial(material2);
-				comp->SetModel(modelMesh);
+				comp->SetModel(modelMesh1);
 
 
 				gameObject3 = new GameObject();
 				gameObject3->GetTransform()->Translate(glm::vec3(0, -1, 0));
 				comp = gameObject3->AddComponent<MeshRenderer>();
 				comp->AddMaterial(material2);
-				comp->SetModel(modelMesh);
+				comp->SetModel(modelMesh2);
 
 				//std::cout << "Tutaj4\n";
 				//instance = this;

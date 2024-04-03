@@ -55,6 +55,8 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <memory>
+#include <string>
+#include <cstring>
 
 #include <CollisionManager.h>
 #include <core/BoxColliderComponent.h>
@@ -630,12 +632,12 @@ void imgui_render()
             }
 
             bool temp = window->IsResizable();
-            if (ImGui::Button(((temp ? "Disable"s : "Enable"s) + " Resizability"s).c_str())) {
+            if (ImGui::Button(((temp ? "Disable" : "Enable") + string(" Resizability")).c_str())) {
                 window->EnableResizability(!temp);
             }
 
             temp = window->IsDecorated();
-            if (ImGui::Button(((temp ? "Disable"s : "Enable"s) + " Decorations"s).c_str())) {
+            if (ImGui::Button(((temp ? "Disable" : "Enable") + string(" Decorations")).c_str())) {
                 window->EnableDecorations(!temp);
             }
 
@@ -677,7 +679,7 @@ void imgui_render()
             size = window->GetWindowSize();
         }
 
-        if (ImGui::Button(((window->IsVSyncOn() ? "Disable"s : "Enable"s) + " VSync"s).c_str())) {
+        if (ImGui::Button(((window->IsVSyncOn() ? "Disable" : "Enable") + string(" VSync")).c_str())) {
             window->EnableVSync(!window->IsVSyncOn());
         }
 

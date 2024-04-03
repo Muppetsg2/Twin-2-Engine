@@ -12,7 +12,7 @@ using namespace GraphicEngine;
 using namespace glm;
 using namespace std;
 
-unsigned int VAO;
+unsigned int _VAO;
 unsigned int VBO;
 
 vector<float> verticies{
@@ -29,8 +29,8 @@ void Image::Initialize()
 {
 	UIRenderingManager::Register(this);
 
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
+	glGenVertexArrays(1, &_VAO);
+	glBindVertexArray(_VAO);
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, verticies.size() * sizeof(float), verticies.data(), GL_STATIC_DRAW);
@@ -45,7 +45,7 @@ void Image::Initialize()
 
 void Image::Render(const Window* window)
 {
-	glBindVertexArray(VAO);
+	glBindVertexArray(_VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
 	Shader* uiShader = ShaderManager::GetShaderProgram("res/CompiledShaders/origin/UI.shdr");

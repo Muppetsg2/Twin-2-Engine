@@ -2,23 +2,23 @@
 #define _MODEL_DATA_H_
 
 #include <InstatiatingMesh.h>
-#include <Model.h>
+//#include <Model.h>
 #include <glad/glad.h>
 
 #include <vector>
 
 namespace Twin2Engine::GraphicEngine
 {
-    class Model;
+    //class Model;
     class InstatiatingMesh;
 
     struct ModelData
     {
         size_t modelHash;
         int useNumber;
-        Model* model;
-        GLuint ssboId;
-        vector<InstatiatingMesh> meshes;
+        //Model* model;
+        //GLuint ssboId;
+        std::vector<InstatiatingMesh*> meshes;
         bool operator<(const ModelData& data2) const
         {
             return modelHash < data2.modelHash;

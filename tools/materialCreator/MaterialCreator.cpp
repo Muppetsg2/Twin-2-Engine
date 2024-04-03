@@ -40,12 +40,12 @@ int main(int argc, char* argv[]) {
     // Write YAML file
     std::ofstream yamlFile("ShadersOrigin/materials/" + materialName + ".material");
     if (!yamlFile.is_open()) {
-        std::cerr << "Failed to create YAML file." << std::endl;
+        std::cerr << "Failed to create material file." << std::endl;
         return 1;
     }
     yamlFile << rootNode;
     yamlFile.close();
 
-    std::cout << "Material YAML file created successfully." << std::endl;
+    std::cout << "Material file created successfully." << std::endl;
     return 0;
 }

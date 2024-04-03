@@ -5,6 +5,7 @@
 #include <Material.h>
 #include <MeshRenderer.h>
 #include <Shader.h>
+#include <core/Transform.h>
 
 #include <unordered_map>
 #include <map>

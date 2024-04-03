@@ -1,20 +1,21 @@
 #ifndef INSTANTIATING_MODEL
 #define INSTANTIATING_MODEL
 
-#include <Model.h>
+//#include <Model.h>
 #include <ModelData.h>
 #include <InstatiatingMesh.h>
-#include <glad/glad.h>
+//#include <glad/glad.h>
 
+#include <glm/glm.hpp>
 
-#include <core/Transform.h>
+//#include <core/Transform.h>
 //#include <Transform.h>
 
-using Twin2Engine::Core::Transform;
+//using Twin2Engine::Core::Transform;
 
 namespace Twin2Engine::GraphicEngine
 {
-    class Model;
+    //class Model;
 
     class InstatiatingModel
     {
@@ -29,14 +30,14 @@ namespace Twin2Engine::GraphicEngine
 
         ModelData* modelData;
 
-        void setupModel(const vector<glm::mat4>& transforms);
+        void setupModel(const std::vector<glm::mat4>& transforms);
 
         //static InstatiatingModel CreateModel(ModelData* modelData);
-        InstatiatingModel(ModelData* modelData);
+        explicit InstatiatingModel(ModelData* modelData);
 
     public:
-        InstatiatingModel(const InstatiatingModel&);
-        InstatiatingModel(InstatiatingModel&&);
+        InstatiatingModel(const InstatiatingModel& model);
+        InstatiatingModel(InstatiatingModel&& model);
         InstatiatingModel();
 
         //InstatiatingModel(const char* path, const vector<glm::mat4>& transforms);
@@ -47,7 +48,7 @@ namespace Twin2Engine::GraphicEngine
 
         void Draw(Shader* shaderProgram);
 
-        void SetTransform(unsigned int meshIndex, const vector<Transform*> transforms);
+        //void SetTransform(unsigned int meshIndex, const vector<Transform*> transforms);
 
         InstatiatingModel& operator=(const InstatiatingModel& other);
         InstatiatingModel& operator=(InstatiatingModel&& other);

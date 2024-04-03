@@ -42,7 +42,7 @@ void UIRenderingManager::Render(const Window* window)
 
 	glBindVertexArray(spriteVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);
-	Shader* uiShader = ShaderManager::GetShaderProgram("res/CompiledShaders/origin/UI.shdr");
+	Shader* uiShader = ShaderManager::GetShaderProgram("origin/UI");
 	uiShader->use();
 	glActiveTexture(GL_TEXTURE0);
 	uiShader->setInt("sprite.img", 0);

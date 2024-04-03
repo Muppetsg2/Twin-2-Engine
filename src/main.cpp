@@ -30,9 +30,12 @@
 #include <graphic/manager/SpriteManager.h>
 #include <graphic/manager/FontManager.h>
 #include <graphic/manager/ShaderManager.h>
+#include <graphic/manager/MaterialsManager.h>
+#include <graphic/manager/ModelsManager.h>
 
 // GAME OBJECT
 #include <core/GameObject.h>
+#include <core/MeshRenderer.h>
 #include <ui/Image.h>
 #include <ui/Text.h>
 
@@ -78,12 +81,6 @@ double lastY = 0.0f;
 float cameraSpeed = 40.0f;
 float sensitivity = 0.1f;
 
-//float yaw2 = 45.0f;
-//float pitch2 = 0.0f;
-
-//GLFWcursorposfun lastMouseCallback;
-
-//bool mouseUsingStarted = false;
 bool mouseNotUsed = true;
 
 #pragma endregion
@@ -138,8 +135,6 @@ const     char*   glsl_version     = "#version 450";
 constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 5;
 
-ImVec4 clear_color = ImVec4(.1f, .1f, .1f, 1.f);
-
 GLuint UBOMatrices;
 
 SoLoud::Soloud soloud;
@@ -147,12 +142,16 @@ SoLoud::Wav smusicSmple;
 SoLoud::handle sampleHandle = 0;
 bool first = true;
 
-/*
-ma_engine engine;
-ma_sound sound;
-*/
-
 bool musicPlaying = false;
+
+Mesh* mesh;
+Shader* shader;
+Material material;
+Material material2;
+InstatiatingModel modelMesh;
+GameObject* gameObject;
+GameObject* gameObject2;
+GameObject* gameObject3;
 
 GraphicEngine* graphicEngine;
 GameObject* imageObj;
@@ -177,20 +176,6 @@ int main(int, char**)
     spdlog::info("Initialized SoLoud.");
 
     smusicSmple.load("./res/music/FurElise.wav");
-
-    /*
-    ma_result result;
-    result = ma_engine_init(NULL, &engine);
-    if (result != MA_SUCCESS) {
-        return EXIT_FAILURE;
-    }
-    spdlog::info("Initialized MiniAudio.");
-
-    result = ma_sound_init_from_file(&engine, "./res/music/FurElise.wav", 0, NULL, NULL, &sound);
-    if (result != MA_SUCCESS) {
-        return result;
-    }
-    */
 
 #pragma endregion
 
@@ -231,7 +216,100 @@ int main(int, char**)
 
     graphicEngine = new GraphicEngine();
 
-    Shader* sh = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/UI.shdr", "shaders/ui.vert", "shaders/ui.frag");
+    vector<Vertex> vertexes;
+    vertexes.push_back(Vertex{ .Position = glm::vec3(0.0f, 0.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
+    vertexes.push_back(Vertex{ .Position = glm::vec3(1.0f, 0.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
+    vertexes.push_back(Vertex{ .Position = glm::vec3(1.0f, 1.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
+    vertexes.push_back(Vertex{ .Position = glm::vec3(0.0f, 1.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
+    vertexes.push_back(Vertex{ .Position = glm::vec3(0.0f, 0.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
+    vertexes.push_back(Vertex{ .Position = glm::vec3(1.0f, 0.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
+    vertexes.push_back(Vertex{ .Position = glm::vec3(1.0f, 1.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
+    vertexes.push_back(Vertex{ .Position = glm::vec3(0.0f, 1.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
+
+    vector<unsigned int> indices;
+
+    indices.push_back(2);
+    indices.push_back(1);
+    indices.push_back(0);
+    indices.push_back(3);
+    indices.push_back(2);
+    indices.push_back(0);
+
+    indices.push_back(0);
+    indices.push_back(4);
+    indices.push_back(3);
+    indices.push_back(4);
+    indices.push_back(7);
+    indices.push_back(3);
+
+    indices.push_back(0);
+    indices.push_back(1);
+    indices.push_back(5);
+    indices.push_back(0);
+    indices.push_back(5);
+    indices.push_back(4);
+
+    indices.push_back(4);
+    indices.push_back(5);
+    indices.push_back(6);
+    indices.push_back(4);
+    indices.push_back(6);
+    indices.push_back(7);
+
+    indices.push_back(3);
+    indices.push_back(7);
+    indices.push_back(6);
+    indices.push_back(3);
+    indices.push_back(6);
+    indices.push_back(2);
+
+    indices.push_back(1);
+    indices.push_back(2);
+    indices.push_back(6);
+    indices.push_back(1);
+    indices.push_back(6);
+    indices.push_back(5);
+    //indices.push_back(6);
+    //indices.push_back(2);
+    //indices.push_back(1);
+    //indices.push_back(5);
+    //indices.push_back(6);
+    //indices.push_back(1);
+
+
+    vector<Texture> textures;
+
+    mesh = new Mesh(vertexes, indices, textures);
+
+    shader = ShaderManager::CreateShaderProgram("res/shaders/Basic.shpr");
+
+    modelMesh = ModelsManager::CreateModel("NewModel", vertexes, indices, textures);
+
+
+    material = MaterialsManager::GetMaterial("Basic");
+
+    material2 = MaterialsManager::GetMaterial("Basic2");
+
+    gameObject = new GameObject();
+    auto comp = gameObject->AddComponent<MeshRenderer>();
+    comp->AddMaterial(material);
+    comp->SetModel(modelMesh);
+
+    gameObject2 = new GameObject();
+    gameObject2->GetTransform()->Translate(glm::vec3(2, 1, 0));
+    comp = gameObject2->AddComponent<MeshRenderer>();
+    comp->AddMaterial(material2);
+    comp->SetModel(modelMesh);
+
+
+    gameObject3 = new GameObject();
+    gameObject3->GetTransform()->Translate(glm::vec3(0, -1, 0));
+    comp = gameObject3->AddComponent<MeshRenderer>();
+    comp->AddMaterial(material2);
+    comp->SetModel(modelMesh);
+
+
+    Shader* sh = ShaderManager::CreateShaderProgram("res/shaders/UI.shpr");
     Texture2D* tex = TextureManager::LoadTexture2D("res/textures/stone.jpg");
     Sprite* s = SpriteManager::MakeSprite(tex, "stone", 0, 0, tex->GetWidth(), tex->GetHeight());
 
@@ -244,7 +322,6 @@ int main(int, char**)
     Image* img2 = imageObj->AddComponent<Image>();
     img2->SetSprite(s2);
 
-    Shader* sh2 = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/Text.shdr", "shaders/text.vert", "shaders/text.frag");
     FontManager::LoadFont("res/fonts/arial.ttf", 48);
 
     textObj = new GameObject();
@@ -275,9 +352,6 @@ int main(int, char**)
     {
         // Process I/O operations here
         input();
-
-        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Update game objects' state here
         update();
@@ -547,7 +621,7 @@ void render()
     for (auto& comp : RenderableComponent::_components) {
         comp->Render(window);
     }
-    graphicEngine->Render(window, Camera.GetComponent<CameraComponent>()->GetViewMatrix(), Camera.GetComponent<CameraComponent>()->GetProjectionMatrix());
+    graphicEngine->Render(window);
 }
 
 void imgui_begin()

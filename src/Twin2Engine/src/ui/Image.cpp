@@ -1,6 +1,7 @@
 #include <ui/Image.h>
 #include <core/Transform.h>
 #include <graphic/manager/UIRenderingManager.h>
+#include <graphic/manager/SpriteManager.h>
 
 using namespace Twin2Engine;
 using namespace UI;
@@ -27,6 +28,10 @@ void Image::Render()
 void Image::OnDestroy()
 {
 	_sprite = nullptr;
+}
+
+void Image::SetSprite(const std::string& spriteAlias) {
+	_sprite = SpriteManager::GetSprite(spriteAlias);
 }
 
 void Image::SetSprite(Sprite* sprite)

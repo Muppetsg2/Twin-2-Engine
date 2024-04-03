@@ -88,20 +88,21 @@ namespace Twin2Engine::Manager {
 		COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT
 	};
 
+	struct TextureData {
+		GraphicEngine::TextureWrapMode sWrapMode = GraphicEngine::TextureWrapMode::MIRRORED_REPEAT;
+		GraphicEngine::TextureWrapMode tWrapMode = GraphicEngine::TextureWrapMode::MIRRORED_REPEAT;
+		GraphicEngine::TextureFilterMode minFilterMode = GraphicEngine::TextureFilterMode::NEAREST_MIPMAP_LINEAR;
+		GraphicEngine::TextureFilterMode magFilterMode = GraphicEngine::TextureFilterMode::LINEAR;
+	};
+
 	class TextureManager {
 	private:
 		static std::map<size_t, GraphicEngine::Texture2D*> _loadedTextures;
 
 	public:
 		static GraphicEngine::Texture2D* GetTexture2D(size_t managerId);
-		static GraphicEngine::Texture2D* LoadTexture2D(const std::string& path);
-		static GraphicEngine::Texture2D* LoadTexture2D(const std::string& path, const GraphicEngine::TextureWrapMode& sWrapMode, const GraphicEngine::TextureWrapMode& tWrapMode);
-		static GraphicEngine::Texture2D* LoadTexture2D(const std::string& path, const GraphicEngine::TextureFilterMode& minFilterMode, const GraphicEngine::TextureFilterMode& magFilterMode);
-		static GraphicEngine::Texture2D* LoadTexture2D(const std::string& path, const GraphicEngine::TextureWrapMode& sWrapMode, const GraphicEngine::TextureWrapMode& tWrapMode, const GraphicEngine::TextureFilterMode& minFilterMode, const GraphicEngine::TextureFilterMode& magFilterMode);
-		static GraphicEngine::Texture2D* LoadTexture2D(const std::string& path, const TextureFileFormat& internalFormat, const GraphicEngine::TextureFormat& format);
-		static GraphicEngine::Texture2D* LoadTexture2D(const std::string& path, const TextureFileFormat& internalFormat, const GraphicEngine::TextureFormat& format, const GraphicEngine::TextureWrapMode& sWrapMode, const GraphicEngine::TextureWrapMode& tWrapMode);
-		static GraphicEngine::Texture2D* LoadTexture2D(const std::string& path, const TextureFileFormat& internalFormat, const GraphicEngine::TextureFormat& format, const GraphicEngine::TextureFilterMode& minFilterMode, const GraphicEngine::TextureFilterMode& magFilterMode);
-		static GraphicEngine::Texture2D* LoadTexture2D(const std::string& path, const TextureFileFormat& internalFormat, const GraphicEngine::TextureFormat& format, const GraphicEngine::TextureWrapMode& sWrapMode, const GraphicEngine::TextureWrapMode& tWrapMode, const GraphicEngine::TextureFilterMode& minFilterMode, const GraphicEngine::TextureFilterMode& magFilterMode);
+		static GraphicEngine::Texture2D* LoadTexture2D(const std::string& path, const TextureData& data = TextureData());
+		static GraphicEngine::Texture2D* LoadTexture2D(const std::string& path, const TextureFileFormat& internalFormat, const GraphicEngine::TextureFormat& format, const TextureData& data = TextureData());
 
 		static void UnloadAll();
 	};

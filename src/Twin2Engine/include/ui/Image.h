@@ -14,7 +14,8 @@ namespace Twin2Engine::UI {
 		virtual void Render() override;
 		virtual void OnDestroy() override;
 
-		void SetSprite(GraphicEngine::Sprite* sprite);
+		void SetSprite(const std::string& spriteAlias);
+		void SetSprite(Sprite* sprite);
 		void SetColor(const glm::vec4& color);
 		void SetWidth(float width);
 		void SetHeight(float height);

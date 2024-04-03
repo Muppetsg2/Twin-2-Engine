@@ -8,30 +8,40 @@ using namespace std;
 
 map<size_t, Sprite*> SpriteManager::_sprites = map<size_t, Sprite*>();
 
-Sprite* SpriteManager::MakeSprite(Texture2D* tex, const string& spriteAlias)
+Sprite* SpriteManager::MakeSprite(const std::string& spriteAlias, const std::string& texPath)
 {
-    return MakeSprite(tex, spriteAlias, 0, 0, tex->GetWidth(), tex->GetHeight());
+    return MakeSprite(spriteAlias, TextureManager::LoadTexture2D(texPath));
 }
 
-Sprite* SpriteManager::MakeSprite(size_t texManagerId, const string& spriteAlias)
+Sprite* SpriteManager::MakeSprite(const string& spriteAlias, Texture2D* tex)
 {
-    return MakeSprite(TextureManager::GetTexture2D(texManagerId), spriteAlias);
+    return MakeSprite(spriteAlias, tex, { .x = 0, .y = 0, .width = tex->GetWidth(), .height = tex->GetHeight() });
 }
 
-Sprite* SpriteManager::MakeSprite(Texture2D* tex, const string& spriteAlias, unsigned int xOffset, unsigned int yOffset, unsigned int width, unsigned int height)
+Sprite* SpriteManager::MakeSprite(const string& spriteAlias, size_t texManagerId)
+{
+    return MakeSprite(spriteAlias, TextureManager::GetTexture2D(texManagerId));
+}
+
+Sprite* SpriteManager::MakeSprite(const std::string& spriteAlias, const std::string& texPath, const SpriteData& data)
+{
+    return MakeSprite(spriteAlias, TextureManager::LoadTexture2D(texPath), data);
+}
+
+Sprite* SpriteManager::MakeSprite(const string& spriteAlias, Texture2D* tex, const SpriteData& data)
 {
     size_t sH = hash<string>()(spriteAlias);
     if (_sprites.find(sH) != _sprites.end()) {
         spdlog::warn("Nadpisywanie Sprite: {}", sH);
     }
-    Sprite* spr = new Sprite(sH, tex, xOffset, yOffset, width, height);
+    Sprite* spr = new Sprite(sH, tex, data.x, data.y, data.width, data.height);
     _sprites[sH] = spr;
     return spr;
 }
 
-Sprite* SpriteManager::MakeSprite(size_t texManagerId, const string& spriteAlias, unsigned int xOffset, unsigned int yOffset, unsigned int width, unsigned int height)
+Sprite* SpriteManager::MakeSprite(const string& spriteAlias, size_t texManagerId, const SpriteData& data)
 {
-    return MakeSprite(TextureManager::GetTexture2D(texManagerId), spriteAlias, xOffset, yOffset, width, height);
+    return MakeSprite(spriteAlias, TextureManager::GetTexture2D(texManagerId), data);
 }
 
 Sprite* SpriteManager::GetSprite(const string& spriteAlias)

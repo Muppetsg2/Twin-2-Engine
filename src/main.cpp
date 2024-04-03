@@ -245,17 +245,11 @@ int main(int, char**)
     comp->AddMaterial(material2);
     comp->SetModel(modelMesh);
 
-    Texture2D* tex = TextureManager::LoadTexture2D("res/textures/stone.jpg");
-    Sprite* s = SpriteManager::MakeSprite(tex, "stone", 0, 0, tex->GetWidth(), tex->GetHeight());
-
-    Texture2D* tex2 = TextureManager::LoadTexture2D("res/textures/grass.png");
-    Sprite* s2 = SpriteManager::MakeSprite(tex2, "grass");
-
     imageObj = new GameObject();
     Image* img = imageObj->AddComponent<Image>();
-    img->SetSprite(s);
+    img->SetSprite(SpriteManager::MakeSprite("stone", "res/textures/stone.jpg"));
     Image* img2 = imageObj->AddComponent<Image>();
-    img2->SetSprite(s2);
+    img2->SetSprite(SpriteManager::MakeSprite("grass", "res/textures/grass.png"));
 
     FontManager::LoadFont("res/fonts/arial.ttf", 48);
 

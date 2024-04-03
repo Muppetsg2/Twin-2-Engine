@@ -56,6 +56,4 @@ namespace Twin2Engine
     }
 }
 
-//#include <ModelsManager.h>
-
 #endif // !INSTANTIATING_MODEL

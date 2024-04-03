@@ -223,78 +223,9 @@ int main(int, char**)
 
     graphicEngine = new GraphicEngine();
 
-    vector<Vertex> vertexes;
-    vertexes.push_back(Vertex{ .Position = glm::vec3(0.0f, 0.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
-    vertexes.push_back(Vertex{ .Position = glm::vec3(1.0f, 0.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
-    vertexes.push_back(Vertex{ .Position = glm::vec3(1.0f, 1.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
-    vertexes.push_back(Vertex{ .Position = glm::vec3(0.0f, 1.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
-    vertexes.push_back(Vertex{ .Position = glm::vec3(0.0f, 0.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
-    vertexes.push_back(Vertex{ .Position = glm::vec3(1.0f, 0.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
-    vertexes.push_back(Vertex{ .Position = glm::vec3(1.0f, 1.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
-    vertexes.push_back(Vertex{ .Position = glm::vec3(0.0f, 1.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
-
-    vector<unsigned int> indices;
-
-    indices.push_back(2);
-    indices.push_back(1);
-    indices.push_back(0);
-    indices.push_back(3);
-    indices.push_back(2);
-    indices.push_back(0);
-
-    indices.push_back(0);
-    indices.push_back(4);
-    indices.push_back(3);
-    indices.push_back(4);
-    indices.push_back(7);
-    indices.push_back(3);
-
-    indices.push_back(0);
-    indices.push_back(1);
-    indices.push_back(5);
-    indices.push_back(0);
-    indices.push_back(5);
-    indices.push_back(4);
-
-    indices.push_back(4);
-    indices.push_back(5);
-    indices.push_back(6);
-    indices.push_back(4);
-    indices.push_back(6);
-    indices.push_back(7);
-
-    indices.push_back(3);
-    indices.push_back(7);
-    indices.push_back(6);
-    indices.push_back(3);
-    indices.push_back(6);
-    indices.push_back(2);
-
-    indices.push_back(1);
-    indices.push_back(2);
-    indices.push_back(6);
-    indices.push_back(1);
-    indices.push_back(6);
-    indices.push_back(5);
-    //indices.push_back(6);
-    //indices.push_back(2);
-    //indices.push_back(1);
-    //indices.push_back(5);
-    //indices.push_back(6);
-    //indices.push_back(1);
-
-
-    vector<Texture> textures;
-
-    mesh = new Mesh(vertexes, indices, textures);
-
-    shader = ShaderManager::CreateShaderProgram("res/shaders/Basic.shpr");
-
-    modelMesh = ModelsManager::CreateModel("NewModel", vertexes, indices, textures);
-
+    modelMesh = ModelsManager::GetCube();
 
     material = MaterialsManager::GetMaterial("Basic");
-
     material2 = MaterialsManager::GetMaterial("Basic2");
 
     gameObject = new GameObject();
@@ -308,15 +239,12 @@ int main(int, char**)
     comp->AddMaterial(material2);
     comp->SetModel(modelMesh);
 
-
     gameObject3 = new GameObject();
     gameObject3->GetTransform()->Translate(glm::vec3(0, -1, 0));
     comp = gameObject3->AddComponent<MeshRenderer>();
     comp->AddMaterial(material2);
     comp->SetModel(modelMesh);
 
-
-    Shader* sh = ShaderManager::CreateShaderProgram("res/shaders/UI.shpr");
     Texture2D* tex = TextureManager::LoadTexture2D("res/textures/stone.jpg");
     Sprite* s = SpriteManager::MakeSprite(tex, "stone", 0, 0, tex->GetWidth(), tex->GetHeight());
 

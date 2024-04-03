@@ -36,6 +36,12 @@ Twin2Engine::GraphicEngine::GraphicEngine::GraphicEngine() {
 #pragma endregion
 
 	ShaderManager::Init();
+	
+	// Standard Shaders
+	ShaderManager::CreateShaderProgram("res/shaders/Basic.shpr");
+	ShaderManager::CreateShaderProgram("res/shaders/UI.shpr");
+
+
 	glClearColor(.1f, .1f, .1f, 1.f);
 }
 

@@ -1,6 +1,8 @@
 #include <graphic/Material.h>
+#include <graphic/manager/MaterialsManager.h>
 
 using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Manager;
 
 //Material::Material(Shader* shader)
 //{

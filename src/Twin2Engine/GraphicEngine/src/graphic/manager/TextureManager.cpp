@@ -1,4 +1,4 @@
-#include <manager/TextureManager.h>
+#include <graphic/manager/TextureManager.h>
 
 using namespace Twin2Engine;
 using namespace GraphicEngine;

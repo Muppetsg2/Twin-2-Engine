@@ -1,7 +1,8 @@
-#include <graphic/MeshRenderingManager.h>
+#include <graphic/manager/MeshRenderingManager.h>
 #include <graphic/InstatiatingMesh.h>
 
 using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Manager;
 
 std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_renderQueue = std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
 

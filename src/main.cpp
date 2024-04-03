@@ -26,10 +26,10 @@
 #include <graphic/Window.h>
 
 // MANAGERS
-#include <manager/TextureManager.h>
-#include <manager/SpriteManager.h>
-#include <manager/FontManager.h>
-#include <graphic/ShaderManager.h>
+#include <graphic/manager/TextureManager.h>
+#include <graphic/manager/SpriteManager.h>
+#include <graphic/manager/FontManager.h>
+#include <graphic/manager/ShaderManager.h>
 
 // GAME OBJECT
 #include <core/GameObject.h>

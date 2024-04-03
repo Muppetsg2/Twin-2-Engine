@@ -1,5 +1,5 @@
 #include <graphic/InstatiatingModel.h>
-#include <graphic/ModelsManager.h>
+#include <graphic/manager/ModelsManager.h>
 
 using namespace Twin2Engine::GraphicEngine;
 
@@ -44,7 +44,7 @@ Twin2Engine::GraphicEngine::InstatiatingModel::InstatiatingModel()
 
 Twin2Engine::GraphicEngine::InstatiatingModel::~InstatiatingModel()
 {
-    Twin2Engine::GraphicEngine::ModelsManager::UnloadModel(modelData);
+    Manager::ModelsManager::UnloadModel(modelData);
 }
 
 size_t Twin2Engine::GraphicEngine::InstatiatingModel::GetMeshCount() const
@@ -97,7 +97,7 @@ void Twin2Engine::GraphicEngine::InstatiatingModel::Draw(Shader* shaderProgram)
 
 Twin2Engine::GraphicEngine::InstatiatingModel& Twin2Engine::GraphicEngine::InstatiatingModel::operator=(const InstatiatingModel& other)
 {
-    Twin2Engine::GraphicEngine::ModelsManager::UnloadModel(modelData);
+    Manager::ModelsManager::UnloadModel(modelData);
     modelData = other.modelData;
     modelData->useNumber++;
     return *this;
@@ -105,7 +105,7 @@ Twin2Engine::GraphicEngine::InstatiatingModel& Twin2Engine::GraphicEngine::Insta
 
 Twin2Engine::GraphicEngine::InstatiatingModel& Twin2Engine::GraphicEngine::InstatiatingModel::operator=(InstatiatingModel&& other)
 {
-    Twin2Engine::GraphicEngine::ModelsManager::UnloadModel(modelData);
+    Manager::ModelsManager::UnloadModel(modelData);
     modelData = other.modelData;
     modelData->useNumber++;
 
@@ -114,7 +114,7 @@ Twin2Engine::GraphicEngine::InstatiatingModel& Twin2Engine::GraphicEngine::Insta
 
 Twin2Engine::GraphicEngine::InstatiatingModel& Twin2Engine::GraphicEngine::InstatiatingModel::operator=(std::nullptr_t)
 {
-    Twin2Engine::GraphicEngine::ModelsManager::UnloadModel(modelData);
+    Manager::ModelsManager::UnloadModel(modelData);
 
     return *this;
 }

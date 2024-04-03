@@ -2,12 +2,14 @@
 #define _MATERIAL_H_
 
 #include <graphic/Shader.h>
-
-#include <graphic/MaterialsManager.h>
 #include <graphic/MaterialParameters.h>
 
-namespace Twin2Engine::GraphicEngine
+namespace Twin2Engine
 {
+	namespace Manager {
+		class MaterialsManager;
+	}
+
 	//class MaterialParameters
 	//{
 	//	std::unordered_map<size_t, std::vector<char>> _variablesValuesMappings;
@@ -66,50 +68,52 @@ namespace Twin2Engine::GraphicEngine
 	//	}
 	//};
 
-	struct MaterialData
-	{
-		size_t id;
-		int useNumber;
-		Shader* shader;
-		MaterialParameters* materialParameters;
-	};
+	namespace GraphicEngine {
 
-	class Material
-	{
-		friend class MaterialsManager;
-		//size_t id;
+		struct MaterialData
+		{
+			size_t id;
+			int useNumber;
+			Shader* shader;
+			MaterialParameters* materialParameters;
+		};
+
+		class Material
+		{
+			friend class Manager::MaterialsManager;
+			//size_t id;
 
 
-		//Shader* _shader;
-		MaterialData* _materialData;
+			//Shader* _shader;
+			MaterialData* _materialData;
 
-		//Material(Shader* shader);
-		Material(MaterialData* materialData);
+			//Material(Shader* shader);
+			Material(MaterialData* materialData);
 
-	public:
-		Material(const Material& other);
-		Material(Material&& other);
-		Material(std::nullptr_t);
-		Material();
+		public:
+			Material(const Material& other);
+			Material(Material&& other);
+			Material(std::nullptr_t);
+			Material();
 
-		~Material();
+			~Material();
 
-		Material& operator=(const Material& other);
-		Material& operator=(Material&& other);
-		Material& operator=(std::nullptr_t);
-		bool operator==(std::nullptr_t);
-		bool operator!=(std::nullptr_t);
-		bool operator==(const Material& other);
-		bool operator!=(const Material& other);
-		//bool operator<(const Material& other);
+			Material& operator=(const Material& other);
+			Material& operator=(Material&& other);
+			Material& operator=(std::nullptr_t);
+			bool operator==(std::nullptr_t);
+			bool operator!=(std::nullptr_t);
+			bool operator==(const Material& other);
+			bool operator!=(const Material& other);
+			//bool operator<(const Material& other);
 
-		Shader* GetShader() const;
-		unsigned int GetId() const;
-		MaterialParameters* GetMaterialParameters() const;
-	};
+			Shader* GetShader() const;
+			unsigned int GetId() const;
+			MaterialParameters* GetMaterialParameters() const;
+		};
 
-	bool operator<(const Material& material1, const Material& material2);
-
+		bool operator<(const Material& material1, const Material& material2);
+	}
 }
 
 #endif

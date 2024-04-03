@@ -1,7 +1,8 @@
 #include <graphic/Shader.h>
-#include <graphic/ShaderManager.h>
+#include <graphic/manager/ShaderManager.h>
 
 using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Manager;
 
 
 //Shader::Shader(const GLchar* shaderPath)

@@ -2,13 +2,13 @@
 #define _MESH_RENDERER_H_
 
 #include <graphic/InstatiatingModel.h>
-#include <graphic/MeshRenderingManager.h>
+#include <graphic/manager/MeshRenderingManager.h>
 
 #include <core/RenderableComponent.h>
 
 namespace Twin2Engine::Core
 {
-	class MeshRenderer : public Twin2Engine::Core::RenderableComponent
+	class MeshRenderer : public RenderableComponent
 	{
 		GraphicEngine::InstatiatingModel _model;
 

@@ -1,6 +1,7 @@
-#include <graphic/MaterialsManager.h>
+#include <graphic/manager/MaterialsManager.h>
 
 using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Manager;
 
 std::hash<std::string> MaterialsManager::stringHash;
 std::list<Twin2Engine::GraphicEngine::MaterialData*> MaterialsManager::loadedMaterials;
@@ -208,7 +209,7 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 	{
 		.id = stringHash(materialName),
 		.useNumber = 1,
-		.shader = ShaderManager::GetShaderProgram(shader),
+		.shader = Manager::ShaderManager::GetShaderProgram(shader),
 		.materialParameters = materialParameters
 	};
 

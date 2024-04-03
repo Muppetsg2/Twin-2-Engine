@@ -5,34 +5,29 @@
 
 using std::vector;
 
-namespace Twin2Engine
+namespace Twin2Engine::GraphicEngine
 {
-    namespace GraphicEngine
+    class InstatiatingMesh
     {
+        Mesh* mesh;
+        unsigned int instancesTransformsVBO;
+        unsigned int amount;
 
-        class InstatiatingMesh
-        {
-            Mesh* mesh;
-            unsigned int instancesTransformsVBO;
-            unsigned int amount;
+        GLuint _instanceDataSSBO;
+        GLuint _materialIndexSSBO;
+        GLuint _materialInputUBO;
 
-            GLuint _instanceDataSSBO;
-            GLuint _materialIndexSSBO;
-            GLuint _materialInputUBO;
+        void setupMesh(const vector<glm::mat4>& transforms);
 
-            void setupMesh(const vector<glm::mat4>& transforms);
+    public:
+        InstatiatingMesh(Mesh* mesh, GLuint instanceDataUBO);
 
-        public:
-            InstatiatingMesh(Mesh* mesh, GLuint instanceDataUBO);
+        void SetInstanceDataSSBO(GLuint instanceDataSSBO);
+        void SetMaterialIndexSSBO(GLuint materialIndexSSBO);
+        void SetMaterialInputUBO(GLuint materialInputUBO);
 
-            void SetInstanceDataSSBO(GLuint instanceDataSSBO);
-            void SetMaterialIndexSSBO(GLuint materialIndexSSBO);
-            void SetMaterialInputUBO(GLuint materialInputUBO);
-
-            void Draw(Shader* shader, unsigned int number);
-        };
-
-    }
+        void Draw(Shader* shader, unsigned int number);
+    };
 }
 
 #endif // !INSTATIATING_MESH

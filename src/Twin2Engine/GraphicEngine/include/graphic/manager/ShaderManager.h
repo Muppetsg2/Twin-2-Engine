@@ -8,7 +8,7 @@ using std::string;
 
 #include <graphic/Shader.h>
 
-namespace Twin2Engine::GraphicEngine
+namespace Twin2Engine::Manager
 {
 	// Define the file extension for shader program files
 	constexpr char SHADER_PROGRAM_EXTENSION[] = ".shpr";
@@ -25,14 +25,14 @@ namespace Twin2Engine::GraphicEngine
 	/// </summary>
 	class ShaderManager
 	{
-		friend class Shader;
+		friend class GraphicEngine::Shader;
 
 		struct ShaderProgramData
 		{
 			size_t shaderPathHash;
 			int shaderProgramId;
 			int useNumber;
-			Shader* shader;
+			GraphicEngine::Shader* shader;
 			bool operator<(const ShaderProgramData& other) const {
 				return shaderPathHash < other.shaderPathHash;
 			}
@@ -66,9 +66,9 @@ namespace Twin2Engine::GraphicEngine
 		static void Init();
 		static void End();
 
-		static Shader* GetShaderProgram(const std::string& shaderName);
-		static Shader* CreateShaderProgram(const std::string& shaderProgramName);
-		static Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);
+		static GraphicEngine::Shader* GetShaderProgram(const std::string& shaderName);
+		static GraphicEngine::Shader* CreateShaderProgram(const std::string& shaderProgramName);
+		static GraphicEngine::Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);
 
 	};
 }

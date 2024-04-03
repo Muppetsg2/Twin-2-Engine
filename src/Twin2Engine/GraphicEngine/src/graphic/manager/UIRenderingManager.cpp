@@ -1,8 +1,9 @@
-#include <graphic/UIRenderingManager.h>
-#include <graphic/ShaderManager.h>
+#include <graphic/manager/UIRenderingManager.h>
+#include <graphic/manager/ShaderManager.h>
 #include <graphic/Shader.h>
 
 using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Manager;
 using namespace std;
 using namespace glm;
 

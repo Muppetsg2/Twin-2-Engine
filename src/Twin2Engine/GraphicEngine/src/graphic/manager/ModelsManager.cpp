@@ -1,15 +1,15 @@
-#include <graphic/ModelsManager.h>
-#include <graphic/InstatiatingMesh.h>
+#include <graphic/manager/ModelsManager.h>
 
 //using ModelData;
 
 using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Manager;
 
 std::hash<std::string> ModelsManager::stringHash;
 std::list<ModelData*> ModelsManager::loadedModels;
 
 
-Twin2Engine::GraphicEngine::ModelData* Twin2Engine::GraphicEngine::ModelsManager::LoadModel(const std::string& modelPath)
+Twin2Engine::GraphicEngine::ModelData* ModelsManager::LoadModel(const std::string& modelPath)
 {
     size_t strHash = stringHash(modelPath);
 
@@ -57,7 +57,7 @@ Twin2Engine::GraphicEngine::ModelData* Twin2Engine::GraphicEngine::ModelsManager
 
 }
 
-void Twin2Engine::GraphicEngine::ModelsManager::UnloadModel(Twin2Engine::GraphicEngine::ModelData* modelData)
+void ModelsManager::UnloadModel(Twin2Engine::GraphicEngine::ModelData* modelData)
 {
     //std::cout << "Tutaj6\n";
     if (modelData != nullptr)
@@ -85,17 +85,17 @@ void Twin2Engine::GraphicEngine::ModelsManager::UnloadModel(Twin2Engine::Graphic
     }
 }
 
-void Twin2Engine::GraphicEngine::ModelsManager::Init()
+void ModelsManager::Init()
 {
 
 }
 
-void Twin2Engine::GraphicEngine::ModelsManager::End()
+void ModelsManager::End()
 {
 
 }
 
-Twin2Engine::GraphicEngine::InstatiatingModel Twin2Engine::GraphicEngine::ModelsManager::GetModel(const std::string& modelPath)
+Twin2Engine::GraphicEngine::InstatiatingModel ModelsManager::GetModel(const std::string& modelPath)
 {
     ModelData* modelData = LoadModel(modelPath);
 
@@ -104,7 +104,7 @@ Twin2Engine::GraphicEngine::InstatiatingModel Twin2Engine::GraphicEngine::Models
     return model;
 }
 
-InstatiatingModel Twin2Engine::GraphicEngine::ModelsManager::CreateModel(const std::string& modelName, vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
+InstatiatingModel ModelsManager::CreateModel(const std::string& modelName, vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
 {
     size_t strHash = stringHash(modelName);
 

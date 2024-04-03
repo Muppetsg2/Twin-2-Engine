@@ -1,9 +1,9 @@
 #include <ui/Text.h>
-#include <manager/FontManager.h>
+#include <graphic/manager/FontManager.h>
 #include <graphic/Shader.h>
 #include <vector>
 #include <core/Transform.h>
-#include <graphic/UIRenderingManager.h>
+#include <graphic/manager/UIRenderingManager.h>
 
 using namespace Twin2Engine;
 using namespace UI;

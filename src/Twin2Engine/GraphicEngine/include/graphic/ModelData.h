@@ -2,12 +2,10 @@
 #define _MODEL_DATA_H_
 
 #include <graphic/InstatiatingMesh.h>
-#include <graphic/Model.h>
 
 namespace Twin2Engine::GraphicEngine
 {
     class Model;
-    class InstatiatingMesh;
 
     struct ModelData
     {

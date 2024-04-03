@@ -1,11 +1,12 @@
 #include <ui/Image.h>
 #include <core/Transform.h>
-#include <graphic/UIRenderingManager.h>
+#include <graphic/manager/UIRenderingManager.h>
 
 using namespace Twin2Engine;
 using namespace UI;
 using namespace Core;
 using namespace GraphicEngine;
+using namespace Manager;
 using namespace glm;
 using namespace std;
 

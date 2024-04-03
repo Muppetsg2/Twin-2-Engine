@@ -10,7 +10,7 @@ using namespace Manager;
 using namespace glm;
 using namespace std;
 
-void Image::Render(const Window* window)
+void Image::Render()
 {
 	UIElement elem{};
 	elem.isText = false;

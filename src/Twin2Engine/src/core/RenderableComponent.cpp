@@ -20,7 +20,7 @@ RenderableComponent::~RenderableComponent()
 	}
 }
 
-void RenderableComponent::Render(const Window* window)
+void RenderableComponent::Render()
 {
 }
 

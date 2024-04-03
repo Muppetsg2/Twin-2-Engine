@@ -12,20 +12,17 @@ namespace Twin2Engine::GraphicEngine
 {
 	class GraphicEngine
 	{
+	private:
+		GLuint _depthMapFBO;
+		GLuint _depthMap;
+
 	public:
-		GraphicEngine()
-		{
-			Manager::ShaderManager::Init();
-		}
+		GraphicEngine();
+		virtual ~GraphicEngine();
 
-		void Render(const Window* window)
-		{
-			glClearColor(.1f, .1f, .1f, 1.f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		void Render();
 
-			Manager::MeshRenderingManager::Render();
-			Manager::UIRenderingManager::Render(window);
-		}
+		GLuint GetDepthMap() const;
 	};
 }
 

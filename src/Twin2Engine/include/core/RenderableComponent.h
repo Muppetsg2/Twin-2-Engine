@@ -12,7 +12,7 @@ namespace Twin2Engine::Core {
 	public:
 		virtual ~RenderableComponent();
 
-		virtual void Render(const GraphicEngine::Window* window);
+		virtual void Render();
 
 		bool IsTransparent() const;
 		void SetIsTransparent(bool value);

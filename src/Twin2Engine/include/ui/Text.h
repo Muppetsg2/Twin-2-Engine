@@ -18,7 +18,7 @@ namespace Twin2Engine::UI {
 		void UpdateTextTextures();
 
 	public:
-		virtual void Render(const GraphicEngine::Window* window) override;
+		virtual void Render() override;
 
 		void SetColor(const glm::vec4& color);
 		void SetText(const std::string& text);

@@ -3,6 +3,8 @@
 namespace Twin2Engine::GraphicEngine {
 	class Window {
 	private:
+		static Window* _instance;
+
 		GLFWwindow* _window;
 		glm::ivec2 _minSizeLimits = { GLFW_DONT_CARE, GLFW_DONT_CARE };
 		glm::ivec2 _maxSizeLimits = { GLFW_DONT_CARE, GLFW_DONT_CARE };
@@ -10,9 +12,12 @@ namespace Twin2Engine::GraphicEngine {
 		int _refreshRate = 0;
 		bool _vsyncOn = false;
 
-	public:
 		Window(const std::string& title, const glm::ivec2& size, bool fullscreen = false);
+	public:
 		virtual ~Window();
+
+		static Window* MakeWindow(const std::string& title, const glm::ivec2& size, bool fullscreen = false);
+		static Window* GetInstance();
 
 #pragma region GLOBAL
 #pragma region GLOBAL_GETTERS

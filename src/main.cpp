@@ -141,8 +141,6 @@ constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 5;
 
 GLuint UBOMatrices;
-GLuint depthMapFBO;
-GLuint depthMap;
 
 Mesh* mesh;
 Shader* shader;
@@ -181,35 +179,6 @@ int main(int, char**)
     spdlog::info("Initialized SoLoud.");
 
     //smusicSmple.load();
-
-#pragma endregion
-
-#pragma region DepthBuffer
-
-    glGenFramebuffers(1, &depthMapFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-
-    glGenTextures(1, &depthMap);
-    glBindTexture(GL_TEXTURE_2D, depthMap);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, WINDOW_WIDTH, WINDOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthMap, 0);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
 
 #pragma endregion
 
@@ -418,7 +387,7 @@ int main(int, char**)
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    delete window;
+    delete Window::GetInstance();
     glfwTerminate();
 
     return 0;
@@ -440,7 +409,7 @@ bool init()
     glfwWindowHint(GLFW_OPENGL_PROFILE,        GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 
-    window = new Window(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT }, false);
+    window = Window::MakeWindow(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT }, false);
     glfwSetFramebufferSizeCallback(window->GetWindow(), framebuffer_size_callback);
     Input::InitForWindow(window);
 
@@ -658,20 +627,10 @@ void update()
 void render()
 {
     // OpenGL Rendering code goes here
-    glBindTexture(GL_TEXTURE_2D, depthMap);
-    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        for (auto& comp : RenderableComponent::_components) {
-            comp->Render(window);
-        }
-        graphicEngine->Render(window);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
     for (auto& comp : RenderableComponent::_components) {
-        comp->Render(window);
+        comp->Render();
     }
-    graphicEngine->Render(window);
+    graphicEngine->Render();
 }
 
 void imgui_begin()

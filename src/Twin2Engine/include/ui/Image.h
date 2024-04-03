@@ -11,7 +11,7 @@ namespace Twin2Engine::UI {
 		float _height = 100.f;
 
 	public:
-		virtual void Render(const GraphicEngine::Window* window) override;
+		virtual void Render() override;
 		virtual void OnDestroy() override;
 
 		void SetSprite(GraphicEngine::Sprite* sprite);

@@ -29,8 +29,10 @@ namespace Twin2Engine
 		{
 		private:
 			static std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _renderQueue;
+			static std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
 
 			static void Render();
+			static void RenderDepthMap();
 		public:
 			static void Render(MeshRenderData meshData);
 

@@ -4,6 +4,8 @@ using namespace Twin2Engine::GraphicEngine;
 using namespace std;
 using namespace glm;
 
+Window* Window::_instance = nullptr;
+
 Window::Window(const string& title, const ivec2& size, bool fullscreen)
 {
 	_window = glfwCreateWindow(size.x, size.y, title.c_str(), NULL, NULL);
@@ -28,6 +30,26 @@ Window::Window(const string& title, const ivec2& size, bool fullscreen)
 Window::~Window()
 {
 	glfwDestroyWindow(_window);
+}
+
+Window* Window::MakeWindow(const string& title, const ivec2& size, bool fullscreen) {
+	if (_instance != nullptr) {
+		_instance->SetTitle(title);
+		_instance->SetWindowSize(size);
+		if (fullscreen) {
+			GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+			_instance->SetFullscreen(monitor);
+		}
+	}
+	else {
+		_instance = new Window(title, size, fullscreen);
+	}
+
+	return _instance;
+}
+
+Window* Window::GetInstance() {
+	return _instance;
 }
 
 string Window::GetTitle() const

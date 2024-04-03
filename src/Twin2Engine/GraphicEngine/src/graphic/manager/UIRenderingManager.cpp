@@ -23,7 +23,7 @@ vector<float> spriteVerticies{
 
 queue<UIElement> UIRenderingManager::_renderQueue = queue<UIElement>();
 
-void UIRenderingManager::Render(const Window* window)
+void UIRenderingManager::Render()
 {
 	if (!spriteVAOInit) {
 		glGenVertexArrays(1, &spriteVAO);
@@ -62,7 +62,7 @@ void UIRenderingManager::Render(const Window* window)
 
 		glBindTexture(GL_TEXTURE_2D, elem.textureID);
 
-		ivec2 canvasSize = window->GetWindowSize();
+		ivec2 canvasSize = Window::GetInstance()->GetWindowSize();
 		uiShader->setFloat("canvas.width", canvasSize.x);
 		uiShader->setFloat("canvas.height", canvasSize.y);
 		uiShader->setFloat("canvas.elemWidth", elem.elemSize.x);

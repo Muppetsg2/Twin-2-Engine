@@ -20,7 +20,7 @@ void Text::UpdateTextTextures()
 	}
 }
 
-void Text::Render(const Window* window)
+void Text::Render()
 {
 	UIElement elem{};
 	elem.isText = true;

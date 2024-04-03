@@ -25,7 +25,7 @@ namespace Twin2Engine
 		private:
 			static std::queue<UIElement> _renderQueue;
 
-			static void Render(const GraphicEngine::Window* window);
+			static void Render();
 		public:
 			static void Render(UIElement elem);
 

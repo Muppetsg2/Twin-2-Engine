@@ -15,7 +15,7 @@ namespace Twin2Engine::Core
 		std::vector<GraphicEngine::Material> _materials;
 
 	public:
-		virtual void Render(const GraphicEngine::Window* window) override;
+		virtual void Render() override;
 
 		GraphicEngine::InstatiatingModel GetModel() const;
 

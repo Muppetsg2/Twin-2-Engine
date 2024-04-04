@@ -176,7 +176,8 @@ bool Input::IsMouseButtonReleased(GLFWwindow* window, MOUSE_BUTTON button)
 
 bool Input::IsMouseButtonDown(GLFWwindow* window, MOUSE_BUTTON button)
 {
-	return _mouseButtonStates[window][button] == INPUT_STATE::PRESSED || _mouseButtonStates[window][button] == INPUT_STATE::DOWN;
+	INPUT_STATE currState = (INPUT_STATE)_mouseButtonStates[window][button];
+	return currState == INPUT_STATE::PRESSED || currState == INPUT_STATE::PRESSED_LONGER || currState == INPUT_STATE::DOWN;
 }
 
 bool Input::IsMouseButtonHeldDown(GLFWwindow* window, MOUSE_BUTTON button)
@@ -186,7 +187,8 @@ bool Input::IsMouseButtonHeldDown(GLFWwindow* window, MOUSE_BUTTON button)
 
 bool Input::IsMouseButtonUp(GLFWwindow* window, MOUSE_BUTTON button)
 {
-	return _mouseButtonStates[window][button] == INPUT_STATE::UP || _mouseButtonStates[window][button] == INPUT_STATE::RELEASED;
+	INPUT_STATE currState = (INPUT_STATE)_mouseButtonStates[window][button];
+	return currState == INPUT_STATE::UP || currState == INPUT_STATE::RELEASED;
 }
 
 bool Input::IsMouseButtonHeldUp(GLFWwindow* window, MOUSE_BUTTON button)
@@ -206,7 +208,8 @@ bool Input::IsKeyReleased(GLFWwindow* window, KEY key)
 
 bool Input::IsKeyDown(GLFWwindow* window, KEY key)
 {
-	return _keyStates[window][key] == INPUT_STATE::PRESSED || _keyStates[window][key] == INPUT_STATE::DOWN;
+	INPUT_STATE currState = (INPUT_STATE)_keyStates[window][key];
+	return currState == INPUT_STATE::PRESSED || currState == INPUT_STATE::PRESSED_LONGER || currState == INPUT_STATE::DOWN;
 }
 
 bool Input::IsKeyHeldDown(GLFWwindow* window, KEY key)
@@ -216,7 +219,8 @@ bool Input::IsKeyHeldDown(GLFWwindow* window, KEY key)
 
 bool Input::IsKeyUp(GLFWwindow* window, KEY key)
 {
-	return _keyStates[window][key] == INPUT_STATE::RELEASED || _keyStates[window][key] == INPUT_STATE::UP;
+	INPUT_STATE currState = (INPUT_STATE)_keyStates[window][key];
+	return currState == INPUT_STATE::RELEASED || currState == INPUT_STATE::UP;
 }
 
 bool Input::IsKeyHeldUp(GLFWwindow* window, KEY key)

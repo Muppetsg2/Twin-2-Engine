@@ -42,7 +42,7 @@ namespace Twin2Engine::Core {
 			RemoveCallback(callback);
 		}
 		void operator()(Args... args) {
-			Invoke(args);
+			Invoke(args...);
 		}
 	};
 	using MethodEventHandler = EventHandler<>;

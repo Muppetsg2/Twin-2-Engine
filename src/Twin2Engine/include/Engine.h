@@ -67,7 +67,7 @@ namespace Twin2Engine {
 	private:
 		GraphicEngine::Window* _mainWindow = nullptr;
 		Core::GameObject _rootObject = Core::GameObject();
-		GraphicEngine::GraphicEngine _graphicEngine = GraphicEngine::GraphicEngine();
+		GraphicEngine::GraphicEngine* _graphicEngine = nullptr;
 
 		GLuint UBOMatrices = 0;
 
@@ -76,7 +76,6 @@ namespace Twin2Engine {
 		int32_t GL_VERSION_MAJOR = 4;
 		int32_t GL_VERSION_MINOR = 5;
 
-		bool Init(const std::string& windowName, int32_t windowWidth, int32_t windowHeight);
 		bool Init_OpenGL(const std::string& windowName, int32_t windowWidth, int32_t windowHeight);
 		bool Init_Imgui();
 
@@ -98,18 +97,23 @@ namespace Twin2Engine {
 		Core::MethodEventHandler onUpdateEvent = Core::MethodEventHandler();
 		Core::MethodEventHandler onImguiRenderEvent = Core::MethodEventHandler();
 
+		void DeleteGameObject(Core::GameObject* obj);
+
 	public:
 		Engine() = default;
 		virtual ~Engine() = default;
 
 		Core::GameObject* CreateGameObject();
 
-		int Start(const std::string& windowName, int32_t windowWidth, int32_t windowHeight);
+		bool Init(const std::string& windowName, int32_t windowWidth, int32_t windowHeight);
+		void Start();
 
 		GLuint GetUBO() const;
 
 		Core::MethodEventHandler GetOnInputEvent() const;
 		Core::MethodEventHandler GetOnUpdateEvent() const;
 		Core::MethodEventHandler GetOnImguiRenderEvent() const;
+
+		GraphicEngine::Window* GetMainWindow() const;
 	};
 }

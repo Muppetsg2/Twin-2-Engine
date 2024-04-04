@@ -29,21 +29,6 @@ static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint i
 
 #pragma endregion
 
-float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd)
-{
-    return expectedStart + ((expectedEnd - expectedStart) / (currEnd - currStart)) * (input - currStart);
-}
-
-double mod(double val1, double val2) {
-    if (val1 < 0 && val2 <= 0) {
-        return 0;
-    }
-
-    double x = val1 / val2;
-    double z = std::floor(val1 / val2);
-    return (x - z) * val2;
-}
-
 bool Engine::Init(const string& windowName, int32_t windowWidth, int32_t windowHeight)
 {
     if (!Init_OpenGL(windowName, windowWidth, windowHeight))
@@ -75,6 +60,8 @@ bool Engine::Init(const string& windowName, int32_t windowWidth, int32_t windowH
 
     // Set global log level to debug
     spdlog::set_level(spdlog::level::debug);
+
+    _graphicEngine = new GraphicEngine::GraphicEngine();
 }
 
 bool Engine::Init_OpenGL(const string& windowName, int32_t windowWidth, int32_t windowHeight)
@@ -123,6 +110,23 @@ bool Engine::Init_OpenGL(const string& windowName, int32_t windowWidth, int32_t 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
+
+#pragma region MatricesUBO
+
+    glGenBuffers(1, &UBOMatrices);
+
+    glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
+    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+    glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBOMatrices, 0, 2 * sizeof(glm::mat4));
+
+    glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(glm::mat4(1.f)));
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(glm::mat4(1.f)));
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+#pragma endregion
 
     return true;
 }
@@ -177,7 +181,7 @@ void Engine::Render()
     for (auto& comp : RenderableComponent::_components) {
         comp->Render();
     }
-    _graphicEngine.Render();
+    _graphicEngine->Render();
 }
 
 void Engine::Imgui_Begin()
@@ -344,8 +348,15 @@ void Engine::End_Frame()
 void Engine::Cleanup()
 {
     // Cleanup
-    for (size_t i = 0; i < _rootObject.GetTransform()->GetChildCount(); ++i) {
-        // Delete Game Objects
+    Transform* t = _rootObject.GetTransform();
+    size_t del = 0;
+    for (size_t i = 0; i < t->GetChildCount() - del; ++i) {
+        Transform* child = t->GetChildAt(i);
+        GameObject* o = child->GetGameObject();
+        DeleteGameObject(o);
+        t->RemoveChild(child);
+        ++del;
+        delete o;
     }
 
     SpriteManager::UnloadAll();
@@ -369,14 +380,10 @@ GameObject* Engine::CreateGameObject()
     return obj;
 }
 
-int Engine::Start(const string& windowName, int32_t windowWidth, int32_t windowHeight)
+void Engine::Start()
 {
-    if (!Init(windowName, windowWidth, windowHeight)) {
-        return -1;
-    }
-
     GameLoop();
-    return 0;
+    Cleanup();
 }
 
 GLuint Engine::GetUBO() const
@@ -399,27 +406,15 @@ MethodEventHandler Engine::GetOnImguiRenderEvent() const
     return onImguiRenderEvent;
 }
 
+Window* Engine::GetMainWindow() const
+{
+    return _mainWindow;
+}
+
 void Engine::GameLoop()
 {
-#pragma region MatricesUBO
-
-    glGenBuffers(1, &UBOMatrices);
-
-    glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
-    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-    glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBOMatrices, 0, 2 * sizeof(glm::mat4));
-
-    glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(glm::mat4(1.f)));
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(glm::mat4(1.f)));
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-#pragma endregion
-
     // Main loop
-    while (!window->IsClosed())
+    while (!_mainWindow->IsClosed())
     {
         // Process I/O operations here
         Input();
@@ -438,6 +433,18 @@ void Engine::GameLoop()
         // End frame and swap buffers (double buffering)
         End_Frame();
     }
+}
 
-    Cleanup();
+void Engine::DeleteGameObject(GameObject* obj)
+{
+    Transform* t = obj->GetTransform();
+    size_t del = 0;
+    for (size_t i = 0; i < t->GetChildCount() - del; ++i) {
+        Transform* child = t->GetChildAt(i);
+        GameObject* o = child->GetGameObject();
+        DeleteGameObject(o);
+        t->RemoveChild(t->GetChildAt(i));
+        ++del;
+        delete o;
+    }
 }

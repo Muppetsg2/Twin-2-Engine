@@ -7,12 +7,11 @@ cmake_install.cmake
 install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
+#GameConfig.yaml.in
 
 [Bb]uild/
 /[Oo]ut/
-<<<<<<< HEAD
 #/[Tt]ools/
-=======
->>>>>>> b10c631e9ef0aba1a88b078d143d87cdfc223229
+/ShadersOrigin/
 
 /\.vs/

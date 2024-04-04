@@ -9,13 +9,13 @@ void Twin2Engine::Core::Transform::SetDirtyFlagInChildren()
 {
 	if (!_dirtyFlags.dirtyFlagInHierarchy)
 	{
+		_dirtyFlags.dirtyFlagInHierarchy = true;
+		_dirtyFlags.dirtyFlagGlobalPosition = true;
+		_dirtyFlags.dirtyFlagGlobalRotation = true;
+		_dirtyFlags.dirtyFlagGlobalScale = true;
+
 		for (int index = 0; index < _children.size(); index++)
 		{
-			_dirtyFlags.dirtyFlagInHierarchy = true;
-			_dirtyFlags.dirtyFlagGlobalPosition = true;
-			_dirtyFlags.dirtyFlagGlobalRotation = true;
-			_dirtyFlags.dirtyFlagGlobalScale = true;
-
 			_children[index]->SetDirtyFlagInChildren();
 		}
 	}
@@ -25,10 +25,13 @@ void Twin2Engine::Core::Transform::SetDirtyFlagGlobalPositionInChildren()
 {
 	if (!_dirtyFlags.dirtyFlagGlobalPosition)
 	{
+		_dirtyFlags.dirtyFlagGlobalPosition = true;
+		_dirtyFlags.dirtyFlagInHierarchy = true;
+
+		CallPositionChanged();
+
 		for (int index = 0; index < _children.size(); index++)
 		{
-			_dirtyFlags.dirtyFlagGlobalPosition = true;
-			_dirtyFlags.dirtyFlagInHierarchy = true;
 			_children[index]->SetDirtyFlagGlobalPositionInChildren();
 		}
 	}
@@ -38,10 +41,13 @@ void Twin2Engine::Core::Transform::SetDirtyFlagGlobalRotationInChildren()
 {
 	if (!_dirtyFlags.dirtyFlagGlobalRotation)
 	{
+		_dirtyFlags.dirtyFlagGlobalRotation = true;
+		_dirtyFlags.dirtyFlagInHierarchy = true;
+
+		CallRotationChanged();
+
 		for (int index = 0; index < _children.size(); index++)
 		{
-			_dirtyFlags.dirtyFlagGlobalRotation = true;
-			_dirtyFlags.dirtyFlagInHierarchy = true;
 			_children[index]->SetDirtyFlagGlobalRotationInChildren();
 		}
 	}
@@ -51,10 +57,13 @@ void Twin2Engine::Core::Transform::SetDirtyFlagGlobalScaleInChildren()
 {
 	if (!_dirtyFlags.dirtyFlagGlobalScale)
 	{
+		_dirtyFlags.dirtyFlagGlobalScale = true;
+		_dirtyFlags.dirtyFlagInHierarchy = true;
+
+		CallScaleChanged();
+
 		for (int index = 0; index < _children.size(); index++)
 		{
-			_dirtyFlags.dirtyFlagGlobalScale = true;
-			_dirtyFlags.dirtyFlagInHierarchy = true;
 			_children[index]->SetDirtyFlagGlobalScaleInChildren();
 		}
 	}
@@ -109,57 +118,79 @@ inline bool Twin2Engine::Core::Transform::GetDirtyFlagGlobalRotationQuat2Euler()
 
 #pragma region EVENTS
 
-void Twin2Engine::Core::Transform::CallPositionChanged()
+inline void Twin2Engine::Core::Transform::CallPositionChanged()
 {
-	OnEventPositionChanged.Invoke(this);
-	OnEventTransformChanged.Invoke(this);
+	_callingEvents.positionChanged = true;
+	_callingEvents.transformChanged = true;
 
-	for (int index = 0; index < _children.size(); index++)
-	{
-		_children[index]->CallPositionChanged();
-	}
+	//OnEventPositionChanged.Invoke(this);
+	//OnEventTransformChanged.Invoke(this);
+	//
+	//for (int index = 0; index < _children.size(); index++)
+	//{
+	//	_children[index]->CallPositionChanged();
+	//}
 }
 
-void Twin2Engine::Core::Transform::CallRotationChanged()
+inline void Twin2Engine::Core::Transform::CallRotationChanged()
 {
-	OnEventRotationChanged.Invoke(this);
-	OnEventTransformChanged.Invoke(this);
+	_callingEvents.rotationChanged = true;
+	_callingEvents.transformChanged = true;
 
-	for (int index = 0; index < _children.size(); index++)
-	{
-		_children[index]->CallRotationChanged();
-	}
+	//OnEventRotationChanged.Invoke(this);
+	//OnEventTransformChanged.Invoke(this);
+	//
+	//for (int index = 0; index < _children.size(); index++)
+	//{
+	//	_children[index]->CallRotationChanged();
+	//}
 }
 
-void Twin2Engine::Core::Transform::CallScaleChanged()
+inline void Twin2Engine::Core::Transform::CallScaleChanged()
 {
-	OnEventScaleChanged.Invoke(this);
-	OnEventTransformChanged.Invoke(this);
+	_callingEvents.scaleChanged = true;
+	_callingEvents.transformChanged = true;
 
-	for (int index = 0; index < _children.size(); index++)
-	{
-		_children[index]->CallScaleChanged();
-	}
+	//OnEventScaleChanged.Invoke(this);
+	//OnEventTransformChanged.Invoke(this);
+	//
+	//for (int index = 0; index < _children.size(); index++)
+	//{
+	//	_children[index]->CallScaleChanged();
+	//}
 }
 
 inline void Twin2Engine::Core::Transform::CallParentChanged()
 {
-	OnEventParentChanged.Invoke(this);
+	_callingEvents.parentChanged = true;
+
+	//OnEventParentChanged.Invoke(this);
 }
 
 void Twin2Engine::Core::Transform::CallInHierarchyParentChanged()
 {
-	OnEventInHierarchyParentChanged.Invoke(this);
-
-	for (int index = 0; index < _children.size(); index++)
+	if (!_callingEvents.inHierarchyParentChanged)
 	{
-		_children[index]->CallInHierarchyParentChanged();
+		_callingEvents.inHierarchyParentChanged = true;
+
+		for (int index = 0; index < _children.size(); index++)
+		{
+			_children[index]->CallInHierarchyParentChanged();
+		}
 	}
+	//OnEventInHierarchyParentChanged.Invoke(this);
+	//
+	//for (int index = 0; index < _children.size(); index++)
+	//{
+	//	_children[index]->CallInHierarchyParentChanged();
+	//}
 }
 
 inline void Twin2Engine::Core::Transform::CallChildrenChanged()
 {
-	OnEventChildrenChanged.Invoke(this);
+	_callingEvents.childrenChanged = true;
+
+	//OnEventChildrenChanged.Invoke(this);
 }
 #pragma endregion
 
@@ -181,6 +212,8 @@ Twin2Engine::Core::Transform::Transform()
 	_localTransformMatrix = glm::mat4(1.0f);
 	_globalTransformMatrix = glm::mat4(1.0f);
 
+	// DirtyFlags
+
 	_dirtyFlags.dirtyFlag = false;
 	_dirtyFlags.dirtyFlagInHierarchy = false;
 
@@ -192,6 +225,16 @@ Twin2Engine::Core::Transform::Transform()
 
 	_dirtyFlags.dirtyFlagGlobalScale = false;
 	_dirtyFlags.dirtyFlagLocalScale = false;
+
+	// CallingEvents
+	_callingEvents.transformChanged = false;
+	_callingEvents.positionChanged = false;
+	_callingEvents.rotationChanged = false;
+	_callingEvents.scaleChanged = false;
+
+	_callingEvents.parentChanged = false;
+	_callingEvents.inHierarchyParentChanged = false;
+	_callingEvents.childrenChanged = false;
 }
 
 #pragma region TRANSFORMATING_METHODS
@@ -698,5 +741,46 @@ void Twin2Engine::Core::Transform::RecalculateTransformMatrix()
 
 		_dirtyFlags.dirtyFlag = false;
 		_dirtyFlags.dirtyFlagInHierarchy = false;
+	}
+}
+
+
+
+void Twin2Engine::Core::Transform::Update()
+{
+	if (_callingEvents.positionChanged)
+	{
+		_callingEvents.positionChanged = false;
+		OnEventPositionChanged.Invoke(this);
+	}
+	if (_callingEvents.rotationChanged)
+	{
+		_callingEvents.rotationChanged = false;
+		OnEventRotationChanged.Invoke(this);
+	}
+	if (_callingEvents.scaleChanged)
+	{
+		_callingEvents.scaleChanged = false;
+		OnEventScaleChanged.Invoke(this);
+	}
+	if (_callingEvents.transformChanged)
+	{
+		_callingEvents.transformChanged = false;
+		OnEventTransformChanged.Invoke(this);
+	}
+	if (_callingEvents.parentChanged)
+	{
+		_callingEvents.parentChanged = false;
+		OnEventParentChanged.Invoke(this);
+	}
+	if (_callingEvents.inHierarchyParentChanged)
+	{
+		_callingEvents.inHierarchyParentChanged = false;
+		OnEventInHierarchyParentChanged.Invoke(this);
+	}
+	if (_callingEvents.childrenChanged)
+	{
+		_callingEvents.childrenChanged = false;
+		OnEventChildrenChanged.Invoke(this);
 	}
 }

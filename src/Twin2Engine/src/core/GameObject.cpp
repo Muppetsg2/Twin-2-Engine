@@ -1,3 +1,5 @@
+#include "GameObject.h"
+#include "GameObject.h"
 #include <core/GameObject.h>
 
 unsigned int Twin2Engine::Core::GameObject::_currentFreeId = 1;
@@ -89,6 +91,24 @@ string Twin2Engine::Core::GameObject::GetName() const
 void Twin2Engine::Core::GameObject::SetName(const string& name)
 {
 	_name = name;
+}
+
+void Twin2Engine::Core::GameObject::Update()
+{
+	UpdateComponents();
+
+	for (size_t i = 0; i < _transform->GetChildCount(); i++)
+	{
+		_transform->GetChildAt(i)->GetGameObject()->Update();
+	}
+}
+
+void Twin2Engine::Core::GameObject::UpdateComponents()
+{
+	for (Component* component : components)
+	{
+		component->Update();
+	}
 }
 
 

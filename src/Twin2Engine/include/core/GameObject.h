@@ -48,6 +48,11 @@ namespace Twin2Engine::Core
 		string GetName() const;
 		void SetName(const string& name);
 
+		virtual void Update();
+		void UpdateComponents();
+
+#pragma region COMPONENTS_MANAGEMENT
+
 		template<class T>
 		//typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
 		T* AddComponent();
@@ -76,6 +81,8 @@ namespace Twin2Engine::Core
 		void RemoveComponents() {
 			components.remove_if([](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
 		}
+
+#pragma endregion
 	};
 }
 

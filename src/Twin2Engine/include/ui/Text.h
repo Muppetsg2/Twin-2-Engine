@@ -8,6 +8,8 @@ namespace Twin2Engine::UI {
 	private:
 		std::string _text = "";
 
+		std::vector<GraphicEngine::Character*> _textCache = std::vector<GraphicEngine::Character*>();
+
 		GraphicEngine::Font* _font = nullptr;
 
 		uint32_t _size = 0;

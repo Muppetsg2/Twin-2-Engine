@@ -321,13 +321,11 @@ bool init()
     }
     spdlog::info("Successfully initialized OpenGL loader!");
 
-    /*
 #ifdef _DEBUG
     // Debugging
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(ErrorMessageCallback, 0);
 #endif
-    */
 
     // Blending
     glEnable(GL_BLEND);
@@ -430,7 +428,6 @@ void input()
             Input::HideAndLockCursor();
             glfwSetCursorPosCallback(window->GetWindow(), mouse_callback);
         }
-        printf("%f %f %f\n", Camera.GetTransform()->GetGlobalRotation().x, Camera.GetTransform()->GetGlobalRotation().y, Camera.GetTransform()->GetGlobalRotation().z);
     }
 }
 
@@ -484,21 +481,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 void update()
 {
-    //Camera.GetTransform()->SetLocalRotation(glm::vec3(0.0f, -90.0f, 0.0f));
-    //
-    //std::cout << "Global Rotation: " << Camera.GetTransform()->GetGlobalRotation().x << " " << Camera.GetTransform()->GetGlobalRotation().y << " " << Camera.GetTransform()->GetGlobalRotation().z << endl;
-    //std::cout << "Local Rotation: " << Camera.GetTransform()->GetLocalRotation().x << " " << Camera.GetTransform()->GetLocalRotation().y << " " << Camera.GetTransform()->GetLocalRotation().z << endl;
-
-    //Camera.GetTransform()->SetGlobalRotation(glm::vec3(0.0f, -90.0f, 0.0f));
-    //
-    //std::cout << "Global Rotation: " << Camera.GetTransform()->GetGlobalRotation().x << " " << Camera.GetTransform()->GetGlobalRotation().y << " " << Camera.GetTransform()->GetGlobalRotation().z << endl;
-    //std::cout << "Local Rotation: " << Camera.GetTransform()->GetLocalRotation().x << " " << Camera.GetTransform()->GetLocalRotation().y << " " << Camera.GetTransform()->GetLocalRotation().z << endl;
-    //
-    //Camera.GetTransform()->SetLocalRotation(glm::vec3(0.0f, -90.0f, 0.0f));
-    //
-    //std::cout << "Global Rotation: " << Camera.GetTransform()->GetGlobalRotation().x << " " << Camera.GetTransform()->GetGlobalRotation().y << " " << Camera.GetTransform()->GetGlobalRotation().z << endl;
-    //std::cout << "Local Rotation: " << Camera.GetTransform()->GetLocalRotation().x << " " << Camera.GetTransform()->GetLocalRotation().y << " " << Camera.GetTransform()->GetLocalRotation().z << endl;
-
     // Update game objects' state here
     text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
 }

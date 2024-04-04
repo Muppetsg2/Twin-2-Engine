@@ -491,7 +491,7 @@ void Twin2Engine::Core::Transform::RecalculateGlobalPosition()
 void Twin2Engine::Core::Transform::SetLocalRotation(const glm::vec3& localRotation)
 {
 	_localRotation = glm::radians(localRotation);
-	_localRotationQuat = glm::quat(localRotation);
+	_localRotationQuat = glm::quat(_localRotation);
 
 	_dirtyFlags.dirtyFlag = true;
 	_dirtyFlags.dirtyFlagGlobalRotation = true;
@@ -555,7 +555,7 @@ void Twin2Engine::Core::Transform::RecalculateLocalRotation()
 void Twin2Engine::Core::Transform::SetGlobalRotation(const glm::vec3& globalRotation)
 {
 	_globalRotation = glm::radians(globalRotation);
-	_globalRotationQuat = glm::quat(globalRotation);
+	_globalRotationQuat = glm::quat(_globalRotation);
 
 	_dirtyFlags.dirtyFlag = true;
 	_dirtyFlags.dirtyFlagLocalRotation = true;

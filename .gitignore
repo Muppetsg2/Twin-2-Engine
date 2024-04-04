@@ -12,6 +12,6 @@ CTestTestfile.cmake
 [Bb]uild/
 /[Oo]ut/
 #/[Tt]ools/
-/ShadersOrigin/
+ShadersOrigin
 
 /\.vs/

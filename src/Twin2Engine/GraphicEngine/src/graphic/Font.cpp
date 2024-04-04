@@ -61,7 +61,7 @@ void Font::LoadCharacter(char character, uint32_t size) {
 }
 
 Character* Font::GetCharacter(char character, uint32_t size) {
-	if (_glyphs.find(size) == _glyphs.end()) {
+    if (_glyphs.find(size) == _glyphs.end()) {
 		_glyphs[size] = map<char, Character*>();
 		LoadCharacter(character, size);
 	}

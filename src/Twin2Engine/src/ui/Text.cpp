@@ -26,8 +26,7 @@ void Text::Render()
 	float x = 0.f;
 	float y = 0.f;
 	float scale = 1.f;
-	vector<Character*> characters = _font->GetText(_text, _size);
-	for (auto& c : characters)
+	for (auto& c : _textCache)
 	{
 		float xpos = x + c->Bearing.x * scale;
 		float ypos = y - (c->Size.y - c->Bearing.y) * scale;
@@ -56,22 +55,57 @@ void Text::SetColor(const vec4& color)
 
 void Text::SetText(const string& text)
 {
-	_text = text;
+	if (_text != text) {
+		if (_size != 0 && _font != nullptr) {
+			// Zastêpowanie
+			for (size_t i = 0; i < _text.size() && i < text.size(); ++i) {
+				if (_text[i] != text[i]) {
+					_textCache[i] = _font->GetCharacter(text[i], _size);
+				}
+			}
+
+			// Dodawanie kolejnych
+			if (_text.size() < text.size()) {
+				vector<Character*> chars = _font->GetText(text.substr(_text.size(), text.size() - _text.size()), _size);
+				for (auto& c : chars) _textCache.push_back(c);
+			}
+			// Odejmowanie nadmiaru
+			else if (_text.size() > text.size()) {
+				for (size_t i = 0; i < _text.size() - text.size(); ++i) _textCache.erase(_textCache.begin() + text.size() + i);
+			}
+		}
+		else {
+			_textCache.clear();
+		}
+		_text = text;
+	}
 }
 
 void Text::SetSize(uint32_t size)
 {
-	_size = size;
+	if (_size != size) {
+		_size = size;
+		_textCache.clear();
+		if (_font != nullptr) {
+			_textCache = _font->GetText(_text, size);
+		}
+	}
 }
 
 void Text::SetFont(const string& fontPath)
 {
-	_font = FontManager::LoadFont(fontPath);
+	SetFont(FontManager::LoadFont(fontPath));
 }
 
 void Text::SetFont(Font* font)
 {
-	_font = font;
+	if (_font != font) {
+		_font = font;
+		_textCache.clear();
+		if (_size != 0) {
+			_textCache = _font->GetText(_text, _size);
+		}
+	}
 }
 
 vec4 Text::GetColor() const

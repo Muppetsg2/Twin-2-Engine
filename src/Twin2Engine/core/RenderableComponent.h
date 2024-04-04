@@ -1,26 +1,21 @@
 #pragma once
 
 #include <core/Component.h>
+#include <core/Window.h>
 #include <vector>
 
-namespace Twin2Engine {
-	namespace Core {
-		class RenderableComponent;
+namespace Twin2Engine::Core {
+	class RenderableComponent : public Component {
+	private:
+		bool _isTransparent = false;
+	protected:
+		RenderableComponent() = default; // Powoduje ï¿½e klasa jest jakby abstrakcyjna no chyba ï¿½e bï¿½dzie dziedziczona
+	public:
+		virtual ~RenderableComponent() = default;
 
-		//std::vector<RenderableComponent*> renderableComponents = std::vector<RenderableComponent*>();
+		virtual void Render(const Window* window);
 
-		class RenderableComponent : public Component {
-		private:
-			bool _isTransparent = false;
-		protected:
-			RenderableComponent(); // Powoduje ¿e klasa jest jakby abstrakcyjna no chyba ¿e bêdzie dziedziczona
-		public:
-			virtual ~RenderableComponent();
-
-			virtual void Render();
-
-			bool IsTransparent() const;
-			void SetIsTransparent(bool value);
-		};
-	}
+		bool IsTransparent() const;
+		void SetIsTransparent(bool value);
+	};
 }

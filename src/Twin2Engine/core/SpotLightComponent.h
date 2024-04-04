@@ -12,7 +12,7 @@ namespace Twin2Engine {
 				bool dirtyFlag = false;
 				glm::vec3 localDirection;
 				LightingSystem::SpotLight* light = nullptr;
-				Twin2Engine::UI::Action<> OnChangeTransform;
+				Twin2Engine::Core::Action<> OnChangeTransform;
 			protected:
 				SpotLightComponent() : LightComponent() {};
 			public:

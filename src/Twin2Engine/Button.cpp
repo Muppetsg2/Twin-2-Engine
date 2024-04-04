@@ -1,4 +1,4 @@
-#include "ui/Button.h"
+#include <ui/Button.h>
 #include <core/GameObject.h>
 #include <core/Input.h>
 
@@ -41,7 +41,7 @@ void Button::Update()
 		return;
 	}
 
-	Transform* t = getTransform();
+	Transform* t = GetTransform();
 	glm::mat4 inv = glm::inverse(t->GetTransformMatrix());
 	glm::vec4 mPos = glm::vec4(Input::GetMousePos(), 0.f, 1.f);
 	glm::vec3 btnLocalMPos = inv * mPos;

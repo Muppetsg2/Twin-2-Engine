@@ -6,12 +6,21 @@
 
 namespace Twin2Engine {
 	namespace Core {
+		class Window;
+
 		enum INPUT_STATE {
 			UP = 0,
 			DOWN = 1,
 			PRESSED = 2,
 			PRESSED_LONGER = 3,
 			RELEASED = 4
+		};
+
+		enum CURSOR_STATE {
+			DISABLED = GLFW_CURSOR_DISABLED,
+			HIDDEN = GLFW_CURSOR_HIDDEN,
+			CAPTURED = GLFW_CURSOR_CAPTURED,
+			NORMAL = GLFW_CURSOR_NORMAL
 		};
 
 		enum KEY {
@@ -165,10 +174,13 @@ namespace Twin2Engine {
 			static void mouse_button_callback(GLFWwindow* win, int button, int action, int mods);
 		public:
 			static void InitForWindow(GLFWwindow* window, bool mainWindow = false);
+			static void InitForWindow(Window* window, bool mainWindow = false);
 			static void FreeWindow(GLFWwindow* window);
+			static void FreeWindow(Window* window);
 			static void FreeAllWindows();
-			static constexpr void SetMainWindow(GLFWwindow* window);
-			static constexpr GLFWwindow* GetMainWindow();
+			static void SetMainWindow(GLFWwindow* window);
+			static void SetMainWindow(Window* window);
+			static GLFWwindow* GetMainWindow();
 			static void Update();
 
 #pragma region WITHOUT_MAIN_WINDOW
@@ -177,6 +189,7 @@ namespace Twin2Engine {
 			static void HideCursor(GLFWwindow* window);
 			static void KeepCursorInWindow(GLFWwindow* window);
 			static void ShowCursor(GLFWwindow* window);
+			static CURSOR_STATE GetCursorState(GLFWwindow* window);
 
 			// MOUSE
 			static glm::vec2 GetMousePos(GLFWwindow* window);
@@ -196,12 +209,39 @@ namespace Twin2Engine {
 			static bool IsKeyHeldUp(GLFWwindow* window, KEY key);
 #pragma endregion
 
+#pragma region WITH_WINDOW_CLASS
+			// CURSOR
+			static void HideAndLockCursor(Window* window);
+			static void HideCursor(Window* window);
+			static void KeepCursorInWindow(Window* window);
+			static void ShowCursor(Window* window);
+			static CURSOR_STATE GetCursorState(Window* window);
+
+			// MOUSE
+			static glm::vec2 GetMousePos(Window* window);
+			static bool IsMouseButtonPressed(Window* window, MOUSE_BUTTON button);
+			static bool IsMouseButtonReleased(Window* window, MOUSE_BUTTON button);
+			static bool IsMouseButtonDown(Window* window, MOUSE_BUTTON button);
+			static bool IsMouseButtonHeldDown(Window* window, MOUSE_BUTTON button);
+			static bool IsMouseButtonUp(Window* window, MOUSE_BUTTON button);
+			static bool IsMouseButtonHeldUp(Window* window, MOUSE_BUTTON button);
+
+			// KEYS
+			static bool IsKeyPressed(Window* window, KEY key);
+			static bool IsKeyReleased(Window* window, KEY key);
+			static bool IsKeyDown(Window* window, KEY key);
+			static bool IsKeyHeldDown(Window* window, KEY key);
+			static bool IsKeyUp(Window* window, KEY key);
+			static bool IsKeyHeldUp(Window* window, KEY key);
+#pragma endregion
+
 #pragma region WITH_MAIN_WINDOW
 			// CURSOR
 			static void HideAndLockCursor();
 			static void HideCursor();
 			static void KeepCursorInWindow();
 			static void ShowCursor();
+			static CURSOR_STATE GetCursorState();
 
 			// MOUSE
 			static glm::vec2 GetMousePos();

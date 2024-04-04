@@ -18,7 +18,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <ShaderManager.h>
+#include "ShaderManager.h"
 
 namespace Twin2Engine::GraphicEngine
 {

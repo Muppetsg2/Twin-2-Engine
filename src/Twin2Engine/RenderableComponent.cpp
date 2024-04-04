@@ -2,31 +2,16 @@
 
 using namespace Twin2Engine::Core;
 
-RenderableComponent::RenderableComponent()
-{
-	//renderableComponents.push_back(this);
-}
-
-RenderableComponent::~RenderableComponent()
-{
-	//for (size_t i = 0; i < renderableComponents.size(); ++i) {
-	//	if (renderableComponents[i] == this) {
-	//		renderableComponents.erase(renderableComponents.begin() + i);
-	//		break;
-	//	}
-	//}
-}
-
-void RenderableComponent::Render()
+void RenderableComponent::Render(const Window* window)
 {
 }
 
-bool Twin2Engine::Core::RenderableComponent::IsTransparent() const
+bool RenderableComponent::IsTransparent() const
 {
 	return _isTransparent;
 }
 
-void Twin2Engine::Core::RenderableComponent::SetIsTransparent(bool value)
+void RenderableComponent::SetIsTransparent(bool value)
 {
 	_isTransparent = value;
 }

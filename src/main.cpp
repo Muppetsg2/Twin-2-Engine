@@ -3,8 +3,8 @@
 // (GLFW is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan graphics context creation, etc.)
 
 #include "imgui.h"
-#include "imgui_impl/imgui_impl_glfw.h"
-#include "imgui_impl/imgui_impl_opengl3.h"
+#include "Twin2Engine/imgui_impl/imgui_impl_glfw.h"
+#include "Twin2Engine/imgui_impl/imgui_impl_opengl3.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -36,6 +36,19 @@
 // TIME
 #include <core/Time.h>
 
+// WINDOW
+#include <core/Window.h>
+
+// MANAGERS
+#include <manager/TextureManager.h>
+#include <manager/SpriteManager.h>
+#include <manager/FontManager.h>
+
+// GAME OBJECT
+#include <core/GameObject.h>
+#include <ui/Image.h>
+#include <ui/Text.h>
+
 // GRAPHIC_ENGINE
 #include <GraphicEnigine.h>
 
@@ -43,156 +56,72 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
+// STANDARD LIBRARY
 #include <memory>
 
-#include "CollisionManager.h"
-#include "core/BoxColliderComponent.h"
-#include "core/CapsuleColliderComponent.h"
-#include "core/SphereColliderComponent.h"
-
+//LIGHTS
 #include <core/PointLightComponent.h>
 #include <core/SpotLightComponent.h>
 #include <core/DirectionalLightComponent.h>
 
-#pragma region CAMERA_CONTROLLING
 
-glm::vec3 cameraPos(-5.0f, 0.0f, -5.0f);
-glm::vec3 cameraFront(1.0f, 0.0f, 1.0f);
-glm::vec3 cameraUp(0.0f, 1.0f, 0.0f);
+// COLLISIONS
+#include <CollisionManager.h>
+#include <core/BoxColliderComponent.h>
+#include <core/CapsuleColliderComponent.h>
+#include <core/SphereColliderComponent.h>
 
-double lastX = 0.0f;
-double lastY = 0.0f;
+// CAMERA
+#include <core/CameraComponent.h>
+#include <core/AudioComponent.h>
+#include <core/AudioManager.h>
 
-float yaw = 45.0f;
-float pitch = 0.0f;
-
-GLFWcursorposfun lastMouseCallback;
-
-bool mouseUsingStarted = false;
-
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-    if (mouseUsingStarted)
-    {
-        lastX = xpos;
-        lastY = ypos;
-        mouseUsingStarted = false;
-    }
-    GLfloat xoffset = xpos - lastX;
-    GLfloat yoffset = ypos - lastY; // Odwr�cone, poniewa� wsp�rz�dne zmieniaj� si� od do�u do g�ry  
-    lastX = xpos;
-    lastY = ypos;
-
-    //printf("MPosX: %f MPosY: %f\n", xpos, ypos);
-
-    GLfloat sensitivity = 0.1f;
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
-
-    yaw += xoffset;
-    pitch -= yoffset;
-
-    if (pitch > 89.0f)
-        pitch = 89.0f;
-    if (pitch < -89.0f)
-        pitch = -89.0f;
-
-    glm::vec3 front(0.f);
-    front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
-    front.y = sin(glm::radians(pitch));
-    front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
-    cameraFront = glm::normalize(front);
-}
+using namespace Twin2Engine::Manager;
+using namespace Twin2Engine::Core;
+using namespace Twin2Engine::UI;
+using namespace Twin2Engine::GraphicEngine;
 
 using Twin2Engine::Core::Input;
 using Twin2Engine::Core::KEY;
 using Twin2Engine::Core::MOUSE_BUTTON;
+using Twin2Engine::Core::CURSOR_STATE;
 using Twin2Engine::Core::Time;
 
-void processInput(GLFWwindow* window)
-{
-    float cameraSpeed = 1.0f; // dopasuj do swoich potrzeb  
+#pragma region CAMERA_CONTROLLING
 
-    if (Input::IsKeyHeldDown(Twin2Engine::Core::KEY::W))
-    {
-        cameraPos += cameraSpeed * cameraFront * Time::GetDeltaTime();
+        //if (LightingSystem::LightingController::IsInstantiated()) {
+        //    LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
+        //}
+GameObject Camera;
 
-        if (LightingSystem::LightingController::IsInstantiated()) {
-            LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
-        }
-    }
-    if (Input::IsKeyHeldDown(KEY::S))
-    {
-        cameraPos -= cameraSpeed * cameraFront * Time::GetDeltaTime();
+glm::vec3 cameraPos(0.f, 0.f, 5.f);
 
-        if (LightingSystem::LightingController::IsInstantiated()) {
-            LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
-        }
-    }
-    if (Input::IsKeyHeldDown(KEY::A))
-    {
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * Time::GetDeltaTime();
+double lastX = 0.0f;
+double lastY = 0.0f;
 
-        if (LightingSystem::LightingController::IsInstantiated()) {
-            LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
-        }
-    }
-    if (Input::IsKeyHeldDown(KEY::D))
-    {
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * Time::GetDeltaTime();
+float cameraSpeed = 40.0f;
+float sensitivity = 0.1f;
 
-        if (LightingSystem::LightingController::IsInstantiated()) {
-            LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
-        }
-    }
-    if (Input::IsKeyHeldDown(KEY::Q))
-    {
-        cameraPos -= cameraUp * cameraSpeed * Time::GetDeltaTime();
-    }
-    if (Input::IsKeyHeldDown(KEY::E))
-    {
-        cameraPos += cameraUp * cameraSpeed * Time::GetDeltaTime();
-    }
-    static bool cursorToggle = false;
+//float yaw2 = 45.0f;
+//float pitch2 = 0.0f;
 
-    //if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS)
-    if (Input::IsMouseButtonPressed(MOUSE_BUTTON::MIDDLE))
-    {
-        if (!cursorToggle)
-        {
-            lastMouseCallback = glfwSetCursorPosCallback(window, mouse_callback);
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            cursorToggle = !cursorToggle;
-            mouseUsingStarted = true;
-        }
-    }
-    //else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_RELEASE)
-    else if (Input::IsMouseButtonReleased(MOUSE_BUTTON::MIDDLE))
-    {
-        if (cursorToggle)
-        {
-            glfwSetCursorPosCallback(window, lastMouseCallback);
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            cursorToggle = !cursorToggle;
-        }
-    }
+//GLFWcursorposfun lastMouseCallback;
 
-
-}
+//bool mouseUsingStarted = false;
+bool mouseNotUsed = true;
 
 #pragma endregion
 
 #pragma region OpenGLCallbackFunctions
 
-static void glfw_error_callback(int error, const char* description)
-{
-    spdlog::error("Glfw Error {0}: {1}\n", error, description);
-}
-
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
+}
+
+static void glfw_error_callback(int error, const char* description)
+{
+    spdlog::error("Glfw Error {0}: {1}\n", error, description);
 }
 
 static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
@@ -208,6 +137,7 @@ bool init();
 void init_imgui();
 
 void input();
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void update();
 void render();
 
@@ -218,16 +148,15 @@ void imgui_end();
 void end_frame();
 
 float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd);
+double mod(double val1, double val2);
 
 #pragma endregion
 
 constexpr int32_t WINDOW_WIDTH  = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
 const char* WINDOW_NAME = "Twin^2 Engine";
-constexpr bool fullscreen = false;
 
-GLFWmonitor* monitor = nullptr;
-GLFWwindow* window = nullptr;
+Window* window = nullptr;
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
 const     char*   glsl_version     = "#version 450";
@@ -237,24 +166,27 @@ constexpr int32_t GL_VERSION_MINOR = 5;
 ImVec4 clear_color = ImVec4(.1f, .1f, .1f, 1.f);
 
 GLuint UBOMatrices;
+GLuint depthMapFBO;
+GLuint depthMap;
 
+/*
 SoLoud::Soloud soloud;
 SoLoud::Wav smusicSmple;
 SoLoud::handle sampleHandle = 0;
 bool first = true;
+*/
 
 /*
 ma_engine engine;
 ma_sound sound;
 */
 
-bool musicPlaying = false;
+//bool musicPlaying = false;
 
-
-Twin2Engine::GraphicEngine::GraphicEngine* graphicEngine;
-
-glm::mat4 projection;
-glm::mat4 view;
+GraphicEngine* graphicEngine;
+GameObject* imageObj;
+GameObject* textObj;
+Text* text;
 
 int main(int, char**)
 {
@@ -270,10 +202,15 @@ int main(int, char**)
     init_imgui();
     spdlog::info("Initialized ImGui.");
     
-    soloud.init();
+    //SoLoud::result res = soloud.init();
+    SoLoud::result res = AudioManager::Init();
+    if (res != 0) {
+        spdlog::error(AudioManager::GetErrorString(res));
+        return EXIT_FAILURE;
+    }
     spdlog::info("Initialized SoLoud.");
 
-    smusicSmple.load("./res/music/FurElise.wav");
+    //smusicSmple.load();
 
     /*
     ma_result result;
@@ -291,6 +228,35 @@ int main(int, char**)
 
 #pragma endregion
 
+#pragma region DepthBuffer
+
+    glGenFramebuffers(1, &depthMapFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+
+    glGenTextures(1, &depthMap);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, WINDOW_WIDTH, WINDOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthMap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+#pragma endregion
+
     // Initialize stdout color sink
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     console_sink->set_level(spdlog::level::debug);
@@ -301,6 +267,17 @@ int main(int, char**)
 
     // Set global log level to debug
     spdlog::set_level(spdlog::level::debug);
+
+    Camera.GetTransform()->SetGlobalPosition(cameraPos);
+    Camera.GetTransform()->SetGlobalRotation(glm::vec3(0.f, -90.f, 0.f));
+    CameraComponent* c = Camera.AddComponent<CameraComponent>();
+    c->SetIsMain(true);
+    c->SetWindowSize(glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
+    c->SetFOV(45.f);
+
+    AudioComponent* a = Camera.AddComponent<AudioComponent>();
+    a->SetAudio("./res/music/FurElise.wav");
+    a->Loop();
 
 #pragma region MatricesUBO
 
@@ -313,28 +290,37 @@ int main(int, char**)
     glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBOMatrices, 0, 2 * sizeof(glm::mat4));
 
     glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(glm::perspective(glm::radians(45.f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 1000.0f)));
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(glm::mat4(1.f)));
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(c->GetProjectionMatrix()));
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(c->GetViewMatrix()));
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 #pragma endregion
 
-    //int value;
-    //glGetIntegerv(GL_NUM_PROGRAM_BINARY_FORMATS, &value);
-    //printf("GL_NUM_PROGRAM_BINARY_FORMATS %d\n", value);
-    //glGetIntegerv(GL_PROGRAM_BINARY_FORMATS, &value);
-    //printf("GL_PROGRAM_BINARY_FORMATS %d\n", value);
-    //glGetIntegerv(GL_PROGRAM_BINARY_FORMATS, &value);
-    //printf("GL_PROGRAM_BINARY_FORMATS %d\n", value);
+    graphicEngine = new GraphicEngine();
 
-    //std::cout << "Tutaj" << std::endl;
-    graphicEngine = new Twin2Engine::GraphicEngine::GraphicEngine();
-    //std::cout << "Tutaj" << std::endl;
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
-    glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    Shader* sh = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/UI.shdr", "shaders/ui.vert", "shaders/ui.frag");
+    Texture2D* tex = TextureManager::LoadTexture2D("res/textures/stone.jpg");
+    Sprite* s = SpriteManager::MakeSprite(tex, "stone", 0, 0, tex->GetWidth(), tex->GetHeight());
 
+    Texture2D* tex2 = TextureManager::LoadTexture2D("res/textures/grass.png");
+    Sprite* s2 = SpriteManager::MakeSprite(tex2, "grass");
 
-    glEnable(GL_DEPTH_TEST);
+    imageObj = new GameObject();
+    Image* img = imageObj->AddComponent<Image>();
+    img->SetSprite(s);
+    Image* img2 = imageObj->AddComponent<Image>();
+    img2->SetSprite(s2);
+
+    Shader* sh2 = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/Text.shdr", "shaders/text.vert", "shaders/text.frag");
+    FontManager::LoadFont("res/fonts/arial.ttf", 48);
+
+    textObj = new GameObject();
+    textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
+    text = textObj->AddComponent<Text>();
+    text->SetColor(glm::vec4(1.f));
+    text->SetText("Text");
+    text->SetSize(48);
+    text->SetFontPath("res/fonts/arial.ttf");
 
 #pragma region TestingCollision
     GameObject go1;
@@ -375,16 +361,9 @@ int main(int, char**)
 #pragma endregion
 
 
-
     // Main loop
-    while (!glfwWindowShouldClose(window))
+    while (!window->IsClosed())
     {
-        // Update game time value
-        //GLfloat currentFrame = glfwGetTime();
-        //deltaTime = currentFrame - lastFrame;
-        //lastFrame = currentFrame;
-
-
         // Process I/O operations here
         input();
 
@@ -407,12 +386,17 @@ int main(int, char**)
     }
 
     // Cleanup
+    delete imageObj;
+    //soloud.deinit();
+    SpriteManager::UnloadAll();
+    TextureManager::UnloadAll();
+    AudioManager::UnloadAll();
+
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    Twin2Engine::Core::Input::FreeAllWindows();
-    glfwDestroyWindow(window);
+    delete window;
     glfwTerminate();
 
     return 0;
@@ -422,7 +406,7 @@ bool init()
 {
     // Setup window
     glfwSetErrorCallback(glfw_error_callback);
-    if (!glfwInit()) 
+    if (!glfwInit())
     {
         spdlog::error("Failed to initalize GLFW!");
         return false;
@@ -434,30 +418,10 @@ bool init()
     glfwWindowHint(GLFW_OPENGL_PROFILE,        GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 
-    // Creates Monitor
-    if (fullscreen) {
-        monitor = glfwGetPrimaryMonitor();
-        if (monitor == NULL) {
-            spdlog::warn("Failed to create GLFW Monitor");
-        }
-    }
-
-    // Create window with graphics context
-    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME, monitor, NULL);
-    if (window == NULL)
-    {
-        spdlog::error("Failed to create GLFW Window!");
-        return false;
-    }
-    spdlog::info("Successfully created GLFW Window!");
-
-    glfwMakeContextCurrent(window);
-    //glfwSwapInterval(1); // Enable VSync - fixes FPS at the refresh rate of your screen
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    Twin2Engine::Core::Input::InitForWindow(window);
+    window = new Window(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT }, false);
+    glfwSetFramebufferSizeCallback(window->GetWindow(), framebuffer_size_callback);
 
     bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-
     if (err)
     {
         spdlog::error("Failed to initialize OpenGL loader!");
@@ -471,9 +435,13 @@ bool init()
     glDebugMessageCallback(ErrorMessageCallback, 0);
 #endif
 
+    // Blending
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     // Depth Test
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LEQUAL);
 
     // Face Culling
     glEnable(GL_CULL_FACE);
@@ -492,7 +460,7 @@ void init_imgui()
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
 
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplGlfw_InitForOpenGL(window->GetWindow(), true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     // Setup style
@@ -517,26 +485,164 @@ void init_imgui()
 
 void input()
 {
-    processInput(window);
-    /*if (Twin2EngineCore::Input::IsKeyPressed(Twin2EngineCore::KEY::W)) {
-        spdlog::info("Delta Time: {}\n", Twin2EngineCore::Time::GetDeltaTime());
-    }*/
+    if (Input::IsKeyPressed(KEY::ESCAPE)) 
+    {
+        window->Close();
+        return;
+    }
+
+    bool camDirty = false;
+
+    CameraComponent* c = Camera.GetComponent<CameraComponent>();        
+
+    if (!Input::IsKeyUp(KEY::W))
+    {
+        camDirty = true;
+        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+    }
+    if (!Input::IsKeyUp(KEY::S))
+    {
+        camDirty = true;
+        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+    }
+    if (!Input::IsKeyUp(KEY::A))
+    {
+        camDirty = true;
+        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+    }
+    if (!Input::IsKeyUp(KEY::D))
+    {
+        camDirty = true;
+        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+    }
+    /*
+    if (Input::IsKeyHeldDown(KEY::Q))
+    {
+        cameraPos -= cameraUp * cameraSpeed * Time::GetDeltaTime();
+    }
+    if (Input::IsKeyHeldDown(KEY::E))
+    {
+        cameraPos += cameraUp * cameraSpeed * Time::GetDeltaTime();
+    }
+    */
+
+    /*
+    static bool cursorToggle = false;
+
+    if (Input::IsMouseButtonPressed(MOUSE_BUTTON::MIDDLE))
+    {
+        if (!cursorToggle)
+        {
+            lastMouseCallback = glfwSetCursorPosCallback(window->GetWindow(), mouse_callback);
+            Input::HideAndLockCursor();
+            cursorToggle = !cursorToggle;
+            mouseUsingStarted = true;
+        }
+    }
+    else if (Input::IsMouseButtonReleased(MOUSE_BUTTON::MIDDLE))
+    {
+        if (cursorToggle)
+        {
+            glfwSetCursorPosCallback(window->GetWindow(), lastMouseCallback);
+            Input::ShowCursor();
+            cursorToggle = !cursorToggle;
+        }
+    }
+    */
+
+    if (camDirty) 
+    {
+        glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Camera.GetComponent<CameraComponent>()->GetViewMatrix()));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
+
+    if (Input::IsKeyPressed(KEY::LEFT_ALT)) 
+    {
+        mouseNotUsed = true;
+        if (Input::GetCursorState() == CURSOR_STATE::DISABLED) 
+        {
+            Input::ShowCursor();
+            glfwSetCursorPosCallback(window->GetWindow(), ImGui_ImplGlfw_CursorPosCallback);
+        }
+        else
+        {
+            Input::HideAndLockCursor();
+            glfwSetCursorPosCallback(window->GetWindow(), mouse_callback);
+        }
+    }
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    if (mouseNotUsed)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        mouseNotUsed = false;
+    }
+
+    GLfloat xoffset = xpos - lastX;
+    GLfloat yoffset = lastY - ypos; // Odwrocone, poniewaz wsporzedne zmieniaja sie od dolu do gory  
+    lastX = xpos;
+    lastY = ypos;
+
+    //printf("MPosX: %f MPosY: %f\n", xpos, ypos);
+
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    //yaw += xoffset;
+    //pitch += yoffset;
+
+    glm::vec3 rot = Camera.GetTransform()->GetGlobalRotation();
+
+    // YAW = ROT Y
+    // PITCH = ROT X
+    // ROLL = ROT Z
+
+    Camera.GetTransform()->SetGlobalRotation(glm::vec3(rot.x + yoffset, rot.y + xoffset, rot.z));
+
+    rot = Camera.GetTransform()->GetGlobalRotation();
+
+    if (rot.x > 89.0f) {
+        Camera.GetTransform()->SetGlobalRotation(glm::vec3(89.f, rot.y, rot.z));
+    }
+    if (rot.x < -89.0f)
+    {
+        Camera.GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
+    }
+
+    rot = Camera.GetTransform()->GetGlobalRotation();
+
+    glm::vec3 front{};
+    front.x = cos(glm::radians(rot.y)) * cos(glm::radians(rot.x));
+    front.y = sin(glm::radians(rot.x));
+    front.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
+    Camera.GetComponent<CameraComponent>()->SetFrontDir(glm::normalize(front));
+
+    glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Camera.GetComponent<CameraComponent>()->GetViewMatrix()));
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 void update()
 {
     // Update game objects' state here
+    text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
 }
 
 void render()
 {
     // OpenGL Rendering code goes here
-    glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 5.0f);
-    glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
-    glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        graphicEngine->Render(window, Camera.GetComponent<CameraComponent>()->GetViewMatrix(), Camera.GetComponent<CameraComponent>()->GetProjectionMatrix());
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
-    graphicEngine->Render(view, projection);
+    graphicEngine->Render(window, Camera.GetComponent<CameraComponent>()->GetViewMatrix(), Camera.GetComponent<CameraComponent>()->GetProjectionMatrix());
 }
 
 void imgui_begin()
@@ -549,45 +655,233 @@ void imgui_begin()
 
 void imgui_render()
 {
-    if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL)
+    if (Input::GetCursorState() == NORMAL)
     {
-        {
-            ImGui::Begin("Twin^2 Engine");
+        ImGui::Begin("Twin^2 Engine");
 
-            ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Hello World!");
+        ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Hello World!");
+
+        if (ImGui::CollapsingHeader("Help")) {
+            ImGui::TextColored(ImVec4(0.f, 1.f, 0.f, 1.f), "Press Left ALT to disable GUI and start Moving Camera");
+            ImGui::Spacing();
+            ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Move Camera using WASD");
+            ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Rotate Camera using Mouse");
+            ImGui::Spacing();
+        }
+
+        ImGui::Separator();
+
+#pragma region IMGUI_AUDIO_SETUP
+        if (ImGui::CollapsingHeader("Audio")) {
+
+            AudioComponent* a = Camera.GetComponent<AudioComponent>();
+            bool loop = a->IsLooping();
+
+            if (ImGui::Checkbox("Loop", &loop)) {
+                if (loop) {
+                    if (!a->IsLooping()) {
+                        a->Loop();
+                    }
+                }
+                else {
+                    if (a->IsLooping()) {
+                        a->UnLoop();
+                    }
+                }
+            }
+
+            float vol = a->GetVolume();
+
+            ImGui::SliderFloat("Volume", &vol, 0.f, 1.f);
+
+            if (a->GetVolume() != vol) {
+                a->SetVolume(vol);
+            }
+
+            ImGui::Text("Position: %02.0f:%02.0f / %02.0f:%02.0f", std::floor(a->GetPlayPosition() / 60), mod(a->GetPlayPosition(), 60), std::floor(a->GetAudioLength() / 60), mod(a->GetAudioLength(), 60));
+            ImGui::Text("Play Time: %02.0f:%02.0f", std::floor(a->GetPlayTime() / 60), mod(a->GetPlayTime(), 60));
 
             if (ImGui::Button("Play Song")) {
-                if (!musicPlaying) {
-                    //ma_sound_start(&sound);
-                    if (first) {
-                        sampleHandle = soloud.play(smusicSmple);
-                        first = false;
-                    }
-                    else {
+                /*
+                if (soloud.isValidVoiceHandle(sampleHandle)) {
+                    if (soloud.getPause(sampleHandle)) {
                         soloud.setPause(sampleHandle, false);
                     }
+                }
+                else
+                {
+                    sampleHandle = soloud.play(smusicSmple);
+                }
+                */
+
+                Camera.GetComponent<AudioComponent>()->Play();
+
+                /*
+                if (!musicPlaying) {
+                    ma_sound_start(&sound);
                     musicPlaying = true;
                 }
+                */
+            }
+
+            if (ImGui::Button("Pause Song")) {
+                /*
+                if (soloud.isValidVoiceHandle(sampleHandle)) {
+                    if (!soloud.getPause(sampleHandle)) {
+                        soloud.setPause(sampleHandle, true);
+                    }
+                }
+                */
+
+                Camera.GetComponent<AudioComponent>()->Pause();
+
+                /*
+                if (musicPlaying) {
+                    ma_sound_stop(&sound);
+                    musicPlaying = false;
+                }
+                */
             }
 
             if (ImGui::Button("Stop Song")) {
+                /*
+                if (soloud.isValidVoiceHandle(sampleHandle)) {
+                    if (!soloud.getPause(sampleHandle)) {
+                        soloud.setPause(sampleHandle, true);
+                    }
+                }
+                */
+
+                Camera.GetComponent<AudioComponent>()->Stop();
+
+                /*
                 if (musicPlaying) {
-                    //ma_sound_stop(&sound);
-                    soloud.setPause(sampleHandle, true);
+                    ma_sound_stop(&sound);
                     musicPlaying = false;
+                }
+                */
+            }
+        }
+#pragma endregion
+
+        ImGui::Separator();
+        
+#pragma region IMGUI_WINDOW_SETUP
+        if (ImGui::CollapsingHeader("Window Setup")) {
+
+            // Window Settings
+            if (window->IsWindowed()) {
+                ImGui::Text("Current State: Windowed");
+
+                int monitorsCount;
+                GLFWmonitor** monitors = glfwGetMonitors(&monitorsCount);
+
+                ImGui::Text("Monitors: ");
+                for (int i = 0; i < monitorsCount; ++i) {
+                    int x, y, mw, mh;
+                    float sx, sy;
+
+                    glfwGetMonitorPos(monitors[i], &x, &y);
+                    const GLFWvidmode* vid = glfwGetVideoMode(monitors[i]);
+                    const char* name = glfwGetMonitorName(monitors[i]);
+                    glfwGetMonitorPhysicalSize(monitors[i], &mw, &mh);
+                    glfwGetMonitorContentScale(monitors[i], &sx, &sy);
+
+                    std::string btnText = std::to_string(i) + ". " + name + ": PS " + std::to_string(mw) + "x" + std::to_string(mh) + ", S " \
+                        + std::to_string(vid->width) + "x" + std::to_string(vid->height) + \
+                        ", Pos " + std::to_string(x) + "x" + std::to_string(y) + \
+                        ", Scale " + std::to_string(sx) + "x" + std::to_string(sy) + \
+                        ", Refresh " + std::to_string(vid->refreshRate) + " Hz";
+                    if (ImGui::Button(btnText.c_str())) {
+                        window->SetFullscreen(monitors[i]);
+                    }
+                }
+
+                ImGui::Text("");
+                static char tempBuff[256] = "Twin^2 Engine";
+                ImGui::InputText("Title", tempBuff, 256);
+                if (std::string(tempBuff) != window->GetTitle()) {
+                    window->SetTitle(std::string(tempBuff));
+                }
+
+                if (ImGui::Button("Request Attention")) {
+                    window->RequestAttention();
+                }
+
+                if (ImGui::Button("Maximize")) {
+                    window->Maximize();
+                }
+
+                if (ImGui::Button("Hide")) {
+                    window->Hide();
+                }
+
+                bool temp = window->IsResizable();
+                if (ImGui::Button(((temp ? "Disable"s : "Enable"s) + " Resizability"s).c_str())) {
+                    window->EnableResizability(!temp);
+                }
+
+                temp = window->IsDecorated();
+                if (ImGui::Button(((temp ? "Disable"s : "Enable"s) + " Decorations"s).c_str())) {
+                    window->EnableDecorations(!temp);
+                }
+
+                static float opacity = window->GetOpacity();
+                ImGui::SliderFloat("Opacity", &opacity, 0.f, 1.f);
+                if (opacity != window->GetOpacity()) {
+                    window->SetOpacity(opacity);
+                }
+
+                static glm::ivec2 ratio = window->GetAspectRatio();
+                ImGui::InputInt2("Aspect Ratio", (int*)&ratio);
+                if (ImGui::Button("Apply")) {
+                    window->SetAspectRatio(ratio);
+                    ratio = window->GetAspectRatio();
+                }
+            }
+            else {
+                ImGui::Text("Current State: Fullscreen");
+                if (ImGui::Button("Windowed")) {
+                    window->SetWindowed({ 0, 30 }, { WINDOW_WIDTH, WINDOW_HEIGHT - 50 });
+                }
+
+                static int refreshRate = window->GetRefreshRate();
+                ImGui::InputInt("Refresh Rate", &refreshRate);
+                if (ImGui::Button("Apply")) {
+                    window->SetRefreshRate(refreshRate);
+                    refreshRate = window->GetRefreshRate();
                 }
             }
 
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
+            if (ImGui::Button("Minimize")) {
+                window->Minimize();
+            }
+
+            static glm::ivec2 size = window->GetWindowSize();
+            ImGui::InputInt2("Window Size", (int*)&size);
+            if (ImGui::Button("Apply")) {
+                window->SetWindowSize(size);
+                size = window->GetWindowSize();
+            }
+
+            if (ImGui::Button(((window->IsVSyncOn() ? "Disable"s : "Enable"s) + " VSync"s).c_str())) {
+                window->EnableVSync(!window->IsVSyncOn());
+            }
         }
+#pragma endregion
+
+        ImGui::Separator();
+
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+        ImGui::End();
     }
 }
 
 void imgui_end()
 {
     ImGui::Render();
-    glfwMakeContextCurrent(window);
+    window->Use();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
@@ -598,12 +892,22 @@ void end_frame()
     // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
     // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
     // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-    Twin2Engine::Core::Time::Update();
-    Twin2Engine::Core::Input::Update();
-    glfwMakeContextCurrent(window);
-    glfwSwapBuffers(window);
+    Time::Update();
+    Input::Update();
+    window->Update();
 }
 
-float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd) {
+float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd) 
+{
     return expectedStart + ((expectedEnd - expectedStart) / (currEnd - currStart)) * (input - currStart);
+}
+
+double mod(double val1, double val2) {
+    if (val1 < 0 && val2 <= 0) {
+        return 0;
+    }
+
+    double x = val1 / val2;
+    double z = std::floor(val1 / val2);
+    return (x - z) * val2;
 }

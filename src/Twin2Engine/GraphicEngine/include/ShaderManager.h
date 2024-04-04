@@ -13,7 +13,7 @@
 
 using std::string;
 
-#include <Shader.h>
+#include "Shader.h"
 
 namespace Twin2Engine::GraphicEngine
 {
@@ -22,8 +22,10 @@ namespace Twin2Engine::GraphicEngine
 	// Define the file extension for compiled shader binary files
 	constexpr char SHADER_BINARY_EXTENSION[] = ".shdr";
 
+	constexpr char SHADERS_ORIGIN_DIRETORY[] = "ShadersOrigin";
+
 	/// <summary>
-	/// Shader Manager obs³uguje:
+	/// Shader Manager obsï¿½uguje:
 	/// * vertex shader
 	/// * geometry shader
 	/// * fragment shader
@@ -45,20 +47,26 @@ namespace Twin2Engine::GraphicEngine
 
 		static GLenum binaryFormat;
 
+		static const std::unordered_map<size_t, int> shaderTypeMapping;
+
 		static std::hash<std::string> stringHash;
 		static std::list<ShaderProgramData*> loadedShaders;
 
 		//Runtime methods
-		static unsigned int LoadShaderProgram(const std::string& shaderPath);
+		static unsigned int LoadShaderProgram(const std::string& shaderName);
 		static void UnloadShaderProgram(int shaderProgramID);
 		static void IncrementUseNumber(int shaderProgramID);
 
 		//Precompilation methods
 		static std::string LoadShaderSource(const std::string& filePath);
 		static GLuint CompileShader(GLenum type, const std::string& source);
-		static void CheckShaderCompilationSuccess(GLuint shaderId);
+		static inline bool CheckShaderCompilationSuccess(GLuint shaderId);
 		static void CheckProgramLinkingSuccess(GLuint programId);
-		static void PrecompileShaders();
+		static inline void PrecompileShaders();
+
+		//Dynamic creation
+		static inline GLuint CreateShaderProgramFromFile(const std::string& shaderProgramName, std::string& shaderName);
+		static inline void SaveShaderProgramToFile(GLuint shaderProgramId, const std::string& shaderName);
 
 	public:
 		//ShaderManager();
@@ -66,6 +74,7 @@ namespace Twin2Engine::GraphicEngine
 		static void End();
 
 		static Shader* GetShaderProgram(const std::string& shaderName);
+		static Shader* CreateShaderProgram(const std::string& shaderProgramName);
 		static Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);
 
 	};

@@ -14,13 +14,17 @@
 #include <MeshRenderer.h>
 #include <MeshRenderingManager.h>
 
+#include <UIRenderingManager.h>
+
 #include <core/GameObject.h>
 #include <core/Transform.h>
+#include <core/Window.h>
 
 #include <LightingController.h>
 
 using Twin2Engine::Core::GameObject;
 using Twin2Engine::Core::Transform;
+using Twin2Engine::Core::Window;
 
 using std::vector;
 
@@ -108,34 +112,23 @@ namespace Twin2Engine
 				vector<Texture> textures;
 
 				mesh = new Mesh(vertexes, indices, textures);
-				////std::cout << "Tutaj" << std::endl;
-				//shader = new Shader("C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\CompiledShaders\\origin\\Basic.shdr");
-				//shader = new Shader("res/CompiledShaders/origin/Basic.shdr");
+
 				ShaderManager::Init();
+
 				//shader = ShaderManager::GetShaderProgram("res/CompiledShaders/origin/Basic.shdr");
 				shader = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/Basic.shdr", "shaders/normalVert.vert", "shaders/LightingShader.frag");
 				LightingSystem::LightingController::Instance()->BindLightBuffors(shader);
-				//shader = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/Basic.shdr", "shaders/normalVert.vert", "shaders/fargmentShader.frag");
-				//shader = new Shader(true, "C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
-				//shader = new Shader("C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
-				//					"C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\fargmentShader.frag");
-
-				////std::cout << "Tutaj" << std::endl;
-				//shader->use();
-				//glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-				//shader->setVec4("uColor", (float*)(&color));
-				//color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
-				//shader->setVec4("uColor", (float*)(&color));
+				
+				//shader = ShaderManager::CreateShaderProgram("res/shaders/Basic.shpr");
+				//shader = ShaderManager::CreateShaderProgram("origin/Basic", "shaders/normalVert.vert", "shaders/fargmentShader.frag");
+				//shader = ShaderManager::GetShaderProgram("origin/Basic");
 
 				modelMesh = ModelsManager::CreateModel("NewModel", vertexes, indices, textures);
 
-				material = MaterialsManager::CreateMaterial("new", "res/CompiledShaders/origin/Basic.shdr", std::vector<string>{ "color1", "color2" });
-				material.GetMaterialParameters()->Set("color1", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-				material.GetMaterialParameters()->Set("color2", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 
-				material2 = MaterialsManager::CreateMaterial("new2", "res/CompiledShaders/origin/Basic.shdr", std::vector<string>{ "color1", "color2" });
-				material2.GetMaterialParameters()->Set("color1", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-				material2.GetMaterialParameters()->Set("color2", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+				material = MaterialsManager::GetMaterial("Basic");
+
+				material2 = MaterialsManager::GetMaterial("Basic2");
 
 				gameObject = new GameObject();
 				auto comp = gameObject->AddComponent<MeshRenderer>();
@@ -165,7 +158,7 @@ namespace Twin2Engine
 			//	return instance;
 			//}
 
-			void Render(glm::mat4& view, glm::mat4& projection)
+			void Render(const Window* window, glm::mat4 view, glm::mat4 projection)
 			{
 				shader->use();
 				shader->setMat4("projection", projection);
@@ -175,17 +168,7 @@ namespace Twin2Engine
 				shader->setMat4("model", model);
 				//std::cout << "Tutaj1\n";
 				MeshRenderingManager::Render();
-				//std::cout << "Tutaj2\n";
-				//shader->setMat4("normalModel", model);
-				//
-				////mesh->Draw(shader);
-				//modelMesh.Draw(shader);
-				//
-				//glm::mat4 newview(1.0f);
-				//shader->setMat4("view", newview);
-				//shader->setMat4("projection", newview);
-				////mesh->Draw(shader);
-				//modelMesh.Draw(shader);
+				UIRenderingManager::Render(window);
 			}
 		};
 	}

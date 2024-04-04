@@ -89,16 +89,21 @@ void Twin2Engine::Core::ColliderComponent::Initialize()
 	collider->colliderComponent = this;
 }
 
+void Twin2Engine::Core::ColliderComponent::Invoke()
+{
+	collider->colliderComponent = this;
+}
+
 void Twin2Engine::Core::ColliderComponent::Update()
 {
-	if (dirtyFlag) {
+	/*/if (dirtyFlag) {
 		((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndPosition =
 										getGameObject()->GetTransform()->GetTransformMatrix()
 										* glm::vec4(((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition, 1.0f);
 
 		dirtyFlag = false;
-	}
-	//collider->shapeColliderData->Position = collider->shapeColliderData->LocalPosition + getGameObject()->GetTransform()->GetGlobalPosition();
+	}/**/
+	collider->shapeColliderData->Position = collider->shapeColliderData->LocalPosition + getGameObject()->GetTransform()->GetGlobalPosition();
 }
 
 

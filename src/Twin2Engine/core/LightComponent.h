@@ -3,7 +3,7 @@
 
 #include <LightingController.h>
 #include <core/Component.h>
-#include <ui/EventHandler.h>
+#include <core/EventHandler.h>
 
 namespace Twin2Engine {
 	namespace Core {

@@ -169,6 +169,12 @@ void Twin2Engine::Core::Transform::SetParent(Transform* parent)
 	//	_parent = parent;
 	//}
 
+	if (parent == nullptr)
+	{
+		parent = originTransform;
+	}
+
+
 	_parent->JustRemoveChild(this);
 	parent->JustAddChild(this);
 	_parent = parent;
@@ -494,25 +500,22 @@ void Twin2Engine::Core::Transform::RecalculateTransformMatrix()
 		_localTransformMatrix = glm::rotate(_localTransformMatrix, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
 		_localTransformMatrix = glm::rotate(_localTransformMatrix, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 		_localTransformMatrix = glm::scale(_localTransformMatrix, GetLocalScale());
-
-		//_dirtyFlag = false;
 	}
-
 
 	if (_dirtyFlagInHierarchy)
 	{
-		if (_parent != originTransform)
+		if (_parent != nullptr && _parent != originTransform)
 		{
 			_parent->RecalculateTransformMatrix();
 			//_globalTransformMatrix = _parent->GetTransformMatrix() * _localTransformMatrix;
-		}
 	
-		//_dirtyFlagInHierarchy = false;
+			//_dirtyFlagInHierarchy = false;
+		}
 	}
 
 	if (_dirtyFlag || _dirtyFlagInHierarchy)
 	{
-		if (_parent != originTransform)
+		if (_parent != nullptr && _parent != originTransform)
 		{
 			_globalTransformMatrix = _parent->GetTransformMatrix() * _localTransformMatrix;
 		}

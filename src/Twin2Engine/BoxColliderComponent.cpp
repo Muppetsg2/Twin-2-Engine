@@ -48,7 +48,7 @@ void Twin2Engine::Core::BoxColliderComponent::Update()
 		r = glm::rotate(r, boxData->Rotation.y, glm::vec3(1.0f, 1.0f, 0.0f));
 		r = glm::rotate(r, boxData->Rotation.z, glm::vec3(1.0f, 0.0f, 1.0f));
 		//((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation
-		r = getGameObject()->GetTransform()->GetTransformMatrix() * r;
+		r = GetGameObject()->GetTransform()->GetTransformMatrix() * r;
 		
 		boxData->XAxis = r * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 		boxData->YAxis = r * glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);

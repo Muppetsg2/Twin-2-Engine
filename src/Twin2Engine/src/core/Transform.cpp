@@ -563,8 +563,6 @@ void Twin2Engine::Core::Transform::SetGlobalRotation(const glm::vec3& globalRota
 	_dirtyFlags.dirtyFlagLocalRotation = true;
 	_dirtyFlags.dirtyFlagGlobalRotation = false;
 
-	//std::cout << "S3Global Rotation: " << GetGlobalRotation().x << " " << GetGlobalRotation().y << " " << GetGlobalRotation().z << std::endl;
-	//std::cout << "S3Local Rotation: " << GetLocalRotation().x << " " << GetLocalRotation().y << " " << GetLocalRotation().z << std::endl;
 	// Calling Events
 	CallRotationChanged();
 

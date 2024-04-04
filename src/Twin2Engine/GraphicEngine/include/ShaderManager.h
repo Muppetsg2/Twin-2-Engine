@@ -70,6 +70,7 @@ namespace Twin2Engine::GraphicEngine
 		static GLuint CompileShaderSPIRV(GLenum type, const string& filePath);
 		//static std::vector<unsigned int> LoadBinarySource(const std::string& filePath);
 		//static GLuint CompileShaderSPIRV(GLenum type, const std::vector<unsigned int>& source);
+		//static GLuint CompileShaderNormal(GLenum type, const string& filePath);
 
 		static inline bool CheckShaderCompilationSuccess(GLuint shaderId);
 		static void CheckProgramLinkingSuccess(GLuint programId);

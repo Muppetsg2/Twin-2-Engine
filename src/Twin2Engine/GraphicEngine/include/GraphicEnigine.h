@@ -125,7 +125,7 @@ namespace Twin2Engine
 				modelMesh2 = ModelsManager::GetModel("res/models/castle.obj");
 
 
-				//shader = ShaderManager::CreateShaderProgram("origin/Textured", "shaders/textured.vert", "shaders/textured.frag");
+				shader = ShaderManager::CreateShaderProgram("origin/Textured", "shaders/textured.vert", "shaders/textured.frag");
 				material = MaterialsManager::GetMaterial("textured");
 
 				material2 = MaterialsManager::GetMaterial("Basic2");

@@ -1,4 +1,5 @@
 #include "ShaderManager.h"
+#include "ShaderManager.h"
 
 //#include "../../Twin2Engine/core/ConfigManager.h"
 
@@ -269,7 +270,8 @@ bool Twin2Engine::GraphicEngine::ShaderManager::CheckShaderCompilationSuccess(GL
     {
         GLchar infoLog[512];
         glGetShaderInfoLog(shaderId, 512, NULL, infoLog);
-        std::cout << shaderId << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << "\n";
+        SPDLOG_ERROR("{} ERROR::SHADER::COMPILATION_FAILED\n{}", shaderId, infoLog);
+        //std::cout << shaderId << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << "\n";
     }
     return success;
 }
@@ -277,11 +279,12 @@ bool Twin2Engine::GraphicEngine::ShaderManager::CheckShaderCompilationSuccess(GL
 void Twin2Engine::GraphicEngine::ShaderManager::CheckProgramLinkingSuccess(GLuint programId)
 {
     GLint success;
-    GLchar infoLog[512];
     glGetProgramiv(programId, GL_LINK_STATUS, &success);
     if (!success) {
+        GLchar infoLog[512];
         glGetProgramInfoLog(programId, 512, NULL, infoLog);
-        std::cout << "ERROR::PROGRAM::LINKING_FAILED\n" << infoLog << "\n";
+        SPDLOG_ERROR("{} ERROR::SHADER::LINKING_FAILED\n{}", programId, infoLog);
+        //std::cout << "ERROR::PROGRAM::LINKING_FAILED\n" << infoLog << "\n";
     }
 }
 
@@ -345,15 +348,12 @@ Shader* Twin2Engine::GraphicEngine::ShaderManager::GetShaderProgram(const std::s
 {
 #if ENTIRE_SHADER_PROGRAM_PRECOMPILATION
     unsigned int shaderProgramId = LoadShaderProgram(shaderName);
-#elif SPIRV_COMPILATION
+    //std::list<ShaderProgramData*>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [shaderProgramId](ShaderProgramData* data) { return data->shaderProgramId == shaderProgramId; });
+    //return (*found)->shader;
+#else
     Shader* shader = LoadShaderProgramSHPR(shaderName);
-#elif NORMAL_SHADERS_CREATION
-    Shader* shader = CreateShaderProgram(shaderName);
 #endif
 
-    //std::list<ShaderProgramData*>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [shaderProgramId](ShaderProgramData* data) { return data->shaderProgramId == shaderProgramId; });
-
-    //return (*found)->shader;
     return shader;
 }
 
@@ -586,7 +586,15 @@ GLuint Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgramFromFile(co
     
         size_t extensionHash = stringHash(shaderName.substr(shaderName.size() - 4, 4));
     
+        #if SPIRV_COMPILATION
+
         GLuint shaderId = CompileShaderSPIRV(shaderTypeMapping.at(extensionHash), SHADERS_ORIGIN_DIRETORY + ("/CompiledShaders/SPIRV/" + shaderName));
+
+        #elif NORMAL_SHADERS_CREATION
+
+        GLuint shaderId = CompileShader(shaderTypeMapping.at(extensionHash), SHADERS_ORIGIN_DIRETORY + ("/shaders/" + shaderName));
+
+        #endif
     
         SPDLOG_INFO("TU1");
         glAttachShader(shaderProgram, shaderId);

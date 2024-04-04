@@ -71,15 +71,27 @@ void ModelsManager::UnloadModel(ModelData* modelData)
                 loadedModels.erase(found);
 
                 delete (*found)->model;
+                glDeleteBuffers(1, &(*found)->ssboId);
+                for (auto& m : (*found)->meshes) {
+                    glDeleteBuffers(1, &m.mesh->EBO);
+                    glDeleteBuffers(1, &m.mesh->VBO);
+                    glDeleteVertexArrays(1, &m.mesh->VAO);
+                }
+                loadedModels.erase(found);
                 delete (*found);
             }
             else if (modelData == _cubeModel || modelData == _piramidModel || modelData == _sphereModel || modelData == _planeModel) {
-                delete modelData->model;
-
                 if (modelData == _cubeModel) _cubeModel = nullptr;
                 else if (modelData == _piramidModel) _piramidModel = nullptr;
                 else if (modelData == _sphereModel) _sphereModel = nullptr;
                 else if (modelData == _planeModel) _planeModel = nullptr;
+                delete modelData->model;
+                glDeleteBuffers(1, &modelData->ssboId);
+                for (auto& m : modelData->meshes) {
+                    glDeleteBuffers(1, &m.mesh->EBO);
+                    glDeleteBuffers(1, &m.mesh->VBO);
+                    glDeleteVertexArrays(1, &m.mesh->VAO);
+                }
                 delete modelData;
             }
             else

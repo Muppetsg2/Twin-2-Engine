@@ -5,6 +5,10 @@
 
 using std::vector;
 
+namespace Twin2Engine::Manager {
+    class ModelsManager;
+}
+
 namespace Twin2Engine::GraphicEngine
 {
     class InstatiatingMesh
@@ -27,6 +31,8 @@ namespace Twin2Engine::GraphicEngine
         void SetMaterialInputUBO(GLuint materialInputUBO);
 
         void Draw(Shader* shader, unsigned int number);
+
+        friend class Manager::ModelsManager;
     };
 }
 

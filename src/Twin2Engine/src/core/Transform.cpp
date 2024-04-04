@@ -260,7 +260,7 @@ void Twin2Engine::Core::Transform::Rotate(const glm::vec3& rotation)
 {
 	RecalculateLocalRotation();
 
-	_localRotation += rotation;
+	_localRotation += glm::radians(rotation);
 	_localRotationQuat = glm::quat(_localRotation);
 
 	_dirtyFlags.dirtyFlag = true;

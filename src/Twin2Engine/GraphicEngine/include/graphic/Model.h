@@ -22,6 +22,7 @@ namespace Twin2Engine
             /*  Funkcje   */
             Model(const char* path);
             Model(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures);
+            virtual ~Model() = default;
             void Draw(Shader* shader);
         private:
             /*  Dane modelu  */

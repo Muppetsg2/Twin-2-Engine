@@ -41,6 +41,7 @@ Twin2Engine::GraphicEngine::GraphicEngine::GraphicEngine() {
 	ShaderManager::CreateShaderProgram("res/shaders/Basic.shpr");
 	ShaderManager::CreateShaderProgram("res/shaders/UI.shpr");
 
+	UIRenderingManager::Init();
 
 	glClearColor(.1f, .1f, .1f, 1.f);
 }

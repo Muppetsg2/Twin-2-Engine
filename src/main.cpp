@@ -43,12 +43,12 @@ GameObject* imageObj;
 GameObject* textObj;
 Text* text;
 
-float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd)
+static float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd)
 {
     return expectedStart + ((expectedEnd - expectedStart) / (currEnd - currStart)) * (input - currStart);
 }
 
-double mod(double val1, double val2) {
+static double mod(double val1, double val2) {
     if (val1 < 0 && val2 <= 0) {
         return 0;
     }
@@ -111,7 +111,7 @@ static void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void input() {
+static void input() {
     if (Input::IsKeyPressed(KEY::ESCAPE))
     {
         _mainWindow->Close();
@@ -200,11 +200,11 @@ void input() {
     }
 }
 
-void update() {
+static void update() {
     text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
 }
 
-void imgui_render() {
+static void imgui_render() {
 #pragma region IMGUI_AUDIO_SETUP
     if (ImGui::CollapsingHeader("Audio")) {
 
@@ -254,6 +254,9 @@ int main() {
     if (!engine.Init(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT)) {
         return -1;
     }
+    engine.GetOnInputEvent() += input;
+    engine.GetOnImguiRenderEvent() += imgui_render;
+    engine.GetOnUpdateEvent() += update;
 
     Camera = engine.CreateGameObject();
     Camera->GetTransform()->SetGlobalPosition(cameraPos);
@@ -318,8 +321,5 @@ int main() {
 
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();
 
-    engine.GetOnInputEvent() += input;
-    engine.GetOnImguiRenderEvent() += imgui_render;
-    engine.GetOnUpdateEvent() += update;
     engine.Start();
 }

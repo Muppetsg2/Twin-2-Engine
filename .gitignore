@@ -8,11 +8,11 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 #GameConfig.yaml.in
+ShadersOrigin
 
 [Bb]uild/
 /[Oo]ut/
 #/[Tt]ools/
-ShadersOrigin
-
+CompiledShaders/
 
 /\.vs/

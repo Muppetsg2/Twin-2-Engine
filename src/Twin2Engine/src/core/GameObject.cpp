@@ -91,6 +91,24 @@ void Twin2Engine::Core::GameObject::SetName(const string& name)
 	_name = name;
 }
 
+void Twin2Engine::Core::GameObject::Update()
+{
+	UpdateComponents();
+
+	for (size_t i = 0; i < _transform->GetChildCount(); i++)
+	{
+		_transform->GetChildAt(i)->GetGameObject()->Update();
+	}
+}
+
+void Twin2Engine::Core::GameObject::UpdateComponents()
+{
+	for (Component* component : components)
+	{
+		component->Update();
+	}
+}
+
 
 void Twin2Engine::Core::GameObject::RemoveComponent(Component* component)
 {

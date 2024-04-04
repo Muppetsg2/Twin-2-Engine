@@ -82,9 +82,23 @@ namespace Twin2Engine
 			void RecalculateGlobalScale();
 			void RecalculateLocalScale();
 
-			void CallPositionChanged();
-			void CallRotationChanged();
-			void CallScaleChanged();
+
+			struct CallingEvents
+			{
+				bool transformChanged : 1;
+				bool positionChanged : 1;
+				bool rotationChanged : 1;
+				bool scaleChanged : 1;
+
+				bool parentChanged : 1;
+				bool inHierarchyParentChanged : 1;
+				bool childrenChanged : 1;
+
+			} _callingEvents;
+
+			inline void CallPositionChanged();
+			inline void CallRotationChanged();
+			inline void CallScaleChanged();
 			inline void CallParentChanged();
 			void CallInHierarchyParentChanged();
 			inline void CallChildrenChanged();
@@ -147,6 +161,8 @@ namespace Twin2Engine
 			inline bool GetDirtyFlagGlobalScale() const;
 			inline bool GetDirtyFlagLocalScale() const;
 			inline bool GetDirtyFlagGlobalRotationQuat2Euler() const;
+
+			virtual void Update() override;
 		};
 	}
 }

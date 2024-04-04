@@ -437,7 +437,7 @@ void Twin2Engine::Core::Transform::RecalculateLocalPosition()
 {
 	if (_dirtyFlags.dirtyFlagLocalPosition)
 	{
-		if (_parent == originTransform)
+		if (_parent == originTransform || _parent == nullptr)
 		{
 			_localPosition = _globalPosition;
 		}

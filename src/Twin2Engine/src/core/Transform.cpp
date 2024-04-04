@@ -537,7 +537,7 @@ void Twin2Engine::Core::Transform::RecalculateLocalRotation()
 {
 	if (_dirtyFlags.dirtyFlagLocalRotation)
 	{
-		if (_parent == originTransform)
+		if (_parent == originTransform || _parent == nullptr)
 		{
 			_localRotationQuat = _globalRotationQuat;
 			_localRotation = _globalRotation;
@@ -593,7 +593,7 @@ void Twin2Engine::Core::Transform::RecalculateGlobalRotation()
 {
 	if (_dirtyFlags.dirtyFlagGlobalRotation)
 	{
-		if (_parent == originTransform)
+		if (_parent == originTransform || _parent == nullptr)
 		{
 			_globalRotationQuat = _localRotationQuat;
 		}

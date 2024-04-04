@@ -186,6 +186,7 @@ std::string Twin2Engine::GraphicEngine::ShaderManager::LoadShaderSource(const st
     buffer << file.rdbuf();
     return buffer.str();
 }
+
 GLuint Twin2Engine::GraphicEngine::ShaderManager::CompileShader(GLenum type, const std::string& source)
 {
     GLuint shaderId = glCreateShader(type);
@@ -592,7 +593,7 @@ GLuint Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgramFromFile(co
 
         #elif NORMAL_SHADERS_CREATION
 
-        GLuint shaderId = CompileShader(shaderTypeMapping.at(extensionHash), SHADERS_ORIGIN_DIRETORY + ("/shaders/" + shaderName));
+        GLuint shaderId = CompileShader(shaderTypeMapping.at(extensionHash), LoadShaderSource(SHADERS_ORIGIN_DIRETORY + ("/shaders/" + shaderName)));
 
         #endif
     

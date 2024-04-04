@@ -85,7 +85,7 @@ T* Twin2Engine::Core::GameObject::AddComponent()
 {
 	T* component = new T();
 
-	component->Initialize();
+	//component->Initialize();
 	component->Init(this);
 
 	components.push_back(component);

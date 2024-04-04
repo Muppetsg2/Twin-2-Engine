@@ -50,6 +50,10 @@
 #include "core/CapsuleColliderComponent.h"
 #include "core/SphereColliderComponent.h"
 
+#include <core/PointLightComponent.h>
+#include <core/SpotLightComponent.h>
+#include <core/DirectionalLightComponent.h>
+
 #pragma region CAMERA_CONTROLLING
 
 glm::vec3 cameraPos(-5.0f, 0.0f, -5.0f);
@@ -113,18 +117,34 @@ void processInput(GLFWwindow* window)
     if (Input::IsKeyHeldDown(Twin2Engine::Core::KEY::W))
     {
         cameraPos += cameraSpeed * cameraFront * Time::GetDeltaTime();
+
+        if (LightingSystem::LightingController::IsInstantiated()) {
+            LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
+        }
     }
     if (Input::IsKeyHeldDown(KEY::S))
     {
         cameraPos -= cameraSpeed * cameraFront * Time::GetDeltaTime();
+
+        if (LightingSystem::LightingController::IsInstantiated()) {
+            LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
+        }
     }
     if (Input::IsKeyHeldDown(KEY::A))
     {
         cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * Time::GetDeltaTime();
+
+        if (LightingSystem::LightingController::IsInstantiated()) {
+            LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
+        }
     }
     if (Input::IsKeyHeldDown(KEY::D))
     {
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * Time::GetDeltaTime();
+
+        if (LightingSystem::LightingController::IsInstantiated()) {
+            LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
+        }
     }
     if (Input::IsKeyHeldDown(KEY::Q))
     {
@@ -316,7 +336,7 @@ int main(int, char**)
 
     glEnable(GL_DEPTH_TEST);
 
-
+#pragma region TestingCollision
     GameObject go1;
     GameObject go2;
     go1.GetTransform()->SetLocalPosition(glm::vec3(1.0f, 0.0f, 0.0f));
@@ -325,12 +345,35 @@ int main(int, char**)
     Twin2Engine::Core::BoxColliderComponent* bc2 = go2.AddComponent<Twin2Engine::Core::BoxColliderComponent>();
     bc1->colliderId = 1;
     bc2->colliderId = 2;
-    bc1->Invoke();
-    bc2->Invoke();
+    bc1->Initialize();
+    bc2->Initialize();
     bc1->Update();
     bc2->Update();
 
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();
+    bc1->Update();
+    bc2->Update();
+    CollisionSystem::CollisionManager::Instance()->PerformCollisions();
+#pragma endregion
+
+#pragma region TestingLighting
+    /**/
+    GameObject pl_go;
+    GameObject sl_go;
+    GameObject dl_go;
+    pl_go.GetTransform()->SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    sl_go.GetTransform()->SetLocalPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
+    dl_go.GetTransform()->SetLocalPosition(glm::vec3(0.0f, 10.0f, 0.0f));
+    Twin2Engine::Core::PointLightComponent* pl = pl_go.AddComponent<Twin2Engine::Core::PointLightComponent>();
+    Twin2Engine::Core::SpotLightComponent* sl = sl_go.AddComponent<Twin2Engine::Core::SpotLightComponent>();
+    Twin2Engine::Core::DirectionalLightComponent* dl = dl_go.AddComponent<Twin2Engine::Core::DirectionalLightComponent>();
+    pl->Initialize();
+    sl->Initialize();
+    dl->Initialize();
+    LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);/**/
+
+#pragma endregion
+
 
 
     // Main loop

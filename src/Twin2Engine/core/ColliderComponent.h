@@ -22,7 +22,7 @@ namespace Twin2Engine {
 		struct Collision {
 			ColliderComponent* collider;
 			ColliderComponent* otherCollider;
-			glm::vec3 position;
+			//glm::vec3 position;
 		};
 
 		class ColliderComponent : public Component {
@@ -30,6 +30,7 @@ namespace Twin2Engine {
 			ColliderComponent(); // Powoduje ¿e klasa jest jakby abstrakcyjna no chyba ¿e bêdzie dziedziczona
 			CollisionSystem::GameCollider * collider = nullptr;
 			CollisionSystem::BoundingVolume* boundingVolume;
+			bool dirtyFlag = true;
 
 		public:
 			virtual ~ColliderComponent();
@@ -53,8 +54,8 @@ namespace Twin2Engine {
 			void SetBoundingVolumeRadius(float radius);
 			void SetLocalPosition(float x, float y, float z);
 
-			void Invoke();
-			void Update();
+			virtual void Initialize() override;
+			virtual void Update() override;
 		};
 	}
 }

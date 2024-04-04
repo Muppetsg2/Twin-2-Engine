@@ -17,7 +17,7 @@ namespace CollisionSystem {
 	struct Collision {
 		Collider* collider;
 		Collider* otherCollider;
-		glm::vec3 position;
+		//glm::vec3 position;
 		glm::vec3 separation;
 	};
 	
@@ -35,7 +35,7 @@ namespace CollisionSystem {
 	
 	struct BoxColliderData : ShapeColliderData {
 		glm::vec3 Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-		glm::vec3 HalfDimensions = glm::vec3(0.5f, 0.5f, 0.5f);
+		glm::vec3 HalfDimensions = glm::vec3(1.0f, 1.0f, 1.0f);
 		glm::vec3 XAxis = glm::vec3(1.0f, 0.0f, 0.0f);
 		glm::vec3 YAxis = glm::vec3(0.0f, 1.0f, 0.0f);
 		glm::vec3 ZAxis = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -43,6 +43,7 @@ namespace CollisionSystem {
 	
 	struct CapsuleColliderData : ShapeColliderData {
 		glm::vec3 EndPosition = glm::vec3(0.0f, 1.0f, 0.0f);
+		glm::vec3 EndLocalPosition = glm::vec3(0.0f, 1.0f, 0.0f);
 		float Radius = 0.5f;
 	};
 	

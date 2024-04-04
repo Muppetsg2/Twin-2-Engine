@@ -11,6 +11,8 @@ namespace Twin2Engine {
 				CapsuleColliderComponent();
 				void SetEndPosition(float x, float y, float z);
 				void SetRadius(float radius);
+
+				void Update() override;
 	
 		};
 	}

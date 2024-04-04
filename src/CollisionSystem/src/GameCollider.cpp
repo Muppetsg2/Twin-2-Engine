@@ -92,14 +92,14 @@ Collision* GameCollider::collide(Collider* other) {
 					Twin2Engine::Core::Collision* col = new Twin2Engine::Core::Collision;
 					col->collider = ((GameCollider*)collision->collider)->colliderComponent;
 					col->otherCollider = ((GameCollider*)collision->otherCollider)->colliderComponent;
-					col->position = collision->position;
+					//col->position = collision->position;
 					colliderComponent->OnTriggerEnter.Invoke(col);
 					delete col;
 
 					col = new Twin2Engine::Core::Collision;
 					col->collider = ((GameCollider*)collision->otherCollider)->colliderComponent;
 					col->otherCollider = ((GameCollider*)collision->collider)->colliderComponent;
-					col->position = collision->position;
+					//col->position = collision->position;
 					((GameCollider*)other)->colliderComponent->OnTriggerEnter.Invoke(col);
 					delete col;
 				}
@@ -147,14 +147,14 @@ Collision* GameCollider::collide(Collider* other) {
 					Twin2Engine::Core::Collision* col = new Twin2Engine::Core::Collision;
 					col->collider = ((GameCollider*)collision->collider)->colliderComponent;
 					col->otherCollider = ((GameCollider*)collision->otherCollider)->colliderComponent;
-					col->position = collision->position;
+					//col->position = collision->position;
 					colliderComponent->OnCollisionEnter.Invoke(col);
 					delete col;
 
 					col = new Twin2Engine::Core::Collision;
 					col->collider = ((GameCollider*)collision->otherCollider)->colliderComponent;
 					col->otherCollider = ((GameCollider*)collision->collider)->colliderComponent;
-					col->position = collision->position;
+					//col->position = collision->position;
 					((GameCollider*)other)->colliderComponent->OnCollisionEnter.Invoke(col);
 					delete col;
 				}
@@ -187,9 +187,9 @@ Collision* GameCollider::collide(Collider* other) {
 	return nullptr;
 };
 
-Collision* GameCollider::rayCollision(Ray& ray) {
-	Collision* collision = new Collision;
-	collision->collider = this;
+bool GameCollider::rayCollision(Ray& ray, RaycastHit& raycastHit) {
+	//Collision* collision = new Collision;
+	raycastHit.collider = this->colliderComponent;
 
 	switch (colliderShape) {
 		case ColliderShape::SPHERE:
@@ -202,10 +202,13 @@ Collision* GameCollider::rayCollision(Ray& ray) {
 				float rSqrt = sphereData->Radius * sphereData->Radius;
 
 				if (distSqr == rSqrt) {
-					collision->position = relativePos;
+					raycastHit.position = relativePos;
 				}
 				else if (distSqr < rSqrt) {
-					collision->position = relativePos - glm::sqrt(rSqrt - distSqr) * ray.Direction;
+					raycastHit.position = relativePos - glm::sqrt(rSqrt - distSqr) * ray.Direction;
+				}
+				else {
+					return false;
 				}
 			}
 
@@ -260,7 +263,7 @@ Collision* GameCollider::rayCollision(Ray& ray) {
 					}
 				}
 
-				collision->position = ray.Origin + ray.Direction * tmin;
+				raycastHit.position = ray.Origin + ray.Direction * tmin;
 			}
 
 			break;
@@ -289,8 +292,7 @@ Collision* GameCollider::rayCollision(Ray& ray) {
 				// Solve quadratic equation for t
 				float discriminant = b * b - 4 * a * c;
 				if (discriminant < 0) {
-					collision = nullptr;
-					break; // No real roots, no intersection
+					return false;
 				}
 
 				float sqrtDiscriminant = sqrt(discriminant);
@@ -299,10 +301,10 @@ Collision* GameCollider::rayCollision(Ray& ray) {
 
 				// Find the smallest positive t
 				float t = (t1 < t2 && t1 >= 0) ? t1 : t2;
-				collision->position = ray.Origin + ray.Direction * t;
+				raycastHit.position = ray.Origin + ray.Direction * t;
 			}
 			break;
 	}
 
-	return collision;
+	return true;
 }

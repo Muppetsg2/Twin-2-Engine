@@ -18,6 +18,7 @@ namespace Twin2Engine {
 
 namespace CollisionSystem {
 	class Ray;
+	struct RaycastHit;
 
 	class GameCollider : public Collider {
 		private:
@@ -44,7 +45,7 @@ namespace CollisionSystem {
 	
 			Collision* collide(Collider* other) override;
 	
-			Collision* rayCollision(Ray& ray);
+			bool rayCollision(Ray& ray, RaycastHit& raycastHit);
 	};
 }
 

@@ -28,11 +28,11 @@ namespace Twin2Engine::GraphicEngine
         friend class ShaderManager;
 
         //Shader(const GLchar* shaderPath);
-        unsigned int shaderProgramID;
         unsigned int _instanceDataSSBO;
         unsigned int _materialIndexSSBO;
         unsigned int _materialInputUBO;
     public:
+        unsigned int shaderProgramID;
         // ID program object  
         Shader(const Shader&& shader);
         Shader(const Shader& shader);

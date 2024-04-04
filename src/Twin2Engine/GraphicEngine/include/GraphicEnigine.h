@@ -17,6 +17,8 @@
 #include <core/GameObject.h>
 #include <core/Transform.h>
 
+#include <LightingController.h>
+
 using Twin2Engine::Core::GameObject;
 using Twin2Engine::Core::Transform;
 
@@ -111,7 +113,9 @@ namespace Twin2Engine
 				//shader = new Shader("res/CompiledShaders/origin/Basic.shdr");
 				ShaderManager::Init();
 				//shader = ShaderManager::GetShaderProgram("res/CompiledShaders/origin/Basic.shdr");
-				shader = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/Basic.shdr", "shaders/normalVert.vert", "shaders/fargmentShader.frag");
+				shader = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/Basic.shdr", "shaders/normalVert.vert", "shaders/LightingShader.frag");
+				LightingSystem::LightingController::Instance()->BindLightBuffors(shader);
+				//shader = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/Basic.shdr", "shaders/normalVert.vert", "shaders/fargmentShader.frag");
 				//shader = new Shader(true, "C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
 				//shader = new Shader("C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\normalVert.vert",
 				//					"C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\res\\shaders\\fargmentShader.frag");

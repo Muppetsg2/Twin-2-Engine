@@ -20,6 +20,8 @@ namespace Twin2Engine {
 				void SetXRotation(float v);
 				void SetYRotation(float v);
 				void SetZRotation(float v);
+
+				void Update() override;
 		};
 	}
 }

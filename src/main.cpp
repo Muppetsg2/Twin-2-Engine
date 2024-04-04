@@ -384,34 +384,34 @@ void input()
 
     bool camDirty = false;
 
-    CameraComponent* c = Camera.GetComponent<CameraComponent>();        
+    CameraComponent* c = Camera.GetComponent<CameraComponent>();
 
-    if (!Input::IsKeyUp(KEY::W))
+    if (Input::IsKeyDown(KEY::W))
     {
         camDirty = true;
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
-    if (!Input::IsKeyUp(KEY::S))
+    if (Input::IsKeyDown(KEY::S))
     {
         camDirty = true;
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
-    if (!Input::IsKeyUp(KEY::A))
+    if (Input::IsKeyDown(KEY::A))
     {
         camDirty = true;
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
-    if (!Input::IsKeyUp(KEY::D))
+    if (Input::IsKeyDown(KEY::D))
     {
         camDirty = true;
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
     /*
-    if (Input::IsKeyHeldDown(KEY::Q))
+    if (Input::IsKeyDown(KEY::Q))
     {
         cameraPos -= cameraUp * cameraSpeed * Time::GetDeltaTime();
     }
-    if (Input::IsKeyHeldDown(KEY::E))
+    if (Input::IsKeyDown(KEY::E))
     {
         cameraPos += cameraUp * cameraSpeed * Time::GetDeltaTime();
     }

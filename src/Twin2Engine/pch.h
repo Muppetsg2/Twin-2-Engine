@@ -39,6 +39,7 @@
 #include <functional>
 #include <iostream>
 #include <fstream>
+#include <memory>
 
 // YAML
 #include <yaml-cpp/yaml.h>

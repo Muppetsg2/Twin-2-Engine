@@ -255,7 +255,7 @@ int main(int, char**)
     textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
     text = textObj->AddComponent<Text>();
     text->SetColor(glm::vec4(1.f));
-    text->SetText("Text");
+    text->SetText("Time: ");
     text->SetSize(48);
     text->SetFont("res/fonts/arial.ttf");
 
@@ -307,7 +307,7 @@ int main(int, char**)
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    delete Window::GetInstance();
+    delete window;
     glfwTerminate();
 
     return 0;

@@ -14,7 +14,7 @@ namespace Twin2Engine::Core {
 		EventHandler() = default;
 		virtual ~EventHandler() = default;
 
-		constexpr void AddCallback(const Action<Args...>& callback) {
+		void AddCallback(const Action<Args...>& callback) {
 			_actions.push_back(callback);
 		}
 		void RemoveCallback(const Action<Args...>& callback) {
@@ -25,7 +25,7 @@ namespace Twin2Engine::Core {
 				}
 			}
 		}
-		constexpr void RemoveAllCallbacks() {
+		void RemoveAllCallbacks() {
 			_actions.clear();
 		}
 
@@ -35,12 +35,14 @@ namespace Twin2Engine::Core {
 			}
 		}
 
-		constexpr void operator+=(const Action<Args...>& callback) {
+		void operator+=(const Action<Args...>& callback) {
 			AddCallback(callback);
 		}
-		constexpr void operator-=(const Action<Args...>& callback) {
+		void operator-=(const Action<Args...>& callback) {
 			RemoveCallback(callback);
-			return *this;
+		}
+		void operator()(Args... args) {
+			Invoke(args);
 		}
 	};
 	using MethodEventHandler = EventHandler<>;

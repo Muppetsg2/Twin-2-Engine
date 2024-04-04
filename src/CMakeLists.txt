@@ -12,7 +12,7 @@ add_subdirectory(Twin2Engine)
 
 add_subdirectory(CollisionSystem)
 
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} main.cpp "main2.cpp")
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC Twin2Engine)

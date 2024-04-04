@@ -1,9 +1,14 @@
 #pragma once
 
-// IMGUI
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#define IMGUI_IMPL_OPENGL_LOADER_GLAD
 #include <imgui.h>
 #include <imgui_impl/imgui_impl_glfw.h>
 #include <imgui_impl/imgui_impl_opengl3.h>
+
+#include <stb_image.h>
 
 // Soloud
 #include <soloud.h>
@@ -15,42 +20,67 @@
 // TIME
 #include <core/Time.h>
 
-constexpr int32_t WINDOW_WIDTH = 1920;
-constexpr int32_t WINDOW_HEIGHT = 1080;
-const char* WINDOW_NAME = "Twin^2 Engine";
-constexpr bool fullscreen = false;
+// WINDOW
+#include <graphic/Window.h>
 
-GLFWmonitor* monitor = nullptr;
-GLFWwindow* window = nullptr;
+#include <core/EventHandler.h>
 
-// Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
-const     char* glsl_version = "#version 450";
-constexpr int32_t GL_VERSION_MAJOR = 4;
-constexpr int32_t GL_VERSION_MINOR = 5;
+// MANAGERS
+#include <graphic/manager/TextureManager.h>
+#include <graphic/manager/SpriteManager.h>
+#include <graphic/manager/FontManager.h>
+#include <graphic/manager/ShaderManager.h>
+#include <graphic/manager/MaterialsManager.h>
+#include <graphic/manager/ModelsManager.h>
+#include <manager/AudioManager.h>
 
-ImVec4 clear_color = ImVec4(.1f, .1f, .1f, 1.f);
+// GAME OBJECT
+#include <core/GameObject.h>
+#include <core/MeshRenderer.h>
+#include <ui/Image.h>
+#include <ui/Text.h>
 
-GLuint UBOMatrices;
+// AUDIO
+#include <core/AudioComponent.h>
 
-SoLoud::Soloud soloud;
-SoLoud::Wav sample;
-SoLoud::handle sampleHandle = 0;
-bool first = true;
+// GRAPHIC_ENGINE
+#include <GraphicEnigine.h>
 
-/*
-ma_engine engine;
-ma_sound sound;
-*/
+//LOGGER
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
-bool musicPlaying = false;
+// STANDARD LIBRARY
+#include <memory>
+
+// COLLISIONS
+#include <CollisionManager.h>
+#include <core/BoxColliderComponent.h>
+#include <core/CapsuleColliderComponent.h>
+#include <core/SphereColliderComponent.h>
+
+// CAMERA
+#include <core/CameraComponent.h>
 
 namespace Twin2Engine {
 	class Engine {
 	private:
-		bool Init();
-		void Init_Imgui();
-		void Init_SoLoud();
+		GraphicEngine::Window* _mainWindow = nullptr;
+		Core::GameObject _rootObject = Core::GameObject();
+		GraphicEngine::GraphicEngine _graphicEngine = GraphicEngine::GraphicEngine();
 
+		GLuint UBOMatrices = 0;
+
+		// Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
+		const char* glsl_version = "#version 450";
+		int32_t GL_VERSION_MAJOR = 4;
+		int32_t GL_VERSION_MINOR = 5;
+
+		bool Init(const std::string& windowName, int32_t windowWidth, int32_t windowHeight);
+		bool Init_OpenGL(const std::string& windowName, int32_t windowWidth, int32_t windowHeight);
+		bool Init_Imgui();
+
+		void Input();
 		void Update();
 		void Render();
 
@@ -60,7 +90,26 @@ namespace Twin2Engine {
 
 		void End_Frame();
 
+		void Cleanup();
+
+		void GameLoop();
+
+		Core::MethodEventHandler onInputEvent = Core::MethodEventHandler();
+		Core::MethodEventHandler onUpdateEvent = Core::MethodEventHandler();
+		Core::MethodEventHandler onImguiRenderEvent = Core::MethodEventHandler();
+
 	public:
-		int GameLoop();
+		Engine() = default;
+		virtual ~Engine() = default;
+
+		Core::GameObject* CreateGameObject();
+
+		int Start(const std::string& windowName, int32_t windowWidth, int32_t windowHeight);
+
+		GLuint GetUBO() const;
+
+		Core::MethodEventHandler GetOnInputEvent() const;
+		Core::MethodEventHandler GetOnUpdateEvent() const;
+		Core::MethodEventHandler GetOnImguiRenderEvent() const;
 	};
 }

@@ -30,7 +30,7 @@ unsigned int Twin2Engine::GraphicEngine::ShaderManager::LoadShaderProgram(const 
 
     std::list<ShaderProgramData*>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [strHash](ShaderProgramData* data) { return data->shaderPathHash == strHash; });
 
-    int shaderProgramID;
+    unsigned int shaderProgramID;
 
     //std::string shaderPath = "ShadersOrigin/CompiledShaders/" + shaderName;
     std::string shaderPath = "ShadersOrigin/CompiledShaders/" + shaderName + ".shdr";
@@ -343,10 +343,12 @@ void Twin2Engine::GraphicEngine::ShaderManager::End()
 
 Shader* Twin2Engine::GraphicEngine::ShaderManager::GetShaderProgram(const std::string& shaderName)
 {
-#ifdef ENTIRE_SHADER_PROGRAM_PRECOMPILATION
+#if ENTIRE_SHADER_PROGRAM_PRECOMPILATION
     unsigned int shaderProgramId = LoadShaderProgram(shaderName);
-#else
+#elif SPIRV_COMPILATION
     Shader* shader = LoadShaderProgramSHPR(shaderName);
+#elif NORMAL_SHADERS_CREATION
+    Shader* shader = CreateShaderProgram(shaderName);
 #endif
 
     //std::list<ShaderProgramData*>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [shaderProgramId](ShaderProgramData* data) { return data->shaderProgramId == shaderProgramId; });
@@ -440,7 +442,7 @@ Shader* Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgram(const std
 
             shader = new Shader(shaderProgramId);
 
-            loadedShaders.push_back(new ShaderProgramData{ .shaderPathHash = strHash, .shaderProgramId = (int)shaderProgramId, .useNumber = 1, .shader = shader });
+            loadedShaders.push_back(new ShaderProgramData{ .shaderPathHash = strHash, .shaderProgramId = shaderProgramId, .useNumber = 1, .shader = shader });
         }
         else
         {
@@ -470,7 +472,7 @@ inline Shader* Twin2Engine::GraphicEngine::ShaderManager::LoadShaderProgramSHPR(
 
         shader = new Shader(shaderProgram);
 
-        loadedShaders.push_back(new ShaderProgramData{ .shaderPathHash = strHash, .shaderProgramId = (int)shaderProgram, .useNumber = 1, .shader = shader });
+        loadedShaders.push_back(new ShaderProgramData{ .shaderPathHash = strHash, .shaderProgramId = shaderProgram, .useNumber = 1, .shader = shader });
     }
     else
     {
@@ -685,7 +687,7 @@ Shader* Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgram(const std
 
         shader = new Shader(shaderProgram);
 
-        loadedShaders.push_back(new ShaderProgramData{ .shaderPathHash = strHash, .shaderProgramId = (int)shaderProgram, .useNumber = 1, .shader = shader });
+        loadedShaders.push_back(new ShaderProgramData{ .shaderPathHash = strHash, .shaderProgramId = shaderProgram, .useNumber = 1, .shader = shader });
     }
     else
     {

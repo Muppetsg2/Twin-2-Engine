@@ -1,6 +1,9 @@
 #ifndef _MATERIALS_MANAGER_H_
 #define _MATERIALS_MANAGER_H_
 
+#include <core/Texture2D.h>
+#include <manager/TextureManager.h>
+
 #include <Material.h>
 #include <ShaderManager.h>
 

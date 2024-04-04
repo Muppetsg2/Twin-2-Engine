@@ -135,6 +135,16 @@ void Twin2Engine::GraphicEngine::MeshRenderingManager::Render(const glm::mat4& p
 			meshPair.first->SetMaterialInputUBO(uboId);
 
 			shaderPair.first->use();
+
+			int beginLocation = 0; // glGetUniformLocation(shaderPair.first->GetProgramId(), "constantZeroTexturePoint");
+			//int textureBind = GL_TEXTURE0;
+			int textureBind = 0;
+			for (auto& material : shaderPair.second)
+			{
+				material.first.GetMaterialParameters()->UploadTextures2D(shaderPair.first->GetProgramId(), beginLocation, textureBind);
+			}
+			
+
 			//meshPair.first->Draw(shaderPair.first, transforms.size());
 			meshPair.first->Draw(shaderPair.first, index);
 		}

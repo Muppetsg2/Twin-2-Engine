@@ -62,6 +62,7 @@ namespace Twin2Engine::GraphicEngine
 
         void setMat4(const std::string& name, glm::mat4& value) const;
 
+        GLuint GetProgramId() const;
         GLuint GetInstanceDataSSBO() const;
         GLuint GetMaterialIndexSSBO() const;
         GLuint GetMaterialInputUBO() const;

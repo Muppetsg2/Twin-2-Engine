@@ -1,3 +1,6 @@
+#include "MaterialParameters.h"
+#include "MaterialParameters.h"
+#include "MaterialParameters.h"
 #include <MaterialParameters.h>
 
 #include <spdlog/spdlog.h>
@@ -49,6 +52,66 @@ void MaterialParameters::Add(const std::string& variableName, size_t size, void*
 	_variablesValuesMappings[hashed] = result;
 }
 
+void Twin2Engine::GraphicEngine::MaterialParameters::AddTexture2D(const std::string& textureName, unsigned int textureId)
+{
+	size_t hashed = hasher(textureName);
+
+	if (_textureMappings.contains(hashed))
+	{
+		_textures[_textureMappings[hashed]] = textureId;
+	}
+	else
+	{
+		_textureMappings[hashed] = _textures.size();
+		_textures.push_back(textureId);
+		GLuint samplerID;
+
+		glGenSamplers(1, &samplerID);
+
+		glSamplerParameteri(samplerID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glSamplerParameteri(samplerID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		_samplers.push_back(samplerID);
+	}
+}
+
+void Twin2Engine::GraphicEngine::MaterialParameters::SetTexture2D(const std::string& textureName, unsigned int textureId)
+{
+	size_t hashed = hasher(textureName);
+
+	if (_textureMappings.contains(hashed))
+	{
+		_textures[_textureMappings[hashed]] = textureId;
+	}
+}
+
+void Twin2Engine::GraphicEngine::MaterialParameters::UploadTextures2D(unsigned int programId, int& beginLocation, int& textureBinded)
+{
+	SPDLOG_INFO("Here1 {}", _textures.size());
+	for (int i = 0; i < _textures.size(); i++)
+	{
+		glActiveTexture(GL_TEXTURE0 + textureBinded);
+		//glActiveTexture(GL_TEXTURE0 + textureBinded);
+		glBindTexture(GL_TEXTURE_2D, _textures[i]);
+		SPDLOG_INFO("Here4 {} {}", beginLocation, textureBinded);
+		glBindSampler(textureBinded, _samplers[i]);
+		SPDLOG_INFO("Here6");
+		//glUniform1i(beginLocation, GL_TEXTURE0 + textureBinded);
+		glUniform1i(beginLocation, textureBinded);
+
+		GLenum error = glGetError();
+		if (error != GL_NO_ERROR) {
+			SPDLOG_ERROR("Error: {}", error);
+		}
+		//glProgramUniform1i(programId, beginLocation, GL_TEXTURE0 + textureBinded);
+		SPDLOG_INFO("Here5");
+		textureBinded++;
+		beginLocation++;
+	}
+	//SPDLOG_INFO("Here2");
+}
 
 std::vector<char> MaterialParameters::GetData() const
 {

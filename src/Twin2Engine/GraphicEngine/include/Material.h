@@ -106,7 +106,7 @@ namespace Twin2Engine::GraphicEngine
 		//bool operator<(const Material& other);
 
 		Shader* GetShader() const;
-		unsigned int GetId() const;
+		size_t GetId() const;
 		MaterialParameters* GetMaterialParameters() const;
 	};
 

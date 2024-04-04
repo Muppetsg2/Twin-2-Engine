@@ -15,7 +15,9 @@ using std::string;
 
 #include <Shader.h>
 
-//#define ENTIRE_SHADER_PROGRAM_PRECOMPILATION
+#define ENTIRE_SHADER_PROGRAM_PRECOMPILATION false
+#define SPIRV_COMPILATION false
+#define NORMAL_SHADERS_CREATION true
 
 namespace Twin2Engine::GraphicEngine
 {
@@ -39,7 +41,7 @@ namespace Twin2Engine::GraphicEngine
 		struct ShaderProgramData
 		{
 			size_t shaderPathHash;
-			int shaderProgramId;
+			unsigned int shaderProgramId;
 			int useNumber;
 			Shader* shader;
 			bool operator<(const ShaderProgramData& other) const {

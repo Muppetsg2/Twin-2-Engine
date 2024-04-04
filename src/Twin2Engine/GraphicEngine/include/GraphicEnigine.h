@@ -49,13 +49,13 @@ namespace Twin2Engine
 			{
 				vector<Vertex> vertexes;
 				vertexes.push_back(Vertex{ .Position = glm::vec3(0.0f, 0.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
-				vertexes.push_back(Vertex{ .Position = glm::vec3(1.0f, 0.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
-				vertexes.push_back(Vertex{ .Position = glm::vec3(1.0f, 1.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
-				vertexes.push_back(Vertex{ .Position = glm::vec3(0.0f, 1.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
+				vertexes.push_back(Vertex{ .Position = glm::vec3(1.0f, 0.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(1.0f, 0.0f) });
+				vertexes.push_back(Vertex{ .Position = glm::vec3(1.0f, 1.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(1.0f, 1.0f) });
+				vertexes.push_back(Vertex{ .Position = glm::vec3(0.0f, 1.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 1.0f) });
 				vertexes.push_back(Vertex{ .Position = glm::vec3(0.0f, 0.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
-				vertexes.push_back(Vertex{ .Position = glm::vec3(1.0f, 0.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
-				vertexes.push_back(Vertex{ .Position = glm::vec3(1.0f, 1.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
-				vertexes.push_back(Vertex{ .Position = glm::vec3(0.0f, 1.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) });
+				vertexes.push_back(Vertex{ .Position = glm::vec3(1.0f, 0.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(1.0f, 0.0f) });
+				vertexes.push_back(Vertex{ .Position = glm::vec3(1.0f, 1.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(1.0f, 1.0f) });
+				vertexes.push_back(Vertex{ .Position = glm::vec3(0.0f, 1.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f), .TexCoords = glm::vec2(0.0f, 1.0f) });
 
 				vector<unsigned int> indices;
 
@@ -117,7 +117,7 @@ namespace Twin2Engine
 
 				//shader = ShaderManager::CreateShaderProgram("res/shaders/Basic.shpr");
 				//shader = ShaderManager::CreateShaderProgram("origin/Basic", "shaders/normalVert.vert", "shaders/fargmentShader.frag");
-				shader = ShaderManager::GetShaderProgram("origin/Basic");
+				//shader = ShaderManager::GetShaderProgram("origin/Basic");
 				
 
 				//modelMesh = ModelsManager::CreateModel("NewModel", vertexes, indices, textures);
@@ -125,7 +125,8 @@ namespace Twin2Engine
 				modelMesh2 = ModelsManager::GetModel("res/models/castle.obj");
 
 
-				material = MaterialsManager::GetMaterial("Basic");
+				//shader = ShaderManager::CreateShaderProgram("origin/Textured", "shaders/textured.vert", "shaders/textured.frag");
+				material = MaterialsManager::GetMaterial("textured");
 
 				material2 = MaterialsManager::GetMaterial("Basic2");
 
@@ -137,14 +138,14 @@ namespace Twin2Engine
 				gameObject2 = new GameObject();
 				gameObject2->GetTransform()->Translate(glm::vec3(2, 1, 0));
 				comp = gameObject2->AddComponent<MeshRenderer>();
-				comp->AddMaterial(material2);
+				comp->AddMaterial(material);
 				comp->SetModel(modelMesh1);
 
 
 				gameObject3 = new GameObject();
 				gameObject3->GetTransform()->Translate(glm::vec3(0, -1, 0));
 				comp = gameObject3->AddComponent<MeshRenderer>();
-				comp->AddMaterial(material2);
+				comp->AddMaterial(material);
 				comp->SetModel(modelMesh2);
 
 				//std::cout << "Tutaj4\n";
@@ -159,12 +160,12 @@ namespace Twin2Engine
 
 			void Render(const Window* window, glm::mat4 view, glm::mat4 projection)
 			{
-				shader->use();
-				shader->setMat4("projection", projection);
-				shader->setMat4("view", view);
-
-				glm::mat4 model(1.0f);
-				shader->setMat4("model", model);
+				//shader->use();
+				//shader->setMat4("projection", projection);
+				//shader->setMat4("view", view);
+				//
+				//glm::mat4 model(1.0f);
+				//shader->setMat4("model", model);
 				//std::cout << "Tutaj1\n";
 				MeshRenderingManager::Render(projection * view);
 				UIRenderingManager::Render(window);

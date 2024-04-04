@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
     YAML::Node materialNode;
     materialNode["name"] = materialName;
     materialNode["shader"] = shaderName;
-    materialNode["parameters"] = parameters;
+    materialNode["parameters"] = parameters["parameters"];
 
     YAML::Node rootNode;
     std::string nodeName = "material"; // Name of the node

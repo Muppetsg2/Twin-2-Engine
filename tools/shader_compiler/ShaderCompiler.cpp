@@ -12,6 +12,28 @@ namespace fs = std::filesystem;
 
 int main() 
 {
+    fs::path sourceDir = "ShadersOrigin/shaders";
+    fs::path destinationDir = "ShadersOrigin/CompiledShaders";
+    for (const auto& entry : fs::recursive_directory_iterator(sourceDir)) 
+    {
+        if (entry.is_regular_file() && entry.path().extension() == ".shpr") 
+        {
+            // Read YAML content
+            std::ifstream file(entry.path());
+            YAML::Node yaml = YAML::Load(file);
+
+            // Extract shader name from YAML
+            std::string shaderName = yaml["shaderprogram"]["name"].as<std::string>();
+
+            // Construct destination path
+            fs::path destinationPath = destinationDir / (shaderName + ".shpr");
+
+            // Copy file
+            fs::copy_file(entry.path(), destinationPath, fs::copy_options::overwrite_existing);
+
+            std::cout << "Copied: " << entry.path().filename() << " to " << destinationPath << std::endl;
+        }
+    }
     // Directory containing shader programs
     std::string shaderDirectory = "ShadersOrigin/CompiledShaders/";
 

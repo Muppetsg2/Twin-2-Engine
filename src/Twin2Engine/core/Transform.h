@@ -2,6 +2,7 @@
 #define _TRANSFORM_H_
 
 #include <core/Component.h>
+#include <core/EventHandler.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -28,20 +29,38 @@ namespace Twin2Engine
 			glm::quat _globalRotationQuat;
 			glm::vec3 _globalScale;
 
-			bool _dirtyFlag = false;
-			bool _dirtyFlagInHierarchy = false;
-
-			bool _dirtyFlagGlobalPosition = false;
-			bool _dirtyFlagLocalPosition = false;
-
-			bool _dirtyFlagGlobalRotation = false;
-			bool _dirtyFlagLocalRotation = false;
-
-			bool _dirtyFlagGlobalScale = false;
-			bool _dirtyFlagLocalScale = false;
-
-			bool _dirtyFlagGlobalRotationQuat2Euler = false;
+			//bool _dirtyFlag = false;
+			//bool _dirtyFlagInHierarchy = false;
+			//
+			//bool _dirtyFlagGlobalPosition = false;
+			//bool _dirtyFlagLocalPosition = false;
+			//
+			//bool _dirtyFlagGlobalRotation = false;
+			//bool _dirtyFlagLocalRotation = false;
+			//
+			//bool _dirtyFlagGlobalScale = false;
+			//bool _dirtyFlagLocalScale = false;
+			//
+			//bool _dirtyFlagGlobalRotationQuat2Euler = false;
 			//bool _dirtyFlagLocalRotationQuat2Euler = false;
+
+			struct DirtyFlags
+			{
+				bool dirtyFlag : 1;
+				bool dirtyFlagInHierarchy : 1;
+
+				bool dirtyFlagGlobalPosition : 1;
+				bool dirtyFlagLocalPosition : 1;
+
+				bool dirtyFlagGlobalRotation : 1;
+				bool dirtyFlagLocalRotation : 1;
+
+				bool dirtyFlagGlobalScale : 1;
+				bool dirtyFlagLocalScale : 1;
+
+				bool dirtyFlagGlobalRotationQuat2Euler : 1;
+
+			} _dirtyFlags;
 
 			glm::mat4 _localTransformMatrix;
 			glm::mat4 _globalTransformMatrix;
@@ -49,7 +68,6 @@ namespace Twin2Engine
 			Transform* _parent;
 
 			std::vector<Transform*> _children;
-
 
 			inline void JustAddChild(Transform* child);
 			inline void JustRemoveChild(Transform* child);
@@ -70,7 +88,23 @@ namespace Twin2Engine
 			void RecalculateGlobalScale();
 			void RecalculateLocalScale();
 
+			void CallPositionChanged();
+			void CallRotationChanged();
+			void CallScaleChanged();
+			inline void CallParentChanged();
+			void CallInHierarchyParentChanged();
+			inline void CallChildrenChanged();
+
 		public:
+			// EVENTS
+			EventHandler<Transform*> OnEventTransformChanged;
+			EventHandler<Transform*> OnEventPositionChanged;
+			EventHandler<Transform*> OnEventRotationChanged;
+			EventHandler<Transform*> OnEventScaleChanged;
+			EventHandler<Transform*> OnEventParentChanged;
+			EventHandler<Transform*> OnEventInHierarchyParentChanged;
+			EventHandler<Transform*> OnEventChildrenChanged;
+
 			Transform();
 
 			void SetParent(Transform* parent);
@@ -109,6 +143,16 @@ namespace Twin2Engine
 			glm::vec3 GetGlobalScale();
 
 			glm::mat4 GetTransformMatrix();
+
+			inline bool GetDirtyFlag() const;
+			inline bool GetDirtyFlagInHierarchy() const;
+			inline bool GetDirtyFlagGlobalPosition() const;
+			inline bool GetDirtyFlagLocalPosition() const;
+			inline bool GetDirtyFlagGlobalRotation() const;
+			inline bool GetDirtyFlagLocalRotation() const;
+			inline bool GetDirtyFlagGlobalScale() const;
+			inline bool GetDirtyFlagLocalScale() const;
+			inline bool GetDirtyFlagGlobalRotationQuat2Euler() const;
 		};
 	}
 }

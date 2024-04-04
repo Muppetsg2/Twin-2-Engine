@@ -490,7 +490,7 @@ void Twin2Engine::Core::Transform::RecalculateGlobalPosition()
 
 void Twin2Engine::Core::Transform::SetLocalRotation(const glm::vec3& localRotation)
 {
-	_localRotation = localRotation;
+	_localRotation = glm::radians(localRotation);
 	_localRotationQuat = glm::quat(localRotation);
 
 	_dirtyFlags.dirtyFlag = true;
@@ -508,7 +508,7 @@ glm::vec3 Twin2Engine::Core::Transform::GetLocalRotation()
 {
 	RecalculateLocalRotation();
 
-	return _localRotation;
+	return glm::degrees(_localRotation);
 }
 
 void Twin2Engine::Core::Transform::SetLocalRotation(const glm::quat& localRotation)
@@ -554,7 +554,7 @@ void Twin2Engine::Core::Transform::RecalculateLocalRotation()
 
 void Twin2Engine::Core::Transform::SetGlobalRotation(const glm::vec3& globalRotation)
 {
-	_globalRotation = globalRotation;
+	_globalRotation = glm::radians(globalRotation);
 	_globalRotationQuat = glm::quat(globalRotation);
 
 	_dirtyFlags.dirtyFlag = true;
@@ -579,7 +579,7 @@ glm::vec3 Twin2Engine::Core::Transform::GetGlobalRotation()
 		_dirtyFlags.dirtyFlagGlobalRotationQuat2Euler = false;
 	}
 
-	return _globalRotation;
+	return glm::degrees(_globalRotation);
 }
 
 glm::quat Twin2Engine::Core::Transform::GetGlobalRotationQuat()
@@ -678,7 +678,7 @@ void Twin2Engine::Core::Transform::RecalculateGlobalScale()
 {
 	if (_dirtyFlags.dirtyFlagGlobalScale)
 	{
-		if (_parent == originTransform || parent == nullptr)
+		if (_parent == originTransform || _parent == nullptr)
 		{
 			_globalScale = _localScale;
 		}

@@ -1,5 +1,4 @@
-#ifndef SHADER_H
-#define SHADER_H
+#pragma once
 
 namespace Twin2Engine
 {
@@ -34,19 +33,18 @@ namespace Twin2Engine
             ~Shader();
 
             // aktywuj shader  
-            void use();
+            void Use();
             // funkcje operuj¹ce na uniformach  
-            void setBool(const std::string& name, bool value) const;
+            void SetBool(const std::string& name, bool value) const;
+            void SetInt(const std::string& name, int value) const;
+            void SetUInt(const std::string& name, unsigned int value) const;
+            void SetFloat(const std::string& name, float value) const;
+            void SetVec2(const std::string& name, const glm::vec2& value) const;
+            void SetVec3(const std::string& name, const glm::vec3& value) const;
+            void SetVec4(const std::string& name, const glm::vec4& value) const;
+            void SetMat4(const std::string& name, glm::mat4& value) const;
 
-            void setInt(const std::string& name, int value) const;
-
-            void setFloat(const std::string& name, float value) const;
-
-            void setVec4(const std::string& name, float* value) const;
-
-            void setVec3(const std::string& name, float* value) const;
-
-            void setMat4(const std::string& name, glm::mat4& value) const;
+            glm::mat4 GetMat4(const std::string& name) const;
 
             GLuint GetInstanceDataSSBO() const;
             GLuint GetMaterialIndexSSBO() const;
@@ -54,5 +52,3 @@ namespace Twin2Engine
         };
     }
 }
-
-#endif // !SHADER_H

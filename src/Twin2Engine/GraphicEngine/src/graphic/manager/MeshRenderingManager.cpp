@@ -108,7 +108,7 @@ void MeshRenderingManager::Render()
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 			meshPair.first->SetMaterialInputUBO(uboId);
 
-			shaderPair.first->use();
+			shaderPair.first->Use();
 			//meshPair.first->Draw(shaderPair.first, transforms.size());
 			meshPair.first->Draw(shaderPair.first, index);
 		}
@@ -194,7 +194,7 @@ void MeshRenderingManager::RenderDepthMap()
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 			meshPair.first->SetMaterialInputUBO(uboId);
 
-			shaderPair.first->use();
+			shaderPair.first->Use();
 			//meshPair.first->Draw(shaderPair.first, transforms.size());
 			meshPair.first->Draw(shaderPair.first, index);
 		}

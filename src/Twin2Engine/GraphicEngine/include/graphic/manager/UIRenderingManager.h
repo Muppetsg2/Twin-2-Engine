@@ -28,7 +28,9 @@ namespace Twin2Engine
 			static GraphicEngine::InstatiatingModel _spritePlane;
 			static GraphicEngine::Shader* _uiShader;
 
+
 			static void Init();
+
 			static void Render();
 		public:
 			static void Render(UIElement elem);

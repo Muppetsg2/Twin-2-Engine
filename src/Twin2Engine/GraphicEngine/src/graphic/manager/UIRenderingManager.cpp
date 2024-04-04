@@ -20,34 +20,34 @@ void UIRenderingManager::Init() {
 
 void UIRenderingManager::Render()
 {
-	_uiShader->use();
+	_uiShader->Use();
 	glActiveTexture(GL_TEXTURE0);
-	_uiShader->setInt("sprite.img", 0);
+	_uiShader->SetInt("sprite.img", 0);
 	ivec2 canvasSize = Window::GetInstance()->GetWindowSize();
-	_uiShader->setFloat("canvas.width", canvasSize.x);
-	_uiShader->setFloat("canvas.height", canvasSize.y);
+	_uiShader->SetFloat("canvas.width", canvasSize.x);
+	_uiShader->SetFloat("canvas.height", canvasSize.y);
 
 	while (_renderQueue.size() > 0) {
 		UIElement elem = _renderQueue.front();
 		
-		_uiShader->setBool("isText", elem.isText);
+		_uiShader->SetBool("isText", elem.isText);
 
-		_uiShader->setVec4("sprite.color", (float*)&elem.color);
-		_uiShader->setFloat("sprite.width", (float)elem.spriteSize.x);
-		_uiShader->setFloat("sprite.height", (float)elem.spriteSize.y);
-		_uiShader->setFloat("sprite.x", (float)elem.spriteOffset.x);
-		_uiShader->setFloat("sprite.y", (float)elem.spriteOffset.y);
-		_uiShader->setFloat("sprite.texWidth", (float)elem.textureSize.x);
-		_uiShader->setFloat("sprite.texHeight", (float)elem.textureSize.y);
+		_uiShader->SetVec4("sprite.color", elem.color);
+		_uiShader->SetFloat("sprite.width", (float)elem.spriteSize.x);
+		_uiShader->SetFloat("sprite.height", (float)elem.spriteSize.y);
+		_uiShader->SetFloat("sprite.x", (float)elem.spriteOffset.x);
+		_uiShader->SetFloat("sprite.y", (float)elem.spriteOffset.y);
+		_uiShader->SetFloat("sprite.texWidth", (float)elem.textureSize.x);
+		_uiShader->SetFloat("sprite.texHeight", (float)elem.textureSize.y);
 
 		glBindTexture(GL_TEXTURE_2D, elem.textureID);
 
-		_uiShader->setFloat("canvas.elemWidth", elem.elemSize.x);
-		_uiShader->setFloat("canvas.elemHeight", elem.elemSize.y);
+		_uiShader->SetFloat("canvas.elemWidth", elem.elemSize.x);
+		_uiShader->SetFloat("canvas.elemHeight", elem.elemSize.y);
 
 		mat4 normalModel = mat4(mat3(transpose(inverse(elem.transform))));
-		_uiShader->setMat4("model", elem.transform);
-		_uiShader->setMat4("normalModel", normalModel);
+		_uiShader->SetMat4("model", elem.transform);
+		_uiShader->SetMat4("normalModel", normalModel);
 
 		_spritePlane.GetMesh(0)->Draw(_uiShader, 1);
 

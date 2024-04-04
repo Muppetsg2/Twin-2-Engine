@@ -52,38 +52,60 @@ Shader::~Shader()
 }
 
 // aktywuj shader  
-void Shader::use()
+void Shader::Use()
 {
     glUseProgram(shaderProgramID);
 }
 // funkcje operuj¹ce na uniformach  
-void Shader::setBool(const std::string& name, bool value) const
+void Shader::SetBool(const std::string& name, bool value) const
 {
     glUniform1i(glGetUniformLocation(shaderProgramID, name.c_str()), (int)value);
 }
 
-void Shader::setInt(const std::string& name, int value) const
+void Shader::SetInt(const std::string& name, int value) const
 {
     glUniform1i(glGetUniformLocation(shaderProgramID, name.c_str()), value);
 }
 
-void Shader::setFloat(const std::string& name, float value) const
+void Shader::SetUInt(const std::string& name, unsigned int value) const
+{
+    glUniform1ui(glGetUniformLocation(shaderProgramID, name.c_str()), value);
+}
+
+void Shader::SetFloat(const std::string& name, float value) const
 {
     glUniform1f(glGetUniformLocation(shaderProgramID, name.c_str()), value);
 }
 
-void Shader::setVec4(const std::string& name, float* value) const
+void Shader::SetVec2(const std::string& name, const glm::vec2& value) const
 {
-    glUniform4fv(glGetUniformLocation(shaderProgramID, name.c_str()), 1, value);
-}
-void Shader::setVec3(const std::string& name, float* value) const
-{
-    glUniform3fv(glGetUniformLocation(shaderProgramID, name.c_str()), 1, value);
+    glUniform2fv(glGetUniformLocation(shaderProgramID, name.c_str()), 1, glm::value_ptr(value));
 }
 
-void Shader::setMat4(const std::string& name, glm::mat4& value) const
+void Shader::SetVec3(const std::string& name, const glm::vec3& value) const
+{
+    glUniform3fv(glGetUniformLocation(shaderProgramID, name.c_str()), 1, glm::value_ptr(value));
+}
+
+void Shader::SetVec4(const std::string& name, const glm::vec4& value) const
+{
+    glUniform4fv(glGetUniformLocation(shaderProgramID, name.c_str()), 1, glm::value_ptr(value));
+}
+
+void Shader::SetMat4(const std::string& name, glm::mat4& value) const
 {
     glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+}
+
+glm::mat4 Shader::GetMat4(const std::string& name) const
+{
+    GLfloat tab[16]{};
+
+    glGetnUniformfv(shaderProgramID, glGetUniformLocation(shaderProgramID, name.c_str()), 16 * sizeof(GLfloat), tab);
+
+    glm::mat4 mat = glm::make_mat4(tab);
+
+    return mat;
 }
 
 GLuint Shader::GetMaterialInputUBO() const

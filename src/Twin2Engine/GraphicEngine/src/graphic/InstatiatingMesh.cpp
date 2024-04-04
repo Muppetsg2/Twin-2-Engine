@@ -97,7 +97,7 @@ void Twin2Engine::GraphicEngine::InstatiatingMesh::Draw(Shader* shader, unsigned
         //printf("Textures path %s\n", (mesh->textures[i].path).c_str());
         //shader.setFloat(("material." + name + number).c_str(), i);
         //shader->setFloat(("material." + name + number).c_str(), i);
-        shader->setInt((name + number).c_str(), GL_TEXTURE0 + i);
+        shader->SetInt((name + number).c_str(), GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, mesh->textures[i].id);
     }
     glActiveTexture(GL_TEXTURE0);

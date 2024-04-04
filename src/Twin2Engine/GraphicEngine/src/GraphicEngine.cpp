@@ -36,6 +36,7 @@ Twin2Engine::GraphicEngine::GraphicEngine::GraphicEngine() {
 #pragma endregion
 
 	ShaderManager::Init();
+	UIRenderingManager::Init();
 	
 	// Standard Shaders
 	ShaderManager::CreateShaderProgram("res/shaders/Basic.shpr");

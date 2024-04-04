@@ -321,11 +321,13 @@ bool init()
     }
     spdlog::info("Successfully initialized OpenGL loader!");
 
+    /*
 #ifdef _DEBUG
     // Debugging
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(ErrorMessageCallback, 0);
 #endif
+    */
 
     // Blending
     glEnable(GL_BLEND);
@@ -407,40 +409,6 @@ void input()
         camDirty = true;
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
-    /*
-    if (Input::IsKeyDown(KEY::Q))
-    {
-        cameraPos -= cameraUp * cameraSpeed * Time::GetDeltaTime();
-    }
-    if (Input::IsKeyDown(KEY::E))
-    {
-        cameraPos += cameraUp * cameraSpeed * Time::GetDeltaTime();
-    }
-    */
-
-    /*
-    static bool cursorToggle = false;
-
-    if (Input::IsMouseButtonPressed(MOUSE_BUTTON::MIDDLE))
-    {
-        if (!cursorToggle)
-        {
-            lastMouseCallback = glfwSetCursorPosCallback(window->GetWindow(), mouse_callback);
-            Input::HideAndLockCursor();
-            cursorToggle = !cursorToggle;
-            mouseUsingStarted = true;
-        }
-    }
-    else if (Input::IsMouseButtonReleased(MOUSE_BUTTON::MIDDLE))
-    {
-        if (cursorToggle)
-        {
-            glfwSetCursorPosCallback(window->GetWindow(), lastMouseCallback);
-            Input::ShowCursor();
-            cursorToggle = !cursorToggle;
-        }
-    }
-    */
 
     if (camDirty) 
     {
@@ -462,6 +430,7 @@ void input()
             Input::HideAndLockCursor();
             glfwSetCursorPosCallback(window->GetWindow(), mouse_callback);
         }
+        printf("%f %f %f\n", Camera.GetTransform()->GetGlobalRotation().x, Camera.GetTransform()->GetGlobalRotation().y, Camera.GetTransform()->GetGlobalRotation().z);
     }
 }
 
@@ -479,13 +448,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     lastX = xpos;
     lastY = ypos;
 
-    //printf("MPosX: %f MPosY: %f\n", xpos, ypos);
-
     xoffset *= sensitivity;
     yoffset *= sensitivity;
-
-    //yaw += xoffset;
-    //pitch += yoffset;
 
     glm::vec3 rot = Camera.GetTransform()->GetGlobalRotation();
 

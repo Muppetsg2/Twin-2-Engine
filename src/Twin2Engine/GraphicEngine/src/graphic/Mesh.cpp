@@ -29,7 +29,7 @@ void Mesh::Draw(Shader* shader)
         //printf("Textures id %d\n", textures[i].id);
         //printf("Textures name %s\n", (name + number).c_str());
         //shader.setFloat(("material." + name + number).c_str(), i);
-        shader->setInt((name + number).c_str(), i);
+        shader->SetInt((name + number).c_str(), i);
         //shader.setInt((name + number).c_str(), textures[i].id);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }

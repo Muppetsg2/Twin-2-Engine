@@ -9,13 +9,13 @@ void Twin2Engine::Core::Transform::SetDirtyFlagInChildren()
 {
 	if (!_dirtyFlags.dirtyFlagInHierarchy)
 	{
-		_dirtyFlags.dirtyFlagInHierarchy = true;
-		_dirtyFlags.dirtyFlagGlobalPosition = true;
-		_dirtyFlags.dirtyFlagGlobalRotation = true;
-		_dirtyFlags.dirtyFlagGlobalScale = true;
-
 		for (int index = 0; index < _children.size(); index++)
 		{
+			_children[index]->_dirtyFlags.dirtyFlagInHierarchy = true;
+			_children[index]->_dirtyFlags.dirtyFlagGlobalPosition = true;
+			_children[index]->_dirtyFlags.dirtyFlagGlobalRotation = true;
+			_children[index]->_dirtyFlags.dirtyFlagGlobalScale = true;
+
 			_children[index]->SetDirtyFlagInChildren();
 		}
 	}
@@ -25,13 +25,13 @@ void Twin2Engine::Core::Transform::SetDirtyFlagGlobalPositionInChildren()
 {
 	if (!_dirtyFlags.dirtyFlagGlobalPosition)
 	{
-		_dirtyFlags.dirtyFlagGlobalPosition = true;
-		_dirtyFlags.dirtyFlagInHierarchy = true;
-
-		CallPositionChanged();
-
 		for (int index = 0; index < _children.size(); index++)
 		{
+			_children[index]->_dirtyFlags.dirtyFlagGlobalPosition = true;
+			_children[index]->_dirtyFlags.dirtyFlagInHierarchy = true;
+
+			_children[index]->CallPositionChanged();
+
 			_children[index]->SetDirtyFlagGlobalPositionInChildren();
 		}
 	}
@@ -41,13 +41,14 @@ void Twin2Engine::Core::Transform::SetDirtyFlagGlobalRotationInChildren()
 {
 	if (!_dirtyFlags.dirtyFlagGlobalRotation)
 	{
-		_dirtyFlags.dirtyFlagGlobalRotation = true;
-		_dirtyFlags.dirtyFlagInHierarchy = true;
-
-		CallRotationChanged();
 
 		for (int index = 0; index < _children.size(); index++)
 		{
+			_children[index]->_dirtyFlags.dirtyFlagGlobalRotation = true;
+			_children[index]->_dirtyFlags.dirtyFlagInHierarchy = true;
+
+			_children[index]->CallRotationChanged();
+
 			_children[index]->SetDirtyFlagGlobalRotationInChildren();
 		}
 	}
@@ -57,13 +58,13 @@ void Twin2Engine::Core::Transform::SetDirtyFlagGlobalScaleInChildren()
 {
 	if (!_dirtyFlags.dirtyFlagGlobalScale)
 	{
-		_dirtyFlags.dirtyFlagGlobalScale = true;
-		_dirtyFlags.dirtyFlagInHierarchy = true;
-
-		CallScaleChanged();
-
 		for (int index = 0; index < _children.size(); index++)
 		{
+			_children[index]->_dirtyFlags.dirtyFlagGlobalScale = true;
+			_children[index]->_dirtyFlags.dirtyFlagInHierarchy = true;
+
+			_children[index]->CallScaleChanged();
+
 			_children[index]->SetDirtyFlagGlobalScaleInChildren();
 		}
 	}
@@ -557,10 +558,13 @@ void Twin2Engine::Core::Transform::SetGlobalRotation(const glm::vec3& globalRota
 	_globalRotation = glm::radians(globalRotation);
 	_globalRotationQuat = glm::quat(_globalRotation);
 
+
 	_dirtyFlags.dirtyFlag = true;
 	_dirtyFlags.dirtyFlagLocalRotation = true;
 	_dirtyFlags.dirtyFlagGlobalRotation = false;
 
+	//std::cout << "S3Global Rotation: " << GetGlobalRotation().x << " " << GetGlobalRotation().y << " " << GetGlobalRotation().z << std::endl;
+	//std::cout << "S3Local Rotation: " << GetLocalRotation().x << " " << GetLocalRotation().y << " " << GetLocalRotation().z << std::endl;
 	// Calling Events
 	CallRotationChanged();
 

@@ -174,6 +174,7 @@ int main(int, char**)
 
     Camera.GetTransform()->SetGlobalPosition(cameraPos);
     Camera.GetTransform()->SetGlobalRotation(glm::vec3(0.f, -90.f, 0.f));
+
     CameraComponent* c = Camera.AddComponent<CameraComponent>();
     c->SetIsMain(true);
     c->SetWindowSize(glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -519,6 +520,21 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 void update()
 {
+    //Camera.GetTransform()->SetLocalRotation(glm::vec3(0.0f, -90.0f, 0.0f));
+    //
+    //std::cout << "Global Rotation: " << Camera.GetTransform()->GetGlobalRotation().x << " " << Camera.GetTransform()->GetGlobalRotation().y << " " << Camera.GetTransform()->GetGlobalRotation().z << endl;
+    //std::cout << "Local Rotation: " << Camera.GetTransform()->GetLocalRotation().x << " " << Camera.GetTransform()->GetLocalRotation().y << " " << Camera.GetTransform()->GetLocalRotation().z << endl;
+
+    //Camera.GetTransform()->SetGlobalRotation(glm::vec3(0.0f, -90.0f, 0.0f));
+    //
+    //std::cout << "Global Rotation: " << Camera.GetTransform()->GetGlobalRotation().x << " " << Camera.GetTransform()->GetGlobalRotation().y << " " << Camera.GetTransform()->GetGlobalRotation().z << endl;
+    //std::cout << "Local Rotation: " << Camera.GetTransform()->GetLocalRotation().x << " " << Camera.GetTransform()->GetLocalRotation().y << " " << Camera.GetTransform()->GetLocalRotation().z << endl;
+    //
+    //Camera.GetTransform()->SetLocalRotation(glm::vec3(0.0f, -90.0f, 0.0f));
+    //
+    //std::cout << "Global Rotation: " << Camera.GetTransform()->GetGlobalRotation().x << " " << Camera.GetTransform()->GetGlobalRotation().y << " " << Camera.GetTransform()->GetGlobalRotation().z << endl;
+    //std::cout << "Local Rotation: " << Camera.GetTransform()->GetLocalRotation().x << " " << Camera.GetTransform()->GetLocalRotation().y << " " << Camera.GetTransform()->GetLocalRotation().z << endl;
+
     // Update game objects' state here
     text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
 }

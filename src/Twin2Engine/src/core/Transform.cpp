@@ -637,7 +637,7 @@ void Twin2Engine::Core::Transform::RecalculateLocalScale()
 {
 	if (_dirtyFlags.dirtyFlagLocalScale)
 	{
-		if (_parent == originTransform)
+		if (_parent == originTransform || _parent == nullptr)
 		{
 			_localScale = _globalScale;
 		}
@@ -678,7 +678,7 @@ void Twin2Engine::Core::Transform::RecalculateGlobalScale()
 {
 	if (_dirtyFlags.dirtyFlagGlobalScale)
 	{
-		if (_parent == originTransform)
+		if (_parent == originTransform || parent == nullptr)
 		{
 			_globalScale = _localScale;
 		}

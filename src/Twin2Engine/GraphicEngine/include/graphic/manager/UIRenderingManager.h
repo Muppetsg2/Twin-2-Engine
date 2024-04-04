@@ -1,6 +1,7 @@
 #pragma once
 
 #include <graphic/Window.h>
+#include <graphic/InstatiatingModel.h>
 
 namespace Twin2Engine
 {
@@ -24,7 +25,10 @@ namespace Twin2Engine
 		{
 		private:
 			static std::queue<UIElement> _renderQueue;
+			static GraphicEngine::InstatiatingModel _spritePlane;
+			static GraphicEngine::Shader* _uiShader;
 
+			static void Init();
 			static void Render();
 		public:
 			static void Render(UIElement elem);

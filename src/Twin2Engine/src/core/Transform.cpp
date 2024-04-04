@@ -572,12 +572,12 @@ glm::vec3 Twin2Engine::Core::Transform::GetGlobalRotation()
 {
 	RecalculateGlobalRotation();
 
-	if (_dirtyFlags.dirtyFlagGlobalRotationQuat2Euler)
-	{
-		_globalRotation = glm::eulerAngles(_globalRotationQuat);
-
-		_dirtyFlags.dirtyFlagGlobalRotationQuat2Euler = false;
-	}
+	//if (_dirtyFlags.dirtyFlagGlobalRotationQuat2Euler)
+	//{
+	//	_globalRotation = glm::eulerAngles(_globalRotationQuat);
+	//
+	//	_dirtyFlags.dirtyFlagGlobalRotationQuat2Euler = false;
+	//}
 
 	return glm::degrees(_globalRotation);
 }
@@ -596,14 +596,16 @@ void Twin2Engine::Core::Transform::RecalculateGlobalRotation()
 		if (_parent == originTransform || _parent == nullptr)
 		{
 			_globalRotationQuat = _localRotationQuat;
+			_globalRotation = _localRotation;
 		}
 		else
 		{
 			_globalRotationQuat = _parent->GetGlobalRotation() * _localRotationQuat;
+			_globalRotation = glm::eulerAngles(_globalRotationQuat);
 		}
 
 		_dirtyFlags.dirtyFlagGlobalRotation = false;
-		_dirtyFlags.dirtyFlagGlobalRotationQuat2Euler = true;
+		//_dirtyFlags.dirtyFlagGlobalRotationQuat2Euler = true;
 	}
 }
 

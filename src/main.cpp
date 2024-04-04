@@ -1,17 +1,3 @@
-// dear imgui: standalone example application for GLFW + OpenGL 3, using programmable pipeline
-// If you are new to dear imgui, see examples/README.txt and documentation at the top of imgui.cpp.
-// (GLFW is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan graphics context creation, etc.)
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#define IMGUI_IMPL_OPENGL_LOADER_GLAD
-#include <imgui.h>
-#include <imgui_impl/imgui_impl_glfw.h>
-#include <imgui_impl/imgui_impl_opengl3.h>
-
-#include <stb_image.h>
-
 // Soloud
 #include <soloud.h>
 #include <soloud_wav.h>
@@ -45,13 +31,6 @@
 
 // GRAPHIC_ENGINE
 #include <GraphicEnigine.h>
-
-//LOGGER
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
-
-// STANDARD LIBRARY
-#include <memory>
 
 // COLLISIONS
 #include <CollisionManager.h>

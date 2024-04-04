@@ -2,7 +2,7 @@
 #define _ENVIROMENTALBOUNDINGVOLUME_H_
 
 #include "BoundingVolume.h"
-#include <vector>
+
 
 namespace CollisionSystem {
 	class EnviromentalBoundingVolume : public BoundingVolume {

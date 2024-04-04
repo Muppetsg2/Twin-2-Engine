@@ -5,7 +5,6 @@
 
 #include "GameCollider.h"
 #include "BoundingVolume.h"
-#include <unordered_set>
 
 namespace CollisionSystem {
 	class CollisionManager {

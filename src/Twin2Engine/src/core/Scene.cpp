@@ -8,6 +8,10 @@ using namespace Twin2Engine::Core;
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
 
+Scene::Scene() {
+	_rootObject = new GameObject(this);
+}
+
 void Scene::DeleteGameObject(GameObject* obj)
 {
 	Transform* rootTrans = obj->GetTransform();
@@ -23,7 +27,7 @@ void Scene::DeleteGameObject(GameObject* obj)
 GameObject* Scene::AddGameObject()
 {
 	GameObject* obj = new GameObject(this);
-	_rootObject.GetTransform()->AddChild(obj->GetTransform());
+	_rootObject->GetTransform()->AddChild(obj->GetTransform());
 	return obj;
 }
 

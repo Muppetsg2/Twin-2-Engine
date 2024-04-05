@@ -12,19 +12,14 @@ namespace Twin2Engine::Manager {
 namespace Twin2Engine::Core {
 	class Scene {
 	private:
-		GameObject _rootObject = GameObject();
+		GameObject* _rootObject = nullptr;
 		std::vector<std::string> _textures = std::vector<std::string>();
 
 		void DeleteGameObject(GameObject* obj);
 		
-		template<typename T, typename... Ty> GameObject* AddComponentToGameObject(GameObject* obj) {
-			obj->AddComponent<T>();
-			if (sizeof...(Ty) > 0) return AddComponentToGameObject<Ty...>(obj);
-			return obj;
-		}
-
+		template<typename T, typename... Ty> GameObject* AddComponentToGameObject(GameObject* obj);
 	public:
-		Scene() = default;
+		Scene();
 		virtual ~Scene() = default;
 
 		// Scene Objects
@@ -39,4 +34,11 @@ namespace Twin2Engine::Core {
 
 		friend class Manager::SceneManager;
 	};
+
+	template<typename T, typename... Ty> 
+	GameObject* Scene::AddComponentToGameObject(GameObject* obj) {
+		obj->AddComponent<T>();
+		if constexpr (sizeof...(Ty) > 1) return AddComponentToGameObject<Ty...>(obj);
+		return obj;
+	}
 }

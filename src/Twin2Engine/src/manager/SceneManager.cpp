@@ -69,12 +69,13 @@ void SceneManager::LoadScene(const string& name)
 		TextureManager::LoadTexture2D(sceneToLoadTexturePaths[t]);
 	}
 
-	_rootObject = &sceneToLoad->_rootObject;
+	_rootObject = sceneToLoad->_rootObject;
 	_currentScene = sceneToLoad;
 }
 
 void SceneManager::UpdateCurrentScene()
 {
+	if (_rootObject == nullptr) return;
 	_rootObject->Update();
 }
 

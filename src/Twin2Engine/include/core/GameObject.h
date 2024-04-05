@@ -13,8 +13,12 @@ using Twin2Engine::Core::Component;
 
 namespace Twin2Engine::Core
 {
+	class Scene;
+
 	class GameObject
 	{
+		Scene* _scene;
+
 		static unsigned int _currentFreeId;
 		unsigned int _id;
 		string _name;
@@ -31,11 +35,13 @@ namespace Twin2Engine::Core
 		//Tag
 
 	public:
-		GameObject();
+		GameObject(Scene* scene = nullptr);
 
 		virtual ~GameObject();
 
 		inline unsigned int Id() const;
+
+		Scene* GetObjectScene() const;
 
 		bool GetActive() const;
 		void SetActive(bool active);
@@ -48,7 +54,7 @@ namespace Twin2Engine::Core
 		string GetName() const;
 		void SetName(const string& name);
 
-		virtual void Update();
+		void Update();
 		void UpdateComponents();
 
 #pragma region COMPONENTS_MANAGEMENT

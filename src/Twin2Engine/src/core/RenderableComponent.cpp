@@ -2,8 +2,9 @@
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::GraphicEngine;
+using namespace std;
 
-std::vector<RenderableComponent*> RenderableComponent::_components = std::vector<RenderableComponent*>();
+vector<RenderableComponent*> RenderableComponent::_components = vector<RenderableComponent*>();
 
 RenderableComponent::RenderableComponent()
 {

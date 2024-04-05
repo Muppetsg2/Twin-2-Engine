@@ -95,15 +95,21 @@ namespace Twin2Engine::Manager {
 		GraphicEngine::TextureFilterMode magFilterMode = GraphicEngine::TextureFilterMode::LINEAR;
 	};
 
+	class SceneManager;
+
 	class TextureManager {
 	private:
 		static std::map<size_t, GraphicEngine::Texture2D*> _loadedTextures;
 
+		static void UnloadTexture2D(size_t managerID);
+		static void UnloadTexture2D(const std::string& path);
 	public:
 		static GraphicEngine::Texture2D* GetTexture2D(size_t managerId);
 		static GraphicEngine::Texture2D* LoadTexture2D(const std::string& path, const TextureData& data = TextureData());
 		static GraphicEngine::Texture2D* LoadTexture2D(const std::string& path, const TextureFileFormat& internalFormat, const GraphicEngine::TextureFormat& format, const TextureData& data = TextureData());
 
 		static void UnloadAll();
+
+		friend class SceneManager;
 	};
 }

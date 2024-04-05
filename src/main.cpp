@@ -41,6 +41,10 @@
 // CAMERA
 #include <core/CameraComponent.h>
 
+// SCENE
+#include <core/Scene.h>
+#include <manager/SceneManager.h>
+
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
@@ -54,7 +58,7 @@ using Twin2Engine::Core::Time;
 
 #pragma region CAMERA_CONTROLLING
 
-GameObject Camera;
+GameObject* Camera;
 
 glm::vec3 cameraPos(0.f, 0.f, 5.f);
 
@@ -121,6 +125,8 @@ constexpr int32_t GL_VERSION_MINOR = 5;
 
 GLuint UBOMatrices;
 
+Scene* testScene = nullptr;
+
 Mesh* mesh;
 Shader* shader;
 Material material;
@@ -172,15 +178,18 @@ int main(int, char**)
     // Set global log level to debug
     spdlog::set_level(spdlog::level::debug);
 
-    Camera.GetTransform()->SetGlobalPosition(cameraPos);
-    Camera.GetTransform()->SetGlobalRotation(glm::vec3(0.f, -90.f, 0.f));
+    testScene = new Scene();
 
-    CameraComponent* c = Camera.AddComponent<CameraComponent>();
+    Camera = testScene->AddGameObject<CameraComponent>();
+    Camera->GetTransform()->SetGlobalPosition(cameraPos);
+    Camera->GetTransform()->SetGlobalRotation(glm::vec3(0.f, -90.f, 0.f));
+
+    CameraComponent* c = Camera->GetComponent<CameraComponent>();
     c->SetIsMain(true);
     c->SetWindowSize(glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
     c->SetFOV(45.f);
 
-    AudioComponent* a = Camera.AddComponent<AudioComponent>();
+    AudioComponent* a = Camera->AddComponent<AudioComponent>();
     a->SetAudio("./res/music/FurElise.wav");
     a->Loop();
 
@@ -208,30 +217,38 @@ int main(int, char**)
     material = MaterialsManager::GetMaterial("Basic");
     material2 = MaterialsManager::GetMaterial("Basic2");
 
-    gameObject = new GameObject();
+    gameObject = testScene->AddGameObject();
     auto comp = gameObject->AddComponent<MeshRenderer>();
     comp->AddMaterial(material);
     comp->SetModel(modelMesh);
 
-    gameObject2 = new GameObject();
+    gameObject2 = testScene->AddGameObject();
     gameObject2->GetTransform()->Translate(glm::vec3(2, 1, 0));
     comp = gameObject2->AddComponent<MeshRenderer>();
     comp->AddMaterial(material2);
     comp->SetModel(modelMesh);
 
-    gameObject3 = new GameObject();
+    gameObject3 = testScene->AddGameObject();
     gameObject3->GetTransform()->Translate(glm::vec3(0, -1, 0));
     comp = gameObject3->AddComponent<MeshRenderer>();
     comp->AddMaterial(material2);
     comp->SetModel(modelMesh);
 
-    imageObj = new GameObject();
+    imageObj = testScene->AddGameObject();
     Image* img = imageObj->AddComponent<Image>();
-    img->SetSprite(SpriteManager::MakeSprite("stone", "res/textures/stone.jpg"));
+    Sprite* s = SpriteManager::MakeSprite("stone", "res/textures/stone.jpg");
+    //currentScene->AddSprite(s->GetManagerId());
+    //currentScene->AddTexture(s->GetTexture()->GetManagerId());
+    testScene->AddTexture("res/textures/stone.jpg");
+    img->SetSprite(s);
     Image* img2 = imageObj->AddComponent<Image>();
-    img2->SetSprite(SpriteManager::MakeSprite("grass", "res/textures/grass.png"));
+    s = SpriteManager::MakeSprite("grass", "res/textures/grass.png");
+    //currentScene->AddSprite(s->GetManagerId());
+    //currentScene->AddTexture(s->GetTexture()->GetManagerId());
+    testScene->AddTexture("res/textures/grass.png");
+    img2->SetSprite(s);
 
-    textObj = new GameObject();
+    textObj = testScene->AddGameObject();
     textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
     text = textObj->AddComponent<Text>();
     text->SetColor(glm::vec4(1.f));
@@ -253,6 +270,9 @@ int main(int, char**)
     bc2->Update();
 
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();
+
+    SceneManager::AddScene("testScene", testScene);
+    SceneManager::LoadScene("testScene");
 
     // Main loop
     while (!window->IsClosed())
@@ -277,6 +297,7 @@ int main(int, char**)
 
     // Cleanup
     delete imageObj;
+    delete testScene;
     SpriteManager::UnloadAll();
     TextureManager::UnloadAll();
     AudioManager::UnloadAll();
@@ -385,33 +406,33 @@ void input()
 
     bool camDirty = false;
 
-    CameraComponent* c = Camera.GetComponent<CameraComponent>();
+    CameraComponent* c = Camera->GetComponent<CameraComponent>();
 
     if (Input::IsKeyDown(KEY::W))
     {
         camDirty = true;
-        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
     if (Input::IsKeyDown(KEY::S))
     {
         camDirty = true;
-        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
     if (Input::IsKeyDown(KEY::A))
     {
         camDirty = true;
-        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
     if (Input::IsKeyDown(KEY::D))
     {
         camDirty = true;
-        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
 
     if (camDirty) 
     {
         glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
-        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Camera.GetComponent<CameraComponent>()->GetViewMatrix()));
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Camera->GetComponent<CameraComponent>()->GetViewMatrix()));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
@@ -448,34 +469,34 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     xoffset *= sensitivity;
     yoffset *= sensitivity;
 
-    glm::vec3 rot = Camera.GetTransform()->GetGlobalRotation();
+    glm::vec3 rot = Camera->GetTransform()->GetGlobalRotation();
 
     // YAW = ROT Y
     // PITCH = ROT X
     // ROLL = ROT Z
 
-    Camera.GetTransform()->SetGlobalRotation(glm::vec3(rot.x + yoffset, rot.y + xoffset, rot.z));
+    Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x + yoffset, rot.y + xoffset, rot.z));
 
-    rot = Camera.GetTransform()->GetGlobalRotation();
+    rot = Camera->GetTransform()->GetGlobalRotation();
 
     if (rot.x > 89.0f) {
-        Camera.GetTransform()->SetGlobalRotation(glm::vec3(89.f, rot.y, rot.z));
+        Camera->GetTransform()->SetGlobalRotation(glm::vec3(89.f, rot.y, rot.z));
     }
     if (rot.x < -89.0f)
     {
-        Camera.GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
+        Camera->GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
     }
 
-    rot = Camera.GetTransform()->GetGlobalRotation();
+    rot = Camera->GetTransform()->GetGlobalRotation();
 
     glm::vec3 front{};
     front.x = cos(glm::radians(rot.y)) * cos(glm::radians(rot.x));
     front.y = sin(glm::radians(rot.x));
     front.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
-    Camera.GetComponent<CameraComponent>()->SetFrontDir(glm::normalize(front));
+    Camera->GetComponent<CameraComponent>()->SetFrontDir(glm::normalize(front));
 
     glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Camera.GetComponent<CameraComponent>()->GetViewMatrix()));
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Camera->GetComponent<CameraComponent>()->GetViewMatrix()));
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
@@ -483,14 +504,13 @@ void update()
 {
     // Update game objects' state here
     text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
+    SceneManager::UpdateCurrentScene();
 }
 
 void render()
 {
     // OpenGL Rendering code goes here
-    for (auto& comp : RenderableComponent::_components) {
-        comp->Render();
-    }
+    SceneManager::RenderCurrentScene();
     graphicEngine->Render();
 }
 
@@ -523,7 +543,7 @@ void imgui_render()
 #pragma region IMGUI_AUDIO_SETUP
         if (ImGui::CollapsingHeader("Audio")) {
 
-            AudioComponent* a = Camera.GetComponent<AudioComponent>();
+            AudioComponent* a = Camera->GetComponent<AudioComponent>();
             bool loop = a->IsLooping();
 
             if (ImGui::Checkbox("Loop", &loop)) {
@@ -563,7 +583,7 @@ void imgui_render()
                 }
                 */
 
-                Camera.GetComponent<AudioComponent>()->Play();
+                Camera->GetComponent<AudioComponent>()->Play();
 
                 /*
                 if (!musicPlaying) {
@@ -582,7 +602,7 @@ void imgui_render()
                 }
                 */
 
-                Camera.GetComponent<AudioComponent>()->Pause();
+                Camera->GetComponent<AudioComponent>()->Pause();
 
                 /*
                 if (musicPlaying) {
@@ -601,7 +621,7 @@ void imgui_render()
                 }
                 */
 
-                Camera.GetComponent<AudioComponent>()->Stop();
+                Camera->GetComponent<AudioComponent>()->Stop();
 
                 /*
                 if (musicPlaying) {

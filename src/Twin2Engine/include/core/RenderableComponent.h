@@ -4,6 +4,7 @@
 #include <graphic/Window.h>
 
 namespace Twin2Engine::Core {
+
 	class RenderableComponent : public Component {
 	private:			
 		bool _isTransparent = false;

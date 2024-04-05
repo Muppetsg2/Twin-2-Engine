@@ -100,6 +100,18 @@ Texture2D* TextureManager::LoadTexture2D(const string& path, const TextureFileFo
     return tex;
 }
 
+void TextureManager::UnloadTexture2D(size_t managerID)
+{
+    if (_loadedTextures.find(managerID) == _loadedTextures.end()) return;
+    delete _loadedTextures[managerID];
+    _loadedTextures.erase(managerID);
+}
+
+void TextureManager::UnloadTexture2D(const string& path)
+{
+    UnloadTexture2D(hash<string>()(path));
+}
+
 void TextureManager::UnloadAll()
 {
     for (auto& tex : _loadedTextures) {

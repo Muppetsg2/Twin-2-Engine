@@ -27,9 +27,24 @@ Font* FontManager::LoadFont(const string& fontPath) {
         spdlog::error("ERROR::FREETYPE: Failed to load font");
         return nullptr;
     }
-    Font* font = new Font(lib, face);
+    Font* font = new Font(h, lib, face);
     _fonts[h] = font;
     return font;
+}
+
+Font* FontManager::GetFont(size_t fontId) {
+    if (_fonts.find(fontId) == _fonts.end()) return nullptr;
+    return _fonts[fontId];
+}
+
+void FontManager::UnloadFont(size_t fontId) {
+    if (_fonts.find(fontId) == _fonts.end()) return;
+    delete _fonts[fontId];
+    _fonts.erase(fontId);
+}
+
+void FontManager::UnloadFont(const string& fontPath) {
+    UnloadFont(hash<string>()(fontPath));
 }
 
 void FontManager::UnloadAll() {

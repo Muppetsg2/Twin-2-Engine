@@ -1,9 +1,12 @@
 #include <core/GameObject.h>
+#include <core/Scene.h>
 
 unsigned int Twin2Engine::Core::GameObject::_currentFreeId = 1;
 
-Twin2Engine::Core::GameObject::GameObject()
+Twin2Engine::Core::GameObject::GameObject(Scene* scene)
 {
+	_scene = scene;
+
 	// Setting ID
 	_id = _currentFreeId++;
 
@@ -36,6 +39,11 @@ Twin2Engine::Core::GameObject::~GameObject()
 unsigned int Twin2Engine::Core::GameObject::Id() const
 {
 	return _id;
+}
+
+Twin2Engine::Core::Scene* Twin2Engine::Core::GameObject::GetObjectScene() const
+{
+	return _scene;
 }
 
 bool Twin2Engine::Core::GameObject::GetActive() const

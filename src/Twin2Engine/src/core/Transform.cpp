@@ -379,6 +379,7 @@ inline void Twin2Engine::Core::Transform::JustAddChild(Transform* child)
 
 inline void Twin2Engine::Core::Transform::JustRemoveChild(Transform* child)
 {
+	if (_children.size() == 0) return;
 	_children.erase(std::find(_children.begin(), _children.end(), child));
 
 	// Calling events

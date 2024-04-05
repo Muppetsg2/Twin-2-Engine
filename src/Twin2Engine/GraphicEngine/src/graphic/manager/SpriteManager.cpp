@@ -8,7 +8,7 @@ using namespace std;
 
 map<size_t, Sprite*> SpriteManager::_sprites = map<size_t, Sprite*>();
 
-Sprite* SpriteManager::MakeSprite(const std::string& spriteAlias, const std::string& texPath)
+Sprite* SpriteManager::MakeSprite(const string& spriteAlias, const string& texPath)
 {
     return MakeSprite(spriteAlias, TextureManager::LoadTexture2D(texPath));
 }
@@ -23,7 +23,7 @@ Sprite* SpriteManager::MakeSprite(const string& spriteAlias, size_t texManagerId
     return MakeSprite(spriteAlias, TextureManager::GetTexture2D(texManagerId));
 }
 
-Sprite* SpriteManager::MakeSprite(const std::string& spriteAlias, const std::string& texPath, const SpriteData& data)
+Sprite* SpriteManager::MakeSprite(const string& spriteAlias, const string& texPath, const SpriteData& data)
 {
     return MakeSprite(spriteAlias, TextureManager::LoadTexture2D(texPath), data);
 }
@@ -56,6 +56,16 @@ Sprite* SpriteManager::GetSprite(size_t spriteId)
         return _sprites[spriteId];
     }
     return nullptr;
+}
+
+void SpriteManager::UnloadSprite(size_t spriteId) {
+    if (_sprites.find(spriteId) == _sprites.end()) return;
+    delete _sprites[spriteId];
+    _sprites.erase(spriteId);
+}
+
+void SpriteManager::UnloadSprite(const string& spriteAlias) {
+    UnloadSprite(hash<string>()(spriteAlias));
 }
 
 void SpriteManager::UnloadAll()

@@ -18,11 +18,19 @@ namespace Twin2Engine::Core {
 			_actions.push_back(callback);
 		}
 		void RemoveCallback(const Action<Args...>& callback) {
+			/*
 			for (size_t i = 0; i < _actions.size(); ++i) {
 				if (_actions[i] == callback) {
 					_actions.erase(_actions.begin() + i);
 					break;
 				}
+			}
+			*/
+
+			auto it = find(_actions.begin(), _actions.end(), callback);
+
+			if (it != _actions.end()) {
+				_actions.erase(it);
 			}
 		}
 		constexpr void RemoveAllCallbacks() {
@@ -40,7 +48,6 @@ namespace Twin2Engine::Core {
 		}
 		constexpr void operator-=(const Action<Args...>& callback) {
 			RemoveCallback(callback);
-			return *this;
 		}
 	};
 	using MethodEventHandler = EventHandler<>;

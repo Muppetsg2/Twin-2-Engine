@@ -119,7 +119,9 @@ const     char*   glsl_version     = "#version 450";
 constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 5;
 
+/*
 GLuint UBOMatrices;
+*/
 
 Mesh* mesh;
 Shader* shader;
@@ -176,14 +178,12 @@ int main(int, char**)
     Camera.GetTransform()->SetGlobalRotation(glm::vec3(0.f, -90.f, 0.f));
 
     CameraComponent* c = Camera.AddComponent<CameraComponent>();
-    c->SetIsMain(true);
-    c->SetWindowSize(glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
     c->SetFOV(45.f);
 
     AudioComponent* a = Camera.AddComponent<AudioComponent>();
     a->SetAudio("./res/music/FurElise.wav");
     a->Loop();
-
+    /*
 #pragma region MatricesUBO
 
     glGenBuffers(1, &UBOMatrices);
@@ -200,6 +200,7 @@ int main(int, char**)
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 #pragma endregion
+    */
 
     graphicEngine = new GraphicEngine();
 
@@ -408,12 +409,14 @@ void input()
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
 
+    /*
     if (camDirty) 
     {
         glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Camera.GetComponent<CameraComponent>()->GetViewMatrix()));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
+    */
 
     if (Input::IsKeyPressed(KEY::LEFT_ALT)) 
     {
@@ -474,9 +477,11 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     front.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
     Camera.GetComponent<CameraComponent>()->SetFrontDir(glm::normalize(front));
 
+    /*
     glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Camera.GetComponent<CameraComponent>()->GetViewMatrix()));
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    */
 }
 
 void update()

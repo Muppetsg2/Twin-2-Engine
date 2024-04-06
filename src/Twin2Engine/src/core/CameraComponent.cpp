@@ -10,7 +10,13 @@ GLuint CameraComponent::_uboMatrices = 0;
 
 void CameraComponent::OnTransformChange(Transform* trans)
 {
-	printf("%d\n", this->IsMain());
+	glm::vec3 rot = trans->GetGlobalRotation();
+
+	glm::vec3 front{};
+	front.x = cos(glm::radians(rot.y)) * cos(glm::radians(rot.x));
+	front.y = sin(glm::radians(rot.x));
+	front.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
+	this->SetFrontDir(glm::normalize(front));
 
 	if (this->_isMain) {
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
@@ -221,8 +227,8 @@ void CameraComponent::Initialize()
 
 	this->_camId = Cameras.size();
 	Cameras.push_back(this);
-	GetTransform()->OnEventPositionChanged += [&](Transform* t) -> void { OnTransformChange(t); };
-	GetTransform()->OnEventRotationChanged += [&](Transform* t) -> void { OnTransformChange(t); };
+
+	_eventId = GetTransform()->OnEventTransformChanged += [&](Transform* t) -> void { OnTransformChange(t); };
 
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
@@ -295,8 +301,7 @@ void CameraComponent::OnDestroy()
 	glDeleteTextures(1, &_renderMap);
 	glDeleteFramebuffers(1, &_renderMapFBO);
 
-	//GetTransform()->OnEventPositionChanged -= [&](Transform* t) -> void { OnTransformChange(t); };
-	//GetTransform()->OnEventRotationChanged -= [&](Transform* t) -> void { OnTransformChange(t); };
+	GetTransform()->OnEventTransformChanged -= _eventId;
 
 	Cameras.erase(Cameras.begin() + this->_camId);
 

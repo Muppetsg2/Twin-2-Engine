@@ -159,8 +159,6 @@ int main(int, char**)
     }
     spdlog::info("Initialized SoLoud.");
 
-    //smusicSmple.load();
-
 #pragma endregion
 
     // Initialize stdout color sink
@@ -183,6 +181,7 @@ int main(int, char**)
     AudioComponent* a = Camera.AddComponent<AudioComponent>();
     a->SetAudio("./res/music/FurElise.wav");
     a->Loop();
+
     /*
 #pragma region MatricesUBO
 
@@ -468,7 +467,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     {
         Camera.GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
     }
-
+    /*
     rot = Camera.GetTransform()->GetGlobalRotation();
 
     glm::vec3 front{};
@@ -476,6 +475,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     front.y = sin(glm::radians(rot.x));
     front.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
     Camera.GetComponent<CameraComponent>()->SetFrontDir(glm::normalize(front));
+    */
 
     /*
     glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
@@ -488,6 +488,7 @@ void update()
 {
     // Update game objects' state here
     text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
+    Camera.GetTransform()->Update();
 }
 
 void render()

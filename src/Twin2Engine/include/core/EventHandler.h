@@ -42,10 +42,6 @@ namespace Twin2Engine::Core {
 			return e.ID;
 		}
 
-		constexpr size_t AddCallback(const CAction<Args...>& callback) {
-			return AddCallback(Action<Args...>([&](Args...) -> void { callback(Args...); }));
-		}
-
 		void RemoveCallback(size_t callbackId) {
 			for (size_t i = 0; i < _events.size(); ++i) {
 				if (_events[i].ID == callbackId) {
@@ -68,9 +64,6 @@ namespace Twin2Engine::Core {
 		}
 
 		constexpr size_t operator+=(const Action<Args...>& callback) {
-			return AddCallback(callback);
-		}
-		constexpr size_t operator+=(const CAction<Args...>& callback) {
 			return AddCallback(callback);
 		}
 		constexpr void operator-=(size_t callbackId) {

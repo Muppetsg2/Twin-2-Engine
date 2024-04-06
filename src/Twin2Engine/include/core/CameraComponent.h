@@ -36,6 +36,7 @@ namespace Twin2Engine::Core {
 		vec3 _up = vec3(0.f, 1.f, 0.f);
 		vec3 _worldUp = vec3(0.f, 1.f, 0.f);
 
+		size_t _eventId;
 		void OnTransformChange(Transform* trans);
 
 	public:

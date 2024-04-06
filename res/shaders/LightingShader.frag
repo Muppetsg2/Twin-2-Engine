@@ -40,7 +40,7 @@ struct SpotLight {
 	vec3 direction;     // Direction of the spot light
 	vec3 color;         // Color of the spot light
 	float power;		  // Light source power
-	float cutOff;       // Inner cutoff angle (in radians)
+	//float cutOff;       // Inner cutoff angle (in radians)
 	float outerCutOff;  // Outer cutoff angle (in radians)
 	float constant;     // Constant attenuation
 	float linear;       // Linear attenuation
@@ -61,15 +61,30 @@ layout (std430, binding = 3) buffer Lights {
     PointLight pointLights[8];
     SpotLight spotLights[8];
     DirectionalLight directionalLights[4];
-} lights;
+};
 
 layout(std140, binding = 4) uniform LightingData {
     vec3 AmbientLight;
 	vec3 ViewerPosition;
 	float gamma;
-} lightingData;
+};
+
+//shadow maps
+uniform sampler2D DirLightShadowMaps[4];
 
 //LIGHTING END
+
+float ShadowCalculation(vec4 fragPosLightSpace)
+{
+    // Perform shadow calculation, using shadowMap and fragPosLightSpace
+    // This is a basic example, adjust for PCF or other techniques as needed
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    projCoords = projCoords * 0.5 + 0.5;
+    float closestDepth = texture(shadowMap, projCoords.xy).r; 
+    float currentDepth = projCoords.z;
+    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
+    return shadow;
+}
 
 float countLambertianPart(vec3 L, vec3 N) {
     return max(dot(N, L), 0.0f);
@@ -78,7 +93,7 @@ float countLambertianPart(vec3 L, vec3 N) {
 float countBlinnPhongPart(vec3 L, vec3 E, vec3 N) {
     vec3 H = normalize(L + E);
     float specAngle = max(dot(H, N), 0.0);
-    return pow(specAngle, 4); //<---------
+    return pow(specAngle, 2); //<---------
 }
 
 void main()
@@ -94,27 +109,29 @@ void main()
 	
 	vec3 L = vec3(0.0);
     vec3 N = normalize(normal);
-    vec3 E = normalize(lightingData.ViewerPosition - position);
+    vec3 E = normalize(ViewerPosition - position);
 
 	float attenuation = 0.0;
 	float lambertian = 0.0;
 	float specular = 0.0;
 	float distance = 0.0;
 
-    for (int i = 0; i < lights.numberOfPointLights; ++i) {
-        L = lights.pointLights[i].position - position;
+    for (uint i = 0; i < numberOfPointLights; ++i) {
+        L = pointLights[i].position - position;
         distance = length(L);
         L = normalize(L);
 
-        attenuation = 1.0 / (lights.pointLights[i].constant + lights.pointLights[i].linear * distance + lights.pointLights[i].quadratic * distance * distance);
+        attenuation = 1.0 / (pointLights[i].constant + pointLights[i].linear * distance + pointLights[i].quadratic * distance * distance);
 
         lambertian = countLambertianPart(L, N);
 
+		specular = 0.0;
         if (lambertian > 0.0) {
             specular = countBlinnPhongPart(L, E, N);
         }
 
-        LightColor += (lambertian + specular) * lights.pointLights[i].color * lights.pointLights[i].power * attenuation;
+        LightColor += (lambertian + specular) * pointLights[i].color * pointLights[i].power * attenuation;
+		//FragColor = vec4((lambertian + specular) * pointLights[i].color * pointLights[i].power * attenuation, 1.0f);
     }
 
 	{
@@ -122,39 +139,43 @@ void main()
 		float epsilon = 0;
 		float intensity = 0;
 
-		for (int i = 0; i < lights.numberOfSpotLights; ++i) {
-			L = lights.spotLights[i].position - position;
+		for (uint i = 0; i < numberOfSpotLights; ++i) {
+			L = spotLights[i].position - position;
 			distance = length(L);
 			L = normalize(L);
 
-			attenuation = 1.0 / (lights.spotLights[i].constant + lights.spotLights[i].linear * distance + lights.spotLights[i].quadratic * distance * distance);
+			attenuation = 1.0 / (spotLights[i].constant + spotLights[i].linear * distance + spotLights[i].quadratic * distance * distance);
 
 			lambertian = countLambertianPart(L, N);
 
+			specular = 0.0;
 			if (lambertian > 0.0) {
 			    specular = countBlinnPhongPart(L, E, N);
 			}
 
-		    theta = dot(L, normalize(-lights.spotLights[i].direction));
-		    epsilon = lights.spotLights[i].cutOff - lights.spotLights[i].outerCutOff;
-		    intensity = smoothstep(lights.spotLights[i].outerCutOff, lights.spotLights[i].cutOff, theta);
+		    theta = dot(L, normalize(-spotLights[i].direction));
+		    //epsilon = spotLights[i].cutOff - spotLights[i].outerCutOff;
+		    epsilon = -spotLights[i].outerCutOff;
+		    intensity = smoothstep(spotLights[i].outerCutOff, 0.0, theta);
 			
-			LightColor += (lambertian + specular) * lights.spotLights[i].color * lights.spotLights[i].power * attenuation * intensity;
+			LightColor += (lambertian + specular) * spotLights[i].color * spotLights[i].power * attenuation * intensity;
+			//FragColor = vec4((lambertian + specular) * spotLights[i].color * spotLights[i].power * attenuation * intensity, 1.0f);
 		}
 	}
 
-	for (int i = 0; i < lights.numberOfDirLights; ++i) {
-        L = -lights.directionalLights[i].direction;
+	for (uint i = 0; i < numberOfDirLights; ++i) {
+        L = -directionalLights[i].direction;
 
         lambertian = countLambertianPart(L, N);
-
+		
+		specular = 0.0;
         if (lambertian > 0.0) {
             specular = countBlinnPhongPart(L, E, N);
         }
 
-        LightColor += (lambertian + specular) * lights.directionalLights[i].color * lights.directionalLights[i].power;
+        LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power;
     }
 	
-    FragColor *= vec4(vec3(LightColor + lightingData.AmbientLight), 1.0f);
-	FragColor = vec4(pow(FragColor.rgb, vec3(1.0 / lightingData.gamma)), FragColor.a);
+    FragColor *= vec4(LightColor + AmbientLight, 1.0f); //
+	FragColor = vec4(pow(FragColor.rgb, vec3(1.0 / gamma)), FragColor.a);
 }

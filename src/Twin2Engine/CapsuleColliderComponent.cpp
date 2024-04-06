@@ -28,7 +28,7 @@ void Twin2Engine::Core::CapsuleColliderComponent::Update()
 	//collider->shapeColliderData->Position = collider->shapeColliderData->LocalPosition + getGameObject()->GetTransform()->GetGlobalPosition();
 	if (dirtyFlag) {
 		((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndPosition = 
-												getGameObject()->GetTransform()->GetTransformMatrix()
+												GetGameObject()->GetTransform()->GetTransformMatrix()
 											  * glm::vec4(((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition, 1.0f);
 
 		Twin2Engine::Core::ColliderComponent::Update();

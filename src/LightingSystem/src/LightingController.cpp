@@ -33,7 +33,7 @@ LightingController::LightingController() {
 	glBufferData(GL_UNIFORM_BUFFER, sizeof(LightingData), NULL, GL_STATIC_DRAW); // allocate 152 bytes of memory
 	glBindBufferBase(GL_UNIFORM_BUFFER, 4, LightingDataBuffer);
 	LightingData lightingData;
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightingData), &lightingData);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, 32, &lightingData);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
@@ -76,7 +76,7 @@ void LightingController::UpdatePointLights() {
 		++plNumber;
 	}
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, 4, &plNumber);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 12, plNumber * sizeof(PointLight), &pLights);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 16, plNumber * 48, &pLights);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
@@ -91,7 +91,7 @@ void LightingController::UpdateSpotLights() {
 		++slNumber;
 	}
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 4, 4, &slNumber);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 396, slNumber * sizeof(SpotLight), &sLights);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 400, slNumber * 64, &sLights);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
@@ -106,7 +106,7 @@ void LightingController::UpdateDirLights() {
 		++dlNumber;
 	}
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 8, 4, &dlNumber);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 972, dlNumber * sizeof(DirectionalLight), &dLights);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 912, dlNumber * 48, &dLights);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
@@ -116,7 +116,7 @@ void LightingController::UpdatePLPosition(PointLight* pointLight) {
 	int pos = std::distance(pointLights.begin(), itr);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 12 + pos * sizeof(PointLight), 12, &((*itr)->position));
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 16 + pos * 48, 12, &((*itr)->position));
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
@@ -126,7 +126,7 @@ void LightingController::UpdateSLTransform(SpotLight* spotLight) {
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
 	//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 396 + pos * sizeof(SpotLight), 12, &((*itr)->position));
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 396 + pos * sizeof(SpotLight), 28, *itr);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 400 + pos * 64, 28, *itr);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
@@ -135,8 +135,8 @@ void LightingController::UpdateDLTransform(DirectionalLight* dirLight) {
 	int pos = std::distance(dirLights.begin(), itr);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
-	//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 972 + pos * sizeof(DirectionalLight), 12, &((*itr)->position)); //972
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 972 + pos * sizeof(DirectionalLight), 28, *itr); //972
+	//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 912 + pos * sizeof(DirectionalLight), 12, &((*itr)->position)); //972
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 912 + pos * 48, 28, *itr); //972
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
@@ -146,7 +146,7 @@ void LightingController::UpdatePL(PointLight* pointLight) {
 	int pos = std::distance(pointLights.begin(), itr);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 12 + pos * sizeof(PointLight), sizeof(PointLight), *itr);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 16 + pos * 48, 48, *itr);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
@@ -155,7 +155,7 @@ void LightingController::UpdateSL(SpotLight* spotLight) {
 	int pos = std::distance(spotLights.begin(), itr);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 396 + pos * sizeof(SpotLight), sizeof(SpotLight), *itr);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 400 + pos * 64, 64, *itr);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
@@ -164,17 +164,17 @@ void LightingController::UpdateDL(DirectionalLight* dirLight) {
 	int pos = std::distance(dirLights.begin(), itr);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 972 + pos * sizeof(DirectionalLight), sizeof(DirectionalLight), *itr);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 912 + pos * 48, 48, *itr);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
 
 void LightingController::BindLightBuffors(Twin2Engine::GraphicEngine::Shader* shader) {
 	GLuint block_index = 0;
-	block_index = glGetProgramResourceIndex(shader->shaderProgramID, GL_SHADER_STORAGE_BLOCK, "lights");
+	block_index = glGetProgramResourceIndex(shader->shaderProgramID, GL_SHADER_STORAGE_BLOCK, "Lights");
 	glShaderStorageBlockBinding(shader->shaderProgramID, block_index, 3);
 
-	block_index = glGetUniformBlockIndex(shader->shaderProgramID, "lightsData");
+	block_index = glGetUniformBlockIndex(shader->shaderProgramID, "LightingData");
 	glUniformBlockBinding(shader->shaderProgramID, block_index, 4);
 }
 
@@ -190,9 +190,9 @@ void LightingController::SetViewerPosition(glm::vec3& viewerPosition) {
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void LightingController::SetGamma(float& gamma) {
+void LightingController::SetGamma(float gamma) {
 	glBindBuffer(GL_UNIFORM_BUFFER, LightingDataBuffer);
-	glBufferSubData(GL_UNIFORM_BUFFER, 32, 4, &gamma);
+	glBufferSubData(GL_UNIFORM_BUFFER, 28, 4, &gamma);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 /*/

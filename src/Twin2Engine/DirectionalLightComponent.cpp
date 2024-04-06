@@ -4,13 +4,13 @@
 void Twin2Engine::Core::DirectionalLightComponent::Initialize()
 {
 	OnChangeTransform = [this]() {
-		light->position = getTransform()->GetGlobalPosition();
-		light->direction = glm::vec3((getTransform()->GetTransformMatrix() * glm::vec4(localDirection, 1.0f)));
+		light->position = GetTransform()->GetGlobalPosition();
+		light->direction = glm::vec3((GetTransform()->GetTransformMatrix() * glm::vec4(localDirection, 1.0f)));
 		LightingSystem::LightingController::Instance()->UpdateDLTransform(light);
 	};
 
 	light = new LightingSystem::DirectionalLight;
-	light->position = getTransform()->GetGlobalPosition();
+	light->position = GetTransform()->GetGlobalPosition();
 	//LightingSystem::LightingController::Instance()->dirLights.insert(light);
 	//LightingSystem::LightingController::Instance()->UpdateDirLights();
 }
@@ -44,7 +44,7 @@ void Twin2Engine::Core::DirectionalLightComponent::OnDestroy()
 
 void Twin2Engine::Core::DirectionalLightComponent::SetDirection(glm::vec3& dir)
 {
-	light->direction = glm::vec3((getTransform()->GetTransformMatrix() * glm::vec4(dir, 1.0f)));
+	light->direction = glm::vec3((GetTransform()->GetTransformMatrix() * glm::vec4(dir, 1.0f)));
 	localDirection = dir;
 	dirtyFlag = true;
 }

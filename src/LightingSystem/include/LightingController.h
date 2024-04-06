@@ -15,19 +15,20 @@ namespace LightingSystem {
 
 			LightingController();
 
-			struct Lights {											//1180
+			struct Lights {											//1104
 				unsigned int numberOfPointLights = 0;				//0		4
 				unsigned int numberOfSpotLights = 0;				//4		4
 				unsigned int numberOfDirLights = 0;					//8		4
-				PointLight pointLights[8];							//12	48 * 8 = 384
-				SpotLight spotLights[8];							//396	72 * 8 = 576
-				DirectionalLight directionalLights[4];				//972	52 * 4 = 208
+				unsigned int padding;								//12	4 - padding
+				PointLight pointLights[8];							//16	48 * 8 = 384
+				SpotLight spotLights[8];							//400	64 * 8 = 512
+				DirectionalLight directionalLights[4];				//912	48 * 4 = 192
 			};
 
-			struct LightingData {													//36
+			struct LightingData {													//32
 				alignas(16) glm::vec3 AmbientLight = glm::vec3(0.0f, 0.0f, 0.0f);	//0		16
-				alignas(16) glm::vec3 ViewerPosition = glm::vec3(0.0f, 0.0f, 0.0f);	//16	32
-				float gamma = 2.2f;													//32	4
+				glm::vec3 ViewerPosition = glm::vec3(0.0f, 0.0f, 0.0f);				//16	12
+				float gamma = 2.2f;													//28	4
 			};
 			//Lights lights;
 
@@ -67,7 +68,7 @@ namespace LightingSystem {
 
 			void SetAmbientLight(glm::vec3& ambientLightColor);
 			void SetViewerPosition(glm::vec3& viewerPosition);
-			void SetGamma(float& gamma);
+			void SetGamma(float gamma);
 
 			/*/
 			void RegisterPointLight(PointLight* pointLight);

@@ -116,7 +116,7 @@ namespace Twin2Engine
 				ShaderManager::Init();
 
 				//shader = ShaderManager::GetShaderProgram("res/CompiledShaders/origin/Basic.shdr");
-				shader = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/Basic.shdr", "shaders/normalVert.vert", "shaders/LightingShader.frag");
+				shader = ShaderManager::CreateShaderProgram("origin/Basic", "shaders/normalVert.vert", "shaders/LightingShader.frag");
 				LightingSystem::LightingController::Instance()->BindLightBuffors(shader);
 				
 				//shader = ShaderManager::CreateShaderProgram("res/shaders/Basic.shpr");

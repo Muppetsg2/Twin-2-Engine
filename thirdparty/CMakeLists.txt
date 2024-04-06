@@ -16,6 +16,12 @@ set(stb_image_SOURCE_DIR ${STB_IMAGE_DIR} CACHE INTERNAL "")
 add_library(stb_image STATIC ${STB_IMAGE_DIR}/stb_image.cpp)
 target_include_directories(stb_image PRIVATE ${STB_IMAGE_DIR})
 
+## free type
+#set(FREETYPE_DIR ${CMAKE_CURRENT_LIST_DIR}/freetype)
+#set(freetype_SOURCE_DIR ${FREETYPE_DIR}/include CACHE INTERNAL "")
+#add_library(freetype STATIC ${FREETYPE_DIR}/src/freetype.cpp)
+#target_include_directories(freetype PRIVATE ${FREETYPE_DIR}/include)
+
 get_property(is_miniaudio GLOBAL PROPERTY ISMINIAUDIO)
 
 if(is_miniaudio)

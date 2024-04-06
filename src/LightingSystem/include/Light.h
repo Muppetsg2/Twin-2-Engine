@@ -24,7 +24,6 @@ namespace LightingSystem {
 		alignas(16) glm::vec3 direction = glm::vec3(1.0f, 0.0f, 0.0f);     // Direction of the spot light
 		alignas(16) glm::vec3 color = glm::vec3(0.0f, 1.0f, 0.0f);         // Color of the spot light
 		float power = 1.0f;		  // Light source power
-		float cutOff = 0.0f;       // Inner cutoff angle (in radians)
 		float outerCutOff = 0.785f;  // Outer cutoff angle (in radians)
 		float constant = 1.0f;     // Constant attenuation
 		float linear = 0.0f;       // Linear attenuation
@@ -33,7 +32,7 @@ namespace LightingSystem {
 
 	struct DirectionalLight : public Light {
 		alignas(16) glm::vec3 position;      // Position of the spot light in world space
-		alignas(16) glm::vec3 direction = glm::vec3(0.0f, -1.0f, 0.0f);     // Direction of the spot light
+		alignas(16) glm::vec3 direction = glm::vec3(-0.7f, -0.7f, 0.0f);     // Direction of the spot light
 		alignas(16) glm::vec3 color = glm::vec3(0.0f, 0.0f, 1.0f);         // Color of the spot light
 		float power = 1.0f;		  // Light source power
 	};

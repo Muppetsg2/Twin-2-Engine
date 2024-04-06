@@ -89,9 +89,6 @@ using Twin2Engine::Core::Time;
 
 #pragma region CAMERA_CONTROLLING
 
-        //if (LightingSystem::LightingController::IsInstantiated()) {
-        //    LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
-        //}
 GameObject Camera;
 
 glm::vec3 cameraPos(0.f, 0.f, 5.f);
@@ -356,7 +353,9 @@ int main(int, char**)
     pl->Initialize();
     sl->Initialize();
     dl->Initialize();
-    LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);/**/
+    LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
+    LightingSystem::LightingController::Instance()->SetGamma(2.2);
+    /**/
 
 #pragma endregion
 
@@ -499,21 +498,37 @@ void input()
     {
         camDirty = true;
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+
+        if (LightingSystem::LightingController::IsInstantiated()) {
+            LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
+        }
     }
     if (!Input::IsKeyUp(KEY::S))
     {
         camDirty = true;
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+
+        if (LightingSystem::LightingController::IsInstantiated()) {
+            LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
+        }
     }
     if (!Input::IsKeyUp(KEY::A))
     {
         camDirty = true;
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+
+        if (LightingSystem::LightingController::IsInstantiated()) {
+            LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
+        }
     }
     if (!Input::IsKeyUp(KEY::D))
     {
         camDirty = true;
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+
+        if (LightingSystem::LightingController::IsInstantiated()) {
+            LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
+        }
     }
     /*
     if (Input::IsKeyHeldDown(KEY::Q))

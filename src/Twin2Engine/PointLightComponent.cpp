@@ -4,12 +4,12 @@
 void Twin2Engine::Core::PointLightComponent::Initialize()
 {
 	OnChangePosition = [this]() {
-		light->position = getTransform()->GetGlobalPosition();
+		light->position = GetTransform()->GetGlobalPosition();
 		LightingSystem::LightingController::Instance()->UpdatePLPosition(light);
 	};
 
 	light = new LightingSystem::PointLight;
-	light->position = getTransform()->GetGlobalPosition();
+	light->position = GetTransform()->GetGlobalPosition();
 	//LightingSystem::LightingController::Instance()->pointLights.insert(light);
 	//LightingSystem::LightingController::Instance()->UpdatePointLights();
 }

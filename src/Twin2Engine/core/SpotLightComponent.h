@@ -26,7 +26,6 @@ namespace Twin2Engine {
 				void SetDirection(glm::vec3& dir);
 				void SetColor(glm::vec3& color);
 				void SetPower(float& power);
-				void SetInnerCutOff(float radAngle);
 				void SetOuterCutOff(float radAngle);
 				void SetAtenuation(float constant, float linear, float quadratic);
 		};

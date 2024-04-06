@@ -4,14 +4,14 @@
 void Twin2Engine::Core::SpotLightComponent::Initialize()
 {
 	OnChangeTransform = [this]() {
-		light->position = getTransform()->GetGlobalPosition();
-		light->direction = glm::vec3((getTransform()->GetTransformMatrix() * glm::vec4(localDirection, 1.0f)));
+		light->position = GetTransform()->GetGlobalPosition();
+		light->direction = glm::vec3((GetTransform()->GetTransformMatrix() * glm::vec4(localDirection, 1.0f)));
 		LightingSystem::LightingController::Instance()->UpdateSLTransform(light);
 	};
 
 
 	light = new LightingSystem::SpotLight;
-	light->position = getTransform()->GetGlobalPosition();
+	light->position = GetTransform()->GetGlobalPosition();
 	//LightingSystem::LightingController::Instance()->spotLights.insert(light);
 	//LightingSystem::LightingController::Instance()->UpdateSpotLights();
 }
@@ -51,7 +51,7 @@ void Twin2Engine::Core::SpotLightComponent::SetColor(glm::vec3& color)
 
 void Twin2Engine::Core::SpotLightComponent::SetDirection(glm::vec3& dir)
 {
-	light->direction = glm::vec3((getTransform()->GetTransformMatrix() * glm::vec4(dir, 1.0f)));
+	light->direction = glm::vec3((GetTransform()->GetTransformMatrix() * glm::vec4(dir, 1.0f)));
 	localDirection = dir;
 	dirtyFlag = true;
 }
@@ -59,12 +59,6 @@ void Twin2Engine::Core::SpotLightComponent::SetDirection(glm::vec3& dir)
 void Twin2Engine::Core::SpotLightComponent::SetPower(float& power)
 {
 	light->power = power;
-	dirtyFlag = true;
-}
-
-void Twin2Engine::Core::SpotLightComponent::SetInnerCutOff(float radAngle)
-{
-	light->cutOff = radAngle;
 	dirtyFlag = true;
 }
 

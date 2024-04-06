@@ -1,8 +1,8 @@
 shaderprogram:
   name: origin/Textured
   shaders:
-    - normalVert.vert
-    - fargmentShader.frag
+    - textured.vert
+    - textured.frag
   parameters:
     - name: texture1
       type: texture2D

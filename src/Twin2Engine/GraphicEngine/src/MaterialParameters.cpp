@@ -89,24 +89,26 @@ void Twin2Engine::GraphicEngine::MaterialParameters::SetTexture2D(const std::str
 
 void Twin2Engine::GraphicEngine::MaterialParameters::UploadTextures2D(unsigned int programId, int& beginLocation, int& textureBinded)
 {
-	SPDLOG_INFO("Here1 {}", _textures.size());
+	//SPDLOG_INFO("Here1 {}", _textures.size());
 	for (int i = 0; i < _textures.size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + textureBinded);
 		//glActiveTexture(GL_TEXTURE0 + textureBinded);
 		glBindTexture(GL_TEXTURE_2D, _textures[i]);
-		SPDLOG_INFO("Here4 {} {}", beginLocation, textureBinded);
+		//SPDLOG_INFO("Here4 {} {}", beginLocation, textureBinded);
 		glBindSampler(textureBinded, _samplers[i]);
-		SPDLOG_INFO("Here6");
+		//SPDLOG_INFO("Here6");
 		//glUniform1i(beginLocation, GL_TEXTURE0 + textureBinded);
-		glUniform1i(beginLocation, GL_TEXTURE0 + textureBinded);
+		//glUniform1i(beginLocation, GL_TEXTURE0 + textureBinded);
+		glUniform1i(beginLocation, textureBinded);
+		//glUniform1i(beginLocation, _samplers[i]);
 
 		GLenum error = glGetError();
 		if (error != GL_NO_ERROR) {
 			SPDLOG_ERROR("Error: {}", error);
 		}
 		//glProgramUniform1i(programId, beginLocation, GL_TEXTURE0 + textureBinded);
-		SPDLOG_INFO("Here5");
+		//SPDLOG_INFO("Here5");
 		textureBinded++;
 		beginLocation++;
 	}

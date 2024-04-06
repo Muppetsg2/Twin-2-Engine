@@ -128,6 +128,7 @@ namespace Twin2Engine
 
 
 				//shader = ShaderManager::CreateShaderProgram("origin/Textured", "shaders/textured.vert", "shaders/textured.frag");
+				//shader = ShaderManager::CreateShaderProgram("origin/Textured");// , "shaders/textured.vert", "shaders/textured.frag");
 				material = MaterialsManager::GetMaterial("textured");
 
 				material2 = MaterialsManager::GetMaterial("Basic2");

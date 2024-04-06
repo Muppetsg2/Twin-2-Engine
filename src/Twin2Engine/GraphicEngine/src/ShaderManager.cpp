@@ -469,6 +469,7 @@ inline Shader* Twin2Engine::GraphicEngine::ShaderManager::LoadShaderProgramSHPR(
     Shader* shader;
     if (found == loadedShaders.end())
     {
+        SPDLOG_INFO("LoadSHPR");
         GLuint shaderProgram = CreateShaderProgramFromFile(shaderName);
 
         shader = new Shader(shaderProgram);
@@ -548,6 +549,7 @@ GLuint Twin2Engine::GraphicEngine::ShaderManager::CreateShaderProgramFromFile(co
 
 
     /////
+    SPDLOG_INFO("From File");
     string shaderProgramPath = "res/CompiledShaders/" + shaderProgramName + ".shpr";
     
     GLuint shaderProgram = 0;

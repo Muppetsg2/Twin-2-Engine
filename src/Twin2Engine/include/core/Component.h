@@ -44,7 +44,7 @@ namespace Twin2Engine::Core
 	private:
 		void Init(GameObject* obj);
 	public:
-		friend GameObject;
+		friend class GameObject;
 #pragma endregion
 	};
 }

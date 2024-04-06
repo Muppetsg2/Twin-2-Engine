@@ -63,24 +63,7 @@ void ModelsManager::UnloadModel(ModelData* modelData)
         modelData->useNumber--;
         if (modelData->useNumber == 0)
         {
-            //std::cout << "Tutaj8\n";
-            std::list<ModelData*>::iterator found = std::find_if(loadedModels.begin(), loadedModels.end(), [modelData](Twin2Engine::GraphicEngine::ModelData* data) { return data == modelData; });
-
-            if (found != loadedModels.end())
-            {
-                loadedModels.erase(found);
-
-                delete (*found)->model;
-                glDeleteBuffers(1, &(*found)->ssboId);
-                for (auto& m : (*found)->meshes) {
-                    glDeleteBuffers(1, &m.mesh->EBO);
-                    glDeleteBuffers(1, &m.mesh->VBO);
-                    glDeleteVertexArrays(1, &m.mesh->VAO);
-                }
-                loadedModels.erase(found);
-                delete (*found);
-            }
-            else if (modelData == _cubeModel || modelData == _piramidModel || modelData == _sphereModel || modelData == _planeModel) {
+            if (modelData == _cubeModel || modelData == _piramidModel || modelData == _sphereModel || modelData == _planeModel) {
                 if (modelData == _cubeModel) _cubeModel = nullptr;
                 else if (modelData == _piramidModel) _piramidModel = nullptr;
                 else if (modelData == _sphereModel) _sphereModel = nullptr;
@@ -93,6 +76,23 @@ void ModelsManager::UnloadModel(ModelData* modelData)
                     glDeleteVertexArrays(1, &m.mesh->VAO);
                 }
                 delete modelData;
+            }
+            else if (loadedModels.size() != 0) {
+                //std::cout << "Tutaj8\n";
+                std::list<ModelData*>::iterator found = std::find_if(loadedModels.begin(), loadedModels.end(), [modelData](Twin2Engine::GraphicEngine::ModelData* data) { return data == modelData; });
+
+                if (found != loadedModels.end())
+                {
+                    delete (*found)->model;
+                    glDeleteBuffers(1, &(*found)->ssboId);
+                    for (auto& m : (*found)->meshes) {
+                        glDeleteBuffers(1, &m.mesh->EBO);
+                        glDeleteBuffers(1, &m.mesh->VBO);
+                        glDeleteVertexArrays(1, &m.mesh->VAO);
+                    }
+                    loadedModels.erase(found);
+                    delete (*found);
+                }
             }
             else
             {

@@ -180,7 +180,7 @@ int main(int, char**)
 
     testScene = new Scene();
 
-    Camera = testScene->AddGameObject<CameraComponent>();
+    Camera = testScene->AddGameObject<CameraComponent, AudioComponent>();
     Camera->GetTransform()->SetGlobalPosition(cameraPos);
     Camera->GetTransform()->SetGlobalRotation(glm::vec3(0.f, -90.f, 0.f));
 
@@ -189,7 +189,7 @@ int main(int, char**)
     c->SetWindowSize(glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
     c->SetFOV(45.f);
 
-    AudioComponent* a = Camera->AddComponent<AudioComponent>();
+    AudioComponent* a = Camera->GetComponent<AudioComponent>();
     a->SetAudio("./res/music/FurElise.wav");
     a->Loop();
 
@@ -296,7 +296,6 @@ int main(int, char**)
     }
 
     // Cleanup
-    delete imageObj;
     delete testScene;
     SpriteManager::UnloadAll();
     TextureManager::UnloadAll();

@@ -12,6 +12,10 @@ Scene::Scene() {
 	_rootObject = new GameObject(this);
 }
 
+Scene::~Scene() {
+	DeleteGameObject(_rootObject);
+}
+
 void Scene::DeleteGameObject(GameObject* obj)
 {
 	Transform* rootTrans = obj->GetTransform();

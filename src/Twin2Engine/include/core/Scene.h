@@ -20,7 +20,7 @@ namespace Twin2Engine::Core {
 		template<typename T, typename... Ty> GameObject* AddComponentToGameObject(GameObject* obj);
 	public:
 		Scene();
-		virtual ~Scene() = default;
+		virtual ~Scene();
 
 		// Scene Objects
 		GameObject* AddGameObject();
@@ -38,7 +38,7 @@ namespace Twin2Engine::Core {
 	template<typename T, typename... Ty> 
 	GameObject* Scene::AddComponentToGameObject(GameObject* obj) {
 		obj->AddComponent<T>();
-		if constexpr (sizeof...(Ty) > 1) return AddComponentToGameObject<Ty...>(obj);
+		if constexpr (sizeof...(Ty) > 0) return AddComponentToGameObject<Ty...>(obj);
 		return obj;
 	}
 }

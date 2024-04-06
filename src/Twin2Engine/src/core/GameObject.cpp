@@ -22,6 +22,7 @@ Twin2Engine::Core::GameObject::GameObject(Scene* scene)
 
 
 	_transform = new Transform();
+	((Component*)_transform)->Init(this);
 
 	//components = list<Component*>();
 	components = std::list<Component*>();
@@ -81,7 +82,6 @@ void Twin2Engine::Core::GameObject::SetIsStatic(bool isStatic)
 {
 	_isStatic = isStatic;
 }
-
 
 Twin2Engine::Core::Transform* Twin2Engine::Core::GameObject::GetTransform() const
 {

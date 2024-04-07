@@ -149,9 +149,10 @@ namespace Twin2Engine
 
 
 				gameObject3 = new GameObject();
-				gameObject3->GetTransform()->Translate(glm::vec3(0, -1, 0));
+				gameObject3->GetTransform()->Translate(glm::vec3(0, -2, 0));
 				comp = gameObject3->AddComponent<MeshRenderer>();
-				comp->AddMaterial(material);
+				comp->AddMaterial(wallMat);
+				comp->AddMaterial(roofMat);
 				comp->SetModel(modelMesh2);
 
 				//std::cout << "Tutaj4\n";

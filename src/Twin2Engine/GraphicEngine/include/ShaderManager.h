@@ -88,7 +88,6 @@ namespace Twin2Engine::GraphicEngine
 		static void End();
 
 		static Shader* GetShaderProgram(const std::string& shaderName);
-		static Shader* CreateShaderProgram(const std::string& shaderProgramName);
 		static Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);
 
 	};

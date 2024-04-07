@@ -31,8 +31,13 @@ namespace LightingSystem {
 	};
 
 	struct DirectionalLight : public Light {
-		alignas(16) glm::vec3 position;      // Position of the spot light in world space
-		alignas(16) glm::vec3 direction = glm::vec3(-0.7f, -0.7f, 0.0f);     // Direction of the spot light
+		//alignas(16) glm::vec3 position;      // Position of the spot light in world space
+		glm::vec3 position;      // Position of the spot light in world space
+		GLuint shadowMapFBO = 0;
+		//alignas(16) glm::vec3 direction = glm::vec3(-0.7f, -0.7f, 0.0f);     // Direction of the spot light
+		glm::vec3 direction = glm::vec3(-0.7f, -0.7f, 0.0f);     // Direction of the spot light
+		GLuint shadowMap = 0;
+		glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
 		alignas(16) glm::vec3 color = glm::vec3(0.0f, 0.0f, 1.0f);         // Color of the spot light
 		float power = 1.0f;		  // Light source power
 	};

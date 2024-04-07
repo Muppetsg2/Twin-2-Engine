@@ -8,18 +8,15 @@ file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_SOURCE_DIR}/Shaders
 # ---- Dependency ----
 add_subdirectory(Twin2Engine)
 
-#add_subdirectory(GraphicEngine)
-
 add_subdirectory(CollisionSystem)
 add_subdirectory(LightingSystem)
 
 add_executable(${PROJECT_NAME} main.cpp)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_SOURCE_DIR})
-target_link_libraries(${PROJECT_NAME} PUBLIC Twin2Engine)
+target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)
 
-#target_include_directories(${PROJECT_NAME} PUBLIC ${GRAPHIC_ENGINE_INCLUDE_DIR})
-#target_link_libraries(${PROJECT_NAME} PRIVATE GraphicEngine)
+target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR})
+target_link_libraries(${PROJECT_NAME} PUBLIC Twin2Engine)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog)
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)

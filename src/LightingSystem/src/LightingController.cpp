@@ -6,6 +6,8 @@
 using namespace LightingSystem;
 
 LightingController* LightingController::instance = nullptr;
+const int LightingController::SHADOW_WIDTH = 1024;
+const int LightingController::SHADOW_HEIGHT = 1024;
 
 LightingController* LightingController::Instance() {
 	if (instance == nullptr) {
@@ -106,7 +108,7 @@ void LightingController::UpdateDirLights() {
 		++dlNumber;
 	}
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 8, 4, &dlNumber);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 912, dlNumber * 48, &dLights);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 912, dlNumber * 112, &dLights);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
@@ -136,8 +138,9 @@ void LightingController::UpdateDLTransform(DirectionalLight* dirLight) {
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
 	//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 912 + pos * sizeof(DirectionalLight), 12, &((*itr)->position)); //972
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 912 + pos * 48, 28, *itr); //972
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 912 + pos * 48, 96, *itr); //972
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
 }
 
 
@@ -164,7 +167,7 @@ void LightingController::UpdateDL(DirectionalLight* dirLight) {
 	int pos = std::distance(dirLights.begin(), itr);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 912 + pos * 48, 48, *itr);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 912 + pos * 112, 112, *itr);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
@@ -176,6 +179,71 @@ void LightingController::BindLightBuffors(Twin2Engine::GraphicEngine::Shader* sh
 
 	block_index = glGetUniformBlockIndex(shader->shaderProgramID, "LightingData");
 	glUniformBlockBinding(shader->shaderProgramID, block_index, 4);
+}
+
+void LightingController::UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader* shader) {
+	int i = 0;
+	shader->Use();
+	for (auto dirLight : dirLights) {
+		glUniform1i(i, dirLight->shadowMap);
+		++i;
+	}
+}
+
+void LightingController::UpdateDirLightSpaceMatrix(DirectionalLight* light, const glm::mat4& viewProjectionInverse) {
+	glm::mat4 lightMatrix = glm::lookAt(light->position, light->position + light->direction, glm::vec3(0.0f, 1.0f, 0.0f));
+	
+	float minX = std::numeric_limits<float>::max();
+	float maxX = std::numeric_limits<float>::lowest();
+	float minY = minX;
+	float maxY = maxX;
+	float minZ = minX;
+	float maxZ = maxX;
+
+	std::vector<glm::vec3> corners;
+
+	// Define NDC cube in homogeneous coordinates
+	std::vector<glm::vec4> ndcCorners = {
+		{ -1.0f,  1.0f, -1.0f, 1.0f },
+		{  1.0f,  1.0f, -1.0f, 1.0f },
+		{  1.0f, -1.0f, -1.0f, 1.0f },
+		{ -1.0f, -1.0f, -1.0f, 1.0f },
+		{ -1.0f,  1.0f,  1.0f, 1.0f },
+		{  1.0f,  1.0f,  1.0f, 1.0f },
+		{  1.0f, -1.0f,  1.0f, 1.0f },
+		{ -1.0f, -1.0f,  1.0f, 1.0f }
+	};
+
+	// Transform NDC corners to world space
+	for (const auto& ndcCorner : ndcCorners) {
+		glm::vec4 worldCorner = viewProjectionInverse * ndcCorner;
+		corners.push_back(glm::vec3(worldCorner) / worldCorner.w);
+	}
+
+	// Transform frustum corners to light's view space and find bounds
+	for (const auto& corner : corners) {
+		glm::vec3 transformedCorner = glm::vec3(lightMatrix * glm::vec4(corner, 1.0f));
+		minX = std::min(minX, transformedCorner.x);
+		maxX = std::max(maxX, transformedCorner.x);
+		minY = std::min(minY, transformedCorner.y);
+		maxY = std::max(maxY, transformedCorner.y);
+		minZ = std::min(minZ, transformedCorner.z);
+		maxZ = std::max(maxZ, transformedCorner.z);
+	}
+
+	// Adjust minZ and maxZ for better precision in the depth buffer
+	float lightMargin = 10.0f; // Adjust based on scene size
+	minZ -= lightMargin;
+	maxZ += lightMargin;
+
+	lightMatrix = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ) * lightMatrix;
+
+	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+	glBindFramebuffer(GL_FRAMEBUFFER, light->shadowMapFBO);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	//ConfigureShaderAndMatrices();
+	//RenderScene();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void LightingController::SetAmbientLight(glm::vec3& ambientLightColor) {

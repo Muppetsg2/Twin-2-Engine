@@ -1,8 +1,6 @@
 #include "GameCollider.h"
+#include "GameCollider.h"
 #include "core/GameObject.h"
-
-#include <iostream>
-#include <spdlog/spdlog.h>
 
 //#define USE_BOUNDING_VOLUMES
 

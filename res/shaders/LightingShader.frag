@@ -11,6 +11,9 @@ flat in uint materialIndex;
 
 out vec4 FragColor;
 
+//shadow maps
+layout (location = 0) uniform sampler2D DirLightShadowMaps[4];
+
 uniform vec4 uColor;
 uniform bool uNoTexture = true;
 uniform sampler2D texture_diffuse1;
@@ -52,6 +55,7 @@ struct DirectionalLight {
 	vec3 direction;     // Direction of the spot light
 	vec3 color;         // Color of the spot light
 	float power;		  // Light source power
+	mat4 lightSpaceMatrix;
 };
 
 layout (std430, binding = 3) buffer Lights {
@@ -69,21 +73,31 @@ layout(std140, binding = 4) uniform LightingData {
 	float gamma;
 };
 
-//shadow maps
-uniform sampler2D DirLightShadowMaps[4];
 
 //LIGHTING END
 
-float ShadowCalculation(vec4 fragPosLightSpace)
+float ShadowCalculation(vec4 fragPosLightSpace, uint shadowMapId)
 {
     // Perform shadow calculation, using shadowMap and fragPosLightSpace
     // This is a basic example, adjust for PCF or other techniques as needed
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     projCoords = projCoords * 0.5 + 0.5;
-    float closestDepth = texture(shadowMap, projCoords.xy).r; 
+    float closestDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy).r; 
     float currentDepth = projCoords.z;
-    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
-    return shadow;
+    return (currentDepth - 0.005) > closestDepth  ? 1.0 : 0.0;
+    
+	//float currentDepth = 0.0;
+	//float shadow = 0.0;
+	//vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+	//for(int x = -1; x <= 1; ++x)
+	//{
+	//    for(int y = -1; y <= 1; ++y)
+	//    {
+	//        float pcfDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy + vec2(x, y) * texelSize).r; 
+	//        shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+	//    }    
+	//}
+	//shadow /= 9.0;
 }
 
 float countLambertianPart(vec3 L, vec3 N) {
@@ -174,6 +188,7 @@ void main()
         }
 
         LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power;
+        //LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), i);
     }
 	
     FragColor *= vec4(LightColor + AmbientLight, 1.0f); //

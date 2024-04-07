@@ -1,34 +1,6 @@
-// dear imgui: standalone example application for GLFW + OpenGL 3, using programmable pipeline
-// If you are new to dear imgui, see examples/README.txt and documentation at the top of imgui.cpp.
-// (GLFW is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan graphics context creation, etc.)
-
-#include "imgui.h"
-#include "Twin2Engine/imgui_impl/imgui_impl_glfw.h"
-#include "Twin2Engine/imgui_impl/imgui_impl_opengl3.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-
-#define IMGUI_IMPL_OPENGL_LOADER_GLAD
-
-#include <glad/glad.h>  // Initialize with gladLoadGL()
-#include <GLFW/glfw3.h> // Include glfw3.h after our OpenGL definitions
-#include <spdlog/spdlog.h>
-
 // Soloud
 #include <soloud.h>
 #include <soloud_wav.h>
-
-/*
-// Miniaudio
-#define MINIAUDIO_IMPLEMENTATION
-#include "miniaudio.h"
-*/
-
-// OpenGL Mathematics
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 // HID
 #include <core/Input.h>
@@ -37,17 +9,25 @@
 #include <core/Time.h>
 
 // WINDOW
-#include <core/Window.h>
+#include <graphic/Window.h>
 
 // MANAGERS
-#include <manager/TextureManager.h>
-#include <manager/SpriteManager.h>
-#include <manager/FontManager.h>
+#include <graphic/manager/TextureManager.h>
+#include <graphic/manager/SpriteManager.h>
+#include <graphic/manager/FontManager.h>
+#include <graphic/manager/ShaderManager.h>
+#include <graphic/manager/MaterialsManager.h>
+#include <graphic/manager/ModelsManager.h>
+#include <manager/AudioManager.h>
 
 // GAME OBJECT
 #include <core/GameObject.h>
+#include <core/MeshRenderer.h>
 #include <ui/Image.h>
 #include <ui/Text.h>
+
+// AUDIO
+#include <core/AudioComponent.h>
 
 // GRAPHIC_ENGINE
 #include <GraphicEnigine.h>
@@ -64,7 +44,6 @@
 #include <core/SpotLightComponent.h>
 #include <core/DirectionalLightComponent.h>
 
-
 // COLLISIONS
 #include <CollisionManager.h>
 #include <core/BoxColliderComponent.h>
@@ -73,8 +52,6 @@
 
 // CAMERA
 #include <core/CameraComponent.h>
-#include <core/AudioComponent.h>
-#include <core/AudioManager.h>
 
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
@@ -99,12 +76,6 @@ double lastY = 0.0f;
 float cameraSpeed = 40.0f;
 float sensitivity = 0.1f;
 
-//float yaw2 = 45.0f;
-//float pitch2 = 0.0f;
-
-//GLFWcursorposfun lastMouseCallback;
-
-//bool mouseUsingStarted = false;
 bool mouseNotUsed = true;
 
 #pragma endregion
@@ -160,25 +131,16 @@ const     char*   glsl_version     = "#version 450";
 constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 5;
 
-ImVec4 clear_color = ImVec4(.1f, .1f, .1f, 1.f);
-
 GLuint UBOMatrices;
-GLuint depthMapFBO;
-GLuint depthMap;
 
-/*
-SoLoud::Soloud soloud;
-SoLoud::Wav smusicSmple;
-SoLoud::handle sampleHandle = 0;
-bool first = true;
-*/
-
-/*
-ma_engine engine;
-ma_sound sound;
-*/
-
-//bool musicPlaying = false;
+Mesh* mesh;
+Shader* shader;
+Material material;
+Material material2;
+InstatiatingModel modelMesh;
+GameObject* gameObject;
+GameObject* gameObject2;
+GameObject* gameObject3;
 
 GraphicEngine* graphicEngine;
 GameObject* imageObj;
@@ -209,49 +171,6 @@ int main(int, char**)
 
     //smusicSmple.load();
 
-    /*
-    ma_result result;
-    result = ma_engine_init(NULL, &engine);
-    if (result != MA_SUCCESS) {
-        return EXIT_FAILURE;
-    }
-    spdlog::info("Initialized MiniAudio.");
-
-    result = ma_sound_init_from_file(&engine, "./res/music/FurElise.wav", 0, NULL, NULL, &sound);
-    if (result != MA_SUCCESS) {
-        return result;
-    }
-    */
-
-#pragma endregion
-
-#pragma region DepthBuffer
-
-    glGenFramebuffers(1, &depthMapFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-
-    glGenTextures(1, &depthMap);
-    glBindTexture(GL_TEXTURE_2D, depthMap);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, WINDOW_WIDTH, WINDOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthMap, 0);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
 #pragma endregion
 
     // Initialize stdout color sink
@@ -267,6 +186,7 @@ int main(int, char**)
 
     Camera.GetTransform()->SetGlobalPosition(cameraPos);
     Camera.GetTransform()->SetGlobalRotation(glm::vec3(0.f, -90.f, 0.f));
+
     CameraComponent* c = Camera.AddComponent<CameraComponent>();
     c->SetIsMain(true);
     c->SetWindowSize(glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -295,21 +215,33 @@ int main(int, char**)
 
     graphicEngine = new GraphicEngine();
 
-    Shader* sh = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/UI.shdr", "shaders/ui.vert", "shaders/ui.frag");
-    Texture2D* tex = TextureManager::LoadTexture2D("res/textures/stone.jpg");
-    Sprite* s = SpriteManager::MakeSprite(tex, "stone", 0, 0, tex->GetWidth(), tex->GetHeight());
+    modelMesh = ModelsManager::GetCube();
 
-    Texture2D* tex2 = TextureManager::LoadTexture2D("res/textures/grass.png");
-    Sprite* s2 = SpriteManager::MakeSprite(tex2, "grass");
+    material = MaterialsManager::GetMaterial("Basic");
+    material2 = MaterialsManager::GetMaterial("Basic2");
+
+    gameObject = new GameObject();
+    auto comp = gameObject->AddComponent<MeshRenderer>();
+    comp->AddMaterial(material);
+    comp->SetModel(modelMesh);
+
+    gameObject2 = new GameObject();
+    gameObject2->GetTransform()->Translate(glm::vec3(2, 1, 0));
+    comp = gameObject2->AddComponent<MeshRenderer>();
+    comp->AddMaterial(material2);
+    comp->SetModel(modelMesh);
+
+    gameObject3 = new GameObject();
+    gameObject3->GetTransform()->Translate(glm::vec3(0, -1, 0));
+    comp = gameObject3->AddComponent<MeshRenderer>();
+    comp->AddMaterial(material2);
+    comp->SetModel(modelMesh);
 
     imageObj = new GameObject();
     Image* img = imageObj->AddComponent<Image>();
-    img->SetSprite(s);
+    img->SetSprite(SpriteManager::MakeSprite("stone", "res/textures/stone.jpg"));
     Image* img2 = imageObj->AddComponent<Image>();
-    img2->SetSprite(s2);
-
-    Shader* sh2 = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/Text.shdr", "shaders/text.vert", "shaders/text.frag");
-    FontManager::LoadFont("res/fonts/arial.ttf", 48);
+    img2->SetSprite(SpriteManager::MakeSprite("grass", "res/textures/grass.png"));
 
     textObj = new GameObject();
     textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
@@ -317,7 +249,7 @@ int main(int, char**)
     text->SetColor(glm::vec4(1.f));
     text->SetText("Text");
     text->SetSize(48);
-    text->SetFontPath("res/fonts/arial.ttf");
+    text->SetFont("res/fonts/arial.ttf");
 
 #pragma region TestingCollision
     GameObject go1;
@@ -366,9 +298,6 @@ int main(int, char**)
         // Process I/O operations here
         input();
 
-        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         // Update game objects' state here
         update();
 
@@ -386,16 +315,17 @@ int main(int, char**)
 
     // Cleanup
     delete imageObj;
-    //soloud.deinit();
     SpriteManager::UnloadAll();
     TextureManager::UnloadAll();
     AudioManager::UnloadAll();
+    FontManager::UnloadAll();
+    Input::FreeAllWindows();
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    delete window;
+    delete Window::GetInstance();
     glfwTerminate();
 
     return 0;
@@ -417,8 +347,9 @@ bool init()
     glfwWindowHint(GLFW_OPENGL_PROFILE,        GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 
-    window = new Window(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT }, false);
+    window = Window::MakeWindow(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT }, false);
     glfwSetFramebufferSizeCallback(window->GetWindow(), framebuffer_size_callback);
+    Input::InitForWindow(window);
 
     bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     if (err)
@@ -492,9 +423,9 @@ void input()
 
     bool camDirty = false;
 
-    CameraComponent* c = Camera.GetComponent<CameraComponent>();        
+    CameraComponent* c = Camera.GetComponent<CameraComponent>();
 
-    if (!Input::IsKeyUp(KEY::W))
+    if (Input::IsKeyDown(KEY::W))
     {
         camDirty = true;
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
@@ -503,7 +434,7 @@ void input()
             LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
         }
     }
-    if (!Input::IsKeyUp(KEY::S))
+    if (Input::IsKeyDown(KEY::S))
     {
         camDirty = true;
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
@@ -512,7 +443,7 @@ void input()
             LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
         }
     }
-    if (!Input::IsKeyUp(KEY::A))
+    if (Input::IsKeyDown(KEY::A))
     {
         camDirty = true;
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
@@ -521,7 +452,7 @@ void input()
             LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
         }
     }
-    if (!Input::IsKeyUp(KEY::D))
+    if (Input::IsKeyDown(KEY::D))
     {
         camDirty = true;
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
@@ -530,40 +461,6 @@ void input()
             LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
         }
     }
-    /*
-    if (Input::IsKeyHeldDown(KEY::Q))
-    {
-        cameraPos -= cameraUp * cameraSpeed * Time::GetDeltaTime();
-    }
-    if (Input::IsKeyHeldDown(KEY::E))
-    {
-        cameraPos += cameraUp * cameraSpeed * Time::GetDeltaTime();
-    }
-    */
-
-    /*
-    static bool cursorToggle = false;
-
-    if (Input::IsMouseButtonPressed(MOUSE_BUTTON::MIDDLE))
-    {
-        if (!cursorToggle)
-        {
-            lastMouseCallback = glfwSetCursorPosCallback(window->GetWindow(), mouse_callback);
-            Input::HideAndLockCursor();
-            cursorToggle = !cursorToggle;
-            mouseUsingStarted = true;
-        }
-    }
-    else if (Input::IsMouseButtonReleased(MOUSE_BUTTON::MIDDLE))
-    {
-        if (cursorToggle)
-        {
-            glfwSetCursorPosCallback(window->GetWindow(), lastMouseCallback);
-            Input::ShowCursor();
-            cursorToggle = !cursorToggle;
-        }
-    }
-    */
 
     if (camDirty) 
     {
@@ -602,13 +499,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     lastX = xpos;
     lastY = ypos;
 
-    //printf("MPosX: %f MPosY: %f\n", xpos, ypos);
-
     xoffset *= sensitivity;
     yoffset *= sensitivity;
-
-    //yaw += xoffset;
-    //pitch += yoffset;
 
     glm::vec3 rot = Camera.GetTransform()->GetGlobalRotation();
 
@@ -650,14 +542,10 @@ void update()
 void render()
 {
     // OpenGL Rendering code goes here
-    glBindTexture(GL_TEXTURE_2D, depthMap);
-    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        graphicEngine->Render(window, Camera.GetComponent<CameraComponent>()->GetViewMatrix(), Camera.GetComponent<CameraComponent>()->GetProjectionMatrix());
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    graphicEngine->Render(window, Camera.GetComponent<CameraComponent>()->GetViewMatrix(), Camera.GetComponent<CameraComponent>()->GetProjectionMatrix());
+    for (auto& comp : RenderableComponent::_components) {
+        comp->Render();
+    }
+    graphicEngine->Render();
 }
 
 void imgui_begin()

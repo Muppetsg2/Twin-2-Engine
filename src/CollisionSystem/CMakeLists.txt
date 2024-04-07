@@ -1,8 +1,9 @@
-#project(CollisionSystem VERSION 1.0)
+project(CollisionSystem VERSION 1.0)
 
 set(COLLISION_SYSTEM_DIR ${CMAKE_CURRENT_LIST_DIR})
 set(COLLISION_SYSTEM_SOURCE_DIR ${COLLISION_SYSTEM_DIR}/src)
 set(COLLISION_SYSTEM_INCLUDE_DIR ${COLLISION_SYSTEM_DIR}/include)
+set(COLLISION_SYSTEM_PRECOMPILE_HEADER ${COLLISION_SYSTEM_DIR}/pch.h)
 
 file(GLOB_RECURSE COLLISION_SYSTEM_SOURCE_FILES 
                         #${GRAPHIC_ENGINE_DIR}/src/.cpp
@@ -25,10 +26,13 @@ source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${COLLISION_SYSTEM_PRIVATE_INC
 
 
 #Defining library
-add_library(CollisionSystem STATIC ${COLLISION_SYSTEM_SOURCE_FILES})
+add_library(${PROJECT_NAME} STATIC ${COLLISION_SYSTEM_SOURCE_FILES})
+
+#Adding precompile header
+target_precompile_headers(${PROJECT_NAME} PUBLIC ${COLLISION_SYSTEM_PRECOMPILE_HEADER})
 
 #Adding include to library
-target_include_directories(CollisionSystem
+target_include_directories(${PROJECT_NAME}
                         PUBLIC 
                         #${GRAPHIC_ENGINE_PUBLIC_INCLUDE_FILES}
                         ${COLLISION_SYSTEM_INCLUDE_DIR}
@@ -39,7 +43,7 @@ target_include_directories(CollisionSystem
                         ${COLLISION_SYSTEM_DIR}
                         )
 
-target_link_libraries(CollisionSystem PRIVATE 
+target_link_libraries(${PROJECT_NAME} PRIVATE 
                                         #glad
                                         #glm::glm
                                         Twin2Engine

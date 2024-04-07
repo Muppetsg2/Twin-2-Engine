@@ -5,7 +5,7 @@
 #include <glad/glad.h>  
 #include <GLFW/glfw3.h> 
 #include <unordered_set>
-#include "Shader.h"
+#include <graphic/Shader.h>
 
 
 namespace LightingSystem {
@@ -22,7 +22,7 @@ namespace LightingSystem {
 				unsigned int padding;								//12	4 - padding
 				PointLight pointLights[8];							//16	48 * 8 = 384
 				SpotLight spotLights[8];							//400	64 * 8 = 512
-				DirectionalLight directionalLights[4];				//912	48 * 4 = 192
+				DirectionalLight directionalLights[4];				//912	112. * 4 = 192
 			};
 
 			struct LightingData {													//32
@@ -33,6 +33,9 @@ namespace LightingSystem {
 			//Lights lights;
 
 		public:
+			static const int SHADOW_WIDTH;
+			static const int SHADOW_HEIGHT;
+
 			GLuint LightsBuffer;
 			GLuint LightingDataBuffer;
 
@@ -65,6 +68,9 @@ namespace LightingSystem {
 			void UpdateDL(DirectionalLight* dirLight);
 
 			void BindLightBuffors(Twin2Engine::GraphicEngine::Shader* shader);
+			void UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader* shader);
+
+			void UpdateDirLightSpaceMatrix(DirectionalLight* lighth, const glm::mat4& viewProjectionInverse);
 
 			void SetAmbientLight(glm::vec3& ambientLightColor);
 			void SetViewerPosition(glm::vec3& viewerPosition);

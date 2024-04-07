@@ -3,6 +3,7 @@
 
 //#define BoundingVolumePtr BoundingVolume*
 #include "Collider.h"
+#include <core/Frustum.h>
 
 namespace CollisionSystem {
 	class BoundingVolume : public Collider {
@@ -13,7 +14,7 @@ namespace CollisionSystem {
 	
 			//virtual ~BoundingVolume();
 	
-			bool isOnFrustrum();
+			bool isOnFrustum(Frustum* frustum);
 
 			Collision* collide(Collider* other) override;
 	};

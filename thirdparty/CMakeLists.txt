@@ -16,6 +16,21 @@ set(stb_image_SOURCE_DIR ${STB_IMAGE_DIR} CACHE INTERNAL "")
 add_library(stb_image STATIC ${STB_IMAGE_DIR}/stb_image.cpp)
 target_include_directories(stb_image PRIVATE ${STB_IMAGE_DIR})
 
+# free type
+#set(FREETYPE_DIR ${CMAKE_CURRENT_LIST_DIR}/freetype)
+#set(freetype_SOURCE_DIR ${FREETYPE_DIR}/include CACHE INTERNAL "")
+#add_library(freetype STATIC ${FREETYPE_DIR}/src/freetype.cpp)
+#target_include_directories(freetype PRIVATE ${FREETYPE_DIR}/include)
+
+
+# tinygltf
+#set(TINY_GTLF_DIR ${CMAKE_CURRENT_LIST_DIR}/tiny_gltf)
+#set(tinygltf_SOURCE_DIR ${TINY_GTLF_DIR} CACHE INTERNAL "")
+#add_library(tinygltf STATIC ${TINY_GTLF_DIR}/tiny_gltf.cc)
+##target_link_libraries(tinygltf PRIVATE stb_image)
+##target_include_directories(tinygltf PRIVATE ${TINY_GTLF_DIR} ${stb_image_SOURCE_DIR})
+#target_include_directories(tinygltf PRIVATE ${TINY_GTLF_DIR})
+
 get_property(is_miniaudio GLOBAL PROPERTY ISMINIAUDIO)
 
 if(is_miniaudio)
@@ -42,6 +57,15 @@ endif()
 # other
 CPMAddPackage("gh:assimp/assimp@5.3.1")
 CPMAddPackage("gh:glfw/glfw#3.4")
+#CPMAddPackage("gh:syoyo/tinygltf@2.8.0")
+
+#CPMAddPackage(
+#    NAME tinygltf
+#    GITHUB_REPOSITORY syoyo/tinygltf
+#    VERSION 2.8.0
+#    #DOWNLOAD_ONLY TRUE
+#)
+
 CPMAddPackage("gh:g-truc/glm#1.0.1")
 CPMAddPackage("gh:gabime/spdlog@1.13.0")
 CPMAddPackage("gh:jbeder/yaml-cpp#0.8.0")
@@ -71,6 +95,7 @@ if(is_miniaudio)
                               spdlog
                               yaml-cpp
                               miniaudio
+                              #tinygltf
                               freetype PROPERTIES FOLDER "thirdparty")
     else()
         set_target_properties(glad
@@ -81,6 +106,7 @@ if(is_miniaudio)
                         spdlog
                         yaml-cpp
                         miniaudio
+                        #tinygltf
                         freetype PROPERTIES FOLDER "thirdparty")
     endif()
 else()
@@ -94,6 +120,7 @@ else()
                               spdlog 
                               soloud
                               yaml-cpp
+                              #tinygltf
                               freetype PROPERTIES FOLDER "thirdparty")
     else()
         set_target_properties(glad
@@ -104,6 +131,7 @@ else()
                         spdlog 
                         soloud
                         yaml-cpp
+                        #tinygltf
                         freetype PROPERTIES FOLDER "thirdparty")
     endif()
 endif()

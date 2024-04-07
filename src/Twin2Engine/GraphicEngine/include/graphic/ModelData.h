@@ -5,15 +5,11 @@
 
 namespace Twin2Engine::GraphicEngine
 {
-    class Model;
-
     struct ModelData
     {
         size_t modelHash;
         int useNumber;
-        Model* model;
-        GLuint ssboId;
-        vector<InstatiatingMesh> meshes;
+        std::vector<InstatiatingMesh*> meshes;
         bool operator<(const ModelData& data2) const
         {
             return modelHash < data2.modelHash;

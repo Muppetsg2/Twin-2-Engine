@@ -47,6 +47,11 @@ Twin2Engine::Core::Scene* Twin2Engine::Core::GameObject::GetObjectScene() const
 	return _scene;
 }
 
+bool Twin2Engine::Core::GameObject::GetActiveInHierarchy() const
+{
+	return _activeInHierarchy;
+}
+
 bool Twin2Engine::Core::GameObject::GetActive() const
 {
 	return _activeSelf && _activeInHierarchy;
@@ -55,19 +60,20 @@ void Twin2Engine::Core::GameObject::SetActive(bool active)
 {
 	_activeSelf = active;
 
-	//Checking if this gameObject's parents are active to go end activate childs 
-	if (_activeInHierarchy)
+	SetActiveInHierarchy(active);
+}
+
+void Twin2Engine::Core::GameObject::SetActiveInHierarchy(bool activeInHierarchy)
+{
+	if (_activeInHierarchy != activeInHierarchy) // warunek sprawdzajï¿½cy czy to ustawienie zmieni stan (musi zmieniaï¿½ inaczej nie ma sensu dziaï¿½ï¿½ï¿½ dalej)
 	{
-		if (_activeSelf)
+		_activeInHierarchy = activeInHierarchy; //zmiana stanu
+		if (_activeSelf) // sprawdzenie wï¿½asnego stanu, jeï¿½li ustawiony na false to znaczy, ï¿½e ten stan dyktuje warunki aktywnoï¿½ci wszystkich podrzï¿½dnych obiektï¿½w
 		{
-			//zrobiæ przejœcie po childach w celu aktywacji _activeInHierarchy
-			//zaprzestanie gdy:
-			// - dojdzie siê do koñca
-			// - gdy gameObject ma _activeSelf == false wtedy nale¿y aktywowaæ _activeInHierarchy i go zaprzestaæ dlasze przeszukiwanie w tym kierunku
-		}
-		else
-		{
-			//wy³¹czanie na podobnej zasadzie childów
+			for (int index = 0; index < _transform->GetChildCount(); index++)
+			{
+				_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(activeInHierarchy);
+			}
 		}
 	}
 }

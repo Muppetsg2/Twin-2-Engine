@@ -49,7 +49,8 @@ void UIRenderingManager::Render()
 		_uiShader->SetMat4("model", elem.transform);
 		_uiShader->SetMat4("normalModel", normalModel);
 
-		_spritePlane.GetMesh(0)->Draw(_uiShader, 1);
+		//_spritePlane.GetMesh(0)->Draw(_uiShader, 1);
+		_spritePlane.GetMesh(0)->Draw(1);
 
 		_renderQueue.pop();
 	}

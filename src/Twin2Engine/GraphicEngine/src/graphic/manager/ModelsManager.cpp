@@ -6,40 +6,237 @@ using namespace Twin2Engine::Manager;
 std::hash<std::string> ModelsManager::stringHash;
 std::list<ModelData*> ModelsManager::loadedModels;
 
+
+#if ASSIMP_LOADING
+
+inline void ModelsManager::LoadModelAssimp(const std::string& modelPath, ModelData* modelData)
+{
+    // Create an instance of the Assimp importer
+    Assimp::Importer importer;
+
+    // Read the file with Assimp
+    const aiScene* scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs);
+
+    // Check if the scene was loaded successfully
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+        SPDLOG_ERROR("Assimp error: {}", importer.GetErrorString());
+        return;
+    }
+
+    modelData->meshes.resize(scene->mNumMeshes);
+
+    // Extract mesh data
+    for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
+        const aiMesh* mesh = scene->mMeshes[i];
+
+        std::vector<Vertex> vertices;
+        std::vector<unsigned int> indices;
+        ExtractMeshAssimp(mesh, vertices, indices);
+
+        modelData->meshes[i] = new InstatiatingMesh(vertices, indices);
+        //modelData->meshes.push_back(new InstatiatingMesh(vertices, indices));
+    }
+}
+
+inline void ModelsManager::ExtractMeshAssimp(const aiMesh* mesh, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
+{
+    // Reserve memory for vertices
+    vertices.resize(mesh->mNumVertices);
+
+    // Extract vertex data
+    for (unsigned int i = 0; i < mesh->mNumVertices; ++i) {
+        // Position
+        vertices[i].Position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+
+        // Normal
+        if (mesh->HasNormals()) {
+            vertices[i].Normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+        }
+
+        // Texture coordinates
+        if (mesh->HasTextureCoords(0)) {
+            vertices[i].TexCoords = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+        }
+    }
+
+    // Reserve memory for indices
+    indices.reserve(mesh->mNumFaces * 3); // Assuming triangles
+
+    // Extract index data
+    for (unsigned int i = 0; i < mesh->mNumFaces; ++i) {
+        const aiFace& face = mesh->mFaces[i];
+        for (unsigned int j = 0; j < face.mNumIndices; ++j) {
+            indices.push_back(face.mIndices[j]);
+        }
+    }
+}
+
+#elif TINYGLTF_LOADING
+
+inline void Twin2Engine::GraphicEngine::ModelsManager::LoadModelGLTF(const std::string& modelPath, ModelData* modelData)
+{
+    // Load GLTF model
+    tinygltf::Model model;
+    tinygltf::TinyGLTF loader;
+    std::string err, warn;
+    bool ret = loader.LoadASCIIFromFile(&model, &err, &warn, modelPath);
+
+    if (!warn.empty()) {
+        SPDLOG_WARN("Warning: {}", warn);
+    }
+
+    if (!err.empty()) {
+        SPDLOG_ERROR("Error: {}", err);
+        return;
+    }
+
+    if (!ret) {
+        SPDLOG_ERROR("Failed to load GLTF file");
+        return;
+    }
+
+    //size_t strHash = stringHash(modelPath);
+    //ModelData* modelData = new ModelData{
+    //    .modelHash = strHash,
+    //    .useNumber = 1
+    //};
+
+    modelData->meshes.resize(model.meshes.size());
+
+    // Extract mesh data
+    //if (model.meshes.size() > 0) {
+    //    const tinygltf::Mesh& mesh = model.meshes[0]; // Assume we're extracting data from the first mesh
+    //    std::vector<Vertex> vertices;
+    //    std::vector<unsigned int> indices;
+    //    ExtractMeshGLTF(mesh, model, vertices, indices);
+    //
+    //    InstatiatingMesh* mesh = new InstatiatingMesh(vertices, indices);
+    //}
+
+    std::vector<Vertex> vertices;
+    std::vector<unsigned int> indices;
+    for (int i = 0; i < model.meshes.size(); i++)
+    {
+        ExtractMeshGLTF(model.meshes[i], model, vertices, indices);
+
+        modelData->meshes[i] = new InstatiatingMesh(vertices, indices);
+    }
+}
+
+inline void Twin2Engine::GraphicEngine::ModelsManager::ExtractMeshGLTF(const tinygltf::Mesh& mesh, const tinygltf::Model& model, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
+{
+    size_t lastVericesSize = 0;
+    size_t lastIndicesSize = 0;
+    for (const auto& primitive : mesh.primitives)
+    {
+        // Extract vertex data
+
+        //Extracting Positions
+        const tinygltf::Accessor& positionAccessor = model.accessors[primitive.attributes.at("POSITION")];
+        const tinygltf::BufferView& positionBufferView = model.bufferViews[positionAccessor.bufferView];
+        const tinygltf::Buffer& positionBuffer = model.buffers[positionBufferView.buffer];
+        const float* positionData = reinterpret_cast<const float*>(&positionBuffer.data[positionAccessor.byteOffset + positionBufferView.byteOffset]);
+        const int numComponents = positionAccessor.type == TINYGLTF_TYPE_VEC3 ? 3 : 2;
+        const int numVertices = positionAccessor.count;
+
+        //Extracting Normals
+        const tinygltf::Accessor* normalAccessor = nullptr;
+        const float* normalData = nullptr;
+        if (primitive.attributes.find("NORMAL") != primitive.attributes.end())
+        {
+            normalAccessor = &model.accessors[primitive.attributes.at("NORMAL")];
+            const tinygltf::BufferView& normalBufferView = model.bufferViews[normalAccessor->bufferView];
+            const tinygltf::Buffer& normalBuffer = model.buffers[normalBufferView.buffer];
+            normalData = reinterpret_cast<const float*>(&normalBuffer.data[normalAccessor->byteOffset + normalBufferView.byteOffset]);
+        }
+
+        //Extracting TexCoords
+        const tinygltf::Accessor* texCoordAccessor = nullptr;
+        const float* texCoordData = nullptr;
+        if (primitive.attributes.find("TEXCOORD_0") != primitive.attributes.end())
+        {
+            texCoordAccessor = &model.accessors[primitive.attributes.at("TEXCOORD_0")];
+            const tinygltf::BufferView& texCoordBufferView = model.bufferViews[texCoordAccessor->bufferView];
+            const tinygltf::Buffer& texCoordBuffer = model.buffers[texCoordBufferView.buffer];
+            texCoordData = reinterpret_cast<const float*>(&texCoordBuffer.data[texCoordAccessor->byteOffset + texCoordBufferView.byteOffset]);
+        }
+
+        // Add vertices to vector
+        vertices.resize(lastVericesSize + numVertices);
+        for (int k = 0; k < numVertices; ++k)
+        {
+            // Position
+            vertices[lastVericesSize + k].Position = glm::vec3(positionData[k * numComponents], positionData[k * numComponents + 1], positionData[k * numComponents + 2]);
+            // Normal
+            if (normalAccessor && normalData)
+            {
+                vertices[lastVericesSize + k].Normal = glm::vec3(normalData[k * 3], normalData[k * 3 + 1], normalData[k * 3 + 2]);
+            }
+            // TexCoords
+            if (texCoordAccessor && texCoordData)
+            {
+                vertices[lastVericesSize + k].TexCoords = glm::vec2(texCoordData[k * 2], texCoordData[k * 2 + 1]);
+            }
+        }
+        lastVericesSize = vertices.size();
+
+        // Extract index data
+        const tinygltf::Accessor& indexAccessor = model.accessors[primitive.indices];
+        const tinygltf::BufferView& indexBufferView = model.bufferViews[indexAccessor.bufferView];
+        const tinygltf::Buffer& indexBuffer = model.buffers[indexBufferView.buffer];
+        const int numIndices = indexAccessor.count;
+
+        indices.resize(lastIndicesSize + numIndices);
+
+        if (indexAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT)
+        {
+            const uint16_t* indexData = reinterpret_cast<const uint16_t*>(&indexBuffer.data[indexAccessor.byteOffset + indexBufferView.byteOffset]);
+            for (int k = 0; k < numIndices; ++k)
+            {
+                indices[lastIndicesSize + k] = indexData[k];
+            }
+        }
+        else if (indexAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT)
+        {
+            const uint32_t* indexData = reinterpret_cast<const uint32_t*>(&indexBuffer.data[indexAccessor.byteOffset + indexBufferView.byteOffset]);
+            for (int k = 0; k < numIndices; ++k)
+            {
+                indices[lastIndicesSize + k] = indexData[k];
+            }
+        }
+        else
+        {
+            SPDLOG_ERROR("Unsupported index type");
+            return;
+        }
+        lastIndicesSize = indices.size();
+    }
+}
+
+#endif
+
 ModelData* ModelsManager::LoadModel(const std::string& modelPath)
 {
     size_t strHash = stringHash(modelPath);
 
     std::list<ModelData*>::iterator found =
         std::find_if(loadedModels.begin(), loadedModels.end(), [strHash](ModelData* data) { return data->modelHash == strHash; });
-    
+
     ModelData* modelData;
     if (found == loadedModels.end())
     {
         SPDLOG_INFO("Loading model: {}!", modelPath);
 
-        Model* model = new Model(modelPath.c_str());
-
-        //Creating SSBO
-
-        GLuint ssbo;
-        glGenBuffers(1, &ssbo);
-
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
         modelData = new ModelData{
             .modelHash = strHash,
-            .useNumber = 1,
-            .model = model,
-            .ssboId = ssbo
+            .useNumber = 1
         };
 
-        for (Mesh& mesh : model->meshes)
-        {
-            modelData->meshes.push_back(InstatiatingMesh(&mesh, ssbo));
-        }
+#if ASSIMP_LOADING
+        LoadModelAssimp(modelPath, modelData);
+#elif TINYGLTF_LOADING
+        LoadModelGLTF(modelPath, modelData);
+#endif
 
         loadedModels.push_back(modelData);
     }
@@ -51,15 +248,12 @@ ModelData* ModelsManager::LoadModel(const std::string& modelPath)
     }
 
     return modelData;
-
 }
 
 void ModelsManager::UnloadModel(ModelData* modelData)
 {
-    //std::cout << "Tutaj6\n";
     if (modelData != nullptr)
     {
-        //std::cout << "Tutaj7\n";
         modelData->useNumber--;
         if (modelData->useNumber == 0)
         {
@@ -68,29 +262,23 @@ void ModelsManager::UnloadModel(ModelData* modelData)
                 else if (modelData == _piramidModel) _piramidModel = nullptr;
                 else if (modelData == _sphereModel) _sphereModel = nullptr;
                 else if (modelData == _planeModel) _planeModel = nullptr;
-                delete modelData->model;
-                glDeleteBuffers(1, &modelData->ssboId);
-                for (auto& m : modelData->meshes) {
-                    glDeleteBuffers(1, &m.mesh->EBO);
-                    glDeleteBuffers(1, &m.mesh->VBO);
-                    glDeleteVertexArrays(1, &m.mesh->VAO);
+                for (auto& mesh : modelData->meshes) {
+                    delete mesh;
                 }
                 delete modelData;
             }
             else if (loadedModels.size() != 0) {
-                //std::cout << "Tutaj8\n";
                 std::list<ModelData*>::iterator found = std::find_if(loadedModels.begin(), loadedModels.end(), [modelData](Twin2Engine::GraphicEngine::ModelData* data) { return data == modelData; });
 
                 if (found != loadedModels.end())
                 {
-                    delete (*found)->model;
-                    glDeleteBuffers(1, &(*found)->ssboId);
-                    for (auto& m : (*found)->meshes) {
-                        glDeleteBuffers(1, &m.mesh->EBO);
-                        glDeleteBuffers(1, &m.mesh->VBO);
-                        glDeleteVertexArrays(1, &m.mesh->VAO);
-                    }
                     loadedModels.erase(found);
+
+                    for (InstatiatingMesh*& mesh : (*found)->meshes) 
+                    {
+                        delete mesh;
+                    }
+
                     delete (*found);
                 }
             }
@@ -129,7 +317,7 @@ InstatiatingModel ModelsManager::GetCube()
     {
         SPDLOG_INFO("Creating Simple Cube Model");
 
-        vector<Vertex> vertices {
+        std::vector<Vertex> vertices {
             // Fron Face
             {.Position = glm::vec3(-0.5f,  0.5f,  0.5f), .Normal = glm::vec3( 0.0f,  0.0f,  1.0f), .TexCoords = glm::vec2(0.0f, 1.0f) },
             {.Position = glm::vec3(-0.5f, -0.5f,  0.5f), .Normal = glm::vec3( 0.0f,  0.0f,  1.0f), .TexCoords = glm::vec2(0.0f, 0.0f) },
@@ -167,7 +355,7 @@ InstatiatingModel ModelsManager::GetCube()
             {.Position = glm::vec3(-0.5f, -0.5f, -0.5f), .Normal = glm::vec3( 0.0f, -1.0f,  0.0f), .TexCoords = glm::vec2(1.0f, 0.0f) }
         };
 
-        vector<unsigned int> indices {
+        std::vector<unsigned int> indices {
             // Fron Face
             0, 1, 2,
             2, 1, 3,
@@ -193,27 +381,33 @@ InstatiatingModel ModelsManager::GetCube()
             23, 21, 22
         };
 
-        Model* model = new Model(vertices, indices, vector<Texture>());
-
-        //Creating SSBO
-        GLuint ssbo;
-        glGenBuffers(1, &ssbo);
-
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+        InstatiatingMesh* mesh = new InstatiatingMesh(vertices, indices);
 
         _cubeModel = new ModelData{
             .modelHash = 0,
-            .useNumber = 1,
-            .model = model,
-            .ssboId = ssbo
+            .useNumber = 1
         };
+        _cubeModel->meshes.push_back(mesh);
 
-        for (Mesh& mesh : model->meshes)
-        {
-            _cubeModel->meshes.push_back(InstatiatingMesh(&mesh, ssbo));
-        }
+        //Creating SSBO
+        //GLuint ssbo;
+        //glGenBuffers(1, &ssbo);
+        //
+        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+        //
+        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+        //_cubeModel = new ModelData{
+        //    .modelHash = 0,
+        //    .useNumber = 1
+        //    .model = model,
+        //    .ssboId = ssbo
+        //};
+        // 
+        //for (Mesh& mesh : model->meshes)
+        //{
+        //    _cubeModel->meshes.push_back(InstatiatingMesh(&mesh, ssbo));
+        //}
     }
     else
     {
@@ -348,27 +542,36 @@ InstatiatingModel ModelsManager::GetSphere()
         texCoords.clear();
         normals.clear();
 
-        Model* model = new Model(vertices, indices, vector<Texture>());
-
-        //Creating SSBO
-        GLuint ssbo;
-        glGenBuffers(1, &ssbo);
-
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+        InstatiatingMesh* mesh = new InstatiatingMesh(vertices, indices);
 
         _sphereModel = new ModelData{
             .modelHash = 0,
-            .useNumber = 1,
-            .model = model,
-            .ssboId = ssbo
+            .useNumber = 1
         };
 
-        for (Mesh& mesh : model->meshes)
-        {
-            _sphereModel->meshes.push_back(InstatiatingMesh(&mesh, ssbo));
-        }
+        _sphereModel->meshes.push_back(mesh);
+
+        //Model* model = new Model(vertices, indices, vector<Texture>());
+        //
+        ////Creating SSBO
+        //GLuint ssbo;
+        //glGenBuffers(1, &ssbo);
+        //
+        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+        //
+        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+        //
+        //_sphereModel = new ModelData{
+        //    .modelHash = 0,
+        //    .useNumber = 1,
+        //    .model = model,
+        //    .ssboId = ssbo
+        //};
+        //
+        //for (Mesh& mesh : model->meshes)
+        //{
+        //    _sphereModel->meshes.push_back(InstatiatingMesh(&mesh, ssbo));
+        //}
     }
     else
     {
@@ -385,39 +588,48 @@ InstatiatingModel ModelsManager::GetPlane()
     {
         SPDLOG_INFO("Creating Simple Plane Model");
 
-        vector<Vertex> vertices {
+        std::vector<Vertex> vertices {
             {.Position = glm::vec3(-0.5f,  0.5f,  0.0f), .Normal = glm::vec3( 0.0f,  0.0f,  1.0f), .TexCoords = glm::vec2(0.0f, 0.0f) },
             {.Position = glm::vec3(-0.5f, -0.5f,  0.0f), .Normal = glm::vec3( 0.0f,  0.0f,  1.0f), .TexCoords = glm::vec2(0.0f, 1.0f) },
             {.Position = glm::vec3( 0.5f,  0.5f,  0.0f), .Normal = glm::vec3( 0.0f,  0.0f,  1.0f), .TexCoords = glm::vec2(1.0f, 0.0f) },
             {.Position = glm::vec3( 0.5f, -0.5f,  0.0f), .Normal = glm::vec3( 0.0f,  0.0f,  1.0f), .TexCoords = glm::vec2(1.0f, 1.0f) },
         };
 
-        vector<unsigned int> indices {
+        std::vector<unsigned int> indices {
             0, 1, 2,
             2, 1, 3
         };
 
-        Model* model = new Model(vertices, indices, vector<Texture>());
-
-        //Creating SSBO
-        GLuint ssbo;
-        glGenBuffers(1, &ssbo);
-
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+        InstatiatingMesh* mesh = new InstatiatingMesh(vertices, indices);
 
         _planeModel = new ModelData{
             .modelHash = 0,
-            .useNumber = 1,
-            .model = model,
-            .ssboId = ssbo
+            .useNumber = 1
         };
 
-        for (Mesh& mesh : model->meshes)
-        {
-            _planeModel->meshes.push_back(InstatiatingMesh(&mesh, ssbo));
-        }
+        _planeModel->meshes.push_back(mesh);
+
+        //Model* model = new Model(vertices, indices, vector<Texture>());
+        //
+        ////Creating SSBO
+        //GLuint ssbo;
+        //glGenBuffers(1, &ssbo);
+        //
+        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+        //
+        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+        //
+        //_planeModel = new ModelData{
+        //    .modelHash = 0,
+        //    .useNumber = 1,
+        //    .model = model,
+        //    .ssboId = ssbo
+        //};
+        //
+        //for (Mesh& mesh : model->meshes)
+        //{
+        //    _planeModel->meshes.push_back(InstatiatingMesh(&mesh, ssbo));
+        //}
     }
     else
     {
@@ -434,7 +646,7 @@ InstatiatingModel ModelsManager::GetPiramid()
     {
         SPDLOG_INFO("Creating Simple Piramid Model");
 
-        vector<Vertex> vertices{
+        std::vector<Vertex> vertices{
             {.Position = glm::vec3(-0.5f, -0.5f, -0.5f), .Normal = glm::vec3( 0.0f, -1.0f,  0.0f), .TexCoords = glm::vec2(0.0f, 1.0f) },
             {.Position = glm::vec3(-0.5f,  0.0f,  0.0f), .Normal = glm::vec3( 0.0f, -1.0f,  0.0f), .TexCoords = glm::vec2(0.0f, 0.0f) },
             {.Position = glm::vec3( 0.5f, -0.5f, -0.5f), .Normal = glm::vec3( 0.0f, -1.0f,  0.0f), .TexCoords = glm::vec2(1.0f, 1.0f) },
@@ -457,7 +669,7 @@ InstatiatingModel ModelsManager::GetPiramid()
             {.Position = glm::vec3( 0.5f, -0.5f, -0.5f), .Normal = glm::vec3( 1.0f,  0.0f,  0.0f), .TexCoords = glm::vec2(1.0f, 1.0f) }
         };
 
-        vector<unsigned int> indices{
+        std::vector<unsigned int> indices{
             // Bottom Face
             0, 1, 2,
             2, 1, 3,
@@ -475,27 +687,36 @@ InstatiatingModel ModelsManager::GetPiramid()
             13, 14, 15
         };
 
-        Model* model = new Model(vertices, indices, vector<Texture>());
-
-        //Creating SSBO
-        GLuint ssbo;
-        glGenBuffers(1, &ssbo);
-
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+        InstatiatingMesh* mesh = new InstatiatingMesh(vertices, indices);
 
         _piramidModel = new ModelData{
             .modelHash = 0,
-            .useNumber = 1,
-            .model = model,
-            .ssboId = ssbo
+            .useNumber = 1
         };
 
-        for (Mesh& mesh : model->meshes)
-        {
-            _piramidModel->meshes.push_back(InstatiatingMesh(&mesh, ssbo));
-        }
+        _piramidModel->meshes.push_back(mesh);
+
+        //Model* model = new Model(vertices, indices, vector<Texture>());
+        //
+        ////Creating SSBO
+        //GLuint ssbo;
+        //glGenBuffers(1, &ssbo);
+        //
+        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+        //
+        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+        //
+        //_piramidModel = new ModelData{
+        //    .modelHash = 0,
+        //    .useNumber = 1,
+        //    .model = model,
+        //    .ssboId = ssbo
+        //};
+        //
+        //for (Mesh& mesh : model->meshes)
+        //{
+        //    _piramidModel->meshes.push_back(InstatiatingMesh(&mesh, ssbo));
+        //}
     }
     else
     {
@@ -505,7 +726,7 @@ InstatiatingModel ModelsManager::GetPiramid()
     return _piramidModel;
 }
 
-InstatiatingModel ModelsManager::CreateModel(const std::string& modelName, vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
+InstatiatingModel ModelsManager::CreateModel(const std::string& modelName, std::vector<Vertex> vertices, std::vector<unsigned int> indices)
 {
     size_t strHash = stringHash(modelName);
 
@@ -517,28 +738,36 @@ InstatiatingModel ModelsManager::CreateModel(const std::string& modelName, vecto
     {
         SPDLOG_INFO("Creating model: {}!", modelName);
 
-        Model* model = new Model(vertices, indices, textures);
+        InstatiatingMesh* mesh = new InstatiatingMesh(vertices, indices);
 
-        //Creating SSBO
-
-        GLuint ssbo;
-        glGenBuffers(1, &ssbo);
-
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-        modelData = new ModelData{
-            .modelHash = strHash,
-            .useNumber = 1,
-            .model = model,
-            .ssboId = ssbo
+        ModelData* newModel = new ModelData{
+            .modelHash = 0,
+            .useNumber = 1
         };
 
-        for (Mesh& mesh : model->meshes)
-        {
-            modelData->meshes.push_back(InstatiatingMesh(&mesh, ssbo));
-        }
+        newModel->meshes.push_back(mesh);
+        //Model* model = new Model(vertices, indices, textures);
+        //
+        ////Creating SSBO
+        //
+        //GLuint ssbo;
+        //glGenBuffers(1, &ssbo);
+        //
+        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+        //
+        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+        //
+        //modelData = new ModelData{
+        //    .modelHash = strHash,
+        //    .useNumber = 1,
+        //    .model = model,
+        //    .ssboId = ssbo
+        //};
+        //
+        //for (Mesh& mesh : model->meshes)
+        //{
+        //    modelData->meshes.push_back(InstatiatingMesh(&mesh, ssbo));
+        //}
 
         loadedModels.push_back(modelData);
     }
@@ -551,9 +780,3 @@ InstatiatingModel ModelsManager::CreateModel(const std::string& modelName, vecto
 
     return modelData;
 }
-
-//void GraphicEngine::ModelsManager::FreeModel(InstatiatingModel*& model)
-//{
-//    model->modelData->useNumber--;
-//    model = nullptr;
-//}

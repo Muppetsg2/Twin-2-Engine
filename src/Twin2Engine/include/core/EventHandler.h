@@ -5,42 +5,72 @@ namespace Twin2Engine::Core {
 	template<typename... Args> using Action = Func<void, Args...>;
 	using Method = Action<>;
 
+	template<typename Ret, typename... Args> using CFunc = Ret(*)(Args...);
+	template<typename... Args> using CAction = CFunc<void, Args...>;
+	using CMethod = CAction<>;
+
+	template<typename... Args>
+	struct Event {
+		size_t ID;
+		Action<Args...> Action;
+	};
+
 	template<typename... Args>
 	class EventHandler {
 	private:
-		std::vector<Action<Args...>> _actions = std::vector<Action<Args...>>();
+		std::vector<Event<Args...>> _events = std::vector<Event<Args...>>();
+		size_t _freeId = 0;
+		std::queue<size_t> _removedIds = std::queue<size_t>();
 
 	public:
 		EventHandler() = default;
 		virtual ~EventHandler() = default;
 
-		constexpr void AddCallback(const Action<Args...>& callback) {
-			_actions.push_back(callback);
+		constexpr size_t AddCallback(const Action<Args...>& callback) {
+			Event e{
+				.ID = 0,
+				.Action = callback
+			};
+			if (_removedIds.size() > 0) {
+				e.ID = _removedIds.front();
+				_removedIds.pop();
+			}
+			else {
+				e.ID = _freeId++;
+			}
+			_events.push_back(e);
+			return e.ID;
 		}
-		void RemoveCallback(const Action<Args...>& callback) {
-			for (size_t i = 0; i < _actions.size(); ++i) {
-				if (_actions[i] == callback) {
-					_actions.erase(_actions.begin() + i);
+
+		void RemoveCallback(size_t callbackId) {
+			for (size_t i = 0; i < _events.size(); ++i) {
+				if (_events[i].ID == callbackId) {
+					_events.erase(_events.begin() + i);
+					_removedIds.push(callbackId);
 					break;
 				}
 			}
 		}
 		constexpr void RemoveAllCallbacks() {
-			_actions.clear();
+			_events.clear();
+			_freeId = 0;
+			while (!_removedIds.empty()) _removedIds.pop();
 		}
 
 		void Invoke(Args... args) const {
-			for (Action<Args...> action : _actions) {
-				action(args...);
+			for (Event<Args...> event : _events) {
+				event.Action(args...);
 			}
 		}
 
-		constexpr void operator+=(const Action<Args...>& callback) {
-			AddCallback(callback);
+		constexpr size_t operator+=(const Action<Args...>& callback) {
+			return AddCallback(callback);
 		}
-		constexpr void operator-=(const Action<Args...>& callback) {
-			RemoveCallback(callback);
-			return *this;
+		constexpr void operator-=(size_t callbackId) {
+			RemoveCallback(callbackId);
+		}
+		constexpr void operator()(Args... args) const {
+			Invoke(args...);
 		}
 	};
 	using MethodEventHandler = EventHandler<>;

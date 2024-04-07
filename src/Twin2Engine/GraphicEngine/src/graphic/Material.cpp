@@ -103,7 +103,7 @@ Shader* Twin2Engine::GraphicEngine::Material::GetShader() const
 	return _materialData->shader;
 }
 
-unsigned int Twin2Engine::GraphicEngine::Material::GetId() const
+size_t Twin2Engine::GraphicEngine::Material::GetId() const
 {
 	if (_materialData == nullptr)
 	{

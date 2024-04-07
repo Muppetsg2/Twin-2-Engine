@@ -30,7 +30,15 @@
 #include <core/AudioComponent.h>
 
 // GRAPHIC_ENGINE
-#include <GraphicEnigine.h>
+#include <GraphicEnigineManager.h>
+
+// LOGGER
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+
+#include <memory>
+#include <string>
+#include <cstring>
 
 // COLLISIONS
 #include <CollisionManager.h>
@@ -119,24 +127,28 @@ const char* WINDOW_NAME = "Twin^2 Engine";
 Window* window = nullptr;
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
-const     char*   glsl_version     = "#version 450";
+const     char*   glsl_version     = "#version 460";
 constexpr int32_t GL_VERSION_MAJOR = 4;
-constexpr int32_t GL_VERSION_MINOR = 5;
+constexpr int32_t GL_VERSION_MINOR = 6;
 
+/*
 GLuint UBOMatrices;
+*/
 
 Scene* testScene = nullptr;
 
-Mesh* mesh;
+//Mesh* mesh;
 Shader* shader;
 Material material;
 Material material2;
+Material wallMat;
+Material roofMat;
 InstatiatingModel modelMesh;
 GameObject* gameObject;
 GameObject* gameObject2;
 GameObject* gameObject3;
 
-GraphicEngine* graphicEngine;
+GraphicEngineManager* graphicEngine;
 GameObject* imageObj;
 GameObject* textObj;
 Text* text;
@@ -163,8 +175,6 @@ int main(int, char**)
     }
     spdlog::info("Initialized SoLoud.");
 
-    //smusicSmple.load();
-
 #pragma endregion
 
     // Initialize stdout color sink
@@ -181,18 +191,14 @@ int main(int, char**)
     testScene = new Scene();
 
     Camera = testScene->AddGameObject<CameraComponent, AudioComponent>();
-    Camera->GetTransform()->SetGlobalPosition(cameraPos);
-    Camera->GetTransform()->SetGlobalRotation(glm::vec3(0.f, -90.f, 0.f));
-
     CameraComponent* c = Camera->GetComponent<CameraComponent>();
-    c->SetIsMain(true);
-    c->SetWindowSize(glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
     c->SetFOV(45.f);
 
     AudioComponent* a = Camera->GetComponent<AudioComponent>();
     a->SetAudio("./res/music/FurElise.wav");
     a->Loop();
 
+    /*
 #pragma region MatricesUBO
 
     glGenBuffers(1, &UBOMatrices);
@@ -209,13 +215,18 @@ int main(int, char**)
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 #pragma endregion
+    */
 
-    graphicEngine = new GraphicEngine();
+    graphicEngine = new GraphicEngineManager();
 
     modelMesh = ModelsManager::GetCube();
 
     material = MaterialsManager::GetMaterial("Basic");
-    material2 = MaterialsManager::GetMaterial("Basic2");
+    //material2 = MaterialsManager::GetMaterial("Basic2");
+    //material = MaterialsManager::GetMaterial("textured");
+    material2 = MaterialsManager::GetMaterial("textured");
+    wallMat = MaterialsManager::GetMaterial("wallMat");
+    roofMat = MaterialsManager::GetMaterial("roofMat");
 
     gameObject = testScene->AddGameObject();
     auto comp = gameObject->AddComponent<MeshRenderer>();
@@ -228,11 +239,14 @@ int main(int, char**)
     comp->AddMaterial(material2);
     comp->SetModel(modelMesh);
 
+    InstatiatingModel modelCastle = ModelsManager::GetModel("res/models/castle.obj");
+
     gameObject3 = testScene->AddGameObject();
     gameObject3->GetTransform()->Translate(glm::vec3(0, -1, 0));
     comp = gameObject3->AddComponent<MeshRenderer>();
-    comp->AddMaterial(material2);
-    comp->SetModel(modelMesh);
+    comp->AddMaterial(wallMat);
+    comp->AddMaterial(roofMat);
+    comp->SetModel(modelCastle);
 
     imageObj = testScene->AddGameObject();
     Image* img = imageObj->AddComponent<Image>();
@@ -428,12 +442,14 @@ void input()
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
 
+    /*
     if (camDirty) 
     {
         glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Camera->GetComponent<CameraComponent>()->GetViewMatrix()));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
+    */
 
     if (Input::IsKeyPressed(KEY::LEFT_ALT)) 
     {
@@ -485,18 +501,21 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     {
         Camera->GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
     }
-
-    rot = Camera->GetTransform()->GetGlobalRotation();
+    /*
+    rot = Camera.GetTransform()->GetGlobalRotation();
 
     glm::vec3 front{};
     front.x = cos(glm::radians(rot.y)) * cos(glm::radians(rot.x));
     front.y = sin(glm::radians(rot.x));
     front.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
     Camera->GetComponent<CameraComponent>()->SetFrontDir(glm::normalize(front));
+    */
 
+    /*
     glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Camera->GetComponent<CameraComponent>()->GetViewMatrix()));
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    */
 }
 
 void update()
@@ -685,12 +704,12 @@ void imgui_render()
                 }
 
                 bool temp = window->IsResizable();
-                if (ImGui::Button(((temp ? "Disable"s : "Enable"s) + " Resizability"s).c_str())) {
+                if (ImGui::Button(((temp ? string("Disable") : string("Enable")) + string(" Resizability")).c_str())) {
                     window->EnableResizability(!temp);
                 }
 
                 temp = window->IsDecorated();
-                if (ImGui::Button(((temp ? "Disable"s : "Enable"s) + " Decorations"s).c_str())) {
+                if (ImGui::Button(((temp ? string("Disable") : string("Enable")) + string(" Decorations")).c_str())) {
                     window->EnableDecorations(!temp);
                 }
 
@@ -742,6 +761,110 @@ void imgui_render()
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
+        
+#pragma region IMGUI_WINDOW_SETUP
+        ImGui::Separator();
+        ImGui::Text("Window Setup");
+        // Window Settings
+        if (window->IsWindowed()) {
+            ImGui::Text("Current State: Windowed");
+
+            int monitorsCount;
+            GLFWmonitor** monitors = glfwGetMonitors(&monitorsCount);
+
+            ImGui::Text("Monitors: ");
+            for (int i = 0; i < monitorsCount; ++i) {
+                int x, y, mw, mh;
+                float sx, sy;
+
+                glfwGetMonitorPos(monitors[i], &x, &y);
+                const GLFWvidmode* vid = glfwGetVideoMode(monitors[i]);
+                const char* name = glfwGetMonitorName(monitors[i]);
+                glfwGetMonitorPhysicalSize(monitors[i], &mw, &mh);
+                glfwGetMonitorContentScale(monitors[i], &sx, &sy);
+
+                std::string btnText = std::to_string(i) + ". " + name + ": PS " + std::to_string(mw) + "x" + std::to_string(mh) + ", S " \
+                    + std::to_string(vid->width) + "x" + std::to_string(vid->height) + \
+                    ", Pos " + std::to_string(x) + "x" + std::to_string(y) + \
+                    ", Scale " + std::to_string(sx) + "x" + std::to_string(sy) + \
+                    ", Refresh " + std::to_string(vid->refreshRate) + " Hz";
+                if (ImGui::Button(btnText.c_str())) {
+                    window->SetFullscreen(monitors[i]);
+                }
+            }
+
+            ImGui::Text("");
+            static char tempBuff[256] = "Twin^2 Engine";
+            ImGui::InputText("Title", tempBuff, 256);
+            if (std::string(tempBuff) != window->GetTitle()) {
+                window->SetTitle(std::string(tempBuff));
+            }
+
+            if (ImGui::Button("Request Attention")) {
+                window->RequestAttention();
+            }
+
+            if (ImGui::Button("Maximize")) {
+                window->Maximize();
+            }
+
+            if (ImGui::Button("Hide")) {
+                window->Hide();
+            }
+
+            bool temp = window->IsResizable();
+            if (ImGui::Button(((temp ? "Disable" : "Enable") + string(" Resizability")).c_str())) {
+                window->EnableResizability(!temp);
+            }
+
+            temp = window->IsDecorated();
+            if (ImGui::Button(((temp ? "Disable" : "Enable") + string(" Decorations")).c_str())) {
+                window->EnableDecorations(!temp);
+            }
+
+            static float opacity = window->GetOpacity();
+            ImGui::SliderFloat("Opacity", &opacity, 0.f, 1.f);
+            if (opacity != window->GetOpacity()) {
+                window->SetOpacity(opacity);
+            }
+
+            static glm::ivec2 ratio = window->GetAspectRatio();
+            ImGui::InputInt2("Aspect Ratio", (int*)&ratio);
+            if (ImGui::Button("Apply")) {
+                window->SetAspectRatio(ratio);
+                ratio = window->GetAspectRatio();
+            }
+        }
+        else {
+            ImGui::Text("Current State: Fullscreen");
+            if (ImGui::Button("Windowed")) {
+                window->SetWindowed({ 0, 30 }, { WINDOW_WIDTH, WINDOW_HEIGHT - 50 });
+            }
+
+            static int refreshRate = window->GetRefreshRate();
+            ImGui::InputInt("Refresh Rate", &refreshRate);
+            if (ImGui::Button("Apply")) {
+                window->SetRefreshRate(refreshRate);
+                refreshRate = window->GetRefreshRate();
+            }
+        }
+
+        if (ImGui::Button("Minimize")) {
+            window->Minimize();
+        }
+
+        static glm::ivec2 size = window->GetWindowSize();
+        ImGui::InputInt2("Window Size", (int*)&size);
+        if (ImGui::Button("Apply")) {
+            window->SetWindowSize(size);
+            size = window->GetWindowSize();
+        }
+
+        if (ImGui::Button(((window->IsVSyncOn() ? "Disable" : "Enable") + string(" VSync")).c_str())) {
+            window->EnableVSync(!window->IsVSyncOn());
+        }
+
+#pragma endregion
         ImGui::End();
     }
 }

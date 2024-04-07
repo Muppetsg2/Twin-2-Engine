@@ -1,4 +1,3 @@
-
 #file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_BINARY_DIR}/ShadersOrigin SYMBOLIC)
 configure_file(GameConfig.yaml.in GameConfig.yaml)
 
@@ -31,3 +30,105 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 if(MSVC)
     target_compile_definitions(${PROJECT_NAME} PUBLIC NOMINMAX)
 endif()
+
+# Set the directory paths
+#set(SHADERS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/res/shaders")
+#set(SHADERS_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/res/CompiledShaders/SPIRV")
+set(SHADERS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/res/shaders/SPIRV")
+set(SHADERS_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/res/CompiledShaders/SPIRV")
+
+find_program(GLSLANG_VALIDATOR NAMES glslangValidator)
+
+# Add a target to compile all shaders
+#add_custom_target(CompileShaders)
+
+## Optionally, add the custom target to the default build target
+#add_dependencies(Twin2Engine CompileShaders)
+# Function to compile shaders using glslangValidator
+function(compile_shader shader_path)
+    get_filename_component(shader_name ${shader_path} NAME_WE)
+    get_filename_component(shader_ext ${shader_path} EXT)
+
+     file(RELATIVE_PATH RELATIVE_SOURCE ${SHADERS_SOURCE_DIR} ${shader_path})
+
+    #set(output_file "${SHADERS_OUTPUT_DIR}/${shader_name}${shader_ext}")
+    set(output_file "${SHADERS_OUTPUT_DIR}/${RELATIVE_SOURCE}")
+
+    # Create output directory
+    file(MAKE_DIRECTORY ${SHADERS_OUTPUT_DIR})
+    
+    message("Shader to compile: ${shader_file}")
+    message("Shader compiled: ${output_file}\n")
+    # Execute glslangValidator to compile the shader
+    add_custom_command(
+        #OUTPUT ${output_file}
+        #TARGET CompileShaders POST_BUILD 
+        TARGET ${PROJECT_NAME} PRE_BUILD  
+        COMMAND C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\tools\\glslang\\bin\\glslangValidator.exe -G ${shader_path} -o ${output_file}
+        #COMMAND ../tools/glslang/bin/glslangValidator.exe -V ${shader_path} -o ${output_file}
+        #COMMAND ${CMAKE_EXECUTE_PROCESS_COMMAND_ECHO} "Result: echo"
+		#		   COMMAND ${CMAKE_COMMAND} -E create_symlink 
+		#		   ${CMAKE_SOURCE_DIR}/res 
+		#		   ${CMAKE_CURRENT_BINARY_DIR}/res2
+        #COMMAND ${GLSLANG_VALIDATOR} -V ${shader_path} -o ${output_file}
+        DEPENDS ${shader_path}
+        COMMENT "Compiling ${shader_name}.${shader_ext} to SPIR-V"
+        VERBATIM
+    )
+
+    # Return the compiled shader file path
+    set(${shader_path} ${output_file} PARENT_SCOPE)
+endfunction()
+
+# Function to recursively find shader files
+function(find_shader_files dir)
+    file(GLOB_RECURSE shader_files LIST_DIRECTORIES false "${dir}/*.vert" "${dir}/*.frag" "${dir}/*.geom" "${dir}/*.tesc" "${dir}/*.tese" "${dir}/*.comp")
+    set(shader_files ${shader_files} PARENT_SCOPE)
+endfunction()
+
+# Find all shader files
+find_shader_files(${SHADERS_SOURCE_DIR})
+
+# Compile each shader file
+foreach(shader_file ${shader_files})
+    compile_shader(${shader_file})
+endforeach()
+
+
+##copying .shpr files to Compiled Shaders
+#
+#
+#set(SHADER_PROGRAMS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/res/shaders")
+#set(SHADER_PROGRAMS_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/res/CompiledShaders")
+#
+#file(GLOB_RECURSE SHADER_PROGRAM_FILES "${SHADER_PROGRAMS_SOURCE_DIR}/*.shpr")
+#
+#function(copy_file_with_destination SHADER_PROGRAM)
+#    file(STRINGS ${SHADER_PROGRAM} FIRST_LINE LIMIT_COUNT 1)
+#    #string(STRIP ${FIRST_LINE} FIRST_LINE)
+#    file(RELATIVE_PATH RELATIVE_SOURCE ${SHADER_PROGRAMS_SOURCE_DIR} ${SHADER_PROGRAM})
+#    message("Read first line: ${FIRST_LINE}")
+#    string(REGEX REPLACE "\n" "" FIRST_LINE ${FIRST_LINE}) # Remove newline character
+#    set(FILE_DESTINATION "${SHADER_PROGRAMS_OUTPUT_DIR}/${FIRST_LINE}.shpr")
+#    add_custom_command(
+#        TARGET ${PROJECT_NAME} PRE_BUILD  
+#        COMMAND ${CMAKE_COMMAND} -E copy ${SHADER_PROGRAM} ${FILE_DESTINATION}
+#        DEPENDS ${SOURCE}
+#        COMMENT "Copying ${SHADER_PROGRAM} to ${FILE_DESTINATION}"
+#    )
+#    #add_custom_target(${FIRST_LINE} DEPENDS ${FILE_DESTINATION})
+#    #add_dependencies(FileCopy ${FIRST_LINE})
+#endfunction()
+#
+## Call the function for each source file
+#foreach(file ${SHADER_PROGRAM_FILES})
+#    copy_file_with_destination(${file})
+#endforeach()
+
+# Custom commend that will create _parameters.shpa files
+message("Additional prebuild program: ${SHADER_COMPILER_EXE}")
+add_custom_command(
+    TARGET ${PROJECT_NAME} PRE_BUILD  
+    COMMAND ${SHADER_COMPILER_EXE}
+    COMMENT "Running additional prebuild program: ${SHADER_COMPILER_EXE}"
+)

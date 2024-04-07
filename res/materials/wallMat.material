@@ -1,0 +1,7 @@
+material:
+  name: wallMat
+  shader: origin/Textured
+  parameters:
+    - name: texture1
+      type: texture2D
+      value: res/textures/brickWall.jpg

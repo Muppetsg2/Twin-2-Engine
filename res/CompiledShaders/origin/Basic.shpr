@@ -1,0 +1,12 @@
+shaderprogram:
+  name: origin/Basic
+  shaders:
+    - normalVert.vert
+    - fargmentShader.frag
+  parameters:
+    - name: color1
+      type: vec4
+      value: [1.0, 1.0, 1.0, 1.0]
+    - name: color2
+      type: vec4
+      value: [1.0, 1.0, 1.0, 1.0]

@@ -9,11 +9,11 @@ layout (std140, binding = 0) uniform Matrices {
 };
 
 layout (std430, binding = 0) buffer InstanceBuffer {
-    mat4 transform[3];
+    mat4 transform[8];
 } instanceData;
 
 layout (std430, binding = 1) buffer MaterialIndexes {
-    int materialIndex[3];
+    int materialIndex[8];
 } materialIndexes;
 
 
@@ -24,7 +24,7 @@ struct MaterialInput
 };
 
 layout(std140, binding = 2) uniform MaterialInputBuffer {
-    MaterialInput materialInput[3];
+    MaterialInput materialInput[8];
 };
 
 out vec3 position;

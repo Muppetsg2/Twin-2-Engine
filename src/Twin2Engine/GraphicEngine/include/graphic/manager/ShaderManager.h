@@ -1,12 +1,11 @@
 #ifndef SHADER_MANAGER_H
 #define SHADER_MANAGER_H
 
-#include <string>
-#include <unordered_map>
-
-using std::string;
-
 #include <graphic/Shader.h>
+
+#define ENTIRE_SHADER_PROGRAM_PRECOMPILATION false
+#define SPIRV_COMPILATION false
+#define NORMAL_SHADERS_CREATION true
 
 namespace Twin2Engine::Manager
 {
@@ -18,7 +17,7 @@ namespace Twin2Engine::Manager
 	constexpr char SHADERS_ORIGIN_DIRETORY[] = "ShadersOrigin";
 
 	/// <summary>
-	/// Shader Manager obsï¿½uguje:
+	/// Shader Manager obs³uguje:
 	/// * vertex shader
 	/// * geometry shader
 	/// * fragment shader
@@ -30,7 +29,7 @@ namespace Twin2Engine::Manager
 		struct ShaderProgramData
 		{
 			size_t shaderPathHash;
-			int shaderProgramId;
+			unsigned int shaderProgramId;
 			int useNumber;
 			GraphicEngine::Shader* shader;
 			bool operator<(const ShaderProgramData& other) const {
@@ -53,13 +52,23 @@ namespace Twin2Engine::Manager
 		//Precompilation methods
 		static std::string LoadShaderSource(const std::string& filePath);
 		static GLuint CompileShader(GLenum type, const std::string& source);
+
+		static std::vector<char> LoadBinarySource(const std::string& filePath);
+		//static GLuint CompileShaderSPIRV(GLenum type, const std::vector<char>& source);
+		static GLuint CompileShaderSPIRV(GLenum type, const std::string& filePath);
+		//static std::vector<unsigned int> LoadBinarySource(const std::string& filePath);
+		//static GLuint CompileShaderSPIRV(GLenum type, const std::vector<unsigned int>& source);
+		//static GLuint CompileShaderNormal(GLenum type, const string& filePath);
+
 		static inline bool CheckShaderCompilationSuccess(GLuint shaderId);
-		static void CheckProgramLinkingSuccess(GLuint programId);
-		static inline void PrecompileShaders();
+		static inline void CheckProgramLinkingSuccess(GLuint programId);
+		//static inline void PrecompileShaders();
 
 		//Dynamic creation
-		static inline GLuint CreateShaderProgramFromFile(const std::string& shaderProgramName, std::string& shaderName);
-		static inline void SaveShaderProgramToFile(GLuint shaderProgramId, const std::string& shaderName);
+		//static inline GLuint CreateShaderProgramFromFile(const std::string& shaderProgramName, std::string& shaderName);
+		static inline GraphicEngine::Shader* LoadShaderProgramSHPR(const std::string& shaderName);
+		static inline GLuint CreateShaderProgramFromFile(const std::string& shaderProgramName);
+		//static inline void SaveShaderProgramToFile(GLuint shaderProgramId, const std::string& shaderName);
 
 	public:
 		//ShaderManager();
@@ -67,9 +76,10 @@ namespace Twin2Engine::Manager
 		static void End();
 
 		static GraphicEngine::Shader* GetShaderProgram(const std::string& shaderName);
-		static GraphicEngine::Shader* CreateShaderProgram(const std::string& shaderProgramName);
 		static GraphicEngine::Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);
-
+		//static GraphicEngine::Shader* GetShaderProgram(const std::string& shaderName);
+		//static GraphicEngine::Shader* CreateShaderProgram(const std::string& shaderProgramName);
+		//static GraphicEngine::Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);
 	};
 }
 

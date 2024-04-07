@@ -29,7 +29,7 @@ void MeshRenderingManager::Render(MeshRenderData meshData)
 	}
 }
 
-void MeshRenderingManager::Render()
+void MeshRenderingManager::Render(const glm::mat4& projectionViewMatrix)
 {
 	for (auto& meshPair : _renderQueue)
 	{
@@ -63,11 +63,12 @@ void MeshRenderingManager::Render()
 				while (material.second.size() > 0) {
 					auto& renderData = material.second.front();
 
-					transforms[index] = renderData.transform;
+					transforms[index] = projectionViewMatrix * renderData.transform;
 					indexes[index] = materialIndex;
 
-					instanceData[index].transformMatrix = renderData.transform;
-					instanceData[index].materialInputId = materialIndex;
+					//instanceData[index].transformMatrix = renderData.transform; //
+					//instanceData[index].transformMatrix = transforms[index];
+					//instanceData[index].materialInputId = materialIndex;
 
 					++index;
 
@@ -109,8 +110,19 @@ void MeshRenderingManager::Render()
 			meshPair.first->SetMaterialInputUBO(uboId);
 
 			shaderPair.first->Use();
+
+			int beginLocation = 0; // glGetUniformLocation(shaderPair.first->GetProgramId(), "constantZeroTexturePoint");
+			//int textureBind = GL_TEXTURE0;
+			int textureBind = 0;
+			for (auto& material : shaderPair.second)
+			{
+				material.first.GetMaterialParameters()->UploadTextures2D(shaderPair.first->GetProgramId(), beginLocation, textureBind);
+			}
+
+			//SPDLOG_INFO("Rending!");
 			//meshPair.first->Draw(shaderPair.first, transforms.size());
-			meshPair.first->Draw(shaderPair.first, index);
+			//meshPair.first->Draw(shaderPair.first, index);
+			meshPair.first->Draw(index);
 		}
 	}
 }
@@ -196,7 +208,8 @@ void MeshRenderingManager::RenderDepthMap()
 
 			shaderPair.first->Use();
 			//meshPair.first->Draw(shaderPair.first, transforms.size());
-			meshPair.first->Draw(shaderPair.first, index);
+			//meshPair.first->Draw(shaderPair.first, index);
+			meshPair.first->Draw(index);
 		}
 	}
 }

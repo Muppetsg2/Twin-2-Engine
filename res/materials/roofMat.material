@@ -1,0 +1,7 @@
+material:
+  name: roofMat
+  shader: origin/Textured
+  parameters:
+    - name: texture1
+      type: texture2D
+      value: res/textures/woodenRoof2.png

@@ -3,9 +3,11 @@
 
 #include <graphic/manager/ShaderManager.h>
 #include <graphic/manager/MeshRenderingManager.h>
-
 #include <graphic/manager/UIRenderingManager.h>
 
+#include <graphic/Window.h>
+
+#include <core/CameraComponent.h>
 //#include <Mesh.h>
 //#include <Shader.h>
 //#include <ShaderManager.h>
@@ -26,7 +28,6 @@
 
 //using std::vector;
 
-#include <graphic/Window.h>
 
 namespace Twin2Engine::GraphicEngine
 {

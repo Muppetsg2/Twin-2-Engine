@@ -15,7 +15,7 @@ struct MaterialInput
 };
 
 layout(std140, binding = 2) uniform MaterialInputBuffer {
-    MaterialInput materialInput[3];
+    MaterialInput materialInput[8];
 };
 
 struct TextureInput
@@ -23,7 +23,8 @@ struct TextureInput
 	sampler2D texture1;
 };
 
-layout(location = 0) uniform TextureInput texturesInput[6];
+layout(location = 0) uniform TextureInput texturesInput[8];
+
 void main()
 {
 

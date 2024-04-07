@@ -1,5 +1,6 @@
 #include <GraphicEnigineManager.h>
 
+using namespace Twin2Engine::Core;
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
 
@@ -62,7 +63,9 @@ void Twin2Engine::GraphicEngine::GraphicEngineManager::Render()
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	MeshRenderingManager::Render();
+	
+	CameraComponent* camera = Core::CameraComponent::GetMainCamera();
+	MeshRenderingManager::Render(camera->GetProjectionMatrix() * camera->GetViewMatrix());
 	UIRenderingManager::Render();
 }
 

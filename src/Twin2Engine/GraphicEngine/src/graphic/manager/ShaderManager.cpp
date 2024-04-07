@@ -510,7 +510,7 @@ GLuint ShaderManager::CreateShaderProgramFromFile(const std::string& shaderProgr
 
         #endif
     
-        SPDLOG_INFO("TU1");
+        //SPDLOG_INFO("TU1");
         glAttachShader(shaderProgram, shaderId);
     
         shaderIds.push_back(shaderId);

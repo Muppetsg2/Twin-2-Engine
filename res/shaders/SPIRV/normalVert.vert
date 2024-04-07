@@ -4,11 +4,11 @@ layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoords;
 
 layout (std430, binding = 0) buffer InstanceBuffer {
-    mat4 transform[3];
+    mat4 transform[8];
 } instanceData;
 
 layout (std430, binding = 1) buffer MaterialIndexes {
-    int materialIndex[3];
+    int materialIndex[8];
 } materialIndexes;
 
 
@@ -19,7 +19,7 @@ struct MaterialInput
 };
 
 layout(std140, binding = 2) uniform MaterialInputBuffer {
-    MaterialInput materialInput[3];
+    MaterialInput materialInput[8];
 };
 
 layout (location = 0) out vec3 position;

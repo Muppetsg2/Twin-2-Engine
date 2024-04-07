@@ -139,6 +139,8 @@ GLuint UBOMatrices;
 Shader* shader;
 Material material;
 Material material2;
+Material wallMat;
+Material roofMat;
 InstatiatingModel modelMesh;
 GameObject* gameObject;
 GameObject* gameObject2;
@@ -218,9 +220,11 @@ int main(int, char**)
     modelMesh = ModelsManager::GetCube();
 
     material = MaterialsManager::GetMaterial("Basic");
-    material2 = MaterialsManager::GetMaterial("Basic2");
+    //material2 = MaterialsManager::GetMaterial("Basic2");
     //material = MaterialsManager::GetMaterial("textured");
-    //material2 = MaterialsManager::GetMaterial("textured");
+    material2 = MaterialsManager::GetMaterial("textured");
+    wallMat = MaterialsManager::GetMaterial("wallMat");
+    roofMat = MaterialsManager::GetMaterial("roofMat");
 
     gameObject = new GameObject();
     auto comp = gameObject->AddComponent<MeshRenderer>();
@@ -238,7 +242,8 @@ int main(int, char**)
     gameObject3 = new GameObject();
     gameObject3->GetTransform()->Translate(glm::vec3(0, -1, 0));
     comp = gameObject3->AddComponent<MeshRenderer>();
-    comp->AddMaterial(material2);
+    comp->AddMaterial(wallMat);
+    comp->AddMaterial(roofMat);
     comp->SetModel(modelCastle);
 
     imageObj = new GameObject();

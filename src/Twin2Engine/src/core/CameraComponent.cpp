@@ -25,7 +25,7 @@ void CameraComponent::OnTransformChange(Transform* trans)
 	}
 }
 
-CameraType CameraComponent::GetCameraType()
+CameraType CameraComponent::GetCameraType() const
 {
 	return _type;
 }
@@ -80,6 +80,7 @@ mat4 CameraComponent::GetProjectionMatrix()
 			break;
 		}
 	}
+	return mat4(1.f);
 }
 
 Frustum CameraComponent::GetFrustum()
@@ -183,12 +184,12 @@ void CameraComponent::EndDepthTest()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-GLuint CameraComponent::GetRenderTexture()
+GLuint CameraComponent::GetRenderTexture() const
 {
 	return _renderMap;
 }
 
-GLuint CameraComponent::GetDepthTexture()
+GLuint CameraComponent::GetDepthTexture() const
 {
 	return _depthMap;
 }

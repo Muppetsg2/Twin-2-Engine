@@ -15,11 +15,11 @@ namespace Twin2Engine::Core {
 	private:
 		static GLuint _uboMatrices;
 
-		GLuint _depthMapFBO;
-		GLuint _depthMap;
+		GLuint _depthMapFBO = NULL;
+		GLuint _depthMap = NULL;
 
-		GLuint _renderMapFBO;
-		GLuint _renderMap;
+		GLuint _renderMapFBO = NULL;
+		GLuint _renderMap = NULL;
 
 		CameraType _type = PERSPECTIVE;
 
@@ -36,13 +36,13 @@ namespace Twin2Engine::Core {
 		vec3 _up = vec3(0.f, 1.f, 0.f);
 		vec3 _worldUp = vec3(0.f, 1.f, 0.f);
 
-		size_t _eventId;
+		size_t _eventId = 0;
 		void OnTransformChange(Transform* trans);
 
 	public:
 		static std::vector<CameraComponent*> Cameras;
 
-		CameraType GetCameraType();
+		CameraType GetCameraType() const;
 		float GetNearPlane() const;
 		float GetFarPlane() const;
 		float GetFOV() const;
@@ -70,8 +70,8 @@ namespace Twin2Engine::Core {
 		void EndDepthTest();
 		void EndRender();
 
-		GLuint GetRenderTexture();
-		GLuint GetDepthTexture();
+		GLuint GetRenderTexture() const;
+		GLuint GetDepthTexture() const;
 
 		static CameraComponent* GetMainCamera();
 

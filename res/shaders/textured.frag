@@ -11,7 +11,7 @@ layout (location = 0) out vec4 FragColor;
 
 struct MaterialInput
 {
-	uint textureIndex;
+	int empty;
 };
 
 layout(std140, binding = 2) uniform MaterialInputBuffer {

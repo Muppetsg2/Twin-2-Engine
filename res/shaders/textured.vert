@@ -15,7 +15,7 @@ layout (std430, binding = 1) buffer MaterialIndexes {
 struct MaterialInput
 {
    //sampler2DArray texture1;
-	uint textureIndex;
+	int empty;
 };
 
 layout(std140, binding = 2) uniform MaterialInputBuffer {

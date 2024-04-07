@@ -1,13 +1,6 @@
 #ifndef _COLLIDER_H_
 #define _COLLIDER_H_
 
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-
-
 namespace CollisionSystem {
 	//struct Collision;
 	class Collider;

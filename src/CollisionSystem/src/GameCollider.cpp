@@ -1,9 +1,6 @@
 #include "GameCollider.h"
 #include "core/GameObject.h"
 
-#include <iostream>
-#include <spdlog/spdlog.h>
-
 //#define USE_BOUNDING_VOLUMES
 
 using namespace CollisionSystem;
@@ -109,17 +106,17 @@ Collision* GameCollider::collide(Collider* other) {
 							//separacja obu gameobjektów
 							SPDLOG_INFO("{} - separacja obu game objektów\n", colliderComponent->colliderId);
 							//std::cout << colliderComponent->colliderId << " - separacja obu gameobjektów\n";
-							colliderComponent->getGameObject()->GetTransform()->SetGlobalPosition(
-								colliderComponent->getGameObject()->GetTransform()->GetGlobalPosition() + collision->separation);
-							((GameCollider*)other)->colliderComponent->getGameObject()->GetTransform()->SetGlobalPosition(
-								colliderComponent->getGameObject()->GetTransform()->GetGlobalPosition() - collision->separation);
+							colliderComponent->GetGameObject()->GetTransform()->SetGlobalPosition(
+								colliderComponent->GetGameObject()->GetTransform()->GetGlobalPosition() + collision->separation);
+							((GameCollider*)other)->colliderComponent->GetGameObject()->GetTransform()->SetGlobalPosition(
+								colliderComponent->GetGameObject()->GetTransform()->GetGlobalPosition() - collision->separation);
 						}
 						else {
 							//separacje drugiego gameobjekta
 							SPDLOG_INFO("{} - separacja tego game objekta\n", colliderComponent->colliderId);
 							//std::cout << colliderComponent->colliderId << " - separacje drugiego gameobjekta\n";
-							((GameCollider*)other)->colliderComponent->getGameObject()->GetTransform()->SetGlobalPosition(
-								colliderComponent->getGameObject()->GetTransform()->GetGlobalPosition() - collision->separation);
+							((GameCollider*)other)->colliderComponent->GetGameObject()->GetTransform()->SetGlobalPosition(
+								colliderComponent->GetGameObject()->GetTransform()->GetGlobalPosition() - collision->separation);
 						}
 					}
 					else {
@@ -127,17 +124,17 @@ Collision* GameCollider::collide(Collider* other) {
 							//separacja tego game objekta
 							SPDLOG_INFO("{} - separacja tego game objekta\n", colliderComponent->colliderId);
 							//std::cout << colliderComponent->colliderId << " - separacja tego game objekta\n";
-							colliderComponent->getGameObject()->GetTransform()->SetGlobalPosition(
-								colliderComponent->getGameObject()->GetTransform()->GetGlobalPosition() + collision->separation);
+							colliderComponent->GetGameObject()->GetTransform()->SetGlobalPosition(
+								colliderComponent->GetGameObject()->GetTransform()->GetGlobalPosition() + collision->separation);
 						}
 						else {
 							//separacja obu gameobjektów
 							SPDLOG_INFO("{} - separacja obu gameobjektów\n", colliderComponent->colliderId);
 							//std::cout << colliderComponent->colliderId << " - separacja obu gameobjektów\n";
-							colliderComponent->getGameObject()->GetTransform()->SetGlobalPosition(
-								colliderComponent->getGameObject()->GetTransform()->GetGlobalPosition() + collision->separation);
-							((GameCollider*)other)->colliderComponent->getGameObject()->GetTransform()->SetGlobalPosition(
-								colliderComponent->getGameObject()->GetTransform()->GetGlobalPosition() - collision->separation);
+							colliderComponent->GetGameObject()->GetTransform()->SetGlobalPosition(
+								colliderComponent->GetGameObject()->GetTransform()->GetGlobalPosition() + collision->separation);
+							((GameCollider*)other)->colliderComponent->GetGameObject()->GetTransform()->SetGlobalPosition(
+								colliderComponent->GetGameObject()->GetTransform()->GetGlobalPosition() - collision->separation);
 						}
 					}
 

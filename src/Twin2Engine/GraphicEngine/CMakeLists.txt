@@ -1,8 +1,9 @@
-project(GraphicEngine)
+project(GraphicEngine VERSION 1.0)
 
 set(GRAPHIC_ENGINE_DIR ${CMAKE_CURRENT_LIST_DIR})
 set(GRAPHIC_ENGINE_SOURCE_DIR ${GRAPHIC_ENGINE_DIR}/src)
 set(GRAPHIC_ENGINE_INCLUDE_DIR ${GRAPHIC_ENGINE_DIR}/include)
+set(GRAPHIC_ENGINE_PRECOMPILE_HEADER ${GRAPHIC_ENGINE_DIR}/pch.h)
 
 file(GLOB_RECURSE GRAPHIC_ENGINE_SOURCE_FILES 
                         ${GRAPHIC_ENGINE_SOURCE_DIR}/*.cpp
@@ -22,10 +23,10 @@ source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${GRAPHIC_ENGINE_PUBLIC_INCLUD
 source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${GRAPHIC_ENGINE_PRIVATE_INCLUDE_FILES})
 
 # Defining library
-add_library(GraphicEngine STATIC ${GRAPHIC_ENGINE_SOURCE_FILES})
+add_library(${PROJECT_NAME} STATIC ${GRAPHIC_ENGINE_SOURCE_FILES})
 
 # Adding include to library
-target_include_directories(GraphicEngine
+target_include_directories(${PROJECT_NAME}
 						PUBLIC 
 						#${GRAPHIC_ENGINE_PUBLIC_INCLUDE_FILES}
 						${GRAPHIC_ENGINE_INCLUDE_DIR}
@@ -39,8 +40,10 @@ target_include_directories(GraphicEngine
 						#INTERFACE
 						#${tinygltf_SOURCE_DIR}
 						#${GRAPHIC_ENGINE_SOURCE_DIR}
-
 )
+
+# Adding precompile Headers to library
+target_precompile_headers(${PROJECT_NAME} PUBLIC ${GRAPHIC_ENGINE_PRECOMPILE_HEADER})
 
 #target_link_libraries(GraphicEngine PRIVATE 
 #										#glad
@@ -52,9 +55,10 @@ target_include_directories(GraphicEngine
 #										#spdlog
 #										Twin2Engine
 #)
+
 target_link_libraries(GraphicEngine ${OPENGL_LIBRARIES})
 target_link_libraries(GraphicEngine glad)
-#target_link_libraries(GraphicEngine stb_image)
+target_link_libraries(GraphicEngine stb_image)
 target_link_libraries(GraphicEngine assimp)
 target_link_libraries(GraphicEngine glfw)
 target_link_libraries(GraphicEngine spdlog)

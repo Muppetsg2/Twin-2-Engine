@@ -1,34 +1,6 @@
-// dear imgui: standalone example application for GLFW + OpenGL 3, using programmable pipeline
-// If you are new to dear imgui, see examples/README.txt and documentation at the top of imgui.cpp.
-// (GLFW is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan graphics context creation, etc.)
-
-#include "imgui.h"
-#include "imgui_impl/imgui_impl_glfw.h"
-#include "imgui_impl/imgui_impl_opengl3.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-
-#define IMGUI_IMPL_OPENGL_LOADER_GLAD
-
-#include <glad/glad.h>  // Initialize with gladLoadGL()
-#include <GLFW/glfw3.h> // Include glfw3.h after our OpenGL definitions
-#include <spdlog/spdlog.h>
-
 // Soloud
 #include <soloud.h>
 #include <soloud_wav.h>
-
-/*
-// Miniaudio
-#define MINIAUDIO_IMPLEMENTATION
-#include "miniaudio.h"
-*/
-
-// OpenGL Mathematics
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 // HID
 #include <core/Input.h>
@@ -37,19 +9,31 @@
 #include <core/Time.h>
 
 // WINDOW
-#include <core/Window.h>
+#include <graphic/Window.h>
 
 // MANAGERS
-#include <manager/TextureManager.h>
-#include <manager/SpriteManager.h>
+#include <graphic/manager/TextureManager.h>
+#include <graphic/manager/SpriteManager.h>
+#include <graphic/manager/FontManager.h>
+#include <graphic/manager/ShaderManager.h>
+#include <graphic/manager/MaterialsManager.h>
+#include <graphic/manager/ModelsManager.h>
+#include <manager/AudioManager.h>
 
 // GAME OBJECT
 #include <core/GameObject.h>
+#include <core/MeshRenderer.h>
 #include <ui/Image.h>
+#include <ui/Text.h>
+
+// AUDIO
+#include <core/AudioComponent.h>
 
 // GRAPHIC_ENGINE
-#include <GraphicEnigine.h>
+#include <GraphicEnigineManager.h>
 
+
+//<<<<<<< HEAD
 //LOGGER
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -58,10 +42,15 @@
 #include <string>
 #include <cstring>
 
+//=======
+// COLLISIONS
+//>>>>>>> 9af207cda8832c4d5cb52947538d06b41101b9fb
 #include <CollisionManager.h>
 #include <core/BoxColliderComponent.h>
 #include <core/CapsuleColliderComponent.h>
 #include <core/SphereColliderComponent.h>
+
+// CAMERA
 #include <core/CameraComponent.h>
 
 using namespace Twin2Engine::Manager;
@@ -87,12 +76,6 @@ double lastY = 0.0f;
 float cameraSpeed = 40.0f;
 float sensitivity = 0.1f;
 
-//float yaw2 = 45.0f;
-//float pitch2 = 0.0f;
-
-//GLFWcursorposfun lastMouseCallback;
-
-//bool mouseUsingStarted = false;
 bool mouseNotUsed = true;
 
 #pragma endregion
@@ -133,6 +116,7 @@ void imgui_end();
 void end_frame();
 
 float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd);
+double mod(double val1, double val2);
 
 #pragma endregion
 
@@ -147,24 +131,23 @@ const     char*   glsl_version     = "#version 460";
 constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 6;
 
-ImVec4 clear_color = ImVec4(.1f, .1f, .1f, 1.f);
-
-GLuint UBOMatrices;
-
-SoLoud::Soloud soloud;
-SoLoud::Wav smusicSmple;
-SoLoud::handle sampleHandle = 0;
-bool first = true;
-
 /*
-ma_engine engine;
-ma_sound sound;
+GLuint UBOMatrices;
 */
 
-bool musicPlaying = false;
+//Mesh* mesh;
+Shader* shader;
+Material material;
+Material material2;
+InstatiatingModel modelMesh;
+GameObject* gameObject;
+GameObject* gameObject2;
+GameObject* gameObject3;
 
-GraphicEngine* graphicEngine;
+GraphicEngineManager* graphicEngine;
 GameObject* imageObj;
+GameObject* textObj;
+Text* text;
 
 int main(int, char**)
 {
@@ -180,24 +163,13 @@ int main(int, char**)
     init_imgui();
     spdlog::info("Initialized ImGui.");
     
-    soloud.init();
-    spdlog::info("Initialized SoLoud.");
-
-    smusicSmple.load("./res/music/FurElise.wav");
-
-    /*
-    ma_result result;
-    result = ma_engine_init(NULL, &engine);
-    if (result != MA_SUCCESS) {
+    //SoLoud::result res = soloud.init();
+    SoLoud::result res = AudioManager::Init();
+    if (res != 0) {
+        spdlog::error(AudioManager::GetErrorString(res));
         return EXIT_FAILURE;
     }
-    spdlog::info("Initialized MiniAudio.");
-
-    result = ma_sound_init_from_file(&engine, "./res/music/FurElise.wav", 0, NULL, NULL, &sound);
-    if (result != MA_SUCCESS) {
-        return result;
-    }
-    */
+    spdlog::info("Initialized SoLoud.");
 
 #pragma endregion
 
@@ -212,13 +184,17 @@ int main(int, char**)
     // Set global log level to debug
     spdlog::set_level(spdlog::level::debug);
 
-    Camera.GetTransform()->SetLocalPosition(cameraPos);
-    Camera.GetTransform()->SetLocalRotation(glm::vec3(0.f, -90.f, 0.f));
+    Camera.GetTransform()->SetGlobalPosition(cameraPos);
+    Camera.GetTransform()->SetGlobalRotation(glm::vec3(0.f, -90.f, 0.f));
+
     CameraComponent* c = Camera.AddComponent<CameraComponent>();
-    c->SetIsMain(true);
-    c->SetWindowSize(glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
     c->SetFOV(45.f);
 
+    AudioComponent* a = Camera.AddComponent<AudioComponent>();
+    a->SetAudio("./res/music/FurElise.wav");
+    a->Loop();
+
+    /*
 #pragma region MatricesUBO
 
     glGenBuffers(1, &UBOMatrices);
@@ -235,21 +211,49 @@ int main(int, char**)
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 #pragma endregion
+    */
 
-    graphicEngine = new GraphicEngine();
+    graphicEngine = new GraphicEngineManager();
 
-    Shader* sh = ShaderManager::CreateShaderProgram("res/CompiledShaders/origin/UI.shdr", "shaders/ui.vert", "shaders/ui.frag");
-    Texture2D* tex = TextureManager::LoadTexture2D("res/textures/stone.jpg");
-    Sprite* s = SpriteManager::MakeSprite(tex, "stone", 0, 0, tex->GetWidth(), tex->GetHeight());
+    modelMesh = ModelsManager::GetCube();
 
-    Texture2D* tex2 = TextureManager::LoadTexture2D("res/textures/grass.png");
-    Sprite* s2 = SpriteManager::MakeSprite(tex2, "grass");
+    material = MaterialsManager::GetMaterial("Basic");
+    material2 = MaterialsManager::GetMaterial("Basic2");
+    //material = MaterialsManager::GetMaterial("textured");
+    //material2 = MaterialsManager::GetMaterial("textured");
 
-    GameObject* ob = new GameObject();
-    Image* img = ob->AddComponent<Image>();
-    img->SetSprite(s);
-    Image* img2 = ob->AddComponent<Image>();
-    img2->SetSprite(s2);
+    gameObject = new GameObject();
+    auto comp = gameObject->AddComponent<MeshRenderer>();
+    comp->AddMaterial(material);
+    comp->SetModel(modelMesh);
+
+    gameObject2 = new GameObject();
+    gameObject2->GetTransform()->Translate(glm::vec3(2, 1, 0));
+    comp = gameObject2->AddComponent<MeshRenderer>();
+    comp->AddMaterial(material2);
+    comp->SetModel(modelMesh);
+
+    InstatiatingModel modelCastle = ModelsManager::GetModel("res/models/castle.obj");
+
+    gameObject3 = new GameObject();
+    gameObject3->GetTransform()->Translate(glm::vec3(0, -1, 0));
+    comp = gameObject3->AddComponent<MeshRenderer>();
+    comp->AddMaterial(material2);
+    comp->SetModel(modelCastle);
+
+    imageObj = new GameObject();
+    Image* img = imageObj->AddComponent<Image>();
+    img->SetSprite(SpriteManager::MakeSprite("stone", "res/textures/stone.jpg"));
+    Image* img2 = imageObj->AddComponent<Image>();
+    img2->SetSprite(SpriteManager::MakeSprite("grass", "res/textures/grass.png"));
+
+    textObj = new GameObject();
+    textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
+    text = textObj->AddComponent<Text>();
+    text->SetColor(glm::vec4(1.f));
+    text->SetText("Text");
+    text->SetSize(48);
+    text->SetFont("res/fonts/arial.ttf");
 
     GameObject go1;
     GameObject go2;
@@ -272,9 +276,6 @@ int main(int, char**)
         // Process I/O operations here
         input();
 
-        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         // Update game objects' state here
         update();
 
@@ -294,12 +295,15 @@ int main(int, char**)
     delete imageObj;
     SpriteManager::UnloadAll();
     TextureManager::UnloadAll();
+    AudioManager::UnloadAll();
+    FontManager::UnloadAll();
+    Input::FreeAllWindows();
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    delete window;
+    delete Window::GetInstance();
     glfwTerminate();
 
     return 0;
@@ -321,8 +325,9 @@ bool init()
     glfwWindowHint(GLFW_OPENGL_PROFILE,        GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 
-    window = new Window(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT }, false);
+    window = Window::MakeWindow(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT }, false);
     glfwSetFramebufferSizeCallback(window->GetWindow(), framebuffer_size_callback);
+    Input::InitForWindow(window);
 
     bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     if (err)
@@ -396,69 +401,37 @@ void input()
 
     bool camDirty = false;
 
-    CameraComponent* c = Camera.GetComponent<CameraComponent>();        
+    CameraComponent* c = Camera.GetComponent<CameraComponent>();
 
-    if (!Input::IsKeyUp(KEY::W))
+    if (Input::IsKeyDown(KEY::W))
     {
         camDirty = true;
-        Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
-    if (!Input::IsKeyUp(KEY::S))
+    if (Input::IsKeyDown(KEY::S))
     {
         camDirty = true;
-        Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
-    if (!Input::IsKeyUp(KEY::A))
+    if (Input::IsKeyDown(KEY::A))
     {
         camDirty = true;
-        Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
-    if (!Input::IsKeyUp(KEY::D))
+    if (Input::IsKeyDown(KEY::D))
     {
         camDirty = true;
-        Camera.GetTransform()->SetLocalPosition(Camera.GetTransform()->GetLocalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
-    /*
-    if (Input::IsKeyHeldDown(KEY::Q))
-    {
-        cameraPos -= cameraUp * cameraSpeed * Time::GetDeltaTime();
-    }
-    if (Input::IsKeyHeldDown(KEY::E))
-    {
-        cameraPos += cameraUp * cameraSpeed * Time::GetDeltaTime();
-    }
-    */
 
     /*
-    static bool cursorToggle = false;
-
-    if (Input::IsMouseButtonPressed(MOUSE_BUTTON::MIDDLE))
-    {
-        if (!cursorToggle)
-        {
-            lastMouseCallback = glfwSetCursorPosCallback(window->GetWindow(), mouse_callback);
-            Input::HideAndLockCursor();
-            cursorToggle = !cursorToggle;
-            mouseUsingStarted = true;
-        }
-    }
-    else if (Input::IsMouseButtonReleased(MOUSE_BUTTON::MIDDLE))
-    {
-        if (cursorToggle)
-        {
-            glfwSetCursorPosCallback(window->GetWindow(), lastMouseCallback);
-            Input::ShowCursor();
-            cursorToggle = !cursorToggle;
-        }
-    }
-    */
-
     if (camDirty) 
     {
         glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Camera.GetComponent<CameraComponent>()->GetViewMatrix()));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
+    */
 
     if (Input::IsKeyPressed(KEY::LEFT_ALT)) 
     {
@@ -490,54 +463,57 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     lastX = xpos;
     lastY = ypos;
 
-    //printf("MPosX: %f MPosY: %f\n", xpos, ypos);
-
     xoffset *= sensitivity;
     yoffset *= sensitivity;
 
-    //yaw += xoffset;
-    //pitch += yoffset;
-
-    glm::vec3 rot = Camera.GetTransform()->GetLocalRotation();
+    glm::vec3 rot = Camera.GetTransform()->GetGlobalRotation();
 
     // YAW = ROT Y
     // PITCH = ROT X
     // ROLL = ROT Z
 
-    Camera.GetTransform()->SetLocalRotation(glm::vec3(rot.x + yoffset, rot.y + xoffset, rot.z));
+    Camera.GetTransform()->SetGlobalRotation(glm::vec3(rot.x + yoffset, rot.y + xoffset, rot.z));
 
-    rot = Camera.GetTransform()->GetLocalRotation();
+    rot = Camera.GetTransform()->GetGlobalRotation();
 
     if (rot.x > 89.0f) {
-        Camera.GetTransform()->SetLocalRotation(glm::vec3(89.f, rot.y, rot.z));
+        Camera.GetTransform()->SetGlobalRotation(glm::vec3(89.f, rot.y, rot.z));
     }
     if (rot.x < -89.0f)
     {
-        Camera.GetTransform()->SetLocalRotation(glm::vec3(-89.f, rot.y, rot.z));
+        Camera.GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
     }
-
-    rot = Camera.GetTransform()->GetLocalRotation();
+    /*
+    rot = Camera.GetTransform()->GetGlobalRotation();
 
     glm::vec3 front{};
     front.x = cos(glm::radians(rot.y)) * cos(glm::radians(rot.x));
     front.y = sin(glm::radians(rot.x));
     front.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
     Camera.GetComponent<CameraComponent>()->SetFrontDir(glm::normalize(front));
+    */
 
+    /*
     glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Camera.GetComponent<CameraComponent>()->GetViewMatrix()));
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    */
 }
 
 void update()
 {
     // Update game objects' state here
+    text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
+    Camera.GetTransform()->Update();
 }
 
 void render()
 {
     // OpenGL Rendering code goes here
-    graphicEngine->Render(window, Camera.GetComponent<CameraComponent>()->GetViewMatrix(), Camera.GetComponent<CameraComponent>()->GetProjectionMatrix());
+    for (auto& comp : RenderableComponent::_components) {
+        comp->Render();
+    }
+    graphicEngine->Render();
 }
 
 void imgui_begin()
@@ -556,27 +532,216 @@ void imgui_render()
 
         ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Hello World!");
 
-        if (ImGui::Button("Play Song")) {
-            if (!musicPlaying) {
-                //ma_sound_start(&sound);
-                if (first) {
-                    sampleHandle = soloud.play(smusicSmple);
-                    first = false;
-                }
-                else {
-                    soloud.setPause(sampleHandle, false);
-                }
-                musicPlaying = true;
-            }
+        if (ImGui::CollapsingHeader("Help")) {
+            ImGui::TextColored(ImVec4(0.f, 1.f, 0.f, 1.f), "Press Left ALT to disable GUI and start Moving Camera");
+            ImGui::Spacing();
+            ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Move Camera using WASD");
+            ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Rotate Camera using Mouse");
+            ImGui::Spacing();
         }
 
-        if (ImGui::Button("Stop Song")) {
-            if (musicPlaying) {
-                //ma_sound_stop(&sound);
-                soloud.setPause(sampleHandle, true);
-                musicPlaying = false;
+        ImGui::Separator();
+
+#pragma region IMGUI_AUDIO_SETUP
+        if (ImGui::CollapsingHeader("Audio")) {
+
+            AudioComponent* a = Camera.GetComponent<AudioComponent>();
+            bool loop = a->IsLooping();
+
+            if (ImGui::Checkbox("Loop", &loop)) {
+                if (loop) {
+                    if (!a->IsLooping()) {
+                        a->Loop();
+                    }
+                }
+                else {
+                    if (a->IsLooping()) {
+                        a->UnLoop();
+                    }
+                }
+            }
+
+            float vol = a->GetVolume();
+
+            ImGui::SliderFloat("Volume", &vol, 0.f, 1.f);
+
+            if (a->GetVolume() != vol) {
+                a->SetVolume(vol);
+            }
+
+            ImGui::Text("Position: %02.0f:%02.0f / %02.0f:%02.0f", std::floor(a->GetPlayPosition() / 60), mod(a->GetPlayPosition(), 60), std::floor(a->GetAudioLength() / 60), mod(a->GetAudioLength(), 60));
+            ImGui::Text("Play Time: %02.0f:%02.0f", std::floor(a->GetPlayTime() / 60), mod(a->GetPlayTime(), 60));
+
+            if (ImGui::Button("Play Song")) {
+                /*
+                if (soloud.isValidVoiceHandle(sampleHandle)) {
+                    if (soloud.getPause(sampleHandle)) {
+                        soloud.setPause(sampleHandle, false);
+                    }
+                }
+                else
+                {
+                    sampleHandle = soloud.play(smusicSmple);
+                }
+                */
+
+                Camera.GetComponent<AudioComponent>()->Play();
+
+                /*
+                if (!musicPlaying) {
+                    ma_sound_start(&sound);
+                    musicPlaying = true;
+                }
+                */
+            }
+
+            if (ImGui::Button("Pause Song")) {
+                /*
+                if (soloud.isValidVoiceHandle(sampleHandle)) {
+                    if (!soloud.getPause(sampleHandle)) {
+                        soloud.setPause(sampleHandle, true);
+                    }
+                }
+                */
+
+                Camera.GetComponent<AudioComponent>()->Pause();
+
+                /*
+                if (musicPlaying) {
+                    ma_sound_stop(&sound);
+                    musicPlaying = false;
+                }
+                */
+            }
+
+            if (ImGui::Button("Stop Song")) {
+                /*
+                if (soloud.isValidVoiceHandle(sampleHandle)) {
+                    if (!soloud.getPause(sampleHandle)) {
+                        soloud.setPause(sampleHandle, true);
+                    }
+                }
+                */
+
+                Camera.GetComponent<AudioComponent>()->Stop();
+
+                /*
+                if (musicPlaying) {
+                    ma_sound_stop(&sound);
+                    musicPlaying = false;
+                }
+                */
             }
         }
+#pragma endregion
+
+        ImGui::Separator();
+        
+#pragma region IMGUI_WINDOW_SETUP
+        if (ImGui::CollapsingHeader("Window Setup")) {
+
+            // Window Settings
+            if (window->IsWindowed()) {
+                ImGui::Text("Current State: Windowed");
+
+                int monitorsCount;
+                GLFWmonitor** monitors = glfwGetMonitors(&monitorsCount);
+
+                ImGui::Text("Monitors: ");
+                for (int i = 0; i < monitorsCount; ++i) {
+                    int x, y, mw, mh;
+                    float sx, sy;
+
+                    glfwGetMonitorPos(monitors[i], &x, &y);
+                    const GLFWvidmode* vid = glfwGetVideoMode(monitors[i]);
+                    const char* name = glfwGetMonitorName(monitors[i]);
+                    glfwGetMonitorPhysicalSize(monitors[i], &mw, &mh);
+                    glfwGetMonitorContentScale(monitors[i], &sx, &sy);
+
+                    std::string btnText = std::to_string(i) + ". " + name + ": PS " + std::to_string(mw) + "x" + std::to_string(mh) + ", S " \
+                        + std::to_string(vid->width) + "x" + std::to_string(vid->height) + \
+                        ", Pos " + std::to_string(x) + "x" + std::to_string(y) + \
+                        ", Scale " + std::to_string(sx) + "x" + std::to_string(sy) + \
+                        ", Refresh " + std::to_string(vid->refreshRate) + " Hz";
+                    if (ImGui::Button(btnText.c_str())) {
+                        window->SetFullscreen(monitors[i]);
+                    }
+                }
+
+                ImGui::Text("");
+                static char tempBuff[256] = "Twin^2 Engine";
+                ImGui::InputText("Title", tempBuff, 256);
+                if (std::string(tempBuff) != window->GetTitle()) {
+                    window->SetTitle(std::string(tempBuff));
+                }
+
+                if (ImGui::Button("Request Attention")) {
+                    window->RequestAttention();
+                }
+
+                if (ImGui::Button("Maximize")) {
+                    window->Maximize();
+                }
+
+                if (ImGui::Button("Hide")) {
+                    window->Hide();
+                }
+
+                bool temp = window->IsResizable();
+                if (ImGui::Button(((temp ? string("Disable") : string("Enable")) + string(" Resizability")).c_str())) {
+                    window->EnableResizability(!temp);
+                }
+
+                temp = window->IsDecorated();
+                if (ImGui::Button(((temp ? string("Disable") : string("Enable")) + string(" Decorations")).c_str())) {
+                    window->EnableDecorations(!temp);
+                }
+
+                static float opacity = window->GetOpacity();
+                ImGui::SliderFloat("Opacity", &opacity, 0.f, 1.f);
+                if (opacity != window->GetOpacity()) {
+                    window->SetOpacity(opacity);
+                }
+
+                static glm::ivec2 ratio = window->GetAspectRatio();
+                ImGui::InputInt2("Aspect Ratio", (int*)&ratio);
+                if (ImGui::Button("Apply")) {
+                    window->SetAspectRatio(ratio);
+                    ratio = window->GetAspectRatio();
+                }
+            }
+            else {
+                ImGui::Text("Current State: Fullscreen");
+                if (ImGui::Button("Windowed")) {
+                    window->SetWindowed({ 0, 30 }, { WINDOW_WIDTH, WINDOW_HEIGHT - 50 });
+                }
+
+                static int refreshRate = window->GetRefreshRate();
+                ImGui::InputInt("Refresh Rate", &refreshRate);
+                if (ImGui::Button("Apply")) {
+                    window->SetRefreshRate(refreshRate);
+                    refreshRate = window->GetRefreshRate();
+                }
+            }
+
+            if (ImGui::Button("Minimize")) {
+                window->Minimize();
+            }
+
+            static glm::ivec2 size = window->GetWindowSize();
+            ImGui::InputInt2("Window Size", (int*)&size);
+            if (ImGui::Button("Apply")) {
+                window->SetWindowSize(size);
+                size = window->GetWindowSize();
+            }
+
+            if (ImGui::Button(((window->IsVSyncOn() ? "Disable"s : "Enable"s) + " VSync"s).c_str())) {
+                window->EnableVSync(!window->IsVSyncOn());
+            }
+        }
+#pragma endregion
+
+        ImGui::Separator();
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
@@ -710,4 +875,14 @@ void end_frame()
 float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd) 
 {
     return expectedStart + ((expectedEnd - expectedStart) / (currEnd - currStart)) * (input - currStart);
+}
+
+double mod(double val1, double val2) {
+    if (val1 < 0 && val2 <= 0) {
+        return 0;
+    }
+
+    double x = val1 / val2;
+    double z = std::floor(val1 / val2);
+    return (x - z) * val2;
 }

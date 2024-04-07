@@ -1,5 +1,4 @@
 #include "BoundingVolume.h"
-#include "BoundingVolume.h"
 
 using namespace CollisionSystem;
 

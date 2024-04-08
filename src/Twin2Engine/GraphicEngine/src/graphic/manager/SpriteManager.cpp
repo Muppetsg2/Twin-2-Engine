@@ -33,6 +33,7 @@ Sprite* SpriteManager::MakeSprite(const string& spriteAlias, Texture2D* tex, con
     size_t sH = hash<string>()(spriteAlias);
     if (_sprites.find(sH) != _sprites.end()) {
         spdlog::warn("Nadpisywanie Sprite: {}", sH);
+        delete _sprites[sH];
     }
     Sprite* spr = new Sprite(sH, tex, data.x, data.y, data.width, data.height);
     _sprites[sH] = spr;

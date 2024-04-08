@@ -288,7 +288,6 @@ void ModelsManager::UnloadModel(ModelData* modelData)
             }
             else
             {
-
                 SPDLOG_ERROR("THIS INSTRUCTION SHOULDNT HAPPEND");
             }
         }

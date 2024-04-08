@@ -182,8 +182,20 @@ int main(int, char**)
     // Set global log level to debug
     spdlog::set_level(spdlog::level::debug);
 
+    GraphicEngineManager::Init();
+
     testScene = new Scene();
 
+    // SCENE RESOURCES
+    testScene->AddTexture2D("res/textures/stone.jpg");
+    testScene->AddTexture2D("res/textures/grass.png");
+
+    testScene->AddSprite("stone", "res/textures/stone.jpg");
+    testScene->AddSprite("grass", "res/textures/grass.png");
+
+    testScene->AddFont("res/fonts/arial.ttf");
+
+    // SCENE OBJECTS
     std::tuple<GameObject*, CameraComponent*, AudioComponent*> CamComps = testScene->AddGameObject<CameraComponent, AudioComponent>();
     Camera = std::get<0>(CamComps);
     CameraComponent* c = std::get<1>(CamComps);
@@ -192,8 +204,6 @@ int main(int, char**)
     AudioComponent* a = std::get<2>(CamComps);
     a->SetAudio("./res/music/FurElise.wav");
     a->Loop();
-
-    GraphicEngineManager::Init();
 
     modelMesh = ModelsManager::GetCube();
 
@@ -224,13 +234,9 @@ int main(int, char**)
 
     imageObj = testScene->AddGameObject();
     Image* img = imageObj->AddComponent<Image>();
-    Sprite* s = SpriteManager::MakeSprite("stone", "res/textures/stone.jpg");
-    testScene->AddTexture2D("res/textures/stone.jpg");
-    img->SetSprite(s);
+    img->SetSprite("stone");
     Image* img2 = imageObj->AddComponent<Image>();
-    s = SpriteManager::MakeSprite("grass", "res/textures/grass.png");
-    testScene->AddTexture2D("res/textures/grass.png");
-    img2->SetSprite(s);
+    img2->SetSprite("grass");
 
     textObj = testScene->AddGameObject();
     textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));

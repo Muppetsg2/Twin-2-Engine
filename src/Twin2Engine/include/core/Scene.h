@@ -14,6 +14,8 @@ namespace Twin2Engine::Core {
 	private:
 		GameObject* _rootObject = nullptr;
 		std::map<std::string, Manager::TextureData> _textures = std::map<std::string, Manager::TextureData>();
+		std::map<std::string, std::tuple<std::string, bool, Manager::SpriteData>> _sprites = std::map<std::string, std::tuple<std::string, bool, Manager::SpriteData>>();
+		std::vector<std::string> _fonts = std::vector<std::string>();
 
 		void DeleteGameObject(GameObject* obj);
 		
@@ -31,6 +33,9 @@ namespace Twin2Engine::Core {
 
 		// Scene Resources
 		void AddTexture2D(const std::string& path, const Manager::TextureData& data = Manager::TextureData());
+		void AddSprite(const std::string& name, const std::string& texPath);
+		void AddSprite(const std::string& name, const std::string& texPath, const Manager::SpriteData& data);
+		void AddFont(const std::string& path);
 
 		friend class Manager::SceneManager;
 	};

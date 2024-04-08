@@ -33,7 +33,7 @@ endif()
 
 # Set the directory paths
 set(SHADERS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/res/shaders/SPIRV")
-set(SHADERS_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/res/CompiledShaders/SPIRV")
+set(SHADERS_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/res/CompiledShaders/SPIRV")
 
 find_program(GLSLANG_VALIDATOR NAMES glslangValidator)
 
@@ -47,13 +47,13 @@ function(compile_shader shader_path)
     get_filename_component(shader_name ${shader_path} NAME_WE)
     get_filename_component(shader_ext ${shader_path} EXT)
 
-     file(RELATIVE_PATH RELATIVE_SOURCE ${SHADERS_SOURCE_DIR} ${shader_path})
+    file(RELATIVE_PATH RELATIVE_SOURCE ${SHADERS_SOURCE_DIR} ${shader_path})
 
     #set(output_file "${SHADERS_OUTPUT_DIR}/${shader_name}${shader_ext}")
     set(output_file "${SHADERS_OUTPUT_DIR}/${RELATIVE_SOURCE}")
 
     # Create output directory
-    file(MAKE_DIRECTORY ${SHADERS_OUTPUT_DIR})
+    # file(MAKE_DIRECTORY ${RELATIVE_SHADER_OUTPUT_DIR})
     
     message("Shader to compile: ${shader_file}")
     message("Shader compiled: ${output_file}\n")

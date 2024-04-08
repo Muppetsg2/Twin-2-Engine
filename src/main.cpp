@@ -197,8 +197,6 @@ int main(int, char**)
     modelMesh = ModelsManager::GetCube();
 
     material = MaterialsManager::GetMaterial("Basic2");
-    //material2 = MaterialsManager::GetMaterial("Basic2");
-    //material = MaterialsManager::GetMaterial("textured");
     material2 = MaterialsManager::GetMaterial("textured");
     wallMat = MaterialsManager::GetMaterial("wallMat");
     roofMat = MaterialsManager::GetMaterial("roofMat");
@@ -226,14 +224,10 @@ int main(int, char**)
     imageObj = testScene->AddGameObject();
     Image* img = imageObj->AddComponent<Image>();
     Sprite* s = SpriteManager::MakeSprite("stone", "res/textures/stone.jpg");
-    //currentScene->AddSprite(s->GetManagerId());
-    //currentScene->AddTexture(s->GetTexture()->GetManagerId());
     testScene->AddTexture("res/textures/stone.jpg");
     img->SetSprite(s);
     Image* img2 = imageObj->AddComponent<Image>();
     s = SpriteManager::MakeSprite("grass", "res/textures/grass.png");
-    //currentScene->AddSprite(s->GetManagerId());
-    //currentScene->AddTexture(s->GetTexture()->GetManagerId());
     testScene->AddTexture("res/textures/grass.png");
     img2->SetSprite(s);
 
@@ -285,7 +279,7 @@ int main(int, char**)
     }
 
     // Cleanup
-    delete testScene;
+    SceneManager::UnloadAll();
     SpriteManager::UnloadAll();
     TextureManager::UnloadAll();
     AudioManager::UnloadAll();
@@ -394,23 +388,23 @@ void input()
         return;
     }
 
-    CameraComponent* c = Camera.GetComponent<CameraComponent>();
+    CameraComponent* c = Camera->GetComponent<CameraComponent>();
 
     if (Input::IsKeyDown(KEY::W))
     {
-        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
     if (Input::IsKeyDown(KEY::S))
     {
-        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
     if (Input::IsKeyDown(KEY::A))
     {
-        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
     if (Input::IsKeyDown(KEY::D))
     {
-        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
 
     if (Input::IsKeyPressed(KEY::LEFT_ALT)) 
@@ -536,15 +530,15 @@ void imgui_render()
             ImGui::Text("Play Time: %02.0f:%02.0f", std::floor(a->GetPlayTime() / 60), mod(a->GetPlayTime(), 60));
 
             if (ImGui::Button("Play Song")) {
-                Camera.GetComponent<AudioComponent>()->Play();
+                Camera->GetComponent<AudioComponent>()->Play();
             }
 
             if (ImGui::Button("Pause Song")) {
-                Camera.GetComponent<AudioComponent>()->Pause();
+                Camera->GetComponent<AudioComponent>()->Pause();
             }
 
             if (ImGui::Button("Stop Song")) {
-                Camera.GetComponent<AudioComponent>()->Stop();
+                Camera->GetComponent<AudioComponent>()->Stop();
             }
         }
 #pragma endregion

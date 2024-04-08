@@ -19,5 +19,9 @@ namespace Twin2Engine::Manager {
 
 		static void UpdateCurrentScene();
 		static void RenderCurrentScene();
+
+		static void UnloadCurrent();
+		static void UnloadScene(const std::string& name);
+		static void UnloadAll();
 	};
 }

@@ -277,14 +277,13 @@ void ModelsManager::UnloadModel(ModelData* modelData)
 
                 if (found != loadedModels.end())
                 {
-                    loadedModels.erase(found);
-
                     for (InstatiatingMesh*& mesh : (*found)->meshes) 
                     {
                         delete mesh;
                     }
 
                     delete (*found);
+                    loadedModels.erase(found);
                 }
             }
             else

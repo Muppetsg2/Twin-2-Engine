@@ -87,3 +87,37 @@ void SceneManager::RenderCurrentScene()
 		}
 	}
 }
+
+void SceneManager::UnloadCurrent()
+{
+	_currentScene = nullptr;
+	_rootObject = nullptr;
+	for (size_t id : _texturesIds) {
+		TextureManager::UnloadTexture2D(id);
+	}
+}
+
+void SceneManager::UnloadScene(const std::string& name)
+{
+	size_t h = hash<string>()(name);
+	if (_loadedScenes.find(h) == _loadedScenes.end()) {
+		SPDLOG_INFO("Failed to unload scene - Scene '{0}' not found", name);
+		return;
+	}
+
+	Scene*& scene = _loadedScenes[h];
+	if (scene == _currentScene) {
+		UnloadCurrent();
+	}
+	delete scene;
+	_loadedScenes.erase(h);
+}
+
+void SceneManager::UnloadAll()
+{
+	UnloadCurrent();
+	for (auto& sceneP : _loadedScenes) {
+		delete sceneP.second;
+	}
+	_loadedScenes.clear();
+}

@@ -1,13 +1,10 @@
 #ifndef _HEXAGONAL_TILEMAP_H_
 #define _HEXAGONAL_TILEMAP_H_
 
+#include <Tilemap/HexagonalTile.h>
+
 namespace Tilemap
 {
-	class HexagonalTile
-	{
-
-	};
-
 	class HexagonalTilemap
 	{
 		HexagonalTile** _tilemap;
@@ -31,8 +28,9 @@ namespace Tilemap
 		inline glm::ivec2 GetLeftBottomPosition() const;
 		inline glm::ivec2 GetRightTopPosition() const;
 
-		void SetTile(glm::ivec4 position, Twin2Engine::Core::GameObject gameObject);
-		void RemoveTile(glm::ivec4 position);
+		HexagonalTile* GetTile(const glm::ivec2& position) const;
+		void SetTile(const glm::ivec2& position, Twin2Engine::Core::GameObject* gameObject);
+		void RemoveTile(const glm::ivec2& position);
 	};
 }
 

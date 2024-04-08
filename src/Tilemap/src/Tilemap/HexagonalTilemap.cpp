@@ -37,6 +37,12 @@ HexagonalTilemap::HexagonalTilemap(glm::ivec2 leftBottomPosition, glm::ivec2 rig
 	for (int i = 0; i < _width; i++)
 	{
 		_tilemap[i] = new HexagonalTile[_height];
+
+		for (int j = 0; j < _height; j++)
+		{
+			_tilemap[i][j].SetTilemap(this);
+			_tilemap[i][j].SetPosition(glm::ivec2(i + _leftBottomPosition.x, j + _leftBottomPosition.y));
+		}
 	}
 }
 
@@ -54,7 +60,9 @@ void HexagonalTilemap::Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTop
 {
 	HexagonalTile** oldTilemap = _tilemap;
 	unsigned int oldWidth = _width;
-	glm::ivec2 oldToCenter = _toCenter;
+	//glm::ivec2 oldToCenter = _toCenter;
+	glm::ivec2 oldLeftBottomPosition = _leftBottomPosition;
+	glm::ivec2 oldRightTopPosition = _rightTopPosition;
 
 	// Creating new tilemap
 	if (leftBottomPosition.x < rightTopPosition.x)
@@ -78,11 +86,46 @@ void HexagonalTilemap::Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTop
 	for (int i = 0; i < _width; i++)
 	{
 		_tilemap[i] = new HexagonalTile[_height];
+
+		for (int j = 0; j < _height; j++)
+		{
+			_tilemap[i][j].SetTilemap(this);
+			_tilemap[i][j].SetPosition(glm::ivec2(i + _leftBottomPosition.x, j + _leftBottomPosition.y));
+		}
 	}
 
 	// Coping old tilemap
+	glm::ivec2 srcBegin = _leftBottomPosition - oldLeftBottomPosition;
+	glm::ivec2 dstBegin = srcBegin;
+	if (srcBegin.x < 0)
+	{
+		srcBegin.x = 0;
+	}
+	if (srcBegin.y < 0)
+	{
+		srcBegin.y = 0;
+	}
 
-	//for (int x = oldT)
+	if (dstBegin.x > 0)
+	{
+		dstBegin.x = 0;
+	}
+	if (dstBegin.y > 0)
+	{
+		dstBegin.y = 0;
+	}
+	dstBegin *= -1;
+
+	int minRTX = (oldRightTopPosition.x < _rightTopPosition.x) ? oldRightTopPosition.x : _rightTopPosition.x;
+	int minRTY = (oldRightTopPosition.y < _rightTopPosition.y) ? oldRightTopPosition.y : _rightTopPosition.y;
+
+	int copyWidth = minRTX - srcBegin.x;
+	int bytesToCopy = (minRTY - srcBegin.y) * sizeof(HexagonalTile);
+
+	for (int x = 0; x < copyWidth; x++)
+	{
+		std::memmove(_tilemap[dstBegin.x + x], oldTilemap[srcBegin.x + x], bytesToCopy);
+	}
 
 
 	// Deleting old tilemap
@@ -116,12 +159,26 @@ inline glm::ivec2 HexagonalTilemap::GetRightTopPosition() const
 }
 
 
-void HexagonalTilemap::SetTile(glm::ivec4 position, Twin2Engine::Core::GameObject gameObject)
+void HexagonalTilemap::SetTile(const glm::ivec2& position, Twin2Engine::Core::GameObject* gameObject)
+{
+	if (position.x > _leftBottomPosition.x && position.x < _rightTopPosition.x && position.y > _leftBottomPosition.y && position.y < _rightTopPosition.y)
+	{
+		_tilemap[position.x][position.y].SetGameObject(gameObject);
+	}
+	else
+	{
+		// Przypadek, gdy pozycja jest poza obecnymi w yile mapie pozycjami
+
+	}
+}
+
+
+HexagonalTile* HexagonalTilemap::GetTile(const glm::ivec2& position) const
 {
 
 }
 
-void HexagonalTilemap::RemoveTile(glm::ivec4 position)
+void HexagonalTilemap::RemoveTile(const glm::ivec2& position)
 {
 
 }

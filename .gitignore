@@ -9,6 +9,7 @@ compile_commands.json
 CTestTestfile.cmake
 #GameConfig.yaml.in
 ShadersOrigin
+bin
 
 [Bb]uild/
 /[Oo]ut/

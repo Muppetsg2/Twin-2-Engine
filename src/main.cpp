@@ -47,7 +47,6 @@
 #include <core/DirectionalLightComponent.h>
 
 // COLLISIONS
-//>>>>>>> 9af207cda8832c4d5cb52947538d06b41101b9fb
 #include <CollisionManager.h>
 #include <core/BoxColliderComponent.h>
 #include <core/CapsuleColliderComponent.h>
@@ -130,6 +129,7 @@ const char* WINDOW_NAME = "Twin^2 Engine";
 Window* window = nullptr;
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
+
 const     char*   glsl_version     = "#version 430";
 constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 3;
@@ -198,25 +198,6 @@ int main(int, char**)
     AudioComponent* a = Camera.AddComponent<AudioComponent>();
     a->SetAudio("./res/music/FurElise.wav");
     a->Loop();
-
-    /*
-#pragma region MatricesUBO
-
-    glGenBuffers(1, &UBOMatrices);
-
-    glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
-    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-    glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBOMatrices, 0, 2 * sizeof(glm::mat4));
-
-    glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(c->GetProjectionMatrix()));
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(c->GetViewMatrix()));
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-#pragma endregion
-    */
 
     graphicEngine = new GraphicEngineManager();
 
@@ -433,13 +414,10 @@ void input()
         return;
     }
 
-    bool camDirty = false;
-
     CameraComponent* c = Camera.GetComponent<CameraComponent>();
 
     if (Input::IsKeyDown(KEY::W))
     {
-        camDirty = true;
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
 
         if (LightingSystem::LightingController::IsInstantiated()) {
@@ -448,7 +426,6 @@ void input()
     }
     if (Input::IsKeyDown(KEY::S))
     {
-        camDirty = true;
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
 
         if (LightingSystem::LightingController::IsInstantiated()) {
@@ -457,7 +434,6 @@ void input()
     }
     if (Input::IsKeyDown(KEY::A))
     {
-        camDirty = true;
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
 
         if (LightingSystem::LightingController::IsInstantiated()) {
@@ -466,22 +442,12 @@ void input()
     }
     if (Input::IsKeyDown(KEY::D))
     {
-        camDirty = true;
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
 
         if (LightingSystem::LightingController::IsInstantiated()) {
             LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
         }
     }
-
-    /*
-    if (camDirty) 
-    {
-        glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
-        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Camera.GetComponent<CameraComponent>()->GetViewMatrix()));
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
-    }
-    */
 
     if (Input::IsKeyPressed(KEY::LEFT_ALT)) 
     {
@@ -533,21 +499,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     {
         Camera.GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
     }
-    /*
-    rot = Camera.GetTransform()->GetGlobalRotation();
-
-    glm::vec3 front{};
-    front.x = cos(glm::radians(rot.y)) * cos(glm::radians(rot.x));
-    front.y = sin(glm::radians(rot.x));
-    front.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
-    Camera.GetComponent<CameraComponent>()->SetFrontDir(glm::normalize(front));
-    */
-
-    /*
-    glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Camera.GetComponent<CameraComponent>()->GetViewMatrix()));
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-    */
 }
 
 void update()
@@ -623,64 +574,15 @@ void imgui_render()
             ImGui::Text("Play Time: %02.0f:%02.0f", std::floor(a->GetPlayTime() / 60), mod(a->GetPlayTime(), 60));
 
             if (ImGui::Button("Play Song")) {
-                /*
-                if (soloud.isValidVoiceHandle(sampleHandle)) {
-                    if (soloud.getPause(sampleHandle)) {
-                        soloud.setPause(sampleHandle, false);
-                    }
-                }
-                else
-                {
-                    sampleHandle = soloud.play(smusicSmple);
-                }
-                */
-
                 Camera.GetComponent<AudioComponent>()->Play();
-
-                /*
-                if (!musicPlaying) {
-                    ma_sound_start(&sound);
-                    musicPlaying = true;
-                }
-                */
             }
 
             if (ImGui::Button("Pause Song")) {
-                /*
-                if (soloud.isValidVoiceHandle(sampleHandle)) {
-                    if (!soloud.getPause(sampleHandle)) {
-                        soloud.setPause(sampleHandle, true);
-                    }
-                }
-                */
-
                 Camera.GetComponent<AudioComponent>()->Pause();
-
-                /*
-                if (musicPlaying) {
-                    ma_sound_stop(&sound);
-                    musicPlaying = false;
-                }
-                */
             }
 
             if (ImGui::Button("Stop Song")) {
-                /*
-                if (soloud.isValidVoiceHandle(sampleHandle)) {
-                    if (!soloud.getPause(sampleHandle)) {
-                        soloud.setPause(sampleHandle, true);
-                    }
-                }
-                */
-
                 Camera.GetComponent<AudioComponent>()->Stop();
-
-                /*
-                if (musicPlaying) {
-                    ma_sound_stop(&sound);
-                    musicPlaying = false;
-                }
-                */
             }
         }
 #pragma endregion

@@ -163,19 +163,40 @@ void HexagonalTilemap::SetTile(const glm::ivec2& position, Twin2Engine::Core::Ga
 {
 	if (position.x > _leftBottomPosition.x && position.x < _rightTopPosition.x && position.y > _leftBottomPosition.y && position.y < _rightTopPosition.y)
 	{
-		_tilemap[position.x][position.y].SetGameObject(gameObject);
+		_tilemap[position.x + _toCenter.x][position.y + _toCenter.y].SetGameObject(gameObject);
 	}
 	else
 	{
-		// Przypadek, gdy pozycja jest poza obecnymi w yile mapie pozycjami
+		glm::vec2 newLeftBottomPosition(_leftBottomPosition);
+		glm::vec2 newRigthTopPosition(_rightTopPosition);
 
+		if (position.x < _leftBottomPosition.x)
+		{
+			newLeftBottomPosition.x = position.x;
+		}
+		if (position.y < _leftBottomPosition.y)
+		{
+			newLeftBottomPosition.y = position.y;
+		}
+		if (position.x > _rightTopPosition.x)
+		{
+			newRigthTopPosition.x = position.x;
+		}
+		if (position.y > _rightTopPosition.y)
+		{
+			newRigthTopPosition.y = position.y;
+		}
+
+		Resize(newLeftBottomPosition, newRigthTopPosition);
+
+		_tilemap[position.x + _toCenter.x][position.y + _toCenter.y].SetGameObject(gameObject);
 	}
 }
 
 
 HexagonalTile* HexagonalTilemap::GetTile(const glm::ivec2& position) const
 {
-
+	return &_tilemap[position.x + _toCenter.x][position.y + _toCenter.y];
 }
 
 void HexagonalTilemap::RemoveTile(const glm::ivec2& position)

@@ -190,7 +190,7 @@ int main(int, char**)
 
     modelMesh = ModelsManager::GetCube();
 
-    material = MaterialsManager::GetMaterial("Basic");
+    material = MaterialsManager::GetMaterial("Basic2");
     //material2 = MaterialsManager::GetMaterial("Basic2");
     //material = MaterialsManager::GetMaterial("textured");
     material2 = MaterialsManager::GetMaterial("textured");

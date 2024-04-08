@@ -11,7 +11,7 @@ using namespace Twin2Engine::GraphicEngine;
 
  }
 
-MaterialParameters::MaterialParameters(const std::vector<std::string>& variableNames)
+MaterialParameters::MaterialParameters(const std::vector<std::string>& variableNames, const std::vector<std::string>& textureParametersNames)
 {
 	std::hash<std::string> hasher;
 
@@ -20,6 +20,11 @@ MaterialParameters::MaterialParameters(const std::vector<std::string>& variableN
 		_variablesValuesMappings[hasher(variableNames[i])];
 	}
 
+	_textures.resize(textureParametersNames.size());
+	for (int i = 0; i < textureParametersNames.size(); i++)
+	{
+		_textureMappings[hasher(textureParametersNames[i])] = i;
+	}
 }
 
 void MaterialParameters::Add(const std::string& variableName, size_t size, void* value)

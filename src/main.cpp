@@ -130,9 +130,9 @@ const char* WINDOW_NAME = "Twin^2 Engine";
 Window* window = nullptr;
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
-const     char*   glsl_version     = "#version 460";
+const     char*   glsl_version     = "#version 430";
 constexpr int32_t GL_VERSION_MAJOR = 4;
-constexpr int32_t GL_VERSION_MINOR = 6;
+constexpr int32_t GL_VERSION_MINOR = 3;
 
 /*
 GLuint UBOMatrices;

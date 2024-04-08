@@ -42,12 +42,13 @@ void main()
 {
     uint instanceId = gl_InstanceID;
 
-    position = vec3(model * vec4(aPos, 1.0));
+    //position = projection * view * instanceData.transform[instanceId] * vec4(aPos, 1.0).xyz;
     normal = mat3(transpose(inverse(model))) * aNormal; 
     texCoords = aTexCoords;
     
 
     gl_Position = projection * view * instanceData.transform[instanceId] * vec4(aPos, 1.0);
+    position = gl_Position.xyz;
 
     color1 = materialInput[materialIndexes.materialIndex[instanceId]].color1;
     color2 = materialInput[materialIndexes.materialIndex[instanceId]].color2;

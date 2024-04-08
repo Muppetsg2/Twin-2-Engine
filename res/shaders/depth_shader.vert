@@ -11,5 +11,5 @@ uniform mat4 lightSpaceMatrix;
 void main()
 {
     //gl_Position = lightSpaceMatrix * model * vec4(aPos, 1.0);
-    gl_Position = lightSpaceMatrix * instanceData.transform[instanceId] * vec4(aPos, 1.0);
+    gl_Position = lightSpaceMatrix * instanceData.transform[gl_InstanceID] * vec4(aPos, 1.0);
 }

@@ -190,8 +190,9 @@ void LightingController::BindLightBuffors(Twin2Engine::GraphicEngine::Shader* sh
 void LightingController::UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader* shader) {
 	int i = 0;
 	shader->Use();
-	for (auto dirLight : dirLights) {
-		glUniform1i(i, dirLight->shadowMap);
+	for (auto dirLight : dirLights) { //DirLightShadowMaps
+		//glUniform1i(i, dirLight->shadowMap);
+		shader->SetUInt(("DirLightShadowMaps[" + std::to_string(i) + "]"), dirLight->shadowMap);
 		++i;
 	}
 }

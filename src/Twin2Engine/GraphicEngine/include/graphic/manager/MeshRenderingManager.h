@@ -5,6 +5,13 @@
 #include <graphic/Material.h>
 #include <graphic/Shader.h>
 
+// SSBO
+#define BINDING_POINT_INSTANCE_DATA 0
+#define BINDING_POINT_MATERIAL_INDEX 1
+
+// UBO
+#define BINDING_POINT_MATERIAL_INPUT 2
+
 namespace Twin2Engine
 {
 	namespace GraphicEngine {

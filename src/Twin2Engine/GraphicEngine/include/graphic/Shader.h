@@ -13,24 +13,13 @@ namespace Twin2Engine
         private:
             friend class Manager::ShaderManager;
 
-            //Shader(const GLchar* shaderPath);
             unsigned int shaderProgramID;
 
-            //unsigned int _instanceDataSSBO;
-            //unsigned int _materialIndexSSBO;
-            //unsigned int _materialInputUBO;
         public:
             // ID program object  
             Shader(const Shader&& shader);
             Shader(const Shader& shader);
             Shader(unsigned int shaderProgramId);
-
-
-            // konstruktor czyta plik shadera z dysku i tworzy go  
-            //Shader(const GLchar* vertexPath, const GLchar* geometryPath, const GLchar* fragmentPath);
-            //Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
-            //Shader(bool create, const GLchar* vertexPath, const GLchar* fragmentPath);
-
 
             ~Shader();
 
@@ -48,10 +37,6 @@ namespace Twin2Engine
             void SetMat4(const std::string& name, glm::mat4& value) const;
 
             glm::mat4 GetMat4(const std::string& name) const;
-
-            //GLuint GetInstanceDataSSBO() const;
-            //GLuint GetMaterialIndexSSBO() const;
-            //GLuint GetMaterialInputUBO() const;
         };
     }
 }

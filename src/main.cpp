@@ -38,7 +38,6 @@
 
 #include <memory>
 #include <string>
-#include <cstring>
 
 // COLLISIONS
 #include <CollisionManager.h>

@@ -31,10 +31,14 @@ target_include_directories(${PROJECT_NAME}
 						#${GRAPHIC_ENGINE_PUBLIC_INCLUDE_FILES}
 						${GRAPHIC_ENGINE_INCLUDE_DIR}
 						${glad_SOURCE_DIR}
-						${stb_image_SOURCE_DIR}
+
+
+						#${tiny_gltf_SOURCE_DIR}
+						#${stb_image_SOURCE_DIR}
 						#${GRAPHIC_ENGINE_DIR}
 						
-						#PRIVATE
+						#INTERFACE
+						#${tinygltf_SOURCE_DIR}
 						#${GRAPHIC_ENGINE_SOURCE_DIR}
 )
 
@@ -51,16 +55,19 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC ${GRAPHIC_ENGINE_PRECOMPILE_HEA
 #										#spdlog
 #										Twin2Engine
 #)
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} glad)
-target_link_libraries(${PROJECT_NAME} stb_image)
-target_link_libraries(${PROJECT_NAME} assimp)
-target_link_libraries(${PROJECT_NAME} glfw)
-target_link_libraries(${PROJECT_NAME} spdlog)
-target_link_libraries(${PROJECT_NAME} yaml-cpp)
-target_link_libraries(${PROJECT_NAME} freetype)
-target_link_libraries(${PROJECT_NAME} glm::glm)
+
+target_link_libraries(GraphicEngine ${OPENGL_LIBRARIES})
+target_link_libraries(GraphicEngine glad)
+target_link_libraries(GraphicEngine stb_image)
+target_link_libraries(GraphicEngine assimp)
+target_link_libraries(GraphicEngine glfw)
+target_link_libraries(GraphicEngine spdlog)
+target_link_libraries(GraphicEngine yaml-cpp)
+target_link_libraries(GraphicEngine Twin2Engine)
+target_link_libraries(GraphicEngine freetype)
+target_link_libraries(GraphicEngine glm::glm)
 target_link_libraries(${PROJECT_NAME} LightingSystem)
+#target_link_libraries(GraphicEngine tinygltf)
 
 #message("GraphicEngine Public Include Files:")
 #foreach(FILE_PATH ${GRAPHIC_ENGINE_PUBLIC_INCLUDE_FILES})

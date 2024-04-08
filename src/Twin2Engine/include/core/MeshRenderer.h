@@ -1,10 +1,12 @@
 #ifndef _MESH_RENDERER_H_
 #define _MESH_RENDERER_H_
 
-#include <graphic/InstatiatingModel.h>
-#include <graphic/manager/MeshRenderingManager.h>
-
 #include <core/RenderableComponent.h>
+#include <core/Transform.h>
+
+#include <graphic/InstatiatingModel.h>
+#include <graphic/Material.h>
+#include <graphic/manager/MeshRenderingManager.h>
 
 namespace Twin2Engine::Core
 {

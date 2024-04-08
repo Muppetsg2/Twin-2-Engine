@@ -1,5 +1,5 @@
 #include <core/MeshRenderer.h>
-#include <core/Transform.h>
+
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::GraphicEngine;
@@ -14,10 +14,11 @@ void MeshRenderer::Render()
 	for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
 		data.meshes.push_back(_model.GetMesh(i));
 
-		if (i >= _materials.size())
-			data.materials.push_back(nullptr);
-		else
-			data.materials.push_back(_materials[i]);
+		//if (i >= _materials.size())
+		//	data.materials.push_back(nullptr);
+		//else
+		//	data.materials.push_back(_materials[i]);
+		data.materials.push_back(GetMaterial(i));
 	}
 	MeshRenderingManager::Render(data);
 }

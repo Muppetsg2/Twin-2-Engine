@@ -24,37 +24,39 @@ std::list<Twin2Engine::GraphicEngine::MaterialData*> MaterialsManager::loadedMat
 //	{ MaterialsManager::stringHash("mat4"), 64 }
 //};
 
-#define TYPE_MAP_INT_HANDLE		0
-#define TYPE_MAP_UINT_HANDLE	1
-#define TYPE_MAP_FLOAT_HANDLE	2
-#define TYPE_MAP_DOUBLE_HANDLE	3
-#define TYPE_MAP_BOOL_HANDLE	4
-#define TYPE_MAP_VEC2_HANDLE	5
-#define TYPE_MAP_VEC3_HANDLE	6
-#define TYPE_MAP_VEC4_HANDLE	7
-#define TYPE_MAP_IVEC2_HANDLE	8
-#define TYPE_MAP_IVEC3_HANDLE	9
-#define TYPE_MAP_IVEC4_HANDLE	10
-#define TYPE_MAP_MAT2_HANDLE	11
-#define TYPE_MAP_MAT3_HANDLE	12
-#define TYPE_MAP_MAT4_HANDLE	13
+#define TYPE_MAP_INT_HANDLE			0
+#define TYPE_MAP_UINT_HANDLE		1
+#define TYPE_MAP_FLOAT_HANDLE		2
+#define TYPE_MAP_DOUBLE_HANDLE		3
+#define TYPE_MAP_BOOL_HANDLE		4
+#define TYPE_MAP_TEXTURE2D_HANDLE	5
+#define TYPE_MAP_VEC2_HANDLE		6
+#define TYPE_MAP_VEC3_HANDLE		7
+#define TYPE_MAP_VEC4_HANDLE		8
+#define TYPE_MAP_IVEC2_HANDLE		9
+#define TYPE_MAP_IVEC3_HANDLE		10
+#define TYPE_MAP_IVEC4_HANDLE		11
+#define TYPE_MAP_MAT2_HANDLE		12
+#define TYPE_MAP_MAT3_HANDLE		13
+#define TYPE_MAP_MAT4_HANDLE		14
 
 const std::unordered_map<size_t, int> MaterialsManager::typeHandleMap
 {
-	{ MaterialsManager::stringHash("int"),		TYPE_MAP_INT_HANDLE		 },
-	{ MaterialsManager::stringHash("uint"),		TYPE_MAP_UINT_HANDLE	 },
-	{ MaterialsManager::stringHash("float"),	TYPE_MAP_FLOAT_HANDLE	 },
-	{ MaterialsManager::stringHash("double"),	TYPE_MAP_DOUBLE_HANDLE	 },
-	{ MaterialsManager::stringHash("bool"),		TYPE_MAP_BOOL_HANDLE	 },
-	{ MaterialsManager::stringHash("vec2"),		TYPE_MAP_VEC2_HANDLE	 },
-	{ MaterialsManager::stringHash("vec3"),		TYPE_MAP_VEC3_HANDLE	 },
-	{ MaterialsManager::stringHash("vec4"),		TYPE_MAP_VEC4_HANDLE	 },
-	{ MaterialsManager::stringHash("ivec2"),	TYPE_MAP_IVEC2_HANDLE	 },
-	{ MaterialsManager::stringHash("ivec3"),	TYPE_MAP_IVEC3_HANDLE	 },
-	{ MaterialsManager::stringHash("ivec4"),	TYPE_MAP_IVEC4_HANDLE	 },
-	{ MaterialsManager::stringHash("mat2"),		TYPE_MAP_MAT2_HANDLE	 },
-	{ MaterialsManager::stringHash("mat3"),		TYPE_MAP_MAT3_HANDLE	 },
-	{ MaterialsManager::stringHash("mat4"),		TYPE_MAP_MAT4_HANDLE	 }
+	{ MaterialsManager::stringHash("int"),			TYPE_MAP_INT_HANDLE			},
+	{ MaterialsManager::stringHash("uint"),			TYPE_MAP_UINT_HANDLE		},
+	{ MaterialsManager::stringHash("float"),		TYPE_MAP_FLOAT_HANDLE		},
+	{ MaterialsManager::stringHash("double"),		TYPE_MAP_DOUBLE_HANDLE		},
+	{ MaterialsManager::stringHash("bool"),			TYPE_MAP_BOOL_HANDLE		},
+	{ MaterialsManager::stringHash("texture2D"),	TYPE_MAP_TEXTURE2D_HANDLE	},
+	{ MaterialsManager::stringHash("vec2"),			TYPE_MAP_VEC2_HANDLE		},
+	{ MaterialsManager::stringHash("vec3"),			TYPE_MAP_VEC3_HANDLE		},
+	{ MaterialsManager::stringHash("vec4"),			TYPE_MAP_VEC4_HANDLE		},
+	{ MaterialsManager::stringHash("ivec2"),		TYPE_MAP_IVEC2_HANDLE		},
+	{ MaterialsManager::stringHash("ivec3"),		TYPE_MAP_IVEC3_HANDLE		},
+	{ MaterialsManager::stringHash("ivec4"),		TYPE_MAP_IVEC4_HANDLE		},
+	{ MaterialsManager::stringHash("mat2"),			TYPE_MAP_MAT2_HANDLE		},
+	{ MaterialsManager::stringHash("mat3"),			TYPE_MAP_MAT3_HANDLE		},
+	{ MaterialsManager::stringHash("mat4"),			TYPE_MAP_MAT4_HANDLE		}
 };
 void MaterialsManager::UnloadMaterial(Material& material)
 {
@@ -121,9 +123,11 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 		return Material();
 	}
 
-	SPDLOG_INFO("Loading material: {}!", materialName);
+	size_t materialNameHash = stringHash(materialName);
+	SPDLOG_INFO("Loading material {}: {}!", materialNameHash, materialName);
 
 	const YAML::Node& materialNode = fileNode["material"];
+
 
 	std::string name = materialNode["name"].as<std::string>();
 	std::string shader = materialNode["shader"].as<std::string>();
@@ -148,46 +152,64 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 		{
 		case TYPE_MAP_INT_HANDLE:
 			materialParameters->Add(parameterName, parameterValue.as<int>());
+			//int valueInt = parameterValue.as<int>();
+			//materialParameters->Add(parameterName, 4, &valueInt);
 			break;
 
 		case TYPE_MAP_UINT_HANDLE:
 			materialParameters->Add(parameterName, parameterValue.as<unsigned int>());
+			//unsigned int valueUint = parameterValue.as<unsigned int>();
+			//materialParameters->Add(parameterName, 4, &valueUint);
 			break;
 
 		case TYPE_MAP_FLOAT_HANDLE:
 			materialParameters->Add(parameterName, parameterValue.as<float>());
+			//float valueFloat = parameterValue.as<float>();
+			//materialParameters->Add(parameterName, 4, &valueFloat);
 			break;
 
 		case TYPE_MAP_DOUBLE_HANDLE:
 			materialParameters->Add(parameterName, parameterValue.as<double>());
+			//double valueDouble = parameterValue.as<double>();
+			//materialParameters->Add(parameterName, 8, &valueDouble);
 			break;
 
 		case TYPE_MAP_BOOL_HANDLE:
 			materialParameters->Add(parameterName, parameterValue.as<bool>());
+			//bool valueBool = parameterValue.as<bool>();
+			//materialParameters->Add(parameterName, 4, &valueBool);
 			break;
 
+		case TYPE_MAP_TEXTURE2D_HANDLE:
+		{
+			std::string texturePath = parameterValue.as<std::string>();
+			Texture2D* texture = Manager::TextureManager::LoadTexture2D(texturePath);
+			materialParameters->AddTexture2D(parameterName, texture->GetId());
+		}
+		break;
+
 		case TYPE_MAP_VEC2_HANDLE:
-			materialParameters->Add(parameterName, 8ull, parameterValue.as<std::vector<float>>().data());
+			materialParameters->Add(parameterName, 8, parameterValue.as<std::vector<float>>().data());
 			break;
 		
 		case TYPE_MAP_VEC3_HANDLE:
-			materialParameters->Add(parameterName, 12ull, parameterValue.as<std::vector<float>>().data());
+			materialParameters->Add(parameterName, 12, parameterValue.as<std::vector<float>>().data());
 			break;
 		
 		case TYPE_MAP_VEC4_HANDLE:
-			materialParameters->Add(parameterName, 16ull, parameterValue.as<std::vector<float>>().data());
+			materialParameters->Add(parameterName, 16, parameterValue.as<std::vector<float>>().data());
 			break;
 		
 		case TYPE_MAP_IVEC2_HANDLE:
-			materialParameters->Add(parameterName, 8ull, parameterValue.as<std::vector<int>>().data());
+			materialParameters->Add(parameterName, 8, parameterValue.as<std::vector<int>>().data());
 			break;
 		
 		case TYPE_MAP_IVEC3_HANDLE:
-			materialParameters->Add(parameterName, 12ull, parameterValue.as<std::vector<int>>().data());
+			materialParameters->Add(parameterName, 12, parameterValue.as<std::vector<int>>().data());
 			break;
 		
 		case TYPE_MAP_IVEC4_HANDLE:
-			materialParameters->Add(parameterName, 16ull, parameterValue.as<std::vector<int>>().data());
+			materialParameters->Add(parameterName, 16, parameterValue.as<std::vector<int>>().data());
 			break;
 		
 		//case TYPE_MAP_MAT2_HANDLE:
@@ -207,7 +229,7 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 
 	MaterialData* materialData = new MaterialData
 	{
-		.id = stringHash(materialName),
+		.id = materialNameHash,
 		.useNumber = 1,
 		.shader = Manager::ShaderManager::GetShaderProgram(shader),
 		.materialParameters = materialParameters
@@ -221,7 +243,7 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 //	return typeSizeMap[stringHash(type)];
 //}
 
-Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, const std::vector<string>& materialParameters)
+Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, const std::vector<std::string>& materialParameters)
 {
 	size_t hashed = stringHash(newMaterialName);
 

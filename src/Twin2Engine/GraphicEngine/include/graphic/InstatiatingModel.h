@@ -1,9 +1,9 @@
 #ifndef INSTANTIATING_MODEL
 #define INSTANTIATING_MODEL
 
-#include <graphic/Model.h>
-#include <graphic/ModelData.h>
+//#include <graphic/Model.h>
 #include <graphic/InstatiatingMesh.h>
+#include <graphic/ModelData.h>
 
 namespace Twin2Engine
 {
@@ -18,16 +18,10 @@ namespace Twin2Engine
 
             friend class Manager::ModelsManager;
 
-
-
-            //Model* model = nullptr;
-            //vector<InstatiatingMesh> meshes;
-
             ModelData* modelData;
 
-            void setupModel(const vector<glm::mat4>& transforms);
+            //void setupModel(const vector<glm::mat4>& transforms);
 
-            //static InstatiatingModel CreateModel(ModelData* modelData);
             InstatiatingModel(ModelData* modelData);
 
         public:
@@ -41,7 +35,7 @@ namespace Twin2Engine
             size_t GetMeshCount() const;
             InstatiatingMesh* GetMesh(size_t index) const;
 
-            void Draw(Shader* shaderProgram);
+            //void Draw(Shader* shaderProgram);
 
             //void SetTransform(unsigned int meshIndex, const vector<Transform*> transforms);
 

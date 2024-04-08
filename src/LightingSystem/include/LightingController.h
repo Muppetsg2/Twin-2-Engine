@@ -33,6 +33,7 @@ namespace LightingSystem {
 			//Lights lights;
 
 		public:
+
 			static const int SHADOW_WIDTH;
 			static const int SHADOW_HEIGHT;
 
@@ -70,7 +71,7 @@ namespace LightingSystem {
 			void BindLightBuffors(Twin2Engine::GraphicEngine::Shader* shader);
 			void UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader* shader);
 
-			void UpdateDirLightSpaceMatrix(DirectionalLight* lighth, const glm::mat4& viewProjectionInverse);
+			void RecalculateDirLightSpaceMatrix(DirectionalLight* light); //, const glm::mat4& viewProjectionInverse
 
 			void SetAmbientLight(glm::vec3& ambientLightColor);
 			void SetViewerPosition(glm::vec3& viewerPosition);

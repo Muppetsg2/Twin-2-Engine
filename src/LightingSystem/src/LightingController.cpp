@@ -2,6 +2,8 @@
 
 #include <glad/glad.h>  
 #include <GLFW/glfw3.h> 
+#include <core/CameraComponent.h>
+#include <graphic/manager/MeshRenderingManager.h>
 
 using namespace LightingSystem;
 
@@ -60,6 +62,7 @@ void LightingController::UpdateLightsBuffer() {
 	auto itr3 = dirLights.begin();
 	while (itr3 != dirLights.end()) {
 		lights.directionalLights[lights.numberOfDirLights] = **itr3;
+		RecalculateDirLightSpaceMatrix(*itr3);
 		++itr3;
 		++lights.numberOfDirLights;
 	}
@@ -104,6 +107,7 @@ void LightingController::UpdateDirLights() {
 	auto itr = dirLights.begin();
 	while (itr != dirLights.end()) {
 		dLights[dlNumber] = **itr;
+		RecalculateDirLightSpaceMatrix(*itr);
 		++itr;
 		++dlNumber;
 	}
@@ -135,6 +139,8 @@ void LightingController::UpdateSLTransform(SpotLight* spotLight) {
 void LightingController::UpdateDLTransform(DirectionalLight* dirLight) {
 	auto itr = dirLights.find(dirLight);
 	int pos = std::distance(dirLights.begin(), itr);
+
+	RecalculateDirLightSpaceMatrix(dirLight);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
 	//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 912 + pos * sizeof(DirectionalLight), 12, &((*itr)->position)); //972
@@ -190,8 +196,11 @@ void LightingController::UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader*
 	}
 }
 
-void LightingController::UpdateDirLightSpaceMatrix(DirectionalLight* light, const glm::mat4& viewProjectionInverse) {
-	glm::mat4 lightMatrix = glm::lookAt(light->position, light->position + light->direction, glm::vec3(0.0f, 1.0f, 0.0f));
+void LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* light) { //const glm::mat4& viewProjectionInverse
+	Twin2Engine::Core::CameraComponent* mainCam = Twin2Engine::Core::CameraComponent::GetMainCamera();
+	glm::mat4 viewProjectionInverse = glm::inverse(mainCam->GetProjectionMatrix() * mainCam->GetViewMatrix());
+
+	glm::mat4 viewMatrix = glm::lookAt(light->position, light->position + light->direction, glm::vec3(0.0f, 1.0f, 0.0f));
 	
 	float minX = std::numeric_limits<float>::max();
 	float maxX = std::numeric_limits<float>::lowest();
@@ -222,7 +231,7 @@ void LightingController::UpdateDirLightSpaceMatrix(DirectionalLight* light, cons
 
 	// Transform frustum corners to light's view space and find bounds
 	for (const auto& corner : corners) {
-		glm::vec3 transformedCorner = glm::vec3(lightMatrix * glm::vec4(corner, 1.0f));
+		glm::vec3 transformedCorner = glm::vec3(viewMatrix * glm::vec4(corner, 1.0f));
 		minX = std::min(minX, transformedCorner.x);
 		maxX = std::max(maxX, transformedCorner.x);
 		minY = std::min(minY, transformedCorner.y);
@@ -236,14 +245,12 @@ void LightingController::UpdateDirLightSpaceMatrix(DirectionalLight* light, cons
 	minZ -= lightMargin;
 	maxZ += lightMargin;
 
-	lightMatrix = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ) * lightMatrix;
+	light->lightSpaceMatrix = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ) * viewMatrix;
 
-	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-	glBindFramebuffer(GL_FRAMEBUFFER, light->shadowMapFBO);
-	glClear(GL_DEPTH_BUFFER_BIT);
+	Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->lightSpaceMatrix);
+
 	//ConfigureShaderAndMatrices();
 	//RenderScene();
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void LightingController::SetAmbientLight(glm::vec3& ambientLightColor) {

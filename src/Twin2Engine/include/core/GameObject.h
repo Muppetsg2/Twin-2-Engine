@@ -1,5 +1,5 @@
-#ifndef GAMEOBJECT_H
-#define GAMEOBJECT_H
+#ifndef _GAMEOBJECT_H_
+#define _GAMEOBJECT_H_
 
 using std::list;
 using std::string;
@@ -15,6 +15,8 @@ namespace Twin2Engine::Core
 {
 	class GameObject
 	{
+		friend class Transform;
+
 		static unsigned int _currentFreeId;
 		unsigned int _id;
 		string _name;
@@ -27,8 +29,10 @@ namespace Twin2Engine::Core
 
 		bool _isStatic;
 
+
 		//Layer
 		//Tag
+		void SetActiveInHierarchy(bool activeInHierarchy);
 
 	public:
 		GameObject();
@@ -37,6 +41,8 @@ namespace Twin2Engine::Core
 
 		inline unsigned int Id() const;
 
+
+		bool GetActiveInHierarchy() const;
 		bool GetActive() const;
 		void SetActive(bool active);
 
@@ -172,4 +178,4 @@ Twin2Engine::Core::GameObject::GetComponentsInParent()
 	return parent->GetGameObject()->GetComponents<T>();
 }
 
-#endif
+#endif // !_GAMEOBJECT_H_

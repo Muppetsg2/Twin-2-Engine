@@ -1,7 +1,9 @@
 #pragma once
 
-#include <graphic/Window.h>
+#include <GraphicEnigineManager.h>
 #include <graphic/InstatiatingModel.h>
+#include <graphic/Shader.h>
+#include <graphic/Window.h>
 
 namespace Twin2Engine
 {
@@ -35,7 +37,7 @@ namespace Twin2Engine
 		public:
 			static void Render(UIElement elem);
 
-			friend class GraphicEngine::GraphicEngine;
+			friend class GraphicEngine::GraphicEngineManager;
 		};
 	}
 }

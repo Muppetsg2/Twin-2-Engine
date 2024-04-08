@@ -15,6 +15,7 @@ void Twin2Engine::Core::DirectionalLightComponent::Initialize()
 
 	light = new LightingSystem::DirectionalLight;
 	light->position = GetTransform()->GetGlobalPosition();
+	LightingSystem::LightingController::Instance()->RecalculateDirLightSpaceMatrix(light);
 
 	glGenFramebuffers(1, &light->shadowMapFBO);
 

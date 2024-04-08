@@ -1,11 +1,13 @@
 #include <graphic/manager/MeshRenderingManager.h>
 #include <graphic/InstatiatingMesh.h>
+#include <LightingController.h>
 
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
 
 std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_renderQueue = std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
 std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
+std::map<InstatiatingMesh*, std::queue<MeshRenderData>> MeshRenderingManager::_depthQueue;
 
 void MeshRenderingManager::Render(MeshRenderData meshData)
 {
@@ -25,11 +27,12 @@ void MeshRenderingManager::Render(MeshRenderData meshData)
 				[meshData.materials[i].GetShader()]
 				[meshData.materials[i]]
 				.push(meshData);
+			_depthQueue[meshData.meshes[i]].push(meshData);
 		}
 	}
 }
 
-void MeshRenderingManager::Render()
+void MeshRenderingManager::Render(const glm::mat4& projectionViewMatrix)
 {
 	for (auto& meshPair : _renderQueue)
 	{
@@ -63,11 +66,12 @@ void MeshRenderingManager::Render()
 				while (material.second.size() > 0) {
 					auto& renderData = material.second.front();
 
-					transforms[index] = renderData.transform;
+					transforms[index] = projectionViewMatrix * renderData.transform;
 					indexes[index] = materialIndex;
 
-					instanceData[index].transformMatrix = renderData.transform;
-					instanceData[index].materialInputId = materialIndex;
+					//instanceData[index].transformMatrix = renderData.transform; //
+					//instanceData[index].transformMatrix = transforms[index];
+					//instanceData[index].materialInputId = materialIndex;
 
 					++index;
 
@@ -109,13 +113,68 @@ void MeshRenderingManager::Render()
 			meshPair.first->SetMaterialInputUBO(uboId);
 
 			shaderPair.first->Use();
+
+			int beginLocation = 0; // glGetUniformLocation(shaderPair.first->GetProgramId(), "constantZeroTexturePoint");
+			//int textureBind = GL_TEXTURE0;
+			int textureBind = 0;
+			for (auto& material : shaderPair.second)
+			{
+				material.first.GetMaterialParameters()->UploadTextures2D(shaderPair.first->GetProgramId(), beginLocation, textureBind);
+			}
+
+			//SPDLOG_INFO("Rending!");
 			//meshPair.first->Draw(shaderPair.first, transforms.size());
-			meshPair.first->Draw(shaderPair.first, index);
+			//meshPair.first->Draw(shaderPair.first, index);
+			LightingSystem::LightingController::Instance()->BindLightBuffors(shaderPair.first);
+
+			meshPair.first->Draw(index);
 		}
 	}
 }
 
-void MeshRenderingManager::RenderDepthMap()
+void MeshRenderingManager::RenderDepthMap(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, 
+										  glm::mat4& projectionViewMatrix)
+{
+	glViewport(0, 0, bufferWidth, bufferHeight);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthFBO);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	ShaderManager::DepthShader->Use();
+	ShaderManager::DepthShader->SetMat4("lightSpaceMatrix", projectionViewMatrix);
+
+	for (auto& meshPair : _depthQueue)
+	{
+		unsigned int index = 0;
+
+		std::vector<glm::mat4> transforms(meshPair.second.size());
+
+		while (meshPair.second.size() > 0) 
+		{
+			auto& renderData = meshPair.second.front();
+
+			transforms[index] = projectionViewMatrix * renderData.transform;
+
+			++index;
+
+			meshPair.second.pop();
+		}
+
+		GLuint ssboId = ShaderManager::DepthShader->GetInstanceDataSSBO();
+
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboId);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * index, transforms.data(), GL_DYNAMIC_DRAW);
+
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+		meshPair.first->SetInstanceDataSSBO(ssboId);
+
+		meshPair.first->Draw(index);
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, 1920, 1080);
+}
+
+/**/void MeshRenderingManager::RenderDepthMap()
 {
 	for (auto& meshPair : _depthMapRenderQueue)
 	{
@@ -196,7 +255,8 @@ void MeshRenderingManager::RenderDepthMap()
 
 			shaderPair.first->Use();
 			//meshPair.first->Draw(shaderPair.first, transforms.size());
-			meshPair.first->Draw(shaderPair.first, index);
+			//meshPair.first->Draw(shaderPair.first, index);
+			meshPair.first->Draw(index);
 		}
 	}
-}
+}/**/

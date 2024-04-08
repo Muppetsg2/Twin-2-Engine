@@ -3,6 +3,7 @@
 
 #include <graphic/Material.h>
 #include <graphic/manager/ShaderManager.h>
+#include <graphic/manager/TextureManager.h>
 
 namespace Twin2Engine::Manager
 {
@@ -16,12 +17,12 @@ namespace Twin2Engine::Manager
 		static std::list<GraphicEngine::MaterialData*> loadedMaterials;
 
 		static void UnloadMaterial(GraphicEngine::Material& material);
-		static GraphicEngine::Material LoadMaterial(const string& materialName);
+		static GraphicEngine::Material LoadMaterial(const std::string& materialName);
 		//static int DetermineSize(const std::string& type);
 	public:
 
 		static GraphicEngine::Material GetMaterial(const std::string& name);
-		static GraphicEngine::Material CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, const std::vector<string>& materialParameters);
+		static GraphicEngine::Material CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, const std::vector<std::string>& materialParameters);
 	};
 }
 

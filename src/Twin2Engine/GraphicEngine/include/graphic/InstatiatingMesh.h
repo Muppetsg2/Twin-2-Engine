@@ -1,39 +1,38 @@
-#ifndef INSTATIATING_MESH
-#define INSTATIATING_MESH
+#ifndef _INSTATIATING_MESH_H_
+#define _INSTATIATING_MESH_H_
 
-#include <graphic/Mesh.h>
+#include <graphic/Vertex.h>
 
-using std::vector;
-
-namespace Twin2Engine::Manager {
-    class ModelsManager;
-}
+//namespace Twin2Engine::Manager {
+//    class ModelsManager;
+//}
 
 namespace Twin2Engine::GraphicEngine
 {
     class InstatiatingMesh
     {
-        Mesh* mesh;
-        unsigned int instancesTransformsVBO;
-        unsigned int amount;
+        /*  dane klasy Mesh  */
+        std::vector<Vertex> _vertices;
+        std::vector<unsigned int> _indices;
+
+        GLuint _VAO;
+        GLuint _VBO;
+        GLuint _EBO;
 
         GLuint _instanceDataSSBO;
         GLuint _materialIndexSSBO;
         GLuint _materialInputUBO;
 
-        void setupMesh(const vector<glm::mat4>& transforms);
-
     public:
-        InstatiatingMesh(Mesh* mesh, GLuint instanceDataUBO);
+        InstatiatingMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
+        virtual ~InstatiatingMesh();
 
         void SetInstanceDataSSBO(GLuint instanceDataSSBO);
         void SetMaterialIndexSSBO(GLuint materialIndexSSBO);
         void SetMaterialInputUBO(GLuint materialInputUBO);
 
-        void Draw(Shader* shader, unsigned int number);
-
-        friend class Manager::ModelsManager;
+        void Draw(unsigned int number);
     };
 }
 
-#endif // !INSTATIATING_MESH
+#endif // !_INSTATIATING_MESH_H_

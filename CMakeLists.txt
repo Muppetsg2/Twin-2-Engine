@@ -19,7 +19,12 @@ include(global_settings)
 
 
 
+
+#creating global variables
+
+#shader variables
 set(SHADER_ORIGIN_FOLDER ${CMAKE_CURRENT_SOURCE_DIR})
+
 
 
 # ---- Dependencies ----

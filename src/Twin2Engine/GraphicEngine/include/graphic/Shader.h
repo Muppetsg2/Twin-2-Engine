@@ -6,7 +6,8 @@ namespace Twin2Engine
         class ShaderManager;
     }
 
-    namespace GraphicEngine {
+    namespace GraphicEngine 
+    {
         class Shader
         {
         private:
@@ -35,6 +36,7 @@ namespace Twin2Engine
 
             // aktywuj shader  
             void Use();
+            GLuint GetProgramId() const;
             // funkcje operuj¹ce na uniformach  
             void SetBool(const std::string& name, bool value) const;
             void SetInt(const std::string& name, int value) const;

@@ -2,6 +2,8 @@
 #define MESH_H
 
 #include <graphic/Shader.h>
+#include <graphic/Vertex.h>
+
 using Twin2Engine::GraphicEngine::Shader;
 
 using std::vector;
@@ -13,11 +15,6 @@ namespace Twin2Engine::Manager {
 
 namespace Twin2Engine::GraphicEngine
 {
-    struct Vertex {
-        glm::vec3 Position;
-        glm::vec3 Normal;
-        glm::vec2 TexCoords;
-    };
 
     struct Texture {
         unsigned int id;

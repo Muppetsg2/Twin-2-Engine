@@ -13,12 +13,20 @@ namespace Twin2Engine::Core {
 
 	class CameraComponent : public Component {
 	private:
+		static GLuint _uboMatrices;
+
+		GLuint _depthMapFBO;
+		GLuint _depthMap;
+
+		GLuint _renderMapFBO;
+		GLuint _renderMap;
+
 		CameraType _type = PERSPECTIVE;
+
+		size_t _camId = 0;
 
 		bool _isMain = false;
 
-		int32_t _w_width = 1920;
-		int32_t _w_height = 1080;
 		float _near = 0.1f;
 		float _far = 1000.f;
 		float _fov = 45.f;
@@ -27,7 +35,13 @@ namespace Twin2Engine::Core {
 		vec3 _right = vec3(1.f, 0.f, 0.f);
 		vec3 _up = vec3(0.f, 1.f, 0.f);
 		vec3 _worldUp = vec3(0.f, 1.f, 0.f);
-	public:			
+
+		size_t _eventId;
+		void OnTransformChange(Transform* trans);
+
+	public:
+		static std::vector<CameraComponent*> Cameras;
+
 		CameraType GetCameraType();
 		float GetNearPlane() const;
 		float GetFarPlane() const;
@@ -41,7 +55,6 @@ namespace Twin2Engine::Core {
 
 		bool IsMain() const;
 
-		void SetWindowSize(vec2 size);
 		void SetFOV(float angle);
 		void SetFarPlane(float value);
 		void SetNearPlane(float value);
@@ -51,12 +64,24 @@ namespace Twin2Engine::Core {
 
 		void SetIsMain(bool value);
 
+		void StartDepthTest();
+		void StartRender();
+
+		void EndDepthTest();
+		void EndRender();
+
+		GLuint GetRenderTexture();
+		GLuint GetDepthTexture();
+
+		static CameraComponent* GetMainCamera();
+
+		void Initialize() override;
+		void OnDestroy() override;
+
 		/*
-		virtual void Initialize();
-		virtual void Update();
-		virtual void OnEnable();
-		virtual void OnDisable();
-		virtual void OnDestroy();
+		void Update() override;
+		void OnEnable() override;
+		void OnDisable() override;
 		*/
 	};
 }

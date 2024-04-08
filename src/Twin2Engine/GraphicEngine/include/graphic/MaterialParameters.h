@@ -10,9 +10,13 @@ namespace Twin2Engine
 	namespace GraphicEngine {
 		class MaterialParameters
 		{
-			friend Manager::MaterialsManager;
+			friend class Manager::MaterialsManager;
 
 			std::map<size_t, std::vector<char>> _variablesValuesMappings;
+			std::map<size_t, char> _textureMappings;
+			std::vector<GLuint> _textures;
+			std::vector<GLuint> _samplers;
+
 			static std::hash<std::string> hasher;
 
 			MaterialParameters();
@@ -20,11 +24,15 @@ namespace Twin2Engine
 			void Add(const std::string& variableName, T value);
 			void Add(const std::string& variableName, size_t size, void* value);
 
+			void AddTexture2D(const std::string& textureName, unsigned int textureId);
 		public:
 			MaterialParameters(const std::vector<std::string>& variableNames);
 
 			template<class T>
 			bool Set(const std::string& variableName, T value);
+
+			void SetTexture2D(const std::string& textureName, unsigned int textureId);
+			void UploadTextures2D(unsigned int programId, int& beginLocation, int& textureBinded);
 
 			std::vector<char> GetData() const;
 		};

@@ -26,7 +26,7 @@ namespace Twin2Engine
 
 			void AddTexture2D(const std::string& textureName, unsigned int textureId);
 		public:
-			MaterialParameters(const std::vector<std::string>& variableNames);
+			MaterialParameters(const std::vector<std::string>& variableNames, const std::vector<std::string>& textureParametersNames);
 
 			template<class T>
 			bool Set(const std::string& variableName, T value);

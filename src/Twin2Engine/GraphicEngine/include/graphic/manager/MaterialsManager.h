@@ -22,7 +22,7 @@ namespace Twin2Engine::Manager
 	public:
 
 		static GraphicEngine::Material GetMaterial(const std::string& name);
-		static GraphicEngine::Material CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, const std::vector<std::string>& materialParameters);
+		static GraphicEngine::Material CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, const std::vector<std::string>& materialParametersNames, const std::vector<std::string>& textureParametersNames);
 	};
 }
 

@@ -19,17 +19,17 @@ namespace Twin2Engine::GraphicEngine
         GLuint _VBO;
         GLuint _EBO;
 
-        GLuint _instanceDataSSBO;
-        GLuint _materialIndexSSBO;
-        GLuint _materialInputUBO;
+        //GLuint _instanceDataSSBO;
+        //GLuint _materialIndexSSBO;
+        //GLuint _materialInputUBO;
 
     public:
         InstatiatingMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
         virtual ~InstatiatingMesh();
 
-        void SetInstanceDataSSBO(GLuint instanceDataSSBO);
-        void SetMaterialIndexSSBO(GLuint materialIndexSSBO);
-        void SetMaterialInputUBO(GLuint materialInputUBO);
+        //void SetInstanceDataSSBO(GLuint instanceDataSSBO);
+        //void SetMaterialIndexSSBO(GLuint materialIndexSSBO);
+        //void SetMaterialInputUBO(GLuint materialInputUBO);
 
         void Draw(unsigned int number);
     };

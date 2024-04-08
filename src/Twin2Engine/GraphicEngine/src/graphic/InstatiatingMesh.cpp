@@ -44,39 +44,39 @@ InstatiatingMesh::~InstatiatingMesh()
     glDeleteVertexArrays(1, &_VAO);
 }
 
-void InstatiatingMesh::SetInstanceDataSSBO(GLuint instanceDataSSBO)
-{
-    _instanceDataSSBO = instanceDataSSBO;
-    //glBindVertexArray(mesh->_VAO);
-    glBindVertexArray(_VAO);
-
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, instanceDataSSBO);
-
-    glBindVertexArray(0);
-}
-
-void InstatiatingMesh::SetMaterialIndexSSBO(GLuint materialIndexSSBO)
-{
-    _materialIndexSSBO = materialIndexSSBO;
-    //glBindVertexArray(mesh->_VAO);
-    glBindVertexArray(_VAO);
-
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, materialIndexSSBO);
-
-    glBindVertexArray(0);
-}
-
-void InstatiatingMesh::SetMaterialInputUBO(GLuint materialInputUBO)
-{
-    _materialInputUBO = materialInputUBO;
-    //glBindVertexArray(mesh->_VAO);
-    glBindVertexArray(_VAO);
-
-    glBindBufferBase(GL_UNIFORM_BUFFER, 2, materialInputUBO);
-
-    glBindVertexArray(0);
-
-}
+//void InstatiatingMesh::SetInstanceDataSSBO(GLuint instanceDataSSBO)
+//{
+//    _instanceDataSSBO = instanceDataSSBO;
+//    //glBindVertexArray(mesh->_VAO);
+//    glBindVertexArray(_VAO);
+//
+//    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, instanceDataSSBO);
+//
+//    glBindVertexArray(0);
+//}
+//
+//void InstatiatingMesh::SetMaterialIndexSSBO(GLuint materialIndexSSBO)
+//{
+//    _materialIndexSSBO = materialIndexSSBO;
+//    //glBindVertexArray(mesh->_VAO);
+//    glBindVertexArray(_VAO);
+//
+//    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, materialIndexSSBO);
+//
+//    glBindVertexArray(0);
+//}
+//
+//void InstatiatingMesh::SetMaterialInputUBO(GLuint materialInputUBO)
+//{
+//    _materialInputUBO = materialInputUBO;
+//    //glBindVertexArray(mesh->_VAO);
+//    glBindVertexArray(_VAO);
+//
+//    glBindBufferBase(GL_UNIFORM_BUFFER, 2, materialInputUBO);
+//
+//    glBindVertexArray(0);
+//
+//}
 
 void InstatiatingMesh::Draw(unsigned int number)
 {

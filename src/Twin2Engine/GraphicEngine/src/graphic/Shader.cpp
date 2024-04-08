@@ -13,8 +13,8 @@ using namespace Twin2Engine::Manager;
 Shader::Shader(const Shader&& shader)
 {
     shaderProgramID = shader.shaderProgramID;
-    _instanceDataSSBO = shader._instanceDataSSBO;
-    _materialInputUBO = shader._materialInputUBO;
+    //_instanceDataSSBO = shader._instanceDataSSBO;
+    //_materialInputUBO = shader._materialInputUBO;
 
     ShaderManager::IncrementUseNumber(shaderProgramID);
 }
@@ -22,8 +22,8 @@ Shader::Shader(const Shader&& shader)
 Shader::Shader(const Shader& shader)
 {
     shaderProgramID = shader.shaderProgramID;
-    _instanceDataSSBO = shader._instanceDataSSBO;
-    _materialInputUBO = shader._materialInputUBO;
+    //_instanceDataSSBO = shader._instanceDataSSBO;
+    //_materialInputUBO = shader._materialInputUBO;
 
     ShaderManager::IncrementUseNumber(shaderProgramID);
 }
@@ -32,18 +32,18 @@ Shader::Shader(unsigned int shaderProgramId)
 {
     shaderProgramID = shaderProgramId;
 
-    // SSBO creation
-    glGenBuffers(1, &_instanceDataSSBO);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-    
-    glGenBuffers(1, &_materialIndexSSBO);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-    // UBO creation
-    glGenBuffers(1, &_materialInputUBO);
-    glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    //// SSBO creation
+    //glGenBuffers(1, &_instanceDataSSBO);
+    //glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+    //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+    //
+    //glGenBuffers(1, &_materialIndexSSBO);
+    //glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
+    //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+    //// UBO creation
+    //glGenBuffers(1, &_materialInputUBO);
+    //glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
+    //glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 Shader::~Shader()
@@ -113,17 +113,17 @@ glm::mat4 Shader::GetMat4(const std::string& name) const
     return mat;
 }
 
-GLuint Shader::GetMaterialInputUBO() const
-{
-    return _instanceDataSSBO;
-}
-
-GLuint Shader::GetMaterialIndexSSBO() const
-{
-    return _materialIndexSSBO;
-}
-
-GLuint Shader::GetInstanceDataSSBO() const
-{
-    return _materialInputUBO;
-}
+//GLuint Shader::GetMaterialInputUBO() const
+//{
+//    return _instanceDataSSBO;
+//}
+//
+//GLuint Shader::GetMaterialIndexSSBO() const
+//{
+//    return _materialIndexSSBO;
+//}
+//
+//GLuint Shader::GetInstanceDataSSBO() const
+//{
+//    return _materialInputUBO;
+//}

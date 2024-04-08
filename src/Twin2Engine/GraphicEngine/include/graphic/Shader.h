@@ -15,9 +15,10 @@ namespace Twin2Engine
 
             //Shader(const GLchar* shaderPath);
             unsigned int shaderProgramID;
-            unsigned int _instanceDataSSBO;
-            unsigned int _materialIndexSSBO;
-            unsigned int _materialInputUBO;
+
+            //unsigned int _instanceDataSSBO;
+            //unsigned int _materialIndexSSBO;
+            //unsigned int _materialInputUBO;
         public:
             // ID program object  
             Shader(const Shader&& shader);
@@ -48,9 +49,9 @@ namespace Twin2Engine
 
             glm::mat4 GetMat4(const std::string& name) const;
 
-            GLuint GetInstanceDataSSBO() const;
-            GLuint GetMaterialIndexSSBO() const;
-            GLuint GetMaterialInputUBO() const;
+            //GLuint GetInstanceDataSSBO() const;
+            //GLuint GetMaterialIndexSSBO() const;
+            //GLuint GetMaterialInputUBO() const;
         };
     }
 }

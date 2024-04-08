@@ -47,6 +47,7 @@
 
 // CAMERA
 #include <core/CameraComponent.h>
+#include "graphic/InstatiatingMesh.h"
 
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
@@ -315,11 +316,13 @@ bool init()
     }
     spdlog::info("Successfully initialized OpenGL loader!");
 
+    /*
 #ifdef _DEBUG
     // Debugging
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(ErrorMessageCallback, 0);
 #endif
+    */
 
     // Blending
     glEnable(GL_BLEND);
@@ -457,11 +460,16 @@ void update()
 
 void render()
 {
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // OpenGL Rendering code goes here
     for (auto& comp : RenderableComponent::_components) {
         comp->Render();
     }
+    /*
     GraphicEngineManager::Render();
+    */
+
+    CameraComponent::GetMainCamera()->Render();
 }
 
 void imgui_begin()
@@ -535,7 +543,74 @@ void imgui_render()
 #pragma endregion
 
         ImGui::Separator();
+
+#pragma region IMGUI_CAMERA_SETUP
+        if (ImGui::CollapsingHeader("Main Camera")) {
+
+            CameraComponent* c = CameraComponent::GetMainCamera();
+
+            uint8_t acFil = RenderFilter::NONE;
+            uint8_t fil = c->GetCameraFilters();
+
+            bool g = (fil & RenderFilter::GRAYSCALE) != 0;
+
+            ImGui::Checkbox("GrayScale", &g);
+            if (g) {
+                acFil |= RenderFilter::GRAYSCALE;
+            }
+
+            g = (fil & RenderFilter::NEGATIVE) != 0;
+
+            ImGui::Checkbox("Negative", &g);
+            if (g) {
+                acFil |= RenderFilter::NEGATIVE;
+            }
+
+            g = (fil & RenderFilter::VIGNETTE) != 0;
+
+            ImGui::Checkbox("Vignette", &g);
+            if (g) {
+                acFil |= RenderFilter::VIGNETTE;
+            }
+
+            g = (fil & RenderFilter::BLUR) != 0;
+
+            ImGui::Checkbox("Blur", &g);
+            if (g) {
+                acFil |= RenderFilter::BLUR;
+            }
+
+            c->SetCameraFilter(acFil);
+
+            bool per = (c->GetCameraType() == CameraType::PERSPECTIVE);
+
+            if (ImGui::Button((per ? "Orthographic" : "Perspective"))) {
+                if (per) {
+                    c->SetCameraType(CameraType::ORTHOGRAPHIC);
+                }
+                else {
+                    c->SetCameraType(CameraType::PERSPECTIVE);
+                }
+            }
+
+            float n = c->GetNearPlane();
+            ImGui::InputFloat("Near Plane", &n);
+
+            if (n != c->GetNearPlane()) {
+                c->SetNearPlane(n);
+            }
+
+            float f = c->GetFarPlane();
+            ImGui::InputFloat("Far Plane", &f);
+
+            if (f != c->GetFarPlane()) {
+                c->SetFarPlane(f);
+            }
+        }
+#pragma endregion
         
+        ImGui::Separator();
+
 #pragma region IMGUI_WINDOW_SETUP
         if (ImGui::CollapsingHeader("Window Setup")) {
 
@@ -644,110 +719,6 @@ void imgui_render()
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
-        
-#pragma region IMGUI_WINDOW_SETUP
-        ImGui::Separator();
-        ImGui::Text("Window Setup");
-        // Window Settings
-        if (window->IsWindowed()) {
-            ImGui::Text("Current State: Windowed");
-
-            int monitorsCount;
-            GLFWmonitor** monitors = glfwGetMonitors(&monitorsCount);
-
-            ImGui::Text("Monitors: ");
-            for (int i = 0; i < monitorsCount; ++i) {
-                int x, y, mw, mh;
-                float sx, sy;
-
-                glfwGetMonitorPos(monitors[i], &x, &y);
-                const GLFWvidmode* vid = glfwGetVideoMode(monitors[i]);
-                const char* name = glfwGetMonitorName(monitors[i]);
-                glfwGetMonitorPhysicalSize(monitors[i], &mw, &mh);
-                glfwGetMonitorContentScale(monitors[i], &sx, &sy);
-
-                std::string btnText = std::to_string(i) + ". " + name + ": PS " + std::to_string(mw) + "x" + std::to_string(mh) + ", S " \
-                    + std::to_string(vid->width) + "x" + std::to_string(vid->height) + \
-                    ", Pos " + std::to_string(x) + "x" + std::to_string(y) + \
-                    ", Scale " + std::to_string(sx) + "x" + std::to_string(sy) + \
-                    ", Refresh " + std::to_string(vid->refreshRate) + " Hz";
-                if (ImGui::Button(btnText.c_str())) {
-                    window->SetFullscreen(monitors[i]);
-                }
-            }
-
-            ImGui::Text("");
-            static char tempBuff[256] = "Twin^2 Engine";
-            ImGui::InputText("Title", tempBuff, 256);
-            if (std::string(tempBuff) != window->GetTitle()) {
-                window->SetTitle(std::string(tempBuff));
-            }
-
-            if (ImGui::Button("Request Attention")) {
-                window->RequestAttention();
-            }
-
-            if (ImGui::Button("Maximize")) {
-                window->Maximize();
-            }
-
-            if (ImGui::Button("Hide")) {
-                window->Hide();
-            }
-
-            bool temp = window->IsResizable();
-            if (ImGui::Button(((temp ? "Disable" : "Enable") + string(" Resizability")).c_str())) {
-                window->EnableResizability(!temp);
-            }
-
-            temp = window->IsDecorated();
-            if (ImGui::Button(((temp ? "Disable" : "Enable") + string(" Decorations")).c_str())) {
-                window->EnableDecorations(!temp);
-            }
-
-            static float opacity = window->GetOpacity();
-            ImGui::SliderFloat("Opacity", &opacity, 0.f, 1.f);
-            if (opacity != window->GetOpacity()) {
-                window->SetOpacity(opacity);
-            }
-
-            static glm::ivec2 ratio = window->GetAspectRatio();
-            ImGui::InputInt2("Aspect Ratio", (int*)&ratio);
-            if (ImGui::Button("Apply")) {
-                window->SetAspectRatio(ratio);
-                ratio = window->GetAspectRatio();
-            }
-        }
-        else {
-            ImGui::Text("Current State: Fullscreen");
-            if (ImGui::Button("Windowed")) {
-                window->SetWindowed({ 0, 30 }, { WINDOW_WIDTH, WINDOW_HEIGHT - 50 });
-            }
-
-            static int refreshRate = window->GetRefreshRate();
-            ImGui::InputInt("Refresh Rate", &refreshRate);
-            if (ImGui::Button("Apply")) {
-                window->SetRefreshRate(refreshRate);
-                refreshRate = window->GetRefreshRate();
-            }
-        }
-
-        if (ImGui::Button("Minimize")) {
-            window->Minimize();
-        }
-
-        static glm::ivec2 size = window->GetWindowSize();
-        ImGui::InputInt2("Window Size", (int*)&size);
-        if (ImGui::Button("Apply")) {
-            window->SetWindowSize(size);
-            size = window->GetWindowSize();
-        }
-
-        if (ImGui::Button(((window->IsVSyncOn() ? "Disable" : "Enable") + string(" VSync")).c_str())) {
-            window->EnableVSync(!window->IsVSyncOn());
-        }
-
-#pragma endregion
         ImGui::End();
     }
 }

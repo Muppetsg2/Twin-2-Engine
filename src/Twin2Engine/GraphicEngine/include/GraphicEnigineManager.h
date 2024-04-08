@@ -15,8 +15,8 @@ namespace Twin2Engine::GraphicEngine
 	{
 
 	private:
-		static GLuint _depthMapFBO;
-		static GLuint _depthMap;
+		//static GLuint _depthMapFBO;
+		//static GLuint _depthMap;
 
 	public:
 		//GraphicEngineManager();
@@ -27,8 +27,9 @@ namespace Twin2Engine::GraphicEngine
 
 
 		static void Render();
+		static void DepthRender();
 
-		static GLuint GetDepthMap();
+		//static GLuint GetDepthMap();
 	};
 }
 

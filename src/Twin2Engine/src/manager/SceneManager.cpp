@@ -4,6 +4,7 @@
 using namespace Twin2Engine::Manager;
 using namespace std;
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::GraphicEngine;
 
 Scene* SceneManager::_currentScene = nullptr;
 GameObject* SceneManager::_rootObject = nullptr;
@@ -11,6 +12,7 @@ GameObject* SceneManager::_rootObject = nullptr;
 vector<size_t> SceneManager::_texturesIds = vector<size_t>();
 vector<size_t> SceneManager::_spritesIds = vector<size_t>();
 vector<size_t> SceneManager::_fontsIds = vector<size_t>();
+vector<size_t> SceneManager::_audiosIds = vector<size_t>();
 
 map<size_t, Scene*> SceneManager::_loadedScenes = map<size_t, Scene*>();
 
@@ -80,12 +82,19 @@ void SceneManager::LoadScene(const string& name)
 
 	auto toLoadToUnload = GetResourcesToLoadAndUnload(paths, _texturesIds);
 	
-	for (auto& t : toLoadToUnload.second) {
+	for (size_t t : toLoadToUnload.second) {
 		TextureManager::UnloadTexture2D(t);
+		for (size_t i = 0; i < _texturesIds.size(); ++i) {
+			if (_texturesIds[i] == t) {
+				_texturesIds.erase(_texturesIds.begin() + i);
+				break;
+			}
+		}
 	}
-	for (auto& t : toLoadToUnload.first) {
+	for (size_t t : toLoadToUnload.first) {
 		string path = paths[t];
-		TextureManager::LoadTexture2D(path, sceneToLoad->_textures[path]);
+		Texture2D* temp = TextureManager::LoadTexture2D(path, sceneToLoad->_textures[path]);
+		if (temp != nullptr) _texturesIds.push_back(temp->GetManagerId());
 	}
 
 	// SPRITES
@@ -96,28 +105,66 @@ void SceneManager::LoadScene(const string& name)
 
 	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _spritesIds);
 
-	for (auto& s : toLoadToUnload.second) {
+	for (size_t s : toLoadToUnload.second) {
 		SpriteManager::UnloadSprite(s);
+		for (size_t i = 0; i < _spritesIds.size(); ++i) {
+			if (_spritesIds[i] == s) {
+				_spritesIds.erase(_spritesIds.begin() + i);
+				break;
+			}
+		}
 	}
-	for (auto& s : toLoadToUnload.first) {
+	for (size_t s : toLoadToUnload.first) {
 		string alias = paths[s];
 		tuple<string, bool, SpriteData> sData = sceneToLoad->_sprites[alias];
+		Sprite* temp = nullptr;
 		if (get<1>(sData)) {
-			SpriteManager::MakeSprite(alias, get<0>(sData), get<2>(sData));
+			temp = SpriteManager::MakeSprite(alias, get<0>(sData), get<2>(sData));
 		}
 		else {
-			SpriteManager::MakeSprite(alias, get<0>(sData));
+			temp = SpriteManager::MakeSprite(alias, get<0>(sData));
 		}
+		if (temp != nullptr) _spritesIds.push_back(temp->GetManagerId());
 	}
 
 	// FONTS
-	toLoadToUnload = GetResourcesToLoadAndUnload(sceneToLoad->_fonts, _fontsIds);
-
-	for (auto& f : toLoadToUnload.second) {
-		FontManager::UnloadFont(f);
+	for (auto& path : sceneToLoad->_fonts) {
+		paths.push_back(path);
 	}
-	for (auto& f : toLoadToUnload.first) {
-		FontManager::LoadFont(paths[f]);
+	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _fontsIds);
+
+	for (size_t f : toLoadToUnload.second) {
+		FontManager::UnloadFont(f);
+		for (size_t i = 0; i < _fontsIds.size(); ++i) {
+			if (_fontsIds[i] == f) {
+				_fontsIds.erase(_fontsIds.begin() + i);
+				break;
+			}
+		}
+	}
+	for (size_t f : toLoadToUnload.first) {
+		Font* temp = FontManager::LoadFont(paths[f]);
+		if (temp != nullptr) _fontsIds.push_back(temp->GetManagerId());
+	}
+
+	// AUDIO
+	for (auto& path : sceneToLoad->_audios) {
+		paths.push_back(path);
+	}
+	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _audiosIds);
+
+	for (size_t a : toLoadToUnload.second) {
+		AudioManager::UnloadAudio(a);
+		for (size_t i = 0; i < _audiosIds.size(); ++i) {
+			if (_audiosIds[i] == a) {
+				_audiosIds.erase(_audiosIds.begin() + i);
+				break;
+			}
+		}
+	}
+	for (size_t a : toLoadToUnload.first) {
+		size_t id = AudioManager::LoadAudio(paths[a]);
+		if (id != 0) _audiosIds.push_back(id);
 	}
 
 	_rootObject = sceneToLoad->_rootObject;

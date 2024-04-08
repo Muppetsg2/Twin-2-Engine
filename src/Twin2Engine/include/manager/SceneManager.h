@@ -13,6 +13,7 @@ namespace Twin2Engine::Manager {
 		static std::vector<size_t> _texturesIds;
 		static std::vector<size_t> _spritesIds;
 		static std::vector<size_t> _fontsIds;
+		static std::vector<size_t> _audiosIds;
 
 		// Loaded Scene Objects
 		static std::map<size_t, Core::Scene*> _loadedScenes;

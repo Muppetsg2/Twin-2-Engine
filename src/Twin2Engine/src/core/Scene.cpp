@@ -74,4 +74,11 @@ void Scene::AddSprite(const string& name, const string& texPath, const SpriteDat
 void Scene::AddFont(const string& path)
 {
 	_fonts.push_back(path);
+	_fonts.unique();
+}
+
+void Scene::AddAudio(const std::string& path)
+{
+	_audios.push_back(path);
+	_audios.unique();
 }

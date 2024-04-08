@@ -1,6 +1,7 @@
 #pragma once
 
 #include <core/GameObject.h>
+#include <manager/AudioManager.h>
 #include <graphic/manager/TextureManager.h>
 #include <graphic/manager/SpriteManager.h>
 #include <graphic/manager/FontManager.h>
@@ -15,7 +16,8 @@ namespace Twin2Engine::Core {
 		GameObject* _rootObject = nullptr;
 		std::map<std::string, Manager::TextureData> _textures = std::map<std::string, Manager::TextureData>();
 		std::map<std::string, std::tuple<std::string, bool, Manager::SpriteData>> _sprites = std::map<std::string, std::tuple<std::string, bool, Manager::SpriteData>>();
-		std::vector<std::string> _fonts = std::vector<std::string>();
+		std::list<std::string> _fonts = std::list<std::string>();
+		std::list<std::string> _audios = std::list<std::string>();
 
 		void DeleteGameObject(GameObject* obj);
 		
@@ -36,6 +38,7 @@ namespace Twin2Engine::Core {
 		void AddSprite(const std::string& name, const std::string& texPath);
 		void AddSprite(const std::string& name, const std::string& texPath, const Manager::SpriteData& data);
 		void AddFont(const std::string& path);
+		void AddAudio(const std::string& path);
 
 		friend class Manager::SceneManager;
 	};

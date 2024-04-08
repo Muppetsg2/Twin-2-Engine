@@ -19,20 +19,20 @@ namespace Twin2Engine {
 
 		class Font {
 		private:
-			size_t _managerID;
+			size_t _managerId;
 			std::map<uint32_t, std::map<char, Character*>> _glyphs = std::map<uint32_t, std::map<char, Character*>>();
 			FT_Library _lib;
 			FT_Face _face;
 
 		private:
-			Font(size_t managerID, FT_Library lib, FT_Face face);
+			Font(size_t managerId, FT_Library lib, FT_Face face);
 
 			void LoadCharacter(char character, uint32_t size);
 
 		public:
 			virtual ~Font();
 
-			size_t GetManagerID() const;
+			size_t GetManagerId() const;
 			Character* GetCharacter(char character, uint32_t size);
 			std::vector<Character*> GetText(const std::string& text, uint32_t size);
 

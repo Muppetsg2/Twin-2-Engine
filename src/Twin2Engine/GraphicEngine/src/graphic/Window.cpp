@@ -52,6 +52,11 @@ Window* Window::GetInstance() {
 	return _instance;
 }
 
+void Window::FreeAll() {
+	delete Window::GetInstance();
+	_instance = nullptr;
+}
+
 string Window::GetTitle() const
 {
 	return string(glfwGetWindowTitle(_window));

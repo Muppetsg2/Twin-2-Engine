@@ -19,6 +19,8 @@ namespace Twin2Engine::GraphicEngine {
 		static Window* MakeWindow(const std::string& title, const glm::ivec2& size, bool fullscreen = false);
 		static Window* GetInstance();
 
+		static void FreeAll();
+
 #pragma region GLOBAL
 #pragma region GLOBAL_GETTERS
 		std::string GetTitle() const;

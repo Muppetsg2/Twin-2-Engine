@@ -195,6 +195,8 @@ int main(int, char**)
 
     testScene->AddFont("res/fonts/arial.ttf");
 
+    testScene->AddAudio("res/music/FurElise.wav");
+
     // SCENE OBJECTS
     std::tuple<GameObject*, CameraComponent*, AudioComponent*> CamComps = testScene->AddGameObject<CameraComponent, AudioComponent>();
     Camera = std::get<0>(CamComps);
@@ -297,7 +299,7 @@ int main(int, char**)
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    delete Window::GetInstance();
+    Window::FreeAll();
     glfwTerminate();
 
     GraphicEngineManager::End();

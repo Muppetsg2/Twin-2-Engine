@@ -65,7 +65,7 @@ void Twin2Engine::GraphicEngine::GraphicEngineManager::Render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	CameraComponent* camera = Core::CameraComponent::GetMainCamera();
-	MeshRenderingManager::Render(camera->GetProjectionMatrix() * camera->GetViewMatrix());
+	MeshRenderingManager::Render();
 	UIRenderingManager::Render();
 }
 

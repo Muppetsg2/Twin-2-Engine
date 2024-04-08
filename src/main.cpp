@@ -146,7 +146,6 @@ GameObject* gameObject;
 GameObject* gameObject2;
 GameObject* gameObject3;
 
-GraphicEngineManager* graphicEngine;
 GameObject* imageObj;
 GameObject* textObj;
 Text* text;
@@ -215,7 +214,7 @@ int main(int, char**)
 #pragma endregion
     */
 
-    graphicEngine = new GraphicEngineManager();
+    GraphicEngineManager::Init();
 
     modelMesh = ModelsManager::GetCube();
 
@@ -310,6 +309,8 @@ int main(int, char**)
 
     delete Window::GetInstance();
     glfwTerminate();
+
+    GraphicEngineManager::End();
 
     return 0;
 }
@@ -518,7 +519,7 @@ void render()
     for (auto& comp : RenderableComponent::_components) {
         comp->Render();
     }
-    graphicEngine->Render();
+    GraphicEngineManager::Render();
 }
 
 void imgui_begin()

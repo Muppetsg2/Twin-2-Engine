@@ -29,16 +29,23 @@ namespace Twin2Engine
 
 		class MeshRenderingManager
 		{
+			friend class GraphicEngine::GraphicEngineManager;
+
 		private:
 			static std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _renderQueue;
 			static std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
 
+			static GLuint _instanceDataSSBO;
+			static GLuint _materialIndexSSBO;
+			static GLuint _materialInputUBO;
+
 			static void Render();
 			static void RenderDepthMap();
 		public:
-			static void Render(MeshRenderData meshData);
+			static void Init();
+			static void End();
 
-			friend class GraphicEngine::GraphicEngineManager;
+			static void Render(MeshRenderData meshData);
 		};
 	}
 }

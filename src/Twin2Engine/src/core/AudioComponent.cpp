@@ -5,6 +5,8 @@
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
 
+// ZROBIÆ BY POBIERA£ HANDLE KIEDY TO POTRZEBNE (POZWALA TO NA ZARZ¥DZANIE ZASOBAMI PRZEZ SCENE MANAGER)
+
 void AudioComponent::SetAudio(string path)
 {
 	_audioId = hash<string>{}(path);

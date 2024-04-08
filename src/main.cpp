@@ -198,13 +198,13 @@ int main(int, char**)
     testScene->AddAudio("res/music/FurElise.wav");
 
     // SCENE OBJECTS
-    std::tuple<GameObject*, CameraComponent*, AudioComponent*> CamComps = testScene->AddGameObject<CameraComponent, AudioComponent>();
-    Camera = std::get<0>(CamComps);
-    CameraComponent* c = std::get<1>(CamComps);
+    tuple<GameObject*, CameraComponent*, AudioComponent*> CamComps = testScene->AddGameObject<CameraComponent, AudioComponent>();
+    Camera = get<0>(CamComps);
+    CameraComponent* c = get<1>(CamComps);
     c->SetFOV(45.f);
 
     AudioComponent* a = std::get<2>(CamComps);
-    a->SetAudio("./res/music/FurElise.wav");
+    a->SetAudio("res/music/FurElise.wav");
     a->Loop();
 
     modelMesh = ModelsManager::GetCube();
@@ -234,11 +234,10 @@ int main(int, char**)
     comp->AddMaterial(roofMat);
     comp->SetModel(modelCastle);
 
-    imageObj = testScene->AddGameObject();
-    Image* img = imageObj->AddComponent<Image>();
-    img->SetSprite("stone");
-    Image* img2 = imageObj->AddComponent<Image>();
-    img2->SetSprite("grass");
+    tuple<GameObject*, Image*, Image*> temp = testScene->AddGameObject<Image, Image>();
+    imageObj = get<0>(temp);
+    get<1>(temp)->SetSprite("stone");
+    get<2>(temp)->SetSprite("grass");
 
     textObj = testScene->AddGameObject();
     textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));

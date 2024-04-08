@@ -32,8 +32,6 @@
 // GRAPHIC_ENGINE
 #include <GraphicEnigineManager.h>
 
-
-//<<<<<<< HEAD
 //LOGGER
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -42,9 +40,7 @@
 #include <string>
 #include <cstring>
 
-//=======
 // COLLISIONS
-//>>>>>>> 9af207cda8832c4d5cb52947538d06b41101b9fb
 #include <CollisionManager.h>
 #include <core/BoxColliderComponent.h>
 #include <core/CapsuleColliderComponent.h>
@@ -127,9 +123,9 @@ const char* WINDOW_NAME = "Twin^2 Engine";
 Window* window = nullptr;
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
-const     char*   glsl_version     = "#version 460";
+const     char*   glsl_version     = "#version 450";
 constexpr int32_t GL_VERSION_MAJOR = 4;
-constexpr int32_t GL_VERSION_MINOR = 6;
+constexpr int32_t GL_VERSION_MINOR = 5;
 
 /*
 GLuint UBOMatrices;

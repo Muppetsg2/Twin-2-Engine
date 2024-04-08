@@ -13,6 +13,8 @@ ShadersOrigin
 [Bb]uild/
 /[Oo]ut/
 #/[Tt]ools/
+/tools/materialCreator/bin
+/tools/shader_compiler/bin
 CompiledShaders/
 
 /\.vs/

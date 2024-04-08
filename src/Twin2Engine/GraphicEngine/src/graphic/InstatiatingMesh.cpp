@@ -29,6 +29,11 @@ InstatiatingMesh::InstatiatingMesh(const std::vector<Vertex>& vertices, const st
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
 
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
+
     glBindVertexArray(0);
 }
 
@@ -37,40 +42,6 @@ InstatiatingMesh::~InstatiatingMesh()
     glDeleteBuffers(1, &_EBO);
     glDeleteBuffers(1, &_VBO);
     glDeleteVertexArrays(1, &_VAO);
-}
-
-void InstatiatingMesh::SetInstanceDataSSBO(GLuint instanceDataSSBO)
-{
-    _instanceDataSSBO = instanceDataSSBO;
-    //glBindVertexArray(mesh->_VAO);
-    glBindVertexArray(_VAO);
-
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, instanceDataSSBO);
-
-    glBindVertexArray(0);
-}
-
-void InstatiatingMesh::SetMaterialIndexSSBO(GLuint materialIndexSSBO)
-{
-    _materialIndexSSBO = materialIndexSSBO;
-    //glBindVertexArray(mesh->_VAO);
-    glBindVertexArray(_VAO);
-
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, materialIndexSSBO);
-
-    glBindVertexArray(0);
-}
-
-void InstatiatingMesh::SetMaterialInputUBO(GLuint materialInputUBO)
-{
-    _materialInputUBO = materialInputUBO;
-    //glBindVertexArray(mesh->_VAO);
-    glBindVertexArray(_VAO);
-
-    glBindBufferBase(GL_UNIFORM_BUFFER, 2, materialInputUBO);
-
-    glBindVertexArray(0);
-
 }
 
 void InstatiatingMesh::Draw(unsigned int number)

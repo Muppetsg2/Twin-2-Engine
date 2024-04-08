@@ -87,9 +87,14 @@ foreach(shader_file ${shader_files})
 endforeach()
 
 # Custom commend that will create _parameters.shpa files
-message("Additional prebuild program: ${SHADER_COMPILER_EXE}")
-add_custom_command(
-    TARGET ${PROJECT_NAME} PRE_BUILD  
-    COMMAND ${SHADER_COMPILER_EXE}
-    COMMENT "Running additional prebuild program: ${SHADER_COMPILER_EXE}"
-)
+
+#file(EXISTS ${SHADER_COMPILER_EXE} SHADER_COMPILER_EXE_EXISTS)
+#if (${SHADER_COMPILER_EXE_EXISTS})
+if (EXISTS ${SHADER_COMPILER_EXE})
+    message("Additional prebuild program: ${SHADER_COMPILER_EXE}")
+    add_custom_command(
+        TARGET ${PROJECT_NAME} PRE_BUILD  
+        COMMAND ${SHADER_COMPILER_EXE}
+        COMMENT "Running additional prebuild program: ${SHADER_COMPILER_EXE}"
+    )
+endif()

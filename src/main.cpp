@@ -38,7 +38,6 @@
 
 #include <memory>
 #include <string>
-#include <cstring>
 
 // COLLISIONS
 #include <CollisionManager.h>
@@ -138,7 +137,6 @@ GameObject* gameObject;
 GameObject* gameObject2;
 GameObject* gameObject3;
 
-GraphicEngineManager* graphicEngine;
 GameObject* imageObj;
 GameObject* textObj;
 Text* text;
@@ -188,11 +186,11 @@ int main(int, char**)
     a->SetAudio("./res/music/FurElise.wav");
     a->Loop();
 
-    graphicEngine = new GraphicEngineManager();
+    GraphicEngineManager::Init();
 
     modelMesh = ModelsManager::GetCube();
 
-    material = MaterialsManager::GetMaterial("Basic");
+    material = MaterialsManager::GetMaterial("Basic2");
     //material2 = MaterialsManager::GetMaterial("Basic2");
     //material = MaterialsManager::GetMaterial("textured");
     material2 = MaterialsManager::GetMaterial("textured");
@@ -283,6 +281,8 @@ int main(int, char**)
 
     delete Window::GetInstance();
     glfwTerminate();
+
+    GraphicEngineManager::End();
 
     return 0;
 }
@@ -461,7 +461,7 @@ void render()
     for (auto& comp : RenderableComponent::_components) {
         comp->Render();
     }
-    graphicEngine->Render();
+    GraphicEngineManager::Render();
 }
 
 void imgui_begin()

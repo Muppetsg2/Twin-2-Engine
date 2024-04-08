@@ -20,15 +20,8 @@ layout (std140, binding = 0) uniform Matrices
 
 struct MaterialInput
 {
-   //sampler2DArray texture1;
 	int empty;
 };
-
-//layout (std140, binding = 0) uniform Matrices
-//{
-//    mat4 projection;
-//    mat4 view;
-//};
 
 layout(std140, binding = 2) uniform MaterialInputBuffer {
     MaterialInput materialInput[8];

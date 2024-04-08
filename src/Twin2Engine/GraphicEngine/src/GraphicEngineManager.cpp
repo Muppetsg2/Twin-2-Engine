@@ -4,7 +4,13 @@ using namespace Twin2Engine::Core;
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
 
-Twin2Engine::GraphicEngine::GraphicEngineManager::GraphicEngineManager() {
+
+GLuint GraphicEngineManager::_depthMapFBO = 0u;
+GLuint GraphicEngineManager::_depthMap = 0u;
+
+//GraphicEngineManager::GraphicEngineManager() {
+void GraphicEngineManager::Init()
+{
 #pragma region DepthBuffer
 
 	glGenFramebuffers(1, &_depthMapFBO);
@@ -38,22 +44,27 @@ Twin2Engine::GraphicEngine::GraphicEngineManager::GraphicEngineManager() {
 
 	ShaderManager::Init();
 	UIRenderingManager::Init();
-	
+	MeshRenderingManager::Init();
+
 	// Standard Shaders
 	//ShaderManager::CreateShaderProgram("res/shaders/Basic.shpr");
 	//ShaderManager::CreateShaderProgram("res/shaders/UI.shpr");
 
-	UIRenderingManager::Init();
-
 	glClearColor(.1f, .1f, .1f, 1.f);
 }
 
-Twin2Engine::GraphicEngine::GraphicEngineManager::~GraphicEngineManager() {
+//Twin2Engine::GraphicEngine::GraphicEngineManager::~GraphicEngineManager() {
+void GraphicEngineManager::End()
+{
 	glDeleteTextures(1, &_depthMap);
 	glDeleteFramebuffers(1, &_depthMapFBO);
+
+	ShaderManager::End();
+	//UIRenderingManager::End();
+	MeshRenderingManager::End();
 }
 
-void Twin2Engine::GraphicEngine::GraphicEngineManager::Render()
+void GraphicEngineManager::Render()
 {
 	glBindTexture(GL_TEXTURE_2D, _depthMap);
 	glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
@@ -63,12 +74,13 @@ void Twin2Engine::GraphicEngine::GraphicEngineManager::Render()
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
 	CameraComponent* camera = Core::CameraComponent::GetMainCamera();
 	MeshRenderingManager::Render();
 	UIRenderingManager::Render();
 }
 
-GLuint Twin2Engine::GraphicEngine::GraphicEngineManager::GetDepthMap() const {
+GLuint GraphicEngineManager::GetDepthMap()
+{
 	return _depthMap;
 }

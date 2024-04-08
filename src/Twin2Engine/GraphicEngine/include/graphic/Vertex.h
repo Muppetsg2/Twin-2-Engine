@@ -1,5 +1,4 @@
-#ifndef _VERTEX_H_
-#define _VERTEX_H_
+#pragma once
 
 namespace Twin2Engine::GraphicEngine
 {
@@ -7,8 +6,7 @@ namespace Twin2Engine::GraphicEngine
         glm::vec3 Position;
         glm::vec3 Normal;
         glm::vec2 TexCoords;
+        glm::vec3 Tangent;
+        glm::vec3 Bitangent;
     };
 }
-
-#endif // !_VERTEX_H_
-

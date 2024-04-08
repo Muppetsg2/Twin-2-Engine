@@ -32,9 +32,10 @@ void SceneManager::LoadScene(const string& name)
 	Scene* sceneToLoad = _loadedScenes[sceneId];
 
 	vector<size_t> sceneToLoadTextureHashes;
-	vector<string> sceneToLoadTexturePaths = sceneToLoad->_textures;
-	for (auto& path : sceneToLoadTexturePaths) {
-		sceneToLoadTextureHashes.push_back(hasher(path));
+	vector<string> sceneToLoadTexturePaths;
+	for (auto& path : sceneToLoad->_textures) {
+		sceneToLoadTexturePaths.push_back(path.first);
+		sceneToLoadTextureHashes.push_back(hasher(path.first));
 	}
 
 	vector<size_t> toUnload, toLoad;
@@ -66,7 +67,8 @@ void SceneManager::LoadScene(const string& name)
 		TextureManager::UnloadTexture2D(t);
 	}
 	for (auto& t : toLoad) {
-		TextureManager::LoadTexture2D(sceneToLoadTexturePaths[t]);
+		string path = sceneToLoadTexturePaths[t];
+		TextureManager::LoadTexture2D(path, sceneToLoad->_textures[path]);
 	}
 
 	_rootObject = sceneToLoad->_rootObject;

@@ -1,8 +1,5 @@
 #include <core/Scene.h>
 #include <core/RenderableComponent.h>
-#include <graphic/manager/TextureManager.h>
-#include <graphic/manager/SpriteManager.h>
-#include <graphic/manager/FontManager.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::GraphicEngine;
@@ -35,6 +32,6 @@ GameObject* Scene::AddGameObject()
 	return obj;
 }
 
-void Scene::AddTexture(const string& path) {
-	_textures.push_back(path);
+void Scene::AddTexture2D(const string& path, const TextureData& data) {
+	_textures[path] = data;
 }

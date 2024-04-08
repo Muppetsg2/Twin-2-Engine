@@ -32,7 +32,7 @@ void MeshRenderingManager::Render(MeshRenderData meshData)
 	}
 }
 
-void MeshRenderingManager::Render(const glm::mat4& projectionViewMatrix)
+void MeshRenderingManager::Render()
 {
 	for (auto& meshPair : _renderQueue)
 	{
@@ -66,7 +66,8 @@ void MeshRenderingManager::Render(const glm::mat4& projectionViewMatrix)
 				while (material.second.size() > 0) {
 					auto& renderData = material.second.front();
 
-					transforms[index] = projectionViewMatrix * renderData.transform;
+					//transforms[index] = projectionViewMatrix * renderData.transform;
+					transforms[index] = renderData.transform;
 					indexes[index] = materialIndex;
 
 					//instanceData[index].transformMatrix = renderData.transform; //

@@ -35,7 +35,7 @@ namespace Twin2Engine
 			static std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
 			static std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>> _depthQueue;
 
-			static void Render(const glm::mat4& projectionViewMatrix);
+			static void Render();
 			static void RenderDepthMap();
 		public:
 			static void RenderDepthMap(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO,

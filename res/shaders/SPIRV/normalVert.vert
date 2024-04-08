@@ -11,6 +11,12 @@ layout (std430, binding = 1) buffer MaterialIndexes {
     int materialIndex[8];
 } materialIndexes;
 
+layout (std140, binding = 0) uniform Matrices
+{
+    mat4 projection;
+    mat4 view;
+};
+
 
 struct MaterialInput
 {
@@ -38,8 +44,6 @@ layout (location = 3) flat out uint materialIndex;
 void main()
 {
     uint instanceId = gl_InstanceID;
-    mat4 view = mat4(1);
-    mat4 projection = mat4(1);
 
     position = vec3(instanceData.transform[instanceId] * vec4(aPos, 1.0));
     normal = mat3(transpose(inverse(instanceData.transform[instanceId]))) * aNormal; 

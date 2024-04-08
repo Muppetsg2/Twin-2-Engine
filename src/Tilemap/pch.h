@@ -10,6 +10,10 @@
 // SPDLOG
 #include <spdlog/spdlog.h>
 
+// STD
+#include <queue>
+#include <unordered_map>
+
 // THWIN2ENGINE
 #include <core/GameObject.h>
 #include <core/Transform.h>

@@ -191,10 +191,12 @@ void HexagonalTilemap::SetTile(const glm::ivec2& position, Twin2Engine::Core::Ga
 
 		_tilemap[position.x + _toCenter.x][position.y + _toCenter.y].SetGameObject(gameObject);
 	}
+
+	gameObject->GetTransform()->SetLocalPosition(glm::vec3(position.x * _distanceBetweenTiles, position.y * _distanceBetweenTiles, 0.0f));
 }
 
 
-HexagonalTile* HexagonalTilemap::GetTile(const glm::ivec2& position) const
+inline HexagonalTile* HexagonalTilemap::GetTile(const glm::ivec2& position) const
 {
 	return &_tilemap[position.x + _toCenter.x][position.y + _toCenter.y];
 }
@@ -202,4 +204,86 @@ HexagonalTile* HexagonalTilemap::GetTile(const glm::ivec2& position) const
 void HexagonalTilemap::RemoveTile(const glm::ivec2& position)
 {
 
+}
+
+void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::GameObject* gameObject)
+{
+	// Check if the given position is within the tilemap bounds
+	if (position.x < _leftBottomPosition.x || position.x > _rightTopPosition.x ||
+		position.y < _leftBottomPosition.y || position.y > _rightTopPosition.y) 
+	{
+		std::cerr << "Error: Position is out of bounds.\n";
+		return;
+	}
+
+	// Perform a breadth-first search to fill empty tiles within the bounds
+	std::queue<glm::ivec2> queue;
+	std::unordered_set<glm::ivec2, std::hash<glm::ivec2>> visited;
+
+	// Add the initial position to the queue
+	queue.push(position);
+	//visited.insert(position);
+
+	// Define the neighboring directions for hexagonal tiles
+	std::vector<glm::ivec2> directions = {
+		glm::ivec2(1, 0), glm::ivec2(-1, 0), glm::ivec2(0, 1),
+		glm::ivec2(0, -1), glm::ivec2(-1, -1), glm::ivec2(1, 1)
+	};
+
+	while (!queue.empty()) 
+	{
+		glm::ivec2 currentPos = queue.front();
+		queue.pop();
+
+		// Get the tile at the current position
+		HexagonalTile* currentTile = GetTile(currentPos);
+
+		// Fill the tile if it's empty
+		if (currentTile && !currentTile->GetGameObject())
+		{
+			currentTile->SetGameObject(gameObject);
+
+			// Add neighboring positions to the queue if they're within bounds and not visited yet
+			for (const auto& dir : directions) 
+			{
+				glm::ivec2 neighborPos = currentPos + dir;
+				if (neighborPos.x >= _leftBottomPosition.x && neighborPos.x <= _rightTopPosition.x &&
+					neighborPos.y >= _leftBottomPosition.y && neighborPos.y <= _rightTopPosition.y &&
+					GetTile(neighborPos)->GetGameObject() == nullptr)
+				//	visited.find(neighborPos) == visited.end()) 
+				{
+					queue.push(neighborPos);
+
+					// Kopiowanie gameobjectu
+					//GetTile(neighborPos)->SetGameObject(gameObject);
+					SPDLOG_ERROR("Nie zaimplementowano kopiowania gameobjectu");
+					//visited.insert(neighborPos);
+				}
+			}
+		}
+	}
+}
+
+inline void HexagonalTilemap::SetDistanceBetweenTiles(float distanceBetweenTiles)
+{
+	_distanceBetweenTiles = distanceBetweenTiles;
+
+	_edgeLength = _distanceBetweenTiles / glm::sqrt(3.f);
+}
+
+inline float HexagonalTilemap::GetDistanceBetweenTiles() const
+{
+	return _distanceBetweenTiles;
+}
+
+inline void HexagonalTilemap::SetDistanceBetweenTiles(float edgeLength)
+{
+	_edgeLength = edgeLength;
+
+	_distanceBetweenTiles = 0.5f * _edgeLength * glm::sqrt(3.f);
+}
+
+inline float HexagonalTilemap::GetDistanceBetweenTiles() const
+{
+	return _edgeLength;
 }

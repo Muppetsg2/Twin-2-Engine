@@ -24,10 +24,12 @@ target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
 target_include_directories(${PROJECT_NAME} PUBLIC ${COLLISION_SYSTEM_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC CollisionSystem)
 
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD 
-				   COMMAND ${CMAKE_COMMAND} -E create_symlink 
-				   ${CMAKE_SOURCE_DIR}/res 
-				   ${CMAKE_CURRENT_BINARY_DIR}/res)
+#add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD 
+#				   COMMAND ${CMAKE_COMMAND} -E create_symlink 
+#				   ${CMAKE_SOURCE_DIR}/res 
+#				   ${CMAKE_CURRENT_BINARY_DIR}/res)
+
+file(CREATE_LINK ${CMAKE_SOURCE_DIR}/res ${CMAKE_CURRENT_SOURCE_DIR}/res SYMBOLIC)
 
 if(MSVC)
     target_compile_definitions(${PROJECT_NAME} PUBLIC NOMINMAX)
@@ -55,7 +57,7 @@ function(compile_shader shader_path)
     set(output_file "${SHADERS_OUTPUT_DIR}/${RELATIVE_SOURCE}")
 
     # Create output directory
-    file(MAKE_DIRECTORY ${SHADERS_OUTPUT_DIR})
+    #file(MAKE_DIRECTORY ${SHADERS_OUTPUT_DIR})
     
     message("Shader to compile: ${shader_file}")
     message("Shader compiled: ${output_file}\n")

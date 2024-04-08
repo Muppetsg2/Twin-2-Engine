@@ -98,7 +98,7 @@ void Twin2Engine::GraphicEngine::MaterialParameters::UploadTextures2D(unsigned i
 		//glActiveTexture(GL_TEXTURE0 + textureBinded);
 		glBindTexture(GL_TEXTURE_2D, _textures[i]);
 		//SPDLOG_INFO("Here4 {} {}", beginLocation, textureBinded);
-		glBindSampler(textureBinded, _samplers[i]);
+		//glBindSampler(textureBinded, _samplers[i]);
 		//SPDLOG_INFO("Here6");
 		//glUniform1i(beginLocation, GL_TEXTURE0 + textureBinded);
 		//glUniform1i(beginLocation, GL_TEXTURE0 + textureBinded);

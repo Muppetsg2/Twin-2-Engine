@@ -28,9 +28,11 @@ namespace Tilemap
 		inline glm::ivec2 GetLeftBottomPosition() const;
 		inline glm::ivec2 GetRightTopPosition() const;
 
-		HexagonalTile* GetTile(const glm::ivec2& position) const;
+		inline HexagonalTile* GetTile(const glm::ivec2& position) const;
 		void SetTile(const glm::ivec2& position, Twin2Engine::Core::GameObject* gameObject);
 		void RemoveTile(const glm::ivec2& position);
+
+		void Fill(const glm::ivec2& position, Twin2Engine::Core::GameObject* gameObject);
 
 		inline void SetDistanceBetweenTiles(float distanceBetweenTiles);
 		inline float GetDistanceBetweenTiles() const;

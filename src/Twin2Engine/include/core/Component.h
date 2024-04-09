@@ -51,7 +51,7 @@ namespace Twin2Engine::Core
 
 #pragma region CLONING_COMPONENTS
 	protected:
-		Component* Clone() const
+		virtual Component* Clone() const
 		{
 			Component* clonedComonent = new Component();
 

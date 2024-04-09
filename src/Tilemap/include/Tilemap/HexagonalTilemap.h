@@ -36,8 +36,8 @@ namespace Tilemap
 
 		inline void SetDistanceBetweenTiles(float distanceBetweenTiles);
 		inline float GetDistanceBetweenTiles() const;
-		inline void SetDistanceBetweenTiles(float edgeLength);
-		inline float GetDistanceBetweenTiles() const;
+		inline void SetEdgeLength(float edgeLength);
+		inline float GetEdgeLength() const;
 	};
 }
 

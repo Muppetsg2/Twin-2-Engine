@@ -11,7 +11,7 @@
 // Macro to start the clone function definition
 #define CloneFunctionStart(className, baseClassName) \
 	protected: \
-    className* Clone() const \
+    virtual className* Clone() const override\
     { \
         className* cloned = new className(); \
         CloneTo(cloned); \

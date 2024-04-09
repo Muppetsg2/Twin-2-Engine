@@ -161,9 +161,13 @@ inline glm::ivec2 HexagonalTilemap::GetRightTopPosition() const
 
 void HexagonalTilemap::SetTile(const glm::ivec2& position, Twin2Engine::Core::GameObject* gameObject)
 {
+
+	Twin2Engine::Core::GameObject* instantiatedGameObject = Twin2Engine::Core::GameObject::Instatiate(gameObject);
+
 	if (position.x > _leftBottomPosition.x && position.x < _rightTopPosition.x && position.y > _leftBottomPosition.y && position.y < _rightTopPosition.y)
 	{
-		_tilemap[position.x + _toCenter.x][position.y + _toCenter.y].SetGameObject(gameObject);
+		//_tilemap[position.x + _toCenter.x][position.y + _toCenter.y].SetGameObject(gameObject);
+		_tilemap[position.x + _toCenter.x][position.y + _toCenter.y].SetGameObject(instantiatedGameObject);
 	}
 	else
 	{
@@ -189,10 +193,11 @@ void HexagonalTilemap::SetTile(const glm::ivec2& position, Twin2Engine::Core::Ga
 
 		Resize(newLeftBottomPosition, newRigthTopPosition);
 
-		_tilemap[position.x + _toCenter.x][position.y + _toCenter.y].SetGameObject(gameObject);
+		_tilemap[position.x + _toCenter.x][position.y + _toCenter.y].SetGameObject(instantiatedGameObject);
 	}
 
-	gameObject->GetTransform()->SetLocalPosition(glm::vec3(position.x * _distanceBetweenTiles, position.y * _distanceBetweenTiles, 0.0f));
+	instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3(position.x * _distanceBetweenTiles, position.y * _distanceBetweenTiles, 0.0f));
+	//gameObject->GetTransform()->SetLocalPosition(glm::vec3(position.x * _distanceBetweenTiles, position.y * _distanceBetweenTiles, 0.0f));
 }
 
 
@@ -210,7 +215,7 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::GameO
 {
 	// Check if the given position is within the tilemap bounds
 	if (position.x < _leftBottomPosition.x || position.x > _rightTopPosition.x ||
-		position.y < _leftBottomPosition.y || position.y > _rightTopPosition.y) 
+		position.y < _leftBottomPosition.y || position.y > _rightTopPosition.y)
 	{
 		std::cerr << "Error: Position is out of bounds.\n";
 		return;
@@ -230,7 +235,7 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::GameO
 		glm::ivec2(0, -1), glm::ivec2(-1, -1), glm::ivec2(1, 1)
 	};
 
-	while (!queue.empty()) 
+	while (!queue.empty())
 	{
 		glm::ivec2 currentPos = queue.front();
 		queue.pop();
@@ -244,13 +249,13 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::GameO
 			currentTile->SetGameObject(gameObject);
 
 			// Add neighboring positions to the queue if they're within bounds and not visited yet
-			for (const auto& dir : directions) 
+			for (const auto& dir : directions)
 			{
 				glm::ivec2 neighborPos = currentPos + dir;
 				if (neighborPos.x >= _leftBottomPosition.x && neighborPos.x <= _rightTopPosition.x &&
 					neighborPos.y >= _leftBottomPosition.y && neighborPos.y <= _rightTopPosition.y &&
 					GetTile(neighborPos)->GetGameObject() == nullptr)
-				//	visited.find(neighborPos) == visited.end()) 
+					//	visited.find(neighborPos) == visited.end()) 
 				{
 					queue.push(neighborPos);
 
@@ -278,14 +283,14 @@ inline float HexagonalTilemap::GetDistanceBetweenTiles() const
 	return _distanceBetweenTiles;
 }
 
-inline void HexagonalTilemap::SetDistanceBetweenTiles(float edgeLength)
+inline void HexagonalTilemap::SetEdgeLength(float edgeLength)
 {
 	_edgeLength = edgeLength;
 
 	_distanceBetweenTiles = 0.5f * _edgeLength * glm::sqrt(3.f);
 }
 
-inline float HexagonalTilemap::GetDistanceBetweenTiles() const
+inline float HexagonalTilemap::GetEdgeLength() const
 {
 	return _edgeLength;
 }

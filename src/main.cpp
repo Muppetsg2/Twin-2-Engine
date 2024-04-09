@@ -218,6 +218,17 @@ int main(int, char**)
     comp->AddMaterial(roofMat);
     comp->SetModel(modelCastle);
 
+
+    InstatiatingModel modelHexagon = ModelsManager::GetModel("res/models/hexagon.obj");
+
+    GameObject* hexagonPrefab = new GameObject();
+    hexagonPrefab->GetTransform()->Translate(glm::vec3(2, -1, 0));
+    comp = hexagonPrefab->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("hexagonMat"));
+    comp->SetModel(modelHexagon);
+
+    //hexTilemap.Fill(glm::ivec2(0, 0), hexagonPrefab);
+
     imageObj = new GameObject();
     Image* img = imageObj->AddComponent<Image>();
     img->SetSprite(SpriteManager::MakeSprite("stone", "res/textures/stone.jpg"));

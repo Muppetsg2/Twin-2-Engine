@@ -316,8 +316,6 @@ bool init()
     }
     spdlog::info("Successfully initialized OpenGL loader!");
 
-    /*
-    */
 #ifdef _DEBUG
     // Debugging
     glEnable(GL_DEBUG_OUTPUT);

@@ -40,40 +40,73 @@ vec3 applyGrayscale(vec3 color) {
     return vec3(average);
 }
 
-vec3 applyBlur() {
+float weight[5] = float[] (0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);
+vec3 applyBlur2() {
+    vec2 tex_offset = 1.0 / textureSize(screenTexture, 0);              // gets size of single texel
+    vec3 result = texture(screenTexture, TexCoord).rgb * weight[0];    // current fragment's contribution
 
-    float Pi2 = 6.28318530718; // Pi*2
-    
-    // GAUSSIAN BLUR SETTINGS {{{
-    float Directions = 16.0; // BLUR DIRECTIONS (Default 16.0 - More is better but slower)
-    float Quality = 4.0; // BLUR QUALITY (Default 4.0 - More is better but slower)
-    float Size = 6.0; // BLUR SIZE (Radius)
-    // GAUSSIAN BLUR SETTINGS }}}
-   
-    vec3 color = texture(screenTexture, TexCoord).rgb;
-
-    vec2 Radius = Size/windowSize;
-    
-    // Blur calculations
-    for(float d = 0.0; d < Pi2; d += Pi2 / Directions)
+    // HORIZONTAL
+    for(int i = 1; i < 5; ++i)
     {
-		for(float i = 1.0 / Quality; i <= 1.0; i += 1.0 / Quality)
-        {
-			color += texture(screenTexture, TexCoord + vec2(cos(d), sin(d)) * Radius * i).rgb;
-        }
+        result += texture(screenTexture, TexCoord + vec2(tex_offset.x * i, 0.0)).rgb * weight[i];
+        result += texture(screenTexture, TexCoord - vec2(tex_offset.x * i, 0.0)).rgb * weight[i];
     }
-    
-    // Output to screen
-    color /= Quality * Directions - 15.0;
-    return color;
+
+    // VERTICAL
+    for(int i = 1; i < 5; ++i)
+    {
+        result += texture(screenTexture, TexCoord + vec2(0.0, tex_offset.y * i)).rgb * weight[i];
+        result += texture(screenTexture, TexCoord - vec2(0.0, tex_offset.y * i)).rgb * weight[i];
+    }
+
+    return result / 2;
+}
+
+float normpdf(float x, float sigma)
+{
+	return 0.39894 * exp(-0.5 * x * x / (sigma * sigma)) / sigma;
+}
+
+vec3 applyBlur() {
+    //declare stuff
+	const int mSize = 11;
+	const int kSize = (mSize - 1) / 2;
+	float kernel[mSize];
+	vec3 result = vec3(0.0);
+    vec2 tex_offset = 1.0 / textureSize(screenTexture, 0); 
+		
+	//create the 1-D kernel
+	float sigma = 7.0;
+	float Z = 0.0;
+	for (int j = 0; j <= kSize; ++j)
+	{
+		kernel[kSize + j] = kernel[kSize - j] = normpdf(float(j), sigma);
+	}
+		
+	//get the normalization factor (as the gaussian has been clamped)
+	for (int j = 0; j < mSize; ++j)
+	{
+		Z += kernel[j];
+	}
+		
+	//read out the texels
+	for (int i =- kSize; i <= kSize; ++i)
+	{
+		for (int j =- kSize; j <= kSize; ++j)
+		{
+			result += kernel[kSize + j] * kernel[kSize + i] * texture(screenTexture, TexCoord.xy + vec2(tex_offset.x * i, tex_offset.y * j)).rgb;
+		}
+	}
+
+	return result / (Z * Z);
 }
 
 void main()
 { 
     vec3 res = texture(screenTexture, TexCoord).rgb;
 
-    // Popracowac
     if (hasBlur) {
+        //res = applyBlur2();
         res = applyBlur();
     }
 

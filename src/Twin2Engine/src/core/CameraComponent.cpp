@@ -196,11 +196,10 @@ void CameraComponent::Render()
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-	size_t si = 2 * sizeof(float) + sizeof(vec2);
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, si, value_ptr(Window::GetInstance()->GetContentSize()));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2), si, &(this->_near));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float), si, &(this->_far));
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(vec2), value_ptr(Window::GetInstance()->GetContentSize()));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2), sizeof(float), &(this->_near));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float), sizeof(float), &(this->_far));
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	// DEPTH MAP
@@ -284,18 +283,16 @@ void CameraComponent::Initialize()
 
 		glGenBuffers(1, &_uboWindowData);
 
-		size_t si = 2 * sizeof(float) + sizeof(vec2);
-
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-		glBufferData(GL_UNIFORM_BUFFER, si, NULL, GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(float) + sizeof(vec2), NULL, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		glBindBufferRange(GL_UNIFORM_BUFFER, 1, _uboWindowData, 0, si);
+		glBindBufferRange(GL_UNIFORM_BUFFER, 1, _uboWindowData, 0, 2 * sizeof(float) + sizeof(vec2));
 
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, si, value_ptr(Window::GetInstance()->GetContentSize()));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2), si, &(this->_near));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float), si, &(this->_far));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(vec2), value_ptr(Window::GetInstance()->GetContentSize()));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2), sizeof(float), &(this->_near));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float), sizeof(float), &(this->_far));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		_renderPlane = ModelsManager::GetPlane();

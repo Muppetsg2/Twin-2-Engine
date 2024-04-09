@@ -83,6 +83,7 @@ void GraphicEngineManager::Render()
 	*/
 
 	//CameraComponent* camera = Core::CameraComponent::GetMainCamera();
+
 	MeshRenderingManager::Render();
 	UIRenderingManager::Render();
 }

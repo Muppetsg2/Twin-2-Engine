@@ -317,12 +317,12 @@ bool init()
     spdlog::info("Successfully initialized OpenGL loader!");
 
     /*
+    */
 #ifdef _DEBUG
     // Debugging
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(ErrorMessageCallback, 0);
 #endif
-    */
 
     // Blending
     glEnable(GL_BLEND);

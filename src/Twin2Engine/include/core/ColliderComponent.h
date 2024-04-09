@@ -24,7 +24,6 @@ namespace Twin2Engine::Core {
 
 	class ColliderComponent : public Component {
 	protected:
-		bool dirtyFlag = false;
 		ColliderComponent(); // Powoduje ¿e klasa jest jakby abstrakcyjna no chyba ¿e bêdzie dziedziczona
 		CollisionSystem::GameCollider * collider = nullptr;
 		CollisionSystem::BoundingVolume* boundingVolume;
@@ -51,9 +50,6 @@ namespace Twin2Engine::Core {
 		void SetBoundingVolumeRadius(float radius);
 		void SetLocalPosition(float x, float y, float z);
 
-		void Invoke();
-		virtual void Initialize() override;
-		virtual void Update() override;
 	};
 }
 

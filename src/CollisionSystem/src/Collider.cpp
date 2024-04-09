@@ -63,26 +63,26 @@ Collision* Collider::BoxBoxCollision(Collider* box1, Collider* box2, bool separa
 
 		if (x > y && x > z) {
 			if (relativePosition.x >= 0) {
-				collision->separation.x = 1.0f;
+				collision->separation.x = -1.0f;
 			}
 			else {
-				collision->separation.x = -1.0f;
+				collision->separation.x = 1.0f;
 			}
 		}
 		else if (y > x && y > z) {
 			if (relativePosition.y >= 0) {
-				collision->separation.y = 1.0f;
+				collision->separation.y = -1.0f;
 			}
 			else {
-				collision->separation.y = -1.0f;
+				collision->separation.y = 1.0f;
 			}
 		}
 		else {
 			if (relativePosition.z >= 0) {
-				collision->separation.z = 1.0f;
+				collision->separation.z = -1.0f;
 			}
 			else {
-				collision->separation.z = -1.0f;
+				collision->separation.z = 1.0f;
 			}
 		}
 		//collision->separation = glm::normalize(sphereData1->Position - sphereData2->Position) * ((radiusSum - glm::sqrt(distanceSqr)) / 2.0f);
@@ -318,7 +318,7 @@ Collision* Collider::SphereBoxCollision(Collider* sphere, Collider* box, bool se
 	SphereColliderData* sphereData = (SphereColliderData*)sphere->shapeColliderData;
 	BoxColliderData* boxData = (BoxColliderData*)box->shapeColliderData;
 
-	glm::vec3 relativePosition = boxData->Position - sphereData->Position;
+	glm::vec3 relativePosition = sphereData->Position - boxData->Position;
 	relativePosition = glm::vec3(glm::dot(relativePosition, boxData->XAxis), glm::dot(relativePosition, boxData->YAxis), 
 								 glm::dot(relativePosition, boxData->ZAxis));
 
@@ -326,8 +326,8 @@ Collision* Collider::SphereBoxCollision(Collider* sphere, Collider* box, bool se
 									   glm::clamp(relativePosition.y, -boxData->HalfDimensions.y, boxData->HalfDimensions.y), 
 									   glm::clamp(relativePosition.z, -boxData->HalfDimensions.z, boxData->HalfDimensions.z));
 
-	float distanceSqr = glm::dot(closestPoint - sphereData->Position, closestPoint - sphereData->Position);
-	if (distanceSqr <= sphereData->Radius) {
+	float distanceSqr = glm::dot(closestPoint - relativePosition, closestPoint - relativePosition);
+	if (distanceSqr < (sphereData->Radius * sphereData->Radius)) {
 		Collision* collision = new Collision;
 		collision->collider = sphere;
 		collision->otherCollider = box;
@@ -355,7 +355,45 @@ Collision* Collider::SphereBoxCollision(Collider* sphere, Collider* box, bool se
 				relativePosition.z = -1.0f;
 			}
 
-			collision->separation = glm::normalize(relativePosition) * ((sphereData->Radius - glm::sqrt(distanceSqr)) / 2.0f);
+			if ((relativePosition.x == 0.0f) && (relativePosition.y == 0.0f) && (relativePosition.z == 0.0f)) {
+				float x = glm::abs(closestPoint.x);
+				float y = glm::abs(closestPoint.y);
+				float z = glm::abs(closestPoint.z);
+				float d = 0.0f;
+
+				if (x > y && x > z) {
+					d = boxData->HalfDimensions.x - x;
+					if (closestPoint.x > 0.0f) {
+						relativePosition.x = 1.0f;
+					}
+					else {
+						relativePosition.x = -1.0f;
+					}
+				}
+				else if (y > x && y > z) {
+					d = boxData->HalfDimensions.y - y;
+					if (closestPoint.y > 0.0f) {
+						relativePosition.y = 1.0f;
+					}
+					else {
+						relativePosition.y = -1.0f;
+					}
+				}
+				else {
+					d = boxData->HalfDimensions.z - z;
+					if (closestPoint.z > 0.0f) {
+						relativePosition.z = 1.0f;
+					}
+					else {
+						relativePosition.z = -1.0f;
+					}
+				}
+				collision->separation = relativePosition * ((sphereData->Radius + d) / 2.0f);
+			}
+			else {
+				collision->separation = glm::normalize(relativePosition) * ((sphereData->Radius - glm::sqrt(distanceSqr)) / 2.0f);
+			}
+
 			collision->separation = glm::vec3(glm::dot(collision->separation, { 1.0f, 0.0f, 0.0f }), 
 											  glm::dot(collision->separation, { 0.0f, 1.0f, 0.0f }), 
 											  glm::dot(collision->separation, { 0.0f, 0.0f, 1.0f }));
@@ -449,12 +487,12 @@ Collision* Collider::BoxCapsuleCollision(Collider* box, Collider* capsule, bool 
 
 
 Collision* Collider::testCollision(Collider* collider, Collider* otherCollider, bool separate) {
-	Collision* collision;
+	Collision* collision = nullptr;
 	Collider* t;
 
 	switch (collider->colliderShape) {
 		case ColliderShape::SPHERE:
-			switch (collider->colliderShape)
+			switch (otherCollider->colliderShape)
 			{
 				case ColliderShape::SPHERE:
 					return SphereSphereCollision(collider, otherCollider, separate);
@@ -471,13 +509,15 @@ Collision* Collider::testCollision(Collider* collider, Collider* otherCollider, 
 			break;
 
 		case ColliderShape::BOX:
-			switch (collider->colliderShape)
+			switch (otherCollider->colliderShape)
 			{
 				case ColliderShape::SPHERE:
 					collision = SphereBoxCollision(collider, otherCollider, separate);
-					t = collision->collider;
-					collision->collider = collision->otherCollider;
-					collision->otherCollider = t;
+					if (collision != nullptr) {
+						t = collision->collider;
+						collision->collider = collision->otherCollider;
+						collision->otherCollider = t;
+					}
 					break;
 
 				case ColliderShape::BOX:
@@ -485,26 +525,30 @@ Collision* Collider::testCollision(Collider* collider, Collider* otherCollider, 
 					break;
 
 				case ColliderShape::CAPSULE:
-					return  BoxCapsuleCollision(collider, otherCollider, separate);
+					return BoxCapsuleCollision(collider, otherCollider, separate);
 					break;
 			}
 			break;
 
 		case ColliderShape::CAPSULE:
-			switch (collider->colliderShape)
+			switch (otherCollider->colliderShape)
 			{
 				case ColliderShape::SPHERE:
 					collision = SphereCapsuleCollision(collider, otherCollider, separate);
-					t = collision->collider;
-					collision->collider = collision->otherCollider;
-					collision->otherCollider = t;
+					if (collision != nullptr) {
+						t = collision->collider;
+						collision->collider = collision->otherCollider;
+						collision->otherCollider = t;
+					}
 					break;
 
 				case ColliderShape::BOX:
 					collision = BoxCapsuleCollision(collider, otherCollider, separate);
-					t = collision->collider;
-					collision->collider = collision->otherCollider;
-					collision->otherCollider = t;
+					if (collision != nullptr) {
+						t = collision->collider;
+						collision->collider = collision->otherCollider;
+						collision->otherCollider = t;
+					}
 					break;
 
 				case ColliderShape::CAPSULE:
@@ -513,4 +557,6 @@ Collision* Collider::testCollision(Collider* collider, Collider* otherCollider, 
 				}
 			break;
 	}
+
+	return collision;
 }/**/

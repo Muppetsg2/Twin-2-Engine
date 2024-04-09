@@ -6,12 +6,17 @@
 namespace Twin2Engine::Core {
 	class CapsuleColliderComponent : public ColliderComponent {
 		//protected: 
+		Twin2Engine::Core::Action<Transform*> TransformChangeAction;
+		size_t TransformChangeActionId;
 	public:
-		CapsuleColliderComponent();
+		CapsuleColliderComponent() : ColliderComponent() {};
 		void SetEndPosition(float x, float y, float z);
 		void SetRadius(float radius);
 
-		void Update() override;
+		void Initialize() override;
+		void OnEnable() override;
+		void OnDisable() override;
+		void OnDestroy() override;
 
 	};
 }

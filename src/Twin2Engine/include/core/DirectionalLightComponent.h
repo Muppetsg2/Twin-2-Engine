@@ -10,9 +10,12 @@ namespace Twin2Engine {
 
 			private:
 				bool dirtyFlag = false;
-				glm::vec3 localDirection;
+				//glm::vec3 localDirection;
 				LightingSystem::DirectionalLight* light = nullptr;
-				Twin2Engine::Core::Action<Transform*> OnChangeTransform;
+				Twin2Engine::Core::Action<Transform*> OnChangePosition;
+				size_t OnChangePositionId;
+				Twin2Engine::Core::Action<> OnViewerChange;
+				size_t OnViewerChangeId;
 			protected:
 				DirectionalLightComponent() : LightComponent() {};
 			public:

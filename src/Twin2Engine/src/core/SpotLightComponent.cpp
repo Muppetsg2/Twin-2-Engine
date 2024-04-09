@@ -10,7 +10,6 @@ void Twin2Engine::Core::SpotLightComponent::Initialize()
 		LightingSystem::LightingController::Instance()->UpdateSLTransform(light);
 	};
 
-	GetTransform()->OnEventTransformChanged += OnChangeTransform;
 
 	light = new LightingSystem::SpotLight;
 	light->position = GetTransform()->GetGlobalPosition();
@@ -29,19 +28,23 @@ void Twin2Engine::Core::SpotLightComponent::Update()
 void Twin2Engine::Core::SpotLightComponent::OnEnable()
 {
 	LightingSystem::LightingController::Instance()->spotLights.insert(light);
+	OnChangeTransformId = GetTransform()->OnEventTransformChanged += OnChangeTransform;
 	LightingSystem::LightingController::Instance()->UpdateSpotLights();
 }
 
 void Twin2Engine::Core::SpotLightComponent::OnDisable()
 {
 	LightingSystem::LightingController::Instance()->spotLights.erase(light);
+	GetTransform()->OnEventTransformChanged -= OnChangeTransformId;
 	LightingSystem::LightingController::Instance()->UpdateSpotLights();
 }
 
 void Twin2Engine::Core::SpotLightComponent::OnDestroy()
 {
 	LightingSystem::LightingController::Instance()->spotLights.erase(light);
+	GetTransform()->OnEventTransformChanged -= OnChangeTransformId;
 	LightingSystem::LightingController::Instance()->UpdateSpotLights();
+
 	delete light;
 }
 

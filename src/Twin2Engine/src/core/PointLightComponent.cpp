@@ -9,8 +9,6 @@ void Twin2Engine::Core::PointLightComponent::Initialize()
 		LightingSystem::LightingController::Instance()->UpdatePLPosition(light);
 	};
 
-	GetTransform()->OnEventPositionChanged += OnChangePosition;
-
 	light = new LightingSystem::PointLight;
 	light->position = GetTransform()->GetGlobalPosition();
 	//LightingSystem::LightingController::Instance()->pointLights.insert(light);
@@ -28,19 +26,23 @@ void Twin2Engine::Core::PointLightComponent::Update()
 void Twin2Engine::Core::PointLightComponent::OnEnable()
 {
 	LightingSystem::LightingController::Instance()->pointLights.insert(light);
+	OnChangePositionId = GetTransform()->OnEventPositionChanged += OnChangePosition;
 	LightingSystem::LightingController::Instance()->UpdatePointLights();
 }
 
 void Twin2Engine::Core::PointLightComponent::OnDisable()
 {
 	LightingSystem::LightingController::Instance()->pointLights.erase(light);
+	GetTransform()->OnEventPositionChanged -= OnChangePositionId;
 	LightingSystem::LightingController::Instance()->UpdatePointLights();
 }
 
 void Twin2Engine::Core::PointLightComponent::OnDestroy()
 {
 	LightingSystem::LightingController::Instance()->pointLights.erase(light);
+	GetTransform()->OnEventPositionChanged -= OnChangePositionId;
 	LightingSystem::LightingController::Instance()->UpdatePointLights();
+
 	delete light;
 }
 

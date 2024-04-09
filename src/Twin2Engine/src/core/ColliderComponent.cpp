@@ -81,29 +81,12 @@ void ColliderComponent::SetLocalPosition(float x, float y, float z)
 	collider->shapeColliderData->LocalPosition.x = x;
 	collider->shapeColliderData->LocalPosition.y = y;
 	collider->shapeColliderData->LocalPosition.z = z;
-	dirtyFlag = true;
-}
 
-void Twin2Engine::Core::ColliderComponent::Initialize()
-{
-	collider->colliderComponent = this;
-}
+	collider->shapeColliderData->Position = GetTransform()->GetTransformMatrix() * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f);
 
-void Twin2Engine::Core::ColliderComponent::Invoke()
-{
-	collider->colliderComponent = this;
-}
-
-void Twin2Engine::Core::ColliderComponent::Update()
-{
-	/*/if (dirtyFlag) {
-		((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndPosition =
-										getGameObject()->GetTransform()->GetTransformMatrix()
-										* glm::vec4(((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition, 1.0f);
-
-		dirtyFlag = false;
-	}/**/
-	collider->shapeColliderData->Position = collider->shapeColliderData->LocalPosition + GetGameObject()->GetTransform()->GetGlobalPosition();
+	if (boundingVolume != nullptr) {
+		boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
+	}
 }
 
 

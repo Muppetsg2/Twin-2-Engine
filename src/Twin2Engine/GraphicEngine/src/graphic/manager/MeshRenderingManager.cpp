@@ -126,18 +126,19 @@ void MeshRenderingManager::Render()
 			//SPDLOG_INFO("Rending!");
 			//meshPair.first->Draw(shaderPair.first, transforms.size());
 			//meshPair.first->Draw(shaderPair.first, index);
-			LightingSystem::LightingController::Instance()->BindLightBuffors(shaderPair.first);
+			LightingSystem::LightingController::Instance()->UpdateShadowMapsTab(shaderPair.first);
 
 			meshPair.first->Draw(index);
 		}
 	}
 }
 
-void MeshRenderingManager::RenderDepthMap(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, 
+void MeshRenderingManager::RenderDepthMap(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,
 										  glm::mat4& projectionViewMatrix)
 {
 	glViewport(0, 0, bufferWidth, bufferHeight);
 	glBindFramebuffer(GL_FRAMEBUFFER, depthFBO);
+	//glBindTexture(GL_TEXTURE_2D, depthMapTex);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	ShaderManager::DepthShader->Use();

@@ -1,5 +1,4 @@
 #include "GameCollider.h"
-#include "GameCollider.h"
 #include "core/GameObject.h"
 
 //#define USE_BOUNDING_VOLUMES
@@ -30,11 +29,13 @@ GameCollider::~GameCollider() {
 
 
 Collision* GameCollider::testBoundingVolume(BoundingVolume* other) const {
-	if (this->boundingVolume != nullptr && boundingVolume != nullptr) {
-		return testCollision(this->boundingVolume, boundingVolume, false);
-	}
-	else if (boundingVolume == nullptr && boundingVolume != nullptr) {
-		return testCollision((Collider*)this, boundingVolume, false);
+	if (other != nullptr) {
+		if (boundingVolume != nullptr) {
+			return testCollision(this->boundingVolume, other, false);
+		}
+		else {
+			return testCollision((Collider*)this, other, false);
+		}
 	}
 	else {
 		return nullptr;
@@ -48,13 +49,16 @@ Collision* GameCollider::testBoundingVolume(GameCollider* other) const {
 	else if (boundingVolume == nullptr && other->boundingVolume != nullptr) {
 		return testCollision((Collider*)this, other->boundingVolume, false);
 	}
-	else {
+	else if (boundingVolume != nullptr) {
 		return testCollision(boundingVolume, other, false);
+	}
+	else {
+		return new Collision;
 	}
 }
 
 Collision* GameCollider::testColliders(GameCollider* collider) const {
-	return testCollision((Collider*)this, collider, !(isTrigger || isTrigger));
+	return testCollision((Collider*)this, collider, !(isTrigger || collider->isTrigger));
 }
 
 Collision* GameCollider::collide(Collider* other) {
@@ -79,13 +83,17 @@ Collision* GameCollider::collide(Collider* other) {
 		Collision* collision = testColliders((GameCollider*)other);
 #endif // USE_BOUNDING_VOLUMES
 		
+		Twin2Engine::Core::Transform* t1 = colliderComponent->GetGameObject()->GetTransform();
+		Twin2Engine::Core::Transform* t2 = ((GameCollider*)other)->colliderComponent->GetGameObject()->GetTransform();
+
 		if (collision != nullptr) {
 			if (!LastFrameCollisions.contains((GameCollider*)other)) {
 				LastFrameCollisions.insert((GameCollider*)other);
+				
 
 				if (isTrigger) {
 					//Execute OnTriggerEnter
-					SPDLOG_INFO("{} - OnTriggerEnter\n", colliderComponent->colliderId);
+					SPDLOG_INFO("{} - OnTriggerEnter", colliderComponent->colliderId);
 					//std::cout << colliderComponent->colliderId << " - OnTriggerEnter\n";
 					Twin2Engine::Core::Collision* col = new Twin2Engine::Core::Collision;
 					col->collider = ((GameCollider*)collision->collider)->colliderComponent;
@@ -105,42 +113,46 @@ Collision* GameCollider::collide(Collider* other) {
 					if (isStatic) {
 						if (((GameCollider*)other)->isStatic) {
 							//separacja obu gameobjektów
-							SPDLOG_INFO("{} - separacja obu game objektów\n", colliderComponent->colliderId);
+							SPDLOG_INFO("{} - separacja obu gameobjektów ({}, {}, {})", colliderComponent->colliderId, collision->separation.x,
+																						  collision->separation.y, collision->separation.z);
 							//std::cout << colliderComponent->colliderId << " - separacja obu gameobjektów\n";
-							colliderComponent->GetGameObject()->GetTransform()->SetGlobalPosition(
-								colliderComponent->GetGameObject()->GetTransform()->GetGlobalPosition() + collision->separation);
-							((GameCollider*)other)->colliderComponent->GetGameObject()->GetTransform()->SetGlobalPosition(
-								colliderComponent->GetGameObject()->GetTransform()->GetGlobalPosition() - collision->separation);
+							colliderComponent->GetTransform()->SetGlobalPosition(
+								colliderComponent->GetTransform()->GetGlobalPosition() + collision->separation);
+							((GameCollider*)other)->colliderComponent->GetTransform()->SetGlobalPosition(
+								((GameCollider*)other)->colliderComponent->GetTransform()->GetGlobalPosition() - collision->separation);
 						}
 						else {
 							//separacje drugiego gameobjekta
-							SPDLOG_INFO("{} - separacja tego game objekta\n", colliderComponent->colliderId);
+							SPDLOG_INFO("{} - separacje drugiego gameobjekta ({}, {}, {})", colliderComponent->colliderId, collision->separation.x,
+																						   collision->separation.y, collision->separation.z);
 							//std::cout << colliderComponent->colliderId << " - separacje drugiego gameobjekta\n";
-							((GameCollider*)other)->colliderComponent->GetGameObject()->GetTransform()->SetGlobalPosition(
-								colliderComponent->GetGameObject()->GetTransform()->GetGlobalPosition() - collision->separation);
+							((GameCollider*)other)->colliderComponent->GetTransform()->SetGlobalPosition(
+								((GameCollider*)other)->colliderComponent->GetTransform()->GetGlobalPosition() - collision->separation);
 						}
 					}
 					else {
 						if (((GameCollider*)other)->isStatic) {
 							//separacja tego game objekta
-							SPDLOG_INFO("{} - separacja tego game objekta\n", colliderComponent->colliderId);
+							SPDLOG_INFO("{} - separacja tego game objekta ({}, {}, {})", colliderComponent->colliderId, collision->separation.x, 
+																						   collision->separation.y, collision->separation.z);
 							//std::cout << colliderComponent->colliderId << " - separacja tego game objekta\n";
-							colliderComponent->GetGameObject()->GetTransform()->SetGlobalPosition(
-								colliderComponent->GetGameObject()->GetTransform()->GetGlobalPosition() + collision->separation);
+							colliderComponent->GetTransform()->SetGlobalPosition(
+								colliderComponent->GetTransform()->GetGlobalPosition() + collision->separation);
 						}
 						else {
 							//separacja obu gameobjektów
-							SPDLOG_INFO("{} - separacja obu gameobjektów\n", colliderComponent->colliderId);
+							SPDLOG_INFO("{} - separacja obu gameobjektów ({}, {}, {})", colliderComponent->colliderId, collision->separation.x,
+																						   collision->separation.y, collision->separation.z);
 							//std::cout << colliderComponent->colliderId << " - separacja obu gameobjektów\n";
-							colliderComponent->GetGameObject()->GetTransform()->SetGlobalPosition(
-								colliderComponent->GetGameObject()->GetTransform()->GetGlobalPosition() + collision->separation);
-							((GameCollider*)other)->colliderComponent->GetGameObject()->GetTransform()->SetGlobalPosition(
-								colliderComponent->GetGameObject()->GetTransform()->GetGlobalPosition() - collision->separation);
+							colliderComponent->GetTransform()->SetGlobalPosition(
+								colliderComponent->GetTransform()->GetGlobalPosition() + collision->separation);
+							((GameCollider*)other)->colliderComponent->GetTransform()->SetGlobalPosition(
+								((GameCollider*)other)->colliderComponent->GetTransform()->GetGlobalPosition() - collision->separation);
 						}
 					}
 
 					//Execute OnCollisionEnter
-					SPDLOG_INFO("{} - OnCollisionEnter\n", colliderComponent->colliderId);
+					SPDLOG_INFO("{} - OnCollisionEnter", colliderComponent->colliderId);
 					//std::cout << colliderComponent->colliderId << " - OnTriggerExit\n";
 					Twin2Engine::Core::Collision* col = new Twin2Engine::Core::Collision;
 					col->collider = ((GameCollider*)collision->collider)->colliderComponent;
@@ -164,14 +176,14 @@ Collision* GameCollider::collide(Collider* other) {
 
 				if (isTrigger) {
 					//Execute OnTriggerExit
-					SPDLOG_INFO("{} - OnTriggerExit\n", colliderComponent->colliderId);
+					SPDLOG_INFO("{} - OnTriggerExit", colliderComponent->colliderId);
 					//std::cout << colliderComponent->colliderId << " - OnTriggerExit\n";
 					colliderComponent->OnTriggerExit.Invoke(((GameCollider*)other)->colliderComponent);
 					((GameCollider*)other)->colliderComponent->OnTriggerExit.Invoke(colliderComponent);
 				}
 				else {
 					//Execute OnCollisionExit
-					SPDLOG_INFO("{} - OnCollisionExit\n", colliderComponent->colliderId);
+					SPDLOG_INFO("{} - OnCollisionExit", colliderComponent->colliderId);
 					//std::cout << colliderComponent->colliderId << " - OnCollisionExit\n";
 					colliderComponent->OnCollisionExit.Invoke(((GameCollider*)other)->colliderComponent);
 					((GameCollider*)other)->colliderComponent->OnCollisionExit.Invoke(colliderComponent);

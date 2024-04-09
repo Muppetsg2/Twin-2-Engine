@@ -12309,7 +12309,7 @@ class iter_impl
     @brief return the value of an iterator
     @pre The iterator is initialized; i.e. `m_object != nullptr`.
     */
-    reference value() const
+    reference dirLight->shadowMap() const
     {
         return operator*();
     }

@@ -1,4 +1,5 @@
 #include <graphic/manager/ShaderManager.h>
+#include <LightingController.h>
 
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
@@ -621,4 +622,16 @@ Shader* ShaderManager::CreateShaderProgram(const std::string& shaderName, const 
         shader = (*found)->shader;
     }
     return shader;
+}
+
+
+void ShaderManager::UpdateDirShadowMapsTab() 
+{
+    size_t depthShaderHash = stringHash("origin/DepthShader");
+
+    for (auto SPD : loadedShaders) {
+        if (SPD->shaderPathHash != depthShaderHash) {
+            LightingSystem::LightingController::Instance()->UpdateShadowMapsTab(SPD->shader);
+        }
+    }
 }

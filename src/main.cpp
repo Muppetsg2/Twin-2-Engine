@@ -247,20 +247,28 @@ int main(int, char**)
 #pragma region TestingCollision
     GameObject go1;
     GameObject go2;
-    go1.GetTransform()->SetLocalPosition(glm::vec3(1.0f, 0.0f, 0.0f));
-    go2.GetTransform()->SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
-    Twin2Engine::Core::BoxColliderComponent* bc1 = go1.AddComponent<Twin2Engine::Core::BoxColliderComponent>();
+    go1.GetTransform()->SetGlobalPosition(glm::vec3(1.0f, 0.0f, 0.0f));
+    go2.GetTransform()->SetGlobalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
+    //Twin2Engine::Core::BoxColliderComponent* bc1 = go1.AddComponent<Twin2Engine::Core::BoxColliderComponent>();
+    Twin2Engine::Core::SphereColliderComponent* bc1 = go1.AddComponent<Twin2Engine::Core::SphereColliderComponent>();
     Twin2Engine::Core::BoxColliderComponent* bc2 = go2.AddComponent<Twin2Engine::Core::BoxColliderComponent>();
+    //Twin2Engine::Core::SphereColliderComponent* bc2 = go2.AddComponent<Twin2Engine::Core::SphereColliderComponent>();
     bc1->colliderId = 1;
     bc2->colliderId = 2;
-    bc1->Initialize();
-    bc2->Initialize();
+    //bc1->Initialize();
+    //bc2->Initialize();
+    go1.GetTransform()->Update();
+    go2.GetTransform()->Update();
     bc1->Update();
     bc2->Update();
 
+    SPDLOG_INFO("CollisionTest1\n");
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();
+    go1.GetTransform()->Update();
+    go2.GetTransform()->Update();
     bc1->Update();
     bc2->Update();
+    SPDLOG_INFO("CollisionTest2\n");
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();
 #pragma endregion
 
@@ -270,18 +278,17 @@ int main(int, char**)
     GameObject sl_go;
     GameObject dl_go;
     pl_go.GetTransform()->SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-    sl_go.GetTransform()->SetLocalPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
+    sl_go.GetTransform()->SetLocalPosition(glm::vec3(-10.0f, 0.0f, 0.0f));
     dl_go.GetTransform()->SetLocalPosition(glm::vec3(0.0f, 10.0f, 0.0f));
     Twin2Engine::Core::PointLightComponent* pl = pl_go.AddComponent<Twin2Engine::Core::PointLightComponent>();
     Twin2Engine::Core::SpotLightComponent* sl = sl_go.AddComponent<Twin2Engine::Core::SpotLightComponent>();
     Twin2Engine::Core::DirectionalLightComponent* dl = dl_go.AddComponent<Twin2Engine::Core::DirectionalLightComponent>();
-    pl->Initialize();
-    sl->Initialize();
-    dl->Initialize();
+    //pl->Initialize();
+    //sl->Initialize();
+    //dl->Initialize();
     LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
     LightingSystem::LightingController::Instance()->SetGamma(2.2);
     /**/
-
 #pragma endregion
 
 
@@ -293,6 +300,12 @@ int main(int, char**)
 
         // Update game objects' state here
         update();
+        pl->GetTransform()->Update();
+        sl->GetTransform()->Update();
+        dl->GetTransform()->Update();
+        pl->Update();
+        sl->Update();
+        dl->Update();
 
         // OpenGL rendering code here
         render();
@@ -416,37 +429,35 @@ void input()
 
     CameraComponent* c = Camera.GetComponent<CameraComponent>();
 
+    bool moved = false;
     if (Input::IsKeyDown(KEY::W))
     {
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
 
-        if (LightingSystem::LightingController::IsInstantiated()) {
-            LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
-        }
+        moved = true;
     }
     if (Input::IsKeyDown(KEY::S))
     {
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
 
-        if (LightingSystem::LightingController::IsInstantiated()) {
-            LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
-        }
+        moved = true;
     }
     if (Input::IsKeyDown(KEY::A))
     {
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
 
-        if (LightingSystem::LightingController::IsInstantiated()) {
-            LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
-        }
+        moved = true;
     }
     if (Input::IsKeyDown(KEY::D))
     {
         Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
 
-        if (LightingSystem::LightingController::IsInstantiated()) {
-            LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
-        }
+        moved = true;
+    }
+
+    if (LightingSystem::LightingController::IsInstantiated() && moved) {
+        glm::vec3 cp = Camera.GetTransform()->GetGlobalPosition();
+        LightingSystem::LightingController::Instance()->SetViewerPosition(cp);
     }
 
     if (Input::IsKeyPressed(KEY::LEFT_ALT)) 
@@ -499,6 +510,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     {
         Camera.GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
     }
+
+    LightingSystem::LightingController::Instance()->ViewerTransformChanged.Invoke();
 }
 
 void update()

@@ -64,7 +64,7 @@ function(compile_shader shader_path)
     # Execute glslangValidator to compile the shader
     add_custom_command(
         TARGET ${PROJECT_NAME} PRE_BUILD  
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../tools/glslang/bin/glslangValidator.exe -G ${shader_path} -o ${output_file}
+        #COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../tools/glslang/bin/glslangValidator.exe -G ${shader_path} -o ${output_file}
         DEPENDS ${shader_path}
         COMMENT "Compiling ${shader_name}.${shader_ext} to SPIR-V"
         VERBATIM

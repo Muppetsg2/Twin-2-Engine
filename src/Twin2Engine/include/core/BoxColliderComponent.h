@@ -6,9 +6,14 @@
 namespace Twin2Engine::Core {
 	class BoxColliderComponent : public ColliderComponent {
 		//protected:
+	private:
+		bool dirtyFlag = false;
+
+		Twin2Engine::Core::Action<Transform*> TransformChangeAction;
+		size_t TransformChangeActionId;
 
 	public:
-		BoxColliderComponent();
+		BoxColliderComponent() : ColliderComponent() {};
 		//Along X
 		void SetWidth(float v);
 		//Along Z
@@ -20,7 +25,11 @@ namespace Twin2Engine::Core {
 		void SetYRotation(float v);
 		void SetZRotation(float v);
 
-		void Update();
+		void Initialize() override;
+		void OnEnable() override;
+		void OnDisable() override;
+		void OnDestroy() override;
+		void Update() override;
 	};
 }
 

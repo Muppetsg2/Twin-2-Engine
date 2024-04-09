@@ -12,6 +12,7 @@ namespace Twin2Engine {
 				bool dirtyFlag = false;
 				LightingSystem::PointLight* light = nullptr;
 				Twin2Engine::Core::Action<Transform*> OnChangePosition;
+				size_t OnChangePositionId;
 			protected:
 				PointLightComponent() : LightComponent() {};
 			public:

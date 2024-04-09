@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h> 
 #include <unordered_set>
 #include <graphic/Shader.h>
-
+#include <core/EventHandler.h>
 
 namespace LightingSystem {
 	class LightingController {
@@ -33,6 +33,7 @@ namespace LightingSystem {
 			//Lights lights;
 
 		public:
+			Twin2Engine::Core::EventHandler<> ViewerTransformChanged;
 
 			static const int SHADOW_WIDTH;
 			static const int SHADOW_HEIGHT;
@@ -71,7 +72,7 @@ namespace LightingSystem {
 			void BindLightBuffors(Twin2Engine::GraphicEngine::Shader* shader);
 			void UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader* shader);
 
-			void RecalculateDirLightSpaceMatrix(DirectionalLight* light); //, const glm::mat4& viewProjectionInverse
+			static glm::vec3 RecalculateDirLightSpaceMatrix(DirectionalLight* light); //, const glm::mat4& viewProjectionInverse
 
 			void SetAmbientLight(glm::vec3& ambientLightColor);
 			void SetViewerPosition(glm::vec3& viewerPosition);

@@ -53,9 +53,9 @@ struct SpotLight {
 struct DirectionalLight {
 	vec3 position;      // Position of the spot light in world space
 	vec3 direction;     // Direction of the spot light
+	mat4 lightSpaceMatrix;
 	vec3 color;         // Color of the spot light
 	float power;		  // Light source power
-	mat4 lightSpaceMatrix;
 };
 
 layout (std430, binding = 3) buffer Lights {
@@ -144,7 +144,7 @@ void main()
             specular = countBlinnPhongPart(L, E, N);
         }
 
-        LightColor += (lambertian + specular) * pointLights[i].color * pointLights[i].power * attenuation;
+        //LightColor += (lambertian + specular) * pointLights[i].color * pointLights[i].power * attenuation;
 		//FragColor = vec4((lambertian + specular) * pointLights[i].color * pointLights[i].power * attenuation, 1.0f);
     }
 
@@ -172,7 +172,7 @@ void main()
 		    epsilon = -spotLights[i].outerCutOff;
 		    intensity = smoothstep(spotLights[i].outerCutOff, 0.0, theta);
 			
-			LightColor += (lambertian + specular) * spotLights[i].color * spotLights[i].power * attenuation * intensity;
+			//LightColor += (lambertian + specular) * spotLights[i].color * spotLights[i].power * attenuation * intensity;
 			//FragColor = vec4((lambertian + specular) * spotLights[i].color * spotLights[i].power * attenuation * intensity, 1.0f);
 		}
 	}
@@ -187,8 +187,8 @@ void main()
             specular = countBlinnPhongPart(L, E, N);
         }
 
-        LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power;
-        //LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), i);
+        //LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power;
+        LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), i);
     }
 	
     FragColor *= vec4(LightColor + AmbientLight, 1.0f); //

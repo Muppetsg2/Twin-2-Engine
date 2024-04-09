@@ -6,10 +6,17 @@
 namespace Twin2Engine::Core {
 	class SphereColliderComponent : public ColliderComponent {
 		//protected:
-
+	private:
+		Twin2Engine::Core::Action<Transform*> PositionChangeAction;
+		size_t PositionChangeActionId;
 	public:
-		SphereColliderComponent();
+		SphereColliderComponent() : ColliderComponent() {};
 		void SetRadius(float radius);
+
+		void Initialize() override;
+		void OnEnable() override;
+		void OnDisable() override;
+		void OnDestroy() override;
 	};
 }
 

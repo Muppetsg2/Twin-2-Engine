@@ -48,7 +48,7 @@ void main()
     
 
     gl_Position = projection * view * instanceData.transform[instanceId] * vec4(aPos, 1.0);
-    position = gl_Position.xyz;
+    position = (instanceData.transform[instanceId] * vec4(aPos, 1.0)).xyz;
 
     color1 = materialInput[materialIndexes.materialIndex[instanceId]].color1;
     color2 = materialInput[materialIndexes.materialIndex[instanceId]].color2;

@@ -73,6 +73,7 @@ namespace Twin2Engine::Manager
 
 	public:
 		static GraphicEngine::Shader* DepthShader;
+		static void UpdateDirShadowMapsTab();
 
 		//ShaderManager();
 		static void Init();

@@ -8,7 +8,6 @@ using std::string;
 #include <core/Transform.h>
 
 using Twin2Engine::Core::Component;
-//using Twin2EngineCore::Transform;
 
 
 namespace Twin2Engine::Core
@@ -16,6 +15,14 @@ namespace Twin2Engine::Core
 	class GameObject
 	{
 		friend class Transform;
+	//public:
+
+		//CloneFunction(GameObject, _name, _activeSelf, _isStatic)
+
+		GameObject* Clone() const;
+		virtual void CloneTo(GameObject* cloned) const;
+
+	private:
 
 		static unsigned int _currentFreeId;
 		unsigned int _id;
@@ -89,6 +96,9 @@ namespace Twin2Engine::Core
 		}
 
 #pragma endregion
+	
+		inline static GameObject* Instatiate(GameObject* gameObject);
+		inline static GameObject* Instatiate(GameObject* gameObject, Transform* parent);
 	};
 }
 

@@ -57,6 +57,7 @@ function(compile_shader shader_path)
     set(output_file "${SHADERS_OUTPUT_DIR}/${RELATIVE_SOURCE}")
 
     # Create output directory
+
     #file(MAKE_DIRECTORY ${SHADERS_OUTPUT_DIR})
     
     message("Shader to compile: ${shader_file}")
@@ -84,9 +85,9 @@ endfunction()
 find_shader_files(${SHADERS_SOURCE_DIR})
 
 # Compile each shader file
-foreach(shader_file ${shader_files})
-    compile_shader(${shader_file})
-endforeach()
+#foreach(shader_file ${shader_files})
+#    compile_shader(${shader_file})
+#endforeach()
 
 # Custom commend that will create _parameters.shpa files
 

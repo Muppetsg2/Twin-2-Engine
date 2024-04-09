@@ -255,7 +255,9 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::GameO
 					queue.push(neighborPos);
 
 					// Kopiowanie gameobjectu
-					//GetTile(neighborPos)->SetGameObject(gameObject);
+					Twin2Engine::Core::GameObject* instantiatedGameObject = Twin2Engine::Core::GameObject::Instatiate(gameObject);
+					GetTile(neighborPos)->SetGameObject(instantiatedGameObject);
+					instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3(neighborPos.x * _distanceBetweenTiles, neighborPos.y * _distanceBetweenTiles, 0.0f));
 					SPDLOG_ERROR("Nie zaimplementowano kopiowania gameobjectu");
 					//visited.insert(neighborPos);
 				}

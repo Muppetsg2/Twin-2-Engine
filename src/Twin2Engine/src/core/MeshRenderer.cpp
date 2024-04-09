@@ -11,6 +11,7 @@ void MeshRenderer::Render()
 	data.transform = GetTransform()->GetTransformMatrix();
 	data.meshes = std::vector<InstatiatingMesh*>();
 	data.materials = std::vector<Material>();
+	data.isTransparent = IsTransparent();
 	for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
 		data.meshes.push_back(_model.GetMesh(i));
 

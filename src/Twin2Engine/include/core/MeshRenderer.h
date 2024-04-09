@@ -12,9 +12,15 @@ namespace Twin2Engine::Core
 {
 	class MeshRenderer : public RenderableComponent
 	{
+		CloneFunctionStart(MeshRenderer, RenderableComponent)
+			CloneField(_model)
+			CloneField(_materials)
+		CloneFunctionEnd()
+
 		GraphicEngine::InstatiatingModel _model;
 
 		std::vector<GraphicEngine::Material> _materials;
+
 
 	public:
 		virtual void Render() override;

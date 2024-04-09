@@ -1,5 +1,4 @@
-#ifndef _INSTATIATING_MESH_H_
-#define _INSTATIATING_MESH_H_
+#pragma once
 
 #include <graphic/Vertex.h>
 
@@ -26,5 +25,3 @@ namespace Twin2Engine::GraphicEngine
         void Draw(unsigned int number);
     };
 }
-
-#endif // !_INSTATIATING_MESH_H_

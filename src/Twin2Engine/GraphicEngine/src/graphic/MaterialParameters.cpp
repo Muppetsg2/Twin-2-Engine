@@ -94,15 +94,18 @@ void Twin2Engine::GraphicEngine::MaterialParameters::UploadTextures2D(unsigned i
 	//SPDLOG_INFO("Here1 {}", _textures.size());
 	for (int i = 0; i < _textures.size(); i++)
 	{
-		glActiveTexture(GL_TEXTURE0 + textureBinded);
 		//glActiveTexture(GL_TEXTURE0 + textureBinded);
+		glActiveTexture(GL_TEXTURE0 + textureBinded);
 		glBindTexture(GL_TEXTURE_2D, _textures[i]);
+
 		//SPDLOG_INFO("Here4 {} {}", beginLocation, textureBinded);
 		glBindSampler(textureBinded, _samplers[i]);
+
 		//SPDLOG_INFO("Here6");
 		//glUniform1i(beginLocation, GL_TEXTURE0 + textureBinded);
 		//glUniform1i(beginLocation, GL_TEXTURE0 + textureBinded);
 		glUniform1i(beginLocation, textureBinded);
+		//glUniform1i(glGetUniformLocation(programId, "texturesInput[0].texture1"), textureBinded);
 		//glUniform1i(beginLocation, _samplers[i]);
 
 		GLenum error = glGetError();

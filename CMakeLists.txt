@@ -17,15 +17,10 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 include(global_settings)
 
-
-
-
 #creating global variables
 
 #shader variables
 set(SHADER_ORIGIN_FOLDER ${CMAKE_CURRENT_SOURCE_DIR})
-
-
 
 # ---- Dependencies ----
 add_subdirectory(thirdparty)

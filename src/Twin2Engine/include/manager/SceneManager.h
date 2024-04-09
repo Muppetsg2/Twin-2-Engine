@@ -34,13 +34,4 @@ namespace Twin2Engine::Manager {
 		static void UnloadScene(const std::string& name);
 		static void UnloadAll();
 	};
-
-	template<const char* T> static void AddComponentToSceneObject(Core::GameObject* obj, const YAML::Node componentNode);
-
-	template<>
-	inline void AddComponentToSceneObject<"Image">(Core::GameObject* obj, const YAML::Node componentNode)
-	{
-		UI::Image* img = obj->AddComponent<UI::Image>();
-		img->SetSprite(componentNode["sprite"].as<string>());
-	}
 }

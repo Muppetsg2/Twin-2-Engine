@@ -1,5 +1,6 @@
 #include <manager/SceneManager.h>
 #include <core/RenderableComponent.h>
+#include <core/ComponentDeserializer.h>
 
 using namespace Twin2Engine::Manager;
 using namespace std;
@@ -65,8 +66,13 @@ GameObject* SceneManager::CreateGameObject(const YAML::Node gameObjectNode)
 
 	vector<YAML::Node> componentNodes = gameObjectNode["components"].as<vector<YAML::Node>>();
 
-	for (auto& compNode : componentNodes) {
-		AddComponentToSceneObject<compNode["type"].as<string>().c_str()>(obj, compNode);
+	for (const YAML::Node& compNode : componentNodes) {
+		string type = compNode["type"].as<string>();
+		if (!ComponentDeserializer::HasDeserializer(type)) {
+			SPDLOG_ERROR("Component Deselializer for given type '{0}' not found", type);
+			continue;
+		}
+		ComponentDeserializer::GetDeserializer(type)(obj, compNode);
 	}
 
 	return obj;

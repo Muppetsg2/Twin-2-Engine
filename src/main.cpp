@@ -52,6 +52,9 @@
 #include <core/Scene.h>
 #include <manager/SceneManager.h>
 
+// SERIALIZATION
+#include <core/ComponentDeserializer.h>
+
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
@@ -183,6 +186,12 @@ int main(int, char**)
     spdlog::set_level(spdlog::level::debug);
 
     GraphicEngineManager::Init();
+
+    // COMPONENTS DESELIALIZERS
+    ComponentDeserializer::AddDeserializer("Image", [](GameObject* obj, const YAML::Node& node) -> void {
+        Image* img = obj->AddComponent<Image>();
+        img->SetSprite(node["sprite"].as<string>());
+    });
 
     testScene = new Scene();
 

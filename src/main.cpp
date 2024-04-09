@@ -127,8 +127,6 @@ const     char*   glsl_version     = "#version 450";
 constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 5;
 
-//Mesh* mesh;
-Shader* shader;
 Material material;
 Material material2;
 Material wallMat;
@@ -137,8 +135,13 @@ InstatiatingModel modelMesh;
 GameObject* gameObject;
 GameObject* gameObject2;
 GameObject* gameObject3;
+GameObject* gameObject4;
 
 GameObject* imageObj;
+GameObject* imageObj2;
+GameObject* imageObj3;
+Image* image;
+float colorSpan = 1.f;
 GameObject* textObj;
 Text* text;
 
@@ -218,11 +221,32 @@ int main(int, char**)
     comp->AddMaterial(roofMat);
     comp->SetModel(modelCastle);
 
+    InstatiatingModel modelAK = ModelsManager::GetModel("res/models/AK47.obj");
+
+    gameObject4 = new GameObject();
+    gameObject4->GetTransform()->Translate(glm::vec3(0, 0, 10));
+    gameObject4->GetTransform()->Rotate(glm::vec3(90, 0, 0));
+    comp = gameObject4->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("deska"));
+    comp->AddMaterial(MaterialsManager::GetMaterial("metal"));
+    comp->SetModel(modelAK);
+
     imageObj = new GameObject();
+    imageObj->GetTransform()->SetGlobalPosition(glm::vec3(-900, -500, 0));
     Image* img = imageObj->AddComponent<Image>();
     img->SetSprite(SpriteManager::MakeSprite("stone", "res/textures/stone.jpg"));
     Image* img2 = imageObj->AddComponent<Image>();
     img2->SetSprite(SpriteManager::MakeSprite("grass", "res/textures/grass.png"));
+
+    imageObj2 = new GameObject();
+    imageObj2->GetTransform()->SetGlobalPosition(glm::vec3(900, -500, 0));
+    img = imageObj2->AddComponent<Image>();
+    img->SetSprite("grass");
+
+    imageObj3 = new GameObject();
+    imageObj3->GetTransform()->SetGlobalPosition(glm::vec3(0, 500, 0));
+    image = imageObj3->AddComponent<Image>();
+    image->SetSprite(SpriteManager::MakeSprite("white_box", "res/textures/white.png"));
 
     textObj = new GameObject();
     textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
@@ -269,7 +293,14 @@ int main(int, char**)
     }
 
     // Cleanup
+    delete gameObject;
+    delete gameObject2;
+    delete gameObject3;
+    delete gameObject4;
     delete imageObj;
+    delete imageObj2;
+    delete imageObj3;
+    delete textObj;
     SpriteManager::UnloadAll();
     TextureManager::UnloadAll();
     AudioManager::UnloadAll();
@@ -415,6 +446,8 @@ void input()
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
+    // Na potrzeby zadania
+    /*
     if (mouseNotUsed)
     {
         lastX = xpos;
@@ -447,12 +480,35 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     {
         Camera.GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
     }
+    */
 }
+
+float yRot = 10.f;
 
 void update()
 {
     // Update game objects' state here
     text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
+
+    colorSpan -= Time::GetDeltaTime() * 0.2f;
+    if (colorSpan <= 0.f) {
+        colorSpan = 1.f;
+    }
+    // Color
+    if (colorSpan > 0.66f) {
+        image->SetColor({ 0.f, 1.f, 0.f, 1.f });
+    }
+    else if (colorSpan > 0.33f) {
+        image->SetColor({ 1.f, 1.f, 0.f, 1.f });
+    }
+    else {
+        image->SetColor({ 1.f, 0.f, 0.f, 1.f });
+    }
+    // WIDTH
+    image->SetWidth(1000.f * colorSpan);
+
+    Camera.GetTransform()->SetGlobalRotation(Camera.GetTransform()->GetGlobalRotation() + glm::vec3(0.f, yRot * Time::GetDeltaTime(), 0.f));
+
     Camera.GetTransform()->Update();
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <core/Scene.h>
+#include <UI/Image.h>
 
 namespace Twin2Engine::Manager {
 	class SceneManager {
@@ -20,6 +21,8 @@ namespace Twin2Engine::Manager {
 
 		static std::pair<std::vector<size_t>, std::vector<size_t>> GetResourcesToLoadAndUnload(const std::vector<std::string> paths, const std::vector<size_t> loadedHashes);
 	public:
+		static Core::GameObject* CreateGameObject(const YAML::Node gameObjectNode);
+
 		static void AddScene(const std::string& name, Core::Scene* scene);
 
 		static void LoadScene(const std::string& name);
@@ -31,4 +34,13 @@ namespace Twin2Engine::Manager {
 		static void UnloadScene(const std::string& name);
 		static void UnloadAll();
 	};
+
+	template<const char* T> static void AddComponentToSceneObject(Core::GameObject* obj, const YAML::Node componentNode);
+
+	template<>
+	inline void AddComponentToSceneObject<"Image">(Core::GameObject* obj, const YAML::Node componentNode)
+	{
+		UI::Image* img = obj->AddComponent<UI::Image>();
+		img->SetSprite(componentNode["sprite"].as<string>());
+	}
 }

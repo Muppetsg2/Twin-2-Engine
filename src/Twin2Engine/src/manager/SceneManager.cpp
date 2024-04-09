@@ -5,6 +5,7 @@ using namespace Twin2Engine::Manager;
 using namespace std;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::UI;
 
 Scene* SceneManager::_currentScene = nullptr;
 GameObject* SceneManager::_rootObject = nullptr;
@@ -52,6 +53,23 @@ pair<vector<size_t>, vector<size_t>> SceneManager::GetResourcesToLoadAndUnload(c
 	}
 
 	return pair<vector<size_t>, vector<size_t>>(toLoad, toUnload);
+}
+
+GameObject* SceneManager::CreateGameObject(const YAML::Node gameObjectNode)
+{
+	GameObject* obj = new GameObject();
+
+	obj->SetName(gameObjectNode["name"].as<string>());
+	obj->SetIsStatic(gameObjectNode["isStatic"].as<bool>());
+	obj->SetActive(gameObjectNode["isActive"].as<bool>());
+
+	vector<YAML::Node> componentNodes = gameObjectNode["components"].as<vector<YAML::Node>>();
+
+	for (auto& compNode : componentNodes) {
+		AddComponentToSceneObject<compNode["type"].as<string>().c_str()>(obj, compNode);
+	}
+
+	return obj;
 }
 
 void SceneManager::AddScene(const string& name, Scene* scene)

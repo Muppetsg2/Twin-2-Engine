@@ -14,6 +14,7 @@ namespace Twin2Engine::Core {
 	class Scene {
 	private:
 		GameObject* _rootObject = nullptr;
+
 		std::map<std::string, Manager::TextureData> _textures = std::map<std::string, Manager::TextureData>();
 		std::map<std::string, std::tuple<std::string, bool, Manager::SpriteData>> _sprites = std::map<std::string, std::tuple<std::string, bool, Manager::SpriteData>>();
 		std::list<std::string> _fonts = std::list<std::string>();

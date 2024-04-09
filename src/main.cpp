@@ -265,6 +265,26 @@ int main(int, char**)
     SceneManager::AddScene("testScene", testScene);
     SceneManager::LoadScene("testScene");
 
+    YAML::Node gbNode;
+    gbNode.force_insert("name", "name"s);
+    gbNode.force_insert("isStatic", false);
+    gbNode.force_insert("isActive", true);
+    
+    vector<YAML::Node> compNodes;
+    YAML::Node imageNode;
+    imageNode.force_insert("type", "Image"s);
+    imageNode.force_insert("sprite", "stone"s);
+    compNodes.push_back(imageNode);
+
+    gbNode.force_insert("components", compNodes);
+
+    GameObject* test = SceneManager::CreateGameObject(gbNode);
+    Image* testImg = test->GetComponent<Image>();
+
+    SPDLOG_INFO("GameObject Test Name: '{0}', Static: {1}, Active: {2}, Sprite: '{3}'", test->GetName(), test->GetIsStatic(), test->GetActive(), testImg->GetSpriteAlias());
+
+    delete test;
+
     // Main loop
     while (!window->IsClosed())
     {

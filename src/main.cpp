@@ -154,7 +154,7 @@ int main(int, char**)
 
     init_imgui();
     spdlog::info("Initialized ImGui.");
-    
+
     //SoLoud::result res = soloud.init();
     SoLoud::result res = AudioManager::Init();
     if (res != 0) {

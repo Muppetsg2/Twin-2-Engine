@@ -18,14 +18,13 @@ void ComponentDeserializer::AddDeserializer(const string& type, const Action<Gam
 
 bool ComponentDeserializer::HasDeserializer(const string& type)
 {
-	size_t h = hash<string>()(type);
-	return _deserializers.find(h) != _deserializers.end();
+	return _deserializers.find(hash<string>()(type)) != _deserializers.end();
 }
 
 Action<GameObject*, const Node&> ComponentDeserializer::GetDeserializer(const string& type)
 {
 	size_t h = hash<string>()(type);
-	if (_deserializers.find(h) != _deserializers.end())
+	if (_deserializers.find(h) == _deserializers.end())
 	{
 		SPDLOG_WARN("Nie znaleziono deserializatora dla typu '{0}'", type);
 		return Action<GameObject*, const Node&>();

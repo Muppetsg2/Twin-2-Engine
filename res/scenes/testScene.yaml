@@ -1,0 +1,36 @@
+Textures:
+    - path: "res/textures/stone.jpg"
+      sWrapMode: 33648 # MIRRORED_REPEAT
+      tWrapMode: 33648 # MIRRORED_REPEAT
+      minFilterMode: 9986 # NEAREST_MIPMAP_LINEAR
+      magFilterMode: 9729 # LINEAR
+    - path: "res/textures/grass.png"
+      sWrapMode: 33648 # MIRRORED_REPEAT
+      tWrapMode: 33648 # MIRRORED_REPEAT
+      minFilterMode: 9986 # NEAREST_MIPMAP_LINEAR
+      magFilterMode: 9729 # LINEAR
+Sprites:
+    - alias: "stone"
+      texture: 0
+    - alias: "grass"
+      texture: 1
+GameObjects:
+    -   name: "test"
+        isStatic: false
+        isActive: true
+        transform:
+            position: 
+                x: 0
+                y: 0
+                z: 0
+            scale:
+                x: 1
+                y: 1
+                z: 1
+            rotation:
+                x: 0
+                y: 0
+                z: 0
+        components:
+            -   type: "Image"
+                sprite: "stone"

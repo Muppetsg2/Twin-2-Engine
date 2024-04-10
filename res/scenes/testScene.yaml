@@ -19,7 +19,7 @@ Sprites:
 Fonts:
     - res/fonts/arial.ttf
 Audio:
-    - res/music/FurElise.wav
+    - res/music/acoustic-guitar.mp3
 GameObjects:
     -   name: Camera
         isStatic: false
@@ -27,15 +27,15 @@ GameObjects:
         transform:
             position:
                 x: 0.0
-                y: 0.0
-                z: 0.0
+                y: 2.0
+                z: 5.0
             scale:
                 x: 0.0
                 y: 0.0
                 z: 0.0
             rotation:
                 x: 0.0
-                y: 0.0
+                y: -90.0
                 z: 0.0
         components:
             -   type: Camera
@@ -53,7 +53,7 @@ GameObjects:
                     z: 0.0
                 isMain: true
             -   type: Audio
-                audio: res/music/FurElise.wav
+                audio: res/music/acoustic-guitar.mp3
                 loop: true
                 time: 0.0
                 volume: 1.0

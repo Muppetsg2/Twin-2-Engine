@@ -24,6 +24,7 @@ namespace Twin2Engine::Manager {
 		static Core::GameObject* CreateGameObject(const YAML::Node gameObjectNode);
 
 		static void AddScene(const std::string& name, Core::Scene* scene);
+		static void AddScene(const std::string& name, const std::string& path);
 
 		static void LoadScene(const std::string& name);
 

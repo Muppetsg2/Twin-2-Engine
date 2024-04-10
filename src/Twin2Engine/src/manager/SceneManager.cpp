@@ -87,6 +87,69 @@ void SceneManager::AddScene(const string& name, Scene* scene)
 	_loadedScenes[id] = scene;
 }
 
+void SceneManager::AddScene(const string& name, const string& path)
+{
+	Scene* scene = new Scene();
+	YAML::Node sceneNode = YAML::LoadFile(path);
+
+	// Loading Textures
+	vector<string> texturePaths;
+	vector<YAML::Node> nodes = sceneNode["Textures"].as<vector<YAML::Node>>();
+
+	for (YAML::Node texNode : nodes) {
+		TextureData data{
+			.sWrapMode = (TextureWrapMode)texNode["sWrapMode"].as<uint32_t>(),
+			.tWrapMode = (TextureWrapMode)texNode["tWrapMode"].as<uint32_t>(),
+			.minFilterMode = (TextureFilterMode)texNode["minFilterMode"].as<uint32_t>(),
+			.magFilterMode = (TextureFilterMode)texNode["magFilterMode"].as<uint32_t>(),
+		};
+		string path = texNode["path"].as<string>();
+		scene->AddTexture2D(path, data);
+		texturePaths.push_back(path);
+	}
+
+	// Loading Sprites
+	nodes = sceneNode["Sprites"].as<vector<YAML::Node>>();
+
+	for (YAML::Node spriteNode : nodes) {
+		if (spriteNode["hasParameters"].as<bool>()) {
+			SpriteData data{
+				.x = spriteNode["x"].as<uint32_t>(),
+				.y = spriteNode["y"].as<uint32_t>(),
+				.width = spriteNode["width"].as<uint32_t>(),
+				.height = spriteNode["height"].as<uint32_t>()
+			};
+			scene->AddSprite(spriteNode["alias"].as<string>(), texturePaths[spriteNode["texture"].as<size_t>()], data);
+		}
+		else {
+			scene->AddSprite(spriteNode["alias"].as<string>(), texturePaths[spriteNode["texture"].as<size_t>()]);
+		}
+	}
+
+	// Loading Fonts
+	nodes = sceneNode["Fonts"].as<vector<YAML::Node>>();
+
+	for (YAML::Node fontNode : nodes) {
+		scene->AddFont(fontNode.as<string>());
+	}
+
+	// Loading Audio
+	nodes = sceneNode["Audio"].as<vector<YAML::Node>>();
+
+	for (YAML::Node audioNode : nodes) {
+		scene->AddAudio(audioNode.as<string>());
+	}
+
+	// Loading GameObjects
+	nodes = sceneNode["GameObjects"].as<vector<YAML::Node>>();
+
+	for (YAML::Node gameObjectNode : nodes) {
+		scene->AddGameObject(gameObjectNode);
+	}
+
+	AddScene(name, scene);
+}
+
 void SceneManager::LoadScene(const string& name)
 {
 	hash<string> hasher;
@@ -152,6 +215,7 @@ void SceneManager::LoadScene(const string& name)
 	}
 
 	// FONTS
+	paths.clear();
 	for (auto& path : sceneToLoad->_fonts) {
 		paths.push_back(path);
 	}
@@ -191,7 +255,7 @@ void SceneManager::LoadScene(const string& name)
 		if (id != 0) _audiosIds.push_back(id);
 	}
 
-	_rootObject = sceneToLoad->_rootObject;
+	//_rootObject = sceneToLoad->_rootObject;
 	_currentScene = sceneToLoad;
 }
 

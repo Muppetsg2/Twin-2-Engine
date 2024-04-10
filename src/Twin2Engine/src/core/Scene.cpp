@@ -6,7 +6,7 @@ using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
 using namespace std;
 
-Scene::Scene() {
+/*Scene::Scene() {
 	_rootObject = new GameObject(this);
 }
 
@@ -31,6 +31,11 @@ GameObject* Scene::AddGameObject()
 	GameObject* obj = new GameObject(this);
 	_rootObject->GetTransform()->AddChild(obj->GetTransform());
 	return obj;
+}*/
+
+void Scene::AddGameObject(const YAML::Node& gameObjectNode)
+{
+	_gameObjects.push_back(gameObjectNode);
 }
 
 void Scene::AddTexture2D(const string& path, const TextureData& data) {

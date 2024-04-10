@@ -194,7 +194,9 @@ int main(int, char**)
         img->SetSprite(node["sprite"].as<string>());
     });
 
-    testScene = new Scene();
+    SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
+
+    /*testScene = new Scene();
 
     // SCENE RESOURCES
     testScene->AddTexture2D("res/textures/stone.jpg");
@@ -205,19 +207,18 @@ int main(int, char**)
 
     testScene->AddFont("res/fonts/arial.ttf");
 
-    testScene->AddAudio("res/music/FurElise.wav");
+    testScene->AddAudio("res/music/FurElise.wav");*/
 
     // SCENE OBJECTS
-    tuple<GameObject*, CameraComponent*, AudioComponent*> CamComps = testScene->AddGameObject<CameraComponent, AudioComponent>();
-    Camera = get<0>(CamComps);
-    CameraComponent* c = get<1>(CamComps);
+    Camera = new GameObject();
+    CameraComponent* c = Camera->AddComponent<CameraComponent>();
     c->SetFOV(45.f);
 
-    AudioComponent* a = std::get<2>(CamComps);
+    AudioComponent* a = Camera->AddComponent<AudioComponent>();
     a->SetAudio("res/music/FurElise.wav");
     a->Loop();
 
-    modelMesh = ModelsManager::GetCube();
+    /*modelMesh = ModelsManager::GetCube();
 
     material = MaterialsManager::GetMaterial("Basic2");
     material2 = MaterialsManager::GetMaterial("textured");
@@ -272,28 +273,8 @@ int main(int, char**)
 
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();
 
-    SceneManager::AddScene("testScene", testScene);
+    SceneManager::AddScene("testScene", testScene);*/
     SceneManager::LoadScene("testScene");
-
-    YAML::Node gbNode;
-    gbNode.force_insert("name", "name"s);
-    gbNode.force_insert("isStatic", false);
-    gbNode.force_insert("isActive", true);
-    
-    vector<YAML::Node> compNodes;
-    YAML::Node imageNode;
-    imageNode.force_insert("type", "Image"s);
-    imageNode.force_insert("sprite", "stone"s);
-    compNodes.push_back(imageNode);
-
-    gbNode.force_insert("components", compNodes);
-
-    GameObject* test = SceneManager::CreateGameObject(gbNode);
-    Image* testImg = test->GetComponent<Image>();
-
-    SPDLOG_INFO("GameObject Test Name: '{0}', Static: {1}, Active: {2}, Sprite: '{3}'", test->GetName(), test->GetIsStatic(), test->GetActive(), testImg->GetSpriteAlias());
-
-    delete test;
 
     // Main loop
     while (!window->IsClosed())
@@ -503,7 +484,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void update()
 {
     // Update game objects' state here
-    text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
+    //text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
     SceneManager::UpdateCurrentScene();
 }
 

@@ -248,7 +248,7 @@ int main(int, char**)
     
 
     GameObject* hexagonPrefab = new GameObject();
-    hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
+    hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 4, 0));
     hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
 
     //spdlog::info("hexagon rotation: [{}, {}, {}]", hexagonPrefab->GetTransform()->GetLocalRotation().x, hexagonPrefab->GetTransform()->GetLocalRotation().y, hexagonPrefab->GetTransform()->GetLocalRotation().z);

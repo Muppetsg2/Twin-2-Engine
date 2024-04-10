@@ -1,12 +1,19 @@
 #ifndef _HEXAGONAL_TILEMAP_H_
 #define _HEXAGONAL_TILEMAP_H_
 
-#include <Tilemap/HexagonalTile.h>
+#include <core/GameObject.h>
+#include <core/Transform.h>
+
+#define SQRT_3 1.7320508075688772935274463415059f
 
 namespace Tilemap
 {
+	class HexagonalTile;
+
 	class HexagonalTilemap
 	{
+
+		//*
 		HexagonalTile** _tilemap;
 		unsigned int _width;
 		unsigned int _height;
@@ -38,7 +45,10 @@ namespace Tilemap
 		inline float GetDistanceBetweenTiles() const;
 		inline void SetEdgeLength(float edgeLength);
 		inline float GetEdgeLength() const;
+	/**/
 	};
 }
+#include <Tilemap/HexagonalTile.h>
+
 
 #endif // !_HEXAGONAL_TILEMAP_H_

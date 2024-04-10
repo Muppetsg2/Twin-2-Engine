@@ -18,6 +18,8 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/pch
 target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC Twin2Engine)
 
+target_link_libraries(${PROJECT_NAME} PUBLIC Tilemap)
+
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog)
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
 

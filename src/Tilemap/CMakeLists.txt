@@ -1,4 +1,4 @@
-project(Tilemap VERSION 0.0)
+project(Tilemap VERSION 1.0)
 
 
 set(TILEMAP_DIR ${CMAKE_CURRENT_LIST_DIR})
@@ -36,7 +36,7 @@ target_include_directories(${PROJECT_NAME}
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${TILEMAP_PRECOMPILE_HEADER})
 
 
-target_link_libraries(${PROJECT_NAME} spdlog)
+target_link_libraries(${PROJECT_NAME} PRIVATE Twin2Engine)
+target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
+target_link_libraries(${PROJECT_NAME} PRIVATE spdlog)
 #target_link_libraries(GraphicEngine yaml-cpp)
-target_link_libraries(${PROJECT_NAME} Twin2Engine)
-target_link_libraries(${PROJECT_NAME} glm::glm)

@@ -97,8 +97,8 @@ namespace Twin2Engine::Core
 
 #pragma endregion
 	
-		inline static GameObject* Instatiate(GameObject* gameObject);
-		inline static GameObject* Instatiate(GameObject* gameObject, Transform* parent);
+		static GameObject* Instatiate(GameObject* gameObject);
+		static GameObject* Instatiate(GameObject* gameObject, Transform* parent);
 	};
 }
 

@@ -38,7 +38,7 @@ CameraType CameraComponent::GetCameraType()
 	return _type;
 }
 
-uint8_t Twin2Engine::Core::CameraComponent::GetCameraFilters()
+uint8_t CameraComponent::GetCameraFilters()
 {
 	return _filters;
 }
@@ -137,7 +137,7 @@ void CameraComponent::SetNearPlane(float value)
 	_near = value;
 }
 
-void Twin2Engine::Core::CameraComponent::SetCameraFilter(uint8_t filters)
+void CameraComponent::SetCameraFilter(uint8_t filters)
 {
 	_filters = filters;
 }

@@ -46,6 +46,13 @@ void CameraComponent::OnWindowSizeChange()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, _renderMapFBO);
+	glBindRenderbuffer(GL_RENDERBUFFER, _renderBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, wSize.x, wSize.y);
+
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 CameraType CameraComponent::GetCameraType()
@@ -188,7 +195,9 @@ void CameraComponent::SetIsMain(bool value)
 {
 	if (value) {
 		for (auto c : Cameras) {
-			c->SetIsMain(false);
+			if (c != this) {
+				c->SetIsMain(false);
+			}
 		}
 	}
 	else if (!value && this->_isMain) {
@@ -240,14 +249,17 @@ void CameraComponent::Render()
 	// RENDERING
 	if (this->IsMain()) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		BindRenderTexture();
+		BindRenderTexture(0);
+		BindDepthTexture(1);
 		_renderShader->Use();
 		_renderShader->SetInt("screenTexture", 0);
+		_renderShader->SetInt("depthTexture", 1);
 
 		_renderShader->SetBool("hasBlur", (_filters & RenderFilter::BLUR) != 0);
 		_renderShader->SetBool("hasVignette", (_filters & RenderFilter::VIGNETTE) != 0);
 		_renderShader->SetBool("hasNegative", (_filters & RenderFilter::NEGATIVE) != 0);
 		_renderShader->SetBool("hasGrayscale", (_filters & RenderFilter::GRAYSCALE) != 0);
+		_renderShader->SetBool("displayDepth", (_filters & RenderFilter::DEPTH) != 0);
 
 		_renderPlane.GetMesh(0)->Draw(1);
 	}
@@ -380,6 +392,7 @@ void CameraComponent::Initialize()
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, wSize.x, wSize.y);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _renderBuffer);
 
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 

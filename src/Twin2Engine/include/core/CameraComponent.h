@@ -21,7 +21,8 @@ namespace Twin2Engine::Core {
 		VIGNETTE = 1,
 		BLUR = 2,
 		NEGATIVE = 4,
-		GRAYSCALE = 8
+		GRAYSCALE = 8,
+		DEPTH = 16
 	};
 
 	class CameraComponent : public Component {

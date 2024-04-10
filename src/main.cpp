@@ -649,6 +649,13 @@ void imgui_render()
                 acFil |= RenderFilter::BLUR;
             }
 
+            g = (fil & RenderFilter::DEPTH) != 0;
+
+            ImGui::Checkbox("Depth", &g);
+            if (g) {
+                acFil |= RenderFilter::DEPTH;
+            }
+
             c->SetCameraFilter(acFil);
 
             bool per = (c->GetCameraType() == CameraType::PERSPECTIVE);

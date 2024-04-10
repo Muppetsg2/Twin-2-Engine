@@ -58,6 +58,9 @@ void AudioComponent::Stop()
 	if (_loaded) {
 		if (AudioManager::IsHandleValid(_audioHandle)) {
 			AudioManager::StopAudio(_audioHandle);
+			_audioHandle = AudioManager::GetAudioHandle(_audioId);
+			AudioManager::SetLooping(_audioHandle, _loop);
+			AudioManager::SetVolume(_audioHandle, _volume);
 			return;
 		}
 	}
@@ -121,6 +124,7 @@ void AudioComponent::SetVolume(float value)
 		}
 
 		AudioManager::SetVolume(_audioHandle, value);
+		_volume = value;
 		return;
 	}
 	else {
@@ -176,6 +180,7 @@ float AudioComponent::GetVolume()
 
 	if (!AudioManager::IsHandleValid(_audioHandle)) {
 		_audioHandle = AudioManager::GetAudioHandle(_audioId);
+		AudioManager::SetVolume(_audioHandle, _volume);
 	}
 
 	return AudioManager::GetVolume(_audioHandle);

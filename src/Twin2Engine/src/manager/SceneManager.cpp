@@ -24,6 +24,7 @@ vector<size_t> SceneManager::_modelsIds = vector<size_t>();
 vector<InstatiatingModel> SceneManager::_modelsHolder = vector<InstatiatingModel>();
 vector<size_t> SceneManager::_standardModelsIds = vector<size_t>();
 vector<InstatiatingModel> SceneManager::_standardModelsHolder = vector<InstatiatingModel>();
+vector<InstatiatingModel*> SceneManager::_allModelsHolder = vector<InstatiatingModel*>();
 
 map<size_t, Scene*> SceneManager::_loadedScenes = map<size_t, Scene*>();
 
@@ -104,6 +105,24 @@ void SceneManager::DeleteGameObject(GameObject* obj)
 		DeleteGameObject(childObj);
 		delete child->GetGameObject();
 	}
+}
+
+GameObject* SceneManager::FindObjectWith(GameObject* obj, const Func<bool, const GameObject*>& predicate)
+{
+	vector<GameObject*> children;
+	Transform* objT = obj->GetTransform();
+	for (size_t i = 0; i < objT->GetChildCount(); ++i) {
+		GameObject* child = objT->GetChildAt(i)->GetGameObject();
+		if (predicate(child)) return child;
+		children.push_back(child);
+	}
+
+	for (const auto& child : children) {
+		GameObject* found = FindObjectWith(child, predicate);
+		if (found != nullptr) return found;
+	}
+
+	return nullptr;
 }
 
 void SceneManager::AddScene(const string& name, Scene* scene)
@@ -191,6 +210,7 @@ void SceneManager::LoadScene(const string& name)
 
 	auto toLoadToUnload = GetResourcesToLoadAndUnload(paths, _texturesIds);
 	
+	// Unloading
 	for (size_t t : toLoadToUnload.second) {
 		TextureManager::UnloadTexture2D(t);
 		for (size_t i = 0; i < _texturesIds.size(); ++i) {
@@ -200,11 +220,24 @@ void SceneManager::LoadScene(const string& name)
 			}
 		}
 	}
+	// Loading
 	for (size_t t : toLoadToUnload.first) {
 		string path = paths[t];
 		Texture2D* temp = TextureManager::LoadTexture2D(path, sceneToLoad->_textures[path]);
 		if (temp != nullptr) _texturesIds.push_back(temp->GetManagerId());
 	}
+	// Sorting
+	vector<size_t> sortedIds;
+	for (size_t i = 0; i < paths.size(); ++i) {
+		size_t pathH = hash<string>()(paths[i]);
+		for (size_t j = 0; j < _texturesIds.size(); ++j) {
+			if (_texturesIds[j] == pathH) {
+				sortedIds.push_back(_texturesIds[j]);
+				break;
+			}
+		}
+	}
+	_texturesIds = sortedIds;
 #pragma endregion
 #pragma region LOADING_SPRITES
 	// SPRITES
@@ -214,7 +247,8 @@ void SceneManager::LoadScene(const string& name)
 	}
 
 	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _spritesIds);
-
+	
+	// Unloading
 	for (size_t s : toLoadToUnload.second) {
 		SpriteManager::UnloadSprite(s);
 		for (size_t i = 0; i < _spritesIds.size(); ++i) {
@@ -224,6 +258,7 @@ void SceneManager::LoadScene(const string& name)
 			}
 		}
 	}
+	// Loading
 	for (size_t s : toLoadToUnload.first) {
 		string alias = paths[s];
 		tuple<string, bool, SpriteData> sData = sceneToLoad->_sprites[alias];
@@ -236,6 +271,18 @@ void SceneManager::LoadScene(const string& name)
 		}
 		if (temp != nullptr) _spritesIds.push_back(temp->GetManagerId());
 	}
+	// Sorting
+	sortedIds.clear();
+	for (size_t i = 0; i < paths.size(); ++i) {
+		size_t pathH = hash<string>()(paths[i]);
+		for (size_t j = 0; j < _spritesIds.size(); ++j) {
+			if (_spritesIds[j] == pathH) {
+				sortedIds.push_back(_spritesIds[j]);
+				break;
+			}
+		}
+	}
+	_spritesIds = sortedIds;
 #pragma endregion
 #pragma region LOADING_FONTS
 	// FONTS
@@ -414,6 +461,48 @@ void SceneManager::RenderCurrentScene()
 GameObject* SceneManager::GetRootObject()
 {
 	return _rootObject;
+}
+
+GameObject* SceneManager::FindObjectWithName(const std::string& name)
+{
+	if (_rootObject->GetName() == name) return _rootObject;
+	return FindObjectWith(_rootObject, [&](const GameObject* obj) -> bool { return obj->GetName() == name; });
+}
+
+/*GameObject* SceneManager::FindObjectWithId(size_t id)
+{
+	if (_rootObject->Id() == id) return _rootObject;
+	return FindObjectWith(_rootObject, [&](const GameObject* obj) -> bool { return obj->Id() == id; });
+}*/
+
+size_t SceneManager::GetTexture2D(size_t loadIdx)
+{
+	return _texturesIds[loadIdx];
+}
+
+size_t SceneManager::GetSprite(size_t loadIdx)
+{
+	return _spritesIds[loadIdx];
+}
+
+size_t SceneManager::GetFont(size_t loadIdx)
+{
+	return _fontsIds[loadIdx];
+}
+
+size_t SceneManager::GetAudio(size_t loadIdx)
+{
+	return _audiosIds[loadIdx];
+}
+
+Material SceneManager::GetMaterial(size_t loadIdx)
+{
+	return _materialsHolder[loadIdx];
+}
+
+InstatiatingModel SceneManager::GetModel(size_t loadIdx)
+{
+	return *_allModelsHolder[loadIdx];
 }
 
 void SceneManager::UnloadCurrent()

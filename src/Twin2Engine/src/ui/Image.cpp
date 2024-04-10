@@ -13,7 +13,7 @@ using namespace std;
 
 void Image::Render()
 {
-	Sprite* sprite = SpriteManager::GetSprite(_spriteAlias);
+	Sprite* sprite = SpriteManager::GetSprite(_spriteId);
 
 	if (sprite != nullptr) {
 		UIElement elem{};
@@ -30,7 +30,12 @@ void Image::Render()
 }
 
 void Image::SetSprite(const std::string& spriteAlias) {
-	_spriteAlias = spriteAlias;
+	_spriteId = hash<string>()(spriteAlias);
+}
+
+void Image::SetSprite(size_t spriteId)
+{
+	_spriteId = spriteId;
 }
 
 void Image::SetColor(const vec4& color)
@@ -48,14 +53,9 @@ void Image::SetHeight(float height)
 	_height = height;
 }
 
-string Image::GetSpriteAlias() const
-{
-	return _spriteAlias;
-}
-
 Sprite* Image::GetSprite() const
 {
-	return SpriteManager::GetSprite(_spriteAlias);
+	return SpriteManager::GetSprite(_spriteId);
 }
 
 vec4 Image::GetColor() const

@@ -92,6 +92,8 @@ static void glfw_error_callback(int error, const char* description)
 
 static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
+    if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) return; // Chce ignorowaæ notyfikacje
+
     string severityS = "";
     if (severity == GL_DEBUG_SEVERITY_HIGH) severityS = "HIGHT";
     else if (severity == GL_DEBUG_SEVERITY_MEDIUM) severityS = "MEDIUM";
@@ -151,21 +153,10 @@ const     char*   glsl_version     = "#version 450";
 constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 5;
 
-Material material;
-Material material2;
-Material wallMat;
-Material roofMat;
-InstatiatingModel modelMesh;
-GameObject* gameObject;
-GameObject* gameObject2;
-GameObject* gameObject3;
-GameObject* gameObject4;
-
 HexagonalTilemap hexagonalTilemap(glm::ivec2(-5, -5), glm::ivec2(5, 5), 1.f, true);
 
 Image* image;
 float colorSpan = 1.f;
-GameObject* textObj;
 Text* text;
 
 GameObject* Camera;
@@ -211,7 +202,7 @@ int main(int, char**)
     ComponentDeserializer::AddDeserializer("Image", [](GameObject* obj, const YAML::Node& node) -> void {
         Image* img = obj->AddComponent<Image>();
         img->SetIsTransparent(node["isTransparent"].as<bool>());
-        img->SetSprite(node["sprite"].as<string>());
+        img->SetSprite(SceneManager::GetSprite(node["sprite"].as<size_t>()));
         img->SetColor(node["color"].as<vec4>());
         img->SetWidth(node["width"].as<float>());
         img->SetHeight(node["height"].as<float>());
@@ -245,52 +236,39 @@ int main(int, char**)
         text->SetFont(node["font"].as<string>());
     });
 
+    ComponentDeserializer::AddDeserializer("MeshRenderer", [](GameObject* obj, const YAML::Node& node) -> void {
+        MeshRenderer* meshRenderer = obj->AddComponent<MeshRenderer>();
+        meshRenderer->SetIsTransparent(node["isTransparent"].as<bool>());
+        for (const YAML::Node& matNode : node["materials"]) {
+            meshRenderer->AddMaterial(MaterialsManager::GetMaterial(matNode.as<string>()));
+        }
+
+        if (node["model"]["standard"]) {
+            string type = node["model"]["standard"].as<string>();
+            if (type == "Cube") {
+                meshRenderer->SetModel(ModelsManager::GetCube());
+            }
+            else if (type == "Sphere") {
+                meshRenderer->SetModel(ModelsManager::GetSphere());
+            }
+            else if (type == "Plane") {
+                meshRenderer->SetModel(ModelsManager::GetPlane());
+            }
+            else if (type == "Piramid") {
+                meshRenderer->SetModel(ModelsManager::GetPiramid());
+            }
+        }
+        else {
+            meshRenderer->SetModel(ModelsManager::GetModel(node["model"]["path"].as<string>()));
+        }
+    });
+
     // ADDING SCENES
     SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
     // SCENE OBJECTS
 
-    /*modelMesh = ModelsManager::GetCube();
-
-    material = MaterialsManager::GetMaterial("Basic2");
-    material2 = MaterialsManager::GetMaterial("textured");
-    wallMat = MaterialsManager::GetMaterial("wallMat");
-    roofMat = MaterialsManager::GetMaterial("roofMat");
-
-    gameObject = testScene->AddGameObject();
-    auto comp = gameObject->AddComponent<MeshRenderer>();
-    gameObject->GetTransform()->Translate(glm::vec3(2, 5, 0));
-    comp->AddMaterial(material);
-    comp->SetModel(modelMesh);
-
-    gameObject2 = testScene->AddGameObject();
-    gameObject2->GetTransform()->Translate(glm::vec3(2, 3, 0));
-    comp = gameObject2->AddComponent<MeshRenderer>();
-    comp->AddMaterial(material2);
-    comp->SetModel(modelMesh);
-
-    InstatiatingModel modelCastle = ModelsManager::GetModel("res/models/castle.obj");
-
-    gameObject3 = testScene->AddGameObject();
-    gameObject3->GetTransform()->Translate(glm::vec3(0, 3, 0));
-    gameObject3->GetTransform()->SetLocalRotation(glm::vec3(0, 0, 0));
-    comp = gameObject3->AddComponent<MeshRenderer>();
-    comp->AddMaterial(wallMat);
-    comp->AddMaterial(roofMat);
-    comp->SetModel(modelCastle);
-
-    InstatiatingModel modelAK = ModelsManager::GetModel("res/models/AK47.obj");
-
-    gameObject4 = new GameObject();
-    gameObject4->GetTransform()->Translate(glm::vec3(0, 0, 10));
-    gameObject4->GetTransform()->Rotate(glm::vec3(90, 0, 0));
-    comp = gameObject4->AddComponent<MeshRenderer>();
-    comp->AddMaterial(MaterialsManager::GetMaterial("deska"));
-    comp->AddMaterial(MaterialsManager::GetMaterial("metal"));
-    comp->SetModel(modelAK);
-
-    InstatiatingModel modelHexagon = ModelsManager::GetModel("res/models/hexagon.obj");
-
+    /*
     GameObject* hexagonPrefab = new GameObject();
     hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 4, 0));
     hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));

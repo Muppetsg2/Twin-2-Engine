@@ -98,7 +98,7 @@ GameObjects:
         components:
             -   type: Image
                 isTransparent: false
-                sprite: stone
+                sprite: 0
                 color:
                     x: 1.0
                     y: 1.0
@@ -108,7 +108,7 @@ GameObjects:
                 height: 100.0
             -   type: Image
                 isTransparent: false
-                sprite: grass
+                sprite: 1
                 color:
                     x: 1.0
                     y: 1.0
@@ -136,7 +136,7 @@ GameObjects:
         components:
             -   type: Image
                 isTransparent: false
-                sprite: grass
+                sprite: 1
                 color:
                     x: 1.0
                     y: 1.0
@@ -164,7 +164,7 @@ GameObjects:
         components:
             -   type: Image
                 isTransparent: false
-                sprite: white_box
+                sprite: 2
                 color:
                     x: 0.0
                     y: 1.0
@@ -200,4 +200,102 @@ GameObjects:
                     w: 1.0
                 size: 48
                 font: res/fonts/arial.ttf
+        children: []
+    -   name: gameObject
+        isStatic: false
+        isActive: true
+        transform:
+            position:
+                x: 2.0
+                y: 5.0
+                z: 0.0
+            scale:
+                x: 1.0
+                y: 1.0
+                z: 1.0
+            rotation:
+                x: 0.0
+                y: 0.0
+                z: 0.0
+        components:
+            -   type: MeshRenderer
+                isTransparent: false
+                model:
+                    standard: Cube
+                materials:
+                    - Basic2
+        children: []
+    -   name: gameObject2
+        isStatic: false
+        isActive: true
+        transform:
+            position:
+                x: 2.0
+                y: 3.0
+                z: 0.0
+            scale:
+                x: 1.0
+                y: 1.0
+                z: 1.0
+            rotation:
+                x: 0.0
+                y: 0.0
+                z: 0.0
+        components:
+            -   type: MeshRenderer
+                isTransparent: false
+                model:
+                    standard: Cube
+                materials:
+                    - textured
+        children: []
+    -   name: gameObject3
+        isStatic: false
+        isActive: true
+        transform:
+            position:
+                x: 0.0
+                y: 3.0
+                z: 0.0
+            scale:
+                x: 1.0
+                y: 1.0
+                z: 1.0
+            rotation:
+                x: 0.0
+                y: 0.0
+                z: 0.0
+        components:
+            -   type: MeshRenderer
+                isTransparent: false
+                model:
+                    path: res/models/castle.obj
+                materials:
+                    - wallMat
+                    - roofMat
+        children: []
+    -   name: gameObject4
+        isStatic: false
+        isActive: true
+        transform:
+            position:
+                x: 0.0
+                y: 0.0
+                z: 10.0
+            scale:
+                x: 1.0
+                y: 1.0
+                z: 1.0
+            rotation:
+                x: 90.0
+                y: 0.0
+                z: 0.0
+        components:
+            -   type: MeshRenderer
+                isTransparent: false
+                model:
+                    path: res/models/AK47.obj
+                materials:
+                    - deska
+                    - metal
         children: []

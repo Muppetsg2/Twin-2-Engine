@@ -7,6 +7,8 @@ namespace Twin2Engine::Core
 
 	class Component
 	{
+		friend class GameObject;
+
 	private:
 		size_t _id;
 		GameObject* _gameObject;
@@ -45,6 +47,23 @@ namespace Twin2Engine::Core
 		void Init(GameObject* obj);
 	public:
 		friend class GameObject;
+#pragma endregion
+
+#pragma region CLONING_COMPONENTS
+	protected:
+		virtual Component* Clone() const
+		{
+			Component* clonedComonent = new Component();
+
+			CloneTo(clonedComonent);
+
+			return clonedComonent;
+		}
+		void CloneTo(Component* clonedComponent) const
+		{
+			clonedComponent->_enabled = _enabled;
+		} 
+
 #pragma endregion
 	};
 }

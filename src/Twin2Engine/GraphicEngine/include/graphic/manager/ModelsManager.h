@@ -1,9 +1,10 @@
-#ifndef _MODELS_MANAGER_H_
-#define _MODELS_MANAGER_H_
+#pragma once
 
 #include <graphic/InstatiatingModel.h>
 #include <graphic/ModelData.h>
 #include <graphic/Vertex.h>
+#include <vector>
+#include <utility>
 
 #define ASSIMP_LOADING true
 #define TINYGLTF_LOADING false
@@ -35,6 +36,7 @@ namespace Twin2Engine::Manager
 		static GraphicEngine::ModelData* LoadModel(const std::string& modelPath);
 		static void UnloadModel(GraphicEngine::ModelData* modelData);
 
+		static std::pair<glm::vec3, glm::vec3> CalcTangentBitangent(std::vector<GraphicEngine::Vertex> vertices, unsigned int i1, unsigned int i2, unsigned int i3);
 
 	public:
 		static void Init();
@@ -52,6 +54,3 @@ namespace Twin2Engine::Manager
 
 	};
 }
-
-
-#endif

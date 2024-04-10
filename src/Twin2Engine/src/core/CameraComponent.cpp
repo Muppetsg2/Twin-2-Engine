@@ -1,12 +1,18 @@
 #include <core/CameraComponent.h>
 #include <core/Transform.h>
 #include <graphic/Window.h>
+#include <GraphicEnigineManager.h>
+#include <graphic/manager/ModelsManager.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Manager;
 
 std::vector<CameraComponent*> CameraComponent::Cameras = std::vector<CameraComponent*>();
 GLuint CameraComponent::_uboMatrices = 0;
+GLuint CameraComponent::_uboWindowData = 0;
+InstatiatingModel CameraComponent::_renderPlane = InstatiatingModel();
+Shader* CameraComponent::_renderShader = nullptr;
 
 void CameraComponent::OnTransformChange(Transform* trans)
 {
@@ -18,16 +24,45 @@ void CameraComponent::OnTransformChange(Transform* trans)
 	front.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
 	this->SetFrontDir(glm::normalize(front));
 
+	/*
 	if (this->_isMain) {
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
+	*/
+}
+
+void CameraComponent::OnWindowSizeChange()
+{
+	ivec2 wSize = Window::GetInstance()->GetContentSize();
+
+	glBindTexture(GL_TEXTURE_2D, _depthMap);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+
+	glBindTexture(GL_TEXTURE_2D, _renderMap);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, _renderMapFBO);
+	glBindRenderbuffer(GL_RENDERBUFFER, _renderBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, wSize.x, wSize.y);
+
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 CameraType CameraComponent::GetCameraType() const
 {
 	return _type;
+}
+
+uint8_t CameraComponent::GetCameraFilters()
+{
+	return _filters;
 }
 
 float CameraComponent::GetNearPlane() const
@@ -72,11 +107,11 @@ mat4 CameraComponent::GetProjectionMatrix()
 
 	switch (_type) {
 		case ORTHOGRAPHIC: {
-			return ortho(0.f, (float)size.x, 0.f, (float)size.y, _near, _far);
+			return ortho(0.f, (float)size.x * 0.005f, 0.f, (float)size.y * 0.005f, _near, _far);
 			break;
 		}
 		case PERSPECTIVE: {
-			return perspective(radians(_fov), (float)size.x / (float)size.y, _near, _far);
+			return perspective(radians(_fov), (size.y != 0) ? ((float)size.x / (float)size.y) : 0, _near, _far);
 			break;
 		}
 	}
@@ -125,9 +160,22 @@ void CameraComponent::SetNearPlane(float value)
 	_near = value;
 }
 
+void CameraComponent::SetCameraFilter(uint8_t filters)
+{
+	_filters = filters;
+}
+
 void CameraComponent::SetCameraType(CameraType value)
 {
 	_type = value;
+
+	/*
+	if (this->IsMain()) {
+		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
+	*/
 }
 
 void CameraComponent::SetFrontDir(vec3 dir)
@@ -164,36 +212,70 @@ void CameraComponent::SetIsMain(bool value)
 	_isMain = value;
 }
 
-void CameraComponent::StartRender()
+void CameraComponent::Render()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, _renderMapFBO);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
+	// UBO's
+	//Jesli wiecej kamer i kazda ma ze swojego kata dawac obraz
+	glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-void CameraComponent::StartDepthTest()
-{
+	glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(vec2), value_ptr(Window::GetInstance()->GetContentSize()));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2), sizeof(float), &(this->_near));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float), sizeof(float), &(this->_far));
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	// DEPTH MAP
 	glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
+	glClearColor(.1f, .1f, .1f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
 
-void CameraComponent::EndRender()
-{
+		GraphicEngineManager::DepthRender();
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
 
-void CameraComponent::EndDepthTest()
-{
+
+	// RENDER MAP
+	glBindFramebuffer(GL_FRAMEBUFFER, _renderMapFBO);
+	glClearColor(.1f, .1f, .1f, 1.f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		GraphicEngineManager::Render();
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+	// RENDERING
+	if (this->IsMain()) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		BindRenderTexture(0);
+		BindDepthTexture(1);
+		_renderShader->Use();
+		_renderShader->SetInt("screenTexture", 0);
+		_renderShader->SetInt("depthTexture", 1);
+
+		_renderShader->SetBool("hasBlur", (_filters & RenderFilter::BLUR) != 0);
+		_renderShader->SetBool("hasVignette", (_filters & RenderFilter::VIGNETTE) != 0);
+		_renderShader->SetBool("hasNegative", (_filters & RenderFilter::NEGATIVE) != 0);
+		_renderShader->SetBool("hasGrayscale", (_filters & RenderFilter::GRAYSCALE) != 0);
+		_renderShader->SetBool("displayDepth", (_filters & RenderFilter::DEPTH) != 0);
+
+		_renderPlane.GetMesh(0)->Draw(1);
+	}
 }
 
-GLuint CameraComponent::GetRenderTexture() const
+void CameraComponent::BindRenderTexture(unsigned int index)
 {
-	return _renderMap;
+	glActiveTexture(GL_TEXTURE0 + index);
+	glBindTexture(GL_TEXTURE_2D, _renderMap);
 }
 
-GLuint CameraComponent::GetDepthTexture() const
+void CameraComponent::BindDepthTexture(unsigned int index)
 {
-	return _depthMap;
+	glActiveTexture(GL_TEXTURE0 + index);
+	glBindTexture(GL_TEXTURE_2D, _depthMap);
 }
 
 CameraComponent* CameraComponent::GetMainCamera()
@@ -226,12 +308,30 @@ void CameraComponent::Initialize()
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+		glGenBuffers(1, &_uboWindowData);
+
+		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
+		glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(float) + sizeof(vec2), NULL, GL_STATIC_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+		glBindBufferRange(GL_UNIFORM_BUFFER, 1, _uboWindowData, 0, 2 * sizeof(float) + sizeof(vec2));
+
+		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(vec2), value_ptr(Window::GetInstance()->GetContentSize()));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2), sizeof(float), &(this->_near));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float), sizeof(float), &(this->_far));
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+		_renderPlane = ModelsManager::GetPlane();
+		_renderShader = ShaderManager::CreateShaderProgram("CameraPlaneShader", "/shaders/screen.vert", "/shaders/screen.frag");
 	}
 
 	this->_camId = Cameras.size();
 	Cameras.push_back(this);
 
-	_eventId = GetTransform()->OnEventTransformChanged += [&](Transform* t) -> void { OnTransformChange(t); };
+	_transformEventId = GetTransform()->OnEventTransformChanged += [&](Transform* t) -> void { OnTransformChange(t); };
+	_windowEventId = Window::GetInstance()->OnWindowSizeEvent += [&]() -> void { OnWindowSizeChange(); };
 
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
@@ -251,8 +351,8 @@ void CameraComponent::Initialize()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, _depthMap, 0);
@@ -274,20 +374,26 @@ void CameraComponent::Initialize()
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, _renderMap, 0);
-	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 
+	glGenRenderbuffers(1, &_renderBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, _renderBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, wSize.x, wSize.y);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _renderBuffer);
+
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -303,12 +409,15 @@ void CameraComponent::OnDestroy()
 	// Render Map
 	glDeleteTextures(1, &_renderMap);
 	glDeleteFramebuffers(1, &_renderMapFBO);
+	glDeleteRenderbuffers(1, &_renderBuffer);
 
-	GetTransform()->OnEventTransformChanged -= _eventId;
+	GetTransform()->OnEventTransformChanged -= _transformEventId;
+	Window::GetInstance()->OnWindowSizeEvent -= _windowEventId;
 
 	Cameras.erase(Cameras.begin() + this->_camId);
 
 	if (Cameras.size() == 0) {
 		glDeleteBuffers(1, &_uboMatrices);
+		glDeleteBuffers(1, &_uboWindowData);
 	}
 }

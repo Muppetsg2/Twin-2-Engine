@@ -9,6 +9,8 @@ add_subdirectory(Twin2Engine)
 
 add_subdirectory(CollisionSystem)
 
+add_subdirectory(Tilemap)
+
 add_executable(${PROJECT_NAME} main.cpp)
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)
@@ -16,16 +18,20 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/pch
 target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC Twin2Engine)
 
+target_link_libraries(${PROJECT_NAME} PUBLIC Tilemap)
+
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog)
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${COLLISION_SYSTEM_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC CollisionSystem)
 
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD 
-				   COMMAND ${CMAKE_COMMAND} -E create_symlink 
-				   ${CMAKE_SOURCE_DIR}/res 
-				   ${CMAKE_CURRENT_BINARY_DIR}/res)
+#add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD 
+#				   COMMAND ${CMAKE_COMMAND} -E create_symlink 
+#				   ${CMAKE_SOURCE_DIR}/res 
+#				   ${CMAKE_CURRENT_BINARY_DIR}/res)
+
+#file(CREATE_LINK ${CMAKE_SOURCE_DIR}/res ${CMAKE_CURRENT_SOURCE_DIR}/res SYMBOLIC)
 
 if(MSVC)
     target_compile_definitions(${PROJECT_NAME} PUBLIC NOMINMAX)
@@ -53,7 +59,8 @@ function(compile_shader shader_path)
     set(output_file "${SHADERS_OUTPUT_DIR}/${RELATIVE_SOURCE}")
 
     # Create output directory
-    # file(MAKE_DIRECTORY ${RELATIVE_SHADER_OUTPUT_DIR})
+
+    #file(MAKE_DIRECTORY ${SHADERS_OUTPUT_DIR})
     
     message("Shader to compile: ${shader_file}")
     message("Shader compiled: ${output_file}\n")
@@ -80,9 +87,9 @@ endfunction()
 find_shader_files(${SHADERS_SOURCE_DIR})
 
 # Compile each shader file
-foreach(shader_file ${shader_files})
-    compile_shader(${shader_file})
-endforeach()
+#foreach(shader_file ${shader_files})
+#    compile_shader(${shader_file})
+#endforeach()
 
 # Custom commend that will create _parameters.shpa files
 

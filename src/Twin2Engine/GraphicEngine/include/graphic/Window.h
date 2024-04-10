@@ -1,5 +1,7 @@
 #pragma once
 
+#include <core/EventHandler.h>
+
 namespace Twin2Engine::GraphicEngine {
 	class Window {
 	private:
@@ -13,7 +15,11 @@ namespace Twin2Engine::GraphicEngine {
 		bool _vsyncOn = false;
 
 		Window(const std::string& title, const glm::ivec2& size, bool fullscreen = false);
+
+		static void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
 	public:
+		static Twin2Engine::Core::MethodEventHandler OnWindowSizeEvent;
+		
 		virtual ~Window();
 
 		static Window* MakeWindow(const std::string& title, const glm::ivec2& size, bool fullscreen = false);

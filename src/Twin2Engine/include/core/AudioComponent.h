@@ -13,6 +13,8 @@ namespace Twin2Engine::Core {
 		handle _audioHandle = 0;
 
 		bool _loaded = false;
+		bool _loop = false;
+		float _volume = 1.0f;
 	public:
 
 		void SetAudio(string path);

@@ -714,11 +714,13 @@ void Twin2Engine::Core::Transform::RecalculateTransformMatrix()
 
 		_localTransformMatrix = glm::translate(_localTransformMatrix, GetLocalPosition());
 
-		glm::vec3 rotation = GetLocalRotation();
+		// Jest to w celu wykonania przebiegu rekalkulacji ale zewzględu na to iżzwraca stopnie to się nie nadaje , ale po tym bezpiecznie można użyć _localRotation
+		//glm::vec3 rotation = GetLocalRotation();
+		RecalculateLocalRotation();
 
-		_localTransformMatrix = glm::rotate(_localTransformMatrix, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-		_localTransformMatrix = glm::rotate(_localTransformMatrix, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-		_localTransformMatrix = glm::rotate(_localTransformMatrix, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+		_localTransformMatrix = glm::rotate(_localTransformMatrix, _localRotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+		_localTransformMatrix = glm::rotate(_localTransformMatrix, _localRotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+		_localTransformMatrix = glm::rotate(_localTransformMatrix, _localRotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 		_localTransformMatrix = glm::scale(_localTransformMatrix, GetLocalScale());
 	}
 

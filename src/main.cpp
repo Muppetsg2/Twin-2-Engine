@@ -1,7 +1,3 @@
-// Soloud
-#include <soloud.h>
-#include <soloud_wav.h>
-
 // HID
 #include <core/Input.h>
 
@@ -52,8 +48,12 @@
 #include <core/Scene.h>
 #include <manager/SceneManager.h>
 
-// SERIALIZATION
+// DESERIALIZATION
 #include <core/ComponentDeserializer.h>
+
+// TILEMAP
+#include <Tilemap/HexagonalTilemap.h>
+#include <Tilemap/HexagonalTile.h>
 
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
@@ -66,9 +66,12 @@ using Twin2Engine::Core::MOUSE_BUTTON;
 using Twin2Engine::Core::CURSOR_STATE;
 using Twin2Engine::Core::Time;
 
+using Tilemap::HexagonalTile;
+using Tilemap::HexagonalTilemap;
+
 #pragma region CAMERA_CONTROLLING
 
-glm::vec3 cameraPos(0.f, 0.f, 5.f);
+glm::vec3 cameraPos(0.f, 2.f, 5.f);
 
 double lastX = 0.0f;
 double lastY = 0.0f;
@@ -81,11 +84,6 @@ bool mouseNotUsed = true;
 #pragma endregion
 
 #pragma region OpenGLCallbackFunctions
-
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -132,10 +130,6 @@ const     char*   glsl_version     = "#version 450";
 constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 5;
 
-Scene* testScene = nullptr;
-
-//Mesh* mesh;
-Shader* shader;
 Material material;
 Material material2;
 Material wallMat;
@@ -144,8 +138,15 @@ InstatiatingModel modelMesh;
 GameObject* gameObject;
 GameObject* gameObject2;
 GameObject* gameObject3;
+GameObject* gameObject4;
+
+HexagonalTilemap hexagonalTilemap(glm::ivec2(-5, -5), glm::ivec2(5, 5), 1.f, true);
 
 GameObject* imageObj;
+GameObject* imageObj2;
+GameObject* imageObj3;
+Image* image;
+float colorSpan = 1.f;
 GameObject* textObj;
 Text* text;
 
@@ -164,7 +165,7 @@ int main(int, char**)
 
     init_imgui();
     spdlog::info("Initialized ImGui.");
-    
+
     //SoLoud::result res = soloud.init();
     SoLoud::result res = AudioManager::Init();
     if (res != 0) {
@@ -230,11 +231,12 @@ int main(int, char**)
 
     gameObject = testScene->AddGameObject();
     auto comp = gameObject->AddComponent<MeshRenderer>();
+    gameObject->GetTransform()->Translate(glm::vec3(2, 5, 0));
     comp->AddMaterial(material);
     comp->SetModel(modelMesh);
 
     gameObject2 = testScene->AddGameObject();
-    gameObject2->GetTransform()->Translate(glm::vec3(2, 1, 0));
+    gameObject2->GetTransform()->Translate(glm::vec3(2, 3, 0));
     comp = gameObject2->AddComponent<MeshRenderer>();
     comp->AddMaterial(material2);
     comp->SetModel(modelMesh);
@@ -242,18 +244,61 @@ int main(int, char**)
     InstatiatingModel modelCastle = ModelsManager::GetModel("res/models/castle.obj");
 
     gameObject3 = testScene->AddGameObject();
-    gameObject3->GetTransform()->Translate(glm::vec3(0, -1, 0));
+    gameObject3->GetTransform()->Translate(glm::vec3(0, 3, 0));
+    gameObject3->GetTransform()->SetLocalRotation(glm::vec3(0, 0, 0));
     comp = gameObject3->AddComponent<MeshRenderer>();
     comp->AddMaterial(wallMat);
     comp->AddMaterial(roofMat);
     comp->SetModel(modelCastle);
 
-    tuple<GameObject*, Image*, Image*> temp = testScene->AddGameObject<Image, Image>();
-    imageObj = get<0>(temp);
-    get<1>(temp)->SetSprite("stone");
-    get<2>(temp)->SetSprite("grass");
+    InstatiatingModel modelAK = ModelsManager::GetModel("res/models/AK47.obj");
 
-    textObj = testScene->AddGameObject();
+    gameObject4 = new GameObject();
+    gameObject4->GetTransform()->Translate(glm::vec3(0, 0, 10));
+    gameObject4->GetTransform()->Rotate(glm::vec3(90, 0, 0));
+    comp = gameObject4->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("deska"));
+    comp->AddMaterial(MaterialsManager::GetMaterial("metal"));
+    comp->SetModel(modelAK);
+
+    InstatiatingModel modelHexagon = ModelsManager::GetModel("res/models/hexagon.obj");
+
+    GameObject* hexagonPrefab = new GameObject();
+    hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 4, 0));
+    hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+
+    //spdlog::info("hexagon rotation: [{}, {}, {}]", hexagonPrefab->GetTransform()->GetLocalRotation().x, hexagonPrefab->GetTransform()->GetLocalRotation().y, hexagonPrefab->GetTransform()->GetLocalRotation().z);
+
+    comp = hexagonPrefab->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("hexagonMat"));
+    comp->SetModel(modelHexagon);
+
+    float tilemapFillingBeginTime = glfwGetTime();
+    hexagonalTilemap.Fill(glm::ivec2(0, 0), hexagonPrefab);
+    spdlog::info("Tilemap filling time: {}", glfwGetTime() - tilemapFillingBeginTime);
+    hexagonalTilemap.GetTile(glm::ivec2(-5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
+    hexagonalTilemap.GetTile(glm::ivec2(5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
+    hexagonalTilemap.GetTile(glm::ivec2(-5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
+    hexagonalTilemap.GetTile(glm::ivec2(5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
+    
+    imageObj = new GameObject();
+    imageObj->GetTransform()->SetGlobalPosition(glm::vec3(-900, 500, 0));
+    Image* img = imageObj->AddComponent<Image>();
+    img->SetSprite(SpriteManager::MakeSprite("stone", "res/textures/stone.jpg"));
+    Image* img2 = imageObj->AddComponent<Image>();
+    img2->SetSprite(SpriteManager::MakeSprite("grass", "res/textures/grass.png"));
+
+    imageObj2 = new GameObject();
+    imageObj2->GetTransform()->SetGlobalPosition(glm::vec3(900, 500, 0));
+    img = imageObj2->AddComponent<Image>();
+    img->SetSprite("grass");
+
+    imageObj3 = new GameObject();
+    imageObj3->GetTransform()->SetGlobalPosition(glm::vec3(0, -500, 0));
+    image = imageObj3->AddComponent<Image>();
+    image->SetSprite(SpriteManager::MakeSprite("white_box", "res/textures/white.png"));
+
+    textObj = new GameObject();
     textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
     text = textObj->AddComponent<Text>();
     text->SetColor(glm::vec4(1.f));
@@ -274,9 +319,8 @@ int main(int, char**)
     bc1->Update();
     bc2->Update();
 
-    CollisionSystem::CollisionManager::Instance()->PerformCollisions();
-
-    SceneManager::AddScene("testScene", testScene);*/
+    CollisionSystem::CollisionManager::Instance()->PerformCollisions();*/
+    
     SceneManager::LoadScene("testScene");
 
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
@@ -339,7 +383,6 @@ bool init()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 
     window = Window::MakeWindow(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT }, false);
-    glfwSetFramebufferSizeCallback(window->GetWindow(), framebuffer_size_callback);
     Input::InitForWindow(window);
 
     bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -350,6 +393,7 @@ bool init()
     }
     spdlog::info("Successfully initialized OpenGL loader!");
 
+    /*
 #ifdef _DEBUG
     // Debugging
     glEnable(GL_DEBUG_OUTPUT);
@@ -358,6 +402,7 @@ bool init()
     /*const GLubyte* renderer = glGetString(GL_RENDERER);
     spdlog::error((char*)renderer);*/
 #endif
+    */
 
     // Blending
     glEnable(GL_BLEND);
@@ -491,6 +536,25 @@ void update()
     // Update game objects' state here
     //text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
     SceneManager::UpdateCurrentScene();
+
+    /*colorSpan -= Time::GetDeltaTime() * 0.2f;
+    if (colorSpan <= 0.f) {
+        colorSpan = 1.f;
+    }
+    // Color
+    if (colorSpan > 0.66f) {
+        image->SetColor({ 0.f, 1.f, 0.f, 1.f });
+    }
+    else if (colorSpan > 0.33f) {
+        image->SetColor({ 1.f, 1.f, 0.f, 1.f });
+    }
+    else {
+        image->SetColor({ 1.f, 0.f, 0.f, 1.f });
+    }
+    // WIDTH
+    image->SetWidth(1000.f * colorSpan);*/
+
+    //Camera.GetTransform()->Update();
 }
 
 void render()
@@ -498,6 +562,7 @@ void render()
     // OpenGL Rendering code goes here
     SceneManager::RenderCurrentScene();
     GraphicEngineManager::Render();
+    CameraComponent::GetMainCamera()->Render();
 }
 
 void imgui_begin()
@@ -571,7 +636,81 @@ void imgui_render()
 #pragma endregion
 
         ImGui::Separator();
+
+#pragma region IMGUI_CAMERA_SETUP
+        if (ImGui::CollapsingHeader("Main Camera")) {
+
+            CameraComponent* c = CameraComponent::GetMainCamera();
+
+            uint8_t acFil = RenderFilter::NONE;
+            uint8_t fil = c->GetCameraFilters();
+
+            bool g = (fil & RenderFilter::GRAYSCALE) != 0;
+
+            ImGui::Checkbox("GrayScale", &g);
+            if (g) {
+                acFil |= RenderFilter::GRAYSCALE;
+            }
+
+            g = (fil & RenderFilter::NEGATIVE) != 0;
+
+            ImGui::Checkbox("Negative", &g);
+            if (g) {
+                acFil |= RenderFilter::NEGATIVE;
+            }
+
+            g = (fil & RenderFilter::VIGNETTE) != 0;
+
+            ImGui::Checkbox("Vignette", &g);
+            if (g) {
+                acFil |= RenderFilter::VIGNETTE;
+            }
+
+            g = (fil & RenderFilter::BLUR) != 0;
+
+            ImGui::Checkbox("Blur", &g);
+            if (g) {
+                acFil |= RenderFilter::BLUR;
+            }
+
+            g = (fil & RenderFilter::DEPTH) != 0;
+
+            ImGui::Checkbox("Depth", &g);
+            if (g) {
+                acFil |= RenderFilter::DEPTH;
+            }
+
+            c->SetCameraFilter(acFil);
+
+            bool per = (c->GetCameraType() == CameraType::PERSPECTIVE);
+
+            if (ImGui::Button((per ? "Orthographic" : "Perspective"))) {
+                if (per) {
+                    c->SetCameraType(CameraType::ORTHOGRAPHIC);
+                }
+                else {
+                    c->SetCameraType(CameraType::PERSPECTIVE);
+                }
+            }
+
+            float n = c->GetNearPlane();
+            ImGui::InputFloat("Near Plane", &n);
+
+            if (n != c->GetNearPlane()) {
+                c->SetNearPlane(n);
+            }
+
+            float f = c->GetFarPlane();
+            ImGui::InputFloat("Far Plane", &f);
+
+            if (f != c->GetFarPlane()) {
+                c->SetFarPlane(f);
+            }
+        }
+#pragma endregion
         
+        ImGui::Separator();
+
 #pragma region IMGUI_WINDOW_SETUP
         if (ImGui::CollapsingHeader("Window Setup")) {
 

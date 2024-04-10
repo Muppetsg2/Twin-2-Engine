@@ -33,6 +33,21 @@ void CameraComponent::OnTransformChange(Transform* trans)
 	*/
 }
 
+void CameraComponent::OnWindowSizeChange()
+{
+	ivec2 wSize = Window::GetInstance()->GetContentSize();
+
+	glBindTexture(GL_TEXTURE_2D, _depthMap);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+
+	glBindTexture(GL_TEXTURE_2D, _renderMap);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 CameraType CameraComponent::GetCameraType()
 {
 	return _type;
@@ -302,7 +317,8 @@ void CameraComponent::Initialize()
 	this->_camId = Cameras.size();
 	Cameras.push_back(this);
 
-	_eventId = GetTransform()->OnEventTransformChanged += [&](Transform* t) -> void { OnTransformChange(t); };
+	_transformEventId = GetTransform()->OnEventTransformChanged += [&](Transform* t) -> void { OnTransformChange(t); };
+	_windowEventId = Window::GetInstance()->OnWindowSizeEvent += [&]() -> void { OnWindowSizeChange(); };
 
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
@@ -381,7 +397,8 @@ void CameraComponent::OnDestroy()
 	glDeleteFramebuffers(1, &_renderMapFBO);
 	glDeleteRenderbuffers(1, &_renderBuffer);
 
-	GetTransform()->OnEventTransformChanged -= _eventId;
+	GetTransform()->OnEventTransformChanged -= _transformEventId;
+	Window::GetInstance()->OnWindowSizeEvent -= _windowEventId;
 
 	Cameras.erase(Cameras.begin() + this->_camId);
 

@@ -80,11 +80,6 @@ bool mouseNotUsed = true;
 
 #pragma region OpenGLCallbackFunctions
 
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
-
 static void glfw_error_callback(int error, const char* description)
 {
     spdlog::error("Glfw Error {0}: {1}\n", error, description);
@@ -362,7 +357,6 @@ bool init()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 
     window = Window::MakeWindow(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT }, false);
-    glfwSetFramebufferSizeCallback(window->GetWindow(), framebuffer_size_callback);
     Input::InitForWindow(window);
 
     bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);

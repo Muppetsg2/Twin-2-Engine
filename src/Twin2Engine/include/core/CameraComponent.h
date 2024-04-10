@@ -55,8 +55,10 @@ namespace Twin2Engine::Core {
 		vec3 _up = vec3(0.f, 1.f, 0.f);
 		vec3 _worldUp = vec3(0.f, 1.f, 0.f);
 
-		size_t _eventId;
+		size_t _transformEventId;
 		void OnTransformChange(Transform* trans);
+		size_t _windowEventId;
+		void OnWindowSizeChange();
 
 	public:
 		static std::vector<CameraComponent*> Cameras;

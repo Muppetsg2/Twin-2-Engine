@@ -31,7 +31,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC CollisionSystem)
 #				   ${CMAKE_SOURCE_DIR}/res 
 #				   ${CMAKE_CURRENT_BINARY_DIR}/res)
 
-file(CREATE_LINK ${CMAKE_SOURCE_DIR}/res ${CMAKE_CURRENT_SOURCE_DIR}/res SYMBOLIC)
+#file(CREATE_LINK ${CMAKE_SOURCE_DIR}/res ${CMAKE_CURRENT_SOURCE_DIR}/res SYMBOLIC)
 
 if(MSVC)
     target_compile_definitions(${PROJECT_NAME} PUBLIC NOMINMAX)

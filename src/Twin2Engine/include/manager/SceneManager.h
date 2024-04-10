@@ -2,6 +2,8 @@
 
 #include <core/Scene.h>
 #include <UI/Image.h>
+#include <graphic/Material.h>
+#include <graphic/InstatiatingModel.h>
 
 namespace Twin2Engine::Manager {
 	class SceneManager {
@@ -15,6 +17,13 @@ namespace Twin2Engine::Manager {
 		static std::vector<size_t> _spritesIds;
 		static std::vector<size_t> _fontsIds;
 		static std::vector<size_t> _audiosIds;
+
+		static std::vector<GraphicEngine::Material> _materialsHolder;
+
+		static std::vector<size_t> _modelsIds;
+		static std::vector<GraphicEngine::InstatiatingModel> _modelsHolder;
+		static std::vector<size_t> _standardModelsIds;
+		static std::vector<GraphicEngine::InstatiatingModel> _standardModelsHolder;
 
 		// Loaded Scene Objects
 		static std::map<size_t, Core::Scene*> _loadedScenes;

@@ -92,8 +92,29 @@ static void glfw_error_callback(int error, const char* description)
 
 static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
-    if (type != 0x8251)
-        spdlog::error("GL CALLBACK: {0} type = 0x{1:x}, severity = 0x{2:x}, message = {3}\n", (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
+    string severityS = "";
+    if (severity == GL_DEBUG_SEVERITY_HIGH) severityS = "HIGHT";
+    else if (severity == GL_DEBUG_SEVERITY_MEDIUM) severityS = "MEDIUM";
+    else if (severity == GL_DEBUG_SEVERITY_LOW) severityS = "LOW";
+    else if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) severityS = "NOTIFICATION";
+
+    if (type == GL_DEBUG_TYPE_ERROR) {
+        spdlog::error("GL CALLBACK: type = ERROR, severity = {0}, message = {1}\n", severityS, message);
+    }
+    else if (type == GL_DEBUG_TYPE_MARKER) {
+        spdlog::info("GL CALLBACK: type = MARKER, severity = {0}, message = {1}\n", severityS, message);
+    }
+    else {
+        string typeS = "";
+        if (type == GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR) typeS = "DEPRACTED BEHAVIOUR";
+        else if (type == GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR) typeS = "UNDEFINED BEHAVIOUR";
+        else if (type == GL_DEBUG_TYPE_PORTABILITY) typeS = "PORTABILITY";
+        else if (type == GL_DEBUG_TYPE_PERFORMANCE) typeS = "PERFORMANCE";
+        else if (type == GL_DEBUG_TYPE_PUSH_GROUP) typeS = "PUSH GROUP";
+        else if (type == GL_DEBUG_TYPE_POP_GROUP) typeS = "POP GROUP";
+        else if (type == GL_DEBUG_TYPE_OTHER) typeS = "OTHER";
+        spdlog::warn("GL CALLBACK: type = {0}, severity = {1}, message = {2}\n", typeS, severityS, message);
+    }
 }
 
 #pragma endregion
@@ -142,9 +163,6 @@ GameObject* gameObject4;
 
 HexagonalTilemap hexagonalTilemap(glm::ivec2(-5, -5), glm::ivec2(5, 5), 1.f, true);
 
-GameObject* imageObj;
-GameObject* imageObj2;
-GameObject* imageObj3;
 Image* image;
 float colorSpan = 1.f;
 GameObject* textObj;
@@ -192,6 +210,7 @@ int main(int, char**)
     // COMPONENTS DESELIALIZERS
     ComponentDeserializer::AddDeserializer("Image", [](GameObject* obj, const YAML::Node& node) -> void {
         Image* img = obj->AddComponent<Image>();
+        img->SetIsTransparent(node["isTransparent"].as<bool>());
         img->SetSprite(node["sprite"].as<string>());
         img->SetColor(node["color"].as<vec4>());
         img->SetWidth(node["width"].as<float>());
@@ -215,6 +234,15 @@ int main(int, char**)
         if (node["loop"].as<bool>()) audio->Loop(); else audio->UnLoop();
         audio->SetTimePosition(node["time"].as<double>());
         audio->SetVolume(node["volume"].as<float>());
+    });
+
+    ComponentDeserializer::AddDeserializer("Text", [](GameObject* obj, const YAML::Node& node) -> void {
+        Text* text = obj->AddComponent<Text>();
+        text->SetIsTransparent(node["isTransparent"].as<bool>());
+        text->SetText(node["text"].as<string>());
+        text->SetColor(node["color"].as<vec4>());
+        text->SetSize(node["size"].as<uint32_t>());
+        text->SetFont(node["font"].as<string>());
     });
 
     // ADDING SCENES
@@ -280,31 +308,6 @@ int main(int, char**)
     hexagonalTilemap.GetTile(glm::ivec2(5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
     hexagonalTilemap.GetTile(glm::ivec2(-5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
     hexagonalTilemap.GetTile(glm::ivec2(5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    
-    imageObj = new GameObject();
-    imageObj->GetTransform()->SetGlobalPosition(glm::vec3(-900, 500, 0));
-    Image* img = imageObj->AddComponent<Image>();
-    img->SetSprite(SpriteManager::MakeSprite("stone", "res/textures/stone.jpg"));
-    Image* img2 = imageObj->AddComponent<Image>();
-    img2->SetSprite(SpriteManager::MakeSprite("grass", "res/textures/grass.png"));
-
-    imageObj2 = new GameObject();
-    imageObj2->GetTransform()->SetGlobalPosition(glm::vec3(900, 500, 0));
-    img = imageObj2->AddComponent<Image>();
-    img->SetSprite("grass");
-
-    imageObj3 = new GameObject();
-    imageObj3->GetTransform()->SetGlobalPosition(glm::vec3(0, -500, 0));
-    image = imageObj3->AddComponent<Image>();
-    image->SetSprite(SpriteManager::MakeSprite("white_box", "res/textures/white.png"));
-
-    textObj = new GameObject();
-    textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
-    text = textObj->AddComponent<Text>();
-    text->SetColor(glm::vec4(1.f));
-    text->SetText("Text");
-    text->SetSize(48);
-    text->SetFont("res/fonts/arial.ttf");
 
     GameObject go1;
     GameObject go2;
@@ -393,7 +396,7 @@ bool init()
     }
     spdlog::info("Successfully initialized OpenGL loader!");
 
-    /*
+    
 #ifdef _DEBUG
     // Debugging
     glEnable(GL_DEBUG_OUTPUT);
@@ -402,7 +405,6 @@ bool init()
     /*const GLubyte* renderer = glGetString(GL_RENDERER);
     spdlog::error((char*)renderer);*/
 #endif
-    */
 
     // Blending
     glEnable(GL_BLEND);
@@ -561,7 +563,6 @@ void render()
 {
     // OpenGL Rendering code goes here
     SceneManager::RenderCurrentScene();
-    GraphicEngineManager::Render();
     CameraComponent::GetMainCamera()->Render();
 }
 

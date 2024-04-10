@@ -17,8 +17,10 @@ namespace Twin2Engine::Core {
 
 		std::map<std::string, Manager::TextureData> _textures = std::map<std::string, Manager::TextureData>();
 		std::map<std::string, std::tuple<std::string, bool, Manager::SpriteData>> _sprites = std::map<std::string, std::tuple<std::string, bool, Manager::SpriteData>>();
-		std::list<std::string> _fonts = std::list<std::string>();
-		std::list<std::string> _audios = std::list<std::string>();
+		std::vector<std::string> _fonts = std::vector<std::string>();
+		std::vector<std::string> _audios = std::vector<std::string>();
+		std::vector<std::string> _materials = std::vector<std::string>();
+		std::vector<std::tuple<bool, std::string>> _models = std::vector<std::tuple<bool, std::string>>();
 	public:
 		Scene() = default;
 		virtual ~Scene() = default;
@@ -31,6 +33,8 @@ namespace Twin2Engine::Core {
 		void AddSprite(const std::string& name, const std::string& texPath, const Manager::SpriteData& data);
 		void AddFont(const std::string& path);
 		void AddAudio(const std::string& path);
+		void AddModel(const std::string& path, bool isStandard = false);
+		void AddMaterial(const std::string& path);
 
 		friend class Manager::SceneManager;
 	};

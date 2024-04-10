@@ -7,9 +7,12 @@
 
 namespace Twin2Engine::Manager
 {
+	class SceneManager;
+
 	class MaterialsManager
 	{
 		friend class GraphicEngine::Material;
+		friend class SceneManager;
 
 		static std::hash<std::string> stringHash;
 		//const static std::unordered_map<size_t, int> typeSizeMap;

@@ -60,7 +60,7 @@ CameraType CameraComponent::GetCameraType() const
 	return _type;
 }
 
-uint8_t CameraComponent::GetCameraFilters()
+uint8_t CameraComponent::GetCameraFilters() const
 {
 	return _filters;
 }
@@ -101,7 +101,7 @@ mat4 CameraComponent::GetViewMatrix() const
 	return lookAt(pos, pos + _front, _up);
 }
 
-mat4 CameraComponent::GetProjectionMatrix()
+mat4 CameraComponent::GetProjectionMatrix() const
 {
 	ivec2 size = Window::GetInstance()->GetContentSize();
 
@@ -118,7 +118,7 @@ mat4 CameraComponent::GetProjectionMatrix()
 	return mat4(1.f);
 }
 
-Frustum CameraComponent::GetFrustum()
+Frustum CameraComponent::GetFrustum() const
 {
 	ivec2 size = Window::GetInstance()->GetContentSize();
 

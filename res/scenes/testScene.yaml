@@ -9,6 +9,11 @@ Textures:
         tWrapMode: 33648 # MIRRORED_REPEAT
         minFilterMode: 9986 # NEAREST_MIPMAP_LINEAR
         magFilterMode: 9729 # LINEAR
+    -   path: res/textures/white.png
+        sWrapMode: 33648 # MIRRORED_REPEAT
+        tWrapMode: 33648 # MIRRORED_REPEAT
+        minFilterMode: 9986 # NEAREST_MIPMAP_LINEAR
+        magFilterMode: 9729 # LINEAR
 Sprites:
     -   alias: stone
         texture: 0
@@ -16,10 +21,26 @@ Sprites:
     -   alias: grass
         texture: 1
         hasParameters: false
+    -   alias: white_box
+        texture: 2
+        hasParameters: false
 Fonts:
     - res/fonts/arial.ttf
 Audio:
     - res/music/acoustic-guitar.mp3
+Materials:
+    - Basic2
+    - textured
+    - wallMat
+    - roofMat
+    - deska
+    - metal
+    - hexagonMat
+Models:
+    - standard: Cube
+    - path: res/models/castle.obj
+    - path: res/models/AK47.obj
+    - path: res/models/hexagon.obj
 GameObjects:
     -   name: Camera
         isStatic: false
@@ -57,13 +78,14 @@ GameObjects:
                 loop: true
                 time: 0.0
                 volume: 1.0
-    -   name: test
+        children: []
+    -   name: imageObj
         isStatic: false
         isActive: true
         transform:
             position: 
-                x: 0.0
-                y: 0.0
+                x: -900.0
+                y: 500.0
                 z: 0.0
             scale:
                 x: 1.0
@@ -75,6 +97,7 @@ GameObjects:
                 z: 0.0
         components:
             -   type: Image
+                isTransparent: false
                 sprite: stone
                 color:
                     x: 1.0
@@ -83,14 +106,79 @@ GameObjects:
                     w: 1.0
                 width: 100.0
                 height: 100.0
-        children:
-            - 2
-    -   name: test2
+            -   type: Image
+                isTransparent: false
+                sprite: grass
+                color:
+                    x: 1.0
+                    y: 1.0
+                    z: 1.0
+                    w: 1.0
+                width: 100.0
+                height: 100.0
+        children: []
+    -   name: imageObj2
+        isStatic: false
+        isActive: true
+        transform:
+            position:
+                x: 900.0
+                y: 500.0
+                z: 0.0
+            scale:
+                x: 1.0
+                y: 1.0
+                z: 1.0
+            rotation:
+                x: 0.0
+                y: 0.0
+                z: 0.0
+        components:
+            -   type: Image
+                isTransparent: false
+                sprite: grass
+                color:
+                    x: 1.0
+                    y: 1.0
+                    z: 1.0
+                    w: 1.0
+                width: 100.0
+                height: 100.0
+        children: []
+    -   name: imageObj3
         isStatic: false
         isActive: true
         transform:
             position:
                 x: 0.0
+                y: -500.0
+                z: 0.0
+            scale:
+                x: 1.0
+                y: 1.0
+                z: 1.0
+            rotation:
+                x: 0.0
+                y: 0.0
+                z: 0.0
+        components:
+            -   type: Image
+                isTransparent: false
+                sprite: white_box
+                color:
+                    x: 0.0
+                    y: 1.0
+                    z: 0.0
+                    w: 1.0
+                width: 1000.0
+                height: 100.0
+        children: []
+    -   name: textObj
+        isStatic: false
+        isActive: true
+        transform:
+            position:
+                x: 400.0
                 y: 0.0
                 z: 0.0
             scale:
@@ -101,14 +189,15 @@ GameObjects:
                 x: 0.0
                 y: 0.0
                 z: 0.0
-            children: []
         components:
-            -   type: Image
-                sprite: grass
+            -   type: Text
+                isTransparent: false
+                text: "Time: 0.0000"
                 color:
                     x: 1.0
                     y: 1.0
                     z: 1.0
                     w: 1.0
-                width: 100.0
-                height: 100.0
+                size: 48
+                font: res/fonts/arial.ttf
+        children: []

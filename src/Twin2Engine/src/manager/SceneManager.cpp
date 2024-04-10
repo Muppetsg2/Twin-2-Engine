@@ -1,6 +1,8 @@
 #include <manager/SceneManager.h>
 #include <core/RenderableComponent.h>
 #include <core/ComponentDeserializer.h>
+#include <graphic/manager/MaterialsManager.h>
+#include <graphic/manager/ModelsManager.h>
 
 using namespace Twin2Engine::Manager;
 using namespace std;
@@ -15,6 +17,13 @@ vector<size_t> SceneManager::_texturesIds = vector<size_t>();
 vector<size_t> SceneManager::_spritesIds = vector<size_t>();
 vector<size_t> SceneManager::_fontsIds = vector<size_t>();
 vector<size_t> SceneManager::_audiosIds = vector<size_t>();
+
+vector<Material> SceneManager::_materialsHolder = vector<Material>();
+
+vector<size_t> SceneManager::_modelsIds = vector<size_t>();
+vector<InstatiatingModel> SceneManager::_modelsHolder = vector<InstatiatingModel>();
+vector<size_t> SceneManager::_standardModelsIds = vector<size_t>();
+vector<InstatiatingModel> SceneManager::_standardModelsHolder = vector<InstatiatingModel>();
 
 map<size_t, Scene*> SceneManager::_loadedScenes = map<size_t, Scene*>();
 
@@ -114,27 +123,15 @@ void SceneManager::AddScene(const string& name, const string& path)
 	// Loading Textures
 	vector<string> texturePaths;
 	for (const YAML::Node& texNode : sceneNode["Textures"]) {
-		TextureData data{
-			.sWrapMode = (TextureWrapMode)texNode["sWrapMode"].as<uint32_t>(),
-			.tWrapMode = (TextureWrapMode)texNode["tWrapMode"].as<uint32_t>(),
-			.minFilterMode = (TextureFilterMode)texNode["minFilterMode"].as<uint32_t>(),
-			.magFilterMode = (TextureFilterMode)texNode["magFilterMode"].as<uint32_t>(),
-		};
 		string path = texNode["path"].as<string>();
-		scene->AddTexture2D(path, data);
+		scene->AddTexture2D(path, texNode.as<TextureData>());
 		texturePaths.push_back(path);
 	}
 
 	// Loading Sprites
 	for (const YAML::Node& spriteNode : sceneNode["Sprites"]) {
 		if (spriteNode["hasParameters"].as<bool>()) {
-			SpriteData data{
-				.x = spriteNode["x"].as<uint32_t>(),
-				.y = spriteNode["y"].as<uint32_t>(),
-				.width = spriteNode["width"].as<uint32_t>(),
-				.height = spriteNode["height"].as<uint32_t>()
-			};
-			scene->AddSprite(spriteNode["alias"].as<string>(), texturePaths[spriteNode["texture"].as<size_t>()], data);
+			scene->AddSprite(spriteNode["alias"].as<string>(), texturePaths[spriteNode["texture"].as<size_t>()], spriteNode.as<SpriteData>());
 		}
 		else {
 			scene->AddSprite(spriteNode["alias"].as<string>(), texturePaths[spriteNode["texture"].as<size_t>()]);
@@ -149,6 +146,21 @@ void SceneManager::AddScene(const string& name, const string& path)
 	// Loading Audio
 	for (const YAML::Node& audioNode : sceneNode["Audio"]) {
 		scene->AddAudio(audioNode.as<string>());
+	}
+
+	// Loading Materials
+	for (const YAML::Node& materialNode : sceneNode["Materials"]) {
+		scene->AddMaterial(materialNode.as<string>());
+	}
+
+	// Loading Models
+	for (const YAML::Node& modelNode : sceneNode["Models"]) {
+		if (modelNode["standard"]) {
+			scene->AddModel(modelNode["standard"].as<string>(), true);
+		}
+		else {
+			scene->AddModel(modelNode["path"].as<string>());
+		}
 	}
 
 	// Loading GameObjects
@@ -170,9 +182,10 @@ void SceneManager::LoadScene(const string& name)
 
 	Scene* sceneToLoad = _loadedScenes[sceneId];
 
+#pragma region LOADING_TEXTURES
 	// TEXTURES
 	vector<string> paths;
-	for (auto& path : sceneToLoad->_textures) {
+	for (const auto& path : sceneToLoad->_textures) {
 		paths.push_back(path.first);
 	}
 
@@ -192,10 +205,11 @@ void SceneManager::LoadScene(const string& name)
 		Texture2D* temp = TextureManager::LoadTexture2D(path, sceneToLoad->_textures[path]);
 		if (temp != nullptr) _texturesIds.push_back(temp->GetManagerId());
 	}
-
+#pragma endregion
+#pragma region LOADING_SPRITES
 	// SPRITES
 	paths.clear();
-	for (auto& path : sceneToLoad->_sprites) {
+	for (const auto& path : sceneToLoad->_sprites) {
 		paths.push_back(path.first);
 	}
 
@@ -222,10 +236,11 @@ void SceneManager::LoadScene(const string& name)
 		}
 		if (temp != nullptr) _spritesIds.push_back(temp->GetManagerId());
 	}
-
+#pragma endregion
+#pragma region LOADING_FONTS
 	// FONTS
 	paths.clear();
-	for (auto& path : sceneToLoad->_fonts) {
+	for (const auto& path : sceneToLoad->_fonts) {
 		paths.push_back(path);
 	}
 	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _fontsIds);
@@ -243,9 +258,11 @@ void SceneManager::LoadScene(const string& name)
 		Font* temp = FontManager::LoadFont(paths[f]);
 		if (temp != nullptr) _fontsIds.push_back(temp->GetManagerId());
 	}
-
+#pragma endregion
+#pragma region LOADING_AUDIO
 	// AUDIO
-	for (auto& path : sceneToLoad->_audios) {
+	paths.clear();
+	for (const auto& path : sceneToLoad->_audios) {
 		paths.push_back(path);
 	}
 	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _audiosIds);
@@ -263,7 +280,101 @@ void SceneManager::LoadScene(const string& name)
 		size_t id = AudioManager::LoadAudio(paths[a]);
 		if (id != 0) _audiosIds.push_back(id);
 	}
+#pragma endregion
+#pragma region LOADING_MATERIALS
+	// MATERIALS
+	paths.clear();
+	for (const auto& path : sceneToLoad->_materials) {
+		paths.push_back(path);
+	}
+	vector<size_t> ids;
+	for (const auto& mat : _materialsHolder) {
+		ids.push_back(mat.GetId());
+	}
+	toLoadToUnload = GetResourcesToLoadAndUnload(paths, ids);
 
+	for (size_t m : toLoadToUnload.second) {
+		for (size_t i = 0; i < ids.size(); ++i) {
+			if (ids[i] == m) {
+				ids.erase(ids.begin() + i);
+				_materialsHolder.erase(_materialsHolder.begin() + i);
+				break;
+			}
+		}
+	}
+	for (size_t m : toLoadToUnload.first) {
+		Material mat = MaterialsManager::LoadMaterial(paths[m]);
+		_materialsHolder.push_back(mat);
+	}
+#pragma endregion
+#pragma region LOADING_PATH_MODELS
+	// PATH MODELS
+	paths.clear();
+	for (const auto& path : sceneToLoad->_models) {
+		if (!get<0>(path)) {
+			paths.push_back(get<1>(path));
+		}
+	}
+	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _modelsIds);
+
+	for (size_t m : toLoadToUnload.second) {
+		for (size_t i = 0; i < _modelsIds.size(); ++i) {
+			if (_modelsIds[i] == m) {
+				_modelsIds.erase(_modelsIds.begin() + i);
+				_modelsHolder.erase(_modelsHolder.begin() + i);
+				break;
+			}
+		}
+	}
+	for (size_t m : toLoadToUnload.first) {
+		InstatiatingModel model = ModelsManager::GetModel(paths[m]);
+		_modelsHolder.push_back(model);
+		_modelsIds.push_back(hash<string>()(paths[m]));
+	}
+#pragma endregion
+#pragma region LOADING_STANDARD_MODELS
+	// STANDARD MODELS
+	paths.clear();
+	for (const auto& path : sceneToLoad->_models) {
+		if (get<0>(path)) {
+			paths.push_back(get<1>(path));
+		}
+	}
+	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _standardModelsIds);
+
+	for (size_t m : toLoadToUnload.second) {
+		for (size_t i = 0; i < _standardModelsIds.size(); ++i) {
+			if (_standardModelsIds[i] == m) {
+				_standardModelsIds.erase(_standardModelsIds.begin() + i);
+				_standardModelsHolder.erase(_standardModelsHolder.begin() + i);
+				break;
+			}
+		}
+	}
+	for (size_t m : toLoadToUnload.first) {
+		if (paths[m] == "Cube") {
+			InstatiatingModel model = ModelsManager::GetCube();
+			_standardModelsHolder.push_back(model);
+			_standardModelsIds.push_back(hash<string>()(paths[m]));
+		}
+		else if (paths[m] == "Plane") {
+			InstatiatingModel model = ModelsManager::GetPlane();
+			_standardModelsHolder.push_back(model);
+			_standardModelsIds.push_back(hash<string>()(paths[m]));
+		}
+		else if (paths[m] == "Sphere") {
+			InstatiatingModel model = ModelsManager::GetSphere();
+			_standardModelsHolder.push_back(model);
+			_standardModelsIds.push_back(hash<string>()(paths[m]));
+		}
+		else if (paths[m] == "Piramid") {
+			InstatiatingModel model = ModelsManager::GetPiramid();
+			_standardModelsHolder.push_back(model);
+			_standardModelsIds.push_back(hash<string>()(paths[m]));
+		}
+	}
+#pragma endregion
+#pragma region LOADING_GAMEOBJECTS
 	// GAME OBJECTS
 	if (_rootObject != nullptr)	DeleteGameObject(_rootObject);
 
@@ -281,6 +392,7 @@ void SceneManager::LoadScene(const string& name)
 			gameObjects[i]->GetTransform()->AddChild(gameObjects[childNode.as<size_t>()]->GetTransform());
 		}
 	}
+#pragma endregion
 
 	_currentScene = sceneToLoad;
 }
@@ -307,10 +419,24 @@ GameObject* SceneManager::GetRootObject()
 void SceneManager::UnloadCurrent()
 {
 	_currentScene = nullptr;
-	_rootObject = nullptr;
+	DeleteGameObject(_rootObject);
 	for (size_t id : _texturesIds) {
 		TextureManager::UnloadTexture2D(id);
 	}
+	for (size_t id : _spritesIds) {
+		SpriteManager::UnloadSprite(id);
+	}
+	for (size_t id : _fontsIds) {
+		FontManager::UnloadFont(id);
+	}
+	for (size_t id : _audiosIds) {
+		AudioManager::UnloadAudio(id);
+	}
+	_materialsHolder.clear();
+	_modelsIds.clear();
+	_modelsHolder.clear();
+	_standardModelsIds.clear();
+	_standardModelsHolder.clear();
 }
 
 void SceneManager::UnloadScene(const std::string& name)

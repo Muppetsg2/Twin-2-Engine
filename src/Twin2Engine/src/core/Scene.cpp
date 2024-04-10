@@ -52,11 +52,19 @@ void Scene::AddSprite(const string& name, const string& texPath, const SpriteDat
 void Scene::AddFont(const string& path)
 {
 	_fonts.push_back(path);
-	_fonts.unique();
 }
 
 void Scene::AddAudio(const std::string& path)
 {
 	_audios.push_back(path);
-	_audios.unique();
+}
+
+void Scene::AddModel(const std::string& path, bool isStandard)
+{
+	_models.push_back({ isStandard, path });
+}
+
+void Scene::AddMaterial(const std::string& path)
+{
+	_materials.push_back(path);
 }

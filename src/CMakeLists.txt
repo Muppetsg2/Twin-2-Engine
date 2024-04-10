@@ -9,9 +9,11 @@ add_subdirectory(Twin2Engine)
 
 add_subdirectory(CollisionSystem)
 
-add_subdirectory(Tilemap)
+#add_subdirectory(Tilemap)
 
-add_executable(${PROJECT_NAME} main.cpp)
+add_subdirectory(Additional)
+
+add_executable(${PROJECT_NAME} main.cpp "Additional/Generation/pch.h")
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)
 

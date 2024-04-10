@@ -21,6 +21,9 @@ namespace Tilemap
 		glm::ivec2 _position;
 
 
+		static const glm::ivec2 adjacentDirectionsEvenY[6];
+		static const glm::ivec2 adjacentDirectionsOddY[6];
+
 		void SetTilemap(HexagonalTilemap* tilemap);
 		void SetPosition(const glm::ivec2& position);
 
@@ -33,6 +36,9 @@ namespace Tilemap
 
 		Twin2Engine::Core::GameObject* GetGameObject() const;
 		void SetGameObject(Twin2Engine::Core::GameObject* gameObject);
+
+		inline HexagonalTile** GetAdjacentTiles() const;
+		inline Twin2Engine::Core::GameObject** GetAdjacentGameObjects() const;
 	};
 }
 

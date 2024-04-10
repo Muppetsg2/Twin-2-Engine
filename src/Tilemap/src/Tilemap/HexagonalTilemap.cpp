@@ -219,6 +219,8 @@ void HexagonalTilemap::RemoveTile(const glm::ivec2& position)
 
 void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::GameObject* gameObject)
 {
+	
+
 	// Check if the given position is within the tilemap bounds
 	if (position.x < _leftBottomPosition.x || position.x > _rightTopPosition.x ||
 		position.y < _leftBottomPosition.y || position.y > _rightTopPosition.y)
@@ -241,17 +243,21 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::GameO
 		glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, -1)
 	};
 
+	glm::ivec2 currentPos;
+	HexagonalTile* currentTile = nullptr;
+	Twin2Engine::Core::GameObject* instantiatedGameObject = nullptr;
+
 	while (!toFillTilesQueue.empty())
 	{
-		glm::ivec2 currentPos = toFillTilesQueue.front();
+		currentPos = toFillTilesQueue.front();
 		toFillTilesQueue.pop();
 
-		HexagonalTile* currentTile = GetTile(currentPos);
+		currentTile = GetTile(currentPos);
 
 		if (currentTile && !currentTile->GetGameObject())
 		{
 			// Kopiowanie gameobjectu
-			Twin2Engine::Core::GameObject* instantiatedGameObject = Twin2Engine::Core::GameObject::Instatiate(gameObject);
+			instantiatedGameObject = Twin2Engine::Core::GameObject::Instatiate(gameObject);
 			currentTile->SetGameObject(instantiatedGameObject);
 			//instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3((currentPos.x * _distanceBetweenTiles + (abs(currentPos.y) % 2) * 0.5f * _distanceBetweenTiles) * 1.5f, 0.0f, currentPos.y * _distanceBetweenTiles * 0.25f * SQRT_3));
 			instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3(currentPos.x * _distanceBetweenTiles * 0.75f, 0.0f, (currentPos.y + (abs(currentPos.x) % 2) * 0.5f) * _distanceBetweenTiles * 0.5f * SQRT_3));
@@ -259,6 +265,7 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::GameO
 			for (const auto& dir : directions)
 			{
 				glm::ivec2 neighborPos = currentPos + dir;
+
 				if (neighborPos.x >= _leftBottomPosition.x && neighborPos.x <= _rightTopPosition.x &&
 					neighborPos.y >= _leftBottomPosition.y && neighborPos.y <= _rightTopPosition.y &&
 					GetTile(neighborPos)->GetGameObject() == nullptr)

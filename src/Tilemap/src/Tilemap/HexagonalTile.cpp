@@ -3,6 +3,16 @@
 using namespace Tilemap;
 using namespace Twin2Engine::Core;
 
+const glm::ivec2 HexagonalTile::adjacentDirectionsEvenY[6] = {
+	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 0),
+	glm::ivec2(0, -1), glm::ivec2(-1, -1), glm::ivec2(-1, 0)
+};
+
+const glm::ivec2 HexagonalTile::adjacentDirectionsOddY[6] = {
+	glm::ivec2(0, 1), glm::ivec2(1, 1), glm::ivec2(1, 0),
+	glm::ivec2(1, -1), glm::ivec2(0, -1), glm::ivec2(-1, 0)
+};
+
 HexagonalTile::HexagonalTile()
 {
 	_gameObject = nullptr;
@@ -42,4 +52,32 @@ void Tilemap::HexagonalTile::SetGameObject(GameObject* gameObject)
 GameObject* HexagonalTile::GetGameObject() const
 {
 	return _gameObject;
+}
+
+inline HexagonalTile** HexagonalTile::GetAdjacentTiles() const
+{
+	HexagonalTile* adjacentTiles[6];
+
+	const glm::ivec2* directions = (_position.y % 2) ? adjacentDirectionsOddY : adjacentDirectionsEvenY;
+
+	for (int i = 0; i < 6; i++)
+	{
+		adjacentTiles[i] = _tilemap->GetTile(_position + directions[i]);
+	}
+
+	return adjacentTiles;
+}
+
+inline GameObject** HexagonalTile::GetAdjacentGameObjects() const
+{
+	GameObject* adjacentGameObjects[6];
+
+	const glm::ivec2* directions = (_position.y % 2) ? adjacentDirectionsOddY : adjacentDirectionsEvenY;
+
+	for (int i = 0; i < 6; i++)
+	{
+		adjacentGameObjects[i] = _tilemap->GetTile(_position + directions[i])->GetGameObject();
+	}
+
+	return adjacentGameObjects;
 }

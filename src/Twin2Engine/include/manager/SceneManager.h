@@ -30,6 +30,8 @@ namespace Twin2Engine::Manager {
 
 		static void UpdateCurrentScene();
 		static void RenderCurrentScene();
+		
+		static Core::GameObject* GetRootObject();
 
 		static void UnloadCurrent();
 		static void UnloadScene(const std::string& name);

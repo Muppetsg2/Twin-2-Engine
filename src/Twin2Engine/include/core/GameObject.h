@@ -138,11 +138,11 @@ Twin2Engine::Core::GameObject::GetComponentInChildren()
 {
 	// Przeszukiwanie w szerz
 	for (size_t i = 0; i < _transform->GetChildCount(); ++i) {
-		T* comp = _transform->GetChildAt(i)->getGameObject()->GetComponent<T>();
+		T* comp = _transform->GetChildAt(i)->GetGameObject()->GetComponent<T>();
 		if (comp != nullptr) return comp;
 	}
 	for (size_t i = 0; i < _transform->GetChildCount(); ++i) {
-		T* comp = _transform->GetChildAt(i)->getGameObject()->GetComponentInChildren<T>();
+		T* comp = _transform->GetChildAt(i)->GetGameObject()->GetComponentInChildren<T>();
 		if (comp != nullptr) return comp;
 	}
 	return nullptr;
@@ -155,7 +155,7 @@ Twin2Engine::Core::GameObject::GetComponentsInChildren()
 	// Przeszukiwanie w g��b
 	list<T*> comps = list<T*>();
 	for (size_t i = 0; i < _transform->GetChildCount(); ++i) {
-		GameObject* obj = _transform->GetChildAt(i)->getGameObject();
+		GameObject* obj = _transform->GetChildAt(i)->GetGameObject();
 		comps.push_back(obj->GetComponents<T>());
 		comps.push_back(obj->GetComponentsInChildren<T>());
 	}

@@ -148,7 +148,9 @@ void CameraComponent::SetIsMain(bool value)
 {
 	if (value) {
 		for (auto c : Cameras) {
-			c->SetIsMain(false);
+			if (c != this) {
+				c->SetIsMain(false);
+			}
 		}
 	}
 	else if (!value && this->_isMain) {

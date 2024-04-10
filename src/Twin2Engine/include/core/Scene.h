@@ -13,27 +13,16 @@ namespace Twin2Engine::Manager {
 namespace Twin2Engine::Core {
 	class Scene {
 	private:
-		//GameObject* _rootObject = nullptr;
 		std::vector<YAML::Node> _gameObjects = std::vector<YAML::Node>();
 
 		std::map<std::string, Manager::TextureData> _textures = std::map<std::string, Manager::TextureData>();
 		std::map<std::string, std::tuple<std::string, bool, Manager::SpriteData>> _sprites = std::map<std::string, std::tuple<std::string, bool, Manager::SpriteData>>();
 		std::list<std::string> _fonts = std::list<std::string>();
 		std::list<std::string> _audios = std::list<std::string>();
-
-		//void DeleteGameObject(GameObject* obj);
-		
-		//template<typename T, typename... Ty> std::tuple<T*, Ty*...> AddComponentToGameObject(GameObject* obj);
 	public:
 		Scene() = default;
 		virtual ~Scene() = default;
 
-		// Scene Objects
-		/*GameObject* AddGameObject();
-		template<typename... Ty> std::tuple<GameObject*, Ty*...> AddGameObject() {
-			GameObject* obj = AddGameObject();
-			return std::tuple_cat(std::tuple<GameObject*>(obj), AddComponentToGameObject<Ty...>(obj));
-		}*/
 		void AddGameObject(const YAML::Node& gameObjectNode);
 
 		// Scene Resources
@@ -45,11 +34,4 @@ namespace Twin2Engine::Core {
 
 		friend class Manager::SceneManager;
 	};
-
-	/*template<typename T, typename... Ty>
-	std::tuple<T*, Ty*...> Scene::AddComponentToGameObject(GameObject* obj) {
-		T* t = obj->AddComponent<T>();
-		if constexpr (sizeof...(Ty) > 0) return std::tuple_cat(std::tuple<T*>(t), AddComponentToGameObject<Ty...>(obj));
-		else return std::tuple<T*>(t);
-	}*/
 }

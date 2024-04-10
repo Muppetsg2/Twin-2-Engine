@@ -68,8 +68,6 @@ using Twin2Engine::Core::Time;
 
 #pragma region CAMERA_CONTROLLING
 
-GameObject* Camera;
-
 glm::vec3 cameraPos(0.f, 0.f, 5.f);
 
 double lastX = 0.0f;
@@ -151,6 +149,8 @@ GameObject* imageObj;
 GameObject* textObj;
 Text* text;
 
+GameObject* Camera;
+
 int main(int, char**)
 {
 #pragma region Initialization
@@ -192,31 +192,34 @@ int main(int, char**)
     ComponentDeserializer::AddDeserializer("Image", [](GameObject* obj, const YAML::Node& node) -> void {
         Image* img = obj->AddComponent<Image>();
         img->SetSprite(node["sprite"].as<string>());
+        img->SetColor(node["color"].as<vec4>());
+        img->SetWidth(node["width"].as<float>());
+        img->SetHeight(node["height"].as<float>());
     });
 
+    ComponentDeserializer::AddDeserializer("Camera", [](GameObject* obj, const YAML::Node& node) -> void {
+        CameraComponent* cam = obj->AddComponent<CameraComponent>();
+        cam->SetFOV(node["fov"].as<float>());
+        cam->SetNearPlane(node["nearPlane"].as<float>());
+        cam->SetFarPlane(node["farPlane"].as<float>());
+        cam->SetCameraType((CameraType)node["cameraType"].as<int>());
+        cam->SetFrontDir(node["frontDir"].as<vec3>());
+        cam->SetWorldUp(node["worldUp"].as<vec3>());
+        cam->SetIsMain(node["isMain"].as<bool>());
+    });
+
+    ComponentDeserializer::AddDeserializer("Audio", [](GameObject* obj, const YAML::Node& node) -> void {
+        AudioComponent* audio = obj->AddComponent<AudioComponent>();
+        audio->SetAudio(node["audio"].as<string>());
+        if (node["loop"].as<bool>()) audio->Loop(); else audio->UnLoop();
+        audio->SetTimePosition(node["time"].as<double>());
+        audio->SetVolume(node["volume"].as<float>());
+    });
+
+    // ADDING SCENES
     SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
-    /*testScene = new Scene();
-
-    // SCENE RESOURCES
-    testScene->AddTexture2D("res/textures/stone.jpg");
-    testScene->AddTexture2D("res/textures/grass.png");
-
-    testScene->AddSprite("stone", "res/textures/stone.jpg");
-    testScene->AddSprite("grass", "res/textures/grass.png");
-
-    testScene->AddFont("res/fonts/arial.ttf");
-
-    testScene->AddAudio("res/music/FurElise.wav");*/
-
     // SCENE OBJECTS
-    Camera = new GameObject();
-    CameraComponent* c = Camera->AddComponent<CameraComponent>();
-    c->SetFOV(45.f);
-
-    AudioComponent* a = Camera->AddComponent<AudioComponent>();
-    a->SetAudio("res/music/FurElise.wav");
-    a->Loop();
 
     /*modelMesh = ModelsManager::GetCube();
 
@@ -275,6 +278,8 @@ int main(int, char**)
 
     SceneManager::AddScene("testScene", testScene);*/
     SceneManager::LoadScene("testScene");
+
+    Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
 
     // Main loop
     while (!window->IsClosed())
@@ -410,7 +415,7 @@ void input()
         return;
     }
 
-    CameraComponent* c = Camera->GetComponent<CameraComponent>();
+    CameraComponent* c = CameraComponent::GetMainCamera();
 
     if (Input::IsKeyDown(KEY::W))
     {

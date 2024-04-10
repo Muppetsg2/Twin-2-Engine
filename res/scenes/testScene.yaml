@@ -1,64 +1,114 @@
 Textures:
-    -   path: "res/textures/stone.jpg"
+    -   path: res/textures/stone.jpg
         sWrapMode: 33648 # MIRRORED_REPEAT
         tWrapMode: 33648 # MIRRORED_REPEAT
         minFilterMode: 9986 # NEAREST_MIPMAP_LINEAR
         magFilterMode: 9729 # LINEAR
-    -   path: "res/textures/grass.png"
+    -   path: res/textures/grass.png
         sWrapMode: 33648 # MIRRORED_REPEAT
         tWrapMode: 33648 # MIRRORED_REPEAT
         minFilterMode: 9986 # NEAREST_MIPMAP_LINEAR
         magFilterMode: 9729 # LINEAR
 Sprites:
-    -   alias: "stone"
+    -   alias: stone
         texture: 0
         hasParameters: false
-    -   alias: "grass"
+    -   alias: grass
         texture: 1
         hasParameters: false
 Fonts:
-    - "res/fonts/arial.ttf"
+    - res/fonts/arial.ttf
 Audio:
-    - "res/music/FurElise.wav"
+    - res/music/FurElise.wav
 GameObjects:
-    -   name: "test"
+    -   name: Camera
         isStatic: false
         isActive: true
         transform:
-            hasParent: false
-            position: 
-                x: 0
-                y: 0
-                z: 0
-            scale:
-                x: 1
-                y: 1
-                z: 1
-            rotation:
-                x: 0
-                y: 0
-                z: 0
-        components:
-            -   type: "Image"
-                sprite: "stone"
-    -   name: "test2"
-        isStatic: false
-        isActive: true
-        transform:
-            hasParent: true
-            parent: 0
             position:
-                x: 0
-                y: 0
-                z: 0
+                x: 0.0
+                y: 0.0
+                z: 0.0
             scale:
-                x: 1
-                y: 1
-                z: 1
+                x: 0.0
+                y: 0.0
+                z: 0.0
             rotation:
-                x: 0
-                y: 0
-                z: 0
+                x: 0.0
+                y: 0.0
+                z: 0.0
         components:
-            -   type: "Image"
-                sprite: "grass"
+            -   type: Camera
+                fov: 45.0
+                nearPlane: 0.1
+                farPlane: 1000.0
+                cameraType: 1
+                frontDir:
+                    x: 0.0
+                    y: 0.0
+                    z: -1.0
+                worldUp:
+                    x: 0.0
+                    y: 1.0
+                    z: 0.0
+                isMain: true
+            -   type: Audio
+                audio: res/music/FurElise.wav
+                loop: true
+                time: 0.0
+                volume: 1.0
+    -   name: test
+        isStatic: false
+        isActive: true
+        transform:
+            position: 
+                x: 0.0
+                y: 0.0
+                z: 0.0
+            scale:
+                x: 1.0
+                y: 1.0
+                z: 1.0
+            rotation:
+                x: 0.0
+                y: 0.0
+                z: 0.0
+        components:
+            -   type: Image
+                sprite: stone
+                color:
+                    x: 1.0
+                    y: 1.0
+                    z: 1.0
+                    w: 1.0
+                width: 100.0
+                height: 100.0
+        children:
+            - 2
+    -   name: test2
+        isStatic: false
+        isActive: true
+        transform:
+            position:
+                x: 0.0
+                y: 0.0
+                z: 0.0
+            scale:
+                x: 1.0
+                y: 1.0
+                z: 1.0
+            rotation:
+                x: 0.0
+                y: 0.0
+                z: 0.0
+            children: []
+        components:
+            -   type: Image
+                sprite: grass
+                color:
+                    x: 1.0
+                    y: 1.0
+                    z: 1.0
+                    w: 1.0
+                width: 100.0
+                height: 100.0

@@ -104,7 +104,8 @@ void Twin2Engine::Core::GameObject::Update()
 
 	for (size_t i = 0; i < _transform->GetChildCount(); i++)
 	{
-		_transform->GetChildAt(i)->GetGameObject()->Update();
+		GameObject* child = _transform->GetChildAt(i)->GetGameObject();
+		if (child->GetActive()) child->Update();
 	}
 }
 
@@ -112,7 +113,7 @@ void Twin2Engine::Core::GameObject::UpdateComponents()
 {
 	for (Component* component : components)
 	{
-		component->Update();
+		if (component->IsEnable()) component->Update();
 	}
 }
 

@@ -68,16 +68,12 @@ GameObject* SceneManager::CreateGameObject(const YAML::Node gameObjectNode)
 	YAML::Node transformNode = gameObjectNode["transform"];
 	Transform* transform = obj->GetTransform();
 
-	YAML::Node node = transformNode["position"];
-	transform->SetLocalPosition({ node["x"].as<float>(), node["y"].as<float>(), node["z"].as<float>() });
-	node = transformNode["scale"];
-	transform->SetLocalScale({ node["x"].as<float>(), node["y"].as<float>(), node["z"].as<float>() });
-	node = transformNode["rotation"];
-	transform->SetLocalRotation({ node["x"].as<float>(), node["y"].as<float>(), node["z"].as<float>() });
+	transform->SetLocalPosition(transformNode["position"].as<glm::vec3>());
+	transform->SetLocalScale(transformNode["scale"].as<glm::vec3>());
+	transform->SetLocalRotation(transformNode["rotation"].as<glm::vec3>());
 
 	// Components
-	vector<YAML::Node> componentsNode = gameObjectNode["components"].as<vector<YAML::Node>>();
-	for (const YAML::Node& compNode : componentsNode) {
+	for (const YAML::Node& compNode : gameObjectNode["components"]) {
 		string type = compNode["type"].as<string>();
 		if (!ComponentDeserializer::HasDeserializer(type)) {
 			SPDLOG_ERROR("Component Deselializer for given type '{0}' not found", type);
@@ -117,9 +113,7 @@ void SceneManager::AddScene(const string& name, const string& path)
 
 	// Loading Textures
 	vector<string> texturePaths;
-	vector<YAML::Node> nodes = sceneNode["Textures"].as<vector<YAML::Node>>();
-
-	for (YAML::Node texNode : nodes) {
+	for (const YAML::Node& texNode : sceneNode["Textures"]) {
 		TextureData data{
 			.sWrapMode = (TextureWrapMode)texNode["sWrapMode"].as<uint32_t>(),
 			.tWrapMode = (TextureWrapMode)texNode["tWrapMode"].as<uint32_t>(),
@@ -132,9 +126,7 @@ void SceneManager::AddScene(const string& name, const string& path)
 	}
 
 	// Loading Sprites
-	nodes = sceneNode["Sprites"].as<vector<YAML::Node>>();
-
-	for (YAML::Node spriteNode : nodes) {
+	for (const YAML::Node& spriteNode : sceneNode["Sprites"]) {
 		if (spriteNode["hasParameters"].as<bool>()) {
 			SpriteData data{
 				.x = spriteNode["x"].as<uint32_t>(),
@@ -150,23 +142,17 @@ void SceneManager::AddScene(const string& name, const string& path)
 	}
 
 	// Loading Fonts
-	nodes = sceneNode["Fonts"].as<vector<YAML::Node>>();
-
-	for (YAML::Node fontNode : nodes) {
+	for (const YAML::Node& fontNode : sceneNode["Fonts"]) {
 		scene->AddFont(fontNode.as<string>());
 	}
 
 	// Loading Audio
-	nodes = sceneNode["Audio"].as<vector<YAML::Node>>();
-
-	for (YAML::Node audioNode : nodes) {
+	for (const YAML::Node& audioNode : sceneNode["Audio"]) {
 		scene->AddAudio(audioNode.as<string>());
 	}
 
 	// Loading GameObjects
-	nodes = sceneNode["GameObjects"].as<vector<YAML::Node>>();
-
-	for (YAML::Node gameObjectNode : nodes) {
+	for (const YAML::Node& gameObjectNode : sceneNode["GameObjects"]) {
 		scene->AddGameObject(gameObjectNode);
 	}
 
@@ -283,17 +269,17 @@ void SceneManager::LoadScene(const string& name)
 
 	_rootObject = new GameObject();
 	vector<GameObject*> gameObjects;
-	for (YAML::Node gameObjectNode : sceneToLoad->_gameObjects) {
+	for (const YAML::Node& gameObjectNode : sceneToLoad->_gameObjects) {
 		GameObject* obj = CreateGameObject(gameObjectNode);
-		Transform* parent = nullptr;
-		if (gameObjectNode["transform"]["hasParent"].as<bool>()) {
-			parent = gameObjects[gameObjectNode["transform"]["parent"].as<size_t>()]->GetTransform();
-		}
-		else {
-			parent = _rootObject->GetTransform();
-		}
-		obj->GetTransform()->SetParent(parent);
+		_rootObject->GetTransform()->AddChild(obj->GetTransform());
 		gameObjects.push_back(obj);
+	}
+
+	// ADDING CHILDREN TO GAME OBJECTS
+	for (size_t i = 0; i < gameObjects.size(); ++i) {
+		for (const YAML::Node& childNode : sceneToLoad->_gameObjects[i]["children"]) {
+			gameObjects[i]->GetTransform()->AddChild(gameObjects[childNode.as<size_t>()]->GetTransform());
+		}
 	}
 
 	_currentScene = sceneToLoad;
@@ -308,8 +294,14 @@ void SceneManager::UpdateCurrentScene()
 void SceneManager::RenderCurrentScene()
 {
 	for (auto& comp : RenderableComponent::_components) {
-		comp->Render();
+		if (comp->IsEnable() && comp->GetGameObject()->GetActive()) 
+			comp->Render();
 	}
+}
+
+GameObject* SceneManager::GetRootObject()
+{
+	return _rootObject;
 }
 
 void SceneManager::UnloadCurrent()

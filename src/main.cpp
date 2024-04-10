@@ -258,19 +258,19 @@ int main(int, char**)
     hexagonalTilemap.GetTile(glm::ivec2(5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
     
     imageObj = new GameObject();
-    imageObj->GetTransform()->SetGlobalPosition(glm::vec3(-900, -500, 0));
+    imageObj->GetTransform()->SetGlobalPosition(glm::vec3(-900, 500, 0));
     Image* img = imageObj->AddComponent<Image>();
     img->SetSprite(SpriteManager::MakeSprite("stone", "res/textures/stone.jpg"));
     Image* img2 = imageObj->AddComponent<Image>();
     img2->SetSprite(SpriteManager::MakeSprite("grass", "res/textures/grass.png"));
 
     imageObj2 = new GameObject();
-    imageObj2->GetTransform()->SetGlobalPosition(glm::vec3(900, -500, 0));
+    imageObj2->GetTransform()->SetGlobalPosition(glm::vec3(900, 500, 0));
     img = imageObj2->AddComponent<Image>();
     img->SetSprite("grass");
 
     imageObj3 = new GameObject();
-    imageObj3->GetTransform()->SetGlobalPosition(glm::vec3(0, 500, 0));
+    imageObj3->GetTransform()->SetGlobalPosition(glm::vec3(0, -500, 0));
     image = imageObj3->AddComponent<Image>();
     image->SetSprite(SpriteManager::MakeSprite("white_box", "res/textures/white.png"));
 

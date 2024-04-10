@@ -1,3 +1,4 @@
+#include "SceneManager.h"
 #include <manager/SceneManager.h>
 #include <core/RenderableComponent.h>
 #include <core/ComponentDeserializer.h>
@@ -58,15 +59,26 @@ pair<vector<size_t>, vector<size_t>> SceneManager::GetResourcesToLoadAndUnload(c
 
 GameObject* SceneManager::CreateGameObject(const YAML::Node gameObjectNode)
 {
+	// Game Object
 	GameObject* obj = new GameObject();
-
 	obj->SetName(gameObjectNode["name"].as<string>());
 	obj->SetIsStatic(gameObjectNode["isStatic"].as<bool>());
 	obj->SetActive(gameObjectNode["isActive"].as<bool>());
 
-	vector<YAML::Node> componentNodes = gameObjectNode["components"].as<vector<YAML::Node>>();
+	// Transform
+	YAML::Node transformNode = gameObjectNode["transform"];
+	Transform* transform = obj->GetTransform();
 
-	for (const YAML::Node& compNode : componentNodes) {
+	YAML::Node node = transformNode["position"];
+	transform->SetLocalPosition({ node["x"].as<float>(), node["y"].as<float>(), node["z"].as<float>() });
+	node = transformNode["scale"];
+	transform->SetLocalScale({ node["x"].as<float>(), node["y"].as<float>(), node["z"].as<float>() });
+	node = transformNode["rotation"];
+	transform->SetLocalRotation({ node["x"].as<float>(), node["y"].as<float>(), node["z"].as<float>() });
+
+	// Components
+	vector<YAML::Node> componentsNode = gameObjectNode["components"].as<vector<YAML::Node>>();
+	for (const YAML::Node& compNode : componentsNode) {
 		string type = compNode["type"].as<string>();
 		if (!ComponentDeserializer::HasDeserializer(type)) {
 			SPDLOG_ERROR("Component Deselializer for given type '{0}' not found", type);
@@ -76,6 +88,18 @@ GameObject* SceneManager::CreateGameObject(const YAML::Node gameObjectNode)
 	}
 
 	return obj;
+}
+
+void SceneManager::DeleteGameObject(GameObject* obj)
+{
+	Transform* rootTrans = obj->GetTransform();
+	size_t childCount = rootTrans->GetChildCount();
+	for (size_t i = 0; i < childCount; ++i) {
+		Transform* child = rootTrans->GetChildAt(i);
+		GameObject* childObj = child->GetGameObject();
+		DeleteGameObject(childObj);
+		delete child->GetGameObject();
+	}
 }
 
 void SceneManager::AddScene(const string& name, Scene* scene)
@@ -255,7 +279,24 @@ void SceneManager::LoadScene(const string& name)
 		if (id != 0) _audiosIds.push_back(id);
 	}
 
-	//_rootObject = sceneToLoad->_rootObject;
+	// GAME OBJECTS
+	if (_rootObject != nullptr)	DeleteGameObject(_rootObject);
+
+	_rootObject = new GameObject();
+	vector<GameObject*> gameObjects;
+	for (YAML::Node gameObjectNode : sceneToLoad->_gameObjects) {
+		GameObject* obj = CreateGameObject(gameObjectNode);
+		Transform* parent = nullptr;
+		if (gameObjectNode["transform"]["hasParent"].as<bool>()) {
+			parent = gameObjects[gameObjectNode["transform"]["parent"].as<size_t>()]->GetTransform();
+		}
+		else {
+			parent = _rootObject->GetTransform();
+		}
+		obj->GetTransform()->SetParent(parent);
+		gameObjects.push_back(obj);
+	}
+
 	_currentScene = sceneToLoad;
 }
 

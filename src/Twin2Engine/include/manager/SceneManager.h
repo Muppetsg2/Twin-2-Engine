@@ -20,9 +20,9 @@ namespace Twin2Engine::Manager {
 		static std::map<size_t, Core::Scene*> _loadedScenes;
 
 		static std::pair<std::vector<size_t>, std::vector<size_t>> GetResourcesToLoadAndUnload(const std::vector<std::string> paths, const std::vector<size_t> loadedHashes);
-	public:
 		static Core::GameObject* CreateGameObject(const YAML::Node gameObjectNode);
-
+		static void DeleteGameObject(GameObject* obj);
+	public:
 		static void AddScene(const std::string& name, Core::Scene* scene);
 		static void AddScene(const std::string& name, const std::string& path);
 

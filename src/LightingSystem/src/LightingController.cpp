@@ -194,6 +194,11 @@ void LightingController::BindLightBuffors(Twin2Engine::GraphicEngine::Shader* sh
 	block_index = glGetUniformBlockIndex(shader->shaderProgramID, "LightingData");
 	glUniformBlockBinding(shader->shaderProgramID, block_index, 4);
 
+	//std::string str = "DirLightShadowMaps[";
+	//glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "0]").c_str()), 8);
+	//glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "1]").c_str()), 9);
+	//glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "2]").c_str()), 10);
+	//glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "3]").c_str()), 11);
 	//UpdateShadowMapsTab(shader);
 }
 
@@ -214,7 +219,7 @@ void LightingController::UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader*
 }
 
 glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* light) { //const glm::mat4& viewProjectionInverse
-	Twin2Engine::Core::CameraComponent* mainCam = Twin2Engine::Core::CameraComponent::GetMainCamera();
+	/**/Twin2Engine::Core::CameraComponent* mainCam = Twin2Engine::Core::CameraComponent::GetMainCamera();
 	glm::mat4 viewProjectionInverse = glm::inverse(mainCam->GetProjectionMatrix() * mainCam->GetViewMatrix());
 
 	
@@ -283,7 +288,8 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 	origin = frustumCenter - VoDir * light->direction;
 
 	//glm::mat4 viewMatrix = glm::lookAt(light->position, light->position + light->direction, glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 viewMatrix = glm::lookAt(origin, origin + light->direction, glm::vec3(0.0f, 1.0f, 0.0f));
+	//glm::mat4 viewMatrix = glm::lookAt(origin, origin + light->direction, glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 viewMatrix = glm::lookAt(origin, frustumCenter, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	for (const auto& corner : corners) {
 		glm::vec3 transformedCorner = glm::vec3(viewMatrix * glm::vec4(corner, 1.0f));
@@ -300,14 +306,29 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 	minZ -= lightMargin;
 	maxZ += lightMargin;
 
-	light->lightSpaceMatrix = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ) * viewMatrix;
+	light->lightSpaceMatrix = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ) * viewMatrix;/**/
 
+	/*/
+	glm::vec3 origin = {10.0f, 10.0f, 0.0f};
+	glm::mat4 lightProjection, lightView;
+	float near_plane = 1.0f, far_plane = 20.0f;
+	//lightProjection = glm::perspective(glm::radians(45.0f), (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
+	lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+	lightView = glm::lookAt(origin, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+	light->lightSpaceMatrix = lightProjection * lightView;/**/
 
-	Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->shadowMap, light->lightSpaceMatrix);
+	//Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->shadowMap, light->lightSpaceMatrix);
 
 	SPDLOG_INFO("Rekalkulacja LightSpaceM dla dirL");
 
 	return std::move(origin);
+}
+
+
+void LightingController::RenderShadowMaps() {
+	for (auto light : dirLights) {
+		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->shadowMap, light->lightSpaceMatrix);
+	}
 }
 
 void LightingController::SetAmbientLight(glm::vec3& ambientLightColor) {

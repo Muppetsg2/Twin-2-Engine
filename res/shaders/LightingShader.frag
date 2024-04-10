@@ -76,28 +76,43 @@ layout(std140, binding = 4) uniform LightingData {
 
 //LIGHTING END
 
-float ShadowCalculation(vec4 fragPosLightSpace, uint shadowMapId)
+//zero w cieniu ; 1 - oœwietlone
+float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
 {
-    // Perform shadow calculation, using shadowMap and fragPosLightSpace
-    // This is a basic example, adjust for PCF or other techniques as needed
+    // perform perspective divide
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    // transform to [0,1] range
     projCoords = projCoords * 0.5 + 0.5;
+    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
     float closestDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy).r; 
+    // get depth of current fragment from light's perspective
     float currentDepth = projCoords.z;
-    return (currentDepth - 0.005) > closestDepth  ? 1.0 : 0.0;
+    // calculate bias (based on depth map resolution and slope)
+   
+    vec3 lightDir = normalize(directionalLights[shadowMapId].position - position);
+    //float bias = max(0.01 * (1.0 - dot(N, lightDir)), 0.005);
+    float bias = 0.005;
+    // check whether current frag pos is in shadow
+    float shadow = (currentDepth - bias) < closestDepth  ? 1.0 : 0.0;
+
+    // PCF
+    //float shadow = 0.0;
+    //vec2 texelSize = 1.0 / textureSize(DirLightShadowMaps[shadowMapId], 0);
+    //for(int x = -1; x <= 1; ++x)
+    //{
+    //    for(int y = -1; y <= 1; ++y)
+    //    {
+    //        float pcfDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy + vec2(x, y) * texelSize).r; 
+    //        shadow += currentDepth - bias > pcfDepth  ? 1.0 : 0.0;        
+    //    }    
+    //}
+    //shadow /= 9.0;
     
-	//float currentDepth = 0.0;
-	//float shadow = 0.0;
-	//vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
-	//for(int x = -1; x <= 1; ++x)
-	//{
-	//    for(int y = -1; y <= 1; ++y)
-	//    {
-	//        float pcfDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy + vec2(x, y) * texelSize).r; 
-	//        shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
-	//    }    
-	//}
-	//shadow /= 9.0;
+    // keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
+    if(projCoords.z > 1.0)
+        shadow = 1.0;
+        
+    return shadow;
 }
 
 float countLambertianPart(vec3 L, vec3 N) {
@@ -188,7 +203,7 @@ void main()
         }
 
         //LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power;
-        LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), i);
+        LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
     }
 	
     FragColor *= vec4(LightColor + AmbientLight, 1.0f); //

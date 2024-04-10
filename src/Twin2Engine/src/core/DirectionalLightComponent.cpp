@@ -106,6 +106,9 @@ void Twin2Engine::Core::DirectionalLightComponent::OnDestroy()
 	LightingSystem::LightingController::Instance()->ViewerTransformChanged -= OnViewerChangeId;
 	LightingSystem::LightingController::Instance()->UpdateDirLights();
 
+	glDeleteFramebuffers(1, &light->shadowMapFBO);
+	glDeleteTextures(GL_TEXTURE_2D, &light->shadowMap);
+
 	delete light;
 }
 

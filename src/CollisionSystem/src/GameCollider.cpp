@@ -157,6 +157,7 @@ Collision* GameCollider::collide(Collider* other) {
 					Twin2Engine::Core::Collision* col = new Twin2Engine::Core::Collision;
 					col->collider = ((GameCollider*)collision->collider)->colliderComponent;
 					col->otherCollider = ((GameCollider*)collision->otherCollider)->colliderComponent;
+					col->separation = collision->separation;
 					//col->position = collision->position;
 					colliderComponent->OnCollisionEnter.Invoke(col);
 					delete col;
@@ -164,6 +165,7 @@ Collision* GameCollider::collide(Collider* other) {
 					col = new Twin2Engine::Core::Collision;
 					col->collider = ((GameCollider*)collision->otherCollider)->colliderComponent;
 					col->otherCollider = ((GameCollider*)collision->collider)->colliderComponent;
+					col->separation = -collision->separation;
 					//col->position = collision->position;
 					((GameCollider*)other)->colliderComponent->OnCollisionEnter.Invoke(col);
 					delete col;

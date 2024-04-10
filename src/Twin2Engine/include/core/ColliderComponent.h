@@ -20,6 +20,7 @@ namespace Twin2Engine::Core {
 		ColliderComponent* collider;
 		ColliderComponent* otherCollider;
 		glm::vec3 position;
+		glm::vec3 separation;
 	};
 
 	class ColliderComponent : public Component {

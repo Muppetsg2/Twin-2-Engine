@@ -80,6 +80,8 @@ unsigned int ShaderManager::LoadShaderProgram(const std::string& shaderName)
         }
 
         loadedShaders.push_back(new ShaderProgramData{ .shaderPathHash = strHash, .shaderProgramId = shaderProgramID, .useNumber = 1, .shader = new Shader(shaderProgramID)});
+
+        /////////////////LightingSystem::LightingController::Instance()->UpdateShadowMapsTab(loadedShaders.back()->shader); 
     }
     else
     {
@@ -118,14 +120,6 @@ void ShaderManager::UnloadShaderProgram(int shaderProgramID)
     {
         glDeleteProgram(data->shaderProgramId);
         loadedShaders.erase(found);
-
-        GLuint _instanceDataSSBO = data->shader->GetInstanceDataSSBO();
-        glDeleteBuffers(1, &_instanceDataSSBO);
-        GLuint _MaterialIndexSSBO = data->shader->GetMaterialIndexSSBO();
-        glDeleteBuffers(1, &_MaterialIndexSSBO);
-        GLuint _materialInputUBO = data->shader->GetMaterialInputUBO();
-        glDeleteBuffers(1, &_materialInputUBO);
-
         delete data;
     }
 }
@@ -327,6 +321,7 @@ Shader* ShaderManager::GetShaderProgram(const std::string& shaderName)
     //Shader* shader = (*found)->shader;
 #else
     Shader* shader = LoadShaderProgramSHPR(shaderName);
+    /////////////////LightingSystem::LightingController::Instance()->UpdateShadowMapsTab(shader); 
 #endif
 
     return shader;
@@ -449,6 +444,7 @@ inline Shader* ShaderManager::LoadShaderProgramSHPR(const std::string& shaderNam
         GLuint shaderProgram = CreateShaderProgramFromFile(shaderName);
 
         shader = new Shader(shaderProgram);
+        /////////////////LightingSystem::LightingController::Instance()->UpdateShadowMapsTab(shader); 
 
         loadedShaders.push_back(new ShaderProgramData{ .shaderPathHash = strHash, .shaderProgramId = shaderProgram, .useNumber = 1, .shader = shader });
     }
@@ -612,6 +608,7 @@ Shader* ShaderManager::CreateShaderProgram(const std::string& shaderName, const 
         glDeleteShader(fragmentId);
 
         shader = new Shader(shaderProgram);
+        /////////////////LightingSystem::LightingController::Instance()->UpdateShadowMapsTab(shader); 
 
         loadedShaders.push_back(new ShaderProgramData{ .shaderPathHash = strHash, .shaderProgramId = shaderProgram, .useNumber = 1, .shader = shader });
     }
@@ -631,7 +628,7 @@ void ShaderManager::UpdateDirShadowMapsTab()
 
     for (auto SPD : loadedShaders) {
         if (SPD->shaderPathHash != depthShaderHash) {
-            LightingSystem::LightingController::Instance()->UpdateShadowMapsTab(SPD->shader);
+            LightingSystem::LightingController::Instance()->UpdateShadowMapsTab(SPD->shader); //////////////////
         }
     }
 }

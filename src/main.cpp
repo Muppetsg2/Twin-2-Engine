@@ -39,7 +39,6 @@
 // STANDARD LIBRARY
 #include <memory>
 #include <string>
-#include <cstring>
 
 //LIGHTS
 #include <core/PointLightComponent.h>
@@ -149,7 +148,11 @@ GameObject* gameObject;
 GameObject* gameObject2;
 GameObject* gameObject3;
 
-GraphicEngineManager* graphicEngine;
+GameObject* CollisionBox1;
+GameObject* CollisionBox2;
+glm::vec3 movementDir = { 1.0f, 0.0f, 0.0f };
+float boxVelocity = 2.0f;
+
 GameObject* imageObj;
 GameObject* textObj;
 Text* text;
@@ -199,11 +202,11 @@ int main(int, char**)
     a->SetAudio("./res/music/FurElise.wav");
     a->Loop();
 
-    graphicEngine = new GraphicEngineManager();
+    GraphicEngineManager::Init();
 
     modelMesh = ModelsManager::GetCube();
 
-    material = MaterialsManager::GetMaterial("Basic");
+    material = MaterialsManager::GetMaterial("Basic2");
     //material2 = MaterialsManager::GetMaterial("Basic2");
     //material = MaterialsManager::GetMaterial("textured");
     material2 = MaterialsManager::GetMaterial("textured");
@@ -245,7 +248,33 @@ int main(int, char**)
     text->SetFont("res/fonts/arial.ttf");
 
 #pragma region TestingCollision
-    GameObject go1;
+    CollisionBox1 = new GameObject();
+    CollisionBox1->GetTransform()->SetGlobalPosition(glm::vec3(-10.0f, 0.0f, 2.0f));
+    MeshRenderer* mr = CollisionBox1->AddComponent<MeshRenderer>();
+    mr->AddMaterial(material2);
+    mr->SetModel(modelMesh);
+    Twin2Engine::Core::BoxColliderComponent* bc = CollisionBox1->AddComponent<Twin2Engine::Core::BoxColliderComponent>();
+    bc->SetHeight(0.5);
+    bc->SetWidth(0.5);
+    bc->SetLength(0.5);
+    CollisionBox1->GetTransform()->Update();
+    bc->Update();
+    bc->OnCollisionEnter += [](Twin2Engine::Core::Collision* collision) {
+        movementDir *= -1;
+    };
+
+    CollisionBox2 = new GameObject();
+    CollisionBox2->GetTransform()->SetGlobalPosition(glm::vec3(10.0f, 0.0f, 2.0f));
+    mr = CollisionBox2->AddComponent<MeshRenderer>();
+    mr->AddMaterial(material2);
+    mr->SetModel(modelMesh);
+    bc = CollisionBox2->AddComponent<Twin2Engine::Core::BoxColliderComponent>();
+    bc->SetHeight(0.5);
+    bc->SetWidth(0.5);
+    bc->SetLength(0.5);
+    CollisionBox2->GetTransform()->Update();
+    bc->Update();
+    /*/GameObject go1;
     GameObject go2;
     go1.GetTransform()->SetGlobalPosition(glm::vec3(1.0f, 0.0f, 0.0f));
     go2.GetTransform()->SetGlobalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
@@ -269,7 +298,7 @@ int main(int, char**)
     bc1->Update();
     bc2->Update();
     SPDLOG_INFO("CollisionTest2\n");
-    CollisionSystem::CollisionManager::Instance()->PerformCollisions();
+    CollisionSystem::CollisionManager::Instance()->PerformCollisions();/**/
 #pragma endregion
 
 #pragma region TestingLighting
@@ -279,7 +308,7 @@ int main(int, char**)
     GameObject dl_go;
     pl_go.GetTransform()->SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     sl_go.GetTransform()->SetLocalPosition(glm::vec3(-10.0f, 0.0f, 0.0f));
-    dl_go.GetTransform()->SetLocalPosition(glm::vec3(0.0f, 10.0f, 0.0f));
+    dl_go.GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
     Twin2Engine::Core::PointLightComponent* pl = pl_go.AddComponent<Twin2Engine::Core::PointLightComponent>();
     Twin2Engine::Core::SpotLightComponent* sl = sl_go.AddComponent<Twin2Engine::Core::SpotLightComponent>();
     Twin2Engine::Core::DirectionalLightComponent* dl = dl_go.AddComponent<Twin2Engine::Core::DirectionalLightComponent>();
@@ -287,6 +316,7 @@ int main(int, char**)
     //sl->Initialize();
     //dl->Initialize();
     LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
+    //LightingSystem::LightingController::Instance()->ViewerTransformChanged.Invoke();
     LightingSystem::LightingController::Instance()->SetGamma(2.2);
     /**/
 #pragma endregion
@@ -300,12 +330,13 @@ int main(int, char**)
 
         // Update game objects' state here
         update();
+        /*/
         pl->GetTransform()->Update();
         sl->GetTransform()->Update();
         dl->GetTransform()->Update();
         pl->Update();
         sl->Update();
-        dl->Update();
+        dl->Update();/**/
 
         // OpenGL rendering code here
         render();
@@ -333,6 +364,8 @@ int main(int, char**)
 
     delete Window::GetInstance();
     glfwTerminate();
+
+    GraphicEngineManager::End();
 
     return 0;
 }
@@ -519,6 +552,13 @@ void update()
     // Update game objects' state here
     text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
     Camera.GetTransform()->Update();
+
+    glm::vec3 movement = movementDir * boxVelocity * Time::GetDeltaTime();
+    CollisionBox1->GetTransform()->Translate(movement);
+    CollisionBox2->GetTransform()->Translate(-movement);
+    CollisionBox1->GetTransform()->Update();
+    CollisionBox2->GetTransform()->Update();
+    CollisionSystem::CollisionManager::Instance()->PerformCollisions();
 }
 
 void render()
@@ -527,7 +567,7 @@ void render()
     for (auto& comp : RenderableComponent::_components) {
         comp->Render();
     }
-    graphicEngine->Render();
+    GraphicEngineManager::Render();
 }
 
 void imgui_begin()

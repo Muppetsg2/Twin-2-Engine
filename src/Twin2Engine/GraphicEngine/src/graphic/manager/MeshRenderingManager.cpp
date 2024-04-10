@@ -9,6 +9,39 @@ std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<Mesh
 std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
 std::map<InstatiatingMesh*, std::queue<MeshRenderData>> MeshRenderingManager::_depthQueue;
 
+GLuint MeshRenderingManager::_instanceDataSSBO = 0u;
+GLuint MeshRenderingManager::_materialIndexSSBO = 0u;
+GLuint MeshRenderingManager::_materialInputUBO = 0u;
+
+void MeshRenderingManager::Init()
+{
+	// Tworzenie SSBO instanceData
+	glGenBuffers(1, &_instanceDataSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, BINDING_POINT_INSTANCE_DATA, _instanceDataSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	
+	// Tworzenie SSBO materialIndex
+	glGenBuffers(1, &_materialIndexSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, BINDING_POINT_MATERIAL_INDEX, _materialIndexSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	
+	// Tworzenie UBO materialInput
+	glGenBuffers(1, &_materialInputUBO);
+	glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
+	glBindBufferBase(GL_UNIFORM_BUFFER, BINDING_POINT_MATERIAL_INPUT, _materialInputUBO);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void MeshRenderingManager::End()
+{
+	glDeleteBuffers(1, &_instanceDataSSBO);
+	glDeleteBuffers(1, &_materialIndexSSBO);
+	glDeleteBuffers(1, &_materialInputUBO);
+}
+
+
 void MeshRenderingManager::Render(MeshRenderData meshData)
 {
 	//SPDLOG_INFO("Trying saving to rendering data1!");
@@ -66,7 +99,6 @@ void MeshRenderingManager::Render()
 				while (material.second.size() > 0) {
 					auto& renderData = material.second.front();
 
-					//transforms[index] = projectionViewMatrix * renderData.transform;
 					transforms[index] = renderData.transform;
 					indexes[index] = materialIndex;
 
@@ -82,41 +114,36 @@ void MeshRenderingManager::Render()
 				materialIndex++;
 			}
 
-			//SPDLOG_INFO("Instancing objects: {}!", index);
-			//SPDLOG_INFO("Instancing objects: {}!", indexes.at(0));
-			//SPDLOG_INFO("Instancing objects: {}!", indexes.at(1));
-
 			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-			GLuint ssboId = shaderPair.first->GetInstanceDataSSBO();
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
 
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboId);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * index, transforms.data(), GL_DYNAMIC_DRAW);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, BINDING_POINT_INSTANCE_DATA, _instanceDataSSBO);
 
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-			meshPair.first->SetInstanceDataSSBO(ssboId);
+
 
 			//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-			GLuint materialIndexSSBO = shaderPair.first->GetMaterialIndexSSBO();
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
 
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, materialIndexSSBO);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(unsigned int) * index, indexes.data(), GL_DYNAMIC_DRAW);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, BINDING_POINT_MATERIAL_INDEX, _materialIndexSSBO);
 
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-			meshPair.first->SetMaterialIndexSSBO(materialIndexSSBO);
+
 
 			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
-			GLuint uboId = shaderPair.first->GetMaterialInputUBO();
+			glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
 
-			glBindBuffer(GL_UNIFORM_BUFFER, uboId);
 			glBufferData(GL_UNIFORM_BUFFER, sizeof(char) * materialData.size(), materialData.data(), GL_DYNAMIC_DRAW);
+			glBindBufferBase(GL_UNIFORM_BUFFER, BINDING_POINT_MATERIAL_INPUT, _materialInputUBO);
 
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
-			meshPair.first->SetMaterialInputUBO(uboId);
 
 			shaderPair.first->Use();
 
-			int beginLocation = 0; // glGetUniformLocation(shaderPair.first->GetProgramId(), "constantZeroTexturePoint");
-			//int textureBind = GL_TEXTURE0;
+			// ASSIGNING TEXTURES
+			int beginLocation = 0;
 			int textureBind = 0;
 			for (auto& material : shaderPair.second)
 			{
@@ -136,13 +163,15 @@ void MeshRenderingManager::Render()
 void MeshRenderingManager::RenderDepthMap(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,
 										  glm::mat4& projectionViewMatrix)
 {
+	ShaderManager::DepthShader->Use();
+	ShaderManager::DepthShader->SetMat4("lightSpaceMatrix", projectionViewMatrix);
+
 	glViewport(0, 0, bufferWidth, bufferHeight);
 	glBindFramebuffer(GL_FRAMEBUFFER, depthFBO);
+	
 	//glBindTexture(GL_TEXTURE_2D, depthMapTex);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	ShaderManager::DepthShader->Use();
-	ShaderManager::DepthShader->SetMat4("lightSpaceMatrix", projectionViewMatrix);
 
 	for (auto& meshPair : _depthQueue)
 	{
@@ -154,20 +183,20 @@ void MeshRenderingManager::RenderDepthMap(const unsigned int& bufferWidth, const
 		{
 			auto& renderData = meshPair.second.front();
 
-			transforms[index] = projectionViewMatrix * renderData.transform;
+			//transforms[index] = projectionViewMatrix * renderData.transform;
+			transforms[index] = renderData.transform;
 
 			++index;
 
 			meshPair.second.pop();
 		}
 
-		GLuint ssboId = ShaderManager::DepthShader->GetInstanceDataSSBO();
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
 
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboId);
 		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * index, transforms.data(), GL_DYNAMIC_DRAW);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, _instanceDataSSBO);
 
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-		meshPair.first->SetInstanceDataSSBO(ssboId);
 
 		meshPair.first->Draw(index);
 	}
@@ -229,35 +258,33 @@ void MeshRenderingManager::RenderDepthMap(const unsigned int& bufferWidth, const
 			//SPDLOG_INFO("Instancing objects: {}!", indexes.at(1));
 
 			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-			GLuint ssboId = shaderPair.first->GetInstanceDataSSBO();
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
 
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboId);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * index, transforms.data(), GL_DYNAMIC_DRAW);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, _instanceDataSSBO);
 
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-			meshPair.first->SetInstanceDataSSBO(ssboId);
+
 
 			//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-			GLuint materialIndexSSBO = shaderPair.first->GetMaterialIndexSSBO();
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
 
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, materialIndexSSBO);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(unsigned int) * index, indexes.data(), GL_DYNAMIC_DRAW);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, _materialIndexSSBO);
 
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-			meshPair.first->SetMaterialIndexSSBO(materialIndexSSBO);
+
 
 			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
-			GLuint uboId = shaderPair.first->GetMaterialInputUBO();
+			glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
 
-			glBindBuffer(GL_UNIFORM_BUFFER, uboId);
 			glBufferData(GL_UNIFORM_BUFFER, sizeof(char) * materialData.size(), materialData.data(), GL_DYNAMIC_DRAW);
+			glBindBufferBase(GL_UNIFORM_BUFFER, 2, _materialInputUBO);
 
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
-			meshPair.first->SetMaterialInputUBO(uboId);
 
 			shaderPair.first->Use();
-			//meshPair.first->Draw(shaderPair.first, transforms.size());
-			//meshPair.first->Draw(shaderPair.first, index);
+
 			meshPair.first->Draw(index);
 		}
 	}

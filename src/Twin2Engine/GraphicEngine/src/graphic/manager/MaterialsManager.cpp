@@ -246,7 +246,8 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 //	return typeSizeMap[stringHash(type)];
 //}
 
-Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, const std::vector<std::string>& materialParameters)
+Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, 
+	const std::vector<std::string>& materialParametersNames, const std::vector<std::string>& textureParametersNames)
 {
 	size_t hashed = stringHash(newMaterialName);
 
@@ -262,7 +263,7 @@ Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, co
 			.id = hashed,
 			.useNumber = 1,
 			.shader = ShaderManager::GetShaderProgram(shaderName),
-			.materialParameters = new MaterialParameters(materialParameters)
+			.materialParameters = new MaterialParameters(materialParametersNames, textureParametersNames)
 			
 		};
 

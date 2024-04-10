@@ -196,7 +196,7 @@ int main(int, char**)
     c->SetFOV(45.f);
 
     AudioComponent* a = Camera.AddComponent<AudioComponent>();
-    a->SetAudio("./res/music/FurElise.wav");
+    a->SetAudio("./res/music/acoustic-guitar.mp3");
     a->Loop();
 
     GraphicEngineManager::Init();

@@ -1,0 +1,10 @@
+material:
+  name: deska
+  shader: origin/Basic
+  parameters:
+    - name: color1
+      type: vec4
+      value: [0.2, 0.2, 0.5, 1.0]
+    - name: color2
+      type: vec4
+      value: [1.0, 1.0, 1.0, 1.0]

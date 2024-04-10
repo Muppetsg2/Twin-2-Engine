@@ -17,7 +17,6 @@ namespace Twin2Engine::Core
 
 	class GameObject
 	{
-		Scene* _scene;
 		friend class Transform;
 
 		static unsigned int _currentFreeId;
@@ -38,13 +37,12 @@ namespace Twin2Engine::Core
 		void SetActiveInHierarchy(bool activeInHierarchy);
 
 	public:
-		GameObject(Scene* scene = nullptr);
+		GameObject();
 
 		virtual ~GameObject();
 
 		inline unsigned int Id() const;
 
-		Scene* GetObjectScene() const;
 		bool GetActiveInHierarchy() const;
 		bool GetActive() const;
 		void SetActive(bool active);

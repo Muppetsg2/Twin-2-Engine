@@ -1,4 +1,3 @@
-#include "SceneManager.h"
 #include <manager/SceneManager.h>
 #include <core/RenderableComponent.h>
 #include <core/ComponentDeserializer.h>
@@ -309,9 +308,7 @@ void SceneManager::UpdateCurrentScene()
 void SceneManager::RenderCurrentScene()
 {
 	for (auto& comp : RenderableComponent::_components) {
-		if (comp->GetGameObject()->GetObjectScene() == _currentScene) {
-			comp->Render();
-		}
+		comp->Render();
 	}
 }
 

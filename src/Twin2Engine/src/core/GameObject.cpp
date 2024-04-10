@@ -3,10 +3,8 @@
 
 unsigned int Twin2Engine::Core::GameObject::_currentFreeId = 1;
 
-Twin2Engine::Core::GameObject::GameObject(Scene* scene)
+Twin2Engine::Core::GameObject::GameObject()
 {
-	_scene = scene;
-
 	// Setting ID
 	_id = _currentFreeId++;
 
@@ -40,11 +38,6 @@ Twin2Engine::Core::GameObject::~GameObject()
 unsigned int Twin2Engine::Core::GameObject::Id() const
 {
 	return _id;
-}
-
-Twin2Engine::Core::Scene* Twin2Engine::Core::GameObject::GetObjectScene() const
-{
-	return _scene;
 }
 
 bool Twin2Engine::Core::GameObject::GetActiveInHierarchy() const

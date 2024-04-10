@@ -244,7 +244,9 @@ int main(int, char**)
     comp->AddMaterial(MaterialsManager::GetMaterial("hexagonMat"));
     comp->SetModel(modelHexagon);
 
+    float tilemapFillingBeginTime = glfwGetTime();
     hexagonalTilemap.Fill(glm::ivec2(0, 0), hexagonPrefab);
+    spdlog::info("Tilemap filling time: {}", glfwGetTime() - tilemapFillingBeginTime);
     hexagonalTilemap.GetTile(glm::ivec2(-5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
     hexagonalTilemap.GetTile(glm::ivec2(5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
     hexagonalTilemap.GetTile(glm::ivec2(-5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));

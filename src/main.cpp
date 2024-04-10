@@ -1,7 +1,3 @@
-// Soloud
-#include <soloud.h>
-#include <soloud_wav.h>
-
 // HID
 #include <core/Input.h>
 
@@ -47,7 +43,6 @@
 
 // CAMERA
 #include <core/CameraComponent.h>
-#include "graphic/InstatiatingMesh.h"
 
 // TILEMAP
 #include <Tilemap/HexagonalTilemap.h>
@@ -71,7 +66,7 @@ using Tilemap::HexagonalTilemap;
 
 GameObject Camera;
 
-glm::vec3 cameraPos(0.f, 0.f, 5.f);
+glm::vec3 cameraPos(0.f, 2.f, 5.f);
 
 double lastX = 0.0f;
 double lastY = 0.0f;
@@ -242,10 +237,7 @@ int main(int, char**)
     comp->AddMaterial(MaterialsManager::GetMaterial("metal"));
     comp->SetModel(modelAK);
 
-
     InstatiatingModel modelHexagon = ModelsManager::GetModel("res/models/hexagon.obj");
-
-    
 
     GameObject* hexagonPrefab = new GameObject();
     hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 4, 0));
@@ -381,11 +373,13 @@ bool init()
     }
     spdlog::info("Successfully initialized OpenGL loader!");
 
+    /*
 #ifdef _DEBUG
     // Debugging
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(ErrorMessageCallback, 0);
 #endif
+    */
 
     // Blending
     glEnable(GL_BLEND);
@@ -480,8 +474,6 @@ void input()
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    // Na potrzeby zadania
-    /*
     if (mouseNotUsed)
     {
         lastX = xpos;
@@ -514,10 +506,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     {
         Camera.GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
     }
-    */
 }
-
-float yRot = 10.f;
 
 void update()
 {
@@ -540,8 +529,6 @@ void update()
     }
     // WIDTH
     image->SetWidth(1000.f * colorSpan);
-
-    Camera.GetTransform()->SetGlobalRotation(Camera.GetTransform()->GetGlobalRotation() + glm::vec3(0.f, yRot * Time::GetDeltaTime(), 0.f));
 
     Camera.GetTransform()->Update();
 }

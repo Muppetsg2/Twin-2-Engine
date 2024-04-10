@@ -89,7 +89,7 @@ mat4 CameraComponent::GetProjectionMatrix()
 			break;
 		}
 		case PERSPECTIVE: {
-			return perspective(radians(_fov), (float)size.x / (float)size.y, _near, _far);
+			return perspective(radians(_fov), (size.y != 0) ? ((float)size.x / (float)size.y) : 0, _near, _far);
 			break;
 		}
 	}

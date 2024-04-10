@@ -74,6 +74,7 @@ void AudioComponent::Loop()
 		}
 
 		AudioManager::SetLooping(_audioHandle, true);
+		_loop = true;
 		return;
 	}
 	else {
@@ -89,6 +90,7 @@ void AudioComponent::UnLoop()
 		}
 
 		AudioManager::SetLooping(_audioHandle, false);
+		_loop = false;
 		return;
 	}
 	else {
@@ -202,6 +204,7 @@ bool AudioComponent::IsLooping()
 
 	if (!AudioManager::IsHandleValid(_audioHandle)) {
 		_audioHandle = AudioManager::GetAudioHandle(_audioId);
+		AudioManager::SetLooping(_audioHandle, _loop);
 	}
 
 	return AudioManager::IsLooping(_audioHandle);

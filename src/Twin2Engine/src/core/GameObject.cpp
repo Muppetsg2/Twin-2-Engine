@@ -35,12 +35,12 @@ Twin2Engine::Core::GameObject::~GameObject()
 	}
 }
 
-inline GameObject* GameObject::Instatiate(GameObject* gameObject)
+GameObject* GameObject::Instatiate(GameObject* gameObject)
 {
 	return gameObject->Clone();
 }
 
-inline GameObject* GameObject::Instatiate(GameObject* gameObject, Transform* parent)
+GameObject* GameObject::Instatiate(GameObject* gameObject, Transform* parent)
 {
 	GameObject* cloned = gameObject->Clone();
 

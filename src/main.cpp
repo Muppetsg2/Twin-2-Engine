@@ -49,6 +49,10 @@
 #include <core/CameraComponent.h>
 #include "graphic/InstatiatingMesh.h"
 
+// TILEMAP
+#include <Tilemap/HexagonalTilemap.h>
+#include <Tilemap/HexagonalTile.h>
+
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
@@ -59,6 +63,9 @@ using Twin2Engine::Core::KEY;
 using Twin2Engine::Core::MOUSE_BUTTON;
 using Twin2Engine::Core::CURSOR_STATE;
 using Twin2Engine::Core::Time;
+
+using Tilemap::HexagonalTile;
+using Tilemap::HexagonalTilemap;
 
 #pragma region CAMERA_CONTROLLING
 
@@ -137,6 +144,8 @@ GameObject* gameObject2;
 GameObject* gameObject3;
 GameObject* gameObject4;
 
+HexagonalTilemap hexagonalTilemap(glm::ivec2(-5, -5), glm::ivec2(5, 5), 1.f, true);
+
 GameObject* imageObj;
 GameObject* imageObj2;
 GameObject* imageObj3;
@@ -203,11 +212,12 @@ int main(int, char**)
 
     gameObject = new GameObject();
     auto comp = gameObject->AddComponent<MeshRenderer>();
+    gameObject->GetTransform()->Translate(glm::vec3(2, 5, 0));
     comp->AddMaterial(material);
     comp->SetModel(modelMesh);
 
     gameObject2 = new GameObject();
-    gameObject2->GetTransform()->Translate(glm::vec3(2, 1, 0));
+    gameObject2->GetTransform()->Translate(glm::vec3(2, 3, 0));
     comp = gameObject2->AddComponent<MeshRenderer>();
     comp->AddMaterial(material2);
     comp->SetModel(modelMesh);
@@ -215,7 +225,8 @@ int main(int, char**)
     InstatiatingModel modelCastle = ModelsManager::GetModel("res/models/castle.obj");
 
     gameObject3 = new GameObject();
-    gameObject3->GetTransform()->Translate(glm::vec3(0, -1, 0));
+    gameObject3->GetTransform()->Translate(glm::vec3(0, 3, 0));
+    gameObject3->GetTransform()->SetLocalRotation(glm::vec3(0, 0, 0));
     comp = gameObject3->AddComponent<MeshRenderer>();
     comp->AddMaterial(wallMat);
     comp->AddMaterial(roofMat);
@@ -231,6 +242,27 @@ int main(int, char**)
     comp->AddMaterial(MaterialsManager::GetMaterial("metal"));
     comp->SetModel(modelAK);
 
+
+    InstatiatingModel modelHexagon = ModelsManager::GetModel("res/models/hexagon.obj");
+
+    
+
+    GameObject* hexagonPrefab = new GameObject();
+    hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
+    hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+
+    //spdlog::info("hexagon rotation: [{}, {}, {}]", hexagonPrefab->GetTransform()->GetLocalRotation().x, hexagonPrefab->GetTransform()->GetLocalRotation().y, hexagonPrefab->GetTransform()->GetLocalRotation().z);
+
+    comp = hexagonPrefab->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("hexagonMat"));
+    comp->SetModel(modelHexagon);
+
+    hexagonalTilemap.Fill(glm::ivec2(0, 0), hexagonPrefab);
+    hexagonalTilemap.GetTile(glm::ivec2(-5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
+    hexagonalTilemap.GetTile(glm::ivec2(5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
+    hexagonalTilemap.GetTile(glm::ivec2(-5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
+    hexagonalTilemap.GetTile(glm::ivec2(5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
+    
     imageObj = new GameObject();
     imageObj->GetTransform()->SetGlobalPosition(glm::vec3(-900, -500, 0));
     Image* img = imageObj->AddComponent<Image>();

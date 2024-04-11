@@ -220,10 +220,9 @@ GameObjects:
         components:
             -   type: MeshRenderer
                 isTransparent: false
-                model:
-                    standard: Cube
+                model: 0
                 materials:
-                    - Basic2
+                    - 0
         children: []
     -   name: gameObject2
         isStatic: false
@@ -244,10 +243,9 @@ GameObjects:
         components:
             -   type: MeshRenderer
                 isTransparent: false
-                model:
-                    standard: Cube
+                model: 0
                 materials:
-                    - textured
+                    - 1
         children: []
     -   name: gameObject3
         isStatic: false
@@ -268,11 +266,10 @@ GameObjects:
         components:
             -   type: MeshRenderer
                 isTransparent: false
-                model:
-                    path: res/models/castle.obj
+                model: 1
                 materials:
-                    - wallMat
-                    - roofMat
+                    - 2
+                    - 3
         children: []
     -   name: gameObject4
         isStatic: false
@@ -293,9 +290,8 @@ GameObjects:
         components:
             -   type: MeshRenderer
                 isTransparent: false
-                model:
-                    path: res/models/AK47.obj
+                model: 2
                 materials:
-                    - deska
-                    - metal
+                    - 4
+                    - 5
         children: []

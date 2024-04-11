@@ -240,27 +240,9 @@ int main(int, char**)
         MeshRenderer* meshRenderer = obj->AddComponent<MeshRenderer>();
         meshRenderer->SetIsTransparent(node["isTransparent"].as<bool>());
         for (const YAML::Node& matNode : node["materials"]) {
-            meshRenderer->AddMaterial(MaterialsManager::GetMaterial(matNode.as<string>()));
+            meshRenderer->AddMaterial(SceneManager::GetMaterial(matNode.as<size_t>()));
         }
-
-        if (node["model"]["standard"]) {
-            string type = node["model"]["standard"].as<string>();
-            if (type == "Cube") {
-                meshRenderer->SetModel(ModelsManager::GetCube());
-            }
-            else if (type == "Sphere") {
-                meshRenderer->SetModel(ModelsManager::GetSphere());
-            }
-            else if (type == "Plane") {
-                meshRenderer->SetModel(ModelsManager::GetPlane());
-            }
-            else if (type == "Piramid") {
-                meshRenderer->SetModel(ModelsManager::GetPiramid());
-            }
-        }
-        else {
-            meshRenderer->SetModel(ModelsManager::GetModel(node["model"]["path"].as<string>()));
-        }
+        meshRenderer->SetModel(SceneManager::GetModel(node["model"].as<size_t>()));
     });
 
     // ADDING SCENES

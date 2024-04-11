@@ -292,6 +292,7 @@ void SceneManager::LoadScene(const string& name)
 	}
 	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _fontsIds);
 
+	// Unloading
 	for (size_t f : toLoadToUnload.second) {
 		FontManager::UnloadFont(f);
 		for (size_t i = 0; i < _fontsIds.size(); ++i) {
@@ -301,10 +302,23 @@ void SceneManager::LoadScene(const string& name)
 			}
 		}
 	}
+	// Loading
 	for (size_t f : toLoadToUnload.first) {
 		Font* temp = FontManager::LoadFont(paths[f]);
 		if (temp != nullptr) _fontsIds.push_back(temp->GetManagerId());
 	}
+	// Sorting
+	sortedIds.clear();
+	for (size_t i = 0; i < paths.size(); ++i) {
+		size_t pathH = hash<string>()(paths[i]);
+		for (size_t j = 0; j < _fontsIds.size(); ++j) {
+			if (_fontsIds[j] == pathH) {
+				sortedIds.push_back(_fontsIds[j]);
+				break;
+			}
+		}
+	}
+	_fontsIds = sortedIds;
 #pragma endregion
 #pragma region LOADING_AUDIO
 	// AUDIO
@@ -314,6 +328,7 @@ void SceneManager::LoadScene(const string& name)
 	}
 	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _audiosIds);
 
+	// Unloading
 	for (size_t a : toLoadToUnload.second) {
 		AudioManager::UnloadAudio(a);
 		for (size_t i = 0; i < _audiosIds.size(); ++i) {
@@ -323,10 +338,23 @@ void SceneManager::LoadScene(const string& name)
 			}
 		}
 	}
+	// Loading
 	for (size_t a : toLoadToUnload.first) {
 		size_t id = AudioManager::LoadAudio(paths[a]);
 		if (id != 0) _audiosIds.push_back(id);
 	}
+	// Sorting
+	sortedIds.clear();
+	for (size_t i = 0; i < paths.size(); ++i) {
+		size_t pathH = hash<string>()(paths[i]);
+		for (size_t j = 0; j < _audiosIds.size(); ++j) {
+			if (_audiosIds[j] == pathH) {
+				sortedIds.push_back(_audiosIds[j]);
+				break;
+			}
+		}
+	}
+	_audiosIds = sortedIds;
 #pragma endregion
 #pragma region LOADING_MATERIALS
 	// MATERIALS
@@ -340,6 +368,7 @@ void SceneManager::LoadScene(const string& name)
 	}
 	toLoadToUnload = GetResourcesToLoadAndUnload(paths, ids);
 
+	// Unloading
 	for (size_t m : toLoadToUnload.second) {
 		for (size_t i = 0; i < ids.size(); ++i) {
 			if (ids[i] == m) {
@@ -349,6 +378,7 @@ void SceneManager::LoadScene(const string& name)
 			}
 		}
 	}
+	// Loading
 	for (size_t m : toLoadToUnload.first) {
 		Material mat = MaterialsManager::LoadMaterial(paths[m]);
 		_materialsHolder.push_back(mat);
@@ -526,6 +556,7 @@ void SceneManager::UnloadCurrent()
 	_modelsHolder.clear();
 	_standardModelsIds.clear();
 	_standardModelsHolder.clear();
+	_allModelsHolder.clear();
 }
 
 void SceneManager::UnloadScene(const std::string& name)

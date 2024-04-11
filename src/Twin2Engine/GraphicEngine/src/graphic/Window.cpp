@@ -5,6 +5,7 @@ using namespace std;
 using namespace glm;
 
 Window* Window::_instance = nullptr;
+Twin2Engine::Core::MethodEventHandler Window::OnWindowSizeEvent;
 
 Window::Window(const string& title, const ivec2& size, bool fullscreen)
 {
@@ -25,6 +26,14 @@ Window::Window(const string& title, const ivec2& size, bool fullscreen)
 		}
 		SetFullscreen(monitor);
 	}
+
+	glfwSetFramebufferSizeCallback(this->GetWindow(), FramebufferSizeCallback);
+}
+
+void Window::FramebufferSizeCallback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+	Window::OnWindowSizeEvent();
 }
 
 Window::~Window()

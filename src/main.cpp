@@ -1,7 +1,3 @@
-// Soloud
-#include <soloud.h>
-#include <soloud_wav.h>
-
 // HID
 #include <core/Input.h>
 
@@ -47,7 +43,6 @@
 
 // CAMERA
 #include <core/CameraComponent.h>
-#include "graphic/InstatiatingMesh.h"
 
 // TILEMAP
 #include <Tilemap/HexagonalTilemap.h>
@@ -71,7 +66,7 @@ using Tilemap::HexagonalTilemap;
 
 GameObject Camera;
 
-glm::vec3 cameraPos(0.f, 0.f, 5.f);
+glm::vec3 cameraPos(0.f, 2.f, 5.f);
 
 double lastX = 0.0f;
 double lastY = 0.0f;
@@ -84,11 +79,6 @@ bool mouseNotUsed = true;
 #pragma endregion
 
 #pragma region OpenGLCallbackFunctions
-
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -196,7 +186,7 @@ int main(int, char**)
     c->SetFOV(45.f);
 
     AudioComponent* a = Camera.AddComponent<AudioComponent>();
-    a->SetAudio("./res/music/FurElise.wav");
+    a->SetAudio("./res/music/acoustic-guitar.mp3");
     a->Loop();
 
     GraphicEngineManager::Init();
@@ -242,13 +232,10 @@ int main(int, char**)
     comp->AddMaterial(MaterialsManager::GetMaterial("metal"));
     comp->SetModel(modelAK);
 
-
     InstatiatingModel modelHexagon = ModelsManager::GetModel("res/models/hexagon.obj");
 
-    
-
     GameObject* hexagonPrefab = new GameObject();
-    hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
+    hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 4, 0));
     hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
 
     //spdlog::info("hexagon rotation: [{}, {}, {}]", hexagonPrefab->GetTransform()->GetLocalRotation().x, hexagonPrefab->GetTransform()->GetLocalRotation().y, hexagonPrefab->GetTransform()->GetLocalRotation().z);
@@ -266,19 +253,19 @@ int main(int, char**)
     hexagonalTilemap.GetTile(glm::ivec2(5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
     
     imageObj = new GameObject();
-    imageObj->GetTransform()->SetGlobalPosition(glm::vec3(-900, -500, 0));
+    imageObj->GetTransform()->SetGlobalPosition(glm::vec3(-900, 500, 0));
     Image* img = imageObj->AddComponent<Image>();
     img->SetSprite(SpriteManager::MakeSprite("stone", "res/textures/stone.jpg"));
     Image* img2 = imageObj->AddComponent<Image>();
     img2->SetSprite(SpriteManager::MakeSprite("grass", "res/textures/grass.png"));
 
     imageObj2 = new GameObject();
-    imageObj2->GetTransform()->SetGlobalPosition(glm::vec3(900, -500, 0));
+    imageObj2->GetTransform()->SetGlobalPosition(glm::vec3(900, 500, 0));
     img = imageObj2->AddComponent<Image>();
     img->SetSprite("grass");
 
     imageObj3 = new GameObject();
-    imageObj3->GetTransform()->SetGlobalPosition(glm::vec3(0, 500, 0));
+    imageObj3->GetTransform()->SetGlobalPosition(glm::vec3(0, -500, 0));
     image = imageObj3->AddComponent<Image>();
     image->SetSprite(SpriteManager::MakeSprite("white_box", "res/textures/white.png"));
 
@@ -370,7 +357,6 @@ bool init()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 
     window = Window::MakeWindow(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT }, false);
-    glfwSetFramebufferSizeCallback(window->GetWindow(), framebuffer_size_callback);
     Input::InitForWindow(window);
 
     bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -381,11 +367,13 @@ bool init()
     }
     spdlog::info("Successfully initialized OpenGL loader!");
 
+    /*
 #ifdef _DEBUG
     // Debugging
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(ErrorMessageCallback, 0);
 #endif
+    */
 
     // Blending
     glEnable(GL_BLEND);
@@ -480,8 +468,6 @@ void input()
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    // Na potrzeby zadania
-    /*
     if (mouseNotUsed)
     {
         lastX = xpos;
@@ -514,10 +500,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     {
         Camera.GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
     }
-    */
 }
-
-float yRot = 10.f;
 
 void update()
 {
@@ -540,8 +523,6 @@ void update()
     }
     // WIDTH
     image->SetWidth(1000.f * colorSpan);
-
-    Camera.GetTransform()->SetGlobalRotation(Camera.GetTransform()->GetGlobalRotation() + glm::vec3(0.f, yRot * Time::GetDeltaTime(), 0.f));
 
     Camera.GetTransform()->Update();
 }
@@ -668,7 +649,22 @@ void imgui_render()
                 acFil |= RenderFilter::BLUR;
             }
 
+            g = (fil & RenderFilter::DEPTH) != 0;
+
+            ImGui::Checkbox("Depth", &g);
+            if (g) {
+                acFil |= RenderFilter::DEPTH;
+            }
+
             c->SetCameraFilter(acFil);
+
+            int s = (int)c->GetSamples();
+
+            ImGui::InputInt("MSAA Samples", &s);
+
+            if (s != (int)c->GetSamples()) {
+                c->SetSamples((uint8_t)s);
+            }
 
             bool per = (c->GetCameraType() == CameraType::PERSPECTIVE);
 

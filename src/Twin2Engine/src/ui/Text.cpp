@@ -34,8 +34,7 @@ void Text::Render()
 		float w = c->Size.x * scale;
 		float h = c->Size.y * scale;
 
-		//glm::mat4 tempModel = glm::translate(model, glm::vec3(xpos + w / 2.f, ypos + h / 2.f, 0.f));
-		glm::mat4 tempModel = glm::translate(model, glm::vec3(xpos + w / 2.f, ypos - h / 2.f, 0.f));
+		glm::mat4 tempModel = glm::translate(model, glm::vec3(xpos + w / 2.f, ypos + h / 2.f, 0.f));
 		elem.elemSize = { w, h };
 		elem.textureSize = { w, h };
 		elem.spriteSize = { w, h };

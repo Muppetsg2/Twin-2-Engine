@@ -15,8 +15,8 @@ namespace Twin2Engine::Core {
 	private:
 		std::vector<YAML::Node> _gameObjects = std::vector<YAML::Node>();
 
-		std::map<std::string, Manager::TextureData> _textures = std::map<std::string, Manager::TextureData>();
-		std::map<std::string, std::tuple<std::string, bool, Manager::SpriteData>> _sprites = std::map<std::string, std::tuple<std::string, bool, Manager::SpriteData>>();
+		std::unordered_map<std::string, Manager::TextureData> _textures = std::unordered_map<std::string, Manager::TextureData>();
+		std::unordered_map<std::string, std::tuple<std::string, bool, Manager::SpriteData>> _sprites = std::unordered_map<std::string, std::tuple<std::string, bool, Manager::SpriteData>>();
 		std::vector<std::string> _fonts = std::vector<std::string>();
 		std::vector<std::string> _audios = std::vector<std::string>();
 		std::vector<std::string> _materials = std::vector<std::string>();

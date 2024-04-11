@@ -469,11 +469,11 @@ GameObject* SceneManager::FindObjectWithName(const std::string& name)
 	return FindObjectWith(_rootObject, [&](const GameObject* obj) -> bool { return obj->GetName() == name; });
 }
 
-/*GameObject* SceneManager::FindObjectWithId(size_t id)
+GameObject* SceneManager::FindObjectWithId(size_t id)
 {
 	if (_rootObject->Id() == id) return _rootObject;
 	return FindObjectWith(_rootObject, [&](const GameObject* obj) -> bool { return obj->Id() == id; });
-}*/
+}
 
 size_t SceneManager::GetTexture2D(size_t loadIdx)
 {

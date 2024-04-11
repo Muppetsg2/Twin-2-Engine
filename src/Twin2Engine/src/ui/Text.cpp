@@ -15,7 +15,7 @@ using namespace std;
 
 void Text::UpdateTextCache()
 {
-	Font* font = FontManager::LoadFont(_fontPath);
+	Font* font = FontManager::GetFont(_fontId);
 	if (_size != 0 && font != nullptr) {
 		if (_justResizeCache) {
 			// Zastêpowanie
@@ -112,12 +112,16 @@ void Text::SetSize(uint32_t size)
 
 void Text::SetFont(const string& fontPath)
 {
-	if (_fontPath != fontPath) {
-		_fontPath = fontPath;
+	SetFont(hash<string>()(fontPath));
+}
+
+void Text::SetFont(size_t fontId)
+{
+	if (_fontId != fontId) {
+		_fontId = fontId;
 		_textCacheDirty = true;
 		_justResizeCache = false;
 	}
-
 }
 
 vec4 Text::GetColor() const
@@ -135,12 +139,12 @@ uint32_t Text::GetSize() const
 	return _size;
 }
 
-string Text::GetFontPath() const
+size_t Text::GetFontId() const
 {
-	return _fontPath;
+	return _fontId;
 }
 
 Font* Text::GetFont() const
 {
-	return FontManager::LoadFont(_fontPath);
+	return FontManager::GetFont(_fontId);
 }

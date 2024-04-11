@@ -48,7 +48,7 @@ namespace Twin2Engine::Core
 
 		virtual ~GameObject();
 
-		inline unsigned int Id() const;
+		unsigned int Id() const;
 
 		bool GetActiveInHierarchy() const;
 		bool GetActive() const;

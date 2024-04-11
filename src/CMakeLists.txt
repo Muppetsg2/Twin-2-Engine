@@ -1,8 +1,4 @@
-#file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_BINARY_DIR}/ShadersOrigin SYMBOLIC)
 configure_file(GameConfig.yaml.in GameConfig.yaml)
-
-file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_BINARY_DIR}/ShadersOrigin SYMBOLIC)
-file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_SOURCE_DIR}/ShadersOrigin SYMBOLIC)
 
 # ---- Dependency ----
 add_subdirectory(Twin2Engine)
@@ -31,7 +27,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC CollisionSystem)
 #				   ${CMAKE_SOURCE_DIR}/res 
 #				   ${CMAKE_CURRENT_BINARY_DIR}/res)
 
-#file(CREATE_LINK ${CMAKE_SOURCE_DIR}/res ${CMAKE_CURRENT_SOURCE_DIR}/res SYMBOLIC)
+file(CREATE_LINK ${CMAKE_SOURCE_DIR}/res ${CMAKE_CURRENT_BINARY_DIR}/res SYMBOLIC)
 
 if(MSVC)
     target_compile_definitions(${PROJECT_NAME} PUBLIC NOMINMAX)

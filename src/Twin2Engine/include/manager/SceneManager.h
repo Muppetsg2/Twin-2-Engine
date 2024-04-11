@@ -44,7 +44,7 @@ namespace Twin2Engine::Manager {
 		
 		static Core::GameObject* GetRootObject();
 		static Core::GameObject* FindObjectWithName(const std::string& name);
-		//static Core::GameObject* FindObjectWithId(size_t id);
+		static Core::GameObject* FindObjectWithId(size_t id);
 
 		static size_t GetTexture2D(size_t loadIdx);
 		static size_t GetSprite(size_t loadIdx);

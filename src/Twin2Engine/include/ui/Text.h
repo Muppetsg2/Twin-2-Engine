@@ -8,7 +8,7 @@ namespace Twin2Engine::UI {
 	private:
 		std::string _text = "";
 
-		std::string _fontPath = "";
+		size_t _fontId = 0;
 
 		uint32_t _size = 0;
 
@@ -28,11 +28,12 @@ namespace Twin2Engine::UI {
 		void SetText(const std::string& text);
 		void SetSize(uint32_t size);
 		void SetFont(const std::string& fontPath);
+		void SetFont(size_t fontId);
 
 		glm::vec4 GetColor() const;
 		std::string GetText() const;
 		uint32_t GetSize() const;
-		std::string GetFontPath() const;
+		size_t GetFontId() const;
 		GraphicEngine::Font* GetFont() const;
 	};
 }

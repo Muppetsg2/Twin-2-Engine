@@ -74,7 +74,7 @@ GameObjects:
                     z: 0.0
                 isMain: true
             -   type: Audio
-                audio: res/music/acoustic-guitar.mp3
+                audio: 0
                 loop: true
                 time: 0.0
                 volume: 1.0
@@ -199,7 +199,7 @@ GameObjects:
                     z: 1.0
                     w: 1.0
                 size: 48
-                font: res/fonts/arial.ttf
+                font: 0
         children: []
     -   name: gameObject
         isStatic: false

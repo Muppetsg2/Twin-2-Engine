@@ -221,7 +221,7 @@ int main(int, char**)
 
     ComponentDeserializer::AddDeserializer("Audio", [](GameObject* obj, const YAML::Node& node) -> void {
         AudioComponent* audio = obj->AddComponent<AudioComponent>();
-        audio->SetAudio(node["audio"].as<string>());
+        audio->SetAudio(SceneManager::GetAudio(node["audio"].as<size_t>()));
         if (node["loop"].as<bool>()) audio->Loop(); else audio->UnLoop();
         audio->SetTimePosition(node["time"].as<double>());
         audio->SetVolume(node["volume"].as<float>());
@@ -233,7 +233,7 @@ int main(int, char**)
         text->SetText(node["text"].as<string>());
         text->SetColor(node["color"].as<vec4>());
         text->SetSize(node["size"].as<uint32_t>());
-        text->SetFont(node["font"].as<string>());
+        text->SetFont(SceneManager::GetFont(node["font"].as<size_t>()));
     });
 
     ComponentDeserializer::AddDeserializer("MeshRenderer", [](GameObject* obj, const YAML::Node& node) -> void {
@@ -305,6 +305,8 @@ int main(int, char**)
     SceneManager::LoadScene("testScene");
 
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
+    image = SceneManager::FindObjectWithName("imageObj3")->GetComponent<Image>();
+    text = SceneManager::FindObjectWithName("textObj")->GetComponent<Text>();
 
     // Main loop
     while (!window->IsClosed())
@@ -380,8 +382,8 @@ bool init()
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(ErrorMessageCallback, 0);
 
-    /*const GLubyte* renderer = glGetString(GL_RENDERER);
-    spdlog::error((char*)renderer);*/
+    const GLubyte* renderer = glGetString(GL_RENDERER);
+    spdlog::info("Graphic Card: {0}", (char*)renderer);
 #endif
 
     // Blending
@@ -514,10 +516,10 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void update()
 {
     // Update game objects' state here
-    //text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
+    text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
     SceneManager::UpdateCurrentScene();
 
-    /*colorSpan -= Time::GetDeltaTime() * 0.2f;
+    colorSpan -= Time::GetDeltaTime() * 0.2f;
     if (colorSpan <= 0.f) {
         colorSpan = 1.f;
     }
@@ -532,9 +534,7 @@ void update()
         image->SetColor({ 1.f, 0.f, 0.f, 1.f });
     }
     // WIDTH
-    image->SetWidth(1000.f * colorSpan);*/
-
-    //Camera.GetTransform()->Update();
+    image->SetWidth(1000.f * colorSpan);
 }
 
 void render()

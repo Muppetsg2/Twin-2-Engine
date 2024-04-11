@@ -6,6 +6,11 @@
 namespace Twin2Engine::Core {
 	class RenderableComponent : public Component {
 	private:			
+
+		CloneFunctionStart(RenderableComponent, Component)
+			CloneField(_isTransparent)
+		CloneFunctionEnd()
+
 		bool _isTransparent = false;
 	protected:
 		RenderableComponent(); // Powoduje �e klasa jest jakby abstrakcyjna no chyba �e b�dzie dziedziczona

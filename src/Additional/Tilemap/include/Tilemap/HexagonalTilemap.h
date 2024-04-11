@@ -32,8 +32,8 @@ namespace Tilemap
 
 		inline unsigned int GetWidth() const;
 		inline unsigned int GetHeight() const;
-		inline glm::ivec2 GetLeftBottomPosition() const;
-		inline glm::ivec2 GetRightTopPosition() const;
+		glm::ivec2 GetLeftBottomPosition() const;
+		glm::ivec2 GetRightTopPosition() const;
 
 		inline HexagonalTile* GetTile(const glm::ivec2& position) const;
 		void SetTile(const glm::ivec2& position, Twin2Engine::Core::GameObject* gameObject);

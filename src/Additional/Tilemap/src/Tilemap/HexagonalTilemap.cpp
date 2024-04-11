@@ -148,12 +148,12 @@ inline unsigned int HexagonalTilemap::GetHeight() const
 	return _height;
 }
 
-inline glm::ivec2 HexagonalTilemap::GetLeftBottomPosition() const
+glm::ivec2 HexagonalTilemap::GetLeftBottomPosition() const
 {
 	return _leftBottomPosition;
 }
 
-inline glm::ivec2 HexagonalTilemap::GetRightTopPosition() const
+glm::ivec2 HexagonalTilemap::GetRightTopPosition() const
 {
 	return _rightTopPosition;
 }

@@ -88,6 +88,8 @@ void MeshRenderingManager::Render()
 
 			std::vector<char> materialData(0);
 
+
+
 			for (auto& material : shaderPair.second)
 			{
 				count += material.second.size();

@@ -48,6 +48,9 @@
 #include <Tilemap/HexagonalTilemap.h>
 #include <Tilemap/HexagonalTile.h>
 
+// GENERATION
+#include <Generation/MapGenerator.h>
+
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
@@ -61,6 +64,7 @@ using Twin2Engine::Core::Time;
 
 using Tilemap::HexagonalTile;
 using Tilemap::HexagonalTilemap;
+using namespace Generation;
 
 #pragma region CAMERA_CONTROLLING
 
@@ -235,23 +239,59 @@ int main(int, char**)
     InstatiatingModel modelHexagon = ModelsManager::GetModel("res/models/hexagon.obj");
 
     GameObject* hexagonPrefab = new GameObject();
-    hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 4, 0));
+    hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
     hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
-
-    //spdlog::info("hexagon rotation: [{}, {}, {}]", hexagonPrefab->GetTransform()->GetLocalRotation().x, hexagonPrefab->GetTransform()->GetLocalRotation().y, hexagonPrefab->GetTransform()->GetLocalRotation().z);
-
     comp = hexagonPrefab->AddComponent<MeshRenderer>();
-    comp->AddMaterial(MaterialsManager::GetMaterial("hexagonMat"));
+    comp->AddMaterial(MaterialsManager::GetMaterial("ColoredHexTile"));
+    //comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
     comp->SetModel(modelHexagon);
 
-    float tilemapFillingBeginTime = glfwGetTime();
-    hexagonalTilemap.Fill(glm::ivec2(0, 0), hexagonPrefab);
-    spdlog::info("Tilemap filling time: {}", glfwGetTime() - tilemapFillingBeginTime);
-    hexagonalTilemap.GetTile(glm::ivec2(-5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    hexagonalTilemap.GetTile(glm::ivec2(5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    hexagonalTilemap.GetTile(glm::ivec2(-5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    hexagonalTilemap.GetTile(glm::ivec2(5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
+    GameObject* redHexagonPrefab = new GameObject();
+    redHexagonPrefab->GetTransform()->Translate(glm::vec3(3, 4, 0));
+    redHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    comp = redHexagonPrefab->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
+    comp->SetModel(modelHexagon);
+
+    GameObject* blueHexagonPrefab = new GameObject();
+    blueHexagonPrefab->GetTransform()->Translate(glm::vec3(4, 5, 0));
+    blueHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    comp = blueHexagonPrefab->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("BlueHexTile"));
+    comp->SetModel(modelHexagon);
+
+    GameObject* greenHexagonPrefab = new GameObject();
+    greenHexagonPrefab->GetTransform()->Translate(glm::vec3(5, 6, 0));
+    greenHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    comp = greenHexagonPrefab->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("GreenHexTile"));
+    comp->SetModel(modelHexagon);
+
+    //comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
+    //spdlog::info("hexagon rotation: [{}, {}, {}]", hexagonPrefab->GetTransform()->GetLocalRotation().x, hexagonPrefab->GetTransform()->GetLocalRotation().y, hexagonPrefab->GetTransform()->GetLocalRotation().z);
+
+
+    //float tilemapFillingBeginTime = glfwGetTime();
+    //hexagonalTilemap.Fill(glm::ivec2(0, 0), hexagonPrefab);
+    //spdlog::info("Tilemap filling time: {}", glfwGetTime() - tilemapFillingBeginTime);
+    //hexagonalTilemap.GetTile(glm::ivec2(-5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
+    //hexagonalTilemap.GetTile(glm::ivec2(5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
+    //hexagonalTilemap.GetTile(glm::ivec2(-5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
+    //hexagonalTilemap.GetTile(glm::ivec2(5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
     
+    // TILEMAP
+
+    GameObject* tilemapGO = new GameObject();
+    MapGenerator* mapGenerator = tilemapGO->AddComponent<MapGenerator>();
+    mapGenerator->tilemap = &hexagonalTilemap;
+    mapGenerator->preafabHexagonalTile = hexagonPrefab;
+    mapGenerator->filledTile = blueHexagonPrefab;
+    mapGenerator->pointTile = redHexagonPrefab;
+    mapGenerator->additionalTile = greenHexagonPrefab;
+    float tilemapGenerating = glfwGetTime();
+    mapGenerator->Generate();
+    spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
+
     imageObj = new GameObject();
     imageObj->GetTransform()->SetGlobalPosition(glm::vec3(-900, 500, 0));
     Image* img = imageObj->AddComponent<Image>();

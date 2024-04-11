@@ -214,12 +214,13 @@ int main(int, char**)
     roofMat = MaterialsManager::GetMaterial("roofMat");
 
     gameObject = new GameObject();
+    gameObject->GetTransform()->Translate(glm::vec3(2, 3, 0));
     auto comp = gameObject->AddComponent<MeshRenderer>();
     comp->AddMaterial(material);
     comp->SetModel(modelMesh);
 
     gameObject2 = new GameObject();
-    gameObject2->GetTransform()->Translate(glm::vec3(2, 1, 0));
+    gameObject2->GetTransform()->Translate(glm::vec3(2, 3, 0));
     comp = gameObject2->AddComponent<MeshRenderer>();
     comp->AddMaterial(material2);
     comp->SetModel(modelMesh);
@@ -227,7 +228,7 @@ int main(int, char**)
     InstatiatingModel modelCastle = ModelsManager::GetModel("res/models/castle.obj");
 
     gameObject3 = new GameObject();
-    gameObject3->GetTransform()->Translate(glm::vec3(0, -1, 0));
+    gameObject3->GetTransform()->Translate(glm::vec3(0, 2, 0));
     comp = gameObject3->AddComponent<MeshRenderer>();
     comp->AddMaterial(wallMat);
     comp->AddMaterial(roofMat);
@@ -235,8 +236,10 @@ int main(int, char**)
 
     imageObj = new GameObject();
     Image* img = imageObj->AddComponent<Image>();
+    img->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
     img->SetSprite(SpriteManager::MakeSprite("stone", "res/textures/stone.jpg"));
     Image* img2 = imageObj->AddComponent<Image>();
+    img2->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
     img2->SetSprite(SpriteManager::MakeSprite("grass", "res/textures/grass.png"));
 
     textObj = new GameObject();
@@ -318,6 +321,8 @@ int main(int, char**)
     LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
     //LightingSystem::LightingController::Instance()->ViewerTransformChanged.Invoke();
     LightingSystem::LightingController::Instance()->SetGamma(2.2);
+    glm::vec3 ambientLight(0.2f, 0.2f, 0.2f);
+    LightingSystem::LightingController::Instance()->SetAmbientLight(ambientLight);
     /**/
 #pragma endregion
 

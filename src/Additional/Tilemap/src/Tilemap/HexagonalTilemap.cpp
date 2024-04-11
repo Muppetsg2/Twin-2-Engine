@@ -122,7 +122,7 @@ void HexagonalTilemap::Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTop
 	int copyWidth = minRTX - srcBegin.x;
 	int bytesToCopy = (minRTY - srcBegin.y) * sizeof(HexagonalTile);
 
-	for (int x = 0; x < copyWidth; x++)
+	for (int x = 0; x <= copyWidth; x++)
 	{
 		std::memmove(_tilemap[dstBegin.x + x], oldTilemap[srcBegin.x + x], bytesToCopy);
 	}
@@ -209,6 +209,7 @@ inline HexagonalTile* HexagonalTilemap::GetTile(const glm::ivec2& position) cons
 	{
 		return nullptr;
 	}
+	spdlog::info("P [{}, {}]: , TC: [{}, {}]", position.x, position.y, _toCenter.x, _toCenter.y);
 	return &_tilemap[position.x + _toCenter.x][position.y + _toCenter.y];
 }
 
@@ -238,10 +239,17 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::GameO
 	//visited.insert(position);
 
 	// Define the neighboring directions for hexagonal tiles
-	std::vector<glm::ivec2> directions = {
-		glm::ivec2(-1, 0), glm::ivec2(-1, 1), glm::ivec2(0, 1),
-		glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, -1)
+	
+	const glm::ivec2 adjacentDirectionsEvenY[6] = {
+		glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 0),
+		glm::ivec2(0, -1), glm::ivec2(-1, -1), glm::ivec2(-1, 0)
 	};
+
+	const glm::ivec2 adjacentDirectionsOddY[6] = {
+		glm::ivec2(0, 1), glm::ivec2(1, 1), glm::ivec2(1, 0),
+		glm::ivec2(1, -1), glm::ivec2(0, -1), glm::ivec2(-1, 0)
+	};
+
 
 	glm::ivec2 currentPos;
 	HexagonalTile* currentTile = nullptr;
@@ -262,9 +270,13 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::GameO
 			//instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3((currentPos.x * _distanceBetweenTiles + (abs(currentPos.y) % 2) * 0.5f * _distanceBetweenTiles) * 1.5f, 0.0f, currentPos.y * _distanceBetweenTiles * 0.25f * SQRT_3));
 			instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3(currentPos.x * _distanceBetweenTiles * 0.75f, 0.0f, (currentPos.y + (abs(currentPos.x) % 2) * 0.5f) * _distanceBetweenTiles * 0.5f * SQRT_3));
 
-			for (const auto& dir : directions)
+			const glm::ivec2* directions = (currentPos.y % 2) ? adjacentDirectionsOddY : adjacentDirectionsEvenY;
+
+			//for (const auto& dir : directions)
+			//for (const auto& dir : directions)
+			for (int i = 0; i < 6; i++)
 			{
-				glm::ivec2 neighborPos = currentPos + dir;
+				glm::ivec2 neighborPos = currentPos + directions[i];
 
 				if (neighborPos.x >= _leftBottomPosition.x && neighborPos.x <= _rightTopPosition.x &&
 					neighborPos.y >= _leftBottomPosition.y && neighborPos.y <= _rightTopPosition.y &&

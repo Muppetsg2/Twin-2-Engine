@@ -26,8 +26,8 @@ void MapGenerator::GeneratePositions(const vector<ivec2>& positions)
 {
     for (int i = 0; i < positions.size(); i++)
     {
-        //tilemap->SetTile(positions[i], preafabHexagonalTile);
-        tilemap->SetTile(positions[i], pointTile);
+        tilemap->SetTile(positions[i], preafabHexagonalTile);
+        //tilemap->SetTile(positions[i], pointTile);
     }
 }
 
@@ -77,20 +77,20 @@ void MapGenerator::ConnectTiles(ivec2 startTile, ivec2 endTile)
         {
             if (abs(cellPosition.y % 2) == 0 && cellPosition.x < lastCellPosition.x)
             {
-                //tilemap->SetTile(ivec2(lastCellPosition.x, cellPosition.y), preafabHexagonalTile);
-                tilemap->SetTile(ivec2(lastCellPosition.x, cellPosition.y), additionalTile);
+                tilemap->SetTile(ivec2(lastCellPosition.x, cellPosition.y), preafabHexagonalTile);
+                //tilemap->SetTile(ivec2(lastCellPosition.x, cellPosition.y), additionalTile);
 
-                //tilemap->SetTile(ivec2(cellPosition.x, lastCellPosition.y), preafabHexagonalTile);
-                tilemap->SetTile(ivec2(cellPosition.x, lastCellPosition.y), additionalTile);
+                tilemap->SetTile(ivec2(cellPosition.x, lastCellPosition.y), preafabHexagonalTile);
+                //tilemap->SetTile(ivec2(cellPosition.x, lastCellPosition.y), additionalTile);
 
             }
             else if (abs(cellPosition.y % 2) == 1 && cellPosition.x > lastCellPosition.x)
             {
-                //tilemap->SetTile(ivec2(lastCellPosition.x, cellPosition.y), preafabHexagonalTile);
-                tilemap->SetTile(ivec2(lastCellPosition.x, cellPosition.y), additionalTile);
+                tilemap->SetTile(ivec2(lastCellPosition.x, cellPosition.y), preafabHexagonalTile);
+                //tilemap->SetTile(ivec2(lastCellPosition.x, cellPosition.y), additionalTile);
 
-                //tilemap->SetTile(ivec2(cellPosition.x, lastCellPosition.y), preafabHexagonalTile);
-                tilemap->SetTile(ivec2(cellPosition.x, lastCellPosition.y), additionalTile);
+                tilemap->SetTile(ivec2(cellPosition.x, lastCellPosition.y), preafabHexagonalTile);
+                //tilemap->SetTile(ivec2(cellPosition.x, lastCellPosition.y), additionalTile);
             }
         }
         lastCellPosition = cellPosition;
@@ -148,7 +148,8 @@ void MapGenerator::Generate()
     //
     //    tilemap->Fill(ivec3.zero, filledTile);
     //}
-   tilemap->Fill(ivec2(0, 0), filledTile);
+   //tilemap->Fill(ivec2(0, 0), filledTile);
+   tilemap->Fill(ivec2(0, 0), preafabHexagonalTile);
 
     //tilemapRegionDivider = GetComponent<ITilemapRegionDivider>();
     //tilemapRegionDivider.DivideTilemap();

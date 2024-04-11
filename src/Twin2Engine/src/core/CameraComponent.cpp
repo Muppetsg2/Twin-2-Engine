@@ -182,7 +182,7 @@ void CameraComponent::SetCameraType(CameraType value)
 
 void CameraComponent::SetSamples(uint8_t i)
 {
-	_samples = i > 32 ? 32 : i < 1 ? 1 : i;
+	_samples = i > 16 ? 16 : i < 1 ? 1 : i;
 
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 

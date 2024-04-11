@@ -60,7 +60,7 @@ void HexagonalTilemap::Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTop
 {
 	HexagonalTile** oldTilemap = _tilemap;
 	unsigned int oldWidth = _width;
-	//glm::ivec2 oldToCenter = _toCenter;
+	glm::ivec2 oldToCenter = _toCenter;
 	glm::ivec2 oldLeftBottomPosition = _leftBottomPosition;
 	glm::ivec2 oldRightTopPosition = _rightTopPosition;
 
@@ -95,38 +95,52 @@ void HexagonalTilemap::Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTop
 	}
 
 	// Coping old tilemap
-	glm::ivec2 srcBegin = _leftBottomPosition - oldLeftBottomPosition;
-	glm::ivec2 dstBegin = srcBegin;
-	if (srcBegin.x < 0)
+	if (oldLeftBottomPosition.x <= _rightTopPosition.x &&
+		oldLeftBottomPosition.y <= _rightTopPosition.y &&
+		oldRightTopPosition.x >= _leftBottomPosition.x &&
+		oldRightTopPosition.y >= _leftBottomPosition.y)
 	{
-		srcBegin.x = 0;
-	}
-	if (srcBegin.y < 0)
-	{
-		srcBegin.y = 0;
-	}
+		//glm::ivec2 srcBegin = _leftBottomPosition - oldLeftBottomPosition;
+		//glm::ivec2 dstBegin = srcBegin;
+		//if (srcBegin.x < 0)
+		//{
+		//	srcBegin.x = 0;
+		//}
+		//if (srcBegin.y < 0)
+		//{
+		//	srcBegin.y = 0;
+		//}
+		//
+		//if (dstBegin.x > 0)
+		//{
+		//	dstBegin.x = 0;
+		//}
+		//if (dstBegin.y > 0)
+		//{
+		//	dstBegin.y = 0;
+		//}
+		//dstBegin *= -1;
+		//
+		//int minRTX = (oldRightTopPosition.x < _rightTopPosition.x) ? oldRightTopPosition.x : _rightTopPosition.x;
+		//int minRTY = (oldRightTopPosition.y < _rightTopPosition.y) ? oldRightTopPosition.y : _rightTopPosition.y;
+		//
+		//int copyWidth = minRTX - srcBegin.x + 1;
+		//int bytesToCopy = (minRTY - srcBegin.y + 1) * sizeof(HexagonalTile);
 
-	if (dstBegin.x > 0)
-	{
-		dstBegin.x = 0;
+		glm::ivec2 beginPos((_leftBottomPosition.x > oldLeftBottomPosition.x) ? _leftBottomPosition.x : oldLeftBottomPosition.x,
+			(_leftBottomPosition.y > oldLeftBottomPosition.y) ? _leftBottomPosition.y : oldLeftBottomPosition.y);
+		glm::ivec2 endPos((_rightTopPosition.x < oldRightTopPosition.x) ? _rightTopPosition.x : oldRightTopPosition.x,
+			(_rightTopPosition.y < oldRightTopPosition.y) ? _rightTopPosition.y : oldRightTopPosition.y);
+
+		glm::ivec2 srcBegin = beginPos + oldToCenter;
+		glm::ivec2 dstBegin = beginPos + _toCenter;
+		int copyWidth = endPos.x - beginPos.x + 1;
+		int bytesToCopy = (endPos.y - beginPos.y + 1) * sizeof(HexagonalTile);
+		for (int x = 0; x < copyWidth; x++)
+		{
+			std::memmove(_tilemap[dstBegin.x + x], oldTilemap[srcBegin.x + x], bytesToCopy);
+		}
 	}
-	if (dstBegin.y > 0)
-	{
-		dstBegin.y = 0;
-	}
-	dstBegin *= -1;
-
-	int minRTX = (oldRightTopPosition.x < _rightTopPosition.x) ? oldRightTopPosition.x : _rightTopPosition.x;
-	int minRTY = (oldRightTopPosition.y < _rightTopPosition.y) ? oldRightTopPosition.y : _rightTopPosition.y;
-
-	int copyWidth = minRTX - srcBegin.x;
-	int bytesToCopy = (minRTY - srcBegin.y) * sizeof(HexagonalTile);
-
-	for (int x = 0; x <= copyWidth; x++)
-	{
-		std::memmove(_tilemap[dstBegin.x + x], oldTilemap[srcBegin.x + x], bytesToCopy);
-	}
-
 
 	// Deleting old tilemap
 	for (int i = 0; i < oldWidth; i++)

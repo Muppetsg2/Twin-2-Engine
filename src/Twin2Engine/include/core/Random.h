@@ -1,9 +1,6 @@
 #ifndef _RANDOM_H_
 #define _RANDOM_H_
 
-#include <random>
-#include <type_traits>
-
 namespace Twin2Engine::Core
 {
     class Random
@@ -14,7 +11,10 @@ namespace Twin2Engine::Core
 
     public:
         template<typename T>
-        static T Generate();
+        static std::enable_if<std::is_integral<T>::value, T>::type Generate();
+
+        template<typename T>
+        static std::enable_if<std::is_floating_point<T>::value, T>::type Generate();
 
         template<typename T>
         static std::enable_if<std::is_integral<T>::value, T>::type Range(T minInclusive, T maxInclusive);
@@ -24,23 +24,18 @@ namespace Twin2Engine::Core
     };
 
     template<typename T>
-    T Random::Generate()
+    static std::enable_if<std::is_integral<T>::value, T>::type Random::Generate()
     {
-        static_assert(std::is_trivial<T>::value, "Type must be trivial");
+        //std::uniform_int_distribution<T> distribution(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
+        std::uniform_int_distribution<T> distribution();
+        return distribution(_generator);
+    }
 
-        if constexpr (std::is_integral<T>::value)
-        {
-            std::uniform_int_distribution<T> distribution(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
-            return distribution(_generator);
-            //return GenerateIntegral<T>();
-        }
-        else if constexpr (std::is_floating_point<T>::value)
-        {
-            std::uniform_real_distribution<T> distribution(0.0, 1.0);
-            return distribution(_generator);
-            //return GenerateFloatingPoint<T>();
-        }
-        //return GenerateRandom<T>();
+    template<typename T>
+    static std::enable_if<std::is_floating_point<T>::value, T>::type Random::Generate()
+    {
+        std::uniform_real_distribution<T> distribution(0.0, 1.0);
+        return distribution(_generator);
     }
 
     template<typename T>

@@ -100,33 +100,6 @@ void HexagonalTilemap::Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTop
 		oldRightTopPosition.x >= _leftBottomPosition.x &&
 		oldRightTopPosition.y >= _leftBottomPosition.y)
 	{
-		//glm::ivec2 srcBegin = _leftBottomPosition - oldLeftBottomPosition;
-		//glm::ivec2 dstBegin = srcBegin;
-		//if (srcBegin.x < 0)
-		//{
-		//	srcBegin.x = 0;
-		//}
-		//if (srcBegin.y < 0)
-		//{
-		//	srcBegin.y = 0;
-		//}
-		//
-		//if (dstBegin.x > 0)
-		//{
-		//	dstBegin.x = 0;
-		//}
-		//if (dstBegin.y > 0)
-		//{
-		//	dstBegin.y = 0;
-		//}
-		//dstBegin *= -1;
-		//
-		//int minRTX = (oldRightTopPosition.x < _rightTopPosition.x) ? oldRightTopPosition.x : _rightTopPosition.x;
-		//int minRTY = (oldRightTopPosition.y < _rightTopPosition.y) ? oldRightTopPosition.y : _rightTopPosition.y;
-		//
-		//int copyWidth = minRTX - srcBegin.x + 1;
-		//int bytesToCopy = (minRTY - srcBegin.y + 1) * sizeof(HexagonalTile);
-
 		glm::ivec2 beginPos((_leftBottomPosition.x > oldLeftBottomPosition.x) ? _leftBottomPosition.x : oldLeftBottomPosition.x,
 			(_leftBottomPosition.y > oldLeftBottomPosition.y) ? _leftBottomPosition.y : oldLeftBottomPosition.y);
 		glm::ivec2 endPos((_rightTopPosition.x < oldRightTopPosition.x) ? _rightTopPosition.x : oldRightTopPosition.x,
@@ -140,6 +113,8 @@ void HexagonalTilemap::Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTop
 		{
 			std::memmove(_tilemap[dstBegin.x + x], oldTilemap[srcBegin.x + x], bytesToCopy);
 		}
+
+		SPDLOG_WARN("Zrobiæ usuwanie GameObjectów poza nowym rozmiarem");
 	}
 
 	// Deleting old tilemap

@@ -41,7 +41,7 @@ Models:
     - res/models/castle.obj
     - res/models/AK47.obj
 GameObjects:
-    -   id: 0
+    -   id: 1
         name: Camera
         isStatic: false
         isActive: true
@@ -85,7 +85,7 @@ GameObjects:
                 time: 0.0
                 volume: 1.0
         children: []
-    -   id: 1
+    -   id: 2
         name: imageObj
         isStatic: false
         isActive: true
@@ -130,7 +130,7 @@ GameObjects:
                 width: 100.0
                 height: 100.0
         children: []
-    -   id: 2
+    -   id: 3
         name: imageObj2
         isStatic: false
         isActive: true
@@ -163,7 +163,7 @@ GameObjects:
                 width: 100.0
                 height: 100.0
         children: []
-    -   id: 3
+    -   id: 4
         name: imageObj3
         isStatic: false
         isActive: true
@@ -196,7 +196,7 @@ GameObjects:
                 width: 1000.0
                 height: 100.0
         children: []
-    -   id: 4
+    -   id: 5
         name: textObj
         isStatic: false
         isActive: true
@@ -229,7 +229,7 @@ GameObjects:
                 size: 48
                 font: 0
         children: []
-    -   id: 5
+    -   id: 6
         name: gameObject
         isStatic: false
         isActive: true
@@ -257,7 +257,7 @@ GameObjects:
                 materials:
                     - 0
         children: []
-    -   id: 6
+    -   id: 7
         name: gameObject2
         isStatic: false
         isActive: true
@@ -285,7 +285,7 @@ GameObjects:
                 materials:
                     - 1
         children: []
-    -   id: 7
+    -   id: 8
         name: gameObject3
         isStatic: false
         isActive: true
@@ -314,7 +314,7 @@ GameObjects:
                     - 2
                     - 3
         children: []
-    -   id: 8
+    -   id: 9
         name: gameObject4
         isStatic: false
         isActive: true

@@ -1,7 +1,9 @@
+id: 0
 name: name
 isStatic: false
 isActive: true
 transform:
+    id: 1
     position:
         x: 0.0
         y: 0.0

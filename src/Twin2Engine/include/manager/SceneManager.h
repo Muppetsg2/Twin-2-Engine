@@ -12,6 +12,9 @@ namespace Twin2Engine::Manager {
 		static Core::Scene* _currentScene;
 		static Core::GameObject* _rootObject;
 
+		static std::map<size_t, Core::GameObject*> _gameObjectsById;
+		static std::map<size_t, Core::Component*> _componentsById;
+
 		// Current Loaded Resources
 		static std::vector<size_t> _texturesIds;
 		static std::vector<size_t> _spritesIds;
@@ -24,9 +27,8 @@ namespace Twin2Engine::Manager {
 		static std::map<size_t, Core::Scene*> _loadedScenes;
 
 		static std::pair<std::vector<size_t>, std::vector<size_t>> GetResourcesToLoadAndUnload(const std::vector<std::string> paths, const std::vector<size_t> loadedHashes);
-		static Core::GameObject* CreateGameObject(const YAML::Node gameObjectNode);
 		static void DeleteGameObject(Core::GameObject* obj);
-		static Core::GameObject* FindObjectWith(Core::GameObject* obj, const Core::Func<bool, const Core::GameObject*>& predicate);
+		static Core::GameObject* FindObjectBy(Core::GameObject* obj, const Core::Func<bool, const Core::GameObject*>& predicate);
 	public:
 		static void AddScene(const std::string& name, Core::Scene* scene);
 		static void AddScene(const std::string& name, const std::string& path);
@@ -37,8 +39,14 @@ namespace Twin2Engine::Manager {
 		static void RenderCurrentScene();
 		
 		static Core::GameObject* GetRootObject();
-		static Core::GameObject* FindObjectWithName(const std::string& name);
-		static Core::GameObject* FindObjectWithId(size_t id);
+		static Core::GameObject* FindObjectByName(const std::string& name);
+
+		static Core::GameObject* GetGameObjectWithId(size_t id);
+		static Core::Component* GetComponentWithId(size_t id);
+		template<class T, std::enable_if_t<std::is_base_of_v<Component, T>, bool> = true>
+		static T* GetComponentWithId(size_t id) {
+			return static_cast<T*>(GetComponentWithId(id));
+		}
 
 		static size_t GetTexture2D(size_t loadIdx);
 		static size_t GetSprite(size_t loadIdx);

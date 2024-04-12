@@ -199,51 +199,76 @@ int main(int, char**)
     GraphicEngineManager::Init();
 
     // COMPONENTS DESELIALIZERS
-    ComponentDeserializer::AddDeserializer("Image", [](GameObject* obj, const YAML::Node& node) -> void {
-        Image* img = obj->AddComponent<Image>();
-        img->SetIsTransparent(node["isTransparent"].as<bool>());
-        img->SetSprite(SceneManager::GetSprite(node["sprite"].as<size_t>()));
-        img->SetColor(node["color"].as<vec4>());
-        img->SetWidth(node["width"].as<float>());
-        img->SetHeight(node["height"].as<float>());
-    });
-
-    ComponentDeserializer::AddDeserializer("Camera", [](GameObject* obj, const YAML::Node& node) -> void {
-        CameraComponent* cam = obj->AddComponent<CameraComponent>();
-        cam->SetFOV(node["fov"].as<float>());
-        cam->SetNearPlane(node["nearPlane"].as<float>());
-        cam->SetFarPlane(node["farPlane"].as<float>());
-        cam->SetCameraType((CameraType)node["cameraType"].as<int>());
-        cam->SetFrontDir(node["frontDir"].as<vec3>());
-        cam->SetWorldUp(node["worldUp"].as<vec3>());
-        cam->SetIsMain(node["isMain"].as<bool>());
-    });
-
-    ComponentDeserializer::AddDeserializer("Audio", [](GameObject* obj, const YAML::Node& node) -> void {
-        AudioComponent* audio = obj->AddComponent<AudioComponent>();
-        audio->SetAudio(SceneManager::GetAudio(node["audio"].as<size_t>()));
-        if (node["loop"].as<bool>()) audio->Loop(); else audio->UnLoop();
-        audio->SetTimePosition(node["time"].as<double>());
-        audio->SetVolume(node["volume"].as<float>());
-    });
-
-    ComponentDeserializer::AddDeserializer("Text", [](GameObject* obj, const YAML::Node& node) -> void {
-        Text* text = obj->AddComponent<Text>();
-        text->SetIsTransparent(node["isTransparent"].as<bool>());
-        text->SetText(node["text"].as<string>());
-        text->SetColor(node["color"].as<vec4>());
-        text->SetSize(node["size"].as<uint32_t>());
-        text->SetFont(SceneManager::GetFont(node["font"].as<size_t>()));
-    });
-
-    ComponentDeserializer::AddDeserializer("MeshRenderer", [](GameObject* obj, const YAML::Node& node) -> void {
-        MeshRenderer* meshRenderer = obj->AddComponent<MeshRenderer>();
-        meshRenderer->SetIsTransparent(node["isTransparent"].as<bool>());
-        for (const YAML::Node& matNode : node["materials"]) {
-            meshRenderer->AddMaterial(SceneManager::GetMaterial(matNode.as<size_t>()));
+    ComponentDeserializer::AddDeserializer("Image",
+        []() -> Component* {
+            return new Image();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            Image* img = static_cast<Image*>(comp);
+            img->SetIsTransparent(node["isTransparent"].as<bool>());
+            img->SetSprite(SceneManager::GetSprite(node["sprite"].as<size_t>()));
+            img->SetColor(node["color"].as<vec4>());
+            img->SetWidth(node["width"].as<float>());
+            img->SetHeight(node["height"].as<float>());
         }
-        meshRenderer->SetModel(SceneManager::GetModel(node["model"].as<size_t>()));
-    });
+    );
+
+    ComponentDeserializer::AddDeserializer("Camera",
+        []() -> Component* {
+            return new CameraComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            CameraComponent* cam = static_cast<CameraComponent*>(comp);
+            cam->SetFOV(node["fov"].as<float>());
+            cam->SetNearPlane(node["nearPlane"].as<float>());
+            cam->SetFarPlane(node["farPlane"].as<float>());
+            cam->SetCameraType((CameraType)node["cameraType"].as<int>());
+            cam->SetFrontDir(node["frontDir"].as<vec3>());
+            cam->SetWorldUp(node["worldUp"].as<vec3>());
+            cam->SetIsMain(node["isMain"].as<bool>());
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("Audio",
+        []() -> Component* {
+            return new AudioComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            AudioComponent* audio = static_cast<AudioComponent*>(comp);
+            audio->SetAudio(SceneManager::GetAudio(node["audio"].as<size_t>()));
+            if (node["loop"].as<bool>()) audio->Loop(); else audio->UnLoop();
+            audio->SetTimePosition(node["time"].as<double>());
+            audio->SetVolume(node["volume"].as<float>());
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("Text",
+        []() -> Component* {
+            return new Text();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            Text* text = static_cast<Text*>(comp);
+            text->SetIsTransparent(node["isTransparent"].as<bool>());
+            text->SetText(node["text"].as<string>());
+            text->SetColor(node["color"].as<vec4>());
+            text->SetSize(node["size"].as<uint32_t>());
+            text->SetFont(SceneManager::GetFont(node["font"].as<size_t>()));
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("MeshRenderer",
+        []() -> Component* {
+            return new MeshRenderer();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            MeshRenderer* meshRenderer = static_cast<MeshRenderer*>(comp);
+            meshRenderer->SetIsTransparent(node["isTransparent"].as<bool>());
+            for (const YAML::Node& matNode : node["materials"]) {
+                meshRenderer->AddMaterial(SceneManager::GetMaterial(matNode.as<size_t>()));
+            }
+            meshRenderer->SetModel(SceneManager::GetModel(node["model"].as<size_t>()));
+        }
+    );
 
     // ADDING SCENES
     SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
@@ -287,8 +312,8 @@ int main(int, char**)
     SceneManager::LoadScene("testScene");
 
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
-    image = SceneManager::FindObjectWithName("imageObj3")->GetComponent<Image>();
-    text = SceneManager::FindObjectWithName("textObj")->GetComponent<Text>();
+    image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
+    text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
 
     // Main loop
     while (!window->IsClosed())

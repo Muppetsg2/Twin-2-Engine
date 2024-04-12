@@ -1,5 +1,9 @@
 #pragma once
 
+namespace Twin2Engine::Manager {
+	class SceneManager;
+}
+
 namespace Twin2Engine::Core
 {
 	class GameObject;
@@ -51,6 +55,7 @@ namespace Twin2Engine::Core
 		void Init(GameObject* obj, size_t id);
 	public:
 		friend class GameObject;
+		friend class Manager::SceneManager;
 #pragma endregion
 
 #pragma region CLONING_COMPONENTS

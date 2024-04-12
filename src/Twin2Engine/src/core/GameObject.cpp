@@ -3,7 +3,7 @@
 
 using namespace Twin2Engine::Core;
 
-size_t Twin2Engine::Core::GameObject::_currentFreeId = 0;
+size_t Twin2Engine::Core::GameObject::_currentFreeId = 1;
 list<size_t> Twin2Engine::Core::GameObject::_freedIds;
 
 GameObject::GameObject(size_t id) {
@@ -27,7 +27,6 @@ GameObject::GameObject(size_t id) {
 	_name = "New GameObject";
 
 	_transform = new Transform();
-	((Component*)_transform)->Init(this);
 
 	//components = list<Component*>();
 	components = std::list<Component*>();
@@ -214,6 +213,11 @@ void GameObject::UpdateComponents()
 	{
 		if (component->IsEnable()) component->Update();
 	}
+}
+
+void GameObject::AddComponent(Component* comp)
+{
+	components.push_back(comp);
 }
 
 void GameObject::RemoveComponent(Component* component)

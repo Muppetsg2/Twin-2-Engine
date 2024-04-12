@@ -13,6 +13,9 @@ using namespace Twin2Engine::UI;
 Scene* SceneManager::_currentScene = nullptr;
 GameObject* SceneManager::_rootObject = nullptr;
 
+map<size_t, GameObject*> SceneManager::_gameObjectsById;
+map<size_t, Component*> SceneManager::_componentsById;
+
 vector<size_t> SceneManager::_texturesIds;
 vector<size_t> SceneManager::_spritesIds;
 vector<size_t> SceneManager::_fontsIds;
@@ -60,35 +63,6 @@ pair<vector<size_t>, vector<size_t>> SceneManager::GetResourcesToLoadAndUnload(c
 	return pair<vector<size_t>, vector<size_t>>(toLoad, toUnload);
 }
 
-GameObject* SceneManager::CreateGameObject(const YAML::Node gameObjectNode)
-{
-	// Game Object
-	GameObject* obj = new GameObject();
-	obj->SetName(gameObjectNode["name"].as<string>());
-	obj->SetIsStatic(gameObjectNode["isStatic"].as<bool>());
-	obj->SetActive(gameObjectNode["isActive"].as<bool>());
-
-	// Transform
-	YAML::Node transformNode = gameObjectNode["transform"];
-	Transform* transform = obj->GetTransform();
-
-	transform->SetLocalPosition(transformNode["position"].as<glm::vec3>());
-	transform->SetLocalScale(transformNode["scale"].as<glm::vec3>());
-	transform->SetLocalRotation(transformNode["rotation"].as<glm::vec3>());
-
-	// Components
-	for (const YAML::Node& compNode : gameObjectNode["components"]) {
-		string type = compNode["type"].as<string>();
-		if (!ComponentDeserializer::HasDeserializer(type)) {
-			SPDLOG_ERROR("Component Deselializer for given type '{0}' not found", type);
-			continue;
-		}
-		ComponentDeserializer::GetDeserializer(type)(obj, compNode);
-	}
-
-	return obj;
-}
-
 void SceneManager::DeleteGameObject(GameObject* obj)
 {
 	Transform* rootTrans = obj->GetTransform();
@@ -101,7 +75,7 @@ void SceneManager::DeleteGameObject(GameObject* obj)
 	}
 }
 
-GameObject* SceneManager::FindObjectWith(GameObject* obj, const Func<bool, const GameObject*>& predicate)
+GameObject* SceneManager::FindObjectBy(GameObject* obj, const Func<bool, const GameObject*>& predicate)
 {
 	vector<GameObject*> children;
 	Transform* objT = obj->GetTransform();
@@ -112,7 +86,7 @@ GameObject* SceneManager::FindObjectWith(GameObject* obj, const Func<bool, const
 	}
 
 	for (const auto& child : children) {
-		GameObject* found = FindObjectWith(child, predicate);
+		GameObject* found = FindObjectBy(child, predicate);
 		if (found != nullptr) return found;
 	}
 
@@ -418,21 +392,104 @@ void SceneManager::LoadScene(const string& name)
 #pragma endregion
 #pragma region LOADING_GAMEOBJECTS
 	// GAME OBJECTS
-	if (_rootObject != nullptr)	DeleteGameObject(_rootObject);
 
-	_rootObject = new GameObject();
-	vector<GameObject*> gameObjects;
-	for (const YAML::Node& gameObjectNode : sceneToLoad->_gameObjects) {
-		GameObject* obj = CreateGameObject(gameObjectNode);
-		_rootObject->GetTransform()->AddChild(obj->GetTransform());
-		gameObjects.push_back(obj);
+	// DESTROY OLD OBJECTS
+	if (_rootObject != nullptr) {
+		_gameObjectsById.clear();
+		_componentsById.clear();
+		DeleteGameObject(_rootObject);
 	}
 
-	// ADDING CHILDREN TO GAME OBJECTS
-	for (size_t i = 0; i < gameObjects.size(); ++i) {
-		for (const YAML::Node& childNode : sceneToLoad->_gameObjects[i]["children"]) {
-			gameObjects[i]->GetTransform()->AddChild(gameObjects[childNode.as<size_t>()]->GetTransform());
+	// CREATE NEW OBJECTS WITH TRANSFORMS
+	map<size_t, GameObject*> objectByComponentId;
+
+	_rootObject = new GameObject(0);
+	for (const YAML::Node& gameObjectNode : sceneToLoad->_gameObjects) {
+		size_t id = gameObjectNode["id"].as<size_t>();
+		GameObject* obj = new GameObject(id);
+		_rootObject->GetTransform()->AddChild(obj->GetTransform());
+		_gameObjectsById[id] = obj;
+
+		size_t transformId = gameObjectNode["transform"]["id"].as<size_t>();
+		_componentsById[transformId] = obj->GetTransform();
+		objectByComponentId[transformId] = obj;
+	}
+
+	// LOAD GAMEOBJECTS AND TRASFORMS VALUES
+	map<size_t, YAML::Node> componentsNodes;
+	for (const YAML::Node& gameObjectNode : sceneToLoad->_gameObjects) {
+		// GameObject
+		GameObject* obj = _gameObjectsById[gameObjectNode["id"].as<size_t>()];
+		obj->SetName(gameObjectNode["name"].as<string>());
+		obj->SetIsStatic(gameObjectNode["isStatic"].as<bool>());
+		obj->SetActive(gameObjectNode["isActive"].as<bool>());
+
+		// Transform
+		const YAML::Node& transformNode = gameObjectNode["transform"];
+		Transform* t = obj->GetTransform();
+		t->SetEnable(transformNode["enabled"].as<bool>());
+		t->SetLocalPosition(transformNode["position"].as<glm::vec3>());
+		t->SetLocalScale(transformNode["scale"].as<glm::vec3>());
+		t->SetLocalRotation(transformNode["rotation"].as<glm::vec3>());
+
+		// Components Node
+		componentsNodes[obj->Id()] = gameObjectNode["components"];
+
+		// Set Children
+		for (const YAML::Node& childNode : gameObjectNode["children"]) {
+			size_t id = childNode.as<size_t>();
+			if (_gameObjectsById.find(id) == _gameObjectsById.end()) {
+				SPDLOG_ERROR("Couldn't find gameObject with id: {0}, provided in children list of gameObject {1}", id, obj->Id());
+				continue;
+			}
+			t->AddChild(_gameObjectsById[id]->GetTransform());
 		}
+	}
+
+	// CREATE AND ADD COMPONENTS TO OBJECTS
+	for (const auto& compPair : componentsNodes) {
+		GameObject* obj = _gameObjectsById[compPair.first];
+		for (const YAML::Node& componentNode : compPair.second) {
+			string type = componentNode["type"].as<string>();
+			if (!ComponentDeserializer::HasDeserializer(type)) {
+				SPDLOG_ERROR("Couldn't find deserializer for component of type '{0}'", type);
+				continue;
+			}
+
+			// Create Component of type
+			Component* comp = ComponentDeserializer::GetComponentFunc(type)();
+
+			size_t id = componentNode["id"].as<size_t>();
+			_componentsById[id] = comp;
+			objectByComponentId[id] = obj;
+		}
+	}
+
+	// LOAD COMPONENTS VALUES
+	for (const auto& compPair : componentsNodes) {
+		GameObject* obj = _gameObjectsById[compPair.first];
+		for (const YAML::Node& componentNode : compPair.second) {
+			string type = componentNode["type"].as<string>();
+			if (!ComponentDeserializer::HasDeserializer(type)) {
+				SPDLOG_ERROR("Couldn't find deserializer for component of type '{0}'", type);
+				continue;
+			}
+
+			Component* comp = _componentsById[componentNode["id"].as<size_t>()];
+
+			// Fill Component with values
+			comp->SetEnable(componentNode["enabled"].as<bool>());
+
+			// Fill Component with specialized values
+			ComponentDeserializer::GetDeserializeAction(type)(comp, componentNode);
+
+			obj->AddComponent(comp);
+		}
+	}
+
+	// INIT COMPONENTS
+	for (const auto& compPair : _componentsById) {
+		compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
 	}
 #pragma endregion
 
@@ -458,16 +515,27 @@ GameObject* SceneManager::GetRootObject()
 	return _rootObject;
 }
 
-GameObject* SceneManager::FindObjectWithName(const std::string& name)
+GameObject* SceneManager::FindObjectByName(const std::string& name)
 {
-	if (_rootObject->GetName() == name) return _rootObject;
-	return FindObjectWith(_rootObject, [&](const GameObject* obj) -> bool { return obj->GetName() == name; });
+	return FindObjectBy(_rootObject, [&](const GameObject* obj) -> bool { return obj->GetName() == name; });
 }
 
-GameObject* SceneManager::FindObjectWithId(size_t id)
+GameObject* SceneManager::GetGameObjectWithId(size_t id)
 {
-	if (_rootObject->Id() == id) return _rootObject;
-	return FindObjectWith(_rootObject, [&](const GameObject* obj) -> bool { return obj->Id() == id; });
+	GameObject* obj = nullptr;
+	if (_gameObjectsById.find(id) != _gameObjectsById.end()) {
+		obj = _gameObjectsById[id];
+	}
+	return obj;
+}
+
+Component* SceneManager::GetComponentWithId(size_t id)
+{
+	Component* comp = nullptr;
+	if (_componentsById.find(id) != _componentsById.end()) {
+		comp = _componentsById[id];
+	}
+	return comp;
 }
 
 size_t SceneManager::GetTexture2D(size_t loadIdx)

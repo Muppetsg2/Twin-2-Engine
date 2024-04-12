@@ -9,6 +9,9 @@ using std::string;
 
 using Twin2Engine::Core::Component;
 
+namespace Twin2Engine::Manager {
+	class SceneManager;
+}
 
 namespace Twin2Engine::Core
 {
@@ -17,6 +20,7 @@ namespace Twin2Engine::Core
 	class GameObject
 	{
 		friend class Transform;
+		friend class Manager::SceneManager;
 	//public:
 
 		//CloneFunction(GameObject, _name, _activeSelf, _isStatic)
@@ -73,8 +77,11 @@ namespace Twin2Engine::Core
 #pragma region COMPONENTS_MANAGEMENT
 
 		template<class T>
-		//typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
 		T* AddComponent();
+
+	private:
+		void AddComponent(Component* comp);
+	public:
 
 		template<class T>
 		typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
@@ -110,7 +117,6 @@ namespace Twin2Engine::Core
 
 
 template<class T>
-//typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
 T* Twin2Engine::Core::GameObject::AddComponent()
 {
 	static_assert(std::is_base_of<Component, T>::value);
@@ -127,6 +133,8 @@ template<class T>
 typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
 Twin2Engine::Core::GameObject::GetComponent()
 {
+	if (components.size() == 0) return nullptr;
+
 	list<Component*>::iterator itr = std::find_if(components.begin(), components.end(), [](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
 	//std::vector<Component*>::iterator itr = std::find_if(components.begin(), components.end(), [](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
 

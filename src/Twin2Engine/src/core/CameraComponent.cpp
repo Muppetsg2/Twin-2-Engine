@@ -38,21 +38,19 @@ void CameraComponent::OnWindowSizeChange()
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
 	glBindTexture(GL_TEXTURE_2D, _depthMap);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, _renderMap);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
-
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, _renderMapFBO);
-	glBindRenderbuffer(GL_RENDERBUFFER, _renderBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, wSize.x, wSize.y);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB, wSize.x, wSize.y, GL_TRUE);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
+	glBindRenderbuffer(GL_RENDERBUFFER, _msRenderBuffer);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, _samples, GL_DEPTH24_STENCIL8, wSize.x, wSize.y);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 CameraType CameraComponent::GetCameraType() const
@@ -140,6 +138,11 @@ Frustum CameraComponent::GetFrustum() const
 	return frustum;
 }
 
+uint8_t CameraComponent::GetSamples() const
+{
+	return _samples;
+}
+
 bool CameraComponent::IsMain() const
 {
 	return _isMain;
@@ -176,6 +179,21 @@ void CameraComponent::SetCameraType(CameraType value)
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 	*/
+}
+
+void CameraComponent::SetSamples(uint8_t i)
+{
+	_samples = i > 16 ? 16 : i < 1 ? 1 : i;
+
+	ivec2 wSize = Window::GetInstance()->GetContentSize();
+
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB, wSize.x, wSize.y, GL_TRUE);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+
+	glBindRenderbuffer(GL_RENDERBUFFER, _msRenderBuffer);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, _samples, GL_DEPTH24_STENCIL8, wSize.x, wSize.y);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
 
 void CameraComponent::SetFrontDir(vec3 dir)
@@ -236,14 +254,18 @@ void CameraComponent::Render()
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
 	// RENDER MAP
-	glBindFramebuffer(GL_FRAMEBUFFER, _renderMapFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, _msRenderMapFBO);
 	glClearColor(.1f, .1f, .1f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		GraphicEngineManager::Render();
 
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, _msRenderMapFBO);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _renderMapFBO);
+	glBlitFramebuffer(0, 0, wSize.x, wSize.y, 0, 0, wSize.x, wSize.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
@@ -288,7 +310,6 @@ CameraComponent* CameraComponent::GetMainCamera()
 
 	return nullptr;
 }
-
 
 void CameraComponent::Initialize()
 {
@@ -343,7 +364,7 @@ void CameraComponent::Initialize()
 	glGenTextures(1, &_depthMap);
 	glBindTexture(GL_TEXTURE_2D, _depthMap);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -351,11 +372,11 @@ void CameraComponent::Initialize()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, _depthMap, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _depthMap, 0);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 
@@ -366,13 +387,34 @@ void CameraComponent::Initialize()
 
 #pragma region RenderBuffer
 
+	// MSAA Render Buffer
+	glGenFramebuffers(1, &_msRenderMapFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, _msRenderMapFBO);
+
+	glGenTextures(1, &_msRenderMap);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB, wSize.x, wSize.y, GL_TRUE);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap, 0);
+
+	glGenRenderbuffers(1, &_msRenderBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, _msRenderBuffer);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, _samples, GL_DEPTH24_STENCIL8, wSize.x, wSize.y);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _msRenderBuffer);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// Intermidiate Render FBO
 	glGenFramebuffers(1, &_renderMapFBO);
 	glBindFramebuffer(GL_FRAMEBUFFER, _renderMapFBO);
 
+	// Color Attachment Texture
 	glGenTextures(1, &_renderMap);
 	glBindTexture(GL_TEXTURE_2D, _renderMap);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -380,20 +422,9 @@ void CameraComponent::Initialize()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, _renderMap, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _renderMap, 0);
 	glReadBuffer(GL_NONE);
 
-	glGenRenderbuffers(1, &_renderBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, _renderBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, wSize.x, wSize.y);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _renderBuffer);
-
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -408,8 +439,10 @@ void CameraComponent::OnDestroy()
 
 	// Render Map
 	glDeleteTextures(1, &_renderMap);
+	glDeleteTextures(1, &_msRenderMap);
 	glDeleteFramebuffers(1, &_renderMapFBO);
-	glDeleteRenderbuffers(1, &_renderBuffer);
+	glDeleteFramebuffers(1, &_msRenderMapFBO);
+	glDeleteRenderbuffers(1, &_msRenderBuffer);
 
 	GetTransform()->OnEventTransformChanged -= _transformEventId;
 	Window::GetInstance()->OnWindowSizeEvent -= _windowEventId;

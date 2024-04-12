@@ -35,13 +35,17 @@ namespace Twin2Engine::Core {
 		GLuint _depthMapFBO = NULL;
 		GLuint _depthMap = NULL;
 
-		GLuint _renderBuffer = NULL;
-		GLuint _renderMapFBO = NULL;
+		// MSAA Render
+		GLuint _msRenderMapFBO = NULL;
+		GLuint _msRenderMap = NULL;
+		GLuint _msRenderBuffer = NULL;
+
 		GLuint _renderMap = NULL;
+		GLuint _renderMapFBO = NULL;
 
 		CameraType _type = PERSPECTIVE;
-
 		uint8_t _filters = NONE;
+		uint8_t _samples = 16;
 
 		size_t _camId = 0;
 
@@ -76,6 +80,7 @@ namespace Twin2Engine::Core {
 		mat4 GetViewMatrix() const;
 		mat4 GetProjectionMatrix() const;
 		Frustum GetFrustum() const;
+		uint8_t GetSamples() const;
 
 		bool IsMain() const;
 
@@ -85,6 +90,7 @@ namespace Twin2Engine::Core {
 		
 		void SetCameraFilter(uint8_t filters);
 		void SetCameraType(CameraType value);
+		void SetSamples(uint8_t i = 4);
 
 		void SetFrontDir(vec3 dir);
 		void SetWorldUp(vec3 value);

@@ -643,6 +643,14 @@ void imgui_render()
 
             c->SetCameraFilter(acFil);
 
+            int s = (int)c->GetSamples();
+
+            ImGui::InputInt("MSAA Samples", &s);
+
+            if (s != (int)c->GetSamples()) {
+                c->SetSamples((uint8_t)s);
+            }
+
             bool per = (c->GetCameraType() == CameraType::PERSPECTIVE);
 
             if (ImGui::Button((per ? "Orthographic" : "Perspective"))) {

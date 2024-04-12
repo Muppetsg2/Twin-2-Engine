@@ -27,12 +27,12 @@ void Text::UpdateTextCache()
 
 			// Dodawanie kolejnych
 			if (_oldText.size() < _text.size()) {
-				vector<Character*> chars = font->GetText(_text.substr(_oldText.size(), _text.size() - _oldText.size()), _size);
+				vector<Character*> chars = font->GetText(_text.substr(_oldText.size(), _text.size() - _oldText.size() + 1), _size);
 				for (auto& c : chars) _textCache.push_back(c);
 			}
 			// Odejmowanie nadmiaru
 			else if (_oldText.size() > _text.size()) {
-				for (size_t i = 0; i < _oldText.size() - _text.size(); ++i) _textCache.erase(_textCache.begin() + _text.size() + i);
+				for (size_t i = _oldText.size(); i >= _text.size(); --i) _textCache.erase(_textCache.end() - 1);
 			}
 		}
 		else {

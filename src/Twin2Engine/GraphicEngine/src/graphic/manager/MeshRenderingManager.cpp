@@ -62,6 +62,12 @@ void MeshRenderingManager::Render(MeshRenderData meshData)
 					.push(meshData);
 			}
 		}
+		else if (meshData.meshes[i] != nullptr) {
+			SPDLOG_WARN("Mesh was null");
+		}
+		else if (meshData.materials[i] != nullptr) {
+			SPDLOG_WARN("Material was null");
+		}
 	}
 }
 

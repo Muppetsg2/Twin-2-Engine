@@ -232,6 +232,8 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 		.materialParameters = materialParameters
 	};
 
+	loadedMaterials[materialNameHash] = materialData;
+
 	return Material(materialData);
 }
 

@@ -138,7 +138,6 @@ GameObject* gameObject2;
 GameObject* gameObject3;
 GameObject* gameObject4;
 
-HexagonalTilemap hexagonalTilemap(glm::ivec2(-5, -5), glm::ivec2(5, 5), 1.f, true);
 
 GameObject* imageObj;
 GameObject* imageObj2;
@@ -267,10 +266,12 @@ int main(int, char**)
     comp->AddMaterial(MaterialsManager::GetMaterial("GreenHexTile"));
     comp->SetModel(modelHexagon);
 
+    //HexagonalTilemap hexagonalTilemap(glm::ivec2(-25, -25), glm::ivec2(25, 25), 1.f, true);
+    HexagonalTilemap hexagonalTilemap(glm::ivec2(-5, -5), glm::ivec2(5, 5), 1.f, true);
     //comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
     //spdlog::info("hexagon rotation: [{}, {}, {}]", hexagonPrefab->GetTransform()->GetLocalRotation().x, hexagonPrefab->GetTransform()->GetLocalRotation().y, hexagonPrefab->GetTransform()->GetLocalRotation().z);
 
-    /**/
+    /*
     float tilemapFillingBeginTime = glfwGetTime();
     hexagonalTilemap.Fill(glm::ivec2(0, 0), hexagonPrefab);
     spdlog::info("Tilemap filling time: {}", glfwGetTime() - tilemapFillingBeginTime);
@@ -291,7 +292,7 @@ int main(int, char**)
     /**/
 
     // TILEMAP
-    /*
+    //*
     GameObject* tilemapGO = new GameObject();
     MapGenerator* mapGenerator = tilemapGO->AddComponent<MapGenerator>();
     mapGenerator->tilemap = &hexagonalTilemap;
@@ -300,7 +301,8 @@ int main(int, char**)
     mapGenerator->pointTile = redHexagonPrefab;
     mapGenerator->additionalTile = greenHexagonPrefab;
 
-    mapGenerator->generationRadius = 15;
+    mapGenerator->generationRadiusMin = 15;
+    mapGenerator->generationRadiusMax = 15;
     float tilemapGenerating = glfwGetTime();
     mapGenerator->Generate();
     spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);

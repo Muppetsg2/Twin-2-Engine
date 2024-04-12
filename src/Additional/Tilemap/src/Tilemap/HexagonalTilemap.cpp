@@ -105,13 +105,23 @@ void HexagonalTilemap::Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTop
 		glm::ivec2 endPos((_rightTopPosition.x < oldRightTopPosition.x) ? _rightTopPosition.x : oldRightTopPosition.x,
 			(_rightTopPosition.y < oldRightTopPosition.y) ? _rightTopPosition.y : oldRightTopPosition.y);
 
+		int copyWidth = endPos.x - beginPos.x + 1;
+		int copyHeight = endPos.y - beginPos.y + 1;
+		int bytesToCopy = (endPos.y - beginPos.y + 1) * sizeof(HexagonalTile);
 		glm::ivec2 srcBegin = beginPos + oldToCenter;
 		glm::ivec2 dstBegin = beginPos + _toCenter;
-		int copyWidth = endPos.x - beginPos.x + 1;
-		int bytesToCopy = (endPos.y - beginPos.y + 1) * sizeof(HexagonalTile);
+		//for (int x = 0; x < copyWidth; x++)
+		//{
+		//	std::memcpy(_tilemap[dstBegin.x + x], oldTilemap[srcBegin.x + x], bytesToCopy);
+		//}
+		//SPDLOG_INFO("COPING MEM W {} H {}", copyWidth, copyHeight);
 		for (int x = 0; x < copyWidth; x++)
 		{
-			std::memmove(_tilemap[dstBegin.x + x], oldTilemap[srcBegin.x + x], bytesToCopy);
+			for (int y = 0; y < copyHeight; y++)
+			{
+				//SPDLOG_INFO("NT [{}, {}]: , OT: [{}, {}]  W {} H {}", dstBegin.x + x, dstBegin.y + y, srcBegin.x + x, srcBegin.y + y, copyWidth, copyHeight);
+				_tilemap[dstBegin.x + x][dstBegin.y + y] = oldTilemap[srcBegin.x + x][srcBegin.y + y];
+			}
 		}
 
 		SPDLOG_WARN("Zrobiæ usuwanie GameObjectów poza nowym rozmiarem");
@@ -198,8 +208,24 @@ inline HexagonalTile* HexagonalTilemap::GetTile(const glm::ivec2& position) cons
 	{
 		return nullptr;
 	}
-	spdlog::info("P [{}, {}]: , TC: [{}, {}]", position.x, position.y, _toCenter.x, _toCenter.y);
+
 	return &_tilemap[position.x + _toCenter.x][position.y + _toCenter.y];
+}
+
+glm::ivec2 HexagonalTilemap::GetPositionInDirection(const glm::ivec2& position, unsigned int direction)
+{
+	if (direction < 6)
+	{
+		if (position.y % 2)
+		{
+			return position + HexagonalTile::adjacentDirectionsOddY[direction];
+		}
+		else
+		{
+			return position + HexagonalTile::adjacentDirectionsEvenY[direction];
+		}
+	}
+	return position;
 }
 
 void HexagonalTilemap::RemoveTile(const glm::ivec2& position)
@@ -215,7 +241,7 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::GameO
 	if (position.x < _leftBottomPosition.x || position.x > _rightTopPosition.x ||
 		position.y < _leftBottomPosition.y || position.y > _rightTopPosition.y)
 	{
-		std::cerr << "Error: Position is out of bounds.\n";
+		//std::cerr << "Error: Position is out of bounds.\n";
 		return;
 	}
 
@@ -301,3 +327,14 @@ inline float HexagonalTilemap::GetEdgeLength() const
 {
 	return _edgeLength;
 }/**/
+
+
+glm::vec2 HexagonalTilemap::ConvertToRealPosition(const glm::ivec2& position) const
+{
+	return glm::vec2(position.x * _distanceBetweenTiles * 0.75f, (position.y + (abs(position.x) % 2) * 0.5f) * _distanceBetweenTiles * 0.5f * SQRT_3);
+}
+
+glm::vec2 HexagonalTilemap::ConvertToTilemapPosition(const glm::ivec2& position) const
+{
+	return glm::ivec2(position.x / (_distanceBetweenTiles * 0.75f), glm::floor((position.y / (_distanceBetweenTiles * 0.5f * SQRT_3))));
+}

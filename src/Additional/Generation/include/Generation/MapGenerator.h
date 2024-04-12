@@ -8,6 +8,9 @@
 #include <Tilemap/HexagonalTile.h>
 #include <Tilemap/HexagonalTilemap.h>
 
+#define HEX_DIRECTION_CONNECTING true
+#define GRADIENT_CONNECTING false
+
 namespace Generation
 {
 	class MapGenerator : public ::Twin2Engine::Core::Component
@@ -34,9 +37,9 @@ namespace Generation
         Twin2Engine::Core::GameObject* pointTile;
 
 
-        float generationRadius = 5.0f;
-        float generationRadiusMinModifier = 0.0f;
-        float generationRadiusMaxModifier = 0.0f;
+        //float generationRadius = 5.0f;
+        float generationRadiusMin = 5.0f;
+        float generationRadiusMax = 5.0f;
 
         int minPointsNumber = 5;
         int maxPointsNumber = 5;

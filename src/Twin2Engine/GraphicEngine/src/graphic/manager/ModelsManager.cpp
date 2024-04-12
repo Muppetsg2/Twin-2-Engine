@@ -4,7 +4,7 @@ using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
 
 std::hash<std::string> ModelsManager::stringHash;
-std::list<ModelData*> ModelsManager::loadedModels;
+std::map<size_t, ModelData*> ModelsManager::loadedModels;
 
 
 #if ASSIMP_LOADING
@@ -220,78 +220,436 @@ inline void Twin2Engine::GraphicEngine::ModelsManager::ExtractMeshGLTF(const tin
 
 #endif
 
-ModelData* ModelsManager::LoadModel(const std::string& modelPath)
+void ModelsManager::LoadCube(ModelData* modelData)
+{
+    SPDLOG_INFO("Creating Simple Cube Model");
+
+    std::vector<Vertex> vertices{
+        // Front And Bottom Face
+        {.Position = glm::vec3(-0.5f, 0.5f, 0.5f),      .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(0.0f, 0.0f, 1.0f),  .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
+        {.Position = glm::vec3(0.5f, 0.5f, 0.5f),       .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(0.0f, 0.0f, 1.0f),  .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
+        {.Position = glm::vec3(0.5f, 0.5f, -0.5f),      .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(0.0f, 0.0f, -1.0f), .Tangent = glm::vec3(-1.0f, 0.0f, 0.0f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
+        {.Position = glm::vec3(-0.5f, 0.5f, -0.5f),     .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(0.0f, 0.0f, -1.0f), .Tangent = glm::vec3(-1.0f, 0.0f, 0.0f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
+        {.Position = glm::vec3(-0.5f, -0.5f, 0.5f),     .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f, 0.0f, 1.0f),  .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
+        {.Position = glm::vec3(0.5f, -0.5f, 0.5f),      .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f, 0.0f, 1.0f),  .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
+        {.Position = glm::vec3(0.5f, -0.5f, -0.5f),     .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f, 0.0f, -1.0f), .Tangent = glm::vec3(-1.0f, 0.0f, 0.0f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
+        {.Position = glm::vec3(-0.5f, -0.5f, -0.5f),    .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f, 0.0f, -1.0f), .Tangent = glm::vec3(-1.0f, 0.0f, 0.0f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
+
+        // Right And Left Face
+        {.Position = glm::vec3(-0.5f, 0.5f, 0.5f),      .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(-1.0f, 0.0f, 0.0f), .Tangent = glm::vec3(0.0f, 0.0f, 1.0f),     .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
+        {.Position = glm::vec3(0.5f, 0.5f, 0.5f),       .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f),  .Tangent = glm::vec3(0.0f, 0.0f, -1.0f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
+        {.Position = glm::vec3(0.5f, 0.5f, -0.5f),      .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f),  .Tangent = glm::vec3(0.0f, 0.0f, -1.0f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
+        {.Position = glm::vec3(-0.5f, 0.5f, -0.5f),     .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(-1.0f, 0.0f, 0.0f), .Tangent = glm::vec3(0.0f, 0.0f, 1.0f),     .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
+        {.Position = glm::vec3(-0.5f, -0.5f, 0.5f),     .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(-1.0f, 0.0f, 0.0f), .Tangent = glm::vec3(0.0f, 0.0f, 1.0f),     .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
+        {.Position = glm::vec3(0.5f, -0.5f, 0.5f),      .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f),  .Tangent = glm::vec3(0.0f, 0.0f, -1.0f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
+        {.Position = glm::vec3(0.5f, -0.5f, -0.5f),     .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f),  .Tangent = glm::vec3(0.0f, 0.0f, -1.0f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
+        {.Position = glm::vec3(-0.5f, -0.5f, -0.5f),    .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(-1.0f, 0.0f, 0.0f), .Tangent = glm::vec3(0.0f, 0.0f, 1.0f),     .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
+
+        // Top And Bottom Face
+        {.Position = glm::vec3(-0.5f, 0.5f, 0.5f),      .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f, 1.0f, 0.0f),  .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)  },
+        {.Position = glm::vec3(0.5f, 0.5f, 0.5f),       .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f, 1.0f, 0.0f),  .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)  },
+        {.Position = glm::vec3(0.5f, 0.5f, -0.5f),      .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(0.0f, 1.0f, 0.0f),  .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)  },
+        {.Position = glm::vec3(-0.5f, 0.5f, -0.5f),     .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(0.0f, 1.0f, 0.0f),  .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)  },
+        {.Position = glm::vec3(-0.5f, -0.5f, 0.5f),     .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(0.0f, -1.0f, 0.0f), .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, -1.0f) },
+        {.Position = glm::vec3(0.5f, -0.5f, 0.5f),      .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(0.0f, -1.0f, 0.0f), .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, -1.0f) },
+        {.Position = glm::vec3(0.5f, -0.5f, -0.5f),     .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f, -1.0f, 0.0f), .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, -1.0f) },
+        {.Position = glm::vec3(-0.5f, -0.5f, -0.5f),    .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f, -1.0f, 0.0f), .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, -1.0f) }
+    };
+
+    std::vector<unsigned int> indices = {
+        // Front Face
+        0, 4, 5,
+        0, 5, 1,
+
+        // Back Face
+        2, 6, 7,
+        2, 7, 3,
+
+        // Right Face
+        9, 13, 14,
+        9, 14, 10,
+
+        // Left Face
+        11, 15, 12,
+        11, 12, 8,
+
+        // Top Face
+        19, 16, 17,
+        19, 17, 18,
+
+        // Bottom Face
+        20, 23, 22,
+        20, 22, 21
+    };
+
+    modelData->meshes.resize(1);
+    modelData->meshes[0] = new InstatiatingMesh(vertices, indices);
+}
+
+void ModelsManager::LoadSphere(ModelData* modelData)
+{
+    SPDLOG_INFO("Creating Simple Sphere Model");
+
+    uint32_t horizontalSegments = 12;
+    uint32_t verticalSegments = 12;
+
+    float angleYDiff = 180.f / horizontalSegments;
+    float angleXZDiff = 360.f / verticalSegments;
+
+    std::vector<glm::vec3> verts = std::vector<glm::vec3>();
+    std::vector<glm::vec2> texCoords = std::vector<glm::vec2>();
+    std::vector<glm::vec3> normals = std::vector<glm::vec3>();
+    std::vector<unsigned int> numTrinagles = std::vector<unsigned int>();
+
+    // VERTICIES AND NUMBER OF TRIANGLES
+    // TOP VERTEX
+    verts.push_back({ 0.f, 1.f, 0.f });
+    numTrinagles.push_back(verticalSegments);
+    // TOP HALF AND BOTTOM HALF
+    float angleY = angleYDiff;
+    for (unsigned int i = 0; i < horizontalSegments - 1; ++i) {
+        float radiansY = glm::radians(angleY);
+        float r = sinf(radiansY);
+        float y = cosf(radiansY);
+
+        unsigned int t = 1;
+
+        if (horizontalSegments == 2) {
+            t = 4;
+        }
+        else if (horizontalSegments == 3) {
+            t = 5;
+        }
+        else if (horizontalSegments >= 4) {
+            if (i == 0 || i + 2 == horizontalSegments) {
+                t = 5;
+            }
+            else {
+                t = 6;
+            }
+        }
+
+        // DRAW CIRCLE
+        float angleXZ = 0.f;
+        for (unsigned int j = 0; j < verticalSegments; ++j) {
+            float radiansXZ = glm::radians(angleXZ);
+            float z = r * cosf(radiansXZ);
+            float x = r * sinf(radiansXZ);
+            verts.push_back({ x, y, z });
+            if (j == verticalSegments - 1)
+            {
+                // Add first in the end again for texCoords
+                verts.push_back({ r * sinf(glm::radians(0.f)), y, r * cosf(glm::radians(0.f)) });
+                numTrinagles.push_back(t);
+            }
+            numTrinagles.push_back(t);
+            angleXZ += angleXZDiff;
+        }
+        angleY += angleYDiff;
+    }
+    // BOTTOM VERTEX
+    verts.push_back({ 0.f, -1.f, 0.f });
+    numTrinagles.push_back(verticalSegments);
+
+    // TEXTURE COORDS
+    // TOP VERTEX
+    texCoords.push_back({ .5f, 1.f });
+
+    float horizontalDiff = 1.f / (float)horizontalSegments;
+    float verticalDiff = 1.f / (float)verticalSegments;
+
+    // CENTER CIRCLES
+    size_t verticiesNum = verts.size();
+    for (unsigned int c = 0; c < horizontalSegments - 1; ++c) {
+        unsigned int startV = c * verticalSegments + 1;
+        for (unsigned int i = 0; i < verticalSegments; ++i) {
+
+            texCoords.push_back({ i * verticalDiff, 1.f - horizontalDiff * (c + 1) });
+
+            if ((i + 1) % verticalSegments == 0)
+            {
+                texCoords.push_back({ 1.f , 1.f - horizontalDiff * (c + 1) });
+            }
+        }
+    }
+
+    // BOTTOM VERTEX
+    texCoords.push_back({ .5f, 0.f });
+
+    // NORMALS
+    for (size_t i = 0; i < verts.size(); ++i)
+    {
+        if (glm::length(verts[i]) != 0.f) {
+            normals.push_back(glm::normalize(verts[i]));
+        }
+        else {
+            normals.push_back(verts[i]);
+        }
+    }
+
+    // VERTICES WITHOUT TANGENTS AND BITANGENTS
+    std::vector<Vertex> vertices = std::vector<Vertex>();
+    for (size_t i = 0; i < verticiesNum; ++i)
+    {
+        vertices.push_back({ verts[i], texCoords[i], normals[i], glm::vec3(0.f), glm::vec3(0.f) });
+    }
+
+    // INDICIES, TANGENTS AND BITANGENTS
+    std::pair<glm::vec3, glm::vec3> TB;
+
+    std::vector<unsigned int> indices = std::vector<unsigned int>();
+    // TOP CIRCLE + BOTTOM CIRCLE
+    for (unsigned int i = 0; i < verticalSegments; ++i) {
+        // TOP CIRCLE
+        unsigned int rightVertex = (i + 1) + 1;
+        unsigned int topVertex = 0;
+        unsigned int leftVertex = i + 1;
+
+        indices.push_back(rightVertex);
+        indices.push_back(topVertex);
+        indices.push_back(leftVertex);
+
+        TB = CalcTangentBitangent(vertices, rightVertex, topVertex, leftVertex);
+
+        vertices[rightVertex].Tangent += TB.first;
+        vertices[rightVertex].Bitangent += TB.second;
+
+        vertices[topVertex].Tangent += TB.first;
+        vertices[topVertex].Bitangent += TB.second;
+
+        vertices[leftVertex].Tangent += TB.first;
+        vertices[leftVertex].Bitangent += TB.second;
+
+        // BOTTOM CIRCLE
+        rightVertex = verticiesNum - 2 - verticalSegments - 1 + (i + 1) + 1;
+        leftVertex = verticiesNum - 2 - verticalSegments - 1 + i + 1;
+        topVertex = verticiesNum - 1;
+
+        indices.push_back(rightVertex);
+        indices.push_back(leftVertex);
+        indices.push_back(topVertex);
+
+        TB = CalcTangentBitangent(vertices, rightVertex, topVertex, leftVertex);
+
+        vertices[rightVertex].Tangent += TB.first;
+        vertices[rightVertex].Bitangent += TB.second;
+
+        vertices[topVertex].Tangent += TB.first;
+        vertices[topVertex].Bitangent += TB.second;
+
+        vertices[leftVertex].Tangent += TB.first;
+        vertices[leftVertex].Bitangent += TB.second;
+    }
+    // CENTER CIRCLES
+    for (unsigned int c = 0; c < horizontalSegments - 2; ++c) {
+        unsigned int startV = c * (verticalSegments + 1) + 1;
+        for (unsigned int i = 0; i < verticalSegments; ++i) {
+            unsigned int topLeft = i + startV;
+            unsigned int topRight = (i + 1) + startV;
+            unsigned int bottomLeft = i + verticalSegments + 1 + startV;
+            unsigned int bottomRight = (i + 1) + verticalSegments + 1 + startV;
+
+            indices.push_back(topRight);
+            indices.push_back(topLeft);
+            indices.push_back(bottomLeft);
+
+            TB = CalcTangentBitangent(vertices, topRight, topLeft, bottomLeft);
+
+            vertices[topRight].Tangent += TB.first;
+            vertices[topRight].Bitangent += TB.second;
+
+            vertices[topLeft].Tangent += TB.first;
+            vertices[topLeft].Bitangent += TB.second;
+
+            vertices[bottomLeft].Tangent += TB.first;
+            vertices[bottomLeft].Bitangent += TB.second;
+
+            indices.push_back(bottomRight);
+            indices.push_back(topRight);
+            indices.push_back(bottomLeft);
+
+            TB = CalcTangentBitangent(vertices, bottomRight, topRight, bottomLeft);
+
+            vertices[bottomRight].Tangent += TB.first;
+            vertices[bottomRight].Bitangent += TB.second;
+
+            vertices[topRight].Tangent += TB.first;
+            vertices[topRight].Bitangent += TB.second;
+
+            vertices[bottomLeft].Tangent += TB.first;
+            vertices[bottomLeft].Bitangent += TB.second;
+        }
+    }
+
+    // FULL VERTICES
+    for (unsigned int i = 0; i < vertices.size(); ++i) {
+        vertices[i].Tangent /= (float)numTrinagles[i];
+        vertices[i].Tangent = glm::normalize(vertices[i].Tangent);
+
+        vertices[i].Bitangent /= (float)numTrinagles[i];
+        vertices[i].Bitangent = glm::normalize(vertices[i].Bitangent);
+    }
+
+    verts.clear();
+    texCoords.clear();
+    normals.clear();
+
+    modelData->meshes.resize(1);
+    modelData->meshes[0] = new InstatiatingMesh(vertices, indices);
+}
+
+void ModelsManager::LoadPlane(ModelData* modelData)
+{
+    SPDLOG_INFO("Creating Simple Plane Model");
+
+    std::vector<Vertex> vertices{
+        {.Position = glm::vec3(-0.5f, 0.0f, -0.5f),    .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(0.0f, 1.0f, 0.0f), .Tangent = glm::vec3(1.0f, 0.0f, 0.0f), .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f) },
+        {.Position = glm::vec3(0.5f, 0.0f, -0.5f),     .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(0.0f, 1.0f, 0.0f), .Tangent = glm::vec3(1.0f, 0.0f, 0.0f), .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f) },
+        {.Position = glm::vec3(-0.5f, 0.0f, 0.5f),     .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f, 1.0f, 0.0f), .Tangent = glm::vec3(1.0f, 0.0f, 0.0f), .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f) },
+        {.Position = glm::vec3(0.5f, 0.0f, 0.5f),      .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f, 1.0f, 0.0f), .Tangent = glm::vec3(1.0f, 0.0f, 0.0f), .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f) }
+    };
+
+    std::vector<unsigned int> indices = {
+        2, 1, 0,
+        2, 3, 1
+    };
+
+    modelData->meshes.resize(1);
+    modelData->meshes[0] = new InstatiatingMesh(vertices, indices);
+}
+
+void ModelsManager::LoadPiramid(ModelData* modelData)
+{
+    SPDLOG_INFO("Creating Simple Piramid Model");
+
+    std::vector<Vertex> vertices{
+        {.Position = glm::vec3(-0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f, -1.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
+        {.Position = glm::vec3(-0.5f,  0.0f,  0.0f), .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(0.0f, -1.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
+        {.Position = glm::vec3(0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f, -1.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
+        {.Position = glm::vec3(0.5f, -0.5f,  0.5f), .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(0.0f, -1.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
+
+        {.Position = glm::vec3(0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f,  0.0f, -1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
+        {.Position = glm::vec3(0.0f,  0.5f,  0.0f), .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3(0.0f,  0.0f, -1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
+        {.Position = glm::vec3(-0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f,  0.0f, -1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
+
+        {.Position = glm::vec3(-0.5f, -0.5f,  0.5f), .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f,  0.0f,  1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
+        {.Position = glm::vec3(0.0f,  0.5f,  0.0f), .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3(0.0f,  0.0f,  1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
+        {.Position = glm::vec3(0.5f, -0.5f,  0.5f), .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f,  0.0f,  1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
+
+        {.Position = glm::vec3(-0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(-1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
+        {.Position = glm::vec3(0.0f,  0.5f,  0.0f), .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3(-1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
+        {.Position = glm::vec3(-0.5f, -0.5f,  0.5f), .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(-1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
+
+        {.Position = glm::vec3(0.5f, -0.5f,  0.5f), .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
+        {.Position = glm::vec3(0.0f,  0.5f,  0.0f), .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3(1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
+        {.Position = glm::vec3(0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) }
+    };
+
+    std::vector<unsigned int> indices{
+        // Bottom Face
+        0, 1, 2,
+        2, 1, 3,
+
+        // Front Triangle
+        4, 5, 6,
+
+        // Back Triangle
+        7, 8, 9,
+
+        // Left Triangle
+        10, 11, 12,
+
+        // Right Triangle
+        13, 14, 15
+    };
+
+    modelData->meshes.resize(1);
+    modelData->meshes[0] = new InstatiatingMesh(vertices, indices);
+}
+
+ModelData* ModelsManager::LoadModelData(const std::string& modelPath)
 {
     size_t strHash = stringHash(modelPath);
 
-    std::list<ModelData*>::iterator found =
-        std::find_if(loadedModels.begin(), loadedModels.end(), [strHash](ModelData* data) { return data->modelHash == strHash; });
-
     ModelData* modelData;
-    if (found == loadedModels.end())
+    if (loadedModels.find(strHash) == loadedModels.end())
     {
         SPDLOG_INFO("Loading model: {}!", modelPath);
 
         modelData = new ModelData{
-            .modelHash = strHash,
+            .id = strHash,
             .useNumber = 1
         };
 
+        if (modelPath == CUBE_PATH) {
+            LoadCube(modelData);
+        }
+        else if (modelPath == SPHERE_PATH) {
+            LoadSphere(modelData);
+        }
+        else if (modelPath == PIRAMID_PATH) {
+            LoadPiramid(modelData);
+        }
+        else if (modelPath == PLANE_PATH) {
+            LoadPlane(modelData);
+        }
+        else {
 #if ASSIMP_LOADING
-        LoadModelAssimp(modelPath, modelData);
+            LoadModelAssimp(modelPath, modelData);
 #elif TINYGLTF_LOADING
-        LoadModelGLTF(modelPath, modelData);
+            LoadModelGLTF(modelPath, modelData);
 #endif
+        }
 
-        loadedModels.push_back(modelData);
+        loadedModels[strHash] = modelData;
     }
     else
     {
         SPDLOG_INFO("Model already loaded: {}!", modelPath);
-        modelData = (*found);
-        (*found)->useNumber++;
+        modelData = loadedModels[strHash];
+        modelData->useNumber++;
     }
 
     return modelData;
 }
 
-void ModelsManager::UnloadModel(ModelData* modelData)
-{
-    if (modelData != nullptr)
+void ModelsManager::UnloadModel(const std::string& path) {
+    UnloadModel(stringHash(path));
+}
+
+void ModelsManager::UnloadModel(size_t managerId) {
+    if (loadedModels.find(managerId) != loadedModels.end())
     {
+        ModelData* modelData = loadedModels[managerId];
         modelData->useNumber--;
-        if (modelData->useNumber == 0)
-        {
-            if (modelData == _cubeModel || modelData == _piramidModel || modelData == _sphereModel || modelData == _planeModel) {
-                if (modelData == _cubeModel) _cubeModel = nullptr;
-                else if (modelData == _piramidModel) _piramidModel = nullptr;
-                else if (modelData == _sphereModel) _sphereModel = nullptr;
-                else if (modelData == _planeModel) _planeModel = nullptr;
-                for (auto& mesh : modelData->meshes) {
-                    delete mesh;
-                }
-                delete modelData;
-            }
-            else if (loadedModels.size() != 0) {
-                std::list<ModelData*>::iterator found = std::find_if(loadedModels.begin(), loadedModels.end(), [modelData](Twin2Engine::GraphicEngine::ModelData* data) { return data == modelData; });
-
-                if (found != loadedModels.end())
-                {
-                    for (InstatiatingMesh*& mesh : (*found)->meshes)
-                    {
-                        delete mesh;
-                    }
-
-                    delete (*found);
-                    loadedModels.erase(found);
-                }
-            }
-            else
-            {
-                SPDLOG_ERROR("THIS INSTRUCTION SHOULDNT HAPPEND");
-            }
+        if (modelData->useNumber > 0) {
+            SPDLOG_WARN("Use Number nie by³o równe 0");
         }
+
+        for (InstatiatingMesh*& mesh : modelData->meshes)
+        {
+            delete mesh;
+        }
+
+        delete modelData;
+        loadedModels.erase(managerId);
     }
+}
+
+void ModelsManager::UnloadCube() {
+    UnloadModel(CUBE_PATH);
+}
+
+void ModelsManager::UnloadSphere() {
+    UnloadModel(SPHERE_PATH);
+}
+
+void ModelsManager::UnloadPlane() {
+    UnloadModel(PLANE_PATH);
+}
+
+void ModelsManager::UnloadPiramid() {
+    UnloadModel(PIRAMID_PATH);
 }
 
 std::pair<glm::vec3, glm::vec3> ModelsManager::CalcTangentBitangent(std::vector<Vertex> vertices, unsigned int i1, unsigned int i2, unsigned int i3)
@@ -325,585 +683,63 @@ std::pair<glm::vec3, glm::vec3> ModelsManager::CalcTangentBitangent(std::vector<
     return TB;
 }
 
-void ModelsManager::Init()
+InstatiatingModel ModelsManager::LoadModel(const std::string& modelPath)
 {
-
-}
-
-void ModelsManager::End()
-{
-
-}
-
-InstatiatingModel ModelsManager::GetModel(const std::string& modelPath)
-{
-    ModelData* modelData = LoadModel(modelPath);
+    ModelData* modelData = LoadModelData(modelPath);
 
     InstatiatingModel model = InstatiatingModel(modelData);
 
     return model;
 }
 
-ModelData* ModelsManager::_cubeModel = nullptr;
-InstatiatingModel ModelsManager::GetCube()
-{
-    if (_cubeModel == nullptr)
-    {
-        SPDLOG_INFO("Creating Simple Cube Model");
-
-        std::vector<Vertex> vertices {
-            // Front And Bottom Face
-            { .Position = glm::vec3(-0.5f, 0.5f, 0.5f),      .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(0.0f, 0.0f, 1.0f),  .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
-            { .Position = glm::vec3(0.5f, 0.5f, 0.5f),       .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(0.0f, 0.0f, 1.0f),  .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
-            { .Position = glm::vec3(0.5f, 0.5f, -0.5f),      .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(0.0f, 0.0f, -1.0f), .Tangent = glm::vec3(-1.0f, 0.0f, 0.0f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
-            { .Position = glm::vec3(-0.5f, 0.5f, -0.5f),     .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(0.0f, 0.0f, -1.0f), .Tangent = glm::vec3(-1.0f, 0.0f, 0.0f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
-            { .Position = glm::vec3(-0.5f, -0.5f, 0.5f),     .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f, 0.0f, 1.0f),  .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
-            { .Position = glm::vec3(0.5f, -0.5f, 0.5f),      .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f, 0.0f, 1.0f),  .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
-            { .Position = glm::vec3(0.5f, -0.5f, -0.5f),     .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f, 0.0f, -1.0f), .Tangent = glm::vec3(-1.0f, 0.0f, 0.0f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
-            { .Position = glm::vec3(-0.5f, -0.5f, -0.5f),    .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f, 0.0f, -1.0f), .Tangent = glm::vec3(-1.0f, 0.0f, 0.0f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
-            
-            // Right And Left Face
-            { .Position = glm::vec3(-0.5f, 0.5f, 0.5f),      .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(-1.0f, 0.0f, 0.0f), .Tangent = glm::vec3(0.0f, 0.0f, 1.0f),     .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
-            { .Position = glm::vec3(0.5f, 0.5f, 0.5f),       .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f),  .Tangent = glm::vec3(0.0f, 0.0f, -1.0f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
-            { .Position = glm::vec3(0.5f, 0.5f, -0.5f),      .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f),  .Tangent = glm::vec3(0.0f, 0.0f, -1.0f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
-            { .Position = glm::vec3(-0.5f, 0.5f, -0.5f),     .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(-1.0f, 0.0f, 0.0f), .Tangent = glm::vec3(0.0f, 0.0f, 1.0f),     .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
-            { .Position = glm::vec3(-0.5f, -0.5f, 0.5f),     .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(-1.0f, 0.0f, 0.0f), .Tangent = glm::vec3(0.0f, 0.0f, 1.0f),     .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
-            { .Position = glm::vec3(0.5f, -0.5f, 0.5f),      .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f),  .Tangent = glm::vec3(0.0f, 0.0f, -1.0f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
-            { .Position = glm::vec3(0.5f, -0.5f, -0.5f),     .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(1.0f, 0.0f, 0.0f),  .Tangent = glm::vec3(0.0f, 0.0f, -1.0f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
-            { .Position = glm::vec3(-0.5f, -0.5f, -0.5f),    .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(-1.0f, 0.0f, 0.0f), .Tangent = glm::vec3(0.0f, 0.0f, 1.0f),     .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f) },
-            
-            // Top And Bottom Face
-            { .Position = glm::vec3(-0.5f, 0.5f, 0.5f),      .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f, 1.0f, 0.0f),  .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)  },
-            { .Position = glm::vec3(0.5f, 0.5f, 0.5f),       .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f, 1.0f, 0.0f),  .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)  },
-            { .Position = glm::vec3(0.5f, 0.5f, -0.5f),      .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(0.0f, 1.0f, 0.0f),  .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)  },
-            { .Position = glm::vec3(-0.5f, 0.5f, -0.5f),     .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(0.0f, 1.0f, 0.0f),  .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)  },
-            { .Position = glm::vec3(-0.5f, -0.5f, 0.5f),     .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(0.0f, -1.0f, 0.0f), .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, -1.0f) },
-            { .Position = glm::vec3(0.5f, -0.5f, 0.5f),      .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(0.0f, -1.0f, 0.0f), .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, -1.0f) },
-            { .Position = glm::vec3(0.5f, -0.5f, -0.5f),     .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f, -1.0f, 0.0f), .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, -1.0f) },
-            { .Position = glm::vec3(-0.5f, -0.5f, -0.5f),    .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f, -1.0f, 0.0f), .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, -1.0f) }
-        };
-
-        std::vector<unsigned int> indices = {
-            // Front Face
-            0, 4, 5,
-            0, 5, 1,
-
-            // Back Face
-            2, 6, 7,
-            2, 7, 3,
-
-            // Right Face
-            9, 13, 14,
-            9, 14, 10,
-
-            // Left Face
-            11, 15, 12,
-            11, 12, 8,
-            
-            // Top Face
-            19, 16, 17,
-            19, 17, 18,
-            
-            // Bottom Face
-            20, 23, 22,
-            20, 22, 21
-        };
-
-        InstatiatingMesh* mesh = new InstatiatingMesh(vertices, indices);
-
-        _cubeModel = new ModelData{
-            .modelHash = 0,
-            .useNumber = 1
-        };
-        _cubeModel->meshes.push_back(mesh);
-
-        //Creating SSBO
-        //GLuint ssbo;
-        //glGenBuffers(1, &ssbo);
-        //
-        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-        //
-        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-        //_cubeModel = new ModelData{
-        //    .modelHash = 0,
-        //    .useNumber = 1
-        //    .model = model,
-        //    .ssboId = ssbo
-        //};
-        // 
-        //for (Mesh& mesh : model->meshes)
-        //{
-        //    _cubeModel->meshes.push_back(InstatiatingMesh(&mesh, ssbo));
-        //}
+InstatiatingModel ModelsManager::GetModel(size_t managerId) {
+    InstatiatingModel model;
+    if (loadedModels.find(managerId) != loadedModels.end()) {
+        model = loadedModels[managerId];
     }
-    else
-    {
-        SPDLOG_INFO("Cube Model Already Created");
-        _cubeModel->useNumber++;
-    }
-    return _cubeModel;
+    return model;
 }
 
-ModelData* ModelsManager::_sphereModel = nullptr;
-InstatiatingModel ModelsManager::GetSphere()
-{
-    if (_sphereModel == nullptr)
-    {
-        SPDLOG_INFO("Creating Simple Sphere Model");
-
-        uint32_t horizontalSegments = 12;
-        uint32_t verticalSegments = 12;
-
-        float angleYDiff = 180.f / horizontalSegments;
-        float angleXZDiff = 360.f / verticalSegments;
-
-        std::vector<glm::vec3> verts = std::vector<glm::vec3>();
-        std::vector<glm::vec2> texCoords = std::vector<glm::vec2>();
-        std::vector<glm::vec3> normals = std::vector<glm::vec3>();
-        std::vector<unsigned int> numTrinagles = std::vector<unsigned int>();
-
-        // VERTICIES AND NUMBER OF TRIANGLES
-        // TOP VERTEX
-        verts.push_back({ 0.f, 1.f, 0.f });
-        numTrinagles.push_back(verticalSegments);
-        // TOP HALF AND BOTTOM HALF
-        float angleY = angleYDiff;
-        for (unsigned int i = 0; i < horizontalSegments - 1; ++i) {
-            float radiansY = glm::radians(angleY);
-            float r = sinf(radiansY);
-            float y = cosf(radiansY);
-
-            unsigned int t = 1;
-
-            if (horizontalSegments == 2) {
-                t = 4;
-            }
-            else if (horizontalSegments == 3) {
-                t = 5;
-            }
-            else if (horizontalSegments >= 4) {
-                if (i == 0 || i + 2 == horizontalSegments) {
-                    t = 5;
-                }
-                else {
-                    t = 6;
-                }
-            }
-
-            // DRAW CIRCLE
-            float angleXZ = 0.f;
-            for (unsigned int j = 0; j < verticalSegments; ++j) {
-                float radiansXZ = glm::radians(angleXZ);
-                float z = r * cosf(radiansXZ);
-                float x = r * sinf(radiansXZ);
-                verts.push_back({ x, y, z });
-                if (j == verticalSegments - 1)
-                {
-                    // Add first in the end again for texCoords
-                    verts.push_back({ r * sinf(glm::radians(0.f)), y, r * cosf(glm::radians(0.f)) });
-                    numTrinagles.push_back(t);
-                }
-                numTrinagles.push_back(t);
-                angleXZ += angleXZDiff;
-            }
-            angleY += angleYDiff;
-        }
-        // BOTTOM VERTEX
-        verts.push_back({ 0.f, -1.f, 0.f });
-        numTrinagles.push_back(verticalSegments);
-
-        // TEXTURE COORDS
-        // TOP VERTEX
-        texCoords.push_back({ .5f, 1.f });
-
-        float horizontalDiff = 1.f / (float)horizontalSegments;
-        float verticalDiff = 1.f / (float)verticalSegments;
-
-        // CENTER CIRCLES
-        size_t verticiesNum = verts.size();
-        for (unsigned int c = 0; c < horizontalSegments - 1; ++c) {
-            unsigned int startV = c * verticalSegments + 1;
-            for (unsigned int i = 0; i < verticalSegments; ++i) {
-
-                texCoords.push_back({ i * verticalDiff, 1.f - horizontalDiff * (c + 1) });
-
-                if ((i + 1) % verticalSegments == 0)
-                {
-                    texCoords.push_back({ 1.f , 1.f - horizontalDiff * (c + 1) });
-                }
-            }
-        }
-
-        // BOTTOM VERTEX
-        texCoords.push_back({ .5f, 0.f });
-
-        // NORMALS
-        for (size_t i = 0; i < verts.size(); ++i)
-        {
-            if (glm::length(verts[i]) != 0.f) {
-                normals.push_back(glm::normalize(verts[i]));
-            }
-            else {
-                normals.push_back(verts[i]);
-            }
-        }
-
-        // VERTICES WITHOUT TANGENTS AND BITANGENTS
-        std::vector<Vertex> vertices = std::vector<Vertex>();
-        for (size_t i = 0; i < verticiesNum; ++i)
-        {
-            vertices.push_back({ verts[i], texCoords[i], normals[i], glm::vec3(0.f), glm::vec3(0.f) });
-        }
-
-        // INDICIES, TANGENTS AND BITANGENTS
-        std::pair<glm::vec3, glm::vec3> TB;
-
-        std::vector<unsigned int> indices = std::vector<unsigned int>();
-        // TOP CIRCLE + BOTTOM CIRCLE
-        for (unsigned int i = 0; i < verticalSegments; ++i) {
-            // TOP CIRCLE
-            unsigned int rightVertex = (i + 1) + 1;
-            unsigned int topVertex = 0;
-            unsigned int leftVertex = i + 1;
-
-            indices.push_back(rightVertex);
-            indices.push_back(topVertex);
-            indices.push_back(leftVertex);
-
-            TB = CalcTangentBitangent(vertices, rightVertex, topVertex, leftVertex);
-
-            vertices[rightVertex].Tangent += TB.first;
-            vertices[rightVertex].Bitangent += TB.second;
-
-            vertices[topVertex].Tangent += TB.first;
-            vertices[topVertex].Bitangent += TB.second;
-
-            vertices[leftVertex].Tangent += TB.first;
-            vertices[leftVertex].Bitangent += TB.second;
-
-            // BOTTOM CIRCLE
-            rightVertex = verticiesNum - 2 - verticalSegments - 1 + (i + 1) + 1;
-            leftVertex = verticiesNum - 2 - verticalSegments - 1 + i + 1;
-            topVertex = verticiesNum - 1;
-
-            indices.push_back(rightVertex);
-            indices.push_back(leftVertex);
-            indices.push_back(topVertex);
-
-            TB = CalcTangentBitangent(vertices, rightVertex, topVertex, leftVertex);
-
-            vertices[rightVertex].Tangent += TB.first;
-            vertices[rightVertex].Bitangent += TB.second;
-
-            vertices[topVertex].Tangent += TB.first;
-            vertices[topVertex].Bitangent += TB.second;
-
-            vertices[leftVertex].Tangent += TB.first;
-            vertices[leftVertex].Bitangent += TB.second;
-        }
-        // CENTER CIRCLES
-        for (unsigned int c = 0; c < horizontalSegments - 2; ++c) {
-            unsigned int startV = c * (verticalSegments + 1) + 1;
-            for (unsigned int i = 0; i < verticalSegments; ++i) {
-                unsigned int topLeft = i + startV;
-                unsigned int topRight = (i + 1) + startV;
-                unsigned int bottomLeft = i + verticalSegments + 1 + startV;
-                unsigned int bottomRight = (i + 1) + verticalSegments + 1 + startV;
-
-                indices.push_back(topRight);
-                indices.push_back(topLeft);
-                indices.push_back(bottomLeft);
-
-                TB = CalcTangentBitangent(vertices, topRight, topLeft, bottomLeft);
-
-                vertices[topRight].Tangent += TB.first;
-                vertices[topRight].Bitangent += TB.second;
-
-                vertices[topLeft].Tangent += TB.first;
-                vertices[topLeft].Bitangent += TB.second;
-
-                vertices[bottomLeft].Tangent += TB.first;
-                vertices[bottomLeft].Bitangent += TB.second;
-
-                indices.push_back(bottomRight);
-                indices.push_back(topRight);
-                indices.push_back(bottomLeft);
-
-                TB = CalcTangentBitangent(vertices, bottomRight, topRight, bottomLeft);
-
-                vertices[bottomRight].Tangent += TB.first;
-                vertices[bottomRight].Bitangent += TB.second;
-
-                vertices[topRight].Tangent += TB.first;
-                vertices[topRight].Bitangent += TB.second;
-
-                vertices[bottomLeft].Tangent += TB.first;
-                vertices[bottomLeft].Bitangent += TB.second;
-            }
-        }
-
-        // FULL VERTICES
-        for (unsigned int i = 0; i < vertices.size(); ++i) {
-            vertices[i].Tangent /= (float)numTrinagles[i];
-            vertices[i].Tangent = glm::normalize(vertices[i].Tangent);
-
-            vertices[i].Bitangent /= (float)numTrinagles[i];
-            vertices[i].Bitangent = glm::normalize(vertices[i].Bitangent);
-        }
-
-        verts.clear();
-        texCoords.clear();
-        normals.clear();
-
-        InstatiatingMesh* mesh = new InstatiatingMesh(vertices, indices);
-
-        _sphereModel = new ModelData{
-            .modelHash = 0,
-            .useNumber = 1
-        };
-
-        _sphereModel->meshes.push_back(mesh);
-
-        //Model* model = new Model(vertices, indices, vector<Texture>());
-        //
-        ////Creating SSBO
-        //GLuint ssbo;
-        //glGenBuffers(1, &ssbo);
-        //
-        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-        //
-        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-        //
-        //_sphereModel = new ModelData{
-        //    .modelHash = 0,
-        //    .useNumber = 1,
-        //    .model = model,
-        //    .ssboId = ssbo
-        //};
-        //
-        //for (Mesh& mesh : model->meshes)
-        //{
-        //    _sphereModel->meshes.push_back(InstatiatingMesh(&mesh, ssbo));
-        //}
-    }
-    else
-    {
-        SPDLOG_INFO("Sphere Model Already Created");
-        _sphereModel->useNumber++;
-    }
-    return _sphereModel;
+InstatiatingModel ModelsManager::GetCube() {
+    return GetModel(stringHash(CUBE_PATH));
 }
 
-ModelData* ModelsManager::_planeModel = nullptr;
-InstatiatingModel ModelsManager::GetPlane()
-{
-    if (_planeModel == nullptr)
-    {
-        SPDLOG_INFO("Creating Simple Plane Model");
-
-        /*
-        std::vector<Vertex> vertices {
-            { .Position = glm::vec3(-0.5f,  0.5f,  0.0f), .Normal = glm::vec3( 0.0f,  0.0f,  1.0f), .TexCoords = glm::vec2(0.0f, 0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-            { .Position = glm::vec3(-0.5f, -0.5f,  0.0f), .Normal = glm::vec3( 0.0f,  0.0f,  1.0f), .TexCoords = glm::vec2(0.0f, 1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-            { .Position = glm::vec3( 0.5f,  0.5f,  0.0f), .Normal = glm::vec3( 0.0f,  0.0f,  1.0f), .TexCoords = glm::vec2(1.0f, 0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-            { .Position = glm::vec3( 0.5f, -0.5f,  0.0f), .Normal = glm::vec3( 0.0f,  0.0f,  1.0f), .TexCoords = glm::vec2(1.0f, 1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-        };
-
-        std::vector<unsigned int> indices {
-            0, 1, 2,
-            2, 1, 3
-        };
-        */
-
-        std::vector<Vertex> vertices{
-            { .Position = glm::vec3(-0.5f, 0.0f, -0.5f),    .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(0.0f, 1.0f, 0.0f), .Tangent = glm::vec3(1.0f, 0.0f, 0.0f), .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f) },
-            { .Position = glm::vec3(0.5f, 0.0f, -0.5f),     .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(0.0f, 1.0f, 0.0f), .Tangent = glm::vec3(1.0f, 0.0f, 0.0f), .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f) },
-            { .Position = glm::vec3(-0.5f, 0.0f, 0.5f),     .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f, 1.0f, 0.0f), .Tangent = glm::vec3(1.0f, 0.0f, 0.0f), .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f) },
-            { .Position = glm::vec3(0.5f, 0.0f, 0.5f),      .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f, 1.0f, 0.0f), .Tangent = glm::vec3(1.0f, 0.0f, 0.0f), .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f) }
-        };
-
-        std::vector<unsigned int> indices = {
-            2, 1, 0,
-            2, 3, 1
-        };
-
-        InstatiatingMesh* mesh = new InstatiatingMesh(vertices, indices);
-
-        _planeModel = new ModelData{
-            .modelHash = 0,
-            .useNumber = 1
-        };
-
-        _planeModel->meshes.push_back(mesh);
-
-        //Model* model = new Model(vertices, indices, vector<Texture>());
-        //
-        ////Creating SSBO
-        //GLuint ssbo;
-        //glGenBuffers(1, &ssbo);
-        //
-        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-        //
-        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-        //
-        //_planeModel = new ModelData{
-        //    .modelHash = 0,
-        //    .useNumber = 1,
-        //    .model = model,
-        //    .ssboId = ssbo
-        //};
-        //
-        //for (Mesh& mesh : model->meshes)
-        //{
-        //    _planeModel->meshes.push_back(InstatiatingMesh(&mesh, ssbo));
-        //}
-    }
-    else
-    {
-        SPDLOG_INFO("Plane Model Already Created");
-        _planeModel->useNumber++;
-    }
-    return _planeModel;
+InstatiatingModel ModelsManager::GetSphere() {
+    return GetModel(stringHash(SPHERE_PATH));
 }
 
-ModelData* ModelsManager::_piramidModel = nullptr;
-InstatiatingModel ModelsManager::GetPiramid()
-{
-    if (_piramidModel == nullptr)
-    {
-        SPDLOG_INFO("Creating Simple Piramid Model");
+InstatiatingModel ModelsManager::GetPlane() {
+    return GetModel(stringHash(PLANE_PATH));
+}
 
-        std::vector<Vertex> vertices{
-            {.Position = glm::vec3(-0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3( 0.0f, -1.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-            {.Position = glm::vec3(-0.5f,  0.0f,  0.0f), .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3( 0.0f, -1.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-            {.Position = glm::vec3( 0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3( 0.0f, -1.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-            {.Position = glm::vec3( 0.5f, -0.5f,  0.5f), .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3( 0.0f, -1.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-
-            {.Position = glm::vec3( 0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3( 0.0f,  0.0f, -1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-            {.Position = glm::vec3( 0.0f,  0.5f,  0.0f), .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3( 0.0f,  0.0f, -1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-            {.Position = glm::vec3(-0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3( 0.0f,  0.0f, -1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-
-            {.Position = glm::vec3(-0.5f, -0.5f,  0.5f), .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3( 0.0f,  0.0f,  1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-            {.Position = glm::vec3( 0.0f,  0.5f,  0.0f), .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3( 0.0f,  0.0f,  1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-            {.Position = glm::vec3( 0.5f, -0.5f,  0.5f), .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3( 0.0f,  0.0f,  1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-
-            {.Position = glm::vec3(-0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(-1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-            {.Position = glm::vec3( 0.0f,  0.5f,  0.0f), .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3(-1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-            {.Position = glm::vec3(-0.5f, -0.5f,  0.5f), .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(-1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-
-            {.Position = glm::vec3( 0.5f, -0.5f,  0.5f), .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3( 1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-            {.Position = glm::vec3( 0.0f,  0.5f,  0.0f), .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3( 1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-            {.Position = glm::vec3( 0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3( 1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) }
-        };
-
-        std::vector<unsigned int> indices{
-            // Bottom Face
-            0, 1, 2,
-            2, 1, 3,
-
-            // Front Triangle
-            4, 5, 6,
-
-            // Back Triangle
-            7, 8, 9,
-
-            // Left Triangle
-            10, 11, 12,
-
-            // Right Triangle
-            13, 14, 15
-        };
-
-        InstatiatingMesh* mesh = new InstatiatingMesh(vertices, indices);
-
-        _piramidModel = new ModelData{
-            .modelHash = 0,
-            .useNumber = 1
-        };
-
-        _piramidModel->meshes.push_back(mesh);
-
-        //Model* model = new Model(vertices, indices, vector<Texture>());
-        //
-        ////Creating SSBO
-        //GLuint ssbo;
-        //glGenBuffers(1, &ssbo);
-        //
-        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-        //
-        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-        //
-        //_piramidModel = new ModelData{
-        //    .modelHash = 0,
-        //    .useNumber = 1,
-        //    .model = model,
-        //    .ssboId = ssbo
-        //};
-        //
-        //for (Mesh& mesh : model->meshes)
-        //{
-        //    _piramidModel->meshes.push_back(InstatiatingMesh(&mesh, ssbo));
-        //}
-    }
-    else
-    {
-        SPDLOG_INFO("Piramid Model Already Created");
-        _piramidModel->useNumber++;
-    }
-    return _piramidModel;
+InstatiatingModel ModelsManager::GetPiramid() {
+    return GetModel(stringHash(PIRAMID_PATH));
 }
 
 InstatiatingModel ModelsManager::CreateModel(const std::string& modelName, std::vector<Vertex> vertices, std::vector<unsigned int> indices)
 {
     size_t strHash = stringHash(modelName);
 
-    std::list<ModelData*>::iterator found =
-        std::find_if(loadedModels.begin(), loadedModels.end(), [strHash](ModelData* data) { return data->modelHash == strHash; });
-
-    ModelData* modelData;
-    if (found == loadedModels.end())
+    ModelData* modelData = nullptr;
+    if (loadedModels.find(strHash) == loadedModels.end())
     {
         SPDLOG_INFO("Creating model: {}!", modelName);
 
         InstatiatingMesh* mesh = new InstatiatingMesh(vertices, indices);
 
-        ModelData* newModel = new ModelData{
-            .modelHash = 0,
+        modelData = new ModelData{
+            .id = strHash,
             .useNumber = 1
         };
 
-        newModel->meshes.push_back(mesh);
-        //Model* model = new Model(vertices, indices, textures);
-        //
-        ////Creating SSBO
-        //
-        //GLuint ssbo;
-        //glGenBuffers(1, &ssbo);
-        //
-        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-        //
-        //glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-        //
-        //modelData = new ModelData{
-        //    .modelHash = strHash,
-        //    .useNumber = 1,
-        //    .model = model,
-        //    .ssboId = ssbo
-        //};
-        //
-        //for (Mesh& mesh : model->meshes)
-        //{
-        //    modelData->meshes.push_back(InstatiatingMesh(&mesh, ssbo));
-        //}
-
-        loadedModels.push_back(modelData);
+        modelData->meshes.push_back(mesh);
+        loadedModels[strHash] = modelData;
     }
     else
     {
         SPDLOG_INFO("Model already exist: {}!", modelName);
-        modelData = (*found);
-        (*found)->useNumber++;
+        modelData = loadedModels[strHash];
+        modelData->useNumber++;
     }
 
     return modelData;

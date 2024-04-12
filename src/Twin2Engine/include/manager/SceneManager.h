@@ -17,14 +17,8 @@ namespace Twin2Engine::Manager {
 		static std::vector<size_t> _spritesIds;
 		static std::vector<size_t> _fontsIds;
 		static std::vector<size_t> _audiosIds;
-
-		static std::vector<GraphicEngine::Material> _materialsHolder;
-
+		static std::vector<size_t> _materialsIds;
 		static std::vector<size_t> _modelsIds;
-		static std::vector<GraphicEngine::InstatiatingModel> _modelsHolder;
-		static std::vector<size_t> _standardModelsIds;
-		static std::vector<GraphicEngine::InstatiatingModel> _standardModelsHolder;
-		static std::vector<GraphicEngine::InstatiatingModel*> _allModelsHolder;
 
 		// Loaded Scene Objects
 		static std::map<size_t, Core::Scene*> _loadedScenes;
@@ -50,8 +44,8 @@ namespace Twin2Engine::Manager {
 		static size_t GetSprite(size_t loadIdx);
 		static size_t GetFont(size_t loadIdx);
 		static size_t GetAudio(size_t loadIdx);
-		static GraphicEngine::Material GetMaterial(size_t loadIdx);
-		static GraphicEngine::InstatiatingModel GetModel(size_t loadIdx);
+		static size_t GetMaterial(size_t loadIdx);
+		static size_t GetModel(size_t loadIdx);
 
 		static void UnloadCurrent();
 		static void UnloadScene(const std::string& name);

@@ -13,18 +13,12 @@ using namespace Twin2Engine::UI;
 Scene* SceneManager::_currentScene = nullptr;
 GameObject* SceneManager::_rootObject = nullptr;
 
-vector<size_t> SceneManager::_texturesIds = vector<size_t>();
-vector<size_t> SceneManager::_spritesIds = vector<size_t>();
-vector<size_t> SceneManager::_fontsIds = vector<size_t>();
-vector<size_t> SceneManager::_audiosIds = vector<size_t>();
-
-vector<Material> SceneManager::_materialsHolder = vector<Material>();
-
-vector<size_t> SceneManager::_modelsIds = vector<size_t>();
-vector<InstatiatingModel> SceneManager::_modelsHolder = vector<InstatiatingModel>();
-vector<size_t> SceneManager::_standardModelsIds = vector<size_t>();
-vector<InstatiatingModel> SceneManager::_standardModelsHolder = vector<InstatiatingModel>();
-vector<InstatiatingModel*> SceneManager::_allModelsHolder = vector<InstatiatingModel*>();
+vector<size_t> SceneManager::_texturesIds;
+vector<size_t> SceneManager::_spritesIds;
+vector<size_t> SceneManager::_fontsIds;
+vector<size_t> SceneManager::_audiosIds;
+vector<size_t> SceneManager::_materialsIds;
+vector<size_t> SceneManager::_modelsIds;;
 
 map<size_t, Scene*> SceneManager::_loadedScenes = map<size_t, Scene*>();
 
@@ -174,12 +168,7 @@ void SceneManager::AddScene(const string& name, const string& path)
 
 	// Loading Models
 	for (const YAML::Node& modelNode : sceneNode["Models"]) {
-		if (modelNode["standard"]) {
-			scene->AddModel(modelNode["standard"].as<string>(), true);
-		}
-		else {
-			scene->AddModel(modelNode["path"].as<string>());
-		}
+		scene->AddModel(modelNode.as<string>());
 	}
 
 	// Loading GameObjects
@@ -362,18 +351,14 @@ void SceneManager::LoadScene(const string& name)
 	for (const auto& path : sceneToLoad->_materials) {
 		paths.push_back(path);
 	}
-	vector<size_t> ids;
-	for (const auto& mat : _materialsHolder) {
-		ids.push_back(mat.GetId());
-	}
-	toLoadToUnload = GetResourcesToLoadAndUnload(paths, ids);
+	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _materialsIds);
 
 	// Unloading
 	for (size_t m : toLoadToUnload.second) {
-		for (size_t i = 0; i < ids.size(); ++i) {
-			if (ids[i] == m) {
-				ids.erase(ids.begin() + i);
-				_materialsHolder.erase(_materialsHolder.begin() + i);
+		MaterialsManager::UnloadMaterial(m);
+		for (size_t i = 0; i < _materialsIds.size(); ++i) {
+			if (_materialsIds[i] == m) {
+				_materialsIds.erase(_materialsIds.begin() + i);
 				break;
 			}
 		}
@@ -381,73 +366,53 @@ void SceneManager::LoadScene(const string& name)
 	// Loading
 	for (size_t m : toLoadToUnload.first) {
 		Material mat = MaterialsManager::LoadMaterial(paths[m]);
-		_materialsHolder.push_back(mat);
+		_materialsIds.push_back(mat.GetId());
 	}
+	// Sorting
+	sortedIds.clear();
+	for (size_t i = 0; i < paths.size(); ++i) {
+		size_t pathH = hash<string>()(paths[i]);
+		for (size_t j = 0; j < _materialsIds.size(); ++j) {
+			if (_materialsIds[j] == pathH) {
+				sortedIds.push_back(_materialsIds[j]);
+				break;
+			}
+		}
+	}
+	_materialsIds = sortedIds;
 #pragma endregion
-#pragma region LOADING_PATH_MODELS
-	// PATH MODELS
+#pragma region LOADING_MODELS
+	// MODELS
 	paths.clear();
 	for (const auto& path : sceneToLoad->_models) {
-		if (!get<0>(path)) {
-			paths.push_back(get<1>(path));
-		}
+		paths.push_back(path);
 	}
 	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _modelsIds);
 
+	// Unloading
 	for (size_t m : toLoadToUnload.second) {
+		ModelsManager::UnloadModel(m);
 		for (size_t i = 0; i < _modelsIds.size(); ++i) {
 			if (_modelsIds[i] == m) {
 				_modelsIds.erase(_modelsIds.begin() + i);
-				_modelsHolder.erase(_modelsHolder.begin() + i);
 				break;
 			}
 		}
 	}
+	// Loading
 	for (size_t m : toLoadToUnload.first) {
-		InstatiatingModel model = ModelsManager::GetModel(paths[m]);
-		_modelsHolder.push_back(model);
-		_modelsIds.push_back(hash<string>()(paths[m]));
+		InstatiatingModel model = ModelsManager::LoadModel(paths[m]);
+		_modelsIds.push_back(model.GetId());
 	}
-#pragma endregion
-#pragma region LOADING_STANDARD_MODELS
-	// STANDARD MODELS
-	paths.clear();
-	for (const auto& path : sceneToLoad->_models) {
-		if (get<0>(path)) {
-			paths.push_back(get<1>(path));
-		}
-	}
-	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _standardModelsIds);
-
-	for (size_t m : toLoadToUnload.second) {
-		for (size_t i = 0; i < _standardModelsIds.size(); ++i) {
-			if (_standardModelsIds[i] == m) {
-				_standardModelsIds.erase(_standardModelsIds.begin() + i);
-				_standardModelsHolder.erase(_standardModelsHolder.begin() + i);
+	// Sorting
+	sortedIds.clear();
+	for (size_t i = 0; i < paths.size(); ++i) {
+		size_t pathH = hash<string>()(paths[i]);
+		for (size_t j = 0; j < _modelsIds.size(); ++j) {
+			if (_modelsIds[j] == pathH) {
+				sortedIds.push_back(_modelsIds[j]);
 				break;
 			}
-		}
-	}
-	for (size_t m : toLoadToUnload.first) {
-		if (paths[m] == "Cube") {
-			InstatiatingModel model = ModelsManager::GetCube();
-			_standardModelsHolder.push_back(model);
-			_standardModelsIds.push_back(hash<string>()(paths[m]));
-		}
-		else if (paths[m] == "Plane") {
-			InstatiatingModel model = ModelsManager::GetPlane();
-			_standardModelsHolder.push_back(model);
-			_standardModelsIds.push_back(hash<string>()(paths[m]));
-		}
-		else if (paths[m] == "Sphere") {
-			InstatiatingModel model = ModelsManager::GetSphere();
-			_standardModelsHolder.push_back(model);
-			_standardModelsIds.push_back(hash<string>()(paths[m]));
-		}
-		else if (paths[m] == "Piramid") {
-			InstatiatingModel model = ModelsManager::GetPiramid();
-			_standardModelsHolder.push_back(model);
-			_standardModelsIds.push_back(hash<string>()(paths[m]));
 		}
 	}
 #pragma endregion
@@ -525,14 +490,14 @@ size_t SceneManager::GetAudio(size_t loadIdx)
 	return _audiosIds[loadIdx];
 }
 
-Material SceneManager::GetMaterial(size_t loadIdx)
+size_t SceneManager::GetMaterial(size_t loadIdx)
 {
-	return _materialsHolder[loadIdx];
+	return _materialsIds[loadIdx];
 }
 
-InstatiatingModel SceneManager::GetModel(size_t loadIdx)
+size_t SceneManager::GetModel(size_t loadIdx)
 {
-	return *_allModelsHolder[loadIdx];
+	return _modelsIds[loadIdx];
 }
 
 void SceneManager::UnloadCurrent()
@@ -542,21 +507,27 @@ void SceneManager::UnloadCurrent()
 	for (size_t id : _texturesIds) {
 		TextureManager::UnloadTexture2D(id);
 	}
+	_texturesIds.clear();
 	for (size_t id : _spritesIds) {
 		SpriteManager::UnloadSprite(id);
 	}
+	_spritesIds.clear();
 	for (size_t id : _fontsIds) {
 		FontManager::UnloadFont(id);
 	}
+	_fontsIds.clear();
 	for (size_t id : _audiosIds) {
 		AudioManager::UnloadAudio(id);
 	}
-	_materialsHolder.clear();
+	_audiosIds.clear();
+	for (size_t id : _modelsIds) {
+		ModelsManager::UnloadModel(id);
+	}
 	_modelsIds.clear();
-	_modelsHolder.clear();
-	_standardModelsIds.clear();
-	_standardModelsHolder.clear();
-	_allModelsHolder.clear();
+	for (size_t id : _materialsIds) {
+		MaterialsManager::UnloadMaterial(id);
+	}
+	_materialsIds.clear();
 }
 
 void SceneManager::UnloadScene(const std::string& name)

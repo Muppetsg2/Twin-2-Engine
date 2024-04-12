@@ -37,10 +37,10 @@ Materials:
     - metal
     - hexagonMat
 Models:
-    - standard: Cube
-    - path: res/models/castle.obj
-    - path: res/models/AK47.obj
-    - path: res/models/hexagon.obj
+    - "{Cube}"
+    - res/models/castle.obj
+    - res/models/AK47.obj
+    - res/models/hexagon.obj
 GameObjects:
     -   name: Camera
         isStatic: false

@@ -59,9 +59,9 @@ void Scene::AddAudio(const std::string& path)
 	_audios.push_back(path);
 }
 
-void Scene::AddModel(const std::string& path, bool isStandard)
+void Scene::AddModel(const std::string& path)
 {
-	_models.push_back({ isStandard, path });
+	_models.push_back(path);
 }
 
 void Scene::AddMaterial(const std::string& path)

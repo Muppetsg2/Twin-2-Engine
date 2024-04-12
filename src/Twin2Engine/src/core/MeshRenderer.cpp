@@ -1,4 +1,6 @@
 #include <core/MeshRenderer.h>
+#include <graphic/manager/ModelsManager.h>
+#include <graphic/manager/MaterialsManager.h>
 
 
 using namespace Twin2Engine::Core;
@@ -14,11 +16,6 @@ void MeshRenderer::Render()
 	data.isTransparent = IsTransparent();
 	for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
 		data.meshes.push_back(_model.GetMesh(i));
-
-		//if (i >= _materials.size())
-		//	data.materials.push_back(nullptr);
-		//else
-		//	data.materials.push_back(_materials[i]);
 		data.materials.push_back(GetMaterial(i));
 	}
 	MeshRenderingManager::Render(data);
@@ -64,6 +61,11 @@ void MeshRenderer::AddMaterial(Material material)
 	_materials.push_back(material);
 }
 
+void MeshRenderer::AddMaterial(size_t materialId)
+{
+	AddMaterial(MaterialsManager::GetMaterial(materialId));
+}
+
 void MeshRenderer::SetMaterial(size_t index, Material material)
 {
 	if (index < _materials.size())
@@ -72,7 +74,17 @@ void MeshRenderer::SetMaterial(size_t index, Material material)
 	}
 }
 
-void MeshRenderer::SetModel(const InstatiatingModel& model)
+void MeshRenderer::SetMaterial(size_t index, size_t materialId)
+{
+	SetMaterial(index, MaterialsManager::GetMaterial(materialId));
+}
+
+void MeshRenderer::SetModel(const GraphicEngine::InstatiatingModel& model)
 {
 	_model = model;
+}
+
+void MeshRenderer::SetModel(size_t modelId)
+{
+	SetModel(ModelsManager::GetModel(modelId));
 }

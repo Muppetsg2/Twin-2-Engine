@@ -3,12 +3,41 @@
 
 using namespace Twin2Engine::Core;
 
-unsigned int Twin2Engine::Core::GameObject::_currentFreeId = 1;
+size_t Twin2Engine::Core::GameObject::_currentFreeId = 0;
+list<size_t> Twin2Engine::Core::GameObject::_freedIds;
 
-Twin2Engine::Core::GameObject::GameObject()
+GameObject::GameObject(size_t id) {
+	
+	// Setting IDs
+	_id = id;
+	if (_currentFreeId <= id) {
+		for (; _currentFreeId < id; ++_currentFreeId) _freedIds.push_back(_currentFreeId);
+		_freedIds.sort();
+		_currentFreeId = id + 1;
+	}
+
+	// Setting activation
+	_activeInHierarchy = true;
+	_activeSelf = true;
+
+	// Setting is no static by default
+	_isStatic = false;
+
+	// Setting default name
+	_name = "New GameObject";
+
+	_transform = new Transform();
+	((Component*)_transform)->Init(this);
+
+	//components = list<Component*>();
+	components = std::list<Component*>();
+	components.push_back(_transform);
+}
+
+GameObject::GameObject()
 {
 	// Setting ID
-	_id = _currentFreeId++;
+	_id = GetFreeId();
 
 	// Setting activation
 	_activeInHierarchy = true;
@@ -29,12 +58,13 @@ Twin2Engine::Core::GameObject::GameObject()
 	components.push_back(_transform);
 }
 
-Twin2Engine::Core::GameObject::~GameObject()
+GameObject::~GameObject()
 {
 	for (Component* component : components)
 	{
 		delete component;
 	}
+	_freedIds.push_back(_id);
 }
 
 GameObject* GameObject::Instatiate(GameObject* gameObject)
@@ -86,28 +116,48 @@ void GameObject::CloneTo(GameObject* cloned) const
 	}
 }
 
-unsigned int Twin2Engine::Core::GameObject::Id() const
+size_t GameObject::GetFreeId()
+{
+	size_t id;
+	if (_freedIds.size() > 0) {
+		id = _freedIds.front();
+		_freedIds.pop_front();
+	}
+	else {
+		id = _currentFreeId++;
+	}
+	return id;
+}
+
+void GameObject::FreeId(size_t id)
+{
+	_freedIds.push_back(id);
+	_freedIds.sort();
+}
+
+size_t GameObject::Id() const
 {
 	return _id;
 }
 
-bool Twin2Engine::Core::GameObject::GetActiveInHierarchy() const
+bool GameObject::GetActiveInHierarchy() const
 {
 	return _activeInHierarchy;
 }
 
-bool Twin2Engine::Core::GameObject::GetActive() const
+bool GameObject::GetActive() const
 {
 	return _activeSelf && _activeInHierarchy;
 }
-void Twin2Engine::Core::GameObject::SetActive(bool active)
+
+void GameObject::SetActive(bool active)
 {
 	_activeSelf = active;
 
 	SetActiveInHierarchy(active);
 }
 
-void Twin2Engine::Core::GameObject::SetActiveInHierarchy(bool activeInHierarchy)
+void GameObject::SetActiveInHierarchy(bool activeInHierarchy)
 {
 	if (_activeInHierarchy != activeInHierarchy) // warunek sprawdzaj�cy czy to ustawienie zmieni stan (musi zmienia� inaczej nie ma sensu dzia��� dalej)
 	{
@@ -122,34 +172,32 @@ void Twin2Engine::Core::GameObject::SetActiveInHierarchy(bool activeInHierarchy)
 	}
 }
 
-
-
-bool Twin2Engine::Core::GameObject::GetIsStatic() const
+bool GameObject::GetIsStatic() const
 {
 	return _isStatic;
 }
-void Twin2Engine::Core::GameObject::SetIsStatic(bool isStatic)
+
+void GameObject::SetIsStatic(bool isStatic)
 {
 	_isStatic = isStatic;
 }
 
-Twin2Engine::Core::Transform* Twin2Engine::Core::GameObject::GetTransform() const
+Transform* GameObject::GetTransform() const
 {
 	return _transform;
 }
 
-string Twin2Engine::Core::GameObject::GetName() const
+string GameObject::GetName() const
 {
 	return _name;
 }
 
-
-void Twin2Engine::Core::GameObject::SetName(const string& name)
+void GameObject::SetName(const string& name)
 {
 	_name = name;
 }
 
-void Twin2Engine::Core::GameObject::Update()
+void GameObject::Update()
 {
 	UpdateComponents();
 
@@ -160,7 +208,7 @@ void Twin2Engine::Core::GameObject::Update()
 	}
 }
 
-void Twin2Engine::Core::GameObject::UpdateComponents()
+void GameObject::UpdateComponents()
 {
 	for (Component* component : components)
 	{
@@ -168,8 +216,7 @@ void Twin2Engine::Core::GameObject::UpdateComponents()
 	}
 }
 
-
-void Twin2Engine::Core::GameObject::RemoveComponent(Component* component)
+void GameObject::RemoveComponent(Component* component)
 {
 	components.remove(component);
 	//std::remove_if(components.begin(), components.end(), [component](Component* comp) { return comp == component; });

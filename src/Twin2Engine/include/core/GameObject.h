@@ -26,8 +26,12 @@ namespace Twin2Engine::Core
 
 	private:
 
-		static unsigned int _currentFreeId;
-		unsigned int _id;
+		static size_t _currentFreeId;
+		static std::list<size_t> _freedIds;
+		static size_t GetFreeId();
+		static void FreeId(size_t id);
+
+		size_t _id;
 		string _name;
 
 		Transform* _transform;
@@ -43,12 +47,13 @@ namespace Twin2Engine::Core
 		//Tag
 		void SetActiveInHierarchy(bool activeInHierarchy);
 
+		GameObject(size_t id);
 	public:
 		GameObject();
 
 		virtual ~GameObject();
 
-		unsigned int Id() const;
+		size_t Id() const;
 
 		bool GetActiveInHierarchy() const;
 		bool GetActive() const;

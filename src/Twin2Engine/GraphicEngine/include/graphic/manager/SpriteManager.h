@@ -15,7 +15,7 @@ namespace Twin2Engine::Manager {
 	class SpriteManager {
 	private:
 		static std::map<size_t, GraphicEngine::Sprite*> _sprites;
-		static std::hash<string> hasher;
+		static std::hash<std::string> hasher;
 
 		static void UnloadSprite(size_t spriteId);
 		static void UnloadSprite(const std::string& spriteAlias);

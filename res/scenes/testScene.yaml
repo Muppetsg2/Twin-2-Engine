@@ -25,7 +25,7 @@ Sprites:
         texture: 2
         hasParameters: false
 Fonts:
-    - res/fonts/arial.ttf
+    - res/fonts/Caveat-Regular.ttf
 Audio:
     - res/music/acoustic-guitar.mp3
 Materials:
@@ -40,12 +40,14 @@ Models:
     - "{Cube}"
     - res/models/castle.obj
     - res/models/AK47.obj
-    - res/models/hexagon.obj
 GameObjects:
-    -   name: Camera
+    -   id: 0
+        name: Camera
         isStatic: false
         isActive: true
         transform:
+            id: 0
+            enabled: true
             position:
                 x: 0.0
                 y: 2.0
@@ -59,7 +61,9 @@ GameObjects:
                 y: -90.0
                 z: 0.0
         components:
-            -   type: Camera
+            -   id: 1
+                enabled: true
+                type: Camera
                 fov: 45.0
                 nearPlane: 0.1
                 farPlane: 1000.0
@@ -73,16 +77,21 @@ GameObjects:
                     y: 1.0
                     z: 0.0
                 isMain: true
-            -   type: Audio
+            -   id: 2
+                enabled: true
+                type: Audio
                 audio: 0
                 loop: true
                 time: 0.0
                 volume: 1.0
         children: []
-    -   name: imageObj
+    -   id: 1
+        name: imageObj
         isStatic: false
         isActive: true
         transform:
+            id: 3
+            enabled: true
             position: 
                 x: -900.0
                 y: 500.0
@@ -96,7 +105,9 @@ GameObjects:
                 y: 0.0
                 z: 0.0
         components:
-            -   type: Image
+            -   id: 4
+                enabled: true
+                type: Image
                 isTransparent: false
                 sprite: 0
                 color:
@@ -106,7 +117,9 @@ GameObjects:
                     w: 1.0
                 width: 100.0
                 height: 100.0
-            -   type: Image
+            -   id: 5
+                enabled: true
+                type: Image
                 isTransparent: false
                 sprite: 1
                 color:
@@ -117,10 +130,13 @@ GameObjects:
                 width: 100.0
                 height: 100.0
         children: []
-    -   name: imageObj2
+    -   id: 2
+        name: imageObj2
         isStatic: false
         isActive: true
         transform:
+            id: 6
+            enabled: true
             position:
                 x: 900.0
                 y: 500.0
@@ -134,7 +150,9 @@ GameObjects:
                 y: 0.0
                 z: 0.0
         components:
-            -   type: Image
+            -   id: 7
+                enabled: true
+                type: Image
                 isTransparent: false
                 sprite: 1
                 color:
@@ -145,10 +163,13 @@ GameObjects:
                 width: 100.0
                 height: 100.0
         children: []
-    -   name: imageObj3
+    -   id: 3
+        name: imageObj3
         isStatic: false
         isActive: true
         transform:
+            id: 8
+            enabled: true
             position:
                 x: 0.0
                 y: -500.0
@@ -162,7 +183,9 @@ GameObjects:
                 y: 0.0
                 z: 0.0
         components:
-            -   type: Image
+            -   id: 9
+                enabled: true
+                type: Image
                 isTransparent: false
                 sprite: 2
                 color:
@@ -173,10 +196,13 @@ GameObjects:
                 width: 1000.0
                 height: 100.0
         children: []
-    -   name: textObj
+    -   id: 4
+        name: textObj
         isStatic: false
         isActive: true
         transform:
+            id: 10
+            enabled: true
             position:
                 x: 400.0
                 y: 0.0
@@ -190,7 +216,9 @@ GameObjects:
                 y: 0.0
                 z: 0.0
         components:
-            -   type: Text
+            -   id: 11
+                enabled: true
+                type: Text
                 isTransparent: false
                 text: "Time: 0.0000"
                 color:
@@ -201,10 +229,13 @@ GameObjects:
                 size: 48
                 font: 0
         children: []
-    -   name: gameObject
+    -   id: 5
+        name: gameObject
         isStatic: false
         isActive: true
         transform:
+            id: 12
+            enabled: true
             position:
                 x: 2.0
                 y: 5.0
@@ -218,16 +249,21 @@ GameObjects:
                 y: 0.0
                 z: 0.0
         components:
-            -   type: MeshRenderer
+            -   id: 13
+                enabled: true
+                type: MeshRenderer
                 isTransparent: false
                 model: 0
                 materials:
                     - 0
         children: []
-    -   name: gameObject2
+    -   id: 6
+        name: gameObject2
         isStatic: false
         isActive: true
         transform:
+            id: 14
+            enabled: true
             position:
                 x: 2.0
                 y: 3.0
@@ -241,16 +277,21 @@ GameObjects:
                 y: 0.0
                 z: 0.0
         components:
-            -   type: MeshRenderer
+            -   id: 15
+                enabled: true
+                type: MeshRenderer
                 isTransparent: false
                 model: 0
                 materials:
                     - 1
         children: []
-    -   name: gameObject3
+    -   id: 7
+        name: gameObject3
         isStatic: false
         isActive: true
         transform:
+            id: 16
+            enabled: true
             position:
                 x: 0.0
                 y: 3.0
@@ -264,17 +305,22 @@ GameObjects:
                 y: 0.0
                 z: 0.0
         components:
-            -   type: MeshRenderer
+            -   id: 17
+                enabled: true
+                type: MeshRenderer
                 isTransparent: false
                 model: 1
                 materials:
                     - 2
                     - 3
         children: []
-    -   name: gameObject4
+    -   id: 8
+        name: gameObject4
         isStatic: false
         isActive: true
         transform:
+            id: 18
+            enabled: true
             position:
                 x: 0.0
                 y: 0.0
@@ -288,7 +334,9 @@ GameObjects:
                 y: 0.0
                 z: 0.0
         components:
-            -   type: MeshRenderer
+            -   id: 19
+                enabled: true
+                type: MeshRenderer
                 isTransparent: false
                 model: 2
                 materials:

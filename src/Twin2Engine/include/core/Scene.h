@@ -16,6 +16,7 @@ namespace Twin2Engine::Core {
 		std::vector<YAML::Node> _gameObjects = std::vector<YAML::Node>();
 
 		std::unordered_map<std::string, Manager::TextureData> _textures;
+		std::unordered_map<std::string, std::pair<GraphicEngine::TextureFormat, Manager::TextureFileFormat>> _texturesFormats;
 		std::unordered_map<std::string, std::tuple<std::string, bool, Manager::SpriteData>> _sprites;
 		std::vector<std::string> _fonts;
 		std::vector<std::string> _audios;
@@ -29,6 +30,7 @@ namespace Twin2Engine::Core {
 
 		// Scene Resources
 		void AddTexture2D(const std::string& path, const Manager::TextureData& data = Manager::TextureData());
+		void AddTexture2D(const std::string& path, const GraphicEngine::TextureFormat& format, const Manager::TextureFileFormat& fileFormat, const Manager::TextureData& data = Manager::TextureData());
 		void AddSprite(const std::string& name, const std::string& texPath);
 		void AddSprite(const std::string& name, const std::string& texPath, const Manager::SpriteData& data);
 		void AddFont(const std::string& path);

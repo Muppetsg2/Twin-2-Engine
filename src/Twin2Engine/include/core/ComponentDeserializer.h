@@ -39,6 +39,7 @@ namespace YAML {
 
 		static bool decode(const Node& node, glm::vec2& rhs) {
 			if (!node.IsMap()) return false;
+			if (!node["x"] || !node["y"]) return false;
 
 			rhs.x = node["x"].as<float>();
 			rhs.y = node["y"].as<float>();
@@ -57,6 +58,7 @@ namespace YAML {
 
 		static bool decode(const Node& node, glm::vec3& rhs) {
 			if (!node.IsMap()) return false;
+			if (!node["x"] || !node["y"] || !node["z"]) return false;
 
 			rhs.x = node["x"].as<float>();
 			rhs.y = node["y"].as<float>();
@@ -77,6 +79,7 @@ namespace YAML {
 
 		static bool decode(const Node& node, glm::vec4& rhs) {
 			if (!node.IsMap()) return false;
+			if (!node["x"] || !node["y"] || !node["z"] || !node["w"]) return false;
 
 			rhs.x = node["x"].as<float>();
 			rhs.y = node["y"].as<float>();
@@ -98,6 +101,7 @@ namespace YAML {
 
 		static bool decode(const Node& node, glm::quat& rhs) {
 			if (!node.IsMap()) return false;
+			if (!node["s"] || !node["i"] || !node["j"] || !node["k"]) return false;
 
 			rhs.x = node["s"].as<float>();
 			rhs.y = node["i"].as<float>();
@@ -114,15 +118,16 @@ namespace YAML {
 
 		static Node encode(const TextureData& rhs) {
 			Node node;
-			node["sWrapMode"] = (size_t)rhs.sWrapMode;
-			node["tWrapMode"] = (size_t)rhs.tWrapMode;
-			node["minFilterMode"] = (size_t)rhs.minFilterMode;
-			node["magFilterMode"] = (size_t)rhs.magFilterMode;
+			if (rhs.sWrapMode != TextureWrapMode::MIRRORED_REPEAT) node["sWrapMode"] = (size_t)rhs.sWrapMode;
+			if (rhs.tWrapMode != TextureWrapMode::MIRRORED_REPEAT) node["tWrapMode"] = (size_t)rhs.tWrapMode;
+			if (rhs.minFilterMode != TextureFilterMode::NEAREST_MIPMAP_LINEAR) node["minFilterMode"] = (size_t)rhs.minFilterMode;
+			if (rhs.magFilterMode != TextureFilterMode::LINEAR) node["magFilterMode"] = (size_t)rhs.magFilterMode;
 			return node;
 		}
 
 		static bool decode(const Node& node, TextureData& rhs) {
 			if (!node.IsMap()) return false;
+			if (!node["sWrapMode"] && !node["tWrapMode"] && !node["minFilterMode"] && !node["magFilterMode"]) return false;
 
 			rhs.sWrapMode = (TextureWrapMode)node["sWrapMode"].as<size_t>();
 			rhs.tWrapMode = (TextureWrapMode)node["tWrapMode"].as<size_t>();

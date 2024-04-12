@@ -15,6 +15,12 @@ void Scene::AddTexture2D(const string& path, const TextureData& data) {
 	_textures[path] = data;
 }
 
+void Scene::AddTexture2D(const string& path, const TextureFormat& format, const TextureFileFormat& fileFormat, const TextureData& data)
+{
+	_textures[path] = data;
+	_texturesFormats[path] = { format, fileFormat };
+}
+
 void Scene::AddSprite(const string& name, const string& texPath)
 {
 	_sprites[name] = tuple<string, bool, SpriteData>(texPath, false, SpriteData());

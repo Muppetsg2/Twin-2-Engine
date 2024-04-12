@@ -111,7 +111,21 @@ void SceneManager::AddScene(const string& name, const string& path)
 	vector<string> texturePaths;
 	for (const YAML::Node& texNode : sceneNode["Textures"]) {
 		string path = texNode["path"].as<string>();
-		scene->AddTexture2D(path, texNode.as<TextureData>());
+		TextureData data;
+		if (texNode["sWrapMode"] || texNode["tWrapMode"] || texNode["minFilterMode"] || texNode["magFilterMode"])
+			data = texNode.as<TextureData>();
+		if (texNode["fileFormat"] && texNode["engineFormat"]) {
+			scene->AddTexture2D(path, (TextureFormat)texNode["engineFormat"].as<size_t>(), (TextureFileFormat)texNode["fileFormat"].as<size_t>(), data);
+		}		
+		else {
+			if (texNode["fileFormat"] && !texNode["engineFormat"]) {
+				SPDLOG_ERROR("Przy podanym parametrze 'fileFormat' brakuje parametru 'engineFormat'");
+			}
+			else if (!texNode["fileFormat"] && texNode["engineFormat"]) {
+				SPDLOG_ERROR("Przy podanym parametrze 'fileFormat' brakuje parametru 'engineFormat'");
+			}
+			scene->AddTexture2D(path, data);
+		}
 		texturePaths.push_back(path);
 	}
 
@@ -186,7 +200,14 @@ void SceneManager::LoadScene(const string& name)
 	// Loading
 	for (size_t t : toLoadToUnload.first) {
 		string path = paths[t];
-		Texture2D* temp = TextureManager::LoadTexture2D(path, sceneToLoad->_textures[path]);
+		Texture2D* temp = nullptr;
+		if (sceneToLoad->_texturesFormats.find(path) != sceneToLoad->_texturesFormats.end()) {
+			const auto& formats = sceneToLoad->_texturesFormats[path];
+			temp = TextureManager::LoadTexture2D(path, formats.second, formats.first, sceneToLoad->_textures[path]);
+		}
+		else {
+			temp = TextureManager::LoadTexture2D(path, sceneToLoad->_textures[path]);
+		}
 		if (temp != nullptr) _texturesIds.push_back(temp->GetManagerId());
 	}
 	// Sorting

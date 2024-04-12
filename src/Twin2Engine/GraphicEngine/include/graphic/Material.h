@@ -16,7 +16,6 @@ namespace Twin2Engine
 		struct MaterialData
 		{
 			size_t id;
-			int useNumber;
 			Shader* shader;
 			MaterialParameters* materialParameters;
 		};

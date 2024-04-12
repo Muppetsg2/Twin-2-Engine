@@ -5,7 +5,8 @@ using namespace GraphicEngine;
 using namespace Manager;
 using namespace std;
 
-map<size_t, Texture2D*> TextureManager::_loadedTextures = map<size_t, Texture2D*>();
+hash<string> TextureManager::hasher;
+map<size_t, Texture2D*> TextureManager::_loadedTextures;
 
 Texture2D* TextureManager::GetTexture2D(size_t managerId)
 {
@@ -15,16 +16,20 @@ Texture2D* TextureManager::GetTexture2D(size_t managerId)
     return nullptr;
 }
 
+Texture2D* TextureManager::GetTexture2D(const std::string& path)
+{
+    Texture2D* tex = GetTexture2D(hasher(path));
+    if (tex == nullptr) {
+        tex = LoadTexture2D(path);
+    }
+    return tex;
+}
+
 Texture2D* TextureManager::LoadTexture2D(const string& path, const TextureData& data)
 {
-    size_t h = hash<string>{}(path);
-    if (_loadedTextures.find(h) != _loadedTextures.end()) {
-        Texture2D* t = _loadedTextures[h];
-        t->SetWrapModeS(data.sWrapMode);
-        t->SetWrapModeT(data.tWrapMode);
-        t->SetMinFilterMode(data.minFilterMode);
-        t->SetMagFilterMode(data.magFilterMode);
-        return t;
+    size_t pathHash = hasher(path);
+    if (_loadedTextures.find(pathHash) != _loadedTextures.end()) {
+        return _loadedTextures[pathHash];
     }
 
     unsigned int id;
@@ -55,21 +60,16 @@ Texture2D* TextureManager::LoadTexture2D(const string& path, const TextureData& 
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(imgData);
 
-    Texture2D* tex = new Texture2D(h, id, (unsigned int)width, (unsigned int)height, (unsigned int)channelsNr, form, data.sWrapMode, data.tWrapMode, data.minFilterMode, data.magFilterMode);
-    _loadedTextures[h] = tex;
+    Texture2D* tex = new Texture2D(pathHash, id, (unsigned int)width, (unsigned int)height, (unsigned int)channelsNr, form, data.sWrapMode, data.tWrapMode, data.minFilterMode, data.magFilterMode);
+    _loadedTextures[pathHash] = tex;
     return tex;
 }
 
 Texture2D* TextureManager::LoadTexture2D(const string& path, const TextureFileFormat& internalFormat, const TextureFormat& format, const TextureData& data)
 {
-    size_t h = hash<string>{}(path);
-    if (_loadedTextures.find(h) != _loadedTextures.end()) {
-        Texture2D* t = _loadedTextures[h];
-        t->SetWrapModeS(data.sWrapMode);
-        t->SetWrapModeT(data.tWrapMode);
-        t->SetMinFilterMode(data.minFilterMode);
-        t->SetMagFilterMode(data.magFilterMode);
-        return t;
+    size_t pathHash = hasher(path);
+    if (_loadedTextures.find(pathHash) != _loadedTextures.end()) {
+        return _loadedTextures[pathHash];
     }
 
     unsigned int id;
@@ -95,8 +95,8 @@ Texture2D* TextureManager::LoadTexture2D(const string& path, const TextureFileFo
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(imgData);
 
-    Texture2D* tex = new Texture2D(h, id, (unsigned int)width, (unsigned int)height, (unsigned int)nrChannels, format, data.sWrapMode, data.tWrapMode, data.minFilterMode, data.magFilterMode);
-    _loadedTextures[h] = tex;
+    Texture2D* tex = new Texture2D(pathHash, id, (unsigned int)width, (unsigned int)height, (unsigned int)nrChannels, format, data.sWrapMode, data.tWrapMode, data.minFilterMode, data.magFilterMode);
+    _loadedTextures[pathHash] = tex;
     return tex;
 }
 
@@ -109,7 +109,7 @@ void TextureManager::UnloadTexture2D(size_t managerID)
 
 void TextureManager::UnloadTexture2D(const string& path)
 {
-    UnloadTexture2D(hash<string>()(path));
+    UnloadTexture2D(hasher(path));
 }
 
 void TextureManager::UnloadAll()

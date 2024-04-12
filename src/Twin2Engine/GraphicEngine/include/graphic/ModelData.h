@@ -8,7 +8,6 @@ namespace Twin2Engine::GraphicEngine
     struct ModelData
     {
         size_t id;
-        int useNumber;
         std::vector<InstatiatingMesh*> meshes;
     };
 

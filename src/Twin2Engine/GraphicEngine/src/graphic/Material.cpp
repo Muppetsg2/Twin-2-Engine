@@ -36,33 +36,22 @@ Material::Material()
 
 Material::~Material()
 {
-	if (_materialData != nullptr) _materialData->useNumber--;
 }
 
 Material& Material::operator=(const Material& other)
 {
-	if (_materialData != nullptr) _materialData->useNumber--;
-
 	_materialData = other._materialData;
-	if (_materialData != nullptr) _materialData->useNumber++;
-
 	return *this;
 }
 
 Material& Material::operator=(Material&& other)
 {
-	if (_materialData != nullptr) _materialData->useNumber--;
-
 	_materialData = other._materialData;
-	if (_materialData != nullptr) _materialData->useNumber++;
-
 	return *this;
 }
 
 Material& Material::operator=(std::nullptr_t)
-{
-	if (_materialData != nullptr) _materialData->useNumber--;
-	
+{	
 	_materialData = nullptr;
 
 	return *this;

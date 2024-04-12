@@ -19,7 +19,7 @@ void Text::UpdateTextCache()
 	if (_size != 0 && font != nullptr) {
 		if (_justResizeCache) {
 			// Zastêpowanie
-			for (size_t i = 0; i < _oldText.size() && i < _text.size(); ++i) {
+			for (size_t i = 0; i < _oldText.size() && i < _text.size() && i < _textCache.size(); ++i) {
 				if (_oldText[i] != _text[i]) {
 					_textCache[i] = font->GetCharacter(_text[i], _size);
 				}

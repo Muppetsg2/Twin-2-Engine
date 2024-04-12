@@ -578,7 +578,6 @@ ModelData* ModelsManager::LoadModelData(const std::string& modelPath)
 
         modelData = new ModelData{
             .id = strHash,
-            .useNumber = 1
         };
 
         if (modelPath == CUBE_PATH) {
@@ -607,7 +606,6 @@ ModelData* ModelsManager::LoadModelData(const std::string& modelPath)
     {
         SPDLOG_INFO("Model already loaded: {}!", modelPath);
         modelData = loadedModels[strHash];
-        modelData->useNumber++;
     }
 
     return modelData;
@@ -621,11 +619,6 @@ void ModelsManager::UnloadModel(size_t managerId) {
     if (loadedModels.find(managerId) != loadedModels.end())
     {
         ModelData* modelData = loadedModels[managerId];
-        modelData->useNumber--;
-        if (modelData->useNumber > 0) {
-            SPDLOG_WARN("Use Number nie by³o równe 0");
-        }
-
         for (InstatiatingMesh*& mesh : modelData->meshes)
         {
             delete mesh;
@@ -729,7 +722,6 @@ InstatiatingModel ModelsManager::CreateModel(const std::string& modelName, std::
 
         modelData = new ModelData{
             .id = strHash,
-            .useNumber = 1
         };
 
         modelData->meshes.push_back(mesh);
@@ -739,7 +731,6 @@ InstatiatingModel ModelsManager::CreateModel(const std::string& modelName, std::
     {
         SPDLOG_INFO("Model already exist: {}!", modelName);
         modelData = loadedModels[strHash];
-        modelData->useNumber++;
     }
 
     return modelData;

@@ -63,11 +63,6 @@ void MaterialsManager::UnloadMaterial(size_t managerId) {
 
 	if (loadedMaterials.find(managerId) != loadedMaterials.end()) {
 		MaterialData* matData = loadedMaterials[managerId];
-		matData->useNumber--;
-		if (matData->useNumber > 0) {
-			SPDLOG_WARN("Use Number nie by³o równe 0");
-		}
-
 		delete matData->materialParameters;
 		delete matData;
 		loadedMaterials.erase(managerId);
@@ -82,7 +77,6 @@ Material MaterialsManager::GetMaterial(size_t managerId)
 {
 	if (loadedMaterials.find(managerId) != loadedMaterials.end())
 	{
-		loadedMaterials[managerId]->useNumber++;
 		return Material(loadedMaterials[managerId]);
 	}
 	return Material();
@@ -94,7 +88,6 @@ Material MaterialsManager::GetMaterial(const std::string& name)
 
 	if (loadedMaterials.find(hashed) != loadedMaterials.end())
 	{
-		loadedMaterials[hashed]->useNumber++;
 		return Material(loadedMaterials[hashed]);
 	}
 	return LoadMaterial(name);
@@ -227,7 +220,6 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 	MaterialData* materialData = new MaterialData
 	{
 		.id = materialNameHash,
-		.useNumber = 1,
 		.shader = Manager::ShaderManager::GetShaderProgram(shader),
 		.materialParameters = materialParameters
 	};
@@ -254,7 +246,6 @@ Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, co
 
 		data = new MaterialData{
 			.id = hashed,
-			.useNumber = 1,
 			.shader = ShaderManager::GetShaderProgram(shaderName),
 			.materialParameters = new MaterialParameters(materialParametersNames, textureParametersNames)
 			
@@ -266,7 +257,6 @@ Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, co
 	{
 		SPDLOG_INFO("Material already exists: {}!", newMaterialName);
 		data = loadedMaterials[hashed];
-		data->useNumber++;
 	}
 	
 	return Material(data);

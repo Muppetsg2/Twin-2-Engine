@@ -26,13 +26,11 @@ Twin2Engine::GraphicEngine::InstatiatingModel::InstatiatingModel(ModelData* mode
 Twin2Engine::GraphicEngine::InstatiatingModel::InstatiatingModel(const InstatiatingModel& model)
 {
     modelData = model.modelData;
-    if (modelData != nullptr) modelData->useNumber++;
 }
 
 Twin2Engine::GraphicEngine::InstatiatingModel::InstatiatingModel(InstatiatingModel&& model)
 {
     modelData = model.modelData;
-    if (modelData != nullptr) modelData->useNumber++;
 }
 
 Twin2Engine::GraphicEngine::InstatiatingModel::InstatiatingModel()
@@ -41,7 +39,7 @@ Twin2Engine::GraphicEngine::InstatiatingModel::InstatiatingModel()
 }
 
 Twin2Engine::GraphicEngine::InstatiatingModel::~InstatiatingModel() {
-    if (modelData != nullptr) modelData->useNumber--;
+
 }
 
 size_t Twin2Engine::GraphicEngine::InstatiatingModel::GetId() const {
@@ -84,23 +82,18 @@ Twin2Engine::GraphicEngine::InstatiatingMesh* Twin2Engine::GraphicEngine::Instat
 
 Twin2Engine::GraphicEngine::InstatiatingModel& Twin2Engine::GraphicEngine::InstatiatingModel::operator=(const InstatiatingModel& other)
 {
-    if (modelData != nullptr) modelData->useNumber--;
     modelData = other.modelData;
-    if (modelData != nullptr) modelData->useNumber++;
     return *this;
 }
 
 Twin2Engine::GraphicEngine::InstatiatingModel& Twin2Engine::GraphicEngine::InstatiatingModel::operator=(InstatiatingModel&& other)
 {
-    if (modelData != nullptr) modelData->useNumber--;
     modelData = other.modelData;
-    if (modelData != nullptr) modelData->useNumber++;
     return *this;
 }
 
 Twin2Engine::GraphicEngine::InstatiatingModel& Twin2Engine::GraphicEngine::InstatiatingModel::operator=(std::nullptr_t)
 {
-    if (modelData != nullptr) modelData->useNumber--;
     modelData = nullptr;
     return *this;
 }

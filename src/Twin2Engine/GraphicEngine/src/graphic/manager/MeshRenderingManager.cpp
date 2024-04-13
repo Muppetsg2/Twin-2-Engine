@@ -104,13 +104,15 @@ void MeshRenderingManager::Render()
 
 			std::vector<char> materialData(0);
 
+			size_t size = 0;
+
 			for (auto& material : shaderPair.second)
 			{
-				count += material.second.size();
-
 				auto data = material.first.GetMaterialParameters()->GetData();
 
-				materialData.insert(materialData.end(), data.begin(), data.end());
+				glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
+				size += data.size();
+				//materialData.insert(materialData.end(), data.begin(), data.end());
 
 				while (material.second.size() > 0) {
 					auto& renderData = material.second.front();
@@ -250,11 +252,15 @@ void MeshRenderingManager::RenderDepthMap(const unsigned int& bufferWidth, const
 
 			std::vector<char> materialData(0);
 
+			size_t size = 0;
+
 			for (auto& material : shaderPair.second)
 			{
 				auto data = material.first.GetMaterialParameters()->GetData();
 
-				materialData.insert(materialData.end(), data.begin(), data.end());
+				glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
+				size += data.size();
+				//materialData.insert(materialData.end(), data.begin(), data.end());
 
 				while (material.second.size() > 0) {
 					auto& renderData = material.second.front();

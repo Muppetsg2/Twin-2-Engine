@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h> 
 #include <core/CameraComponent.h>
 #include <graphic/manager/MeshRenderingManager.h>
+#include <core/GameObject.h>
+
 
 #include <utility>
 #include <string>
@@ -13,6 +15,7 @@ using namespace LightingSystem;
 LightingController* LightingController::instance = nullptr;
 const int LightingController::SHADOW_WIDTH = 1024;
 const int LightingController::SHADOW_HEIGHT = 1024;
+float LightingController::DLShadowCastingRange = 15.0f;
 
 LightingController* LightingController::Instance() {
 	if (instance == nullptr) {
@@ -118,7 +121,7 @@ void LightingController::UpdateDirLights() {
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 912, dlNumber * 112, &dLights);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-	Twin2Engine::Manager::ShaderManager::UpdateDirShadowMapsTab();
+	//Twin2Engine::Manager::ShaderManager::UpdateDirShadowMapsTab();
 }
 
 
@@ -188,17 +191,19 @@ void LightingController::UpdateDL(DirectionalLight* dirLight) {
 
 void LightingController::BindLightBuffors(Twin2Engine::GraphicEngine::Shader* shader) {
 	GLuint block_index = 0;
+
 	block_index = glGetProgramResourceIndex(shader->shaderProgramID, GL_SHADER_STORAGE_BLOCK, "Lights");
 	glShaderStorageBlockBinding(shader->shaderProgramID, block_index, 3);
 
 	block_index = glGetUniformBlockIndex(shader->shaderProgramID, "LightingData");
 	glUniformBlockBinding(shader->shaderProgramID, block_index, 4);
 
-	//std::string str = "DirLightShadowMaps[";
-	//glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "0]").c_str()), 8);
-	//glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "1]").c_str()), 9);
-	//glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "2]").c_str()), 10);
-	//glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "3]").c_str()), 11);
+	std::string str = "DirLightShadowMaps[";
+	shader->Use();
+	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "0]").c_str()), 8);
+	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "1]").c_str()), 9);
+	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "2]").c_str()), 10);
+	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "3]").c_str()), 11);
 	//UpdateShadowMapsTab(shader);
 }
 
@@ -208,20 +213,132 @@ void LightingController::UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader*
 	SPDLOG_INFO("Aktualizacja shadow mapy");
 
 	for (auto dirLight : dirLights) { //DirLightShadowMaps
-		//glUniform1i(i, dirLight->shadowMap);
-		//shader->SetInt(("DirLightShadowMaps[" + std::to_string(i) + "]"), dirLight->shadowMap);
 		glActiveTexture(GL_TEXTURE0 + 8 + i);
 		glBindTexture(GL_TEXTURE_2D, dirLight->shadowMap);
+		//glBindTexture(GL_TEXTURE0 + 8 + i, dirLight->shadowMap);
 		//glUniform1i(glGetUniformLocation(shader->shaderProgramID, ("DirLightShadowMaps[" + std::to_string(i) + "]").c_str()), dirLight->shadowMap);
-		glUniform1i(glGetUniformLocation(shader->shaderProgramID, ("DirLightShadowMaps[" + std::to_string(i) + "]").c_str()), 8 + i);
+		//glUniform1i(glGetUniformLocation(shader->shaderProgramID, ("DirLightShadowMaps[" + std::to_string(i) + "]").c_str()), 8 + i);
 		++i;
 	}
 }
 
 glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* light) { //const glm::mat4& viewProjectionInverse
-	/**/Twin2Engine::Core::CameraComponent* mainCam = Twin2Engine::Core::CameraComponent::GetMainCamera();
-	glm::mat4 viewProjectionInverse = glm::inverse(mainCam->GetProjectionMatrix() * mainCam->GetViewMatrix());
+	/**/
+	Twin2Engine::Core::CameraComponent* mainCam = Twin2Engine::Core::CameraComponent::GetMainCamera();
+	glm::mat4 projectionViewInverse = glm::inverse(mainCam->GetProjectionMatrix() * mainCam->GetViewMatrix());
+	std::vector<glm::vec3> corners;
 
+	glm::vec3 lightNewPos;
+	glm::vec3 frustumCenter;
+
+	if (mainCam->GetCameraType() == Twin2Engine::Core::CameraType::ORTHOGRAPHIC) {
+		std::vector<glm::vec4> ndcNearCorners = {
+			{ -1.0f,  1.0f, -1.0f, 1.0f },
+			{  1.0f,  1.0f, -1.0f, 1.0f },
+			{  1.0f, -1.0f, -1.0f, 1.0f },
+			{ -1.0f, -1.0f, -1.0f, 1.0f },
+		};
+		////do robiæ
+	}
+	else {
+		glm::vec3 camPos = mainCam->GetTransform()->GetGlobalPosition();
+		corners.push_back(camPos);
+		//SPDLOG_INFO("CP: {}\t {} \t{}", camPos.x, camPos.y, camPos.z);
+		frustumCenter = camPos + mainCam->GetFrontDir() * (DLShadowCastingRange * 0.5f);
+		//SPDLOG_INFO("FC: {}\t {} \t{}", frustumCenter.x, frustumCenter.y, frustumCenter.z);
+
+		float ndcZPos = DLShadowCastingRange / mainCam->GetFarPlane();
+		glm::vec3 gPos = projectionViewInverse * glm::vec4(-1.0f, 1.0f, ndcZPos * DLShadowCastingRange, 1.0f);
+		//SPDLOG_INFO("P: {}\t {} \t{}", gPos.x, gPos.y, gPos.z);
+		corners.push_back(gPos);
+		gPos = projectionViewInverse * glm::vec4(1.0f, 1.0f, ndcZPos * DLShadowCastingRange, 1.0f);
+		//SPDLOG_INFO("P: {}\t {} \t{}", gPos.x, gPos.y, gPos.z);
+		corners.push_back(gPos);
+		gPos = projectionViewInverse * glm::vec4(1.0f, -1.0f, ndcZPos * DLShadowCastingRange, 1.0f);
+		//SPDLOG_INFO("P: {}\t {} \t{}", gPos.x, gPos.y, gPos.z);
+		corners.push_back(gPos);
+		gPos = projectionViewInverse * glm::vec4(-1.0f, -1.0f, ndcZPos * DLShadowCastingRange, 1.0f);
+		//SPDLOG_INFO("P: {}\t {} \t{}", gPos.x, gPos.y, gPos.z);
+		corners.push_back(gPos);
+
+		/*/glm::vec4 ndcPoisitions[] = {
+			{ -1.0f,  1.0f, ndcZPos, 1.0f },
+			{  1.0f,  1.0f, ndcZPos, 1.0f },
+			{  1.0f, -1.0f, ndcZPos, 1.0f },
+			{ -1.0f, -1.0f, ndcZPos, 1.0f },
+		};
+		for (auto p : ndcPoisitions) {
+			corners.insert(projectionViewInverse * p);
+		}/**/
+	}
+
+
+	float minX = std::numeric_limits<float>::max();
+	float maxX = std::numeric_limits<float>::lowest();
+	float minY = minX;
+	float maxY = maxX;
+	float minZ = minX;
+	float maxZ = maxX;
+
+	for (const auto& corner : corners) {
+		minX = std::min(minX, corner.x);
+		maxX = std::max(maxX, corner.x);
+		minY = std::min(minY, corner.y);
+		maxY = std::max(maxY, corner.y);
+		minZ = std::min(minZ, corner.z);
+		maxZ = std::max(maxZ, corner.z);
+	}
+
+	glm::vec3 origin = { 0.0f, 0.0f, 0.0f };
+	if (light->direction.x < 0) {
+		origin.x = maxX;
+	}
+	else {
+		origin.x = minX;
+	}
+	if (light->direction.y < 0) {
+		origin.y = maxY;
+	}
+	else {
+		origin.y = minY;
+	}
+	if (light->direction.z < 0) {
+		origin.z = maxZ;
+	}
+	else {
+		origin.z = minZ;
+	}
+
+	glm::vec3 V = frustumCenter - origin;
+	float VoDir = glm::dot(V, light->direction);
+	//Zawiera now¹ pozycjê œwiat³a
+	lightNewPos = frustumCenter - VoDir * light->direction;
+
+	glm::mat4 viewMatrix = glm::lookAt(lightNewPos, lightNewPos + light->direction, glm::vec3(0.0f, 1.0f, 0.0f));
+
+	maxX = 0.0f;
+	maxY = 0.0f;
+	for (const auto& corner : corners) {
+		glm::vec3 transformedCorner = glm::vec3(viewMatrix * glm::vec4(corner, 1.0f));
+		//minX = std::min(minX, corner.x);
+		maxX = std::max(maxX, glm::abs(corner.x));
+		maxY = std::max(maxY, glm::abs(corner.y));
+		//maxZ = std::max(maxZ, glm::abs(corner.z));
+		//minY = std::min(minY, corner.y);
+		//minZ = std::min(minZ, corner.z);
+	}
+
+
+
+	// Adjust minZ and maxZ for better precision in the depth buffer
+	float lightMargin = 10.0f; // Adjust based on scene size
+	minZ -= lightMargin;
+	maxZ += lightMargin;
+
+	//SPDLOG_INFO("R: {} \tU {} \t ( {}, {}, {})", maxX, maxY, lightNewPos.x, lightNewPos.y, lightNewPos.z);
+	light->lightSpaceMatrix = glm::ortho(-maxX, maxX, -maxY, maxY, -100.0f, 100.f) * viewMatrix;/**/
+
+	/*/glm::mat4 viewProjectionInverse = glm::inverse(mainCam->GetProjectionMatrix() * mainCam->GetViewMatrix());
 	
 	float minX = std::numeric_limits<float>::max();
 	float maxX = std::numeric_limits<float>::lowest();
@@ -253,7 +370,6 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 
 	// Transform frustum corners to light's view space and find bounds
 	for (const auto& corner : corners) {
-		//glm::vec3 transformedCorner = glm::vec3(viewMatrix * glm::vec4(corner, 1.0f));
 		minX = std::min(minX, corner.x);
 		maxX = std::max(maxX, corner.x);
 		minY = std::min(minY, corner.y);
@@ -321,13 +437,17 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 
 	SPDLOG_INFO("Rekalkulacja LightSpaceM dla dirL");
 
-	return std::move(origin);
+	return std::move(lightNewPos);
 }
 
 
 void LightingController::RenderShadowMaps() {
+	int i = 0;
 	for (auto light : dirLights) {
 		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->shadowMap, light->lightSpaceMatrix);
+		glActiveTexture(GL_TEXTURE0 + 8 + i);
+		glBindTexture(GL_TEXTURE_2D, light->shadowMap);
+		++i;
 	}
 }
 

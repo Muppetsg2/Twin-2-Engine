@@ -67,6 +67,7 @@ void MeshRenderingManager::Render(MeshRenderData meshData)
 
 void MeshRenderingManager::Render()
 {
+	//ShaderManager::UpdateDirShadowMapsTab();
 	for (auto& meshPair : _renderQueue)
 	{
 		for (auto& shaderPair : meshPair.second)
@@ -153,7 +154,7 @@ void MeshRenderingManager::Render()
 			//SPDLOG_INFO("Rending!");
 			//meshPair.first->Draw(shaderPair.first, transforms.size());
 			//meshPair.first->Draw(shaderPair.first, index);
-			LightingSystem::LightingController::Instance()->UpdateShadowMapsTab(shaderPair.first);
+			//LightingSystem::LightingController::Instance()->UpdateShadowMapsTab(shaderPair.first);
 
 			meshPair.first->Draw(index);
 		}

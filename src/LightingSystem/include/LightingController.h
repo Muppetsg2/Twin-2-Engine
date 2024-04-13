@@ -33,6 +33,7 @@ namespace LightingSystem {
 			//Lights lights;
 
 		public:
+			static float DLShadowCastingRange;
 			Twin2Engine::Core::EventHandler<> ViewerTransformChanged;
 
 			static const int SHADOW_WIDTH;

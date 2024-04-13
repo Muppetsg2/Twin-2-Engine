@@ -151,7 +151,8 @@ GameObject* gameObject3;
 GameObject* CollisionBox1;
 GameObject* CollisionBox2;
 glm::vec3 movementDir = { 1.0f, 0.0f, 0.0f };
-float boxVelocity = 2.0f;
+float box1Velocity = 2.0f;
+float box2Velocity = 2.0f;
 
 GameObject* imageObj;
 GameObject* textObj;
@@ -205,8 +206,9 @@ int main(int, char**)
     GraphicEngineManager::Init();
 
     modelMesh = ModelsManager::GetCube();
+    Twin2Engine::GraphicEngine::InstatiatingModel planeModel = ModelsManager::GetPlane();
 
-    material = MaterialsManager::GetMaterial("Basic2");
+    //material = MaterialsManager::GetMaterial("Basic2");
     //material2 = MaterialsManager::GetMaterial("Basic2");
     //material = MaterialsManager::GetMaterial("textured");
     material2 = MaterialsManager::GetMaterial("textured");
@@ -214,9 +216,18 @@ int main(int, char**)
     roofMat = MaterialsManager::GetMaterial("roofMat");
 
     gameObject = new GameObject();
+    gameObject->GetTransform()->Translate(glm::vec3(0, -2, 0));
+    {
+        //glm::quat q = glm::quat(1.0f, 0.0f, 0.0f, 1.57f);
+        glm::vec3 v = { -1.57f, 0.0f, 0.0f };
+        glm::quat q = glm::quat(1.57f, v);
+        gameObject->GetTransform()->Rotate(v);
+        glm::vec3 scale = { 10.0f, 10.0f, 1.0f };
+        gameObject->GetTransform()->Scale(scale);
+    }
     auto comp = gameObject->AddComponent<MeshRenderer>();
-    comp->AddMaterial(material);
-    comp->SetModel(modelMesh);
+    comp->AddMaterial(material2);
+    comp->SetModel(planeModel);
 
     gameObject2 = new GameObject();
     gameObject2->GetTransform()->Translate(glm::vec3(2, 1, 0));
@@ -249,7 +260,7 @@ int main(int, char**)
 
 #pragma region TestingCollision
     CollisionBox1 = new GameObject();
-    CollisionBox1->GetTransform()->SetGlobalPosition(glm::vec3(-10.0f, 0.0f, 2.0f));
+    CollisionBox1->GetTransform()->SetGlobalPosition(glm::vec3(-30.0f, 0.0f, 2.0f));
     MeshRenderer* mr = CollisionBox1->AddComponent<MeshRenderer>();
     mr->AddMaterial(material2);
     mr->SetModel(modelMesh);
@@ -261,10 +272,11 @@ int main(int, char**)
     bc->Update();
     bc->OnCollisionEnter += [](Twin2Engine::Core::Collision* collision) {
         movementDir *= -1;
+        box2Velocity = 0.0f;
     };
 
     CollisionBox2 = new GameObject();
-    CollisionBox2->GetTransform()->SetGlobalPosition(glm::vec3(10.0f, 0.0f, 2.0f));
+    CollisionBox2->GetTransform()->SetGlobalPosition(glm::vec3(30.0f, 0.0f, 2.0f));
     mr = CollisionBox2->AddComponent<MeshRenderer>();
     mr->AddMaterial(material2);
     mr->SetModel(modelMesh);
@@ -318,6 +330,10 @@ int main(int, char**)
     LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
     //LightingSystem::LightingController::Instance()->ViewerTransformChanged.Invoke();
     LightingSystem::LightingController::Instance()->SetGamma(2.2);
+    //{
+    //    glm::vec3 al = { 0.2, 0.2, 0.2 };
+    //    LightingSystem::LightingController::Instance()->SetAmbientLight(al);
+    //}
     /**/
 #pragma endregion
 
@@ -330,7 +346,7 @@ int main(int, char**)
 
         // Update game objects' state here
         update();
-        /*/
+        /**/
         pl->GetTransform()->Update();
         sl->GetTransform()->Update();
         dl->GetTransform()->Update();
@@ -553,9 +569,10 @@ void update()
     text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
     Camera.GetTransform()->Update();
 
-    glm::vec3 movement = movementDir * boxVelocity * Time::GetDeltaTime();
-    CollisionBox1->GetTransform()->Translate(movement);
-    CollisionBox2->GetTransform()->Translate(-movement);
+    glm::vec3 movement1 = movementDir * box1Velocity * Time::GetDeltaTime();
+    glm::vec3 movement2 = movementDir * box2Velocity * Time::GetDeltaTime();
+    CollisionBox1->GetTransform()->Translate(movement1);
+    CollisionBox2->GetTransform()->Translate(-movement2);
     CollisionBox1->GetTransform()->Update();
     CollisionBox2->GetTransform()->Update();
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();

@@ -67,8 +67,6 @@ void GraphicEngineManager::End()
 
 void GraphicEngineManager::Render()
 {
-	LightingSystem::LightingController::Instance()->RenderShadowMaps();
-	//ShaderManager::UpdateDirShadowMapsTab();
 	glBindTexture(GL_TEXTURE_2D, _depthMap);
 	glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -78,6 +76,8 @@ void GraphicEngineManager::Render()
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	LightingSystem::LightingController::Instance()->RenderShadowMaps();
+	//ShaderManager::UpdateDirShadowMapsTab();
 	CameraComponent* camera = Core::CameraComponent::GetMainCamera();
 	MeshRenderingManager::Render();
 	UIRenderingManager::Render();

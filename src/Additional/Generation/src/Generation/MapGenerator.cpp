@@ -1,6 +1,7 @@
 #include <Generation/MapGenerator.h>
 
 using namespace Generation;
+using namespace Tilemap;
 using namespace Twin2Engine::Core;
 using namespace std;
 using namespace glm;
@@ -11,10 +12,11 @@ void MapGenerator::GenerateFloatHull(const vector<vec2>& hull)
 
     for (int i = 0; i < hull.size(); i++)
     {
-        hullInt[i] = ivec2(hull[i].x + 0.5f, hull[i].y + 0.5f);
+        //hullInt[i] = ivec2(hull[i].x + 0.5f, hull[i].y + 0.5f);
+        hullInt[i] = tilemap->ConvertToTilemapPosition(hull[i]);
     }
 
-    for (int i = 0; i < (hull.size() - 1); i++)
+    for (int i = 0; i < (hullInt.size() - 1); i++)
     {
         ConnectTiles(hullInt[i], hullInt[i + 1]);
     }
@@ -37,7 +39,8 @@ void MapGenerator::GenerateForFloatPositions(const vector<vec2>& positions)
 
     for (int i = 0; i < positions.size(); i++)
     {
-        temp[i] = ivec2(positions[i].x + 0.5f, positions[i].y + 0.5f);
+        //temp[i] = ivec2(positions[i].x + 0.5f, positions[i].y + 0.5f);
+        temp[i] = tilemap->ConvertToTilemapPosition(positions[i]);
     }
 
 
@@ -46,29 +49,105 @@ void MapGenerator::GenerateForFloatPositions(const vector<vec2>& positions)
 
 void MapGenerator::ConnectTiles(ivec2 startTile, ivec2 endTile)
 {
+#if HEX_DIRECTION_CONNECTING
+    ivec2 cellPosition(startTile);
+    vec2 currentPos = tilemap->ConvertToRealPosition(cellPosition);
+    vec2 destPosition = tilemap->ConvertToRealPosition(endTile);
+
+    const vec2 normalDirections[6]
+    {
+        vec2(-0.866025, 0.5), vec2(0, 1), vec2(0.866025, 0.5),
+        vec2(0.866025, -0.5), vec2(0, -1), vec2(-0.866025, -0.5)
+    };
+
+    //for (int i = 0; i <= steps; i++)
+    while (cellPosition != endTile)
+    {
+        vec2 direction = destPosition - currentPos;
+        tilemap->SetTile(cellPosition, preafabHexagonalTile);
+        if (destPosition.y <= currentPos.y)
+        {
+            if (destPosition.x <= currentPos.x)
+            {
+                if (glm::dot(direction, normalDirections[5]) >= glm::dot(direction, normalDirections[4]))
+                {
+                    cellPosition = tilemap->GetPositionInDirection(cellPosition, 5);
+                }
+                else
+                {
+                    cellPosition = tilemap->GetPositionInDirection(cellPosition, 4);
+                }
+            }
+            else
+            {
+                if (glm::dot(direction, normalDirections[3]) >= glm::dot(direction, normalDirections[4]))
+                {
+                    cellPosition = tilemap->GetPositionInDirection(cellPosition, 3);
+                }
+                else
+                {
+                    cellPosition = tilemap->GetPositionInDirection(cellPosition, 4);
+                }
+            }
+        }
+        else
+        {
+            if (destPosition.x <= currentPos.x)
+            {
+                if (glm::dot(direction, normalDirections[0]) >= glm::dot(direction, normalDirections[1]))
+                {
+                    cellPosition = tilemap->GetPositionInDirection(cellPosition, 0);
+                }
+                else
+                {
+                    cellPosition = tilemap->GetPositionInDirection(cellPosition, 1);
+                }
+            }
+            else
+            {
+                if (glm::dot(direction, normalDirections[2]) >= glm::dot(direction, normalDirections[1]))
+                {
+                    cellPosition = tilemap->GetPositionInDirection(cellPosition, 2);
+                }
+                else
+                {
+                    cellPosition = tilemap->GetPositionInDirection(cellPosition, 1);
+                }
+            }
+        }
+        currentPos = tilemap->ConvertToRealPosition(cellPosition);
+        
+        SPDLOG_INFO("Generated position: {} {}", cellPosition.x, cellPosition.y);
+        
+    }
+#elif GRADIENT_CONNECTING
+    ///////////////////////////////////
     int dx = endTile.x - startTile.x;
     int dy = endTile.y - startTile.y;
     //int dz = endTile.z - startTile.z;
-
+    
     int steps = max(abs(dx), abs(dy)); // Zastanowiæ siê czy to jakoœ nie zmieniæ z makr na funckje
     //int steps = Mathf.Max(Mathf.Abs(dx), Mathf.Abs(dy), Mathf.Abs(dz));
-
+    
     float delta_x = dx / (float)steps;
     float delta_y = dy / (float)steps;
     //float delta_z = dz / (float)steps;
-
+    
     float x = startTile.x;
     float y = startTile.y;
     //float z = startTile.z;
-
-
+    
+    
     //float q = startTile.x;
     //float r = startTile.y;
-
+    
+    
     //ivec2 lastCellPosition = new(Mathf.RoundToInt(x), Mathf.RoundToInt(y), Mathf.RoundToInt(z));
     ivec2 lastCellPosition(x + 0.5f, y + 0.5f);
-    ivec2 cellPosition;
+    ivec2 cellPosition(startTile);
+
     for (int i = 0; i <= steps; i++)
+    //while (cellPosition != endTile)
     {
         //ivec3 cellPosition = new ivec3(Mathf.RoundToInt(x) + (Mathf.RoundToInt(y) % 2), Mathf.RoundToInt(y), Mathf.RoundToInt(z));
         //ivec3 cellPosition = new(Mathf.RoundToInt(x), Mathf.RoundToInt(y), Mathf.RoundToInt(z));
@@ -79,16 +158,16 @@ void MapGenerator::ConnectTiles(ivec2 startTile, ivec2 endTile)
             {
                 tilemap->SetTile(ivec2(lastCellPosition.x, cellPosition.y), preafabHexagonalTile);
                 //tilemap->SetTile(ivec2(lastCellPosition.x, cellPosition.y), additionalTile);
-
+        
                 tilemap->SetTile(ivec2(cellPosition.x, lastCellPosition.y), preafabHexagonalTile);
                 //tilemap->SetTile(ivec2(cellPosition.x, lastCellPosition.y), additionalTile);
-
+        
             }
             else if (abs(cellPosition.y % 2) == 1 && cellPosition.x > lastCellPosition.x)
             {
                 tilemap->SetTile(ivec2(lastCellPosition.x, cellPosition.y), preafabHexagonalTile);
                 //tilemap->SetTile(ivec2(lastCellPosition.x, cellPosition.y), additionalTile);
-
+        
                 tilemap->SetTile(ivec2(cellPosition.x, lastCellPosition.y), preafabHexagonalTile);
                 //tilemap->SetTile(ivec2(cellPosition.x, lastCellPosition.y), additionalTile);
             }
@@ -96,13 +175,12 @@ void MapGenerator::ConnectTiles(ivec2 startTile, ivec2 endTile)
         lastCellPosition = cellPosition;
         tilemap->SetTile(cellPosition, preafabHexagonalTile);
 
-
-        SPDLOG_INFO("Generated position: {} {}", cellPosition.x, cellPosition.y);
-
         x += delta_x;
         y += delta_y;
         //z += delta_z;
+
     }
+#endif
 }
 
 void MapGenerator::GenerateRandomHull()
@@ -118,7 +196,7 @@ void MapGenerator::GenerateRandomHull()
     {
         float usedAngle = angle + Twin2Engine::Core::Random::Range(-radiansAngleDeltaRange, radiansAngleDeltaRange);
 
-        hexPositions[i] = vec2(cos(usedAngle), sin(usedAngle)) * (generationRadius + Twin2Engine::Core::Random::Range(generationRadiusMinModifier, generationRadiusMaxModifier));
+        hexPositions[i] = vec2(cos(usedAngle), sin(usedAngle)) * (Twin2Engine::Core::Random::Range(generationRadiusMin, generationRadiusMax));
 
         angle += angleDelta;
     }
@@ -129,7 +207,7 @@ void MapGenerator::GenerateRandomHull()
     //{
     //    GenerateForFloatPositions(hexPositions);
     //}
-    GenerateForFloatPositions(hexPositions);
+    //GenerateForFloatPositions(hexPositions);
 }
 
 void MapGenerator::Generate()
@@ -148,8 +226,8 @@ void MapGenerator::Generate()
     //
     //    tilemap->Fill(ivec3.zero, filledTile);
     //}
-   //tilemap->Fill(ivec2(0, 0), filledTile);
-   tilemap->Fill(ivec2(0, 0), preafabHexagonalTile);
+    //tilemap->Fill(ivec2(0, 0), filledTile);
+    tilemap->Fill(ivec2(0, 0), preafabHexagonalTile);
 
     //tilemapRegionDivider = GetComponent<ITilemapRegionDivider>();
     //tilemapRegionDivider.DivideTilemap();
@@ -158,7 +236,7 @@ void MapGenerator::Generate()
     //BoundsInt bounds = tilemap.cellBounds;
     ivec2 leftBottomPosition = tilemap->GetLeftBottomPosition();
     ivec2 rightTopPosition = tilemap->GetRightTopPosition();
-
+    
     for (int x = leftBottomPosition.x; x < rightTopPosition.x; x++)
     {
         for (int y = leftBottomPosition.y; y < rightTopPosition.y; y++)

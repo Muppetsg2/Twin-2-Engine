@@ -109,10 +109,6 @@ void Twin2Engine::GraphicEngine::MaterialParameters::UploadTextures2D(unsigned i
 		//glUniform1i(glGetUniformLocation(programId, "texturesInput[0].texture1"), textureBinded);
 		//glUniform1i(beginLocation, _samplers[i]);
 
-		GLenum error = glGetError();
-		if (error != GL_NO_ERROR) {
-			SPDLOG_ERROR("Error: {}", error);
-		}
 		//glProgramUniform1i(programId, beginLocation, GL_TEXTURE0 + textureBinded);
 		//SPDLOG_INFO("Here5");
 		textureBinded++;

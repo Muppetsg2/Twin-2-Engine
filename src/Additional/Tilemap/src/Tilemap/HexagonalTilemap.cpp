@@ -1,50 +1,66 @@
 #include <Tilemap/HexagonalTilemap.h>
-//*
+
+#define SQRT_3 1.7320508075688772935274463415059f
+
 using namespace Tilemap;
 
-HexagonalTilemap::HexagonalTilemap(glm::ivec2 leftBottomPosition, glm::ivec2 rightTopPosition, float length, bool isDistanceBetweenTiles)
+HexagonalTilemap::HexagonalTilemap()
 {
-	if (isDistanceBetweenTiles)
-	{
-		_distanceBetweenTiles = length;
-		_edgeLength = length / glm::sqrt(3.f);
-	}
-	else
-	{
-		_edgeLength = length;
-		_distanceBetweenTiles = 0.5f * length * glm::sqrt(3.f);
-	}
+	_leftBottomPosition = glm::ivec2(0, 0);
+	_rightTopPosition = glm::ivec2(0, 0);
+	_toCenter = glm::ivec2(0, 0);
 
-	// Creating new tilemap
-	if (leftBottomPosition.x < rightTopPosition.x)
-	{
-		_leftBottomPosition.x = leftBottomPosition.x;
-		_rightTopPosition.x = rightTopPosition.x;
-	}
-	if (leftBottomPosition.y < rightTopPosition.y)
-	{
-		_leftBottomPosition.y = leftBottomPosition.y;
-		_rightTopPosition.y = rightTopPosition.y;
-	}
+	_width = 1;
+	_height = 1;
+	_distanceBetweenTiles = 1.0f;
+	_edgeLength = _distanceBetweenTiles / glm::sqrt(3.f);
 
-	_toCenter = -_leftBottomPosition;
-
-	_width = _rightTopPosition.x - _leftBottomPosition.x + 1;
-	_height = _rightTopPosition.y - _leftBottomPosition.x + 1;
-
-	_tilemap = new HexagonalTile * [_width];
-
-	for (int i = 0; i < _width; i++)
-	{
-		_tilemap[i] = new HexagonalTile[_height];
-
-		for (int j = 0; j < _height; j++)
-		{
-			_tilemap[i][j].SetTilemap(this);
-			_tilemap[i][j].SetPosition(glm::ivec2(i + _leftBottomPosition.x, j + _leftBottomPosition.y));
-		}
-	}
+	_tilemap = new HexagonalTile* [1];
+	_tilemap[0] = new HexagonalTile[1];
 }
+//HexagonalTilemap::HexagonalTilemap(glm::ivec2 leftBottomPosition, glm::ivec2 rightTopPosition, float length, bool isDistanceBetweenTiles)
+//{
+//	if (isDistanceBetweenTiles)
+//	{
+//		_distanceBetweenTiles = length;
+//		_edgeLength = length / glm::sqrt(3.f);
+//	}
+//	else
+//	{
+//		_edgeLength = length;
+//		_distanceBetweenTiles = 0.5f * length * glm::sqrt(3.f);
+//	}
+//
+//	// Creating new tilemap
+//	if (leftBottomPosition.x < rightTopPosition.x)
+//	{
+//		_leftBottomPosition.x = leftBottomPosition.x;
+//		_rightTopPosition.x = rightTopPosition.x;
+//	}
+//	if (leftBottomPosition.y < rightTopPosition.y)
+//	{
+//		_leftBottomPosition.y = leftBottomPosition.y;
+//		_rightTopPosition.y = rightTopPosition.y;
+//	}
+//
+//	_toCenter = -_leftBottomPosition;
+//
+//	_width = _rightTopPosition.x - _leftBottomPosition.x + 1;
+//	_height = _rightTopPosition.y - _leftBottomPosition.x + 1;
+//
+//	_tilemap = new HexagonalTile * [_width];
+//
+//	for (int i = 0; i < _width; i++)
+//	{
+//		_tilemap[i] = new HexagonalTile[_height];
+//
+//		for (int j = 0; j < _height; j++)
+//		{
+//			_tilemap[i][j].SetTilemap(this);
+//			_tilemap[i][j].SetPosition(glm::ivec2(i + _leftBottomPosition.x, j + _leftBottomPosition.y));
+//		}
+//	}
+//}
 
 HexagonalTilemap::~HexagonalTilemap()
 {
@@ -300,4 +316,4 @@ inline void HexagonalTilemap::SetEdgeLength(float edgeLength)
 inline float HexagonalTilemap::GetEdgeLength() const
 {
 	return _edgeLength;
-}/**/
+}

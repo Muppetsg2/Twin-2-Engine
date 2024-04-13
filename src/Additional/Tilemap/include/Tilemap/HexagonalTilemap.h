@@ -2,30 +2,28 @@
 #define _HEXAGONAL_TILEMAP_H_
 
 #include <core/GameObject.h>
+#include <core/Component.h>
 #include <core/Transform.h>
-
-#define SQRT_3 1.7320508075688772935274463415059f
 
 namespace Tilemap
 {
 	class HexagonalTile;
 
-	class HexagonalTilemap
+	class HexagonalTilemap : public Twin2Engine::Core::Component
 	{
-
-		//*
 		HexagonalTile** _tilemap;
 		unsigned int _width;
 		unsigned int _height;
 		float _distanceBetweenTiles;
 		float _edgeLength;
-		glm::ivec2 _toCenter;
 		glm::ivec2 _leftBottomPosition;
 		glm::ivec2 _rightTopPosition;
+		glm::ivec2 _toCenter;
 
 
 	public:
-		HexagonalTilemap(glm::ivec2 leftBottomPosition, glm::ivec2 rightTopPosition, float length, bool isDistanceBetweenTiles);
+		//HexagonalTilemap(glm::ivec2 leftBottomPosition, glm::ivec2 rightTopPosition, float length, bool isDistanceBetweenTiles);
+		HexagonalTilemap();
 		~HexagonalTilemap();
 
 		void Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTopPosition);

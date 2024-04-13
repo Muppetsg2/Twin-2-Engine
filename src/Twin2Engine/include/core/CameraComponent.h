@@ -91,7 +91,7 @@ namespace Twin2Engine::Core {
 		
 		void SetCameraFilter(uint8_t filters);
 		void SetCameraType(CameraType value);
-		void SetSamples(uint8_t i = 4);
+		void SetSamples(uint8_t i = 16);
 
 		void SetFrontDir(vec3 dir);
 		void SetWorldUp(vec3 value);

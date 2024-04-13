@@ -15,8 +15,11 @@ HexagonalTilemap::HexagonalTilemap()
 	_distanceBetweenTiles = 1.0f;
 	_edgeLength = _distanceBetweenTiles / glm::sqrt(3.f);
 
-	_tilemap = new HexagonalTile* [1];
-	_tilemap[0] = new HexagonalTile[1];
+	_tilemap = new HexagonalTile** [1];
+	_tilemap[0] = new HexagonalTile*[1];
+	_tilemap[0][0] = new HexagonalTile();
+	_tilemap[0][0]->SetTilemap(this);
+	_tilemap[0][0]->SetPosition(glm::ivec2(0, 0));
 }
 //HexagonalTilemap::HexagonalTilemap(glm::ivec2 leftBottomPosition, glm::ivec2 rightTopPosition, float length, bool isDistanceBetweenTiles)
 //{
@@ -74,8 +77,9 @@ HexagonalTilemap::~HexagonalTilemap()
 
 void HexagonalTilemap::Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTopPosition)
 {
-	HexagonalTile** oldTilemap = _tilemap;
+	HexagonalTile*** oldTilemap = _tilemap;
 	unsigned int oldWidth = _width;
+	unsigned int oldHeight = _height;
 	glm::ivec2 oldToCenter = _toCenter;
 	glm::ivec2 oldLeftBottomPosition = _leftBottomPosition;
 	glm::ivec2 oldRightTopPosition = _rightTopPosition;
@@ -97,17 +101,10 @@ void HexagonalTilemap::Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTop
 	_width = _rightTopPosition.x - _leftBottomPosition.x + 1;
 	_height = _rightTopPosition.y - _leftBottomPosition.x + 1;
 
-	_tilemap = new HexagonalTile * [_width];
-
+	_tilemap = new HexagonalTile**[_width];
 	for (int i = 0; i < _width; i++)
 	{
-		_tilemap[i] = new HexagonalTile[_height];
-
-		for (int j = 0; j < _height; j++)
-		{
-			_tilemap[i][j].SetTilemap(this);
-			_tilemap[i][j].SetPosition(glm::ivec2(i + _leftBottomPosition.x, j + _leftBottomPosition.y));
-		}
+		_tilemap[i] = new HexagonalTile * [_height](nullptr);
 	}
 
 	// Coping old tilemap
@@ -137,15 +134,37 @@ void HexagonalTilemap::Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTop
 			{
 				//SPDLOG_INFO("NT [{}, {}]: , OT: [{}, {}]  W {} H {}", dstBegin.x + x, dstBegin.y + y, srcBegin.x + x, srcBegin.y + y, copyWidth, copyHeight);
 				_tilemap[dstBegin.x + x][dstBegin.y + y] = oldTilemap[srcBegin.x + x][srcBegin.y + y];
+				oldTilemap[srcBegin.x + x][srcBegin.y + y] = nullptr;
 			}
 		}
 
 		SPDLOG_WARN("Zrobiæ usuwanie GameObjectów poza nowym rozmiarem");
 	}
 
+	for (int i = 0; i < _width; i++)
+	{
+		for (int j = 0; j < _height; j++)
+		{
+			if (_tilemap[i][j] == nullptr)
+			{
+				_tilemap[i][j] = new HexagonalTile();
+				_tilemap[i][j]->SetTilemap(this);
+				_tilemap[i][j]->SetPosition(glm::ivec2(i + _leftBottomPosition.x, j + _leftBottomPosition.y));
+			}
+		}
+	}
+
 	// Deleting old tilemap
 	for (int i = 0; i < oldWidth; i++)
 	{
+		for (int j = 0; j < oldHeight; j++)
+		{
+			if (oldTilemap[i][j] != nullptr)
+			{
+				delete oldTilemap[i][j];
+			}
+		}
+
 		delete[] oldTilemap[i];
 	}
 
@@ -182,7 +201,7 @@ void HexagonalTilemap::SetTile(const glm::ivec2& position, Twin2Engine::Core::Ga
 	if (position.x >= _leftBottomPosition.x && position.x <= _rightTopPosition.x && position.y >= _leftBottomPosition.y && position.y <= _rightTopPosition.y)
 	{
 		//_tilemap[position.x + _toCenter.x][position.y + _toCenter.y].SetGameObject(gameObject);
-		_tilemap[position.x + _toCenter.x][position.y + _toCenter.y].SetGameObject(instantiatedGameObject);
+		_tilemap[position.x + _toCenter.x][position.y + _toCenter.y]->SetGameObject(instantiatedGameObject);
 	}
 	else
 	{
@@ -208,7 +227,7 @@ void HexagonalTilemap::SetTile(const glm::ivec2& position, Twin2Engine::Core::Ga
 
 		Resize(newLeftBottomPosition, newRigthTopPosition);
 
-		_tilemap[position.x + _toCenter.x][position.y + _toCenter.y].SetGameObject(instantiatedGameObject);
+		_tilemap[position.x + _toCenter.x][position.y + _toCenter.y]->SetGameObject(instantiatedGameObject);
 	}
 
 	//instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3(position.x * _distanceBetweenTiles, 0.0f, position.y * _distanceBetweenTiles));
@@ -225,7 +244,7 @@ inline HexagonalTile* HexagonalTilemap::GetTile(const glm::ivec2& position) cons
 		return nullptr;
 	}
 
-	return &_tilemap[position.x + _toCenter.x][position.y + _toCenter.y];
+	return _tilemap[position.x + _toCenter.x][position.y + _toCenter.y];
 }
 
 glm::ivec2 HexagonalTilemap::GetPositionInDirection(const glm::ivec2& position, unsigned int direction)

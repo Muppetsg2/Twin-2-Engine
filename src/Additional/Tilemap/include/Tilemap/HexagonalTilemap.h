@@ -11,7 +11,7 @@ namespace Tilemap
 
 	class HexagonalTilemap : public Twin2Engine::Core::Component
 	{
-		HexagonalTile** _tilemap;
+		HexagonalTile*** _tilemap;
 		unsigned int _width;
 		unsigned int _height;
 		float _distanceBetweenTiles;

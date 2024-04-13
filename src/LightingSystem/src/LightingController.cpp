@@ -442,6 +442,8 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 
 
 void LightingController::RenderShadowMaps() {
+	glCullFace(GL_FRONT);
+
 	int i = 0;
 	for (auto light : dirLights) {
 		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->shadowMap, light->lightSpaceMatrix);
@@ -449,9 +451,11 @@ void LightingController::RenderShadowMaps() {
 		glBindTexture(GL_TEXTURE_2D, light->shadowMap);
 		++i;
 	}
+
+	glCullFace(GL_BACK);
 }
 
-void LightingController::SetAmbientLight(glm::vec3& ambientLightColor) {
+void LightingController::SetAmbientLight(glm::vec3 ambientLightColor) {
 	glBindBuffer(GL_UNIFORM_BUFFER, LightingDataBuffer);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, 12, &ambientLightColor);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);

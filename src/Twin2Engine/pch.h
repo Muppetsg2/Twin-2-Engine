@@ -43,3 +43,6 @@
 
 // YAML
 #include <yaml-cpp/yaml.h>
+
+// MACROS
+#include "SerializationMacros.h"

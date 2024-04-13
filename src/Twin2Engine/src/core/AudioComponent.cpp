@@ -58,6 +58,9 @@ void AudioComponent::Stop()
 	if (_loaded) {
 		if (AudioManager::IsHandleValid(_audioHandle)) {
 			AudioManager::StopAudio(_audioHandle);
+			_audioHandle = AudioManager::GetAudioHandle(_audioId);
+			AudioManager::SetLooping(_audioHandle, _loop);
+			AudioManager::SetVolume(_audioHandle, _volume);
 			return;
 		}
 	}
@@ -74,6 +77,7 @@ void AudioComponent::Loop()
 		}
 
 		AudioManager::SetLooping(_audioHandle, true);
+		_loop = true;
 		return;
 	}
 	else {
@@ -89,6 +93,7 @@ void AudioComponent::UnLoop()
 		}
 
 		AudioManager::SetLooping(_audioHandle, false);
+		_loop = false;
 		return;
 	}
 	else {
@@ -119,6 +124,7 @@ void AudioComponent::SetVolume(float value)
 		}
 
 		AudioManager::SetVolume(_audioHandle, value);
+		_volume = value;
 		return;
 	}
 	else {
@@ -174,6 +180,7 @@ float AudioComponent::GetVolume()
 
 	if (!AudioManager::IsHandleValid(_audioHandle)) {
 		_audioHandle = AudioManager::GetAudioHandle(_audioId);
+		AudioManager::SetVolume(_audioHandle, _volume);
 	}
 
 	return AudioManager::GetVolume(_audioHandle);
@@ -202,6 +209,7 @@ bool AudioComponent::IsLooping()
 
 	if (!AudioManager::IsHandleValid(_audioHandle)) {
 		_audioHandle = AudioManager::GetAudioHandle(_audioId);
+		AudioManager::SetLooping(_audioHandle, _loop);
 	}
 
 	return AudioManager::IsLooping(_audioHandle);

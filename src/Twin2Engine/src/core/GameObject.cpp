@@ -1,5 +1,7 @@
 #include <core/GameObject.h>
 
+using namespace Twin2Engine::Core;
+
 unsigned int Twin2Engine::Core::GameObject::_currentFreeId = 1;
 
 Twin2Engine::Core::GameObject::GameObject()
@@ -30,6 +32,55 @@ Twin2Engine::Core::GameObject::~GameObject()
 	for (Component* component : components)
 	{
 		delete component;
+	}
+}
+
+GameObject* GameObject::Instatiate(GameObject* gameObject)
+{
+	return gameObject->Clone();
+}
+
+GameObject* GameObject::Instatiate(GameObject* gameObject, Transform* parent)
+{
+	GameObject* cloned = gameObject->Clone();
+
+	cloned->GetTransform()->SetParent(parent);
+
+	return cloned;
+}
+
+GameObject* GameObject::Clone() const
+{
+	GameObject* cloned = new GameObject();
+
+	CloneTo(cloned);
+
+	return cloned;
+}
+
+void GameObject::CloneTo(GameObject* cloned) const
+{
+	cloned->_activeSelf = _activeSelf;
+	cloned->_isStatic = _isStatic;
+	cloned->_name = _name;
+
+	cloned->_transform->SetLocalPosition(_transform->GetLocalPosition());
+	cloned->_transform->SetLocalRotation(_transform->GetLocalRotation());
+	cloned->_transform->SetLocalScale(_transform->GetLocalScale());
+
+	// Pomijanie Transforma z listy komponentów
+	auto component = std::next(components.begin());
+
+	for (; component != components.end(); ++component) 
+	{
+		Component* clonedComponent = (*component)->Clone();
+		clonedComponent->Init(cloned);
+		cloned->components.push_back(clonedComponent);
+	}
+
+	for (int index = 0; index < _transform->GetChildCount(); index++)
+	{
+		cloned->_transform->AddChild(Instatiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform)->GetTransform());
 	}
 }
 

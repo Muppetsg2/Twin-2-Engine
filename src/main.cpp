@@ -1,7 +1,3 @@
-// Soloud
-#include <soloud.h>
-#include <soloud_wav.h>
-
 // HID
 #include <core/Input.h>
 
@@ -54,6 +50,10 @@
 // CAMERA
 #include <core/CameraComponent.h>
 
+// TILEMAP
+#include <Tilemap/HexagonalTilemap.h>
+#include <Tilemap/HexagonalTile.h>
+
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
@@ -65,11 +65,14 @@ using Twin2Engine::Core::MOUSE_BUTTON;
 using Twin2Engine::Core::CURSOR_STATE;
 using Twin2Engine::Core::Time;
 
+using Tilemap::HexagonalTile;
+using Tilemap::HexagonalTilemap;
+
 #pragma region CAMERA_CONTROLLING
 
 GameObject Camera;
 
-glm::vec3 cameraPos(0.f, 0.f, 5.f);
+glm::vec3 cameraPos(0.f, 2.f, 5.f);
 
 double lastX = 0.0f;
 double lastY = 0.0f;
@@ -82,11 +85,6 @@ bool mouseNotUsed = true;
 #pragma endregion
 
 #pragma region OpenGLCallbackFunctions
-
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -137,8 +135,6 @@ constexpr int32_t GL_VERSION_MINOR = 3;
 GLuint UBOMatrices;
 */
 
-//Mesh* mesh;
-Shader* shader;
 Material material;
 Material material2;
 Material wallMat;
@@ -147,6 +143,9 @@ InstatiatingModel modelMesh;
 GameObject* gameObject;
 GameObject* gameObject2;
 GameObject* gameObject3;
+GameObject* gameObject4;
+
+HexagonalTilemap hexagonalTilemap(glm::ivec2(-5, -5), glm::ivec2(5, 5), 1.f, true);
 
 GameObject* CollisionBox1;
 GameObject* CollisionBox2;
@@ -155,6 +154,10 @@ float box1Velocity = 2.0f;
 float box2Velocity = 2.0f;
 
 GameObject* imageObj;
+GameObject* imageObj2;
+GameObject* imageObj3;
+Image* image;
+float colorSpan = 1.f;
 GameObject* textObj;
 Text* text;
 
@@ -171,7 +174,7 @@ int main(int, char**)
 
     init_imgui();
     spdlog::info("Initialized ImGui.");
-    
+
     //SoLoud::result res = soloud.init();
     SoLoud::result res = AudioManager::Init();
     if (res != 0) {
@@ -200,7 +203,7 @@ int main(int, char**)
     c->SetFOV(45.f);
 
     AudioComponent* a = Camera.AddComponent<AudioComponent>();
-    a->SetAudio("./res/music/FurElise.wav");
+    a->SetAudio("./res/music/acoustic-guitar.mp3");
     a->Loop();
 
     GraphicEngineManager::Init();
@@ -226,11 +229,12 @@ int main(int, char**)
         gameObject->GetTransform()->Scale(scale);
     }
     auto comp = gameObject->AddComponent<MeshRenderer>();
-    comp->AddMaterial(material2);
-    comp->SetModel(planeModel);
+    gameObject->GetTransform()->Translate(glm::vec3(2, 5, 0));
+    comp->AddMaterial(material);
+    comp->SetModel(modelMesh);
 
     gameObject2 = new GameObject();
-    gameObject2->GetTransform()->Translate(glm::vec3(2, 1, 0));
+    gameObject2->GetTransform()->Translate(glm::vec3(2, 3, 0));
     comp = gameObject2->AddComponent<MeshRenderer>();
     comp->AddMaterial(material2);
     comp->SetModel(modelMesh);
@@ -238,17 +242,59 @@ int main(int, char**)
     InstatiatingModel modelCastle = ModelsManager::GetModel("res/models/castle.obj");
 
     gameObject3 = new GameObject();
-    gameObject3->GetTransform()->Translate(glm::vec3(0, -1, 0));
+    gameObject3->GetTransform()->Translate(glm::vec3(0, 3, 0));
+    gameObject3->GetTransform()->SetLocalRotation(glm::vec3(0, 0, 0));
     comp = gameObject3->AddComponent<MeshRenderer>();
     comp->AddMaterial(wallMat);
     comp->AddMaterial(roofMat);
     comp->SetModel(modelCastle);
 
+    InstatiatingModel modelAK = ModelsManager::GetModel("res/models/AK47.obj");
+
+    gameObject4 = new GameObject();
+    gameObject4->GetTransform()->Translate(glm::vec3(0, 0, 10));
+    gameObject4->GetTransform()->Rotate(glm::vec3(90, 0, 0));
+    comp = gameObject4->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("deska"));
+    comp->AddMaterial(MaterialsManager::GetMaterial("metal"));
+    comp->SetModel(modelAK);
+
+    InstatiatingModel modelHexagon = ModelsManager::GetModel("res/models/hexagon.obj");
+
+    GameObject* hexagonPrefab = new GameObject();
+    hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 4, 0));
+    hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+
+    //spdlog::info("hexagon rotation: [{}, {}, {}]", hexagonPrefab->GetTransform()->GetLocalRotation().x, hexagonPrefab->GetTransform()->GetLocalRotation().y, hexagonPrefab->GetTransform()->GetLocalRotation().z);
+
+    comp = hexagonPrefab->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("hexagonMat"));
+    comp->SetModel(modelHexagon);
+
+    float tilemapFillingBeginTime = glfwGetTime();
+    hexagonalTilemap.Fill(glm::ivec2(0, 0), hexagonPrefab);
+    spdlog::info("Tilemap filling time: {}", glfwGetTime() - tilemapFillingBeginTime);
+    hexagonalTilemap.GetTile(glm::ivec2(-5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
+    hexagonalTilemap.GetTile(glm::ivec2(5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
+    hexagonalTilemap.GetTile(glm::ivec2(-5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
+    hexagonalTilemap.GetTile(glm::ivec2(5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
+    
     imageObj = new GameObject();
+    imageObj->GetTransform()->SetGlobalPosition(glm::vec3(-900, 500, 0));
     Image* img = imageObj->AddComponent<Image>();
     img->SetSprite(SpriteManager::MakeSprite("stone", "res/textures/stone.jpg"));
     Image* img2 = imageObj->AddComponent<Image>();
     img2->SetSprite(SpriteManager::MakeSprite("grass", "res/textures/grass.png"));
+
+    imageObj2 = new GameObject();
+    imageObj2->GetTransform()->SetGlobalPosition(glm::vec3(900, 500, 0));
+    img = imageObj2->AddComponent<Image>();
+    img->SetSprite("grass");
+
+    imageObj3 = new GameObject();
+    imageObj3->GetTransform()->SetGlobalPosition(glm::vec3(0, -500, 0));
+    image = imageObj3->AddComponent<Image>();
+    image->SetSprite(SpriteManager::MakeSprite("white_box", "res/textures/white.png"));
 
     textObj = new GameObject();
     textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
@@ -367,7 +413,16 @@ int main(int, char**)
     }
 
     // Cleanup
+    delete gameObject;
+    delete gameObject2;
+    delete gameObject3;
+    delete gameObject4;
     delete imageObj;
+    delete imageObj2;
+    delete imageObj3;
+    delete textObj;
+    delete CollisionBox1;
+    delete CollisionBox2;
     SpriteManager::UnloadAll();
     TextureManager::UnloadAll();
     AudioManager::UnloadAll();
@@ -403,7 +458,6 @@ bool init()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 
     window = Window::MakeWindow(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT }, false);
-    glfwSetFramebufferSizeCallback(window->GetWindow(), framebuffer_size_callback);
     Input::InitForWindow(window);
 
     bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -414,11 +468,13 @@ bool init()
     }
     spdlog::info("Successfully initialized OpenGL loader!");
 
+    /*
 #ifdef _DEBUG
     // Debugging
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(ErrorMessageCallback, 0);
 #endif
+    */
 
     // Blending
     glEnable(GL_BLEND);
@@ -567,6 +623,24 @@ void update()
 {
     // Update game objects' state here
     text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
+
+    colorSpan -= Time::GetDeltaTime() * 0.2f;
+    if (colorSpan <= 0.f) {
+        colorSpan = 1.f;
+    }
+    // Color
+    if (colorSpan > 0.66f) {
+        image->SetColor({ 0.f, 1.f, 0.f, 1.f });
+    }
+    else if (colorSpan > 0.33f) {
+        image->SetColor({ 1.f, 1.f, 0.f, 1.f });
+    }
+    else {
+        image->SetColor({ 1.f, 0.f, 0.f, 1.f });
+    }
+    // WIDTH
+    image->SetWidth(1000.f * colorSpan);
+
     Camera.GetTransform()->Update();
 
     glm::vec3 movement1 = movementDir * box1Velocity * Time::GetDeltaTime();
@@ -580,11 +654,16 @@ void update()
 
 void render()
 {
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // OpenGL Rendering code goes here
     for (auto& comp : RenderableComponent::_components) {
         comp->Render();
     }
+    /*
     GraphicEngineManager::Render();
+    */
+
+    CameraComponent::GetMainCamera()->Render();
 }
 
 void imgui_begin()
@@ -658,7 +737,89 @@ void imgui_render()
 #pragma endregion
 
         ImGui::Separator();
+
+#pragma region IMGUI_CAMERA_SETUP
+        if (ImGui::CollapsingHeader("Main Camera")) {
+
+            CameraComponent* c = CameraComponent::GetMainCamera();
+
+            uint8_t acFil = RenderFilter::NONE;
+            uint8_t fil = c->GetCameraFilters();
+
+            bool g = (fil & RenderFilter::GRAYSCALE) != 0;
+
+            ImGui::Checkbox("GrayScale", &g);
+            if (g) {
+                acFil |= RenderFilter::GRAYSCALE;
+            }
+
+            g = (fil & RenderFilter::NEGATIVE) != 0;
+
+            ImGui::Checkbox("Negative", &g);
+            if (g) {
+                acFil |= RenderFilter::NEGATIVE;
+            }
+
+            g = (fil & RenderFilter::VIGNETTE) != 0;
+
+            ImGui::Checkbox("Vignette", &g);
+            if (g) {
+                acFil |= RenderFilter::VIGNETTE;
+            }
+
+            g = (fil & RenderFilter::BLUR) != 0;
+
+            ImGui::Checkbox("Blur", &g);
+            if (g) {
+                acFil |= RenderFilter::BLUR;
+            }
+
+            g = (fil & RenderFilter::DEPTH) != 0;
+
+            ImGui::Checkbox("Depth", &g);
+            if (g) {
+                acFil |= RenderFilter::DEPTH;
+            }
+
+            c->SetCameraFilter(acFil);
+
+            int s = (int)c->GetSamples();
+
+            ImGui::InputInt("MSAA Samples", &s);
+
+            if (s != (int)c->GetSamples()) {
+                c->SetSamples((uint8_t)s);
+            }
+
+            bool per = (c->GetCameraType() == CameraType::PERSPECTIVE);
+
+            if (ImGui::Button((per ? "Orthographic" : "Perspective"))) {
+                if (per) {
+                    c->SetCameraType(CameraType::ORTHOGRAPHIC);
+                }
+                else {
+                    c->SetCameraType(CameraType::PERSPECTIVE);
+                }
+            }
+
+            float n = c->GetNearPlane();
+            ImGui::InputFloat("Near Plane", &n);
+
+            if (n != c->GetNearPlane()) {
+                c->SetNearPlane(n);
+            }
+
+            float f = c->GetFarPlane();
+            ImGui::InputFloat("Far Plane", &f);
+
+            if (f != c->GetFarPlane()) {
+                c->SetFarPlane(f);
+            }
+        }
+#pragma endregion
         
+        ImGui::Separator();
+
 #pragma region IMGUI_WINDOW_SETUP
         if (ImGui::CollapsingHeader("Window Setup")) {
 
@@ -767,110 +928,6 @@ void imgui_render()
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
-        
-#pragma region IMGUI_WINDOW_SETUP
-        ImGui::Separator();
-        ImGui::Text("Window Setup");
-        // Window Settings
-        if (window->IsWindowed()) {
-            ImGui::Text("Current State: Windowed");
-
-            int monitorsCount;
-            GLFWmonitor** monitors = glfwGetMonitors(&monitorsCount);
-
-            ImGui::Text("Monitors: ");
-            for (int i = 0; i < monitorsCount; ++i) {
-                int x, y, mw, mh;
-                float sx, sy;
-
-                glfwGetMonitorPos(monitors[i], &x, &y);
-                const GLFWvidmode* vid = glfwGetVideoMode(monitors[i]);
-                const char* name = glfwGetMonitorName(monitors[i]);
-                glfwGetMonitorPhysicalSize(monitors[i], &mw, &mh);
-                glfwGetMonitorContentScale(monitors[i], &sx, &sy);
-
-                std::string btnText = std::to_string(i) + ". " + name + ": PS " + std::to_string(mw) + "x" + std::to_string(mh) + ", S " \
-                    + std::to_string(vid->width) + "x" + std::to_string(vid->height) + \
-                    ", Pos " + std::to_string(x) + "x" + std::to_string(y) + \
-                    ", Scale " + std::to_string(sx) + "x" + std::to_string(sy) + \
-                    ", Refresh " + std::to_string(vid->refreshRate) + " Hz";
-                if (ImGui::Button(btnText.c_str())) {
-                    window->SetFullscreen(monitors[i]);
-                }
-            }
-
-            ImGui::Text("");
-            static char tempBuff[256] = "Twin^2 Engine";
-            ImGui::InputText("Title", tempBuff, 256);
-            if (std::string(tempBuff) != window->GetTitle()) {
-                window->SetTitle(std::string(tempBuff));
-            }
-
-            if (ImGui::Button("Request Attention")) {
-                window->RequestAttention();
-            }
-
-            if (ImGui::Button("Maximize")) {
-                window->Maximize();
-            }
-
-            if (ImGui::Button("Hide")) {
-                window->Hide();
-            }
-
-            bool temp = window->IsResizable();
-            if (ImGui::Button(((temp ? "Disable" : "Enable") + string(" Resizability")).c_str())) {
-                window->EnableResizability(!temp);
-            }
-
-            temp = window->IsDecorated();
-            if (ImGui::Button(((temp ? "Disable" : "Enable") + string(" Decorations")).c_str())) {
-                window->EnableDecorations(!temp);
-            }
-
-            static float opacity = window->GetOpacity();
-            ImGui::SliderFloat("Opacity", &opacity, 0.f, 1.f);
-            if (opacity != window->GetOpacity()) {
-                window->SetOpacity(opacity);
-            }
-
-            static glm::ivec2 ratio = window->GetAspectRatio();
-            ImGui::InputInt2("Aspect Ratio", (int*)&ratio);
-            if (ImGui::Button("Apply")) {
-                window->SetAspectRatio(ratio);
-                ratio = window->GetAspectRatio();
-            }
-        }
-        else {
-            ImGui::Text("Current State: Fullscreen");
-            if (ImGui::Button("Windowed")) {
-                window->SetWindowed({ 0, 30 }, { WINDOW_WIDTH, WINDOW_HEIGHT - 50 });
-            }
-
-            static int refreshRate = window->GetRefreshRate();
-            ImGui::InputInt("Refresh Rate", &refreshRate);
-            if (ImGui::Button("Apply")) {
-                window->SetRefreshRate(refreshRate);
-                refreshRate = window->GetRefreshRate();
-            }
-        }
-
-        if (ImGui::Button("Minimize")) {
-            window->Minimize();
-        }
-
-        static glm::ivec2 size = window->GetWindowSize();
-        ImGui::InputInt2("Window Size", (int*)&size);
-        if (ImGui::Button("Apply")) {
-            window->SetWindowSize(size);
-            size = window->GetWindowSize();
-        }
-
-        if (ImGui::Button(((window->IsVSyncOn() ? "Disable" : "Enable") + string(" VSync")).c_str())) {
-            window->EnableVSync(!window->IsVSyncOn());
-        }
-
-#pragma endregion
         ImGui::End();
     }
 }

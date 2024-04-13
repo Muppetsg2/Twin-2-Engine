@@ -76,7 +76,7 @@ namespace LightingSystem {
 			static glm::vec3 RecalculateDirLightSpaceMatrix(DirectionalLight* light); //, const glm::mat4& viewProjectionInverse
 			void RenderShadowMaps();
 
-			void SetAmbientLight(glm::vec3& ambientLightColor);
+			void SetAmbientLight(glm::vec3 ambientLightColor);
 			void SetViewerPosition(glm::vec3& viewerPosition);
 			void SetGamma(float gamma);
 

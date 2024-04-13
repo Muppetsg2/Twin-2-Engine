@@ -33,6 +33,7 @@ namespace Twin2Engine
 			std::vector<GraphicEngine::InstatiatingMesh*> meshes;
 			std::vector<GraphicEngine::Material> materials;
 			glm::mat4 transform;
+			bool isTransparent;
 		};
 
 		class MeshRenderingManager

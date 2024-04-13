@@ -56,11 +56,15 @@ void MeshRenderingManager::Render(MeshRenderData meshData)
 				[meshData.materials[i].GetShader()]
 				[meshData.materials[i]]
 				.push(meshData);
-			_depthMapRenderQueue[meshData.meshes[i]]
-				[meshData.materials[i].GetShader()]
-				[meshData.materials[i]]
-				.push(meshData);
+
 			_depthQueue[meshData.meshes[i]].push(meshData);
+
+			if (!meshData.isTransparent) {
+				_depthMapRenderQueue[meshData.meshes[i]]
+					[meshData.materials[i].GetShader()]
+					[meshData.materials[i]]
+					.push(meshData);
+			}
 		}
 	}
 }

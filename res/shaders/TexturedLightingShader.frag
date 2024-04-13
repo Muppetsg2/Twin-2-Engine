@@ -91,23 +91,23 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
     // calculate bias (based on depth map resolution and slope)
    
     vec3 lightDir = normalize(directionalLights[shadowMapId].position - position);
-    //float bias = max(0.01 * (1.0 - dot(N, lightDir)), 0.005);
-    float bias = 0.005;
+    float bias = max(0.01 * (1.0 - dot(N, lightDir)), 0.005);
+    //float bias = 0.005;
     // check whether current frag pos is in shadow
     //float shadow = (currentDepth - bias) < closestDepth  ? 1.0 : 0.0;
 
     // PCF
     float shadow = 0.0;
-    vec2 texelSize = 0.75 * 1.0 / textureSize(DirLightShadowMaps[shadowMapId], 0);
-    for(int x = -1; x <= 1; ++x)
+    vec2 texelSize = 0.5 * 1.0 / textureSize(DirLightShadowMaps[shadowMapId], 0);
+    for(int x = -2; x <= 2; ++x)
     {
-        for(int y = -1; y <= 1; ++y)
+        for(int y = -2; y <= 2; ++y)
         {
             float pcfDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy + vec2(x, y) * texelSize).r; 
-            shadow += currentDepth - bias < pcfDepth  ? 1.0 : 0.0;        
+            shadow += currentDepth  < pcfDepth  ? 1.0 : 0.0;        
         }    
     }
-    shadow /= 9.0;
+    shadow /= 25.0;
     
     // keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
     if(projCoords.z > 1.0)
@@ -159,7 +159,7 @@ void main()
             specular = countBlinnPhongPart(L, E, N);
         }
 
-        //LightColor += (lambertian + specular) * pointLights[i].color * pointLights[i].power * attenuation;
+        LightColor += (lambertian + specular) * pointLights[i].color * pointLights[i].power * attenuation;
 		//FragColor = vec4((lambertian + specular) * pointLights[i].color * pointLights[i].power * attenuation, 1.0f);
     }
 
@@ -187,7 +187,7 @@ void main()
 		    epsilon = -spotLights[i].outerCutOff;
 		    intensity = smoothstep(spotLights[i].outerCutOff, 0.0, theta);
 			
-			//LightColor += (lambertian + specular) * spotLights[i].color * spotLights[i].power * attenuation * intensity;
+			LightColor += (lambertian + specular) * spotLights[i].color * spotLights[i].power * attenuation * intensity;
 			//FragColor = vec4((lambertian + specular) * spotLights[i].color * spotLights[i].power * attenuation * intensity, 1.0f);
 		}
 	}

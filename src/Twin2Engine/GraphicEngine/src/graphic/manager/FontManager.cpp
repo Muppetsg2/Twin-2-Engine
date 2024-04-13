@@ -7,11 +7,13 @@ using namespace Manager;
 
 using namespace std;
 
+hash<string> FontManager::_hasher;
 map<size_t, Font*> FontManager::_fonts;
-hash<string> FontManager::hasher;
+
+map<size_t, string> FontManager::_fontsPaths;
 
 Font* FontManager::LoadFont(const string& fontPath) {
-	size_t pathHash = hasher(fontPath);
+	size_t pathHash = _hasher(fontPath);
     if (_fonts.find(pathHash) != _fonts.end()) {
         spdlog::info("Font \"{0}\" already loaded", fontPath);
         return _fonts[pathHash];
@@ -30,6 +32,7 @@ Font* FontManager::LoadFont(const string& fontPath) {
     }
     Font* font = new Font(pathHash, lib, face);
     _fonts[pathHash] = font;
+    _fontsPaths[pathHash] = fontPath;
     return font;
 }
 
@@ -39,7 +42,7 @@ Font* FontManager::GetFont(size_t fontId) {
 }
 
 Font* FontManager::GetFont(const std::string& fontPath) {
-    Font* font = GetFont(hasher(fontPath));
+    Font* font = GetFont(_hasher(fontPath));
     if (font == nullptr) {
         font = LoadFont(fontPath);
     }
@@ -50,6 +53,7 @@ void FontManager::UnloadFont(size_t fontId) {
     if (_fonts.find(fontId) == _fonts.end()) return;
     delete _fonts[fontId];
     _fonts.erase(fontId);
+    _fontsPaths.erase(fontId);
 }
 
 void FontManager::UnloadFont(const string& fontPath) {
@@ -61,4 +65,5 @@ void FontManager::UnloadAll() {
         delete font.second;
     }
     _fonts.clear();
+    _fontsPaths.clear();
 }

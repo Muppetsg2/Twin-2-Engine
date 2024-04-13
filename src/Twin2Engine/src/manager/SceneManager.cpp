@@ -107,7 +107,7 @@ void SceneManager::AddScene(const string& name, const string& path)
 	Scene* scene = new Scene();
 	YAML::Node sceneNode = YAML::LoadFile(path);
 
-	// Loading Textures
+#pragma region LOAD_TEXTURES_FROM_SCENE_FILE
 	vector<string> texturePaths;
 	for (const YAML::Node& texNode : sceneNode["Textures"]) {
 		string path = texNode["path"].as<string>();
@@ -115,7 +115,7 @@ void SceneManager::AddScene(const string& name, const string& path)
 		if (texNode["sWrapMode"] || texNode["tWrapMode"] || texNode["minFilterMode"] || texNode["magFilterMode"])
 			data = texNode.as<TextureData>();
 		if (texNode["fileFormat"] && texNode["engineFormat"]) {
-			scene->AddTexture2D(path, (TextureFormat)texNode["engineFormat"].as<size_t>(), (TextureFileFormat)texNode["fileFormat"].as<size_t>(), data);
+			scene->AddTexture2D(path, texNode["engineFormat"].as<TextureFormat>(), texNode["fileFormat"].as<TextureFileFormat>(), data);
 		}		
 		else {
 			if (texNode["fileFormat"] && !texNode["engineFormat"]) {
@@ -128,41 +128,45 @@ void SceneManager::AddScene(const string& name, const string& path)
 		}
 		texturePaths.push_back(path);
 	}
-
-	// Loading Sprites
+#pragma endregion
+#pragma region LOAD_SPRITES_FROM_SCENE_FILE
 	for (const YAML::Node& spriteNode : sceneNode["Sprites"]) {
-		if (spriteNode["hasParameters"].as<bool>()) {
+		if (spriteNode["x"] && spriteNode["y"] && spriteNode["width"] && spriteNode["height"]) {
 			scene->AddSprite(spriteNode["alias"].as<string>(), texturePaths[spriteNode["texture"].as<size_t>()], spriteNode.as<SpriteData>());
 		}
 		else {
+			if (spriteNode["x"] || spriteNode["y"] || spriteNode["width"] || spriteNode["height"]) {
+				SPDLOG_ERROR("Nie podano wszystkich parametrów poprawnie: x, y, width, height");
+			}
 			scene->AddSprite(spriteNode["alias"].as<string>(), texturePaths[spriteNode["texture"].as<size_t>()]);
 		}
 	}
-
-	// Loading Fonts
+#pragma endregion
+#pragma region LOAD_FONTS_FROM_SCENE_FILE
 	for (const YAML::Node& fontNode : sceneNode["Fonts"]) {
 		scene->AddFont(fontNode.as<string>());
 	}
-
-	// Loading Audio
+#pragma endregion
+#pragma region LOAD_AUDIO_FROM_SCENE_FILE
 	for (const YAML::Node& audioNode : sceneNode["Audio"]) {
 		scene->AddAudio(audioNode.as<string>());
 	}
-
-	// Loading Materials
+#pragma endregion
+#pragma region LOAD_MATERIALS_FROM_SCENE_FILE
 	for (const YAML::Node& materialNode : sceneNode["Materials"]) {
 		scene->AddMaterial(materialNode.as<string>());
 	}
-
-	// Loading Models
+#pragma endregion
+#pragma region LOAD_MODELS_FROM_SCENE_FILE
 	for (const YAML::Node& modelNode : sceneNode["Models"]) {
 		scene->AddModel(modelNode.as<string>());
 	}
-
-	// Loading GameObjects
+#pragma endregion
+#pragma region LOAD_GAMEOBJECTS_DATA_FROM_SCENE_FILE
 	for (const YAML::Node& gameObjectNode : sceneNode["GameObjects"]) {
 		scene->AddGameObject(gameObjectNode);
 	}
+#pragma endregion
 
 	AddScene(name, scene);
 }
@@ -529,6 +533,83 @@ void SceneManager::LoadScene(const string& name)
 #pragma endregion
 
 	_currentScene = sceneToLoad;
+}
+
+void SceneManager::SaveScene(const string& path) {
+	YAML::Node sceneNode;
+
+#pragma region SAVING_TEXTURES
+	std::map<size_t, size_t> textures;
+	size_t i = 0;
+	for (const auto& pathPair : TextureManager::_texturesPaths) {
+		Texture2D* tex = TextureManager::_loadedTextures[pathPair.first];
+
+		YAML::Node texNode;
+		texNode["path"] = pathPair.second;
+		if (TextureManager::_texturesFormats.find(pathPair.first) != TextureManager::_texturesFormats.end()) {
+			const auto& formats = TextureManager::_texturesFormats[pathPair.first];
+			texNode["fileFormat"] = formats.second;
+			texNode["engineFormat"] = formats.first;
+		}
+		texNode["sWrapMode"] = tex->GetWrapModeS();
+		texNode["tWrapMode"] = tex->GetWrapModeT();
+		texNode["minFilterMode"] = tex->GetMinFilterMode();
+		texNode["magFilterMode"] = tex->GetMagFilterMode();
+
+		sceneNode["Textures"].push_back(texNode);
+		textures[pathPair.first] = i++;
+	}
+#pragma endregion
+#pragma region SAVING_SPRITES
+	for (const auto& spritePair : SpriteManager::_spriteAliases) {
+		Sprite* sprite = SpriteManager::_sprites[spritePair.first];
+		
+		YAML::Node spriteNode;
+		spriteNode["alias"] = spritePair.second;
+		spriteNode["texture"] = textures[sprite->GetTexture()->GetManagerId()];
+
+		if (SpriteManager::_spriteLoadData.find(spritePair.first) != SpriteManager::_spriteLoadData.end()) {
+			SpriteData data = SpriteManager::_spriteLoadData[spritePair.first];
+			spriteNode["x"] = data.x;
+			spriteNode["y"] = data.y;
+			spriteNode["width"] = data.width;
+			spriteNode["height"] = data.height;
+		}
+
+		sceneNode["Sprites"].push_back(spriteNode);
+	}
+#pragma endregion
+#pragma region SAVING_FONTS
+	for (const auto& fontPair : FontManager::_fontsPaths) {
+		sceneNode["Fonts"].push_back(fontPair.second);
+	}
+#pragma endregion
+#pragma region SAVING_AUDIOS
+	for (const auto& audioPair : AudioManager::_audiosPaths) {
+		sceneNode["Audio"].push_back(audioPair.second);
+	}
+#pragma endregion
+#pragma region SAVING_MATERIALS
+	for (const auto& matPair : MaterialsManager::materialsPaths) {
+		sceneNode["Materials"].push_back(matPair.second);
+	}
+#pragma endregion
+#pragma region SAVING_MODELS
+	for (const auto& modelPair : ModelsManager::modelsPaths) {
+		sceneNode["Models"].push_back(modelPair.second);
+	}
+#pragma endregion
+#pragma region SAVING_GAMEOBJECTS
+	/*Transform* rootT = _rootObject->GetTransform();
+	for (i = 0; i < rootT->GetChildCount(); ++i) {
+		GameObject* obj = rootT->GetChildAt(i)->GetGameObject();
+		sceneNode["GameObjects"].push_back(obj->Serialize());
+	}*/
+#pragma endregion
+
+	ofstream file{ path };
+	file << sceneNode;
+	file.close();
 }
 
 void SceneManager::UpdateCurrentScene()

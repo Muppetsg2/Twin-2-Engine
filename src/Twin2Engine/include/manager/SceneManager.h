@@ -35,6 +35,8 @@ namespace Twin2Engine::Manager {
 
 		static void LoadScene(const std::string& name);
 
+		static void SaveScene(const std::string& path);
+
 		static void UpdateCurrentScene();
 		static void RenderCurrentScene();
 		

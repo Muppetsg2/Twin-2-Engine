@@ -5,6 +5,7 @@
 #include <graphic/manager/TextureManager.h>
 #include <graphic/manager/SpriteManager.h>
 #include <LayersData.h>
+#include <core/CameraComponent.h>
 
 namespace Twin2Engine::Core {
 	class ComponentDeserializer {
@@ -112,6 +113,70 @@ namespace YAML {
 		}
 	};
 
+	template<> struct convert<Twin2Engine::GraphicEngine::TextureFormat> {
+		using TextureFormat = Twin2Engine::GraphicEngine::TextureFormat;
+
+		static Node encode(const TextureFormat& rhs) {
+			Node node;
+			node = (size_t)rhs;
+			return node;
+		}
+
+		static bool decode(const Node& node, TextureFormat& rhs) {
+			if (!node.IsScalar()) return false;
+			rhs = (TextureFormat)node.as<size_t>();
+			return true;
+		}
+	};
+
+	template<> struct convert<Twin2Engine::Manager::TextureFileFormat> {
+		using TextureFileFormat = Twin2Engine::Manager::TextureFileFormat;
+
+		static Node encode(const TextureFileFormat& rhs) {
+			Node node;
+			node = (size_t)rhs;
+			return node;
+		}
+
+		static bool decode(const Node& node, TextureFileFormat& rhs) {
+			if (!node.IsScalar()) return false;
+			rhs = (TextureFileFormat)node.as<size_t>();
+			return true;
+		}
+	};
+
+	template<> struct convert<Twin2Engine::GraphicEngine::TextureWrapMode> {
+		using TextureWrapMode = Twin2Engine::GraphicEngine::TextureWrapMode;
+
+		static Node encode(const TextureWrapMode& rhs) {
+			Node node;
+			node = (size_t)rhs;
+			return node;
+		}
+
+		static bool decode(const Node& node, TextureWrapMode& rhs) {
+			if (!node.IsScalar()) return false;
+			rhs = (TextureWrapMode)node.as<size_t>();
+			return true;
+		}
+	};
+
+	template<> struct convert<Twin2Engine::GraphicEngine::TextureFilterMode> {
+		using TextureFilterMode = Twin2Engine::GraphicEngine::TextureFilterMode;
+
+		static Node encode(const TextureFilterMode& rhs) {
+			Node node;
+			node = (size_t)rhs;
+			return node;
+		}
+
+		static bool decode(const Node& node, TextureFilterMode& rhs) {
+			if (!node.IsScalar()) return false;
+			rhs = (TextureFilterMode)node.as<size_t>();
+			return true;
+		}
+	};
+
 	template<> struct convert<Twin2Engine::Manager::TextureData> {
 		using TextureData = Twin2Engine::Manager::TextureData;
 		using TextureWrapMode = Twin2Engine::GraphicEngine::TextureWrapMode;
@@ -119,10 +184,10 @@ namespace YAML {
 
 		static Node encode(const TextureData& rhs) {
 			Node node;
-			if (rhs.sWrapMode != TextureWrapMode::MIRRORED_REPEAT) node["sWrapMode"] = (size_t)rhs.sWrapMode;
-			if (rhs.tWrapMode != TextureWrapMode::MIRRORED_REPEAT) node["tWrapMode"] = (size_t)rhs.tWrapMode;
-			if (rhs.minFilterMode != TextureFilterMode::NEAREST_MIPMAP_LINEAR) node["minFilterMode"] = (size_t)rhs.minFilterMode;
-			if (rhs.magFilterMode != TextureFilterMode::LINEAR) node["magFilterMode"] = (size_t)rhs.magFilterMode;
+			if (rhs.sWrapMode != TextureWrapMode::MIRRORED_REPEAT) node["sWrapMode"] = rhs.sWrapMode;
+			if (rhs.tWrapMode != TextureWrapMode::MIRRORED_REPEAT) node["tWrapMode"] = rhs.tWrapMode;
+			if (rhs.minFilterMode != TextureFilterMode::NEAREST_MIPMAP_LINEAR) node["minFilterMode"] = rhs.minFilterMode;
+			if (rhs.magFilterMode != TextureFilterMode::LINEAR) node["magFilterMode"] = rhs.magFilterMode;
 			return node;
 		}
 
@@ -130,10 +195,10 @@ namespace YAML {
 			if (!node.IsMap()) return false;
 			if (!node["sWrapMode"] && !node["tWrapMode"] && !node["minFilterMode"] && !node["magFilterMode"]) return false;
 
-			rhs.sWrapMode = (TextureWrapMode)node["sWrapMode"].as<size_t>();
-			rhs.tWrapMode = (TextureWrapMode)node["tWrapMode"].as<size_t>();
-			rhs.minFilterMode = (TextureFilterMode)node["minFilterMode"].as<size_t>();
-			rhs.magFilterMode = (TextureFilterMode)node["magFilterMode"].as<size_t>();
+			rhs.sWrapMode = node["sWrapMode"].as<TextureWrapMode>();
+			rhs.tWrapMode = node["tWrapMode"].as<TextureWrapMode>();
+			rhs.minFilterMode = node["minFilterMode"].as<TextureFilterMode>();
+			rhs.magFilterMode = node["magFilterMode"].as<TextureFilterMode>();
 			return true;
 		}
 	};
@@ -160,33 +225,63 @@ namespace YAML {
 			return true;
 		}
 	};
+	
+	template<> struct convert<CollisionMode> {
+		static Node encode(const CollisionMode& rhs) {
+			Node node;
+			node = (uint8_t)rhs;
+			return node;
+		}
+
+		static bool decode(const Node& node, CollisionMode& rhs) {
+			if (!node.IsScalar()) return false;
+			rhs = (CollisionMode)node.as<uint8_t>();
+			return true;
+		}
+	};
 
 	template<> struct convert<LayerCollisionFilter> {
 		static Node encode(const LayerCollisionFilter& rhs) {
 			Node node;
-			node.push_back((uint8_t)rhs.DEFAULT);
-			node.push_back((uint8_t)rhs.IGNORE_RAYCAST);
-			node.push_back((uint8_t)rhs.IGNORE_COLLISION);
-			node.push_back((uint8_t)rhs.UI);
-			node.push_back((uint8_t)rhs.LAYER_1);
-			node.push_back((uint8_t)rhs.LAYER_2);
-			node.push_back((uint8_t)rhs.LAYER_3);
-			node.push_back((uint8_t)rhs.LAYER_4);
+			node.push_back(rhs.DEFAULT);
+			node.push_back(rhs.IGNORE_RAYCAST);
+			node.push_back(rhs.IGNORE_COLLISION);
+			node.push_back(rhs.UI);
+			node.push_back(rhs.LAYER_1);
+			node.push_back(rhs.LAYER_2);
+			node.push_back(rhs.LAYER_3);
+			node.push_back(rhs.LAYER_4);
 			return node;
 		}
 
 		static bool decode(const Node& node, LayerCollisionFilter& rhs) {
 			if (!node.IsSequence()) return false;
 
-			rhs.DEFAULT = (CollisionMode)node[0].as<uint8_t>();
-			rhs.IGNORE_RAYCAST = (CollisionMode)node[1].as<uint8_t>();
-			rhs.IGNORE_COLLISION = (CollisionMode)node[2].as<uint8_t>();
-			rhs.UI = (CollisionMode)node[3].as<uint8_t>();
-			rhs.LAYER_1 = (CollisionMode)node[4].as<uint8_t>();
-			rhs.LAYER_2 = (CollisionMode)node[5].as<uint8_t>();
-			rhs.LAYER_3 = (CollisionMode)node[6].as<uint8_t>();
-			rhs.LAYER_4 = (CollisionMode)node[7].as<uint8_t>();
+			rhs.DEFAULT				= node[0].as<CollisionMode>();
+			rhs.IGNORE_RAYCAST		= node[1].as<CollisionMode>();
+			rhs.IGNORE_COLLISION	= node[2].as<CollisionMode>();
+			rhs.UI					= node[3].as<CollisionMode>();
+			rhs.LAYER_1				= node[4].as<CollisionMode>();
+			rhs.LAYER_2				= node[5].as<CollisionMode>();
+			rhs.LAYER_3				= node[6].as<CollisionMode>();
+			rhs.LAYER_4				= node[7].as<CollisionMode>();
 			return true;
 		}
 	};
+
+	template<> struct convert<Twin2Engine::Core::CameraType> {
+		using CameraType = Twin2Engine::Core::CameraType;
+
+		static Node encode(const CameraType& rhs) {
+			Node node;
+			node = (size_t)rhs;
+			return node;
+		}
+
+		static bool decode(const Node& node, CameraType& rhs) {
+			if (!node.IsScalar()) return false;
+			rhs = (CameraType)node.as<size_t>();
+		}
+	};
+
 }

@@ -19,8 +19,11 @@
 // GAME OBJECT
 #include <core/GameObject.h>
 #include <core/MeshRenderer.h>
+
+// UI
 #include <ui/Image.h>
 #include <ui/Text.h>
+#include <ui/Button.h>
 
 // AUDIO
 #include <core/AudioComponent.h>
@@ -198,6 +201,7 @@ int main(int, char**)
 
     GraphicEngineManager::Init();
 
+#pragma region DESERIALIZERS
     // COMPONENTS DESELIALIZERS
     ComponentDeserializer::AddDeserializer("Camera",
         []() -> Component* {
@@ -209,7 +213,7 @@ int main(int, char**)
             cam->SetNearPlane(node["nearPlane"].as<float>());
             cam->SetFarPlane(node["farPlane"].as<float>());
             cam->SetCameraFilter(node["cameraFilter"].as<uint8_t>());
-            cam->SetCameraType((CameraType)node["cameraType"].as<int>());
+            cam->SetCameraType(node["cameraType"].as<CameraType>());
             cam->SetSamples(node["samples"].as<uint8_t>());
             cam->SetFrontDir(node["frontDir"].as<vec3>());
             cam->SetWorldUp(node["worldUp"].as<vec3>());
@@ -227,6 +231,18 @@ int main(int, char**)
             if (node["loop"].as<bool>()) audio->Loop(); else audio->UnLoop();
             audio->SetTimePosition(node["time"].as<double>());
             audio->SetVolume(node["volume"].as<float>());
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("Button",
+        []() -> Component* {
+            return new Button();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            Button* button = static_cast<Button*>(comp);
+            button->SetWidth(node["width"].as<float>());
+            button->SetHeight(node["height"].as<float>());
+            button->SetInteractable(node["interactable"].as<bool>());
         }
     );
 
@@ -336,6 +352,7 @@ int main(int, char**)
             capsuleCollider->SetRadius(node["radius"].as<float>());
         }
     );
+#pragma endregion
 
     // ADDING SCENES
     SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
@@ -377,6 +394,7 @@ int main(int, char**)
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();*/
     
     SceneManager::LoadScene("testScene");
+    SceneManager::SaveScene("res/scenes/savedScene.yaml");
 
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();

@@ -1,0 +1,59 @@
+Textures:
+  - path: res/textures/white.png
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
+  - path: res/textures/grass.png
+    fileFormat: 6408
+    engineFormat: 6408
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
+  - path: res/textures/brickWall.jpg
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
+  - path: res/textures/stone.jpg
+    fileFormat: 6407
+    engineFormat: 6407
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
+  - path: res/textures/woodenRoof2.png
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
+  - path: res/textures/hexEdgeTexture.png
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
+Sprites:
+  - alias: white_box
+    texture: 0
+  - alias: grass
+    texture: 1
+  - alias: stone
+    texture: 3
+Fonts:
+  - res/fonts/Caveat-Regular.ttf
+Audio:
+  - res/music/acoustic-guitar.mp3
+Materials:
+  - hexagonMat
+  - Basic2
+  - metal
+  - textured
+  - deska
+  - wallMat
+  - roofMat
+Models:
+  - res/models/AK47.obj
+  - res/models/castle.obj
+  - "{Cube}"
+  - "{Plane}"

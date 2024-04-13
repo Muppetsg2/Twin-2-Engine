@@ -21,13 +21,10 @@ Textures:
 Sprites:
     -   alias: stone
         texture: 0
-        hasParameters: false
     -   alias: grass
         texture: 1
-        hasParameters: false
     -   alias: white_box
         texture: 2
-        hasParameters: false
 Fonts:
     - res/fonts/Caveat-Regular.ttf
 Audio:
@@ -469,4 +466,10 @@ GameObjects:
                     y: 20.0
                     z: 0.0
                 radius: 20.0
+            -   id: 24
+                enabled: true
+                type: Button
+                width: 100.0
+                height: 10.0
+                interactable: false
         children: []

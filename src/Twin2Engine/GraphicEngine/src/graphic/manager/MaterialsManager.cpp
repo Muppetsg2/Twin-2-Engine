@@ -6,6 +6,8 @@ using namespace Twin2Engine::Manager;
 std::hash<std::string> MaterialsManager::stringHash;
 std::map<size_t, Twin2Engine::GraphicEngine::MaterialData*> MaterialsManager::loadedMaterials;
 
+std::map<size_t, std::string> MaterialsManager::materialsPaths;
+
 //sconst td::unordered_map<size_t, int> MaterialsManager::typeSizeMap
 //{
 //	{ MaterialsManager::stringHash("int"), 4 },
@@ -66,6 +68,7 @@ void MaterialsManager::UnloadMaterial(size_t managerId) {
 		delete matData->materialParameters;
 		delete matData;
 		loadedMaterials.erase(managerId);
+		materialsPaths.erase(managerId);
 	}
 }
 
@@ -225,6 +228,7 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 	};
 
 	loadedMaterials[materialNameHash] = materialData;
+	materialsPaths[materialNameHash] = materialName;
 
 	return Material(materialData);
 }

@@ -5,6 +5,11 @@
 #include <graphic/Material.h>
 #include <graphic/Shader.h>
 
+// RENDERING
+#define MAX_INSTANCE_NUMBER_PER_DRAW 1024
+#define MAX_MATERIAL_NUMBER_PER_DRAW 8
+#define MAX_MATERIAL_SIZE 1024
+
 // SSBO
 #define BINDING_POINT_INSTANCE_DATA 0
 #define BINDING_POINT_MATERIAL_INDEX 1

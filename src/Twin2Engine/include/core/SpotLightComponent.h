@@ -24,9 +24,9 @@ namespace Twin2Engine {
 				virtual void OnDisable() override;
 				virtual void OnDestroy() override;
 
-				void SetDirection(glm::vec3& dir);
-				void SetColor(glm::vec3& color);
-				void SetPower(float& power);
+				void SetDirection(glm::vec3 dir);
+				void SetColor(glm::vec3 color);
+				void SetPower(float power);
 				void SetOuterCutOff(float radAngle);
 				void SetAtenuation(float constant, float linear, float quadratic);
 		};

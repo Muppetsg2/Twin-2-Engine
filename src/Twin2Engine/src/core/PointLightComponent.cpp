@@ -46,13 +46,13 @@ void Twin2Engine::Core::PointLightComponent::OnDestroy()
 	delete light;
 }
 
-void Twin2Engine::Core::PointLightComponent::SetColor(glm::vec3& color)
+void Twin2Engine::Core::PointLightComponent::SetColor(glm::vec3 color)
 {
 	light->color = color;
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::PointLightComponent::SetPower(float& power)
+void Twin2Engine::Core::PointLightComponent::SetPower(float power)
 {
 	light->power = power;
 	dirtyFlag = true;

@@ -112,7 +112,7 @@ void Twin2Engine::Core::DirectionalLightComponent::OnDestroy()
 	delete light;
 }
 
-void Twin2Engine::Core::DirectionalLightComponent::SetDirection(glm::vec3& dir)
+void Twin2Engine::Core::DirectionalLightComponent::SetDirection(glm::vec3 dir)
 {
 	light->direction = dir;
 	//light->direction = glm::vec3((GetTransform()->GetTransformMatrix() * glm::vec4(dir, 1.0f)));
@@ -120,13 +120,13 @@ void Twin2Engine::Core::DirectionalLightComponent::SetDirection(glm::vec3& dir)
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::DirectionalLightComponent::SetColor(glm::vec3& color)
+void Twin2Engine::Core::DirectionalLightComponent::SetColor(glm::vec3 color)
 {
 	light->color = color;
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::DirectionalLightComponent::SetPower(float& power)
+void Twin2Engine::Core::DirectionalLightComponent::SetPower(float power)
 {
 	light->power = power;
 	dirtyFlag = true;

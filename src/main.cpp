@@ -211,7 +211,8 @@ int main(int, char**)
     modelMesh = ModelsManager::GetCube();
     Twin2Engine::GraphicEngine::InstatiatingModel planeModel = ModelsManager::GetPlane();
 
-    //material = MaterialsManager::GetMaterial("Basic2");
+    material = MaterialsManager::GetMaterial("Basic2");
+
     //material2 = MaterialsManager::GetMaterial("Basic2");
     //material = MaterialsManager::GetMaterial("textured");
     material2 = MaterialsManager::GetMaterial("textured");
@@ -361,21 +362,23 @@ int main(int, char**)
 
 #pragma region TestingLighting
     /**/
-    GameObject pl_go;
-    GameObject sl_go;
+    //GameObject pl_go;
+    //GameObject sl_go;
+    //pl_go.GetTransform()->SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    //sl_go.GetTransform()->SetLocalPosition(glm::vec3(-10.0f, 0.0f, 0.0f));
+    //Twin2Engine::Core::PointLightComponent* pl = pl_go.AddComponent<Twin2Engine::Core::PointLightComponent>();
+    //Twin2Engine::Core::SpotLightComponent* sl = sl_go.AddComponent<Twin2Engine::Core::SpotLightComponent>();
     GameObject dl_go;
-    pl_go.GetTransform()->SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-    sl_go.GetTransform()->SetLocalPosition(glm::vec3(-10.0f, 0.0f, 0.0f));
     dl_go.GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
-    Twin2Engine::Core::PointLightComponent* pl = pl_go.AddComponent<Twin2Engine::Core::PointLightComponent>();
-    Twin2Engine::Core::SpotLightComponent* sl = sl_go.AddComponent<Twin2Engine::Core::SpotLightComponent>();
     Twin2Engine::Core::DirectionalLightComponent* dl = dl_go.AddComponent<Twin2Engine::Core::DirectionalLightComponent>();
+    dl->SetColor(glm::vec3(0.85, 0.85, 0.85));
     //pl->Initialize();
     //sl->Initialize();
     //dl->Initialize();
     LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
     //LightingSystem::LightingController::Instance()->ViewerTransformChanged.Invoke();
-    LightingSystem::LightingController::Instance()->SetGamma(2.2);
+    LightingSystem::LightingController::Instance()->SetGamma(2.2); 
+    LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.1, 0.1, 0.1));
     //{
     //    glm::vec3 al = { 0.2, 0.2, 0.2 };
     //    LightingSystem::LightingController::Instance()->SetAmbientLight(al);
@@ -393,11 +396,11 @@ int main(int, char**)
         // Update game objects' state here
         update();
         /**/
-        pl->GetTransform()->Update();
-        sl->GetTransform()->Update();
+        //pl->GetTransform()->Update();
+        //sl->GetTransform()->Update();
         dl->GetTransform()->Update();
-        pl->Update();
-        sl->Update();
+        //pl->Update();
+        //sl->Update();
         dl->Update();/**/
 
         // OpenGL rendering code here

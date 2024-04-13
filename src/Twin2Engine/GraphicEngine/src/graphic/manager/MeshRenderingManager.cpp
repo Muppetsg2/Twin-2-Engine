@@ -126,29 +126,13 @@ void MeshRenderingManager::Render()
 			}
 
 			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
-
-			glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * index, transforms.data());
-			//glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * index, transforms.data());
-			//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, BINDING_POINT_INSTANCE_DATA, _instanceDataSSBO);
-
+			glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * index, transforms.data());
 
 			//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
-
-			glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * index, indexes.data());
-			//glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * index, indexes.data());
-			//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, BINDING_POINT_MATERIAL_INDEX, _materialIndexSSBO);
-
+			glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * index, indexes.data());
 
 			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
-			glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
-
-			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(char) * materialData.size(), materialData.data());
-			//glNamedBufferSubData(_materialInputUBO, 0, sizeof(char) * materialData.size(), materialData.data());
-			//glBindBufferBase(GL_UNIFORM_BUFFER, BINDING_POINT_MATERIAL_INPUT, _materialInputUBO);
-
-			glBindBuffer(GL_UNIFORM_BUFFER, 0);
+			glNamedBufferSubData(_materialInputUBO, 0, sizeof(char) * materialData.size(), materialData.data());
 
 			shaderPair.first->Use();
 
@@ -216,33 +200,14 @@ void MeshRenderingManager::RenderDepthMap()
 				materialIndex++;
 			}
 
-
 			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
-
-			glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * index, transforms.data());
-			//glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * index, transforms.data());
-			//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, BINDING_POINT_INSTANCE_DATA, _instanceDataSSBO);
-
+			glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * index, transforms.data());
 
 			//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
-
-			glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * index, indexes.data());
-			//glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * index, indexes.data());
-			//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, BINDING_POINT_MATERIAL_INDEX, _materialIndexSSBO);
-
+			glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * index, indexes.data());
 
 			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
-			glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
-
-			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(char) * materialData.size(), materialData.data());
-			//glNamedBufferSubData(_materialInputUBO, 0, sizeof(char) * materialData.size(), materialData.data());
-			//glBindBufferBase(GL_UNIFORM_BUFFER, BINDING_POINT_MATERIAL_INPUT, _materialInputUBO);
-
-			glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-
+			glNamedBufferSubData(_materialInputUBO, 0, sizeof(char) * materialData.size(), materialData.data());
 
 			shaderPair.first->Use();
 

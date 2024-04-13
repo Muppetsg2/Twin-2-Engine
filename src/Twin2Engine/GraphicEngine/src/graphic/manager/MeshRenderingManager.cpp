@@ -139,7 +139,7 @@ void MeshRenderingManager::Render()
 			//shaderPair.first->Use();
 
 			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
-			glNamedBufferSubData(_materialInputUBO, 0, sizeof(char) * materialData.size(), materialData.data());
+			//glNamedBufferSubData(_materialInputUBO, 0, sizeof(char) * materialData.size(), materialData.data());
 
 			shaderPair.first->Use();
 
@@ -235,12 +235,14 @@ void MeshRenderingManager::RenderDepthMap()
 			}
 
 			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
-			glNamedBufferSubData(_materialInputUBO, 0, sizeof(char) * materialData.size(), materialData.data());
+			//glNamedBufferSubData(_materialInputUBO, 0, sizeof(char) * materialData.size(), materialData.data());
 
 			shaderPair.first->Use();
 
 			size_t sizeOfInstanceData = 0;
 			size_t sizeOfMaterialIndex = 0;
+
+			SPDLOG_INFO("Count {}, Index {}", count, index);
 
 			while (count >= MAX_INSTANCE_NUMBER_PER_DRAW)
 			{
@@ -256,13 +258,39 @@ void MeshRenderingManager::RenderDepthMap()
 
 				count -= MAX_INSTANCE_NUMBER_PER_DRAW;
 			}
+			//SPDLOG_INFO("Count2 {}, Index {} ptr {} size {} ptr2 {}", count, index, (unsigned int)(transforms.data()), sizeOfInstanceData, (unsigned int)(transforms.data() + sizeOfInstanceData));
+			{GLenum error = glGetError();
+			if (error != GL_NO_ERROR) {
+				SPDLOG_ERROR("RDMError1: {}", error);
+			}}
 			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+			//glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+			//glBufferSubData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * sizeOfInstanceData, sizeof(glm::mat4) * count, transforms.data() + sizeOfInstanceData);
+			//glm::mat4* ptr = (glm::mat4*)glMapNamedBufferRange(_instanceDataSSBO, sizeof(glm::mat4) * sizeOfInstanceData, sizeof(glm::mat4) * count, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+			//glm::mat4* ptr = (glm::mat4*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * sizeOfInstanceData, sizeof(glm::mat4) * count, GL_MAP_WRITE_BIT);
+			//std::memcpy(ptr, (transforms.data() + sizeOfInstanceData), sizeof(glm::mat4) * count);
 			glNamedBufferSubData(_instanceDataSSBO, sizeof(glm::mat4) * sizeOfInstanceData, sizeof(glm::mat4) * count, transforms.data() + sizeOfInstanceData);
+			//glUnmapNamedBuffer(_instanceDataSSBO);
+			//glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+			//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
+			{GLenum error = glGetError();
+			if (error != GL_NO_ERROR) {
+				SPDLOG_ERROR("RDMError2: {}", error);
+			}}
 			//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
 			glNamedBufferSubData(_materialIndexSSBO, sizeof(unsigned int) * sizeOfMaterialIndex, sizeof(unsigned int) * count, indexes.data() + sizeOfMaterialIndex);
 
+			{GLenum error = glGetError();
+			if (error != GL_NO_ERROR) {
+				SPDLOG_ERROR("RDMError3: {}", error);
+			}}
 			meshPair.first->Draw(count);
+			{GLenum error = glGetError();
+			if (error != GL_NO_ERROR) {
+				SPDLOG_ERROR("RDMError: {}", error);
+			}}
+
 		}
 	}
 }

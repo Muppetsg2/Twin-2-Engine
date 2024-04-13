@@ -169,10 +169,10 @@ void MeshRenderingManager::Render()
 				count -= MAX_INSTANCE_NUMBER_PER_DRAW;
 			}
 			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-			glNamedBufferSubData(_instanceDataSSBO, sizeOfInstanceData, sizeof(glm::mat4) * count, transforms.data() + sizeOfInstanceData);
+			glNamedBufferSubData(_instanceDataSSBO, sizeof(glm::mat4) * sizeOfInstanceData, sizeof(glm::mat4) * count, transforms.data() + sizeOfInstanceData);
 
 			//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-			glNamedBufferSubData(_materialIndexSSBO, sizeOfMaterialIndex, sizeof(unsigned int) * count, indexes.data() + sizeOfMaterialIndex);
+			glNamedBufferSubData(_materialIndexSSBO, sizeof(unsigned int) * sizeOfMaterialIndex, sizeof(unsigned int) * count, indexes.data() + sizeOfMaterialIndex);
 
 			meshPair.first->Draw(count);
 
@@ -257,10 +257,10 @@ void MeshRenderingManager::RenderDepthMap()
 				count -= MAX_INSTANCE_NUMBER_PER_DRAW;
 			}
 			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-			glNamedBufferSubData(_instanceDataSSBO, sizeOfInstanceData, sizeof(glm::mat4) * count, transforms.data() + sizeOfInstanceData);
+			glNamedBufferSubData(_instanceDataSSBO, sizeof(glm::mat4) * sizeOfInstanceData, sizeof(glm::mat4) * count, transforms.data() + sizeOfInstanceData);
 
 			//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-			glNamedBufferSubData(_materialIndexSSBO, sizeOfMaterialIndex, sizeof(unsigned int) * count, indexes.data() + sizeOfMaterialIndex);
+			glNamedBufferSubData(_materialIndexSSBO, sizeof(unsigned int) * sizeOfMaterialIndex, sizeof(unsigned int) * count, indexes.data() + sizeOfMaterialIndex);
 
 			meshPair.first->Draw(count);
 		}

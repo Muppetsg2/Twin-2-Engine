@@ -103,7 +103,7 @@ void MeshRenderingManager::Render()
 
 			for (auto& material : shaderPair.second)
 			{
-				auto data = material.first.GetMaterialParameters()->GetData();
+				const auto& data = material.first.GetMaterialParameters()->GetData();
 
 				glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
 				size += data.size();
@@ -211,7 +211,7 @@ void MeshRenderingManager::RenderDepthMap()
 
 			for (auto& material : shaderPair.second)
 			{
-				auto data = material.first.GetMaterialParameters()->GetData();
+				const auto& data = material.first.GetMaterialParameters()->GetData();
 
 				glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
 				size += data.size();

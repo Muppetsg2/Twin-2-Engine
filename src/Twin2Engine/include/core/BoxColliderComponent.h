@@ -19,6 +19,8 @@ namespace Twin2Engine::Core {
 		void SetXRotation(float v);
 		void SetYRotation(float v);
 		void SetZRotation(float v);
+
+		virtual YAML::Node Serialize() const override;
 	};
 }
 

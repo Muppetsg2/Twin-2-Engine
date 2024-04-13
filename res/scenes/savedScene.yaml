@@ -57,3 +57,443 @@ Models:
   - res/models/castle.obj
   - "{Cube}"
   - "{Plane}"
+GameObjects:
+  - id: 1
+    name: Camera
+    isStatic: false
+    isActive: true
+    transform:
+      id: 0
+      enabled: true
+      position:
+        x: 0
+        y: 2
+        z: 5
+      scale:
+        x: 0
+        y: 0
+        z: 0
+      rotation:
+        x: 0
+        y: -1.57079637
+        z: 0
+    components:
+      - id: 1
+        enabled: true
+        type: Camera
+        fov: 45
+        nearPlane: 0.100000001
+        farPlane: 1000
+        cameraFilter: "\x00"
+        cameraType: 1
+        samples: "\x10"
+        fronDir:
+          x: 0
+          y: 0
+          z: -1
+        worldUp:
+          x: 0
+          y: 1
+          z: 0
+        isMain: true
+      - id: 2
+        enabled: true
+        type: Audio
+        audio: 0
+        loop: true
+        volume: 1
+    children:
+      []
+  - id: 2
+    name: imageObj
+    isStatic: false
+    isActive: true
+    transform:
+      id: 3
+      enabled: true
+      position:
+        x: -900
+        y: 500
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 4
+        enabled: true
+        type: &1 Image
+        subTypes:
+          - *1
+        isTransparent: false
+        sprite: 2
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+      - id: 5
+        enabled: true
+        type: &2 Image
+        subTypes:
+          - *2
+        isTransparent: false
+        sprite: 1
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+    children:
+      []
+  - id: 3
+    name: imageObj2
+    isStatic: false
+    isActive: true
+    transform:
+      id: 6
+      enabled: true
+      position:
+        x: 900
+        y: 500
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 7
+        enabled: true
+        type: &3 Image
+        subTypes:
+          - *3
+        isTransparent: false
+        sprite: 1
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+    children:
+      []
+  - id: 4
+    name: imageObj3
+    isStatic: false
+    isActive: true
+    transform:
+      id: 8
+      enabled: true
+      position:
+        x: 0
+        y: -500
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 9
+        enabled: true
+        type: &4 Image
+        subTypes:
+          - *4
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 0
+          y: 1
+          z: 0
+          w: 1
+        width: 1000
+        height: 100
+    children:
+      []
+  - id: 5
+    name: textObj
+    isStatic: false
+    isActive: true
+    transform:
+      id: 10
+      enabled: true
+      position:
+        x: 400
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 11
+        enabled: true
+        type: &5 Text
+        subTypes:
+          - *5
+        isTransparent: false
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        size: 48
+        font: 0
+    children:
+      []
+  - id: 6
+    name: gameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 12
+      enabled: true
+      position:
+        x: 2
+        y: 5
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 13
+        enabled: true
+        type: &6 MeshRenderer
+        subTypes:
+          - *6
+        isTransparent: false
+        model: 2
+        materials:
+          - 1
+    children:
+      []
+  - id: 7
+    name: gameObject2
+    isStatic: false
+    isActive: true
+    transform:
+      id: 14
+      enabled: true
+      position:
+        x: 2
+        y: 3
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 15
+        enabled: true
+        type: &7 MeshRenderer
+        subTypes:
+          - *7
+        isTransparent: false
+        model: 2
+        materials:
+          - 3
+    children:
+      []
+  - id: 8
+    name: gameObject3
+    isStatic: false
+    isActive: true
+    transform:
+      id: 16
+      enabled: true
+      position:
+        x: 0
+        y: 3
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 17
+        enabled: true
+        type: &8 MeshRenderer
+        subTypes:
+          - *8
+        isTransparent: false
+        model: 1
+        materials:
+          - 5
+          - 6
+    children:
+      []
+  - id: 9
+    name: gameObject4
+    isStatic: false
+    isActive: true
+    transform:
+      id: 18
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 10
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 1.57079637
+        y: 0
+        z: 0
+    components:
+      - id: 19
+        enabled: true
+        type: &9 MeshRenderer
+        subTypes:
+          - *9
+        isTransparent: false
+        model: 0
+        materials:
+          - 4
+          - 2
+    children:
+      []
+  - id: 10
+    name: testGameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 20
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 21
+        enabled: true
+        type: &10 SphereCollider
+        subTypes:
+          - *10
+        trigger: false
+        static: false
+        layer: "\x00"
+        layerFilter:
+          - "\x03"
+          - "\x03"
+          - "\x01"
+          - "\x00"
+          - "\x03"
+          - "\x03"
+          - "\x03"
+          - "\x03"
+        boundingVolume: true
+        boundingVolumeRadius: 2
+        position:
+          x: 0
+          y: 0
+          z: 0
+        radius: 20
+      - id: 22
+        enabled: true
+        type: &11 BoxCollider
+        subTypes:
+          - *11
+        trigger: false
+        static: false
+        layer: "\x00"
+        layerFilter:
+          - "\x03"
+          - "\x03"
+          - "\x01"
+          - "\x00"
+          - "\x03"
+          - "\x03"
+          - "\x03"
+          - "\x03"
+        boundingVolume: true
+        boundingVolumeRadius: 2
+        position:
+          x: 0
+          y: 0
+          z: 0
+        width: 20
+        length: 20
+        height: 20
+        rotation:
+          x: 0
+          y: 0
+          z: 0
+      - id: 23
+        enabled: true
+        type: &12 CapsuleCollider
+        subTypes:
+          - *12
+        trigger: false
+        static: false
+        layer: "\x00"
+        layerFilter:
+          - "\x03"
+          - "\x03"
+          - "\x01"
+          - "\x00"
+          - "\x03"
+          - "\x03"
+          - "\x03"
+          - "\x03"
+        boundingVolume: true
+        boundingVolumeRadius: 2
+        position:
+          x: 0
+          y: 0
+          z: 0
+        endPosition:
+          x: 0
+          y: 20
+          z: 0
+        radius: 20
+      - id: 24
+        enabled: true
+        type: Button
+        width: 100
+        height: 10
+        interactable: false
+    children:
+      []

@@ -51,6 +51,7 @@ namespace Twin2Engine::Core {
 
 		void Invoke();
 		void Update();
+		virtual YAML::Node Serialize() const override;
 	};
 }
 

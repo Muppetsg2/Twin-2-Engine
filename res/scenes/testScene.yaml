@@ -85,7 +85,6 @@ GameObjects:
                 type: Audio
                 audio: 0
                 loop: true
-                time: 0.0
                 volume: 1.0
         children: []
     -   id: 2

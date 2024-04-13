@@ -57,6 +57,13 @@ namespace Twin2Engine::Manager {
 		static size_t GetMaterial(size_t loadIdx);
 		static size_t GetModel(size_t loadIdx);
 
+		static size_t GetTexture2DSaveIdx(size_t texId);
+		static size_t GetSpriteSaveIdx(size_t spriteId);
+		static size_t GetFontSaveIdx(size_t fontId);
+		static size_t GetAudioSaveIdx(size_t audioId);
+		static size_t GetMaterialSaveIdx(size_t materialId);
+		static size_t GetModelSaveIdx(size_t modelId);
+
 		static void UnloadCurrent();
 		static void UnloadScene(const std::string& name);
 		static void UnloadAll();

@@ -1,5 +1,6 @@
 #include <core/CameraComponent.h>
 #include <core/Transform.h>
+#include <core/YamlConverters.h>
 #include <graphic/Window.h>
 #include <GraphicEnigineManager.h>
 #include <graphic/manager/ModelsManager.h>
@@ -457,4 +458,21 @@ void CameraComponent::OnDestroy()
 		glDeleteBuffers(1, &_uboMatrices);
 		glDeleteBuffers(1, &_uboWindowData);
 	}
+}
+
+YAML::Node CameraComponent::Serialize() const
+{
+	YAML::Node node = Component::Serialize();
+	node["type"] = "Camera";
+	node.remove("subTypes");
+	node["fov"] = _fov;
+	node["nearPlane"] = _near;
+	node["farPlane"] = _far;
+	node["cameraFilter"] = _filters;
+	node["cameraType"] = _type;
+	node["samples"] = _samples;
+	node["fronDir"] = _front;
+	node["worldUp"] = _worldUp;
+	node["isMain"] = _isMain;
+	return node;
 }

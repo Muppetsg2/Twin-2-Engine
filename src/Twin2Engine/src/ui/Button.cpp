@@ -1,6 +1,7 @@
 #include <ui/Button.h>
 #include <core/GameObject.h>
 #include <core/Input.h>
+#include <core/YamlConverters.h>
 
 using namespace Twin2Engine::UI;
 using namespace Twin2Engine::Core;
@@ -53,4 +54,15 @@ void Button::Update()
 			_onClickEvent.Invoke();
 		}
 	}
+}
+
+YAML::Node Button::Serialize() const
+{
+	YAML::Node node = Component::Serialize();
+	node["type"] = "Button";
+	node.remove("subTypes");
+	node["width"] = _width;
+	node["height"] = _height;
+	node["interactable"] = _interactable;
+	return node;
 }

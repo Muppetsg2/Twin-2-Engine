@@ -11,6 +11,7 @@ namespace Twin2Engine::Core {
 		void SetEndPosition(float x, float y, float z);
 		void SetRadius(float radius);
 
+		virtual YAML::Node Serialize() const override;
 	};
 }
 

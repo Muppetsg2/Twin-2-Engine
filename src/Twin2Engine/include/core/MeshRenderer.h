@@ -25,6 +25,7 @@ namespace Twin2Engine::Core
 
 	public:
 		virtual void Render() override;
+		virtual YAML::Node Serialize() const override;
 
 		GraphicEngine::InstatiatingModel GetModel() const;
 

@@ -229,7 +229,6 @@ int main(int, char**)
             AudioComponent* audio = static_cast<AudioComponent*>(comp);
             audio->SetAudio(SceneManager::GetAudio(node["audio"].as<size_t>()));
             if (node["loop"].as<bool>()) audio->Loop(); else audio->UnLoop();
-            audio->SetTimePosition(node["time"].as<double>());
             audio->SetVolume(node["volume"].as<float>());
         }
     );

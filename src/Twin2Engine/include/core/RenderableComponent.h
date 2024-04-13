@@ -14,6 +14,7 @@ namespace Twin2Engine::Core {
 		virtual ~RenderableComponent();
 
 		virtual void Render();
+		virtual YAML::Node Serialize() const override;
 
 		bool IsTransparent() const;
 		void SetIsTransparent(bool value);

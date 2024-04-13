@@ -1,5 +1,6 @@
 #include <core/SphereColliderComponent.h>
-#include "CollisionManager.h"
+#include <CollisionManager.h>
+#include <core/YamlConverters.h>
 
 Twin2Engine::Core::SphereColliderComponent::SphereColliderComponent() : ColliderComponent()
 {
@@ -11,4 +12,13 @@ Twin2Engine::Core::SphereColliderComponent::SphereColliderComponent() : Collider
 void Twin2Engine::Core::SphereColliderComponent::SetRadius(float radius)
 {
 	((CollisionSystem::SphereColliderData*)collider->shapeColliderData)->Radius = radius;
+}
+
+YAML::Node Twin2Engine::Core::SphereColliderComponent::Serialize() const
+{
+	YAML::Node node = ColliderComponent::Serialize();
+	node["subTypes"].push_back(node["type"]);
+	node["type"] = "SphereCollider";
+	node["radius"] = ((CollisionSystem::SphereColliderData*)collider->shapeColliderData)->Radius;
+	return node;
 }

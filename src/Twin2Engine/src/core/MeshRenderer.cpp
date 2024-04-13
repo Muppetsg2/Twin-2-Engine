@@ -1,4 +1,5 @@
 #include <core/MeshRenderer.h>
+#include <manager/SceneManager.h>
 #include <graphic/manager/ModelsManager.h>
 #include <graphic/manager/MaterialsManager.h>
 
@@ -19,6 +20,19 @@ void MeshRenderer::Render()
 		data.materials.push_back(GetMaterial(i));
 	}
 	MeshRenderingManager::Render(data);
+}
+
+YAML::Node MeshRenderer::Serialize() const
+{
+	YAML::Node node = RenderableComponent::Serialize();
+	node["subTypes"].push_back(node["type"]);
+	node["type"] = "MeshRenderer";
+	node["model"] = SceneManager::GetModelSaveIdx(_model.GetId());
+	node["materials"] = vector<size_t>();
+	for (const auto& mat : _materials) {
+		node["materials"].push_back(SceneManager::GetMaterialSaveIdx(mat.GetId()));
+	}
+	return node;
 }
 
 InstatiatingModel MeshRenderer::GetModel() const

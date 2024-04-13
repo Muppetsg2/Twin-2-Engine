@@ -40,5 +40,6 @@ namespace Twin2Engine::Core {
 		virtual void OnDisable();
 		*/
 		void OnDestroy() override;
+		virtual YAML::Node Serialize() const override;
 	};
 }

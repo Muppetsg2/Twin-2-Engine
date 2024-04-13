@@ -1,5 +1,6 @@
 #include <core/CapsuleColliderComponent.h>
 #include <CollisionManager.h>
+#include <core/YamlConverters.h>
 
 Twin2Engine::Core::CapsuleColliderComponent::CapsuleColliderComponent() : ColliderComponent()
 {
@@ -18,4 +19,18 @@ void Twin2Engine::Core::CapsuleColliderComponent::SetEndPosition(float x, float 
 void Twin2Engine::Core::CapsuleColliderComponent::SetRadius(float radius)
 {
 	((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->Radius = radius;
+}
+
+YAML::Node Twin2Engine::Core::CapsuleColliderComponent::Serialize() const
+{
+	YAML::Node node = ColliderComponent::Serialize();
+	node["subTypes"].push_back(node["type"]);
+	node["type"] = "CapsuleCollider";
+	node["endPosition"] = glm::vec3(
+		((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndPosition.x,
+		((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndPosition.y,
+		((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndPosition.z
+	);
+	node["radius"] = ((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->Radius;
+	return node;
 }

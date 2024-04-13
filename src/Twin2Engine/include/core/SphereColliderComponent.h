@@ -10,6 +10,8 @@ namespace Twin2Engine::Core {
 	public:
 		SphereColliderComponent();
 		void SetRadius(float radius);
+
+		virtual YAML::Node Serialize() const override;
 	};
 }
 

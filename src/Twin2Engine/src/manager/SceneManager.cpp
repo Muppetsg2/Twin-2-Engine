@@ -600,11 +600,11 @@ void SceneManager::SaveScene(const string& path) {
 	}
 #pragma endregion
 #pragma region SAVING_GAMEOBJECTS
-	/*Transform* rootT = _rootObject->GetTransform();
+	Transform* rootT = _rootObject->GetTransform();
 	for (i = 0; i < rootT->GetChildCount(); ++i) {
 		GameObject* obj = rootT->GetChildAt(i)->GetGameObject();
 		sceneNode["GameObjects"].push_back(obj->Serialize());
-	}*/
+	}
 #pragma endregion
 
 	ofstream file{ path };
@@ -682,6 +682,72 @@ size_t SceneManager::GetMaterial(size_t loadIdx)
 size_t SceneManager::GetModel(size_t loadIdx)
 {
 	return _modelsIds[loadIdx];
+}
+
+size_t SceneManager::GetTexture2DSaveIdx(size_t texId)
+{
+	size_t idx = 0;
+	for (const auto& texPair : TextureManager::_texturesPaths) {
+		if (texPair.first == texId) return idx;
+		++idx;
+	}
+	SPDLOG_WARN("Texture2D '{0}' Not Found", texId);
+	return idx;
+}
+
+size_t SceneManager::GetSpriteSaveIdx(size_t spriteId)
+{
+	size_t idx = 0;
+	for (const auto& spritePair : SpriteManager::_spriteAliases) {
+		if (spritePair.first == spriteId) return idx;
+		++idx;
+	}
+	SPDLOG_WARN("Sprite '{0}' Not Found", spriteId);
+	return idx;
+}
+
+size_t SceneManager::GetFontSaveIdx(size_t fontId)
+{
+	size_t idx = 0;
+	for (const auto& fontPair : FontManager::_fontsPaths) {
+		if (fontPair.first == fontId) return idx;
+		++idx;
+	}
+	SPDLOG_WARN("Font '{0}' Not Found", fontId);
+	return idx;
+}
+
+size_t SceneManager::GetAudioSaveIdx(size_t audioId)
+{
+	size_t idx = 0;
+	for (const auto& audioPair : AudioManager::_audiosPaths) {
+		if (audioPair.first == audioId) return idx;
+		++idx;
+	}
+	SPDLOG_WARN("Audio '{0}' Not Found", audioId);
+	return idx;
+}
+
+size_t SceneManager::GetMaterialSaveIdx(size_t materialId)
+{
+	size_t idx = 0;
+	for (const auto& matPair : MaterialsManager::materialsPaths) {
+		if (matPair.first == materialId) return idx;
+		++idx;
+	}
+	SPDLOG_WARN("Material '{0}' Not Found", materialId);
+	return idx;
+}
+
+size_t SceneManager::GetModelSaveIdx(size_t modelId)
+{
+	size_t idx = 0;
+	for (const auto& modelPair : ModelsManager::modelsPaths) {
+		if (modelPair.first == modelId) return idx;
+		++idx;
+	}
+	SPDLOG_WARN("Model '{0}' Not Found", modelId);
+	return idx;
 }
 
 void SceneManager::UnloadCurrent()

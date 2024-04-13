@@ -501,7 +501,21 @@ void SceneManager::LoadScene(const string& name)
 			// Fill Component with values
 			comp->SetEnable(componentNode["enabled"].as<bool>());
 
-			// Fill Component with specialized values
+			if (componentNode["subTypes"]) {
+				// Fill Component with SubTypes values
+				for (const YAML::Node& subTypeNode : componentNode["subTypes"]) {
+					string subType = subTypeNode.as<string>();
+					if (!ComponentDeserializer::HasDeserializer(subType)) {
+						SPDLOG_ERROR("Couldn't find deserializer for component of subType '{0}'", subType);
+						continue;
+					}
+
+					ComponentDeserializer::GetDeserializeAction(subType)(comp, componentNode);
+				}
+			}
+			
+
+			// Fill Component with Type values
 			ComponentDeserializer::GetDeserializeAction(type)(comp, componentNode);
 
 			obj->AddComponent(comp);

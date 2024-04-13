@@ -4,6 +4,7 @@
 #include <core/EventHandler.h>
 #include <graphic/manager/TextureManager.h>
 #include <graphic/manager/SpriteManager.h>
+#include <LayersData.h>
 
 namespace Twin2Engine::Core {
 	class ComponentDeserializer {
@@ -156,6 +157,35 @@ namespace YAML {
 			rhs.y = node["y"].as<uint32_t>();
 			rhs.width = node["width"].as<uint32_t>();
 			rhs.height = node["height"].as<uint32_t>();
+			return true;
+		}
+	};
+
+	template<> struct convert<LayerCollisionFilter> {
+		static Node encode(const LayerCollisionFilter& rhs) {
+			Node node;
+			node.push_back((uint8_t)rhs.DEFAULT);
+			node.push_back((uint8_t)rhs.IGNORE_RAYCAST);
+			node.push_back((uint8_t)rhs.IGNORE_COLLISION);
+			node.push_back((uint8_t)rhs.UI);
+			node.push_back((uint8_t)rhs.LAYER_1);
+			node.push_back((uint8_t)rhs.LAYER_2);
+			node.push_back((uint8_t)rhs.LAYER_3);
+			node.push_back((uint8_t)rhs.LAYER_4);
+			return node;
+		}
+
+		static bool decode(const Node& node, LayerCollisionFilter& rhs) {
+			if (!node.IsSequence()) return false;
+
+			rhs.DEFAULT = (CollisionMode)node[0].as<uint8_t>();
+			rhs.IGNORE_RAYCAST = (CollisionMode)node[1].as<uint8_t>();
+			rhs.IGNORE_COLLISION = (CollisionMode)node[2].as<uint8_t>();
+			rhs.UI = (CollisionMode)node[3].as<uint8_t>();
+			rhs.LAYER_1 = (CollisionMode)node[4].as<uint8_t>();
+			rhs.LAYER_2 = (CollisionMode)node[5].as<uint8_t>();
+			rhs.LAYER_3 = (CollisionMode)node[6].as<uint8_t>();
+			rhs.LAYER_4 = (CollisionMode)node[7].as<uint8_t>();
 			return true;
 		}
 	};

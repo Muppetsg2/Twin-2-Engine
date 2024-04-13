@@ -24,7 +24,7 @@ namespace Twin2Engine::Core {
 	class ColliderComponent : public Component {
 	protected:
 		ColliderComponent(); // Powoduje ¿e klasa jest jakby abstrakcyjna no chyba ¿e bêdzie dziedziczona
-		CollisionSystem::GameCollider * collider = nullptr;
+		CollisionSystem::GameCollider* collider = nullptr;
 		CollisionSystem::BoundingVolume* boundingVolume;
 
 	public:

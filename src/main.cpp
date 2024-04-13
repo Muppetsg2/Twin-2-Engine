@@ -199,20 +199,6 @@ int main(int, char**)
     GraphicEngineManager::Init();
 
     // COMPONENTS DESELIALIZERS
-    ComponentDeserializer::AddDeserializer("Image",
-        []() -> Component* {
-            return new Image();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            Image* img = static_cast<Image*>(comp);
-            img->SetIsTransparent(node["isTransparent"].as<bool>());
-            img->SetSprite(SceneManager::GetSprite(node["sprite"].as<size_t>()));
-            img->SetColor(node["color"].as<vec4>());
-            img->SetWidth(node["width"].as<float>());
-            img->SetHeight(node["height"].as<float>());
-        }
-    );
-
     ComponentDeserializer::AddDeserializer("Camera",
         []() -> Component* {
             return new CameraComponent();
@@ -222,7 +208,9 @@ int main(int, char**)
             cam->SetFOV(node["fov"].as<float>());
             cam->SetNearPlane(node["nearPlane"].as<float>());
             cam->SetFarPlane(node["farPlane"].as<float>());
+            cam->SetCameraFilter(node["cameraFilter"].as<uint8_t>());
             cam->SetCameraType((CameraType)node["cameraType"].as<int>());
+            cam->SetSamples(node["samples"].as<uint8_t>());
             cam->SetFrontDir(node["frontDir"].as<vec3>());
             cam->SetWorldUp(node["worldUp"].as<vec3>());
             cam->SetIsMain(node["isMain"].as<bool>());
@@ -242,13 +230,36 @@ int main(int, char**)
         }
     );
 
+    // Only for subTypes
+    ComponentDeserializer::AddDeserializer("Renderable",
+        []() -> Component* {
+            return nullptr;
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            RenderableComponent* renderable = static_cast<RenderableComponent*>(comp);
+            renderable->SetIsTransparent(node["isTransparent"].as<bool>());
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("Image",
+        []() -> Component* {
+            return new Image();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            Image* img = static_cast<Image*>(comp);
+            img->SetSprite(SceneManager::GetSprite(node["sprite"].as<size_t>()));
+            img->SetColor(node["color"].as<vec4>());
+            img->SetWidth(node["width"].as<float>());
+            img->SetHeight(node["height"].as<float>());
+        }
+    );
+
     ComponentDeserializer::AddDeserializer("Text",
         []() -> Component* {
             return new Text();
         },
         [](Component* comp, const YAML::Node& node) -> void {
             Text* text = static_cast<Text*>(comp);
-            text->SetIsTransparent(node["isTransparent"].as<bool>());
             text->SetText(node["text"].as<string>());
             text->SetColor(node["color"].as<vec4>());
             text->SetSize(node["size"].as<uint32_t>());
@@ -262,11 +273,67 @@ int main(int, char**)
         },
         [](Component* comp, const YAML::Node& node) -> void {
             MeshRenderer* meshRenderer = static_cast<MeshRenderer*>(comp);
-            meshRenderer->SetIsTransparent(node["isTransparent"].as<bool>());
             for (const YAML::Node& matNode : node["materials"]) {
                 meshRenderer->AddMaterial(SceneManager::GetMaterial(matNode.as<size_t>()));
             }
             meshRenderer->SetModel(SceneManager::GetModel(node["model"].as<size_t>()));
+        }
+    );
+
+    // Only for subTypes
+    ComponentDeserializer::AddDeserializer("Collider",
+        []() -> Component* {
+            return nullptr;
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            ColliderComponent* collider = static_cast<ColliderComponent*>(comp);
+            collider->SetTrigger(node["trigger"].as<bool>());
+            collider->SetStatic(node["static"].as<bool>());
+            collider->SetLayer((Layer)node["layer"].as<uint8_t>());
+            LayerCollisionFilter filter = node["layerFilter"].as<LayerCollisionFilter>();
+            collider->SetLayersFilter(filter);
+            collider->EnableBoundingVolume(node["boundingVolume"].as<bool>());
+            collider->SetBoundingVolumeRadius(node["boundingVolumeRadius"].as<float>());
+            vec3 position = node["position"].as<vec3>();
+            collider->SetLocalPosition(position.x, position.y, position.z);
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("SphereCollider",
+        []() -> Component* {
+            return new SphereColliderComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            SphereColliderComponent* sphereCollider = static_cast<SphereColliderComponent*>(comp);
+            sphereCollider->SetRadius(node["radius"].as<float>());
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("BoxCollider",
+        []() -> Component* {
+            return new BoxColliderComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            BoxColliderComponent* boxCollider = static_cast<BoxColliderComponent*>(comp);
+            boxCollider->SetWidth(node["width"].as<float>());
+            boxCollider->SetLength(node["length"].as<float>());
+            boxCollider->SetHeight(node["height"].as<float>());
+            vec3 rotation = node["rotation"].as<vec3>();
+            boxCollider->SetXRotation(rotation.x);
+            boxCollider->SetYRotation(rotation.y);
+            boxCollider->SetZRotation(rotation.z);
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("CapsuleCollider",
+        []() -> Component* {
+            return new CapsuleColliderComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            CapsuleColliderComponent* capsuleCollider = static_cast<CapsuleColliderComponent*>(comp);
+            vec3 endPos = node["endPosition"].as<vec3>();
+            capsuleCollider->SetEndPosition(endPos.x, endPos.y, endPos.z);
+            capsuleCollider->SetRadius(node["radius"].as<float>());
         }
     );
 

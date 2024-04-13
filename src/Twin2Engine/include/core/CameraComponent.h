@@ -50,6 +50,7 @@ namespace Twin2Engine::Core {
 		size_t _camId = 0;
 
 		bool _isMain = false;
+		bool _isInit = false;
 
 		float _near = 0.1f;
 		float _far = 1000.f;

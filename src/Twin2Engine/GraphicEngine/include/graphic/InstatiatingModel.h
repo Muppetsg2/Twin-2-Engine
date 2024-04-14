@@ -32,6 +32,7 @@ namespace Twin2Engine
             //InstatiatingModel(const char* path, const vector<glm::mat4>& transforms);
             ~InstatiatingModel();
 
+            size_t GetId() const;
             size_t GetMeshCount() const;
             InstatiatingMesh* GetMesh(size_t index) const;
 

@@ -16,6 +16,7 @@ namespace Twin2Engine::Core
 			CloneField(_model)
 			CloneField(_materials)
 		CloneFunctionEnd()
+	private:
 
 		GraphicEngine::InstatiatingModel _model;
 
@@ -33,10 +34,13 @@ namespace Twin2Engine::Core
 		size_t GetMaterialCount() const;
 		GraphicEngine::Material GetMaterial(size_t index) const;
 		void AddMaterial(GraphicEngine::Material material);
+		void AddMaterial(size_t materialId);
 		void SetMaterial(size_t index, GraphicEngine::Material material);
+		void SetMaterial(size_t index, size_t materialId);
 
 
 		void SetModel(const GraphicEngine::InstatiatingModel& model);
+		void SetModel(size_t modelId);
 	};
 }
 

@@ -8,6 +8,21 @@ map<size_t, Wav*> AudioManager::_loadedAudio = map<size_t, Wav*>();
 
 bool AudioManager::_init = false;
 
+void AudioManager::UnloadAudio(size_t id)
+{
+    if (_loadedAudio.count(id) == 0) {
+        spdlog::error("AudioManager::Audio not found");
+        return;
+    }
+
+    if (_init) {
+        StopWav(id);
+    }
+
+    delete _loadedAudio[id];
+    _loadedAudio.erase(id);
+}
+
 result AudioManager::Init()
 {
     if (!_init) {
@@ -156,6 +171,31 @@ void AudioManager::StopAudio(handle h)
     else {
         spdlog::error("AudioManager::Handle Not Valid");
     }
+}
+
+void AudioManager::StopWav(string path)
+{
+    StopWav(hash<string>{}(path));
+}
+
+void AudioManager::StopWav(size_t id)
+{
+    if (!_init) {
+        spdlog::error("AudioManager::SoLoud engine not initialized");
+        return;
+    }
+
+    if (_loadedAudio.count(id) == 0) {
+        spdlog::error("AudioManager::Audio not found");
+        return;
+    }
+
+    _soloud.stopAudioSource(*_loadedAudio[id]);
+}
+
+void AudioManager::StopAll()
+{
+    _soloud.stopAll();
 }
 
 void AudioManager::SetPositionAudio(handle h, SoLoud::time seconds)

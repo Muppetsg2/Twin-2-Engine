@@ -24,7 +24,7 @@ unsigned int ShaderManager::LoadShaderProgram(const std::string& shaderName)
     unsigned int shaderProgramID;
 
     //std::string shaderPath = "ShadersOrigin/CompiledShaders/" + shaderName;
-    std::string shaderPath = "ShadersOrigin/CompiledShaders/" + shaderName + ".shdr";
+    std::string shaderPath = "res/CompiledShaders/" + shaderName + ".shdr";
 
     if (found == loadedShaders.end())
     {
@@ -585,8 +585,8 @@ Shader* ShaderManager::CreateShaderProgram(const std::string& shaderName, const 
     Shader* shader;
     if (found == loadedShaders.end())
     {
-        unsigned int vertexId = CompileShader(GL_VERTEX_SHADER, LoadShaderSource("ShadersOrigin/" + vertexShader));
-        unsigned int fragmentId = CompileShader(GL_FRAGMENT_SHADER, LoadShaderSource("ShadersOrigin/" + fragmentShader));
+        unsigned int vertexId = CompileShader(GL_VERTEX_SHADER, LoadShaderSource("res/" + vertexShader));
+        unsigned int fragmentId = CompileShader(GL_FRAGMENT_SHADER, LoadShaderSource("res/" + fragmentShader));
 
         GLuint shaderProgram = glCreateProgram();
 

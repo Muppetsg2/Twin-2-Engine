@@ -3,7 +3,7 @@
 using namespace Twin2Engine::GraphicEngine;
 using namespace std;
 
-Font::Font(FT_Library lib, FT_Face face) : _lib(lib), _face(face) {}
+Font::Font(size_t managerId, FT_Library lib, FT_Face face) : _managerId(managerId), _lib(lib), _face(face) {}
 
 Font::~Font() {
 	for (auto& s : _glyphs) {
@@ -58,6 +58,10 @@ void Font::LoadCharacter(char character, uint32_t size) {
     _glyphs[size].insert(std::pair<char, Character*>(character, glyph));
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+}
+
+size_t Font::GetManagerId() const {
+    return _managerId;
 }
 
 Character* Font::GetCharacter(char character, uint32_t size) {

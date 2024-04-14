@@ -13,8 +13,43 @@ using namespace Manager;
 using namespace glm;
 using namespace std;
 
+void Text::UpdateTextCache()
+{
+	Font* font = FontManager::GetFont(_fontId);
+	if (_size != 0 && font != nullptr) {
+		if (_justResizeCache) {
+			// Zastêpowanie
+			for (size_t i = 0; i < _oldText.size() && i < _text.size() && i < _textCache.size(); ++i) {
+				if (_oldText[i] != _text[i]) {
+					_textCache[i] = font->GetCharacter(_text[i], _size);
+				}
+			}
+
+			// Dodawanie kolejnych
+			if (_oldText.size() < _text.size()) {
+				vector<Character*> chars = font->GetText(_text.substr(_oldText.size(), _text.size() - _oldText.size() + 1), _size);
+				for (auto& c : chars) _textCache.push_back(c);
+			}
+			// Odejmowanie nadmiaru
+			else if (_oldText.size() > _text.size()) {
+				for (size_t i = _oldText.size(); i >= _text.size(); --i) _textCache.erase(_textCache.end() - 1);
+			}
+		}
+		else {
+			_textCache = font->GetText(_text, _size);
+		}
+	}
+	else {
+		_textCache.clear();
+	}
+	_textCacheDirty = false;
+	_justResizeCache = false;
+}
+
 void Text::Render()
 {
+	if (_textCacheDirty) UpdateTextCache();
+
 	UIElement elem{};
 	elem.isText = true;
 	elem.color = _color;
@@ -56,28 +91,13 @@ void Text::SetColor(const vec4& color)
 void Text::SetText(const string& text)
 {
 	if (_text != text) {
-		if (_size != 0 && _font != nullptr) {
-			// Zastêpowanie
-			for (size_t i = 0; i < _text.size() && i < text.size(); ++i) {
-				if (_text[i] != text[i]) {
-					_textCache[i] = _font->GetCharacter(text[i], _size);
-				}
-			}
-
-			// Dodawanie kolejnych
-			if (_text.size() < text.size()) {
-				vector<Character*> chars = _font->GetText(text.substr(_text.size(), text.size() - _text.size()), _size);
-				for (auto& c : chars) _textCache.push_back(c);
-			}
-			// Odejmowanie nadmiaru
-			else if (_text.size() > text.size()) {
-				for (size_t i = 0; i < _text.size() - text.size(); ++i) _textCache.erase(_textCache.begin() + text.size() + i);
-			}
-		}
-		else {
-			_textCache.clear();
-		}
+		_oldText = _text;
 		_text = text;
+
+		if (!_textCacheDirty) {
+			_textCacheDirty = true;
+			_justResizeCache = true;
+		}
 	}
 }
 
@@ -85,26 +105,22 @@ void Text::SetSize(uint32_t size)
 {
 	if (_size != size) {
 		_size = size;
-		_textCache.clear();
-		if (_font != nullptr) {
-			_textCache = _font->GetText(_text, size);
-		}
+		_textCacheDirty = true;
+		_justResizeCache = false;
 	}
 }
 
 void Text::SetFont(const string& fontPath)
 {
-	SetFont(FontManager::LoadFont(fontPath));
+	SetFont(hash<string>()(fontPath));
 }
 
-void Text::SetFont(Font* font)
+void Text::SetFont(size_t fontId)
 {
-	if (_font != font) {
-		_font = font;
-		_textCache.clear();
-		if (_size != 0) {
-			_textCache = _font->GetText(_text, _size);
-		}
+	if (_fontId != fontId) {
+		_fontId = fontId;
+		_textCacheDirty = true;
+		_justResizeCache = false;
 	}
 }
 
@@ -123,7 +139,12 @@ uint32_t Text::GetSize() const
 	return _size;
 }
 
+size_t Text::GetFontId() const
+{
+	return _fontId;
+}
+
 Font* Text::GetFont() const
 {
-	return _font;
+	return FontManager::GetFont(_fontId);
 }

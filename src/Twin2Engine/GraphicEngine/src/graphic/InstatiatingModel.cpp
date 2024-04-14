@@ -26,15 +26,11 @@ Twin2Engine::GraphicEngine::InstatiatingModel::InstatiatingModel(ModelData* mode
 Twin2Engine::GraphicEngine::InstatiatingModel::InstatiatingModel(const InstatiatingModel& model)
 {
     modelData = model.modelData;
-
-    modelData->useNumber++;
 }
 
 Twin2Engine::GraphicEngine::InstatiatingModel::InstatiatingModel(InstatiatingModel&& model)
 {
     modelData = model.modelData;
-    modelData->useNumber++;
-
 }
 
 Twin2Engine::GraphicEngine::InstatiatingModel::InstatiatingModel()
@@ -42,9 +38,13 @@ Twin2Engine::GraphicEngine::InstatiatingModel::InstatiatingModel()
     modelData = nullptr;
 }
 
-Twin2Engine::GraphicEngine::InstatiatingModel::~InstatiatingModel()
-{
-    Manager::ModelsManager::UnloadModel(modelData);
+Twin2Engine::GraphicEngine::InstatiatingModel::~InstatiatingModel() {
+
+}
+
+size_t Twin2Engine::GraphicEngine::InstatiatingModel::GetId() const {
+    if (modelData != nullptr) return modelData->id;
+    return 0;
 }
 
 size_t Twin2Engine::GraphicEngine::InstatiatingModel::GetMeshCount() const
@@ -82,25 +82,19 @@ Twin2Engine::GraphicEngine::InstatiatingMesh* Twin2Engine::GraphicEngine::Instat
 
 Twin2Engine::GraphicEngine::InstatiatingModel& Twin2Engine::GraphicEngine::InstatiatingModel::operator=(const InstatiatingModel& other)
 {
-    Manager::ModelsManager::UnloadModel(modelData);
     modelData = other.modelData;
-    modelData->useNumber++;
     return *this;
 }
 
 Twin2Engine::GraphicEngine::InstatiatingModel& Twin2Engine::GraphicEngine::InstatiatingModel::operator=(InstatiatingModel&& other)
 {
-    Manager::ModelsManager::UnloadModel(modelData);
     modelData = other.modelData;
-    modelData->useNumber++;
-
     return *this;
 }
 
 Twin2Engine::GraphicEngine::InstatiatingModel& Twin2Engine::GraphicEngine::InstatiatingModel::operator=(std::nullptr_t)
 {
-    Manager::ModelsManager::UnloadModel(modelData);
-
+    modelData = nullptr;
     return *this;
 }
 

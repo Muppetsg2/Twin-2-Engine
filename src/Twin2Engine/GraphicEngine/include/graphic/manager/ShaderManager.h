@@ -14,7 +14,7 @@ namespace Twin2Engine::Manager
 	// Define the file extension for compiled shader binary files
 	constexpr char SHADER_BINARY_EXTENSION[] = ".shdr";
 
-	constexpr char SHADERS_ORIGIN_DIRETORY[] = "ShadersOrigin";
+	constexpr char SHADERS_ORIGIN_DIRETORY[] = "res";
 
 	/// <summary>
 	/// Shader Manager obs³uguje:

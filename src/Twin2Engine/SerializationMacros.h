@@ -25,7 +25,6 @@
 // Macro to end the clone function definition
 #define CloneFunctionEnd() \
     } \
-    private:
 
 // Macro to define the clone function
 //#define CloneFunction(className, baseClassName, ...) \

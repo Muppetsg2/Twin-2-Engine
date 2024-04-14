@@ -53,12 +53,12 @@ void CameraComponent::OnWindowSizeChange()
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
 
-CameraType CameraComponent::GetCameraType()
+CameraType CameraComponent::GetCameraType() const
 {
 	return _type;
 }
 
-uint8_t CameraComponent::GetCameraFilters()
+uint8_t CameraComponent::GetCameraFilters() const
 {
 	return _filters;
 }
@@ -113,6 +113,7 @@ mat4 CameraComponent::GetProjectionMatrix() const
 			break;
 		}
 	}
+	return mat4(1.f);
 }
 
 Frustum CameraComponent::GetFrustum() const
@@ -184,15 +185,17 @@ void CameraComponent::SetSamples(uint8_t i)
 {
 	_samples = i > 16 ? 16 : i < 1 ? 1 : i;
 
-	ivec2 wSize = Window::GetInstance()->GetContentSize();
+	if (_isInit) {
+		ivec2 wSize = Window::GetInstance()->GetContentSize();
 
-	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB, wSize.x, wSize.y, GL_TRUE);
-	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB, wSize.x, wSize.y, GL_TRUE);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
-	glBindRenderbuffer(GL_RENDERBUFFER, _msRenderBuffer);
-	glRenderbufferStorageMultisample(GL_RENDERBUFFER, _samples, GL_DEPTH24_STENCIL8, wSize.x, wSize.y);
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+		glBindRenderbuffer(GL_RENDERBUFFER, _msRenderBuffer);
+		glRenderbufferStorageMultisample(GL_RENDERBUFFER, _samples, GL_DEPTH24_STENCIL8, wSize.x, wSize.y);
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	}
 }
 
 void CameraComponent::SetFrontDir(vec3 dir)
@@ -233,16 +236,14 @@ void CameraComponent::Render()
 {
 	// UBO's
 	//Jesli wiecej kamer i kazda ma ze swojego kata dawac obraz
-	glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	//glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
+	//glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
+	glNamedBufferSubData(_uboMatrices, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
+	glNamedBufferSubData(_uboMatrices, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
 
-	glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(vec2), value_ptr(Window::GetInstance()->GetContentSize()));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2), sizeof(float), &(this->_near));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float), sizeof(float), &(this->_far));
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	glNamedBufferSubData(_uboWindowData, 0, sizeof(vec2), value_ptr(Window::GetInstance()->GetContentSize()));
+	glNamedBufferSubData(_uboWindowData, sizeof(vec2), sizeof(float), &(this->_near));
+	glNamedBufferSubData(_uboWindowData, sizeof(vec2) + sizeof(float), sizeof(float), &(this->_far));
 
 	// DEPTH MAP
 	glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
@@ -428,6 +429,8 @@ void CameraComponent::Initialize()
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 #pragma endregion
+
+	_isInit = true;
 }
 
 void CameraComponent::OnDestroy()

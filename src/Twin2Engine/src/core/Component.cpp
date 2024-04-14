@@ -4,9 +4,26 @@
 using namespace Twin2Engine::Core;
 using namespace std;
 
-static size_t GetUniqueComponentId() {
-	static size_t id = 0;
-	return id++;
+size_t Component::_currentFreeId = 0;
+list<size_t> Component::_freedIds;
+
+size_t Component::GetFreeId()
+{
+	size_t id;
+	if (_freedIds.size() > 0) {
+		id = _freedIds.front();
+		_freedIds.pop_front();
+	}
+	else {
+		id = _currentFreeId++;
+	}
+	return id;
+}
+
+void Component::FreeId(size_t id)
+{
+	_freedIds.push_back(id);
+	_freedIds.sort();
 }
 
 Component::Component()
@@ -78,7 +95,21 @@ string Component::GetName() const
 
 void Component::Init(GameObject* obj)
 {
-	_id = GetUniqueComponentId();
+	_id = GetFreeId();
+	_gameObject = obj;
+	_enabled = true;
+	Initialize();
+	OnEnable();
+}
+
+void Component::Init(GameObject* obj, size_t id)
+{
+	_id = id;
+	if (_currentFreeId <= _id) {
+		for (; _currentFreeId < _id; ++_currentFreeId) _freedIds.push_back(_currentFreeId);
+		_freedIds.sort();
+		_currentFreeId = _id + 1;
+	}
 	_gameObject = obj;
 	_enabled = true;
 	Initialize();

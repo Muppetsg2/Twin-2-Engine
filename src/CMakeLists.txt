@@ -1,8 +1,4 @@
-#file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_BINARY_DIR}/ShadersOrigin SYMBOLIC)
 configure_file(GameConfig.yaml.in GameConfig.yaml)
-
-file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_BINARY_DIR}/ShadersOrigin SYMBOLIC)
-file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_SOURCE_DIR}/ShadersOrigin SYMBOLIC)
 
 # ---- Dependency ----
 add_subdirectory(Twin2Engine)
@@ -12,7 +8,7 @@ add_subdirectory(CollisionSystem)
 #add_subdirectory(Tilemap)
 
 
-add_executable(${PROJECT_NAME} main.cpp "Additional/Generation/pch.h")
+add_executable(${PROJECT_NAME} main.cpp)
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)
 
@@ -34,7 +30,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC CollisionSystem)
 #				   ${CMAKE_SOURCE_DIR}/res 
 #				   ${CMAKE_CURRENT_BINARY_DIR}/res)
 
-#file(CREATE_LINK ${CMAKE_SOURCE_DIR}/res ${CMAKE_CURRENT_SOURCE_DIR}/res SYMBOLIC)
+file(CREATE_LINK ${CMAKE_SOURCE_DIR}/res ${CMAKE_CURRENT_BINARY_DIR}/res SYMBOLIC)
 
 if(MSVC)
     target_compile_definitions(${PROJECT_NAME} PUBLIC NOMINMAX)
@@ -42,7 +38,7 @@ endif()
 
 # Set the directory paths
 set(SHADERS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/res/shaders/SPIRV")
-set(SHADERS_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/res/CompiledShaders/SPIRV")
+set(SHADERS_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/res/CompiledShaders/SPIRV")
 
 find_program(GLSLANG_VALIDATOR NAMES glslangValidator)
 
@@ -56,7 +52,7 @@ function(compile_shader shader_path)
     get_filename_component(shader_name ${shader_path} NAME_WE)
     get_filename_component(shader_ext ${shader_path} EXT)
 
-     file(RELATIVE_PATH RELATIVE_SOURCE ${SHADERS_SOURCE_DIR} ${shader_path})
+    file(RELATIVE_PATH RELATIVE_SOURCE ${SHADERS_SOURCE_DIR} ${shader_path})
 
     #set(output_file "${SHADERS_OUTPUT_DIR}/${shader_name}${shader_ext}")
     set(output_file "${SHADERS_OUTPUT_DIR}/${RELATIVE_SOURCE}")

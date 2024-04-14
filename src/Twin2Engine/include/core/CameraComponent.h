@@ -32,16 +32,16 @@ namespace Twin2Engine::Core {
 		static Twin2Engine::GraphicEngine::InstatiatingModel _renderPlane;
 		static Twin2Engine::GraphicEngine::Shader* _renderShader;
 
-		GLuint _depthMapFBO;
-		GLuint _depthMap;
+		GLuint _depthMapFBO = NULL;
+		GLuint _depthMap = NULL;
 
 		// MSAA Render
-		GLuint _msRenderMapFBO;
-		GLuint _msRenderMap;
-		GLuint _msRenderBuffer;
+		GLuint _msRenderMapFBO = NULL;
+		GLuint _msRenderMap = NULL;
+		GLuint _msRenderBuffer = NULL;
 
-		GLuint _renderMap;
-		GLuint _renderMapFBO;
+		GLuint _renderMap = NULL;
+		GLuint _renderMapFBO = NULL;
 
 		CameraType _type = PERSPECTIVE;
 		uint8_t _filters = NONE;
@@ -50,6 +50,7 @@ namespace Twin2Engine::Core {
 		size_t _camId = 0;
 
 		bool _isMain = false;
+		bool _isInit = false;
 
 		float _near = 0.1f;
 		float _far = 1000.f;
@@ -68,8 +69,8 @@ namespace Twin2Engine::Core {
 	public:
 		static std::vector<CameraComponent*> Cameras;
 
-		CameraType GetCameraType();
-		uint8_t GetCameraFilters();
+		CameraType GetCameraType() const;
+		uint8_t GetCameraFilters() const;
 
 		float GetNearPlane() const;
 		float GetFarPlane() const;
@@ -90,7 +91,7 @@ namespace Twin2Engine::Core {
 		
 		void SetCameraFilter(uint8_t filters);
 		void SetCameraType(CameraType value);
-		void SetSamples(uint8_t i = 4);
+		void SetSamples(uint8_t i = 16);
 
 		void SetFrontDir(vec3 dir);
 		void SetWorldUp(vec3 value);

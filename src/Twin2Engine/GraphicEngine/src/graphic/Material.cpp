@@ -36,33 +36,22 @@ Material::Material()
 
 Material::~Material()
 {
-	MaterialsManager::UnloadMaterial(*this);
 }
 
 Material& Material::operator=(const Material& other)
 {
-	MaterialsManager::UnloadMaterial(*this);
-
 	_materialData = other._materialData;
-	_materialData->useNumber++;
-
 	return *this;
 }
 
 Material& Material::operator=(Material&& other)
 {
-	MaterialsManager::UnloadMaterial(*this);
-
 	_materialData = other._materialData;
-	_materialData->useNumber++;
-
 	return *this;
 }
 
 Material& Material::operator=(std::nullptr_t)
-{
-	MaterialsManager::UnloadMaterial(*this);
-	
+{	
 	_materialData = nullptr;
 
 	return *this;

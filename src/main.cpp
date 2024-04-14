@@ -28,7 +28,7 @@
 // GRAPHIC_ENGINE
 #include <GraphicEnigineManager.h>
 
-//LOGGER
+// LOGGER
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
@@ -43,6 +43,13 @@
 
 // CAMERA
 #include <core/CameraComponent.h>
+
+// SCENE
+#include <core/Scene.h>
+#include <manager/SceneManager.h>
+
+// DESERIALIZATION
+#include <core/ComponentDeserializer.h>
 
 // TILEMAP
 #include <Tilemap/HexagonalTilemap.h>
@@ -68,8 +75,6 @@ using namespace Generation;
 
 #pragma region CAMERA_CONTROLLING
 
-GameObject Camera;
-
 glm::vec3 cameraPos(0.f, 2.f, 5.f);
 
 double lastX = 0.0f;
@@ -91,7 +96,31 @@ static void glfw_error_callback(int error, const char* description)
 
 static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
-    spdlog::error("GL CALLBACK: {0} type = 0x{1:x}, severity = 0x{2:x}, message = {3}\n", (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
+    if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) return; // Chce ignorowa� notyfikacje
+
+    string severityS = "";
+    if (severity == GL_DEBUG_SEVERITY_HIGH) severityS = "HIGHT";
+    else if (severity == GL_DEBUG_SEVERITY_MEDIUM) severityS = "MEDIUM";
+    else if (severity == GL_DEBUG_SEVERITY_LOW) severityS = "LOW";
+    else if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) severityS = "NOTIFICATION";
+
+    if (type == GL_DEBUG_TYPE_ERROR) {
+        spdlog::error("GL CALLBACK: type = ERROR, severity = {0}, message = {1}\n", severityS, message);
+    }
+    else if (type == GL_DEBUG_TYPE_MARKER) {
+        spdlog::info("GL CALLBACK: type = MARKER, severity = {0}, message = {1}\n", severityS, message);
+    }
+    else {
+        string typeS = "";
+        if (type == GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR) typeS = "DEPRACTED BEHAVIOUR";
+        else if (type == GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR) typeS = "UNDEFINED BEHAVIOUR";
+        else if (type == GL_DEBUG_TYPE_PORTABILITY) typeS = "PORTABILITY";
+        else if (type == GL_DEBUG_TYPE_PERFORMANCE) typeS = "PERFORMANCE";
+        else if (type == GL_DEBUG_TYPE_PUSH_GROUP) typeS = "PUSH GROUP";
+        else if (type == GL_DEBUG_TYPE_POP_GROUP) typeS = "POP GROUP";
+        else if (type == GL_DEBUG_TYPE_OTHER) typeS = "OTHER";
+        spdlog::warn("GL CALLBACK: type = {0}, severity = {1}, message = {2}\n", typeS, severityS, message);
+    }
 }
 
 #pragma endregion
@@ -143,8 +172,9 @@ GameObject* imageObj2;
 GameObject* imageObj3;
 Image* image;
 float colorSpan = 1.f;
-GameObject* textObj;
 Text* text;
+
+GameObject* Camera;
 
 int main(int, char**)
 {
@@ -181,66 +211,158 @@ int main(int, char**)
     // Set global log level to debug
     spdlog::set_level(spdlog::level::debug);
 
-    Camera.GetTransform()->SetGlobalPosition(cameraPos);
-    Camera.GetTransform()->SetGlobalRotation(glm::vec3(0.f, -90.f, 0.f));
-
-    CameraComponent* c = Camera.AddComponent<CameraComponent>();
-    c->SetFOV(45.f);
-
-    AudioComponent* a = Camera.AddComponent<AudioComponent>();
-    a->SetAudio("./res/music/acoustic-guitar.mp3");
-    a->Loop();
-
     GraphicEngineManager::Init();
 
-    modelMesh = ModelsManager::GetCube();
+    // COMPONENTS DESELIALIZERS
+    ComponentDeserializer::AddDeserializer("Camera",
+        []() -> Component* {
+            return new CameraComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            CameraComponent* cam = static_cast<CameraComponent*>(comp);
+            cam->SetFOV(node["fov"].as<float>());
+            cam->SetNearPlane(node["nearPlane"].as<float>());
+            cam->SetFarPlane(node["farPlane"].as<float>());
+            cam->SetCameraFilter(node["cameraFilter"].as<uint8_t>());
+            cam->SetCameraType((CameraType)node["cameraType"].as<int>());
+            cam->SetSamples(node["samples"].as<uint8_t>());
+            cam->SetFrontDir(node["frontDir"].as<vec3>());
+            cam->SetWorldUp(node["worldUp"].as<vec3>());
+            cam->SetIsMain(node["isMain"].as<bool>());
+        }
+    );
 
-    material = MaterialsManager::GetMaterial("Basic2");
+    ComponentDeserializer::AddDeserializer("Audio",
+        []() -> Component* {
+            return new AudioComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            AudioComponent* audio = static_cast<AudioComponent*>(comp);
+            audio->SetAudio(SceneManager::GetAudio(node["audio"].as<size_t>()));
+            if (node["loop"].as<bool>()) audio->Loop(); else audio->UnLoop();
+            audio->SetTimePosition(node["time"].as<double>());
+            audio->SetVolume(node["volume"].as<float>());
+        }
+    );
 
-    //material2 = MaterialsManager::GetMaterial("Basic2");
-    //material = MaterialsManager::GetMaterial("textured");
-    material2 = MaterialsManager::GetMaterial("textured");
-    wallMat = MaterialsManager::GetMaterial("wallMat");
-    roofMat = MaterialsManager::GetMaterial("roofMat");
+    // Only for subTypes
+    ComponentDeserializer::AddDeserializer("Renderable",
+        []() -> Component* {
+            return nullptr;
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            RenderableComponent* renderable = static_cast<RenderableComponent*>(comp);
+            renderable->SetIsTransparent(node["isTransparent"].as<bool>());
+        }
+    );
 
-    gameObject = new GameObject();
-    auto comp = gameObject->AddComponent<MeshRenderer>();
-    gameObject->GetTransform()->Translate(glm::vec3(2, 5, 0));
-    comp->AddMaterial(material);
-    comp->SetModel(modelMesh);
+    ComponentDeserializer::AddDeserializer("Image",
+        []() -> Component* {
+            return new Image();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            Image* img = static_cast<Image*>(comp);
+            img->SetSprite(SceneManager::GetSprite(node["sprite"].as<size_t>()));
+            img->SetColor(node["color"].as<vec4>());
+            img->SetWidth(node["width"].as<float>());
+            img->SetHeight(node["height"].as<float>());
+        }
+    );
 
-    gameObject2 = new GameObject();
-    gameObject2->GetTransform()->Translate(glm::vec3(2, 3, 0));
-    comp = gameObject2->AddComponent<MeshRenderer>();
-    comp->AddMaterial(material2);
-    comp->SetModel(modelMesh);
+    ComponentDeserializer::AddDeserializer("Text",
+        []() -> Component* {
+            return new Text();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            Text* text = static_cast<Text*>(comp);
+            text->SetText(node["text"].as<string>());
+            text->SetColor(node["color"].as<vec4>());
+            text->SetSize(node["size"].as<uint32_t>());
+            text->SetFont(SceneManager::GetFont(node["font"].as<size_t>()));
+        }
+    );
 
-    InstatiatingModel modelCastle = ModelsManager::GetModel("res/models/castle.obj");
+    ComponentDeserializer::AddDeserializer("MeshRenderer",
+        []() -> Component* {
+            return new MeshRenderer();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            MeshRenderer* meshRenderer = static_cast<MeshRenderer*>(comp);
+            for (const YAML::Node& matNode : node["materials"]) {
+                meshRenderer->AddMaterial(SceneManager::GetMaterial(matNode.as<size_t>()));
+            }
+            meshRenderer->SetModel(SceneManager::GetModel(node["model"].as<size_t>()));
+        }
+    );
 
-    gameObject3 = new GameObject();
-    gameObject3->GetTransform()->Translate(glm::vec3(0, 3, 0));
-    gameObject3->GetTransform()->SetLocalRotation(glm::vec3(0, 0, 0));
-    comp = gameObject3->AddComponent<MeshRenderer>();
-    comp->AddMaterial(wallMat);
-    comp->AddMaterial(roofMat);
-    comp->SetModel(modelCastle);
+    // Only for subTypes
+    ComponentDeserializer::AddDeserializer("Collider",
+        []() -> Component* {
+            return nullptr;
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            ColliderComponent* collider = static_cast<ColliderComponent*>(comp);
+            collider->SetTrigger(node["trigger"].as<bool>());
+            collider->SetStatic(node["static"].as<bool>());
+            collider->SetLayer((Layer)node["layer"].as<uint8_t>());
+            LayerCollisionFilter filter = node["layerFilter"].as<LayerCollisionFilter>();
+            collider->SetLayersFilter(filter);
+            collider->EnableBoundingVolume(node["boundingVolume"].as<bool>());
+            collider->SetBoundingVolumeRadius(node["boundingVolumeRadius"].as<float>());
+            vec3 position = node["position"].as<vec3>();
+            collider->SetLocalPosition(position.x, position.y, position.z);
+        }
+    );
 
-    InstatiatingModel modelAK = ModelsManager::GetModel("res/models/AK47.obj");
+    ComponentDeserializer::AddDeserializer("SphereCollider",
+        []() -> Component* {
+            return new SphereColliderComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            SphereColliderComponent* sphereCollider = static_cast<SphereColliderComponent*>(comp);
+            sphereCollider->SetRadius(node["radius"].as<float>());
+        }
+    );
 
-    gameObject4 = new GameObject();
-    gameObject4->GetTransform()->Translate(glm::vec3(0, 0, 10));
-    gameObject4->GetTransform()->Rotate(glm::vec3(90, 0, 0));
-    comp = gameObject4->AddComponent<MeshRenderer>();
-    comp->AddMaterial(MaterialsManager::GetMaterial("deska"));
-    comp->AddMaterial(MaterialsManager::GetMaterial("metal"));
-    comp->SetModel(modelAK);
+    ComponentDeserializer::AddDeserializer("BoxCollider",
+        []() -> Component* {
+            return new BoxColliderComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            BoxColliderComponent* boxCollider = static_cast<BoxColliderComponent*>(comp);
+            boxCollider->SetWidth(node["width"].as<float>());
+            boxCollider->SetLength(node["length"].as<float>());
+            boxCollider->SetHeight(node["height"].as<float>());
+            vec3 rotation = node["rotation"].as<vec3>();
+            boxCollider->SetXRotation(rotation.x);
+            boxCollider->SetYRotation(rotation.y);
+            boxCollider->SetZRotation(rotation.z);
+        }
+    );
 
-    InstatiatingModel modelHexagon = ModelsManager::GetModel("res/models/hexagon.obj");
+    ComponentDeserializer::AddDeserializer("CapsuleCollider",
+        []() -> Component* {
+            return new CapsuleColliderComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            CapsuleColliderComponent* capsuleCollider = static_cast<CapsuleColliderComponent*>(comp);
+            vec3 endPos = node["endPosition"].as<vec3>();
+            capsuleCollider->SetEndPosition(endPos.x, endPos.y, endPos.z);
+            capsuleCollider->SetRadius(node["radius"].as<float>());
+        }
+    );
 
+    // ADDING SCENES
+    SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
+
+    // SCENE OBJECTS
+
+    //*
+    InstatiatingModel modelHexagon = ModelsManager::LoadModel("res/models/hexagon.obj");
     GameObject* hexagonPrefab = new GameObject();
     hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
     hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
-    comp = hexagonPrefab->AddComponent<MeshRenderer>();
+    auto comp = hexagonPrefab->AddComponent<MeshRenderer>();
     comp->AddMaterial(MaterialsManager::GetMaterial("ColoredHexTile"));
     //comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
     comp->SetModel(modelHexagon);
@@ -327,30 +449,30 @@ int main(int, char**)
     /**/
 
 
-    imageObj = new GameObject();
-    imageObj->GetTransform()->SetGlobalPosition(glm::vec3(-900, 500, 0));
-    Image* img = imageObj->AddComponent<Image>();
-    img->SetSprite(SpriteManager::MakeSprite("stone", "res/textures/stone.jpg"));
-    Image* img2 = imageObj->AddComponent<Image>();
-    img2->SetSprite(SpriteManager::MakeSprite("grass", "res/textures/grass.png"));
-
-    imageObj2 = new GameObject();
-    imageObj2->GetTransform()->SetGlobalPosition(glm::vec3(900, 500, 0));
-    img = imageObj2->AddComponent<Image>();
-    img->SetSprite("grass");
-
-    imageObj3 = new GameObject();
-    imageObj3->GetTransform()->SetGlobalPosition(glm::vec3(0, -500, 0));
-    image = imageObj3->AddComponent<Image>();
-    image->SetSprite(SpriteManager::MakeSprite("white_box", "res/textures/white.png"));
-
-    textObj = new GameObject();
-    textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
-    text = textObj->AddComponent<Text>();
-    text->SetColor(glm::vec4(1.f));
-    text->SetText("Text");
-    text->SetSize(48);
-    text->SetFont("res/fonts/arial.ttf");
+    //imageObj = new GameObject();
+    //imageObj->GetTransform()->SetGlobalPosition(glm::vec3(-900, 500, 0));
+    //Image* img = imageObj->AddComponent<Image>();
+    //img->SetSprite(SpriteManager::MakeSprite("stone", "res/textures/stone.jpg"));
+    //Image* img2 = imageObj->AddComponent<Image>();
+    //img2->SetSprite(SpriteManager::MakeSprite("grass", "res/textures/grass.png"));
+    //
+    //imageObj2 = new GameObject();
+    //imageObj2->GetTransform()->SetGlobalPosition(glm::vec3(900, 500, 0));
+    //img = imageObj2->AddComponent<Image>();
+    //img->SetSprite("grass");
+    //
+    //imageObj3 = new GameObject();
+    //imageObj3->GetTransform()->SetGlobalPosition(glm::vec3(0, -500, 0));
+    //image = imageObj3->AddComponent<Image>();
+    //image->SetSprite(SpriteManager::MakeSprite("white_box", "res/textures/white.png"));
+    //
+    //textObj = new GameObject();
+    //textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
+    //text = textObj->AddComponent<Text>();
+    //text->SetColor(glm::vec4(1.f));
+    //text->SetText("Text");
+    //text->SetSize(48);
+    //text->SetFont("res/fonts/arial.ttf");
 
     GameObject go1;
     GameObject go2;
@@ -365,7 +487,13 @@ int main(int, char**)
     bc1->Update();
     bc2->Update();
 
-    CollisionSystem::CollisionManager::Instance()->PerformCollisions();
+    CollisionSystem::CollisionManager::Instance()->PerformCollisions();/**/
+    
+    SceneManager::LoadScene("testScene");
+
+    Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
+    image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
+    text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
 
     // Main loop
     while (!window->IsClosed())
@@ -389,14 +517,7 @@ int main(int, char**)
     }
 
     // Cleanup
-    delete gameObject;
-    delete gameObject2;
-    delete gameObject3;
-    delete gameObject4;
-    delete imageObj;
-    delete imageObj2;
-    delete imageObj3;
-    delete textObj;
+    SceneManager::UnloadAll();
     SpriteManager::UnloadAll();
     TextureManager::UnloadAll();
     AudioManager::UnloadAll();
@@ -407,7 +528,7 @@ int main(int, char**)
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    delete Window::GetInstance();
+    Window::FreeAll();
     glfwTerminate();
 
     GraphicEngineManager::End();
@@ -442,13 +563,15 @@ bool init()
     }
     spdlog::info("Successfully initialized OpenGL loader!");
 
-    /*
+    
 #ifdef _DEBUG
     // Debugging
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(ErrorMessageCallback, 0);
+
+    const GLubyte* renderer = glGetString(GL_RENDERER);
+    spdlog::info("Graphic Card: {0}", (char*)renderer);
 #endif
-    */
 
     // Blending
     glEnable(GL_BLEND);
@@ -506,23 +629,23 @@ void input()
         return;
     }
 
-    CameraComponent* c = Camera.GetComponent<CameraComponent>();
+    CameraComponent* c = CameraComponent::GetMainCamera();
 
     if (Input::IsKeyDown(KEY::W))
     {
-        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
     if (Input::IsKeyDown(KEY::S))
     {
-        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
     if (Input::IsKeyDown(KEY::A))
     {
-        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
     if (Input::IsKeyDown(KEY::D))
     {
-        Camera.GetTransform()->SetGlobalPosition(Camera.GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
 
     if (Input::IsKeyPressed(KEY::LEFT_ALT)) 
@@ -558,22 +681,22 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     xoffset *= sensitivity;
     yoffset *= sensitivity;
 
-    glm::vec3 rot = Camera.GetTransform()->GetGlobalRotation();
+    glm::vec3 rot = Camera->GetTransform()->GetGlobalRotation();
 
     // YAW = ROT Y
     // PITCH = ROT X
     // ROLL = ROT Z
 
-    Camera.GetTransform()->SetGlobalRotation(glm::vec3(rot.x + yoffset, rot.y + xoffset, rot.z));
+    Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x + yoffset, rot.y + xoffset, rot.z));
 
-    rot = Camera.GetTransform()->GetGlobalRotation();
+    rot = Camera->GetTransform()->GetGlobalRotation();
 
     if (rot.x > 89.0f) {
-        Camera.GetTransform()->SetGlobalRotation(glm::vec3(89.f, rot.y, rot.z));
+        Camera->GetTransform()->SetGlobalRotation(glm::vec3(89.f, rot.y, rot.z));
     }
     if (rot.x < -89.0f)
     {
-        Camera.GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
+        Camera->GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
     }
 }
 
@@ -581,6 +704,7 @@ void update()
 {
     // Update game objects' state here
     text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
+    SceneManager::UpdateCurrentScene();
 
     colorSpan -= Time::GetDeltaTime() * 0.2f;
     if (colorSpan <= 0.f) {
@@ -598,21 +722,12 @@ void update()
     }
     // WIDTH
     image->SetWidth(1000.f * colorSpan);
-
-    Camera.GetTransform()->Update();
 }
 
 void render()
 {
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // OpenGL Rendering code goes here
-    for (auto& comp : RenderableComponent::_components) {
-        comp->Render();
-    }
-    /*
-    GraphicEngineManager::Render();
-    */
-
+    SceneManager::RenderCurrentScene();
     CameraComponent::GetMainCamera()->Render();
 }
 
@@ -645,7 +760,7 @@ void imgui_render()
 #pragma region IMGUI_AUDIO_SETUP
         if (ImGui::CollapsingHeader("Audio")) {
 
-            AudioComponent* a = Camera.GetComponent<AudioComponent>();
+            AudioComponent* a = Camera->GetComponent<AudioComponent>();
             bool loop = a->IsLooping();
 
             if (ImGui::Checkbox("Loop", &loop)) {
@@ -673,15 +788,15 @@ void imgui_render()
             ImGui::Text("Play Time: %02.0f:%02.0f", std::floor(a->GetPlayTime() / 60), mod(a->GetPlayTime(), 60));
 
             if (ImGui::Button("Play Song")) {
-                Camera.GetComponent<AudioComponent>()->Play();
+                Camera->GetComponent<AudioComponent>()->Play();
             }
 
             if (ImGui::Button("Pause Song")) {
-                Camera.GetComponent<AudioComponent>()->Pause();
+                Camera->GetComponent<AudioComponent>()->Pause();
             }
 
             if (ImGui::Button("Stop Song")) {
-                Camera.GetComponent<AudioComponent>()->Stop();
+                Camera->GetComponent<AudioComponent>()->Stop();
             }
         }
 #pragma endregion

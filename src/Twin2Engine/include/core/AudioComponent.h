@@ -10,7 +10,7 @@ namespace Twin2Engine::Core {
 	class AudioComponent : public Component {
 	private:
 		size_t _audioId = 0;
-		handle _audioHandle;
+		handle _audioHandle = 0;
 
 		bool _loaded = false;
 		bool _loop = false;

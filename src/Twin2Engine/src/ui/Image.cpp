@@ -13,30 +13,29 @@ using namespace std;
 
 void Image::Render()
 {
-	UIElement elem{};
-	elem.isText = false;
-	elem.textureID = _sprite->GetTexture()->GetId();
-	elem.textureSize = { _sprite->GetTexture()->GetWidth(), _sprite->GetTexture()->GetHeight() };
-	elem.spriteSize = { _sprite->GetWidth(), _sprite->GetHeight() };
-	elem.spriteOffset = { _sprite->GetXOffset(), _sprite->GetYOffset() };
-	elem.color = _color;
-	elem.elemSize = { _width, _height };
-	elem.transform = GetTransform()->GetTransformMatrix();
-	UIRenderingManager::Render(elem);
-}
+	Sprite* sprite = SpriteManager::GetSprite(_spriteId);
 
-void Image::OnDestroy()
-{
-	_sprite = nullptr;
+	if (sprite != nullptr) {
+		UIElement elem{};
+		elem.isText = false;
+		elem.textureID = sprite->GetTexture()->GetId();
+		elem.textureSize = { sprite->GetTexture()->GetWidth(), sprite->GetTexture()->GetHeight() };
+		elem.spriteSize = { sprite->GetWidth(), sprite->GetHeight() };
+		elem.spriteOffset = { sprite->GetXOffset(), sprite->GetYOffset() };
+		elem.color = _color;
+		elem.elemSize = { _width, _height };
+		elem.transform = GetTransform()->GetTransformMatrix();
+		UIRenderingManager::Render(elem);
+	}
 }
 
 void Image::SetSprite(const std::string& spriteAlias) {
-	_sprite = SpriteManager::GetSprite(spriteAlias);
+	_spriteId = hash<string>()(spriteAlias);
 }
 
-void Image::SetSprite(Sprite* sprite)
+void Image::SetSprite(size_t spriteId)
 {
-	_sprite = sprite;
+	_spriteId = spriteId;
 }
 
 void Image::SetColor(const vec4& color)
@@ -56,7 +55,7 @@ void Image::SetHeight(float height)
 
 Sprite* Image::GetSprite() const
 {
-	return _sprite;
+	return SpriteManager::GetSprite(_spriteId);
 }
 
 vec4 Image::GetColor() const

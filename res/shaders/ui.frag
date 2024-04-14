@@ -1,4 +1,11 @@
 #version 450 core
+layout (std140, binding = 1) uniform WindowData
+{
+    vec2 windowSize;
+    float nearPlane;
+    float farPlane;
+    float gamma;
+};
 
 in VS_OUT {
     vec2 texCoord;
@@ -35,9 +42,11 @@ void main()
     vec2 uvMax = vec2((sprite.x + sprite.width) / sprite.texWidth, (sprite.y + sprite.height) / sprite.texHeight);
     vec2 uv = map(fs_in.texCoord, vec2(0.0, 0.0), vec2(1.0, 1.0), uvMin, uvMax);
     if (!isText) {
-        Color = texture(sprite.img, uv) * sprite.color;
+        //Color = texture(sprite.img, uv) * sprite.color;
+        Color = texture(sprite.img, uv) * vec4(pow(sprite.color.rgb, vec3(gamma)), sprite.color.a);
     }
     else {
-        Color = vec4(1.0, 1.0, 1.0, texture(sprite.img, uv).r) * sprite.color;
+        //Color = vec4(1.0, 1.0, 1.0, texture(sprite.img, uv).r) * sprite.color;
+        Color = vec4(1.0, 1.0, 1.0, texture(sprite.img, uv).r) * vec4(pow(sprite.color.rgb, vec3(gamma)), sprite.color.a);
     }
 }

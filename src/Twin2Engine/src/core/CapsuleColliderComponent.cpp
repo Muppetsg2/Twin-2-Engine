@@ -24,7 +24,7 @@ void Twin2Engine::Core::CapsuleColliderComponent::SetRadius(float radius)
 YAML::Node Twin2Engine::Core::CapsuleColliderComponent::Serialize() const
 {
 	YAML::Node node = ColliderComponent::Serialize();
-	node["subTypes"].push_back(node["type"]);
+	node["subTypes"].push_back(node["type"].as<std::string>());
 	node["type"] = "CapsuleCollider";
 	node["endPosition"] = glm::vec3(
 		((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndPosition.x,

@@ -17,7 +17,7 @@ void Twin2Engine::Core::SphereColliderComponent::SetRadius(float radius)
 YAML::Node Twin2Engine::Core::SphereColliderComponent::Serialize() const
 {
 	YAML::Node node = ColliderComponent::Serialize();
-	node["subTypes"].push_back(node["type"]);
+	node["subTypes"].push_back(node["type"].as<std::string>());
 	node["type"] = "SphereCollider";
 	node["radius"] = ((CollisionSystem::SphereColliderData*)collider->shapeColliderData)->Radius;
 	return node;

@@ -42,7 +42,7 @@ void Twin2Engine::Core::BoxColliderComponent::SetZRotation(float v)
 YAML::Node Twin2Engine::Core::BoxColliderComponent::Serialize() const
 {
 	YAML::Node node = ColliderComponent::Serialize();
-	node["subTypes"].push_back(node["type"]);
+	node["subTypes"].push_back(node["type"].as<std::string>());
 	node["type"] = "BoxCollider";
 	node["width"] = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x;
 	node["length"] = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z;

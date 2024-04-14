@@ -126,9 +126,9 @@ GameObjects:
     components:
       - id: 4
         enabled: true
-        type: &1 Image
+        type: Image
         subTypes:
-          - *1
+          - Renderable
         isTransparent: false
         sprite: 2
         color:
@@ -140,9 +140,9 @@ GameObjects:
         height: 100
       - id: 5
         enabled: true
-        type: &2 Image
+        type: Image
         subTypes:
-          - *2
+          - Renderable
         isTransparent: false
         sprite: 1
         color:
@@ -176,9 +176,9 @@ GameObjects:
     components:
       - id: 7
         enabled: true
-        type: &3 Image
+        type: Image
         subTypes:
-          - *3
+          - Renderable
         isTransparent: false
         sprite: 1
         color:
@@ -212,9 +212,9 @@ GameObjects:
     components:
       - id: 9
         enabled: true
-        type: &4 Image
+        type: Image
         subTypes:
-          - *4
+          - Renderable
         isTransparent: false
         sprite: 0
         color:
@@ -248,9 +248,9 @@ GameObjects:
     components:
       - id: 11
         enabled: true
-        type: &5 Text
+        type: Text
         subTypes:
-          - *5
+          - Renderable
         isTransparent: false
         color:
           x: 1
@@ -283,9 +283,9 @@ GameObjects:
     components:
       - id: 13
         enabled: true
-        type: &6 MeshRenderer
+        type: MeshRenderer
         subTypes:
-          - *6
+          - Renderable
         isTransparent: false
         model: 2
         materials:
@@ -314,9 +314,9 @@ GameObjects:
     components:
       - id: 15
         enabled: true
-        type: &7 MeshRenderer
+        type: MeshRenderer
         subTypes:
-          - *7
+          - Renderable
         isTransparent: false
         model: 2
         materials:
@@ -345,9 +345,9 @@ GameObjects:
     components:
       - id: 17
         enabled: true
-        type: &8 MeshRenderer
+        type: MeshRenderer
         subTypes:
-          - *8
+          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -377,9 +377,9 @@ GameObjects:
     components:
       - id: 19
         enabled: true
-        type: &9 MeshRenderer
+        type: MeshRenderer
         subTypes:
-          - *9
+          - Renderable
         isTransparent: false
         model: 0
         materials:
@@ -409,9 +409,9 @@ GameObjects:
     components:
       - id: 21
         enabled: true
-        type: &10 SphereCollider
+        type: SphereCollider
         subTypes:
-          - *10
+          - Collider
         trigger: false
         static: false
         layer: "\x00"
@@ -433,9 +433,9 @@ GameObjects:
         radius: 20
       - id: 22
         enabled: true
-        type: &11 BoxCollider
+        type: BoxCollider
         subTypes:
-          - *11
+          - Collider
         trigger: false
         static: false
         layer: "\x00"
@@ -463,9 +463,9 @@ GameObjects:
           z: 0
       - id: 23
         enabled: true
-        type: &12 CapsuleCollider
+        type: CapsuleCollider
         subTypes:
-          - *12
+          - Collider
         trigger: false
         static: false
         layer: "\x00"

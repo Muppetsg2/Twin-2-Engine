@@ -212,9 +212,9 @@ int main(int, char**)
             cam->SetFOV(node["fov"].as<float>());
             cam->SetNearPlane(node["nearPlane"].as<float>());
             cam->SetFarPlane(node["farPlane"].as<float>());
-            cam->SetCameraFilter(node["cameraFilter"].as<uint8_t>());
+            cam->SetCameraFilter(node["cameraFilter"].as<int8_t>());
             cam->SetCameraType(node["cameraType"].as<CameraType>());
-            cam->SetSamples(node["samples"].as<uint8_t>());
+            cam->SetSamples(node["samples"].as<int8_t>());
             cam->SetFrontDir(node["frontDir"].as<vec3>());
             cam->SetWorldUp(node["worldUp"].as<vec3>());
             cam->SetIsMain(node["isMain"].as<bool>());
@@ -354,7 +354,8 @@ int main(int, char**)
 #pragma endregion
 
     // ADDING SCENES
-    SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
+    SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
     // SCENE OBJECTS
 
@@ -393,7 +394,7 @@ int main(int, char**)
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();*/
     
     SceneManager::LoadScene("testScene");
-    SceneManager::SaveScene("res/scenes/savedScene.yaml");
+    //SceneManager::SaveScene("res/scenes/savedScene.yaml");
 
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();

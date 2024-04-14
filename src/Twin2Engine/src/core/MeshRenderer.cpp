@@ -25,7 +25,7 @@ void MeshRenderer::Render()
 YAML::Node MeshRenderer::Serialize() const
 {
 	YAML::Node node = RenderableComponent::Serialize();
-	node["subTypes"].push_back(node["type"]);
+	node["subTypes"].push_back(node["type"].as<string>());
 	node["type"] = "MeshRenderer";
 	node["model"] = SceneManager::GetModelSaveIdx(_model.GetId());
 	node["materials"] = vector<size_t>();

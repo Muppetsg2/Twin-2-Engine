@@ -54,30 +54,22 @@ GameObject* HexagonalTile::GetGameObject() const
 	return _gameObject;
 }
 
-inline HexagonalTile** HexagonalTile::GetAdjacentTiles() const
+inline void HexagonalTile::GetAdjacentTiles(HexagonalTile** out_AdjacentTiles) const
 {
-	HexagonalTile* adjacentTiles[6];
-
 	const glm::ivec2* directions = (_position.y % 2) ? adjacentDirectionsOddY : adjacentDirectionsEvenY;
 
 	for (int i = 0; i < 6; i++)
 	{
-		adjacentTiles[i] = _tilemap->GetTile(_position + directions[i]);
+		out_AdjacentTiles[i] = _tilemap->GetTile(_position + directions[i]);
 	}
-
-	return adjacentTiles;
 }
 
-inline GameObject** HexagonalTile::GetAdjacentGameObjects() const
+inline void HexagonalTile::GetAdjacentGameObjects(GameObject** out_adjacentGameObjects) const
 {
-	GameObject* adjacentGameObjects[6];
-
 	const glm::ivec2* directions = (_position.y % 2) ? adjacentDirectionsOddY : adjacentDirectionsEvenY;
 
 	for (int i = 0; i < 6; i++)
 	{
-		adjacentGameObjects[i] = _tilemap->GetTile(_position + directions[i])->GetGameObject();
+		out_adjacentGameObjects[i] = _tilemap->GetTile(_position + directions[i])->GetGameObject();
 	}
-
-	return adjacentGameObjects;
 }

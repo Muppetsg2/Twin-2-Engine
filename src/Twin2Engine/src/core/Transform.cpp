@@ -483,6 +483,8 @@ void Twin2Engine::Core::Transform::RecalculateGlobalPosition()
 
 		_globalPosition = glm::vec3(_globalTransformMatrix[3]);
 
+		RecalculateLocalPosition();
+
 		_dirtyFlags.dirtyFlagGlobalPosition = false;
 	}
 }
@@ -608,6 +610,8 @@ void Twin2Engine::Core::Transform::RecalculateGlobalRotation()
 			_globalRotation = glm::eulerAngles(_globalRotationQuat);
 		}
 
+		RecalculateLocalRotation();
+
 		_dirtyFlags.dirtyFlagGlobalRotation = false;
 		//_dirtyFlags.dirtyFlagGlobalRotationQuat2Euler = true;
 	}
@@ -692,6 +696,8 @@ void Twin2Engine::Core::Transform::RecalculateGlobalScale()
 		{
 			_globalScale = _parent->GetGlobalScale() * _localScale;
 		}
+
+		RecalculateLocalScale();
 
 		_dirtyFlags.dirtyFlagGlobalScale = false;
 	}

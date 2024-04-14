@@ -537,19 +537,19 @@ void input()
 
     CameraComponent* c = CameraComponent::GetMainCamera();
 
-    if (Input::IsKeyDown(KEY::W))
+    if (Input::IsKeyDown(KEY::W) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
-    if (Input::IsKeyDown(KEY::S))
+    if (Input::IsKeyDown(KEY::S) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
     }
-    if (Input::IsKeyDown(KEY::A))
+    if (Input::IsKeyDown(KEY::A) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
-    if (Input::IsKeyDown(KEY::D))
+    if (Input::IsKeyDown(KEY::D) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
@@ -574,6 +574,16 @@ void input()
         Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
         image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
         text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
+    }
+
+    if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::Q)) {
+        
+        // Rotation not saving properly
+        // Can't save Values when they change unles you get them
+        Camera->GetTransform()->GetLocalPosition();
+        Camera->GetTransform()->GetLocalRotation();
+        Camera->GetTransform()->GetLocalScale();
+        SceneManager::SaveScene("res/scenes/quickSavedScene.yaml");
     }
 }
 

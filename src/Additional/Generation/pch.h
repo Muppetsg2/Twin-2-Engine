@@ -13,6 +13,7 @@
 // STD
 //#include <queue>
 #include <vector>
+#include <unordered_set>
 
 // TILEMAP
 //#include <Tilemap/HexagonalTile.h>

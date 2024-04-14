@@ -4,6 +4,7 @@
 #include <Tilemap/HexagonalTile.h>
 #include <Tilemap/HexagonalTilemap.h>
 #include <Generation/MapRegion.h>
+#include <Generation/MapHexTile.h>
 
 using Tilemap::HexagonalTilemap;
 

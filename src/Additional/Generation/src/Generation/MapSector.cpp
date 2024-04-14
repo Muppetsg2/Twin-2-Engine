@@ -3,6 +3,8 @@
 using namespace Generation;
 using namespace Tilemap;
 
+using namespace Twin2Engine::Core;
+
 using namespace std;
 
 
@@ -74,18 +76,65 @@ std::vector<MapSector*> MapSector::GetAdjacentSectors() const
 
 	for (const HexagonalTile* tile : _sectorTiles)
 	{
-		HexagonalTile** tileAdjacentSectors = tile->GetAdjacentTiles();
+		GameObject* tileAdjacentGameObjects[6];
+		tile->GetAdjacentGameObjects(tileAdjacentGameObjects);
 
+		for (int i = 0; i < 6; i++)
+		{
+			if (tileAdjacentGameObjects[i] != nullptr)
+			{
+				MapHexTile* hexTile = tileAdjacentGameObjects[i]->GetComponent<MapHexTile>();
 
+				if (hexTile != nullptr && hexTile->GetSector() != this)
+				{
+					adjacentSectors.insert(hexTile->GetSector());
+				}
+			}
+		}
 	}
+
+	return vector<MapSector*>(adjacentSectors.cbegin(), adjacentSectors.cend());
 }
 
 bool MapSector::HasAdjacentSector(MapSector* otherSector) const
 {
+	for (const HexagonalTile* tile : _sectorTiles)
+	{
+		GameObject* tileAdjacentGameObjects[6];
+		tile->GetAdjacentGameObjects(tileAdjacentGameObjects);
 
+		for (int i = 0; i < 6; i++)
+		{
+			if (tileAdjacentGameObjects[i] != nullptr)
+			{
+				MapHexTile* hexTile = tileAdjacentGameObjects[i]->GetComponent<MapHexTile>();
+
+				if (hexTile != nullptr && hexTile->GetSector() == otherSector)
+				{
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
 }
 
 bool MapSector::IsInternalSector() const
 {
+	for (const HexagonalTile* tile : _sectorTiles)
+	{
+		GameObject* tileAdjacentGameObjects[6];
+		tile->GetAdjacentGameObjects(tileAdjacentGameObjects);
 
+		for (int i = 0; i < 6; i++)
+		{
+			if (tileAdjacentGameObjects[i] == nullptr)
+			{
+				return false;
+			}
+		}
+	}
+
+	return true;
 }

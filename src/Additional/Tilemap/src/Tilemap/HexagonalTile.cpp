@@ -70,6 +70,15 @@ inline void HexagonalTile::GetAdjacentGameObjects(GameObject** out_adjacentGameO
 
 	for (int i = 0; i < 6; i++)
 	{
-		out_adjacentGameObjects[i] = _tilemap->GetTile(_position + directions[i])->GetGameObject();
+		HexagonalTile* tile = _tilemap->GetTile(_position + directions[i]);
+
+		if (tile == nullptr)
+		{
+			out_adjacentGameObjects[i] = nullptr;
+		}
+		else
+		{
+			out_adjacentGameObjects[i] = _tilemap->GetTile(_position + directions[i])->GetGameObject();
+		}
 	}
 }

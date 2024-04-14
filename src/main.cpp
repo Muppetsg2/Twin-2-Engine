@@ -568,6 +568,13 @@ void input()
             glfwSetCursorPosCallback(window->GetWindow(), mouse_callback);
         }
     }
+
+    if (Input::IsKeyPressed(KEY::R)) {
+        SceneManager::LoadScene("testScene");
+        Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
+        image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
+        text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
+    }
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)

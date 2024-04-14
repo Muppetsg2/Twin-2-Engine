@@ -65,10 +65,10 @@ pair<vector<size_t>, vector<size_t>> SceneManager::GetResourcesToLoadAndUnload(c
 
 void SceneManager::DeleteGameObject(GameObject* obj)
 {
-	Transform* rootTrans = obj->GetTransform();
-	size_t childCount = rootTrans->GetChildCount();
+	Transform* trans = obj->GetTransform();
+	size_t childCount = trans->GetChildCount();
 	for (size_t i = 0; i < childCount; ++i) {
-		Transform* child = rootTrans->GetChildAt(i);
+		Transform* child = trans->GetChildAt(i);
 		GameObject* childObj = child->GetGameObject();
 		DeleteGameObject(childObj);
 		delete child->GetGameObject();

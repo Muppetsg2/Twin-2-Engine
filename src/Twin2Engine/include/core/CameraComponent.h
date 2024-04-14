@@ -109,8 +109,8 @@ namespace Twin2Engine::Core {
 		// Jesli beda sceny to tu trzeba dodac by scena byla przekazywana
 		static CameraComponent* GetMainCamera();
 
-		void Initialize() override;
-		void OnDestroy() override;
+		virtual void Initialize() override;
+		virtual void OnDestroy() override;
 		virtual YAML::Node Serialize() const override;
 
 		/*

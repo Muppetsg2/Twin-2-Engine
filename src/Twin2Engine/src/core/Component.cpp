@@ -36,7 +36,6 @@ Component::Component()
 
 Component::~Component()
 {
-	OnDestroy();
 	_gameObject = nullptr;
 }
 

@@ -50,6 +50,12 @@ namespace Twin2Engine::Manager {
 			return static_cast<T*>(GetComponentWithId(id));
 		}
 
+		// Z mo¿liwym podanym parentem (jeœli nullptr to root)
+		// CreateGameObject
+		// CreateGameObject<Ty...>
+
+		// GetCurrentSceneName
+
 		static size_t GetTexture2D(size_t loadIdx);
 		static size_t GetSprite(size_t loadIdx);
 		static size_t GetFont(size_t loadIdx);

@@ -212,9 +212,9 @@ int main(int, char**)
             cam->SetFOV(node["fov"].as<float>());
             cam->SetNearPlane(node["nearPlane"].as<float>());
             cam->SetFarPlane(node["farPlane"].as<float>());
-            cam->SetCameraFilter(node["cameraFilter"].as<int8_t>());
+            cam->SetCameraFilter(node["cameraFilter"].as<size_t>());
             cam->SetCameraType(node["cameraType"].as<CameraType>());
-            cam->SetSamples(node["samples"].as<int8_t>());
+            cam->SetSamples(node["samples"].as<size_t>());
             cam->SetFrontDir(node["frontDir"].as<vec3>());
             cam->SetWorldUp(node["worldUp"].as<vec3>());
             cam->SetIsMain(node["isMain"].as<bool>());
@@ -304,7 +304,7 @@ int main(int, char**)
             ColliderComponent* collider = static_cast<ColliderComponent*>(comp);
             collider->SetTrigger(node["trigger"].as<bool>());
             collider->SetStatic(node["static"].as<bool>());
-            collider->SetLayer((Layer)node["layer"].as<uint8_t>());
+            collider->SetLayer(node["layer"].as<Layer>());
             LayerCollisionFilter filter = node["layerFilter"].as<LayerCollisionFilter>();
             collider->SetLayersFilter(filter);
             collider->EnableBoundingVolume(node["boundingVolume"].as<bool>());

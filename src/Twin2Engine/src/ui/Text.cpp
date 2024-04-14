@@ -89,6 +89,7 @@ YAML::Node Text::Serialize() const
 	YAML::Node node = RenderableComponent::Serialize();
 	node["subTypes"].push_back(node["type"].as<string>());
 	node["type"] = "Text";
+	node["text"] = _text;
 	node["color"] = _color;
 	node["size"] = _size;
 	node["font"] = SceneManager::GetFontSaveIdx(_fontId);

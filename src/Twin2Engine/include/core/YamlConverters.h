@@ -204,13 +204,13 @@ namespace YAML {
 	template<> struct convert<CollisionMode> {
 		static Node encode(const CollisionMode& rhs) {
 			Node node;
-			node = (uint8_t)rhs;
+			node = (size_t)rhs;
 			return node;
 		}
 
 		static bool decode(const Node& node, CollisionMode& rhs) {
 			if (!node.IsScalar()) return false;
-			rhs = (CollisionMode)node.as<uint8_t>();
+			rhs = (CollisionMode)node.as<size_t>();
 			return true;
 		}
 	};
@@ -247,13 +247,13 @@ namespace YAML {
 	template<> struct convert<Layer> {
 		static Node encode(const Layer& rhs) {
 			Node node;
-			node = (uint8_t)rhs;
+			node = (size_t)rhs;
 			return node;
 		}
 
 		static bool decode(const Node& node, Layer& rhs) {
 			if (!node.IsScalar()) return false;
-			rhs = (Layer)node.as<uint8_t>();
+			rhs = (Layer)node.as<size_t>();
 			return true;
 		}
 	};

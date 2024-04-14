@@ -468,10 +468,10 @@ YAML::Node CameraComponent::Serialize() const
 	node["fov"] = _fov;
 	node["nearPlane"] = _near;
 	node["farPlane"] = _far;
-	node["cameraFilter"] = _filters;
+	node["cameraFilter"] = (size_t)_filters;
 	node["cameraType"] = _type;
-	node["samples"] = _samples;
-	node["fronDir"] = _front;
+	node["samples"] = (size_t)_samples;
+	node["frontDir"] = _front;
 	node["worldUp"] = _worldUp;
 	node["isMain"] = _isMain;
 	return node;

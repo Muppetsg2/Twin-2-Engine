@@ -800,6 +800,6 @@ YAML::Node Twin2Engine::Core::Transform::Serialize() const
 	node.remove("subTypes");
 	node["position"] = _localPosition;
 	node["scale"] = _localScale;
-	node["rotation"] = _localRotation;
+	node["rotation"] = glm::degrees(_localRotation);
 	return node;
 }

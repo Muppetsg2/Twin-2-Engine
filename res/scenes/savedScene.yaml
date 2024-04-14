@@ -75,7 +75,7 @@ GameObjects:
         z: 0
       rotation:
         x: 0
-        y: -1.57079637
+        y: -90
         z: 0
     components:
       - id: 1
@@ -84,10 +84,10 @@ GameObjects:
         fov: 45
         nearPlane: 0.100000001
         farPlane: 1000
-        cameraFilter: "\x00"
+        cameraFilter: 0
         cameraType: 1
-        samples: "\x10"
-        fronDir:
+        samples: 16
+        frontDir:
           x: 0
           y: 0
           z: -1
@@ -252,6 +252,7 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
+        text: "Time: 0.0000"
         color:
           x: 1
           y: 1
@@ -371,7 +372,7 @@ GameObjects:
         y: 1
         z: 1
       rotation:
-        x: 1.57079637
+        x: 90
         y: 0
         z: 0
     components:
@@ -414,16 +415,16 @@ GameObjects:
           - Collider
         trigger: false
         static: false
-        layer: "\x00"
+        layer: 0
         layerFilter:
-          - "\x03"
-          - "\x03"
-          - "\x01"
-          - "\x00"
-          - "\x03"
-          - "\x03"
-          - "\x03"
-          - "\x03"
+          - 3
+          - 3
+          - 1
+          - 0
+          - 3
+          - 3
+          - 3
+          - 3
         boundingVolume: true
         boundingVolumeRadius: 2
         position:
@@ -438,16 +439,16 @@ GameObjects:
           - Collider
         trigger: false
         static: false
-        layer: "\x00"
+        layer: 0
         layerFilter:
-          - "\x03"
-          - "\x03"
-          - "\x01"
-          - "\x00"
-          - "\x03"
-          - "\x03"
-          - "\x03"
-          - "\x03"
+          - 3
+          - 3
+          - 1
+          - 0
+          - 3
+          - 3
+          - 3
+          - 3
         boundingVolume: true
         boundingVolumeRadius: 2
         position:
@@ -468,16 +469,16 @@ GameObjects:
           - Collider
         trigger: false
         static: false
-        layer: "\x00"
+        layer: 0
         layerFilter:
-          - "\x03"
-          - "\x03"
-          - "\x01"
-          - "\x00"
-          - "\x03"
-          - "\x03"
-          - "\x03"
-          - "\x03"
+          - 3
+          - 3
+          - 1
+          - 0
+          - 3
+          - 3
+          - 3
+          - 3
         boundingVolume: true
         boundingVolumeRadius: 2
         position:

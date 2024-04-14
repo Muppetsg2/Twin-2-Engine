@@ -1,4 +1,5 @@
 #include <graphic/manager/MeshRenderingManager.h>
+#include <graphic/manager/ShaderManager.h>
 #include <graphic/InstatiatingMesh.h>
 
 using namespace Twin2Engine::GraphicEngine;

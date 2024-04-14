@@ -100,7 +100,7 @@ if (EXISTS ${SHADER_COMPILER_EXE})
     message("Additional prebuild program: ${SHADER_COMPILER_EXE}")
     add_custom_command(
         TARGET ${PROJECT_NAME} PRE_BUILD  
-        COMMAND ${SHADER_COMPILER_EXE}
+        #COMMAND ${SHADER_COMPILER_EXE}
         COMMENT "Running additional prebuild program: ${SHADER_COMPILER_EXE}"
     )
 endif()

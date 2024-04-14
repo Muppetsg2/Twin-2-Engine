@@ -346,18 +346,6 @@ int main(int, char**)
     // ADDING SCENES
     SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
-    // SCENE OBJECTS
-#pragma region TestingLighting
-    /**/
-    GameObject dl_go;
-    dl_go.GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
-    Twin2Engine::Core::DirectionalLightComponent* dl = dl_go.AddComponent<Twin2Engine::Core::DirectionalLightComponent>();
-    dl->SetColor(glm::vec3(0.8f, 0.8f, 0.8f));
-    LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
-    LightingSystem::LightingController::Instance()->SetGamma(2.2);
-    LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.05f, 0.05f, 0.05f));
-#pragma endregion
-
     /*
     GameObject* hexagonPrefab = new GameObject();
     hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 4, 0));
@@ -397,6 +385,19 @@ int main(int, char**)
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
+
+
+    // SCENE OBJECTS
+#pragma region TestingLighting
+    /**/
+    GameObject dl_go;
+    dl_go.GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
+    Twin2Engine::Core::DirectionalLightComponent* dl = dl_go.AddComponent<Twin2Engine::Core::DirectionalLightComponent>();
+    dl->SetColor(glm::vec3(0.8f, 0.8f, 0.8f));
+    LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
+    LightingSystem::LightingController::Instance()->SetGamma(2.2);
+    LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.05f, 0.05f, 0.05f));
+#pragma endregion
 
     // Main loop
     while (!window->IsClosed())

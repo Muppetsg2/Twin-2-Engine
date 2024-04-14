@@ -401,6 +401,9 @@ int main(int, char**)
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
 
+    GameObject* test1 = SceneManager::CreateGameObject();
+    std::tuple<GameObject*, Text*, Image*> test2 = SceneManager::CreateGameObject<Text, Image>();
+
     // Main loop
     while (!window->IsClosed())
     {

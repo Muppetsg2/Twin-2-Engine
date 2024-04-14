@@ -269,7 +269,7 @@ void MeshRenderingManager::RenderDepthMap()
 			//glm::mat4* ptr = (glm::mat4*)glMapNamedBufferRange(_instanceDataSSBO, sizeof(glm::mat4) * sizeOfInstanceData, sizeof(glm::mat4) * count, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 			//glm::mat4* ptr = (glm::mat4*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * sizeOfInstanceData, sizeof(glm::mat4) * count, GL_MAP_WRITE_BIT);
 			//std::memcpy(ptr, (transforms.data() + sizeOfInstanceData), sizeof(glm::mat4) * count);
-			glNamedBufferSubData(_instanceDataSSBO, sizeof(glm::mat4) * sizeOfInstanceData, sizeof(glm::mat4) * count, transforms.data() + sizeOfInstanceData);
+			glNamedBufferSubData(_instanceDataSSBO, sizeof(glm::mat4) * sizeOfInstanceData, sizeof(glm::mat4) * count, transforms.data() + sizeOfInstanceData));
 			//glUnmapNamedBuffer(_instanceDataSSBO);
 			//glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 			//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);

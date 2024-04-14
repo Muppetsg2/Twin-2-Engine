@@ -10,7 +10,8 @@ using namespace Twin2Engine::Core;
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::UI;
 
-Scene* SceneManager::_currentScene = nullptr;
+size_t SceneManager::_currentSceneId;
+std::string SceneManager::_currentSceneName;
 GameObject* SceneManager::_rootObject = nullptr;
 
 map<size_t, GameObject*> SceneManager::_gameObjectsById;
@@ -532,7 +533,8 @@ void SceneManager::LoadScene(const string& name)
 	}
 #pragma endregion
 
-	_currentScene = sceneToLoad;
+	_currentSceneName = name;
+	_currentSceneId = sceneId;
 }
 
 void SceneManager::SaveScene(const string& path) {
@@ -654,6 +656,23 @@ Component* SceneManager::GetComponentWithId(size_t id)
 	return comp;
 }
 
+GameObject* SceneManager::CreateGameObject(Transform* parent)
+{
+	GameObject* obj = new GameObject();
+	obj->GetTransform()->SetParent(parent == nullptr ? _rootObject->GetTransform() : parent);
+	return obj;
+}
+
+size_t SceneManager::GetCurrentSceneId()
+{
+	return _currentSceneId;
+}
+
+string SceneManager::GetCurrentSceneName()
+{
+	return _currentSceneName;
+}
+
 size_t SceneManager::GetTexture2D(size_t loadIdx)
 {
 	return _texturesIds[loadIdx];
@@ -752,7 +771,8 @@ size_t SceneManager::GetModelSaveIdx(size_t modelId)
 
 void SceneManager::UnloadCurrent()
 {
-	_currentScene = nullptr;
+	_currentSceneId = 0;
+	_currentSceneName = "";
 	DeleteGameObject(_rootObject);
 	for (size_t id : _texturesIds) {
 		TextureManager::UnloadTexture2D(id);
@@ -782,18 +802,18 @@ void SceneManager::UnloadCurrent()
 
 void SceneManager::UnloadScene(const std::string& name)
 {
-	size_t h = hash<string>()(name);
-	if (_loadedScenes.find(h) == _loadedScenes.end()) {
+	size_t sceneId = hash<string>()(name);
+	if (_loadedScenes.find(sceneId) == _loadedScenes.end()) {
 		SPDLOG_INFO("Failed to unload scene - Scene '{0}' not found", name);
 		return;
 	}
 
-	Scene*& scene = _loadedScenes[h];
-	if (scene == _currentScene) {
+	Scene*& scene = _loadedScenes[sceneId];
+	if (sceneId == _currentSceneId) {
 		UnloadCurrent();
 	}
 	delete scene;
-	_loadedScenes.erase(h);
+	_loadedScenes.erase(sceneId);
 }
 
 void SceneManager::UnloadAll()

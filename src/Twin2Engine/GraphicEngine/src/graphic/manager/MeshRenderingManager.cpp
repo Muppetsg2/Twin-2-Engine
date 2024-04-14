@@ -157,34 +157,32 @@ void MeshRenderingManager::Render()
 				material.first.GetMaterialParameters()->UploadTextures2D(shaderPair.first->GetProgramId(), beginLocation, textureBind);
 			}
 
-			size_t sizeOfInstanceData = 0;
-			size_t sizeOfMaterialIndex = 0;
+			size_t instanceIdnex = 0;
 
-			while (count >= MAX_INSTANCE_NUMBER_PER_DRAW)
+			while (count > MAX_INSTANCE_NUMBER_PER_DRAW)
 			{
 				//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-				glNamedBufferSubData(_instanceDataSSBO, sizeof(glm::mat4) * sizeOfInstanceData, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, transforms.data() + sizeOfInstanceData);
-				sizeOfInstanceData += MAX_INSTANCE_NUMBER_PER_DRAW;
+				glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, transforms.data() + instanceIdnex);
 
 				//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-				glNamedBufferSubData(_materialIndexSSBO, sizeof(unsigned int) * sizeOfMaterialIndex, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, indexes.data() + sizeOfMaterialIndex);
-				sizeOfMaterialIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
+				glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, indexes.data() + instanceIdnex);
 
 				meshPair.first->Draw(MAX_INSTANCE_NUMBER_PER_DRAW);
 
+				instanceIdnex += MAX_INSTANCE_NUMBER_PER_DRAW;
 				count -= MAX_INSTANCE_NUMBER_PER_DRAW;
 			}
 			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-			glNamedBufferSubData(_instanceDataSSBO, sizeof(glm::mat4) * sizeOfInstanceData, sizeof(glm::mat4) * count, transforms.data() + sizeOfInstanceData);
+			glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * count, transforms.data() + instanceIdnex);
 
 			//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-			glNamedBufferSubData(_materialIndexSSBO, sizeof(unsigned int) * sizeOfMaterialIndex, sizeof(unsigned int) * count, indexes.data() + sizeOfMaterialIndex);
+			glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * count, indexes.data() + instanceIdnex);
 
 			meshPair.first->Draw(count);
 
 			{GLenum error = glGetError();
 			if (error != GL_NO_ERROR) {
-				SPDLOG_ERROR("Error: {}", error);
+				SPDLOG_ERROR("RError: {}", error);
 			}}
 		}
 	}
@@ -245,30 +243,33 @@ void MeshRenderingManager::RenderDepthMap()
 
 			shaderPair.first->Use();
 
-			size_t sizeOfInstanceData = 0;
-			size_t sizeOfMaterialIndex = 0;
+			size_t instanceIdnex = 0;
 
-			while (count >= MAX_INSTANCE_NUMBER_PER_DRAW)
+			while (count > MAX_INSTANCE_NUMBER_PER_DRAW)
 			{
 				//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-				glNamedBufferSubData(_instanceDataSSBO, sizeof(glm::mat4) * sizeOfInstanceData, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, transforms.data() + sizeOfInstanceData);
-				sizeOfInstanceData += MAX_INSTANCE_NUMBER_PER_DRAW;
+				glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, transforms.data() + instanceIdnex);
 
 				//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-				glNamedBufferSubData(_materialIndexSSBO, sizeof(unsigned int) * sizeOfMaterialIndex, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, indexes.data() + sizeOfMaterialIndex);
-				sizeOfMaterialIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
+				glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, indexes.data() + instanceIdnex);
 
 				meshPair.first->Draw(MAX_INSTANCE_NUMBER_PER_DRAW);
 
+				instanceIdnex += MAX_INSTANCE_NUMBER_PER_DRAW;
 				count -= MAX_INSTANCE_NUMBER_PER_DRAW;
 			}
 			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-			glNamedBufferSubData(_instanceDataSSBO, sizeof(glm::mat4) * sizeOfInstanceData, sizeof(glm::mat4) * count, transforms.data() + sizeOfInstanceData);
+			glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * count, transforms.data() + instanceIdnex);
 
 			//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-			glNamedBufferSubData(_materialIndexSSBO, sizeof(unsigned int) * sizeOfMaterialIndex, sizeof(unsigned int) * count, indexes.data() + sizeOfMaterialIndex);
+			glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * count, indexes.data() + instanceIdnex);
 
 			meshPair.first->Draw(count);
+
+			{GLenum error = glGetError();
+			if (error != GL_NO_ERROR) {
+				SPDLOG_ERROR("RDMError: {}", error);
+			}}
 		}
 	}
 }

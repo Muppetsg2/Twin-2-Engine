@@ -1,34 +1,42 @@
 Textures:
   - path: res/textures/white.png
+    fileFormat: 35906
+    engineFormat: 6408
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
   - path: res/textures/grass.png
-    fileFormat: 6408
+    fileFormat: 35906
     engineFormat: 6408
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
   - path: res/textures/brickWall.jpg
+    fileFormat: 35904
+    engineFormat: 6407
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
   - path: res/textures/stone.jpg
-    fileFormat: 6407
+    fileFormat: 35904
     engineFormat: 6407
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
   - path: res/textures/woodenRoof2.png
+    fileFormat: 35906
+    engineFormat: 6408
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
   - path: res/textures/hexEdgeTexture.png
+    fileFormat: 35906
+    engineFormat: 6408
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
@@ -87,6 +95,7 @@ GameObjects:
         cameraFilter: 0
         cameraType: 1
         samples: 16
+        gamma: 2.20000005
         frontDir:
           x: 0
           y: 0

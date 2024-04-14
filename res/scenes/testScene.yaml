@@ -73,6 +73,7 @@ GameObjects:
                 cameraFilter: 0
                 cameraType: 1
                 samples: 16
+                gamma: 2.2
                 frontDir:
                     x: 0.0
                     y: 0.0

@@ -482,6 +482,7 @@ YAML::Node CameraComponent::Serialize() const
 	node["cameraFilter"] = (size_t)_filters;
 	node["cameraType"] = _type;
 	node["samples"] = (size_t)_samples;
+	node["gamma"] = _gamma;
 	node["frontDir"] = _front;
 	node["worldUp"] = _worldUp;
 	node["isMain"] = _isMain;

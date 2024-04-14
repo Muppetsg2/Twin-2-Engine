@@ -215,6 +215,7 @@ int main(int, char**)
             cam->SetCameraFilter(node["cameraFilter"].as<size_t>());
             cam->SetCameraType(node["cameraType"].as<CameraType>());
             cam->SetSamples(node["samples"].as<size_t>());
+            cam->SetGamma(node["gamma"].as<float>());
             cam->SetFrontDir(node["frontDir"].as<vec3>());
             cam->SetWorldUp(node["worldUp"].as<vec3>());
             cam->SetIsMain(node["isMain"].as<bool>());

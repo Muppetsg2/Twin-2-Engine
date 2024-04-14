@@ -55,6 +55,7 @@ namespace Twin2Engine::Core {
 		float _near = 0.1f;
 		float _far = 1000.f;
 		float _fov = 45.f;
+		float _gamma = 2.2f;
 
 		vec3 _front = vec3(0.f, 0.f, -1.f);
 		vec3 _right = vec3(1.f, 0.f, 0.f);
@@ -72,9 +73,10 @@ namespace Twin2Engine::Core {
 		CameraType GetCameraType() const;
 		uint8_t GetCameraFilters() const;
 
+		float GetFOV() const;
+		float GetGamma() const;
 		float GetNearPlane() const;
 		float GetFarPlane() const;
-		float GetFOV() const;
 		vec3 GetFrontDir() const;
 		vec3 GetWorldUp() const;
 		vec3 GetRight() const;
@@ -86,6 +88,7 @@ namespace Twin2Engine::Core {
 		bool IsMain() const;
 
 		void SetFOV(float angle);
+		void SetGamma(float gamma);
 		void SetFarPlane(float value);
 		void SetNearPlane(float value);
 		

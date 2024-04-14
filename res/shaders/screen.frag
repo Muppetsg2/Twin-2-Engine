@@ -4,6 +4,7 @@ layout (std140, binding = 1) uniform WindowData
     vec2 windowSize;
     float nearPlane;
     float farPlane;
+    float gamma;
 };
 
 in vec2 TexCoord;
@@ -142,5 +143,6 @@ void main() {
         res = applyNegative(res);
     }
 
-    Color = vec4(res, 1.0);
+    Color = vec4(pow(res, vec3(1.0/gamma)), 1.0);
+    //Color = vec4(res, 1.0);
 }

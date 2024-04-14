@@ -1,19 +1,21 @@
 Textures:
     -   path: res/textures/stone.jpg
-        fileFormat: 6407 # RGB
+        fileFormat: 35904 # SRGB
         engineFormat: 6407 # RGB
         sWrapMode: 33648 # MIRRORED_REPEAT
         tWrapMode: 33648 # MIRRORED_REPEAT
         minFilterMode: 9986 # NEAREST_MIPMAP_LINEAR
         magFilterMode: 9729 # LINEAR
     -   path: res/textures/grass.png
-        fileFormat: 6408 # RGBA
+        fileFormat: 35906 # SRGB_ALPHA
         engineFormat: 6408 # RGBA
         sWrapMode: 33648 # MIRRORED_REPEAT
         tWrapMode: 33648 # MIRRORED_REPEAT
         minFilterMode: 9986 # NEAREST_MIPMAP_LINEAR
         magFilterMode: 9729 # LINEAR
     -   path: res/textures/white.png
+        fileFormat: 35906 # SRGB_ALPHA
+        engineFormat: 6408 # RGBA
         sWrapMode: 33648 # MIRRORED_REPEAT
         tWrapMode: 33648 # MIRRORED_REPEAT
         minFilterMode: 9986 # NEAREST_MIPMAP_LINEAR

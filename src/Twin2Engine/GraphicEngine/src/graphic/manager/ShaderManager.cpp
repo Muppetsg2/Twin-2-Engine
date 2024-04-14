@@ -1,4 +1,5 @@
 #include <graphic/manager/ShaderManager.h>
+#include <LightingController.h>
 
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
@@ -7,6 +8,8 @@ GLenum ShaderManager::binaryFormat = 1;
 
 std::hash<std::string> ShaderManager::stringHash;
 std::list<ShaderManager::ShaderProgramData*> ShaderManager::loadedShaders;
+
+Shader* ShaderManager::DepthShader = nullptr;
 
 const std::unordered_map<size_t, int> ShaderManager::shaderTypeMapping
 {
@@ -253,6 +256,7 @@ inline void ShaderManager::CheckProgramLinkingSuccess(GLuint programId)
 
 void ShaderManager::Init()
 {
+    DepthShader = GetShaderProgram("origin/DepthShader");
     //ConfigManager configManager("GameConfig.yaml");
     //ConfigManager::OpenConfig("GameConfig.yaml");
     //ConfigManager::ReadConfig();
@@ -610,4 +614,15 @@ Shader* ShaderManager::CreateShaderProgram(const std::string& shaderName, const 
         shader = (*found)->shader;
     }
     return shader;
+}
+
+void ShaderManager::UpdateDirShadowMapsTab()
+{
+    size_t depthShaderHash = stringHash("origin/DepthShader");
+
+    for (auto SPD : loadedShaders) {
+        if (SPD->shaderPathHash != depthShaderHash) {
+            LightingSystem::LightingController::Instance()->UpdateShadowMapsTab(SPD->shader); //////////////////
+        }
+    }
 }

@@ -55,6 +55,12 @@
 #include <Tilemap/HexagonalTilemap.h>
 #include <Tilemap/HexagonalTile.h>
 
+// LIGHTING
+#include <LightingController.h>
+#include <core/PointLightComponent.h>
+#include <core/SpotLightComponent.h>
+#include <core/DirectionalLightComponent.h>
+
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
@@ -341,6 +347,16 @@ int main(int, char**)
     SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
     // SCENE OBJECTS
+#pragma region TestingLighting
+    /**/
+    GameObject dl_go;
+    dl_go.GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
+    Twin2Engine::Core::DirectionalLightComponent* dl = dl_go.AddComponent<Twin2Engine::Core::DirectionalLightComponent>();
+    dl->SetColor(glm::vec3(0.8f, 0.8f, 0.8f));
+    LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
+    LightingSystem::LightingController::Instance()->SetGamma(2.2);
+    LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.05f, 0.05f, 0.05f));
+#pragma endregion
 
     /*
     GameObject* hexagonPrefab = new GameObject();
@@ -390,6 +406,9 @@ int main(int, char**)
 
         // Update game objects' state here
         update();
+        /**/
+        dl->GetTransform()->Update();
+        dl->Update();/**/
 
         // OpenGL rendering code here
         render();

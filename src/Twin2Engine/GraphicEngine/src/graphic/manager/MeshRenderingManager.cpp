@@ -6,6 +6,7 @@ using namespace Twin2Engine::Manager;
 
 std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_renderQueue = std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
 std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
+std::map<InstatiatingMesh*, std::queue<MeshRenderData>> MeshRenderingManager::_depthQueue;
 
 GLuint MeshRenderingManager::_instanceDataSSBO = 0u;
 GLuint MeshRenderingManager::_materialIndexSSBO = 0u;
@@ -271,4 +272,49 @@ void MeshRenderingManager::RenderDepthMap()
 			meshPair.first->Draw(count);
 		}
 	}
+}
+
+void MeshRenderingManager::RenderDepthMap(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,
+	glm::mat4& projectionViewMatrix)
+{
+	ShaderManager::DepthShader->Use();
+	ShaderManager::DepthShader->SetMat4("lightSpaceMatrix", projectionViewMatrix);
+
+	glViewport(0, 0, bufferWidth, bufferHeight);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthFBO);
+
+	//glBindTexture(GL_TEXTURE_2D, depthMapTex);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+
+	for (auto& meshPair : _depthQueue)
+	{
+		unsigned int index = 0;
+
+		std::vector<glm::mat4> transforms(meshPair.second.size());
+
+		while (meshPair.second.size() > 0)
+		{
+			auto& renderData = meshPair.second.front();
+
+			//transforms[index] = projectionViewMatrix * renderData.transform;
+			transforms[index] = renderData.transform;
+
+			++index;
+
+			meshPair.second.pop();
+		}
+
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * index, transforms.data(), GL_DYNAMIC_DRAW);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, _instanceDataSSBO);
+
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+		meshPair.first->Draw(index);
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, 1920, 1080);
 }

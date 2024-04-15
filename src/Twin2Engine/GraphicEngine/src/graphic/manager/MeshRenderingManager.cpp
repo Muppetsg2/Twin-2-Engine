@@ -1,6 +1,7 @@
 #include <graphic/manager/MeshRenderingManager.h>
 #include <graphic/manager/ShaderManager.h>
 #include <graphic/InstatiatingMesh.h>
+#include <graphic/Window.h>
 
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
@@ -73,6 +74,8 @@ void MeshRenderingManager::Render(MeshRenderData meshData)
 					[meshData.materials[i].GetShader()]
 					[meshData.materials[i]]
 					.push(meshData);
+
+					_depthQueue[meshData.meshes[i]].push(meshData);
 			}
 		}
 		else if (meshData.meshes[i] != nullptr) {
@@ -317,5 +320,6 @@ void MeshRenderingManager::RenderDepthMap(const unsigned int& bufferWidth, const
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, 1920, 1080);
+	glm::ivec2 wSize = Twin2Engine::GraphicEngine::Window::GetInstance()->GetContentSize();
+	glViewport(0, 0, wSize.x, wSize.y);
 }

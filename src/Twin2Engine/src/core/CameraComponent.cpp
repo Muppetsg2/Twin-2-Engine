@@ -3,6 +3,7 @@
 #include <graphic/Window.h>
 #include <GraphicEnigineManager.h>
 #include <graphic/manager/ModelsManager.h>
+#include <LightingController.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::GraphicEngine;
@@ -255,6 +256,9 @@ void CameraComponent::Render()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
+
+
+	LightingSystem::LightingController::Instance()->RenderShadowMaps();
 
 	// RENDER MAP
 	glBindFramebuffer(GL_FRAMEBUFFER, _msRenderMapFBO);

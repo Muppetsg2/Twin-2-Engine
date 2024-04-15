@@ -806,6 +806,13 @@ void imgui_render()
             if (f != c->GetFarPlane()) {
                 c->SetFarPlane(f);
             }
+
+            float gm = c->GetGamma();
+            ImGui::InputFloat("Gamma", &gm);
+
+            if (gm != c->GetGamma()) {
+                c->SetGamma(gm);
+            }
         }
 #pragma endregion
         

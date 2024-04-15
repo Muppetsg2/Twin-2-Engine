@@ -1,4 +1,5 @@
 #include <graphic/manager/MaterialsManager.h>
+#include <LightingController.h>
 
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
@@ -229,6 +230,8 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 
 	loadedMaterials[materialNameHash] = materialData;
 	materialsPaths[materialNameHash] = materialName;
+
+	LightingSystem::LightingController::Instance()->BindLightBuffors(materialData->shader);
 
 	return Material(materialData);
 }

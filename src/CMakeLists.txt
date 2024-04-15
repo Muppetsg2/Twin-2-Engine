@@ -5,6 +5,8 @@ add_subdirectory(Twin2Engine)
 
 add_subdirectory(CollisionSystem)
 
+add_subdirectory(LightingSystem)
+
 add_subdirectory(Tilemap)
 
 add_executable(${PROJECT_NAME} main.cpp)
@@ -21,6 +23,9 @@ target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${COLLISION_SYSTEM_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC CollisionSystem)
+
+target_include_directories(${PROJECT_NAME} PUBLIC ${LIGHTING_SYSTEM_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} PUBLIC LightingSystem)
 
 #add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD 
 #				   COMMAND ${CMAKE_COMMAND} -E create_symlink 
@@ -88,14 +93,13 @@ find_shader_files(${SHADERS_SOURCE_DIR})
 #endforeach()
 
 # Custom commend that will create _parameters.shpa files
-
 #file(EXISTS ${SHADER_COMPILER_EXE} SHADER_COMPILER_EXE_EXISTS)
 #if (${SHADER_COMPILER_EXE_EXISTS})
 if (EXISTS ${SHADER_COMPILER_EXE})
     message("Additional prebuild program: ${SHADER_COMPILER_EXE}")
     add_custom_command(
         TARGET ${PROJECT_NAME} PRE_BUILD  
-        COMMAND ${SHADER_COMPILER_EXE}
+        #COMMAND ${SHADER_COMPILER_EXE}
         COMMENT "Running additional prebuild program: ${SHADER_COMPILER_EXE}"
     )
 endif()

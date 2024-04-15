@@ -1,11 +1,8 @@
 #version 430
 
 in vec3 position;
-in vec3 normal;
 in vec2 texCoords;
-
-in vec4 color1;
-in vec4 color2;
+in vec3 normal;
 
 flat in uint materialIndex;
 

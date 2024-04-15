@@ -71,6 +71,8 @@ namespace Twin2Engine::Manager
 		//static inline void SaveShaderProgramToFile(GLuint shaderProgramId, const std::string& shaderName);
 
 	public:
+		static GraphicEngine::Shader* DepthShader;
+
 		//ShaderManager();
 		static void Init();
 		static void End();
@@ -80,6 +82,8 @@ namespace Twin2Engine::Manager
 		//static GraphicEngine::Shader* GetShaderProgram(const std::string& shaderName);
 		//static GraphicEngine::Shader* CreateShaderProgram(const std::string& shaderProgramName);
 		//static GraphicEngine::Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);
+
+		void UpdateDirShadowMapsTab();
 	};
 }
 

@@ -17,10 +17,10 @@ namespace CollisionSystem {
 	};
 
 	class Ray {
-		public:
-			glm::vec3 Direction;
-			glm::vec3 Origin;
-			Ray(glm::vec3&& Direction, glm::vec3&& Origin);
+	public:
+		glm::vec3 Direction;
+		glm::vec3 Origin;
+		Ray(glm::vec3&& Direction, glm::vec3&& Origin);
 	};
 }
 

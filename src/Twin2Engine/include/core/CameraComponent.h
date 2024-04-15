@@ -2,6 +2,7 @@
 
 #include <core/Component.h>
 #include <core/Frustum.h>
+#include <Ray.h>
 
 using namespace glm;
 
@@ -118,5 +119,7 @@ namespace Twin2Engine::Core {
 		void OnEnable() override;
 		void OnDisable() override;
 		*/
+
+		CollisionSystem::Ray GetScreenPointRay(glm::vec2 screenPosition);
 	};
 }

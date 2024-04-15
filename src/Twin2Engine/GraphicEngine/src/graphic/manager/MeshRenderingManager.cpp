@@ -1,11 +1,14 @@
 #include <graphic/manager/MeshRenderingManager.h>
+#include <graphic/manager/ShaderManager.h>
 #include <graphic/InstatiatingMesh.h>
+#include <graphic/Window.h>
 
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
 
 std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_renderQueue = std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
 std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
+std::map<InstatiatingMesh*, std::queue<MeshRenderData>> MeshRenderingManager::_depthQueue;
 
 GLuint MeshRenderingManager::_instanceDataSSBO = 0u;
 GLuint MeshRenderingManager::_materialIndexSSBO = 0u;
@@ -71,6 +74,8 @@ void MeshRenderingManager::Render(MeshRenderData meshData)
 					[meshData.materials[i].GetShader()]
 					[meshData.materials[i]]
 					.push(meshData);
+
+					_depthQueue[meshData.meshes[i]].push(meshData);
 			}
 		}
 		else if (meshData.meshes[i] != nullptr) {
@@ -180,10 +185,10 @@ void MeshRenderingManager::Render()
 
 			meshPair.first->Draw(count);
 
-			{GLenum error = glGetError();
+			GLenum error = glGetError();
 			if (error != GL_NO_ERROR) {
-				SPDLOG_ERROR("RError: {}", error);
-			}}
+				SPDLOG_ERROR("Error: {}", error);
+			}
 		}
 	}
 }
@@ -272,4 +277,68 @@ void MeshRenderingManager::RenderDepthMap()
 			}}
 		}
 	}
+}
+
+void MeshRenderingManager::RenderDepthMap(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,
+	glm::mat4& projectionViewMatrix)
+{
+	ShaderManager::DepthShader->Use();
+	ShaderManager::DepthShader->SetMat4("lightSpaceMatrix", projectionViewMatrix);
+
+	glViewport(0, 0, bufferWidth, bufferHeight);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthFBO);
+
+	//glBindTexture(GL_TEXTURE_2D, depthMapTex);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+
+	for (auto& meshPair : _depthQueue)
+	{
+		unsigned int index = 0;
+
+		std::vector<glm::mat4> transforms(meshPair.second.size());
+
+		while (meshPair.second.size() > 0)
+		{
+			auto& renderData = meshPair.second.front();
+
+			//transforms[index] = projectionViewMatrix * renderData.transform;
+			transforms[index] = renderData.transform;
+
+			++index;
+
+			meshPair.second.pop();
+		}
+
+		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+		//
+		//glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * index, transforms.data(), GL_DYNAMIC_DRAW);
+		//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, _instanceDataSSBO);
+		//
+		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+		size_t instanceIdnex = 0;
+
+		while (index > MAX_INSTANCE_NUMBER_PER_DRAW)
+		{
+			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+			glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, transforms.data() + instanceIdnex);
+
+			//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
+			//glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, indexes.data() + instanceIdnex);
+
+			meshPair.first->Draw(MAX_INSTANCE_NUMBER_PER_DRAW);
+
+			instanceIdnex += MAX_INSTANCE_NUMBER_PER_DRAW;
+			index -= MAX_INSTANCE_NUMBER_PER_DRAW;
+		}
+		//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+		glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * index, transforms.data() + instanceIdnex);
+
+		meshPair.first->Draw(index);
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glm::ivec2 wSize = Twin2Engine::GraphicEngine::Window::GetInstance()->GetContentSize();
+	glViewport(0, 0, wSize.x, wSize.y);
 }

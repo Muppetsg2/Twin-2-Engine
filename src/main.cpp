@@ -62,6 +62,12 @@
 #include <Tilemap/HexagonalTilemap.h>
 #include <Tilemap/HexagonalTile.h>
 
+// LIGHTING
+#include <LightingController.h>
+#include <core/PointLightComponent.h>
+#include <core/SpotLightComponent.h>
+#include <core/DirectionalLightComponent.h>
+
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
@@ -160,7 +166,7 @@ const     char*   glsl_version     = "#version 450";
 constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 5;
 
-HexagonalTilemap hexagonalTilemap(glm::ivec2(-5, -5), glm::ivec2(5, 5), 1.f, true);
+//HexagonalTilemap hexagonalTilemap(glm::ivec2(-5, -5), glm::ivec2(5, 5), 1.f, true);
 
 Image* image;
 float colorSpan = 1.f;
@@ -362,8 +368,6 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
     SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
-    // SCENE OBJECTS
-
     /*
     GameObject* hexagonPrefab = new GameObject();
     hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 4, 0));
@@ -405,10 +409,25 @@ int main(int, char**)
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
 
+    // SCENE OBJECTS
+
     GameObject* test1 = SceneManager::CreateGameObject();
     std::tuple<GameObject*, Text*, Image*> test2 = SceneManager::CreateGameObject<Text, Image>();
 
     GameObject* test3 = SceneManager::CreateGameObject(PrefabManager::GetPrefab("res/prefabs/testPrefab.yaml"));
+    
+#pragma region TestingLighting
+    /**/
+    GameObject dl_go;
+    dl_go.GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
+    Twin2Engine::Core::DirectionalLightComponent* dl = dl_go.AddComponent<Twin2Engine::Core::DirectionalLightComponent>();
+    dl->SetColor(glm::vec3(1.0f));
+    //dl->SetColor(glm::vec3(0.85f, 0.85f, 0.85f));
+    //dl->SetColor(glm::vec3(0.8f, 0.8f, 0.8f));
+    LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
+    //LightingSystem::LightingController::Instance()->SetGamma(2.2);
+    LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f, 0.02f, 0.02f));
+#pragma endregion
 
     // Main loop
     while (!window->IsClosed())
@@ -418,6 +437,9 @@ int main(int, char**)
 
         // Update game objects' state here
         update();
+        /**/
+        dl->GetTransform()->Update();
+        dl->Update();/**/
 
         // OpenGL rendering code here
         render();
@@ -546,22 +568,35 @@ void input()
 
     CameraComponent* c = CameraComponent::GetMainCamera();
 
+    bool moved = false;
+
     if (Input::IsKeyDown(KEY::W) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        moved = true;
     }
     if (Input::IsKeyDown(KEY::S) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        moved = true;
     }
     if (Input::IsKeyDown(KEY::A) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        moved = true;
     }
     if (Input::IsKeyDown(KEY::D) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        moved = true;
     }
+
+
+    if (LightingSystem::LightingController::IsInstantiated() && moved) {
+        glm::vec3 cp = c->GetTransform()->GetGlobalPosition();
+        LightingSystem::LightingController::Instance()->SetViewerPosition(cp);
+    }
+
 
     if (Input::IsKeyPressed(KEY::LEFT_ALT)) 
     {
@@ -630,6 +665,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     {
         Camera->GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
     }
+
+    LightingSystem::LightingController::Instance()->ViewerTransformChanged.Invoke();
 }
 
 void update()
@@ -811,6 +848,13 @@ void imgui_render()
 
             if (f != c->GetFarPlane()) {
                 c->SetFarPlane(f);
+            }
+
+            float gm = c->GetGamma();
+            ImGui::InputFloat("Gamma", &gm);
+
+            if (gm != c->GetGamma()) {
+                c->SetGamma(gm);
             }
         }
 #pragma endregion

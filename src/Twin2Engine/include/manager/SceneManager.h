@@ -1,7 +1,7 @@
 #pragma once
 
 #include <core/Scene.h>
-#include <UI/Image.h>
+#include <core/Prefab.h>
 
 namespace Twin2Engine::Manager {
 	class SceneManager {
@@ -21,6 +21,7 @@ namespace Twin2Engine::Manager {
 		static std::vector<size_t> _audiosIds;
 		static std::vector<size_t> _materialsIds;
 		static std::vector<size_t> _modelsIds;
+		static std::vector<size_t> _prefabsIds;
 
 		// Loaded Scene Objects
 		static std::map<size_t, Core::Scene*> _loadedScenes;
@@ -33,7 +34,7 @@ namespace Twin2Engine::Manager {
 			T* comp = obj->AddComponent<T>();
 			if constexpr (sizeof...(Ts) > 0) return std::tuple_cat(std::make_tuple(comp), AddComponentsToGameObject<Ts...>(obj));
 			else return std::make_tuple(comp);
-		}
+		};
 	public:
 		static void AddScene(const std::string& name, Core::Scene* scene);
 		static void AddScene(const std::string& name, const std::string& path);
@@ -53,14 +54,16 @@ namespace Twin2Engine::Manager {
 		template<class T, std::enable_if_t<std::is_base_of_v<Component, T>, bool> = true>
 		static T* GetComponentWithId(size_t id) {
 			return static_cast<T*>(GetComponentWithId(id));
-		}
+		};
 
 		static Core::GameObject* CreateGameObject(Core::Transform* parent = nullptr);
 		template<class... Ts>
 		static std::tuple<Core::GameObject*, Ts*...> CreateGameObject(Core::Transform* parent = nullptr) {
 			Core::GameObject* obj = CreateGameObject(parent);
 			return std::tuple_cat(std::make_tuple(obj), AddComponentsToGameObject<Ts...>(obj));
-		}
+		};
+		
+		static Core::GameObject* CreateGameObject(Core::Prefab* prefab, Core::Transform* parent = nullptr);
 
 		static size_t GetCurrentSceneId();
 		static std::string GetCurrentSceneName();
@@ -71,6 +74,7 @@ namespace Twin2Engine::Manager {
 		static size_t GetAudio(size_t loadIdx);
 		static size_t GetMaterial(size_t loadIdx);
 		static size_t GetModel(size_t loadIdx);
+		static size_t GetPrefab(size_t loadIdx);
 
 		static size_t GetTexture2DSaveIdx(size_t texId);
 		static size_t GetSpriteSaveIdx(size_t spriteId);
@@ -78,6 +82,7 @@ namespace Twin2Engine::Manager {
 		static size_t GetAudioSaveIdx(size_t audioId);
 		static size_t GetMaterialSaveIdx(size_t materialId);
 		static size_t GetModelSaveIdx(size_t modelId);
+		static size_t GetPrefabSaveIdx(size_t prefabId);
 
 		static void UnloadCurrent();
 		static void UnloadScene(const std::string& name);

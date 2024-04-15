@@ -9,11 +9,14 @@ namespace Twin2Engine::Manager {
 namespace Twin2Engine::Core {
 	class Prefab : public Scene {
 	protected:
+		size_t _id;
 		YAML::Node _rootObject;
 
 	public:
-		Prefab() = default;
+		Prefab(size_t id);
 		virtual ~Prefab() = default;
+
+		size_t GetId() const;
 
 		void SetRootObject(const YAML::Node& rootObjectNode);
 

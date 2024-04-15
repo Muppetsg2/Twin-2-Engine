@@ -17,7 +17,9 @@ Materials:
     - textured
 Models:
     - "{Cube}"
-RootObject:
+Prefabs:
+    - res/prefabs/testPrefab.yaml
+Root:
     name: testPrefabRoot
     isStatic: false
     isActive: true

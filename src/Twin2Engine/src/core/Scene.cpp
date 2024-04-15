@@ -60,17 +60,22 @@ void Scene::AddFont(const string& path)
 	_fonts.push_back(path);
 }
 
-void Scene::AddAudio(const std::string& path)
+void Scene::AddAudio(const string& path)
 {
 	_audios.push_back(path);
 }
 
-void Scene::AddModel(const std::string& path)
+void Scene::AddModel(const string& path)
 {
 	_models.push_back(path);
 }
 
-void Scene::AddMaterial(const std::string& path)
+void Scene::AddMaterial(const string& path)
 {
 	_materials.push_back(path);
+}
+
+void Scene::AddPrefab(const string& path)
+{
+	_prefabs.push_back(path);
 }

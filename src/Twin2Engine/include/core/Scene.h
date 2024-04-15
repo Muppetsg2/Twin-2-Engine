@@ -22,6 +22,7 @@ namespace Twin2Engine::Core {
 		std::vector<std::string> _audios;
 		std::vector<std::string> _materials;
 		std::vector<std::string> _models;
+		std::vector<std::string> _prefabs;
 	public:
 		Scene() = default;
 		virtual ~Scene() = default;
@@ -37,6 +38,7 @@ namespace Twin2Engine::Core {
 		void AddAudio(const std::string& path);
 		void AddModel(const std::string& path);
 		void AddMaterial(const std::string& path);
+		void AddPrefab(const std::string& path);
 
 		friend class Manager::SceneManager;
 	};

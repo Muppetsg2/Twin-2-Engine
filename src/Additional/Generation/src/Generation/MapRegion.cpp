@@ -20,14 +20,14 @@ void MapRegion::SetType(const RegionType& type)
 	_type = type;
 }
 
-inline MapRegion::RegionType MapRegion::GetType()
+inline MapRegion::RegionType MapRegion::GetType() const
 {
 	return _type;
 }
 
 
 //inline const std::vector<Tilemap::HexagonalTile*>& GetTiles() const;
-inline const std::unordered_set<MapSector*>& MapRegion::GetSectos() const
+inline const std::unordered_set<MapSector*>& MapRegion::GetSectors() const
 {
 	return _regionSectors;
 }
@@ -67,7 +67,7 @@ std::vector<MapRegion*> MapRegion::GetAdjacentRegions() const
 
 		for (int i = 0; i < adjacentSectors.size(); i++)
 		{
-			MapRegion* region = adjacentSectors[i]->GetRegion();
+			MapRegion* region = adjacentSectors[i]->region;
 
 			if (region != this)
 			{
@@ -87,7 +87,7 @@ bool MapRegion::HasAdjacentRegion(MapRegion* otherRegion) const
 
 		for (int i = 0; i < adjacentSectors.size(); i++)
 		{
-			if (adjacentSectors[i]->GetRegion() != otherRegion)
+			if (adjacentSectors[i]->region != otherRegion)
 			{
 				return true;
 			}

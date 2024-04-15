@@ -6,6 +6,8 @@
 
 namespace Generation
 {
+    class MapSector;
+
 	class MapRegion
 	{
     public:
@@ -18,7 +20,7 @@ namespace Generation
         };
 
     private:
-        HexagonalTilemap* _tilemap;
+        Tilemap::HexagonalTilemap* _tilemap;
 
         RegionType _type;
 
@@ -27,13 +29,13 @@ namespace Generation
 
     public:
 
-        void SetTilemap(HexagonalTilemap* tilemap);
-        inline HexagonalTilemap* GetTilemap() const;
+        void SetTilemap(Tilemap::HexagonalTilemap* tilemap);
+        inline Tilemap::HexagonalTilemap* GetTilemap() const;
         void SetType(const RegionType& type);
-        inline RegionType GetType();
+        inline RegionType GetType() const;
 
         //inline const std::vector<Tilemap::HexagonalTile*>& GetTiles() const;
-        inline const std::unordered_set<MapSector*>& GetSectos() const;
+        inline const std::unordered_set<MapSector*>& GetSectors() const;
         void AddSector(MapSector* tile);
         void AddSectors(const std::vector<MapSector*>& sectors);
         void RemoveSector(MapSector* sector);

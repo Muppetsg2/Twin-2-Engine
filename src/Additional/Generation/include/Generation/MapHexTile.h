@@ -1,13 +1,15 @@
 #ifndef _MAP_HEX_TILE_H_
 #define _MAP_HEX_TILE_H_
 
-#include <Generation/MapRegion.h>
-#include <Generation/MapSector.h>
+//#include <Generation/MapRegion.h>
+//#include <Generation/MapSector.h>
 
 #include <Tilemap/HexagonalTilemap.h>
 
 namespace Generation
 {
+	class MapRegion;
+	class MapSector;
 	class MapHexTile : public Twin2Engine::Core::Component
 	{
 

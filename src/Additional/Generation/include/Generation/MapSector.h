@@ -3,13 +3,16 @@
 
 #include <Tilemap/HexagonalTile.h>
 #include <Tilemap/HexagonalTilemap.h>
-#include <Generation/MapRegion.h>
+//#include <Generation/MapRegion.h>
 #include <Generation/MapHexTile.h>
 
 using Tilemap::HexagonalTilemap;
 
 namespace Generation
 {
+    class MapRegion;
+    class MapHexTile;
+
 	class MapSector : public Twin2Engine::Core::Component
 	{
     public:

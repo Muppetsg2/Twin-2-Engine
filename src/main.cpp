@@ -419,7 +419,7 @@ int main(int, char**)
     //dl->SetColor(glm::vec3(0.85f, 0.85f, 0.85f));
     //dl->SetColor(glm::vec3(0.8f, 0.8f, 0.8f));
     LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
-    LightingSystem::LightingController::Instance()->SetGamma(2.2);
+    //LightingSystem::LightingController::Instance()->SetGamma(2.2);
     LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f, 0.02f, 0.02f));
 #pragma endregion
 

@@ -310,12 +310,30 @@ void MeshRenderingManager::RenderDepthMap(const unsigned int& bufferWidth, const
 			meshPair.second.pop();
 		}
 
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+		//
+		//glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * index, transforms.data(), GL_DYNAMIC_DRAW);
+		//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, _instanceDataSSBO);
+		//
+		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * index, transforms.data(), GL_DYNAMIC_DRAW);
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, _instanceDataSSBO);
+		size_t instanceIdnex = 0;
 
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+		while (index > MAX_INSTANCE_NUMBER_PER_DRAW)
+		{
+			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+			glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, transforms.data() + instanceIdnex);
+
+			//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
+			//glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, indexes.data() + instanceIdnex);
+
+			meshPair.first->Draw(MAX_INSTANCE_NUMBER_PER_DRAW);
+
+			instanceIdnex += MAX_INSTANCE_NUMBER_PER_DRAW;
+			index -= MAX_INSTANCE_NUMBER_PER_DRAW;
+		}
+		//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+		glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * index, transforms.data() + instanceIdnex);
 
 		meshPair.first->Draw(index);
 	}

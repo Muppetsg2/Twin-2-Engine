@@ -143,6 +143,6 @@ void main() {
         res = applyNegative(res);
     }
 
-    Color = vec4(pow(res, vec3(1.0/gamma)), 1.0);
-    //Color = vec4(res, 1.0);
+    //Color = vec4(pow(res, vec3(1.0/gamma)), 1.0);
+    Color = vec4(res, 1.0);
 }

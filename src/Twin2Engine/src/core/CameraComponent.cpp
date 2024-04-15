@@ -39,14 +39,14 @@ void CameraComponent::OnWindowSizeChange()
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
 	glBindTexture(GL_TEXTURE_2D, _depthMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, _renderMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB, wSize.x, wSize.y, GL_TRUE);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB32F, wSize.x, wSize.y, GL_TRUE);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
 	glBindRenderbuffer(GL_RENDERBUFFER, _msRenderBuffer);
@@ -69,7 +69,7 @@ float CameraComponent::GetFOV() const
 	return _fov;
 }
 
-float Twin2Engine::Core::CameraComponent::GetGamma() const
+float CameraComponent::GetGamma() const
 {
 	return _gamma;
 }
@@ -160,7 +160,7 @@ void CameraComponent::SetFOV(float angle)
 	_fov = angle;
 }
 
-void Twin2Engine::Core::CameraComponent::SetGamma(float gamma)
+void CameraComponent::SetGamma(float gamma)
 {
 	_gamma = gamma;
 }
@@ -201,7 +201,7 @@ void CameraComponent::SetSamples(uint8_t i)
 		ivec2 wSize = Window::GetInstance()->GetContentSize();
 
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB, wSize.x, wSize.y, GL_TRUE);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB32F, wSize.x, wSize.y, GL_TRUE);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
 		glBindRenderbuffer(GL_RENDERBUFFER, _msRenderBuffer);
@@ -350,12 +350,13 @@ void CameraComponent::Initialize()
 		glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(float) + sizeof(vec2), NULL, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		glBindBufferRange(GL_UNIFORM_BUFFER, 1, _uboWindowData, 0, 2 * sizeof(float) + sizeof(vec2));
+		glBindBufferRange(GL_UNIFORM_BUFFER, 1, _uboWindowData, 0, 3 * sizeof(float) + sizeof(vec2));
 
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(vec2), value_ptr(Window::GetInstance()->GetContentSize()));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2), sizeof(float), &(this->_near));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float), sizeof(float), &(this->_far));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		_renderPlane = ModelsManager::GetPlane();

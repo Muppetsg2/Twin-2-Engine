@@ -12,6 +12,8 @@
 
 // STD
 //#include <queue>
+#include <iterator>
+#include <list>
 #include <vector>
 #include <unordered_set>
 

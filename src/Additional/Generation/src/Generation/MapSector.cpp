@@ -8,76 +8,91 @@ using namespace Twin2Engine::Core;
 using namespace std;
 
 
-void MapSector::SetTilemap(HexagonalTilemap* tilemap)
-{
-	_tilemap = tilemap;
-}
+//void MapSector::SetTilemap(MapHexTilemap* tilemap)
+//{
+//	_tilemap = tilemap;
+//}
+//
+//inline HexagonalTilemap* MapSector::GetTilemap() const
+//{
+//	return _tilemap;
+//}
 
-inline HexagonalTilemap* MapSector::GetTilemap() const
-{
-	return _tilemap;
-}
+//void MapSector::SetRegion(MapRegion* region)
+//{
+//	_region = region;
+//}
+//
+//inline MapRegion* MapSector::GetRegion() const
+//{
+//	return _region;
+//}
 
-void MapSector::SetRegion(MapRegion* region)
-{
-	_region = region;
-}
-
-inline MapRegion* MapSector::GetRegion() const
-{
-	return _region;
-}
-
-void MapSector::SetType(const SectorType& type)
-{
-	_type = type;
-}
-
-inline MapSector::SectorType MapSector::GetType()
-{
-	return _type;
-}
+//void MapSector::SetType(const SectorType& type)
+//{
+//	_type = type;
+//}
+//
+//inline MapSector::SectorType MapSector::GetType()
+//{
+//	return _type;
+//}
 
 
-//inline const std::vector<Tilemap::HexagonalTile*>& MapSector::GetTiles() const
-inline const std::unordered_set<Tilemap::HexagonalTile*>& MapSector::GetTiles() const
+//inline const std::vector<Tilemap::MapHexTile*>& MapSector::GetTiles() const
+inline const std::unordered_set<MapHexTile*>& MapSector::GetTiles() const
 {
 	return _sectorTiles;
 }
 
-void MapSector::AddTile(HexagonalTile* tile)
+void MapSector::AddTile(MapHexTile* tile)
 {
 	_sectorTiles.insert(tile);
+	tile->GetTransform()->SetParent(GetTransform());
 }
 
-void MapSector::AddTiles(const std::vector<Tilemap::HexagonalTile*>& tiles)
+void MapSector::AddTiles(const std::vector<MapHexTile*>& tiles)
 {
 	_sectorTiles.insert(tiles.begin(), tiles.end());
 }
 
-void MapSector::RemoveTile(Tilemap::HexagonalTile* tile)
+void MapSector::JoinSector(MapSector* otherSector)
+{
+	_sectorTiles.insert(otherSector->_sectorTiles.begin(), otherSector->_sectorTiles.end());
+	for (const auto& tile : otherSector->_sectorTiles)
+	{
+		tile->GetTransform()->SetParent(GetTransform());
+	}
+	otherSector->_sectorTiles.clear();
+}
+
+void MapSector::RemoveTile(MapHexTile* tile)
 {
 	_sectorTiles.erase(tile);
 }
 
-//void MapSector::RemoveTiles(const std::vector<Tilemap::HexagonalTile*>& tiles)
-void MapSector::RemoveTiles(const std::unordered_set<Tilemap::HexagonalTile*>& tiles)
+//void MapSector::RemoveTiles(const std::vector<MapHexTile*>& tiles)
+void MapSector::RemoveTiles(const std::unordered_set<MapHexTile*>& tiles)
 {
-	for (HexagonalTile* tile : tiles)
+	for (MapHexTile* tile : tiles)
 	{
 		_sectorTiles.erase(tile);
 	}
 }
 
+inline size_t MapSector::GetTilesCount() const
+{
+	return _sectorTiles.size();
+}
 
 std::vector<MapSector*> MapSector::GetAdjacentSectors() const
 {
 	unordered_set<MapSector*> adjacentSectors;
 
-	for (const HexagonalTile* tile : _sectorTiles)
+	for (const MapHexTile* tile : _sectorTiles)
 	{
 		GameObject* tileAdjacentGameObjects[6];
-		tile->GetAdjacentGameObjects(tileAdjacentGameObjects);
+		tile->tile->GetAdjacentGameObjects(tileAdjacentGameObjects);
 
 		for (int i = 0; i < 6; i++)
 		{
@@ -85,9 +100,9 @@ std::vector<MapSector*> MapSector::GetAdjacentSectors() const
 			{
 				MapHexTile* hexTile = tileAdjacentGameObjects[i]->GetComponent<MapHexTile>();
 
-				if (hexTile != nullptr && hexTile->GetSector() != this)
+				if (hexTile != nullptr && hexTile->sector != this)
 				{
-					adjacentSectors.insert(hexTile->GetSector());
+					adjacentSectors.insert(hexTile->sector);
 				}
 			}
 		}
@@ -98,10 +113,10 @@ std::vector<MapSector*> MapSector::GetAdjacentSectors() const
 
 bool MapSector::HasAdjacentSector(MapSector* otherSector) const
 {
-	for (const HexagonalTile* tile : _sectorTiles)
+	for (const MapHexTile* tile : _sectorTiles)
 	{
 		GameObject* tileAdjacentGameObjects[6];
-		tile->GetAdjacentGameObjects(tileAdjacentGameObjects);
+		tile->tile->GetAdjacentGameObjects(tileAdjacentGameObjects);
 
 		for (int i = 0; i < 6; i++)
 		{
@@ -109,7 +124,7 @@ bool MapSector::HasAdjacentSector(MapSector* otherSector) const
 			{
 				MapHexTile* hexTile = tileAdjacentGameObjects[i]->GetComponent<MapHexTile>();
 
-				if (hexTile != nullptr && hexTile->GetSector() == otherSector)
+				if (hexTile != nullptr && hexTile->sector == otherSector)
 				{
 					return true;
 				}
@@ -122,10 +137,10 @@ bool MapSector::HasAdjacentSector(MapSector* otherSector) const
 
 bool MapSector::IsInternalSector() const
 {
-	for (const HexagonalTile* tile : _sectorTiles)
+	for (const MapHexTile* tile : _sectorTiles)
 	{
 		GameObject* tileAdjacentGameObjects[6];
-		tile->GetAdjacentGameObjects(tileAdjacentGameObjects);
+		tile->tile->GetAdjacentGameObjects(tileAdjacentGameObjects);
 
 		for (int i = 0; i < 6; i++)
 		{

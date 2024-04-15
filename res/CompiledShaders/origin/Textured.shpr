@@ -2,7 +2,7 @@ shaderprogram:
   name: origin/Textured
   shaders:
     - textured.vert
-    - textured.frag
+    - TexturedLightingShader.frag
   parameters:
     - name: texture1
       type: texture2D

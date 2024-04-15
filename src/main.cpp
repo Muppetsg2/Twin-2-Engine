@@ -393,10 +393,10 @@ int main(int, char**)
     GameObject dl_go;
     dl_go.GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
     Twin2Engine::Core::DirectionalLightComponent* dl = dl_go.AddComponent<Twin2Engine::Core::DirectionalLightComponent>();
-    dl->SetColor(glm::vec3(0.8f, 0.8f, 0.8f));
+    //dl->SetColor(glm::vec3(0.8f, 0.8f, 0.8f));
     LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
     LightingSystem::LightingController::Instance()->SetGamma(2.2);
-    LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.05f, 0.05f, 0.05f));
+    //LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.05f, 0.05f, 0.05f));
 #pragma endregion
 
     // Main loop
@@ -538,22 +538,35 @@ void input()
 
     CameraComponent* c = CameraComponent::GetMainCamera();
 
+    bool moved = false;
+
     if (Input::IsKeyDown(KEY::W))
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        moved = true;
     }
     if (Input::IsKeyDown(KEY::S))
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        moved = true;
     }
     if (Input::IsKeyDown(KEY::A))
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        moved = true;
     }
     if (Input::IsKeyDown(KEY::D))
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        moved = true;
     }
+
+
+    if (LightingSystem::LightingController::IsInstantiated() && moved) {
+        glm::vec3 cp = c->GetTransform()->GetGlobalPosition();
+        LightingSystem::LightingController::Instance()->SetViewerPosition(cp);
+    }
+
 
     if (Input::IsKeyPressed(KEY::LEFT_ALT)) 
     {
@@ -605,6 +618,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     {
         Camera->GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
     }
+
+    LightingSystem::LightingController::Instance()->ViewerTransformChanged.Invoke();
 }
 
 void update()

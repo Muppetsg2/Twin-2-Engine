@@ -2,7 +2,7 @@ shaderprogram:
   name: origin/Basic
   shaders:
     - normalVert.vert
-    - fargmentShader.frag
+    - LightingShader.frag
   parameters:
     - name: color1
       type: vec4

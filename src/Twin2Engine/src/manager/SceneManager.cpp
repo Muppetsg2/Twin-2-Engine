@@ -422,6 +422,7 @@ void SceneManager::LoadScene(const string& name)
 			}
 		}
 	}
+	_modelsIds = sortedIds;
 #pragma endregion
 #pragma region LOADING_PREFABS
 	// MODELS
@@ -461,6 +462,7 @@ void SceneManager::LoadScene(const string& name)
 			}
 		}
 	}
+	_prefabsIds = sortedIds;
 #pragma endregion
 #pragma region LOADING_GAMEOBJECTS
 	// GAME OBJECTS
@@ -716,7 +718,7 @@ GameObject* SceneManager::CreateGameObject(Transform* parent)
 
 GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 {
-#pragma region LOADING_TEXTURES
+#pragma region LOADING_PREFAB_TEXTURES
 	// TEXTURES
 	vector<string> paths;
 	for (const auto& path : prefab->_textures) {
@@ -765,7 +767,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	}
 	_texturesIds = sortedIds;
 #pragma endregion
-#pragma region LOADING_SPRITES
+#pragma region LOADING_PREFAB_SPRITES
 	// SPRITES
 	paths.clear();
 	for (const auto& path : prefab->_sprites) {
@@ -814,7 +816,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	}
 	_spritesIds = sortedIds;
 #pragma endregion
-#pragma region LOADING_FONTS
+#pragma region LOADING_PREFAB_FONTS
 	// FONTS
 	paths.clear();
 	for (const auto& path : prefab->_fonts) {
@@ -831,53 +833,43 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	sortedIds.clear();
 	for (size_t i = 0; i < paths.size(); ++i) {
 		size_t pathH = hash<string>()(paths[i]);
-		for (size_t j = 0; j < _spritesIds.size(); ++j) {
-			if (_spritesIds[j] == pathH) {
-				sortedIds.push_back(_spritesIds[j]);
+		for (size_t j = 0; j < _fontsIds.size(); ++j) {
+			if (_fontsIds[j] == pathH) {
+				sortedIds.push_back(_fontsIds[j]);
 				break;
 			}
 		}
 	}
 	// Add rest
 	size_t startSortedSize = sortedIds.size();
-	for (size_t i = 0; i < _spritesIds.size(); ++i) {
+	for (size_t i = 0; i < _fontsIds.size(); ++i) {
 		bool hasId = false;
 		for (size_t j = 0; j < startSortedSize; ++j) {
-			if (_spritesIds[i] == sortedIds[j]) {
+			if (_fontsIds[i] == sortedIds[j]) {
 				hasId = true;
 				break;
 			}
 		}
 		if (!hasId) {
-			sortedIds.push_back(_spritesIds[i]);
+			sortedIds.push_back(_fontsIds[i]);
 		}
 	}
 	_fontsIds = sortedIds;
 #pragma endregion
-#pragma region LOADING_AUDIO
+#pragma region LOADING_PREFAB_AUDIO
 	// AUDIO
 	paths.clear();
-	for (const auto& path : sceneToLoad->_audios) {
+	for (const auto& path : prefab->_audios) {
 		paths.push_back(path);
 	}
 	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _audiosIds);
 
-	// Unloading
-	for (size_t a : toLoadToUnload.second) {
-		AudioManager::UnloadAudio(a);
-		for (size_t i = 0; i < _audiosIds.size(); ++i) {
-			if (_audiosIds[i] == a) {
-				_audiosIds.erase(_audiosIds.begin() + i);
-				break;
-			}
-		}
-	}
 	// Loading
 	for (size_t a : toLoadToUnload.first) {
 		size_t id = AudioManager::LoadAudio(paths[a]);
 		if (id != 0) _audiosIds.push_back(id);
 	}
-	// Sorting
+	// Sorting (First like in prefab file then rest)
 	sortedIds.clear();
 	for (size_t i = 0; i < paths.size(); ++i) {
 		size_t pathH = hash<string>()(paths[i]);
@@ -888,32 +880,36 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 			}
 		}
 	}
+	// Add rest
+	size_t startSortedSize = sortedIds.size();
+	for (size_t i = 0; i < _audiosIds.size(); ++i) {
+		bool hasId = false;
+		for (size_t j = 0; j < startSortedSize; ++j) {
+			if (_audiosIds[i] == sortedIds[j]) {
+				hasId = true;
+				break;
+			}
+		}
+		if (!hasId) {
+			sortedIds.push_back(_audiosIds[i]);
+		}
+	}
 	_audiosIds = sortedIds;
 #pragma endregion
-#pragma region LOADING_MATERIALS
+#pragma region LOADING_PREFAB_MATERIALS
 	// MATERIALS
 	paths.clear();
-	for (const auto& path : sceneToLoad->_materials) {
+	for (const auto& path : prefab->_materials) {
 		paths.push_back(path);
 	}
 	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _materialsIds);
 
-	// Unloading
-	for (size_t m : toLoadToUnload.second) {
-		MaterialsManager::UnloadMaterial(m);
-		for (size_t i = 0; i < _materialsIds.size(); ++i) {
-			if (_materialsIds[i] == m) {
-				_materialsIds.erase(_materialsIds.begin() + i);
-				break;
-			}
-		}
-	}
 	// Loading
 	for (size_t m : toLoadToUnload.first) {
 		Material mat = MaterialsManager::LoadMaterial(paths[m]);
 		_materialsIds.push_back(mat.GetId());
 	}
-	// Sorting
+	// Sorting (First like in prefab file then rest)
 	sortedIds.clear();
 	for (size_t i = 0; i < paths.size(); ++i) {
 		size_t pathH = hash<string>()(paths[i]);
@@ -924,32 +920,36 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 			}
 		}
 	}
+	// Add rest
+	size_t startSortedSize = sortedIds.size();
+	for (size_t i = 0; i < _materialsIds.size(); ++i) {
+		bool hasId = false;
+		for (size_t j = 0; j < startSortedSize; ++j) {
+			if (_materialsIds[i] == sortedIds[j]) {
+				hasId = true;
+				break;
+			}
+		}
+		if (!hasId) {
+			sortedIds.push_back(_materialsIds[i]);
+		}
+	}
 	_materialsIds = sortedIds;
 #pragma endregion
-#pragma region LOADING_MODELS
+#pragma region LOADING_PREFAB_MODELS
 	// MODELS
 	paths.clear();
-	for (const auto& path : sceneToLoad->_models) {
+	for (const auto& path : prefab->_models) {
 		paths.push_back(path);
 	}
 	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _modelsIds);
 
-	// Unloading
-	for (size_t m : toLoadToUnload.second) {
-		ModelsManager::UnloadModel(m);
-		for (size_t i = 0; i < _modelsIds.size(); ++i) {
-			if (_modelsIds[i] == m) {
-				_modelsIds.erase(_modelsIds.begin() + i);
-				break;
-			}
-		}
-	}
 	// Loading
 	for (size_t m : toLoadToUnload.first) {
 		InstatiatingModel model = ModelsManager::LoadModel(paths[m]);
 		_modelsIds.push_back(model.GetId());
 	}
-	// Sorting
+	// Sorting (First like in prefab file then rest)
 	sortedIds.clear();
 	for (size_t i = 0; i < paths.size(); ++i) {
 		size_t pathH = hash<string>()(paths[i]);
@@ -960,25 +960,30 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 			}
 		}
 	}
+	// Add rest
+	size_t startSortedSize = sortedIds.size();
+	for (size_t i = 0; i < _modelsIds.size(); ++i) {
+		bool hasId = false;
+		for (size_t j = 0; j < startSortedSize; ++j) {
+			if (_modelsIds[i] == sortedIds[j]) {
+				hasId = true;
+				break;
+			}
+		}
+		if (!hasId) {
+			sortedIds.push_back(_materialsIds[i]);
+		}
+	}
+	_modelsIds = sortedIds;
 #pragma endregion
-#pragma region LOADING_PREFABS
+#pragma region LOADING_PREFAB_PREFABS
 	// MODELS
 	paths.clear();
-	for (const auto& path : sceneToLoad->_prefabs) {
+	for (const auto& path : prefab->_prefabs) {
 		paths.push_back(path);
 	}
 	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _prefabsIds);
 
-	// Unloading
-	for (size_t p : toLoadToUnload.second) {
-		PrefabManager::UnloadPrefab(p);
-		for (size_t i = 0; i < _prefabsIds.size(); ++i) {
-			if (_prefabsIds[i] == p) {
-				_prefabsIds.erase(_prefabsIds.begin() + i);
-				break;
-			}
-		}
-	}
 	// Loading
 	for (size_t p : toLoadToUnload.first) {
 		Prefab* prefab = PrefabManager::LoadPrefab(paths[p]);
@@ -988,7 +993,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		}
 		_prefabsIds.push_back(prefab->GetId());
 	}
-	// Sorting
+	// Sorting (First like in prefab file then rest)
 	sortedIds.clear();
 	for (size_t i = 0; i < paths.size(); ++i) {
 		size_t pathH = hash<string>()(paths[i]);
@@ -999,22 +1004,30 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 			}
 		}
 	}
-#pragma endregion
-#pragma region LOADING_GAMEOBJECTS
-	// GAME OBJECTS
-
-	// DESTROY OLD OBJECTS
-	if (_rootObject != nullptr) {
-		_gameObjectsById.clear();
-		_componentsById.clear();
-		DeleteGameObject(_rootObject);
+	// Add rest
+	size_t startSortedSize = sortedIds.size();
+	for (size_t i = 0; i < _prefabsIds.size(); ++i) {
+		bool hasId = false;
+		for (size_t j = 0; j < startSortedSize; ++j) {
+			if (_prefabsIds[i] == sortedIds[j]) {
+				hasId = true;
+				break;
+			}
+		}
+		if (!hasId) {
+			sortedIds.push_back(_prefabsIds[i]);
+		}
 	}
+	_prefabsIds = sortedIds;
+#pragma endregion
+#pragma region LOADING_PREFAB_GAMEOBJECTS
+	// GAME OBJECTS
 
 	// CREATE NEW OBJECTS WITH TRANSFORMS
 	map<size_t, GameObject*> objectByComponentId;
 
 	_rootObject = new GameObject(0);
-	for (const YAML::Node& gameObjectNode : sceneToLoad->_gameObjects) {
+	for (const YAML::Node& gameObjectNode : prefab->_gameObjects) {
 		size_t id = gameObjectNode["id"].as<size_t>();
 		GameObject* obj = new GameObject(id);
 		_rootObject->GetTransform()->AddChild(obj->GetTransform());

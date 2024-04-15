@@ -21,16 +21,18 @@ uniform bool displayDepth;
 
 vec3 applyVignette(vec3 color) {
     vec2 position = TexCoord.xy - vec2(0.5);  
-    float dist = length(position);
+    float dist = length(position * 2);
+    vec3 tintColor = vec3(0.0, 0.0, 0.0);
     //float dist = length(position * vec2(windowSize.x / windowSize.y, 1.0));
 
     float radius = 0.7;
-    float softness = 0.25;
-    float vignette = smoothstep(radius, radius - softness, dist);
+    float softness = 0.5;
+    float vignette = 1.0 - smoothstep(radius, radius + softness, dist);
 
-    color = color - (1.0 - vignette);
+    vec3 displayColor = color * vignette;
+    vec3 vignetteColor = (1.0 - color) * tintColor * (1.0 - vignette);
 
-    return color;
+    return displayColor + vignetteColor;
 }
 
 vec3 applyNegative(vec3 color) {

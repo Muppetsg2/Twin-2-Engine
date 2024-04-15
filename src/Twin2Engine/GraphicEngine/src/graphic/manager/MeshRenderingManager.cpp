@@ -185,10 +185,10 @@ void MeshRenderingManager::Render()
 
 			meshPair.first->Draw(count);
 
-			{GLenum error = glGetError();
+			GLenum error = glGetError();
 			if (error != GL_NO_ERROR) {
-				SPDLOG_ERROR("RError: {}", error);
-			}}
+				SPDLOG_ERROR("Error: {}", error);
+			}
 		}
 	}
 }

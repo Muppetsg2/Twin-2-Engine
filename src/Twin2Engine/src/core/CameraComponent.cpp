@@ -250,8 +250,21 @@ void CameraComponent::Render()
 	glm::vec3 clear_color = glm::vec3(powf(.1f, _gamma));
 	// UBO's
 	//Jesli wiecej kamer i kazda ma ze swojego kata dawac obraz
-	//glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
-	//glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
+
+	// DEFAULT
+	/*
+	glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
+
+	glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(vec2), value_ptr(Window::GetInstance()->GetContentSize()));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2), sizeof(float), &(this->_near));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float), sizeof(float), &(this->_far));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
+	*/
+	
+	// NAMED
 	glNamedBufferSubData(_uboMatrices, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
 	glNamedBufferSubData(_uboMatrices, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
 

@@ -13,6 +13,14 @@ struct MaterialInput
 	int empty;
 };
 
+layout (std140, binding = 1) uniform WindowData
+{
+    vec2 windowSize;
+    float nearPlane;
+    float farPlane;
+    float gamma;
+};
+
 layout(std140, binding = 2) uniform MaterialInputBuffer {
     MaterialInput materialInput[8];
 };
@@ -71,7 +79,7 @@ layout (std430, binding = 3) buffer Lights {
 layout(std140, binding = 4) uniform LightingData {
     vec3 AmbientLight;
 	vec3 ViewerPosition;
-	float gamma;
+	//float gamma;
 };
 
 
@@ -207,5 +215,5 @@ void main()
     }
 	
     FragColor *= vec4(LightColor + AmbientLight, 1.0f); //
-	FragColor = vec4(pow(FragColor.rgb, vec3(1.0 / gamma)), FragColor.a);
+	FragColor = vec4(pow(FragColor.rgb, vec3(gamma)), 1.0);
 }

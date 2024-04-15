@@ -24,6 +24,14 @@ struct MaterialInput
    vec4 color2;
 };
 
+layout (std140, binding = 1) uniform WindowData
+{
+    vec2 windowSize;
+    float nearPlane;
+    float farPlane;
+    float gamma;
+};
+
 layout(std140, binding = 2) uniform MaterialInputBuffer {
     MaterialInput materialInput[8];
 };
@@ -70,7 +78,7 @@ layout (std430, binding = 3) buffer Lights {
 layout(std140, binding = 4) uniform LightingData {
     vec3 AmbientLight;
 	vec3 ViewerPosition;
-	float gamma;
+	//float gamma;
 };
 
 

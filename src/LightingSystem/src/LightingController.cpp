@@ -296,7 +296,7 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 	glm::vec3 V = frustumCenter - origin;
 	float VoDir = glm::dot(V, light->direction);
 	//Zawiera now¹ pozycjê œwiat³a
-	lightNewPos = frustumCenter - VoDir * light->direction;
+	lightNewPos = frustumCenter - 20.0f * VoDir * light->direction;
 
 	glm::mat4 viewMatrix = glm::lookAt(lightNewPos, lightNewPos + light->direction, glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -310,11 +310,10 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 
 
 	// Adjust minZ and maxZ for better precision in the depth buffer
-	float lightMargin = 10.0f; // Adjust based on scene size
-	minZ -= lightMargin;
-	maxZ += lightMargin;
+	float lightMargin = 5.0f; // Adjust based on scene size
 
-	light->lightSpaceMatrix = glm::ortho(-maxX, maxX, -maxY, maxY, -100.0f, 100.f) * viewMatrix;/**/
+	float zLength = 40.0f * glm::abs(VoDir);
+	light->lightSpaceMatrix = glm::ortho(-(maxX + lightMargin), maxX + lightMargin, -(maxY + lightMargin), maxY + lightMargin, -zLength, zLength) * viewMatrix;/**/
 
 	/*/glm::mat4 viewProjectionInverse = glm::inverse(mainCam->GetProjectionMatrix() * mainCam->GetViewMatrix());
 	
@@ -448,12 +447,14 @@ void LightingController::SetViewerPosition(glm::vec3& viewerPosition) {
 
 	ViewerTransformChanged.Invoke();
 }
-
+/*/
 void LightingController::SetGamma(float gamma) {
 	glBindBuffer(GL_UNIFORM_BUFFER, LightingDataBuffer);
 	glBufferSubData(GL_UNIFORM_BUFFER, 28, 4, &gamma);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
+/**/
+
 /*/
 void LightingController::RegisterPointLight(PointLight* pointLight) {
 	pointLights.insert(pointLight);

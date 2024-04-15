@@ -99,8 +99,11 @@ namespace Twin2Engine::Manager {
 
 	class TextureManager {
 	private:
-		static std::hash<std::string> hasher;
+		static std::hash<std::string> _hasher;
 		static std::map<size_t, GraphicEngine::Texture2D*> _loadedTextures;
+
+		static std::map<size_t, std::string> _texturesPaths;
+		static std::map<size_t, std::pair<GraphicEngine::TextureFormat, TextureFileFormat>> _texturesFormats;
 
 		static void UnloadTexture2D(size_t managerID);
 		static void UnloadTexture2D(const std::string& path);

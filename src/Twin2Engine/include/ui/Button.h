@@ -22,6 +22,7 @@ namespace Twin2Engine::UI {
 		bool IsInteractable() const;
 		const Core::MethodEventHandler& GetOnClickEvent() const;
 
-		void Update() override;
+		virtual void Update() override;
+		virtual YAML::Node Serialize() const override;
 	};
 }

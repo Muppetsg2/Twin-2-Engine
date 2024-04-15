@@ -155,7 +155,7 @@ void LightingController::UpdateDLTransform(DirectionalLight* dirLight) {
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 912 + pos * 112, 96, *itr); //972
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-	SPDLOG_INFO("Aktualizacja DL transform");
+	//SPDLOG_INFO("Aktualizacja DL transform");
 }
 
 
@@ -243,33 +243,17 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 	else {
 		glm::vec3 camPos = mainCam->GetTransform()->GetGlobalPosition();
 		corners.push_back(camPos);
-		//SPDLOG_INFO("CP: {}\t {} \t{}", camPos.x, camPos.y, camPos.z);
 		frustumCenter = camPos + mainCam->GetFrontDir() * (DLShadowCastingRange * 0.5f);
-		//SPDLOG_INFO("FC: {}\t {} \t{}", frustumCenter.x, frustumCenter.y, frustumCenter.z);
 
 		float ndcZPos = DLShadowCastingRange / mainCam->GetFarPlane();
 		glm::vec3 gPos = projectionViewInverse * glm::vec4(-1.0f, 1.0f, ndcZPos * DLShadowCastingRange, 1.0f);
-		//SPDLOG_INFO("P: {}\t {} \t{}", gPos.x, gPos.y, gPos.z);
 		corners.push_back(gPos);
 		gPos = projectionViewInverse * glm::vec4(1.0f, 1.0f, ndcZPos * DLShadowCastingRange, 1.0f);
-		//SPDLOG_INFO("P: {}\t {} \t{}", gPos.x, gPos.y, gPos.z);
 		corners.push_back(gPos);
 		gPos = projectionViewInverse * glm::vec4(1.0f, -1.0f, ndcZPos * DLShadowCastingRange, 1.0f);
-		//SPDLOG_INFO("P: {}\t {} \t{}", gPos.x, gPos.y, gPos.z);
 		corners.push_back(gPos);
 		gPos = projectionViewInverse * glm::vec4(-1.0f, -1.0f, ndcZPos * DLShadowCastingRange, 1.0f);
-		//SPDLOG_INFO("P: {}\t {} \t{}", gPos.x, gPos.y, gPos.z);
 		corners.push_back(gPos);
-
-		/*/glm::vec4 ndcPoisitions[] = {
-			{ -1.0f,  1.0f, ndcZPos, 1.0f },
-			{  1.0f,  1.0f, ndcZPos, 1.0f },
-			{  1.0f, -1.0f, ndcZPos, 1.0f },
-			{ -1.0f, -1.0f, ndcZPos, 1.0f },
-		};
-		for (auto p : ndcPoisitions) {
-			corners.insert(projectionViewInverse * p);
-		}/**/
 	}
 
 
@@ -320,14 +304,9 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 	maxY = 0.0f;
 	for (const auto& corner : corners) {
 		glm::vec3 transformedCorner = glm::vec3(viewMatrix * glm::vec4(corner, 1.0f));
-		//minX = std::min(minX, corner.x);
 		maxX = std::max(maxX, glm::abs(corner.x));
 		maxY = std::max(maxY, glm::abs(corner.y));
-		//maxZ = std::max(maxZ, glm::abs(corner.z));
-		//minY = std::min(minY, corner.y);
-		//minZ = std::min(minZ, corner.z);
 	}
-
 
 
 	// Adjust minZ and maxZ for better precision in the depth buffer
@@ -335,7 +314,6 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 	minZ -= lightMargin;
 	maxZ += lightMargin;
 
-	//SPDLOG_INFO("R: {} \tU {} \t ( {}, {}, {})", maxX, maxY, lightNewPos.x, lightNewPos.y, lightNewPos.z);
 	light->lightSpaceMatrix = glm::ortho(-maxX, maxX, -maxY, maxY, -100.0f, 100.f) * viewMatrix;/**/
 
 	/*/glm::mat4 viewProjectionInverse = glm::inverse(mainCam->GetProjectionMatrix() * mainCam->GetViewMatrix());
@@ -435,7 +413,7 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 
 	//Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->shadowMap, light->lightSpaceMatrix);
 
-	SPDLOG_INFO("Rekalkulacja LightSpaceM dla dirL");
+	//SPDLOG_INFO("Rekalkulacja LightSpaceM dla dirL");
 
 	return std::move(lightNewPos);
 }
@@ -466,7 +444,7 @@ void LightingController::SetViewerPosition(glm::vec3& viewerPosition) {
 	glBufferSubData(GL_UNIFORM_BUFFER, 16, 12, &viewerPosition);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-	SPDLOG_INFO("SetViewerPosition ({}, {}, {})", viewerPosition.x, viewerPosition.y, viewerPosition.z);
+	//SPDLOG_INFO("SetViewerPosition ({}, {}, {})", viewerPosition.x, viewerPosition.y, viewerPosition.z);
 
 	ViewerTransformChanged.Invoke();
 }

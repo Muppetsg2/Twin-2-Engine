@@ -74,6 +74,8 @@ namespace Twin2Engine::Core
 		void Update();
 		void UpdateComponents();
 
+		YAML::Node Serialize() const;
+
 #pragma region COMPONENTS_MANAGEMENT
 
 		template<class T>

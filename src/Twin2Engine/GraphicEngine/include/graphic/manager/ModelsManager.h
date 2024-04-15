@@ -23,6 +23,8 @@ namespace Twin2Engine::Manager
 		static std::hash<std::string> stringHash;
 		static std::map<size_t, GraphicEngine::ModelData*> loadedModels;
 
+		static std::map<size_t, std::string> modelsPaths;
+
 #if ASSIMP_LOADING
 		static inline void LoadModelAssimp(const std::string& modelPath, GraphicEngine::ModelData* modelData);
 		static inline void ExtractMeshAssimp(const aiMesh* mesh, std::vector<GraphicEngine::Vertex>& vertices, std::vector<unsigned int>& indices);

@@ -61,6 +61,7 @@ GameObject::~GameObject()
 {
 	for (Component* component : components)
 	{
+		component->OnDestroy();
 		delete component;
 	}
 	_freedIds.push_back(_id);
@@ -213,6 +214,26 @@ void GameObject::UpdateComponents()
 	{
 		if (component->IsEnable()) component->Update();
 	}
+}
+
+YAML::Node GameObject::Serialize() const
+{
+	YAML::Node node;
+	node["id"] = _id;
+	node["name"] = _name;
+	node["isStatic"] = _isStatic;
+	node["isActive"] = _activeSelf;
+	node["transform"] = _transform->Serialize();
+	node["components"] = vector<YAML::Node>();
+	for (const Component* comp : components) {
+		if (comp != _transform)
+			node["components"].push_back(comp->Serialize());
+	}
+	node["children"] = vector<YAML::Node>();
+	for (size_t i = 0; i < _transform->GetChildCount(); ++i) {
+		node["children"].push_back(_transform->GetChildAt(i)->GetGameObject()->Id());
+	}
+	return node;
 }
 
 void GameObject::AddComponent(Component* comp)

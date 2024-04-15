@@ -1,6 +1,7 @@
-#include "core/BoxColliderComponent.h"
 #include "core/GameObject.h"
-#include "CollisionManager.h"
+#include <core/BoxColliderComponent.h>
+#include <CollisionManager.h>
+#include <core/YamlConverters.h>
 
 
 Twin2Engine::Core::BoxColliderComponent::BoxColliderComponent() : ColliderComponent()
@@ -114,4 +115,20 @@ void Twin2Engine::Core::BoxColliderComponent::Update()
 
 		dirtyFlag = false;
 	}
+}
+
+YAML::Node Twin2Engine::Core::BoxColliderComponent::Serialize() const
+{
+	YAML::Node node = ColliderComponent::Serialize();
+	node["subTypes"].push_back(node["type"].as<std::string>());
+	node["type"] = "BoxCollider";
+	node["width"] = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x;
+	node["length"] = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z;
+	node["height"] = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y;
+	node["rotation"] = glm::vec3(
+		((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation.x,
+		((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation.y,
+		((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation.z
+	);
+	return node;
 }

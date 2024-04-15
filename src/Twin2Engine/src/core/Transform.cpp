@@ -1,4 +1,5 @@
 #include <core/Transform.h>
+#include <core/YamlConverters.h>
 
 //Nie mo�e by� nullptr gdy� niekt�re warunki w set parent mog� si� posypa�
 Twin2Engine::Core::Transform* Twin2Engine::Core::Transform::originTransform = new Transform();
@@ -482,6 +483,8 @@ void Twin2Engine::Core::Transform::RecalculateGlobalPosition()
 
 		_globalPosition = glm::vec3(_globalTransformMatrix[3]);
 
+		RecalculateLocalPosition();
+
 		_dirtyFlags.dirtyFlagGlobalPosition = false;
 	}
 }
@@ -607,6 +610,8 @@ void Twin2Engine::Core::Transform::RecalculateGlobalRotation()
 			_globalRotation = glm::eulerAngles(_globalRotationQuat);
 		}
 
+		RecalculateLocalRotation();
+
 		_dirtyFlags.dirtyFlagGlobalRotation = false;
 		//_dirtyFlags.dirtyFlagGlobalRotationQuat2Euler = true;
 	}
@@ -691,6 +696,8 @@ void Twin2Engine::Core::Transform::RecalculateGlobalScale()
 		{
 			_globalScale = _parent->GetGlobalScale() * _localScale;
 		}
+
+		RecalculateLocalScale();
 
 		_dirtyFlags.dirtyFlagGlobalScale = false;
 	}
@@ -790,4 +797,15 @@ void Twin2Engine::Core::Transform::Update()
 		_callingEvents.childrenChanged = false;
 		OnEventChildrenChanged.Invoke(this);
 	}
+}
+
+YAML::Node Twin2Engine::Core::Transform::Serialize() const
+{
+	YAML::Node node = Twin2Engine::Core::Component::Serialize();
+	node.remove("type");
+	node.remove("subTypes");
+	node["position"] = _localPosition;
+	node["scale"] = _localScale;
+	node["rotation"] = glm::degrees(_localRotation);
+	return node;
 }

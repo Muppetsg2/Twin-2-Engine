@@ -1,7 +1,7 @@
 #include <core/CapsuleColliderComponent.h>
 #include <CollisionManager.h>
 #include <core/GameObject.h>
-
+#include <core/YamlConverters.h>
 
 Twin2Engine::Core::CapsuleColliderComponent::CapsuleColliderComponent() : ColliderComponent()
 {
@@ -68,4 +68,18 @@ void Twin2Engine::Core::CapsuleColliderComponent::Update()
 
 		dirtyFlag = false;
 	}
+}
+
+YAML::Node Twin2Engine::Core::CapsuleColliderComponent::Serialize() const
+{
+	YAML::Node node = ColliderComponent::Serialize();
+	node["subTypes"].push_back(node["type"].as<std::string>());
+	node["type"] = "CapsuleCollider";
+	node["endPosition"] = glm::vec3(
+		((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndPosition.x,
+		((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndPosition.y,
+		((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndPosition.z
+	);
+	node["radius"] = ((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->Radius;
+	return node;
 }

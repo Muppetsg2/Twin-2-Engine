@@ -19,8 +19,11 @@
 // GAME OBJECT
 #include <core/GameObject.h>
 #include <core/MeshRenderer.h>
+
+// UI
 #include <ui/Image.h>
 #include <ui/Text.h>
+#include <ui/Button.h>
 
 // AUDIO
 #include <core/AudioComponent.h>
@@ -159,7 +162,7 @@ const     char*   glsl_version     = "#version 450";
 constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 5;
 
-HexagonalTilemap hexagonalTilemap(glm::ivec2(-5, -5), glm::ivec2(5, 5), 1.f, true);
+//HexagonalTilemap hexagonalTilemap(glm::ivec2(-5, -5), glm::ivec2(5, 5), 1.f, true);
 
 Image* image;
 float colorSpan = 1.f;
@@ -204,6 +207,7 @@ int main(int, char**)
 
     GraphicEngineManager::Init();
 
+#pragma region DESERIALIZERS
     // COMPONENTS DESELIALIZERS
     ComponentDeserializer::AddDeserializer("Camera",
         []() -> Component* {
@@ -214,9 +218,10 @@ int main(int, char**)
             cam->SetFOV(node["fov"].as<float>());
             cam->SetNearPlane(node["nearPlane"].as<float>());
             cam->SetFarPlane(node["farPlane"].as<float>());
-            cam->SetCameraFilter(node["cameraFilter"].as<uint8_t>());
-            cam->SetCameraType((CameraType)node["cameraType"].as<int>());
-            cam->SetSamples(node["samples"].as<uint8_t>());
+            cam->SetCameraFilter(node["cameraFilter"].as<size_t>());
+            cam->SetCameraType(node["cameraType"].as<CameraType>());
+            cam->SetSamples(node["samples"].as<size_t>());
+            cam->SetGamma(node["gamma"].as<float>());
             cam->SetFrontDir(node["frontDir"].as<vec3>());
             cam->SetWorldUp(node["worldUp"].as<vec3>());
             cam->SetIsMain(node["isMain"].as<bool>());
@@ -231,8 +236,19 @@ int main(int, char**)
             AudioComponent* audio = static_cast<AudioComponent*>(comp);
             audio->SetAudio(SceneManager::GetAudio(node["audio"].as<size_t>()));
             if (node["loop"].as<bool>()) audio->Loop(); else audio->UnLoop();
-            audio->SetTimePosition(node["time"].as<double>());
             audio->SetVolume(node["volume"].as<float>());
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("Button",
+        []() -> Component* {
+            return new Button();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            Button* button = static_cast<Button*>(comp);
+            button->SetWidth(node["width"].as<float>());
+            button->SetHeight(node["height"].as<float>());
+            button->SetInteractable(node["interactable"].as<bool>());
         }
     );
 
@@ -295,7 +311,7 @@ int main(int, char**)
             ColliderComponent* collider = static_cast<ColliderComponent*>(comp);
             collider->SetTrigger(node["trigger"].as<bool>());
             collider->SetStatic(node["static"].as<bool>());
-            collider->SetLayer((Layer)node["layer"].as<uint8_t>());
+            collider->SetLayer(node["layer"].as<Layer>());
             LayerCollisionFilter filter = node["layerFilter"].as<LayerCollisionFilter>();
             collider->SetLayersFilter(filter);
             collider->EnableBoundingVolume(node["boundingVolume"].as<bool>());
@@ -342,9 +358,11 @@ int main(int, char**)
             capsuleCollider->SetRadius(node["radius"].as<float>());
         }
     );
+#pragma endregion
 
     // ADDING SCENES
-    SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
+    SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
     /*
     GameObject* hexagonPrefab = new GameObject();
@@ -381,13 +399,17 @@ int main(int, char**)
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();*/
     
     SceneManager::LoadScene("testScene");
+    //SceneManager::SaveScene("res/scenes/savedScene.yaml");
 
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
 
-
     // SCENE OBJECTS
+
+    GameObject* test1 = SceneManager::CreateGameObject();
+    std::tuple<GameObject*, Text*, Image*> test2 = SceneManager::CreateGameObject<Text, Image>();
+
 #pragma region TestingLighting
     /**/
     GameObject dl_go;
@@ -542,22 +564,22 @@ void input()
 
     bool moved = false;
 
-    if (Input::IsKeyDown(KEY::W))
+    if (Input::IsKeyDown(KEY::W) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
         moved = true;
     }
-    if (Input::IsKeyDown(KEY::S))
+    if (Input::IsKeyDown(KEY::S) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
         moved = true;
     }
-    if (Input::IsKeyDown(KEY::A))
+    if (Input::IsKeyDown(KEY::A) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
         moved = true;
     }
-    if (Input::IsKeyDown(KEY::D))
+    if (Input::IsKeyDown(KEY::D) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
         moved = true;
@@ -583,6 +605,23 @@ void input()
             Input::HideAndLockCursor();
             glfwSetCursorPosCallback(window->GetWindow(), mouse_callback);
         }
+    }
+
+    if (Input::IsKeyPressed(KEY::R)) {
+        SceneManager::LoadScene("testScene");
+        Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
+        image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
+        text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
+    }
+
+    if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::Q)) {
+        
+        // Rotation not saving properly
+        // Can't save Values when they change unles you get them
+        Camera->GetTransform()->GetLocalPosition();
+        Camera->GetTransform()->GetLocalRotation();
+        Camera->GetTransform()->GetLocalScale();
+        SceneManager::SaveScene("res/scenes/quickSavedScene.yaml");
     }
 }
 

@@ -1,5 +1,6 @@
 #include <core/CameraComponent.h>
 #include <core/Transform.h>
+#include <core/YamlConverters.h>
 #include <graphic/Window.h>
 #include <GraphicEnigineManager.h>
 #include <graphic/manager/ModelsManager.h>
@@ -39,14 +40,14 @@ void CameraComponent::OnWindowSizeChange()
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
 	glBindTexture(GL_TEXTURE_2D, _depthMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, _renderMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB, wSize.x, wSize.y, GL_TRUE);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB32F, wSize.x, wSize.y, GL_TRUE);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
 	glBindRenderbuffer(GL_RENDERBUFFER, _msRenderBuffer);
@@ -64,6 +65,16 @@ uint8_t CameraComponent::GetCameraFilters() const
 	return _filters;
 }
 
+float CameraComponent::GetFOV() const
+{
+	return _fov;
+}
+
+float CameraComponent::GetGamma() const
+{
+	return _gamma;
+}
+
 float CameraComponent::GetNearPlane() const
 {
 	return _near;
@@ -74,10 +85,6 @@ float CameraComponent::GetFarPlane() const
 	return _far;
 }
 
-float CameraComponent::GetFOV() const
-{
-	return _fov;
-}
 
 vec3 CameraComponent::GetFrontDir() const
 {
@@ -154,6 +161,11 @@ void CameraComponent::SetFOV(float angle)
 	_fov = angle;
 }
 
+void CameraComponent::SetGamma(float gamma)
+{
+	_gamma = gamma;
+}
+
 void CameraComponent::SetFarPlane(float value)
 {
 	_far = value;
@@ -190,7 +202,7 @@ void CameraComponent::SetSamples(uint8_t i)
 		ivec2 wSize = Window::GetInstance()->GetContentSize();
 
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB, wSize.x, wSize.y, GL_TRUE);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB32F, wSize.x, wSize.y, GL_TRUE);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
 		glBindRenderbuffer(GL_RENDERBUFFER, _msRenderBuffer);
@@ -235,6 +247,7 @@ void CameraComponent::SetIsMain(bool value)
 
 void CameraComponent::Render()
 {
+	glm::vec3 clear_color = glm::vec3(powf(.1f, _gamma));
 	// UBO's
 	//Jesli wiecej kamer i kazda ma ze swojego kata dawac obraz
 	//glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
@@ -245,10 +258,11 @@ void CameraComponent::Render()
 	glNamedBufferSubData(_uboWindowData, 0, sizeof(vec2), value_ptr(Window::GetInstance()->GetContentSize()));
 	glNamedBufferSubData(_uboWindowData, sizeof(vec2), sizeof(float), &(this->_near));
 	glNamedBufferSubData(_uboWindowData, sizeof(vec2) + sizeof(float), sizeof(float), &(this->_far));
+	glNamedBufferSubData(_uboWindowData, sizeof(vec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
 
 	// DEPTH MAP
 	glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
-	glClearColor(.1f, .1f, .1f, 1.f);
+	glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		GraphicEngineManager::DepthRender();
@@ -262,7 +276,7 @@ void CameraComponent::Render()
 
 	// RENDER MAP
 	glBindFramebuffer(GL_FRAMEBUFFER, _msRenderMapFBO);
-	glClearColor(.1f, .1f, .1f, 1.f);
+	glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		GraphicEngineManager::Render();
@@ -337,15 +351,16 @@ void CameraComponent::Initialize()
 		glGenBuffers(1, &_uboWindowData);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-		glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(float) + sizeof(vec2), NULL, GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(float) + sizeof(vec2), NULL, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		glBindBufferRange(GL_UNIFORM_BUFFER, 1, _uboWindowData, 0, 2 * sizeof(float) + sizeof(vec2));
+		glBindBufferRange(GL_UNIFORM_BUFFER, 1, _uboWindowData, 0, 3 * sizeof(float) + sizeof(vec2));
 
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(vec2), value_ptr(Window::GetInstance()->GetContentSize()));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2), sizeof(float), &(this->_near));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float), sizeof(float), &(this->_far));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		_renderPlane = ModelsManager::GetPlane();
@@ -368,7 +383,7 @@ void CameraComponent::Initialize()
 	glGenTextures(1, &_depthMap);
 	glBindTexture(GL_TEXTURE_2D, _depthMap);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -397,7 +412,7 @@ void CameraComponent::Initialize()
 
 	glGenTextures(1, &_msRenderMap);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB, wSize.x, wSize.y, GL_TRUE);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB32F, wSize.x, wSize.y, GL_TRUE);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap, 0);
@@ -418,7 +433,7 @@ void CameraComponent::Initialize()
 	glGenTextures(1, &_renderMap);
 	glBindTexture(GL_TEXTURE_2D, _renderMap);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -470,4 +485,22 @@ CollisionSystem::Ray CameraComponent::GetScreenPointRay(glm::vec2 screenPosition
 	glm::vec3 Origin = GetTransform()->GetGlobalPosition();
 	glm::vec3 Direction = glm::normalize(Position - Origin);
 	return CollisionSystem::Ray(std::move(Direction), std::move(Origin));
+}
+
+YAML::Node CameraComponent::Serialize() const
+{
+	YAML::Node node = Component::Serialize();
+	node["type"] = "Camera";
+	node.remove("subTypes");
+	node["fov"] = _fov;
+	node["nearPlane"] = _near;
+	node["farPlane"] = _far;
+	node["cameraFilter"] = (size_t)_filters;
+	node["cameraType"] = _type;
+	node["samples"] = (size_t)_samples;
+	node["gamma"] = _gamma;
+	node["frontDir"] = _front;
+	node["worldUp"] = _worldUp;
+	node["isMain"] = _isMain;
+	return node;
 }

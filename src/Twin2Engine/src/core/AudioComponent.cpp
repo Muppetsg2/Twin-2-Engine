@@ -1,6 +1,6 @@
 #include <core/AudioComponent.h>
 #include <manager/AudioManager.h>
-#include <spdlog/spdlog.h>
+#include <manager/SceneManager.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
@@ -220,4 +220,15 @@ void AudioComponent::OnDestroy()
 	if (AudioManager::IsHandleValid(_audioHandle)) {
 		AudioManager::StopAudio(_audioHandle);
 	}
+}
+
+YAML::Node AudioComponent::Serialize() const
+{
+	YAML::Node node = Component::Serialize();
+	node["type"] = "Audio";
+	node.remove("subTypes");
+	node["audio"] = SceneManager::GetAudioSaveIdx(_audioId);
+	node["loop"] = _loop;
+	node["volume"] = _volume;
+	return node;
 }

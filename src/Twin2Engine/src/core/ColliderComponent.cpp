@@ -1,6 +1,7 @@
 #include <core/ColliderComponent.h>
 #include <core/GameObject.h>
 #include <CollisionManager.h>
+#include <core/YamlConverters.h>
 
 using namespace Twin2Engine::Core;
 
@@ -71,6 +72,10 @@ void Twin2Engine::Core::ColliderComponent::Update()
 		}
 
 		dirtyFlag = false;
+		//YAML::Node Twin2Engine::Core::ColliderComponent::Serialize() const
+		//{
+		//	return YAML::Node();
+		//}
 	}
 }
 
@@ -96,6 +101,22 @@ void ColliderComponent::SetLocalPosition(float x, float y, float z)
 	collider->shapeColliderData->LocalPosition.z = z;
 
 	dirtyFlag = true;
+}
+
+YAML::Node Twin2Engine::Core::ColliderComponent::Serialize() const
+{
+	YAML::Node node = Component::Serialize();
+	node["type"] = "Collider";
+	node["trigger"] = collider->isTrigger;
+	node["static"] = collider->isStatic;
+	node["layer"] = collider->layer;
+	node["layerFilter"] = collider->layersFilter;
+	node["boundingVolume"] = collider->boundingVolume != nullptr;
+	if (collider->boundingVolume != nullptr) {
+		node["boundingVolumeRadius"] = ((CollisionSystem::SphereColliderData*)collider->boundingVolume)->Radius;
+	}
+	node["position"] = glm::vec3(collider->shapeColliderData->LocalPosition.x, collider->shapeColliderData->LocalPosition.y, collider->shapeColliderData->LocalPosition.z);
+	return node;
 }
 
 

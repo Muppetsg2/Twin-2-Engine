@@ -55,6 +55,8 @@ namespace Twin2Engine::Core {
 		void SetBoundingVolumeRadius(float radius);
 		void SetLocalPosition(float x, float y, float z);
 
+		//void Invoke();
+		virtual YAML::Node Serialize() const override;
 	};
 }
 

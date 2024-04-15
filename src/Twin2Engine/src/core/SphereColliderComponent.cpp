@@ -1,6 +1,7 @@
 #include <core/SphereColliderComponent.h>
 #include "core/GameObject.h"
-#include "CollisionManager.h"
+#include <CollisionManager.h>
+#include <core/YamlConverters.h>
 
 
 Twin2Engine::Core::SphereColliderComponent::SphereColliderComponent() : ColliderComponent()
@@ -44,4 +45,13 @@ void Twin2Engine::Core::SphereColliderComponent::OnDestroy()
 {
 	GetTransform()->OnEventPositionChanged -= PositionChangeActionId;
 	CollisionSystem::CollisionManager::Instance()->UnregisterCollider(collider);
+}
+
+YAML::Node Twin2Engine::Core::SphereColliderComponent::Serialize() const
+{
+	YAML::Node node = ColliderComponent::Serialize();
+	node["subTypes"].push_back(node["type"].as<std::string>());
+	node["type"] = "SphereCollider";
+	node["radius"] = ((CollisionSystem::SphereColliderData*)collider->shapeColliderData)->Radius;
+	return node;
 }

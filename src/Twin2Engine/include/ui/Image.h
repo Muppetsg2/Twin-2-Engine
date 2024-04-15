@@ -12,6 +12,7 @@ namespace Twin2Engine::UI {
 
 	public:
 		virtual void Render() override;
+		virtual YAML::Node Serialize() const override;
 
 		void SetSprite(const std::string& spriteAlias);
 		void SetSprite(size_t spriteId);

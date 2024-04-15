@@ -21,6 +21,7 @@ namespace Twin2Engine::Core {
 		void OnDestroy() override;
 		void Update() override;
 
+		virtual YAML::Node Serialize() const override;
 	};
 }
 

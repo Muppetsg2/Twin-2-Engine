@@ -16,6 +16,8 @@ namespace Twin2Engine::Manager {
 		static Soloud _soloud;
 		static map<size_t, Wav*> _loadedAudio;
 
+		static map<size_t, string> _audiosPaths;
+
 		static bool _init;
 
 		static void UnloadAudio(size_t id);

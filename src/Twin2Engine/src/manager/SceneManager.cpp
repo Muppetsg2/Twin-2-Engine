@@ -10,7 +10,8 @@ using namespace Twin2Engine::Core;
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::UI;
 
-Scene* SceneManager::_currentScene = nullptr;
+size_t SceneManager::_currentSceneId;
+std::string SceneManager::_currentSceneName;
 GameObject* SceneManager::_rootObject = nullptr;
 
 map<size_t, GameObject*> SceneManager::_gameObjectsById;
@@ -65,10 +66,10 @@ pair<vector<size_t>, vector<size_t>> SceneManager::GetResourcesToLoadAndUnload(c
 
 void SceneManager::DeleteGameObject(GameObject* obj)
 {
-	Transform* rootTrans = obj->GetTransform();
-	size_t childCount = rootTrans->GetChildCount();
+	Transform* trans = obj->GetTransform();
+	size_t childCount = trans->GetChildCount();
 	for (size_t i = 0; i < childCount; ++i) {
-		Transform* child = rootTrans->GetChildAt(i);
+		Transform* child = trans->GetChildAt(i);
 		GameObject* childObj = child->GetGameObject();
 		DeleteGameObject(childObj);
 		delete child->GetGameObject();
@@ -107,7 +108,7 @@ void SceneManager::AddScene(const string& name, const string& path)
 	Scene* scene = new Scene();
 	YAML::Node sceneNode = YAML::LoadFile(path);
 
-	// Loading Textures
+#pragma region LOAD_TEXTURES_FROM_SCENE_FILE
 	vector<string> texturePaths;
 	for (const YAML::Node& texNode : sceneNode["Textures"]) {
 		string path = texNode["path"].as<string>();
@@ -115,7 +116,7 @@ void SceneManager::AddScene(const string& name, const string& path)
 		if (texNode["sWrapMode"] || texNode["tWrapMode"] || texNode["minFilterMode"] || texNode["magFilterMode"])
 			data = texNode.as<TextureData>();
 		if (texNode["fileFormat"] && texNode["engineFormat"]) {
-			scene->AddTexture2D(path, (TextureFormat)texNode["engineFormat"].as<size_t>(), (TextureFileFormat)texNode["fileFormat"].as<size_t>(), data);
+			scene->AddTexture2D(path, texNode["engineFormat"].as<TextureFormat>(), texNode["fileFormat"].as<TextureFileFormat>(), data);
 		}		
 		else {
 			if (texNode["fileFormat"] && !texNode["engineFormat"]) {
@@ -128,41 +129,45 @@ void SceneManager::AddScene(const string& name, const string& path)
 		}
 		texturePaths.push_back(path);
 	}
-
-	// Loading Sprites
+#pragma endregion
+#pragma region LOAD_SPRITES_FROM_SCENE_FILE
 	for (const YAML::Node& spriteNode : sceneNode["Sprites"]) {
-		if (spriteNode["hasParameters"].as<bool>()) {
+		if (spriteNode["x"] && spriteNode["y"] && spriteNode["width"] && spriteNode["height"]) {
 			scene->AddSprite(spriteNode["alias"].as<string>(), texturePaths[spriteNode["texture"].as<size_t>()], spriteNode.as<SpriteData>());
 		}
 		else {
+			if (spriteNode["x"] || spriteNode["y"] || spriteNode["width"] || spriteNode["height"]) {
+				SPDLOG_ERROR("Nie podano wszystkich parametrów poprawnie: x, y, width, height");
+			}
 			scene->AddSprite(spriteNode["alias"].as<string>(), texturePaths[spriteNode["texture"].as<size_t>()]);
 		}
 	}
-
-	// Loading Fonts
+#pragma endregion
+#pragma region LOAD_FONTS_FROM_SCENE_FILE
 	for (const YAML::Node& fontNode : sceneNode["Fonts"]) {
 		scene->AddFont(fontNode.as<string>());
 	}
-
-	// Loading Audio
+#pragma endregion
+#pragma region LOAD_AUDIO_FROM_SCENE_FILE
 	for (const YAML::Node& audioNode : sceneNode["Audio"]) {
 		scene->AddAudio(audioNode.as<string>());
 	}
-
-	// Loading Materials
+#pragma endregion
+#pragma region LOAD_MATERIALS_FROM_SCENE_FILE
 	for (const YAML::Node& materialNode : sceneNode["Materials"]) {
 		scene->AddMaterial(materialNode.as<string>());
 	}
-
-	// Loading Models
+#pragma endregion
+#pragma region LOAD_MODELS_FROM_SCENE_FILE
 	for (const YAML::Node& modelNode : sceneNode["Models"]) {
 		scene->AddModel(modelNode.as<string>());
 	}
-
-	// Loading GameObjects
+#pragma endregion
+#pragma region LOAD_GAMEOBJECTS_DATA_FROM_SCENE_FILE
 	for (const YAML::Node& gameObjectNode : sceneNode["GameObjects"]) {
 		scene->AddGameObject(gameObjectNode);
 	}
+#pragma endregion
 
 	AddScene(name, scene);
 }
@@ -528,7 +533,85 @@ void SceneManager::LoadScene(const string& name)
 	}
 #pragma endregion
 
-	_currentScene = sceneToLoad;
+	_currentSceneName = name;
+	_currentSceneId = sceneId;
+}
+
+void SceneManager::SaveScene(const string& path) {
+	YAML::Node sceneNode;
+
+#pragma region SAVING_TEXTURES
+	std::map<size_t, size_t> textures;
+	size_t i = 0;
+	for (const auto& pathPair : TextureManager::_texturesPaths) {
+		Texture2D* tex = TextureManager::_loadedTextures[pathPair.first];
+
+		YAML::Node texNode;
+		texNode["path"] = pathPair.second;
+		if (TextureManager::_texturesFormats.find(pathPair.first) != TextureManager::_texturesFormats.end()) {
+			const auto& formats = TextureManager::_texturesFormats[pathPair.first];
+			texNode["fileFormat"] = formats.second;
+			texNode["engineFormat"] = formats.first;
+		}
+		texNode["sWrapMode"] = tex->GetWrapModeS();
+		texNode["tWrapMode"] = tex->GetWrapModeT();
+		texNode["minFilterMode"] = tex->GetMinFilterMode();
+		texNode["magFilterMode"] = tex->GetMagFilterMode();
+
+		sceneNode["Textures"].push_back(texNode);
+		textures[pathPair.first] = i++;
+	}
+#pragma endregion
+#pragma region SAVING_SPRITES
+	for (const auto& spritePair : SpriteManager::_spriteAliases) {
+		Sprite* sprite = SpriteManager::_sprites[spritePair.first];
+		
+		YAML::Node spriteNode;
+		spriteNode["alias"] = spritePair.second;
+		spriteNode["texture"] = textures[sprite->GetTexture()->GetManagerId()];
+
+		if (SpriteManager::_spriteLoadData.find(spritePair.first) != SpriteManager::_spriteLoadData.end()) {
+			SpriteData data = SpriteManager::_spriteLoadData[spritePair.first];
+			spriteNode["x"] = data.x;
+			spriteNode["y"] = data.y;
+			spriteNode["width"] = data.width;
+			spriteNode["height"] = data.height;
+		}
+
+		sceneNode["Sprites"].push_back(spriteNode);
+	}
+#pragma endregion
+#pragma region SAVING_FONTS
+	for (const auto& fontPair : FontManager::_fontsPaths) {
+		sceneNode["Fonts"].push_back(fontPair.second);
+	}
+#pragma endregion
+#pragma region SAVING_AUDIOS
+	for (const auto& audioPair : AudioManager::_audiosPaths) {
+		sceneNode["Audio"].push_back(audioPair.second);
+	}
+#pragma endregion
+#pragma region SAVING_MATERIALS
+	for (const auto& matPair : MaterialsManager::materialsPaths) {
+		sceneNode["Materials"].push_back(matPair.second);
+	}
+#pragma endregion
+#pragma region SAVING_MODELS
+	for (const auto& modelPair : ModelsManager::modelsPaths) {
+		sceneNode["Models"].push_back(modelPair.second);
+	}
+#pragma endregion
+#pragma region SAVING_GAMEOBJECTS
+	Transform* rootT = _rootObject->GetTransform();
+	for (i = 0; i < rootT->GetChildCount(); ++i) {
+		GameObject* obj = rootT->GetChildAt(i)->GetGameObject();
+		sceneNode["GameObjects"].push_back(obj->Serialize());
+	}
+#pragma endregion
+
+	ofstream file{ path };
+	file << sceneNode;
+	file.close();
 }
 
 void SceneManager::UpdateCurrentScene()
@@ -573,6 +656,23 @@ Component* SceneManager::GetComponentWithId(size_t id)
 	return comp;
 }
 
+GameObject* SceneManager::CreateGameObject(Transform* parent)
+{
+	GameObject* obj = new GameObject();
+	obj->GetTransform()->SetParent(parent == nullptr ? _rootObject->GetTransform() : parent);
+	return obj;
+}
+
+size_t SceneManager::GetCurrentSceneId()
+{
+	return _currentSceneId;
+}
+
+string SceneManager::GetCurrentSceneName()
+{
+	return _currentSceneName;
+}
+
 size_t SceneManager::GetTexture2D(size_t loadIdx)
 {
 	return _texturesIds[loadIdx];
@@ -603,9 +703,76 @@ size_t SceneManager::GetModel(size_t loadIdx)
 	return _modelsIds[loadIdx];
 }
 
+size_t SceneManager::GetTexture2DSaveIdx(size_t texId)
+{
+	size_t idx = 0;
+	for (const auto& texPair : TextureManager::_texturesPaths) {
+		if (texPair.first == texId) return idx;
+		++idx;
+	}
+	SPDLOG_WARN("Texture2D '{0}' Not Found", texId);
+	return idx;
+}
+
+size_t SceneManager::GetSpriteSaveIdx(size_t spriteId)
+{
+	size_t idx = 0;
+	for (const auto& spritePair : SpriteManager::_spriteAliases) {
+		if (spritePair.first == spriteId) return idx;
+		++idx;
+	}
+	SPDLOG_WARN("Sprite '{0}' Not Found", spriteId);
+	return idx;
+}
+
+size_t SceneManager::GetFontSaveIdx(size_t fontId)
+{
+	size_t idx = 0;
+	for (const auto& fontPair : FontManager::_fontsPaths) {
+		if (fontPair.first == fontId) return idx;
+		++idx;
+	}
+	SPDLOG_WARN("Font '{0}' Not Found", fontId);
+	return idx;
+}
+
+size_t SceneManager::GetAudioSaveIdx(size_t audioId)
+{
+	size_t idx = 0;
+	for (const auto& audioPair : AudioManager::_audiosPaths) {
+		if (audioPair.first == audioId) return idx;
+		++idx;
+	}
+	SPDLOG_WARN("Audio '{0}' Not Found", audioId);
+	return idx;
+}
+
+size_t SceneManager::GetMaterialSaveIdx(size_t materialId)
+{
+	size_t idx = 0;
+	for (const auto& matPair : MaterialsManager::materialsPaths) {
+		if (matPair.first == materialId) return idx;
+		++idx;
+	}
+	SPDLOG_WARN("Material '{0}' Not Found", materialId);
+	return idx;
+}
+
+size_t SceneManager::GetModelSaveIdx(size_t modelId)
+{
+	size_t idx = 0;
+	for (const auto& modelPair : ModelsManager::modelsPaths) {
+		if (modelPair.first == modelId) return idx;
+		++idx;
+	}
+	SPDLOG_WARN("Model '{0}' Not Found", modelId);
+	return idx;
+}
+
 void SceneManager::UnloadCurrent()
 {
-	_currentScene = nullptr;
+	_currentSceneId = 0;
+	_currentSceneName = "";
 	DeleteGameObject(_rootObject);
 	for (size_t id : _texturesIds) {
 		TextureManager::UnloadTexture2D(id);
@@ -635,18 +802,18 @@ void SceneManager::UnloadCurrent()
 
 void SceneManager::UnloadScene(const std::string& name)
 {
-	size_t h = hash<string>()(name);
-	if (_loadedScenes.find(h) == _loadedScenes.end()) {
+	size_t sceneId = hash<string>()(name);
+	if (_loadedScenes.find(sceneId) == _loadedScenes.end()) {
 		SPDLOG_INFO("Failed to unload scene - Scene '{0}' not found", name);
 		return;
 	}
 
-	Scene*& scene = _loadedScenes[h];
-	if (scene == _currentScene) {
+	Scene*& scene = _loadedScenes[sceneId];
+	if (sceneId == _currentSceneId) {
 		UnloadCurrent();
 	}
 	delete scene;
-	_loadedScenes.erase(h);
+	_loadedScenes.erase(sceneId);
 }
 
 void SceneManager::UnloadAll()

@@ -1,19 +1,21 @@
 Textures:
     -   path: res/textures/stone.jpg
-        fileFormat: 6407 # RGB
+        fileFormat: 35904 # SRGB
         engineFormat: 6407 # RGB
         sWrapMode: 33648 # MIRRORED_REPEAT
         tWrapMode: 33648 # MIRRORED_REPEAT
         minFilterMode: 9986 # NEAREST_MIPMAP_LINEAR
         magFilterMode: 9729 # LINEAR
     -   path: res/textures/grass.png
-        fileFormat: 6408 # RGBA
+        fileFormat: 35906 # SRGB_ALPHA
         engineFormat: 6408 # RGBA
         sWrapMode: 33648 # MIRRORED_REPEAT
         tWrapMode: 33648 # MIRRORED_REPEAT
         minFilterMode: 9986 # NEAREST_MIPMAP_LINEAR
         magFilterMode: 9729 # LINEAR
     -   path: res/textures/white.png
+        fileFormat: 35906 # SRGB_ALPHA
+        engineFormat: 6408 # RGBA
         sWrapMode: 33648 # MIRRORED_REPEAT
         tWrapMode: 33648 # MIRRORED_REPEAT
         minFilterMode: 9986 # NEAREST_MIPMAP_LINEAR
@@ -21,13 +23,10 @@ Textures:
 Sprites:
     -   alias: stone
         texture: 0
-        hasParameters: false
     -   alias: grass
         texture: 1
-        hasParameters: false
     -   alias: white_box
         texture: 2
-        hasParameters: false
 Fonts:
     - res/fonts/Caveat-Regular.ttf
 Audio:
@@ -74,6 +73,7 @@ GameObjects:
                 cameraFilter: 0
                 cameraType: 1
                 samples: 16
+                gamma: 2.2
                 frontDir:
                     x: 0.0
                     y: 0.0
@@ -88,7 +88,6 @@ GameObjects:
                 type: Audio
                 audio: 0
                 loop: true
-                time: 0.0
                 volume: 1.0
         children: []
     -   id: 2
@@ -469,4 +468,10 @@ GameObjects:
                     y: 20.0
                     z: 0.0
                 radius: 20.0
+            -   id: 24
+                enabled: true
+                type: Button
+                width: 100.0
+                height: 10.0
+                interactable: false
         children: []

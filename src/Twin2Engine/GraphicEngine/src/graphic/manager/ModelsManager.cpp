@@ -6,6 +6,7 @@ using namespace Twin2Engine::Manager;
 std::hash<std::string> ModelsManager::stringHash;
 std::map<size_t, ModelData*> ModelsManager::loadedModels;
 
+std::map<size_t, std::string> ModelsManager::modelsPaths;
 
 #if ASSIMP_LOADING
 
@@ -601,6 +602,7 @@ ModelData* ModelsManager::LoadModelData(const std::string& modelPath)
         }
 
         loadedModels[strHash] = modelData;
+        modelsPaths[strHash] = modelPath;
     }
     else
     {
@@ -626,6 +628,7 @@ void ModelsManager::UnloadModel(size_t managerId) {
 
         delete modelData;
         loadedModels.erase(managerId);
+        modelsPaths.erase(managerId);
     }
 }
 

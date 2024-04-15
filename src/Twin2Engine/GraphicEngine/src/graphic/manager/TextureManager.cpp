@@ -5,8 +5,11 @@ using namespace GraphicEngine;
 using namespace Manager;
 using namespace std;
 
-hash<string> TextureManager::hasher;
+hash<string> TextureManager::_hasher;
 map<size_t, Texture2D*> TextureManager::_loadedTextures;
+
+map<size_t, string> TextureManager::_texturesPaths;
+map<size_t, pair<TextureFormat, TextureFileFormat>> TextureManager::_texturesFormats;
 
 Texture2D* TextureManager::GetTexture2D(size_t managerId)
 {
@@ -18,7 +21,7 @@ Texture2D* TextureManager::GetTexture2D(size_t managerId)
 
 Texture2D* TextureManager::GetTexture2D(const std::string& path)
 {
-    Texture2D* tex = GetTexture2D(hasher(path));
+    Texture2D* tex = GetTexture2D(_hasher(path));
     if (tex == nullptr) {
         tex = LoadTexture2D(path);
     }
@@ -27,7 +30,7 @@ Texture2D* TextureManager::GetTexture2D(const std::string& path)
 
 Texture2D* TextureManager::LoadTexture2D(const string& path, const TextureData& data)
 {
-    size_t pathHash = hasher(path);
+    size_t pathHash = _hasher(path);
     if (_loadedTextures.find(pathHash) != _loadedTextures.end()) {
         return _loadedTextures[pathHash];
     }
@@ -62,12 +65,13 @@ Texture2D* TextureManager::LoadTexture2D(const string& path, const TextureData& 
 
     Texture2D* tex = new Texture2D(pathHash, id, (unsigned int)width, (unsigned int)height, (unsigned int)channelsNr, form, data.sWrapMode, data.tWrapMode, data.minFilterMode, data.magFilterMode);
     _loadedTextures[pathHash] = tex;
+    _texturesPaths[pathHash] = path;
     return tex;
 }
 
 Texture2D* TextureManager::LoadTexture2D(const string& path, const TextureFileFormat& internalFormat, const TextureFormat& format, const TextureData& data)
 {
-    size_t pathHash = hasher(path);
+    size_t pathHash = _hasher(path);
     if (_loadedTextures.find(pathHash) != _loadedTextures.end()) {
         return _loadedTextures[pathHash];
     }
@@ -97,6 +101,8 @@ Texture2D* TextureManager::LoadTexture2D(const string& path, const TextureFileFo
 
     Texture2D* tex = new Texture2D(pathHash, id, (unsigned int)width, (unsigned int)height, (unsigned int)nrChannels, format, data.sWrapMode, data.tWrapMode, data.minFilterMode, data.magFilterMode);
     _loadedTextures[pathHash] = tex;
+    _texturesPaths[pathHash] = path;
+    _texturesFormats[pathHash] = { format, internalFormat };
     return tex;
 }
 
@@ -105,11 +111,13 @@ void TextureManager::UnloadTexture2D(size_t managerID)
     if (_loadedTextures.find(managerID) == _loadedTextures.end()) return;
     delete _loadedTextures[managerID];
     _loadedTextures.erase(managerID);
+    _texturesPaths.erase(managerID);
+    _texturesFormats.erase(managerID);
 }
 
 void TextureManager::UnloadTexture2D(const string& path)
 {
-    UnloadTexture2D(hasher(path));
+    UnloadTexture2D(_hasher(path));
 }
 
 void TextureManager::UnloadAll()
@@ -119,4 +127,6 @@ void TextureManager::UnloadAll()
         tex.second = nullptr;
     }
     _loadedTextures.clear();
+    _texturesPaths.clear();
+    _texturesFormats.clear();
 }

@@ -15,9 +15,10 @@ namespace Twin2Engine::Manager
 		friend class SceneManager;
 
 		static std::hash<std::string> stringHash;
-		//const static std::unordered_map<size_t, int> typeSizeMap;
 		static const std::unordered_map<size_t, int> typeHandleMap;
 		static std::map<size_t, GraphicEngine::MaterialData*> loadedMaterials;
+
+		static std::map<size_t, std::string> materialsPaths;
 
 		static void UnloadMaterial(size_t managerId);
 		static void UnloadMaterial(const std::string& path);

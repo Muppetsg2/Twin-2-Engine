@@ -93,7 +93,6 @@ find_shader_files(${SHADERS_SOURCE_DIR})
 #endforeach()
 
 # Custom commend that will create _parameters.shpa files
-
 #file(EXISTS ${SHADER_COMPILER_EXE} SHADER_COMPILER_EXE_EXISTS)
 #if (${SHADER_COMPILER_EXE_EXISTS})
 if (EXISTS ${SHADER_COMPILER_EXE})

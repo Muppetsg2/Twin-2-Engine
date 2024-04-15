@@ -2,8 +2,6 @@
 
 #include <core/Scene.h>
 #include <UI/Image.h>
-#include <graphic/Material.h>
-#include <graphic/InstatiatingModel.h>
 
 namespace Twin2Engine::Manager {
 	class SceneManager {

@@ -350,12 +350,13 @@ void CameraComponent::Initialize()
 		glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(float) + sizeof(vec2), NULL, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		glBindBufferRange(GL_UNIFORM_BUFFER, 1, _uboWindowData, 0, 2 * sizeof(float) + sizeof(vec2));
+		glBindBufferRange(GL_UNIFORM_BUFFER, 1, _uboWindowData, 0, 3 * sizeof(float) + sizeof(vec2));
 
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(vec2), value_ptr(Window::GetInstance()->GetContentSize()));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2), sizeof(float), &(this->_near));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float), sizeof(float), &(this->_far));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		_renderPlane = ModelsManager::GetPlane();

@@ -12,7 +12,7 @@ namespace Twin2Engine::Manager {
 
 namespace Twin2Engine::Core {
 	class Scene {
-	private:
+	protected:
 		std::vector<YAML::Node> _gameObjects = std::vector<YAML::Node>();
 
 		std::unordered_map<std::string, Manager::TextureData> _textures;

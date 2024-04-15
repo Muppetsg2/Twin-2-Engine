@@ -51,6 +51,10 @@
 #include <core/Scene.h>
 #include <manager/SceneManager.h>
 
+// PREFABS
+#include <core/Prefab.h>
+#include <manager/PrefabManager.h>
+
 // DESERIALIZATION
 #include <core/ComponentDeserializer.h>
 
@@ -355,8 +359,8 @@ int main(int, char**)
 #pragma endregion
 
     // ADDING SCENES
-    SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
-    //SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
+    SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
     // SCENE OBJECTS
 
@@ -403,6 +407,8 @@ int main(int, char**)
 
     GameObject* test1 = SceneManager::CreateGameObject();
     std::tuple<GameObject*, Text*, Image*> test2 = SceneManager::CreateGameObject<Text, Image>();
+
+    GameObject* test3 = SceneManager::CreateGameObject(PrefabManager::GetPrefab("res/prefabs/testPrefab.yaml"));
 
     // Main loop
     while (!window->IsClosed())

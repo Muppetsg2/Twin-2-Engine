@@ -1,4 +1,5 @@
 #include <manager/PrefabManager.h>
+#include <core/YamlConverters.h>
 
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
@@ -32,7 +33,7 @@ Prefab* PrefabManager::LoadPrefab(const string& path)
 	}
 
 	SPDLOG_INFO("Loading Prefab '{0}'", path);
-	Prefab* prefab = new Prefab();
+	Prefab* prefab = new Prefab(pathHash);
 
 	YAML::Node prefabNode = YAML::LoadFile(path);
 

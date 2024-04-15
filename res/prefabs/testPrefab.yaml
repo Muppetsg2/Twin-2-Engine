@@ -24,7 +24,8 @@ Root:
     isStatic: false
     isActive: true
     transform:
-        id: 1
+        id: 0
+        enabled: true
         position:
             x: 0.0
             y: 0.0
@@ -39,23 +40,24 @@ Root:
             z: 0.0
     components: []
 GameObjects:
-    id: 1
-    name: testPrefabChild1
-    isStatic: false
-    isActive: true
-    transform:
-        id: 1
-        position:
-            x: 0.0
-            y: 0.0
-            z: 0.0
-        scale:
-            x: 1.0
-            y: 1.0
-            z: 1.0
-        rotation:
-            x: 0.0
-            y: 0.0
-            z: 0.0
-    components: []
-    children: []    
+    -   id: 1
+        name: testPrefabChild1
+        isStatic: false
+        isActive: true
+        transform:
+            id: 1
+            enabled: true
+            position:
+                x: 0.0
+                y: 0.0
+                z: 0.0
+            scale:
+                x: 1.0
+                y: 1.0
+                z: 1.0
+            rotation:
+                x: 0.0
+                y: 0.0
+                z: 0.0
+        components: []
+        children: []    

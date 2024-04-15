@@ -32,6 +32,7 @@ namespace Twin2Engine::Manager {
 		template<class T, class... Ts>
 		static std::tuple<T*, Ts*...> AddComponentsToGameObject(Core::GameObject* obj) {
 			T* comp = obj->AddComponent<T>();
+			_componentsById[comp->GetId()] = comp;
 			if constexpr (sizeof...(Ts) > 0) return std::tuple_cat(std::make_tuple(comp), AddComponentsToGameObject<Ts...>(obj));
 			else return std::make_tuple(comp);
 		};

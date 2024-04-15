@@ -4,6 +4,7 @@
 #include <graphic/manager/MaterialsManager.h>
 #include <graphic/manager/ModelsManager.h>
 #include <manager/PrefabManager.h>
+#include <core/EventHandler.h>
 
 using namespace Twin2Engine::Manager;
 using namespace std;
@@ -478,8 +479,13 @@ void SceneManager::LoadScene(const string& name)
 	map<size_t, GameObject*> objectByComponentId;
 
 	_rootObject = new GameObject(0);
+	_gameObjectsById[0] = _rootObject;
 	for (const YAML::Node& gameObjectNode : sceneToLoad->_gameObjects) {
 		size_t id = gameObjectNode["id"].as<size_t>();
+		if (id == 0) {
+			SPDLOG_ERROR("Object ID cannot be equal 0");
+			continue;
+		}
 		GameObject* obj = new GameObject(id);
 		_rootObject->GetTransform()->AddChild(obj->GetTransform());
 		_gameObjectsById[id] = obj;
@@ -512,6 +518,10 @@ void SceneManager::LoadScene(const string& name)
 		// Set Children
 		for (const YAML::Node& childNode : gameObjectNode["children"]) {
 			size_t id = childNode.as<size_t>();
+			if (id == 0) {
+				SPDLOG_ERROR("Couldn't set rootObject (id: 0) as Child of gameObject");
+				continue;
+			}
 			if (_gameObjectsById.find(id) == _gameObjectsById.end()) {
 				SPDLOG_ERROR("Couldn't find gameObject with id: {0}, provided in children list of gameObject {1}", id, obj->Id());
 				continue;
@@ -713,6 +723,8 @@ GameObject* SceneManager::CreateGameObject(Transform* parent)
 {
 	GameObject* obj = new GameObject();
 	obj->GetTransform()->SetParent(parent == nullptr ? _rootObject->GetTransform() : parent);
+	_gameObjectsById[obj->Id()] = obj;
+	_componentsById[obj->GetTransform()->GetId()] = obj->GetTransform();
 	return obj;
 }
 
@@ -801,7 +813,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		}
 	}
 	// Add rest
-	size_t startSortedSize = sortedIds.size();
+	startSortedSize = sortedIds.size();
 	for (size_t i = 0; i < _spritesIds.size(); ++i) {
 		bool hasId = false;
 		for (size_t j = 0; j < startSortedSize; ++j) {
@@ -841,7 +853,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		}
 	}
 	// Add rest
-	size_t startSortedSize = sortedIds.size();
+	startSortedSize = sortedIds.size();
 	for (size_t i = 0; i < _fontsIds.size(); ++i) {
 		bool hasId = false;
 		for (size_t j = 0; j < startSortedSize; ++j) {
@@ -881,7 +893,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		}
 	}
 	// Add rest
-	size_t startSortedSize = sortedIds.size();
+	startSortedSize = sortedIds.size();
 	for (size_t i = 0; i < _audiosIds.size(); ++i) {
 		bool hasId = false;
 		for (size_t j = 0; j < startSortedSize; ++j) {
@@ -921,7 +933,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		}
 	}
 	// Add rest
-	size_t startSortedSize = sortedIds.size();
+	startSortedSize = sortedIds.size();
 	for (size_t i = 0; i < _materialsIds.size(); ++i) {
 		bool hasId = false;
 		for (size_t j = 0; j < startSortedSize; ++j) {
@@ -961,7 +973,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		}
 	}
 	// Add rest
-	size_t startSortedSize = sortedIds.size();
+	startSortedSize = sortedIds.size();
 	for (size_t i = 0; i < _modelsIds.size(); ++i) {
 		bool hasId = false;
 		for (size_t j = 0; j < startSortedSize; ++j) {
@@ -1005,7 +1017,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		}
 	}
 	// Add rest
-	size_t startSortedSize = sortedIds.size();
+	startSortedSize = sortedIds.size();
 	for (size_t i = 0; i < _prefabsIds.size(); ++i) {
 		bool hasId = false;
 		for (size_t j = 0; j < startSortedSize; ++j) {
@@ -1025,22 +1037,71 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 
 	// CREATE NEW OBJECTS WITH TRANSFORMS
 	map<size_t, GameObject*> objectByComponentId;
+	map<size_t, pair<GameObject*, size_t>> idTakenObjects;
+	map<size_t, Component*> prefabComponentsById;
+	map<size_t, pair<Component*, size_t>> idTakenComponents;
 
-	_rootObject = new GameObject(0);
+	Action<GameObject*, size_t> CheckTakenID = [&](GameObject* objToReplace, size_t idToTake) -> void {
+		if (_gameObjectsById.find(idToTake) != _gameObjectsById.end()) {
+			size_t newId = GameObject::GetFreeId();
+			idTakenObjects[idToTake] = pair(_gameObjectsById[idToTake], newId);
+			_gameObjectsById[newId] = _gameObjectsById[idToTake];
+		}
+		_gameObjectsById[idToTake] = objToReplace;
+	};
+
+	Action<Component*, size_t> CheckComponentTakenID = [&](Component* componentToReplace, size_t idToTake) -> void {
+		if (_componentsById.find(idToTake) != _componentsById.end()) {
+			size_t newId = Component::GetFreeId();
+			idTakenComponents[idToTake] = pair(_componentsById[idToTake], newId);
+			_componentsById[newId] = _componentsById[idToTake];
+		}
+		_componentsById[idToTake] = componentToReplace;
+		prefabComponentsById[idToTake] = componentToReplace;
+	};
+
+	GameObject* prefabRoot = new GameObject(0);
+	CheckTakenID(prefabRoot, 0);
+
+	size_t rootTransformId = prefab->_rootObject["transform"]["id"].as<size_t>();
+	CheckComponentTakenID(prefabRoot->GetTransform(), rootTransformId);
+	objectByComponentId[rootTransformId] = prefabRoot;
+
 	for (const YAML::Node& gameObjectNode : prefab->_gameObjects) {
 		size_t id = gameObjectNode["id"].as<size_t>();
+		if (id == 0) {
+			SPDLOG_ERROR("Object ID cannot be equal 0");
+			continue;
+		}
 		GameObject* obj = new GameObject(id);
-		_rootObject->GetTransform()->AddChild(obj->GetTransform());
-		_gameObjectsById[id] = obj;
+		prefabRoot->GetTransform()->AddChild(obj->GetTransform());
+		CheckTakenID(obj, id);
 
 		size_t transformId = gameObjectNode["transform"]["id"].as<size_t>();
-		_componentsById[transformId] = obj->GetTransform();
+		CheckComponentTakenID(obj->GetTransform(), transformId);
 		objectByComponentId[transformId] = obj;
 	}
 
-	// LOAD GAMEOBJECTS AND TRASFORMS VALUES
+	// LOAD ROOT OBJECT AND TRANSFORM VALUES
 	map<size_t, YAML::Node> componentsNodes;
-	for (const YAML::Node& gameObjectNode : sceneToLoad->_gameObjects) {
+	// GameObject
+	prefabRoot->SetName(prefab->_rootObject["name"].as<string>());
+	prefabRoot->SetIsStatic(prefab->_rootObject["isStatic"].as<bool>());
+	prefabRoot->SetActive(prefab->_rootObject["isActive"].as<bool>());
+
+	// Transform
+	const YAML::Node& transformNode = prefab->_rootObject["transform"];
+	Transform* t = prefabRoot->GetTransform();
+	t->SetEnable(transformNode["enabled"].as<bool>());
+	t->SetLocalPosition(transformNode["position"].as<glm::vec3>());
+	t->SetLocalScale(transformNode["scale"].as<glm::vec3>());
+	t->SetLocalRotation(transformNode["rotation"].as<glm::vec3>());
+
+	// Components Node
+	componentsNodes[0] = prefab->_rootObject["components"];
+
+	// LOAD GAMEOBJECTS AND TRASFORMS VALUES
+	for (const YAML::Node& gameObjectNode : prefab->_gameObjects) {
 		// GameObject
 		GameObject* obj = _gameObjectsById[gameObjectNode["id"].as<size_t>()];
 		obj->SetName(gameObjectNode["name"].as<string>());
@@ -1061,6 +1122,10 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		// Set Children
 		for (const YAML::Node& childNode : gameObjectNode["children"]) {
 			size_t id = childNode.as<size_t>();
+			if (id == 0) {
+				SPDLOG_ERROR("Couldn't set rootObject (id: 0) as Child of gameObject");
+				continue;
+			}
 			if (_gameObjectsById.find(id) == _gameObjectsById.end()) {
 				SPDLOG_ERROR("Couldn't find gameObject with id: {0}, provided in children list of gameObject {1}", id, obj->Id());
 				continue;
@@ -1083,7 +1148,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 			Component* comp = ComponentDeserializer::GetComponentFunc(type)();
 
 			size_t id = componentNode["id"].as<size_t>();
-			_componentsById[id] = comp;
+			CheckComponentTakenID(comp, id);
 			objectByComponentId[id] = obj;
 		}
 	}
@@ -1124,14 +1189,40 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		}
 	}
 
+	// RETURN IDS TO ORIGINAL OBJECTS AND COMPONENTS
+	for (const auto& takenIdPair : idTakenObjects) {
+		size_t oldId = takenIdPair.first;
+		size_t newId = takenIdPair.second.second;
+
+		_gameObjectsById[newId] = _gameObjectsById[oldId];
+		_gameObjectsById[newId]->_id = newId;
+		_gameObjectsById[oldId] = takenIdPair.second.first;
+	}
+
+	for (const auto& takenIdPair : idTakenComponents) {
+		size_t oldId = takenIdPair.first;
+		size_t newId = takenIdPair.second.second;
+
+		_componentsById[newId] = _componentsById[oldId];
+		_componentsById[newId]->_id = newId;
+		_componentsById[oldId] = takenIdPair.second.first;
+
+		prefabComponentsById[newId] = _componentsById[newId];
+		prefabComponentsById.erase(oldId);
+
+		objectByComponentId[newId] = objectByComponentId[oldId];
+		objectByComponentId.erase(oldId);
+	}
+
 	// INIT COMPONENTS
-	for (const auto& compPair : _componentsById) {
+	for (const auto& compPair : prefabComponentsById) {
 		compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
 	}
 #pragma endregion
 
-	_currentSceneName = name;
-	_currentSceneId = sceneId;
+
+	if (parent != nullptr) prefabRoot->GetTransform()->SetParent(parent);
+	return prefabRoot;
 }
 
 size_t SceneManager::GetCurrentSceneId()

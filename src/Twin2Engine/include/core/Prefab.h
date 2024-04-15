@@ -4,6 +4,7 @@
 
 namespace Twin2Engine::Manager {
 	class PrefabManager;
+	class SceneManager;
 }
 
 namespace Twin2Engine::Core {
@@ -21,5 +22,6 @@ namespace Twin2Engine::Core {
 		void SetRootObject(const YAML::Node& rootObjectNode);
 
 		friend class Manager::PrefabManager;
+		friend class Manager::SceneManager;
 	};
 }

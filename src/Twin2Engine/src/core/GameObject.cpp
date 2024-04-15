@@ -10,6 +10,12 @@ GameObject::GameObject(size_t id) {
 	
 	// Setting IDs
 	_id = id;
+	if (_freedIds.size() > 0) {
+		auto found = find_if(_freedIds.begin(), _freedIds.end(), [&](size_t fId) -> bool { return fId == _id; });
+		if (found != _freedIds.end()) {
+			_freedIds.erase(found);
+		}
+	}
 	if (_currentFreeId <= id) {
 		for (; _currentFreeId < id; ++_currentFreeId) _freedIds.push_back(_currentFreeId);
 		_freedIds.sort();

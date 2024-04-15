@@ -460,3 +460,14 @@ void CameraComponent::OnDestroy()
 		glDeleteBuffers(1, &_uboWindowData);
 	}
 }
+
+CollisionSystem::Ray CameraComponent::GetScreenPointRay(glm::vec2 screenPosition)
+{
+	ivec2 size = Window::GetInstance()->GetContentSize();
+
+	glm::vec3 Position = glm::inverse(GetProjectionMatrix() * GetViewMatrix()) * glm::vec4(2.0f * screenPosition.x / size.x - 1.0f,
+		2.0f * screenPosition.y / size.y - 1.0f, 0.5f, 1.0f);
+	glm::vec3 Origin = GetTransform()->GetGlobalPosition();
+	glm::vec3 Direction = glm::normalize(Position - Origin);
+	return CollisionSystem::Ray(std::move(Direction), std::move(Origin));
+}

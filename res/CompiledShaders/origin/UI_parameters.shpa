@@ -1,4 +1,0 @@
-parameters:
-  - name: texture
-    type: uint
-    value: 0

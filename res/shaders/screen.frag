@@ -66,15 +66,15 @@ vec3 applyBlur() {
     vec2 off2 = vec2(3.2941176470588234) * direction;
     vec2 off3 = vec2(5.176470588235294) * direction;
 
-    color += (displayDepth ? getDepthValue(uv) : texture2D(screenTexture, uv).rgb) * 0.1964825501511404;
-    color += (displayDepth ? getDepthValue(uv + (off1 / resolution)) : texture2D(screenTexture, uv + (off1 / resolution)).rgb) * 0.2969069646728344;
-    color += (displayDepth ? getDepthValue(uv - (off1 / resolution)) : texture2D(screenTexture, uv - (off1 / resolution)).rgb) * 0.2969069646728344;
+    color += (displayDepth ? getDepthValue(uv) : texture(screenTexture, uv).rgb) * 0.1964825501511404;
+    color += (displayDepth ? getDepthValue(uv + (off1 / resolution)) : texture(screenTexture, uv + (off1 / resolution)).rgb) * 0.2969069646728344;
+    color += (displayDepth ? getDepthValue(uv - (off1 / resolution)) : texture(screenTexture, uv - (off1 / resolution)).rgb) * 0.2969069646728344;
 
-    color += (displayDepth ? getDepthValue(uv + (off2 / resolution)) : texture2D(screenTexture, uv + (off2 / resolution)).rgb) * 0.09447039785044732;
-    color += (displayDepth ? getDepthValue(uv - (off2 / resolution)) : texture2D(screenTexture, uv - (off2 / resolution)).rgb) * 0.09447039785044732;
+    color += (displayDepth ? getDepthValue(uv + (off2 / resolution)) : texture(screenTexture, uv + (off2 / resolution)).rgb) * 0.09447039785044732;
+    color += (displayDepth ? getDepthValue(uv - (off2 / resolution)) : texture(screenTexture, uv - (off2 / resolution)).rgb) * 0.09447039785044732;
 
-    color += (displayDepth ? getDepthValue(uv + (off3 / resolution)) : texture2D(screenTexture, uv + (off3 / resolution)).rgb) * 0.010381362401148057;
-    color += (displayDepth ? getDepthValue(uv - (off3 / resolution)) : texture2D(screenTexture, uv - (off3 / resolution)).rgb) * 0.010381362401148057;
+    color += (displayDepth ? getDepthValue(uv + (off3 / resolution)) : texture(screenTexture, uv + (off3 / resolution)).rgb) * 0.010381362401148057;
+    color += (displayDepth ? getDepthValue(uv - (off3 / resolution)) : texture(screenTexture, uv - (off3 / resolution)).rgb) * 0.010381362401148057;
     return color;
 }
 

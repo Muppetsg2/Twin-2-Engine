@@ -209,6 +209,7 @@ void PrefabManager::SaveAsPrefab(const GameObject* obj, const std::string& path)
 	prefabNode["Root"] = rootNode;
 #pragma endregion
 #pragma region SAVING_GAMEOBJECTS
+	// Zapisywaæ dzieci dzieci
 	Transform* rootT = obj->GetTransform();
 	for (i = 0; i < rootT->GetChildCount(); ++i) {
 		GameObject* obj = rootT->GetChildAt(i)->GetGameObject();

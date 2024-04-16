@@ -27,15 +27,14 @@ namespace Twin2Engine::Manager {
 		static std::map<size_t, Core::Scene*> _loadedScenes;
 
 		static std::pair<std::vector<size_t>, std::vector<size_t>> GetResourcesToLoadAndUnload(const std::vector<std::string> paths, const std::vector<size_t> loadedHashes);
+		
 		static void DeleteGameObject(Core::GameObject* obj);
+		static void SaveGameObject(const Core::GameObject* obj, YAML::Node gameObjects);
+
 		static Core::GameObject* FindObjectBy(Core::GameObject* obj, const Core::Func<bool, const Core::GameObject*>& predicate);
+		
 		template<class T, class... Ts>
-		static std::tuple<T*, Ts*...> AddComponentsToGameObject(Core::GameObject* obj) {
-			T* comp = obj->AddComponent<T>();
-			_componentsById[comp->GetId()] = comp;
-			if constexpr (sizeof...(Ts) > 0) return std::tuple_cat(std::make_tuple(comp), AddComponentsToGameObject<Ts...>(obj));
-			else return std::make_tuple(comp);
-		};
+		static std::tuple<T*, Ts*...> AddComponentsToGameObject(Core::GameObject* obj);
 	public:
 		static void AddScene(const std::string& name, Core::Scene* scene);
 		static void AddScene(const std::string& name, const std::string& path);
@@ -52,17 +51,12 @@ namespace Twin2Engine::Manager {
 
 		static Core::GameObject* GetGameObjectWithId(size_t id);
 		static Core::Component* GetComponentWithId(size_t id);
-		template<class T, std::enable_if_t<std::is_base_of_v<Component, T>, bool> = true>
-		static T* GetComponentWithId(size_t id) {
-			return static_cast<T*>(GetComponentWithId(id));
-		};
+		template<class T>
+		static T* GetComponentWithId(size_t id);
 
 		static Core::GameObject* CreateGameObject(Core::Transform* parent = nullptr);
 		template<class... Ts>
-		static std::tuple<Core::GameObject*, Ts*...> CreateGameObject(Core::Transform* parent = nullptr) {
-			Core::GameObject* obj = CreateGameObject(parent);
-			return std::tuple_cat(std::make_tuple(obj), AddComponentsToGameObject<Ts...>(obj));
-		};
+		static std::tuple<Core::GameObject*, Ts*...> CreateGameObject(Core::Transform* parent = nullptr);
 		
 		static Core::GameObject* CreateGameObject(Core::Prefab* prefab, Core::Transform* parent = nullptr);
 
@@ -89,4 +83,26 @@ namespace Twin2Engine::Manager {
 		static void UnloadScene(const std::string& name);
 		static void UnloadAll();
 	};
+
+	template<class T, class ...Ts>
+	inline std::tuple<T*, Ts*...> SceneManager::AddComponentsToGameObject(Core::GameObject* obj)
+	{
+		T* comp = obj->AddComponent<T>();
+		_componentsById[comp->GetId()] = comp;
+		if constexpr (sizeof...(Ts) > 0) return std::tuple_cat(std::make_tuple(comp), AddComponentsToGameObject<Ts...>(obj));
+		else return std::make_tuple(comp);
+	}
+
+	template<class T>
+	inline T* SceneManager::GetComponentWithId(size_t id) {
+		static_assert(is_base_of_v<Core::Component, T>);
+		return static_cast<T*>(GetComponentWithId(id));
+	}
+
+	template<class ...Ts>
+	inline std::tuple<Core::GameObject*, Ts*...> SceneManager::CreateGameObject(Core::Transform* parent)
+	{
+		Core::GameObject* obj = CreateGameObject(parent);
+		return std::tuple_cat(std::make_tuple(obj), AddComponentsToGameObject<Ts...>(obj));
+	}
 }

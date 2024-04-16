@@ -65,6 +65,8 @@ Models:
   - res/models/castle.obj
   - "{Cube}"
   - "{Plane}"
+Prefabs:
+  - res/prefabs/testPrefab.yaml
 GameObjects:
   - id: 1
     name: Camera

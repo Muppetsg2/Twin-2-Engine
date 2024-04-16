@@ -365,8 +365,8 @@ int main(int, char**)
 #pragma endregion
 
     // ADDING SCENES
-    //SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
-    SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
+    SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
     /*
     GameObject* hexagonPrefab = new GameObject();
@@ -415,6 +415,7 @@ int main(int, char**)
     std::tuple<GameObject*, Text*, Image*> test2 = SceneManager::CreateGameObject<Text, Image>();
 
     GameObject* test3 = SceneManager::CreateGameObject(PrefabManager::GetPrefab("res/prefabs/testPrefab.yaml"));
+    //PrefabManager::SaveAsPrefab(test3, "res/prefabs/savedPrefab.yaml");
     
 #pragma region TestingLighting
     /**/

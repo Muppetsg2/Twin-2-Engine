@@ -12,6 +12,16 @@ hash<string> PrefabManager::_hasher;
 map<size_t, Prefab*> PrefabManager::_prefabs;
 map<size_t, string> PrefabManager::_prefabsPaths;
 
+void PrefabManager::SaveGameObject(const GameObject* obj, YAML::Node gameObjects)
+{
+	gameObjects.push_back(obj->Serialize());
+
+	Transform* objT = obj->GetTransform();
+	for (size_t i = 0; i < objT->GetChildCount(); ++i) {
+		SaveGameObject(objT->GetChildAt(i)->GetGameObject(), gameObjects);
+	}
+}
+
 void PrefabManager::UnloadPrefab(size_t id)
 {
 	if (_prefabs.find(id) != _prefabs.end()) {
@@ -209,11 +219,9 @@ void PrefabManager::SaveAsPrefab(const GameObject* obj, const std::string& path)
 	prefabNode["Root"] = rootNode;
 #pragma endregion
 #pragma region SAVING_GAMEOBJECTS
-	// Zapisywaæ dzieci dzieci
 	Transform* rootT = obj->GetTransform();
 	for (i = 0; i < rootT->GetChildCount(); ++i) {
-		GameObject* obj = rootT->GetChildAt(i)->GetGameObject();
-		prefabNode["GameObjects"].push_back(obj->Serialize());
+		SaveGameObject(rootT->GetChildAt(i)->GetGameObject(), prefabNode["GameObjects"]);
 	}
 #pragma endregion
 

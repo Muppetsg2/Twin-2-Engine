@@ -79,6 +79,16 @@ void SceneManager::DeleteGameObject(GameObject* obj)
 	}
 }
 
+void SceneManager::SaveGameObject(const GameObject* obj, YAML::Node gameObjects)
+{
+	gameObjects.push_back(obj->Serialize());
+
+	Transform* objT = obj->GetTransform();
+	for (size_t i = 0; i < objT->GetChildCount(); ++i) {
+		SaveGameObject(objT->GetChildAt(i)->GetGameObject(), gameObjects);
+	}
+}
+
 GameObject* SceneManager::FindObjectBy(GameObject* obj, const Func<bool, const GameObject*>& predicate)
 {
 	vector<GameObject*> children;
@@ -667,8 +677,7 @@ void SceneManager::SaveScene(const string& path) {
 #pragma region SAVING_GAMEOBJECTS
 	Transform* rootT = _rootObject->GetTransform();
 	for (i = 0; i < rootT->GetChildCount(); ++i) {
-		GameObject* obj = rootT->GetChildAt(i)->GetGameObject();
-		sceneNode["GameObjects"].push_back(obj->Serialize());
+		SaveGameObject(rootT->GetChildAt(i)->GetGameObject(), sceneNode["GameObjects"]);
 	}
 #pragma endregion
 
@@ -1221,7 +1230,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 #pragma endregion
 
 
-	if (parent != nullptr) prefabRoot->GetTransform()->SetParent(parent);
+	prefabRoot->GetTransform()->SetParent(parent != nullptr ? parent : _rootObject->GetTransform());
 	return prefabRoot;
 }
 

@@ -12,6 +12,8 @@ namespace Twin2Engine::Manager {
 
 		static std::map<size_t, std::string> _prefabsPaths;
 
+		static void SaveGameObject(const Core::GameObject* obj, YAML::Node gameObjects);
+
 		static void UnloadPrefab(size_t id);
 		static void UnloadPrefab(const std::string& path);
 	public:
@@ -20,7 +22,7 @@ namespace Twin2Engine::Manager {
 		static Core::Prefab* GetPrefab(size_t id);
 		static Core::Prefab* GetPrefab(const std::string& path);
 
-		static void SaveAsPrefab(const GameObject* obj, const std::string& path);
+		static void SaveAsPrefab(const Core::GameObject* obj, const std::string& path);
 
 		static void UnloadAll();
 

@@ -201,6 +201,8 @@ void SceneManager::LoadScene(const string& name)
 
 	Scene* sceneToLoad = _loadedScenes[sceneId];
 
+	Func<string, const string&> pathGetter;
+	Action<size_t> unloader;
 #pragma region LOADING_TEXTURES
 	// TEXTURES
 	vector<string> paths;
@@ -209,7 +211,7 @@ void SceneManager::LoadScene(const string& name)
 	}
 
 	auto toLoadToUnload = GetResourcesToLoadAndUnload(paths, _texturesIds);
-	
+
 	// Unloading
 	for (size_t t : toLoadToUnload.second) {
 		TextureManager::UnloadTexture2D(t);
@@ -248,13 +250,13 @@ void SceneManager::LoadScene(const string& name)
 #pragma endregion
 #pragma region LOADING_SPRITES
 	// SPRITES
-	paths.clear();
+	/*paths.clear();
 	for (const auto& path : sceneToLoad->_sprites) {
 		paths.push_back(path.first);
 	}
 
 	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _spritesIds);
-	
+
 	// Unloading
 	for (size_t s : toLoadToUnload.second) {
 		SpriteManager::UnloadSprite(s);
@@ -289,7 +291,12 @@ void SceneManager::LoadScene(const string& name)
 			}
 		}
 	}
-	_spritesIds = sortedIds;
+	_spritesIds = sortedIds;*/
+	pathGetter = [](const string& path) -> string { return path; };
+	unloader = [](size_t id) -> void { MaterialsManager::UnloadMaterial(id); };
+	Func<Sprite*, const string&> spriteLoader = [](const string& path) -> Material { return MaterialsManager::GetMaterial(path); };
+	Func<size_t, const Sprite*&> spriteIdGetter = [](const Material& mat) -> size_t { return mat.GetId(); };
+	LoadResources(pathGetter, sceneToLoad->_materials, _materialsIds, unloader, materialLoader, materialIdGetter);
 #pragma endregion
 #pragma region LOADING_FONTS
 	// FONTS
@@ -364,40 +371,11 @@ void SceneManager::LoadScene(const string& name)
 	_audiosIds = sortedIds;
 #pragma endregion
 #pragma region LOADING_MATERIALS
-	// MATERIALS
-	paths.clear();
-	for (const auto& path : sceneToLoad->_materials) {
-		paths.push_back(path);
-	}
-	toLoadToUnload = GetResourcesToLoadAndUnload(paths, _materialsIds);
-
-	// Unloading
-	for (size_t m : toLoadToUnload.second) {
-		MaterialsManager::UnloadMaterial(m);
-		for (size_t i = 0; i < _materialsIds.size(); ++i) {
-			if (_materialsIds[i] == m) {
-				_materialsIds.erase(_materialsIds.begin() + i);
-				break;
-			}
-		}
-	}
-	// Loading
-	for (size_t m : toLoadToUnload.first) {
-		Material mat = MaterialsManager::LoadMaterial(paths[m]);
-		_materialsIds.push_back(mat.GetId());
-	}
-	// Sorting
-	sortedIds.clear();
-	for (size_t i = 0; i < paths.size(); ++i) {
-		size_t pathH = hash<string>()(paths[i]);
-		for (size_t j = 0; j < _materialsIds.size(); ++j) {
-			if (_materialsIds[j] == pathH) {
-				sortedIds.push_back(_materialsIds[j]);
-				break;
-			}
-		}
-	}
-	_materialsIds = sortedIds;
+	pathGetter = [](const string& path) -> string { return path; };
+	unloader = [](size_t id) -> void { MaterialsManager::UnloadMaterial(id); };
+	Func<Material, const string&> materialLoader = [](const string& path) -> Material { return MaterialsManager::GetMaterial(path); };
+	Func<size_t, const Material&> materialIdGetter = [](const Material& mat) -> size_t { return mat.GetId(); };
+	LoadResources(pathGetter, sceneToLoad->_materials, _materialsIds, unloader, materialLoader, materialIdGetter);
 #pragma endregion
 #pragma region LOADING_MODELS
 	// MODELS

@@ -2,6 +2,7 @@
 
 #include <core/Scene.h>
 #include <core/Prefab.h>
+#include <core/EventHandler.h>
 
 namespace Twin2Engine::Manager {
 	class SceneManager {
@@ -27,14 +28,71 @@ namespace Twin2Engine::Manager {
 		static std::map<size_t, Core::Scene*> _loadedScenes;
 
 		static std::pair<std::vector<size_t>, std::vector<size_t>> GetResourcesToLoadAndUnload(const std::vector<std::string> paths, const std::vector<size_t> loadedHashes);
-		
+		/*template<class T, class U, class C>
+		static void LoadResources(
+			//const Core::Func<std::string, T>& pathGetter,
+			const U& resoucersList, std::vector<size_t>& loadedIds
+			//const Core::Action<size_t>& unloader,
+			//const Core::Func<C, std::string>& loader,
+			const Core::Func<size_t, C>& idGetter ) {
+
+		};*/
+		template<class T, class U, class C>
+		static void LoadResources(const Core::Func<std::string, const T&>& pathGetter,
+			const U& resources, std::vector<size_t>& loadedIds,
+			const Core::Action<size_t>& unloader, 
+			const Core::Func<C, const std::string&>& loader,
+			const Core::Func<size_t, const C&>& idGetter) 
+		{
+
+			std::vector<std::string> paths;
+			for (const auto& path : resources) {
+				paths.push_back(pathGetter(path));
+			}
+			std::pair<std::vector<size_t>, std::vector<size_t>> toLoadToUnload = GetResourcesToLoadAndUnload(paths, loadedIds);
+
+			// Unloading
+			for (size_t id : toLoadToUnload.second) {
+				unloader(id);
+				for (size_t i = 0; i < loadedIds.size(); ++i) {
+					if (loadedIds[i] == id) {
+						loadedIds.erase(loadedIds.begin() + i);
+						break;
+					}
+				}
+			}
+
+			// Loading
+			for (size_t id : toLoadToUnload.first) {
+				loadedIds.push_back(idGetter(loader(paths[id])));
+			}
+
+			// Sorting
+			std::vector<size_t> sortedIds;
+			for (size_t i = 0; i < paths.size(); ++i) {
+				size_t pathH = hash<string>()(paths[i]);
+				for (size_t j = 0; j < loadedIds.size(); ++j) {
+					if (loadedIds[j] == pathH) {
+						sortedIds.push_back(loadedIds[j]);
+						break;
+					}
+				}
+			}
+			loadedIds = sortedIds;
+		}
+
 		static void DeleteGameObject(Core::GameObject* obj);
 		static void SaveGameObject(const Core::GameObject* obj, YAML::Node gameObjects);
 
 		static Core::GameObject* FindObjectBy(Core::GameObject* obj, const Core::Func<bool, const Core::GameObject*>& predicate);
 		
-		template<class T, class... Ts>
-		static std::tuple<T*, Ts*...> AddComponentsToGameObject(Core::GameObject* obj);
+		template<class T, class... Ts> static std::tuple<T*, Ts*...> AddComponentsToGameObject(Core::GameObject* obj)
+		{
+			T* comp = obj->AddComponent<T>();
+			_componentsById[comp->GetId()] = comp;
+			if constexpr (sizeof...(Ts) > 0) return std::tuple_cat(std::make_tuple(comp), AddComponentsToGameObject<Ts...>(obj));
+			else return std::make_tuple(comp);
+		};
 	public:
 		static void AddScene(const std::string& name, Core::Scene* scene);
 		static void AddScene(const std::string& name, const std::string& path);
@@ -51,12 +109,16 @@ namespace Twin2Engine::Manager {
 
 		static Core::GameObject* GetGameObjectWithId(size_t id);
 		static Core::Component* GetComponentWithId(size_t id);
-		template<class T>
-		static T* GetComponentWithId(size_t id);
+		template<class T> static T* GetComponentWithId(size_t id) {
+			static_assert(is_base_of_v<Core::Component, T>);
+			return static_cast<T*>(GetComponentWithId(id));
+		};
 
 		static Core::GameObject* CreateGameObject(Core::Transform* parent = nullptr);
-		template<class... Ts>
-		static std::tuple<Core::GameObject*, Ts*...> CreateGameObject(Core::Transform* parent = nullptr);
+		template<class... Ts> static std::tuple<Core::GameObject*, Ts*...> CreateGameObject(Core::Transform* parent = nullptr) {
+			Core::GameObject* obj = CreateGameObject(parent);
+			return std::tuple_cat(std::make_tuple(obj), AddComponentsToGameObject<Ts...>(obj));
+		}
 		
 		static Core::GameObject* CreateGameObject(Core::Prefab* prefab, Core::Transform* parent = nullptr);
 
@@ -84,25 +146,48 @@ namespace Twin2Engine::Manager {
 		static void UnloadAll();
 	};
 
-	template<class T, class ...Ts>
-	inline std::tuple<T*, Ts*...> SceneManager::AddComponentsToGameObject(Core::GameObject* obj)
+	/*template<class T, class U,  class C>
+	inline void SceneManager::LoadResources(
+		const Core::Func<std::string, T>& pathGetter,
+		const U& resourceList, std::vector<size_t>&loadedIds,
+		const Core::Action<size_t>& unloader,
+		const Core::Func<C, std::string>& loader,
+		const Core::Func<size_t, C>& idGetter)
 	{
-		T* comp = obj->AddComponent<T>();
-		_componentsById[comp->GetId()] = comp;
-		if constexpr (sizeof...(Ts) > 0) return std::tuple_cat(std::make_tuple(comp), AddComponentsToGameObject<Ts...>(obj));
-		else return std::make_tuple(comp);
-	}
+		/*std::vector<std::string>& paths;
+		for (const auto& path : resourceList) {
+			paths.push_back(pathGetter(path));
+		}
+		std::pair<std::vector<size_t>, std::vector<size_t>> toLoadToUnload = GetResourcesToLoadAndUnload(paths, loadedIds);
 
-	template<class T>
-	inline T* SceneManager::GetComponentWithId(size_t id) {
-		static_assert(is_base_of_v<Core::Component, T>);
-		return static_cast<T*>(GetComponentWithId(id));
-	}
+		// Unloading
+		for (size_t id : toLoadToUnload.second) {
+			unloader(id);
+			for (size_t i = 0; i < loadedIds.size(); ++i) {
+				if (loadedIds[i] == id) {
+					loadedIds.erase(loadedIds.begin() + i);
+					break;
+				}
+			}
+		}
 
-	template<class ...Ts>
-	inline std::tuple<Core::GameObject*, Ts*...> SceneManager::CreateGameObject(Core::Transform* parent)
-	{
-		Core::GameObject* obj = CreateGameObject(parent);
-		return std::tuple_cat(std::make_tuple(obj), AddComponentsToGameObject<Ts...>(obj));
-	}
+		// Loading
+		for (size_t id : toLoadToUnload.first) {
+			C obj = loader(paths[id]);
+			loadedIds.push_back(idGetter(id));
+		}
+
+		// Sorting
+		std::vector<size_t> sortedIds;
+		for (size_t i = 0; i < paths.size(); ++i) {
+			size_t pathH = hash<string>()(paths[i]);
+			for (size_t j = 0; j < loadedIds.size(); ++j) {
+				if (loadedIds[j] == pathH) {
+					sortedIds.push_back(loadedIds[j]);
+					break;
+				}
+			}
+		}
+		loadedIds = sortedIds;
+	}*/
 }

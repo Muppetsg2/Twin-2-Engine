@@ -1,10 +1,13 @@
 #include <graphic/manager/MaterialsManager.h>
+#include <LightingController.h>
 
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
 
 std::hash<std::string> MaterialsManager::stringHash;
-std::list<Twin2Engine::GraphicEngine::MaterialData*> MaterialsManager::loadedMaterials;
+std::map<size_t, Twin2Engine::GraphicEngine::MaterialData*> MaterialsManager::loadedMaterials;
+
+std::map<size_t, std::string> MaterialsManager::materialsPaths;
 
 //sconst td::unordered_map<size_t, int> MaterialsManager::typeSizeMap
 //{
@@ -58,49 +61,40 @@ const std::unordered_map<size_t, int> MaterialsManager::typeHandleMap
 	{ MaterialsManager::stringHash("mat3"),			TYPE_MAP_MAT3_HANDLE		},
 	{ MaterialsManager::stringHash("mat4"),			TYPE_MAP_MAT4_HANDLE		}
 };
-void MaterialsManager::UnloadMaterial(Material& material)
-{
-	if (material != nullptr)
-	{
-		material._materialData->useNumber--;
 
-		if (material._materialData->useNumber == 0)
-		{
-			std::list<MaterialData*>::iterator found =
-				std::find_if(loadedMaterials.begin(), loadedMaterials.end(), [material](MaterialData* data) { return data->id == material.GetId(); });
+void MaterialsManager::UnloadMaterial(size_t managerId) {
 
-			if (found != loadedMaterials.end())
-			{
-				loadedMaterials.erase(found);
-
-				delete material._materialData->materialParameters;
-				delete material._materialData;
-			}
-
-		}
-
-		//material = nullptr;
+	if (loadedMaterials.find(managerId) != loadedMaterials.end()) {
+		MaterialData* matData = loadedMaterials[managerId];
+		delete matData->materialParameters;
+		delete matData;
+		loadedMaterials.erase(managerId);
+		materialsPaths.erase(managerId);
 	}
+}
+
+void MaterialsManager::UnloadMaterial(const std::string& path) {
+	UnloadMaterial(stringHash(path));
+}
+
+Material MaterialsManager::GetMaterial(size_t managerId)
+{
+	if (loadedMaterials.find(managerId) != loadedMaterials.end())
+	{
+		return Material(loadedMaterials[managerId]);
+	}
+	return Material();
 }
 
 Material MaterialsManager::GetMaterial(const std::string& name)
 {
 	size_t hashed = stringHash(name);
 
-	std::list<MaterialData*>::iterator found =
-		std::find_if(loadedMaterials.begin(), loadedMaterials.end(), [hashed](MaterialData* data) { return data->id == hashed; });
-
-
-	if (found != loadedMaterials.end())
+	if (loadedMaterials.find(hashed) != loadedMaterials.end())
 	{
-		(*found)->useNumber++;
-		return Material(*found);
+		return Material(loadedMaterials[hashed]);
 	}
-	else
-	{
-		return LoadMaterial(name);
-	}
-
+	return LoadMaterial(name);
 }
 
 Material MaterialsManager::LoadMaterial(const std::string& materialName)
@@ -230,10 +224,14 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 	MaterialData* materialData = new MaterialData
 	{
 		.id = materialNameHash,
-		.useNumber = 1,
 		.shader = Manager::ShaderManager::GetShaderProgram(shader),
 		.materialParameters = materialParameters
 	};
+
+	loadedMaterials[materialNameHash] = materialData;
+	materialsPaths[materialNameHash] = materialName;
+
+	LightingSystem::LightingController::Instance()->BindLightBuffors(materialData->shader);
 
 	return Material(materialData);
 }
@@ -248,29 +246,24 @@ Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, co
 {
 	size_t hashed = stringHash(newMaterialName);
 
-	std::list<MaterialData*>::iterator found =
-		std::find_if(loadedMaterials.begin(), loadedMaterials.end(), [hashed](MaterialData* data) { return data->id == hashed; });
-
 	MaterialData* data;
-	if (found == loadedMaterials.end())
+	if (loadedMaterials.find(hashed) == loadedMaterials.end())
 	{
 		SPDLOG_INFO("Creating new material: {}!", newMaterialName);
 
 		data = new MaterialData{
 			.id = hashed,
-			.useNumber = 1,
 			.shader = ShaderManager::GetShaderProgram(shaderName),
 			.materialParameters = new MaterialParameters(materialParametersNames, textureParametersNames)
 			
 		};
 
-		loadedMaterials.push_back(data);
+		loadedMaterials[hashed] = data;
 	}
 	else
 	{
 		SPDLOG_INFO("Material already exists: {}!", newMaterialName);
-		data = (*found);
-		data->useNumber++;
+		data = loadedMaterials[hashed];
 	}
 	
 	return Material(data);

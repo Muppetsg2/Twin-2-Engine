@@ -1,6 +1,7 @@
 #include <core/ColliderComponent.h>
 #include <core/GameObject.h>
 #include <CollisionManager.h>
+#include <core/YamlConverters.h>
 
 using namespace Twin2Engine::Core;
 
@@ -61,6 +62,23 @@ void ColliderComponent::SetLayersFilter(LayerCollisionFilter& layersFilter)
 	collider->layersFilter = layersFilter;
 }
 
+void Twin2Engine::Core::ColliderComponent::Update()
+{
+	if (dirtyFlag) {
+		collider->shapeColliderData->Position = GetTransform()->GetTransformMatrix() * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f);
+
+		if (boundingVolume != nullptr) {
+			boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
+		}
+
+		dirtyFlag = false;
+		//YAML::Node Twin2Engine::Core::ColliderComponent::Serialize() const
+		//{
+		//	return YAML::Node();
+		//}
+	}
+}
+
 void ColliderComponent::EnableBoundingVolume(bool v)
 {
 	if (v) {
@@ -81,16 +99,24 @@ void ColliderComponent::SetLocalPosition(float x, float y, float z)
 	collider->shapeColliderData->LocalPosition.x = x;
 	collider->shapeColliderData->LocalPosition.y = y;
 	collider->shapeColliderData->LocalPosition.z = z;
+
+	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::ColliderComponent::Invoke()
+YAML::Node Twin2Engine::Core::ColliderComponent::Serialize() const
 {
-	collider->colliderComponent = this;
-}
-
-void Twin2Engine::Core::ColliderComponent::Update()
-{
-	collider->shapeColliderData->Position = collider->shapeColliderData->LocalPosition + GetGameObject()->GetTransform()->GetGlobalPosition();
+	YAML::Node node = Component::Serialize();
+	node["type"] = "Collider";
+	node["trigger"] = collider->isTrigger;
+	node["static"] = collider->isStatic;
+	node["layer"] = collider->layer;
+	node["layerFilter"] = collider->layersFilter;
+	node["boundingVolume"] = collider->boundingVolume != nullptr;
+	if (collider->boundingVolume != nullptr) {
+		node["boundingVolumeRadius"] = ((CollisionSystem::SphereColliderData*)collider->boundingVolume)->Radius;
+	}
+	node["position"] = glm::vec3(collider->shapeColliderData->LocalPosition.x, collider->shapeColliderData->LocalPosition.y, collider->shapeColliderData->LocalPosition.z);
+	return node;
 }
 
 

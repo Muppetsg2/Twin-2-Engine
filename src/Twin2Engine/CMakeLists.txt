@@ -90,7 +90,11 @@ target_link_libraries(${PROJECT_NAME} yaml-cpp)
 target_link_libraries(${PROJECT_NAME} freetype)
 target_link_libraries(${PROJECT_NAME} glm::glm)
 target_link_libraries(${PROJECT_NAME} CollisionSystem)
+#target_link_libraries(${PROJECT_NAME} LightingSystem)
 
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${GRAPHIC_ENGINE_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} GraphicEngine)
+
+target_include_directories(${PROJECT_NAME} PUBLIC ${LIGHTING_SYSTEM_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} LightingSystem)

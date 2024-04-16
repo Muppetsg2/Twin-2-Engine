@@ -1,4 +1,5 @@
 #include <graphic/manager/ShaderManager.h>
+#include <LightingController.h>
 
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
@@ -7,6 +8,8 @@ GLenum ShaderManager::binaryFormat = 1;
 
 std::hash<std::string> ShaderManager::stringHash;
 std::list<ShaderManager::ShaderProgramData*> ShaderManager::loadedShaders;
+
+Shader* ShaderManager::DepthShader = nullptr;
 
 const std::unordered_map<size_t, int> ShaderManager::shaderTypeMapping
 {
@@ -24,7 +27,7 @@ unsigned int ShaderManager::LoadShaderProgram(const std::string& shaderName)
     unsigned int shaderProgramID;
 
     //std::string shaderPath = "ShadersOrigin/CompiledShaders/" + shaderName;
-    std::string shaderPath = "ShadersOrigin/CompiledShaders/" + shaderName + ".shdr";
+    std::string shaderPath = "res/CompiledShaders/" + shaderName + ".shdr";
 
     if (found == loadedShaders.end())
     {
@@ -253,6 +256,7 @@ inline void ShaderManager::CheckProgramLinkingSuccess(GLuint programId)
 
 void ShaderManager::Init()
 {
+    DepthShader = GetShaderProgram("origin/DepthShader");
     //ConfigManager configManager("GameConfig.yaml");
     //ConfigManager::OpenConfig("GameConfig.yaml");
     //ConfigManager::ReadConfig();
@@ -453,7 +457,7 @@ GLuint ShaderManager::CreateShaderProgramFromFile(const std::string& shaderProgr
 {
 
     SPDLOG_INFO("From File");
-    std::string shaderProgramPath = "res/CompiledShaders/" + shaderProgramName + ".shpr";
+    std::string shaderProgramPath = "res/shaders/" + shaderProgramName + ".shpr";
     
     GLuint shaderProgram = 0;
     
@@ -585,8 +589,8 @@ Shader* ShaderManager::CreateShaderProgram(const std::string& shaderName, const 
     Shader* shader;
     if (found == loadedShaders.end())
     {
-        unsigned int vertexId = CompileShader(GL_VERTEX_SHADER, LoadShaderSource("ShadersOrigin/" + vertexShader));
-        unsigned int fragmentId = CompileShader(GL_FRAGMENT_SHADER, LoadShaderSource("ShadersOrigin/" + fragmentShader));
+        unsigned int vertexId = CompileShader(GL_VERTEX_SHADER, LoadShaderSource("res/" + vertexShader));
+        unsigned int fragmentId = CompileShader(GL_FRAGMENT_SHADER, LoadShaderSource("res/" + fragmentShader));
 
         GLuint shaderProgram = glCreateProgram();
 
@@ -610,4 +614,15 @@ Shader* ShaderManager::CreateShaderProgram(const std::string& shaderName, const 
         shader = (*found)->shader;
     }
     return shader;
+}
+
+void ShaderManager::UpdateDirShadowMapsTab()
+{
+    size_t depthShaderHash = stringHash("origin/DepthShader");
+
+    for (auto SPD : loadedShaders) {
+        if (SPD->shaderPathHash != depthShaderHash) {
+            LightingSystem::LightingController::Instance()->UpdateShadowMapsTab(SPD->shader); //////////////////
+        }
+    }
 }

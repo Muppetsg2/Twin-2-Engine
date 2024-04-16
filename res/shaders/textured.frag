@@ -27,6 +27,5 @@ layout(location = 0) uniform TextureInput texturesInput[8];
 
 void main()
 {
-
 	FragColor = texture(texturesInput[materialIndex].texture1, texCoords);
 }

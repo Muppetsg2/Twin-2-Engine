@@ -163,6 +163,7 @@ namespace Twin2Engine
 			inline bool GetDirtyFlagGlobalRotationQuat2Euler() const;
 
 			virtual void Update() override;
+			virtual YAML::Node Serialize() const override;
 		};
 	}
 }

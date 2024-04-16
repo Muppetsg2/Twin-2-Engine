@@ -1,5 +1,9 @@
 #pragma once
 
+namespace Twin2Engine::Manager {
+	class SceneManager;
+}
+
 namespace Twin2Engine::Core
 {
 	class GameObject;
@@ -7,9 +11,12 @@ namespace Twin2Engine::Core
 
 	class Component
 	{
-		friend class GameObject;
-
 	private:
+		static size_t _currentFreeId;
+		static std::list<size_t> _freedIds;
+		static size_t GetFreeId();
+		static void FreeId(size_t id);
+
 		size_t _id;
 		GameObject* _gameObject;
 		bool _enabled;
@@ -25,6 +32,7 @@ namespace Twin2Engine::Core
 		virtual void OnEnable();
 		virtual void OnDisable();
 		virtual void OnDestroy();
+		virtual YAML::Node Serialize() const;
 #pragma endregion
 
 #pragma region Setters
@@ -45,8 +53,10 @@ namespace Twin2Engine::Core
 #pragma region FriendMethods
 	private:
 		void Init(GameObject* obj);
+		void Init(GameObject* obj, size_t id);
 	public:
-		friend GameObject;
+		friend class GameObject;
+		friend class Manager::SceneManager;
 #pragma endregion
 
 #pragma region CLONING_COMPONENTS

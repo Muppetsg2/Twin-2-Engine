@@ -9,13 +9,19 @@ using namespace SoLoud;
 using namespace std;
 
 namespace Twin2Engine::Manager {
+	class SceneManager;
+	class PrefabManager;
+
 	class AudioManager {
 	private:
 		static Soloud _soloud;
 		static map<size_t, Wav*> _loadedAudio;
 
+		static map<size_t, string> _audiosPaths;
+
 		static bool _init;
 
+		static void UnloadAudio(size_t id);
 	public:
 		static result Init();
 		static const char* GetErrorString(result errorCode);
@@ -31,7 +37,11 @@ namespace Twin2Engine::Manager {
 		static void PlayAudio(handle h); // doing the same as ResumeAudio
 		static void PauseAudio(handle h);
 		static void ResumeAudio(handle h);
+
 		static void StopAudio(handle h); // delete handle
+		static void StopWav(string path);
+		static void StopWav(size_t id);
+		static void StopAll();
 
 		static void SetPositionAudio(handle h, SoLoud::time seconds);
 		static void SetVolume(handle h, float value);
@@ -49,5 +59,8 @@ namespace Twin2Engine::Manager {
 		static void FadeVolume(handle h, float to, SoLoud::time seconds);
 
 		static void UnloadAll();
+
+		friend class SceneManager;
+		friend class PrefabManager;
 	};
 }

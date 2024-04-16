@@ -1,13 +1,11 @@
-#file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_BINARY_DIR}/ShadersOrigin SYMBOLIC)
 configure_file(GameConfig.yaml.in GameConfig.yaml)
-
-file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_BINARY_DIR}/ShadersOrigin SYMBOLIC)
-file(CREATE_LINK ${SHADER_ORIGIN_FOLDER}/res ${CMAKE_CURRENT_SOURCE_DIR}/ShadersOrigin SYMBOLIC)
 
 # ---- Dependency ----
 add_subdirectory(Twin2Engine)
 
 add_subdirectory(CollisionSystem)
+
+add_subdirectory(LightingSystem)
 
 add_subdirectory(Tilemap)
 
@@ -26,12 +24,15 @@ target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
 target_include_directories(${PROJECT_NAME} PUBLIC ${COLLISION_SYSTEM_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC CollisionSystem)
 
+target_include_directories(${PROJECT_NAME} PUBLIC ${LIGHTING_SYSTEM_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} PUBLIC LightingSystem)
+
 #add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD 
 #				   COMMAND ${CMAKE_COMMAND} -E create_symlink 
 #				   ${CMAKE_SOURCE_DIR}/res 
 #				   ${CMAKE_CURRENT_BINARY_DIR}/res)
 
-#file(CREATE_LINK ${CMAKE_SOURCE_DIR}/res ${CMAKE_CURRENT_SOURCE_DIR}/res SYMBOLIC)
+file(CREATE_LINK ${CMAKE_SOURCE_DIR}/res ${CMAKE_CURRENT_BINARY_DIR}/res SYMBOLIC)
 
 if(MSVC)
     target_compile_definitions(${PROJECT_NAME} PUBLIC NOMINMAX)
@@ -39,7 +40,7 @@ endif()
 
 # Set the directory paths
 set(SHADERS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/res/shaders/SPIRV")
-set(SHADERS_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/res/CompiledShaders/SPIRV")
+set(SHADERS_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/res/CompiledShaders/SPIRV")
 
 find_program(GLSLANG_VALIDATOR NAMES glslangValidator)
 
@@ -53,7 +54,7 @@ function(compile_shader shader_path)
     get_filename_component(shader_name ${shader_path} NAME_WE)
     get_filename_component(shader_ext ${shader_path} EXT)
 
-     file(RELATIVE_PATH RELATIVE_SOURCE ${SHADERS_SOURCE_DIR} ${shader_path})
+    file(RELATIVE_PATH RELATIVE_SOURCE ${SHADERS_SOURCE_DIR} ${shader_path})
 
     #set(output_file "${SHADERS_OUTPUT_DIR}/${shader_name}${shader_ext}")
     set(output_file "${SHADERS_OUTPUT_DIR}/${RELATIVE_SOURCE}")
@@ -92,14 +93,13 @@ find_shader_files(${SHADERS_SOURCE_DIR})
 #endforeach()
 
 # Custom commend that will create _parameters.shpa files
-
 #file(EXISTS ${SHADER_COMPILER_EXE} SHADER_COMPILER_EXE_EXISTS)
 #if (${SHADER_COMPILER_EXE_EXISTS})
 if (EXISTS ${SHADER_COMPILER_EXE})
     message("Additional prebuild program: ${SHADER_COMPILER_EXE}")
     add_custom_command(
         TARGET ${PROJECT_NAME} PRE_BUILD  
-        COMMAND ${SHADER_COMPILER_EXE}
+        #COMMAND ${SHADER_COMPILER_EXE}
         COMMENT "Running additional prebuild program: ${SHADER_COMPILER_EXE}"
     )
 endif()

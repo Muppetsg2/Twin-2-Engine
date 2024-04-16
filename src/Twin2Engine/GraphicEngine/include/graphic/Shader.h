@@ -13,9 +13,8 @@ namespace Twin2Engine
         private:
             friend class Manager::ShaderManager;
 
-            unsigned int shaderProgramID;
-
         public:
+            unsigned int shaderProgramID;
             // ID program object  
             Shader(const Shader&& shader);
             Shader(const Shader& shader);

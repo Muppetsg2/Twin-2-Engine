@@ -1,13 +1,48 @@
 #include <core/GameObject.h>
+#include <core/Scene.h>
 
 using namespace Twin2Engine::Core;
 
-unsigned int Twin2Engine::Core::GameObject::_currentFreeId = 1;
+size_t Twin2Engine::Core::GameObject::_currentFreeId = 1;
+list<size_t> Twin2Engine::Core::GameObject::_freedIds;
 
-Twin2Engine::Core::GameObject::GameObject()
+GameObject::GameObject(size_t id) {
+	
+	// Setting IDs
+	_id = id;
+	if (_freedIds.size() > 0) {
+		auto found = find_if(_freedIds.begin(), _freedIds.end(), [&](size_t fId) -> bool { return fId == _id; });
+		if (found != _freedIds.end()) {
+			_freedIds.erase(found);
+		}
+	}
+	if (_currentFreeId <= id) {
+		for (; _currentFreeId < id; ++_currentFreeId) _freedIds.push_back(_currentFreeId);
+		_freedIds.sort();
+		_currentFreeId = id + 1;
+	}
+
+	// Setting activation
+	_activeInHierarchy = true;
+	_activeSelf = true;
+
+	// Setting is no static by default
+	_isStatic = false;
+
+	// Setting default name
+	_name = "New GameObject";
+
+	_transform = new Transform();
+
+	//components = list<Component*>();
+	components = std::list<Component*>();
+	components.push_back(_transform);
+}
+
+GameObject::GameObject()
 {
 	// Setting ID
-	_id = _currentFreeId++;
+	_id = GetFreeId();
 
 	// Setting activation
 	_activeInHierarchy = true;
@@ -21,18 +56,21 @@ Twin2Engine::Core::GameObject::GameObject()
 
 
 	_transform = new Transform();
+	((Component*)_transform)->Init(this);
 
 	//components = list<Component*>();
 	components = std::list<Component*>();
 	components.push_back(_transform);
 }
 
-Twin2Engine::Core::GameObject::~GameObject()
+GameObject::~GameObject()
 {
 	for (Component* component : components)
 	{
+		component->OnDestroy();
 		delete component;
 	}
+	_freedIds.push_back(_id);
 }
 
 GameObject* GameObject::Instatiate(GameObject* gameObject)
@@ -84,33 +122,53 @@ void GameObject::CloneTo(GameObject* cloned) const
 	}
 }
 
-unsigned int Twin2Engine::Core::GameObject::Id() const
+size_t GameObject::GetFreeId()
+{
+	size_t id;
+	if (_freedIds.size() > 0) {
+		id = _freedIds.front();
+		_freedIds.pop_front();
+	}
+	else {
+		id = _currentFreeId++;
+	}
+	return id;
+}
+
+void GameObject::FreeId(size_t id)
+{
+	_freedIds.push_back(id);
+	_freedIds.sort();
+}
+
+size_t GameObject::Id() const
 {
 	return _id;
 }
 
-bool Twin2Engine::Core::GameObject::GetActiveInHierarchy() const
+bool GameObject::GetActiveInHierarchy() const
 {
 	return _activeInHierarchy;
 }
 
-bool Twin2Engine::Core::GameObject::GetActive() const
+bool GameObject::GetActive() const
 {
 	return _activeSelf && _activeInHierarchy;
 }
-void Twin2Engine::Core::GameObject::SetActive(bool active)
+
+void GameObject::SetActive(bool active)
 {
 	_activeSelf = active;
 
 	SetActiveInHierarchy(active);
 }
 
-void Twin2Engine::Core::GameObject::SetActiveInHierarchy(bool activeInHierarchy)
+void GameObject::SetActiveInHierarchy(bool activeInHierarchy)
 {
-	if (_activeInHierarchy != activeInHierarchy) // warunek sprawdzaj¹cy czy to ustawienie zmieni stan (musi zmieniaæ inaczej nie ma sensu dzia³¹æ dalej)
+	if (_activeInHierarchy != activeInHierarchy) // warunek sprawdzajï¿½cy czy to ustawienie zmieni stan (musi zmieniaï¿½ inaczej nie ma sensu dziaï¿½ï¿½ï¿½ dalej)
 	{
 		_activeInHierarchy = activeInHierarchy; //zmiana stanu
-		if (_activeSelf) // sprawdzenie w³asnego stanu, jeœli ustawiony na false to znaczy, ¿e ten stan dyktuje warunki aktywnoœci wszystkich podrzêdnych obiektów
+		if (_activeSelf) // sprawdzenie wï¿½asnego stanu, jeï¿½li ustawiony na false to znaczy, ï¿½e ten stan dyktuje warunki aktywnoï¿½ci wszystkich podrzï¿½dnych obiektï¿½w
 		{
 			for (int index = 0; index < _transform->GetChildCount(); index++)
 			{
@@ -120,54 +178,76 @@ void Twin2Engine::Core::GameObject::SetActiveInHierarchy(bool activeInHierarchy)
 	}
 }
 
-
-
-bool Twin2Engine::Core::GameObject::GetIsStatic() const
+bool GameObject::GetIsStatic() const
 {
 	return _isStatic;
 }
-void Twin2Engine::Core::GameObject::SetIsStatic(bool isStatic)
+
+void GameObject::SetIsStatic(bool isStatic)
 {
 	_isStatic = isStatic;
 }
 
-
-Twin2Engine::Core::Transform* Twin2Engine::Core::GameObject::GetTransform() const
+Transform* GameObject::GetTransform() const
 {
 	return _transform;
 }
 
-string Twin2Engine::Core::GameObject::GetName() const
+string GameObject::GetName() const
 {
 	return _name;
 }
 
-
-void Twin2Engine::Core::GameObject::SetName(const string& name)
+void GameObject::SetName(const string& name)
 {
 	_name = name;
 }
 
-void Twin2Engine::Core::GameObject::Update()
+void GameObject::Update()
 {
 	UpdateComponents();
 
 	for (size_t i = 0; i < _transform->GetChildCount(); i++)
 	{
-		_transform->GetChildAt(i)->GetGameObject()->Update();
+		GameObject* child = _transform->GetChildAt(i)->GetGameObject();
+		if (child->GetActive()) child->Update();
 	}
 }
 
-void Twin2Engine::Core::GameObject::UpdateComponents()
+void GameObject::UpdateComponents()
 {
 	for (Component* component : components)
 	{
-		component->Update();
+		if (component->IsEnable()) component->Update();
 	}
 }
 
+YAML::Node GameObject::Serialize() const
+{
+	YAML::Node node;
+	node["id"] = _id;
+	node["name"] = _name;
+	node["isStatic"] = _isStatic;
+	node["isActive"] = _activeSelf;
+	node["transform"] = _transform->Serialize();
+	node["components"] = vector<YAML::Node>();
+	for (const Component* comp : components) {
+		if (comp != _transform)
+			node["components"].push_back(comp->Serialize());
+	}
+	node["children"] = vector<YAML::Node>();
+	for (size_t i = 0; i < _transform->GetChildCount(); ++i) {
+		node["children"].push_back(_transform->GetChildAt(i)->GetGameObject()->Id());
+	}
+	return node;
+}
 
-void Twin2Engine::Core::GameObject::RemoveComponent(Component* component)
+void GameObject::AddComponent(Component* comp)
+{
+	components.push_back(comp);
+}
+
+void GameObject::RemoveComponent(Component* component)
 {
 	components.remove(component);
 	//std::remove_if(components.begin(), components.end(), [component](Component* comp) { return comp == component; });

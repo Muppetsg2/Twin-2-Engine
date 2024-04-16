@@ -2,8 +2,9 @@
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::GraphicEngine;
+using namespace std;
 
-std::vector<RenderableComponent*> RenderableComponent::_components = std::vector<RenderableComponent*>();
+vector<RenderableComponent*> RenderableComponent::_components = vector<RenderableComponent*>();
 
 RenderableComponent::RenderableComponent()
 {
@@ -22,6 +23,14 @@ RenderableComponent::~RenderableComponent()
 
 void RenderableComponent::Render()
 {
+}
+
+YAML::Node RenderableComponent::Serialize() const
+{
+	YAML::Node node = Component::Serialize();
+	node["type"] = "Renderable";
+	node["isTransparent"] = _isTransparent;
+	return node;
 }
 
 bool RenderableComponent::IsTransparent() const

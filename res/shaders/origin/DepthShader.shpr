@@ -1,0 +1,6 @@
+shaderprogram:
+  name: origin/DepthShader
+  shaders:
+    - depth_shader.vert
+    - depth_shader.frag
+  parameters:

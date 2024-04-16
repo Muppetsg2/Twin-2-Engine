@@ -8,26 +8,33 @@ namespace Twin2Engine::UI {
 	private:
 		std::string _text = "";
 
-		std::vector<GraphicEngine::Character*> _textCache = std::vector<GraphicEngine::Character*>();
-
-		GraphicEngine::Font* _font = nullptr;
+		size_t _fontId = 0;
 
 		uint32_t _size = 0;
 
 		glm::vec4 _color = glm::vec4(0.f);
 
+		std::vector<GraphicEngine::Character*> _textCache = std::vector<GraphicEngine::Character*>();
+
+		bool _textCacheDirty = true;
+		bool _justResizeCache = false;
+		std::string _oldText = "";
+		void UpdateTextCache();
+
 	public:
 		virtual void Render() override;
+		virtual YAML::Node Serialize() const override;
 
 		void SetColor(const glm::vec4& color);
 		void SetText(const std::string& text);
 		void SetSize(uint32_t size);
 		void SetFont(const std::string& fontPath);
-		void SetFont(GraphicEngine::Font* font);
+		void SetFont(size_t fontId);
 
 		glm::vec4 GetColor() const;
 		std::string GetText() const;
 		uint32_t GetSize() const;
+		size_t GetFontId() const;
 		GraphicEngine::Font* GetFont() const;
 	};
 }

@@ -7,13 +7,8 @@ namespace Twin2Engine::GraphicEngine
 {
     struct ModelData
     {
-        size_t modelHash;
-        int useNumber;
+        size_t id;
         std::vector<InstatiatingMesh*> meshes;
-        bool operator<(const ModelData& data2) const
-        {
-            return modelHash < data2.modelHash;
-        }
     };
 
     //bool operator<(const ModelData& data1, const ModelData& data2)

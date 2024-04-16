@@ -14,7 +14,7 @@ namespace Twin2Engine::Manager
 	// Define the file extension for compiled shader binary files
 	constexpr char SHADER_BINARY_EXTENSION[] = ".shdr";
 
-	constexpr char SHADERS_ORIGIN_DIRETORY[] = "ShadersOrigin";
+	constexpr char SHADERS_ORIGIN_DIRETORY[] = "res";
 
 	/// <summary>
 	/// Shader Manager obs³uguje:
@@ -71,6 +71,8 @@ namespace Twin2Engine::Manager
 		//static inline void SaveShaderProgramToFile(GLuint shaderProgramId, const std::string& shaderName);
 
 	public:
+		static GraphicEngine::Shader* DepthShader;
+
 		//ShaderManager();
 		static void Init();
 		static void End();
@@ -80,6 +82,8 @@ namespace Twin2Engine::Manager
 		//static GraphicEngine::Shader* GetShaderProgram(const std::string& shaderName);
 		//static GraphicEngine::Shader* CreateShaderProgram(const std::string& shaderProgramName);
 		//static GraphicEngine::Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);
+
+		void UpdateDirShadowMapsTab();
 	};
 }
 

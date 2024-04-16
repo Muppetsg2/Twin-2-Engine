@@ -14,7 +14,7 @@ InstatiatingModel UIRenderingManager::_spritePlane = InstatiatingModel();
 Shader* UIRenderingManager::_uiShader = nullptr;
 
 void UIRenderingManager::Init() {
-	_spritePlane = ModelsManager::GetPlane();
+	_spritePlane = ModelsManager::LoadModel(ModelsManager::PLANE_PATH);
 	_uiShader = ShaderManager::GetShaderProgram("origin/UI");
 }
 

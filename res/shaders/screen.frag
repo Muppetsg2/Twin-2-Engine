@@ -56,65 +56,26 @@ vec3 getDepthValue(vec2 coord) {
     return vec3(Linear01Depth(texture(depthTexture, coord).r, nearPlane, farPlane));
 }
 
-float weight[5] = float[] (0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);
-vec3 applyBlur2() {
-    vec2 tex_offset = displayDepth ? 1.0 / textureSize(depthTexture, 0) : 1.0 / textureSize(screenTexture, 0);  // gets size of single texel
-    vec3 result = displayDepth ? getDepthValue(TexCoord) * weight[0] : texture(screenTexture, TexCoord).rgb * weight[0];    // current fragment's contribution
-
-    // HORIZONTAL
-    for(int i = 1; i < 5; ++i)
-    {
-        result += displayDepth ? getDepthValue(TexCoord + vec2(tex_offset.x * i, 0.0)) : texture(screenTexture, TexCoord + vec2(tex_offset.x * i, 0.0)).rgb * weight[i];
-        result += displayDepth ? getDepthValue(TexCoord - vec2(tex_offset.x * i, 0.0)) : texture(screenTexture, TexCoord - vec2(tex_offset.x * i, 0.0)).rgb * weight[i];
-    }
-
-    // VERTICAL
-    for(int i = 1; i < 5; ++i)
-    {
-        result += displayDepth ? getDepthValue(TexCoord + vec2(0.0, tex_offset.y * i)) : texture(screenTexture, TexCoord + vec2(0.0, tex_offset.y * i)).rgb * weight[i];
-        result += displayDepth ? getDepthValue(TexCoord - vec2(0.0, tex_offset.y * i)) : texture(screenTexture, TexCoord - vec2(0.0, tex_offset.y * i)).rgb * weight[i];
-    }
-
-    return result / 2;
-}
-
-float normpdf(float x, float sigma) {
-	return 0.39894 * exp(-0.5 * x * x / (sigma * sigma)) / sigma;
-}
-
 vec3 applyBlur() {
-    //declare stuff
-	const int mSize = 11;
-	const int kSize = (mSize - 1) / 2;
-	float kernel[mSize];
-	vec3 result = vec3(0.0);
-    vec2 tex_offset = displayDepth ? 1.0 / textureSize(depthTexture, 0) : 1.0 / textureSize(screenTexture, 0);
-		
-	//create the 1-D kernel
-	float sigma = 7.0;
-	float Z = 0.0;
-	for (int j = 0; j <= kSize; ++j)
-	{
-		kernel[kSize + j] = kernel[kSize - j] = normpdf(float(j), sigma);
-	}
-		
-	//get the normalization factor (as the gaussian has been clamped)
-	for (int j = 0; j < mSize; ++j)
-	{
-		Z += kernel[j];
-	}
-		
-	//read out the texels
-	for (int i =- kSize; i <= kSize; ++i)
-	{
-		for (int j =- kSize; j <= kSize; ++j)
-		{
-            vec3 c = displayDepth ? getDepthValue(TexCoord.xy + vec2(tex_offset.x * i, tex_offset.y * j)) : texture(screenTexture, TexCoord.xy + vec2(tex_offset.x * i, tex_offset.y * j)).rgb;
-			result += kernel[kSize + j] * kernel[kSize + i] * c;
-		}
-	}
+    vec2 direction = normalize(vec2(1.0));
+    vec2 resolution = displayDepth ? textureSize(depthTexture, 0) : textureSize(screenTexture, 0);
+    vec2 uv = TexCoord;
 
-	return result / (Z * Z);
+    vec3 color = vec3(0.0);
+    vec2 off1 = vec2(1.411764705882353) * direction;
+    vec2 off2 = vec2(3.2941176470588234) * direction;
+    vec2 off3 = vec2(5.176470588235294) * direction;
+
+    color += (displayDepth ? getDepthValue(uv) : texture2D(screenTexture, uv).rgb) * 0.1964825501511404;
+    color += (displayDepth ? getDepthValue(uv + (off1 / resolution)) : texture2D(screenTexture, uv + (off1 / resolution)).rgb) * 0.2969069646728344;
+    color += (displayDepth ? getDepthValue(uv - (off1 / resolution)) : texture2D(screenTexture, uv - (off1 / resolution)).rgb) * 0.2969069646728344;
+
+    color += (displayDepth ? getDepthValue(uv + (off2 / resolution)) : texture2D(screenTexture, uv + (off2 / resolution)).rgb) * 0.09447039785044732;
+    color += (displayDepth ? getDepthValue(uv - (off2 / resolution)) : texture2D(screenTexture, uv - (off2 / resolution)).rgb) * 0.09447039785044732;
+
+    color += (displayDepth ? getDepthValue(uv + (off3 / resolution)) : texture2D(screenTexture, uv + (off3 / resolution)).rgb) * 0.010381362401148057;
+    color += (displayDepth ? getDepthValue(uv - (off3 / resolution)) : texture2D(screenTexture, uv - (off3 / resolution)).rgb) * 0.010381362401148057;
+    return color;
 }
 
 void main() {
@@ -129,7 +90,6 @@ void main() {
     }
 
     if (hasBlur) {
-        //res = applyBlur2();
         res = applyBlur();
     }
 
@@ -146,5 +106,4 @@ void main() {
     }
 
     Color = vec4(pow(res, vec3(1.0/gamma)), 1.0);
-    //Color = vec4(res, 1.0);
 }

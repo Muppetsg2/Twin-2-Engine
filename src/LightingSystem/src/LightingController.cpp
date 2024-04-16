@@ -1,4 +1,4 @@
-#include "LightingController.h"
+#include <LightingController.h>
 
 #include <glad/glad.h>  
 #include <GLFW/glfw3.h> 
@@ -192,18 +192,18 @@ void LightingController::UpdateDL(DirectionalLight* dirLight) {
 void LightingController::BindLightBuffors(Twin2Engine::GraphicEngine::Shader* shader) {
 	GLuint block_index = 0;
 
-	block_index = glGetProgramResourceIndex(shader->shaderProgramID, GL_SHADER_STORAGE_BLOCK, "Lights");
-	glShaderStorageBlockBinding(shader->shaderProgramID, block_index, 3);
+	block_index = glGetProgramResourceIndex(shader->GetProgramId(), GL_SHADER_STORAGE_BLOCK, "Lights");
+	glShaderStorageBlockBinding(shader->GetProgramId(), block_index, 3);
 
-	block_index = glGetUniformBlockIndex(shader->shaderProgramID, "LightingData");
-	glUniformBlockBinding(shader->shaderProgramID, block_index, 4);
+	block_index = glGetUniformBlockIndex(shader->GetProgramId(), "LightingData");
+	glUniformBlockBinding(shader->GetProgramId(), block_index, 4);
 
 	std::string str = "DirLightShadowMaps[";
 	shader->Use();
-	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "0]").c_str()), 8);
-	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "1]").c_str()), 9);
-	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "2]").c_str()), 10);
-	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "3]").c_str()), 11);
+	glUniform1i(glGetUniformLocation(shader->GetProgramId(), (str + "0]").c_str()), 8);
+	glUniform1i(glGetUniformLocation(shader->GetProgramId(), (str + "1]").c_str()), 9);
+	glUniform1i(glGetUniformLocation(shader->GetProgramId(), (str + "2]").c_str()), 10);
+	glUniform1i(glGetUniformLocation(shader->GetProgramId(), (str + "3]").c_str()), 11);
 	//UpdateShadowMapsTab(shader);
 }
 
@@ -216,8 +216,8 @@ void LightingController::UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader*
 		glActiveTexture(GL_TEXTURE0 + 8 + i);
 		glBindTexture(GL_TEXTURE_2D, dirLight->shadowMap);
 		//glBindTexture(GL_TEXTURE0 + 8 + i, dirLight->shadowMap);
-		//glUniform1i(glGetUniformLocation(shader->shaderProgramID, ("DirLightShadowMaps[" + std::to_string(i) + "]").c_str()), dirLight->shadowMap);
-		//glUniform1i(glGetUniformLocation(shader->shaderProgramID, ("DirLightShadowMaps[" + std::to_string(i) + "]").c_str()), 8 + i);
+		//glUniform1i(glGetUniformLocation(shader->GetProgramId(), ("DirLightShadowMaps[" + std::to_string(i) + "]").c_str()), dirLight->shadowMap);
+		//glUniform1i(glGetUniformLocation(shader->GetProgramId(), ("DirLightShadowMaps[" + std::to_string(i) + "]").c_str()), 8 + i);
 		++i;
 	}
 }

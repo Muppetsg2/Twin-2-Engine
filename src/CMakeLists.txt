@@ -4,6 +4,7 @@ configure_file(GameConfig.yaml.in GameConfig.yaml)
 add_subdirectory(Twin2Engine)
 
 add_subdirectory(CollisionSystem)
+add_subdirectory(LightingSystem)
 
 add_subdirectory(Tilemap)
 

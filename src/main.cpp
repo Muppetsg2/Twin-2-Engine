@@ -105,7 +105,7 @@ static void glfw_error_callback(int error, const char* description)
 
 static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
-    if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) return; // Chce ignorowa� notyfikacje
+    //if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) return; // Chce ignorowa� notyfikacje
 
     string severityS = "";
     if (severity == GL_DEBUG_SEVERITY_HIGH) severityS = "HIGHT";
@@ -418,15 +418,16 @@ int main(int, char**)
     
 #pragma region TestingLighting
     /**/
-    GameObject dl_go;
-    dl_go.GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
-    Twin2Engine::Core::DirectionalLightComponent* dl = dl_go.AddComponent<Twin2Engine::Core::DirectionalLightComponent>();
+    GameObject* dl_go = SceneManager::CreateGameObject();
+    dl_go->GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
+    Twin2Engine::Core::DirectionalLightComponent* dl = dl_go->AddComponent<Twin2Engine::Core::DirectionalLightComponent>();
     dl->SetColor(glm::vec3(1.0f));
     //dl->SetColor(glm::vec3(0.85f, 0.85f, 0.85f));
     //dl->SetColor(glm::vec3(0.8f, 0.8f, 0.8f));
     LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
     //LightingSystem::LightingController::Instance()->SetGamma(2.2);
     LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f, 0.02f, 0.02f));
+    /**/
 #pragma endregion
 
     // Main loop
@@ -439,7 +440,8 @@ int main(int, char**)
         update();
         /**/
         dl->GetTransform()->Update();
-        dl->Update();/**/
+        dl->Update();
+        /**/
 
         // OpenGL rendering code here
         render();

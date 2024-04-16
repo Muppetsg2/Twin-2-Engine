@@ -1,3 +1,4 @@
+#include "PrefabManager.h"
 #include <manager/PrefabManager.h>
 #include <core/YamlConverters.h>
 
@@ -128,6 +129,11 @@ Prefab* PrefabManager::GetPrefab(const string& path)
 		return LoadPrefab(path);
 	}
 	return prefab;
+}
+
+void PrefabManager::SaveAsPrefab(const GameObject* obj, const std::string& path)
+{
+
 }
 
 void PrefabManager::UnloadAll()

@@ -6,12 +6,12 @@
 
 namespace CollisionSystem {
 	class EnviromentalBoundingVolume : public BoundingVolume {
-		public:
-			std::vector<EnviromentalBoundingVolume*> ChildrenBoundingVolume;
-	
-			EnviromentalBoundingVolume(SphereColliderData* sphereColliderData);
-			EnviromentalBoundingVolume(BoxColliderData* boxColliderData);
-			EnviromentalBoundingVolume(CapsuleColliderData* capsuleColliderData);
+	public:
+		std::vector<EnviromentalBoundingVolume*> ChildrenBoundingVolume;
+
+		EnviromentalBoundingVolume(SphereColliderData* sphereColliderData);
+		EnviromentalBoundingVolume(BoxColliderData* boxColliderData);
+		EnviromentalBoundingVolume(CapsuleColliderData* capsuleColliderData);
 	};
 }
 

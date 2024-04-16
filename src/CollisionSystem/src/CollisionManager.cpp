@@ -20,73 +20,73 @@ CollisionManager* CollisionManager::Instance() {
 
 void CollisionManager::RegisterCollider(GameCollider* collider) {
 	switch (collider->layer) {
-		case Layer::DEFAULT:
-			DefaultLayer.insert(collider);
-			break;
+	case Layer::DEFAULT:
+		DefaultLayer.insert(collider);
+		break;
 
-		case Layer::IGNORE_RAYCAST:
-			IgnoreRaycastLayer.insert(collider);
-			break;
+	case Layer::IGNORE_RAYCAST:
+		IgnoreRaycastLayer.insert(collider);
+		break;
 
-		case Layer::IGNORE_COLLISION:
-			IgnoreCollisionLayer.insert(collider);
-			break;
+	case Layer::IGNORE_COLLISION:
+		IgnoreCollisionLayer.insert(collider);
+		break;
 
-		case Layer::UI:
-			UiLayer.insert(collider);
-			break;
+	case Layer::UI:
+		UiLayer.insert(collider);
+		break;
 
-		case Layer::LAYER_1:
-			Layer1.insert(collider);
-			break;
+	case Layer::LAYER_1:
+		Layer1.insert(collider);
+		break;
 
-		case Layer::LAYER_2:
-			Layer2.insert(collider);
-			break;
+	case Layer::LAYER_2:
+		Layer2.insert(collider);
+		break;
 
-		case Layer::LAYER_3:
-			Layer3.insert(collider);
-			break;
+	case Layer::LAYER_3:
+		Layer3.insert(collider);
+		break;
 
-		case Layer::LAYER_4:
-			Layer4.insert(collider);
-			break;
+	case Layer::LAYER_4:
+		Layer4.insert(collider);
+		break;
 	}
 }
 
 void CollisionManager::UnregisterCollider(GameCollider* collider) {
 	switch (collider->layer) {
-		case Layer::DEFAULT:
-			DefaultLayer.erase(collider);
-			break;
+	case Layer::DEFAULT:
+		DefaultLayer.erase(collider);
+		break;
 
-		case Layer::IGNORE_RAYCAST:
-			IgnoreRaycastLayer.erase(collider);
-			break;
+	case Layer::IGNORE_RAYCAST:
+		IgnoreRaycastLayer.erase(collider);
+		break;
 
-		case Layer::IGNORE_COLLISION:
-			IgnoreCollisionLayer.erase(collider);
-			break;
+	case Layer::IGNORE_COLLISION:
+		IgnoreCollisionLayer.erase(collider);
+		break;
 
-		case Layer::UI:
-			UiLayer.erase(collider);
-			break;
+	case Layer::UI:
+		UiLayer.erase(collider);
+		break;
 
-		case Layer::LAYER_1:
-			Layer1.erase(collider);
-			break;
+	case Layer::LAYER_1:
+		Layer1.erase(collider);
+		break;
 
-		case Layer::LAYER_2:
-			Layer2.erase(collider);
-			break;
+	case Layer::LAYER_2:
+		Layer2.erase(collider);
+		break;
 
-		case Layer::LAYER_3:
-			Layer3.erase(collider);
-			break;
+	case Layer::LAYER_3:
+		Layer3.erase(collider);
+		break;
 
-		case Layer::LAYER_4:
-			Layer4.erase(collider);
-			break;
+	case Layer::LAYER_4:
+		Layer4.erase(collider);
+		break;
 	}
 }
 
@@ -583,118 +583,118 @@ void CollisionManager::PerformCollisions() {
 
 bool CollisionManager::Raycast(Ray& ray, RaycastHit& raycastHit)
 {
-	Collision* collision;
+	//Collision* collision;
 	float minDistance = -1.0f;
 	float tDistance;
+	RaycastHit temp;
 
 	for (auto collider : DefaultLayer) {
-		collision = collider->rayCollision(ray);
-		if (collision != nullptr) {
+		//collision = collider->rayCollision(ray);
+		if (collider->rayCollision(ray, temp)) {
 			if (minDistance < 0) {
-				minDistance = glm::dot(collision->position - ray.Origin, collision->position - ray.Origin);
-				raycastHit.collider = ((GameCollider*)collision->collider)->colliderComponent;
-				raycastHit.position = collision->position;
+				minDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
+				raycastHit.collider = temp.collider;
+				raycastHit.position = temp.position;
 			}
 			else {
-				tDistance = glm::dot(collision->position - ray.Origin, collision->position - ray.Origin);
+				tDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
 				if (tDistance < minDistance) {
 					minDistance = tDistance;
-					raycastHit.collider = ((GameCollider*)collision->collider)->colliderComponent;
-					raycastHit.position = collision->position;
+					raycastHit.collider = temp.collider;
+					raycastHit.position = temp.position;
 				}
 			}
 		}
 	}
 	for (auto collider : IgnoreCollisionLayer) {
-		collision = collider->rayCollision(ray);
-		if (collision != nullptr) {
+		//collision = collider->rayCollision(ray);
+		if (collider->rayCollision(ray, temp)) {
 			if (minDistance < 0) {
-				minDistance = glm::dot(collision->position - ray.Origin, collision->position - ray.Origin);
-				raycastHit.collider = ((GameCollider*)collision->collider)->colliderComponent;
-				raycastHit.position = collision->position;
+				minDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
+				raycastHit.collider = temp.collider;
+				raycastHit.position = temp.position;
 			}
 			else {
-				tDistance = glm::dot(collision->position - ray.Origin, collision->position - ray.Origin);
+				tDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
 				if (tDistance < minDistance) {
 					minDistance = tDistance;
-					raycastHit.collider = ((GameCollider*)collision->collider)->colliderComponent;
-					raycastHit.position = collision->position;
+					raycastHit.collider = temp.collider;
+					raycastHit.position = temp.position;
 				}
 			}
 		}
 	}
 	for (auto collider : Layer1) {
-		collision = collider->rayCollision(ray);
-		if (collision != nullptr) {
+		//collision = collider->rayCollision(ray);
+		if (collider->rayCollision(ray, temp)) {
 			if (minDistance < 0) {
-				minDistance = glm::dot(collision->position - ray.Origin, collision->position - ray.Origin);
-				raycastHit.collider = ((GameCollider*)collision->collider)->colliderComponent;
-				raycastHit.position = collision->position;
+				minDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
+				raycastHit.collider = temp.collider;
+				raycastHit.position = temp.position;
 			}
 			else {
-				tDistance = glm::dot(collision->position - ray.Origin, collision->position - ray.Origin);
+				tDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
 				if (tDistance < minDistance) {
 					minDistance = tDistance;
-					raycastHit.collider = ((GameCollider*)collision->collider)->colliderComponent;
-					raycastHit.position = collision->position;
+					raycastHit.collider = temp.collider;
+					raycastHit.position = temp.position;
 				}
 			}
 		}
 	}
 	for (auto collider : Layer2) {
-		collision = collider->rayCollision(ray);
-		if (collision != nullptr) {
+		if (collider->rayCollision(ray, temp)) {
 			if (minDistance < 0) {
-				minDistance = glm::dot(collision->position - ray.Origin, collision->position - ray.Origin);
-				raycastHit.collider = ((GameCollider*)collision->collider)->colliderComponent;
-				raycastHit.position = collision->position;
+				minDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
+				raycastHit.collider = temp.collider;
+				raycastHit.position = temp.position;
 			}
 			else {
-				tDistance = glm::dot(collision->position - ray.Origin, collision->position - ray.Origin);
+				tDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
 				if (tDistance < minDistance) {
 					minDistance = tDistance;
-					raycastHit.collider = ((GameCollider*)collision->collider)->colliderComponent;
-					raycastHit.position = collision->position;
+					raycastHit.collider = temp.collider;
+					raycastHit.position = temp.position;
 				}
 			}
 		}
 	}
 	for (auto collider : Layer3) {
-		collision = collider->rayCollision(ray);
-		if (collision != nullptr) {
+		if (collider->rayCollision(ray, temp)) {
 			if (minDistance < 0) {
-				minDistance = glm::dot(collision->position - ray.Origin, collision->position - ray.Origin);
-				raycastHit.collider = ((GameCollider*)collision->collider)->colliderComponent;
-				raycastHit.position = collision->position;
+				minDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
+				raycastHit.collider = temp.collider;
+				raycastHit.position = temp.position;
 			}
 			else {
-				tDistance = glm::dot(collision->position - ray.Origin, collision->position - ray.Origin);
+				tDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
 				if (tDistance < minDistance) {
 					minDistance = tDistance;
-					raycastHit.collider = ((GameCollider*)collision->collider)->colliderComponent;
-					raycastHit.position = collision->position;
+					raycastHit.collider = temp.collider;
+					raycastHit.position = temp.position;
 				}
 			}
 		}
 	}
 	for (auto collider : Layer4) {
-		collision = collider->rayCollision(ray);
-		if (collision != nullptr) {
+		if (collider->rayCollision(ray, temp)) {
 			if (minDistance < 0) {
-				minDistance = glm::dot(collision->position - ray.Origin, collision->position - ray.Origin);
-				raycastHit.collider = ((GameCollider*)collision->collider)->colliderComponent;
-				raycastHit.position = collision->position;
+				minDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
+				raycastHit.collider = temp.collider;
+				raycastHit.position = temp.position;
 			}
 			else {
-				tDistance = glm::dot(collision->position - ray.Origin, collision->position - ray.Origin);
+				tDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
 				if (tDistance < minDistance) {
 					minDistance = tDistance;
-					raycastHit.collider = ((GameCollider*)collision->collider)->colliderComponent;
-					raycastHit.position = collision->position;
+					raycastHit.collider = temp.collider;
+					raycastHit.position = temp.position;
 				}
 			}
 		}
 	}
+
+	//delete collision;
 
 	return raycastHit.collider != nullptr;
 }

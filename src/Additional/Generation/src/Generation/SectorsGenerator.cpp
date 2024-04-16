@@ -13,13 +13,13 @@ using namespace std;
 void SectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
 {
     list<MapSector*> sectors;
-
+    
     ivec2 lbPosition = tilemap->GetLeftBottomPosition();
     ivec2 rtPosition = tilemap->GetRightTopPosition();
     //*
     vector<ivec2> positions;//mo¿na wy u¿yæ jakiegoœ resezie lub reserbe
     // robiæ w tilemapie zliczanie poll aktwnych w tilemapie.
-
+    
     for (int x = lbPosition.x; x < rtPosition.x; x++)
     {
         for (int y = lbPosition.y; y < rtPosition.y; y++)
@@ -28,9 +28,9 @@ void SectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
             positions.push_back(tilePosition);
         }
     }
-
+    
     VectorShuffler::Shuffle(positions);
-
+    
     for (ivec2 tilePosition : positions)
     {
         HexagonalTile* tile = tilemap->GetTile(tilePosition);
@@ -38,49 +38,51 @@ void SectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
         {
             sectors.push_back(CreateSector(tilemap, tilePosition));
         }
-
+    
     }
-
+    
     list<MapSector*> smallSectors;
-
+    
     int minTilesNumber = minTilesPerSector;
     float accuracy = accuracyFactor;
-
-    copy_if(sectors.begin(), sectors.end(), smallSectors.end(), [minTilesNumber, accuracy](MapSector* sector) { return sector->GetTilesCount() < (minTilesNumber * accuracy); });
-
+    
+    copy_if(sectors.begin(), sectors.end(), smallSectors.end(), [minTilesNumber, accuracy](const MapSector* sector) { return sector->GetTilesCount() < (minTilesNumber * accuracy); });
+    
     while (smallSectors.size() > 0)
     {
-        sort(smallSectors.begin(), smallSectors.end(), [](MapSector* sector1, MapSector* sector2) { return sector1->GetTilesCount() > sector2->GetTilesCount(); });
+        smallSectors.sort([](const MapSector* sector1, const MapSector* sector2) { return sector1->GetTilesCount() > sector2->GetTilesCount(); });
+        //sort(smallSectors.cbegin(), smallSectors.cend(), );
         vector<MapSector*> adjacentSectors(smallSectors.front()->GetAdjacentSectors());
-
+    
         //Wybranie poni¿szej opcji powoduje b³edy rozseparowania przestrzennego tile'i
         //int smallestCount = smallSectors.Min(sector => sector.sectorTiles.Count);
         //List<MapSector> smallestSectors = smallSectors.FindAll(sector => sector.sectorTiles.Count == smallestCount);
         //List<MapSector> neighbouringSectors = smallestSectors[Random.Range(0, smallestSectors.Count)].GetNeighbouringSectors();
-
-
-
-        int minCount = (*min_element(adjacentSectors.begin(), adjacentSectors.end(), [](MapSector* sector) { return sector->GetTilesCount(); }))->GetTilesCount();
-
+    
+    
+    
+        //int minCount = (*min_element(adjacentSectors.begin(), adjacentSectors.end(), [](const MapSector* sector) { return sector->GetTilesCount(); }))->GetTilesCount();
+        int minCount = (*min_element(adjacentSectors.begin(), adjacentSectors.end(), [](MapSector* sector1, MapSector* sector2) { return sector1->GetTilesCount() > sector2->GetTilesCount(); }))->GetTilesCount();
+    
         list<MapSector*> foundOnes;
-        copy_if(adjacentSectors.begin(), adjacentSectors.end(), foundOnes.end(), [minTilesNumber, accuracy](MapSector* sector) { return sector->GetTilesCount() < (minTilesNumber * accuracy); });
-
+        copy_if(adjacentSectors.begin(), adjacentSectors.end(), foundOnes.end(), [minTilesNumber, accuracy](const MapSector* sector) { return sector->GetTilesCount() < (minTilesNumber * accuracy); });
+    
         auto chosenItr = foundOnes.begin();
         advance(chosenItr, Random::Range(0ull, foundOnes.size() - 1));
         MapSector* chosen = *chosenItr;
-
+    
         chosen->JoinSector(smallSectors.front());
         MapSector* toDestroy = smallSectors.front();
         //smallRegions.RemoveAt(0);
-        sectors.erase(find(sectors.begin(), sectors.end(), [toDestroy](MapSector* sector) { return sector == toDestroy; }));
-
+        sectors.remove(toDestroy);
+    
         SPDLOG_ERROR("Stworzyæ Destroy oraz DestroyImmediate dla GameObject");
         //DestroyImmediate(toDestroy.gameObject);
-
+    
         //smallSectors = sectors.FindAll(sector => sector.sectorTiles.Count < (minTilesPerSector * accuracyFactor) && sector.sectorTiles.Count != 0);
         smallSectors.clear();
-        copy_if(sectors.begin(), sectors.end(), smallSectors.end(), [minTilesNumber, accuracy](MapSector* sector) { return sector->GetTilesCount() < (minTilesNumber * accuracy); });
-
+        copy_if(sectors.begin(), sectors.end(), smallSectors.end(), [minTilesNumber, accuracy](const MapSector* sector) { return sector->GetTilesCount() < (minTilesNumber * accuracy); });
+    
     }/**/
 }
 
@@ -104,7 +106,6 @@ MapSector* SectorsGenerator::CreateSector(Tilemap::HexagonalTilemap* tilemap, gl
             MapHexTile* hexTile = possibilities[j]->GetComponent<MapHexTile>();
             if (hexTile->sector == nullptr)
             {
-
                 possibleTiles.push_back(Counter{ .tile = hexTile, .count = 1 });
             }
         }
@@ -127,7 +128,7 @@ MapSector* SectorsGenerator::CreateSector(Tilemap::HexagonalTilemap* tilemap, gl
         //}
 
         //int maxCount = possibleTiles.Max(counter = > counter.count);
-        int maxCount = max_element(possibleTiles.begin(), possibleTiles.end(), [](const Counter& counter1, const Counter counter2) { return counter1.count > counter2.count; })->count;
+        int maxCount = max_element(possibleTiles.begin(), possibleTiles.end(), [](const Counter& counter1, const Counter& counter2) { return counter1.count > counter2.count; })->count;
 
 
         list<Counter> foundOnes;
@@ -149,16 +150,28 @@ MapSector* SectorsGenerator::CreateSector(Tilemap::HexagonalTilemap* tilemap, gl
                 MapHexTile* hexTile = possibilities[j]->GetComponent<MapHexTile>();
                 if (hexTile->sector == nullptr)
                 {
-                    auto found = find(possibleTiles.begin(), possibleTiles.end(), [possibilities, j](const auto& tile) { return tile == possibilities[j]; });
-
-                    if (found == possibleTiles.end())
+                    //auto found = possibleTiles.begin();//find(possibleTiles.begin(), possibleTiles.end(), [hexTile](Counter tile) { return tile.tile == hexTile; });
+                    //auto found = find(possibleTiles.begin(), possibleTiles.end(), [hexTile](Counter tile) { return tile.tile == hexTile; });
+                    MapHexTile* foundTile = nullptr;
+                    for (Counter& counter : possibleTiles)
+                    {
+                        if (counter.tile == hexTile)
+                        {
+                            foundTile = counter.tile;
+                            counter.count++;
+                            break;
+                        }
+                    }
+                    
+                    //if (found == possibleTiles.end())
+                    if (foundTile == nullptr)
                     {
                         possibleTiles.push_back(Counter{ .tile = hexTile, .count = 1 });
                     }
-                    else
-                    {
-                        found->count++;
-                    }
+                    //else
+                    //{
+                    //    found->count++;
+                    //}
 
                 }
             }

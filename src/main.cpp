@@ -438,10 +438,6 @@ int main(int, char**)
 
         // Update game objects' state here
         update();
-        /**/
-        dl->GetTransform()->Update();
-        dl->Update();
-        /**/
 
         // OpenGL rendering code here
         render();

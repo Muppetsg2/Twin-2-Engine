@@ -21,9 +21,9 @@ void CameraComponent::OnTransformChange(Transform* trans)
 	glm::vec3 rot = trans->GetGlobalRotation();
 
 	glm::vec3 front{};
-	front.x = cos(rot.y) * cos(rot.x);
-	front.y = sin(rot.x);
-	front.z = sin(rot.y) * cos(rot.x);
+	front.x = cos(glm::radians(rot.y)) * cos(glm::radians(rot.x));
+	front.y = sin(glm::radians(rot.x));
+	front.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
 	this->SetFrontDir(glm::normalize(front));
 
 	/*
@@ -39,15 +39,41 @@ void CameraComponent::OnWindowSizeChange()
 {
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
+	unsigned int r_res = GL_RGB;
+	unsigned int d_res = GL_DEPTH_COMPONENT;
+
+	switch (_renderRes) {
+		case DEFAULT: {
+			r_res = GL_RGB;
+			d_res = GL_DEPTH_COMPONENT;
+			break;
+		}
+		case MEDIUM: {
+			r_res = GL_RGB16F;
+			d_res = GL_DEPTH_COMPONENT16;
+			break;
+		}
+		case HIGH: {
+			r_res = GL_RGB32F;
+			d_res = GL_DEPTH_COMPONENT32F;
+			break;
+		}
+		default: {
+			r_res = GL_RGB;
+			d_res = GL_DEPTH_COMPONENT;
+			break;
+		}
+	}
+
 	glBindTexture(GL_TEXTURE_2D, _depthMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, d_res, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, _renderMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, r_res, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB16F, wSize.x, wSize.y, GL_TRUE);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, r_res, wSize.x, wSize.y, GL_TRUE);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
 	glBindRenderbuffer(GL_RENDERBUFFER, _msRenderBuffer);
@@ -207,8 +233,29 @@ void CameraComponent::SetSamples(uint8_t i)
 	if (_isInit) {
 		ivec2 wSize = Window::GetInstance()->GetContentSize();
 
+		unsigned int r_res = GL_RGB;
+
+		switch (_renderRes) {
+			case DEFAULT: {
+				r_res = GL_RGB;
+				break;
+			}
+			case MEDIUM: {
+				r_res = GL_RGB16F;
+				break;
+			}
+			case HIGH: {
+				r_res = GL_RGB32F;
+				break;
+			}
+			default: {
+				r_res = GL_RGB;
+				break;
+			}
+		}
+
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB16F, wSize.x, wSize.y, GL_TRUE);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, r_res, wSize.x, wSize.y, GL_TRUE);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
 		glBindRenderbuffer(GL_RENDERBUFFER, _msRenderBuffer);
@@ -224,8 +271,8 @@ void CameraComponent::SetRenderResolution(RenderResolution res)
 	if (_isInit) {
 		ivec2 wSize = Window::GetInstance()->GetContentSize();
 
-		uint r_res = GL_RGB;
-		uint d_res = GL_DEPTH_COMPONENT;
+		unsigned int r_res = GL_RGB;
+		unsigned int d_res = GL_DEPTH_COMPONENT;
 
 		switch (_renderRes) {
 			case DEFAULT: {
@@ -440,8 +487,8 @@ void CameraComponent::Initialize()
 
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
-	uint r_res = GL_RGB;
-	uint d_res = GL_DEPTH_COMPONENT;
+	unsigned int r_res = GL_RGB;
+	unsigned int d_res = GL_DEPTH_COMPONENT;
 
 	switch (_renderRes) {
 		case DEFAULT: {

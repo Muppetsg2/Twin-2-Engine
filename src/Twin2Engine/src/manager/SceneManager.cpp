@@ -291,7 +291,7 @@ void SceneManager::LoadScene(const string& name)
 		objectByComponentId[transformId] = obj;
 	}
 
-	// LOAD GAMEOBJECTS AND TRASFORMS VALUES
+	// LOAD GAMEOBJECTS AND TRANSFORMS VALUES
 	map<size_t, YAML::Node> componentsNodes;
 	for (const YAML::Node& gameObjectNode : sceneToLoad->_gameObjects) {
 		// GameObject

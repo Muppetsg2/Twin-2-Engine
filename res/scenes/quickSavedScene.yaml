@@ -76,17 +76,17 @@ GameObjects:
       id: 0
       enabled: true
       position:
-        x: -14.8198109
-        y: 2.17843032
-        z: 11.6985006
+        x: 1.1766516
+        y: 4.43748379
+        z: 4.75468874
       scale:
         x: 0
         y: 0
         z: 0
       rotation:
-        x: .nan
-        y: .nan
-        z: .nan
+        x: 142.800369
+        y: 75.9996643
+        z: -180
     components:
       - id: 1
         enabled: true
@@ -100,9 +100,9 @@ GameObjects:
         renderRes: 0
         gamma: 2.20000005
         frontDir:
-          x: 0.797813237
-          y: 0.0453629829
-          z: -0.601195693
+          x: -0.192703515
+          y: -0.604594231
+          z: 0.772872031
         worldUp:
           x: 0
           y: 1
@@ -234,7 +234,7 @@ GameObjects:
           y: 1
           z: 0
           w: 1
-        width: 517.397278
+        width: 517.74939
         height: 100
     children:
       []
@@ -264,7 +264,7 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        text: "Time: 0.004820"
+        text: "Time: 0.005417"
         color:
           x: 1
           y: 1
@@ -508,124 +508,5 @@ GameObjects:
         width: 100
         height: 10
         interactable: false
-    children:
-      []
-  - id: 11
-    name: New GameObject
-    isStatic: false
-    isActive: true
-    transform:
-      id: 25
-      enabled: true
-      position:
-        x: 0
-        y: 0
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      []
-    children:
-      []
-  - id: 12
-    name: New GameObject
-    isStatic: false
-    isActive: true
-    transform:
-      id: 26
-      enabled: true
-      position:
-        x: 0
-        y: 0
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 27
-        enabled: true
-        type: Text
-        subTypes:
-          - Renderable
-        isTransparent: false
-        text: ""
-        color:
-          x: 0
-          y: 0
-          z: 0
-          w: 0
-        size: 0
-        font: 1
-      - id: 28
-        enabled: true
-        type: Image
-        subTypes:
-          - Renderable
-        isTransparent: false
-        sprite: 3
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 100
-        height: 100
-    children:
-      []
-  - id: 13
-    name: testPrefabRoot
-    isStatic: false
-    isActive: true
-    transform:
-      id: 29
-      enabled: true
-      position:
-        x: 0
-        y: 0
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      []
-    children:
-      - 14
-  - id: 14
-    name: testPrefabChild1
-    isStatic: false
-    isActive: true
-    transform:
-      id: 30
-      enabled: true
-      position:
-        x: 0
-        y: 0
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      []
     children:
       []

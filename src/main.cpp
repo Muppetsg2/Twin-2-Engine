@@ -366,7 +366,8 @@ int main(int, char**)
 #pragma endregion
 
     // ADDING SCENES
-    SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
+    SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
     /*
@@ -411,11 +412,12 @@ int main(int, char**)
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
 
     // SCENE OBJECTS
-
+    /*
     GameObject* test1 = SceneManager::CreateGameObject();
     std::tuple<GameObject*, Text*, Image*> test2 = SceneManager::CreateGameObject<Text, Image>();
 
     GameObject* test3 = SceneManager::CreateGameObject(PrefabManager::GetPrefab("res/prefabs/testPrefab.yaml"));
+    */
     //PrefabManager::SaveAsPrefab(test3, "res/prefabs/savedPrefab.yaml");
     
 #pragma region TestingLighting
@@ -584,9 +586,6 @@ void input()
     }
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::Q)) {
-        
-        // Rotation not saving properly
-        // Can't save Values when they change unles you get them
         SceneManager::SaveScene("res/scenes/quickSavedScene.yaml");
     }
 }
@@ -599,7 +598,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
         lastY = ypos;
         mouseNotUsed = false;
     }
-
 
     GLfloat xoffset = xpos - lastX;
     GLfloat yoffset = lastY - ypos; // Odwrocone, poniewaz wsporzedne zmieniaja sie od dolu do gory  
@@ -615,17 +613,18 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     // PITCH = ROT X
     // ROLL = ROT Z
 
-    rot.x += glm::radians(yoffset);
+    rot.x += yoffset;
 
-    if (rot.x > glm::radians(89.f)) {
-        rot.x = glm::radians(89.f);
+    if (rot.x > 89.f) {
+        rot.x = 89.f;
     }
-    else if (rot.x < glm::radians(-89.f))
+    
+    if (rot.x < -89.f)
     {
-        rot.x = glm::radians(-89.f);
+        rot.x = -89.f;
     }
 
-    Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x, rot.y + glm::radians(xoffset), rot.z));
+    Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x, rot.y + xoffset, rot.z));
     LightingSystem::LightingController::Instance()->ViewerTransformChanged.Invoke();
 }
 

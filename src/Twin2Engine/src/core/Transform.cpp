@@ -493,6 +493,7 @@ void Twin2Engine::Core::Transform::RecalculateGlobalPosition()
 
 #pragma region ROTATIONS
 
+// VEC3 IN EULER ANGLES
 void Twin2Engine::Core::Transform::SetLocalRotation(const glm::vec3& localRotation)
 {
 	_localRotation = glm::radians(localRotation);
@@ -509,6 +510,7 @@ void Twin2Engine::Core::Transform::SetLocalRotation(const glm::vec3& localRotati
 	SetDirtyFlagGlobalRotationInChildren();
 }
 
+// IN EULAR ANGLES
 glm::vec3 Twin2Engine::Core::Transform::GetLocalRotation()
 {
 	RecalculateLocalRotation();
@@ -564,6 +566,7 @@ void Twin2Engine::Core::Transform::RecalculateLocalRotation()
 	}
 }
 
+// VEC3 IN EULAR ANGLES
 void Twin2Engine::Core::Transform::SetGlobalRotation(const glm::vec3& globalRotation)
 {
 	_globalRotation = glm::radians(globalRotation);
@@ -583,6 +586,7 @@ void Twin2Engine::Core::Transform::SetGlobalRotation(const glm::vec3& globalRota
 	SetDirtyFlagGlobalRotationInChildren();
 }
 
+// IN EULAR ANGLES
 glm::vec3 Twin2Engine::Core::Transform::GetGlobalRotation()
 {
 	RecalculateGlobalRotation();
@@ -615,7 +619,15 @@ void Twin2Engine::Core::Transform::RecalculateGlobalRotation()
 		}
 		else
 		{
-			_globalRotationQuat = _parent->GetGlobalRotation() * _localRotationQuat;
+			if (_parent->GetGlobalRotationQuat().w != 0)
+			{
+				_globalRotationQuat = _parent->GetGlobalRotationQuat() * _localRotationQuat;
+			}
+			else
+			{
+				_globalRotationQuat = _localRotationQuat;
+			}
+
 			_globalRotation = glm::eulerAngles(_globalRotationQuat);
 		}
 

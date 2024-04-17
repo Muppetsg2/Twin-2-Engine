@@ -427,20 +427,6 @@ int main(int, char**)
     /**/
 #pragma endregion
 
-#pragma region TestingRaycasting
-    InstatiatingModel model = ModelsManager::GetSphere();
-    Material material = MaterialsManager::GetMaterial("textured");
-    GameObject rayHitObject;
-    Twin2Engine::Core::SphereColliderComponent* sc = rayHitObject.AddComponent<Twin2Engine::Core::SphereColliderComponent>();
-    sc->colliderId = 10;
-    sc->SetRadius(0.5f);
-    Twin2Engine::Core::MeshRenderer* mr = rayHitObject.AddComponent<Twin2Engine::Core::MeshRenderer>();
-    mr->AddMaterial(material);
-    mr->SetModel(model);
-    rayHitObject.GetTransform()->SetGlobalPosition(glm::vec3(5.0f, 0.0f, 5.0f));
-#pragma endregion
-
-
     // Main loop
     while (!window->IsClosed())
     {
@@ -452,8 +438,6 @@ int main(int, char**)
         /**/
         dl->GetTransform()->Update();
         dl->Update();
-        rayHitObject.GetTransform()->Update();
-        sc->Update();
         /**/
 
         // OpenGL rendering code here
@@ -610,21 +594,6 @@ void input()
     if (LightingSystem::LightingController::IsInstantiated() && moved) {
         glm::vec3 cp = c->GetTransform()->GetGlobalPosition();
         LightingSystem::LightingController::Instance()->SetViewerPosition(cp);
-    }
-
-    if (Input::IsMouseButtonPressed(MOUSE_BUTTON::LEFT)) {
-        CameraComponent* c = CameraComponent::GetMainCamera();
-        glm::vec2 pos = Input::GetMousePos();
-        CollisionSystem::Ray ray = c->GetScreenPointRay(pos);
-        glm::vec3 cDir = c->GetFrontDir();
-        SPDLOG_INFO("Camera pos: {}, {}, {} \t CameraDir: {}, {}, {}", ray.Origin.x, ray.Origin.y, ray.Origin.z, cDir.x, cDir.y, cDir.z);
-        SPDLOG_INFO("Ray: {}, {}, {} \t Pos pix: {}, {}",ray.Direction.x, ray.Direction.y, ray.Direction.z, pos.x, pos.y);
-        CollisionSystem::RaycastHit raycastHit;
-        if (CollisionSystem::CollisionManager::Instance()->Raycast(ray, raycastHit)) {
-            if (raycastHit.collider->colliderId == 10) {
-                SPDLOG_INFO("Ray hit {}\t pos: {}, {}, {}", raycastHit.collider->colliderId, raycastHit.position.x, raycastHit.position.y, raycastHit.position.z);
-            }
-        }
     }
 
 

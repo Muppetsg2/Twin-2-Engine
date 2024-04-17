@@ -585,21 +585,26 @@ bool CollisionManager::Raycast(Ray& ray, RaycastHit& raycastHit)
 {
 	//Collision* collision;
 	float minDistance = -1.0f;
-	float tDistance;
+	//float tDistance;
+	float sqrDistance;
+	float projection;
+	glm::vec3 tRelPos;
 	RaycastHit temp;
 
 	for (auto collider : DefaultLayer) {
 		//collision = collider->rayCollision(ray);
 		if (collider->rayCollision(ray, temp)) {
-			if (minDistance < 0) {
-				minDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
+			tRelPos = temp.position - ray.Origin;
+			sqrDistance = glm::dot(tRelPos, tRelPos);
+			projection = glm::dot(tRelPos, ray.Direction);
+			if (minDistance < 0 && projection >= 0.0f) {
+				minDistance = sqrDistance;
 				raycastHit.collider = temp.collider;
 				raycastHit.position = temp.position;
 			}
 			else {
-				tDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
-				if (tDistance < minDistance) {
-					minDistance = tDistance;
+				if (sqrDistance < minDistance && projection >= 0.0f) {
+					minDistance = sqrDistance;
 					raycastHit.collider = temp.collider;
 					raycastHit.position = temp.position;
 				}
@@ -609,15 +614,17 @@ bool CollisionManager::Raycast(Ray& ray, RaycastHit& raycastHit)
 	for (auto collider : IgnoreCollisionLayer) {
 		//collision = collider->rayCollision(ray);
 		if (collider->rayCollision(ray, temp)) {
-			if (minDistance < 0) {
-				minDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
+			tRelPos = temp.position - ray.Origin;
+			sqrDistance = glm::dot(tRelPos, tRelPos);
+			projection = glm::dot(tRelPos, ray.Direction);
+			if (minDistance < 0 && projection >= 0.0f) {
+				minDistance = sqrDistance;
 				raycastHit.collider = temp.collider;
 				raycastHit.position = temp.position;
 			}
 			else {
-				tDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
-				if (tDistance < minDistance) {
-					minDistance = tDistance;
+				if (sqrDistance < minDistance && projection >= 0.0f) {
+					minDistance = sqrDistance;
 					raycastHit.collider = temp.collider;
 					raycastHit.position = temp.position;
 				}
@@ -627,15 +634,17 @@ bool CollisionManager::Raycast(Ray& ray, RaycastHit& raycastHit)
 	for (auto collider : Layer1) {
 		//collision = collider->rayCollision(ray);
 		if (collider->rayCollision(ray, temp)) {
-			if (minDistance < 0) {
-				minDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
+			tRelPos = temp.position - ray.Origin;
+			sqrDistance = glm::dot(tRelPos, tRelPos);
+			projection = glm::dot(tRelPos, ray.Direction);
+			if (minDistance < 0 && projection >= 0.0f) {
+				minDistance = sqrDistance;
 				raycastHit.collider = temp.collider;
 				raycastHit.position = temp.position;
 			}
 			else {
-				tDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
-				if (tDistance < minDistance) {
-					minDistance = tDistance;
+				if (sqrDistance < minDistance && projection >= 0.0f) {
+					minDistance = sqrDistance;
 					raycastHit.collider = temp.collider;
 					raycastHit.position = temp.position;
 				}
@@ -644,15 +653,17 @@ bool CollisionManager::Raycast(Ray& ray, RaycastHit& raycastHit)
 	}
 	for (auto collider : Layer2) {
 		if (collider->rayCollision(ray, temp)) {
-			if (minDistance < 0) {
-				minDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
+			tRelPos = temp.position - ray.Origin;
+			sqrDistance = glm::dot(tRelPos, tRelPos);
+			projection = glm::dot(tRelPos, ray.Direction);
+			if (minDistance < 0 && projection >= 0.0f) {
+				minDistance = sqrDistance;
 				raycastHit.collider = temp.collider;
 				raycastHit.position = temp.position;
 			}
 			else {
-				tDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
-				if (tDistance < minDistance) {
-					minDistance = tDistance;
+				if (sqrDistance < minDistance && projection >= 0.0f) {
+					minDistance = sqrDistance;
 					raycastHit.collider = temp.collider;
 					raycastHit.position = temp.position;
 				}
@@ -661,15 +672,17 @@ bool CollisionManager::Raycast(Ray& ray, RaycastHit& raycastHit)
 	}
 	for (auto collider : Layer3) {
 		if (collider->rayCollision(ray, temp)) {
-			if (minDistance < 0) {
-				minDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
+			tRelPos = temp.position - ray.Origin;
+			sqrDistance = glm::dot(tRelPos, tRelPos);
+			projection = glm::dot(tRelPos, ray.Direction);
+			if (minDistance < 0 && projection >= 0.0f) {
+				minDistance = sqrDistance;
 				raycastHit.collider = temp.collider;
 				raycastHit.position = temp.position;
 			}
 			else {
-				tDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
-				if (tDistance < minDistance) {
-					minDistance = tDistance;
+				if (sqrDistance < minDistance && projection >= 0.0f) {
+					minDistance = sqrDistance;
 					raycastHit.collider = temp.collider;
 					raycastHit.position = temp.position;
 				}
@@ -678,15 +691,17 @@ bool CollisionManager::Raycast(Ray& ray, RaycastHit& raycastHit)
 	}
 	for (auto collider : Layer4) {
 		if (collider->rayCollision(ray, temp)) {
-			if (minDistance < 0) {
-				minDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
+			tRelPos = temp.position - ray.Origin;
+			sqrDistance = glm::dot(tRelPos, tRelPos);
+			projection = glm::dot(tRelPos, ray.Direction);
+			if (minDistance < 0 && projection >= 0.0f) {
+				minDistance = sqrDistance;
 				raycastHit.collider = temp.collider;
 				raycastHit.position = temp.position;
 			}
 			else {
-				tDistance = glm::dot(temp.position - ray.Origin, temp.position - ray.Origin);
-				if (tDistance < minDistance) {
-					minDistance = tDistance;
+				if (sqrDistance < minDistance && projection >= 0.0f) {
+					minDistance = sqrDistance;
 					raycastHit.collider = temp.collider;
 					raycastHit.position = temp.position;
 				}

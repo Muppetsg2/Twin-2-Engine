@@ -27,10 +27,10 @@ void Twin2Engine::Core::CapsuleColliderComponent::Initialize()
 	collider->colliderComponent = this;
 	TransformChangeAction = [this](Transform* transform) {
 		glm::mat4 TransformMatrix = transform->GetTransformMatrix();
-		((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndPosition = TransformMatrix
-			* glm::vec4(((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition, 1.0f);
+		CollisionSystem::CapsuleColliderData* capsuleData = (CollisionSystem::CapsuleColliderData*)collider->shapeColliderData;
+		capsuleData->EndPosition = TransformMatrix * glm::vec4(capsuleData->EndLocalPosition, 1.0f);
 		//collider->shapeColliderData->Position = collider->shapeColliderData->LocalPosition + GetGameObject()->GetTransform()->GetGlobalPosition();
-		collider->shapeColliderData->Position = TransformMatrix * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f);
+		capsuleData->Position = TransformMatrix * glm::vec4(capsuleData->LocalPosition, 1.0f);
 
 		if (boundingVolume != nullptr) {
 			boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;

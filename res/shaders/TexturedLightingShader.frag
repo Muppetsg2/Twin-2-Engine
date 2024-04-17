@@ -102,7 +102,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
     float bias = max(0.01 * (1.0 - dot(N, lightDir)), 0.005);
     //float bias = 0.005;
     // check whether current frag pos is in shadow
-    //float shadow = (currentDepth - bias) < closestDepth  ? 1.0 : 0.0;
+    //float shadow = (currentDepth) < closestDepth  ? 1.0 : 0.0;
 
     // PCF
     float shadow = 0.0;
@@ -214,6 +214,6 @@ void main()
         LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
     }
 	
-    FragColor *= vec4(LightColor + AmbientLight, 1.0f); //
+    FragColor *= vec4(LightColor + AmbientLight, 1.0); //
 	FragColor = vec4(pow(FragColor.rgb, vec3(gamma)), 1.0);
 }

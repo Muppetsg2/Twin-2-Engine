@@ -68,6 +68,8 @@ void Twin2Engine::Core::BoxColliderComponent::Initialize()
 		boxData->YAxis = q * glm::vec3(0.0f, 1.0f, 0.0f);
 		boxData->ZAxis = q * glm::vec3(0.0f, 0.0f, 1.0f);
 
+		boxData->HalfDimensions = transform->GetGlobalScale() * boxData->LocalHalfDimensions;
+
 		collider->shapeColliderData->Position = transform->GetTransformMatrix() * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f);
 
 		if (boundingVolume != nullptr) {
@@ -101,7 +103,18 @@ void Twin2Engine::Core::BoxColliderComponent::Update()
 	Twin2Engine::Core::ColliderComponent::Update();
 
 	if (dirtyFlag) {
-		glm::mat4 TransformMatrix = glm::mat4(1.0f);
+		CollisionSystem::BoxColliderData* boxData = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData);
+		glm::quat q = GetTransform()->GetGlobalRotationQuat()
+			* glm::angleAxis(boxData->Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
+			* glm::angleAxis(boxData->Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f))
+			* glm::angleAxis(boxData->Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+		boxData->XAxis = q * glm::vec3(1.0f, 0.0f, 0.0f);
+		boxData->YAxis = q * glm::vec3(0.0f, 1.0f, 0.0f);
+		boxData->ZAxis = q * glm::vec3(0.0f, 0.0f, 1.0f);
+
+		boxData->HalfDimensions = GetTransform()->GetGlobalScale() * boxData->LocalHalfDimensions;
+
+		/*/glm::mat4 TransformMatrix = glm::mat4(1.0f);
 		CollisionSystem::BoxColliderData* boxData = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData);
 		TransformMatrix = glm::rotate(TransformMatrix, boxData->Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
 		TransformMatrix = glm::rotate(TransformMatrix, boxData->Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -109,9 +122,9 @@ void Twin2Engine::Core::BoxColliderComponent::Update()
 		//((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation
 		TransformMatrix = GetTransform()->GetTransformMatrix() * TransformMatrix;
 
-		boxData->XAxis = TransformMatrix * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-		boxData->YAxis = TransformMatrix * glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
-		boxData->ZAxis = TransformMatrix * glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+		boxData->XAxis = glm::normalize(TransformMatrix * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		boxData->YAxis = glm::normalize(TransformMatrix * glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+		boxData->ZAxis = glm::normalize(TransformMatrix * glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));/**/
 
 		dirtyFlag = false;
 	}

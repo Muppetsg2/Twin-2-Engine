@@ -418,15 +418,11 @@ int main(int, char**)
     //PrefabManager::SaveAsPrefab(test3, "res/prefabs/savedPrefab.yaml");
     
 #pragma region TestingLighting
-    /**/
-    GameObject* dl_go = SceneManager::CreateGameObject();
-    dl_go->GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
-    Twin2Engine::Core::DirectionalLightComponent* dl = dl_go->AddComponent<Twin2Engine::Core::DirectionalLightComponent>();
+    GameObject dl_go;
+    dl_go.GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
+    Twin2Engine::Core::DirectionalLightComponent* dl = dl_go.AddComponent<Twin2Engine::Core::DirectionalLightComponent>();
     dl->SetColor(glm::vec3(1.0f));
-    //dl->SetColor(glm::vec3(0.85f, 0.85f, 0.85f));
-    //dl->SetColor(glm::vec3(0.8f, 0.8f, 0.8f));
     LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
-    //LightingSystem::LightingController::Instance()->SetGamma(2.2);
     LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f, 0.02f, 0.02f));
     /**/
 #pragma endregion
@@ -439,6 +435,10 @@ int main(int, char**)
 
         // Update game objects' state here
         update();
+        /**/
+        dl->GetTransform()->Update();
+        dl->Update();
+        /**/
 
         // OpenGL rendering code here
         render();
@@ -638,6 +638,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
         lastY = ypos;
         mouseNotUsed = false;
     }
+
 
     GLfloat xoffset = xpos - lastX;
     GLfloat yoffset = lastY - ypos; // Odwrocone, poniewaz wsporzedne zmieniaja sie od dolu do gory  

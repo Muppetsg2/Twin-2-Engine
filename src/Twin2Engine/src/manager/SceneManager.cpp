@@ -408,74 +408,34 @@ void SceneManager::SaveScene(const string& path) {
 	YAML::Node sceneNode;
 
 #pragma region SAVING_TEXTURES
-	std::map<size_t, size_t> textures;
-	size_t i = 0;
-	for (const auto& pathPair : TextureManager::_texturesPaths) {
-		Texture2D* tex = TextureManager::_loadedTextures[pathPair.first];
-
-		YAML::Node texNode;
-		texNode["path"] = pathPair.second;
-		if (TextureManager::_texturesFormats.find(pathPair.first) != TextureManager::_texturesFormats.end()) {
-			const auto& formats = TextureManager::_texturesFormats[pathPair.first];
-			texNode["fileFormat"] = formats.second;
-			texNode["engineFormat"] = formats.first;
-		}
-		texNode["sWrapMode"] = tex->GetWrapModeS();
-		texNode["tWrapMode"] = tex->GetWrapModeT();
-		texNode["minFilterMode"] = tex->GetMinFilterMode();
-		texNode["magFilterMode"] = tex->GetMagFilterMode();
-
-		sceneNode["Textures"].push_back(texNode);
-		textures[pathPair.first] = i++;
-	}
+	sceneNode["Textures"] = TextureManager::Serialize();
 #pragma endregion
 #pragma region SAVING_SPRITES
-	for (const auto& spritePair : SpriteManager::_spriteAliases) {
-		Sprite* sprite = SpriteManager::_sprites[spritePair.first];
-		
-		YAML::Node spriteNode;
-		spriteNode["alias"] = spritePair.second;
-		spriteNode["texture"] = textures[sprite->GetTexture()->GetManagerId()];
-
-		if (SpriteManager::_spriteLoadData.find(spritePair.first) != SpriteManager::_spriteLoadData.end()) {
-			SpriteData data = SpriteManager::_spriteLoadData[spritePair.first];
-			spriteNode["x"] = data.x;
-			spriteNode["y"] = data.y;
-			spriteNode["width"] = data.width;
-			spriteNode["height"] = data.height;
-		}
-
-		sceneNode["Sprites"].push_back(spriteNode);
+	map<size_t, size_t> textures;
+	size_t idx = 0;
+	for (const auto& texPair : TextureManager::_texturesPaths) {
+		textures[texPair.first] = idx++;
 	}
+	sceneNode["Sprites"] = SpriteManager::Serialize(textures);
 #pragma endregion
 #pragma region SAVING_FONTS
-	for (const auto& fontPair : FontManager::_fontsPaths) {
-		sceneNode["Fonts"].push_back(fontPair.second);
-	}
+	sceneNode["Fonts"] = FontManager::Serialize();
 #pragma endregion
 #pragma region SAVING_AUDIOS
-	for (const auto& audioPair : AudioManager::_audiosPaths) {
-		sceneNode["Audio"].push_back(audioPair.second);
-	}
+	sceneNode["Audio"] = AudioManager::Serialize();
 #pragma endregion
 #pragma region SAVING_MATERIALS
-	for (const auto& matPair : MaterialsManager::materialsPaths) {
-		sceneNode["Materials"].push_back(matPair.second);
-	}
+	sceneNode["Materials"] = MaterialsManager::Serialize();
 #pragma endregion
 #pragma region SAVING_MODELS
-	for (const auto& modelPair : ModelsManager::modelsPaths) {
-		sceneNode["Models"].push_back(modelPair.second);
-	}
+	sceneNode["Models"] = ModelsManager::Serialize();
 #pragma endregion
 #pragma region SAVING_PREFABS
-	for (const auto& prefabPair : PrefabManager::_prefabsPaths) {
-		sceneNode["Prefabs"].push_back(prefabPair.second);
-	}
+	sceneNode["Prefabs"] = PrefabManager::Serialize();
 #pragma endregion
 #pragma region SAVING_GAMEOBJECTS
 	Transform* rootT = _rootObject->GetTransform();
-	for (i = 0; i < rootT->GetChildCount(); ++i) {
+	for (size_t i = 0; i < rootT->GetChildCount(); ++i) {
 		SaveGameObject(rootT->GetChildAt(i)->GetGameObject(), sceneNode["GameObjects"]);
 	}
 #pragma endregion

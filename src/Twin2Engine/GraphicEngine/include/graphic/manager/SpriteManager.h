@@ -36,6 +36,8 @@ namespace Twin2Engine::Manager {
 
 		static void UnloadAll();
 
+		static YAML::Node Serialize(std::map<size_t, size_t> textures);
+
 		friend class SceneManager;
 		friend class PrefabManager;
 	};

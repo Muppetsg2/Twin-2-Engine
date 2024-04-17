@@ -130,3 +130,26 @@ void TextureManager::UnloadAll()
     _texturesPaths.clear();
     _texturesFormats.clear();
 }
+
+YAML::Node TextureManager::Serialize()
+{
+    YAML::Node textures;
+    for (const auto& pathPair : _texturesPaths) {
+        Texture2D* tex = _loadedTextures[pathPair.first];
+
+        YAML::Node texNode;
+        texNode["path"] = pathPair.second;
+        if (_texturesFormats.find(pathPair.first) != _texturesFormats.end()) {
+            const auto& formats = _texturesFormats[pathPair.first];
+            texNode["fileFormat"] = formats.second;
+            texNode["engineFormat"] = formats.first;
+        }
+        texNode["sWrapMode"] = tex->GetWrapModeS();
+        texNode["tWrapMode"] = tex->GetWrapModeT();
+        texNode["minFilterMode"] = tex->GetMinFilterMode();
+        texNode["magFilterMode"] = tex->GetMagFilterMode();
+
+        textures.push_back(texNode);
+    }
+    return textures;
+}

@@ -393,3 +393,12 @@ void AudioManager::UnloadAll()
     _soloud.deinit();
     _init = false;
 }
+
+YAML::Node AudioManager::Serialize()
+{
+    YAML::Node audios;
+    for (const auto& audioPair : _audiosPaths) {
+        audios.push_back(audioPair.second);
+    }
+    return audios;
+}

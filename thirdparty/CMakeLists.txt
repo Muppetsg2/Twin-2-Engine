@@ -31,7 +31,7 @@ target_include_directories(stb_image PRIVATE ${STB_IMAGE_DIR})
 ##target_include_directories(tinygltf PRIVATE ${TINY_GTLF_DIR} ${stb_image_SOURCE_DIR})
 #target_include_directories(tinygltf PRIVATE ${TINY_GTLF_DIR})
 
-get_property(is_miniaudio GLOBAL PROPERTY ISMINIAUDIO)
+get_property(is_miniaudio GLOBAL PROPERTY IS_MINI_AUDIO)
 
 if(is_miniaudio)
     # miniaudio
@@ -54,26 +54,42 @@ else()
     target_include_directories(soloud PRIVATE ${SOLOUD_DIR}/include)
 endif()
 
+get_property(find_memory_leaks GLOBAL PROPERTY FIND_MEMORY_LEAKS)
+
+if(find_memory_leaks AND (NOT CMAKE_BUILD_TYPE STREQUAL "Release"))
+    set(TRACEY_LEAK_DIR ${CMAKE_CURRENT_LIST_DIR}/tracey_leak)
+    set(tracey_leak_SOURCE_DIR ${TRACEY_LEAK_DIR}/include CACHE INTERNAL "")
+    file(GLOB_RECURSE tracey_leak_SOURCE_FILES 
+                            ${TRACEY_LEAK_DIR}/src/*.cpp
+                            ${TRACEY_LEAK_DIR}/src/*.c)
+    add_library(tracey_leak STATIC ${tracey_leak_SOURCE_FILES})
+    target_include_directories(tracey_leak PRIVATE ${TRACEY_LEAK_DIR}/include)
+
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
+    find_package(Threads REQUIRED)
+    set_target_properties(tracey_leak PROPERTIES FOLDER "thirdparty")
+endif()
+
 # other
 CPMAddPackage("gh:assimp/assimp@5.3.1")
 CPMAddPackage("gh:glfw/glfw#3.4")
-#CPMAddPackage("gh:syoyo/tinygltf@2.8.0")
-
-#CPMAddPackage(
-#    NAME tinygltf
-#    GITHUB_REPOSITORY syoyo/tinygltf
-#    VERSION 2.8.0
-#    #DOWNLOAD_ONLY TRUE
-#)
-
+#CPMAddPackage("gh:syoyo/tinygltf@2.8.21")
 CPMAddPackage("gh:g-truc/glm#1.0.1")
 CPMAddPackage("gh:gabime/spdlog@1.13.0")
 CPMAddPackage("gh:jbeder/yaml-cpp#0.8.0")
 CPMAddPackage("gh:freetype/freetype#VER-2-13-2")
 
-get_property(is_imgui GLOBAL PROPERTY USEIMGUI)
+set_target_properties(glad
+                      stb_image 
+                      assimp 
+                      glfw 
+                      glm 
+                      spdlog
+                      yaml-cpp
+                      #tinygltf
+                      freetype PROPERTIES FOLDER "thirdparty")
 
-if(is_imgui)
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     CPMAddPackage("gh:ocornut/imgui@1.90.4")
 
     set(imgui_SOURCE_DIR ${imgui_SOURCE_DIR} CACHE INTERNAL "")
@@ -82,58 +98,14 @@ if(is_imgui)
 					         ${imgui_SOURCE_DIR}/imgui_draw.cpp
 						     ${imgui_SOURCE_DIR}/imgui_tables.cpp
 					         ${imgui_SOURCE_DIR}/imgui_widgets.cpp)
+
+    set_target_properties(imgui PROPERTIES FOLDER "thirdparty")
 endif()
-                         
+          
 if(is_miniaudio)
-    if (is_imgui)
-        set_target_properties(glad
-                              stb_image 
-                              assimp 
-                              glfw 
-                              glm 
-                              imgui
-                              spdlog
-                              yaml-cpp
-                              miniaudio
-                              #tinygltf
-                              freetype PROPERTIES FOLDER "thirdparty")
-    else()
-        set_target_properties(glad
-                        stb_image 
-                        assimp 
-                        glfw 
-                        glm 
-                        spdlog
-                        yaml-cpp
-                        miniaudio
-                        #tinygltf
-                        freetype PROPERTIES FOLDER "thirdparty")
-    endif()
+    set_target_properties(miniaudio PROPERTIES FOLDER "thirdparty")
 else()
-    if (is_imgui)
-        set_target_properties(glad
-                              stb_image 
-                              assimp 
-                              glfw 
-                              glm 
-                              imgui
-                              spdlog 
-                              soloud
-                              yaml-cpp
-                              #tinygltf
-                              freetype PROPERTIES FOLDER "thirdparty")
-    else()
-        set_target_properties(glad
-                        stb_image 
-                        assimp 
-                        glfw 
-                        glm 
-                        spdlog 
-                        soloud
-                        yaml-cpp
-                        #tinygltf
-                        freetype PROPERTIES FOLDER "thirdparty")
-    endif()
+    set_target_properties(soloud PROPERTIES FOLDER "thirdparty")
 endif()
 
 if (TARGET zlibstatic)

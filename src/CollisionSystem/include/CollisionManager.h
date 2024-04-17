@@ -15,7 +15,6 @@ namespace CollisionSystem {
 
 	public:
 
-
 		std::unordered_set<GameCollider*> DefaultLayer;
 		std::unordered_set<GameCollider*> IgnoreRaycastLayer;
 		std::unordered_set<GameCollider*> IgnoreCollisionLayer;

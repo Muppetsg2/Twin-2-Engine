@@ -18,9 +18,7 @@ CollisionManager::CollisionManager()
 	Layer4.clear();
 }
 
-CollisionSystem::CollisionManager::~CollisionManager()
-{
-}
+CollisionSystem::CollisionManager::~CollisionManager() {}
 
 CollisionManager* CollisionManager::Instance() {
 	if (instance == nullptr) {

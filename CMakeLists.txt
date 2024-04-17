@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 project(Twin2Game VERSION 1.0)
 
-set_property(GLOBAL PROPERTY ISMINIAUDIO false)
-set_property(GLOBAL PROPERTY USEIMGUI true)
+set_property(GLOBAL PROPERTY IS_MINI_AUDIO false)
+set_property(GLOBAL PROPERTY FIND_MEMORY_LEAKS true)
 
 IF (WIN32)
   message(NOTICE "\n")

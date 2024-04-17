@@ -3,10 +3,6 @@ configure_file(GameConfig.yaml.in GameConfig.yaml)
 # ---- Dependency ----
 add_subdirectory(Twin2Engine)
 
-add_subdirectory(CollisionSystem)
-
-add_subdirectory(LightingSystem)
-
 add_subdirectory(Tilemap)
 
 add_executable(${PROJECT_NAME} main.cpp)
@@ -20,12 +16,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Tilemap)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog)
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
-
-target_include_directories(${PROJECT_NAME} PUBLIC ${COLLISION_SYSTEM_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} PUBLIC CollisionSystem)
-
-target_include_directories(${PROJECT_NAME} PUBLIC ${LIGHTING_SYSTEM_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} PUBLIC LightingSystem)
 
 #add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD 
 #				   COMMAND ${CMAKE_COMMAND} -E create_symlink 

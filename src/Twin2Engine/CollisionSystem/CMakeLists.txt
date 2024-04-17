@@ -6,19 +6,17 @@ set(COLLISION_SYSTEM_INCLUDE_DIR ${COLLISION_SYSTEM_DIR}/include)
 set(COLLISION_SYSTEM_PRECOMPILE_HEADER ${COLLISION_SYSTEM_DIR}/pch.h)
 
 file(GLOB_RECURSE COLLISION_SYSTEM_SOURCE_FILES 
-                        #${GRAPHIC_ENGINE_DIR}/src/.cpp
-                        #${GRAPHIC_ENGINE_DIR}/src/.c)
                         ${COLLISION_SYSTEM_SOURCE_DIR}/*.cpp
                         ${COLLISION_SYSTEM_SOURCE_DIR}/*.c)
 
 
 file(GLOB_RECURSE COLLISION_SYSTEM_PUBLIC_INCLUDE_FILES 
-                        #${GRAPHIC_ENGINE_DIR}/include}/.h)
-                        ${COLLISION_SYSTEM_INCLUDE_DIR}/*.h)
+                        ${COLLISION_SYSTEM_INCLUDE_DIR}/*.h
+                        ${COLLISION_SYSTEM_INCLUDE_DIR}/*.hpp)
 
 file(GLOB_RECURSE COLLISION_SYSTEM_PRIVATE_INCLUDE_FILES
-                        #${GRAPHIC_ENGINE_DIR}/src/.h)
-                        ${COLLISION_SYSTEM_SOURCE_DIR}/*.h)
+                        ${COLLISION_SYSTEM_SOURCE_DIR}/*.h
+                        ${COLLISION_SYSTEM_SOURCE_DIR}/*.hpp)
 
 source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${COLLISION_SYSTEM_SOURCE_FILES})
 source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${COLLISION_SYSTEM_PUBLIC_INCLUDE_FILES})

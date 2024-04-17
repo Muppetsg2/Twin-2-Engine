@@ -1,14 +1,8 @@
 #include "LightingController.h"
 
-#include <glad/glad.h>  
-#include <GLFW/glfw3.h> 
 #include <core/CameraComponent.h>
+#include <core/Transform.h>
 #include <graphic/manager/MeshRenderingManager.h>
-#include <core/GameObject.h>
-
-
-#include <utility>
-#include <string>
 
 using namespace LightingSystem;
 

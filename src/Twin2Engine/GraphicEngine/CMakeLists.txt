@@ -28,33 +28,12 @@ add_library(${PROJECT_NAME} STATIC ${GRAPHIC_ENGINE_SOURCE_FILES})
 # Adding include to library
 target_include_directories(${PROJECT_NAME}
 						PUBLIC 
-						#${GRAPHIC_ENGINE_PUBLIC_INCLUDE_FILES}
 						${GRAPHIC_ENGINE_INCLUDE_DIR}
 						${glad_SOURCE_DIR}
-
-
-						#${tiny_gltf_SOURCE_DIR}
-						#${stb_image_SOURCE_DIR}
-						#${GRAPHIC_ENGINE_DIR}
-						
-						#INTERFACE
-						#${tinygltf_SOURCE_DIR}
-						#${GRAPHIC_ENGINE_SOURCE_DIR}
 )
 
 # Adding precompile Headers to library
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${GRAPHIC_ENGINE_PRECOMPILE_HEADER})
-
-#target_link_libraries(GraphicEngine PRIVATE 
-#										#glad
-#										##stb_image
-#										#assimp
-#										#glfw
-#										#glm::glm
-#										#yaml-cpp
-#										#spdlog
-#										Twin2Engine
-#)
 
 target_link_libraries(GraphicEngine ${OPENGL_LIBRARIES})
 target_link_libraries(GraphicEngine glad)

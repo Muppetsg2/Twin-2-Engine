@@ -2,9 +2,6 @@
 #define _LIGHTINGCONTROLLER_H_
 
 #include "Light.h"
-#include <glad/glad.h>  
-#include <GLFW/glfw3.h> 
-#include <unordered_set>
 #include <graphic/Shader.h>
 #include <core/EventHandler.h>
 

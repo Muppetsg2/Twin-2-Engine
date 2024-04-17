@@ -26,6 +26,8 @@ source_group(TREE ${CMAKE_SOURCE_DIR}         FILES ${ASSETS_FILES})
 
 
 add_subdirectory(GraphicEngine)
+add_subdirectory(CollisionSystem)
+add_subdirectory(LightingSystem)
 
 # ---- Dependency ----
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES} ${ASSETS_FILES})
@@ -38,46 +40,26 @@ get_property(is_imgui GLOBAL PROPERTY USEIMGUI)
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${Twin2Engine_PRECOMPILE_HEADERS_FILE})
 
-if(is_miniaudio)
-	if(is_imgui)
-		target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR}
-														  ${glad_SOURCE_DIR}
-														  ${stb_image_SOURCE_DIR}
-														  ${freetype_SOURCE_DIR}
-														  ${miniaudio_SOURCE_DIR}
-														  ${imgui_SOURCE_DIR})
-		
-		target_link_libraries(${PROJECT_NAME} imgui)
-	else()
-		target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR}
-														${glad_SOURCE_DIR}
-														${stb_image_SOURCE_DIR}
-														${freetype_SOURCE_DIR}
-														${miniaudio_SOURCE_DIR})
-	endif()
+target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR}
+												  ${GRAPHIC_ENGINE_INCLUDE_DIR}
+												  ${COLLISION_SYSTEM_INCLUDE_DIR}
+												  ${LIGHTING_SYSTEM_INCLUDE_DIR}
+												  ${glad_SOURCE_DIR}
+												  ${stb_image_SOURCE_DIR}
+												  ${freetype_SOURCE_DIR})
 
+if (is_miniaudio)
+	target_include_directories(${PROJECT_NAME} PUBLIC ${miniaudio_SOURCE_DIR})
 	target_link_libraries(${PROJECT_NAME} miniaudio)
 else()
-	if(is_imgui)
-		target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR}
-														  ${glad_SOURCE_DIR}
-														  ${stb_image_SOURCE_DIR}
-														  ${soloud_SOURCE_DIR}
-														  ${freetype_SOURCE_DIR}
-														  ${imgui_SOURCE_DIR})
-
-		target_link_libraries(${PROJECT_NAME} imgui)
-	else()
-		target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR}
-													${glad_SOURCE_DIR}
-													${stb_image_SOURCE_DIR}
-													${soloud_SOURCE_DIR}
-													${freetype_SOURCE_DIR})
-	endif()
-	
+	target_include_directories(${PROJECT_NAME} PUBLIC ${soloud_SOURCE_DIR})
 	target_link_libraries(${PROJECT_NAME} soloud)
 endif()
 
+if (is_imgui)
+	target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
+	target_link_libraries(${PROJECT_NAME} imgui)
+endif()
 
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} glad)
@@ -89,12 +71,6 @@ target_link_libraries(${PROJECT_NAME} spdlog)
 target_link_libraries(${PROJECT_NAME} yaml-cpp)
 target_link_libraries(${PROJECT_NAME} freetype)
 target_link_libraries(${PROJECT_NAME} glm::glm)
-target_link_libraries(${PROJECT_NAME} CollisionSystem)
-#target_link_libraries(${PROJECT_NAME} LightingSystem)
-
-
-target_include_directories(${PROJECT_NAME} PUBLIC ${GRAPHIC_ENGINE_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} GraphicEngine)
-
-target_include_directories(${PROJECT_NAME} PUBLIC ${LIGHTING_SYSTEM_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} CollisionSystem)
 target_link_libraries(${PROJECT_NAME} LightingSystem)

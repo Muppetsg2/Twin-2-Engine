@@ -2,7 +2,6 @@
 
 #include <core/Scene.h>
 #include <core/Prefab.h>
-#include <core/EventHandler.h>
 
 namespace Twin2Engine::Manager {
 	class SceneManager {
@@ -26,60 +25,6 @@ namespace Twin2Engine::Manager {
 
 		// Loaded Scene Objects
 		static std::map<size_t, Core::Scene*> _loadedScenes;
-
-		static std::pair<std::vector<size_t>, std::vector<size_t>> GetResourcesToLoadAndUnload(const std::vector<std::string> paths, const std::vector<size_t> loadedHashes);
-		/*template<class T, class U, class C>
-		static void LoadResources(
-			//const Core::Func<std::string, T>& pathGetter,
-			const U& resoucersList, std::vector<size_t>& loadedIds
-			//const Core::Action<size_t>& unloader,
-			//const Core::Func<C, std::string>& loader,
-			const Core::Func<size_t, C>& idGetter ) {
-
-		};*/
-		template<class T, class U, class C>
-		static void LoadResources(const Core::Func<std::string, const T&>& pathGetter,
-			const U& resources, std::vector<size_t>& loadedIds,
-			const Core::Action<size_t>& unloader, 
-			const Core::Func<C, const std::string&>& loader,
-			const Core::Func<size_t, const C&>& idGetter) 
-		{
-
-			std::vector<std::string> paths;
-			for (const auto& path : resources) {
-				paths.push_back(pathGetter(path));
-			}
-			std::pair<std::vector<size_t>, std::vector<size_t>> toLoadToUnload = GetResourcesToLoadAndUnload(paths, loadedIds);
-
-			// Unloading
-			for (size_t id : toLoadToUnload.second) {
-				unloader(id);
-				for (size_t i = 0; i < loadedIds.size(); ++i) {
-					if (loadedIds[i] == id) {
-						loadedIds.erase(loadedIds.begin() + i);
-						break;
-					}
-				}
-			}
-
-			// Loading
-			for (size_t id : toLoadToUnload.first) {
-				loadedIds.push_back(idGetter(loader(paths[id])));
-			}
-
-			// Sorting
-			std::vector<size_t> sortedIds;
-			for (size_t i = 0; i < paths.size(); ++i) {
-				size_t pathH = hash<string>()(paths[i]);
-				for (size_t j = 0; j < loadedIds.size(); ++j) {
-					if (loadedIds[j] == pathH) {
-						sortedIds.push_back(loadedIds[j]);
-						break;
-					}
-				}
-			}
-			loadedIds = sortedIds;
-		}
 
 		static void DeleteGameObject(Core::GameObject* obj);
 		static void SaveGameObject(const Core::GameObject* obj, YAML::Node gameObjects);

@@ -464,6 +464,8 @@ void Twin2Engine::Core::Transform::SetGlobalPosition(const glm::vec3& globalPosi
 	// Calling Events
 	CallPositionChanged();
 
+	RecalculateLocalPosition();
+
 	// Setting dirty flags
 	SetDirtyFlagGlobalPositionInChildren();
 }
@@ -482,8 +484,6 @@ void Twin2Engine::Core::Transform::RecalculateGlobalPosition()
 		RecalculateTransformMatrix();
 
 		_globalPosition = glm::vec3(_globalTransformMatrix[3]);
-
-		RecalculateLocalPosition();
 
 		_dirtyFlags.dirtyFlagGlobalPosition = false;
 	}
@@ -551,6 +551,8 @@ void Twin2Engine::Core::Transform::RecalculateLocalRotation()
 		{
 			_localRotationQuat = glm::inverse(_parent->GetGlobalRotationQuat()) * _globalRotationQuat;
 			_localRotation = glm::eulerAngles(_localRotationQuat);
+
+			printf("%f %f %f\n", _localRotationQuat.x, _localRotationQuat.y, _localRotation.z);
 		}
 
 		_dirtyFlags.dirtyFlagLocalRotation = false;
@@ -569,6 +571,8 @@ void Twin2Engine::Core::Transform::SetGlobalRotation(const glm::vec3& globalRota
 
 	// Calling Events
 	CallRotationChanged();
+
+	RecalculateLocalRotation();
 
 	// Setting dirty flags
 	SetDirtyFlagGlobalRotationInChildren();
@@ -609,8 +613,6 @@ void Twin2Engine::Core::Transform::RecalculateGlobalRotation()
 			_globalRotationQuat = _parent->GetGlobalRotation() * _localRotationQuat;
 			_globalRotation = glm::eulerAngles(_globalRotationQuat);
 		}
-
-		RecalculateLocalRotation();
 
 		_dirtyFlags.dirtyFlagGlobalRotation = false;
 		//_dirtyFlags.dirtyFlagGlobalRotationQuat2Euler = true;
@@ -670,6 +672,8 @@ void Twin2Engine::Core::Transform::SetGlobalScale(const glm::vec3& globalScale)
 
 	// Calling Events
 	CallScaleChanged();
+
+	RecalculateLocalScale();
 
 	// Setting dirty flags
 	SetDirtyFlagGlobalScaleInChildren();

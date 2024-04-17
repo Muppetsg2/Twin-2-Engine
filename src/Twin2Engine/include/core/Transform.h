@@ -1,5 +1,4 @@
-#ifndef _TRANSFORM_H_
-#define _TRANSFORM_H_
+#pragma once
 
 #include <core/Component.h>
 #include <core/EventHandler.h>
@@ -167,5 +166,3 @@ namespace Twin2Engine
 		};
 	}
 }
-
-#endif

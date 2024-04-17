@@ -51,6 +51,10 @@
 #include <core/Scene.h>
 #include <manager/SceneManager.h>
 
+// PREFABS
+#include <core/Prefab.h>
+#include <manager/PrefabManager.h>
+
 // DESERIALIZATION
 #include <core/ComponentDeserializer.h>
 
@@ -101,7 +105,7 @@ static void glfw_error_callback(int error, const char* description)
 
 static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
-    if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) return; // Chce ignorowa� notyfikacje
+    //if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) return; // Chce ignorowa� notyfikacje
 
     string severityS = "";
     if (severity == GL_DEBUG_SEVERITY_HIGH) severityS = "HIGHT";
@@ -410,6 +414,9 @@ int main(int, char**)
     GameObject* test1 = SceneManager::CreateGameObject();
     std::tuple<GameObject*, Text*, Image*> test2 = SceneManager::CreateGameObject<Text, Image>();
 
+    GameObject* test3 = SceneManager::CreateGameObject(PrefabManager::GetPrefab("res/prefabs/testPrefab.yaml"));
+    //PrefabManager::SaveAsPrefab(test3, "res/prefabs/savedPrefab.yaml");
+    
 #pragma region TestingLighting
     GameObject dl_go;
     dl_go.GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
@@ -417,6 +424,7 @@ int main(int, char**)
     dl->SetColor(glm::vec3(1.0f));
     LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
     LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f, 0.02f, 0.02f));
+    /**/
 #pragma endregion
 
 #pragma region TestingRaycasting

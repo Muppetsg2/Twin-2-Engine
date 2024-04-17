@@ -1,9 +1,0 @@
-shaderprogram:
-  name: origin/Textured
-  shaders:
-    - textured.vert
-    - TexturedLightingShader.frag
-  parameters:
-    - name: texture1
-      type: texture2D
-      value: res/textures/stone.jpg

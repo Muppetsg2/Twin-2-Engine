@@ -1,7 +1,7 @@
 Textures:
   - path: res/textures/white.png
-    fileFormat: 35906
-    engineFormat: 6408
+    fileFormat: 35904
+    engineFormat: 6407
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
@@ -65,6 +65,8 @@ Models:
   - res/models/castle.obj
   - "{Cube}"
   - "{Plane}"
+Prefabs:
+  - res/prefabs/testPrefab.yaml
 GameObjects:
   - id: 1
     name: Camera

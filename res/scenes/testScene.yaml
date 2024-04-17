@@ -14,8 +14,8 @@ Textures:
         minFilterMode: 9986 # NEAREST_MIPMAP_LINEAR
         magFilterMode: 9729 # LINEAR
     -   path: res/textures/white.png
-        fileFormat: 35906 # SRGB_ALPHA
-        engineFormat: 6408 # RGBA
+        fileFormat: 35904 # SRGB
+        engineFormat: 6407 # RGB
         sWrapMode: 33648 # MIRRORED_REPEAT
         tWrapMode: 33648 # MIRRORED_REPEAT
         minFilterMode: 9986 # NEAREST_MIPMAP_LINEAR
@@ -43,6 +43,8 @@ Models:
     - "{Cube}"
     - res/models/castle.obj
     - res/models/AK47.obj
+Prefabs:
+    - res/prefabs/testPrefab.yaml
 GameObjects:
     -   id: 1
         name: Camera

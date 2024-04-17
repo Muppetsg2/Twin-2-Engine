@@ -457,7 +457,7 @@ GLuint ShaderManager::CreateShaderProgramFromFile(const std::string& shaderProgr
 {
 
     SPDLOG_INFO("From File");
-    std::string shaderProgramPath = "res/CompiledShaders/" + shaderProgramName + ".shpr";
+    std::string shaderProgramPath = "res/shaders/" + shaderProgramName + ".shpr";
     
     GLuint shaderProgram = 0;
     

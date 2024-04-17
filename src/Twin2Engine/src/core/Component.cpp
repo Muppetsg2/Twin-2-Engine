@@ -115,6 +115,12 @@ void Component::Init(GameObject* obj)
 void Component::Init(GameObject* obj, size_t id)
 {
 	_id = id;
+	if (_freedIds.size() > 0) {
+		auto found = find_if(_freedIds.begin(), _freedIds.end(), [&](size_t fId) -> bool { return fId == _id; });
+		if (found != _freedIds.end()) {
+			_freedIds.erase(found);
+		}
+	}
 	if (_currentFreeId <= _id) {
 		for (; _currentFreeId < _id; ++_currentFreeId) _freedIds.push_back(_currentFreeId);
 		_freedIds.sort();

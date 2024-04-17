@@ -426,6 +426,7 @@ void LightingController::RenderShadowMaps() {
 		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->shadowMap, light->lightSpaceMatrix);
 		glActiveTexture(GL_TEXTURE0 + 8 + i);
 		glBindTexture(GL_TEXTURE_2D, light->shadowMap);
+
 		++i;
 	}
 

@@ -10,6 +10,7 @@ using namespace std;
 
 namespace Twin2Engine::Manager {
 	class SceneManager;
+	class PrefabManager;
 
 	class AudioManager {
 	private:
@@ -60,5 +61,6 @@ namespace Twin2Engine::Manager {
 		static void UnloadAll();
 
 		friend class SceneManager;
+		friend class PrefabManager;
 	};
 }

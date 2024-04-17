@@ -8,11 +8,13 @@
 namespace Twin2Engine::Manager
 {
 	class SceneManager;
+	class PrefabManager;
 
 	class MaterialsManager
 	{
 		friend class GraphicEngine::Material;
 		friend class SceneManager;
+		friend class PrefabManager;
 
 		static std::hash<std::string> stringHash;
 		static const std::unordered_map<size_t, int> typeHandleMap;

@@ -12,11 +12,13 @@
 namespace Twin2Engine::Manager
 {
 	class SceneManager;
+	class PrefabManager;
 
 	class ModelsManager
 	{
 		friend class GraphicEngine::InstatiatingModel;
 		friend class SceneManager;
+		friend class PrefabManager;
 
 		static GLenum binaryFormat;
 

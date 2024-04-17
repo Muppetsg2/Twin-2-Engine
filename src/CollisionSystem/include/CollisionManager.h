@@ -11,6 +11,7 @@ namespace CollisionSystem {
 	private:
 		static CollisionManager* instance;
 		CollisionManager();
+		~CollisionManager();
 
 	public:
 
@@ -30,6 +31,8 @@ namespace CollisionSystem {
 
 
 		static CollisionManager* Instance();
+		static void DeleteInstance();
+
 
 		void RegisterCollider(GameCollider* collider);
 		void UnregisterCollider(GameCollider* collider);

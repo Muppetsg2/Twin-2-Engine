@@ -1,4 +1,5 @@
 #include "CollisionManager.h"
+#include "CollisionManager.h"
 //#include <iterator>
 
 using namespace CollisionSystem;
@@ -7,7 +8,18 @@ CollisionManager* CollisionManager::instance = nullptr;
 
 CollisionManager::CollisionManager()
 {
+	DefaultLayer.clear();
+	IgnoreRaycastLayer.clear();
+	IgnoreCollisionLayer.clear();
+	UiLayer.clear();
+	Layer1.clear();
+	Layer2.clear();
+	Layer3.clear();
+	Layer4.clear();
+}
 
+CollisionSystem::CollisionManager::~CollisionManager()
+{
 }
 
 CollisionManager* CollisionManager::Instance() {
@@ -16,6 +28,12 @@ CollisionManager* CollisionManager::Instance() {
 	}
 
 	return instance;
+}
+
+void CollisionSystem::CollisionManager::DeleteInstance()
+{
+	delete instance;
+	instance = nullptr;
 }
 
 void CollisionManager::RegisterCollider(GameCollider* collider) {

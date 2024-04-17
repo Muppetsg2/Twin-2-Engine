@@ -78,6 +78,7 @@ layout (std430, binding = 3) buffer Lights {
 layout(std140, binding = 4) uniform LightingData {
     vec3 AmbientLight;
 	vec3 ViewerPosition;
+	float highlightParam;
 	//float gamma;
 };
 
@@ -130,7 +131,7 @@ float countLambertianPart(vec3 L, vec3 N) {
 float countBlinnPhongPart(vec3 L, vec3 E, vec3 N) {
     vec3 H = normalize(L + E);
     float specAngle = max(dot(H, N), 0.0);
-    return pow(specAngle, 2); //<---------
+    return pow(specAngle, highlightParam); //<---------
 }
 
 void main()

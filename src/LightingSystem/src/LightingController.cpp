@@ -448,6 +448,13 @@ void LightingController::SetViewerPosition(glm::vec3& viewerPosition) {
 
 	ViewerTransformChanged.Invoke();
 }
+
+
+void LightingController::SetHighlightParam(float highlightParam) {
+	glBindBuffer(GL_UNIFORM_BUFFER, LightingDataBuffer);
+	glBufferSubData(GL_UNIFORM_BUFFER, 28, 4, &highlightParam);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
 /*/
 void LightingController::SetGamma(float gamma) {
 	glBindBuffer(GL_UNIFORM_BUFFER, LightingDataBuffer);

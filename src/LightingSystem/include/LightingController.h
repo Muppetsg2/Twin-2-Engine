@@ -28,7 +28,7 @@ namespace LightingSystem {
 			struct LightingData {													//32
 				alignas(16) glm::vec3 AmbientLight = glm::vec3(0.0f, 0.0f, 0.0f);	//0		16
 				glm::vec3 ViewerPosition = glm::vec3(0.0f, 0.0f, 0.0f);				//16	12
-				//float gamma = 2.2f;													//28	4
+				float HighlightParam = 2.0f;													//28	4
 			};
 			//Lights lights;
 
@@ -78,6 +78,7 @@ namespace LightingSystem {
 
 			void SetAmbientLight(glm::vec3 ambientLightColor);
 			void SetViewerPosition(glm::vec3& viewerPosition);
+			void SetHighlightParam(float highlightParam);
 			//void SetGamma(float gamma);
 
 			/*/

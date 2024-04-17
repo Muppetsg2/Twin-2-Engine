@@ -424,6 +424,7 @@ int main(int, char**)
     dl->SetColor(glm::vec3(1.0f));
     LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
     LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f, 0.02f, 0.02f));
+    LightingSystem::LightingController::Instance()->SetHighlightParam(2.0f);
     /**/
 #pragma endregion
 

@@ -124,7 +124,6 @@ void TextureManager::UnloadAll()
 {
     for (auto& tex : _loadedTextures) {
         delete tex.second;
-        tex.second = nullptr;
     }
     _loadedTextures.clear();
     _texturesPaths.clear();

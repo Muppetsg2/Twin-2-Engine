@@ -26,7 +26,6 @@ namespace Twin2Engine::Manager {
 		// Loaded Scene Objects
 		static std::map<size_t, Core::Scene*> _loadedScenes;
 
-		static void DeleteGameObject(Core::GameObject* obj);
 		static void SaveGameObject(const Core::GameObject* obj, YAML::Node gameObjects);
 
 		static Core::GameObject* FindObjectBy(Core::GameObject* obj, const Core::Func<bool, const Core::GameObject*>& predicate);
@@ -59,6 +58,8 @@ namespace Twin2Engine::Manager {
 			return static_cast<T*>(GetComponentWithId(id));
 		};
 
+		static void DestroyGameObject(Core::GameObject* obj);
+
 		static Core::GameObject* CreateGameObject(Core::Transform* parent = nullptr);
 		template<class... Ts> static std::tuple<Core::GameObject*, Ts*...> CreateGameObject(Core::Transform* parent = nullptr) {
 			Core::GameObject* obj = CreateGameObject(parent);
@@ -90,49 +91,4 @@ namespace Twin2Engine::Manager {
 		static void UnloadScene(const std::string& name);
 		static void UnloadAll();
 	};
-
-	/*template<class T, class U,  class C>
-	inline void SceneManager::LoadResources(
-		const Core::Func<std::string, T>& pathGetter,
-		const U& resourceList, std::vector<size_t>&loadedIds,
-		const Core::Action<size_t>& unloader,
-		const Core::Func<C, std::string>& loader,
-		const Core::Func<size_t, C>& idGetter)
-	{
-		/*std::vector<std::string>& paths;
-		for (const auto& path : resourceList) {
-			paths.push_back(pathGetter(path));
-		}
-		std::pair<std::vector<size_t>, std::vector<size_t>> toLoadToUnload = GetResourcesToLoadAndUnload(paths, loadedIds);
-
-		// Unloading
-		for (size_t id : toLoadToUnload.second) {
-			unloader(id);
-			for (size_t i = 0; i < loadedIds.size(); ++i) {
-				if (loadedIds[i] == id) {
-					loadedIds.erase(loadedIds.begin() + i);
-					break;
-				}
-			}
-		}
-
-		// Loading
-		for (size_t id : toLoadToUnload.first) {
-			C obj = loader(paths[id]);
-			loadedIds.push_back(idGetter(id));
-		}
-
-		// Sorting
-		std::vector<size_t> sortedIds;
-		for (size_t i = 0; i < paths.size(); ++i) {
-			size_t pathH = hash<string>()(paths[i]);
-			for (size_t j = 0; j < loadedIds.size(); ++j) {
-				if (loadedIds[j] == pathH) {
-					sortedIds.push_back(loadedIds[j]);
-					break;
-				}
-			}
-		}
-		loadedIds = sortedIds;
-	}*/
 }

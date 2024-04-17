@@ -5,7 +5,7 @@ namespace Twin2Engine::Core {
 	template<class T, class U>
 	static std::vector<size_t> LoadResources(const Func<std::string, const T&>& pathGetter,
 		const U& resources, const std::vector<size_t>& loadedIds,
-		const Action<size_t>& unloader,
+		const Func<bool, size_t>& unloader,
 		const Func<bool, const std::string&, size_t&>& loader,
 		const Func<std::vector<size_t>, const std::vector<size_t>&, const std::vector<size_t>&>& sorter)
 	{
@@ -50,11 +50,12 @@ namespace Twin2Engine::Core {
 
 		// Unloading
 		for (size_t id : toUnload) {
-			unloader(id);
-			for (size_t i = 0; i < currentIds.size(); ++i) {
-				if (currentIds[i] == id) {
-					currentIds.erase(currentIds.begin() + i);
-					break;
+			if (unloader(id)) {
+				for (size_t i = 0; i < currentIds.size(); ++i) {
+					if (currentIds[i] == id) {
+						currentIds.erase(currentIds.begin() + i);
+						break;
+					}
 				}
 			}
 		}

@@ -455,16 +455,15 @@ int main(int, char**)
     TextureManager::UnloadAll();
     AudioManager::UnloadAll();
     FontManager::UnloadAll();
+    GraphicEngineManager::End();
     Input::FreeAllWindows();
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-
     Window::FreeAll();
-    glfwTerminate();
 
-    GraphicEngineManager::End();
+    glfwTerminate();
 
     return 0;
 }

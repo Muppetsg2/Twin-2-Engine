@@ -385,7 +385,6 @@ void AudioManager::UnloadAll()
 
     for (auto& ad : _loadedAudio) {
         delete ad.second;
-        ad.second = nullptr;
     }
 
     _loadedAudio.clear();

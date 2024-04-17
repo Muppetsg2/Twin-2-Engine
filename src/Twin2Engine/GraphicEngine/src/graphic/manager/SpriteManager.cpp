@@ -83,7 +83,6 @@ void SpriteManager::UnloadAll()
 {
     for (auto& spr : _sprites) {
         delete spr.second;
-        spr.second = nullptr;
     }
     _sprites.clear();
     _spriteAliases.clear();

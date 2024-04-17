@@ -29,19 +29,6 @@ vector<size_t> SceneManager::_prefabsIds;
 
 map<size_t, Scene*> SceneManager::_loadedScenes;
 
-void SceneManager::DeleteGameObject(GameObject* obj)
-{
-	Transform* trans = obj->GetTransform();
-	size_t childCount = trans->GetChildCount();
-	for (size_t i = 0; i < childCount; ++i) {
-		Transform* child = trans->GetChildAt(i);
-		GameObject* childObj = child->GetGameObject();
-		DeleteGameObject(childObj);
-		_gameObjectsById.erase(childObj->Id());
-		delete childObj;
-	}
-}
-
 void SceneManager::SaveGameObject(const GameObject* obj, YAML::Node gameObjects)
 {
 	gameObjects.push_back(obj->Serialize());
@@ -165,7 +152,7 @@ void SceneManager::LoadScene(const string& name)
 	Scene* sceneToLoad = _loadedScenes[sceneId];
 
 	Func<string, const string&> pathGetter;
-	Action<size_t> unloader;
+	Func<bool, size_t> unloader;
 	Func<bool, const string&, size_t&> loader;
 
 	Func<vector<size_t>, const vector<size_t>&, const vector<size_t>&> sorter = [](const vector<size_t>& hashedPaths, const vector<size_t>& loadedIds) -> vector<size_t> {
@@ -183,7 +170,7 @@ void SceneManager::LoadScene(const string& name)
 
 #pragma region LOADING_TEXTURES
 	Func<string, const pair<string, TextureData>&> texturePathGetter = [](const pair<string, TextureData>& texturePair) -> string { return texturePair.first; };
-	unloader = [](size_t id) -> void { TextureManager::UnloadTexture2D(id); };
+	unloader = [](size_t id) -> bool { TextureManager::UnloadTexture2D(id); return true; };
 	loader = [&](const string& path, size_t& id) -> bool {
 		Texture2D* temp = nullptr;
 		if (sceneToLoad->_texturesFormats.find(path) != sceneToLoad->_texturesFormats.end()) {
@@ -204,7 +191,7 @@ void SceneManager::LoadScene(const string& name)
 #pragma endregion
 #pragma region LOADING_SPRITES
 	Func<string, const pair<string, tuple<string, bool, SpriteData>>&> spritePathGetter = [](const pair<string, tuple<string, bool, SpriteData>>& spritePair) -> string { return spritePair.first; };
-	unloader = [](size_t id) -> void { SpriteManager::UnloadSprite(id); };
+	unloader = [](size_t id) -> bool { SpriteManager::UnloadSprite(id); return true; };
 	loader = [&](const string& alias, size_t& id) -> bool { 
 		tuple<string, bool, SpriteData> sData = sceneToLoad->_sprites[alias];
 		Sprite* temp = nullptr;
@@ -225,7 +212,7 @@ void SceneManager::LoadScene(const string& name)
 #pragma endregion
 #pragma region LOADING_FONTS
 	pathGetter = [](const string& path) -> string { return path; };
-	unloader = [](size_t id) -> void { FontManager::UnloadFont(id); };
+	unloader = [](size_t id) -> bool { FontManager::UnloadFont(id); return true; };
 	loader = [](const string& path, size_t& id) -> bool { 
 		Font* temp = FontManager::LoadFont(path);
 		if (temp != nullptr) { 
@@ -239,7 +226,7 @@ void SceneManager::LoadScene(const string& name)
 #pragma endregion
 #pragma region LOADING_AUDIO
 	pathGetter = [](const string& path) -> string { return path; };
-	unloader = [](size_t id) -> void { AudioManager::UnloadAudio(id); };
+	unloader = [](size_t id) -> bool { AudioManager::UnloadAudio(id); return true; };
 	loader = [](const string& path, size_t& id) -> bool { 
 		id = AudioManager::LoadAudio(path); 
 		if (id != 0) return true; 
@@ -250,19 +237,19 @@ void SceneManager::LoadScene(const string& name)
 #pragma endregion
 #pragma region LOADING_MATERIALS
 	pathGetter = [](const string& path) -> string { return path; };
-	unloader = [](size_t id) -> void { MaterialsManager::UnloadMaterial(id); };
+	unloader = [](size_t id) -> bool { MaterialsManager::UnloadMaterial(id); return true; };
 	loader = [](const string& path, size_t& id) -> bool { id = MaterialsManager::LoadMaterial(path).GetId(); return true; };
 	_materialsIds = LoadResources(pathGetter, sceneToLoad->_materials, _materialsIds, unloader, loader, sorter);
 #pragma endregion
 #pragma region LOADING_MODELS
 	pathGetter = [](const string& path) -> string { return path; };
-	unloader = [](size_t id) -> void { ModelsManager::UnloadModel(id); };
+	unloader = [](size_t id) -> bool { ModelsManager::UnloadModel(id); return true; };
 	loader = [](const string& path, size_t& id) -> bool { id = ModelsManager::LoadModel(path).GetId(); return true; };
 	_modelsIds = LoadResources(pathGetter, sceneToLoad->_models, _modelsIds, unloader, loader, sorter);
 #pragma endregion
 #pragma region LOADING_PREFABS
 	pathGetter = [](const string& path) -> string { return path; };
-	unloader = [](size_t id) -> void { PrefabManager::UnloadPrefab(id); };
+	unloader = [](size_t id) -> bool { PrefabManager::UnloadPrefab(id); return true; };
 	loader = [](const string& path, size_t& id) -> bool { 
 		Prefab* prefab = PrefabManager::LoadPrefab(path);
 		if (prefab != nullptr) {
@@ -281,7 +268,7 @@ void SceneManager::LoadScene(const string& name)
 	if (_rootObject != nullptr) {
 		_gameObjectsById.clear();
 		_componentsById.clear();
-		DeleteGameObject(_rootObject);
+		DestroyGameObject(_rootObject);
 	}
 
 	// CREATE NEW OBJECTS WITH TRANSFORMS
@@ -485,6 +472,20 @@ Component* SceneManager::GetComponentWithId(size_t id)
 	return comp;
 }
 
+void SceneManager::DestroyGameObject(GameObject* obj)
+{
+	Transform* trans = obj->GetTransform();
+	while (trans->GetChildCount() > 0) {
+		Transform* child = trans->GetChildAt(0);
+		trans->RemoveChild(child);
+
+		GameObject* childObj = child->GetGameObject();
+		if (_gameObjectsById.size() > 0) _gameObjectsById.erase(childObj->Id());
+		DestroyGameObject(childObj);
+	}
+	delete obj;
+}
+
 GameObject* SceneManager::CreateGameObject(Transform* parent)
 {
 	GameObject* obj = new GameObject();
@@ -497,7 +498,7 @@ GameObject* SceneManager::CreateGameObject(Transform* parent)
 GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 {
 	Func<string, const string&> pathGetter;
-	Action<size_t> unloader = [](size_t id) -> void {};
+	Func<bool, size_t> unloader = [](size_t id) -> bool { return false; };
 	Func<bool, const string&, size_t&> loader;
 
 	Func<vector<size_t>, const vector<size_t>&, const vector<size_t>&> sorter = [](const vector<size_t>& hashedPaths, const vector<size_t>& loadedIds) -> vector<size_t> {
@@ -932,7 +933,9 @@ void SceneManager::UnloadCurrent()
 {
 	_currentSceneId = 0;
 	_currentSceneName = "";
-	DeleteGameObject(_rootObject);
+	_gameObjectsById.clear();
+	_componentsById.clear();
+	DestroyGameObject(_rootObject);
 
 	Action<vector<size_t>&, const Action<size_t>&> unloader = [](vector<size_t>& ids, const Action<size_t>& unload) -> void {
 		for (size_t id : ids) {
@@ -948,9 +951,6 @@ void SceneManager::UnloadCurrent()
 	unloader(_materialsIds, [](size_t id) -> void { MaterialsManager::UnloadMaterial(id); });
 	unloader(_modelsIds, [](size_t id) -> void { ModelsManager::UnloadModel(id); });
 	unloader(_prefabsIds, [](size_t id) -> void { PrefabManager::UnloadPrefab(id); });
-
-	_gameObjectsById.clear();
-	_componentsById.clear();
 }
 
 void SceneManager::UnloadScene(const std::string& name)

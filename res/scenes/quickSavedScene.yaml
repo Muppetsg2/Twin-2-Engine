@@ -76,17 +76,17 @@ GameObjects:
       id: 0
       enabled: true
       position:
-        x: -14.8198109
-        y: 2.17843032
-        z: 11.6985006
+        x: -1.74832702
+        y: -0.647136509
+        z: 19.0363827
       scale:
         x: 0
         y: 0
         z: 0
       rotation:
-        x: .nan
-        y: .nan
-        z: .nan
+        x: 0.185004979
+        y: -1.44687772
+        z: 0
     components:
       - id: 1
         enabled: true
@@ -100,9 +100,9 @@ GameObjects:
         renderRes: 0
         gamma: 2.20000005
         frontDir:
-          x: 0.797813237
-          y: 0.0453629829
-          z: -0.601195693
+          x: 0.121492498
+          y: 0.183951423
+          z: -0.975398183
         worldUp:
           x: 0
           y: 1
@@ -230,11 +230,11 @@ GameObjects:
         isTransparent: false
         sprite: 0
         color:
-          x: 1
+          x: 0
           y: 1
           z: 0
           w: 1
-        width: 517.397278
+        width: 787.026123
         height: 100
     children:
       []
@@ -264,7 +264,7 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        text: "Time: 0.004820"
+        text: "Time: 0.010273"
         color:
           x: 1
           y: 1

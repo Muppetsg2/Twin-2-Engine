@@ -366,7 +366,7 @@ int main(int, char**)
 #pragma endregion
 
     // ADDING SCENES
-    SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
+    SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
     /*
@@ -589,9 +589,6 @@ void input()
     }
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::Q)) {
-        
-        // Rotation not saving properly
-        // Can't save Values when they change unles you get them
         SceneManager::SaveScene("res/scenes/quickSavedScene.yaml");
     }
 }

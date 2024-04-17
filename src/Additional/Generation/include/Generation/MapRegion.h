@@ -8,7 +8,7 @@ namespace Generation
 {
     class MapSector;
 
-	class MapRegion
+	class MapRegion : Twin2Engine::Core::Component
 	{
     public:
 

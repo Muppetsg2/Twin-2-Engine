@@ -1,6 +1,7 @@
-#include <Generation/SectorsGenerator.h>
+#include <Generation/Generators/SectorsGenerator.h>
 
 using namespace Generation;
+using namespace Generation::Generators;
 using namespace Tilemap;
 
 using namespace Twin2Engine::Core;

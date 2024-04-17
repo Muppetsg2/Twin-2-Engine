@@ -1,13 +1,13 @@
 #ifndef _SECTORS_GENERATOR_H_
 #define _SECTORS_GENERATOR_H_
 
-#include <Generation/AMapElementGenerator.h>
+#include <Generation/Generators/AMapElementGenerator.h>
 #include <Generation/MapSector.h>
 #include <Generation/VectorShuffler.h>
 
 #include <core/GameObject.h>
 
-namespace Generation
+namespace Generation::Generators
 {
 	class SectorsGenerator : public AMapElementGenerator
 	{

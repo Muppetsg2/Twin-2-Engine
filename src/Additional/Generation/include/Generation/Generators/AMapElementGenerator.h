@@ -3,7 +3,7 @@
 
 #include <Tilemap/HexagonalTilemap.h>
 
-namespace Generation
+namespace Generation::Generators
 {
 	class AMapElementGenerator
 	{

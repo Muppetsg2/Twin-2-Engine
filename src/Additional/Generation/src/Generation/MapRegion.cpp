@@ -31,6 +31,10 @@ inline const std::unordered_set<MapSector*>& MapRegion::GetSectors() const
 {
 	return _regionSectors;
 }
+inline unsigned int MapRegion::GetSectorsCount() const
+{
+	return static_cast<unsigned int>(_regionSectors.size());
+}
 
 void MapRegion::AddSector(MapSector* tile)
 {
@@ -56,6 +60,26 @@ void MapRegion::RemoveSectors(const std::unordered_set<MapSector*>& sectors)
 	}
 }
 
+inline unsigned int MapRegion::GetTilesCount() const
+{
+	unsigned int count = 0;
+	for (MapSector* sector : _regionSectors)
+	{
+		count += sector->GetTilesCount();
+	}
+
+	return count;
+}
+
+void MapRegion::JoinRegion(MapRegion* region)
+{
+	for (MapSector* sector : region->_regionSectors)
+	{
+		AddSector(sector);
+	}
+
+	region->_regionSectors.clear();
+}
 
 std::vector<MapRegion*> MapRegion::GetAdjacentRegions() const
 {

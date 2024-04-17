@@ -1,7 +1,6 @@
 #ifndef _CITIES_GENERATOR_H_
 #define _CITIES_GENERATOR_H_
 
-
 #include <Generation/Generators/AMapElementGenerator.h>
 
 #include <Generation/MapRegion.h>

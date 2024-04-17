@@ -493,10 +493,10 @@ void Twin2Engine::Core::Transform::RecalculateGlobalPosition()
 
 #pragma region ROTATIONS
 
-// VEC3 IN RADIANS
+// VEC3 IN EULER ANGLES
 void Twin2Engine::Core::Transform::SetLocalRotation(const glm::vec3& localRotation)
 {
-	_localRotation = localRotation;
+	_localRotation = glm::radians(localRotation);
 	_localRotationQuat = glm::quat(_localRotation);
 
 	_dirtyFlags.dirtyFlag = true;
@@ -510,11 +510,12 @@ void Twin2Engine::Core::Transform::SetLocalRotation(const glm::vec3& localRotati
 	SetDirtyFlagGlobalRotationInChildren();
 }
 
+// IN EULAR ANGLES
 glm::vec3 Twin2Engine::Core::Transform::GetLocalRotation()
 {
 	RecalculateLocalRotation();
 
-	return _localRotation;
+	return glm::degrees(_localRotation);
 }
 
 void Twin2Engine::Core::Transform::SetLocalRotation(const glm::quat& localRotation)
@@ -566,10 +567,10 @@ void Twin2Engine::Core::Transform::RecalculateLocalRotation()
 	}
 }
 
-// VEC3 IN RADIANS
+// VEC3 IN EULAR ANGLES
 void Twin2Engine::Core::Transform::SetGlobalRotation(const glm::vec3& globalRotation)
 {
-	_globalRotation = globalRotation;
+	_globalRotation = glm::radians(globalRotation);
 	_globalRotationQuat = glm::quat(_globalRotation);
 
 
@@ -586,7 +587,7 @@ void Twin2Engine::Core::Transform::SetGlobalRotation(const glm::vec3& globalRota
 	SetDirtyFlagGlobalRotationInChildren();
 }
 
-// IN RADIANS
+// IN EULAR ANGLES
 glm::vec3 Twin2Engine::Core::Transform::GetGlobalRotation()
 {
 	RecalculateGlobalRotation();
@@ -598,7 +599,7 @@ glm::vec3 Twin2Engine::Core::Transform::GetGlobalRotation()
 	//	_dirtyFlags.dirtyFlagGlobalRotationQuat2Euler = false;
 	//}
 
-	return _globalRotation;
+	return glm::degrees(_globalRotation);
 }
 
 glm::quat Twin2Engine::Core::Transform::GetGlobalRotationQuat()
@@ -619,7 +620,15 @@ void Twin2Engine::Core::Transform::RecalculateGlobalRotation()
 		}
 		else
 		{
-			_globalRotationQuat = _parent->GetGlobalRotation() * _localRotationQuat;
+			if (_parent->GetGlobalRotationQuat().w != 0)
+			{
+				_globalRotationQuat = _parent->GetGlobalRotationQuat() * _localRotationQuat;
+			}
+			else
+			{
+				_globalRotationQuat = _localRotationQuat;
+			}
+
 			_globalRotation = glm::eulerAngles(_globalRotationQuat);
 		}
 

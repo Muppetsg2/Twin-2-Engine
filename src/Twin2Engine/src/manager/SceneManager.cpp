@@ -520,7 +520,7 @@ void SceneManager::LoadScene(const string& name)
 		t->SetEnable(transformNode["enabled"].as<bool>());
 		t->SetLocalPosition(transformNode["position"].as<glm::vec3>());
 		t->SetLocalScale(transformNode["scale"].as<glm::vec3>());
-		t->SetLocalRotation(glm::radians(transformNode["rotation"].as<glm::vec3>()));
+		t->SetLocalRotation(transformNode["rotation"].as<glm::vec3>());
 
 		// Components Node
 		componentsNodes[obj->Id()] = gameObjectNode["components"];

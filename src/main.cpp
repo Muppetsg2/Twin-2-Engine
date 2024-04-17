@@ -604,7 +604,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
         mouseNotUsed = false;
     }
 
-
     GLfloat xoffset = xpos - lastX;
     GLfloat yoffset = lastY - ypos; // Odwrocone, poniewaz wsporzedne zmieniaja sie od dolu do gory  
     lastX = xpos;
@@ -619,17 +618,18 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     // PITCH = ROT X
     // ROLL = ROT Z
 
-    rot.x += glm::radians(yoffset);
+    rot.x += yoffset;
 
-    if (rot.x > glm::radians(89.f)) {
-        rot.x = glm::radians(89.f);
+    if (rot.x > 89.f) {
+        rot.x = 89.f;
     }
-    else if (rot.x < glm::radians(-89.f))
+    
+    if (rot.x < -89.f)
     {
-        rot.x = glm::radians(-89.f);
+        rot.x = -89.f;
     }
 
-    Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x, rot.y + glm::radians(xoffset), rot.z));
+    Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x, rot.y + xoffset, rot.z));
     LightingSystem::LightingController::Instance()->ViewerTransformChanged.Invoke();
 }
 

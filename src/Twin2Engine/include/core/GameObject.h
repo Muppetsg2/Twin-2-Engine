@@ -112,8 +112,8 @@ namespace Twin2Engine::Core
 
 #pragma endregion
 	
-		static GameObject* Instatiate(GameObject* gameObject);
-		static GameObject* Instatiate(GameObject* gameObject, Transform* parent);
+		static GameObject* Instantiate(GameObject* gameObject);
+		static GameObject* Instantiate(GameObject* gameObject, Transform* parent);
 	};
 }
 
@@ -153,7 +153,15 @@ list<typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type>
 Twin2Engine::Core::GameObject::GetComponents()
 {
 	list<T*> foundComponents;
-	std::copy_if(components.begin(), components.end(), std::back_inserter(foundComponents), [](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
+	//std::copy_if(components.begin(), components.end(), std::back_inserter(foundComponents), [](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
+	for (auto itr = components.begin(); itr != components.end(); itr++)
+	{
+		T* componentCast = dynamic_cast<T*>(*itr);
+		if (componentCast != nullptr)
+		{
+			foundComponents.push_back(componentCast);
+		}
+	}
 	return foundComponents;
 }
 
@@ -178,15 +186,15 @@ list<typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type>
 Twin2Engine::Core::GameObject::GetComponentsInChildren()
 {
 	// Przeszukiwanie w g��b
-	list<T*> comps = list<T*>();
+	list<T*> comps;
 	for (size_t i = 0; i < _transform->GetChildCount(); ++i) {
 		GameObject* obj = _transform->GetChildAt(i)->GetGameObject();
-		auto listOfComponents = obj->GetComponents<T>();
-		comps.insert(comps.cend(), listOfComponents.begin(), listOfComponents.end());
-		listOfComponents = obj->GetComponentsInChildren<T>();
-		comps.insert(comps.cend(), listOfComponents.begin(), listOfComponents.end());
-		//comps.push_back(obj->GetComponents<T>());
-		//comps.push_back(obj->GetComponentsInChildren<T>());
+		//auto listOfComponents = obj->GetComponents<T>();
+		//comps.insert(comps.cend(), listOfComponents.begin(), listOfComponents.end());
+		//listOfComponents = obj->GetComponentsInChildren<T>();
+		//comps.insert(comps.cend(), listOfComponents.begin(), listOfComponents.end());
+		comps.merge(obj->GetComponents<T>());
+		comps.merge(obj->GetComponentsInChildren<T>());
 	}
 	return comps;
 }

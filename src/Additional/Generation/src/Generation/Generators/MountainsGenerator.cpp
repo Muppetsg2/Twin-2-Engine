@@ -35,7 +35,7 @@ void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
             //tile->layer = LayerMask::NameToLayer("Mountain");
             tile->type = MapHexTile::HexTileType::Mountain;
 
-            GameObject* mountain = GameObject::Instatiate(prefabMountains, tile->GetGameObject()->GetTransform());
+            GameObject* mountain = GameObject::Instantiate(prefabMountains, tile->GetGameObject()->GetTransform());
         }
 
         sectors.erase(sectors.begin() + index);

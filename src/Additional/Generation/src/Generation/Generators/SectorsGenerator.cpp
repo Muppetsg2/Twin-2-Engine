@@ -179,7 +179,7 @@ MapSector* SectorsGenerator::CreateSector(Tilemap::HexagonalTilemap* tilemap, gl
         }
     }
 
-    GameObject* sectorGO = GameObject::Instatiate(prefabSector, tilemap->GetTransform());
+    GameObject* sectorGO = GameObject::Instantiate(prefabSector, tilemap->GetTransform());
     MapSector* sector = sectorGO->GetComponent<MapSector>();
 
     sector->tilemap = tilemap;

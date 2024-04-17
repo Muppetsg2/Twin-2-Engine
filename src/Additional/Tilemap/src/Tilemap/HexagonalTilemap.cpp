@@ -196,7 +196,7 @@ glm::ivec2 HexagonalTilemap::GetRightTopPosition() const
 void HexagonalTilemap::SetTile(const glm::ivec2& position, Twin2Engine::Core::GameObject* gameObject)
 {
 
-	Twin2Engine::Core::GameObject* instantiatedGameObject = Twin2Engine::Core::GameObject::Instatiate(gameObject);
+	Twin2Engine::Core::GameObject* instantiatedGameObject = Twin2Engine::Core::GameObject::Instantiate(gameObject);
 
 	if (position.x >= _leftBottomPosition.x && position.x <= _rightTopPosition.x && position.y >= _leftBottomPosition.y && position.y <= _rightTopPosition.y)
 	{
@@ -315,7 +315,7 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::GameO
 		if (currentTile && !currentTile->GetGameObject())
 		{
 			// Kopiowanie gameobjectu
-			instantiatedGameObject = Twin2Engine::Core::GameObject::Instatiate(gameObject);
+			instantiatedGameObject = Twin2Engine::Core::GameObject::Instantiate(gameObject);
 			currentTile->SetGameObject(instantiatedGameObject);
 			//instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3((currentPos.x * _distanceBetweenTiles + (abs(currentPos.y) % 2) * 0.5f * _distanceBetweenTiles) * 1.5f, 0.0f, currentPos.y * _distanceBetweenTiles * 0.25f * SQRT_3));
 			instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3(currentPos.x * _distanceBetweenTiles * 0.75f, 0.0f, (currentPos.y + (abs(currentPos.x) % 2) * 0.5f) * _distanceBetweenTiles * 0.5f * SQRT_3));

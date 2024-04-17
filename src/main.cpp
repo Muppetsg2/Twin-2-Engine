@@ -413,7 +413,15 @@ int main(int, char**)
     greenHexagonPrefab->GetTransform()->Translate(glm::vec3(5, 6, 0));
     greenHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
     comp = greenHexagonPrefab->AddComponent<MeshRenderer>();
+    {GLenum error = glGetError();
+	if (error != GL_NO_ERROR) {
+		SPDLOG_ERROR("RDMError0: {}", error);
+	}}
     comp->AddMaterial(MaterialsManager::GetMaterial("GreenHexTile"));
+    {GLenum error = glGetError();
+	if (error != GL_NO_ERROR) {
+		SPDLOG_ERROR("RDMError01: {}", error);
+	}}
     comp->SetModel(modelHexagon);
 
     //HexagonalTilemap hexagonalTilemap(glm::ivec2(-25, -25), glm::ivec2(25, 25), 1.f, true);
@@ -469,8 +477,8 @@ int main(int, char**)
     mapGenerator->pointTile = redHexagonPrefab;
     mapGenerator->additionalTile = greenHexagonPrefab;
 
-    mapGenerator->generationRadiusMin = 15;
-    mapGenerator->generationRadiusMax = 15;
+    mapGenerator->generationRadiusMin = 5;
+    mapGenerator->generationRadiusMax = 5;
     float tilemapGenerating = glfwGetTime();
     mapGenerator->Generate();
     spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);

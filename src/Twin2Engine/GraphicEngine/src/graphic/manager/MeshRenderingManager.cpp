@@ -108,7 +108,7 @@ void MeshRenderingManager::Render()
 			unsigned int index = 0;
 			unsigned int materialIndex = 0;
 
-			std::vector<char> materialData(0);
+			//std::vector<char> materialData(0);
 
 			size_t size = 0;
 
@@ -153,9 +153,9 @@ void MeshRenderingManager::Render()
 
 			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
 			//glNamedBufferSubData(_materialInputUBO, 0, sizeof(char) * materialData.size(), materialData.data());
-			glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
-			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(char) * materialData.size(), materialData.data());
-			glBindBuffer(GL_UNIFORM_BUFFER, NULL);
+			//glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
+			//glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(char) * materialData.size(), materialData.data());
+			//glBindBuffer(GL_UNIFORM_BUFFER, NULL);
 
 			shaderPair.first->Use();
 
@@ -228,7 +228,7 @@ void MeshRenderingManager::RenderDepthMap()
 			unsigned int index = 0;
 			unsigned int materialIndex = 0;
 
-			std::vector<char> materialData(0);
+			//std::vector<char> materialData(0);
 
 			size_t size = 0;
 
@@ -261,9 +261,9 @@ void MeshRenderingManager::RenderDepthMap()
 
 			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
 			//glNamedBufferSubData(_materialInputUBO, 0, sizeof(char) * materialData.size(), materialData.data());
-			glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
-			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(char) * materialData.size(), materialData.data());
-			glBindBuffer(GL_UNIFORM_BUFFER, NULL);
+			//glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
+			//glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(char) * materialData.size(), materialData.data());
+			//glBindBuffer(GL_UNIFORM_BUFFER, NULL);
 
 			shaderPair.first->Use();
 

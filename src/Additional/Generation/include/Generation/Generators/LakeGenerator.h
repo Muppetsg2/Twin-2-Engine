@@ -7,6 +7,7 @@
 #include <Generation/MapSector.h>
 #include <Generation/VectorShuffler.h>
 
+
 namespace Generation::Generators
 {
     class LakeGenerator : public AMapElementGenerator

@@ -12,12 +12,21 @@ namespace Generation
 	class MapSector;
 	class MapHexTile : public Twin2Engine::Core::Component
 	{
+	public:
+
+		enum HexTileType
+		{
+			Normal,
+			Water,
+			Mountain
+		};
 
 	public:
 		Tilemap::HexagonalTilemap* tilemap;
 		MapRegion* region;
 		MapSector* sector;
 		Tilemap::HexagonalTile* tile;
+		HexTileType type;
 
 		//inline void SetTilemap(Tilemap::HexagonalTilemap* tilemap);
 		//inline Tilemap::HexagonalTilemap* GetTilemap() const;

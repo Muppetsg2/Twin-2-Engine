@@ -5,25 +5,25 @@ using namespace Tilemap;
 using namespace Twin2Engine::Core;
 using namespace std;
 
-void MapRegion::SetTilemap(HexagonalTilemap* tilemap)
-{
-	_tilemap = tilemap;
-}
-
-inline HexagonalTilemap* MapRegion::GetTilemap() const
-{
-	return _tilemap;
-}
-
-void MapRegion::SetType(const RegionType& type)
-{
-	_type = type;
-}
-
-inline MapRegion::RegionType MapRegion::GetType() const
-{
-	return _type;
-}
+//void MapRegion::SetTilemap(HexagonalTilemap* tilemap)
+//{
+//	tilemap = tilemap;
+//}
+//
+//inline HexagonalTilemap* MapRegion::GetTilemap() const
+//{
+//	return tilemap;
+//}
+//
+//void MapRegion::SetType(const RegionType& type)
+//{
+//	type = type;
+//}
+//
+//inline MapRegion::RegionType MapRegion::GetType() const
+//{
+//	return type;
+//}
 
 
 //inline const std::vector<Tilemap::HexagonalTile*>& GetTiles() const;

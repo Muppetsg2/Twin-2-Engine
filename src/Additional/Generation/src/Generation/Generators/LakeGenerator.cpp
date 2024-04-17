@@ -1,9 +1,14 @@
 #include <Generation/Generators/LakeGenerator.h>
 
+#include <manager/SceneManager.h>
+
 using namespace Generation;
 using namespace Generation::Generators;
 
 using namespace Tilemap;
+
+using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Manager;
 
 using namespace std;
 using namespace glm;
@@ -48,6 +53,8 @@ void LakeGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
     {
         for (MapRegion* region : waterRegions)
         {
+            SPDLOG_ERROR("Nie zrobiono usuwania GameObjectów");
+            //SceneManager::DeleteGameObject(region->GetGameObject());
             //DestroyImmediate(region->GetGameObject());
         }
     }
@@ -56,16 +63,15 @@ void LakeGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
         for (MapRegion* region : waterRegions)
         {
             region->type = MapRegion::RegionType::Water;
-            for (MapSector* sector : region->regionSectors)
+            for (MapSector* sector : region->GetSectors())
             {
                 sector->type = MapSector::SectorType::Water;
-                for (GameObject* tile : sector->sectorTiles)
+                for (MapHexTile* tile : sector->GetTiles())
                 {
-                    tile->GetComponent<HexTile>()->Type = TileType::Water;
-                    tile->GetComponent<HexTile>()->baseColor = waterColor;
+                    tile->type = MapHexTile::HexTileType::Water;
                 }
             }
-            region->transform->SetPositionY(waterLevel);
+            region->GetGameObject()->GetTransform()->Translate(vec3(0.0f, -waterLevel, 0.0f));
         }
     }
 }

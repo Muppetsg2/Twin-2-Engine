@@ -8,7 +8,7 @@ namespace Generation
 {
     class MapSector;
 
-	class MapRegion : Twin2Engine::Core::Component
+	class MapRegion : public Twin2Engine::Core::Component
 	{
     public:
 
@@ -20,19 +20,22 @@ namespace Generation
         };
 
     private:
-        Tilemap::HexagonalTilemap* _tilemap;
-
-        RegionType _type;
+        //Tilemap::HexagonalTilemap* _tilemap;
+        //
+        //RegionType _type;
 
         //std::vector<MapSector*> _regionSectors;
         std::unordered_set<MapSector*> _regionSectors;
 
     public:
+        Tilemap::HexagonalTilemap* tilemap;
 
-        void SetTilemap(Tilemap::HexagonalTilemap* tilemap);
-        inline Tilemap::HexagonalTilemap* GetTilemap() const;
-        void SetType(const RegionType& type);
-        inline RegionType GetType() const;
+        RegionType type;
+
+        //void SetTilemap(Tilemap::HexagonalTilemap* tilemap);
+        //inline Tilemap::HexagonalTilemap* GetTilemap() const;
+        //void SetType(const RegionType& type);
+        //inline RegionType GetType() const;
 
         //inline const std::vector<Tilemap::HexagonalTile*>& GetTiles() const;
         inline const std::unordered_set<MapSector*>& GetSectors() const;

@@ -225,6 +225,7 @@ int main(int, char**)
             cam->SetCameraFilter(node["cameraFilter"].as<size_t>());
             cam->SetCameraType(node["cameraType"].as<CameraType>());
             cam->SetSamples(node["samples"].as<size_t>());
+            cam->SetRenderResolution(node["renderRes"].as<RenderResolution>());
             cam->SetGamma(node["gamma"].as<float>());
             cam->SetFrontDir(node["frontDir"].as<vec3>());
             cam->SetWorldUp(node["worldUp"].as<vec3>());
@@ -776,6 +777,25 @@ void imgui_render()
         if (ImGui::CollapsingHeader("Main Camera")) {
 
             CameraComponent* c = CameraComponent::GetMainCamera();
+
+            RenderResolution res = c->GetRenderResolution();
+
+            if (ImGui::BeginCombo("Render Resolution", res == RenderResolution::DEFAULT ? "Default" : (res == RenderResolution::MEDIUM ? "Medium" : "High")))
+            {
+                if (ImGui::Selectable("Default", res == RenderResolution::DEFAULT))
+                {
+                    c->SetRenderResolution(RenderResolution::DEFAULT);
+                }
+                else if (ImGui::Selectable("Medium", res == RenderResolution::MEDIUM))
+                {
+                    c->SetRenderResolution(RenderResolution::MEDIUM);
+                }
+                else if (ImGui::Selectable("High", res == RenderResolution::HIGH))
+                {
+                    c->SetRenderResolution(RenderResolution::HIGH);
+                }
+                ImGui::EndCombo();
+            }
 
             uint8_t acFil = RenderFilter::NONE;
             uint8_t fil = c->GetCameraFilters();

@@ -273,4 +273,20 @@ namespace YAML {
 			return true;
 		}
 	};
+
+	template<> struct convert<Twin2Engine::Core::RenderResolution> {
+		using RenderResolution = Twin2Engine::Core::RenderResolution;
+
+		static Node encode(const RenderResolution& rhs) {
+			Node node;
+			node = (size_t)rhs;
+			return node;
+		}
+
+		static bool decode(const Node& node, RenderResolution& rhs) {
+			if (!node.IsScalar()) return false;
+			rhs = (RenderResolution)node.as<size_t>();
+			return true;
+		}
+	};
 }

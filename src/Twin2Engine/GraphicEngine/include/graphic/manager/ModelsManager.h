@@ -61,6 +61,8 @@ namespace Twin2Engine::Manager
 		static GraphicEngine::InstatiatingModel CreateModel(const std::string& modelName, std::vector<GraphicEngine::Vertex> vertices, std::vector<unsigned int> indices);
 		//static void FreeModel(InstatiatingModel*& model);
 
+		static YAML::Node Serialize();
+
 		static constexpr const char* CUBE_PATH = "{Cube}";
 		static constexpr const char* SPHERE_PATH = "{Sphere}";
 		static constexpr const char* PLANE_PATH = "{Plane}";

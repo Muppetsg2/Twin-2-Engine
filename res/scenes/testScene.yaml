@@ -74,7 +74,8 @@ GameObjects:
                 farPlane: 1000.0
                 cameraFilter: 0
                 cameraType: 1
-                samples: 16
+                samples: 4
+                renderRes: 0
                 gamma: 2.2
                 frontDir:
                     x: 0.0

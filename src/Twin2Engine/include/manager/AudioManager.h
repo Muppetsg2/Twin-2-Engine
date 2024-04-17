@@ -60,6 +60,8 @@ namespace Twin2Engine::Manager {
 
 		static void UnloadAll();
 
+		static YAML::Node Serialize();
+
 		friend class SceneManager;
 		friend class PrefabManager;
 	};

@@ -268,3 +268,12 @@ Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, co
 	
 	return Material(data);
 }
+
+YAML::Node MaterialsManager::Serialize()
+{
+	YAML::Node materials;
+	for (const auto& matPair : materialsPaths) {
+		materials.push_back(matPair.second);
+	}
+	return materials;
+}

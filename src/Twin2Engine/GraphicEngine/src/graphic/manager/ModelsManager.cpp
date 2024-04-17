@@ -738,3 +738,12 @@ InstatiatingModel ModelsManager::CreateModel(const std::string& modelName, std::
 
     return modelData;
 }
+
+YAML::Node ModelsManager::Serialize()
+{
+    YAML::Node models;
+    for (const auto& modelPair : modelsPaths) {
+        models.push_back(modelPair.second);
+    }
+    return models;
+}

@@ -83,8 +83,30 @@ void SpriteManager::UnloadAll()
 {
     for (auto& spr : _sprites) {
         delete spr.second;
-        spr.second = nullptr;
     }
     _sprites.clear();
     _spriteAliases.clear();
+}
+
+YAML::Node SpriteManager::Serialize()
+{
+    YAML::Node sprites;
+    for (const auto& spritePair : SpriteManager::_spriteAliases) {
+        Sprite* sprite = SpriteManager::_sprites[spritePair.first];
+
+        YAML::Node spriteNode;
+        spriteNode["alias"] = spritePair.second;
+        spriteNode["texture"] = sprite->GetTexture()->GetManagerId();
+
+        if (SpriteManager::_spriteLoadData.find(spritePair.first) != SpriteManager::_spriteLoadData.end()) {
+            SpriteData data = SpriteManager::_spriteLoadData[spritePair.first];
+            spriteNode["x"] = data.x;
+            spriteNode["y"] = data.y;
+            spriteNode["width"] = data.width;
+            spriteNode["height"] = data.height;
+        }
+
+        sprites.push_back(spriteNode);
+    }
+    return sprites;
 }

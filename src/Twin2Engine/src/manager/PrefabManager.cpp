@@ -1,6 +1,7 @@
 #include <manager/PrefabManager.h>
 #include <graphic/manager/MaterialsManager.h>
 #include <graphic/manager/ModelsManager.h>
+#include <manager/SceneManager.h>
 #include <core/YamlConverters.h>
 
 using namespace Twin2Engine::Manager;
@@ -147,70 +148,28 @@ void PrefabManager::SaveAsPrefab(const GameObject* obj, const std::string& path)
 	YAML::Node prefabNode;
 
 #pragma region SAVING_TEXTURES
-	std::map<size_t, size_t> textures;
-	size_t i = 0;
-	for (const auto& pathPair : TextureManager::_texturesPaths) {
-		Texture2D* tex = TextureManager::_loadedTextures[pathPair.first];
-
-		YAML::Node texNode;
-		texNode["path"] = pathPair.second;
-		if (TextureManager::_texturesFormats.find(pathPair.first) != TextureManager::_texturesFormats.end()) {
-			const auto& formats = TextureManager::_texturesFormats[pathPair.first];
-			texNode["fileFormat"] = formats.second;
-			texNode["engineFormat"] = formats.first;
-		}
-		texNode["sWrapMode"] = tex->GetWrapModeS();
-		texNode["tWrapMode"] = tex->GetWrapModeT();
-		texNode["minFilterMode"] = tex->GetMinFilterMode();
-		texNode["magFilterMode"] = tex->GetMagFilterMode();
-
-		prefabNode["Textures"].push_back(texNode);
-		textures[pathPair.first] = i++;
-	}
+	prefabNode["Textures"] = TextureManager::Serialize();
 #pragma endregion
 #pragma region SAVING_SPRITES
-	for (const auto& spritePair : SpriteManager::_spriteAliases) {
-		Sprite* sprite = SpriteManager::_sprites[spritePair.first];
-
-		YAML::Node spriteNode;
-		spriteNode["alias"] = spritePair.second;
-		spriteNode["texture"] = textures[sprite->GetTexture()->GetManagerId()];
-
-		if (SpriteManager::_spriteLoadData.find(spritePair.first) != SpriteManager::_spriteLoadData.end()) {
-			SpriteData data = SpriteManager::_spriteLoadData[spritePair.first];
-			spriteNode["x"] = data.x;
-			spriteNode["y"] = data.y;
-			spriteNode["width"] = data.width;
-			spriteNode["height"] = data.height;
-		}
-
-		prefabNode["Sprites"].push_back(spriteNode);
+	prefabNode["Sprites"] = SpriteManager::Serialize();
+	for (YAML::Node spriteNode : prefabNode["Sprites"]) {
+		spriteNode["texture"] = SceneManager::GetTexture2DSaveIdx(spriteNode["texture"].as<size_t>());
 	}
 #pragma endregion
 #pragma region SAVING_FONTS
-	for (const auto& fontPair : FontManager::_fontsPaths) {
-		prefabNode["Fonts"].push_back(fontPair.second);
-	}
+	prefabNode["Fonts"] = FontManager::Serialize();
 #pragma endregion
 #pragma region SAVING_AUDIOS
-	for (const auto& audioPair : AudioManager::_audiosPaths) {
-		prefabNode["Audio"].push_back(audioPair.second);
-	}
+	prefabNode["Audio"] = AudioManager::Serialize();
 #pragma endregion
 #pragma region SAVING_MATERIALS
-	for (const auto& matPair : MaterialsManager::materialsPaths) {
-		prefabNode["Materials"].push_back(matPair.second);
-	}
+	prefabNode["Materials"] = MaterialsManager::Serialize();
 #pragma endregion
 #pragma region SAVING_MODELS
-	for (const auto& modelPair : ModelsManager::modelsPaths) {
-		prefabNode["Models"].push_back(modelPair.second);
-	}
+	prefabNode["Models"] = ModelsManager::Serialize();
 #pragma endregion
 #pragma region SAVING_PREFABS
-	for (const auto& prefabPair : PrefabManager::_prefabsPaths) {
-		prefabNode["Prefabs"].push_back(prefabPair.second);
-	}
+	prefabNode["Prefabs"] = PrefabManager::Serialize();
 #pragma endregion
 #pragma region SAVING_ROOT_OBJECT
 	YAML::Node rootNode = obj->Serialize();
@@ -220,7 +179,7 @@ void PrefabManager::SaveAsPrefab(const GameObject* obj, const std::string& path)
 #pragma endregion
 #pragma region SAVING_GAMEOBJECTS
 	Transform* rootT = obj->GetTransform();
-	for (i = 0; i < rootT->GetChildCount(); ++i) {
+	for (size_t i = 0; i < rootT->GetChildCount(); ++i) {
 		SaveGameObject(rootT->GetChildAt(i)->GetGameObject(), prefabNode["GameObjects"]);
 	}
 #pragma endregion
@@ -237,4 +196,13 @@ void PrefabManager::UnloadAll()
 	}
 	_prefabs.clear();
 	_prefabsPaths.clear();
+}
+
+YAML::Node PrefabManager::Serialize()
+{
+	YAML::Node prefabs;
+	for (const auto& prefabPair : _prefabsPaths) {
+		prefabs.push_back(prefabPair.second);
+	}
+	return prefabs;
 }

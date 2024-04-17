@@ -137,13 +137,13 @@ static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint i
 #pragma region FunctionsDeclaration
 
 bool init();
-void init_imgui();
 
 void input();
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void update();
 void render();
 
+void init_imgui();
 void imgui_begin();
 void imgui_render();
 void imgui_end();
@@ -225,6 +225,7 @@ int main(int, char**)
             cam->SetCameraFilter(node["cameraFilter"].as<size_t>());
             cam->SetCameraType(node["cameraType"].as<CameraType>());
             cam->SetSamples(node["samples"].as<size_t>());
+            cam->SetRenderResolution(node["renderRes"].as<RenderResolution>());
             cam->SetGamma(node["gamma"].as<float>());
             cam->SetFrontDir(node["frontDir"].as<vec3>());
             cam->SetWorldUp(node["worldUp"].as<vec3>());
@@ -365,7 +366,8 @@ int main(int, char**)
 #pragma endregion
 
     // ADDING SCENES
-    SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
+    SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
     /*
@@ -410,17 +412,15 @@ int main(int, char**)
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
 
     // SCENE OBJECTS
-
-    GameObject* test1 = SceneManager::CreateGameObject();
-    std::tuple<GameObject*, Text*, Image*> test2 = SceneManager::CreateGameObject<Text, Image>();
-
+    /*
     GameObject* test3 = SceneManager::CreateGameObject(PrefabManager::GetPrefab("res/prefabs/testPrefab.yaml"));
+    */
     //PrefabManager::SaveAsPrefab(test3, "res/prefabs/savedPrefab.yaml");
     
 #pragma region TestingLighting
-    GameObject dl_go;
-    dl_go.GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
-    Twin2Engine::Core::DirectionalLightComponent* dl = dl_go.AddComponent<Twin2Engine::Core::DirectionalLightComponent>();
+    GameObject* dl_go = SceneManager::CreateGameObject();
+    dl_go->GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
+    DirectionalLightComponent* dl = dl_go->AddComponent<DirectionalLightComponent>();
     dl->SetColor(glm::vec3(1.0f));
     LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
     LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f, 0.02f, 0.02f));
@@ -436,10 +436,6 @@ int main(int, char**)
 
         // Update game objects' state here
         update();
-        /**/
-        dl->GetTransform()->Update();
-        dl->Update();
-        /**/
 
         // OpenGL rendering code here
         render();
@@ -459,16 +455,15 @@ int main(int, char**)
     TextureManager::UnloadAll();
     AudioManager::UnloadAll();
     FontManager::UnloadAll();
+    GraphicEngineManager::End();
     Input::FreeAllWindows();
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-
     Window::FreeAll();
-    glfwTerminate();
 
-    GraphicEngineManager::End();
+    glfwTerminate();
 
     return 0;
 }
@@ -524,38 +519,6 @@ bool init()
     glFrontFace(GL_CCW);
 
     return true;
-}
-
-void init_imgui()
-{
-    // Setup Dear ImGui binding
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
-
-    ImGui_ImplGlfw_InitForOpenGL(window->GetWindow(), true);
-    ImGui_ImplOpenGL3_Init(glsl_version);
-
-    // Setup style
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
-
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-    // - Read 'misc/fonts/README.txt' for more instructions and details.
-    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != NULL);
 }
 
 void input()
@@ -621,12 +584,6 @@ void input()
     }
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::Q)) {
-        
-        // Rotation not saving properly
-        // Can't save Values when they change unles you get them
-        Camera->GetTransform()->GetLocalPosition();
-        Camera->GetTransform()->GetLocalRotation();
-        Camera->GetTransform()->GetLocalScale();
         SceneManager::SaveScene("res/scenes/quickSavedScene.yaml");
     }
 }
@@ -639,7 +596,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
         lastY = ypos;
         mouseNotUsed = false;
     }
-
 
     GLfloat xoffset = xpos - lastX;
     GLfloat yoffset = lastY - ypos; // Odwrocone, poniewaz wsporzedne zmieniaja sie od dolu do gory  
@@ -655,18 +611,18 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     // PITCH = ROT X
     // ROLL = ROT Z
 
-    Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x + yoffset, rot.y + xoffset, rot.z));
+    rot.x += yoffset;
 
-    rot = Camera->GetTransform()->GetGlobalRotation();
-
-    if (rot.x > 89.0f) {
-        Camera->GetTransform()->SetGlobalRotation(glm::vec3(89.f, rot.y, rot.z));
+    if (rot.x > 89.f) {
+        rot.x = 89.f;
     }
-    if (rot.x < -89.0f)
+    
+    if (rot.x < -89.f)
     {
-        Camera->GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
+        rot.x = -89.f;
     }
 
+    Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x, rot.y + xoffset, rot.z));
     LightingSystem::LightingController::Instance()->ViewerTransformChanged.Invoke();
 }
 
@@ -699,6 +655,38 @@ void render()
     // OpenGL Rendering code goes here
     SceneManager::RenderCurrentScene();
     CameraComponent::GetMainCamera()->Render();
+}
+
+void init_imgui()
+{
+    // Setup Dear ImGui binding
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
+
+    ImGui_ImplGlfw_InitForOpenGL(window->GetWindow(), true);
+    ImGui_ImplOpenGL3_Init(glsl_version);
+
+    // Setup style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsClassic();
+
+    // Load Fonts
+    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
+    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
+    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
+    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
+    // - Read 'misc/fonts/README.txt' for more instructions and details.
+    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
+    //io.Fonts->AddFontDefault();
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
+    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
+    //IM_ASSERT(font != NULL);
 }
 
 void imgui_begin()
@@ -777,6 +765,25 @@ void imgui_render()
         if (ImGui::CollapsingHeader("Main Camera")) {
 
             CameraComponent* c = CameraComponent::GetMainCamera();
+
+            RenderResolution res = c->GetRenderResolution();
+
+            if (ImGui::BeginCombo("Render Resolution", res == RenderResolution::DEFAULT ? "Default" : (res == RenderResolution::MEDIUM ? "Medium" : "High")))
+            {
+                if (ImGui::Selectable("Default", res == RenderResolution::DEFAULT))
+                {
+                    c->SetRenderResolution(RenderResolution::DEFAULT);
+                }
+                else if (ImGui::Selectable("Medium", res == RenderResolution::MEDIUM))
+                {
+                    c->SetRenderResolution(RenderResolution::MEDIUM);
+                }
+                else if (ImGui::Selectable("High", res == RenderResolution::HIGH))
+                {
+                    c->SetRenderResolution(RenderResolution::HIGH);
+                }
+                ImGui::EndCombo();
+            }
 
             uint8_t acFil = RenderFilter::NONE;
             uint8_t fil = c->GetCameraFilters();

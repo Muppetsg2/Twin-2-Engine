@@ -116,7 +116,101 @@ namespace Twin2Engine::Manager {
 
 		static void UnloadAll();
 
+		static YAML::Node Serialize();
+
 		friend class SceneManager;
 		friend class PrefabManager;
+	};
+}
+
+namespace YAML {
+	template<> struct convert<Twin2Engine::GraphicEngine::TextureFormat> {
+		using TextureFormat = Twin2Engine::GraphicEngine::TextureFormat;
+
+		static Node encode(const TextureFormat& rhs) {
+			Node node;
+			node = (size_t)rhs;
+			return node;
+		}
+
+		static bool decode(const Node& node, TextureFormat& rhs) {
+			if (!node.IsScalar()) return false;
+			rhs = (TextureFormat)node.as<size_t>();
+			return true;
+		}
+	};
+
+	template<> struct convert<Twin2Engine::Manager::TextureFileFormat> {
+		using TextureFileFormat = Twin2Engine::Manager::TextureFileFormat;
+
+		static Node encode(const TextureFileFormat& rhs) {
+			Node node;
+			node = (size_t)rhs;
+			return node;
+		}
+
+		static bool decode(const Node& node, TextureFileFormat& rhs) {
+			if (!node.IsScalar()) return false;
+			rhs = (TextureFileFormat)node.as<size_t>();
+			return true;
+		}
+	};
+
+	template<> struct convert<Twin2Engine::GraphicEngine::TextureWrapMode> {
+		using TextureWrapMode = Twin2Engine::GraphicEngine::TextureWrapMode;
+
+		static Node encode(const TextureWrapMode& rhs) {
+			Node node;
+			node = (size_t)rhs;
+			return node;
+		}
+
+		static bool decode(const Node& node, TextureWrapMode& rhs) {
+			if (!node.IsScalar()) return false;
+			rhs = (TextureWrapMode)node.as<size_t>();
+			return true;
+		}
+	};
+
+	template<> struct convert<Twin2Engine::GraphicEngine::TextureFilterMode> {
+		using TextureFilterMode = Twin2Engine::GraphicEngine::TextureFilterMode;
+
+		static Node encode(const TextureFilterMode& rhs) {
+			Node node;
+			node = (size_t)rhs;
+			return node;
+		}
+
+		static bool decode(const Node& node, TextureFilterMode& rhs) {
+			if (!node.IsScalar()) return false;
+			rhs = (TextureFilterMode)node.as<size_t>();
+			return true;
+		}
+	};
+
+	template<> struct convert<Twin2Engine::Manager::TextureData> {
+		using TextureData = Twin2Engine::Manager::TextureData;
+		using TextureWrapMode = Twin2Engine::GraphicEngine::TextureWrapMode;
+		using TextureFilterMode = Twin2Engine::GraphicEngine::TextureFilterMode;
+
+		static Node encode(const TextureData& rhs) {
+			Node node;
+			if (rhs.sWrapMode != TextureWrapMode::MIRRORED_REPEAT) node["sWrapMode"] = rhs.sWrapMode;
+			if (rhs.tWrapMode != TextureWrapMode::MIRRORED_REPEAT) node["tWrapMode"] = rhs.tWrapMode;
+			if (rhs.minFilterMode != TextureFilterMode::NEAREST_MIPMAP_LINEAR) node["minFilterMode"] = rhs.minFilterMode;
+			if (rhs.magFilterMode != TextureFilterMode::LINEAR) node["magFilterMode"] = rhs.magFilterMode;
+			return node;
+		}
+
+		static bool decode(const Node& node, TextureData& rhs) {
+			if (!node.IsMap()) return false;
+			if (!node["sWrapMode"] && !node["tWrapMode"] && !node["minFilterMode"] && !node["magFilterMode"]) return false;
+
+			rhs.sWrapMode = node["sWrapMode"].as<TextureWrapMode>();
+			rhs.tWrapMode = node["tWrapMode"].as<TextureWrapMode>();
+			rhs.minFilterMode = node["minFilterMode"].as<TextureFilterMode>();
+			rhs.magFilterMode = node["magFilterMode"].as<TextureFilterMode>();
+			return true;
+		}
 	};
 }

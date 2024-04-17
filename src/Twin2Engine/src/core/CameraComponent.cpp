@@ -40,14 +40,14 @@ void CameraComponent::OnWindowSizeChange()
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
 	glBindTexture(GL_TEXTURE_2D, _depthMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, _renderMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB, wSize.x, wSize.y, GL_TRUE);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB16F, wSize.x, wSize.y, GL_TRUE);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
 	glBindRenderbuffer(GL_RENDERBUFFER, _msRenderBuffer);
@@ -202,7 +202,7 @@ void CameraComponent::SetSamples(uint8_t i)
 		ivec2 wSize = Window::GetInstance()->GetContentSize();
 
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB, wSize.x, wSize.y, GL_TRUE);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB16F, wSize.x, wSize.y, GL_TRUE);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
 		glBindRenderbuffer(GL_RENDERBUFFER, _msRenderBuffer);
@@ -396,7 +396,7 @@ void CameraComponent::Initialize()
 	glGenTextures(1, &_depthMap);
 	glBindTexture(GL_TEXTURE_2D, _depthMap);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -425,7 +425,7 @@ void CameraComponent::Initialize()
 
 	glGenTextures(1, &_msRenderMap);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB, wSize.x, wSize.y, GL_TRUE);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB16F, wSize.x, wSize.y, GL_TRUE);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap, 0);
@@ -446,7 +446,7 @@ void CameraComponent::Initialize()
 	glGenTextures(1, &_renderMap);
 	glBindTexture(GL_TEXTURE_2D, _renderMap);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

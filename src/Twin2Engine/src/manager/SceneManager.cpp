@@ -505,7 +505,7 @@ void SceneManager::LoadScene(const string& name)
 		objectByComponentId[transformId] = obj;
 	}
 
-	// LOAD GAMEOBJECTS AND TRASFORMS VALUES
+	// LOAD GAMEOBJECTS AND TRANSFORMS VALUES
 	map<size_t, YAML::Node> componentsNodes;
 	for (const YAML::Node& gameObjectNode : sceneToLoad->_gameObjects) {
 		// GameObject
@@ -520,7 +520,7 @@ void SceneManager::LoadScene(const string& name)
 		t->SetEnable(transformNode["enabled"].as<bool>());
 		t->SetLocalPosition(transformNode["position"].as<glm::vec3>());
 		t->SetLocalScale(transformNode["scale"].as<glm::vec3>());
-		t->SetLocalRotation(transformNode["rotation"].as<glm::vec3>());
+		t->SetLocalRotation(glm::radians(transformNode["rotation"].as<glm::vec3>()));
 
 		// Components Node
 		componentsNodes[obj->Id()] = gameObjectNode["components"];

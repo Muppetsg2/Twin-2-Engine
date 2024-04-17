@@ -366,6 +366,7 @@ int main(int, char**)
 #pragma endregion
 
     // ADDING SCENES
+    //SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
     SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
@@ -411,11 +412,12 @@ int main(int, char**)
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
 
     // SCENE OBJECTS
-
+    /*
     GameObject* test1 = SceneManager::CreateGameObject();
     std::tuple<GameObject*, Text*, Image*> test2 = SceneManager::CreateGameObject<Text, Image>();
 
     GameObject* test3 = SceneManager::CreateGameObject(PrefabManager::GetPrefab("res/prefabs/testPrefab.yaml"));
+    */
     //PrefabManager::SaveAsPrefab(test3, "res/prefabs/savedPrefab.yaml");
     
 #pragma region TestingLighting

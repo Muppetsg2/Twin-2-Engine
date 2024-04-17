@@ -224,8 +224,8 @@ void CameraComponent::SetRenderResolution(RenderResolution res)
 	if (_isInit) {
 		ivec2 wSize = Window::GetInstance()->GetContentSize();
 
-		uint r_res = GL_RGB;
-		uint d_res = GL_DEPTH_COMPONENT;
+		unsigned int r_res = GL_RGB;
+		unsigned int d_res = GL_DEPTH_COMPONENT;
 
 		switch (_renderRes) {
 			case DEFAULT: {
@@ -440,8 +440,8 @@ void CameraComponent::Initialize()
 
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
-	uint r_res = GL_RGB;
-	uint d_res = GL_DEPTH_COMPONENT;
+	unsigned int r_res = GL_RGB;
+	unsigned int d_res = GL_DEPTH_COMPONENT;
 
 	switch (_renderRes) {
 		case DEFAULT: {

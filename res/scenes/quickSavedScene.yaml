@@ -1,7 +1,7 @@
 Textures:
   - path: res/textures/white.png
-    fileFormat: 35906
-    engineFormat: 6408
+    fileFormat: 35904
+    engineFormat: 6407
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
@@ -14,6 +14,8 @@ Textures:
     minFilterMode: 9986
     magFilterMode: 9729
   - path: res/textures/brickWall.jpg
+    fileFormat: 35904
+    engineFormat: 6407
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
@@ -26,11 +28,15 @@ Textures:
     minFilterMode: 9986
     magFilterMode: 9729
   - path: res/textures/woodenRoof2.png
+    fileFormat: 35906
+    engineFormat: 6408
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
   - path: res/textures/hexEdgeTexture.png
+    fileFormat: 35906
+    engineFormat: 6408
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
@@ -59,6 +65,8 @@ Models:
   - res/models/castle.obj
   - "{Cube}"
   - "{Plane}"
+Prefabs:
+  - res/prefabs/testPrefab.yaml
 GameObjects:
   - id: 1
     name: Camera
@@ -68,9 +76,9 @@ GameObjects:
       id: 0
       enabled: true
       position:
-        x: 0
-        y: 2
-        z: 5
+        x: -14.8198109
+        y: 2.17843032
+        z: 11.6985006
       scale:
         x: 0
         y: 0
@@ -88,12 +96,13 @@ GameObjects:
         farPlane: 1000
         cameraFilter: 0
         cameraType: 1
-        samples: 16
+        samples: 4
+        renderRes: 0
         gamma: 2.20000005
         frontDir:
-          x: 0.112350643
-          y: 0.315648943
-          z: -0.942201197
+          x: 0.797813237
+          y: 0.0453629829
+          z: -0.601195693
         worldUp:
           x: 0
           y: 1
@@ -222,10 +231,10 @@ GameObjects:
         sprite: 0
         color:
           x: 1
-          y: 0
+          y: 1
           z: 0
           w: 1
-        width: 199.333557
+        width: 517.397278
         height: 100
     children:
       []
@@ -255,7 +264,7 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        text: "Time: 0.017846"
+        text: "Time: 0.004820"
         color:
           x: 1
           y: 1
@@ -458,9 +467,9 @@ GameObjects:
           x: 0
           y: 0
           z: 0
-        width: 20
-        length: 20
-        height: 20
+        width: 1
+        length: 1
+        height: 1
         rotation:
           x: 0
           y: 0
@@ -572,5 +581,51 @@ GameObjects:
           w: 1
         width: 100
         height: 100
+    children:
+      []
+  - id: 13
+    name: testPrefabRoot
+    isStatic: false
+    isActive: true
+    transform:
+      id: 29
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      []
+    children:
+      - 14
+  - id: 14
+    name: testPrefabChild1
+    isStatic: false
+    isActive: true
+    transform:
+      id: 30
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      []
     children:
       []

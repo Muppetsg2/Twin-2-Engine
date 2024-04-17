@@ -21,9 +21,9 @@ void CameraComponent::OnTransformChange(Transform* trans)
 	glm::vec3 rot = trans->GetGlobalRotation();
 
 	glm::vec3 front{};
-	front.x = cos(glm::radians(rot.y)) * cos(glm::radians(rot.x));
-	front.y = sin(glm::radians(rot.x));
-	front.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
+	front.x = cos(rot.y) * cos(rot.x);
+	front.y = sin(rot.x);
+	front.z = sin(rot.y) * cos(rot.x);
 	this->SetFrontDir(glm::normalize(front));
 
 	/*

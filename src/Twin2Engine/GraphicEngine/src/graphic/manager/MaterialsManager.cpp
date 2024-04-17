@@ -1,10 +1,13 @@
 #include <graphic/manager/MaterialsManager.h>
+#include <LightingController.h>
 
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
 
 std::hash<std::string> MaterialsManager::stringHash;
 std::map<size_t, Twin2Engine::GraphicEngine::MaterialData*> MaterialsManager::loadedMaterials;
+
+std::map<size_t, std::string> MaterialsManager::materialsPaths;
 
 //sconst td::unordered_map<size_t, int> MaterialsManager::typeSizeMap
 //{
@@ -66,6 +69,7 @@ void MaterialsManager::UnloadMaterial(size_t managerId) {
 		delete matData->materialParameters;
 		delete matData;
 		loadedMaterials.erase(managerId);
+		materialsPaths.erase(managerId);
 	}
 }
 
@@ -225,6 +229,9 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 	};
 
 	loadedMaterials[materialNameHash] = materialData;
+	materialsPaths[materialNameHash] = materialName;
+
+	LightingSystem::LightingController::Instance()->BindLightBuffors(materialData->shader);
 
 	return Material(materialData);
 }
@@ -260,4 +267,13 @@ Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, co
 	}
 	
 	return Material(data);
+}
+
+YAML::Node MaterialsManager::Serialize()
+{
+	YAML::Node materials;
+	for (const auto& matPair : materialsPaths) {
+		materials.push_back(matPair.second);
+	}
+	return materials;
 }

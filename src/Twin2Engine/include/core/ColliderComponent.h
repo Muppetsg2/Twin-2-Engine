@@ -5,6 +5,7 @@
 #include <GameCollider.h>
 #include <BoundingVolume.h>
 #include <core/EventHandler.h>
+#include <LayersData.h>
 
 namespace CollisionSystem {
 	class GameCollider;
@@ -19,9 +20,12 @@ namespace Twin2Engine::Core {
 		ColliderComponent* collider;
 		ColliderComponent* otherCollider;
 		glm::vec3 position;
+		glm::vec3 separation;
 	};
 
 	class ColliderComponent : public Component {
+	private:
+		bool dirtyFlag = false;
 	protected:
 		ColliderComponent(); // Powoduje ¿e klasa jest jakby abstrakcyjna no chyba ¿e bêdzie dziedziczona
 		CollisionSystem::GameCollider* collider = nullptr;
@@ -45,12 +49,14 @@ namespace Twin2Engine::Core {
 		Layer GetLayer();
 		void SetLayersFilter(LayerCollisionFilter& layersFilter);
 
+		virtual void Update() override;
+
 		void EnableBoundingVolume(bool v);
 		void SetBoundingVolumeRadius(float radius);
 		void SetLocalPosition(float x, float y, float z);
 
-		void Invoke();
-		void Update();
+		//void Invoke();
+		virtual YAML::Node Serialize() const override;
 	};
 }
 

@@ -1,5 +1,7 @@
 #include <ui/Image.h>
 #include <core/Transform.h>
+#include <core/YamlConverters.h>
+#include <manager/SceneManager.h>
 #include <graphic/manager/UIRenderingManager.h>
 #include <graphic/manager/SpriteManager.h>
 
@@ -27,6 +29,18 @@ void Image::Render()
 		elem.transform = GetTransform()->GetTransformMatrix();
 		UIRenderingManager::Render(elem);
 	}
+}
+
+YAML::Node Image::Serialize() const
+{
+	YAML::Node node = RenderableComponent::Serialize();
+	node["subTypes"].push_back(node["type"].as<string>());
+	node["type"] = "Image";
+	node["sprite"] = SceneManager::GetSpriteSaveIdx(_spriteId);
+	node["color"] = _color;
+	node["width"] = _width;
+	node["height"] = _height;
+	return node;
 }
 
 void Image::SetSprite(const std::string& spriteAlias) {

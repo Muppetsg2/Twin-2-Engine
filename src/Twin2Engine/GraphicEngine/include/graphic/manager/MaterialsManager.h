@@ -8,16 +8,19 @@
 namespace Twin2Engine::Manager
 {
 	class SceneManager;
+	class PrefabManager;
 
 	class MaterialsManager
 	{
 		friend class GraphicEngine::Material;
 		friend class SceneManager;
+		friend class PrefabManager;
 
 		static std::hash<std::string> stringHash;
-		//const static std::unordered_map<size_t, int> typeSizeMap;
 		static const std::unordered_map<size_t, int> typeHandleMap;
 		static std::map<size_t, GraphicEngine::MaterialData*> loadedMaterials;
+
+		static std::map<size_t, std::string> materialsPaths;
 
 		static void UnloadMaterial(size_t managerId);
 		static void UnloadMaterial(const std::string& path);
@@ -28,6 +31,8 @@ namespace Twin2Engine::Manager
 		static GraphicEngine::Material GetMaterial(size_t managerId);
 		static GraphicEngine::Material GetMaterial(const std::string& name);
 		static GraphicEngine::Material CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, const std::vector<std::string>& materialParametersNames, const std::vector<std::string>& textureParametersNames);
+
+		static YAML::Node Serialize();
 	};
 }
 

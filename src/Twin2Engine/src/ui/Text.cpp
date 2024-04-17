@@ -1,9 +1,10 @@
 #include <ui/Text.h>
-#include <graphic/manager/FontManager.h>
-#include <graphic/Shader.h>
-#include <vector>
 #include <core/Transform.h>
+#include <core/YamlConverters.h>
+#include <manager/SceneManager.h>
+#include <graphic/Shader.h>
 #include <graphic/manager/UIRenderingManager.h>
+#include <graphic/manager/FontManager.h>
 
 using namespace Twin2Engine;
 using namespace UI;
@@ -81,6 +82,18 @@ void Text::Render()
 		// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
 		x += (c->Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
 	}
+}
+
+YAML::Node Text::Serialize() const
+{
+	YAML::Node node = RenderableComponent::Serialize();
+	node["subTypes"].push_back(node["type"].as<string>());
+	node["type"] = "Text";
+	node["text"] = _text;
+	node["color"] = _color;
+	node["size"] = _size;
+	node["font"] = SceneManager::GetFontSaveIdx(_fontId);
+	return node;
 }
 
 void Text::SetColor(const vec4& color)

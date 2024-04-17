@@ -11,11 +11,15 @@ namespace Twin2Engine::Manager {
 	};
 
 	class SceneManager;
+	class PrefabManager;
 
 	class SpriteManager {
 	private:
+		static std::hash<std::string> _hasher;
 		static std::map<size_t, GraphicEngine::Sprite*> _sprites;
-		static std::hash<std::string> hasher;
+
+		static std::map<size_t, std::string> _spriteAliases;
+		static std::map<size_t, SpriteData> _spriteLoadData;
 
 		static void UnloadSprite(size_t spriteId);
 		static void UnloadSprite(const std::string& spriteAlias);
@@ -32,6 +36,34 @@ namespace Twin2Engine::Manager {
 
 		static void UnloadAll();
 
+		static YAML::Node Serialize();
+
 		friend class SceneManager;
+		friend class PrefabManager;
+	};
+}
+
+namespace YAML {
+	template<> struct convert<Twin2Engine::Manager::SpriteData> {
+		using SpriteData = Twin2Engine::Manager::SpriteData;
+
+		static Node encode(const SpriteData& rhs) {
+			Node node;
+			node["x"] = rhs.x;
+			node["y"] = rhs.y;
+			node["width"] = rhs.width;
+			node["height"] = rhs.height;
+			return node;
+		}
+
+		static bool decode(const Node& node, SpriteData& rhs) {
+			if (!node.IsMap()) return false;
+
+			rhs.x = node["x"].as<uint32_t>();
+			rhs.y = node["y"].as<uint32_t>();
+			rhs.width = node["width"].as<uint32_t>();
+			rhs.height = node["height"].as<uint32_t>();
+			return true;
+		}
 	};
 }

@@ -1,5 +1,6 @@
 #include <core/Component.h>
 #include <core/GameObject.h>
+#include <core/YamlConverters.h>
 
 using namespace Twin2Engine::Core;
 using namespace std;
@@ -35,7 +36,6 @@ Component::Component()
 
 Component::~Component()
 {
-	OnDestroy();
 	_gameObject = nullptr;
 }
 
@@ -57,6 +57,16 @@ void Component::OnDisable()
 
 void Component::OnDestroy()
 {
+}
+
+YAML::Node Component::Serialize() const
+{
+	YAML::Node node;
+	node["id"] = _id;
+	node["enabled"] = _enabled;
+	node["type"] = "";
+	node["subTypes"] = vector<string>();
+	return node;
 }
 
 void Component::SetEnable(bool enable)
@@ -105,6 +115,12 @@ void Component::Init(GameObject* obj)
 void Component::Init(GameObject* obj, size_t id)
 {
 	_id = id;
+	if (_freedIds.size() > 0) {
+		auto found = find_if(_freedIds.begin(), _freedIds.end(), [&](size_t fId) -> bool { return fId == _id; });
+		if (found != _freedIds.end()) {
+			_freedIds.erase(found);
+		}
+	}
 	if (_currentFreeId <= _id) {
 		for (; _currentFreeId < _id; ++_currentFreeId) _freedIds.push_back(_currentFreeId);
 		_freedIds.sort();

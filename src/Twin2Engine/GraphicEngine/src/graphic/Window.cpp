@@ -62,7 +62,7 @@ Window* Window::GetInstance() {
 }
 
 void Window::FreeAll() {
-	delete Window::GetInstance();
+	delete _instance;
 	_instance = nullptr;
 }
 

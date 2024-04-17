@@ -5,11 +5,14 @@
 
 namespace Twin2Engine::Manager {
 	class SceneManager;
+	class PrefabManager;
 
 	class FontManager {
 	private:
+		static std::hash<std::string> _hasher;
 		static std::map<size_t, GraphicEngine::Font*> _fonts;
-		static std::hash<std::string> hasher;
+
+		static std::map < size_t, std::string> _fontsPaths;
 
 		static void UnloadFont(size_t fontId);
 		static void UnloadFont(const std::string& fontPath);
@@ -21,6 +24,9 @@ namespace Twin2Engine::Manager {
 
 		static void UnloadAll();
 
+		static YAML::Node Serialize();
+
 		friend class SceneManager;
+		friend class PrefabManager;
 	};
 }

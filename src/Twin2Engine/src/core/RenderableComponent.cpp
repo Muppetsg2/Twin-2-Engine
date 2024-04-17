@@ -25,6 +25,14 @@ void RenderableComponent::Render()
 {
 }
 
+YAML::Node RenderableComponent::Serialize() const
+{
+	YAML::Node node = Component::Serialize();
+	node["type"] = "Renderable";
+	node["isTransparent"] = _isTransparent;
+	return node;
+}
+
 bool RenderableComponent::IsTransparent() const
 {
 	return _isTransparent;

@@ -23,6 +23,7 @@ namespace Twin2Engine::UI {
 
 	public:
 		virtual void Render() override;
+		virtual YAML::Node Serialize() const override;
 
 		void SetColor(const glm::vec4& color);
 		void SetText(const std::string& text);

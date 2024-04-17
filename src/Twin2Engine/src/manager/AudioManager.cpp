@@ -6,6 +6,8 @@ using namespace Twin2Engine::Manager;
 Soloud AudioManager::_soloud = Soloud();
 map<size_t, Wav*> AudioManager::_loadedAudio = map<size_t, Wav*>();
 
+map<size_t, string> AudioManager::_audiosPaths;
+
 bool AudioManager::_init = false;
 
 void AudioManager::UnloadAudio(size_t id)
@@ -21,6 +23,7 @@ void AudioManager::UnloadAudio(size_t id)
 
     delete _loadedAudio[id];
     _loadedAudio.erase(id);
+    _audiosPaths.erase(id);
 }
 
 result AudioManager::Init()
@@ -67,6 +70,7 @@ size_t AudioManager::LoadAudio(string path)
     }
 
     _loadedAudio[h] = sample;
+    _audiosPaths[h] = path;
 
     return h;
 }
@@ -381,10 +385,19 @@ void AudioManager::UnloadAll()
 
     for (auto& ad : _loadedAudio) {
         delete ad.second;
-        ad.second = nullptr;
     }
 
     _loadedAudio.clear();
+    _audiosPaths.clear();
     _soloud.deinit();
     _init = false;
+}
+
+YAML::Node AudioManager::Serialize()
+{
+    YAML::Node audios;
+    for (const auto& audioPair : _audiosPaths) {
+        audios.push_back(audioPair.second);
+    }
+    return audios;
 }

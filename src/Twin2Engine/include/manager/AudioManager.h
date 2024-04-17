@@ -10,11 +10,14 @@ using namespace std;
 
 namespace Twin2Engine::Manager {
 	class SceneManager;
+	class PrefabManager;
 
 	class AudioManager {
 	private:
 		static Soloud _soloud;
 		static map<size_t, Wav*> _loadedAudio;
+
+		static map<size_t, string> _audiosPaths;
 
 		static bool _init;
 
@@ -57,6 +60,9 @@ namespace Twin2Engine::Manager {
 
 		static void UnloadAll();
 
+		static YAML::Node Serialize();
+
 		friend class SceneManager;
+		friend class PrefabManager;
 	};
 }

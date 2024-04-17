@@ -12,16 +12,20 @@
 namespace Twin2Engine::Manager
 {
 	class SceneManager;
+	class PrefabManager;
 
 	class ModelsManager
 	{
 		friend class GraphicEngine::InstatiatingModel;
 		friend class SceneManager;
+		friend class PrefabManager;
 
 		static GLenum binaryFormat;
 
 		static std::hash<std::string> stringHash;
 		static std::map<size_t, GraphicEngine::ModelData*> loadedModels;
+
+		static std::map<size_t, std::string> modelsPaths;
 
 #if ASSIMP_LOADING
 		static inline void LoadModelAssimp(const std::string& modelPath, GraphicEngine::ModelData* modelData);
@@ -56,6 +60,8 @@ namespace Twin2Engine::Manager
 
 		static GraphicEngine::InstatiatingModel CreateModel(const std::string& modelName, std::vector<GraphicEngine::Vertex> vertices, std::vector<unsigned int> indices);
 		//static void FreeModel(InstatiatingModel*& model);
+
+		static YAML::Node Serialize();
 
 		static constexpr const char* CUBE_PATH = "{Cube}";
 		static constexpr const char* SPHERE_PATH = "{Sphere}";

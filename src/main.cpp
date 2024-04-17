@@ -19,8 +19,11 @@
 // GAME OBJECT
 #include <core/GameObject.h>
 #include <core/MeshRenderer.h>
+
+// UI
 #include <ui/Image.h>
 #include <ui/Text.h>
+#include <ui/Button.h>
 
 // AUDIO
 #include <core/AudioComponent.h>
@@ -48,6 +51,10 @@
 #include <core/Scene.h>
 #include <manager/SceneManager.h>
 
+// PREFABS
+#include <core/Prefab.h>
+#include <manager/PrefabManager.h>
+
 // DESERIALIZATION
 #include <core/ComponentDeserializer.h>
 
@@ -57,6 +64,12 @@
 
 // GENERATION
 #include <Generation/MapGenerator.h>
+
+// LIGHTING
+#include <LightingController.h>
+#include <core/PointLightComponent.h>
+#include <core/SpotLightComponent.h>
+#include <core/DirectionalLightComponent.h>
 
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
@@ -96,7 +109,7 @@ static void glfw_error_callback(int error, const char* description)
 
 static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
-    if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) return; // Chce ignorowa� notyfikacje
+    //if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) return; // Chce ignorowa� notyfikacje
 
     string severityS = "";
     if (severity == GL_DEBUG_SEVERITY_HIGH) severityS = "HIGHT";
@@ -128,13 +141,13 @@ static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint i
 #pragma region FunctionsDeclaration
 
 bool init();
-void init_imgui();
 
 void input();
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void update();
 void render();
 
+void init_imgui();
 void imgui_begin();
 void imgui_render();
 void imgui_end();
@@ -213,6 +226,7 @@ int main(int, char**)
 
     GraphicEngineManager::Init();
 
+#pragma region DESERIALIZERS
     // COMPONENTS DESELIALIZERS
     ComponentDeserializer::AddDeserializer("Camera",
         []() -> Component* {
@@ -223,9 +237,11 @@ int main(int, char**)
             cam->SetFOV(node["fov"].as<float>());
             cam->SetNearPlane(node["nearPlane"].as<float>());
             cam->SetFarPlane(node["farPlane"].as<float>());
-            cam->SetCameraFilter(node["cameraFilter"].as<uint8_t>());
-            cam->SetCameraType((CameraType)node["cameraType"].as<int>());
-            cam->SetSamples(node["samples"].as<uint8_t>());
+            cam->SetCameraFilter(node["cameraFilter"].as<size_t>());
+            cam->SetCameraType(node["cameraType"].as<CameraType>());
+            cam->SetSamples(node["samples"].as<size_t>());
+            cam->SetRenderResolution(node["renderRes"].as<RenderResolution>());
+            cam->SetGamma(node["gamma"].as<float>());
             cam->SetFrontDir(node["frontDir"].as<vec3>());
             cam->SetWorldUp(node["worldUp"].as<vec3>());
             cam->SetIsMain(node["isMain"].as<bool>());
@@ -240,8 +256,19 @@ int main(int, char**)
             AudioComponent* audio = static_cast<AudioComponent*>(comp);
             audio->SetAudio(SceneManager::GetAudio(node["audio"].as<size_t>()));
             if (node["loop"].as<bool>()) audio->Loop(); else audio->UnLoop();
-            audio->SetTimePosition(node["time"].as<double>());
             audio->SetVolume(node["volume"].as<float>());
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("Button",
+        []() -> Component* {
+            return new Button();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            Button* button = static_cast<Button*>(comp);
+            button->SetWidth(node["width"].as<float>());
+            button->SetHeight(node["height"].as<float>());
+            button->SetInteractable(node["interactable"].as<bool>());
         }
     );
 
@@ -304,7 +331,7 @@ int main(int, char**)
             ColliderComponent* collider = static_cast<ColliderComponent*>(comp);
             collider->SetTrigger(node["trigger"].as<bool>());
             collider->SetStatic(node["static"].as<bool>());
-            collider->SetLayer((Layer)node["layer"].as<uint8_t>());
+            collider->SetLayer(node["layer"].as<Layer>());
             LayerCollisionFilter filter = node["layerFilter"].as<LayerCollisionFilter>();
             collider->SetLayersFilter(filter);
             collider->EnableBoundingVolume(node["boundingVolume"].as<bool>());
@@ -351,11 +378,12 @@ int main(int, char**)
             capsuleCollider->SetRadius(node["radius"].as<float>());
         }
     );
+#pragma endregion
 
     // ADDING SCENES
-    SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
-
-    // SCENE OBJECTS
+    //SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
+    SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
     //*
     InstatiatingModel modelHexagon = ModelsManager::LoadModel("res/models/hexagon.obj");
@@ -474,26 +502,31 @@ int main(int, char**)
     //text->SetSize(48);
     //text->SetFont("res/fonts/arial.ttf");
 
-    GameObject go1;
-    GameObject go2;
-    go1.GetTransform()->SetLocalPosition(glm::vec3(1.0f, 0.0f, 0.0f));
-    go2.GetTransform()->SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
-    Twin2Engine::Core::BoxColliderComponent* bc1 = go1.AddComponent<Twin2Engine::Core::BoxColliderComponent>();
-    Twin2Engine::Core::BoxColliderComponent* bc2 = go2.AddComponent<Twin2Engine::Core::BoxColliderComponent>();
-    bc1->colliderId = 1;
-    bc2->colliderId = 2;
-    bc1->Invoke();
-    bc2->Invoke();
-    bc1->Update();
-    bc2->Update();
-
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();/**/
     
     SceneManager::LoadScene("testScene");
+    //SceneManager::SaveScene("res/scenes/savedScene.yaml");
 
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
+
+    // SCENE OBJECTS
+    /*
+    GameObject* test3 = SceneManager::CreateGameObject(PrefabManager::GetPrefab("res/prefabs/testPrefab.yaml"));
+    */
+    //PrefabManager::SaveAsPrefab(test3, "res/prefabs/savedPrefab.yaml");
+    
+#pragma region TestingLighting
+    GameObject* dl_go = SceneManager::CreateGameObject();
+    dl_go->GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
+    DirectionalLightComponent* dl = dl_go->AddComponent<DirectionalLightComponent>();
+    dl->SetColor(glm::vec3(1.0f));
+    LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
+    LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f, 0.02f, 0.02f));
+    LightingSystem::LightingController::Instance()->SetHighlightParam(2.0f);
+    /**/
+#pragma endregion
 
     // Main loop
     while (!window->IsClosed())
@@ -522,16 +555,17 @@ int main(int, char**)
     TextureManager::UnloadAll();
     AudioManager::UnloadAll();
     FontManager::UnloadAll();
+    GraphicEngineManager::End();
     Input::FreeAllWindows();
+
+    CollisionSystem::CollisionManager::DeleteInstance();
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-
     Window::FreeAll();
-    glfwTerminate();
 
-    GraphicEngineManager::End();
+    glfwTerminate();
 
     return 0;
 }
@@ -589,38 +623,6 @@ bool init()
     return true;
 }
 
-void init_imgui()
-{
-    // Setup Dear ImGui binding
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
-
-    ImGui_ImplGlfw_InitForOpenGL(window->GetWindow(), true);
-    ImGui_ImplOpenGL3_Init(glsl_version);
-
-    // Setup style
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
-
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-    // - Read 'misc/fonts/README.txt' for more instructions and details.
-    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != NULL);
-}
-
 void input()
 {
     if (Input::IsKeyPressed(KEY::ESCAPE)) 
@@ -631,22 +633,35 @@ void input()
 
     CameraComponent* c = CameraComponent::GetMainCamera();
 
-    if (Input::IsKeyDown(KEY::W))
+    bool moved = false;
+
+    if (Input::IsKeyDown(KEY::W) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        moved = true;
     }
-    if (Input::IsKeyDown(KEY::S))
+    if (Input::IsKeyDown(KEY::S) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
+        moved = true;
     }
-    if (Input::IsKeyDown(KEY::A))
+    if (Input::IsKeyDown(KEY::A) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        moved = true;
     }
-    if (Input::IsKeyDown(KEY::D))
+    if (Input::IsKeyDown(KEY::D) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
+        moved = true;
     }
+
+
+    if (LightingSystem::LightingController::IsInstantiated() && moved) {
+        glm::vec3 cp = c->GetTransform()->GetGlobalPosition();
+        LightingSystem::LightingController::Instance()->SetViewerPosition(cp);
+    }
+
 
     if (Input::IsKeyPressed(KEY::LEFT_ALT)) 
     {
@@ -661,6 +676,17 @@ void input()
             Input::HideAndLockCursor();
             glfwSetCursorPosCallback(window->GetWindow(), mouse_callback);
         }
+    }
+
+    if (Input::IsKeyPressed(KEY::R)) {
+        SceneManager::LoadScene("testScene");
+        Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
+        image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
+        text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
+    }
+
+    if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::Q)) {
+        SceneManager::SaveScene("res/scenes/quickSavedScene.yaml");
     }
 }
 
@@ -687,17 +713,19 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     // PITCH = ROT X
     // ROLL = ROT Z
 
-    Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x + yoffset, rot.y + xoffset, rot.z));
+    rot.x += yoffset;
 
-    rot = Camera->GetTransform()->GetGlobalRotation();
-
-    if (rot.x > 89.0f) {
-        Camera->GetTransform()->SetGlobalRotation(glm::vec3(89.f, rot.y, rot.z));
+    if (rot.x > 89.f) {
+        rot.x = 89.f;
     }
-    if (rot.x < -89.0f)
+    
+    if (rot.x < -89.f)
     {
-        Camera->GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
+        rot.x = -89.f;
     }
+
+    Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x, rot.y + xoffset, rot.z));
+    LightingSystem::LightingController::Instance()->ViewerTransformChanged.Invoke();
 }
 
 void update()
@@ -729,6 +757,38 @@ void render()
     // OpenGL Rendering code goes here
     SceneManager::RenderCurrentScene();
     CameraComponent::GetMainCamera()->Render();
+}
+
+void init_imgui()
+{
+    // Setup Dear ImGui binding
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
+
+    ImGui_ImplGlfw_InitForOpenGL(window->GetWindow(), true);
+    ImGui_ImplOpenGL3_Init(glsl_version);
+
+    // Setup style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsClassic();
+
+    // Load Fonts
+    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
+    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
+    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
+    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
+    // - Read 'misc/fonts/README.txt' for more instructions and details.
+    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
+    //io.Fonts->AddFontDefault();
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
+    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
+    //IM_ASSERT(font != NULL);
 }
 
 void imgui_begin()
@@ -808,6 +868,25 @@ void imgui_render()
 
             CameraComponent* c = CameraComponent::GetMainCamera();
 
+            RenderResolution res = c->GetRenderResolution();
+
+            if (ImGui::BeginCombo("Render Resolution", res == RenderResolution::DEFAULT ? "Default" : (res == RenderResolution::MEDIUM ? "Medium" : "High")))
+            {
+                if (ImGui::Selectable("Default", res == RenderResolution::DEFAULT))
+                {
+                    c->SetRenderResolution(RenderResolution::DEFAULT);
+                }
+                else if (ImGui::Selectable("Medium", res == RenderResolution::MEDIUM))
+                {
+                    c->SetRenderResolution(RenderResolution::MEDIUM);
+                }
+                else if (ImGui::Selectable("High", res == RenderResolution::HIGH))
+                {
+                    c->SetRenderResolution(RenderResolution::HIGH);
+                }
+                ImGui::EndCombo();
+            }
+
             uint8_t acFil = RenderFilter::NONE;
             uint8_t fil = c->GetCameraFilters();
 
@@ -879,6 +958,13 @@ void imgui_render()
 
             if (f != c->GetFarPlane()) {
                 c->SetFarPlane(f);
+            }
+
+            float gm = c->GetGamma();
+            ImGui::InputFloat("Gamma", &gm);
+
+            if (gm != c->GetGamma()) {
+                c->SetGamma(gm);
             }
         }
 #pragma endregion

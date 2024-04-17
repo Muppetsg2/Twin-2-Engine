@@ -16,9 +16,12 @@ namespace Generation
 
 		enum HexTileType
 		{
-			Normal,
+			None,
+			Empty,
+			PointOfInterest,
 			Water,
-			Mountain
+			Mountain,
+			RadioStation
 		};
 
 	public:

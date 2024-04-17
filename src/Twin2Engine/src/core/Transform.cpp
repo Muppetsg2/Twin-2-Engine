@@ -558,8 +558,6 @@ void Twin2Engine::Core::Transform::RecalculateLocalRotation()
 				_localRotationQuat = _globalRotationQuat;
 			}
 			_localRotation = glm::eulerAngles(_localRotationQuat);
-
-			printf("%f %f %f\n", _localRotationQuat.x, _localRotationQuat.y, _localRotation.z);
 		}
 
 		_dirtyFlags.dirtyFlagLocalRotation = false;

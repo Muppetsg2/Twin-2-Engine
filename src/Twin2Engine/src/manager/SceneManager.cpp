@@ -411,12 +411,10 @@ void SceneManager::SaveScene(const string& path) {
 	sceneNode["Textures"] = TextureManager::Serialize();
 #pragma endregion
 #pragma region SAVING_SPRITES
-	map<size_t, size_t> textures;
-	size_t idx = 0;
-	for (const auto& texPair : TextureManager::_texturesPaths) {
-		textures[texPair.first] = idx++;
+	sceneNode["Sprites"] = SpriteManager::Serialize();
+	for (YAML::Node spriteNode : sceneNode["Sprites"]) {
+		spriteNode["texture"] = GetTexture2DSaveIdx(spriteNode["texture"].as<size_t>());
 	}
-	sceneNode["Sprites"] = SpriteManager::Serialize(textures);
 #pragma endregion
 #pragma region SAVING_FONTS
 	sceneNode["Fonts"] = FontManager::Serialize();

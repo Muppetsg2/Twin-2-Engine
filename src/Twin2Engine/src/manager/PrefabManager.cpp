@@ -1,6 +1,7 @@
 #include <manager/PrefabManager.h>
 #include <graphic/manager/MaterialsManager.h>
 #include <graphic/manager/ModelsManager.h>
+#include <manager/SceneManager.h>
 #include <core/YamlConverters.h>
 
 using namespace Twin2Engine::Manager;
@@ -150,12 +151,10 @@ void PrefabManager::SaveAsPrefab(const GameObject* obj, const std::string& path)
 	prefabNode["Textures"] = TextureManager::Serialize();
 #pragma endregion
 #pragma region SAVING_SPRITES
-	map<size_t, size_t> textures;
-	size_t idx = 0;
-	for (const auto& texPair : TextureManager::_texturesPaths) {
-		textures[texPair.first] = idx++;
+	prefabNode["Sprites"] = SpriteManager::Serialize();
+	for (YAML::Node spriteNode : prefabNode["Sprites"]) {
+		spriteNode["texture"] = SceneManager::GetTexture2DSaveIdx(spriteNode["texture"].as<size_t>());
 	}
-	prefabNode["Sprites"] = SpriteManager::Serialize(textures);
 #pragma endregion
 #pragma region SAVING_FONTS
 	prefabNode["Fonts"] = FontManager::Serialize();

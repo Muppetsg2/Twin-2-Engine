@@ -132,3 +132,37 @@ namespace Twin2Engine::Core {
 		CollisionSystem::Ray GetScreenPointRay(glm::vec2 screenPosition);
 	};
 }
+
+namespace YAML {
+	template<> struct convert<Twin2Engine::Core::CameraType> {
+		using CameraType = Twin2Engine::Core::CameraType;
+
+		static Node encode(const CameraType& rhs) {
+			Node node;
+			node = (size_t)rhs;
+			return node;
+		}
+
+		static bool decode(const Node& node, CameraType& rhs) {
+			if (!node.IsScalar()) return false;
+			rhs = (CameraType)node.as<size_t>();
+			return true;
+		}
+	};
+
+	template<> struct convert<Twin2Engine::Core::RenderResolution> {
+		using RenderResolution = Twin2Engine::Core::RenderResolution;
+
+		static Node encode(const RenderResolution& rhs) {
+			Node node;
+			node = (size_t)rhs;
+			return node;
+		}
+
+		static bool decode(const Node& node, RenderResolution& rhs) {
+			if (!node.IsScalar()) return false;
+			rhs = (RenderResolution)node.as<size_t>();
+			return true;
+		}
+	};
+}

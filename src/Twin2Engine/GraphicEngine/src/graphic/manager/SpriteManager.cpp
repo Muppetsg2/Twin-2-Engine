@@ -89,7 +89,7 @@ void SpriteManager::UnloadAll()
     _spriteAliases.clear();
 }
 
-YAML::Node SpriteManager::Serialize(map<size_t, size_t> textures)
+YAML::Node SpriteManager::Serialize()
 {
     YAML::Node sprites;
     for (const auto& spritePair : SpriteManager::_spriteAliases) {
@@ -97,7 +97,7 @@ YAML::Node SpriteManager::Serialize(map<size_t, size_t> textures)
 
         YAML::Node spriteNode;
         spriteNode["alias"] = spritePair.second;
-        spriteNode["texture"] = textures[sprite->GetTexture()->GetManagerId()];
+        spriteNode["texture"] = sprite->GetTexture()->GetManagerId();
 
         if (SpriteManager::_spriteLoadData.find(spritePair.first) != SpriteManager::_spriteLoadData.end()) {
             SpriteData data = SpriteManager::_spriteLoadData[spritePair.first];

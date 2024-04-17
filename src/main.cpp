@@ -458,6 +458,8 @@ int main(int, char**)
     GraphicEngineManager::End();
     Input::FreeAllWindows();
 
+    CollisionSystem::CollisionManager::DeleteInstance();
+
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

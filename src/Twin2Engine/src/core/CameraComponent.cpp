@@ -479,11 +479,33 @@ void CameraComponent::OnDestroy()
 CollisionSystem::Ray CameraComponent::GetScreenPointRay(glm::vec2 screenPosition)
 {
 	ivec2 size = Window::GetInstance()->GetContentSize();
-
-	glm::vec3 Position = glm::inverse(GetProjectionMatrix() * GetViewMatrix()) * glm::vec4(2.0f * screenPosition.x / size.x - 1.0f,
-		2.0f * screenPosition.y / size.y - 1.0f, 0.5f, 1.0f);
 	glm::vec3 Origin = GetTransform()->GetGlobalPosition();
-	glm::vec3 Direction = glm::normalize(Position - Origin);
+
+	/*/glm::vec4 Position = glm::inverse(GetProjectionMatrix() * GetViewMatrix()) * glm::vec4(2.0f * screenPosition.x / size.x - 1.0f,
+																						   2.0f * screenPosition.y / size.y - 1.0f, 1.0f, 1.0f);
+	//SPDLOG_INFO("P: {}, {}, {}, {}", Position.x, Position.y, Position.z, Position.w);
+	//float fov_tan = glm::tan(3.141 * _fov / 180.0f);
+	
+
+	glm::vec3 Direction = glm::normalize(glm::vec3(Position) - Origin);
+	//glm::vec3 Direction = glm::normalize(glm::vec3((2.0f * screenPosition.x / size.x - 1.0f) * fov_tan,
+	//											   (1.0f - 2.0f * screenPosition.y / size.y) * fov_tan, 1.0f));/**/
+
+	// Normalize screen coordinates to NDC (-1 to 1)
+	float x = (2.0f * screenPosition.x) / size.x - 1.0f;
+	float y = 1.0f - (2.0f * screenPosition.y) / size.y;
+	float z = 1.0f; // NDC Z value (should be 1 for far plane)
+
+	// Unproject to view space
+	glm::vec4 rayClip = glm::vec4(x, y, -1.0f, 1.0f);
+	glm::vec4 rayEye = glm::inverse(GetProjectionMatrix()) * rayClip;
+	rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f); // Set z to -1 for direction
+	glm::vec4 rayWorld = glm::inverse(GetViewMatrix()) * rayEye;
+
+	// Get direction vector in world space
+	glm::vec3 Direction(rayWorld);
+	Direction = glm::normalize(Direction);
+
 	return CollisionSystem::Ray(std::move(Direction), std::move(Origin));
 }
 

@@ -62,7 +62,6 @@ void MeshRenderingManager::Render(MeshRenderData meshData)
 		//SPDLOG_INFO("Trying saving to rendering data! {}, {}", meshRenderer->GetMesh(i) != nullptr, meshRenderer->GetMaterial(i) != nullptr);
 		if (meshData.meshes[i] != nullptr && meshData.materials[i] != nullptr)
 		{
-
 			//SPDLOG_INFO("Saving to rendering data!");
 			_renderQueue[meshData.meshes[i]]
 				[meshData.materials[i].GetShader()]

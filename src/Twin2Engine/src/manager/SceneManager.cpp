@@ -251,7 +251,7 @@ void SceneManager::LoadScene(const string& name)
 #pragma region LOADING_MATERIALS
 	pathGetter = [](const string& path) -> string { return path; };
 	unloader = [](size_t id) -> void { MaterialsManager::UnloadMaterial(id); };
-	loader = [](const string& path, size_t& id) -> bool { id = MaterialsManager::GetMaterial(path).GetId(); return true; };
+	loader = [](const string& path, size_t& id) -> bool { id = MaterialsManager::LoadMaterial(path).GetId(); return true; };
 	_materialsIds = LoadResources(pathGetter, sceneToLoad->_materials, _materialsIds, unloader, loader, sorter);
 #pragma endregion
 #pragma region LOADING_MODELS
@@ -539,7 +539,7 @@ GameObject* SceneManager::CreateGameObject(Transform* parent)
 GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 {
 	Func<string, const string&> pathGetter;
-	Action<size_t> unloader;
+	Action<size_t> unloader = [](size_t id) -> void {};
 	Func<bool, const string&, size_t&> loader;
 
 	Func<vector<size_t>, const vector<size_t>&, const vector<size_t>&> sorter = [](const vector<size_t>& hashedPaths, const vector<size_t>& loadedIds) -> vector<size_t> {
@@ -572,7 +572,6 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 
 #pragma region LOADING_PREFAB_TEXTURES
 	Func<string, const pair<string, TextureData>&> texturePathGetter = [](const pair<string, TextureData>& texturePair) -> string { return texturePair.first; };
-	unloader = [](size_t id) -> void { TextureManager::UnloadTexture2D(id); };
 	loader = [&](const string& path, size_t& id) -> bool {
 		Texture2D* temp = nullptr;
 		if (prefab->_texturesFormats.find(path) != prefab->_texturesFormats.end()) {
@@ -593,7 +592,6 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 #pragma endregion
 #pragma region LOADING_PREFAB_SPRITES
 	Func<string, const pair<string, tuple<string, bool, SpriteData>>&> spritePathGetter = [](const pair<string, tuple<string, bool, SpriteData>>& spritePair) -> string { return spritePair.first; };
-	unloader = [](size_t id) -> void { SpriteManager::UnloadSprite(id); };
 	loader = [&](const string& alias, size_t& id) -> bool {
 		tuple<string, bool, SpriteData> sData = prefab->_sprites[alias];
 		Sprite* temp = nullptr;
@@ -614,7 +612,6 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 #pragma endregion
 #pragma region LOADING_PREFAB_FONTS
 	pathGetter = [](const string& path) -> string { return path; };
-	unloader = [](size_t id) -> void { FontManager::UnloadFont(id); };
 	loader = [](const string& path, size_t& id) -> bool {
 		Font* temp = FontManager::LoadFont(path);
 		if (temp != nullptr) {
@@ -628,7 +625,6 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 #pragma endregion
 #pragma region LOADING_PREFAB_AUDIO
 	pathGetter = [](const string& path) -> string { return path; };
-	unloader = [](size_t id) -> void { AudioManager::UnloadAudio(id); };
 	loader = [](const string& path, size_t& id) -> bool {
 		id = AudioManager::LoadAudio(path);
 		if (id != 0) return true;
@@ -639,19 +635,16 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 #pragma endregion
 #pragma region LOADING_PREFAB_MATERIALS
 	pathGetter = [](const string& path) -> string { return path; };
-	unloader = [](size_t id) -> void { MaterialsManager::UnloadMaterial(id); };
 	loader = [](const string& path, size_t& id) -> bool { id = MaterialsManager::GetMaterial(path).GetId(); return true; };
 	_materialsIds = LoadResources(pathGetter, prefab->_materials, _materialsIds, unloader, loader, sorter);
 #pragma endregion
 #pragma region LOADING_PREFAB_MODELS
 	pathGetter = [](const string& path) -> string { return path; };
-	unloader = [](size_t id) -> void { ModelsManager::UnloadModel(id); };
 	loader = [](const string& path, size_t& id) -> bool { id = ModelsManager::LoadModel(path).GetId(); return true; };
 	_modelsIds = LoadResources(pathGetter, prefab->_models, _modelsIds, unloader, loader, sorter);
 #pragma endregion
 #pragma region LOADING_PREFAB_PREFABS
 	pathGetter = [](const string& path) -> string { return path; };
-	unloader = [](size_t id) -> void { PrefabManager::UnloadPrefab(id); };
 	loader = [](const string& path, size_t& id) -> bool {
 		Prefab* prefab = PrefabManager::LoadPrefab(path);
 		if (prefab != nullptr) {

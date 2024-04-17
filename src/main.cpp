@@ -418,9 +418,9 @@ int main(int, char**)
     //PrefabManager::SaveAsPrefab(test3, "res/prefabs/savedPrefab.yaml");
     
 #pragma region TestingLighting
-    GameObject dl_go;
-    dl_go.GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
-    Twin2Engine::Core::DirectionalLightComponent* dl = dl_go.AddComponent<Twin2Engine::Core::DirectionalLightComponent>();
+    GameObject* dl_go = SceneManager::CreateGameObject();
+    dl_go->GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
+    DirectionalLightComponent* dl = dl_go->AddComponent<DirectionalLightComponent>();
     dl->SetColor(glm::vec3(1.0f));
     LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
     LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f, 0.02f, 0.02f));
@@ -435,10 +435,6 @@ int main(int, char**)
 
         // Update game objects' state here
         update();
-        /**/
-        dl->GetTransform()->Update();
-        dl->Update();
-        /**/
 
         // OpenGL rendering code here
         render();

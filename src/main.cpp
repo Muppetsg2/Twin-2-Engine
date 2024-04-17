@@ -413,9 +413,6 @@ int main(int, char**)
 
     // SCENE OBJECTS
     /*
-    GameObject* test1 = SceneManager::CreateGameObject();
-    std::tuple<GameObject*, Text*, Image*> test2 = SceneManager::CreateGameObject<Text, Image>();
-
     GameObject* test3 = SceneManager::CreateGameObject(PrefabManager::GetPrefab("res/prefabs/testPrefab.yaml"));
     */
     //PrefabManager::SaveAsPrefab(test3, "res/prefabs/savedPrefab.yaml");

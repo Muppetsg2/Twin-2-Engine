@@ -291,7 +291,7 @@ void SceneManager::LoadScene(const string& name)
 		objectByComponentId[transformId] = obj;
 	}
 
-	// LOAD GAMEOBJECTS AND TRANSFORMS VALUES
+	// LOAD GAMEOBJECTS AND TRASFORMS VALUES
 	map<size_t, YAML::Node> componentsNodes;
 	for (const YAML::Node& gameObjectNode : sceneToLoad->_gameObjects) {
 		// GameObject
@@ -489,7 +489,8 @@ void SceneManager::DestroyGameObject(GameObject* obj)
 GameObject* SceneManager::CreateGameObject(Transform* parent)
 {
 	GameObject* obj = new GameObject();
-	obj->GetTransform()->SetParent(parent == nullptr ? _rootObject->GetTransform() : parent);
+	if (_rootObject == nullptr) _rootObject = new GameObject();
+	obj->GetTransform()->SetParent(parent != nullptr ? parent : _rootObject->GetTransform());
 	_gameObjectsById[obj->Id()] = obj;
 	_componentsById[obj->GetTransform()->GetId()] = obj->GetTransform();
 	return obj;
@@ -803,6 +804,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	}
 #pragma endregion
 
+	if (_rootObject == nullptr) _rootObject = new GameObject();
 	prefabRoot->GetTransform()->SetParent(parent != nullptr ? parent : _rootObject->GetTransform());
 	return prefabRoot;
 }

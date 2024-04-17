@@ -549,7 +549,14 @@ void Twin2Engine::Core::Transform::RecalculateLocalRotation()
 		}
 		else
 		{
-			_localRotationQuat = glm::inverse(_parent->GetGlobalRotationQuat()) * _globalRotationQuat;
+			if (_parent->GetGlobalRotationQuat().w != 0)
+			{
+				_localRotationQuat = glm::inverse(_parent->GetGlobalRotationQuat()) * _globalRotationQuat;
+			}
+			else
+			{
+				_localRotationQuat = _globalRotationQuat;
+			}
 			_localRotation = glm::eulerAngles(_localRotationQuat);
 
 			printf("%f %f %f\n", _localRotationQuat.x, _localRotationQuat.y, _localRotation.z);

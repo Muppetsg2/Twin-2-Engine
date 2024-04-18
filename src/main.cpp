@@ -72,6 +72,7 @@ using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
 using namespace Twin2Engine::GraphicEngine;
+using namespace CollisionSystem;
 
 using Twin2Engine::Core::Input;
 using Twin2Engine::Core::KEY;
@@ -461,7 +462,7 @@ int main(int, char**)
     TextureManager::UnloadAll();
     AudioManager::UnloadAll();
     FontManager::UnloadAll();
-    CollisionSystem::CollisionManager::DeleteInstance();
+    CollisionManager::UnloadAll();
     GraphicEngineManager::End();
     Input::FreeAllWindows();
 

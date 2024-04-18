@@ -24,9 +24,9 @@ GameCollider::GameCollider(Twin2Engine::Core::ColliderComponent* colliderCompone
 }
 
 GameCollider::~GameCollider() {
-	delete boundingVolume;
+	colliderComponent = nullptr;
+	boundingVolume = nullptr;
 }
-
 
 Collision* GameCollider::testBoundingVolume(BoundingVolume* other) const {
 	if (other != nullptr) {

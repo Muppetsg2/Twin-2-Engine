@@ -7,15 +7,16 @@ using namespace Twin2Engine::Core;
 
 ColliderComponent::ColliderComponent() : Component()
 {
-	CollisionSystem::SphereColliderData* bvData = new CollisionSystem::SphereColliderData();
-	boundingVolume = new CollisionSystem::BoundingVolume(bvData);
+	boundingVolume = new CollisionSystem::BoundingVolume(new CollisionSystem::SphereColliderData());
 	//CollisionManager::Instance->RegisterCollider(this);
 	//colliderComponents.push_back(this);
 }
 
 ColliderComponent::~ColliderComponent()
 {
-	CollisionSystem::CollisionManager::Instance()->UnregisterCollider(collider);
+	delete collider;
+	//delete boundingVolume;
+	//CollisionSystem::CollisionManager::Instance()->UnregisterCollider(collider);
 	/*for (size_t i = 0; i < colliderComponents.size(); ++i) {
 		if (colliderComponents[i] == this) {
 			colliderComponents.erase(colliderComponents.begin() + i);

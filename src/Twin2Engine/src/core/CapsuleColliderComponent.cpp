@@ -5,8 +5,7 @@
 
 Twin2Engine::Core::CapsuleColliderComponent::CapsuleColliderComponent() : ColliderComponent()
 {
-	CollisionSystem::CapsuleColliderData* colliderData = new CollisionSystem::CapsuleColliderData();
-	collider = new CollisionSystem::GameCollider(this, colliderData);
+	collider = new CollisionSystem::GameCollider(this, new CollisionSystem::CapsuleColliderData());
 }
 
 void Twin2Engine::Core::CapsuleColliderComponent::SetEndPosition(float x, float y, float z)

@@ -1,5 +1,4 @@
-#ifndef _COLLIDER_H_
-#define _COLLIDER_H_
+#pragma once
 
 namespace CollisionSystem {
 	//struct Collision;
@@ -66,5 +65,3 @@ namespace CollisionSystem {
 		static Collision* testCollision(Collider* collider, Collider* otherCollider, bool separate);
 	};
 }
-
-#endif // !_COLLIDER_H_

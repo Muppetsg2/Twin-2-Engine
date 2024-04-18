@@ -1,5 +1,4 @@
-#ifndef _BOUNDINGVOLUME_H_
-#define _BOUNDINGVOLUME_H_
+#pragma once
 
 //#define BoundingVolumePtr BoundingVolume*
 #include "Collider.h"
@@ -20,8 +19,4 @@ namespace CollisionSystem {
 	};
 }
 
-
-
 //typedef BoundingVolume* BoundingVolumePtr;
-
-#endif // !_BOUNDINGVOLUME_H_

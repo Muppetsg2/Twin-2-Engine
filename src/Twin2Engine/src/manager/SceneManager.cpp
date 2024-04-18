@@ -338,10 +338,8 @@ void SceneManager::LoadScene(const string& name)
 			}
 
 			// Create Component of type
-			Component* comp = ComponentDeserializer::GetComponentFunc(type)();
-
 			size_t id = componentNode["id"].as<size_t>();
-			_componentsById[id] = comp;
+			_componentsById[id] = ComponentDeserializer::GetComponentFunc(type)();
 			objectByComponentId[id] = obj;
 		}
 	}

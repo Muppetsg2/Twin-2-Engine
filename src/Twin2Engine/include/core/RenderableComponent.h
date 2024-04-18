@@ -9,7 +9,7 @@ namespace Twin2Engine::Core {
 	private:			
 		bool _isTransparent = false;
 	protected:
-		RenderableComponent(); // Powoduje �e klasa jest jakby abstrakcyjna no chyba �e b�dzie dziedziczona
+		RenderableComponent(); // Powoduje ze klasa jest jakby abstrakcyjna no chyba ze bedzie dziedziczona
 	public:
 		virtual ~RenderableComponent();
 

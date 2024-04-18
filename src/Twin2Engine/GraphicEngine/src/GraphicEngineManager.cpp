@@ -63,9 +63,9 @@ void GraphicEngineManager::End()
 	glDeleteFramebuffers(1, &_depthMapFBO);
 	*/
 
-	ShaderManager::End();
+	ShaderManager::UnloadAll();
 	//UIRenderingManager::End();
-	MeshRenderingManager::End();
+	MeshRenderingManager::UnloadAll();
 }
 
 void GraphicEngineManager::Render()

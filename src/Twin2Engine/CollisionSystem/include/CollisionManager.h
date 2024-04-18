@@ -1,5 +1,4 @@
-#ifndef _COLLISIONMANAGER_H_
-#define _COLLISIONMANAGER_H_
+#pragma once
 
 //#define USE_BOUNDING_VOLUMES
 
@@ -15,7 +14,6 @@ namespace CollisionSystem {
 
 	public:
 
-
 		std::unordered_set<GameCollider*> DefaultLayer;
 		std::unordered_set<GameCollider*> IgnoreRaycastLayer;
 		std::unordered_set<GameCollider*> IgnoreCollisionLayer;
@@ -29,10 +27,8 @@ namespace CollisionSystem {
 
 #endif // USE_BOUNDING_VOLUMES
 
-
 		static CollisionManager* Instance();
-		static void DeleteInstance();
-
+		static void UnloadAll();
 
 		void RegisterCollider(GameCollider* collider);
 		void UnregisterCollider(GameCollider* collider);
@@ -40,7 +36,3 @@ namespace CollisionSystem {
 		bool Raycast(Ray& ray, RaycastHit& raycastHit);
 	};
 }
-
-
-
-#endif // !_COLLISIONMANAGER_H_

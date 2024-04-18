@@ -3,11 +3,9 @@
 #include <CollisionManager.h>
 #include <tools/YamlConverters.h>
 
-
 Twin2Engine::Core::BoxColliderComponent::BoxColliderComponent() : ColliderComponent()
 {
-	CollisionSystem::BoxColliderData* colliderData = new CollisionSystem::BoxColliderData();
-	collider = new CollisionSystem::GameCollider(this, colliderData);
+	collider = new CollisionSystem::GameCollider(this, new CollisionSystem::BoxColliderData());
 }
 
 void Twin2Engine::Core::BoxColliderComponent::SetWidth(float v)

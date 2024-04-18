@@ -6,8 +6,7 @@ using namespace CollisionSystem;
 
 CollisionManager* CollisionManager::instance = nullptr;
 
-CollisionManager::CollisionManager()
-{
+CollisionManager::CollisionManager() {
 	DefaultLayer.clear();
 	IgnoreRaycastLayer.clear();
 	IgnoreCollisionLayer.clear();
@@ -18,8 +17,15 @@ CollisionManager::CollisionManager()
 	Layer4.clear();
 }
 
-CollisionSystem::CollisionManager::~CollisionManager()
-{
+CollisionSystem::CollisionManager::~CollisionManager() {
+	DefaultLayer.clear();
+	IgnoreRaycastLayer.clear();
+	IgnoreCollisionLayer.clear();
+	UiLayer.clear();
+	Layer1.clear();
+	Layer2.clear();
+	Layer3.clear();
+	Layer4.clear();
 }
 
 CollisionManager* CollisionManager::Instance() {
@@ -30,8 +36,7 @@ CollisionManager* CollisionManager::Instance() {
 	return instance;
 }
 
-void CollisionSystem::CollisionManager::DeleteInstance()
-{
+void CollisionManager::UnloadAll() {
 	delete instance;
 	instance = nullptr;
 }

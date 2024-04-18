@@ -2,12 +2,13 @@
 #include <core/GameObject.h>
 #include <CollisionManager.h>
 #include <tools/YamlConverters.h>
+#include <GameCollider.h>
+#include <core/ColliderComponent.h>
 
 
 Twin2Engine::Core::SphereColliderComponent::SphereColliderComponent() : ColliderComponent()
 {
-	CollisionSystem::SphereColliderData* colliderData = new CollisionSystem::SphereColliderData();
-	collider = new CollisionSystem::GameCollider(this, colliderData);
+	collider = new CollisionSystem::GameCollider(this, new CollisionSystem::SphereColliderData());
 }
 
 void Twin2Engine::Core::SphereColliderComponent::SetRadius(float radius)

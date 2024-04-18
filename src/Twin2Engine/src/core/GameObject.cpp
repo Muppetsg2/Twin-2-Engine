@@ -68,8 +68,14 @@ GameObject::~GameObject()
 	for (Component* component : components)
 	{
 		component->OnDestroy();
+	}
+
+	for (Component* component : components)
+	{
 		delete component;
 	}
+
+	components.clear();
 	_freedIds.push_back(_id);
 }
 

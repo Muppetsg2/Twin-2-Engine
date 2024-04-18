@@ -46,11 +46,15 @@ void MeshRenderingManager::Init()
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void MeshRenderingManager::End()
+void MeshRenderingManager::UnloadAll()
 {
 	glDeleteBuffers(1, &_instanceDataSSBO);
 	glDeleteBuffers(1, &_materialIndexSSBO);
 	glDeleteBuffers(1, &_materialInputUBO);
+
+	_renderQueue.clear();
+	_depthQueue.clear();
+	_depthMapRenderQueue.clear();
 }
 
 
@@ -298,10 +302,10 @@ void MeshRenderingManager::RenderDepthMap()
 
 			meshPair.first->Draw(count);
 
-			{GLenum error = glGetError();
+			GLenum error = glGetError();
 			if (error != GL_NO_ERROR) {
 				SPDLOG_ERROR("RDMError: {}", error);
-			}}
+			}
 		}
 	}
 }

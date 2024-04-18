@@ -1,5 +1,4 @@
-#ifndef _COLLIDERCOMPONENT_H_
-#define _COLLIDERCOMPONENT_H_
+#pragma once
 
 #include <core/Component.h>
 #include <GameCollider.h>
@@ -27,9 +26,9 @@ namespace Twin2Engine::Core {
 	private:
 		bool dirtyFlag = false;
 	protected:
-		ColliderComponent(); // Powoduje ¿e klasa jest jakby abstrakcyjna no chyba ¿e bêdzie dziedziczona
+		ColliderComponent(); // Powoduje ze klasa jest jakby abstrakcyjna no chyba ze bedzie dziedziczona
 		CollisionSystem::GameCollider* collider = nullptr;
-		CollisionSystem::BoundingVolume* boundingVolume;
+		CollisionSystem::BoundingVolume* boundingVolume = nullptr;
 
 	public:
 		virtual ~ColliderComponent();
@@ -59,5 +58,3 @@ namespace Twin2Engine::Core {
 		virtual YAML::Node Serialize() const override;
 	};
 }
-
-#endif // !_COLLIDERCOMPONENT_H_

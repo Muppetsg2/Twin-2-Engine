@@ -72,6 +72,8 @@ using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
 using namespace Twin2Engine::GraphicEngine;
+using namespace CollisionSystem;
+using namespace LightingSystem;
 
 using Twin2Engine::Core::Input;
 using Twin2Engine::Core::KEY;
@@ -96,6 +98,7 @@ bool mouseNotUsed = true;
 
 #pragma endregion
 
+#if _DEBUG
 #pragma region OpenGLCallbackFunctions
 
 static void glfw_error_callback(int error, const char* description)
@@ -133,6 +136,7 @@ static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint i
 }
 
 #pragma endregion
+#endif
 
 #pragma region FunctionsDeclaration
 
@@ -143,10 +147,12 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void update();
 void render();
 
+#if _DEBUG
 void init_imgui();
 void imgui_begin();
 void imgui_render();
 void imgui_end();
+#endif
 
 void end_frame();
 
@@ -185,10 +191,11 @@ int main(int, char**)
     }
     spdlog::info("Initialized project.");
 
+#if _DEBUG
     init_imgui();
     spdlog::info("Initialized ImGui.");
+#endif
 
-    //SoLoud::result res = soloud.init();
     SoLoud::result res = AudioManager::Init();
     if (res != 0) {
         spdlog::error(AudioManager::GetErrorString(res));
@@ -416,10 +423,9 @@ int main(int, char**)
     dl_go->GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
     DirectionalLightComponent* dl = dl_go->AddComponent<DirectionalLightComponent>();
     dl->SetColor(glm::vec3(1.0f));
-    LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
-    LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f, 0.02f, 0.02f));
-    LightingSystem::LightingController::Instance()->SetHighlightParam(2.0f);
-    /**/
+    LightingController::Instance()->SetViewerPosition(cameraPos);
+    LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f, 0.02f, 0.02f));
+    LightingController::Instance()->SetHighlightParam(2.0f);
 #pragma endregion
 
     // Main loop
@@ -428,16 +434,20 @@ int main(int, char**)
         // Process I/O operations here
         input();
 
+        if (window->IsClosed()) break;
+
         // Update game objects' state here
         update();
 
         // OpenGL rendering code here
         render();
 
+#if _DEBUG
         // Draw ImGui
         imgui_begin();
         imgui_render(); // edit this function to add your own ImGui controls
         imgui_end(); // this call effectively renders ImGui
+#endif
 
         // End frame and swap buffers (double buffering)
         end_frame();
@@ -449,14 +459,17 @@ int main(int, char**)
     TextureManager::UnloadAll();
     AudioManager::UnloadAll();
     FontManager::UnloadAll();
+    CollisionManager::UnloadAll();
+    LightingController::UnloadAll();
     GraphicEngineManager::End();
     Input::FreeAllWindows();
 
-    CollisionSystem::CollisionManager::DeleteInstance();
-
+#if _DEBUG
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+#endif
+
     Window::FreeAll();
 
     glfwTerminate();
@@ -467,7 +480,10 @@ int main(int, char**)
 bool init()
 {
     // Setup window
+#if _DEBUG
     glfwSetErrorCallback(glfw_error_callback);
+#endif
+
     if (!glfwInit())
     {
         spdlog::error("Failed to initalize GLFW!");
@@ -563,7 +579,11 @@ void input()
         if (Input::GetCursorState() == CURSOR_STATE::DISABLED) 
         {
             Input::ShowCursor();
+#if _DEBUG
             glfwSetCursorPosCallback(window->GetWindow(), ImGui_ImplGlfw_CursorPosCallback);
+#else
+            glfwSetCursorPosCallback(window->GetWindow(), NULL);
+#endif
         }
         else
         {
@@ -653,6 +673,7 @@ void render()
     CameraComponent::GetMainCamera()->Render();
 }
 
+#if _DEBUG
 void init_imgui()
 {
     // Setup Dear ImGui binding
@@ -983,6 +1004,8 @@ void imgui_end()
     window->Use();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
+
+#endif
 
 void end_frame()
 {

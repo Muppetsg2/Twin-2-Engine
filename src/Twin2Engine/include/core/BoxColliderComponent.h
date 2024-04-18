@@ -1,5 +1,4 @@
-#ifndef _BOXCOLLIDERCOMPONENT_H_
-#define _BOXCOLLIDERCOMPONENT_H_
+#pragma once
 
 #include <core/ColliderComponent.h>
 
@@ -10,7 +9,7 @@ namespace Twin2Engine::Core {
 		bool dirtyFlag = false;
 
 		Tools::Action<Transform*> TransformChangeAction;
-		size_t TransformChangeActionId;
+		size_t TransformChangeActionId = 0;
 
 	public:
 		BoxColliderComponent();
@@ -34,5 +33,3 @@ namespace Twin2Engine::Core {
 		virtual YAML::Node Serialize() const override;
 	};
 }
-
-#endif // !_BOXCOLLIDERCOMPONENT_H_

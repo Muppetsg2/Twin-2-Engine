@@ -1,8 +1,8 @@
 #include <core/Transform.h>
 #include <tools/YamlConverters.h>
 
-//Nie mo�e by� nullptr gdy� niekt�re warunki w set parent mog� si� posypa�
-Twin2Engine::Core::Transform* Twin2Engine::Core::Transform::originTransform = new Transform();
+//Nie moze byc nullptr gdyz niektore warunki w set parent moga sie posypac
+//Twin2Engine::Core::Transform* Twin2Engine::Core::Transform::originTransform = new Transform();
 
 #pragma region DIRTY_FLAG
 
@@ -209,7 +209,8 @@ Twin2Engine::Core::Transform::Transform()
 	_localRotationQuat = glm::quat();
 	_globalRotationQuat = glm::quat();
 
-	_parent = originTransform;
+	//_parent = originTransform;
+	_parent = nullptr;
 
 	_localTransformMatrix = glm::mat4(1.0f);
 	_globalTransformMatrix = glm::mat4(1.0f);
@@ -330,12 +331,13 @@ void Twin2Engine::Core::Transform::AddChild(Transform* child)
 
 void Twin2Engine::Core::Transform::RemoveChild(Transform* child)
 {
-	child->SetParent(originTransform);
+	//child->SetParent(originTransform);
+	child->SetParent(nullptr);
 }
 
 void Twin2Engine::Core::Transform::SetParent(Transform* parent)
 {
-	//Nie usuwa� jest to zapasowe w wypadtku zmiany originTransform na nullptr, ale b�dzie nal�a� to wtedy jeszcze przerobi�
+	//Nie usuwac jest to zapasowe w wypadtku zmiany originTransform na nullptr, ale bedzie nal�a� to wtedy jeszcze przerobie
 	//if (parent == originTransform)
 	//{
 	//	_parent->JustRemoveChild(this);
@@ -349,15 +351,22 @@ void Twin2Engine::Core::Transform::SetParent(Transform* parent)
 	//	_parent = parent;
 	//}
 
+	/*
 	if (parent == nullptr)
 	{
 		parent = originTransform;
 	}
+	*/
 
 	if (_parent != parent)
 	{
-		_parent->JustRemoveChild(this);
-		parent->JustAddChild(this);
+		if (_parent != nullptr) {
+			_parent->JustRemoveChild(this);
+		}
+
+		if (parent != nullptr) {
+			parent->JustAddChild(this);
+		}
 		_parent = parent;
 
 		//_dirtyFlags.dirtyFlag = true;
@@ -440,7 +449,10 @@ void Twin2Engine::Core::Transform::RecalculateLocalPosition()
 {
 	if (_dirtyFlags.dirtyFlagLocalPosition)
 	{
+		/*
 		if (_parent == originTransform || _parent == nullptr)
+		*/
+		if (_parent == nullptr)
 		{
 			_localPosition = _globalPosition;
 		}
@@ -544,7 +556,10 @@ void Twin2Engine::Core::Transform::RecalculateLocalRotation()
 {
 	if (_dirtyFlags.dirtyFlagLocalRotation)
 	{
+		/*
 		if (_parent == originTransform || _parent == nullptr)
+		*/
+		if (_parent == nullptr)
 		{
 			_localRotationQuat = _globalRotationQuat;
 			_localRotation = _globalRotation;
@@ -612,7 +627,10 @@ void Twin2Engine::Core::Transform::RecalculateGlobalRotation()
 {
 	if (_dirtyFlags.dirtyFlagGlobalRotation)
 	{
+		/*
 		if (_parent == originTransform || _parent == nullptr)
+		*/
+		if (_parent == nullptr)
 		{
 			_globalRotationQuat = _localRotationQuat;
 			_globalRotation = _localRotation;
@@ -666,7 +684,10 @@ void Twin2Engine::Core::Transform::RecalculateLocalScale()
 {
 	if (_dirtyFlags.dirtyFlagLocalScale)
 	{
+		/*
 		if (_parent == originTransform || _parent == nullptr)
+		*/
+		if (_parent == nullptr)
 		{
 			_localScale = _globalScale;
 		}
@@ -709,7 +730,10 @@ void Twin2Engine::Core::Transform::RecalculateGlobalScale()
 {
 	if (_dirtyFlags.dirtyFlagGlobalScale)
 	{
+		/*
 		if (_parent == originTransform || _parent == nullptr)
+		*/
+		if (_parent == nullptr)
 		{
 			_globalScale = _localScale;
 		}
@@ -754,7 +778,10 @@ void Twin2Engine::Core::Transform::RecalculateTransformMatrix()
 
 	if (_dirtyFlags.dirtyFlagInHierarchy)
 	{
+		/*
 		if (_parent != nullptr && _parent != originTransform)
+		*/
+		if (_parent != nullptr)
 		{
 			_parent->RecalculateTransformMatrix();
 			//_globalTransformMatrix = _parent->GetTransformMatrix() * _localTransformMatrix;
@@ -765,7 +792,10 @@ void Twin2Engine::Core::Transform::RecalculateTransformMatrix()
 
 	if (_dirtyFlags.dirtyFlag || _dirtyFlags.dirtyFlagInHierarchy)
 	{
+		/*
 		if (_parent != nullptr && _parent != originTransform)
+		*/
+		if (_parent != nullptr)
 		{
 			_globalTransformMatrix = _parent->GetTransformMatrix() * _localTransformMatrix;
 		}

@@ -118,7 +118,8 @@ void GameObject::CloneTo(GameObject* cloned) const
 
 	for (int index = 0; index < _transform->GetChildCount(); index++)
 	{
-		cloned->_transform->AddChild(Instantiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform)->GetTransform());
+		//cloned->_transform->AddChild(Instantiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform)->GetTransform());
+		Instantiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform);
 	}
 }
 

@@ -25,11 +25,11 @@ namespace Generation
 		};
 
 	public:
-		Tilemap::HexagonalTilemap* tilemap;
-		MapRegion* region;
-		MapSector* sector;
-		Tilemap::HexagonalTile* tile;
-		HexTileType type;
+		Tilemap::HexagonalTilemap* tilemap = nullptr;
+		MapRegion* region = nullptr;
+		MapSector* sector = nullptr;
+		Tilemap::HexagonalTile* tile = nullptr;
+		HexTileType type = HexTileType::None;
 
 		//inline void SetTilemap(Tilemap::HexagonalTilemap* tilemap);
 		//inline Tilemap::HexagonalTilemap* GetTilemap() const;

@@ -28,9 +28,9 @@ namespace Generation
         std::unordered_set<MapSector*> _regionSectors;
 
     public:
-        Tilemap::HexagonalTilemap* tilemap;
+        Tilemap::HexagonalTilemap* tilemap = nullptr;
 
-        RegionType type;
+        RegionType type = RegionType::Normal;
 
         //void SetTilemap(Tilemap::HexagonalTilemap* tilemap);
         //inline Tilemap::HexagonalTilemap* GetTilemap() const;
@@ -39,14 +39,14 @@ namespace Generation
 
         //inline const std::vector<Tilemap::HexagonalTile*>& GetTiles() const;
         inline const std::unordered_set<MapSector*>& GetSectors() const;
-        inline unsigned int GetSectorsCount() const;
+        unsigned int GetSectorsCount() const;
         void AddSector(MapSector* tile);
         void AddSectors(const std::vector<MapSector*>& sectors);
         void RemoveSector(MapSector* sector);
         //void RemoveTiles(const std::vector<Tilemap::HexagonalTile*>& tiles);
         void RemoveSectors(const std::unordered_set<MapSector*>& sectors);
 
-        inline unsigned int GetTilesCount() const;
+        unsigned int GetTilesCount() const;
 
         void JoinRegion(MapRegion* region);
 

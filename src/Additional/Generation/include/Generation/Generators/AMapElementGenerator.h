@@ -9,7 +9,7 @@ namespace Generation::Generators
 	{
 	public:
 		AMapElementGenerator() = default;
-		virtual ~AMapElementGenerator();
+		virtual ~AMapElementGenerator() { } 
 		virtual void Generate(Tilemap::HexagonalTilemap* tilemap) = 0;
 	};
 }

@@ -38,7 +38,7 @@ namespace Tilemap
 		void SetGameObject(Twin2Engine::Core::GameObject* gameObject);
 
 		inline void GetAdjacentTiles(HexagonalTile** out_AdjacentTiles) const;
-		inline void GetAdjacentGameObjects(Twin2Engine::Core::GameObject** out_adjacentGameObjects) const;
+		void GetAdjacentGameObjects(Twin2Engine::Core::GameObject** out_adjacentGameObjects) const;
 	};
 }
 

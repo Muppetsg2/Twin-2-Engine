@@ -64,6 +64,17 @@
 
 // GENERATION
 #include <Generation/MapGenerator.h>
+#include <Generation/ContentGenerator.h>
+#include <Generation/MapRegion.h>
+#include <Generation/MapSector.h>
+#include <Generation/MapHexTile.h>
+#include <Generation/Generators/CitiesGenerator.h>
+#include <Generation/Generators/LakeGenerator.h>
+#include <Generation/Generators/MountainsGenerator.h>
+#include <Generation/Generators/RadioStationGeneratorRegionBased.h>
+#include <Generation/Generators/RadioStationGeneratorSectorBased.h>
+#include <Generation/Generators/RegionsBySectorsGenerator.h>
+#include <Generation/Generators/SectorsGenerator.h>
 
 // LIGHTING
 #include <LightingController.h>
@@ -85,6 +96,7 @@ using Twin2Engine::Core::Time;
 using Tilemap::HexagonalTile;
 using Tilemap::HexagonalTilemap;
 using namespace Generation;
+using namespace Generation::Generators;
 
 #pragma region CAMERA_CONTROLLING
 
@@ -390,6 +402,8 @@ int main(int, char**)
     GameObject* hexagonPrefab = new GameObject();
     hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
     hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    MapHexTile* mapHexTile = hexagonPrefab->AddComponent<MapHexTile>();
+    
     auto comp = hexagonPrefab->AddComponent<MeshRenderer>();
     comp->AddMaterial(MaterialsManager::GetMaterial("ColoredHexTile"));
     //comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
@@ -398,6 +412,8 @@ int main(int, char**)
     GameObject* redHexagonPrefab = new GameObject();
     redHexagonPrefab->GetTransform()->Translate(glm::vec3(3, 4, 0));
     redHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    mapHexTile = redHexagonPrefab->AddComponent<MapHexTile>();
+
     comp = redHexagonPrefab->AddComponent<MeshRenderer>();
     comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
     comp->SetModel(modelHexagon);
@@ -405,6 +421,8 @@ int main(int, char**)
     GameObject* blueHexagonPrefab = new GameObject();
     blueHexagonPrefab->GetTransform()->Translate(glm::vec3(4, 5, 0));
     blueHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    mapHexTile = blueHexagonPrefab->AddComponent<MapHexTile>();
+
     comp = blueHexagonPrefab->AddComponent<MeshRenderer>();
     comp->AddMaterial(MaterialsManager::GetMaterial("BlueHexTile"));
     comp->SetModel(modelHexagon);
@@ -412,6 +430,8 @@ int main(int, char**)
     GameObject* greenHexagonPrefab = new GameObject();
     greenHexagonPrefab->GetTransform()->Translate(glm::vec3(5, 6, 0));
     greenHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    mapHexTile = greenHexagonPrefab->AddComponent<MapHexTile>();
+
     comp = greenHexagonPrefab->AddComponent<MeshRenderer>();
     {GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
@@ -423,48 +443,6 @@ int main(int, char**)
 		SPDLOG_ERROR("RDMError01: {}", error);
 	}}
     comp->SetModel(modelHexagon);
-
-    //HexagonalTilemap hexagonalTilemap(glm::ivec2(-25, -25), glm::ivec2(25, 25), 1.f, true);
-    //comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
-    //spdlog::info("hexagon rotation: [{}, {}, {}]", hexagonPrefab->GetTransform()->GetLocalRotation().x, hexagonPrefab->GetTransform()->GetLocalRotation().y, hexagonPrefab->GetTransform()->GetLocalRotation().z);
-
-    /**/
-    //float tilemapFillingBeginTime = glfwGetTime();
-    //hexagonalTilemap.Fill(glm::ivec2(0, 0), hexagonPrefab);
-    //spdlog::info("Tilemap filling time: {}", glfwGetTime() - tilemapFillingBeginTime);
-    //glm::ivec2 lbp = hexagonalTilemap.GetLeftBottomPosition();
-    //glm::ivec2 rtp = hexagonalTilemap.GetRightTopPosition();
-    //
-    //spdlog::info("LBP [{}, {}]: , RTP: [{}, {}]", lbp.x, lbp.y, rtp.x, rtp.y);
-    //hexagonalTilemap.SetTile(glm::ivec2(6, 6), redHexagonPrefab);
-    //lbp = hexagonalTilemap.GetLeftBottomPosition();
-    //rtp = hexagonalTilemap.GetRightTopPosition();
-    //
-    //spdlog::info("LBP [{}, {}]: , RTP: [{}, {}]", lbp.x, lbp.y, rtp.x, rtp.y);
-    //
-    //hexagonalTilemap.GetTile(glm::ivec2(-5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    //hexagonalTilemap.GetTile(glm::ivec2(5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    //hexagonalTilemap.GetTile(glm::ivec2(-5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    //hexagonalTilemap.GetTile(glm::ivec2(5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    /*
-    float tilemapFillingBeginTime = glfwGetTime();
-    hexagonalTilemap.Fill(glm::ivec2(0, 0), hexagonPrefab);
-    spdlog::info("Tilemap filling time: {}", glfwGetTime() - tilemapFillingBeginTime);
-    glm::ivec2 lbp = hexagonalTilemap.GetLeftBottomPosition();
-    glm::ivec2 rtp = hexagonalTilemap.GetRightTopPosition();
-
-    spdlog::info("LBP [{}, {}]: , RTP: [{}, {}]", lbp.x, lbp.y, rtp.x, rtp.y);
-    hexagonalTilemap.SetTile(glm::ivec2(6, 6), redHexagonPrefab);
-    lbp = hexagonalTilemap.GetLeftBottomPosition();
-    rtp = hexagonalTilemap.GetRightTopPosition();
-
-    spdlog::info("LBP [{}, {}]: , RTP: [{}, {}]", lbp.x, lbp.y, rtp.x, rtp.y);
-
-    hexagonalTilemap.GetTile(glm::ivec2(-5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    hexagonalTilemap.GetTile(glm::ivec2(5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    hexagonalTilemap.GetTile(glm::ivec2(-5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    hexagonalTilemap.GetTile(glm::ivec2(5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    /**/
 
     // TILEMAP
     //*
@@ -482,6 +460,31 @@ int main(int, char**)
     float tilemapGenerating = glfwGetTime();
     mapGenerator->Generate();
     spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
+
+    GameObject* prefabSector = new GameObject();
+    prefabSector->AddComponent<MapSector>();
+    GameObject* prefabRegion = new GameObject();
+    prefabRegion->AddComponent<MapRegion>();
+
+    ContentGenerator* contentGenerator = tilemapGO->AddComponent<ContentGenerator>();
+    SectorsGenerator sectorsGenertor;
+    sectorsGenertor.minTilesPerSector = 3;
+    sectorsGenertor.maxTilesPerSector = 3;
+    sectorsGenertor.prefabSector = prefabSector;
+    contentGenerator->mapElementGenerators.push_back(&sectorsGenertor);
+    RegionsBySectorsGenerator regionsBySectorsGenerator;
+    regionsBySectorsGenerator.regionPrefab = prefabRegion;
+    regionsBySectorsGenerator.mergeByNumberTilesPerRegion = false;
+    regionsBySectorsGenerator.minSectorsPerRegion = 3;
+    regionsBySectorsGenerator.maxSectorsPerRegion = 3;
+    regionsBySectorsGenerator.lowerHeightRange = 0;
+    regionsBySectorsGenerator.upperHeightRange = 3;
+    regionsBySectorsGenerator.isDiscritizedHeight = true;
+
+
+    tilemapGenerating = glfwGetTime();
+    contentGenerator->GenerateContent(hexagonalTilemap);
+    spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
     /**/
 
 

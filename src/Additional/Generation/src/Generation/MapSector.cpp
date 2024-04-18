@@ -80,7 +80,7 @@ void MapSector::RemoveTiles(const std::unordered_set<MapHexTile*>& tiles)
 	}
 }
 
-inline size_t MapSector::GetTilesCount() const
+size_t MapSector::GetTilesCount() const
 {
 	return _sectorTiles.size();
 }

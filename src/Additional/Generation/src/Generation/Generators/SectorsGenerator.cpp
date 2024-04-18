@@ -112,7 +112,7 @@ MapSector* SectorsGenerator::CreateSector(Tilemap::HexagonalTilemap* tilemap, gl
         }
     }
 
-    int tilesInSector = Random::Range(minTilesPerSector, maxTilesPerSctor);
+    int tilesInSector = Random::Range(minTilesPerSector, maxTilesPerSector);
     MapHexTile* chosenTile = nullptr;
     list<MapHexTile*> sectorTiles;
 

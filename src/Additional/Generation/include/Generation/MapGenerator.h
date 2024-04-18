@@ -8,6 +8,8 @@
 #include <Tilemap/HexagonalTile.h>
 #include <Tilemap/HexagonalTilemap.h>
 
+#include <Generation/MapHexTile.h>
+
 #define HEX_DIRECTION_CONNECTING true
 #define GRADIENT_CONNECTING false
 

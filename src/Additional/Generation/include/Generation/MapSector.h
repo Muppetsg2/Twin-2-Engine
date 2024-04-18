@@ -30,8 +30,8 @@ namespace Generation
         std::unordered_set<MapHexTile*> _sectorTiles;
 
     public:
-        HexagonalTilemap* tilemap;
-        MapRegion* region;
+        HexagonalTilemap* tilemap = nullptr;
+        MapRegion* region = nullptr;
         SectorType type = SectorType::Normal;
 
 
@@ -51,7 +51,7 @@ namespace Generation
         void RemoveTile(MapHexTile* tile);
         //void RemoveTiles(const std::vector<MapHexTile*>& tiles);
         void RemoveTiles(const std::unordered_set<MapHexTile*>& tiles);
-        inline size_t GetTilesCount() const;
+        size_t GetTilesCount() const;
 
 
         std::vector<MapSector*> GetAdjacentSectors() const;

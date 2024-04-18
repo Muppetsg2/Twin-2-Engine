@@ -16,9 +16,9 @@ namespace Generation::Generators
 		MapSector* CreateSector(Tilemap::HexagonalTilemap* tilemap, glm::ivec2 position);
 
 	public:
-		Twin2Engine::Core::GameObject* prefabSector;
+		Twin2Engine::Core::GameObject* prefabSector = nullptr;
 		int minTilesPerSector = 7;
-		int maxTilesPerSctor = 7;
+		int maxTilesPerSector = 7;
 
 		float accuracyFactor = 1.0f;
 

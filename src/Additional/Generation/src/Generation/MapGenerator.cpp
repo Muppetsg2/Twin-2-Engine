@@ -242,12 +242,13 @@ void MapGenerator::Generate()
         for (int y = leftBottomPosition.y; y < rightTopPosition.y; y++)
         {
             ivec2 tilePosition(x, y);
-            Twin2Engine::Core::GameObject* tileObject = tilemap->GetTile(tilePosition)->GetGameObject();
+            HexagonalTile* tile = tilemap->GetTile(tilePosition);
+            GameObject* tileObject = tile->GetGameObject();
             if (tileObject != nullptr)
             {
-                //HexTile hexTile = tileObject.GetComponent<HexTile>();
-                //hexTile->tilemap = tilemap;
-                //hexTile->tilemapPosition = tilePosition;
+                MapHexTile* hexTile = tileObject->GetComponent<MapHexTile>();
+                hexTile->tilemap = tilemap;
+                hexTile->tile = tile;
             }
         }
     }

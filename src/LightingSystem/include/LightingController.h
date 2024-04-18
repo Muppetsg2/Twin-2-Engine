@@ -1,5 +1,4 @@
-#ifndef _LIGHTINGCONTROLLER_H_
-#define _LIGHTINGCONTROLLER_H_
+#pragma once
 
 #include "Light.h"
 #include <glad/glad.h>  
@@ -14,6 +13,7 @@ namespace LightingSystem {
 			static LightingController* instance;
 
 			LightingController();
+			~LightingController();
 
 			struct Lights {											//1104
 				unsigned int numberOfPointLights = 0;				//0		4
@@ -28,7 +28,7 @@ namespace LightingSystem {
 			struct LightingData {													//32
 				alignas(16) glm::vec3 AmbientLight = glm::vec3(0.0f, 0.0f, 0.0f);	//0		16
 				glm::vec3 ViewerPosition = glm::vec3(0.0f, 0.0f, 0.0f);				//16	12
-				float HighlightParam = 2.0f;													//28	4
+				float HighlightParam = 2.0f;										//28	4
 			};
 			//Lights lights;
 
@@ -42,13 +42,13 @@ namespace LightingSystem {
 			GLuint LightsBuffer;
 			GLuint LightingDataBuffer;
 
-
 			std::unordered_set<PointLight*> pointLights;
 			std::unordered_set<SpotLight*> spotLights;
 			std::unordered_set<DirectionalLight*> dirLights;
 
 			static LightingController* Instance();
 			static bool IsInstantiated();
+			static void UnloadAll();
 
 			void UpdateLightsBuffer();
 			//Nale¿y u¿ywaæ po dodaniu lub usuniêciu nowego point light-a
@@ -91,5 +91,3 @@ namespace LightingSystem {
 			void UnregisterDirLight(DirectionalLight* dirLight);/**/
 	};
 }
-
-#endif // !_LIGHTINGCONTROLLER_H_

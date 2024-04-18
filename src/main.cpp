@@ -73,6 +73,7 @@ using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
 using namespace Twin2Engine::GraphicEngine;
 using namespace CollisionSystem;
+using namespace LightingSystem;
 
 using Twin2Engine::Core::Input;
 using Twin2Engine::Core::KEY;
@@ -428,9 +429,9 @@ int main(int, char**)
     dl_go->GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
     DirectionalLightComponent* dl = dl_go->AddComponent<DirectionalLightComponent>();
     dl->SetColor(glm::vec3(1.0f));
-    LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
-    LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f, 0.02f, 0.02f));
-    LightingSystem::LightingController::Instance()->SetHighlightParam(2.0f);
+    LightingController::Instance()->SetViewerPosition(cameraPos);
+    LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f, 0.02f, 0.02f));
+    LightingController::Instance()->SetHighlightParam(2.0f);
 #pragma endregion
 
     // Main loop
@@ -438,6 +439,8 @@ int main(int, char**)
     {
         // Process I/O operations here
         input();
+
+        if (window->IsClosed()) break;
 
         // Update game objects' state here
         update();
@@ -463,6 +466,7 @@ int main(int, char**)
     AudioManager::UnloadAll();
     FontManager::UnloadAll();
     CollisionManager::UnloadAll();
+    LightingController::UnloadAll();
     GraphicEngineManager::End();
     Input::FreeAllWindows();
 

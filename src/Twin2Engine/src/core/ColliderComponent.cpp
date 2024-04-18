@@ -15,7 +15,9 @@ ColliderComponent::ColliderComponent() : Component()
 ColliderComponent::~ColliderComponent()
 {
 	delete collider;
-	//delete boundingVolume;
+	collider = nullptr;
+	delete boundingVolume;
+	boundingVolume = nullptr;
 	//CollisionSystem::CollisionManager::Instance()->UnregisterCollider(collider);
 	/*for (size_t i = 0; i < colliderComponents.size(); ++i) {
 		if (colliderComponents[i] == this) {
@@ -92,7 +94,7 @@ void ColliderComponent::EnableBoundingVolume(bool v)
 
 void ColliderComponent::SetBoundingVolumeRadius(float radius)
 {
-	((CollisionSystem::SphereColliderData*)collider->boundingVolume)->Radius = radius;
+	((CollisionSystem::SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius = radius;
 }
 
 void ColliderComponent::SetLocalPosition(float x, float y, float z)
@@ -114,7 +116,7 @@ YAML::Node Twin2Engine::Core::ColliderComponent::Serialize() const
 	node["layerFilter"] = collider->layersFilter;
 	node["boundingVolume"] = collider->boundingVolume != nullptr;
 	if (collider->boundingVolume != nullptr) {
-		node["boundingVolumeRadius"] = ((CollisionSystem::SphereColliderData*)collider->boundingVolume)->Radius;
+		node["boundingVolumeRadius"] = ((CollisionSystem::SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius;
 	}
 	node["position"] = glm::vec3(collider->shapeColliderData->LocalPosition.x, collider->shapeColliderData->LocalPosition.y, collider->shapeColliderData->LocalPosition.z);
 	return node;

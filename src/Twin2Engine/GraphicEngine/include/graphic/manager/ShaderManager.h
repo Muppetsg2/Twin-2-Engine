@@ -75,7 +75,7 @@ namespace Twin2Engine::Manager
 
 		//ShaderManager();
 		static void Init();
-		static void End();
+		static void UnloadAll();
 
 		static GraphicEngine::Shader* GetShaderProgram(const std::string& shaderName);
 		static GraphicEngine::Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);

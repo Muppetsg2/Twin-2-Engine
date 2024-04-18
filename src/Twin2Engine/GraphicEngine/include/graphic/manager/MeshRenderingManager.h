@@ -1,5 +1,4 @@
-#ifndef _MESH_RENDERING_MANAGER_H_
-#define _MESH_RENDERING_MANAGER_H_
+#pragma once
 
 #include <graphic/InstatiatingMesh.h>
 #include <graphic/Material.h>
@@ -57,7 +56,7 @@ namespace Twin2Engine
 			static void RenderDepthMap();
 		public:
 			static void Init();
-			static void End();
+			static void UnloadAll();
 
 			static void Render(MeshRenderData meshData);
 			static void RenderDepthMap(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,
@@ -65,6 +64,3 @@ namespace Twin2Engine
 		};
 	}
 }
-
-
-#endif

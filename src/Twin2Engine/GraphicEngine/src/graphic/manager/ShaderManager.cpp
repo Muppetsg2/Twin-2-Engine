@@ -306,8 +306,10 @@ void ShaderManager::Init()
 
 }
 
-void ShaderManager::End()
+void ShaderManager::UnloadAll()
 {
+    loadedShaders.clear();
+    delete DepthShader;
 }
 
 

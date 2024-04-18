@@ -1,4 +1,4 @@
-#project(CollisionSystem VERSION 1.0)
+project(LightingSystem VERSION 1.0)
 
 set(LIGHTING_SYSTEM_DIR ${CMAKE_CURRENT_LIST_DIR})
 set(LIGHTING_SYSTEM_SOURCE_DIR ${LIGHTING_SYSTEM_DIR}/src)
@@ -24,22 +24,25 @@ source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${LIGHTING_SYSTEM_PRIVATE_INCL
 
 
 #Defining library
-add_library(LightingSystem STATIC ${LIGHTING_SYSTEM_SOURCE_FILES})
+add_library(${PROJECT_NAME} STATIC ${LIGHTING_SYSTEM_SOURCE_FILES})
 
 # Adding precompile Headers to library
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${LIGHTING_SYSTEM_PRECOMPILE_HEADER})
 
 #Adding include to library
-target_include_directories(LightingSystem
+target_include_directories(${PROJECT_NAME}
                         PUBLIC 
                         ${LIGHTING_SYSTEM_INCLUDE_DIR}
+                        ${TOOLS_INCLUDE_DIR}
                         ${glad_SOURCE_DIR}
 
                         PRIVATE
                         ${LIGHTING_SYSTEM_DIR})
 
-target_link_libraries(LightingSystem PRIVATE 
+target_link_libraries(${PROJECT_NAME} PRIVATE 
                                         glad
                                         glfw
+                                        glm::glm
                                         GraphicEngine
+                                        Tools
                                         spdlog)

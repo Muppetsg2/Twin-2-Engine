@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Twin2Engine::Core {
+namespace Twin2Engine::Tools {
 	template<typename Ret, typename... Args> using Func = std::function<Ret(Args...)>;
 	template<typename... Args> using Action = Func<void, Args...>;
 	using Method = Action<>;

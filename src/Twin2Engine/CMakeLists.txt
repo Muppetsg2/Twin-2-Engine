@@ -28,6 +28,7 @@ source_group(TREE ${CMAKE_SOURCE_DIR}         FILES ${ASSETS_FILES})
 add_subdirectory(GraphicEngine)
 add_subdirectory(CollisionSystem)
 add_subdirectory(LightingSystem)
+add_subdirectory(Tools)
 
 # ---- Dependency ----
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES} ${ASSETS_FILES})

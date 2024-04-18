@@ -28,7 +28,7 @@ namespace Twin2Engine::Manager {
 
 		static void SaveGameObject(const Core::GameObject* obj, YAML::Node gameObjects);
 
-		static Core::GameObject* FindObjectBy(Core::GameObject* obj, const Core::Func<bool, const Core::GameObject*>& predicate);
+		static Core::GameObject* FindObjectBy(Core::GameObject* obj, const Tools::Func<bool, const Core::GameObject*>& predicate);
 		
 		template<class T, class... Ts> static std::tuple<T*, Ts*...> AddComponentsToGameObject(Core::GameObject* obj)
 		{

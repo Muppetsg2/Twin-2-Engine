@@ -1,6 +1,5 @@
 #include <GraphicEnigineManager.h>
 
-using namespace Twin2Engine::Core;
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
 

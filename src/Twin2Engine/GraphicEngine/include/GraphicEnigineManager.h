@@ -7,8 +7,6 @@
 
 #include <graphic/Window.h>
 
-#include <core/CameraComponent.h>
-
 namespace Twin2Engine::GraphicEngine
 {
 	class GraphicEngineManager

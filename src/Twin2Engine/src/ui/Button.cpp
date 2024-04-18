@@ -1,10 +1,11 @@
 #include <ui/Button.h>
 #include <core/GameObject.h>
 #include <core/Input.h>
-#include <core/YamlConverters.h>
+#include <tools/YamlConverters.h>
 
 using namespace Twin2Engine::UI;
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Tools;
 
 void Button::SetWidth(float width) {
 	_width = width;

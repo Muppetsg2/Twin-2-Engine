@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/EventHandler.h>
+#include <tools/EventHandler.h>
 
 namespace Twin2Engine::GraphicEngine {
 	class Window {
@@ -18,7 +18,7 @@ namespace Twin2Engine::GraphicEngine {
 
 		static void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
 	public:
-		static Twin2Engine::Core::MethodEventHandler OnWindowSizeEvent;
+		static Twin2Engine::Tools::MethodEventHandler OnWindowSizeEvent;
 		
 		virtual ~Window();
 

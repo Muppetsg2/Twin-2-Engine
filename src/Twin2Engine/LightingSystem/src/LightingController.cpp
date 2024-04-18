@@ -1,7 +1,5 @@
 #include "LightingController.h"
 
-#include <core/CameraComponent.h>
-#include <core/Transform.h>
 #include <graphic/manager/MeshRenderingManager.h>
 
 using namespace LightingSystem;
@@ -62,7 +60,7 @@ void LightingController::UpdateLightsBuffer() {
 	auto itr3 = dirLights.begin();
 	while (itr3 != dirLights.end()) {
 		lights.directionalLights[lights.numberOfDirLights] = **itr3;
-		RecalculateDirLightSpaceMatrix(*itr3);
+		RecalculateDirLightSpaceMatrix(*itr3, CameraData());
 		++itr3;
 		++lights.numberOfDirLights;
 	}
@@ -216,16 +214,15 @@ void LightingController::UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader*
 	}
 }
 
-glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* light) { //const glm::mat4& viewProjectionInverse
+glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* light, const CameraData& camera) { //const glm::mat4& viewProjectionInverse
 	/**/
-	Twin2Engine::Core::CameraComponent* mainCam = Twin2Engine::Core::CameraComponent::GetMainCamera();
-	glm::mat4 projectionViewInverse = glm::inverse(mainCam->GetProjectionMatrix() * mainCam->GetViewMatrix());
+	glm::mat4 projectionViewInverse = glm::inverse(camera.projection * camera.view);
 	std::vector<glm::vec3> corners;
 
 	glm::vec3 lightNewPos;
 	glm::vec3 frustumCenter;
 
-	if (mainCam->GetCameraType() == Twin2Engine::Core::CameraType::ORTHOGRAPHIC) {
+	if (!camera.isPerspective) {
 		std::vector<glm::vec4> ndcNearCorners = {
 			{ -1.0f,  1.0f, -1.0f, 1.0f },
 			{  1.0f,  1.0f, -1.0f, 1.0f },
@@ -235,11 +232,11 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 		////do robiæ
 	}
 	else {
-		glm::vec3 camPos = mainCam->GetTransform()->GetGlobalPosition();
+		glm::vec3 camPos = camera.pos;
 		corners.push_back(camPos);
-		frustumCenter = camPos + mainCam->GetFrontDir() * (DLShadowCastingRange * 0.5f);
+		frustumCenter = camPos + camera.front * (DLShadowCastingRange * 0.5f);
 
-		float ndcZPos = DLShadowCastingRange / mainCam->GetFarPlane();
+		float ndcZPos = DLShadowCastingRange / camera.farPlane;
 		glm::vec3 gPos = projectionViewInverse * glm::vec4(-1.0f, 1.0f, ndcZPos * DLShadowCastingRange, 1.0f);
 		corners.push_back(gPos);
 		gPos = projectionViewInverse * glm::vec4(1.0f, 1.0f, ndcZPos * DLShadowCastingRange, 1.0f);

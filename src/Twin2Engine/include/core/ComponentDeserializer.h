@@ -1,18 +1,18 @@
 #pragma once
 
 #include <core/GameObject.h>
-#include <core/EventHandler.h>
+#include <tools/EventHandler.h>
 #include <graphic/manager/TextureManager.h>
 #include <graphic/manager/SpriteManager.h>
 #include <LayersData.h>
 #include <core/CameraComponent.h>
-#include <core/YamlConverters.h>
+#include <tools/YamlConverters.h>
 
 namespace Twin2Engine::Core {
 	class ComponentDeserializer {
 	private:
-		using ComponentFunc = Func<Component*>;
-		using DeserializeAction = Action<Component*, const YAML::Node&>;
+		using ComponentFunc = Tools::Func<Component*>;
+		using DeserializeAction = Tools::Action<Component*, const YAML::Node&>;
 		using DeserializePair = std::pair<ComponentFunc, DeserializeAction>;
 
 		static std::hash<std::string> hasher;

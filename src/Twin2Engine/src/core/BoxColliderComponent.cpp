@@ -1,7 +1,7 @@
 #include "core/GameObject.h"
 #include <core/BoxColliderComponent.h>
 #include <CollisionManager.h>
-#include <core/YamlConverters.h>
+#include <tools/YamlConverters.h>
 
 
 Twin2Engine::Core::BoxColliderComponent::BoxColliderComponent() : ColliderComponent()

@@ -1,5 +1,5 @@
 #include <core/Transform.h>
-#include <core/YamlConverters.h>
+#include <tools/YamlConverters.h>
 
 //Nie mo�e by� nullptr gdy� niekt�re warunki w set parent mog� si� posypa�
 Twin2Engine::Core::Transform* Twin2Engine::Core::Transform::originTransform = new Transform();

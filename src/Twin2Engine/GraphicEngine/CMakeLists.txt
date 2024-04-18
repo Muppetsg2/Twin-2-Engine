@@ -29,35 +29,22 @@ add_library(${PROJECT_NAME} STATIC ${GRAPHIC_ENGINE_SOURCE_FILES})
 target_include_directories(${PROJECT_NAME}
 						PUBLIC 
 						${GRAPHIC_ENGINE_INCLUDE_DIR}
+						${TOOLS_INCLUDE_DIR}
 						${glad_SOURCE_DIR}
-)
+						${stb_image_SOURCE_DIR})
 
 # Adding precompile Headers to library
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${GRAPHIC_ENGINE_PRECOMPILE_HEADER})
 
-target_link_libraries(GraphicEngine ${OPENGL_LIBRARIES})
-target_link_libraries(GraphicEngine glad)
-target_link_libraries(GraphicEngine stb_image)
-target_link_libraries(GraphicEngine assimp)
-target_link_libraries(GraphicEngine glfw)
-target_link_libraries(GraphicEngine spdlog)
-target_link_libraries(GraphicEngine yaml-cpp)
-target_link_libraries(GraphicEngine Twin2Engine)
-target_link_libraries(GraphicEngine freetype)
-target_link_libraries(GraphicEngine glm::glm)
-target_link_libraries(GraphicEngine LightingSystem)
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} glad)
+target_link_libraries(${PROJECT_NAME} stb_image)
+target_link_libraries(${PROJECT_NAME} assimp)
+target_link_libraries(${PROJECT_NAME} glfw)
+target_link_libraries(${PROJECT_NAME} spdlog)
+target_link_libraries(${PROJECT_NAME} yaml-cpp)
+target_link_libraries(${PROJECT_NAME} freetype)
+target_link_libraries(${PROJECT_NAME} glm::glm)
+target_link_libraries(${PROJECT_NAME} LightingSystem)
+target_link_libraries(${PROJECT_NAME} Tools)
 #target_link_libraries(GraphicEngine tinygltf)
-
-#message("GraphicEngine Public Include Files:")
-#foreach(FILE_PATH ${GRAPHIC_ENGINE_PUBLIC_INCLUDE_FILES})
-#    message("  ${FILE_PATH}")
-#endforeach()
-#message("GraphicEngine Private Include Files:")
-#foreach(FILE_PATH ${GRAPHIC_ENGINE_PRIVATE_INCLUDE_FILES})
-#    message("  ${FILE_PATH}")
-#endforeach()
-#message("GraphicEngine Source Files:")
-#foreach(FILE_PATH ${GRAPHIC_ENGINE_SOURCE_FILES})
-#    message("  ${FILE_PATH}")
-#endforeach()
-

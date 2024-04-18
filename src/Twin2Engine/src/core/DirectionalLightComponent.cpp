@@ -1,6 +1,7 @@
 #include <core/DirectionalLightComponent.h>
 #include <core/GameObject.h>
 #include <core/Transform.h>
+#include <core/CameraComponent.h>
 
 
 void Twin2Engine::Core::DirectionalLightComponent::Initialize()
@@ -12,7 +13,16 @@ void Twin2Engine::Core::DirectionalLightComponent::Initialize()
 	};
 
 	OnViewerChange = [this]() {
-		GetTransform()->SetGlobalPosition(LightingSystem::LightingController::RecalculateDirLightSpaceMatrix(light));
+		CameraComponent* camera = CameraComponent::GetMainCamera();
+		LightingSystem::CameraData data{
+			.projection = camera->GetProjectionMatrix(),
+			.view = camera->GetViewMatrix(),
+			.pos = camera->GetTransform()->GetGlobalPosition(),
+			.front = camera->GetFrontDir(),
+			.farPlane = camera->GetFarPlane(),
+			.isPerspective = camera->GetCameraType() == CameraType::PERSPECTIVE,
+		};
+		GetTransform()->SetGlobalPosition(LightingSystem::LightingController::RecalculateDirLightSpaceMatrix(light, data));
 	};
 
 

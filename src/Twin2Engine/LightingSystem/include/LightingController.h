@@ -3,9 +3,22 @@
 
 #include "Light.h"
 #include <graphic/Shader.h>
-#include <core/EventHandler.h>
+#include <tools/EventHandler.h>
 
 namespace LightingSystem {
+
+	struct CameraData {
+		glm::mat4 projection;
+		glm::mat4 view;
+
+		glm::vec3 pos;
+		glm::vec3 front;
+
+		float farPlane;
+
+		bool isPerspective;
+	};
+
 	class LightingController {
 		private:
 			static LightingController* instance;
@@ -31,7 +44,7 @@ namespace LightingSystem {
 
 		public:
 			static float DLShadowCastingRange;
-			Twin2Engine::Core::EventHandler<> ViewerTransformChanged;
+			Twin2Engine::Tools::EventHandler<> ViewerTransformChanged;
 
 			static const int SHADOW_WIDTH;
 			static const int SHADOW_HEIGHT;
@@ -70,7 +83,7 @@ namespace LightingSystem {
 			void BindLightBuffors(Twin2Engine::GraphicEngine::Shader* shader);
 			void UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader* shader);
 
-			static glm::vec3 RecalculateDirLightSpaceMatrix(DirectionalLight* light); //, const glm::mat4& viewProjectionInverse
+			static glm::vec3 RecalculateDirLightSpaceMatrix(DirectionalLight* light, const CameraData& camera); //, const glm::mat4& viewProjectionInverse
 			void RenderShadowMaps();
 
 			void SetAmbientLight(glm::vec3 ambientLightColor);

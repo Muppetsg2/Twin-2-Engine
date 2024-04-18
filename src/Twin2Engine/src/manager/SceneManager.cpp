@@ -4,12 +4,13 @@
 #include <graphic/manager/MaterialsManager.h>
 #include <graphic/manager/ModelsManager.h>
 #include <manager/PrefabManager.h>
-#include <core/EventHandler.h>
+#include <tools/EventHandler.h>
 #include <core/ResourceManagement.h>
 
 using namespace Twin2Engine::Manager;
 using namespace std;
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Tools;
 using namespace Twin2Engine::GraphicEngine;
 
 size_t SceneManager::_currentSceneId;

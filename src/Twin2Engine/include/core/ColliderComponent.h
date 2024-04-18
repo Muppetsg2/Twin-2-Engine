@@ -4,7 +4,7 @@
 #include <core/Component.h>
 #include <GameCollider.h>
 #include <BoundingVolume.h>
-#include <core/EventHandler.h>
+#include <tools/EventHandler.h>
 #include <LayersData.h>
 
 namespace CollisionSystem {
@@ -34,10 +34,10 @@ namespace Twin2Engine::Core {
 	public:
 		virtual ~ColliderComponent();
 
-		EventHandler<Collision*> OnTriggerEnter;
-		EventHandler<ColliderComponent*> OnTriggerExit;
-		EventHandler<Collision*> OnCollisionEnter;
-		EventHandler<ColliderComponent*> OnCollisionExit;
+		Tools::EventHandler<Collision*> OnTriggerEnter;
+		Tools::EventHandler<ColliderComponent*> OnTriggerExit;
+		Tools::EventHandler<Collision*> OnCollisionEnter;
+		Tools::EventHandler<ColliderComponent*> OnCollisionExit;
 
 		unsigned int colliderId = 0;
 

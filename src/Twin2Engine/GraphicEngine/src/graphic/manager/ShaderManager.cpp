@@ -117,6 +117,7 @@ void ShaderManager::UnloadShaderProgram(int shaderProgramID)
     if (data.useNumber == 0)
     {
         //glDeleteProgram(data.shaderProgramId);
+        delete data.shader;
         loadedShaders.erase(found);
         //delete data;
     }
@@ -308,8 +309,11 @@ void ShaderManager::Init()
 
 void ShaderManager::UnloadAll()
 {
+    for (ShaderProgramData data : loadedShaders) {
+        delete data.shader;
+    }
+    DepthShader = nullptr;
     loadedShaders.clear();
-    delete DepthShader;
 }
 
 

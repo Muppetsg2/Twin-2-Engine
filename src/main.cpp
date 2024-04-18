@@ -417,12 +417,6 @@ int main(int, char**)
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
-
-    // SCENE OBJECTS
-    /*
-    GameObject* test3 = SceneManager::CreateGameObject(PrefabManager::GetPrefab("res/prefabs/testPrefab.yaml"));
-    */
-    //PrefabManager::SaveAsPrefab(test3, "res/prefabs/savedPrefab.yaml");
     
 #pragma region TestingLighting
     GameObject* dl_go = SceneManager::CreateGameObject();

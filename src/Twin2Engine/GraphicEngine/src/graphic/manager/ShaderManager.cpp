@@ -7,7 +7,7 @@ using namespace Twin2Engine::Manager;
 GLenum ShaderManager::binaryFormat = 1;
 
 std::hash<std::string> ShaderManager::stringHash;
-std::list<ShaderManager::ShaderProgramData*> ShaderManager::loadedShaders;
+std::list<ShaderManager::ShaderProgramData> ShaderManager::loadedShaders;
 
 Shader* ShaderManager::DepthShader = nullptr;
 
@@ -22,7 +22,7 @@ unsigned int ShaderManager::LoadShaderProgram(const std::string& shaderName)
 {
     size_t strHash = stringHash(shaderName);
 
-    std::list<ShaderProgramData*>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [strHash](ShaderProgramData* data) { return data->shaderPathHash == strHash; });
+    std::list<ShaderProgramData>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [strHash](ShaderProgramData data) { return data.shaderPathHash == strHash; });
 
     unsigned int shaderProgramID;
 
@@ -79,13 +79,13 @@ unsigned int ShaderManager::LoadShaderProgram(const std::string& shaderName)
             return 0;
         }
 
-        loadedShaders.push_back(new ShaderProgramData{ .shaderPathHash = strHash, .shaderProgramId = shaderProgramID, .useNumber = 1, .shader = new Shader(shaderProgramID)});
+        loadedShaders.push_back({ .shaderPathHash = strHash, .shaderProgramId = shaderProgramID, .useNumber = 1, .shader = new Shader(shaderProgramID)});
     }
     else
     {
         SPDLOG_INFO("Shader already loaded: {}!", shaderPath);
-        shaderProgramID = (*found)->shaderProgramId;
-        (*found)->useNumber++;
+        shaderProgramID = (*found).shaderProgramId;
+        (*found).useNumber++;
     }
 
 
@@ -94,14 +94,14 @@ unsigned int ShaderManager::LoadShaderProgram(const std::string& shaderName)
 
 void ShaderManager::IncrementUseNumber(int shaderProgramID)
 {
-    std::list<ShaderProgramData*>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [shaderProgramID](ShaderProgramData* data) { return data->shaderProgramId == shaderProgramID; });
+    std::list<ShaderProgramData>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [shaderProgramID](ShaderProgramData data) { return data.shaderProgramId == shaderProgramID; });
 
-    (*found)->useNumber++;
+    (*found).useNumber++;
 }
 
 void ShaderManager::UnloadShaderProgram(int shaderProgramID)
 {
-    std::list<ShaderProgramData*>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [shaderProgramID](ShaderProgramData* data) { return data->shaderProgramId == shaderProgramID; });
+    std::list<ShaderProgramData>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [shaderProgramID](ShaderProgramData data) { return data.shaderProgramId == shaderProgramID; });
 
     if (found == loadedShaders.end())
     {
@@ -110,15 +110,15 @@ void ShaderManager::UnloadShaderProgram(int shaderProgramID)
         return;
     }
 
-    ShaderProgramData* data = *found;
+    ShaderProgramData data = *found;
 
-    data->useNumber--;
+    data.useNumber--;
 
-    if (data->useNumber == 0)
+    if (data.useNumber == 0)
     {
-        glDeleteProgram(data->shaderProgramId);
+        //glDeleteProgram(data.shaderProgramId);
         loadedShaders.erase(found);
-        delete data;
+        //delete data;
     }
 }
 
@@ -435,8 +435,8 @@ inline Shader* ShaderManager::LoadShaderProgramSHPR(const std::string& shaderNam
 {
     size_t strHash = stringHash(shaderName);
 
-    std::list<ShaderProgramData*>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [strHash](ShaderProgramData* data) { return data->shaderPathHash == strHash; });
-    Shader* shader;
+    std::list<ShaderProgramData>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [strHash](ShaderProgramData data) { return data.shaderPathHash == strHash; });
+    Shader* shader = nullptr;
     if (found == loadedShaders.end())
     {
         SPDLOG_INFO("LoadSHPR");
@@ -444,13 +444,13 @@ inline Shader* ShaderManager::LoadShaderProgramSHPR(const std::string& shaderNam
 
         shader = new Shader(shaderProgram);
 
-        loadedShaders.push_back(new ShaderProgramData{ .shaderPathHash = strHash, .shaderProgramId = shaderProgram, .useNumber = 1, .shader = shader });
+        loadedShaders.push_back({ .shaderPathHash = strHash, .shaderProgramId = shaderProgram, .useNumber = 1, .shader = shader });
     }
     else
     {
         SPDLOG_INFO("Shader already created: {}!", shaderName);
-        (*found)->useNumber++;
-        shader = (*found)->shader;
+        (*found).useNumber++;
+        shader = (*found).shader;
     }
     return shader;
 }
@@ -587,8 +587,8 @@ Shader* ShaderManager::CreateShaderProgram(const std::string& shaderName, const 
 {
     size_t strHash = stringHash(shaderName);
 
-    std::list<ShaderProgramData*>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [strHash](ShaderProgramData* data) { return data->shaderPathHash == strHash; });
-    Shader* shader;
+    std::list<ShaderProgramData>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [strHash](ShaderProgramData data) { return data.shaderPathHash == strHash; });
+    Shader* shader = nullptr;
     if (found == loadedShaders.end())
     {
         unsigned int vertexId = CompileShader(GL_VERTEX_SHADER, LoadShaderSource("res/" + vertexShader));
@@ -607,13 +607,13 @@ Shader* ShaderManager::CreateShaderProgram(const std::string& shaderName, const 
 
         shader = new Shader(shaderProgram);
 
-        loadedShaders.push_back(new ShaderProgramData{ .shaderPathHash = strHash, .shaderProgramId = shaderProgram, .useNumber = 1, .shader = shader });
+        loadedShaders.push_back({ .shaderPathHash = strHash, .shaderProgramId = shaderProgram, .useNumber = 1, .shader = shader });
     }
     else
     {
         SPDLOG_INFO("Shader already created: {}!", shaderName);
-        (*found)->useNumber++;
-        shader = (*found)->shader;
+        (*found).useNumber++;
+        shader = (*found).shader;
     }
     return shader;
 }
@@ -623,8 +623,8 @@ void ShaderManager::UpdateDirShadowMapsTab()
     size_t depthShaderHash = stringHash("origin/DepthShader");
 
     for (auto SPD : loadedShaders) {
-        if (SPD->shaderPathHash != depthShaderHash) {
-            LightingSystem::LightingController::Instance()->UpdateShadowMapsTab(SPD->shader); //////////////////
+        if (SPD.shaderPathHash != depthShaderHash) {
+            LightingSystem::LightingController::Instance()->UpdateShadowMapsTab(SPD.shader);
         }
     }
 }

@@ -42,7 +42,7 @@ namespace Twin2Engine::Manager
 		static const std::unordered_map<size_t, int> shaderTypeMapping;
 
 		static std::hash<std::string> stringHash;
-		static std::list<ShaderProgramData*> loadedShaders;
+		static std::list<ShaderProgramData> loadedShaders;
 
 		//Runtime methods
 		static unsigned int LoadShaderProgram(const std::string& shaderName);

@@ -1,0 +1,10 @@
+material:
+  name: Basic2
+  shader: origin/ColoredUnlit
+  parameters:
+    - name: color1
+      type: vec4
+      value: [0.8, 0.4, 0.08, 1.0]
+    - name: color2
+      type: vec4
+      value: [1.0, 1.0, 1.0, 1.0]

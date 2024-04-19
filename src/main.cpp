@@ -513,6 +513,7 @@ int main(int, char**)
 
     InstatiatingModel cityModel = ModelsManager::LoadModel("res/models/city.obj");
     GameObject* cityPrefab = new GameObject();
+    cityPrefab->GetTransform()->Scale(glm::vec3(1.0f, 0.5f, 1.0f));
     comp = cityPrefab->AddComponent<MeshRenderer>();
     comp->AddMaterial(MaterialsManager::GetMaterial("Basic2"));
     comp->SetModel(cityModel);
@@ -523,6 +524,7 @@ int main(int, char**)
 
     InstatiatingModel radioStationModel = ModelsManager::LoadModel("res/models/radioStation.obj");
     GameObject* radioStationPrefab = new GameObject();
+    radioStationPrefab->GetTransform()->Scale(glm::vec3(1.0f, 0.5f, 1.0f));
     comp = radioStationPrefab->AddComponent<MeshRenderer>();
     comp->AddMaterial(MaterialsManager::GetMaterial("Basic2"));
     comp->SetModel(radioStationModel);
@@ -536,6 +538,10 @@ int main(int, char**)
     contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
     /**/
+    hexagonPrefab->SetActive(false);
+    greenHexagonPrefab->SetActive(false);
+    redHexagonPrefab->SetActive(false);
+    blueHexagonPrefab->SetActive(false);
     mountainPrefab->SetActive(false);
     cityPrefab->SetActive(false);
     radioStationPrefab->SetActive(false);

@@ -35,5 +35,5 @@ void main()
 	//FragColor = uColor;
 	//FragColor = color1 + color2;
 	//FragColor = materialInput[materialIndex].color1 + materialInput[materialIndex].color2;
-	FragColor = vec4(vec3(vec3(pow(materialInput[materialIndex].color1.rgb, vec3(gamma))) + vec3(pow(materialInput[materialIndex].color2.rgb, vec3(gamma)))), 1.0);
+	FragColor = vec4(vec3(vec3(pow(materialInput[materialIndex].color1.rgb * materialInput[materialIndex].color2.rgb, vec3(gamma)))), 1.0);
 }

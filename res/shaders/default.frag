@@ -47,7 +47,7 @@ struct SpotLight {
     vec3 direction;     // Direction of the spot light
     vec3 color;         // Color of the spot light
     float power;        // Light source power
-    float innerCutOff;  // Inner cutoff angle (in radians)
+    //float innerCutOff;  // Inner cutoff angle (in radians)
     float outerCutOff;  // Outer cutoff angle (in radians)
     float constant;     // Constant attenuation
     float linear;       // Linear attenuation
@@ -57,10 +57,9 @@ struct SpotLight {
 struct DirectionalLight {
     vec3 position;          // Position of the spot light in world space
 	vec3 direction;         // Direction of the spot light
+    mat4 lightSpaceMatrix;  // For Shadow Mapping
 	vec3 color;             // Color of the spot light
 	float power;		    // Light source power
-
-    mat4 lightSpaceMatrix;  // For Shadow Mapping
 };
 
 layout(std430, binding = 3) buffer Lights {
@@ -134,9 +133,14 @@ float CalculateLambertian(vec3 LightDir, vec3 Normal) {
     return max(dot(Normal, LightDir), 0.0);
 }
 
-float CalculateBlinnPhong(vec3 LightDir, vec3 ViewerDir, vec3 Normal) {
-    vec3 halfDir = normalize(LightDir + ViewerDir);
-    return pow(max(dot(halfDir, Normal), 0.0), highlightParam);
+float CalculateBlinnPhong(vec3 LightDir, vec3 ViewDir, vec3 Normal) {
+    vec3 HalfDir = normalize(LightDir + ViewDir);
+    return pow(max(dot(Normal, HalfDir), 0.0), highlightParam);
+}
+
+float CalculatePhong(vec3 LightDir, vec3 ViewDir, vec3 Normal) {
+    vec3 ReflectDir = reflect(-LightDir, Normal);
+    return pow(max(dot(ViewDir, ReflectDir), 0.0), highlightParam);
 }
 
 void main() 
@@ -167,10 +171,7 @@ void main()
 
         lamb = CalculateLambertian(LightDir, Normal);
 
-        spec = 0.0;
-        if (lamb > 0.0) {
-            spec = CalculateBlinnPhong(LightDir, ViewerDir, Normal);
-        }
+        spec = CalculatePhong(LightDir, ViewerDir, Normal);
 
         LightColor += (lamb + spec) * pointLight.color * pointLight.power * atten;
     }
@@ -191,14 +192,11 @@ void main()
 
         lamb = CalculateLambertian(LightDir, Normal);
 
-        spec = 0.0;
-        if (lamb > 0.0) {
-            spec = CalculateBlinnPhong(LightDir, ViewerDir, Normal);
-        }
+        spec = CalculatePhong(LightDir, ViewerDir, Normal);
 
         theta = dot(LightDir, normalize(-spotLight.direction));
-        epsilon = spotLight.innerCutOff - spotLight.outerCutOff;
-        intensity = smoothstep(spotLight.outerCutOff, spotLight.innerCutOff, theta);
+        epsilon = /*spotLight.innerCutOff*/ - spotLight.outerCutOff;
+        intensity = smoothstep(spotLight.outerCutOff, /*spotLight.innerCutOff*/0.0, theta);
 
         LightColor += (lamb + spec) * spotLight.color * spotLight.power * atten * intensity;
     }
@@ -209,14 +207,21 @@ void main()
 
         lamb = CalculateLambertian(LightDir, Normal);
 
-        spec = 0.0;
-        if (lamb > 0.0) {
-            spec = CalculateBlinnPhong(LightDir, ViewerDir, Normal);
-        }
+        spec = CalculatePhong(LightDir, ViewerDir, Normal);
 
         LightColor += (lamb + spec) * directionalLight.color * directionalLight.power /** CalculateShadow(directionalLight.lightSpaceMatrix * vec4(fs_in.fragPos, 1.0), Normal, i)*/;
     }
 
-    Color *= vec4(LightColor + AmbientLight, 1.0);
+    LightColor += AmbientLight;
+    uint borders = 3;
+    float b0 = 1.0 / float(borders + 1);
+    uint sectorR = uint(floor(LightColor.r * float(borders + 1)));
+    uint sectorG = uint(floor(LightColor.g * float(borders + 1)));
+    uint sectorB = uint(floor(LightColor.b * float(borders + 1)));
+    LightColor.r = b0 * (sectorR + 1.0);
+    LightColor.g = b0 * (sectorG + 1.0);
+    LightColor.b = b0 * (sectorB + 1.0);
+
+    Color *= vec4(LightColor, 1.0);
     Color = vec4(pow(Color.rgb, vec3(gamma)), 1.0);
 }

@@ -17,7 +17,17 @@ add_subdirectory(Additional)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC Twin2Engine)
 
-#target_link_libraries(${PROJECT_NAME} PUBLIC Tilemap)
+get_property(find_memory_leaks GLOBAL PROPERTY FIND_MEMORY_LEAKS)
+
+# For Tracey_Leak_Finder
+if (find_memory_leaks AND (NOT CMAKE_BUILD_TYPE STREQUAL "Release"))
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
+    find_package(Threads REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
+
+    target_link_libraries(${PROJECT_NAME} PRIVATE tracey_leak)
+endif()
+
 
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog)
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)

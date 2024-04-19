@@ -17,18 +17,6 @@ const int LightingController::SHADOW_WIDTH = 1024;
 const int LightingController::SHADOW_HEIGHT = 1024;
 float LightingController::DLShadowCastingRange = 15.0f;
 
-LightingController* LightingController::Instance() {
-	if (instance == nullptr) {
-		instance = new LightingController();
-	}
-
-	return instance;
-}
-
-bool LightingController::IsInstantiated() {
-	return instance != nullptr;
-}
-
 LightingController::LightingController() {
 	glGenBuffers(1, &LightsBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
@@ -45,6 +33,30 @@ LightingController::LightingController() {
 	LightingData lightingData;
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, 32, &lightingData);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+LightingController::~LightingController() {
+	glDeleteBuffers(1, &LightsBuffer);
+	glDeleteBuffers(1, &LightingDataBuffer);
+	pointLights.clear();
+	spotLights.clear();
+	dirLights.clear();
+}
+
+LightingController* LightingController::Instance() {
+	if (instance == nullptr) {
+		instance = new LightingController();
+	}
+
+	return instance;
+}
+
+bool LightingController::IsInstantiated() {
+	return instance != nullptr;
+}
+
+void LightingController::UnloadAll() {
+	delete instance;
 }
 
 void LightingController::UpdateLightsBuffer() {

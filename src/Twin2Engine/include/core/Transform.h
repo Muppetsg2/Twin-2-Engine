@@ -9,7 +9,7 @@ namespace Twin2Engine
 		class Transform : public Component
 		{
 		private:
-			static Transform* originTransform;
+			//static Transform* originTransform;
 
 			glm::vec3 _localPosition;
 			glm::vec3 _localRotation;

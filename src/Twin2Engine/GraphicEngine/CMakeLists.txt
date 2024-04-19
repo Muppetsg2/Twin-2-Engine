@@ -46,6 +46,7 @@ target_link_libraries(GraphicEngine Twin2Engine)
 target_link_libraries(GraphicEngine freetype)
 target_link_libraries(GraphicEngine glm::glm)
 target_link_libraries(GraphicEngine LightingSystem)
+
 #target_link_libraries(GraphicEngine tinygltf)
 
 #message("GraphicEngine Public Include Files:")

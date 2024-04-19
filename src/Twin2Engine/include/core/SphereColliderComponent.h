@@ -1,5 +1,4 @@
-#ifndef _SPHERECOLLIDERCOMPONENT_H_
-#define	_SPHERECOLLIDERCOMPONENT_H_
+#pragma once
 
 #include <core/ColliderComponent.h>
 
@@ -8,7 +7,7 @@ namespace Twin2Engine::Core {
 		//protected:
 	private:
 		Twin2Engine::Core::Action<Transform*> PositionChangeAction;
-		size_t PositionChangeActionId;
+		size_t PositionChangeActionId = 0;
 		bool dirtyFlag = false;
 	public:
 		SphereColliderComponent();
@@ -22,6 +21,3 @@ namespace Twin2Engine::Core {
 		virtual YAML::Node Serialize() const override;
 	};
 }
-
-
-#endif // !_SPHERECOLLIDERCOMPONENT_H_

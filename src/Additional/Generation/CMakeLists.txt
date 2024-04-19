@@ -1,4 +1,4 @@
-project(Generation VERSION 0.0)
+project(Generation VERSION 1.0)
 
 set(GENERATION_DIR ${CMAKE_CURRENT_LIST_DIR})
 set(GENERATION_SOURCE_DIR ${GENERATION_DIR}/src)
@@ -39,4 +39,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Twin2Engine)
 target_link_libraries(${PROJECT_NAME} PRIVATE Tilemap)
 target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
 target_link_libraries(${PROJECT_NAME} PRIVATE spdlog)
+target_link_libraries(${PROJECT_NAME} PRIVATE EngineAlgorithms)
 #target_link_libraries(GraphicEngine yaml-cpp)

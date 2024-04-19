@@ -25,7 +25,8 @@ Shader::Shader(unsigned int shaderProgramId)
 
 Shader::~Shader()
 {
-    ShaderManager::UnloadShaderProgram(shaderProgramID);
+    glDeleteProgram(shaderProgramID);
+    //ShaderManager::UnloadShaderProgram(shaderProgramID);
 }
 
 // aktywuj shader  

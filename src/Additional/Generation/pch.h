@@ -29,5 +29,3 @@
 //#include <core/Transform.h>
 // 
 // ALGORITHMS
-#include <Algorithms/KMeans.h>
-#include <Algorithms/ObjectsKMeans.h>

@@ -75,6 +75,8 @@
 #include <Generation/Generators/RadioStationGeneratorSectorBased.h>
 #include <Generation/Generators/RegionsBySectorsGenerator.h>
 #include <Generation/Generators/SectorsGenerator.h>
+#include <Generation/Generators/RegionsGeneratorByKMeans.h>
+#include <Generation/Generators/SectorGeneratorForRegionsByKMeans.h>
 
 // LIGHTING
 #include <LightingController.h>
@@ -451,6 +453,8 @@ int main(int, char**)
 	}}
     comp->SetModel(modelHexagon);
 
+
+
     // TILEMAP
     //*
     GameObject* tilemapGO = new GameObject();
@@ -496,11 +500,24 @@ int main(int, char**)
     contentGenerator->mapElementGenerators.push_back(&lakeGenerator);
 
 
+    InstatiatingModel mountainModel = ModelsManager::LoadModel("res/models/mountain.obj");
+    GameObject* mountainPrefab = new GameObject();
+    comp = mountainPrefab->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("Basic2"));
+    comp->SetModel(mountainModel);
+    MountainsGenerator mountainsGenerator;
+    mountainsGenerator.prefabMountains = mountainPrefab;
+    mountainsGenerator.mountainsHeight = 0.2f;
+    mountainsGenerator.mountainsNumber = 3;
+    contentGenerator->mapElementGenerators.push_back(&mountainsGenerator);
+
     tilemapGenerating = glfwGetTime();
     contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
     /**/
 
+    mountainPrefab->GetTransform()->Translate(glm::vec3(2, 6, 0));
+    mountainPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
 
     //imageObj = new GameObject();
     //imageObj->GetTransform()->SetGlobalPosition(glm::vec3(-900, 500, 0));

@@ -1,0 +1,10 @@
+material:
+  name: Default
+  shader: origin/Default
+  parameters:
+    - name: color
+      type: vec4
+      value: [1.0, 1.0, 1.0, 1.0]
+    - name: tex
+      type: texture2D
+      value: res/textures/white.png

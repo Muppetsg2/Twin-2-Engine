@@ -54,12 +54,13 @@ Audio:
   - res/music/acoustic-guitar.mp3
 Materials:
   - hexagonMat
-  - Basic2
+  - Basic
   - metal
   - textured
   - deska
   - wallMat
   - roofMat
+  - Default
 Models:
   - "{Sphere}"
   - res/models/castle.obj
@@ -396,8 +397,7 @@ GameObjects:
         isTransparent: false
         model: 0
         materials:
-          - 4
-          - 2
+          - 7
     children:
       []
   - id: 10

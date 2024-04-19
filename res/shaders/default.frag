@@ -16,8 +16,7 @@ in VS_OUT {
 } fs_in;
 
 struct MaterialInput {
-    vec4 color1;
-    vec4 color2;
+    vec4 color;
 };
 
 layout(std140, binding = 2) uniform MaterialInputBuffer {
@@ -25,7 +24,7 @@ layout(std140, binding = 2) uniform MaterialInputBuffer {
 };
 
 struct TextureInput {
-    sampler2D texture1;
+    sampler2D tex;
 };
 
 layout(location = 0) uniform TextureInput texturesInput[8];
@@ -143,7 +142,7 @@ float CalculateBlinnPhong(vec3 LightDir, vec3 ViewerDir, vec3 Normal) {
 void main() 
 {
     MaterialInput material = materialInput[fs_in.materialIndex];
-    Color = texture(texturesInput[fs_in.materialIndex].texture1, fs_in.texCoord) * (material.color1 + material.color2);
+    Color = texture(texturesInput[fs_in.materialIndex].tex, fs_in.texCoord) * material.color;
 
     vec3 LightColor = vec3(0.0);
 
@@ -184,7 +183,7 @@ void main()
     for (uint i = 0; i < numberOfSpotLights; ++i) {
         SpotLight spotLight = spotLights[i];
 
-        LightDir = spotLight.position - fs_in.position;
+        LightDir = spotLight.position - fs_in.fragPos;
         dist = length(LightDir);
         LightDir = normalize(LightDir);
 

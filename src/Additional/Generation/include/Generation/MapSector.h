@@ -15,6 +15,11 @@ namespace Generation
 
 	class MapSector : public Twin2Engine::Core::Component
 	{
+        CloneFunctionStart(MapSector, Twin2Engine::Core::Component)
+            //CloneField(tilemap)
+            //CloneField(region)
+            CloneField(type)
+        CloneFunctionEnd()
     public:
 
         enum SectorType
@@ -43,7 +48,7 @@ namespace Generation
         //inline SectorType GetType();
 
         //inline const std::vector<MapHexTile*>& GetTiles() const;
-        inline const std::unordered_set<MapHexTile*>& GetTiles() const;
+        const std::unordered_set<MapHexTile*>& GetTiles() const;
         void AddTile(MapHexTile* tile);
         void AddTiles(const std::vector<MapHexTile*>& tiles);
         void JoinSector(MapSector* otherSector);

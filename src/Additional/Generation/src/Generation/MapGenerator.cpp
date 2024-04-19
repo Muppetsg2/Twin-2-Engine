@@ -116,9 +116,6 @@ void MapGenerator::ConnectTiles(ivec2 startTile, ivec2 endTile)
             }
         }
         currentPos = tilemap->ConvertToRealPosition(cellPosition);
-        
-        SPDLOG_INFO("Generated position: {} {}", cellPosition.x, cellPosition.y);
-        
     }
 #elif GRADIENT_CONNECTING
     ///////////////////////////////////
@@ -237,9 +234,9 @@ void MapGenerator::Generate()
     ivec2 leftBottomPosition = tilemap->GetLeftBottomPosition();
     ivec2 rightTopPosition = tilemap->GetRightTopPosition();
     
-    for (int x = leftBottomPosition.x; x < rightTopPosition.x; x++)
+    for (int x = leftBottomPosition.x; x <= rightTopPosition.x; x++)
     {
-        for (int y = leftBottomPosition.y; y < rightTopPosition.y; y++)
+        for (int y = leftBottomPosition.y; y <= rightTopPosition.y; y++)
         {
             ivec2 tilePosition(x, y);
             HexagonalTile* tile = tilemap->GetTile(tilePosition);

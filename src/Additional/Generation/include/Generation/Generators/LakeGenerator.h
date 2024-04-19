@@ -13,12 +13,12 @@ namespace Generation::Generators
     class LakeGenerator : public AMapElementGenerator
     {
     private:
+
+    public:
         int numberOfLakes = 0;
         float waterLevel = 0.0f;
 
         bool destroyWaterTile = true;
-
-    public:
         virtual void Generate(Tilemap::HexagonalTilemap* tilemap) override;
     };
 }

@@ -16,8 +16,9 @@ using namespace glm;
 void LakeGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
 {
     list<MapRegion*> regionsList = tilemap->GetGameObject()->GetComponentsInChildren<MapRegion>();
-    std::vector<MapRegion*> regions = vector<MapRegion*>(regionsList.begin(), regionsList.end());
-    regions.clear();
+    regionsList.remove_if([](MapRegion* region) { return region->GetTilesCount() == 0; });
+    vector<MapRegion*> regions = vector<MapRegion*>(regionsList.begin(), regionsList.end());
+    regionsList.clear();
 
     VectorShuffler::Shuffle(regions);
 
@@ -71,7 +72,7 @@ void LakeGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
                     tile->type = MapHexTile::HexTileType::Water;
                 }
             }
-            region->GetGameObject()->GetTransform()->Translate(vec3(0.0f, -waterLevel, 0.0f));
+            region->GetTransform()->Translate(vec3(0.0f, waterLevel, 0.0f));
         }
     }
 }

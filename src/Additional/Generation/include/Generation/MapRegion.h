@@ -10,6 +10,10 @@ namespace Generation
 
 	class MapRegion : public Twin2Engine::Core::Component
 	{
+        CloneFunctionStart(MapRegion, Twin2Engine::Core::Component)
+            //CloneField(tilemap)
+            CloneField(type)
+        CloneFunctionEnd()
     public:
 
         enum RegionType
@@ -38,7 +42,7 @@ namespace Generation
         //inline RegionType GetType() const;
 
         //inline const std::vector<Tilemap::HexagonalTile*>& GetTiles() const;
-        inline const std::unordered_set<MapSector*>& GetSectors() const;
+        const std::unordered_set<MapSector*>& GetSectors() const;
         unsigned int GetSectorsCount() const;
         void AddSector(MapSector* tile);
         void AddSectors(const std::vector<MapSector*>& sectors);

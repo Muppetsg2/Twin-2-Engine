@@ -172,12 +172,12 @@ void HexagonalTilemap::Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTop
 }
 
 
-inline unsigned int HexagonalTilemap::GetWidth() const
+unsigned int HexagonalTilemap::GetWidth() const
 {
 	return _width;
 }
 
-inline unsigned int HexagonalTilemap::GetHeight() const
+unsigned int HexagonalTilemap::GetHeight() const
 {
 	return _height;
 }
@@ -315,7 +315,8 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::GameO
 		if (currentTile && !currentTile->GetGameObject())
 		{
 			// Kopiowanie gameobjectu
-			instantiatedGameObject = Twin2Engine::Core::GameObject::Instantiate(gameObject);
+			instantiatedGameObject = Twin2Engine::Core::GameObject::Instantiate(gameObject, this->GetGameObject()->GetTransform());
+
 			currentTile->SetGameObject(instantiatedGameObject);
 			//instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3((currentPos.x * _distanceBetweenTiles + (abs(currentPos.y) % 2) * 0.5f * _distanceBetweenTiles) * 1.5f, 0.0f, currentPos.y * _distanceBetweenTiles * 0.25f * SQRT_3));
 			instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3(currentPos.x * _distanceBetweenTiles * 0.75f, 0.0f, (currentPos.y + (abs(currentPos.x) % 2) * 0.5f) * _distanceBetweenTiles * 0.5f * SQRT_3));

@@ -37,18 +37,12 @@ void RegionsBySectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
 
     if (mergeByNumberTilesPerRegion)
     {
-        //regions.erase(remove_if(regions.begin(), regions.end(), [this](MapRegion* region) {
-        //    return region->TilesCount < minTilesPerRegion;
-        //    }), regions.end());
         regions.remove_if([this](MapRegion* region) {
             return region->GetTilesCount() >= minTilesPerRegion;
             });
     }
     else
     {
-        //regions.erase(remove_if(regions.begin(), regions.end(), [this](MapRegion* region) {
-        //    return region->GetSectorsCount() < minSectorsPerRegion;
-        //    }), regions.end());
         regions.remove_if([this](MapRegion* region) {
             return region->GetSectorsCount() >= minSectorsPerRegion;
             });
@@ -56,6 +50,12 @@ void RegionsBySectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
 
     while (!regions.empty())
     {
+        // Jest jakiœ b³¹d który powoduje ¿e w hierarchi pozostaj¹ puste sektory, prawdopodobnie brak usuwania sektorów oraz regionó z hierarc
+        // Poni¿sze jest prawdopodobnie do usuniêcia, ale trzeba jeszcze to zdecydowaæ
+        regions.remove_if([this](MapRegion* region) {
+            return region->GetSectorsCount() == 0 || region->GetTilesCount() == 0;
+            });
+
         MapRegion* chosenRegion = nullptr;
 
         list<MapRegion*> foundOnes;
@@ -95,14 +95,14 @@ void RegionsBySectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
         }
         else
         {
-            auto smallestCount = min_element(regions.begin(), regions.end(), [](MapRegion* a, MapRegion* b) {
+            unsigned int smallestCount = (*min_element(regions.begin(), regions.end(), [](MapRegion* a, MapRegion* b) {
                 return a->GetSectorsCount() < b->GetSectorsCount();
-                });
+                }))->GetSectorsCount();
 
             list<MapRegion*> smallest;// = regions.FindAll(region = > region.TilesCount == smallestCount);
             for (MapRegion* region : regions)
             {
-                if (region->GetSectorsCount() == (*smallestCount)->GetSectorsCount())
+                if (region->GetSectorsCount() == smallestCount)
                 {
                     smallest.push_back(region);
                 }
@@ -111,15 +111,15 @@ void RegionsBySectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
             std::advance(chosenItr, Random::Range(0ull, smallest.size() - 1));
             chosenRegion = *chosenItr;
 
-            vector<MapRegion*> neighbouringRegions = chosenRegion->GetAdjacentRegions();
+            vector<MapRegion*> neighbouringRegions(chosenRegion->GetAdjacentRegions());
 
-            auto minCount = min_element(neighbouringRegions.begin(), neighbouringRegions.end(), [](MapRegion* a, MapRegion* b) {
+            unsigned int minCount = (*min_element(neighbouringRegions.begin(), neighbouringRegions.end(), [](MapRegion* a, MapRegion* b) {
                 return a->GetSectorsCount() < b->GetSectorsCount();
-                });
+                }))->GetSectorsCount();
 
             for (MapRegion* region : neighbouringRegions)
             {
-                if (region->GetSectorsCount() == (*minCount)->GetSectorsCount())
+                if (region->GetSectorsCount() == minCount)
                 {
                     foundOnes.push_back(region);
                 }
@@ -132,11 +132,24 @@ void RegionsBySectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
 
         chosen->JoinRegion(chosenRegion);
         regions.remove(chosenRegion);
+        allRegions.remove(chosenRegion);
         SPDLOG_ERROR("Dodaæ usuwanie GameObjectu");
         //DestroyImmediate(chosenRegion->GetGameObject());
+
+        if (mergeByNumberTilesPerRegion)
+        {
+            regions.remove_if([this](MapRegion* region) {
+                return region->GetTilesCount() >= minTilesPerRegion;
+                });
+        }
+        else
+        {
+            regions.remove_if([this](MapRegion* region) {
+                return region->GetSectorsCount() >= minSectorsPerRegion;
+                });
+        }
     }
 
-    //vector<MapRegion*> heightChangeRegions = tilemap->GetGameObject()->GetComponentsInChildren<MapRegion>();
     for (auto region : allRegions)
     {
         if (isDiscritizedHeight)

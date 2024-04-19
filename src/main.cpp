@@ -455,8 +455,8 @@ int main(int, char**)
     mapGenerator->pointTile = redHexagonPrefab;
     mapGenerator->additionalTile = greenHexagonPrefab;
 
-    mapGenerator->generationRadiusMin = 5;
-    mapGenerator->generationRadiusMax = 5;
+    mapGenerator->generationRadiusMin = 7;
+    mapGenerator->generationRadiusMax = 7;
     float tilemapGenerating = glfwGetTime();
     mapGenerator->Generate();
     spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
@@ -479,7 +479,14 @@ int main(int, char**)
     regionsBySectorsGenerator.maxSectorsPerRegion = 3;
     regionsBySectorsGenerator.lowerHeightRange = 0;
     regionsBySectorsGenerator.upperHeightRange = 3;
+    regionsBySectorsGenerator.heightRangeFacor = 0.25f;
     regionsBySectorsGenerator.isDiscritizedHeight = true;
+    contentGenerator->mapElementGenerators.push_back(&regionsBySectorsGenerator);
+    LakeGenerator lakeGenerator;
+    lakeGenerator.numberOfLakes = 2;
+    lakeGenerator.waterLevel = -5.f;
+    lakeGenerator.destroyWaterTile = false;
+    contentGenerator->mapElementGenerators.push_back(&lakeGenerator);
 
 
     tilemapGenerating = glfwGetTime();

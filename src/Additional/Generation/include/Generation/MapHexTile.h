@@ -12,6 +12,13 @@ namespace Generation
 	class MapSector;
 	class MapHexTile : public Twin2Engine::Core::Component
 	{
+		CloneFunctionStart(MapHexTile, Twin2Engine::Core::Component)
+			//CloneField(tilemap)
+			//CloneField(region)
+			//CloneField(sector)
+			//CloneField(tile)
+			CloneField(type)
+		CloneFunctionEnd()
 	public:
 
 		enum HexTileType

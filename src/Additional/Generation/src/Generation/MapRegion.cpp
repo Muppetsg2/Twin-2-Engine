@@ -27,7 +27,7 @@ using namespace std;
 
 
 //inline const std::vector<Tilemap::HexagonalTile*>& GetTiles() const;
-inline const std::unordered_set<MapSector*>& MapRegion::GetSectors() const
+const std::unordered_set<MapSector*>& MapRegion::GetSectors() const
 {
 	return _regionSectors;
 }
@@ -36,14 +36,29 @@ unsigned int MapRegion::GetSectorsCount() const
 	return static_cast<unsigned int>(_regionSectors.size());
 }
 
-void MapRegion::AddSector(MapSector* tile)
+void MapRegion::AddSector(MapSector* sector)
 {
-	_regionSectors.insert(tile);
+	_regionSectors.insert(sector);
+	sector->region = this;
+	sector->GetTransform()->SetParent(GetTransform());
+	for (MapHexTile* tile : sector->GetTiles())
+	{
+		tile->region = this;
+	}
 }
 
 void MapRegion::AddSectors(const std::vector<MapSector*>& sectors)
 {
 	_regionSectors.insert(sectors.cbegin(), sectors.cend());
+	for (MapSector* sector : sectors)
+	{
+		sector->region = this;
+		sector->GetTransform()->SetParent(GetTransform());
+		for (MapHexTile* tile : sector->GetTiles())
+		{
+			tile->region = this;
+		}
+	}
 }
 
 void MapRegion::RemoveSector(MapSector* sector)
@@ -91,11 +106,9 @@ std::vector<MapRegion*> MapRegion::GetAdjacentRegions() const
 
 		for (int i = 0; i < adjacentSectors.size(); i++)
 		{
-			MapRegion* region = adjacentSectors[i]->region;
-
-			if (region != this)
+			if (adjacentSectors[i]->region != this)
 			{
-				adjacentRegions.insert(region);
+				adjacentRegions.insert(adjacentSectors[i]->region);
 			}
 		}
 	}

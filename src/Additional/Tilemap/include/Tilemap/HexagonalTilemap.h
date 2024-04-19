@@ -5,6 +5,13 @@
 #include <core/Component.h>
 #include <core/Transform.h>
 
+
+namespace Generation
+{
+	class MapHexTile;
+}
+using Generation::MapHexTile;
+
 namespace Tilemap
 {
 	class HexagonalTile;
@@ -28,8 +35,8 @@ namespace Tilemap
 
 		void Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTopPosition);
 
-		inline unsigned int GetWidth() const;
-		inline unsigned int GetHeight() const;
+		unsigned int GetWidth() const;
+		unsigned int GetHeight() const;
 		glm::ivec2 GetLeftBottomPosition() const;
 		glm::ivec2 GetRightTopPosition() const;
 
@@ -53,5 +60,6 @@ namespace Tilemap
 }
 #include <Tilemap/HexagonalTile.h>
 
+#include <Generation/MapHexTile.h>
 
 #endif // !_HEXAGONAL_TILEMAP_H_

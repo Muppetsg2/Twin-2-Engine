@@ -21,7 +21,7 @@ namespace Generation
         while (n > 1)
         {
             n--;
-            k = Twin2Engine::Core::Random::Range(0, n - 1);
+            k = Twin2Engine::Core::Random::Range(0, n);
             T value = toShuffle[k];
             toShuffle[k] = toShuffle[n];
             toShuffle[n] = value;

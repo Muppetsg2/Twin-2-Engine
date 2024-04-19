@@ -3,13 +3,15 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec2 aTexCoords;
 layout (location = 2) in vec3 aNormal;
 
+// OUTPUT
+
 layout (location = 0) out vec3 position;
 layout (location = 1) out vec3 normal;
 layout (location = 2) out vec2 texCoords;
 
 layout (location = 3) flat out uint materialIndex;
 
-// Instance Data
+// INSTANCE DATA
 
 layout (std430, binding = 0) buffer InstanceBuffer {
     mat4 transform[256];
@@ -25,19 +27,6 @@ layout (std140, binding = 0) uniform Matrices
     mat4 projection;
     mat4 view;
 };
-
-//struct MaterialInput
-//{
-//	int empty;
-//};
-//
-//layout(std140, binding = 2) uniform MaterialInputBuffer {
-//    MaterialInput materialInput[8];
-//};
-
-
-
-
 
 void main()
 {

@@ -40,7 +40,7 @@ using namespace std;
 
 
 //inline const std::vector<Tilemap::MapHexTile*>& MapSector::GetTiles() const
-inline const std::unordered_set<MapHexTile*>& MapSector::GetTiles() const
+const std::unordered_set<MapHexTile*>& MapSector::GetTiles() const
 {
 	return _sectorTiles;
 }
@@ -48,12 +48,17 @@ inline const std::unordered_set<MapHexTile*>& MapSector::GetTiles() const
 void MapSector::AddTile(MapHexTile* tile)
 {
 	_sectorTiles.insert(tile);
+	tile->sector = this;
 	tile->GetTransform()->SetParent(GetTransform());
 }
 
 void MapSector::AddTiles(const std::vector<MapHexTile*>& tiles)
 {
 	_sectorTiles.insert(tiles.begin(), tiles.end());
+	for (MapHexTile* tile : tiles)
+	{
+		tile->sector = this;
+	}
 }
 
 void MapSector::JoinSector(MapSector* otherSector)
@@ -62,6 +67,7 @@ void MapSector::JoinSector(MapSector* otherSector)
 	for (const auto& tile : otherSector->_sectorTiles)
 	{
 		tile->GetTransform()->SetParent(GetTransform());
+		tile->sector = this;
 	}
 	otherSector->_sectorTiles.clear();
 }

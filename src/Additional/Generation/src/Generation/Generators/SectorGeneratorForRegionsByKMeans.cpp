@@ -1,4 +1,4 @@
-#include "SectorGeneratorForRegionsByKMeans.h"
+#include <Generation/Generators/SectorGeneratorForRegionsByKMeans.h>
 
 using namespace std;
 using namespace Algorithms;
@@ -9,24 +9,27 @@ using namespace glm;
 
 void SectorGeneratorForRegionsByKMeans::Generate(Tilemap::HexagonalTilemap* tilemap) 
 {
-    vector<MapRegion*> regions = tilemap->GetTransform()->GetComponentsInChildren<MapRegion>();
+    list<MapRegion*> regions(tilemap->GetGameObject()->GetComponentsInChildren<MapRegion>());
 
     for (MapRegion* region : regions)
     {
-        vector<MapHexTile*> tiles = region->GetTransform()->GetComponentsInChildren<HexTile>();
+        list<MapHexTile*> tilesList(region->GetGameObject()->GetComponentsInChildren<MapHexTile>());
+        vector<MapHexTile*> tiles(tilesList.begin(), tilesList.end());
+        tilesList.clear();
+
         vector<vector<MapHexTile*>> regionTilesClusters = ObjectsKMeans<MapHexTile*>::ClusterObjects(sectorsCount, tiles, [](MapHexTile* hexTile) { return hexTile->GetTransform()->GetGlobalPosition(); });
 
         for (const auto& cluster : regionTilesClusters)
         {
             if (!cluster.empty()) 
             {
-                MapSector* sector = GameObject::Instantiate<MapSector>(sectorPrefab, tilemap->GetTransform());
-                sector->SetTilemap(tilemap);
-                sector->SetRegion(region);
+                MapSector* sector = GameObject::Instantiate(sectorPrefab, tilemap->GetTransform())->GetComponent<MapSector>();
+                sector->tilemap = tilemap;
+                sector->region = region;
 
-                for (HexTile* tile : cluster)
+                for (MapHexTile* tile : cluster)
                 {
-                    sector->AddTile(tile->GetGameObject());
+                    sector->AddTile(tile);
                 }
 
                 region->AddSector(sector);

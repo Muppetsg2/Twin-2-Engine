@@ -17,9 +17,9 @@ namespace Generation::Generators
         int regionsCount = 3; // Number of regions/clusters
 
         bool isDiscritizedHeight = false;
-        float lowerHeightRange = 0f;
-        float upperHeightRange = 0f;
-        float heightRangeFacor = 1f;
+        float lowerHeightRange = 0.f;
+        float upperHeightRange = 0.f;
+        float heightRangeFacor = 1.f;
 
         void Generate(Tilemap::HexagonalTilemap* tilemap) override;
     };

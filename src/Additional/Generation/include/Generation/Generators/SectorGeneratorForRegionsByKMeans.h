@@ -10,8 +10,10 @@
 #include <core/Random.h>
 #include <core/Transform.h>
 
-namespace Generation::Generators {
-    class SectorGeneratorForRegionsByKMeans : public AMapElementGenerator {
+namespace Generation::Generators
+{
+    class SectorGeneratorForRegionsByKMeans : public AMapElementGenerator 
+    {
     public:
         Twin2Engine::Core::GameObject* sectorPrefab;
         int sectorsCount = 3; // Number of regions/clusters

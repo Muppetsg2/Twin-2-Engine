@@ -43,7 +43,8 @@ void RegionsGeneratorByKMeans::Generate(Tilemap::HexagonalTilemap* tilemap)
 
             for (GameObject* gameObject : cluster)
             {
-                region->AddTile(gameObject);
+                //region->AddTile(gameObject);
+                gameObject->GetTransform()->SetParent(region->GetTransform());
             }
 
             if (isDiscritizedHeight)

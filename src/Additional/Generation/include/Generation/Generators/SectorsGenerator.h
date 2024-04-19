@@ -6,6 +6,7 @@
 #include <Generation/VectorShuffler.h>
 
 #include <core/GameObject.h>
+#include <manager/SceneManager.h>
 
 namespace Generation::Generators
 {

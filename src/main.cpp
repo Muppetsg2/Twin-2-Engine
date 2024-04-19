@@ -511,13 +511,40 @@ int main(int, char**)
     mountainsGenerator.mountainsNumber = 3;
     contentGenerator->mapElementGenerators.push_back(&mountainsGenerator);
 
+    InstatiatingModel cityModel = ModelsManager::LoadModel("res/models/city.obj");
+    GameObject* cityPrefab = new GameObject();
+    comp = cityPrefab->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("Basic2"));
+    comp->SetModel(cityModel);
+    CitiesGenerator cityGenerator;
+    cityGenerator.prefabCity = cityPrefab;
+    cityGenerator.density = 1.0f;
+    contentGenerator->mapElementGenerators.push_back(&cityGenerator);
+
+    InstatiatingModel radioStationModel = ModelsManager::LoadModel("res/models/radioStation.obj");
+    GameObject* radioStationPrefab = new GameObject();
+    comp = radioStationPrefab->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("Basic2"));
+    comp->SetModel(radioStationModel);
+    RadioStationGeneratorSectorBased radioStationGenerator;
+    radioStationGenerator.prefabRadioStation = radioStationPrefab;
+    radioStationGenerator.densityFactorPerSector = 0.1f;
+    contentGenerator->mapElementGenerators.push_back(&radioStationGenerator);
+
+
     tilemapGenerating = glfwGetTime();
     contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
     /**/
-
+    mountainPrefab->SetActive(false);
+    cityPrefab->SetActive(false);
+    radioStationPrefab->SetActive(false);
     mountainPrefab->GetTransform()->Translate(glm::vec3(2, 6, 0));
     mountainPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    cityPrefab->GetTransform()->Translate(glm::vec3(2, 6, 0));
+    cityPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    radioStationPrefab->GetTransform()->Translate(glm::vec3(2, 6, 0));
+    radioStationPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
 
     //imageObj = new GameObject();
     //imageObj->GetTransform()->SetGlobalPosition(glm::vec3(-900, 500, 0));

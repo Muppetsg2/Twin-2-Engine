@@ -47,7 +47,8 @@ void RadioStationGeneratorRegionBased::Generate(Tilemap::HexagonalTilemap* tilem
             {
                 for (MapHexTile* hexTiles : sector->GetTiles())
                 {
-                    if (hexTiles->GetGameObject()->GetComponent<MapHexTile>()->type == MapHexTile::HexTileType::Empty)
+                    if (hexTiles->GetGameObject()->GetComponent<MapHexTile>()->type == MapHexTile::HexTileType::Empty ||
+                        hexTiles->GetGameObject()->GetComponent<MapHexTile>()->type == MapHexTile::HexTileType::None)
                     {
                         foundOnes.push_back(hexTiles->GetGameObject());
                     }

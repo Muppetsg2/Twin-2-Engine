@@ -32,7 +32,8 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
             {
                 for (MapHexTile* hexTiles : sector->GetTiles())
                 {
-                    if (hexTiles->GetGameObject()->GetComponent<MapHexTile>()->type == MapHexTile::HexTileType::Empty)
+                    if (hexTiles->GetGameObject()->GetComponent<MapHexTile>()->type == MapHexTile::HexTileType::Empty ||
+                        hexTiles->GetGameObject()->GetComponent<MapHexTile>()->type == MapHexTile::HexTileType::None)
                     {
                         foundOnes.push_back(hexTiles->GetGameObject());
                     }
@@ -81,7 +82,8 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
             std::vector<GameObject*> foundOnes;
             for (MapHexTile* tile : sectors[i]->GetTiles())
             {
-                if (tile->type == MapHexTile::HexTileType::Empty)
+                if (tile->type == MapHexTile::HexTileType::Empty ||
+                    tile->type == MapHexTile::HexTileType::None)
                 {
                     foundOnes.push_back(tile->GetGameObject());
                 }

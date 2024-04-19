@@ -5,6 +5,7 @@ using namespace Generation::Generators;
 using namespace Tilemap;
 
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Manager;
 
 using namespace glm;
 
@@ -74,6 +75,8 @@ void SectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
         sectors.remove(toDestroy);
     
         SPDLOG_ERROR("Stworzyæ Destroy oraz DestroyImmediate dla GameObject");
+        toDestroy->GetTransform()->SetParent(nullptr);
+        SceneManager::DestroyGameObject(toDestroy->GetGameObject());
         //DestroyImmediate(toDestroy.gameObject);
     
         //smallSectors = sectors.FindAll(sector => sector.sectorTiles.Count < (minTilesPerSector * accuracyFactor) && sector.sectorTiles.Count != 0);

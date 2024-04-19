@@ -134,6 +134,8 @@ void RegionsBySectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
         regions.remove(chosenRegion);
         allRegions.remove(chosenRegion);
         SPDLOG_ERROR("Dodaæ usuwanie GameObjectu");
+        chosenRegion->GetTransform()->SetParent(nullptr);
+        SceneManager::DestroyGameObject(chosenRegion->GetGameObject());
         //DestroyImmediate(chosenRegion->GetGameObject());
 
         if (mergeByNumberTilesPerRegion)

@@ -13,7 +13,7 @@ using namespace glm;
 
 void RadioStationGeneratorSectorBased::Generate(Tilemap::HexagonalTilemap* tilemap)
 {
-    std::vector<MapSector*> sectors;
+    vector<MapSector*> sectors;
     for (MapSector* region : tilemap->GetGameObject()->GetComponentsInChildren<MapSector>())
     {
         if (region->type == MapRegion::RegionType::Normal)
@@ -25,27 +25,28 @@ void RadioStationGeneratorSectorBased::Generate(Tilemap::HexagonalTilemap* tilem
     VectorShuffler::Shuffle(sectors);
 
     int sectorCountWithStation = static_cast<int>(densityFactorPerSector * sectors.size() + 0.5f);
-    std::vector<MapSector*> sectorsWithStation(sectorCountWithStation);
+    vector<MapSector*> sectorsWithStation(sectorCountWithStation);
     int instantiatedCounter = 0;
 
     for (int i = 0; i < sectors.size() && instantiatedCounter < sectorCountWithStation; i++)
     {
         bool guard = true;
-        for (int j = 0; j < instantiatedCounter; j++)
-        {
-            if (sectorsWithStation[j]->HasAdjacentSector(sectors[i]))
-            {
-                guard = false;
-                break;
-            }
-        }
+        //for (int j = 0; j < instantiatedCounter; j++)
+        //{
+        //    if (sectorsWithStation[j]->HasAdjacentSector(sectors[i]))
+        //    {
+        //        guard = false;
+        //        break;
+        //    }
+        //}
 
         if (guard)
         {
-            std::vector<GameObject*> foundOnes;
+            vector<GameObject*> foundOnes;
             for (MapHexTile* hexTiles : sectors[i]->GetTiles())
             {
-                if (hexTiles->GetGameObject()->GetComponent<MapHexTile>()->type == MapHexTile::HexTileType::Empty)
+                if (hexTiles->GetGameObject()->GetComponent<MapHexTile>()->type == MapHexTile::HexTileType::Empty ||
+                    hexTiles->GetGameObject()->GetComponent<MapHexTile>()->type == MapHexTile::HexTileType::None)
                 {
                     foundOnes.push_back(hexTiles->GetGameObject());
                 }

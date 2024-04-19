@@ -8,6 +8,8 @@
 
 #include <core/Random.h>
 
+#include <manager/SceneManager.h>
+
 namespace Generation::Generators
 {
 	class RegionsBySectorsGenerator : public AMapElementGenerator

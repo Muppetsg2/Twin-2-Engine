@@ -212,9 +212,9 @@ void main()
         }
 
         //LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power;
-        LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
+        LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power /** ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i)*/;
     }
 	
-    FragColor *= vec4(LightColor + AmbientLight, 1.0); //
+    FragColor *= vec4(LightColor + AmbientLight, 1.0);
 	FragColor = vec4(pow(FragColor.rgb, vec3(gamma)), 1.0);
 }

@@ -61,7 +61,7 @@ Materials:
   - wallMat
   - roofMat
 Models:
-  - res/models/AK47.obj
+  - "{Sphere}"
   - res/models/castle.obj
   - "{Cube}"
   - "{Plane}"
@@ -386,7 +386,7 @@ GameObjects:
       rotation:
         x: 90
         y: 0
-        z: 0
+        z: 45
     components:
       - id: 19
         enabled: true

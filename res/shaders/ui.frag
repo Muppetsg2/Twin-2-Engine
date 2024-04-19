@@ -38,15 +38,15 @@ vec2 map(vec2 value, vec2 min1, vec2 max1, vec2 min2, vec2 max2) {
 
 void main() 
 {
-    vec2 uvMin = vec2(sprite.x / sprite.texWidth, sprite.y / sprite.texHeight);
-    vec2 uvMax = vec2((sprite.x + sprite.width) / sprite.texWidth, (sprite.y + sprite.height) / sprite.texHeight);
+    float InvTexWidth = 1.0 / sprite.texWidth;
+    float InvTexHeight = 1.0 / sprite.texHeight;
+    vec2 uvMin = vec2(sprite.x * InvTexWidth, sprite.y * InvTexHeight);
+    vec2 uvMax = vec2((sprite.x + sprite.width) * InvTexWidth, (sprite.y + sprite.height) * InvTexHeight);
     vec2 uv = map(fs_in.texCoord, vec2(0.0, 0.0), vec2(1.0, 1.0), uvMin, uvMax);
     if (!isText) {
-        //Color = texture(sprite.img, uv) * sprite.color;
         Color = texture(sprite.img, uv) * vec4(pow(sprite.color.rgb, vec3(gamma)), sprite.color.a);
     }
     else {
-        //Color = vec4(1.0, 1.0, 1.0, texture(sprite.img, uv).r) * sprite.color;
         Color = vec4(1.0, 1.0, 1.0, texture(sprite.img, uv).r) * vec4(pow(sprite.color.rgb, vec3(gamma)), sprite.color.a);
     }
 }

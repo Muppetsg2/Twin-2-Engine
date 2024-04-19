@@ -513,9 +513,9 @@ int main(int, char**)
 
     InstatiatingModel cityModel = ModelsManager::LoadModel("res/models/city.obj");
     GameObject* cityPrefab = new GameObject();
-    cityPrefab->GetTransform()->Scale(glm::vec3(1.0f, 0.5f, 1.0f));
+    //cityPrefab->GetTransform()->Scale(glm::vec3(1.0f, 0.5f, 1.0f));
     comp = cityPrefab->AddComponent<MeshRenderer>();
-    comp->AddMaterial(MaterialsManager::GetMaterial("Basic2"));
+    comp->AddMaterial(MaterialsManager::GetMaterial("CityMaterial"));
     comp->SetModel(cityModel);
     CitiesGenerator cityGenerator;
     cityGenerator.prefabCity = cityPrefab;
@@ -592,7 +592,7 @@ int main(int, char**)
     DirectionalLightComponent* dl = dl_go->AddComponent<DirectionalLightComponent>();
     dl->SetColor(glm::vec3(1.0f));
     LightingController::Instance()->SetViewerPosition(cameraPos);
-    LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f, 0.02f, 0.02f));
+    LightingController::Instance()->SetAmbientLight(glm::vec3(0.2f, 0.2f, 0.2f));
     LightingController::Instance()->SetHighlightParam(2.0f);
 #pragma endregion
 

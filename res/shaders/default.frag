@@ -102,8 +102,8 @@ float CalculateShadow(vec4 fragPosLightSpace, vec3 normal, uint shadowMapId) {
     float currentDepth = projCoords.z;
 
     // calculate bias (based on depth map resolution and slope)
-    vec3 lightDir = normalize(directionalLights[shadowMapId].position - position);
-    float bias = max(0.01 * (1.0 - dot(N, lightDir)), 0.005);
+    vec3 lightDir = normalize(directionalLights[shadowMapId].position - fs_in.fragPos);
+    float bias = max(0.01 * (1.0 - dot(normal, lightDir)), 0.005);
 
     // PCF
     float shadow = 0.0;
@@ -148,7 +148,7 @@ void main()
 
     vec3 LightDir = vec3(0.0);
     vec3 Normal = normalize(fs_in.normal);
-    vec3 ViewerDir = normalize(ViewerPosition, fs_in.fragPos);
+    vec3 ViewerDir = normalize(ViewerPosition - fs_in.fragPos);
 
     float atten = 0.0;  // atenuation
     float lamb = 0.0;   // lambertian

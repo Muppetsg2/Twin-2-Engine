@@ -1,7 +1,6 @@
 #version 450 core
 // IN
-layout (std140, binding = 1) uniform WindowData
-{
+layout (std140, binding = 1) uniform WindowData {
     vec2 windowSize;
     float nearPlane;
     float farPlane;
@@ -81,9 +80,12 @@ layout(std140, binding = 4) uniform LightingData {
 out vec4 Color;
 
 // UNIFORMS
-uniform vec4 uColor;
 uniform bool uNoTexture = true;
-uniform sampler2D texture_diffuse1;
+uniform bool toon = true;
+
+// CONSTS
+const uint toonBorders = 3;
+const float invToonBorders = 1.0 / toonBorders;
 
 // SHADOW MAP CALCULATIONS
 float CalculateShadow(vec4 fragPosLightSpace, vec3 normal, uint shadowMapId) {
@@ -124,7 +126,7 @@ float CalculateShadow(vec4 fragPosLightSpace, vec3 normal, uint shadowMapId) {
     return shadow;
 }
 
-// ADDITIONAL LIGHT FUNCTIONS
+// LIGHT VARIABLES
 float CalculateAttenuation(float constant, float linear, float quadratic, float dist) {
     return 1.0 / (constant + linear * dist + quadratic * dist * dist);
 }
@@ -143,84 +145,88 @@ float CalculatePhong(vec3 LightDir, vec3 ViewDir, vec3 Normal) {
     return pow(max(dot(ViewDir, ReflectDir), 0.0), highlightParam);
 }
 
+float CalculateToon(float value) {
+    return invToonBorders * floor(value * (toonBorders + 1.0));
+}
+
+// LIGHT TYPES
+vec3 CalculatePointLight(PointLight light, vec3 position, vec3 normal, vec3 viewDir) {
+    vec3 lightDir = light.position - position;
+    float attenuation = CalculateAttenuation(light.constant, light.linear, light.quadratic, length(lightDir));
+    lightDir = normalize(lightDir);
+
+    float diffuse = CalculateLambertian(lightDir, normal);
+    if (!toon) {
+        diffuse += CalculateBlinnPhong(lightDir, viewDir, normal);
+    }
+    else {
+        diffuse = CalculateToon(diffuse);
+    }
+
+    return diffuse * light.color * light.power * attenuation;
+}
+
+vec3 CalculateSpotLight(SpotLight light, vec3 position, vec3 normal, vec3 viewDir) {
+    vec3 lightDir = light.position - position;
+    float attenuation = CalculateAttenuation(light.constant, light.linear, light.quadratic, length(lightDir));
+    lightDir = normalize(lightDir);
+
+    float theta = dot(lightDir, normalize(-light.direction));
+    float epsilon = /*light.innerCutOff*/ - light.outerCutOff;
+
+    float intensity = smoothstep(light.outerCutOff, /*light.innerCutOff*/0.0, theta);
+    float diffuse = CalculateLambertian(lightDir, normal);
+    if (!toon) {
+        diffuse += CalculateBlinnPhong(lightDir, viewDir, normal);
+    }
+    else {
+        diffuse = CalculateToon(diffuse);
+    }
+
+    return diffuse * intensity * light.color * light.power * attenuation;
+}
+
+vec3 CalculateDirectionalLight(DirectionalLight light, vec3 position, vec3 normal, vec3 viewDir, uint shadowMapId) {
+        vec3 lightDir = -light.direction;
+
+        float intensity = 1.0 /*CalculateShadow(light.lightSpaceMatrix * vec4(position, 1.0), normal, shadowMapId)*/;
+        float diffuse = CalculateLambertian(lightDir, normal);
+        if (!toon) {
+            diffuse += CalculateBlinnPhong(lightDir, viewDir, normal);
+        }
+        else {
+            diffuse = CalculateToon(diffuse);
+        }
+
+        return diffuse * intensity * light.color * light.power;
+}
+
 void main() 
 {
-    MaterialInput material = materialInput[fs_in.materialIndex];
-    Color = texture(texturesInput[fs_in.materialIndex].tex, fs_in.texCoord) * material.color;
+    Color = materialInput[fs_in.materialIndex].color * texture(texturesInput[fs_in.materialIndex].tex, fs_in.texCoord);
 
     vec3 LightColor = vec3(0.0);
 
-    vec3 LightDir = vec3(0.0);
-    vec3 Normal = normalize(fs_in.normal);
-    vec3 ViewerDir = normalize(ViewerPosition - fs_in.fragPos);
-
-    float atten = 0.0;  // atenuation
-    float lamb = 0.0;   // lambertian
-    float spec = 0.0;   // specular
-    float dist = 0.0;   // distance
+    vec3 normal = normalize(fs_in.normal);
+    vec3 viewDir = normalize(ViewerPosition - fs_in.fragPos);
 
     // POINT LIGHTS
     for (uint i = 0; i < numberOfPointLights; ++i) {
-        PointLight pointLight = pointLights[i];
-
-        LightDir = pointLight.position - fs_in.fragPos;
-        dist = length(LightDir);
-        LightDir = normalize(LightDir);
-
-        atten = CalculateAttenuation(pointLight.constant, pointLight.linear, pointLight.quadratic, dist);
-
-        lamb = CalculateLambertian(LightDir, Normal);
-
-        spec = CalculatePhong(LightDir, ViewerDir, Normal);
-
-        LightColor += (lamb + spec) * pointLight.color * pointLight.power * atten;
+        LightColor += CalculatePointLight(pointLights[i], fs_in.fragPos, normal, viewDir);
     }
 
     // SPOT LIGHTS
-    float theta = 0.0;
-    float epsilon = 0.0;
-    float intensity = 0.0;
-
     for (uint i = 0; i < numberOfSpotLights; ++i) {
-        SpotLight spotLight = spotLights[i];
-
-        LightDir = spotLight.position - fs_in.fragPos;
-        dist = length(LightDir);
-        LightDir = normalize(LightDir);
-
-        atten = CalculateAttenuation(spotLight.constant, spotLight.linear, spotLight.quadratic, dist);
-
-        lamb = CalculateLambertian(LightDir, Normal);
-
-        spec = CalculatePhong(LightDir, ViewerDir, Normal);
-
-        theta = dot(LightDir, normalize(-spotLight.direction));
-        epsilon = /*spotLight.innerCutOff*/ - spotLight.outerCutOff;
-        intensity = smoothstep(spotLight.outerCutOff, /*spotLight.innerCutOff*/0.0, theta);
-
-        LightColor += (lamb + spec) * spotLight.color * spotLight.power * atten * intensity;
+        LightColor += CalculateSpotLight(spotLights[i], fs_in.fragPos, normal, viewDir);
     }
 
+    // DIRECTIONAL LIGHTS
     for (uint i = 0; i < numberOfDirLights; ++i) {
-        DirectionalLight directionalLight = directionalLights[i];
-        LightDir = -directionalLight.direction;
-
-        lamb = CalculateLambertian(LightDir, Normal);
-
-        spec = CalculatePhong(LightDir, ViewerDir, Normal);
-
-        LightColor += (lamb + spec) * directionalLight.color * directionalLight.power /** CalculateShadow(directionalLight.lightSpaceMatrix * vec4(fs_in.fragPos, 1.0), Normal, i)*/;
+        LightColor += CalculateDirectionalLight(directionalLights[i], fs_in.fragPos, normal, viewDir, i);
     }
 
+    // AMBIENT LIGHT
     LightColor += AmbientLight;
-    uint borders = 3;
-    float b0 = 1.0 / float(borders + 1);
-    uint sectorR = uint(floor(LightColor.r * float(borders + 1)));
-    uint sectorG = uint(floor(LightColor.g * float(borders + 1)));
-    uint sectorB = uint(floor(LightColor.b * float(borders + 1)));
-    LightColor.r = b0 * (sectorR + 1.0);
-    LightColor.g = b0 * (sectorG + 1.0);
-    LightColor.b = b0 * (sectorB + 1.0);
 
     Color *= vec4(LightColor, 1.0);
     Color = vec4(pow(Color.rgb, vec3(gamma)), 1.0);

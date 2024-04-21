@@ -9,7 +9,7 @@ using namespace glm;
 using namespace std;
 
 
-template class ObjectsKMeans<GameObject*>;
+//template class ObjectsKMeans<GameObject*>;
 
 void RegionsGeneratorByKMeans::Generate(Tilemap::HexagonalTilemap* tilemap)
 {
@@ -35,7 +35,7 @@ void RegionsGeneratorByKMeans::Generate(Tilemap::HexagonalTilemap* tilemap)
         }
     }
 
-    vector<vector<GameObject*>> regionGameObjectClusters = ObjectsKMeans<GameObject*>::ClusterObjects(regionsCount, gameObjectsInTilemap, [](GameObject* gameObject) { return gameObject->GetTransform()->GetGlobalPosition(); });
+    vector<vector<GameObject*>> regionGameObjectClusters = ObjectsKMeans::ClusterObjects<GameObject*>(regionsCount, gameObjectsInTilemap, [](GameObject* gameObject) { return gameObject->GetTransform()->GetGlobalPosition(); });
 
     for (const auto& cluster : regionGameObjectClusters)
     {

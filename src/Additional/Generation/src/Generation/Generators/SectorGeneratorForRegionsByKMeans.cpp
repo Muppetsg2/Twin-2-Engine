@@ -7,7 +7,7 @@ using namespace Tilemap;
 using namespace Twin2Engine::Core;
 using namespace glm;
 
-template class ObjectsKMeans<MapHexTile*>;
+//template class ObjectsKMeans<MapHexTile*>;
 
 void SectorGeneratorForRegionsByKMeans::Generate(HexagonalTilemap* tilemap) 
 {
@@ -19,8 +19,8 @@ void SectorGeneratorForRegionsByKMeans::Generate(HexagonalTilemap* tilemap)
         vector<MapHexTile*> tiles(tilesList.begin(), tilesList.end());
         tilesList.clear();
 
-        ObjectsKMeans<MapHexTile*> kMeans;
-        vector<vector<MapHexTile*>> regionTilesClusters = kMeans.ClusterObjects<MapHexTile*>(sectorsCount, tiles, [](MapHexTile* hexTile) { return hexTile->GetTransform()->GetGlobalPosition(); });
+        //ObjectsKMeans<MapHexTile*> kMeans;
+        vector<vector<MapHexTile*>> regionTilesClusters = ObjectsKMeans::ClusterObjects<MapHexTile*>(sectorsCount, tiles, [](MapHexTile* hexTile) { return hexTile->GetTransform()->GetGlobalPosition(); });
 
         for (const auto& cluster : regionTilesClusters)
         {
@@ -39,11 +39,11 @@ void SectorGeneratorForRegionsByKMeans::Generate(HexagonalTilemap* tilemap)
 
                 if (isDiscritizedHeight)
                 {
-                    sector->GetTransform()->Translate(vec3(0.0f, 0.0f, -(int)Random::Range(lowerHeightRange, upperHeightRange) * heightRangeFacor));
+                    sector->GetTransform()->Translate(vec3(0.0f, (int)Random::Range(lowerHeightRange, upperHeightRange) * heightRangeFacor, 0.0f));
                 }
                 else
                 {
-                    sector->GetTransform()->Translate(vec3(0.0f, 0.0f, -Random::Range(lowerHeightRange, upperHeightRange)));
+                    sector->GetTransform()->Translate(vec3(0.0f, Random::Range(lowerHeightRange, upperHeightRange), 0.0f));
                 }
             }
         }

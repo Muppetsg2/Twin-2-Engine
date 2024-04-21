@@ -74,14 +74,11 @@ layout(std140, binding = 4) uniform LightingData {
     vec3 AmbientLight;
     vec3 ViewerPosition;
     float highlightParam;
+    int shadingType;
 };
 
 // OUT
 out vec4 Color;
-
-// UNIFORMS
-uniform bool uNoTexture = true;
-uniform bool toon = true;
 
 // CONSTS
 const uint toonBorders = 3;
@@ -156,10 +153,10 @@ vec3 CalculatePointLight(PointLight light, vec3 position, vec3 normal, vec3 view
     lightDir = normalize(lightDir);
 
     float diffuse = CalculateLambertian(lightDir, normal);
-    if (!toon) {
+    if (shadingType == 0) {
         diffuse += CalculateBlinnPhong(lightDir, viewDir, normal);
     }
-    else {
+    else if (shadingType == 1) {
         diffuse = CalculateToon(diffuse);
     }
 
@@ -176,10 +173,10 @@ vec3 CalculateSpotLight(SpotLight light, vec3 position, vec3 normal, vec3 viewDi
 
     float intensity = smoothstep(light.outerCutOff, /*light.innerCutOff*/0.0, theta);
     float diffuse = CalculateLambertian(lightDir, normal);
-    if (!toon) {
+    if (shadingType == 0) {
         diffuse += CalculateBlinnPhong(lightDir, viewDir, normal);
     }
-    else {
+    else if (shadingType == 1) {
         diffuse = CalculateToon(diffuse);
     }
 
@@ -191,10 +188,10 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 position, vec3 norma
 
         float intensity = 1.0 /*CalculateShadow(light.lightSpaceMatrix * vec4(position, 1.0), normal, shadowMapId)*/;
         float diffuse = CalculateLambertian(lightDir, normal);
-        if (!toon) {
+        if (shadingType == 0) {
             diffuse += CalculateBlinnPhong(lightDir, viewDir, normal);
         }
-        else {
+        else if (shadingType == 1) {
             diffuse = CalculateToon(diffuse);
         }
 

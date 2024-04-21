@@ -28,10 +28,10 @@ LightingController::LightingController() {
 
 	glGenBuffers(1, &LightingDataBuffer);
 	glBindBuffer(GL_UNIFORM_BUFFER, LightingDataBuffer);
-	glBufferData(GL_UNIFORM_BUFFER, sizeof(LightingData), NULL, GL_STATIC_DRAW); // allocate 152 bytes of memory
+	glBufferData(GL_UNIFORM_BUFFER, 36, NULL, GL_STATIC_DRAW); // allocate 152 bytes of memory
 	glBindBufferBase(GL_UNIFORM_BUFFER, 4, LightingDataBuffer);
 	LightingData lightingData;
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, 32, &lightingData);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, 36, &lightingData);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
@@ -114,7 +114,7 @@ void LightingController::UpdateSpotLights() {
 		++slNumber;
 	}
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 4, 4, &slNumber);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 400, slNumber * 64, &sLights);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 400, slNumber * 80, &sLights);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
@@ -466,6 +466,12 @@ void LightingController::SetHighlightParam(float highlightParam) {
 	glBindBuffer(GL_UNIFORM_BUFFER, LightingDataBuffer);
 	glBufferSubData(GL_UNIFORM_BUFFER, 28, 4, &highlightParam);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void LightingController::SetShadingType(int type) {
+	glBindBuffer(GL_UNIFORM_BUFFER, LightingDataBuffer);
+	glBufferSubData(GL_UNIFORM_BUFFER, 32, 4, &type);
+	glBindBuffer(GL_UNIFORM_BUFFER, NULL);
 }
 /*/
 void LightingController::SetGamma(float gamma) {

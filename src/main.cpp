@@ -990,6 +990,23 @@ void imgui_render()
         }
 #pragma endregion
 
+#pragma region IMGUI_WINDOW_SETUP
+        if (ImGui::CollapsingHeader("Lighting Setup")) {
+            static bool blinnPhongShading = true;
+            static bool toonShading = false;
+            if (ImGui::RadioButton("Lambert + Blinn-Phong Shading", blinnPhongShading)) {
+                blinnPhongShading = true;
+                toonShading = false;
+                LightingSystem::LightingController::Instance()->SetShadingType(0);
+            }
+            if (ImGui::RadioButton("Toon/Cel Shading", toonShading)) {
+                toonShading = true;
+                blinnPhongShading = false;
+                LightingSystem::LightingController::Instance()->SetShadingType(1);
+            }
+        }
+#pragma endregion
+
         ImGui::Separator();
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);

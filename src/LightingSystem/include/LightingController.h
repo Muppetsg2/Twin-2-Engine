@@ -29,6 +29,8 @@ namespace LightingSystem {
 				alignas(16) glm::vec3 AmbientLight = glm::vec3(0.0f, 0.0f, 0.0f);	//0		16
 				glm::vec3 ViewerPosition = glm::vec3(0.0f, 0.0f, 0.0f);				//16	12
 				float HighlightParam = 2.0f;										//28	4
+				// 0 - blinnPhong, 1 - toon
+				int shadingType = 0;												//32	4
 			};
 			//Lights lights;
 
@@ -79,6 +81,7 @@ namespace LightingSystem {
 			void SetAmbientLight(glm::vec3 ambientLightColor);
 			void SetViewerPosition(glm::vec3& viewerPosition);
 			void SetHighlightParam(float highlightParam);
+			void SetShadingType(int type);
 			//void SetGamma(float gamma);
 
 			/*/

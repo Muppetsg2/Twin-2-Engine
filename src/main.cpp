@@ -401,6 +401,51 @@ int main(int, char**)
     );
 #pragma endregion
 
+#pragma region TILEMAP_DESERIALIZER
+
+
+    ComponentDeserializer::AddDeserializer("HexagonalTilemap",
+        []() -> Component* {
+            return new HexagonalTilemap();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            HexagonalTilemap* hexagonalTilemap = static_cast<HexagonalTilemap*>(comp);
+            hexagonalTilemap->Resize(node["leftBottomPosition"].as<ivec2>(), node["rightTopPosition"].as<ivec2>());
+            // tilemap
+        }
+    );
+
+
+#pragma endregion
+
+#pragma region GENERATION_DESERIALIZER
+
+
+    ComponentDeserializer::AddDeserializer("MapGenerator",
+        []() -> Component* {
+            return new MapGenerator();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            MapGenerator* mapGenerator = static_cast<MapGenerator*>(comp);
+
+            //Tilemap::HexagonalTilemap* tilemap;
+            ////Tilemap::HexagonalTile* tile;
+            //Twin2Engine::Core::GameObject* preafabHexagonalTile;
+            //Twin2Engine::Core::GameObject* additionalTile;
+            //Twin2Engine::Core::GameObject* filledTile;
+            //Twin2Engine::Core::GameObject* pointTile;
+
+
+            //float generationRadius = 5.0f;
+            mapGenerator->generationRadiusMin = node["generationRadiusMin"].as<float>();
+            mapGenerator->generationRadiusMax = node["generationRadiusMax"].as<float>();
+            mapGenerator->minPointsNumber = node["minPointsNumber"].as<int>();
+            mapGenerator->maxPointsNumber = node["maxPointsNumber"].as<int>();
+            mapGenerator->angleDeltaRange = node["angleDeltaRange"].as<float>();
+        }
+    );
+
+#pragma endregion
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
     SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
@@ -478,21 +523,40 @@ int main(int, char**)
     prefabRegion->AddComponent<MapRegion>();
 
     ContentGenerator* contentGenerator = tilemapGO->AddComponent<ContentGenerator>();
-    SectorsGenerator sectorsGenertor;
-    sectorsGenertor.minTilesPerSector = 3;
-    sectorsGenertor.maxTilesPerSector = 3;
-    sectorsGenertor.prefabSector = prefabSector;
-    contentGenerator->mapElementGenerators.push_back(&sectorsGenertor);
-    RegionsBySectorsGenerator regionsBySectorsGenerator;
-    regionsBySectorsGenerator.regionPrefab = prefabRegion;
-    regionsBySectorsGenerator.mergeByNumberTilesPerRegion = false;
-    regionsBySectorsGenerator.minSectorsPerRegion = 3;
-    regionsBySectorsGenerator.maxSectorsPerRegion = 3;
-    regionsBySectorsGenerator.lowerHeightRange = 0;
-    regionsBySectorsGenerator.upperHeightRange = 3;
-    regionsBySectorsGenerator.heightRangeFacor = 0.25f;
-    regionsBySectorsGenerator.isDiscritizedHeight = true;
-    contentGenerator->mapElementGenerators.push_back(&regionsBySectorsGenerator);
+   //SectorsGenerator sectorsGenertor;
+   //sectorsGenertor.minTilesPerSector = 3;
+   //sectorsGenertor.maxTilesPerSector = 3;
+   //sectorsGenertor.prefabSector = prefabSector;
+   //contentGenerator->mapElementGenerators.push_back(&sectorsGenertor);
+   //RegionsBySectorsGenerator regionsBySectorsGenerator;
+   //regionsBySectorsGenerator.regionPrefab = prefabRegion;
+   //regionsBySectorsGenerator.mergeByNumberTilesPerRegion = false;
+   //regionsBySectorsGenerator.minSectorsPerRegion = 3;
+   //regionsBySectorsGenerator.maxSectorsPerRegion = 3;
+   //regionsBySectorsGenerator.lowerHeightRange = 0;
+   //regionsBySectorsGenerator.upperHeightRange = 3;
+   //regionsBySectorsGenerator.heightRangeFacor = 0.25f;
+   //regionsBySectorsGenerator.isDiscritizedHeight = true;
+   //contentGenerator->mapElementGenerators.push_back(&regionsBySectorsGenerator);
+
+    RegionsGeneratorByKMeans regionsGeneratorKMeans;
+    regionsGeneratorKMeans.regionPrefab = prefabRegion;
+    regionsGeneratorKMeans.isDiscritizedHeight = true;
+    regionsGeneratorKMeans.lowerHeightRange = 0;
+    regionsGeneratorKMeans.upperHeightRange = 3;
+    regionsGeneratorKMeans.heightRangeFacor = 0.25f;
+    regionsGeneratorKMeans.regionsCount = 10;
+    contentGenerator->mapElementGenerators.push_back(&regionsGeneratorKMeans);
+
+    SectorGeneratorForRegionsByKMeans sectorGeneratorsKMeans;
+    sectorGeneratorsKMeans.sectorPrefab = prefabSector;
+    sectorGeneratorsKMeans.sectorsCount = 3;
+    sectorGeneratorsKMeans.isDiscritizedHeight = true;
+    sectorGeneratorsKMeans.lowerHeightRange = 0;
+    sectorGeneratorsKMeans.upperHeightRange = 2;
+    sectorGeneratorsKMeans.heightRangeFacor = 0.125f;
+    contentGenerator->mapElementGenerators.push_back(&sectorGeneratorsKMeans);
+
     LakeGenerator lakeGenerator;
     lakeGenerator.numberOfLakes = 2;
     lakeGenerator.waterLevel = -5.f;

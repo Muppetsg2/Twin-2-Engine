@@ -8,6 +8,9 @@ using namespace Twin2Engine::Core;
 using namespace glm;
 using namespace std;
 
+
+template class ObjectsKMeans<GameObject*>;
+
 void RegionsGeneratorByKMeans::Generate(Tilemap::HexagonalTilemap* tilemap)
 {
     ivec2 leftBottomPosition = tilemap->GetLeftBottomPosition();

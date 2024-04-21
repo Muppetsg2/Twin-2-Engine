@@ -7,7 +7,9 @@ using namespace Tilemap;
 using namespace Twin2Engine::Core;
 using namespace glm;
 
-void SectorGeneratorForRegionsByKMeans::Generate(Tilemap::HexagonalTilemap* tilemap) 
+template class ObjectsKMeans<MapHexTile*>;
+
+void SectorGeneratorForRegionsByKMeans::Generate(HexagonalTilemap* tilemap) 
 {
     list<MapRegion*> regions(tilemap->GetGameObject()->GetComponentsInChildren<MapRegion>());
 
@@ -17,7 +19,8 @@ void SectorGeneratorForRegionsByKMeans::Generate(Tilemap::HexagonalTilemap* tile
         vector<MapHexTile*> tiles(tilesList.begin(), tilesList.end());
         tilesList.clear();
 
-        vector<vector<MapHexTile*>> regionTilesClusters = ObjectsKMeans<MapHexTile*>::ClusterObjects(sectorsCount, tiles, [](MapHexTile* hexTile) { return hexTile->GetTransform()->GetGlobalPosition(); });
+        ObjectsKMeans<MapHexTile*> kMeans;
+        vector<vector<MapHexTile*>> regionTilesClusters = kMeans.ClusterObjects<MapHexTile*>(sectorsCount, tiles, [](MapHexTile* hexTile) { return hexTile->GetTransform()->GetGlobalPosition(); });
 
         for (const auto& cluster : regionTilesClusters)
         {

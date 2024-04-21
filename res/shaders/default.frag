@@ -30,10 +30,11 @@ struct TextureInput {
 
 layout(location = 0) uniform TextureInput textureInputs[8];
 
-// SHADOW MAP
-uniform sampler2D DirLightShadowMaps[4];
-
 // LIGHTS
+#define MAX_POINT_LIGHTS 8
+#define MAX_SPOT_LIGHTS 8
+#define MAX_DIRECTIONAL_LIGHTS 4
+
 struct PointLight {
     vec3 position;      // Position of the point light in world space
     vec3 color;         // Color of the point light
@@ -63,19 +64,20 @@ struct DirectionalLight {
 	float power;		    // Light source power
 };
 
+uniform sampler2D DirLightShadowMaps[MAX_DIRECTIONAL_LIGHTS]; // SHADOW MAP
+
 layout(std430, binding = 3) buffer Lights {
     uint numberOfPointLights;
     uint numberOfSpotLights;
     uint numberOfDirLights;
-    PointLight pointLights[8];
-    SpotLight spotLights[8];
-    DirectionalLight directionalLights[4];
+    PointLight pointLights[MAX_POINT_LIGHTS];
+    SpotLight spotLights[MAX_SPOT_LIGHTS];
+    DirectionalLight directionalLights[MAX_DIRECTIONAL_LIGHTS];
 };
 
 layout(std140, binding = 4) uniform LightingData {
     vec3 ambientLight;
     vec3 viewerPosition;
-    float highlightParam;
     int shadingType;
 };
 
@@ -240,17 +242,17 @@ void main()
     vec3 viewDir = normalize(viewerPosition - fs_in.fragPos);
 
     // POINT LIGHTS
-    for (uint i = 0; i < numberOfPointLights; ++i) {
+    for (uint i = 0; i < numberOfPointLights && i < MAX_POINT_LIGHTS; ++i) {
         result += CalculatePointLight(pointLights[i], normal, viewDir, mat_diffuse, mat_specular, mat.shininess);
     }
 
     // SPOT LIGHTS
-    for (uint i = 0; i < numberOfSpotLights; ++i) {
+    for (uint i = 0; i < numberOfSpotLights && i < MAX_SPOT_LIGHTS; ++i) {
         result += CalculateSpotLight(spotLights[i], normal, viewDir, mat_diffuse, mat_specular, mat.shininess);
     }
 
     // DIRECTIONAL LIGHTS
-    for (uint i = 0; i < numberOfDirLights; ++i) {
+    for (uint i = 0; i < numberOfDirLights && i < MAX_DIRECTIONAL_LIGHTS; ++i) {
         result += CalculateDirectionalLight(directionalLights[i], normal, viewDir, i, mat_diffuse, mat_specular, mat.shininess);
     }
 
@@ -259,3 +261,6 @@ void main()
 
     Color = vec4(pow(result.rgb, vec3(gamma)), result.a);
 }
+
+// - Dodaæ innerCutOff do spotLight w (cpp)
+// - usun¹æ highlightParam

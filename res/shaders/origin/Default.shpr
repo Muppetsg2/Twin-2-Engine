@@ -4,9 +4,15 @@ shaderprogram:
     - default.vert
     - default.frag
   parameters:
+    - name: diffuse
+      type: texture2D
+      value: res/textures/white.png
+    - name: specular
+      type: texture2D
+      value: res/textures/white.png
     - name: color
       type: vec4
       value: [1.0, 1.0, 1.0, 1.0]
-    - name: tex
-      type: texture2D
-      value: res/textures/white.png
+    - name: shininess
+      type: float
+      value: 8

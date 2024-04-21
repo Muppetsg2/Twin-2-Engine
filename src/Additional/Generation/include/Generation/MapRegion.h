@@ -1,7 +1,6 @@
 #ifndef _MAP_REGION_H_
 #define _MAP_REGION_H_
 
-#include <Generation/MapSector.h>
 #include <Tilemap/HexagonalTilemap.h>
 
 namespace Generation
@@ -59,7 +58,12 @@ namespace Generation
         bool IsInternalRegion() const;
 
 
+        virtual YAML::Node Serialize() const override;
+
 	};
 }
+
+#include <Generation/MapSector.h>
+//#include "YamlConverters.h"
 
 #endif // !_MAP_REGION_H_

@@ -84,6 +84,10 @@
 #include <core/SpotLightComponent.h>
 #include <core/DirectionalLightComponent.h>
 
+// YAML CONVERTERS
+#include <core/YamlConverters.h>
+#include <Generation/YamlConverters.h>
+
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
@@ -445,13 +449,66 @@ int main(int, char**)
         }
     );
 
+    ComponentDeserializer::AddDeserializer("ContentGenerator",
+        []() -> Component* {
+            return new ContentGenerator();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            ContentGenerator* contentGenerator = static_cast<ContentGenerator*>(comp);
+
+            //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("MapHexTile",
+        []() -> Component* {
+            return new MapHexTile();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            MapHexTile* mapHexTile = static_cast<MapHexTile*>(comp);
+
+            mapHexTile->tilemap = nullptr;
+            mapHexTile->region = nullptr;
+            mapHexTile->sector = nullptr;
+            mapHexTile->tile = nullptr;
+            mapHexTile->type = node["type"].as<MapHexTile::HexTileType>();
+            //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("MapRegion",
+        []() -> Component* {
+            return new MapRegion();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            MapRegion* mapRegion = static_cast<MapRegion*>(comp);
+
+            mapRegion->tilemap = nullptr;
+            mapRegion->type = node["type"].as<MapRegion::RegionType>();
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("MapSector",
+        []() -> Component* {
+            return new MapSector();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            MapSector* mapSector = static_cast<MapSector*>(comp);
+
+
+            mapSector->tilemap = nullptr;
+            mapSector->region = nullptr;
+            mapSector->type = node["type"].as<MapSector::SectorType>();
+        }
+    );
+
 #pragma endregion
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
     SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
-    //*
+#pragma region SETTING_UP_GENERATION
     InstatiatingModel modelHexagon = ModelsManager::LoadModel("res/models/hexagon.obj");
     GameObject* hexagonPrefab = new GameObject();
     hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
@@ -616,30 +673,7 @@ int main(int, char**)
     radioStationPrefab->GetTransform()->Translate(glm::vec3(2, 6, 0));
     radioStationPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
 
-    //imageObj = new GameObject();
-    //imageObj->GetTransform()->SetGlobalPosition(glm::vec3(-900, 500, 0));
-    //Image* img = imageObj->AddComponent<Image>();
-    //img->SetSprite(SpriteManager::MakeSprite("stone", "res/textures/stone.jpg"));
-    //Image* img2 = imageObj->AddComponent<Image>();
-    //img2->SetSprite(SpriteManager::MakeSprite("grass", "res/textures/grass.png"));
-    //
-    //imageObj2 = new GameObject();
-    //imageObj2->GetTransform()->SetGlobalPosition(glm::vec3(900, 500, 0));
-    //img = imageObj2->AddComponent<Image>();
-    //img->SetSprite("grass");
-    //
-    //imageObj3 = new GameObject();
-    //imageObj3->GetTransform()->SetGlobalPosition(glm::vec3(0, -500, 0));
-    //image = imageObj3->AddComponent<Image>();
-    //image->SetSprite(SpriteManager::MakeSprite("white_box", "res/textures/white.png"));
-    //
-    //textObj = new GameObject();
-    //textObj->GetTransform()->SetGlobalPosition(glm::vec3(400, 0, 0));
-    //text = textObj->AddComponent<Text>();
-    //text->SetColor(glm::vec4(1.f));
-    //text->SetText("Text");
-    //text->SetSize(48);
-    //text->SetFont("res/fonts/arial.ttf");
+#pragma endregion
 
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();/**/
     

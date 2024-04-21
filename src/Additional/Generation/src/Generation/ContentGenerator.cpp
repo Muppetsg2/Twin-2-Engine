@@ -8,8 +8,14 @@ void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
 {
     for (AMapElementGenerator* generator : mapElementGenerators)
     {
-        SPDLOG_INFO("Tutaj0");
         generator->Generate(targetTilemap);
-        SPDLOG_INFO("Tutaj1");
     }
+}
+
+YAML::Node ContentGenerator::Serialize() const
+{
+    YAML::Node node = Twin2Engine::Core::Component::Serialize();
+    node.remove("type");
+    node.remove("subTypes");
+    return node;
 }

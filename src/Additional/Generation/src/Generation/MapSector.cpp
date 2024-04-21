@@ -1,5 +1,8 @@
 #include <Generation/MapSector.h>
 
+#include <Generation/YamlConverters.h>
+
+
 using namespace Generation;
 using namespace Tilemap;
 
@@ -158,4 +161,15 @@ bool MapSector::IsInternalSector() const
 	}
 
 	return true;
+}
+
+YAML::Node MapSector::Serialize() const
+{
+	YAML::Node node = Twin2Engine::Core::Component::Serialize();
+	node.remove("type");
+	node.remove("subTypes");
+	//node["tilemap"] = tilemap;
+	//node["region"] = region;
+	node["type"] = type;
+	return node;
 }

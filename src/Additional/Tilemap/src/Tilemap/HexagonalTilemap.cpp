@@ -1,5 +1,7 @@
 #include <Tilemap/HexagonalTilemap.h>
 
+#include <core/YamlConverters.h>
+
 #define SQRT_3 1.7320508075688772935274463415059f
 
 using namespace Tilemap;
@@ -372,4 +374,14 @@ glm::vec2 HexagonalTilemap::ConvertToRealPosition(const glm::ivec2& position) co
 glm::vec2 HexagonalTilemap::ConvertToTilemapPosition(const glm::ivec2& position) const
 {
 	return glm::ivec2(position.x / (_distanceBetweenTiles * 0.75f), glm::floor((position.y / (_distanceBetweenTiles * 0.5f * SQRT_3))));
+}
+
+YAML::Node HexagonalTilemap::Serialize() const
+{
+	YAML::Node node = Twin2Engine::Core::Component::Serialize();
+	node.remove("type");
+	node.remove("subTypes");
+	node["generationRadiusMin"] = _leftBottomPosition;
+	node["generationRadiusMax"] = _rightTopPosition;
+	return node;
 }

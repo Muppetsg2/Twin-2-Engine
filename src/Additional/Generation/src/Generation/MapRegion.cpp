@@ -1,5 +1,8 @@
 #include <Generation/MapRegion.h>
 
+#include <Generation/YamlConverters.h>
+
+
 using namespace Generation;
 using namespace Tilemap;
 using namespace Twin2Engine::Core;
@@ -145,4 +148,14 @@ bool MapRegion::IsInternalRegion() const
 	}
 
 	return true;
+}
+
+YAML::Node MapRegion::Serialize() const
+{
+	YAML::Node node = Twin2Engine::Core::Component::Serialize();
+	node.remove("type");
+	node.remove("subTypes");
+	//node["tilemap"] = tilemap;
+	node["type"] = type;
+	return node;
 }

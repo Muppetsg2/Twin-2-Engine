@@ -1,8 +1,6 @@
 #ifndef _MAP_HEX_TILE_H_
 #define _MAP_HEX_TILE_H_
 
-//#include <Generation/MapRegion.h>
-//#include <Generation/MapSector.h>
 
 #include <Tilemap/HexagonalTilemap.h>
 
@@ -48,7 +46,13 @@ namespace Generation
 		//inline MapSector* GetSector() const;
 
 
+		virtual YAML::Node Serialize() const override;
+
 	};
 }
+
+#include <Generation/MapRegion.h>
+#include <Generation/MapSector.h>
+
 
 #endif // !_MAP_HEX_TILE_H_

@@ -1,5 +1,7 @@
 #include <Generation/MapHexTile.h>
 
+#include <Generation/YamlConverters.h>
+
 using namespace Generation;
 using namespace Tilemap;
 
@@ -36,3 +38,16 @@ using namespace std;
 //{
 //	return _sector;
 //}
+
+YAML::Node MapHexTile::Serialize() const
+{
+    YAML::Node node = Twin2Engine::Core::Component::Serialize();
+    node.remove("type");
+    node.remove("subTypes");
+    //node["tilemap"] = tilemap;
+    //node["region"] = region;
+    //node["sector"] = sector;
+    //node["tile"] = tile;
+    node["type"] = type;
+    return node;
+}

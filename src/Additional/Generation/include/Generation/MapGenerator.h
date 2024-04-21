@@ -50,7 +50,7 @@ namespace Generation
 #pragma endregion
         void Generate();
 
-
+        virtual YAML::Node Serialize() const override;
 	};
 }
 

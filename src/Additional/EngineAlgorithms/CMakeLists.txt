@@ -38,4 +38,4 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC ${EngineAlgorithms_PRECOMPILE_H
 
 target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
 target_link_libraries(${PROJECT_NAME} PRIVATE spdlog)
-#target_link_libraries(${PROJECT_NAME} yaml-cpp)
+#target_link_libraries(${PROJECT_NAME} PRIVATE yaml-cpp)

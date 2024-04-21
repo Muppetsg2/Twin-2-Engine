@@ -55,7 +55,8 @@ namespace Tilemap
 		glm::vec2 ConvertToTilemapPosition(const glm::ivec2& position) const;
 
 		static glm::ivec2 GetPositionInDirection(const glm::ivec2& position, unsigned int direction);
-	/**/
+
+		virtual YAML::Node Serialize() const override;
 	};
 }
 #include <Tilemap/HexagonalTile.h>

@@ -253,3 +253,12 @@ void MapGenerator::Generate()
     SPDLOG_ERROR("Zrobiæ implementacjê content generator!");
     //GetComponent<IContentGenerator>() ? .GenerateContent();
 }
+
+YAML::Node MapGenerator::Serialize() const
+{
+    YAML::Node node = Twin2Engine::Core::Component::Serialize();
+    node.remove("type");
+    node.remove("subTypes");
+    //node["generationRadiusMin"] = generationRadiusMin;
+    return node;
+}

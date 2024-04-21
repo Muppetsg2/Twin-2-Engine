@@ -3,8 +3,7 @@
 
 #include <Tilemap/HexagonalTile.h>
 #include <Tilemap/HexagonalTilemap.h>
-//#include <Generation/MapRegion.h>
-#include <Generation/MapHexTile.h>
+
 
 using Tilemap::HexagonalTilemap;
 
@@ -62,7 +61,13 @@ namespace Generation
         std::vector<MapSector*> GetAdjacentSectors() const;
         bool HasAdjacentSector(MapSector* otherSector) const;
         bool IsInternalSector() const;
+
+        virtual YAML::Node Serialize() const override;
 	};
 }
+
+#include <Generation/MapRegion.h>
+#include <Generation/MapHexTile.h>
+//#include "YamlConverters.h"
 
 #endif // !_MAP_SECTOR_H_

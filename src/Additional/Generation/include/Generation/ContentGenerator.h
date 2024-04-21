@@ -12,6 +12,8 @@ namespace Generation
     public:
         std::list<Generators::AMapElementGenerator*> mapElementGenerators;
         void GenerateContent(Tilemap::HexagonalTilemap* targetTilemap);
+
+        virtual YAML::Node Serialize() const override;
 	};
 }
 

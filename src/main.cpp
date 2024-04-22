@@ -443,8 +443,6 @@ int main(int, char**)
         // Process I/O operations here
         input();
 
-        if (window->IsClosed()) break;
-
         // Update game objects' state here
         update();
 

@@ -2,10 +2,10 @@ material:
   name: Default
   shader: origin/Default
   parameters:
-    - name: diffuse
+    - name: diffuse_texture
       type: texture2D
       value: res/textures/white.png
-    - name: specular
+    - name: specular_texture
       type: texture2D
       value: res/textures/white.png
     - name: color

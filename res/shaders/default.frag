@@ -28,7 +28,7 @@ struct TextureInput {
     sampler2D specular_texture;
 };
 
-layout(location = 0) uniform TextureInput textureInputs[8];
+layout(location = 0) uniform TextureInput texturesInput[8];
 
 // LIGHTS
 #define MAX_POINT_LIGHTS 8
@@ -230,11 +230,10 @@ vec4 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir
 
 void main()
 {
-    TextureInput tex = textureInputs[fs_in.materialIndex];
     MaterialInput mat = materialInputs[fs_in.materialIndex];
     
-    vec4 mat_diffuse = mat.color * texture(tex.diffuse_texture, fs_in.texCoord);
-    vec4 mat_specular = mat.color * texture(tex.specular_texture, fs_in.texCoord);
+    vec4 mat_diffuse = mat.color * texture(texturesInput[fs_in.materialIndex].diffuse_texture, fs_in.texCoord);
+    vec4 mat_specular = mat.color * texture(texturesInput[fs_in.materialIndex].specular_texture, fs_in.texCoord);
 
     vec4 result = vec4(0.0, 0.0, 0.0, 1.0);
 
@@ -257,7 +256,7 @@ void main()
     }
 
     // AMBIENT LIGHT
-    result += ambientLight;
+    result += vec4(ambientLight, 0.0);
 
     Color = vec4(pow(result.rgb, vec3(gamma)), result.a);
 }

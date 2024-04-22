@@ -7,6 +7,10 @@
 #include <graphic/Shader.h>
 #include <core/EventHandler.h>
 
+#define MAX_POINT_LIGHTS 8
+#define MAX_SPOT_LIGHTS 8
+#define MAX_DIRECTIONAL_LIGHTS 4
+
 namespace LightingSystem {
 	class LightingController {
 		private:
@@ -19,18 +23,17 @@ namespace LightingSystem {
 				unsigned int numberOfPointLights = 0;				//0		4
 				unsigned int numberOfSpotLights = 0;				//4		4
 				unsigned int numberOfDirLights = 0;					//8		4
-				unsigned int padding;								//12	4 - padding
-				PointLight pointLights[8];							//16	48 * 8 = 384
-				SpotLight spotLights[8];							//400	64 * 8 = 512
-				DirectionalLight directionalLights[4];				//912	112. * 4 = 192
+				unsigned int padding = 0;								//12	4 - padding
+				PointLight pointLights[MAX_POINT_LIGHTS];							//16	48 * 8 = 384
+				SpotLight spotLights[MAX_SPOT_LIGHTS];							//400	64 * 8 = 512
+				DirectionalLight directionalLights[MAX_DIRECTIONAL_LIGHTS];				//912	112. * 4 = 192
 			};
 
 			struct LightingData {													//32
-				alignas(16) glm::vec3 AmbientLight = glm::vec3(0.0f, 0.0f, 0.0f);	//0		16
-				glm::vec3 ViewerPosition = glm::vec3(0.0f, 0.0f, 0.0f);				//16	12
-				float HighlightParam = 2.0f;										//28	4
+				glm::vec3 ambientLight = glm::vec3(0.0f, 0.0f, 0.0f);				//0		12
+				glm::vec3 viewerPosition = glm::vec3(0.0f, 0.0f, 0.0f);				//12	12
 				// 0 - blinnPhong, 1 - toon
-				int shadingType = 0;												//32	4
+				int shadingType = 0;												//24	4
 			};
 			//Lights lights;
 
@@ -80,7 +83,6 @@ namespace LightingSystem {
 
 			void SetAmbientLight(glm::vec3 ambientLightColor);
 			void SetViewerPosition(glm::vec3& viewerPosition);
-			void SetHighlightParam(float highlightParam);
 			void SetShadingType(int type);
 			//void SetGamma(float gamma);
 

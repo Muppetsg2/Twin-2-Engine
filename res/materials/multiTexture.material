@@ -1,0 +1,10 @@
+material:
+  name: multiTexture
+  shader: origin/MultiTexture
+  parameters:
+    - name: texture1
+      type: texture2D
+      value: res/textures/stone.jpg
+    - name: texture2
+      type: texture2D
+      value: res/textures/hexEdgeTexture.png

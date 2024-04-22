@@ -236,10 +236,47 @@ void SceneManager::LoadScene(const string& name)
 	_audiosIds = LoadResources(pathGetter, sceneToLoad->_audios, _audiosIds, unloader, loader, sorter);
 #pragma endregion
 #pragma region LOADING_MATERIALS
+	//// MATERIALS
+	//paths.clear();
+	//for (const auto& path : sceneToLoad->_materials) {
+	//	paths.push_back(path);
+	//}
+	//toLoadToUnload = GetResourcesToLoadAndUnload(paths, _materialsIds);
+	//
+	//// Unloading
+	//for (size_t m : toLoadToUnload.second) {
+	//	MaterialsManager::UnloadMaterial(m);
+	//	for (size_t i = 0; i < _materialsIds.size(); ++i) {
+	//		if (_materialsIds[i] == m) {
+	//			_materialsIds.erase(_materialsIds.begin() + i);
+	//			break;
+	//		}
+	//	}
+	//}
+	//
+	//// Loading
+	//for (size_t m : toLoadToUnload.first) {
+	//	Material mat = MaterialsManager::LoadMaterial(paths[m]);
+	//	_materialsIds.push_back(mat.GetId());
+	//}
+	//// Sorting
+	//sortedIds.clear();
+	//for (size_t i = 0; i < paths.size(); ++i) {
+	//	size_t pathH = hash<string>()(paths[i]);
+	//	for (size_t j = 0; j < _materialsIds.size(); ++j) {
+	//		if (_materialsIds[j] == pathH) {
+	//			sortedIds.push_back(_materialsIds[j]);
+	//			break;
+	//		}
+	//	}
+	//}
+	//_materialsIds = sortedIds;
+
 	pathGetter = [](const string& path) -> string { return path; };
 	unloader = [](size_t id) -> bool { MaterialsManager::UnloadMaterial(id); return true; };
 	loader = [](const string& path, size_t& id) -> bool { id = MaterialsManager::LoadMaterial(path).GetId(); return true; };
 	_materialsIds = LoadResources(pathGetter, sceneToLoad->_materials, _materialsIds, unloader, loader, sorter);
+
 #pragma endregion
 #pragma region LOADING_MODELS
 	pathGetter = [](const string& path) -> string { return path; };

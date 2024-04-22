@@ -71,26 +71,31 @@ void GraphicEngineManager::End()
 
 void GraphicEngineManager::Render()
 {
-	/*
-	glBindTexture(GL_TEXTURE_2D, _depthMap);
-	glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	MeshRenderingManager::RenderDepthMap();
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	*/
-
-	//CameraComponent* camera = Core::CameraComponent::GetMainCamera();
-
+#if DEBUG_GRAPHIC_ENGINE
+	float startRenderingTime = glfwGetTime();
+#endif
 	MeshRenderingManager::Render();
+#if DEBUG_GRAPHIC_ENGINE
+	SPDLOG_INFO("Randering Time: {}", glfwGetTime() - startRenderingTime);
+#endif
+#if DEBUG_GRAPHIC_ENGINE
+	float startUIRenderingTime = glfwGetTime();
+#endif
 	UIRenderingManager::Render();
+#if DEBUG_GRAPHIC_ENGINE
+	SPDLOG_INFO("UIRandering Time: {}", glfwGetTime() - startUIRenderingTime);
+#endif
 }
 
 void GraphicEngineManager::DepthRender()
 {
+#if DEBUG_GRAPHIC_ENGINE
+	float startDepthRenderingTime = glfwGetTime();
+#endif
 	MeshRenderingManager::RenderDepthMap();
+#if DEBUG_GRAPHIC_ENGINE
+	SPDLOG_INFO("Depth Randering Time: {}", glfwGetTime() - startDepthRenderingTime);
+#endif
 }
 
 /*

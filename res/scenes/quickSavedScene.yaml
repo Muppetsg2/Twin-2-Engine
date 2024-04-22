@@ -408,7 +408,7 @@ GameObjects:
         isTransparent: false
         model: 0
         materials:
-          - 3
+          - 8
     children:
       []
   - id: 10

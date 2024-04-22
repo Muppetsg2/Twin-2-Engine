@@ -15,6 +15,8 @@ in VS_OUT {
 } fs_in;
 
 struct MaterialInput {
+    bool has_diffuse_texture;
+    bool has_specular_texture;
     vec3 color;
     float shininess;
 };
@@ -94,6 +96,11 @@ const float invDiffuseToonBorders = 1.0 / diffuseToonBorders;
 const uint specularToonBorders = 1;
 const float invSpecularToonBorders = 1.0 / specularToonBorders;
 
+// GAMMA CALCULATION
+vec4 CalculateGamma(vec4 color) {
+    return vec4(pow(color.rgb, vec3(gamma)), color.a);
+}
+
 // SHADOW MAP CALCULATIONS
 float CalculateShadow(vec4 fragPosLightSpace, vec3 normal, uint shadowMapId) {
 
@@ -150,12 +157,8 @@ float CalculatePhong(vec3 lightDir, vec3 viewDir, vec3 normal, float shininess) 
     return pow(max(dot(viewDir, reflect(-lightDir, normal)), 0.0), shininess);
 }
 
-float CalculateDiffuseToon(float value) {
-    return invDiffuseToonBorders * floor(value * (diffuseToonBorders + 1.0));
-}
-
-float CalculateSpecularToon(float value) {
-    return invSpecularToonBorders * floor(value * (specularToonBorders + 1.0));
+float CalculateToon(float value, float toonBorders, float invToonBorders) {
+    return invToonBorders * floor(value * (toonBorders + 1.0));
 }
 
 // LIGHT TYPES
@@ -169,11 +172,11 @@ vec4 CalculatePointLight(PointLight light, vec3 normal, vec3 viewDir, vec4 mat_d
 
     // TOON SHADING
     if (shadingType == 1) {
-        diff = CalculateDiffuseToon(diff);
-        spec = CalculateSpecularToon(spec);
+        diff = CalculateToon(diff, diffuseToonBorders, invDiffuseToonBorders);
+        spec = CalculateToon(spec, specularToonBorders, invSpecularToonBorders);
     }
 
-    vec4 lightColor = vec4(light.color, 1.0);
+    vec4 lightColor = CalculateGamma(vec4(light.color, 1.0));
     vec4 ambient = ambientPowerPercent * attenuation * light.power * lightColor * mat_diffuse;
     vec4 diffuse = diffusePowerPercent * attenuation * diff * light.power * lightColor * mat_diffuse;
     vec4 specular = specularPowerPercent * attenuation * spec * light.power * lightColor * mat_specular;
@@ -195,11 +198,11 @@ vec4 CalculateSpotLight(SpotLight light, vec3 normal, vec3 viewDir, vec4 mat_dif
 
     // TOON SHADING
     if (shadingType == 1) {
-        diff = CalculateDiffuseToon(diff);
-        spec = CalculateSpecularToon(spec);
+        diff = CalculateToon(diff, diffuseToonBorders, invDiffuseToonBorders);
+        spec = CalculateToon(spec, specularToonBorders, invSpecularToonBorders);
     }
 
-    vec4 lightColor = vec4(light.color, 1.0);
+    vec4 lightColor = CalculateGamma(vec4(light.color, 1.0));
     vec4 ambient = ambientPowerPercent * attenuation * intensity * light.power * lightColor * mat_diffuse;
     vec4 diffuse = diffusePowerPercent * attenuation * intensity * diff * light.power * lightColor * mat_diffuse;
     vec4 specular = specularPowerPercent * attenuation * intensity * spec * light.power * lightColor * mat_specular;
@@ -216,11 +219,11 @@ vec4 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir
 
     // TOON SHADING
     if (shadingType == 1) {
-        diff = CalculateDiffuseToon(diff);
-        spec = CalculateSpecularToon(spec);
+        diff = CalculateToon(diff, diffuseToonBorders, invDiffuseToonBorders);
+        spec = CalculateToon(spec, specularToonBorders, invSpecularToonBorders);
     }
 
-    vec4 lightColor = vec4(light.color, 1.0);
+    vec4 lightColor = CalculateGamma(vec4(light.color, 1.0));
     vec4 ambient = ambientPowerPercent * intensity * light.power * lightColor * mat_diffuse;
     vec4 diffuse = diffusePowerPercent * intensity * diff * light.power * lightColor * mat_diffuse;
     vec4 specular = specularPowerPercent * intensity * spec * light.power * lightColor * mat_specular;
@@ -232,10 +235,12 @@ void main()
 {
     MaterialInput mat = materialInputs[fs_in.materialIndex];
     
-    vec4 mat_diffuse = vec4(mat.color, 1.0) * texture(texturesInput[fs_in.materialIndex].diffuse_texture, fs_in.texCoord);
-    vec4 mat_specular = vec4(mat.color, 1.0) * texture(texturesInput[fs_in.materialIndex].specular_texture, fs_in.texCoord);
+    vec4 mat_diffuse = CalculateGamma(vec4(mat.color, 1.0));
+    if (mat.has_diffuse_texture) mat_diffuse *= texture(texturesInput[fs_in.materialIndex].diffuse_texture, fs_in.texCoord);
+    vec4 mat_specular = CalculateGamma(vec4(1.0));
+    if (mat.has_specular_texture) mat_specular *= texture(texturesInput[fs_in.materialIndex].specular_texture, fs_in.texCoord);
 
-    vec4 result = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 result = vec4(0.0);
 
     vec3 normal = normalize(fs_in.normal);
     vec3 viewDir = normalize(viewerPosition - fs_in.fragPos);
@@ -256,7 +261,8 @@ void main()
     }
 
     // AMBIENT LIGHT
-    result += vec4(ambientLight, 0.0);
+    result += CalculateGamma(vec4(ambientLight, 1.0)) * mat_diffuse;
 
-    Color = vec4(pow(result.rgb, vec3(gamma)), result.a);
+    //Color = vec4(pow(result.rgb, vec3(gamma)), result.a);
+    Color = result;
 }

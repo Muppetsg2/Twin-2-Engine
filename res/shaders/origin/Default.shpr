@@ -7,9 +7,15 @@ shaderprogram:
     - name: diffuse_texture
       type: texture2D
       value: res/textures/white.png
+    - name: has_diffuse_texture
+      type: bool
+      value: true
     - name: specular_texture
       type: texture2D
       value: res/textures/white.png
+    - name: has_specular_texutre
+      type: bool
+      value: true
     - name: color
       type: vec4
       value: [1.0, 1.0, 1.0, 1.0]

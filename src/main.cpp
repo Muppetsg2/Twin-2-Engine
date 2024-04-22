@@ -414,14 +414,14 @@ int main(int, char**)
     SceneManager::LoadScene("testScene");
     //SceneManager::SaveScene("res/scenes/savedScene.yaml");
 
-    InstatiatingModel modelHexagon = ModelsManager::LoadModel("res/models/hexagon.obj");
-    GameObject* hexagonPrefab = new GameObject();
-    hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
-    hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
-    auto comp = hexagonPrefab->AddComponent<MeshRenderer>();
-    comp->AddMaterial(MaterialsManager::GetMaterial("multiTexture"));
-    //comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
-    comp->SetModel(modelHexagon);
+    //InstatiatingModel modelHexagon = ModelsManager::LoadModel("res/models/hexagon.obj");
+    //GameObject* hexagonPrefab = new GameObject();
+    //hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
+    //hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    //auto comp = hexagonPrefab->AddComponent<MeshRenderer>();
+    //comp->AddMaterial(MaterialsManager::GetMaterial("multiTexture"));
+    ////comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
+    //comp->SetModel(modelHexagon);
     
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();

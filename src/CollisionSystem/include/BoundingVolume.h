@@ -13,7 +13,7 @@ namespace CollisionSystem {
 
 		//virtual ~BoundingVolume();
 
-		bool isOnFrustum(Frustum* frustum);
+		bool isOnFrustum(Frustum& frustum);
 
 		Collision* collide(Collider* other) override;
 	};

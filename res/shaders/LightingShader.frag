@@ -1,8 +1,8 @@
 #version 430
 
 in vec3 position;
-in vec3 normal;
 in vec2 texCoords;
+in vec3 normal;
 
 in vec4 color1;
 in vec4 color2;
@@ -113,7 +113,8 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
         {
             float pcfDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy + vec2(x, y) * texelSize).r; 
             shadow += currentDepth  < pcfDepth  ? 1.0 : 0.0;        
-        }    
+            //shadow += (currentDepth - bias) < pcfDepth  ? 1.0 : 0.0;
+            }    
     }
     shadow /= 25.0;
     
@@ -136,14 +137,9 @@ float countBlinnPhongPart(vec3 L, vec3 E, vec3 N) {
 
 void main()
 {
-	//FragColor = uColor;
-	//FragColor = color1 + color2;
 	FragColor = materialInput[materialIndex].color1 + materialInput[materialIndex].color2;
 
-	//vec3 result = vec3(0.0);
-	//vec3 lightDir;
-	//vec3 diffuse;
-    vec3 LightColor = vec3(0.0);
+	vec3 LightColor = vec3(0.0);
 	
 	vec3 L = vec3(0.0);
     vec3 N = normalize(normal);

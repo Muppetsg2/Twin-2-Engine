@@ -23,7 +23,6 @@ namespace CollisionSystem {
 
 	struct SphereColliderData : ShapeColliderData {
 		float Radius = 1.0f;
-		float LocalRadius = 1.0f;
 	};
 
 	struct BoxColliderData : ShapeColliderData {

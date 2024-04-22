@@ -1,0 +1,7 @@
+material:
+  name: FakeBRDF
+  shader: origin/FakeBRDF
+  parameters:
+    - name: brdfTexture
+      type: texture2D
+      value: res/textures/fakeBRDF.png

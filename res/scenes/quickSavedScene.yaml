@@ -41,6 +41,13 @@ Textures:
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
+  - path: res/textures/fakeBRDF.png
+    fileFormat: 35906
+    engineFormat: 6408
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
 Sprites:
   - alias: white_box
     texture: 0
@@ -62,6 +69,7 @@ Materials:
   - wallMat
   - roofMat
   - Default
+  - FakeBRDF
 Models:
   - "{Sphere}"
   - res/models/hexagon.obj
@@ -400,7 +408,7 @@ GameObjects:
         isTransparent: false
         model: 0
         materials:
-          - 8
+          - 3
     children:
       []
   - id: 10
@@ -542,5 +550,36 @@ GameObjects:
         model: 1
         materials:
           - 3
+    children:
+      []
+  - id: 13
+    name: BRDF
+    isStatic: false
+    isActive: true
+    transform:
+      id: 29
+      enabled: true
+      position:
+        x: 2.0
+        y: 6.0
+        z: -2.0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 30
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 0
+        materials:
+          - 9
     children:
       []

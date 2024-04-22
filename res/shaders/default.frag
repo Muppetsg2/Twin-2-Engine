@@ -15,7 +15,7 @@ in VS_OUT {
 } fs_in;
 
 struct MaterialInput {
-    vec4 color;
+    vec3 color;
     float shininess;
 };
 
@@ -178,7 +178,7 @@ vec4 CalculatePointLight(PointLight light, vec3 normal, vec3 viewDir, vec4 mat_d
     vec4 diffuse = diffusePowerPercent * attenuation * diff * light.power * lightColor * mat_diffuse;
     vec4 specular = specularPowerPercent * attenuation * spec * light.power * lightColor * mat_specular;
 
-    return ambient + diffuse + specular;
+    return ambient + diffuse /*+ specular*/;
 }
 
 vec4 CalculateSpotLight(SpotLight light, vec3 normal, vec3 viewDir, vec4 mat_diffuse, vec4 mat_specular, float mat_shininess) {    
@@ -204,7 +204,7 @@ vec4 CalculateSpotLight(SpotLight light, vec3 normal, vec3 viewDir, vec4 mat_dif
     vec4 diffuse = diffusePowerPercent * attenuation * intensity * diff * light.power * lightColor * mat_diffuse;
     vec4 specular = specularPowerPercent * attenuation * intensity * spec * light.power * lightColor * mat_specular;
 
-    return ambient + diffuse + specular;
+    return ambient + diffuse /*+ specular*/;
 }
 
 vec4 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir, uint shadowMapId, vec4 mat_diffuse, vec4 mat_specular, float mat_shininess) {
@@ -225,23 +225,23 @@ vec4 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir
     vec4 diffuse = diffusePowerPercent * intensity * diff * light.power * lightColor * mat_diffuse;
     vec4 specular = specularPowerPercent * intensity * spec * light.power * lightColor * mat_specular;
 
-    return ambient + diffuse + specular;
+    return ambient + diffuse /*+ specular*/;
 }
 
 void main()
 {
     MaterialInput mat = materialInputs[fs_in.materialIndex];
     
-    vec4 mat_diffuse = mat.color * texture(texturesInput[fs_in.materialIndex].diffuse_texture, fs_in.texCoord);
-    vec4 mat_specular = mat.color * texture(texturesInput[fs_in.materialIndex].specular_texture, fs_in.texCoord);
+    vec4 mat_diffuse = /*mat.color **/ texture(texturesInput[fs_in.materialIndex].diffuse_texture, fs_in.texCoord);
+    vec4 mat_specular = /*mat.color **/ texture(texturesInput[fs_in.materialIndex].specular_texture, fs_in.texCoord);
 
-    vec4 result = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 result = vec4(0.0, 0.0, 0.0, 1.0) + mat_diffuse;
 
     vec3 normal = normalize(fs_in.normal);
     vec3 viewDir = normalize(viewerPosition - fs_in.fragPos);
 
     // POINT LIGHTS
-    for (uint i = 0; i < numberOfPointLights && i < MAX_POINT_LIGHTS; ++i) {
+    /*for (uint i = 0; i < numberOfPointLights && i < MAX_POINT_LIGHTS; ++i) {
         result += CalculatePointLight(pointLights[i], normal, viewDir, mat_diffuse, mat_specular, mat.shininess);
     }
 
@@ -253,7 +253,7 @@ void main()
     // DIRECTIONAL LIGHTS
     for (uint i = 0; i < numberOfDirLights && i < MAX_DIRECTIONAL_LIGHTS; ++i) {
         result += CalculateDirectionalLight(directionalLights[i], normal, viewDir, i, mat_diffuse, mat_specular, mat.shininess);
-    }
+    }*/
 
     // AMBIENT LIGHT
     result += vec4(ambientLight, 0.0);

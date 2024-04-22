@@ -320,7 +320,6 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 	return std::move(lightNewPos);
 }
 
-
 void LightingController::RenderShadowMaps() {
 	glCullFace(GL_FRONT);
 

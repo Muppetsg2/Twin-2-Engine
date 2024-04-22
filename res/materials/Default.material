@@ -4,13 +4,13 @@ material:
   parameters:
     - name: diffuse_texture
       type: texture2D
-      value: res/textures/white.png
+      value: res/textures/stone.jpg
     - name: specular_texture
       type: texture2D
-      value: res/textures/white.png
+      value: res/textures/stoneSpecular.png
     - name: color
-      type: vec4
-      value: [1.0, 0.0, 0.0, 1.0]
+      type: vec3
+      value: [1.0, 1.0, 1.0]
     - name: shininess
       type: float
       value: 16

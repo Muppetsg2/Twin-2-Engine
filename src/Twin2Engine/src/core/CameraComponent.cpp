@@ -174,10 +174,10 @@ Frustum CameraComponent::GetFrustum() const
 
 	frustum.nearFace = { pos + _near * _front, _front };
 	frustum.farFace = { pos + frontMultFar, -_front };
-	frustum.rightFace = { pos, cross(frontMultFar - _right * halfHSide, _up) };
-	frustum.leftFace = { pos, cross(_up, frontMultFar + _right * halfHSide) };
-	frustum.topFace = { pos, cross(_right, frontMultFar - _up * halfVSide) };
-	frustum.bottomFace = { pos, cross(frontMultFar + _up * halfVSide, _right) };
+	frustum.rightFace = { pos, glm::normalize(cross(frontMultFar - _right * halfHSide, _up)) };
+	frustum.leftFace = { pos, glm::normalize(cross(_up, frontMultFar + _right * halfHSide)) };
+	frustum.topFace = { pos, glm::normalize(cross(_right, frontMultFar - _up * halfVSide)) };
+	frustum.bottomFace = { pos, glm::normalize(cross(frontMultFar + _up * halfVSide, _right)) };
 
 	return frustum;
 }

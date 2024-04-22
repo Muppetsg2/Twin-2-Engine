@@ -353,7 +353,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 0
+        y: 45.0
         z: 0
     components:
       - id: 17

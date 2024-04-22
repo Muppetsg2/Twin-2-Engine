@@ -2,6 +2,7 @@
 #include <manager/SceneManager.h>
 #include <graphic/manager/ModelsManager.h>
 #include <graphic/manager/MaterialsManager.h>
+#include <core/CameraComponent.h>
 
 
 using namespace Twin2Engine::Core;
@@ -15,10 +16,28 @@ void MeshRenderer::Render()
 	data.meshes = std::vector<InstatiatingMesh*>();
 	data.materials = std::vector<Material>();
 	data.isTransparent = IsTransparent();
-	for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
-		data.meshes.push_back(_model.GetMesh(i));
-		data.materials.push_back(GetMaterial(i));
+
+
+	if (CameraComponent::GetMainCamera()->IsFrustumCullingOn) 
+	{
+		InstatiatingMesh* tMesh;
+		Frustum frustum = CameraComponent::GetMainCamera()->GetFrustum();
+		for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
+			tMesh = _model.GetMesh(i);
+			if (tMesh->IsOnFrustum(frustum, data.transform)) {
+				data.meshes.push_back(tMesh);
+				data.materials.push_back(GetMaterial(i));
+			}
+		}
 	}
+	else 
+	{
+		for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
+			data.meshes.push_back(_model.GetMesh(i));
+			data.materials.push_back(GetMaterial(i));
+		}
+	}
+
 	MeshRenderingManager::Render(data);
 }
 
@@ -93,9 +112,39 @@ void MeshRenderer::SetMaterial(size_t index, size_t materialId)
 	SetMaterial(index, MaterialsManager::GetMaterial(materialId));
 }
 
+#ifdef MESH_FRUSTUM_CULLING
+void Twin2Engine::Core::MeshRenderer::OnEnable()
+{
+	if (_model != nullptr && OnTransformChangedActionId == -1) {
+		OnTransformChangedActionId = GetTransform()->OnEventTransformChanged += OnTransformChangedAction;
+	}
+}
+
+void Twin2Engine::Core::MeshRenderer::OnDisable()
+{
+	if (_model != nullptr && OnTransformChangedActionId != -1) {
+		GetTransform()->OnEventTransformChanged -= OnTransformChangedActionId;
+	}
+}
+
+void Twin2Engine::Core::MeshRenderer::OnDestroy()
+{
+	if (_model != nullptr && OnTransformChangedActionId != -1) {
+		GetTransform()->OnEventTransformChanged -= OnTransformChangedActionId;
+	}
+}
+#endif // MESH_FRUSTUM_CULLING
+
 void MeshRenderer::SetModel(const GraphicEngine::InstatiatingModel& model)
 {
 	_model = model;
+
+
+	#ifdef MESH_FRUSTUM_CULLING
+	if (OnTransformChangedActionId == -1 && GetGameObject() != nullptr) {
+		OnTransformChangedActionId = GetTransform()->OnEventTransformChanged += OnTransformChangedAction;
+	}
+	#endif // MESH_FRUSTUM_CULLING
 }
 
 void MeshRenderer::SetModel(size_t modelId)

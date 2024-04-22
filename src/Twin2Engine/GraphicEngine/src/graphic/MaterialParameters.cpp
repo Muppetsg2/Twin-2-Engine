@@ -3,6 +3,8 @@
 #include <spdlog/spdlog.h>
 
 using namespace Twin2Engine::GraphicEngine;
+using namespace glm;
+using namespace std;
 
  std::hash<std::string> MaterialParameters::hasher;
 
@@ -17,7 +19,8 @@ MaterialParameters::MaterialParameters(const std::vector<std::string>& variableN
 
 	for (int i = 0; i < variableNames.size(); i++)
 	{
-		_variablesValuesMappings[hasher(variableNames[i])];
+		//_variablesValuesMappings[hasher(variableNames[i])];
+		_variablesValuesOffsets[hasher(variableNames[i])];
 	}
 
 	_textures.resize(textureParametersNames.size());
@@ -27,32 +30,32 @@ MaterialParameters::MaterialParameters(const std::vector<std::string>& variableN
 	}
 }
 
-void MaterialParameters::Add(const std::string& variableName, size_t size, void* value)
-{
-	size_t hashed = hasher(variableName);
-
-	size_t paramSize = size;
-	
-	if (size % 2 == 0)
-	{
-		// Jest to pusty przebieg, aby przy wiêkszoœci przypadków, w których to size jest podzielny przez 2, ¿eby ci¹g warunków zawsze spradzanych by³ krótki
-	}
-	if (size == 12)
-	{
-		paramSize = 16;
-	}
-	else if (size == 36)
-	{
-		paramSize = 64;
-	}
-
-	const char* ptr = reinterpret_cast<const char*>(value);
-	std::vector<char> result(paramSize); //(ptr, ptr + size);
-	memcpy(result.data(), ptr, size);
-
-
-	_variablesValuesMappings[hashed] = result;
-}
+//void MaterialParameters::Add(const std::string& variableName, size_t size, void* value)
+//{
+//	size_t hashed = hasher(variableName);
+//
+//	size_t paramSize = size;
+//	
+//	if (size % 2 == 0)
+//	{
+//		// Jest to pusty przebieg, aby przy wiêkszoœci przypadków, w których to size jest podzielny przez 2, ¿eby ci¹g warunków zawsze spradzanych by³ krótki
+//	}
+//	if (size == 12)
+//	{
+//		paramSize = 16;
+//	}
+//	else if (size == 36)
+//	{
+//		paramSize = 64;
+//	}
+//
+//	const char* ptr = reinterpret_cast<const char*>(value);
+//	std::vector<char> result(paramSize); //(ptr, ptr + size);
+//	memcpy(result.data(), ptr, size);
+//
+//
+//	_variablesValuesMappings[hashed] = result;
+//}
 
 void Twin2Engine::GraphicEngine::MaterialParameters::AddTexture2D(const std::string& textureName, unsigned int textureId)
 {
@@ -66,18 +69,19 @@ void Twin2Engine::GraphicEngine::MaterialParameters::AddTexture2D(const std::str
 	{
 		_textureMappings[hashed] = _textures.size();
 		_textures.push_back(textureId);
-		GLuint samplerID;
-
-		glGenSamplers(1, &samplerID);
-
-		glSamplerParameteri(samplerID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glSamplerParameteri(samplerID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-		_samplers.push_back(samplerID);
+		//GLuint samplerID;
+		//
+		//glGenSamplers(1, &samplerID);
+		//
+		//glSamplerParameteri(samplerID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		//glSamplerParameteri(samplerID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		//glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		//glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		//
+		//_samplers.push_back(samplerID);
 	}
 }
+
 
 void Twin2Engine::GraphicEngine::MaterialParameters::SetTexture2D(const std::string& textureName, unsigned int textureId)
 {
@@ -117,22 +121,31 @@ void Twin2Engine::GraphicEngine::MaterialParameters::UploadTextures2D(unsigned i
 	//SPDLOG_INFO("Here2");
 }
 
+void MaterialParameters::AlignData()
+{
+	unsigned int over = _materialData.size() % 16u;
+	if (over)
+	{
+		_materialData.resize(_materialData.size() + 16u - over);
+	}
+}
+
 std::vector<char> MaterialParameters::GetData() const
 {
-	size_t totalSize = 0;
-	for (const auto& pair : _variablesValuesMappings) {
-		totalSize += pair.second.size();
-	}
-	// Create the flattened vector with the appropriate size
-	std::vector<char> flattenedVector(totalSize);
+	//size_t totalSize = 0;
+	//for (const auto& pair : _variablesValuesMappings) {
+	//	totalSize += pair.second.size();
+	//}
+	//// Create the flattened vector with the appropriate size
+	//std::vector<char> flattenedVector(totalSize);
+	//
+	//// Copy the vectors from the map into the flattened vector
+	//size_t offset = 0;
+	//for (const auto& pair : _variablesValuesMappings) {
+	//	const auto& vector = pair.second;
+	//	std::copy(vector.begin(), vector.end(), flattenedVector.begin() + offset);
+	//	offset += vector.size();
+	//}
 
-	// Copy the vectors from the map into the flattened vector
-	size_t offset = 0;
-	for (const auto& pair : _variablesValuesMappings) {
-		const auto& vector = pair.second;
-		std::copy(vector.begin(), vector.end(), flattenedVector.begin() + offset);
-		offset += vector.size();
-	}
-
-	return flattenedVector;
+	return _materialData;
 }

@@ -1,0 +1,9 @@
+shaderprogram:
+  name: origin/FakeBRDF
+  shaders:
+    - textured.vert
+    - fakeBRDF.frag
+  parameters:
+    - name: brdfTexture
+      type: texture2D
+      value: res/textures/fakeBRDF.png

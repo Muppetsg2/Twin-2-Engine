@@ -443,7 +443,6 @@ inline Shader* ShaderManager::LoadShaderProgramSHPR(const std::string& shaderNam
     Shader* shader = nullptr;
     if (found == loadedShaders.end())
     {
-        SPDLOG_INFO("LoadSHPR");
         GLuint shaderProgram = CreateShaderProgramFromFile(shaderName);
 
         shader = new Shader(shaderProgram);
@@ -490,7 +489,7 @@ GLuint ShaderManager::CreateShaderProgramFromFile(const std::string& shaderProgr
     
     std::string name = shaderProgramNode["name"].as<std::string>();
     //std::string shader = materialNode["shaders"].as<std::string>();
-    
+
     shaderProgram = glCreateProgram();
     
     std::string shaderName;
@@ -520,6 +519,12 @@ GLuint ShaderManager::CreateShaderProgramFromFile(const std::string& shaderProgr
     
     SPDLOG_INFO("Before linking");
     glLinkProgram(shaderProgram);
+    {
+        GLenum error = glGetError();
+        if (error != GL_NO_ERROR) {
+            SPDLOG_ERROR("Error: {}", error);
+        }
+    }
     CheckProgramLinkingSuccess(shaderProgram);
     
     for (unsigned int id : shaderIds)

@@ -41,6 +41,13 @@ Textures:
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
+  - path: res/textures/fakeBRDF.png
+    fileFormat: 35906
+    engineFormat: 6408
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
 Sprites:
   - alias: white_box
     texture: 0
@@ -56,15 +63,20 @@ Materials:
   - hexagonMat
   - Basic2
   - metal
+  - multiTexture
   - textured
   - deska
   - wallMat
   - roofMat
+  - multiTexture
+  - FakeBRDF
 Models:
   - res/models/AK47.obj
+  - res/models/hexagon.obj
   - res/models/castle.obj
   - "{Cube}"
   - "{Plane}"
+  - "{Sphere}"
 Prefabs:
   - res/prefabs/testPrefab.yaml
 GameObjects:
@@ -76,17 +88,17 @@ GameObjects:
       id: 0
       enabled: true
       position:
-        x: 1.1766516
-        y: 4.43748379
-        z: 4.75468874
+        x: 2.34490824
+        y: 3.37880015
+        z: 4.11597824
       scale:
         x: 0
         y: 0
         z: 0
       rotation:
-        x: 142.800369
-        y: 75.9996643
-        z: -180
+        x: 170.100098
+        y: -84.0002747
+        z: -4.08408187e-06
     components:
       - id: 1
         enabled: true
@@ -100,9 +112,9 @@ GameObjects:
         renderRes: 0
         gamma: 2.20000005
         frontDir:
-          x: -0.192703515
-          y: -0.604594231
-          z: 0.772872031
+          x: -0.102968201
+          y: -0.171927452
+          z: -0.979713559
         worldUp:
           x: 0
           y: 1
@@ -230,11 +242,11 @@ GameObjects:
         isTransparent: false
         sprite: 0
         color:
-          x: 1
+          x: 0
           y: 1
           z: 0
           w: 1
-        width: 517.74939
+        width: 769.506531
         height: 100
     children:
       []
@@ -264,7 +276,7 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        text: "Time: 0.005417"
+        text: "Time: 0.002933"
         color:
           x: 1
           y: 1
@@ -300,7 +312,7 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        model: 2
+        model: 3
         materials:
           - 1
     children:
@@ -331,9 +343,9 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        model: 2
+        model: 3
         materials:
-          - 3
+          - 4
     children:
       []
   - id: 8
@@ -362,10 +374,10 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        model: 1
+        model: 2
         materials:
-          - 5
           - 6
+          - 7
     children:
       []
   - id: 9
@@ -396,7 +408,7 @@ GameObjects:
         isTransparent: false
         model: 0
         materials:
-          - 4
+          - 5
           - 2
     children:
       []
@@ -508,5 +520,67 @@ GameObjects:
         width: 100
         height: 10
         interactable: false
+    children:
+      []
+  - id: 12
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 27
+      enabled: true
+      position:
+        x: 2.0
+        y: 4.0
+        z: -2.0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 28
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 8
+    children:
+      []
+  - id: 13
+    name: BRDF
+    isStatic: false
+    isActive: true
+    transform:
+      id: 29
+      enabled: true
+      position:
+        x: 2.0
+        y: 6.0
+        z: -2.0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 30
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 5
+        materials:
+          - 9
     children:
       []

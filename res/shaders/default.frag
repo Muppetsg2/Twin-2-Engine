@@ -232,8 +232,8 @@ void main()
 {
     MaterialInput mat = materialInputs[fs_in.materialIndex];
     
-    vec4 mat_diffuse = /*vec4(mat.color, 1.0) **/ texture(texturesInput[fs_in.materialIndex].diffuse_texture, fs_in.texCoord);
-    vec4 mat_specular = /*vec4(mat.color, 1.0) **/ texture(texturesInput[fs_in.materialIndex].specular_texture, fs_in.texCoord);
+    vec4 mat_diffuse = vec4(mat.color, 1.0) * texture(texturesInput[fs_in.materialIndex].diffuse_texture, fs_in.texCoord);
+    vec4 mat_specular = vec4(mat.color, 1.0) * texture(texturesInput[fs_in.materialIndex].specular_texture, fs_in.texCoord);
 
     vec4 result = vec4(0.0, 0.0, 0.0, 1.0);
 

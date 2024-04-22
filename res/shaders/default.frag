@@ -21,8 +21,14 @@ struct MaterialInput {
     float shininess;
 
     // TOON SHADING PARAMETERS
-    uint diffuseToonBorders;
-    uint specularToonBorders;
+    uint diffuse_toon_borders;
+    uint specular_toon_borders;
+    vec2 highlight_translate;
+    vec2 highlight_rotation;
+    vec2 highlight_scale;
+    vec2 highlight_split;
+    int highlight_square_n;
+    float highlight_square_x;
 };
 
 layout(std140, binding = 2) uniform MaterialInputBuffer {
@@ -48,10 +54,18 @@ struct FragmentData {
     float mat_shininess;
 
     // TOON BORDERS
-    uint diffuseToonBorders;
-    float invDiffuseToonBorders;
-    uint specularToonBorders;
-    float invSpecularToonBorders;
+    uint diffuse_toon_borders;
+    float inv_diffuse_toon_borders;
+    uint specular_toon_borders;
+    float inv_specular_toon_borders;
+
+    // TOON HIGHLIGHT AFFINE TRANSFORMATIONS
+    vec2 highlight_translate;
+    vec2 highlight_rotation;
+    vec2 highlight_scale;
+    vec2 highlight_split;
+    int highlight_square_n;
+    float highlight_square_x;
 } data;
 
 // LIGHTS
@@ -173,7 +187,13 @@ float CalculateLambertian(vec3 lightDir, vec3 normal) {
 }
 
 float CalculateBlinnPhong(vec3 lightDir, vec3 viewDir, vec3 normal, float shininess) {
-    return pow(max(dot(normal, normalize(lightDir + viewDir)), 0.0), shininess);
+    vec3 halfDir = normalize(lightDir + viewDir);
+    // TOON AFFINITE TRANSFORMS
+    if (shadingType == 1) {
+        // TRANSLATE
+        
+    }
+    return pow(max(dot(normal, halfDir), 0.0), shininess);
 }
 
 float CalculatePhong(vec3 lightDir, vec3 viewDir, vec3 normal, float shininess) {
@@ -195,8 +215,8 @@ vec4 CalculatePointLight(PointLight light) {
 
     // TOON SHADING
     if (shadingType == 1) {
-        diff = CalculateToon(diff, data.diffuseToonBorders, data.invDiffuseToonBorders);
-        spec = CalculateToon(spec, data.specularToonBorders, data.invSpecularToonBorders);
+        diff = CalculateToon(diff, data.diffuse_toon_borders, data.inv_diffuse_toon_borders);
+        spec = CalculateToon(spec, data.specular_toon_borders, data.inv_specular_toon_borders);
     }
 
     vec4 lightColor = CalculateGamma(vec4(light.color, 1.0));
@@ -221,8 +241,8 @@ vec4 CalculateSpotLight(SpotLight light) {
 
     // TOON SHADING
     if (shadingType == 1) {
-        diff = CalculateToon(diff, data.diffuseToonBorders, data.invDiffuseToonBorders);
-        spec = CalculateToon(spec, data.specularToonBorders, data.invSpecularToonBorders);
+        diff = CalculateToon(diff, data.diffuse_toon_borders, data.inv_diffuse_toon_borders);
+        spec = CalculateToon(spec, data.specular_toon_borders, data.inv_specular_toon_borders);
     }
 
     vec4 lightColor = CalculateGamma(vec4(light.color, 1.0));
@@ -236,14 +256,14 @@ vec4 CalculateSpotLight(SpotLight light) {
 vec4 CalculateDirectionalLight(DirectionalLight light, uint shadowMapId) {
     vec3 lightDir = normalize(-light.direction);
 
-    float intensity = 1.0 /*CalculateShadow(light.lightSpaceMatrix * vec4(position, 1.0), normal, shadowMapId)*/;
+    float intensity = 1.0/*CalculateShadow(light.lightSpaceMatrix * vec4(fs_in.fragPos, 1.0), data.normal, shadowMapId)*/;
     float diff = CalculateLambertian(lightDir, data.normal);
     float spec = CalculateBlinnPhong(lightDir, data.viewDir, data.normal, data.mat_shininess);
 
     // TOON SHADING
     if (shadingType == 1) {
-        diff = CalculateToon(diff, data.diffuseToonBorders, data.invDiffuseToonBorders);
-        spec = CalculateToon(spec, data.specularToonBorders, data.invSpecularToonBorders);
+        diff = CalculateToon(diff, data.diffuse_toon_borders, data.inv_diffuse_toon_borders);
+        spec = CalculateToon(spec, data.specular_toon_borders, data.inv_specular_toon_borders);
     }
     // GOOCH SHADING
     else if (shadingType == 2) {
@@ -286,13 +306,22 @@ void main()
     // SHININESS
     data.mat_shininess = mat.shininess;
 
-    // TOON BORDERS
+    // TOON SHADING
     if (shadingType == 1) {
-        data.diffuseToonBorders = mat.diffuseToonBorders;
-        data.invDiffuseToonBorders = 1.0 / data.diffuseToonBorders;
+        // TOON BORDERS
+        data.diffuse_toon_borders = mat.diffuse_toon_borders;
+        data.inv_diffuse_toon_borders = data.diffuse_toon_borders == 0 ? 1.0 : 1.0 / data.diffuse_toon_borders;
 
-        data.specularToonBorders = mat.specularToonBorders;
-        data.invSpecularToonBorders = 1.0 / data.specularToonBorders;
+        data.specular_toon_borders = mat.specular_toon_borders;
+        data.inv_specular_toon_borders = data.specular_toon_borders == 0 ? 1.0 : 1.0 / data.specular_toon_borders;
+
+        // TOON HIGHLIGHT AFFINE TRANSFORMATIONS
+        data.highlight_translate = mat.highlight_translate;
+        data.highlight_rotation = mat.highlight_rotation;
+        data.highlight_scale = vec2(clamp(mat.highlight_scale.x, 0.0, 1.0), clamp(mat.highlight_scale.y, 0.0, 1.0));
+        data.highlight_split = vec2(mat.highlight_split.x > 0.0 ? mat.highlight_split.x : 0.0, mat.highlight_split.y > 0.0 ? mat.highlight_split.y : 0.0);
+        data.highlight_square_n = mat.highlight_square_n;
+        data.highlight_square_x = clamp(mat.highlight_square_x, 0.0, 1.0);
     }
 
     Color = vec4(0.0);

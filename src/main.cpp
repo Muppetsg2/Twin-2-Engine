@@ -1027,7 +1027,7 @@ void imgui_render()
             static bool hasSpecularTexture = defaultMat.GetMaterialParameters()->Get<bool>("has_specular_texture");
             if (ImGui::Checkbox("Has Specular Texture", &hasSpecularTexture)) {
                 if (hasSpecularTexture != defaultMat.GetMaterialParameters()->Get<bool>("has_specular_texture")) {
-                    defaultMat.GetMaterialParameters()->Set("has_diffuse_texture", hasSpecularTexture);
+                    defaultMat.GetMaterialParameters()->Set("has_specular_texture", hasSpecularTexture);
                 }
             }
 
@@ -1047,17 +1047,17 @@ void imgui_render()
 
             // TOON SHADING VARIABLES
             if (shadingType == 1) {
-                static uint32_t diffuseToonBorders = defaultMat.GetMaterialParameters()->Get<uint32_t>("diffuseToonBorders");
-                if (ImGui::InputInt("diffuseToonBorders", (int*)&diffuseToonBorders)) {
-                    if (diffuseToonBorders != defaultMat.GetMaterialParameters()->Get<uint32_t>("diffuseToonBorders")) {
-                        defaultMat.GetMaterialParameters()->Set("diffuseToonBorders", diffuseToonBorders);
+                static uint32_t diffuseToonBorders = defaultMat.GetMaterialParameters()->Get<uint32_t>("diffuse_toon_borders");
+                if (ImGui::InputInt("Diffuse Borders", (int*)&diffuseToonBorders)) {
+                    if (diffuseToonBorders != defaultMat.GetMaterialParameters()->Get<uint32_t>("diffuse_toon_borders")) {
+                        defaultMat.GetMaterialParameters()->Set("diffuse_toon_borders", diffuseToonBorders);
                     }
                 }
 
-                static uint32_t specularToonBorders = defaultMat.GetMaterialParameters()->Get<uint32_t>("specularToonBorders");
-                if (ImGui::InputInt("specularToonBorders", (int*)&specularToonBorders)) {
-                    if (specularToonBorders != defaultMat.GetMaterialParameters()->Get<uint32_t>("specularToonBorders")) {
-                        defaultMat.GetMaterialParameters()->Set("specularToonBorders", specularToonBorders);
+                static uint32_t specularToonBorders = defaultMat.GetMaterialParameters()->Get<uint32_t>("specular_toon_borders");
+                if (ImGui::InputInt("Specular Borders", (int*)&specularToonBorders)) {
+                    if (specularToonBorders != defaultMat.GetMaterialParameters()->Get<uint32_t>("specular_toon_borders")) {
+                        defaultMat.GetMaterialParameters()->Set("specular_toon_borders", specularToonBorders);
                     }
                 }
             }

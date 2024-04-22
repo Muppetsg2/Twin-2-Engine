@@ -248,7 +248,7 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 //}
 
 Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, 
-	const std::vector<std::string>& materialParametersNames, const std::vector<std::string>& textureParametersNames)
+	const std::vector<std::string>& materialParametersNames, const std::vector<unsigned int>& materialParametersSizes, const std::vector<std::string>& textureParametersNames)
 {
 	size_t hashed = stringHash(newMaterialName);
 
@@ -260,7 +260,7 @@ Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, co
 		data = new MaterialData{
 			.id = hashed,
 			.shader = ShaderManager::GetShaderProgram(shaderName),
-			.materialParameters = new MaterialParameters(materialParametersNames, textureParametersNames)
+			.materialParameters = new MaterialParameters(materialParametersNames, materialParametersSizes, textureParametersNames)
 			
 		};
 

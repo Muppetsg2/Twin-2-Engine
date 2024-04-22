@@ -4,6 +4,7 @@ shaderprogram:
     - default.vert
     - default.frag
   parameters:
+# GLOBAL PARAMETERS
     - name: diffuse_texture
       type: texture2D
       value: res/textures/white.png
@@ -17,8 +18,15 @@ shaderprogram:
       type: bool
       value: true
     - name: color
-      type: vec4
-      value: [1.0, 1.0, 1.0, 1.0]
+      type: vec3
+      value: [1.0, 1.0, 1.0]
     - name: shininess
       type: float
-      value: 8
+      value: 16
+# TOON SHADING PARAMETERS
+    - name: diffuseToonBorders
+      type: uint
+      value: 3
+    - name: specularToonBorders
+      type: uint
+      value: 1

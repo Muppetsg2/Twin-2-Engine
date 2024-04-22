@@ -7,16 +7,22 @@ material:
       value: res/textures/stone.jpg
     - name: has_diffuse_texture
       type: bool
-      value: true
+      value: false
     - name: specular_texture
       type: texture2D
       value: res/textures/stoneSpecular.png
     - name: has_specular_texture
       type: bool
-      value: true
+      value: false
     - name: color
       type: vec3
-      value: [1.0, 1.0, 1.0]
+      value: [1.0, 0.0, 0.0]
     - name: shininess
       type: float
       value: 16
+    - name: diffuseToonBorders
+      type: uint
+      value: 3
+    - name: specularToonBorders
+      type: uint
+      value: 1

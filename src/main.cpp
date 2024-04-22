@@ -996,19 +996,70 @@ void imgui_render()
         }
 #pragma endregion
 
-#pragma region IMGUI_WINDOW_SETUP
+#pragma region IMGUI_LIGHTING_SETUP
         if (ImGui::CollapsingHeader("Lighting Setup")) {
-            static bool blinnPhongShading = true;
-            static bool toonShading = false;
-            if (ImGui::RadioButton("Lambert + Blinn-Phong Shading", blinnPhongShading)) {
-                blinnPhongShading = true;
-                toonShading = false;
-                LightingSystem::LightingController::Instance()->SetShadingType(0);
+            static uint32_t shadingType = 0;
+            if (ImGui::BeginCombo("Shading Type", "Lambert + Blinn-Phong Shading")) {
+                if (ImGui::Selectable("Lambert + Blinn-Phong Shading", shadingType == 0)) {
+                    shadingType = 0;
+                    LightingSystem::LightingController::Instance()->SetShadingType(0);
+                }
+                if (ImGui::Selectable("Toon/Cel Shading", shadingType == 1)) {
+                    shadingType = 1;
+                    LightingSystem::LightingController::Instance()->SetShadingType(1);
+                }
+                if (ImGui::Selectable("Gooch Shading", shadingType == 2)) {
+                    shadingType = 2;
+                    LightingSystem::LightingController::Instance()->SetShadingType(2);
+                }
+                ImGui::EndCombo();
             }
-            if (ImGui::RadioButton("Toon/Cel Shading", toonShading)) {
-                toonShading = true;
-                blinnPhongShading = false;
-                LightingSystem::LightingController::Instance()->SetShadingType(1);
+            // DEFAULT MATERIAL SETTINGS
+            Material defaultMat = MaterialsManager::GetMaterial("Default");
+
+            static bool hasDiffuseTexture = defaultMat.GetMaterialParameters()->Get<bool>("has_diffuse_texture");
+            if (ImGui::Checkbox("Has Diffuse Texture", &hasDiffuseTexture)) {
+                if (hasDiffuseTexture != defaultMat.GetMaterialParameters()->Get<bool>("has_diffuse_texture")) {
+                    defaultMat.GetMaterialParameters()->Set("has_diffuse_texture", hasDiffuseTexture);
+                }
+            }
+
+            static bool hasSpecularTexture = defaultMat.GetMaterialParameters()->Get<bool>("has_specular_texture");
+            if (ImGui::Checkbox("Has Specular Texture", &hasSpecularTexture)) {
+                if (hasSpecularTexture != defaultMat.GetMaterialParameters()->Get<bool>("has_specular_texture")) {
+                    defaultMat.GetMaterialParameters()->Set("has_diffuse_texture", hasSpecularTexture);
+                }
+            }
+
+            static vec3 color = defaultMat.GetMaterialParameters()->Get<vec3>("color");
+            if (ImGui::ColorEdit3("Color", (float*)&color)) {
+                if (color != defaultMat.GetMaterialParameters()->Get<vec3>("color")) {
+                    defaultMat.GetMaterialParameters()->Set("color", color);
+                }
+            }
+
+            static float shininess = defaultMat.GetMaterialParameters()->Get<float>("shininess");
+            if (ImGui::InputFloat("Shininess", &shininess)) {
+                if (shininess != defaultMat.GetMaterialParameters()->Get<float>("shininess")) {
+                    defaultMat.GetMaterialParameters()->Set("shininess", shininess);
+                }
+            }
+
+            // TOON SHADING VARIABLES
+            if (shadingType == 1) {
+                static uint32_t diffuseToonBorders = defaultMat.GetMaterialParameters()->Get<uint32_t>("diffuseToonBorders");
+                if (ImGui::InputInt("diffuseToonBorders", (int*)&diffuseToonBorders)) {
+                    if (diffuseToonBorders != defaultMat.GetMaterialParameters()->Get<uint32_t>("diffuseToonBorders")) {
+                        defaultMat.GetMaterialParameters()->Set("diffuseToonBorders", diffuseToonBorders);
+                    }
+                }
+
+                static uint32_t specularToonBorders = defaultMat.GetMaterialParameters()->Get<uint32_t>("specularToonBorders");
+                if (ImGui::InputInt("specularToonBorders", (int*)&specularToonBorders)) {
+                    if (specularToonBorders != defaultMat.GetMaterialParameters()->Get<uint32_t>("specularToonBorders")) {
+                        defaultMat.GetMaterialParameters()->Set("specularToonBorders", specularToonBorders);
+                    }
+                }
             }
         }
 #pragma endregion

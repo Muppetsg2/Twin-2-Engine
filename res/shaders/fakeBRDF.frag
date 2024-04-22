@@ -39,8 +39,7 @@ layout(location = 0) uniform TextureInput texturesInput[8];
 layout(std140, binding = 4) uniform LightingData {
     vec3 AmbientLight;
 	vec3 ViewerPosition;
-	float highlightParam;
-	//float gamma;
+	int shadingType;
 };
 
 //shadow maps
@@ -60,7 +59,7 @@ struct SpotLight {
 	vec3 direction;     // Direction of the spot light
 	vec3 color;         // Color of the spot light
 	float power;		  // Light source power
-	//float cutOff;       // Inner cutoff angle (in radians)
+	float innerCutOff;       // Inner cutoff angle (in radians)
 	float outerCutOff;  // Outer cutoff angle (in radians)
 	float constant;     // Constant attenuation
 	float linear;       // Linear attenuation

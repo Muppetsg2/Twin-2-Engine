@@ -19,6 +19,10 @@ struct MaterialInput {
     bool has_specular_texture;
     vec3 color;
     float shininess;
+
+    // TOON SHADING PARAMETERS
+    uint diffuseToonBorders;
+    uint specularToonBorders;
 };
 
 layout(std140, binding = 2) uniform MaterialInputBuffer {
@@ -31,6 +35,24 @@ struct TextureInput {
 };
 
 layout(location = 0) uniform TextureInput texturesInput[8];
+
+// STRUCTS
+struct FragmentData {
+    // VECTORS
+    vec3 normal;
+    vec3 viewDir;
+
+    // MATERIAL
+    vec4 mat_diffuse;
+    vec4 mat_specular;
+    float mat_shininess;
+
+    // TOON BORDERS
+    uint diffuseToonBorders;
+    float invDiffuseToonBorders;
+    uint specularToonBorders;
+    float invSpecularToonBorders;
+} data;
 
 // LIGHTS
 #define MAX_POINT_LIGHTS 8
@@ -91,10 +113,11 @@ const float ambientPowerPercent = 0.2;
 const float diffusePowerPercent = 0.75;
 const float specularPowerPercent = 1.0;
 
-const uint diffuseToonBorders = 3;
-const float invDiffuseToonBorders = 1.0 / diffuseToonBorders;
-const uint specularToonBorders = 1;
-const float invSpecularToonBorders = 1.0 / specularToonBorders;
+// GOOCH CONSTS
+const vec3 coolColor = vec3(0.0, 0.0, 0.4);
+const float coolFactor = 0.25;
+const vec3 warmColor = vec3(0.4, 0.4, 0.0);
+const float warmFactor = 0.25;
 
 // GAMMA CALCULATION
 vec4 CalculateGamma(vec4 color) {
@@ -162,29 +185,29 @@ float CalculateToon(float value, float toonBorders, float invToonBorders) {
 }
 
 // LIGHT TYPES
-vec4 CalculatePointLight(PointLight light, vec3 normal, vec3 viewDir, vec4 mat_diffuse, vec4 mat_specular, float mat_shininess) {
+vec4 CalculatePointLight(PointLight light) {
     vec3 lightDir = light.position - fs_in.fragPos;
     float attenuation = CalculateAttenuation(light.constant, light.linear, light.quadratic, length(lightDir));
     lightDir = normalize(lightDir);
 
-    float diff = CalculateLambertian(lightDir, normal);
-    float spec = CalculateBlinnPhong(lightDir, viewDir, normal, mat_shininess);
+    float diff = CalculateLambertian(lightDir, data.normal);
+    float spec = CalculateBlinnPhong(lightDir, data.viewDir, data.normal, data.mat_shininess);
 
     // TOON SHADING
     if (shadingType == 1) {
-        diff = CalculateToon(diff, diffuseToonBorders, invDiffuseToonBorders);
-        spec = CalculateToon(spec, specularToonBorders, invSpecularToonBorders);
+        diff = CalculateToon(diff, data.diffuseToonBorders, data.invDiffuseToonBorders);
+        spec = CalculateToon(spec, data.specularToonBorders, data.invSpecularToonBorders);
     }
 
     vec4 lightColor = CalculateGamma(vec4(light.color, 1.0));
-    vec4 ambient = ambientPowerPercent * attenuation * light.power * lightColor * mat_diffuse;
-    vec4 diffuse = diffusePowerPercent * attenuation * diff * light.power * lightColor * mat_diffuse;
-    vec4 specular = specularPowerPercent * attenuation * spec * light.power * lightColor * mat_specular;
+    vec4 ambient = ambientPowerPercent * attenuation * light.power * lightColor * data.mat_diffuse;
+    vec4 diffuse = diffusePowerPercent * attenuation * diff * light.power * lightColor * data.mat_diffuse;
+    vec4 specular = specularPowerPercent * attenuation * spec * light.power * lightColor * data.mat_specular;
 
     return ambient + diffuse + specular;
 }
 
-vec4 CalculateSpotLight(SpotLight light, vec3 normal, vec3 viewDir, vec4 mat_diffuse, vec4 mat_specular, float mat_shininess) {    
+vec4 CalculateSpotLight(SpotLight light) {    
     vec3 lightDir = light.position - fs_in.fragPos;
     float attenuation = CalculateAttenuation(light.constant, light.linear, light.quadratic, length(lightDir));
     lightDir = normalize(lightDir);
@@ -193,76 +216,102 @@ vec4 CalculateSpotLight(SpotLight light, vec3 normal, vec3 viewDir, vec4 mat_dif
     float epsilon = light.innerCutOff - light.outerCutOff;
 
     float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
-    float diff = CalculateLambertian(lightDir, normal);
-    float spec = CalculateBlinnPhong(lightDir, viewDir, normal, mat_shininess);
+    float diff = CalculateLambertian(lightDir, data.normal);
+    float spec = CalculateBlinnPhong(lightDir, data.viewDir, data.normal, data.mat_shininess);
 
     // TOON SHADING
     if (shadingType == 1) {
-        diff = CalculateToon(diff, diffuseToonBorders, invDiffuseToonBorders);
-        spec = CalculateToon(spec, specularToonBorders, invSpecularToonBorders);
+        diff = CalculateToon(diff, data.diffuseToonBorders, data.invDiffuseToonBorders);
+        spec = CalculateToon(spec, data.specularToonBorders, data.invSpecularToonBorders);
     }
 
     vec4 lightColor = CalculateGamma(vec4(light.color, 1.0));
-    vec4 ambient = ambientPowerPercent * attenuation * intensity * light.power * lightColor * mat_diffuse;
-    vec4 diffuse = diffusePowerPercent * attenuation * intensity * diff * light.power * lightColor * mat_diffuse;
-    vec4 specular = specularPowerPercent * attenuation * intensity * spec * light.power * lightColor * mat_specular;
+    vec4 ambient = ambientPowerPercent * attenuation * intensity * light.power * lightColor * data.mat_diffuse;
+    vec4 diffuse = diffusePowerPercent * attenuation * intensity * diff * light.power * lightColor * data.mat_diffuse;
+    vec4 specular = specularPowerPercent * attenuation * intensity * spec * light.power * lightColor * data.mat_specular;
 
     return ambient + diffuse + specular;
 }
 
-vec4 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir, uint shadowMapId, vec4 mat_diffuse, vec4 mat_specular, float mat_shininess) {
+vec4 CalculateDirectionalLight(DirectionalLight light, uint shadowMapId) {
     vec3 lightDir = normalize(-light.direction);
 
     float intensity = 1.0 /*CalculateShadow(light.lightSpaceMatrix * vec4(position, 1.0), normal, shadowMapId)*/;
-    float diff = CalculateLambertian(lightDir, normal);
-    float spec = CalculateBlinnPhong(lightDir, viewDir, normal, mat_shininess);
+    float diff = CalculateLambertian(lightDir, data.normal);
+    float spec = CalculateBlinnPhong(lightDir, data.viewDir, data.normal, data.mat_shininess);
 
     // TOON SHADING
     if (shadingType == 1) {
-        diff = CalculateToon(diff, diffuseToonBorders, invDiffuseToonBorders);
-        spec = CalculateToon(spec, specularToonBorders, invSpecularToonBorders);
+        diff = CalculateToon(diff, data.diffuseToonBorders, data.invDiffuseToonBorders);
+        spec = CalculateToon(spec, data.specularToonBorders, data.invSpecularToonBorders);
+    }
+    // GOOCH SHADING
+    else if (shadingType == 2) {
+        diff = (diff + 1.0) * 0.5;
+
+        vec4 kCool = vec4(coolColor, 0.0) + coolFactor * data.mat_diffuse;
+        vec4 kWarm = vec4(warmColor, 0.0) + warmFactor * data.mat_diffuse;
+
+        vec4 gooch = mix(kWarm, kCool, diff);
+        vec4 lightColor = CalculateGamma(vec4(light.color, 1.0));
+        vec4 specular = specularPowerPercent * intensity * spec * light.power * lightColor * data.mat_specular;
+        return gooch + specular;
     }
 
     vec4 lightColor = CalculateGamma(vec4(light.color, 1.0));
-    vec4 ambient = ambientPowerPercent * intensity * light.power * lightColor * mat_diffuse;
-    vec4 diffuse = diffusePowerPercent * intensity * diff * light.power * lightColor * mat_diffuse;
-    vec4 specular = specularPowerPercent * intensity * spec * light.power * lightColor * mat_specular;
+    vec4 ambient = ambientPowerPercent * intensity * light.power * lightColor * data.mat_diffuse;
+    vec4 diffuse = diffusePowerPercent * intensity * diff * light.power * lightColor * data.mat_diffuse;
+    vec4 specular = specularPowerPercent * intensity * spec * light.power * lightColor * data.mat_specular;
 
     return ambient + diffuse + specular;
 }
 
 void main()
 {
+    // VECTORS
+    data.normal = normalize(fs_in.normal);
+    data.viewDir = normalize(viewerPosition - fs_in.fragPos);
+
+    // CURRENT MATERIAL
     MaterialInput mat = materialInputs[fs_in.materialIndex];
     
-    vec4 mat_diffuse = CalculateGamma(vec4(mat.color, 1.0));
-    if (mat.has_diffuse_texture) mat_diffuse *= texture(texturesInput[fs_in.materialIndex].diffuse_texture, fs_in.texCoord);
-    vec4 mat_specular = CalculateGamma(vec4(1.0));
-    if (mat.has_specular_texture) mat_specular *= texture(texturesInput[fs_in.materialIndex].specular_texture, fs_in.texCoord);
+    // DIFFUSE
+    data.mat_diffuse = CalculateGamma(vec4(mat.color, 1.0));
+    if (mat.has_diffuse_texture) data.mat_diffuse *= texture(texturesInput[fs_in.materialIndex].diffuse_texture, fs_in.texCoord);
 
-    vec4 result = vec4(0.0);
+    // SPECULAR
+    data.mat_specular = CalculateGamma(vec4(1.0));
+    if (mat.has_specular_texture) data.mat_specular *= texture(texturesInput[fs_in.materialIndex].specular_texture, fs_in.texCoord);
 
-    vec3 normal = normalize(fs_in.normal);
-    vec3 viewDir = normalize(viewerPosition - fs_in.fragPos);
+    // SHININESS
+    data.mat_shininess = mat.shininess;
+
+    // TOON BORDERS
+    if (shadingType == 1) {
+        data.diffuseToonBorders = mat.diffuseToonBorders;
+        data.invDiffuseToonBorders = 1.0 / data.diffuseToonBorders;
+
+        data.specularToonBorders = mat.specularToonBorders;
+        data.invSpecularToonBorders = 1.0 / data.specularToonBorders;
+    }
+
+    Color = vec4(0.0);
 
     // POINT LIGHTS
     for (uint i = 0; i < numberOfPointLights && i < MAX_POINT_LIGHTS; ++i) {
-        result += CalculatePointLight(pointLights[i], normal, viewDir, mat_diffuse, mat_specular, mat.shininess);
+        Color += CalculatePointLight(pointLights[i]);
     }
 
     // SPOT LIGHTS
     for (uint i = 0; i < numberOfSpotLights && i < MAX_SPOT_LIGHTS; ++i) {
-        result += CalculateSpotLight(spotLights[i], normal, viewDir, mat_diffuse, mat_specular, mat.shininess);
+        Color += CalculateSpotLight(spotLights[i]);
     }
 
     // DIRECTIONAL LIGHTS
     for (uint i = 0; i < numberOfDirLights && i < MAX_DIRECTIONAL_LIGHTS; ++i) {
-        result += CalculateDirectionalLight(directionalLights[i], normal, viewDir, i, mat_diffuse, mat_specular, mat.shininess);
+        Color += CalculateDirectionalLight(directionalLights[i], i);
     }
 
     // AMBIENT LIGHT
-    result += CalculateGamma(vec4(ambientLight, 1.0)) * mat_diffuse;
-
-    //Color = vec4(pow(result.rgb, vec3(gamma)), result.a);
-    Color = result;
+    Color += CalculateGamma(vec4(ambientLight, 1.0)) * data.mat_diffuse;
 }

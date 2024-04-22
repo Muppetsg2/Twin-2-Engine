@@ -30,7 +30,7 @@ MaterialParameters::MaterialParameters(const std::vector<std::string>& variableN
 	unsigned int over = dataSize % 16u;
 	if (over)
 	{
-		_materialData.resize(dataSize + 16u - over);
+		_materialData.resize((size_t)dataSize + 16u - over);
 	}
 	_materialData.resize(dataSize);
 

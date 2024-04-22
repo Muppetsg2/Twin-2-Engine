@@ -51,7 +51,7 @@ struct SpotLight {
 	vec3 direction;     // Direction of the spot light
 	vec3 color;         // Color of the spot light
 	float power;		  // Light source power
-	//float cutOff;       // Inner cutoff angle (in radians)
+	float innerCutOff;       // Inner cutoff angle (in radians)
 	float outerCutOff;  // Outer cutoff angle (in radians)
 	float constant;     // Constant attenuation
 	float linear;       // Linear attenuation
@@ -78,8 +78,7 @@ layout (std430, binding = 3) buffer Lights {
 layout(std140, binding = 4) uniform LightingData {
     vec3 AmbientLight;
 	vec3 ViewerPosition;
-	float highlightParam;
-	//float gamma;
+    int shadingType;
 };
 
 
@@ -132,7 +131,7 @@ float countLambertianPart(vec3 L, vec3 N) {
 float countBlinnPhongPart(vec3 L, vec3 E, vec3 N) {
     vec3 H = normalize(L + E);
     float specAngle = max(dot(H, N), 0.0);
-    return pow(specAngle, highlightParam); //<---------
+    return pow(specAngle, 16); //<---------
 }
 
 void main()
@@ -208,7 +207,7 @@ void main()
         }
 
         //LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power;
-        LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power /** ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i)*/;
+        LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
     }
 	
     FragColor *= vec4(LightColor + AmbientLight, 1.0);

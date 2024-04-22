@@ -24,20 +24,20 @@ namespace Twin2Engine
 
 			MaterialParameters();
 			template<class T>
-			typename std::enable_if<
-				std::is_same<T, int>::value ||
-				std::is_same<T, unsigned int>::value ||
-				std::is_same<T, float>::value ||
-				std::is_same<T, double>::value ||
-				std::is_same<T, glm::vec2>::value ||
-				std::is_same<T, glm::vec3>::value ||
-				std::is_same<T, glm::vec4>::value ||
-				std::is_same<T, glm::ivec2>::value ||
-				std::is_same<T, glm::ivec3>::value ||
-				std::is_same<T, glm::ivec4>::value, void>::type
+			typename std::enable_if_t<
+				std::is_same_v<T, int> ||
+				std::is_same_v<T, unsigned int> ||
+				std::is_same_v<T, float> ||
+				std::is_same_v<T, double> ||
+				std::is_same_v<T, glm::vec2> ||
+				std::is_same_v<T, glm::vec3> ||
+				std::is_same_v<T, glm::vec4> ||
+				std::is_same_v<T, glm::ivec2> ||
+				std::is_same_v<T, glm::ivec3> ||
+				std::is_same_v<T, glm::ivec4>, void>
 			Add(const std::string& variableName, const T& value);
 			template<class T>
-			typename std::enable_if<std::is_same<T, bool>::value, void>::type
+			typename std::enable_if_t<std::is_same_v<T, bool>, void>
 				Add(const std::string& variableName, const T& value);
 
 			void AddTexture2D(const std::string& textureName, unsigned int textureId);
@@ -48,21 +48,39 @@ namespace Twin2Engine
 			MaterialParameters(const std::vector<std::string>& variableNames, const std::vector<unsigned int>& parametersSizes, const std::vector<std::string>& textureParametersNames);
 
 			template<class T>
-			typename std::enable_if<
-				std::is_same<T, int>::value ||
-				std::is_same<T, unsigned int>::value ||
-				std::is_same<T, float>::value ||
-				std::is_same<T, double>::value ||
-				std::is_same<T, glm::vec2>::value ||
-				std::is_same<T, glm::vec3>::value ||
-				std::is_same<T, glm::vec4>::value ||
-				std::is_same<T, glm::ivec2>::value ||
-				std::is_same<T, glm::ivec3>::value ||
-				std::is_same<T, glm::ivec4>::value, bool>::type
+			typename std::enable_if_t<
+				std::is_same_v<T, int> ||
+				std::is_same_v<T, unsigned int> ||
+				std::is_same_v<T, float> ||
+				std::is_same_v<T, double> ||
+				std::is_same_v<T, glm::vec2> ||
+				std::is_same_v<T, glm::vec3> ||
+				std::is_same_v<T, glm::vec4> ||
+				std::is_same_v<T, glm::ivec2> ||
+				std::is_same_v<T, glm::ivec3> ||
+				std::is_same_v<T, glm::ivec4>, bool>
 			Set(const std::string& variableName, const T& value);
 			template<class T>
-			typename std::enable_if<std::is_same<T, bool>::value, bool>::type
+			typename std::enable_if_t<std::is_same_v<T, bool>, bool>
 				Set(const std::string& variableName, const T& value);
+
+
+			template<class T>
+			typename std::enable_if_t<
+				std::is_same_v<T, int> ||
+				std::is_same_v<T, unsigned int> ||
+				std::is_same_v<T, float> ||
+				std::is_same_v<T, double> ||
+				std::is_same_v<T, glm::vec2> ||
+				std::is_same_v<T, glm::vec3> ||
+				std::is_same_v<T, glm::vec4> ||
+				std::is_same_v<T, glm::ivec2> ||
+				std::is_same_v<T, glm::ivec3> ||
+				std::is_same_v<T, glm::ivec4>, T>
+				Get(const std::string& variableName);
+			template<class T>
+			typename std::enable_if_t<std::is_same_v<T, bool>, T>
+				Get(const std::string& variableName);
 
 
 			void SetTexture2D(const std::string& textureName, unsigned int textureId);
@@ -72,17 +90,17 @@ namespace Twin2Engine
 		};
 
 		template<class T>
-		typename std::enable_if<
-			std::is_same<T, int>::value ||
-			std::is_same<T, unsigned int>::value ||
-			std::is_same<T, float>::value ||
-			std::is_same<T, double>::value ||
-			std::is_same<T, glm::vec2>::value ||
-			std::is_same<T, glm::vec3>::value ||
-			std::is_same<T, glm::vec4>::value ||
-			std::is_same<T, glm::ivec2>::value ||
-			std::is_same<T, glm::ivec3>::value ||
-			std::is_same<T, glm::ivec4>::value, bool>::type
+		typename std::enable_if_t<
+			std::is_same_v<T, int> ||
+			std::is_same_v<T, unsigned int> ||
+			std::is_same_v<T, float> ||
+			std::is_same_v<T, double> ||
+			std::is_same_v<T, glm::vec2> ||
+			std::is_same_v<T, glm::vec3> ||
+			std::is_same_v<T, glm::vec4> ||
+			std::is_same_v<T, glm::ivec2> ||
+			std::is_same_v<T, glm::ivec3> ||
+			std::is_same_v<T, glm::ivec4>, bool>
 		MaterialParameters::Set(const std::string& variableName, const T& value)
 		{
 			size_t hashed = hasher(variableName);
@@ -95,7 +113,7 @@ namespace Twin2Engine
 			return false;
 		}
 		template<class T>
-		typename std::enable_if<std::is_same<T, bool>::value, bool>::type
+		typename std::enable_if_t<std::is_same_v<T, bool>, bool>
 			MaterialParameters::Set(const std::string& variableName, const T& value)
 		{
 			size_t hashed = hasher(variableName);
@@ -110,17 +128,56 @@ namespace Twin2Engine
 		}
 
 		template<class T>
-		typename std::enable_if<
-			std::is_same<T, int>::value ||
-			std::is_same<T, unsigned int>::value ||
-			std::is_same<T, float>::value ||
-			std::is_same<T, double>::value ||
-			std::is_same<T, glm::vec2>::value ||
-			std::is_same<T, glm::vec3>::value ||
-			std::is_same<T, glm::vec4>::value ||
-			std::is_same<T, glm::ivec2>::value ||
-			std::is_same<T, glm::ivec3>::value ||
-			std::is_same<T, glm::ivec4>::value, void>::type
+		typename std::enable_if_t<
+			std::is_same_v<T, int> ||
+			std::is_same_v<T, unsigned int> ||
+			std::is_same_v<T, float> ||
+			std::is_same_v<T, double> ||
+			std::is_same_v<T, glm::vec2> ||
+			std::is_same_v<T, glm::vec3> ||
+			std::is_same_v<T, glm::vec4> ||
+			std::is_same_v<T, glm::ivec2> ||
+			std::is_same_v<T, glm::ivec3> ||
+			std::is_same_v<T, glm::ivec4>, T>
+		MaterialParameters::Get(const std::string& variableName) {
+			size_t hashed = hasher(variableName);
+
+			if (_variablesValuesOffsets.contains(hashed))
+			{
+				char* valuePtr = new char[sizeof(T)];
+				memcpy(valuePtr, _materialData.data() + _variablesValuesOffsets[hashed], sizeof(T));
+				T* value = reinterpret_cast<T*>(valuePtr);
+				return *value;
+			}
+			return T();
+		}
+		template<class T>
+		typename std::enable_if_t<std::is_same_v<T, bool>, T>
+			MaterialParameters::Get(const std::string& variableName) {
+			size_t hashed = hasher(variableName);
+
+			if (_variablesValuesOffsets.contains(hashed))
+			{
+				char* valuePtr = new char[sizeof(int)];
+				memcpy(valuePtr, _materialData.data() + _variablesValuesOffsets[hashed], sizeof(int));
+				int* value = reinterpret_cast<int*>(valuePtr);
+				return (bool)*value;
+			}
+			return T();
+		}
+
+		template<class T>
+		typename std::enable_if_t<
+			std::is_same_v<T, int> ||
+			std::is_same_v<T, unsigned int> ||
+			std::is_same_v<T, float> ||
+			std::is_same_v<T, double> ||
+			std::is_same_v<T, glm::vec2> ||
+			std::is_same_v<T, glm::vec3> ||
+			std::is_same_v<T, glm::vec4> ||
+			std::is_same_v<T, glm::ivec2> ||
+			std::is_same_v<T, glm::ivec3> ||
+			std::is_same_v<T, glm::ivec4>, void>
 		MaterialParameters::Add(const std::string& variableName, const T& value)
 		{
 			size_t hashed = hasher(variableName);
@@ -138,7 +195,7 @@ namespace Twin2Engine
 		}
 
 		template<class T>
-		typename std::enable_if<std::is_same<T, bool>::value, void>::type
+		typename std::enable_if_t<std::is_same_v<T, bool>, void>
 			MaterialParameters::Add(const std::string& variableName, const T& value)
 		{
 			size_t hashed = hasher(variableName);
@@ -149,7 +206,7 @@ namespace Twin2Engine
 			{
 				offset += left;
 			}
-			_materialData.resize(offset + 4);
+			_materialData.resize((size_t)offset + 4);
 			int temp = value;
 			const char* ptr = reinterpret_cast<const char*>(&temp);
 			std::memcpy(_materialData.data() + offset, ptr, 4);

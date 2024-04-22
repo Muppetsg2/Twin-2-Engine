@@ -36,7 +36,34 @@ namespace Twin2Engine::Manager {
 
 		static void UnloadAll();
 
+		static YAML::Node Serialize();
+
 		friend class SceneManager;
 		friend class PrefabManager;
+	};
+}
+
+namespace YAML {
+	template<> struct convert<Twin2Engine::Manager::SpriteData> {
+		using SpriteData = Twin2Engine::Manager::SpriteData;
+
+		static Node encode(const SpriteData& rhs) {
+			Node node;
+			node["x"] = rhs.x;
+			node["y"] = rhs.y;
+			node["width"] = rhs.width;
+			node["height"] = rhs.height;
+			return node;
+		}
+
+		static bool decode(const Node& node, SpriteData& rhs) {
+			if (!node.IsMap()) return false;
+
+			rhs.x = node["x"].as<uint32_t>();
+			rhs.y = node["y"].as<uint32_t>();
+			rhs.width = node["width"].as<uint32_t>();
+			rhs.height = node["height"].as<uint32_t>();
+			return true;
+		}
 	};
 }

@@ -5,17 +5,22 @@ using namespace CollisionSystem;
 BoundingVolume::BoundingVolume(SphereColliderData* sphereColliderData) {
 	colliderShape = ColliderShape::SPHERE;
 	shapeColliderData = sphereColliderData;
+	isBoundingVolume = true;
 }
 
 BoundingVolume::BoundingVolume(BoxColliderData* boxColliderData) {
 	colliderShape = ColliderShape::BOX;
 	shapeColliderData = boxColliderData;
+	isBoundingVolume = true;
 }
 
 BoundingVolume::BoundingVolume(CapsuleColliderData* capsuleColliderData) {
 	colliderShape = ColliderShape::CAPSULE;
 	shapeColliderData = capsuleColliderData;
+	isBoundingVolume = true;
 }
+
+//BoundingVolume::~BoundingVolume() {}
 
 bool isOverPlane(FrustumPlane& plane, BoxColliderData* colliderData) {
 	glm::vec3 relPos = plane.point - colliderData->Position;

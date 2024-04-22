@@ -13,6 +13,11 @@ file(GLOB_RECURSE SOURCE_FILES
 file(GLOB_RECURSE HEADER_FILES
 	 ${Twin2Engine_HEADER_DIR}/*.h
 	 ${Twin2Engine_HEADER_DIR}/*.hpp)
+
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+	list(FILTER SOURCE_FILES EXCLUDE REGEX ".*(imgui_impl\/).*")
+	list(FILTER HEADER_FILES EXCLUDE REGEX ".*(imgui_impl\/).*")
+endif()
 	 
 # Search for the assets files
 file(GLOB_RECURSE ASSETS_FILES 
@@ -24,7 +29,6 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${HEADER_FILES})
 source_group(TREE ${CMAKE_SOURCE_DIR}         FILES ${ASSETS_FILES})
 
-
 add_subdirectory(GraphicEngine)
 
 # ---- Dependency ----
@@ -32,65 +36,40 @@ add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES} ${ASSETS_FILE
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE GLFW_INCLUDE_NONE)
 target_compile_definitions(${PROJECT_NAME} PRIVATE LIBRARY_SUFFIX="")
+target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG="$<IF:$<CONFIG:Debug>,1,0>")
 
-get_property(is_miniaudio GLOBAL PROPERTY ISMINIAUDIO)
-get_property(is_imgui GLOBAL PROPERTY USEIMGUI)
+get_property(is_miniaudio GLOBAL PROPERTY IS_MINI_AUDIO)
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${Twin2Engine_PRECOMPILE_HEADERS_FILE})
 
+target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR}
+														  ${glad_SOURCE_DIR}
+														  ${stb_image_SOURCE_DIR}
+														  ${freetype_SOURCE_DIR})
+
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+	target_link_libraries(${PROJECT_NAME} imgui)
+	target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
+endif()
+
 if(is_miniaudio)
-	if(is_imgui)
-		target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR}
-														  ${glad_SOURCE_DIR}
-														  ${stb_image_SOURCE_DIR}
-														  ${freetype_SOURCE_DIR}
-														  ${miniaudio_SOURCE_DIR}
-														  ${imgui_SOURCE_DIR})
-		
-		target_link_libraries(${PROJECT_NAME} imgui)
-	else()
-		target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR}
-														${glad_SOURCE_DIR}
-														${stb_image_SOURCE_DIR}
-														${freetype_SOURCE_DIR}
-														${miniaudio_SOURCE_DIR})
-	endif()
-
 	target_link_libraries(${PROJECT_NAME} miniaudio)
+	target_include_directories(${PROJECT_NAME} PUBLIC ${miniaudio_SOURCE_DIR})
 else()
-	if(is_imgui)
-		target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR}
-														  ${glad_SOURCE_DIR}
-														  ${stb_image_SOURCE_DIR}
-														  ${soloud_SOURCE_DIR}
-														  ${freetype_SOURCE_DIR}
-														  ${imgui_SOURCE_DIR})
-
-		target_link_libraries(${PROJECT_NAME} imgui)
-	else()
-		target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR}
-													${glad_SOURCE_DIR}
-													${stb_image_SOURCE_DIR}
-													${soloud_SOURCE_DIR}
-													${freetype_SOURCE_DIR})
-	endif()
-	
 	target_link_libraries(${PROJECT_NAME} soloud)
+	target_include_directories(${PROJECT_NAME} PUBLIC ${soloud_SOURCE_DIR})
 endif()
 
 
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} glad)
 target_link_libraries(${PROJECT_NAME} stb_image)
-#target_link_libraries(${PROJECT_NAME} assimp)
-#target_link_libraries(${PROJECT_NAME} tinygltf)
 target_link_libraries(${PROJECT_NAME} glfw)
 target_link_libraries(${PROJECT_NAME} spdlog)
 target_link_libraries(${PROJECT_NAME} yaml-cpp)
 target_link_libraries(${PROJECT_NAME} freetype)
 target_link_libraries(${PROJECT_NAME} glm::glm)
 target_link_libraries(${PROJECT_NAME} CollisionSystem)
-#target_link_libraries(${PROJECT_NAME} LightingSystem)
 
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${GRAPHIC_ENGINE_INCLUDE_DIR})

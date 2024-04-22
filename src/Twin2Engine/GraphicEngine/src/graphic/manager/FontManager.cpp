@@ -67,3 +67,12 @@ void FontManager::UnloadAll() {
     _fonts.clear();
     _fontsPaths.clear();
 }
+
+YAML::Node FontManager::Serialize()
+{
+    YAML::Node fonts;
+    for (const auto& fontPair : FontManager::_fontsPaths) {
+        fonts.push_back(fontPair.second);
+    }
+    return fonts;
+}

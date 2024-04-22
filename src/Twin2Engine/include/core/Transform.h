@@ -1,5 +1,4 @@
-#ifndef _TRANSFORM_H_
-#define _TRANSFORM_H_
+#pragma once
 
 #include <core/Component.h>
 #include <core/EventHandler.h>
@@ -10,7 +9,7 @@ namespace Twin2Engine
 		class Transform : public Component
 		{
 		private:
-			static Transform* originTransform;
+			//static Transform* originTransform;
 
 			glm::vec3 _localPosition;
 			glm::vec3 _localRotation;
@@ -167,5 +166,3 @@ namespace Twin2Engine
 		};
 	}
 }
-
-#endif

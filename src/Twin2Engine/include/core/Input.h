@@ -142,7 +142,7 @@ namespace Twin2Engine {
 			RIGHT_ALT = GLFW_KEY_RIGHT_ALT,
 			RIGHT_SUPER = GLFW_KEY_RIGHT_SUPER,
 			MENU = GLFW_KEY_MENU,
-			KEYS_SIZE = GLFW_KEY_LAST + 1,
+			KEYS_SIZE = GLFW_KEY_LAST + 1 - GLFW_KEY_SPACE,
 		};
 
 		enum MOUSE_BUTTON {
@@ -165,11 +165,13 @@ namespace Twin2Engine {
 			static GLFWwindow* _mainWindow;
 
 			static std::vector<GLFWwindow*> _windows;
-			static std::map<GLFWwindow*, int*> _mouseButtonStates;
-			static std::map<GLFWwindow*, int*> _keyStates;
+			static std::map<GLFWwindow*, std::map<uint8_t, uint8_t >> _mouseButtonStates;
+			static std::map<GLFWwindow*, std::map<uint16_t, uint8_t>> _keyStates;
 
 			static void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods);
 			static void mouse_button_callback(GLFWwindow* win, int button, int action, int mods);
+
+			static bool IsInizializedForWindow(GLFWwindow* window);
 		public:
 			static void InitForWindow(GLFWwindow* window, bool mainWindow = false);
 			static void InitForWindow(GraphicEngine::Window* window, bool mainWindow = false);

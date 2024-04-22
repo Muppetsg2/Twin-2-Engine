@@ -385,11 +385,19 @@ void AudioManager::UnloadAll()
 
     for (auto& ad : _loadedAudio) {
         delete ad.second;
-        ad.second = nullptr;
     }
 
     _loadedAudio.clear();
     _audiosPaths.clear();
     _soloud.deinit();
     _init = false;
+}
+
+YAML::Node AudioManager::Serialize()
+{
+    YAML::Node audios;
+    for (const auto& audioPair : _audiosPaths) {
+        audios.push_back(audioPair.second);
+    }
+    return audios;
 }

@@ -1,5 +1,4 @@
-#ifndef _COLLIDER_H_
-#define _COLLIDER_H_
+#pragma once
 
 namespace CollisionSystem {
 	//struct Collision;
@@ -24,11 +23,13 @@ namespace CollisionSystem {
 
 	struct SphereColliderData : ShapeColliderData {
 		float Radius = 1.0f;
+		float LocalRadius = 1.0f;
 	};
 
 	struct BoxColliderData : ShapeColliderData {
 		glm::vec3 Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 		glm::vec3 HalfDimensions = glm::vec3(1.0f, 1.0f, 1.0f);
+		glm::vec3 LocalHalfDimensions = glm::vec3(1.0f, 1.0f, 1.0f);
 		glm::vec3 XAxis = glm::vec3(1.0f, 0.0f, 0.0f);
 		glm::vec3 YAxis = glm::vec3(0.0f, 1.0f, 0.0f);
 		glm::vec3 ZAxis = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -38,6 +39,7 @@ namespace CollisionSystem {
 		glm::vec3 EndPosition = glm::vec3(0.0f, 1.0f, 0.0f);
 		glm::vec3 EndLocalPosition = glm::vec3(0.0f, 1.0f, 0.0f);
 		float Radius = 0.5f;
+		float LocalRadius = 0.5f;
 	};
 
 
@@ -63,5 +65,3 @@ namespace CollisionSystem {
 		static Collision* testCollision(Collider* collider, Collider* otherCollider, bool separate);
 	};
 }
-
-#endif // !_COLLIDER_H_

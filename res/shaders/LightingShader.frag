@@ -78,6 +78,7 @@ layout (std430, binding = 3) buffer Lights {
 layout(std140, binding = 4) uniform LightingData {
     vec3 AmbientLight;
 	vec3 ViewerPosition;
+	float highlightParam;
 	//float gamma;
 };
 
@@ -105,13 +106,13 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
 
     // PCF
     float shadow = 0.0;
-    vec2 texelSize = 0.5 * 1.0  / textureSize(DirLightShadowMaps[shadowMapId], 0);
+    vec2 texelSize = 0.5 * 1.0 / textureSize(DirLightShadowMaps[shadowMapId], 0);
     for(int x = -2; x <= 2; ++x)
     {
         for(int y = -2; y <= 2; ++y)
         {
             float pcfDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy + vec2(x, y) * texelSize).r; 
-            shadow += currentDepth - bias < pcfDepth  ? 1.0 : 0.0;        
+            shadow += currentDepth  < pcfDepth  ? 1.0 : 0.0;        
         }    
     }
     shadow /= 25.0;
@@ -130,7 +131,7 @@ float countLambertianPart(vec3 L, vec3 N) {
 float countBlinnPhongPart(vec3 L, vec3 E, vec3 N) {
     vec3 H = normalize(L + E);
     float specAngle = max(dot(H, N), 0.0);
-    return pow(specAngle, 2); //<---------
+    return pow(specAngle, highlightParam); //<---------
 }
 
 void main()

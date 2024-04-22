@@ -45,17 +45,6 @@ target_include_directories(${PROJECT_NAME}
 # Adding precompile Headers to library
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${GRAPHIC_ENGINE_PRECOMPILE_HEADER})
 
-#target_link_libraries(GraphicEngine PRIVATE 
-#										#glad
-#										##stb_image
-#										#assimp
-#										#glfw
-#										#glm::glm
-#										#yaml-cpp
-#										#spdlog
-#										Twin2Engine
-#)
-
 target_link_libraries(GraphicEngine ${OPENGL_LIBRARIES})
 target_link_libraries(GraphicEngine glad)
 target_link_libraries(GraphicEngine stb_image)
@@ -67,6 +56,7 @@ target_link_libraries(GraphicEngine Twin2Engine)
 target_link_libraries(GraphicEngine freetype)
 target_link_libraries(GraphicEngine glm::glm)
 target_link_libraries(GraphicEngine LightingSystem)
+
 #target_link_libraries(GraphicEngine tinygltf)
 
 #message("GraphicEngine Public Include Files:")

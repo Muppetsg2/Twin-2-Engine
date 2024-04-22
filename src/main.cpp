@@ -72,6 +72,8 @@ using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
 using namespace Twin2Engine::GraphicEngine;
+using namespace CollisionSystem;
+using namespace LightingSystem;
 
 using Twin2Engine::Core::Input;
 using Twin2Engine::Core::KEY;
@@ -96,6 +98,7 @@ bool mouseNotUsed = true;
 
 #pragma endregion
 
+#if _DEBUG
 #pragma region OpenGLCallbackFunctions
 
 static void glfw_error_callback(int error, const char* description)
@@ -133,20 +136,23 @@ static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint i
 }
 
 #pragma endregion
+#endif
 
 #pragma region FunctionsDeclaration
 
 bool init();
-void init_imgui();
 
 void input();
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void update();
 void render();
 
+#if _DEBUG
+void init_imgui();
 void imgui_begin();
 void imgui_render();
 void imgui_end();
+#endif
 
 void end_frame();
 
@@ -185,10 +191,11 @@ int main(int, char**)
     }
     spdlog::info("Initialized project.");
 
+#if _DEBUG
     init_imgui();
     spdlog::info("Initialized ImGui.");
+#endif
 
-    //SoLoud::result res = soloud.init();
     SoLoud::result res = AudioManager::Init();
     if (res != 0) {
         spdlog::error(AudioManager::GetErrorString(res));
@@ -225,6 +232,7 @@ int main(int, char**)
             cam->SetCameraFilter(node["cameraFilter"].as<size_t>());
             cam->SetCameraType(node["cameraType"].as<CameraType>());
             cam->SetSamples(node["samples"].as<size_t>());
+            cam->SetRenderResolution(node["renderRes"].as<RenderResolution>());
             cam->SetGamma(node["gamma"].as<float>());
             cam->SetFrontDir(node["frontDir"].as<vec3>());
             cam->SetWorldUp(node["worldUp"].as<vec3>());
@@ -365,7 +373,8 @@ int main(int, char**)
 #pragma endregion
 
     // ADDING SCENES
-    SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
+    SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
     /*
@@ -405,31 +414,27 @@ int main(int, char**)
     SceneManager::LoadScene("testScene");
     //SceneManager::SaveScene("res/scenes/savedScene.yaml");
 
+    InstatiatingModel modelHexagon = ModelsManager::LoadModel("res/models/hexagon.obj");
+    GameObject* hexagonPrefab = new GameObject();
+    hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
+    hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    auto comp = hexagonPrefab->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("multiTexture"));
+    //comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
+    comp->SetModel(modelHexagon);
     
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
-
-    // SCENE OBJECTS
-
-    GameObject* test1 = SceneManager::CreateGameObject();
-    std::tuple<GameObject*, Text*, Image*> test2 = SceneManager::CreateGameObject<Text, Image>();
-
-    GameObject* test3 = SceneManager::CreateGameObject(PrefabManager::GetPrefab("res/prefabs/testPrefab.yaml"));
-    //PrefabManager::SaveAsPrefab(test3, "res/prefabs/savedPrefab.yaml");
     
 #pragma region TestingLighting
-    /**/
     GameObject* dl_go = SceneManager::CreateGameObject();
     dl_go->GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
-    Twin2Engine::Core::DirectionalLightComponent* dl = dl_go->AddComponent<Twin2Engine::Core::DirectionalLightComponent>();
+    DirectionalLightComponent* dl = dl_go->AddComponent<DirectionalLightComponent>();
     dl->SetColor(glm::vec3(1.0f));
-    //dl->SetColor(glm::vec3(0.85f, 0.85f, 0.85f));
-    //dl->SetColor(glm::vec3(0.8f, 0.8f, 0.8f));
-    LightingSystem::LightingController::Instance()->SetViewerPosition(cameraPos);
-    //LightingSystem::LightingController::Instance()->SetGamma(2.2);
-    LightingSystem::LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f, 0.02f, 0.02f));
-    /**/
+    LightingController::Instance()->SetViewerPosition(cameraPos);
+    LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f, 0.02f, 0.02f));
+    LightingController::Instance()->SetHighlightParam(2.0f);
 #pragma endregion
 
     // Main loop
@@ -438,16 +443,20 @@ int main(int, char**)
         // Process I/O operations here
         input();
 
+        if (window->IsClosed()) break;
+
         // Update game objects' state here
         update();
 
         // OpenGL rendering code here
         render();
 
+#if _DEBUG
         // Draw ImGui
         imgui_begin();
         imgui_render(); // edit this function to add your own ImGui controls
         imgui_end(); // this call effectively renders ImGui
+#endif
 
         // End frame and swap buffers (double buffering)
         end_frame();
@@ -459,16 +468,20 @@ int main(int, char**)
     TextureManager::UnloadAll();
     AudioManager::UnloadAll();
     FontManager::UnloadAll();
+    CollisionManager::UnloadAll();
+    LightingController::UnloadAll();
+    GraphicEngineManager::End();
     Input::FreeAllWindows();
 
+#if _DEBUG
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+#endif
 
     Window::FreeAll();
-    glfwTerminate();
 
-    GraphicEngineManager::End();
+    glfwTerminate();
 
     return 0;
 }
@@ -476,7 +489,10 @@ int main(int, char**)
 bool init()
 {
     // Setup window
+#if _DEBUG
     glfwSetErrorCallback(glfw_error_callback);
+#endif
+
     if (!glfwInit())
     {
         spdlog::error("Failed to initalize GLFW!");
@@ -526,38 +542,6 @@ bool init()
     return true;
 }
 
-void init_imgui()
-{
-    // Setup Dear ImGui binding
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
-
-    ImGui_ImplGlfw_InitForOpenGL(window->GetWindow(), true);
-    ImGui_ImplOpenGL3_Init(glsl_version);
-
-    // Setup style
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
-
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-    // - Read 'misc/fonts/README.txt' for more instructions and details.
-    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != NULL);
-}
-
 void input()
 {
     if (Input::IsKeyPressed(KEY::ESCAPE)) 
@@ -604,7 +588,11 @@ void input()
         if (Input::GetCursorState() == CURSOR_STATE::DISABLED) 
         {
             Input::ShowCursor();
+#if _DEBUG
             glfwSetCursorPosCallback(window->GetWindow(), ImGui_ImplGlfw_CursorPosCallback);
+#else
+            glfwSetCursorPosCallback(window->GetWindow(), NULL);
+#endif
         }
         else
         {
@@ -621,12 +609,6 @@ void input()
     }
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::Q)) {
-        
-        // Rotation not saving properly
-        // Can't save Values when they change unles you get them
-        Camera->GetTransform()->GetLocalPosition();
-        Camera->GetTransform()->GetLocalRotation();
-        Camera->GetTransform()->GetLocalScale();
         SceneManager::SaveScene("res/scenes/quickSavedScene.yaml");
     }
 }
@@ -654,18 +636,18 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     // PITCH = ROT X
     // ROLL = ROT Z
 
-    Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x + yoffset, rot.y + xoffset, rot.z));
+    rot.x += yoffset;
 
-    rot = Camera->GetTransform()->GetGlobalRotation();
-
-    if (rot.x > 89.0f) {
-        Camera->GetTransform()->SetGlobalRotation(glm::vec3(89.f, rot.y, rot.z));
+    if (rot.x > 89.f) {
+        rot.x = 89.f;
     }
-    if (rot.x < -89.0f)
+    
+    if (rot.x < -89.f)
     {
-        Camera->GetTransform()->SetGlobalRotation(glm::vec3(-89.f, rot.y, rot.z));
+        rot.x = -89.f;
     }
 
+    Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x, rot.y + xoffset, rot.z));
     LightingSystem::LightingController::Instance()->ViewerTransformChanged.Invoke();
 }
 
@@ -698,6 +680,39 @@ void render()
     // OpenGL Rendering code goes here
     SceneManager::RenderCurrentScene();
     CameraComponent::GetMainCamera()->Render();
+}
+
+#if _DEBUG
+void init_imgui()
+{
+    // Setup Dear ImGui binding
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
+
+    ImGui_ImplGlfw_InitForOpenGL(window->GetWindow(), true);
+    ImGui_ImplOpenGL3_Init(glsl_version);
+
+    // Setup style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsClassic();
+
+    // Load Fonts
+    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
+    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
+    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
+    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
+    // - Read 'misc/fonts/README.txt' for more instructions and details.
+    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
+    //io.Fonts->AddFontDefault();
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
+    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
+    //IM_ASSERT(font != NULL);
 }
 
 void imgui_begin()
@@ -776,6 +791,25 @@ void imgui_render()
         if (ImGui::CollapsingHeader("Main Camera")) {
 
             CameraComponent* c = CameraComponent::GetMainCamera();
+
+            RenderResolution res = c->GetRenderResolution();
+
+            if (ImGui::BeginCombo("Render Resolution", res == RenderResolution::DEFAULT ? "Default" : (res == RenderResolution::MEDIUM ? "Medium" : "High")))
+            {
+                if (ImGui::Selectable("Default", res == RenderResolution::DEFAULT))
+                {
+                    c->SetRenderResolution(RenderResolution::DEFAULT);
+                }
+                else if (ImGui::Selectable("Medium", res == RenderResolution::MEDIUM))
+                {
+                    c->SetRenderResolution(RenderResolution::MEDIUM);
+                }
+                else if (ImGui::Selectable("High", res == RenderResolution::HIGH))
+                {
+                    c->SetRenderResolution(RenderResolution::HIGH);
+                }
+                ImGui::EndCombo();
+            }
 
             uint8_t acFil = RenderFilter::NONE;
             uint8_t fil = c->GetCameraFilters();
@@ -979,6 +1013,8 @@ void imgui_end()
     window->Use();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
+
+#endif
 
 void end_frame()
 {

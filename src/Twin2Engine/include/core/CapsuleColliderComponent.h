@@ -1,5 +1,4 @@
-#ifndef _CAPSULECOLLIDERCOMPONENT_H_
-#define _CAPSULECOLLIDERCOMPONENT_H_
+#pragma once
 
 #include <core/ColliderComponent.h>
 
@@ -9,7 +8,7 @@ namespace Twin2Engine::Core {
 	private:
 		bool dirtyFlag = false;
 		Twin2Engine::Core::Action<Transform*> TransformChangeAction;
-		size_t TransformChangeActionId;
+		size_t TransformChangeActionId = 0;
 	public:
 		CapsuleColliderComponent();
 		void SetEndPosition(float x, float y, float z);
@@ -24,5 +23,3 @@ namespace Twin2Engine::Core {
 		virtual YAML::Node Serialize() const override;
 	};
 }
-
-#endif // !_CAPSULECOLLIDERCOMPONENT_H_

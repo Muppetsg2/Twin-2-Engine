@@ -48,11 +48,15 @@ void MeshRenderingManager::Init()
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void MeshRenderingManager::End()
+void MeshRenderingManager::UnloadAll()
 {
 	glDeleteBuffers(1, &_instanceDataSSBO);
 	glDeleteBuffers(1, &_materialIndexSSBO);
 	glDeleteBuffers(1, &_materialInputUBO);
+
+	_renderQueue.clear();
+	_depthQueue.clear();
+	_depthMapRenderQueue.clear();
 }
 
 
@@ -64,7 +68,6 @@ void MeshRenderingManager::Render(MeshRenderData meshData)
 		//SPDLOG_INFO("Trying saving to rendering data! {}, {}", meshRenderer->GetMesh(i) != nullptr, meshRenderer->GetMaterial(i) != nullptr);
 		if (meshData.meshes[i] != nullptr && meshData.materials[i] != nullptr)
 		{
-
 			//SPDLOG_INFO("Saving to rendering data!");
 			_renderQueue[meshData.meshes[i]]
 				[meshData.materials[i].GetShader()]
@@ -110,7 +113,7 @@ void MeshRenderingManager::Render()
 			unsigned int index = 0;
 			unsigned int materialIndex = 0;
 
-			std::vector<char> materialData(0);
+			//std::vector<char> materialData(0);
 
 			size_t size = 0;
 
@@ -304,10 +307,10 @@ void MeshRenderingManager::RenderDepthMap()
 
 			meshPair.first->Draw(count);
 
-			{GLenum error = glGetError();
+			GLenum error = glGetError();
 			if (error != GL_NO_ERROR) {
 				SPDLOG_ERROR("RDMError: {}", error);
-			}}
+			}
 		}
 	}
 }

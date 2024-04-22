@@ -124,7 +124,7 @@ T* Twin2Engine::Core::GameObject::AddComponent()
 	static_assert(std::is_base_of<Component, T>::value);
 	T* component = new T();
 
-	((Component*)component)->Init(this);
+	component->Init(this);
 
 	components.push_back(component);
 
@@ -181,8 +181,12 @@ Twin2Engine::Core::GameObject::GetComponentsInChildren()
 	list<T*> comps = list<T*>();
 	for (size_t i = 0; i < _transform->GetChildCount(); ++i) {
 		GameObject* obj = _transform->GetChildAt(i)->GetGameObject();
-		comps.push_back(obj->GetComponents<T>());
-		comps.push_back(obj->GetComponentsInChildren<T>());
+		auto listOfComponents = obj->GetComponents<T>();
+		comps.insert(comps.cend(), listOfComponents.begin(), listOfComponents.end());
+		listOfComponents = obj->GetComponentsInChildren<T>();
+		comps.insert(comps.cend(), listOfComponents.begin(), listOfComponents.end());
+		//comps.push_back(obj->GetComponents<T>());
+		//comps.push_back(obj->GetComponentsInChildren<T>());
 	}
 	return comps;
 }

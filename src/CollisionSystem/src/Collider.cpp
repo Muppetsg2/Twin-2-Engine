@@ -1,6 +1,6 @@
 //#include "CollisionSystem/inc/Collider.h"
 //#include <CollisionSystem/inc/Collider.h>
-#include "Collider.h"
+#include <Collider.h>
 //#include "Collider.h"
 //#include "Collider.h"
 //#include <CollisionSystem/inc/Collider.h>
@@ -479,6 +479,8 @@ Collision* Collider::BoxCapsuleCollision(Collider* box, Collider* capsule, bool 
 		if (separate) {
 			collision->separation = glm::vec3(0.0f, 0.0f, 0.0f);
 		}
+
+		return collision;
 	}
 	else {
 		return nullptr;

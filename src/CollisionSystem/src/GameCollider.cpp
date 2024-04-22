@@ -24,9 +24,9 @@ GameCollider::GameCollider(Twin2Engine::Core::ColliderComponent* colliderCompone
 }
 
 GameCollider::~GameCollider() {
-	delete boundingVolume;
+	colliderComponent = nullptr;
+	boundingVolume = nullptr;
 }
-
 
 Collision* GameCollider::testBoundingVolume(BoundingVolume* other) const {
 	if (other != nullptr) {
@@ -229,7 +229,61 @@ bool GameCollider::rayCollision(Ray& ray, RaycastHit& raycastHit) {
 	case ColliderShape::BOX:
 	{
 		BoxColliderData* boxData = (BoxColliderData*)shapeColliderData;
-		//glm::vec3 relativePos = boxData->Position - ray.Origin;
+		glm::vec3 relativePos = ray.Origin - boxData->Position;
+		relativePos = { glm::dot(relativePos, boxData->XAxis),
+						glm::dot(relativePos, boxData->YAxis), 
+						glm::dot(relativePos, boxData->ZAxis) };
+		glm::vec3 relativeDir = glm::normalize(glm::vec3(glm::dot(ray.Direction, boxData->XAxis), 
+														 glm::dot(ray.Direction, boxData->YAxis), 
+														 glm::dot(ray.Direction, boxData->ZAxis)));
+
+		float t;
+
+		float tmin = (-boxData->HalfDimensions.x - relativePos.x) / relativeDir.x;
+		float tmax = ( boxData->HalfDimensions.x - relativePos.x) / relativeDir.x;
+
+		if (tmin > tmax) {
+			t = tmin;
+			tmin = tmax;
+			tmax = t;
+		};
+
+		float tymin = (-boxData->HalfDimensions.y - relativePos.y) / relativeDir.y;
+		float tymax = ( boxData->HalfDimensions.y - relativePos.y) / relativeDir.y;
+
+		if (tymin > tymax) {
+			t = tymin;
+			tymin = tymax;
+			tymax = t;
+		};
+
+		if ((tmin > tymax) || (tymin > tmax))
+			return false;
+
+		if (tymin > tmin) tmin = tymin;
+		if (tymax < tmax) tmax = tymax;
+
+		float tzmin = (-boxData->HalfDimensions.z - relativePos.z) / relativeDir.z;
+		float tzmax = ( boxData->HalfDimensions.z - relativePos.z) / relativeDir.z;
+
+		if (tzmin > tzmax) {
+			t = tzmin;
+			tzmin = tzmax;
+			tzmax = t;
+		};
+
+
+		if ((tmin > tzmax) || (tzmin > tmax))
+			return false;
+
+		if (tzmin > tmin) tmin = tzmin;
+		if (tzmax < tmax) tmax = tzmax;
+
+		raycastHit.position = ray.Origin + ray.Direction * tmin;
+
+		return true;
+
+		/*/
 		float tmin = -1.0f;
 		float t;
 
@@ -273,9 +327,9 @@ bool GameCollider::rayCollision(Ray& ray, RaycastHit& raycastHit) {
 			if (t < tmin) {
 				tmin = t;
 			}
-		}
+		}/**/
 
-		raycastHit.position = ray.Origin + ray.Direction * tmin;
+		//raycastHit.position = ray.Origin + ray.Direction * tmin;
 	}
 
 	break;

@@ -39,15 +39,41 @@ void CameraComponent::OnWindowSizeChange()
 {
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
+	unsigned int r_res = GL_RGB;
+	unsigned int d_res = GL_DEPTH_COMPONENT;
+
+	switch (_renderRes) {
+		case DEFAULT: {
+			r_res = GL_RGB;
+			d_res = GL_DEPTH_COMPONENT;
+			break;
+		}
+		case MEDIUM: {
+			r_res = GL_RGB16F;
+			d_res = GL_DEPTH_COMPONENT16;
+			break;
+		}
+		case HIGH: {
+			r_res = GL_RGB32F;
+			d_res = GL_DEPTH_COMPONENT32F;
+			break;
+		}
+		default: {
+			r_res = GL_RGB;
+			d_res = GL_DEPTH_COMPONENT;
+			break;
+		}
+	}
+
 	glBindTexture(GL_TEXTURE_2D, _depthMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, d_res, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, _renderMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, r_res, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB, wSize.x, wSize.y, GL_TRUE);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, r_res, wSize.x, wSize.y, GL_TRUE);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
 	glBindRenderbuffer(GL_RENDERBUFFER, _msRenderBuffer);
@@ -63,6 +89,16 @@ CameraType CameraComponent::GetCameraType() const
 uint8_t CameraComponent::GetCameraFilters() const
 {
 	return _filters;
+}
+
+uint8_t CameraComponent::GetSamples() const
+{
+	return _samples;
+}
+
+RenderResolution CameraComponent::GetRenderResolution() const
+{
+	return _renderRes;
 }
 
 float CameraComponent::GetFOV() const
@@ -146,10 +182,6 @@ Frustum CameraComponent::GetFrustum() const
 	return frustum;
 }
 
-uint8_t CameraComponent::GetSamples() const
-{
-	return _samples;
-}
 
 bool CameraComponent::IsMain() const
 {
@@ -201,13 +233,80 @@ void CameraComponent::SetSamples(uint8_t i)
 	if (_isInit) {
 		ivec2 wSize = Window::GetInstance()->GetContentSize();
 
+		unsigned int r_res = GL_RGB;
+
+		switch (_renderRes) {
+			case DEFAULT: {
+				r_res = GL_RGB;
+				break;
+			}
+			case MEDIUM: {
+				r_res = GL_RGB16F;
+				break;
+			}
+			case HIGH: {
+				r_res = GL_RGB32F;
+				break;
+			}
+			default: {
+				r_res = GL_RGB;
+				break;
+			}
+		}
+
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB, wSize.x, wSize.y, GL_TRUE);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, r_res, wSize.x, wSize.y, GL_TRUE);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
 		glBindRenderbuffer(GL_RENDERBUFFER, _msRenderBuffer);
 		glRenderbufferStorageMultisample(GL_RENDERBUFFER, _samples, GL_DEPTH24_STENCIL8, wSize.x, wSize.y);
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	}
+}
+
+void CameraComponent::SetRenderResolution(RenderResolution res)
+{
+	_renderRes = res;
+
+	if (_isInit) {
+		ivec2 wSize = Window::GetInstance()->GetContentSize();
+
+		unsigned int r_res = GL_RGB;
+		unsigned int d_res = GL_DEPTH_COMPONENT;
+
+		switch (_renderRes) {
+			case DEFAULT: {
+				r_res = GL_RGB;
+				d_res = GL_DEPTH_COMPONENT;
+				break;
+			}
+			case MEDIUM: {
+				r_res = GL_RGB16F;
+				d_res = GL_DEPTH_COMPONENT16;
+				break;
+			}
+			case HIGH: {
+				r_res = GL_RGB32F;
+				d_res = GL_DEPTH_COMPONENT32F;
+				break;
+			}
+			default: {
+				r_res = GL_RGB;
+				d_res = GL_DEPTH_COMPONENT;
+				break;
+			}
+		}
+
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, r_res, wSize.x, wSize.y, GL_TRUE);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+
+		glBindTexture(GL_TEXTURE_2D, _depthMap);
+		glTexImage2D(GL_TEXTURE_2D, 0, d_res, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+
+		glBindTexture(GL_TEXTURE_2D, _renderMap);
+		glTexImage2D(GL_TEXTURE_2D, 0, r_res, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
 
@@ -388,6 +487,32 @@ void CameraComponent::Initialize()
 
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
+	unsigned int r_res = GL_RGB;
+	unsigned int d_res = GL_DEPTH_COMPONENT;
+
+	switch (_renderRes) {
+		case DEFAULT: {
+			r_res = GL_RGB;
+			d_res = GL_DEPTH_COMPONENT;
+			break;
+		}
+		case MEDIUM: {
+			r_res = GL_RGB16F;
+			d_res = GL_DEPTH_COMPONENT16;
+			break;
+		}
+		case HIGH: {
+			r_res = GL_RGB32F;
+			d_res = GL_DEPTH_COMPONENT32F;
+			break;
+		}
+		default: {
+			r_res = GL_RGB;
+			d_res = GL_DEPTH_COMPONENT;
+			break;
+		}
+	}
+
 #pragma region DepthBuffer
 
 	glGenFramebuffers(1, &_depthMapFBO);
@@ -396,7 +521,7 @@ void CameraComponent::Initialize()
 	glGenTextures(1, &_depthMap);
 	glBindTexture(GL_TEXTURE_2D, _depthMap);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, d_res, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -425,7 +550,7 @@ void CameraComponent::Initialize()
 
 	glGenTextures(1, &_msRenderMap);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, GL_RGB, wSize.x, wSize.y, GL_TRUE);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, r_res, wSize.x, wSize.y, GL_TRUE);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap, 0);
@@ -446,7 +571,7 @@ void CameraComponent::Initialize()
 	glGenTextures(1, &_renderMap);
 	glBindTexture(GL_TEXTURE_2D, _renderMap);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, r_res, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -492,11 +617,33 @@ void CameraComponent::OnDestroy()
 CollisionSystem::Ray CameraComponent::GetScreenPointRay(glm::vec2 screenPosition)
 {
 	ivec2 size = Window::GetInstance()->GetContentSize();
-
-	glm::vec3 Position = glm::inverse(GetProjectionMatrix() * GetViewMatrix()) * glm::vec4(2.0f * screenPosition.x / size.x - 1.0f,
-		2.0f * screenPosition.y / size.y - 1.0f, 0.5f, 1.0f);
 	glm::vec3 Origin = GetTransform()->GetGlobalPosition();
-	glm::vec3 Direction = glm::normalize(Position - Origin);
+
+	/*/glm::vec4 Position = glm::inverse(GetProjectionMatrix() * GetViewMatrix()) * glm::vec4(2.0f * screenPosition.x / size.x - 1.0f,
+																						   2.0f * screenPosition.y / size.y - 1.0f, 1.0f, 1.0f);
+	//SPDLOG_INFO("P: {}, {}, {}, {}", Position.x, Position.y, Position.z, Position.w);
+	//float fov_tan = glm::tan(3.141 * _fov / 180.0f);
+	
+
+	glm::vec3 Direction = glm::normalize(glm::vec3(Position) - Origin);
+	//glm::vec3 Direction = glm::normalize(glm::vec3((2.0f * screenPosition.x / size.x - 1.0f) * fov_tan,
+	//											   (1.0f - 2.0f * screenPosition.y / size.y) * fov_tan, 1.0f));/**/
+
+	// Normalize screen coordinates to NDC (-1 to 1)
+	float x = (2.0f * screenPosition.x) / size.x - 1.0f;
+	float y = 1.0f - (2.0f * screenPosition.y) / size.y;
+	float z = 1.0f; // NDC Z value (should be 1 for far plane)
+
+	// Unproject to view space
+	glm::vec4 rayClip = glm::vec4(x, y, -1.0f, 1.0f);
+	glm::vec4 rayEye = glm::inverse(GetProjectionMatrix()) * rayClip;
+	rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f); // Set z to -1 for direction
+	glm::vec4 rayWorld = glm::inverse(GetViewMatrix()) * rayEye;
+
+	// Get direction vector in world space
+	glm::vec3 Direction(rayWorld);
+	Direction = glm::normalize(Direction);
+
 	return CollisionSystem::Ray(std::move(Direction), std::move(Origin));
 }
 
@@ -511,6 +658,7 @@ YAML::Node CameraComponent::Serialize() const
 	node["cameraFilter"] = (size_t)_filters;
 	node["cameraType"] = _type;
 	node["samples"] = (size_t)_samples;
+	node["renderRes"] = _renderRes;
 	node["gamma"] = _gamma;
 	node["frontDir"] = _front;
 	node["worldUp"] = _worldUp;

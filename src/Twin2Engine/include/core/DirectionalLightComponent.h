@@ -14,7 +14,7 @@ namespace Twin2Engine {
 				LightingSystem::DirectionalLight* light = nullptr;
 				Twin2Engine::Core::Action<Transform*> OnChangePosition;
 				size_t OnChangePositionId;
-				Twin2Engine::Core::Action<> OnViewerChange;
+				Twin2Engine::Core::Method OnViewerChange;
 				size_t OnViewerChangeId;
 			protected:
 				DirectionalLightComponent() : LightComponent() {};
@@ -28,7 +28,7 @@ namespace Twin2Engine {
 
 				void SetDirection(glm::vec3 dir);
 				void SetColor(glm::vec3 color);
-				void SetPower(float& power);
+				void SetPower(float power);
 		};
 	}
 }

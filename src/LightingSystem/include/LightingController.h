@@ -7,9 +7,9 @@
 #include <graphic/Shader.h>
 #include <core/EventHandler.h>
 
-#define MAX_POINT_LIGHTS 8
-#define MAX_SPOT_LIGHTS 8
-#define MAX_DIRECTIONAL_LIGHTS 4
+constexpr const unsigned int MAX_POINT_LIGHTS = 8;
+constexpr const unsigned int MAX_SPOT_LIGHTS = 8;
+constexpr const unsigned int MAX_DIRECTIONAL_LIGHTS = 4;
 
 namespace LightingSystem {
 	class LightingController {
@@ -30,16 +30,16 @@ namespace LightingSystem {
 			};
 
 			struct LightingData {													//32
-				glm::vec3 ambientLight = glm::vec3(0.0f, 0.0f, 0.0f);				//0		12
-				glm::vec3 viewerPosition = glm::vec3(0.0f, 0.0f, 0.0f);				//12	12
+				alignas(16) glm::vec3 ambientLight;				//0		12
+				alignas(16) glm::vec3 viewerPosition;				//12	12
 				// 0 - blinnPhong, 1 - toon
-				int shadingType = 0;												//24	4
+				int shadingType = 0;								//24	4
 			};
 			//Lights lights;
 
 		public:
 			static float DLShadowCastingRange;
-			Twin2Engine::Core::EventHandler<> ViewerTransformChanged;
+			Twin2Engine::Core::MethodEventHandler ViewerTransformChanged;
 
 			static const int SHADOW_WIDTH;
 			static const int SHADOW_HEIGHT;
@@ -84,15 +84,5 @@ namespace LightingSystem {
 			void SetAmbientLight(glm::vec3 ambientLightColor);
 			void SetViewerPosition(glm::vec3& viewerPosition);
 			void SetShadingType(int type);
-			//void SetGamma(float gamma);
-
-			/*/
-			void RegisterPointLight(PointLight* pointLight);
-			void RegisterSpotLight(SpotLight* spotLight);
-			void RegisterDirLight(DirectionalLight* dirLight);
-
-			void UnregisterPointLight(PointLight* pointLight);
-			void UnregisterSpotLight(SpotLight* spotLight);
-			void UnregisterDirLight(DirectionalLight* dirLight);/**/
 	};
 }

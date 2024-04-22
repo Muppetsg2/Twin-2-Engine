@@ -20,7 +20,7 @@ float LightingController::DLShadowCastingRange = 15.0f;
 LightingController::LightingController() {
 	glGenBuffers(1, &LightsBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Lights), nullptr, GL_DYNAMIC_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Lights), NULL, GL_DYNAMIC_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, LightsBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
@@ -94,9 +94,8 @@ void LightingController::UpdatePointLights() {
 		++itr;
 		++plNumber;
 	}
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int), &plNumber);
-	constexpr size_t offset = 4 * sizeof(unsigned int);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, plNumber * sizeof(PointLight), &pLights);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, offsetof(Lights, numberOfPointLights), sizeof(unsigned int), &plNumber);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, offsetof(Lights, pointLights), plNumber * sizeof(PointLight), &pLights);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
@@ -110,9 +109,8 @@ void LightingController::UpdateSpotLights() {
 		++itr;
 		++slNumber;
 	}
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, sizeof(unsigned int), sizeof(unsigned int), &slNumber);
-	constexpr size_t offset = 4 * sizeof(unsigned int) + MAX_POINT_LIGHTS * sizeof(PointLight);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, slNumber * sizeof(SpotLight), &sLights);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, offsetof(Lights, numberOfSpotLights), sizeof(unsigned int), &slNumber);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, offsetof(Lights, spotLights), slNumber * sizeof(SpotLight), &sLights);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
@@ -126,9 +124,8 @@ void LightingController::UpdateDirLights() {
 		++itr;
 		++dlNumber;
 	}
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 2 * sizeof(unsigned int), sizeof(unsigned int), &dlNumber);
-	constexpr size_t offset = 4 * sizeof(unsigned int) + MAX_POINT_LIGHTS * sizeof(PointLight) + MAX_SPOT_LIGHTS * sizeof(SpotLight);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, dlNumber * sizeof(DirectionalLight), &dLights);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, offsetof(Lights, numberOfDirLights), sizeof(unsigned int), &dlNumber);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, offsetof(Lights, directionalLights), dlNumber * sizeof(DirectionalLight), &dLights);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
@@ -138,8 +135,7 @@ void LightingController::UpdatePLPosition(PointLight* pointLight) {
 
 	if (pos < MAX_POINT_LIGHTS) {
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
-		size_t offset = 4 * sizeof(unsigned int) + pos * sizeof(PointLight);
-		glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, sizeof(glm::vec3), &((*itr)->position));
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, offsetof(Lights, pointLights) + pos * sizeof(PointLight), sizeof(glm::vec3), &((*itr)->position));
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 }
@@ -150,8 +146,7 @@ void LightingController::UpdateSLTransform(SpotLight* spotLight) {
 
 	if (pos < MAX_SPOT_LIGHTS) {
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
-		size_t offset = 4 * sizeof(unsigned int) + MAX_POINT_LIGHTS * sizeof(PointLight) + pos * sizeof(SpotLight);
-		glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, 2 * sizeof(glm::vec3), *itr);
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, offsetof(Lights, spotLights) + pos * sizeof(SpotLight), sizeof(glm::vec3), *itr);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 }
@@ -162,7 +157,7 @@ void LightingController::UpdateDLTransform(DirectionalLight* dirLight) {
 
 	if (pos < MAX_DIRECTIONAL_LIGHTS) {
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
-		glBufferSubData(GL_SHADER_STORAGE_BUFFER, offsetof(Lights, directionalLights) + pos * sizeof(DirectionalLight), 96, *itr);
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, offsetof(Lights, directionalLights) + pos * sizeof(DirectionalLight), sizeof(glm::vec3), *itr);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 }
@@ -357,39 +352,6 @@ void LightingController::SetViewerPosition(glm::vec3& viewerPosition) {
 
 void LightingController::SetShadingType(int type) {
 	glBindBuffer(GL_UNIFORM_BUFFER, LightingDataBuffer);
-	glBufferSubData(GL_UNIFORM_BUFFER, 32, 4, &type);
+	glBufferSubData(GL_UNIFORM_BUFFER, offsetof(LightingData, shadingType), sizeof(unsigned int), &type);
 	glBindBuffer(GL_UNIFORM_BUFFER, NULL);
 }
-/*/
-void LightingController::SetGamma(float gamma) {
-	glBindBuffer(GL_UNIFORM_BUFFER, LightingDataBuffer);
-	glBufferSubData(GL_UNIFORM_BUFFER, 28, 4, &gamma);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-}
-/**/
-
-/*/
-void LightingController::RegisterPointLight(PointLight* pointLight) {
-	pointLights.insert(pointLight);
-}
-
-void LightingController::RegisterSpotLight(SpotLight* spotLight) {
-	spotLights.insert(spotLight);
-}
-
-void LightingController::RegisterDirLight(DirectionalLight* dirLight) {
-	dirLights.insert(dirLight);
-}
-
-
-void LightingController::UnregisterPointLight(PointLight* pointLight) {
-	pointLights.erase(pointLight);
-}
-
-void LightingController::UnregisterSpotLight(SpotLight* spotLight) {
-	spotLights.erase(spotLight);
-}
-
-void LightingController::UnregisterDirLight(DirectionalLight* dirLight) {
-	dirLights.erase(dirLight);
-}/**/

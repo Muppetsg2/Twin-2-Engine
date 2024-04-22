@@ -13,4 +13,4 @@ material:
       value: [1.0, 0.0, 0.0, 1.0]
     - name: shininess
       type: float
-      value: 8
+      value: 16

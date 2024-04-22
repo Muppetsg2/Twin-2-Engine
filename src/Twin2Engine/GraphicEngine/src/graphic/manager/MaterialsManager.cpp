@@ -141,6 +141,7 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 			SPDLOG_ERROR("Incorrect parameter type of loaded material. Parameter name: {}", parameterName);
 			break;
 		}
+		SPDLOG_INFO("LoadSHPR");
 
 		switch (typeHandleMap.at(parameterTypeHash))
 		{
@@ -232,7 +233,7 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 	materialsPaths[materialNameHash] = materialName;
 
 	LightingSystem::LightingController::Instance()->BindLightBuffors(materialData->shader);
-
+	
 	return Material(materialData);
 }
 

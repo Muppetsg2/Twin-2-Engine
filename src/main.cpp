@@ -405,6 +405,7 @@ int main(int, char**)
     SceneManager::LoadScene("testScene");
     //SceneManager::SaveScene("res/scenes/savedScene.yaml");
 
+    
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();

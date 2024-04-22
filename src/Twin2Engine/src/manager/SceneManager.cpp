@@ -381,6 +381,7 @@ void SceneManager::LoadScene(const string& name)
 			}
 		}
 	}
+
 	// Loading
 	for (size_t m : toLoadToUnload.first) {
 		Material mat = MaterialsManager::LoadMaterial(paths[m]);

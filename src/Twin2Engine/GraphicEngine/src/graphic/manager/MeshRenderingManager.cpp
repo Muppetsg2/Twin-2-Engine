@@ -3,7 +3,7 @@
 #include <graphic/InstatiatingMesh.h>
 #include <graphic/Window.h>
 
-#define USE_NAMED_BUFFER_SUBDATA 1
+#define USE_NAMED_BUFFER_SUBDATA 0
 
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;

@@ -23,7 +23,8 @@ namespace Twin2Engine::Core {
 		BLUR = 2,
 		NEGATIVE = 4,
 		GRAYSCALE = 8,
-		DEPTH = 16
+		DEPTH = 16,
+		OUTLINE = 32
 	};
 
 	enum RenderResolution {

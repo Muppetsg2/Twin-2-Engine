@@ -18,6 +18,7 @@ uniform bool hasVignette;
 uniform bool hasNegative;
 uniform bool hasGrayscale;
 uniform bool displayDepth;
+uniform bool hasOutline;
 
 vec3 applyVignette(vec3 color) {
     vec2 position = TexCoord.xy - vec2(0.5);  
@@ -78,15 +79,30 @@ vec3 applyBlur() {
     return color;
 }
 
+int getDepthOffset(int i, int offset) {
+    return min((1 + i + offset) % 4, 1) * (1 - 2 * (int((i + offset) / 4) % 2));
+}
+
+bool IsEdge(vec2 coord) {
+    float depth = getDepthValue(coord).r;
+    vec2 offset = 1.0 / textureSize(depthTexture, 0);
+
+    for (int i = 0; i < 8; ++i) {
+        float nearDepth = getDepthValue(coord.xy + (vec2(getDepthOffset(i, 1), getDepthOffset(i, -1)) * offset)).r;
+        if (abs(depth - nearDepth) > 0.1) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void main() {
 
-    vec3 res = vec3(0);
+    vec3 res = displayDepth ? getDepthValue(TexCoord) : texture(screenTexture, TexCoord).rgb;
 
-    if (displayDepth) {
-        res = getDepthValue(TexCoord);
-    }
-    else {
-        res = texture(screenTexture, TexCoord).rgb;
+    if (hasOutline) {
+        res = IsEdge(TexCoord) ? (displayDepth ? vec3(0.5) : vec3(0.0)) : res;
     }
 
     if (hasBlur) {

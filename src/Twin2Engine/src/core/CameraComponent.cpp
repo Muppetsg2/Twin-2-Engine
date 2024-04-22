@@ -413,6 +413,7 @@ void CameraComponent::Render()
 		_renderShader->SetBool("hasNegative", (_filters & RenderFilter::NEGATIVE) != 0);
 		_renderShader->SetBool("hasGrayscale", (_filters & RenderFilter::GRAYSCALE) != 0);
 		_renderShader->SetBool("displayDepth", (_filters & RenderFilter::DEPTH) != 0);
+		_renderShader->SetBool("hasOutline", (_filters & RenderFilter::OUTLINE) != 0);
 
 		_renderPlane.GetMesh(0)->Draw(1);
 	}

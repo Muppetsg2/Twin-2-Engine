@@ -676,44 +676,75 @@ void ModelsManager::LoadPiramid(ModelData* modelData)
     SPDLOG_INFO("Creating Simple Piramid Model");
 
     std::vector<Vertex> vertices{
-        {.Position = glm::vec3(-0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f, -1.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-        {.Position = glm::vec3(-0.5f,  0.0f,  0.0f), .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(0.0f, -1.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-        {.Position = glm::vec3(0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f, -1.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-        {.Position = glm::vec3(0.5f, -0.5f,  0.5f), .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(0.0f, -1.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-
-        {.Position = glm::vec3(0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f,  0.0f, -1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-        {.Position = glm::vec3(0.0f,  0.5f,  0.0f), .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3(0.0f,  0.0f, -1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-        {.Position = glm::vec3(-0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f,  0.0f, -1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-
-        {.Position = glm::vec3(-0.5f, -0.5f,  0.5f), .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f,  0.0f,  1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-        {.Position = glm::vec3(0.0f,  0.5f,  0.0f), .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3(0.0f,  0.0f,  1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-        {.Position = glm::vec3(0.5f, -0.5f,  0.5f), .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f,  0.0f,  1.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-
-        {.Position = glm::vec3(-0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(-1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-        {.Position = glm::vec3(0.0f,  0.5f,  0.0f), .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3(-1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-        {.Position = glm::vec3(-0.5f, -0.5f,  0.5f), .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(-1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-
-        {.Position = glm::vec3(0.5f, -0.5f,  0.5f), .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-        {.Position = glm::vec3(0.0f,  0.5f,  0.0f), .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3(1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) },
-        {.Position = glm::vec3(0.5f, -0.5f, -0.5f), .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(1.0f,  0.0f,  0.0f), .Tangent = glm::vec3(0.0f), .Bitangent = glm::vec3(0.0f) }
+        { .Position = glm::vec3(-0.5f, -0.353553f, 0.5f),   .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(0.0f, -1.0f, 0.0f),             .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, -1.0f)           },
+        { .Position = glm::vec3(0.5f, -0.353553f, 0.5f),    .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(0.0f, -1.0f, 0.0f),             .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, -1.0f)           },
+        { .Position = glm::vec3(-0.5f, -0.353553f, -0.5f),  .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f, -1.0f, 0.0f),             .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, -1.0f)           },
+        { .Position = glm::vec3(0.5f, -0.353553f, -0.5f),   .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f, -1.0f, 0.0f),             .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, 0.0f, -1.0f)           },
+        
+        { .Position = glm::vec3(-0.5f, -0.353553f, 0.5f),   .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f, 0.447214f, 0.894427f),    .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, -0.816497f, 0.57735f)  },
+        { .Position = glm::vec3(0.5f, -0.353553f, 0.5f),    .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f, 0.447214f, 0.894427f),    .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, -0.816497f, 0.57735f)  },
+        { .Position = glm::vec3(0.0f, 0.353553f, 0.0f),     .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3(0.0f, 0.447214f, 0.894427f),    .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),     .Bitangent = glm::vec3(0.0f, -0.816497f, 0.57735f)  },
+        
+        { .Position = glm::vec3(0.5f, -0.353553f, 0.5f),    .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.894427f, 0.447214f, 0.0f),    .Tangent = glm::vec3(0.0f, 0.0f, -1.0f),    .Bitangent = glm::vec3(0.57735f, -0.816497f, 0.0f)  },
+        { .Position = glm::vec3(0.5f, -0.353553f, -0.5f),   .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.894427f, 0.447214f, 0.0f),    .Tangent = glm::vec3(0.0f, 0.0f, -1.0f),    .Bitangent = glm::vec3(0.57735f, -0.816497f, 0.0f)  },
+        { .Position = glm::vec3(0.0f, 0.353553f, 0.0f),     .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3(0.894427f, 0.447214f, 0.0f),    .Tangent = glm::vec3(0.0f, 0.0f, -1.0f),    .Bitangent = glm::vec3(0.57735f, -0.816497f, 0.0f)  },
+        
+        { .Position = glm::vec3(0.5f, -0.353553f, -0.5f),   .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f, 0.447214f, -0.894427f),   .Tangent = glm::vec3(-1.0f, 0.0f, 0.0f),    .Bitangent = glm::vec3(0.0f, -0.816497f, -0.57735f) },
+        { .Position = glm::vec3(-0.5f, -0.353553f, -0.5f),  .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f, 0.447214f, -0.894427f),   .Tangent = glm::vec3(-1.0f, 0.0f, 0.0f),    .Bitangent = glm::vec3(0.0f, -0.816497f, -0.57735f) },
+        { .Position = glm::vec3(0.0f, 0.353553f, 0.0f),     .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3(0.0f, 0.447214f, -0.894427f),   .Tangent = glm::vec3(-1.0f, 0.0f, 0.0f),    .Bitangent = glm::vec3(0.0f, -0.816497f, -0.57735f) },
+        
+        { .Position = glm::vec3(-0.5f, -0.353553f, -0.5f),  .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(-0.894427f, 0.447214f, 0.0f),   .Tangent = glm::vec3(0.0f, 0.0f, 1.0f),     .Bitangent = glm::vec3(-0.57735f, -0.816497f, 0.0f) },
+        { .Position = glm::vec3(-0.5f, -0.353553f, 0.5f),   .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(-0.894427f, 0.447214f, 0.0f),   .Tangent = glm::vec3(0.0f, 0.0f, 1.0f),     .Bitangent = glm::vec3(-0.57735f, -0.816497f, 0.0f) },
+        { .Position = glm::vec3(0.0f, 0.353553f, 0.0f),     .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3(-0.894427f, 0.447214f, 0.0f),   .Tangent = glm::vec3(0.0f, 0.0f, 1.0f),     .Bitangent = glm::vec3(-0.57735f, -0.816497f, 0.0f) }
     };
 
     std::vector<unsigned int> indices{
-        // Bottom Face
-        0, 1, 2,
-        2, 1, 3,
+        0, 2, 1,
+        1, 2, 3,
 
-        // Front Triangle
         4, 5, 6,
 
-        // Back Triangle
         7, 8, 9,
 
-        // Left Triangle
         10, 11, 12,
 
-        // Right Triangle
         13, 14, 15
+    };
+
+    modelData->meshes.resize(1);
+    modelData->meshes[0] = new InstatiatingMesh(vertices, indices);
+}
+
+void ModelsManager::LoadTetrahedron(ModelData* modelData)
+{
+    SPDLOG_INFO("Creating Simple Tetrahedron Model");
+
+    std::vector<Vertex> vertices{
+        { .Position = glm::vec3(0.0f, -0.333333f, 0.577350f),   .TexCoords = glm::vec2(0.5f, 1.0f), .Normal = glm::vec3(0.0f, -1.0f, 0.0f),                 .Tangent = glm::vec3(-1.0f, 0.0f, 0.0f),        .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)                    },
+        { .Position = glm::vec3(0.5f, -0.333333f, -0.288675f),  .TexCoords = glm::vec2(0.0f, 0.0f), .Normal = glm::vec3(0.0f, -1.0f, 0.0f),                 .Tangent = glm::vec3(-1.0f, 0.0f, 0.0f),        .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)                    },
+        { .Position = glm::vec3(-0.5f, -0.333333f, -0.288675f), .TexCoords = glm::vec2(1.0f, 0.0f), .Normal = glm::vec3(0.0f, -1.0f, 0.0f),                 .Tangent = glm::vec3(-1.0f, 0.0f, 0.0f),        .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)                    },
+        
+        { .Position = glm::vec3(0.0f, -0.333333f, 0.577350f),   .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.344124f, 0.917663f, 0.19868f),    .Tangent = glm::vec3(0.5f, 0.0f, -0.866025f),   .Bitangent = glm::vec3(0.344124f, -0.917663f, 0.19868f)     },
+        { .Position = glm::vec3(0.5f, -0.333333f, -0.288675f),  .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.344124f, 0.917663f, 0.19868f),    .Tangent = glm::vec3(0.5f, 0.0f, -0.866025f),   .Bitangent = glm::vec3(0.344124f, -0.917663f, 0.19868f)     },
+        { .Position = glm::vec3(0.0f, 0.333333f, 0.0f),         .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3(0.344124f, 0.917663f, 0.19868f),    .Tangent = glm::vec3(0.5f, 0.0f, -0.866025f),   .Bitangent = glm::vec3(0.344124f, -0.917663f, 0.19868f)     },
+        
+        { .Position = glm::vec3(0.5f, -0.333333f, -0.288675f),  .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(0.0f, 0.917663f, -0.39736f),        .Tangent = glm::vec3(-1.0f, 0.0f, 0.0f),        .Bitangent = glm::vec3(0.0f, -0.917663f, -0.39736f)         },
+        { .Position = glm::vec3(-0.5f, -0.333333f, -0.288675f), .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(0.0f, 0.917663f, -0.39736f),        .Tangent = glm::vec3(-1.0f, 0.0f, 0.0f),        .Bitangent = glm::vec3(0.0f, -0.917663f, -0.39736f)         },
+        { .Position = glm::vec3(0.0f, 0.333333f, 0.0f),         .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3(0.0f, 0.917663f, -0.39736f),        .Tangent = glm::vec3(-1.0f, 0.0f, 0.0f),        .Bitangent = glm::vec3(0.0f, -0.917663f, -0.39736f)         },
+        
+        { .Position = glm::vec3(-0.5f, -0.333333f, -0.288675f), .TexCoords = glm::vec2(0.0f, 1.0f), .Normal = glm::vec3(-0.344124f, 0.917663f, 0.19868f),   .Tangent = glm::vec3(0.5f, 0.0f, 0.866025f),    .Bitangent = glm::vec3(-0.344124f, -0.917663f, 0.19868f)    },
+        { .Position = glm::vec3(0.0f, -0.333333f, 0.577350f),   .TexCoords = glm::vec2(1.0f, 1.0f), .Normal = glm::vec3(-0.344124f, 0.917663f, 0.19868f),   .Tangent = glm::vec3(0.5f, 0.0f, 0.866025f),    .Bitangent = glm::vec3(-0.344124f, -0.917663f, 0.19868f)    },
+        { .Position = glm::vec3(0.0f, 0.333333f, 0.0f),         .TexCoords = glm::vec2(0.5f, 0.0f), .Normal = glm::vec3(-0.344124f, 0.917663f, 0.19868f),   .Tangent = glm::vec3(0.5f, 0.0f, 0.866025f),    .Bitangent = glm::vec3(-0.344124f, -0.917663f, 0.19868f)    }
+    };
+
+    std::vector<unsigned int> indices{
+        0, 2, 1,
+
+        3, 4, 5,
+
+        6, 7, 8,
+
+        9, 10, 11
     };
 
     modelData->meshes.resize(1);
@@ -811,6 +842,96 @@ void ModelsManager::LoadCylinder(ModelData* modelData)
     modelData->meshes[0] = new InstatiatingMesh(vertices, indices);
 }
 
+void ModelsManager::LoadHexagon(ModelData* modelData)
+{
+    SPDLOG_INFO("Creating Simple Hexagon Model");
+
+    std::vector<Vertex> vertices {
+        { .Position = glm::vec3(0.0f, 0.5f, 1.0f),          .TexCoords = glm::vec2(0.5f, 1.0f),         .Normal = glm::vec3(0.0f, 1.0f, 0.0f),          .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),         .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)    },
+        { .Position = glm::vec3(0.866025f, 0.5f, 0.5f),     .TexCoords = glm::vec2(0.933013f, 0.75f),   .Normal = glm::vec3(0.0f, 1.0f, 0.0f),          .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),         .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)    },
+        { .Position = glm::vec3(0.866025f, 0.5f, -0.5f),    .TexCoords = glm::vec2(0.933013f, 0.25f),   .Normal = glm::vec3(0.0f, 1.0f, 0.0f),          .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),         .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)    },
+        { .Position = glm::vec3(0.0f, 0.5f, -1.0f),         .TexCoords = glm::vec2(0.5f, 0.0f),         .Normal = glm::vec3(0.0f, 1.0f, 0.0f),          .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),         .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)    },
+        { .Position = glm::vec3(-0.866025f, 0.5f, -0.5f),   .TexCoords = glm::vec2(0.066987f, 0.25f),   .Normal = glm::vec3(0.0f, 1.0f, 0.0f),          .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),         .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)    },
+        { .Position = glm::vec3(-0.866025f, 0.5f, 0.5f),    .TexCoords = glm::vec2(0.066987f, 0.75f),   .Normal = glm::vec3(0.0f, 1.0f, 0.0f),          .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),         .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)    },
+        { .Position = glm::vec3(0.0f, 0.5f, 0.0f),          .TexCoords = glm::vec2(0.5f, 0.5f),         .Normal = glm::vec3(0.0f, 1.0f, 0.0f),          .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),         .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)    },
+        
+        { .Position = glm::vec3(0.0f, 0.5f, 1.0f),          .TexCoords = glm::vec2(0.0f, 0.0f),         .Normal = glm::vec3(0.5f, 0.0f, 0.866025f),     .Tangent = glm::vec3(0.866025f, 0.0f, -0.5f),   .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(0.866025f, 0.5f, 0.5f),     .TexCoords = glm::vec2(1.0f, 0.0f),         .Normal = glm::vec3(0.5f, 0.0f, 0.866025f),     .Tangent = glm::vec3(0.866025f, 0.0f, -0.5f),   .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(0.866025f, 0.5f, 0.5f),     .TexCoords = glm::vec2(0.0f, 0.0f),         .Normal = glm::vec3(1.0f, 0.0f, 0.0f),          .Tangent = glm::vec3(0.0f, 0.0f, -1.0f),        .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(0.866025f, 0.5f, -0.5f),    .TexCoords = glm::vec2(1.0f, 0.0f),         .Normal = glm::vec3(1.0f, 0.0f, 0.0f),          .Tangent = glm::vec3(0.0f, 0.0f, -1.0f),        .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        
+        { .Position = glm::vec3(0.866025f, 0.5f, -0.5f),    .TexCoords = glm::vec2(0.0f, 0.0f),         .Normal = glm::vec3(0.5f, 0.0f, -0.866025f),    .Tangent = glm::vec3(-0.866025f, 0.0f, -0.5f),  .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(0.0f, 0.5f, -1.0f),         .TexCoords = glm::vec2(1.0f, 0.0f),         .Normal = glm::vec3(0.5f, 0.0f, -0.866025f),    .Tangent = glm::vec3(-0.866025f, 0.0f, -0.5f),  .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(0.0f, 0.5f, -1.0f),         .TexCoords = glm::vec2(0.0f, 0.0f),         .Normal = glm::vec3(-0.5f, 0.0f, -0.866025f),   .Tangent = glm::vec3(-0.866025f, 0.0f, 0.5f),   .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(-0.866025f, 0.5f, -0.5f),   .TexCoords = glm::vec2(1.0f, 0.0f),         .Normal = glm::vec3(-0.5f, 0.0f, -0.866025f),   .Tangent = glm::vec3(-0.866025f, 0.0f, 0.5f),   .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        
+        { .Position = glm::vec3(-0.866025f, 0.5f, -0.5f),   .TexCoords = glm::vec2(0.0f, 0.0f),         .Normal = glm::vec3(-1.0f, 0.0f, 0.0f),         .Tangent = glm::vec3(0.0f, 0.0f, 1.0f),         .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(-0.866025f, 0.5f, 0.5f),    .TexCoords = glm::vec2(1.0f, 0.0f),         .Normal = glm::vec3(-1.0f, 0.0f, 0.0f),         .Tangent = glm::vec3(0.0f, 0.0f, 1.0f),         .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(-0.866025f, 0.5f, 0.5f),    .TexCoords = glm::vec2(0.0f, 0.0f),         .Normal = glm::vec3(-0.5f, 0.0f, 0.866025f),    .Tangent = glm::vec3(0.866025f, 0.0f, 0.5f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(0.0f, 0.5f, 1.0f),          .TexCoords = glm::vec2(1.0f, 0.0f),         .Normal = glm::vec3(-0.5f, 0.0f, 0.866025f),    .Tangent = glm::vec3(0.866025f, 0.0f, 0.5f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        
+        { .Position = glm::vec3(0.0f, -0.5f, 1.0f),         .TexCoords = glm::vec2(0.0f, 1.0f),         .Normal = glm::vec3(0.5f, 0.0f, 0.866025f),     .Tangent = glm::vec3(0.866025f, 0.0f, -0.5f),   .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(0.866025f, -0.5f, 0.5f),    .TexCoords = glm::vec2(1.0f, 1.0f),         .Normal = glm::vec3(0.5f, 0.0f, 0.866025f),     .Tangent = glm::vec3(0.866025f, 0.0f, -0.5f),   .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(0.866025f, -0.5f, 0.5f),    .TexCoords = glm::vec2(0.0f, 1.0f),         .Normal = glm::vec3(1.0f, 0.0f, 0.0f),          .Tangent = glm::vec3(0.0f, 0.0f, -1.0f),        .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(0.866025f, -0.5f, -0.5f),   .TexCoords = glm::vec2(1.0f, 1.0f),         .Normal = glm::vec3(1.0f, 0.0f, 0.0f),          .Tangent = glm::vec3(0.0f, 0.0f, -1.0f),        .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        
+        { .Position = glm::vec3(0.866025f, -0.5f, -0.5f),   .TexCoords = glm::vec2(0.0f, 1.0f),         .Normal = glm::vec3(0.5f, 0.0f, -0.866025f),    .Tangent = glm::vec3(-0.866025f, 0.0f, -0.5f),  .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(0.0f, -0.5f, -1.0f),        .TexCoords = glm::vec2(1.0f, 1.0f),         .Normal = glm::vec3(0.5f, 0.0f, -0.866025f),    .Tangent = glm::vec3(-0.866025f, 0.0f, -0.5f),  .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(0.0f, -0.5f, -1.0f),        .TexCoords = glm::vec2(0.0f, 1.0f),         .Normal = glm::vec3(-0.5f, 0.0f, -0.866025f),   .Tangent = glm::vec3(-0.866025f, 0.0f, 0.5f),   .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(-0.866025f, -0.5f, -0.5f),  .TexCoords = glm::vec2(1.0f, 1.0f),         .Normal = glm::vec3(-0.5f, 0.0f, -0.866025f),   .Tangent = glm::vec3(-0.866025f, 0.0f, 0.5f),   .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        
+        { .Position = glm::vec3(-0.866025f, -0.5f, -0.5f),  .TexCoords = glm::vec2(0.0f, 1.0f),         .Normal = glm::vec3(-1.0f, 0.0f, 0.0f),         .Tangent = glm::vec3(0.0f, 0.0f, 1.0f),         .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(-0.866025f, -0.5f, 0.5f),   .TexCoords = glm::vec2(1.0f, 1.0f),         .Normal = glm::vec3(-1.0f, 0.0f, 0.0f),         .Tangent = glm::vec3(0.0f, 0.0f, 1.0f),         .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(-0.866025f, -0.5f, 0.5f),   .TexCoords = glm::vec2(0.0f, 1.0f),         .Normal = glm::vec3(-0.5f, 0.0f, 0.866025f),    .Tangent = glm::vec3(0.866025f, 0.0f, 0.5f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        { .Position = glm::vec3(0.0f, -0.5f, 1.0f),         .TexCoords = glm::vec2(1.0f, 1.0f),         .Normal = glm::vec3(-0.5f, 0.0f, 0.866025f),    .Tangent = glm::vec3(0.866025f, 0.0f, 0.5f),    .Bitangent = glm::vec3(0.0f, -1.0f, 0.0f)   },
+        
+        { .Position = glm::vec3(0.0f, -0.5f, 1.0f),         .TexCoords = glm::vec2(0.5f, 1.0f),         .Normal = glm::vec3(0.0f, -1.0f, 0.0f),         .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),         .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)    },
+        { .Position = glm::vec3(0.866025f, -0.5f, 0.5f),    .TexCoords = glm::vec2(0.933013f, 0.75f),   .Normal = glm::vec3(0.0f, -1.0f, 0.0f),         .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),         .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)    },
+        { .Position = glm::vec3(0.866025f, -0.5f, -0.5f),   .TexCoords = glm::vec2(0.933013f, 0.25f),   .Normal = glm::vec3(0.0f, -1.0f, 0.0f),         .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),         .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)    },
+        { .Position = glm::vec3(0.0f, -0.5f, -1.0f),        .TexCoords = glm::vec2(0.5f, 0.0f),         .Normal = glm::vec3(0.0f, -1.0f, 0.0f),         .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),         .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)    },
+        { .Position = glm::vec3(-0.866025f, -0.5f, -0.5f),  .TexCoords = glm::vec2(0.066987f, 0.25f),   .Normal = glm::vec3(0.0f, -1.0f, 0.0f),         .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),         .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)    },
+        { .Position = glm::vec3(-0.866025f, -0.5f, 0.5f),   .TexCoords = glm::vec2(0.066987f, 0.75f),   .Normal = glm::vec3(0.0f, -1.0f, 0.0f),         .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),         .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)    },
+        { .Position = glm::vec3(0.0f, -0.5f, 0.0f),         .TexCoords = glm::vec2(0.5f, 0.5f),         .Normal = glm::vec3(0.0f, -1.0f, 0.0f),         .Tangent = glm::vec3(1.0f, 0.0f, 0.0f),         .Bitangent = glm::vec3(0.0f, 0.0f, 1.0f)    }
+    };
+
+    std::vector<unsigned int> indices{
+        0, 1, 6,
+        1, 2, 6,
+        2, 3, 6,
+        3, 4, 6,
+        4, 5, 6,
+        5, 0, 6,
+
+        7, 19, 8,
+        8, 19, 20,
+        
+        9, 21, 10,
+        10, 21, 22,
+        
+        11, 23, 12,
+        12, 23, 24,
+        
+        13, 25, 14,
+        14, 25, 26,
+        
+        15, 27, 16,
+        16, 27, 28,
+        
+        17, 29, 18,
+        18, 29, 30,
+
+        32, 31, 37,
+        33, 32, 37,
+        34, 33, 37,
+        35, 34, 37,
+        36, 35, 37,
+        31, 36, 37
+    };
+
+    modelData->meshes.resize(1);
+    modelData->meshes[0] = new InstatiatingMesh(vertices, indices);
+}
+
 ModelData* ModelsManager::LoadModelData(const std::string& modelPath)
 {
     size_t strHash = stringHash(modelPath);
@@ -842,8 +963,14 @@ ModelData* ModelsManager::LoadModelData(const std::string& modelPath)
         else if (modelPath == PIRAMID_PATH) {
             LoadPiramid(modelData);
         }
+        else if (modelPath == TETRAHEDRON_PATH) {
+            LoadTetrahedron(modelData);
+        }
         else if (modelPath == CYLINDER_PATH) {
             LoadCylinder(modelData);
+        }
+        else if (modelPath == HEXAGON_PATH) {
+            LoadHexagon(modelData);
         }
         else {
 #if ASSIMP_LOADING
@@ -908,8 +1035,16 @@ void ModelsManager::UnloadPiramid() {
     UnloadModel(PIRAMID_PATH);
 }
 
+void ModelsManager::UnloadTetrahedron() {
+    UnloadModel(TETRAHEDRON_PATH);
+}
+
 void ModelsManager::UnloadCylinder() {
     UnloadModel(CYLINDER_PATH);
+}
+
+void ModelsManager::UnloadHexagon() {
+    UnloadModel(HEXAGON_PATH);
 }
 
 std::pair<glm::vec3, glm::vec3> ModelsManager::CalcTangentBitangent(std::vector<Vertex> vertices, unsigned int i1, unsigned int i2, unsigned int i3)
@@ -1045,8 +1180,16 @@ InstatiatingModel ModelsManager::GetPiramid() {
     return GetModel(stringHash(PIRAMID_PATH));
 }
 
+InstatiatingModel ModelsManager::GetTetrahedron() {
+    return GetModel(stringHash(TETRAHEDRON_PATH));
+}
+
 InstatiatingModel ModelsManager::GetCylinder() {
     return GetModel(stringHash(CYLINDER_PATH));
+}
+
+InstatiatingModel ModelsManager::GetHexagon() {
+    return GetModel(stringHash(HEXAGON_PATH));
 }
 
 InstatiatingModel ModelsManager::CreateModel(const std::string& modelName, std::vector<Vertex> vertices, std::vector<unsigned int> indices)

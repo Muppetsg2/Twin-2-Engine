@@ -57,6 +57,35 @@ vec3 getDepthValue(vec2 coord) {
     return vec3(Linear01Depth(texture(depthTexture, coord).r, nearPlane, farPlane));
 }
 
+int getDepthOffset(int i, int offset) {
+    return min((1 + i + offset) % 4, 1) * (1 - 2 * (int((i + offset) / 4) % 2));
+}
+
+bool IsEdge(vec2 coord) {
+    float depth = getDepthValue(coord).r;
+    vec2 offset = 1.0 / textureSize(depthTexture, 0);
+
+    for (int i = 0; i < 8; i+=2) {
+        float nearDepth = getDepthValue(coord.xy + (vec2(getDepthOffset(i, 1), getDepthOffset(i, -1)) * offset)).r;
+        if (abs(depth - nearDepth) > 0.0007) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+vec3 getColor(vec2 coord) {
+    vec3 outlineColor = vec3(1.0);
+    vec3 res = displayDepth ? getDepthValue(coord) : texture(screenTexture, coord).rgb;
+
+    if (hasOutline) {
+        res = IsEdge(coord) ? (displayDepth ? outlineColor / 2.0 : outlineColor) : res;
+    }
+
+    return res;
+}
+
 vec3 applyBlur() {
     vec2 direction = normalize(vec2(1.0));
     vec2 resolution = displayDepth ? textureSize(depthTexture, 0) : textureSize(screenTexture, 0);
@@ -67,43 +96,21 @@ vec3 applyBlur() {
     vec2 off2 = vec2(3.2941176470588234) * direction;
     vec2 off3 = vec2(5.176470588235294) * direction;
 
-    color += (displayDepth ? getDepthValue(uv) : texture(screenTexture, uv).rgb) * 0.1964825501511404;
-    color += (displayDepth ? getDepthValue(uv + (off1 / resolution)) : texture(screenTexture, uv + (off1 / resolution)).rgb) * 0.2969069646728344;
-    color += (displayDepth ? getDepthValue(uv - (off1 / resolution)) : texture(screenTexture, uv - (off1 / resolution)).rgb) * 0.2969069646728344;
+    color += getColor(uv) * 0.1964825501511404;
+    color += getColor(uv + (off1 / resolution)) * 0.2969069646728344;
+    color += getColor(uv - (off1 / resolution)) * 0.2969069646728344;
 
-    color += (displayDepth ? getDepthValue(uv + (off2 / resolution)) : texture(screenTexture, uv + (off2 / resolution)).rgb) * 0.09447039785044732;
-    color += (displayDepth ? getDepthValue(uv - (off2 / resolution)) : texture(screenTexture, uv - (off2 / resolution)).rgb) * 0.09447039785044732;
+    color += getColor(uv + (off2 / resolution)) * 0.09447039785044732;
+    color += getColor(uv - (off2 / resolution)) * 0.09447039785044732;
 
-    color += (displayDepth ? getDepthValue(uv + (off3 / resolution)) : texture(screenTexture, uv + (off3 / resolution)).rgb) * 0.010381362401148057;
-    color += (displayDepth ? getDepthValue(uv - (off3 / resolution)) : texture(screenTexture, uv - (off3 / resolution)).rgb) * 0.010381362401148057;
+    color += getColor(uv + (off3 / resolution)) * 0.010381362401148057;
+    color += getColor(uv - (off3 / resolution)) * 0.010381362401148057;
     return color;
-}
-
-int getDepthOffset(int i, int offset) {
-    return min((1 + i + offset) % 4, 1) * (1 - 2 * (int((i + offset) / 4) % 2));
-}
-
-bool IsEdge(vec2 coord) {
-    float depth = getDepthValue(coord).r;
-    vec2 offset = 1.0 / textureSize(depthTexture, 0);
-
-    for (int i = 0; i < 8; ++i) {
-        float nearDepth = getDepthValue(coord.xy + (vec2(getDepthOffset(i, 1), getDepthOffset(i, -1)) * offset)).r;
-        if (abs(depth - nearDepth) > 0.1) {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 void main() {
 
-    vec3 res = displayDepth ? getDepthValue(TexCoord) : texture(screenTexture, TexCoord).rgb;
-
-    if (hasOutline) {
-        res = IsEdge(TexCoord) ? (displayDepth ? vec3(0.5) : vec3(0.0)) : res;
-    }
+    vec3 res = getColor(TexCoord);
 
     if (hasBlur) {
         res = applyBlur();

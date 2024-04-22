@@ -624,7 +624,7 @@ int main(int, char**)
     InstatiatingModel mountainModel = ModelsManager::LoadModel("res/models/mountain.obj");
     GameObject* mountainPrefab = new GameObject();
     comp = mountainPrefab->AddComponent<MeshRenderer>();
-    comp->AddMaterial(MaterialsManager::GetMaterial("Basic2"));
+    comp->AddMaterial(MaterialsManager::GetMaterial("MountainsUnlit"));
     comp->SetModel(mountainModel);
     MountainsGenerator mountainsGenerator;
     mountainsGenerator.prefabMountains = mountainPrefab;

@@ -5,6 +5,7 @@ using namespace Twin2Engine::Core;
 
 size_t Twin2Engine::Core::GameObject::_currentFreeId = 1;
 list<size_t> Twin2Engine::Core::GameObject::_freedIds;
+std::unordered_set<std::string_view> Twin2Engine::Core::GameObject::AllTags;
 
 GameObject::GameObject(size_t id) {
 	
@@ -227,6 +228,35 @@ void GameObject::UpdateComponents()
 		if (component->IsEnable()) component->Update();
 	}
 }
+
+
+void GameObject::AddTag(std::string_view tagName) {
+	auto tagItr = AllTags.find(tagName);
+	if (tagItr == AllTags.end()) {
+		AllTags.insert(tagName);
+		tagItr = AllTags.find(tagName);
+	}
+
+	tagsIndexes.insert(std::distance(AllTags.begin(), tagItr));
+}
+
+void GameObject::RemoveTag(std::string_view tagName) {
+	auto tagItr = AllTags.find(tagName);
+	if (tagItr != AllTags.end()) {
+		tagsIndexes.erase(std::distance(AllTags.begin(), tagItr));
+	}
+}
+
+bool GameObject::HasTag(std::string_view tagName) {
+	auto tagItr = AllTags.find(tagName);
+	if (tagItr != AllTags.end()) {
+		return tagsIndexes.contains((char)std::distance(AllTags.begin(), tagItr));
+	}
+	else {
+		return false;
+	}
+}
+
 
 YAML::Node GameObject::Serialize() const
 {

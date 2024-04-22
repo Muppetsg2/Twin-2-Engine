@@ -28,6 +28,7 @@ namespace CollisionSystem {
 	public:
 		bool isTrigger = false;
 		bool isStatic = false;
+
 		Layer layer = Layer::DEFAULT;
 		LayerCollisionFilter& layersFilter = GLOBAL_LAYERS_FILTERS[int(layer)];
 		BoundingVolume* boundingVolume = nullptr;

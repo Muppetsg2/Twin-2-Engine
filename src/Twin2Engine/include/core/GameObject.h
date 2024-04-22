@@ -6,6 +6,7 @@ using std::string;
 
 #include <core/Component.h>
 #include <core/Transform.h>
+#include <LayersData.h>
 
 using Twin2Engine::Core::Component;
 
@@ -34,6 +35,9 @@ namespace Twin2Engine::Core
 		static std::list<size_t> _freedIds;
 		static size_t GetFreeId();
 		static void FreeId(size_t id);
+		
+		static std::unordered_set<std::string_view> AllTags;
+		std::unordered_set<char> tagsIndexes;
 
 		size_t _id;
 		string _name;
@@ -73,6 +77,11 @@ namespace Twin2Engine::Core
 
 		void Update();
 		void UpdateComponents();
+
+		void AddTag(std::string_view tagName);
+		void RemoveTag(std::string_view tagName);
+		bool HasTag(std::string_view tagName);
+		//Layer layer = Layer::DEFAULT;
 
 		YAML::Node Serialize() const;
 

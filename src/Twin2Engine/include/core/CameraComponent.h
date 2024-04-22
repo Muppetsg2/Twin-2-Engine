@@ -77,6 +77,7 @@ namespace Twin2Engine::Core {
 
 	public:
 		static std::vector<CameraComponent*> Cameras;
+		bool IsFrustumCullingOn = true;
 
 		CameraType GetCameraType() const;
 		uint8_t GetCameraFilters() const;

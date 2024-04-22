@@ -433,7 +433,7 @@ int main(int, char**)
     DirectionalLightComponent* dl = dl_go->AddComponent<DirectionalLightComponent>();
     dl->SetColor(glm::vec3(1.0f));
     LightingController::Instance()->SetViewerPosition(cameraPos);
-    LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f));
+    LightingController::Instance()->SetAmbientLight(glm::vec3(0.2f));
 #pragma endregion
 
     // Main loop

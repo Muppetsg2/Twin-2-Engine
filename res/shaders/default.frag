@@ -196,13 +196,19 @@ float CalculateBlinnPhong(vec3 lightDir, vec3 viewDir, vec3 normal, float shinin
         halfDir = normalize(halfDir + data.highlight_translate.x * data.du + data.highlight_translate.y * data.dv);
 
         // ROTATION (NIE DZIA£A)
-        //halfDir = normalize(halfDir + dot(halfDir, data.du) * data.highlight_rotation.x + dot(halfDir, data.dv) * data.highlight_rotation.y);
+        halfDir = normalize(halfDir + dot(halfDir, data.du) * data.highlight_rotation.x + dot(halfDir, data.dv) * data.highlight_rotation.y);
 
         // SCALE (NIE DZIA£A)
-        //halfDir = normalize(halfDir - data.highlight_scale.x * dot(halfDir, data.du) * data.du - data.highlight_scale.y * dot(halfDir, data.dv) * data.dv);
+        halfDir = normalize(halfDir - data.highlight_scale.x * dot(halfDir, data.du) * data.du - data.highlight_scale.y * dot(halfDir, data.dv) * data.dv);
 
         // SPLIT (NIE DZIA£A ALE JAKO SCALE XD?)
         halfDir = normalize(halfDir - data.highlight_split.x * sign(dot(halfDir, data.du)) * data.du - data.highlight_split.y * sign(dot(halfDir, data.dv)) * data.dv);
+
+        // SQUARE
+        vec3 v = normalize(dot(halfDir, data.du) * data.du + dot(halfDir, data.dv) * data.dv);
+        float theta = min(1.0 / cos(dot(v, data.du)), 1.0 / cos(dot(v, data.dv)));
+        float k = pow(sin(2.0 * theta), data.highlight_square_n);
+        halfDir = normalize(halfDir - k * data.highlight_square_x * v);
     }
     return pow(max(dot(normal, halfDir), 0.0), shininess);
 }

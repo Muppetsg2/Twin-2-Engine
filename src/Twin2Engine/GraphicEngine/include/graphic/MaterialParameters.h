@@ -3,6 +3,21 @@
 
 #include <core/YamlConverters.h>
 
+/*
+bool, int, uint, float, double -> wyrównywane do 4 i zapisywane na 4
+
+vec2, ivec2 itp. -> wyrównywanie do 8 i zapisywanie na 8
+
+vec3, ivec3, vec4, ivec4 -> wyrównywanie do 16 i zapisywanie na 16
+
+lista skalarów lub vektorów:
+	- element ma wielkoœæ standardow¹
+	- zaokr¹glon¹ do najbli¿szej wielokrotnoœci 16
+	- na koñcu mo¿e byæ padding
+	- ostatnii element te¿ jest zaokr¹glony do pe³nej 16
+	- ca³kowity rozmiar to N * 16
+*/
+
 namespace Twin2Engine
 {
 	namespace Manager {

@@ -1095,6 +1095,20 @@ void imgui_render()
                         defaultMat.GetMaterialParameters()->Set("highlight_split", highlightSplit);
                     }
                 }
+
+                static int highlightSquareN = defaultMat.GetMaterialParameters()->Get<int>("highlight_square_n");
+                if (ImGui::InputInt("Highlight Square N", &highlightSquareN)) {
+                    if (highlightSquareN != defaultMat.GetMaterialParameters()->Get<int>("highlight_square_n")) {
+                        defaultMat.GetMaterialParameters()->Set("highlight_square_n", highlightSquareN);
+                    }
+                }
+
+                static float highlightSquareX = defaultMat.GetMaterialParameters()->Get<float>("highlight_square_x");
+                if (ImGui::InputFloat("Highlight Square X", &highlightSquareX)) {
+                    if (highlightSquareX != defaultMat.GetMaterialParameters()->Get<float>("highlight_square_x")) {
+                        defaultMat.GetMaterialParameters()->Set("highlight_square_x", highlightSquareX);
+                    }
+                }
             }
         }
 #pragma endregion

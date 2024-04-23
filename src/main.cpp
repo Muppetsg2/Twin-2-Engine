@@ -1067,6 +1067,34 @@ void imgui_render()
                         defaultMat.GetMaterialParameters()->Set("specular_toon_borders", specularToonBorders);
                     }
                 }
+
+                static vec2 highlightTranslate = defaultMat.GetMaterialParameters()->Get<vec2>("highlight_translate");
+                if (ImGui::InputFloat2("Highlight Translate", (float*)&highlightTranslate)) {
+                    if (highlightTranslate != defaultMat.GetMaterialParameters()->Get<vec2>("highlight_translate")) {
+                        defaultMat.GetMaterialParameters()->Set("highlight_translate", highlightTranslate);
+                    }
+                }
+
+                static vec2 highlightRotation = defaultMat.GetMaterialParameters()->Get<vec2>("highlight_rotation");
+                if (ImGui::InputFloat2("Highlight Rotation", (float*)&highlightRotation)) {
+                    if (highlightRotation != defaultMat.GetMaterialParameters()->Get<vec2>("highlight_rotation")) {
+                        defaultMat.GetMaterialParameters()->Set("highlight_rotation", highlightRotation);
+                    }
+                }
+
+                static vec2 highlightScale = defaultMat.GetMaterialParameters()->Get<vec2>("highlight_scale");
+                if (ImGui::InputFloat2("Highlight Scale", (float*)&highlightScale)) {
+                    if (highlightScale != defaultMat.GetMaterialParameters()->Get<vec2>("highlight_scale")) {
+                        defaultMat.GetMaterialParameters()->Set("highlight_scale", highlightScale);
+                    }
+                }
+
+                static vec2 highlightSplit = defaultMat.GetMaterialParameters()->Get<vec2>("highlight_split");
+                if (ImGui::InputFloat2("Highlight Split", (float*)&highlightSplit)) {
+                    if (highlightSplit != defaultMat.GetMaterialParameters()->Get<vec2>("highlight_split")) {
+                        defaultMat.GetMaterialParameters()->Set("highlight_split", highlightSplit);
+                    }
+                }
             }
         }
 #pragma endregion

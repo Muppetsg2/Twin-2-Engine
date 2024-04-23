@@ -60,6 +60,8 @@ struct FragmentData {
     float inv_specular_toon_borders;
 
     // TOON HIGHLIGHT AFFINE TRANSFORMATIONS
+    vec3 du;
+    vec3 dv;
     vec2 highlight_translate;
     vec2 highlight_rotation;
     vec2 highlight_scale;
@@ -191,7 +193,16 @@ float CalculateBlinnPhong(vec3 lightDir, vec3 viewDir, vec3 normal, float shinin
     // TOON AFFINITE TRANSFORMS
     if (shadingType == 1) {
         // TRANSLATE
-        
+        halfDir = normalize(halfDir + data.highlight_translate.x * data.du + data.highlight_translate.y * data.dv);
+
+        // ROTATION (NIE DZIA£A)
+        //halfDir = normalize(halfDir + dot(halfDir, data.du) * data.highlight_rotation.x + dot(halfDir, data.dv) * data.highlight_rotation.y);
+
+        // SCALE (NIE DZIA£A)
+        //halfDir = normalize(halfDir - data.highlight_scale.x * dot(halfDir, data.du) * data.du - data.highlight_scale.y * dot(halfDir, data.dv) * data.dv);
+
+        // SPLIT (NIE DZIA£A ALE JAKO SCALE XD?)
+        halfDir = normalize(halfDir - data.highlight_split.x * sign(dot(halfDir, data.du)) * data.du - data.highlight_split.y * sign(dot(halfDir, data.dv)) * data.dv);
     }
     return pow(max(dot(normal, halfDir), 0.0), shininess);
 }
@@ -202,6 +213,15 @@ float CalculatePhong(vec3 lightDir, vec3 viewDir, vec3 normal, float shininess) 
 
 float CalculateToon(float value, float toonBorders, float invToonBorders) {
     return invToonBorders * floor(value * (toonBorders + 1.0));
+}
+
+vec3 CalculateDUVector() {
+    // Other Random point on plane
+    vec3 pointDir = vec3(10.0, 0.0, 0.0);
+    float dist = pointDir.x * data.normal.x + pointDir.y * data.normal.y + pointDir.z * data.normal.z;
+    vec3 randomPoint = (fs_in.fragPos + pointDir) - dist * data.normal;
+
+    return normalize(randomPoint - fs_in.fragPos);
 }
 
 // LIGHT TYPES
@@ -316,6 +336,8 @@ void main()
         data.inv_specular_toon_borders = data.specular_toon_borders == 0 ? 1.0 : 1.0 / data.specular_toon_borders;
 
         // TOON HIGHLIGHT AFFINE TRANSFORMATIONS
+        data.du = CalculateDUVector();
+        data.dv = normalize(cross(data.du, data.normal));
         data.highlight_translate = mat.highlight_translate;
         data.highlight_rotation = mat.highlight_rotation;
         data.highlight_scale = vec2(clamp(mat.highlight_scale.x, 0.0, 1.0), clamp(mat.highlight_scale.y, 0.0, 1.0));

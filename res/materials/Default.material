@@ -22,13 +22,13 @@ material:
       type: float
       value: 16
 # TOON SHADING PARAMETERS
-    - name: diffuseToonBorders
+    - name: diffuse_toon_borders
       type: uint
       value: 3
-    - name: specularToonBorders
+    - name: specular_toon_borders
       type: uint
       value: 1
-    - name: highlight_transform
+    - name: highlight_translate
       type: vec2
       value: [0.0, 0.0]
     - name: highlight_translate

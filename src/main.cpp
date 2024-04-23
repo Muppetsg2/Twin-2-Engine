@@ -1163,6 +1163,13 @@ void imgui_render()
                 acFil |= RenderFilter::DEPTH;
             }
 
+            g = (fil & RenderFilter::OUTLINE) != 0;
+
+            ImGui::Checkbox("Outline", &g);
+            if (g) {
+                acFil |= RenderFilter::OUTLINE;
+            }
+
             c->SetCameraFilter(acFil);
 
             int s = (int)c->GetSamples();

@@ -7,11 +7,13 @@ std::unordered_map<size_t, ScriptableObject::ScriptableObjectData> ScriptableObj
 
 void ScriptableObject::Serialize(YAML::Node& node) const
 {
-
+	node["__SO_RegisteredName__"] = "ScriptableObject";
+	//node["id"] = _id;
 }
 
 bool ScriptableObject::Deserialize(const YAML::Node& node)
 {
+	//_id = node["id"].as<int>();
 	return true;
 }
 
@@ -23,4 +25,10 @@ ScriptableObject* ScriptableObject::Create()
 void ScriptableObject::Register()
 {
 
+}
+
+
+size_t ScriptableObject::GetId() const
+{
+	return _id;
 }

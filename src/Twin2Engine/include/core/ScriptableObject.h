@@ -1,6 +1,13 @@
 #ifndef _SCRIPTABLE_OBJECT_H_
 #define _SCRIPTABLE_OBJECT_H_
 
+#include <manager/ScriptableObjectManager.h>
+
+namespace Twin2Engine::Manager
+{
+	class ScriptableObjectManager;
+}
+
 namespace Twin2Engine::Core
 {
 	class ScriptableObject;
@@ -10,9 +17,12 @@ namespace Twin2Engine::Core
 
 	class ScriptableObject
 	{
+		friend class Twin2Engine::Manager::ScriptableObjectManager;
+
 		friend class ScriptableObjectRegister<ScriptableObject>;
 		static void Register();
 
+		size_t _id;
 	protected:
 		static std::hash<std::string> hasher;
 		struct ScriptableObjectData
@@ -24,6 +34,7 @@ namespace Twin2Engine::Core
 		static std::unordered_map<size_t, ScriptableObjectData> scriptableObjects;
 
 	public:
+		size_t GetId() const;
 
 		virtual void Serialize(YAML::Node& node) const;
 		virtual bool Deserialize(const YAML::Node& node);
@@ -52,12 +63,14 @@ namespace Twin2Engine::Core
 
 #define SCRIPTABLE_OBJECT_BODY(ScriptableObjectClass) \
 		friend class Twin2Engine::Core::ScriptableObjectRegister<ScriptableObjectClass>; \
+		static std::string _registeredName; \
 		static Twin2Engine::Core::ScriptableObject* Create(); \
 		static void Register(); \
 
 #define SCRIPTABLE_OBJECT_SOURCE_CODE(ScriptableObjectClass, ScriptableObjectNamespace, RegisteredName) \
 namespace ScriptableObjectNamespace \
 { \
+	std::string ScriptableObjectClass::_registeredName = RegisteredName; \
 	Twin2Engine::Core::ScriptableObject* ScriptableObjectClass::Create() \
 	{ \
 		return new ScriptableObjectClass(); \
@@ -65,7 +78,7 @@ namespace ScriptableObjectNamespace \
 	  \
 	void ScriptableObjectClass::Register() \
 	{ \
-		scriptableObjects[hasher(RegisteredName)] = ScriptableObjectData { .scriptableObjectName = RegisteredName, .createSpecificScriptableObject = ScriptableObjectClass::Create }; \
+		scriptableObjects[hasher(_registeredName)] = ScriptableObjectData { .scriptableObjectName = _registeredName, .createSpecificScriptableObject = ScriptableObjectClass::Create }; \
 	} \
 	  \
 	Twin2Engine::Core::ScriptableObjectRegister<ScriptableObjectClass> registererInstance##ScriptableObjectClass(); \
@@ -104,30 +117,30 @@ namespace ScriptableObjectNamespace \
 
 //*
 #define SERIALIZABLE_SCRIPTABLE_OBJECT(ScriptableObjectClass) \
-template<> struct YAML::convert<ScriptableObjectClass> { \
-	static Node encode(const ScriptableObjectClass& rhs) { \
-		Node node; \
-		rhs.Serialize(node); \
-		return node; \
-	} \
- \
-	static bool decode(const Node& node, ScriptableObjectClass& rhs) \
-	{ \
-		rhs.Deserialize(node); \
-	} \
-}; \
-template<> struct YAML::convert<ScriptableObjectClass*> { \
-	static Node encode(const ScriptableObjectClass*& rhs) { \
-		Node node; \
-		rhs->Serialize(node); \
-		return node; \
-	} \
- \
-	static bool decode(const Node& node, ScriptableObjectClass*& rhs) \
-	{ \
-		rhs->Deserialize(node); \
-	} \
-}; \
+//template<> struct YAML::convert<ScriptableObjectClass> { \
+//	static Node encode(const ScriptableObjectClass& rhs) { \
+//		Node node; \
+//		rhs.Serialize(node); \
+//		return node; \
+//	} \
+// \
+//	static bool decode(const Node& node, ScriptableObjectClass& rhs) \
+//	{ \
+//		rhs.Deserialize(node); \
+//	} \
+//}; \
+//template<> struct YAML::convert<ScriptableObjectClass*> { \
+//	static Node encode(const ScriptableObjectClass*& rhs) { \
+//		Node node; \
+//		rhs->Serialize(node); \
+//		return node; \
+//	} \
+// \
+//	static bool decode(const Node& node, ScriptableObjectClass*& rhs) \
+//	{ \
+//		rhs->Deserialize(node); \
+//	} \
+//}; \
 
 
 
@@ -137,7 +150,8 @@ virtual void Serialize(YAML::Node& node) const override;
 #define SO_SERIALIZATION_BEGIN(ScriptableObjectClass, ScriptableObjectBaseClass) \
 void ScriptableObjectClass::Serialize(YAML::Node& node) const \
 { \
-	ScriptableObjectBaseClass::Serialize(node);
+	ScriptableObjectBaseClass::Serialize(node); \
+	node["__SO_RegisteredName__"] = _registeredName;
 
 #define SO_SERIALIZATION_END() \
 }

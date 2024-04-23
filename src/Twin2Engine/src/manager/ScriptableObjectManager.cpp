@@ -40,9 +40,10 @@ ScriptableObject* ScriptableObjectManager::Get(const std::string& path)
 {
 	size_t pathHash = _hasher(path);
 	if (_scriptableObjects.contains(pathHash)) {
-		SPDLOG_WARN("ScriptableObject '{0}' already loaded", path);
+		//SPDLOG_WARN("ScriptableObject '{0}' already loaded", path);
 		return _scriptableObjects[pathHash];
 	}
+	SPDLOG_WARN("ScriptableObject '{0}' not loaded", path);
 	return nullptr;
 }
 
@@ -50,9 +51,10 @@ ScriptableObject* ScriptableObjectManager::Get(size_t id)
 {
 	if (_scriptableObjects.contains(id)) 
 	{
-		SPDLOG_WARN("ScriptableObject '{0}' already loaded", id);
+		//SPDLOG_WARN("ScriptableObject '{0}' already loaded", id);
 		return _scriptableObjects[id];
 	}
+	SPDLOG_WARN("ScriptableObject '{0}' not loaded", id);
 	return nullptr;
 }
 

@@ -27,6 +27,7 @@ vector<size_t> SceneManager::_audiosIds;
 vector<size_t> SceneManager::_materialsIds;
 vector<size_t> SceneManager::_modelsIds;
 vector<size_t> SceneManager::_prefabsIds;
+vector<size_t> SceneManager::_scriptableObjectsIds;
 
 map<size_t, Scene*> SceneManager::_loadedScenes;
 
@@ -309,10 +310,11 @@ void SceneManager::LoadScene(const string& name)
 	for (unsigned int i = 0; i < sceneToLoad->_scriptableObjects.size(); i++)
 	{
 		size_t id = ScriptableObjectManager::SceneDeserialize(0, sceneToLoad->_scriptableObjects[i]);
-		if (std::find(_scriptableObjectsIds.begin(), _scriptableObjectsIds.end(), [id](size_t soId) -> bool { return soId == id; }) == _scriptableObjectsIds.end())
+		if (std::find_if(_scriptableObjectsIds.cbegin(), _scriptableObjectsIds.cend(), [id](const size_t& soId) { return soId == id; }) == _scriptableObjectsIds.end())
 		{
 			_scriptableObjectsIds.push_back(id);
 		}
+		//_scriptableObjectsIds.push_back(id);
 	}
 	//pathGetter = [](const string& path) -> string { return path; };
 	//unloader = [](size_t id) -> bool { return true; };

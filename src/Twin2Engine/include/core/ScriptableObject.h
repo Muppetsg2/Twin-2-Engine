@@ -12,8 +12,9 @@ namespace Twin2Engine::Core
 	{
 		friend class ScriptableObjectRegister<ScriptableObject>;
 		static void Register();
-		static std::hash<std::string> hasher;
 
+	protected:
+		static std::hash<std::string> hasher;
 		struct ScriptableObjectData
 		{
 			std::string scriptableObjectName;
@@ -24,8 +25,8 @@ namespace Twin2Engine::Core
 
 	public:
 
-		virtual void Serialize(YAML::Node& node);
-		virtual void Deserialize(const YAML::Node& node);
+		virtual void Serialize(YAML::Node& node) const;
+		virtual bool Deserialize(const YAML::Node& node);
 
 		static ScriptableObject* Create();
 	};
@@ -49,15 +50,15 @@ namespace Twin2Engine::Core
 	}
 }
 
-#define SCIPTABLE_OBJECT_BODY(ScriptableObjectClass) \
+#define SCRIPTABLE_OBJECT_BODY(ScriptableObjectClass) \
 		friend class Twin2Engine::Core::ScriptableObjectRegister<ScriptableObjectClass>; \
-		static ScriptableObject* Create(); \
+		static Twin2Engine::Core::ScriptableObject* Create(); \
 		static void Register(); \
 
 #define SCRIPTABLE_OBJECT_SOURCE_CODE(ScriptableObjectClass, ScriptableObjectNamespace, RegisteredName) \
+namespace ScriptableObjectNamespace \
 { \
-	using namespace ScriptableObjectNamespace; \
-	ScriptableObject* ScriptableObjectClass::Create() \
+	Twin2Engine::Core::ScriptableObject* ScriptableObjectClass::Create() \
 	{ \
 		return new ScriptableObjectClass(); \
 	} \
@@ -70,4 +71,90 @@ namespace Twin2Engine::Core
 	Twin2Engine::Core::ScriptableObjectRegister<ScriptableObjectClass> registererInstance##ScriptableObjectClass(); \
 } \
 
+//template<class T>
+//struct ScriplableObjectYAMLConverter : public YAML::convert
+//{
+//	static Node encode(const T& rhs) {
+//		Node node;
+//		rhs.Serialize(node);
+//		return node;
+//	}
+//
+//	static bool decode(const Node& node, T& rhs)
+//	{
+//		return rhs.Deserialize(node);
+//	}
+//};
+//template<class T>
+//struct ScriplableObjectPtrYAMLConverter : public YAML::convert<T*>
+//{
+//	static Node encode(const T*& rhs) {
+//		Node node;
+//		rhs->Serialize(node);
+//		return node;
+//	}
+//
+//	static bool decode(const Node& node, T*& rhs)
+//	{
+//		return rhs->Deserialize(node);
+//	}
+//};
+//using ScriplableObjectYAMLConverter_##ScriptableObjectClass = ScriplableObjectYAMLConverter<ScriptableObjectClass>; \
+//using ScriplableObjectPtrYAMLConverter_##ScriptableObjectClass = ScriplableObjectPtrYAMLConverter<ScriptableObjectClass>; \
+
+//*
+#define SERIALIZABLE_SCRIPTABLE_OBJECT(ScriptableObjectClass) \
+template<> struct YAML::convert<ScriptableObjectClass> { \
+	static Node encode(const ScriptableObjectClass& rhs) { \
+		Node node; \
+		rhs.Serialize(node); \
+		return node; \
+	} \
+ \
+	static bool decode(const Node& node, ScriptableObjectClass& rhs) \
+	{ \
+		rhs.Deserialize(node); \
+	} \
+}; \
+template<> struct YAML::convert<ScriptableObjectClass*> { \
+	static Node encode(const ScriptableObjectClass*& rhs) { \
+		Node node; \
+		rhs->Serialize(node); \
+		return node; \
+	} \
+ \
+	static bool decode(const Node& node, ScriptableObjectClass*& rhs) \
+	{ \
+		rhs->Deserialize(node); \
+	} \
+}; \
+
+
+#define SO_SERIALIZE_FIELD(field) \
+	node[#field] = field;
+#define SO_SERIALIZE_FIELD_F(field, serializer) \
+	node[#field] = serializer(field);
+#define SO_SERIALIZE_FIELD_R(name, field) \
+	node[name] = field;
+#define SO_SERIALIZE_FIELD_F_R(name, field, serializer) \
+	node[name] = serializer(field);
+
+//#define SO_DESERIALIZE_FIELD(field, type) \
+//	field = node[#field].as<type>();
+//#define SO_DESERIALIZE_FIELD_R(name, field, type) \
+//	field = node[name].as<type>();
+//#define SO_DESERIALIZE_FIELD_F(field, deserializer) \
+//	field = deserializer(node[#field]);
+//#define SO_DESERIALIZE_FIELD_F_R(name, field, deserializer) \
+//	field = deserializer(node[name]);
+
+#define SO_DESERIALIZE_FIELD(field) \
+	field = node[#field].as<decltype(field)>();
+#define SO_DESERIALIZE_FIELD_F(field, deserializer) \
+	field = deserializer(node[#field]);
+#define SO_DESERIALIZE_FIELD_R(name, field) \
+	field = node[name].as<decltype(field)>();
+#define SO_DESERIALIZE_FIELD_F_R(name, field, deserializer) \
+	field = deserializer(node[name]);
+/**/
 #endif // !_SCRIPTABLE_OBJECT_H_

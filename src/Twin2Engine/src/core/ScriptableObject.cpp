@@ -2,21 +2,25 @@
 
 using namespace Twin2Engine::Core;
 
-void Twin2Engine::Core::ScriptableObject::Serialize(YAML::Node& node)
+std::hash<std::string> ScriptableObject::hasher;
+std::unordered_map<size_t, ScriptableObject::ScriptableObjectData> ScriptableObject::scriptableObjects;
+
+void ScriptableObject::Serialize(YAML::Node& node) const
 {
 
 }
 
-void Twin2Engine::Core::ScriptableObject::Deserialize(const YAML::Node& node)
+bool ScriptableObject::Deserialize(const YAML::Node& node)
 {
+	return true;
 }
 
-ScriptableObject* Twin2Engine::Core::ScriptableObject::Create()
+ScriptableObject* ScriptableObject::Create()
 {
 	return new ScriptableObject();
 }
 
-void Twin2Engine::Core::ScriptableObject::Register()
+void ScriptableObject::Register()
 {
 
 }

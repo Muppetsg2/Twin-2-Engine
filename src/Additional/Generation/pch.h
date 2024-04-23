@@ -30,3 +30,5 @@
 //#include <core/Transform.h>
 // 
 // ALGORITHMS
+
+#include <core/ScriptableObject.h>

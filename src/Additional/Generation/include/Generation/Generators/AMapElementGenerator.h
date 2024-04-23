@@ -5,8 +5,10 @@
 
 namespace Generation::Generators
 {
-	class AMapElementGenerator
+	class AMapElementGenerator : public Twin2Engine::Core::ScriptableObject
 	{
+		//SCIPTABLE_OBJECT_BODY(AMapElementGenerator)
+
 	public:
 		AMapElementGenerator() = default;
 		virtual ~AMapElementGenerator() { } 

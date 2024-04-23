@@ -11,6 +11,22 @@ using namespace glm;
 
 using namespace std;
 
+SCRIPTABLE_OBJECT_SOURCE_CODE(SectorsGenerator, Generation::Generators, "SectorsGenerator")
+
+SO_SERIALIZATION_BEGIN(SectorsGenerator, AMapElementGenerator)
+SO_SERIALIZE_FIELD(minTilesPerSector)
+SO_SERIALIZE_FIELD(maxTilesPerSector)
+SO_SERIALIZE_FIELD(accuracyFactor)
+SO_SERIALIZATION_END()
+
+SO_DESERIALIZATION_BEGIN(SectorsGenerator, AMapElementGenerator)
+SO_DESERIALIZE_FIELD(minTilesPerSector)
+SO_DESERIALIZE_FIELD(maxTilesPerSector)
+SO_DESERIALIZE_FIELD(accuracyFactor)
+SO_DESERIALIZATION_END()
+
+
+
 
 void SectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
 {

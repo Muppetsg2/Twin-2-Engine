@@ -130,6 +130,18 @@ template<> struct YAML::convert<ScriptableObjectClass*> { \
 }; \
 
 
+
+#define SO_SERIALIZE() \
+virtual void Serialize(YAML::Node& node) const override;
+
+#define SO_SERIALIZATION_BEGIN(ScriptableObjectClass, ScriptableObjectBaseClass) \
+void ScriptableObjectClass::Serialize(YAML::Node& node) const \
+{ \
+	ScriptableObjectBaseClass::Serialize(node);
+
+#define SO_SERIALIZATION_END() \
+}
+
 #define SO_SERIALIZE_FIELD(field) \
 	node[#field] = field;
 #define SO_SERIALIZE_FIELD_F(field, serializer) \
@@ -139,14 +151,18 @@ template<> struct YAML::convert<ScriptableObjectClass*> { \
 #define SO_SERIALIZE_FIELD_F_R(name, field, serializer) \
 	node[name] = serializer(field);
 
-//#define SO_DESERIALIZE_FIELD(field, type) \
-//	field = node[#field].as<type>();
-//#define SO_DESERIALIZE_FIELD_R(name, field, type) \
-//	field = node[name].as<type>();
-//#define SO_DESERIALIZE_FIELD_F(field, deserializer) \
-//	field = deserializer(node[#field]);
-//#define SO_DESERIALIZE_FIELD_F_R(name, field, deserializer) \
-//	field = deserializer(node[name]);
+
+#define SO_DESERIALIZE() \
+virtual bool Deserialize(const YAML::Node& node) override;
+
+#define SO_DESERIALIZATION_BEGIN(ScriptableObjectClass, ScriptableObjectBaseClass) \
+bool ScriptableObjectClass::Deserialize(const YAML::Node& node) \
+{ \
+	bool baseReturned = ScriptableObjectBaseClass::Deserialize(node);
+
+#define SO_DESERIALIZATION_END() \
+	return baseReturned; \
+}
 
 #define SO_DESERIALIZE_FIELD(field) \
 	field = node[#field].as<decltype(field)>();
@@ -156,5 +172,14 @@ template<> struct YAML::convert<ScriptableObjectClass*> { \
 	field = node[name].as<decltype(field)>();
 #define SO_DESERIALIZE_FIELD_F_R(name, field, deserializer) \
 	field = deserializer(node[name]);
+//#define SO_DESERIALIZE_FIELD(field, type) \
+//	field = node[#field].as<type>();
+//#define SO_DESERIALIZE_FIELD_R(name, field, type) \
+//	field = node[name].as<type>();
+//#define SO_DESERIALIZE_FIELD_F(field, deserializer) \
+//	field = deserializer(node[#field]);
+//#define SO_DESERIALIZE_FIELD_F_R(name, field, deserializer) \
+//	field = deserializer(node[name]);
+
 /**/
 #endif // !_SCRIPTABLE_OBJECT_H_

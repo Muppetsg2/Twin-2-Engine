@@ -14,6 +14,8 @@ namespace Generation::Generators
 {
     class SectorGeneratorForRegionsByKMeans : public AMapElementGenerator 
     {
+        SCRIPTABLE_OBJECT_BODY(SectorGeneratorForRegionsByKMeans)
+
     public:
         Twin2Engine::Core::GameObject* sectorPrefab;
         int sectorsCount = 3; // Number of regions/clusters
@@ -24,5 +26,10 @@ namespace Generation::Generators
         float heightRangeFacor = 1.0f;
 
         void Generate(Tilemap::HexagonalTilemap* tilemap) override;
+
+        SO_SERIALIZE()
+        SO_DESERIALIZE()
     };
 }
+
+SERIALIZABLE_SCRIPTABLE_OBJECT(Generation::Generators::SectorGeneratorForRegionsByKMeans)

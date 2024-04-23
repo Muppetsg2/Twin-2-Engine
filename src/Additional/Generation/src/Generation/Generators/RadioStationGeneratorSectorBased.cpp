@@ -11,6 +11,18 @@ using namespace Twin2Engine::Manager;
 using namespace std;
 using namespace glm;
 
+SCRIPTABLE_OBJECT_SOURCE_CODE(RadioStationGeneratorSectorBased, Generation::Generators, "RadioStationGeneratorSectorBased")
+
+SO_SERIALIZATION_BEGIN(RadioStationGeneratorSectorBased, AMapElementGenerator)
+SO_SERIALIZE_FIELD(densityFactorPerSector)
+SO_SERIALIZATION_END()
+
+SO_DESERIALIZATION_BEGIN(RadioStationGeneratorSectorBased, AMapElementGenerator)
+SO_DESERIALIZE_FIELD(densityFactorPerSector)
+SO_DESERIALIZATION_END()
+
+
+
 void RadioStationGeneratorSectorBased::Generate(Tilemap::HexagonalTilemap* tilemap)
 {
     vector<MapSector*> sectors;

@@ -10,6 +10,20 @@ using namespace Twin2Engine::Core;
 using namespace std;
 using namespace glm;
 
+SCRIPTABLE_OBJECT_SOURCE_CODE(MountainsGenerator, Generation::Generators, "MountainsGenerator")
+
+SO_SERIALIZATION_BEGIN(MountainsGenerator, AMapElementGenerator)
+SO_SERIALIZE_FIELD(mountainsNumber)
+SO_SERIALIZE_FIELD(mountainsHeight)
+SO_SERIALIZATION_END()
+
+SO_DESERIALIZATION_BEGIN(MountainsGenerator, AMapElementGenerator)
+SO_DESERIALIZE_FIELD(mountainsNumber)
+SO_DESERIALIZE_FIELD(mountainsHeight)
+SO_DESERIALIZATION_END()
+
+
+
 void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
 {
     vector<MapSector*> sectors;

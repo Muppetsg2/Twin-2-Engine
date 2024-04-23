@@ -8,6 +8,26 @@ using namespace Twin2Engine::Core;
 using namespace glm;
 using namespace std;
 
+SCRIPTABLE_OBJECT_SOURCE_CODE(RegionsGeneratorByKMeans, Generation::Generators, "RegionsGeneratorByKMeans")
+
+SO_SERIALIZATION_BEGIN(RegionsGeneratorByKMeans, AMapElementGenerator)
+SO_SERIALIZE_FIELD(regionsCount)
+SO_SERIALIZE_FIELD(isDiscritizedHeight)
+SO_SERIALIZE_FIELD(lowerHeightRange)
+SO_SERIALIZE_FIELD(upperHeightRange)
+SO_SERIALIZE_FIELD(heightRangeFacor)
+SO_SERIALIZATION_END()
+
+SO_DESERIALIZATION_BEGIN(RegionsGeneratorByKMeans, AMapElementGenerator)
+SO_DESERIALIZE_FIELD(regionsCount)
+SO_DESERIALIZE_FIELD(isDiscritizedHeight)
+SO_DESERIALIZE_FIELD(lowerHeightRange)
+SO_DESERIALIZE_FIELD(upperHeightRange)
+SO_DESERIALIZE_FIELD(heightRangeFacor)
+SO_DESERIALIZATION_END()
+
+
+
 
 //template class ObjectsKMeans<GameObject*>;
 

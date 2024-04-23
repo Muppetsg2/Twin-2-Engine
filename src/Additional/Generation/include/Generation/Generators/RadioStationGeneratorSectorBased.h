@@ -12,12 +12,19 @@ namespace Generation::Generators
 {
 	class RadioStationGeneratorSectorBased : public AMapElementGenerator
 	{
+		SCRIPTABLE_OBJECT_BODY(RadioStationGeneratorSectorBased)
+
 	public:
 		Twin2Engine::Core::GameObject* prefabRadioStation;
 		float densityFactorPerSector = 1.0f;
 
 		virtual void Generate(Tilemap::HexagonalTilemap* tilemap) override;
+
+		SO_SERIALIZE()
+		SO_DESERIALIZE()
 	};
 }
+
+SERIALIZABLE_SCRIPTABLE_OBJECT(Generation::Generators::RadioStationGeneratorSectorBased)
 
 #endif // !_RADIO_STATION_GENERATOR_SECTOR_BASED_H_

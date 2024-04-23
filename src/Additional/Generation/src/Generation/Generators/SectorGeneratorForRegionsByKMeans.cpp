@@ -7,6 +7,26 @@ using namespace Tilemap;
 using namespace Twin2Engine::Core;
 using namespace glm;
 
+SCRIPTABLE_OBJECT_SOURCE_CODE(SectorGeneratorForRegionsByKMeans, Generation::Generators, "SectorGeneratorForRegionsByKMeans")
+
+SO_SERIALIZATION_BEGIN(SectorGeneratorForRegionsByKMeans, AMapElementGenerator)
+SO_SERIALIZE_FIELD(sectorsCount)
+SO_SERIALIZE_FIELD(isDiscritizedHeight)
+SO_SERIALIZE_FIELD(lowerHeightRange)
+SO_SERIALIZE_FIELD(upperHeightRange)
+SO_SERIALIZE_FIELD(heightRangeFacor)
+SO_SERIALIZATION_END()
+
+SO_DESERIALIZATION_BEGIN(SectorGeneratorForRegionsByKMeans, AMapElementGenerator)
+SO_DESERIALIZE_FIELD(sectorsCount)
+SO_DESERIALIZE_FIELD(isDiscritizedHeight)
+SO_DESERIALIZE_FIELD(lowerHeightRange)
+SO_DESERIALIZE_FIELD(upperHeightRange)
+SO_DESERIALIZE_FIELD(heightRangeFacor)
+SO_DESERIALIZATION_END()
+
+
+
 //template class ObjectsKMeans<MapHexTile*>;
 
 void SectorGeneratorForRegionsByKMeans::Generate(HexagonalTilemap* tilemap) 

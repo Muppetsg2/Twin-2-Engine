@@ -1,6 +1,7 @@
 #include <core/DirectionalLightComponent.h>
 #include <core/GameObject.h>
 #include <core/Transform.h>
+#include <core/YamlConverters.h>
 
 
 void Twin2Engine::Core::DirectionalLightComponent::Initialize()
@@ -16,9 +17,9 @@ void Twin2Engine::Core::DirectionalLightComponent::Initialize()
 	};
 
 
-	SPDLOG_INFO("DLC Initialization!");
+	//SPDLOG_INFO("DLC Initialization!");
 
-	light = new LightingSystem::DirectionalLight();
+	//light = new LightingSystem::DirectionalLight;
 	light->position = GetTransform()->GetGlobalPosition();
 
 	glGenFramebuffers(1, &light->shadowMapFBO);
@@ -94,4 +95,14 @@ void Twin2Engine::Core::DirectionalLightComponent::SetPower(float power)
 {
 	light->power = power;
 	dirtyFlag = true;
+}
+
+YAML::Node Twin2Engine::Core::DirectionalLightComponent::Serialize() const
+{
+	YAML::Node node = LightComponent::Serialize();
+	node["direction"] = light->direction;
+	node["color"] = light->color;
+	node["power"] = light->power;
+
+	return node;
 }

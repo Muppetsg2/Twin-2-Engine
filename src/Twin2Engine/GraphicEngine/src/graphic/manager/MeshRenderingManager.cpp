@@ -287,7 +287,9 @@ void MeshRenderingManager::RenderDepthMap()
 				instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
 				count -= MAX_INSTANCE_NUMBER_PER_DRAW;
 			}
+
 #if USE_NAMED_BUFFER_SUBDATA
+
 			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
 			glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4)* count, transforms.data() + instanceIndex);
 
@@ -298,6 +300,10 @@ void MeshRenderingManager::RenderDepthMap()
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
 			glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4)* count, transforms.data() + instanceIndex);
 
+			{GLenum error = glGetError();
+			if (error != GL_NO_ERROR) {
+				SPDLOG_ERROR("RDMError2: {}", error);
+			}}
 			//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
 			glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int)* count, indexes.data() + instanceIndex);
@@ -305,6 +311,10 @@ void MeshRenderingManager::RenderDepthMap()
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 #endif
 
+			{GLenum error = glGetError();
+			if (error != GL_NO_ERROR) {
+				SPDLOG_ERROR("RDMError3: {}", error);
+			}}
 			meshPair.first->Draw(count);
 
 			GLenum error = glGetError();

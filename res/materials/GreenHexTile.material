@@ -1,0 +1,10 @@
+material:
+  name: GreenHexTile
+  shader: origin/ColoredTexture
+  parameters:
+    - name: color
+      type: vec4
+      value: [0.0, 1.0, 0.0, 1.0]
+    - name: texture
+      type: texture2D
+      value: res/textures/hexEdgeTexture.png

@@ -195,13 +195,13 @@ float CalculateBlinnPhong(vec3 lightDir, vec3 viewDir, vec3 normal, float shinin
         // TRANSLATE
         halfDir = normalize(halfDir + data.highlight_translate.x * data.du + data.highlight_translate.y * data.dv);
 
-        // ROTATION (NIE DZIA£A)
+        // ROTATION (NIE DZIAï¿½A)
         halfDir = normalize(halfDir + dot(halfDir, data.du) * data.highlight_rotation.x + dot(halfDir, data.dv) * data.highlight_rotation.y);
 
-        // SCALE (NIE DZIA£A)
+        // SCALE (NIE DZIAï¿½A)
         halfDir = normalize(halfDir - data.highlight_scale.x * dot(halfDir, data.du) * data.du - data.highlight_scale.y * dot(halfDir, data.dv) * data.dv);
 
-        // SPLIT (NIE DZIA£A ALE JAKO SCALE XD?)
+        // SPLIT (NIE DZIAï¿½A ALE JAKO SCALE XD?)
         halfDir = normalize(halfDir - data.highlight_split.x * sign(dot(halfDir, data.du)) * data.du - data.highlight_split.y * sign(dot(halfDir, data.dv)) * data.dv);
 
         // SQUARE

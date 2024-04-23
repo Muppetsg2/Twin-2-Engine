@@ -295,7 +295,7 @@ GameObjects:
       enabled: true
       position:
         x: 2
-        y: 5
+        y: 25
         z: 0
       scale:
         x: 1
@@ -326,7 +326,7 @@ GameObjects:
       enabled: true
       position:
         x: 2
-        y: 3
+        y: 23
         z: 0
       scale:
         x: 1
@@ -357,7 +357,7 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: 3
+        y: 23
         z: 0
       scale:
         x: 1
@@ -389,7 +389,7 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: 0
+        y: 20
         z: 10
       scale:
         x: 1
@@ -420,7 +420,7 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: 0
+        y: 20
         z: 0
       scale:
         x: 1

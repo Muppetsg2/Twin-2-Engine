@@ -62,11 +62,31 @@
 #include <Tilemap/HexagonalTilemap.h>
 #include <Tilemap/HexagonalTile.h>
 
+// GENERATION
+#include <Generation/MapGenerator.h>
+#include <Generation/ContentGenerator.h>
+#include <Generation/MapRegion.h>
+#include <Generation/MapSector.h>
+#include <Generation/MapHexTile.h>
+#include <Generation/Generators/CitiesGenerator.h>
+#include <Generation/Generators/LakeGenerator.h>
+#include <Generation/Generators/MountainsGenerator.h>
+#include <Generation/Generators/RadioStationGeneratorRegionBased.h>
+#include <Generation/Generators/RadioStationGeneratorSectorBased.h>
+#include <Generation/Generators/RegionsBySectorsGenerator.h>
+#include <Generation/Generators/SectorsGenerator.h>
+#include <Generation/Generators/RegionsGeneratorByKMeans.h>
+#include <Generation/Generators/SectorGeneratorForRegionsByKMeans.h>
+
 // LIGHTING
 #include <LightingController.h>
 #include <core/PointLightComponent.h>
 #include <core/SpotLightComponent.h>
 #include <core/DirectionalLightComponent.h>
+
+// YAML CONVERTERS
+#include <core/YamlConverters.h>
+#include <Generation/YamlConverters.h>
 
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
@@ -83,6 +103,8 @@ using Twin2Engine::Core::Time;
 
 using Tilemap::HexagonalTile;
 using Tilemap::HexagonalTilemap;
+using namespace Generation;
+using namespace Generation::Generators;
 
 #pragma region CAMERA_CONTROLLING
 
@@ -172,8 +194,19 @@ const     char*   glsl_version     = "#version 450";
 constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 5;
 
-//HexagonalTilemap hexagonalTilemap(glm::ivec2(-5, -5), glm::ivec2(5, 5), 1.f, true);
+Material material;
+Material material2;
+Material wallMat;
+Material roofMat;
+InstatiatingModel modelMesh;
+GameObject* gameObject;
+GameObject* gameObject2;
+GameObject* gameObject3;
+GameObject* gameObject4;
 
+GameObject* imageObj;
+GameObject* imageObj2;
+GameObject* imageObj3;
 Image* image;
 float colorSpan = 1.f;
 Text* text;
@@ -370,46 +403,327 @@ int main(int, char**)
             capsuleCollider->SetRadius(node["radius"].as<float>());
         }
     );
+
+    ComponentDeserializer::AddDeserializer("LightComponent",
+        []() -> Component* {
+            return nullptr;
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            //LightingSystem::LightComponent* lightComponent = static_cast<LightingSystem::LightComponent*>(comp);
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("DirectionalLightComponent",
+        []() -> Component* {
+            return new DirectionalLightComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            DirectionalLightComponent* light = static_cast<DirectionalLightComponent*>(comp);
+            light->SetDirection(node["direction"].as<vec3>());
+            light->SetColor(node["color"].as<vec3>());
+            light->SetPower(node["power"].as<float>());
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("PointLightComponent",
+        []() -> Component* {
+            return new PointLightComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            PointLightComponent* light = static_cast<PointLightComponent*>(comp);
+            light->SetColor(node["color"].as<vec3>());
+            light->SetPower(node["power"].as<float>());
+            light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("SpotLightComponent",
+        []() -> Component* {
+            return new SpotLightComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            SpotLightComponent* light = static_cast<SpotLightComponent*>(comp);
+            light->SetDirection(node["direction"].as<vec3>());
+            light->SetColor(node["color"].as<vec3>());
+            light->SetPower(node["power"].as<float>());
+            light->SetOuterCutOff(node["outerCutOff"].as<float>());
+            light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
+        }
+    );
+
 #pragma endregion
 
+#pragma region TILEMAP_DESERIALIZER
+
+
+    ComponentDeserializer::AddDeserializer("HexagonalTilemap",
+        []() -> Component* {
+            return new HexagonalTilemap();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            HexagonalTilemap* hexagonalTilemap = static_cast<HexagonalTilemap*>(comp);
+            hexagonalTilemap->Resize(node["leftBottomPosition"].as<ivec2>(), node["rightTopPosition"].as<ivec2>());
+            // tilemap
+        }
+    );
+
+
+#pragma endregion
+
+#pragma region GENERATION_DESERIALIZER
+
+
+    ComponentDeserializer::AddDeserializer("MapGenerator",
+        []() -> Component* {
+            return new MapGenerator();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            MapGenerator* mapGenerator = static_cast<MapGenerator*>(comp);
+
+            //Tilemap::HexagonalTilemap* tilemap;
+            ////Tilemap::HexagonalTile* tile;
+            //Twin2Engine::Core::GameObject* preafabHexagonalTile;
+            //Twin2Engine::Core::GameObject* additionalTile;
+            //Twin2Engine::Core::GameObject* filledTile;
+            //Twin2Engine::Core::GameObject* pointTile;
+
+
+            //float generationRadius = 5.0f;
+            mapGenerator->generationRadiusMin = node["generationRadiusMin"].as<float>();
+            mapGenerator->generationRadiusMax = node["generationRadiusMax"].as<float>();
+            mapGenerator->minPointsNumber = node["minPointsNumber"].as<int>();
+            mapGenerator->maxPointsNumber = node["maxPointsNumber"].as<int>();
+            mapGenerator->angleDeltaRange = node["angleDeltaRange"].as<float>();
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("ContentGenerator",
+        []() -> Component* {
+            return new ContentGenerator();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            ContentGenerator* contentGenerator = static_cast<ContentGenerator*>(comp);
+
+            //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("MapHexTile",
+        []() -> Component* {
+            return new MapHexTile();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            MapHexTile* mapHexTile = static_cast<MapHexTile*>(comp);
+
+            mapHexTile->tilemap = nullptr;
+            mapHexTile->region = nullptr;
+            mapHexTile->sector = nullptr;
+            mapHexTile->tile = nullptr;
+            mapHexTile->type = node["type"].as<MapHexTile::HexTileType>();
+            //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("MapRegion",
+        []() -> Component* {
+            return new MapRegion();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            MapRegion* mapRegion = static_cast<MapRegion*>(comp);
+
+            mapRegion->tilemap = nullptr;
+            mapRegion->type = node["type"].as<MapRegion::RegionType>();
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("MapSector",
+        []() -> Component* {
+            return new MapSector();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            MapSector* mapSector = static_cast<MapSector*>(comp);
+
+
+            mapSector->tilemap = nullptr;
+            mapSector->region = nullptr;
+            mapSector->type = node["type"].as<MapSector::SectorType>();
+        }
+    );
+
+#pragma endregion
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
     SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
-    /*
+#pragma region SETTING_UP_GENERATION
+    InstatiatingModel modelHexagon = ModelsManager::LoadModel("res/models/hexagon.obj");
     GameObject* hexagonPrefab = new GameObject();
-    hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 4, 0));
+    hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
     hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
-
-    //spdlog::info("hexagon rotation: [{}, {}, {}]", hexagonPrefab->GetTransform()->GetLocalRotation().x, hexagonPrefab->GetTransform()->GetLocalRotation().y, hexagonPrefab->GetTransform()->GetLocalRotation().z);
-
-    comp = hexagonPrefab->AddComponent<MeshRenderer>();
-    comp->AddMaterial(MaterialsManager::GetMaterial("hexagonMat"));
+    MapHexTile* mapHexTile = hexagonPrefab->AddComponent<MapHexTile>();
+    
+    auto comp = hexagonPrefab->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("ColoredHexTile"));
+    //comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
     comp->SetModel(modelHexagon);
 
-    float tilemapFillingBeginTime = glfwGetTime();
-    hexagonalTilemap.Fill(glm::ivec2(0, 0), hexagonPrefab);
-    spdlog::info("Tilemap filling time: {}", glfwGetTime() - tilemapFillingBeginTime);
-    hexagonalTilemap.GetTile(glm::ivec2(-5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    hexagonalTilemap.GetTile(glm::ivec2(5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    hexagonalTilemap.GetTile(glm::ivec2(-5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    hexagonalTilemap.GetTile(glm::ivec2(5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
+    GameObject* redHexagonPrefab = new GameObject();
+    redHexagonPrefab->GetTransform()->Translate(glm::vec3(3, 4, 0));
+    redHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    mapHexTile = redHexagonPrefab->AddComponent<MapHexTile>();
 
-    GameObject go1;
-    GameObject go2;
-    go1.GetTransform()->SetLocalPosition(glm::vec3(1.0f, 0.0f, 0.0f));
-    go2.GetTransform()->SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
-    Twin2Engine::Core::BoxColliderComponent* bc1 = go1.AddComponent<Twin2Engine::Core::BoxColliderComponent>();
-    Twin2Engine::Core::BoxColliderComponent* bc2 = go2.AddComponent<Twin2Engine::Core::BoxColliderComponent>();
-    bc1->colliderId = 1;
-    bc2->colliderId = 2;
-    bc1->Invoke();
-    bc2->Invoke();
-    bc1->Update();
-    bc2->Update();
+    comp = redHexagonPrefab->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
+    comp->SetModel(modelHexagon);
 
-    CollisionSystem::CollisionManager::Instance()->PerformCollisions();*/
+    GameObject* blueHexagonPrefab = new GameObject();
+    blueHexagonPrefab->GetTransform()->Translate(glm::vec3(4, 5, 0));
+    blueHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    mapHexTile = blueHexagonPrefab->AddComponent<MapHexTile>();
+
+    comp = blueHexagonPrefab->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("BlueHexTile"));
+    comp->SetModel(modelHexagon);
+
+    GameObject* greenHexagonPrefab = new GameObject();
+    greenHexagonPrefab->GetTransform()->Translate(glm::vec3(5, 6, 0));
+    greenHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    mapHexTile = greenHexagonPrefab->AddComponent<MapHexTile>();
+
+    comp = greenHexagonPrefab->AddComponent<MeshRenderer>();
+    {GLenum error = glGetError();
+	if (error != GL_NO_ERROR) {
+		SPDLOG_ERROR("RDMError0: {}", error);
+	}}
+    comp->AddMaterial(MaterialsManager::GetMaterial("GreenHexTile"));
+    {GLenum error = glGetError();
+	if (error != GL_NO_ERROR) {
+		SPDLOG_ERROR("RDMError01: {}", error);
+	}}
+    comp->SetModel(modelHexagon);
+
+
+
+    // TILEMAP
+    //*
+    GameObject* tilemapGO = new GameObject();
+    HexagonalTilemap* hexagonalTilemap = tilemapGO->AddComponent<HexagonalTilemap>();
+    MapGenerator* mapGenerator = tilemapGO->AddComponent<MapGenerator>();
+    mapGenerator->tilemap = hexagonalTilemap;
+    mapGenerator->preafabHexagonalTile = hexagonPrefab;
+    mapGenerator->filledTile = blueHexagonPrefab;
+    mapGenerator->pointTile = redHexagonPrefab;
+    mapGenerator->additionalTile = greenHexagonPrefab;
+
+    mapGenerator->generationRadiusMin = 7;
+    mapGenerator->generationRadiusMax = 7;
+    float tilemapGenerating = glfwGetTime();
+    mapGenerator->Generate();
+    spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
+
+    GameObject* prefabSector = new GameObject();
+    prefabSector->AddComponent<MapSector>();
+    GameObject* prefabRegion = new GameObject();
+    prefabRegion->AddComponent<MapRegion>();
+
+    ContentGenerator* contentGenerator = tilemapGO->AddComponent<ContentGenerator>();
+   //SectorsGenerator sectorsGenertor;
+   //sectorsGenertor.minTilesPerSector = 3;
+   //sectorsGenertor.maxTilesPerSector = 3;
+   //sectorsGenertor.prefabSector = prefabSector;
+   //contentGenerator->mapElementGenerators.push_back(&sectorsGenertor);
+   //RegionsBySectorsGenerator regionsBySectorsGenerator;
+   //regionsBySectorsGenerator.regionPrefab = prefabRegion;
+   //regionsBySectorsGenerator.mergeByNumberTilesPerRegion = false;
+   //regionsBySectorsGenerator.minSectorsPerRegion = 3;
+   //regionsBySectorsGenerator.maxSectorsPerRegion = 3;
+   //regionsBySectorsGenerator.lowerHeightRange = 0;
+   //regionsBySectorsGenerator.upperHeightRange = 3;
+   //regionsBySectorsGenerator.heightRangeFacor = 0.25f;
+   //regionsBySectorsGenerator.isDiscritizedHeight = true;
+   //contentGenerator->mapElementGenerators.push_back(&regionsBySectorsGenerator);
+
+    RegionsGeneratorByKMeans regionsGeneratorKMeans;
+    regionsGeneratorKMeans.regionPrefab = prefabRegion;
+    regionsGeneratorKMeans.isDiscritizedHeight = true;
+    regionsGeneratorKMeans.lowerHeightRange = 0;
+    regionsGeneratorKMeans.upperHeightRange = 3;
+    regionsGeneratorKMeans.heightRangeFacor = 0.25f;
+    regionsGeneratorKMeans.regionsCount = 10;
+    contentGenerator->mapElementGenerators.push_back(&regionsGeneratorKMeans);
+
+    SectorGeneratorForRegionsByKMeans sectorGeneratorsKMeans;
+    sectorGeneratorsKMeans.sectorPrefab = prefabSector;
+    sectorGeneratorsKMeans.sectorsCount = 3;
+    sectorGeneratorsKMeans.isDiscritizedHeight = true;
+    sectorGeneratorsKMeans.lowerHeightRange = 0;
+    sectorGeneratorsKMeans.upperHeightRange = 2;
+    sectorGeneratorsKMeans.heightRangeFacor = 0.125f;
+    contentGenerator->mapElementGenerators.push_back(&sectorGeneratorsKMeans);
+
+    LakeGenerator lakeGenerator;
+    lakeGenerator.numberOfLakes = 2;
+    lakeGenerator.waterLevel = -5.f;
+    lakeGenerator.destroyWaterTile = true;
+    contentGenerator->mapElementGenerators.push_back(&lakeGenerator);
+
+
+    InstatiatingModel mountainModel = ModelsManager::LoadModel("res/models/mountain.obj");
+    GameObject* mountainPrefab = new GameObject();
+    comp = mountainPrefab->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("MountainsUnlit"));
+    comp->SetModel(mountainModel);
+    MountainsGenerator mountainsGenerator;
+    mountainsGenerator.prefabMountains = mountainPrefab;
+    mountainsGenerator.mountainsHeight = 0.2f;
+    mountainsGenerator.mountainsNumber = 3;
+    contentGenerator->mapElementGenerators.push_back(&mountainsGenerator);
+
+    InstatiatingModel cityModel = ModelsManager::LoadModel("res/models/city.obj");
+    GameObject* cityPrefab = new GameObject();
+    //cityPrefab->GetTransform()->Scale(glm::vec3(1.0f, 0.5f, 1.0f));
+    comp = cityPrefab->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("CityMaterial"));
+    comp->SetModel(cityModel);
+    CitiesGenerator cityGenerator;
+    cityGenerator.prefabCity = cityPrefab;
+    cityGenerator.density = 1.0f;
+    contentGenerator->mapElementGenerators.push_back(&cityGenerator);
+
+    InstatiatingModel radioStationModel = ModelsManager::LoadModel("res/models/radioStation.obj");
+    GameObject* radioStationPrefab = new GameObject();
+    radioStationPrefab->GetTransform()->Scale(glm::vec3(1.0f, 0.5f, 1.0f));
+    comp = radioStationPrefab->AddComponent<MeshRenderer>();
+    comp->AddMaterial(MaterialsManager::GetMaterial("Basic2"));
+    comp->SetModel(radioStationModel);
+    RadioStationGeneratorSectorBased radioStationGenerator;
+    radioStationGenerator.prefabRadioStation = radioStationPrefab;
+    radioStationGenerator.densityFactorPerSector = 0.1f;
+    contentGenerator->mapElementGenerators.push_back(&radioStationGenerator);
+
+
+    tilemapGenerating = glfwGetTime();
+    contentGenerator->GenerateContent(hexagonalTilemap);
+    spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
+    /**/
+    hexagonPrefab->SetActive(false);
+    greenHexagonPrefab->SetActive(false);
+    redHexagonPrefab->SetActive(false);
+    blueHexagonPrefab->SetActive(false);
+    mountainPrefab->SetActive(false);
+    cityPrefab->SetActive(false);
+    radioStationPrefab->SetActive(false);
+    mountainPrefab->GetTransform()->Translate(glm::vec3(2, 6, 0));
+    mountainPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    cityPrefab->GetTransform()->Translate(glm::vec3(2, 6, 0));
+    cityPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    radioStationPrefab->GetTransform()->Translate(glm::vec3(2, 6, 0));
+    radioStationPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+
+#pragma endregion
+
+    CollisionSystem::CollisionManager::Instance()->PerformCollisions();/**/
     
     SceneManager::LoadScene("testScene");
     //SceneManager::SaveScene("res/scenes/savedScene.yaml");
@@ -433,7 +747,7 @@ int main(int, char**)
     DirectionalLightComponent* dl = dl_go->AddComponent<DirectionalLightComponent>();
     dl->SetColor(glm::vec3(1.0f));
     LightingController::Instance()->SetViewerPosition(cameraPos);
-    LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f));
+    LightingController::Instance()->SetAmbientLight(glm::vec3(0.1f));
 #pragma endregion
 
     // Main loop

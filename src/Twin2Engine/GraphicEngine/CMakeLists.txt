@@ -28,18 +28,8 @@ add_library(${PROJECT_NAME} STATIC ${GRAPHIC_ENGINE_SOURCE_FILES})
 # Adding include to library
 target_include_directories(${PROJECT_NAME}
 						PUBLIC 
-						#${GRAPHIC_ENGINE_PUBLIC_INCLUDE_FILES}
 						${GRAPHIC_ENGINE_INCLUDE_DIR}
 						${glad_SOURCE_DIR}
-
-
-						#${tiny_gltf_SOURCE_DIR}
-						#${stb_image_SOURCE_DIR}
-						#${GRAPHIC_ENGINE_DIR}
-						
-						#INTERFACE
-						#${tinygltf_SOURCE_DIR}
-						#${GRAPHIC_ENGINE_SOURCE_DIR}
 )
 
 # Adding precompile Headers to library

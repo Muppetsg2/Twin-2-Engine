@@ -52,3 +52,8 @@
 
 // MACROS
 #include "SerializationMacros.h"
+
+
+
+
+#include <type_traits>

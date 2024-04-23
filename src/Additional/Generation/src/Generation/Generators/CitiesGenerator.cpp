@@ -11,6 +11,16 @@ using namespace Twin2Engine::Manager;
 using namespace std;
 using namespace glm;
 
+SCRIPTABLE_OBJECT_SOURCE_CODE(CitiesGenerator, Generation::Generators, "CitiesGenerator")
+
+void CitiesGenerator::Serialize(YAML::Node& node) const
+{
+
+}
+bool CitiesGenerator::Deserialize(const YAML::Node& node)
+{
+    return true;
+}
 void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
 {
     if (byRegions)

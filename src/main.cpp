@@ -370,6 +370,54 @@ int main(int, char**)
             capsuleCollider->SetRadius(node["radius"].as<float>());
         }
     );
+
+    ComponentDeserializer::AddDeserializer("LightComponent",
+        []() -> Component* {
+            return nullptr;
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            //LightingSystem::LightComponent* lightComponent = static_cast<LightingSystem::LightComponent*>(comp);
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("DirectionalLightComponent",
+        []() -> Component* {
+            return new DirectionalLightComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            DirectionalLightComponent* light = static_cast<DirectionalLightComponent*>(comp);
+            light->SetDirection(node["direction"].as<vec3>());
+            light->SetColor(node["color"].as<vec3>());
+            light->SetPower(node["power"].as<float>());
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("PointLightComponent",
+        []() -> Component* {
+            return new PointLightComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            PointLightComponent* light = static_cast<PointLightComponent*>(comp);
+            light->SetColor(node["color"].as<vec3>());
+            light->SetPower(node["power"].as<float>());
+            light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("SpotLightComponent",
+        []() -> Component* {
+            return new SpotLightComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            SpotLightComponent* light = static_cast<SpotLightComponent*>(comp);
+            light->SetDirection(node["direction"].as<vec3>());
+            light->SetColor(node["color"].as<vec3>());
+            light->SetPower(node["power"].as<float>());
+            light->SetOuterCutOff(node["outerCutOff"].as<float>());
+            light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
+        }
+    );
+
 #pragma endregion
 
     // ADDING SCENES

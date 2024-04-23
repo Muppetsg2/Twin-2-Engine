@@ -11,12 +11,12 @@ namespace Twin2Engine {
 			private:
 				bool dirtyFlag = false;
 				glm::vec3 localDirection;
-				LightingSystem::SpotLight* light = nullptr;
+				LightingSystem::SpotLight* light = new LightingSystem::SpotLight;
 				Twin2Engine::Core::Action<Transform*> OnChangeTransform;
 				size_t OnChangeTransformId;
-			protected:
-				SpotLightComponent() : LightComponent() {};
+			//protected:
 			public:
+				SpotLightComponent() : LightComponent() {};
 
 				virtual void Initialize() override;
 				virtual void Update() override;
@@ -29,6 +29,8 @@ namespace Twin2Engine {
 				void SetPower(float power);
 				void SetOuterCutOff(float radAngle);
 				void SetAtenuation(float constant, float linear, float quadratic);
+
+				virtual YAML::Node Serialize() const override;
 		};
 	}
 }

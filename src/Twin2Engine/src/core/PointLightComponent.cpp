@@ -9,7 +9,7 @@ void Twin2Engine::Core::PointLightComponent::Initialize()
 		LightingSystem::LightingController::Instance()->UpdatePLPosition(light);
 	};
 
-	light = new LightingSystem::PointLight;
+	//light = new LightingSystem::PointLight;
 	light->position = GetTransform()->GetGlobalPosition();
 	//LightingSystem::LightingController::Instance()->pointLights.insert(light);
 	//LightingSystem::LightingController::Instance()->UpdatePointLights();
@@ -46,13 +46,13 @@ void Twin2Engine::Core::PointLightComponent::OnDestroy()
 	delete light;
 }
 
-void Twin2Engine::Core::PointLightComponent::SetColor(glm::vec3& color)
+void Twin2Engine::Core::PointLightComponent::SetColor(glm::vec3 color)
 {
 	light->color = color;
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::PointLightComponent::SetPower(float& power)
+void Twin2Engine::Core::PointLightComponent::SetPower(float power)
 {
 	light->power = power;
 	dirtyFlag = true;
@@ -64,4 +64,16 @@ void Twin2Engine::Core::PointLightComponent::SetAtenuation(float constant, float
 	light->linear = linear;
 	light->quadratic = quadratic;
 	dirtyFlag = true;
+}
+
+YAML::Node Twin2Engine::Core::PointLightComponent::Serialize() const
+{
+	YAML::Node node = LightComponent::Serialize();
+	node["color"] = light->color;
+	node["power"] = light->power;
+	node["constant"] = light->constant;
+	node["linear"] = light->linear;
+	node["quadratic"] = light->quadratic;
+
+	return node;
 }

@@ -46,6 +46,9 @@ LightingController::~LightingController() {
 LightingController* LightingController::Instance() {
 	if (instance == nullptr) {
 		instance = new LightingController();
+
+		instance->SetAmbientLight(glm::vec3(0.0f, 0.0f, 0.0f));
+		instance->SetHighlightParam(2.0f);
 	}
 
 	return instance;

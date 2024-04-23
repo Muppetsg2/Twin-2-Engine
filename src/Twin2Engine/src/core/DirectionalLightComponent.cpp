@@ -16,9 +16,9 @@ void Twin2Engine::Core::DirectionalLightComponent::Initialize()
 	};
 
 
-	SPDLOG_INFO("DLC Initialization!");
+	//SPDLOG_INFO("DLC Initialization!");
 
-	light = new LightingSystem::DirectionalLight;
+	//light = new LightingSystem::DirectionalLight;
 	light->position = GetTransform()->GetGlobalPosition();
 	//LightingSystem::LightingController::Instance()->RecalculateDirLightSpaceMatrix(light);
 
@@ -126,8 +126,18 @@ void Twin2Engine::Core::DirectionalLightComponent::SetColor(glm::vec3 color)
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::DirectionalLightComponent::SetPower(float& power)
+void Twin2Engine::Core::DirectionalLightComponent::SetPower(float power)
 {
 	light->power = power;
 	dirtyFlag = true;
+}
+
+YAML::Node Twin2Engine::Core::DirectionalLightComponent::Serialize() const
+{
+	YAML::Node node = LightComponent::Serialize();
+	node["direction"] = light->direction;
+	node["color"] = light->color;
+	node["power"] = light->power;
+
+	return node;
 }

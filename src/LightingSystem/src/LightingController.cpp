@@ -13,8 +13,8 @@
 using namespace LightingSystem;
 
 LightingController* LightingController::instance = nullptr;
-const int LightingController::SHADOW_WIDTH = 1024;
-const int LightingController::SHADOW_HEIGHT = 1024;
+const int LightingController::SHADOW_WIDTH = 2048;
+const int LightingController::SHADOW_HEIGHT = 2048;
 float LightingController::DLShadowCastingRange = 15.0f;
 
 LightingController::LightingController() {

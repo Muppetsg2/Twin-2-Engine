@@ -1,6 +1,7 @@
 #include <core/PointLightComponent.h>
 #include <core/GameObject.h>
 #include <core/Transform.h>
+#include <core/YamlConverters.h>
 
 void Twin2Engine::Core::PointLightComponent::Initialize()
 {

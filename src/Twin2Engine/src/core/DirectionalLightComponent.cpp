@@ -1,6 +1,7 @@
 #include <core/DirectionalLightComponent.h>
 #include <core/GameObject.h>
 #include <core/Transform.h>
+#include <core/YamlConverters.h>
 
 
 void Twin2Engine::Core::DirectionalLightComponent::Initialize()

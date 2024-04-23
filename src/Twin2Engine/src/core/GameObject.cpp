@@ -80,12 +80,12 @@ GameObject::~GameObject()
 	_freedIds.push_back(_id);
 }
 
-GameObject* GameObject::Instatiate(GameObject* gameObject)
+GameObject* GameObject::Instantiate(GameObject* gameObject)
 {
 	return gameObject->Clone();
 }
 
-GameObject* GameObject::Instatiate(GameObject* gameObject, Transform* parent)
+GameObject* GameObject::Instantiate(GameObject* gameObject, Transform* parent)
 {
 	GameObject* cloned = gameObject->Clone();
 
@@ -125,7 +125,8 @@ void GameObject::CloneTo(GameObject* cloned) const
 
 	for (int index = 0; index < _transform->GetChildCount(); index++)
 	{
-		cloned->_transform->AddChild(Instatiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform)->GetTransform());
+		//cloned->_transform->AddChild(Instantiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform)->GetTransform());
+		Instantiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform);
 	}
 }
 

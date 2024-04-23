@@ -41,6 +41,13 @@ Textures:
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
+  - path: res/textures/fakeBRDF.png
+    fileFormat: 35906
+    engineFormat: 6408
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
 Sprites:
   - alias: white_box
     texture: 0
@@ -62,12 +69,14 @@ Materials:
   - wallMat
   - roofMat
   - multiTexture
+  - FakeBRDF
 Models:
   - res/models/AK47.obj
   - res/models/hexagon.obj
   - res/models/castle.obj
   - "{Cube}"
   - "{Plane}"
+  - "{Sphere}"
 Prefabs:
   - res/prefabs/testPrefab.yaml
 GameObjects:
@@ -286,7 +295,7 @@ GameObjects:
       enabled: true
       position:
         x: 2
-        y: 5
+        y: 25
         z: 0
       scale:
         x: 1
@@ -317,7 +326,7 @@ GameObjects:
       enabled: true
       position:
         x: 2
-        y: 3
+        y: 23
         z: 0
       scale:
         x: 1
@@ -348,7 +357,7 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: 3
+        y: 23
         z: 0
       scale:
         x: 1
@@ -380,7 +389,7 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: 0
+        y: 20
         z: 10
       scale:
         x: 1
@@ -412,7 +421,7 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: 0
+        y: 20
         z: 0
       scale:
         x: 1
@@ -542,5 +551,36 @@ GameObjects:
         model: 1
         materials:
           - 8
+    children:
+      []
+  - id: 13
+    name: BRDF
+    isStatic: false
+    isActive: true
+    transform:
+      id: 29
+      enabled: true
+      position:
+        x: 2.0
+        y: 6.0
+        z: -2.0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 30
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 5
+        materials:
+          - 9
     children:
       []

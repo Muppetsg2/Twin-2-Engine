@@ -1,0 +1,12 @@
+shaderprogram:
+  name: origin/ColoredTexture
+  shaders:
+    - ColoredTexture.vert
+    - ColoredTexture.frag
+  parameters:
+    - name: vec4
+      type: texture2D
+      value: [1.0, 1.0, 1.0, 1.0]
+    - name: texture
+      type: texture2D
+      value: res/textures/stone.jpg

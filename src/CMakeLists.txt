@@ -7,11 +7,12 @@ add_subdirectory(CollisionSystem)
 
 add_subdirectory(LightingSystem)
 
-add_subdirectory(Tilemap)
 
 add_executable(${PROJECT_NAME} main.cpp)
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)
+
+add_subdirectory(Additional)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC Twin2Engine)
@@ -27,7 +28,6 @@ if (find_memory_leaks AND (NOT CMAKE_BUILD_TYPE STREQUAL "Release"))
     target_link_libraries(${PROJECT_NAME} PRIVATE tracey_leak)
 endif()
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Tilemap)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog)
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)

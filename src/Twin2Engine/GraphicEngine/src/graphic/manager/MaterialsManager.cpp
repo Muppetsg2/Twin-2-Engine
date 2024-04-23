@@ -3,6 +3,7 @@
 
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
+using namespace glm;
 
 std::hash<std::string> MaterialsManager::stringHash;
 std::map<size_t, Twin2Engine::GraphicEngine::MaterialData*> MaterialsManager::loadedMaterials;
@@ -184,27 +185,31 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 		break;
 
 		case TYPE_MAP_VEC2_HANDLE:
-			materialParameters->Add(parameterName, 8, parameterValue.as<std::vector<float>>().data());
+			//materialParameters->Add(parameterName, 8, parameterValue.as<std::vector<float>>().data());
+			//materialParameters->Add<vec2>(parameterName, parameterValue.as<std::vector<float>>().data());
+			materialParameters->Add(parameterName, parameterValue.as<vec2>());
 			break;
 		
 		case TYPE_MAP_VEC3_HANDLE:
-			materialParameters->Add(parameterName, 12, parameterValue.as<std::vector<float>>().data());
+			//materialParameters->Add(parameterName, 12, parameterValue.as<std::vector<float>>().data());
+			materialParameters->Add(parameterName, parameterValue.as<vec3>());
 			break;
 		
 		case TYPE_MAP_VEC4_HANDLE:
-			materialParameters->Add(parameterName, 16, parameterValue.as<std::vector<float>>().data());
+			//materialParameters->Add(parameterName, 16, parameterValue.as<std::vector<float>>().data());
+			materialParameters->Add(parameterName, parameterValue.as<vec4>());
 			break;
 		
 		case TYPE_MAP_IVEC2_HANDLE:
-			materialParameters->Add(parameterName, 8, parameterValue.as<std::vector<int>>().data());
+			materialParameters->Add(parameterName, parameterValue.as<ivec2>());
 			break;
 		
 		case TYPE_MAP_IVEC3_HANDLE:
-			materialParameters->Add(parameterName, 12, parameterValue.as<std::vector<int>>().data());
+			materialParameters->Add(parameterName, parameterValue.as<ivec3>());
 			break;
 		
 		case TYPE_MAP_IVEC4_HANDLE:
-			materialParameters->Add(parameterName, 16, parameterValue.as<std::vector<int>>().data());
+			materialParameters->Add(parameterName, parameterValue.as<ivec4>());
 			break;
 		
 		//case TYPE_MAP_MAT2_HANDLE:
@@ -220,7 +225,7 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 		//	break;
 		}
 	}
-
+	materialParameters->AlignData();
 
 	MaterialData* materialData = new MaterialData
 	{
@@ -243,7 +248,7 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 //}
 
 Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, 
-	const std::vector<std::string>& materialParametersNames, const std::vector<std::string>& textureParametersNames)
+	const std::vector<std::string>& materialParametersNames, const std::vector<unsigned int>& materialParametersSizes, const std::vector<std::string>& textureParametersNames)
 {
 	size_t hashed = stringHash(newMaterialName);
 
@@ -255,7 +260,7 @@ Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, co
 		data = new MaterialData{
 			.id = hashed,
 			.shader = ShaderManager::GetShaderProgram(shaderName),
-			.materialParameters = new MaterialParameters(materialParametersNames, textureParametersNames)
+			.materialParameters = new MaterialParameters(materialParametersNames, materialParametersSizes, textureParametersNames)
 			
 		};
 

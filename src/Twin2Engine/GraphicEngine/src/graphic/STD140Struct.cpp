@@ -15,6 +15,7 @@ void STD140Struct::Add(const string& name, const vector<char>& value, size_t bas
 		aligementOffset += baseAligement - (aligementOffset % baseAligement);
 	}
 	_offsets[nameHash] = aligementOffset;
+	_names[nameHash] = name;
 
 	// UPDATE SIZE
 	_currentOffset = aligementOffset + baseOffset;
@@ -42,4 +43,59 @@ void STD140Struct::AddArray(const string& name, const vector<vector<char>>& valu
 	if (_currentOffset % 16 != 0) {
 		_currentOffset += 16 - (_currentOffset % 16);
 	}
+}
+
+void STD140Struct::Add(const std::string& name, const STD140Struct& value)
+{
+	Add(name, value._data, value.GetBaseAligement(), value._currentOffset);
+	size_t aligementOffset = _offsets[_hasher(name)];
+	for (const auto& off : value._offsets) {
+		size_t nameHash = _hasher(name + "."s + (*value._names.find(off.first)).second);
+		_offsets[nameHash] = aligementOffset + off.second;
+	}
+	if (_currentOffset % 16 != 0) {
+		_currentOffset += 16 - (_currentOffset % 16);
+	}
+}
+
+void STD140Struct::Add(const std::string& name, const const STD140Struct*& values, size_t size)
+{
+	for (size_t i = 0; i < size; ++i) {
+		Add(name + "["s + std::to_string(i) + "]"s, values[i]);
+	}
+}
+
+void STD140Struct::Add(const std::string& name, const STD140Struct*& values, size_t size)
+{
+	for (size_t i = 0; i < size; ++i) {
+		Add(name + "["s + std::to_string(i) + "]"s, values[i]);
+	}
+}
+
+void STD140Struct::Add(const std::string& name, const std::vector<STD140Struct>& values)
+{
+	for (size_t i = 0; i < values.size(); ++i) {
+		Add(name + "["s + std::to_string(i) + "]"s, values[i]);
+	}
+}
+
+vector<char> STD140Struct::GetData() const
+{
+	return _data;
+}
+
+size_t STD140Struct::GetBaseAligement() const {
+	size_t baseAligement = _maxAligement;
+	if (_maxAligement % 16 != 0) {
+		baseAligement += 16 - (baseAligement % 16);
+	}
+	return baseAligement;
+}
+
+size_t STD140Struct::GetSize() const {
+	size_t size = _currentOffset;
+	if (size % 16 != 0) {
+		size += 16 - (size % 16);
+	}
+	return size;
 }

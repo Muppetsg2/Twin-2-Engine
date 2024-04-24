@@ -88,17 +88,17 @@ GameObjects:
       id: 0
       enabled: true
       position:
-        x: 2.34490824
-        y: 3.37880015
-        z: 4.11597824
+        x: 0
+        y: 0
+        z: 0
       scale:
         x: 0
         y: 0
         z: 0
       rotation:
-        x: 170.100098
-        y: -84.0002747
-        z: -4.08408187e-06
+        x: 180
+        y: -90
+        z: 0
     components:
       - id: 1
         enabled: true
@@ -112,9 +112,9 @@ GameObjects:
         renderRes: 0
         gamma: 2.20000005
         frontDir:
-          x: -0.102968201
-          y: -0.171927452
-          z: -0.979713559
+          x: 0
+          y: 0
+          z: -1
         worldUp:
           x: 0
           y: 1

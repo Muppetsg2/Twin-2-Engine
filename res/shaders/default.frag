@@ -293,15 +293,15 @@ vec4 CalculateDirectionalLight(DirectionalLight light, uint shadowMapId) {
     }
     // GOOCH SHADING
     else if (shadingType == 2) {
-        diff = (diff + 1.0) * 0.5;
+        diff = (dot(data.normal, lightDir) + 1.0) * 0.5;
 
-        vec4 kCool = vec4(coolColor, 0.0) + coolFactor * data.mat_diffuse;
-        vec4 kWarm = vec4(warmColor, 0.0) + warmFactor * data.mat_diffuse;
+        vec3 kCool = coolColor + coolFactor * data.mat_diffuse.xyz;
+        vec3 kWarm = warmColor + warmFactor * data.mat_diffuse.xyz;
 
-        vec4 gooch = mix(kWarm, kCool, diff);
-        vec4 lightColor = CalculateGamma(vec4(light.color, 1.0));
-        vec4 specular = specularPowerPercent * intensity * spec * light.power * lightColor * data.mat_specular;
-        return gooch + specular;
+        vec3 gooch = mix(kCool, kWarm, diff);
+        vec3 lightColor = light.color;
+        vec3 specular = specularPowerPercent * intensity * spec * light.power * lightColor * data.mat_specular.xyz;
+        return CalculateGamma(vec4(gooch + specular, 1.0));
     }
 
     vec4 lightColor = CalculateGamma(vec4(light.color, 1.0));
@@ -355,12 +355,12 @@ void main()
     Color = vec4(0.0);
 
     // POINT LIGHTS
-    for (uint i = 0; i < numberOfPointLights && i < MAX_POINT_LIGHTS; ++i) {
+    for (uint i = 0; i < numberOfPointLights && i < 0/*MAX_POINT_LIGHTS*/; ++i) {
         Color += CalculatePointLight(pointLights[i]);
     }
 
     // SPOT LIGHTS
-    for (uint i = 0; i < numberOfSpotLights && i < MAX_SPOT_LIGHTS; ++i) {
+    for (uint i = 0; i < numberOfSpotLights && i < 0/*MAX_SPOT_LIGHTS*/; ++i) {
         Color += CalculateSpotLight(spotLights[i]);
     }
 
@@ -371,4 +371,6 @@ void main()
 
     // AMBIENT LIGHT
     Color += CalculateGamma(vec4(ambientLight, 1.0)) * data.mat_diffuse;
+
+    Color = vec4(Color.xyz, 1.0);
 }

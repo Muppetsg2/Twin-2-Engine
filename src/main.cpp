@@ -551,6 +551,7 @@ int main(int, char**)
     );
 
 #pragma endregion
+
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
     SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");

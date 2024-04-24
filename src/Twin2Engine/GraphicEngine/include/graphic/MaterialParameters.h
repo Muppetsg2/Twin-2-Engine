@@ -4,7 +4,7 @@
 #include <core/YamlConverters.h>
 
 namespace Twin2Engine
-{
+ {
 	namespace Manager {
 		class MaterialsManager;
 	}

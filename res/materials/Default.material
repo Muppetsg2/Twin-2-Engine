@@ -39,7 +39,7 @@ material:
       value: [0.0, 0.0]
     - name: highlight_scale
       type: vec2
-      value: [1.0, 1.0]
+      value: [0.0, 0.0]
     - name: highlight_split
       type: vec2
       value: [0.0, 0.0]

@@ -11,7 +11,7 @@ namespace Twin2Engine::GraphicEngine {
 
 		static std::hash<std::string> _hasher;
 
-		
+
 
 	public:
 		STD140Struct() = default;

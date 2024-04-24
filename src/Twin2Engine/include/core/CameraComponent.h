@@ -75,6 +75,7 @@ namespace Twin2Engine::Core {
 		void OnTransformChange(Transform* trans);
 		size_t _windowEventId = 0;
 		void OnWindowSizeChange();
+		void SetFrontDir(vec3 dir);
 
 	public:
 		static std::vector<CameraComponent*> Cameras;
@@ -108,8 +109,9 @@ namespace Twin2Engine::Core {
 		void SetSamples(uint8_t i = 4);
 		void SetRenderResolution(RenderResolution res);
 
-		void SetFrontDir(vec3 dir);
 		void SetWorldUp(vec3 value);
+
+		void UpdateFrontDir();
 
 		void SetIsMain(bool value);
 

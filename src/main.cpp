@@ -267,7 +267,6 @@ int main(int, char**)
             cam->SetSamples(node["samples"].as<size_t>());
             cam->SetRenderResolution(node["renderRes"].as<RenderResolution>());
             cam->SetGamma(node["gamma"].as<float>());
-            cam->SetFrontDir(node["frontDir"].as<vec3>());
             cam->SetWorldUp(node["worldUp"].as<vec3>());
             cam->SetIsMain(node["isMain"].as<bool>());
         }
@@ -551,6 +550,7 @@ int main(int, char**)
     );
 
 #pragma endregion
+
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
     SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");

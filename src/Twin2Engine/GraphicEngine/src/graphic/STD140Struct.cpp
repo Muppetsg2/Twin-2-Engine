@@ -61,13 +61,13 @@ bool STD140Struct::Set(const string& name, const vector<char>& value)
 	return false;
 }
 
-bool STD140Struct::SetArray(const std::string& name, const std::vector<std::vector<char>>& values) 
+bool STD140Struct::SetArray(const string& name, const vector<vector<char>>& values) 
 {
 	size_t nameHash = _hasher(name);
 	if (_offsets.contains(nameHash)) {
 		for (size_t i = 0; i < values.size(); ++i) {
 			if (!Set(name + "["s + to_string(i) + "]"s, values[i])) {
-				break;
+				return false;
 			}
 		}
 		return true;
@@ -75,7 +75,7 @@ bool STD140Struct::SetArray(const std::string& name, const std::vector<std::vect
 	return false;
 }
 
-void STD140Struct::Add(const std::string& name, const STD140Struct& value)
+void STD140Struct::Add(const string& name, const STD140Struct& value)
 {
 	Add(name, value._data, value.GetBaseAligement(), value._currentOffset);
 	size_t aligementOffset = _offsets[_hasher(name)];
@@ -88,14 +88,29 @@ void STD140Struct::Add(const std::string& name, const STD140Struct& value)
 	}
 }
 
-void STD140Struct::Add(const std::string& name, const STD140Struct*& values, size_t size)
+void STD140Struct::Add(const string& name, const STD140Struct*& values, size_t size)
 {
 	AddStructArray(name, values, size);
 }
 
-void STD140Struct::Add(const std::string& name, const std::vector<STD140Struct>& values)
+void STD140Struct::Add(const string& name, const vector<STD140Struct>& values)
 {
 	AddStructArray(name, values, values.size());
+}
+
+bool STD140Struct::Set(const string& name, const STD140Struct& value)
+{
+	return Set(name, value._data);
+}
+
+bool STD140Struct::Set(const string& name, const STD140Struct*& values, size_t size)
+{
+	return SetStructArray(name, values, size);
+}
+
+bool STD140Struct::Set(const string& name, const vector<STD140Struct>& values)
+{
+	return SetStructArray(name, values, values.size());
 }
 
 vector<char> STD140Struct::GetData() const

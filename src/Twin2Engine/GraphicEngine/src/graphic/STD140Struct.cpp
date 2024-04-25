@@ -31,6 +31,8 @@ void STD140Struct::Add(const string& name, const vector<char>& value, size_t bas
 }
 
 void STD140Struct::AddArray(const string& name, const vector<vector<char>>& values, size_t baseAligement, size_t baseOffset) {
+	if (values.size() == 0) return;
+
 	// SET BASE ALIGEMENT
 	if (baseAligement % 16 != 0) {
 		baseAligement += 16 - (baseAligement % 16);
@@ -39,10 +41,38 @@ void STD140Struct::AddArray(const string& name, const vector<vector<char>>& valu
 	for (size_t i = 0; i < values.size(); ++i) {
 		Add(name + "["s + to_string(i) + "]"s, values[i], baseAligement, baseOffset);
 	}
+	// SET ARRAY BEGIN POINTER
+	size_t nameHash = _hasher(name);
+	size_t firstElemHash = _hasher(name + "[0]"s);
+	_offsets[nameHash] = _offsets[firstElemHash];
 	// UPDATE CURRENT OFFSET (ADD PADDING)
 	if (_currentOffset % 16 != 0) {
 		_currentOffset += 16 - (_currentOffset % 16);
 	}
+}
+
+bool STD140Struct::Set(const string& name, const vector<char>& value)
+{
+	size_t nameHash = _hasher(name);
+	if (_offsets.contains(nameHash)) {
+		memcpy(_data.data() + _offsets[nameHash], value.data(), value.size());
+		return true;
+	}
+	return false;
+}
+
+bool STD140Struct::SetArray(const std::string& name, const std::vector<std::vector<char>>& values) 
+{
+	size_t nameHash = _hasher(name);
+	if (_offsets.contains(nameHash)) {
+		for (size_t i = 0; i < values.size(); ++i) {
+			if (!Set(name + "["s + to_string(i) + "]"s, values[i])) {
+				break;
+			}
+		}
+		return true;
+	}
+	return false;
 }
 
 void STD140Struct::Add(const std::string& name, const STD140Struct& value)

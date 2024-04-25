@@ -28,32 +28,59 @@ namespace Twin2Engine::GraphicEngine {
 			return rows;
 		}
 
+#pragma region ADD
 		void Add(const std::string& name, const std::vector<char>& value, size_t baseAligement, size_t baseOffset);
-		void AddArray(const std::string& name, const std::vector<std::vector<char>>& values, size_t baseAligement, size_t baseOffset);
 
-		template<class T> void Add(const std::string& name, const T*& values, size_t size, size_t baseAligement, size_t baseOffset) {
+		void AddArray(const std::string& name, const std::vector<std::vector<char>>& values, size_t baseAligement, size_t baseOffset);
+		template<class T> void AddArray(const std::string& name, const T*& values, size_t size, size_t baseAligement, size_t baseOffset) {
 			std::vector<std::vector<char>> valuesData;
 			for (size_t i = 0; i < size; ++i) {
 				valuesData.push_back(GetValueData(values[i]));
 			}
 			AddArray(name, valuesData, baseAligement, baseOffset);
 		}
-
-		template<class T, size_t N> void Add(const std::string& name, const T(&values)[N], size_t baseAligement, size_t baseOffset) {
+		template<class T, size_t N> void AddArray(const std::string& name, const T(&values)[N], size_t baseAligement, size_t baseOffset) {
 			std::vector<std::vector<char>> valuesData;
 			for (size_t i = 0; i < N; ++i) {
 				valuesData.push_back(GetValueData(values[i]));
 			}
 			AddArray(name, valuesData, baseAligement, baseOffset);
 		}
-
-		template<class T> void Add(const std::string& name, const std::vector<T>& values, size_t baseAligement, size_t baseOffset) {
+		template<class T> void AddArray(const std::string& name, const std::vector<T>& values, size_t baseAligement, size_t baseOffset) {
 			std::vector<std::vector<char>> valuesData;
 			for (size_t i = 0; i < values.size(); ++i) {
 				valuesData.push_back(GetValueData(values[i]));
 			}
 			AddArray(name, valuesData, baseAligement, baseOffset);
 		}
+#pragma endregion
+
+#pragma region SET
+		bool Set(const std::string& name, const std::vector<char>& value);
+
+		bool SetArray(const std::string& name, const std::vector<std::vector<char>>& values);
+		template<class T> bool SetArray(const std::string& name, const T*& values, size_t size) {
+			std::vector<std::vector<char>> valuesData;
+			for (size_t i = 0; i < size; ++i) {
+				valuesData.push_back(GetValueData(values[i]));
+			}
+			SetArray(name, valuesData);
+		}
+		template<class T, size_t N> void SetArray(const std::string& name, const T(&values)[N]) {
+			std::vector<std::vector<char>> valuesData;
+			for (size_t i = 0; i < N; ++i) {
+				valuesData.push_back(GetValueData(values[i]));
+			}
+			SetArray(name, valuesData);
+		}
+		template<class T> void SetArray(const std::string& name, const std::vector<T>& values) {
+			std::vector<std::vector<char>> valuesData;
+			for (size_t i = 0; i < values.size(); ++i) {
+				valuesData.push_back(GetValueData(values[i]));
+			}
+			SetArray(name, valuesData);
+		}
+#pragma endregion
 
 	public:
 		STD140Struct() = default;
@@ -66,13 +93,13 @@ namespace Twin2Engine::GraphicEngine {
 			std::is_same_v<T, unsigned int> ||
 			std::is_same_v<T, float> ||
 			std::is_same_v<T, double>>
-			Add(const std::string& name, const T& value) {
+		Add(const std::string& name, const T& value) {
 			Add(name, GetValueData(value), 4, 4);
 		}
 
 		template<class T>
 		typename std::enable_if_t<std::is_same_v<T, bool>>
-			Add(const std::string& name, const T& value) {
+		Add(const std::string& name, const T& value) {
 			Add(name, (unsigned int)value);
 		}
 
@@ -401,7 +428,89 @@ namespace Twin2Engine::GraphicEngine {
 
 
 #pragma region SET_SCALARS
+		template<class T>
+		typename std::enable_if_t<
+			std::is_same_v<T, int> ||
+			std::is_same_v<T, unsigned int> ||
+			std::is_same_v<T, float> ||
+			std::is_same_v<T, double>>
+		Set(const std::string& name, const T& value) {
+			Set(name, GetValueData(value));
+		}
 
+		template<class T>
+		typename std::enable_if_t<std::is_same_v<T, bool>>
+		Set(const std::string& name, const T& value) {
+			Set(name, (unsigned int)value);
+		}
+#pragma region SET_SCALARS_ARRAYS
+		template<class T>
+		typename std::enable_if_t<
+			std::is_same_v<T, const int*> ||
+			std::is_same_v<T, const unsigned int*> ||
+			std::is_same_v<T, const float*> ||
+			std::is_same_v<T, const double*> ||
+			std::is_same_v<T, int*> ||
+			std::is_same_v<T, unsigned int*> ||
+			std::is_same_v<T, float*> ||
+			std::is_same_v<T, double*>>
+		Set(const std::string& name, const T& values, size_t size) {
+			SetArray(name, values, size);
+		}
+
+		template<class T>
+		typename std::enable_if_t<std::is_same_v<T, const bool*>>
+		Set(const std::string& name, const T& values, size_t size) {
+			std::vector<unsigned int> bools;
+			for (size_t i = 0; i < size; ++i) {
+				bools.push_back((unsigned int)values[i]);
+			}
+			SetArray(name, bools);
+		}
+
+		template<class T, size_t N>
+		typename std::enable_if_t<
+			std::is_same_v<T, int[N]> ||
+			std::is_same_v<T, unsigned int[N]> ||
+			std::is_same_v<T, float[N]> ||
+			std::is_same_v<T, double[N]> ||
+			std::is_same_v<T, const int[N]> ||
+			std::is_same_v<T, const unsigned int[N]> ||
+			std::is_same_v<T, const float[N]> ||
+			std::is_same_v<T, const double[N]>>
+		Set(const std::string& name, const T& values) {
+			SetArray(name, values);
+		}
+
+		template<class T, size_t N>
+		typename std::enable_if_t<std::is_same_v<T, const bool[N]>>
+		Set(const std::string& name, const T& values) {
+			std::vector<unsigned int> bools;
+			for (size_t i = 0; i < N; ++i) {
+				bools.push_back((unsigned int)values[i]);
+			}
+			SetArray(name, values);
+		}
+
+		template<class T>
+		typename std::enable_if_t<
+			std::is_same_v<T, std::vector<int>> ||
+			std::is_same_v<T, std::vector<unsigned int>> ||
+			std::is_same_v<T, std::vector<float>> ||
+			std::is_same_v<T, std::vector<double>>>
+		Set(const std::string& name, const T& values) {
+			SetArray(name, values);
+		}
+
+		template<class T>
+		typename std::enable_if_t<std::is_same_v<T, std::vector<bool>>>
+		Set(const std::string& name, const T& values) {
+			std::vector<unsigned int> bools;
+			for (size_t i = 0; i < values.size(); ++i) {
+				bools.push_back((unsigned int)values[i]);
+			}
+			SetArray(name, values);
+		}
 #pragma endregion
 
 		std::vector<char> GetData() const;

@@ -1,6 +1,9 @@
 #pragma once
 
 namespace Twin2Engine::GraphicEngine {
+	template<class T, class... Ts> struct is_in : public std::bool_constant<(std::is_same_v<T, Ts> || ...)> {};
+	template<class T, class... Ts> using is_in_v = is_in<T, Ts...>::value;
+
 	class STD140Struct {
 	private:
 		size_t _currentOffset = 0;
@@ -88,11 +91,7 @@ namespace Twin2Engine::GraphicEngine {
 
 #pragma region ADD_SCALARS
 		template<class T>
-		typename std::enable_if_t<
-			std::is_same_v<T, int> ||
-			std::is_same_v<T, unsigned int> ||
-			std::is_same_v<T, float> ||
-			std::is_same_v<T, double>>
+		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double>>
 		Add(const std::string& name, const T& value) {
 			Add(name, GetValueData(value), 4, 4);
 		}
@@ -511,6 +510,7 @@ namespace Twin2Engine::GraphicEngine {
 			}
 			SetArray(name, values);
 		}
+#pragma endregion
 #pragma endregion
 
 		std::vector<char> GetData() const;

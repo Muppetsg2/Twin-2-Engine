@@ -1,8 +1,8 @@
 #pragma once
 
 namespace Twin2Engine::GraphicEngine {
-	template<class T, class... Ts> struct is_in : public std::bool_constant<(std::is_same_v<T, Ts> || ...)> {};
-	template<class T, class... Ts> using is_in_v = is_in<T, Ts...>::value;
+	template<class T, class... Ts> constexpr bool is_in_v = std::is_same_v<T, Ts> || ...;
+	template<class T, class... Ts> struct is_in : public std::bool_constant<is_in_v<T, Ts...>> {};
 
 	class STD140Struct {
 	private:
@@ -35,26 +35,32 @@ namespace Twin2Engine::GraphicEngine {
 		void Add(const std::string& name, const std::vector<char>& value, size_t baseAligement, size_t baseOffset);
 
 		void AddArray(const std::string& name, const std::vector<std::vector<char>>& values, size_t baseAligement, size_t baseOffset);
-		template<class T> void AddArray(const std::string& name, const T*& values, size_t size, size_t baseAligement, size_t baseOffset) {
+		template<class T> void AddArray(const std::string& name, const T& values, size_t size, size_t baseAligement, size_t baseOffset) {
 			std::vector<std::vector<char>> valuesData;
 			for (size_t i = 0; i < size; ++i) {
 				valuesData.push_back(GetValueData(values[i]));
 			}
 			AddArray(name, valuesData, baseAligement, baseOffset);
 		}
-		template<class T, size_t N> void AddArray(const std::string& name, const T(&values)[N], size_t baseAligement, size_t baseOffset) {
-			std::vector<std::vector<char>> valuesData;
-			for (size_t i = 0; i < N; ++i) {
-				valuesData.push_back(GetValueData(values[i]));
+		template<class T> void AddMatArray(const std::string& name, const T& values, size_t size) {
+			if (size == 0) return;
+			for (size_t i = 0; i < size; ++i) {
+				Add(name + "["s + std::to_string(i) + "]"s, values[i]);
 			}
-			AddArray(name, valuesData, baseAligement, baseOffset);
+			// SET ARRAY BEGIN POINTER
+			size_t nameHash = _hasher(name);
+			size_t firstElemHash = _hasher(name + "[0]"s);
+			_offsets[nameHash] = _offsets[firstElemHash];
 		}
-		template<class T> void AddArray(const std::string& name, const std::vector<T>& values, size_t baseAligement, size_t baseOffset) {
-			std::vector<std::vector<char>> valuesData;
-			for (size_t i = 0; i < values.size(); ++i) {
-				valuesData.push_back(GetValueData(values[i]));
+		template<class T> void AddStructArray(const std::string& name, const T& values, size_t size) {
+			if (size == 0) return;
+			for (size_t i = 0; i < size; ++i) {
+				Add(name + "["s + std::to_string(i) + "]"s, values[i]);
 			}
-			AddArray(name, valuesData, baseAligement, baseOffset);
+			// SET ARRAY BEGIN POINTER
+			size_t nameHash = _hasher(name);
+			size_t firstElemHash = _hasher(name + "[0]"s);
+			_offsets[nameHash] = _offsets[firstElemHash];
 		}
 #pragma endregion
 
@@ -62,23 +68,9 @@ namespace Twin2Engine::GraphicEngine {
 		bool Set(const std::string& name, const std::vector<char>& value);
 
 		bool SetArray(const std::string& name, const std::vector<std::vector<char>>& values);
-		template<class T> bool SetArray(const std::string& name, const T*& values, size_t size) {
+		template<class T> bool SetArray(const std::string& name, const T& values, size_t size) {
 			std::vector<std::vector<char>> valuesData;
 			for (size_t i = 0; i < size; ++i) {
-				valuesData.push_back(GetValueData(values[i]));
-			}
-			SetArray(name, valuesData);
-		}
-		template<class T, size_t N> void SetArray(const std::string& name, const T(&values)[N]) {
-			std::vector<std::vector<char>> valuesData;
-			for (size_t i = 0; i < N; ++i) {
-				valuesData.push_back(GetValueData(values[i]));
-			}
-			SetArray(name, valuesData);
-		}
-		template<class T> void SetArray(const std::string& name, const std::vector<T>& values) {
-			std::vector<std::vector<char>> valuesData;
-			for (size_t i = 0; i < values.size(); ++i) {
 				valuesData.push_back(GetValueData(values[i]));
 			}
 			SetArray(name, valuesData);
@@ -91,316 +83,172 @@ namespace Twin2Engine::GraphicEngine {
 
 #pragma region ADD_SCALARS
 		template<class T>
-		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double>>
+		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>>
 		Add(const std::string& name, const T& value) {
-			Add(name, GetValueData(value), 4, 4);
-		}
-
-		template<class T>
-		typename std::enable_if_t<std::is_same_v<T, bool>>
-		Add(const std::string& name, const T& value) {
-			Add(name, (unsigned int)value);
+			if constexpr (std::is_same_v<T, bool>) {
+				Add(name, GetValueData((unsigned int)value), 4, 4);
+			}
+			else {
+				Add(name, GetValueData(value), sizeof(T), sizeof(T));
+			}
 		}
 
 #pragma region ADD_SCALARS_ARRAYS
 		template<class T>
-		typename std::enable_if_t<
-			std::is_same_v<T, const int*> ||
-			std::is_same_v<T, const unsigned int*> ||
-			std::is_same_v<T, const float*> ||
-			std::is_same_v<T, const double*> ||
-			std::is_same_v<T, int*> ||
-			std::is_same_v<T, unsigned int*> ||
-			std::is_same_v<T, float*> ||
-			std::is_same_v<T, double*>>
-			Add(const std::string& name, const T& values, size_t size) {
-			Add(name, values, size, 4, 4);
-		}
-
-		template<class T>
-		typename std::enable_if_t<std::is_same_v<T, const bool*>>
-			Add(const std::string& name, const T& values, size_t size) {
-			std::vector<unsigned int> bools;
-			for (size_t i = 0; i < size; ++i) {
-				bools.push_back((unsigned int)values[i]);
+		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>>
+		Add(const std::string& name, const T*& values, size_t size) {
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<unsigned int> bools;
+				for (size_t i = 0; i < size; ++i) {
+					bools.push_back((unsigned int)values[i]);
+				}
+				AddArray(name, bools, bools.size(), 4, 4);
 			}
-			Add(name, bools);
+			else {
+				AddArray(name, values, size, sizeof(T), sizeof(T));
+			}
 		}
 
 		template<class T, size_t N>
-		typename std::enable_if_t<
-			std::is_same_v<T, int[N]> ||
-			std::is_same_v<T, unsigned int[N]> ||
-			std::is_same_v<T, float[N]> ||
-			std::is_same_v<T, double[N]> ||
-			std::is_same_v<T, const int[N]> ||
-			std::is_same_v<T, const unsigned int[N]> ||
-			std::is_same_v<T, const float[N]> ||
-			std::is_same_v<T, const double[N]>>
-			Add(const std::string& name, const T& values) {
-			Add(name, values, 4, 4);
-		}
-
-		template<class T, size_t N>
-		typename std::enable_if_t<std::is_same_v<T, const bool[N]>>
-			Add(const std::string& name, const T& values) {
-			std::vector<unsigned int> bools;
-			for (size_t i = 0; i < N; ++i) {
-				bools.push_back((unsigned int)values[i]);
+		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>>
+		Add(const std::string& name, const T(&values)[N]) {
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<unsigned int> bools;
+				for (size_t i = 0; i < N; ++i) {
+					bools.push_back((unsigned int)values[i]);
+				}
+				AddArray(name, bools, bools.size(), 4, 4);
 			}
-			Add(name, values);
+			else {
+				AddArray(name, values, N, sizeof(T), sizeof(T));
+			}
 		}
 
 		template<class T>
-		typename std::enable_if_t<
-			std::is_same_v<T, std::vector<int>> ||
-			std::is_same_v<T, std::vector<unsigned int>> ||
-			std::is_same_v<T, std::vector<float>> ||
-			std::is_same_v<T, std::vector<double>>>
-			Add(const std::string& name, const T& values) {
-			Add(name, values, 4, 4);
-		}
-
-		template<class T>
-		typename std::enable_if_t<std::is_same_v<T, std::vector<bool>>>
-			Add(const std::string& name, const T& values) {
-			std::vector<unsigned int> bools;
-			for (size_t i = 0; i < values.size(); ++i) {
-				bools.push_back((unsigned int)values[i]);
+		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>>
+		Add(const std::string& name, const std::vector<T>& values) {
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<unsigned int> bools;
+				for (size_t i = 0; i < values.size(); ++i) {
+					bools.push_back((unsigned int)values[i]);
+				}
+				AddArray(name, bools, bools.size(), 4, 4);
 			}
-			Add(name, values, 4, 4);
+			else {
+				AddArray(name, values, values.size(), sizeof(T), sizeof(T));
+			}
 		}
 #pragma endregion
 #pragma endregion
 
 #pragma region ADD_VEC_2
 		template<class T>
-		typename std::enable_if_t<
-			std::is_same_v<T, glm::vec2> ||
-			std::is_same_v<T, glm::ivec2> ||
-			std::is_same_v<T, glm::uvec2> ||
-			std::is_same_v<T, glm::bvec2> ||
-			std::is_same_v<T, glm::dvec2>>
-			Add(const std::string& name, const T& value) {
+		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
+		Add(const std::string& name, const glm::vec<2, T>& value) {
 			Add(name, GetValueData(value), 8, 8);
 		}
 
 #pragma region ADD_VEC_2_ARRAYS
 		template<class T>
-		typename std::enable_if_t<
-			std::is_same_v<T, glm::vec2*> ||
-			std::is_same_v<T, glm::ivec2*> ||
-			std::is_same_v<T, glm::uvec2*> ||
-			std::is_same_v<T, glm::bvec2*> ||
-			std::is_same_v<T, glm::dvec2*> ||
-			std::is_same_v<T, const glm::vec2*> ||
-			std::is_same_v<T, const glm::ivec2*> ||
-			std::is_same_v<T, const glm::uvec2*> ||
-			std::is_same_v<T, const glm::bvec2*> ||
-			std::is_same_v<T, const glm::dvec2*>>
-			Add(const std::string& name, const T& values, size_t size) {
-			Add(name, values, size, 8, 8);
+		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
+		Add(const std::string& name, const glm::vec<2, T>*& values, size_t size) {
+			AddArray(name, values, size, 8, 8);
 		}
 
 		template<class T, size_t N>
-		typename std::enable_if_t<
-			std::is_same_v<T, glm::vec2[N]> ||
-			std::is_same_v<T, glm::ivec2[N]> ||
-			std::is_same_v<T, glm::uvec2[N]> ||
-			std::is_same_v<T, glm::bvec2[N]> ||
-			std::is_same_v<T, glm::dvec2[N]> ||
-			std::is_same_v<T, const glm::vec2[N]> ||
-			std::is_same_v<T, const glm::ivec2[N]> ||
-			std::is_same_v<T, const glm::uvec2[N]> ||
-			std::is_same_v<T, const glm::bvec2[N]> ||
-			std::is_same_v<T, const glm::dvec2[N]>>
-			Add(const std::string& name, const T& values) {
-			Add(name, values, 8, 8);
+		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
+		Add(const std::string& name, const glm::vec<2, T>(&values)[N]) {
+			AddArray(name, values, N, 8, 8);
 		}
 
 		template<class T>
-		typename std::enable_if_t<
-			std::is_same_v<T, std::vector<glm::vec2>> ||
-			std::is_same_v<T, std::vector<glm::ivec2>> ||
-			std::is_same_v<T, std::vector<glm::uvec2>> ||
-			std::is_same_v<T, std::vector<glm::bvec2>> ||
-			std::is_same_v<T, std::vector<glm::dvec2>>>
-			Add(const std::string& name, const T& values) {
-			Add(name, values, 8, 8);
+		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
+		Add(const std::string& name, const std::vector<glm::vec<2, T>>& values) {
+			AddArray(name, values, values.size(), 8, 8);
 		}
 #pragma endregion
 #pragma endregion
 
 #pragma region ADD_VEC_3
 		template<class T>
-		typename std::enable_if_t<
-			std::is_same_v<T, glm::vec3> ||
-			std::is_same_v<T, glm::ivec3> ||
-			std::is_same_v<T, glm::uvec3> ||
-			std::is_same_v<T, glm::bvec3> ||
-			std::is_same_v<T, glm::dvec3>>
-			Add(const std::string& name, const T& value) {
+		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
+		Add(const std::string& name, const glm::vec<3, T>& value) {
 			Add(name, GetValueData(value), 16, 12);
 		}
 
 #pragma region ADD_VEC_3_ARRAYS
 		template<class T>
-		typename std::enable_if_t<
-			std::is_same_v<T, glm::vec3*> ||
-			std::is_same_v<T, glm::ivec3*> ||
-			std::is_same_v<T, glm::uvec3*> ||
-			std::is_same_v<T, glm::bvec3*> ||
-			std::is_same_v<T, glm::dvec3*> ||
-			std::is_same_v<T, const glm::vec3*> ||
-			std::is_same_v<T, const glm::ivec3*> ||
-			std::is_same_v<T, const glm::uvec3*> ||
-			std::is_same_v<T, const glm::bvec3*> ||
-			std::is_same_v<T, const glm::dvec3*>>
-			Add(const std::string& name, const T& values, size_t size) {
-			Add(name, values, size, 16, 12);
+		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
+		Add(const std::string& name, const glm::vec<3, T>*& values, size_t size) {
+			AddArray(name, values, size, 16, 12);
 		}
 
 		template<class T, size_t N>
-		typename std::enable_if_t<
-			std::is_same_v<T, glm::vec3[N]> ||
-			std::is_same_v<T, glm::ivec3[N]> ||
-			std::is_same_v<T, glm::uvec3[N]> ||
-			std::is_same_v<T, glm::bvec3[N]> ||
-			std::is_same_v<T, glm::dvec3[N]> ||
-			std::is_same_v<T, const glm::vec3[N]> ||
-			std::is_same_v<T, const glm::ivec3[N]> ||
-			std::is_same_v<T, const glm::uvec3[N]> ||
-			std::is_same_v<T, const glm::bvec3[N]> ||
-			std::is_same_v<T, const glm::dvec3[N]>>
-			Add(const std::string& name, const T& values) {
-			Add(name, values, 16, 12);
+		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
+		Add(const std::string& name, const glm::vec<3, T>(&values)[N]) {
+			AddArray(name, values, N, 16, 12);
 		}
 
 		template<class T>
-		typename std::enable_if_t<
-			std::is_same_v<T, std::vector<glm::vec3>> ||
-			std::is_same_v<T, std::vector<glm::ivec3>> ||
-			std::is_same_v<T, std::vector<glm::uvec3>> ||
-			std::is_same_v<T, std::vector<glm::bvec3>> ||
-			std::is_same_v<T, std::vector<glm::dvec3>>>
-			Add(const std::string& name, const T& values) {
-			Add(name, values, 16, 12);
+		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
+		Add(const std::string& name, const std::vector<glm::vec<3, T>>& values) {
+			AddArray(name, values, values.size(), 16, 12);
 		}
 #pragma endregion
 #pragma endregion
 
 #pragma region ADD_VEC_4
 		template<class T>
-		typename std::enable_if_t<
-			std::is_same_v<T, glm::vec4> ||
-			std::is_same_v<T, glm::ivec4> ||
-			std::is_same_v<T, glm::uvec4> ||
-			std::is_same_v<T, glm::bvec4> ||
-			std::is_same_v<T, glm::dvec4>>
-			Add(const std::string& name, const T& value) {
+		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
+		Add(const std::string& name, const glm::vec<4, T>& value) {
 			Add(name, GetValueData(value), 16, 16);
 		}
 
 #pragma region ADD_VEC_4_ARRAYS
 		template<class T>
-		typename std::enable_if_t<
-			std::is_same_v<T, glm::vec4*> ||
-			std::is_same_v<T, glm::ivec4*> ||
-			std::is_same_v<T, glm::uvec4*> ||
-			std::is_same_v<T, glm::bvec4*> ||
-			std::is_same_v<T, glm::dvec4*> ||
-			std::is_same_v<T, const glm::vec4*> ||
-			std::is_same_v<T, const glm::ivec4*> ||
-			std::is_same_v<T, const glm::uvec4*> ||
-			std::is_same_v<T, const glm::bvec4*> ||
-			std::is_same_v<T, const glm::dvec4*>>
-			Add(const std::string& name, const T& values, size_t size) {
-			Add(name, values, size, 16, 16);
+		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
+		Add(const std::string& name, const glm::vec<4, T>*& values, size_t size) {
+			AddArray(name, values, size, 16, 16);
 		}
 
 		template<class T, size_t N>
-		typename std::enable_if_t<
-			std::is_same_v<T, glm::vec4[N]> ||
-			std::is_same_v<T, glm::ivec4[N]> ||
-			std::is_same_v<T, glm::uvec4[N]> ||
-			std::is_same_v<T, glm::bvec4[N]> ||
-			std::is_same_v<T, glm::dvec4[N]> ||
-			std::is_same_v<T, const glm::vec4[N]> ||
-			std::is_same_v<T, const glm::ivec4[N]> ||
-			std::is_same_v<T, const glm::uvec4[N]> ||
-			std::is_same_v<T, const glm::bvec4[N]> ||
-			std::is_same_v<T, const glm::dvec4[N]>>
-			Add(const std::string& name, const T& values) {
-			Add(name, values, 16, 16);
+		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
+		Add(const std::string& name, const glm::vec<4, T>(&values)[N]) {
+			AddArray(name, values, N, 16, 16);
 		}
 
 		template<class T>
-		typename std::enable_if_t<
-			std::is_same_v<T, std::vector<glm::vec4>> ||
-			std::is_same_v<T, std::vector<glm::ivec4>> ||
-			std::is_same_v<T, std::vector<glm::uvec4>> ||
-			std::is_same_v<T, std::vector<glm::bvec4>> ||
-			std::is_same_v<T, std::vector<glm::dvec4>>>
-			Add(const std::string& name, const T& values) {
-			Add(name, values, 16, 16);
+		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
+		Add(const std::string& name, const std::vector<glm::vec<4, T>>& values) {
+			AddArray(name, values, values.size(), 16, 16);
 		}
 #pragma endregion
 #pragma endregion
 
 #pragma region ADD_MAT
 		template<class T, size_t C, size_t R>
-		typename std::enable_if_t<
-			std::is_same_v<T, glm::mat<C, R, glm::f32>> ||
-			std::is_same_v<T, glm::mat<C, R, int>> ||
-			std::is_same_v<T, glm::mat<C, R, unsigned int>> ||
-			std::is_same_v<T, glm::mat<C, R, glm::f64>>>
-			Add(const std::string& name, const T& value) {
+		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, double, bool>>
+		Add(const std::string& name, const glm::mat<C, R, T>& value) {
 			Add(name, GetMatRows(value));
 		}
 
 #pragma region ADD_MAT_ARRAYS
 		template<class T, size_t C, size_t R>
-		typename std::enable_if_t<
-			std::is_same_v<T, glm::mat<C, R, glm::f32>*> ||
-			std::is_same_v<T, glm::mat<C, R, int>*> ||
-			std::is_same_v<T, glm::mat<C, R, unsigned int>*> ||
-			std::is_same_v<T, glm::mat<C, R, glm::f64>*> ||
-			std::is_same_v<T, const glm::mat<C, R, glm::f32>*> ||
-			std::is_same_v<T, const glm::mat<C, R, int>*> ||
-			std::is_same_v<T, const glm::mat<C, R, unsigned int>*> ||
-			std::is_same_v<T, const glm::mat<C, R, glm::f64>*>>
-			Add(const std::string& name, const T& values, size_t size) {
-			for (size_t i = 0; i < size; ++i) {
-				Add(name + "["s + std::to_string(i) + "]"s, values[i]);
-			}
+		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, double, bool>>
+		Add(const std::string& name, const glm::mat<C, R, T>*& values, size_t size) {
+			AddMatArray(name, values, size);
 		}
 
 		template<class T, size_t C, size_t R, size_t N>
-		typename std::enable_if_t<
-			std::is_same_v<T, glm::mat<C, R, glm::f32>[N]> ||
-			std::is_same_v<T, glm::mat<C, R, int>[N]> ||
-			std::is_same_v<T, glm::mat<C, R, unsigned int>[N]> ||
-			std::is_same_v<T, glm::mat<C, R, glm::f64>[N]> ||
-			std::is_same_v<T, const glm::mat<C, R, glm::f32>[N]> ||
-			std::is_same_v<T, const glm::mat<C, R, int>[N]> ||
-			std::is_same_v<T, const glm::mat<C, R, unsigned int>[N]> ||
-			std::is_same_v<T, const glm::mat<C, R, glm::f64>[N]>>
-			Add(const std::string& name, const T& values) {
-			for (size_t i = 0; i < N; ++i) {
-				Add(name + "["s + std::to_string(i) + "]"s, values[i]);
-			}
+		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, double, bool>>
+		Add(const std::string& name, const glm::mat<C, R, T>(&values)[N]) {
+			AddMatArray(name, values, N);
 		}
 
 		template<class T, size_t C, size_t R>
-		typename std::enable_if_t<
-			std::is_same_v<T, std::vector<glm::mat<C, R, glm::f32>>> ||
-			std::is_same_v<T, std::vector<glm::mat<C, R, int>>> ||
-			std::is_same_v<T, std::vector<glm::mat<C, R, unsigned int>>> ||
-			std::is_same_v<T, std::vector<glm::mat<C, R, glm::f64>>>>
-			Add(const std::string& name, const T& values) {
-			for (size_t i = 0; i < values.size(); ++i) {
-				Add(name + "["s + std::to_string(i) + "]"s, values[i]);
-			}
+		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, double, bool>>
+		Add(const std::string& name, const std::vector<glm::mat<C, R, T>>& values) {
+			AddMatArray(name, values, values.size());
 		}
 #pragma endregion
 #pragma endregion
@@ -409,17 +257,9 @@ namespace Twin2Engine::GraphicEngine {
 		void Add(const std::string& name, const STD140Struct& value);
 
 #pragma region ADD_STRUCT_ARRAYS
-		void Add(const std::string& name, const const STD140Struct*& values, size_t size);
 		void Add(const std::string& name, const STD140Struct*& values, size_t size);
-		template<size_t N> void Add(const std::string& name, const const STD140Struct(&values)[N]) {
-			for (size_t i = 0; i < N; ++i) {
-				Add(name + "["s + std::to_string(i) + "]"s, values[i]);
-			}
-		}
 		template<size_t N> void Add(const std::string& name, const STD140Struct(&values)[N]) {
-			for (size_t i = 0; i < N; ++i) {
-				Add(name + "["s + std::to_string(i) + "]"s, values[i]);
-			}
+			AddStructArray(name, values, N);
 		}
 		void Add(const std::string& name, const std::vector<STD140Struct>& values);
 #pragma endregion
@@ -428,87 +268,87 @@ namespace Twin2Engine::GraphicEngine {
 
 #pragma region SET_SCALARS
 		template<class T>
-		typename std::enable_if_t<
-			std::is_same_v<T, int> ||
-			std::is_same_v<T, unsigned int> ||
-			std::is_same_v<T, float> ||
-			std::is_same_v<T, double>>
+		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
 		Set(const std::string& name, const T& value) {
-			Set(name, GetValueData(value));
-		}
-
-		template<class T>
-		typename std::enable_if_t<std::is_same_v<T, bool>>
-		Set(const std::string& name, const T& value) {
-			Set(name, (unsigned int)value);
+			if constexpr (std::is_same_v<T, bool>) {
+				return Set(name, GetValueData((unsigned int)value));
+			}
+			else {
+				return Set(name, GetValueData(value));
+			}
 		}
 #pragma region SET_SCALARS_ARRAYS
 		template<class T>
-		typename std::enable_if_t<
-			std::is_same_v<T, const int*> ||
-			std::is_same_v<T, const unsigned int*> ||
-			std::is_same_v<T, const float*> ||
-			std::is_same_v<T, const double*> ||
-			std::is_same_v<T, int*> ||
-			std::is_same_v<T, unsigned int*> ||
-			std::is_same_v<T, float*> ||
-			std::is_same_v<T, double*>>
-		Set(const std::string& name, const T& values, size_t size) {
-			SetArray(name, values, size);
-		}
-
-		template<class T>
-		typename std::enable_if_t<std::is_same_v<T, const bool*>>
-		Set(const std::string& name, const T& values, size_t size) {
-			std::vector<unsigned int> bools;
-			for (size_t i = 0; i < size; ++i) {
-				bools.push_back((unsigned int)values[i]);
+		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
+		Set(const std::string& name, const T*& values, size_t size) {
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<unsigned int> bools;
+				for (size_t i = 0; i < size; ++i) {
+					bools.push_back((unsigned int)values[i]);
+				}
+				return SetArray(name, bools, bools.size());
 			}
-			SetArray(name, bools);
+			else {
+				return SetArray(name, values, size);
+			}
 		}
 
 		template<class T, size_t N>
-		typename std::enable_if_t<
-			std::is_same_v<T, int[N]> ||
-			std::is_same_v<T, unsigned int[N]> ||
-			std::is_same_v<T, float[N]> ||
-			std::is_same_v<T, double[N]> ||
-			std::is_same_v<T, const int[N]> ||
-			std::is_same_v<T, const unsigned int[N]> ||
-			std::is_same_v<T, const float[N]> ||
-			std::is_same_v<T, const double[N]>>
-		Set(const std::string& name, const T& values) {
-			SetArray(name, values);
-		}
-
-		template<class T, size_t N>
-		typename std::enable_if_t<std::is_same_v<T, const bool[N]>>
-		Set(const std::string& name, const T& values) {
-			std::vector<unsigned int> bools;
-			for (size_t i = 0; i < N; ++i) {
-				bools.push_back((unsigned int)values[i]);
+		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
+		Set(const std::string& name, const T(&values)[N]) {
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<unsigned int> bools;
+				for (size_t i = 0; i < N; ++i) {
+					bools.push_back((unsigned int)values[i]);
+				}
+				return SetArray(name, bools, bools.size());
 			}
-			SetArray(name, values);
+			else {
+				return SetArray(name, values, N);
+			}
 		}
 
 		template<class T>
-		typename std::enable_if_t<
-			std::is_same_v<T, std::vector<int>> ||
-			std::is_same_v<T, std::vector<unsigned int>> ||
-			std::is_same_v<T, std::vector<float>> ||
-			std::is_same_v<T, std::vector<double>>>
-		Set(const std::string& name, const T& values) {
-			SetArray(name, values);
+		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
+		Set(const std::string& name, const std::vector<T>& values) {
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<unsigned int> bools;
+				for (size_t i = 0; i < values.size(); ++i) {
+					bools.push_back((unsigned int)values[i]);
+				}
+				return SetArray(name, bools, bools.size());
+			}
+			else {
+				return SetArray(name, values, values.size());
+			}
+		}
+#pragma endregion
+#pragma endregion
+
+#pragma region SET_VEC
+		template<class T, size_t S>
+		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
+		Set(const std::string& name, const glm::vec<S, T>& value) {
+			return Set(name, GetValueData(value));
 		}
 
-		template<class T>
-		typename std::enable_if_t<std::is_same_v<T, std::vector<bool>>>
-		Set(const std::string& name, const T& values) {
-			std::vector<unsigned int> bools;
-			for (size_t i = 0; i < values.size(); ++i) {
-				bools.push_back((unsigned int)values[i]);
-			}
-			SetArray(name, values);
+#pragma region SET_VEC_ARRAYS
+		template<class T, size_t S>
+		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
+		Set(const std::string& name, const glm::vec<S, T>*& values, size_t size) {
+			return SetArray(name, values, size);
+		}
+
+		template<class T, size_t S, size_t N>
+		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
+		Set(const std::string& name, const glm::vec<S, T>(&values)[N]) {
+			return SetArray(name, values, N);
+		}
+
+		template<class T, size_t S>
+		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
+		Set(const std::string& name, const glm::vec<S, T>*& values, size_t size) {
+			return SetArray(name, values, size);
 		}
 #pragma endregion
 #pragma endregion

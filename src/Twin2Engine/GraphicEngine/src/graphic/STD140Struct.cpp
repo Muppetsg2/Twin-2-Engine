@@ -88,25 +88,14 @@ void STD140Struct::Add(const std::string& name, const STD140Struct& value)
 	}
 }
 
-void STD140Struct::Add(const std::string& name, const const STD140Struct*& values, size_t size)
-{
-	for (size_t i = 0; i < size; ++i) {
-		Add(name + "["s + std::to_string(i) + "]"s, values[i]);
-	}
-}
-
 void STD140Struct::Add(const std::string& name, const STD140Struct*& values, size_t size)
 {
-	for (size_t i = 0; i < size; ++i) {
-		Add(name + "["s + std::to_string(i) + "]"s, values[i]);
-	}
+	AddStructArray(name, values, size);
 }
 
 void STD140Struct::Add(const std::string& name, const std::vector<STD140Struct>& values)
 {
-	for (size_t i = 0; i < values.size(); ++i) {
-		Add(name + "["s + std::to_string(i) + "]"s, values[i]);
-	}
+	AddStructArray(name, values, values.size());
 }
 
 vector<char> STD140Struct::GetData() const

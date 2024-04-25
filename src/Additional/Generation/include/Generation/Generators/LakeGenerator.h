@@ -12,7 +12,7 @@ namespace Generation::Generators
 {
     class LakeGenerator : public AMapElementGenerator
     {
-    private:
+        SCRIPTABLE_OBJECT_BODY(LakeGenerator)
 
     public:
         int numberOfLakes = 0;
@@ -20,7 +20,12 @@ namespace Generation::Generators
 
         bool destroyWaterTile = true;
         virtual void Generate(Tilemap::HexagonalTilemap* tilemap) override;
+
+        SO_SERIALIZE()
+        SO_DESERIALIZE()
     };
 }
+
+SERIALIZABLE_SCRIPTABLE_OBJECT(Generation::Generators::LakeGenerator)
 
 #endif // !_LAKE_GENERATOR_H_

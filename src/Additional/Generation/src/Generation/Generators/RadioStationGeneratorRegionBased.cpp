@@ -11,6 +11,18 @@ using namespace Twin2Engine::Manager;
 using namespace std;
 using namespace glm;
 
+SCRIPTABLE_OBJECT_SOURCE_CODE(RadioStationGeneratorRegionBased, Generation::Generators, "RadioStationGeneratorRegionBased")
+
+SO_SERIALIZATION_BEGIN(RadioStationGeneratorRegionBased, AMapElementGenerator)
+SO_SERIALIZE_FIELD(densityFactorPerRegion)
+SO_SERIALIZATION_END()
+
+SO_DESERIALIZATION_BEGIN(RadioStationGeneratorRegionBased, AMapElementGenerator)
+SO_DESERIALIZE_FIELD(densityFactorPerRegion)
+SO_DESERIALIZATION_END()
+
+
+
 void RadioStationGeneratorRegionBased::Generate(Tilemap::HexagonalTilemap* tilemap)
 {
     std::vector<MapRegion*> regions;

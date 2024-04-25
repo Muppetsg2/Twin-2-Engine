@@ -12,6 +12,7 @@ namespace Generation::Generators
 {
 	class SectorsGenerator : public AMapElementGenerator
 	{
+		SCRIPTABLE_OBJECT_BODY(SectorsGenerator)
 	private:
 
 		MapSector* CreateSector(Tilemap::HexagonalTilemap* tilemap, glm::ivec2 position);
@@ -26,7 +27,11 @@ namespace Generation::Generators
 		virtual void Generate(Tilemap::HexagonalTilemap* tilemap) override;
 
 
+		SO_SERIALIZE()
+		SO_DESERIALIZE()
 	};
 }
+
+SERIALIZABLE_SCRIPTABLE_OBJECT(Generation::Generators::SectorsGenerator)
 
 #endif // !_SECTORS_GENERATOR_H_

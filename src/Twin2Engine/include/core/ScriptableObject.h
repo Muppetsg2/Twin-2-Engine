@@ -1,6 +1,13 @@
 #ifndef _SCRIPTABLE_OBJECT_H_
 #define _SCRIPTABLE_OBJECT_H_
 
+#include <manager/ScriptableObjectManager.h>
+
+namespace Twin2Engine::Manager
+{
+	class ScriptableObjectManager;
+}
+
 namespace Twin2Engine::Core
 {
 	class ScriptableObject;
@@ -10,9 +17,12 @@ namespace Twin2Engine::Core
 
 	class ScriptableObject
 	{
+		friend class Twin2Engine::Manager::ScriptableObjectManager;
+
 		friend class ScriptableObjectRegister<ScriptableObject>;
 		static void Register();
 
+		size_t _id;
 	protected:
 		static std::hash<std::string> hasher;
 		struct ScriptableObjectData
@@ -24,6 +34,7 @@ namespace Twin2Engine::Core
 		static std::unordered_map<size_t, ScriptableObjectData> scriptableObjects;
 
 	public:
+		size_t GetId() const;
 
 		virtual void Serialize(YAML::Node& node) const;
 		virtual bool Deserialize(const YAML::Node& node);
@@ -52,12 +63,14 @@ namespace Twin2Engine::Core
 
 #define SCRIPTABLE_OBJECT_BODY(ScriptableObjectClass) \
 		friend class Twin2Engine::Core::ScriptableObjectRegister<ScriptableObjectClass>; \
+		static std::string _registeredName; \
 		static Twin2Engine::Core::ScriptableObject* Create(); \
 		static void Register(); \
 
 #define SCRIPTABLE_OBJECT_SOURCE_CODE(ScriptableObjectClass, ScriptableObjectNamespace, RegisteredName) \
 namespace ScriptableObjectNamespace \
 { \
+	std::string ScriptableObjectClass::_registeredName = RegisteredName; \
 	Twin2Engine::Core::ScriptableObject* ScriptableObjectClass::Create() \
 	{ \
 		return new ScriptableObjectClass(); \
@@ -65,7 +78,7 @@ namespace ScriptableObjectNamespace \
 	  \
 	void ScriptableObjectClass::Register() \
 	{ \
-		scriptableObjects[hasher(RegisteredName)] = ScriptableObjectData { .scriptableObjectName = RegisteredName, .createSpecificScriptableObject = ScriptableObjectClass::Create }; \
+		scriptableObjects[hasher(_registeredName)] = ScriptableObjectData { .scriptableObjectName = _registeredName, .createSpecificScriptableObject = ScriptableObjectClass::Create }; \
 	} \
 	  \
 	Twin2Engine::Core::ScriptableObjectRegister<ScriptableObjectClass> registererInstance##ScriptableObjectClass(); \
@@ -104,31 +117,44 @@ namespace ScriptableObjectNamespace \
 
 //*
 #define SERIALIZABLE_SCRIPTABLE_OBJECT(ScriptableObjectClass) \
-template<> struct YAML::convert<ScriptableObjectClass> { \
-	static Node encode(const ScriptableObjectClass& rhs) { \
-		Node node; \
-		rhs.Serialize(node); \
-		return node; \
-	} \
- \
-	static bool decode(const Node& node, ScriptableObjectClass& rhs) \
-	{ \
-		rhs.Deserialize(node); \
-	} \
-}; \
-template<> struct YAML::convert<ScriptableObjectClass*> { \
-	static Node encode(const ScriptableObjectClass*& rhs) { \
-		Node node; \
-		rhs->Serialize(node); \
-		return node; \
-	} \
- \
-	static bool decode(const Node& node, ScriptableObjectClass*& rhs) \
-	{ \
-		rhs->Deserialize(node); \
-	} \
-}; \
+//template<> struct YAML::convert<ScriptableObjectClass> { \
+//	static Node encode(const ScriptableObjectClass& rhs) { \
+//		Node node; \
+//		rhs.Serialize(node); \
+//		return node; \
+//	} \
+// \
+//	static bool decode(const Node& node, ScriptableObjectClass& rhs) \
+//	{ \
+//		rhs.Deserialize(node); \
+//	} \
+//}; \
+//template<> struct YAML::convert<ScriptableObjectClass*> { \
+//	static Node encode(const ScriptableObjectClass*& rhs) { \
+//		Node node; \
+//		rhs->Serialize(node); \
+//		return node; \
+//	} \
+// \
+//	static bool decode(const Node& node, ScriptableObjectClass*& rhs) \
+//	{ \
+//		rhs->Deserialize(node); \
+//	} \
+//}; \
 
+
+
+#define SO_SERIALIZE() \
+virtual void Serialize(YAML::Node& node) const override;
+
+#define SO_SERIALIZATION_BEGIN(ScriptableObjectClass, ScriptableObjectBaseClass) \
+void ScriptableObjectClass::Serialize(YAML::Node& node) const \
+{ \
+	ScriptableObjectBaseClass::Serialize(node); \
+	node["__SO_RegisteredName__"] = _registeredName;
+
+#define SO_SERIALIZATION_END() \
+}
 
 #define SO_SERIALIZE_FIELD(field) \
 	node[#field] = field;
@@ -139,14 +165,18 @@ template<> struct YAML::convert<ScriptableObjectClass*> { \
 #define SO_SERIALIZE_FIELD_F_R(name, field, serializer) \
 	node[name] = serializer(field);
 
-//#define SO_DESERIALIZE_FIELD(field, type) \
-//	field = node[#field].as<type>();
-//#define SO_DESERIALIZE_FIELD_R(name, field, type) \
-//	field = node[name].as<type>();
-//#define SO_DESERIALIZE_FIELD_F(field, deserializer) \
-//	field = deserializer(node[#field]);
-//#define SO_DESERIALIZE_FIELD_F_R(name, field, deserializer) \
-//	field = deserializer(node[name]);
+
+#define SO_DESERIALIZE() \
+virtual bool Deserialize(const YAML::Node& node) override;
+
+#define SO_DESERIALIZATION_BEGIN(ScriptableObjectClass, ScriptableObjectBaseClass) \
+bool ScriptableObjectClass::Deserialize(const YAML::Node& node) \
+{ \
+	bool baseReturned = ScriptableObjectBaseClass::Deserialize(node);
+
+#define SO_DESERIALIZATION_END() \
+	return baseReturned; \
+}
 
 #define SO_DESERIALIZE_FIELD(field) \
 	field = node[#field].as<decltype(field)>();
@@ -156,5 +186,14 @@ template<> struct YAML::convert<ScriptableObjectClass*> { \
 	field = node[name].as<decltype(field)>();
 #define SO_DESERIALIZE_FIELD_F_R(name, field, deserializer) \
 	field = deserializer(node[name]);
+//#define SO_DESERIALIZE_FIELD(field, type) \
+//	field = node[#field].as<type>();
+//#define SO_DESERIALIZE_FIELD_R(name, field, type) \
+//	field = node[name].as<type>();
+//#define SO_DESERIALIZE_FIELD_F(field, deserializer) \
+//	field = deserializer(node[#field]);
+//#define SO_DESERIALIZE_FIELD_F_R(name, field, deserializer) \
+//	field = deserializer(node[name]);
+
 /**/
 #endif // !_SCRIPTABLE_OBJECT_H_

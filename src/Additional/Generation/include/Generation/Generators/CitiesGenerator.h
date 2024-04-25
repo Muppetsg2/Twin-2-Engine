@@ -20,9 +20,9 @@ namespace Generation::Generators
 		float density = 1.0f;
 
 		virtual void Generate(Tilemap::HexagonalTilemap* tilemap) override;
-
-		virtual void Serialize(YAML::Node& node) const override;
-		virtual bool Deserialize(const YAML::Node& node) override;
+		
+		SO_SERIALIZE()
+		SO_DESERIALIZE()
 	};
 }
 

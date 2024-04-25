@@ -486,8 +486,6 @@ int main(int, char**)
             //Twin2Engine::Core::GameObject* filledTile;
             //Twin2Engine::Core::GameObject* pointTile;
 
-
-            //float generationRadius = 5.0f;
             mapGenerator->generationRadiusMin = node["generationRadiusMin"].as<float>();
             mapGenerator->generationRadiusMax = node["generationRadiusMax"].as<float>();
             mapGenerator->minPointsNumber = node["minPointsNumber"].as<int>();
@@ -503,6 +501,14 @@ int main(int, char**)
         [](Component* comp, const YAML::Node& node) -> void {
             ContentGenerator* contentGenerator = static_cast<ContentGenerator*>(comp);
 
+            for (YAML::Node soSceneId : node["mapElementGenerators"])
+            {
+                AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(ScriptableObjectManager::Deserialize(soSceneId.as<unsigned int>()));
+                if (generator != nullptr)
+                {
+                    contentGenerator->mapElementGenerators.push_back(generator);
+                }
+            }
             //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
         }
     );

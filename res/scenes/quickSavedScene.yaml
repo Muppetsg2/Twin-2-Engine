@@ -527,7 +527,7 @@ GameObjects:
       enabled: true
       position:
         x: 2.0
-        y: 4.0
+        y: 24.0
         z: -2.0
       scale:
         x: 1
@@ -558,7 +558,7 @@ GameObjects:
       enabled: true
       position:
         x: 2.0
-        y: 6.0
+        y: 20.0
         z: -2.0
       scale:
         x: 1

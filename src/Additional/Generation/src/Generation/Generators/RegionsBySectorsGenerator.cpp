@@ -11,6 +11,34 @@ using namespace Twin2Engine::Manager;
 using namespace std;
 using namespace glm;
 
+SCRIPTABLE_OBJECT_SOURCE_CODE(RegionsBySectorsGenerator, Generation::Generators, "RegionsBySectorsGenerator")
+
+SO_SERIALIZATION_BEGIN(RegionsBySectorsGenerator, AMapElementGenerator)
+SO_SERIALIZE_FIELD(mergeByNumberTilesPerRegion)
+SO_SERIALIZE_FIELD(minTilesPerRegion)
+SO_SERIALIZE_FIELD(maxTilesPerRegion)
+SO_SERIALIZE_FIELD(minSectorsPerRegion)
+SO_SERIALIZE_FIELD(maxSectorsPerRegion)
+SO_SERIALIZE_FIELD(isDiscritizedHeight)
+SO_SERIALIZE_FIELD(lowerHeightRange)
+SO_SERIALIZE_FIELD(upperHeightRange)
+SO_SERIALIZE_FIELD(heightRangeFacor)
+SO_SERIALIZATION_END()
+
+SO_DESERIALIZATION_BEGIN(RegionsBySectorsGenerator, AMapElementGenerator)
+SO_DESERIALIZE_FIELD(mergeByNumberTilesPerRegion)
+SO_DESERIALIZE_FIELD(minTilesPerRegion)
+SO_DESERIALIZE_FIELD(maxTilesPerRegion)
+SO_DESERIALIZE_FIELD(minSectorsPerRegion)
+SO_DESERIALIZE_FIELD(maxSectorsPerRegion)
+SO_DESERIALIZE_FIELD(isDiscritizedHeight)
+SO_DESERIALIZE_FIELD(lowerHeightRange)
+SO_DESERIALIZE_FIELD(upperHeightRange)
+SO_DESERIALIZE_FIELD(heightRangeFacor)
+SO_DESERIALIZATION_END()
+
+
+
 
 void RegionsBySectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
 {

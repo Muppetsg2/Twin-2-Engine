@@ -13,6 +13,19 @@ using namespace Twin2Engine::Manager;
 using namespace std;
 using namespace glm;
 
+SCRIPTABLE_OBJECT_SOURCE_CODE(LakeGenerator, Generation::Generators, "LakeGenerator")
+
+SO_SERIALIZATION_BEGIN(LakeGenerator, AMapElementGenerator)
+SO_SERIALIZE_FIELD(numberOfLakes)
+SO_SERIALIZE_FIELD(waterLevel)
+SO_SERIALIZATION_END()
+
+SO_DESERIALIZATION_BEGIN(LakeGenerator, AMapElementGenerator)
+SO_DESERIALIZE_FIELD(numberOfLakes)
+SO_DESERIALIZE_FIELD(waterLevel)
+SO_DESERIALIZATION_END()
+
+
 void LakeGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
 {
     list<MapRegion*> regionsList = tilemap->GetGameObject()->GetComponentsInChildren<MapRegion>();

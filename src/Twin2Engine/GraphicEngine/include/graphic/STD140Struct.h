@@ -167,9 +167,9 @@ namespace Twin2Engine::GraphicEngine {
 #pragma endregion
 
 #pragma region ADD_VEC
-		template<class T, size_t S>
+		template<class T, size_t L>
 		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
-		Add(const std::string& name, const glm::vec<S, T>& value) {
+		Add(const std::string& name, const glm::vec<L, T>& value) {
 			size_t TSize;
 			if constexpr (std::is_same_v<T, bool>) {
 				TSize = sizeof(unsigned int);
@@ -178,18 +178,18 @@ namespace Twin2Engine::GraphicEngine {
 				TSize = sizeof(T);
 			}
 
-			if constexpr (S == 2 || S == 4) {
-				Add(name, GetValueData(value), TSize * S, TSize * S);
+			if constexpr (L == 2 || L == 4) {
+				Add(name, GetValueData(value), TSize * L, TSize * L);
 			}
-			else if constexpr (S == 3) {
-				Add(name, GetValueData(value), TSize * (S + 1), TSize * S);
+			else if constexpr (L == 3) {
+				Add(name, GetValueData(value), TSize * (L + 1), TSize * L);
 			}
 		}
 
 #pragma region ADD_VEC_ARRAYS
-		template<class T, size_t S>
+		template<class T, size_t L>
 		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
-		Add(const std::string& name, const glm::vec<S, T>*& values, size_t size) {
+		Add(const std::string& name, const glm::vec<L, T>*& values, size_t size) {
 			size_t TSize;
 			if constexpr (std::is_same_v<T, bool>) {
 				TSize = sizeof(unsigned int);
@@ -198,17 +198,17 @@ namespace Twin2Engine::GraphicEngine {
 				TSize = sizeof(T);
 			}
 
-			if constexpr (S == 2 || S == 4) {
-				AddArray(name, values, size, TSize * S, TSize * S);
+			if constexpr (L == 2 || L == 4) {
+				AddArray(name, values, size, TSize * L, TSize * L);
 			}
-			else if constexpr (S == 3) {
-				AddArray(name, values, size, TSize * (S + 1), TSize * S);
+			else if constexpr (L == 3) {
+				AddArray(name, values, size, TSize * (L + 1), TSize * L);
 			}
 		}
 
-		template<class T, size_t S, size_t N>
+		template<class T, size_t L, size_t N>
 		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
-		Add(const std::string& name, const glm::vec<S, T>(&values)[N]) {
+		Add(const std::string& name, const glm::vec<L, T>(&values)[N]) {
 			size_t TSize;
 			if constexpr (std::is_same_v<T, bool>) {
 				TSize = sizeof(unsigned int);
@@ -217,17 +217,17 @@ namespace Twin2Engine::GraphicEngine {
 				TSize = sizeof(T);
 			}
 
-			if constexpr (S == 2 || S == 4) {
-				AddArray(name, values, N, TSize * S, TSize * S);
+			if constexpr (L == 2 || L == 4) {
+				AddArray(name, values, N, TSize * L, TSize * L);
 			}
-			else if constexpr (S == 3) {
-				AddArray(name, values, N, TSize * (S + 1), TSize * S);
+			else if constexpr (L == 3) {
+				AddArray(name, values, N, TSize * (L + 1), TSize * L);
 			}
 		}
 
-		template<class T, size_t S>
+		template<class T, size_t L>
 		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
-		Add(const std::string& name, const std::vector<glm::vec<S, T>>& values) {
+		Add(const std::string& name, const std::vector<glm::vec<L, T>>& values) {
 			size_t TSize;
 			if constexpr (std::is_same_v<T, bool>) {
 				TSize = sizeof(unsigned int);
@@ -236,11 +236,11 @@ namespace Twin2Engine::GraphicEngine {
 				TSize = sizeof(T);
 			}
 
-			if constexpr (S == 2 || S == 4) {
-				AddArray(name, values, values.size(), TSize * S, TSize * S);
+			if constexpr (L == 2 || L == 4) {
+				AddArray(name, values, values.size(), TSize * L, TSize * L);
 			}
-			else if constexpr (S == 3) {
-				AddArray(name, values, values.size(), TSize * (S + 1), TSize * S);
+			else if constexpr (L == 3) {
+				AddArray(name, values, values.size(), TSize * (L + 1), TSize * L);
 			}
 		}
 #pragma endregion
@@ -347,28 +347,28 @@ namespace Twin2Engine::GraphicEngine {
 #pragma endregion
 
 #pragma region SET_VEC
-		template<class T, size_t S>
+		template<class T, size_t L>
 		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
-		Set(const std::string& name, const glm::vec<S, T>& value) {
+		Set(const std::string& name, const glm::vec<L, T>& value) {
 			return Set(name, GetValueData(value));
 		}
 
 #pragma region SET_VEC_ARRAYS
-		template<class T, size_t S>
+		template<class T, size_t L>
 		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
-		Set(const std::string& name, const glm::vec<S, T>*& values, size_t size) {
+		Set(const std::string& name, const glm::vec<L, T>*& values, size_t size) {
 			return SetArray(name, values, size);
 		}
 
-		template<class T, size_t S, size_t N>
+		template<class T, size_t L, size_t N>
 		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
-		Set(const std::string& name, const glm::vec<S, T>(&values)[N]) {
+		Set(const std::string& name, const glm::vec<L, T>(&values)[N]) {
 			return SetArray(name, values, N);
 		}
 
-		template<class T, size_t S>
+		template<class T, size_t L>
 		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
-		Set(const std::string& name, const std::vector<glm::vec<S, T>>& values) {
+		Set(const std::string& name, const std::vector<glm::vec<L, T>>& values) {
 			return SetArray(name, values, values.size());
 		}
 #pragma endregion
@@ -497,9 +497,9 @@ namespace Twin2Engine::GraphicEngine {
 #pragma endregion
 
 #pragma region GET_VEC
-		template<class T>
-		std::enable_if_t<is_in_v<T, bool, int, unsigned int, float, double>, T>
-			Get(const std::string& name) {
+		template<class V, class T, size_t L>
+		std::enable_if_t<std::is_same_v<V, glm::vec<L, T>> && is_in_v<T, bool, int, unsigned int, float, double>, V>
+		Get(const std::string& name) {
 			if constexpr (std::is_same_v<T, bool>) {
 				return (bool)Get<unsigned int>(name);
 			}
@@ -511,10 +511,10 @@ namespace Twin2Engine::GraphicEngine {
 		}
 
 #pragma region GET_VEC_ARRAYS
-		template<class T>
-		std::enable_if_t<is_in_v<T, bool, int, unsigned int, float, double>, void>
-			Get(const std::string& name, T*& valuesDest, size_t size) {
-			std::vector<T> values;
+		template<class V, class T, size_t L>
+		std::enable_if_t<std::is_same_v<V, glm::vec<L, T>> && is_in_v<T, bool, int, unsigned int, float, double>, void>
+		Get(const std::string& name, V*& valuesDest, size_t size) {
+			std::vector<V> values;
 			if constexpr (std::is_same_v<T, bool>) {
 				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
 				for (auto& valueData : valuesData) {
@@ -533,9 +533,9 @@ namespace Twin2Engine::GraphicEngine {
 			memcpy(valuesDest, values.data(), values.size() < size ? values.size() : size);
 		}
 
-		template<class A, class T, size_t N>
-		std::enable_if_t<std::is_same_v<A, T[N]>&& is_in_v<T, bool, int, unsigned int, float, double>, A>
-			Get(const std::string& name) {
+		template<class A, class T, size_t L, size_t N>
+		std::enable_if_t<std::is_same_v<A, glm::vec<L, T>[N]>&& is_in_v<T, bool, int, unsigned int, float, double>, A>
+		Get(const std::string& name) {
 			T values[N]{};
 			if constexpr (std::is_same_v<T, bool>) {
 				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
@@ -554,8 +554,8 @@ namespace Twin2Engine::GraphicEngine {
 			return values;
 		}
 
-		template<class V, class T>
-		std::enable_if_t<std::is_same_v<V, std::vector<T>>&& is_in_v<T, bool, int, unsigned int, float, double>, V>
+		template<class V, class T, size_t L>
+		std::enable_if_t<std::is_same_v<V, std::vector<glm::vec<L, T>>>&& is_in_v<T, bool, int, unsigned int, float, double>, V>
 			Get(const std::string& name) {
 			V values{};
 			if constexpr (std::is_same_v<T, bool>) {

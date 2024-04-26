@@ -3,6 +3,8 @@
 
 #include <Tilemap/HexagonalTilemap.h>
 
+#include <core/ScriptableObject.h>
+
 namespace Generation::Generators
 {
 	class AMapElementGenerator : public Twin2Engine::Core::ScriptableObject

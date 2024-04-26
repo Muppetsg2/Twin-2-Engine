@@ -811,6 +811,8 @@ bool init()
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
+    ScriptableObject::Init();
+
     return true;
 }
 
@@ -995,6 +997,19 @@ void imgui_begin()
     ImGui::NewFrame();
 }
 
+struct HierarchicalItem {
+    std::string label;
+    std::vector<HierarchicalItem> children;
+};
+// Recursive function to render the hierarchical list
+void renderHierarchicalList(const HierarchicalItem& item) {
+    if (ImGui::TreeNode(item.label.c_str())) {
+        for (const auto& child : item.children) {
+            renderHierarchicalList(child);
+        }
+        ImGui::TreePop();
+    }
+}
 void imgui_render()
 {
     if (Input::GetCursorState() == NORMAL)
@@ -1279,6 +1294,35 @@ void imgui_render()
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
+        static string selectedSO = "";
+        static vector<string> scriptableObjectsNames = ScriptableObjectManager::GetScriptableObjectsNames();
+        if (ImGui::TreeNode("ScriptableObjects")) {
+            for (size_t i = 0; i < scriptableObjectsNames.size(); i++)
+            {
+                if (ImGui::Selectable(scriptableObjectsNames[i].c_str())) {
+                    selectedSO = scriptableObjectsNames[i];
+                }
+            }
+            ImGui::TreePop();
+        }
+        ImGui::Text("Selected Scriptable Object to create:");
+        ImGui::SameLine();
+        ImGui::InputText("##selectedItem", &selectedSO[0], selectedSO.size(), ImGuiInputTextFlags_ReadOnly);
+        char dstPath[255];
+        ImGui::InputText("##dstPath", dstPath, 255);
+
+        if (ImGui::Button("Create ScriptableObject"))
+        {
+            if (selectedSO.size() > 0)
+            {
+                string strDstPath(dstPath);
+                if (strDstPath.size() > 0)
+                {
+                    ScriptableObjectManager::CreateScriptableObject(dstPath, selectedSO);
+                }
+            }
+        }
+        
         ImGui::End();
     }
 }

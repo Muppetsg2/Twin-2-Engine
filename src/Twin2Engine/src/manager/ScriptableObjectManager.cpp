@@ -49,7 +49,7 @@ ScriptableObject* ScriptableObjectManager::Get(const std::string& path)
 
 ScriptableObject* ScriptableObjectManager::Get(size_t id)
 {
-	if (_scriptableObjects.contains(id)) 
+	if (_scriptableObjects.contains(id))
 	{
 		//SPDLOG_WARN("ScriptableObject '{0}' already loaded", id);
 		return _scriptableObjects[id];
@@ -123,7 +123,51 @@ Twin2Engine::Core::ScriptableObject* Twin2Engine::Manager::ScriptableObjectManag
 	return nullptr;
 }
 
+
 void Twin2Engine::Manager::ScriptableObjectManager::SceneDeserializationEnd()
 {
 	_deserializationContext.clear();
+}
+
+vector<string> ScriptableObjectManager::GetScriptableObjectsNames()
+{
+	vector<string> scriptableObjectNames(ScriptableObject::scriptableObjects.size());
+	size_t index = 0;
+	for (auto& pair : ScriptableObject::scriptableObjects)
+	{
+		scriptableObjectNames[index++] = pair.second.scriptableObjectName;
+	}
+	return scriptableObjectNames;
+}
+
+bool Twin2Engine::Manager::ScriptableObjectManager::CreateScriptableObject(const string& dstPath, const string& scriptableObjectClassName)
+{
+	size_t hashedName = _hasher(scriptableObjectClassName);
+
+	ScriptableObject* createdSO = nullptr;
+
+	if (ScriptableObject::scriptableObjects.contains(hashedName))
+	{
+		createdSO = ScriptableObject::scriptableObjects[hashedName].createSpecificScriptableObject();
+	}
+
+	if (createdSO != nullptr)
+	{
+		YAML::Node node;
+		createdSO->Serialize(node);
+
+
+		ofstream file{ dstPath };
+		if (file.is_open())
+		{
+			file << node;
+		}
+		else
+		{
+			SPDLOG_ERROR("Couldn't open file: {}, for saving ScriptableObject!", dstPath);
+		}
+		file.close();
+	}
+
+	return false;
 }

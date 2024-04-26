@@ -225,7 +225,6 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 		//	break;
 		}
 	}
-	materialParameters->AlignData();
 
 	MaterialData* materialData = new MaterialData
 	{
@@ -247,7 +246,7 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 //	return typeSizeMap[stringHash(type)];
 //}
 
-Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, 
+/*Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, const std::string& shaderName,
 	const std::vector<std::string>& materialParametersNames, const std::vector<unsigned int>& materialParametersSizes, const std::vector<std::string>& textureParametersNames)
 {
 	size_t hashed = stringHash(newMaterialName);
@@ -273,7 +272,7 @@ Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, co
 	}
 	
 	return Material(data);
-}
+}*/
 
 YAML::Node MaterialsManager::Serialize()
 {

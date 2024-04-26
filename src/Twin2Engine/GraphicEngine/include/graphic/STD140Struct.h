@@ -97,10 +97,9 @@ namespace Twin2Engine::GraphicEngine {
 #pragma endregion
 
 #pragma region GET
-		std::vector<char> Get(const std::string& name);
+		std::vector<char> Get(const std::string& name, size_t baseOffset) const;
 
-		std::vector<std::vector<char>> GetArray(const std::string& name);
-
+		std::vector<std::vector<char>> GetArray(const std::string& name, size_t baseOffset) const;
 #pragma endregion
 
 	public:
@@ -415,7 +414,330 @@ namespace Twin2Engine::GraphicEngine {
 #pragma endregion
 #pragma endregion
 
-		template<class T> T Get(const std::string& name);
+
+#pragma region GET_SCALARS
+		template<class T>
+		std::enable_if_t<is_in_v<T, bool, int, unsigned int, float, double>, T>
+		Get(const std::string& name) {
+			if constexpr (std::is_same_v<T, bool>) {
+				return (bool)Get<unsigned int>(name);
+			}
+			else {
+				std::vector<char> valueData = Get(name, sizeof(T));
+				T* valuePtr = reinterpret_cast<T*>(valueData.data());
+				return *valuePtr;
+			}
+		}
+
+#pragma region GET_SCALARS_ARRAYS
+		template<class T>
+		std::enable_if_t<is_in_v<T, bool, int, unsigned int, float, double>, void>
+		Get(const std::string& name, T*& valuesDest, size_t size) {
+			std::vector<T> values;
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
+				for (auto& valueData : valuesData) {
+					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valueData.data());
+					values.push_back((bool)*valuePtr);
+				}
+				
+			}
+			else {
+				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
+				for (auto& valueData : valuesData) {
+					T* valuePtr = reinterpret_cast<T*>(valueData.data());
+					values.push_back(*valuePtr);
+				}
+			}
+			memcpy(valuesDest, values.data(), values.size() < size ? values.size() : size);
+		}
+
+		template<class A, class T, size_t N>
+		std::enable_if_t<std::is_same_v<A, T[N]> && is_in_v<T, bool, int, unsigned int, float, double>, A>
+		Get(const std::string& name) {
+			T values[N]{};
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
+				for (size_t i = 0; i < valuesData.size() && i < N; ++i) {
+					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valuesData[i].data());
+					values[i] = (bool)*valuePtr;
+				}
+			}
+			else {
+				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
+				for (size_t i = 0; i < valuesData.size() && i < N; ++i) {
+					T* valuePtr = reinterpret_cast<T*>(valuesData[i].data());
+					values[i] = *valuePtr;
+				}
+			}
+			return values;
+		}
+
+		template<class V, class T>
+		std::enable_if_t<std::is_same_v<V, std::vector<T>> && is_in_v<T, bool, int, unsigned int, float, double>, V>
+		Get(const std::string& name) {
+			V values{};
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
+				for (auto& valueData : valuesData) {
+					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valueData.data());
+					values.push_back((bool)*valuePtr);
+				}
+			}
+			else {
+				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
+				for (auto& valueData : valuesData) {
+					T* valuePtr = reinterpret_cast<T*>(valueData.data());
+					values.push_back(*valuePtr);
+				}
+			}
+			return values;
+		}
+#pragma endregion
+#pragma endregion
+
+#pragma region GET_VEC
+		template<class T>
+		std::enable_if_t<is_in_v<T, bool, int, unsigned int, float, double>, T>
+			Get(const std::string& name) {
+			if constexpr (std::is_same_v<T, bool>) {
+				return (bool)Get<unsigned int>(name);
+			}
+			else {
+				std::vector<char> valueData = Get(name, sizeof(T));
+				T* valuePtr = reinterpret_cast<T*>(valueData.data());
+				return *valuePtr;
+			}
+		}
+
+#pragma region GET_VEC_ARRAYS
+		template<class T>
+		std::enable_if_t<is_in_v<T, bool, int, unsigned int, float, double>, void>
+			Get(const std::string& name, T*& valuesDest, size_t size) {
+			std::vector<T> values;
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
+				for (auto& valueData : valuesData) {
+					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valueData.data());
+					values.push_back((bool)*valuePtr);
+				}
+
+			}
+			else {
+				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
+				for (auto& valueData : valuesData) {
+					T* valuePtr = reinterpret_cast<T*>(valueData.data());
+					values.push_back(*valuePtr);
+				}
+			}
+			memcpy(valuesDest, values.data(), values.size() < size ? values.size() : size);
+		}
+
+		template<class A, class T, size_t N>
+		std::enable_if_t<std::is_same_v<A, T[N]>&& is_in_v<T, bool, int, unsigned int, float, double>, A>
+			Get(const std::string& name) {
+			T values[N]{};
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
+				for (size_t i = 0; i < valuesData.size() && i < N; ++i) {
+					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valuesData[i].data());
+					values[i] = (bool)*valuePtr;
+				}
+			}
+			else {
+				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
+				for (size_t i = 0; i < valuesData.size() && i < N; ++i) {
+					T* valuePtr = reinterpret_cast<T*>(valuesData[i].data());
+					values[i] = *valuePtr;
+				}
+			}
+			return values;
+		}
+
+		template<class V, class T>
+		std::enable_if_t<std::is_same_v<V, std::vector<T>>&& is_in_v<T, bool, int, unsigned int, float, double>, V>
+			Get(const std::string& name) {
+			V values{};
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
+				for (auto& valueData : valuesData) {
+					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valueData.data());
+					values.push_back((bool)*valuePtr);
+				}
+			}
+			else {
+				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
+				for (auto& valueData : valuesData) {
+					T* valuePtr = reinterpret_cast<T*>(valueData.data());
+					values.push_back(*valuePtr);
+				}
+			}
+			return values;
+		}
+#pragma endregion
+#pragma endregion
+
+/*#pragma region GET_MAT
+		template<class T>
+		std::enable_if_t<is_in_v<T, bool, int, unsigned int, float, double>, T>
+			Get(const std::string& name) {
+			if constexpr (std::is_same_v<T, bool>) {
+				return (bool)Get<unsigned int>(name);
+			}
+			else {
+				std::vector<char> valueData = Get(name, sizeof(T));
+				T* valuePtr = reinterpret_cast<T*>(valueData.data());
+				return *valuePtr;
+			}
+		}
+
+#pragma region GET_MAT_ARRAYS
+		template<class T>
+		std::enable_if_t<is_in_v<T, bool, int, unsigned int, float, double>, void>
+			Get(const std::string& name, T*& valuesDest, size_t size) {
+			std::vector<T> values;
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
+				for (auto& valueData : valuesData) {
+					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valueData.data());
+					values.push_back((bool)*valuePtr);
+				}
+
+			}
+			else {
+				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
+				for (auto& valueData : valuesData) {
+					T* valuePtr = reinterpret_cast<T*>(valueData.data());
+					values.push_back(*valuePtr);
+				}
+			}
+			memcpy(valuesDest, values.data(), values.size() < size ? values.size() : size);
+		}
+
+		template<class A, class T, size_t N>
+		std::enable_if_t<std::is_same_v<A, T[N]>&& is_in_v<T, bool, int, unsigned int, float, double>, A>
+			Get(const std::string& name) {
+			T values[N]{};
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
+				for (size_t i = 0; i < valuesData.size() && i < N; ++i) {
+					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valuesData[i].data());
+					values[i] = (bool)*valuePtr;
+				}
+			}
+			else {
+				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
+				for (size_t i = 0; i < valuesData.size() && i < N; ++i) {
+					T* valuePtr = reinterpret_cast<T*>(valuesData[i].data());
+					values[i] = *valuePtr;
+				}
+			}
+			return values;
+		}
+
+		template<class V, class T>
+		std::enable_if_t<std::is_same_v<V, std::vector<T>>&& is_in_v<T, bool, int, unsigned int, float, double>, V>
+			Get(const std::string& name) {
+			V values{};
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
+				for (auto& valueData : valuesData) {
+					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valueData.data());
+					values.push_back((bool)*valuePtr);
+				}
+			}
+			else {
+				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
+				for (auto& valueData : valuesData) {
+					T* valuePtr = reinterpret_cast<T*>(valueData.data());
+					values.push_back(*valuePtr);
+				}
+			}
+			return values;
+		}
+#pragma endregion
+#pragma endregion
+
+#pragma region GET_STRUCT
+		template<class T>
+		std::enable_if_t<is_in_v<T, bool, int, unsigned int, float, double>, T>
+			Get(const std::string& name) {
+			if constexpr (std::is_same_v<T, bool>) {
+				return (bool)Get<unsigned int>(name);
+			}
+			else {
+				std::vector<char> valueData = Get(name, sizeof(T));
+				T* valuePtr = reinterpret_cast<T*>(valueData.data());
+				return *valuePtr;
+			}
+		}
+
+#pragma region GET_STRUCT_ARRAYS
+		template<class T>
+		std::enable_if_t<is_in_v<T, bool, int, unsigned int, float, double>, void>
+			Get(const std::string& name, T*& valuesDest, size_t size) {
+			std::vector<T> values;
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
+				for (auto& valueData : valuesData) {
+					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valueData.data());
+					values.push_back((bool)*valuePtr);
+				}
+
+			}
+			else {
+				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
+				for (auto& valueData : valuesData) {
+					T* valuePtr = reinterpret_cast<T*>(valueData.data());
+					values.push_back(*valuePtr);
+				}
+			}
+			memcpy(valuesDest, values.data(), values.size() < size ? values.size() : size);
+		}
+
+		template<class A, class T, size_t N>
+		std::enable_if_t<std::is_same_v<A, T[N]>&& is_in_v<T, bool, int, unsigned int, float, double>, A>
+			Get(const std::string& name) {
+			T values[N]{};
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
+				for (size_t i = 0; i < valuesData.size() && i < N; ++i) {
+					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valuesData[i].data());
+					values[i] = (bool)*valuePtr;
+				}
+			}
+			else {
+				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
+				for (size_t i = 0; i < valuesData.size() && i < N; ++i) {
+					T* valuePtr = reinterpret_cast<T*>(valuesData[i].data());
+					values[i] = *valuePtr;
+				}
+			}
+			return values;
+		}
+
+		template<class V, class T>
+		std::enable_if_t<std::is_same_v<V, std::vector<T>>&& is_in_v<T, bool, int, unsigned int, float, double>, V>
+			Get(const std::string& name) {
+			V values{};
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
+				for (auto& valueData : valuesData) {
+					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valueData.data());
+					values.push_back((bool)*valuePtr);
+				}
+			}
+			else {
+				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
+				for (auto& valueData : valuesData) {
+					T* valuePtr = reinterpret_cast<T*>(valueData.data());
+					values.push_back(*valuePtr);
+				}
+			}
+			return values;
+		}
+#pragma endregion
+#pragma endregion*/
 
 		std::vector<char> GetData() const;
 		size_t GetBaseAligement() const;

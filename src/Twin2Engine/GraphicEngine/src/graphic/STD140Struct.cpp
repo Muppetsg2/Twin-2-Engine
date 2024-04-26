@@ -75,6 +75,36 @@ bool STD140Struct::SetArray(const string& name, const vector<vector<char>>& valu
 	return false;
 }
 
+vector<char> STD140Struct::Get(const string& name, size_t baseOffset) const
+{
+	size_t nameHash = _hasher(name);
+	if (_offsets.contains(nameHash)) {
+		vector<char> value;
+		value.resize(baseOffset);
+		memcpy(value.data(), _data.data() + (*_offsets.find(nameHash)).second, baseOffset);
+		return value;
+	}
+	return vector<char>();
+}
+
+vector<vector<char>> STD140Struct::GetArray(const string& name, size_t baseOffset) const
+{
+	if (_offsets.contains(_hasher(name))) {
+		// GET ARRAY VALUES
+		vector<vector<char>> values;
+		size_t i = 0;
+		string arrayElemName = name + "["s + to_string(i) + "]"s;
+		while (_offsets.contains(_hasher(arrayElemName))) {
+			values.push_back(Get(arrayElemName, baseOffset));
+
+			++i;
+			arrayElemName = name + "["s + to_string(i) + "]"s;
+		}
+		return values;
+	}
+	return vector<vector<char>>();
+}
+
 void STD140Struct::Add(const string& name, const STD140Struct& value)
 {
 	Add(name, value._data, value.GetBaseAligement(), value._currentOffset);

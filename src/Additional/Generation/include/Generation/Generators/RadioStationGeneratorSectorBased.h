@@ -15,7 +15,8 @@ namespace Generation::Generators
 		SCRIPTABLE_OBJECT_BODY(RadioStationGeneratorSectorBased)
 
 	public:
-		Twin2Engine::Core::GameObject* prefabRadioStation;
+		//Twin2Engine::Core::GameObject* prefabRadioStation;
+		Twin2Engine::Core::Prefab* prefabRadioStation;
 		float densityFactorPerSector = 1.0f;
 
 		virtual void Generate(Tilemap::HexagonalTilemap* tilemap) override;
@@ -25,6 +26,6 @@ namespace Generation::Generators
 	};
 }
 
-SERIALIZABLE_SCRIPTABLE_OBJECT(Generation::Generators::RadioStationGeneratorSectorBased)
+SERIALIZABLE_SCRIPTABLE_OBJECT(RadioStationGeneratorSectorBased, Generation::Generators)
 
 #endif // !_RADIO_STATION_GENERATOR_SECTOR_BASED_H_

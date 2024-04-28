@@ -144,18 +144,22 @@ bool Twin2Engine::Manager::ScriptableObjectManager::CreateScriptableObject(const
 {
 	size_t hashedName = _hasher(scriptableObjectClassName);
 
+	SPDLOG_INFO("Tworzenie ScriptableObject. Id: {}, Name {}, DatPath {}", hashedName, scriptableObjectClassName, dstPath);
+
 	ScriptableObject* createdSO = nullptr;
 
 	if (ScriptableObject::scriptableObjects.contains(hashedName))
 	{
+		SPDLOG_INFO("Istnieje docelowy  ScriptableObject");
 		createdSO = ScriptableObject::scriptableObjects[hashedName].createSpecificScriptableObject();
 	}
 
 	if (createdSO != nullptr)
 	{
 		YAML::Node node;
-		createdSO->Serialize(node);
-
+		YAML::Node soNode;
+		createdSO->Serialize(soNode);
+		node["scriptable_object"] = soNode;
 
 		ofstream file{ dstPath };
 		if (file.is_open())

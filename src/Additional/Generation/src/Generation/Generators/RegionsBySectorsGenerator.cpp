@@ -14,6 +14,7 @@ using namespace glm;
 SCRIPTABLE_OBJECT_SOURCE_CODE(RegionsBySectorsGenerator, Generation::Generators, "RegionsBySectorsGenerator")
 
 SO_SERIALIZATION_BEGIN(RegionsBySectorsGenerator, AMapElementGenerator)
+SO_SERIALIZE_FIELD_F(regionPrefab, PrefabManager::GetPrefabPath)
 SO_SERIALIZE_FIELD(mergeByNumberTilesPerRegion)
 SO_SERIALIZE_FIELD(minTilesPerRegion)
 SO_SERIALIZE_FIELD(maxTilesPerRegion)
@@ -26,6 +27,7 @@ SO_SERIALIZE_FIELD(heightRangeFacor)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(RegionsBySectorsGenerator, AMapElementGenerator)
+SO_DESERIALIZE_FIELD_F_T(regionPrefab, PrefabManager::GetPrefab, string)
 SO_DESERIALIZE_FIELD(mergeByNumberTilesPerRegion)
 SO_DESERIALIZE_FIELD(minTilesPerRegion)
 SO_DESERIALIZE_FIELD(maxTilesPerRegion)
@@ -55,7 +57,8 @@ void RegionsBySectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
 
     for (MapSector* sector : sectors)
     {
-        MapRegion* region = GameObject::Instantiate(regionPrefab, tilemap->GetTransform())->GetComponent<MapRegion>();
+        MapRegion* region = SceneManager::CreateGameObject(regionPrefab, tilemap->GetTransform())->GetComponent<MapRegion>();
+        //MapRegion* region = GameObject::Instantiate(regionPrefab, tilemap->GetTransform())->GetComponent<MapRegion>();
         region->tilemap = tilemap;
         regions.push_back(region);
         region->AddSector(sector);

@@ -14,11 +14,13 @@ using namespace glm;
 SCRIPTABLE_OBJECT_SOURCE_CODE(CitiesGenerator, Generation::Generators, "CitiesGenerator")
 
 SO_SERIALIZATION_BEGIN(CitiesGenerator, AMapElementGenerator)
+    SO_SERIALIZE_FIELD_F(prefabCity, PrefabManager::GetPrefabPath)
     SO_SERIALIZE_FIELD(byRegions)
     SO_SERIALIZE_FIELD(density)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(CitiesGenerator, AMapElementGenerator)
+    SO_DESERIALIZE_FIELD_F_T(prefabCity, PrefabManager::GetPrefab, string)
     SO_DESERIALIZE_FIELD(byRegions)
     SO_DESERIALIZE_FIELD(density)
 SO_DESERIALIZATION_END()
@@ -92,7 +94,8 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
                     }
                 }
                 found->GetComponent<MapHexTile>()->type = MapHexTile::HexTileType::PointOfInterest;
-                GameObject* instantiated = GameObject::Instantiate(prefabCity, found->GetTransform());
+                GameObject* instantiated = SceneManager::CreateGameObject(prefabCity, found->GetTransform());
+                //GameObject* instantiated = GameObject::Instantiate(prefabCity, found->GetTransform());
             }
         }
     }
@@ -141,7 +144,8 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
                     }
                 }
                 found->GetComponent<MapHexTile>()->type = MapHexTile::HexTileType::PointOfInterest;
-                GameObject* instantiated = GameObject::Instantiate(prefabCity, found->GetTransform());
+                GameObject* instantiated = SceneManager::CreateGameObject(prefabCity, found->GetTransform());
+                //GameObject* instantiated = GameObject::Instantiate(prefabCity, found->GetTransform());
             }
         }
     }

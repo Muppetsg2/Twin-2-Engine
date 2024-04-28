@@ -1,0 +1,54 @@
+Textures:
+  - path: res/textures/stone.jpg
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
+  - path: res/textures/hexEdgeTexture.png
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
+Sprites: ~
+Fonts: ~
+Audio: ~
+Materials:
+  - GreenHexTile
+  - ColoredHexTile
+  - BlueHexTile
+  - MountainsUnlit
+  - RedHexTile
+Models:
+  - res/models/mountain.obj
+  - res/models/hexagon.obj
+  - "{Plane}"
+Prefabs: ~
+Root:
+  name: New GameObject
+  isStatic: false
+  isActive: true
+  transform:
+    id: 619
+    enabled: true
+    position:
+      x: 0
+      y: 0
+      z: 0
+    scale:
+      x: 1
+      y: 1
+      z: 1
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+  components:
+    - id: 620
+      enabled: true
+      type: MeshRenderer
+      subTypes:
+        - Renderable
+      isTransparent: false
+      model: 0
+      materials:
+        - 3

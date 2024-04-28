@@ -15,7 +15,9 @@ namespace Generation::Generators
 		SCRIPTABLE_OBJECT_BODY(CitiesGenerator)
 
 	public:
-		Twin2Engine::Core::GameObject* prefabCity;
+		//Twin2Engine::Core::GameObject* prefabCity;
+		Twin2Engine::Core::Prefab* prefabCity;
+		
 		bool byRegions = true;
 		float density = 1.0f;
 
@@ -26,6 +28,6 @@ namespace Generation::Generators
 	};
 }
 
-SERIALIZABLE_SCRIPTABLE_OBJECT(Generation::Generators::CitiesGenerator)
+SERIALIZABLE_SCRIPTABLE_OBJECT(CitiesGenerator, Generation::Generators)
 
 #endif // !_CITIES_GENERATOR_H_

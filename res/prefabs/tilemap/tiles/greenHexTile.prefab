@@ -1,0 +1,50 @@
+Textures:
+  - path: res/textures/hexEdgeTexture.png
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
+Sprites: ~
+Fonts: ~
+Audio: ~
+Materials:
+  - GreenHexTile
+  - ColoredHexTile
+  - BlueHexTile
+  - RedHexTile
+Models:
+  - res/models/hexagon.obj
+  - "{Plane}"
+Prefabs: ~
+Root:
+  name: New GameObject
+  isStatic: false
+  isActive: true
+  transform:
+    id: 9
+    enabled: true
+    position:
+      x: 5
+      y: 6
+      z: 0
+    scale:
+      x: 1
+      y: 1
+      z: 1
+    rotation:
+      x: 0
+      y: 90
+      z: 0
+  components:
+    - id: 10
+      enabled: true
+      type: 0
+    - id: 11
+      enabled: true
+      type: MeshRenderer
+      subTypes:
+        - Renderable
+      isTransparent: false
+      model: 0
+      materials:
+        - 0

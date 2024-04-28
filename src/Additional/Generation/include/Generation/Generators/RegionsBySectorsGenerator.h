@@ -17,7 +17,8 @@ namespace Generation::Generators
         SCRIPTABLE_OBJECT_BODY(RegionsBySectorsGenerator)
 
     public:
-        Twin2Engine::Core::GameObject* regionPrefab = nullptr;
+        //Twin2Engine::Core::GameObject* regionPrefab = nullptr;
+        Twin2Engine::Core::Prefab* regionPrefab = nullptr;
         bool mergeByNumberTilesPerRegion = false;
         int minTilesPerRegion = 10;
         int maxTilesPerRegion = 20;
@@ -37,6 +38,6 @@ namespace Generation::Generators
     };
 }
 
-SERIALIZABLE_SCRIPTABLE_OBJECT(Generation::Generators::RegionsBySectorsGenerator)
+SERIALIZABLE_SCRIPTABLE_OBJECT(RegionsBySectorsGenerator, Generation::Generators)
 
 #endif // !_REGIONS_BY_SECTORS_GENERATOR_H_

@@ -14,10 +14,12 @@ using namespace glm;
 SCRIPTABLE_OBJECT_SOURCE_CODE(RadioStationGeneratorSectorBased, Generation::Generators, "RadioStationGeneratorSectorBased")
 
 SO_SERIALIZATION_BEGIN(RadioStationGeneratorSectorBased, AMapElementGenerator)
+SO_SERIALIZE_FIELD_F(prefabRadioStation, PrefabManager::GetPrefabPath)
 SO_SERIALIZE_FIELD(densityFactorPerSector)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(RadioStationGeneratorSectorBased, AMapElementGenerator)
+SO_DESERIALIZE_FIELD_F_T(prefabRadioStation, PrefabManager::GetPrefab, string)
 SO_DESERIALIZE_FIELD(densityFactorPerSector)
 SO_DESERIALIZATION_END()
 
@@ -73,7 +75,8 @@ void RadioStationGeneratorSectorBased::Generate(Tilemap::HexagonalTilemap* tilem
                 size_t randomIndex = Random::Range(0ull, foundOnes.size() - 1);
                 GameObject* tile = foundOnes[randomIndex];
                 tile->GetComponent<MapHexTile>()->type = MapHexTile::HexTileType::RadioStation;
-                GameObject* instantiated = GameObject::Instantiate(prefabRadioStation, tile->GetTransform());
+                GameObject* instantiated = SceneManager::CreateGameObject(prefabRadioStation, tile->GetTransform());
+                //GameObject* instantiated = GameObject::Instantiate(prefabRadioStation, tile->GetTransform());
             }
         }
     }

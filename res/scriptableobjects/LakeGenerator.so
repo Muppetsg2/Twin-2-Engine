@@ -1,0 +1,5 @@
+scriptable_object:
+  __SO_RegisteredName__: LakeGenerator
+  numberOfLakes: 2
+  waterLevel: -5.0
+  destroyWaterTile: true

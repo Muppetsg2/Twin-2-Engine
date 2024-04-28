@@ -4,6 +4,9 @@
 #include <Tilemap/HexagonalTilemap.h>
 
 #include <core/ScriptableObject.h>
+#include <manager/PrefabManager.h>
+#include <manager/SceneManager.h>
+
 
 namespace Generation::Generators
 {

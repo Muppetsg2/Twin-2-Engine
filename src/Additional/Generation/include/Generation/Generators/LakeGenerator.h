@@ -26,6 +26,6 @@ namespace Generation::Generators
     };
 }
 
-SERIALIZABLE_SCRIPTABLE_OBJECT(Generation::Generators::LakeGenerator)
+SERIALIZABLE_SCRIPTABLE_OBJECT(LakeGenerator, Generation::Generators)
 
 #endif // !_LAKE_GENERATOR_H_

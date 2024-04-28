@@ -41,12 +41,7 @@ void ScriptableObject::Register(size_t hash, const ScriptableObjectData& soData)
 	{
 		notIinitialized = false;
 		scriptableObjectsTemp = new std::unordered_map<size_t, ScriptableObjectData>();
-		SPDLOG_WARN("Intialized");
 	}
-	SPDLOG_WARN("Hash {}", hash);
-	//scriptableObjects[hash] = soData;
-	
-	
 	(*scriptableObjectsTemp)[hash] = soData;
 }
 

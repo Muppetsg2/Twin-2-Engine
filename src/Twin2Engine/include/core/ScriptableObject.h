@@ -57,7 +57,6 @@ namespace Twin2Engine::Core
 	template<class T>
 	ScriptableObjectRegister<T>::ScriptableObjectRegister()
 	{
-		SPDLOG_WARN("Creating registerer!");
 		if (_canBeRegistered)
 		{
 			T::Register();
@@ -73,7 +72,7 @@ namespace Twin2Engine::Core
 		static std::string _registeredName; \
 		static Twin2Engine::Core::ScriptableObject* Create(); \
 		static void Register(); \
-		static Twin2Engine::Core::ScriptableObjectRegister<ScriptableObjectClass> registererInstance##ScriptableObjectClass; \
+		//static Twin2Engine::Core::ScriptableObjectRegister<ScriptableObjectClass> registererInstance##ScriptableObjectClass; \
 
 #define SCRIPTABLE_OBJECT_SOURCE_CODE(ScriptableObjectClass, ScriptableObjectNamespace, RegisteredName) \
 namespace ScriptableObjectNamespace \
@@ -91,7 +90,6 @@ namespace ScriptableObjectNamespace \
 		Twin2Engine::Core::ScriptableObject::Register(hasher(_registeredName), ScriptableObjectData { .scriptableObjectName = _registeredName, .createSpecificScriptableObject = ScriptableObjectClass::Create }); \
 	} \
 	  \
-	Twin2Engine::Core::ScriptableObjectRegister<ScriptableObjectClass> registererInstance##ScriptableObjectClass; \
 } \
 
 //scriptableObjects[hasher(_registeredName)] = ScriptableObjectData { .scriptableObjectName = _registeredName, .createSpecificScriptableObject = ScriptableObjectClass::Create }; \
@@ -127,7 +125,8 @@ namespace ScriptableObjectNamespace \
 //using ScriplableObjectPtrYAMLConverter_##ScriptableObjectClass = ScriplableObjectPtrYAMLConverter<ScriptableObjectClass>; \
 
 //*
-#define SERIALIZABLE_SCRIPTABLE_OBJECT(ScriptableObjectClass) \
+#define SERIALIZABLE_SCRIPTABLE_OBJECT(ScriptableObjectClass, ScriptableObjectNamespace) \
+	static Twin2Engine::Core::ScriptableObjectRegister<ScriptableObjectNamespace::ScriptableObjectClass> registererInstance##ScriptableObjectClass; \
 //template<> struct YAML::convert<ScriptableObjectClass> { \
 //	static Node encode(const ScriptableObjectClass& rhs) { \
 //		Node node; \
@@ -192,7 +191,9 @@ bool ScriptableObjectClass::Deserialize(const YAML::Node& node) \
 #define SO_DESERIALIZE_FIELD(field) \
 	field = node[#field].as<decltype(field)>();
 #define SO_DESERIALIZE_FIELD_F(field, deserializer) \
-	field = deserializer(node[#field]);
+	field = deserializer(node[#field].as<decltype(field)>());
+#define SO_DESERIALIZE_FIELD_F_T(field, deserializer, type) \
+	field = deserializer(node[#field].as<type>());
 #define SO_DESERIALIZE_FIELD_R(name, field) \
 	field = node[name].as<decltype(field)>();
 #define SO_DESERIALIZE_FIELD_F_R(name, field, deserializer) \

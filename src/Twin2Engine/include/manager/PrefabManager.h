@@ -21,6 +21,7 @@ namespace Twin2Engine::Manager {
 
 		static Core::Prefab* GetPrefab(size_t id);
 		static Core::Prefab* GetPrefab(const std::string& path);
+		static std::string GetPrefabPath(const Core::Prefab* prefab);
 
 		static void SaveAsPrefab(const Core::GameObject* obj, const std::string& path);
 

@@ -15,7 +15,8 @@ namespace Generation::Generators
         SCRIPTABLE_OBJECT_BODY(MountainsGenerator)
 
     public:
-        Twin2Engine::Core::GameObject* prefabMountains;
+        //Twin2Engine::Core::GameObject* prefabMountains;
+        Twin2Engine::Core::Prefab* prefabMountains;
         int mountainsNumber = 0;
 
         float mountainsHeight = 0.2f;
@@ -27,6 +28,6 @@ namespace Generation::Generators
     };
 }
 
-SERIALIZABLE_SCRIPTABLE_OBJECT(Generation::Generators::MountainsGenerator)
+SERIALIZABLE_SCRIPTABLE_OBJECT(MountainsGenerator, Generation::Generators)
 
 #endif // !_MOUNTAINS_GENERATOR_H_

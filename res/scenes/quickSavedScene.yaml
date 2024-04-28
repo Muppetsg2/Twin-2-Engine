@@ -79,6 +79,13 @@ Models:
   - "{Sphere}"
 Prefabs:
   - res/prefabs/testPrefab.yaml
+ScriptableObjects:
+  - path: res/scriptablobjects/RegionsGeneratorByKMeans.so
+  - path: res/scriptablobjects/SectorGeneratorForRegionsByKMeans.so
+  - path: res/scriptablobjects/LakeGenerator.so
+  - path: res/scriptablobjects/MountainsGenerator.so
+  - path: res/scriptablobjects/CityGenerator.so
+  - path: res/scriptablobjects/RadioStationGeneratorSectorBased.so
 GameObjects:
   - id: 1
     name: Camera
@@ -584,3 +591,50 @@ GameObjects:
           - 9
     children:
       []
+  - id: 14
+    name: MapGenerator
+    isStatic: false
+    isActive: true
+    transform:
+      id: 31
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 32
+        type: HexagonalTilemap
+        enabled: true
+        leftBottomPosition:
+          x: 0
+          y: 0
+        rightTopPosition:
+          x: 0
+          y: 0
+      - id: 33
+        enabled: true
+        type: MapGenerator
+        subTypes:
+          []
+        preafabHexagonalTile: "res/prefabs/tilemap/tiles/hexTile.prefab"
+        additionalTile: "res/prefabs/tilemap/tiles/redHexTile.prefab"
+        filledTile: "res/prefabs/tilemap/tiles/blueHexTile.prefab"
+        pointTile: "res/prefabs/tilemap/tiles/greenHexTile.prefab"
+        generationRadiusMin: 7
+        generationRadiusMax: 7
+        minPointsNumber: 5
+        maxPointsNumber: 5
+        angleDeltaRange: 5
+      - id: 34
+        type: ContentGenerator
+        enabled: true
+        mapElementGenerators: [0, 1, 2, 3, 4, 5]

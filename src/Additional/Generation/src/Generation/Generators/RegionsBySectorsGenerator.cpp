@@ -27,7 +27,7 @@ SO_SERIALIZE_FIELD(heightRangeFacor)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(RegionsBySectorsGenerator, AMapElementGenerator)
-SO_DESERIALIZE_FIELD_F_T(regionPrefab, PrefabManager::GetPrefab, string)
+SO_DESERIALIZE_FIELD_F_T(regionPrefab, PrefabManager::LoadPrefab, string)
 SO_DESERIALIZE_FIELD(mergeByNumberTilesPerRegion)
 SO_DESERIALIZE_FIELD(minTilesPerRegion)
 SO_DESERIALIZE_FIELD(maxTilesPerRegion)

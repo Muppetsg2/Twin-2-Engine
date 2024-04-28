@@ -19,7 +19,7 @@ SO_SERIALIZE_FIELD(densityFactorPerRegion)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(RadioStationGeneratorRegionBased, AMapElementGenerator)
-SO_DESERIALIZE_FIELD_F_T(prefabRadioStation, PrefabManager::GetPrefab, string)
+SO_DESERIALIZE_FIELD_F_T(prefabRadioStation, PrefabManager::LoadPrefab, string)
 SO_DESERIALIZE_FIELD(densityFactorPerRegion)
 SO_DESERIALIZATION_END()
 

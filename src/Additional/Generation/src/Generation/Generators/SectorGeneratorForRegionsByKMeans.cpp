@@ -20,7 +20,7 @@ SO_SERIALIZE_FIELD(heightRangeFacor)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(SectorGeneratorForRegionsByKMeans, AMapElementGenerator)
-SO_DESERIALIZE_FIELD_F_T(sectorPrefab, PrefabManager::GetPrefab, string)
+SO_DESERIALIZE_FIELD_F_T(sectorPrefab, PrefabManager::LoadPrefab, string)
 SO_DESERIALIZE_FIELD(sectorsCount)
 SO_DESERIALIZE_FIELD(isDiscritizedHeight)
 SO_DESERIALIZE_FIELD(lowerHeightRange)

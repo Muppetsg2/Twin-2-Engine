@@ -145,17 +145,24 @@ Prefab* PrefabManager::GetPrefab(const string& path)
 
 std::string PrefabManager::GetPrefabPath(const Prefab* prefab)
 {
-	size_t id = 0;
-	bool foundId = false;
-	for (const auto& pair : _prefabs)
+	if (prefab != nullptr)
 	{
-		id = pair.first;
-	}
-	if (foundId)
-	{
-		if (_prefabsPaths.contains(id))
+		size_t id = 0;
+		bool foundId = false;
+		for (const auto& pair : _prefabs)
 		{
-			return _prefabsPaths[id];
+			if (pair.second == prefab)
+			{
+				id = pair.first;
+				break;
+			}
+		}
+		if (foundId)
+		{
+			if (_prefabsPaths.contains(id))
+			{
+				return _prefabsPaths[id];
+			}
 		}
 	}
 	return "";

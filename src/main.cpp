@@ -439,6 +439,11 @@ int main(int, char**)
             //Twin2Engine::Core::GameObject* filledTile;
             //Twin2Engine::Core::GameObject* pointTile;
 
+            mapGenerator->preafabHexagonalTile = PrefabManager::LoadPrefab(node["preafabHexagonalTile"].as<string>());
+            mapGenerator->additionalTile = PrefabManager::LoadPrefab(node["additionalTile"].as<string>());
+            mapGenerator->filledTile = PrefabManager::LoadPrefab(node["filledTile"].as<string>());
+            mapGenerator->pointTile = PrefabManager::LoadPrefab(node["pointTile"].as<string>());
+
             mapGenerator->generationRadiusMin = node["generationRadiusMin"].as<float>();
             mapGenerator->generationRadiusMax = node["generationRadiusMax"].as<float>();
             mapGenerator->minPointsNumber = node["minPointsNumber"].as<int>();
@@ -515,77 +520,76 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
 #pragma region SETTING_UP_GENERATION
-    InstatiatingModel modelHexagon = ModelsManager::LoadModel("res/models/hexagon.obj");
-    GameObject* hexagonPrefab = new GameObject();
-    hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
-    hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
-    MapHexTile* mapHexTile = hexagonPrefab->AddComponent<MapHexTile>();
-    
-    auto comp = hexagonPrefab->AddComponent<MeshRenderer>();
-    comp->AddMaterial(MaterialsManager::GetMaterial("ColoredHexTile"));
+    //InstatiatingModel modelHexagon = ModelsManager::LoadModel("res/models/hexagon.obj");
+    //GameObject* hexagonPrefab = new GameObject();
+    //hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
+    //hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    //MapHexTile* mapHexTile = hexagonPrefab->AddComponent<MapHexTile>();
+    //
+    //auto comp = hexagonPrefab->AddComponent<MeshRenderer>();
+    //comp->AddMaterial(MaterialsManager::GetMaterial("ColoredHexTile"));
+    ////comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
+    //comp->SetModel(modelHexagon);
+    //
+    //PrefabManager::SaveAsPrefab(hexagonPrefab, "res/prefabs/tilemap/tiles/hexTile.prefab");
+    //
+    //GameObject* redHexagonPrefab = new GameObject();
+    //redHexagonPrefab->GetTransform()->Translate(glm::vec3(3, 4, 0));
+    //redHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    //mapHexTile = redHexagonPrefab->AddComponent<MapHexTile>();
+    //
+    //comp = redHexagonPrefab->AddComponent<MeshRenderer>();
     //comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
-    comp->SetModel(modelHexagon);
-
-    PrefabManager::SaveAsPrefab(hexagonPrefab, "res/prefabs/tilemap/tiles/hexTile.prefab");
-
-    GameObject* redHexagonPrefab = new GameObject();
-    redHexagonPrefab->GetTransform()->Translate(glm::vec3(3, 4, 0));
-    redHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
-    mapHexTile = redHexagonPrefab->AddComponent<MapHexTile>();
-
-    comp = redHexagonPrefab->AddComponent<MeshRenderer>();
-    comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
-    comp->SetModel(modelHexagon);
-
-    PrefabManager::SaveAsPrefab(redHexagonPrefab, "res/prefabs/tilemap/tiles/redHexTile.prefab");
-    GameObject* blueHexagonPrefab = new GameObject();
-    blueHexagonPrefab->GetTransform()->Translate(glm::vec3(4, 5, 0));
-    blueHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
-    mapHexTile = blueHexagonPrefab->AddComponent<MapHexTile>();
-
-    comp = blueHexagonPrefab->AddComponent<MeshRenderer>();
-    comp->AddMaterial(MaterialsManager::GetMaterial("BlueHexTile"));
-    comp->SetModel(modelHexagon);
-
-    PrefabManager::SaveAsPrefab(blueHexagonPrefab, "res/prefabs/tilemap/tiles/blueHexTile.prefab");
-    GameObject* greenHexagonPrefab = new GameObject();
-    greenHexagonPrefab->GetTransform()->Translate(glm::vec3(5, 6, 0));
-    greenHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
-    mapHexTile = greenHexagonPrefab->AddComponent<MapHexTile>();
-
-    comp = greenHexagonPrefab->AddComponent<MeshRenderer>();
-    {GLenum error = glGetError();
-	if (error != GL_NO_ERROR) {
-		SPDLOG_ERROR("RDMError0: {}", error);
-	}}
-    comp->AddMaterial(MaterialsManager::GetMaterial("GreenHexTile"));
-    {GLenum error = glGetError();
-	if (error != GL_NO_ERROR) {
-		SPDLOG_ERROR("RDMError01: {}", error);
-	}}
-    comp->SetModel(modelHexagon);
+    //comp->SetModel(modelHexagon);
+    //
+    //PrefabManager::SaveAsPrefab(redHexagonPrefab, "res/prefabs/tilemap/tiles/redHexTile.prefab");
+    //GameObject* blueHexagonPrefab = new GameObject();
+    //blueHexagonPrefab->GetTransform()->Translate(glm::vec3(4, 5, 0));
+    //blueHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    //mapHexTile = blueHexagonPrefab->AddComponent<MapHexTile>();
+    //
+    //comp = blueHexagonPrefab->AddComponent<MeshRenderer>();
+    //comp->AddMaterial(MaterialsManager::GetMaterial("BlueHexTile"));
+    //comp->SetModel(modelHexagon);
+    //
+    //PrefabManager::SaveAsPrefab(blueHexagonPrefab, "res/prefabs/tilemap/tiles/blueHexTile.prefab");
+    //GameObject* greenHexagonPrefab = new GameObject();
+    //greenHexagonPrefab->GetTransform()->Translate(glm::vec3(5, 6, 0));
+    //greenHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    //mapHexTile = greenHexagonPrefab->AddComponent<MapHexTile>();
+    //
+    //comp = greenHexagonPrefab->AddComponent<MeshRenderer>();
+    //{GLenum error = glGetError();
+	//if (error != GL_NO_ERROR) {
+	//	SPDLOG_ERROR("RDMError0: {}", error);
+	//}}
+    //comp->AddMaterial(MaterialsManager::GetMaterial("GreenHexTile"));
+    //{GLenum error = glGetError();
+	//if (error != GL_NO_ERROR) {
+	//	SPDLOG_ERROR("RDMError01: {}", error);
+	//}}
+    //comp->SetModel(modelHexagon);
 
 
     //PrefabManager::SaveAsPrefab(greenHexagonPrefab, "res/prefabs/tilemap/tiles/greenHexTile.prefab");
 
     // TILEMAP
     //*
-    GameObject* tilemapGO = new GameObject();
-    HexagonalTilemap* hexagonalTilemap = tilemapGO->AddComponent<HexagonalTilemap>();
-    MapGenerator* mapGenerator = tilemapGO->AddComponent<MapGenerator>();
+    GameObject* tilemapGO = SceneManager::GetGameObjectWithId(14);
+    HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
+    MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
     mapGenerator->tilemap = hexagonalTilemap;
-    mapGenerator->preafabHexagonalTile = hexagonPrefab;
-    mapGenerator->filledTile = blueHexagonPrefab;
-    mapGenerator->pointTile = redHexagonPrefab;
-    mapGenerator->additionalTile = greenHexagonPrefab;
+    //mapGenerator->preafabHexagonalTile = hexagonPrefab;
+    //mapGenerator->filledTile = blueHexagonPrefab;
+    //mapGenerator->pointTile = redHexagonPrefab;
+    //mapGenerator->additionalTile = greenHexagonPrefab;
 
-    mapGenerator->generationRadiusMin = 7;
-    mapGenerator->generationRadiusMax = 7;
+    //mapGenerator->generationRadiusMin = 7;
+    //mapGenerator->generationRadiusMax = 7;
     float tilemapGenerating = glfwGetTime();
     mapGenerator->Generate();
     spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
 
-    PrefabManager::SaveAsPrefab(tilemapGO, "res/prefabs/tilemap/tilemap.prefab");
 
     //GameObject* prefabSector = new GameObject();
     //prefabSector->AddComponent<MapSector>();
@@ -594,7 +598,8 @@ int main(int, char**)
     //prefabRegion->AddComponent<MapRegion>();
     //PrefabManager::SaveAsPrefab(prefabRegion, "res/prefabs/tilemap/mapRegion.prefab");
 
-    //ContentGenerator* contentGenerator = tilemapGO->AddComponent<ContentGenerator>();
+    ContentGenerator* contentGenerator = tilemapGO->AddComponent<ContentGenerator>();
+    PrefabManager::SaveAsPrefab(tilemapGO, "res/prefabs/tilemap/tilemap.prefab");
    //SectorsGenerator sectorsGenertor;
    //sectorsGenertor.minTilesPerSector = 3;
    //sectorsGenertor.maxTilesPerSector = 3;

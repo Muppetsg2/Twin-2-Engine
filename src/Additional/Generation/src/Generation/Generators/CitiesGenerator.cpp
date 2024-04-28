@@ -20,7 +20,7 @@ SO_SERIALIZATION_BEGIN(CitiesGenerator, AMapElementGenerator)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(CitiesGenerator, AMapElementGenerator)
-    SO_DESERIALIZE_FIELD_F_T(prefabCity, PrefabManager::GetPrefab, string)
+    SO_DESERIALIZE_FIELD_F_T(prefabCity, PrefabManager::LoadPrefab, string)
     SO_DESERIALIZE_FIELD(byRegions)
     SO_DESERIALIZE_FIELD(density)
 SO_DESERIALIZATION_END()

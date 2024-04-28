@@ -21,7 +21,7 @@ SO_SERIALIZE_FIELD(accuracyFactor)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(SectorsGenerator, AMapElementGenerator)
-SO_DESERIALIZE_FIELD_F_T(prefabSector, PrefabManager::GetPrefab, string)
+SO_DESERIALIZE_FIELD_F_T(prefabSector, PrefabManager::LoadPrefab, string)
 SO_DESERIALIZE_FIELD(minTilesPerSector)
 SO_DESERIALIZE_FIELD(maxTilesPerSector)
 SO_DESERIALIZE_FIELD(accuracyFactor)

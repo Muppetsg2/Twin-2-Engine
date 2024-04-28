@@ -20,7 +20,7 @@ SO_SERIALIZE_FIELD(mountainsHeight)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(MountainsGenerator, AMapElementGenerator)
-SO_DESERIALIZE_FIELD_F_T(prefabMountains, PrefabManager::GetPrefab, string)
+SO_DESERIALIZE_FIELD_F_T(prefabMountains, PrefabManager::LoadPrefab, string)
 SO_DESERIALIZE_FIELD(mountainsNumber)
 SO_DESERIALIZE_FIELD(mountainsHeight)
 SO_DESERIALIZATION_END()

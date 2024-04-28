@@ -24,7 +24,7 @@ Models:
   - "{Plane}"
 Prefabs: ~
 Root:
-  name: New GameObject
+  name: Mountain
   isStatic: false
   isActive: true
   transform:

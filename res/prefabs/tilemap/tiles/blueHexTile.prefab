@@ -37,7 +37,8 @@ Root:
   components:
     - id: 7
       enabled: true
-      type: 0
+      type: MapHexTile
+      hexTileType: 0
     - id: 8
       enabled: true
       type: MeshRenderer

@@ -153,9 +153,9 @@ bool MapRegion::IsInternalRegion() const
 YAML::Node MapRegion::Serialize() const
 {
 	YAML::Node node = Twin2Engine::Core::Component::Serialize();
-	node.remove("type");
+	node["type"] = "MapRegion";
 	node.remove("subTypes");
 	//node["tilemap"] = tilemap;
-	node["type"] = type;
+	node["regionType"] = type;
 	return node;
 }

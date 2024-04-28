@@ -6,8 +6,10 @@ using namespace Tilemap;
 
 void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
 {
+    SPDLOG_INFO("Starting content");
     for (AMapElementGenerator* generator : mapElementGenerators)
     {
+        SPDLOG_INFO("Generating element");
         generator->Generate(targetTilemap);
     }
 }
@@ -23,7 +25,8 @@ YAML::Node ContentGenerator::Serialize() const
     node["mapElementGenerators"] = {};
     for (AMapElementGenerator* generator : mapElementGenerators)
     {
-        node["mapElementGenerators"][index++] = Twin2Engine::Manager::ScriptableObjectManager::SceneSerialize(generator->GetId());
+        //node["mapElementGenerators"][index++] = Twin2Engine::Manager::ScriptableObjectManager::SceneSerialize(generator->GetId());
+        node["mapElementGenerators"][index++] = Twin2Engine::Manager::ScriptableObjectManager::GetPath(generator->GetId());
     }
     return node;
 }

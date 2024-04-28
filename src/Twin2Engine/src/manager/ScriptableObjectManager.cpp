@@ -23,7 +23,7 @@ ScriptableObject* ScriptableObjectManager::Load(const std::string& path)
 
 	SPDLOG_INFO("Loading ScriptableObject '{0}'", path);
 
-	YAML::Node soNode = YAML::LoadFile(path)["ScriptableObject"];
+	YAML::Node soNode = YAML::LoadFile(path)["scriptable_object"];
 	size_t hashedSORegisteredName = _hasher(soNode["__SO_RegisteredName__"].as<string>());
 	ScriptableObject* scriptableObject = ScriptableObject::scriptableObjects[hashedSORegisteredName].createSpecificScriptableObject();
 	scriptableObject->_id = pathHash;
@@ -51,11 +51,19 @@ ScriptableObject* ScriptableObjectManager::Get(size_t id)
 {
 	if (_scriptableObjects.contains(id))
 	{
-		//SPDLOG_WARN("ScriptableObject '{0}' already loaded", id);
 		return _scriptableObjects[id];
 	}
-	SPDLOG_WARN("ScriptableObject '{0}' not loaded", id);
 	return nullptr;
+}
+
+std::string ScriptableObjectManager::GetPath(size_t id)
+{
+	if (_scriptableObjects.contains(id))
+	{
+		return _scriptableObjectsPaths[id];
+	}
+	SPDLOG_WARN("ScriptableObject '{0}' not loaded", id);
+	return "";
 }
 
 void Twin2Engine::Manager::ScriptableObjectManager::UnloadAll()

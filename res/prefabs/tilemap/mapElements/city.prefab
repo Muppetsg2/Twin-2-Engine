@@ -31,7 +31,7 @@ Models:
   - res/models/city.obj
 Prefabs: ~
 Root:
-  name: New GameObject
+  name: City
   isStatic: false
   isActive: true
   transform:

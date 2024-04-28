@@ -33,7 +33,7 @@ Models:
   - res/models/city.obj
 Prefabs: ~
 Root:
-  name: New GameObject
+  name: RadioStation
   isStatic: false
   isActive: true
   transform:

@@ -38,4 +38,5 @@ Root:
   components:
     - id: 616
       enabled: true
-      type: 0
+      type: MapSector
+      sectorType: 0

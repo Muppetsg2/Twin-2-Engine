@@ -6,6 +6,7 @@ using namespace Generation::Generators;
 using namespace Tilemap;
 
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Manager;
 
 using namespace std;
 using namespace glm;
@@ -13,11 +14,13 @@ using namespace glm;
 SCRIPTABLE_OBJECT_SOURCE_CODE(MountainsGenerator, Generation::Generators, "MountainsGenerator")
 
 SO_SERIALIZATION_BEGIN(MountainsGenerator, AMapElementGenerator)
+SO_SERIALIZE_FIELD_F(prefabMountains, PrefabManager::GetPrefabPath)
 SO_SERIALIZE_FIELD(mountainsNumber)
 SO_SERIALIZE_FIELD(mountainsHeight)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(MountainsGenerator, AMapElementGenerator)
+SO_DESERIALIZE_FIELD_F_T(prefabMountains, PrefabManager::LoadPrefab, string)
 SO_DESERIALIZE_FIELD(mountainsNumber)
 SO_DESERIALIZE_FIELD(mountainsHeight)
 SO_DESERIALIZATION_END()
@@ -49,7 +52,8 @@ void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
             //tile->layer = LayerMask::NameToLayer("Mountain");
             tile->type = MapHexTile::HexTileType::Mountain;
 
-            GameObject* mountain = GameObject::Instantiate(prefabMountains, tile->GetGameObject()->GetTransform());
+            GameObject* mountain = SceneManager::CreateGameObject(prefabMountains, tile->GetGameObject()->GetTransform());
+            //GameObject* mountain = GameObject::Instantiate(prefabMountains, tile->GetGameObject()->GetTransform());
         }
 
         sectors.erase(sectors.begin() + index);

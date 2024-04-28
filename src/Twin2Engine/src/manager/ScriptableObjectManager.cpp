@@ -23,7 +23,7 @@ ScriptableObject* ScriptableObjectManager::Load(const std::string& path)
 
 	SPDLOG_INFO("Loading ScriptableObject '{0}'", path);
 
-	YAML::Node soNode = YAML::LoadFile(path)["ScriptableObject"];
+	YAML::Node soNode = YAML::LoadFile(path)["scriptable_object"];
 	size_t hashedSORegisteredName = _hasher(soNode["__SO_RegisteredName__"].as<string>());
 	ScriptableObject* scriptableObject = ScriptableObject::scriptableObjects[hashedSORegisteredName].createSpecificScriptableObject();
 	scriptableObject->_id = pathHash;
@@ -49,13 +49,21 @@ ScriptableObject* ScriptableObjectManager::Get(const std::string& path)
 
 ScriptableObject* ScriptableObjectManager::Get(size_t id)
 {
-	if (_scriptableObjects.contains(id)) 
+	if (_scriptableObjects.contains(id))
 	{
-		//SPDLOG_WARN("ScriptableObject '{0}' already loaded", id);
 		return _scriptableObjects[id];
 	}
-	SPDLOG_WARN("ScriptableObject '{0}' not loaded", id);
 	return nullptr;
+}
+
+std::string ScriptableObjectManager::GetPath(size_t id)
+{
+	if (_scriptableObjects.contains(id))
+	{
+		return _scriptableObjectsPaths[id];
+	}
+	SPDLOG_WARN("ScriptableObject '{0}' not loaded", id);
+	return "";
 }
 
 void Twin2Engine::Manager::ScriptableObjectManager::UnloadAll()
@@ -123,7 +131,55 @@ Twin2Engine::Core::ScriptableObject* Twin2Engine::Manager::ScriptableObjectManag
 	return nullptr;
 }
 
+
 void Twin2Engine::Manager::ScriptableObjectManager::SceneDeserializationEnd()
 {
 	_deserializationContext.clear();
+}
+
+vector<string> ScriptableObjectManager::GetScriptableObjectsNames()
+{
+	vector<string> scriptableObjectNames(ScriptableObject::scriptableObjects.size());
+	size_t index = 0;
+	for (auto& pair : ScriptableObject::scriptableObjects)
+	{
+		scriptableObjectNames[index++] = pair.second.scriptableObjectName;
+	}
+	return scriptableObjectNames;
+}
+
+bool Twin2Engine::Manager::ScriptableObjectManager::CreateScriptableObject(const string& dstPath, const string& scriptableObjectClassName)
+{
+	size_t hashedName = _hasher(scriptableObjectClassName);
+
+	SPDLOG_INFO("Tworzenie ScriptableObject. Id: {}, Name {}, DatPath {}", hashedName, scriptableObjectClassName, dstPath);
+
+	ScriptableObject* createdSO = nullptr;
+
+	if (ScriptableObject::scriptableObjects.contains(hashedName))
+	{
+		SPDLOG_INFO("Istnieje docelowy  ScriptableObject");
+		createdSO = ScriptableObject::scriptableObjects[hashedName].createSpecificScriptableObject();
+	}
+
+	if (createdSO != nullptr)
+	{
+		YAML::Node node;
+		YAML::Node soNode;
+		createdSO->Serialize(soNode);
+		node["scriptable_object"] = soNode;
+
+		ofstream file{ dstPath };
+		if (file.is_open())
+		{
+			file << node;
+		}
+		else
+		{
+			SPDLOG_ERROR("Couldn't open file: {}, for saving ScriptableObject!", dstPath);
+		}
+		file.close();
+	}
+
+	return false;
 }

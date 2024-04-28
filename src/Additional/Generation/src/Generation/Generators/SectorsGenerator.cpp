@@ -14,12 +14,14 @@ using namespace std;
 SCRIPTABLE_OBJECT_SOURCE_CODE(SectorsGenerator, Generation::Generators, "SectorsGenerator")
 
 SO_SERIALIZATION_BEGIN(SectorsGenerator, AMapElementGenerator)
+SO_SERIALIZE_FIELD_F(prefabSector, PrefabManager::GetPrefabPath)
 SO_SERIALIZE_FIELD(minTilesPerSector)
 SO_SERIALIZE_FIELD(maxTilesPerSector)
 SO_SERIALIZE_FIELD(accuracyFactor)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(SectorsGenerator, AMapElementGenerator)
+SO_DESERIALIZE_FIELD_F_T(prefabSector, PrefabManager::LoadPrefab, string)
 SO_DESERIALIZE_FIELD(minTilesPerSector)
 SO_DESERIALIZE_FIELD(maxTilesPerSector)
 SO_DESERIALIZE_FIELD(accuracyFactor)
@@ -196,7 +198,8 @@ MapSector* SectorsGenerator::CreateSector(Tilemap::HexagonalTilemap* tilemap, gl
         }
     }
 
-    GameObject* sectorGO = GameObject::Instantiate(prefabSector, tilemap->GetTransform());
+    GameObject* sectorGO = SceneManager::CreateGameObject(prefabSector, tilemap->GetTransform());
+    //GameObject* sectorGO = GameObject::Instantiate(prefabSector, tilemap->GetTransform());
     MapSector* sector = sectorGO->GetComponent<MapSector>();
 
     sector->tilemap = tilemap;

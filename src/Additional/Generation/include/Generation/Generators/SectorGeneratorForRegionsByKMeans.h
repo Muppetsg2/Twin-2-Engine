@@ -17,7 +17,8 @@ namespace Generation::Generators
         SCRIPTABLE_OBJECT_BODY(SectorGeneratorForRegionsByKMeans)
 
     public:
-        Twin2Engine::Core::GameObject* sectorPrefab;
+        //Twin2Engine::Core::GameObject* sectorPrefab;
+        Twin2Engine::Core::Prefab* sectorPrefab;
         int sectorsCount = 3; // Number of regions/clusters
 
         bool isDiscritizedHeight = false;
@@ -32,4 +33,4 @@ namespace Generation::Generators
     };
 }
 
-SERIALIZABLE_SCRIPTABLE_OBJECT(Generation::Generators::SectorGeneratorForRegionsByKMeans)
+SERIALIZABLE_SCRIPTABLE_OBJECT(SectorGeneratorForRegionsByKMeans, Generation::Generators)

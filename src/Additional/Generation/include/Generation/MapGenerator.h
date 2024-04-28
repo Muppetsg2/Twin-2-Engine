@@ -3,7 +3,10 @@
 
 #include <core/Component.h>
 #include <core/GameObject.h>
+#include <core/Prefab.h>
 #include <core/Random.h>
+
+#include <manager/PrefabManager.h>
 
 #include <Tilemap/HexagonalTile.h>
 #include <Tilemap/HexagonalTilemap.h>
@@ -33,10 +36,14 @@ namespace Generation
 
         Tilemap::HexagonalTilemap* tilemap;
         //Tilemap::HexagonalTile* tile;
-        Twin2Engine::Core::GameObject* preafabHexagonalTile;
-        Twin2Engine::Core::GameObject* additionalTile;
-        Twin2Engine::Core::GameObject* filledTile;
-        Twin2Engine::Core::GameObject* pointTile;
+        //Twin2Engine::Core::GameObject* preafabHexagonalTile;
+        //Twin2Engine::Core::GameObject* additionalTile;
+        //Twin2Engine::Core::GameObject* filledTile;
+        //Twin2Engine::Core::GameObject* pointTile;
+        Twin2Engine::Core::Prefab* preafabHexagonalTile;
+        Twin2Engine::Core::Prefab* additionalTile;
+        Twin2Engine::Core::Prefab* filledTile;
+        Twin2Engine::Core::Prefab* pointTile;
 
 
         //float generationRadius = 5.0f;

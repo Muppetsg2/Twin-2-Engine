@@ -3,7 +3,9 @@
 
 #include <core/GameObject.h>
 #include <core/Component.h>
+#include <core/Prefab.h>
 #include <core/Transform.h>
+#include <manager/SceneManager.h>
 
 
 namespace Generation
@@ -41,10 +43,12 @@ namespace Tilemap
 		glm::ivec2 GetRightTopPosition() const;
 
 		inline HexagonalTile* GetTile(const glm::ivec2& position) const;
-		void SetTile(const glm::ivec2& position, Twin2Engine::Core::GameObject* gameObject);
+		//void SetTile(const glm::ivec2& position, Twin2Engine::Core::GameObject* gameObject);
+		void SetTile(const glm::ivec2& position, Twin2Engine::Core::Prefab* prefab);
 		void RemoveTile(const glm::ivec2& position);
 
-		void Fill(const glm::ivec2& position, Twin2Engine::Core::GameObject* gameObject);
+		//void Fill(const glm::ivec2& position, Twin2Engine::Core::GameObject* gameObject);
+		void Fill(const glm::ivec2& position, Twin2Engine::Core::Prefab* prefab);
 
 		inline void SetDistanceBetweenTiles(float distanceBetweenTiles);
 		inline float GetDistanceBetweenTiles() const;

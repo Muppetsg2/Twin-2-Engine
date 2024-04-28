@@ -15,6 +15,9 @@ GameObject::GameObject(size_t id) {
 		auto found = find_if(_freedIds.begin(), _freedIds.end(), [&](size_t fId) -> bool { return fId == _id; });
 		if (found != _freedIds.end()) {
 			_freedIds.erase(found);
+
+
+
 		}
 	}
 	if (_currentFreeId <= id) {

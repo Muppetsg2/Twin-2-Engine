@@ -18,7 +18,8 @@ namespace Generation::Generators
 		MapSector* CreateSector(Tilemap::HexagonalTilemap* tilemap, glm::ivec2 position);
 
 	public:
-		Twin2Engine::Core::GameObject* prefabSector = nullptr;
+		//Twin2Engine::Core::GameObject* prefabSector = nullptr;
+		Twin2Engine::Core::Prefab* prefabSector = nullptr;
 		int minTilesPerSector = 7;
 		int maxTilesPerSector = 7;
 
@@ -32,6 +33,6 @@ namespace Generation::Generators
 	};
 }
 
-SERIALIZABLE_SCRIPTABLE_OBJECT(Generation::Generators::SectorsGenerator)
+SERIALIZABLE_SCRIPTABLE_OBJECT(SectorsGenerator, Generation::Generators)
 
 #endif // !_SECTORS_GENERATOR_H_

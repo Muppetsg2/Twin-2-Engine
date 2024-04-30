@@ -18,14 +18,7 @@ Shader* CameraComponent::_renderShader = nullptr;
 
 void CameraComponent::OnTransformChange(Transform* trans)
 {
-	glm::vec3 rot = trans->GetGlobalRotation();
-
-	glm::vec3 front{};
-	front.x = cos(glm::radians(rot.y)) * cos(glm::radians(rot.x));
-	front.y = sin(glm::radians(rot.x));
-	front.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
-	this->SetFrontDir(glm::normalize(front));
-
+	UpdateFrontDir();
 	/*
 	if (this->_isMain) {
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
@@ -79,6 +72,13 @@ void CameraComponent::OnWindowSizeChange()
 	glBindRenderbuffer(GL_RENDERBUFFER, _msRenderBuffer);
 	glRenderbufferStorageMultisample(GL_RENDERBUFFER, _samples, GL_DEPTH24_STENCIL8, wSize.x, wSize.y);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+}
+
+void CameraComponent::SetFrontDir(vec3 dir)
+{
+	_front = normalize(dir);
+	_right = normalize(cross(_front, _worldUp));
+	_up = normalize(cross(_right, _front));
 }
 
 CameraType CameraComponent::GetCameraType() const
@@ -310,18 +310,22 @@ void CameraComponent::SetRenderResolution(RenderResolution res)
 	}
 }
 
-void CameraComponent::SetFrontDir(vec3 dir)
-{
-	_front = normalize(dir);
-	_right = normalize(cross(_front, _worldUp));
-	_up = normalize(cross(_right, _front));
-}
-
 void CameraComponent::SetWorldUp(vec3 value)
 {
 	_worldUp = normalize(value);
 	_right = normalize(cross(_front, _worldUp));
 	_up = normalize(cross(_right, _front));
+}
+
+void CameraComponent::UpdateFrontDir()
+{
+	glm::vec3 rot = GetTransform()->GetGlobalRotation();
+
+	glm::vec3 front{};
+	front.x = cos(glm::radians(rot.y)) * cos(glm::radians(rot.x));
+	front.y = sin(glm::radians(rot.x));
+	front.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
+	this->SetFrontDir(glm::normalize(front));
 }
 
 void CameraComponent::SetIsMain(bool value)
@@ -482,6 +486,8 @@ void CameraComponent::Initialize()
 
 	this->_camId = Cameras.size();
 	Cameras.push_back(this);
+
+	UpdateFrontDir();
 
 	_transformEventId = GetTransform()->OnEventTransformChanged += [&](Transform* t) -> void { OnTransformChange(t); };
 	_windowEventId = Window::GetInstance()->OnWindowSizeEvent += [&]() -> void { OnWindowSizeChange(); };
@@ -661,7 +667,6 @@ YAML::Node CameraComponent::Serialize() const
 	node["samples"] = (size_t)_samples;
 	node["renderRes"] = _renderRes;
 	node["gamma"] = _gamma;
-	node["frontDir"] = _front;
 	node["worldUp"] = _worldUp;
 	node["isMain"] = _isMain;
 	return node;

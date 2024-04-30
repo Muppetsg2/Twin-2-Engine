@@ -42,12 +42,12 @@ using namespace std;
 YAML::Node MapHexTile::Serialize() const
 {
     YAML::Node node = Twin2Engine::Core::Component::Serialize();
-    node.remove("type");
+    node["type"] = "MapHexTile";
     node.remove("subTypes");
     //node["tilemap"] = tilemap;
     //node["region"] = region;
     //node["sector"] = sector;
     //node["tile"] = tile;
-    node["type"] = type;
+    node["hexTileType"] = type;
     return node;
 }

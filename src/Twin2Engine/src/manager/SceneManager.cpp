@@ -4,6 +4,7 @@
 #include <graphic/manager/MaterialsManager.h>
 #include <graphic/manager/ModelsManager.h>
 #include <manager/PrefabManager.h>
+#include <manager/ScriptableObjectManager.h>
 #include <core/EventHandler.h>
 #include <core/ResourceManagement.h>
 
@@ -26,6 +27,7 @@ vector<size_t> SceneManager::_audiosIds;
 vector<size_t> SceneManager::_materialsIds;
 vector<size_t> SceneManager::_modelsIds;
 vector<size_t> SceneManager::_prefabsIds;
+vector<size_t> SceneManager::_scriptableObjectsIds;
 
 map<size_t, Scene*> SceneManager::_loadedScenes;
 
@@ -134,6 +136,11 @@ void SceneManager::AddScene(const string& name, const string& path)
 #pragma region LOAD_GAMEOBJECTS_DATA_FROM_SCENE_FILE
 	for (const YAML::Node& gameObjectNode : sceneNode["GameObjects"]) {
 		scene->AddGameObject(gameObjectNode);
+	}
+#pragma endregion
+#pragma region LOAD_SCRIPTABLEBJECTS_DATA_FROM_SCENE_FILE
+	for (const YAML::Node& scriptableObject : sceneNode["ScriptableObjects"]) {
+		scene->AddScriptableObject(scriptableObject["path"].as<string>());
 	}
 #pragma endregion
 
@@ -262,6 +269,30 @@ void SceneManager::LoadScene(const string& name)
 	};
 	_prefabsIds = LoadResources(pathGetter, sceneToLoad->_prefabs, _prefabsIds, unloader, loader, sorter);
 #pragma endregion
+#pragma region LOADING_SCRIPTABLE_OBJECTS
+	ScriptableObjectManager::SceneDeserializationBegin();
+	for (unsigned int i = 0; i < sceneToLoad->_scriptableObjects.size(); i++)
+	{
+		size_t id = ScriptableObjectManager::SceneDeserialize(0, sceneToLoad->_scriptableObjects[i]);
+		if (std::find_if(_scriptableObjectsIds.cbegin(), _scriptableObjectsIds.cend(), [id](const size_t& soId) { return soId == id; }) == _scriptableObjectsIds.end())
+		{
+			_scriptableObjectsIds.push_back(id);
+		}
+		//_scriptableObjectsIds.push_back(id);
+	}
+	//pathGetter = [](const string& path) -> string { return path; };
+	//unloader = [](size_t id) -> bool { return true; };
+	//loader = [](const string& path, size_t& id) -> bool {
+	//	ScriptableObject* scriptableObject = ScriptableObjectManager::Load(path);
+	//	if (scriptableObject != nullptr) {
+	//		id = scriptableObject->GetId();
+	//		return true;
+	//	}
+	//	SPDLOG_ERROR("Couldn't load scriptableObject {0}", path);
+	//	return false;
+	//	};
+	//_scriptableObjectsIds = LoadResources(pathGetter, sceneToLoad->_scriptableObjects, _scriptableObjectsIds, unloader, loader, sorter);
+#pragma endregion
 #pragma region LOADING_GAMEOBJECTS
 	// GAME OBJECTS
 
@@ -386,6 +417,8 @@ void SceneManager::LoadScene(const string& name)
 	}
 #pragma endregion
 
+	ScriptableObjectManager::SceneDeserializationEnd();
+
 	_currentSceneName = name;
 	_currentSceneId = sceneId;
 }
@@ -417,12 +450,19 @@ void SceneManager::SaveScene(const string& path) {
 #pragma region SAVING_PREFABS
 	sceneNode["Prefabs"] = PrefabManager::Serialize();
 #pragma endregion
+#pragma region SAVING_SCRIPTABLE_OBJECTS
+	sceneNode["ScriptableObjects"];
+	ScriptableObjectManager::SceneSerializationBegin();
+#pragma endregion
 #pragma region SAVING_GAMEOBJECTS
 	Transform* rootT = _rootObject->GetTransform();
 	for (size_t i = 0; i < rootT->GetChildCount(); ++i) {
 		SaveGameObject(rootT->GetChildAt(i)->GetGameObject(), sceneNode["GameObjects"]);
 	}
 #pragma endregion
+
+	sceneNode["ScriptableObjects"] = ScriptableObjectManager::Serialize();
+	ScriptableObjectManager::SceneSerializationEnd();
 
 	ofstream file{ path };
 	file << sceneNode;

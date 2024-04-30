@@ -94,6 +94,7 @@ void MeshRenderingManager::Render(MeshRenderData meshData)
 
 void MeshRenderingManager::Render()
 {
+	unsigned int globalDrawCount = 0;
 	for (auto& meshPair : _renderQueue)
 	{
 		for (auto& shaderPair : meshPair.second)
@@ -156,6 +157,7 @@ void MeshRenderingManager::Render()
 			}
 
 			size_t instanceIndex = 0;
+			globalDrawCount += count;
 
 			while (count > MAX_INSTANCE_NUMBER_PER_DRAW)
 			{
@@ -206,6 +208,8 @@ void MeshRenderingManager::Render()
 			}
 		}
 	}
+
+	SPDLOG_WARN("Global draw count: {}", globalDrawCount);
 }
 
 void MeshRenderingManager::RenderDepthMap()

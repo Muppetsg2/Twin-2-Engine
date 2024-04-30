@@ -12,14 +12,22 @@ namespace Generation::Generators
 {
 	class MountainsGenerator : public AMapElementGenerator
     {
+        SCRIPTABLE_OBJECT_BODY(MountainsGenerator)
+
     public:
-        Twin2Engine::Core::GameObject* prefabMountains;
+        //Twin2Engine::Core::GameObject* prefabMountains;
+        Twin2Engine::Core::Prefab* prefabMountains;
         int mountainsNumber = 0;
 
         float mountainsHeight = 0.2f;
 
         virtual void Generate(Tilemap::HexagonalTilemap* tilemap) override;
+
+        SO_SERIALIZE()
+        SO_DESERIALIZE()
     };
 }
+
+SERIALIZABLE_SCRIPTABLE_OBJECT(MountainsGenerator, Generation::Generators)
 
 #endif // !_MOUNTAINS_GENERATOR_H_

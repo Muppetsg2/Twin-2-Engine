@@ -11,6 +11,36 @@ using namespace Twin2Engine::Manager;
 using namespace std;
 using namespace glm;
 
+SCRIPTABLE_OBJECT_SOURCE_CODE(RegionsBySectorsGenerator, Generation::Generators, "RegionsBySectorsGenerator")
+
+SO_SERIALIZATION_BEGIN(RegionsBySectorsGenerator, AMapElementGenerator)
+SO_SERIALIZE_FIELD_F(regionPrefab, PrefabManager::GetPrefabPath)
+SO_SERIALIZE_FIELD(mergeByNumberTilesPerRegion)
+SO_SERIALIZE_FIELD(minTilesPerRegion)
+SO_SERIALIZE_FIELD(maxTilesPerRegion)
+SO_SERIALIZE_FIELD(minSectorsPerRegion)
+SO_SERIALIZE_FIELD(maxSectorsPerRegion)
+SO_SERIALIZE_FIELD(isDiscritizedHeight)
+SO_SERIALIZE_FIELD(lowerHeightRange)
+SO_SERIALIZE_FIELD(upperHeightRange)
+SO_SERIALIZE_FIELD(heightRangeFacor)
+SO_SERIALIZATION_END()
+
+SO_DESERIALIZATION_BEGIN(RegionsBySectorsGenerator, AMapElementGenerator)
+SO_DESERIALIZE_FIELD_F_T(regionPrefab, PrefabManager::LoadPrefab, string)
+SO_DESERIALIZE_FIELD(mergeByNumberTilesPerRegion)
+SO_DESERIALIZE_FIELD(minTilesPerRegion)
+SO_DESERIALIZE_FIELD(maxTilesPerRegion)
+SO_DESERIALIZE_FIELD(minSectorsPerRegion)
+SO_DESERIALIZE_FIELD(maxSectorsPerRegion)
+SO_DESERIALIZE_FIELD(isDiscritizedHeight)
+SO_DESERIALIZE_FIELD(lowerHeightRange)
+SO_DESERIALIZE_FIELD(upperHeightRange)
+SO_DESERIALIZE_FIELD(heightRangeFacor)
+SO_DESERIALIZATION_END()
+
+
+
 
 void RegionsBySectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
 {
@@ -27,7 +57,8 @@ void RegionsBySectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
 
     for (MapSector* sector : sectors)
     {
-        MapRegion* region = GameObject::Instantiate(regionPrefab, tilemap->GetTransform())->GetComponent<MapRegion>();
+        MapRegion* region = SceneManager::CreateGameObject(regionPrefab, tilemap->GetTransform())->GetComponent<MapRegion>();
+        //MapRegion* region = GameObject::Instantiate(regionPrefab, tilemap->GetTransform())->GetComponent<MapRegion>();
         region->tilemap = tilemap;
         regions.push_back(region);
         region->AddSector(sector);

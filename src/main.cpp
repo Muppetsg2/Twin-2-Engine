@@ -267,7 +267,6 @@ int main(int, char**)
             cam->SetSamples(node["samples"].as<size_t>());
             cam->SetRenderResolution(node["renderRes"].as<RenderResolution>());
             cam->SetGamma(node["gamma"].as<float>());
-            cam->SetFrontDir(node["frontDir"].as<vec3>());
             cam->SetWorldUp(node["worldUp"].as<vec3>());
             cam->SetIsMain(node["isMain"].as<bool>());
         }
@@ -487,8 +486,11 @@ int main(int, char**)
             //Twin2Engine::Core::GameObject* filledTile;
             //Twin2Engine::Core::GameObject* pointTile;
 
+            mapGenerator->preafabHexagonalTile = PrefabManager::LoadPrefab(node["preafabHexagonalTile"].as<string>());
+            mapGenerator->additionalTile = PrefabManager::LoadPrefab(node["additionalTile"].as<string>());
+            mapGenerator->filledTile = PrefabManager::LoadPrefab(node["filledTile"].as<string>());
+            mapGenerator->pointTile = PrefabManager::LoadPrefab(node["pointTile"].as<string>());
 
-            //float generationRadius = 5.0f;
             mapGenerator->generationRadiusMin = node["generationRadiusMin"].as<float>();
             mapGenerator->generationRadiusMax = node["generationRadiusMax"].as<float>();
             mapGenerator->minPointsNumber = node["minPointsNumber"].as<int>();
@@ -504,6 +506,16 @@ int main(int, char**)
         [](Component* comp, const YAML::Node& node) -> void {
             ContentGenerator* contentGenerator = static_cast<ContentGenerator*>(comp);
 
+            for (YAML::Node soSceneId : node["mapElementGenerators"])
+            {
+                //AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(ScriptableObjectManager::Deserialize(soSceneId.as<unsigned int>()));
+                AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(ScriptableObjectManager::Load(soSceneId.as<string>()));
+                SPDLOG_INFO("Adding generator {0}, {1}", soSceneId.as<string>(), (unsigned int) generator);
+                if (generator != nullptr)
+                {
+                    contentGenerator->mapElementGenerators.push_back(generator);
+                }
+            }
             //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
         }
     );
@@ -519,7 +531,7 @@ int main(int, char**)
             mapHexTile->region = nullptr;
             mapHexTile->sector = nullptr;
             mapHexTile->tile = nullptr;
-            mapHexTile->type = node["type"].as<MapHexTile::HexTileType>();
+            mapHexTile->type = node["hexTileType"].as<MapHexTile::HexTileType>();
             //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
         }
     );
@@ -532,7 +544,7 @@ int main(int, char**)
             MapRegion* mapRegion = static_cast<MapRegion*>(comp);
 
             mapRegion->tilemap = nullptr;
-            mapRegion->type = node["type"].as<MapRegion::RegionType>();
+            mapRegion->type = node["regionType"].as<MapRegion::RegionType>();
         }
     );
 
@@ -546,7 +558,7 @@ int main(int, char**)
 
             mapSector->tilemap = nullptr;
             mapSector->region = nullptr;
-            mapSector->type = node["type"].as<MapSector::SectorType>();
+            mapSector->type = node["sectorType"].as<MapSector::SectorType>();
         }
     );
 
@@ -557,177 +569,31 @@ int main(int, char**)
     SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
 
-#pragma region SETTING_UP_GENERATION
-    InstatiatingModel modelHexagon = ModelsManager::LoadModel("res/models/hexagon.obj");
-    GameObject* hexagonPrefab = new GameObject();
-    hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
-    hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
-    MapHexTile* mapHexTile = hexagonPrefab->AddComponent<MapHexTile>();
+    CollisionSystem::CollisionManager::Instance()->PerformCollisions();/**/
     
-    auto comp = hexagonPrefab->AddComponent<MeshRenderer>();
-    comp->AddMaterial(MaterialsManager::GetMaterial("ColoredHexTile"));
-    //comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
-    comp->SetModel(modelHexagon);
+    SceneManager::LoadScene("testScene");
+    //SceneManager::SaveScene("res/scenes/savedScene.yaml");
 
-    GameObject* redHexagonPrefab = new GameObject();
-    redHexagonPrefab->GetTransform()->Translate(glm::vec3(3, 4, 0));
-    redHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
-    mapHexTile = redHexagonPrefab->AddComponent<MapHexTile>();
+#pragma region SETTING_UP_GENERATION
 
-    comp = redHexagonPrefab->AddComponent<MeshRenderer>();
-    comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
-    comp->SetModel(modelHexagon);
-
-    GameObject* blueHexagonPrefab = new GameObject();
-    blueHexagonPrefab->GetTransform()->Translate(glm::vec3(4, 5, 0));
-    blueHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
-    mapHexTile = blueHexagonPrefab->AddComponent<MapHexTile>();
-
-    comp = blueHexagonPrefab->AddComponent<MeshRenderer>();
-    comp->AddMaterial(MaterialsManager::GetMaterial("BlueHexTile"));
-    comp->SetModel(modelHexagon);
-
-    GameObject* greenHexagonPrefab = new GameObject();
-    greenHexagonPrefab->GetTransform()->Translate(glm::vec3(5, 6, 0));
-    greenHexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
-    mapHexTile = greenHexagonPrefab->AddComponent<MapHexTile>();
-
-    comp = greenHexagonPrefab->AddComponent<MeshRenderer>();
-    {GLenum error = glGetError();
-	if (error != GL_NO_ERROR) {
-		SPDLOG_ERROR("RDMError0: {}", error);
-	}}
-    comp->AddMaterial(MaterialsManager::GetMaterial("GreenHexTile"));
-    {GLenum error = glGetError();
-	if (error != GL_NO_ERROR) {
-		SPDLOG_ERROR("RDMError01: {}", error);
-	}}
-    comp->SetModel(modelHexagon);
-
-
-
-    // TILEMAP
     //*
-    GameObject* tilemapGO = new GameObject();
-    HexagonalTilemap* hexagonalTilemap = tilemapGO->AddComponent<HexagonalTilemap>();
-    MapGenerator* mapGenerator = tilemapGO->AddComponent<MapGenerator>();
+    GameObject* tilemapGO = SceneManager::GetGameObjectWithId(14);
+    HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
+    MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
     mapGenerator->tilemap = hexagonalTilemap;
-    mapGenerator->preafabHexagonalTile = hexagonPrefab;
-    mapGenerator->filledTile = blueHexagonPrefab;
-    mapGenerator->pointTile = redHexagonPrefab;
-    mapGenerator->additionalTile = greenHexagonPrefab;
-
-    mapGenerator->generationRadiusMin = 7;
-    mapGenerator->generationRadiusMax = 7;
     float tilemapGenerating = glfwGetTime();
     mapGenerator->Generate();
     spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
 
-    GameObject* prefabSector = new GameObject();
-    prefabSector->AddComponent<MapSector>();
-    GameObject* prefabRegion = new GameObject();
-    prefabRegion->AddComponent<MapRegion>();
-
-    ContentGenerator* contentGenerator = tilemapGO->AddComponent<ContentGenerator>();
-   //SectorsGenerator sectorsGenertor;
-   //sectorsGenertor.minTilesPerSector = 3;
-   //sectorsGenertor.maxTilesPerSector = 3;
-   //sectorsGenertor.prefabSector = prefabSector;
-   //contentGenerator->mapElementGenerators.push_back(&sectorsGenertor);
-   //RegionsBySectorsGenerator regionsBySectorsGenerator;
-   //regionsBySectorsGenerator.regionPrefab = prefabRegion;
-   //regionsBySectorsGenerator.mergeByNumberTilesPerRegion = false;
-   //regionsBySectorsGenerator.minSectorsPerRegion = 3;
-   //regionsBySectorsGenerator.maxSectorsPerRegion = 3;
-   //regionsBySectorsGenerator.lowerHeightRange = 0;
-   //regionsBySectorsGenerator.upperHeightRange = 3;
-   //regionsBySectorsGenerator.heightRangeFacor = 0.25f;
-   //regionsBySectorsGenerator.isDiscritizedHeight = true;
-   //contentGenerator->mapElementGenerators.push_back(&regionsBySectorsGenerator);
-
-    RegionsGeneratorByKMeans regionsGeneratorKMeans;
-    regionsGeneratorKMeans.regionPrefab = prefabRegion;
-    regionsGeneratorKMeans.isDiscritizedHeight = true;
-    regionsGeneratorKMeans.lowerHeightRange = 0;
-    regionsGeneratorKMeans.upperHeightRange = 3;
-    regionsGeneratorKMeans.heightRangeFacor = 0.25f;
-    regionsGeneratorKMeans.regionsCount = 10;
-    contentGenerator->mapElementGenerators.push_back(&regionsGeneratorKMeans);
-
-    SectorGeneratorForRegionsByKMeans sectorGeneratorsKMeans;
-    sectorGeneratorsKMeans.sectorPrefab = prefabSector;
-    sectorGeneratorsKMeans.sectorsCount = 3;
-    sectorGeneratorsKMeans.isDiscritizedHeight = true;
-    sectorGeneratorsKMeans.lowerHeightRange = 0;
-    sectorGeneratorsKMeans.upperHeightRange = 2;
-    sectorGeneratorsKMeans.heightRangeFacor = 0.125f;
-    contentGenerator->mapElementGenerators.push_back(&sectorGeneratorsKMeans);
-
-    LakeGenerator lakeGenerator;
-    lakeGenerator.numberOfLakes = 2;
-    lakeGenerator.waterLevel = -5.f;
-    lakeGenerator.destroyWaterTile = true;
-    contentGenerator->mapElementGenerators.push_back(&lakeGenerator);
-
-
-    InstatiatingModel mountainModel = ModelsManager::LoadModel("res/models/mountain.obj");
-    GameObject* mountainPrefab = new GameObject();
-    comp = mountainPrefab->AddComponent<MeshRenderer>();
-    comp->AddMaterial(MaterialsManager::GetMaterial("MountainsUnlit"));
-    comp->SetModel(mountainModel);
-    MountainsGenerator mountainsGenerator;
-    mountainsGenerator.prefabMountains = mountainPrefab;
-    mountainsGenerator.mountainsHeight = 0.2f;
-    mountainsGenerator.mountainsNumber = 3;
-    contentGenerator->mapElementGenerators.push_back(&mountainsGenerator);
-
-    InstatiatingModel cityModel = ModelsManager::LoadModel("res/models/city.obj");
-    GameObject* cityPrefab = new GameObject();
-    //cityPrefab->GetTransform()->Scale(glm::vec3(1.0f, 0.5f, 1.0f));
-    comp = cityPrefab->AddComponent<MeshRenderer>();
-    comp->AddMaterial(MaterialsManager::GetMaterial("CityMaterial"));
-    comp->SetModel(cityModel);
-    CitiesGenerator cityGenerator;
-    cityGenerator.prefabCity = cityPrefab;
-    cityGenerator.density = 1.0f;
-    contentGenerator->mapElementGenerators.push_back(&cityGenerator);
-
-    InstatiatingModel radioStationModel = ModelsManager::LoadModel("res/models/radioStation.obj");
-    GameObject* radioStationPrefab = new GameObject();
-    radioStationPrefab->GetTransform()->Scale(glm::vec3(1.0f, 0.5f, 1.0f));
-    comp = radioStationPrefab->AddComponent<MeshRenderer>();
-    comp->AddMaterial(MaterialsManager::GetMaterial("Basic2"));
-    comp->SetModel(radioStationModel);
-    RadioStationGeneratorSectorBased radioStationGenerator;
-    radioStationGenerator.prefabRadioStation = radioStationPrefab;
-    radioStationGenerator.densityFactorPerSector = 0.1f;
-    contentGenerator->mapElementGenerators.push_back(&radioStationGenerator);
-
+    ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
 
     tilemapGenerating = glfwGetTime();
     contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
     /**/
-    hexagonPrefab->SetActive(false);
-    greenHexagonPrefab->SetActive(false);
-    redHexagonPrefab->SetActive(false);
-    blueHexagonPrefab->SetActive(false);
-    mountainPrefab->SetActive(false);
-    cityPrefab->SetActive(false);
-    radioStationPrefab->SetActive(false);
-    mountainPrefab->GetTransform()->Translate(glm::vec3(2, 6, 0));
-    mountainPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
-    cityPrefab->GetTransform()->Translate(glm::vec3(2, 6, 0));
-    cityPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
-    radioStationPrefab->GetTransform()->Translate(glm::vec3(2, 6, 0));
-    radioStationPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+
 
 #pragma endregion
-
-    CollisionSystem::CollisionManager::Instance()->PerformCollisions();/**/
-    
-    SceneManager::LoadScene("testScene");
-    //SceneManager::SaveScene("res/scenes/savedScene.yaml");
 
     //InstatiatingModel modelHexagon = ModelsManager::LoadModel("res/models/hexagon.obj");
     //GameObject* hexagonPrefab = new GameObject();
@@ -850,6 +716,8 @@ bool init()
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
+
+    ScriptableObject::Init();
 
     return true;
 }
@@ -1035,6 +903,19 @@ void imgui_begin()
     ImGui::NewFrame();
 }
 
+struct HierarchicalItem {
+    std::string label;
+    std::vector<HierarchicalItem> children;
+};
+// Recursive function to render the hierarchical list
+void renderHierarchicalList(const HierarchicalItem& item) {
+    if (ImGui::TreeNode(item.label.c_str())) {
+        for (const auto& child : item.children) {
+            renderHierarchicalList(child);
+        }
+        ImGui::TreePop();
+    }
+}
 void imgui_render()
 {
     if (Input::GetCursorState() == NORMAL)
@@ -1435,6 +1316,41 @@ void imgui_render()
         ImGui::Separator();
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+#pragma region ScriptableObjects
+
+        static string selectedSO = "";
+        static vector<string> scriptableObjectsNames = ScriptableObjectManager::GetScriptableObjectsNames();
+        if (ImGui::TreeNode("ScriptableObjects")) {
+            for (size_t i = 0; i < scriptableObjectsNames.size(); i++)
+            {
+                if (ImGui::Selectable(scriptableObjectsNames[i].c_str())) {
+                    selectedSO = scriptableObjectsNames[i];
+                }
+            }
+            ImGui::TreePop();
+        }
+        ImGui::Text("Selected Scriptable Object to create:");
+        ImGui::SameLine();
+        ImGui::InputText("##selectedItem", &selectedSO[0], selectedSO.size(), ImGuiInputTextFlags_ReadOnly);
+        static char dstPath[255] = { '\0' };
+        ImGui::InputText("##dstPath", dstPath, 254);
+
+        if (ImGui::Button("Create ScriptableObject"))
+        {
+            SPDLOG_WARN("Button pressed");
+            if (selectedSO.size() > 0)
+            {
+                SPDLOG_WARN("Selected size");
+                string strDstPath(dstPath);
+                if (strDstPath.size() > 0)
+                {
+                    SPDLOG_WARN("DstPath size");
+                    ScriptableObjectManager::CreateScriptableObject(strDstPath, selectedSO);
+                }
+            }
+        }
+#pragma endregion
 
         ImGui::End();
     }

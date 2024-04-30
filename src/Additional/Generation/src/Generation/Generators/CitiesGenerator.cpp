@@ -13,14 +13,37 @@ using namespace glm;
 
 SCRIPTABLE_OBJECT_SOURCE_CODE(CitiesGenerator, Generation::Generators, "CitiesGenerator")
 
-void CitiesGenerator::Serialize(YAML::Node& node) const
-{
+SO_SERIALIZATION_BEGIN(CitiesGenerator, AMapElementGenerator)
+    SO_SERIALIZE_FIELD_F(prefabCity, PrefabManager::GetPrefabPath)
+    SO_SERIALIZE_FIELD(byRegions)
+    SO_SERIALIZE_FIELD(density)
+SO_SERIALIZATION_END()
 
-}
-bool CitiesGenerator::Deserialize(const YAML::Node& node)
-{
-    return true;
-}
+SO_DESERIALIZATION_BEGIN(CitiesGenerator, AMapElementGenerator)
+    SO_DESERIALIZE_FIELD_F_T(prefabCity, PrefabManager::LoadPrefab, string)
+    SO_DESERIALIZE_FIELD(byRegions)
+    SO_DESERIALIZE_FIELD(density)
+SO_DESERIALIZATION_END()
+
+//void CitiesGenerator::Serialize(YAML::Node& node) const
+//{
+//    AMapElementGenerator::Serialize(node);
+//
+//    node["byRegions"] = byRegions;
+//    node["density"] = density;
+//}
+//bool CitiesGenerator::Deserialize(const YAML::Node& node)
+//{
+//    bool baseReturned = AMapElementGenerator::Deserialize(node);
+//
+//    byRegions = node["byRegions"].as<decltype(byRegions)>();
+//    density = node["density"].as<decltype(density)>();
+//
+//    return baseReturned;
+//}
+
+
+
 void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
 {
     if (byRegions)
@@ -71,7 +94,8 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
                     }
                 }
                 found->GetComponent<MapHexTile>()->type = MapHexTile::HexTileType::PointOfInterest;
-                GameObject* instantiated = GameObject::Instantiate(prefabCity, found->GetTransform());
+                GameObject* instantiated = SceneManager::CreateGameObject(prefabCity, found->GetTransform());
+                //GameObject* instantiated = GameObject::Instantiate(prefabCity, found->GetTransform());
             }
         }
     }
@@ -120,7 +144,8 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
                     }
                 }
                 found->GetComponent<MapHexTile>()->type = MapHexTile::HexTileType::PointOfInterest;
-                GameObject* instantiated = GameObject::Instantiate(prefabCity, found->GetTransform());
+                GameObject* instantiated = SceneManager::CreateGameObject(prefabCity, found->GetTransform());
+                //GameObject* instantiated = GameObject::Instantiate(prefabCity, found->GetTransform());
             }
         }
     }

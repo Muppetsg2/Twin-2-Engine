@@ -166,10 +166,10 @@ bool MapSector::IsInternalSector() const
 YAML::Node MapSector::Serialize() const
 {
 	YAML::Node node = Twin2Engine::Core::Component::Serialize();
-	node.remove("type");
+	node["type"] = "MapSector";
 	node.remove("subTypes");
 	//node["tilemap"] = tilemap;
 	//node["region"] = region;
-	node["type"] = type;
+	node["sectorType"] = type;
 	return node;
 }

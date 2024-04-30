@@ -581,14 +581,23 @@ namespace Twin2Engine::GraphicEngine {
 #pragma endregion
 
 #pragma region GET_STRUCT
-		STD140Struct Get(const std::string& name) const;
+		template<class S>
+		typename std::enable_if_t<std::is_same_v<S, STD140Struct>, S>
+		Get(const std::string& name, const STD140Struct& structTemplate) const {
+			STD140Struct value = structTemplate;
+		}
 
 #pragma region GET_STRUCT_ARRAYS
-		void Get(const std::string& name, STD140Struct*& valueDest, size_t size);
-		template<size_t N> STD140Struct* Get(const std::string& name) {
-			return nullptr;
+		template<class S>
+		typename std::enable_if_t<std::is_same_v<S, STD140Struct>>
+		Get(const std::string& name, const STD140Struct& structTemplate, S*& valueDest, size_t size) const {
+
 		}
-		std::vector<STD140Struct> Get(const std::string& name);
+		template<class V, class S = V::value_type>
+		typename std::enable_if_t<std::is_same_v<S, STD140Struct>, V>
+		Get(const std::string& name, const STD140Struct& structTemplate) const {
+
+		}
 #pragma endregion
 #pragma endregion
 

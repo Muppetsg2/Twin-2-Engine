@@ -20,6 +20,9 @@
 #define RENERING_TYPE_SHADER_MATERIAL_MESH true
 #define RENERING_TYPE_SHADER_MESH_MATERIAL true
 
+#define USE_NAMED_BUFFER_SUBDATA 0
+
+
 namespace Twin2Engine
 {
 	namespace GraphicEngine {

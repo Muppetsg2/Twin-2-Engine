@@ -88,6 +88,9 @@
 #include <core/YamlConverters.h>
 #include <Generation/YamlConverters.h>
 
+// EDITOR
+#include <Editor/Common/ProcessingMtlFiles.h>
+
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
@@ -1244,6 +1247,20 @@ void imgui_render()
             }
         }
 #pragma endregion
+
+
+#pragma region EDITOR_MATERIAL_SCANNING
+
+        if (ImGui::Button("Scan for new materials"))
+        {
+            filesystem::path src = "res/models";
+            filesystem::path dst = "res/materials/processed";
+            Editor::Common::processMTLFiles(src, dst);
+        }
+
+
+#pragma endregion
+
 
         ImGui::End();
     }

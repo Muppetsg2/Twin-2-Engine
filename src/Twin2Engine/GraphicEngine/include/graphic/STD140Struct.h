@@ -107,12 +107,12 @@ namespace Twin2Engine::GraphicEngine {
 			if (_offsets.contains(_hasher(name))) {
 				// GET MAT ARRAY VALUES
 				size_t i = 0;
-				string arrayElemName = name + "["s + to_string(i) + "]"s;
+				std::string arrayElemName = name + "[" + std::to_string(i) + "]";
 				while (_offsets.contains(_hasher(arrayElemName))) {
 					values.push_back(Get<M>(arrayElemName));
 
 					++i;
-					arrayElemName = name + "["s + to_string(i) + "]"s;
+					arrayElemName = name + "[" + std::to_string(i) + "]";
 				}
 			}
 			return values;
@@ -646,83 +646,14 @@ namespace Twin2Engine::GraphicEngine {
 #pragma endregion
 
 #pragma region GET_STRUCT
-		template<class T>
-		std::enable_if_t<is_in_v<T, bool, int, unsigned int, float, double>, T>
-			Get(const std::string& name) {
-			if constexpr (std::is_same_v<T, bool>) {
-				return (bool)Get<unsigned int>(name);
-			}
-			else {
-				std::vector<char> valueData = Get(name, sizeof(T));
-				T* valuePtr = reinterpret_cast<T*>(valueData.data());
-				return *valuePtr;
-			}
-		}
+		STD140Struct Get(const std::string& name) const;
 
 #pragma region GET_STRUCT_ARRAYS
-		template<class T>
-		std::enable_if_t<is_in_v<T, bool, int, unsigned int, float, double>, void>
-			Get(const std::string& name, T*& valuesDest, size_t size) {
-			std::vector<T> values;
-			if constexpr (std::is_same_v<T, bool>) {
-				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
-				for (auto& valueData : valuesData) {
-					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valueData.data());
-					values.push_back((bool)*valuePtr);
-				}
-
-			}
-			else {
-				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
-				for (auto& valueData : valuesData) {
-					T* valuePtr = reinterpret_cast<T*>(valueData.data());
-					values.push_back(*valuePtr);
-				}
-			}
-			memcpy(valuesDest, values.data(), values.size() < size ? values.size() : size);
+		void Get(const std::string& name, STD140Struct*& valueDest, size_t size);
+		template<size_t N> STD140Struct* Get(const std::string& name) {
+			return nullptr;
 		}
-
-		template<class A, class T, size_t N>
-		std::enable_if_t<std::is_same_v<A, T[N]>&& is_in_v<T, bool, int, unsigned int, float, double>, A>
-			Get(const std::string& name) {
-			T values[N]{};
-			if constexpr (std::is_same_v<T, bool>) {
-				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
-				for (size_t i = 0; i < valuesData.size() && i < N; ++i) {
-					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valuesData[i].data());
-					values[i] = (bool)*valuePtr;
-				}
-			}
-			else {
-				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
-				for (size_t i = 0; i < valuesData.size() && i < N; ++i) {
-					T* valuePtr = reinterpret_cast<T*>(valuesData[i].data());
-					values[i] = *valuePtr;
-				}
-			}
-			return values;
-		}
-
-		template<class V, class T>
-		std::enable_if_t<std::is_same_v<V, std::vector<T>>&& is_in_v<T, bool, int, unsigned int, float, double>, V>
-			Get(const std::string& name) {
-			V values{};
-			if constexpr (std::is_same_v<T, bool>) {
-				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
-				for (auto& valueData : valuesData) {
-					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valueData.data());
-					values.push_back((bool)*valuePtr);
-				}
-			}
-			else {
-				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
-				for (auto& valueData : valuesData) {
-					T* valuePtr = reinterpret_cast<T*>(valueData.data());
-					values.push_back(*valuePtr);
-				}
-			}
-			return values;
-		}
+		std::vector<STD140Struct> Get(const std::string& name);
 #pragma endregion
 #pragma endregion
 

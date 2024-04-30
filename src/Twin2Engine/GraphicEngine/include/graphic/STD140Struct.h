@@ -440,9 +440,7 @@ namespace Twin2Engine::GraphicEngine {
 				return (bool)Get<unsigned int>(name);
 			}
 			else {
-				std::vector<char> valueData = Get(name, sizeof(T));
-				T* valuePtr = reinterpret_cast<T*>(valueData.data());
-				return *valuePtr;
+				return *reinterpret_cast<T*>(Get(name, sizeof(T)).data());
 			}
 		}
 
@@ -454,22 +452,20 @@ namespace Twin2Engine::GraphicEngine {
 			if constexpr (std::is_same_v<T, bool>) {
 				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
 				for (auto& valueData : valuesData) {
-					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valueData.data());
-					values.push_back((bool)*valuePtr);
+					values.push_back((bool)(*reinterpret_cast<unsigned int*>(valueData.data())));
 				}
 				
 			}
 			else {
 				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
 				for (auto& valueData : valuesData) {
-					T* valuePtr = reinterpret_cast<T*>(valueData.data());
-					values.push_back(*valuePtr);
+					values.push_back(*reinterpret_cast<T*>(valueData.data()));
 				}
 			}
 			memcpy(valuesDest, values.data(), values.size() < size ? values.size() : size);
 		}
 
-		template<class A, class T, size_t N>
+		template<class T, size_t N, class A = T[N]>
 		std::enable_if_t<std::is_same_v<A, T[N]> && is_in_v<T, bool, int, unsigned int, float, double>, A>
 		Get(const std::string& name) const {
 			T values[N]{};

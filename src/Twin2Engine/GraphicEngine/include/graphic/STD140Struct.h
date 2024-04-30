@@ -100,9 +100,7 @@ namespace Twin2Engine::GraphicEngine {
 		std::vector<char> Get(const std::string& name, size_t baseOffset) const;
 
 		std::vector<std::vector<char>> GetArray(const std::string& name, size_t baseOffset) const;
-		template<typename T, size_t C, size_t R> std::vector<glm::mat<C, R, T>> GetMatArray(const std::string& name) const {
-			using M = glm::mat<C, R, T>;
-
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()> std::vector<M> GetMatArray(const std::string& name) const {
 			std::vector<M> values;
 			if (_offsets.contains(_hasher(name))) {
 				// GET MAT ARRAY VALUES
@@ -465,43 +463,20 @@ namespace Twin2Engine::GraphicEngine {
 			memcpy(valuesDest, values.data(), values.size() < size ? values.size() : size);
 		}
 
-		template<class T, size_t N, class A = T[N]>
-		std::enable_if_t<std::is_same_v<A, T[N]> && is_in_v<T, bool, int, unsigned int, float, double>, A>
-		Get(const std::string& name) const {
-			T values[N]{};
-			if constexpr (std::is_same_v<T, bool>) {
-				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
-				for (size_t i = 0; i < valuesData.size() && i < N; ++i) {
-					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valuesData[i].data());
-					values[i] = (bool)*valuePtr;
-				}
-			}
-			else {
-				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
-				for (size_t i = 0; i < valuesData.size() && i < N; ++i) {
-					T* valuePtr = reinterpret_cast<T*>(valuesData[i].data());
-					values[i] = *valuePtr;
-				}
-			}
-			return values;
-		}
-
-		template<class V, class T>
+		template<class V, class T = V::value_type>
 		std::enable_if_t<std::is_same_v<V, std::vector<T>> && is_in_v<T, bool, int, unsigned int, float, double>, V>
 		Get(const std::string& name) const {
 			V values{};
 			if constexpr (std::is_same_v<T, bool>) {
 				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
 				for (auto& valueData : valuesData) {
-					unsigned int* valuePtr = reinterpret_cast<unsigned int*>(valueData.data());
-					values.push_back((bool)*valuePtr);
+					values.push_back((bool)(*reinterpret_cast<unsigned int*>(valueData.data())));
 				}
 			}
 			else {
 				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
 				for (auto& valueData : valuesData) {
-					T* valuePtr = reinterpret_cast<T*>(valueData.data());
-					values.push_back(*valuePtr);
+					values.push_back(*reinterpret_cast<T*>(valueData.data()));
 				}
 			}
 			return values;
@@ -510,7 +485,7 @@ namespace Twin2Engine::GraphicEngine {
 #pragma endregion
 
 #pragma region GET_VEC
-		template<class V, class T, size_t L>
+		template<class V, class T = V::value_type, size_t L = V::length()>
 		std::enable_if_t<std::is_same_v<V, glm::vec<L, T>> && is_in_v<T, bool, int, unsigned int, float, double>, V>
 		Get(const std::string& name) const {
 			size_t TSize{};
@@ -535,7 +510,7 @@ namespace Twin2Engine::GraphicEngine {
 		}
 
 #pragma region GET_VEC_ARRAYS
-		template<class V, class T, size_t L>
+		template<class V, class T = V::value_type, size_t L = V::length()>
 		std::enable_if_t<std::is_same_v<V, glm::vec<L, T>> && is_in_v<T, bool, int, unsigned int, float, double>, void>
 		Get(const std::string& name, V*& valuesDest, size_t size) const {
 			std::vector<V> values;
@@ -549,35 +524,13 @@ namespace Twin2Engine::GraphicEngine {
 			else {
 				std::vector<std::vector<char>> valuesData = GetArray(name, L * sizeof(T));
 				for (auto& valueData : valuesData) {
-					V* valuePtr = reinterpret_cast<V*>(valueData.data());
-					values.push_back(*valuePtr);
+					values.push_back(*reinterpret_cast<V*>(valueData.data()));
 				}
 			}
 			memcpy(valuesDest, values.data(), values.size() < size ? values.size() : size);
 		}
 
-		template<class A, class V, class T, size_t L, size_t N>
-		std::enable_if_t<std::is_same_v<A, V[N]> && std::is_same_v<V, glm::vec<L, T>> && is_in_v<T, bool, int, unsigned int, float, double>, A>
-		Get(const std::string& name) const {
-			V values[N]{};
-			if constexpr (std::is_same_v<T, bool>) {
-				std::vector<std::vector<char>> valuesData = GetArray(name, L * sizeof(unsigned int));
-				for (size_t i = 0; i < valuesData.size() && i < N; ++i) {
-					glm::vec<L, unsigned int> valueToConvert = *reinterpret_cast<glm::vec<L, unsigned int>*>(valuesData[i].data());
-					values[i] = { (bool)valueToConvert.x, (bool)valueToConvert.y, (bool)valueToConvert.z };
-				}
-			}
-			else {
-				std::vector<std::vector<char>> valuesData = GetArray(name, L * sizeof(T));
-				for (size_t i = 0; i < valuesData.size() && i < N; ++i) {
-					V* valuePtr = reinterpret_cast<V*>(valuesData[i].data());
-					values[i] = *valuePtr;
-				}
-			}
-			return values;
-		}
-
-		template<class Vec, class V, class T, size_t L>
+		template<class Vec, class V = Vec::value_type, class T = V::value_type, size_t L = V::length()>
 		std::enable_if_t<std::is_same_v<Vec, std::vector<V>>&& std::is_same_v<V, glm::vec<L, T>> && is_in_v<T, bool, int, unsigned int, float, double>, Vec>
 		Get(const std::string& name) const {
 			Vec values{};
@@ -591,8 +544,7 @@ namespace Twin2Engine::GraphicEngine {
 			else {
 				std::vector<std::vector<char>> valuesData = GetArray(name, L * sizeof(T));
 				for (auto& valueData : valuesData) {
-					V* valuePtr = reinterpret_cast<V*>(valueData.data());
-					values.push_back(*valuePtr);
+					values.push_back(*reinterpret_cast<V*>(valueData.data()));
 				}
 			}
 			return values;
@@ -601,13 +553,11 @@ namespace Twin2Engine::GraphicEngine {
 #pragma endregion
 
 #pragma region GET_MAT
-		template<class M, class T, size_t C, size_t R>
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		std::enable_if_t<std::is_same_v<M, glm::mat<C, R, T>> && is_in_v<T, bool, int, unsigned int, float, double>, M>
 		Get(const std::string& name) const {
-			using row = glm::vec<R, T>;
-
 			M value{};
-			std::vector<row> rows = Get<std::vector<row>>(name);
+			std::vector<M::col_type> rows = Get<std::vector<M::col_type>>(name);
 			for (size_t i = 0; i < C && i < rows.size(); ++i) {
 				value[i] = rows[i];
 			}
@@ -615,28 +565,17 @@ namespace Twin2Engine::GraphicEngine {
 		}
 
 #pragma region GET_MAT_ARRAYS
-		template<class M, class T, size_t C, size_t R>
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		std::enable_if_t<std::is_same_v<M, glm::mat<C, R, T>> && is_in_v<T, bool, int, unsigned int, float, double>, void>
 		Get(const std::string& name, M*& valuesDest, size_t size) const {
-			std::vector<M> values = GetMatArray<T, C, R>(name);
+			std::vector<M> values = GetMatArray<M>(name);
 			memcpy(valuesDest, values.data(), values.size() < size ? values.size() : size);
 		}
 
-		template<class A, class M, class T, size_t C, size_t R, size_t N>
-		std::enable_if_t<std::is_same_v<A, M[N]> && std::is_same_v<M, glm::mat<C, R, T>> && is_in_v<T, bool, int, unsigned int, float, double>, A>
-		Get(const std::string& name) const {
-			M values[N]{};
-			std::vector<M> tempValues = GetMatArray<T, C, R>(name);
-			for (size_t i = 0; i < tempValues.size() && i < N; ++i) {
-				values[i] = tempValues[i];
-			}
-			return values;
-		}
-
-		template<class V, class M, class T, size_t C, size_t R>
+		template<class V, class M = V::value_type, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		std::enable_if_t<std::is_same_v<V, std::vector<M>> && std::is_same_v<M, glm::mat<C, R, T>> && is_in_v<T, bool, int, unsigned int, float, double>, V>
 		Get(const std::string& name) const {
-			return GetMatArray<T, C, R>(name);
+			return GetMatArray<M>(name);
 		}
 #pragma endregion
 #pragma endregion

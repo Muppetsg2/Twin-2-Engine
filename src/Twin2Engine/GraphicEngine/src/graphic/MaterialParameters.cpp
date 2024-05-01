@@ -90,22 +90,15 @@ void MaterialParameters::AlignData()
 	}
 }
 
-std::vector<char> MaterialParameters::GetData() const
+//vector<char> MaterialParameters::GetData() const
+//{
+//	return _materialData;
+//}
+const char* MaterialParameters::GetData() const
 {
-	//size_t totalSize = 0;
-	//for (const auto& pair : _variablesValuesMappings) {
-	//	totalSize += pair.second.size();
-	//}
-	//// Create the flattened vector with the appropriate size
-	//std::vector<char> flattenedVector(totalSize);
-	//
-	//// Copy the vectors from the map into the flattened vector
-	//size_t offset = 0;
-	//for (const auto& pair : _variablesValuesMappings) {
-	//	const auto& vector = pair.second;
-	//	std::copy(vector.begin(), vector.end(), flattenedVector.begin() + offset);
-	//	offset += vector.size();
-	//}
-
-	return _materialData;
+	return _materialData.data();
+}
+size_t MaterialParameters::GetSize() const
+{
+	return _materialData.size();
 }

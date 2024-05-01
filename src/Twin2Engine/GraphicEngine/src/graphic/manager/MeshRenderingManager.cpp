@@ -271,14 +271,17 @@ void MeshRenderingManager::Render()
 		{
 
 			size_t size = 0;
-			const auto& data = materialPair.first.GetMaterialParameters()->GetData();
+			//const auto& data = materialPair.first.GetMaterialParameters()->GetData();
+			const auto& materialParameters = materialPair.first.GetMaterialParameters();
 #if USE_NAMED_BUFFER_SUBDATA
 			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
-			glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
+			//glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
+			glNamedBufferSubData(_materialInputUBO, size, materialParameters->GetSize(), materialParameters->GetData());
 #else
 			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
 			glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
-			glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
+			//glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
+			glBufferSubData(GL_UNIFORM_BUFFER, size, materialParameters->GetSize(), materialParameters->GetData());
 #endif
 
 			// ASSIGNING TEXTURES
@@ -616,14 +619,17 @@ void MeshRenderingManager::RenderDepthMap()
 		{
 
 			size_t size = 0;
-			const auto& data = materialPair.first.GetMaterialParameters()->GetData();
+			//const auto& data = materialPair.first.GetMaterialParameters()->GetData();
+			const auto& materialParameters = materialPair.first.GetMaterialParameters();
 #if USE_NAMED_BUFFER_SUBDATA
 			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
-			glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
+			//glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
+			glNamedBufferSubData(_materialInputUBO, size, materialParameters->GetSize(), materialParameters->GetData());
 #else
 			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
 			glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
-			glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
+			//glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
+			glBufferSubData(GL_UNIFORM_BUFFER, size, materialParameters->GetSize(), materialParameters->GetData());
 #endif
 
 			// ASSIGNING TEXTURES

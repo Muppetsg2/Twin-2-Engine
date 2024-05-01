@@ -10,9 +10,12 @@ namespace Twin2Engine
 	}
 
 	namespace GraphicEngine {
+		class MaterialParametersBuilder;
+
 		class MaterialParameters
 		{
 			friend class Manager::MaterialsManager;
+			friend class MaterialParametersBuilder;
 
 			std::vector<char> _materialData;
 			std::map<size_t, unsigned int> _variablesValuesOffsets;
@@ -68,7 +71,9 @@ namespace Twin2Engine
 			void SetTexture2D(const std::string& textureName, unsigned int textureId);
 			void UploadTextures2D(unsigned int programId, int& beginLocation, int& textureBinded);
 
-			std::vector<char> GetData() const;
+			//std::vector<char> GetData() const;
+			const char* GetData() const;
+			size_t GetSize() const;
 		};
 
 		template<class T>

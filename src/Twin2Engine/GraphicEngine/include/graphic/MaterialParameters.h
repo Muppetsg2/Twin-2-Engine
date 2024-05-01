@@ -14,6 +14,9 @@ namespace Twin2Engine
 		{
 			friend class Manager::MaterialsManager;
 
+
+			GLuint _materialParametersDataUBO;
+
 			std::vector<char> _materialData;
 			std::map<size_t, unsigned int> _variablesValuesOffsets;
 
@@ -23,6 +26,8 @@ namespace Twin2Engine
 			static std::hash<std::string> hasher;
 
 			MaterialParameters();
+			MaterialParameters(const char* data, size_t size, const std::map<size_t, unsigned int>& variablesValuesOffsets, const std::map<size_t, char>& textureMappings, const std::vector<GLuint>& textures);
+
 			template<class T>
 			typename std::enable_if<
 				std::is_same<T, int>::value ||

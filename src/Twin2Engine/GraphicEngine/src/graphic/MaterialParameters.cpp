@@ -13,6 +13,21 @@ using namespace std;
 
  }
 
+ MaterialParameters::MaterialParameters(const char* data, size_t size, const map<size_t, unsigned int>& variablesValuesOffsets, const map<size_t, char>& textureMappings, const vector<GLuint>& textures)
+ {
+	 // Tworzenie UBO materialInput
+	 glGenBuffers(1, &_materialParametersDataUBO);
+	 glBindBuffer(GL_UNIFORM_BUFFER, _materialParametersDataUBO);
+	 // Initialization of buffer
+	 glBufferData(GL_UNIFORM_BUFFER, size, data, GL_DYNAMIC_DRAW);
+	 //glBindBufferBase(GL_UNIFORM_BUFFER, BINDING_POINT_MATERIAL_INPUT, _materialParametersDataUBO);
+	 glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	 _variablesValuesOffsets = variablesValuesOffsets;
+	 _textureMappings = textureMappings;
+	 _textures = textures;
+ }
+
 MaterialParameters::MaterialParameters(const std::vector<std::string>& variableNames, const std::vector<unsigned int>& parametersSizes, const std::vector<std::string>& textureParametersNames)
 {
 	unsigned int dataSize = 0;

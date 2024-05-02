@@ -9,6 +9,11 @@ using namespace Twin2Engine::Core;
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
 
+void Twin2Engine::Core::MeshRenderer::Initialize()
+{
+
+}
+
 void MeshRenderer::Render()
 {
 	MeshRenderData data{};

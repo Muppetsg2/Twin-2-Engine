@@ -55,6 +55,8 @@ namespace Twin2Engine
 		public:
 			MaterialParameters(const std::vector<std::string>& variableNames, const std::vector<unsigned int>& parametersSizes, const std::vector<std::string>& textureParametersNames);
 
+			~MaterialParameters();
+
 			template<class T>
 			typename std::enable_if<
 				std::is_same<T, int>::value ||

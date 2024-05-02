@@ -13,6 +13,11 @@ using namespace std;
 
  }
 
+MaterialParameters::~MaterialParameters()
+ {
+	glDeleteBuffers(1, &_materialParametersDataUBO);
+ }
+
  MaterialParameters::MaterialParameters(const char* data, size_t size, const map<size_t, unsigned int>& variablesValuesOffsets, const map<size_t, char>& textureMappings, const vector<GLuint>& textures)
  {
 	 // Tworzenie UBO materialInput

@@ -23,6 +23,9 @@ using namespace std;
 	 //glBindBufferBase(GL_UNIFORM_BUFFER, BINDING_POINT_MATERIAL_INPUT, _materialParametersDataUBO);
 	 glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
+	 _materialData = vector<char>(size);
+	 std::memcpy(_materialData.data(), data, size);
+
 	 _variablesValuesOffsets = variablesValuesOffsets;
 	 _textureMappings = textureMappings;
 	 _textures = textures;
@@ -56,21 +59,29 @@ MaterialParameters::MaterialParameters(const std::vector<std::string>& variableN
 	}
 }
 
-void Twin2Engine::GraphicEngine::MaterialParameters::AddTexture2D(const std::string& textureName, unsigned int textureId)
-{
-	size_t hashed = hasher(textureName);
-
-	if (_textureMappings.contains(hashed))
-	{
-		_textures[_textureMappings[hashed]] = textureId;
-	}
-	else
-	{
-		_textureMappings[hashed] = _textures.size();
-		_textures.push_back(textureId);
-	}
-}
-
+//void Twin2Engine::GraphicEngine::MaterialParameters::AddTexture2D(const std::string& textureName, unsigned int textureId)
+//{
+//	size_t hashed = hasher(textureName);
+//
+//	if (_textureMappings.contains(hashed))
+//	{
+//		_textures[_textureMappings[hashed]] = textureId;
+//	}
+//	else
+//	{
+//		_textureMappings[hashed] = _textures.size();
+//		_textures.push_back(textureId);
+//	}
+//}
+//
+//void MaterialParameters::AlignData()
+//{
+//	unsigned int over = _materialData.size() % 16u;
+//	if (over)
+//	{
+//		_materialData.resize(_materialData.size() + 16u - over);
+//	}
+//}
 
 void Twin2Engine::GraphicEngine::MaterialParameters::SetTexture2D(const std::string& textureName, unsigned int textureId)
 {
@@ -96,15 +107,11 @@ void Twin2Engine::GraphicEngine::MaterialParameters::UploadTextures2D(unsigned i
 	}
 }
 
-void MaterialParameters::AlignData()
-{
-	unsigned int over = _materialData.size() % 16u;
-	if (over)
-	{
-		_materialData.resize(_materialData.size() + 16u - over);
-	}
-}
 
+GLuint MaterialParameters::GetDataUBO() const
+{
+	return _materialParametersDataUBO;
+}
 //vector<char> MaterialParameters::GetData() const
 //{
 //	return _materialData;

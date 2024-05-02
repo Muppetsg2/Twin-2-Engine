@@ -36,7 +36,7 @@ MaterialParameters* MaterialParametersBuilder::Build()
 {
 	AlignData();
 
-	return nullptr;
+	return new MaterialParameters(_materialData.data(), _materialData.size(), _variablesValuesOffsets, _textureMappings, _textures);
 }
 
 void MaterialParametersBuilder::Clear()

@@ -169,9 +169,14 @@ bool GameObject::GetActive() const
 
 void GameObject::SetActive(bool active)
 {
-	_activeSelf = active;
+	if (_activeSelf != active)
+	{
+		_activeSelf = active;
 
-	SetActiveInHierarchy(active);
+		SetActiveInHierarchy(active);
+
+		OnActiveChanged.Invoke(this); // Wywo³ywanie eventu
+	}
 }
 
 void GameObject::SetActiveInHierarchy(bool activeInHierarchy)
@@ -186,6 +191,7 @@ void GameObject::SetActiveInHierarchy(bool activeInHierarchy)
 				_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(activeInHierarchy);
 			}
 		}
+		OnActiveChanged.Invoke(this); // Wywo³ywanie eventu
 	}
 }
 
@@ -196,7 +202,11 @@ bool GameObject::GetIsStatic() const
 
 void GameObject::SetIsStatic(bool isStatic)
 {
-	_isStatic = isStatic;
+	if (_isStatic != isStatic)
+	{
+		_isStatic = isStatic;
+		OnStaticChanged.Invoke(this);
+	}
 }
 
 Transform* GameObject::GetTransform() const

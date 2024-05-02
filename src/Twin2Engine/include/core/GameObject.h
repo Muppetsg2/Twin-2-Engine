@@ -59,6 +59,11 @@ namespace Twin2Engine::Core
 	public:
 		GameObject();
 
+#pragma region EVENTS
+		EventHandler<GameObject*> OnActiveChanged;
+		EventHandler<GameObject*> OnStaticChanged;
+#pragma endregion
+
 		virtual ~GameObject();
 
 		size_t Id() const;

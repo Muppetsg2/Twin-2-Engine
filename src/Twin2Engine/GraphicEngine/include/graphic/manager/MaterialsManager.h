@@ -4,6 +4,7 @@
 #include <graphic/Material.h>
 #include <graphic/manager/ShaderManager.h>
 #include <graphic/manager/TextureManager.h>
+#include <graphic/MaterialParametersBuilder.h>
 
 namespace Twin2Engine::Manager
 {

@@ -166,15 +166,18 @@ void MeshRenderingManager::Render()
 
 			for (auto& material : shaderPair.second)
 			{
-				const auto& data = material.first.GetMaterialParameters()->GetData();
+				//const auto& data = material.first.GetMaterialParameters()->GetData();
+				const auto& materialParameters = material.first.GetMaterialParameters();
 
 #if USE_NAMED_BUFFER_SUBDATA
 				//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
-				glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
+				//glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
+				glNamedBufferSubData(_materialInputUBO, size, materialParameters->GetSize(), materialParameters->GetData());
 #else
 				//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
 				glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
-				glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
+				//glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
+				glBufferSubData(GL_UNIFORM_BUFFER, size, materialParameters->GetSize(), materialParameters->GetData());
 #endif
 				size += data.size();
 
@@ -270,6 +273,7 @@ void MeshRenderingManager::Render()
 		for (auto& materialPair : shaderPair.second)
 		{
 
+#if MATERIAL_INPUT_SINGLE_UBO
 			size_t size = 0;
 			//const auto& data = materialPair.first.GetMaterialParameters()->GetData();
 			const auto& materialParameters = materialPair.first.GetMaterialParameters();
@@ -282,6 +286,9 @@ void MeshRenderingManager::Render()
 			glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
 			//glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
 			glBufferSubData(GL_UNIFORM_BUFFER, size, materialParameters->GetSize(), materialParameters->GetData());
+#endif
+#elif MATERIAL_INPUT_MANY_INPUT
+			glBindBufferBase(GL_UNIFORM_BUFFER, BINDING_POINT_MATERIAL_INPUT, materialPair.first.GetMaterialParameters()->GetDataUBO());
 #endif
 
 			// ASSIGNING TEXTURES
@@ -397,16 +404,20 @@ void MeshRenderingManager::Render()
 
 			for (auto& material : meshPair.second)
 			{
-				const auto& data = material.first.GetMaterialParameters()->GetData();
+				//const auto& data = material.first.GetMaterialParameters()->GetData();
+				const auto& materialParameters = material.first.GetMaterialParameters();
 
 #if USE_NAMED_BUFFER_SUBDATA
 				//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
-				glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
+				//glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
+				glNamedBufferSubData(_materialInputUBO, size, materialParameters->GetSize(), materialParameters->GetData());
 #else
 				//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
 				glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
-				glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
+				//glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
+				glBufferSubData(GL_UNIFORM_BUFFER, size, materialParameters->GetSize(), materialParameters->GetData());
 #endif
+
 				size += data.size();
 
 				while (material.second.size() > 0) {
@@ -517,15 +528,18 @@ void MeshRenderingManager::RenderDepthMap()
 
 			for (auto& material : shaderPair.second)
 			{
-				const auto& data = material.first.GetMaterialParameters()->GetData();
+				//const auto& data = material.first.GetMaterialParameters()->GetData();
+				const auto& materialParameters = material.first.GetMaterialParameters();
 
 #if USE_NAMED_BUFFER_SUBDATA
 				//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
-				glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
+				//glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
+				glNamedBufferSubData(_materialInputUBO, size, materialParameters->GetSize(), materialParameters->GetData());
 #else
 				//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
 				glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
-				glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
+				//glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
+				glBufferSubData(GL_UNIFORM_BUFFER, size, materialParameters->GetSize(), materialParameters->GetData());
 #endif
 				size += data.size();
 
@@ -618,6 +632,7 @@ void MeshRenderingManager::RenderDepthMap()
 		for (auto& materialPair : shaderPair.second)
 		{
 
+#if MATERIAL_INPUT_SINGLE_UBO
 			size_t size = 0;
 			//const auto& data = materialPair.first.GetMaterialParameters()->GetData();
 			const auto& materialParameters = materialPair.first.GetMaterialParameters();
@@ -630,6 +645,9 @@ void MeshRenderingManager::RenderDepthMap()
 			glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
 			//glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
 			glBufferSubData(GL_UNIFORM_BUFFER, size, materialParameters->GetSize(), materialParameters->GetData());
+#endif
+#elif MATERIAL_INPUT_MANY_INPUT
+			glBindBufferBase(GL_UNIFORM_BUFFER, BINDING_POINT_MATERIAL_INPUT, materialPair.first.GetMaterialParameters()->GetDataUBO());
 #endif
 
 			// ASSIGNING TEXTURES
@@ -743,16 +761,20 @@ void MeshRenderingManager::RenderDepthMap()
 
 			for (auto& material : meshPair.second)
 			{
-				const auto& data = material.first.GetMaterialParameters()->GetData();
+				//const auto& data = material.first.GetMaterialParameters()->GetData();
+				const auto& materialParameters = material.first.GetMaterialParameters();
 
 #if USE_NAMED_BUFFER_SUBDATA
 				//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
-				glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
+				//glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
+				glNamedBufferSubData(_materialInputUBO, size, materialParameters->GetSize(), materialParameters->GetData());
 #else
 				//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
 				glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
-				glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
+				//glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
+				glBufferSubData(GL_UNIFORM_BUFFER, size, materialParameters->GetSize(), materialParameters->GetData());
 #endif
+
 				size += data.size();
 
 				while (material.second.size() > 0) {

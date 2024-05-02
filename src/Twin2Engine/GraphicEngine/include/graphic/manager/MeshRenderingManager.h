@@ -22,6 +22,8 @@
 
 #define USE_NAMED_BUFFER_SUBDATA 0
 
+#define MATERIAL_INPUT_SINGLE_UBO false
+#define MATERIAL_INPUT_MANY_INPUT true
 
 namespace Twin2Engine
 {

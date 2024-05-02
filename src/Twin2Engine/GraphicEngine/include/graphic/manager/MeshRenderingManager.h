@@ -3,6 +3,9 @@
 #include <graphic/InstatiatingMesh.h>
 #include <graphic/Material.h>
 #include <graphic/Shader.h>
+#include <core/CameraComponent.h>
+#include <core/GameObject.h>
+#include <core/MeshRenderer.h>
 
 // RENDERING
 #define MAX_INSTANCE_NUMBER_PER_DRAW 1024
@@ -33,6 +36,10 @@ namespace Twin2Engine
 		class Material;
 	}
 
+	namespace Core {
+		class MeshRenderer;
+	}
+
 	namespace Manager {
 
 		struct InstanceData
@@ -53,10 +60,25 @@ namespace Twin2Engine
 			friend class GraphicEngine::GraphicEngineManager;
 
 		private:
+			struct RenderedSegment
+			{
+				unsigned int offset;
+				unsigned int count;
+			};
+			struct MeshRenderingData
+			{
+				std::vector<glm::mat4> modelTransforms;
+				std::vector<Twin2Engine::Core::MeshRenderer*> meshRenderers;
+				std::queue<RenderedSegment> rendered;
+				unsigned int renderedCount;
+			};
+
 #if RENERING_TYPE_MESH_SHADER_MATERIAL
 			static std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _renderQueue;
 			static std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
 #elif RENERING_TYPE_SHADER_MATERIAL_MESH
+			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, MeshRenderingData>>>  _renderQueueStatic;
+			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, MeshRenderingData>>>  _depthMapenderQueueStatic;
 			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>>>>  _renderQueue;
 			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
 #elif RENERING_TYPE_SHADER_MESH_MATERIAL
@@ -69,11 +91,17 @@ namespace Twin2Engine
 			static GLuint _materialIndexSSBO;
 			static GLuint _materialInputUBO;
 
+			static void UpdateQueues();
+			static void RenderStatic();
+
 			static void Render();
 			static void RenderDepthMap();
 		public:
 			static void Init();
 			static void UnloadAll();
+
+			static void RegisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer);
+			static void UnregisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer);
 
 			static void Render(MeshRenderData meshData);
 			static void RenderDepthMap(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,

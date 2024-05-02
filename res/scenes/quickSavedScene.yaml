@@ -105,7 +105,7 @@ ScriptableObjects: ~
 GameObjects:
   - id: 1
     name: Camera
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 0
@@ -149,7 +149,7 @@ GameObjects:
       []
   - id: 2
     name: imageObj
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 3
@@ -199,7 +199,7 @@ GameObjects:
       []
   - id: 3
     name: imageObj2
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 6
@@ -235,7 +235,7 @@ GameObjects:
       []
   - id: 4
     name: imageObj3
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 8
@@ -271,7 +271,7 @@ GameObjects:
       []
   - id: 5
     name: textObj
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 10
@@ -307,7 +307,7 @@ GameObjects:
       []
   - id: 6
     name: gameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 12
@@ -338,7 +338,7 @@ GameObjects:
       []
   - id: 7
     name: gameObject2
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 14
@@ -369,7 +369,7 @@ GameObjects:
       []
   - id: 8
     name: gameObject3
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 16
@@ -401,7 +401,7 @@ GameObjects:
       []
   - id: 9
     name: gameObject4
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 18
@@ -433,7 +433,7 @@ GameObjects:
       []
   - id: 10
     name: testGameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 20
@@ -543,7 +543,7 @@ GameObjects:
       []
   - id: 12
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 27
@@ -574,7 +574,7 @@ GameObjects:
       []
   - id: 13
     name: BRDF
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 29
@@ -605,7 +605,7 @@ GameObjects:
       []
   - id: 14
     name: MapGenerator
-    isStatic: false
+    isStatic: true
     isActive: false
     transform:
       id: 31
@@ -668,7 +668,7 @@ GameObjects:
       - 235
   - id: 227
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 671
@@ -696,7 +696,7 @@ GameObjects:
       - 238
   - id: 236
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 689
@@ -727,7 +727,7 @@ GameObjects:
       - 38
   - id: 216
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 639
@@ -762,7 +762,7 @@ GameObjects:
       - 267
   - id: 267
     name: City
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 803
@@ -793,7 +793,7 @@ GameObjects:
       []
   - id: 220
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 651
@@ -828,7 +828,7 @@ GameObjects:
       []
   - id: 221
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 654
@@ -863,7 +863,7 @@ GameObjects:
       []
   - id: 186
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 549
@@ -898,7 +898,7 @@ GameObjects:
       []
   - id: 37
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 102
@@ -933,7 +933,7 @@ GameObjects:
       []
   - id: 38
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 105
@@ -968,7 +968,7 @@ GameObjects:
       []
   - id: 237
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 691
@@ -997,7 +997,7 @@ GameObjects:
       - 225
   - id: 40
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 111
@@ -1032,7 +1032,7 @@ GameObjects:
       []
   - id: 39
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 108
@@ -1067,7 +1067,7 @@ GameObjects:
       []
   - id: 224
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 663
@@ -1102,7 +1102,7 @@ GameObjects:
       []
   - id: 225
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 666
@@ -1137,7 +1137,7 @@ GameObjects:
       []
   - id: 238
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 693
@@ -1170,7 +1170,7 @@ GameObjects:
       - 41
   - id: 219
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 648
@@ -1205,7 +1205,7 @@ GameObjects:
       []
   - id: 223
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 660
@@ -1240,7 +1240,7 @@ GameObjects:
       []
   - id: 214
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 633
@@ -1275,7 +1275,7 @@ GameObjects:
       []
   - id: 218
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 645
@@ -1310,7 +1310,7 @@ GameObjects:
       []
   - id: 215
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 636
@@ -1345,7 +1345,7 @@ GameObjects:
       []
   - id: 222
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 657
@@ -1380,7 +1380,7 @@ GameObjects:
       []
   - id: 42
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 117
@@ -1415,7 +1415,7 @@ GameObjects:
       []
   - id: 41
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 114
@@ -1450,7 +1450,7 @@ GameObjects:
       []
   - id: 228
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 673
@@ -1478,7 +1478,7 @@ GameObjects:
       - 241
   - id: 239
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 695
@@ -1509,7 +1509,7 @@ GameObjects:
       - 29
   - id: 127
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 372
@@ -1544,7 +1544,7 @@ GameObjects:
       - 268
   - id: 268
     name: City
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 805
@@ -1575,7 +1575,7 @@ GameObjects:
       []
   - id: 129
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 378
@@ -1610,7 +1610,7 @@ GameObjects:
       []
   - id: 158
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 465
@@ -1645,7 +1645,7 @@ GameObjects:
       []
   - id: 157
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 462
@@ -1680,7 +1680,7 @@ GameObjects:
       []
   - id: 28
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 75
@@ -1715,7 +1715,7 @@ GameObjects:
       []
   - id: 29
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 78
@@ -1750,7 +1750,7 @@ GameObjects:
       []
   - id: 240
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 697
@@ -1780,7 +1780,7 @@ GameObjects:
       - 32
   - id: 189
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 558
@@ -1815,7 +1815,7 @@ GameObjects:
       []
   - id: 188
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 555
@@ -1850,7 +1850,7 @@ GameObjects:
       []
   - id: 31
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 84
@@ -1885,7 +1885,7 @@ GameObjects:
       []
   - id: 30
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 81
@@ -1920,7 +1920,7 @@ GameObjects:
       []
   - id: 32
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 87
@@ -1955,7 +1955,7 @@ GameObjects:
       []
   - id: 241
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 699
@@ -1988,7 +1988,7 @@ GameObjects:
       - 103
   - id: 130
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 381
@@ -2023,7 +2023,7 @@ GameObjects:
       []
   - id: 128
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 375
@@ -2058,7 +2058,7 @@ GameObjects:
       []
   - id: 27
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 72
@@ -2093,7 +2093,7 @@ GameObjects:
       []
   - id: 86
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 249
@@ -2128,7 +2128,7 @@ GameObjects:
       []
   - id: 85
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 246
@@ -2163,7 +2163,7 @@ GameObjects:
       []
   - id: 105
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 306
@@ -2198,7 +2198,7 @@ GameObjects:
       []
   - id: 104
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 303
@@ -2233,7 +2233,7 @@ GameObjects:
       []
   - id: 103
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 300
@@ -2268,7 +2268,7 @@ GameObjects:
       []
   - id: 229
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 675
@@ -2296,7 +2296,7 @@ GameObjects:
       - 244
   - id: 242
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 701
@@ -2331,7 +2331,7 @@ GameObjects:
       - 53
   - id: 206
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 609
@@ -2366,7 +2366,7 @@ GameObjects:
       []
   - id: 205
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 606
@@ -2401,7 +2401,7 @@ GameObjects:
       []
   - id: 207
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 612
@@ -2436,7 +2436,7 @@ GameObjects:
       []
   - id: 148
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 435
@@ -2471,7 +2471,7 @@ GameObjects:
       []
   - id: 149
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 438
@@ -2506,7 +2506,7 @@ GameObjects:
       - 156
   - id: 156
     name: City
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 791
@@ -2537,7 +2537,7 @@ GameObjects:
       []
   - id: 178
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 525
@@ -2572,7 +2572,7 @@ GameObjects:
       []
   - id: 179
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 528
@@ -2607,7 +2607,7 @@ GameObjects:
       []
   - id: 177
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 522
@@ -2642,7 +2642,7 @@ GameObjects:
       []
   - id: 52
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 147
@@ -2677,7 +2677,7 @@ GameObjects:
       []
   - id: 53
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 150
@@ -2712,7 +2712,7 @@ GameObjects:
       []
   - id: 243
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 703
@@ -2743,7 +2743,7 @@ GameObjects:
       - 146
   - id: 119
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 348
@@ -2778,7 +2778,7 @@ GameObjects:
       - 109
   - id: 109
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 763
@@ -2809,7 +2809,7 @@ GameObjects:
       []
   - id: 118
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 345
@@ -2844,7 +2844,7 @@ GameObjects:
       - 159
   - id: 159
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 767
@@ -2875,7 +2875,7 @@ GameObjects:
       []
   - id: 120
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 351
@@ -2910,7 +2910,7 @@ GameObjects:
       - 160
   - id: 160
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 769
@@ -2941,7 +2941,7 @@ GameObjects:
       []
   - id: 174
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 513
@@ -2976,7 +2976,7 @@ GameObjects:
       - 245
   - id: 245
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 765
@@ -3007,7 +3007,7 @@ GameObjects:
       []
   - id: 147
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 432
@@ -3042,7 +3042,7 @@ GameObjects:
       - 191
   - id: 191
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 771
@@ -3073,7 +3073,7 @@ GameObjects:
       []
   - id: 146
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 429
@@ -3108,7 +3108,7 @@ GameObjects:
       - 190
   - id: 190
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 773
@@ -3139,7 +3139,7 @@ GameObjects:
       []
   - id: 244
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 705
@@ -3173,7 +3173,7 @@ GameObjects:
       - 58
   - id: 204
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 603
@@ -3208,7 +3208,7 @@ GameObjects:
       []
   - id: 203
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 600
@@ -3243,7 +3243,7 @@ GameObjects:
       []
   - id: 175
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 516
@@ -3278,7 +3278,7 @@ GameObjects:
       []
   - id: 176
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 519
@@ -3313,7 +3313,7 @@ GameObjects:
       []
   - id: 56
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 159
@@ -3348,7 +3348,7 @@ GameObjects:
       []
   - id: 57
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 162
@@ -3383,7 +3383,7 @@ GameObjects:
       []
   - id: 55
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 156
@@ -3418,7 +3418,7 @@ GameObjects:
       []
   - id: 54
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 153
@@ -3453,7 +3453,7 @@ GameObjects:
       []
   - id: 58
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 165
@@ -3488,7 +3488,7 @@ GameObjects:
       []
   - id: 230
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 677
@@ -3516,7 +3516,7 @@ GameObjects:
       - 250
   - id: 248
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 713
@@ -3548,7 +3548,7 @@ GameObjects:
       - 16
   - id: 198
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 585
@@ -3583,7 +3583,7 @@ GameObjects:
       - 269
   - id: 269
     name: City
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 807
@@ -3614,7 +3614,7 @@ GameObjects:
       []
   - id: 197
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 582
@@ -3649,7 +3649,7 @@ GameObjects:
       []
   - id: 196
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 579
@@ -3684,7 +3684,7 @@ GameObjects:
       []
   - id: 141
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 414
@@ -3719,7 +3719,7 @@ GameObjects:
       []
   - id: 169
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 498
@@ -3754,7 +3754,7 @@ GameObjects:
       []
   - id: 15
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 36
@@ -3789,7 +3789,7 @@ GameObjects:
       []
   - id: 16
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 39
@@ -3824,7 +3824,7 @@ GameObjects:
       []
   - id: 249
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 715
@@ -3853,7 +3853,7 @@ GameObjects:
       - 64
   - id: 11
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 25
@@ -3888,7 +3888,7 @@ GameObjects:
       []
   - id: 65
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 186
@@ -3923,7 +3923,7 @@ GameObjects:
       []
   - id: 63
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 180
@@ -3958,7 +3958,7 @@ GameObjects:
       - 271
   - id: 271
     name: RadioStation
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 811
@@ -3989,7 +3989,7 @@ GameObjects:
       []
   - id: 64
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 183
@@ -4024,7 +4024,7 @@ GameObjects:
       []
   - id: 250
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 717
@@ -4060,7 +4060,7 @@ GameObjects:
       - 18
   - id: 195
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 576
@@ -4095,7 +4095,7 @@ GameObjects:
       []
   - id: 114
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 333
@@ -4130,7 +4130,7 @@ GameObjects:
       []
   - id: 140
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 411
@@ -4165,7 +4165,7 @@ GameObjects:
       []
   - id: 113
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 330
@@ -4200,7 +4200,7 @@ GameObjects:
       []
   - id: 139
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 408
@@ -4235,7 +4235,7 @@ GameObjects:
       []
   - id: 112
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 327
@@ -4270,7 +4270,7 @@ GameObjects:
       []
   - id: 168
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 495
@@ -4305,7 +4305,7 @@ GameObjects:
       []
   - id: 167
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 492
@@ -4340,7 +4340,7 @@ GameObjects:
       []
   - id: 166
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 489
@@ -4375,7 +4375,7 @@ GameObjects:
       []
   - id: 17
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 42
@@ -4410,7 +4410,7 @@ GameObjects:
       []
   - id: 18
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 45
@@ -4445,7 +4445,7 @@ GameObjects:
       []
   - id: 231
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 679
@@ -4473,7 +4473,7 @@ GameObjects:
       - 253
   - id: 251
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 719
@@ -4507,7 +4507,7 @@ GameObjects:
       - 72
   - id: 88
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 255
@@ -4542,7 +4542,7 @@ GameObjects:
       - 36
   - id: 36
     name: City
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 795
@@ -4573,7 +4573,7 @@ GameObjects:
       []
   - id: 68
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 195
@@ -4608,7 +4608,7 @@ GameObjects:
       []
   - id: 84
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 243
@@ -4643,7 +4643,7 @@ GameObjects:
       []
   - id: 74
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 213
@@ -4678,7 +4678,7 @@ GameObjects:
       []
   - id: 87
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 252
@@ -4713,7 +4713,7 @@ GameObjects:
       []
   - id: 75
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 216
@@ -4748,7 +4748,7 @@ GameObjects:
       []
   - id: 67
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 192
@@ -4783,7 +4783,7 @@ GameObjects:
       []
   - id: 73
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 210
@@ -4818,7 +4818,7 @@ GameObjects:
       []
   - id: 72
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 207
@@ -4853,7 +4853,7 @@ GameObjects:
       []
   - id: 252
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 721
@@ -4885,7 +4885,7 @@ GameObjects:
       - 93
   - id: 77
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 222
@@ -4920,7 +4920,7 @@ GameObjects:
       []
   - id: 76
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 219
@@ -4955,7 +4955,7 @@ GameObjects:
       []
   - id: 91
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 264
@@ -4990,7 +4990,7 @@ GameObjects:
       []
   - id: 92
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 267
@@ -5025,7 +5025,7 @@ GameObjects:
       []
   - id: 69
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 198
@@ -5060,7 +5060,7 @@ GameObjects:
       []
   - id: 78
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 225
@@ -5095,7 +5095,7 @@ GameObjects:
       []
   - id: 93
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 270
@@ -5130,7 +5130,7 @@ GameObjects:
       []
   - id: 253
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 723
@@ -5161,7 +5161,7 @@ GameObjects:
       - 94
   - id: 66
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 189
@@ -5196,7 +5196,7 @@ GameObjects:
       []
   - id: 79
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 228
@@ -5231,7 +5231,7 @@ GameObjects:
       []
   - id: 80
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 231
@@ -5266,7 +5266,7 @@ GameObjects:
       []
   - id: 71
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 204
@@ -5301,7 +5301,7 @@ GameObjects:
       []
   - id: 70
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 201
@@ -5336,7 +5336,7 @@ GameObjects:
       []
   - id: 94
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 273
@@ -5371,7 +5371,7 @@ GameObjects:
       []
   - id: 232
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 681
@@ -5399,7 +5399,7 @@ GameObjects:
       - 259
   - id: 257
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 731
@@ -5432,7 +5432,7 @@ GameObjects:
       - 62
   - id: 200
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 591
@@ -5467,7 +5467,7 @@ GameObjects:
       - 35
   - id: 35
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 775
@@ -5498,7 +5498,7 @@ GameObjects:
       []
   - id: 199
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 588
@@ -5533,7 +5533,7 @@ GameObjects:
       - 33
   - id: 33
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 777
@@ -5564,7 +5564,7 @@ GameObjects:
       []
   - id: 115
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 336
@@ -5599,7 +5599,7 @@ GameObjects:
       - 34
   - id: 34
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 779
@@ -5630,7 +5630,7 @@ GameObjects:
       []
   - id: 142
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 417
@@ -5665,7 +5665,7 @@ GameObjects:
       - 217
   - id: 217
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 785
@@ -5696,7 +5696,7 @@ GameObjects:
       []
   - id: 143
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 420
@@ -5731,7 +5731,7 @@ GameObjects:
       - 192
   - id: 192
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 783
@@ -5762,7 +5762,7 @@ GameObjects:
       []
   - id: 170
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 501
@@ -5797,7 +5797,7 @@ GameObjects:
       - 155
   - id: 155
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 787
@@ -5828,7 +5828,7 @@ GameObjects:
       []
   - id: 171
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 504
@@ -5863,7 +5863,7 @@ GameObjects:
       - 246
   - id: 246
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 781
@@ -5894,7 +5894,7 @@ GameObjects:
       []
   - id: 62
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 177
@@ -5929,7 +5929,7 @@ GameObjects:
       - 162
   - id: 162
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 789
@@ -5960,7 +5960,7 @@ GameObjects:
       []
   - id: 258
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 733
@@ -5991,7 +5991,7 @@ GameObjects:
       - 96
   - id: 117
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 342
@@ -6026,7 +6026,7 @@ GameObjects:
       - 226
   - id: 226
     name: City
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 799
@@ -6057,7 +6057,7 @@ GameObjects:
       []
   - id: 116
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 339
@@ -6092,7 +6092,7 @@ GameObjects:
       []
   - id: 144
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 423
@@ -6127,7 +6127,7 @@ GameObjects:
       []
   - id: 145
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 426
@@ -6162,7 +6162,7 @@ GameObjects:
       []
   - id: 95
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 276
@@ -6197,7 +6197,7 @@ GameObjects:
       []
   - id: 96
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 279
@@ -6232,7 +6232,7 @@ GameObjects:
       []
   - id: 259
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 735
@@ -6264,7 +6264,7 @@ GameObjects:
       - 61
   - id: 201
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 594
@@ -6299,7 +6299,7 @@ GameObjects:
       []
   - id: 202
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 597
@@ -6334,7 +6334,7 @@ GameObjects:
       []
   - id: 172
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 507
@@ -6369,7 +6369,7 @@ GameObjects:
       []
   - id: 173
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 510
@@ -6404,7 +6404,7 @@ GameObjects:
       []
   - id: 60
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 171
@@ -6439,7 +6439,7 @@ GameObjects:
       []
   - id: 59
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 168
@@ -6474,7 +6474,7 @@ GameObjects:
       []
   - id: 61
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 174
@@ -6509,7 +6509,7 @@ GameObjects:
       []
   - id: 233
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 683
@@ -6537,7 +6537,7 @@ GameObjects:
       - 265
   - id: 263
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 743
@@ -6570,7 +6570,7 @@ GameObjects:
       - 20
   - id: 194
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 573
@@ -6605,7 +6605,7 @@ GameObjects:
       []
   - id: 193
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 570
@@ -6640,7 +6640,7 @@ GameObjects:
       []
   - id: 163
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 480
@@ -6675,7 +6675,7 @@ GameObjects:
       []
   - id: 164
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 483
@@ -6710,7 +6710,7 @@ GameObjects:
       []
   - id: 19
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 48
@@ -6745,7 +6745,7 @@ GameObjects:
       - 247
   - id: 247
     name: City
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 797
@@ -6776,7 +6776,7 @@ GameObjects:
       []
   - id: 21
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 54
@@ -6811,7 +6811,7 @@ GameObjects:
       []
   - id: 22
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 57
@@ -6846,7 +6846,7 @@ GameObjects:
       []
   - id: 20
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 51
@@ -6881,7 +6881,7 @@ GameObjects:
       []
   - id: 264
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 745
@@ -6912,7 +6912,7 @@ GameObjects:
       - 90
   - id: 110
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 321
@@ -6947,7 +6947,7 @@ GameObjects:
       []
   - id: 138
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 405
@@ -6982,7 +6982,7 @@ GameObjects:
       []
   - id: 111
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 324
@@ -7017,7 +7017,7 @@ GameObjects:
       []
   - id: 137
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 402
@@ -7052,7 +7052,7 @@ GameObjects:
       []
   - id: 165
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 486
@@ -7087,7 +7087,7 @@ GameObjects:
       []
   - id: 90
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 261
@@ -7122,7 +7122,7 @@ GameObjects:
       []
   - id: 265
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 747
@@ -7157,7 +7157,7 @@ GameObjects:
       - 108
   - id: 132
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 387
@@ -7192,7 +7192,7 @@ GameObjects:
       []
   - id: 136
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 399
@@ -7227,7 +7227,7 @@ GameObjects:
       []
   - id: 134
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 393
@@ -7262,7 +7262,7 @@ GameObjects:
       []
   - id: 161
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 474
@@ -7297,7 +7297,7 @@ GameObjects:
       []
   - id: 25
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 66
@@ -7332,7 +7332,7 @@ GameObjects:
       []
   - id: 24
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 63
@@ -7367,7 +7367,7 @@ GameObjects:
       []
   - id: 26
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 69
@@ -7402,7 +7402,7 @@ GameObjects:
       []
   - id: 23
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 60
@@ -7437,7 +7437,7 @@ GameObjects:
       []
   - id: 106
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 309
@@ -7472,7 +7472,7 @@ GameObjects:
       []
   - id: 108
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 315
@@ -7507,7 +7507,7 @@ GameObjects:
       []
   - id: 234
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 685
@@ -7535,7 +7535,7 @@ GameObjects:
       - 262
   - id: 260
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 737
@@ -7567,7 +7567,7 @@ GameObjects:
       - 182
   - id: 211
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 624
@@ -7602,7 +7602,7 @@ GameObjects:
       - 133
   - id: 133
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 749
@@ -7633,7 +7633,7 @@ GameObjects:
       []
   - id: 209
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 618
@@ -7668,7 +7668,7 @@ GameObjects:
       - 131
   - id: 131
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 753
@@ -7699,7 +7699,7 @@ GameObjects:
       []
   - id: 150
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 441
@@ -7734,7 +7734,7 @@ GameObjects:
       - 126
   - id: 126
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 755
@@ -7765,7 +7765,7 @@ GameObjects:
       []
   - id: 151
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 444
@@ -7800,7 +7800,7 @@ GameObjects:
       - 102
   - id: 102
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 759
@@ -7831,7 +7831,7 @@ GameObjects:
       []
   - id: 180
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 531
@@ -7866,7 +7866,7 @@ GameObjects:
       - 135
   - id: 135
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 751
@@ -7897,7 +7897,7 @@ GameObjects:
       []
   - id: 181
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 534
@@ -7932,7 +7932,7 @@ GameObjects:
       - 107
   - id: 107
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 761
@@ -7963,7 +7963,7 @@ GameObjects:
       []
   - id: 182
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 537
@@ -7998,7 +7998,7 @@ GameObjects:
       - 89
   - id: 89
     name: Mountain
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 757
@@ -8029,7 +8029,7 @@ GameObjects:
       []
   - id: 261
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 739
@@ -8060,7 +8060,7 @@ GameObjects:
       - 48
   - id: 210
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 621
@@ -8095,7 +8095,7 @@ GameObjects:
       []
   - id: 208
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 615
@@ -8130,7 +8130,7 @@ GameObjects:
       []
   - id: 50
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 141
@@ -8165,7 +8165,7 @@ GameObjects:
       []
   - id: 49
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 138
@@ -8200,7 +8200,7 @@ GameObjects:
       []
   - id: 51
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 144
@@ -8235,7 +8235,7 @@ GameObjects:
       []
   - id: 48
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 135
@@ -8270,7 +8270,7 @@ GameObjects:
       []
   - id: 262
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 741
@@ -8301,7 +8301,7 @@ GameObjects:
       - 46
   - id: 212
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 627
@@ -8336,7 +8336,7 @@ GameObjects:
       []
   - id: 47
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 132
@@ -8371,7 +8371,7 @@ GameObjects:
       []
   - id: 45
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 126
@@ -8406,7 +8406,7 @@ GameObjects:
       []
   - id: 43
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 120
@@ -8441,7 +8441,7 @@ GameObjects:
       []
   - id: 44
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 123
@@ -8476,7 +8476,7 @@ GameObjects:
       - 266
   - id: 266
     name: City
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 801
@@ -8507,7 +8507,7 @@ GameObjects:
       []
   - id: 46
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 129
@@ -8542,7 +8542,7 @@ GameObjects:
       []
   - id: 235
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 687
@@ -8570,7 +8570,7 @@ GameObjects:
       - 256
   - id: 254
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 725
@@ -8602,7 +8602,7 @@ GameObjects:
       - 97
   - id: 121
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 354
@@ -8637,7 +8637,7 @@ GameObjects:
       - 270
   - id: 270
     name: RadioStation
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 809
@@ -8668,7 +8668,7 @@ GameObjects:
       []
   - id: 81
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 234
@@ -8703,7 +8703,7 @@ GameObjects:
       []
   - id: 82
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 237
@@ -8738,7 +8738,7 @@ GameObjects:
       []
   - id: 98
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 285
@@ -8773,7 +8773,7 @@ GameObjects:
       []
   - id: 99
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 288
@@ -8808,7 +8808,7 @@ GameObjects:
       []
   - id: 100
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 291
@@ -8843,7 +8843,7 @@ GameObjects:
       []
   - id: 97
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 282
@@ -8878,7 +8878,7 @@ GameObjects:
       []
   - id: 255
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 727
@@ -8909,7 +8909,7 @@ GameObjects:
       - 101
   - id: 124
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 363
@@ -8944,7 +8944,7 @@ GameObjects:
       []
   - id: 125
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 366
@@ -8979,7 +8979,7 @@ GameObjects:
       []
   - id: 154
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 453
@@ -9014,7 +9014,7 @@ GameObjects:
       []
   - id: 185
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 546
@@ -9049,7 +9049,7 @@ GameObjects:
       []
   - id: 83
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 240
@@ -9084,7 +9084,7 @@ GameObjects:
       []
   - id: 101
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 294
@@ -9119,7 +9119,7 @@ GameObjects:
       []
   - id: 256
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 729
@@ -9151,7 +9151,7 @@ GameObjects:
       - 184
   - id: 213
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 630
@@ -9186,7 +9186,7 @@ GameObjects:
       []
   - id: 122
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 357
@@ -9221,7 +9221,7 @@ GameObjects:
       []
   - id: 123
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 360
@@ -9256,7 +9256,7 @@ GameObjects:
       - 187
   - id: 187
     name: City
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 793
@@ -9287,7 +9287,7 @@ GameObjects:
       []
   - id: 152
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 447
@@ -9322,7 +9322,7 @@ GameObjects:
       []
   - id: 153
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 450
@@ -9357,7 +9357,7 @@ GameObjects:
       []
   - id: 183
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 540
@@ -9392,7 +9392,7 @@ GameObjects:
       []
   - id: 184
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 543

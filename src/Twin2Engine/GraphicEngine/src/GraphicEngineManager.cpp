@@ -74,6 +74,8 @@ void GraphicEngineManager::Render()
 #if DEBUG_GRAPHIC_ENGINE
 	float startRenderingTime = glfwGetTime();
 #endif
+	MeshRenderingManager::UpdateQueues();
+	MeshRenderingManager::RenderStatic();
 	MeshRenderingManager::Render();
 #if DEBUG_GRAPHIC_ENGINE
 	SPDLOG_INFO("Randering Time: {}", glfwGetTime() - startRenderingTime);

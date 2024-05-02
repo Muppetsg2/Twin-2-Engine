@@ -11,39 +11,56 @@ using namespace Twin2Engine::Manager;
 
 void Twin2Engine::Core::MeshRenderer::Initialize()
 {
+	GetGameObject()->OnStaticChanged += [this](GameObject* gameObject) {
+			if (gameObject->GetIsStatic())
+			{
+				MeshRenderingManager::RegisterStatic(this);
+			}
+			else
+			{
+				MeshRenderingManager::UnregisterStatic(this);
+			}
+		};
 
+	if (GetGameObject()->GetIsStatic())
+	{
+		MeshRenderingManager::RegisterStatic(this);
+	}
 }
 
 void MeshRenderer::Render()
 {
-	MeshRenderData data{};
-	data.transform = GetTransform()->GetTransformMatrix();
-	data.meshes = std::vector<InstatiatingMesh*>();
-	data.materials = std::vector<Material>();
-	data.isTransparent = IsTransparent();
-
-
-	if (CameraComponent::GetMainCamera()->IsFrustumCullingOn) 
+	if (!GetGameObject()->GetIsStatic())
 	{
-		InstatiatingMesh* tMesh;
-		Frustum frustum = CameraComponent::GetMainCamera()->GetFrustum();
-		for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
-			tMesh = _model.GetMesh(i);
-			if (tMesh->IsOnFrustum(frustum, data.transform)) {
-				data.meshes.push_back(tMesh);
+		MeshRenderData data{};
+		data.transform = GetTransform()->GetTransformMatrix();
+		data.meshes = std::vector<InstatiatingMesh*>();
+		data.materials = std::vector<Material>();
+		data.isTransparent = IsTransparent();
+
+
+		if (CameraComponent::GetMainCamera()->IsFrustumCullingOn)
+		{
+			InstatiatingMesh* tMesh;
+			Frustum frustum = CameraComponent::GetMainCamera()->GetFrustum();
+			for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
+				tMesh = _model.GetMesh(i);
+				if (tMesh->IsOnFrustum(frustum, data.transform)) {
+					data.meshes.push_back(tMesh);
+					data.materials.push_back(GetMaterial(i));
+				}
+			}
+		}
+		else
+		{
+			for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
+				data.meshes.push_back(_model.GetMesh(i));
 				data.materials.push_back(GetMaterial(i));
 			}
 		}
-	}
-	else 
-	{
-		for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
-			data.meshes.push_back(_model.GetMesh(i));
-			data.materials.push_back(GetMaterial(i));
-		}
-	}
 
-	MeshRenderingManager::Render(data);
+		MeshRenderingManager::Render(data);
+	}
 }
 
 YAML::Node MeshRenderer::Serialize() const

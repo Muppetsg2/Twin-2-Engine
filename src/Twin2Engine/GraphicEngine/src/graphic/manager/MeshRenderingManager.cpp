@@ -4,12 +4,16 @@
 #include <graphic/Window.h>
 
 using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
 
 #if RENERING_TYPE_MESH_SHADER_MATERIAL
 std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_renderQueue = std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
 std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
 #elif RENERING_TYPE_SHADER_MATERIAL_MESH
+std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueStatic = std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, MeshRenderingData>>>();
+std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_depthMapenderQueueStatic = std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, MeshRenderingData>>>();
+
 std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, std::queue<MeshRenderData>>>> MeshRenderingManager::_renderQueue = std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, std::queue<MeshRenderData>>>>();
 std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, std::queue<MeshRenderData>>>>();
 #elif RENERING_TYPE_SHADER_MESH_MATERIAL
@@ -135,6 +139,133 @@ void MeshRenderingManager::Render(MeshRenderData meshData)
 		}
 	}
 }
+
+
+void MeshRenderingManager::RegisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer)
+{
+	SPDLOG_INFO("Registering");
+	InstatiatingMesh* mesh;
+	for (size_t i = 0; i < meshRenderer->GetMeshCount(); ++i) {
+		mesh = meshRenderer->GetMesh(i);
+		Material material = meshRenderer->GetMaterial(i);
+
+		auto& queueElement =_renderQueueStatic[material.GetShader()][material][mesh];
+		queueElement.meshRenderers.push_back(meshRenderer);
+		queueElement.modelTransforms.push_back(meshRenderer->GetTransform()->GetTransformMatrix());
+
+		auto& depthMapEueueElement = _depthMapenderQueueStatic[material.GetShader()][material][mesh];
+		depthMapEueueElement.meshRenderers.push_back(meshRenderer);
+		depthMapEueueElement.modelTransforms.push_back(meshRenderer->GetTransform()->GetTransformMatrix());
+
+		//_depthQueue[meshData.meshes[i]].push(meshData);
+	}
+}
+
+void MeshRenderingManager::UnregisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer)
+{
+	InstatiatingMesh* mesh;
+	for (size_t i = 0; i < meshRenderer->GetMeshCount(); ++i) {
+		mesh = meshRenderer->GetMesh(i);
+		Material material = meshRenderer->GetMaterial(i);
+
+		auto& meshRenderers = _renderQueueStatic[material.GetShader()][material][mesh].meshRenderers;
+
+		for (size_t i = 0; i < meshRenderers.size(); i++)
+		{
+			if (meshRenderers[i] == meshRenderer)
+			{
+				meshRenderers.erase(meshRenderers.cbegin() + i);
+
+				_renderQueueStatic[material.GetShader()][material][mesh]
+					.modelTransforms.erase(_renderQueueStatic[material.GetShader()][material][mesh].modelTransforms.cbegin() + i);
+
+				_depthMapenderQueueStatic[material.GetShader()][material][mesh]
+					.meshRenderers.erase(_depthMapenderQueueStatic[material.GetShader()][material][mesh].meshRenderers.cbegin() + i);
+
+				_depthMapenderQueueStatic[material.GetShader()][material][mesh]
+					.modelTransforms.erase(_depthMapenderQueueStatic[material.GetShader()][material][mesh].modelTransforms.cbegin() + i);
+
+				break;
+			}
+		}
+	}
+}
+
+void MeshRenderingManager::UpdateQueues()
+{
+	Frustum frustum = CameraComponent::GetMainCamera()->GetFrustum();
+	for (auto& shaderPair : _renderQueueStatic)
+	{
+		for (auto& materialPair : shaderPair.second)
+		{
+			for (auto& meshPair : materialPair.second)
+			{
+				RenderedSegment renderedSegment{ .offset = 0, .count = 0 };
+				bool lastAdded = true;
+
+				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); index++)
+				{
+					//W przypadku gdy ma byæ aktualizacja transforma
+					//meshPair.second.modelTransforms[index] = meshPair.second.meshRenderers[index]->GetTransform()->GetTransformMatrix();
+
+					if (!meshPair.second.meshRenderers[index]->IsTransparent() && meshPair.second.meshRenderers[index]->GetGameObject()->GetActive())
+					{
+						if (CameraComponent::GetMainCamera()->IsFrustumCullingOn)
+						{
+							if (meshPair.first->IsOnFrustum(frustum, meshPair.second.modelTransforms[index]))
+							{
+								lastAdded = true;
+								renderedSegment.count++;
+							}
+							else
+							{
+								if (lastAdded)
+								{
+									lastAdded = false;
+									meshPair.second.rendered.push(renderedSegment);
+									meshPair.second.renderedCount += renderedSegment.count;
+									renderedSegment.count = 0u;
+								}
+								else
+								{
+									renderedSegment.offset = index + 1u;
+								}
+							}
+						}
+						else
+						{
+							lastAdded = true;
+							renderedSegment.count++;
+						}
+					}
+					else
+					{
+						if (lastAdded)
+						{
+							lastAdded = false;
+							meshPair.second.rendered.push(renderedSegment);
+							meshPair.second.renderedCount += renderedSegment.count;
+							renderedSegment.count = 0u;
+						}
+						else
+						{
+							renderedSegment.offset = index + 1u;
+						}
+					}
+				}
+				if (renderedSegment.count)
+				{
+					meshPair.second.rendered.push(renderedSegment);
+					meshPair.second.renderedCount += renderedSegment.count;
+					renderedSegment.count = 0u;
+				}
+				_depthMapenderQueueStatic[shaderPair.first][materialPair.first][meshPair.first].rendered = meshPair.second.rendered;
+				_depthMapenderQueueStatic[shaderPair.first][materialPair.first][meshPair.first].renderedCount = meshPair.second.renderedCount;
+			}
+		}
+	}
+}
+
 
 #if RENERING_TYPE_MESH_SHADER_MATERIAL
 
@@ -263,6 +394,194 @@ void MeshRenderingManager::Render()
 
 #elif RENERING_TYPE_SHADER_MATERIAL_MESH
 
+void MeshRenderingManager::RenderStatic()
+{
+	unsigned int globalDrawCount = 0;
+	for (auto& shaderPair : _renderQueueStatic)
+	{
+		// Activating Shader Program
+		shaderPair.first->Use();
+
+		for (auto& materialPair : shaderPair.second)
+		{
+
+#if MATERIAL_INPUT_SINGLE_UBO
+			size_t size = 0;
+			//const auto& data = materialPair.first.GetMaterialParameters()->GetData();
+			const auto& materialParameters = materialPair.first.GetMaterialParameters();
+#if USE_NAMED_BUFFER_SUBDATA
+			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
+			//glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
+			glNamedBufferSubData(_materialInputUBO, size, materialParameters->GetSize(), materialParameters->GetData());
+#else
+			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
+			glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
+			//glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
+			glBufferSubData(GL_UNIFORM_BUFFER, size, materialParameters->GetSize(), materialParameters->GetData());
+#endif
+#elif MATERIAL_INPUT_MANY_INPUT
+			glBindBufferBase(GL_UNIFORM_BUFFER, BINDING_POINT_MATERIAL_INPUT, materialPair.first.GetMaterialParameters()->GetDataUBO());
+#endif
+
+			// ASSIGNING TEXTURES
+			int beginLocation = 0;
+			int textureBind = 0;
+			materialPair.first.GetMaterialParameters()->UploadTextures2D(shaderPair.first->GetProgramId(), beginLocation, textureBind);
+
+			unsigned int count = 0;
+
+			for (auto& meshPair : materialPair.second)
+			{
+				count = meshPair.second.renderedCount;
+
+				meshPair.second.renderedCount = 0u;
+				//std::vector<glm::mat4> transforms(count);
+				//std::vector<unsigned int> indexes(count);
+
+				glm::mat4 transforms[MAX_INSTANCE_NUMBER_PER_DRAW];
+				unsigned int indexes[MAX_INSTANCE_NUMBER_PER_DRAW];
+				for (size_t index = 0; index < MAX_INSTANCE_NUMBER_PER_DRAW; index++)
+				{
+					indexes[index] = 0;
+				}
+
+				//size_t index = 0;
+				//while (meshPair.second.size() > 0) {
+				//	auto& renderData = meshPair.second.front();
+				//
+				//	transforms[index] = renderData.transform;
+				//	indexes[index] = 0;
+				//
+				//	++index;
+				//
+				//	meshPair.second.pop();
+				//}
+
+				size_t instanceIndex = 0;
+				size_t remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
+				globalDrawCount += count;
+
+				RenderedSegment currentSegment{ .offset = 0u, .count = 0u };
+
+				while (count > MAX_INSTANCE_NUMBER_PER_DRAW)
+				{
+					instanceIndex = 0ull;
+					remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
+
+					if (currentSegment.count)
+					{
+						if (currentSegment.count > MAX_INSTANCE_NUMBER_PER_DRAW)
+						{
+							std::memcpy(transforms, meshPair.second.modelTransforms.data() + currentSegment.offset, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
+							currentSegment.offset += MAX_INSTANCE_NUMBER_PER_DRAW;
+							currentSegment.count -= MAX_INSTANCE_NUMBER_PER_DRAW;
+
+							instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
+							remaining -= MAX_INSTANCE_NUMBER_PER_DRAW;
+						}
+						else
+						{
+							std::memcpy(transforms, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+
+							instanceIndex += currentSegment.count;
+							remaining -= currentSegment.count;
+						}
+					}
+					while (remaining > 0)
+					{
+						currentSegment = meshPair.second.rendered.front();
+						meshPair.second.rendered.pop();
+
+						if (currentSegment.count > remaining)
+						{
+							std::memcpy(transforms + instanceIndex, meshPair.second.modelTransforms.data() + currentSegment.offset, remaining * sizeof(glm::mat4));
+							currentSegment.offset += remaining;
+							currentSegment.count -= remaining;
+
+							instanceIndex += remaining;
+							remaining = 0ull;
+						}
+						else
+						{
+							std::memcpy(transforms + instanceIndex, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+
+							instanceIndex += currentSegment.count;
+							remaining -= currentSegment.count;
+						}
+					}
+
+#if USE_NAMED_BUFFER_SUBDATA
+					//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+					glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, transforms);
+					//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
+					glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, indexes);
+#else
+					//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+					glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+					glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, transforms);
+
+					//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
+					glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
+					glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, indexes);
+#endif
+
+					meshPair.first->Draw(MAX_INSTANCE_NUMBER_PER_DRAW);
+
+					instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
+					count -= MAX_INSTANCE_NUMBER_PER_DRAW;
+				}
+
+
+				instanceIndex = 0ull;
+				remaining = count;
+
+				if (currentSegment.count)
+				{
+					std::memcpy(transforms, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+
+					instanceIndex += currentSegment.count;
+					remaining -= currentSegment.count;
+				}
+				while (remaining > 0)
+				{
+					currentSegment = meshPair.second.rendered.front();
+					meshPair.second.rendered.pop();
+
+					std::memcpy(transforms + instanceIndex, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+
+					instanceIndex += currentSegment.count;
+					remaining -= currentSegment.count;
+				}
+
+#if USE_NAMED_BUFFER_SUBDATA
+				//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+				glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * count, transforms);
+
+				//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
+				glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * count, indexes);
+#else
+				//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+				glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * count, transforms);
+
+				//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
+				glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * count, indexes);
+
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+#endif
+
+				meshPair.first->Draw(count);
+
+				GLenum error = glGetError();
+				if (error != GL_NO_ERROR) {
+					SPDLOG_ERROR("Error: {}", error);
+				}
+			}
+		}
+	}
+	//SPDLOG_WARN("Global static draw count: {}", globalDrawCount);
+}
 void MeshRenderingManager::Render()
 {
 	unsigned int globalDrawCount = 0;

@@ -179,7 +179,8 @@ void MeshRenderingManager::Render()
 				//glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
 				glBufferSubData(GL_UNIFORM_BUFFER, size, materialParameters->GetSize(), materialParameters->GetData());
 #endif
-				size += data.size();
+				//size += data.size();
+				size += materialParameters->GetData();
 
 				while (material.second.size() > 0) {
 					auto& renderData = material.second.front();
@@ -417,8 +418,8 @@ void MeshRenderingManager::Render()
 				//glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
 				glBufferSubData(GL_UNIFORM_BUFFER, size, materialParameters->GetSize(), materialParameters->GetData());
 #endif
-
-				size += data.size();
+				//size += data.size();
+				size += materialParameters->GetData();
 
 				while (material.second.size() > 0) {
 					auto& renderData = material.second.front();
@@ -541,7 +542,8 @@ void MeshRenderingManager::RenderDepthMap()
 				//glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
 				glBufferSubData(GL_UNIFORM_BUFFER, size, materialParameters->GetSize(), materialParameters->GetData());
 #endif
-				size += data.size();
+				//size += data.size();
+				size += materialParameters->GetData();
 
 				while (material.second.size() > 0) {
 					auto& renderData = material.second.front();
@@ -774,8 +776,8 @@ void MeshRenderingManager::RenderDepthMap()
 				//glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
 				glBufferSubData(GL_UNIFORM_BUFFER, size, materialParameters->GetSize(), materialParameters->GetData());
 #endif
-
-				size += data.size();
+				//size += data.size();
+				size += materialParameters->GetData();
 
 				while (material.second.size() > 0) {
 					auto& renderData = material.second.front();

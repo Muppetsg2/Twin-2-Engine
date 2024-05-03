@@ -44,7 +44,9 @@ void MeshRenderer::Render()
 		}
 	}
 
-	MeshRenderingManager::Render(data);
+	if (data.meshes.size() > 0) {
+		MeshRenderingManager::Render(data);
+	}
 }
 
 YAML::Node MeshRenderer::Serialize() const

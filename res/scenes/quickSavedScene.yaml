@@ -76,14 +76,11 @@ Materials:
   - CityMaterial
   - BlueHexTile
   - wallMat
-  - roofMat
-  - Default
   - MountainsUnlit
   - FakeBRDF
   - RedHexTile
   - roofMat
 Models:
-  - "{Sphere}"
   - res/models/AK47.obj
   - res/models/mountain.obj
   - res/models/radioStation.obj
@@ -92,6 +89,7 @@ Models:
   - "{Cube}"
   - "{Plane}"
   - res/models/city.obj
+  - "{Sphere}"
 Prefabs:
   - res/prefabs/tilemap/mapElements/city.prefab
   - res/prefabs/testPrefab.yaml
@@ -419,7 +417,7 @@ GameObjects:
       rotation:
         x: 90
         y: 0
-        z: 45
+        z: 0
     components:
       - id: 19
         enabled: true
@@ -571,7 +569,7 @@ GameObjects:
         isTransparent: false
         model: 3
         materials:
-          - 3
+          - 5
     children:
       []
   - id: 13
@@ -600,7 +598,7 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        model: 0
+        model: 8
         materials:
           - 12
     children:

@@ -568,14 +568,12 @@ int main(int, char**)
 #pragma endregion
 
     // ADDING SCENES
-    //SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
     SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
-    //SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
 
-    CollisionSystem::CollisionManager::Instance()->PerformCollisions();/**/
+    CollisionSystem::CollisionManager::Instance()->PerformCollisions();
     
     SceneManager::LoadScene("testScene");
-    //SceneManager::SaveScene("res/scenes/savedScene.yaml");
 
 #pragma region SETTING_UP_GENERATION
 

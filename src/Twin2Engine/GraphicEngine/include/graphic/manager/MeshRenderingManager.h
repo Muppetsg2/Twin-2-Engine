@@ -91,6 +91,9 @@ namespace Twin2Engine
 			static GLuint _materialIndexSSBO;
 			static GLuint _materialInputUBO;
 
+			static glm::mat4* _modelTransforms;
+			static unsigned int* _materialsIndexes;
+
 			static void UpdateQueues();
 			static void RenderStatic();
 

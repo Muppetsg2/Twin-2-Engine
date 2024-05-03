@@ -396,7 +396,7 @@ GameObjects:
         model: 4
         materials:
           - 10
-          - 14
+          - 13
     children:
       []
   - id: 9

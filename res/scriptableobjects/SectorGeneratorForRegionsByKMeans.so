@@ -1,0 +1,8 @@
+scriptable_object:
+  __SO_RegisteredName__: SectorGeneratorForRegionsByKMeans
+  sectorPrefab: res/prefabs/tilemap/mapSector.prefab
+  sectorsCount: 3
+  isDiscritizedHeight: true
+  lowerHeightRange: 0
+  upperHeightRange: 2
+  heightRangeFacor: 0.125

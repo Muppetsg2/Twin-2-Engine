@@ -10,12 +10,12 @@ namespace Twin2Engine {
 
 			private:
 				bool dirtyFlag = false;
-				LightingSystem::PointLight* light = nullptr;
-				Tools::Action<Transform*> OnChangePosition;
+				LightingSystem::PointLight* light = new LightingSystem::PointLight;
+				Twin2Engine::Core::Action<Transform*> OnChangePosition;
 				size_t OnChangePositionId;
-			protected:
-				PointLightComponent() : LightComponent() {};
+			//protected:
 			public:
+				PointLightComponent() : LightComponent() {};
 
 				virtual void Initialize() override;
 				virtual void Update() override;
@@ -23,9 +23,11 @@ namespace Twin2Engine {
 				virtual void OnDisable() override;
 				virtual void OnDestroy() override;
 
-				void SetColor(glm::vec3& color);
-				void SetPower(float& power);
+				void SetColor(glm::vec3 color);
+				void SetPower(float power);
 				void SetAtenuation(float constant, float linear, float quadratic);
+
+				virtual YAML::Node Serialize() const override;
 		};
 	}
 }

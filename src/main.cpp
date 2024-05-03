@@ -62,11 +62,34 @@
 #include <Tilemap/HexagonalTilemap.h>
 #include <Tilemap/HexagonalTile.h>
 
+// GENERATION
+#include <Generation/MapGenerator.h>
+#include <Generation/ContentGenerator.h>
+#include <Generation/MapRegion.h>
+#include <Generation/MapSector.h>
+#include <Generation/MapHexTile.h>
+#include <Generation/Generators/CitiesGenerator.h>
+#include <Generation/Generators/LakeGenerator.h>
+#include <Generation/Generators/MountainsGenerator.h>
+#include <Generation/Generators/RadioStationGeneratorRegionBased.h>
+#include <Generation/Generators/RadioStationGeneratorSectorBased.h>
+#include <Generation/Generators/RegionsBySectorsGenerator.h>
+#include <Generation/Generators/SectorsGenerator.h>
+#include <Generation/Generators/RegionsGeneratorByKMeans.h>
+#include <Generation/Generators/SectorGeneratorForRegionsByKMeans.h>
+
 // LIGHTING
 #include <LightingController.h>
 #include <core/PointLightComponent.h>
 #include <core/SpotLightComponent.h>
 #include <core/DirectionalLightComponent.h>
+
+// YAML CONVERTERS
+#include <core/YamlConverters.h>
+#include <Generation/YamlConverters.h>
+
+// EDITOR
+#include <Editor/Common/ProcessingMtlFiles.h>
 
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
@@ -83,6 +106,8 @@ using Twin2Engine::Core::Time;
 
 using Tilemap::HexagonalTile;
 using Tilemap::HexagonalTilemap;
+using namespace Generation;
+using namespace Generation::Generators;
 
 #pragma region CAMERA_CONTROLLING
 
@@ -172,8 +197,19 @@ const     char*   glsl_version     = "#version 450";
 constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 5;
 
-//HexagonalTilemap hexagonalTilemap(glm::ivec2(-5, -5), glm::ivec2(5, 5), 1.f, true);
+Material material;
+Material material2;
+Material wallMat;
+Material roofMat;
+InstatiatingModel modelMesh;
+GameObject* gameObject;
+GameObject* gameObject2;
+GameObject* gameObject3;
+GameObject* gameObject4;
 
+GameObject* imageObj;
+GameObject* imageObj2;
+GameObject* imageObj3;
 Image* image;
 float colorSpan = 1.f;
 Text* text;
@@ -234,7 +270,6 @@ int main(int, char**)
             cam->SetSamples(node["samples"].as<size_t>());
             cam->SetRenderResolution(node["renderRes"].as<RenderResolution>());
             cam->SetGamma(node["gamma"].as<float>());
-            cam->SetFrontDir(node["frontDir"].as<vec3>());
             cam->SetWorldUp(node["worldUp"].as<vec3>());
             cam->SetIsMain(node["isMain"].as<bool>());
         }
@@ -370,50 +405,206 @@ int main(int, char**)
             capsuleCollider->SetRadius(node["radius"].as<float>());
         }
     );
+
+    ComponentDeserializer::AddDeserializer("LightComponent",
+        []() -> Component* {
+            return nullptr;
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            //LightingSystem::LightComponent* lightComponent = static_cast<LightingSystem::LightComponent*>(comp);
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("DirectionalLightComponent",
+        []() -> Component* {
+            return new DirectionalLightComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            DirectionalLightComponent* light = static_cast<DirectionalLightComponent*>(comp);
+            light->SetDirection(node["direction"].as<vec3>());
+            light->SetColor(node["color"].as<vec3>());
+            light->SetPower(node["power"].as<float>());
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("PointLightComponent",
+        []() -> Component* {
+            return new PointLightComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            PointLightComponent* light = static_cast<PointLightComponent*>(comp);
+            light->SetColor(node["color"].as<vec3>());
+            light->SetPower(node["power"].as<float>());
+            light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("SpotLightComponent",
+        []() -> Component* {
+            return new SpotLightComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            SpotLightComponent* light = static_cast<SpotLightComponent*>(comp);
+            light->SetDirection(node["direction"].as<vec3>());
+            light->SetColor(node["color"].as<vec3>());
+            light->SetPower(node["power"].as<float>());
+            light->SetOuterCutOff(node["outerCutOff"].as<float>());
+            light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
+        }
+    );
+
+#pragma endregion
+
+#pragma region TILEMAP_DESERIALIZER
+
+
+    ComponentDeserializer::AddDeserializer("HexagonalTilemap",
+        []() -> Component* {
+            return new HexagonalTilemap();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            HexagonalTilemap* hexagonalTilemap = static_cast<HexagonalTilemap*>(comp);
+            hexagonalTilemap->Resize(node["leftBottomPosition"].as<ivec2>(), node["rightTopPosition"].as<ivec2>());
+            // tilemap
+        }
+    );
+
+
+#pragma endregion
+
+#pragma region GENERATION_DESERIALIZER
+
+
+    ComponentDeserializer::AddDeserializer("MapGenerator",
+        []() -> Component* {
+            return new MapGenerator();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            MapGenerator* mapGenerator = static_cast<MapGenerator*>(comp);
+
+            //Tilemap::HexagonalTilemap* tilemap;
+            ////Tilemap::HexagonalTile* tile;
+            //Twin2Engine::Core::GameObject* preafabHexagonalTile;
+            //Twin2Engine::Core::GameObject* additionalTile;
+            //Twin2Engine::Core::GameObject* filledTile;
+            //Twin2Engine::Core::GameObject* pointTile;
+
+            mapGenerator->preafabHexagonalTile = PrefabManager::LoadPrefab(node["preafabHexagonalTile"].as<string>());
+            mapGenerator->additionalTile = PrefabManager::LoadPrefab(node["additionalTile"].as<string>());
+            mapGenerator->filledTile = PrefabManager::LoadPrefab(node["filledTile"].as<string>());
+            mapGenerator->pointTile = PrefabManager::LoadPrefab(node["pointTile"].as<string>());
+
+            mapGenerator->generationRadiusMin = node["generationRadiusMin"].as<float>();
+            mapGenerator->generationRadiusMax = node["generationRadiusMax"].as<float>();
+            mapGenerator->minPointsNumber = node["minPointsNumber"].as<int>();
+            mapGenerator->maxPointsNumber = node["maxPointsNumber"].as<int>();
+            mapGenerator->angleDeltaRange = node["angleDeltaRange"].as<float>();
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("ContentGenerator",
+        []() -> Component* {
+            return new ContentGenerator();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            ContentGenerator* contentGenerator = static_cast<ContentGenerator*>(comp);
+
+            for (YAML::Node soSceneId : node["mapElementGenerators"])
+            {
+                //AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(ScriptableObjectManager::Deserialize(soSceneId.as<unsigned int>()));
+                AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(ScriptableObjectManager::Load(soSceneId.as<string>()));
+                SPDLOG_INFO("Adding generator {0}, {1}", soSceneId.as<string>(), (unsigned int) generator);
+                if (generator != nullptr)
+                {
+                    contentGenerator->mapElementGenerators.push_back(generator);
+                }
+            }
+            //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("MapHexTile",
+        []() -> Component* {
+            return new MapHexTile();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            MapHexTile* mapHexTile = static_cast<MapHexTile*>(comp);
+
+            mapHexTile->tilemap = nullptr;
+            mapHexTile->region = nullptr;
+            mapHexTile->sector = nullptr;
+            mapHexTile->tile = nullptr;
+            mapHexTile->type = node["hexTileType"].as<MapHexTile::HexTileType>();
+            //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("MapRegion",
+        []() -> Component* {
+            return new MapRegion();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            MapRegion* mapRegion = static_cast<MapRegion*>(comp);
+
+            mapRegion->tilemap = nullptr;
+            mapRegion->type = node["regionType"].as<MapRegion::RegionType>();
+        }
+    );
+
+    ComponentDeserializer::AddDeserializer("MapSector",
+        []() -> Component* {
+            return new MapSector();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            MapSector* mapSector = static_cast<MapSector*>(comp);
+
+
+            mapSector->tilemap = nullptr;
+            mapSector->region = nullptr;
+            mapSector->type = node["sectorType"].as<MapSector::SectorType>();
+        }
+    );
+
 #pragma endregion
 
     // ADDING SCENES
-    //SceneManager::AddScene("testScene", "res/scenes/savedScene.yaml");
     SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
-    //SceneManager::AddScene("testScene", "res/scenes/testScene.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
 
-    /*
-    GameObject* hexagonPrefab = new GameObject();
-    hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 4, 0));
-    hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
-
-    //spdlog::info("hexagon rotation: [{}, {}, {}]", hexagonPrefab->GetTransform()->GetLocalRotation().x, hexagonPrefab->GetTransform()->GetLocalRotation().y, hexagonPrefab->GetTransform()->GetLocalRotation().z);
-
-    comp = hexagonPrefab->AddComponent<MeshRenderer>();
-    comp->AddMaterial(MaterialsManager::GetMaterial("hexagonMat"));
-    comp->SetModel(modelHexagon);
-
-    float tilemapFillingBeginTime = glfwGetTime();
-    hexagonalTilemap.Fill(glm::ivec2(0, 0), hexagonPrefab);
-    spdlog::info("Tilemap filling time: {}", glfwGetTime() - tilemapFillingBeginTime);
-    hexagonalTilemap.GetTile(glm::ivec2(-5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    hexagonalTilemap.GetTile(glm::ivec2(5, -5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    hexagonalTilemap.GetTile(glm::ivec2(-5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-    hexagonalTilemap.GetTile(glm::ivec2(5, 5))->GetGameObject()->GetTransform()->Translate(glm::vec3(0.0f, 1.0f, 0.0f));
-
-    GameObject go1;
-    GameObject go2;
-    go1.GetTransform()->SetLocalPosition(glm::vec3(1.0f, 0.0f, 0.0f));
-    go2.GetTransform()->SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
-    Twin2Engine::Core::BoxColliderComponent* bc1 = go1.AddComponent<Twin2Engine::Core::BoxColliderComponent>();
-    Twin2Engine::Core::BoxColliderComponent* bc2 = go2.AddComponent<Twin2Engine::Core::BoxColliderComponent>();
-    bc1->colliderId = 1;
-    bc2->colliderId = 2;
-    bc1->Invoke();
-    bc2->Invoke();
-    bc1->Update();
-    bc2->Update();
-
-    CollisionSystem::CollisionManager::Instance()->PerformCollisions();*/
+    CollisionSystem::CollisionManager::Instance()->PerformCollisions();
     
     SceneManager::LoadScene("testScene");
-    //SceneManager::SaveScene("res/scenes/savedScene.yaml");
 
+#pragma region SETTING_UP_GENERATION
+
+    //*
+    GameObject* tilemapGO = SceneManager::GetGameObjectWithId(14);
+    HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
+    MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
+    mapGenerator->tilemap = hexagonalTilemap;
+    float tilemapGenerating = glfwGetTime();
+    //mapGenerator->Generate();
+    spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
+
+    ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
+
+    tilemapGenerating = glfwGetTime();
+    //contentGenerator->GenerateContent(hexagonalTilemap);
+    spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
+    /**/
+
+
+#pragma endregion
+
+    //InstatiatingModel modelHexagon = ModelsManager::LoadModel("res/models/hexagon.obj");
+    //GameObject* hexagonPrefab = new GameObject();
+    //hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
+    //hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
+    //auto comp = hexagonPrefab->AddComponent<MeshRenderer>();
+    //comp->AddMaterial(MaterialsManager::GetMaterial("multiTexture"));
+    ////comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
+    //comp->SetModel(modelHexagon);
+    
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
@@ -424,8 +615,7 @@ int main(int, char**)
     DirectionalLightComponent* dl = dl_go->AddComponent<DirectionalLightComponent>();
     dl->SetColor(glm::vec3(1.0f));
     LightingController::Instance()->SetViewerPosition(cameraPos);
-    LightingController::Instance()->SetAmbientLight(glm::vec3(0.02f, 0.02f, 0.02f));
-    LightingController::Instance()->SetHighlightParam(2.0f);
+    LightingController::Instance()->SetAmbientLight(glm::vec3(0.1f));
 #pragma endregion
 
     // Main loop
@@ -433,8 +623,6 @@ int main(int, char**)
     {
         // Process I/O operations here
         input();
-
-        if (window->IsClosed()) break;
 
         // Update game objects' state here
         update();
@@ -529,6 +717,8 @@ bool init()
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
+
+    ScriptableObject::Init();
 
     return true;
 }
@@ -714,6 +904,19 @@ void imgui_begin()
     ImGui::NewFrame();
 }
 
+struct HierarchicalItem {
+    std::string label;
+    std::vector<HierarchicalItem> children;
+};
+// Recursive function to render the hierarchical list
+void renderHierarchicalList(const HierarchicalItem& item) {
+    if (ImGui::TreeNode(item.label.c_str())) {
+        for (const auto& child : item.children) {
+            renderHierarchicalList(child);
+        }
+        ImGui::TreePop();
+    }
+}
 void imgui_render()
 {
     if (Input::GetCursorState() == NORMAL)
@@ -838,6 +1041,13 @@ void imgui_render()
             ImGui::Checkbox("Depth", &g);
             if (g) {
                 acFil |= RenderFilter::DEPTH;
+            }
+
+            g = (fil & RenderFilter::OUTLINE) != 0;
+
+            ImGui::Checkbox("Outline", &g);
+            if (g) {
+                acFil |= RenderFilter::OUTLINE;
             }
 
             c->SetCameraFilter(acFil);
@@ -990,9 +1200,172 @@ void imgui_render()
         }
 #pragma endregion
 
+#pragma region IMGUI_LIGHTING_SETUP
+        if (ImGui::CollapsingHeader("Lighting Setup")) {
+            static uint32_t shadingType = 0;
+            if (ImGui::BeginCombo("Shading Type", "Lambert + Blinn-Phong Shading")) {
+                if (ImGui::Selectable("Lambert + Blinn-Phong Shading", shadingType == 0)) {
+                    shadingType = 0;
+                    LightingSystem::LightingController::Instance()->SetShadingType(0);
+                }
+                if (ImGui::Selectable("Toon/Cel Shading", shadingType == 1)) {
+                    shadingType = 1;
+                    LightingSystem::LightingController::Instance()->SetShadingType(1);
+                }
+                if (ImGui::Selectable("Gooch Shading", shadingType == 2)) {
+                    shadingType = 2;
+                    LightingSystem::LightingController::Instance()->SetShadingType(2);
+                }
+                ImGui::EndCombo();
+            }
+            // DEFAULT MATERIAL SETTINGS
+            Material defaultMat = MaterialsManager::GetMaterial("Default");
+
+            static bool hasDiffuseTexture = defaultMat.GetMaterialParameters()->Get<bool>("has_diffuse_texture");
+            if (ImGui::Checkbox("Has Diffuse Texture", &hasDiffuseTexture)) {
+                if (hasDiffuseTexture != defaultMat.GetMaterialParameters()->Get<bool>("has_diffuse_texture")) {
+                    defaultMat.GetMaterialParameters()->Set("has_diffuse_texture", hasDiffuseTexture);
+                }
+            }
+
+            static bool hasSpecularTexture = defaultMat.GetMaterialParameters()->Get<bool>("has_specular_texture");
+            if (ImGui::Checkbox("Has Specular Texture", &hasSpecularTexture)) {
+                if (hasSpecularTexture != defaultMat.GetMaterialParameters()->Get<bool>("has_specular_texture")) {
+                    defaultMat.GetMaterialParameters()->Set("has_specular_texture", hasSpecularTexture);
+                }
+            }
+
+            static vec3 color = defaultMat.GetMaterialParameters()->Get<vec3>("color");
+            if (ImGui::ColorEdit3("Color", (float*)&color)) {
+                if (color != defaultMat.GetMaterialParameters()->Get<vec3>("color")) {
+                    defaultMat.GetMaterialParameters()->Set("color", color);
+                }
+            }
+
+            static float shininess = defaultMat.GetMaterialParameters()->Get<float>("shininess");
+            if (ImGui::InputFloat("Shininess", &shininess)) {
+                if (shininess != defaultMat.GetMaterialParameters()->Get<float>("shininess")) {
+                    defaultMat.GetMaterialParameters()->Set("shininess", shininess);
+                }
+            }
+
+            // TOON SHADING VARIABLES
+            if (shadingType == 1) {
+                static uint32_t diffuseToonBorders = defaultMat.GetMaterialParameters()->Get<uint32_t>("diffuse_toon_borders");
+                if (ImGui::InputInt("Diffuse Borders", (int*)&diffuseToonBorders)) {
+                    if (diffuseToonBorders != defaultMat.GetMaterialParameters()->Get<uint32_t>("diffuse_toon_borders")) {
+                        defaultMat.GetMaterialParameters()->Set("diffuse_toon_borders", diffuseToonBorders);
+                    }
+                }
+
+                static uint32_t specularToonBorders = defaultMat.GetMaterialParameters()->Get<uint32_t>("specular_toon_borders");
+                if (ImGui::InputInt("Specular Borders", (int*)&specularToonBorders)) {
+                    if (specularToonBorders != defaultMat.GetMaterialParameters()->Get<uint32_t>("specular_toon_borders")) {
+                        defaultMat.GetMaterialParameters()->Set("specular_toon_borders", specularToonBorders);
+                    }
+                }
+
+                static vec2 highlightTranslate = defaultMat.GetMaterialParameters()->Get<vec2>("highlight_translate");
+                if (ImGui::InputFloat2("Highlight Translate", (float*)&highlightTranslate)) {
+                    if (highlightTranslate != defaultMat.GetMaterialParameters()->Get<vec2>("highlight_translate")) {
+                        defaultMat.GetMaterialParameters()->Set("highlight_translate", highlightTranslate);
+                    }
+                }
+
+                static vec2 highlightRotation = defaultMat.GetMaterialParameters()->Get<vec2>("highlight_rotation");
+                if (ImGui::InputFloat2("Highlight Rotation", (float*)&highlightRotation)) {
+                    if (highlightRotation != defaultMat.GetMaterialParameters()->Get<vec2>("highlight_rotation")) {
+                        defaultMat.GetMaterialParameters()->Set("highlight_rotation", highlightRotation);
+                    }
+                }
+
+                static vec2 highlightScale = defaultMat.GetMaterialParameters()->Get<vec2>("highlight_scale");
+                if (ImGui::InputFloat2("Highlight Scale", (float*)&highlightScale)) {
+                    if (highlightScale != defaultMat.GetMaterialParameters()->Get<vec2>("highlight_scale")) {
+                        defaultMat.GetMaterialParameters()->Set("highlight_scale", highlightScale);
+                    }
+                }
+
+                static vec2 highlightSplit = defaultMat.GetMaterialParameters()->Get<vec2>("highlight_split");
+                if (ImGui::InputFloat2("Highlight Split", (float*)&highlightSplit)) {
+                    if (highlightSplit != defaultMat.GetMaterialParameters()->Get<vec2>("highlight_split")) {
+                        defaultMat.GetMaterialParameters()->Set("highlight_split", highlightSplit);
+                    }
+                }
+
+                static int highlightSquareN = defaultMat.GetMaterialParameters()->Get<int>("highlight_square_n");
+                if (ImGui::InputInt("Highlight Square N", &highlightSquareN)) {
+                    if (highlightSquareN != defaultMat.GetMaterialParameters()->Get<int>("highlight_square_n")) {
+                        defaultMat.GetMaterialParameters()->Set("highlight_square_n", highlightSquareN);
+                    }
+                }
+
+                static float highlightSquareX = defaultMat.GetMaterialParameters()->Get<float>("highlight_square_x");
+                if (ImGui::InputFloat("Highlight Square X", &highlightSquareX)) {
+                    if (highlightSquareX != defaultMat.GetMaterialParameters()->Get<float>("highlight_square_x")) {
+                        defaultMat.GetMaterialParameters()->Set("highlight_square_x", highlightSquareX);
+                    }
+                }
+            }
+        }
+#pragma endregion
+
+        ImGui::Separator();
+
+        ImGui::Checkbox("IsFrustumCullingOn", &(CameraComponent::GetMainCamera()->IsFrustumCullingOn));
+
         ImGui::Separator();
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+#pragma region ScriptableObjects
+
+        static string selectedSO = "";
+        static vector<string> scriptableObjectsNames = ScriptableObjectManager::GetScriptableObjectsNames();
+        if (ImGui::TreeNode("ScriptableObjects")) {
+            for (size_t i = 0; i < scriptableObjectsNames.size(); i++)
+            {
+                if (ImGui::Selectable(scriptableObjectsNames[i].c_str())) {
+                    selectedSO = scriptableObjectsNames[i];
+                }
+            }
+            ImGui::TreePop();
+        }
+        ImGui::Text("Selected Scriptable Object to create:");
+        ImGui::SameLine();
+        ImGui::InputText("##selectedItem", &selectedSO[0], selectedSO.size(), ImGuiInputTextFlags_ReadOnly);
+        static char dstPath[255] = { '\0' };
+        ImGui::InputText("##dstPath", dstPath, 254);
+
+        if (ImGui::Button("Create ScriptableObject"))
+        {
+            SPDLOG_WARN("Button pressed");
+            if (selectedSO.size() > 0)
+            {
+                SPDLOG_WARN("Selected size");
+                string strDstPath(dstPath);
+                if (strDstPath.size() > 0)
+                {
+                    SPDLOG_WARN("DstPath size");
+                    ScriptableObjectManager::CreateScriptableObject(strDstPath, selectedSO);
+                }
+            }
+        }
+#pragma endregion
+
+
+#pragma region EDITOR_MATERIAL_SCANNING
+
+        if (ImGui::Button("Scan for new materials"))
+        {
+            filesystem::path src = "res/models";
+            filesystem::path dst = "res/materials/processed";
+            Editor::Common::processMTLFiles(src, dst);
+        }
+
+
+#pragma endregion
+
 
         ImGui::End();
     }

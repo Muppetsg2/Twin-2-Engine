@@ -5,6 +5,7 @@ using namespace Twin2Engine::Core;
 
 size_t Twin2Engine::Core::GameObject::_currentFreeId = 1;
 list<size_t> Twin2Engine::Core::GameObject::_freedIds;
+std::unordered_set<std::string_view> Twin2Engine::Core::GameObject::AllTags;
 
 GameObject::GameObject(size_t id) {
 	
@@ -14,6 +15,9 @@ GameObject::GameObject(size_t id) {
 		auto found = find_if(_freedIds.begin(), _freedIds.end(), [&](size_t fId) -> bool { return fId == _id; });
 		if (found != _freedIds.end()) {
 			_freedIds.erase(found);
+
+
+
 		}
 	}
 	if (_currentFreeId <= id) {
@@ -79,12 +83,12 @@ GameObject::~GameObject()
 	_freedIds.push_back(_id);
 }
 
-GameObject* GameObject::Instatiate(GameObject* gameObject)
+GameObject* GameObject::Instantiate(GameObject* gameObject)
 {
 	return gameObject->Clone();
 }
 
-GameObject* GameObject::Instatiate(GameObject* gameObject, Transform* parent)
+GameObject* GameObject::Instantiate(GameObject* gameObject, Transform* parent)
 {
 	GameObject* cloned = gameObject->Clone();
 
@@ -124,7 +128,8 @@ void GameObject::CloneTo(GameObject* cloned) const
 
 	for (int index = 0; index < _transform->GetChildCount(); index++)
 	{
-		cloned->_transform->AddChild(Instatiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform)->GetTransform());
+		//cloned->_transform->AddChild(Instantiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform)->GetTransform());
+		Instantiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform);
 	}
 }
 
@@ -164,9 +169,14 @@ bool GameObject::GetActive() const
 
 void GameObject::SetActive(bool active)
 {
-	_activeSelf = active;
+	if (_activeSelf != active)
+	{
+		_activeSelf = active;
 
-	SetActiveInHierarchy(active);
+		SetActiveInHierarchy(active);
+
+		OnActiveChanged.Invoke(this); // Wywo³ywanie eventu
+	}
 }
 
 void GameObject::SetActiveInHierarchy(bool activeInHierarchy)
@@ -181,6 +191,7 @@ void GameObject::SetActiveInHierarchy(bool activeInHierarchy)
 				_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(activeInHierarchy);
 			}
 		}
+		OnActiveChanged.Invoke(this); // Wywo³ywanie eventu
 	}
 }
 
@@ -191,7 +202,11 @@ bool GameObject::GetIsStatic() const
 
 void GameObject::SetIsStatic(bool isStatic)
 {
-	_isStatic = isStatic;
+	if (_isStatic != isStatic)
+	{
+		_isStatic = isStatic;
+		OnStaticChanged.Invoke(this);
+	}
 }
 
 Transform* GameObject::GetTransform() const
@@ -227,6 +242,35 @@ void GameObject::UpdateComponents()
 		if (component->IsEnable()) component->Update();
 	}
 }
+
+
+void GameObject::AddTag(std::string_view tagName) {
+	auto tagItr = AllTags.find(tagName);
+	if (tagItr == AllTags.end()) {
+		AllTags.insert(tagName);
+		tagItr = AllTags.find(tagName);
+	}
+
+	tagsIndexes.insert(std::distance(AllTags.begin(), tagItr));
+}
+
+void GameObject::RemoveTag(std::string_view tagName) {
+	auto tagItr = AllTags.find(tagName);
+	if (tagItr != AllTags.end()) {
+		tagsIndexes.erase(std::distance(AllTags.begin(), tagItr));
+	}
+}
+
+bool GameObject::HasTag(std::string_view tagName) {
+	auto tagItr = AllTags.find(tagName);
+	if (tagItr != AllTags.end()) {
+		return tagsIndexes.contains((char)std::distance(AllTags.begin(), tagItr));
+	}
+	else {
+		return false;
+	}
+}
+
 
 YAML::Node GameObject::Serialize() const
 {

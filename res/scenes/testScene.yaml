@@ -55,7 +55,7 @@ GameObjects:
             enabled: true
             position:
                 x: 0.0
-                y: 2.0
+                y: 22.0
                 z: 5.0
             scale:
                 x: 0.0
@@ -63,7 +63,7 @@ GameObjects:
                 z: 0.0
             rotation:
                 x: 0.0
-                y: -90.0
+                y: 90.0
                 z: 0.0
         components:
             -   id: 1
@@ -256,7 +256,7 @@ GameObjects:
             enabled: true
             position:
                 x: 2.0
-                y: 5.0
+                y: 27.0
                 z: 0.0
             scale:
                 x: 1.0
@@ -286,7 +286,7 @@ GameObjects:
             enabled: true
             position:
                 x: 2.0
-                y: 3.0
+                y: 26.0
                 z: 0.0
             scale:
                 x: 1.0
@@ -316,7 +316,7 @@ GameObjects:
             enabled: true
             position:
                 x: 0.0
-                y: 3.0
+                y: 28.0
                 z: 0.0
             scale:
                 x: 1.0
@@ -324,7 +324,7 @@ GameObjects:
                 z: 1.0
             rotation:
                 x: 0.0
-                y: 0.0
+                y: 45.0
                 z: 0.0
         components:
             -   id: 17
@@ -347,7 +347,7 @@ GameObjects:
             enabled: true
             position:
                 x: 0.0
-                y: 0.0
+                y: 25.0
                 z: 10.0
             scale:
                 x: 1.0
@@ -378,7 +378,7 @@ GameObjects:
             enabled: true
             position:
                 x: 0.0
-                y: 0.0
+                y: 25.0
                 z: 0.0
             scale:
                 x: 1.0

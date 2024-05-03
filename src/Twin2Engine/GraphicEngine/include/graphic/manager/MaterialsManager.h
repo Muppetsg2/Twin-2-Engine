@@ -4,6 +4,7 @@
 #include <graphic/Material.h>
 #include <graphic/manager/ShaderManager.h>
 #include <graphic/manager/TextureManager.h>
+#include <graphic/MaterialParametersBuilder.h>
 
 namespace Twin2Engine::Manager
 {
@@ -30,7 +31,7 @@ namespace Twin2Engine::Manager
 
 		static GraphicEngine::Material GetMaterial(size_t managerId);
 		static GraphicEngine::Material GetMaterial(const std::string& name);
-		static GraphicEngine::Material CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, const std::vector<std::string>& materialParametersNames, const std::vector<std::string>& textureParametersNames);
+		//static GraphicEngine::Material CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, const std::vector<std::string>& materialParametersNames, const std::vector<unsigned int>& materialParametersSizes, const std::vector<std::string>& textureParametersNames);
 
 		static YAML::Node Serialize();
 	};

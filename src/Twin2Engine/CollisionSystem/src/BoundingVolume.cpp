@@ -32,10 +32,11 @@ bool isOverPlane(FrustumPlane& plane, BoxColliderData* colliderData) {
 }
 
 bool isOverPlane(FrustumPlane& plane, SphereColliderData* colliderData) {
-	glm::vec3 relPos = plane.point - colliderData->Position;
+	glm::vec3 relPos = colliderData->Position - plane.point;
 	float distance = glm::dot(relPos, plane.normal);
 
-	return (glm::abs(distance) < colliderData->Radius) || ((distance) < 0);
+	return distance > -colliderData->Radius;
+	//return (glm::abs(distance) < colliderData->Radius) || ((distance) < 0);
 }
 
 bool isOverPlane(FrustumPlane& plane, CapsuleColliderData* colliderData) {
@@ -46,23 +47,23 @@ bool isOverPlane(FrustumPlane& plane, CapsuleColliderData* colliderData) {
 	return minDist <= colliderData->Radius && maxDist >= (-colliderData->Radius);
 }
 
-bool CollisionSystem::BoundingVolume::isOnFrustum(Frustum* frustum)
+bool CollisionSystem::BoundingVolume::isOnFrustum(Frustum& frustum)
 {
 	switch (colliderShape) {
-	case (ColliderShape::BOX):
-		return isOverPlane(frustum->bottomFace, (BoxColliderData*)colliderShape) && isOverPlane(frustum->topFace, (BoxColliderData*)colliderShape)
-			&& isOverPlane(frustum->leftFace, (BoxColliderData*)colliderShape) && isOverPlane(frustum->rightFace, (BoxColliderData*)colliderShape)
-			&& isOverPlane(frustum->farFace, (BoxColliderData*)colliderShape) && isOverPlane(frustum->nearFace, (BoxColliderData*)colliderShape);
+		case (ColliderShape::BOX):
+			return isOverPlane(frustum.bottomFace, (BoxColliderData*)shapeColliderData) && isOverPlane(frustum.topFace, (BoxColliderData*)shapeColliderData)
+				&& isOverPlane(frustum.leftFace, (BoxColliderData*)shapeColliderData) && isOverPlane(frustum.rightFace, (BoxColliderData*)shapeColliderData)
+				&& isOverPlane(frustum.farFace, (BoxColliderData*)shapeColliderData) && isOverPlane(frustum.nearFace, (BoxColliderData*)shapeColliderData);
 
-	case (ColliderShape::SPHERE):
-		return isOverPlane(frustum->bottomFace, (SphereColliderData*)colliderShape) && isOverPlane(frustum->topFace, (SphereColliderData*)colliderShape)
-			&& isOverPlane(frustum->leftFace, (SphereColliderData*)colliderShape) && isOverPlane(frustum->rightFace, (SphereColliderData*)colliderShape)
-			&& isOverPlane(frustum->farFace, (SphereColliderData*)colliderShape) && isOverPlane(frustum->nearFace, (SphereColliderData*)colliderShape);
+		case (ColliderShape::SPHERE):
+			return isOverPlane(frustum.bottomFace, (SphereColliderData*)shapeColliderData) && isOverPlane(frustum.topFace, (SphereColliderData*)shapeColliderData)
+				&& isOverPlane(frustum.leftFace, (SphereColliderData*)shapeColliderData) && isOverPlane(frustum.rightFace, (SphereColliderData*)shapeColliderData)
+				&& isOverPlane(frustum.farFace, (SphereColliderData*)shapeColliderData) && isOverPlane(frustum.nearFace, (SphereColliderData*)shapeColliderData);
 
-	case (ColliderShape::CAPSULE):
-		return isOverPlane(frustum->bottomFace, (CapsuleColliderData*)colliderShape) && isOverPlane(frustum->topFace, (CapsuleColliderData*)colliderShape)
-			&& isOverPlane(frustum->leftFace, (CapsuleColliderData*)colliderShape) && isOverPlane(frustum->rightFace, (CapsuleColliderData*)colliderShape)
-			&& isOverPlane(frustum->farFace, (CapsuleColliderData*)colliderShape) && isOverPlane(frustum->nearFace, (CapsuleColliderData*)colliderShape);
+		case (ColliderShape::CAPSULE):
+			return isOverPlane(frustum.bottomFace, (CapsuleColliderData*)shapeColliderData) && isOverPlane(frustum.topFace, (CapsuleColliderData*)shapeColliderData)
+				&& isOverPlane(frustum.leftFace, (CapsuleColliderData*)shapeColliderData) && isOverPlane(frustum.rightFace, (CapsuleColliderData*)shapeColliderData)
+				&& isOverPlane(frustum.farFace, (CapsuleColliderData*)shapeColliderData) && isOverPlane(frustum.nearFace, (CapsuleColliderData*)shapeColliderData);
 
 	}
 	return false;

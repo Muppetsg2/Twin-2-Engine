@@ -52,7 +52,7 @@ struct SpotLight {
 	vec3 direction;     // Direction of the spot light
 	vec3 color;         // Color of the spot light
 	float power;		  // Light source power
-	//float cutOff;       // Inner cutoff angle (in radians)
+	float innerCutOff;       // Inner cutoff angle (in radians)
 	float outerCutOff;  // Outer cutoff angle (in radians)
 	float constant;     // Constant attenuation
 	float linear;       // Linear attenuation
@@ -79,8 +79,7 @@ layout (std430, binding = 3) buffer Lights {
 layout(std140, binding = 4) uniform LightingData {
     vec3 AmbientLight;
 	vec3 ViewerPosition;
-	float highlightParam;
-	//float gamma;
+    int shadingType;
 };
 
 
@@ -100,7 +99,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
     // calculate bias (based on depth map resolution and slope)
    
     vec3 lightDir = normalize(directionalLights[shadowMapId].position - position);
-    float bias = max(0.01 * (1.0 - dot(N, lightDir)), 0.005);
+    float bias = max(0.001 * (1.0 - dot(N, lightDir)), 0.0005);
     //float bias = 0.005;
     // check whether current frag pos is in shadow
     //float shadow = (currentDepth) < closestDepth  ? 1.0 : 0.0;
@@ -114,6 +113,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
         {
             float pcfDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy + vec2(x, y) * texelSize).r; 
             shadow += currentDepth  < pcfDepth  ? 1.0 : 0.0;        
+            //shadow += (currentDepth - bias) < pcfDepth  ? 1.0 : 0.0;        
         }    
     }
     shadow /= 25.0;
@@ -132,17 +132,13 @@ float countLambertianPart(vec3 L, vec3 N) {
 float countBlinnPhongPart(vec3 L, vec3 E, vec3 N) {
     vec3 H = normalize(L + E);
     float specAngle = max(dot(H, N), 0.0);
-    return pow(specAngle, highlightParam); //<---------
+    return pow(specAngle, 16); //<---------
 }
 
 void main()
 {
-	//FragColor = materialInput[materialIndex].color1 + materialInput[materialIndex].color2;
 	FragColor = texture(texturesInput[materialIndex].texture1, texCoords);
 
-	//vec3 result = vec3(0.0);
-	//vec3 lightDir;
-	//vec3 diffuse;
     vec3 LightColor = vec3(0.0);
 	
 	vec3 L = vec3(0.0);

@@ -16,6 +16,15 @@
 // UBO
 #define BINDING_POINT_MATERIAL_INPUT 2
 
+#define RENERING_TYPE_MESH_SHADER_MATERIAL false
+#define RENERING_TYPE_SHADER_MATERIAL_MESH true
+#define RENERING_TYPE_SHADER_MESH_MATERIAL true
+
+#define USE_NAMED_BUFFER_SUBDATA 0
+
+#define MATERIAL_INPUT_SINGLE_UBO false
+#define MATERIAL_INPUT_MANY_INPUT true
+
 namespace Twin2Engine
 {
 	namespace GraphicEngine {
@@ -44,8 +53,16 @@ namespace Twin2Engine
 			friend class GraphicEngine::GraphicEngineManager;
 
 		private:
+#if RENERING_TYPE_MESH_SHADER_MATERIAL
 			static std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _renderQueue;
 			static std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
+#elif RENERING_TYPE_SHADER_MATERIAL_MESH
+			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>>>>  _renderQueue;
+			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
+#elif RENERING_TYPE_SHADER_MESH_MATERIAL
+			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::InstatiatingMesh*,  std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _renderQueue;
+			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::InstatiatingMesh*,  std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
+#endif
 			static std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>> _depthQueue;
 
 			static GLuint _instanceDataSSBO;

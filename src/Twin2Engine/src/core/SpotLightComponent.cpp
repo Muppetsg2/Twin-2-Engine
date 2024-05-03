@@ -1,6 +1,7 @@
 #include <core/SpotLightComponent.h>
 #include <core/GameObject.h>
 #include <core/Transform.h>
+#include <core/YamlConverters.h>
 
 void Twin2Engine::Core::SpotLightComponent::Initialize()
 {
@@ -11,7 +12,7 @@ void Twin2Engine::Core::SpotLightComponent::Initialize()
 	};
 
 
-	light = new LightingSystem::SpotLight;
+	//light = new LightingSystem::SpotLight;
 	light->position = GetTransform()->GetGlobalPosition();
 	//LightingSystem::LightingController::Instance()->spotLights.insert(light);
 	//LightingSystem::LightingController::Instance()->UpdateSpotLights();
@@ -79,4 +80,18 @@ void Twin2Engine::Core::SpotLightComponent::SetAtenuation(float constant, float 
 	light->linear = linear;
 	light->quadratic = quadratic;
 	dirtyFlag = true;
+}
+
+YAML::Node Twin2Engine::Core::SpotLightComponent::Serialize() const
+{
+	YAML::Node node = LightComponent::Serialize();
+	node["direction"] = light->direction;
+	node["color"] = light->color;
+	node["power"] = light->power;
+	node["outerCutOff"] = light->power;
+	node["constant"] = light->constant;
+	node["linear"] = light->linear;
+	node["quadratic"] = light->quadratic;
+
+	return node;
 }

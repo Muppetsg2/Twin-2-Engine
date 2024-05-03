@@ -1,8 +1,8 @@
 #version 430
 
 in vec3 position;
-in vec3 normal;
 in vec2 texCoords;
+in vec3 normal;
 
 in vec4 color1;
 in vec4 color2;
@@ -51,7 +51,7 @@ struct SpotLight {
 	vec3 direction;     // Direction of the spot light
 	vec3 color;         // Color of the spot light
 	float power;		  // Light source power
-	//float cutOff;       // Inner cutoff angle (in radians)
+	float innerCutOff;       // Inner cutoff angle (in radians)
 	float outerCutOff;  // Outer cutoff angle (in radians)
 	float constant;     // Constant attenuation
 	float linear;       // Linear attenuation
@@ -78,8 +78,7 @@ layout (std430, binding = 3) buffer Lights {
 layout(std140, binding = 4) uniform LightingData {
     vec3 AmbientLight;
 	vec3 ViewerPosition;
-	float highlightParam;
-	//float gamma;
+    int shadingType;
 };
 
 
@@ -113,7 +112,8 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
         {
             float pcfDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy + vec2(x, y) * texelSize).r; 
             shadow += currentDepth  < pcfDepth  ? 1.0 : 0.0;        
-        }    
+            //shadow += (currentDepth - bias) < pcfDepth  ? 1.0 : 0.0;
+            }    
     }
     shadow /= 25.0;
     
@@ -131,19 +131,14 @@ float countLambertianPart(vec3 L, vec3 N) {
 float countBlinnPhongPart(vec3 L, vec3 E, vec3 N) {
     vec3 H = normalize(L + E);
     float specAngle = max(dot(H, N), 0.0);
-    return pow(specAngle, highlightParam); //<---------
+    return pow(specAngle, 16); //<---------
 }
 
 void main()
 {
-	//FragColor = uColor;
-	//FragColor = color1 + color2;
 	FragColor = materialInput[materialIndex].color1 + materialInput[materialIndex].color2;
 
-	//vec3 result = vec3(0.0);
-	//vec3 lightDir;
-	//vec3 diffuse;
-    vec3 LightColor = vec3(0.0);
+	vec3 LightColor = vec3(0.0);
 	
 	vec3 L = vec3(0.0);
     vec3 N = normalize(normal);
@@ -215,6 +210,6 @@ void main()
         LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
     }
 	
-    FragColor *= vec4(LightColor + AmbientLight, 1.0); //
+    FragColor *= vec4(LightColor + AmbientLight, 1.0);
 	FragColor = vec4(pow(FragColor.rgb, vec3(gamma)), 1.0);
 }

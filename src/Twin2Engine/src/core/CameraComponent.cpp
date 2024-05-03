@@ -18,14 +18,7 @@ Shader* CameraComponent::_renderShader = nullptr;
 
 void CameraComponent::OnTransformChange(Transform* trans)
 {
-	glm::vec3 rot = trans->GetGlobalRotation();
-
-	glm::vec3 front{};
-	front.x = cos(glm::radians(rot.y)) * cos(glm::radians(rot.x));
-	front.y = sin(glm::radians(rot.x));
-	front.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
-	this->SetFrontDir(glm::normalize(front));
-
+	UpdateFrontDir();
 	/*
 	if (this->_isMain) {
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
@@ -79,6 +72,13 @@ void CameraComponent::OnWindowSizeChange()
 	glBindRenderbuffer(GL_RENDERBUFFER, _msRenderBuffer);
 	glRenderbufferStorageMultisample(GL_RENDERBUFFER, _samples, GL_DEPTH24_STENCIL8, wSize.x, wSize.y);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+}
+
+void CameraComponent::SetFrontDir(vec3 dir)
+{
+	_front = normalize(dir);
+	_right = normalize(cross(_front, _worldUp));
+	_up = normalize(cross(_right, _front));
 }
 
 CameraType CameraComponent::GetCameraType() const
@@ -174,10 +174,10 @@ Frustum CameraComponent::GetFrustum() const
 
 	frustum.nearFace = { pos + _near * _front, _front };
 	frustum.farFace = { pos + frontMultFar, -_front };
-	frustum.rightFace = { pos, cross(frontMultFar - _right * halfHSide, _up) };
-	frustum.leftFace = { pos, cross(_up, frontMultFar + _right * halfHSide) };
-	frustum.topFace = { pos, cross(_right, frontMultFar - _up * halfVSide) };
-	frustum.bottomFace = { pos, cross(frontMultFar + _up * halfVSide, _right) };
+	frustum.rightFace = { pos, glm::normalize(cross(frontMultFar - _right * halfHSide, _up)) };
+	frustum.leftFace = { pos, glm::normalize(cross(_up, frontMultFar + _right * halfHSide)) };
+	frustum.topFace = { pos, glm::normalize(cross(_right, frontMultFar - _up * halfVSide)) };
+	frustum.bottomFace = { pos, glm::normalize(cross(frontMultFar + _up * halfVSide, _right)) };
 
 	return frustum;
 }
@@ -310,18 +310,22 @@ void CameraComponent::SetRenderResolution(RenderResolution res)
 	}
 }
 
-void CameraComponent::SetFrontDir(vec3 dir)
-{
-	_front = normalize(dir);
-	_right = normalize(cross(_front, _worldUp));
-	_up = normalize(cross(_right, _front));
-}
-
 void CameraComponent::SetWorldUp(vec3 value)
 {
 	_worldUp = normalize(value);
 	_right = normalize(cross(_front, _worldUp));
 	_up = normalize(cross(_right, _front));
+}
+
+void CameraComponent::UpdateFrontDir()
+{
+	glm::vec3 rot = GetTransform()->GetGlobalRotation();
+
+	glm::vec3 front{};
+	front.x = cos(glm::radians(rot.y)) * cos(glm::radians(rot.x));
+	front.y = sin(glm::radians(rot.x));
+	front.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
+	this->SetFrontDir(glm::normalize(front));
 }
 
 void CameraComponent::SetIsMain(bool value)
@@ -357,10 +361,10 @@ void CameraComponent::Render()
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
 
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(vec2), value_ptr(Window::GetInstance()->GetContentSize()));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2), sizeof(float), &(this->_near));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float), sizeof(float), &(this->_far));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ivec2), value_ptr(Window::GetInstance()->GetContentSize()));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2), sizeof(float), &(this->_near));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float), sizeof(float), &(this->_far));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
 	
 	
 	// NAMED
@@ -413,6 +417,7 @@ void CameraComponent::Render()
 		_renderShader->SetBool("hasNegative", (_filters & RenderFilter::NEGATIVE) != 0);
 		_renderShader->SetBool("hasGrayscale", (_filters & RenderFilter::GRAYSCALE) != 0);
 		_renderShader->SetBool("displayDepth", (_filters & RenderFilter::DEPTH) != 0);
+		_renderShader->SetBool("hasOutline", (_filters & RenderFilter::OUTLINE) != 0);
 
 		_renderPlane.GetMesh(0)->Draw(1);
 	}
@@ -463,16 +468,16 @@ void CameraComponent::Initialize()
 		glGenBuffers(1, &_uboWindowData);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-		glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(float) + sizeof(vec2), NULL, GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(float) + sizeof(ivec2), NULL, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		glBindBufferRange(GL_UNIFORM_BUFFER, 1, _uboWindowData, 0, 3 * sizeof(float) + sizeof(vec2));
+		glBindBufferRange(GL_UNIFORM_BUFFER, 1, _uboWindowData, 0, 3 * sizeof(float) + sizeof(ivec2));
 
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(vec2), value_ptr(Window::GetInstance()->GetContentSize()));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2), sizeof(float), &(this->_near));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float), sizeof(float), &(this->_far));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(vec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ivec2), value_ptr(Window::GetInstance()->GetContentSize()));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2), sizeof(float), &(this->_near));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float), sizeof(float), &(this->_far));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		_renderPlane = ModelsManager::GetPlane();
@@ -481,6 +486,8 @@ void CameraComponent::Initialize()
 
 	this->_camId = Cameras.size();
 	Cameras.push_back(this);
+
+	UpdateFrontDir();
 
 	_transformEventId = GetTransform()->OnEventTransformChanged += [&](Transform* t) -> void { OnTransformChange(t); };
 	_windowEventId = Window::GetInstance()->OnWindowSizeEvent += [&]() -> void { OnWindowSizeChange(); };
@@ -660,7 +667,6 @@ YAML::Node CameraComponent::Serialize() const
 	node["samples"] = (size_t)_samples;
 	node["renderRes"] = _renderRes;
 	node["gamma"] = _gamma;
-	node["frontDir"] = _front;
 	node["worldUp"] = _worldUp;
 	node["isMain"] = _isMain;
 	return node;

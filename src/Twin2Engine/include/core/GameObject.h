@@ -6,6 +6,7 @@ using std::string;
 
 #include <core/Component.h>
 #include <core/Transform.h>
+#include <LayersData.h>
 
 using Twin2Engine::Core::Component;
 
@@ -34,6 +35,9 @@ namespace Twin2Engine::Core
 		static std::list<size_t> _freedIds;
 		static size_t GetFreeId();
 		static void FreeId(size_t id);
+		
+		static std::unordered_set<std::string_view> AllTags;
+		std::unordered_set<char> tagsIndexes;
 
 		size_t _id;
 		string _name;
@@ -55,6 +59,11 @@ namespace Twin2Engine::Core
 	public:
 		GameObject();
 
+#pragma region EVENTS
+		EventHandler<GameObject*> OnActiveChanged;
+		EventHandler<GameObject*> OnStaticChanged;
+#pragma endregion
+
 		virtual ~GameObject();
 
 		size_t Id() const;
@@ -73,6 +82,11 @@ namespace Twin2Engine::Core
 
 		void Update();
 		void UpdateComponents();
+
+		void AddTag(std::string_view tagName);
+		void RemoveTag(std::string_view tagName);
+		bool HasTag(std::string_view tagName);
+		//Layer layer = Layer::DEFAULT;
 
 		YAML::Node Serialize() const;
 
@@ -112,8 +126,8 @@ namespace Twin2Engine::Core
 
 #pragma endregion
 	
-		static GameObject* Instatiate(GameObject* gameObject);
-		static GameObject* Instatiate(GameObject* gameObject, Transform* parent);
+		static GameObject* Instantiate(GameObject* gameObject);
+		static GameObject* Instantiate(GameObject* gameObject, Transform* parent);
 	};
 }
 
@@ -153,7 +167,15 @@ list<typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type>
 Twin2Engine::Core::GameObject::GetComponents()
 {
 	list<T*> foundComponents;
-	std::copy_if(components.begin(), components.end(), std::back_inserter(foundComponents), [](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
+	//std::copy_if(components.begin(), components.end(), std::back_inserter(foundComponents), [](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
+	for (auto itr = components.begin(); itr != components.end(); itr++)
+	{
+		T* componentCast = dynamic_cast<T*>(*itr);
+		if (componentCast != nullptr)
+		{
+			foundComponents.push_back(componentCast);
+		}
+	}
 	return foundComponents;
 }
 
@@ -178,15 +200,15 @@ list<typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type>
 Twin2Engine::Core::GameObject::GetComponentsInChildren()
 {
 	// Przeszukiwanie w g��b
-	list<T*> comps = list<T*>();
+	list<T*> comps;
 	for (size_t i = 0; i < _transform->GetChildCount(); ++i) {
 		GameObject* obj = _transform->GetChildAt(i)->GetGameObject();
-		auto listOfComponents = obj->GetComponents<T>();
-		comps.insert(comps.cend(), listOfComponents.begin(), listOfComponents.end());
-		listOfComponents = obj->GetComponentsInChildren<T>();
-		comps.insert(comps.cend(), listOfComponents.begin(), listOfComponents.end());
-		//comps.push_back(obj->GetComponents<T>());
-		//comps.push_back(obj->GetComponentsInChildren<T>());
+		//auto listOfComponents = obj->GetComponents<T>();
+		//comps.insert(comps.cend(), listOfComponents.begin(), listOfComponents.end());
+		//listOfComponents = obj->GetComponentsInChildren<T>();
+		//comps.insert(comps.cend(), listOfComponents.begin(), listOfComponents.end());
+		comps.merge(obj->GetComponents<T>());
+		comps.merge(obj->GetComponentsInChildren<T>());
 	}
 	return comps;
 }

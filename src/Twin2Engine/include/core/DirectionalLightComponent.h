@@ -11,14 +11,14 @@ namespace Twin2Engine {
 			private:
 				bool dirtyFlag = false;
 				//glm::vec3 localDirection;
-				LightingSystem::DirectionalLight* light = nullptr;
-				Tools::Action<Transform*> OnChangePosition;
+				LightingSystem::DirectionalLight* light = new LightingSystem::DirectionalLight;
+				Twin2Engine::Core::Action<Transform*> OnChangePosition;
 				size_t OnChangePositionId;
-				Tools::Method OnViewerChange;
+				Twin2Engine::Core::Method OnViewerChange;
 				size_t OnViewerChangeId;
-			protected:
-				DirectionalLightComponent() : LightComponent() {};
+			//protected:
 			public:
+				DirectionalLightComponent() : LightComponent() {};
 
 				virtual void Initialize() override;
 				virtual void Update() override;
@@ -28,7 +28,9 @@ namespace Twin2Engine {
 
 				void SetDirection(glm::vec3 dir);
 				void SetColor(glm::vec3 color);
-				void SetPower(float& power);
+				void SetPower(float power);
+
+				virtual YAML::Node Serialize() const override;
 		};
 	}
 }

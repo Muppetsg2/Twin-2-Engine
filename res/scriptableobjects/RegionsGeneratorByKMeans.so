@@ -1,0 +1,8 @@
+scriptable_object:
+  __SO_RegisteredName__: RegionsGeneratorByKMeans
+  regionPrefab: res/prefabs/tilemap/mapRegion.prefab
+  regionsCount: 10
+  isDiscritizedHeight: true
+  lowerHeightRange: 0
+  upperHeightRange: 3
+  heightRangeFacor: 0.25

@@ -79,3 +79,8 @@ void Scene::AddPrefab(const string& path)
 {
 	_prefabs.push_back(path);
 }
+
+void Twin2Engine::Core::Scene::AddScriptableObject(const std::string& path)
+{
+	_scriptableObjects.push_back(path);
+}

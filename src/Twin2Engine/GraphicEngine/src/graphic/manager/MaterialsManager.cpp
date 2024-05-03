@@ -3,6 +3,7 @@
 
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
+using namespace glm;
 
 std::hash<std::string> MaterialsManager::stringHash;
 std::map<size_t, Twin2Engine::GraphicEngine::MaterialData*> MaterialsManager::loadedMaterials;
@@ -126,7 +127,8 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 	std::string name = materialNode["name"].as<std::string>();
 	std::string shader = materialNode["shader"].as<std::string>();
 
-	MaterialParameters* materialParameters = new MaterialParameters();
+	//MaterialParameters* materialParameters = new MaterialParameters();
+	MaterialParametersBuilder materialParametersBuilder;
 
 	for (const auto& parameterNode : materialNode["parameters"]) {
 		std::string parameterName = parameterNode["name"].as<std::string>();
@@ -141,69 +143,72 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 			SPDLOG_ERROR("Incorrect parameter type of loaded material. Parameter name: {}", parameterName);
 			break;
 		}
+		SPDLOG_INFO("LoadSHPR");
 
 		switch (typeHandleMap.at(parameterTypeHash))
 		{
 		case TYPE_MAP_INT_HANDLE:
-			materialParameters->Add(parameterName, parameterValue.as<int>());
-			//int valueInt = parameterValue.as<int>();
-			//materialParameters->Add(parameterName, 4, &valueInt);
+			//materialParameters->Add(parameterName, parameterValue.as<int>());
+			materialParametersBuilder.Add(parameterName, parameterValue.as<int>());
 			break;
 
 		case TYPE_MAP_UINT_HANDLE:
-			materialParameters->Add(parameterName, parameterValue.as<unsigned int>());
-			//unsigned int valueUint = parameterValue.as<unsigned int>();
-			//materialParameters->Add(parameterName, 4, &valueUint);
+			//materialParameters->Add(parameterName, parameterValue.as<unsigned int>());
+			materialParametersBuilder.Add(parameterName, parameterValue.as<unsigned int>());
 			break;
 
 		case TYPE_MAP_FLOAT_HANDLE:
-			materialParameters->Add(parameterName, parameterValue.as<float>());
-			//float valueFloat = parameterValue.as<float>();
-			//materialParameters->Add(parameterName, 4, &valueFloat);
+			//materialParameters->Add(parameterName, parameterValue.as<float>());
+			materialParametersBuilder.Add(parameterName, parameterValue.as<float>());
 			break;
 
 		case TYPE_MAP_DOUBLE_HANDLE:
-			materialParameters->Add(parameterName, parameterValue.as<double>());
-			//double valueDouble = parameterValue.as<double>();
-			//materialParameters->Add(parameterName, 8, &valueDouble);
+			//materialParameters->Add(parameterName, parameterValue.as<double>());
+			materialParametersBuilder.Add(parameterName, parameterValue.as<double>());
 			break;
 
 		case TYPE_MAP_BOOL_HANDLE:
-			materialParameters->Add(parameterName, parameterValue.as<bool>());
-			//bool valueBool = parameterValue.as<bool>();
-			//materialParameters->Add(parameterName, 4, &valueBool);
+			//materialParameters->Add(parameterName, parameterValue.as<bool>());
+			materialParametersBuilder.Add(parameterName, parameterValue.as<bool>());
 			break;
 
 		case TYPE_MAP_TEXTURE2D_HANDLE:
 		{
 			std::string texturePath = parameterValue.as<std::string>();
 			Texture2D* texture = Manager::TextureManager::LoadTexture2D(texturePath);
-			materialParameters->AddTexture2D(parameterName, texture->GetId());
+			//materialParameters->AddTexture2D(parameterName, texture->GetId());
+			materialParametersBuilder.AddTexture2D(parameterName, texture->GetId());
 		}
 		break;
 
 		case TYPE_MAP_VEC2_HANDLE:
-			materialParameters->Add(parameterName, 8, parameterValue.as<std::vector<float>>().data());
+			//materialParameters->Add(parameterName, parameterValue.as<vec2>());
+			materialParametersBuilder.Add(parameterName, parameterValue.as<vec2>());
 			break;
 		
 		case TYPE_MAP_VEC3_HANDLE:
-			materialParameters->Add(parameterName, 12, parameterValue.as<std::vector<float>>().data());
+			//materialParameters->Add(parameterName, parameterValue.as<vec3>());
+			materialParametersBuilder.Add(parameterName, parameterValue.as<vec3>());
 			break;
 		
 		case TYPE_MAP_VEC4_HANDLE:
-			materialParameters->Add(parameterName, 16, parameterValue.as<std::vector<float>>().data());
+			//materialParameters->Add(parameterName, parameterValue.as<vec4>());
+			materialParametersBuilder.Add(parameterName, parameterValue.as<vec4>());
 			break;
 		
 		case TYPE_MAP_IVEC2_HANDLE:
-			materialParameters->Add(parameterName, 8, parameterValue.as<std::vector<int>>().data());
+			//materialParameters->Add(parameterName, parameterValue.as<ivec2>());
+			materialParametersBuilder.Add(parameterName, parameterValue.as<ivec2>());
 			break;
 		
 		case TYPE_MAP_IVEC3_HANDLE:
-			materialParameters->Add(parameterName, 12, parameterValue.as<std::vector<int>>().data());
+			//materialParameters->Add(parameterName, parameterValue.as<ivec3>());
+			materialParametersBuilder.Add(parameterName, parameterValue.as<ivec3>());
 			break;
 		
 		case TYPE_MAP_IVEC4_HANDLE:
-			materialParameters->Add(parameterName, 16, parameterValue.as<std::vector<int>>().data());
+			//materialParameters->Add(parameterName, parameterValue.as<ivec4>());
+			materialParametersBuilder.Add(parameterName, parameterValue.as<ivec4>());
 			break;
 		
 		//case TYPE_MAP_MAT2_HANDLE:
@@ -219,20 +224,21 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 		//	break;
 		}
 	}
-
+	//materialParameters->AlignData();
 
 	MaterialData* materialData = new MaterialData
 	{
 		.id = materialNameHash,
 		.shader = Manager::ShaderManager::GetShaderProgram(shader),
-		.materialParameters = materialParameters
+		.materialParameters = materialParametersBuilder.Build()
 	};
+	materialParametersBuilder.Clear();
 
 	loadedMaterials[materialNameHash] = materialData;
 	materialsPaths[materialNameHash] = materialName;
 
 	LightingSystem::LightingController::Instance()->BindLightBuffors(materialData->shader);
-
+	
 	return Material(materialData);
 }
 
@@ -241,8 +247,8 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 //	return typeSizeMap[stringHash(type)];
 //}
 
-Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, const std::string& shaderName, 
-	const std::vector<std::string>& materialParametersNames, const std::vector<std::string>& textureParametersNames)
+/*Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, const std::string& shaderName,
+	const std::vector<std::string>& materialParametersNames, const std::vector<unsigned int>& materialParametersSizes, const std::vector<std::string>& textureParametersNames)
 {
 	size_t hashed = stringHash(newMaterialName);
 
@@ -254,7 +260,7 @@ Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, co
 		data = new MaterialData{
 			.id = hashed,
 			.shader = ShaderManager::GetShaderProgram(shaderName),
-			.materialParameters = new MaterialParameters(materialParametersNames, textureParametersNames)
+			.materialParameters = new MaterialParameters(materialParametersNames, materialParametersSizes, textureParametersNames)
 			
 		};
 
@@ -267,7 +273,7 @@ Material MaterialsManager::CreateMaterial(const std::string& newMaterialName, co
 	}
 	
 	return Material(data);
-}
+}*/
 
 YAML::Node MaterialsManager::Serialize()
 {

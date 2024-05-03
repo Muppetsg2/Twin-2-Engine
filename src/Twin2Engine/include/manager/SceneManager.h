@@ -22,6 +22,7 @@ namespace Twin2Engine::Manager {
 		static std::vector<size_t> _materialsIds;
 		static std::vector<size_t> _modelsIds;
 		static std::vector<size_t> _prefabsIds;
+		static std::vector<size_t> _scriptableObjectsIds;
 
 		// Loaded Scene Objects
 		static std::map<size_t, Core::Scene*> _loadedScenes;

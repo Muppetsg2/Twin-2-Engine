@@ -1,0 +1,49 @@
+material:
+  name: Default
+  shader: origin/Default
+  parameters:
+# GLOBAL PARAMETERS
+    - name: diffuse_texture
+      type: texture2D
+      value: res/textures/stone.jpg
+    - name: has_diffuse_texture
+      type: bool
+      value: false
+    - name: specular_texture
+      type: texture2D
+      value: res/textures/stoneSpecular.png
+    - name: has_specular_texture
+      type: bool
+      value: false
+    - name: color
+      type: vec3
+      value: [1.0, 0.0, 0.0]
+    - name: shininess
+      type: float
+      value: 16
+# TOON SHADING PARAMETERS
+    - name: diffuse_toon_borders
+      type: uint
+      value: 3
+    - name: specular_toon_borders
+      type: uint
+      value: 1
+    - name: highlight_translate
+      type: vec2
+      value: [0.0, 0.0]
+    - name: highlight_rotation
+      type: vec2
+      value: [0.0, 0.0]
+    - name: highlight_scale
+      type: vec2
+      value: [0.0, 0.0]
+    - name: highlight_split
+      type: vec2
+      value: [0.0, 0.0]
+    - name: highlight_square_n
+      type: int
+      value: 0
+    - name: highlight_square_x
+      type: float
+      value: 0.0
+# GOOCH SHADING PARAMETERS

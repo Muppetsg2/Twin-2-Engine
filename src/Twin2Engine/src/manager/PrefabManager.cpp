@@ -143,6 +143,31 @@ Prefab* PrefabManager::GetPrefab(const string& path)
 	return prefab;
 }
 
+std::string PrefabManager::GetPrefabPath(const Prefab* prefab)
+{
+	if (prefab != nullptr)
+	{
+		size_t id = 0;
+		bool foundId = false;
+		for (const auto& pair : _prefabs)
+		{
+			if (pair.second == prefab)
+			{
+				id = pair.first;
+				break;
+			}
+		}
+		if (foundId)
+		{
+			if (_prefabsPaths.contains(id))
+			{
+				return _prefabsPaths[id];
+			}
+		}
+	}
+	return "";
+}
+
 void PrefabManager::SaveAsPrefab(const GameObject* obj, const std::string& path)
 {
 	YAML::Node prefabNode;

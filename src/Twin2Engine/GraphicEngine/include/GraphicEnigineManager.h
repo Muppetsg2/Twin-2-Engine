@@ -7,6 +7,10 @@
 
 #include <graphic/Window.h>
 
+#include <core/CameraComponent.h>
+
+#define DEBUG_GRAPHIC_ENGINE false
+
 namespace Twin2Engine::GraphicEngine
 {
 	class GraphicEngineManager

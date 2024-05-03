@@ -6,6 +6,18 @@ Textures:
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
+  - path: res/textures/fakeBRDF.png
+    fileFormat: 35906
+    engineFormat: 6408
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
+  - path: res/textures/cityTextureColour.png
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
   - path: res/textures/grass.png
     fileFormat: 35906
     engineFormat: 6408
@@ -45,9 +57,9 @@ Sprites:
   - alias: white_box
     texture: 0
   - alias: grass
-    texture: 1
-  - alias: stone
     texture: 3
+  - alias: stone
+    texture: 5
 Fonts:
   - res/fonts/Caveat-Regular.ttf
 Audio:
@@ -55,18 +67,41 @@ Audio:
 Materials:
   - hexagonMat
   - Basic2
+  - GreenHexTile
+  - ColoredHexTile
   - metal
+  - multiTexture
   - textured
   - deska
+  - CityMaterial
+  - BlueHexTile
   - wallMat
+  - MountainsUnlit
+  - FakeBRDF
+  - RedHexTile
   - roofMat
 Models:
   - res/models/AK47.obj
+  - res/models/mountain.obj
+  - res/models/radioStation.obj
+  - res/models/hexagon.obj
   - res/models/castle.obj
   - "{Cube}"
   - "{Plane}"
+  - res/models/city.obj
+  - "{Sphere}"
 Prefabs:
+  - res/prefabs/tilemap/mapElements/city.prefab
   - res/prefabs/testPrefab.yaml
+  - res/prefabs/tilemap/mapElements/radioStation.prefab
+  - res/prefabs/tilemap/tiles/blueHexTile.prefab
+  - res/prefabs/tilemap/tiles/redHexTile.prefab
+  - res/prefabs/tilemap/mapSector.prefab
+  - res/prefabs/tilemap/tiles/hexTile.prefab
+  - res/prefabs/tilemap/tiles/greenHexTile.prefab
+  - res/prefabs/tilemap/mapRegion.prefab
+  - res/prefabs/tilemap/mapElements/mountains.prefab
+ScriptableObjects: ~
 GameObjects:
   - id: 1
     name: Camera
@@ -76,17 +111,17 @@ GameObjects:
       id: 0
       enabled: true
       position:
-        x: 1.1766516
-        y: 4.43748379
-        z: 4.75468874
+        x: -0.415009499
+        y: 16.8011475
+        z: 9.74193382
       scale:
         x: 0
         y: 0
         z: 0
       rotation:
-        x: 142.800369
-        y: 75.9996643
-        z: -180
+        x: -63.3999825
+        y: -87.4805145
+        z: -3.88415283e-05
     components:
       - id: 1
         enabled: true
@@ -99,10 +134,6 @@ GameObjects:
         samples: 4
         renderRes: 0
         gamma: 2.20000005
-        frontDir:
-          x: -0.192703515
-          y: -0.604594231
-          z: 0.772872031
         worldUp:
           x: 0
           y: 1
@@ -230,11 +261,11 @@ GameObjects:
         isTransparent: false
         sprite: 0
         color:
-          x: 1
+          x: 0
           y: 1
           z: 0
           w: 1
-        width: 517.74939
+        width: 680.67804
         height: 100
     children:
       []
@@ -264,7 +295,7 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        text: "Time: 0.005417"
+        text: "Time: 0.005936"
         color:
           x: 1
           y: 1
@@ -283,7 +314,7 @@ GameObjects:
       enabled: true
       position:
         x: 2
-        y: 5
+        y: 25
         z: 0
       scale:
         x: 1
@@ -300,7 +331,7 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        model: 2
+        model: 5
         materials:
           - 1
     children:
@@ -314,7 +345,7 @@ GameObjects:
       enabled: true
       position:
         x: 2
-        y: 3
+        y: 23
         z: 0
       scale:
         x: 1
@@ -331,9 +362,9 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        model: 2
+        model: 5
         materials:
-          - 3
+          - 6
     children:
       []
   - id: 8
@@ -345,7 +376,7 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: 3
+        y: 23
         z: 0
       scale:
         x: 1
@@ -362,10 +393,10 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        model: 1
+        model: 4
         materials:
-          - 5
-          - 6
+          - 10
+          - 13
     children:
       []
   - id: 9
@@ -377,7 +408,7 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: 0
+        y: 20
         z: 10
       scale:
         x: 1
@@ -396,8 +427,8 @@ GameObjects:
         isTransparent: false
         model: 0
         materials:
+          - 7
           - 4
-          - 2
     children:
       []
   - id: 10
@@ -409,7 +440,7 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: 0
+        y: 20
         z: 0
       scale:
         x: 1
@@ -499,7 +530,7 @@ GameObjects:
           z: 0
         endPosition:
           x: 0
-          y: 20
+          y: 40
           z: 0
         radius: 20
       - id: 24
@@ -508,5 +539,8889 @@ GameObjects:
         width: 100
         height: 10
         interactable: false
+    children:
+      []
+  - id: 12
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 27
+      enabled: true
+      position:
+        x: 2
+        y: 24
+        z: -2
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 28
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 5
+    children:
+      []
+  - id: 13
+    name: BRDF
+    isStatic: false
+    isActive: true
+    transform:
+      id: 29
+      enabled: true
+      position:
+        x: 2
+        y: 20
+        z: -2
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 30
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 8
+        materials:
+          - 12
+    children:
+      []
+  - id: 14
+    name: MapGenerator
+    isStatic: false
+    isActive: false
+    transform:
+      id: 31
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 32
+        enabled: true
+        type: HexagonalTilemap
+        leftBottomPosition:
+          x: -9
+          y: -8
+        rightTopPosition:
+          x: 9
+          y: 7
+      - id: 33
+        enabled: true
+        type: MapGenerator
+        subTypes:
+          []
+        preafabHexagonalTile: "res/prefabs/tilemap/tiles/hexTile.prefab"
+        additionalTile: "res/prefabs/tilemap/tiles/redHexTile.prefab"
+        filledTile: "res/prefabs/tilemap/tiles/blueHexTile.prefab"
+        pointTile: "res/prefabs/tilemap/tiles/greenHexTile.prefab"
+        generationRadiusMin: 7
+        generationRadiusMax: 7
+        minPointsNumber: 5
+        maxPointsNumber: 5
+        angleDeltaRange: 5
+      - id: 34
+        enabled: true
+        type: ContentGenerator
+        mapElementGenerators:
+          - res/scriptableobjects/RegionsGeneratorByKMeans.so
+          - res/scriptableobjects/SectorGeneratorForRegionsByKMeans.so
+          - res/scriptableobjects/LakeGenerator.so
+          - res/scriptableobjects/MountainsGenerator.so
+          - res/scriptableobjects/CityGenerator.so
+          - res/scriptableobjects/RadioStationGeneratorSectorBased.so
+    children:
+      - 227
+      - 228
+      - 229
+      - 230
+      - 231
+      - 232
+      - 233
+      - 234
+      - 235
+  - id: 227
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 671
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 672
+        enabled: true
+        type: MapRegion
+        regionType: 0
+    children:
+      - 236
+      - 237
+      - 238
+  - id: 236
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 689
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 690
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 216
+      - 220
+      - 221
+      - 186
+      - 37
+      - 38
+  - id: 216
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 639
+      enabled: true
+      position:
+        x: -5.25
+        y: 0
+        z: -0.433012694
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 640
+        enabled: true
+        type: MapHexTile
+        hexTileType: 2
+      - id: 641
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 267
+  - id: 267
+    name: City
+    isStatic: false
+    isActive: true
+    transform:
+      id: 803
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 804
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 7
+        materials:
+          - 8
+    children:
+      []
+  - id: 220
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 651
+      enabled: true
+      position:
+        x: -5.25
+        y: 0
+        z: -1.29903805
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 652
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 653
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 221
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 654
+      enabled: true
+      position:
+        x: -6
+        y: 0
+        z: -0.866025388
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 655
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 656
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 186
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 549
+      enabled: true
+      position:
+        x: -4.5
+        y: 0
+        z: -0.866025388
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 550
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 551
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 37
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 102
+      enabled: true
+      position:
+        x: -6
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 103
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 104
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 38
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 105
+      enabled: true
+      position:
+        x: -6.75
+        y: 0
+        z: -0.433012694
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 106
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 107
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 237
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 691
+      enabled: true
+      position:
+        x: 0
+        y: 0.125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 692
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 40
+      - 39
+      - 224
+      - 225
+  - id: 40
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 111
+      enabled: true
+      position:
+        x: -6.75
+        y: 0
+        z: -2.16506338
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 112
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 113
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 39
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 108
+      enabled: true
+      position:
+        x: -6.75
+        y: 0
+        z: -1.29903805
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 109
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 110
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 224
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 663
+      enabled: true
+      position:
+        x: -6
+        y: 0
+        z: -2.59807611
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 664
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 665
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 225
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 666
+      enabled: true
+      position:
+        x: -6
+        y: 0
+        z: -1.73205078
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 667
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 668
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 238
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 693
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 694
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 219
+      - 223
+      - 214
+      - 218
+      - 215
+      - 222
+      - 42
+      - 41
+  - id: 219
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 648
+      enabled: true
+      position:
+        x: -5.25
+        y: 0
+        z: -2.16506338
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 649
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 650
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 223
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 660
+      enabled: true
+      position:
+        x: -5.25
+        y: 0
+        z: -3.03108883
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 661
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 662
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 214
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 633
+      enabled: true
+      position:
+        x: -4.5
+        y: 0
+        z: -2.59807611
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 634
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 635
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 218
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 645
+      enabled: true
+      position:
+        x: -4.5
+        y: 0
+        z: -3.46410155
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 646
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 647
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 215
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 636
+      enabled: true
+      position:
+        x: -4.5
+        y: 0
+        z: -1.73205078
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 637
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 638
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 222
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 657
+      enabled: true
+      position:
+        x: -5.25
+        y: 0
+        z: -3.89711428
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 658
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 659
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 42
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 117
+      enabled: true
+      position:
+        x: -6
+        y: 0
+        z: -4.33012676
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 118
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 119
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 41
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 114
+      enabled: true
+      position:
+        x: -6
+        y: 0
+        z: -3.46410155
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 115
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 116
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 228
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 673
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 674
+        enabled: true
+        type: MapRegion
+        regionType: 0
+    children:
+      - 239
+      - 240
+      - 241
+  - id: 239
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 695
+      enabled: true
+      position:
+        x: 0
+        y: 0.125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 696
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 127
+      - 129
+      - 158
+      - 157
+      - 28
+      - 29
+  - id: 127
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 372
+      enabled: true
+      position:
+        x: -2.25
+        y: 0
+        z: 4.76313972
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 373
+        enabled: true
+        type: MapHexTile
+        hexTileType: 2
+      - id: 374
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 268
+  - id: 268
+    name: City
+    isStatic: false
+    isActive: true
+    transform:
+      id: 805
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 806
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 7
+        materials:
+          - 8
+    children:
+      []
+  - id: 129
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 378
+      enabled: true
+      position:
+        x: -2.25
+        y: 0
+        z: 3.89711428
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 379
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 380
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 158
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 465
+      enabled: true
+      position:
+        x: -3
+        y: 0
+        z: 3.46410155
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 466
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 467
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 157
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 462
+      enabled: true
+      position:
+        x: -3
+        y: 0
+        z: 4.33012676
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 463
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 464
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 28
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 75
+      enabled: true
+      position:
+        x: -1.5
+        y: 0
+        z: 5.19615221
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 76
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 77
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 29
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 78
+      enabled: true
+      position:
+        x: -2.25
+        y: 0
+        z: 5.62916517
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 79
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 80
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 240
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 697
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 698
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 189
+      - 188
+      - 31
+      - 30
+      - 32
+  - id: 189
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 558
+      enabled: true
+      position:
+        x: -3.75
+        y: 0
+        z: 3.89711428
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 559
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 560
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 188
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 555
+      enabled: true
+      position:
+        x: -3.75
+        y: 0
+        z: 4.76313972
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 556
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 557
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 31
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 84
+      enabled: true
+      position:
+        x: -3.75
+        y: 0
+        z: 5.62916517
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 85
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 86
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 30
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 81
+      enabled: true
+      position:
+        x: -3
+        y: 0
+        z: 5.19615221
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 82
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 83
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 32
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 87
+      enabled: true
+      position:
+        x: -4.5
+        y: 0
+        z: 4.33012676
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 88
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 89
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 241
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 699
+      enabled: true
+      position:
+        x: 0
+        y: 0.125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 700
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 130
+      - 128
+      - 27
+      - 86
+      - 85
+      - 105
+      - 104
+      - 103
+  - id: 130
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 381
+      enabled: true
+      position:
+        x: -0.75
+        y: 0
+        z: 4.76313972
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 382
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 383
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 128
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 375
+      enabled: true
+      position:
+        x: -1.5
+        y: 0
+        z: 4.33012676
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 376
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 377
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 27
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 72
+      enabled: true
+      position:
+        x: -0.75
+        y: 0
+        z: 5.62916517
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 73
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 74
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 86
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 249
+      enabled: true
+      position:
+        x: -0.75
+        y: 0
+        z: 3.03108883
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 250
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 251
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 85
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 246
+      enabled: true
+      position:
+        x: -1.5
+        y: 0
+        z: 2.59807611
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 247
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 248
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 105
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 306
+      enabled: true
+      position:
+        x: -2.25
+        y: 0
+        z: 3.03108883
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 307
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 308
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 104
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 303
+      enabled: true
+      position:
+        x: -0.75
+        y: 0
+        z: 3.89711428
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 304
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 305
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 103
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 300
+      enabled: true
+      position:
+        x: -1.5
+        y: 0
+        z: 3.46410155
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 301
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 302
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 229
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 675
+      enabled: true
+      position:
+        x: 0
+        y: 0.5
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 676
+        enabled: true
+        type: MapRegion
+        regionType: 0
+    children:
+      - 242
+      - 243
+      - 244
+  - id: 242
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 701
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 702
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 206
+      - 205
+      - 207
+      - 148
+      - 149
+      - 178
+      - 179
+      - 177
+      - 52
+      - 53
+  - id: 206
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 609
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: -6.06217766
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 610
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 611
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 205
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 606
+      enabled: true
+      position:
+        x: 0.75
+        y: 0
+        z: -5.62916517
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 607
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 608
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 207
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 612
+      enabled: true
+      position:
+        x: -0.75
+        y: 0
+        z: -5.62916517
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 613
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 614
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 148
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 435
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: -4.33012676
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 436
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 437
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 149
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 438
+      enabled: true
+      position:
+        x: -0.75
+        y: 0
+        z: -3.89711428
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 439
+        enabled: true
+        type: MapHexTile
+        hexTileType: 2
+      - id: 440
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 156
+  - id: 156
+    name: City
+    isStatic: false
+    isActive: true
+    transform:
+      id: 791
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 792
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 7
+        materials:
+          - 8
+    children:
+      []
+  - id: 178
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 525
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: -5.19615221
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 526
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 527
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 179
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 528
+      enabled: true
+      position:
+        x: -0.75
+        y: 0
+        z: -4.76313972
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 529
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 530
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 177
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 522
+      enabled: true
+      position:
+        x: 0.75
+        y: 0
+        z: -4.76313972
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 523
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 524
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 52
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 147
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: -6.92820311
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 148
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 149
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 53
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 150
+      enabled: true
+      position:
+        x: 0.75
+        y: 0
+        z: -6.49519062
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 151
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 152
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 243
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 703
+      enabled: true
+      position:
+        x: 0
+        y: 0.324999988
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 704
+        enabled: true
+        type: MapSector
+        sectorType: 2
+    children:
+      - 119
+      - 118
+      - 120
+      - 174
+      - 147
+      - 146
+  - id: 119
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 348
+      enabled: true
+      position:
+        x: 0.75
+        y: 0
+        z: -3.03108883
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 349
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 350
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 109
+  - id: 109
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 763
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 764
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 118
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 345
+      enabled: true
+      position:
+        x: 1.5
+        y: 0
+        z: -3.46410155
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 346
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 347
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 159
+  - id: 159
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 767
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 768
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 120
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 351
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: -3.46410155
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 352
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 353
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 160
+  - id: 160
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 769
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 770
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 174
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 513
+      enabled: true
+      position:
+        x: 2.25
+        y: 0
+        z: -3.89711428
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 514
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 515
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 245
+  - id: 245
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 765
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 766
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 147
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 432
+      enabled: true
+      position:
+        x: 0.75
+        y: 0
+        z: -3.89711428
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 433
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 434
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 191
+  - id: 191
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 771
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 772
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 146
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 429
+      enabled: true
+      position:
+        x: 1.5
+        y: 0
+        z: -4.33012676
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 430
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 431
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 190
+  - id: 190
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 773
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 774
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 244
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 705
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 706
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 204
+      - 203
+      - 175
+      - 176
+      - 56
+      - 57
+      - 55
+      - 54
+      - 58
+  - id: 204
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 603
+      enabled: true
+      position:
+        x: 3
+        y: 0
+        z: -5.19615221
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 604
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 605
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 203
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 600
+      enabled: true
+      position:
+        x: 3
+        y: 0
+        z: -4.33012676
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 601
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 602
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 175
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 516
+      enabled: true
+      position:
+        x: 2.25
+        y: 0
+        z: -4.76313972
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 517
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 518
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 176
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 519
+      enabled: true
+      position:
+        x: 1.5
+        y: 0
+        z: -5.19615221
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 520
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 521
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 56
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 159
+      enabled: true
+      position:
+        x: 2.25
+        y: 0
+        z: -5.62916517
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 160
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 161
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 57
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 162
+      enabled: true
+      position:
+        x: 3
+        y: 0
+        z: -6.06217766
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 163
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 164
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 55
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 156
+      enabled: true
+      position:
+        x: 1.5
+        y: 0
+        z: -6.06217766
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 157
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 158
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 54
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 153
+      enabled: true
+      position:
+        x: 1.5
+        y: 0
+        z: -6.92820311
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 154
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 155
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 58
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 165
+      enabled: true
+      position:
+        x: 3.75
+        y: 0
+        z: -4.76313972
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 166
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 167
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 230
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 677
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 678
+        enabled: true
+        type: MapRegion
+        regionType: 0
+    children:
+      - 248
+      - 249
+      - 250
+  - id: 248
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 713
+      enabled: true
+      position:
+        x: 0
+        y: 0.125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 714
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 198
+      - 197
+      - 196
+      - 141
+      - 169
+      - 15
+      - 16
+  - id: 198
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 585
+      enabled: true
+      position:
+        x: 5.25
+        y: 0
+        z: 0.433012694
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 586
+        enabled: true
+        type: MapHexTile
+        hexTileType: 2
+      - id: 587
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 269
+  - id: 269
+    name: City
+    isStatic: false
+    isActive: true
+    transform:
+      id: 807
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 808
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 7
+        materials:
+          - 8
+    children:
+      []
+  - id: 197
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 582
+      enabled: true
+      position:
+        x: 4.5
+        y: 0
+        z: 0.866025388
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 583
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 584
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 196
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 579
+      enabled: true
+      position:
+        x: 4.5
+        y: 0
+        z: 1.73205078
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 580
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 581
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 141
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 414
+      enabled: true
+      position:
+        x: 3.75
+        y: 0
+        z: 0.433012694
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 415
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 416
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 169
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 498
+      enabled: true
+      position:
+        x: 4.5
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 499
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 500
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 15
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 36
+      enabled: true
+      position:
+        x: 5.25
+        y: 0
+        z: 1.29903805
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 37
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 38
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 16
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 39
+      enabled: true
+      position:
+        x: 5.25
+        y: 0
+        z: 2.16506338
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 40
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 41
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 249
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 715
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 716
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 11
+      - 65
+      - 63
+      - 64
+  - id: 11
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 25
+      enabled: true
+      position:
+        x: 6
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 26
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 35
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 65
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 186
+      enabled: true
+      position:
+        x: 6.75
+        y: 0
+        z: 0.433012694
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 187
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 188
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 63
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 180
+      enabled: true
+      position:
+        x: 5.25
+        y: 0
+        z: -0.433012694
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 181
+        enabled: true
+        type: MapHexTile
+        hexTileType: 5
+      - id: 182
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 271
+  - id: 271
+    name: RadioStation
+    isStatic: false
+    isActive: true
+    transform:
+      id: 811
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 0.5
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 812
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 2
+        materials:
+          - 1
+    children:
+      []
+  - id: 64
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 183
+      enabled: true
+      position:
+        x: 6
+        y: 0
+        z: -0.866025388
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 184
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 185
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 250
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 717
+      enabled: true
+      position:
+        x: 0
+        y: 0.125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 718
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 195
+      - 114
+      - 140
+      - 113
+      - 139
+      - 112
+      - 168
+      - 167
+      - 166
+      - 17
+      - 18
+  - id: 195
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 576
+      enabled: true
+      position:
+        x: 3.75
+        y: 0
+        z: 3.03108883
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 577
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 578
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 114
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 333
+      enabled: true
+      position:
+        x: 3
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 334
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 335
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 140
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 411
+      enabled: true
+      position:
+        x: 3
+        y: 0
+        z: 0.866025388
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 412
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 413
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 113
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 330
+      enabled: true
+      position:
+        x: 2.25
+        y: 0
+        z: 1.29903805
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 331
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 332
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 139
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 408
+      enabled: true
+      position:
+        x: 3
+        y: 0
+        z: 1.73205078
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 409
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 410
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 112
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 327
+      enabled: true
+      position:
+        x: 2.25
+        y: 0
+        z: 2.16506338
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 328
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 329
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 168
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 495
+      enabled: true
+      position:
+        x: 3.75
+        y: 0
+        z: 1.29903805
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 496
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 497
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 167
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 492
+      enabled: true
+      position:
+        x: 3.75
+        y: 0
+        z: 2.16506338
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 493
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 494
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 166
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 489
+      enabled: true
+      position:
+        x: 3
+        y: 0
+        z: 2.59807611
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 490
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 491
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 17
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 42
+      enabled: true
+      position:
+        x: 4.5
+        y: 0
+        z: 2.59807611
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 43
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 44
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 18
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 45
+      enabled: true
+      position:
+        x: 4.5
+        y: 0
+        z: 3.46410155
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 46
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 47
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 231
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 679
+      enabled: true
+      position:
+        x: 0
+        y: 0.5
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 680
+        enabled: true
+        type: MapRegion
+        regionType: 0
+    children:
+      - 251
+      - 252
+      - 253
+  - id: 251
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 719
+      enabled: true
+      position:
+        x: 0
+        y: 0.125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 720
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 88
+      - 68
+      - 84
+      - 74
+      - 87
+      - 75
+      - 67
+      - 73
+      - 72
+  - id: 88
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 255
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 2.59807611
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 256
+        enabled: true
+        type: MapHexTile
+        hexTileType: 2
+      - id: 257
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 36
+  - id: 36
+    name: City
+    isStatic: false
+    isActive: true
+    transform:
+      id: 795
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 796
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 7
+        materials:
+          - 8
+    children:
+      []
+  - id: 68
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 195
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0.866025388
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 196
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 197
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 84
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 243
+      enabled: true
+      position:
+        x: -1.5
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 244
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 245
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 74
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 213
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 1.73205078
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 214
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 215
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 87
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 252
+      enabled: true
+      position:
+        x: -1.5
+        y: 0
+        z: 1.73205078
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 253
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 254
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 75
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 216
+      enabled: true
+      position:
+        x: -1.5
+        y: 0
+        z: 0.866025388
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 217
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 218
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 67
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 192
+      enabled: true
+      position:
+        x: -0.75
+        y: 0
+        z: 1.29903805
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 193
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 194
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 73
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 210
+      enabled: true
+      position:
+        x: -0.75
+        y: 0
+        z: 2.16506338
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 211
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 212
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 72
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 207
+      enabled: true
+      position:
+        x: -0.75
+        y: 0
+        z: 0.433012694
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 208
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 209
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 252
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 721
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 722
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 77
+      - 76
+      - 91
+      - 92
+      - 69
+      - 78
+      - 93
+  - id: 77
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 222
+      enabled: true
+      position:
+        x: 0.75
+        y: 0
+        z: 1.29903805
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 223
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 224
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 76
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 219
+      enabled: true
+      position:
+        x: 0.75
+        y: 0
+        z: 2.16506338
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 220
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 221
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 91
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 264
+      enabled: true
+      position:
+        x: 1.5
+        y: 0
+        z: 1.73205078
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 265
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 266
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 92
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 267
+      enabled: true
+      position:
+        x: 1.5
+        y: 0
+        z: 0.866025388
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 268
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 269
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 69
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 198
+      enabled: true
+      position:
+        x: 0.75
+        y: 0
+        z: 0.433012694
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 199
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 200
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 78
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 225
+      enabled: true
+      position:
+        x: 1.5
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 226
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 227
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 93
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 270
+      enabled: true
+      position:
+        x: 2.25
+        y: 0
+        z: 0.433012694
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 271
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 272
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 253
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 723
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 724
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 66
+      - 79
+      - 80
+      - 71
+      - 70
+      - 94
+  - id: 66
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 189
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 190
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 191
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 79
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 228
+      enabled: true
+      position:
+        x: 0.75
+        y: 0
+        z: -0.433012694
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 229
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 230
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 80
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 231
+      enabled: true
+      position:
+        x: 0.75
+        y: 0
+        z: -1.29903805
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 232
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 233
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 71
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 204
+      enabled: true
+      position:
+        x: -0.75
+        y: 0
+        z: -0.433012694
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 205
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 206
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 70
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 201
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: -0.866025388
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 202
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 203
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 94
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 273
+      enabled: true
+      position:
+        x: 1.5
+        y: 0
+        z: -0.866025388
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 274
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 275
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 232
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 681
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 682
+        enabled: true
+        type: MapRegion
+        regionType: 0
+    children:
+      - 257
+      - 258
+      - 259
+  - id: 257
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 731
+      enabled: true
+      position:
+        x: 0
+        y: 0.200000003
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 732
+        enabled: true
+        type: MapSector
+        sectorType: 2
+    children:
+      - 200
+      - 199
+      - 115
+      - 142
+      - 143
+      - 170
+      - 171
+      - 62
+  - id: 200
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 591
+      enabled: true
+      position:
+        x: 4.5
+        y: 0
+        z: -1.73205078
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 592
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 593
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 35
+  - id: 35
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 775
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 776
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 199
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 588
+      enabled: true
+      position:
+        x: 4.5
+        y: 0
+        z: -0.866025388
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 589
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 590
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 33
+  - id: 33
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 777
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 778
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 115
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 336
+      enabled: true
+      position:
+        x: 2.25
+        y: 0
+        z: -0.433012694
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 337
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 338
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 34
+  - id: 34
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 779
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 780
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 142
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 417
+      enabled: true
+      position:
+        x: 3
+        y: 0
+        z: -0.866025388
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 418
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 419
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 217
+  - id: 217
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 785
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 786
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 143
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 420
+      enabled: true
+      position:
+        x: 3
+        y: 0
+        z: -1.73205078
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 421
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 422
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 192
+  - id: 192
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 783
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 784
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 170
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 501
+      enabled: true
+      position:
+        x: 3.75
+        y: 0
+        z: -0.433012694
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 502
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 503
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 155
+  - id: 155
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 787
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 788
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 171
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 504
+      enabled: true
+      position:
+        x: 3.75
+        y: 0
+        z: -1.29903805
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 505
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 506
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 246
+  - id: 246
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 781
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 782
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 62
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 177
+      enabled: true
+      position:
+        x: 5.25
+        y: 0
+        z: -1.29903805
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 178
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 179
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 162
+  - id: 162
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 789
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 790
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 258
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 733
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 734
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 117
+      - 116
+      - 144
+      - 145
+      - 95
+      - 96
+  - id: 117
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 342
+      enabled: true
+      position:
+        x: 1.5
+        y: 0
+        z: -2.59807611
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 343
+        enabled: true
+        type: MapHexTile
+        hexTileType: 2
+      - id: 344
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 226
+  - id: 226
+    name: City
+    isStatic: false
+    isActive: true
+    transform:
+      id: 799
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 800
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 7
+        materials:
+          - 8
+    children:
+      []
+  - id: 116
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 339
+      enabled: true
+      position:
+        x: 2.25
+        y: 0
+        z: -1.29903805
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 340
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 341
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 144
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 423
+      enabled: true
+      position:
+        x: 2.25
+        y: 0
+        z: -2.16506338
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 424
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 425
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 145
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 426
+      enabled: true
+      position:
+        x: 2.25
+        y: 0
+        z: -3.03108883
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 427
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 428
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 95
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 276
+      enabled: true
+      position:
+        x: 1.5
+        y: 0
+        z: -1.73205078
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 277
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 278
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 96
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 279
+      enabled: true
+      position:
+        x: 0.75
+        y: 0
+        z: -2.16506338
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 280
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 281
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 259
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 735
+      enabled: true
+      position:
+        x: 0
+        y: 0.125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 736
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 201
+      - 202
+      - 172
+      - 173
+      - 60
+      - 59
+      - 61
+  - id: 201
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 594
+      enabled: true
+      position:
+        x: 3.75
+        y: 0
+        z: -2.16506338
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 595
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 596
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 202
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 597
+      enabled: true
+      position:
+        x: 3.75
+        y: 0
+        z: -3.03108883
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 598
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 599
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 172
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 507
+      enabled: true
+      position:
+        x: 3
+        y: 0
+        z: -2.59807611
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 508
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 509
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 173
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 510
+      enabled: true
+      position:
+        x: 3
+        y: 0
+        z: -3.46410155
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 511
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 512
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 60
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 171
+      enabled: true
+      position:
+        x: 4.5
+        y: 0
+        z: -3.46410155
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 172
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 173
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 59
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 168
+      enabled: true
+      position:
+        x: 3.75
+        y: 0
+        z: -3.89711428
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 169
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 170
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 61
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 174
+      enabled: true
+      position:
+        x: 4.5
+        y: 0
+        z: -2.59807611
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 175
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 176
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 233
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 683
+      enabled: true
+      position:
+        x: 0
+        y: 0.5
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 684
+        enabled: true
+        type: MapRegion
+        regionType: 0
+    children:
+      - 263
+      - 264
+      - 265
+  - id: 263
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 743
+      enabled: true
+      position:
+        x: 0
+        y: 0.125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 744
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 194
+      - 193
+      - 163
+      - 164
+      - 19
+      - 21
+      - 22
+      - 20
+  - id: 194
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 573
+      enabled: true
+      position:
+        x: 3.75
+        y: 0
+        z: 3.89711428
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 574
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 575
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 193
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 570
+      enabled: true
+      position:
+        x: 3
+        y: 0
+        z: 4.33012676
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 571
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 572
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 163
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 480
+      enabled: true
+      position:
+        x: 2.25
+        y: 0
+        z: 5.62916517
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 481
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 482
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 164
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 483
+      enabled: true
+      position:
+        x: 2.25
+        y: 0
+        z: 4.76313972
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 484
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 485
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 19
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 48
+      enabled: true
+      position:
+        x: 3.75
+        y: 0
+        z: 4.76313972
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 49
+        enabled: true
+        type: MapHexTile
+        hexTileType: 2
+      - id: 50
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 247
+  - id: 247
+    name: City
+    isStatic: false
+    isActive: true
+    transform:
+      id: 797
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 798
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 7
+        materials:
+          - 8
+    children:
+      []
+  - id: 21
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 54
+      enabled: true
+      position:
+        x: 3
+        y: 0
+        z: 5.19615221
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 55
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 56
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 22
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 57
+      enabled: true
+      position:
+        x: 2.25
+        y: 0
+        z: 6.49519062
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 58
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 59
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 20
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 51
+      enabled: true
+      position:
+        x: 3.75
+        y: 0
+        z: 5.62916517
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 52
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 53
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 264
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 745
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 746
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 110
+      - 138
+      - 111
+      - 137
+      - 165
+      - 90
+  - id: 110
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 321
+      enabled: true
+      position:
+        x: 1.5
+        y: 0
+        z: 3.46410155
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 322
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 323
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 138
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 405
+      enabled: true
+      position:
+        x: 2.25
+        y: 0
+        z: 3.03108883
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 406
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 407
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 111
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 324
+      enabled: true
+      position:
+        x: 1.5
+        y: 0
+        z: 2.59807611
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 325
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 326
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 137
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 402
+      enabled: true
+      position:
+        x: 2.25
+        y: 0
+        z: 3.89711428
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 403
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 404
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 165
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 486
+      enabled: true
+      position:
+        x: 3
+        y: 0
+        z: 3.46410155
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 487
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 488
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 90
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 261
+      enabled: true
+      position:
+        x: 0.75
+        y: 0
+        z: 3.03108883
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 262
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 263
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 265
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 747
+      enabled: true
+      position:
+        x: 0
+        y: 0.125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 748
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 132
+      - 136
+      - 134
+      - 161
+      - 25
+      - 24
+      - 26
+      - 23
+      - 106
+      - 108
+  - id: 132
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 387
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 4.33012676
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 388
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 389
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 136
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 399
+      enabled: true
+      position:
+        x: 1.5
+        y: 0
+        z: 4.33012676
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 400
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 401
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 134
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 393
+      enabled: true
+      position:
+        x: 0.75
+        y: 0
+        z: 4.76313972
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 394
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 395
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 161
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 474
+      enabled: true
+      position:
+        x: 1.5
+        y: 0
+        z: 5.19615221
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 475
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 476
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 25
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 66
+      enabled: true
+      position:
+        x: 0.75
+        y: 0
+        z: 5.62916517
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 67
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 68
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 24
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 63
+      enabled: true
+      position:
+        x: 0.75
+        y: 0
+        z: 6.49519062
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 64
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 65
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 26
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 69
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 5.19615221
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 70
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 71
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 23
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 60
+      enabled: true
+      position:
+        x: 1.5
+        y: 0
+        z: 6.06217766
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 61
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 62
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 106
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 309
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 3.46410155
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 310
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 311
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 108
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 315
+      enabled: true
+      position:
+        x: 0.75
+        y: 0
+        z: 3.89711428
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 316
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 317
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 234
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 685
+      enabled: true
+      position:
+        x: 0
+        y: 0.5
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 686
+        enabled: true
+        type: MapRegion
+        regionType: 0
+    children:
+      - 260
+      - 261
+      - 262
+  - id: 260
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 737
+      enabled: true
+      position:
+        x: 0
+        y: 0.200000003
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 738
+        enabled: true
+        type: MapSector
+        sectorType: 2
+    children:
+      - 211
+      - 209
+      - 150
+      - 151
+      - 180
+      - 181
+      - 182
+  - id: 211
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 624
+      enabled: true
+      position:
+        x: -3
+        y: 0
+        z: -5.19615221
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 625
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 626
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 133
+  - id: 133
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 749
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 750
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 209
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 618
+      enabled: true
+      position:
+        x: -2.25
+        y: 0
+        z: -5.62916517
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 619
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 620
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 131
+  - id: 131
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 753
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 754
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 150
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 441
+      enabled: true
+      position:
+        x: -1.5
+        y: 0
+        z: -4.33012676
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 442
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 443
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 126
+  - id: 126
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 755
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 756
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 151
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 444
+      enabled: true
+      position:
+        x: -2.25
+        y: 0
+        z: -3.89711428
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 445
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 446
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 102
+  - id: 102
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 759
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 760
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 180
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 531
+      enabled: true
+      position:
+        x: -1.5
+        y: 0
+        z: -5.19615221
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 532
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 533
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 135
+  - id: 135
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 751
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 752
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 181
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 534
+      enabled: true
+      position:
+        x: -2.25
+        y: 0
+        z: -4.76313972
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 535
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 536
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 107
+  - id: 107
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 761
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 762
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 182
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 537
+      enabled: true
+      position:
+        x: -3
+        y: 0
+        z: -4.33012676
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 538
+        enabled: true
+        type: MapHexTile
+        hexTileType: 4
+      - id: 539
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 89
+  - id: 89
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 757
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 758
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 1
+        materials:
+          - 11
+    children:
+      []
+  - id: 261
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 739
+      enabled: true
+      position:
+        x: 0
+        y: 0.125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 740
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 210
+      - 208
+      - 50
+      - 49
+      - 51
+      - 48
+  - id: 210
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 621
+      enabled: true
+      position:
+        x: -3
+        y: 0
+        z: -6.06217766
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 622
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 623
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 208
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 615
+      enabled: true
+      position:
+        x: -1.5
+        y: 0
+        z: -6.06217766
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 616
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 617
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 50
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 141
+      enabled: true
+      position:
+        x: -1.5
+        y: 0
+        z: -6.92820311
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 142
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 143
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 49
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 138
+      enabled: true
+      position:
+        x: -2.25
+        y: 0
+        z: -6.49519062
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 139
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 140
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 51
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 144
+      enabled: true
+      position:
+        x: -0.75
+        y: 0
+        z: -6.49519062
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 145
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 146
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 48
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 135
+      enabled: true
+      position:
+        x: -3
+        y: 0
+        z: -6.92820311
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 136
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 137
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 262
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 741
+      enabled: true
+      position:
+        x: 0
+        y: 0.125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 742
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 212
+      - 47
+      - 45
+      - 43
+      - 44
+      - 46
+  - id: 212
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 627
+      enabled: true
+      position:
+        x: -3.75
+        y: 0
+        z: -3.89711428
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 628
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 629
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 47
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 132
+      enabled: true
+      position:
+        x: -3.75
+        y: 0
+        z: -5.62916517
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 133
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 134
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 45
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 126
+      enabled: true
+      position:
+        x: -4.5
+        y: 0
+        z: -4.33012676
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 127
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 128
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 43
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 120
+      enabled: true
+      position:
+        x: -5.25
+        y: 0
+        z: -4.76313972
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 121
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 122
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 44
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 123
+      enabled: true
+      position:
+        x: -4.5
+        y: 0
+        z: -5.19615221
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 124
+        enabled: true
+        type: MapHexTile
+        hexTileType: 2
+      - id: 125
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 266
+  - id: 266
+    name: City
+    isStatic: false
+    isActive: true
+    transform:
+      id: 801
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 802
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 7
+        materials:
+          - 8
+    children:
+      []
+  - id: 46
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 129
+      enabled: true
+      position:
+        x: -3.75
+        y: 0
+        z: -4.76313972
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 130
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 131
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 235
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 687
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 688
+        enabled: true
+        type: MapRegion
+        regionType: 0
+    children:
+      - 254
+      - 255
+      - 256
+  - id: 254
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 725
+      enabled: true
+      position:
+        x: 0
+        y: 0.125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 726
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 121
+      - 81
+      - 82
+      - 98
+      - 99
+      - 100
+      - 97
+  - id: 121
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 354
+      enabled: true
+      position:
+        x: -0.75
+        y: 0
+        z: -3.03108883
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 355
+        enabled: true
+        type: MapHexTile
+        hexTileType: 5
+      - id: 356
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 270
+  - id: 270
+    name: RadioStation
+    isStatic: false
+    isActive: true
+    transform:
+      id: 809
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 0.5
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 810
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 2
+        materials:
+          - 1
+    children:
+      []
+  - id: 81
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 234
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: -1.73205078
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 235
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 236
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 82
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 237
+      enabled: true
+      position:
+        x: -0.75
+        y: 0
+        z: -1.29903805
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 238
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 239
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 98
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 285
+      enabled: true
+      position:
+        x: -0.75
+        y: 0
+        z: -2.16506338
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 286
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 287
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 99
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 288
+      enabled: true
+      position:
+        x: -1.5
+        y: 0
+        z: -2.59807611
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 289
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 290
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 100
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 291
+      enabled: true
+      position:
+        x: -1.5
+        y: 0
+        z: -1.73205078
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 292
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 293
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 97
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 282
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: -2.59807611
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 283
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 284
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 255
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 727
+      enabled: true
+      position:
+        x: 0
+        y: 0.125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 728
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 124
+      - 125
+      - 154
+      - 185
+      - 83
+      - 101
+  - id: 124
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 363
+      enabled: true
+      position:
+        x: -2.25
+        y: 0
+        z: -1.29903805
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 364
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 365
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 125
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 366
+      enabled: true
+      position:
+        x: -3
+        y: 0
+        z: -0.866025388
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 367
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 368
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 154
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 453
+      enabled: true
+      position:
+        x: -3
+        y: 0
+        z: -1.73205078
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 454
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 455
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 185
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 546
+      enabled: true
+      position:
+        x: -3.75
+        y: 0
+        z: -1.29903805
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 547
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 548
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 83
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 240
+      enabled: true
+      position:
+        x: -1.5
+        y: 0
+        z: -0.866025388
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 241
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 242
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 101
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 294
+      enabled: true
+      position:
+        x: -2.25
+        y: 0
+        z: -0.433012694
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 295
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 296
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 256
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 729
+      enabled: true
+      position:
+        x: 0
+        y: 0.125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 730
+        enabled: true
+        type: MapSector
+        sectorType: 0
+    children:
+      - 213
+      - 122
+      - 123
+      - 152
+      - 153
+      - 183
+      - 184
+  - id: 213
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 630
+      enabled: true
+      position:
+        x: -3.75
+        y: 0
+        z: -3.03108883
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 631
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 632
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 122
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 357
+      enabled: true
+      position:
+        x: -1.5
+        y: 0
+        z: -3.46410155
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 358
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 359
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 123
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 360
+      enabled: true
+      position:
+        x: -2.25
+        y: 0
+        z: -2.16506338
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 361
+        enabled: true
+        type: MapHexTile
+        hexTileType: 2
+      - id: 362
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      - 187
+  - id: 187
+    name: City
+    isStatic: false
+    isActive: true
+    transform:
+      id: 793
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 794
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 7
+        materials:
+          - 8
+    children:
+      []
+  - id: 152
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 447
+      enabled: true
+      position:
+        x: -2.25
+        y: 0
+        z: -3.03108883
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 448
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 449
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 153
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 450
+      enabled: true
+      position:
+        x: -3
+        y: 0
+        z: -2.59807611
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 451
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 452
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 183
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 540
+      enabled: true
+      position:
+        x: -3
+        y: 0
+        z: -3.46410155
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 541
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 542
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
+    children:
+      []
+  - id: 184
+    name: New GameObject
+    isStatic: false
+    isActive: true
+    transform:
+      id: 543
+      enabled: true
+      position:
+        x: -3.75
+        y: 0
+        z: -2.16506338
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 544
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 545
+        enabled: true
+        type: MeshRenderer
+        subTypes:
+          - Renderable
+        isTransparent: false
+        model: 3
+        materials:
+          - 3
     children:
       []

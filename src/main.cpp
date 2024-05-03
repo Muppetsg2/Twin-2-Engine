@@ -88,6 +88,9 @@
 #include <core/YamlConverters.h>
 #include <Generation/YamlConverters.h>
 
+// EDITOR
+#include <Editor/Common/ProcessingMtlFiles.h>
+
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
@@ -582,13 +585,13 @@ int main(int, char**)
     MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
     mapGenerator->tilemap = hexagonalTilemap;
     float tilemapGenerating = glfwGetTime();
-    mapGenerator->Generate();
+    //mapGenerator->Generate();
     spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
 
     ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
 
     tilemapGenerating = glfwGetTime();
-    contentGenerator->GenerateContent(hexagonalTilemap);
+    //contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
     /**/
 
@@ -1351,6 +1354,20 @@ void imgui_render()
             }
         }
 #pragma endregion
+
+
+#pragma region EDITOR_MATERIAL_SCANNING
+
+        if (ImGui::Button("Scan for new materials"))
+        {
+            filesystem::path src = "res/models";
+            filesystem::path dst = "res/materials/processed";
+            Editor::Common::processMTLFiles(src, dst);
+        }
+
+
+#pragma endregion
+
 
         ImGui::End();
     }

@@ -37,13 +37,21 @@ namespace Twin2Engine::Core
 		#endif // MESH_FRUSTUM_CULLING
 
 	public:
+
+		virtual void Initialize();
+		
+
 		virtual void Render() override;
 		virtual YAML::Node Serialize() const override;
 
+#pragma region MODEL_PART
 		GraphicEngine::InstatiatingModel GetModel() const;
-
 		size_t GetMeshCount() const;
+		void SetModel(const GraphicEngine::InstatiatingModel& model);
+		void SetModel(size_t modelId);
+#pragma endregion
 
+#pragma region MATERIALS_PART
 		GraphicEngine::InstatiatingMesh* GetMesh(size_t index) const;
 		size_t GetMaterialCount() const;
 		GraphicEngine::Material GetMaterial(size_t index) const;
@@ -51,6 +59,7 @@ namespace Twin2Engine::Core
 		void AddMaterial(size_t materialId);
 		void SetMaterial(size_t index, GraphicEngine::Material material);
 		void SetMaterial(size_t index, size_t materialId);
+#pragma endregion
 
 		#ifdef MESH_FRUSTUM_CULLING
 		virtual void OnEnable() override;
@@ -59,8 +68,6 @@ namespace Twin2Engine::Core
 		#endif // MESH_FRUSTUM_CULLING
 
 
-		void SetModel(const GraphicEngine::InstatiatingModel& model);
-		void SetModel(size_t modelId);
 	};
 }
 

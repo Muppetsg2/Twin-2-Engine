@@ -163,3 +163,13 @@ size_t STD140Struct::GetSize() const {
 	}
 	return size;
 }
+
+void STD140Struct::Clear()
+{
+	_currentOffset = 0;
+	_maxAligement = 0;
+
+	_offsets.clear();
+	_names.clear();
+	_data.clear();
+}

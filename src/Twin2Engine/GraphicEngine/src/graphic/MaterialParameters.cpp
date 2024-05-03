@@ -8,82 +8,27 @@ using namespace std;
 
  std::hash<std::string> MaterialParameters::hasher;
 
- MaterialParameters::MaterialParameters()
- {
-
- }
-
- MaterialParameters::MaterialParameters(const char* data, size_t size, const map<size_t, unsigned int>& variablesValuesOffsets, const map<size_t, char>& textureMappings, const vector<GLuint>& textures)
- {
-	 // Tworzenie UBO materialInput
-	 glGenBuffers(1, &_materialParametersDataUBO);
-	 glBindBuffer(GL_UNIFORM_BUFFER, _materialParametersDataUBO);
-	 // Initialization of buffer
-	 glBufferData(GL_UNIFORM_BUFFER, size, data, GL_DYNAMIC_DRAW);
-	 //glBindBufferBase(GL_UNIFORM_BUFFER, BINDING_POINT_MATERIAL_INPUT, _materialParametersDataUBO);
-	 glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-	 _materialData = vector<char>(size);
-	 std::memcpy(_materialData.data(), data, size);
-
-	 _variablesValuesOffsets = variablesValuesOffsets;
-	 _textureMappings = textureMappings;
-	 _textures = textures;
- }
-
-MaterialParameters::MaterialParameters(const std::vector<std::string>& variableNames, const std::vector<unsigned int>& parametersSizes, const std::vector<std::string>& textureParametersNames)
+MaterialParameters::MaterialParameters()
 {
-	unsigned int dataSize = 0;
-	const unsigned int vectorSize = variableNames.size() < parametersSizes.size() ? variableNames.size() : parametersSizes.size();
-	for (unsigned int i = 0; i < vectorSize; i++)
-	{
-		unsigned int left = 16u - (dataSize % 16u);
-		if (parametersSizes[i] > left)
-		{
-			dataSize += left;
-		}
-		_variablesValuesOffsets[hasher(variableNames[i])] = dataSize;
-		dataSize += parametersSizes[i];
-	}
-	unsigned int over = dataSize % 16u;
-	if (over)
-	{
-		_materialData.resize((size_t)dataSize + 16u - over);
-	}
-	_materialData.resize(dataSize);
 
-	_textures.resize(textureParametersNames.size());
-	for (int i = 0; i < textureParametersNames.size(); i++)
-	{
-		_textureMappings[hasher(textureParametersNames[i])] = i;
-	}
-}*/
+}
 
-//void Twin2Engine::GraphicEngine::MaterialParameters::AddTexture2D(const std::string& textureName, unsigned int textureId)
-//{
-//	size_t hashed = hasher(textureName);
-//
-//	if (_textureMappings.contains(hashed))
-//	{
-//		_textures[_textureMappings[hashed]] = textureId;
-//	}
-//	else
-//	{
-//		_textureMappings[hashed] = _textures.size();
-//		_textures.push_back(textureId);
-//	}
-//}
-//
-//void MaterialParameters::AlignData()
-//{
-//	unsigned int over = _materialData.size() % 16u;
-//	if (over)
-//	{
-//		_materialData.resize(_materialData.size() + 16u - over);
-//	}
-//}
+MaterialParameters::MaterialParameters(const STD140Struct& parameters, const map<size_t, char>& textureMappings, const vector<GLuint>& textures)
+{
+	_parameters = parameters;
+	// Tworzenie UBO materialInput
+	glGenBuffers(1, &_materialParametersDataUBO);
+	glBindBuffer(GL_UNIFORM_BUFFER, _materialParametersDataUBO);
+	// Initialization of buffer
+	glBufferData(GL_UNIFORM_BUFFER, _parameters.GetSize(), _parameters.GetData().data(), GL_DYNAMIC_DRAW);
+	//glBindBufferBase(GL_UNIFORM_BUFFER, BINDING_POINT_MATERIAL_INPUT, _materialParametersDataUBO);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-void Twin2Engine::GraphicEngine::MaterialParameters::SetTexture2D(const std::string& textureName, unsigned int textureId)
+	_textureMappings = textureMappings;
+	_textures = textures;
+}
+
+void MaterialParameters::SetTexture2D(const std::string& textureName, unsigned int textureId)
 {
 	size_t hashed = hasher(textureName);
 
@@ -93,7 +38,7 @@ void Twin2Engine::GraphicEngine::MaterialParameters::SetTexture2D(const std::str
 	}
 }
 
-void Twin2Engine::GraphicEngine::MaterialParameters::UploadTextures2D(unsigned int programId, int& beginLocation, int& textureBinded)
+void MaterialParameters::UploadTextures2D(unsigned int programId, int& beginLocation, int& textureBinded)
 {
 	for (int i = 0; i < _textures.size(); i++)
 	{
@@ -112,15 +57,12 @@ GLuint MaterialParameters::GetDataUBO() const
 {
 	return _materialParametersDataUBO;
 }
-//vector<char> MaterialParameters::GetData() const
-//{
-//	return _materialData;
-//}
+
 const char* MaterialParameters::GetData() const
 {
-	return _materialData.data();
+	return _parameters.GetData().data();
 }
 size_t MaterialParameters::GetSize() const
 {
-	return _materialData.size();
+	return _parameters.GetSize();
 }

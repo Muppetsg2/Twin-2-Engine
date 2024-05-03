@@ -138,6 +138,10 @@ namespace Twin2Engine::GraphicEngine {
 		STD140Struct(STD140Struct&& std140s) = default;
 		virtual ~STD140Struct() = default;
 
+		STD140Struct& operator=(STD140Struct& std140s) = default;
+		STD140Struct& operator=(const STD140Struct& std140s) = default;
+		STD140Struct& operator=(STD140Struct&& std140s) = default;
+
 #pragma region ADD_SCALARS
 		template<class T>
 		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>>
@@ -626,5 +630,7 @@ namespace Twin2Engine::GraphicEngine {
 		std::vector<char> GetData() const;
 		size_t GetBaseAligement() const;
 		size_t GetSize() const;
+
+		void Clear();
 	};
 }

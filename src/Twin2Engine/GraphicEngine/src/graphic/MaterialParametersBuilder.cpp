@@ -8,7 +8,7 @@ using namespace std;
 
 std::hash<std::string> MaterialParametersBuilder::hasher;
 
-void Twin2Engine::GraphicEngine::MaterialParametersBuilder::AddTexture2D(const std::string& textureName, unsigned int textureId)
+void MaterialParametersBuilder::AddTexture2D(const std::string& textureName, unsigned int textureId)
 {
 	size_t hashed = hasher(textureName);
 
@@ -23,26 +23,14 @@ void Twin2Engine::GraphicEngine::MaterialParametersBuilder::AddTexture2D(const s
 	}
 }
 
-void MaterialParametersBuilder::AlignData()
-{
-	unsigned int over = _materialData.size() % 16u;
-	if (over)
-	{
-		_materialData.resize(_materialData.size() + 16u - over);
-	}
-}
-
 MaterialParameters* MaterialParametersBuilder::Build()
 {
-	AlignData();
-
-	return new MaterialParameters(_materialData.data(), _materialData.size(), _variablesValuesOffsets, _textureMappings, _textures);
+	return new MaterialParameters(_parameters, _textureMappings, _textures);
 }
 
 void MaterialParametersBuilder::Clear()
 {
-	_materialData.clear();
-	_variablesValuesOffsets.clear();
+	_parameters.Clear();
 	_textureMappings.clear();
 	_textures.clear();
 }

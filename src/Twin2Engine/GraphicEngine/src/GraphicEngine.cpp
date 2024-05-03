@@ -39,7 +39,7 @@ void GLAPIENTRY Twin2Engine::Graphic::ErrorMessageCallback(GLenum source, GLenum
 }
 #endif
 
-void GraphicEngine::Init(const std::string& window_name, int32_t window_width, int32_t window_height, int32_t gl_version_major, int32_t gl_version_minor)
+void GraphicEngine::Init(const std::string& window_name, int32_t window_width, int32_t window_height, bool fullscreen, int32_t gl_version_major, int32_t gl_version_minor)
 {
 	// Setup window
 #if _DEBUG
@@ -58,7 +58,7 @@ void GraphicEngine::Init(const std::string& window_name, int32_t window_width, i
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 
-	Window::MakeWindow(window_name, { window_width, window_height }, false);
+	Window::MakeWindow(window_name, { window_width, window_height }, fullscreen);
 
 	bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 	if (err)

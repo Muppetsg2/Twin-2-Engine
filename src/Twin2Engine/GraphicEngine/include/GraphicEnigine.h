@@ -25,7 +25,7 @@ namespace Twin2Engine::Graphic
 	class GraphicEngine
 	{
 	public:
-		static void Init(const std::string& window_name, int32_t window_width, int32_t window_height, int32_t gl_version_major, int32_t gl_version_minor);
+		static void Init(const std::string& window_name, int32_t window_width, int32_t window_height, bool fullscreen, int32_t gl_version_major, int32_t gl_version_minor);
 		static void End();
 
 		static void Render();

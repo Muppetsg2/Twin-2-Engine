@@ -122,46 +122,6 @@ bool mouseNotUsed = true;
 
 #pragma endregion
 
-#if _DEBUG
-#pragma region OpenGLCallbackFunctions
-
-static void glfw_error_callback(int error, const char* description)
-{
-    spdlog::error("Glfw Error {0}: {1}\n", error, description);
-}
-
-static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
-{
-    //if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) return; // Chce ignorowa� notyfikacje
-
-    string severityS = "";
-    if (severity == GL_DEBUG_SEVERITY_HIGH) severityS = "HIGHT";
-    else if (severity == GL_DEBUG_SEVERITY_MEDIUM) severityS = "MEDIUM";
-    else if (severity == GL_DEBUG_SEVERITY_LOW) severityS = "LOW";
-    else if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) severityS = "NOTIFICATION";
-
-    if (type == GL_DEBUG_TYPE_ERROR) {
-        spdlog::error("GL CALLBACK: type = ERROR, severity = {0}, message = {1}\n", severityS, message);
-    }
-    else if (type == GL_DEBUG_TYPE_MARKER) {
-        spdlog::info("GL CALLBACK: type = MARKER, severity = {0}, message = {1}\n", severityS, message);
-    }
-    else {
-        string typeS = "";
-        if (type == GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR) typeS = "DEPRACTED BEHAVIOUR";
-        else if (type == GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR) typeS = "UNDEFINED BEHAVIOUR";
-        else if (type == GL_DEBUG_TYPE_PORTABILITY) typeS = "PORTABILITY";
-        else if (type == GL_DEBUG_TYPE_PERFORMANCE) typeS = "PERFORMANCE";
-        else if (type == GL_DEBUG_TYPE_PUSH_GROUP) typeS = "PUSH GROUP";
-        else if (type == GL_DEBUG_TYPE_POP_GROUP) typeS = "POP GROUP";
-        else if (type == GL_DEBUG_TYPE_OTHER) typeS = "OTHER";
-        spdlog::warn("GL CALLBACK: type = {0}, severity = {1}, message = {2}\n", typeS, severityS, message);
-    }
-}
-
-#pragma endregion
-#endif
-
 #pragma region FunctionsDeclaration
 
 bool init();
@@ -187,14 +147,14 @@ double mod(double val1, double val2);
 
 constexpr int32_t WINDOW_WIDTH  = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
-const char* WINDOW_NAME = "Twin^2 Engine";
+constexpr const char* WINDOW_NAME = "Twin^2 Engine";
 
 Window* window = nullptr;
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
-const     char*   glsl_version     = "#version 450";
 constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 5;
+constexpr const char* glsl_version = "#version 450";
 
 Material material;
 Material material2;
@@ -232,19 +192,6 @@ int main(int, char**)
 #endif
 
 #pragma endregion
-
-    // Initialize stdout color sink
-    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    console_sink->set_level(spdlog::level::debug);
-
-    // Create a logger with the stdout color sink
-    auto logger = std::make_shared<spdlog::logger>("logger", console_sink);
-    spdlog::register_logger(logger);
-
-    // Set global log level to debug
-    spdlog::set_level(spdlog::level::debug);
-
-    GraphicEngine::Init();
 
 #pragma region DESERIALIZERS
     // COMPONENTS DESELIALIZERS
@@ -587,15 +534,6 @@ int main(int, char**)
 
 
 #pragma endregion
-
-    //InstatiatingModel modelHexagon = ModelsManager::LoadModel("res/models/hexagon.obj");
-    //GameObject* hexagonPrefab = new GameObject();
-    //hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
-    //hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
-    //auto comp = hexagonPrefab->AddComponent<MeshRenderer>();
-    //comp->AddMaterial(MaterialsManager::GetMaterial("multiTexture"));
-    ////comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
-    //comp->SetModel(modelHexagon);
     
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
@@ -635,13 +573,8 @@ int main(int, char**)
 
     // Cleanup
     SceneManager::UnloadAll();
-    SpriteManager::UnloadAll();
-    TextureManager::UnloadAll();
     AudioManager::UnloadAll();
-    FontManager::UnloadAll();
     CollisionManager::UnloadAll();
-    LightingController::UnloadAll();
-    GraphicEngine::End();
     Input::FreeAllWindows();
 
 #if _DEBUG
@@ -650,65 +583,18 @@ int main(int, char**)
     ImGui::DestroyContext();
 #endif
 
-    Window::FreeAll();
-
-    glfwTerminate();
+    GraphicEngine::End();
 
     return 0;
 }
 
 bool init()
 {
-    // Setup window
-#if _DEBUG
-    glfwSetErrorCallback(glfw_error_callback);
-#endif
+    GraphicEngine::Init(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, GL_VERSION_MAJOR, GL_VERSION_MINOR);
 
-    if (!glfwInit())
-    {
-        spdlog::error("Failed to initalize GLFW!");
-        return false;
-    }
-
-    // GL 4.5 + GLSL 450
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GL_VERSION_MAJOR);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GL_VERSION_MINOR);
-    glfwWindowHint(GLFW_OPENGL_PROFILE,        GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
-
-    window = Window::MakeWindow(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT }, false);
+    window = Window::GetInstance();
+    if (window == nullptr) return false;
     Input::InitForWindow(window);
-
-    bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-    if (err)
-    {
-        spdlog::error("Failed to initialize OpenGL loader!");
-        return false;
-    }
-    spdlog::info("Successfully initialized OpenGL loader!");
-
-    
-#ifdef _DEBUG
-    // Debugging
-    glEnable(GL_DEBUG_OUTPUT);
-    glDebugMessageCallback(ErrorMessageCallback, 0);
-
-    const GLubyte* renderer = glGetString(GL_RENDERER);
-    spdlog::info("Graphic Card: {0}", (char*)renderer);
-#endif
-
-    // Blending
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    // Depth Test
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-
-    // Face Culling
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
 
     ScriptableObject::Init();
 
@@ -718,6 +604,17 @@ bool init()
         return EXIT_FAILURE;
     }
     spdlog::info("Initialized SoLoud.");
+
+    // Initialize stdout color sink
+    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+    console_sink->set_level(spdlog::level::debug);
+
+    // Create a logger with the stdout color sink
+    auto logger = std::make_shared<spdlog::logger>("logger", console_sink);
+    spdlog::register_logger(logger);
+
+    // Set global log level to debug
+    spdlog::set_level(spdlog::level::debug);
 
     return true;
 }

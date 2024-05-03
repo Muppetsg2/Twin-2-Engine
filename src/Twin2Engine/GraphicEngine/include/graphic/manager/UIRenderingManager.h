@@ -31,6 +31,7 @@ namespace Twin2Engine
 
 
 			static void Init();
+			static void UnloadAll();
 
 			static void Render();
 		public:

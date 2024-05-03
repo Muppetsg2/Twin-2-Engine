@@ -18,6 +18,11 @@ void UIRenderingManager::Init() {
 	_uiShader = ShaderManager::GetShaderProgram("origin/UI");
 }
 
+void UIRenderingManager::UnloadAll() {
+	while (!_renderQueue.empty()) _renderQueue.pop();
+	_uiShader = nullptr;
+}
+
 void UIRenderingManager::Render()
 {
 	_uiShader->Use();

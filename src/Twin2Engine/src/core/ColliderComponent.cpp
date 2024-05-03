@@ -1,10 +1,10 @@
 #include <core/ColliderComponent.h>
 #include <core/GameObject.h>
-#include <physics/CollisionManager.h>
+#include <physic/CollisionManager.h>
 #include <tools/YamlConverters.h>
 
 using namespace Twin2Engine::Core;
-using namespace Twin2Engine::PhysicsEngine;
+using namespace Twin2Engine::Physic;
 using namespace Twin2Engine::Tools;
 
 void ColliderComponent::OnCollisionEnter(Collision* collision)

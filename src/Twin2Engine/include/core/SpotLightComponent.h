@@ -10,7 +10,7 @@ namespace Twin2Engine::Core {
 	private:
 		bool dirtyFlag = false;
 		glm::vec3 localDirection;
-		GraphicEngine::SpotLight* light = new GraphicEngine::SpotLight();
+		Graphic::SpotLight* light = new Graphic::SpotLight();
 		Tools::Action<Transform*> OnChangeTransform;
 		size_t OnChangeTransformId;
 		//protected:

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Twin2Engine::PhysicsEngine {
+namespace Twin2Engine::Physic {
 	class Collider;
 
 	struct Collision {

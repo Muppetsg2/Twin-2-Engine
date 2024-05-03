@@ -10,7 +10,7 @@ namespace Twin2Engine::Core {
 	private:
 		bool dirtyFlag = false;
 		//glm::vec3 localDirection;
-		GraphicEngine::DirectionalLight* light = new GraphicEngine::DirectionalLight();
+		Graphic::DirectionalLight* light = new Graphic::DirectionalLight();
 		Tools::Action<Transform*> OnChangePosition;
 		size_t OnChangePositionId;
 		Tools::Method OnViewerChange;

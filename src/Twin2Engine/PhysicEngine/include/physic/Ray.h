@@ -5,9 +5,9 @@ namespace Twin2Engine::Core {
 	class ColliderComponent;
 }
 
-namespace Twin2Engine::PhysicsEngine {
+namespace Twin2Engine::Physic {
 	struct RaycastHit {
-		Twin2Engine::Core::ColliderComponent* collider = nullptr;
+		Core::ColliderComponent* collider = nullptr;
 		glm::vec3 position;
 	};
 

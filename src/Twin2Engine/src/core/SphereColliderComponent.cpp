@@ -1,12 +1,12 @@
 #include <core/SphereColliderComponent.h>
 #include <core/GameObject.h>
-#include <physics/CollisionManager.h>
+#include <physic/CollisionManager.h>
 #include <tools/YamlConverters.h>
-#include <physics/GameCollider.h>
+#include <physic/GameCollider.h>
 #include <core/ColliderComponent.h>
 
 using namespace Twin2Engine::Core;
-using namespace Twin2Engine::PhysicsEngine;
+using namespace Twin2Engine::Physic;
 
 SphereColliderComponent::SphereColliderComponent() : ColliderComponent()
 {

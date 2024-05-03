@@ -3,18 +3,13 @@
 
 #include <graphic/InstatiatingMesh.h>
 
-namespace Twin2Engine::GraphicEngine
+namespace Twin2Engine::Graphic
 {
     struct ModelData
     {
         size_t id;
         std::vector<InstatiatingMesh*> meshes;
     };
-
-    //bool operator<(const ModelData& data1, const ModelData& data2)
-    //{
-    //    return data1.modelHash < data2.modelHash;
-    //}
 }
 
 #endif

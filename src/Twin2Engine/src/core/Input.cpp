@@ -4,7 +4,7 @@
 using namespace std;
 using namespace glm;
 using namespace Twin2Engine::Core;
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 
 GLFWwindow* Input::_mainWindow = nullptr;
 

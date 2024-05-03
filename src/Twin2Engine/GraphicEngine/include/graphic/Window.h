@@ -2,7 +2,7 @@
 
 #include <tools/EventHandler.h>
 
-namespace Twin2Engine::GraphicEngine {
+namespace Twin2Engine::Graphic {
 	class Window {
 	private:
 		static Window* _instance;

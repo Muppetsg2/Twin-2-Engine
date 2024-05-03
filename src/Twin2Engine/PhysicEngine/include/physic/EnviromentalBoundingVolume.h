@@ -1,10 +1,10 @@
 #ifndef _ENVIROMENTALBOUNDINGVOLUME_H_
 #define _ENVIROMENTALBOUNDINGVOLUME_H_
 
-#include <physics/BoundingVolume.h>
+#include <physic/BoundingVolume.h>
 
 
-namespace Twin2Engine::PhysicsEngine {
+namespace Twin2Engine::Physic {
 	class EnviromentalBoundingVolume : public BoundingVolume {
 	public:
 		std::vector<EnviromentalBoundingVolume*> ChildrenBoundingVolume;

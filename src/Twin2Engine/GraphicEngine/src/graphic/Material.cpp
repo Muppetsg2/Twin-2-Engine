@@ -1,13 +1,8 @@
 #include <graphic/Material.h>
 #include <graphic/manager/MaterialsManager.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
-
-//Material::Material(Shader* shader)
-//{
-//	_shader = shader;
-//}
 
 Material::Material(MaterialData* materialData)
 {
@@ -82,7 +77,7 @@ bool Material::operator!=(const Material& other)
 //	return _materialData->id < other._materialData->id;
 //}
 
-Shader* Twin2Engine::GraphicEngine::Material::GetShader() const
+Shader* Material::GetShader() const
 {
 	if (_materialData == nullptr)
 	{
@@ -92,7 +87,7 @@ Shader* Twin2Engine::GraphicEngine::Material::GetShader() const
 	return _materialData->shader;
 }
 
-size_t Twin2Engine::GraphicEngine::Material::GetId() const
+size_t Material::GetId() const
 {
 	if (_materialData == nullptr)
 	{
@@ -102,12 +97,12 @@ size_t Twin2Engine::GraphicEngine::Material::GetId() const
 	return _materialData->id;
 }
 
-MaterialParameters* Twin2Engine::GraphicEngine::Material::GetMaterialParameters() const
+MaterialParameters* Material::GetMaterialParameters() const
 {
 	return _materialData->materialParameters;
 }
 
-bool Twin2Engine::GraphicEngine::operator<(const Material& material1, const Material& material2)
+bool Twin2Engine::Graphic::operator<(const Material& material1, const Material& material2)
 {
 	return material1.GetId() < material2.GetId();
 }

@@ -27,8 +27,8 @@
 
 namespace Twin2Engine
 {
-	namespace GraphicEngine {
-		class GraphicEngineManager;
+	namespace Graphic {
+		class GraphicEngine;
 		class InstatiatingMesh;
 		class Material;
 	}
@@ -42,28 +42,28 @@ namespace Twin2Engine
 		};
 
 		struct MeshRenderData {
-			std::vector<GraphicEngine::InstatiatingMesh*> meshes;
-			std::vector<GraphicEngine::Material> materials;
+			std::vector<Graphic::InstatiatingMesh*> meshes;
+			std::vector<Graphic::Material> materials;
 			glm::mat4 transform;
 			bool isTransparent;
 		};
 
 		class MeshRenderingManager
 		{
-			friend class GraphicEngine::GraphicEngineManager;
+			friend class Graphic::GraphicEngine;
 
 		private:
 #if RENERING_TYPE_MESH_SHADER_MATERIAL
-			static std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _renderQueue;
-			static std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
+			static std::map<Graphic::InstatiatingMesh*, std::map<Graphic::Shader*, std::map<Graphic::Material, std::queue<MeshRenderData>>>>  _renderQueue;
+			static std::map<Graphic::InstatiatingMesh*, std::map<Graphic::Shader*, std::map<Graphic::Material, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
 #elif RENERING_TYPE_SHADER_MATERIAL_MESH
-			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>>>>  _renderQueue;
-			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
+			static std::map<Graphic::Shader*, std::map<Graphic::Material, std::map<Graphic::InstatiatingMesh*, std::queue<MeshRenderData>>>>  _renderQueue;
+			static std::map<Graphic::Shader*, std::map<Graphic::Material, std::map<Graphic::InstatiatingMesh*, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
 #elif RENERING_TYPE_SHADER_MESH_MATERIAL
-			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::InstatiatingMesh*,  std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _renderQueue;
-			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::InstatiatingMesh*,  std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
+			static std::map<Graphic::Shader*, std::map<Graphic::InstatiatingMesh*,  std::map<Graphic::Material, std::queue<MeshRenderData>>>>  _renderQueue;
+			static std::map<Graphic::Shader*, std::map<Graphic::InstatiatingMesh*,  std::map<Graphic::Material, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
 #endif
-			static std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>> _depthQueue;
+			static std::map<Graphic::InstatiatingMesh*, std::queue<MeshRenderData>> _depthQueue;
 
 			static GLuint _instanceDataSSBO;
 			static GLuint _materialIndexSSBO;

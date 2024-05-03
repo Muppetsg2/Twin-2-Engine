@@ -1,6 +1,6 @@
 #include <graphic/Window.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Tools;
 using namespace std;
 using namespace glm;

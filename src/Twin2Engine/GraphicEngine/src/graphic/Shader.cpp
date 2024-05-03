@@ -1,7 +1,7 @@
 #include <graphic/Shader.h>
 #include <graphic/manager/ShaderManager.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
 Shader::Shader(const Shader&& shader)

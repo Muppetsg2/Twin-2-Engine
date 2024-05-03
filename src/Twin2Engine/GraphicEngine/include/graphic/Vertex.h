@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Twin2Engine::GraphicEngine
+namespace Twin2Engine::Graphic
 {
     struct Vertex {
         glm::vec3 Position;

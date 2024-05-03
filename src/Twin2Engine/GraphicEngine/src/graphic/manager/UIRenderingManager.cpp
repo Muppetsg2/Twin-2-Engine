@@ -4,7 +4,7 @@
 #include <graphic/manager/ModelsManager.h>
 #include <graphic/InstatiatingModel.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 using namespace std;
 using namespace glm;

@@ -1,7 +1,7 @@
 #include <graphic/manager/ShaderManager.h>
 #include <graphic/LightingController.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
 GLenum ShaderManager::binaryFormat = 1;

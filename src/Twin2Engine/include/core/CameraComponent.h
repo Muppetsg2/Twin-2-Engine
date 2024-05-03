@@ -2,11 +2,11 @@
 
 #include <core/Component.h>
 #include <graphic/Frustum.h>
-#include <physics/Ray.h>
+#include <physic/Ray.h>
 
 using namespace glm;
 
-namespace Twin2Engine::GraphicEngine {
+namespace Twin2Engine::Graphic {
 	class InstatiatingModel;
 	class Shader;
 }
@@ -37,8 +37,8 @@ namespace Twin2Engine::Core {
 	private:
 		static GLuint _uboMatrices;
 		static GLuint _uboWindowData;
-		static Twin2Engine::GraphicEngine::InstatiatingModel _renderPlane;
-		static Twin2Engine::GraphicEngine::Shader* _renderShader;
+		static Graphic::InstatiatingModel _renderPlane;
+		static Graphic::Shader* _renderShader;
 
 		GLuint _depthMapFBO = NULL;
 		GLuint _depthMap = NULL;
@@ -95,7 +95,7 @@ namespace Twin2Engine::Core {
 		vec3 GetRight() const;
 		mat4 GetViewMatrix() const;
 		mat4 GetProjectionMatrix() const;
-		GraphicEngine::Frustum GetFrustum() const;
+		Graphic::Frustum GetFrustum() const;
 
 		bool IsMain() const;
 
@@ -133,7 +133,7 @@ namespace Twin2Engine::Core {
 		void OnDisable() override;
 		*/
 
-		PhysicsEngine::Ray GetScreenPointRay(glm::vec2 screenPosition);
+		Physic::Ray GetScreenPointRay(glm::vec2 screenPosition) const;
 	};
 }
 

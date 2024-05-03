@@ -1,8 +1,8 @@
-#include <physics/GameCollider.h>
+#include <physic/GameCollider.h>
 
 //#define USE_BOUNDING_VOLUMES
 
-using namespace Twin2Engine::PhysicsEngine;
+using namespace Twin2Engine::Physic;
 
 GameCollider::GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, SphereColliderData* sphereColliderData)
 	: colliderComponent(colliderComponent) {
@@ -90,13 +90,13 @@ Collision* GameCollider::collide(Collider* other) {
 				if (isTrigger) {
 					//Execute OnTriggerEnter
 					SPDLOG_INFO("{} - OnTriggerEnter", colliderId);
-					Twin2Engine::PhysicsEngine::Collision* col = new Twin2Engine::PhysicsEngine::Collision();
+					Collision* col = new Collision();
 					col->collider = (GameCollider*)collision->collider;
 					col->otherCollider = (GameCollider*)collision->otherCollider;
 					OnTriggerEnter.Invoke(col);
 					delete col;
 
-					col = new Twin2Engine::PhysicsEngine::Collision();
+					col = new Collision();
 					col->collider = (GameCollider*)collision->otherCollider;
 					col->otherCollider = (GameCollider*)collision->collider;
 					((GameCollider*)other)->OnTriggerEnter.Invoke(col);
@@ -145,14 +145,14 @@ Collision* GameCollider::collide(Collider* other) {
 
 					//Execute OnCollisionEnter
 					SPDLOG_INFO("{} - OnCollisionEnter", colliderId);
-					Twin2Engine::PhysicsEngine::Collision* col = new Twin2Engine::PhysicsEngine::Collision();
+					Collision* col = new Collision();
 					col->collider = (GameCollider*)collision->collider;
 					col->otherCollider = (GameCollider*)collision->otherCollider;
 					col->separation = collision->separation;
 					OnCollisionEnter.Invoke(col);
 					delete col;
 
-					col = new Twin2Engine::PhysicsEngine::Collision();
+					col = new Collision();
 					col->collider = (GameCollider*)collision->otherCollider;
 					col->otherCollider = (GameCollider*)collision->collider;
 					col->separation = -collision->separation;

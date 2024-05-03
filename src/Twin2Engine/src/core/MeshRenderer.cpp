@@ -7,10 +7,10 @@
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Tools;
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
-void Twin2Engine::Core::MeshRenderer::Initialize()
+void MeshRenderer::Initialize()
 {
 
 }
@@ -119,21 +119,21 @@ void MeshRenderer::SetMaterial(size_t index, size_t materialId)
 }
 
 #ifdef MESH_FRUSTUM_CULLING
-void Twin2Engine::Core::MeshRenderer::OnEnable()
+void MeshRenderer::OnEnable()
 {
 	if (_model != nullptr && OnTransformChangedActionId == -1) {
 		OnTransformChangedActionId = GetTransform()->OnEventTransformChanged += OnTransformChangedAction;
 	}
 }
 
-void Twin2Engine::Core::MeshRenderer::OnDisable()
+void MeshRenderer::OnDisable()
 {
 	if (_model != nullptr && OnTransformChangedActionId != -1) {
 		GetTransform()->OnEventTransformChanged -= OnTransformChangedActionId;
 	}
 }
 
-void Twin2Engine::Core::MeshRenderer::OnDestroy()
+void MeshRenderer::OnDestroy()
 {
 	if (_model != nullptr && OnTransformChangedActionId != -1) {
 		GetTransform()->OnEventTransformChanged -= OnTransformChangedActionId;
@@ -141,7 +141,7 @@ void Twin2Engine::Core::MeshRenderer::OnDestroy()
 }
 #endif // MESH_FRUSTUM_CULLING
 
-void MeshRenderer::SetModel(const GraphicEngine::InstatiatingModel& model)
+void MeshRenderer::SetModel(const InstatiatingModel& model)
 {
 	_model = model;
 

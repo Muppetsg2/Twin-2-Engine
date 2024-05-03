@@ -1,13 +1,12 @@
 #pragma once
 
-#include <GraphicEnigineManager.h>
 #include <graphic/InstatiatingModel.h>
 #include <graphic/Shader.h>
 #include <graphic/Window.h>
 
 namespace Twin2Engine
 {
-	namespace GraphicEngine {
+	namespace Graphic {
 		class GraphicEngine;
 	}
 
@@ -27,8 +26,8 @@ namespace Twin2Engine
 		{
 		private:
 			static std::queue<UIElement> _renderQueue;
-			static GraphicEngine::InstatiatingModel _spritePlane;
-			static GraphicEngine::Shader* _uiShader;
+			static Graphic::InstatiatingModel _spritePlane;
+			static Graphic::Shader* _uiShader;
 
 
 			static void Init();
@@ -37,7 +36,7 @@ namespace Twin2Engine
 		public:
 			static void Render(UIElement elem);
 
-			friend class GraphicEngine::GraphicEngineManager;
+			friend class Graphic::GraphicEngine;
 		};
 	}
 }

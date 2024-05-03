@@ -10,7 +10,7 @@ namespace Twin2Engine
 		class MaterialsManager;
 	}
 
-	namespace GraphicEngine {
+	namespace Graphic {
 		class MaterialParametersBuilder;
 
 		class MaterialParameters

@@ -9,27 +9,16 @@
 
 #define DEBUG_GRAPHIC_ENGINE false
 
-namespace Twin2Engine::GraphicEngine
+namespace Twin2Engine::Graphic
 {
-	class GraphicEngineManager
+	class GraphicEngine
 	{
-
-	private:
-		//static GLuint _depthMapFBO;
-		//static GLuint _depthMap;
-
 	public:
-		//GraphicEngineManager();
-		//virtual ~GraphicEngineManager();
-
 		static void Init();
 		static void End();
 
-
 		static void Render();
 		static void DepthRender();
-
-		//static GLuint GetDepthMap();
 	};
 }
 

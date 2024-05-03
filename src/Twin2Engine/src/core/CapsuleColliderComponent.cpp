@@ -1,9 +1,9 @@
 #include <core/CapsuleColliderComponent.h>
-#include <physics/CollisionManager.h>
+#include <physic/CollisionManager.h>
 #include <core/GameObject.h>
 #include <tools/YamlConverters.h>
 
-using namespace Twin2Engine::PhysicsEngine;
+using namespace Twin2Engine::Physic;
 using namespace Twin2Engine::Core;
 
 CapsuleColliderComponent::CapsuleColliderComponent() : ColliderComponent()

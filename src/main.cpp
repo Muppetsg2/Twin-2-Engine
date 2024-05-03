@@ -29,7 +29,7 @@
 #include <core/AudioComponent.h>
 
 // GRAPHIC_ENGINE
-#include <GraphicEnigineManager.h>
+#include <GraphicEnigine.h>
 
 // LOGGER
 #include <spdlog/spdlog.h>
@@ -39,7 +39,7 @@
 #include <string>
 
 // COLLISIONS
-#include <physics/CollisionManager.h>
+#include <physic/CollisionManager.h>
 #include <core/BoxColliderComponent.h>
 #include <core/CapsuleColliderComponent.h>
 #include <core/SphereColliderComponent.h>
@@ -94,8 +94,8 @@
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
-using namespace Twin2Engine::GraphicEngine;
-using namespace Twin2Engine::PhysicsEngine;
+using namespace Twin2Engine::Graphic;
+using namespace Twin2Engine::Physic;
 
 using Twin2Engine::Core::Input;
 using Twin2Engine::Core::KEY;
@@ -231,13 +231,6 @@ int main(int, char**)
     spdlog::info("Initialized ImGui.");
 #endif
 
-    SoLoud::result res = AudioManager::Init();
-    if (res != 0) {
-        spdlog::error(AudioManager::GetErrorString(res));
-        return EXIT_FAILURE;
-    }
-    spdlog::info("Initialized SoLoud.");
-
 #pragma endregion
 
     // Initialize stdout color sink
@@ -251,7 +244,7 @@ int main(int, char**)
     // Set global log level to debug
     spdlog::set_level(spdlog::level::debug);
 
-    GraphicEngineManager::Init();
+    GraphicEngine::Init();
 
 #pragma region DESERIALIZERS
     // COMPONENTS DESELIALIZERS
@@ -648,7 +641,7 @@ int main(int, char**)
     FontManager::UnloadAll();
     CollisionManager::UnloadAll();
     LightingController::UnloadAll();
-    GraphicEngineManager::End();
+    GraphicEngine::End();
     Input::FreeAllWindows();
 
 #if _DEBUG
@@ -718,6 +711,13 @@ bool init()
     glFrontFace(GL_CCW);
 
     ScriptableObject::Init();
+
+    SoLoud::result res = AudioManager::Init();
+    if (res != 0) {
+        spdlog::error(AudioManager::GetErrorString(res));
+        return EXIT_FAILURE;
+    }
+    spdlog::info("Initialized SoLoud.");
 
     return true;
 }

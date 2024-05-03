@@ -2,7 +2,7 @@
 
 #include <graphic/manager/MeshRenderingManager.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 
 LightingController* LightingController::instance = nullptr;
 const int LightingController::SHADOW_WIDTH = 2048;
@@ -192,7 +192,7 @@ void LightingController::UpdateDL(DirectionalLight* dirLight) {
 }
 
 
-void LightingController::BindLightBuffors(Twin2Engine::GraphicEngine::Shader* shader) {
+void LightingController::BindLightBuffors(Shader* shader) {
 	GLuint block_index = 0;
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, LightsBuffer);
@@ -207,7 +207,7 @@ void LightingController::BindLightBuffors(Twin2Engine::GraphicEngine::Shader* sh
 	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "3]").c_str()), 11);
 }
 
-void LightingController::UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader* shader) {
+void LightingController::UpdateShadowMapsTab(Shader* shader) {
 	int i = 0;
 	shader->Use();
 	SPDLOG_INFO("Aktualizacja shadow mapy");

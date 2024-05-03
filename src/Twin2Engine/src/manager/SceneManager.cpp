@@ -12,7 +12,7 @@ using namespace Twin2Engine::Manager;
 using namespace std;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Tools;
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 
 size_t SceneManager::_currentSceneId;
 std::string SceneManager::_currentSceneName;

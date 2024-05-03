@@ -1,12 +1,12 @@
 #include <graphic/manager/MaterialsManager.h>
 #include <graphic/LightingController.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 using namespace glm;
 
 std::hash<std::string> MaterialsManager::stringHash;
-std::map<size_t, Twin2Engine::GraphicEngine::MaterialData*> MaterialsManager::loadedMaterials;
+std::map<size_t, MaterialData*> MaterialsManager::loadedMaterials;
 
 std::map<size_t, std::string> MaterialsManager::materialsPaths;
 

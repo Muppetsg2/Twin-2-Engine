@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Twin2Engine::GraphicEngine {
+namespace Twin2Engine::Graphic {
     struct FrustumPlane {
         glm::vec3 point = { 0.f, 0.f, 0.f };
         glm::vec3 normal = { 0.f, 1.f, 0.f };

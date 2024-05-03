@@ -1,9 +1,9 @@
-#include <GraphicEnigineManager.h>
+#include <GraphicEnigine.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
-void GraphicEngineManager::Init()
+void GraphicEngine::Init()
 {
 	ShaderManager::Init();
 	UIRenderingManager::Init();
@@ -12,14 +12,13 @@ void GraphicEngineManager::Init()
 	glClearColor(.1f, .1f, .1f, 1.f);
 }
 
-void GraphicEngineManager::End()
+void GraphicEngine::End()
 {
-
 	ShaderManager::UnloadAll();
 	MeshRenderingManager::UnloadAll();
 }
 
-void GraphicEngineManager::Render()
+void GraphicEngine::Render()
 {
 #if DEBUG_GRAPHIC_ENGINE
 	float startRenderingTime = glfwGetTime();
@@ -35,7 +34,7 @@ void GraphicEngineManager::Render()
 #endif
 }
 
-void GraphicEngineManager::DepthRender()
+void GraphicEngine::DepthRender()
 {
 #if DEBUG_GRAPHIC_ENGINE
 	float startDepthRenderingTime = glfwGetTime();

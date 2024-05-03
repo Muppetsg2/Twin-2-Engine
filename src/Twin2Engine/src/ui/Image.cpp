@@ -8,7 +8,7 @@
 using namespace Twin2Engine;
 using namespace UI;
 using namespace Core;
-using namespace GraphicEngine;
+using namespace Graphic;
 using namespace Manager;
 using namespace glm;
 using namespace std;

@@ -1,10 +1,10 @@
 #ifndef _GAMECOLLIDER_H_
 #define _GAMECOLLIDER_H_
 
-#include <physics/Collider.h>
-#include <physics/BoundingVolume.h>
-#include <physics/LayersData.h>
-#include <physics/Ray.h>
+#include <physic/Collider.h>
+#include <physic/BoundingVolume.h>
+#include <physic/LayersData.h>
+#include <physic/Ray.h>
 #include <graphic/Frustum.h>
 #include <tools/EventHandler.h>
 
@@ -12,7 +12,7 @@ namespace Twin2Engine::Core {
 	class ColliderComponent;
 }
 
-namespace Twin2Engine::PhysicsEngine {
+namespace Twin2Engine::Physic {
 	class Ray;
 	struct RaycastHit;
 

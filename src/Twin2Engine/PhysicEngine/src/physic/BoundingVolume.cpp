@@ -1,7 +1,7 @@
-#include <physics/BoundingVolume.h>
+#include <physic/BoundingVolume.h>
 
-using namespace Twin2Engine::PhysicsEngine;
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Physic;
+using namespace Twin2Engine::Graphic;
 
 BoundingVolume::BoundingVolume(SphereColliderData* sphereColliderData) {
 	colliderShape = ColliderShape::SPHERE;

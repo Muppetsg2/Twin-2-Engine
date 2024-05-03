@@ -18,17 +18,17 @@ namespace Twin2Engine::Core
 		CloneFunctionEnd()
 	private:
 
-		GraphicEngine::InstatiatingModel _model;
+		Graphic::InstatiatingModel _model;
 
-		std::vector<GraphicEngine::Material> _materials;
+		std::vector<Graphic::Material> _materials;
 
 		#ifdef MESH_FRUSTUM_CULLING
 		int OnTransformChangedActionId = -1;
 		Tools::Action<Transform*> OnTransformChangedAction = [this](Transform* transform) {
 			glm::mat4 tMatrix = transform->GetTransformMatrix();
-			PhysicsEngine::SphereColliderData* sphereBV;
+			Physic::SphereColliderData* sphereBV;
 			for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
-				sphereBV = (PhysicsEngine::SphereColliderData*)_model.GetMesh(i)->sphericalBV->colliderShape;
+				sphereBV = (Physic::SphereColliderData*)_model.GetMesh(i)->sphericalBV->colliderShape;
 				if (sphereBV != nullptr) {
 					sphereBV->Position = tMatrix * glm::vec4(sphereBV->LocalPosition, 1.0f);
 				}
@@ -45,19 +45,19 @@ namespace Twin2Engine::Core
 		virtual YAML::Node Serialize() const override;
 
 #pragma region MODEL_PART
-		GraphicEngine::InstatiatingModel GetModel() const;
+		Graphic::InstatiatingModel GetModel() const;
 		size_t GetMeshCount() const;
-		void SetModel(const GraphicEngine::InstatiatingModel& model);
+		void SetModel(const Graphic::InstatiatingModel& model);
 		void SetModel(size_t modelId);
 #pragma endregion
 
 #pragma region MATERIALS_PART
-		GraphicEngine::InstatiatingMesh* GetMesh(size_t index) const;
+		Graphic::InstatiatingMesh* GetMesh(size_t index) const;
 		size_t GetMaterialCount() const;
-		GraphicEngine::Material GetMaterial(size_t index) const;
-		void AddMaterial(GraphicEngine::Material material);
+		Graphic::Material GetMaterial(size_t index) const;
+		void AddMaterial(Graphic::Material material);
 		void AddMaterial(size_t materialId);
-		void SetMaterial(size_t index, GraphicEngine::Material material);
+		void SetMaterial(size_t index, Graphic::Material material);
 		void SetMaterial(size_t index, size_t materialId);
 #pragma endregion
 

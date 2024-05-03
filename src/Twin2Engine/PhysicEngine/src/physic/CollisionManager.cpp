@@ -1,6 +1,6 @@
-#include <physics/CollisionManager.h>
+#include <physic/CollisionManager.h>
 
-using namespace Twin2Engine::PhysicsEngine;
+using namespace Twin2Engine::Physic;
 
 CollisionManager* CollisionManager::instance = nullptr;
 

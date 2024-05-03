@@ -1,6 +1,6 @@
-#include <physics/Collider.h>
+#include <physic/Collider.h>
 
-using namespace Twin2Engine::PhysicsEngine;
+using namespace Twin2Engine::Physic;
 
 Collider::~Collider() {
 	delete shapeColliderData;

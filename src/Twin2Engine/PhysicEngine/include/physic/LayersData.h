@@ -1,7 +1,7 @@
 #ifndef _LAYERSDATA_H_
 #define _LAYERSDATA_H_
 
-namespace Twin2Engine::PhysicsEngine {
+namespace Twin2Engine::Physic {
 
 	enum Layer : uint8_t { DEFAULT, IGNORE_RAYCAST, IGNORE_COLLISION, UI, LAYER_1, LAYER_2, LAYER_3, LAYER_4 };
 
@@ -33,8 +33,8 @@ namespace Twin2Engine::PhysicsEngine {
 }
 
 namespace YAML {
-	template<> struct convert<Twin2Engine::PhysicsEngine::CollisionMode> {
-		using CollisionMode = Twin2Engine::PhysicsEngine::CollisionMode;
+	template<> struct convert<Twin2Engine::Physic::CollisionMode> {
+		using CollisionMode = Twin2Engine::Physic::CollisionMode;
 
 		static Node encode(const CollisionMode& rhs) {
 			Node node;
@@ -49,9 +49,9 @@ namespace YAML {
 		}
 	};
 
-	template<> struct convert<Twin2Engine::PhysicsEngine::LayerCollisionFilter> {
-		using LayerCollisionFilter = Twin2Engine::PhysicsEngine::LayerCollisionFilter;
-		using CollisionMode = Twin2Engine::PhysicsEngine::CollisionMode;
+	template<> struct convert<Twin2Engine::Physic::LayerCollisionFilter> {
+		using LayerCollisionFilter = Twin2Engine::Physic::LayerCollisionFilter;
+		using CollisionMode = Twin2Engine::Physic::CollisionMode;
 
 		static Node encode(const LayerCollisionFilter& rhs) {
 			Node node;
@@ -81,8 +81,8 @@ namespace YAML {
 		}
 	};
 
-	template<> struct convert<Twin2Engine::PhysicsEngine::Layer> {
-		using Layer = Twin2Engine::PhysicsEngine::Layer;
+	template<> struct convert<Twin2Engine::Physic::Layer> {
+		using Layer = Twin2Engine::Physic::Layer;
 
 		static Node encode(const Layer& rhs) {
 			Node node;

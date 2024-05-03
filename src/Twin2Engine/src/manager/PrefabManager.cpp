@@ -6,7 +6,7 @@
 
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 using namespace std;
 
 hash<string> PrefabManager::_hasher;

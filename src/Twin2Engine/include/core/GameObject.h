@@ -6,7 +6,7 @@ using std::string;
 
 #include <core/Component.h>
 #include <core/Transform.h>
-#include <physics/LayersData.h>
+#include <physic/LayersData.h>
 
 using Twin2Engine::Core::Component;
 

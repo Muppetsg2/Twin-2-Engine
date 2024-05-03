@@ -27,7 +27,7 @@ add_library(${PROJECT_NAME} STATIC ${GRAPHIC_ENGINE_SOURCE_FILES})
 
 # Adding include to library
 target_include_directories(${PROJECT_NAME} PUBLIC	${GRAPHIC_ENGINE_INCLUDE_DIR}
-													${PHYSICS_ENGINE_INCLUDE_DIR}
+													${PHYSIC_ENGINE_INCLUDE_DIR}
 													${TOOLS_INCLUDE_DIR}
 													${glad_SOURCE_DIR}
 													${stb_image_SOURCE_DIR})
@@ -44,5 +44,5 @@ target_link_libraries(${PROJECT_NAME}	${OPENGL_LIBRARIES}
 										yaml-cpp
 										freetype
 										glm::glm
-										PhysicsEngine
+										PhysicEngine
 										Tools)

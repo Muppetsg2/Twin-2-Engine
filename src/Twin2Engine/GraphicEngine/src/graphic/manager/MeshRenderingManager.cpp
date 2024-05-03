@@ -3,7 +3,7 @@
 #include <graphic/InstatiatingMesh.h>
 #include <graphic/Window.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
 #if RENERING_TYPE_MESH_SHADER_MATERIAL
@@ -919,6 +919,6 @@ void MeshRenderingManager::RenderDepthMap(const unsigned int& bufferWidth, const
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glm::ivec2 wSize = Twin2Engine::GraphicEngine::Window::GetInstance()->GetContentSize();
+	glm::ivec2 wSize = Window::GetInstance()->GetContentSize();
 	glViewport(0, 0, wSize.x, wSize.y);
 }

@@ -5,7 +5,7 @@
 
 #include <graphic/MaterialParameters.h>
 
-namespace Twin2Engine::GraphicEngine
+namespace Twin2Engine::Graphic
 {
 	class MaterialParametersBuilder
 	{

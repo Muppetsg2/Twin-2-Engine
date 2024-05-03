@@ -8,7 +8,7 @@ constexpr const unsigned int MAX_POINT_LIGHTS = 8;
 constexpr const unsigned int MAX_SPOT_LIGHTS = 8;
 constexpr const unsigned int MAX_DIRECTIONAL_LIGHTS = 4;
 
-namespace Twin2Engine::GraphicEngine {
+namespace Twin2Engine::Graphic {
 
 	struct CameraData {
 		glm::mat4 projection;
@@ -85,8 +85,8 @@ namespace Twin2Engine::GraphicEngine {
 			//U�ycie tej metody w celu modyfikacji �r�d�a �wiat�a, po dodaniu lub usuni�ciu �r�d�a �wiat�a bez wywo�ania UpdateDirLights mo�e przynie�� nieprawid�owywynik
 			void UpdateDL(DirectionalLight* dirLight);
 
-			void BindLightBuffors(Twin2Engine::GraphicEngine::Shader* shader);
-			void UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader* shader);
+			void BindLightBuffors(Twin2Engine::Graphic::Shader* shader);
+			void UpdateShadowMapsTab(Twin2Engine::Graphic::Shader* shader);
 
 			static glm::vec3 RecalculateDirLightSpaceMatrix(DirectionalLight* light, const CameraData& camera); //, const glm::mat4& viewProjectionInverse
 			void RenderShadowMaps();

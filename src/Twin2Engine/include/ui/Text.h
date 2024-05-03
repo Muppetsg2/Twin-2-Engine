@@ -14,7 +14,7 @@ namespace Twin2Engine::UI {
 
 		glm::vec4 _color = glm::vec4(0.f);
 
-		std::vector<GraphicEngine::Character*> _textCache = std::vector<GraphicEngine::Character*>();
+		std::vector<Graphic::Character*> _textCache = std::vector<Graphic::Character*>();
 
 		bool _textCacheDirty = true;
 		bool _justResizeCache = false;
@@ -35,6 +35,6 @@ namespace Twin2Engine::UI {
 		std::string GetText() const;
 		uint32_t GetSize() const;
 		size_t GetFontId() const;
-		GraphicEngine::Font* GetFont() const;
+		Graphic::Font* GetFont() const;
 	};
 }

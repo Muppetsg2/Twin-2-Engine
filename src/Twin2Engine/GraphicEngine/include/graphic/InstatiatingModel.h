@@ -1,7 +1,6 @@
 #ifndef INSTANTIATING_MODEL
 #define INSTANTIATING_MODEL
 
-//#include <graphic/Model.h>
 #include <graphic/InstatiatingMesh.h>
 #include <graphic/ModelData.h>
 
@@ -11,7 +10,7 @@ namespace Twin2Engine
         class ModelsManager;
     }
 
-    namespace GraphicEngine {
+    namespace Graphic {
         class InstatiatingModel
         {
         private:

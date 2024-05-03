@@ -9,7 +9,7 @@ namespace Twin2Engine {
 		class FontManager;
 	}
 
-	namespace GraphicEngine {
+	namespace Graphic {
 		struct Character {
 			unsigned int TextureID;  // ID handle of the glyph texture
 			glm::ivec2   Size;       // Size of glyph

@@ -9,7 +9,7 @@ namespace Twin2Engine::Core {
 
 	private:
 		bool dirtyFlag = false;
-		GraphicEngine::PointLight* light = new GraphicEngine::PointLight();
+		Graphic::PointLight* light = new Graphic::PointLight();
 		Tools::Action<Transform*> OnChangePosition;
 		size_t OnChangePositionId;
 

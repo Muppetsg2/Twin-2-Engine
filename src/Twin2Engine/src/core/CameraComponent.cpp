@@ -2,14 +2,14 @@
 #include <core/Transform.h>
 #include <tools/YamlConverters.h>
 #include <graphic/Window.h>
-#include <GraphicEnigineManager.h>
+#include <GraphicEnigine.h>
 #include <graphic/manager/ModelsManager.h>
 #include <graphic/LightingController.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Tools;
-using namespace Twin2Engine::PhysicsEngine;
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Physic;
+using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
 std::vector<CameraComponent*> CameraComponent::Cameras = std::vector<CameraComponent*>();
@@ -383,7 +383,7 @@ void CameraComponent::Render()
 	glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		GraphicEngineManager::DepthRender();
+	GraphicEngine::DepthRender();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -397,7 +397,7 @@ void CameraComponent::Render()
 	glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		GraphicEngineManager::Render();
+	GraphicEngine::Render();
 
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, _msRenderMapFBO);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _renderMapFBO);
@@ -623,7 +623,7 @@ void CameraComponent::OnDestroy()
 	}
 }
 
-Ray CameraComponent::GetScreenPointRay(glm::vec2 screenPosition)
+Ray CameraComponent::GetScreenPointRay(glm::vec2 screenPosition) const
 {
 	ivec2 size = Window::GetInstance()->GetContentSize();
 	glm::vec3 Origin = GetTransform()->GetGlobalPosition();

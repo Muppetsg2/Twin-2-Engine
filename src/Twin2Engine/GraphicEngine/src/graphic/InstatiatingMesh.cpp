@@ -1,6 +1,6 @@
 #include <graphic/InstatiatingMesh.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 
 InstatiatingMesh::InstatiatingMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices)
 {
@@ -92,11 +92,11 @@ InstatiatingMesh::InstatiatingMesh(const std::vector<Vertex>& vertices, const st
         }
 
 
-        PhysicsEngine::SphereColliderData* sphereCD = new PhysicsEngine::SphereColliderData;
+        Physic::SphereColliderData* sphereCD = new Physic::SphereColliderData;
         sphereCD->LocalPosition = center;
         sphereCD->Radius = radius;
         //SPDLOG_INFO("BV has been created! R: {}", radius);
-        sphericalBV = new PhysicsEngine::BoundingVolume(sphereCD);
+        sphericalBV = new Physic::BoundingVolume(sphereCD);
     }
 #endif // MESH_FRUSTUM_CULLING
 }

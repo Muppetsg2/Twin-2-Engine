@@ -30,7 +30,7 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${HEADER_FILES})
 source_group(TREE ${CMAKE_SOURCE_DIR}         FILES ${ASSETS_FILES})
 
 add_subdirectory(GraphicEngine)
-add_subdirectory(PhysicsEngine)
+add_subdirectory(PhysicEngine)
 add_subdirectory(Tools)
 
 # ---- Dependency ----
@@ -46,7 +46,7 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC ${Twin2Engine_PRECOMPILE_HEADER
 
 target_include_directories(${PROJECT_NAME} PUBLIC	${Twin2Engine_INCLUDE_DIR}
 													${GRAPHIC_ENGINE_INCLUDE_DIR}
-													${PHYSICS_ENGINE_INCLUDE_DIR}
+													${PHYSIC_ENGINE_INCLUDE_DIR}
 													${TOOLS_INCLUDE_DIR})
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
@@ -69,5 +69,5 @@ endif()
 
 target_link_libraries(${PROJECT_NAME} 	glfw
 										GraphicEngine
-										PhysicsEngine
+										PhysicEngine
 										Tools)

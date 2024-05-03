@@ -1,8 +1,8 @@
-#include "LightingController.h"
+#include <graphic/LightingController.h>
 
 #include <graphic/manager/MeshRenderingManager.h>
 
-using namespace LightingSystem;
+using namespace Twin2Engine::GraphicEngine;
 
 LightingController* LightingController::instance = nullptr;
 const int LightingController::SHADOW_WIDTH = 2048;

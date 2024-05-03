@@ -4,9 +4,11 @@
 #include <graphic/Window.h>
 #include <GraphicEnigineManager.h>
 #include <graphic/manager/ModelsManager.h>
-#include <LightingController.h>
+#include <graphic/LightingController.h>
 
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Tools;
+using namespace Twin2Engine::PhysicsEngine;
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
 
@@ -388,7 +390,7 @@ void CameraComponent::Render()
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
 
-	LightingSystem::LightingController::Instance()->RenderShadowMaps();
+	LightingController::Instance()->RenderShadowMaps();
 
 	// RENDER MAP
 	glBindFramebuffer(GL_FRAMEBUFFER, _msRenderMapFBO);
@@ -621,7 +623,7 @@ void CameraComponent::OnDestroy()
 	}
 }
 
-CollisionSystem::Ray CameraComponent::GetScreenPointRay(glm::vec2 screenPosition)
+Ray CameraComponent::GetScreenPointRay(glm::vec2 screenPosition)
 {
 	ivec2 size = Window::GetInstance()->GetContentSize();
 	glm::vec3 Origin = GetTransform()->GetGlobalPosition();
@@ -651,7 +653,7 @@ CollisionSystem::Ray CameraComponent::GetScreenPointRay(glm::vec2 screenPosition
 	glm::vec3 Direction(rayWorld);
 	Direction = glm::normalize(Direction);
 
-	return CollisionSystem::Ray(std::move(Direction), std::move(Origin));
+	return Ray(std::move(Direction), std::move(Origin));
 }
 
 YAML::Node CameraComponent::Serialize() const

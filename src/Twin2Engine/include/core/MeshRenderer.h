@@ -24,11 +24,11 @@ namespace Twin2Engine::Core
 
 		#ifdef MESH_FRUSTUM_CULLING
 		int OnTransformChangedActionId = -1;
-		Twin2Engine::Core::Action<Transform*> OnTransformChangedAction = [this](Transform* transform) {
+		Tools::Action<Transform*> OnTransformChangedAction = [this](Transform* transform) {
 			glm::mat4 tMatrix = transform->GetTransformMatrix();
-			CollisionSystem::SphereColliderData* sphereBV;
+			PhysicsEngine::SphereColliderData* sphereBV;
 			for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
-				sphereBV = (CollisionSystem::SphereColliderData*)_model.GetMesh(i)->sphericalBV->colliderShape;
+				sphereBV = (PhysicsEngine::SphereColliderData*)_model.GetMesh(i)->sphericalBV->colliderShape;
 				if (sphereBV != nullptr) {
 					sphereBV->Position = tMatrix * glm::vec4(sphereBV->LocalPosition, 1.0f);
 				}

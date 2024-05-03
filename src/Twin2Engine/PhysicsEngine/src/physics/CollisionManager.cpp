@@ -1,8 +1,6 @@
-#include "CollisionManager.h"
-#include "CollisionManager.h"
-//#include <iterator>
+#include <physics/CollisionManager.h>
 
-using namespace CollisionSystem;
+using namespace Twin2Engine::PhysicsEngine;
 
 CollisionManager* CollisionManager::instance = nullptr;
 
@@ -17,7 +15,7 @@ CollisionManager::CollisionManager() {
 	Layer4.clear();
 }
 
-CollisionSystem::CollisionManager::~CollisionManager() {
+CollisionManager::~CollisionManager() {
 	DefaultLayer.clear();
 	IgnoreRaycastLayer.clear();
 	IgnoreCollisionLayer.clear();

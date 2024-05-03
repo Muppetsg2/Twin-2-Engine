@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Light.h"
+#include <graphic/Light.h>
 #include <graphic/Shader.h>
 #include <tools/EventHandler.h>
 
@@ -8,7 +8,7 @@ constexpr const unsigned int MAX_POINT_LIGHTS = 8;
 constexpr const unsigned int MAX_SPOT_LIGHTS = 8;
 constexpr const unsigned int MAX_DIRECTIONAL_LIGHTS = 4;
 
-namespace LightingSystem {
+namespace Twin2Engine::GraphicEngine {
 
 	struct CameraData {
 		glm::mat4 projection;
@@ -49,7 +49,7 @@ namespace LightingSystem {
 
 		public:
 			static float DLShadowCastingRange;
-			Twin2Engine::Core::MethodEventHandler ViewerTransformChanged;
+			Twin2Engine::Tools::MethodEventHandler ViewerTransformChanged;
 
 			static const int SHADOW_WIDTH;
 			static const int SHADOW_HEIGHT;

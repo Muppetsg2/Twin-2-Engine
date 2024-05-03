@@ -1,16 +1,11 @@
 #ifndef _RAY_H_
 #define _RAY_H_
 
-#include <core/ColliderComponent.h>
-
-
-namespace Twin2Engine {
-	namespace Core {
-		class ColliderComponent;
-	}
+namespace Twin2Engine::Core {
+	class ColliderComponent;
 }
 
-namespace CollisionSystem {
+namespace Twin2Engine::PhysicsEngine {
 	struct RaycastHit {
 		Twin2Engine::Core::ColliderComponent* collider = nullptr;
 		glm::vec3 position;

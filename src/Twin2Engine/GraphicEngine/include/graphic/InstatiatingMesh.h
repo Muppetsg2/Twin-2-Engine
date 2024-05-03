@@ -3,11 +3,7 @@
 #include <graphic/Vertex.h>
 
 #define MESH_FRUSTUM_CULLING
-#include <BoundingVolume.h>
-
-//namespace Twin2Engine::Manager {
-//    class ModelsManager;
-//}
+#include <physics/BoundingVolume.h>
 
 namespace Twin2Engine::GraphicEngine
 {
@@ -26,7 +22,7 @@ namespace Twin2Engine::GraphicEngine
         virtual ~InstatiatingMesh();
 
 #ifdef MESH_FRUSTUM_CULLING
-        CollisionSystem::BoundingVolume* sphericalBV = nullptr;
+        PhysicsEngine::BoundingVolume* sphericalBV = nullptr;
         bool IsOnFrustum(Frustum& frustum, glm::mat4 model);
 #endif // MESH_FRUSTUM_CULLING
 

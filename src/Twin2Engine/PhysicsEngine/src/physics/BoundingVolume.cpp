@@ -1,6 +1,7 @@
-#include "BoundingVolume.h"
+#include <physics/BoundingVolume.h>
 
-using namespace CollisionSystem;
+using namespace Twin2Engine::PhysicsEngine;
+using namespace Twin2Engine::GraphicEngine;
 
 BoundingVolume::BoundingVolume(SphereColliderData* sphereColliderData) {
 	colliderShape = ColliderShape::SPHERE;
@@ -20,9 +21,7 @@ BoundingVolume::BoundingVolume(CapsuleColliderData* capsuleColliderData) {
 	isBoundingVolume = true;
 }
 
-//BoundingVolume::~BoundingVolume() {}
-
-bool isOverPlane(FrustumPlane& plane, BoxColliderData* colliderData) {
+static bool isOverPlane(FrustumPlane& plane, BoxColliderData* colliderData) {
 	glm::vec3 relPos = plane.point - colliderData->Position;
 	float distance = glm::dot(relPos, plane.normal);
 	float width = colliderData->HalfDimensions.x * glm::abs(glm::dot(colliderData->XAxis, plane.normal))
@@ -31,23 +30,22 @@ bool isOverPlane(FrustumPlane& plane, BoxColliderData* colliderData) {
 	return (glm::abs(distance) < width) || ((distance) < 0);
 }
 
-bool isOverPlane(FrustumPlane& plane, SphereColliderData* colliderData) {
+static bool isOverPlane(FrustumPlane& plane, SphereColliderData* colliderData) {
 	glm::vec3 relPos = colliderData->Position - plane.point;
 	float distance = glm::dot(relPos, plane.normal);
 
 	return distance > -colliderData->Radius;
-	//return (glm::abs(distance) < colliderData->Radius) || ((distance) < 0);
 }
 
-bool isOverPlane(FrustumPlane& plane, CapsuleColliderData* colliderData) {
+static bool isOverPlane(FrustumPlane& plane, CapsuleColliderData* colliderData) {
 	float startDist = glm::dot(plane.normal, colliderData->Position) - glm::dot(plane.normal, plane.point);
 	float endDist = glm::dot(plane.normal, colliderData->EndPosition) - glm::dot(plane.normal, plane.point);
 	float minDist = glm::min(startDist, endDist);
-	float maxDist = max(startDist, endDist);
+	float maxDist = glm::max(startDist, endDist);
 	return minDist <= colliderData->Radius && maxDist >= (-colliderData->Radius);
 }
 
-bool CollisionSystem::BoundingVolume::isOnFrustum(Frustum& frustum)
+bool BoundingVolume::isOnFrustum(Frustum& frustum)
 {
 	switch (colliderShape) {
 		case (ColliderShape::BOX):
@@ -70,13 +68,5 @@ bool CollisionSystem::BoundingVolume::isOnFrustum(Frustum& frustum)
 }
 
 Collision* BoundingVolume::collide(Collider* other) {
-	/*if (other->isBoundingVolume) {
-		return testCollision((Collider*)this, other, false);
-	}
-	else {
-
-	}
-
-	return nullptr;/**/
 	return testCollision((Collider*)this, other, false);
 };

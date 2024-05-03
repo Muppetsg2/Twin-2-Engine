@@ -1,80 +1,79 @@
 #include <core/SpotLightComponent.h>
 #include <core/GameObject.h>
 #include <core/Transform.h>
-#include <core/YamlConverters.h>
+#include <tools/YamlConverters.h>
 
-void Twin2Engine::Core::SpotLightComponent::Initialize()
+using namespace Twin2Engine::Core;
+using namespace Twin2Engine::GraphicEngine;
+
+void SpotLightComponent::Initialize()
 {
 	OnChangeTransform = [this](Transform* transform) {
 		light->position = GetTransform()->GetGlobalPosition();
 		light->direction = glm::vec3((transform->GetTransformMatrix() * glm::vec4(localDirection, 1.0f)));
-		LightingSystem::LightingController::Instance()->UpdateSLTransform(light);
+		LightingController::Instance()->UpdateSLTransform(light);
 	};
 
-
-	//light = new LightingSystem::SpotLight;
 	light->position = GetTransform()->GetGlobalPosition();
-	//LightingSystem::LightingController::Instance()->spotLights.insert(light);
-	//LightingSystem::LightingController::Instance()->UpdateSpotLights();
 }
 
-void Twin2Engine::Core::SpotLightComponent::Update()
+void SpotLightComponent::Update()
 {
 	if (dirtyFlag) {
-		LightingSystem::LightingController::Instance()->UpdateSL(light);
+		LightingController::Instance()->UpdateSL(light);
 		dirtyFlag = false;
 	}
 }
 
-void Twin2Engine::Core::SpotLightComponent::OnEnable()
+void SpotLightComponent::OnEnable()
 {
-	LightingSystem::LightingController::Instance()->spotLights.insert(light);
+	LightingController::Instance()->spotLights.insert(light);
 	OnChangeTransformId = GetTransform()->OnEventTransformChanged += OnChangeTransform;
-	LightingSystem::LightingController::Instance()->UpdateSpotLights();
+	LightingController::Instance()->UpdateSpotLights();
 }
 
-void Twin2Engine::Core::SpotLightComponent::OnDisable()
+void SpotLightComponent::OnDisable()
 {
-	LightingSystem::LightingController::Instance()->spotLights.erase(light);
+	LightingController::Instance()->spotLights.erase(light);
 	GetTransform()->OnEventTransformChanged -= OnChangeTransformId;
-	LightingSystem::LightingController::Instance()->UpdateSpotLights();
+	LightingController::Instance()->UpdateSpotLights();
 }
 
-void Twin2Engine::Core::SpotLightComponent::OnDestroy()
+void SpotLightComponent::OnDestroy()
 {
-	LightingSystem::LightingController::Instance()->spotLights.erase(light);
+	LightingController::Instance()->spotLights.erase(light);
 	GetTransform()->OnEventTransformChanged -= OnChangeTransformId;
-	LightingSystem::LightingController::Instance()->UpdateSpotLights();
+	LightingController::Instance()->UpdateSpotLights();
 
 	delete light;
 }
 
-void Twin2Engine::Core::SpotLightComponent::SetColor(glm::vec3 color)
+void SpotLightComponent::SetColor(glm::vec3 color)
 {
 	light->color = color;
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::SpotLightComponent::SetDirection(glm::vec3 dir)
+void SpotLightComponent::SetDirection(glm::vec3 dir)
 {
 	light->direction = glm::vec3((GetTransform()->GetTransformMatrix() * glm::vec4(dir, 1.0f)));
 	localDirection = dir;
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::SpotLightComponent::SetPower(float power)
+void SpotLightComponent::SetPower(float power)
 {
 	light->power = power;
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::SpotLightComponent::SetOuterCutOff(float radAngle)
+void SpotLightComponent::SetOuterCutOff(float radAngle)
 {
 	light->outerCutOff = radAngle;
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::SpotLightComponent::SetAtenuation(float constant, float linear, float quadratic)
+void SpotLightComponent::SetAtenuation(float constant, float linear, float quadratic)
 {
 	light->constant = constant;
 	light->linear = linear;
@@ -82,7 +81,7 @@ void Twin2Engine::Core::SpotLightComponent::SetAtenuation(float constant, float 
 	dirtyFlag = true;
 }
 
-YAML::Node Twin2Engine::Core::SpotLightComponent::Serialize() const
+YAML::Node SpotLightComponent::Serialize() const
 {
 	YAML::Node node = LightComponent::Serialize();
 	node["direction"] = light->direction;

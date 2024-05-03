@@ -104,13 +104,13 @@ namespace Twin2Engine
 
 		public:
 #pragma region EVENTS
-			EventHandler<Transform*> OnEventTransformChanged;
-			EventHandler<Transform*> OnEventPositionChanged;
-			EventHandler<Transform*> OnEventRotationChanged;
-			EventHandler<Transform*> OnEventScaleChanged;
-			EventHandler<Transform*> OnEventParentChanged;
-			EventHandler<Transform*> OnEventInHierarchyParentChanged;
-			EventHandler<Transform*> OnEventChildrenChanged;
+			Tools::EventHandler<Transform*> OnEventTransformChanged;
+			Tools::EventHandler<Transform*> OnEventPositionChanged;
+			Tools::EventHandler<Transform*> OnEventRotationChanged;
+			Tools::EventHandler<Transform*> OnEventScaleChanged;
+			Tools::EventHandler<Transform*> OnEventParentChanged;
+			Tools::EventHandler<Transform*> OnEventInHierarchyParentChanged;
+			Tools::EventHandler<Transform*> OnEventChildrenChanged;
 #pragma endregion
 
 			Transform();

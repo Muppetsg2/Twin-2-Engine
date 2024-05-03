@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Twin2Engine::GraphicEngine {
+namespace Twin2Engine::Tools {
 	template<class T, class... Ts> constexpr bool is_in_v = (std::is_same_v<T, Ts> || ...);
 	template<class T, class... Ts> struct is_in : public std::bool_constant<is_in_v<T, Ts...>> {};
 

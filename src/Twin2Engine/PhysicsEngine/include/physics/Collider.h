@@ -1,20 +1,13 @@
 #pragma once
 
-namespace CollisionSystem {
-	//struct Collision;
+namespace Twin2Engine::PhysicsEngine {
 	class Collider;
-
-	//typedef Collider* ColliderPtr;
 
 	struct Collision {
 		Collider* collider;
 		Collider* otherCollider;
-		//glm::vec3 position;
 		glm::vec3 separation;
 	};
-
-	//typedef Collision* CollisionPtr;
-
 
 	struct ShapeColliderData {
 		glm::vec3 Position = glm::vec3(0.0f, 0.0f, 0.0f);

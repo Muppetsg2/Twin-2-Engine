@@ -1,6 +1,6 @@
-#include "EnviromentalBoundingVolume.h"
+#include <physics/EnviromentalBoundingVolume.h>
 
-using namespace CollisionSystem;
+using namespace Twin2Engine::PhysicsEngine;
 
 EnviromentalBoundingVolume::EnviromentalBoundingVolume(SphereColliderData* sphereColliderData) : BoundingVolume(sphereColliderData) {
 

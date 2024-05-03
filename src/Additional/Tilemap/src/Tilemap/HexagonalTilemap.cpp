@@ -1,8 +1,8 @@
 #include <Tilemap/HexagonalTilemap.h>
 
-#include <core/YamlConverters.h>
+#include <tools/YamlConverters.h>
 
-#define SQRT_3 1.7320508075688772935274463415059f
+constexpr const float SQRT_3 = 1.7320508075688772935274463415059f;
 
 using namespace Tilemap;
 

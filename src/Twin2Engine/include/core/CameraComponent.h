@@ -1,8 +1,8 @@
 #pragma once
 
 #include <core/Component.h>
-#include <core/Frustum.h>
-#include <Ray.h>
+#include <graphic/Frustum.h>
+#include <physics/Ray.h>
 
 using namespace glm;
 
@@ -95,7 +95,7 @@ namespace Twin2Engine::Core {
 		vec3 GetRight() const;
 		mat4 GetViewMatrix() const;
 		mat4 GetProjectionMatrix() const;
-		Frustum GetFrustum() const;
+		GraphicEngine::Frustum GetFrustum() const;
 
 		bool IsMain() const;
 
@@ -133,7 +133,7 @@ namespace Twin2Engine::Core {
 		void OnDisable() override;
 		*/
 
-		CollisionSystem::Ray GetScreenPointRay(glm::vec2 screenPosition);
+		PhysicsEngine::Ray GetScreenPointRay(glm::vec2 screenPosition);
 	};
 }
 

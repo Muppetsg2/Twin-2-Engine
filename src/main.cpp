@@ -39,7 +39,7 @@
 #include <string>
 
 // COLLISIONS
-#include <CollisionManager.h>
+#include <physics/CollisionManager.h>
 #include <core/BoxColliderComponent.h>
 #include <core/CapsuleColliderComponent.h>
 #include <core/SphereColliderComponent.h>
@@ -79,13 +79,13 @@
 #include <Generation/Generators/SectorGeneratorForRegionsByKMeans.h>
 
 // LIGHTING
-#include <LightingController.h>
+#include <graphic/LightingController.h>
 #include <core/PointLightComponent.h>
 #include <core/SpotLightComponent.h>
 #include <core/DirectionalLightComponent.h>
 
 // YAML CONVERTERS
-#include <core/YamlConverters.h>
+#include <tools/YamlConverters.h>
 #include <Generation/YamlConverters.h>
 
 // EDITOR
@@ -95,8 +95,7 @@ using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
 using namespace Twin2Engine::GraphicEngine;
-using namespace CollisionSystem;
-using namespace LightingSystem;
+using namespace Twin2Engine::PhysicsEngine;
 
 using Twin2Engine::Core::Input;
 using Twin2Engine::Core::KEY;
@@ -571,7 +570,7 @@ int main(int, char**)
     SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
 
-    CollisionSystem::CollisionManager::Instance()->PerformCollisions();
+    CollisionManager::Instance()->PerformCollisions();
     
     SceneManager::LoadScene("testScene");
 
@@ -757,9 +756,9 @@ void input()
     }
 
 
-    if (LightingSystem::LightingController::IsInstantiated() && moved) {
+    if (LightingController::IsInstantiated() && moved) {
         glm::vec3 cp = c->GetTransform()->GetGlobalPosition();
-        LightingSystem::LightingController::Instance()->SetViewerPosition(cp);
+        LightingController::Instance()->SetViewerPosition(cp);
     }
 
 
@@ -829,7 +828,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     }
 
     Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x, rot.y + xoffset, rot.z));
-    LightingSystem::LightingController::Instance()->ViewerTransformChanged.Invoke();
+    LightingController::Instance()->ViewerTransformChanged.Invoke();
 }
 
 void update()
@@ -1206,15 +1205,15 @@ void imgui_render()
             if (ImGui::BeginCombo("Shading Type", "Lambert + Blinn-Phong Shading")) {
                 if (ImGui::Selectable("Lambert + Blinn-Phong Shading", shadingType == 0)) {
                     shadingType = 0;
-                    LightingSystem::LightingController::Instance()->SetShadingType(0);
+                    LightingController::Instance()->SetShadingType(0);
                 }
                 if (ImGui::Selectable("Toon/Cel Shading", shadingType == 1)) {
                     shadingType = 1;
-                    LightingSystem::LightingController::Instance()->SetShadingType(1);
+                    LightingController::Instance()->SetShadingType(1);
                 }
                 if (ImGui::Selectable("Gooch Shading", shadingType == 2)) {
                     shadingType = 2;
-                    LightingSystem::LightingController::Instance()->SetShadingType(2);
+                    LightingController::Instance()->SetShadingType(2);
                 }
                 ImGui::EndCombo();
             }

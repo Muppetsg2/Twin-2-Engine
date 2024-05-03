@@ -92,11 +92,11 @@ InstatiatingMesh::InstatiatingMesh(const std::vector<Vertex>& vertices, const st
         }
 
 
-        CollisionSystem::SphereColliderData* sphereCD = new CollisionSystem::SphereColliderData;
+        PhysicsEngine::SphereColliderData* sphereCD = new PhysicsEngine::SphereColliderData;
         sphereCD->LocalPosition = center;
         sphereCD->Radius = radius;
         //SPDLOG_INFO("BV has been created! R: {}", radius);
-        sphericalBV = new CollisionSystem::BoundingVolume(sphereCD);
+        sphericalBV = new PhysicsEngine::BoundingVolume(sphereCD);
     }
 #endif // MESH_FRUSTUM_CULLING
 }

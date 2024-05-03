@@ -1,7 +1,7 @@
 #ifndef _LIGHT_H_
 #define _LIGHT_H_
 
-namespace LightingSystem {
+namespace Twin2Engine::GraphicEngine {
 	struct Light {
 
 	};

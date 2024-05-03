@@ -34,4 +34,5 @@ target_include_directories(${PROJECT_NAME}
                         PUBLIC 
                         ${TOOLS_INCLUDE_DIR})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE spdlog)
+target_link_libraries(${PROJECT_NAME} PRIVATE spdlog
+                                              glm::glm)

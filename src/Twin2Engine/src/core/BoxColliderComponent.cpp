@@ -1,63 +1,54 @@
 #include "core/GameObject.h"
 #include <core/BoxColliderComponent.h>
-#include <CollisionManager.h>
+#include <physics/CollisionManager.h>
 #include <tools/YamlConverters.h>
 
-Twin2Engine::Core::BoxColliderComponent::BoxColliderComponent() : ColliderComponent()
+using namespace Twin2Engine::Core;
+using namespace Twin2Engine::PhysicsEngine;
+
+BoxColliderComponent::BoxColliderComponent() : ColliderComponent()
 {
-	collider = new CollisionSystem::GameCollider(this, new CollisionSystem::BoxColliderData());
+	collider = new GameCollider(this, new BoxColliderData());
 }
 
-void Twin2Engine::Core::BoxColliderComponent::SetWidth(float v)
+void BoxColliderComponent::SetWidth(float v)
 {
-	((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x = v;
+	((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x = v;
 }
 
-void Twin2Engine::Core::BoxColliderComponent::SetLength(float v)
+void BoxColliderComponent::SetLength(float v)
 {
-	((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z = v;
+	((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z = v;
 }
 
-void Twin2Engine::Core::BoxColliderComponent::SetHeight(float v)
+void BoxColliderComponent::SetHeight(float v)
 {
-	((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y = v;
+	((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y = v;
 }
 
-void Twin2Engine::Core::BoxColliderComponent::SetXRotation(float v)
+void BoxColliderComponent::SetXRotation(float v)
 {
-	((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation.x = v;
+	((BoxColliderData*)collider->shapeColliderData)->Rotation.x = v;
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::BoxColliderComponent::SetYRotation(float v)
+void BoxColliderComponent::SetYRotation(float v)
 {
-	((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation.y = v;
+	((BoxColliderData*)collider->shapeColliderData)->Rotation.y = v;
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::BoxColliderComponent::SetZRotation(float v)
+void BoxColliderComponent::SetZRotation(float v)
 {
-	((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation.z = v;
+	((BoxColliderData*)collider->shapeColliderData)->Rotation.z = v;
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::BoxColliderComponent::Initialize()
+void BoxColliderComponent::Initialize()
 {
 	collider->colliderComponent = this;
 	TransformChangeAction = [this](Transform* transform) {
-		/*//SPDLOG_INFO("{} BX TransformChangeAction!", colliderId);
-		glm::mat4 TransformMatrix = glm::mat4(1.0f);
-		CollisionSystem::BoxColliderData* boxData = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData);
-		TransformMatrix = glm::rotate(TransformMatrix, boxData->Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-		TransformMatrix = glm::rotate(TransformMatrix, boxData->Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-		TransformMatrix = glm::rotate(TransformMatrix, boxData->Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-		//((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation
-		TransformMatrix = transform->GetTransformMatrix() * TransformMatrix;
-		transform->GetGlobalRotationQuat().;
-		boxData->XAxis = TransformMatrix * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-		boxData->YAxis = TransformMatrix * glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
-		boxData->ZAxis = TransformMatrix * glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);*/
-		CollisionSystem::BoxColliderData* boxData = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData);
+		BoxColliderData* boxData = ((BoxColliderData*)collider->shapeColliderData);
 		glm::quat q = transform->GetGlobalRotationQuat()
 			* glm::angleAxis(boxData->Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
 			* glm::angleAxis(boxData->Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f))
@@ -78,30 +69,30 @@ void Twin2Engine::Core::BoxColliderComponent::Initialize()
 	TransformChangeAction(GetTransform());
 }
 
-void Twin2Engine::Core::BoxColliderComponent::OnEnable()
+void BoxColliderComponent::OnEnable()
 {
 	TransformChangeActionId = GetTransform()->OnEventTransformChanged += TransformChangeAction;
-	CollisionSystem::CollisionManager::Instance()->RegisterCollider(collider);
+	CollisionManager::Instance()->RegisterCollider(collider);
 }
 
-void Twin2Engine::Core::BoxColliderComponent::OnDisable()
+void BoxColliderComponent::OnDisable()
 {
 	GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
-	CollisionSystem::CollisionManager::Instance()->UnregisterCollider(collider);
+	CollisionManager::Instance()->UnregisterCollider(collider);
 }
 
-void Twin2Engine::Core::BoxColliderComponent::OnDestroy()
+void BoxColliderComponent::OnDestroy()
 {
 	GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
-	CollisionSystem::CollisionManager::Instance()->UnregisterCollider(collider);
+	CollisionManager::Instance()->UnregisterCollider(collider);
 }
 
-void Twin2Engine::Core::BoxColliderComponent::Update()
+void BoxColliderComponent::Update()
 {
-	Twin2Engine::Core::ColliderComponent::Update();
+	ColliderComponent::Update();
 
 	if (dirtyFlag) {
-		CollisionSystem::BoxColliderData* boxData = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData);
+		BoxColliderData* boxData = ((BoxColliderData*)collider->shapeColliderData);
 		glm::quat q = GetTransform()->GetGlobalRotationQuat()
 			* glm::angleAxis(boxData->Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
 			* glm::angleAxis(boxData->Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f))
@@ -112,34 +103,22 @@ void Twin2Engine::Core::BoxColliderComponent::Update()
 
 		boxData->HalfDimensions = GetTransform()->GetGlobalScale() * boxData->LocalHalfDimensions;
 
-		/*/glm::mat4 TransformMatrix = glm::mat4(1.0f);
-		CollisionSystem::BoxColliderData* boxData = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData);
-		TransformMatrix = glm::rotate(TransformMatrix, boxData->Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-		TransformMatrix = glm::rotate(TransformMatrix, boxData->Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-		TransformMatrix = glm::rotate(TransformMatrix, boxData->Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-		//((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation
-		TransformMatrix = GetTransform()->GetTransformMatrix() * TransformMatrix;
-
-		boxData->XAxis = glm::normalize(TransformMatrix * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-		boxData->YAxis = glm::normalize(TransformMatrix * glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-		boxData->ZAxis = glm::normalize(TransformMatrix * glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));/**/
-
 		dirtyFlag = false;
 	}
 }
 
-YAML::Node Twin2Engine::Core::BoxColliderComponent::Serialize() const
+YAML::Node BoxColliderComponent::Serialize() const
 {
 	YAML::Node node = ColliderComponent::Serialize();
 	node["subTypes"].push_back(node["type"].as<std::string>());
 	node["type"] = "BoxCollider";
-	node["width"] = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x;
-	node["length"] = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z;
-	node["height"] = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y;
+	node["width"] = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x;
+	node["length"] = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z;
+	node["height"] = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y;
 	node["rotation"] = glm::vec3(
-		((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation.x,
-		((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation.y,
-		((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation.z
+		((BoxColliderData*)collider->shapeColliderData)->Rotation.x,
+		((BoxColliderData*)collider->shapeColliderData)->Rotation.y,
+		((BoxColliderData*)collider->shapeColliderData)->Rotation.z
 	);
 	return node;
 }

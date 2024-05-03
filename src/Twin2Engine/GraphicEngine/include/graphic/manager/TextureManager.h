@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stb_image.h>
+#include <yaml-cpp/yaml.h>
 #include <graphic/Texture2D.h>
 
 namespace Twin2Engine::Manager {

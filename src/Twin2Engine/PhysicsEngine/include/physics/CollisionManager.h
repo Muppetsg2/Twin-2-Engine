@@ -2,10 +2,10 @@
 
 //#define USE_BOUNDING_VOLUMES
 
-#include "GameCollider.h"
-#include "BoundingVolume.h"
+#include <physics/GameCollider.h>
+#include <physics/BoundingVolume.h>
 
-namespace CollisionSystem {
+namespace Twin2Engine::PhysicsEngine {
 	class CollisionManager {
 	private:
 		static CollisionManager* instance;

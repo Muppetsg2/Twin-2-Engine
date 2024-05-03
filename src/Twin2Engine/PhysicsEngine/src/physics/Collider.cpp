@@ -1,13 +1,6 @@
-//#include "CollisionSystem/inc/Collider.h"
-//#include <CollisionSystem/inc/Collider.h>
-#include <Collider.h>
-//#include "Collider.h"
-//#include "Collider.h"
-//#include <CollisionSystem/inc/Collider.h>
+#include <physics/Collider.h>
 
-//using namespace CollisionSystem;
-
-using namespace CollisionSystem;
+using namespace Twin2Engine::PhysicsEngine;
 
 Collider::~Collider() {
 	delete shapeColliderData;
@@ -167,48 +160,6 @@ Collision* Collider::BoxBoxCollision(Collider* box1, Collider* box2, bool separa
 			glm::dot(collision->separation, boxData1->ZAxis));
 	}
 
-	/*if (separate) {
-		//collision->separation = glm::vec3(0.0f, 0.0f, 0.0f);
-		relativePosition = glm::vec3(glm::dot(relativePosition, boxData2->XAxis),
-									 glm::dot(relativePosition, boxData2->YAxis),
-									 glm::dot(relativePosition, boxData2->ZAxis));
-		float distance = relativePosition.length();
-		float x = glm::abs(relativePosition.x);
-		float y = glm::abs(relativePosition.y);
-		float z = glm::abs(relativePosition.z);
-		if (x > y && x > z) {
-			projection = boxData1->HalfDimensions.x * glm::abs(glm::dot(boxData1->XAxis, boxData2->XAxis))
-					   + boxData1->HalfDimensions.y * glm::abs(glm::dot(boxData1->YAxis, boxData2->XAxis))
-					   + boxData1->HalfDimensions.z * glm::abs(glm::dot(boxData1->ZAxis, boxData2->XAxis));
-			collision->separation = glm::normalize(relativePosition) * ((projection + boxData2->HalfDimensions.x - distance) / 2);
-
-			if (relativePosition.x < 0) {
-				collision->separation *= -1.0f;
-			}
-		}
-		else if (y > x && y > z) {
-			projection = boxData1->HalfDimensions.x * glm::abs(glm::dot(boxData1->XAxis, boxData2->YAxis))
-					   + boxData1->HalfDimensions.y * glm::abs(glm::dot(boxData1->YAxis, boxData2->YAxis))
-					   + boxData1->HalfDimensions.z * glm::abs(glm::dot(boxData1->ZAxis, boxData2->YAxis));
-			collision->separation = glm::normalize(relativePosition) * ((projection + boxData2->HalfDimensions.x - distance) / 2);
-
-			if (relativePosition.x < 0) {
-				collision->separation *= -1.0f;
-			}
-		}
-		else {
-			projection = boxData1->HalfDimensions.x * glm::abs(glm::dot(boxData1->XAxis, boxData2->ZAxis))
-					   + boxData1->HalfDimensions.y * glm::abs(glm::dot(boxData1->YAxis, boxData2->ZAxis))
-					   + boxData1->HalfDimensions.z * glm::abs(glm::dot(boxData1->ZAxis, boxData2->ZAxis));
-			collision->separation = boxData2->ZAxis * ((projection + boxData2->HalfDimensions.z - distance) / 2);
-
-			if (relativePosition.x < 0) {
-				collision->separation *= -1.0f;
-			}
-		}
-		//collision->separation = glm::normalize(sphereData1->Position - sphereData2->Position) * ((radiusSum - glm::sqrt(distanceSqr)) / 2.0f);
-	}
-	/**/
 	return collision;
 }
 

@@ -1,33 +1,36 @@
 #ifndef _GAMECOLLIDER_H_
 #define _GAMECOLLIDER_H_
 
-#include "Collider.h"
-#include "BoundingVolume.h"
-#include "LayersData.h"
-#include <Ray.h>
-#include <core/ColliderComponent.h>
-#include <core/Frustum.h>
+#include <physics/Collider.h>
+#include <physics/BoundingVolume.h>
+#include <physics/LayersData.h>
+#include <physics/Ray.h>
+#include <graphic/Frustum.h>
+#include <tools/EventHandler.h>
 
-//#define GameColliderPtr GameCollider*
-
-namespace Twin2Engine {
-	namespace Core {
-		class ColliderComponent;
-	}
+namespace Twin2Engine::Core {
+	class ColliderComponent;
 }
 
-namespace CollisionSystem {
+namespace Twin2Engine::PhysicsEngine {
 	class Ray;
 	struct RaycastHit;
 
 	class GameCollider : public Collider {
 	private:
 		std::unordered_set<GameCollider*> LastFrameCollisions;
-		//Collision* test(Collider* collider, bool separate) const;
 
 	public:
+		unsigned int colliderId = 0;
+
+		bool enabled = false;
 		bool isTrigger = false;
 		bool isStatic = false;
+
+		Tools::EventHandler<Collision*> OnTriggerEnter;
+		Tools::EventHandler<GameCollider*> OnTriggerExit;
+		Tools::EventHandler<Collision*> OnCollisionEnter;
+		Tools::EventHandler<GameCollider*> OnCollisionExit;
 
 		Layer layer = Layer::DEFAULT;
 		LayerCollisionFilter& layersFilter = GLOBAL_LAYERS_FILTERS[int(layer)];

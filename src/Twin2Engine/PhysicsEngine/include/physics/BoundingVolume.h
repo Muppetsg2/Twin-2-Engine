@@ -1,10 +1,10 @@
 #pragma once
 
 //#define BoundingVolumePtr BoundingVolume*
-#include "Collider.h"
-#include <core/Frustum.h>
+#include <physics/Collider.h>
+#include <graphic/Frustum.h>
 
-namespace CollisionSystem {
+namespace Twin2Engine::PhysicsEngine {
 	class BoundingVolume : public Collider {
 	public:
 		BoundingVolume(SphereColliderData* sphereColliderData);
@@ -13,7 +13,7 @@ namespace CollisionSystem {
 
 		//virtual ~BoundingVolume();
 
-		bool isOnFrustum(Frustum& frustum);
+		bool isOnFrustum(GraphicEngine::Frustum & frustum);
 
 		Collision* collide(Collider* other) override;
 	};

@@ -26,25 +26,23 @@ source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${GRAPHIC_ENGINE_PRIVATE_INCLU
 add_library(${PROJECT_NAME} STATIC ${GRAPHIC_ENGINE_SOURCE_FILES})
 
 # Adding include to library
-target_include_directories(${PROJECT_NAME}
-						PUBLIC 
-						${GRAPHIC_ENGINE_INCLUDE_DIR}
-						${TOOLS_INCLUDE_DIR}
-						${glad_SOURCE_DIR}
-						${stb_image_SOURCE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC	${GRAPHIC_ENGINE_INCLUDE_DIR}
+													${PHYSICS_ENGINE_INCLUDE_DIR}
+													${TOOLS_INCLUDE_DIR}
+													${glad_SOURCE_DIR}
+													${stb_image_SOURCE_DIR})
 
 # Adding precompile Headers to library
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${GRAPHIC_ENGINE_PRECOMPILE_HEADER})
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} glad)
-target_link_libraries(${PROJECT_NAME} stb_image)
-target_link_libraries(${PROJECT_NAME} assimp)
-target_link_libraries(${PROJECT_NAME} glfw)
-target_link_libraries(${PROJECT_NAME} spdlog)
-target_link_libraries(${PROJECT_NAME} yaml-cpp)
-target_link_libraries(${PROJECT_NAME} freetype)
-target_link_libraries(${PROJECT_NAME} glm::glm)
-target_link_libraries(${PROJECT_NAME} LightingSystem)
-target_link_libraries(${PROJECT_NAME} Tools)
-#target_link_libraries(${PROJECT_NAME} tinygltf)
+target_link_libraries(${PROJECT_NAME}	${OPENGL_LIBRARIES}
+										glad
+										stb_image
+										assimp
+										glfw
+										spdlog
+										yaml-cpp
+										freetype
+										glm::glm
+										PhysicsEngine
+										Tools)

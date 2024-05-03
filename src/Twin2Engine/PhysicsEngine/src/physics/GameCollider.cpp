@@ -1,9 +1,8 @@
-#include "GameCollider.h"
-#include "core/GameObject.h"
+#include <physics/GameCollider.h>
 
 //#define USE_BOUNDING_VOLUMES
 
-using namespace CollisionSystem;
+using namespace Twin2Engine::PhysicsEngine;
 
 GameCollider::GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, SphereColliderData* sphereColliderData)
 	: colliderComponent(colliderComponent) {
@@ -65,7 +64,7 @@ Collision* GameCollider::collide(Collider* other) {
 	if (other->isBoundingVolume) {
 		return testBoundingVolume((BoundingVolume*)other);
 	}
-	else {
+	else if (enabled && ((GameCollider*)other)->enabled) {
 
 #ifdef USE_BOUNDING_VOLUMES
 		Collision* collision = nullptr;// testBoundingVolume(((GameCollider*)other)->boundingVolume);
@@ -83,9 +82,6 @@ Collision* GameCollider::collide(Collider* other) {
 		Collision* collision = testColliders((GameCollider*)other);
 #endif // USE_BOUNDING_VOLUMES
 
-		Twin2Engine::Core::Transform* t1 = colliderComponent->GetGameObject()->GetTransform();
-		Twin2Engine::Core::Transform* t2 = ((GameCollider*)other)->colliderComponent->GetGameObject()->GetTransform();
-
 		if (collision != nullptr) {
 			if (!LastFrameCollisions.contains((GameCollider*)other)) {
 				LastFrameCollisions.insert((GameCollider*)other);
@@ -93,29 +89,25 @@ Collision* GameCollider::collide(Collider* other) {
 
 				if (isTrigger) {
 					//Execute OnTriggerEnter
-					SPDLOG_INFO("{} - OnTriggerEnter", colliderComponent->colliderId);
-					//std::cout << colliderComponent->colliderId << " - OnTriggerEnter\n";
-					Twin2Engine::Core::Collision* col = new Twin2Engine::Core::Collision;
-					col->collider = ((GameCollider*)collision->collider)->colliderComponent;
-					col->otherCollider = ((GameCollider*)collision->otherCollider)->colliderComponent;
-					//col->position = collision->position;
-					colliderComponent->OnTriggerEnter.Invoke(col);
+					SPDLOG_INFO("{} - OnTriggerEnter", colliderId);
+					Twin2Engine::PhysicsEngine::Collision* col = new Twin2Engine::PhysicsEngine::Collision();
+					col->collider = (GameCollider*)collision->collider;
+					col->otherCollider = (GameCollider*)collision->otherCollider;
+					OnTriggerEnter.Invoke(col);
 					delete col;
 
-					col = new Twin2Engine::Core::Collision;
-					col->collider = ((GameCollider*)collision->otherCollider)->colliderComponent;
-					col->otherCollider = ((GameCollider*)collision->collider)->colliderComponent;
-					//col->position = collision->position;
-					((GameCollider*)other)->colliderComponent->OnTriggerEnter.Invoke(col);
+					col = new Twin2Engine::PhysicsEngine::Collision();
+					col->collider = (GameCollider*)collision->otherCollider;
+					col->otherCollider = (GameCollider*)collision->collider;
+					((GameCollider*)other)->OnTriggerEnter.Invoke(col);
 					delete col;
 				}
 				else {
-					if (isStatic) {
+					/*if (isStatic) {
 						if (((GameCollider*)other)->isStatic) {
 							//separacja obu gameobjektów
-							SPDLOG_INFO("{} - separacja obu gameobjektów ({}, {}, {})", colliderComponent->colliderId, collision->separation.x,
+							SPDLOG_INFO("{} - separacja obu gameobjektów ({}, {}, {})", colliderId, collision->separation.x,
 								collision->separation.y, collision->separation.z);
-							//std::cout << colliderComponent->colliderId << " - separacja obu gameobjektów\n";
 							colliderComponent->GetTransform()->SetGlobalPosition(
 								colliderComponent->GetTransform()->GetGlobalPosition() + collision->separation);
 							((GameCollider*)other)->colliderComponent->GetTransform()->SetGlobalPosition(
@@ -149,25 +141,22 @@ Collision* GameCollider::collide(Collider* other) {
 							((GameCollider*)other)->colliderComponent->GetTransform()->SetGlobalPosition(
 								((GameCollider*)other)->colliderComponent->GetTransform()->GetGlobalPosition() - collision->separation);
 						}
-					}
+					}*/
 
 					//Execute OnCollisionEnter
-					SPDLOG_INFO("{} - OnCollisionEnter", colliderComponent->colliderId);
-					//std::cout << colliderComponent->colliderId << " - OnTriggerExit\n";
-					Twin2Engine::Core::Collision* col = new Twin2Engine::Core::Collision;
-					col->collider = ((GameCollider*)collision->collider)->colliderComponent;
-					col->otherCollider = ((GameCollider*)collision->otherCollider)->colliderComponent;
+					SPDLOG_INFO("{} - OnCollisionEnter", colliderId);
+					Twin2Engine::PhysicsEngine::Collision* col = new Twin2Engine::PhysicsEngine::Collision();
+					col->collider = (GameCollider*)collision->collider;
+					col->otherCollider = (GameCollider*)collision->otherCollider;
 					col->separation = collision->separation;
-					//col->position = collision->position;
-					colliderComponent->OnCollisionEnter.Invoke(col);
+					OnCollisionEnter.Invoke(col);
 					delete col;
 
-					col = new Twin2Engine::Core::Collision;
-					col->collider = ((GameCollider*)collision->otherCollider)->colliderComponent;
-					col->otherCollider = ((GameCollider*)collision->collider)->colliderComponent;
+					col = new Twin2Engine::PhysicsEngine::Collision();
+					col->collider = (GameCollider*)collision->otherCollider;
+					col->otherCollider = (GameCollider*)collision->collider;
 					col->separation = -collision->separation;
-					//col->position = collision->position;
-					((GameCollider*)other)->colliderComponent->OnCollisionEnter.Invoke(col);
+					((GameCollider*)other)->OnCollisionEnter.Invoke(col);
 					delete col;
 				}
 			}
@@ -178,17 +167,15 @@ Collision* GameCollider::collide(Collider* other) {
 
 				if (isTrigger) {
 					//Execute OnTriggerExit
-					SPDLOG_INFO("{} - OnTriggerExit", colliderComponent->colliderId);
-					//std::cout << colliderComponent->colliderId << " - OnTriggerExit\n";
-					colliderComponent->OnTriggerExit.Invoke(((GameCollider*)other)->colliderComponent);
-					((GameCollider*)other)->colliderComponent->OnTriggerExit.Invoke(colliderComponent);
+					SPDLOG_INFO("{} - OnTriggerExit", colliderId);
+					OnTriggerExit.Invoke((GameCollider*)other);
+					((GameCollider*)other)->OnTriggerExit.Invoke(this);
 				}
 				else {
 					//Execute OnCollisionExit
-					SPDLOG_INFO("{} - OnCollisionExit", colliderComponent->colliderId);
-					//std::cout << colliderComponent->colliderId << " - OnCollisionExit\n";
-					colliderComponent->OnCollisionExit.Invoke(((GameCollider*)other)->colliderComponent);
-					((GameCollider*)other)->colliderComponent->OnCollisionExit.Invoke(colliderComponent);
+					SPDLOG_INFO("{} - OnCollisionExit", colliderId);
+					OnCollisionExit.Invoke((GameCollider*)other);
+					((GameCollider*)other)->OnCollisionExit.Invoke(this);
 				}
 			}
 		}
@@ -282,54 +269,6 @@ bool GameCollider::rayCollision(Ray& ray, RaycastHit& raycastHit) {
 		raycastHit.position = ray.Origin + ray.Direction * tmin;
 
 		return true;
-
-		/*/
-		float tmin = -1.0f;
-		float t;
-
-		float dn = glm::dot(ray.Direction, boxData->XAxis);
-		if (dn != 0.0f) {
-			tmin = (boxData->HalfDimensions.x - glm::dot(ray.Origin, boxData->XAxis)) / dn;
-		}
-		dn = glm::dot(ray.Direction, -boxData->XAxis);
-		if (dn != 0.0f) {
-			t = (boxData->HalfDimensions.x - glm::dot(ray.Origin, -boxData->XAxis)) / dn;
-			if (t < tmin) {
-				tmin = t;
-			}
-		}
-
-		dn = glm::dot(ray.Direction, boxData->YAxis);
-		if (dn != 0.0f) {
-			t = (boxData->HalfDimensions.y - glm::dot(ray.Origin, boxData->YAxis)) / dn;
-			if (t < tmin) {
-				tmin = t;
-			}
-		}
-		dn = glm::dot(ray.Direction, -boxData->YAxis);
-		if (dn != 0.0f) {
-			t = (boxData->HalfDimensions.y - glm::dot(ray.Origin, -boxData->YAxis)) / dn;
-			if (t < tmin) {
-				tmin = t;
-			}
-		}
-
-		dn = glm::dot(ray.Direction, boxData->ZAxis);
-		if (dn != 0.0f) {
-			t = (boxData->HalfDimensions.z - glm::dot(ray.Origin, boxData->ZAxis)) / dn;
-			if (t < tmin) {
-				tmin = t;
-			}
-		}
-		dn = glm::dot(ray.Direction, -boxData->ZAxis);
-		if (dn != 0.0f) {
-			t = (boxData->HalfDimensions.z - glm::dot(ray.Origin, -boxData->ZAxis)) / dn;
-			if (t < tmin) {
-				tmin = t;
-			}
-		}/**/
-
-		//raycastHit.position = ray.Origin + ray.Direction * tmin;
 	}
 
 	break;

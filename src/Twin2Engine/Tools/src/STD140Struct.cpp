@@ -1,6 +1,6 @@
-#include <graphic/STD140Struct.h>
+#include <tools/STD140Struct.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Tools;
 using namespace std;
 
 hash<string> STD140Struct::_hasher;

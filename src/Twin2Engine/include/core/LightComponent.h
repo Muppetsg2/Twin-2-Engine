@@ -1,7 +1,7 @@
 #ifndef _LIGHTCOMPONENT_H_
 #define _LIGHTCOMPONENT_H_
 
-#include <LightingController.h>
+#include <graphic/LightingController.h>
 #include <core/Component.h>
 #include <tools/EventHandler.h>
 

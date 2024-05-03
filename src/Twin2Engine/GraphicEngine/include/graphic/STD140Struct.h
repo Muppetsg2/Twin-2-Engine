@@ -115,10 +115,27 @@ namespace Twin2Engine::GraphicEngine {
 			}
 			return values;
 		}
+		template<class S> std::vector<S> GetStructArray(const std::string& name, const S& structTemplate) const {
+			std::vector<S> values;
+			if (_offsets.contains(_hasher(name))) {
+				// GET STRUCT ARRAY VALUES
+				size_t i = 0;
+				std::string arrayElemName = name + "[" + std::to_string(i) + "]";
+				while (_offsets.contains(_hasher(arrayElemName))) {
+					values.push_back(Get<S>(arrayElemName, structTemplate));
+
+					++i;
+					arrayElemName = name + "[" + std::to_string(i) + "]";
+				}
+			}
+			return values;
+		}
 #pragma endregion
 
 	public:
 		STD140Struct() = default;
+		STD140Struct(STD140Struct& std140s) = default;
+		STD140Struct(STD140Struct&& std140s) = default;
 		virtual ~STD140Struct() = default;
 
 #pragma region ADD_SCALARS
@@ -583,20 +600,25 @@ namespace Twin2Engine::GraphicEngine {
 #pragma region GET_STRUCT
 		template<class S>
 		typename std::enable_if_t<std::is_same_v<S, STD140Struct>, S>
-		Get(const std::string& name, const STD140Struct& structTemplate) const {
-			STD140Struct value = structTemplate;
+		Get(const std::string& name, const S& structTemplate) const {
+			S value = structTemplate;
+			std::vector<char> valueData = Get(name, structTemplate.GetSize());
+			value._data.resize(valueData.size());
+			memcpy(value._data.data(), valueData.data(), valueData.size());
+			return value;
 		}
 
 #pragma region GET_STRUCT_ARRAYS
 		template<class S>
 		typename std::enable_if_t<std::is_same_v<S, STD140Struct>>
 		Get(const std::string& name, const STD140Struct& structTemplate, S*& valueDest, size_t size) const {
-
+			std::vector<S> values = GetStructArray<S>(name, structTemplate);
+			memcpy(valueDest, values.data(), size > values.size() ? values.size() : size);
 		}
 		template<class V, class S = V::value_type>
 		typename std::enable_if_t<std::is_same_v<S, STD140Struct>, V>
 		Get(const std::string& name, const STD140Struct& structTemplate) const {
-
+			return GetStructArray<S>(name, structTemplate);
 		}
 #pragma endregion
 #pragma endregion

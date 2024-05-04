@@ -428,6 +428,16 @@ void MeshRenderingManager::Render()
 void MeshRenderingManager::RenderStatic()
 {
 	unsigned int globalDrawCount = 0;
+
+#if USE_NAMED_BUFFER_SUBDATA
+	//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
+	glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, indexes);
+#else
+	//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, _materialsIndexes);
+#endif
+
 	for (auto& shaderPair : _renderQueueStatic)
 	{
 		// Activating Shader Program
@@ -528,15 +538,15 @@ void MeshRenderingManager::RenderStatic()
 						//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
 						glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, transforms);
 						//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-						glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, indexes);
+						//glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, indexes);
 #else
 						//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
 						glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
 						glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, _modelTransforms);
 
 						//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-						glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
-						glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, _materialsIndexes);
+						//glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
+						//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, _materialsIndexes);
 #endif
 
 						meshPair.first->Draw(MAX_INSTANCE_NUMBER_PER_DRAW);
@@ -572,15 +582,15 @@ void MeshRenderingManager::RenderStatic()
 					glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * count, transforms);
 
 					//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-					glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * count, indexes);
+					//glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * count, indexes);
 #else
 					//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
 					glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
 					glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * count, _modelTransforms);
 
 					//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-					glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
-					glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * count, _materialsIndexes);
+					//glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
+					//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * count, _materialsIndexes);
 
 					glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 #endif
@@ -961,6 +971,16 @@ void MeshRenderingManager::RenderDepthMap()
 void MeshRenderingManager::RenderDepthMapStatic()
 {
 	unsigned int globalDrawCount = 0;
+
+#if USE_NAMED_BUFFER_SUBDATA
+	//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
+	glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, indexes);
+#else
+	//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, _materialsIndexes);
+#endif
+
 	for (auto& shaderPair : _depthMapenderQueueStatic)
 	{
 		// Activating Shader Program
@@ -996,7 +1016,6 @@ void MeshRenderingManager::RenderDepthMapStatic()
 
 			for (auto& meshPair : materialPair.second)
 			{
-
 				if (meshPair.second.renderedCount)
 				{
 					count = meshPair.second.renderedCount;
@@ -1062,15 +1081,15 @@ void MeshRenderingManager::RenderDepthMapStatic()
 						//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
 						glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, transforms);
 						//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-						glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, indexes);
+						//glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, indexes);
 #else
 						//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
 						glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
 						glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, _modelTransforms);
 
 						//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-						glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
-						glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, _materialsIndexes);
+						//glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
+						//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, _materialsIndexes);
 #endif
 
 						meshPair.first->Draw(MAX_INSTANCE_NUMBER_PER_DRAW);
@@ -1106,15 +1125,15 @@ void MeshRenderingManager::RenderDepthMapStatic()
 					glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * count, transforms);
 
 					//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-					glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * count, indexes);
+					//glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * count, indexes);
 #else
 					//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
 					glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
 					glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * count, _modelTransforms);
 
 					//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-					glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
-					glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * count, _materialsIndexes);
+					//glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
+					//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * count, _materialsIndexes);
 
 					glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 #endif

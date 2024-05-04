@@ -33,7 +33,7 @@ namespace Twin2Engine
 
 		public:
 			template<class T>
-			typename std::enable_if_t<Tools::is_in_v<T, bool, int, unsigned int, float, double,
+			typename std::enable_if_t<Tools::is_type_in_v<T, bool, int, unsigned int, float, double,
 									glm::vec2, glm::vec3, glm::vec4,
 									glm::ivec2, glm::ivec3, glm::ivec4>, bool>
 			Set(const std::string& variableName, const T& value) {
@@ -42,7 +42,7 @@ namespace Twin2Engine
 
 
 			template<class T>
-			typename std::enable_if_t<Tools::is_in_v<T, bool, int, unsigned int, float, double,
+			typename std::enable_if_t<Tools::is_type_in_v<T, bool, int, unsigned int, float, double,
 									glm::vec2, glm::vec3, glm::vec4,
 									glm::ivec2, glm::ivec3, glm::ivec4>, T>
 			Get(const std::string& variableName) {

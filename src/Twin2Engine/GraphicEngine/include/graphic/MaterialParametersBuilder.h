@@ -18,7 +18,7 @@ namespace Twin2Engine::Graphic
 	public:
 
 		template<class T>
-		typename std::enable_if_t<Tools::is_in_v<T, int, unsigned int, float, double, bool,
+		typename std::enable_if_t<Tools::is_type_in_v<T, int, unsigned int, float, double, bool,
 										glm::vec2, glm::vec3, glm::vec4,
 										glm::ivec2, glm::ivec3, glm::ivec4>>
 		Add(const std::string& variableName, const T& value) {

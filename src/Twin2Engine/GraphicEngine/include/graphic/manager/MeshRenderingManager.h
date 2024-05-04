@@ -69,7 +69,7 @@ namespace Twin2Engine
 			{
 				std::vector<glm::mat4> modelTransforms;
 				std::vector<Twin2Engine::Core::MeshRenderer*> meshRenderers;
-				std::queue<RenderedSegment> rendered;
+				std::list<RenderedSegment> rendered;
 				unsigned int renderedCount;
 			};
 
@@ -100,6 +100,7 @@ namespace Twin2Engine
 
 			static void Render();
 			static void RenderDepthMap();
+			static void RenderDepthMapStatic();
 		public:
 			static void Init();
 			static void UnloadAll();

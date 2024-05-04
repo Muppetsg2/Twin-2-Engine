@@ -69,17 +69,18 @@ void GraphicEngineManager::End()
 	MeshRenderingManager::UnloadAll();
 }
 
+void GraphicEngineManager::UpdateBeforeRendering()
+{
+	MeshRenderingManager::UpdateQueues();
+
+}
+
 void GraphicEngineManager::Render()
 {
 #if DEBUG_GRAPHIC_ENGINE
 	float startRenderingTime = glfwGetTime();
 #endif
-	float startRenderingTime = glfwGetTime();
-	MeshRenderingManager::UpdateQueues();
-	SPDLOG_INFO("UpdateRandering Time: {}", glfwGetTime() - startRenderingTime);
-	startRenderingTime = glfwGetTime();
 	MeshRenderingManager::RenderStatic();
-	//SPDLOG_INFO("RanderingStatic Time: {}", glfwGetTime() - startRenderingTime);
 	//MeshRenderingManager::Render();
 #if DEBUG_GRAPHIC_ENGINE
 	SPDLOG_INFO("Randering Time: {}", glfwGetTime() - startRenderingTime);
@@ -99,6 +100,7 @@ void GraphicEngineManager::DepthRender()
 	float startDepthRenderingTime = glfwGetTime();
 #endif
 	//MeshRenderingManager::RenderDepthMap();
+	MeshRenderingManager::RenderDepthMapStatic();
 #if DEBUG_GRAPHIC_ENGINE
 	SPDLOG_INFO("Depth Randering Time: {}", glfwGetTime() - startDepthRenderingTime);
 #endif

@@ -6,13 +6,23 @@
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
+using namespace std;
+
+template<> struct hash<Material>
+{
+public:
+	std::size_t operator()(const Material& m) const
+	{
+		return (size_t) m.GetMaterialParameters();
+	}
+};
 
 #if RENERING_TYPE_MESH_SHADER_MATERIAL
 std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_renderQueue = std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
 std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
 #elif RENERING_TYPE_SHADER_MATERIAL_MESH
-std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueStatic = std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, MeshRenderingData>>>();
-std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_depthMapenderQueueStatic = std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, MeshRenderingData>>>();
+std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueStatic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingData>>>();
+std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_depthMapenderQueueStatic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingData>>>();
 
 std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, std::queue<MeshRenderData>>>> MeshRenderingManager::_renderQueue = std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, std::queue<MeshRenderData>>>>();
 std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, std::queue<MeshRenderData>>>>();
@@ -210,12 +220,19 @@ void MeshRenderingManager::UpdateQueues()
 	RenderedSegment renderedSegment{ .offset = 0, .count = 0 };
 	bool lastAdded = true;
 	unsigned int globalUpadates = 0u;
+	unsigned int globalUpadatesII = 0u;
+	unsigned int globalUpadatesIII = 0u;
+
 	for (auto& shaderPair : _renderQueueStatic)
 	{
+		globalUpadatesII += shaderPair.second.size();
+
 		for (auto& materialPair : shaderPair.second)
 		{
 			for (auto& meshPair : materialPair.second)
 			{
+				globalUpadatesIII += materialPair.second.size();
+
 				renderedSegment.offset = 0u;
 				renderedSegment.count = 0u;
 				lastAdded = true;
@@ -277,13 +294,16 @@ void MeshRenderingManager::UpdateQueues()
 					meshPair.second.renderedCount += renderedSegment.count;
 					renderedSegment.count = 0u;
 				}
-				_depthMapenderQueueStatic[shaderPair.first][materialPair.first][meshPair.first].rendered = meshPair.second.rendered;
+				//_depthMapenderQueueStatic[shaderPair.first][materialPair.first][meshPair.first].rendered = meshPair.second.rendered;
 				_depthMapenderQueueStatic[shaderPair.first][materialPair.first][meshPair.first].renderedCount = meshPair.second.renderedCount;
 			}
 		}
 	}
+	//SPDLOG_INFO("Number in I: {}", _renderQueueStatic.size());
+	//SPDLOG_INFO("Number in II: {}", globalUpadatesII);
+	//SPDLOG_INFO("Number in III: {}", globalUpadatesIII);
 
-	SPDLOG_INFO("Updated: {}", globalUpadates);
+	//SPDLOG_INFO("Number in I: {}, Number in II: {}, Number in III: {} Updated: {}", _renderQueueStatic.size(), globalUpadatesII, globalUpadatesIII, globalUpadates);
 }
 
 

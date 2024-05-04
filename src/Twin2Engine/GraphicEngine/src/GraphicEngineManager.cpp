@@ -79,7 +79,7 @@ void GraphicEngineManager::Render()
 	SPDLOG_INFO("UpdateRandering Time: {}", glfwGetTime() - startRenderingTime);
 	startRenderingTime = glfwGetTime();
 	MeshRenderingManager::RenderStatic();
-	SPDLOG_INFO("RanderingStatic Time: {}", glfwGetTime() - startRenderingTime);
+	//SPDLOG_INFO("RanderingStatic Time: {}", glfwGetTime() - startRenderingTime);
 	//MeshRenderingManager::Render();
 #if DEBUG_GRAPHIC_ENGINE
 	SPDLOG_INFO("Randering Time: {}", glfwGetTime() - startRenderingTime);

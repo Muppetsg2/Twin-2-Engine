@@ -77,8 +77,9 @@ namespace Twin2Engine
 			static std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _renderQueue;
 			static std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
 #elif RENERING_TYPE_SHADER_MATERIAL_MESH
-			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, MeshRenderingData>>>  _renderQueueStatic;
-			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, MeshRenderingData>>>  _depthMapenderQueueStatic;
+			static std::unordered_map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::unordered_map<GraphicEngine::InstatiatingMesh*, MeshRenderingData>>>  _renderQueueStatic;
+			static std::unordered_map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::unordered_map<GraphicEngine::InstatiatingMesh*, MeshRenderingData>>>  _depthMapenderQueueStatic;
+
 			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>>>>  _renderQueue;
 			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
 #elif RENERING_TYPE_SHADER_MESH_MATERIAL

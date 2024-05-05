@@ -61,6 +61,7 @@ namespace Twin2Engine
 			static void Render(MeshRenderData meshData);
 			static void RenderDepthMap(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,
 									   glm::mat4& projectionViewMatrix);
+			static void RenderLightingMap(const GLuint& lightingMapFBO);
 		};
 	}
 }

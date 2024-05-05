@@ -1,4 +1,7 @@
 #version 430
+//LightingMultiTexture.frag
+
+layout(early_fragment_tests) in;
 
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 normal;
@@ -21,6 +24,8 @@ layout (std140, binding = 1) uniform WindowData
     float gamma;
 };
 
+
+
 layout(std140, binding = 2) uniform MaterialInputBuffer {
     MaterialInput materialInput[8];
 };
@@ -28,10 +33,10 @@ layout(std140, binding = 2) uniform MaterialInputBuffer {
 struct TextureInput
 {
 	sampler2D texture1;
+	sampler2D texture2;
 };
 
 layout(location = 0) uniform TextureInput texturesInput[8];
-
 
 
 //shadow maps
@@ -100,23 +105,24 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
     float currentDepth = projCoords.z;
     // calculate bias (based on depth map resolution and slope)
    
-    vec3 lightDir = normalize(directionalLights[shadowMapId].position - position);
-    float bias = max(0.001 * (1.0 - dot(N, lightDir)), 0.0005);
+    //vec3 lightDir = normalize(directionalLights[shadowMapId].position - position);
+    //float bias = max(0.001 * (1.0 - dot(N, lightDir)), 0.0005);
     //float bias = 0.005;
     // check whether current frag pos is in shadow
     //float shadow = (currentDepth) < closestDepth  ? 1.0 : 0.0;
 
     // PCF
     float shadow = 0.0;
-    vec2 texelSize = 0.5 * 1.0 / textureSize(DirLightShadowMaps[shadowMapId], 0);
+    vec2 texelSize = 0.25 * 1.0 / textureSize(DirLightShadowMaps[shadowMapId], 0);
+    float pcfDepth = 0.0;
     for(int x = -2; x <= 2; ++x)
     {
         for(int y = -2; y <= 2; ++y)
         {
-            float pcfDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy + vec2(x, y) * texelSize).r; 
+            pcfDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy + vec2(x, y) * texelSize).r; 
             shadow += currentDepth  < pcfDepth  ? 1.0 : 0.0;        
-            //shadow += (currentDepth - bias) < pcfDepth  ? 1.0 : 0.0;        
-        }    
+            //shadow += (currentDepth - bias) < pcfDepth  ? 1.0 : 0.0;
+            }    
     }
     shadow /= 25.0;
     
@@ -139,9 +145,10 @@ float countBlinnPhongPart(vec3 L, vec3 E, vec3 N) {
 
 void main()
 {
-	FragColor = texture(texturesInput[materialIndex].texture1, texCoords);
+	FragColor = texture(texturesInput[materialIndex].texture1, texCoords) * texture(texturesInput[materialIndex].texture2, texCoords);
+	//FragColor = texture(texturesInput[materialIndex * 2].texture1, texCoords) * texture(texturesInput[materialIndex * 2 + 1].texture2, texCoords);
 
-    vec3 LightColor = vec3(0.0);
+	vec3 LightColor = vec3(0.0);
 	
 	vec3 L = vec3(0.0);
     vec3 N = normalize(normal);
@@ -151,6 +158,7 @@ void main()
 	float lambertian = 0.0;
 	float specular = 0.0;
 	float distance = 0.0;
+    vec3 SpecCol = vec3(1.0, 1.0, 1.0);
 
     for (uint i = 0; i < numberOfPointLights; ++i) {
         L = pointLights[i].position - position;
@@ -165,8 +173,9 @@ void main()
         if (lambertian > 0.0) {
             specular = countBlinnPhongPart(L, E, N);
         }
-
-        LightColor += (lambertian + specular) * pointLights[i].color * pointLights[i].power * attenuation;
+		
+        LightColor += (lambertian * pointLights[i].color + specular * SpecCol) * pointLights[i].power * attenuation;
+        //LightColor += (lambertian + specular) * pointLights[i].color * pointLights[i].power * attenuation;
 		//FragColor = vec4((lambertian + specular) * pointLights[i].color * pointLights[i].power * attenuation, 1.0f);
     }
 
@@ -201,15 +210,16 @@ void main()
 
 	for (uint i = 0; i < numberOfDirLights; ++i) {
         L = -directionalLights[i].direction;
-
+    
         lambertian = countLambertianPart(L, N);
 		
 		specular = 0.0;
         if (lambertian > 0.0) {
             specular = countBlinnPhongPart(L, E, N);
         }
-
+    
         //LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power;
+        //LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
         LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
     }
     //LightColor += texture(DirLightingMap, gl_FragCoord.xy).r;

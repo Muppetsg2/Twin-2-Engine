@@ -2,7 +2,7 @@ shaderprogram:
   name: origin/ColoredTexture
   shaders:
     - ColoredTexture.vert
-    - ColoredTexture.frag
+    - LightingColoredTexture.frag
   parameters:
     - name: vec4
       type: texture2D

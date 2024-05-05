@@ -205,17 +205,15 @@ void LightingController::UpdateDL(DirectionalLight* dirLight) {
 
 
 void LightingController::BindLightBuffors(Twin2Engine::GraphicEngine::Shader* shader) {
-	GLuint block_index = 0;
-
+	//GLuint block_index = 0;
 	//block_index = glGetProgramResourceIndex(shader->shaderProgramID, GL_SHADER_STORAGE_BLOCK, "Lights");
 	//glShaderStorageBlockBinding(shader->shaderProgramID, block_index, 3);
 
 	//block_index = glGetUniformBlockIndex(shader->shaderProgramID, "LightingData");
 	//glUniformBlockBinding(shader->shaderProgramID, block_index, 4);
 
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, LightsBuffer);
-
-	glBindBufferBase(GL_UNIFORM_BUFFER, 4, LightingDataBuffer);
+	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, LightsBuffer);
+	//glBindBufferBase(GL_UNIFORM_BUFFER, 4, LightingDataBuffer);
 
 	std::string str = "DirLightShadowMaps[";
 	shader->Use();
@@ -224,6 +222,10 @@ void LightingController::BindLightBuffors(Twin2Engine::GraphicEngine::Shader* sh
 	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "2]").c_str()), 10);
 	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "3]").c_str()), 11);
 	//UpdateShadowMapsTab(shader);
+
+	//std::string str = "DirShadowLightingMap";
+	//shader->Use();
+	//glUniform1i(glGetUniformLocation(shader->shaderProgramID, str.c_str()), SHADOW_MAP_BEGINING + 4);
 }
 
 void LightingController::UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader* shader) {

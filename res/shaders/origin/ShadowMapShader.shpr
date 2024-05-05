@@ -1,0 +1,6 @@
+shaderprogram:
+  name: origin/ShadowMapShader
+  shaders:
+    - ShadowMapShader.vert
+    - ShadowMapShader.frag
+  parameters:

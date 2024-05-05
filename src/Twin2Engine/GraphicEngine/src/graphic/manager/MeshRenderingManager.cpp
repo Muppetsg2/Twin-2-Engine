@@ -388,3 +388,61 @@ void MeshRenderingManager::RenderDepthMap(const unsigned int& bufferWidth, const
 	glm::ivec2 wSize = Twin2Engine::GraphicEngine::Window::GetInstance()->GetContentSize();
 	glViewport(0, 0, wSize.x, wSize.y);
 }
+
+void MeshRenderingManager::RenderLightingMap(const GLuint& lightingMapFBO) 
+{
+	ShaderManager::DepthShader->Use();
+	glBindFramebuffer(GL_FRAMEBUFFER, lightingMapFBO);
+
+	//glBindTexture(GL_TEXTURE_2D, depthMapTex);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	for (auto& meshPair : _depthQueue)
+	{
+		unsigned int index = 0;
+
+		std::vector<glm::mat4> transforms(meshPair.second.size());
+
+		while (meshPair.second.size() > 0)
+		{
+			auto& renderData = meshPair.second.front();
+
+			transforms[index] = renderData.transform;
+
+			++index;
+
+			meshPair.second.pop();
+		}
+
+		size_t instanceIndex = 0;
+
+		while (index > MAX_INSTANCE_NUMBER_PER_DRAW)
+		{
+#if USE_NAMED_BUFFER_SUBDATA
+			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+			glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, transforms.data() + instanceIndex);
+#else
+			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+			glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, transforms.data() + instanceIndex);
+#endif
+			meshPair.first->Draw(MAX_INSTANCE_NUMBER_PER_DRAW);
+
+			instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
+			index -= MAX_INSTANCE_NUMBER_PER_DRAW;
+		}
+#if USE_NAMED_BUFFER_SUBDATA
+		//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+		glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * index, transforms.data() + instanceIndex);
+#else
+		//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * index, transforms.data() + instanceIndex);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+#endif
+
+		meshPair.first->Draw(index);
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}

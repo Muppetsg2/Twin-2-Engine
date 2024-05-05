@@ -966,7 +966,9 @@ void imgui_render()
 
             /*
             if (!loop) {
-                ImGui::SliderFloat("Position Slider", (float*)&pos, 0.f, a->GetAudioLength());
+                if (ImGui::SliderFloat("Position Slider", (float*)&pos, 0.f, a->GetAudioLength())) {
+					a->SetPlayPosition(pos);
+				}
             }
             */
 

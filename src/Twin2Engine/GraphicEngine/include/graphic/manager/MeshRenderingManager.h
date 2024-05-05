@@ -72,6 +72,17 @@ namespace Twin2Engine
 				std::list<RenderedSegment> rendered;
 				unsigned int renderedCount;
 			};
+			struct RenderedSegmentDepthMap
+			{
+				std::vector<glm::mat4>* modelTransforms;
+				unsigned int offset;
+				unsigned int count;
+			};
+			struct MeshRenderingDataDepthMap
+			{
+				std::list<RenderedSegmentDepthMap> rendered;
+				unsigned int renderedCount;
+			};
 
 #if RENERING_TYPE_MESH_SHADER_MATERIAL
 			static std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _renderQueue;
@@ -79,6 +90,8 @@ namespace Twin2Engine
 #elif RENERING_TYPE_SHADER_MATERIAL_MESH
 			static std::unordered_map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::unordered_map<GraphicEngine::InstatiatingMesh*, MeshRenderingData>>>  _renderQueueStatic;
 			static std::unordered_map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::unordered_map<GraphicEngine::InstatiatingMesh*, MeshRenderingData>>>  _depthMapenderQueueStatic;
+
+			static std::unordered_map<GraphicEngine::InstatiatingMesh*, MeshRenderingDataDepthMap> _depthQueueStatic;
 
 			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>>>>  _renderQueue;
 			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
@@ -111,6 +124,8 @@ namespace Twin2Engine
 			static void Render(MeshRenderData meshData);
 			static void RenderDepthMap(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,
 									   glm::mat4& projectionViewMatrix);
+			static void RenderDepthMapStatic(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,
+				glm::mat4& projectionViewMatrix);
 		};
 	}
 }

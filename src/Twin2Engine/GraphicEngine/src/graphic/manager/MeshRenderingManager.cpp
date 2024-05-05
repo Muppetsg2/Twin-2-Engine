@@ -24,6 +24,8 @@ std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<Mesh
 std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueStatic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingData>>>();
 std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_depthMapenderQueueStatic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingData>>>();
 
+std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthQueueStatic = std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
+
 std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, std::queue<MeshRenderData>>>> MeshRenderingManager::_renderQueue = std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, std::queue<MeshRenderData>>>>();
 std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, std::queue<MeshRenderData>>>>();
 #elif RENERING_TYPE_SHADER_MESH_MATERIAL
@@ -292,6 +294,12 @@ void MeshRenderingManager::UpdateQueues()
 
 				_depthMapenderQueueStatic[shaderPair.first][materialPair.first][meshPair.first].rendered = meshPair.second.rendered;
 				_depthMapenderQueueStatic[shaderPair.first][materialPair.first][meshPair.first].renderedCount = meshPair.second.renderedCount;
+
+				_depthQueueStatic[meshPair.first].renderedCount += meshPair.second.renderedCount;
+				for (const auto& element : meshPair.second.rendered)
+				{
+					_depthQueueStatic[meshPair.first].rendered.emplace_back(&meshPair.second.modelTransforms, element.offset, element.count);
+				}
 			}
 		}
 	}
@@ -1442,6 +1450,141 @@ void MeshRenderingManager::RenderDepthMap(const unsigned int& bufferWidth, const
 #endif
 
 		meshPair.first->Draw(index);
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glm::ivec2 wSize = Twin2Engine::GraphicEngine::Window::GetInstance()->GetContentSize();
+	glViewport(0, 0, wSize.x, wSize.y);
+}
+
+void MeshRenderingManager::RenderDepthMapStatic(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,
+	glm::mat4& projectionViewMatrix)
+{
+	ShaderManager::DepthShader->Use();
+	ShaderManager::DepthShader->SetMat4("lightSpaceMatrix", projectionViewMatrix);
+
+	glViewport(0, 0, bufferWidth, bufferHeight);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthFBO);
+
+	//glBindTexture(GL_TEXTURE_2D, depthMapTex);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	unsigned int count = 0;
+	RenderedSegmentDepthMap currentSegment{ .offset = 0u, .count = 0u };
+
+	for (auto& meshPair : _depthQueueStatic)
+	{
+		if(meshPair.second.renderedCount)
+		{
+			count = meshPair.second.renderedCount;
+
+			meshPair.second.renderedCount = 0u;
+
+			size_t instanceIndex = 0;
+			size_t remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
+
+			currentSegment.offset = 0u;
+			currentSegment.count = 0u;
+
+			while (count > MAX_INSTANCE_NUMBER_PER_DRAW)
+			{
+				instanceIndex = 0ull;
+				remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
+
+				if (currentSegment.count)
+				{
+					if (currentSegment.count > MAX_INSTANCE_NUMBER_PER_DRAW)
+					{
+						std::memcpy(_modelTransforms, currentSegment.modelTransforms->data() + currentSegment.offset, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
+						currentSegment.offset += MAX_INSTANCE_NUMBER_PER_DRAW;
+						currentSegment.count -= MAX_INSTANCE_NUMBER_PER_DRAW;
+
+						instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
+						remaining -= MAX_INSTANCE_NUMBER_PER_DRAW;
+					}
+					else
+					{
+						std::memcpy(_modelTransforms, currentSegment.modelTransforms->data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+
+						instanceIndex += currentSegment.count;
+						remaining -= currentSegment.count;
+					}
+				}
+				while (remaining > 0)
+				{
+					currentSegment = meshPair.second.rendered.front();
+					meshPair.second.rendered.pop_front();
+
+					if (currentSegment.count > remaining)
+					{
+						std::memcpy(_modelTransforms + instanceIndex, currentSegment.modelTransforms->data() + currentSegment.offset, remaining * sizeof(glm::mat4));
+						currentSegment.offset += remaining;
+						currentSegment.count -= remaining;
+
+						instanceIndex += remaining;
+						remaining = 0ull;
+					}
+					else
+					{
+						std::memcpy(_modelTransforms + instanceIndex, currentSegment.modelTransforms->data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+
+						instanceIndex += currentSegment.count;
+						remaining -= currentSegment.count;
+
+						currentSegment.count = 0u;
+					}
+				}
+
+#if USE_NAMED_BUFFER_SUBDATA
+				//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+				glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, transforms);
+#else
+				//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+				glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, _modelTransforms);
+#endif
+
+				meshPair.first->Draw(MAX_INSTANCE_NUMBER_PER_DRAW);
+
+				instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
+				count -= MAX_INSTANCE_NUMBER_PER_DRAW;
+			}
+
+
+			instanceIndex = 0ull;
+			remaining = count;
+
+			if (currentSegment.count)
+			{
+				std::memcpy(_modelTransforms, currentSegment.modelTransforms->data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+
+				instanceIndex += currentSegment.count;
+				remaining -= currentSegment.count;
+			}
+			while (remaining > 0)
+			{
+				currentSegment = meshPair.second.rendered.front();
+				meshPair.second.rendered.pop_front();
+
+				std::memcpy(_modelTransforms + instanceIndex, currentSegment.modelTransforms->data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+
+				instanceIndex += currentSegment.count;
+				remaining -= currentSegment.count;
+			}
+
+#if USE_NAMED_BUFFER_SUBDATA
+			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+			glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * count, transforms);
+#else
+			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+			glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * count, _modelTransforms);
+
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+#endif
+
+			meshPair.first->Draw(count);
+		}
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

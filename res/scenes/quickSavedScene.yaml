@@ -105,7 +105,7 @@ ScriptableObjects: ~
 GameObjects:
   - id: 1
     name: Camera
-    isStatic: true
+    isStatic: false
     isActive: true
     transform:
       id: 0

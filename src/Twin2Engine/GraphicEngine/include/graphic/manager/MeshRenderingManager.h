@@ -93,11 +93,18 @@ namespace Twin2Engine
 
 			static std::unordered_map<GraphicEngine::InstatiatingMesh*, MeshRenderingDataDepthMap> _depthQueueStatic;
 
+
+			static std::unordered_map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::unordered_map<GraphicEngine::InstatiatingMesh*, MeshRenderingData>>>  _renderQueueDynamic;
+			static std::unordered_map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::unordered_map<GraphicEngine::InstatiatingMesh*, MeshRenderingData>>>  _depthMapenderQueueDynamic;
+
+			static std::unordered_map<GraphicEngine::InstatiatingMesh*, MeshRenderingDataDepthMap> _depthQueueDynamic;
+
+
 			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>>>>  _renderQueue;
 			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
 #elif RENERING_TYPE_SHADER_MESH_MATERIAL
-			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::InstatiatingMesh*,  std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _renderQueue;
-			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::InstatiatingMesh*,  std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
+			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _renderQueue;
+			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
 #endif
 			static std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>> _depthQueue;
 
@@ -109,11 +116,12 @@ namespace Twin2Engine
 			static unsigned int* _materialsIndexes;
 
 			static void UpdateQueues();
+
 			static void RenderStatic();
+			static void RenderDepthMapStatic();
 
 			static void Render();
 			static void RenderDepthMap();
-			static void RenderDepthMapStatic();
 		public:
 			static void Init();
 			static void UnloadAll();
@@ -121,9 +129,12 @@ namespace Twin2Engine
 			static void RegisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer);
 			static void UnregisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer);
 
+			static void RegisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer);
+			static void UnregisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer);
+
 			static void Render(MeshRenderData meshData);
 			static void RenderDepthMap(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,
-									   glm::mat4& projectionViewMatrix);
+				glm::mat4& projectionViewMatrix);
 			static void RenderDepthMapStatic(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,
 				glm::mat4& projectionViewMatrix);
 		};

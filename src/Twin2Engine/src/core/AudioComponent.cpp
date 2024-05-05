@@ -101,7 +101,7 @@ void AudioComponent::UnLoop()
 	}
 }
 
-void AudioComponent::SetTimePosition(SoLoud::time seconds)
+void AudioComponent::SetPlayPosition(SoLoud::time seconds)
 {
 	if (_loaded) {
 		if (!AudioManager::IsHandleValid(_audioHandle)) {

@@ -13,6 +13,11 @@ MaterialParameters::MaterialParameters()
 
 }
 
+MaterialParameters::~MaterialParameters()
+{
+	glDeleteBuffers(1, &_materialParametersDataUBO);
+}
+
 MaterialParameters::MaterialParameters(const STD140Struct& parameters, const map<size_t, char>& textureMappings, const vector<GLuint>& textures)
 {
 	_parameters = parameters;

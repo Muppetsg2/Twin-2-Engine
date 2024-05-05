@@ -41,6 +41,8 @@ namespace Twin2Engine
 			}
 
 
+			~MaterialParameters();
+
 			template<class T>
 			typename std::enable_if_t<is_in_v<T, bool, int, unsigned int, float, double,
 									glm::vec2, glm::vec3, glm::vec4,

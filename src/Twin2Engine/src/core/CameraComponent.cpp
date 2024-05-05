@@ -460,11 +460,20 @@ void CameraComponent::Initialize()
 		glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(mat4), NULL, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
+		_uboMatricesOffsets = STD140Offsets();
+		_uboMatricesOffsets.Add<mat4>("projection");
+		_uboMatricesOffsets.Add<mat4>("model");
+
 		glBindBufferRange(GL_UNIFORM_BUFFER, 0, _uboMatrices, 0, 2 * sizeof(mat4));
 
+		STD140Struct tempStruct = STD140Struct(_uboMatricesOffsets);
+		tempStruct.Set("projection", this->GetProjectionMatrix());
+		tempStruct.Set("view", this->GetViewMatrix());
+
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
+		//glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr());
+		//glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr());
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		glGenBuffers(1, &_uboWindowData);

@@ -3,6 +3,7 @@
 #include <core/Component.h>
 #include <graphic/Frustum.h>
 #include <physic/Ray.h>
+#include <tools/STD140Struct.h>
 
 using namespace glm;
 
@@ -36,7 +37,9 @@ namespace Twin2Engine::Core {
 	class CameraComponent : public Component {
 	private:
 		static GLuint _uboMatrices;
+		static Tools::STD140Offsets _uboMatricesOffsets;
 		static GLuint _uboWindowData;
+		static Tools::STD140Offsets _uboWindowDataOffsets;
 		static Graphic::InstatiatingModel _renderPlane;
 		static Graphic::Shader* _renderShader;
 

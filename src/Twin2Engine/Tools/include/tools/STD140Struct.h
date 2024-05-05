@@ -579,7 +579,7 @@ namespace Twin2Engine::Tools {
 #pragma endregion
 
 #pragma region ADD_MAT
-		template<class M>
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::column_type::length()>
 		typename mat_enable_if_t<M, typename M::value_type, M::row_type::length(), M::column_type::length()>
 		Add(const std::string& name, const M& value) {
 			using T = M::value_type;
@@ -726,8 +726,8 @@ namespace Twin2Engine::Tools {
 		typename mat_enable_if_t<M, typename M::value_type, M::row_type::length(), M::column_type::length(), bool>
 		Set(const std::string& name, const M& value) {
 			using T = M::value_type;
-			using type = glm::mat<M::row_type::length(), M::column_type::length(), type_test_t<std::is_same<T, bool>, unsigned int, T>>;
-			_SetMat(name, (type)value);
+			using type = glm::mat<M::row_type::length(), M::column_type::length(), type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			return _SetMat(name, (type)value);
 		}
 
 #pragma region SET_MAT_ARRAYS

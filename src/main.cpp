@@ -232,8 +232,8 @@ int main(int, char**)
 #pragma endregion
 
     // ADDING SCENES
-    SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
-    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
+    SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
 
     CollisionManager::Instance()->PerformCollisions();
 

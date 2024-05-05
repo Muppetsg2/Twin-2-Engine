@@ -37,7 +37,13 @@ namespace Twin2Engine
 									glm::vec2, glm::vec3, glm::vec4,
 									glm::ivec2, glm::ivec3, glm::ivec4>, bool>
 			Set(const std::string& variableName, const T& value) {
-				return _parameters.Set(variableName, value);
+				if (_parameters.Set(variableName, value)) {
+					glBindBuffer(GL_UNIFORM_BUFFER, _materialParametersDataUBO);
+					glBufferSubData(GL_UNIFORM_BUFFER, 0, _parameters.GetSize(), _parameters.GetData().data());
+					glBindBuffer(GL_UNIFORM_BUFFER, NULL);
+					return true;
+				}
+				return false;
 			}
 
 

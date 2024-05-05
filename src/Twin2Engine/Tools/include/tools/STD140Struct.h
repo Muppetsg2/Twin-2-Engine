@@ -1,21 +1,30 @@
 #pragma once
 
-namespace Twin2Engine::Tools {
-	template<class T, class... Ts> constexpr bool is_in_v = (std::is_same_v<T, Ts> || ...);
-	template<class T, class... Ts> struct is_in : public std::bool_constant<is_in_v<T, Ts...>> {};
+#include <tools/STD140Offsets.h>
 
+namespace Twin2Engine::Tools {
 	class STD140Struct {
 	private:
-		size_t _currentOffset = 0;
-		size_t _maxAligement = 0;
+#pragma region CHECKS
+		template<class T> static constexpr bool type_check_v = is_type_in_v<T, bool, int, unsigned int, float, double>;
+		template<class T, size_t L> static constexpr bool vec_check_v = type_check_v<T> && is_num_in_range_v<L, 1, 4>;
+		template<class T, size_t C, size_t R> static constexpr bool mat_check_v = vec_check_v<T, C> && is_num_in_range_v<R, 1, 4>;
+		template<class T> static constexpr bool struct_check_v = std::is_same_v<T, STD140Struct>;
 
+		template<class V, class T> static constexpr bool is_vector_of_v = std::is_same_v<V, std::vector<T>>;
+		template<class V, class T, bool Test> static constexpr bool get_vector_check_v = is_vector_of_v<V, T> && Test;
+
+		template<class T, class Ret = void> using scalar_enable_if_t = std::enable_if_t<type_check_v<T>, Ret>;
+		template<class V, class T, size_t L, class Ret = void> using vec_enable_if_t = std::enable_if_t<std::is_same_v<V, glm::vec<L, T>> && vec_check_v<T, L>, Ret>;
+		template<class M, class T, size_t C, size_t R, class Ret = void> using mat_enable_if_t = std::enable_if_t<std::is_same_v<M, glm::mat<C, R, T>> && mat_check_v<T, C, R>, Ret>;
+
+		template<class V, class T, bool Test, class Ret = void> using get_vector_enable_if_t = std::enable_if_t<get_vector_check_v<V, T, Test>, Ret>;
+#pragma endregion
+
+		STD140Offsets _dataOffsets;
 		std::vector<char> _data;
-		std::map<size_t, size_t> _offsets;
-		std::map<size_t, std::string> _names;
 
-		static std::hash<std::string> _hasher;
-
-		template<class T> std::vector<char> GetValueData(const T& value) {
+		template<class T> std::vector<char> _GetValueData(const T& value) {
 			std::vector<char> valueData;
 			valueData.resize(sizeof(T));
 			const char* valueDataPtr = reinterpret_cast<const char*>(&value);
@@ -23,111 +32,471 @@ namespace Twin2Engine::Tools {
 			return valueData;
 		}
 
-		template<class T, size_t C, size_t R> std::vector<glm::vec<R, T>> GetMatRows(const glm::mat<C, R, T>& mat) {
-			std::vector<glm::vec<R, T>> rows;
-			for (size_t i = 0; i < C; ++i) {
-				rows.push_back(mat[i]);
-			}
-			return rows;
-		}
-
 #pragma region ADD
-		void Add(const std::string& name, const std::vector<char>& value, size_t baseAligement, size_t baseOffset);
+		template<class T> void _Add(const std::string& name, const T& value) {
+			// ADD TO OFFSETS
+			size_t valueOffset = _dataOffsets.Add<T>(name);
 
-		void AddArray(const std::string& name, const std::vector<std::vector<char>>& values, size_t baseAligement, size_t baseOffset);
-		template<class T> void AddArray(const std::string& name, const T& values, size_t size, size_t baseAligement, size_t baseOffset) {
-			std::vector<std::vector<char>> valuesData;
-			for (size_t i = 0; i < size; ++i) {
-				valuesData.push_back(GetValueData(values[i]));
+			// CHECK ERROR
+			if (valueOffset == 0 && _data.size() != 0) {
+				SPDLOG_ERROR("Variable '{0}' already added to structure", name);
+				return;
 			}
-			AddArray(name, valuesData, baseAligement, baseOffset);
+
+			// UPDATE SIZE
+			_data.resize(_dataOffsets.GetSize());
+
+			// GET VALUE DATA
+			std::vector<char> valueData = _GetValueData(value);
+
+			// SET VALUE DATA
+			memcpy(_data.data() + valueOffset, valueData.data(), valueData.size());
 		}
-		template<class T> void AddMatArray(const std::string& name, const T& values, size_t size) {
-			if (size == 0) return;
-			for (size_t i = 0; i < size; ++i) {
-				Add(name + "[" + std::to_string(i) + "]", values[i]);
+		template<class T> void _AddArray(const std::string& name, const std::vector<T>& values) {
+			// ADD TO OFFSETS
+			std::vector<size_t> valuesOffsets = _dataOffsets.Add<T>(name, values.size());
+
+			// CHECK ERROR
+			if (valuesOffsets.size() == 0) {
+				SPDLOG_ERROR("Variable '{0}' already added to structure", name);
+				return;
 			}
-			// SET ARRAY BEGIN POINTER
-			size_t nameHash = _hasher(name);
-			size_t firstElemHash = _hasher(name + "[0]");
-			_offsets[nameHash] = _offsets[firstElemHash];
+
+			// UPDATE SIZE
+			_data.resize(_dataOffsets.GetSize());
+
+			// SET VALUES DATA
+			for (size_t i = 0; i < valuesOffsets.size() && i < values.size(); ++i) {
+				// GET VALUE DATA
+				std::vector<char> valueData = _GetValueData(values[i]);
+
+				// SET VALUE DATA
+				memcpy(_data.data() + valuesOffsets[i], valueData.data(), valueData.size());
+			}
 		}
-		template<class T> void AddStructArray(const std::string& name, const T& values, size_t size) {
-			if (size == 0) return;
-			for (size_t i = 0; i < size; ++i) {
-				Add(name + "[" + std::to_string(i) + "]", values[i]);
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::column_type::length()>
+		void _AddMat(const std::string& name, const M& value) {
+			// ADD TO OFFSETS AND CHECK ERROR
+			if (_dataOffsets.Add<M>(name) == 0 && _data.size() != 0) {
+				SPDLOG_ERROR("Variable '{0}' already added to structure", name);
+				return;
 			}
-			// SET ARRAY BEGIN POINTER
-			size_t nameHash = _hasher(name);
-			size_t firstElemHash = _hasher(name + "[0]");
-			_offsets[nameHash] = _offsets[firstElemHash];
+
+			// UPDATE SIZE
+			_data.resize(_dataOffsets.GetSize());
+
+			// GET ROWS OFFSETS
+			std::vector<size_t> rowsOffsets = _dataOffsets.GetArray<glm::vec<R, T>>(name);
+
+			// SET ROWS DATA
+			for (size_t i = 0; i < C && i < rowsOffsets.size(); ++i) {
+				// GET VALUE DATA
+				std::vector<char> valueData = _GetValueData(value[i]);
+
+				// SET VALUE DATA
+				memcpy(_data.data() + rowsOffsets[i], valueData.data(), valueData.size());
+			}
+		}
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::column_type::length()>
+		void _AddMatArray(const std::string& name, const std::vector<M>& values) {
+			// ADD TO OFFSETS
+			std::vector<size_t> valuesOffsets = _dataOffsets.Add<M>(name, values.size());
+			
+			// ADD TO OFFSETS AND CHECK ERROR
+			if (valuesOffsets.size() == 0) {
+				SPDLOG_ERROR("Variable '{0}' already added to structure", name);
+				return;
+			}
+
+			// UPDATE SIZE
+			_data.resize(_dataOffsets.GetSize());
+
+			// SET VALUES DATA
+			for (size_t i = 0; i < valuesOffsets.size() && i < values.size(); ++i) {
+				// GET ROWS OFFSETS
+				std::vector<size_t> rowsOffsets = _dataOffsets.GetArray<glm::vec<R, T>>(name);
+
+				// SET ROWS DATA
+				for (size_t r = 0; r < C && r < rowsOffsets.size(); ++r) {
+					// GET VALUE DATA
+					std::vector<char> valueData = _GetValueData(values[i][r]);
+
+					// SET VALUE DATA
+					memcpy(_data.data() + rowsOffsets[r], valueData.data(), valueData.size());
+				}
+			}
+		}
+		void _AddStruct(const std::string& name, const STD140Struct& value) {
+			// ADD TO OFFSETS
+			size_t valueOffset = _dataOffsets.Add(name, value._dataOffsets);
+
+			// CHECK ERROR
+			if (valueOffset == 0 && _data.size() != 0) {
+				SPDLOG_ERROR("Variable '{0}' already added to structure", name);
+				return;
+			}
+
+			// UPDATE SIZE
+			_data.resize(_dataOffsets.GetSize());
+
+			// GET VALUE DATA
+			std::vector<char> valueData = value._data;
+
+			// SET VALUE DATA
+			memcpy(_data.data() + valueOffset, valueData.data(), valueData.size());
+		}
+		void _AddStructArray(const std::string& name, const STD140Offsets& structOffsets, const std::vector<std::vector<char>>& values) {
+			// ADD TO OFFSETS
+			std::vector<size_t> valuesOffsets = _dataOffsets.Add(name, structOffsets, values.size());
+
+			// CHECK ERROR
+			if (valuesOffsets.size() == 0) {
+				SPDLOG_ERROR("Variable '{0}' already added to structure", name);
+				return;
+			}
+
+			// UPDATE SIZE
+			_data.resize(_dataOffsets.GetSize());
+
+			// SET VALUES DATA
+			for (size_t i = 0; i < valuesOffsets.size() && i < values.size(); ++i) {
+				// GET VALUE DATA
+				std::vector<char> valueData = values[i];
+
+				// SET VALUE DATA
+				memcpy(_data.data() + valuesOffsets[i], valueData.data(), valueData.size());
+			}
 		}
 #pragma endregion
 
 #pragma region SET
-		bool Set(const std::string& name, const std::vector<char>& value);
+		template<class T> bool _Set(const std::string& name, const T& value) {
+			// CHECK VARIABLE
+			if (!_dataOffsets.Contains(name)) {
+				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
+				return false;
+			}
 
-		bool SetArray(const std::string& name, const std::vector<std::vector<char>>& values);
-		template<class T> bool SetArray(const std::string& name, const T& values, size_t size) {
-			if (size == 0) return true;
-			std::vector<std::vector<char>> valuesData;
-			for (size_t i = 0; i < size; ++i) {
-				valuesData.push_back(GetValueData(values[i]));
-			}
-			return SetArray(name, valuesData);
+			// GET VALUE OFFSET
+			size_t valueOffset = _dataOffsets.Get(name);
+
+			// GET VALUE DATA
+			std::vector<char> valueData = _GetValueData(value);
+
+			// GET VALUE DATA MAX SIZE
+			size_t valueDataSize = valueData.size() > (_data.size() - valueOffset) ? (_data.size() - valueOffset) : valueData.size();
+
+			// SET VALUE DATA
+			memcpy(_data.data() + valueOffset, valueData.data(), valueDataSize);
+			return true;
 		}
-		template<class T> bool SetMatArray(const std::string& name, const T& values, size_t size) {
-			if (size == 0) return true;
-			for (size_t i = 0; i < size; ++i) {
-				if (!Set(name + "[" + std::to_string(i) + "]", values[i])) {
-					return false;
+		template<class T> bool _SetArray(const std::string& name, const std::vector<T>& values) {
+			// CHECK VARIABLE
+			if (!_dataOffsets.Contains(name)) {
+				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
+				return false;
+			}
+
+			// GET VALUES OFFSETS
+			std::vector<size_t> valuesOffsets = _dataOffsets.GetArray(name);
+
+			// SET VALUES DATA
+			for (size_t i = 0; i < valuesOffsets.size() && i < values.size(); ++i) {
+				// GET VALUE OFFSET
+				size_t valueOffset = valuesOffsets[i];
+
+				// GET VALUE DATA
+				std::vector<char> valueData = _GetValueData(values[i]);
+
+				// GET VALUE DATA MAX SIZE
+				size_t valueDataSize = valueData.size() > (_data.size() - valueOffset) ? (_data.size() - valueOffset) : valueData.size();
+
+				// SET VALUE DATA
+				memcpy(_data.data() + valueOffset, valueData.size(), valueDataSize);
+			}
+			return true;
+		}
+		template<class M, class T, size_t C, size_t R>
+		bool _SetMat(const std::string& name, const M& value) {
+			// CHECK VARIABLE
+			if (!_dataOffsets.Contains(name)) {
+				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
+				return false;
+			}
+
+			// GET ROWS OFFSETS
+			std::vector<size_t> rowsOffsets = _dataOffsets.GetArray<glm::vec<R, T>>(name);
+
+			// SET ROWS DATA
+			for (size_t i = 0; i < C && i < rowsOffsets.size(); ++i) {
+				// GET VALUE DATA
+				std::vector<char> valueData = _GetValueData(value[i]);
+
+				// GET VALUE DATA MAX SIZE
+				size_t valueDataSize = valueData.size() > (_data.size() - rowsOffsets[i]) ? (_data.size() - rowsOffsets[i]) : valueData.size();
+
+				// SET VALUE DATA
+				memcpy(_data.data() + rowsOffsets[i], valueData.data(), valueDataSize);
+			}
+			return true;
+		}
+		template<class M, class T, size_t C, size_t R>
+		bool _SetMatArray(const std::string& name, const std::vector<M>& values) {
+			// CHECK VARIABLE
+			if (!_dataOffsets.Contains(name)) {
+				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
+				return false;
+			}
+
+			// GET VALUES OFFSETS
+			std::vector<size_t> valuesOffsets = _dataOffsets.GetArray(name);
+
+			// SET VALUES DATA
+			for (size_t i = 0; i < valuesOffsets.size() && i < values.size(); ++i) {
+				// GET ROWS OFFSETS
+				std::vector<size_t> rowsOffsets = _dataOffsets.GetArray<glm::vec<R, T>>(name);
+
+				// SET ROWS DATA
+				for (size_t r = 0; r < C && r < rowsOffsets.size(); ++r) {
+					// GET VALUE DATA
+					std::vector<char> valueData = _GetValueData(values[i][r]);
+
+					// GET VALUE DATA MAX SIZE
+					size_t valueDataSize = valueData.size() > (_data.size() - rowsOffsets[r]) ? (_data.size() - rowsOffsets[r]) : valueData.size();
+
+					// SET VALUE DATA
+					memcpy(_data.data() + rowsOffsets[r], valueData.data(), valueDataSize);
 				}
 			}
 			return true;
 		}
-		template<class T> bool SetStructArray(const std::string& name, const T& values, size_t size) {
-			if (size == 0) return true;
-			for (size_t i = 0; i < size; ++i) {
-				if (!Set(name + "[" + std::to_string(i) + "]", values[i])) {
-					return false;
-				}
+		bool _SetStruct(const std::string& name, const STD140Struct& value) {
+			// CHECK VARIABLE
+			if (!_dataOffsets.Contains(name)) {
+				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
+				return false;
 			}
-			return true;
+
+			// GET OFFSET
+			size_t valueOffset = _dataOffsets.Get(name);
+
+			// GET VALUE DATA
+			std::vector<char> valueData = value._data;
+
+			// GET VALUE DATA MAX SIZE
+			size_t valueDataSize = valueData.size() > (_data.size() - valueOffset) ? (_data.size() - valueOffset) : valueData.size();
+
+			// SET VALUE DATA
+			memcpy(_data.data() + valueOffset, valueData.data(), valueData.size());
+		}
+		bool _SetStructArray(const std::string& name, const STD140Offsets& structOffsets, const std::vector<std::vector<char>>& values) {
+			// CHECK VARIABLE
+			if (!_dataOffsets.Contains(name)) {
+				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
+				return false;
+			}
+
+			// GET OFFSETS
+			std::vector<size_t> valuesOffsets = _dataOffsets.GetArray(name);
+
+			// SET VALUES DATA
+			for (size_t i = 0; i < valuesOffsets.size() && i < values.size(); ++i) {
+				// GET VALUE DATA
+				std::vector<char> valueData = values[i];
+
+				// GET VALUE DATA MAX SIZE
+				size_t valueDataSize = valueData.size() > (_data.size() - valuesOffsets[i]) ? (_data.size() - valuesOffsets[i]) : valueData.size();
+
+				// SET VALUE DATA
+				memcpy(_data.data() + valuesOffsets[i], valueData.data(), valueDataSize);
+			}
 		}
 #pragma endregion
 
 #pragma region GET
-		std::vector<char> Get(const std::string& name, size_t baseOffset) const;
-
-		std::vector<std::vector<char>> GetArray(const std::string& name, size_t baseOffset) const;
-		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()> std::vector<M> GetMatArray(const std::string& name) const {
-			std::vector<M> values;
-			if (_offsets.contains(_hasher(name))) {
-				// GET MAT ARRAY VALUES
-				size_t i = 0;
-				std::string arrayElemName = name + "[" + std::to_string(i) + "]";
-				while (_offsets.contains(_hasher(arrayElemName))) {
-					values.push_back(Get<M>(arrayElemName));
-
-					++i;
-					arrayElemName = name + "[" + std::to_string(i) + "]";
-				}
+		template<class T> T _Get(const std::string& name) const {
+			// CHECK VARIABLE
+			if (!_dataOffsets.Contains(name)) {
+				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
+				return T();
 			}
+
+			// GET VALUE OFFSET
+			size_t valueOffset = _dataOffsets.Get(name);
+
+			// MAKE EMPTY VALUE DATA
+			std::vector<char> valueData;
+			valueData.resize(sizeof(T));
+
+			// GET MAX VALUE DATA
+			size_t valueDataSize = valueData.size() > (_data.size() - valueOffset) ? (_data.size() - valueOffset) : valueData.size();
+
+			// GET VALUE DATA
+			memcpy(valueData.data(), _data.data() + valueOffset, valueDataSize);
+
+			// GET VALUE
+			T value = *reinterpret_cast<T*>(valueData.data());
+
+			// RETURN VALUE
+			return value;
+		}
+		template<class T> std::vector<T> _GetArray(const std::string& name) const {
+			// CHECK VARIABLE
+			if (!_dataOffsets.Contains(name)) {
+				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
+				return std::vector<T>();
+			}
+
+			// GET VALUES OFFSETS
+			std::vector<size_t> valuesOffsets = _dataOffsets.GetArray(name);
+
+			// GET VALUES DATA
+			std::vector<T> values;
+			for (size_t i = 0; i < valuesOffsets.size(); ++i) {
+				// MAKE EMPTY VALUE DATA
+				std::vector<char> valueData;
+				valueData.resize(sizeof(T));
+
+				// GET MAX VALUE DATA
+				size_t valueDataSize = std::min(valueData.size(), _data.size() - valuesOffsets[i]);
+
+				// GET VALUE DATA
+				memcpy(valueData.data(), _data.data() + valuesOffsets[i], valueDataSize);
+
+				// GET VALUE
+				values.push_back(*reinterpret_cast<T*>(valueData.data()));
+			}
+			
+			// RETURN VALUES
 			return values;
 		}
-		template<class S> std::vector<S> GetStructArray(const std::string& name, const S& structTemplate) const {
-			std::vector<S> values;
-			if (_offsets.contains(_hasher(name))) {
-				// GET STRUCT ARRAY VALUES
-				size_t i = 0;
-				std::string arrayElemName = name + "[" + std::to_string(i) + "]";
-				while (_offsets.contains(_hasher(arrayElemName))) {
-					values.push_back(Get<S>(arrayElemName, structTemplate));
-
-					++i;
-					arrayElemName = name + "[" + std::to_string(i) + "]";
-				}
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::column_type::length()>
+		M _GetMat(const std::string& name) const {
+			// CHECK VARIABLE
+			if (!_dataOffsets.Contains(name)) {
+				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
+				return M();
 			}
+
+			// GET ROWS OFFSETS
+			std::vector<size_t> rowsOffsets = _dataOffsets.GetArray(name);
+
+			// MAKE EMPTY MAT
+			M value{};
+
+			// GET ROWS DATA
+			for (size_t i = 0; i < C && i < rowsOffsets.size(); ++i) {
+				// MAKE EMPTY ROW DATA
+				std::vector<char> rowData;
+				rowData.resize(sizeof(glm::vec<R, T>));
+
+				// GET MAX VALUE DATA
+				size_t rowDataSize = rowData.size() > (_data.size() - rowsOffsets[i]) ? (_data.size() - rowsOffsets[i]) : rowData.size();
+
+				// GET ROW DATA
+				memcpy(rowData.data(), _data.data() + rowsOffsets[i], rowDataSize);
+
+				// GET ROW
+				glm::vec<R, T> row = *reinterpret_cast<glm::vec<R, T>*>(rowData.data());
+
+				// SET ROW
+				value[i] = row;
+			}
+
+			// RETURN VALUE
+			return value;
+		}
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::column_type::length()>
+		std::vector<M> _GetMatArray(const std::string& name) const {
+			// CHECK VARIABLE
+			if (!_dataOffsets.Contains(name)) {
+				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
+				return std::vector<M>();
+			}
+
+			// GET VALUES DATA
+			std::vector<M> values;
+			for (size_t i = 0; i < _dataOffsets.GetArray(name).size(); ++i) {
+				// GET ROWS OFFSETS
+				std::vector<size_t> rowsOffsets = _dataOffsets.GetArray(name + "[" + std::to_string(i) + "]");
+
+				// MAKE EMPTY MAT
+				M value{};
+
+				// GET ROWS DATA
+				for (size_t i = 0; i < C && i < rowsOffsets.size(); ++i) {
+					// MAKE EMPTY ROW DATA
+					std::vector<char> rowData;
+					rowData.resize(sizeof(glm::vec<R, T>));
+
+					// GET MAX VALUE DATA
+					size_t rowDataSize = rowData.size() > (_data.size() - rowsOffsets[i]) ? (_data.size() - rowsOffsets[i]) : rowData.size();
+
+					// GET ROW DATA
+					memcpy(rowData.data(), _data.data() + rowsOffsets[i], rowDataSize);
+
+					// GET ROW
+					glm::vec<R, T> row = *reinterpret_cast<glm::vec<R, T>*>(rowData.data());
+
+					// SET ROW
+					value[i] = row;
+				}
+
+				values.push_back(value);
+			}
+
+			// RETURN VALUES
+			return values;
+		}
+		STD140Struct _GetStruct(const std::string& name, const STD140Offsets& structOffsets) const {
+			// CHECK VARIABLE
+			if (!_dataOffsets.Contains(name)) {
+				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
+				return STD140Struct(structOffsets);
+			}
+
+			// GET VALUE OFFSET
+			size_t valueOffset = _dataOffsets.Get(name);
+
+			// MAKE EMPTY STRUCT
+			STD140Struct value(structOffsets);
+
+			// GET MAX VALUE DATA
+			size_t valueDataSize = std::min(_data.size() - valueOffset, structOffsets.GetSize());
+
+			// SET VALUE DATA
+			memcpy(value._data.data(), _data.data() + valueOffset, valueDataSize);
+
+			// RETURN VALUE
+			return value;
+		}
+		std::vector<STD140Struct> _GetStructArray(const std::string& name, const STD140Offsets& structOffsets) const {
+			// CHECK VARIABLE
+			if (!_dataOffsets.Contains(name)) {
+				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
+				return std::vector<STD140Struct>();
+			}
+
+			// GET VALUES OFFSETS
+			std::vector<size_t> valuesOffsets = _dataOffsets.GetArray(name);
+
+			// GET VALUES DATA
+			std::vector<STD140Struct> values;
+			for (size_t i = 0; i < valuesOffsets.size(); ++i) {
+				// MAKE EMPTY STRUCT
+				STD140Struct value(structOffsets);
+
+				// GET MAX VALUE DATA
+				size_t valueDataSize = std::min(_data.size() - valuesOffsets[i], structOffsets.GetSize());
+
+				// SET VALUE DATA
+				memcpy(value._data.data(), _data.data() + valuesOffsets[i], valueDataSize);
+
+				// ADD VALUE TO VALUES
+				values.push_back(value);
+			}
+
+			// RETURN VALUE
 			return values;
 		}
 #pragma endregion
@@ -135,7 +504,13 @@ namespace Twin2Engine::Tools {
 	public:
 		STD140Struct() = default;
 		STD140Struct(STD140Struct& std140s) = default;
+		STD140Struct(const STD140Struct& std140s) = default;
 		STD140Struct(STD140Struct&& std140s) = default;
+		STD140Struct(const STD140Offsets& structOffsets, const std::vector<char>& data = std::vector<char>()) {
+			_dataOffsets = structOffsets;
+			_data.resize(_dataOffsets.GetSize());
+			memcpy(_data.data(), data.data(), std::min(_data.size(), data.size()));
+		}
 		virtual ~STD140Struct() = default;
 
 		STD140Struct& operator=(STD140Struct& std140s) = default;
@@ -144,361 +519,473 @@ namespace Twin2Engine::Tools {
 
 #pragma region ADD_SCALARS
 		template<class T>
-		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>>
+		typename scalar_enable_if_t<T>
 		Add(const std::string& name, const T& value) {
-			if constexpr (std::is_same_v<T, bool>) {
-				Add(name, GetValueData((unsigned int)value), 4, 4);
-			}
-			else {
-				Add(name, GetValueData(value), sizeof(T), sizeof(T));
-			}
+			if constexpr (std::is_same_v<T, bool>)
+				_Add(name, (unsigned int)value);
+			else 
+				_Add(name, value);
 		}
 
 #pragma region ADD_SCALARS_ARRAYS
 		template<class T>
-		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>>
+		typename scalar_enable_if_t<T>
 		Add(const std::string& name, const T*& values, size_t size) {
-			if constexpr (std::is_same_v<T, bool>) {
-				std::vector<unsigned int> bools;
-				for (size_t i = 0; i < size; ++i) {
-					bools.push_back((unsigned int)values[i]);
-				}
-				AddArray(name, bools, bools.size(), 4, 4);
+			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
+			std::vector<type> scalars;
+			for (size_t i = 0; i < size; ++i) {
+				scalars.push_back((type)values[i]);
 			}
-			else {
-				AddArray(name, values, size, sizeof(T), sizeof(T));
-			}
+			_AddArray(name, scalars);
 		}
 
 		template<class T, size_t N>
-		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>>
+		typename scalar_enable_if_t<T>
 		Add(const std::string& name, const T(&values)[N]) {
-			if constexpr (std::is_same_v<T, bool>) {
-				std::vector<unsigned int> bools;
-				for (size_t i = 0; i < N; ++i) {
-					bools.push_back((unsigned int)values[i]);
-				}
-				AddArray(name, bools, bools.size(), 4, 4);
+			using type = type_test<std::is_same_v<T, bool>, unsigned int, T>;
+			std::vector<type> scalars;
+			for (size_t i = 0; i < N; ++i) {
+				scalars.push_back((type)values[i]);
 			}
-			else {
-				AddArray(name, values, N, sizeof(T), sizeof(T));
-			}
+			_AddArray(name, scalars);
 		}
 
 		template<class T>
-		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>>
+		typename scalar_enable_if_t<T>
 		Add(const std::string& name, const std::vector<T>& values) {
 			if constexpr (std::is_same_v<T, bool>) {
-				std::vector<unsigned int> bools;
+				std::vector<unsigned int> scalars;
 				for (size_t i = 0; i < values.size(); ++i) {
-					bools.push_back((unsigned int)values[i]);
+					scalars.push_back((unsigned int)values[i]);
 				}
-				AddArray(name, bools, bools.size(), 4, 4);
+				_AddArray(name, scalars);
 			}
 			else {
-				AddArray(name, values, values.size(), sizeof(T), sizeof(T));
+				_AddArray(name, values);
 			}
 		}
 #pragma endregion
 #pragma endregion
 
 #pragma region ADD_VEC
-		template<class T, size_t L>
-		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
-		Add(const std::string& name, const glm::vec<L, T>& value) {
-			size_t TSize;
-			if constexpr (std::is_same_v<T, bool>) {
-				TSize = sizeof(unsigned int);
-			}
-			else {
-				TSize = sizeof(T);
-			}
-
-			if constexpr (L == 2 || L == 4) {
-				Add(name, GetValueData(value), TSize * L, TSize * L);
-			}
-			else if constexpr (L == 3) {
-				Add(name, GetValueData(value), TSize * (L + 1), TSize * L);
-			}
+		template<class V, class T = V::value_type, size_t L = V::length()>
+		typename vec_enable_if_t<V, T, L>
+		Add(const std::string& name, const V& value) {
+			if constexpr (std::is_same_v<T, bool>)
+				_Add(name, (glm::vec<L, unsigned int>)value);
+			else
+				_Add(name, value);
 		}
 
 #pragma region ADD_VEC_ARRAYS
-		template<class T, size_t L>
-		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
-		Add(const std::string& name, const glm::vec<L, T>*& values, size_t size) {
-			size_t TSize;
-			if constexpr (std::is_same_v<T, bool>) {
-				TSize = sizeof(unsigned int);
+		template<class V, class T = V::value_type, size_t L = V::lenght()>
+		typename vec_enable_if_t<V, T, L>
+		Add(const std::string& name, const V*& values, size_t size) {
+			using type = type_test_t<std::is_same_v<T, bool>, glm::vec<L, unsigned int>, V>;
+			std::vector<type> vecs;
+			for (size_t i = 0; i < size; ++i) {
+				vecs.push_back((type)values[i]);
 			}
-			else {
-				TSize = sizeof(T);
-			}
-
-			if constexpr (L == 2 || L == 4) {
-				AddArray(name, values, size, TSize * L, TSize * L);
-			}
-			else if constexpr (L == 3) {
-				AddArray(name, values, size, TSize * (L + 1), TSize * L);
-			}
+			_AddArray(name, vecs);
 		}
 
-		template<class T, size_t L, size_t N>
-		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
-		Add(const std::string& name, const glm::vec<L, T>(&values)[N]) {
-			size_t TSize;
-			if constexpr (std::is_same_v<T, bool>) {
-				TSize = sizeof(unsigned int);
+		template<class V, class T = V::value_type, size_t L = V::length(), size_t N>
+		typename vec_enable_if_t<V, T, L>
+		Add(const std::string& name, const V(&values)[N]) {
+			using type = type_test_t<std::is_same_v<T, bool>, glm::vec<L, unsigned int>, V>;
+			std::vector<type> vecs;
+			for (size_t i = 0; i < N; ++i) {
+				vecs.push_back((type)values[i]);
 			}
-			else {
-				TSize = sizeof(T);
-			}
-
-			if constexpr (L == 2 || L == 4) {
-				AddArray(name, values, N, TSize * L, TSize * L);
-			}
-			else if constexpr (L == 3) {
-				AddArray(name, values, N, TSize * (L + 1), TSize * L);
-			}
+			_AddArray(name, vecs);
 		}
 
-		template<class T, size_t L>
-		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, bool, double>>
-		Add(const std::string& name, const std::vector<glm::vec<L, T>>& values) {
-			size_t TSize;
+		template<class V, class T = V::value_type, size_t L = V::length()>
+		typename vec_enable_if_t<V, T, L>
+		Add(const std::string& name, const std::vector<V>& values) {
 			if constexpr (std::is_same_v<T, bool>) {
-				TSize = sizeof(unsigned int);
+				std::vector<glm::vec<L, unsigned int>> vecs;
+				for (size_t i = 0; i < values.size(); ++i) {
+					vecs.push_back((glm::vec<L, unsigned int>)values[i]);
+				}
+				_AddArray(name, vecs);
 			}
 			else {
-				TSize = sizeof(T);
-			}
-
-			if constexpr (L == 2 || L == 4) {
-				AddArray(name, values, values.size(), TSize * L, TSize * L);
-			}
-			else if constexpr (L == 3) {
-				AddArray(name, values, values.size(), TSize * (L + 1), TSize * L);
+				_AddArray(name, values);
 			}
 		}
 #pragma endregion
 #pragma endregion
 
 #pragma region ADD_MAT
-		template<class T, size_t C, size_t R>
-		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, double, bool>>
-		Add(const std::string& name, const glm::mat<C, R, T>& value) {
-			Add(name, GetMatRows(value));
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::column_type::length()>
+		typename mat_enable_if_t<M, T, C, R>
+		Add(const std::string& name, const M& value) {
+			if constexpr (std::is_same_v<T, bool>) {
+				_AddMat(name, (glm::mat<C, R, unsigned int>)value);
+			}
+			else {
+				_AddMat(name, value);
+			}
 		}
 
 #pragma region ADD_MAT_ARRAYS
-		template<class T, size_t C, size_t R>
-		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, double, bool>>
-		Add(const std::string& name, const glm::mat<C, R, T>*& values, size_t size) {
-			AddMatArray(name, values, size);
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::column_type::length()>
+		typename mat_enable_if_t<M, T, C, R>
+		Add(const std::string& name, const M*& values, size_t size) {
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<glm::mat<C, R, unsigned int>> mats;
+				for (size_t i = 0; i < size; ++i) {
+					mats.push_back((glm::mat<C, R, unsigned int>)values[i]);
+				}
+				_AddMatArray(name, mats);
+			}
+			else {
+				std::vector<M> mats;
+				for (size_t i = 0; i < size; ++i) {
+					mats.push_back(values[i]);
+				}
+				_AddMatArray(name, mats);
+			}
 		}
 
-		template<class T, size_t C, size_t R, size_t N>
-		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, double, bool>>
-		Add(const std::string& name, const glm::mat<C, R, T>(&values)[N]) {
-			AddMatArray(name, values, N);
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::column_type::length(), size_t N>
+		typename mat_enable_if_t<M, T, C, R>
+		Add(const std::string& name, const M(&values)[N]) {
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<glm::mat<C, R, unsigned int>> mats;
+				for (size_t i = 0; i < N; ++i) {
+					mats.push_back((glm::mat<C, R, unsigned int>)values[i]);
+				}
+				_AddMatArray(name, mats);
+			}
+			else {
+				std::vector<M> mats;
+				for (size_t i = 0; i < N; ++i) {
+					mats.push_back(values[i]);
+				}
+				_AddMatArray(name, mats);
+			}
 		}
 
-		template<class T, size_t C, size_t R>
-		typename std::enable_if_t<is_in_v<T, float, int, unsigned int, double, bool>>
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::column_type::length()>
+		typename mat_enable_if_t<M, T, C, R>
 		Add(const std::string& name, const std::vector<glm::mat<C, R, T>>& values) {
-			AddMatArray(name, values, values.size());
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<glm::mat<C, R, unsigned int>> mats;
+				for (size_t i = 0; i < values.size(); ++i) {
+					mats.push_back((glm::mat<C, R, unsigned int>)values[i]);
+				}
+				_AddMatArray(name, mats);
+			}
+			else {
+				_AddMatArray(name, values);
+			}
 		}
 #pragma endregion
 #pragma endregion
 
 #pragma region ADD_STRUCT
-		void Add(const std::string& name, const STD140Struct& value);
+		void Add(const std::string& name, const STD140Struct& value) {
+			_AddStruct(name, value);
+		}
 
 #pragma region ADD_STRUCT_ARRAYS
-		void Add(const std::string& name, const STD140Struct*& values, size_t size);
-		template<size_t N> void Add(const std::string& name, const STD140Struct(&values)[N]) {
-			AddStructArray(name, values, N);
+		void Add(const std::string& name, const STD140Offsets& structOffsets, const std::vector<char>*& values, size_t size) {
+			std::vector<std::vector<char>> structs;
+			for (size_t i = 0; i < size; ++i) {
+				structs.push_back(values[i]);
+			}
+			_AddStructArray(name, structOffsets, structs);
 		}
-		void Add(const std::string& name, const std::vector<STD140Struct>& values);
+		template<size_t N> void Add(const std::string& name, const STD140Offsets& structOffsets, const std::vector<char>(&values)[N]) {
+			std::vector<std::vector<char>> structs;
+			for (size_t i = 0; i < N; ++i) {
+				structs.push_back(values[i]);
+			}
+			_AddStructArray(name, structOffsets, structs);
+		}
+		void Add(const std::string& name, const STD140Offsets& structOffsets, const std::vector<std::vector<char>>& values) {
+			_AddStructArray(name, structOffsets, values);
+		}
 #pragma endregion
 #pragma endregion
 
 
 #pragma region SET_SCALARS
 		template<class T>
-		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
+		typename scalar_enable_if_t<T, bool>
 		Set(const std::string& name, const T& value) {
 			if constexpr (std::is_same_v<T, bool>) {
-				return Set(name, GetValueData((unsigned int)value));
+				return _Set(name, (unsigned int)value);
 			}
 			else {
-				return Set(name, GetValueData(value));
+				return _Set(name, value);
 			}
 		}
 #pragma region SET_SCALARS_ARRAYS
 		template<class T>
-		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
+		typename scalar_enable_if_t<T, bool>
 		Set(const std::string& name, const T*& values, size_t size) {
 			if constexpr (std::is_same_v<T, bool>) {
-				std::vector<unsigned int> bools;
+				std::vector<unsigned int> scalars;
 				for (size_t i = 0; i < size; ++i) {
-					bools.push_back((unsigned int)values[i]);
+					scalars.push_back((unsigned int)values[i]);
 				}
-				return SetArray(name, bools, bools.size());
+				return _SetArray(name, scalars);
 			}
 			else {
-				return SetArray(name, values, size);
+				std::vector<T> scalars;
+				for (size_t i = 0; i < size; ++i) {
+					scalars.push_back(values[i]);
+				}
+				return _SetArray(name, scalars);
 			}
 		}
 
 		template<class T, size_t N>
-		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
+		typename scalar_enable_if_t<T, bool>
 		Set(const std::string& name, const T(&values)[N]) {
 			if constexpr (std::is_same_v<T, bool>) {
-				std::vector<unsigned int> bools;
+				std::vector<unsigned int> scalars;
 				for (size_t i = 0; i < N; ++i) {
-					bools.push_back((unsigned int)values[i]);
+					scalars.push_back((unsigned int)values[i]);
 				}
-				return SetArray(name, bools, bools.size());
+				return _SetArray(name, scalars);
 			}
 			else {
-				return SetArray(name, values, N);
+				std::vector<T> scalars;
+				for (size_t i = 0; i < N; ++i) {
+					scalars.push_back(values[i]);
+				}
+				return _SetArray(name, values, N);
 			}
 		}
 
 		template<class T>
-		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
+		typename scalar_enable_if_t<T, bool>
 		Set(const std::string& name, const std::vector<T>& values) {
 			if constexpr (std::is_same_v<T, bool>) {
-				std::vector<unsigned int> bools;
+				std::vector<unsigned int> scalars;
 				for (size_t i = 0; i < values.size(); ++i) {
-					bools.push_back((unsigned int)values[i]);
+					scalars.push_back((unsigned int)values[i]);
 				}
-				return SetArray(name, bools, bools.size());
+				return _SetArray(name, scalars);
 			}
 			else {
-				return SetArray(name, values, values.size());
+				return _SetArray(name, values);
 			}
 		}
 #pragma endregion
 #pragma endregion
 
 #pragma region SET_VEC
-		template<class T, size_t L>
-		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
-		Set(const std::string& name, const glm::vec<L, T>& value) {
-			return Set(name, GetValueData(value));
+		template<class V, class T = V::value_type, size_t L = V::length()>
+		typename vec_enable_if_t<V, T, L, bool>
+		Set(const std::string& name, const V& value) {
+			if constexpr (std::is_same_v<T, bool>) {
+				return _Set(name, (glm::vec<L, unsigned int>)value);
+			}
+			else {
+				return _Set(name, value);
+			}
 		}
 
 #pragma region SET_VEC_ARRAYS
-		template<class T, size_t L>
-		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
-		Set(const std::string& name, const glm::vec<L, T>*& values, size_t size) {
-			return SetArray(name, values, size);
+		template<class V, class T = V::value_type, size_t L = V::length()>
+		typename vec_enable_if_t<V, T, L, bool>
+		Set(const std::string& name, const V*& values, size_t size) {
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<glm::vec<L, unsigned int>> vecs;
+				for (size_t i = 0; i < size; ++i) {
+					vecs.push_back((glm::vec<L, unsigned int>)values[i]);
+				}
+				return _SetArray(name, vecs);
+			}
+			else {
+				std::vector<V> vecs;
+				for (size_t i = 0; i < size; ++i) {
+					vecs.pop_back(values[i]);
+				}
+				return _SetArray(name, vecs);
+			}
 		}
 
-		template<class T, size_t L, size_t N>
-		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
-		Set(const std::string& name, const glm::vec<L, T>(&values)[N]) {
-			return SetArray(name, values, N);
+		template<class V, class T = V::value_type, size_t L = V::length(), size_t N>
+		typename vec_enable_if_t<V, T, L, bool>
+		Set(const std::string& name, const V(&values)[N]) {
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<glm::vec<L, unsigned int>> vecs;
+				for (size_t i = 0; i < N; ++i) {
+					vecs.push_back((glm::vec<L, unsigned int>)values[i]);
+				}
+				return _SetArray(name, vecs);
+			}
+			else {
+				std::vector<V> vecs;
+				for (size_t i = 0; i < N; ++i) {
+					vecs.pop_back(values[i]);
+				}
+				return _SetArray(name, vecs);
+			}
 		}
 
-		template<class T, size_t L>
-		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
-		Set(const std::string& name, const std::vector<glm::vec<L, T>>& values) {
-			return SetArray(name, values, values.size());
+		template<class V, class T = V::value_type, size_t L = V::length()>
+		typename vec_enable_if_t<V, T, L, bool>
+		Set(const std::string& name, const std::vector<V>& values) {
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<glm::vec<L, unsigned int>> vecs;
+				for (size_t i = 0; i < values.size(); ++i) {
+					vecs.push_back((glm::vec<L, unsigned int>)values[i]);
+				}
+				return _SetArray(name, vecs);
+			}
+			else {
+				return _SetArray(name, values);
+			}
 		}
 #pragma endregion
 #pragma endregion
 
 #pragma region SET_MAT
-		template<class T, size_t C, size_t R>
-		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
-		Set(const std::string& name, const glm::mat<C, R, T>& value) {
-			return Set(name, GetMatRows(value));
+		template<class M, class T = M::value_type, size_t C = M::row_type::lenght(), size_t R = M::column_type::length()>
+		typename mat_enable_if_t<M, T, C, R, bool>
+		Set(const std::string& name, const M& value) {
+			if constexpr (std::is_same_v<T, bool>) {
+				return _SetMat(name, (glm::mat<C, R, unsigned int>)value);
+			}
+			else {
+				return _SetMat(name, value);
+			}
 		}
 
 #pragma region SET_MAT_ARRAYS
-		template<class T, size_t C, size_t R>
-		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
-		Set(const std::string& name, const glm::mat<C, R, T>*& values, size_t size) {
-			return SetMatArray(name, values, size);
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::column_type::length()>
+		typename mat_enable_if_t<M, T, C, R, bool>
+		Set(const std::string& name, const M*& values, size_t size) {
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<glm::mat<C, R, unsigned int>> mats;
+				for (size_t i = 0; i < size; ++i) {
+					mats.push_back(values[i]);
+				}
+				return _SetMatArray(name, mats);
+			}
+			else {
+				std::vector<M> mats;
+				for (size_t i = 0; i < size; ++i) {
+					mats.push_back(values[i]);
+				}
+				return _SetMatArray(name, mats);
+			}
 		}
 
-		template<class T, size_t C, size_t R, size_t N>
-		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
-		Set(const std::string& name, const glm::mat<C, R, T>(&values)[N]) {
-			return SetMatArray(name, values, N);
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::column_type::length(), size_t N>
+		typename mat_enable_if_t<M, T, C, R, bool>
+		Set(const std::string& name, const M(&values)[N]) {
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<glm::mat<C, R, unsigned int>> mats;
+				for (size_t i = 0; i < N; ++i) {
+					mats.push_back(values[i]);
+				}
+				return _SetMatArray(name, mats);
+			}
+			else {
+				std::vector<M> mats;
+				for (size_t i = 0; i < N; ++i) {
+					mats.push_back(values[i]);
+				}
+				return _SetMatArray(name, mats);
+			}
 		}
 
-		template<class T, size_t C, size_t R>
-		typename std::enable_if_t<is_in_v<T, int, unsigned int, float, double, bool>, bool>
-			Set(const std::string& name, const std::vector<glm::mat<C, R, T>>& values) {
-			return SetMatArray(name, values, values.size());
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::column_type::length()>
+		typename mat_enable_if_t<M, T, C, R, bool>
+		Set(const std::string& name, const std::vector<M>& values) {
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<glm::mat<C, R, unsigned int>> mats;
+				for (size_t i = 0; i < values.size(); ++i) {
+					mats.push_back(values[i]);
+				}
+				return _SetMatArray(name, mats);
+			}
+			else {
+				return _SetMatArray(name, values);
+			}
 		}
 #pragma endregion
 #pragma endregion
 
 #pragma region SET_STRUCT
-		bool Set(const std::string& name, const STD140Struct& value);
+		bool Set(const std::string& name, const STD140Struct& value) {
+			return _SetStruct(name, value);
+		}
 
 #pragma region SET_STRUCT_ARRAYS
-		bool Set(const std::string& name, const STD140Struct*& values, size_t size);
-		template<size_t N> bool Set(const std::string& name, const STD140Struct(&values)[N]) {
-			return SetStructArray(name, values, N);
+		bool Set(const std::string& name, const STD140Offsets& structOffsets, const std::vector<char>*& values, size_t size) {
+			std::vector<std::vector<char>> structs;
+			for (size_t i = 0; i < size; ++i) {
+				structs.push_back(values[i]);
+			}
+			return _SetStructArray(name, structOffsets, structs);
 		}
-		bool Set(const std::string& name, const std::vector<STD140Struct>& values);
+
+		template<size_t N> bool Set(const std::string& name, const STD140Offsets& structOffsets, const std::vector<char>(&values)[N]) {
+			std::vector<std::vector<char>> structs;
+			for (size_t i = 0; i < N; ++i) {
+				structs.push_back(values[i]);
+			}
+			return _SetStructArray(name, structOffsets, structs);
+		}
+
+		bool Set(const std::string& name, const STD140Offsets& structOffsets, const std::vector<std::vector<char>>& values) {
+			return _SetStructArray(name, structOffsets, values);
+		}
 #pragma endregion
 #pragma endregion
 
 
 #pragma region GET_SCALARS
 		template<class T>
-		std::enable_if_t<is_in_v<T, bool, int, unsigned int, float, double>, T>
+		typename scalar_enable_if_t<T, T>
 		Get(const std::string& name) const {
 			if constexpr (std::is_same_v<T, bool>) {
-				return (bool)Get<unsigned int>(name);
+				return (bool)_Get<unsigned int>(name);
 			}
 			else {
-				return *reinterpret_cast<T*>(Get(name, sizeof(T)).data());
+				return _Get<T>(name);
 			}
 		}
 
 #pragma region GET_SCALARS_ARRAYS
 		template<class T>
-		std::enable_if_t<is_in_v<T, bool, int, unsigned int, float, double>, void>
+		typename scalar_enable_if_t<T>
 		Get(const std::string& name, T*& valuesDest, size_t size) const {
 			std::vector<T> values;
 			if constexpr (std::is_same_v<T, bool>) {
-				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
+				std::vector<unsigned int> valuesData = _GetArray<unsigned int>(name);
 				for (auto& valueData : valuesData) {
-					values.push_back((bool)(*reinterpret_cast<unsigned int*>(valueData.data())));
+					values.push_back((bool)valueData);
 				}
 				
 			}
 			else {
-				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
-				for (auto& valueData : valuesData) {
-					values.push_back(*reinterpret_cast<T*>(valueData.data()));
-				}
+				values = _GetArray<T>(name);
 			}
 			memcpy(valuesDest, values.data(), values.size() < size ? values.size() : size);
 		}
 
 		template<class V, class T = V::value_type>
-		std::enable_if_t<std::is_same_v<V, std::vector<T>> && is_in_v<T, bool, int, unsigned int, float, double>, V>
+		typename get_vector_enable_if_t<V, T, type_check_v<T>, V>
 		Get(const std::string& name) const {
 			V values{};
 			if constexpr (std::is_same_v<T, bool>) {
-				std::vector<std::vector<char>> valuesData = GetArray(name, 4);
+				std::vector<unsigned int> valuesData = _GetArray<unsigned int>(name);
 				for (auto& valueData : valuesData) {
-					values.push_back((bool)(*reinterpret_cast<unsigned int*>(valueData.data())));
+					values.push_back((bool)valueData);
 				}
 			}
 			else {
-				std::vector<std::vector<char>> valuesData = GetArray(name, sizeof(T));
-				for (auto& valueData : valuesData) {
-					values.push_back(*reinterpret_cast<T*>(valueData.data()));
-				}
+				values = _GetArray<T>(name);
 			}
 			return values;
 		}
@@ -507,66 +994,45 @@ namespace Twin2Engine::Tools {
 
 #pragma region GET_VEC
 		template<class V, class T = V::value_type, size_t L = V::length()>
-		std::enable_if_t<std::is_same_v<V, glm::vec<L, T>> && is_in_v<T, bool, int, unsigned int, float, double>, V>
+		typename vec_enable_if_t<V, T, L, V>
 		Get(const std::string& name) const {
-			size_t TSize{};
 			if constexpr (std::is_same_v<T, bool>) {
-				TSize = sizeof(unsigned int);
+				return (V)Get<glm::vec<L, unsigned int>>(name);
 			}
 			else {
-				TSize = sizeof(T);
+				return Get<V>(name);
 			}
-			std::vector<char> valueData = Get(name, L * TSize);
-			V value{};
-			if constexpr (std::is_same_v<T, bool>) {
-				glm::vec<L, unsigned int> valueToConvert = *reinterpret_cast<glm::vec<L, unsigned int>*>(valueData.data());
-				value.x = (bool)valueToConvert.x;
-				value.y = (bool)valueToConvert.y;
-				value.z = (bool)valueToConvert.z;
-			}
-			else {
-				value = *reinterpret_cast<V*>(valueData.data());
-			}
-			return value;
 		}
 
 #pragma region GET_VEC_ARRAYS
 		template<class V, class T = V::value_type, size_t L = V::length()>
-		std::enable_if_t<std::is_same_v<V, glm::vec<L, T>> && is_in_v<T, bool, int, unsigned int, float, double>, void>
+		typename vec_enable_if_t<V, T, L>
 		Get(const std::string& name, V*& valuesDest, size_t size) const {
 			std::vector<V> values;
 			if constexpr (std::is_same_v<T, bool>) {
-				std::vector<std::vector<char>> valuesData = GetArray(name, L * sizeof(unsigned int));
+				std::vector<glm::vec<L, unsigned int>> valuesData = _GetArray<glm::vec<L, unsigned int>>(name);
 				for (auto& valueData : valuesData) {
-					glm::vec<L, unsigned int> valueToConvert = *reinterpret_cast<glm::vec<L, unsigned int>*>(valueData.data());
-					values.push_back({ (bool)valueToConvert.x, (bool)valueToConvert.y, (bool)valueToConvert.z });
+					values.push_back((V)valueData);
 				}
 			}
 			else {
-				std::vector<std::vector<char>> valuesData = GetArray(name, L * sizeof(T));
-				for (auto& valueData : valuesData) {
-					values.push_back(*reinterpret_cast<V*>(valueData.data()));
-				}
+				values = _GetArray<V>(name);
 			}
 			memcpy(valuesDest, values.data(), values.size() < size ? values.size() : size);
 		}
 
 		template<class Vec, class V = Vec::value_type, class T = V::value_type, size_t L = V::length()>
-		std::enable_if_t<std::is_same_v<Vec, std::vector<V>>&& std::is_same_v<V, glm::vec<L, T>> && is_in_v<T, bool, int, unsigned int, float, double>, Vec>
+		typename get_vector_enable_if_t<Vec, V, std::is_same_v<V, glm::vec<L, T>> && vec_check_v<T, L>, Vec>
 		Get(const std::string& name) const {
 			Vec values{};
 			if constexpr (std::is_same_v<T, bool>) {
-				std::vector<std::vector<char>> valuesData = GetArray(name, L * sizeof(unsigned int));
+				std::vector<glm::vec<L, unsigned int>> valuesData = _GetArray<glm::vec<L, unsigned int>>(name);
 				for (auto& valueData : valuesData) {
-					glm::vec<L, unsigned int> valueToConvert = *reinterpret_cast<glm::vec<L, unsigned int>*>(valueData.data());
-					values.push_back({ (bool)valueToConvert.x, (bool)valueToConvert.y, (bool)valueToConvert.z });
+					values.push_back((V)valueData);
 				}
 			}
 			else {
-				std::vector<std::vector<char>> valuesData = GetArray(name, L * sizeof(T));
-				for (auto& valueData : valuesData) {
-					values.push_back(*reinterpret_cast<V*>(valueData.data()));
-				}
+				values = GetArray<V>(name);
 			}
 			return values;
 		}
@@ -575,28 +1041,49 @@ namespace Twin2Engine::Tools {
 
 #pragma region GET_MAT
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
-		std::enable_if_t<std::is_same_v<M, glm::mat<C, R, T>> && is_in_v<T, bool, int, unsigned int, float, double>, M>
+		typename mat_enable_if_t<M, T, C, R, M>
 		Get(const std::string& name) const {
 			M value{};
-			std::vector<M::col_type> rows = Get<std::vector<M::col_type>>(name);
-			for (size_t i = 0; i < C && i < rows.size(); ++i) {
-				value[i] = rows[i];
+			if constexpr (std::is_same_v<T, bool>) {
+				value = (M)_GetMat<glm::mat<C, R, unsigned int>>(name);
+			}
+			else {
+				value = _GetMat<M>(name);
 			}
 			return value;
 		}
 
 #pragma region GET_MAT_ARRAYS
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
-		std::enable_if_t<std::is_same_v<M, glm::mat<C, R, T>> && is_in_v<T, bool, int, unsigned int, float, double>, void>
+		typename mat_enable_if_t<M, T, C, R>
 		Get(const std::string& name, M*& valuesDest, size_t size) const {
-			std::vector<M> values = GetMatArray<M>(name);
+			std::vector<M> values;
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<glm::mat<C, R, unsigned int>> mats = _GetMatArray<glm::mat<C, R, unsigned int>>(name);
+				for (auto& mat : mats) {
+					values.push_back((M)mat);
+				}
+			}
+			else {
+				values = _GetMatArray<M>(name);
+			}
 			memcpy(valuesDest, values.data(), values.size() < size ? values.size() : size);
 		}
 
 		template<class V, class M = V::value_type, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
-		std::enable_if_t<std::is_same_v<V, std::vector<M>> && std::is_same_v<M, glm::mat<C, R, T>> && is_in_v<T, bool, int, unsigned int, float, double>, V>
+		typename get_vector_enable_if_t<V, M, mat_check_v<T, C, R>, V>
 		Get(const std::string& name) const {
-			return GetMatArray<M>(name);
+			if constexpr (std::is_same_v<T, bool>) {
+				std::vector<M> values;
+				std::vector<glm::mat<C, R, unsigned int>> mats = _GetMatArray<glm::mat<C, R, unsigned int>>(name);
+				for (auto& mat : mats) {
+					values.push_back((M)mat);
+				}
+				return values;
+			}
+			else {
+				return _GetMatArray<M>(name);
+			}
 		}
 #pragma endregion
 #pragma endregion
@@ -604,33 +1091,42 @@ namespace Twin2Engine::Tools {
 #pragma region GET_STRUCT
 		template<class S>
 		typename std::enable_if_t<std::is_same_v<S, STD140Struct>, S>
-		Get(const std::string& name, const S& structTemplate) const {
-			S value = structTemplate;
-			std::vector<char> valueData = Get(name, structTemplate.GetSize());
-			value._data.resize(valueData.size());
-			memcpy(value._data.data(), valueData.data(), valueData.size());
-			return value;
+		Get(const std::string& name, const STD140Offsets& structOffsets) const {
+			return _GetStruct(name, structOffsets);
 		}
 
 #pragma region GET_STRUCT_ARRAYS
 		template<class S>
 		typename std::enable_if_t<std::is_same_v<S, STD140Struct>>
-		Get(const std::string& name, const STD140Struct& structTemplate, S*& valueDest, size_t size) const {
-			std::vector<S> values = GetStructArray<S>(name, structTemplate);
-			memcpy(valueDest, values.data(), size > values.size() ? values.size() : size);
+		Get(const std::string& name, const STD140Offsets& structOffsets, STD140Struct*& valueDest, size_t size) const {
+			std::vector<STD140Struct> values = _GetStructArray(name, structOffsets);
+			memcpy(valueDest, values.data(), std::min(values.size(), size));
 		}
+
 		template<class V, class S = V::value_type>
-		typename std::enable_if_t<std::is_same_v<S, STD140Struct>, V>
-		Get(const std::string& name, const STD140Struct& structTemplate) const {
-			return GetStructArray<S>(name, structTemplate);
+		typename get_vector_enable_if_t<V, S, std::is_same_v<S, STD140Struct>, V>
+		Get(const std::string& name, const STD140Offsets& structTemplate) const {
+			return _GetStructArray(name, structTemplate);
 		}
 #pragma endregion
 #pragma endregion
 
-		std::vector<char> GetData() const;
-		size_t GetBaseAligement() const;
-		size_t GetSize() const;
+		STD140Offsets GetOffsets() const {
+			return _dataOffsets;
+		}
+		std::vector<char> GetData() const {
+			return _data;
+		}
+		size_t GetBaseAligement() const {
+			return _dataOffsets.GetBaseAligement();
+		}
+		size_t GetSize() const {
+			return _data.size();
+		}
 
-		void Clear();
+		void Clear() {
+			_dataOffsets.Clear();
+			_data.clear();
+		}
 	};
 }

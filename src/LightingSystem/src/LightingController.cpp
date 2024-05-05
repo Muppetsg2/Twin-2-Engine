@@ -442,7 +442,8 @@ void LightingController::RenderShadowMaps() {
 
 	int i = 0;
 	for (auto light : dirLights) {
-		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->shadowMap, light->lightSpaceMatrix);
+		//Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->shadowMap, light->lightSpaceMatrix);
+		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMapStatic(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->shadowMap, light->lightSpaceMatrix);
 		glActiveTexture(GL_TEXTURE0 + 8 + i);
 		glBindTexture(GL_TEXTURE_2D, light->shadowMap);
 

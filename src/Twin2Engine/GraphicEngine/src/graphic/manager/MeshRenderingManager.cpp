@@ -2103,6 +2103,8 @@ void MeshRenderingManager::RenderDepthMapStatic(const unsigned int& bufferWidth,
 #endif
 
 			meshPair.first->Draw(count);
+
+			meshPair.second.rendered.clear();
 		}
 	}
 
@@ -2222,6 +2224,8 @@ void MeshRenderingManager::RenderDepthMapStatic(const unsigned int& bufferWidth,
 #endif
 
 			meshPair.first->Draw(count);
+
+			meshPair.second.rendered.clear();
 		}
 	}
 

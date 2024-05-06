@@ -213,14 +213,14 @@ void main()
     
         lambertian = countLambertianPart(L, N);
 		
-		specular = 0.0;
-        if (lambertian > 0.0) {
-            specular = countBlinnPhongPart(L, E, N);
-        }
+		//specular = 0.0;
+        //if (lambertian > 0.0) {
+        //    specular = countBlinnPhongPart(L, E, N);
+        //}
     
         //LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power;
         //LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
-        LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
+        LightColor += lambertian * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
     }
     //LightColor += texture(DirLightingMap, gl_FragCoord.xy).r;
 	

@@ -94,6 +94,7 @@ using namespace Twin2Engine::UI;
 using namespace Twin2Engine::GraphicEngine;
 using namespace CollisionSystem;
 using namespace LightingSystem;
+bool updateShadowLightingMap = true;
 
 using Twin2Engine::Core::Input;
 using Twin2Engine::Core::KEY;
@@ -183,14 +184,14 @@ double mod(double val1, double val2);
 
 #pragma endregion
 
-constexpr int32_t WINDOW_WIDTH  = 1920;
+constexpr int32_t WINDOW_WIDTH = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
 const char* WINDOW_NAME = "Twin^2 Engine";
 
 Window* window = nullptr;
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
-const     char*   glsl_version     = "#version 450";
+const     char* glsl_version = "#version 450";
 constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 5;
 
@@ -271,7 +272,7 @@ int main(int, char**)
             cam->SetWorldUp(node["worldUp"].as<vec3>());
             cam->SetIsMain(node["isMain"].as<bool>());
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("Audio",
         []() -> Component* {
@@ -283,7 +284,7 @@ int main(int, char**)
             if (node["loop"].as<bool>()) audio->Loop(); else audio->UnLoop();
             audio->SetVolume(node["volume"].as<float>());
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("Button",
         []() -> Component* {
@@ -295,7 +296,7 @@ int main(int, char**)
             button->SetHeight(node["height"].as<float>());
             button->SetInteractable(node["interactable"].as<bool>());
         }
-    );
+        );
 
     // Only for subTypes
     ComponentDeserializer::AddDeserializer("Renderable",
@@ -306,7 +307,7 @@ int main(int, char**)
             RenderableComponent* renderable = static_cast<RenderableComponent*>(comp);
             renderable->SetIsTransparent(node["isTransparent"].as<bool>());
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("Image",
         []() -> Component* {
@@ -319,7 +320,7 @@ int main(int, char**)
             img->SetWidth(node["width"].as<float>());
             img->SetHeight(node["height"].as<float>());
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("Text",
         []() -> Component* {
@@ -332,7 +333,7 @@ int main(int, char**)
             text->SetSize(node["size"].as<uint32_t>());
             text->SetFont(SceneManager::GetFont(node["font"].as<size_t>()));
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("MeshRenderer",
         []() -> Component* {
@@ -345,7 +346,7 @@ int main(int, char**)
             }
             meshRenderer->SetModel(SceneManager::GetModel(node["model"].as<size_t>()));
         }
-    );
+        );
 
     // Only for subTypes
     ComponentDeserializer::AddDeserializer("Collider",
@@ -364,7 +365,7 @@ int main(int, char**)
             vec3 position = node["position"].as<vec3>();
             collider->SetLocalPosition(position.x, position.y, position.z);
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("SphereCollider",
         []() -> Component* {
@@ -374,7 +375,7 @@ int main(int, char**)
             SphereColliderComponent* sphereCollider = static_cast<SphereColliderComponent*>(comp);
             sphereCollider->SetRadius(node["radius"].as<float>());
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("BoxCollider",
         []() -> Component* {
@@ -390,7 +391,7 @@ int main(int, char**)
             boxCollider->SetYRotation(rotation.y);
             boxCollider->SetZRotation(rotation.z);
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("CapsuleCollider",
         []() -> Component* {
@@ -402,7 +403,7 @@ int main(int, char**)
             capsuleCollider->SetEndPosition(endPos.x, endPos.y, endPos.z);
             capsuleCollider->SetRadius(node["radius"].as<float>());
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("LightComponent",
         []() -> Component* {
@@ -411,7 +412,7 @@ int main(int, char**)
         [](Component* comp, const YAML::Node& node) -> void {
             //LightingSystem::LightComponent* lightComponent = static_cast<LightingSystem::LightComponent*>(comp);
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("DirectionalLightComponent",
         []() -> Component* {
@@ -423,7 +424,7 @@ int main(int, char**)
             light->SetColor(node["color"].as<vec3>());
             light->SetPower(node["power"].as<float>());
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("PointLightComponent",
         []() -> Component* {
@@ -435,7 +436,7 @@ int main(int, char**)
             light->SetPower(node["power"].as<float>());
             light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("SpotLightComponent",
         []() -> Component* {
@@ -449,7 +450,7 @@ int main(int, char**)
             light->SetOuterCutOff(node["outerCutOff"].as<float>());
             light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
         }
-    );
+        );
 
 #pragma endregion
 
@@ -465,7 +466,7 @@ int main(int, char**)
             hexagonalTilemap->Resize(node["leftBottomPosition"].as<ivec2>(), node["rightTopPosition"].as<ivec2>());
             // tilemap
         }
-    );
+        );
 
 
 #pragma endregion
@@ -495,7 +496,7 @@ int main(int, char**)
             mapGenerator->maxPointsNumber = node["maxPointsNumber"].as<int>();
             mapGenerator->angleDeltaRange = node["angleDeltaRange"].as<float>();
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("ContentGenerator",
         []() -> Component* {
@@ -506,7 +507,7 @@ int main(int, char**)
 
             //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("MapHexTile",
         []() -> Component* {
@@ -522,7 +523,7 @@ int main(int, char**)
             mapHexTile->type = node["type"].as<MapHexTile::HexTileType>();
             //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("MapRegion",
         []() -> Component* {
@@ -534,7 +535,7 @@ int main(int, char**)
             mapRegion->tilemap = nullptr;
             mapRegion->type = node["type"].as<MapRegion::RegionType>();
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("MapSector",
         []() -> Component* {
@@ -548,7 +549,7 @@ int main(int, char**)
             mapSector->region = nullptr;
             mapSector->type = node["type"].as<MapSector::SectorType>();
         }
-    );
+        );
 
 #pragma endregion
     // ADDING SCENES
@@ -562,7 +563,7 @@ int main(int, char**)
     hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
     hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
     MapHexTile* mapHexTile = hexagonPrefab->AddComponent<MapHexTile>();
-    
+
     auto comp = hexagonPrefab->AddComponent<MeshRenderer>();
     comp->AddMaterial(MaterialsManager::GetMaterial("ColoredHexTile"));
     //comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
@@ -593,14 +594,14 @@ int main(int, char**)
 
     comp = greenHexagonPrefab->AddComponent<MeshRenderer>();
     {GLenum error = glGetError();
-	if (error != GL_NO_ERROR) {
-		SPDLOG_ERROR("RDMError0: {}", error);
-	}}
+    if (error != GL_NO_ERROR) {
+        SPDLOG_ERROR("RDMError0: {}", error);
+    }}
     comp->AddMaterial(MaterialsManager::GetMaterial("GreenHexTile"));
     {GLenum error = glGetError();
-	if (error != GL_NO_ERROR) {
-		SPDLOG_ERROR("RDMError01: {}", error);
-	}}
+    if (error != GL_NO_ERROR) {
+        SPDLOG_ERROR("RDMError01: {}", error);
+    }}
     comp->SetModel(modelHexagon);
 
 
@@ -628,21 +629,21 @@ int main(int, char**)
     prefabRegion->AddComponent<MapRegion>();
 
     ContentGenerator* contentGenerator = tilemapGO->AddComponent<ContentGenerator>();
-   //SectorsGenerator sectorsGenertor;
-   //sectorsGenertor.minTilesPerSector = 3;
-   //sectorsGenertor.maxTilesPerSector = 3;
-   //sectorsGenertor.prefabSector = prefabSector;
-   //contentGenerator->mapElementGenerators.push_back(&sectorsGenertor);
-   //RegionsBySectorsGenerator regionsBySectorsGenerator;
-   //regionsBySectorsGenerator.regionPrefab = prefabRegion;
-   //regionsBySectorsGenerator.mergeByNumberTilesPerRegion = false;
-   //regionsBySectorsGenerator.minSectorsPerRegion = 3;
-   //regionsBySectorsGenerator.maxSectorsPerRegion = 3;
-   //regionsBySectorsGenerator.lowerHeightRange = 0;
-   //regionsBySectorsGenerator.upperHeightRange = 3;
-   //regionsBySectorsGenerator.heightRangeFacor = 0.25f;
-   //regionsBySectorsGenerator.isDiscritizedHeight = true;
-   //contentGenerator->mapElementGenerators.push_back(&regionsBySectorsGenerator);
+    //SectorsGenerator sectorsGenertor;
+    //sectorsGenertor.minTilesPerSector = 3;
+    //sectorsGenertor.maxTilesPerSector = 3;
+    //sectorsGenertor.prefabSector = prefabSector;
+    //contentGenerator->mapElementGenerators.push_back(&sectorsGenertor);
+    //RegionsBySectorsGenerator regionsBySectorsGenerator;
+    //regionsBySectorsGenerator.regionPrefab = prefabRegion;
+    //regionsBySectorsGenerator.mergeByNumberTilesPerRegion = false;
+    //regionsBySectorsGenerator.minSectorsPerRegion = 3;
+    //regionsBySectorsGenerator.maxSectorsPerRegion = 3;
+    //regionsBySectorsGenerator.lowerHeightRange = 0;
+    //regionsBySectorsGenerator.upperHeightRange = 3;
+    //regionsBySectorsGenerator.heightRangeFacor = 0.25f;
+    //regionsBySectorsGenerator.isDiscritizedHeight = true;
+    //contentGenerator->mapElementGenerators.push_back(&regionsBySectorsGenerator);
 
     RegionsGeneratorByKMeans regionsGeneratorKMeans;
     regionsGeneratorKMeans.regionPrefab = prefabRegion;
@@ -724,7 +725,7 @@ int main(int, char**)
 #pragma endregion
 
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();/**/
-    
+
     SceneManager::LoadScene("testScene");
     //SceneManager::SaveScene("res/scenes/savedScene.yaml");
 
@@ -736,11 +737,11 @@ int main(int, char**)
     //comp->AddMaterial(MaterialsManager::GetMaterial("multiTexture"));
     ////comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
     //comp->SetModel(modelHexagon);
-    
+
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
-    
+
 #pragma region TestingLighting
     GameObject* dl_go = SceneManager::CreateGameObject();
     dl_go->GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
@@ -816,7 +817,7 @@ bool init()
     // GL 4.5 + GLSL 450
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GL_VERSION_MAJOR);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GL_VERSION_MINOR);
-    glfwWindowHint(GLFW_OPENGL_PROFILE,        GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 
     window = Window::MakeWindow(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT }, false);
@@ -830,7 +831,7 @@ bool init()
     }
     spdlog::info("Successfully initialized OpenGL loader!");
 
-    
+
 #ifdef _DEBUG
     // Debugging
     glEnable(GL_DEBUG_OUTPUT);
@@ -853,12 +854,14 @@ bool init()
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
+    glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
+
     return true;
 }
 
 void input()
 {
-    if (Input::IsKeyPressed(KEY::ESCAPE)) 
+    if (Input::IsKeyPressed(KEY::ESCAPE))
     {
         window->Close();
         return;
@@ -896,10 +899,10 @@ void input()
     }
 
 
-    if (Input::IsKeyPressed(KEY::LEFT_ALT)) 
+    if (Input::IsKeyPressed(KEY::LEFT_ALT))
     {
         mouseNotUsed = true;
-        if (Input::GetCursorState() == CURSOR_STATE::DISABLED) 
+        if (Input::GetCursorState() == CURSOR_STATE::DISABLED)
         {
             Input::ShowCursor();
 #if _DEBUG
@@ -955,18 +958,26 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     if (rot.x > 89.f) {
         rot.x = 89.f;
     }
-    
+
     if (rot.x < -89.f)
     {
         rot.x = -89.f;
     }
 
     Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x, rot.y + xoffset, rot.z));
-    LightingSystem::LightingController::Instance()->ViewerTransformChanged.Invoke();
+    //LightingSystem::LightingController::Instance()->UpdateOnTransformChange();
+    updateShadowLightingMap = true;
 }
 
 void update()
 {
+    //Update Shadow & Lighting Map
+    if (updateShadowLightingMap)
+    {
+        LightingSystem::LightingController::Instance()->UpdateOnTransformChange();
+        updateShadowLightingMap = false;
+    }
+
     // Update game objects' state here
     text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
     SceneManager::UpdateCurrentScene();
@@ -1213,7 +1224,7 @@ void imgui_render()
             }
         }
 #pragma endregion
-        
+
         ImGui::Separator();
 
 #pragma region IMGUI_WINDOW_SETUP
@@ -1353,7 +1364,7 @@ void end_frame()
     window->Update();
 }
 
-float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd) 
+float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd)
 {
     return expectedStart + ((expectedEnd - expectedStart) / (currEnd - currStart)) * (input - currStart);
 }

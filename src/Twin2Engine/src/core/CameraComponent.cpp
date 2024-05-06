@@ -384,7 +384,7 @@ void CameraComponent::Render()
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
 
-	LightingSystem::LightingController::Instance()->RenderShadowMaps();
+	//LightingSystem::LightingController::Instance()->RenderShadowMaps();
 
 	// RENDER MAP
 	glBindFramebuffer(GL_FRAMEBUFFER, _msRenderMapFBO);

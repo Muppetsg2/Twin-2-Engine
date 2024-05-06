@@ -467,7 +467,8 @@ void LightingController::SetViewerPosition(glm::vec3& viewerPosition) {
 
 	//SPDLOG_INFO("SetViewerPosition ({}, {}, {})", viewerPosition.x, viewerPosition.y, viewerPosition.z);
 
-	ViewerTransformChanged.Invoke();
+	//ViewerTransformChanged.Invoke();
+	UpdateOnTransformChange();
 }
 
 

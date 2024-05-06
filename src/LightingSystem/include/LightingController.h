@@ -35,6 +35,10 @@ namespace LightingSystem {
 		public:
 			static float DLShadowCastingRange;
 			Twin2Engine::Core::EventHandler<> ViewerTransformChanged;
+			void UpdateOnTransformChange() {
+				ViewerTransformChanged.Invoke();
+				RenderShadowMaps();
+			}
 
 			static const int SHADOW_WIDTH;
 			static const int SHADOW_HEIGHT;

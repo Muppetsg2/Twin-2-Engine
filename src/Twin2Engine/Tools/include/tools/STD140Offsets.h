@@ -3,6 +3,30 @@
 #include <tools/templates.h>
 
 namespace Twin2Engine::Tools {
+	class STD140Offsets;
+
+	template<class T>
+	struct STD140Variable {
+	public:
+		using var_type = T;
+		
+		const std::string var_name;
+		const size_t array_size;
+		typename std::conditional_t<std::is_same_v<T, STD140Offsets>, STD140Offsets, void(*)> struct_offsets;
+
+		template<typename = std::enable_if_t<!std::is_same_v<T, STD140Offsets>>>
+		STD140Variable(const std::string& name) : var_name(name), array_size(0) {}
+
+		template<typename = std::enable_if_t<!std::is_same_v<T, STD140Offsets>>>
+		STD140Variable(const std::string& name, const size_t& size) : var_name(name), array_size(size) {}
+
+		template<typename = std::enable_if_t<std::is_same_v<T, STD140Offsets>>>
+		STD140Variable(const std::string& name, const STD140Offsets& offsets) : var_name(name), struct_offsets(offsets) {}
+
+		template<typename = std::enable_if_t<std::is_same_v<T, STD140Offsets>>>
+		STD140Variable(const std::string& name, const STD140Offsets& offsets, const size_t& size) : var_name(name), struct_offsets(offsets), array_size(size) {}
+	};
+
 	class STD140Offsets {
 	private:
 #pragma region CHECKS
@@ -26,6 +50,29 @@ namespace Twin2Engine::Tools {
 
 		bool CheckVariable(const std::string& name) const;
 
+		template<class T, class... Ts>
+		void AddMultiple(const STD140Variable<T>& var, const STD140Variable<Ts>&... vars) {
+			if constexpr (std::is_same_v<T, STD140Offsets>) {
+				if (var.array_size == 0) {
+					Add(var.var_name, var.struct_offsets);
+				}
+				else {
+					Add(var.var_name, var.struct_offsets, var.array_size);
+				}
+			}
+			else {
+				if (var.array_size == 0) {
+					Add<T>(var.var_name);
+				}
+				else {
+					Add<T>(var.var_name, var.array_size);
+				}
+			}
+			if constexpr (sizeof...(Ts) > 0) {
+				AddMultiple(vars...);
+			}
+		}
+
 		size_t Add(const std::string& name, size_t baseAligement, size_t baseOffset);
 		std::vector<size_t> AddArray(const std::string& name, size_t arraySize, size_t baseAligement, size_t baseOffset);
 
@@ -34,6 +81,10 @@ namespace Twin2Engine::Tools {
 		STD140Offsets(STD140Offsets& std140off) = default;
 		STD140Offsets(const STD140Offsets& std140off) = default;
 		STD140Offsets(STD140Offsets&& std140off) = default;
+		template<class... Args>
+		STD140Offsets(const STD140Variable<Args>&... vars) {
+			AddMultiple(vars...);
+		}
 		virtual ~STD140Offsets() = default;
 
 		STD140Offsets& operator=(STD140Offsets& std140off) = default;

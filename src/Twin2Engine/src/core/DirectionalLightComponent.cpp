@@ -10,7 +10,7 @@ using namespace Twin2Engine::Graphic;
 void DirectionalLightComponent::Initialize()
 {
 	OnChangePosition = [this](Transform* transform) {
-		light->position = transform->GetGlobalPosition();
+		//light->position = transform->GetGlobalPosition();
 		//light->direction = glm::vec3((transform->GetTransformMatrix() * glm::vec4(localDirection, 1.0f)));
 		LightingController::Instance()->UpdateDLTransform(light);
 	};
@@ -28,7 +28,7 @@ void DirectionalLightComponent::Initialize()
 		GetTransform()->SetGlobalPosition(LightingController::RecalculateDirLightSpaceMatrix(light, data));
 	};
 
-	light->position = GetTransform()->GetGlobalPosition();
+	//light->position = GetTransform()->GetGlobalPosition();
 
 	glGenFramebuffers(1, &light->shadowMapFBO);
 	

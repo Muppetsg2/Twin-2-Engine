@@ -58,6 +58,7 @@ vector<size_t> STD140Offsets::AddArray(const string& name, size_t arraySize, siz
 	// SET ARRAY BEGIN POINTER
 	size_t nameHash = _hasher(name);
 	_offsets[nameHash] = arrayElemOffsets[0];
+	_names[nameHash] = name;
 	// UPDATE CURRENT OFFSET (ADD PADDING)
 	if (_currentOffset % 16 != 0) {
 		_currentOffset += 16 - (_currentOffset % 16);

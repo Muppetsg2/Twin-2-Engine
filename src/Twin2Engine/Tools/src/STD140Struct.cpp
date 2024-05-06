@@ -36,6 +36,8 @@ void STD140Struct::_AddStruct(const string& name, const STD140Struct& value)
 
 void STD140Struct::_AddStructArray(const string& name, const STD140Offsets& structOffsets, const vector<vector<char>>& values)
 {
+	if (values.size() == 0) return;
+
 	// ADD TO OFFSETS
 	vector<size_t> valuesOffsets = _dataOffsets.Add(name, structOffsets, values.size());
 
@@ -81,6 +83,8 @@ bool STD140Struct::_SetStruct(const string& name, const STD140Struct& value)
 
 bool STD140Struct::_SetStructArray(const string& name, const STD140Offsets& structOffsets, const vector<vector<char>>& values)
 {
+	if (values.size() == 0) return false;
+
 	// CHECK VARIABLE
 	if (!_dataOffsets.Contains(name)) {
 		SPDLOG_ERROR("No value called '{0}' was added to this structure", name);

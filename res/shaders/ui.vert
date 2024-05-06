@@ -34,7 +34,6 @@ vec2 map(vec2 value, vec2 min1, vec2 max1, vec2 min2, vec2 max2) {
 
 void main()
 {
-	//vec2 canvasPos = vec2(position.x * canvas.elemWidth, position.y * canvas.elemHeight);
 	vec2 canvasPos = vec2(position.x * canvas.elemWidth, -position.z * canvas.elemHeight);
 	vec2 tpos = vec2(model * vec4(canvasPos, 1.0, 1.0));
 

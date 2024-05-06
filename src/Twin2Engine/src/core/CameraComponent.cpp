@@ -14,9 +14,17 @@ using namespace Twin2Engine::Manager;
 
 std::vector<CameraComponent*> CameraComponent::Cameras = std::vector<CameraComponent*>();
 GLuint CameraComponent::_uboMatrices = 0;
-STD140Offsets CameraComponent::_uboMatricesOffsets;
+STD140Offsets CameraComponent::_uboMatricesOffsets{
+	STD140Variable<mat4>("projection"),
+	STD140Variable<mat4>("view")
+};
 GLuint CameraComponent::_uboWindowData = 0;
-STD140Offsets CameraComponent::_uboWindowDataOffsets;
+STD140Offsets CameraComponent::_uboWindowDataOffsets{
+		STD140Variable<ivec2>("windowSize"),
+		STD140Variable<float>("nearPlane"),
+		STD140Variable<float>("farPlane"),
+		STD140Variable<float>("gamma"),
+};
 InstatiatingModel CameraComponent::_renderPlane = InstatiatingModel();
 Shader* CameraComponent::_renderShader = nullptr;
 
@@ -469,9 +477,6 @@ void CameraComponent::Initialize()
 		this->SetIsMain(true);
 
 		// UBO MATRICIES
-		_uboMatricesOffsets.Add<mat4>("projection");
-		_uboMatricesOffsets.Add<mat4>("view");
-
 		glGenBuffers(1, &_uboMatrices);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
@@ -491,11 +496,6 @@ void CameraComponent::Initialize()
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		// UBO WINDOW DATA
-		_uboWindowDataOffsets.Add<ivec2>("windowSize");
-		_uboWindowDataOffsets.Add<float>("nearPlane");
-		_uboWindowDataOffsets.Add<float>("farPlane");
-		_uboWindowDataOffsets.Add<float>("gamma");
-
 		glGenBuffers(1, &_uboWindowData);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);

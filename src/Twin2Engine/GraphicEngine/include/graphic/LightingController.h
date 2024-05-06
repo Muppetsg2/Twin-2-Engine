@@ -30,28 +30,22 @@ namespace Twin2Engine::Graphic {
 			LightingController();
 			~LightingController();
 
-			static Tools::STD140Offsets _pointLightOffsets;
-			static Tools::STD140Offsets _spotLightOffsets;
-			static Tools::STD140Offsets _dirLightOffsets;
-
-			struct Lights {											//1104
-				unsigned int numberOfPointLights = 0;				//0		4
-				unsigned int numberOfSpotLights = 0;				//4		4
-				unsigned int numberOfDirLights = 0;					//8		4
-				unsigned int padding = 0;								//12	4 - padding
-				PointLight pointLights[MAX_POINT_LIGHTS];							//16	48 * 8 = 384
-				SpotLight spotLights[MAX_SPOT_LIGHTS];							//400	64 * 8 = 512
-				DirectionalLight directionalLights[MAX_DIRECTIONAL_LIGHTS];				//912	112. * 4 = 192
+			struct Lights {
+				PointLight pointLights[MAX_POINT_LIGHTS];
+				SpotLight spotLights[MAX_SPOT_LIGHTS];
+				DirectionalLight directionalLights[MAX_DIRECTIONAL_LIGHTS];
+				unsigned int numberOfPointLights = 0;
+				unsigned int numberOfSpotLights = 0;
+				unsigned int numberOfDirLights = 0;
 			};
-			static Tools::STD140Offsets _lightsOffsets;
+			static const Tools::STD140Offsets _lightsOffsets;
 
-			struct LightingData {													//32
-				alignas(16) glm::vec3 ambientLight;				//0		12
-				alignas(16) glm::vec3 viewerPosition;				//12	12
-				// 0 - blinnPhong, 1 - toon
-				int shadingType = 0;								//24	4
+			struct LightingData {
+				glm::vec3 ambientLight;
+				glm::vec3 viewerPosition;
+				int shadingType = 0; // 0 - blinnPhong, 1 - toon, 2 - gooch
 			};
-			static Tools::STD140Offsets _lightingDataOffsets;
+			static const Tools::STD140Offsets _lightingDataOffsets;
 
 		public:
 			static float DLShadowCastingRange;

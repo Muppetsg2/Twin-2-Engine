@@ -15,7 +15,7 @@ struct MaterialInput
 
 layout (std140, binding = 1) uniform WindowData
 {
-    vec2 windowSize;
+    ivec2 windowSize;
     float nearPlane;
     float farPlane;
     float gamma;
@@ -49,8 +49,8 @@ struct PointLight {
 
 struct SpotLight {
 	vec3 position;      // Position of the spot light in world space
+    vec3 color;         // Color of the spot light
 	vec3 direction;     // Direction of the spot light
-	vec3 color;         // Color of the spot light
 	float power;		  // Light source power
 	float innerCutOff;       // Inner cutoff angle (in radians)
 	float outerCutOff;  // Outer cutoff angle (in radians)
@@ -60,20 +60,21 @@ struct SpotLight {
 };
 
 struct DirectionalLight {
-	vec3 position;      // Position of the spot light in world space
+    mat4 lightSpaceMatrix;
+    vec3 color;         // Color of the spot light
 	vec3 direction;     // Direction of the spot light
-	mat4 lightSpaceMatrix;
-	vec3 color;         // Color of the spot light
 	float power;		  // Light source power
+    uint shadowMapFBO;
+    uint shadowMap;
 };
 
 layout (std430, binding = 3) buffer Lights {
-	uint numberOfPointLights;
-	uint numberOfSpotLights;
-	uint numberOfDirLights;
     PointLight pointLights[8];
     SpotLight spotLights[8];
     DirectionalLight directionalLights[4];
+    uint numberOfPointLights;
+	uint numberOfSpotLights;
+	uint numberOfDirLights;
 };
 
 layout(std140, binding = 4) uniform LightingData {
@@ -98,7 +99,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
     float currentDepth = projCoords.z;
     // calculate bias (based on depth map resolution and slope)
    
-    vec3 lightDir = normalize(directionalLights[shadowMapId].position - position);
+    vec3 lightDir = normalize(-directionalLights[shadowMapId].direction);
     float bias = max(0.001 * (1.0 - dot(N, lightDir)), 0.0005);
     //float bias = 0.005;
     // check whether current frag pos is in shadow

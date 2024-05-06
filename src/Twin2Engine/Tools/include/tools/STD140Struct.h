@@ -60,6 +60,8 @@ namespace Twin2Engine::Tools {
 			memcpy(_data.data() + valueOffset, valueData.data(), valueData.size());
 		}
 		template<class T> void _AddArray(const std::string& name, const std::vector<T>& values) {
+			if (values.size() == 0) return;
+
 			// ADD TO OFFSETS
 			std::vector<size_t> valuesOffsets = _dataOffsets.Add<T>(name, values.size());
 
@@ -106,6 +108,8 @@ namespace Twin2Engine::Tools {
 		}
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		void _AddMatArray(const std::string& name, const std::vector<M>& values) {
+			if (values.size() == 0) return;
+
 			// ADD TO OFFSETS
 			std::vector<size_t> valuesOffsets = _dataOffsets.Add<M>(name, values.size());
 			
@@ -168,6 +172,8 @@ namespace Twin2Engine::Tools {
 			return true;
 		}
 		template<class T> bool _SetArray(const std::string& name, const std::vector<T>& values) {
+			if (values.size() == 0) return false;
+
 			// CHECK VARIABLE
 			if (!_dataOffsets.Contains(name)) {
 				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
@@ -237,6 +243,8 @@ namespace Twin2Engine::Tools {
 		}
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		bool _SetMatArray(const std::string& name, const std::vector<M>& values) {
+			if (values.size() == 0) return false;
+
 			// CHECK VARIABLE
 			if (!_dataOffsets.Contains(name)) {
 				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);

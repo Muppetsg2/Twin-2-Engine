@@ -263,7 +263,7 @@ inline Shader* ShaderManager::LoadShaderProgramSHPR(const std::string& shaderNam
 GLuint ShaderManager::CreateShaderProgramFromFile(const std::string& shaderProgramName)
 {
 
-    SPDLOG_INFO("From File");
+    //SPDLOG_INFO("From File");
     std::string shaderProgramPath = "res/shaders/" + shaderProgramName + ".shpr";
     
     GLuint shaderProgram = 0;
@@ -319,7 +319,7 @@ GLuint ShaderManager::CreateShaderProgramFromFile(const std::string& shaderProgr
         shaderIds.push_back(shaderId);
     }
     
-    SPDLOG_INFO("Before linking");
+    //SPDLOG_INFO("Before linking");
     glLinkProgram(shaderProgram);
     {
         GLenum error = glGetError();

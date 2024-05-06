@@ -24,7 +24,7 @@ namespace Twin2Engine::Core {
 		void Stop();
 		void Loop();
 		void UnLoop();
-		void SetTimePosition(SoLoud::time seconds);
+		void SetPlayPosition(SoLoud::time seconds);
 		void SetVolume(float value);
 		SoLoud::time GetAudioLength();
 		SoLoud::time GetPlayPosition();

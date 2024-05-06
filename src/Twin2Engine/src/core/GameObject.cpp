@@ -295,6 +295,8 @@ YAML::Node GameObject::Serialize() const
 void GameObject::AddComponent(Component* comp)
 {
 	components.push_back(comp);
+	comp->Init(this);
+	comp->Initialize();
 }
 
 void GameObject::RemoveComponent(Component* component)

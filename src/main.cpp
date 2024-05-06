@@ -531,8 +531,18 @@ void render_imgui()
             if (a->GetVolume() != vol) {
                 a->SetVolume(vol);
             }
+            
+            double pos = a->GetPlayPosition();
 
-            ImGui::Text("Position: %02.0f:%02.0f / %02.0f:%02.0f", std::floor(a->GetPlayPosition() / 60), mod(a->GetPlayPosition(), 60), std::floor(a->GetAudioLength() / 60), mod(a->GetAudioLength(), 60));
+            /*
+            if (!loop) {
+                if (ImGui::SliderFloat("Position Slider", (float*)&pos, 0.f, a->GetAudioLength())) {
+					a->SetPlayPosition(pos);
+				}
+            }
+            */
+
+            ImGui::Text("Position: %02.0f:%02.0f / %02.0f:%02.0f", std::floor(pos / 60), mod(pos, 60), std::floor(a->GetAudioLength() / 60), mod(a->GetAudioLength(), 60));
             ImGui::Text("Play Time: %02.0f:%02.0f", std::floor(a->GetPlayTime() / 60), mod(a->GetPlayTime(), 60));
 
             if (ImGui::Button("Play Song")) {

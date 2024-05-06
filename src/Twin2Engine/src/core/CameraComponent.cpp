@@ -400,6 +400,9 @@ void CameraComponent::Render()
 	glNamedBufferSubData(_uboWindowData, sizeof(vec2) + sizeof(float), sizeof(float), &(this->_far));
 	glNamedBufferSubData(_uboWindowData, sizeof(vec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));*/
 
+	// UPDATING RENDERER
+	GraphicEngineManager::UpdateBeforeRendering();
+
 	// DEPTH MAP
 	glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
 	glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);

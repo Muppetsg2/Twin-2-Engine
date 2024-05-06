@@ -54,15 +54,15 @@ sampler2D GetAmbientMap(uint index)
 }
 sampler2D GetDiffuseMap(uint index)
 {
-	return textureInput[materialInput[materialIndex] + ambientTexturesCount + index];
+	return textureInput[materialInput[materialIndex].ambientTexturesCount + index];
 }
 sampler2D GetSpecularMap(uint index)
 {
-	return textureInput[materialInput[materialIndex] + ambientTexturesCount + diffuseTexturesCount  + index];
+	return textureInput[materialInput[materialIndex].ambientTexturesCount + materialInput[materialIndex].diffuseTexturesCount  + index];
 }
 sampler2D GetNormalMap(uint index)
 {
-	return textureInput[materialInput[materialIndex] + ambientTexturesCount + diffuseTexturesCount + specularTexturesCount + index];
+	return textureInput[materialInput[materialIndex].ambientTexturesCount + materialInput[materialIndex].diffuseTexturesCount + materialInput[materialIndex].specularTexturesCount + index];
 }
 
 
@@ -178,6 +178,19 @@ void main()
 	float specular = 0.0;
 	float distance = 0.0;
 
+    for (uint index = 0; index < materialInput[materialIndex].ambientTexturesCount; index++)
+    {
+        LightColor += (texture(GetAmbientMap(index), texCoords)).xyz;
+    }
+    for (uint index = 0; index < materialInput[materialIndex].diffuseTexturesCount; index++)
+    {
+        LightColor += (texture(GetDiffusetMap(index), texCoords)).xyz;
+    }
+    for (uint index = 0; index < materialInput[materialIndex].specularTexturesCount; index++)
+    {
+        LightColor += (texture(GetSpeculartMap(index), texCoords)).xyz;
+    }
+
     for (uint i = 0; i < numberOfPointLights; ++i) {
         L = pointLights[i].position - position;
         distance = length(L);
@@ -192,7 +205,7 @@ void main()
             specular = countBlinnPhongPart(L, E, N);
         }
 
-        LightColor += (lambertian + specular) * pointLights[i].color * pointLights[i].power * attenuation;
+        LightColor += (lambertian * materialInput[materilIndex].diffuseColor + specular * materialInput[materilIndex].specularColor) * pointLights[i].color * pointLights[i].power * attenuation;
 		//FragColor = vec4((lambertian + specular) * pointLights[i].color * pointLights[i].power * attenuation, 1.0f);
     }
 
@@ -220,7 +233,7 @@ void main()
 		    epsilon = -spotLights[i].outerCutOff;
 		    intensity = smoothstep(spotLights[i].outerCutOff, 0.0, theta);
 			
-			LightColor += (lambertian + specular) * spotLights[i].color * spotLights[i].power * attenuation * intensity;
+			LightColor += (lambertian * materialInput[materilIndex].diffuseColor + specular * materialInput[materilIndex].specularColor) * spotLights[i].color * spotLights[i].power * attenuation * intensity;
 			//FragColor = vec4((lambertian + specular) * spotLights[i].color * spotLights[i].power * attenuation * intensity, 1.0f);
 		}
 	}
@@ -235,10 +248,10 @@ void main()
             specular = countBlinnPhongPart(L, E, N);
         }
 
-        LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power;
+        LightColor += (lambertian * materialInput[materilIndex].diffuseColor + specular * materialInput[materilIndex].specularColor) * directionalLights[i].color * directionalLights[i].power;
         //LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
     }
 	
-    FragColor *= vec4(LightColor + AmbientLight, 1.0); //
+    FragColor *= vec4(LightColor + AmbientLight + materialInput[materilIndex].ambientColor.xyz, 1.0); //
 	FragColor = vec4(pow(FragColor.rgb, vec3(2.2)), 1.0);
 }

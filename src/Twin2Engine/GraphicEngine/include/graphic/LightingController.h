@@ -3,6 +3,7 @@
 #include <graphic/Light.h>
 #include <graphic/Shader.h>
 #include <tools/EventHandler.h>
+#include <tools/STD140Struct.h>
 
 constexpr const unsigned int MAX_POINT_LIGHTS = 8;
 constexpr const unsigned int MAX_SPOT_LIGHTS = 8;
@@ -29,6 +30,10 @@ namespace Twin2Engine::Graphic {
 			LightingController();
 			~LightingController();
 
+			static Tools::STD140Offsets _pointLightOffsets;
+			static Tools::STD140Offsets _spotLightOffsets;
+			static Tools::STD140Offsets _dirLightOffsets;
+
 			struct Lights {											//1104
 				unsigned int numberOfPointLights = 0;				//0		4
 				unsigned int numberOfSpotLights = 0;				//4		4
@@ -38,6 +43,7 @@ namespace Twin2Engine::Graphic {
 				SpotLight spotLights[MAX_SPOT_LIGHTS];							//400	64 * 8 = 512
 				DirectionalLight directionalLights[MAX_DIRECTIONAL_LIGHTS];				//912	112. * 4 = 192
 			};
+			static Tools::STD140Offsets _lightsOffsets;
 
 			struct LightingData {													//32
 				alignas(16) glm::vec3 ambientLight;				//0		12
@@ -45,7 +51,7 @@ namespace Twin2Engine::Graphic {
 				// 0 - blinnPhong, 1 - toon
 				int shadingType = 0;								//24	4
 			};
-			//Lights lights;
+			static Tools::STD140Offsets _lightingDataOffsets;
 
 		public:
 			static float DLShadowCastingRange;

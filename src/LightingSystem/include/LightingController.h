@@ -43,7 +43,7 @@ namespace LightingSystem {
 			Twin2Engine::Core::EventHandler<> ViewerTransformChanged;
 			void UpdateOnTransformChange() {
 				ViewerTransformChanged.Invoke();
-				//RenderShadowMaps();
+				RenderShadowMaps();
 			}
 
 			static const int SHADOW_WIDTH;

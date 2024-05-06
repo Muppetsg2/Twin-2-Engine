@@ -112,12 +112,18 @@ void GraphicEngine::End()
 	glfwTerminate();
 }
 
+void GraphicEngine::UpdateBeforeRendering()
+{
+	MeshRenderingManager::UpdateQueues();
+}
+
 void GraphicEngine::Render()
 {
 #if DEBUG_GRAPHIC_ENGINE
 	float startRenderingTime = glfwGetTime();
 #endif
-	MeshRenderingManager::Render();
+	MeshRenderingManager::RenderStatic();
+	//MeshRenderingManager::Render();
 #if DEBUG_GRAPHIC_ENGINE
 	SPDLOG_INFO("Randering Time: {}", glfwGetTime() - startRenderingTime);
 	float startUIRenderingTime = glfwGetTime();
@@ -133,7 +139,8 @@ void GraphicEngine::DepthRender()
 #if DEBUG_GRAPHIC_ENGINE
 	float startDepthRenderingTime = glfwGetTime();
 #endif
-	MeshRenderingManager::RenderDepthMap();
+	//MeshRenderingManager::RenderDepthMap();
+	MeshRenderingManager::RenderDepthMapStatic();
 #if DEBUG_GRAPHIC_ENGINE
 	SPDLOG_INFO("Depth Randering Time: {}", glfwGetTime() - startDepthRenderingTime);
 #endif

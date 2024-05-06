@@ -39,8 +39,7 @@ layout(location = 0) uniform TextureInput texturesInput[8];
 layout(std140, binding = 4) uniform LightingData {
     vec3 AmbientLight;
 	vec3 ViewerPosition;
-	float highlightParam;
-	//float gamma;
+	int shadingType;
 };
 
 //shadow maps
@@ -60,7 +59,7 @@ struct SpotLight {
 	vec3 direction;     // Direction of the spot light
 	vec3 color;         // Color of the spot light
 	float power;		  // Light source power
-	//float cutOff;       // Inner cutoff angle (in radians)
+	float innerCutOff;       // Inner cutoff angle (in radians)
 	float outerCutOff;  // Outer cutoff angle (in radians)
 	float constant;     // Constant attenuation
 	float linear;       // Linear attenuation
@@ -87,10 +86,7 @@ layout (std430, binding = 3) buffer Lights {
 
 vec4 fakeBRDF(sampler2D brdfTex, vec3 lightDirection, vec3 viewer)
 {
-	//return texture(brdfTex, vec2(dot(normal, normalize(lightDirection)), dot(viewer, normal) * 0.5 + 0.5));
 	return texture(brdfTex, vec2(clamp(dot(normal, normalize(lightDirection)), 0.0, 1.0), dot(viewer, normal) * 0.5 + 0.5));
-	//return texture(brdfTex, vec2(abs(dot(normal, normalize(lightDirection))), dot(viewer, normal) * 0.5 + 0.5));
-	//return texture(brdfTex, vec2(dot(normal, normalize(lightDirection)) * 0.5 + 0.5, dot(viewer, normal) * 0.5 + 0.5));
 }
 
 
@@ -113,6 +109,7 @@ void main()
         LightColor += fakeBRDF(texturesInput[materialIndex].brdfTexture, -directionalLights[i].direction, E).rgb;
     }
 	
-    FragColor = vec4(LightColor + AmbientLight, 1.0);
+    FragColor = vec4(LightColor, 1.0);
+    //FragColor = vec4(LightColor + AmbientLight, 1.0);
 	//FragColor = vec4(pow(FragColor.rgb, vec3(gamma)), 1.0);
 }

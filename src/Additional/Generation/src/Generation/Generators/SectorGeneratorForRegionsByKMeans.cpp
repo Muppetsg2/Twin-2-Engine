@@ -5,7 +5,30 @@ using namespace Algorithms;
 using namespace Generation::Generators;
 using namespace Tilemap;
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Manager;
 using namespace glm;
+
+SCRIPTABLE_OBJECT_SOURCE_CODE(SectorGeneratorForRegionsByKMeans, Generation::Generators, "SectorGeneratorForRegionsByKMeans")
+
+SO_SERIALIZATION_BEGIN(SectorGeneratorForRegionsByKMeans, AMapElementGenerator)
+SO_SERIALIZE_FIELD_F(sectorPrefab, PrefabManager::GetPrefabPath)
+SO_SERIALIZE_FIELD(sectorsCount)
+SO_SERIALIZE_FIELD(isDiscritizedHeight)
+SO_SERIALIZE_FIELD(lowerHeightRange)
+SO_SERIALIZE_FIELD(upperHeightRange)
+SO_SERIALIZE_FIELD(heightRangeFacor)
+SO_SERIALIZATION_END()
+
+SO_DESERIALIZATION_BEGIN(SectorGeneratorForRegionsByKMeans, AMapElementGenerator)
+SO_DESERIALIZE_FIELD_F_T(sectorPrefab, PrefabManager::LoadPrefab, string)
+SO_DESERIALIZE_FIELD(sectorsCount)
+SO_DESERIALIZE_FIELD(isDiscritizedHeight)
+SO_DESERIALIZE_FIELD(lowerHeightRange)
+SO_DESERIALIZE_FIELD(upperHeightRange)
+SO_DESERIALIZE_FIELD(heightRangeFacor)
+SO_DESERIALIZATION_END()
+
+
 
 //template class ObjectsKMeans<MapHexTile*>;
 
@@ -26,7 +49,8 @@ void SectorGeneratorForRegionsByKMeans::Generate(HexagonalTilemap* tilemap)
         {
             if (!cluster.empty()) 
             {
-                MapSector* sector = GameObject::Instantiate(sectorPrefab, tilemap->GetTransform())->GetComponent<MapSector>();
+                MapSector* sector = SceneManager::CreateGameObject(sectorPrefab, tilemap->GetTransform())->GetComponent<MapSector>();
+                //MapSector* sector = GameObject::Instantiate(sectorPrefab, tilemap->GetTransform())->GetComponent<MapSector>();
                 sector->tilemap = tilemap;
                 sector->region = region;
 

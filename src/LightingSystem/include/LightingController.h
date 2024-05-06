@@ -7,6 +7,10 @@
 #include <graphic/Shader.h>
 #include <core/EventHandler.h>
 
+constexpr const unsigned int MAX_POINT_LIGHTS = 8;
+constexpr const unsigned int MAX_SPOT_LIGHTS = 8;
+constexpr const unsigned int MAX_DIRECTIONAL_LIGHTS = 4;
+
 namespace LightingSystem {
 	class LightingController {
 		private:
@@ -15,20 +19,22 @@ namespace LightingSystem {
 			LightingController();
 			~LightingController();
 
-			struct Lights {											//1104
+			struct Lights {											//1360
 				unsigned int numberOfPointLights = 0;				//0		4
 				unsigned int numberOfSpotLights = 0;				//4		4
 				unsigned int numberOfDirLights = 0;					//8		4
-				unsigned int padding;								//12	4 - padding
-				PointLight pointLights[8];							//16	48 * 8 = 384
-				SpotLight spotLights[8];							//400	64 * 8 = 512
-				DirectionalLight directionalLights[4];				//912	112. * 4 = 192
+				unsigned int padding = 0;								//12	4 - padding
+				PointLight pointLights[MAX_POINT_LIGHTS];							//16	48 * 8 = 384
+				SpotLight spotLights[MAX_SPOT_LIGHTS];							//400	64 * 8 = 512
+				DirectionalLight directionalLights[MAX_DIRECTIONAL_LIGHTS];				//912	112. * 4 = 448
 			};
 
 			struct LightingData {													//32
-				alignas(16) glm::vec3 AmbientLight = glm::vec3(0.0f, 0.0f, 0.0f);	//0		16
-				glm::vec3 ViewerPosition = glm::vec3(0.0f, 0.0f, 0.0f);				//16	12
-				float HighlightParam = 2.0f;										//28	4
+				glm::vec3 ambientLight;				//0		12
+				float shininness = 2.2;
+				glm::vec3 viewerPosition;
+				int shadingType = 0;			//12	12
+				// 0 - blinnPhong, 1 - toon							//24	4
 			};
 			//Lights lights;
 
@@ -37,11 +43,12 @@ namespace LightingSystem {
 			Twin2Engine::Core::EventHandler<> ViewerTransformChanged;
 			void UpdateOnTransformChange() {
 				ViewerTransformChanged.Invoke();
-				RenderShadowMaps();
+				//RenderShadowMaps();
 			}
 
 			static const int SHADOW_WIDTH;
 			static const int SHADOW_HEIGHT;
+			static const int MAPS_BEGINNING;
 
 			GLuint LightsBuffer;
 			GLuint LightingDataBuffer;
@@ -75,23 +82,13 @@ namespace LightingSystem {
 			void UpdateDL(DirectionalLight* dirLight);
 
 			void BindLightBuffors(Twin2Engine::GraphicEngine::Shader* shader);
-			void UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader* shader);
+			//void UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader* shader);
 
 			static glm::vec3 RecalculateDirLightSpaceMatrix(DirectionalLight* light); //, const glm::mat4& viewProjectionInverse
 			void RenderShadowMaps();
 
 			void SetAmbientLight(glm::vec3 ambientLightColor);
 			void SetViewerPosition(glm::vec3& viewerPosition);
-			void SetHighlightParam(float highlightParam);
-			//void SetGamma(float gamma);
-
-			/*/
-			void RegisterPointLight(PointLight* pointLight);
-			void RegisterSpotLight(SpotLight* spotLight);
-			void RegisterDirLight(DirectionalLight* dirLight);
-
-			void UnregisterPointLight(PointLight* pointLight);
-			void UnregisterSpotLight(SpotLight* spotLight);
-			void UnregisterDirLight(DirectionalLight* dirLight);/**/
+			void SetShadingType(int type);
 	};
 }

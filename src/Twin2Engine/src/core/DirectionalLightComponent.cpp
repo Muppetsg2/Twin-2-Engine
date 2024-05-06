@@ -21,7 +21,6 @@ void Twin2Engine::Core::DirectionalLightComponent::Initialize()
 
 	//light = new LightingSystem::DirectionalLight;
 	light->position = GetTransform()->GetGlobalPosition();
-	//LightingSystem::LightingController::Instance()->RecalculateDirLightSpaceMatrix(light);
 
 	glGenFramebuffers(1, &light->shadowMapFBO);
 	
@@ -34,46 +33,13 @@ void Twin2Engine::Core::DirectionalLightComponent::Initialize()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
-	//GLfloat borderColor[] = { 0.0, 0.0, 0.0, 0.0 };
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-
-	/*/int width, height, nrComponents;
-	unsigned char* data = stbi_load("res/textures/XShadowMap2.png", &width, &height, &nrComponents, 0);
-	if (data)
-	{
-		GLenum format;
-		if (nrComponents == 1)
-			format = GL_RED;
-		else if (nrComponents == 3)
-			format = GL_RGB;
-		else if (nrComponents == 4)
-			format = GL_RGBA;
-
-		glBindTexture(GL_TEXTURE_2D, light->shadowMap);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-		//glGenerateMipmap(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-
-		stbi_image_free(data);
-	}
-	else
-	{
-		std::cout << "Texture failed to load at path: " << "res/textures/XShadowMap.png" << std::endl;
-		stbi_image_free(data);
-	}/**/
-
 
 	glBindFramebuffer(GL_FRAMEBUFFER, light->shadowMapFBO);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, light->shadowMap, 0);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//LightingSystem::LightingController::Instance()->dirLights.insert(light);
-	//LightingSystem::LightingController::Instance()->UpdateDirLights();
 }
 
 void Twin2Engine::Core::DirectionalLightComponent::Update()
@@ -116,8 +82,6 @@ void Twin2Engine::Core::DirectionalLightComponent::OnDestroy()
 void Twin2Engine::Core::DirectionalLightComponent::SetDirection(glm::vec3 dir)
 {
 	light->direction = dir;
-	//light->direction = glm::vec3((GetTransform()->GetTransformMatrix() * glm::vec4(dir, 1.0f)));
-	//localDirection = dir;
 	dirtyFlag = true;
 }
 

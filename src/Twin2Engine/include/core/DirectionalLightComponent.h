@@ -14,7 +14,7 @@ namespace Twin2Engine {
 				LightingSystem::DirectionalLight* light = new LightingSystem::DirectionalLight;
 				Twin2Engine::Core::Action<Transform*> OnChangePosition;
 				size_t OnChangePositionId;
-				Twin2Engine::Core::Action<> OnViewerChange;
+				Twin2Engine::Core::Method OnViewerChange;
 				size_t OnViewerChangeId;
 			//protected:
 			public:

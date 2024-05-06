@@ -23,6 +23,7 @@ namespace Twin2Engine::Core {
 		std::vector<std::string> _materials;
 		std::vector<std::string> _models;
 		std::vector<std::string> _prefabs;
+		std::vector<std::string> _scriptableObjects;
 	public:
 		Scene() = default;
 		virtual ~Scene() = default;
@@ -39,6 +40,7 @@ namespace Twin2Engine::Core {
 		void AddModel(const std::string& path);
 		void AddMaterial(const std::string& path);
 		void AddPrefab(const std::string& path);
+		void AddScriptableObject(const std::string& path);
 
 		friend class Manager::SceneManager;
 	};

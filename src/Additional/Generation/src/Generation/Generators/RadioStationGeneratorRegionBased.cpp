@@ -11,6 +11,20 @@ using namespace Twin2Engine::Manager;
 using namespace std;
 using namespace glm;
 
+SCRIPTABLE_OBJECT_SOURCE_CODE(RadioStationGeneratorRegionBased, Generation::Generators, "RadioStationGeneratorRegionBased")
+
+SO_SERIALIZATION_BEGIN(RadioStationGeneratorRegionBased, AMapElementGenerator)
+SO_SERIALIZE_FIELD_F(prefabRadioStation, PrefabManager::GetPrefabPath)
+SO_SERIALIZE_FIELD(densityFactorPerRegion)
+SO_SERIALIZATION_END()
+
+SO_DESERIALIZATION_BEGIN(RadioStationGeneratorRegionBased, AMapElementGenerator)
+SO_DESERIALIZE_FIELD_F_T(prefabRadioStation, PrefabManager::LoadPrefab, string)
+SO_DESERIALIZE_FIELD(densityFactorPerRegion)
+SO_DESERIALIZATION_END()
+
+
+
 void RadioStationGeneratorRegionBased::Generate(Tilemap::HexagonalTilemap* tilemap)
 {
     std::vector<MapRegion*> regions;
@@ -63,7 +77,8 @@ void RadioStationGeneratorRegionBased::Generate(Tilemap::HexagonalTilemap* tilem
                 size_t randomIndex = Random::Range(0ull, foundOnes.size() - 1);
                 GameObject* tile = foundOnes[randomIndex];
                 tile->GetComponent<MapHexTile>()->type = MapHexTile::HexTileType::RadioStation;
-                GameObject* instantiated = GameObject::Instantiate(prefabRadioStation, tile->GetTransform());
+                GameObject* instantiated = SceneManager::CreateGameObject(prefabRadioStation, tile->GetTransform());
+                //GameObject* instantiated = GameObject::Instantiate(prefabRadioStation, tile->GetTransform());
             }
         }
     }

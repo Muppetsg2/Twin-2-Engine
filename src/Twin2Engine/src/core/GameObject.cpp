@@ -15,6 +15,9 @@ GameObject::GameObject(size_t id) {
 		auto found = find_if(_freedIds.begin(), _freedIds.end(), [&](size_t fId) -> bool { return fId == _id; });
 		if (found != _freedIds.end()) {
 			_freedIds.erase(found);
+
+
+
 		}
 	}
 	if (_currentFreeId <= id) {
@@ -166,9 +169,14 @@ bool GameObject::GetActive() const
 
 void GameObject::SetActive(bool active)
 {
-	_activeSelf = active;
+	if (_activeSelf != active)
+	{
+		_activeSelf = active;
 
-	SetActiveInHierarchy(active);
+		SetActiveInHierarchy(active);
+
+		OnActiveChanged.Invoke(this); // Wywo³ywanie eventu
+	}
 }
 
 void GameObject::SetActiveInHierarchy(bool activeInHierarchy)
@@ -183,6 +191,7 @@ void GameObject::SetActiveInHierarchy(bool activeInHierarchy)
 				_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(activeInHierarchy);
 			}
 		}
+		OnActiveChanged.Invoke(this); // Wywo³ywanie eventu
 	}
 }
 
@@ -193,7 +202,11 @@ bool GameObject::GetIsStatic() const
 
 void GameObject::SetIsStatic(bool isStatic)
 {
-	_isStatic = isStatic;
+	if (_isStatic != isStatic)
+	{
+		_isStatic = isStatic;
+		OnStaticChanged.Invoke(this);
+	}
 }
 
 Transform* GameObject::GetTransform() const
@@ -282,6 +295,8 @@ YAML::Node GameObject::Serialize() const
 void GameObject::AddComponent(Component* comp)
 {
 	components.push_back(comp);
+	comp->Init(this);
+	comp->Initialize();
 }
 
 void GameObject::RemoveComponent(Component* component)

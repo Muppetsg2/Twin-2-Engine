@@ -195,10 +195,12 @@ glm::ivec2 HexagonalTilemap::GetRightTopPosition() const
 }
 
 
-void HexagonalTilemap::SetTile(const glm::ivec2& position, Twin2Engine::Core::GameObject* gameObject)
+//void HexagonalTilemap::SetTile(const glm::ivec2& position, Twin2Engine::Core::GameObject* gameObject)
+void HexagonalTilemap::SetTile(const glm::ivec2& position, Twin2Engine::Core::Prefab* prefab)
 {
 
-	Twin2Engine::Core::GameObject* instantiatedGameObject = Twin2Engine::Core::GameObject::Instantiate(gameObject);
+	//Twin2Engine::Core::GameObject* instantiatedGameObject = Twin2Engine::Core::GameObject::Instantiate(prefab);
+	Twin2Engine::Core::GameObject* instantiatedGameObject = Twin2Engine::Manager::SceneManager::CreateGameObject(prefab, this->GetGameObject()->GetTransform());
 
 	if (position.x >= _leftBottomPosition.x && position.x <= _rightTopPosition.x && position.y >= _leftBottomPosition.y && position.y <= _rightTopPosition.y)
 	{
@@ -270,7 +272,7 @@ void HexagonalTilemap::RemoveTile(const glm::ivec2& position)
 
 }
 
-void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::GameObject* gameObject)
+void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::Prefab* prefab)
 {
 	
 
@@ -317,7 +319,8 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::GameO
 		if (currentTile && !currentTile->GetGameObject())
 		{
 			// Kopiowanie gameobjectu
-			instantiatedGameObject = Twin2Engine::Core::GameObject::Instantiate(gameObject, this->GetGameObject()->GetTransform());
+			//instantiatedGameObject = Twin2Engine::Core::GameObject::Instantiate(prefab, this->GetGameObject()->GetTransform());
+			instantiatedGameObject = Twin2Engine::Manager::SceneManager::CreateGameObject(prefab, this->GetGameObject()->GetTransform());
 
 			currentTile->SetGameObject(instantiatedGameObject);
 			//instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3((currentPos.x * _distanceBetweenTiles + (abs(currentPos.y) % 2) * 0.5f * _distanceBetweenTiles) * 1.5f, 0.0f, currentPos.y * _distanceBetweenTiles * 0.25f * SQRT_3));
@@ -379,9 +382,10 @@ glm::vec2 HexagonalTilemap::ConvertToTilemapPosition(const glm::ivec2& position)
 YAML::Node HexagonalTilemap::Serialize() const
 {
 	YAML::Node node = Twin2Engine::Core::Component::Serialize();
-	node.remove("type");
+	node["type"] = "HexagonalTilemap";
+	//node.remove("type");
 	node.remove("subTypes");
-	node["generationRadiusMin"] = _leftBottomPosition;
-	node["generationRadiusMax"] = _rightTopPosition;
+	node["leftBottomPosition"] = _leftBottomPosition;
+	node["rightTopPosition"] = _rightTopPosition;
 	return node;
 }

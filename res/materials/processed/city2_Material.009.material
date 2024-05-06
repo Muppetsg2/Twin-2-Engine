@@ -1,0 +1,50 @@
+material:
+  name: Material.009
+  shader: origin/Standard
+  parameters:
+    - name: ambientColor
+      type: vec4
+      value:
+        - 1
+        - 1
+        - 1
+        - 1
+    - name: diffuseColor
+      type: vec4
+      value:
+        - 0.600000024
+        - 0.600000024
+        - 0.600000024
+        - 1
+    - name: specularColor
+      type: vec4
+      value:
+        - 0.5
+        - 0.5
+        - 0.5
+        - 1
+    - name: emissiveColor
+      type: vec4
+      value:
+        - 0
+        - 0
+        - 0
+        - 1
+    - name: shininess
+      type: float
+      value: 250
+    - name: ambientTexturesCount
+      type: uint
+      value: 0
+    - name: diffuseTexturesCount
+      type: uint
+      value: 1
+    - name: diffuse0
+      type: texture2D
+      value: C:/Users/matga/AppData/Local/Temp/ec2bff10-9433-4b2d-b969-e3e9c6844589_city.zip.589/cityTextureColour.png
+    - name: specularTexturesCount
+      type: uint
+      value: 0
+    - name: normalsTexturesCount
+      type: uint
+      value: 0

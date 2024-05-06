@@ -14,8 +14,11 @@ namespace Generation::Generators
 {
 	class RegionsBySectorsGenerator : public AMapElementGenerator
     {
+        SCRIPTABLE_OBJECT_BODY(RegionsBySectorsGenerator)
+
     public:
-        Twin2Engine::Core::GameObject* regionPrefab = nullptr;
+        //Twin2Engine::Core::GameObject* regionPrefab = nullptr;
+        Twin2Engine::Core::Prefab* regionPrefab = nullptr;
         bool mergeByNumberTilesPerRegion = false;
         int minTilesPerRegion = 10;
         int maxTilesPerRegion = 20;
@@ -29,7 +32,12 @@ namespace Generation::Generators
         //RegionsBySectorsGenerator() = default;
         //virtual ~RegionsBySectorsGenerator() { }
         virtual void Generate(Tilemap::HexagonalTilemap* tilemap) override;
+
+        SO_SERIALIZE()
+        SO_DESERIALIZE()
     };
 }
+
+SERIALIZABLE_SCRIPTABLE_OBJECT(RegionsBySectorsGenerator, Generation::Generators)
 
 #endif // !_REGIONS_BY_SECTORS_GENERATOR_H_

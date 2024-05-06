@@ -3,6 +3,7 @@
 using namespace Generation;
 using namespace Tilemap;
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Manager;
 using namespace std;
 using namespace glm;
 
@@ -257,8 +258,16 @@ void MapGenerator::Generate()
 YAML::Node MapGenerator::Serialize() const
 {
     YAML::Node node = Twin2Engine::Core::Component::Serialize();
-    node.remove("type");
-    node.remove("subTypes");
-    //node["generationRadiusMin"] = generationRadiusMin;
+    node["type"] = "MapGenerator";
+    //node.remove("subTypes");
+    node["preafabHexagonalTile"] = PrefabManager::GetPrefabPath(preafabHexagonalTile);
+    node["additionalTile"] = PrefabManager::GetPrefabPath(additionalTile);
+    node["filledTile"] = PrefabManager::GetPrefabPath(filledTile);
+    node["pointTile"] = PrefabManager::GetPrefabPath(pointTile);
+    node["generationRadiusMin"] = generationRadiusMin;
+    node["generationRadiusMax"] = generationRadiusMax;
+    node["minPointsNumber"] = minPointsNumber;
+    node["maxPointsNumber"] = maxPointsNumber;
+    node["angleDeltaRange"] = angleDeltaRange;
     return node;
 }

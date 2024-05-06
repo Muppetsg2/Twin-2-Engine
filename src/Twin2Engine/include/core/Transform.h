@@ -103,7 +103,7 @@ namespace Twin2Engine
 			inline void CallChildrenChanged();
 
 		public:
-			// EVENTS
+#pragma region EVENTS
 			EventHandler<Transform*> OnEventTransformChanged;
 			EventHandler<Transform*> OnEventPositionChanged;
 			EventHandler<Transform*> OnEventRotationChanged;
@@ -111,6 +111,7 @@ namespace Twin2Engine
 			EventHandler<Transform*> OnEventParentChanged;
 			EventHandler<Transform*> OnEventInHierarchyParentChanged;
 			EventHandler<Transform*> OnEventChildrenChanged;
+#pragma endregion
 
 			Transform();
 

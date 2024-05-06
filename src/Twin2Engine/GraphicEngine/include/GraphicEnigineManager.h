@@ -28,6 +28,7 @@ namespace Twin2Engine::GraphicEngine
 		static void End();
 
 
+		static void UpdateBeforeRendering();
 		static void Render();
 		static void DepthRender();
 

@@ -11,8 +11,8 @@ namespace Twin2Engine::Tools {
 		template<class T, size_t C, size_t R> static constexpr bool mat_check_v = vec_check_v<T, C> && is_num_in_range_v<R, 1, 4>;
 
 		template<class T, class Ret = void> using scalar_enable_if_t = std::enable_if_t<scalar_check_v<T>, Ret>;
-		template<class T, size_t L, class Ret = void> using vec_enable_if_t = std::enable_if_t<vec_check_v<T, L>, Ret>;
-		template<class T, size_t C, size_t R, class Ret = void> using mat_enable_if_t = std::enable_if_t<mat_check_v<T, C, R>, Ret>;
+		template<class V, class T, size_t L, class Ret = void> using vec_enable_if_t = std::enable_if_t<std::is_same_v<V, glm::vec<L, T>> && vec_check_v<T, L>, Ret>;
+		template<class M, class T, size_t C, size_t R, class Ret = void> using mat_enable_if_t = std::enable_if_t<std::is_same_v<M, glm::mat<C, R, T>> && mat_check_v<T, C, R>, Ret>;
 
 #pragma endregion
 
@@ -74,7 +74,7 @@ namespace Twin2Engine::Tools {
 
 #pragma region ADD_VEC
 		template<class V, class T = V::value_type, size_t L = V::length()>
-		typename vec_enable_if_t<T, L, size_t>
+		typename vec_enable_if_t<V, T, L, size_t>
 		Add(const std::string& name) {
 			if (CheckVariable(name)) return 0;
 
@@ -91,7 +91,7 @@ namespace Twin2Engine::Tools {
 
 #pragma region ADD_VEC_ARRAY
 		template<class V, class T = V::value_type, size_t L = V::length()>
-		typename vec_enable_if_t<T, L, std::vector<size_t>>
+		typename vec_enable_if_t<V, T, L, std::vector<size_t>>
 		Add(const std::string& name, size_t size) {
 			if (CheckVariable(name) || size == 0) return std::vector<size_t>();
 
@@ -109,8 +109,8 @@ namespace Twin2Engine::Tools {
 #pragma endregion
 
 #pragma region ADD_MAT
-		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::column_type::length()>
-		typename mat_enable_if_t<T, C, R, size_t>
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
+		typename mat_enable_if_t<M, T, C, R, size_t>
 		Add(const std::string& name) {
 			if (CheckVariable(name)) return 0;
 
@@ -118,8 +118,8 @@ namespace Twin2Engine::Tools {
 		}
 
 #pragma region ADD_MAT_ARRAY
-		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::column_type::length()>
-		typename mat_enable_if_t<T, C, R, std::vector<size_t>>
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
+		typename mat_enable_if_t<M, T, C, R, std::vector<size_t>>
 		Add(const std::string& name, size_t size) {
 			if (CheckVariable(name) || size == 0) return std::vector<size_t>();
 

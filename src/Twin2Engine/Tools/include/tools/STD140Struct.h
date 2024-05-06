@@ -11,13 +11,13 @@ namespace Twin2Engine::Tools {
 		static constexpr bool type_check_v = is_type_in_v<T, bool, int, unsigned int, float, double>;
 
 		template<class V, class T, size_t L>
-		static constexpr bool vec_check_v = std::is_same_v<V, glm::vec<L, T>> && type_check_v<T> && is_num_in_range_v<L, 1, 4>;
+		static constexpr bool vec_check_v = (std::is_same_v<V, glm::vec<L, T>> && type_check_v<T> && is_num_in_range_v<L, 1, 4>);
 
 		template<class M, class T, size_t C, size_t R>
-		static constexpr bool mat_check_v = std::is_same_v<M, glm::mat<C, R, T>> && type_check_v<T> && is_num_in_range_v<C, 1, 4> && is_num_in_range_v<R, 1, 4>;
+		static constexpr bool mat_check_v = (std::is_same_v<M, glm::mat<C, R, T>> && type_check_v<T> && is_num_in_range_v<C, 1, 4> && is_num_in_range_v<R, 1, 4>);
 
 		template<class V, class T> static constexpr bool is_vector_of_v = std::is_same_v<V, std::vector<T>>;
-		template<class V, class T, bool Test> static constexpr bool get_vector_check_v = is_vector_of_v<V, T> && Test;
+		template<class V, class T, bool Test> static constexpr bool get_vector_check_v = (is_vector_of_v<V, T> && Test);
 
 		template<class T, class Ret = void> using scalar_enable_if_t = std::enable_if_t<type_check_v<T>, Ret>;
 		template<class V, class T, size_t L, class Ret = void> using vec_enable_if_t = std::enable_if_t<vec_check_v<V, T, L>, Ret>;
@@ -81,7 +81,8 @@ namespace Twin2Engine::Tools {
 				memcpy(_data.data() + valuesOffsets[i], valueData.data(), valueData.size());
 			}
 		}
-		template<class M> void _AddMat(const std::string& name, const M& value) {
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
+		void _AddMat(const std::string& name, const M& value) {
 			// ADD TO OFFSETS AND CHECK ERROR
 			if (_dataOffsets.Add<M>(name) == 0 && _data.size() != 0) {
 				SPDLOG_ERROR("Variable '{0}' already added to structure", name);
@@ -92,10 +93,10 @@ namespace Twin2Engine::Tools {
 			_data.resize(_dataOffsets.GetSize());
 
 			// GET ROWS OFFSETS
-			std::vector<size_t> rowsOffsets = _dataOffsets.GetArray<glm::vec<M::column_type::length(), M::value_type>>(name);
+			std::vector<size_t> rowsOffsets = _dataOffsets.GetArray(name);
 
 			// SET ROWS DATA
-			for (size_t i = 0; i < M::row_type::length() && i < rowsOffsets.size(); ++i) {
+			for (size_t i = 0; i < C && i < rowsOffsets.size(); ++i) {
 				// GET VALUE DATA
 				std::vector<char> valueData = _GetValueData(value[i]);
 
@@ -103,7 +104,8 @@ namespace Twin2Engine::Tools {
 				memcpy(_data.data() + rowsOffsets[i], valueData.data(), valueData.size());
 			}
 		}
-		template<class M> void _AddMatArray(const std::string& name, const std::vector<M>& values) {
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
+		void _AddMatArray(const std::string& name, const std::vector<M>& values) {
 			// ADD TO OFFSETS
 			std::vector<size_t> valuesOffsets = _dataOffsets.Add<M>(name, values.size());
 			
@@ -119,10 +121,10 @@ namespace Twin2Engine::Tools {
 			// SET VALUES DATA
 			for (size_t i = 0; i < valuesOffsets.size() && i < values.size(); ++i) {
 				// GET ROWS OFFSETS
-				std::vector<size_t> rowsOffsets = _dataOffsets.GetArray<glm::vec<M::column_type::length(), M::value_type>>(name + "[" + std::to_string(i) + "]");
+				std::vector<size_t> rowsOffsets = _dataOffsets.GetArray<glm::vec<R, T>>(name + "[" + std::to_string(i) + "]");
 
 				// SET ROWS DATA
-				for (size_t r = 0; r < M::row_type::length() && r < rowsOffsets.size(); ++r) {
+				for (size_t r = 0; r < C && r < rowsOffsets.size(); ++r) {
 					// GET VALUE DATA
 					std::vector<char> valueData = _GetValueData(values[i][r]);
 
@@ -200,7 +202,8 @@ namespace Twin2Engine::Tools {
 			}
 			return true;
 		}
-		template<class M> bool _SetMat(const std::string& name, const M& value) {
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
+		bool _SetMat(const std::string& name, const M& value) {
 			// CHECK VARIABLE
 			if (!_dataOffsets.Contains(name)) {
 				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
@@ -208,7 +211,7 @@ namespace Twin2Engine::Tools {
 			}
 
 			// GET ROWS OFFSETS
-			std::vector<size_t> rowsOffsets = _dataOffsets.GetArray<glm::vec<M::column_type::length(), M::value_type>>(name);
+			std::vector<size_t> rowsOffsets = _dataOffsets.GetArray(name);
 
 			// CHECK ROWS ARRAY ELEMENTS OFFSETS
 			if (rowsOffsets.size() == 0) {
@@ -220,7 +223,7 @@ namespace Twin2Engine::Tools {
 			size_t rowsArrayElemSize = _GetArrayElemSize(rowsOffsets);
 
 			// SET ROWS DATA
-			for (size_t i = 0; i < M::row_type::length() && i < rowsOffsets.size(); ++i) {
+			for (size_t i = 0; i < C && i < rowsOffsets.size(); ++i) {
 				// GET VALUE DATA
 				std::vector<char> valueData = _GetValueData(value[i]);
 
@@ -232,7 +235,8 @@ namespace Twin2Engine::Tools {
 			}
 			return true;
 		}
-		template<class M> bool _SetMatArray(const std::string& name, const std::vector<M>& values) {
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
+		bool _SetMatArray(const std::string& name, const std::vector<M>& values) {
 			// CHECK VARIABLE
 			if (!_dataOffsets.Contains(name)) {
 				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
@@ -254,7 +258,7 @@ namespace Twin2Engine::Tools {
 			// SET VALUES DATA
 			for (size_t i = 0; i < valuesOffsets.size() && i < values.size(); ++i) {
 				// GET ROWS OFFSETS
-				std::vector<size_t> rowsOffsets = _dataOffsets.GetArray<glm::vec<M::column_type::length(), M::value_type>>(name + "[" + std::to_string(i) + "]");
+				std::vector<size_t> rowsOffsets = _dataOffsets.GetArray(name + "[" + std::to_string(i) + "]");
 
 				// CHECK ROWS ARRAY ELEMENTS OFFSETS
 				if (rowsOffsets.size() == 0) {
@@ -269,7 +273,7 @@ namespace Twin2Engine::Tools {
 				size_t matrixDataSize = std::min(arrayElemDataSize, _data.size() - valuesOffsets[i]);
 
 				// SET ROWS DATA
-				for (size_t r = 0; r < M::row_type::length() && r < rowsOffsets.size(); ++r) {
+				for (size_t r = 0; r < C && r < rowsOffsets.size(); ++r) {
 					// GET VALUE DATA
 					std::vector<char> valueData = _GetValueData(values[i][r]);
 
@@ -536,38 +540,35 @@ namespace Twin2Engine::Tools {
 #pragma endregion
 
 #pragma region ADD_VEC
-		template<class V>
-		typename vec_enable_if_t<V, typename V::value_type, V::length()>
+		template<class V, class T = V::value_type, size_t L = V::length()>
+		typename vec_enable_if_t<V, T, L>
 		Add(const std::string& name, const V& value) {
-			using T = V::value_type;
-			using type = glm::vec<V::length(), type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			_Add(name, (type)value);
 		}
 
 #pragma region ADD_VEC_ARRAYS
-		template<class V>
-		typename vec_enable_if_t<V, typename V::value_type, V::length()>
+		template<class V, class T = V::value_type, size_t L = V::length()>
+		typename vec_enable_if_t<V, T, L>
 		Add(const std::string& name, const V*& values, size_t size) {
-			using T = V::value_type;
-			using type = glm::vec<V::lenght(), type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			_AddArray<V, type>(name, values, size, 
 				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
 		}
 
-		template<class V, size_t N>
-		typename vec_enable_if_t<V, typename V::value_type, V::length()>
+		template<class V, class T = V::value_type, size_t L = V::length(), size_t N>
+		typename vec_enable_if_t<V, T, L>
 		Add(const std::string& name, const V(&values)[N]) {
-			using T = V::value_type;
-			using type = glm::vec<V::length(), type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			_AddArray<V, type>(name, values, N, 
 				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
 		}
 
-		template<class V>
-		typename vec_enable_if_t<V, typename V::value_type, V::length()>
+		template<class V, class T = V::value_type, size_t L = V::length()>
+		typename vec_enable_if_t<V, T, L>
 		Add(const std::string& name, const std::vector<V>& values) {
-			if constexpr (std::is_same_v<V::value_type, bool>) {
-				using type = glm::vec<V::length(), unsigned int>;
+			if constexpr (std::is_same_v<T, bool>) {
+				using type = glm::vec<L, unsigned int>;
 				_AddArray<V, type>(name, values, values.size(), 
 					[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
 			}
@@ -579,38 +580,35 @@ namespace Twin2Engine::Tools {
 #pragma endregion
 
 #pragma region ADD_MAT
-		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::column_type::length()>
-		typename mat_enable_if_t<M, typename M::value_type, M::row_type::length(), M::column_type::length()>
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
+		typename mat_enable_if_t<M, T, C, R>
 		Add(const std::string& name, const M& value) {
-			using T = M::value_type;
-			using type = glm::mat<M::row_type::length(), M::column_type::length(), type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			_AddMat(name, (type)value);
 		}
 
 #pragma region ADD_MAT_ARRAYS
-		template<class M>
-		typename mat_enable_if_t<M, typename M::value_type, M::row_type::length(), M::column_type::length()>
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
+		typename mat_enable_if_t<M, T, C, R>
 		Add(const std::string& name, const M*& values, size_t size) {
-			using T = M::value_type;
-			using type = glm::mat<M::row_type::length(), M::column_type::length(), type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			_AddArray<M, type>(name, values, size, 
 				[&](const std::string& name, const std::vector<type>& values) -> void { _AddMatArray(name, values); });
 		}
 
-		template<class M, size_t N>
-		typename mat_enable_if_t<M, typename M::value_type, M::row_type::length(), M::column_type::length()>
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length(), size_t N>
+		typename mat_enable_if_t<M, T, C, R>
 		Add(const std::string& name, const M(&values)[N]) {
-			using T = M::value_type;
-			using type = glm::mat<M::row_type::length(), M::column_type::length(), type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			_AddArray<M, type>(name, values, N, 
 				[&](const std::string& name, const std::vector<type>& values) -> void { _AddMatArray(name, values); });
 		}
 
-		template<class M>
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, typename M::value_type, M::row_type::length(), M::column_type::length()>
 		Add(const std::string& name, const std::vector<M>& values) {
-			if constexpr (std::is_same_v<M::value_type, bool>) {
-				using type = glm::mat<M::row_type::length(), M::column_type::length(), unsigned int>;
+			if constexpr (std::is_same_v<T, bool>) {
+				using type = glm::mat<C, R, unsigned int>;
 				_AddArray<M, type>(name, values, values.size(), 
 					[&](const std::string& name, const std::vector<type>& values) -> void { _AddMatArray(name, values); });
 			}
@@ -679,38 +677,35 @@ namespace Twin2Engine::Tools {
 #pragma endregion
 
 #pragma region SET_VEC
-		template<class V>
-		typename vec_enable_if_t<V, typename V::value_type, V::length(), bool>
+		template<class V, class T = V::value_type, size_t L = V::length()>
+		typename vec_enable_if_t<V, T, L, bool>
 		Set(const std::string& name, const V& value) {
-			using T = V::value_type;
-			using type = glm::vec<V::length(), type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			return _Set(name, (type)value);
 		}
 
 #pragma region SET_VEC_ARRAYS
-		template<class V>
-		typename vec_enable_if_t<V, typename V::value_type, V::length(), bool>
+		template<class V, class T = V::value_type, size_t L = V::length()>
+		typename vec_enable_if_t<V, T, L, bool>
 		Set(const std::string& name, const V*& values, size_t size) {
-			using T = V::value_type;
-			using type = glm::vec<V::length(), type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			return _SetArray<V, type>(name, values, size, 
 				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
 		}
 
-		template<class V, size_t N>
-		typename vec_enable_if_t<V, typename V::value_type, V::length(), bool>
+		template<class V, class T = V::value_type, size_t L = V::length(), size_t N>
+		typename vec_enable_if_t<V, T, L, bool>
 		Set(const std::string& name, const V(&values)[N]) {
-			using T = V::value_type;
-			using type = glm::vec<V::length(), type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			return _SetArray<V, type>(name, values, N, 
 				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
 		}
 
-		template<class V>
-		typename vec_enable_if_t<V, typename V::value_type, V::length(), bool>
+		template<class V, class T = V::value_type, size_t L = V::length()>
+		typename vec_enable_if_t<V, T, L, bool>
 		Set(const std::string& name, const std::vector<V>& values) {
-			if constexpr (std::is_same_v<V::value_type, bool>) {
-				using type = glm::vec<V::length(), unsigned int>;
+			if constexpr (std::is_same_v<T, bool>) {
+				using type = glm::vec<L, unsigned int>;
 				return _SetArray<V, type>(name, values, values.size(),
 					[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
 			}
@@ -722,38 +717,35 @@ namespace Twin2Engine::Tools {
 #pragma endregion
 
 #pragma region SET_MAT
-		template<class M>
-		typename mat_enable_if_t<M, typename M::value_type, M::row_type::length(), M::column_type::length(), bool>
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
+		typename mat_enable_if_t<M, T, C, R, bool>
 		Set(const std::string& name, const M& value) {
-			using T = M::value_type;
-			using type = glm::mat<M::row_type::length(), M::column_type::length(), type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			return _SetMat(name, (type)value);
 		}
 
 #pragma region SET_MAT_ARRAYS
-		template<class M>
-		typename mat_enable_if_t<M, typename M::value_type, M::row_type::length(), M::column_type::length(), bool>
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
+		typename mat_enable_if_t<M, T, C, R, bool>
 		Set(const std::string& name, const M*& values, size_t size) {
-			using T = M::value_type;
-			using type = glm::mat<M::row_type::length(), M::column_type::length(), type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			return _SetArray<M, type>(name, values, size, 
 				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetMatArray(name, values); });
 		}
 
-		template<class M, size_t N>
-		typename mat_enable_if_t<M, typename M::value_type, M::row_type::length(), M::column_type::length(), bool>
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length(), size_t N>
+		typename mat_enable_if_t<M, T, C, R, bool>
 		Set(const std::string& name, const M(&values)[N]) {
-			using T = M::value_type;
-			using type = glm::mat<M::row_type::length(), M::column_type::length(), type_test_t<std::is_same<T, bool>, unsigned int, T>>;
+			using type = glm::mat<C, R, type_test_t<std::is_same<T, bool>, unsigned int, T>>;
 			return _SetArray<M, type>(name, values, N, 
 				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetMatArray(name, values); });
 		}
 
-		template<class M>
-		typename mat_enable_if_t<M, typename M::value_type, M::row_type::length(), M::column_type::length(), bool>
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
+		typename mat_enable_if_t<M, T, C, R, bool>
 		Set(const std::string& name, const std::vector<M>& values) {
-			if constexpr (std::is_same_v<M::value_type, bool>) {
-				using type = glm::mat<M::row_type::length(), M::column_type::length(), unsigned int>;
+			if constexpr (std::is_same_v<T, bool>) {
+				using type = glm::mat<C, R, unsigned int>;
 				return _SetArray<M, type>(name, values, values.size(),
 					[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
 			}
@@ -818,21 +810,20 @@ namespace Twin2Engine::Tools {
 #pragma endregion
 
 #pragma region GET_VEC
-		template<class V>
-		typename vec_enable_if_t<V, typename V::value_type, V::length(), V>
+		template<class V, class T = V::value_type, size_t L = V::length()>
+		typename vec_enable_if_t<V, T, L, V>
 		Get(const std::string& name) const {
-			using T = V::value_type;
-			using type = glm::vec<V::length(), type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			return (V)_Get<type>(name);
 		}
 
 #pragma region GET_VEC_ARRAYS
-		template<class V>
-		typename vec_enable_if_t<V, typename V::value_type, V::length()>
+		template<class V, class T = V::value_type, size_t L = V::length()>
+		typename vec_enable_if_t<V, T, L>
 		Get(const std::string& name, V*& valuesDest, size_t size) const {
 			std::vector<V> values;
-			if constexpr (std::is_same_v<V::value_type, bool>) {
-				using type = glm::vec<V::length(), unsigned int>;
+			if constexpr (std::is_same_v<T, bool>) {
+				using type = glm::vec<L, unsigned int>;
 				values = _GetArray<type, V>(name, [&](const std::string& name) -> std::vector<type> {
 						return _GetArray<type>(name); 
 					});
@@ -843,11 +834,11 @@ namespace Twin2Engine::Tools {
 			memcpy(valuesDest, values.data(), std::min(values.size(), size));
 		}
 
-		template<class Vec, class V = Vec::value_type>
-		typename get_vector_enable_if_t<Vec, V, vec_check_v<V, typename V::value_type, V::length()>, Vec>
+		template<class Vec, class V = Vec::value_type, class T = V::value_type, size_t L = V::length()>
+		typename get_vector_enable_if_t<Vec, V, vec_check_v<V, T, L>, Vec>
 		Get(const std::string& name) const {
-			if constexpr (std::is_same_v<V::value_type, bool>) {
-				using type = glm::vec<V::length(), unsigned int>;
+			if constexpr (std::is_same_v<T, bool>) {
+				using type = glm::vec<L, unsigned int>;
 				return _GetArray<type, V>(name, [&](const std::string& name) -> std::vector<type> {
 						return _GetArray<type>(name); 
 					});
@@ -860,21 +851,20 @@ namespace Twin2Engine::Tools {
 #pragma endregion
 
 #pragma region GET_MAT
-		template<class M>
-		typename mat_enable_if_t<M, typename M::value_type, M::row_type::length(), M::column_type::length(), M>
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
+		typename mat_enable_if_t<M, T, C, R, M>
 		Get(const std::string& name) const {
-			using T = M::value_type;
-			using type = glm::mat<M::row_type::length(), M::column_type::length(), type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			return (M)_GetMat<type>(name);
 		}
 
 #pragma region GET_MAT_ARRAYS
-		template<class M>
-		typename mat_enable_if_t<M, typename M::value_type, M::row_type::length(), M::column_type::length()>
+		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
+		typename mat_enable_if_t<M, T, C, R>
 		Get(const std::string& name, M*& valuesDest, size_t size) const {
 			std::vector<M> values;
-			if constexpr (std::is_same_v<M::value_type, bool>) {
-				using type = glm::mat<M::row_type::length(), M::column_type::length(), unsigned int>;
+			if constexpr (std::is_same_v<T, bool>) {
+				using type = glm::mat<C, R, unsigned int>;
 				values = _GetArray<type, M>(name, [&](const std::string& name) -> std::vector<type> {
 						return _GetMatArray<type>(name); 
 					});
@@ -885,11 +875,11 @@ namespace Twin2Engine::Tools {
 			memcpy(valuesDest, values.data(), std::min(values.size(), size));
 		}
 
-		template<class V, class M = V::value_type>
-		typename get_vector_enable_if_t<V, M, mat_check_v<M, typename M::value_type, M::row_type::length(), M::column_type::length()>, V>
+		template<class Vec, class M = Vec::value_type, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
+		typename get_vector_enable_if_t<Vec, M, mat_check_v<M, T, C, R>, Vec>
 		Get(const std::string& name) const {
-			if constexpr (std::is_same_v<M::value_type, bool>) {
-				using type = glm::mat<M::row_type::length(), M::column_type::length(), unsigned int>;
+			if constexpr (std::is_same_v<T, bool>) {
+				using type = glm::mat<C, R, unsigned int>;
 				return _GetArray<type, M>(name, [&](const std::string& name) -> std::vector<type> {
 						return _GetMatArray<type>(name); 
 					});

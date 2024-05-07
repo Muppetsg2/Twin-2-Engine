@@ -14,6 +14,7 @@
 
 #if _DEBUG
 	#define IMGUI_IMPL_OPENGL_LOADER_GLAD
+	#include <imgui_impl/imgui_user.h>
 	#include <imgui.h>
 	#include <imgui_impl/imgui_impl_glfw.h>
 	#include <imgui_impl/imgui_impl_opengl3.h>

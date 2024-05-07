@@ -962,28 +962,34 @@ void imgui_render()
                 a->SetVolume(vol);
             }
             
-            double pos = a->GetPlayPosition();
+            float pos = (float)a->GetPlayPosition();
 
-            /*
-            if (!loop) {
-                if (ImGui::SliderFloat("Position Slider", (float*)&pos, 0.f, a->GetAudioLength())) {
-					a->SetPlayPosition(pos);
-				}
+            ImGui::ProgressBar(pos / (float)a->GetAudioLength(), ImVec2(0.0f, 0.0f), std::vformat(string_view("{:02.0f}:{:02.0f}"), 
+                                                                                                    make_format_args(
+                                                                                                        std::floor(pos / 60),
+                                                                                                        mod(pos, 60)
+                                                                                                    )).c_str());
+
+            if (ImGui::SliderFloatv2("Position Slider", &pos, 0.f, (float)a->GetAudioLength(), std::vformat(string_view("{:02.0f}:{:02.0f}"),
+                make_format_args(
+                    std::floor(pos / 60),
+                    mod(pos, 60)
+                )).c_str())) {
+                a->SetPlayPosition(pos);
             }
-            */
 
             ImGui::Text("Position: %02.0f:%02.0f / %02.0f:%02.0f", std::floor(pos / 60), mod(pos, 60), std::floor(a->GetAudioLength() / 60), mod(a->GetAudioLength(), 60));
             ImGui::Text("Play Time: %02.0f:%02.0f", std::floor(a->GetPlayTime() / 60), mod(a->GetPlayTime(), 60));
 
-            if (ImGui::Button("Play Song")) {
+            if (ImGui::ArrowButton("Play Song", ImGuiDir_Right)) {
                 Camera->GetComponent<AudioComponent>()->Play();
             }
-
-            if (ImGui::Button("Pause Song")) {
+            ImGui::SameLine();
+            if (ImGui::PauseButton("Pause Song", 1.f)) {
                 Camera->GetComponent<AudioComponent>()->Pause();
             }
-
-            if (ImGui::Button("Stop Song")) {
+            ImGui::SameLine();
+            if (ImGui::StopButton("Stop Song", 1.f)) {
                 Camera->GetComponent<AudioComponent>()->Stop();
             }
         }

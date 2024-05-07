@@ -401,7 +401,7 @@ void CameraComponent::Render()
 	glNamedBufferSubData(_uboWindowData, sizeof(vec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));*/
 
 	// UPDATING RENDERER
-	GraphicEngineManager::UpdateBeforeRendering();
+	GraphicEngine::UpdateBeforeRendering();
 
 	// DEPTH MAP
 	glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);

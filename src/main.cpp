@@ -239,6 +239,26 @@ int main(int, char**)
 
     SceneManager::LoadScene("testScene");
 
+    GameObject* obj = SceneManager::CreateGameObject();
+    obj->SetName("Test Button");
+    Button* b = obj->AddComponent<Button>();
+    b->SetHeight(70);
+    b->SetWidth(200);
+    b->GetOnClickEvent() += []() -> void {
+        spdlog::info("clicked");
+    };
+    Image* i = obj->AddComponent<Image>();
+    i->SetSprite("white_box");
+    i->SetHeight(70);
+    i->SetWidth(200);
+    Text* t = obj->AddComponent<Text>();
+    t->SetText("Click Meeej");
+    t->SetFont("res/fonts/Caveat-Regular.ttf");
+    t->SetSize(48);  
+    t->SetColor(glm::vec4(1.f, 0.f, 0.f, 1.f));
+
+    //SceneManager::SaveScene("res/scenes/quickSavedScene_toonShading.yaml");
+
 #pragma region SETTING_UP_GENERATION
 
     //*
@@ -489,7 +509,7 @@ void begin_imgui()
 
 void render_imgui()
 {
-    if (Input::GetCursorState() == NORMAL)
+    if (Input::GetCursorState() == CURSOR_STATE::NORMAL)
     {
         ImGui::Begin("Twin^2 Engine");
 
@@ -933,6 +953,32 @@ void render_imgui()
         }
 #pragma endregion
 
+        if (ImGui::CollapsingHeader("Text test")) {
+            Text* t = SceneManager::FindObjectByName("Test Button")->GetComponent<Text>();
+            static std::string alignYValue = t->GetTextAlignY() == TextAlignY::CENTER ? "CENTER" : t->GetTextAlignY() == TextAlignY::TOP ? "TOP" : "BOTTOM";
+            if (ImGui::BeginCombo("Align Y", alignYValue.c_str())) {
+                TextAlignY alignY = t->GetTextAlignY();
+                if (ImGui::Selectable("BOTTOM")) {
+                    if (alignY != TextAlignY::BOTTOM) {
+                        t->SetTextAlignY(TextAlignY::BOTTOM);
+                        alignYValue = "BOTTOM";
+                    }
+                }
+                if (ImGui::Selectable("CENTER")) {
+                    if (alignY != TextAlignY::CENTER) {
+                        t->SetTextAlignY(TextAlignY::CENTER);
+                        alignYValue = "CENTER";
+                    }
+                }
+                if (ImGui::Selectable("TOP")) {
+                    if (alignY != TextAlignY::TOP) {
+                        t->SetTextAlignY(TextAlignY::TOP);
+                        alignYValue = "TOP";
+                    }
+                }
+                ImGui::EndCombo();
+            }
+        }
 
 #pragma region EDITOR_MATERIAL_SCANNING
 

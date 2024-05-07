@@ -22,25 +22,67 @@ void Text::UpdateTextCache()
 			// Zastêpowanie
 			for (size_t i = 0; i < _oldText.size() && i < _text.size() && i < _textCache.size(); ++i) {
 				if (_oldText[i] != _text[i]) {
+					_totalTextWidth -= _textCache[i]->Size.x;
 					_textCache[i] = font->GetCharacter(_text[i], _size);
+					_totalTextWidth += _textCache[i]->Size.x;
+
+					if (_textCache[i]->Size.y > _maxTextHeight) {
+						_maxTextHeight = _textCache[i]->Size.y;
+					}
 				}
 			}
 
 			// Dodawanie kolejnych
 			if (_oldText.size() < _text.size()) {
 				vector<Character*> chars = font->GetText(_text.substr(_oldText.size(), _text.size() - _oldText.size() + 1), _size);
-				for (auto& c : chars) _textCache.push_back(c);
+				for (auto& c : chars) {
+					_textCache.push_back(c);
+					_totalTextWidth += c->Size.x;
+
+					if (c->Size.y > _maxTextHeight) {
+						_maxTextHeight = c->Size.y;
+					}
+				}
 			}
 			// Odejmowanie nadmiaru
 			else if (_oldText.size() > _text.size()) {
-				for (size_t i = _oldText.size(); i >= _text.size(); --i) _textCache.erase(_textCache.end() - 1);
+				bool checkMaxSize = false;
+				for (size_t i = _oldText.size(); i >= _text.size(); --i) {
+					_totalTextWidth -= (*(_textCache.end() - 1))->Size.x;
+					if ((*(_textCache.end() - 1))->Size.y == _maxTextHeight) {
+						checkMaxSize = true;
+					}
+
+					_textCache.erase(_textCache.end() - 1);
+				}
+
+				// CHECK NEW MAX SIZE
+				if (checkMaxSize) {
+					_maxTextHeight = 0.f;
+					for (auto& c : _textCache) {
+						if (c->Size.y > _maxTextHeight) {
+							_maxTextHeight = c->Size.y;
+						}
+					}
+				}
 			}
 		}
 		else {
+			_totalTextWidth = 0.f;
+			_maxTextHeight = 0.f;
 			_textCache = font->GetText(_text, _size);
+			for (auto& c : _textCache) {
+				_totalTextWidth += c->Size.x;
+
+				if (c->Size.y > _maxTextHeight) {
+					_maxTextHeight = c->Size.y;
+				}
+			}
 		}
 	}
 	else {
+		_totalTextWidth = 0.f;
+		_maxTextHeight = 0.f;
 		_textCache.clear();
 	}
 	_textCacheDirty = false;
@@ -61,16 +103,35 @@ void Text::Render()
 	// iterate through all characters
 	float x = 0.f;
 	float y = 0.f;
-	float scale = 1.f;
 	for (auto& c : _textCache)
 	{
-		float xpos = x + c->Bearing.x * scale;
-		float ypos = y - (c->Size.y - c->Bearing.y) * scale;
+		float w = c->Size.x;
+		float h = c->Size.y;
 
-		float w = c->Size.x * scale;
-		float h = c->Size.y * scale;
+		float xpos = x + c->Bearing.x;
+		switch (_alignX) {
+		case TextAlignX::LEFT:
+			xpos += w * .5f;
+			break;
+		case TextAlignX::CENTER:
+			xpos -= _totalTextWidth * .5f;
+			break;
+		case TextAlignX::RIGHT:
+			xpos -= _totalTextWidth;
+			break;
+		}
 
-		glm::mat4 tempModel = glm::translate(model, glm::vec3(xpos + w / 2.f, ypos + h / 2.f, 0.f));
+		float ypos = y;
+		switch (_alignY) {
+		case TextAlignY::BOTTOM:
+			ypos += (h - _maxTextHeight) * .5f;
+			break;
+		case TextAlignY::TOP:
+			ypos -= (h - _maxTextHeight) * .5f;
+			break;
+		}
+
+		glm::mat4 tempModel = glm::translate(model, glm::vec3(xpos, ypos, 0.f));
 		elem.elemSize = { w, h };
 		elem.textureSize = { w, h };
 		elem.spriteSize = { w, h };
@@ -80,7 +141,7 @@ void Text::Render()
 		UIRenderingManager::Render(elem);
 
 		// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-		x += (c->Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
+		x += (c->Advance >> 6); // bitshift by 6 to get value in pixels (2^6 = 64)
 	}
 }
 
@@ -137,6 +198,16 @@ void Text::SetFont(size_t fontId)
 	}
 }
 
+void Text::SetTextAlignX(const TextAlignX& alignX)
+{
+	_alignX = alignX;
+}
+
+void Text::SetTextAlignY(const TextAlignY& alignY)
+{
+	_alignY = alignY;
+}
+
 vec4 Text::GetColor() const
 {
 	return _color;
@@ -160,4 +231,14 @@ size_t Text::GetFontId() const
 Font* Text::GetFont() const
 {
 	return FontManager::GetFont(_fontId);
+}
+
+TextAlignX Text::GetTextAlignX() const
+{
+	return _alignX;
+}
+
+TextAlignY Text::GetTextAlignY() const
+{
+	return _alignY;
 }

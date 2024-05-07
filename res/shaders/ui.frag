@@ -48,5 +48,6 @@ void main()
     }
     else {
         Color = vec4(1.0, 1.0, 1.0, texture(sprite.img, uv).r) * vec4(pow(sprite.color.rgb, vec3(gamma)), sprite.color.a);
+        //Color = vec4(pow(sprite.color.rgb, vec3(gamma)), sprite.color.a);
     }
 }

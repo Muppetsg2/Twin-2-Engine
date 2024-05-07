@@ -6,7 +6,7 @@ namespace Twin2Engine {
 	}
 
 	namespace Core {
-		enum INPUT_STATE {
+		enum class INPUT_STATE {
 			UP = 0,
 			DOWN = 1,
 			PRESSED = 2,
@@ -14,14 +14,14 @@ namespace Twin2Engine {
 			RELEASED = 4
 		};
 
-		enum CURSOR_STATE {
+		enum class CURSOR_STATE {
 			DISABLED = GLFW_CURSOR_DISABLED,
 			HIDDEN = GLFW_CURSOR_HIDDEN,
 			CAPTURED = GLFW_CURSOR_CAPTURED,
 			NORMAL = GLFW_CURSOR_NORMAL
 		};
 
-		enum KEY {
+		enum class KEY {
 			SPACE = GLFW_KEY_SPACE,
 			APOSTROPHE = GLFW_KEY_APOSTROPHE,
 			COMMA = GLFW_KEY_COMMA,
@@ -145,7 +145,7 @@ namespace Twin2Engine {
 			KEYS_SIZE = GLFW_KEY_LAST + 1 - GLFW_KEY_SPACE,
 		};
 
-		enum MOUSE_BUTTON {
+		enum class MOUSE_BUTTON {
 			NR_1 = GLFW_MOUSE_BUTTON_1,
 			NR_2 = GLFW_MOUSE_BUTTON_2,
 			NR_3 = GLFW_MOUSE_BUTTON_3,

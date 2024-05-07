@@ -20,7 +20,7 @@ namespace Twin2Engine::UI {
 		float GetWidth() const;
 		float GetHeight() const;
 		bool IsInteractable() const;
-		const Tools::MethodEventHandler& GetOnClickEvent() const;
+		Tools::MethodEventHandler GetOnClickEvent() const;
 
 		virtual void Update() override;
 		virtual YAML::Node Serialize() const override;

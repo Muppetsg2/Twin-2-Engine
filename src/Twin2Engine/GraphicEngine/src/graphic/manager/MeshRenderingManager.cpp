@@ -20,7 +20,7 @@ public:
 std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_renderQueue = std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
 std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
 #elif RENERING_TYPE_SHADER_MATERIAL_MESH
-std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueStatic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingData>>>();
+/*std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueStatic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingData>>>();
 std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_depthMapenderQueueStatic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingData>>>();
 
 std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthQueueStatic = std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
@@ -29,7 +29,7 @@ std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMe
 std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_depthMapenderQueueDynamic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingData>>>();
 
 std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthQueueDynamic = std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
-
+*/
 
 
 
@@ -173,7 +173,7 @@ void MeshRenderingManager::Render(MeshRenderData meshData)
 }
 
 
-void MeshRenderingManager::RegisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer)
+/*void MeshRenderingManager::RegisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer)
 {
 	if (meshRenderer->GetModel() != nullptr && meshRenderer->GetMaterialCount() != 0)
 	{
@@ -465,7 +465,7 @@ void MeshRenderingManager::UpdateQueues()
 	}
 #pragma endregion
 
-}
+}*/
 
 
 #if RENERING_TYPE_MESH_SHADER_MATERIAL
@@ -595,7 +595,7 @@ void MeshRenderingManager::Render()
 
 #elif RENERING_TYPE_SHADER_MATERIAL_MESH
 
-void MeshRenderingManager::RenderStatic()
+/*void MeshRenderingManager::RenderStatic()
 {
 	unsigned int globalDrawCount = 0;
 
@@ -953,7 +953,7 @@ void MeshRenderingManager::RenderStatic()
 #pragma endregion
 
 	//SPDLOG_WARN("Global static draw count: {}", globalDrawCount);
-}
+}*/
 void MeshRenderingManager::Render()
 {
 	unsigned int globalDrawCount = 0;
@@ -1315,7 +1315,7 @@ void MeshRenderingManager::RenderDepthMap()
 
 #elif RENERING_TYPE_SHADER_MATERIAL_MESH
 
-void MeshRenderingManager::RenderDepthMapStatic()
+/*void MeshRenderingManager::RenderDepthMapStatic()
 {
 	unsigned int globalDrawCount = 0;
 
@@ -1673,7 +1673,7 @@ void MeshRenderingManager::RenderDepthMapStatic()
 #pragma endregion
 
 	//SPDLOG_WARN("Global static draw count: {}", globalDrawCount);
-}
+}*/
 void MeshRenderingManager::RenderDepthMap()
 {
 	for (auto& shaderPair : _depthMapRenderQueue)
@@ -1973,7 +1973,7 @@ void MeshRenderingManager::RenderDepthMap(const unsigned int& bufferWidth, const
 	glViewport(0, 0, wSize.x, wSize.y);
 }
 
-void MeshRenderingManager::RenderDepthMapStatic(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,
+/*void MeshRenderingManager::RenderDepthMapStatic(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,
 	glm::mat4& projectionViewMatrix)
 {
 	ShaderManager::DepthShader->Use();
@@ -2231,6 +2231,6 @@ void MeshRenderingManager::RenderDepthMapStatic(const unsigned int& bufferWidth,
 #pragma endregion
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glm::ivec2 wSize = Twin2Engine::GraphicEngine::Window::GetInstance()->GetContentSize();
+	glm::ivec2 wSize = Twin2Engine::Graphic::Window::GetInstance()->GetContentSize();
 	glViewport(0, 0, wSize.x, wSize.y);
-}
+}*/

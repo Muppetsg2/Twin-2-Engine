@@ -31,7 +31,7 @@ bool Button::IsInteractable() const {
 	return _interactable;
 }
 
-const MethodEventHandler& Button::GetOnClickEvent() const {
+MethodEventHandler Button::GetOnClickEvent() const {
 	return _onClickEvent;
 }
 

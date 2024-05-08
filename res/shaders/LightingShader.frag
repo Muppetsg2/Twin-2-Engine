@@ -77,6 +77,13 @@ layout (std430, binding = 3) buffer Lights {
     DirectionalLight directionalLights[4];
 };
 
+layout (std140, binding = 0) uniform CameraData
+{
+    mat4 projection;
+    mat4 view;
+	vec3 viewPos;
+};
+
 layout(std140, binding = 4) uniform LightingData {
     vec3 AmbientLight;
 	float shininness;
@@ -148,7 +155,7 @@ void main()
 	
 	vec3 L = vec3(0.0);
     vec3 N = normalize(normal);
-    vec3 E = normalize(ViewerPosition - position);
+    vec3 E = normalize(viewPos - position);
 
 	float attenuation = 0.0;
 	float lambertian = 0.0;

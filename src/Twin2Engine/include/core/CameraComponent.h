@@ -35,7 +35,7 @@ namespace Twin2Engine::Core {
 
 	class CameraComponent : public Component {
 	private:
-		static GLuint _uboMatrices;
+		static GLuint _uboCameraData;
 		static GLuint _uboWindowData;
 		static Twin2Engine::GraphicEngine::InstantiatingModel _renderPlane;
 		static Twin2Engine::GraphicEngine::Shader* _renderShader;

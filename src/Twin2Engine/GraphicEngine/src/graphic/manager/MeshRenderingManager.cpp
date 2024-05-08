@@ -1,6 +1,6 @@
 #include <graphic/manager/MeshRenderingManager.h>
 #include <graphic/manager/ShaderManager.h>
-#include <graphic/InstatiatingMesh.h>
+#include <graphic/InstantiatingMesh.h>
 #include <graphic/Window.h>
 
 using namespace Twin2Engine::GraphicEngine;
@@ -18,30 +18,30 @@ public:
 };
 
 #if RENERING_TYPE_MESH_SHADER_MATERIAL
-std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_renderQueue = std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
-std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
+std::map<InstantiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_renderQueue = std::map<InstantiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
+std::map<InstantiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<InstantiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
 #elif RENERING_TYPE_SHADER_MATERIAL_MESH
-std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueStatic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingData>>>();
-std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_depthMapenderQueueStatic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingData>>>();
+std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueStatic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
+std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_depthMapenderQueueStatic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
 
-std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthQueueStatic = std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
+std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthQueueStatic = std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
 
-std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueDynamic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingData>>>();
-std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_depthMapenderQueueDynamic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstatiatingMesh*, MeshRenderingData>>>();
+std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueDynamic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
+std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_depthMapenderQueueDynamic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
 
-std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthQueueDynamic = std::unordered_map<InstatiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
-
-
+std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthQueueDynamic = std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
 
 
-std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, std::queue<MeshRenderData>>>> MeshRenderingManager::_renderQueue = std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, std::queue<MeshRenderData>>>>();
-std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<Shader*, std::map<Material, std::map<InstatiatingMesh*, std::queue<MeshRenderData>>>>();
+
+
+std::map<Shader*, std::map<Material, std::map<InstantiatingMesh*, std::queue<MeshRenderData>>>> MeshRenderingManager::_renderQueue = std::map<Shader*, std::map<Material, std::map<InstantiatingMesh*, std::queue<MeshRenderData>>>>();
+std::map<Shader*, std::map<Material, std::map<InstantiatingMesh*, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<Shader*, std::map<Material, std::map<InstantiatingMesh*, std::queue<MeshRenderData>>>>();
 #elif RENERING_TYPE_SHADER_MESH_MATERIAL
-std::map<Shader*, std::map<InstatiatingMesh*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_renderQueue = std::map<Shader*, std::map<InstatiatingMesh*, std::map<Material, std::queue<MeshRenderData>>>>();
-std::map<Shader*, std::map<InstatiatingMesh*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<Shader*, std::map<InstatiatingMesh*, std::map<Material, std::queue<MeshRenderData>>>>();
+std::map<Shader*, std::map<InstantiatingMesh*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_renderQueue = std::map<Shader*, std::map<InstantiatingMesh*, std::map<Material, std::queue<MeshRenderData>>>>();
+std::map<Shader*, std::map<InstantiatingMesh*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<Shader*, std::map<InstantiatingMesh*, std::map<Material, std::queue<MeshRenderData>>>>();
 #endif
-//std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<InstatiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
-std::map<InstatiatingMesh*, std::queue<MeshRenderData>> MeshRenderingManager::_depthQueue;
+//std::map<InstantiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>> MeshRenderingManager::_depthMapRenderQueue = std::map<InstantiatingMesh*, std::map<Shader*, std::map<Material, std::queue<MeshRenderData>>>>();
+std::map<InstantiatingMesh*, std::queue<MeshRenderData>> MeshRenderingManager::_depthQueue;
 
 GLuint MeshRenderingManager::_instanceDataSSBO = 0u;
 GLuint MeshRenderingManager::_materialIndexSSBO = 0u;
@@ -178,7 +178,7 @@ void MeshRenderingManager::RegisterStatic(Twin2Engine::Core::MeshRenderer* meshR
 {
 	if (meshRenderer->GetModel() != nullptr && meshRenderer->GetMaterialCount() != 0)
 	{
-		InstatiatingMesh* mesh;
+		InstantiatingMesh* mesh;
 		for (size_t i = 0; i < meshRenderer->GetMeshCount(); ++i) {
 			mesh = meshRenderer->GetMesh(i);
 			Material material = meshRenderer->GetMaterial(i);
@@ -200,7 +200,7 @@ void MeshRenderingManager::UnregisterStatic(Twin2Engine::Core::MeshRenderer* mes
 {
 	if (meshRenderer->GetModel() != nullptr && meshRenderer->GetMaterialCount() != 0)
 	{
-		InstatiatingMesh* mesh;
+		InstantiatingMesh* mesh;
 		for (size_t i = 0; i < meshRenderer->GetMeshCount(); ++i) {
 			mesh = meshRenderer->GetMesh(i);
 			Material material = meshRenderer->GetMaterial(i);
@@ -235,7 +235,7 @@ void MeshRenderingManager::RegisterDynamic(Twin2Engine::Core::MeshRenderer* mesh
 {
 	if (meshRenderer->GetModel() != nullptr && meshRenderer->GetMaterialCount() != 0)
 	{
-		InstatiatingMesh* mesh;
+		InstantiatingMesh* mesh;
 		for (size_t i = 0; i < meshRenderer->GetMeshCount(); ++i) {
 			mesh = meshRenderer->GetMesh(i);
 			Material material = meshRenderer->GetMaterial(i);
@@ -257,7 +257,7 @@ void MeshRenderingManager::UnregisterDynamic(Twin2Engine::Core::MeshRenderer* me
 {
 	if (meshRenderer->GetModel() != nullptr && meshRenderer->GetMaterialCount() != 0)
 	{
-		InstatiatingMesh* mesh;
+		InstantiatingMesh* mesh;
 		for (size_t i = 0; i < meshRenderer->GetMeshCount(); ++i) {
 			mesh = meshRenderer->GetMesh(i);
 			Material material = meshRenderer->GetMaterial(i);

@@ -83,7 +83,7 @@ namespace Twin2Engine::Manager
 		//static GraphicEngine::Shader* CreateShaderProgram(const std::string& shaderProgramName);
 		//static GraphicEngine::Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);
 
-		void UpdateDirShadowMapsTab();
+		//void UpdateDirShadowMapsTab();
 	};
 }
 

@@ -62,20 +62,20 @@ namespace Twin2Engine::Manager
 		static void GenerateCircle(std::vector<GraphicEngine::Vertex> vertices, std::vector<unsigned int> indices, unsigned int segments, float y = 0.f, unsigned int cullFace = GL_CCW);
 
 	public:
-		static GraphicEngine::InstatiatingModel LoadModel(const std::string& modelPath);
-		static GraphicEngine::InstatiatingModel GetModel(size_t managerId);
-		static GraphicEngine::InstatiatingModel GetCube();
-		static GraphicEngine::InstatiatingModel GetPlane();
-		static GraphicEngine::InstatiatingModel GetSphere();
-		static GraphicEngine::InstatiatingModel GetTorus();
-		static GraphicEngine::InstatiatingModel GetCone();
-		static GraphicEngine::InstatiatingModel GetPiramid();
-		static GraphicEngine::InstatiatingModel GetTetrahedron();
-		static GraphicEngine::InstatiatingModel GetCylinder();
-		static GraphicEngine::InstatiatingModel GetHexagon();
+		static GraphicEngine::InstantiatingModel LoadModel(const std::string& modelPath);
+		static GraphicEngine::InstantiatingModel GetModel(size_t managerId);
+		static GraphicEngine::InstantiatingModel GetCube();
+		static GraphicEngine::InstantiatingModel GetPlane();
+		static GraphicEngine::InstantiatingModel GetSphere();
+		static GraphicEngine::InstantiatingModel GetTorus();
+		static GraphicEngine::InstantiatingModel GetCone();
+		static GraphicEngine::InstantiatingModel GetPiramid();
+		static GraphicEngine::InstantiatingModel GetTetrahedron();
+		static GraphicEngine::InstantiatingModel GetCylinder();
+		static GraphicEngine::InstantiatingModel GetHexagon();
 
-		static GraphicEngine::InstatiatingModel CreateModel(const std::string& modelName, std::vector<GraphicEngine::Vertex> vertices, std::vector<unsigned int> indices);
-		//static void FreeModel(InstatiatingModel*& model);
+		static GraphicEngine::InstantiatingModel CreateModel(const std::string& modelName, std::vector<GraphicEngine::Vertex> vertices, std::vector<unsigned int> indices);
+		//static void FreeModel(InstantiatingModel*& model);
 
 		static YAML::Node Serialize();
 

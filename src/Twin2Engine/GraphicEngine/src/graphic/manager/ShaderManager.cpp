@@ -626,7 +626,7 @@ Shader* ShaderManager::CreateShaderProgram(const std::string& shaderName, const 
     }
     return shader;
 }
-
+/*/
 void ShaderManager::UpdateDirShadowMapsTab()
 {
     size_t depthShaderHash = stringHash("origin/DepthShader");
@@ -636,4 +636,4 @@ void ShaderManager::UpdateDirShadowMapsTab()
             LightingSystem::LightingController::Instance()->UpdateShadowMapsTab(SPD.shader);
         }
     }
-}
+}/**/

@@ -13,9 +13,10 @@
 using namespace LightingSystem;
 
 LightingController* LightingController::instance = nullptr;
-const int LightingController::SHADOW_WIDTH = 2048;
-const int LightingController::SHADOW_HEIGHT = 2048;
-float LightingController::DLShadowCastingRange = 15.0f;
+const int LightingController::SHADOW_WIDTH = 1536;
+const int LightingController::SHADOW_HEIGHT = 1536;
+const int LightingController::MAPS_BEGINNING = 27;
+float LightingController::DLShadowCastingRange = 20.0f;
 
 LightingController::LightingController() {
 	glGenBuffers(1, &LightsBuffer);
@@ -138,7 +139,7 @@ void LightingController::UpdatePLPosition(PointLight* pointLight) {
 
 	if (pos < MAX_POINT_LIGHTS) {
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
-		glBufferSubData(GL_SHADER_STORAGE_BUFFER, offsetof(Lights, pointLights) + pos * sizeof(PointLight), sizeof(glm::vec3), &((*itr)->position));
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, offsetof(Lights, pointLights) + pos * sizeof(PointLight), sizeof(PointLight), &((*itr)->position));
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 }
@@ -149,7 +150,7 @@ void LightingController::UpdateSLTransform(SpotLight* spotLight) {
 
 	if (pos < MAX_SPOT_LIGHTS) {
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
-		glBufferSubData(GL_SHADER_STORAGE_BUFFER, offsetof(Lights, spotLights) + pos * sizeof(SpotLight), sizeof(glm::vec3), *itr);
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, offsetof(Lights, spotLights) + pos * sizeof(SpotLight), sizeof(SpotLight), *itr);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 }
@@ -160,7 +161,7 @@ void LightingController::UpdateDLTransform(DirectionalLight* dirLight) {
 
 	if (pos < MAX_DIRECTIONAL_LIGHTS) {
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
-		glBufferSubData(GL_SHADER_STORAGE_BUFFER, offsetof(Lights, directionalLights) + pos * sizeof(DirectionalLight), sizeof(glm::vec3), *itr);
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, offsetof(Lights, directionalLights) + pos * sizeof(DirectionalLight), sizeof(DirectionalLight), *itr);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 }
@@ -201,31 +202,28 @@ void LightingController::UpdateDL(DirectionalLight* dirLight) {
 
 
 void LightingController::BindLightBuffors(Twin2Engine::GraphicEngine::Shader* shader) {
-	GLuint block_index = 0;
-
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, LightsBuffer);
-
-	glBindBufferBase(GL_UNIFORM_BUFFER, 4, LightingDataBuffer);
+	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, LightsBuffer);
+	//glBindBufferBase(GL_UNIFORM_BUFFER, 4, LightingDataBuffer);
 
 	std::string str = "DirLightShadowMaps[";
 	shader->Use();
-	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "0]").c_str()), 8);
-	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "1]").c_str()), 9);
-	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "2]").c_str()), 10);
-	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "3]").c_str()), 11);
+	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "0]").c_str()), MAPS_BEGINNING);
+	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "1]").c_str()), MAPS_BEGINNING + 1);
+	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "2]").c_str()), MAPS_BEGINNING + 2);
+	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "3]").c_str()), MAPS_BEGINNING + 3);
 }
-
+/*/
 void LightingController::UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader* shader) {
 	int i = 0;
 	shader->Use();
 	SPDLOG_INFO("Aktualizacja shadow mapy");
 
 	for (auto dirLight : dirLights) { //DirLightShadowMaps
-		glActiveTexture(GL_TEXTURE0 + 8 + i);
+		glActiveTexture(GL_TEXTURE0 + MAPS_BEGINNING + i);
 		glBindTexture(GL_TEXTURE_2D, dirLight->shadowMap);
 		++i;
 	}
-}
+}/**/
 
 glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* light) { //const glm::mat4& viewProjectionInverse
 	/**/
@@ -305,20 +303,26 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 
 	glm::mat4 viewMatrix = glm::lookAt(lightNewPos, lightNewPos + light->direction, glm::vec3(0.0f, 1.0f, 0.0f));
 
-	maxX = 0.0f;
-	maxY = 0.0f;
-	for (const auto& corner : corners) {
-		glm::vec3 transformedCorner = glm::vec3(viewMatrix * glm::vec4(corner, 1.0f));
-		maxX = std::max(maxX, glm::abs(corner.x));
-		maxY = std::max(maxY, glm::abs(corner.y));
-	}
-
-
-	// Adjust minZ and maxZ for better precision in the depth buffer
-	float lightMargin = 5.0f; // Adjust based on scene size
+	//maxX = 0.0f;
+	//maxY = 0.0f;
+	//for (const auto& corner : corners) {
+	//	glm::vec3 transformedCorner = glm::vec3(viewMatrix * glm::vec4(corner, 1.0f));
+	//	maxX = std::max(maxX, glm::abs(corner.x));
+	//	maxY = std::max(maxY, glm::abs(corner.y));
+	//}
+	//
+	//
+	//// Adjust minZ and maxZ for better precision in the depth buffer
+	//float lightMargin = 5.0f; // Adjust based on scene size
+	//float MarginScaleX = 0.7f; // Adjust based on scene size
+	//float XMovement = -5.0f; // Adjust based on scene size
+	float orthoHeight = 10.0f;
+	float orthoWidth = 10.0f;
 
 	float zLength = 40.0f * glm::abs(VoDir);
-	light->lightSpaceMatrix = glm::ortho(-(maxX + lightMargin), maxX + lightMargin, -(maxY + lightMargin), maxY + lightMargin, -zLength, zLength) * viewMatrix;/**/
+	//light->lightSpaceMatrix = glm::ortho(-(maxX + lightMargin), maxX + lightMargin, -(maxY + lightMargin), maxY + lightMargin, -zLength, zLength) * viewMatrix;/**/
+	light->lightSpaceMatrix = glm::ortho(-orthoWidth, orthoWidth, -orthoHeight, orthoHeight, -zLength, zLength) * viewMatrix;/**/
+	//light->lightSpaceMatrix = glm::ortho(-maxX * MarginScaleX + XMovement, maxX * MarginScaleX + XMovement, -(maxY * MarginScaleX), maxY * MarginScaleX, -zLength, zLength) * viewMatrix;/**/
 
 	return std::move(lightNewPos);
 }
@@ -330,7 +334,7 @@ void LightingController::RenderShadowMaps() {
 	for (auto light : dirLights) {
 		//Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->shadowMap, light->lightSpaceMatrix);
 		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMapStatic(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->shadowMap, light->lightSpaceMatrix);
-		glActiveTexture(GL_TEXTURE0 + 8 + i);
+		glActiveTexture(GL_TEXTURE0 + MAPS_BEGINNING + i);
 		glBindTexture(GL_TEXTURE_2D, light->shadowMap);
 
 		++i;
@@ -350,7 +354,7 @@ void LightingController::SetViewerPosition(glm::vec3& viewerPosition) {
 	glBufferSubData(GL_UNIFORM_BUFFER, offsetof(LightingData, viewerPosition), sizeof(glm::vec3), &viewerPosition);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-	ViewerTransformChanged.Invoke();
+	UpdateOnTransformChange();
 }
 
 void LightingController::SetShadingType(int type) {

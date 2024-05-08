@@ -11,9 +11,9 @@ using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
 
 std::vector<CameraComponent*> CameraComponent::Cameras = std::vector<CameraComponent*>();
-GLuint CameraComponent::_uboMatrices = 0;
+GLuint CameraComponent::_uboCameraData = 0;
 GLuint CameraComponent::_uboWindowData = 0;
-InstatiatingModel CameraComponent::_renderPlane = InstatiatingModel();
+InstantiatingModel CameraComponent::_renderPlane = InstantiatingModel();
 Shader* CameraComponent::_renderShader = nullptr;
 
 void CameraComponent::OnTransformChange(Transform* trans)
@@ -23,6 +23,7 @@ void CameraComponent::OnTransformChange(Transform* trans)
 	if (this->_isMain) {
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 	*/
@@ -355,17 +356,16 @@ void CameraComponent::Render()
 	//Jesli wiecej kamer i kazda ma ze swojego kata dawac obraz
 
 	// DEFAULT
-	
-	glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
+	glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));
 
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ivec2), value_ptr(Window::GetInstance()->GetContentSize()));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2), sizeof(float), &(this->_near));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float), sizeof(float), &(this->_far));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
-	
 	
 	// NAMED
 	/*glNamedBufferSubData(_uboMatrices, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
@@ -391,7 +391,7 @@ void CameraComponent::Render()
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
 
-	LightingSystem::LightingController::Instance()->RenderShadowMaps();
+	//LightingSystem::LightingController::Instance()->RenderShadowMaps();
 
 	// RENDER MAP
 	glBindFramebuffer(GL_FRAMEBUFFER, _msRenderMapFBO);
@@ -455,17 +455,18 @@ void CameraComponent::Initialize()
 
 		this->SetIsMain(true);
 
-		glGenBuffers(1, &_uboMatrices);
+		glGenBuffers(1, &_uboCameraData);
 
-		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
-		glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(mat4), NULL, GL_STATIC_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
+		glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(mat4) + sizeof(vec3), NULL, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		glBindBufferRange(GL_UNIFORM_BUFFER, 0, _uboMatrices, 0, 2 * sizeof(mat4));
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, _uboCameraData);
 
-		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
+		glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		glGenBuffers(1, &_uboWindowData);
@@ -474,7 +475,7 @@ void CameraComponent::Initialize()
 		glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(float) + sizeof(ivec2), NULL, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		glBindBufferRange(GL_UNIFORM_BUFFER, 1, _uboWindowData, 0, 3 * sizeof(float) + sizeof(ivec2));
+		glBindBufferBase(GL_UNIFORM_BUFFER, 1, _uboWindowData);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ivec2), value_ptr(Window::GetInstance()->GetContentSize()));
@@ -619,7 +620,7 @@ void CameraComponent::OnDestroy()
 	Cameras.erase(Cameras.begin() + this->_camId);
 
 	if (Cameras.size() == 0) {
-		glDeleteBuffers(1, &_uboMatrices);
+		glDeleteBuffers(1, &_uboCameraData);
 		glDeleteBuffers(1, &_uboWindowData);
 	}
 }

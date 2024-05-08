@@ -32,7 +32,7 @@ namespace Twin2Engine
 {
 	namespace GraphicEngine {
 		class GraphicEngineManager;
-		class InstatiatingMesh;
+		class InstantiatingMesh;
 		class Material;
 	}
 
@@ -49,7 +49,7 @@ namespace Twin2Engine
 		};
 
 		struct MeshRenderData {
-			std::vector<GraphicEngine::InstatiatingMesh*> meshes;
+			std::vector<GraphicEngine::InstantiatingMesh*> meshes;
 			std::vector<GraphicEngine::Material> materials;
 			glm::mat4 transform;
 			bool isTransparent;
@@ -85,28 +85,28 @@ namespace Twin2Engine
 			};
 
 #if RENERING_TYPE_MESH_SHADER_MATERIAL
-			static std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _renderQueue;
-			static std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
+			static std::map<GraphicEngine::InstantiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _renderQueue;
+			static std::map<GraphicEngine::InstantiatingMesh*, std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
 #elif RENERING_TYPE_SHADER_MATERIAL_MESH
-			static std::unordered_map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::unordered_map<GraphicEngine::InstatiatingMesh*, MeshRenderingData>>>  _renderQueueStatic;
-			static std::unordered_map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::unordered_map<GraphicEngine::InstatiatingMesh*, MeshRenderingData>>>  _depthMapenderQueueStatic;
+			static std::unordered_map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::unordered_map<GraphicEngine::InstantiatingMesh*, MeshRenderingData>>>  _renderQueueStatic;
+			static std::unordered_map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::unordered_map<GraphicEngine::InstantiatingMesh*, MeshRenderingData>>>  _depthMapenderQueueStatic;
 
-			static std::unordered_map<GraphicEngine::InstatiatingMesh*, MeshRenderingDataDepthMap> _depthQueueStatic;
-
-
-			static std::unordered_map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::unordered_map<GraphicEngine::InstatiatingMesh*, MeshRenderingData>>>  _renderQueueDynamic;
-			static std::unordered_map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::unordered_map<GraphicEngine::InstatiatingMesh*, MeshRenderingData>>>  _depthMapenderQueueDynamic;
-
-			static std::unordered_map<GraphicEngine::InstatiatingMesh*, MeshRenderingDataDepthMap> _depthQueueDynamic;
+			static std::unordered_map<GraphicEngine::InstantiatingMesh*, MeshRenderingDataDepthMap> _depthQueueStatic;
 
 
-			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>>>>  _renderQueue;
-			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
+			static std::unordered_map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::unordered_map<GraphicEngine::InstantiatingMesh*, MeshRenderingData>>>  _renderQueueDynamic;
+			static std::unordered_map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::unordered_map<GraphicEngine::InstantiatingMesh*, MeshRenderingData>>>  _depthMapenderQueueDynamic;
+
+			static std::unordered_map<GraphicEngine::InstantiatingMesh*, MeshRenderingDataDepthMap> _depthQueueDynamic;
+
+
+			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstantiatingMesh*, std::queue<MeshRenderData>>>>  _renderQueue;
+			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::Material, std::map<GraphicEngine::InstantiatingMesh*, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
 #elif RENERING_TYPE_SHADER_MESH_MATERIAL
-			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _renderQueue;
-			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::InstatiatingMesh*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
+			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::InstantiatingMesh*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _renderQueue;
+			static std::map<GraphicEngine::Shader*, std::map<GraphicEngine::InstantiatingMesh*, std::map<GraphicEngine::Material, std::queue<MeshRenderData>>>>  _depthMapRenderQueue;
 #endif
-			static std::map<GraphicEngine::InstatiatingMesh*, std::queue<MeshRenderData>> _depthQueue;
+			static std::map<GraphicEngine::InstantiatingMesh*, std::queue<MeshRenderData>> _depthQueue;
 
 			static GLuint _instanceDataSSBO;
 			static GLuint _materialIndexSSBO;

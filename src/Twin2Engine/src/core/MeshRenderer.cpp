@@ -82,14 +82,14 @@ void MeshRenderer::Render()
 	//{
 	//	MeshRenderData data{};
 	//	data.transform = GetTransform()->GetTransformMatrix();
-	//	data.meshes = std::vector<InstatiatingMesh*>();
+	//	data.meshes = std::vector<InstantiatingMesh*>();
 	//	data.materials = std::vector<Material>();
 	//	data.isTransparent = IsTransparent();
 	//
 	//
 	//	if (CameraComponent::GetMainCamera()->IsFrustumCullingOn)
 	//	{
-	//		InstatiatingMesh* tMesh;
+	//		InstantiatingMesh* tMesh;
 	//		Frustum frustum = CameraComponent::GetMainCamera()->GetFrustum();
 	//		for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
 	//			tMesh = _model.GetMesh(i);

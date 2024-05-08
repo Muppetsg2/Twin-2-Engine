@@ -11,10 +11,11 @@ layout (std430, binding = 1) buffer MaterialIndexes {
     int materialIndexes[1024];
 };
 
-layout (std140, binding = 0) uniform Matrices
+layout (std140, binding = 0) uniform CameraData
 {
     mat4 projection;
     mat4 view;
+	vec3 viewPos;
 };
 
 out VS_OUT {

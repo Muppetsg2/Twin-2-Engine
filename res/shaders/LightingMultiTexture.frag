@@ -1,5 +1,7 @@
 #version 430
-//LightingColoredTexture.frag
+//LightingMultiTexture.frag
+
+layout(early_fragment_tests) in;
 
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 normal;
@@ -9,15 +11,10 @@ layout (location = 3) flat in uint materialIndex;
 
 layout (location = 0) out vec4 FragColor;
 
-// Material Input
 struct MaterialInput
 {
-	vec4 color;
+	int empty;
 };
-
-//shadow maps
-uniform sampler2D DirLightShadowMaps[4];
-uniform sampler2D DirLightingMap;
 
 layout (std140, binding = 1) uniform WindowData
 {
@@ -27,19 +24,24 @@ layout (std140, binding = 1) uniform WindowData
     float gamma;
 };
 
+
+
 layout(std140, binding = 2) uniform MaterialInputBuffer {
     MaterialInput materialInput[8];
 };
 
-// Texture Input
 struct TextureInput
 {
-	sampler2D texture;
+	sampler2D texture1;
+	sampler2D texture2;
 };
 
 layout(location = 0) uniform TextureInput texturesInput[8];
 
 
+//shadow maps
+uniform sampler2D DirLightShadowMaps[4];
+uniform sampler2D DirLightingMap;
 
 //LIGHTING BEGIN
 struct PointLight {
@@ -78,6 +80,13 @@ layout (std430, binding = 3) buffer Lights {
     PointLight pointLights[8];
     SpotLight spotLights[8];
     DirectionalLight directionalLights[4];
+};
+
+layout (std140, binding = 0) uniform CameraData
+{
+    mat4 projection;
+    mat4 view;
+	vec3 viewPos;
 };
 
 layout(std140, binding = 4) uniform LightingData {
@@ -145,18 +154,20 @@ float countBlinnPhongPart(vec3 L, vec3 E, vec3 N) {
 
 void main()
 {
-	FragColor = texture(texturesInput[materialIndex].texture, texCoords) * materialInput[materialIndex].color;
+	FragColor = texture(texturesInput[materialIndex].texture1, texCoords) * texture(texturesInput[materialIndex].texture2, texCoords);
+	//FragColor = texture(texturesInput[materialIndex * 2].texture1, texCoords) * texture(texturesInput[materialIndex * 2 + 1].texture2, texCoords);
 
-    vec3 LightColor = vec3(0.0);
+	vec3 LightColor = vec3(0.0);
 	
 	vec3 L = vec3(0.0);
     vec3 N = normalize(normal);
-    vec3 E = normalize(ViewerPosition - position);
+    vec3 E = normalize(viewPos - position);
 
 	float attenuation = 0.0;
 	float lambertian = 0.0;
 	float specular = 0.0;
 	float distance = 0.0;
+    vec3 SpecCol = vec3(1.0, 1.0, 1.0);
 
     for (uint i = 0; i < numberOfPointLights; ++i) {
         L = pointLights[i].position - position;
@@ -171,8 +182,9 @@ void main()
         if (lambertian > 0.0) {
             specular = countBlinnPhongPart(L, E, N);
         }
-
-        LightColor += (lambertian + specular) * pointLights[i].color * pointLights[i].power * attenuation;
+		
+        LightColor += (lambertian * pointLights[i].color + specular * SpecCol) * pointLights[i].power * attenuation;
+        //LightColor += (lambertian + specular) * pointLights[i].color * pointLights[i].power * attenuation;
 		//FragColor = vec4((lambertian + specular) * pointLights[i].color * pointLights[i].power * attenuation, 1.0f);
     }
 
@@ -207,7 +219,7 @@ void main()
 
 	for (uint i = 0; i < numberOfDirLights; ++i) {
         L = -directionalLights[i].direction;
-
+    
         lambertian = countLambertianPart(L, N);
 		
 		//specular = 0.0;
@@ -219,6 +231,7 @@ void main()
         //LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
         LightColor += lambertian * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
     }
+    //LightColor += texture(DirLightingMap, gl_FragCoord.xy).r;
 	
     FragColor *= vec4(LightColor + AmbientLight, 1.0); //
 	FragColor = vec4(pow(FragColor.rgb, vec3(gamma)), 1.0);

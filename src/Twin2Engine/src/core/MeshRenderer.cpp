@@ -124,7 +124,7 @@ YAML::Node MeshRenderer::Serialize() const
 	return node;
 }
 
-InstatiatingModel MeshRenderer::GetModel() const
+InstantiatingModel MeshRenderer::GetModel() const
 {
 	return _model;
 }
@@ -134,7 +134,7 @@ size_t MeshRenderer::GetMeshCount() const
 	return _model.GetMeshCount();
 }
 
-InstatiatingMesh* MeshRenderer::GetMesh(size_t index) const
+InstantiatingMesh* MeshRenderer::GetMesh(size_t index) const
 {
 	return _model.GetMesh(index);
 }
@@ -255,7 +255,7 @@ void Twin2Engine::Core::MeshRenderer::OnDestroy()
 }
 #endif // MESH_FRUSTUM_CULLING
 
-void MeshRenderer::SetModel(const GraphicEngine::InstatiatingModel& model)
+void MeshRenderer::SetModel(const GraphicEngine::InstantiatingModel& model)
 {
 	if (_model != model)
 	{

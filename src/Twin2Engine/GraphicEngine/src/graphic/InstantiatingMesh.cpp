@@ -1,8 +1,8 @@
-#include <graphic/InstatiatingMesh.h>
+#include <graphic/InstantiatingMesh.h>
 
 using namespace Twin2Engine::GraphicEngine;
 
-InstatiatingMesh::InstatiatingMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices)
+InstantiatingMesh::InstantiatingMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices)
 {
     _vertices = vertices;
     _indices = indices;
@@ -102,7 +102,7 @@ InstatiatingMesh::InstatiatingMesh(const std::vector<Vertex>& vertices, const st
 }
 
 
-InstatiatingMesh::~InstatiatingMesh()
+InstantiatingMesh::~InstantiatingMesh()
 {
     glDeleteBuffers(1, &_EBO);
     glDeleteBuffers(1, &_VBO);
@@ -116,7 +116,7 @@ InstatiatingMesh::~InstatiatingMesh()
 }
 
 #ifdef MESH_FRUSTUM_CULLING
-bool InstatiatingMesh::IsOnFrustum(Frustum& frustum, glm::mat4 model)
+bool InstantiatingMesh::IsOnFrustum(Frustum& frustum, glm::mat4 model)
 {
     if (sphericalBV != nullptr) {
         sphericalBV->shapeColliderData->Position = glm::vec3(model * glm::vec4(sphericalBV->shapeColliderData->LocalPosition, 1.0f));
@@ -126,7 +126,7 @@ bool InstatiatingMesh::IsOnFrustum(Frustum& frustum, glm::mat4 model)
 }
 #endif // MESH_FRUSTUM_CULLING
 
-void InstatiatingMesh::Draw(unsigned int number)
+void InstantiatingMesh::Draw(unsigned int number)
 {
     glBindVertexArray(_VAO);
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <graphic/InstatiatingModel.h>
+#include <graphic/InstantiatingModel.h>
 #include <graphic/ModelData.h>
 #include <graphic/Vertex.h>
 #include <vector>
@@ -16,7 +16,7 @@ namespace Twin2Engine::Manager
 
 	class ModelsManager
 	{
-		friend class GraphicEngine::InstatiatingModel;
+		friend class GraphicEngine::InstantiatingModel;
 		friend class SceneManager;
 		friend class PrefabManager;
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <tools/EventHandler.h>
+
 namespace Twin2Engine {
 	namespace Graphic {
 		class Window;
@@ -75,7 +77,7 @@ namespace Twin2Engine {
 			ESCAPE = GLFW_KEY_ESCAPE,
 			ENTER = GLFW_KEY_ENTER,
 			TAB = GLFW_KEY_TAB,
-			BACKSPACE = GLFW_KEY_BACKSLASH,
+			BACKSPACE = GLFW_KEY_BACKSPACE,
 			INSERT = GLFW_KEY_INSERT,
 			DELETE_KEY = GLFW_KEY_DELETE,
 			ARROW_RIGHT = GLFW_KEY_RIGHT,
@@ -165,8 +167,11 @@ namespace Twin2Engine {
 			static Graphic::Window* _mainWindow;
 
 			static std::vector<Graphic::Window*> _windows;
-			static std::map<GLFWwindow*, std::map<uint8_t, uint8_t >> _mouseButtonStates;
+			static std::map<GLFWwindow*, std::map<uint8_t, uint8_t>> _mouseButtonStates;
 			static std::map<GLFWwindow*, std::map<uint16_t, uint8_t>> _keyStates;
+
+			static std::map<GLFWwindow*, Tools::EventHandler<KEY, INPUT_STATE>> _onKeyStateChange;
+			static std::map<GLFWwindow*, Tools::EventHandler<MOUSE_BUTTON, INPUT_STATE>> _onMouseButtonStateChange;
 
 			static void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods);
 			static void mouse_button_callback(GLFWwindow* win, int button, int action, int mods);
@@ -196,6 +201,7 @@ namespace Twin2Engine {
 			static bool IsMouseButtonHeldDown(Graphic::Window* window, MOUSE_BUTTON button);
 			static bool IsMouseButtonUp(Graphic::Window* window, MOUSE_BUTTON button);
 			static bool IsMouseButtonHeldUp(Graphic::Window* window, MOUSE_BUTTON button);
+			static Tools::EventHandler<MOUSE_BUTTON, INPUT_STATE>& GetOnMouseButtonStateChange(Graphic::Window* window);
 
 			// KEYS
 			static bool IsKeyPressed(Graphic::Window* window, KEY key);
@@ -204,6 +210,7 @@ namespace Twin2Engine {
 			static bool IsKeyHeldDown(Graphic::Window* window, KEY key);
 			static bool IsKeyUp(Graphic::Window* window, KEY key);
 			static bool IsKeyHeldUp(Graphic::Window* window, KEY key);
+			static Tools::EventHandler<KEY, INPUT_STATE>& GetOnKeyStateChange(Graphic::Window* window);
 #pragma endregion
 
 #pragma region WITH_MAIN_WINDOW
@@ -222,6 +229,7 @@ namespace Twin2Engine {
 			static bool IsMouseButtonHeldDown(MOUSE_BUTTON button);
 			static bool IsMouseButtonUp(MOUSE_BUTTON button);
 			static bool IsMouseButtonHeldUp(MOUSE_BUTTON button);
+			static Tools::EventHandler<MOUSE_BUTTON, INPUT_STATE>& GetOnMouseButtonStateChange();
 
 			// KEY
 			static bool IsKeyPressed(KEY key);
@@ -230,6 +238,7 @@ namespace Twin2Engine {
 			static bool IsKeyHeldDown(KEY key);
 			static bool IsKeyUp(KEY key);
 			static bool IsKeyHeldUp(KEY key);
+			static Tools::EventHandler<KEY, INPUT_STATE>& GetOnKeyStateChange();
 #pragma endregion
 		};
 	}

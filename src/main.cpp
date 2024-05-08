@@ -243,6 +243,7 @@ int main(int, char**)
     obj->SetName("Test Button");
     Transform* tr = obj->GetTransform();
     tr->Rotate(glm::vec3(0, 0, 45.f));
+    tr->Translate(glm::vec3(0.f, -200.f, 0.f));
     Button* b = obj->AddComponent<Button>();
     b->SetHeight(70);
     b->SetWidth(200);
@@ -259,6 +260,22 @@ int main(int, char**)
     t->SetSize(48);  
     t->SetColor(glm::vec4(1.f, 0.f, 0.f, 1.f));
     t->SetTextAlignX(TextAlignX::CENTER);
+
+    obj = SceneManager::CreateGameObject();
+    obj->SetName("Test Input Field");
+    Image* img = obj->AddComponent<Image>();
+    img->SetSprite("white_box");
+    img->SetWidth(200);
+    img->SetHeight(70);
+    Text* inputText = obj->AddComponent<Text>();
+    inputText->SetFont("res/fonts/Caveat-Regular.ttf");
+    inputText->SetSize(48);
+    Text* placeHolder = obj->AddComponent<Text>();
+    InputField* inp = obj->AddComponent<InputField>();
+    inp->SetInputText(inputText);
+    inp->SetPlaceHolderText(placeHolder);
+    inp->SetWidth(200);
+    inp->SetHeight(70);
 
     //SceneManager::SaveScene("res/scenes/quickSavedScene_toonShading.yaml");
 
@@ -382,12 +399,12 @@ void input()
         }
     }
 
-    if (Input::IsKeyPressed(KEY::R)) {
+    /*if (Input::IsKeyPressed(KEY::R)) {
         SceneManager::LoadScene("testScene");
         Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
         image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
         text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
-    }
+    }*/
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::Q)) {
         SceneManager::SaveScene("res/scenes/quickSavedScene.yaml");

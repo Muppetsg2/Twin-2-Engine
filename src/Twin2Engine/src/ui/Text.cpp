@@ -47,7 +47,7 @@ void Text::UpdateTextCache()
 			// Odejmowanie nadmiaru
 			else if (_oldText.size() > _text.size()) {
 				bool checkMaxSize = false;
-				for (size_t i = _oldText.size(); i >= _text.size(); --i) {
+				for (size_t i = _oldText.size(); i > _text.size(); --i) {
 					_totalTextWidth -= (*(_textCache.end() - 1))->Advance >> 6;
 					if ((*(_textCache.end() - 1))->Size.y == _maxTextHeight) {
 						checkMaxSize = true;
@@ -94,6 +94,7 @@ void Text::Render()
 	if (_textCacheDirty) UpdateTextCache();
 
 	UIElement elem{};
+	elem.hasTexture = true;
 	elem.isText = true;
 	elem.color = _color;
 	elem.spriteOffset = { 0, 0 };
@@ -165,13 +166,12 @@ void Text::SetColor(const vec4& color)
 void Text::SetText(const string& text)
 {
 	if (_text != text) {
-		_oldText = _text;
-		_text = text;
-
 		if (!_textCacheDirty) {
 			_textCacheDirty = true;
 			_justResizeCache = true;
+			_oldText = _text;
 		}
+		_text = text;
 	}
 }
 

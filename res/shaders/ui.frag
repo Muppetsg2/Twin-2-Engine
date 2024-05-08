@@ -19,6 +19,7 @@ layout (std140, binding = 5) uniform UIElementData {
 	ivec2 spriteSize;
 	ivec2 texSize;
 	bool isText;
+    bool hasTexture;
 };
 
 in GS_OUT {
@@ -31,13 +32,17 @@ out vec4 Color;
 
 void main() 
 {
-    vec2 invTexSize = 1.0 / texSize;
-    vec2 uv = (fs_in.texCoord * spriteSize + spriteOffset) * invTexSize;
     vec4 gammaColor = vec4(pow(color.rgb, vec3(gamma)), color.a);
+    vec4 elemColor = vec4(1.0);
+    if (hasTexture) {
+        vec2 invTexSize = 1.0 / texSize;
+        vec2 uv = (fs_in.texCoord * spriteSize + spriteOffset) * invTexSize;
+        elemColor = texture(image, uv);
+    }
     if (!isText) {
-        Color = texture(image, uv) * gammaColor;
+        Color = elemColor * gammaColor;
     }
     else {
-        Color = vec4(1.0, 1.0, 1.0, texture(image, uv).r) * gammaColor;
+        Color = vec4(1.0, 1.0, 1.0, elemColor.r) * gammaColor;
     }
 }

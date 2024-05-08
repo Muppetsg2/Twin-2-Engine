@@ -19,6 +19,7 @@ namespace Twin2Engine
 			glm::ivec2 textureSize;
 			uint32_t textureID;
 			bool isText;
+			bool hasTexture;
 		};
 
 		static const Tools::STD140Offsets CanvasOffsets{
@@ -32,7 +33,8 @@ namespace Twin2Engine
 			Tools::STD140Variable<glm::ivec2>("spriteOffset"),
 			Tools::STD140Variable<glm::ivec2>("spriteSize"),
 			Tools::STD140Variable<glm::ivec2>("texSize"),
-			Tools::STD140Variable<bool>("isText")
+			Tools::STD140Variable<bool>("isText"),
+			Tools::STD140Variable<bool>("hasTexture")
 		};
 
 		static Tools::STD140Struct MakeUIElementStruct(const UIElement& uiElem) {
@@ -44,6 +46,7 @@ namespace Twin2Engine
 			uiElemStruct.Set("spriteSize", uiElem.spriteSize);
 			uiElemStruct.Set("texSize", uiElem.textureSize);
 			uiElemStruct.Set("isText", uiElem.isText);
+			uiElemStruct.Set("hasTexture", uiElem.hasTexture);
 			return uiElemStruct;
 		}
 

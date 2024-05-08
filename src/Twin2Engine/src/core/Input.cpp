@@ -5,6 +5,7 @@ using namespace std;
 using namespace glm;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;
+using namespace Twin2Engine::Tools;
 
 Window* Input::_mainWindow = nullptr;
 
@@ -14,31 +15,40 @@ map<GLFWwindow*, map<uint8_t, uint8_t>> Input::_mouseButtonStates;
 
 map<GLFWwindow*, map<uint16_t, uint8_t>> Input::_keyStates;
 
+map<GLFWwindow*, EventHandler<KEY, INPUT_STATE>> Input::_onKeyStateChange;
+map<GLFWwindow*, EventHandler<MOUSE_BUTTON, INPUT_STATE>> Input::_onMouseButtonStateChange;
+
 void Input::key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_UNKNOWN) return; // Don't accept unknown keys
-	uint16_t keyStateCode = (uint8_t)key - (uint8_t)KEY::SPACE;
-	if (action == GLFW_PRESS) {
+	uint16_t keyStateCode = (uint16_t)key - (uint16_t)KEY::SPACE;
+	if (action == GLFW_PRESS && _keyStates[win][keyStateCode] != (uint8_t)INPUT_STATE::PRESSED && _keyStates[win][keyStateCode] != (uint8_t)INPUT_STATE::PRESSED_LONGER) {
 		_keyStates[win][keyStateCode] = (uint8_t)INPUT_STATE::PRESSED;
+		_onKeyStateChange[win].Invoke((KEY)key, INPUT_STATE::PRESSED);
 	}
-	else if (action == GLFW_RELEASE) {
+	else if (action == GLFW_RELEASE && _keyStates[win][keyStateCode] != (uint8_t)INPUT_STATE::RELEASED && _keyStates[win][keyStateCode] != (uint8_t)INPUT_STATE::UP) {
 		_keyStates[win][keyStateCode] = (uint8_t)INPUT_STATE::RELEASED;
+		_onKeyStateChange[win].Invoke((KEY)key, INPUT_STATE::RELEASED);
 	}
-	else if (action == GLFW_REPEAT) {
+	else if (action == GLFW_REPEAT && _keyStates[win][keyStateCode] != (uint8_t)INPUT_STATE::DOWN) {
 		_keyStates[win][keyStateCode] = (uint8_t)INPUT_STATE::DOWN;
+		_onKeyStateChange[win].Invoke((KEY)key, INPUT_STATE::DOWN);
 	}
 }
 
 void Input::mouse_button_callback(GLFWwindow* win, int button, int action, int mods)
 {
-	if (action == GLFW_PRESS) {
+	if (action == GLFW_PRESS && _mouseButtonStates[win][button] != (uint8_t)INPUT_STATE::PRESSED && _mouseButtonStates[win][button] != (uint8_t)INPUT_STATE::PRESSED_LONGER) {
 		_mouseButtonStates[win][button] = (uint8_t)INPUT_STATE::PRESSED;
+		_onMouseButtonStateChange[win].Invoke((MOUSE_BUTTON)button, INPUT_STATE::PRESSED);
 	}
-	else if (action == GLFW_RELEASE) {
+	else if (action == GLFW_RELEASE && _mouseButtonStates[win][button] != (uint8_t)INPUT_STATE::RELEASED && _mouseButtonStates[win][button] != (uint8_t)INPUT_STATE::UP) {
 		_mouseButtonStates[win][button] = (uint8_t)INPUT_STATE::RELEASED;
+		_onMouseButtonStateChange[win].Invoke((MOUSE_BUTTON)button, INPUT_STATE::RELEASED);
 	}
-	else if (action == GLFW_REPEAT) {
+	else if (action == GLFW_REPEAT && _mouseButtonStates[win][button] != (uint8_t)INPUT_STATE::DOWN) {
 		_mouseButtonStates[win][button] = (uint8_t)INPUT_STATE::DOWN;
+		_onMouseButtonStateChange[win].Invoke((MOUSE_BUTTON)button, INPUT_STATE::DOWN);
 	}
 }
 
@@ -111,6 +121,7 @@ void Input::Update()
 		for (const auto& key : windowKeyStates.second) {
 			if (key.second == (uint8_t)INPUT_STATE::RELEASED) {
 				_keyStates[windowKeyStates.first][key.first] = (uint8_t)INPUT_STATE::UP;
+				_onKeyStateChange[windowKeyStates.first].Invoke((KEY)(key.first + (uint16_t)KEY::SPACE), INPUT_STATE::UP);
 			}
 			else if (key.second == (uint8_t)INPUT_STATE::PRESSED) {
 				_keyStates[windowKeyStates.first][key.first] = (uint8_t)INPUT_STATE::PRESSED_LONGER;
@@ -121,6 +132,7 @@ void Input::Update()
 		for (const auto& button : windowMouseButtonStates.second) {
 			if (button.second == (uint8_t)INPUT_STATE::RELEASED) {
 				_mouseButtonStates[windowMouseButtonStates.first][button.first] = (uint8_t)INPUT_STATE::UP;
+				_onMouseButtonStateChange[windowMouseButtonStates.first].Invoke((MOUSE_BUTTON)button.first, INPUT_STATE::UP);
 			}
 			else if (button.second == (uint8_t)INPUT_STATE::PRESSED) {
 				_mouseButtonStates[windowMouseButtonStates.first][button.first] = (uint8_t)INPUT_STATE::PRESSED_LONGER;
@@ -236,6 +248,11 @@ bool Input::IsMouseButtonHeldUp(Window* window, MOUSE_BUTTON button)
 	return _mouseButtonStates[glfwWin][(uint8_t)button] == (uint8_t)INPUT_STATE::UP;
 }
 
+EventHandler<MOUSE_BUTTON, INPUT_STATE>& Input::GetOnMouseButtonStateChange(Window* window)
+{
+	return _onMouseButtonStateChange[window->GetWindow()];
+}
+
 bool Input::IsKeyPressed(Window* window, KEY key)
 {
 	GLFWwindow* glfwWin = window->GetWindow();
@@ -305,6 +322,11 @@ bool Input::IsKeyHeldUp(Window* window, KEY key)
 	return _keyStates[glfwWin][keyStateCode] == (uint8_t)INPUT_STATE::UP;
 }
 
+EventHandler<KEY, INPUT_STATE>& Input::GetOnKeyStateChange(Window* window)
+{
+	return _onKeyStateChange[window->GetWindow()];
+}
+
 void Input::HideAndLockCursor()
 {
 	HideAndLockCursor(_mainWindow);
@@ -365,6 +387,11 @@ bool Input::IsMouseButtonHeldUp(MOUSE_BUTTON button)
 	return IsMouseButtonHeldUp(_mainWindow, button);
 }
 
+EventHandler<MOUSE_BUTTON, INPUT_STATE>& Input::GetOnMouseButtonStateChange()
+{
+	return GetOnMouseButtonStateChange(_mainWindow);
+}
+
 bool Input::IsKeyPressed(KEY key)
 {
 	return IsKeyPressed(_mainWindow, key);
@@ -393,4 +420,9 @@ bool Input::IsKeyUp(KEY key)
 bool Input::IsKeyHeldUp(KEY key)
 {
 	return IsKeyHeldUp(_mainWindow, key);
+}
+
+EventHandler<KEY, INPUT_STATE>& Input::GetOnKeyStateChange()
+{
+	return GetOnKeyStateChange(_mainWindow);
 }

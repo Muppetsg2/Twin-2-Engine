@@ -79,13 +79,14 @@ void UIRenderingManager::Render()
 			STD140Struct elemStruct = MakeUIElementStruct(elem);
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, elemStruct.GetSize(), elemStruct.GetData().data());
 
-			glBindTexture(GL_TEXTURE_2D, elem.textureID);
+			if (elem.hasTexture) glBindTexture(GL_TEXTURE_2D, elem.textureID);
 
 			glDrawArrays(GL_POINTS, 0, 1);
 
 			_renderQueue.pop();
 		}
 		glBindBuffer(GL_UNIFORM_BUFFER, NULL);
+		glBindVertexArray(NULL);
 	}
 }
 

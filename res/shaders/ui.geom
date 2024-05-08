@@ -14,6 +14,7 @@ layout (std140, binding = 5) uniform UIElementData {
 	ivec2 spriteSize;
 	ivec2 texSize;
 	bool isText;
+	bool hasTexture;
 };
 
 out GS_OUT {

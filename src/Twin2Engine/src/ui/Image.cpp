@@ -27,6 +27,15 @@ void Image::Render()
 		elem.color = _color;
 		elem.elemSize = { _width, _height };
 		elem.transform = GetTransform()->GetTransformMatrix();
+		elem.hasTexture = true;
+		UIRenderingManager::Render(elem);
+	}
+	else {
+		UIElement elem{};
+		elem.color = _color;
+		elem.elemSize = { _width, _height };
+		elem.transform = GetTransform()->GetTransformMatrix();
+		elem.hasTexture = false;
 		UIRenderingManager::Render(elem);
 	}
 }

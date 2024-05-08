@@ -1,10 +1,9 @@
-#ifndef _MESH_RENDERER_H_
-#define _MESH_RENDERER_H_
+#pragma once
 
 #include <core/RenderableComponent.h>
 #include <core/Transform.h>
 
-#include <graphic/InstatiatingModel.h>
+#include <graphic/InstantiatingModel.h>
 #include <graphic/Material.h>
 #include <graphic/manager/MeshRenderingManager.h>
 
@@ -25,7 +24,7 @@ namespace Twin2Engine::Core
 			CloneFunctionEnd()
 	private:
 
-		GraphicEngine::InstatiatingModel _model;
+		GraphicEngine::InstantiatingModel _model;
 
 		std::vector<GraphicEngine::Material> _materials;
 
@@ -61,14 +60,14 @@ namespace Twin2Engine::Core
 		bool IsTransformChanged() const;
 
 #pragma region MODEL_PART
-		GraphicEngine::InstatiatingModel GetModel() const;
+		GraphicEngine::InstantiatingModel GetModel() const;
 		size_t GetMeshCount() const;
-		void SetModel(const GraphicEngine::InstatiatingModel& model);
+		void SetModel(const GraphicEngine::InstantiatingModel& model);
 		void SetModel(size_t modelId);
 #pragma endregion
 
 #pragma region MATERIALS_PART
-		GraphicEngine::InstatiatingMesh* GetMesh(size_t index) const;
+		GraphicEngine::InstantiatingMesh* GetMesh(size_t index) const;
 		size_t GetMaterialCount() const;
 		GraphicEngine::Material GetMaterial(size_t index) const;
 		void AddMaterial(GraphicEngine::Material material);
@@ -86,5 +85,3 @@ namespace Twin2Engine::Core
 
 	};
 }
-
-#endif

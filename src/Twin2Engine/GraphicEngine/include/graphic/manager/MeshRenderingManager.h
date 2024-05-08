@@ -1,6 +1,6 @@
 #pragma once
 
-#include <graphic/InstatiatingMesh.h>
+#include <graphic/InstantiatingMesh.h>
 #include <graphic/Material.h>
 #include <graphic/Shader.h>
 #include <core/CameraComponent.h>

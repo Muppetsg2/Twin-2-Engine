@@ -978,6 +978,29 @@ void render_imgui()
                 }
                 ImGui::EndCombo();
             }
+            static std::string alignXValue = t->GetTextAlignX() == TextAlignX::CENTER ? "CENTER" : t->GetTextAlignX() == TextAlignX::LEFT ? "LEFT" : "RIGHT";
+            if (ImGui::BeginCombo("Align X", alignXValue.c_str())) {
+                TextAlignX alignX = t->GetTextAlignX();
+                if (ImGui::Selectable("LEFT")) {
+                    if (alignX != TextAlignX::LEFT) {
+                        t->SetTextAlignX(TextAlignX::LEFT);
+                        alignXValue = "LEFT";
+                    }
+                }
+                if (ImGui::Selectable("CENTER")) {
+                    if (alignX != TextAlignX::CENTER) {
+                        t->SetTextAlignX(TextAlignX::CENTER);
+                        alignXValue = "CENTER";
+                    }
+                }
+                if (ImGui::Selectable("RIGHT")) {
+                    if (alignX != TextAlignX::RIGHT) {
+                        t->SetTextAlignX(TextAlignX::RIGHT);
+                        alignXValue = "RIGHT";
+                    }
+                }
+                ImGui::EndCombo();
+            }
         }
 
 #pragma region EDITOR_MATERIAL_SCANNING

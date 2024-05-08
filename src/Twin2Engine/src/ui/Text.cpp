@@ -108,26 +108,26 @@ void Text::Render()
 		float w = c->Size.x;
 		float h = c->Size.y;
 
-		float xpos = x + c->Bearing.x;
+		float xpos = x;
 		switch (_alignX) {
 		case TextAlignX::LEFT:
-			xpos += w * .5f;
+			xpos += w * .5f + c->Bearing.x;
 			break;
 		case TextAlignX::CENTER:
-			xpos -= _totalTextWidth * .5f;
+			xpos -= _totalTextWidth * .5f + c->Bearing.x - w * .5f;
 			break;
 		case TextAlignX::RIGHT:
-			xpos -= _totalTextWidth;
+			//xpos -= (w - _totalTextWidth) + (c->Advance - c->Bearing.x);
 			break;
 		}
 
 		float ypos = y;
 		switch (_alignY) {
 		case TextAlignY::BOTTOM:
-			ypos += (h - _maxTextHeight) * .5f;
+			ypos += (h - _maxTextHeight) * .5f - (h - c->Bearing.y);
 			break;
 		case TextAlignY::TOP:
-			ypos -= (h - _maxTextHeight) * .5f;
+			ypos -= (h - _maxTextHeight) * .5f - (h - c->Bearing.y);
 			break;
 		}
 

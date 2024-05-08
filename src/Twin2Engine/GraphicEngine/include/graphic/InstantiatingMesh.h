@@ -11,7 +11,7 @@
 
 namespace Twin2Engine::GraphicEngine
 {
-    class InstatiatingMesh
+    class InstantiatingMesh
     {
         /*  dane klasy Mesh  */
         std::vector<Vertex> _vertices;
@@ -22,8 +22,8 @@ namespace Twin2Engine::GraphicEngine
         GLuint _EBO;
 
     public:
-        InstatiatingMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
-        virtual ~InstatiatingMesh();
+        InstantiatingMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
+        virtual ~InstantiatingMesh();
 
 #ifdef MESH_FRUSTUM_CULLING
         CollisionSystem::BoundingVolume* sphericalBV = nullptr;

@@ -13,7 +13,7 @@ using namespace Twin2Engine::Manager;
 std::vector<CameraComponent*> CameraComponent::Cameras = std::vector<CameraComponent*>();
 GLuint CameraComponent::_uboMatrices = 0;
 GLuint CameraComponent::_uboWindowData = 0;
-InstatiatingModel CameraComponent::_renderPlane = InstatiatingModel();
+InstantiatingModel CameraComponent::_renderPlane = InstantiatingModel();
 Shader* CameraComponent::_renderShader = nullptr;
 
 void CameraComponent::OnTransformChange(Transform* trans)

@@ -209,7 +209,7 @@ Material material;
 Material material2;
 Material wallMat;
 Material roofMat;
-InstatiatingModel modelMesh;
+InstantiatingModel modelMesh;
 GameObject* gameObject;
 GameObject* gameObject2;
 GameObject* gameObject3;
@@ -603,7 +603,7 @@ int main(int, char**)
 
 #pragma endregion
 
-    //InstatiatingModel modelHexagon = ModelsManager::LoadModel("res/models/hexagon.obj");
+    //InstantiatingModel modelHexagon = ModelsManager::LoadModel("res/models/hexagon.obj");
     //GameObject* hexagonPrefab = new GameObject();
     //hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
     //hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
@@ -853,9 +853,9 @@ void update()
 
     // Update game objects' state here
     text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
-    CollisionManager::Instance()->PerformCollisions();
+    //CollisionManager::Instance()->PerformCollisions();
     SceneManager::UpdateCurrentScene();
-    Twin2Engine::Processes::ProcessManager::Instance()->UpdateSynchronizedProcess();
+    //Twin2Engine::Processes::ProcessManager::Instance()->UpdateSynchronizedProcess();
     colorSpan -= Time::GetDeltaTime() * 0.2f;
     if (colorSpan <= 0.f) {
         colorSpan = 1.f;

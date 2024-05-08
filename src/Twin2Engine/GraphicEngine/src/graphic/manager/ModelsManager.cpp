@@ -34,8 +34,8 @@ inline void ModelsManager::LoadModelAssimp(const std::string& modelPath, ModelDa
         std::vector<unsigned int> indices;
         ExtractMeshAssimp(mesh, vertices, indices);
 
-        modelData->meshes[i] = new InstatiatingMesh(vertices, indices);
-        //modelData->meshes.push_back(new InstatiatingMesh(vertices, indices));
+        modelData->meshes[i] = new InstantiatingMesh(vertices, indices);
+        //modelData->meshes.push_back(new InstantiatingMesh(vertices, indices));
     }
 }
 
@@ -116,7 +116,7 @@ inline void Twin2Engine::GraphicEngine::ModelsManager::LoadModelGLTF(const std::
     //    std::vector<unsigned int> indices;
     //    ExtractMeshGLTF(mesh, model, vertices, indices);
     //
-    //    InstatiatingMesh* mesh = new InstatiatingMesh(vertices, indices);
+    //    InstantiatingMesh* mesh = new InstantiatingMesh(vertices, indices);
     //}
 
     std::vector<Vertex> vertices;
@@ -125,7 +125,7 @@ inline void Twin2Engine::GraphicEngine::ModelsManager::LoadModelGLTF(const std::
     {
         ExtractMeshGLTF(model.meshes[i], model, vertices, indices);
 
-        modelData->meshes[i] = new InstatiatingMesh(vertices, indices);
+        modelData->meshes[i] = new InstantiatingMesh(vertices, indices);
     }
 }
 
@@ -284,7 +284,7 @@ void ModelsManager::LoadCube(ModelData* modelData)
     };
 
     modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstatiatingMesh(vertices, indices);
+    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
 }
 
 void ModelsManager::LoadPlane(ModelData* modelData)
@@ -304,7 +304,7 @@ void ModelsManager::LoadPlane(ModelData* modelData)
     };
 
     modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstatiatingMesh(vertices, indices);
+    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
 }
 
 void ModelsManager::LoadSphere(ModelData* modelData)
@@ -479,7 +479,7 @@ void ModelsManager::LoadSphere(ModelData* modelData)
     trisNum.clear();
 
     modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstatiatingMesh(vertices, indices);
+    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
 }
 
 void ModelsManager::LoadTorus(ModelData* modelData)
@@ -584,7 +584,7 @@ void ModelsManager::LoadTorus(ModelData* modelData)
     trisNum.clear();
 
     modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstatiatingMesh(vertices, indices);
+    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
 }
 
 void ModelsManager::LoadCone(ModelData* modelData)
@@ -668,7 +668,7 @@ void ModelsManager::LoadCone(ModelData* modelData)
     trisNum.clear();
 
     modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstatiatingMesh(vertices, indices);
+    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
 }
 
 void ModelsManager::LoadPiramid(ModelData* modelData)
@@ -712,7 +712,7 @@ void ModelsManager::LoadPiramid(ModelData* modelData)
     };
 
     modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstatiatingMesh(vertices, indices);
+    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
 }
 
 void ModelsManager::LoadTetrahedron(ModelData* modelData)
@@ -748,7 +748,7 @@ void ModelsManager::LoadTetrahedron(ModelData* modelData)
     };
 
     modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstatiatingMesh(vertices, indices);
+    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
 }
 
 void ModelsManager::LoadCylinder(ModelData* modelData)
@@ -839,7 +839,7 @@ void ModelsManager::LoadCylinder(ModelData* modelData)
     GenerateCircle(vertices, indices, segments, -h / 2.f, GL_CW);
 
     modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstatiatingMesh(vertices, indices);
+    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
 }
 
 void ModelsManager::LoadHexagon(ModelData* modelData)
@@ -929,7 +929,7 @@ void ModelsManager::LoadHexagon(ModelData* modelData)
     };
 
     modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstatiatingMesh(vertices, indices);
+    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
 }
 
 ModelData* ModelsManager::LoadModelData(const std::string& modelPath)
@@ -1000,7 +1000,7 @@ void ModelsManager::UnloadModel(size_t managerId) {
     if (loadedModels.find(managerId) != loadedModels.end())
     {
         ModelData* modelData = loadedModels[managerId];
-        for (InstatiatingMesh*& mesh : modelData->meshes)
+        for (InstantiatingMesh*& mesh : modelData->meshes)
         {
             delete mesh;
         }
@@ -1139,60 +1139,60 @@ void ModelsManager::GenerateCircle(std::vector<Vertex> vertices, std::vector<uns
     trisNum.clear();
 }
 
-InstatiatingModel ModelsManager::LoadModel(const std::string& modelPath)
+InstantiatingModel ModelsManager::LoadModel(const std::string& modelPath)
 {
     ModelData* modelData = LoadModelData(modelPath);
 
-    InstatiatingModel model = InstatiatingModel(modelData);
+    InstantiatingModel model = InstantiatingModel(modelData);
 
     return model;
 }
 
-InstatiatingModel ModelsManager::GetModel(size_t managerId) {
-    InstatiatingModel model;
+InstantiatingModel ModelsManager::GetModel(size_t managerId) {
+    InstantiatingModel model;
     if (loadedModels.find(managerId) != loadedModels.end()) {
         model = loadedModels[managerId];
     }
     return model;
 }
 
-InstatiatingModel ModelsManager::GetCube() {
+InstantiatingModel ModelsManager::GetCube() {
     return GetModel(stringHash(CUBE_PATH));
 }
 
-InstatiatingModel ModelsManager::GetPlane() {
+InstantiatingModel ModelsManager::GetPlane() {
     return GetModel(stringHash(PLANE_PATH));
 }
 
-InstatiatingModel ModelsManager::GetSphere() {
+InstantiatingModel ModelsManager::GetSphere() {
     return GetModel(stringHash(SPHERE_PATH));
 }
 
-InstatiatingModel ModelsManager::GetTorus() {
+InstantiatingModel ModelsManager::GetTorus() {
     return GetModel(stringHash(TORUS_PATH));
 }
 
-InstatiatingModel ModelsManager::GetCone() {
+InstantiatingModel ModelsManager::GetCone() {
     return GetModel(stringHash(CONE_PATH));
 }
 
-InstatiatingModel ModelsManager::GetPiramid() {
+InstantiatingModel ModelsManager::GetPiramid() {
     return GetModel(stringHash(PIRAMID_PATH));
 }
 
-InstatiatingModel ModelsManager::GetTetrahedron() {
+InstantiatingModel ModelsManager::GetTetrahedron() {
     return GetModel(stringHash(TETRAHEDRON_PATH));
 }
 
-InstatiatingModel ModelsManager::GetCylinder() {
+InstantiatingModel ModelsManager::GetCylinder() {
     return GetModel(stringHash(CYLINDER_PATH));
 }
 
-InstatiatingModel ModelsManager::GetHexagon() {
+InstantiatingModel ModelsManager::GetHexagon() {
     return GetModel(stringHash(HEXAGON_PATH));
 }
 
-InstatiatingModel ModelsManager::CreateModel(const std::string& modelName, std::vector<Vertex> vertices, std::vector<unsigned int> indices)
+InstantiatingModel ModelsManager::CreateModel(const std::string& modelName, std::vector<Vertex> vertices, std::vector<unsigned int> indices)
 {
     size_t strHash = stringHash(modelName);
 
@@ -1201,7 +1201,7 @@ InstatiatingModel ModelsManager::CreateModel(const std::string& modelName, std::
     {
         SPDLOG_INFO("Creating model: {}!", modelName);
 
-        InstatiatingMesh* mesh = new InstatiatingMesh(vertices, indices);
+        InstantiatingMesh* mesh = new InstantiatingMesh(vertices, indices);
 
         modelData = new ModelData{
             .id = strHash,

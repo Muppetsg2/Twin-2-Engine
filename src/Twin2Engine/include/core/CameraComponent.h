@@ -7,7 +7,7 @@
 using namespace glm;
 
 namespace Twin2Engine::GraphicEngine {
-	class InstatiatingModel;
+	class InstantiatingModel;
 	class Shader;
 }
 
@@ -37,7 +37,7 @@ namespace Twin2Engine::Core {
 	private:
 		static GLuint _uboMatrices;
 		static GLuint _uboWindowData;
-		static Twin2Engine::GraphicEngine::InstatiatingModel _renderPlane;
+		static Twin2Engine::GraphicEngine::InstantiatingModel _renderPlane;
 		static Twin2Engine::GraphicEngine::Shader* _renderShader;
 
 		GLuint _depthMapFBO = NULL;

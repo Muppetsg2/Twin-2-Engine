@@ -23,7 +23,7 @@ Twin2Engine::GraphicEngine::InstantiatingModel::InstantiatingModel(ModelData* mo
     this->modelData = modelData;
 }
 
-Twin2Engine::GraphicEngine::InstantiatingModel::InstantiatingModel(const InstatiatingModel& model)
+Twin2Engine::GraphicEngine::InstantiatingModel::InstantiatingModel(const InstantiatingModel& model)
 {
     modelData = model.modelData;
 }

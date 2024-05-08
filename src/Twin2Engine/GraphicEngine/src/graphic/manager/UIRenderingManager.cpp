@@ -2,7 +2,7 @@
 #include <graphic/manager/ShaderManager.h>
 #include <graphic/Shader.h>
 #include <graphic/manager/ModelsManager.h>
-#include <graphic/InstatiatingModel.h>
+#include <graphic/InstantiatingModel.h>
 
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
@@ -10,7 +10,7 @@ using namespace std;
 using namespace glm;
 
 queue<UIElement> UIRenderingManager::_renderQueue = queue<UIElement>();
-InstatiatingModel UIRenderingManager::_spritePlane = InstatiatingModel();
+InstantiatingModel UIRenderingManager::_spritePlane = InstantiatingModel();
 Shader* UIRenderingManager::_uiShader = nullptr;
 
 void UIRenderingManager::Init() {

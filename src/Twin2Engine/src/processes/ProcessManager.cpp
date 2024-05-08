@@ -1,6 +1,6 @@
 #include <processes/ProcessManager.h>
 
-static Twin2Engine::Processes::ProcessManager* instance;
+Twin2Engine::Processes::ProcessManager* Twin2Engine::Processes::ProcessManager::instance = nullptr;
 
 void Twin2Engine::Processes::ProcessManager::UpdateSynchronizedProcess()
 {

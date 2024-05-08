@@ -90,6 +90,7 @@
 
 // EDITOR
 #include <Editor/Common/ProcessingMtlFiles.h>
+#include <Editor/Common/MaterialCreator.h>
 
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
@@ -569,6 +570,7 @@ int main(int, char**)
 
     // ADDING SCENES
     SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
 
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();
@@ -1330,43 +1332,64 @@ void imgui_render()
 
 #pragma region ScriptableObjects
 
-        static string selectedSO = "";
-        static vector<string> scriptableObjectsNames = ScriptableObjectManager::GetScriptableObjectsNames();
-        if (ImGui::TreeNode("ScriptableObjects")) {
-            for (size_t i = 0; i < scriptableObjectsNames.size(); i++)
-            {
-                if (ImGui::Selectable(scriptableObjectsNames[i].c_str())) {
-                    selectedSO = scriptableObjectsNames[i];
-                }
-            }
-            ImGui::TreePop();
-        }
-        ImGui::Text("Selected Scriptable Object to create:");
-        ImGui::SameLine();
-        ImGui::InputText("##selectedItem", &selectedSO[0], selectedSO.size(), ImGuiInputTextFlags_ReadOnly);
-        static char dstPath[255] = { '\0' };
-        ImGui::InputText("##dstPath", dstPath, 254);
-
-        if (ImGui::Button("Create ScriptableObject"))
-        {
-            SPDLOG_WARN("Button pressed");
-            if (selectedSO.size() > 0)
-            {
-                SPDLOG_WARN("Selected size");
-                string strDstPath(dstPath);
-                if (strDstPath.size() > 0)
+        if (ImGui::CollapsingHeader("Scriptable Object Creator")) {
+            static string selectedSO = "";
+            static vector<string> scriptableObjectsNames = ScriptableObjectManager::GetScriptableObjectsNames();
+            if (ImGui::TreeNode("ScriptableObjects")) {
+                for (size_t i = 0; i < scriptableObjectsNames.size(); i++)
                 {
-                    SPDLOG_WARN("DstPath size");
-                    ScriptableObjectManager::CreateScriptableObject(strDstPath, selectedSO);
+                    if (ImGui::Selectable(scriptableObjectsNames[i].c_str())) {
+                        selectedSO = scriptableObjectsNames[i];
+                    }
+                }
+                ImGui::TreePop();
+            }
+            ImGui::Text("Selected Scriptable Object to create:");
+            ImGui::SameLine();
+            ImGui::InputText("##selectedItem", &selectedSO[0], selectedSO.size(), ImGuiInputTextFlags_ReadOnly);
+            static char dstPath[255] = { '\0' };
+            ImGui::Text("Destination and output file name:");
+            ImGui::SameLine();
+            ImGui::InputText("##dstPath", dstPath, 254);
+
+            if (ImGui::Button("Create ScriptableObject"))
+            {
+                if (selectedSO.size() > 0)
+                {
+                    string strDstPath(dstPath);
+                    if (strDstPath.size() > 0)
+                    {
+                        ScriptableObjectManager::CreateScriptableObject(strDstPath, selectedSO);
+                    }
                 }
             }
         }
 #pragma endregion
 
+#pragma region MATERIAL_CREATOR
+
+
+        if (ImGui::CollapsingHeader("Material Creator"))
+        {
+            static char shaderName[255] = { '\0' };
+            static char materialName[255] = { '\0' };
+            ImGui::Text("Shader name:");
+            ImGui::SameLine();
+            ImGui::InputText("##selectedItem", shaderName, 254);
+            ImGui::Text("Material name:");
+            ImGui::SameLine();
+            ImGui::InputText("##dstPath", materialName, 254);
+            if (ImGui::Button("Create Material"))
+            {
+                Editor::Common::CreateMaterial(shaderName, materialName);
+            }
+        }
+
+#pragma endregion
 
 #pragma region EDITOR_MATERIAL_SCANNING
 
-        if (ImGui::Button("Scan for new materials"))
+        if (ImGui::Button("Scan for materials"))
         {
             filesystem::path src = "res/models";
             filesystem::path dst = "res/materials/processed";

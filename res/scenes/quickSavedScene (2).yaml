@@ -6,6 +6,18 @@ Textures:
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
+  - path: res/textures/fakeBRDF.png
+    fileFormat: 35906
+    engineFormat: 6408
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
+  - path: res/textures/cityTextureColour.png
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
   - path: res/textures/grass.png
     fileFormat: 35906
     engineFormat: 6408
@@ -41,20 +53,13 @@ Textures:
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-  - path: res/textures/fakeBRDF.png
-    fileFormat: 35906
-    engineFormat: 6408
-    sWrapMode: 33648
-    tWrapMode: 33648
-    minFilterMode: 9986
-    magFilterMode: 9729
 Sprites:
   - alias: white_box
     texture: 0
   - alias: grass
-    texture: 1
-  - alias: stone
     texture: 3
+  - alias: stone
+    texture: 5
 Fonts:
   - res/fonts/Caveat-Regular.ttf
 Audio:
@@ -62,30 +67,41 @@ Audio:
 Materials:
   - hexagonMat
   - Basic2
+  - GreenHexTile
+  - ColoredHexTile
   - metal
   - multiTexture
   - textured
   - deska
+  - CityMaterial
+  - BlueHexTile
   - wallMat
-  - roofMat
-  - multiTexture
+  - MountainsUnlit
   - FakeBRDF
+  - RedHexTile
+  - roofMat
 Models:
   - res/models/AK47.obj
+  - res/models/mountain.obj
+  - res/models/radioStation.obj
   - res/models/hexagon.obj
   - res/models/castle.obj
   - "{Cube}"
   - "{Plane}"
+  - res/models/city.obj
   - "{Sphere}"
 Prefabs:
+  - res/prefabs/tilemap/mapElements/city.prefab
   - res/prefabs/testPrefab.yaml
-ScriptableObjects:
-  - path: res/scriptablobjects/RegionsGeneratorByKMeans.so
-  - path: res/scriptablobjects/SectorGeneratorForRegionsByKMeans.so
-  - path: res/scriptablobjects/LakeGenerator.so
-  - path: res/scriptablobjects/MountainsGenerator.so
-  - path: res/scriptablobjects/CityGenerator.so
-  - path: res/scriptablobjects/RadioStationGeneratorSectorBased.so
+  - res/prefabs/tilemap/mapElements/radioStation.prefab
+  - res/prefabs/tilemap/tiles/blueHexTile.prefab
+  - res/prefabs/tilemap/tiles/redHexTile.prefab
+  - res/prefabs/tilemap/mapSector.prefab
+  - res/prefabs/tilemap/tiles/hexTile.prefab
+  - res/prefabs/tilemap/tiles/greenHexTile.prefab
+  - res/prefabs/tilemap/mapRegion.prefab
+  - res/prefabs/tilemap/mapElements/mountains.prefab
+ScriptableObjects: ~
 GameObjects:
   - id: 1
     name: Camera
@@ -95,17 +111,17 @@ GameObjects:
       id: 0
       enabled: true
       position:
-        x: 0
-        y: 0
-        z: 0
+        x: -0.415009499
+        y: 16.8011475
+        z: 9.74193382
       scale:
         x: 0
         y: 0
         z: 0
       rotation:
-        x: 0
-        y: -90
-        z: 0
+        x: -63.3999825
+        y: -87.4805145
+        z: -3.88415283e-05
     components:
       - id: 1
         enabled: true
@@ -133,7 +149,7 @@ GameObjects:
       []
   - id: 2
     name: imageObj
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 3
@@ -183,7 +199,7 @@ GameObjects:
       []
   - id: 3
     name: imageObj2
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 6
@@ -219,7 +235,7 @@ GameObjects:
       []
   - id: 4
     name: imageObj3
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 8
@@ -249,13 +265,13 @@ GameObjects:
           y: 1
           z: 0
           w: 1
-        width: 769.506531
+        width: 680.67804
         height: 100
     children:
       []
   - id: 5
     name: textObj
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 10
@@ -279,7 +295,7 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        text: "Time: 0.002933"
+        text: "Time: 0.005936"
         color:
           x: 1
           y: 1
@@ -291,7 +307,7 @@ GameObjects:
       []
   - id: 6
     name: gameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 12
@@ -315,14 +331,14 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        model: 3
+        model: 5
         materials:
           - 1
     children:
       []
   - id: 7
     name: gameObject2
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 14
@@ -346,14 +362,14 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        model: 3
+        model: 5
         materials:
-          - 4
+          - 6
     children:
       []
   - id: 8
     name: gameObject3
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 16
@@ -377,15 +393,15 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        model: 2
+        model: 4
         materials:
-          - 6
-          - 7
+          - 10
+          - 14
     children:
       []
   - id: 9
     name: gameObject4
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 18
@@ -411,13 +427,13 @@ GameObjects:
         isTransparent: false
         model: 0
         materials:
-          - 5
-          - 2
+          - 7
+          - 4
     children:
       []
   - id: 10
     name: testGameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 20
@@ -514,7 +530,7 @@ GameObjects:
           z: 0
         endPosition:
           x: 0
-          y: 20
+          y: 40
           z: 0
         radius: 20
       - id: 24
@@ -527,15 +543,15 @@ GameObjects:
       []
   - id: 12
     name: New GameObject
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 27
       enabled: true
       position:
-        x: 2.0
-        y: 24.0
-        z: -2.0
+        x: 2
+        y: 24
+        z: -2
       scale:
         x: 1
         y: 1
@@ -551,22 +567,22 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        model: 1
+        model: 3
         materials:
-          - 8
+          - 5
     children:
       []
   - id: 13
     name: BRDF
-    isStatic: false
+    isStatic: true
     isActive: true
     transform:
       id: 29
       enabled: true
       position:
-        x: 2.0
-        y: 20.0
-        z: -2.0
+        x: 2
+        y: 20
+        z: -2
       scale:
         x: 1
         y: 1
@@ -582,15 +598,15 @@ GameObjects:
         subTypes:
           - Renderable
         isTransparent: false
-        model: 5
+        model: 8
         materials:
-          - 9
+          - 12
     children:
       []
   - id: 14
     name: MapGenerator
-    isStatic: false
-    isActive: true
+    isStatic: true
+    isActive: false
     transform:
       id: 31
       enabled: true
@@ -608,31 +624,31 @@ GameObjects:
         z: 0
     components:
       - id: 32
-        type: HexagonalTilemap
         enabled: true
+        type: HexagonalTilemap
         leftBottomPosition:
-          x: 0
-          y: 0
+          x: -9
+          y: -8
         rightTopPosition:
-          x: 0
-          y: 0
+          x: 9
+          y: 7
       - id: 33
         enabled: true
         type: MapGenerator
         subTypes:
           []
-        preafabHexagonalTile: res/prefabs/tilemap/tiles/hexTile.prefab
-        additionalTile: res/prefabs/tilemap/tiles/redHexTile.prefab
-        filledTile: res/prefabs/tilemap/tiles/blueHexTile.prefab
-        pointTile: res/prefabs/tilemap/tiles/greenHexTile.prefab
+        preafabHexagonalTile: "res/prefabs/tilemap/tiles/hexTile.prefab"
+        additionalTile: "res/prefabs/tilemap/tiles/redHexTile.prefab"
+        filledTile: "res/prefabs/tilemap/tiles/blueHexTile.prefab"
+        pointTile: "res/prefabs/tilemap/tiles/greenHexTile.prefab"
         generationRadiusMin: 7
         generationRadiusMax: 7
         minPointsNumber: 5
         maxPointsNumber: 5
         angleDeltaRange: 5
       - id: 34
-        type: ContentGenerator
         enabled: true
+        type: ContentGenerator
         mapElementGenerators:
           - res/scriptableobjects/RegionsGeneratorByKMeans.so
           - res/scriptableobjects/SectorGeneratorForRegionsByKMeans.so
@@ -640,3 +656,4 @@ GameObjects:
           - res/scriptableobjects/MountainsGenerator.so
           - res/scriptableobjects/CityGenerator.so
           - res/scriptableobjects/RadioStationGeneratorSectorBased.so
+    children: []

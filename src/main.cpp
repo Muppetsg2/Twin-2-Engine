@@ -84,6 +84,12 @@
 #include <core/SpotLightComponent.h>
 #include <core/DirectionalLightComponent.h>
 
+// PROCESSES
+#include <processes/SynchronizedProcess.h>
+#include <processes/ThreadProcess.h>
+#include <processes/TimerProcess.h>
+#include <processes/ProcessManager.h>
+
 // YAML CONVERTERS
 #include <core/YamlConverters.h>
 #include <Generation/YamlConverters.h>
@@ -845,8 +851,9 @@ void update()
 
     // Update game objects' state here
     text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
+    CollisionManager::Instance()->PerformCollisions();
     SceneManager::UpdateCurrentScene();
-
+    Twin2Engine::Processes::ProcessManager::Instance()->UpdateSynchronizedProcess();
     colorSpan -= Time::GetDeltaTime() * 0.2f;
     if (colorSpan <= 0.f) {
         colorSpan = 1.f;

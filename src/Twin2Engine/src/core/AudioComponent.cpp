@@ -1,6 +1,9 @@
 #include <core/AudioComponent.h>
 #include <manager/AudioManager.h>
 #include <manager/SceneManager.h>
+#include <core/MathExtensions.h>
+#include <format>
+#include <cmath>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
@@ -10,6 +13,9 @@ void AudioComponent::SetAudio(string path)
 	_audioId = hash<string>{}(path);
 	_audioHandle = AudioManager::GetAudioHandle(path);
 	_loaded = true;
+	AudioManager::SetLooping(_audioHandle, _loop);
+	AudioManager::SetVolume(_audioHandle, _volume);
+	_audioName = AudioManager::GetAudioName(_audioId);
 }
 
 void AudioComponent::SetAudio(size_t id)
@@ -17,6 +23,9 @@ void AudioComponent::SetAudio(size_t id)
 	_audioId = id;
 	_audioHandle = AudioManager::GetAudioHandle(id);
 	_loaded = true;
+	AudioManager::SetLooping(_audioHandle, _loop);
+	AudioManager::SetVolume(_audioHandle, _volume);
+	_audioName = AudioManager::GetAudioName(_audioId);
 }
 
 void AudioComponent::Play()
@@ -32,7 +41,7 @@ void AudioComponent::Play()
 		}
 	}
 	else {
-		spdlog::error("AudioComponent::Audio Was Not Loaded!");
+		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
 	}
 }
 
@@ -49,7 +58,7 @@ void AudioComponent::Pause()
 		}
 	}
 	else {
-		spdlog::error("AudioComponent::Audio Was Not Loaded!");
+		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
 	}
 }
 
@@ -65,7 +74,7 @@ void AudioComponent::Stop()
 		}
 	}
 	else {
-		spdlog::error("AudioComponent::Audio Was Not Loaded!");
+		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
 	}
 }
 
@@ -81,7 +90,8 @@ void AudioComponent::Loop()
 		return;
 	}
 	else {
-		spdlog::error("AudioComponent::Audio Was Not Loaded!");
+		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
+		_loop = true;
 	}
 }
 
@@ -97,7 +107,8 @@ void AudioComponent::UnLoop()
 		return;
 	}
 	else {
-		spdlog::error("AudioComponent::Audio Was Not Loaded!");
+		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
+		_loop = false;
 	}
 }
 
@@ -112,7 +123,7 @@ void AudioComponent::SetPlayPosition(SoLoud::time seconds)
 		return;
 	}
 	else {
-		spdlog::error("AudioComponent::Audio Was Not Loaded!");
+		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
 	}
 }
 
@@ -128,7 +139,8 @@ void AudioComponent::SetVolume(float value)
 		return;
 	}
 	else {
-		spdlog::error("AudioComponent::Audio Was Not Loaded!");
+		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
+		_volume = value;
 	}
 }
 
@@ -138,7 +150,7 @@ SoLoud::time AudioComponent::GetAudioLength()
 		return AudioManager::GetAudioTime(_audioId);
 	}
 	else {
-		spdlog::error("AudioComponent::Audio Was Not Loaded!");
+		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
 		return SoLoud::time();
 	}
 }
@@ -146,7 +158,7 @@ SoLoud::time AudioComponent::GetAudioLength()
 SoLoud::time AudioComponent::GetPlayPosition()
 {
 	if (!_loaded) {
-		spdlog::error("AudioComponent::Audio Was Not Loaded!");
+		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
 		return SoLoud::time();
 	}
 
@@ -160,7 +172,7 @@ SoLoud::time AudioComponent::GetPlayPosition()
 SoLoud::time AudioComponent::GetPlayTime()
 {
 	if (!_loaded) {
-		spdlog::error("AudioComponent::Audio Was Not Loaded!");
+		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
 		return SoLoud::time();
 	}
 
@@ -174,8 +186,8 @@ SoLoud::time AudioComponent::GetPlayTime()
 float AudioComponent::GetVolume()
 {
 	if (!_loaded) {
-		spdlog::error("AudioComponent::Audio Was Not Loaded!");
-		return 0.f;
+		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
+		return _volume;
 	}
 
 	if (!AudioManager::IsHandleValid(_audioHandle)) {
@@ -204,7 +216,7 @@ bool AudioComponent::IsLooping()
 {
 	if (!_loaded) {
 		spdlog::error("AudioComponent::Audio Was Not Loaded!");
-		return false;
+		return _loop;
 	}
 
 	if (!AudioManager::IsHandleValid(_audioHandle)) {
@@ -231,4 +243,81 @@ YAML::Node AudioComponent::Serialize() const
 	node["loop"] = _loop;
 	node["volume"] = _volume;
 	return node;
+}
+
+void AudioComponent::DrawEditor()
+{
+	if (ImGui::CollapsingHeader("Audio")) {
+
+		if (this->_loaded) {
+			ImGui::Text("File Name: %s", this->_audioName.c_str());
+
+			if (ImGui::Button("Open File")) {
+				_fileDialogOpen = true;
+				_fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
+				_fileDialogInfo.title = "Open File";
+				_fileDialogInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\music");
+			}
+
+			if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
+			{
+				// Result path in: m_fileDialogInfo.resultPath
+				this->SetAudio(_fileDialogInfo.resultPath.string());
+			}
+
+			if (ImGui::ArrowButton("Play Song", ImGuiDir_Right)) {
+				this->Play();
+			}
+			ImGui::SameLine();
+			if (ImGui::PauseButton("Pause Song", 1.f)) {
+				this->Pause();
+			}
+			ImGui::SameLine();
+			if (ImGui::StopButton("Stop Song", 1.f)) {
+				this->Stop();
+			}
+
+			float pos = (float)this->GetPlayPosition();
+
+			float len = (float)this->GetAudioLength();
+
+			ImGui::Text("Play Time: %02.0f:%02.0f", std::floor(this->GetPlayTime() / 60.0), mod(this->GetPlayTime(), 60));
+			ImGui::Text("Position: %02.0f:%02.0f / %02.0f:%02.0f", std::floor(pos / 60.f), mod((double)pos, 60.0), std::floor(len / 60.f), mod((double)len, 60.0));
+
+			if (ImGui::SliderFloat("Position Slider", &pos, 0.f, len, std::vformat(string_view("{:02.0f}:{:02.0f}"),
+				make_format_args(
+					std::floor(pos / 60.f),
+					mod((double)pos, 60.0)
+				)).c_str()))
+			{
+				this->SetPlayPosition((double)pos);
+			}
+		}
+		else {
+			ImGui::Text("Choose File");
+		}
+
+		float vol = this->_volume;
+
+		ImGui::SliderFloat("Volume", &vol, 0.f, 1.f);
+
+		if (this->_volume != vol) {
+			this->SetVolume(vol);
+		}
+
+		bool loop = this->_loop;
+
+		if (ImGui::Checkbox("Loop", &loop)) {
+			if (loop) {
+				if (!this->_loop) {
+					this->Loop();
+				}
+			}
+			else {
+				if (this->_loop) {
+					this->UnLoop();
+				}
+			}
+		}
+	}
 }

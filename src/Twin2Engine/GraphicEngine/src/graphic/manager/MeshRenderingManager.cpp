@@ -314,7 +314,7 @@ void MeshRenderingManager::UpdateQueues()
 
 					if (!meshPair.second.meshRenderers[index]->IsTransparent() && meshPair.second.meshRenderers[index]->GetGameObject()->GetActive())
 					{
-						if (CameraComponent::GetMainCamera()->IsFrustumCullingOn)
+						if (CameraComponent::GetMainCamera()->IsFrustumCullingOn())
 						{
 							if (meshPair.first->IsOnFrustum(frustum, meshPair.second.modelTransforms[index]))
 							{
@@ -403,7 +403,7 @@ void MeshRenderingManager::UpdateQueues()
 
 					if (!meshPair.second.meshRenderers[index]->IsTransparent() && meshPair.second.meshRenderers[index]->GetGameObject()->GetActive())
 					{
-						if (CameraComponent::GetMainCamera()->IsFrustumCullingOn)
+						if (CameraComponent::GetMainCamera()->IsFrustumCullingOn())
 						{
 							if (meshPair.first->IsOnFrustum(frustum, meshPair.second.modelTransforms[index]))
 							{

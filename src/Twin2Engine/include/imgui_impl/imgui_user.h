@@ -17,7 +17,4 @@ namespace ImGui {
 	IMGUI_API void			RenderArrowAndWall(ImDrawList* draw_list, ImVec2 pos, ImU32 col, ImGuiDir dir, float rounding = 0.0f, float scale = 1.0f);
 	IMGUI_API bool          ArrowAndWallButtonEx(const char* str_id, ImGuiDir dir, ImVec2 size, float rounding = 0.0f, ImGuiButtonFlags flags = 0);
 	IMGUI_API bool          ArrowAndWallButton(const char* str_id, ImGuiDir dir, float rounding = 0.0f);	// arrow and wall button with an arrow and wall shapes
-
-	IMGUI_API bool          SliderScalarv2(const char* label, ImGuiDataType data_type, void* p_data, const void* p_min, const void* p_max, const char* display = NULL, ImGuiSliderFlags flags = 0);
-	IMGUI_API bool          SliderFloatv2(const char* label, float* v, float v_min, float v_max, const char* display = "", ImGuiSliderFlags flags = 0);
 }

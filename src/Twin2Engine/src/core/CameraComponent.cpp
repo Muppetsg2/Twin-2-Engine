@@ -189,6 +189,11 @@ bool CameraComponent::IsMain() const
 	return _isMain;
 }
 
+bool CameraComponent::IsFrustumCullingOn() const
+{
+	return _isFrustumCulling;
+}
+
 void CameraComponent::SetFOV(float angle)
 {
 	_fov = angle;
@@ -347,6 +352,11 @@ void CameraComponent::SetIsMain(bool value)
 		}
 	}
 	_isMain = value;
+}
+
+void CameraComponent::SetFrustumCulling(bool value)
+{
+	_isFrustumCulling = value;
 }
 
 void CameraComponent::Render()
@@ -674,4 +684,94 @@ YAML::Node CameraComponent::Serialize() const
 	node["worldUp"] = _worldUp;
 	node["isMain"] = _isMain;
 	return node;
+}
+
+void CameraComponent::DrawEditor()
+{
+	if (ImGui::CollapsingHeader("Camera")) {
+
+		bool per = (this->_type == CameraType::PERSPECTIVE);
+		if (ImGui::BeginCombo("Projection", (per ? "Orthographic" : "Perspective"))) {
+			if (ImGui::Selectable("Orthographic", per == CameraType::ORTHOGRAPHIC))
+			{
+				this->SetCameraType(CameraType::ORTHOGRAPHIC);
+			}
+			else if (ImGui::Selectable("Perspective", per == CameraType::PERSPECTIVE))
+			{
+				this->SetCameraType(CameraType::PERSPECTIVE);
+			}
+			ImGui::EndCombo();
+		}
+
+		RenderResolution res = this->_renderRes;
+		if (ImGui::BeginCombo("Render Resolution", res == RenderResolution::DEFAULT ? "Default" : (res == RenderResolution::MEDIUM ? "Medium" : "High")))
+		{
+			if (ImGui::Selectable("Default", res == RenderResolution::DEFAULT))
+			{
+				this->SetRenderResolution(RenderResolution::DEFAULT);
+			}
+			else if (ImGui::Selectable("Medium", res == RenderResolution::MEDIUM))
+			{
+				this->SetRenderResolution(RenderResolution::MEDIUM);
+			}
+			else if (ImGui::Selectable("High", res == RenderResolution::HIGH))
+			{
+				this->SetRenderResolution(RenderResolution::HIGH);
+			}
+			ImGui::EndCombo();
+		}
+
+		uint8_t acFil = RenderFilter::NONE;
+		uint8_t fil = this->_filters;
+
+		bool g = (fil & RenderFilter::GRAYSCALE) != 0;
+		ImGui::Checkbox("GrayScale", &g);
+		if (g) {
+			acFil |= RenderFilter::GRAYSCALE;
+		}
+
+		g = (fil & RenderFilter::NEGATIVE) != 0;
+		ImGui::Checkbox("Negative", &g);
+		if (g) {
+			acFil |= RenderFilter::NEGATIVE;
+		}
+
+		g = (fil & RenderFilter::VIGNETTE) != 0;
+		ImGui::Checkbox("Vignette", &g);
+		if (g) {
+			acFil |= RenderFilter::VIGNETTE;
+		}
+
+		g = (fil & RenderFilter::BLUR) != 0;
+		ImGui::Checkbox("Blur", &g);
+		if (g) {
+			acFil |= RenderFilter::BLUR;
+		}
+
+		g = (fil & RenderFilter::DEPTH) != 0;
+		ImGui::Checkbox("Depth", &g);
+		if (g) {
+			acFil |= RenderFilter::DEPTH;
+		}
+
+		g = (fil & RenderFilter::OUTLINE) != 0;
+		ImGui::Checkbox("Outline", &g);
+		if (g) {
+			acFil |= RenderFilter::OUTLINE;
+		}
+
+		this->SetCameraFilter(acFil);
+
+		int s = (int)this->_samples;
+		ImGui::InputInt("MSAA Samples", &s);
+
+		if (s != (int)this->_samples) {
+			this->SetSamples((uint8_t)s);
+		}
+
+		ImGui::InputFloat("Near Plane", &this->_near);
+		ImGui::InputFloat("Far Plane", &this->_far);
+		ImGui::InputFloat("Gamma", &this->_gamma);
+		ImGui::Checkbox("Frustum Culling", &this->_isFrustumCulling);
+	}
 }

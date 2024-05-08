@@ -60,6 +60,7 @@ namespace Twin2Engine::Core {
 
 		bool _isMain = false;
 		bool _isInit = false;
+		bool _isFrustumCulling = true;
 
 		float _near = 0.1f;
 		float _far = 1000.f;
@@ -79,7 +80,6 @@ namespace Twin2Engine::Core {
 
 	public:
 		static std::vector<CameraComponent*> Cameras;
-		bool IsFrustumCullingOn = true;
 
 		CameraType GetCameraType() const;
 		uint8_t GetCameraFilters() const;
@@ -98,6 +98,7 @@ namespace Twin2Engine::Core {
 		Frustum GetFrustum() const;
 
 		bool IsMain() const;
+		bool IsFrustumCullingOn() const;
 
 		void SetFOV(float angle);
 		void SetGamma(float gamma);
@@ -114,6 +115,7 @@ namespace Twin2Engine::Core {
 		void UpdateFrontDir();
 
 		void SetIsMain(bool value);
+		void SetFrustumCulling(bool value);
 
 		void Render();
 
@@ -126,6 +128,7 @@ namespace Twin2Engine::Core {
 		void Initialize() override;
 		void OnDestroy() override;
 		YAML::Node Serialize() const override;
+		void DrawEditor() override;
 
 		/*
 		void Update() override;

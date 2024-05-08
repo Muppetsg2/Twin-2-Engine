@@ -33,6 +33,7 @@ namespace Twin2Engine::Core
 		virtual void OnDisable();
 		virtual void OnDestroy();
 		virtual YAML::Node Serialize() const;
+		virtual void DrawEditor();
 #pragma endregion
 
 #pragma region Setters

@@ -162,52 +162,23 @@ namespace Twin2Engine {
 
 		class Input {
 		private:
-			static GLFWwindow* _mainWindow;
+			static Graphic::Window* _mainWindow;
 
-			static std::vector<GLFWwindow*> _windows;
+			static std::vector<Graphic::Window*> _windows;
 			static std::map<GLFWwindow*, std::map<uint8_t, uint8_t >> _mouseButtonStates;
 			static std::map<GLFWwindow*, std::map<uint16_t, uint8_t>> _keyStates;
 
 			static void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods);
 			static void mouse_button_callback(GLFWwindow* win, int button, int action, int mods);
 
-			static bool IsInizializedForWindow(GLFWwindow* window);
+			static bool IsInizializedForWindow(Graphic::Window* window);
 		public:
-			static void InitForWindow(GLFWwindow* window, bool mainWindow = false);
 			static void InitForWindow(Graphic::Window* window, bool mainWindow = false);
-			static void FreeWindow(GLFWwindow* window);
 			static void FreeWindow(Graphic::Window* window);
 			static void FreeAllWindows();
-			static void SetMainWindow(GLFWwindow* window);
 			static void SetMainWindow(Graphic::Window* window);
-			static GLFWwindow* GetMainWindow();
+			static Graphic::Window* GetMainWindow();
 			static void Update();
-
-#pragma region WITHOUT_MAIN_WINDOW
-			// CURSOR
-			static void HideAndLockCursor(GLFWwindow* window);
-			static void HideCursor(GLFWwindow* window);
-			static void KeepCursorInWindow(GLFWwindow* window);
-			static void ShowCursor(GLFWwindow* window);
-			static CURSOR_STATE GetCursorState(GLFWwindow* window);
-
-			// MOUSE
-			static glm::vec2 GetMousePos(GLFWwindow* window);
-			static bool IsMouseButtonPressed(GLFWwindow* window, MOUSE_BUTTON button);
-			static bool IsMouseButtonReleased(GLFWwindow* window, MOUSE_BUTTON button);
-			static bool IsMouseButtonDown(GLFWwindow* window, MOUSE_BUTTON button);
-			static bool IsMouseButtonHeldDown(GLFWwindow* window, MOUSE_BUTTON button);
-			static bool IsMouseButtonUp(GLFWwindow* window, MOUSE_BUTTON button);
-			static bool IsMouseButtonHeldUp(GLFWwindow* window, MOUSE_BUTTON button);
-
-			// KEYS
-			static bool IsKeyPressed(GLFWwindow* window, KEY key);
-			static bool IsKeyReleased(GLFWwindow* window, KEY key);
-			static bool IsKeyDown(GLFWwindow* window, KEY key);
-			static bool IsKeyHeldDown(GLFWwindow* window, KEY key);
-			static bool IsKeyUp(GLFWwindow* window, KEY key);
-			static bool IsKeyHeldUp(GLFWwindow* window, KEY key);
-#pragma endregion
 
 #pragma region WITH_WINDOW_CLASS
 			// CURSOR

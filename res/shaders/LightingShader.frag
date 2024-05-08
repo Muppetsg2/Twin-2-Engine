@@ -67,7 +67,7 @@ struct DirectionalLight {
     uint shadowMap;
 };
 
-layout (std430, binding = 3) buffer Lights {
+layout (std140, binding = 3) buffer Lights {
     PointLight pointLights[8];
     SpotLight spotLights[8];
     DirectionalLight directionalLights[4];
@@ -76,7 +76,7 @@ layout (std430, binding = 3) buffer Lights {
 	uint numberOfDirLights;
 };
 
-layout(std140, binding = 4) uniform LightingData {
+layout(std140, binding = 3) uniform LightingData {
     vec3 AmbientLight;
 	vec3 ViewerPosition;
     int shadingType;

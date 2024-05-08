@@ -1,34 +1,65 @@
 #pragma once
 
-#include <graphic/InstatiatingModel.h>
-#include <graphic/Shader.h>
-#include <graphic/Window.h>
+#include <tools/STD140Struct.h>
 
 namespace Twin2Engine
 {
 	namespace Graphic {
 		class GraphicEngine;
+		class Shader;
 	}
 
 	namespace Manager {
 		struct UIElement {
-			uint32_t textureID;
-			bool isText;
+			glm::mat4 transform;
+			glm::vec4 color;
+			glm::vec2 elemSize;
 			glm::ivec2 spriteSize;
 			glm::ivec2 spriteOffset;
 			glm::ivec2 textureSize;
-			glm::vec4 color;
-			glm::vec2 elemSize;
-			glm::mat4 transform;
+			uint32_t textureID;
+			bool isText;
 		};
+
+		static const Tools::STD140Offsets CanvasOffsets{
+			Tools::STD140Variable<glm::ivec2>("canvasSize")
+		};
+
+		static const Tools::STD140Offsets UIElementOffsets{
+			Tools::STD140Variable<glm::mat4>("transform"),
+			Tools::STD140Variable<glm::vec4>("color"),
+			Tools::STD140Variable<glm::vec2>("elemSize"),
+			Tools::STD140Variable<glm::ivec2>("spriteOffset"),
+			Tools::STD140Variable<glm::ivec2>("spriteSize"),
+			Tools::STD140Variable<glm::ivec2>("texSize"),
+			Tools::STD140Variable<bool>("isText")
+		};
+
+		static Tools::STD140Struct MakeUIElementStruct(const UIElement& uiElem) {
+			Tools::STD140Struct uiElemStruct(UIElementOffsets);
+			uiElemStruct.Set("transform", uiElem.transform);
+			uiElemStruct.Set("color", uiElem.color);
+			uiElemStruct.Set("elemSize", uiElem.elemSize);
+			uiElemStruct.Set("spriteOffset", uiElem.spriteOffset);
+			uiElemStruct.Set("spriteSize", uiElem.spriteSize);
+			uiElemStruct.Set("texSize", uiElem.textureSize);
+			uiElemStruct.Set("isText", uiElem.isText);
+			return uiElemStruct;
+		}
 
 		class UIRenderingManager
 		{
 		private:
 			static std::queue<UIElement> _renderQueue;
-			static Graphic::InstatiatingModel _spritePlane;
 			static Graphic::Shader* _uiShader;
 
+			// POINT
+			static uint32_t _pointVAO;
+			static uint32_t _pointVBO;
+
+			// UBOs
+			static uint32_t _canvasUBO;
+			static uint32_t _elemUBO;
 
 			static void Init();
 			static void UnloadAll();

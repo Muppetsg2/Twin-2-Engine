@@ -2,5 +2,6 @@ shaderprogram:
   name: origin/UI
   shaders:
     - ui.vert
+    - ui.geom
     - ui.frag
   parameters: []

@@ -241,6 +241,8 @@ int main(int, char**)
 
     GameObject* obj = SceneManager::CreateGameObject();
     obj->SetName("Test Button");
+    Transform* tr = obj->GetTransform();
+    tr->Rotate(glm::vec3(0, 0, 45.f));
     Button* b = obj->AddComponent<Button>();
     b->SetHeight(70);
     b->SetWidth(200);
@@ -256,6 +258,7 @@ int main(int, char**)
     t->SetFont("res/fonts/Caveat-Regular.ttf");
     t->SetSize(48);  
     t->SetColor(glm::vec4(1.f, 0.f, 0.f, 1.f));
+    t->SetTextAlignX(TextAlignX::CENTER);
 
     //SceneManager::SaveScene("res/scenes/quickSavedScene_toonShading.yaml");
 

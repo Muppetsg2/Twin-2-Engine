@@ -107,7 +107,7 @@ struct DirectionalLight {
 
 uniform sampler2D DirLightShadowMaps[MAX_DIRECTIONAL_LIGHTS]; // SHADOW MAP
 
-layout(std430, binding = 3) buffer Lights {
+layout(std140, binding = 3) buffer Lights {
     PointLight pointLights[MAX_POINT_LIGHTS];
     SpotLight spotLights[MAX_SPOT_LIGHTS];
     DirectionalLight directionalLights[MAX_DIRECTIONAL_LIGHTS];
@@ -116,7 +116,7 @@ layout(std430, binding = 3) buffer Lights {
     uint numberOfDirLights;
 };
 
-layout(std140, binding = 4) uniform LightingData {
+layout(std140, binding = 3) uniform LightingData {
     vec3 ambientLight;
     vec3 viewerPosition;
     int shadingType;

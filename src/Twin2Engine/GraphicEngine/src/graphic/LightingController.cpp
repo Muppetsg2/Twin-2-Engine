@@ -36,7 +36,7 @@ LightingController::LightingController() {
 	glGenBuffers(1, &LightingDataBuffer);
 	glBindBuffer(GL_UNIFORM_BUFFER, LightingDataBuffer);
 	glBufferData(GL_UNIFORM_BUFFER, _lightingDataOffsets.GetSize(), NULL, GL_STATIC_DRAW); // allocate 152 bytes of memory
-	glBindBufferBase(GL_UNIFORM_BUFFER, 4, LightingDataBuffer);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 3, LightingDataBuffer);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
@@ -228,7 +228,7 @@ void LightingController::BindLightBuffors(Shader* shader) {
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, LightsBuffer);
 
-	glBindBufferBase(GL_UNIFORM_BUFFER, 4, LightingDataBuffer);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 3, LightingDataBuffer);
 
 	std::string str = "DirLightShadowMaps[";
 	shader->Use();

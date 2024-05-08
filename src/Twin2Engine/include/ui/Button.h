@@ -10,7 +10,6 @@ namespace Twin2Engine::UI {
 		float _height = 0.f;
 		bool _interactable = true;
 		Tools::MethodEventHandler _onClickEvent = Tools::MethodEventHandler();
-		bool _notHold = true;
 
 	public:
 		void SetWidth(float width);
@@ -20,7 +19,7 @@ namespace Twin2Engine::UI {
 		float GetWidth() const;
 		float GetHeight() const;
 		bool IsInteractable() const;
-		Tools::MethodEventHandler GetOnClickEvent() const;
+		Tools::MethodEventHandler& GetOnClickEvent();
 
 		virtual void Update() override;
 		virtual YAML::Node Serialize() const override;

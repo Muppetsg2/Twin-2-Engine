@@ -22,9 +22,9 @@ void Text::UpdateTextCache()
 			// Zastêpowanie
 			for (size_t i = 0; i < _oldText.size() && i < _text.size() && i < _textCache.size(); ++i) {
 				if (_oldText[i] != _text[i]) {
-					_totalTextWidth -= _textCache[i]->Size.x;
+					_totalTextWidth -= _textCache[i]->Advance >> 6;
 					_textCache[i] = font->GetCharacter(_text[i], _size);
-					_totalTextWidth += _textCache[i]->Size.x;
+					_totalTextWidth += _textCache[i]->Advance >> 6;
 
 					if (_textCache[i]->Size.y > _maxTextHeight) {
 						_maxTextHeight = _textCache[i]->Size.y;
@@ -37,7 +37,7 @@ void Text::UpdateTextCache()
 				vector<Character*> chars = font->GetText(_text.substr(_oldText.size(), _text.size() - _oldText.size() + 1), _size);
 				for (auto& c : chars) {
 					_textCache.push_back(c);
-					_totalTextWidth += c->Size.x;
+					_totalTextWidth += c->Advance >> 6;
 
 					if (c->Size.y > _maxTextHeight) {
 						_maxTextHeight = c->Size.y;
@@ -48,7 +48,7 @@ void Text::UpdateTextCache()
 			else if (_oldText.size() > _text.size()) {
 				bool checkMaxSize = false;
 				for (size_t i = _oldText.size(); i >= _text.size(); --i) {
-					_totalTextWidth -= (*(_textCache.end() - 1))->Size.x;
+					_totalTextWidth -= (*(_textCache.end() - 1))->Advance >> 6;
 					if ((*(_textCache.end() - 1))->Size.y == _maxTextHeight) {
 						checkMaxSize = true;
 					}
@@ -72,7 +72,7 @@ void Text::UpdateTextCache()
 			_maxTextHeight = 0.f;
 			_textCache = font->GetText(_text, _size);
 			for (auto& c : _textCache) {
-				_totalTextWidth += c->Size.x;
+				_totalTextWidth += c->Advance >> 6;
 
 				if (c->Size.y > _maxTextHeight) {
 					_maxTextHeight = c->Size.y;
@@ -114,10 +114,10 @@ void Text::Render()
 			xpos += w * .5f + c->Bearing.x;
 			break;
 		case TextAlignX::CENTER:
-			xpos -= _totalTextWidth * .5f + c->Bearing.x - w * .5f;
+			xpos += (w - _totalTextWidth) * .5f + c->Bearing.x;
 			break;
 		case TextAlignX::RIGHT:
-			//xpos -= (w - _totalTextWidth) + (c->Advance - c->Bearing.x);
+			xpos += w * .5f - _totalTextWidth + c->Bearing.x;
 			break;
 		}
 

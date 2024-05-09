@@ -473,6 +473,7 @@ int main(int, char**)
         [](Component* comp, const YAML::Node& node) -> void {
             HexagonalTilemap* hexagonalTilemap = static_cast<HexagonalTilemap*>(comp);
             hexagonalTilemap->Resize(node["leftBottomPosition"].as<ivec2>(), node["rightTopPosition"].as<ivec2>());
+
             // tilemap
         }
         );
@@ -576,8 +577,8 @@ int main(int, char**)
 #pragma endregion
 
     // ADDING SCENES
-    SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
-    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
+    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
 
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();
@@ -591,7 +592,7 @@ int main(int, char**)
     MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
     mapGenerator->tilemap = hexagonalTilemap;
     float tilemapGenerating = glfwGetTime();
-    //mapGenerator->Generate();
+    mapGenerator->Generate();
     spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
 
     ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();

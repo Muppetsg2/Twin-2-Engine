@@ -473,7 +473,7 @@ Collision* Collider::BoxCapsuleCollision(Collider* box, Collider* capsule, bool 
 	if (((projection + capsuleData->Radius) * (projection + capsuleData->Radius)) > glm::dot(dif, dif)) {
 		Collision* collision = new Collision;
 		collision->collider = box;
-		collision->collider = capsule;
+		collision->otherCollider = capsule;
 		//collision->position = ;
 
 		if (separate) {
@@ -514,7 +514,7 @@ Collision* Collider::testCollision(Collider* collider, Collider* otherCollider, 
 		switch (otherCollider->colliderShape)
 		{
 		case ColliderShape::SPHERE:
-			collision = SphereBoxCollision(collider, otherCollider, separate);
+			collision = SphereBoxCollision(otherCollider, collider, separate);
 			if (collision != nullptr) {
 				t = collision->collider;
 				collision->collider = collision->otherCollider;
@@ -536,7 +536,7 @@ Collision* Collider::testCollision(Collider* collider, Collider* otherCollider, 
 		switch (otherCollider->colliderShape)
 		{
 		case ColliderShape::SPHERE:
-			collision = SphereCapsuleCollision(collider, otherCollider, separate);
+			collision = SphereCapsuleCollision(otherCollider, collider, separate);
 			if (collision != nullptr) {
 				t = collision->collider;
 				collision->collider = collision->otherCollider;
@@ -545,7 +545,7 @@ Collision* Collider::testCollision(Collider* collider, Collider* otherCollider, 
 			break;
 
 		case ColliderShape::BOX:
-			collision = BoxCapsuleCollision(collider, otherCollider, separate);
+			collision = BoxCapsuleCollision(otherCollider, collider, separate);
 			if (collision != nullptr) {
 				t = collision->collider;
 				collision->collider = collision->otherCollider;

@@ -856,9 +856,9 @@ void update()
 
     // Update game objects' state here
     text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
-    //CollisionManager::Instance()->PerformCollisions();
+    CollisionManager::Instance()->PerformCollisions();
     SceneManager::UpdateCurrentScene();
-    //Twin2Engine::Processes::ProcessManager::Instance()->UpdateSynchronizedProcess();
+    Twin2Engine::Processes::ProcessManager::Instance()->UpdateSynchronizedProcess();
     colorSpan -= Time::GetDeltaTime() * 0.2f;
     if (colorSpan <= 0.f) {
         colorSpan = 1.f;

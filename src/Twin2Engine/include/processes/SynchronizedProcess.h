@@ -18,6 +18,8 @@ namespace Twin2Engine::Processes {
 
 			virtual void Initialize() override;
 			virtual void Update() override;
+
+			virtual YAML::Node Serialize() const override;
 	};
 }
 

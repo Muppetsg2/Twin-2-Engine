@@ -1,4 +1,3 @@
-#include "Process.h"
 #include <processes/Process.h>
 //#include <processes/SynchronizedProcess.h>
 
@@ -117,4 +116,15 @@ void Twin2Engine::Processes::Process::OnActivation() {
 
 void Twin2Engine::Processes::Process::OnDeactivation() {
 
+}
+
+YAML::Node Twin2Engine::Processes::Process::Serialize() const
+{
+	YAML::Node node;
+	node["Active"] = Active;
+	node["DontDestroyOnLoad"] = Active;
+	node["name"] = name;
+
+	//return node;
+	return std::move(node);
 }

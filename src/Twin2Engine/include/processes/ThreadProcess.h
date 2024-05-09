@@ -35,6 +35,8 @@ namespace Twin2Engine::Processes {
 		std::thread* getThread();
 		void GoSleep(float timeMillis);
 		void SetDelayTime(float timeMillis);
+
+		virtual YAML::Node Serialize() const override;
 	};
 }
 

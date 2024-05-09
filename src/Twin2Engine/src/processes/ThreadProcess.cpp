@@ -91,3 +91,8 @@ void Twin2Engine::Processes::ThreadProcess::OnDeactivation()
 		Finish(true);
 	}
 }
+
+YAML::Node Twin2Engine::Processes::TimerProcess::Serialize() const
+{
+	return std::move(Twin2Engine::Processes::Process::Serialize());
+}

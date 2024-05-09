@@ -133,10 +133,10 @@ namespace Twin2Engine
 			static void UnregisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer);
 
 			static void Render(MeshRenderData meshData);
-			static void RenderDepthMap(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,
-				glm::mat4& projectionViewMatrix);
-			static void RenderDepthMapStatic(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,
-				glm::mat4& projectionViewMatrix);
+			//Przed u¿yciem tej funkcji nale¿y zapewniæ, i¿ glViewport jest ustawiony w nastêpuj¹cy sposób: glViewport(0, 0, depthTexWidth, depthTexHeight), po uruchomieñiu funkcji nale¿y przywróciæ rozmiar viewportu do rozmiaru okna gry
+			static void RenderDepthMap(const GLuint& depthFBO, glm::mat4& projectionViewMatrix);
+			//Przed u¿yciem tej funkcji nale¿y zapewniæ, i¿ glViewport jest ustawiony w nastêpuj¹cy sposób: glViewport(0, 0, depthTexWidth, depthTexHeight), po uruchomieñiu funkcji nale¿y przywróciæ rozmiar viewportu do rozmiaru okna gry
+			static void RenderDepthMapStatic(const GLuint& depthFBO, glm::mat4& projectionViewMatrix);
 		};
 	}
 }

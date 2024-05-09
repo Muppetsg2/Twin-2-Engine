@@ -289,8 +289,8 @@ void MeshRenderingManager::UnregisterDynamic(Twin2Engine::Core::MeshRenderer* me
 void MeshRenderingManager::UpdateQueues()
 {
 	Frustum frustum = CameraComponent::GetMainCamera()->GetFrustum();
-	RenderedSegment renderedSegment{ .offset = 0, .count = 0 };
-	bool lastAdded = true;
+	RenderedSegment renderedSegment{ .begin = nullptr, .count = 0 };
+	//bool lastAdded = true;
 
 #pragma region UPDATE_FOR_STATIC
 	for (auto& shaderPair : _renderQueueStatic)
@@ -299,9 +299,9 @@ void MeshRenderingManager::UpdateQueues()
 		{
 			for (auto& meshPair : materialPair.second)
 			{
-				renderedSegment.offset = 0u;
+				renderedSegment.begin = meshPair.second.modelTransforms.data();
 				renderedSegment.count = 0u;
-				lastAdded = true;
+				//lastAdded = true;
 
 				meshPair.second.rendered.clear();
 				meshPair.second.renderedCount = 0u;
@@ -318,42 +318,47 @@ void MeshRenderingManager::UpdateQueues()
 						{
 							if (meshPair.first->IsOnFrustum(frustum, meshPair.second.modelTransforms[index]))
 							{
-								lastAdded = true;
+								//lastAdded = true;
 								renderedSegment.count++;
 							}
 							else
 							{
-								if (lastAdded)
+								//if (lastAdded)
+								if (renderedSegment.count)
 								{
-									lastAdded = false;
+									//lastAdded = false;
 									meshPair.second.rendered.push_back(renderedSegment);
 									meshPair.second.renderedCount += renderedSegment.count;
+
+									renderedSegment.begin += renderedSegment.count;
 									renderedSegment.count = 0u;
 								}
 								else
 								{
-									renderedSegment.offset = index + 1u;
+									renderedSegment.begin++;
 								}
 							}
 						}
 						else
 						{
-							lastAdded = true;
+							//lastAdded = true;
 							renderedSegment.count++;
 						}
 					}
 					else
 					{
-						if (lastAdded)
+						if (renderedSegment.count)
 						{
-							lastAdded = false;
+							//lastAdded = false;
 							meshPair.second.rendered.push_back(renderedSegment);
 							meshPair.second.renderedCount += renderedSegment.count;
+
+							renderedSegment.begin += renderedSegment.count;
 							renderedSegment.count = 0u;
 						}
 						else
 						{
-							renderedSegment.offset = index + 1u;
+							renderedSegment.begin++;
 						}
 					}
 				}
@@ -370,7 +375,8 @@ void MeshRenderingManager::UpdateQueues()
 				_depthQueueStatic[meshPair.first].renderedCount += meshPair.second.renderedCount;
 				for (const auto& element : meshPair.second.rendered)
 				{
-					_depthQueueStatic[meshPair.first].rendered.emplace_back(&meshPair.second.modelTransforms, element.offset, element.count);
+					//_depthQueueStatic[meshPair.first].rendered.emplace_back(&meshPair.second.modelTransforms, element.begin, element.count);
+					_depthQueueStatic[meshPair.first].rendered.push_back(element);
 				}
 			}
 		}
@@ -384,9 +390,9 @@ void MeshRenderingManager::UpdateQueues()
 		{
 			for (auto& meshPair : materialPair.second)
 			{
-				renderedSegment.offset = 0u;
+				renderedSegment.begin = meshPair.second.modelTransforms.data();
 				renderedSegment.count = 0u;
-				lastAdded = true;
+				//lastAdded = true;
 
 				meshPair.second.rendered.clear();
 				meshPair.second.renderedCount = 0u;
@@ -406,49 +412,53 @@ void MeshRenderingManager::UpdateQueues()
 						meshPair.second.meshRenderers[index]->TransformUpdated();
 					}
 
-
 					if (!meshPair.second.meshRenderers[index]->IsTransparent() && meshPair.second.meshRenderers[index]->GetGameObject()->GetActive())
 					{
 						if (CameraComponent::GetMainCamera()->IsFrustumCullingOn())
 						{
 							if (meshPair.first->IsOnFrustum(frustum, meshPair.second.modelTransforms[index]))
 							{
-								lastAdded = true;
+								//lastAdded = true;
 								renderedSegment.count++;
 							}
 							else
 							{
-								if (lastAdded)
+								//if (lastAdded)
+								if (renderedSegment.count)
 								{
-									lastAdded = false;
+									//lastAdded = false;
 									meshPair.second.rendered.push_back(renderedSegment);
 									meshPair.second.renderedCount += renderedSegment.count;
+
+									renderedSegment.begin += renderedSegment.count;
 									renderedSegment.count = 0u;
 								}
 								else
 								{
-									renderedSegment.offset = index + 1u;
+									renderedSegment.begin++;
 								}
 							}
 						}
 						else
 						{
-							lastAdded = true;
+							//lastAdded = true;
 							renderedSegment.count++;
 						}
 					}
 					else
 					{
-						if (lastAdded)
+						if (renderedSegment.count)
 						{
-							lastAdded = false;
+							//lastAdded = false;
 							meshPair.second.rendered.push_back(renderedSegment);
 							meshPair.second.renderedCount += renderedSegment.count;
+
+							renderedSegment.begin += renderedSegment.count;
 							renderedSegment.count = 0u;
 						}
 						else
 						{
-							renderedSegment.offset = index + 1u;
+							renderedSegment.begin++;
 						}
 					}
 				}
@@ -465,7 +475,8 @@ void MeshRenderingManager::UpdateQueues()
 				_depthQueueDynamic[meshPair.first].renderedCount += meshPair.second.renderedCount;
 				for (const auto& element : meshPair.second.rendered)
 				{
-					_depthQueueDynamic[meshPair.first].rendered.emplace_back(&meshPair.second.modelTransforms, element.offset, element.count);
+					//_depthQueueDynamic[meshPair.first].rendered.emplace_back(element.begin, element.count);
+					_depthQueueDynamic[meshPair.first].rendered.push_back(element);
 				}
 			}
 		}
@@ -662,7 +673,7 @@ void MeshRenderingManager::RenderStatic()
 					size_t instanceIndex = 0;
 					size_t remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
 
-					RenderedSegment currentSegment{ .offset = 0u, .count = 0u };
+					RenderedSegment currentSegment{ .begin = nullptr, .count = 0u };
 
 					while (count > MAX_INSTANCE_NUMBER_PER_DRAW)
 					{
@@ -673,8 +684,8 @@ void MeshRenderingManager::RenderStatic()
 						{
 							if (currentSegment.count > MAX_INSTANCE_NUMBER_PER_DRAW)
 							{
-								std::memcpy(_modelTransforms, meshPair.second.modelTransforms.data() + currentSegment.offset, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
-								currentSegment.offset += MAX_INSTANCE_NUMBER_PER_DRAW;
+								std::memcpy(_modelTransforms, currentSegment.begin, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
+								currentSegment.begin += MAX_INSTANCE_NUMBER_PER_DRAW;
 								currentSegment.count -= MAX_INSTANCE_NUMBER_PER_DRAW;
 
 								instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
@@ -682,7 +693,7 @@ void MeshRenderingManager::RenderStatic()
 							}
 							else
 							{
-								std::memcpy(_modelTransforms, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+								std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 								instanceIndex += currentSegment.count;
 								remaining -= currentSegment.count;
@@ -695,8 +706,8 @@ void MeshRenderingManager::RenderStatic()
 
 							if (currentSegment.count > remaining)
 							{
-								std::memcpy(_modelTransforms + instanceIndex, meshPair.second.modelTransforms.data() + currentSegment.offset, remaining * sizeof(glm::mat4));
-								currentSegment.offset += remaining;
+								std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, remaining * sizeof(glm::mat4));
+								currentSegment.begin += remaining;
 								currentSegment.count -= remaining;
 
 								instanceIndex += remaining;
@@ -704,7 +715,7 @@ void MeshRenderingManager::RenderStatic()
 							}
 							else
 							{
-								std::memcpy(_modelTransforms + instanceIndex, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+								std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 								instanceIndex += currentSegment.count;
 								remaining -= currentSegment.count;
@@ -740,7 +751,7 @@ void MeshRenderingManager::RenderStatic()
 
 					if (currentSegment.count)
 					{
-						std::memcpy(_modelTransforms, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+						std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 						instanceIndex += currentSegment.count;
 						remaining -= currentSegment.count;
@@ -750,7 +761,7 @@ void MeshRenderingManager::RenderStatic()
 						currentSegment = meshPair.second.rendered.front();
 						meshPair.second.rendered.pop_front();
 
-						std::memcpy(_modelTransforms + instanceIndex, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+						std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 						instanceIndex += currentSegment.count;
 						remaining -= currentSegment.count;
@@ -834,7 +845,7 @@ void MeshRenderingManager::RenderStatic()
 					size_t instanceIndex = 0;
 					size_t remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
 
-					RenderedSegment currentSegment{ .offset = 0u, .count = 0u };
+					RenderedSegment currentSegment{ .begin = nullptr, .count = 0u };
 
 					while (count > MAX_INSTANCE_NUMBER_PER_DRAW)
 					{
@@ -845,8 +856,8 @@ void MeshRenderingManager::RenderStatic()
 						{
 							if (currentSegment.count > MAX_INSTANCE_NUMBER_PER_DRAW)
 							{
-								std::memcpy(_modelTransforms, meshPair.second.modelTransforms.data() + currentSegment.offset, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
-								currentSegment.offset += MAX_INSTANCE_NUMBER_PER_DRAW;
+								std::memcpy(_modelTransforms, currentSegment.begin, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
+								currentSegment.begin += MAX_INSTANCE_NUMBER_PER_DRAW;
 								currentSegment.count -= MAX_INSTANCE_NUMBER_PER_DRAW;
 
 								instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
@@ -854,7 +865,7 @@ void MeshRenderingManager::RenderStatic()
 							}
 							else
 							{
-								std::memcpy(_modelTransforms, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+								std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 								instanceIndex += currentSegment.count;
 								remaining -= currentSegment.count;
@@ -867,8 +878,8 @@ void MeshRenderingManager::RenderStatic()
 
 							if (currentSegment.count > remaining)
 							{
-								std::memcpy(_modelTransforms + instanceIndex, meshPair.second.modelTransforms.data() + currentSegment.offset, remaining * sizeof(glm::mat4));
-								currentSegment.offset += remaining;
+								std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, remaining * sizeof(glm::mat4));
+								currentSegment.begin += remaining;
 								currentSegment.count -= remaining;
 
 								instanceIndex += remaining;
@@ -876,7 +887,7 @@ void MeshRenderingManager::RenderStatic()
 							}
 							else
 							{
-								std::memcpy(_modelTransforms + instanceIndex, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+								std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 								instanceIndex += currentSegment.count;
 								remaining -= currentSegment.count;
@@ -912,7 +923,7 @@ void MeshRenderingManager::RenderStatic()
 
 					if (currentSegment.count)
 					{
-						std::memcpy(_modelTransforms, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+						std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 						instanceIndex += currentSegment.count;
 						remaining -= currentSegment.count;
@@ -922,7 +933,7 @@ void MeshRenderingManager::RenderStatic()
 						currentSegment = meshPair.second.rendered.front();
 						meshPair.second.rendered.pop_front();
 
-						std::memcpy(_modelTransforms + instanceIndex, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+						std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 						instanceIndex += currentSegment.count;
 						remaining -= currentSegment.count;
@@ -1324,8 +1335,6 @@ void MeshRenderingManager::RenderDepthMap()
 
 void MeshRenderingManager::RenderDepthMapStatic()
 {
-	unsigned int globalDrawCount = 0;
-
 #if USE_NAMED_BUFFER_SUBDATA
 	//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
 	glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, indexes);
@@ -1375,14 +1384,13 @@ void MeshRenderingManager::RenderDepthMapStatic()
 				if (meshPair.second.renderedCount)
 				{
 					count = meshPair.second.renderedCount;
-					globalDrawCount += count;
 
 					meshPair.second.renderedCount = 0u;
 
 					size_t instanceIndex = 0;
 					size_t remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
 
-					RenderedSegment currentSegment{ .offset = 0u, .count = 0u };
+					RenderedSegment currentSegment{ .begin = nullptr, .count = 0u };
 
 					while (count > MAX_INSTANCE_NUMBER_PER_DRAW)
 					{
@@ -1393,8 +1401,8 @@ void MeshRenderingManager::RenderDepthMapStatic()
 						{
 							if (currentSegment.count > MAX_INSTANCE_NUMBER_PER_DRAW)
 							{
-								std::memcpy(_modelTransforms, meshPair.second.modelTransforms.data() + currentSegment.offset, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
-								currentSegment.offset += MAX_INSTANCE_NUMBER_PER_DRAW;
+								std::memcpy(_modelTransforms, currentSegment.begin, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
+								currentSegment.begin += MAX_INSTANCE_NUMBER_PER_DRAW;
 								currentSegment.count -= MAX_INSTANCE_NUMBER_PER_DRAW;
 
 								instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
@@ -1402,7 +1410,7 @@ void MeshRenderingManager::RenderDepthMapStatic()
 							}
 							else
 							{
-								std::memcpy(_modelTransforms, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+								std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 								instanceIndex += currentSegment.count;
 								remaining -= currentSegment.count;
@@ -1415,8 +1423,8 @@ void MeshRenderingManager::RenderDepthMapStatic()
 
 							if (currentSegment.count > remaining)
 							{
-								std::memcpy(_modelTransforms + instanceIndex, meshPair.second.modelTransforms.data() + currentSegment.offset, remaining * sizeof(glm::mat4));
-								currentSegment.offset += remaining;
+								std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, remaining * sizeof(glm::mat4));
+								currentSegment.begin += remaining;
 								currentSegment.count -= remaining;
 
 								instanceIndex += remaining;
@@ -1424,7 +1432,7 @@ void MeshRenderingManager::RenderDepthMapStatic()
 							}
 							else
 							{
-								std::memcpy(_modelTransforms + instanceIndex, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+								std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 								instanceIndex += currentSegment.count;
 								remaining -= currentSegment.count;
@@ -1460,7 +1468,7 @@ void MeshRenderingManager::RenderDepthMapStatic()
 
 					if (currentSegment.count)
 					{
-						std::memcpy(_modelTransforms, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+						std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 						instanceIndex += currentSegment.count;
 						remaining -= currentSegment.count;
@@ -1470,7 +1478,7 @@ void MeshRenderingManager::RenderDepthMapStatic()
 						currentSegment = meshPair.second.rendered.front();
 						meshPair.second.rendered.pop_front();
 
-						std::memcpy(_modelTransforms + instanceIndex, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+						std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 						instanceIndex += currentSegment.count;
 						remaining -= currentSegment.count;
@@ -1502,7 +1510,7 @@ void MeshRenderingManager::RenderDepthMapStatic()
 					}
 				}
 			}
-		}
+}
 	}
 
 #pragma endregion
@@ -1547,14 +1555,13 @@ void MeshRenderingManager::RenderDepthMapStatic()
 				if (meshPair.second.renderedCount)
 				{
 					count = meshPair.second.renderedCount;
-					globalDrawCount += count;
 
 					meshPair.second.renderedCount = 0u;
 
 					size_t instanceIndex = 0;
 					size_t remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
 
-					RenderedSegment currentSegment{ .offset = 0u, .count = 0u };
+					RenderedSegment currentSegment{ .begin = nullptr, .count = 0u };
 
 					while (count > MAX_INSTANCE_NUMBER_PER_DRAW)
 					{
@@ -1565,8 +1572,8 @@ void MeshRenderingManager::RenderDepthMapStatic()
 						{
 							if (currentSegment.count > MAX_INSTANCE_NUMBER_PER_DRAW)
 							{
-								std::memcpy(_modelTransforms, meshPair.second.modelTransforms.data() + currentSegment.offset, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
-								currentSegment.offset += MAX_INSTANCE_NUMBER_PER_DRAW;
+								std::memcpy(_modelTransforms, currentSegment.begin, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
+								currentSegment.begin += MAX_INSTANCE_NUMBER_PER_DRAW;
 								currentSegment.count -= MAX_INSTANCE_NUMBER_PER_DRAW;
 
 								instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
@@ -1574,7 +1581,7 @@ void MeshRenderingManager::RenderDepthMapStatic()
 							}
 							else
 							{
-								std::memcpy(_modelTransforms, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+								std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 								instanceIndex += currentSegment.count;
 								remaining -= currentSegment.count;
@@ -1587,8 +1594,8 @@ void MeshRenderingManager::RenderDepthMapStatic()
 
 							if (currentSegment.count > remaining)
 							{
-								std::memcpy(_modelTransforms + instanceIndex, meshPair.second.modelTransforms.data() + currentSegment.offset, remaining * sizeof(glm::mat4));
-								currentSegment.offset += remaining;
+								std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, remaining * sizeof(glm::mat4));
+								currentSegment.begin += remaining;
 								currentSegment.count -= remaining;
 
 								instanceIndex += remaining;
@@ -1596,7 +1603,7 @@ void MeshRenderingManager::RenderDepthMapStatic()
 							}
 							else
 							{
-								std::memcpy(_modelTransforms + instanceIndex, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+								std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 								instanceIndex += currentSegment.count;
 								remaining -= currentSegment.count;
@@ -1632,7 +1639,7 @@ void MeshRenderingManager::RenderDepthMapStatic()
 
 					if (currentSegment.count)
 					{
-						std::memcpy(_modelTransforms, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+						std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 						instanceIndex += currentSegment.count;
 						remaining -= currentSegment.count;
@@ -1642,7 +1649,7 @@ void MeshRenderingManager::RenderDepthMapStatic()
 						currentSegment = meshPair.second.rendered.front();
 						meshPair.second.rendered.pop_front();
 
-						std::memcpy(_modelTransforms + instanceIndex, meshPair.second.modelTransforms.data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+						std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 						instanceIndex += currentSegment.count;
 						remaining -= currentSegment.count;
@@ -1678,7 +1685,6 @@ void MeshRenderingManager::RenderDepthMapStatic()
 	}
 
 #pragma endregion
-
 	//SPDLOG_WARN("Global static draw count: {}", globalDrawCount);
 }
 void MeshRenderingManager::RenderDepthMap()
@@ -1990,7 +1996,7 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	unsigned int count = 0;
-	RenderedSegmentDepthMap currentSegment{ .offset = 0u, .count = 0u };
+	RenderedSegment currentSegment{ .begin = nullptr, .count = 0u };
 
 #pragma region RENDERING_STATIC_DEPTH_MAP
 
@@ -2005,7 +2011,7 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 			size_t instanceIndex = 0;
 			size_t remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
 
-			currentSegment.offset = 0u;
+			currentSegment.begin = nullptr;
 			currentSegment.count = 0u;
 
 			while (count > MAX_INSTANCE_NUMBER_PER_DRAW)
@@ -2017,8 +2023,8 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 				{
 					if (currentSegment.count > MAX_INSTANCE_NUMBER_PER_DRAW)
 					{
-						std::memcpy(_modelTransforms, currentSegment.modelTransforms->data() + currentSegment.offset, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
-						currentSegment.offset += MAX_INSTANCE_NUMBER_PER_DRAW;
+						std::memcpy(_modelTransforms, currentSegment.begin, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
+						currentSegment.begin += MAX_INSTANCE_NUMBER_PER_DRAW;
 						currentSegment.count -= MAX_INSTANCE_NUMBER_PER_DRAW;
 
 						instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
@@ -2026,7 +2032,7 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 					}
 					else
 					{
-						std::memcpy(_modelTransforms, currentSegment.modelTransforms->data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+						std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 						instanceIndex += currentSegment.count;
 						remaining -= currentSegment.count;
@@ -2039,8 +2045,8 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 
 					if (currentSegment.count > remaining)
 					{
-						std::memcpy(_modelTransforms + instanceIndex, currentSegment.modelTransforms->data() + currentSegment.offset, remaining * sizeof(glm::mat4));
-						currentSegment.offset += remaining;
+						std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, remaining * sizeof(glm::mat4));
+						currentSegment.begin += remaining;
 						currentSegment.count -= remaining;
 
 						instanceIndex += remaining;
@@ -2048,7 +2054,7 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 					}
 					else
 					{
-						std::memcpy(_modelTransforms + instanceIndex, currentSegment.modelTransforms->data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+						std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 						instanceIndex += currentSegment.count;
 						remaining -= currentSegment.count;
@@ -2078,7 +2084,7 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 
 			if (currentSegment.count)
 			{
-				std::memcpy(_modelTransforms, currentSegment.modelTransforms->data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+				std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 				instanceIndex += currentSegment.count;
 				remaining -= currentSegment.count;
@@ -2088,7 +2094,7 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 				currentSegment = meshPair.second.rendered.front();
 				meshPair.second.rendered.pop_front();
 
-				std::memcpy(_modelTransforms + instanceIndex, currentSegment.modelTransforms->data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+				std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 				instanceIndex += currentSegment.count;
 				remaining -= currentSegment.count;
@@ -2126,7 +2132,7 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 			size_t instanceIndex = 0;
 			size_t remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
 
-			currentSegment.offset = 0u;
+			currentSegment.begin = nullptr;
 			currentSegment.count = 0u;
 
 			while (count > MAX_INSTANCE_NUMBER_PER_DRAW)
@@ -2138,8 +2144,8 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 				{
 					if (currentSegment.count > MAX_INSTANCE_NUMBER_PER_DRAW)
 					{
-						std::memcpy(_modelTransforms, currentSegment.modelTransforms->data() + currentSegment.offset, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
-						currentSegment.offset += MAX_INSTANCE_NUMBER_PER_DRAW;
+						std::memcpy(_modelTransforms, currentSegment.begin, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
+						currentSegment.begin += MAX_INSTANCE_NUMBER_PER_DRAW;
 						currentSegment.count -= MAX_INSTANCE_NUMBER_PER_DRAW;
 
 						instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
@@ -2147,7 +2153,7 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 					}
 					else
 					{
-						std::memcpy(_modelTransforms, currentSegment.modelTransforms->data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+						std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 						instanceIndex += currentSegment.count;
 						remaining -= currentSegment.count;
@@ -2160,8 +2166,8 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 
 					if (currentSegment.count > remaining)
 					{
-						std::memcpy(_modelTransforms + instanceIndex, currentSegment.modelTransforms->data() + currentSegment.offset, remaining * sizeof(glm::mat4));
-						currentSegment.offset += remaining;
+						std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, remaining * sizeof(glm::mat4));
+						currentSegment.begin += remaining;
 						currentSegment.count -= remaining;
 
 						instanceIndex += remaining;
@@ -2169,7 +2175,7 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 					}
 					else
 					{
-						std::memcpy(_modelTransforms + instanceIndex, currentSegment.modelTransforms->data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+						std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 						instanceIndex += currentSegment.count;
 						remaining -= currentSegment.count;
@@ -2199,7 +2205,7 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 
 			if (currentSegment.count)
 			{
-				std::memcpy(_modelTransforms, currentSegment.modelTransforms->data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+				std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 				instanceIndex += currentSegment.count;
 				remaining -= currentSegment.count;
@@ -2209,7 +2215,7 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 				currentSegment = meshPair.second.rendered.front();
 				meshPair.second.rendered.pop_front();
 
-				std::memcpy(_modelTransforms + instanceIndex, currentSegment.modelTransforms->data() + currentSegment.offset, currentSegment.count * sizeof(glm::mat4));
+				std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
 
 				instanceIndex += currentSegment.count;
 				remaining -= currentSegment.count;

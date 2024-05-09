@@ -62,7 +62,7 @@ namespace Twin2Engine
 		private:
 			struct RenderedSegment
 			{
-				unsigned int offset;
+				glm::mat4* begin;
 				unsigned int count;
 			};
 			struct MeshRenderingData
@@ -80,7 +80,7 @@ namespace Twin2Engine
 			};
 			struct MeshRenderingDataDepthMap
 			{
-				std::list<RenderedSegmentDepthMap> rendered;
+				std::list<RenderedSegment> rendered;
 				unsigned int renderedCount;
 			};
 

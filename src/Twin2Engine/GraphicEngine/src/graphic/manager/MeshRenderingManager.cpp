@@ -70,7 +70,7 @@ void MeshRenderingManager::Init()
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
-		SPDLOG_ERROR("Error1: {}", error);
+		SPDLOG_ERROR("Error: {}", error);
 	};
 
 	// Tworzenie SSBO materialIndex
@@ -288,7 +288,7 @@ void MeshRenderingManager::UnregisterDynamic(Twin2Engine::Core::MeshRenderer* me
 
 void MeshRenderingManager::UpdateQueues()
 {
-	Frustum frustum = CameraComponent::GetMainCamera()->GetFrustum();
+	Frustum frustum = CameraComponent::GetCurrentCameraFrustum();
 	RenderedSegment renderedSegment{ .offset = 0, .count = 0 };
 	bool lastAdded = true;
 
@@ -1974,8 +1974,6 @@ void MeshRenderingManager::RenderDepthMap(const GLuint& depthFBO, glm::mat4& pro
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//glm::ivec2 wSize = Twin2Engine::GraphicEngine::Window::GetInstance()->GetContentSize();
-	//glViewport(0, 0, wSize.x, wSize.y);
 }
 
 void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat4& projectionViewMatrix)
@@ -2235,6 +2233,4 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 #pragma endregion
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//glm::ivec2 wSize = Twin2Engine::GraphicEngine::Window::GetInstance()->GetContentSize();
-	//glViewport(0, 0, wSize.x, wSize.y);
 }

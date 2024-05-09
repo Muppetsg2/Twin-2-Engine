@@ -31,6 +31,8 @@ vector<size_t> SceneManager::_scriptableObjectsIds;
 
 map<size_t, Scene*> SceneManager::_loadedScenes;
 
+ImGuiID SceneManager::selected = 0;
+
 void SceneManager::SaveGameObject(const GameObject* obj, YAML::Node gameObjects)
 {
 	gameObjects.push_back(obj->Serialize());
@@ -38,6 +40,51 @@ void SceneManager::SaveGameObject(const GameObject* obj, YAML::Node gameObjects)
 	Transform* objT = obj->GetTransform();
 	for (size_t i = 0; i < objT->GetChildCount(); ++i) {
 		SaveGameObject(objT->GetChildAt(i)->GetGameObject(), gameObjects);
+	}
+}
+
+void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
+{
+	ImGuiID clicked_elem = 0;
+	Transform* objT = obj->GetTransform();
+	for (size_t i = 0; i < objT->GetChildCount(); ++i) {
+		ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+		const string name = objT->GetChildAt(i)->GetName().append("##").append(objT->GetName()).append(std::to_string(i));
+		const ImGuiID id = ImGui::GetID(name.c_str());
+		const bool is_selected = id == selected;
+
+		if (is_selected) {
+			node_flag |= ImGuiTreeNodeFlags_Selected;
+			// zamkyanie okienka
+			if (ImGui::Begin("Inspector")) {
+				objT->GetChildAt(i)->GetGameObject()->DrawEditor();
+			}
+			ImGui::End();
+		}
+
+		if (objT->GetChildAt(i)->GetChildCount() == 0) {
+			node_flag |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+			ImGui::TreeNodeEx(name.c_str(), node_flag);
+			if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
+				clicked_elem = id;
+			}
+		}
+		else {
+			bool node_open = ImGui::TreeNodeEx(name.c_str(), node_flag);
+
+			if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
+				clicked_elem = id;
+			}
+
+			if (node_open) {
+				DrawGameObjectEditor(objT->GetChildAt(i)->GetGameObject());
+				ImGui::TreePop();
+			}
+		}
+	}
+
+	if (clicked_elem != 0) {
+		selected = clicked_elem;
 	}
 }
 
@@ -1018,4 +1065,11 @@ void SceneManager::UnloadAll()
 		delete sceneP.second;
 	}
 	_loadedScenes.clear();
+}
+
+void SceneManager::DrawCurrentSceneEditor()
+{
+	if (ImGui::CollapsingHeader(SceneManager::GetCurrentSceneName().c_str())) {
+		DrawGameObjectEditor(_rootObject);
+	}
 }

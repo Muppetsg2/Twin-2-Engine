@@ -39,6 +39,7 @@ namespace Twin2Engine::Core {
 		static GLuint _uboWindowData;
 		static Twin2Engine::GraphicEngine::InstantiatingModel _renderPlane;
 		static Twin2Engine::GraphicEngine::Shader* _renderShader;
+		static Frustum _currentCameraFrustum;
 
 		GLuint _depthMapFBO = NULL;
 		GLuint _depthMap = NULL;
@@ -122,19 +123,13 @@ namespace Twin2Engine::Core {
 		void BindRenderTexture(unsigned int index = 0);
 		void BindDepthTexture(unsigned int index = 0);
 
-		// Jesli beda sceny to tu trzeba dodac by scena byla przekazywana
 		static CameraComponent* GetMainCamera();
+		static Frustum GetCurrentCameraFrustum();
 
 		void Initialize() override;
 		void OnDestroy() override;
 		YAML::Node Serialize() const override;
 		void DrawEditor() override;
-
-		/*
-		void Update() override;
-		void OnEnable() override;
-		void OnDisable() override;
-		*/
 
 		CollisionSystem::Ray GetScreenPointRay(glm::vec2 screenPosition);
 	};

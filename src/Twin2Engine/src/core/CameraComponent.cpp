@@ -15,6 +15,7 @@ GLuint CameraComponent::_uboCameraData = 0;
 GLuint CameraComponent::_uboWindowData = 0;
 InstantiatingModel CameraComponent::_renderPlane = InstantiatingModel();
 Shader* CameraComponent::_renderShader = nullptr;
+Frustum CameraComponent::_currentCameraFrustum = Frustum();
 
 void CameraComponent::OnTransformChange(Transform* trans)
 {
@@ -361,6 +362,9 @@ void CameraComponent::SetFrustumCulling(bool value)
 
 void CameraComponent::Render()
 {
+	if (_isFrustumCulling)
+		_currentCameraFrustum = GetFrustum();
+
 	vec3 clear_color = glm::vec3(powf(.1f, _gamma));
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
@@ -376,31 +380,33 @@ void CameraComponent::Render()
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float), sizeof(float), &(this->_far));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
 
-	// UPDATING RENDERER
-	GraphicEngineManager::UpdateBeforeRendering();
+	if (wSize.y != 0) {
+		// UPDATING RENDERER
+		GraphicEngineManager::UpdateBeforeRendering();
 
-	// DEPTH MAP
-	glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
-	glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// DEPTH MAP
+		glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
+		glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		GraphicEngineManager::DepthRender();
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	//LightingSystem::LightingController::Instance()->RenderShadowMaps();
+		//LightingSystem::LightingController::Instance()->RenderShadowMaps();
 
-	// RENDER MAP
-	glBindFramebuffer(GL_FRAMEBUFFER, _msRenderMapFBO);
-	glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// RENDER MAP
+		glBindFramebuffer(GL_FRAMEBUFFER, _msRenderMapFBO);
+		glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		GraphicEngineManager::Render();
 
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, _msRenderMapFBO);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _renderMapFBO);
-	glBlitFramebuffer(0, 0, wSize.x, wSize.y, 0, 0, wSize.x, wSize.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, _msRenderMapFBO);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _renderMapFBO);
+		glBlitFramebuffer(0, 0, wSize.x, wSize.y, 0, 0, wSize.x, wSize.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
 
 	// RENDERING
 	if (this->IsMain()) {
@@ -443,6 +449,11 @@ CameraComponent* CameraComponent::GetMainCamera()
 	}
 
 	return nullptr;
+}
+
+Frustum CameraComponent::GetCurrentCameraFrustum()
+{
+	return _currentCameraFrustum;
 }
 
 void CameraComponent::Initialize()

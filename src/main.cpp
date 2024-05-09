@@ -98,6 +98,8 @@
 #include <Editor/Common/ProcessingMtlFiles.h>
 #include <Editor/Common/MaterialCreator.h>
 
+#include <imgui_demo.cpp>
+
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
@@ -621,9 +623,11 @@ int main(int, char**)
     dl_go->GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
     DirectionalLightComponent* dl = dl_go->AddComponent<DirectionalLightComponent>();
     dl->SetColor(glm::vec3(1.0f));
-    LightingController::Instance()->SetViewerPosition(cameraPos);
+    //LightingController::Instance()->SetViewerPosition(cameraPos);
     LightingController::Instance()->SetAmbientLight(glm::vec3(0.1f));
 #pragma endregion
+
+    bool open = true;
 
     // Main loop
     while (!window->IsClosed())
@@ -765,10 +769,10 @@ void input()
         moved = true;
     }
 
-
     if (LightingSystem::LightingController::IsInstantiated() && moved) {
-        glm::vec3 cp = c->GetTransform()->GetGlobalPosition();
-        LightingSystem::LightingController::Instance()->SetViewerPosition(cp);
+        //glm::vec3 cp = c->GetTransform()->GetGlobalPosition();
+        //LightingSystem::LightingController::Instance()->SetViewerPosition(cp);
+        LightingController::Instance()->UpdateOnTransformChange();
     }
 
 
@@ -950,6 +954,9 @@ void imgui_render()
             ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Rotate Camera using Mouse");
             ImGui::Spacing();
         }
+
+        ImGui::Separator();
+        SceneManager::DrawCurrentSceneEditor();
 
         ImGui::Separator();
         Camera->GetComponent<AudioComponent>()->DrawEditor();

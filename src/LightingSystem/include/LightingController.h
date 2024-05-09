@@ -88,7 +88,7 @@ namespace LightingSystem {
 			void RenderShadowMaps();
 
 			void SetAmbientLight(glm::vec3 ambientLightColor);
-			void SetViewerPosition(glm::vec3& viewerPosition);
+			//void SetViewerPosition(glm::vec3& viewerPosition);
 			void SetShadingType(int type);
 	};
 }

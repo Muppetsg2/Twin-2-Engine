@@ -1340,6 +1340,7 @@ void imgui_render()
             }
         }
 #pragma endregion
+
 #pragma region ScriptableObjects
 
         if (ImGui::CollapsingHeader("Scriptable Object Creator")) {
@@ -1414,6 +1415,30 @@ void imgui_render()
 
         if (ImGui::CollapsingHeader("Map Generator"))
         {
+            static string selectedSO = "";
+            static vector<string> scriptableObjectsPaths = ScriptableObjectManager::GetAllPaths();
+            static ScriptableObject* selectedScriptableObject = nullptr;
+            if (ImGui::TreeNode("Scriptable Objects")) {
+                for (size_t i = 0; i < scriptableObjectsPaths.size(); i++)
+                {
+                    if (ImGui::Selectable(scriptableObjectsPaths[i].c_str())) {
+                        selectedSO = scriptableObjectsPaths[i];
+                        selectedScriptableObject = ScriptableObjectManager::Get(selectedSO);
+                    }
+                }
+                ImGui::TreePop();
+            }
+            ImGui::Text("Selected Scriptable Object to create:");
+            ImGui::SameLine();
+            ImGui::InputText("##selectedSO", &selectedSO[0], selectedSO.size(), ImGuiInputTextFlags_ReadOnly);
+
+            ImGui::Separator();
+            if (selectedScriptableObject != nullptr)
+            {
+                selectedScriptableObject->DrawEditor();
+            }
+            ImGui::Separator();
+
             if (ImGui::Button("Generate"))
             {
                 static Transform* tilemapTransform = tilemapGO->GetTransform();

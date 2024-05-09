@@ -23,6 +23,13 @@ namespace Generation::Generators
 
         SO_SERIALIZE()
         SO_DESERIALIZE()
+
+        virtual void DrawEditor() override
+        {
+            ImGui::Checkbox("destroyWaterTile", &destroyWaterTile);
+            ImGui::InputInt("numberOfLakes", &numberOfLakes);
+            ImGui::InputFloat("waterLevel", &waterLevel);
+        }
     };
 }
 

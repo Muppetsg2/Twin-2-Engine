@@ -30,6 +30,16 @@ namespace Generation::Generators
 
         SO_SERIALIZE()
         SO_DESERIALIZE()
+
+
+        virtual void DrawEditor() override
+        {
+            ImGui::InputInt("sectorsCount", &sectorsCount);
+            ImGui::Checkbox("isDiscritizedHeight", &isDiscritizedHeight);
+            ImGui::InputFloat("lowerHeightRange", &lowerHeightRange);
+            ImGui::InputFloat("upperHeightRange", &upperHeightRange);
+            ImGui::InputFloat("heightRangeFacor", &heightRangeFacor);
+        }
     };
 }
 

@@ -183,3 +183,15 @@ bool Twin2Engine::Manager::ScriptableObjectManager::CreateScriptableObject(const
 
 	return false;
 }
+
+
+vector<string> Twin2Engine::Manager::ScriptableObjectManager::GetAllPaths()
+{
+	vector<string> paths;
+	paths.reserve(_scriptableObjectsPaths.size());
+	for (auto& pair : _scriptableObjectsPaths)
+	{
+		paths.push_back(pair.second);
+	}
+	return paths;
+}

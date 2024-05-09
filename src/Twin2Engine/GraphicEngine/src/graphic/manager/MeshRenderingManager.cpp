@@ -401,6 +401,8 @@ void MeshRenderingManager::UpdateQueues()
 						//SPDLOG_INFO("Game object ptr: {}", (unsigned int)meshPair.second.meshRenderers[index]->GetGameObject());
 						//SPDLOG_INFO("Transform ptr: {}", (unsigned int)meshPair.second.meshRenderers[index]->GetGameObject()->GetTransform());
 						meshPair.second.modelTransforms[index] = meshPair.second.meshRenderers[index]->GetGameObject()->GetTransform()->GetTransformMatrix();
+						_depthMapenderQueueDynamic[shaderPair.first][materialPair.first][meshPair.first].modelTransforms[index] = meshPair.second.modelTransforms[index];
+
 						meshPair.second.meshRenderers[index]->TransformUpdated();
 					}
 

@@ -25,6 +25,13 @@ namespace Generation::Generators
 		
 		SO_SERIALIZE()
 		SO_DESERIALIZE()
+
+
+		virtual void DrawEditor() override
+		{
+			ImGui::Checkbox("byRegions", &byRegions);
+			ImGui::SliderFloat("Density", &density, 0.0f, 1.0f);
+		}
 	};
 }
 

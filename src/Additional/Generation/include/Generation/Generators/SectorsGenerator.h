@@ -30,6 +30,13 @@ namespace Generation::Generators
 
 		SO_SERIALIZE()
 		SO_DESERIALIZE()
+
+		virtual void DrawEditor() override
+		{
+			ImGui::InputInt("minTilesPerSector", &minTilesPerSector);
+			ImGui::InputInt("maxTilesPerSector", &maxTilesPerSector);
+			ImGui::InputFloat("accuracyFactor", &accuracyFactor);
+		}
 	};
 }
 

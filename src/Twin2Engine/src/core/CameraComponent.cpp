@@ -60,7 +60,7 @@ void CameraComponent::OnWindowSizeChange()
 	}
 
 	glBindTexture(GL_TEXTURE_2D, _depthMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, d_res, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, d_res, wSize.x / 2, wSize.y / 2, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, _renderMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, r_res, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
@@ -308,7 +308,7 @@ void CameraComponent::SetRenderResolution(RenderResolution res)
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
 		glBindTexture(GL_TEXTURE_2D, _depthMap);
-		glTexImage2D(GL_TEXTURE_2D, 0, d_res, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, d_res, wSize.x / 2, wSize.y / 2, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 		glBindTexture(GL_TEXTURE_2D, _renderMap);
 		glTexImage2D(GL_TEXTURE_2D, 0, r_res, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
@@ -361,30 +361,20 @@ void CameraComponent::SetFrustumCulling(bool value)
 
 void CameraComponent::Render()
 {
-	glm::vec3 clear_color = glm::vec3(powf(.1f, _gamma));
-	// UBO's
-	//Jesli wiecej kamer i kazda ma ze swojego kata dawac obraz
+	vec3 clear_color = glm::vec3(powf(.1f, _gamma));
+	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
-	// DEFAULT
+	//Jesli wiecej kamer i kazda ma ze swojego kata dawac obraz
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));
 
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ivec2), value_ptr(Window::GetInstance()->GetContentSize()));
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ivec2), value_ptr(wSize));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2), sizeof(float), &(this->_near));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float), sizeof(float), &(this->_far));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
-	
-	// NAMED
-	/*glNamedBufferSubData(_uboMatrices, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
-	glNamedBufferSubData(_uboMatrices, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
-
-	glNamedBufferSubData(_uboWindowData, 0, sizeof(vec2), value_ptr(Window::GetInstance()->GetContentSize()));
-	glNamedBufferSubData(_uboWindowData, sizeof(vec2), sizeof(float), &(this->_near));
-	glNamedBufferSubData(_uboWindowData, sizeof(vec2) + sizeof(float), sizeof(float), &(this->_far));
-	glNamedBufferSubData(_uboWindowData, sizeof(vec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));*/
 
 	// UPDATING RENDERER
 	GraphicEngineManager::UpdateBeforeRendering();
@@ -397,9 +387,6 @@ void CameraComponent::Render()
 		GraphicEngineManager::DepthRender();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	ivec2 wSize = Window::GetInstance()->GetContentSize();
-
 
 	//LightingSystem::LightingController::Instance()->RenderShadowMaps();
 
@@ -414,7 +401,6 @@ void CameraComponent::Render()
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _renderMapFBO);
 	glBlitFramebuffer(0, 0, wSize.x, wSize.y, 0, 0, wSize.x, wSize.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 
 	// RENDERING
 	if (this->IsMain()) {
@@ -691,7 +677,7 @@ void CameraComponent::DrawEditor()
 	if (ImGui::CollapsingHeader("Camera")) {
 
 		bool per = (this->_type == CameraType::PERSPECTIVE);
-		if (ImGui::BeginCombo("Projection", (per ? "Orthographic" : "Perspective"))) {
+		if (ImGui::BeginCombo("Projection", (per ? "Perspective" : "Orthographic"))) {
 			if (ImGui::Selectable("Orthographic", per == CameraType::ORTHOGRAPHIC))
 			{
 				this->SetCameraType(CameraType::ORTHOGRAPHIC);

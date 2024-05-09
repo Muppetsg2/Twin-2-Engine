@@ -89,6 +89,7 @@ namespace Twin2Engine::Core
 		//Layer layer = Layer::DEFAULT;
 
 		YAML::Node Serialize() const;
+		void DrawEditor();
 
 #pragma region COMPONENTS_MANAGEMENT
 

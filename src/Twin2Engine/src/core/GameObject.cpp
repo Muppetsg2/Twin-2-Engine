@@ -293,6 +293,16 @@ YAML::Node GameObject::Serialize() const
 	return node;
 }
 
+void GameObject::DrawEditor()
+{
+	_transform->DrawEditor();
+
+	for (Component* comp : components) {
+		if (comp != _transform)
+			comp->DrawEditor();
+	}
+}
+
 void GameObject::AddComponent(Component* comp)
 {
 	components.push_back(comp);

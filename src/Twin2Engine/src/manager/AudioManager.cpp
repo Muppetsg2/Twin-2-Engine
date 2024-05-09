@@ -1,5 +1,6 @@
 #include <manager/AudioManager.h>
 #include <spdlog/spdlog.h>
+#include <filesystem>
 
 using namespace Twin2Engine::Manager;
 
@@ -245,6 +246,12 @@ void AudioManager::SetLooping(handle h, bool loop)
     else {
         spdlog::error("AudioManager::Handle Not Valid");
     }
+}
+
+string AudioManager::GetAudioName(size_t id)
+{
+    string p = _audiosPaths[id];
+    return std::filesystem::path(p).stem().string();
 }
 
 float AudioManager::GetVolume(handle h)

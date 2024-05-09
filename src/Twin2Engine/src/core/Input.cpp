@@ -22,15 +22,15 @@ void Input::key_callback(GLFWwindow* win, int key, int scancode, int action, int
 {
 	if (key == GLFW_KEY_UNKNOWN) return; // Don't accept unknown keys
 	uint16_t keyStateCode = (uint16_t)key - (uint16_t)KEY::SPACE;
-	if (action == GLFW_PRESS && _keyStates[win][keyStateCode] != (uint8_t)INPUT_STATE::PRESSED && _keyStates[win][keyStateCode] != (uint8_t)INPUT_STATE::PRESSED_LONGER) {
+	if (action == GLFW_PRESS) {
 		_keyStates[win][keyStateCode] = (uint8_t)INPUT_STATE::PRESSED;
 		_onKeyStateChange[win].Invoke((KEY)key, INPUT_STATE::PRESSED);
 	}
-	else if (action == GLFW_RELEASE && _keyStates[win][keyStateCode] != (uint8_t)INPUT_STATE::RELEASED && _keyStates[win][keyStateCode] != (uint8_t)INPUT_STATE::UP) {
+	else if (action == GLFW_RELEASE) {
 		_keyStates[win][keyStateCode] = (uint8_t)INPUT_STATE::RELEASED;
 		_onKeyStateChange[win].Invoke((KEY)key, INPUT_STATE::RELEASED);
 	}
-	else if (action == GLFW_REPEAT && _keyStates[win][keyStateCode] != (uint8_t)INPUT_STATE::DOWN) {
+	else if (action == GLFW_REPEAT) {
 		_keyStates[win][keyStateCode] = (uint8_t)INPUT_STATE::DOWN;
 		_onKeyStateChange[win].Invoke((KEY)key, INPUT_STATE::DOWN);
 	}
@@ -38,15 +38,15 @@ void Input::key_callback(GLFWwindow* win, int key, int scancode, int action, int
 
 void Input::mouse_button_callback(GLFWwindow* win, int button, int action, int mods)
 {
-	if (action == GLFW_PRESS && _mouseButtonStates[win][button] != (uint8_t)INPUT_STATE::PRESSED && _mouseButtonStates[win][button] != (uint8_t)INPUT_STATE::PRESSED_LONGER) {
+	if (action == GLFW_PRESS) {
 		_mouseButtonStates[win][button] = (uint8_t)INPUT_STATE::PRESSED;
 		_onMouseButtonStateChange[win].Invoke((MOUSE_BUTTON)button, INPUT_STATE::PRESSED);
 	}
-	else if (action == GLFW_RELEASE && _mouseButtonStates[win][button] != (uint8_t)INPUT_STATE::RELEASED && _mouseButtonStates[win][button] != (uint8_t)INPUT_STATE::UP) {
+	else if (action == GLFW_RELEASE) {
 		_mouseButtonStates[win][button] = (uint8_t)INPUT_STATE::RELEASED;
 		_onMouseButtonStateChange[win].Invoke((MOUSE_BUTTON)button, INPUT_STATE::RELEASED);
 	}
-	else if (action == GLFW_REPEAT && _mouseButtonStates[win][button] != (uint8_t)INPUT_STATE::DOWN) {
+	else if (action == GLFW_REPEAT) {
 		_mouseButtonStates[win][button] = (uint8_t)INPUT_STATE::DOWN;
 		_onMouseButtonStateChange[win].Invoke((MOUSE_BUTTON)button, INPUT_STATE::DOWN);
 	}
@@ -258,7 +258,7 @@ bool Input::IsKeyPressed(Window* window, KEY key)
 	GLFWwindow* glfwWin = window->GetWindow();
 	if (_keyStates.find(glfwWin) == _keyStates.end())
 		return false;
-	uint16_t keyStateCode = (uint8_t)key - (uint8_t)KEY::SPACE;
+	uint16_t keyStateCode = (uint16_t)key - (uint16_t)KEY::SPACE;
 	if (_keyStates[glfwWin].find(keyStateCode) == _keyStates[glfwWin].end())
 		return false;
 	return _keyStates[glfwWin][keyStateCode] == (uint8_t)INPUT_STATE::PRESSED;
@@ -269,7 +269,7 @@ bool Input::IsKeyReleased(Window* window, KEY key)
 	GLFWwindow* glfwWin = window->GetWindow();
 	if (_keyStates.find(glfwWin) == _keyStates.end())
 		return false;
-	uint16_t keyStateCode = (uint8_t)key - (uint8_t)KEY::SPACE;
+	uint16_t keyStateCode = (uint16_t)key - (uint16_t)KEY::SPACE;
 	if (_keyStates[glfwWin].find(keyStateCode) == _keyStates[glfwWin].end())
 		return false;
 	return _keyStates[glfwWin][keyStateCode] == (uint8_t)INPUT_STATE::RELEASED;
@@ -280,7 +280,7 @@ bool Input::IsKeyDown(Window* window, KEY key)
 	GLFWwindow* glfwWin = window->GetWindow();
 	if (_keyStates.find(glfwWin) == _keyStates.end())
 		return false;
-	uint16_t keyStateCode = (uint8_t)key - (uint8_t)KEY::SPACE;
+	uint16_t keyStateCode = (uint16_t)key - (uint16_t)KEY::SPACE;
 	if (_keyStates[glfwWin].find(keyStateCode) == _keyStates[glfwWin].end())
 		return false;
 	INPUT_STATE currState = (INPUT_STATE)_keyStates[glfwWin][keyStateCode];
@@ -292,7 +292,7 @@ bool Input::IsKeyHeldDown(Window* window, KEY key)
 	GLFWwindow* glfwWin = window->GetWindow();
 	if (_keyStates.find(glfwWin) == _keyStates.end())
 		return false;
-	uint16_t keyStateCode = (uint8_t)key - (uint8_t)KEY::SPACE;
+	uint16_t keyStateCode = (uint16_t)key - (uint16_t)KEY::SPACE;
 	if (_keyStates[glfwWin].find(keyStateCode) == _keyStates[glfwWin].end())
 		return true;
 	INPUT_STATE currState = (INPUT_STATE)_keyStates[glfwWin][keyStateCode];
@@ -304,7 +304,7 @@ bool Input::IsKeyUp(Window* window, KEY key)
 	GLFWwindow* glfwWin = window->GetWindow();
 	if (_keyStates.find(glfwWin) == _keyStates.end())
 		return false;
-	uint16_t keyStateCode = (uint8_t)key - (uint8_t)KEY::SPACE;
+	uint16_t keyStateCode = (uint16_t)key - (uint16_t)KEY::SPACE;
 	if (_keyStates[glfwWin].find(keyStateCode) == _keyStates[glfwWin].end())
 		return true;
 	INPUT_STATE currState = (INPUT_STATE)_keyStates[glfwWin][keyStateCode];
@@ -316,7 +316,7 @@ bool Input::IsKeyHeldUp(Window* window, KEY key)
 	GLFWwindow* glfwWin = window->GetWindow();
 	if (_keyStates.find(glfwWin) == _keyStates.end())
 		return false;
-	uint16_t keyStateCode = (uint8_t)key - (uint8_t)KEY::SPACE;
+	uint16_t keyStateCode = (uint16_t)key - (uint16_t)KEY::SPACE;
 	if (_keyStates[glfwWin].find(keyStateCode) == _keyStates[glfwWin].end())
 		return true;
 	return _keyStates[glfwWin][keyStateCode] == (uint8_t)INPUT_STATE::UP;

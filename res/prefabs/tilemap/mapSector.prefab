@@ -17,7 +17,7 @@ Models:
   - "{Plane}"
 Prefabs: ~
 Root:
-  name: New GameObject
+  name: MapSector
   isStatic: false
   isActive: true
   transform:

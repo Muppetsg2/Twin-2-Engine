@@ -224,6 +224,8 @@ Text* text;
 
 GameObject* Camera;
 
+GameObject* tilemapGO = nullptr;
+
 int main(int, char**)
 {
 #pragma region Initialization
@@ -473,6 +475,7 @@ int main(int, char**)
         [](Component* comp, const YAML::Node& node) -> void {
             HexagonalTilemap* hexagonalTilemap = static_cast<HexagonalTilemap*>(comp);
             hexagonalTilemap->Resize(node["leftBottomPosition"].as<ivec2>(), node["rightTopPosition"].as<ivec2>());
+
             // tilemap
         }
         );
@@ -576,8 +579,8 @@ int main(int, char**)
 #pragma endregion
 
     // ADDING SCENES
-    SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
-    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
+    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
 
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();
@@ -586,18 +589,18 @@ int main(int, char**)
 
 #pragma region SETTING_UP_GENERATION
     //*
-    GameObject* tilemapGO = SceneManager::GetGameObjectWithId(14);
+    tilemapGO = SceneManager::GetGameObjectWithId(14);
     HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
     MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
     mapGenerator->tilemap = hexagonalTilemap;
     float tilemapGenerating = glfwGetTime();
-    //mapGenerator->Generate();
+    mapGenerator->Generate();
     spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
 
     ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
 
     tilemapGenerating = glfwGetTime();
-    //contentGenerator->GenerateContent(hexagonalTilemap);
+    contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
     /**/
 
@@ -1061,6 +1064,8 @@ void imgui_render()
         }
 #pragma endregion
 
+        ImGui::Separator();
+
 #pragma region IMGUI_LIGHTING_SETUP
         if (ImGui::CollapsingHeader("Lighting Setup")) {
             static uint32_t shadingType = 0;
@@ -1173,8 +1178,6 @@ void imgui_render()
 
         ImGui::Separator();
 
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
 #pragma region ScriptableObjects
 
         if (ImGui::CollapsingHeader("Scriptable Object Creator")) {
@@ -1211,6 +1214,8 @@ void imgui_render()
         }
 #pragma endregion
 
+        ImGui::Separator();
+
 #pragma region MATERIAL_CREATOR
 
 
@@ -1232,6 +1237,8 @@ void imgui_render()
 
 #pragma endregion
 
+        ImGui::Separator();
+
 #pragma region EDITOR_MATERIAL_SCANNING
 
         if (ImGui::Button("Scan for materials"))
@@ -1244,6 +1251,43 @@ void imgui_render()
 
 #pragma endregion
 
+        ImGui::Separator();
+
+#pragma region MapGenerators
+
+        if (ImGui::CollapsingHeader("Map Generator"))
+        {
+            if (ImGui::Button("Generate"))
+            {
+                static Transform* tilemapTransform = tilemapGO->GetTransform();
+                static HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
+                hexagonalTilemap->Clear();
+                while (tilemapTransform->GetChildCount())
+                {
+                    Transform* child = tilemapTransform->GetChildAt(0ull);
+                    tilemapTransform->RemoveChild(child);
+                    SceneManager::DestroyGameObject(child->GetGameObject());
+                }
+                
+                static MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
+                
+                float tilemapGenerating = glfwGetTime();
+                mapGenerator->Generate();
+                spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
+                
+                static ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
+                
+                tilemapGenerating = glfwGetTime();
+                contentGenerator->GenerateContent(hexagonalTilemap);
+                spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
+            }
+        }
+
+#pragma endregion
+
+        ImGui::Separator();
+
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
         ImGui::End();
     }

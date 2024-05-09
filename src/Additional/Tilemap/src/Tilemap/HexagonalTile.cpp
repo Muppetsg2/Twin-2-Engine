@@ -26,6 +26,13 @@ HexagonalTile::HexagonalTile(HexagonalTilemap* tilemap, const glm::ivec2& positi
 	_tilemap = tilemap;
 	_position = position;
 }
+HexagonalTile::~HexagonalTile()
+{
+	if (_gameObject != nullptr)
+	{
+		//Twin2Engine::Manager::SceneManager::DestroyGameObject(_gameObject);
+	}
+}
 
 void HexagonalTile::SetTilemap(HexagonalTilemap* tilemap)
 {

@@ -75,6 +75,21 @@ HexagonalTilemap::~HexagonalTilemap()
 	}
 
 	delete[] _tilemap;
+
+	_leftBottomPosition = glm::ivec2(0, 0);
+	_rightTopPosition = glm::ivec2(0, 0);
+	_toCenter = glm::ivec2(0, 0);
+
+	_width = 1;
+	_height = 1;
+	_distanceBetweenTiles = 1.0f;
+	_edgeLength = _distanceBetweenTiles / glm::sqrt(3.f);
+
+	_tilemap = new HexagonalTile * *[1];
+	_tilemap[0] = new HexagonalTile * [1];
+	_tilemap[0][0] = new HexagonalTile();
+	_tilemap[0][0]->SetTilemap(this);
+	_tilemap[0][0]->SetPosition(glm::ivec2(0, 0));
 }
 
 void HexagonalTilemap::Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTopPosition)
@@ -139,8 +154,6 @@ void HexagonalTilemap::Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTop
 				oldTilemap[srcBegin.x + x][srcBegin.y + y] = nullptr;
 			}
 		}
-
-		SPDLOG_WARN("Zrobiæ usuwanie GameObjectów poza nowym rozmiarem");
 	}
 
 	for (int i = 0; i < _width; i++)
@@ -171,6 +184,40 @@ void HexagonalTilemap::Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTop
 	}
 
 	delete[] oldTilemap;
+}
+
+
+void HexagonalTilemap::Clear()
+{
+	for (int i = 0; i < _width; i++)
+	{
+		for (int j = 0; j < _height; j++)
+		{
+			if (_tilemap[i][j] != nullptr)
+			{
+				delete _tilemap[i][j];
+			}
+		}
+
+		delete[] _tilemap[i];
+	}
+
+	delete[] _tilemap;
+
+	_leftBottomPosition = glm::ivec2(0, 0);
+	_rightTopPosition = glm::ivec2(0, 0);
+	_toCenter = glm::ivec2(0, 0);
+
+	_width = 1;
+	_height = 1;
+	//_distanceBetweenTiles = 1.0f;
+	//_edgeLength = _distanceBetweenTiles / glm::sqrt(3.f);
+
+	_tilemap = new HexagonalTile * *[1];
+	_tilemap[0] = new HexagonalTile * [1];
+	_tilemap[0][0] = new HexagonalTile();
+	_tilemap[0][0]->SetTilemap(this);
+	_tilemap[0][0]->SetPosition(glm::ivec2(0, 0));
 }
 
 

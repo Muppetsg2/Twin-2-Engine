@@ -11,11 +11,10 @@ Materials:
   - ColoredHexTile
 Models:
   - res/models/hexagon.obj
-  - "{Plane}"
 Prefabs: ~
 Root:
-  name: New GameObject
-  isStatic: true
+  name: MapHexTile
+  isStatic: false
   isActive: true
   transform:
     id: 0

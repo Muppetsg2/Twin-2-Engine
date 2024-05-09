@@ -37,6 +37,7 @@ GameObject::GameObject(size_t id) {
 	_name = "New GameObject";
 
 	_transform = new Transform();
+	_transform->Init(this);
 
 	//components = list<Component*>();
 	components = std::list<Component*>();
@@ -60,7 +61,7 @@ GameObject::GameObject()
 
 
 	_transform = new Transform();
-	((Component*)_transform)->Init(this);
+	_transform->Init(this);
 
 	//components = list<Component*>();
 	components = std::list<Component*>();
@@ -295,12 +296,16 @@ YAML::Node GameObject::Serialize() const
 void GameObject::AddComponent(Component* comp)
 {
 	components.push_back(comp);
-	comp->Init(this);
-	comp->Initialize();
+	//comp->Init(this);
+	//comp->Initialize();
 }
 
 void GameObject::RemoveComponent(Component* component)
 {
-	components.remove(component);
+	if (components.remove(component))
+	{
+		component->OnDestroy();
+		//delete component;
+	}
 	//std::remove_if(components.begin(), components.end(), [component](Component* comp) { return comp == component; });
 }

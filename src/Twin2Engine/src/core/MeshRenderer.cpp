@@ -191,7 +191,8 @@ void MeshRenderer::AddMaterial(Material material)
 
 void MeshRenderer::AddMaterial(size_t materialId)
 {
-	AddMaterial(MaterialsManager::GetMaterial(materialId));
+	//AddMaterial(MaterialsManager::GetMaterial(materialId));
+	_materials.push_back(MaterialsManager::GetMaterial(materialId));
 }
 
 void MeshRenderer::SetMaterial(size_t index, Material material)
@@ -251,6 +252,17 @@ void Twin2Engine::Core::MeshRenderer::OnDestroy()
 {
 	if (_model != nullptr && OnTransformChangedActionId != -1) {
 		GetTransform()->OnEventTransformChanged -= OnTransformChangedActionId;
+	}
+	if (_registered)
+	{
+		if (GetGameObject()->GetIsStatic())
+		{
+			MeshRenderingManager::UnregisterStatic(this);
+		}
+		else
+		{
+			MeshRenderingManager::UnregisterDynamic(this);
+		}
 	}
 }
 #endif // MESH_FRUSTUM_CULLING

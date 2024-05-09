@@ -36,6 +36,7 @@ namespace Tilemap
 		~HexagonalTilemap();
 
 		void Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTopPosition);
+		void Clear();
 
 		unsigned int GetWidth() const;
 		unsigned int GetHeight() const;

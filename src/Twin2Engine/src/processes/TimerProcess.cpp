@@ -78,3 +78,8 @@ void Twin2Engine::Processes::TimerProcess::SetRepeatTime(int repeatTimeMillis)
 {
 	_repeatTimeMillis = repeatTimeMillis;
 }
+
+YAML::Node Twin2Engine::Processes::TimerProcess::Serialize() const
+{
+	return std::move(Twin2Engine::Processes::Process::Serialize());
+}

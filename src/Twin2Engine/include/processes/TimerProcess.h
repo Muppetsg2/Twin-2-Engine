@@ -31,6 +31,8 @@ namespace Twin2Engine::Processes {
 			bool Begin();
 			void Finish(bool waitForFinish);
 			void SetRepeatTime(int repeatTimeMillis);
+
+			virtual YAML::Node Serialize() const override;
 	};
 }
 

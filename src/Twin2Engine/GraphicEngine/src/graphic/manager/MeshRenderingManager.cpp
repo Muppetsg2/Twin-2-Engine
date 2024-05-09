@@ -1915,14 +1915,12 @@ void MeshRenderingManager::RenderDepthMap()
 #endif
 
 
-
-void MeshRenderingManager::RenderDepthMap(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,
-	glm::mat4& projectionViewMatrix)
+void MeshRenderingManager::RenderDepthMap(const GLuint& depthFBO, glm::mat4& projectionViewMatrix)
 {
 	ShaderManager::DepthShader->Use();
 	ShaderManager::DepthShader->SetMat4("lightSpaceMatrix", projectionViewMatrix);
 
-	glViewport(0, 0, bufferWidth, bufferHeight);
+	//glViewport(0, 0, bufferWidth, bufferHeight);
 	glBindFramebuffer(GL_FRAMEBUFFER, depthFBO);
 
 	//glBindTexture(GL_TEXTURE_2D, depthMapTex);
@@ -1976,17 +1974,16 @@ void MeshRenderingManager::RenderDepthMap(const unsigned int& bufferWidth, const
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glm::ivec2 wSize = Twin2Engine::GraphicEngine::Window::GetInstance()->GetContentSize();
-	glViewport(0, 0, wSize.x, wSize.y);
+	//glm::ivec2 wSize = Twin2Engine::GraphicEngine::Window::GetInstance()->GetContentSize();
+	//glViewport(0, 0, wSize.x, wSize.y);
 }
 
-void MeshRenderingManager::RenderDepthMapStatic(const unsigned int& bufferWidth, const unsigned int& bufferHeight, const GLuint& depthFBO, const GLuint& depthMapTex,
-	glm::mat4& projectionViewMatrix)
+void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat4& projectionViewMatrix)
 {
 	ShaderManager::DepthShader->Use();
 	ShaderManager::DepthShader->SetMat4("lightSpaceMatrix", projectionViewMatrix);
 
-	glViewport(0, 0, bufferWidth, bufferHeight);
+	//glViewport(0, 0, bufferWidth, bufferHeight);
 	glBindFramebuffer(GL_FRAMEBUFFER, depthFBO);
 
 	//glBindTexture(GL_TEXTURE_2D, depthMapTex);
@@ -2238,6 +2235,6 @@ void MeshRenderingManager::RenderDepthMapStatic(const unsigned int& bufferWidth,
 #pragma endregion
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glm::ivec2 wSize = Twin2Engine::GraphicEngine::Window::GetInstance()->GetContentSize();
-	glViewport(0, 0, wSize.x, wSize.y);
+	//glm::ivec2 wSize = Twin2Engine::GraphicEngine::Window::GetInstance()->GetContentSize();
+	//glViewport(0, 0, wSize.x, wSize.y);
 }

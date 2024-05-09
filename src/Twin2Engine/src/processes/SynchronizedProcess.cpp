@@ -16,3 +16,8 @@ void Twin2Engine::Processes::SynchronizedProcess::Update() {
 Twin2Engine::Processes::SynchronizedProcess::~SynchronizedProcess() {
 	Twin2Engine::Processes::ProcessManager::Instance()->RemoveProcess(this);
 }
+
+YAML::Node Twin2Engine::Processes::SynchronizedProcess::Serialize() const
+{
+	return std::move(Twin2Engine::Processes::Process::Serialize());
+}

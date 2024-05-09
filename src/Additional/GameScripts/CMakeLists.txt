@@ -1,0 +1,43 @@
+project(GameScripts VERSION 1.0)
+
+set(GAMESCRIPTS_DIR ${CMAKE_CURRENT_LIST_DIR})
+set(GAMESCRIPTS_SOURCE_DIR ${GAMESCRIPTS_DIR}/src)
+set(GAMESCRIPTS_INCLUDE_DIR ${GAMESCRIPTS_DIR}/include)
+set(GAMESCRIPTS_PRECOMPILE_HEADER ${GAMESCRIPTS_DIR}/pch.h)
+
+file(GLOB_RECURSE GAMESCRIPTS_SOURCE_FILES 
+                        ${GAMESCRIPTS_SOURCE_DIR}/*.cpp
+                        ${GAMESCRIPTS_SOURCE_DIR}/*.c)
+		
+
+file(GLOB_RECURSE GAMESCRIPTS_PUBLIC_INCLUDE_FILES 
+                        ${GAMESCRIPTS_INCLUDE_DIR}/*.h
+                        ${GAMESCRIPTS_INCLUDE_DIR}/*.hpp)
+						
+file(GLOB_RECURSE GAMESCRIPTS_PRIVATE_INCLUDE_FILES  
+                        ${GAMESCRIPTS_SOURCE_DIR}/*.h
+                        ${GAMESCRIPTS_SOURCE_DIR}/*.hpp)
+	 
+source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${GAMESCRIPTS_SOURCE_FILES})						   
+source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${GAMESCRIPTS_PUBLIC_INCLUDE_FILES})
+source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${GAMESCRIPTS_PRIVATE_INCLUDE_FILES})
+
+# Defining library
+add_library(${PROJECT_NAME} STATIC ${GAMESCRIPTS_SOURCE_FILES})
+
+# Adding include to library
+target_include_directories(${PROJECT_NAME}
+						PUBLIC 
+                        ${GAMESCRIPTS_INCLUDE_DIR}
+)
+
+# Adding precompile Headers to library
+target_precompile_headers(${PROJECT_NAME} PUBLIC ${GAMESCRIPTS_PRECOMPILE_HEADER})
+
+
+target_link_libraries(${PROJECT_NAME} PRIVATE Twin2Engine)
+target_link_libraries(${PROJECT_NAME} PRIVATE Tilemap)
+target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
+target_link_libraries(${PROJECT_NAME} PRIVATE spdlog)
+target_link_libraries(${PROJECT_NAME} PRIVATE EngineAlgorithms)
+target_link_libraries(${PROJECT_NAME} PRIVATE yaml-cpp)

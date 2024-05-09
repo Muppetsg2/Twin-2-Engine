@@ -3,6 +3,7 @@
 
 #include <unordered_set>
 #include <string>
+#include <core/YamlConverters.h>
 
 namespace Twin2Engine::Processes {
 	class SynchronizedProcess;
@@ -38,6 +39,8 @@ namespace Twin2Engine::Processes {
 			virtual void OnActivation();
 			virtual void OnDeactivation();
 			//void UpdateChildrenProcesses();
+
+			virtual YAML::Node Serialize() const;
 	};
 }
 

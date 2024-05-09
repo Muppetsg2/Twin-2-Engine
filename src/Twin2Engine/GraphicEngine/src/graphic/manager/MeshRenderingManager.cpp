@@ -394,11 +394,15 @@ void MeshRenderingManager::UpdateQueues()
 				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); index++)
 				{
 					//W przypadku gdy ma byæ aktualizacja transforma
-					//if (meshPair.second.meshRenderers[index]->IsTransformChanged())
-					//{
-					//	meshPair.second.modelTransforms[index] = meshPair.second.meshRenderers[index]->GetTransform()->GetTransformMatrix();
-					//	meshPair.second.meshRenderers[index]->TransformUpdated();
-					//}
+					if (meshPair.second.meshRenderers[index]->IsTransformChanged())
+					{
+						//SPDLOG_INFO("Game object ptr: {}", (unsigned int)this);
+						//SPDLOG_INFO("Transform ptr: {}", (unsigned int)_transform);
+						//SPDLOG_INFO("Game object ptr: {}", (unsigned int)meshPair.second.meshRenderers[index]->GetGameObject());
+						//SPDLOG_INFO("Transform ptr: {}", (unsigned int)meshPair.second.meshRenderers[index]->GetGameObject()->GetTransform());
+						meshPair.second.modelTransforms[index] = meshPair.second.meshRenderers[index]->GetGameObject()->GetTransform()->GetTransformMatrix();
+						meshPair.second.meshRenderers[index]->TransformUpdated();
+					}
 
 
 					if (!meshPair.second.meshRenderers[index]->IsTransparent() && meshPair.second.meshRenderers[index]->GetGameObject()->GetActive())

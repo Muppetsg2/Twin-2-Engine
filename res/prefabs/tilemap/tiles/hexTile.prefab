@@ -14,7 +14,7 @@ Models:
 Prefabs: ~
 Root:
   name: MapHexTile
-  isStatic: true
+  isStatic: false
   isActive: true
   transform:
     id: 0

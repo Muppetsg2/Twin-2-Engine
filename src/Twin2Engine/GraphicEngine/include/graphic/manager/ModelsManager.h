@@ -16,7 +16,7 @@ namespace Twin2Engine::Manager
 
 	class ModelsManager
 	{
-		friend class Graphic::InstatiatingModel;
+		friend class Graphic::InstantiatingMesh;
 		friend class SceneManager;
 		friend class PrefabManager;
 
@@ -64,17 +64,17 @@ namespace Twin2Engine::Manager
 	public:
 		static Graphic::InstantiatingModel LoadModel(const std::string& modelPath);
 		static Graphic::InstantiatingModel GetModel(size_t managerId);
-		static GraphicEngine::InstantiatingModel GetCube();
-		static GraphicEngine::InstantiatingModel GetPlane();
-		static GraphicEngine::InstantiatingModel GetSphere();
-		static GraphicEngine::InstantiatingModel GetTorus();
-		static GraphicEngine::InstantiatingModel GetCone();
-		static GraphicEngine::InstantiatingModel GetPiramid();
-		static GraphicEngine::InstantiatingModel GetTetrahedron();
-		static GraphicEngine::InstantiatingModel GetCylinder();
-		static GraphicEngine::InstantiatingModel GetHexagon();
+		static Graphic::InstantiatingModel GetCube();
+		static Graphic::InstantiatingModel GetPlane();
+		static Graphic::InstantiatingModel GetSphere();
+		static Graphic::InstantiatingModel GetTorus();
+		static Graphic::InstantiatingModel GetCone();
+		static Graphic::InstantiatingModel GetPiramid();
+		static Graphic::InstantiatingModel GetTetrahedron();
+		static Graphic::InstantiatingModel GetCylinder();
+		static Graphic::InstantiatingModel GetHexagon();
 
-		static GraphicEngine::InstantiatingModel CreateModel(const std::string& modelName, std::vector<GraphicEngine::Vertex> vertices, std::vector<unsigned int> indices);
+		static Graphic::InstantiatingModel CreateModel(const std::string & modelName, std::vector<Graphic::Vertex> vertices, std::vector<unsigned int> indices);
 		//static void FreeModel(InstantiatingModel*& model);
 
 		static YAML::Node Serialize();

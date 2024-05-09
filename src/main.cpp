@@ -330,11 +330,11 @@ int main(int, char**)
     };
 #endif
 
-    GameEngine::OnInput += []() -> void {
+    GameEngine::OnInput += [&]() -> void {
         input();
     };
 
-    GameEngine::EarlyUpdate += []() -> void {
+    GameEngine::EarlyUpdate += [&]() -> void {
         update();
     };
 
@@ -401,12 +401,12 @@ void input()
         }
     }
 
-    /*if (Input::IsKeyPressed(KEY::R)) {
+    if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::R)) {
         SceneManager::LoadScene("testScene");
         Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
         image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
         text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
-    }*/
+    }
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::Q)) {
         SceneManager::SaveScene("res/scenes/quickSavedScene.yaml");
@@ -448,24 +448,12 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     }
 
     Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x, rot.y + xoffset, rot.z));
-    //LightingSystem::LightingController::Instance()->UpdateOnTransformChange();
-    updateShadowLightingMap = true;
 }
 
 void update()
 {
-    //Update Shadow & Lighting Map
-    if (updateShadowLightingMap)
-    {
-        LightingSystem::LightingController::Instance()->UpdateOnTransformChange();
-        updateShadowLightingMap = false;
-    }
-
     // Update game objects' state here
     text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
-    CollisionManager::Instance()->PerformCollisions();
-    SceneManager::UpdateCurrentScene();
-    Twin2Engine::Processes::ProcessManager::Instance()->UpdateSynchronizedProcess();
     colorSpan -= Time::GetDeltaTime() * 0.2f;
     if (colorSpan <= 0.f) {
         colorSpan = 1.f;
@@ -974,18 +962,3 @@ void end_imgui()
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 #endif
-
-float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd) 
-{
-    return expectedStart + ((expectedEnd - expectedStart) / (currEnd - currStart)) * (input - currStart);
-}
-
-double mod(double val1, double val2) {
-    if (val1 < 0 && val2 <= 0) {
-        return 0;
-    }
-
-    double x = val1 / val2;
-    double z = std::floor(val1 / val2);
-    return (x - z) * val2;
-}

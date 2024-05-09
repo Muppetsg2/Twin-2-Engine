@@ -10,7 +10,7 @@ namespace Twin2Engine
         class ModelsManager;
     }
 
-    namespace GraphicEngine {
+    namespace Graphic {
         class InstantiatingModel
         {
         private:

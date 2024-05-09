@@ -1,4 +1,5 @@
 #include <graphic/LightingController.h>
+#include <graphic/Window.h>
 
 #include <graphic/manager/MeshRenderingManager.h>
 
@@ -357,15 +358,15 @@ void LightingController::RenderShadowMaps() {
 
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 	for (auto light : dirLights) {
-		//Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->lightSpaceMatrix);
-		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMapStatic(light->shadowMapFBO, light->lightSpaceMatrix);
+		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(light->shadowMapFBO, light->lightSpaceMatrix);
+		//Twin2Engine::Manager::MeshRenderingManager::RenderDepthMapStatic(light->shadowMapFBO, light->lightSpaceMatrix);
 		glActiveTexture(GL_TEXTURE0 + MAPS_BEGINNING + i);
 		glBindTexture(GL_TEXTURE_2D, light->shadowMap);
 
 		++i;
 	}
 
-	glm::ivec2 wSize = Twin2Engine::GraphicEngine::Window::GetInstance()->GetContentSize();
+	glm::ivec2 wSize = Twin2Engine::Graphic::Window::GetInstance()->GetContentSize();
 	glViewport(0, 0, wSize.x, wSize.y);
 
 	glCullFace(GL_BACK);

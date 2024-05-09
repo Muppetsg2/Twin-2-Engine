@@ -26,7 +26,7 @@ STD140Offsets CameraComponent::_uboWindowDataOffsets{
 		STD140Variable<float>("farPlane"),
 		STD140Variable<float>("gamma"),
 };
-InstatiatingModel CameraComponent::_renderPlane = InstatiatingModel();
+InstantiatingModel CameraComponent::_renderPlane = InstantiatingModel();
 Shader* CameraComponent::_renderShader = nullptr;
 
 void CameraComponent::OnTransformChange(Transform* trans)

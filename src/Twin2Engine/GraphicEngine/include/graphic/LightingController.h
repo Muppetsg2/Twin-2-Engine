@@ -50,9 +50,14 @@ namespace Twin2Engine::Graphic {
 		public:
 			static float DLShadowCastingRange;
 			Twin2Engine::Tools::MethodEventHandler ViewerTransformChanged;
+			void UpdateOnTransformChange() {
+				ViewerTransformChanged.Invoke();
+				RenderShadowMaps();
+			}
 
 			static const int SHADOW_WIDTH;
 			static const int SHADOW_HEIGHT;
+			static const int MAPS_BEGINNING;
 
 			GLuint LightsBuffer;
 			GLuint LightingDataBuffer;
@@ -86,7 +91,7 @@ namespace Twin2Engine::Graphic {
 			void UpdateDL(DirectionalLight* dirLight);
 
 			void BindLightBuffors(Twin2Engine::Graphic::Shader* shader);
-			void UpdateShadowMapsTab(Twin2Engine::Graphic::Shader* shader);
+			//void UpdateShadowMapsTab(Twin2Engine::Graphic::Shader* shader);
 
 			static glm::vec3 RecalculateDirLightSpaceMatrix(DirectionalLight* light, const CameraData& camera); //, const glm::mat4& viewProjectionInverse
 			void RenderShadowMaps();

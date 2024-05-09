@@ -48,9 +48,18 @@
 // SCRIPTABLE OBJECT
 #include <core/ScriptableObject.h>
 
+// PROCESSED
+#include <processes/Process.h>
+#include <processes/ProcessManager.h>
+#include <processes/SynchronizedProcess.h>
+#include <processes/ThreadProcess.h>
+#include <processes/TimerProcess.h>
+
 namespace Twin2Engine {
 	class GameEngine {
 	private:
+		static bool updateShadowLightingMap;
+
 		static void Deserializers();
 
 		static void Update();

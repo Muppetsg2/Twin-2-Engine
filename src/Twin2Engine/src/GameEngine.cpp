@@ -7,12 +7,15 @@ using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
 using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Physic;
+using namespace Twin2Engine::Processes;
 
 using Twin2Engine::Core::Input;
 using Twin2Engine::Core::KEY;
 using Twin2Engine::Core::MOUSE_BUTTON;
 using Twin2Engine::Core::CURSOR_STATE;
 using Twin2Engine::Core::Time;
+
+bool GameEngine::updateShadowLightingMap = false;
 
 void GameEngine::Deserializers()
 {
@@ -218,7 +221,17 @@ void GameEngine::Deserializers()
 void GameEngine::Update()
 {
     EarlyUpdate();
+
+    //Update Shadow & Lighting Map
+    if (updateShadowLightingMap)
+    {
+        LightingController::Instance()->UpdateOnTransformChange();
+        updateShadowLightingMap = false;
+    }
+
+    CollisionManager::Instance()->PerformCollisions();
     SceneManager::UpdateCurrentScene();
+    Twin2Engine::Processes::ProcessManager::Instance()->UpdateSynchronizedProcess();
     LateUpdate();
 }
 

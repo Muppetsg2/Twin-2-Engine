@@ -83,14 +83,14 @@ void MeshRenderer::Render()
 	{*/
 		MeshRenderData data{};
 		data.transform = GetTransform()->GetTransformMatrix();
-		data.meshes = std::vector<InstatiatingMesh*>();
+		data.meshes = std::vector<InstantiatingMesh*>();
 		data.materials = std::vector<Material>();
 		data.isTransparent = IsTransparent();
 	
 	
-		if (CameraComponent::GetMainCamera()->IsFrustumCullingOn)
+		if (CameraComponent::GetMainCamera()->IsFrustumCullingOn())
 		{
-			InstatiatingMesh* tMesh;
+			InstantiatingMesh* tMesh;
 			Frustum frustum = CameraComponent::GetMainCamera()->GetFrustum();
 			for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
 				tMesh = _model.GetMesh(i);
@@ -254,7 +254,7 @@ void MeshRenderer::OnDestroy()
 	if (_model != nullptr && OnTransformChangedActionId != -1) {
 		GetTransform()->OnEventTransformChanged -= OnTransformChangedActionId;
 	}
-	if (_registered)
+	/*if (_registered)
 	{
 		if (GetGameObject()->GetIsStatic())
 		{
@@ -264,11 +264,11 @@ void MeshRenderer::OnDestroy()
 		{
 			MeshRenderingManager::UnregisterDynamic(this);
 		}
-	}
+	}*/
 }
 #endif // MESH_FRUSTUM_CULLING
 
-void MeshRenderer::SetModel(const InstatiatingModel& model)
+void MeshRenderer::SetModel(const InstantiatingModel& model)
 {
 	if (_model != model)
 	{

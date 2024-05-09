@@ -8,7 +8,7 @@
 using namespace glm;
 
 namespace Twin2Engine::Graphic {
-	class InstatiatingModel;
+	class InstantiatingModel;
 	class Shader;
 }
 
@@ -40,7 +40,7 @@ namespace Twin2Engine::Core {
 		static Tools::STD140Offsets _uboCameraDataOffsets;
 		static GLuint _uboWindowData;
 		static Tools::STD140Offsets _uboWindowDataOffsets;
-		static Graphic::InstatiatingModel _renderPlane;
+		static Graphic::InstantiatingModel _renderPlane;
 		static Graphic::Shader* _renderShader;
 
 		GLuint _depthMapFBO = NULL;

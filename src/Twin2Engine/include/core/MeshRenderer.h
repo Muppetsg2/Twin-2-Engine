@@ -24,7 +24,7 @@ namespace Twin2Engine::Core
 			CloneFunctionEnd()
 	private:
 
-		Graphic::InstatiatingModel _model;
+		Graphic::InstantiatingModel _model;
 
 		std::vector<Graphic::Material> _materials;
 
@@ -60,14 +60,14 @@ namespace Twin2Engine::Core
 		bool IsTransformChanged() const;
 
 #pragma region MODEL_PART
-		Graphic::InstatiatingModel GetModel() const;
+		Graphic::InstantiatingModel GetModel() const;
 		size_t GetMeshCount() const;
-		void SetModel(const Graphic::InstatiatingModel& model);
+		void SetModel(const Graphic::InstantiatingModel& model);
 		void SetModel(size_t modelId);
 #pragma endregion
 
 #pragma region MATERIALS_PART
-		Graphic::InstatiatingMesh* GetMesh(size_t index) const;
+		Graphic::InstantiatingMesh* GetMesh(size_t index) const;
 		size_t GetMaterialCount() const;
 		Graphic::Material GetMaterial(size_t index) const;
 		void AddMaterial(Graphic::Material material);

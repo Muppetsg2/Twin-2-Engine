@@ -3,6 +3,8 @@
 
 #include <manager/ScriptableObjectManager.h>
 
+
+
 namespace Twin2Engine::Manager
 {
 	class ScriptableObjectManager;
@@ -42,25 +44,28 @@ namespace Twin2Engine::Core
 		virtual void Serialize(YAML::Node& node) const;
 		virtual bool Deserialize(const YAML::Node& node);
 
+		virtual void DrawEditor();
+
 		static ScriptableObject* Create();
 		static void Init();
 	};
-
+#define PRINT_CLASS(Class) \
+	printf("Class name: %s", #Class)
 
 	template<class T>
 	class ScriptableObjectRegister
 	{
-		bool _canBeRegistered = true;
 	public:
 		ScriptableObjectRegister();
 	};
 	template<class T>
 	ScriptableObjectRegister<T>::ScriptableObjectRegister()
 	{
+		static bool _canBeRegistered = true;
 		if (_canBeRegistered)
 		{
-			T::Register();
 			_canBeRegistered = false;
+			T::Register();
 		}
 	}
 }
@@ -87,7 +92,7 @@ namespace ScriptableObjectNamespace \
 	{ \
 		std::hash<std::string> hasher; \
 		_registeredName = RegisteredName; \
-		Twin2Engine::Core::ScriptableObject::Register(hasher(_registeredName), ScriptableObjectData { .scriptableObjectName = _registeredName, .createSpecificScriptableObject = ScriptableObjectClass::Create }); \
+		Twin2Engine::Core::ScriptableObject::Register(hasher(RegisteredName), ScriptableObjectData { .scriptableObjectName = RegisteredName, .createSpecificScriptableObject = ScriptableObjectClass::Create }); \
 	} \
 	  \
 } \

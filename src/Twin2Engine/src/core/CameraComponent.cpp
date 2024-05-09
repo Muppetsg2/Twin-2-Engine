@@ -13,10 +13,11 @@ using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
 std::vector<CameraComponent*> CameraComponent::Cameras = std::vector<CameraComponent*>();
-GLuint CameraComponent::_uboMatrices = 0;
-STD140Offsets CameraComponent::_uboMatricesOffsets{
+GLuint CameraComponent::_uboCameraData = 0;
+STD140Offsets CameraComponent::_uboCameraDataOffsets{
 	STD140Variable<mat4>("projection"),
-	STD140Variable<mat4>("view")
+	STD140Variable<mat4>("view"),
+	STD140Variable<vec3>("viewerPosition")
 };
 GLuint CameraComponent::_uboWindowData = 0;
 STD140Offsets CameraComponent::_uboWindowDataOffsets{
@@ -35,6 +36,7 @@ void CameraComponent::OnTransformChange(Transform* trans)
 	if (this->_isMain) {
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 	*/
@@ -200,6 +202,11 @@ bool CameraComponent::IsMain() const
 	return _isMain;
 }
 
+bool CameraComponent::IsFrustumCullingOn() const
+{
+	return _isFrustumCulling;
+}
+
 void CameraComponent::SetFOV(float angle)
 {
 	_fov = angle;
@@ -360,6 +367,11 @@ void CameraComponent::SetIsMain(bool value)
 	_isMain = value;
 }
 
+void CameraComponent::SetFrustumCulling(bool value)
+{
+	_isFrustumCulling = value;
+}
+
 void CameraComponent::Render()
 {
 	glm::vec3 clear_color = glm::vec3(powf(.1f, _gamma));
@@ -368,13 +380,15 @@ void CameraComponent::Render()
 
 	// DEFAULT
 	
-	STD140Struct tempStruct = STD140Struct(_uboMatricesOffsets);
+	STD140Struct tempStruct = STD140Struct(_uboCameraDataOffsets);
 	tempStruct.Set("projection", this->GetProjectionMatrix());
 	tempStruct.Set("view", this->GetViewMatrix());
+	tempStruct.Set("viewerPosition", this->GetTransform()->GetGlobalPosition());
 
-	glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
+	glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
 	/*glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));*/
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));*/
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
 
 	tempStruct = STD140Struct(_uboWindowDataOffsets);
@@ -389,7 +403,6 @@ void CameraComponent::Render()
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float), sizeof(float), &(this->_far));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));*/
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
-	
 	
 	// NAMED
 	/*glNamedBufferSubData(_uboMatrices, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
@@ -415,7 +428,7 @@ void CameraComponent::Render()
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
 
-	LightingController::Instance()->RenderShadowMaps();
+	//LightingSystem::LightingController::Instance()->RenderShadowMaps();
 
 	// RENDER MAP
 	glBindFramebuffer(GL_FRAMEBUFFER, _msRenderMapFBO);
@@ -480,21 +493,23 @@ void CameraComponent::Initialize()
 		this->SetIsMain(true);
 
 		// UBO MATRICIES
-		glGenBuffers(1, &_uboMatrices);
+		glGenBuffers(1, &_uboCameraData);
 
-		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
-		glBufferData(GL_UNIFORM_BUFFER, _uboMatricesOffsets.GetSize(), NULL, GL_STATIC_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
+		glBufferData(GL_UNIFORM_BUFFER, _uboCameraDataOffsets.GetSize(), NULL, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		glBindBufferRange(GL_UNIFORM_BUFFER, 0, _uboMatrices, 0, _uboMatricesOffsets.GetSize());
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, _uboCameraData);
 
-		STD140Struct tempStruct = STD140Struct(_uboMatricesOffsets);
+		STD140Struct tempStruct = STD140Struct(_uboCameraDataOffsets);
 		tempStruct.Set("projection", this->GetProjectionMatrix());
 		tempStruct.Set("view", this->GetViewMatrix());
+		tempStruct.Set("viewerPosition", this->GetTransform()->GetGlobalPosition());
 
-		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
+		glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
 		/*glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));*/
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));*/
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -505,7 +520,7 @@ void CameraComponent::Initialize()
 		glBufferData(GL_UNIFORM_BUFFER, _uboWindowDataOffsets.GetSize(), NULL, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		glBindBufferRange(GL_UNIFORM_BUFFER, 1, _uboWindowData, 0, _uboWindowDataOffsets.GetSize());
+		glBindBufferBase(GL_UNIFORM_BUFFER, 1, _uboWindowData);
 
 		tempStruct = STD140Struct(_uboWindowDataOffsets);
 		tempStruct.Set("windowSize", Window::GetInstance()->GetContentSize());
@@ -657,7 +672,7 @@ void CameraComponent::OnDestroy()
 	Cameras.erase(Cameras.begin() + this->_camId);
 
 	if (Cameras.size() == 0) {
-		glDeleteBuffers(1, &_uboMatrices);
+		glDeleteBuffers(1, &_uboCameraData);
 		glDeleteBuffers(1, &_uboWindowData);
 	}
 }
@@ -711,4 +726,94 @@ YAML::Node CameraComponent::Serialize() const
 	node["worldUp"] = _worldUp;
 	node["isMain"] = _isMain;
 	return node;
+}
+
+void CameraComponent::DrawEditor()
+{
+	if (ImGui::CollapsingHeader("Camera")) {
+
+		bool per = (this->_type == CameraType::PERSPECTIVE);
+		if (ImGui::BeginCombo("Projection", (per ? "Orthographic" : "Perspective"))) {
+			if (ImGui::Selectable("Orthographic", per == CameraType::ORTHOGRAPHIC))
+			{
+				this->SetCameraType(CameraType::ORTHOGRAPHIC);
+			}
+			else if (ImGui::Selectable("Perspective", per == CameraType::PERSPECTIVE))
+			{
+				this->SetCameraType(CameraType::PERSPECTIVE);
+			}
+			ImGui::EndCombo();
+		}
+
+		RenderResolution res = this->_renderRes;
+		if (ImGui::BeginCombo("Render Resolution", res == RenderResolution::DEFAULT ? "Default" : (res == RenderResolution::MEDIUM ? "Medium" : "High")))
+		{
+			if (ImGui::Selectable("Default", res == RenderResolution::DEFAULT))
+			{
+				this->SetRenderResolution(RenderResolution::DEFAULT);
+			}
+			else if (ImGui::Selectable("Medium", res == RenderResolution::MEDIUM))
+			{
+				this->SetRenderResolution(RenderResolution::MEDIUM);
+			}
+			else if (ImGui::Selectable("High", res == RenderResolution::HIGH))
+			{
+				this->SetRenderResolution(RenderResolution::HIGH);
+			}
+			ImGui::EndCombo();
+		}
+
+		uint8_t acFil = RenderFilter::NONE;
+		uint8_t fil = this->_filters;
+
+		bool g = (fil & RenderFilter::GRAYSCALE) != 0;
+		ImGui::Checkbox("GrayScale", &g);
+		if (g) {
+			acFil |= RenderFilter::GRAYSCALE;
+		}
+
+		g = (fil & RenderFilter::NEGATIVE) != 0;
+		ImGui::Checkbox("Negative", &g);
+		if (g) {
+			acFil |= RenderFilter::NEGATIVE;
+		}
+
+		g = (fil & RenderFilter::VIGNETTE) != 0;
+		ImGui::Checkbox("Vignette", &g);
+		if (g) {
+			acFil |= RenderFilter::VIGNETTE;
+		}
+
+		g = (fil & RenderFilter::BLUR) != 0;
+		ImGui::Checkbox("Blur", &g);
+		if (g) {
+			acFil |= RenderFilter::BLUR;
+		}
+
+		g = (fil & RenderFilter::DEPTH) != 0;
+		ImGui::Checkbox("Depth", &g);
+		if (g) {
+			acFil |= RenderFilter::DEPTH;
+		}
+
+		g = (fil & RenderFilter::OUTLINE) != 0;
+		ImGui::Checkbox("Outline", &g);
+		if (g) {
+			acFil |= RenderFilter::OUTLINE;
+		}
+
+		this->SetCameraFilter(acFil);
+
+		int s = (int)this->_samples;
+		ImGui::InputInt("MSAA Samples", &s);
+
+		if (s != (int)this->_samples) {
+			this->SetSamples((uint8_t)s);
+		}
+
+		ImGui::InputFloat("Near Plane", &this->_near);
+		ImGui::InputFloat("Far Plane", &this->_far);
+		ImGui::InputFloat("Gamma", &this->_gamma);
+		ImGui::Checkbox("Frustum Culling", &this->_isFrustumCulling);
+	}
 }

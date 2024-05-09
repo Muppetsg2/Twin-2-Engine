@@ -1,6 +1,6 @@
 #pragma once
 
-#include <graphic/InstatiatingModel.h>
+#include <graphic/InstantiatingModel.h>
 #include <graphic/ModelData.h>
 #include <graphic/Vertex.h>
 #include <vector>
@@ -62,19 +62,20 @@ namespace Twin2Engine::Manager
 		static void GenerateCircle(std::vector<Graphic::Vertex> vertices, std::vector<unsigned int> indices, unsigned int segments, float y = 0.f, unsigned int cullFace = GL_CCW);
 
 	public:
-		static Graphic::InstatiatingModel LoadModel(const std::string& modelPath);
-		static Graphic::InstatiatingModel GetModel(size_t managerId);
-		static Graphic::InstatiatingModel GetCube();
-		static Graphic::InstatiatingModel GetPlane();
-		static Graphic::InstatiatingModel GetSphere();
-		static Graphic::InstatiatingModel GetTorus();
-		static Graphic::InstatiatingModel GetCone();
-		static Graphic::InstatiatingModel GetPiramid();
-		static Graphic::InstatiatingModel GetTetrahedron();
-		static Graphic::InstatiatingModel GetCylinder();
-		static Graphic::InstatiatingModel GetHexagon();
+		static Graphic::InstantiatingModel LoadModel(const std::string& modelPath);
+		static Graphic::InstantiatingModel GetModel(size_t managerId);
+		static GraphicEngine::InstantiatingModel GetCube();
+		static GraphicEngine::InstantiatingModel GetPlane();
+		static GraphicEngine::InstantiatingModel GetSphere();
+		static GraphicEngine::InstantiatingModel GetTorus();
+		static GraphicEngine::InstantiatingModel GetCone();
+		static GraphicEngine::InstantiatingModel GetPiramid();
+		static GraphicEngine::InstantiatingModel GetTetrahedron();
+		static GraphicEngine::InstantiatingModel GetCylinder();
+		static GraphicEngine::InstantiatingModel GetHexagon();
 
-		static Graphic::InstatiatingModel CreateModel(const std::string& modelName, std::vector<Graphic::Vertex> vertices, std::vector<unsigned int> indices);
+		static GraphicEngine::InstantiatingModel CreateModel(const std::string& modelName, std::vector<GraphicEngine::Vertex> vertices, std::vector<unsigned int> indices);
+		//static void FreeModel(InstantiatingModel*& model);
 
 		static YAML::Node Serialize();
 

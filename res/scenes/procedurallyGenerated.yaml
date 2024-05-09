@@ -621,10 +621,10 @@ GameObjects:
         type: MapGenerator
         subTypes:
           []
-        preafabHexagonalTile: "res/prefabs/tilemap/tiles/hexTile.prefab"
-        additionalTile: "res/prefabs/tilemap/tiles/redHexTile.prefab"
-        filledTile: "res/prefabs/tilemap/tiles/blueHexTile.prefab"
-        pointTile: "res/prefabs/tilemap/tiles/greenHexTile.prefab"
+        preafabHexagonalTile: res/prefabs/tilemap/tiles/hexTile.prefab
+        additionalTile: res/prefabs/tilemap/tiles/redHexTile.prefab
+        filledTile: res/prefabs/tilemap/tiles/blueHexTile.prefab
+        pointTile: res/prefabs/tilemap/tiles/greenHexTile.prefab
         generationRadiusMin: 7
         generationRadiusMax: 7
         minPointsNumber: 5

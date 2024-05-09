@@ -515,6 +515,7 @@ Component* SceneManager::GetComponentWithId(size_t id)
 void SceneManager::DestroyGameObject(GameObject* obj)
 {
 	Transform* trans = obj->GetTransform();
+	trans->SetParent(nullptr);
 	while (trans->GetChildCount() > 0) {
 		Transform* child = trans->GetChildAt(0);
 		trans->RemoveChild(child);

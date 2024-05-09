@@ -26,6 +26,7 @@
 
 // EDITOR
 #include <Editor/Common/ProcessingMtlFiles.h>
+#include <Editor/Common/MaterialCreator.h>
 
 using namespace Twin2Engine;
 using namespace Twin2Engine::Manager;
@@ -87,7 +88,7 @@ Material material;
 Material material2;
 Material wallMat;
 Material roofMat;
-InstatiatingModel modelMesh;
+InstantiatingModel modelMesh;
 GameObject* gameObject;
 GameObject* gameObject2;
 GameObject* gameObject3;
@@ -101,6 +102,8 @@ float colorSpan = 1.f;
 Text* text;
 
 GameObject* Camera;
+
+GameObject* tilemapGO = nullptr;
 
 int main(int, char**)
 {
@@ -131,9 +134,10 @@ int main(int, char**)
         [](Component* comp, const YAML::Node& node) -> void {
             HexagonalTilemap* hexagonalTilemap = static_cast<HexagonalTilemap*>(comp);
             hexagonalTilemap->Resize(node["leftBottomPosition"].as<ivec2>(), node["rightTopPosition"].as<ivec2>());
+
             // tilemap
         }
-    );
+        );
 
 #pragma endregion
 
@@ -164,7 +168,7 @@ int main(int, char**)
             mapGenerator->maxPointsNumber = node["maxPointsNumber"].as<int>();
             mapGenerator->angleDeltaRange = node["angleDeltaRange"].as<float>();
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("ContentGenerator",
         []() -> Component* {
@@ -185,7 +189,7 @@ int main(int, char**)
             }
             //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("MapHexTile",
         []() -> Component* {
@@ -201,7 +205,7 @@ int main(int, char**)
             mapHexTile->type = node["hexTileType"].as<MapHexTile::HexTileType>();
             //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("MapRegion",
         []() -> Component* {
@@ -213,7 +217,7 @@ int main(int, char**)
             mapRegion->tilemap = nullptr;
             mapRegion->type = node["regionType"].as<MapRegion::RegionType>();
         }
-    );
+        );
 
     ComponentDeserializer::AddDeserializer("MapSector",
         []() -> Component* {
@@ -227,15 +231,14 @@ int main(int, char**)
             mapSector->region = nullptr;
             mapSector->type = node["sectorType"].as<MapSector::SectorType>();
         }
-    );
+        );
 
 #pragma endregion
 
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.yaml");
     SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
-
-    CollisionManager::Instance()->PerformCollisions();
 
     SceneManager::LoadScene("testScene");
 
@@ -281,30 +284,28 @@ int main(int, char**)
     //SceneManager::SaveScene("res/scenes/quickSavedScene_toonShading.yaml");
 
 #pragma region SETTING_UP_GENERATION
-
     //*
-    GameObject* tilemapGO = SceneManager::GetGameObjectWithId(14);
+    tilemapGO = SceneManager::GetGameObjectWithId(14);
     HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
     MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
     mapGenerator->tilemap = hexagonalTilemap;
     float tilemapGenerating = glfwGetTime();
-    //mapGenerator->Generate();
+    mapGenerator->Generate();
     spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
 
     ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
 
     tilemapGenerating = glfwGetTime();
-    //contentGenerator->GenerateContent(hexagonalTilemap);
+    contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
     /**/
-
 
 #pragma endregion
     
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
-    
+
 #pragma region TestingLighting
     GameObject* dl_go = SceneManager::CreateGameObject();
     dl_go->GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
@@ -343,7 +344,7 @@ int main(int, char**)
 
 void input()
 {
-    if (Input::IsKeyPressed(KEY::ESCAPE)) 
+    if (Input::IsKeyPressed(KEY::ESCAPE))
     {
         window->Close();
         return;
@@ -381,10 +382,10 @@ void input()
     }
 
 
-    if (Input::IsKeyPressed(KEY::LEFT_ALT)) 
+    if (Input::IsKeyPressed(KEY::LEFT_ALT))
     {
         mouseNotUsed = true;
-        if (Input::GetCursorState() == CURSOR_STATE::DISABLED) 
+        if (Input::GetCursorState() == CURSOR_STATE::DISABLED)
         {
             Input::ShowCursor();
 #if _DEBUG
@@ -440,21 +441,31 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     if (rot.x > 89.f) {
         rot.x = 89.f;
     }
-    
+
     if (rot.x < -89.f)
     {
         rot.x = -89.f;
     }
 
     Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x, rot.y + xoffset, rot.z));
-    LightingController::Instance()->ViewerTransformChanged.Invoke();
+    //LightingSystem::LightingController::Instance()->UpdateOnTransformChange();
+    updateShadowLightingMap = true;
 }
 
 void update()
 {
+    //Update Shadow & Lighting Map
+    if (updateShadowLightingMap)
+    {
+        LightingSystem::LightingController::Instance()->UpdateOnTransformChange();
+        updateShadowLightingMap = false;
+    }
+
     // Update game objects' state here
     text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
-
+    CollisionManager::Instance()->PerformCollisions();
+    SceneManager::UpdateCurrentScene();
+    Twin2Engine::Processes::ProcessManager::Instance()->UpdateSynchronizedProcess();
     colorSpan -= Time::GetDeltaTime() * 0.2f;
     if (colorSpan <= 0.f) {
         colorSpan = 1.f;
@@ -545,176 +556,9 @@ void render_imgui()
         }
 
         ImGui::Separator();
-
-#pragma region IMGUI_AUDIO_SETUP
-        if (ImGui::CollapsingHeader("Audio")) {
-
-            AudioComponent* a = Camera->GetComponent<AudioComponent>();
-            bool loop = a->IsLooping();
-
-            if (ImGui::Checkbox("Loop", &loop)) {
-                if (loop) {
-                    if (!a->IsLooping()) {
-                        a->Loop();
-                    }
-                }
-                else {
-                    if (a->IsLooping()) {
-                        a->UnLoop();
-                    }
-                }
-            }
-
-            float vol = a->GetVolume();
-
-            ImGui::SliderFloat("Volume", &vol, 0.f, 1.f);
-
-            if (a->GetVolume() != vol) {
-                a->SetVolume(vol);
-            }
-            
-            double pos = a->GetPlayPosition();
-
-            /*
-            if (!loop) {
-                if (ImGui::SliderFloat("Position Slider", (float*)&pos, 0.f, a->GetAudioLength())) {
-					a->SetPlayPosition(pos);
-				}
-            }
-            */
-
-            ImGui::Text("Position: %02.0f:%02.0f / %02.0f:%02.0f", std::floor(pos / 60), mod(pos, 60), std::floor(a->GetAudioLength() / 60), mod(a->GetAudioLength(), 60));
-            ImGui::Text("Play Time: %02.0f:%02.0f", std::floor(a->GetPlayTime() / 60), mod(a->GetPlayTime(), 60));
-
-            if (ImGui::Button("Play Song")) {
-                Camera->GetComponent<AudioComponent>()->Play();
-            }
-
-            if (ImGui::Button("Pause Song")) {
-                Camera->GetComponent<AudioComponent>()->Pause();
-            }
-
-            if (ImGui::Button("Stop Song")) {
-                Camera->GetComponent<AudioComponent>()->Stop();
-            }
-        }
-#pragma endregion
-
+        Camera->GetComponent<AudioComponent>()->DrawEditor();
         ImGui::Separator();
-
-#pragma region IMGUI_CAMERA_SETUP
-        if (ImGui::CollapsingHeader("Main Camera")) {
-
-            CameraComponent* c = CameraComponent::GetMainCamera();
-
-            RenderResolution res = c->GetRenderResolution();
-
-            if (ImGui::BeginCombo("Render Resolution", res == RenderResolution::DEFAULT ? "Default" : (res == RenderResolution::MEDIUM ? "Medium" : "High")))
-            {
-                if (ImGui::Selectable("Default", res == RenderResolution::DEFAULT))
-                {
-                    c->SetRenderResolution(RenderResolution::DEFAULT);
-                }
-                else if (ImGui::Selectable("Medium", res == RenderResolution::MEDIUM))
-                {
-                    c->SetRenderResolution(RenderResolution::MEDIUM);
-                }
-                else if (ImGui::Selectable("High", res == RenderResolution::HIGH))
-                {
-                    c->SetRenderResolution(RenderResolution::HIGH);
-                }
-                ImGui::EndCombo();
-            }
-
-            uint8_t acFil = RenderFilter::NONE;
-            uint8_t fil = c->GetCameraFilters();
-
-            bool g = (fil & RenderFilter::GRAYSCALE) != 0;
-
-            ImGui::Checkbox("GrayScale", &g);
-            if (g) {
-                acFil |= RenderFilter::GRAYSCALE;
-            }
-
-            g = (fil & RenderFilter::NEGATIVE) != 0;
-
-            ImGui::Checkbox("Negative", &g);
-            if (g) {
-                acFil |= RenderFilter::NEGATIVE;
-            }
-
-            g = (fil & RenderFilter::VIGNETTE) != 0;
-
-            ImGui::Checkbox("Vignette", &g);
-            if (g) {
-                acFil |= RenderFilter::VIGNETTE;
-            }
-
-            g = (fil & RenderFilter::BLUR) != 0;
-
-            ImGui::Checkbox("Blur", &g);
-            if (g) {
-                acFil |= RenderFilter::BLUR;
-            }
-
-            g = (fil & RenderFilter::DEPTH) != 0;
-
-            ImGui::Checkbox("Depth", &g);
-            if (g) {
-                acFil |= RenderFilter::DEPTH;
-            }
-
-            g = (fil & RenderFilter::OUTLINE) != 0;
-
-            ImGui::Checkbox("Outline", &g);
-            if (g) {
-                acFil |= RenderFilter::OUTLINE;
-            }
-
-            c->SetCameraFilter(acFil);
-
-            int s = (int)c->GetSamples();
-
-            ImGui::InputInt("MSAA Samples", &s);
-
-            if (s != (int)c->GetSamples()) {
-                c->SetSamples((uint8_t)s);
-            }
-
-            bool per = (c->GetCameraType() == CameraType::PERSPECTIVE);
-
-            if (ImGui::Button((per ? "Orthographic" : "Perspective"))) {
-                if (per) {
-                    c->SetCameraType(CameraType::ORTHOGRAPHIC);
-                }
-                else {
-                    c->SetCameraType(CameraType::PERSPECTIVE);
-                }
-            }
-
-            float n = c->GetNearPlane();
-            ImGui::InputFloat("Near Plane", &n);
-
-            if (n != c->GetNearPlane()) {
-                c->SetNearPlane(n);
-            }
-
-            float f = c->GetFarPlane();
-            ImGui::InputFloat("Far Plane", &f);
-
-            if (f != c->GetFarPlane()) {
-                c->SetFarPlane(f);
-            }
-
-            float gm = c->GetGamma();
-            ImGui::InputFloat("Gamma", &gm);
-
-            if (gm != c->GetGamma()) {
-                c->SetGamma(gm);
-            }
-        }
-#pragma endregion
-
+        Camera->GetComponent<CameraComponent>()->DrawEditor();
         ImGui::Separator();
 
 #pragma region IMGUI_WINDOW_SETUP
@@ -820,6 +664,8 @@ void render_imgui()
             }
         }
 #pragma endregion
+
+        ImGui::Separator();
 
 #pragma region IMGUI_LIGHTING_SETUP
         if (ImGui::CollapsingHeader("Lighting Setup")) {
@@ -933,42 +779,37 @@ void render_imgui()
 
         ImGui::Separator();
 
-        ImGui::Checkbox("IsFrustumCullingOn", &(CameraComponent::GetMainCamera()->IsFrustumCullingOn));
-
-        ImGui::Separator();
-
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
 #pragma region ScriptableObjects
 
-        static string selectedSO = "";
-        static vector<string> scriptableObjectsNames = ScriptableObjectManager::GetScriptableObjectsNames();
-        if (ImGui::TreeNode("ScriptableObjects")) {
-            for (size_t i = 0; i < scriptableObjectsNames.size(); i++)
-            {
-                if (ImGui::Selectable(scriptableObjectsNames[i].c_str())) {
-                    selectedSO = scriptableObjectsNames[i];
-                }
-            }
-            ImGui::TreePop();
-        }
-        ImGui::Text("Selected Scriptable Object to create:");
-        ImGui::SameLine();
-        ImGui::InputText("##selectedItem", &selectedSO[0], selectedSO.size(), ImGuiInputTextFlags_ReadOnly);
-        static char dstPath[255] = { '\0' };
-        ImGui::InputText("##dstPath", dstPath, 254);
-
-        if (ImGui::Button("Create ScriptableObject"))
-        {
-            SPDLOG_WARN("Button pressed");
-            if (selectedSO.size() > 0)
-            {
-                SPDLOG_WARN("Selected size");
-                string strDstPath(dstPath);
-                if (strDstPath.size() > 0)
+        if (ImGui::CollapsingHeader("Scriptable Object Creator")) {
+            static string selectedSO = "";
+            static vector<string> scriptableObjectsNames = ScriptableObjectManager::GetScriptableObjectsNames();
+            if (ImGui::TreeNode("ScriptableObjects")) {
+                for (size_t i = 0; i < scriptableObjectsNames.size(); i++)
                 {
-                    SPDLOG_WARN("DstPath size");
-                    ScriptableObjectManager::CreateScriptableObject(strDstPath, selectedSO);
+                    if (ImGui::Selectable(scriptableObjectsNames[i].c_str())) {
+                        selectedSO = scriptableObjectsNames[i];
+                    }
+                }
+                ImGui::TreePop();
+            }
+            ImGui::Text("Selected Scriptable Object to create:");
+            ImGui::SameLine();
+            ImGui::InputText("##selectedItem", &selectedSO[0], selectedSO.size(), ImGuiInputTextFlags_ReadOnly);
+            static char dstPath[255] = { '\0' };
+            ImGui::Text("Destination and output file name:");
+            ImGui::SameLine();
+            ImGui::InputText("##dstPath", dstPath, 254);
+
+            if (ImGui::Button("Create ScriptableObject"))
+            {
+                if (selectedSO.size() > 0)
+                {
+                    string strDstPath(dstPath);
+                    if (strDstPath.size() > 0)
+                    {
+                        ScriptableObjectManager::CreateScriptableObject(strDstPath, selectedSO);
+                    }
                 }
             }
         }
@@ -1023,10 +864,34 @@ void render_imgui()
                 ImGui::EndCombo();
             }
         }
+        ImGui::Separator();
+
+#pragma region MATERIAL_CREATOR
+
+
+        if (ImGui::CollapsingHeader("Material Creator"))
+        {
+            static char shaderName[255] = { '\0' };
+            static char materialName[255] = { '\0' };
+            ImGui::Text("Shader name:");
+            ImGui::SameLine();
+            ImGui::InputText("##selectedItem", shaderName, 254);
+            ImGui::Text("Material name:");
+            ImGui::SameLine();
+            ImGui::InputText("##dstPath", materialName, 254);
+            if (ImGui::Button("Create Material"))
+            {
+                Editor::Common::CreateMaterial(shaderName, materialName);
+            }
+        }
+
+#pragma endregion
+
+        ImGui::Separator();
 
 #pragma region EDITOR_MATERIAL_SCANNING
 
-        if (ImGui::Button("Scan for new materials"))
+        if (ImGui::Button("Scan for materials"))
         {
             filesystem::path src = "res/models";
             filesystem::path dst = "res/materials/processed";
@@ -1036,6 +901,67 @@ void render_imgui()
 
 #pragma endregion
 
+        ImGui::Separator();
+
+#pragma region MapGenerators
+
+        if (ImGui::CollapsingHeader("Map Generator"))
+        {
+            static string selectedSO = "";
+            static vector<string> scriptableObjectsPaths = ScriptableObjectManager::GetAllPaths();
+            static ScriptableObject* selectedScriptableObject = nullptr;
+            if (ImGui::TreeNode("Scriptable Objects")) {
+                for (size_t i = 0; i < scriptableObjectsPaths.size(); i++)
+                {
+                    if (ImGui::Selectable(scriptableObjectsPaths[i].c_str())) {
+                        selectedSO = scriptableObjectsPaths[i];
+                        selectedScriptableObject = ScriptableObjectManager::Get(selectedSO);
+                    }
+                }
+                ImGui::TreePop();
+            }
+            ImGui::Text("Selected Scriptable Object to create:");
+            ImGui::SameLine();
+            ImGui::InputText("##selectedSO", &selectedSO[0], selectedSO.size(), ImGuiInputTextFlags_ReadOnly);
+
+            ImGui::Separator();
+            if (selectedScriptableObject != nullptr)
+            {
+                selectedScriptableObject->DrawEditor();
+            }
+            ImGui::Separator();
+
+            if (ImGui::Button("Generate"))
+            {
+                static Transform* tilemapTransform = tilemapGO->GetTransform();
+                static HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
+                hexagonalTilemap->Clear();
+                while (tilemapTransform->GetChildCount())
+                {
+                    Transform* child = tilemapTransform->GetChildAt(0ull);
+                    tilemapTransform->RemoveChild(child);
+                    SceneManager::DestroyGameObject(child->GetGameObject());
+                }
+                
+                static MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
+                
+                float tilemapGenerating = glfwGetTime();
+                mapGenerator->Generate();
+                spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
+                
+                static ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
+                
+                tilemapGenerating = glfwGetTime();
+                contentGenerator->GenerateContent(hexagonalTilemap);
+                spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
+            }
+        }
+
+#pragma endregion
+
+        ImGui::Separator();
+
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
         ImGui::End();
     }

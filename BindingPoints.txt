@@ -1,0 +1,15 @@
+SSBO:
+0 - InstanceBuffer
+1 - MaterialIndexes
+2 - 
+3 - Lights
+4 - 
+5 - 
+
+UBO:
+0 - CameraData
+1 - WindowData
+2 - MaterialInput
+3 - LightingData
+4 - UICanvas
+5 - UIElement

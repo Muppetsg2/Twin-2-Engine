@@ -251,7 +251,6 @@ void MapGenerator::Generate()
         }
     }
     
-    SPDLOG_ERROR("Zrobiæ implementacjê content generator!");
     //GetComponent<IContentGenerator>() ? .GenerateContent();
 }
 

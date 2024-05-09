@@ -1,5 +1,4 @@
-#ifndef _RANDOM_H_
-#define _RANDOM_H_
+#pragma once
 
 namespace Twin2Engine::Core
 {
@@ -81,5 +80,3 @@ namespace Twin2Engine::Core
         //return GenerateInRangeRandom<T>(minInclusive, maxExclusive);
     }
 }
-
-#endif // !_RANDOM_H_

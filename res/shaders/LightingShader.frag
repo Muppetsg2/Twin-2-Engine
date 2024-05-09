@@ -1,4 +1,5 @@
 #version 430
+//LightingShader.frag
 
 in vec3 position;
 in vec2 texCoords;
@@ -13,6 +14,7 @@ out vec4 FragColor;
 
 //shadow maps
 uniform sampler2D DirLightShadowMaps[4];
+uniform sampler2D DirLightingMap;
 
 uniform vec4 uColor;
 uniform bool uNoTexture = true;
@@ -76,31 +78,38 @@ layout (std140, binding = 3) buffer Lights {
 	uint numberOfDirLights;
 };
 
+layout (std140, binding = 0) uniform CameraData
+{
+    mat4 projection;
+    mat4 view;
+	vec3 viewPos;
+};
+
 layout(std140, binding = 3) uniform LightingData {
     vec3 AmbientLight;
+	float shininness;
 	vec3 ViewerPosition;
-    int shadingType;
+	int shadingType;
 };
 
 
 //LIGHTING END
 
-//zero w cieniu ; 1 - oœwietlone
+//zero w cieniu ; 1 - oï¿½wietlone
 float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
 {
     // perform perspective divide
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     // transform to [0,1] range
     projCoords = projCoords * 0.5 + 0.5;
-    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-    float closestDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy).r; 
     // get depth of current fragment from light's perspective
     float currentDepth = projCoords.z;
+
+    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    //float closestDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy).r; 
     // calculate bias (based on depth map resolution and slope)
-   
     //vec3 lightDir = normalize(directionalLights[shadowMapId].position - position);
-    vec3 lightDir = normalize(-directionalLights[shadowMapId].direction);
-    float bias = max(0.01 * (1.0 - dot(N, lightDir)), 0.005);
+    //float bias = max(0.001 * (1.0 - dot(N, lightDir)), 0.0005);
     //float bias = 0.005;
     // check whether current frag pos is in shadow
     //float shadow = (currentDepth) < closestDepth  ? 1.0 : 0.0;
@@ -108,16 +117,18 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
     // PCF
     float shadow = 0.0;
     vec2 texelSize = 0.5 * 1.0 / textureSize(DirLightShadowMaps[shadowMapId], 0);
-    for(int x = -2; x <= 2; ++x)
+    float pcfDepth = 0.0;
+    for(int x = -1; x <= 1; ++x)
     {
-        for(int y = -2; y <= 2; ++y)
+        for(int y = -1; y <= 1; ++y)
         {
-            float pcfDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy + vec2(x, y) * texelSize).r; 
+            pcfDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy + vec2(x, y) * texelSize).r; 
             shadow += currentDepth  < pcfDepth  ? 1.0 : 0.0;        
-            //shadow += (currentDepth - bias) < pcfDepth  ? 1.0 : 0.0;
-            }    
+            //shadow += (currentDepth - bias) < pcfDepth  ? 1.0 : 0.0;        
+        }    
     }
-    shadow /= 25.0;
+    //shadow /= 9.0;
+    shadow *= 0.11;
     
     // keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
     if(projCoords.z > 1.0)
@@ -133,7 +144,7 @@ float countLambertianPart(vec3 L, vec3 N) {
 float countBlinnPhongPart(vec3 L, vec3 E, vec3 N) {
     vec3 H = normalize(L + E);
     float specAngle = max(dot(H, N), 0.0);
-    return pow(specAngle, 16); //<---------
+    return pow(specAngle, shininness); //<---------
 }
 
 void main()
@@ -144,7 +155,7 @@ void main()
 	
 	vec3 L = vec3(0.0);
     vec3 N = normalize(normal);
-    vec3 E = normalize(ViewerPosition - position);
+    vec3 E = normalize(viewPos - position);
 
 	float attenuation = 0.0;
 	float lambertian = 0.0;
@@ -203,13 +214,14 @@ void main()
 
         lambertian = countLambertianPart(L, N);
 		
-		specular = 0.0;
-        if (lambertian > 0.0) {
-            specular = countBlinnPhongPart(L, E, N);
-        }
-
-        //LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power;
-        LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
+		//specular = 0.0;
+        //if (lambertian > 0.0) {
+        //    specular = countBlinnPhongPart(L, E, N);
+        //}
+    
+        //LightColor += lambertian * directionalLights[i].color * directionalLights[i].power;
+        //LightColor += (lambertian + specular) * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
+        LightColor += lambertian * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
     }
 	
     FragColor *= vec4(LightColor + AmbientLight, 1.0);

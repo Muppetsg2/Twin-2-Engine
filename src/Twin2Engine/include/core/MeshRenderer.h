@@ -1,10 +1,9 @@
-#ifndef _MESH_RENDERER_H_
-#define _MESH_RENDERER_H_
+#pragma once
 
 #include <core/RenderableComponent.h>
 #include <core/Transform.h>
 
-#include <graphic/InstatiatingModel.h>
+#include <graphic/InstantiatingModel.h>
 #include <graphic/Material.h>
 #include <graphic/manager/MeshRenderingManager.h>
 
@@ -86,5 +85,3 @@ namespace Twin2Engine::Core
 
 	};
 }
-
-#endif

@@ -35,6 +35,20 @@ namespace Generation::Generators
 
         SO_SERIALIZE()
         SO_DESERIALIZE()
+
+
+        virtual void DrawEditor() override
+        {
+            ImGui::Checkbox("mergeByNumberTilesPerRegion", &mergeByNumberTilesPerRegion);
+            ImGui::InputInt("minTilesPerRegion", &minTilesPerRegion);
+            ImGui::InputInt("maxTilesPerRegion", &maxTilesPerRegion);
+            ImGui::InputInt("minSectorsPerRegion", &minSectorsPerRegion);
+            ImGui::InputInt("maxSectorsPerRegion", &maxSectorsPerRegion);
+            ImGui::Checkbox("isDiscritizedHeight", &isDiscritizedHeight);
+            ImGui::InputFloat("upperHeightRange", &upperHeightRange);
+            ImGui::InputFloat("upperHeightRange", &upperHeightRange);
+            ImGui::InputFloat("heightRangeFacor", &heightRangeFacor);
+        }
     };
 }
 

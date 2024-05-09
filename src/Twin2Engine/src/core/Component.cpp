@@ -69,6 +69,10 @@ YAML::Node Component::Serialize() const
 	return node;
 }
 
+void Twin2Engine::Core::Component::DrawEditor()
+{
+}
+
 void Component::SetEnable(bool enable)
 {
 	if (_enabled == enable) return;

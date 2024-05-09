@@ -116,6 +116,13 @@ layout(std140, binding = 3) buffer Lights {
     uint numberOfDirLights;
 };
 
+layout (std140, binding = 0) uniform CameraData
+{
+    mat4 projection;
+    mat4 view;
+	vec3 viewPos;
+};
+
 layout(std140, binding = 3) uniform LightingData {
     vec3 ambientLight;
     vec3 viewerPosition;
@@ -318,7 +325,7 @@ void main()
 {
     // VECTORS
     data.normal = normalize(fs_in.normal);
-    data.viewDir = normalize(viewerPosition - fs_in.fragPos);
+    data.viewDir = normalize(viewPos - fs_in.fragPos);
 
     // CURRENT MATERIAL
     MaterialInput mat = materialInputs[fs_in.materialIndex];

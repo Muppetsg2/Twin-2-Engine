@@ -9,12 +9,17 @@ using namespace std;
 namespace Twin2Engine::Core {
 	class AudioComponent : public Component {
 	private:
+		string _audioName = "";
 		size_t _audioId = 0;
 		handle _audioHandle = 0;
 
 		bool _loaded = false;
 		bool _loop = false;
 		float _volume = 1.0f;
+
+		// For ImGui
+		bool _fileDialogOpen;
+		ImFileDialogInfo _fileDialogInfo;
 	public:
 
 		void SetAudio(string path);
@@ -41,5 +46,6 @@ namespace Twin2Engine::Core {
 		*/
 		void OnDestroy() override;
 		virtual YAML::Node Serialize() const override;
+		virtual void DrawEditor() override;
 	};
 }

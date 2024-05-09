@@ -25,6 +25,13 @@ namespace Generation::Generators
 
         SO_SERIALIZE()
         SO_DESERIALIZE()
+
+
+        virtual void DrawEditor() override
+        {
+            ImGui::InputInt("mountainsNumber", &mountainsNumber);
+            ImGui::InputFloat("mountainsHeight", &mountainsHeight);
+        }
     };
 }
 

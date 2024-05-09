@@ -3,6 +3,8 @@
 
 #include <manager/ScriptableObjectManager.h>
 
+
+
 namespace Twin2Engine::Manager
 {
 	class ScriptableObjectManager;
@@ -41,6 +43,8 @@ namespace Twin2Engine::Core
 
 		virtual void Serialize(YAML::Node& node) const;
 		virtual bool Deserialize(const YAML::Node& node);
+
+		virtual void DrawEditor();
 
 		static ScriptableObject* Create();
 		static void Init();

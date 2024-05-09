@@ -3,14 +3,14 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-/*
 #if _DEBUG
 	#define IMGUI_IMPL_OPENGL_LOADER_GLAD
+	#include <imgui_impl/imgui_user.h>
+	#include <imgui_impl/imgui_filedialog.h>
 	#include <imgui.h>
 	#include <imgui_impl/imgui_impl_glfw.h>
 	#include <imgui_impl/imgui_impl_opengl3.h>
 #endif
-*/
 
 #include <stb_image.h>
 
@@ -43,6 +43,7 @@
 #include <functional>
 #include <iostream>
 #include <fstream>
+#include <format>
 #include <memory>
 #include <random>
 #include <type_traits>
@@ -55,5 +56,13 @@
 
 
 
+#if _DEBUG
+#define IMGUI_IMPL_OPENGL_LOADER_GLAD
+#include <imgui_impl/imgui_user.h>
+#include <imgui_impl/imgui_filedialog.h>
+#include <imgui.h>
+#include <imgui_impl/imgui_impl_glfw.h>
+#include <imgui_impl/imgui_impl_opengl3.h>
+#endif
 
 #include <type_traits>

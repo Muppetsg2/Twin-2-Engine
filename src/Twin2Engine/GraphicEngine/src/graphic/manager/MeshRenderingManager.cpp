@@ -314,7 +314,7 @@ void MeshRenderingManager::UpdateQueues()
 
 					if (!meshPair.second.meshRenderers[index]->IsTransparent() && meshPair.second.meshRenderers[index]->GetGameObject()->GetActive())
 					{
-						if (CameraComponent::GetMainCamera()->IsFrustumCullingOn)
+						if (CameraComponent::GetMainCamera()->IsFrustumCullingOn())
 						{
 							if (meshPair.first->IsOnFrustum(frustum, meshPair.second.modelTransforms[index]))
 							{
@@ -401,13 +401,15 @@ void MeshRenderingManager::UpdateQueues()
 						//SPDLOG_INFO("Game object ptr: {}", (unsigned int)meshPair.second.meshRenderers[index]->GetGameObject());
 						//SPDLOG_INFO("Transform ptr: {}", (unsigned int)meshPair.second.meshRenderers[index]->GetGameObject()->GetTransform());
 						meshPair.second.modelTransforms[index] = meshPair.second.meshRenderers[index]->GetGameObject()->GetTransform()->GetTransformMatrix();
+						_depthMapenderQueueDynamic[shaderPair.first][materialPair.first][meshPair.first].modelTransforms[index] = meshPair.second.modelTransforms[index];
+
 						meshPair.second.meshRenderers[index]->TransformUpdated();
 					}
 
 
 					if (!meshPair.second.meshRenderers[index]->IsTransparent() && meshPair.second.meshRenderers[index]->GetGameObject()->GetActive())
 					{
-						if (CameraComponent::GetMainCamera()->IsFrustumCullingOn)
+						if (CameraComponent::GetMainCamera()->IsFrustumCullingOn())
 						{
 							if (meshPair.first->IsOnFrustum(frustum, meshPair.second.modelTransforms[index]))
 							{

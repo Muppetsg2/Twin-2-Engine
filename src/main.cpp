@@ -189,9 +189,6 @@ void imgui_end();
 
 void end_frame();
 
-float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd);
-double mod(double val1, double val2);
-
 #pragma endregion
 
 constexpr int32_t WINDOW_WIDTH = 1920;
@@ -955,176 +952,9 @@ void imgui_render()
         }
 
         ImGui::Separator();
-
-#pragma region IMGUI_AUDIO_SETUP
-        if (ImGui::CollapsingHeader("Audio")) {
-
-            AudioComponent* a = Camera->GetComponent<AudioComponent>();
-            bool loop = a->IsLooping();
-
-            if (ImGui::Checkbox("Loop", &loop)) {
-                if (loop) {
-                    if (!a->IsLooping()) {
-                        a->Loop();
-                    }
-                }
-                else {
-                    if (a->IsLooping()) {
-                        a->UnLoop();
-                    }
-                }
-            }
-
-            float vol = a->GetVolume();
-
-            ImGui::SliderFloat("Volume", &vol, 0.f, 1.f);
-
-            if (a->GetVolume() != vol) {
-                a->SetVolume(vol);
-            }
-            
-            double pos = a->GetPlayPosition();
-
-            /*
-            if (!loop) {
-                if (ImGui::SliderFloat("Position Slider", (float*)&pos, 0.f, a->GetAudioLength())) {
-					a->SetPlayPosition(pos);
-				}
-            }
-            */
-
-            ImGui::Text("Position: %02.0f:%02.0f / %02.0f:%02.0f", std::floor(pos / 60), mod(pos, 60), std::floor(a->GetAudioLength() / 60), mod(a->GetAudioLength(), 60));
-            ImGui::Text("Play Time: %02.0f:%02.0f", std::floor(a->GetPlayTime() / 60), mod(a->GetPlayTime(), 60));
-
-            if (ImGui::Button("Play Song")) {
-                Camera->GetComponent<AudioComponent>()->Play();
-            }
-
-            if (ImGui::Button("Pause Song")) {
-                Camera->GetComponent<AudioComponent>()->Pause();
-            }
-
-            if (ImGui::Button("Stop Song")) {
-                Camera->GetComponent<AudioComponent>()->Stop();
-            }
-        }
-#pragma endregion
-
+        Camera->GetComponent<AudioComponent>()->DrawEditor();
         ImGui::Separator();
-
-#pragma region IMGUI_CAMERA_SETUP
-        if (ImGui::CollapsingHeader("Main Camera")) {
-
-            CameraComponent* c = CameraComponent::GetMainCamera();
-
-            RenderResolution res = c->GetRenderResolution();
-
-            if (ImGui::BeginCombo("Render Resolution", res == RenderResolution::DEFAULT ? "Default" : (res == RenderResolution::MEDIUM ? "Medium" : "High")))
-            {
-                if (ImGui::Selectable("Default", res == RenderResolution::DEFAULT))
-                {
-                    c->SetRenderResolution(RenderResolution::DEFAULT);
-                }
-                else if (ImGui::Selectable("Medium", res == RenderResolution::MEDIUM))
-                {
-                    c->SetRenderResolution(RenderResolution::MEDIUM);
-                }
-                else if (ImGui::Selectable("High", res == RenderResolution::HIGH))
-                {
-                    c->SetRenderResolution(RenderResolution::HIGH);
-                }
-                ImGui::EndCombo();
-            }
-
-            uint8_t acFil = RenderFilter::NONE;
-            uint8_t fil = c->GetCameraFilters();
-
-            bool g = (fil & RenderFilter::GRAYSCALE) != 0;
-
-            ImGui::Checkbox("GrayScale", &g);
-            if (g) {
-                acFil |= RenderFilter::GRAYSCALE;
-            }
-
-            g = (fil & RenderFilter::NEGATIVE) != 0;
-
-            ImGui::Checkbox("Negative", &g);
-            if (g) {
-                acFil |= RenderFilter::NEGATIVE;
-            }
-
-            g = (fil & RenderFilter::VIGNETTE) != 0;
-
-            ImGui::Checkbox("Vignette", &g);
-            if (g) {
-                acFil |= RenderFilter::VIGNETTE;
-            }
-
-            g = (fil & RenderFilter::BLUR) != 0;
-
-            ImGui::Checkbox("Blur", &g);
-            if (g) {
-                acFil |= RenderFilter::BLUR;
-            }
-
-            g = (fil & RenderFilter::DEPTH) != 0;
-
-            ImGui::Checkbox("Depth", &g);
-            if (g) {
-                acFil |= RenderFilter::DEPTH;
-            }
-
-            g = (fil & RenderFilter::OUTLINE) != 0;
-
-            ImGui::Checkbox("Outline", &g);
-            if (g) {
-                acFil |= RenderFilter::OUTLINE;
-            }
-
-            c->SetCameraFilter(acFil);
-
-            int s = (int)c->GetSamples();
-
-            ImGui::InputInt("MSAA Samples", &s);
-
-            if (s != (int)c->GetSamples()) {
-                c->SetSamples((uint8_t)s);
-            }
-
-            bool per = (c->GetCameraType() == CameraType::PERSPECTIVE);
-
-            if (ImGui::Button((per ? "Orthographic" : "Perspective"))) {
-                if (per) {
-                    c->SetCameraType(CameraType::ORTHOGRAPHIC);
-                }
-                else {
-                    c->SetCameraType(CameraType::PERSPECTIVE);
-                }
-            }
-
-            float n = c->GetNearPlane();
-            ImGui::InputFloat("Near Plane", &n);
-
-            if (n != c->GetNearPlane()) {
-                c->SetNearPlane(n);
-            }
-
-            float f = c->GetFarPlane();
-            ImGui::InputFloat("Far Plane", &f);
-
-            if (f != c->GetFarPlane()) {
-                c->SetFarPlane(f);
-            }
-
-            float gm = c->GetGamma();
-            ImGui::InputFloat("Gamma", &gm);
-
-            if (gm != c->GetGamma()) {
-                c->SetGamma(gm);
-            }
-        }
-#pragma endregion
-
+        Camera->GetComponent<CameraComponent>()->DrawEditor();
         ImGui::Separator();
 
 #pragma region IMGUI_WINDOW_SETUP
@@ -1230,6 +1060,8 @@ void imgui_render()
             }
         }
 #pragma endregion
+
+        ImGui::Separator();
 
 #pragma region IMGUI_LIGHTING_SETUP
         if (ImGui::CollapsingHeader("Lighting Setup")) {
@@ -1340,6 +1172,9 @@ void imgui_render()
             }
         }
 #pragma endregion
+
+        ImGui::Separator();
+
 #pragma region ScriptableObjects
 
         if (ImGui::CollapsingHeader("Scriptable Object Creator")) {
@@ -1376,6 +1211,8 @@ void imgui_render()
         }
 #pragma endregion
 
+        ImGui::Separator();
+
 #pragma region MATERIAL_CREATOR
 
 
@@ -1397,6 +1234,8 @@ void imgui_render()
 
 #pragma endregion
 
+        ImGui::Separator();
+
 #pragma region EDITOR_MATERIAL_SCANNING
 
         if (ImGui::Button("Scan for materials"))
@@ -1409,11 +1248,36 @@ void imgui_render()
 
 #pragma endregion
 
+        ImGui::Separator();
 
 #pragma region MapGenerators
 
         if (ImGui::CollapsingHeader("Map Generator"))
         {
+            static string selectedSO = "";
+            static vector<string> scriptableObjectsPaths = ScriptableObjectManager::GetAllPaths();
+            static ScriptableObject* selectedScriptableObject = nullptr;
+            if (ImGui::TreeNode("Scriptable Objects")) {
+                for (size_t i = 0; i < scriptableObjectsPaths.size(); i++)
+                {
+                    if (ImGui::Selectable(scriptableObjectsPaths[i].c_str())) {
+                        selectedSO = scriptableObjectsPaths[i];
+                        selectedScriptableObject = ScriptableObjectManager::Get(selectedSO);
+                    }
+                }
+                ImGui::TreePop();
+            }
+            ImGui::Text("Selected Scriptable Object to create:");
+            ImGui::SameLine();
+            ImGui::InputText("##selectedSO", &selectedSO[0], selectedSO.size(), ImGuiInputTextFlags_ReadOnly);
+
+            ImGui::Separator();
+            if (selectedScriptableObject != nullptr)
+            {
+                selectedScriptableObject->DrawEditor();
+            }
+            ImGui::Separator();
+
             if (ImGui::Button("Generate"))
             {
                 static Transform* tilemapTransform = tilemapGO->GetTransform();
@@ -1442,15 +1306,9 @@ void imgui_render()
 
 #pragma endregion
 
-
-        ImGui::Separator();
-
-        ImGui::Checkbox("IsFrustumCullingOn", &(CameraComponent::GetMainCamera()->IsFrustumCullingOn));
-
         ImGui::Separator();
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
 
         ImGui::End();
     }
@@ -1475,19 +1333,4 @@ void end_frame()
     Time::Update();
     Input::Update();
     window->Update();
-}
-
-float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd)
-{
-    return expectedStart + ((expectedEnd - expectedStart) / (currEnd - currStart)) * (input - currStart);
-}
-
-double mod(double val1, double val2) {
-    if (val1 < 0 && val2 <= 0) {
-        return 0;
-    }
-
-    double x = val1 / val2;
-    double z = std::floor(val1 / val2);
-    return (x - z) * val2;
 }

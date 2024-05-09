@@ -224,6 +224,8 @@ Text* text;
 
 GameObject* Camera;
 
+GameObject* tilemapGO = nullptr;
+
 int main(int, char**)
 {
 #pragma region Initialization
@@ -587,7 +589,7 @@ int main(int, char**)
 
 #pragma region SETTING_UP_GENERATION
     //*
-    GameObject* tilemapGO = SceneManager::GetGameObjectWithId(14);
+    tilemapGO = SceneManager::GetGameObjectWithId(14);
     HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
     MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
     mapGenerator->tilemap = hexagonalTilemap;
@@ -1338,15 +1340,6 @@ void imgui_render()
             }
         }
 #pragma endregion
-
-        ImGui::Separator();
-
-        ImGui::Checkbox("IsFrustumCullingOn", &(CameraComponent::GetMainCamera()->IsFrustumCullingOn));
-
-        ImGui::Separator();
-
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
 #pragma region ScriptableObjects
 
         if (ImGui::CollapsingHeader("Scriptable Object Creator")) {
@@ -1415,6 +1408,47 @@ void imgui_render()
 
 
 #pragma endregion
+
+
+#pragma region MapGenerators
+
+        if (ImGui::CollapsingHeader("Map Generator"))
+        {
+            if (ImGui::Button("Generate"))
+            {
+                //static Transform* tilemapTransform = tilemapGO->GetTransform();
+                //while (tilemapTransform->GetChildCount())
+                //{
+                //    Transform* child = tilemapTransform->GetChildAt(0ull);
+                //    tilemapTransform->RemoveChild(child);
+                //    SceneManager::DestroyGameObject(child->GetGameObject());
+                //}
+                //
+                //static HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
+                //static MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
+                //
+                //float tilemapGenerating = glfwGetTime();
+                //mapGenerator->Generate();
+                //spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
+                //
+                //static ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
+                //
+                //tilemapGenerating = glfwGetTime();
+                //contentGenerator->GenerateContent(hexagonalTilemap);
+                //spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
+            }
+        }
+
+#pragma endregion
+
+
+        ImGui::Separator();
+
+        ImGui::Checkbox("IsFrustumCullingOn", &(CameraComponent::GetMainCamera()->IsFrustumCullingOn));
+
+        ImGui::Separator();
+
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 
         ImGui::End();

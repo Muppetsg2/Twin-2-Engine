@@ -69,10 +69,8 @@ void LakeGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
     {
         for (MapRegion* region : waterRegions)
         {
-            SPDLOG_ERROR("Nie zrobiono usuwania GameObjectów");
             region->GetTransform()->SetParent(nullptr);
             SceneManager::DestroyGameObject(region->GetGameObject());
-            //DestroyImmediate(region->GetGameObject());
         }
     }
     else

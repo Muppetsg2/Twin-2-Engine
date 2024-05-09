@@ -30,6 +30,7 @@ namespace Tilemap
 	public:
 		HexagonalTile();
 		HexagonalTile(HexagonalTilemap* tilemap, const glm::ivec2& position);
+		~HexagonalTile();
 
 		inline HexagonalTilemap* GetTilemap() const;
 		inline glm::ivec2 GetPosition() const;

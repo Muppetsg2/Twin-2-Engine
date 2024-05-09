@@ -121,7 +121,15 @@ namespace Twin2Engine::Core
 		void RemoveComponent(Component* component);
 		template<class T, std::enable_if<std::is_base_of<Component, T>::value, bool>::type = true>
 		void RemoveComponents() {
-			components.remove_if([](Component* component) { return dynamic_cast<T*>(component) != nullptr; });
+			components.remove_if([](Component* component) { 
+				if (dynamic_cast<T*>(component) != nullptr)
+				{
+					component->OnDestroy();
+					//delete component;
+					return true;
+				}
+				return false;
+			});
 		}
 
 #pragma endregion

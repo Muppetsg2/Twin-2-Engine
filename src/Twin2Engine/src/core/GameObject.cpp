@@ -302,6 +302,10 @@ void GameObject::AddComponent(Component* comp)
 
 void GameObject::RemoveComponent(Component* component)
 {
-	components.remove(component);
+	if (components.remove(component))
+	{
+		component->OnDestroy();
+		//delete component;
+	}
 	//std::remove_if(components.begin(), components.end(), [component](Component* comp) { return comp == component; });
 }

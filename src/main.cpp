@@ -1416,26 +1416,27 @@ void imgui_render()
         {
             if (ImGui::Button("Generate"))
             {
-                //static Transform* tilemapTransform = tilemapGO->GetTransform();
-                //while (tilemapTransform->GetChildCount())
-                //{
-                //    Transform* child = tilemapTransform->GetChildAt(0ull);
-                //    tilemapTransform->RemoveChild(child);
-                //    SceneManager::DestroyGameObject(child->GetGameObject());
-                //}
-                //
-                //static HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
-                //static MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
-                //
-                //float tilemapGenerating = glfwGetTime();
-                //mapGenerator->Generate();
-                //spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
-                //
-                //static ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
-                //
-                //tilemapGenerating = glfwGetTime();
-                //contentGenerator->GenerateContent(hexagonalTilemap);
-                //spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
+                static Transform* tilemapTransform = tilemapGO->GetTransform();
+                static HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
+                hexagonalTilemap->Clear();
+                while (tilemapTransform->GetChildCount())
+                {
+                    Transform* child = tilemapTransform->GetChildAt(0ull);
+                    tilemapTransform->RemoveChild(child);
+                    SceneManager::DestroyGameObject(child->GetGameObject());
+                }
+                
+                static MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
+                
+                float tilemapGenerating = glfwGetTime();
+                mapGenerator->Generate();
+                spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
+                
+                static ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
+                
+                tilemapGenerating = glfwGetTime();
+                contentGenerator->GenerateContent(hexagonalTilemap);
+                spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
             }
         }
 

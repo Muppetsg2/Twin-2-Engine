@@ -189,9 +189,6 @@ void imgui_end();
 
 void end_frame();
 
-float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd);
-double mod(double val1, double val2);
-
 #pragma endregion
 
 constexpr int32_t WINDOW_WIDTH = 1920;

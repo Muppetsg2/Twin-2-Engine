@@ -102,10 +102,12 @@ void InputField::Render()
 		// KALKULACJA POZYCJI KURSORA
 
 		UIElement elem{};
-		elem.transform = GetTransform()->GetTransformMatrix();
+		elem.elemTransform = GetTransform()->GetTransformMatrix();
 		elem.color = glm::vec4(0.0, 0.0, 0.0, 1.0);
 		elem.elemSize = glm::ivec2(4, _text->GetSize());
 		elem.hasTexture = false;
+		elem.worldSpaceCanvas = false;
+		elem.canvasSize = Window::GetInstance()->GetContentSize();
 		UIRenderingManager::Render(elem);
 	}
 }

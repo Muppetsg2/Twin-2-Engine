@@ -64,22 +64,33 @@ void UIRenderingManager::Render()
 {
 	if (_uiShader != nullptr) {
 		_uiShader->Use();
-		glActiveTexture(GL_TEXTURE0);
 		_uiShader->SetInt("image", 0);
+		_uiShader->SetInt("maskImage", 1);
 
-		glBindBuffer(GL_UNIFORM_BUFFER, _canvasUBO);
-		STD140Struct canvasStruct(CanvasOffsets);
-		canvasStruct.Set("canvasSize", Window::GetInstance()->GetContentSize());
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, canvasStruct.GetSize(), canvasStruct.GetData().data());
-
-		glBindBuffer(GL_UNIFORM_BUFFER, _elemUBO);
 		glBindVertexArray(_pointVAO);
 		while (_renderQueue.size() > 0) {
 			UIElement elem = _renderQueue.front();
+
+			glBindBuffer(GL_UNIFORM_BUFFER, _canvasUBO);
+			STD140Struct canvasStruct(CanvasOffsets);
+			canvasStruct.Set("canvasTransform", elem.canvasTransform);
+			canvasStruct.Set("canvasSize", elem.canvasSize);
+			canvasStruct.Set("worldSpaceCanvas", elem.worldSpaceCanvas);
+			glBufferSubData(GL_UNIFORM_BUFFER, 0, canvasStruct.GetSize(), canvasStruct.GetData().data());
+
+			glBindBuffer(GL_UNIFORM_BUFFER, _elemUBO);
 			STD140Struct elemStruct = MakeUIElementStruct(elem);
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, elemStruct.GetSize(), elemStruct.GetData().data());
 
-			if (elem.hasTexture) glBindTexture(GL_TEXTURE_2D, elem.textureID);
+			if (elem.hasTexture) {
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, elem.textureID);
+			}
+
+			if (elem.hasMaskTexture) {
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, elem.maskTextureID);
+			}
 
 			glDrawArrays(GL_POINTS, 0, 1);
 

@@ -258,6 +258,7 @@ int main(int, char**)
     t->SetText("Click Meeej");
     t->SetFont("res/fonts/Caveat-Regular.ttf");
     t->SetSize(48);  
+    t->SetHeight(48);
     t->SetColor(glm::vec4(1.f, 0.f, 0.f, 1.f));
     t->SetTextAlignX(TextAlignX::CENTER);
 

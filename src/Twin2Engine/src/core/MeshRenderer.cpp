@@ -6,7 +6,6 @@
 
 
 using namespace Twin2Engine::Core;
-using namespace Twin2Engine::Tools;
 using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
@@ -27,7 +26,7 @@ bool Twin2Engine::Core::MeshRenderer::IsTransformChanged() const
 
 void Twin2Engine::Core::MeshRenderer::Initialize()
 {
-	/*GetGameObject()->OnStaticChanged += [this](GameObject* gameObject) {
+	GetGameObject()->OnStaticChanged += [this](GameObject* gameObject) {
 		if (gameObject->GetIsStatic())
 		{
 			if (_registered)
@@ -46,10 +45,10 @@ void Twin2Engine::Core::MeshRenderer::Initialize()
 			MeshRenderingManager::RegisterDynamic(this);
 			_registered = true;
 		}
-	};*/
+		};
 
 	_transformChanged = false;
-	/*if (GetGameObject()->GetIsStatic())
+	if (GetGameObject()->GetIsStatic())
 	{
 		if (_registered)
 		{
@@ -64,51 +63,51 @@ void Twin2Engine::Core::MeshRenderer::Initialize()
 			MeshRenderingManager::UnregisterStatic(this);
 		}
 		MeshRenderingManager::RegisterDynamic(this);
-	}*/
+	}
 	_registered = true;
 
 	GetTransform()->OnEventTransformChanged += [this](Transform* transform) {
 		_transformChanged = true;
 		_toUpdate = _model.GetMeshCount();
-	};
+		};
 	GetTransform()->OnEventInHierarchyParentChanged += [this](Transform* transform) {
 		_transformChanged = true;
 		_toUpdate = _model.GetMeshCount();
-	};
+		};
 }
 
 void MeshRenderer::Render()
 {
-	/*if (!GetGameObject()->GetIsStatic())
-	{*/
-		MeshRenderData data{};
-		data.transform = GetTransform()->GetTransformMatrix();
-		data.meshes = std::vector<InstantiatingMesh*>();
-		data.materials = std::vector<Material>();
-		data.isTransparent = IsTransparent();
-	
-	
-		if (CameraComponent::GetMainCamera()->IsFrustumCullingOn())
-		{
-			InstantiatingMesh* tMesh;
-			Frustum frustum = CameraComponent::GetMainCamera()->GetFrustum();
-			for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
-				tMesh = _model.GetMesh(i);
-				if (tMesh->IsOnFrustum(frustum, data.transform)) {
-					data.meshes.push_back(tMesh);
-					data.materials.push_back(GetMaterial(i));
-				}
-			}
-		}
-		else
-		{
-			for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
-				data.meshes.push_back(_model.GetMesh(i));
-				data.materials.push_back(GetMaterial(i));
-			}
-		}
-	
-		MeshRenderingManager::Render(data);
+	//if (!GetGameObject()->GetIsStatic())
+	//{
+	//	MeshRenderData data{};
+	//	data.transform = GetTransform()->GetTransformMatrix();
+	//	data.meshes = std::vector<InstantiatingMesh*>();
+	//	data.materials = std::vector<Material>();
+	//	data.isTransparent = IsTransparent();
+	//
+	//
+	//	if (CameraComponent::GetMainCamera()->IsFrustumCullingOn)
+	//	{
+	//		InstantiatingMesh* tMesh;
+	//		Frustum frustum = CameraComponent::GetMainCamera()->GetFrustum();
+	//		for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
+	//			tMesh = _model.GetMesh(i);
+	//			if (tMesh->IsOnFrustum(frustum, data.transform)) {
+	//				data.meshes.push_back(tMesh);
+	//				data.materials.push_back(GetMaterial(i));
+	//			}
+	//		}
+	//	}
+	//	else
+	//	{
+	//		for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
+	//			data.meshes.push_back(_model.GetMesh(i));
+	//			data.materials.push_back(GetMaterial(i));
+	//		}
+	//	}
+	//
+	//	MeshRenderingManager::Render(data);
 	//}
 }
 
@@ -162,7 +161,7 @@ size_t MeshRenderer::GetMaterialCount() const
 
 void MeshRenderer::AddMaterial(Material material)
 {
-	/*if (_registered)
+	if (_registered)
 	{
 		if (GetGameObject()->GetIsStatic())
 		{
@@ -172,11 +171,11 @@ void MeshRenderer::AddMaterial(Material material)
 		{
 			MeshRenderingManager::UnregisterDynamic(this);
 		}
-	}*/
+	}
 
 	_materials.push_back(material);
 
-	/*if (_registered)
+	if (_registered)
 	{
 		if (GetGameObject()->GetIsStatic())
 		{
@@ -186,7 +185,7 @@ void MeshRenderer::AddMaterial(Material material)
 		{
 			MeshRenderingManager::RegisterDynamic(this);
 		}
-	}*/
+	}
 	//_registered = true;
 }
 
@@ -200,7 +199,7 @@ void MeshRenderer::SetMaterial(size_t index, Material material)
 {
 	if (_materials[index] != material && index < _materials.size())
 	{
-		/*if (_registered)
+		if (_registered)
 		{
 			if (GetGameObject()->GetIsStatic())
 			{
@@ -210,11 +209,11 @@ void MeshRenderer::SetMaterial(size_t index, Material material)
 			{
 				MeshRenderingManager::UnregisterDynamic(this);
 			}
-		}*/
+		}
 
 		_materials[index] = material;
 
-		/*if (_registered)
+		if (_registered)
 		{
 			if (GetGameObject()->GetIsStatic())
 			{
@@ -224,7 +223,7 @@ void MeshRenderer::SetMaterial(size_t index, Material material)
 			{
 				MeshRenderingManager::RegisterDynamic(this);
 			}
-		}*/
+		}
 		//_registered = true;
 	}
 }
@@ -235,26 +234,26 @@ void MeshRenderer::SetMaterial(size_t index, size_t materialId)
 }
 
 #ifdef MESH_FRUSTUM_CULLING
-void MeshRenderer::OnEnable()
+void Twin2Engine::Core::MeshRenderer::OnEnable()
 {
 	if (_model != nullptr && OnTransformChangedActionId == -1) {
 		OnTransformChangedActionId = GetTransform()->OnEventTransformChanged += OnTransformChangedAction;
 	}
 }
 
-void MeshRenderer::OnDisable()
+void Twin2Engine::Core::MeshRenderer::OnDisable()
 {
 	if (_model != nullptr && OnTransformChangedActionId != -1) {
 		GetTransform()->OnEventTransformChanged -= OnTransformChangedActionId;
 	}
 }
 
-void MeshRenderer::OnDestroy()
+void Twin2Engine::Core::MeshRenderer::OnDestroy()
 {
 	if (_model != nullptr && OnTransformChangedActionId != -1) {
 		GetTransform()->OnEventTransformChanged -= OnTransformChangedActionId;
 	}
-	/*if (_registered)
+	if (_registered)
 	{
 		if (GetGameObject()->GetIsStatic())
 		{
@@ -264,7 +263,7 @@ void MeshRenderer::OnDestroy()
 		{
 			MeshRenderingManager::UnregisterDynamic(this);
 		}
-	}*/
+	}
 }
 #endif // MESH_FRUSTUM_CULLING
 
@@ -272,7 +271,7 @@ void MeshRenderer::SetModel(const InstantiatingModel& model)
 {
 	if (_model != model)
 	{
-		/*if (_registered)
+		if (_registered)
 		{
 			if (GetGameObject()->GetIsStatic())
 			{
@@ -282,11 +281,11 @@ void MeshRenderer::SetModel(const InstantiatingModel& model)
 			{
 				MeshRenderingManager::UnregisterDynamic(this);
 			}
-		}*/
+		}
 
 		_model = model;
 
-		/*if (_registered)
+		if (_registered)
 		{
 			if (GetGameObject()->GetIsStatic())
 			{
@@ -296,7 +295,7 @@ void MeshRenderer::SetModel(const InstantiatingModel& model)
 			{
 				MeshRenderingManager::RegisterDynamic(this);
 			}
-		}*/
+		}
 		//_registered = true;
 
 #ifdef MESH_FRUSTUM_CULLING

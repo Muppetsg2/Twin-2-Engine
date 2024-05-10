@@ -24,11 +24,13 @@ std::map<InstantiatingMesh*, std::map<Shader*, std::map<Material, std::queue<Mes
 std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueStatic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
 std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_depthMapenderQueueStatic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
 
+std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthMapQueueStatic = std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
 std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthQueueStatic = std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
 
 std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueDynamic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
 std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_depthMapenderQueueDynamic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
 
+std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthMapQueueDynamic = std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
 std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthQueueDynamic = std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
 
 
@@ -102,6 +104,15 @@ void MeshRenderingManager::UnloadAll()
 	_renderQueue.clear();
 	_depthQueue.clear();
 	_depthMapRenderQueue.clear();
+
+	_renderQueueStatic.clear();
+	_depthMapenderQueueStatic.clear();
+	_depthMapQueueStatic.clear();
+	_depthQueueStatic.clear();
+	_renderQueueDynamic.clear();
+	_depthMapenderQueueDynamic.clear();
+	_depthMapQueueDynamic.clear();
+	_depthQueueDynamic.clear();
 }
 
 
@@ -292,7 +303,17 @@ void MeshRenderingManager::UpdateQueues()
 	RenderedSegment renderedSegment{ .begin = nullptr, .count = 0 };
 	//bool lastAdded = true;
 
+	for (auto& meshPair : _depthMapQueueStatic)
+	{
+		meshPair.second.rendered.clear();
+	}
+	for (auto& meshPair : _depthMapQueueDynamic)
+	{
+		meshPair.second.rendered.clear();
+	}
+
 #pragma region UPDATE_FOR_STATIC
+
 	for (auto& shaderPair : _renderQueueStatic)
 	{
 		for (auto& materialPair : shaderPair.second)
@@ -301,32 +322,25 @@ void MeshRenderingManager::UpdateQueues()
 			{
 				renderedSegment.begin = meshPair.second.modelTransforms.data();
 				renderedSegment.count = 0u;
-				//lastAdded = true;
 
 				meshPair.second.rendered.clear();
+
 				meshPair.second.renderedCount = 0u;
 
 				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); index++)
 				{
-					//W przypadku gdy ma byæ aktualizacja transforma
-					//meshPair.second.modelTransforms[index] = meshPair.second.meshRenderers[index]->GetTransform()->GetTransformMatrix();
-
-
 					if (!meshPair.second.meshRenderers[index]->IsTransparent() && meshPair.second.meshRenderers[index]->GetGameObject()->GetActive())
 					{
 						if (CameraComponent::GetMainCamera()->IsFrustumCullingOn())
 						{
 							if (meshPair.first->IsOnFrustum(frustum, meshPair.second.modelTransforms[index]))
 							{
-								//lastAdded = true;
 								renderedSegment.count++;
 							}
 							else
 							{
-								//if (lastAdded)
 								if (renderedSegment.count)
 								{
-									//lastAdded = false;
 									meshPair.second.rendered.push_back(renderedSegment);
 									meshPair.second.renderedCount += renderedSegment.count;
 
@@ -341,7 +355,6 @@ void MeshRenderingManager::UpdateQueues()
 						}
 						else
 						{
-							//lastAdded = true;
 							renderedSegment.count++;
 						}
 					}
@@ -349,7 +362,6 @@ void MeshRenderingManager::UpdateQueues()
 					{
 						if (renderedSegment.count)
 						{
-							//lastAdded = false;
 							meshPair.second.rendered.push_back(renderedSegment);
 							meshPair.second.renderedCount += renderedSegment.count;
 
@@ -369,18 +381,19 @@ void MeshRenderingManager::UpdateQueues()
 					renderedSegment.count = 0u;
 				}
 
-				_depthMapenderQueueStatic[shaderPair.first][materialPair.first][meshPair.first].rendered = meshPair.second.rendered;
-				_depthMapenderQueueStatic[shaderPair.first][materialPair.first][meshPair.first].renderedCount = meshPair.second.renderedCount;
+				//_depthMapenderQueueStatic[shaderPair.first][materialPair.first][meshPair.first].rendered = meshPair.second.rendered;
+				//_depthMapenderQueueStatic[shaderPair.first][materialPair.first][meshPair.first].renderedCount = meshPair.second.renderedCount;
 
-				_depthQueueStatic[meshPair.first].renderedCount += meshPair.second.renderedCount;
+				_depthMapQueueStatic[meshPair.first].renderedCount += meshPair.second.renderedCount;
+				//_depthMapQueueStatic[meshPair.first].rendered.insert(_depthMapQueueStatic[meshPair.first].rendered.cend(), meshPair.second.rendered.begin(), meshPair.second.rendered.end());
 				for (const auto& element : meshPair.second.rendered)
 				{
-					//_depthQueueStatic[meshPair.first].rendered.emplace_back(&meshPair.second.modelTransforms, element.begin, element.count);
-					_depthQueueStatic[meshPair.first].rendered.push_back(element);
+					_depthMapQueueStatic[meshPair.first].rendered.push_back(element);
 				}
 			}
 		}
 	}
+	_depthQueueStatic = _depthMapQueueStatic;
 #pragma endregion
 
 #pragma region UPDATE_FOR_DYNAMIC
@@ -392,22 +405,15 @@ void MeshRenderingManager::UpdateQueues()
 			{
 				renderedSegment.begin = meshPair.second.modelTransforms.data();
 				renderedSegment.count = 0u;
-				//lastAdded = true;
 
 				meshPair.second.rendered.clear();
 				meshPair.second.renderedCount = 0u;
 
 				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); index++)
 				{
-					//W przypadku gdy ma byæ aktualizacja transforma
 					if (meshPair.second.meshRenderers[index]->IsTransformChanged())
 					{
-						//SPDLOG_INFO("Game object ptr: {}", (unsigned int)this);
-						//SPDLOG_INFO("Transform ptr: {}", (unsigned int)_transform);
-						//SPDLOG_INFO("Game object ptr: {}", (unsigned int)meshPair.second.meshRenderers[index]->GetGameObject());
-						//SPDLOG_INFO("Transform ptr: {}", (unsigned int)meshPair.second.meshRenderers[index]->GetGameObject()->GetTransform());
 						meshPair.second.modelTransforms[index] = meshPair.second.meshRenderers[index]->GetGameObject()->GetTransform()->GetTransformMatrix();
-						_depthMapenderQueueDynamic[shaderPair.first][materialPair.first][meshPair.first].modelTransforms[index] = meshPair.second.modelTransforms[index];
 
 						meshPair.second.meshRenderers[index]->TransformUpdated();
 					}
@@ -418,15 +424,12 @@ void MeshRenderingManager::UpdateQueues()
 						{
 							if (meshPair.first->IsOnFrustum(frustum, meshPair.second.modelTransforms[index]))
 							{
-								//lastAdded = true;
 								renderedSegment.count++;
 							}
 							else
 							{
-								//if (lastAdded)
 								if (renderedSegment.count)
 								{
-									//lastAdded = false;
 									meshPair.second.rendered.push_back(renderedSegment);
 									meshPair.second.renderedCount += renderedSegment.count;
 
@@ -441,7 +444,6 @@ void MeshRenderingManager::UpdateQueues()
 						}
 						else
 						{
-							//lastAdded = true;
 							renderedSegment.count++;
 						}
 					}
@@ -449,7 +451,6 @@ void MeshRenderingManager::UpdateQueues()
 					{
 						if (renderedSegment.count)
 						{
-							//lastAdded = false;
 							meshPair.second.rendered.push_back(renderedSegment);
 							meshPair.second.renderedCount += renderedSegment.count;
 
@@ -469,22 +470,21 @@ void MeshRenderingManager::UpdateQueues()
 					renderedSegment.count = 0u;
 				}
 
-				_depthMapenderQueueDynamic[shaderPair.first][materialPair.first][meshPair.first].rendered = meshPair.second.rendered;
-				_depthMapenderQueueDynamic[shaderPair.first][materialPair.first][meshPair.first].renderedCount = meshPair.second.renderedCount;
+				//_depthMapenderQueueDynamic[shaderPair.first][materialPair.first][meshPair.first].rendered = meshPair.second.rendered;
+				//_depthMapenderQueueDynamic[shaderPair.first][materialPair.first][meshPair.first].renderedCount = meshPair.second.renderedCount;
 
-				_depthQueueDynamic[meshPair.first].renderedCount += meshPair.second.renderedCount;
+				_depthMapQueueDynamic[meshPair.first].renderedCount += meshPair.second.renderedCount;
+				//_depthMapQueueDynamic[meshPair.first].rendered.insert(_depthMapQueueDynamic[meshPair.first].rendered.cend(), meshPair.second.rendered.begin(), meshPair.second.rendered.end());
 				for (const auto& element : meshPair.second.rendered)
 				{
-					//_depthQueueDynamic[meshPair.first].rendered.emplace_back(element.begin, element.count);
-					_depthQueueDynamic[meshPair.first].rendered.push_back(element);
+					_depthMapQueueDynamic[meshPair.first].rendered.push_back(element);
 				}
 			}
 		}
 	}
+	_depthQueueDynamic = _depthMapQueueDynamic;
 #pragma endregion
-
 }
-
 
 #if RENERING_TYPE_MESH_SHADER_MATERIAL
 
@@ -612,6 +612,269 @@ void MeshRenderingManager::Render()
 }
 
 #elif RENERING_TYPE_SHADER_MATERIAL_MESH
+
+void MeshRenderingManager::PreRender()
+{
+	ShaderManager::CameraDepthShader->Use();
+	size_t instanceIndex = 0;
+	size_t remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
+
+	unsigned int count = 0;
+	RenderedSegment currentSegment{ .begin = nullptr, .count = 0u };
+
+	std::list<RenderedSegment>::iterator renderItr;
+
+#pragma region RENDERING_STATIC_DEPTH_MAP
+
+	for (auto& meshPair : _depthMapQueueStatic)
+	{
+		if (meshPair.second.renderedCount)
+		{
+			count = meshPair.second.renderedCount;
+
+			meshPair.second.renderedCount = 0u;
+
+			instanceIndex = 0;
+			remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
+
+			currentSegment.begin = nullptr;
+			currentSegment.count = 0u;
+			renderItr = meshPair.second.rendered.begin();
+
+			while (count > MAX_INSTANCE_NUMBER_PER_DRAW)
+			{
+				instanceIndex = 0ull;
+				remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
+
+				if (currentSegment.count)
+				{
+					if (currentSegment.count > MAX_INSTANCE_NUMBER_PER_DRAW)
+					{
+						std::memcpy(_modelTransforms, currentSegment.begin, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
+						currentSegment.begin += MAX_INSTANCE_NUMBER_PER_DRAW;
+						currentSegment.count -= MAX_INSTANCE_NUMBER_PER_DRAW;
+
+						instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
+						remaining -= MAX_INSTANCE_NUMBER_PER_DRAW;
+					}
+					else
+					{
+						std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
+
+						instanceIndex += currentSegment.count;
+						remaining -= currentSegment.count;
+					}
+				}
+				while (remaining > 0)
+				{
+					currentSegment = *renderItr;
+					renderItr++;
+					//currentSegment = meshPair.second.rendered.front();
+					//meshPair.second.rendered.pop_front();
+
+					if (currentSegment.count > remaining)
+					{
+						std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, remaining * sizeof(glm::mat4));
+						currentSegment.begin += remaining;
+						currentSegment.count -= remaining;
+
+						instanceIndex += remaining;
+						remaining = 0ull;
+					}
+					else
+					{
+						std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
+
+						instanceIndex += currentSegment.count;
+						remaining -= currentSegment.count;
+
+						currentSegment.count = 0u;
+					}
+				}
+
+#if USE_NAMED_BUFFER_SUBDATA
+				//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+				glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, transforms);
+#else
+				//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+				glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, _modelTransforms);
+#endif
+
+				meshPair.first->Draw(MAX_INSTANCE_NUMBER_PER_DRAW);
+
+				instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
+				count -= MAX_INSTANCE_NUMBER_PER_DRAW;
+			}
+
+
+			instanceIndex = 0ull;
+			remaining = count;
+
+			if (currentSegment.count)
+			{
+				std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
+
+				instanceIndex += currentSegment.count;
+				remaining -= currentSegment.count;
+			}
+			while (remaining > 0)
+			{
+				currentSegment = *renderItr;
+				renderItr++;
+				//currentSegment = meshPair.second.rendered.front();
+				//meshPair.second.rendered.pop_front();
+
+				std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
+
+				instanceIndex += currentSegment.count;
+				remaining -= currentSegment.count;
+			}
+
+#if USE_NAMED_BUFFER_SUBDATA
+			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+			glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * count, transforms);
+#else
+			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+			glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * count, _modelTransforms);
+
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+#endif
+
+			meshPair.first->Draw(count);
+
+			meshPair.second.rendered.clear();
+		}
+	}
+
+#pragma endregion
+
+#pragma region RENDERING_DYNAMIC_DEPTH_MAP
+
+	for (auto& meshPair : _depthMapQueueDynamic)
+	{
+		if (meshPair.second.renderedCount)
+		{
+			count = meshPair.second.renderedCount;
+
+			meshPair.second.renderedCount = 0u;
+
+			instanceIndex = 0;
+			remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
+
+			currentSegment.begin = nullptr;
+			currentSegment.count = 0u;
+
+			while (count > MAX_INSTANCE_NUMBER_PER_DRAW)
+			{
+				instanceIndex = 0ull;
+				remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
+
+				if (currentSegment.count)
+				{
+					if (currentSegment.count > MAX_INSTANCE_NUMBER_PER_DRAW)
+					{
+						std::memcpy(_modelTransforms, currentSegment.begin, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
+						currentSegment.begin += MAX_INSTANCE_NUMBER_PER_DRAW;
+						currentSegment.count -= MAX_INSTANCE_NUMBER_PER_DRAW;
+
+						instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
+						remaining -= MAX_INSTANCE_NUMBER_PER_DRAW;
+					}
+					else
+					{
+						std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
+
+						instanceIndex += currentSegment.count;
+						remaining -= currentSegment.count;
+					}
+				}
+				while (remaining > 0)
+				{
+					currentSegment = *renderItr;
+					renderItr++;
+					//currentSegment = meshPair.second.rendered.front();
+					//meshPair.second.rendered.pop_front();
+
+					if (currentSegment.count > remaining)
+					{
+						std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, remaining * sizeof(glm::mat4));
+						currentSegment.begin += remaining;
+						currentSegment.count -= remaining;
+
+						instanceIndex += remaining;
+						remaining = 0ull;
+					}
+					else
+					{
+						std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
+
+						instanceIndex += currentSegment.count;
+						remaining -= currentSegment.count;
+
+						currentSegment.count = 0u;
+					}
+				}
+
+#if USE_NAMED_BUFFER_SUBDATA
+				//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+				glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, transforms);
+#else
+				//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+				glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, _modelTransforms);
+#endif
+
+				meshPair.first->Draw(MAX_INSTANCE_NUMBER_PER_DRAW);
+
+				instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
+				count -= MAX_INSTANCE_NUMBER_PER_DRAW;
+			}
+
+
+			instanceIndex = 0ull;
+			remaining = count;
+
+			if (currentSegment.count)
+			{
+				std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
+
+				instanceIndex += currentSegment.count;
+				remaining -= currentSegment.count;
+			}
+			while (remaining > 0)
+			{
+				currentSegment = *renderItr;
+				renderItr++;
+				//currentSegment = meshPair.second.rendered.front();
+				//meshPair.second.rendered.pop_front();
+
+				std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
+
+				instanceIndex += currentSegment.count;
+				remaining -= currentSegment.count;
+			}
+
+#if USE_NAMED_BUFFER_SUBDATA
+			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+			glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * count, transforms);
+#else
+			//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+			glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * count, _modelTransforms);
+
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+#endif
+
+			meshPair.first->Draw(count);
+
+			meshPair.second.rendered.clear();
+		}
+	}
+
+#pragma endregion
+}
 
 void MeshRenderingManager::RenderStatic()
 {

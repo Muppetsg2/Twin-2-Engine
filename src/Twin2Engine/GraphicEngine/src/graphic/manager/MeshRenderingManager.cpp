@@ -18,13 +18,11 @@ public:
 };
 
 std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueStatic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
-//std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_depthMapenderQueueStatic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
 
 std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthMapQueueStatic = std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
 std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthQueueStatic = std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
 
 std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueDynamic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
-//std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_depthMapenderQueueDynamic = std::unordered_map<Shader*, std::map<Material, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
 
 std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthMapQueueDynamic = std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
 std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthQueueDynamic = std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
@@ -55,11 +53,6 @@ void MeshRenderingManager::Init()
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, BINDING_POINT_INSTANCE_DATA, _instanceDataSSBO);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-	GLenum error = glGetError();
-	if (error != GL_NO_ERROR) {
-		SPDLOG_ERROR("Error1: {}", error);
-	};
-
 	// Tworzenie SSBO materialIndex
 	glGenBuffers(1, &_materialIndexSSBO);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
@@ -87,11 +80,9 @@ void MeshRenderingManager::UnloadAll()
 	glDeleteBuffers(1, &_materialInputUBO);
 
 	_renderQueueStatic.clear();
-	//_depthMapenderQueueStatic.clear();
 	_depthMapQueueStatic.clear();
 	_depthQueueStatic.clear();
 	_renderQueueDynamic.clear();
-	//_depthMapenderQueueDynamic.clear();
 	_depthMapQueueDynamic.clear();
 	_depthQueueDynamic.clear();
 }
@@ -108,12 +99,6 @@ void MeshRenderingManager::RegisterStatic(Twin2Engine::Core::MeshRenderer* meshR
 			auto& queueElement = _renderQueueStatic[material.GetShader()][material][mesh];
 			queueElement.meshRenderers.push_back(meshRenderer);
 			queueElement.modelTransforms.push_back(meshRenderer->GetTransform()->GetTransformMatrix());
-
-			//auto& depthMapEueueElement = _depthMapenderQueueStatic[material.GetShader()][material][mesh];
-			//depthMapEueueElement.meshRenderers.push_back(meshRenderer);
-			//depthMapEueueElement.modelTransforms.push_back(meshRenderer->GetTransform()->GetTransformMatrix());
-
-			//_depthQueue[meshData.meshes[i]].push(meshData);
 		}
 	}
 }
@@ -138,12 +123,6 @@ void MeshRenderingManager::UnregisterStatic(Twin2Engine::Core::MeshRenderer* mes
 					_renderQueueStatic[material.GetShader()][material][mesh]
 						.modelTransforms.erase(_renderQueueStatic[material.GetShader()][material][mesh].modelTransforms.cbegin() + i);
 
-					//_depthMapenderQueueStatic[material.GetShader()][material][mesh]
-					//	.meshRenderers.erase(_depthMapenderQueueStatic[material.GetShader()][material][mesh].meshRenderers.cbegin() + i);
-					//
-					//_depthMapenderQueueStatic[material.GetShader()][material][mesh]
-					//	.modelTransforms.erase(_depthMapenderQueueStatic[material.GetShader()][material][mesh].modelTransforms.cbegin() + i);
-
 					break;
 				}
 			}
@@ -165,12 +144,6 @@ void MeshRenderingManager::RegisterDynamic(Twin2Engine::Core::MeshRenderer* mesh
 			auto& queueElement = _renderQueueDynamic[material.GetShader()][material][mesh];
 			queueElement.meshRenderers.push_back(meshRenderer);
 			queueElement.modelTransforms.push_back(meshRenderer->GetTransform()->GetTransformMatrix());
-
-			//auto& depthMapEueueElement = _depthMapenderQueueDynamic[material.GetShader()][material][mesh];
-			//depthMapEueueElement.meshRenderers.push_back(meshRenderer);
-			//depthMapEueueElement.modelTransforms.push_back(meshRenderer->GetTransform()->GetTransformMatrix());
-
-			//_depthQueue[meshData.meshes[i]].push(meshData);
 		}
 	}
 }
@@ -195,12 +168,6 @@ void MeshRenderingManager::UnregisterDynamic(Twin2Engine::Core::MeshRenderer* me
 					_renderQueueDynamic[material.GetShader()][material][mesh]
 						.modelTransforms.erase(_renderQueueDynamic[material.GetShader()][material][mesh].modelTransforms.cbegin() + i);
 
-					//_depthMapenderQueueDynamic[material.GetShader()][material][mesh]
-					//	.meshRenderers.erase(_depthMapenderQueueDynamic[material.GetShader()][material][mesh].meshRenderers.cbegin() + i);
-					//
-					//_depthMapenderQueueDynamic[material.GetShader()][material][mesh]
-					//	.modelTransforms.erase(_depthMapenderQueueDynamic[material.GetShader()][material][mesh].modelTransforms.cbegin() + i);
-
 					break;
 				}
 			}
@@ -212,7 +179,6 @@ void MeshRenderingManager::UpdateQueues()
 {
 	Frustum frustum = CameraComponent::GetMainCamera()->GetFrustum();
 	RenderedSegment renderedSegment{ .begin = nullptr, .count = 0 };
-	//bool lastAdded = true;
 
 	for (auto& meshPair : _depthMapQueueStatic)
 	{
@@ -291,9 +257,6 @@ void MeshRenderingManager::UpdateQueues()
 					meshPair.second.renderedCount += renderedSegment.count;
 					renderedSegment.count = 0u;
 				}
-
-				//_depthMapenderQueueStatic[shaderPair.first][materialPair.first][meshPair.first].rendered = meshPair.second.rendered;
-				//_depthMapenderQueueStatic[shaderPair.first][materialPair.first][meshPair.first].renderedCount = meshPair.second.renderedCount;
 
 				_depthMapQueueStatic[meshPair.first].renderedCount += meshPair.second.renderedCount;
 				//_depthMapQueueStatic[meshPair.first].rendered.insert(_depthMapQueueStatic[meshPair.first].rendered.cend(), meshPair.second.rendered.begin(), meshPair.second.rendered.end());
@@ -380,9 +343,6 @@ void MeshRenderingManager::UpdateQueues()
 					meshPair.second.renderedCount += renderedSegment.count;
 					renderedSegment.count = 0u;
 				}
-
-				//_depthMapenderQueueDynamic[shaderPair.first][materialPair.first][meshPair.first].rendered = meshPair.second.rendered;
-				//_depthMapenderQueueDynamic[shaderPair.first][materialPair.first][meshPair.first].renderedCount = meshPair.second.renderedCount;
 
 				_depthMapQueueDynamic[meshPair.first].renderedCount += meshPair.second.renderedCount;
 				//_depthMapQueueDynamic[meshPair.first].rendered.insert(_depthMapQueueDynamic[meshPair.first].rendered.cend(), meshPair.second.rendered.begin(), meshPair.second.rendered.end());

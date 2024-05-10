@@ -4,16 +4,31 @@
 #include <glm/glm.hpp>
 
 namespace Twin2Engine::UI {
-	enum class TextAlignX { LEFT, CENTER, RIGHT };
-	enum class TextAlignY { BOTTOM, CENTER, TOP };
+	enum class TextAlignX { LEFT = 0, CENTER = 1, RIGHT = 2 };
+	enum class TextAlignY { BOTTOM = 0, CENTER = 1, TOP = 2 };
+	enum class TextOverflow { Overflow = 0, Masking = 1, Truncate = 2, Ellipsis = 3 };
+
+	struct TextCharacter {
+		Graphic::Character* character = nullptr;
+		glm::vec2 position = glm::vec2(0.f);
+	};
 
 	class Text : public Core::RenderableComponent {
 	private:
 		std::string _text = "";
+		std::string _displayText = "";
 
 		size_t _fontId = 0;
 
 		uint32_t _size = 0; // text pixel height
+		bool _autoSize = false;
+		uint32_t _minSize = 0;
+		uint32_t _maxSize = 0;
+
+		float _displayTextWidth = 0.f;
+		float _displayTextHeight = 0.f;
+		float _textWidth = 0.f;
+		float _textHeight = 0.f;
 		float _height = 0.f;
 		float _width = 0.f;
 
@@ -24,17 +39,22 @@ namespace Twin2Engine::UI {
 
 		bool _textWrapping = false;
 
-		std::vector<Graphic::Character*> _textCache = std::vector<Graphic::Character*>();
+		TextOverflow _overflow = TextOverflow::Overflow;
 
-		bool _textCacheDirty = true;
-		bool _justResizeCache = false;
+		bool _textDirty = true;
+		bool _displayTextDirty = true;
 		std::string _oldText = "";
+		std::string _oldDisplayText = "";
+		std::vector<TextCharacter> _textCharCache;
+		std::vector<TextCharacter> _displayTextCharCache;
 
+		void UpdateTextCharCache(Graphic::Font* font, const std::string& newText, const std::string& oldText, float& textWidth, float& textHeight, std::vector<TextCharacter>& textCharCache);
 	public:
-		void UpdateTextCache();
+		void UpdateTextMesh();
 
-		virtual void Render() override;
-		virtual YAML::Node Serialize() const override;
+		void Update() override;
+		void Render() override;
+		YAML::Node Serialize() const override;
 
 		void SetColor(const glm::vec4& color);
 		void SetText(const std::string& text);
@@ -46,6 +66,7 @@ namespace Twin2Engine::UI {
 		void SetTextAlignX(const TextAlignX& alignX);
 		void SetTextAlignY(const TextAlignY& alignY);
 		void SetTextWrapping(bool textWrapping);
+		void SetTextOverflow(const TextOverflow& overflow);
 
 		glm::vec4 GetColor() const;
 		std::string GetText() const;
@@ -57,5 +78,6 @@ namespace Twin2Engine::UI {
 		TextAlignX GetTextAlignX() const;
 		TextAlignY GetTextAlignY() const;
 		bool IsTextWrapping() const;
+		TextOverflow GetTextOverflow() const;
 	};
 }

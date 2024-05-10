@@ -22,13 +22,12 @@ namespace Twin2Engine::UI {
 		bool _cursorVisible = false;
 		size_t _cursorPos = 0;
 
+		size_t _onKeyStateChangeID = 0;
 		void OnKeyStateChange(Core::KEY key, Core::INPUT_STATE state);
 	public:
 		virtual void Initialize() override;
 		virtual void Update() override;
 		virtual void Render() override;
-		virtual void OnEnable() override;
-		virtual void OnDisable() override;
 		virtual void OnDestroy() override;
 		virtual YAML::Node Serialize() const override;
 

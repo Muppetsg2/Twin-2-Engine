@@ -258,12 +258,13 @@ int main(int, char**)
     i->SetHeight(70);
     i->SetWidth(200);
     Text* t = obj->AddComponent<Text>();
-    t->SetText("Click Meeej");
+    t->SetText("ClickMeeejjjjjjjjj");
     t->SetFont("res/fonts/Caveat-Regular.ttf");
     t->SetSize(48);  
     t->SetHeight(48);
+    //t->SetTextWrapping(true);
+    t->SetWidth(200);
     t->SetColor(glm::vec4(1.f, 0.f, 0.f, 1.f));
-    t->SetTextAlignX(TextAlignX::CENTER);
 
     obj = SceneManager::CreateGameObject();
     obj->SetName("Test Input Field");
@@ -274,6 +275,8 @@ int main(int, char**)
     Text* inputText = obj->AddComponent<Text>();
     inputText->SetFont("res/fonts/Caveat-Regular.ttf");
     inputText->SetSize(48);
+    inputText->SetWidth(200);
+    inputText->SetHeight(70);
     Text* placeHolder = obj->AddComponent<Text>();
     InputField* inp = obj->AddComponent<InputField>();
     inp->SetInputText(inputText);
@@ -847,6 +850,35 @@ void render_imgui()
                     if (alignX != TextAlignX::RIGHT) {
                         t->SetTextAlignX(TextAlignX::RIGHT);
                         alignXValue = "RIGHT";
+                    }
+                }
+                ImGui::EndCombo();
+            }
+            static std::string overflowValue = t->GetTextOverflow() == TextOverflow::Overflow ? "OVERFLOW" : t->GetTextOverflow() == TextOverflow::Ellipsis ? "ELLIPSIS" : t->GetTextOverflow() == TextOverflow::Masking ? "MASKING" : "TRUNCATE";
+            if (ImGui::BeginCombo("Overflow", overflowValue.c_str())) {
+                TextOverflow overflow = t->GetTextOverflow();
+                if (ImGui::Selectable("OVERFLOW")) {
+                    if (overflow != TextOverflow::Overflow) {
+                        t->SetTextOverflow(TextOverflow::Overflow);
+                        overflowValue = "OVERFLOW";
+                    }
+                }
+                if (ImGui::Selectable("ELLIPSIS")) {
+                    if (overflow != TextOverflow::Ellipsis) {
+                        t->SetTextOverflow(TextOverflow::Ellipsis);
+                        overflowValue = "ELLIPSIS";
+                    }
+                }
+                if (ImGui::Selectable("MASKING")) {
+                    if (overflow != TextOverflow::Masking) {
+                        t->SetTextOverflow(TextOverflow::Masking);
+                        overflowValue = "MASKING";
+                    }
+                }
+                if (ImGui::Selectable("TRUNCATE")) {
+                    if (overflow != TextOverflow::Truncate) {
+                        t->SetTextOverflow(TextOverflow::Truncate);
+                        overflowValue = "TRUNCATE";
                     }
                 }
                 ImGui::EndCombo();

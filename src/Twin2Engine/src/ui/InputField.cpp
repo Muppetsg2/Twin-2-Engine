@@ -59,7 +59,7 @@ void InputField::OnKeyStateChange(KEY key, INPUT_STATE state)
 
 void InputField::Initialize()
 {
-	Input::GetOnKeyStateChange() += [&](KEY key, INPUT_STATE state) -> void {
+	_onKeyStateChangeID = Input::GetOnKeyStateChange() += [&](KEY key, INPUT_STATE state) -> void {
 		if (!_typing) return;
 		OnKeyStateChange(key, state);
 	};
@@ -99,10 +99,11 @@ void InputField::Render()
 {
 	// Render Cursor
 	if (_cursorVisible) {
-		// KALKULACJA POZYCJI KURSORA
-
 		UIElement elem{};
 		elem.elemTransform = GetTransform()->GetTransformMatrix();
+		// KALKULACJA POZYCJI KURSORA
+		glm::translate(elem.elemTransform, glm::vec3(_cursorPos * _text->GetWidth() / _text->GetText().size(), 0.f, 0.f));
+
 		elem.color = glm::vec4(0.0, 0.0, 0.0, 1.0);
 		elem.elemSize = glm::ivec2(4, _text->GetSize());
 		elem.hasTexture = false;
@@ -112,16 +113,9 @@ void InputField::Render()
 	}
 }
 
-void InputField::OnEnable()
-{
-}
-
-void InputField::OnDisable()
-{
-}
-
 void InputField::OnDestroy()
 {
+	Input::GetOnKeyStateChange() -= _onKeyStateChangeID;
 }
 
 YAML::Node InputField::Serialize() const

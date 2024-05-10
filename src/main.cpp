@@ -262,7 +262,6 @@ int main(int, char**)
     t->SetFont("res/fonts/Caveat-Regular.ttf");
     t->SetSize(48);  
     t->SetHeight(48);
-    //t->SetTextWrapping(true);
     t->SetWidth(200);
     t->SetColor(glm::vec4(1.f, 0.f, 0.f, 1.f));
 
@@ -882,6 +881,12 @@ void render_imgui()
                     }
                 }
                 ImGui::EndCombo();
+            }
+            bool wrapping = t->IsTextWrapping();
+            if (ImGui::Checkbox("Text Wrapping", &wrapping)) {
+                if (wrapping != t->IsTextWrapping()) {
+                    t->SetTextWrapping(wrapping);
+                }
             }
         }
         ImGui::Separator();

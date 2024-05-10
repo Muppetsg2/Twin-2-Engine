@@ -18,12 +18,22 @@ using namespace glm;
 using namespace std;
 
 void Text::UpdateTextCharCache(Font* font, const string& newText, const string& oldText, float& textWidth, float& textHeight, std::vector<TextCharacter>& textCharCache) {
+
+}
+
+void Text::UpdateTextMesh()
+{
+	Font* font = FontManager::GetFont(_fontId);
+
+	_textWidth = 0.f;
+	_textHeight = 0.f;
+	_textCharCache.clear();
+	_displayTextCharCache.clear();
+
 	if (_size != 0 && font != nullptr) {
 		const float lineHeight = _size * 1.2f;
 		glm::vec2 currPos = glm::vec2(0.f);
-		textWidth = 0.f;
-		textHeight = lineHeight;
-		textCharCache.clear();
+		_textHeight = lineHeight;
 
 		// TO CALCULATE TEXT WIDTH
 		float lineWidth = 0.f;
@@ -39,23 +49,29 @@ void Text::UpdateTextCharCache(Font* font, const string& newText, const string& 
 
 		// NEW LINE FUNC
 		Action<size_t> newLine = [&](size_t i) -> void {
+			for (size_t idx = lineStartIdx; idx < _textCharCache.size(); ++idx) {
+				_displayTextCharCache.push_back(_textCharCache[idx]);
+			}
+
 			if (_alignX == TextAlignX::CENTER) {
 				for (size_t idx = lineStartIdx; idx < i; ++idx) {
-					textCharCache[idx].position.x += (_width - lineWidth) * .5f - linePadding;
+					_displayTextCharCache[idx].position.x += (_width - lineWidth) * .5f - linePadding;
+					_displayTextCharCache[idx].cursorPos.x += (_width - lineWidth) * .5f - linePadding;
 				}
 			}
 			else if (_alignX == TextAlignX::RIGHT) {
 				for (size_t idx = lineStartIdx; idx < i; ++idx) {
-					textCharCache[idx].position.x += _width - lineWidth - linePadding * 2;
+					_displayTextCharCache[idx].position.x += _width - lineWidth - linePadding * 2;
+					_displayTextCharCache[idx].cursorPos.x += _width - lineWidth - linePadding * 2;
 				}
 			}
 
 			currPos.x = 0.f;
 			currPos.y -= lineHeight;
-			textHeight += lineHeight;
+			_textHeight += lineHeight;
 
-			if (lineWidth > textWidth) {
-				textWidth = lineWidth;
+			if (lineWidth > _textWidth) {
+				_textWidth = lineWidth;
 			}
 			lineWidth = 0.f;
 
@@ -79,7 +95,7 @@ void Text::UpdateTextCharCache(Font* font, const string& newText, const string& 
 
 			Character* c;
 			if (_textWrapping && i < lastIdx) {
-				c = textCharCache[i].character;
+				c = _textCharCache[i].character;
 			}
 			else {
 				c = font->GetCharacter(_text[i], _size);
@@ -112,7 +128,7 @@ void Text::UpdateTextCharCache(Font* font, const string& newText, const string& 
 						lastIdx = i;
 						i = spaceCharIdx;
 						for (size_t idx = i; idx < lastIdx; ++idx) {
-							lineWidth -= textCharCache[idx].character->Advance >> 6;
+							lineWidth -= _textCharCache[idx].character->Advance >> 6;
 						}
 						newLine(i);
 						break;
@@ -131,10 +147,10 @@ void Text::UpdateTextCharCache(Font* font, const string& newText, const string& 
 			}
 
 			if (_textWrapping && i < lastIdx) {
-				textCharCache[i].position = charPos;
+				_textCharCache[i].position = charPos;
 			}
 			else {
-				textCharCache.push_back({ c, charPos });
+				_textCharCache.push_back({ c, charPos, currPos });
 			}
 
 			// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
@@ -142,59 +158,89 @@ void Text::UpdateTextCharCache(Font* font, const string& newText, const string& 
 			lineWidth += c->Advance >> 6;
 		}
 
+		bool truncated = false;
+		if (_overflow == TextOverflow::Truncate || _overflow == TextOverflow::Ellipsis) {
+			for (size_t idx = lineStartIdx; idx < _textCharCache.size(); ++idx) {
+				vec2 charPos = _textCharCache[idx].position;
+				vec2 size = _textCharCache[idx].character->Size;
+				if (charPos.x + size.x * .5f < _width * .5f && charPos.x - size.x * .5f > -_width * .5f && charPos.y + size.y * .5f < _height * .5f && charPos.y - size.y * .5f > -_height * .5f) {
+					_displayTextCharCache.push_back(_textCharCache[idx]);
+				}
+				else {
+					lineWidth -= _textCharCache[idx].character->Advance >> 6;
+					truncated = true;
+				}
+			}
+		}
+		else if (_overflow == TextOverflow::Masking) {
+			for (size_t idx = lineStartIdx; idx < _textCharCache.size(); ++idx) {
+				vec2 charPos = _textCharCache[idx].position;
+				vec2 size = _textCharCache[idx].character->Size;
+				if (charPos.x - size.x * .5f <= _width * .5f && charPos.x + size.x * .5f >= -_width * .5f && charPos.y - size.y * .5f <= _height * .5f && charPos.y + size.y * .5f >= -_height * .5f) {
+					_displayTextCharCache.push_back(_textCharCache[idx]);
+				}
+				else {
+					lineWidth -= _textCharCache[idx].character->Advance >> 6;
+				}
+			}
+		}
+		else if (_overflow == TextOverflow::Overflow) {
+			for (size_t idx = lineStartIdx; idx < _textCharCache.size(); ++idx) {
+				_displayTextCharCache.push_back(_textCharCache[idx]);
+			}
+		}
+
+		if (truncated && _overflow == TextOverflow::Ellipsis) {
+			for (size_t idx = 3; idx >= 1; --idx) {
+				// DELETE OLD CHAR
+				auto& ch = _displayTextCharCache[_displayTextCharCache.size() - idx];
+				lineWidth -= ch.character->Advance >> 6;
+
+				// MAKE NEW DOT
+				Character* c = font->GetCharacter('.', _size);
+
+				float w = c->Size.x;
+				float h = c->Size.y;
+
+				vec2 cursorPos = _displayTextCharCache[_displayTextCharCache.size() - idx - 1].cursorPos;
+				cursorPos.x += _displayTextCharCache[_displayTextCharCache.size() - idx - 1].character->Advance >> 6;
+
+				vec2 charPos = cursorPos;
+				charPos.x += (w - _width) * .5f + c->Bearing.x;
+
+				switch (_alignY) {
+				case TextAlignY::BOTTOM:
+					charPos.y += h * .5f - _size * .25f - (h - c->Bearing.y);
+					break;
+				case TextAlignY::TOP:
+					charPos.y -= h * .5f - _size * .25f - (h - c->Bearing.y);
+					break;
+				}
+
+				// UPDATE INFO
+				ch.position = charPos;
+				ch.cursorPos = cursorPos;
+				ch.character = c;
+			}
+		}
+
 		if (_alignX == TextAlignX::CENTER) {
-			for (size_t idx = lineStartIdx; idx < textCharCache.size(); ++idx) {
-				textCharCache[idx].position.x += (_width - lineWidth) * .5f - linePadding;
+			for (size_t idx = lineStartIdx; idx < _displayTextCharCache.size(); ++idx) {
+				_displayTextCharCache[idx].position.x += (_width - lineWidth) * .5f - linePadding;
+				_displayTextCharCache[idx].cursorPos.x += (_width - lineWidth) * .5f - linePadding;
 			}
 		}
 		else if (_alignX == TextAlignX::RIGHT) {
-			for (size_t idx = lineStartIdx; idx < textCharCache.size(); ++idx) {
-				textCharCache[idx].position.x += _width - lineWidth - linePadding * 2.f;
+			for (size_t idx = lineStartIdx; idx < _displayTextCharCache.size(); ++idx) {
+				_displayTextCharCache[idx].position.x += _width - lineWidth - linePadding * 2.f;
+				_displayTextCharCache[idx].cursorPos.x += _width - lineWidth - linePadding * 2.f;
 			}
 		}
 
-		if (lineWidth > textWidth) {
-			textWidth = lineWidth;
+		if (lineWidth > _textWidth) {
+			_textWidth = lineWidth;
 		}
 	}
-	else {
-		textWidth = 0.f;
-		textHeight = 0.f;
-		textCharCache.clear();
-	}
-}
-
-void Text::UpdateTextMesh()
-{
-	Font* font = FontManager::GetFont(_fontId);
-
-	// Update Text Char Cache
-	UpdateTextCharCache(font, _text, _oldText, _textWidth, _textHeight, _textCharCache);
-
-	// Update Display Text
-	_displayText = _text;
-
-	// Update Display Text Char Cache
-	UpdateTextCharCache(font, _displayText, _oldDisplayText, _displayTextWidth, _displayTextHeight, _displayTextCharCache);
-
-	/*if (_size != 0 && font != nullptr) {
-		const float lineHeight = _size * 1.2f;
-		_displayTextCharCache.clear();
-		_displayTextWidth = 0.f;
-		_displayTextHeight = lineHeight;
-		for (size_t i = 0; i < _textCharCache.size(); ++i) {
-			TextCharacter c = _textCharCache[i];
-			if (_overflow == TextOverflow::Truncate) {
-				glm::vec2 pos = c.position;
-				glm::vec2 size = c.character->Size;
-				if (pos.x + size.x * .5f > _width * .5f || pos.x - size.x * .5f < -_width * .5f || pos.y + size.y * .5f > _height * .5f || pos.y - size.y * .5f < -_height * .5f) {
-					continue;
-				}
-			}
-			_displayTextWidth += c.character->Advance >> 6;
-			_displayTextCharCache.push_back(c);
-		}
-	}*/
 }
 
 void Text::Update()

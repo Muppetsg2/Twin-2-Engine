@@ -11,12 +11,12 @@ namespace Twin2Engine::UI {
 	struct TextCharacter {
 		Graphic::Character* character = nullptr;
 		glm::vec2 position = glm::vec2(0.f);
+		glm::vec2 cursorPos = glm::vec2(0.f);
 	};
 
 	class Text : public Core::RenderableComponent {
 	private:
 		std::string _text = "";
-		std::string _displayText = "";
 
 		size_t _fontId = 0;
 
@@ -25,8 +25,6 @@ namespace Twin2Engine::UI {
 		uint32_t _minSize = 0;
 		uint32_t _maxSize = 0;
 
-		float _displayTextWidth = 0.f;
-		float _displayTextHeight = 0.f;
 		float _textWidth = 0.f;
 		float _textHeight = 0.f;
 		float _height = 0.f;

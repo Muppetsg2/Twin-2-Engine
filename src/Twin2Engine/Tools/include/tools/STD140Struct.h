@@ -3,6 +3,8 @@
 #include <tools/EventHandler.h>
 #include <tools/STD140Offsets.h>
 
+#define min min
+
 namespace Twin2Engine::Tools {
 	class STD140Struct {
 	private:

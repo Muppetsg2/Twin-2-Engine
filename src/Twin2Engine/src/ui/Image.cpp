@@ -48,6 +48,13 @@ void Image::DrawEditor()
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Image##").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
+		/*
+		node["type"] = "Image";
+		node["sprite"] = SceneManager::GetSpriteSaveIdx(_spriteId);
+		node["color"] = _color;
+		node["width"] = _width;
+		node["height"] = _height;
+		*/
 		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
 	}
 }

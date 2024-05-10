@@ -12,22 +12,23 @@ namespace Twin2Engine::GraphicEngine {
 }
 
 namespace Twin2Engine::Core {
-	enum CameraType {
+	enum class CameraType{
 		ORTHOGRAPHIC = 0,
 		PERSPECTIVE = 1
 	};
 
-	enum RenderFilter {
+	enum class RenderFilter : uint8_t {
 		NONE = 0,
 		VIGNETTE = 1,
 		BLUR = 2,
 		NEGATIVE = 4,
 		GRAYSCALE = 8,
 		DEPTH = 16,
-		OUTLINE = 32
+		OUTLINE = 32,
+		EVERYTHING = VIGNETTE | BLUR | NEGATIVE | GRAYSCALE | DEPTH | OUTLINE
 	};
 
-	enum RenderResolution {
+	enum class RenderResolution {
 		DEFAULT = 0,
 		MEDIUM = 1,
 		HIGH = 2
@@ -52,10 +53,10 @@ namespace Twin2Engine::Core {
 		GLuint _renderMap = NULL;
 		GLuint _renderMapFBO = NULL;
 
-		CameraType _type = PERSPECTIVE;
-		uint8_t _filters = NONE;
+		CameraType _type = CameraType::PERSPECTIVE;
+		uint8_t _filters = (uint8_t)RenderFilter::NONE;
 		uint8_t _samples = 4;
-		RenderResolution _renderRes = DEFAULT;
+		RenderResolution _renderRes = RenderResolution::DEFAULT;
 
 		size_t _camId = 0;
 

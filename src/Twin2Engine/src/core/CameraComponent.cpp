@@ -38,17 +38,17 @@ void CameraComponent::OnWindowSizeChange()
 	unsigned int d_res = GL_DEPTH_COMPONENT;
 
 	switch (_renderRes) {
-		case DEFAULT: {
+		case RenderResolution::DEFAULT: {
 			r_res = GL_RGB;
 			d_res = GL_DEPTH_COMPONENT;
 			break;
 		}
-		case MEDIUM: {
+		case RenderResolution::MEDIUM: {
 			r_res = GL_RGB16F;
 			d_res = GL_DEPTH_COMPONENT16;
 			break;
 		}
-		case HIGH: {
+		case RenderResolution::HIGH: {
 			r_res = GL_RGB32F;
 			d_res = GL_DEPTH_COMPONENT32F;
 			break;
@@ -150,11 +150,11 @@ mat4 CameraComponent::GetProjectionMatrix() const
 	ivec2 size = Window::GetInstance()->GetContentSize();
 
 	switch (_type) {
-		case ORTHOGRAPHIC: {
+		case CameraType::ORTHOGRAPHIC: {
 			return ortho(0.f, (float)size.x * 0.005f, 0.f, (float)size.y * 0.005f, _near, _far);
 			break;
 		}
-		case PERSPECTIVE: {
+		case CameraType::PERSPECTIVE: {
 			return perspective(radians(_fov), (size.y != 0) ? ((float)size.x / (float)size.y) : 0, _near, _far);
 			break;
 		}
@@ -243,15 +243,15 @@ void CameraComponent::SetSamples(uint8_t i)
 		unsigned int r_res = GL_RGB;
 
 		switch (_renderRes) {
-			case DEFAULT: {
+			case RenderResolution::DEFAULT: {
 				r_res = GL_RGB;
 				break;
 			}
-			case MEDIUM: {
+			case RenderResolution::MEDIUM: {
 				r_res = GL_RGB16F;
 				break;
 			}
-			case HIGH: {
+			case RenderResolution::HIGH: {
 				r_res = GL_RGB32F;
 				break;
 			}
@@ -282,17 +282,17 @@ void CameraComponent::SetRenderResolution(RenderResolution res)
 		unsigned int d_res = GL_DEPTH_COMPONENT;
 
 		switch (_renderRes) {
-			case DEFAULT: {
+			case RenderResolution::DEFAULT: {
 				r_res = GL_RGB;
 				d_res = GL_DEPTH_COMPONENT;
 				break;
 			}
-			case MEDIUM: {
+			case RenderResolution::MEDIUM: {
 				r_res = GL_RGB16F;
 				d_res = GL_DEPTH_COMPONENT16;
 				break;
 			}
-			case HIGH: {
+			case RenderResolution::HIGH: {
 				r_res = GL_RGB32F;
 				d_res = GL_DEPTH_COMPONENT32F;
 				break;
@@ -417,12 +417,12 @@ void CameraComponent::Render()
 		_renderShader->SetInt("screenTexture", 0);
 		_renderShader->SetInt("depthTexture", 1);
 
-		_renderShader->SetBool("hasBlur", (_filters & RenderFilter::BLUR) != 0);
-		_renderShader->SetBool("hasVignette", (_filters & RenderFilter::VIGNETTE) != 0);
-		_renderShader->SetBool("hasNegative", (_filters & RenderFilter::NEGATIVE) != 0);
-		_renderShader->SetBool("hasGrayscale", (_filters & RenderFilter::GRAYSCALE) != 0);
-		_renderShader->SetBool("displayDepth", (_filters & RenderFilter::DEPTH) != 0);
-		_renderShader->SetBool("hasOutline", (_filters & RenderFilter::OUTLINE) != 0);
+		_renderShader->SetBool("hasBlur", ((uint8_t)_filters & (uint8_t)RenderFilter::BLUR) != 0);
+		_renderShader->SetBool("hasVignette", (_filters & (uint8_t)RenderFilter::VIGNETTE) != 0);
+		_renderShader->SetBool("hasNegative", (_filters & (uint8_t)RenderFilter::NEGATIVE) != 0);
+		_renderShader->SetBool("hasGrayscale", (_filters & (uint8_t)RenderFilter::GRAYSCALE) != 0);
+		_renderShader->SetBool("displayDepth", (_filters & (uint8_t)RenderFilter::DEPTH) != 0);
+		_renderShader->SetBool("hasOutline", (_filters & (uint8_t)RenderFilter::OUTLINE) != 0);
 
 		_renderPlane.GetMesh(0)->Draw(1);
 	}
@@ -509,17 +509,17 @@ void CameraComponent::Initialize()
 	unsigned int d_res = GL_DEPTH_COMPONENT;
 
 	switch (_renderRes) {
-		case DEFAULT: {
+		case RenderResolution::DEFAULT: {
 			r_res = GL_RGB;
 			d_res = GL_DEPTH_COMPONENT;
 			break;
 		}
-		case MEDIUM: {
+		case RenderResolution::MEDIUM: {
 			r_res = GL_RGB16F;
 			d_res = GL_DEPTH_COMPONENT16;
 			break;
 		}
-		case HIGH: {
+		case RenderResolution::HIGH: {
 			r_res = GL_RGB32F;
 			d_res = GL_DEPTH_COMPONENT32F;
 			break;
@@ -691,11 +691,11 @@ void CameraComponent::DrawEditor()
 
 		bool per = (this->_type == CameraType::PERSPECTIVE);
 		if (ImGui::BeginCombo(string("Projection##").append(id).c_str(), (per ? "Perspective" : "Orthographic"))) {
-			if (ImGui::Selectable(string("Orthographic##").append(id).c_str(), per == CameraType::ORTHOGRAPHIC))
+			if (ImGui::Selectable(string("Orthographic##").append(id).c_str(), !per))
 			{
 				this->SetCameraType(CameraType::ORTHOGRAPHIC);
 			}
-			else if (ImGui::Selectable(string("Perspective##").append(id).c_str(), per == CameraType::PERSPECTIVE))
+			else if (ImGui::Selectable(string("Perspective##").append(id).c_str(), per))
 			{
 				this->SetCameraType(CameraType::PERSPECTIVE);
 			}
@@ -720,43 +720,83 @@ void CameraComponent::DrawEditor()
 			ImGui::EndCombo();
 		}
 
-		uint8_t acFil = RenderFilter::NONE;
-		uint8_t fil = this->_filters;
+		uint8_t acFil = (uint8_t)RenderFilter::NONE;
+		uint8_t fil = (uint8_t)this->_filters;
 
-		bool g = (fil & RenderFilter::GRAYSCALE) != 0;
+		bool n = (fil ^ (uint8_t)RenderFilter::NONE) == 0;
+		ImGui::Checkbox(string("Nothing##").append(id).c_str(), &n);
+
+		bool e = (fil ^ (uint8_t)RenderFilter::EVERYTHING) == 0 && !n;
+		bool g = (fil ^ (uint8_t)RenderFilter::EVERYTHING) == 0 && !n;
+		ImGui::Checkbox(string("Everything##").append(id).c_str(), &g);
+		if (g) {
+			acFil |= (uint8_t)RenderFilter::EVERYTHING;
+		}
+
+		g = (fil & (uint8_t)RenderFilter::GRAYSCALE) != 0 && !n;
 		ImGui::Checkbox(string("GrayScale##").append(id).c_str(), &g);
 		if (g) {
-			acFil |= RenderFilter::GRAYSCALE;
+			acFil |= (uint8_t)RenderFilter::GRAYSCALE;
+		}
+		else {
+			if (e) {
+				acFil ^= (uint8_t)RenderFilter::GRAYSCALE;
+			}
 		}
 
-		g = (fil & RenderFilter::NEGATIVE) != 0;
+		g = (fil & (uint8_t)RenderFilter::NEGATIVE) != 0 && !n;
 		ImGui::Checkbox(string("Negative##").append(id).c_str(), &g);
 		if (g) {
-			acFil |= RenderFilter::NEGATIVE;
+			acFil |= (uint8_t)RenderFilter::NEGATIVE;
+		}
+		else {
+			if (e) {
+				acFil ^= (uint8_t)RenderFilter::NEGATIVE;
+			}
 		}
 
-		g = (fil & RenderFilter::VIGNETTE) != 0;
+		g = (fil & (uint8_t)RenderFilter::VIGNETTE) != 0 && !n;
 		ImGui::Checkbox(string("Vignette##").append(id).c_str(), &g);
 		if (g) {
-			acFil |= RenderFilter::VIGNETTE;
+			acFil |= (uint8_t)RenderFilter::VIGNETTE;
+		}
+		else {
+			if (e) {
+				acFil ^= (uint8_t)RenderFilter::VIGNETTE;
+			}
 		}
 
-		g = (fil & RenderFilter::BLUR) != 0;
+		g = (fil & (uint8_t)RenderFilter::BLUR) != 0 && !n;
 		ImGui::Checkbox(string("Blur##").append(id).c_str(), &g);
 		if (g) {
-			acFil |= RenderFilter::BLUR;
+			acFil |= (uint8_t)RenderFilter::BLUR;
+		}
+		else {
+			if (e) {
+				acFil ^= (uint8_t)RenderFilter::BLUR;
+			}
 		}
 
-		g = (fil & RenderFilter::DEPTH) != 0;
+		g = (fil & (uint8_t)RenderFilter::DEPTH) != 0 && !n;
 		ImGui::Checkbox(string("Depth##").append(id).c_str(), &g);
 		if (g) {
-			acFil |= RenderFilter::DEPTH;
+			acFil |= (uint8_t)RenderFilter::DEPTH;
+		}
+		else {
+			if (e) {
+				acFil ^= (uint8_t)RenderFilter::DEPTH;
+			}
 		}
 
-		g = (fil & RenderFilter::OUTLINE) != 0;
+		g = (fil & (uint8_t)RenderFilter::OUTLINE) != 0 && !n;
 		ImGui::Checkbox(string("Outline##").append(id).c_str(), &g);
 		if (g) {
-			acFil |= RenderFilter::OUTLINE;
+			acFil |= (uint8_t)RenderFilter::OUTLINE;
+		}
+		else {
+			if (e) {
+				acFil ^= (uint8_t)RenderFilter::OUTLINE;
+			}
 		}
 
 		this->SetCameraFilter(acFil);

@@ -1,5 +1,4 @@
-#ifndef SHADER_MANAGER_H
-#define SHADER_MANAGER_H
+#pragma once
 
 #include <graphic/Shader.h>
 
@@ -86,7 +85,3 @@ namespace Twin2Engine::Manager
 		//void UpdateDirShadowMapsTab();
 	};
 }
-
-
-#endif // !SHADER_MANAGER_H
-

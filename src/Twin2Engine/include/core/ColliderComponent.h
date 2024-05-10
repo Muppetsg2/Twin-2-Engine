@@ -56,5 +56,6 @@ namespace Twin2Engine::Core {
 
 		//void Invoke();
 		virtual YAML::Node Serialize() const override;
+		virtual void DrawEditor() override;
 	};
 }

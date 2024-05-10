@@ -72,6 +72,19 @@ void Button::DrawEditor()
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Button##").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
+		
+		float v = _width;
+		ImGui::DragFloat(string("Width##").append(id).c_str(), &v, 0.1f);
+		if (v != _width) {
+			SetWidth(v);
+		}
 
+		v = _height;
+		ImGui::DragFloat(string("Height##").append(id).c_str(), &v, 0.1f);
+		if (v != _height) {
+			SetHeight(v);
+		}
+
+		ImGui::Checkbox(string("Interactable##").append(id).c_str(), &_interactable);
 	}
 }

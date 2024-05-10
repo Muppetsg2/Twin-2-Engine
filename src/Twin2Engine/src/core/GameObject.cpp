@@ -296,10 +296,13 @@ YAML::Node GameObject::Serialize() const
 void GameObject::DrawEditor()
 {
 	_transform->DrawEditor();
+	ImGui::Separator();
 
 	for (Component* comp : components) {
-		if (comp != _transform)
+		if (comp != _transform) {
 			comp->DrawEditor();
+			ImGui::Separator();
+		}
 	}
 
 	// Add Component Button

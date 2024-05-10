@@ -1,5 +1,4 @@
-#ifndef _CONTENT_GENERATOR_H_
-#define _CONTENT_GENERATOR_H_
+#pragma once
 
 #include <Generation/Generators/AMapElementGenerator.h>
 
@@ -16,5 +15,3 @@ namespace Generation
         virtual YAML::Node Serialize() const override;
 	};
 }
-
-#endif // !_CONTENT_GENERATOR_H_

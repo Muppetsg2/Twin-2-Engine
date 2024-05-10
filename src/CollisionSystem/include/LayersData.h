@@ -1,11 +1,22 @@
-#ifndef _LAYERSDATA_H_
-#define _LAYERSDATA_H_
+#pragma once
 
-enum Layer : uint8_t { DEFAULT, IGNORE_RAYCAST, IGNORE_COLLISION, UI, LAYER_1, LAYER_2, LAYER_3, LAYER_4 };
-
+enum class Layer : uint8_t {
+	DEFAULT = 0, 
+	IGNORE_RAYCAST = 1,
+	IGNORE_COLLISION = 2,
+	UI = 4,
+	LAYER_1 = 8,
+	LAYER_2 = 16,
+	LAYER_3 = 32,
+	LAYER_4 = 64 
+};
 
 //system nigdy nie bêdzie sprawdza³ kolizji z obiektami w warstwi UI, nawet jeœli filtry wskazywaæ bêd¹ inaczej (chyba, ¿e podczas raycast?)
-enum CollisionMode : uint8_t { IGNORING = 0, NEUTRAL = 1, ACTIVE = 3 };
+enum class CollisionMode : uint8_t {
+	IGNORING = 0,
+	NEUTRAL = 1,
+	ACTIVE = 2
+};
 struct LayerCollisionFilter {
 	CollisionMode DEFAULT : 2;
 	CollisionMode IGNORE_RAYCAST : 2;
@@ -28,17 +39,17 @@ struct LayerCollisionFilter {
 };/**/
 
 //const LayersFilter DEFAULT_LAYERS_FILTER { 1, 1, 0, 0, 1, 1, 1, 1 };
-static LayerCollisionFilter DEFAULT_LAYERS_FILTER{ ACTIVE, ACTIVE, NEUTRAL, IGNORING, ACTIVE, ACTIVE, ACTIVE, ACTIVE };
+static LayerCollisionFilter DEFAULT_LAYERS_FILTER{ CollisionMode::ACTIVE, CollisionMode::ACTIVE, CollisionMode::NEUTRAL, CollisionMode::IGNORING, CollisionMode::ACTIVE, CollisionMode::ACTIVE, CollisionMode::ACTIVE, CollisionMode::ACTIVE };
 
 static LayerCollisionFilter GLOBAL_LAYERS_FILTERS[] = {
-													{ ACTIVE,	ACTIVE,		NEUTRAL,	IGNORING,		ACTIVE,		ACTIVE,		ACTIVE,		ACTIVE },
-													{ ACTIVE,	ACTIVE,		NEUTRAL,	IGNORING,		ACTIVE,		ACTIVE,		ACTIVE,		ACTIVE },
-													{ ACTIVE,	ACTIVE,		NEUTRAL,	IGNORING,		ACTIVE,		ACTIVE,		ACTIVE,		ACTIVE },
-													{ IGNORING,	IGNORING,	IGNORING,	IGNORING,		IGNORING,	IGNORING,	IGNORING,	IGNORING },
-													{ ACTIVE,	ACTIVE,		NEUTRAL,	IGNORING,		ACTIVE,		ACTIVE,		ACTIVE,		ACTIVE },
-													{ ACTIVE,	ACTIVE,		NEUTRAL,	IGNORING,		ACTIVE,		ACTIVE,		ACTIVE,		ACTIVE },
-													{ ACTIVE,	ACTIVE,		NEUTRAL,	IGNORING,		ACTIVE,		ACTIVE,		ACTIVE,		ACTIVE },
-													{ ACTIVE,	ACTIVE,		NEUTRAL,	IGNORING,		ACTIVE,		ACTIVE,		ACTIVE,		ACTIVE }
+													{ CollisionMode::ACTIVE,	CollisionMode::ACTIVE,		CollisionMode::NEUTRAL,		CollisionMode::IGNORING, CollisionMode::ACTIVE,		CollisionMode::ACTIVE,		CollisionMode::ACTIVE,		CollisionMode::ACTIVE	},
+													{ CollisionMode::ACTIVE,	CollisionMode::ACTIVE,		CollisionMode::NEUTRAL,		CollisionMode::IGNORING, CollisionMode::ACTIVE,		CollisionMode::ACTIVE,		CollisionMode::ACTIVE,		CollisionMode::ACTIVE	},
+													{ CollisionMode::ACTIVE,	CollisionMode::ACTIVE,		CollisionMode::NEUTRAL,		CollisionMode::IGNORING, CollisionMode::ACTIVE,		CollisionMode::ACTIVE,		CollisionMode::ACTIVE,		CollisionMode::ACTIVE	},
+													{ CollisionMode::IGNORING,	CollisionMode::IGNORING,	CollisionMode::IGNORING,	CollisionMode::IGNORING, CollisionMode::IGNORING,	CollisionMode::IGNORING,	CollisionMode::IGNORING,	CollisionMode::IGNORING },
+													{ CollisionMode::ACTIVE,	CollisionMode::ACTIVE,		CollisionMode::NEUTRAL,		CollisionMode::IGNORING, CollisionMode::ACTIVE,		CollisionMode::ACTIVE,		CollisionMode::ACTIVE,		CollisionMode::ACTIVE	},
+													{ CollisionMode::ACTIVE,	CollisionMode::ACTIVE,		CollisionMode::NEUTRAL,		CollisionMode::IGNORING, CollisionMode::ACTIVE,		CollisionMode::ACTIVE,		CollisionMode::ACTIVE,		CollisionMode::ACTIVE	},
+													{ CollisionMode::ACTIVE,	CollisionMode::ACTIVE,		CollisionMode::NEUTRAL,		CollisionMode::IGNORING, CollisionMode::ACTIVE,		CollisionMode::ACTIVE,		CollisionMode::ACTIVE,		CollisionMode::ACTIVE	},
+													{ CollisionMode::ACTIVE,	CollisionMode::ACTIVE,		CollisionMode::NEUTRAL,		CollisionMode::IGNORING, CollisionMode::ACTIVE,		CollisionMode::ACTIVE,		CollisionMode::ACTIVE,		CollisionMode::ACTIVE	}
 };
 
 namespace YAML {
@@ -99,5 +110,3 @@ namespace YAML {
 		}
 	};
 }
-
-#endif // !_LAYERSDATA_H_

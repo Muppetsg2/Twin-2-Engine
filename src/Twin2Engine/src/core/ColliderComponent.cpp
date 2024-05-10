@@ -122,6 +122,52 @@ YAML::Node Twin2Engine::Core::ColliderComponent::Serialize() const
 	return node;
 }
 
+void Twin2Engine::Core::ColliderComponent::DrawEditor()
+{
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Collider##").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+		glm::vec3 pos = collider->shapeColliderData->LocalPosition;
+		ImGui::DragFloat3(string("Offset##").append(id).c_str(), glm::value_ptr(pos), 0.1f);
+
+		if (pos != collider->shapeColliderData->LocalPosition) {
+			collider->shapeColliderData->LocalPosition = pos;
+		}
+
+		/*
+		//node["layer"] = collider->layer;
+		std::unordered_map<Layer, string> ls = {
+			std::pair(Layer::DEFAULT, "DEFAULT"),
+			std::pair(Layer::IGNORE_RAYCAST, "IGNORE_RAYCAST"),
+			std::pair(Layer::IGNORE_COLLISION, "IGNORE_COLLISION"),
+			std::pair(Layer::UI, "UI"),
+			std::pair(Layer::LAYER_1, "LAYER_1"),
+			std::pair(Layer::LAYER_2, "LAYER_2"),
+			std::pair(Layer::LAYER_3, "LAYER_3"),
+			std::pair(Layer::LAYER_4, "LAYER_4"),
+		};
+
+		ImGui::BeginCombo(string("Layer##").append(id).c_str());
+		ImGui::EndCombo();
+
+		//node["layerFilter"] = collider->layersFilter;
+		*/
+
+		ImGui::Checkbox(string("Trigger##").append(id).c_str(), &collider->isTrigger);
+		ImGui::Checkbox(string("Static##").append(id).c_str(), &collider->isStatic);
+
+		bool v = collider->boundingVolume != nullptr;
+		ImGui::Checkbox(string("Bounding Volume##").append(id).c_str(), &v);
+		if (v != (collider->boundingVolume != nullptr)) {
+			EnableBoundingVolume(v);
+		}
+
+		if (v) {
+			ImGui::DragFloat(string("Bounding Volume Radius##").append(id).c_str(), &((CollisionSystem::SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius, 0.1f);
+		}
+	}
+}
+
 
 /*/#include <core/ColliderComponent.h>
 

@@ -1,9 +1,6 @@
-#ifndef _SCRIPTABLE_OBJECT_H_
-#define _SCRIPTABLE_OBJECT_H_
+#pragma once
 
 #include <manager/ScriptableObjectManager.h>
-
-
 
 namespace Twin2Engine::Manager
 {
@@ -211,6 +208,3 @@ bool ScriptableObjectClass::Deserialize(const YAML::Node& node) \
 //	field = deserializer(node[#field]);
 //#define SO_DESERIALIZE_FIELD_F_R(name, field, deserializer) \
 //	field = deserializer(node[name]);
-
-/**/
-#endif // !_SCRIPTABLE_OBJECT_H_

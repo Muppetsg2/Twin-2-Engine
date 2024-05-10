@@ -1,5 +1,4 @@
-#ifndef _MAP_GENERATOR_H_
-#define _MAP_GENERATOR_H_
+#pragma once
 
 #include <core/Component.h>
 #include <core/GameObject.h>
@@ -60,5 +59,3 @@ namespace Generation
         virtual YAML::Node Serialize() const override;
 	};
 }
-
-#endif // !_MAP_GENERATOR_H_

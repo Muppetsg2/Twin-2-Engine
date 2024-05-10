@@ -1076,6 +1076,7 @@ void SceneManager::UnloadAll()
 void SceneManager::DrawCurrentSceneEditor()
 {
 	if (ImGui::Begin(SceneManager::GetCurrentSceneName().c_str())) {
+		// Dodac menu odczytywania nowej sceny
 		DrawGameObjectEditor(_rootObject);
 	}
 	ImGui::End();

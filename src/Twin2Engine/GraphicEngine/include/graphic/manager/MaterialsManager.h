@@ -1,5 +1,4 @@
-#ifndef _MATERIALS_MANAGER_H_
-#define _MATERIALS_MANAGER_H_
+#pragma once
 
 #include <graphic/Material.h>
 #include <graphic/manager/ShaderManager.h>
@@ -36,5 +35,3 @@ namespace Twin2Engine::Manager
 		static YAML::Node Serialize();
 	};
 }
-
-#endif

@@ -40,9 +40,6 @@ namespace Twin2Engine::UI {
 		TextOverflow _overflow = TextOverflow::Overflow;
 
 		bool _textDirty = true;
-		bool _displayTextDirty = true;
-		std::string _oldText = "";
-		std::string _oldDisplayText = "";
 		std::vector<TextCharacter> _textCharCache;
 		std::vector<TextCharacter> _displayTextCharCache;
 
@@ -77,5 +74,7 @@ namespace Twin2Engine::UI {
 		TextAlignY GetTextAlignY() const;
 		bool IsTextWrapping() const;
 		TextOverflow GetTextOverflow() const;
+		float GetTextWidth() const;
+		float GetTextHeight() const;
 	};
 }

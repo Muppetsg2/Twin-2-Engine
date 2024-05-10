@@ -422,3 +422,13 @@ TextOverflow Text::GetTextOverflow() const
 {
 	return _overflow;
 }
+
+float Text::GetTextWidth() const
+{
+	return _textWidth;
+}
+
+float Text::GetTextHeight() const
+{
+	return _textHeight;
+}

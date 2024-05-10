@@ -100,7 +100,8 @@ void GraphicEngineManager::DepthRender()
 	float startDepthRenderingTime = glfwGetTime();
 #endif
 	//MeshRenderingManager::RenderDepthMap();
-	MeshRenderingManager::RenderDepthMapStatic();
+	//MeshRenderingManager::RenderDepthMapStatic();
+	MeshRenderingManager::PreRender();
 #if DEBUG_GRAPHIC_ENGINE
 	SPDLOG_INFO("Depth Randering Time: {}", glfwGetTime() - startDepthRenderingTime);
 #endif

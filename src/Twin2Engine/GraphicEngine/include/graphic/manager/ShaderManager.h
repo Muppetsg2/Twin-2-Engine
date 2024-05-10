@@ -72,6 +72,7 @@ namespace Twin2Engine::Manager
 
 	public:
 		static GraphicEngine::Shader* DepthShader;
+		static GraphicEngine::Shader* CameraDepthShader;
 
 		//ShaderManager();
 		static void Init();

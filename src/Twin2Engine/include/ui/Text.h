@@ -14,6 +14,10 @@ namespace Twin2Engine::UI {
 
 		glm::vec4 _color = glm::vec4(0.f);
 
+		// For ImGui
+		bool _fileDialogOpen;
+		ImFileDialogInfo _fileDialogInfo;
+
 		std::vector<GraphicEngine::Character*> _textCache = std::vector<GraphicEngine::Character*>();
 
 		bool _textCacheDirty = true;
@@ -24,6 +28,7 @@ namespace Twin2Engine::UI {
 	public:
 		virtual void Render() override;
 		virtual YAML::Node Serialize() const override;
+		virtual void DrawEditor() override;
 
 		void SetColor(const glm::vec4& color);
 		void SetText(const std::string& text);

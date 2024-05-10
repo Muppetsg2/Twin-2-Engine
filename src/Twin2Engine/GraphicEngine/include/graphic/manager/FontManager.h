@@ -21,6 +21,8 @@ namespace Twin2Engine::Manager {
 
 		static GraphicEngine::Font* GetFont(size_t fontId);
 		static GraphicEngine::Font* GetFont(const std::string& fontPath);
+		static std::string GetFontName(size_t fontId);
+		static std::string GetFontName(const std::string& fontPath);
 
 		static void UnloadAll();
 

@@ -59,7 +59,7 @@ void Twin2Engine::Core::PointLightComponent::SetPower(float power)
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::PointLightComponent::SetAtenuation(float constant, float linear, float quadratic)
+void Twin2Engine::Core::PointLightComponent::SetAttenuation(float constant, float linear, float quadratic)
 {
 	light->constant = constant;
 	light->linear = linear;
@@ -77,4 +77,36 @@ YAML::Node Twin2Engine::Core::PointLightComponent::Serialize() const
 	node["quadratic"] = light->quadratic;
 
 	return node;
+}
+
+void Twin2Engine::Core::PointLightComponent::DrawEditor()
+{
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Point Light##").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+		glm::vec3 v = light->color;
+		ImGui::ColorEdit3(string("Color##").append(id).c_str(), glm::value_ptr(v));
+		if (v != light->color) {
+			SetColor(v);
+		}
+
+		float p = light->power;
+		ImGui::DragFloat(string("Power##").append(id).c_str(), &p);
+		if (p != light->power) {
+			SetPower(p);
+		}
+
+		float c = light->constant;
+		float l = light->linear;
+		p = light->quadratic;
+		ImGui::DragFloat(string("Constant##").append(id).c_str(), &c);
+		ImGui::SameLine();
+		ImGui::DragFloat(string("Linear##").append(id).c_str(), &l);
+		ImGui::SameLine();
+		ImGui::DragFloat(string("Quadratic##").append(id).c_str(), &p);
+
+		if (c != light->constant || l != light->linear || p != light->quadratic) {
+			SetAttenuation(c, l, p);
+		}
+	}
 }

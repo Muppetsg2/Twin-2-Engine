@@ -47,6 +47,7 @@ namespace Twin2Engine::Manager {
 		static void SetVolume(handle h, float value);
 		static void SetLooping(handle h, bool loop);
 
+		static string GetAudioName(string path);
 		static string GetAudioName(size_t id);
 		static float GetVolume(handle h);
 		static SoLoud::time GetAudioTime(string path);

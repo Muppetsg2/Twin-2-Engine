@@ -301,6 +301,8 @@ void GameObject::DrawEditor()
 		if (comp != _transform)
 			comp->DrawEditor();
 	}
+
+	// Add Component Button
 }
 
 void GameObject::AddComponent(Component* comp)

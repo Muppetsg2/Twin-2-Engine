@@ -43,6 +43,15 @@ YAML::Node Image::Serialize() const
 	return node;
 }
 
+void Image::DrawEditor()
+{
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Image##").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
+	}
+}
+
 void Image::SetSprite(const std::string& spriteAlias) {
 	_spriteId = hash<string>()(spriteAlias);
 }

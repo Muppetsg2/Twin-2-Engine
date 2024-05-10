@@ -68,13 +68,19 @@ void Twin2Engine::Core::SpotLightComponent::SetPower(float power)
 	dirtyFlag = true;
 }
 
+void Twin2Engine::Core::SpotLightComponent::SetInnerCutOff(float radAngle)
+{
+	light->innerCutOff = radAngle;
+	dirtyFlag = true;
+}
+
 void Twin2Engine::Core::SpotLightComponent::SetOuterCutOff(float radAngle)
 {
 	light->outerCutOff = radAngle;
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::SpotLightComponent::SetAtenuation(float constant, float linear, float quadratic)
+void Twin2Engine::Core::SpotLightComponent::SetAttenuation(float constant, float linear, float quadratic)
 {
 	light->constant = constant;
 	light->linear = linear;
@@ -88,10 +94,61 @@ YAML::Node Twin2Engine::Core::SpotLightComponent::Serialize() const
 	node["direction"] = light->direction;
 	node["color"] = light->color;
 	node["power"] = light->power;
-	node["outerCutOff"] = light->power;
+	node["innerCutOff"] = light->innerCutOff;
+	node["outerCutOff"] = light->outerCutOff;
 	node["constant"] = light->constant;
 	node["linear"] = light->linear;
 	node["quadratic"] = light->quadratic;
 
 	return node;
+}
+
+void Twin2Engine::Core::SpotLightComponent::DrawEditor()
+{
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Spot Light##").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+		glm::vec3 v = light->direction;
+		ImGui::DragFloat3(string("Direction##").append(id).c_str(), glm::value_ptr(v), .1f, -1.f, 1.f);
+		if (v != light->direction) {
+			SetDirection(v);
+		}
+
+		v = light->color;
+		ImGui::ColorEdit3(string("Color##").append(id).c_str(), glm::value_ptr(v));
+		if (v != light->color) {
+			SetColor(v);
+		}
+
+		float p = light->power;
+		ImGui::DragFloat(string("Power##").append(id).c_str(), &p);
+		if (p != light->power) {
+			SetPower(p);
+		}
+
+		p = light->innerCutOff;
+		ImGui::DragFloat(string("Inner Cut Off##").append(id).c_str(), &p, 1.f, 0.f, 360.f);
+		if (p != light->innerCutOff) {
+			SetInnerCutOff(glm::radians(p));
+		}
+
+		p = light->outerCutOff;
+		ImGui::DragFloat(string("Outer Cut Off##").append(id).c_str(), &p, 1.f, 0.f, 360.f);
+		if (p != light->outerCutOff) {
+			SetOuterCutOff(glm::radians(p));
+		}
+
+		float c = light->constant;
+		float l = light->linear;
+		p = light->quadratic;
+		ImGui::DragFloat(string("Constant##").append(id).c_str(), &c);
+		ImGui::SameLine();
+		ImGui::DragFloat(string("Linear##").append(id).c_str(), &l);
+		ImGui::SameLine();
+		ImGui::DragFloat(string("Quadratic##").append(id).c_str(), &p);
+
+		if (c != light->constant || l != light->linear || p != light->quadratic) {
+			SetAttenuation(c, l, p);
+		}
+	}
 }

@@ -1,5 +1,4 @@
-#ifndef _POINTLIGHTCOMPONENT_H_
-#define _POINTLIGHTCOMPONENT_H_
+#pragma once
 
 #include <core/LightComponent.h>
 
@@ -25,11 +24,10 @@ namespace Twin2Engine {
 
 				void SetColor(glm::vec3 color);
 				void SetPower(float power);
-				void SetAtenuation(float constant, float linear, float quadratic);
+				void SetAttenuation(float constant, float linear, float quadratic);
 
 				virtual YAML::Node Serialize() const override;
+				virtual void DrawEditor() override;
 		};
 	}
 }
-
-#endif // !_POINTLIGHTCOMPONENT_H_

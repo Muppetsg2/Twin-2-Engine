@@ -444,7 +444,7 @@ int main(int, char**)
             PointLightComponent* light = static_cast<PointLightComponent*>(comp);
             light->SetColor(node["color"].as<vec3>());
             light->SetPower(node["power"].as<float>());
-            light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
+            light->SetAttenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
         }
         );
 
@@ -458,7 +458,7 @@ int main(int, char**)
             light->SetColor(node["color"].as<vec3>());
             light->SetPower(node["power"].as<float>());
             light->SetOuterCutOff(node["outerCutOff"].as<float>());
-            light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
+            light->SetAttenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
         }
         );
 
@@ -943,6 +943,8 @@ void imgui_render()
 {
     if (Input::GetCursorState() == NORMAL)
     {
+        SceneManager::DrawCurrentSceneEditor();
+
         ImGui::Begin("Twin^2 Engine");
 
         ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Hello World!");
@@ -955,14 +957,9 @@ void imgui_render()
             ImGui::Spacing();
         }
 
-        ImGui::Separator();
-        SceneManager::DrawCurrentSceneEditor();
-
-        ImGui::Separator();
-        Camera->GetComponent<AudioComponent>()->DrawEditor();
-        ImGui::Separator();
-        Camera->GetComponent<CameraComponent>()->DrawEditor();
-        ImGui::Separator();
+        //ImGui::Separator();
+        //SceneManager::DrawCurrentSceneEditor();
+        //ImGui::Separator();
 
 #pragma region IMGUI_WINDOW_SETUP
         if (ImGui::CollapsingHeader("Window Setup")) {
@@ -1282,8 +1279,8 @@ void imgui_render()
             if (selectedScriptableObject != nullptr)
             {
                 selectedScriptableObject->DrawEditor();
+                ImGui::Separator();
             }
-            ImGui::Separator();
 
             if (ImGui::Button("Generate"))
             {

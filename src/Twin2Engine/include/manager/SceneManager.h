@@ -28,6 +28,7 @@ namespace Twin2Engine::Manager {
 		static std::map<size_t, Core::Scene*> _loadedScenes;
 
 		static ImGuiID selected;
+		static bool inspectorOpened;
 
 		static void SaveGameObject(const Core::GameObject* obj, YAML::Node gameObjects);
 		static void DrawGameObjectEditor(const Core::GameObject* obj);

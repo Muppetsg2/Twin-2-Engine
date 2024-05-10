@@ -56,3 +56,12 @@ YAML::Node Twin2Engine::Core::SphereColliderComponent::Serialize() const
 	node["radius"] = ((CollisionSystem::SphereColliderData*)collider->shapeColliderData)->Radius;
 	return node;
 }
+
+void Twin2Engine::Core::SphereColliderComponent::DrawEditor()
+{
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Sphere Collider##").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+
+	}
+}

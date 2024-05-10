@@ -32,6 +32,7 @@ vector<size_t> SceneManager::_scriptableObjectsIds;
 map<size_t, Scene*> SceneManager::_loadedScenes;
 
 ImGuiID SceneManager::selected = 0;
+bool SceneManager::inspectorOpened = true;
 
 void SceneManager::SaveGameObject(const GameObject* obj, YAML::Node gameObjects)
 {
@@ -55,11 +56,15 @@ void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 
 		if (is_selected) {
 			node_flag |= ImGuiTreeNodeFlags_Selected;
-			// zamkyanie okienka
-			if (ImGui::Begin("Inspector")) {
+
+			if (ImGui::Begin("Inspector", &inspectorOpened)) {
 				objT->GetChildAt(i)->GetGameObject()->DrawEditor();
 			}
 			ImGui::End();
+
+			if (!inspectorOpened) {
+				selected = 0;
+			}
 		}
 
 		if (objT->GetChildAt(i)->GetChildCount() == 0) {
@@ -85,6 +90,7 @@ void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 
 	if (clicked_elem != 0) {
 		selected = clicked_elem;
+		inspectorOpened = true;
 	}
 }
 
@@ -1069,7 +1075,8 @@ void SceneManager::UnloadAll()
 
 void SceneManager::DrawCurrentSceneEditor()
 {
-	if (ImGui::CollapsingHeader(SceneManager::GetCurrentSceneName().c_str())) {
+	if (ImGui::Begin(SceneManager::GetCurrentSceneName().c_str())) {
 		DrawGameObjectEditor(_rootObject);
 	}
+	ImGui::End();
 }

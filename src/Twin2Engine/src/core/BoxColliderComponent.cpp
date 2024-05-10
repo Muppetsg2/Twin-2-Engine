@@ -143,3 +143,12 @@ YAML::Node Twin2Engine::Core::BoxColliderComponent::Serialize() const
 	);
 	return node;
 }
+
+void Twin2Engine::Core::BoxColliderComponent::DrawEditor()
+{
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Box Light##").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+
+	}
+}

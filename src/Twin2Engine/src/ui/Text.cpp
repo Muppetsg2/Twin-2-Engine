@@ -96,8 +96,75 @@ YAML::Node Text::Serialize() const
 	return node;
 }
 
+void Text::DrawEditor()
+{
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Text##").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+
+		string buff = _text;
+		// ustawilem 1000 znakow, ale mozna zawsze zrobic INT_MAX z biblioteka limits.h, ale wywala wtedy blad w UpdateTextCache (nie to, ze teraz go nie wyrzuca)
+		ImGui::InputText(string("Value##").append(id).c_str(), buff.data(), 1000);
+
+		if (buff != _text) {
+			SetText(buff);
+		}
+
+		glm::vec4 c = _color;
+		ImGui::ColorEdit4(string("Color##").append(id).c_str(), glm::value_ptr(c));
+
+		if (c != _color) {
+			SetColor(c);
+		}
+
+		float s = _size;
+		ImGui::DragFloat(string("Size##").append(id).c_str(), &s);
+
+		if (s != _size) {
+			SetSize(s);
+		}
+
+		if (GetFont() != nullptr) {
+			ImGui::Text("Font Name: %s", FontManager::GetFontName(_fontId).c_str());
+			ImGui::SameLine();
+			if (ImGui::Button(string("Open File##").append(id).c_str())) {
+				_fileDialogOpen = true;
+				_fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
+				_fileDialogInfo.title = "Open File";
+				_fileDialogInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\fonts");
+			}
+
+			if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
+			{
+				// Result path in: m_fileDialogInfo.resultPath
+				this->SetFont(_fileDialogInfo.resultPath.string());
+			}
+		}
+		else {
+			ImGui::Text("Choose File");
+			ImGui::SameLine();
+			if (ImGui::Button(string("Open File##").append(id).c_str())) {
+				_fileDialogOpen = true;
+				_fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
+				_fileDialogInfo.title = "Open File";
+				_fileDialogInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\fonts");
+			}
+
+			if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
+			{
+				// Result path in: m_fileDialogInfo.resultPath
+				this->SetFont(_fileDialogInfo.resultPath.string());
+			}
+		}
+
+		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
+	}
+}
+
 void Text::SetColor(const vec4& color)
 {
+	if (color.a != 1.f)
+		_isTransparent = true;
 	_color = color;
 }
 
@@ -125,7 +192,11 @@ void Text::SetSize(uint32_t size)
 
 void Text::SetFont(const string& fontPath)
 {
-	SetFont(hash<string>()(fontPath));
+	size_t h = hash<string>()(fontPath);
+	if (FontManager::GetFont(fontPath) == nullptr) {
+		FontManager::LoadFont(fontPath);
+	}
+	SetFont(h);
 }
 
 void Text::SetFont(size_t fontId)

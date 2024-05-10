@@ -82,3 +82,12 @@ YAML::Node Twin2Engine::Core::CapsuleColliderComponent::Serialize() const
 	node["radius"] = ((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->Radius;
 	return node;
 }
+
+void Twin2Engine::Core::CapsuleColliderComponent::DrawEditor()
+{
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Capsule Collider##").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+
+	}
+}

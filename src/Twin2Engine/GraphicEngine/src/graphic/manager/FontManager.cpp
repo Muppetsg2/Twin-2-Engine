@@ -49,6 +49,16 @@ Font* FontManager::GetFont(const std::string& fontPath) {
     return font;
 }
 
+std::string FontManager::GetFontName(size_t fontId) {
+    if (_fontsPaths.find(fontId) == _fontsPaths.end()) return "";
+    string p = _fontsPaths[fontId];
+    return std::filesystem::path(p).stem().string();
+}
+
+std::string FontManager::GetFontName(const std::string& fontPath) {
+    return GetFontName(_hasher(fontPath));
+}
+
 void FontManager::UnloadFont(size_t fontId) {
     if (_fonts.find(fontId) == _fonts.end()) return;
     delete _fonts[fontId];

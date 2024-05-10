@@ -860,3 +860,53 @@ YAML::Node Twin2Engine::Core::Transform::Serialize() const
 	node["rotation"] = glm::degrees(_localRotation);
 	return node;
 }
+
+void Twin2Engine::Core::Transform::DrawEditor()
+{
+	std::string id = std::string(std::to_string(this->GetId()));
+	std::string name = std::string("Transform##").append(id);
+	static bool world = false;
+
+	if (ImGui::CollapsingHeader(name.c_str())) {
+		if (ImGui::RadioButton(std::string("Local##").append(id).c_str(), world == false))
+			world = false;
+		ImGui::SameLine();
+		if (ImGui::RadioButton(std::string("World##").append(id).c_str(), world == true))
+			world = true;
+
+		glm::vec3 pos = world ? _globalPosition : _localPosition;
+		glm::vec3 rot = world ? _globalRotation : _localRotation;
+		glm::vec3 sc = world ? _globalScale : _localScale;
+
+		ImGui::DragFloat3(std::string("Position##").append(id).c_str(), glm::value_ptr(pos));
+		ImGui::DragFloat3(std::string("Rotation##").append(id).c_str(), glm::value_ptr(rot));
+		ImGui::DragFloat3(std::string("Scale##").append(id).c_str(), glm::value_ptr(sc));
+
+		if ((world ? _globalPosition : _localPosition) != pos) {
+			if (world) {
+				SetGlobalPosition(pos);
+			}
+			else {
+				SetLocalPosition(pos);
+			}
+		}
+
+		if ((world ? _globalRotation : _localRotation) != rot) {
+			if (world) {
+				SetGlobalRotation(rot);
+			}
+			else {
+				SetLocalRotation(rot);
+			}
+		}
+
+		if ((world ? _globalScale : _localScale) != sc) {
+			if (world) {
+				SetGlobalScale(sc);
+			}
+			else {
+				SetLocalScale(sc);
+			}
+		}
+	}
+}

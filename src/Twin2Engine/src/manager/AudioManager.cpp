@@ -96,7 +96,7 @@ handle AudioManager::GetAudioHandle(size_t id)
 
     if (_loadedAudio.count(id) == 0) {
         spdlog::error("AudioManager::Audio not found");
-        return SoLoud::time();
+        return 0;
     }
 
     return _soloud.play(*_loadedAudio[id], -1.f, 0.f, true);
@@ -248,8 +248,19 @@ void AudioManager::SetLooping(handle h, bool loop)
     }
 }
 
+string AudioManager::GetAudioName(string path)
+{
+    size_t h = hash<string>{}(path);
+    return GetAudioName(h);
+}
+
 string AudioManager::GetAudioName(size_t id)
 {
+    if (_loadedAudio.count(id) == 0) {
+        spdlog::error("AudioManager::Audio not found");
+        return "";
+    }
+
     string p = _audiosPaths[id];
     return std::filesystem::path(p).stem().string();
 }

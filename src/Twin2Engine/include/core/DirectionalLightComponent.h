@@ -1,5 +1,4 @@
-#ifndef _DIRECTIONALLIGHTCOMPONENT_H_
-#define _DIRECTIONALLIGHTCOMPONENT_H_
+#pragma once
 
 #include <core/LightComponent.h>
 
@@ -31,8 +30,7 @@ namespace Twin2Engine {
 				void SetPower(float power);
 
 				virtual YAML::Node Serialize() const override;
+				virtual void DrawEditor() override;
 		};
 	}
 }
-
-#endif // !_DIRECTIONALLIGHTCOMPONENT_H_

@@ -1,5 +1,4 @@
-#ifndef _SPOTLIGHTCOMPONENT_H_
-#define _SPOTLIGHTCOMPONENT_H_
+#pragma once
 
 #include <core/LightComponent.h>
 
@@ -27,12 +26,12 @@ namespace Twin2Engine {
 				void SetDirection(glm::vec3 dir);
 				void SetColor(glm::vec3 color);
 				void SetPower(float power);
+				void SetInnerCutOff(float radAngle);
 				void SetOuterCutOff(float radAngle);
-				void SetAtenuation(float constant, float linear, float quadratic);
+				void SetAttenuation(float constant, float linear, float quadratic);
 
 				virtual YAML::Node Serialize() const override;
+				virtual void DrawEditor() override;
 		};
 	}
 }
-
-#endif // !_SPOTLIGHTCOMPONENT_H_

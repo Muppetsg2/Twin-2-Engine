@@ -685,15 +685,17 @@ YAML::Node CameraComponent::Serialize() const
 
 void CameraComponent::DrawEditor()
 {
-	if (ImGui::CollapsingHeader("Camera")) {
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Camera##").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
 
 		bool per = (this->_type == CameraType::PERSPECTIVE);
-		if (ImGui::BeginCombo("Projection", (per ? "Perspective" : "Orthographic"))) {
-			if (ImGui::Selectable("Orthographic", per == CameraType::ORTHOGRAPHIC))
+		if (ImGui::BeginCombo(string("Projection##").append(id).c_str(), (per ? "Perspective" : "Orthographic"))) {
+			if (ImGui::Selectable(string("Orthographic##").append(id).c_str(), per == CameraType::ORTHOGRAPHIC))
 			{
 				this->SetCameraType(CameraType::ORTHOGRAPHIC);
 			}
-			else if (ImGui::Selectable("Perspective", per == CameraType::PERSPECTIVE))
+			else if (ImGui::Selectable(string("Perspective##").append(id).c_str(), per == CameraType::PERSPECTIVE))
 			{
 				this->SetCameraType(CameraType::PERSPECTIVE);
 			}
@@ -701,17 +703,17 @@ void CameraComponent::DrawEditor()
 		}
 
 		RenderResolution res = this->_renderRes;
-		if (ImGui::BeginCombo("Render Resolution", res == RenderResolution::DEFAULT ? "Default" : (res == RenderResolution::MEDIUM ? "Medium" : "High")))
+		if (ImGui::BeginCombo(string("Render Resolution##").append(id).c_str(), res == RenderResolution::DEFAULT ? "Default" : (res == RenderResolution::MEDIUM ? "Medium" : "High")))
 		{
-			if (ImGui::Selectable("Default", res == RenderResolution::DEFAULT))
+			if (ImGui::Selectable(string("Default##").append(id).c_str(), res == RenderResolution::DEFAULT))
 			{
 				this->SetRenderResolution(RenderResolution::DEFAULT);
 			}
-			else if (ImGui::Selectable("Medium", res == RenderResolution::MEDIUM))
+			else if (ImGui::Selectable(string("Medium##").append(id).c_str(), res == RenderResolution::MEDIUM))
 			{
 				this->SetRenderResolution(RenderResolution::MEDIUM);
 			}
-			else if (ImGui::Selectable("High", res == RenderResolution::HIGH))
+			else if (ImGui::Selectable(string("High##").append(id).c_str(), res == RenderResolution::HIGH))
 			{
 				this->SetRenderResolution(RenderResolution::HIGH);
 			}
@@ -722,37 +724,37 @@ void CameraComponent::DrawEditor()
 		uint8_t fil = this->_filters;
 
 		bool g = (fil & RenderFilter::GRAYSCALE) != 0;
-		ImGui::Checkbox("GrayScale", &g);
+		ImGui::Checkbox(string("GrayScale##").append(id).c_str(), &g);
 		if (g) {
 			acFil |= RenderFilter::GRAYSCALE;
 		}
 
 		g = (fil & RenderFilter::NEGATIVE) != 0;
-		ImGui::Checkbox("Negative", &g);
+		ImGui::Checkbox(string("Negative##").append(id).c_str(), &g);
 		if (g) {
 			acFil |= RenderFilter::NEGATIVE;
 		}
 
 		g = (fil & RenderFilter::VIGNETTE) != 0;
-		ImGui::Checkbox("Vignette", &g);
+		ImGui::Checkbox(string("Vignette##").append(id).c_str(), &g);
 		if (g) {
 			acFil |= RenderFilter::VIGNETTE;
 		}
 
 		g = (fil & RenderFilter::BLUR) != 0;
-		ImGui::Checkbox("Blur", &g);
+		ImGui::Checkbox(string("Blur##").append(id).c_str(), &g);
 		if (g) {
 			acFil |= RenderFilter::BLUR;
 		}
 
 		g = (fil & RenderFilter::DEPTH) != 0;
-		ImGui::Checkbox("Depth", &g);
+		ImGui::Checkbox(string("Depth##").append(id).c_str(), &g);
 		if (g) {
 			acFil |= RenderFilter::DEPTH;
 		}
 
 		g = (fil & RenderFilter::OUTLINE) != 0;
-		ImGui::Checkbox("Outline", &g);
+		ImGui::Checkbox(string("Outline##").append(id).c_str(), &g);
 		if (g) {
 			acFil |= RenderFilter::OUTLINE;
 		}
@@ -760,15 +762,15 @@ void CameraComponent::DrawEditor()
 		this->SetCameraFilter(acFil);
 
 		int s = (int)this->_samples;
-		ImGui::InputInt("MSAA Samples", &s);
+		ImGui::InputInt(string("MSAA Samples##").append(id).c_str(), &s);
 
 		if (s != (int)this->_samples) {
 			this->SetSamples((uint8_t)s);
 		}
 
-		ImGui::InputFloat("Near Plane", &this->_near);
-		ImGui::InputFloat("Far Plane", &this->_far);
-		ImGui::InputFloat("Gamma", &this->_gamma);
-		ImGui::Checkbox("Frustum Culling", &this->_isFrustumCulling);
+		ImGui::InputFloat(string("Near Plane##").append(id).c_str(), &this->_near);
+		ImGui::InputFloat(string("Far Plane##").append(id).c_str(), &this->_far);
+		ImGui::InputFloat(string("Gamma##").append(id).c_str(), &this->_gamma);
+		ImGui::Checkbox(string("Frustum Culling##").append(id).c_str(), &this->_isFrustumCulling);
 	}
 }

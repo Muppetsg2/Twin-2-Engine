@@ -29,6 +29,10 @@ void Text::UpdateTextMesh()
 		_textCharCache.clear();
 		_displayTextCharCache.clear();
 
+		if (_autoSize && _text.size() == 0) {
+			_size = _maxSize;
+		}
+
 		if (_size != 0 && font != nullptr) {
 			const float lineHeight = _size * 1.2f;
 			glm::vec2 currPos = glm::vec2(0.f);
@@ -282,13 +286,14 @@ void Text::UpdateTextMesh()
 
 		break;
 	}
+
+	_textDirty = false;
 }
 
 void Text::Update()
 {
 	if (_textDirty) {
 		UpdateTextMesh();
-		_textDirty = false;
 	}
 }
 

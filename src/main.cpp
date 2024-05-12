@@ -275,11 +275,19 @@ int main(int, char**)
     Text* inputText = obj->AddComponent<Text>();
     inputText->SetFont("res/fonts/Caveat-Regular.ttf");
     inputText->SetSize(48);
-    inputText->SetWidth(200);
-    inputText->SetHeight(70);
+    inputText->SetWidth(196);
+    inputText->SetHeight(66);
     inputText->SetTextOverflow(TextOverflow::Masking);
     inputText->EnableAutoSize(30, 70);
     Text* placeHolder = obj->AddComponent<Text>();
+    placeHolder->SetFont("res/fonts/Caveat-Regular.ttf");
+    placeHolder->SetSize(48);
+    placeHolder->SetWidth(196);
+    placeHolder->SetHeight(66);
+    placeHolder->SetText("Enter name...");
+    placeHolder->SetTextOverflow(TextOverflow::Ellipsis);
+    placeHolder->EnableAutoSize(30, 70);
+    placeHolder->SetColor({ .5f, .5f, .5f, 1.f });
     InputField* inp = obj->AddComponent<InputField>();
     inp->SetInputText(inputText);
     inp->SetPlaceHolderText(placeHolder);
@@ -458,7 +466,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void update()
 {
     // Update game objects' state here
-    //text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
+    text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
     colorSpan -= Time::GetDeltaTime() * 0.2f;
     if (colorSpan <= 0.f) {
         colorSpan = 1.f;

@@ -294,9 +294,9 @@ bool Input::IsKeyHeldDown(Window* window, KEY key)
 		return false;
 	uint16_t keyStateCode = (uint16_t)key - (uint16_t)KEY::SPACE;
 	if (_keyStates[glfwWin].find(keyStateCode) == _keyStates[glfwWin].end())
-		return true;
+		return false;
 	INPUT_STATE currState = (INPUT_STATE)_keyStates[glfwWin][keyStateCode];
-	return currState == INPUT_STATE::RELEASED || currState == INPUT_STATE::UP;
+	return currState == INPUT_STATE::DOWN;
 }
 
 bool Input::IsKeyUp(Window* window, KEY key)

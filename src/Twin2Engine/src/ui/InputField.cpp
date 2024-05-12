@@ -22,36 +22,9 @@ void InputField::OnKeyStateChange(KEY key, INPUT_STATE state)
 				value += 'a' - 'A';
 			}
 
-			std::string oldText = _text->GetText();
-			_text->SetText(oldText.substr(0, _cursorPos) + value + oldText.substr(_cursorPos, oldText.size() - _cursorPos));
+			_textValue = _textValue.substr(0, _cursorPos) + value + _textValue.substr(_cursorPos, _textValue.size() - _cursorPos);
 			++_cursorPos;
-		}
-		else if (key == KEY::ENTER) {
-			_typing = false;
-			_cursorVisible = false;
-		}
-		else if (key == KEY::BACKSPACE) {
-			std::string oldText = _text->GetText();
-			if (_cursorPos > 0) {
-				_text->SetText(oldText.substr(0, _cursorPos - 1) + oldText.substr(_cursorPos, oldText.size() - _cursorPos));
-				--_cursorPos;
-			}
-		}
-		else if (key == KEY::DELETE_KEY) {
-			std::string oldText = _text->GetText();
-			if (_cursorPos < oldText.size()) {
-				_text->SetText(oldText.substr(0, _cursorPos) + oldText.substr(_cursorPos + 1, oldText.size() - _cursorPos - 1));
-			}
-		}
-		else if (key == KEY::ARROW_LEFT) {
-			if (_cursorPos > 0) {
-				--_cursorPos;
-			}
-		}
-		else if (key == KEY::ARROW_RIGHT) {
-			if (_cursorPos < _text->GetText().size()) {
-				++_cursorPos;
-			}
+			_textDirty = true;
 		}
 
 		// U¯YWANIE INNYCH PRZYCISKÓW
@@ -81,6 +54,8 @@ void InputField::Update()
 		if (!_typing && btnLocalMPos.x >= -_width / 2.f && btnLocalMPos.x <= _width / 2.f && btnLocalMPos.y >= -_height / 2.f && btnLocalMPos.y <= _height / 2.f) {
 			_typing = true;
 			_cursorVisible = true;
+			_currentCursorTime = _cursorDelay;
+			_cursorPos = 0;
 		}
 		else if (btnLocalMPos.x < -_width / 2.f || btnLocalMPos.x > _width / 2.f || btnLocalMPos.y < -_height / 2.f || btnLocalMPos.y > _height / 2.f) {
 			_typing = false;
@@ -94,6 +69,84 @@ void InputField::Update()
 			_cursorVisible = !_cursorVisible;
 			_currentCursorTime = _cursorDelay;
 		}
+
+		if (Input::IsKeyPressed(KEY::ENTER)) {
+			_typing = false;
+			_cursorVisible = false;
+			_textOffset = 0;
+			_textDirty = true;
+		}
+
+		if (Input::IsKeyPressed(KEY::BACKSPACE) || (Input::IsKeyHeldDown(KEY::BACKSPACE) && _cursorVisible)) {
+			if (_cursorPos > 0) {
+				_textValue = _textValue.substr(0, _cursorPos - 1) + _textValue.substr(_cursorPos, _textValue.size() - _cursorPos);
+				--_cursorPos;
+				if (_textOffset > 0) {
+					--_textOffset;
+				}
+				_textDirty = true;
+				_cursorVisible = true;
+				_currentCursorTime = _cursorDelay;
+			}
+		}
+
+		if (Input::IsKeyPressed(KEY::DELETE_KEY) || (Input::IsKeyHeldDown(KEY::DELETE_KEY) && _cursorVisible)) {
+			if (_cursorPos < _textValue.size()) {
+				_textValue = _textValue.substr(0, _cursorPos) + _textValue.substr(_cursorPos + 1, _textValue.size() - _cursorPos - 1);
+				if (_textOffset > 0) {
+					--_textOffset;
+				}
+				_textDirty = true;
+				_cursorVisible = true;
+				_currentCursorTime = _cursorDelay;
+			}
+		}
+		
+		if (Input::IsKeyPressed(KEY::ARROW_LEFT) || (Input::IsKeyHeldDown(KEY::ARROW_LEFT) && _cursorVisible)) {
+			if (_cursorPos > 0) {
+				--_cursorPos;
+				_textDirty = true;
+				_cursorVisible = true;
+				_currentCursorTime = _cursorDelay;
+			}
+		}
+		
+		if (Input::IsKeyPressed(KEY::ARROW_RIGHT) || (Input::IsKeyHeldDown(KEY::ARROW_RIGHT) && _cursorVisible)) {
+			if (_cursorPos < _textValue.size()) {
+				++_cursorPos;
+				_textDirty = true;
+				_cursorVisible = true;
+				_currentCursorTime = _cursorDelay;
+			}
+		}
+
+		// UPDATE TEXT
+		if (_textDirty) {
+			std::string finalText = _textValue.substr(_textOffset, _textValue.size() - _textOffset);
+			_text->SetText(finalText);
+			_text->UpdateTextMesh();
+			if (finalText != "") {
+				_placeHolder->SetEnable(false);
+				if (_cursorPos != 0) {
+					if (_textOffset > _cursorPos) {
+						_textOffset -= _textOffset - _cursorPos;
+						finalText = _textValue.substr(_textOffset, _textValue.size() - _textOffset);
+						_text->SetText(finalText);
+						_text->UpdateTextMesh();
+					}
+					else if (_cursorPos - _textOffset > _text->_displayTextCharCache.size()) {
+						_textOffset += (_cursorPos - _textOffset) - _text->_displayTextCharCache.size();
+						finalText = _textValue.substr(_textOffset, _textValue.size() - _textOffset);
+						_text->SetText(finalText);
+						_text->UpdateTextMesh();
+					}
+				}
+			}
+			else {
+				_placeHolder->SetEnable(true);
+			}
+			_textDirty = false;
+		}
 	}
 }
 
@@ -104,14 +157,14 @@ void InputField::Render()
 		UIElement elem{};
 		// KALKULACJA POZYCJI KURSORA
 		elem.elemTransform = _text->GetTransform()->GetTransformMatrix();
-		glm::vec2 cursor = glm::vec2(-_text->_width * .5f, 0.f);
+		glm::vec2 cursor = glm::vec2(-_text->_width * .5f + 1, 0.f);
 		if (_text->_displayTextCharCache.size() != 0) {
-			if (_cursorPos >= _text->_displayTextCharCache.size()) {
+			if (_cursorPos - _textOffset >= _text->_displayTextCharCache.size()) {
 				auto& c = _text->_displayTextCharCache[_text->_displayTextCharCache.size() - 1];
 				cursor += c.cursorPos + glm::vec2(c.character->Advance >> 6, 0);
 			}
 			else {
-				cursor += _text->_displayTextCharCache[_cursorPos].cursorPos;
+				cursor += _text->_displayTextCharCache[_cursorPos - _textOffset].cursorPos;
 			}
 		}
 		elem.elemTransform = glm::translate(elem.elemTransform, glm::vec3(cursor, 0.f));
@@ -122,8 +175,8 @@ void InputField::Render()
 			elem.maskTransform = _text->GetTransform()->GetTransformMatrix();
 		}
 
-		elem.color = glm::vec4(.0f, .0f, .0f, .9f);
-		elem.elemSize = glm::ivec2(4, _text->GetSize());
+		elem.color = glm::vec4(.5f, .5f, .5f, .9f);
+		elem.elemSize = glm::ivec2(2, _text->GetSize());
 		elem.hasTexture = false;
 		elem.worldSpaceCanvas = false;
 		elem.canvasSize = Window::GetInstance()->GetContentSize();
@@ -158,7 +211,7 @@ void InputField::SetPlaceHolder(const std::string& placeHolder)
 
 void InputField::SetText(const std::string& text)
 {
-	_text->SetText(text);
+	_textValue = text;
 }
 
 void InputField::SetWidth(float width)
@@ -203,7 +256,7 @@ string InputField::GetPlaceHolder() const
 
 string InputField::GetText() const
 {
-	return _text->GetText();
+	return _textValue;
 }
 
 Text* InputField::GetPlaceHolderText() const

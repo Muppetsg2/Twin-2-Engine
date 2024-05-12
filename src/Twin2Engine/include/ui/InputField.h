@@ -17,6 +17,10 @@ namespace Twin2Engine::UI {
 		Text* _placeHolder = nullptr;
 		Text* _text = nullptr;
 
+		std::string _textValue = "";
+		size_t _textOffset = 0;
+		bool _textDirty = false;
+
 		static const float _cursorDelay;
 		float _currentCursorTime = 0.f;
 		bool _cursorVisible = false;

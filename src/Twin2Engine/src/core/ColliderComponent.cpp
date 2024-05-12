@@ -12,6 +12,199 @@ ColliderComponent::ColliderComponent() : Component()
 	//colliderComponents.push_back(this);
 }
 
+void ColliderComponent::DrawInheritedFields()
+{
+	string id = string(std::to_string(this->GetId()));
+	glm::vec3 pos = collider->shapeColliderData->LocalPosition;
+	ImGui::DragFloat3(string("Offset##").append(id).c_str(), glm::value_ptr(pos), 0.1f);
+
+	if (pos != collider->shapeColliderData->LocalPosition) {
+		collider->shapeColliderData->LocalPosition = pos;
+	}
+
+	std::map<Layer, string> ls = {
+		std::pair(Layer::DEFAULT, "DEFAULT"),
+		std::pair(Layer::IGNORE_RAYCAST, "IGNORE_RAYCAST"),
+		std::pair(Layer::IGNORE_COLLISION, "IGNORE_COLLISION"),
+		std::pair(Layer::UI, "UI"),
+		std::pair(Layer::LAYER_1, "LAYER_1"),
+		std::pair(Layer::LAYER_2, "LAYER_2"),
+		std::pair(Layer::LAYER_3, "LAYER_3"),
+		std::pair(Layer::LAYER_4, "LAYER_4"),
+	};
+
+	Layer l = collider->layer;
+	bool clicked = false;
+	if (ImGui::BeginCombo(string("Layer##").append(id).c_str(), ls[l].c_str())) {
+
+		for (auto& item : ls)
+		{
+			if (ImGui::Selectable(item.second.append("##").append(id).c_str(), l == item.first))
+			{
+				if (clicked) {
+					continue;
+				}
+				l = item.first;
+				clicked = true;
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	if (clicked) {
+		this->SetLayer(l);
+	}
+
+	std::unordered_map<CollisionMode, string> cms = {
+		std::pair(CollisionMode::IGNORING, "IGNORING"),
+		std::pair(CollisionMode::NEUTRAL, "NEUTRAL"),
+		std::pair(CollisionMode::ACTIVE, "ACTIVE")
+	};
+
+	std::vector<string> lcfs = {
+		"DEFAULT",
+		"IGNORE_RAYCAST",
+		"IGNORE_COLLISION",
+		"UI",
+		"LAYER_1",
+		"LAYER_2",
+		"LAYER_3",
+		"LAYER_4",
+	};
+
+	ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+	bool node_open = ImGui::TreeNodeEx(string("Layers Filters##").append(id).c_str(), node_flag);
+
+	if (node_open) {
+
+		LayerCollisionFilter fil = collider->layersFilter;
+		bool changed = false;
+		for (int i = 0; i < 8; ++i) {
+
+			CollisionMode m = fil.DEFAULT;
+			bool clicked = false;
+
+			switch (i)
+			{
+				case 0: {
+					m = fil.DEFAULT;
+					break;
+				}
+				case 1: {
+					m = fil.IGNORE_RAYCAST;
+					break;
+				}
+				case 2: {
+					m = fil.IGNORE_COLLISION;
+					break;
+				}
+				case 3: {
+					m = fil.UI;
+					break;
+				}
+				case 4: {
+					m = fil.LAYER_1;
+					break;
+				}
+				case 5: {
+					m = fil.LAYER_2;
+					break;
+				}
+				case 6: {
+					m = fil.LAYER_3;
+					break;
+				}
+				case 7: {
+					m = fil.LAYER_4;
+					break;
+				}
+				default: {
+					m = fil.DEFAULT;
+					break;
+				}
+			}
+
+			if (ImGui::BeginCombo(lcfs[i].append("##").append(id).c_str(), cms[m].c_str())) {
+
+				for (auto& item : cms)
+				{
+					if (ImGui::Selectable(item.second.append("##").append(id).c_str(), m == item.first))
+					{
+						if (clicked) {
+							continue;
+						}
+						m = item.first;
+						clicked = true;
+					}
+				}
+				ImGui::EndCombo();
+			}
+
+			if (clicked) {
+				changed = true;
+				switch (i)
+				{
+					case 0: {
+						fil.DEFAULT = m;
+						break;
+					}
+					case 1: {
+						fil.IGNORE_RAYCAST = m;
+						break;
+					}
+					case 2: {
+						fil.IGNORE_COLLISION = m;
+						break;
+					}
+					case 3: {
+						fil.UI = m;
+						break;
+					}
+					case 4: {
+						fil.LAYER_1 = m;
+						break;
+					}
+					case 5: {
+						fil.LAYER_2 = m;
+						break;
+					}
+					case 6: {
+						fil.LAYER_3 = m;
+						break;
+					}
+					case 7: {
+						fil.LAYER_4 = m;
+						break;
+					}
+					default: {
+						fil.DEFAULT = m;
+						break;
+					}
+				}
+			}
+		}
+
+		if (changed) {
+			this->SetLayersFilter(fil);
+		}
+
+		ImGui::TreePop();
+	}
+
+	ImGui::Checkbox(string("Trigger##").append(id).c_str(), &collider->isTrigger);
+	ImGui::Checkbox(string("Static##").append(id).c_str(), &collider->isStatic);
+
+	bool v = collider->boundingVolume != nullptr;
+	ImGui::Checkbox(string("Bounding Volume##").append(id).c_str(), &v);
+	if (v != (collider->boundingVolume != nullptr)) {
+		EnableBoundingVolume(v);
+	}
+
+	if (v) {
+		ImGui::DragFloat(string("Bounding Volume Radius##").append(id).c_str(), &((CollisionSystem::SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius, 0.1f);
+	}
+}
+
 ColliderComponent::~ColliderComponent()
 {
 	delete collider;
@@ -65,7 +258,7 @@ void ColliderComponent::SetLayersFilter(LayerCollisionFilter& layersFilter)
 	collider->layersFilter = layersFilter;
 }
 
-void Twin2Engine::Core::ColliderComponent::Update()
+void ColliderComponent::Update()
 {
 	if (dirtyFlag) {
 		collider->shapeColliderData->Position = GetTransform()->GetTransformMatrix() * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f);
@@ -106,7 +299,7 @@ void ColliderComponent::SetLocalPosition(float x, float y, float z)
 	dirtyFlag = true;
 }
 
-YAML::Node Twin2Engine::Core::ColliderComponent::Serialize() const
+YAML::Node ColliderComponent::Serialize() const
 {
 	YAML::Node node = Component::Serialize();
 	node["type"] = "Collider";
@@ -122,49 +315,11 @@ YAML::Node Twin2Engine::Core::ColliderComponent::Serialize() const
 	return node;
 }
 
-void Twin2Engine::Core::ColliderComponent::DrawEditor()
+void ColliderComponent::DrawEditor()
 {
-	string id = string(std::to_string(this->GetId()));
-	string name = string("Collider##").append(id);
+	string name = string("Collider##").append(std::to_string(this->GetId()));
 	if (ImGui::CollapsingHeader(name.c_str())) {
-		glm::vec3 pos = collider->shapeColliderData->LocalPosition;
-		ImGui::DragFloat3(string("Offset##").append(id).c_str(), glm::value_ptr(pos), 0.1f);
-
-		if (pos != collider->shapeColliderData->LocalPosition) {
-			collider->shapeColliderData->LocalPosition = pos;
-		}
-
-		/*
-		//node["layer"] = collider->layer;
-		std::unordered_map<Layer, string> ls = {
-			std::pair(Layer::DEFAULT, "DEFAULT"),
-			std::pair(Layer::IGNORE_RAYCAST, "IGNORE_RAYCAST"),
-			std::pair(Layer::IGNORE_COLLISION, "IGNORE_COLLISION"),
-			std::pair(Layer::UI, "UI"),
-			std::pair(Layer::LAYER_1, "LAYER_1"),
-			std::pair(Layer::LAYER_2, "LAYER_2"),
-			std::pair(Layer::LAYER_3, "LAYER_3"),
-			std::pair(Layer::LAYER_4, "LAYER_4"),
-		};
-
-		ImGui::BeginCombo(string("Layer##").append(id).c_str());
-		ImGui::EndCombo();
-
-		//node["layerFilter"] = collider->layersFilter;
-		*/
-
-		ImGui::Checkbox(string("Trigger##").append(id).c_str(), &collider->isTrigger);
-		ImGui::Checkbox(string("Static##").append(id).c_str(), &collider->isStatic);
-
-		bool v = collider->boundingVolume != nullptr;
-		ImGui::Checkbox(string("Bounding Volume##").append(id).c_str(), &v);
-		if (v != (collider->boundingVolume != nullptr)) {
-			EnableBoundingVolume(v);
-		}
-
-		if (v) {
-			ImGui::DragFloat(string("Bounding Volume Radius##").append(id).c_str(), &((CollisionSystem::SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius, 0.1f);
-		}
+		DrawInheritedFields();
 	}
 }
 

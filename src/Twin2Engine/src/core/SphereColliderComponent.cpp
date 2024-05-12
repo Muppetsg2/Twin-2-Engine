@@ -64,6 +64,6 @@ void Twin2Engine::Core::SphereColliderComponent::DrawEditor()
 	if (ImGui::CollapsingHeader(name.c_str())) {
 		ImGui::DragFloat(string("Radius##").append(id).c_str(), &((CollisionSystem::SphereColliderData*)collider->shapeColliderData)->Radius, 0.1f);
 
-		// ColliderComponent DrawEditor
+		DrawInheritedFields();
 	}
 }

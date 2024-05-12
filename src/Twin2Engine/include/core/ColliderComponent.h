@@ -30,6 +30,8 @@ namespace Twin2Engine::Core {
 		CollisionSystem::GameCollider* collider = nullptr;
 		CollisionSystem::BoundingVolume* boundingVolume = nullptr;
 
+		void DrawInheritedFields();
+
 	public:
 		virtual ~ColliderComponent();
 

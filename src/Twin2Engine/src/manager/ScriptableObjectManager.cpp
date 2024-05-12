@@ -66,6 +66,13 @@ std::string ScriptableObjectManager::GetPath(size_t id)
 	return "";
 }
 
+std::string Twin2Engine::Manager::ScriptableObjectManager::GetName(size_t id)
+{
+	if (_scriptableObjectsPaths.find(id) == _scriptableObjectsPaths.end()) return "";
+	string p = _scriptableObjectsPaths[id];
+	return std::filesystem::path(p).stem().string();
+}
+
 void Twin2Engine::Manager::ScriptableObjectManager::UnloadAll()
 {
 	for (auto& pair : _scriptableObjects)

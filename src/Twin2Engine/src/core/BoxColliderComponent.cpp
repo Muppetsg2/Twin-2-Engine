@@ -11,16 +11,19 @@ Twin2Engine::Core::BoxColliderComponent::BoxColliderComponent() : ColliderCompon
 void Twin2Engine::Core::BoxColliderComponent::SetWidth(float v)
 {
 	((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x = v;
+	dirtyFlag = true;
 }
 
 void Twin2Engine::Core::BoxColliderComponent::SetLength(float v)
 {
 	((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z = v;
+	dirtyFlag = true;
 }
 
 void Twin2Engine::Core::BoxColliderComponent::SetHeight(float v)
 {
 	((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y = v;
+	dirtyFlag = true;
 }
 
 void Twin2Engine::Core::BoxColliderComponent::SetXRotation(float v)
@@ -38,6 +41,15 @@ void Twin2Engine::Core::BoxColliderComponent::SetYRotation(float v)
 void Twin2Engine::Core::BoxColliderComponent::SetZRotation(float v)
 {
 	((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation.z = v;
+	dirtyFlag = true;
+}
+
+void Twin2Engine::Core::BoxColliderComponent::SetRotation(const glm::vec3& rot)
+{
+	glm::vec3 v = glm::radians(rot);
+	((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation.x = v.x;
+	((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation.y = v.y;
+	((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation.z = v.z;
 	dirtyFlag = true;
 }
 
@@ -147,8 +159,37 @@ YAML::Node Twin2Engine::Core::BoxColliderComponent::Serialize() const
 void Twin2Engine::Core::BoxColliderComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
-	string name = string("Box Light##").append(id);
+	string name = string("Box Collider##").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
+		float v = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x;
+		ImGui::DragFloat(string("Width##").append(id).c_str(), &v, 0.1f);
+
+		if (v != ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x) {
+			SetWidth(v);
+		}
+
+		v = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y;
+		ImGui::DragFloat(string("Height##").append(id).c_str(), &v, 0.1f);
+
+		if (v != ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y) {
+			SetHeight(v);
+		}
+
+		v = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z;
+		ImGui::DragFloat(string("Length##").append(id).c_str(), &v, 0.1f);
+
+		if (v != ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z) {
+			SetLength(v);
+		}
+
+		glm::vec3 rot = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation;
+		ImGui::DragFloat3(string("Rotation##").append(id).c_str(), glm::value_ptr(rot), 0.1f);
+
+		if (rot != ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation) {
+			SetRotation(rot);
+		}
+
+		DrawInheritedFields();
 	}
 }

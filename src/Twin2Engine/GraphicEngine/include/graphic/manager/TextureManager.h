@@ -4,7 +4,7 @@
 #include <graphic/Texture2D.h>
 
 namespace Twin2Engine::Manager {
-	enum TextureFileFormat {
+	enum class TextureFileFormat {
 		DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
 		DEPTH_STENCIL = GL_DEPTH_STENCIL,
 		RED = GL_RED,

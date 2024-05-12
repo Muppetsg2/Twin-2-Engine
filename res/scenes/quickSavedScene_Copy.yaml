@@ -460,14 +460,14 @@ GameObjects:
         static: false
         layer: 0
         layerFilter:
-          - 3
-          - 3
+          - 2
+          - 2
           - 1
           - 0
-          - 3
-          - 3
-          - 3
-          - 3
+          - 2
+          - 2
+          - 2
+          - 2
         boundingVolume: true
         boundingVolumeRadius: 2
         position:
@@ -484,14 +484,14 @@ GameObjects:
         static: false
         layer: 0
         layerFilter:
-          - 3
-          - 3
+          - 2
+          - 2
           - 1
           - 0
-          - 3
-          - 3
-          - 3
-          - 3
+          - 2
+          - 2
+          - 2
+          - 2
         boundingVolume: true
         boundingVolumeRadius: 2
         position:
@@ -514,14 +514,14 @@ GameObjects:
         static: false
         layer: 0
         layerFilter:
-          - 3
-          - 3
+          - 2
+          - 2
           - 1
           - 0
-          - 3
-          - 3
-          - 3
-          - 3
+          - 2
+          - 2
+          - 2
+          - 2
         boundingVolume: true
         boundingVolumeRadius: 2
         position:

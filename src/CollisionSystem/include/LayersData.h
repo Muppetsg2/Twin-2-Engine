@@ -1,14 +1,14 @@
 #pragma once
 
 enum class Layer : uint8_t {
-	DEFAULT = 0, 
+	DEFAULT = 0,
 	IGNORE_RAYCAST = 1,
 	IGNORE_COLLISION = 2,
 	UI = 4,
 	LAYER_1 = 8,
 	LAYER_2 = 16,
 	LAYER_3 = 32,
-	LAYER_4 = 64 
+	LAYER_4 = 64
 };
 
 //system nigdy nie bêdzie sprawdza³ kolizji z obiektami w warstwi UI, nawet jeœli filtry wskazywaæ bêd¹ inaczej (chyba, ¿e podczas raycast?)
@@ -17,6 +17,7 @@ enum class CollisionMode : uint8_t {
 	NEUTRAL = 1,
 	ACTIVE = 2
 };
+
 struct LayerCollisionFilter {
 	CollisionMode DEFAULT : 2;
 	CollisionMode IGNORE_RAYCAST : 2;

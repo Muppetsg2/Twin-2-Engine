@@ -14,10 +14,6 @@ namespace Twin2Engine::UI {
 
 		glm::vec4 _color = glm::vec4(0.f);
 
-		// For ImGui
-		bool _fileDialogOpen;
-		ImFileDialogInfo _fileDialogInfo;
-
 		std::vector<GraphicEngine::Character*> _textCache = std::vector<GraphicEngine::Character*>();
 
 		bool _textCacheDirty = true;

@@ -16,6 +16,11 @@ void Twin2Engine::Core::CapsuleColliderComponent::SetEndPosition(float x, float 
 	dirtyFlag = true;
 }
 
+void Twin2Engine::Core::CapsuleColliderComponent::SetEndPosition(const glm::vec3& pos)
+{
+	SetEndPosition(pos.x, pos.y, pos.z);
+}
+
 void Twin2Engine::Core::CapsuleColliderComponent::SetRadius(float radius)
 {
 	((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->Radius = radius;
@@ -75,9 +80,9 @@ YAML::Node Twin2Engine::Core::CapsuleColliderComponent::Serialize() const
 	node["subTypes"].push_back(node["type"].as<std::string>());
 	node["type"] = "CapsuleCollider";
 	node["endPosition"] = glm::vec3(
-		((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndPosition.x,
-		((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndPosition.y,
-		((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndPosition.z
+		((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition.x,
+		((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition.y,
+		((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition.z
 	);
 	node["radius"] = ((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->Radius;
 	return node;
@@ -88,6 +93,20 @@ void Twin2Engine::Core::CapsuleColliderComponent::DrawEditor()
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Capsule Collider##").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
+		float v = ((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->Radius;
+		ImGui::DragFloat(string("Radius##").append(id).c_str(), &v, 0.1f);
 
+		if (v != ((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->Radius) {
+			SetRadius(v);
+		}
+
+		glm::vec3 ep = ((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition;
+		ImGui::DragFloat3(string("EndPosition##").append(id).c_str(), glm::value_ptr(ep), 0.1f);
+
+		if (ep != ((CollisionSystem::CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition) {
+			SetEndPosition(ep);
+		}
+
+		DrawInheritedFields();
 	}
 }

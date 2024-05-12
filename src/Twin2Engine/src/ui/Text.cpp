@@ -5,6 +5,7 @@
 #include <graphic/Shader.h>
 #include <graphic/manager/UIRenderingManager.h>
 #include <graphic/manager/FontManager.h>
+#include <map>
 
 using namespace Twin2Engine;
 using namespace UI;
@@ -124,37 +125,30 @@ void Text::DrawEditor()
 			SetSize(s);
 		}
 
-		if (GetFont() != nullptr) {
-			ImGui::Text("Font Name: %s", FontManager::GetFontName(_fontId).c_str());
-			ImGui::SameLine();
-			if (ImGui::Button(string("Open File##").append(id).c_str())) {
-				_fileDialogOpen = true;
-				_fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
-				_fileDialogInfo.title = "Open File";
-				_fileDialogInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\fonts");
+		std::map<size_t, string> fontNames = FontManager::GetAllFontsNames();
+
+		fontNames.insert(std::pair(0, "None"));
+
+		if (ImGui::BeginCombo(string("Font##").append(id).c_str(), fontNames[_fontId].c_str())) {
+			
+			bool clicked = false;
+			size_t choosed = _fontId;
+			for (auto& item : fontNames) {
+
+				if (ImGui::Selectable(item.second.append("##").append(id).c_str(), item.first == _fontId)) {
+					
+					if (clicked) continue;
+
+					choosed = item.first;
+					clicked = true;
+				}
 			}
 
-			if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
-			{
-				// Result path in: m_fileDialogInfo.resultPath
-				this->SetFont(_fileDialogInfo.resultPath.string());
-			}
-		}
-		else {
-			ImGui::Text("Choose File");
-			ImGui::SameLine();
-			if (ImGui::Button(string("Open File##").append(id).c_str())) {
-				_fileDialogOpen = true;
-				_fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
-				_fileDialogInfo.title = "Open File";
-				_fileDialogInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\fonts");
+			if (clicked) {
+				SetFont(choosed);
 			}
 
-			if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
-			{
-				// Result path in: m_fileDialogInfo.resultPath
-				this->SetFont(_fileDialogInfo.resultPath.string());
-			}
+			ImGui::EndCombo();
 		}
 
 		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);

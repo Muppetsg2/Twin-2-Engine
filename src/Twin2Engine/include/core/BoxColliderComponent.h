@@ -24,6 +24,8 @@ namespace Twin2Engine::Core {
 		void SetYRotation(float v);
 		void SetZRotation(float v);
 
+		void SetRotation(const glm::vec3& rot);
+
 		void Initialize() override;
 		void OnEnable() override;
 		void OnDisable() override;

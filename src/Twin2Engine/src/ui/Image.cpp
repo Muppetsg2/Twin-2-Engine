@@ -48,13 +48,31 @@ void Image::DrawEditor()
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Image##").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
+		// DODAÆ
 		/*
-		node["type"] = "Image";
 		node["sprite"] = SceneManager::GetSpriteSaveIdx(_spriteId);
-		node["color"] = _color;
-		node["width"] = _width;
-		node["height"] = _height;
 		*/
+		float v = _width;
+		ImGui::DragFloat(string("Width##").append(id).c_str(), &v, 0.1f);
+
+		if (v != _width) {
+			SetWidth(v);
+		}
+
+		v = _height;
+		ImGui::DragFloat(string("Height##").append(id).c_str(), &v, 0.1f);
+
+		if (v != _height) {
+			SetHeight(v);
+		}
+
+		glm::vec4 c = _color;
+		ImGui::ColorEdit4(string("Color##").append(id).c_str(), glm::value_ptr(c));
+
+		if (c != _color) {
+			SetColor(c);
+		}
+
 		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
 	}
 }
@@ -70,6 +88,8 @@ void Image::SetSprite(size_t spriteId)
 
 void Image::SetColor(const vec4& color)
 {
+	if (color.a != 1.f)
+		_isTransparent = true;
 	_color = color;
 }
 

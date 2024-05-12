@@ -875,7 +875,7 @@ void Twin2Engine::Core::Transform::DrawEditor()
 			world = true;
 
 		glm::vec3 pos = world ? _globalPosition : _localPosition;
-		glm::vec3 rot = world ? _globalRotation : _localRotation;
+		glm::vec3 rot = world ? glm::degrees(_globalRotation) : glm::degrees(_localRotation);
 		glm::vec3 sc = world ? _globalScale : _localScale;
 
 		ImGui::DragFloat3(std::string("Position##").append(id).c_str(), glm::value_ptr(pos));

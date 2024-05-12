@@ -1,4 +1,6 @@
 #include <Generation/MapGenerator.h>
+#include <core/Time.h>
+#include <Generation/ContentGenerator.h>
 
 using namespace Generation;
 using namespace Tilemap;
@@ -269,4 +271,81 @@ YAML::Node MapGenerator::Serialize() const
     node["maxPointsNumber"] = maxPointsNumber;
     node["angleDeltaRange"] = angleDeltaRange;
     return node;
+}
+
+void MapGenerator::DrawEditor()
+{
+    string id = string(std::to_string(this->GetId()));
+    string name = string("Map Generator##").append(id);
+    if (ImGui::CollapsingHeader(name.c_str()))
+    {
+        // DODAC
+        /*
+        node["preafabHexagonalTile"] = PrefabManager::GetPrefabPath(preafabHexagonalTile);
+        node["additionalTile"] = PrefabManager::GetPrefabPath(additionalTile);
+        node["filledTile"] = PrefabManager::GetPrefabPath(filledTile);
+        node["pointTile"] = PrefabManager::GetPrefabPath(pointTile);
+        */
+
+        float v = generationRadiusMin;
+        ImGui::DragFloat(string("Generation Radius Min##").append(id).c_str(), &v, 0.1f);
+
+        if (v != generationRadiusMin) {
+            generationRadiusMin = v;
+        }
+
+        v = generationRadiusMax;
+        ImGui::DragFloat(string("Generation Radius Max##").append(id).c_str(), &v, 0.1f);
+
+        if (v != generationRadiusMax) {
+            generationRadiusMax = v;
+        }
+
+        v = minPointsNumber;
+        ImGui::DragFloat(string("Points Number Min##").append(id).c_str(), &v, 0.1f);
+
+        if (v != minPointsNumber) {
+            minPointsNumber = v;
+        }
+
+        v = maxPointsNumber;
+        ImGui::DragFloat(string("Points Number Max##").append(id).c_str(), &v, 0.1f);
+
+        if (v != maxPointsNumber) {
+            maxPointsNumber = v;
+        }
+
+        v = angleDeltaRange;
+        ImGui::DragFloat(string("Delta Range Angle##").append(id).c_str(), &v, 0.1f);
+
+        if (v != angleDeltaRange) {
+            angleDeltaRange = v;
+        }
+
+        if (ImGui::Button(string("Generate##").append(id).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0.f)))
+        {
+            Transform* tilemapTransform = tilemap->GetTransform();
+            tilemap->Clear();
+            while (tilemapTransform->GetChildCount())
+            {
+                Transform* child = tilemapTransform->GetChildAt(0);
+                tilemapTransform->RemoveChild(child);
+                SceneManager::DestroyGameObject(child->GetGameObject());
+            }
+
+            float tilemapGenerating = Time::GetTime();
+            Generate();
+            spdlog::info("Tilemap generation: {}ms", Time::GetTime() - tilemapGenerating);
+
+            ContentGenerator* contentGenerator = this->GetGameObject()->GetComponent<ContentGenerator>();
+            if (contentGenerator != nullptr) {
+                tilemapGenerating = Time::GetTime();
+                contentGenerator->GenerateContent(tilemap);
+                spdlog::info("Tilemap content generation: {}", Time::GetTime() - tilemapGenerating);
+            }
+            else {
+                spdlog::info("Map Generator: Couldn't find Content Generator");
+            }
+        }
+    }
 }

@@ -587,7 +587,7 @@ int main(int, char**)
     SceneManager::LoadScene("testScene");
 
 #pragma region SETTING_UP_GENERATION
-    //*
+
     tilemapGO = SceneManager::GetGameObjectWithId(14);
     HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
     MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
@@ -601,7 +601,6 @@ int main(int, char**)
     tilemapGenerating = glfwGetTime();
     contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
-    /**/
 
 #pragma endregion
 
@@ -945,7 +944,32 @@ void imgui_render()
     {
         SceneManager::DrawCurrentSceneEditor();
 
-        ImGui::Begin("Twin^2 Engine");
+        if (!ImGui::Begin("Twin^2 Engine", NULL, ImGuiWindowFlags_MenuBar)) {
+            ImGui::End();
+            return;
+        }
+
+        static bool _fontOpened = false;
+
+        if (ImGui::BeginMenuBar()) {
+            if (ImGui::BeginMenu("File"))
+            {
+                //ImGui::MenuItem("Load Scene");
+                if (ImGui::MenuItem("Exit"))
+                    window->Close();
+
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Resources"))
+            {
+                ImGui::MenuItem("Font Manager", NULL, &_fontOpened);
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenuBar();
+        }
+
+        if (_fontOpened)
+            FontManager::DrawEditor(&_fontOpened);
 
         ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Hello World!");
 
@@ -1254,6 +1278,7 @@ void imgui_render()
 
         ImGui::Separator();
 
+        /**/
 #pragma region MapGenerators
 
         if (ImGui::CollapsingHeader("Map Generator"))
@@ -1311,6 +1336,7 @@ void imgui_render()
 #pragma endregion
 
         ImGui::Separator();
+        /**/
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 

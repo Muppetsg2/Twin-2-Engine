@@ -261,6 +261,7 @@ int main(int, char**)
     t->SetText("ClickMeeejjjjjjjjj");
     t->SetFont("res/fonts/Caveat-Regular.ttf");
     t->SetSize(48);  
+    t->EnableAutoSize(10, 60);
     t->SetHeight(48);
     t->SetWidth(200);
     t->SetColor(glm::vec4(1.f, 0.f, 0.f, 1.f));

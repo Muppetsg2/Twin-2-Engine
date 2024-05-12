@@ -62,6 +62,8 @@ namespace Twin2Engine::UI {
 		void SetTextAlignY(const TextAlignY& alignY);
 		void SetTextWrapping(bool textWrapping);
 		void SetTextOverflow(const TextOverflow& overflow);
+		void EnableAutoSize(uint32_t minSize, uint32_t maxSize);
+		void DisableAutoSize();
 
 		glm::vec4 GetColor() const;
 		std::string GetText() const;
@@ -76,5 +78,8 @@ namespace Twin2Engine::UI {
 		TextOverflow GetTextOverflow() const;
 		float GetTextWidth() const;
 		float GetTextHeight() const;
+		bool IsAutoSize() const;
+		uint32_t GetMinSize() const;
+		uint32_t GetMaxSize() const;
 	};
 }

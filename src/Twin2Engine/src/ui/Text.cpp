@@ -87,7 +87,7 @@ void Text::UpdateTextMesh()
 			};
 			for (size_t i = 0; i < _text.size(); ++i) {
 				if (_text[i] == '\n') {
-					if (_autoSize && lineWidth > _width) {
+					if (_autoSize && lineWidth > _width && _size > _minSize && _size < _maxSize) {
 						break;
 					}
 					newLine(i);
@@ -136,14 +136,14 @@ void Text::UpdateTextMesh()
 							for (size_t idx = i; idx < lastIdx; ++idx) {
 								lineWidth -= _textCharCache[idx].character->Advance >> 6;
 							}
-							if (_autoSize && lineWidth > _width) {
+							if (_autoSize && lineWidth > _width && _size > _minSize && _size < _maxSize) {
 								break;
 							}
 							newLine(i);
 							break;
 						}
 						else {
-							if (_autoSize && lineWidth > _width) {
+							if (_autoSize && lineWidth > _width && _size > _minSize && _size < _maxSize) {
 								break;
 							}
 							newLine(i);
@@ -155,7 +155,7 @@ void Text::UpdateTextMesh()
 				}
 
 				if (!goodPos) {
-					if (_autoSize && lineWidth > _width) {
+					if (_autoSize && lineWidth > _width && _size > _minSize && _size < _maxSize) {
 						break;
 					}
 					continue;
@@ -173,7 +173,7 @@ void Text::UpdateTextMesh()
 				lineWidth += c->Advance >> 6;
 			}
 
-			if (_autoSize && lineWidth > _width) {
+			if (_autoSize && lineWidth > _width && _size > _minSize && _size < _maxSize) {
 				_size = std::max(std::min(_width / lineWidth * _size, (float)_maxSize), (float)_minSize);
 				continue;
 			}

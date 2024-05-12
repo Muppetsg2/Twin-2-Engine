@@ -17,17 +17,13 @@ using namespace Tools;
 using namespace glm;
 using namespace std;
 
-void Text::UpdateTextCharCache(Font* font, const string& newText, const string& oldText, float& textWidth, float& textHeight, std::vector<TextCharacter>& textCharCache) {
-
-}
-
 void Text::UpdateTextMesh()
 {
 	Font* font = FontManager::GetFont(_fontId);
 	
 	bool goodSize = false;
 
-	while (!goodSize) {
+	while (true) {
 		_textWidth = 0.f;
 		_textHeight = 0.f;
 		_textCharCache.clear();
@@ -85,9 +81,13 @@ void Text::UpdateTextMesh()
 
 				lineStartIdx = i;
 			};
+			Func<bool> autoSizeCheck = [&]() -> bool {
+				return !goodSize && _autoSize && lineWidth > _width && _size >= _minSize && _size <= _maxSize;
+			};
 			for (size_t i = 0; i < _text.size(); ++i) {
 				if (_text[i] == '\n') {
-					if (_autoSize && lineWidth > _width && _size > _minSize && _size < _maxSize) {
+					if (autoSizeCheck()) {
+						goodSize = false;
 						break;
 					}
 					newLine(i);
@@ -136,14 +136,16 @@ void Text::UpdateTextMesh()
 							for (size_t idx = i; idx < lastIdx; ++idx) {
 								lineWidth -= _textCharCache[idx].character->Advance >> 6;
 							}
-							if (_autoSize && lineWidth > _width && _size > _minSize && _size < _maxSize) {
+							if (autoSizeCheck()) {
+								goodSize = false;
 								break;
 							}
 							newLine(i);
 							break;
 						}
 						else {
-							if (_autoSize && lineWidth > _width && _size > _minSize && _size < _maxSize) {
+							if (autoSizeCheck()) {
+								goodSize = false;
 								break;
 							}
 							newLine(i);
@@ -155,7 +157,7 @@ void Text::UpdateTextMesh()
 				}
 
 				if (!goodPos) {
-					if (_autoSize && lineWidth > _width && _size > _minSize && _size < _maxSize) {
+					if (autoSizeCheck()) {
 						break;
 					}
 					continue;
@@ -173,8 +175,24 @@ void Text::UpdateTextMesh()
 				lineWidth += c->Advance >> 6;
 			}
 
-			if (_autoSize && lineWidth > _width && _size > _minSize && _size < _maxSize) {
-				_size = std::max(std::min(_width / lineWidth * _size, (float)_maxSize), (float)_minSize);
+			float tempSize = _size;
+			if (autoSizeCheck()) {
+				tempSize = std::max(std::min(_width / lineWidth * tempSize, (float)_maxSize), (float)_minSize);
+			}
+
+			if (!goodSize && _autoSize && tempSize >= _minSize && tempSize <= _maxSize) {
+				if (_textWidth < _width && _textWidth > lineWidth) {
+					tempSize = std::max(std::min(_width / _textWidth * tempSize, (float)_maxSize), (float)_minSize);
+				}
+				else if (lineWidth < _width && lineWidth > _textWidth) {
+					tempSize = std::max(std::min(_width / lineWidth * tempSize, (float)_maxSize), (float)_minSize);
+				}
+			}
+
+			uint32_t newSize = std::floor(tempSize);
+			if (_size != newSize) {
+				_size = newSize;
+				goodSize = true;
 				continue;
 			}
 
@@ -262,13 +280,16 @@ void Text::UpdateTextMesh()
 			}
 		}
 
-		goodSize = true;
+		break;
 	}
 }
 
 void Text::Update()
 {
-	UpdateTextMesh();
+	if (_textDirty) {
+		UpdateTextMesh();
+		_textDirty = false;
+	}
 }
 
 void Text::Render()
@@ -325,11 +346,6 @@ void Text::SetColor(const vec4& color)
 void Text::SetText(const string& text)
 {
 	if (_text != text) {
-		/*if (!_textCacheDirty) {
-			_textCacheDirty = true;
-			_justResizeCache = true;
-			_oldText = _text;
-		}*/
 		_textDirty = true;
 		_text = text;
 	}
@@ -340,19 +356,23 @@ void Text::SetSize(uint32_t size)
 	if (_size != size) {
 		_size = size;
 		_textDirty = true;
-		//_textCacheDirty = true;
-		//_justResizeCache = false;
 	}
 }
 
 void Text::SetWidth(float width)
 {
-	_width = width;
+	if (_width != width) {
+		_textDirty = true;
+		_width = width;
+	}
 }
 
 void Text::SetHeight(float height)
 {
-	_height = height;
+	if (_height != height) {
+		_textDirty = true;
+		_height = height;
+	}
 }
 
 void Text::SetFont(const string& fontPath)
@@ -365,36 +385,49 @@ void Text::SetFont(size_t fontId)
 	if (_fontId != fontId) {
 		_fontId = fontId;
 		_textDirty = true;
-		//_textCacheDirty = true;
-		//_justResizeCache = false;
 	}
 }
 
 void Text::SetTextAlignX(const TextAlignX& alignX)
 {
-	_alignX = alignX;
+	if (_alignX != alignX) {
+		_alignX = alignX;
+		_textDirty = true;
+	}
 }
 
 void Text::SetTextAlignY(const TextAlignY& alignY)
 {
-	_alignY = alignY;
+	if (_alignY != alignY) {
+		_alignY = alignY;
+		_textDirty = true;
+	}
 }
 
 void Text::SetTextWrapping(bool textWrapping)
 {
-	_textWrapping = textWrapping;
+	if (_textWrapping != textWrapping) {
+		_textWrapping = textWrapping;
+		_textDirty = true;
+	}
 }
 
 void Text::SetTextOverflow(const TextOverflow& overflow)
 {
-	_overflow = overflow;
+	if (_overflow != overflow) {
+		_overflow = overflow;
+		_textDirty = true;
+	}
 }
 
 void Text::EnableAutoSize(uint32_t minSize, uint32_t maxSize)
 {
-	_autoSize = true;
-	_minSize = minSize;
-	_maxSize = maxSize;
+	if (!_autoSize || _minSize != minSize || _maxSize != maxSize) {
+		_autoSize = true;
+		_minSize = minSize;
+		_maxSize = maxSize;
+		_textDirty = true;
+	}
 }
 
 void Text::DisableAutoSize()

@@ -13,6 +13,8 @@ const float InputField::_cursorDelay = .5f;
 
 void InputField::OnKeyStateChange(KEY key, INPUT_STATE state)
 {
+	if (!IsEnable() || !_interactable) return;
+
 	if (state == INPUT_STATE::PRESSED) {
 		if (key >= KEY::SPACE && key <= KEY::GRAVE_ACCENT) {
 			char value = (char)key;
@@ -100,11 +102,27 @@ void InputField::Render()
 	// Render Cursor
 	if (_cursorVisible) {
 		UIElement elem{};
-		elem.elemTransform = GetTransform()->GetTransformMatrix();
 		// KALKULACJA POZYCJI KURSORA
-		glm::translate(elem.elemTransform, glm::vec3(_cursorPos * _text->GetWidth() / _text->GetText().size(), 0.f, 0.f));
+		elem.elemTransform = _text->GetTransform()->GetTransformMatrix();
+		glm::vec2 cursor = glm::vec2(-_text->_width * .5f, 0.f);
+		if (_text->_displayTextCharCache.size() != 0) {
+			if (_cursorPos >= _text->_displayTextCharCache.size()) {
+				auto& c = _text->_displayTextCharCache[_text->_displayTextCharCache.size() - 1];
+				cursor += c.cursorPos + glm::vec2(c.character->Advance >> 6, 0);
+			}
+			else {
+				cursor += _text->_displayTextCharCache[_cursorPos].cursorPos;
+			}
+		}
+		elem.elemTransform = glm::translate(elem.elemTransform, glm::vec3(cursor, 0.f));
 
-		elem.color = glm::vec4(0.0, 0.0, 0.0, 1.0);
+		if (_text->_overflow != TextOverflow::Overflow) {
+			elem.useMask = true;
+			elem.maskSize = { _text->_width, _text->_height };
+			elem.maskTransform = _text->GetTransform()->GetTransformMatrix();
+		}
+
+		elem.color = glm::vec4(.0f, .0f, .0f, .9f);
 		elem.elemSize = glm::ivec2(4, _text->GetSize());
 		elem.hasTexture = false;
 		elem.worldSpaceCanvas = false;

@@ -14,6 +14,8 @@ namespace Twin2Engine::UI {
 		glm::vec2 cursorPos = glm::vec2(0.f);
 	};
 
+	class InputField;
+
 	class Text : public Core::RenderableComponent {
 	private:
 		std::string _text = "";
@@ -43,7 +45,7 @@ namespace Twin2Engine::UI {
 		std::vector<TextCharacter> _textCharCache;
 		std::vector<TextCharacter> _displayTextCharCache;
 
-		void UpdateTextCharCache(Graphic::Font* font, const std::string& newText, const std::string& oldText, float& textWidth, float& textHeight, std::vector<TextCharacter>& textCharCache);
+		friend class InputField;
 	public:
 		void UpdateTextMesh();
 

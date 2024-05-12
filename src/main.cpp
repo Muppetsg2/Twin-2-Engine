@@ -262,8 +262,8 @@ int main(int, char**)
     t->SetFont("res/fonts/Caveat-Regular.ttf");
     t->SetSize(48);  
     t->EnableAutoSize(10, 60);
-    t->SetHeight(48);
-    t->SetWidth(200);
+    t->SetHeight(44);
+    t->SetWidth(196);
     t->SetColor(glm::vec4(1.f, 0.f, 0.f, 1.f));
 
     obj = SceneManager::CreateGameObject();
@@ -277,6 +277,8 @@ int main(int, char**)
     inputText->SetSize(48);
     inputText->SetWidth(200);
     inputText->SetHeight(70);
+    inputText->SetTextOverflow(TextOverflow::Masking);
+    inputText->EnableAutoSize(30, 70);
     Text* placeHolder = obj->AddComponent<Text>();
     InputField* inp = obj->AddComponent<InputField>();
     inp->SetInputText(inputText);
@@ -456,7 +458,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void update()
 {
     // Update game objects' state here
-    text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
+    //text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
     colorSpan -= Time::GetDeltaTime() * 0.2f;
     if (colorSpan <= 0.f) {
         colorSpan = 1.f;

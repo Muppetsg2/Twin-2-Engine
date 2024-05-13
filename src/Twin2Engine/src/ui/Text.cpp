@@ -205,7 +205,7 @@ void Text::UpdateTextMesh()
 				for (size_t idx = lineStartIdx; idx < _textCharCache.size(); ++idx) {
 					vec2 charPos = _textCharCache[idx].position;
 					vec2 size = _textCharCache[idx].character->Size;
-					if (charPos.x + size.x * .5f < _width * .5f && charPos.x - size.x * .5f > -_width * .5f && charPos.y + size.y * .5f < _height * .5f && charPos.y - size.y * .5f > -_height * .5f) {
+					if (charPos.x + size.x * .5f <= _width * .5f && charPos.y - size.y * .5f <= _height * .5f && charPos.y + size.y * .5f >= -_height * .5f) {
 						_displayTextCharCache.push_back(_textCharCache[idx]);
 					}
 					else {
@@ -218,7 +218,7 @@ void Text::UpdateTextMesh()
 				for (size_t idx = lineStartIdx; idx < _textCharCache.size(); ++idx) {
 					vec2 charPos = _textCharCache[idx].position;
 					vec2 size = _textCharCache[idx].character->Size;
-					if (charPos.x - size.x * .5f <= _width * .5f && charPos.x + size.x * .5f >= -_width * .5f && charPos.y - size.y * .5f <= _height * .5f && charPos.y + size.y * .5f >= -_height * .5f) {
+					if (charPos.x - size.x * .5f <= _width * .5f && charPos.y - size.y * .5f <= _height * .5f && charPos.y + size.y * .5f >= -_height * .5f) {
 						_displayTextCharCache.push_back(_textCharCache[idx]);
 					}
 					else {

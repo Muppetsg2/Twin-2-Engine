@@ -119,19 +119,17 @@ void InputField::Update()
 			_text->UpdateTextMesh();
 			if (finalText != L"") {
 				_placeHolder->SetEnable(false);
-				if (_cursorPos != 0) {
-					if (_textOffset > _cursorPos) {
-						_textOffset -= _textOffset - _cursorPos;
-						finalText = _textValue.substr(_textOffset, _textValue.size() - _textOffset);
-						_text->SetText(finalText);
-						_text->UpdateTextMesh();
-					}
-					else if (_cursorPos - _textOffset > _text->_displayTextCharCache.size()) {
-						_textOffset += (_cursorPos - _textOffset) - _text->_displayTextCharCache.size();
-						finalText = _textValue.substr(_textOffset, _textValue.size() - _textOffset);
-						_text->SetText(finalText);
-						_text->UpdateTextMesh();
-					}
+				if (_textOffset > _cursorPos) {
+					_textOffset -= _textOffset - _cursorPos;
+					finalText = _textValue.substr(_textOffset, _textValue.size() - _textOffset);
+					_text->SetText(finalText);
+					_text->UpdateTextMesh();
+				}
+				else if (_cursorPos - _textOffset > _text->_displayTextCharCache.size()) {
+					_textOffset += (_cursorPos - _textOffset) - _text->_displayTextCharCache.size();
+					finalText = _textValue.substr(_textOffset, _textValue.size() - _textOffset);
+					_text->SetText(finalText);
+					_text->UpdateTextMesh();
 				}
 			}
 			else {

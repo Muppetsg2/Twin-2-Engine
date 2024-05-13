@@ -277,8 +277,8 @@ int main(int, char**)
     inputText->SetSize(48);
     inputText->SetWidth(196);
     inputText->SetHeight(66);
-    inputText->SetTextOverflow(TextOverflow::Masking);
-    inputText->EnableAutoSize(30, 70);
+    inputText->SetTextOverflow(TextOverflow::Truncate);
+    inputText->EnableAutoSize(30, 48);
     Text* placeHolder = obj->AddComponent<Text>();
     placeHolder->SetFont("res/fonts/Caveat-Regular.ttf");
     placeHolder->SetSize(48);
@@ -286,7 +286,7 @@ int main(int, char**)
     placeHolder->SetHeight(66);
     placeHolder->SetText(L"Enter name...");
     placeHolder->SetTextOverflow(TextOverflow::Ellipsis);
-    placeHolder->EnableAutoSize(30, 70);
+    placeHolder->EnableAutoSize(30, 48);
     placeHolder->SetColor({ .5f, .5f, .5f, 1.f });
     InputField* inp = obj->AddComponent<InputField>();
     inp->SetInputText(inputText);

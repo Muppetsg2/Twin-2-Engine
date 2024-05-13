@@ -7,6 +7,9 @@ using namespace Twin2Engine::Manager;
 Soloud AudioManager::_soloud = Soloud();
 map<size_t, Wav*> AudioManager::_loadedAudio = map<size_t, Wav*>();
 
+bool AudioManager::_fileDialogOpen = false;
+ImFileDialogInfo AudioManager::_fileDialogInfo;
+
 map<size_t, string> AudioManager::_audiosPaths;
 
 bool AudioManager::_init = false;
@@ -411,6 +414,16 @@ void AudioManager::UnloadAll()
     _init = false;
 }
 
+std::map<size_t, string> AudioManager::GetAllAudiosNames()
+{
+    std::map<size_t, std::string> names = std::map<size_t, std::string>();
+
+    for (auto item : _audiosPaths) {
+        names[item.first] = std::filesystem::path(item.second).stem().string();
+    }
+    return names;
+}
+
 YAML::Node AudioManager::Serialize()
 {
     YAML::Node audios;
@@ -418,4 +431,59 @@ YAML::Node AudioManager::Serialize()
         audios.push_back(audioPair.second);
     }
     return audios;
+}
+
+void AudioManager::DrawEditor(bool* p_open)
+{
+    if (!ImGui::Begin("Audio Manager")) {
+        ImGui::End();
+        return;
+    }
+
+    ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+    bool node_open = ImGui::TreeNodeEx(string("Audios##Audio Manager").c_str(), node_flag);
+
+    std::list<size_t> clicked = std::list<size_t>();
+    clicked.clear();
+    if (node_open) {
+        int i = 0;
+        for (auto& item : _audiosPaths) {
+            string n = GetAudioName(item.second);
+            ImGui::BulletText(n.c_str());
+            ImGui::SameLine(ImGui::GetContentRegionAvail().x - 30);
+            if (ImGui::Button(string("Remove##Audio Manager").append(std::to_string(i)).c_str())) {
+                clicked.push_back(item.first);
+            }
+            ++i;
+        }
+        ImGui::TreePop();
+    }
+
+    if (clicked.size() > 0) {
+        clicked.sort();
+
+        for (int i = clicked.size() - 1; i > -1; --i)
+        {
+            UnloadAudio(clicked.back());
+
+            clicked.pop_back();
+        }
+    }
+
+    clicked.clear();
+
+    if (ImGui::Button("Load Audio##Audio Manager", ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
+        _fileDialogOpen = true;
+        _fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
+        _fileDialogInfo.title = "Open File";
+        _fileDialogInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\music");
+    }
+
+    if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
+    {
+        // Result path in: m_fileDialogInfo.resultPath
+        LoadAudio(_fileDialogInfo.resultPath.string());
+    }
+
+    ImGui::End();
 }

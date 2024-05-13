@@ -100,7 +100,7 @@ YAML::Node Text::Serialize() const
 void Text::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
-	string name = string("Text##").append(id);
+	string name = string("Text##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
 		string buff = _text;
@@ -129,6 +129,12 @@ void Text::DrawEditor()
 
 		fontNames.insert(std::pair(0, "None"));
 
+		if (!fontNames.contains(_fontId)) {
+			_fontId = 0;
+			_textCacheDirty = false;
+			_justResizeCache = false;
+		}
+
 		if (ImGui::BeginCombo(string("Font##").append(id).c_str(), fontNames[_fontId].c_str())) {
 			
 			bool clicked = false;
@@ -145,7 +151,14 @@ void Text::DrawEditor()
 			}
 
 			if (clicked) {
-				SetFont(choosed);
+				if (choosed != 0) {
+					SetFont(choosed);
+				}
+				else {
+					_fontId = 0;
+					_textCacheDirty = false;
+					_justResizeCache = false;
+				}
 			}
 
 			ImGui::EndCombo();

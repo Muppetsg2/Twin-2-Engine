@@ -950,19 +950,23 @@ void imgui_render()
         }
 
         static bool _fontOpened = false;
+        static bool _audioOpened = false;
 
         if (ImGui::BeginMenuBar()) {
-            if (ImGui::BeginMenu("File"))
+            if (ImGui::BeginMenu("File##Menu"))
             {
                 //ImGui::MenuItem("Load Scene");
-                if (ImGui::MenuItem("Exit"))
+                //ImGui::MenuItem("Save Scene");
+                //ImGui::MenuItem("Save Scene As...");
+                if (ImGui::MenuItem("Exit##File"))
                     window->Close();
 
                 ImGui::EndMenu();
             }
-            if (ImGui::BeginMenu("Resources"))
+            if (ImGui::BeginMenu("Resources##Menu"))
             {
-                ImGui::MenuItem("Font Manager", NULL, &_fontOpened);
+                ImGui::MenuItem("Font Manager##Resources", NULL, &_fontOpened);
+                ImGui::MenuItem("Audio Manager##Resources", NULL, &_audioOpened);
                 ImGui::EndMenu();
             }
             ImGui::EndMenuBar();
@@ -970,6 +974,9 @@ void imgui_render()
 
         if (_fontOpened)
             FontManager::DrawEditor(&_fontOpened);
+
+        if (_audioOpened)
+            AudioManager::DrawEditor(&_audioOpened);
 
         ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Hello World!");
 

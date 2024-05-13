@@ -248,24 +248,50 @@ YAML::Node AudioComponent::Serialize() const
 void AudioComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
-	string name = string("Audio##").append(id);
+	string name = string("Audio##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
+		std::map<size_t, string> audioNames = AudioManager::GetAllAudiosNames();
+
+		audioNames.insert(std::pair(0, "None"));
+
+		if (!audioNames.contains(_audioId)) {
+			_audioId = 0;
+			_loaded = false;
+			_audioHandle = handle();
+		}
+
+		if (ImGui::BeginCombo(string("Audio##").append(id).c_str(), audioNames[_audioId].c_str())) {
+
+			bool clicked = false;
+			size_t choosed = _audioId;
+			for (auto& item : audioNames) {
+
+				if (ImGui::Selectable(item.second.append("##").append(id).c_str(), item.first == _audioId)) {
+
+					if (clicked) continue;
+
+					choosed = item.first;
+					clicked = true;
+				}
+			}
+
+			if (clicked) {
+				if (choosed != 0) {
+					SetAudio(choosed);
+				}
+				else {
+					_audioId = 0;
+					_loaded = false;
+					_audioHandle = handle();
+				}
+			}
+
+			ImGui::EndCombo();
+		}
+
+
 		if (this->_loaded) {
-			ImGui::Text("File Name: %s", this->_audioName.c_str());
-
-			if (ImGui::Button(string("Open File##").append(id).c_str())) {
-				_fileDialogOpen = true;
-				_fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
-				_fileDialogInfo.title = "Open File";
-				_fileDialogInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\music");
-			}
-
-			if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
-			{
-				// Result path in: m_fileDialogInfo.resultPath
-				this->SetAudio(_fileDialogInfo.resultPath.string());
-			}
 
 			if (ImGui::ArrowButton(string("Play Song##").append(id).c_str(), ImGuiDir_Right)) {
 				this->Play();
@@ -293,22 +319,6 @@ void AudioComponent::DrawEditor()
 				)).c_str()))
 			{
 				this->SetPlayPosition((double)pos);
-			}
-		}
-		else {
-			ImGui::Text("Choose File");
-
-			if (ImGui::Button(string("Open File##").append(id).c_str())) {
-				_fileDialogOpen = true;
-				_fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
-				_fileDialogInfo.title = "Open File";
-				_fileDialogInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\music");
-			}
-
-			if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
-			{
-				// Result path in: m_fileDialogInfo.resultPath
-				this->SetAudio(_fileDialogInfo.resultPath.string());
 			}
 		}
 

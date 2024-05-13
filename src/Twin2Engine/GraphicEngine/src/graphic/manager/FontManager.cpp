@@ -130,7 +130,7 @@ void FontManager::DrawEditor(bool* p_open) {
 
         for (int i = clicked.size() - 1; i > -1; --i)
         {
-            UnloadFont(_fontsPaths[clicked.back()]);
+            UnloadFont(clicked.back());
 
             clicked.pop_back();
         }
@@ -138,7 +138,7 @@ void FontManager::DrawEditor(bool* p_open) {
 
     clicked.clear();
 
-    if (ImGui::Button("LoadFont##Font Manager", ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
+    if (ImGui::Button("Load Font##Font Manager", ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
         _fileDialogOpen = true;
         _fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
         _fileDialogInfo.title = "Open File";

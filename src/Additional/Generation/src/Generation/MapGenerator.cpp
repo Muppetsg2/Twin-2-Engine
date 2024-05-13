@@ -276,7 +276,7 @@ YAML::Node MapGenerator::Serialize() const
 void MapGenerator::DrawEditor()
 {
     string id = string(std::to_string(this->GetId()));
-    string name = string("Map Generator##").append(id);
+    string name = string("Map Generator##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str()))
     {
         // DODAC

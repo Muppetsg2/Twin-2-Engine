@@ -34,6 +34,8 @@ namespace Twin2Engine::Manager {
 		static GraphicEngine::Sprite* GetSprite(size_t spriteId);
 		static GraphicEngine::Sprite* GetSprite(const std::string& spriteAlias);
 
+		static std::map<size_t, std::string> GetAllSpritesNames();
+
 		static void UnloadAll();
 
 		static YAML::Node Serialize();

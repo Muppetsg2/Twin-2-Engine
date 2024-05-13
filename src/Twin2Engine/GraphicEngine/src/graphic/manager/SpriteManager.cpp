@@ -68,6 +68,15 @@ Sprite* SpriteManager::GetSprite(const string& spriteAlias)
     return GetSprite(_hasher(spriteAlias));
 }
 
+std::map<size_t, std::string> SpriteManager::GetAllSpritesNames() {
+    std::map<size_t, std::string> names = std::map<size_t, std::string>();
+
+    for (auto item : _spriteAliases) {
+        names[item.first] = item.second;
+    }
+    return names;
+}
+
 void SpriteManager::UnloadSprite(size_t spriteId) {
     if (_sprites.find(spriteId) == _sprites.end()) return;
     delete _sprites[spriteId];

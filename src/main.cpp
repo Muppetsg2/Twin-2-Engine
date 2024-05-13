@@ -891,8 +891,9 @@ void init_imgui()
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;   // Enable Keyboard Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;    // Enable Gamepad Controls
 
     ImGui_ImplGlfw_InitForOpenGL(window->GetWindow(), true);
     ImGui_ImplOpenGL3_Init(glsl_version);
@@ -951,6 +952,7 @@ void imgui_render()
 
         static bool _fontOpened = false;
         static bool _audioOpened = false;
+        static bool _materialsOpened = false;
 
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("File##Menu"))
@@ -967,6 +969,7 @@ void imgui_render()
             {
                 ImGui::MenuItem("Font Manager##Resources", NULL, &_fontOpened);
                 ImGui::MenuItem("Audio Manager##Resources", NULL, &_audioOpened);
+                ImGui::MenuItem("Materials Manager##Resources", NULL, &_materialsOpened);
                 ImGui::EndMenu();
             }
             ImGui::EndMenuBar();
@@ -977,6 +980,9 @@ void imgui_render()
 
         if (_audioOpened)
             AudioManager::DrawEditor(&_audioOpened);
+
+        if (_materialsOpened)
+            MaterialsManager::DrawEditor(&_materialsOpened);
 
         ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Hello World!");
 
@@ -1060,7 +1066,7 @@ void imgui_render()
 
                 static glm::ivec2 ratio = window->GetAspectRatio();
                 ImGui::InputInt2("Aspect Ratio", (int*)&ratio);
-                if (ImGui::Button("Apply")) {
+                if (ImGui::Button("Apply##AspectRatio")) {
                     window->SetAspectRatio(ratio);
                     ratio = window->GetAspectRatio();
                 }
@@ -1073,7 +1079,7 @@ void imgui_render()
 
                 static int refreshRate = window->GetRefreshRate();
                 ImGui::InputInt("Refresh Rate", &refreshRate);
-                if (ImGui::Button("Apply")) {
+                if (ImGui::Button("Apply##RefreshRate")) {
                     window->SetRefreshRate(refreshRate);
                     refreshRate = window->GetRefreshRate();
                 }
@@ -1085,7 +1091,7 @@ void imgui_render()
 
             static glm::ivec2 size = window->GetWindowSize();
             ImGui::InputInt2("Window Size", (int*)&size);
-            if (ImGui::Button("Apply")) {
+            if (ImGui::Button("Apply##WindowSize")) {
                 window->SetWindowSize(size);
                 size = window->GetWindowSize();
             }

@@ -22,7 +22,6 @@ void GraphicEngineManager::End()
 void GraphicEngineManager::UpdateBeforeRendering()
 {
 	MeshRenderingManager::UpdateQueues();
-
 }
 
 void GraphicEngineManager::Render()

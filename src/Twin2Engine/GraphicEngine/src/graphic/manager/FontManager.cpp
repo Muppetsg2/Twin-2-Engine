@@ -141,7 +141,7 @@ void FontManager::DrawEditor(bool* p_open) {
     if (ImGui::Button("Load Font##Font Manager", ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
         _fileDialogOpen = true;
         _fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
-        _fileDialogInfo.title = "Open File";
+        _fileDialogInfo.title = "Open File##Font Manager";
         _fileDialogInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\fonts");
     }
 

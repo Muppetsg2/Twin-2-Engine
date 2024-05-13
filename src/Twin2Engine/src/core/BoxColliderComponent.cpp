@@ -159,7 +159,7 @@ YAML::Node Twin2Engine::Core::BoxColliderComponent::Serialize() const
 void Twin2Engine::Core::BoxColliderComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
-	string name = string("Box Collider##").append(id);
+	string name = string("Box Collider##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
 		float v = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x;

@@ -104,8 +104,9 @@ void Text::DrawEditor()
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
 		string buff = _text;
-		// ustawilem 1000 znakow, ale mozna zawsze zrobic INT_MAX z biblioteka limits.h, ale wywala wtedy blad w UpdateTextCache (nie to, ze teraz go nie wyrzuca)
-		ImGui::InputText(string("Value##").append(id).c_str(), buff.data(), 1000);
+		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll;
+
+		ImGui::InputText(string("Value##").append(id).c_str(), &buff, flags);
 
 		if (buff != _text) {
 			SetText(buff);

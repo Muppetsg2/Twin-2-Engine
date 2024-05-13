@@ -390,7 +390,11 @@ inline void Twin2Engine::Core::Transform::JustAddChild(Transform* child)
 inline void Twin2Engine::Core::Transform::JustRemoveChild(Transform* child)
 {
 	if (_children.size() == 0) return;
-	_children.erase(std::find(_children.begin(), _children.end(), child));
+
+	auto t = std::find(_children.begin(), _children.end(), child);
+
+	if (t != _children.end())
+		_children.erase(t);
 
 	// Calling events
 	CallChildrenChanged();
@@ -864,7 +868,7 @@ YAML::Node Twin2Engine::Core::Transform::Serialize() const
 void Twin2Engine::Core::Transform::DrawEditor()
 {
 	std::string id = std::string(std::to_string(this->GetId()));
-	std::string name = std::string("Transform##").append(id);
+	std::string name = std::string("Transform##Component").append(id);
 	static bool world = false;
 
 	if (ImGui::CollapsingHeader(name.c_str())) {

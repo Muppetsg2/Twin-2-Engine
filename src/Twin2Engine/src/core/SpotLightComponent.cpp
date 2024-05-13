@@ -106,7 +106,7 @@ YAML::Node Twin2Engine::Core::SpotLightComponent::Serialize() const
 void Twin2Engine::Core::SpotLightComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
-	string name = string("Spot Light##").append(id);
+	string name = string("Spot Light##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 		glm::vec3 v = light->direction;
 		ImGui::DragFloat3(string("Direction##").append(id).c_str(), glm::value_ptr(v), .1f, -1.f, 1.f);

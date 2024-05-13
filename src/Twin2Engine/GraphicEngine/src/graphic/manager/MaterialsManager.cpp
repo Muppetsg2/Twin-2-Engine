@@ -1,14 +1,18 @@
 #include <graphic/manager/MaterialsManager.h>
 #include <LightingController.h>
+#include <filesystem>
 
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
 using namespace glm;
 
-std::hash<std::string> MaterialsManager::stringHash;
-std::map<size_t, Twin2Engine::GraphicEngine::MaterialData*> MaterialsManager::loadedMaterials;
+std::hash<std::string> MaterialsManager::_stringHash;
+std::map<size_t, Twin2Engine::GraphicEngine::MaterialData*> MaterialsManager::_loadedMaterials;
 
-std::map<size_t, std::string> MaterialsManager::materialsPaths;
+bool MaterialsManager::_fileDialogOpen = false;
+ImFileDialogInfo MaterialsManager::_fileDialogInfo;
+
+std::map<size_t, std::string> MaterialsManager::_materialsPaths;
 
 //sconst td::unordered_map<size_t, int> MaterialsManager::typeSizeMap
 //{
@@ -44,58 +48,38 @@ std::map<size_t, std::string> MaterialsManager::materialsPaths;
 #define TYPE_MAP_MAT3_HANDLE		13
 #define TYPE_MAP_MAT4_HANDLE		14
 
-const std::unordered_map<size_t, int> MaterialsManager::typeHandleMap
+const std::unordered_map<size_t, int> MaterialsManager::_typeHandleMap
 {
-	{ MaterialsManager::stringHash("int"),			TYPE_MAP_INT_HANDLE			},
-	{ MaterialsManager::stringHash("uint"),			TYPE_MAP_UINT_HANDLE		},
-	{ MaterialsManager::stringHash("float"),		TYPE_MAP_FLOAT_HANDLE		},
-	{ MaterialsManager::stringHash("double"),		TYPE_MAP_DOUBLE_HANDLE		},
-	{ MaterialsManager::stringHash("bool"),			TYPE_MAP_BOOL_HANDLE		},
-	{ MaterialsManager::stringHash("texture2D"),	TYPE_MAP_TEXTURE2D_HANDLE	},
-	{ MaterialsManager::stringHash("vec2"),			TYPE_MAP_VEC2_HANDLE		},
-	{ MaterialsManager::stringHash("vec3"),			TYPE_MAP_VEC3_HANDLE		},
-	{ MaterialsManager::stringHash("vec4"),			TYPE_MAP_VEC4_HANDLE		},
-	{ MaterialsManager::stringHash("ivec2"),		TYPE_MAP_IVEC2_HANDLE		},
-	{ MaterialsManager::stringHash("ivec3"),		TYPE_MAP_IVEC3_HANDLE		},
-	{ MaterialsManager::stringHash("ivec4"),		TYPE_MAP_IVEC4_HANDLE		},
-	{ MaterialsManager::stringHash("mat2"),			TYPE_MAP_MAT2_HANDLE		},
-	{ MaterialsManager::stringHash("mat3"),			TYPE_MAP_MAT3_HANDLE		},
-	{ MaterialsManager::stringHash("mat4"),			TYPE_MAP_MAT4_HANDLE		}
+	{ MaterialsManager::_stringHash("int"),				TYPE_MAP_INT_HANDLE			},
+	{ MaterialsManager::_stringHash("uint"),			TYPE_MAP_UINT_HANDLE		},
+	{ MaterialsManager::_stringHash("float"),			TYPE_MAP_FLOAT_HANDLE		},
+	{ MaterialsManager::_stringHash("double"),			TYPE_MAP_DOUBLE_HANDLE		},
+	{ MaterialsManager::_stringHash("bool"),			TYPE_MAP_BOOL_HANDLE		},
+	{ MaterialsManager::_stringHash("texture2D"),		TYPE_MAP_TEXTURE2D_HANDLE	},
+	{ MaterialsManager::_stringHash("vec2"),			TYPE_MAP_VEC2_HANDLE		},
+	{ MaterialsManager::_stringHash("vec3"),			TYPE_MAP_VEC3_HANDLE		},
+	{ MaterialsManager::_stringHash("vec4"),			TYPE_MAP_VEC4_HANDLE		},
+	{ MaterialsManager::_stringHash("ivec2"),			TYPE_MAP_IVEC2_HANDLE		},
+	{ MaterialsManager::_stringHash("ivec3"),			TYPE_MAP_IVEC3_HANDLE		},
+	{ MaterialsManager::_stringHash("ivec4"),			TYPE_MAP_IVEC4_HANDLE		},
+	{ MaterialsManager::_stringHash("mat2"),			TYPE_MAP_MAT2_HANDLE		},
+	{ MaterialsManager::_stringHash("mat3"),			TYPE_MAP_MAT3_HANDLE		},
+	{ MaterialsManager::_stringHash("mat4"),			TYPE_MAP_MAT4_HANDLE		}
 };
 
 void MaterialsManager::UnloadMaterial(size_t managerId) {
 
-	if (loadedMaterials.find(managerId) != loadedMaterials.end()) {
-		MaterialData* matData = loadedMaterials[managerId];
+	if (_loadedMaterials.find(managerId) != _loadedMaterials.end()) {
+		MaterialData* matData = _loadedMaterials[managerId];
 		delete matData->materialParameters;
 		delete matData;
-		loadedMaterials.erase(managerId);
-		materialsPaths.erase(managerId);
+		_loadedMaterials.erase(managerId);
+		_materialsPaths.erase(managerId);
 	}
 }
 
 void MaterialsManager::UnloadMaterial(const std::string& path) {
-	UnloadMaterial(stringHash(path));
-}
-
-Material MaterialsManager::GetMaterial(size_t managerId)
-{
-	if (loadedMaterials.find(managerId) != loadedMaterials.end())
-	{
-		return Material(loadedMaterials[managerId]);
-	}
-	return Material();
-}
-
-Material MaterialsManager::GetMaterial(const std::string& name)
-{
-	size_t hashed = stringHash(name);
-
-	if (loadedMaterials.find(hashed) != loadedMaterials.end())
-	{
-		return Material(loadedMaterials[hashed]);
-	}
-	return LoadMaterial(name);
+	UnloadMaterial(_stringHash(path));
 }
 
 Material MaterialsManager::LoadMaterial(const std::string& materialName)
@@ -118,7 +102,7 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 		return Material();
 	}
 
-	size_t materialNameHash = stringHash(materialName);
+	size_t materialNameHash = _stringHash(materialName);
 	SPDLOG_INFO("Loading material {}: {}!", materialNameHash, materialName);
 
 	const YAML::Node& materialNode = fileNode["material"];
@@ -136,16 +120,16 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 
 		const YAML::Node& parameterValue = parameterNode["value"];
 
-		size_t parameterTypeHash = stringHash(parameterType);
+		size_t parameterTypeHash = _stringHash(parameterType);
 
-		if (!typeHandleMap.contains(parameterTypeHash))
+		if (!_typeHandleMap.contains(parameterTypeHash))
 		{
 			SPDLOG_ERROR("Incorrect parameter type of loaded material. Parameter name: {}", parameterName);
 			break;
 		}
 		SPDLOG_INFO("LoadSHPR");
 
-		switch (typeHandleMap.at(parameterTypeHash))
+		switch (_typeHandleMap.at(parameterTypeHash))
 		{
 		case TYPE_MAP_INT_HANDLE:
 			//materialParameters->Add(parameterName, parameterValue.as<int>());
@@ -234,8 +218,8 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 	};
 	materialParametersBuilder.Clear();
 
-	loadedMaterials[materialNameHash] = materialData;
-	materialsPaths[materialNameHash] = materialName;
+	_loadedMaterials[materialNameHash] = materialData;
+	_materialsPaths[materialNameHash] = materialName;
 
 	LightingSystem::LightingController::Instance()->BindLightBuffors(materialData->shader);
 	
@@ -275,11 +259,101 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 	return Material(data);
 }*/
 
+Material MaterialsManager::GetMaterial(size_t managerId)
+{
+	if (_loadedMaterials.find(managerId) != _loadedMaterials.end())
+	{
+		return Material(_loadedMaterials[managerId]);
+	}
+	return Material();
+}
+
+Material MaterialsManager::GetMaterial(const std::string& name)
+{
+	size_t hashed = _stringHash(name);
+
+	if (_loadedMaterials.find(hashed) != _loadedMaterials.end())
+	{
+		return Material(_loadedMaterials[hashed]);
+	}
+	return LoadMaterial(name);
+}
+
+std::string MaterialsManager::GetMaterialName(size_t fontId) {
+	if (_materialsPaths.find(fontId) == _materialsPaths.end()) return "";
+	std::string p = _materialsPaths[fontId];
+	return std::filesystem::path(p).stem().string();
+}
+
+std::map<size_t, std::string> MaterialsManager::GetAllMaterialsNames() {
+	std::map<size_t, std::string> names = std::map<size_t, std::string>();
+
+	for (auto item : _materialsPaths) {
+		names[item.first] = std::filesystem::path(item.second).stem().string();
+	}
+	return names;
+}
+
 YAML::Node MaterialsManager::Serialize()
 {
 	YAML::Node materials;
-	for (const auto& matPair : materialsPaths) {
+	for (const auto& matPair : _materialsPaths) {
 		materials.push_back(matPair.second);
 	}
 	return materials;
+}
+
+void MaterialsManager::DrawEditor(bool* p_open)
+{
+	if (!ImGui::Begin("Materials Manager", p_open)) {
+		ImGui::End();
+		return;
+	}
+
+	ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+	bool node_open = ImGui::TreeNodeEx(std::string("Materials##Materials Manager").c_str(), node_flag);
+
+	std::list<size_t> clicked = std::list<size_t>();
+	clicked.clear();
+	if (node_open) {
+		int i = 0;
+		for (auto& item : _materialsPaths) {
+			std::string n = GetMaterialName(item.first);
+			ImGui::BulletText(n.c_str());
+			ImGui::SameLine(ImGui::GetContentRegionAvail().x - 30);
+			if (ImGui::Button(std::string("Remove##Materials Manager").append(std::to_string(i)).c_str())) {
+				clicked.push_back(item.first);
+			}
+			++i;
+		}
+		ImGui::TreePop();
+	}
+
+	if (clicked.size() > 0) {
+		clicked.sort();
+
+		for (int i = clicked.size() - 1; i > -1; --i)
+		{
+			UnloadMaterial(clicked.back());
+
+			clicked.pop_back();
+		}
+	}
+
+	clicked.clear();
+
+	if (ImGui::Button("Load Material##Materials Manager", ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
+		_fileDialogOpen = true;
+		_fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
+		_fileDialogInfo.title = "Open File##Materials Manager";
+		_fileDialogInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\materials");
+	}
+
+	if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
+	{
+		// Result path in: m_fileDialogInfo.resultPath
+		LoadMaterial(_fileDialogInfo.resultPath.stem().string());
+	}
+
+	ImGui::End();
 }

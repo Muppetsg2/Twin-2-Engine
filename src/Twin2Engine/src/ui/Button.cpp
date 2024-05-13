@@ -70,7 +70,7 @@ YAML::Node Button::Serialize() const
 void Button::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
-	string name = string("Button##").append(id);
+	string name = string("Button##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 		
 		float v = _width;

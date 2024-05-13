@@ -435,7 +435,7 @@ YAML::Node AudioManager::Serialize()
 
 void AudioManager::DrawEditor(bool* p_open)
 {
-    if (!ImGui::Begin("Audio Manager")) {
+    if (!ImGui::Begin("Audio Manager", p_open)) {
         ImGui::End();
         return;
     }
@@ -475,7 +475,7 @@ void AudioManager::DrawEditor(bool* p_open)
     if (ImGui::Button("Load Audio##Audio Manager", ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
         _fileDialogOpen = true;
         _fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
-        _fileDialogInfo.title = "Open File";
+        _fileDialogInfo.title = "Open File##Audio Manager";
         _fileDialogInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\music");
     }
 

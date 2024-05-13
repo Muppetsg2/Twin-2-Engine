@@ -33,6 +33,7 @@ map<size_t, Scene*> SceneManager::_loadedScenes;
 
 ImGuiID SceneManager::selected = 0;
 bool SceneManager::inspectorOpened = true;
+const std::string SceneManager::payloadType = "SceneHierarchyObject";
 
 void SceneManager::SaveGameObject(const GameObject* obj, YAML::Node gameObjects)
 {
@@ -46,12 +47,13 @@ void SceneManager::SaveGameObject(const GameObject* obj, YAML::Node gameObjects)
 
 void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 {
-	ImGuiID clicked_elem = 0;
+	size_t clicked_elem = 0;
 	Transform* objT = obj->GetTransform();
 	for (size_t i = 0; i < objT->GetChildCount(); ++i) {
-		ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+		//ImGuiDragDropFlags drop_target_flags = ImGuiDragDropFlags_AcceptBeforeDelivery;
+		ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
 		const string name = objT->GetChildAt(i)->GetName().append("##").append(objT->GetName()).append(std::to_string(i));
-		const ImGuiID id = ImGui::GetID(name.c_str());
+		const size_t id = objT->GetChildAt(i)->GetGameObject()->Id();
 		const bool is_selected = id == selected;
 
 		if (is_selected) {
@@ -67,11 +69,36 @@ void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 			}
 		}
 
+		if (objT->GetChildAt(i) == nullptr)
+			return;
+
 		if (objT->GetChildAt(i)->GetChildCount() == 0) {
 			node_flag |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 			ImGui::TreeNodeEx(name.c_str(), node_flag);
 			if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
 				clicked_elem = id;
+			}
+
+			if (ImGui::BeginDragDropTarget()) {
+
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(payloadType.c_str()))
+				{
+					size_t payload_n = *(const size_t*)payload->Data;
+					Transform* t = SceneManager::GetGameObjectWithId(payload_n)->GetTransform();
+					if (objT->GetChildAt(i) != t) {
+						t->SetParent(objT->GetChildAt(i));
+						selected = objT->GetChildAt(i)->GetGameObject()->Id();
+					}
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+
+			if (ImGui::BeginDragDropSource()) {
+				size_t n = objT->GetChildAt(i)->GetGameObject()->Id();
+				ImGui::SetDragDropPayload(payloadType.c_str(), &n, sizeof(size_t), ImGuiCond_Once);
+				ImGui::Text(objT->GetChildAt(i)->GetName().c_str());
+				ImGui::EndDragDropSource();
 			}
 		}
 		else {
@@ -79,6 +106,28 @@ void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 
 			if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
 				clicked_elem = id;
+			}
+
+			if (ImGui::BeginDragDropTarget()) {
+
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(payloadType.c_str()))
+				{
+					size_t payload_n = *(const size_t*)payload->Data;
+					Transform* t = SceneManager::GetGameObjectWithId(payload_n)->GetTransform();
+					if (objT->GetChildAt(i) != t) {
+						t->SetParent(objT->GetChildAt(i));
+						selected = objT->GetChildAt(i)->GetGameObject()->Id();
+					}
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+
+			if (ImGui::BeginDragDropSource()) {
+				size_t n = objT->GetChildAt(i)->GetGameObject()->Id();
+				ImGui::SetDragDropPayload(payloadType.c_str(), &n, sizeof(size_t), ImGuiCond_Once);
+				ImGui::Text(objT->GetChildAt(i)->GetName().c_str());
+				ImGui::EndDragDropSource();
 			}
 
 			if (node_open) {
@@ -360,6 +409,7 @@ void SceneManager::LoadScene(const string& name)
 	map<size_t, GameObject*> objectByComponentId;
 
 	_rootObject = new GameObject(0);
+	_rootObject->SetName("##ROOT##");
 	_gameObjectsById[0] = _rootObject;
 	for (const YAML::Node& gameObjectNode : sceneToLoad->_gameObjects) {
 		size_t id = gameObjectNode["id"].as<size_t>();
@@ -994,7 +1044,7 @@ size_t SceneManager::GetAudioSaveIdx(size_t audioId)
 size_t SceneManager::GetMaterialSaveIdx(size_t materialId)
 {
 	size_t idx = 0;
-	for (const auto& matPair : MaterialsManager::materialsPaths) {
+	for (const auto& matPair : MaterialsManager::_materialsPaths) {
 		if (matPair.first == materialId) return idx;
 		++idx;
 	}
@@ -1075,8 +1125,43 @@ void SceneManager::UnloadAll()
 
 void SceneManager::DrawCurrentSceneEditor()
 {
-	if (ImGui::Begin(SceneManager::GetCurrentSceneName().c_str())) {
-		DrawGameObjectEditor(_rootObject);
+	if (!ImGui::Begin(SceneManager::GetCurrentSceneName().c_str(), NULL, ImGuiWindowFlags_MenuBar)) {
+		ImGui::End();
+		return;
 	}
+
+	ImGui::PushStyleColor(ImGuiCol_DragDropTarget, ImVec4(0.1f, 0.7f, 0.2f, 1.f));
+	ImGui::PushStyleColor(ImGuiCol_NavHighlight, ImVec4(0.1f, 0.7f, 0.2f, 1.f));
+	if (ImGui::BeginMenuBar()) {
+		if (ImGui::BeginMenu(string("Create##").append(SceneManager::GetCurrentSceneName()).c_str()))
+		{
+			if (ImGui::MenuItem(string("Add GameObject##Create").append(SceneManager::GetCurrentSceneName()).c_str()))
+				CreateGameObject();
+
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}
+
+	DrawGameObjectEditor(_rootObject);
+
+	ImGui::Dummy(ImGui::GetContentRegionAvail());
+
+	if (ImGui::BeginDragDropTarget()) {
+
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(payloadType.c_str()))
+		{
+			size_t payload_n = *(const size_t*)payload->Data;
+			Transform* t = SceneManager::GetGameObjectWithId(payload_n)->GetTransform();
+			if (_rootObject->GetTransform() != t->GetParent()) {
+				t->SetParent(_rootObject->GetTransform());
+			}
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+
 	ImGui::End();
 }

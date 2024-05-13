@@ -60,7 +60,7 @@ YAML::Node Twin2Engine::Core::SphereColliderComponent::Serialize() const
 void Twin2Engine::Core::SphereColliderComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
-	string name = string("Sphere Collider##").append(id);
+	string name = string("Sphere Collider##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 		ImGui::DragFloat(string("Radius##").append(id).c_str(), &((CollisionSystem::SphereColliderData*)collider->shapeColliderData)->Radius, 0.1f);
 

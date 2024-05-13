@@ -110,7 +110,7 @@ YAML::Node Twin2Engine::Core::DirectionalLightComponent::Serialize() const
 void Twin2Engine::Core::DirectionalLightComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
-	string name = string("Directional Light##").append(id);
+	string name = string("Directional Light##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
 		glm::vec3 v = light->direction;

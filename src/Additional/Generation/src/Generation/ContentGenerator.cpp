@@ -34,7 +34,7 @@ YAML::Node ContentGenerator::Serialize() const
 void ContentGenerator::DrawEditor()
 {
     string id = string(std::to_string(this->GetId()));
-    string name = string("Content Generator##").append(id);
+    string name = string("Content Generator##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str()))
     {
 		ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;

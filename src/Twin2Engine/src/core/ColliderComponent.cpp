@@ -317,7 +317,7 @@ YAML::Node ColliderComponent::Serialize() const
 
 void ColliderComponent::DrawEditor()
 {
-	string name = string("Collider##").append(std::to_string(this->GetId()));
+	string name = string("Collider##Component").append(std::to_string(this->GetId()));
 	if (ImGui::CollapsingHeader(name.c_str())) {
 		DrawInheritedFields();
 	}

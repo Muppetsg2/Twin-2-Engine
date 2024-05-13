@@ -686,7 +686,7 @@ YAML::Node CameraComponent::Serialize() const
 void CameraComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
-	string name = string("Camera##").append(id);
+	string name = string("Camera##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
 		bool per = (this->_type == CameraType::PERSPECTIVE);

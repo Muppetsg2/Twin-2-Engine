@@ -1,19 +1,22 @@
 Textures:
-    -   path: res/textures/stone.jpg
+    -   id: 0
+        path: res/textures/stone.jpg
         fileFormat: 35904 # SRGB
         engineFormat: 6407 # RGB
         sWrapMode: 33648 # MIRRORED_REPEAT
         tWrapMode: 33648 # MIRRORED_REPEAT
         minFilterMode: 9986 # NEAREST_MIPMAP_LINEAR
         magFilterMode: 9729 # LINEAR
-    -   path: res/textures/grass.png
+    -   id: 1
+        path: res/textures/grass.png
         fileFormat: 35906 # SRGB_ALPHA
         engineFormat: 6408 # RGBA
         sWrapMode: 33648 # MIRRORED_REPEAT
         tWrapMode: 33648 # MIRRORED_REPEAT
         minFilterMode: 9986 # NEAREST_MIPMAP_LINEAR
         magFilterMode: 9729 # LINEAR
-    -   path: res/textures/white.png
+    -   id: 2
+        path: res/textures/white.png
         fileFormat: 35904 # SRGB
         engineFormat: 6407 # RGB
         sWrapMode: 33648 # MIRRORED_REPEAT
@@ -21,30 +24,47 @@ Textures:
         minFilterMode: 9986 # NEAREST_MIPMAP_LINEAR
         magFilterMode: 9729 # LINEAR
 Sprites:
-    -   alias: stone
+    -   id: 0
+        alias: stone
         texture: 0
-    -   alias: grass
+    -   id: 1
+        alias: grass
         texture: 1
-    -   alias: white_box
+    -   id: 2
+        alias: white_box
         texture: 2
 Fonts:
-    - res/fonts/Caveat-Regular.ttf
+    - id: 0
+      path: res/fonts/Caveat-Regular.ttf
 Audio:
-    - res/music/acoustic-guitar.mp3
+    - id: 0
+      path: res/music/acoustic-guitar.mp3
 Materials:
-    - Basic2
-    - textured
-    - wallMat
-    - roofMat
-    - deska
-    - metal
-    - hexagonMat
+    - id: 0
+      path: Basic2
+    - id: 1
+      path: textured
+    - id: 2
+      path: wallMat
+    - id: 3
+      path: roofMat
+    - id: 4
+      path: deska
+    - id: 5
+      path: metal
+    - id: 6
+      path: hexagonMat
 Models:
-    - "{Cube}"
-    - res/models/castle.obj
-    - res/models/AK47.obj
+    - id: 0
+      path: "{Cube}"
+    - id: 1
+      path: res/models/castle.obj
+    - id: 2
+      path: res/models/AK47.obj
 Prefabs:
-    - res/prefabs/testPrefab.yaml
+    - id: 0
+      path: res/prefabs/testPrefab.prefab
+ScriptableObjects: []
 GameObjects:
     -   id: 1
         name: Camera

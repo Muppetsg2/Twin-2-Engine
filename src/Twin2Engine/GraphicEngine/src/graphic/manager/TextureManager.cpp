@@ -133,10 +133,12 @@ void TextureManager::UnloadAll()
 YAML::Node TextureManager::Serialize()
 {
     YAML::Node textures;
+    size_t id = 0;
     for (const auto& pathPair : _texturesPaths) {
         Texture2D* tex = _loadedTextures[pathPair.first];
 
         YAML::Node texNode;
+        texNode["id"] = id++;
         texNode["path"] = pathPair.second;
         if (_texturesFormats.find(pathPair.first) != _texturesFormats.end()) {
             const auto& formats = _texturesFormats[pathPair.first];

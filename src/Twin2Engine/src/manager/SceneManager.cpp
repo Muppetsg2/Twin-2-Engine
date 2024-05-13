@@ -21,13 +21,13 @@ GameObject* SceneManager::_rootObject = nullptr;
 map<size_t, GameObject*> SceneManager::_gameObjectsById;
 map<size_t, Component*> SceneManager::_componentsById;
 
-vector<size_t> SceneManager::_texturesIds;
-vector<size_t> SceneManager::_spritesIds;
-vector<size_t> SceneManager::_fontsIds;
-vector<size_t> SceneManager::_audiosIds;
-vector<size_t> SceneManager::_materialsIds;
-vector<size_t> SceneManager::_modelsIds;
-vector<size_t> SceneManager::_prefabsIds;
+map<size_t, size_t> SceneManager::_texturesIds;
+map<size_t, size_t> SceneManager::_spritesIds;
+map<size_t, size_t> SceneManager::_fontsIds;
+map<size_t, size_t> SceneManager::_audiosIds;
+map<size_t, size_t> SceneManager::_materialsIds;
+map<size_t, size_t> SceneManager::_modelsIds;
+map<size_t, size_t> SceneManager::_prefabsIds;
 vector<size_t> SceneManager::_scriptableObjectsIds;
 
 map<size_t, Scene*> SceneManager::_loadedScenes;
@@ -72,79 +72,7 @@ void SceneManager::AddScene(const string& name, Scene* scene)
 void SceneManager::AddScene(const string& name, const string& path)
 {
 	Scene* scene = new Scene();
-	YAML::Node sceneNode = YAML::LoadFile(path);
-
-#pragma region LOAD_TEXTURES_FROM_SCENE_FILE
-	vector<string> texturePaths;
-	for (const YAML::Node& texNode : sceneNode["Textures"]) {
-		string path = texNode["path"].as<string>();
-		TextureData data;
-		if (texNode["sWrapMode"] || texNode["tWrapMode"] || texNode["minFilterMode"] || texNode["magFilterMode"])
-			data = texNode.as<TextureData>();
-		if (texNode["fileFormat"] && texNode["engineFormat"]) {
-			scene->AddTexture2D(path, texNode["engineFormat"].as<TextureFormat>(), texNode["fileFormat"].as<TextureFileFormat>(), data);
-		}		
-		else {
-			if (texNode["fileFormat"] && !texNode["engineFormat"]) {
-				SPDLOG_ERROR("Przy podanym parametrze 'fileFormat' brakuje parametru 'engineFormat'");
-			}
-			else if (!texNode["fileFormat"] && texNode["engineFormat"]) {
-				SPDLOG_ERROR("Przy podanym parametrze 'fileFormat' brakuje parametru 'engineFormat'");
-			}
-			scene->AddTexture2D(path, data);
-		}
-		texturePaths.push_back(path);
-	}
-#pragma endregion
-#pragma region LOAD_SPRITES_FROM_SCENE_FILE
-	for (const YAML::Node& spriteNode : sceneNode["Sprites"]) {
-		if (spriteNode["x"] && spriteNode["y"] && spriteNode["width"] && spriteNode["height"]) {
-			scene->AddSprite(spriteNode["alias"].as<string>(), texturePaths[spriteNode["texture"].as<size_t>()], spriteNode.as<SpriteData>());
-		}
-		else {
-			if (spriteNode["x"] || spriteNode["y"] || spriteNode["width"] || spriteNode["height"]) {
-				SPDLOG_ERROR("Nie podano wszystkich parametr�w poprawnie: x, y, width, height");
-			}
-			scene->AddSprite(spriteNode["alias"].as<string>(), texturePaths[spriteNode["texture"].as<size_t>()]);
-		}
-	}
-#pragma endregion
-#pragma region LOAD_FONTS_FROM_SCENE_FILE
-	for (const YAML::Node& fontNode : sceneNode["Fonts"]) {
-		scene->AddFont(fontNode.as<string>());
-	}
-#pragma endregion
-#pragma region LOAD_AUDIO_FROM_SCENE_FILE
-	for (const YAML::Node& audioNode : sceneNode["Audio"]) {
-		scene->AddAudio(audioNode.as<string>());
-	}
-#pragma endregion
-#pragma region LOAD_MATERIALS_FROM_SCENE_FILE
-	for (const YAML::Node& materialNode : sceneNode["Materials"]) {
-		scene->AddMaterial(materialNode.as<string>());
-	}
-#pragma endregion
-#pragma region LOAD_MODELS_FROM_SCENE_FILE
-	for (const YAML::Node& modelNode : sceneNode["Models"]) {
-		scene->AddModel(modelNode.as<string>());
-	}
-#pragma endregion
-#pragma region LOAD_PREFABS_FROM_SCENE_FILE
-	for (const YAML::Node& prefabNode : sceneNode["Prefabs"]) {
-		scene->AddPrefab(prefabNode.as<string>());
-	}
-#pragma endregion
-#pragma region LOAD_GAMEOBJECTS_DATA_FROM_SCENE_FILE
-	for (const YAML::Node& gameObjectNode : sceneNode["GameObjects"]) {
-		scene->AddGameObject(gameObjectNode);
-	}
-#pragma endregion
-#pragma region LOAD_SCRIPTABLEBJECTS_DATA_FROM_SCENE_FILE
-	for (const YAML::Node& scriptableObject : sceneNode["ScriptableObjects"]) {
-		scene->AddScriptableObject(scriptableObject["path"].as<string>());
-	}
-#pragma endregion
-
+	scene->Deserialize(YAML::LoadFile(path));
 	AddScene(name, scene);
 }
 
@@ -159,67 +87,58 @@ void SceneManager::LoadScene(const string& name)
 
 	Scene* sceneToLoad = _loadedScenes[sceneId];
 
-	Func<string, const string&> pathGetter;
+	Func<string, const pair<size_t, string>&> pathGetter = [](const pair<size_t, string>& pair) -> string { return pair.second; };
+	Func<size_t, const pair<size_t, string>&> idGetter = [](const pair<size_t, string>& pair) -> size_t { return pair.first; };
+	Func<string, const pair<size_t, string>&> dataGetter = [](const pair<size_t, string>& pair) -> string { return pair.second; };
 	Func<bool, size_t> unloader;
 	Func<bool, const string&, size_t&> loader;
 
-	Func<vector<size_t>, const vector<size_t>&, const vector<size_t>&> sorter = [](const vector<size_t>& hashedPaths, const vector<size_t>& loadedIds) -> vector<size_t> {
-		vector<size_t> sortedIds;
-		for (size_t i = 0; i < hashedPaths.size(); ++i) {
-			for (size_t j = 0; j < loadedIds.size(); ++j) {
-				if (loadedIds[j] == hashedPaths[i]) {
-					sortedIds.push_back(loadedIds[j]);
-					break;
-				}
-			}
-		}
-		return sortedIds;
-	};
-
 #pragma region LOADING_TEXTURES
-	Func<string, const pair<string, TextureData>&> texturePathGetter = [](const pair<string, TextureData>& texturePair) -> string { return texturePair.first; };
+	Func<string, const pair<size_t, pair<string, TextureData>>&> texturePathGetter = [](const pair<size_t, pair<string, TextureData>>& texturePair) -> string { return texturePair.second.first; };
+	Func<size_t, const pair<size_t, pair<string, TextureData>>&> textureIdGetter = [](const pair<size_t, pair<string, TextureData>>& texturePair) -> size_t { return texturePair.first; };
+	Func<pair<string, TextureData>, const pair<size_t, pair<string, TextureData>>&> textureDataGetter = [](const pair<size_t, pair<string, TextureData>>& texturePair) -> pair<string, TextureData> { return texturePair.second; };
 	unloader = [](size_t id) -> bool { TextureManager::UnloadTexture2D(id); return true; };
-	loader = [&](const string& path, size_t& id) -> bool {
+	Func<bool, const pair<string, TextureData>&, size_t&> textureLoader = [&](const pair<string, TextureData>& textureLoadData, size_t& id) -> bool {
 		Texture2D* temp = nullptr;
-		if (sceneToLoad->_texturesFormats.find(path) != sceneToLoad->_texturesFormats.end()) {
-			const auto& formats = sceneToLoad->_texturesFormats[path];
-			temp = TextureManager::LoadTexture2D(path, formats.second, formats.first, sceneToLoad->_textures[path]);
+		if (sceneToLoad->_texturesFormats.contains(textureLoadData.first)) {
+			const auto& formats = sceneToLoad->_texturesFormats[textureLoadData.first];
+			temp = TextureManager::LoadTexture2D(textureLoadData.first, formats.second, formats.first, textureLoadData.second);
 		}
 		else {
-			temp = TextureManager::LoadTexture2D(path, sceneToLoad->_textures[path]);
+			temp = TextureManager::LoadTexture2D(textureLoadData.first, textureLoadData.second);
 		}
 		if (temp != nullptr) {
 			id = temp->GetManagerId();
 			return true;
 		}
-		SPDLOG_ERROR("Couldn't load texture '{0}'", path);
+		SPDLOG_ERROR("Couldn't load texture '{0}'", textureLoadData.first);
 		return false;
 	};
-	_texturesIds = LoadResources(texturePathGetter, sceneToLoad->_textures, _texturesIds, unloader, loader, sorter);
+	_texturesIds = LoadResources(texturePathGetter, textureIdGetter, textureDataGetter, sceneToLoad->_textures, _texturesIds, unloader, textureLoader);
 #pragma endregion
 #pragma region LOADING_SPRITES
-	Func<string, const pair<string, tuple<string, bool, SpriteData>>&> spritePathGetter = [](const pair<string, tuple<string, bool, SpriteData>>& spritePair) -> string { return spritePair.first; };
+	Func<string, const pair<size_t, tuple<string, size_t, bool, SpriteData>>&> spritePathGetter = [](const pair<size_t, tuple<string, size_t, bool, SpriteData>>& spritePair) -> string { return get<0>(spritePair.second); };
+	Func<size_t, const pair<size_t, tuple<string, size_t, bool, SpriteData>>&> spriteIdGetter = [](const pair<size_t, tuple<string, size_t, bool, SpriteData>>& spritePair) -> size_t { return spritePair.first; };
+	Func<tuple<string, size_t, bool, SpriteData>, const pair<size_t, tuple<string, size_t, bool, SpriteData>>&> spriteDataGetter = [](const pair<size_t, tuple<string, size_t, bool, SpriteData>>& spritePair) -> tuple<string, size_t, bool, SpriteData> { return spritePair.second; };
 	unloader = [](size_t id) -> bool { SpriteManager::UnloadSprite(id); return true; };
-	loader = [&](const string& alias, size_t& id) -> bool { 
-		tuple<string, bool, SpriteData> sData = sceneToLoad->_sprites[alias];
+	Func<bool, const tuple<string, size_t, bool, SpriteData>&, size_t&> spriteLoader = [&](const tuple<string, size_t, bool, SpriteData>& spriteLoadData, size_t& id) -> bool {
 		Sprite* temp = nullptr;
-		if (get<1>(sData)) {
-			temp = SpriteManager::MakeSprite(alias, get<0>(sData), get<2>(sData));
+		if (get<2>(spriteLoadData)) {
+			temp = SpriteManager::MakeSprite(get<0>(spriteLoadData), _texturesIds[get<1>(spriteLoadData)], get<3>(spriteLoadData));
 		}
 		else {
-			temp = SpriteManager::MakeSprite(alias, get<0>(sData));
+			temp = SpriteManager::MakeSprite(get<0>(spriteLoadData), _texturesIds[get<1>(spriteLoadData)]);
 		}
 		if (temp != nullptr) {
 			id = temp->GetManagerId();
 			return true;
 		}
-		SPDLOG_ERROR("Couldn't make sprite '{0}'", alias);
+		SPDLOG_ERROR("Couldn't make sprite '{0}'", get<0>(spriteLoadData));
 		return false;
 	};
-	_spritesIds = LoadResources(spritePathGetter, sceneToLoad->_sprites, _spritesIds, unloader, loader, sorter);
+	_spritesIds = LoadResources(spritePathGetter, spriteIdGetter, spriteDataGetter, sceneToLoad->_sprites, _spritesIds, unloader, spriteLoader);
 #pragma endregion
 #pragma region LOADING_FONTS
-	pathGetter = [](const string& path) -> string { return path; };
 	unloader = [](size_t id) -> bool { FontManager::UnloadFont(id); return true; };
 	loader = [](const string& path, size_t& id) -> bool { 
 		Font* temp = FontManager::LoadFont(path);
@@ -230,10 +149,9 @@ void SceneManager::LoadScene(const string& name)
 		SPDLOG_ERROR("Couldn't load font '{0}'", path);
 		return false;
 	};
-	_fontsIds = LoadResources(pathGetter, sceneToLoad->_fonts, _fontsIds, unloader, loader, sorter);
+	_fontsIds = LoadResources(pathGetter, idGetter, dataGetter, sceneToLoad->_fonts, _fontsIds, unloader, loader);
 #pragma endregion
 #pragma region LOADING_AUDIO
-	pathGetter = [](const string& path) -> string { return path; };
 	unloader = [](size_t id) -> bool { AudioManager::UnloadAudio(id); return true; };
 	loader = [](const string& path, size_t& id) -> bool { 
 		id = AudioManager::LoadAudio(path); 
@@ -241,23 +159,19 @@ void SceneManager::LoadScene(const string& name)
 		SPDLOG_ERROR("Couldn't load audio '{0}'", path);
 		return false;
 	};
-	_audiosIds = LoadResources(pathGetter, sceneToLoad->_audios, _audiosIds, unloader, loader, sorter);
+	_audiosIds = LoadResources(pathGetter, idGetter, dataGetter, sceneToLoad->_audios, _audiosIds, unloader, loader);
 #pragma endregion
 #pragma region LOADING_MATERIALS
-	pathGetter = [](const string& path) -> string { return path; };
 	unloader = [](size_t id) -> bool { MaterialsManager::UnloadMaterial(id); return true; };
 	loader = [](const string& path, size_t& id) -> bool { id = MaterialsManager::LoadMaterial(path).GetId(); return true; };
-	_materialsIds = LoadResources(pathGetter, sceneToLoad->_materials, _materialsIds, unloader, loader, sorter);
-
+	_materialsIds = LoadResources(pathGetter, idGetter, dataGetter, sceneToLoad->_materials, _materialsIds, unloader, loader);
 #pragma endregion
 #pragma region LOADING_MODELS
-	pathGetter = [](const string& path) -> string { return path; };
 	unloader = [](size_t id) -> bool { ModelsManager::UnloadModel(id); return true; };
 	loader = [](const string& path, size_t& id) -> bool { id = ModelsManager::LoadModel(path).GetId(); return true; };
-	_modelsIds = LoadResources(pathGetter, sceneToLoad->_models, _modelsIds, unloader, loader, sorter);
+	_modelsIds = LoadResources(pathGetter, idGetter, dataGetter, sceneToLoad->_models, _modelsIds, unloader, loader);
 #pragma endregion
 #pragma region LOADING_PREFABS
-	pathGetter = [](const string& path) -> string { return path; };
 	unloader = [](size_t id) -> bool { PrefabManager::UnloadPrefab(id); return true; };
 	loader = [](const string& path, size_t& id) -> bool { 
 		Prefab* prefab = PrefabManager::LoadPrefab(path);
@@ -268,7 +182,7 @@ void SceneManager::LoadScene(const string& name)
 		SPDLOG_ERROR("Couldn't load prefab {0}", path);
 		return false;
 	};
-	_prefabsIds = LoadResources(pathGetter, sceneToLoad->_prefabs, _prefabsIds, unloader, loader, sorter);
+	_prefabsIds = LoadResources(pathGetter, idGetter, dataGetter, sceneToLoad->_prefabs, _prefabsIds, unloader, loader);
 #pragma endregion
 #pragma region LOADING_SCRIPTABLE_OBJECTS
 	ScriptableObjectManager::SceneDeserializationBegin();
@@ -539,80 +453,56 @@ GameObject* SceneManager::CreateGameObject(Transform* parent)
 
 GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 {
-	Func<string, const string&> pathGetter;
+	Func<string, const pair<size_t, string>&> pathGetter = [](const pair<size_t, string>& pair) -> string { return pair.second; };
+	Func<size_t, const pair<size_t, string>&> idGetter = [](const pair<size_t, string>& pair) -> size_t { return pair.first; };
+	Func<string, const pair<size_t, string>&> dataGetter = [](const pair<size_t, string>& pair) -> string { return pair.second; };
 	Func<bool, size_t> unloader = [](size_t id) -> bool { return false; };
 	Func<bool, const string&, size_t&> loader;
 
-	Func<vector<size_t>, const vector<size_t>&, const vector<size_t>&> sorter = [](const vector<size_t>& hashedPaths, const vector<size_t>& loadedIds) -> vector<size_t> {
-		// Sorting (First like in prefab file then rest)
-		vector<size_t> sortedIds;
-		for (size_t i = 0; i < hashedPaths.size(); ++i) {
-			for (size_t j = 0; j < loadedIds.size(); ++j) {
-				if (loadedIds[j] == hashedPaths[i]) {
-					sortedIds.push_back(loadedIds[j]);
-					break;
-				}
-			}
-		}
-		// Add rest
-		size_t startSortedSize = sortedIds.size();
-		for (size_t i = 0; i < loadedIds.size(); ++i) {
-			bool hasId = false;
-			for (size_t j = 0; j < startSortedSize; ++j) {
-				if (loadedIds[i] == sortedIds[j]) {
-					hasId = true;
-					break;
-				}
-			}
-			if (!hasId) {
-				sortedIds.push_back(loadedIds[i]);
-			}
-		}
-		return sortedIds;
-	};
-
 #pragma region LOADING_PREFAB_TEXTURES
-	Func<string, const pair<string, TextureData>&> texturePathGetter = [](const pair<string, TextureData>& texturePair) -> string { return texturePair.first; };
-	loader = [&](const string& path, size_t& id) -> bool {
+	Func<string, const pair<size_t, pair<string, TextureData>>&> texturePathGetter = [](const pair<size_t, pair<string, TextureData>>& texturePair) -> string { return texturePair.second.first; };
+	Func<size_t, const pair<size_t, pair<string, TextureData>>&> textureIdGetter = [](const pair<size_t, pair<string, TextureData>>& texturePair) -> size_t { return texturePair.first; };
+	Func<pair<string, TextureData>, const pair<size_t, pair<string, TextureData>>&> textureDataGetter = [](const pair<size_t, pair<string, TextureData>>& texturePair) -> pair<string, TextureData> { return texturePair.second; };
+	Func<bool, const pair<string, TextureData>&, size_t&> textureLoader = [&](const pair<string, TextureData>& textureLoadData, size_t& id) -> bool {
 		Texture2D* temp = nullptr;
-		if (prefab->_texturesFormats.find(path) != prefab->_texturesFormats.end()) {
-			const auto& formats = prefab->_texturesFormats[path];
-			temp = TextureManager::LoadTexture2D(path, formats.second, formats.first, prefab->_textures[path]);
+		if (prefab->_texturesFormats.contains(textureLoadData.first)) {
+			const auto& formats = prefab->_texturesFormats[textureLoadData.first];
+			temp = TextureManager::LoadTexture2D(textureLoadData.first, formats.second, formats.first, textureLoadData.second);
 		}
 		else {
-			temp = TextureManager::LoadTexture2D(path, prefab->_textures[path]);
+			temp = TextureManager::LoadTexture2D(textureLoadData.first, textureLoadData.second);
 		}
 		if (temp != nullptr) {
 			id = temp->GetManagerId();
 			return true;
 		}
-		SPDLOG_ERROR("Couldn't load texture '{0}'", path);
+		SPDLOG_ERROR("Couldn't load texture '{0}'", textureLoadData.first);
 		return false;
 	};
-	_texturesIds = LoadResources(texturePathGetter, prefab->_textures, _texturesIds, unloader, loader, sorter);
+	_texturesIds = LoadResources(texturePathGetter, textureIdGetter, textureDataGetter, prefab->_textures, _texturesIds, unloader, textureLoader);
 #pragma endregion
 #pragma region LOADING_PREFAB_SPRITES
-	Func<string, const pair<string, tuple<string, bool, SpriteData>>&> spritePathGetter = [](const pair<string, tuple<string, bool, SpriteData>>& spritePair) -> string { return spritePair.first; };
-	loader = [&](const string& alias, size_t& id) -> bool {
-		tuple<string, bool, SpriteData> sData = prefab->_sprites[alias];
+	Func<string, const pair<size_t, tuple<string, size_t, bool, SpriteData>>&> spritePathGetter = [](const pair<size_t, tuple<string, size_t, bool, SpriteData>>& spritePair) -> string { return get<0>(spritePair.second); };
+	Func<size_t, const pair<size_t, tuple<string, size_t, bool, SpriteData>>&> spriteIdGetter = [](const pair<size_t, tuple<string, size_t, bool, SpriteData>>& spritePair) -> size_t { return spritePair.first; };
+	Func<tuple<string, size_t, bool, SpriteData>, const pair<size_t, tuple<string, size_t, bool, SpriteData>>&> spriteDataGetter = [](const pair<size_t, tuple<string, size_t, bool, SpriteData>>& spritePair) -> tuple<string, size_t, bool, SpriteData> { return spritePair.second; };
+	Func<bool, const tuple<string, size_t, bool, SpriteData>&, size_t&> spriteLoader = [&](const tuple<string, size_t, bool, SpriteData>& spriteLoadData, size_t& id) -> bool {
 		Sprite* temp = nullptr;
-		if (get<1>(sData)) {
-			temp = SpriteManager::MakeSprite(alias, get<0>(sData), get<2>(sData));
+		if (get<2>(spriteLoadData)) {
+			temp = SpriteManager::MakeSprite(get<0>(spriteLoadData), get<1>(spriteLoadData), get<3>(spriteLoadData));
 		}
 		else {
-			temp = SpriteManager::MakeSprite(alias, get<0>(sData));
+			temp = SpriteManager::MakeSprite(get<0>(spriteLoadData), get<1>(spriteLoadData));
 		}
 		if (temp != nullptr) {
 			id = temp->GetManagerId();
 			return true;
 		}
-		SPDLOG_ERROR("Couldn't make sprite '{0}'", alias);
+		SPDLOG_ERROR("Couldn't make sprite '{0}'", get<0>(spriteLoadData));
 		return false;
 	};
-	_spritesIds = LoadResources(spritePathGetter, prefab->_sprites, _spritesIds, unloader, loader, sorter);
+	_spritesIds = LoadResources(spritePathGetter, spriteIdGetter, spriteDataGetter, prefab->_sprites, _spritesIds, unloader, spriteLoader);
 #pragma endregion
 #pragma region LOADING_PREFAB_FONTS
-	pathGetter = [](const string& path) -> string { return path; };
 	loader = [](const string& path, size_t& id) -> bool {
 		Font* temp = FontManager::LoadFont(path);
 		if (temp != nullptr) {
@@ -621,31 +511,27 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		}
 		SPDLOG_ERROR("Couldn't load font '{0}'", path);
 		return false;
-		};
-	_fontsIds = LoadResources(pathGetter, prefab->_fonts, _fontsIds, unloader, loader, sorter);
+	};
+	_fontsIds = LoadResources(pathGetter, idGetter, dataGetter, prefab->_fonts, _fontsIds, unloader, loader);
 #pragma endregion
 #pragma region LOADING_PREFAB_AUDIO
-	pathGetter = [](const string& path) -> string { return path; };
 	loader = [](const string& path, size_t& id) -> bool {
 		id = AudioManager::LoadAudio(path);
 		if (id != 0) return true;
 		SPDLOG_ERROR("Couldn't load audio '{0}'", path);
 		return false;
-		};
-	_audiosIds = LoadResources(pathGetter, prefab->_audios, _audiosIds, unloader, loader, sorter);
+	};
+	_audiosIds = LoadResources(pathGetter, idGetter, dataGetter, prefab->_audios, _audiosIds, unloader, loader);
 #pragma endregion
 #pragma region LOADING_PREFAB_MATERIALS
-	pathGetter = [](const string& path) -> string { return path; };
 	loader = [](const string& path, size_t& id) -> bool { id = MaterialsManager::GetMaterial(path).GetId(); return true; };
-	_materialsIds = LoadResources(pathGetter, prefab->_materials, _materialsIds, unloader, loader, sorter);
+	_materialsIds = LoadResources(pathGetter, idGetter, dataGetter, prefab->_materials, _materialsIds, unloader, loader);
 #pragma endregion
 #pragma region LOADING_PREFAB_MODELS
-	pathGetter = [](const string& path) -> string { return path; };
 	loader = [](const string& path, size_t& id) -> bool { id = ModelsManager::LoadModel(path).GetId(); return true; };
-	_modelsIds = LoadResources(pathGetter, prefab->_models, _modelsIds, unloader, loader, sorter);
+	_modelsIds = LoadResources(pathGetter, idGetter, dataGetter, prefab->_models, _modelsIds, unloader, loader);
 #pragma endregion
 #pragma region LOADING_PREFAB_PREFABS
-	pathGetter = [](const string& path) -> string { return path; };
 	loader = [](const string& path, size_t& id) -> bool {
 		Prefab* prefab = PrefabManager::LoadPrefab(path);
 		if (prefab != nullptr) {
@@ -654,8 +540,20 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		}
 		SPDLOG_ERROR("Couldn't load prefab {0}", path);
 		return false;
-		};
-	_prefabsIds = LoadResources(pathGetter, prefab->_prefabs, _prefabsIds, unloader, loader, sorter);
+	};
+	_prefabsIds = LoadResources(pathGetter, idGetter, dataGetter, prefab->_prefabs, _prefabsIds, unloader, loader);
+#pragma endregion
+#pragma region LOADING_SCRIPTABLE_OBJECTS
+	ScriptableObjectManager::SceneDeserializationBegin();
+	for (unsigned int i = 0; i < prefab->_scriptableObjects.size(); i++)
+	{
+		size_t id = ScriptableObjectManager::SceneDeserialize(0, prefab->_scriptableObjects[i]);
+		if (std::find_if(_scriptableObjectsIds.cbegin(), _scriptableObjectsIds.cend(), [id](const size_t& soId) { return soId == id; }) == _scriptableObjectsIds.end())
+		{
+			_scriptableObjectsIds.push_back(id);
+		}
+		//_scriptableObjectsIds.push_back(id);
+	}
 #pragma endregion
 #pragma region LOADING_PREFAB_GAMEOBJECTS
 	// GAME OBJECTS
@@ -845,6 +743,8 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	}
 #pragma endregion
 
+	ScriptableObjectManager::SceneDeserializationEnd();
+
 	if (_rootObject == nullptr) _rootObject = new GameObject();
 	prefabRoot->GetTransform()->SetParent(parent != nullptr ? parent : _rootObject->GetTransform());
 	return prefabRoot;
@@ -980,9 +880,9 @@ void SceneManager::UnloadCurrent()
 	_componentsById.clear();
 	DestroyGameObject(_rootObject);
 
-	Action<vector<size_t>&, const Action<size_t>&> unloader = [](vector<size_t>& ids, const Action<size_t>& unload) -> void {
-		for (size_t id : ids) {
-			unload(id);
+	Action<map<size_t, size_t>&, const Action<size_t>&> unloader = [](map<size_t, size_t>& ids, const Action<size_t>& unload) -> void {
+		for (auto& id : ids) {
+			unload(id.second);
 		}
 		ids.clear();
 	};

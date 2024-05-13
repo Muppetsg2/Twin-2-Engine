@@ -15,13 +15,13 @@ namespace Twin2Engine::Manager {
 		static std::map<size_t, Core::Component*> _componentsById;
 
 		// Current Loaded Resources
-		static std::vector<size_t> _texturesIds;
-		static std::vector<size_t> _spritesIds;
-		static std::vector<size_t> _fontsIds;
-		static std::vector<size_t> _audiosIds;
-		static std::vector<size_t> _materialsIds;
-		static std::vector<size_t> _modelsIds;
-		static std::vector<size_t> _prefabsIds;
+		static std::map<size_t, size_t> _texturesIds;
+		static std::map<size_t, size_t> _spritesIds;
+		static std::map<size_t, size_t> _fontsIds;
+		static std::map<size_t, size_t> _audiosIds;
+		static std::map<size_t, size_t> _materialsIds;
+		static std::map<size_t, size_t> _modelsIds;
+		static std::map<size_t, size_t> _prefabsIds;
 		static std::vector<size_t> _scriptableObjectsIds;
 
 		// Loaded Scene Objects

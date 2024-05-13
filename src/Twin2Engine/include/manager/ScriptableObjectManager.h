@@ -8,10 +8,12 @@ namespace Twin2Engine::Core
 namespace Twin2Engine::Manager
 {
 	class SceneManager;
+	class PrefabManager;
 
 	class ScriptableObjectManager
 	{
 		friend class SceneManager;
+		friend class PrefabManager;
 
 		static std::hash<std::string> _hasher;
 

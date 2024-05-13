@@ -214,8 +214,12 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 YAML::Node MaterialsManager::Serialize()
 {
 	YAML::Node materials;
+	size_t id = 0;
 	for (const auto& matPair : materialsPaths) {
-		materials.push_back(matPair.second);
+		YAML::Node material;
+		material["id"] = id++;
+		material["path"] = matPair.second;
+		materials.push_back(material);
 	}
 	return materials;
 }

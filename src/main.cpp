@@ -236,11 +236,10 @@ int main(int, char**)
 #pragma endregion
 
     // ADDING SCENES
-    SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.yaml");
-    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
-    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.yaml");
-    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
-    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.scene");
 
     SceneManager::LoadScene("testScene");
 

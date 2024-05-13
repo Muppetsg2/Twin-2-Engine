@@ -38,6 +38,17 @@ namespace Twin2Engine::Manager {
 			if constexpr (sizeof...(Ts) > 0) return std::tuple_cat(std::make_tuple(comp), AddComponentsToGameObject<Ts...>(obj));
 			else return std::make_tuple(comp);
 		};
+
+		static Tools::EventHandler<std::string> _onSceneLoaded;
+
+		static bool _loadScene;
+		static std::string _sceneToLoadName;
+		static size_t _sceneToLoadId;
+		static void LoadScene();
+
+		static std::queue<Core::GameObject*> _objectsToDestroy;
+		static void DestroyObject(Core::GameObject* obj);
+		static void DestroyObjects();
 	public:
 		static void AddScene(const std::string& name, Core::Scene* scene);
 		static void AddScene(const std::string& name, const std::string& path);
@@ -48,6 +59,9 @@ namespace Twin2Engine::Manager {
 
 		static void UpdateCurrentScene();
 		static void RenderCurrentScene();
+
+		static void Update();
+		static Tools::EventHandler<std::string>& GetOnSceneLoaded();
 		
 		static Core::GameObject* GetRootObject();
 		static Core::GameObject* FindObjectByName(const std::string& name);

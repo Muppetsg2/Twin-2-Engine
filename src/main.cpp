@@ -235,6 +235,12 @@ int main(int, char**)
 
 #pragma endregion
 
+    SceneManager::GetOnSceneLoaded() += [](std::string sceneName) -> void {
+        Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
+        image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
+        text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
+    };
+
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
@@ -242,6 +248,7 @@ int main(int, char**)
     SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.scene");
 
     SceneManager::LoadScene("testScene");
+    SceneManager::Update();
 
     GameObject* obj = SceneManager::CreateGameObject();
     obj->SetName("Test Button");
@@ -417,9 +424,6 @@ void input()
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::R)) {
         SceneManager::LoadScene("testScene");
-        Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
-        image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
-        text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
     }
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::Q)) {

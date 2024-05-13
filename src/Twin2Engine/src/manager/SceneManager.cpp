@@ -60,38 +60,30 @@ GameObject* SceneManager::FindObjectBy(GameObject* obj, const Func<bool, const G
 	return nullptr;
 }
 
-void SceneManager::AddScene(const string& name, Scene* scene)
-{
-	size_t id = hash<string>()(name);
-	if (_loadedScenes.find(id) != _loadedScenes.end()) {
-		SPDLOG_WARN("Zast�powanie Sceny o nazwie '{0}'", name);
-	}
-	_loadedScenes[id] = scene;
-}
+EventHandler<string> SceneManager::_onSceneLoaded;
 
-void SceneManager::AddScene(const string& name, const string& path)
-{
-	Scene* scene = new Scene();
-	scene->Deserialize(YAML::LoadFile(path));
-	AddScene(name, scene);
-}
+bool SceneManager::_loadScene = false;
+string SceneManager::_sceneToLoadName = "";
+size_t SceneManager::_sceneToLoadId = 0;
 
-void SceneManager::LoadScene(const string& name)
-{
-	hash<string> hasher;
-	size_t sceneId = hasher(name);
-	if (_loadedScenes.find(sceneId) == _loadedScenes.end()) {
-		SPDLOG_WARN("Nie znaleziono sceny o nazwie '{0}'", name);
-		return;
-	}
+void SceneManager::LoadScene() {
+	if (!_loadScene) return;
+	_loadScene = false;
 
-	Scene* sceneToLoad = _loadedScenes[sceneId];
+	Scene* sceneToLoad = _loadedScenes[_sceneToLoadId];
 
 	Func<string, const pair<size_t, string>&> pathGetter = [](const pair<size_t, string>& pair) -> string { return pair.second; };
 	Func<size_t, const pair<size_t, string>&> idGetter = [](const pair<size_t, string>& pair) -> size_t { return pair.first; };
 	Func<string, const pair<size_t, string>&> dataGetter = [](const pair<size_t, string>& pair) -> string { return pair.second; };
 	Func<bool, size_t> unloader;
 	Func<bool, const string&, size_t&> loader;
+
+	// DESTROY OLD OBJECTS
+	if (_rootObject != nullptr) {
+		_gameObjectsById.clear();
+		_componentsById.clear();
+		DestroyObject(_rootObject);
+	}
 
 #pragma region LOADING_TEXTURES
 	Func<string, const pair<size_t, pair<string, TextureData>>&> texturePathGetter = [](const pair<size_t, pair<string, TextureData>>& texturePair) -> string { return texturePair.second.first; };
@@ -113,7 +105,7 @@ void SceneManager::LoadScene(const string& name)
 		}
 		SPDLOG_ERROR("Couldn't load texture '{0}'", textureLoadData.first);
 		return false;
-	};
+		};
 	_texturesIds = LoadResources(texturePathGetter, textureIdGetter, textureDataGetter, sceneToLoad->_textures, _texturesIds, unloader, textureLoader);
 #pragma endregion
 #pragma region LOADING_SPRITES
@@ -135,30 +127,30 @@ void SceneManager::LoadScene(const string& name)
 		}
 		SPDLOG_ERROR("Couldn't make sprite '{0}'", get<0>(spriteLoadData));
 		return false;
-	};
+		};
 	_spritesIds = LoadResources(spritePathGetter, spriteIdGetter, spriteDataGetter, sceneToLoad->_sprites, _spritesIds, unloader, spriteLoader);
 #pragma endregion
 #pragma region LOADING_FONTS
 	unloader = [](size_t id) -> bool { FontManager::UnloadFont(id); return true; };
-	loader = [](const string& path, size_t& id) -> bool { 
+	loader = [](const string& path, size_t& id) -> bool {
 		Font* temp = FontManager::LoadFont(path);
-		if (temp != nullptr) { 
+		if (temp != nullptr) {
 			id = temp->GetManagerId();
 			return true;
 		}
 		SPDLOG_ERROR("Couldn't load font '{0}'", path);
 		return false;
-	};
+		};
 	_fontsIds = LoadResources(pathGetter, idGetter, dataGetter, sceneToLoad->_fonts, _fontsIds, unloader, loader);
 #pragma endregion
 #pragma region LOADING_AUDIO
 	unloader = [](size_t id) -> bool { AudioManager::UnloadAudio(id); return true; };
-	loader = [](const string& path, size_t& id) -> bool { 
-		id = AudioManager::LoadAudio(path); 
-		if (id != 0) return true; 
+	loader = [](const string& path, size_t& id) -> bool {
+		id = AudioManager::LoadAudio(path);
+		if (id != 0) return true;
 		SPDLOG_ERROR("Couldn't load audio '{0}'", path);
 		return false;
-	};
+		};
 	_audiosIds = LoadResources(pathGetter, idGetter, dataGetter, sceneToLoad->_audios, _audiosIds, unloader, loader);
 #pragma endregion
 #pragma region LOADING_MATERIALS
@@ -173,7 +165,7 @@ void SceneManager::LoadScene(const string& name)
 #pragma endregion
 #pragma region LOADING_PREFABS
 	unloader = [](size_t id) -> bool { PrefabManager::UnloadPrefab(id); return true; };
-	loader = [](const string& path, size_t& id) -> bool { 
+	loader = [](const string& path, size_t& id) -> bool {
 		Prefab* prefab = PrefabManager::LoadPrefab(path);
 		if (prefab != nullptr) {
 			id = prefab->GetId();
@@ -181,7 +173,7 @@ void SceneManager::LoadScene(const string& name)
 		}
 		SPDLOG_ERROR("Couldn't load prefab {0}", path);
 		return false;
-	};
+		};
 	_prefabsIds = LoadResources(pathGetter, idGetter, dataGetter, sceneToLoad->_prefabs, _prefabsIds, unloader, loader);
 #pragma endregion
 #pragma region LOADING_SCRIPTABLE_OBJECTS
@@ -210,13 +202,6 @@ void SceneManager::LoadScene(const string& name)
 #pragma endregion
 #pragma region LOADING_GAMEOBJECTS
 	// GAME OBJECTS
-
-	// DESTROY OLD OBJECTS
-	if (_rootObject != nullptr) {
-		_gameObjectsById.clear();
-		_componentsById.clear();
-		DestroyGameObject(_rootObject);
-	}
 
 	// CREATE NEW OBJECTS WITH TRANSFORMS
 	map<size_t, GameObject*> objectByComponentId;
@@ -317,7 +302,7 @@ void SceneManager::LoadScene(const string& name)
 					ComponentDeserializer::GetDeserializeAction(subType)(comp, componentNode);
 				}
 			}
-			
+
 
 			// Fill Component with Type values
 			ComponentDeserializer::GetDeserializeAction(type)(comp, componentNode);
@@ -334,8 +319,65 @@ void SceneManager::LoadScene(const string& name)
 
 	ScriptableObjectManager::SceneDeserializationEnd();
 
-	_currentSceneName = name;
-	_currentSceneId = sceneId;
+	_currentSceneName = _sceneToLoadName;
+	_currentSceneId = _sceneToLoadId;
+
+	_onSceneLoaded(_sceneToLoadName);
+}
+
+queue<GameObject*> SceneManager::_objectsToDestroy;
+
+void SceneManager::DestroyObject(GameObject* obj) {
+	Transform* trans = obj->GetTransform();
+	trans->SetParent(nullptr);
+	while (trans->GetChildCount() > 0) {
+		Transform* child = trans->GetChildAt(0);
+		trans->RemoveChild(child);
+
+		GameObject* childObj = child->GetGameObject();
+		if (_gameObjectsById.size() > 0) _gameObjectsById.erase(childObj->Id());
+		DestroyObject(childObj);
+	}
+	delete obj;
+}
+
+void SceneManager::DestroyObjects() {
+	if (_objectsToDestroy.size() == 0) return;
+
+	while (_objectsToDestroy.size() > 0) {
+		DestroyObject(_objectsToDestroy.front());
+		_objectsToDestroy.pop();
+	}
+}
+
+void SceneManager::AddScene(const string& name, Scene* scene)
+{
+	size_t id = hash<string>()(name);
+	if (_loadedScenes.find(id) != _loadedScenes.end()) {
+		SPDLOG_WARN("Zast�powanie Sceny o nazwie '{0}'", name);
+	}
+	_loadedScenes[id] = scene;
+}
+
+void SceneManager::AddScene(const string& name, const string& path)
+{
+	Scene* scene = new Scene();
+	scene->Deserialize(YAML::LoadFile(path));
+	AddScene(name, scene);
+}
+
+void SceneManager::LoadScene(const string& name)
+{
+	hash<string> hasher;
+	size_t sceneId = hasher(name);
+	if (_loadedScenes.find(sceneId) == _loadedScenes.end()) {
+		SPDLOG_WARN("Nie znaleziono sceny o nazwie '{0}'", name);
+		return;
+	}
+
+	_loadScene = true;
+	_sceneToLoadId = sceneId;
+	_sceneToLoadName = name;
 }
 
 void SceneManager::SaveScene(const string& path) {
@@ -398,6 +440,17 @@ void SceneManager::RenderCurrentScene()
 	}
 }
 
+void SceneManager::Update()
+{
+	DestroyObjects();
+	LoadScene();
+}
+
+EventHandler<string>& SceneManager::GetOnSceneLoaded()
+{
+	return _onSceneLoaded;
+}
+
 GameObject* SceneManager::GetRootObject()
 {
 	return _rootObject;
@@ -428,17 +481,7 @@ Component* SceneManager::GetComponentWithId(size_t id)
 
 void SceneManager::DestroyGameObject(GameObject* obj)
 {
-	Transform* trans = obj->GetTransform();
-	trans->SetParent(nullptr);
-	while (trans->GetChildCount() > 0) {
-		Transform* child = trans->GetChildAt(0);
-		trans->RemoveChild(child);
-
-		GameObject* childObj = child->GetGameObject();
-		if (_gameObjectsById.size() > 0) _gameObjectsById.erase(childObj->Id());
-		DestroyGameObject(childObj);
-	}
-	delete obj;
+	_objectsToDestroy.push(obj);
 }
 
 GameObject* SceneManager::CreateGameObject(Transform* parent)
@@ -878,7 +921,7 @@ void SceneManager::UnloadCurrent()
 	_currentSceneName = "";
 	_gameObjectsById.clear();
 	_componentsById.clear();
-	DestroyGameObject(_rootObject);
+	DestroyObject(_rootObject);
 
 	Action<map<size_t, size_t>&, const Action<size_t>&> unloader = [](map<size_t, size_t>& ids, const Action<size_t>& unload) -> void {
 		for (auto& id : ids) {

@@ -15,7 +15,23 @@ namespace Twin2Engine::Core {
 
 		hash<string> hasher = hash<string>();
 
-		map<size_t, size_t> finalIds;
+		for (auto& id : loadedIds) {
+			if (unloader(id.second)) {
+				
+			}
+		}
+
+		map<size_t, size_t> ret;
+		for (auto& data : resources) {
+			size_t id = 0;
+			if (loader(dataGetter(data), id)) {
+				ret[idGetter(data)] = id;
+			}
+		}
+
+		return ret;
+
+		/*map<size_t, size_t> finalIds;
 
 
 		map<size_t, size_t> currentIds = loadedIds;
@@ -28,7 +44,7 @@ namespace Twin2Engine::Core {
 			pathHashes[extractedId] = hasher(extractedPath);
 		}
 
-		vector<size_t> toUnload, toLoad;
+		vector<size_t> toUnload, toLoad, toRemove;
 		for (auto& path : pathHashes) {
 			toLoad.push_back(path.first);
 		}
@@ -48,11 +64,17 @@ namespace Twin2Engine::Core {
 			else {
 				for (size_t i = 0; i < toLoad.size(); ++i) {
 					if (pathHashes[toLoad[i]] == h.second) {
-						toLoad.erase(toLoad.begin() + i);
 						finalIds[toLoad[i]] = h.second;
+						toLoad.erase(toLoad.begin() + i);
+						toRemove.push_back(h.first);
 					}
 				}
 			}
+		}
+
+		// Removing from Current
+		for (auto& id : toRemove) {
+			currentIds.erase(id);
 		}
 
 		// Unloading
@@ -97,7 +119,7 @@ namespace Twin2Engine::Core {
 				}
 			}
 		}
-		
-		return finalIds;
+	
+		return finalIds;*/
 	}
 }

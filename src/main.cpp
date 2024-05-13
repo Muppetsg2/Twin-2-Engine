@@ -1,4 +1,4 @@
-//#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #include <GameEngine.h>
 
 // TILEMAP
@@ -115,20 +115,11 @@ GameObject* tilemapGO = nullptr;
 int main(int, char**)
 {
 #pragma region Initialization
-
-    // Initialize stdout color sink
-    //auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    
-    //auto console_sink = std::make_shared<Editor::Common::ImGuiSink<spdlog::details::console_mutex>>();
-    auto console_sink = std::make_shared<Editor::Common::ImGuiSink<mutex>>();
-    //console_sink->set_level(spdlog::level::debug);
-
-    // Create a logger with the stdout color sink
+    // LOGGING: SPDLOG INITIALIZATION
+    auto console_sink = std::make_shared<Editor::Common::ImGuiSink<mutex>>("res/logs/log.txt");
     auto logger = std::make_shared<spdlog::logger>("logger", console_sink);
     spdlog::register_logger(logger);
     spdlog::set_default_logger(logger);
-    // Set global log level to debug
-    //spdlog::set_level(spdlog::level::debug);
 
     if (!GameEngine::Init(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_FULLSCREEN, GL_VERSION_MAJOR, GL_VERSION_MINOR))
     {
@@ -1025,9 +1016,38 @@ void render_imgui()
         const vector<ImGuiLogMessage> messages = ImGuiSink<mutex>::getLogMessages();
         for (size_t index = 0ull; index < messages.size(); index++)
         {
+            ImVec4 textColor;
+
             if (logLevels[messages[index].level])
             {
-                ImGui::Text("%s", messages[index].messageContent.c_str());
+                switch (messages[index].level)
+                {
+                case SPDLOG_LEVEL_TRACE:
+                    textColor = ImVec4(0.0, 0.5, 0.0, 1.0);
+                    break;
+
+                case SPDLOG_LEVEL_DEBUG:
+                    textColor = ImVec4(0.0, 0.5, 0.0, 1.0);
+                    break;
+
+                case SPDLOG_LEVEL_INFO:
+                    textColor = ImVec4(0.65, 0.65, 0.65, 1.0);
+                    break;
+
+                case SPDLOG_LEVEL_WARN:
+                    textColor = ImVec4(1.0, 1.0, 0.0, 1.0);
+                    break;
+
+                case SPDLOG_LEVEL_ERROR:
+                    textColor = ImVec4(1.0, 0.0, 0.0, 1.0);
+                    break;
+
+                case SPDLOG_LEVEL_OFF:
+                    textColor = ImVec4(0.5, 0.0, 0.0, 1.0);
+                    break;
+                }
+
+                ImGui::TextColored(textColor, "%s", messages[index].messageContent.c_str());
             }
         }
 

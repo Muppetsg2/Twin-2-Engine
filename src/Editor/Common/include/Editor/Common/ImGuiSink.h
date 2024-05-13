@@ -27,23 +27,33 @@ namespace Editor::Common
 
         //static std::vector<spdlog::details::log_msg> logMessages;
         static std::vector<ImGuiLogMessage> logMessages;
+        static std::ofstream logFile;
 
     };
 
     template<typename Mutex>
     class ImGuiSink : public spdlog::sinks::base_sink<Mutex> {
     public:
-        ImGuiSink() {}
+        ImGuiSink(const std::string& filename)
+        {
+            MessageHolder::logFile.open(filename);
+        }
 
     protected:
         void sink_it_(const spdlog::details::log_msg& msg) override {
             // Convert log message to string
             spdlog::memory_buf_t formatted;
             this->formatter_->format(msg, formatted);
-            //std::string message = fmt::to_string(formatted);
+            std::string message = fmt::to_string(formatted);
 
             // Store the log message
-            MessageHolder::logMessages.emplace_back(ImGuiLogMessage(fmt::to_string(formatted), msg.level, msg.source));
+            MessageHolder::logMessages.emplace_back(ImGuiLogMessage(message, msg.level, msg.source));
+
+            if (MessageHolder::logFile.is_open())
+            {
+                MessageHolder::logFile << message << std::endl;
+                MessageHolder::logFile.flush();
+            }
         }
 
         void flush_() override {}
@@ -67,6 +77,7 @@ namespace Editor::Common
     // Static member definition
     //std::vector<spdlog::details::log_msg> MessageHolder::logMessages;
     std::vector<ImGuiLogMessage> MessageHolder::logMessages;
+    std::ofstream MessageHolder::logFile;
 }
 
 #endif // !_IMGUI_SINK_H_

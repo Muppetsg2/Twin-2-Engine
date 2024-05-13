@@ -336,7 +336,7 @@ YAML::Node Text::Serialize() const
 	YAML::Node node = RenderableComponent::Serialize();
 	node["subTypes"].push_back(node["type"].as<string>());
 	node["type"] = "Text";
-	node["text"] = _text;
+	//node["text"] = _text;
 	node["color"] = _color;
 	node["size"] = _size;
 	node["font"] = SceneManager::GetFontSaveIdx(_fontId);
@@ -348,7 +348,7 @@ void Text::SetColor(const vec4& color)
 	_color = color;
 }
 
-void Text::SetText(const string& text)
+void Text::SetText(const wstring& text)
 {
 	if (_text != text) {
 		_textDirty = true;
@@ -445,7 +445,7 @@ vec4 Text::GetColor() const
 	return _color;
 }
 
-string Text::GetText() const
+wstring Text::GetText() const
 {
 	return _text;
 }

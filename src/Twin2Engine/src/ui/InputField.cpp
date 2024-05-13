@@ -9,34 +9,22 @@ using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 using namespace std;
 
-const float InputField::_cursorDelay = .5f;
+const float InputField::_cursorDelay = 1.f;
 
-void InputField::OnKeyStateChange(KEY key, INPUT_STATE state)
+void InputField::OnTextInput(unsigned int character)
 {
 	if (!IsEnable() || !_interactable) return;
 
-	if (state == INPUT_STATE::PRESSED) {
-		if (key >= KEY::SPACE && key <= KEY::GRAVE_ACCENT) {
-			char value = (char)key;
-			if (key >= KEY::A && key <= KEY::Z) {
-				value += 'a' - 'A';
-			}
-
-			_textValue = _textValue.substr(0, _cursorPos) + value + _textValue.substr(_cursorPos, _textValue.size() - _cursorPos);
-			++_cursorPos;
-			_textDirty = true;
-		}
-
-		// U¯YWANIE INNYCH PRZYCISKÓW
-		// caps lock; num lock; numpad; insert; escape; tab; left/right shift; right alt; left ctrl
-	}
+	_textValue = _textValue.substr(0, _cursorPos) + (wchar_t)character + _textValue.substr(_cursorPos, _textValue.size() - _cursorPos);
+	++_cursorPos;
+	_textDirty = true;
 }
 
 void InputField::Initialize()
 {
-	_onKeyStateChangeID = Input::GetOnKeyStateChange() += [&](KEY key, INPUT_STATE state) -> void {
+	_onTextInputID = Input::GetOnTextInput() += [&](unsigned int character) -> void {
 		if (!_typing) return;
-		OnKeyStateChange(key, state);
+		OnTextInput(character);
 	};
 }
 
@@ -48,7 +36,7 @@ void InputField::Update()
 	if (Input::IsMouseButtonPressed(MOUSE_BUTTON::LEFT)) {
 		Transform* t = GetTransform();
 		glm::mat4 inv = glm::inverse(t->GetTransformMatrix());
-		glm::vec4 mPos = glm::vec4(Input::GetMousePos(), 0.f, 1.f);
+		glm::vec4 mPos = glm::vec4(Input::GetCursorPos(), 0.f, 1.f);
 		glm::vec3 btnLocalMPos = inv * mPos;
 
 		if (!_typing && btnLocalMPos.x >= -_width / 2.f && btnLocalMPos.x <= _width / 2.f && btnLocalMPos.y >= -_height / 2.f && btnLocalMPos.y <= _height / 2.f) {
@@ -70,7 +58,7 @@ void InputField::Update()
 			_currentCursorTime = _cursorDelay;
 		}
 
-		if (Input::IsKeyPressed(KEY::ENTER)) {
+		if (Input::IsKeyPressed(KEY::ENTER) || Input::IsKeyPressed(KEY::ESCAPE)) {
 			_typing = false;
 			_cursorVisible = false;
 			_textOffset = 0;
@@ -120,12 +108,16 @@ void InputField::Update()
 			}
 		}
 
+		if (Input::IsKeyPressed(KEY::INSERT)) {
+			_insertCursorMode = !_insertCursorMode;
+		}
+
 		// UPDATE TEXT
 		if (_textDirty) {
-			std::string finalText = _textValue.substr(_textOffset, _textValue.size() - _textOffset);
+			std::wstring finalText = _textValue.substr(_textOffset, _textValue.size() - _textOffset);
 			_text->SetText(finalText);
 			_text->UpdateTextMesh();
-			if (finalText != "") {
+			if (finalText != L"") {
 				_placeHolder->SetEnable(false);
 				if (_cursorPos != 0) {
 					if (_textOffset > _cursorPos) {
@@ -171,12 +163,19 @@ void InputField::Render()
 
 		if (_text->_overflow != TextOverflow::Overflow) {
 			elem.useMask = true;
-			elem.maskSize = { _text->_width, _text->_height };
+			elem.maskSize = { _text->_width + 4, _text->_height };
 			elem.maskTransform = _text->GetTransform()->GetTransformMatrix();
 		}
 
+		if (_insertCursorMode && _cursorPos - _textOffset < _text->_displayTextCharCache.size()) {
+			elem.elemSize = glm::ivec2(_text->_displayTextCharCache[_cursorPos - _textOffset].character->Size.x, _text->GetSize());
+			elem.elemTransform = glm::translate(elem.elemTransform, glm::vec3(elem.elemSize.x * .5f, 0.f, 0.f));
+		}
+		else {
+			elem.elemSize = glm::ivec2(2, _text->GetSize());
+		}
+
 		elem.color = glm::vec4(.5f, .5f, .5f, .9f);
-		elem.elemSize = glm::ivec2(2, _text->GetSize());
 		elem.hasTexture = false;
 		elem.worldSpaceCanvas = false;
 		elem.canvasSize = Window::GetInstance()->GetContentSize();
@@ -186,7 +185,7 @@ void InputField::Render()
 
 void InputField::OnDestroy()
 {
-	Input::GetOnKeyStateChange() -= _onKeyStateChangeID;
+	Input::GetOnTextInput() -= _onTextInputID;
 }
 
 YAML::Node InputField::Serialize() const
@@ -204,12 +203,12 @@ void InputField::SetInputText(Text* text)
 	_text = text;
 }
 
-void InputField::SetPlaceHolder(const std::string& placeHolder)
+void InputField::SetPlaceHolder(const wstring& placeHolder)
 {
 	_placeHolder->SetText(placeHolder);
 }
 
-void InputField::SetText(const std::string& text)
+void InputField::SetText(const wstring& text)
 {
 	_textValue = text;
 }
@@ -249,12 +248,12 @@ float InputField::GetHeight() const
 	return _height;
 }
 
-string InputField::GetPlaceHolder() const
+wstring InputField::GetPlaceHolder() const
 {
 	return _placeHolder->GetText();
 }
 
-string InputField::GetText() const
+wstring InputField::GetText() const
 {
 	return _textValue;
 }

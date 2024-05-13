@@ -19,7 +19,7 @@ Font::~Font() {
 	FT_Done_FreeType(_lib);
 }
 
-void Font::LoadCharacter(char character, uint32_t size) {
+void Font::LoadCharacter(unsigned int character, uint32_t size) {
     FT_Set_Pixel_Sizes(_face, 0, size);
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable byte-alignment restriction
@@ -55,7 +55,7 @@ void Font::LoadCharacter(char character, uint32_t size) {
         glm::ivec2(_face->glyph->bitmap_left, _face->glyph->bitmap_top),
         (unsigned int)_face->glyph->advance.x
     };
-    _glyphs[size].insert(std::pair<char, Character*>(character, glyph));
+    _glyphs[size].insert(std::pair<unsigned int, Character*>(character, glyph));
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 }
@@ -64,21 +64,13 @@ size_t Font::GetManagerId() const {
     return _managerId;
 }
 
-Character* Font::GetCharacter(char character, uint32_t size) {
+Character* Font::GetCharacter(unsigned int character, uint32_t size) {
     if (_glyphs.find(size) == _glyphs.end()) {
-		_glyphs[size] = map<char, Character*>();
+		_glyphs[size] = map<unsigned int, Character*>();
 		LoadCharacter(character, size);
 	}
 	else if (_glyphs[size].find(character) == _glyphs[size].end()) {
 		LoadCharacter(character, size);
 	}
 	return _glyphs[size][character];
-}
-
-vector<Character*> Font::GetText(const string& text, uint32_t size) {
-	vector<Character*> res = vector<Character*>();
-	for (auto& c : text) {
-		res.push_back(GetCharacter(c, size));
-	}
-	return res;
 }

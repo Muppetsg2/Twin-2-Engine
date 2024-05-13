@@ -18,7 +18,7 @@ namespace Twin2Engine::UI {
 
 	class Text : public Core::RenderableComponent {
 	private:
-		std::string _text = "";
+		std::wstring _text = L"";
 
 		size_t _fontId = 0;
 
@@ -54,7 +54,7 @@ namespace Twin2Engine::UI {
 		YAML::Node Serialize() const override;
 
 		void SetColor(const glm::vec4& color);
-		void SetText(const std::string& text);
+		void SetText(const std::wstring& text);
 		void SetSize(uint32_t size);
 		void SetWidth(float width);
 		void SetHeight(float height);
@@ -68,7 +68,7 @@ namespace Twin2Engine::UI {
 		void DisableAutoSize();
 
 		glm::vec4 GetColor() const;
-		std::string GetText() const;
+		std::wstring GetText() const;
 		uint32_t GetSize() const;
 		float GetHeight() const;
 		float GetWidth() const;

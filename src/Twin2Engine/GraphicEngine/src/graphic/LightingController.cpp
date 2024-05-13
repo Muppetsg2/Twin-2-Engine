@@ -3,6 +3,8 @@
 
 #include <graphic/manager/MeshRenderingManager.h>
 
+#define max max
+
 using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Tools;
 
@@ -358,7 +360,7 @@ void LightingController::RenderShadowMaps() {
 
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 	for (auto light : dirLights) {
-		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(light->shadowMapFBO, light->lightSpaceMatrix);
+		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMapStatic(light->shadowMapFBO, light->lightSpaceMatrix);
 		//Twin2Engine::Manager::MeshRenderingManager::RenderDepthMapStatic(light->shadowMapFBO, light->lightSpaceMatrix);
 		glActiveTexture(GL_TEXTURE0 + MAPS_BEGINNING + i);
 		glBindTexture(GL_TEXTURE_2D, light->shadowMap);

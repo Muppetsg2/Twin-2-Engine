@@ -45,4 +45,5 @@ target_link_libraries(${PROJECT_NAME}	${OPENGL_LIBRARIES}
 										freetype
 										glm::glm
 										PhysicEngine
+										Twin2Engine
 										Tools)

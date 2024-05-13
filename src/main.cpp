@@ -236,9 +236,11 @@ int main(int, char**)
 #pragma endregion
 
     // ADDING SCENES
+    SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.yaml");
-    SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
 
     SceneManager::LoadScene("testScene");
 
@@ -303,13 +305,13 @@ int main(int, char**)
     MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
     mapGenerator->tilemap = hexagonalTilemap;
     float tilemapGenerating = glfwGetTime();
-    mapGenerator->Generate();
+    //mapGenerator->Generate();
     spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
 
     ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
 
     tilemapGenerating = glfwGetTime();
-    contentGenerator->GenerateContent(hexagonalTilemap);
+    //contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
     /**/
 

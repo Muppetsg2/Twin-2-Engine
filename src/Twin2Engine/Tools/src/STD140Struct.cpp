@@ -79,6 +79,8 @@ bool STD140Struct::_SetStruct(const string& name, const STD140Struct& value)
 
 	// SET VALUE DATA
 	memcpy(_data.data() + valueOffset, valueData.data(), valueDataSize);
+
+	return true;
 }
 
 bool STD140Struct::_SetStructArray(const string& name, const STD140Offsets& structOffsets, const vector<vector<char>>& values)
@@ -114,6 +116,8 @@ bool STD140Struct::_SetStructArray(const string& name, const STD140Offsets& stru
 		// SET VALUE DATA
 		memcpy(_data.data() + valuesOffsets[i], valueData.data(), valueDataSize);
 	}
+
+	return true;
 }
 
 STD140Struct STD140Struct::_GetStruct(const string& name, const STD140Offsets& structOffsets) const

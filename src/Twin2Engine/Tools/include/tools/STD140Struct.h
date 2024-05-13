@@ -3,6 +3,8 @@
 #include <tools/EventHandler.h>
 #include <tools/STD140Offsets.h>
 
+#undef min
+
 namespace Twin2Engine::Tools {
 	class STD140Struct {
 	private:
@@ -165,7 +167,7 @@ namespace Twin2Engine::Tools {
 			std::vector<char> valueData = _GetValueData(value);
 
 			// GET VALUE DATA MAX SIZE
-			size_t valueDataSize = std::min(valueData.size(), _data.size() - valueOffset);
+			size_t valueDataSize = glm::min(valueData.size(), _data.size() - valueOffset);
 
 			// SET VALUE DATA
 			memcpy(_data.data() + valueOffset, valueData.data(), valueDataSize);
@@ -201,7 +203,7 @@ namespace Twin2Engine::Tools {
 				std::vector<char> valueData = _GetValueData(values[i]);
 
 				// GET LOCAL VALUE DATA MAX SIZE
-				size_t valueDataSize = std::min(std::min(valueData.size(), arrayElemDataSize), _data.size() - valueOffset);
+				size_t valueDataSize = glm::min(glm::min(valueData.size(), arrayElemDataSize), _data.size() - valueOffset);
 
 				// SET VALUE DATA
 				memcpy(_data.data() + valueOffset, valueData.size(), valueDataSize);
@@ -234,7 +236,7 @@ namespace Twin2Engine::Tools {
 				std::vector<char> valueData = _GetValueData(value[i]);
 
 				// GET VALUE DATA MAX SIZE
-				size_t valueDataSize = std::min(std::min(valueData.size(), rowsArrayElemSize), _data.size() - rowsOffsets[i]);
+				size_t valueDataSize = glm::min(glm::min(valueData.size(), rowsArrayElemSize), _data.size() - rowsOffsets[i]);
 
 				// SET VALUE DATA
 				memcpy(_data.data() + rowsOffsets[i], valueData.data(), valueDataSize);
@@ -278,7 +280,7 @@ namespace Twin2Engine::Tools {
 				size_t rowsArrayElemDataSize = _GetArrayElemSize(rowsOffsets);
 
 				// GET MATRIX DATA MAX SIZE
-				size_t matrixDataSize = std::min(arrayElemDataSize, _data.size() - valuesOffsets[i]);
+				size_t matrixDataSize = glm::min(arrayElemDataSize, _data.size() - valuesOffsets[i]);
 
 				// SET ROWS DATA
 				for (size_t r = 0; r < C && r < rowsOffsets.size(); ++r) {
@@ -286,7 +288,7 @@ namespace Twin2Engine::Tools {
 					std::vector<char> valueData = _GetValueData(values[i][r]);
 
 					// GET VALUE DATA MAX SIZE
-					size_t valueDataSize = std::min(std::min(valueData.size(), rowsArrayElemDataSize), valuesOffsets[i] + matrixDataSize - rowsOffsets[r]);
+					size_t valueDataSize = glm::min(glm::min(valueData.size(), rowsArrayElemDataSize), valuesOffsets[i] + matrixDataSize - rowsOffsets[r]);
 
 					// SET VALUE DATA
 					memcpy(_data.data() + rowsOffsets[r], valueData.data(), valueDataSize);
@@ -323,7 +325,7 @@ namespace Twin2Engine::Tools {
 			valueData.resize(sizeof(T));
 
 			// GET MAX VALUE DATA
-			size_t valueDataSize = std::min(valueData.size(), _data.size() - valueOffset);
+			size_t valueDataSize = glm::min(valueData.size(), _data.size() - valueOffset);
 
 			// GET VALUE DATA
 			memcpy(valueData.data(), _data.data() + valueOffset, valueDataSize);
@@ -361,7 +363,7 @@ namespace Twin2Engine::Tools {
 				valueData.resize(sizeof(T));
 
 				// GET MAX VALUE DATA
-				size_t valueDataSize = std::min(std::min(valueData.size(), arrayElemDataSize), _data.size() - valuesOffsets[i]);
+				size_t valueDataSize = glm::min(glm::min(valueData.size(), arrayElemDataSize), _data.size() - valuesOffsets[i]);
 
 				// GET VALUE DATA
 				memcpy(valueData.data(), _data.data() + valuesOffsets[i], valueDataSize);
@@ -403,7 +405,7 @@ namespace Twin2Engine::Tools {
 				rowData.resize(sizeof(glm::vec<R, T>));
 
 				// GET MAX VALUE DATA
-				size_t rowDataSize = std::min(std::min(rowData.size(), rowsArrayElemDataSize), _data.size() - rowsOffsets[i]);
+				size_t rowDataSize = glm::min(glm::min(rowData.size(), rowsArrayElemDataSize), _data.size() - rowsOffsets[i]);
 
 				// GET ROW DATA
 				memcpy(rowData.data(), _data.data() + rowsOffsets[i], rowDataSize);
@@ -454,7 +456,7 @@ namespace Twin2Engine::Tools {
 				size_t rowsArrayElemDataSize = _GetArrayElemSize(rowsOffsets);
 
 				// GET MATRIX DATA SIZE
-				size_t matrixDataSize = std::min(arrayElemDataSize, _data.size() - valuesOffsets[i]);
+				size_t matrixDataSize = glm::min(arrayElemDataSize, _data.size() - valuesOffsets[i]);
 
 				// MAKE EMPTY MAT
 				M value{};
@@ -466,7 +468,7 @@ namespace Twin2Engine::Tools {
 					rowData.resize(sizeof(glm::vec<R, T>));
 
 					// GET MAX VALUE DATA
-					size_t rowDataSize = std::min(std::min(rowData.size(), rowsArrayElemDataSize), valuesOffsets[i] + matrixDataSize - rowsOffsets[r]);
+					size_t rowDataSize = glm::min(glm::min(rowData.size(), rowsArrayElemDataSize), valuesOffsets[i] + matrixDataSize - rowsOffsets[r]);
 
 					// GET ROW DATA
 					memcpy(rowData.data(), _data.data() + rowsOffsets[r], rowDataSize);
@@ -801,7 +803,7 @@ namespace Twin2Engine::Tools {
 			else {
 				values = _GetArray<T>(name);
 			}
-			memcpy(valuesDest, values.data(), std::min(values.size(), size));
+			memcpy(valuesDest, values.data(), glm::min(values.size(), size));
 		}
 
 		template<class V, class T = V::value_type>
@@ -839,7 +841,7 @@ namespace Twin2Engine::Tools {
 			else {
 				values = _GetArray<V>(name);
 			}
-			memcpy(valuesDest, values.data(), std::min(values.size(), size));
+			memcpy(valuesDest, values.data(), glm::min(values.size(), size));
 		}
 
 		template<class Vec, class V = Vec::value_type, class T = V::value_type, size_t L = V::length()>
@@ -880,7 +882,7 @@ namespace Twin2Engine::Tools {
 			else {
 				values = _GetMatArray<M>(name);
 			}
-			memcpy(valuesDest, values.data(), std::min(values.size(), size));
+			memcpy(valuesDest, values.data(), glm::min(values.size(), size));
 		}
 
 		template<class Vec, class M = Vec::value_type, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
@@ -911,7 +913,7 @@ namespace Twin2Engine::Tools {
 		typename std::enable_if_t<std::is_same_v<S, STD140Struct>>
 		Get(const std::string& name, const STD140Offsets& structOffsets, STD140Struct*& valueDest, size_t size) const {
 			std::vector<STD140Struct> values = _GetStructArray(name, structOffsets);
-			memcpy(valueDest, values.data(), std::min(values.size(), size));
+			memcpy(valueDest, values.data(), glm::min(values.size(), size));
 		}
 
 		template<class V, class S = V::value_type>

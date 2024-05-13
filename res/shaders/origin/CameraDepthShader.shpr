@@ -1,0 +1,6 @@
+shaderprogram:
+  name: origin/CameraDepthShader
+  shaders:
+    - depth_shader_camera.vert
+    - depth_shader.frag
+  parameters:

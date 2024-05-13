@@ -93,7 +93,7 @@ void GameEngine::Deserializers()
         },
         [](Component* comp, const YAML::Node& node) -> void {
             Text* text = static_cast<Text*>(comp);
-            text->SetText(node["text"].as<string>());
+            //text->SetText(node["text"].as<wstring>());
             text->SetColor(node["color"].as<vec4>());
             text->SetSize(node["size"].as<uint32_t>());
             text->SetFont(SceneManager::GetFont(node["font"].as<size_t>()));

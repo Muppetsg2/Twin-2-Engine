@@ -42,7 +42,7 @@ void Button::Update()
 	if (Input::IsMouseButtonPressed(MOUSE_BUTTON::LEFT)) {
 		Transform* t = GetTransform();
 		glm::mat4 inv = glm::inverse(t->GetTransformMatrix());
-		glm::vec4 mPos = glm::vec4(Input::GetMousePos(), 0.f, 1.f);
+		glm::vec4 mPos = glm::vec4(Input::GetCursorPos(), 0.f, 1.f);
 		glm::vec3 btnLocalMPos = inv * mPos;
 		if (btnLocalMPos.x >= -_width / 2.f && btnLocalMPos.x <= _width / 2.f && btnLocalMPos.y >= -_height / 2.f && btnLocalMPos.y <= _height / 2.f) {
 

@@ -15,6 +15,11 @@
 
 //LOGGER
 #include <spdlog/spdlog.h>
+#include <spdlog/sinks/base_sink.h>
+#include <spdlog/sinks/base_sink-inl.h>
+//#include <spdlog/sinks/stdout_color_sinks.h>
+//#include <spdlog/sinks/wincolor_sink.h>
+//#include <spdlog/details/synchronous_factory.h>
 
 
 // GLM

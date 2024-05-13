@@ -1,3 +1,4 @@
+//#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #include <GameEngine.h>
 
 // TILEMAP
@@ -25,8 +26,14 @@
 #include <Generation/YamlConverters.h>
 
 // EDITOR
-#include <Editor/Common/ProcessingMtlFiles.h>
 #include <Editor/Common/MaterialCreator.h>
+#include <Editor/Common/ProcessingMtlFiles.h>
+#include <Editor/Common/ScriptableObjectEditorManager.h>
+#include <Editor/Common/ImGuiSink.h>
+
+using Editor::Common::ImGuiSink;
+using Editor::Common::ImGuiLogMessage;
+
 
 using namespace Twin2Engine;
 using namespace Twin2Engine::Manager;
@@ -108,6 +115,20 @@ GameObject* tilemapGO = nullptr;
 int main(int, char**)
 {
 #pragma region Initialization
+
+    // Initialize stdout color sink
+    //auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+    
+    //auto console_sink = std::make_shared<Editor::Common::ImGuiSink<spdlog::details::console_mutex>>();
+    auto console_sink = std::make_shared<Editor::Common::ImGuiSink<mutex>>();
+    //console_sink->set_level(spdlog::level::debug);
+
+    // Create a logger with the stdout color sink
+    auto logger = std::make_shared<spdlog::logger>("logger", console_sink);
+    spdlog::register_logger(logger);
+    spdlog::set_default_logger(logger);
+    // Set global log level to debug
+    //spdlog::set_level(spdlog::level::debug);
 
     if (!GameEngine::Init(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_FULLSCREEN, GL_VERSION_MAJOR, GL_VERSION_MINOR))
     {
@@ -301,6 +322,8 @@ int main(int, char**)
     //contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
     /**/
+
+    Editor::Common::ScriptableObjectEditorManager::Update();
 
 #pragma endregion
     
@@ -948,12 +971,82 @@ void render_imgui()
         }
 
 #pragma endregion
+        
+
 
         ImGui::Separator();
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
         ImGui::End();
+
+#pragma region LOGGING_CONSOLE
+
+
+        static bool logLevels[7] = { true, true, true, true, true, true, true };
+
+        ImGui::SetNextWindowSizeConstraints(ImVec2(600, 300), ImVec2(WINDOW_WIDTH, WINDOW_HEIGHT));
+
+        ImGui::Begin("Console");
+        ImGui::Checkbox("TRACE", &logLevels[SPDLOG_LEVEL_TRACE]);
+        ImGui::SameLine();
+        ImGui::Checkbox("DEBUG", &logLevels[SPDLOG_LEVEL_DEBUG]);
+        ImGui::SameLine();
+        ImGui::Checkbox("INFO", &logLevels[SPDLOG_LEVEL_INFO]);
+        ImGui::SameLine();
+        ImGui::Checkbox("WARN", &logLevels[SPDLOG_LEVEL_WARN]);
+        ImGui::SameLine();
+        ImGui::Checkbox("ERR", &logLevels[SPDLOG_LEVEL_ERROR]);
+        ImGui::SameLine();
+        ImGui::Checkbox("CRITICAL", &logLevels[SPDLOG_LEVEL_CRITICAL]);
+        ImGui::SameLine();
+        ImGui::Checkbox("OFF", &logLevels[SPDLOG_LEVEL_OFF]);
+
+        float buttonPosX = ImGui::GetWindowWidth() - ImGui::GetStyle().ItemSpacing.x - ImGui::CalcTextSize("Clear").x;
+
+        ImGui::SameLine();
+
+        ImGui::SetCursorPosX(buttonPosX);
+
+        // Draw button
+        if (ImGui::Button("Clear")) {
+            // Handle button click
+            ImGuiSink<mutex>::clear();
+        }
+
+        ImGui::SameLine();
+        float autoScrollPosX = buttonPosX - 4 * ImGui::GetStyle().ItemSpacing.x - ImGui::CalcTextSize("Auto Scroll").x;
+        ImGui::SetCursorPosX(autoScrollPosX);
+
+        static bool autoScroll = true;
+        ImGui::Checkbox("Auto Scroll", &autoScroll);
+
+        ImGui::BeginChild("LogWindow", ImVec2(0, 0), true);
+        const vector<ImGuiLogMessage> messages = ImGuiSink<mutex>::getLogMessages();
+        for (size_t index = 0ull; index < messages.size(); index++)
+        {
+            if (logLevels[messages[index].level])
+            {
+                ImGui::Text("%s", messages[index].messageContent.c_str());
+            }
+        }
+
+        //static float lastScrollPosition = 0.0;
+        //static bool lastFrameOnEnd = true;
+        //cout << "Scroll" << ImGui::GetScrollY() << endl;
+        if (autoScroll)
+        {
+            ImGui::SetScrollHereY(1.0f);
+        }
+        //float currentScrollPos = ImGui::GetScrollY();
+        //if (currentScrollPos == ImGui::GetScrollMaxY())
+        //{
+        //    lastFrameOnEnd = true;
+        //}
+
+        ImGui::EndChild();
+        ImGui::End();
+#pragma endregion 
     }
 }
 
@@ -963,4 +1056,5 @@ void end_imgui()
     window->Use();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
+
 #endif

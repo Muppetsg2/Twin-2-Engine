@@ -1,4 +1,5 @@
 #include <Generation/MapGenerator.h>
+#include <core/HexagonalColliderComponent.h>
 
 using namespace Generation;
 using namespace Tilemap;
@@ -235,6 +236,7 @@ void MapGenerator::Generate()
     ivec2 leftBottomPosition = tilemap->GetLeftBottomPosition();
     ivec2 rightTopPosition = tilemap->GetRightTopPosition();
     
+    int i = 1000;
     for (int x = leftBottomPosition.x; x <= rightTopPosition.x; x++)
     {
         for (int y = leftBottomPosition.y; y <= rightTopPosition.y; y++)
@@ -247,6 +249,9 @@ void MapGenerator::Generate()
                 MapHexTile* hexTile = tileObject->GetComponent<MapHexTile>();
                 hexTile->tilemap = tilemap;
                 hexTile->tile = tile;
+
+                HexagonalColliderComponent* hexCol = tileObject->GetComponent<HexagonalColliderComponent>();
+                hexCol->colliderId = ++i;
             }
         }
     }

@@ -5,6 +5,8 @@
 
 using namespace CollisionSystem;
 
+//LastFrameCollisions
+
 GameCollider::GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, SphereColliderData* sphereColliderData)
 	: colliderComponent(colliderComponent) {
 	colliderShape = ColliderShape::SPHERE;
@@ -23,7 +25,14 @@ GameCollider::GameCollider(Twin2Engine::Core::ColliderComponent* colliderCompone
 	shapeColliderData = capsuleColliderData;
 }
 
+GameCollider::GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, HexagonalColliderData* hexagonalColliderData)
+	: colliderComponent(colliderComponent) {
+	colliderShape = ColliderShape::HEXAGONAL;
+	shapeColliderData = hexagonalColliderData;
+}
+
 GameCollider::~GameCollider() {
+	LastFrameCollisions.clear();
 	colliderComponent = nullptr;
 	boundingVolume = nullptr;
 }
@@ -141,7 +150,7 @@ Collision* GameCollider::collide(Collider* other) {
 						}
 						else {
 							//separacja obu gameobjektów
-							SPDLOG_INFO("{} - separacja obu gameobjektów ({}, {}, {})", colliderComponent->colliderId, collision->separation.x,
+							SPDLOG_INFO("{} - separacja obu gameobjektów \t({} {})\t ({}, {}, {})", colliderComponent->colliderId, colliderShape, other->colliderShape, collision->separation.x,
 								collision->separation.y, collision->separation.z);
 							//std::cout << colliderComponent->colliderId << " - separacja obu gameobjektów\n";
 							colliderComponent->GetTransform()->SetGlobalPosition(

@@ -43,6 +43,7 @@
 #include <core/BoxColliderComponent.h>
 #include <core/CapsuleColliderComponent.h>
 #include <core/SphereColliderComponent.h>
+#include <core/HexagonalColliderComponent.h>
 
 // CAMERA
 #include <core/CameraComponent.h>
@@ -363,6 +364,7 @@ int main(int, char**)
         },
         [](Component* comp, const YAML::Node& node) -> void {
             ColliderComponent* collider = static_cast<ColliderComponent*>(comp);
+            collider->colliderId = node["colliderId"].as<unsigned int>();
             collider->SetTrigger(node["trigger"].as<bool>());
             collider->SetStatic(node["static"].as<bool>());
             collider->SetLayer(node["layer"].as<Layer>());
@@ -398,6 +400,18 @@ int main(int, char**)
             boxCollider->SetXRotation(rotation.x);
             boxCollider->SetYRotation(rotation.y);
             boxCollider->SetZRotation(rotation.z);
+        }
+        );
+
+    ComponentDeserializer::AddDeserializer("HexagonalCollider",
+        []() -> Component* {
+            return new HexagonalColliderComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            HexagonalColliderComponent* hexCollider = static_cast<HexagonalColliderComponent*>(comp);
+            hexCollider->SetBaseLength(node["baselength"].as<float>());
+            hexCollider->SetHalfHeight(node["halfheight"].as<float>());
+            hexCollider->SetYRotation(node["rotation"].as<float>());
         }
         );
 
@@ -577,7 +591,8 @@ int main(int, char**)
 
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
-    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.yaml");
+    SceneManager::AddScene("testScene", "res/scenes/MainGameScene.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
 
     CollisionSystem::CollisionManager::Instance()->PerformCollisions();
@@ -623,6 +638,11 @@ int main(int, char**)
     dl->SetColor(glm::vec3(1.0f));
     LightingController::Instance()->SetViewerPosition(cameraPos);
     LightingController::Instance()->SetAmbientLight(glm::vec3(0.1f));
+#pragma endregion
+#pragma region HexCollider
+    //GameObject* h_go = SceneManager::CreateGameObject();
+    //HexagonalColliderComponent* hc = h_go->AddComponent<HexagonalColliderComponent>();
+    //hc->SetLocalPosition(0.0f, -0.5f, 0.5f);
 #pragma endregion
 
     // Main loop
@@ -741,6 +761,19 @@ void input()
     }
 
     CameraComponent* c = CameraComponent::GetMainCamera();
+
+    if (Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::LEFT)) {
+        static int i = 1;
+        RaycastHit raycast;
+        Ray ray = c->GetScreenPointRay(Input::GetMousePos());
+        CollisionManager::Instance()->Raycast(ray, raycast);
+        if (raycast.collider != nullptr) {
+            SPDLOG_INFO("Click {}. collider: {}\t pos: \t{}\t{}\t{}", i++, raycast.collider->colliderId, raycast.position.x, raycast.position.y, raycast.position.z);
+        }
+        else {
+            SPDLOG_INFO("Collision not happened!");
+        }
+    }
 
     bool moved = false;
 

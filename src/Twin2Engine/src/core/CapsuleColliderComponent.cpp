@@ -53,7 +53,7 @@ void Twin2Engine::Core::CapsuleColliderComponent::OnDisable()
 
 void Twin2Engine::Core::CapsuleColliderComponent::OnDestroy()
 {
-	GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
+	//GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
 	CollisionSystem::CollisionManager::Instance()->UnregisterCollider(collider);
 }
 

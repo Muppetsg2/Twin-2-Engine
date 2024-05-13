@@ -488,6 +488,99 @@ Collision* Collider::BoxCapsuleCollision(Collider* box, Collider* capsule, bool 
 }
 
 
+
+
+Collision* Collider::HexagonalSphereCollision(Collider* Hexagonal, Collider* sphere, bool separate) {
+	HexagonalColliderData* hexagonalData = (HexagonalColliderData*)Hexagonal->shapeColliderData;
+	SphereColliderData* sphereData = (SphereColliderData*)sphere->shapeColliderData;
+
+	glm::vec3 relPos = sphereData->Position - hexagonalData->Position;
+	glm::vec3 t;
+	glm::vec3 nearestPosition;
+	float projectionT;
+
+	//clamping to hexagon
+	float projection = glm::dot(relPos, hexagonalData->u);
+	float halfBaseLength = 0.5 * hexagonalData->BaseLength;
+
+	if ((-halfBaseLength) <= projection && projection <= halfBaseLength) {
+		t = glm::cross(hexagonalData->u, glm::vec3(0.0f, 1.0f, 0.0f));
+		projectionT = glm::dot(relPos, t);
+		nearestPosition = hexagonalData->Position + projectionT * t + projection * hexagonalData->u;
+	}
+	else {
+		projection = glm::dot(relPos, hexagonalData->v);
+		if ((-halfBaseLength) <= projection && projection <= halfBaseLength) {
+			t = glm::cross(hexagonalData->v, glm::vec3(0.0f, 1.0f, 0.0f));
+			projectionT = glm::dot(relPos, t);
+			nearestPosition = hexagonalData->Position + projectionT * t + projection * hexagonalData->v;
+		}
+		else {
+			projection = glm::dot(relPos, hexagonalData->w);
+			t = glm::cross(hexagonalData->w, glm::vec3(0.0f, 1.0f, 0.0f));
+			projectionT = glm::dot(relPos, t);
+			if ((-halfBaseLength) <= projection && projection <= halfBaseLength) {
+				nearestPosition = hexagonalData->Position + projectionT * t + projection * hexagonalData->w;
+			}
+			else {
+				if (projection < 0.0f) {
+					if (projectionT > 0.0f) {
+						nearestPosition = hexagonalData->Position - hexagonalData->BaseLength * hexagonalData->v;
+					}
+					else if (projectionT < 0.0f) {
+						nearestPosition = hexagonalData->Position + hexagonalData->BaseLength * hexagonalData->u;
+					}
+					else {
+						nearestPosition = hexagonalData->Position - hexagonalData->BaseLength * hexagonalData->w;
+					}
+				}
+				else {
+					if (projectionT > 0.0f) {
+						nearestPosition = hexagonalData->Position - hexagonalData->BaseLength * hexagonalData->u;
+					}
+					else if (projectionT < 0.0f) {
+						nearestPosition = hexagonalData->Position + hexagonalData->BaseLength * hexagonalData->v;
+					}
+					else {
+						nearestPosition = hexagonalData->Position + hexagonalData->BaseLength * hexagonalData->w;
+					}
+				}
+			}
+		}
+	}
+
+	projection = glm::dot(relPos, glm::vec3(0.0f, 1.0f, 0.0f));
+	if (projection > hexagonalData->HalfHeight) {
+		nearestPosition.y = hexagonalData->HalfHeight;
+	}
+	else if (projection < (-hexagonalData->HalfHeight)) {
+		nearestPosition.y = projection;
+	}
+	else {
+		nearestPosition.y = -hexagonalData->HalfHeight;
+	}
+
+	relPos = nearestPosition - sphereData->Position;
+	float distanceSqr = glm::dot(relPos, relPos);
+	float radiusSqr = sphereData->Radius * sphereData->Radius;
+
+	if (distanceSqr <= radiusSqr) {
+		Collision* collision = new Collision;
+		collision->collider = Hexagonal;
+		collision->otherCollider = sphere;
+		//collision->position = ;
+
+		if (separate) {
+			collision->separation = glm::normalize(relPos) * ((sphereData->Radius - relPos.length()) * 0.5f);
+		}
+
+		return collision;
+	}
+	else {
+		return nullptr;
+	}
+}
+
 Collision* Collider::testCollision(Collider* collider, Collider* otherCollider, bool separate) {
 	Collision* collision = nullptr;
 	Collider* t;
@@ -507,6 +600,16 @@ Collision* Collider::testCollision(Collider* collider, Collider* otherCollider, 
 		case ColliderShape::CAPSULE:
 			return SphereCapsuleCollision(collider, otherCollider, separate);
 			break;
+
+		case ColliderShape::HEXAGONAL:
+			return HexagonalSphereCollision(otherCollider, collider, separate);
+			if (collision != nullptr) {
+				t = collision->collider;
+				collision->collider = collision->otherCollider;
+				collision->otherCollider = t;
+				collision->separation *= -1.0f;
+			}
+			break;
 		}
 		break;
 
@@ -519,6 +622,7 @@ Collision* Collider::testCollision(Collider* collider, Collider* otherCollider, 
 				t = collision->collider;
 				collision->collider = collision->otherCollider;
 				collision->otherCollider = t;
+				collision->separation *= -1.0f;
 			}
 			break;
 
@@ -528,6 +632,10 @@ Collision* Collider::testCollision(Collider* collider, Collider* otherCollider, 
 
 		case ColliderShape::CAPSULE:
 			return BoxCapsuleCollision(collider, otherCollider, separate);
+			break;
+
+		case ColliderShape::HEXAGONAL:
+			return nullptr;
 			break;
 		}
 		break;
@@ -541,6 +649,7 @@ Collision* Collider::testCollision(Collider* collider, Collider* otherCollider, 
 				t = collision->collider;
 				collision->collider = collision->otherCollider;
 				collision->otherCollider = t;
+				collision->separation *= -1.0f;
 			}
 			break;
 
@@ -550,11 +659,36 @@ Collision* Collider::testCollision(Collider* collider, Collider* otherCollider, 
 				t = collision->collider;
 				collision->collider = collision->otherCollider;
 				collision->otherCollider = t;
+				collision->separation *= -1.0f;
 			}
 			break;
 
 		case ColliderShape::CAPSULE:
 			return CapsuleCapsuleCollision(collider, otherCollider, separate);
+			break;
+
+		case ColliderShape::HEXAGONAL:
+			return nullptr;
+			break;
+		}
+		break;
+
+	case ColliderShape::HEXAGONAL:
+		switch (otherCollider->colliderShape) {
+		case ColliderShape::SPHERE:
+			return HexagonalSphereCollision(collider, otherCollider, separate);
+			break;
+
+		case ColliderShape::BOX:
+			return nullptr;
+			break;
+
+		case ColliderShape::CAPSULE:
+			return nullptr;
+			break;
+
+		case ColliderShape::HEXAGONAL:
+			return nullptr;
 			break;
 		}
 		break;

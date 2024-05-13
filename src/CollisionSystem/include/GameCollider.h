@@ -37,7 +37,7 @@ namespace CollisionSystem {
 		GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, SphereColliderData* sphereColliderData);
 		GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, BoxColliderData* boxColliderData);
 		GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, CapsuleColliderData* CapsuleColliderData);
-
+		GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, HexagonalColliderData* hexagonalColliderData);
 		virtual ~GameCollider();
 
 		Collision* testBoundingVolume(BoundingVolume* other) const;// = 0;

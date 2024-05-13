@@ -15,6 +15,9 @@ namespace LightingSystem {
 	class LightingController {
 		private:
 			static LightingController* instance;
+			static glm::vec3 viewerPosition;
+			static bool lastViewerPositionSet;
+			static glm::vec3 lastViewerPosition;
 
 			LightingController();
 			~LightingController();
@@ -42,6 +45,14 @@ namespace LightingSystem {
 			static float DLShadowCastingRange;
 			Twin2Engine::Core::EventHandler<> ViewerTransformChanged;
 			void UpdateOnTransformChange() {
+				//SPDLOG_INFO("VP: {}\t{}\t{}\t\tLVP{}\t{}\t{}", viewerPosition.x, viewerPosition.y, viewerPosition.z, lastViewerPosition.x, lastViewerPosition.y, lastViewerPosition.z);
+				if (lastViewerPositionSet) {
+					if ((glm::abs(lastViewerPosition.x - viewerPosition.x) <= 5.0f) && (glm::abs(lastViewerPosition.y - viewerPosition.y) <= 5.0f)) {
+						//SPDLOG_INFO("2");
+						return;
+					}
+				}
+				//SPDLOG_INFO("1");
 				ViewerTransformChanged.Invoke();
 				RenderShadowMaps();
 			}

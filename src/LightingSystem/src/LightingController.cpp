@@ -13,10 +13,13 @@
 using namespace LightingSystem;
 
 LightingController* LightingController::instance = nullptr;
-const int LightingController::SHADOW_WIDTH = 1536;
-const int LightingController::SHADOW_HEIGHT = 1536;
+const int LightingController::SHADOW_WIDTH = 2048;
+const int LightingController::SHADOW_HEIGHT = 2048;
 const int LightingController::MAPS_BEGINNING = 27;
 float LightingController::DLShadowCastingRange = 20.0f;
+glm::vec3 LightingController::viewerPosition(0.0f);
+bool LightingController::lastViewerPositionSet = false;
+glm::vec3 LightingController::lastViewerPosition(0.0f);
 
 LightingController::LightingController() {
 	glGenBuffers(1, &LightsBuffer);
@@ -228,11 +231,11 @@ void LightingController::UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader*
 glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* light) { //const glm::mat4& viewProjectionInverse
 	/**/
 	Twin2Engine::Core::CameraComponent* mainCam = Twin2Engine::Core::CameraComponent::GetMainCamera();
-	glm::mat4 projectionViewInverse = glm::inverse(mainCam->GetProjectionMatrix() * mainCam->GetViewMatrix());
-	std::vector<glm::vec3> corners;
+	//glm::mat4 projectionViewInverse = glm::inverse(mainCam->GetProjectionMatrix() * mainCam->GetViewMatrix());
+	//std::vector<glm::vec3> corners;
 
-	glm::vec3 lightNewPos;
-	glm::vec3 frustumCenter;
+	//glm::vec3 lightNewPos;
+	/*/glm::vec3 frustumCenter;
 
 	if (mainCam->GetCameraType() == Twin2Engine::Core::CameraType::ORTHOGRAPHIC) {
 		std::vector<glm::vec4> ndcNearCorners = {
@@ -299,8 +302,10 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 	glm::vec3 V = frustumCenter - origin;
 	float VoDir = glm::dot(V, light->direction);
 	//Zawiera now¹ pozycjê œwiat³a
-	lightNewPos = frustumCenter - 20.0f * VoDir * light->direction;
+	lightNewPos = frustumCenter - 20.0f * VoDir * light->direction;/**/
 
+	float zLength = 100.0f;
+	glm::vec3 lightNewPos = viewerPosition + mainCam->GetFrontDir() * DLShadowCastingRange - light->direction * (zLength * 0.5f);
 	glm::mat4 viewMatrix = glm::lookAt(lightNewPos, lightNewPos + light->direction, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	//maxX = 0.0f;
@@ -316,13 +321,15 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 	//float lightMargin = 5.0f; // Adjust based on scene size
 	//float MarginScaleX = 0.7f; // Adjust based on scene size
 	//float XMovement = -5.0f; // Adjust based on scene size
-	float orthoHeight = 10.0f;
-	float orthoWidth = 10.0f;
+	float orthoHeight = 20.0f;
+	float orthoWidth = 20.0f;
 
-	float zLength = 40.0f * glm::abs(VoDir);
 	//light->lightSpaceMatrix = glm::ortho(-(maxX + lightMargin), maxX + lightMargin, -(maxY + lightMargin), maxY + lightMargin, -zLength, zLength) * viewMatrix;/**/
 	light->lightSpaceMatrix = glm::ortho(-orthoWidth, orthoWidth, -orthoHeight, orthoHeight, -zLength, zLength) * viewMatrix;/**/
 	//light->lightSpaceMatrix = glm::ortho(-maxX * MarginScaleX + XMovement, maxX * MarginScaleX + XMovement, -(maxY * MarginScaleX), maxY * MarginScaleX, -zLength, zLength) * viewMatrix;/**/
+
+	lastViewerPosition = viewerPosition;
+	lastViewerPositionSet = true;
 
 	return std::move(lightNewPos);
 }
@@ -355,6 +362,7 @@ void LightingController::SetAmbientLight(glm::vec3 ambientLightColor) {
 }
 
 void LightingController::SetViewerPosition(glm::vec3& viewerPosition) {
+	this->viewerPosition = viewerPosition;
 	glBindBuffer(GL_UNIFORM_BUFFER, LightingDataBuffer);
 	glBufferSubData(GL_UNIFORM_BUFFER, offsetof(LightingData, viewerPosition), sizeof(glm::vec3), &viewerPosition);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);

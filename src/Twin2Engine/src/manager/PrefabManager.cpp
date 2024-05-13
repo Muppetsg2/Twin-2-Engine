@@ -2,11 +2,11 @@
 #include <graphic/manager/MaterialsManager.h>
 #include <graphic/manager/ModelsManager.h>
 #include <manager/SceneManager.h>
-#include <core/YamlConverters.h>
+#include <tools/YamlConverters.h>
 
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 using namespace std;
 
 hash<string> PrefabManager::_hasher;

@@ -1,63 +1,4 @@
-// HID
-#include <core/Input.h>
-
-// TIME
-#include <core/Time.h>
-
-// WINDOW
-#include <graphic/Window.h>
-
-// MANAGERS
-#include <graphic/manager/TextureManager.h>
-#include <graphic/manager/SpriteManager.h>
-#include <graphic/manager/FontManager.h>
-#include <graphic/manager/ShaderManager.h>
-#include <graphic/manager/MaterialsManager.h>
-#include <graphic/manager/ModelsManager.h>
-#include <manager/AudioManager.h>
-
-// GAME OBJECT
-#include <core/GameObject.h>
-#include <core/MeshRenderer.h>
-
-// UI
-#include <ui/Image.h>
-#include <ui/Text.h>
-#include <ui/Button.h>
-
-// AUDIO
-#include <core/AudioComponent.h>
-
-// GRAPHIC_ENGINE
-#include <GraphicEnigineManager.h>
-
-// LOGGER
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
-
-#include <memory>
-#include <string>
-
-// COLLISIONS
-#include <CollisionManager.h>
-#include <core/BoxColliderComponent.h>
-#include <core/CapsuleColliderComponent.h>
-#include <core/SphereColliderComponent.h>
-#include <core/HexagonalColliderComponent.h>
-
-// CAMERA
-#include <core/CameraComponent.h>
-
-// SCENE
-#include <core/Scene.h>
-#include <manager/SceneManager.h>
-
-// PREFABS
-#include <core/Prefab.h>
-#include <manager/PrefabManager.h>
-
-// DESERIALIZATION
-#include <core/ComponentDeserializer.h>
+#include <GameEngine.h>
 
 // TILEMAP
 #include <Tilemap/HexagonalTilemap.h>
@@ -79,39 +20,20 @@
 #include <Generation/Generators/RegionsGeneratorByKMeans.h>
 #include <Generation/Generators/SectorGeneratorForRegionsByKMeans.h>
 
-// LIGHTING
-#include <LightingController.h>
-#include <core/PointLightComponent.h>
-#include <core/SpotLightComponent.h>
-#include <core/DirectionalLightComponent.h>
-
-// PROCESSES
-#include <processes/SynchronizedProcess.h>
-#include <processes/ThreadProcess.h>
-#include <processes/TimerProcess.h>
-#include <processes/ProcessManager.h>
-
 // YAML CONVERTERS
-#include <core/YamlConverters.h>
+#include <tools/YamlConverters.h>
 #include <Generation/YamlConverters.h>
 
 // EDITOR
 #include <Editor/Common/ProcessingMtlFiles.h>
 #include <Editor/Common/MaterialCreator.h>
 
+using namespace Twin2Engine;
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
-using namespace Twin2Engine::GraphicEngine;
-using namespace CollisionSystem;
-using namespace LightingSystem;
-bool updateShadowLightingMap = true;
-
-using Twin2Engine::Core::Input;
-using Twin2Engine::Core::KEY;
-using Twin2Engine::Core::MOUSE_BUTTON;
-using Twin2Engine::Core::CURSOR_STATE;
-using Twin2Engine::Core::Time;
+using namespace Twin2Engine::Graphic;
+using namespace Twin2Engine::Physic;
 
 using Tilemap::HexagonalTile;
 using Tilemap::HexagonalTilemap;
@@ -132,76 +54,35 @@ bool mouseNotUsed = true;
 
 #pragma endregion
 
-#if _DEBUG
-#pragma region OpenGLCallbackFunctions
-
-static void glfw_error_callback(int error, const char* description)
-{
-    spdlog::error("Glfw Error {0}: {1}\n", error, description);
-}
-
-static void GLAPIENTRY ErrorMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
-{
-    //if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) return; // Chce ignorowa� notyfikacje
-
-    string severityS = "";
-    if (severity == GL_DEBUG_SEVERITY_HIGH) severityS = "HIGHT";
-    else if (severity == GL_DEBUG_SEVERITY_MEDIUM) severityS = "MEDIUM";
-    else if (severity == GL_DEBUG_SEVERITY_LOW) severityS = "LOW";
-    else if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) severityS = "NOTIFICATION";
-
-    if (type == GL_DEBUG_TYPE_ERROR) {
-        spdlog::error("GL CALLBACK: type = ERROR, severity = {0}, message = {1}\n", severityS, message);
-    }
-    else if (type == GL_DEBUG_TYPE_MARKER) {
-        spdlog::info("GL CALLBACK: type = MARKER, severity = {0}, message = {1}\n", severityS, message);
-    }
-    else {
-        string typeS = "";
-        if (type == GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR) typeS = "DEPRACTED BEHAVIOUR";
-        else if (type == GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR) typeS = "UNDEFINED BEHAVIOUR";
-        else if (type == GL_DEBUG_TYPE_PORTABILITY) typeS = "PORTABILITY";
-        else if (type == GL_DEBUG_TYPE_PERFORMANCE) typeS = "PERFORMANCE";
-        else if (type == GL_DEBUG_TYPE_PUSH_GROUP) typeS = "PUSH GROUP";
-        else if (type == GL_DEBUG_TYPE_POP_GROUP) typeS = "POP GROUP";
-        else if (type == GL_DEBUG_TYPE_OTHER) typeS = "OTHER";
-        spdlog::warn("GL CALLBACK: type = {0}, severity = {1}, message = {2}\n", typeS, severityS, message);
-    }
-}
-
-#pragma endregion
-#endif
-
 #pragma region FunctionsDeclaration
-
-bool init();
 
 void input();
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void update();
-void render();
 
 #if _DEBUG
 void init_imgui();
-void imgui_begin();
-void imgui_render();
-void imgui_end();
+void begin_imgui();
+void render_imgui();
+void end_imgui();
 #endif
 
-void end_frame();
+float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd);
+double mod(double val1, double val2);
 
 #pragma endregion
 
-constexpr int32_t WINDOW_WIDTH = 1920;
+constexpr const char* WINDOW_NAME = "Twin^2 Engine";
+constexpr int32_t WINDOW_WIDTH  = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
-const char* WINDOW_NAME = "Twin^2 Engine";
-
-Window* window = nullptr;
+constexpr bool WINDOW_FULLSCREEN = false;
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
-const     char* glsl_version = "#version 450";
 constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 5;
+constexpr const char* glsl_version = "#version 450";
+
+Window* window;
 
 Material material;
 Material material2;
@@ -228,256 +109,23 @@ int main(int, char**)
 {
 #pragma region Initialization
 
-    if (!init())
+    if (!GameEngine::Init(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_FULLSCREEN, GL_VERSION_MAJOR, GL_VERSION_MINOR))
     {
-        spdlog::error("Failed to initialize project!");
+        spdlog::error("Failed to initialize GameEngine!");
         return EXIT_FAILURE;
     }
-    spdlog::info("Initialized project.");
+    spdlog::info("Initialized GameEngine.");
 
 #if _DEBUG
     init_imgui();
     spdlog::info("Initialized ImGui.");
 #endif
 
-    SoLoud::result res = AudioManager::Init();
-    if (res != 0) {
-        spdlog::error(AudioManager::GetErrorString(res));
-        return EXIT_FAILURE;
-    }
-    spdlog::info("Initialized SoLoud.");
-
-#pragma endregion
-
-    // Initialize stdout color sink
-    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    console_sink->set_level(spdlog::level::debug);
-
-    // Create a logger with the stdout color sink
-    auto logger = std::make_shared<spdlog::logger>("logger", console_sink);
-    spdlog::register_logger(logger);
-
-    // Set global log level to debug
-    spdlog::set_level(spdlog::level::debug);
-
-    GraphicEngineManager::Init();
-
-#pragma region DESERIALIZERS
-    // COMPONENTS DESELIALIZERS
-    ComponentDeserializer::AddDeserializer("Camera",
-        []() -> Component* {
-            return new CameraComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            CameraComponent* cam = static_cast<CameraComponent*>(comp);
-            cam->SetFOV(node["fov"].as<float>());
-            cam->SetNearPlane(node["nearPlane"].as<float>());
-            cam->SetFarPlane(node["farPlane"].as<float>());
-            cam->SetCameraFilter(node["cameraFilter"].as<size_t>());
-            cam->SetCameraType(node["cameraType"].as<CameraType>());
-            cam->SetSamples(node["samples"].as<size_t>());
-            cam->SetRenderResolution(node["renderRes"].as<RenderResolution>());
-            cam->SetGamma(node["gamma"].as<float>());
-            cam->SetWorldUp(node["worldUp"].as<vec3>());
-            cam->SetIsMain(node["isMain"].as<bool>());
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("Audio",
-        []() -> Component* {
-            return new AudioComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            AudioComponent* audio = static_cast<AudioComponent*>(comp);
-            audio->SetAudio(SceneManager::GetAudio(node["audio"].as<size_t>()));
-            if (node["loop"].as<bool>()) audio->Loop(); else audio->UnLoop();
-            audio->SetVolume(node["volume"].as<float>());
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("Button",
-        []() -> Component* {
-            return new Button();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            Button* button = static_cast<Button*>(comp);
-            button->SetWidth(node["width"].as<float>());
-            button->SetHeight(node["height"].as<float>());
-            button->SetInteractable(node["interactable"].as<bool>());
-        }
-        );
-
-    // Only for subTypes
-    ComponentDeserializer::AddDeserializer("Renderable",
-        []() -> Component* {
-            return nullptr;
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            RenderableComponent* renderable = static_cast<RenderableComponent*>(comp);
-            renderable->SetIsTransparent(node["isTransparent"].as<bool>());
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("Image",
-        []() -> Component* {
-            return new Image();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            Image* img = static_cast<Image*>(comp);
-            img->SetSprite(SceneManager::GetSprite(node["sprite"].as<size_t>()));
-            img->SetColor(node["color"].as<vec4>());
-            img->SetWidth(node["width"].as<float>());
-            img->SetHeight(node["height"].as<float>());
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("Text",
-        []() -> Component* {
-            return new Text();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            Text* text = static_cast<Text*>(comp);
-            text->SetText(node["text"].as<string>());
-            text->SetColor(node["color"].as<vec4>());
-            text->SetSize(node["size"].as<uint32_t>());
-            text->SetFont(SceneManager::GetFont(node["font"].as<size_t>()));
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("MeshRenderer",
-        []() -> Component* {
-            return new MeshRenderer();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            MeshRenderer* meshRenderer = static_cast<MeshRenderer*>(comp);
-            for (const YAML::Node& matNode : node["materials"]) {
-                meshRenderer->AddMaterial(SceneManager::GetMaterial(matNode.as<size_t>()));
-            }
-            meshRenderer->SetModel(SceneManager::GetModel(node["model"].as<size_t>()));
-        }
-        );
-
-    // Only for subTypes
-    ComponentDeserializer::AddDeserializer("Collider",
-        []() -> Component* {
-            return nullptr;
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            ColliderComponent* collider = static_cast<ColliderComponent*>(comp);
-            collider->colliderId = node["colliderId"].as<unsigned int>();
-            collider->SetTrigger(node["trigger"].as<bool>());
-            collider->SetStatic(node["static"].as<bool>());
-            collider->SetLayer(node["layer"].as<Layer>());
-            LayerCollisionFilter filter = node["layerFilter"].as<LayerCollisionFilter>();
-            collider->SetLayersFilter(filter);
-            collider->EnableBoundingVolume(node["boundingVolume"].as<bool>());
-            collider->SetBoundingVolumeRadius(node["boundingVolumeRadius"].as<float>());
-            vec3 position = node["position"].as<vec3>();
-            collider->SetLocalPosition(position.x, position.y, position.z);
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("SphereCollider",
-        []() -> Component* {
-            return new SphereColliderComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            SphereColliderComponent* sphereCollider = static_cast<SphereColliderComponent*>(comp);
-            sphereCollider->SetRadius(node["radius"].as<float>());
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("BoxCollider",
-        []() -> Component* {
-            return new BoxColliderComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            BoxColliderComponent* boxCollider = static_cast<BoxColliderComponent*>(comp);
-            boxCollider->SetWidth(node["width"].as<float>());
-            boxCollider->SetLength(node["length"].as<float>());
-            boxCollider->SetHeight(node["height"].as<float>());
-            vec3 rotation = node["rotation"].as<vec3>();
-            boxCollider->SetXRotation(rotation.x);
-            boxCollider->SetYRotation(rotation.y);
-            boxCollider->SetZRotation(rotation.z);
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("HexagonalCollider",
-        []() -> Component* {
-            return new HexagonalColliderComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            HexagonalColliderComponent* hexCollider = static_cast<HexagonalColliderComponent*>(comp);
-            hexCollider->SetBaseLength(node["baselength"].as<float>());
-            hexCollider->SetHalfHeight(node["halfheight"].as<float>());
-            hexCollider->SetYRotation(node["rotation"].as<float>());
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("CapsuleCollider",
-        []() -> Component* {
-            return new CapsuleColliderComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            CapsuleColliderComponent* capsuleCollider = static_cast<CapsuleColliderComponent*>(comp);
-            vec3 endPos = node["endPosition"].as<vec3>();
-            capsuleCollider->SetEndPosition(endPos.x, endPos.y, endPos.z);
-            capsuleCollider->SetRadius(node["radius"].as<float>());
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("LightComponent",
-        []() -> Component* {
-            return nullptr;
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            //LightingSystem::LightComponent* lightComponent = static_cast<LightingSystem::LightComponent*>(comp);
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("DirectionalLightComponent",
-        []() -> Component* {
-            return new DirectionalLightComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            DirectionalLightComponent* light = static_cast<DirectionalLightComponent*>(comp);
-            light->SetDirection(node["direction"].as<vec3>());
-            light->SetColor(node["color"].as<vec3>());
-            light->SetPower(node["power"].as<float>());
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("PointLightComponent",
-        []() -> Component* {
-            return new PointLightComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            PointLightComponent* light = static_cast<PointLightComponent*>(comp);
-            light->SetColor(node["color"].as<vec3>());
-            light->SetPower(node["power"].as<float>());
-            light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("SpotLightComponent",
-        []() -> Component* {
-            return new SpotLightComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            SpotLightComponent* light = static_cast<SpotLightComponent*>(comp);
-            light->SetDirection(node["direction"].as<vec3>());
-            light->SetColor(node["color"].as<vec3>());
-            light->SetPower(node["power"].as<float>());
-            light->SetOuterCutOff(node["outerCutOff"].as<float>());
-            light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
-        }
-        );
+    window = Window::GetInstance();
 
 #pragma endregion
 
 #pragma region TILEMAP_DESERIALIZER
-
 
     ComponentDeserializer::AddDeserializer("HexagonalTilemap",
         []() -> Component* {
@@ -491,11 +139,9 @@ int main(int, char**)
         }
         );
 
-
 #pragma endregion
 
 #pragma region GENERATION_DESERIALIZER
-
 
     ComponentDeserializer::AddDeserializer("MapGenerator",
         []() -> Component* {
@@ -590,14 +236,55 @@ int main(int, char**)
 #pragma endregion
 
     // ADDING SCENES
+    SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
-    SceneManager::AddScene("testScene", "res/scenes/MainGameScene.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/MainGameScene.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
 
-    CollisionSystem::CollisionManager::Instance()->PerformCollisions();
-    
     SceneManager::LoadScene("testScene");
+
+    GameObject* obj = SceneManager::CreateGameObject();
+    obj->SetName("Test Button");
+    Transform* tr = obj->GetTransform();
+    tr->Rotate(glm::vec3(0, 0, 45.f));
+    tr->Translate(glm::vec3(0.f, -200.f, 0.f));
+    Button* b = obj->AddComponent<Button>();
+    b->SetHeight(70);
+    b->SetWidth(200);
+    b->GetOnClickEvent() += []() -> void {
+        spdlog::info("clicked");
+    };
+    Image* i = obj->AddComponent<Image>();
+    i->SetSprite("white_box");
+    i->SetHeight(70);
+    i->SetWidth(200);
+    Text* t = obj->AddComponent<Text>();
+    t->SetText("Click Meeej");
+    t->SetFont("res/fonts/Caveat-Regular.ttf");
+    t->SetSize(48);  
+    t->SetHeight(48);
+    t->SetColor(glm::vec4(1.f, 0.f, 0.f, 1.f));
+    t->SetTextAlignX(TextAlignX::CENTER);
+
+    obj = SceneManager::CreateGameObject();
+    obj->SetName("Test Input Field");
+    Image* img = obj->AddComponent<Image>();
+    img->SetSprite("white_box");
+    img->SetWidth(200);
+    img->SetHeight(70);
+    Text* inputText = obj->AddComponent<Text>();
+    inputText->SetFont("res/fonts/Caveat-Regular.ttf");
+    inputText->SetSize(48);
+    Text* placeHolder = obj->AddComponent<Text>();
+    InputField* inp = obj->AddComponent<InputField>();
+    inp->SetInputText(inputText);
+    inp->SetPlaceHolderText(placeHolder);
+    inp->SetWidth(200);
+    inp->SetHeight(70);
+
+    //SceneManager::SaveScene("res/scenes/quickSavedScene_toonShading.yaml");
 
 #pragma region SETTING_UP_GENERATION
     //*
@@ -606,27 +293,18 @@ int main(int, char**)
     MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
     mapGenerator->tilemap = hexagonalTilemap;
     float tilemapGenerating = glfwGetTime();
-    mapGenerator->Generate();
+    //mapGenerator->Generate();
     spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
 
     ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
 
     tilemapGenerating = glfwGetTime();
-    contentGenerator->GenerateContent(hexagonalTilemap);
+    //contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
     /**/
 
 #pragma endregion
-
-    //InstantiatingModel modelHexagon = ModelsManager::LoadModel("res/models/hexagon.obj");
-    //GameObject* hexagonPrefab = new GameObject();
-    //hexagonPrefab->GetTransform()->Translate(glm::vec3(2, 3, 0));
-    //hexagonPrefab->GetTransform()->SetLocalRotation(glm::vec3(0, 90, 0));
-    //auto comp = hexagonPrefab->AddComponent<MeshRenderer>();
-    //comp->AddMaterial(MaterialsManager::GetMaterial("multiTexture"));
-    ////comp->AddMaterial(MaterialsManager::GetMaterial("RedHexTile"));
-    //comp->SetModel(modelHexagon);
-
+    
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
@@ -645,111 +323,31 @@ int main(int, char**)
     //hc->SetLocalPosition(0.0f, -0.5f, 0.5f);
 #pragma endregion
 
-    // Main loop
-    while (!window->IsClosed())
-    {
-        // Process I/O operations here
-        input();
-
-        // Update game objects' state here
-        update();
-
-        // OpenGL rendering code here
-        render();
-
 #if _DEBUG
+    GameEngine::LateRender += []() -> void {
         // Draw ImGui
-        imgui_begin();
-        imgui_render(); // edit this function to add your own ImGui controls
-        imgui_end(); // this call effectively renders ImGui
+        begin_imgui();
+        render_imgui(); // edit this function to add your own ImGui controls
+        end_imgui(); // this call effectively renders ImGui        
+    };
+
+    GameEngine::EarlyEnd += []() -> void {
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+    };
 #endif
 
-        // End frame and swap buffers (double buffering)
-        end_frame();
-    }
+    GameEngine::OnInput += [&]() -> void {
+        input();
+    };
 
-    // Cleanup
-    SceneManager::UnloadAll();
-    SpriteManager::UnloadAll();
-    TextureManager::UnloadAll();
-    AudioManager::UnloadAll();
-    FontManager::UnloadAll();
-    CollisionManager::UnloadAll();
-    LightingController::UnloadAll();
-    GraphicEngineManager::End();
-    Input::FreeAllWindows();
+    GameEngine::EarlyUpdate += [&]() -> void {
+        update();
+    };
 
-#if _DEBUG
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-#endif
-
-    Window::FreeAll();
-
-    glfwTerminate();
-
+    GameEngine::Start();
     return 0;
-}
-
-bool init()
-{
-    // Setup window
-#if _DEBUG
-    glfwSetErrorCallback(glfw_error_callback);
-#endif
-
-    if (!glfwInit())
-    {
-        spdlog::error("Failed to initalize GLFW!");
-        return false;
-    }
-
-    // GL 4.5 + GLSL 450
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GL_VERSION_MAJOR);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GL_VERSION_MINOR);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
-
-    window = Window::MakeWindow(WINDOW_NAME, { WINDOW_WIDTH, WINDOW_HEIGHT }, false);
-    Input::InitForWindow(window);
-
-    bool err = !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-    if (err)
-    {
-        spdlog::error("Failed to initialize OpenGL loader!");
-        return false;
-    }
-    spdlog::info("Successfully initialized OpenGL loader!");
-
-
-#ifdef _DEBUG
-    // Debugging
-    glEnable(GL_DEBUG_OUTPUT);
-    glDebugMessageCallback(ErrorMessageCallback, 0);
-
-    const GLubyte* renderer = glGetString(GL_RENDERER);
-    spdlog::info("Graphic Card: {0}", (char*)renderer);
-#endif
-
-    // Blending
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    // Depth Test
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-
-    // Face Culling
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
-
-    glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
-
-    ScriptableObject::Init();
-
-    return true;
 }
 
 void input()
@@ -762,7 +360,7 @@ void input()
 
     CameraComponent* c = CameraComponent::GetMainCamera();
 
-    if (Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::LEFT)) {
+    if (Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT)) {
         static int i = 1;
         RaycastHit raycast;
         Ray ray = c->GetScreenPointRay(Input::GetMousePos());
@@ -799,9 +397,9 @@ void input()
     }
 
 
-    if (LightingSystem::LightingController::IsInstantiated() && moved) {
+    if (LightingController::IsInstantiated() && moved) {
         glm::vec3 cp = c->GetTransform()->GetGlobalPosition();
-        LightingSystem::LightingController::Instance()->SetViewerPosition(cp);
+        LightingController::Instance()->SetViewerPosition(cp);
     }
 
 
@@ -824,7 +422,7 @@ void input()
         }
     }
 
-    if (Input::IsKeyPressed(KEY::R)) {
+    if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::R)) {
         SceneManager::LoadScene("testScene");
         Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
         image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
@@ -871,24 +469,12 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     }
 
     Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x, rot.y + xoffset, rot.z));
-    //LightingSystem::LightingController::Instance()->UpdateOnTransformChange();
-    updateShadowLightingMap = true;
 }
 
 void update()
 {
-    //Update Shadow & Lighting Map
-    if (updateShadowLightingMap)
-    {
-        LightingSystem::LightingController::Instance()->UpdateOnTransformChange();
-        updateShadowLightingMap = false;
-    }
-
     // Update game objects' state here
     text->SetText("Time: " + std::to_string(Time::GetDeltaTime()));
-    CollisionManager::Instance()->PerformCollisions();
-    SceneManager::UpdateCurrentScene();
-    Twin2Engine::Processes::ProcessManager::Instance()->UpdateSynchronizedProcess();
     colorSpan -= Time::GetDeltaTime() * 0.2f;
     if (colorSpan <= 0.f) {
         colorSpan = 1.f;
@@ -907,14 +493,21 @@ void update()
     image->SetWidth(1000.f * colorSpan);
 }
 
-void render()
-{
-    // OpenGL Rendering code goes here
-    SceneManager::RenderCurrentScene();
-    CameraComponent::GetMainCamera()->Render();
+#if _DEBUG
+struct HierarchicalItem {
+    std::string label;
+    std::vector<HierarchicalItem> children;
+};
+// Recursive function to render the hierarchical list
+static void renderHierarchicalList(const HierarchicalItem& item) {
+    if (ImGui::TreeNode(item.label.c_str())) {
+        for (const auto& child : item.children) {
+            renderHierarchicalList(child);
+        }
+        ImGui::TreePop();
+    }
 }
 
-#if _DEBUG
 void init_imgui()
 {
     // Setup Dear ImGui binding
@@ -924,7 +517,7 @@ void init_imgui()
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
 
-    ImGui_ImplGlfw_InitForOpenGL(window->GetWindow(), true);
+    ImGui_ImplGlfw_InitForOpenGL(Window::GetInstance()->GetWindow(), true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     // Setup style
@@ -947,7 +540,7 @@ void init_imgui()
     //IM_ASSERT(font != NULL);
 }
 
-void imgui_begin()
+void begin_imgui()
 {
     // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
@@ -955,22 +548,9 @@ void imgui_begin()
     ImGui::NewFrame();
 }
 
-struct HierarchicalItem {
-    std::string label;
-    std::vector<HierarchicalItem> children;
-};
-// Recursive function to render the hierarchical list
-void renderHierarchicalList(const HierarchicalItem& item) {
-    if (ImGui::TreeNode(item.label.c_str())) {
-        for (const auto& child : item.children) {
-            renderHierarchicalList(child);
-        }
-        ImGui::TreePop();
-    }
-}
-void imgui_render()
+void render_imgui()
 {
-    if (Input::GetCursorState() == NORMAL)
+    if (Input::GetCursorState() == CURSOR_STATE::NORMAL)
     {
         ImGui::Begin("Twin^2 Engine");
 
@@ -1102,15 +682,15 @@ void imgui_render()
             if (ImGui::BeginCombo("Shading Type", "Lambert + Blinn-Phong Shading")) {
                 if (ImGui::Selectable("Lambert + Blinn-Phong Shading", shadingType == 0)) {
                     shadingType = 0;
-                    LightingSystem::LightingController::Instance()->SetShadingType(0);
+                    LightingController::Instance()->SetShadingType(0);
                 }
                 if (ImGui::Selectable("Toon/Cel Shading", shadingType == 1)) {
                     shadingType = 1;
-                    LightingSystem::LightingController::Instance()->SetShadingType(1);
+                    LightingController::Instance()->SetShadingType(1);
                 }
                 if (ImGui::Selectable("Gooch Shading", shadingType == 2)) {
                     shadingType = 2;
-                    LightingSystem::LightingController::Instance()->SetShadingType(2);
+                    LightingController::Instance()->SetShadingType(2);
                 }
                 ImGui::EndCombo();
             }
@@ -1244,6 +824,55 @@ void imgui_render()
         }
 #pragma endregion
 
+        if (ImGui::CollapsingHeader("Text test")) {
+            Text* t = SceneManager::FindObjectByName("Test Button")->GetComponent<Text>();
+            static std::string alignYValue = t->GetTextAlignY() == TextAlignY::CENTER ? "CENTER" : t->GetTextAlignY() == TextAlignY::TOP ? "TOP" : "BOTTOM";
+            if (ImGui::BeginCombo("Align Y", alignYValue.c_str())) {
+                TextAlignY alignY = t->GetTextAlignY();
+                if (ImGui::Selectable("BOTTOM")) {
+                    if (alignY != TextAlignY::BOTTOM) {
+                        t->SetTextAlignY(TextAlignY::BOTTOM);
+                        alignYValue = "BOTTOM";
+                    }
+                }
+                if (ImGui::Selectable("CENTER")) {
+                    if (alignY != TextAlignY::CENTER) {
+                        t->SetTextAlignY(TextAlignY::CENTER);
+                        alignYValue = "CENTER";
+                    }
+                }
+                if (ImGui::Selectable("TOP")) {
+                    if (alignY != TextAlignY::TOP) {
+                        t->SetTextAlignY(TextAlignY::TOP);
+                        alignYValue = "TOP";
+                    }
+                }
+                ImGui::EndCombo();
+            }
+            static std::string alignXValue = t->GetTextAlignX() == TextAlignX::CENTER ? "CENTER" : t->GetTextAlignX() == TextAlignX::LEFT ? "LEFT" : "RIGHT";
+            if (ImGui::BeginCombo("Align X", alignXValue.c_str())) {
+                TextAlignX alignX = t->GetTextAlignX();
+                if (ImGui::Selectable("LEFT")) {
+                    if (alignX != TextAlignX::LEFT) {
+                        t->SetTextAlignX(TextAlignX::LEFT);
+                        alignXValue = "LEFT";
+                    }
+                }
+                if (ImGui::Selectable("CENTER")) {
+                    if (alignX != TextAlignX::CENTER) {
+                        t->SetTextAlignX(TextAlignX::CENTER);
+                        alignXValue = "CENTER";
+                    }
+                }
+                if (ImGui::Selectable("RIGHT")) {
+                    if (alignX != TextAlignX::RIGHT) {
+                        t->SetTextAlignX(TextAlignX::RIGHT);
+                        alignXValue = "RIGHT";
+                    }
+                }
+                ImGui::EndCombo();
+            }
+        }
         ImGui::Separator();
 
 #pragma region MATERIAL_CREATOR
@@ -1347,23 +976,10 @@ void imgui_render()
     }
 }
 
-void imgui_end()
+void end_imgui()
 {
     ImGui::Render();
     window->Use();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
-
 #endif
-
-void end_frame()
-{
-    // Poll and handle events (inputs, window resize, etc.)
-    // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-    // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
-    // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
-    // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-    Time::Update();
-    Input::Update();
-    window->Update();
-}

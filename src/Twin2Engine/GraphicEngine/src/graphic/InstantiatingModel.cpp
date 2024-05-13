@@ -1,7 +1,7 @@
 #include <graphic/InstantiatingModel.h>
 #include <graphic/manager/ModelsManager.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 
 //void Twin2Engine::GraphicEngine::InstantiatingModel::setupModel(const std::vector<glm::mat4>& transforms)
 //{
@@ -18,36 +18,36 @@ using namespace Twin2Engine::GraphicEngine;
 //
 //    setupModel(transforms);
 //}
-Twin2Engine::GraphicEngine::InstantiatingModel::InstantiatingModel(ModelData* modelData)
+Twin2Engine::Graphic::InstantiatingModel::InstantiatingModel(ModelData* modelData)
 {
     this->modelData = modelData;
 }
 
-Twin2Engine::GraphicEngine::InstantiatingModel::InstantiatingModel(const InstantiatingModel& model)
+Twin2Engine::Graphic::InstantiatingModel::InstantiatingModel(const InstantiatingModel& model)
 {
     modelData = model.modelData;
 }
 
-Twin2Engine::GraphicEngine::InstantiatingModel::InstantiatingModel(InstantiatingModel&& model)
+Twin2Engine::Graphic::InstantiatingModel::InstantiatingModel(InstantiatingModel&& model)
 {
     modelData = model.modelData;
 }
 
-Twin2Engine::GraphicEngine::InstantiatingModel::InstantiatingModel()
+Twin2Engine::Graphic::InstantiatingModel::InstantiatingModel()
 {
     modelData = nullptr;
 }
 
-Twin2Engine::GraphicEngine::InstantiatingModel::~InstantiatingModel() {
+Twin2Engine::Graphic::InstantiatingModel::~InstantiatingModel() {
 
 }
 
-size_t Twin2Engine::GraphicEngine::InstantiatingModel::GetId() const {
+size_t Twin2Engine::Graphic::InstantiatingModel::GetId() const {
     if (modelData != nullptr) return modelData->id;
     return 0;
 }
 
-size_t Twin2Engine::GraphicEngine::InstantiatingModel::GetMeshCount() const
+size_t Twin2Engine::Graphic::InstantiatingModel::GetMeshCount() const
 {
     if (modelData == nullptr)
     {
@@ -57,7 +57,7 @@ size_t Twin2Engine::GraphicEngine::InstantiatingModel::GetMeshCount() const
     return modelData->meshes.size();
 }
 
-Twin2Engine::GraphicEngine::InstantiatingMesh* Twin2Engine::GraphicEngine::InstantiatingModel::GetMesh(size_t index) const
+Twin2Engine::Graphic::InstantiatingMesh* Twin2Engine::Graphic::InstantiatingModel::GetMesh(size_t index) const
 {
     if (modelData == nullptr)
     {
@@ -80,40 +80,40 @@ Twin2Engine::GraphicEngine::InstantiatingMesh* Twin2Engine::GraphicEngine::Insta
 //    //    meshes[i].Draw(shaderProgram);
 //}
 
-Twin2Engine::GraphicEngine::InstantiatingModel& Twin2Engine::GraphicEngine::InstantiatingModel::operator=(const InstantiatingModel& other)
+Twin2Engine::Graphic::InstantiatingModel& Twin2Engine::Graphic::InstantiatingModel::operator=(const InstantiatingModel& other)
 {
     modelData = other.modelData;
     return *this;
 }
 
-Twin2Engine::GraphicEngine::InstantiatingModel& Twin2Engine::GraphicEngine::InstantiatingModel::operator=(InstantiatingModel&& other)
+Twin2Engine::Graphic::InstantiatingModel& Twin2Engine::Graphic::InstantiatingModel::operator=(InstantiatingModel&& other)
 {
     modelData = other.modelData;
     return *this;
 }
 
-Twin2Engine::GraphicEngine::InstantiatingModel& Twin2Engine::GraphicEngine::InstantiatingModel::operator=(std::nullptr_t)
+Twin2Engine::Graphic::InstantiatingModel& Twin2Engine::Graphic::InstantiatingModel::operator=(std::nullptr_t)
 {
     modelData = nullptr;
     return *this;
 }
 
-bool Twin2Engine::GraphicEngine::InstantiatingModel::operator==(std::nullptr_t)
+bool Twin2Engine::Graphic::InstantiatingModel::operator==(std::nullptr_t)
 {
     return modelData == nullptr;
 }
 
-bool Twin2Engine::GraphicEngine::InstantiatingModel::operator!=(std::nullptr_t)
+bool Twin2Engine::Graphic::InstantiatingModel::operator!=(std::nullptr_t)
 {
     return modelData != nullptr;
 }
 
-bool Twin2Engine::GraphicEngine::InstantiatingModel::operator==(const InstantiatingModel& other)
+bool Twin2Engine::Graphic::InstantiatingModel::operator==(const InstantiatingModel& other)
 {
     return modelData == other.modelData;
 }
 
-bool Twin2Engine::GraphicEngine::InstantiatingModel::operator!=(const InstantiatingModel& other)
+bool Twin2Engine::Graphic::InstantiatingModel::operator!=(const InstantiatingModel& other)
 {
     return modelData != other.modelData;
 }

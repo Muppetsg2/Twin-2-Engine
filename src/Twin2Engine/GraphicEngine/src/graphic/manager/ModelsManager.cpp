@@ -1,6 +1,6 @@
 #include <graphic/manager/ModelsManager.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
 std::hash<std::string> ModelsManager::stringHash;

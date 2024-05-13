@@ -20,7 +20,7 @@ namespace Twin2Engine::UI {
 		void SetWidth(float width);
 		void SetHeight(float height);
 
-		GraphicEngine::Sprite* GetSprite() const;
+		Graphic::Sprite* GetSprite() const;
 		glm::vec4 GetColor() const;
 		float GetWidth() const;
 		float GetHeight() const;

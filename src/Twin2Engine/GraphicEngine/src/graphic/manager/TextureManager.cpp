@@ -1,7 +1,7 @@
 #include <graphic/manager/TextureManager.h>
 
 using namespace Twin2Engine;
-using namespace GraphicEngine;
+using namespace Graphic;
 using namespace Manager;
 using namespace std;
 

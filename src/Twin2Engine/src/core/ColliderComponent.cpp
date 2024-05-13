@@ -1,15 +1,54 @@
 #include <core/ColliderComponent.h>
 #include <core/GameObject.h>
-#include <CollisionManager.h>
-#include <core/YamlConverters.h>
+#include <physic/CollisionManager.h>
+#include <tools/YamlConverters.h>
 
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Physic;
+using namespace Twin2Engine::Tools;
+
+void ColliderComponent::OnCollisionEnter(Collision* collision)
+{
+	GameCollider* collider = (GameCollider*)collision->collider;
+	GameCollider* other = (GameCollider*)collision->otherCollider;
+
+	if (!collider->isStatic && !other->isStatic) {
+		//separacja obu gameobjektów
+		SPDLOG_INFO("{} - separacja obu gameobjektów ({}, {}, {})", collider->colliderId, collision->separation.x,
+			collision->separation.y, collision->separation.z);
+		collider->colliderComponent->GetTransform()->SetGlobalPosition(
+			collider->colliderComponent->GetTransform()->GetGlobalPosition() + collision->separation);
+		other->colliderComponent->GetTransform()->SetGlobalPosition(
+			other->colliderComponent->GetTransform()->GetGlobalPosition() - collision->separation);
+	}
+	else if (!collider->isStatic) {
+		//separacja tego game objekta
+		SPDLOG_INFO("{} - separacja tego game objekta ({}, {}, {})", collider->colliderId, collision->separation.x,
+			collision->separation.y, collision->separation.z);
+		collider->colliderComponent->GetTransform()->SetGlobalPosition(
+			collider->colliderComponent->GetTransform()->GetGlobalPosition() + collision->separation);
+	}
+	else if (!other->isStatic) {
+		//separacje drugiego gameobjekta
+		SPDLOG_INFO("{} - separacje drugiego gameobjekta ({}, {}, {})", collider->colliderId, collision->separation.x,
+			collision->separation.y, collision->separation.z);
+		other->colliderComponent->GetTransform()->SetGlobalPosition(
+			other->colliderComponent->GetTransform()->GetGlobalPosition() - collision->separation);
+	}
+	/*else {
+		//separacja obu gameobjektów
+		SPDLOG_INFO("{} - separacja obu gameobjektów ({}, {}, {})", collider->colliderId, collision->separation.x,
+			collision->separation.y, collision->separation.z);
+		collider->colliderComponent->GetTransform()->SetGlobalPosition(
+			collider->colliderComponent->GetTransform()->GetGlobalPosition() + collision->separation);
+		other->colliderComponent->GetTransform()->SetGlobalPosition(
+			other->colliderComponent->GetTransform()->GetGlobalPosition() - collision->separation);
+	}*/
+}
 
 ColliderComponent::ColliderComponent() : Component()
 {
-	boundingVolume = new CollisionSystem::BoundingVolume(new CollisionSystem::SphereColliderData());
-	//CollisionManager::Instance->RegisterCollider(this);
-	//colliderComponents.push_back(this);
+	boundingVolume = new BoundingVolume(new SphereColliderData());
 }
 
 ColliderComponent::~ColliderComponent()
@@ -18,13 +57,6 @@ ColliderComponent::~ColliderComponent()
 	collider = nullptr;
 	delete boundingVolume;
 	boundingVolume = nullptr;
-	//CollisionSystem::CollisionManager::Instance()->UnregisterCollider(collider);
-	/*for (size_t i = 0; i < colliderComponents.size(); ++i) {
-		if (colliderComponents[i] == this) {
-			colliderComponents.erase(colliderComponents.begin() + i);
-			break;
-		}
-	}*/
 }
 
 
@@ -50,9 +82,9 @@ bool ColliderComponent::IsStatic()
 
 void ColliderComponent::SetLayer(Layer layer)
 {
-	CollisionSystem::CollisionManager::Instance()->UnregisterCollider(collider);
+	CollisionManager::Instance()->UnregisterCollider(collider);
 	collider->layer = layer;
-	CollisionSystem::CollisionManager::Instance()->RegisterCollider(collider);
+	CollisionManager::Instance()->RegisterCollider(collider);
 }
 
 Layer ColliderComponent::GetLayer()
@@ -65,7 +97,13 @@ void ColliderComponent::SetLayersFilter(LayerCollisionFilter& layersFilter)
 	collider->layersFilter = layersFilter;
 }
 
-void Twin2Engine::Core::ColliderComponent::Update()
+void ColliderComponent::Initialize()
+{
+	collider->colliderComponent = this;
+	_onCollisionEnterId = collider->OnCollisionEnter += [](Collision* collision) -> void { OnCollisionEnter(collision); };
+}
+
+void ColliderComponent::Update()
 {
 	if (dirtyFlag) {
 		collider->shapeColliderData->Position = GetTransform()->GetTransformMatrix() * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f);
@@ -76,6 +114,21 @@ void Twin2Engine::Core::ColliderComponent::Update()
 
 		dirtyFlag = false;
 	}
+}
+
+void ColliderComponent::OnEnable()
+{
+	collider->enabled = true;
+}
+
+void ColliderComponent::OnDisable()
+{
+	collider->enabled = false;
+}
+
+void ColliderComponent::OnDestroy()
+{
+	collider->OnCollisionEnter -= _onCollisionEnterId;
 }
 
 void ColliderComponent::EnableBoundingVolume(bool v)
@@ -90,7 +143,7 @@ void ColliderComponent::EnableBoundingVolume(bool v)
 
 void ColliderComponent::SetBoundingVolumeRadius(float radius)
 {
-	((CollisionSystem::SphereColliderData*)(boundingVolume->shapeColliderData))->Radius = radius;
+	((SphereColliderData*)(boundingVolume->shapeColliderData))->Radius = radius;
 }
 
 void ColliderComponent::SetLocalPosition(float x, float y, float z)
@@ -102,7 +155,27 @@ void ColliderComponent::SetLocalPosition(float x, float y, float z)
 	dirtyFlag = true;
 }
 
-YAML::Node Twin2Engine::Core::ColliderComponent::Serialize() const
+EventHandler<Collision*>& ColliderComponent::GetOnTriggerEnterEvent() const
+{
+	return collider->OnTriggerEnter;
+}
+
+EventHandler<GameCollider*>& ColliderComponent::GetOnTriggerExitEvent() const
+{
+	return collider->OnTriggerExit;
+}
+
+EventHandler<Collision*>& ColliderComponent::GetOnCollisionEnterEvent() const
+{
+	return collider->OnCollisionEnter;
+}
+
+EventHandler<GameCollider*>& ColliderComponent::GetOnCollisionExitEvent() const
+{
+	return collider->OnCollisionExit;
+}
+
+YAML::Node ColliderComponent::Serialize() const
 {
 	YAML::Node node = Component::Serialize();
 	node["type"] = "Collider";
@@ -112,29 +185,7 @@ YAML::Node Twin2Engine::Core::ColliderComponent::Serialize() const
 	node["layer"] = collider->layer;
 	node["layerFilter"] = collider->layersFilter;
 	node["boundingVolume"] = collider->boundingVolume != nullptr;
-	node["boundingVolumeRadius"] = ((CollisionSystem::SphereColliderData*)(boundingVolume->shapeColliderData))->Radius;
-	//if (collider->boundingVolume != nullptr) {
-	//}
+	node["boundingVolumeRadius"] = ((SphereColliderData*)(boundingVolume->shapeColliderData))->Radius;
 	node["position"] = glm::vec3(collider->shapeColliderData->LocalPosition.x, collider->shapeColliderData->LocalPosition.y, collider->shapeColliderData->LocalPosition.z);
 	return node;
 }
-
-
-/*/#include <core/ColliderComponent.h>
-
-using namespace Twin2Engine::Core;
-
-ColliderComponent::ColliderComponent()
-{
-	colliderComponents.push_back(this);
-}
-
-ColliderComponent::~ColliderComponent()
-{
-	for (size_t i = 0; i < colliderComponents.size(); ++i) {
-		if (colliderComponents[i] == this) {
-			colliderComponents.erase(colliderComponents.begin() + i);
-			break;
-		}
-	}
-}/**/

@@ -54,8 +54,6 @@
 // MACROS
 #include "SerializationMacros.h"
 
-
-
 #if _DEBUG
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 #include <imgui_impl/imgui_user.h>

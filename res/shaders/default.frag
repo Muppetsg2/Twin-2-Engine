@@ -1,7 +1,7 @@
 #version 450 core
 // IN
 layout (std140, binding = 1) uniform WindowData {
-    vec2 windowSize;
+    ivec2 windowSize;
     float nearPlane;
     float farPlane;
     float gamma;
@@ -86,8 +86,8 @@ struct PointLight {
 
 struct SpotLight {
     vec3 position;      // Position of the spot light in world space
-    vec3 direction;     // Direction of the spot light
     vec3 color;         // Color of the spot light
+    vec3 direction;     // Direction of the spot light
     float power;        // Light source power
     float innerCutOff;  // Inner cutoff angle (in radians)
     float outerCutOff;  // Outer cutoff angle (in radians)
@@ -97,22 +97,23 @@ struct SpotLight {
 };
 
 struct DirectionalLight {
-    vec3 position;          // Position of the spot light in world space
-	vec3 direction;         // Direction of the spot light
     mat4 lightSpaceMatrix;  // For Shadow Mapping
-	vec3 color;             // Color of the spot light
+    vec3 color;             // Color of the dir light
+	vec3 direction;         // Direction of the dir light
 	float power;		    // Light source power
+    uint shadowMapFBO;
+    uint shadowMap;
 };
 
 uniform sampler2D DirLightShadowMaps[MAX_DIRECTIONAL_LIGHTS]; // SHADOW MAP
 
-layout(std430, binding = 3) buffer Lights {
-    uint numberOfPointLights;
-    uint numberOfSpotLights;
-    uint numberOfDirLights;
+layout(std140, binding = 3) buffer Lights {
     PointLight pointLights[MAX_POINT_LIGHTS];
     SpotLight spotLights[MAX_SPOT_LIGHTS];
     DirectionalLight directionalLights[MAX_DIRECTIONAL_LIGHTS];
+    uint numberOfPointLights;
+    uint numberOfSpotLights;
+    uint numberOfDirLights;
 };
 
 layout (std140, binding = 0) uniform CameraData
@@ -122,7 +123,7 @@ layout (std140, binding = 0) uniform CameraData
 	vec3 viewPos;
 };
 
-layout(std140, binding = 4) uniform LightingData {
+layout(std140, binding = 3) uniform LightingData {
     vec3 ambientLight;
     vec3 viewerPosition;
     int shadingType;
@@ -163,7 +164,8 @@ float CalculateShadow(vec4 fragPosLightSpace, vec3 normal, uint shadowMapId) {
     float currentDepth = projCoords.z;
 
     // calculate bias (based on depth map resolution and slope)
-    vec3 lightDir = normalize(directionalLights[shadowMapId].position - fs_in.fragPos);
+    //vec3 lightDir = normalize(directionalLights[shadowMapId].position - fs_in.fragPos);
+    vec3 lightDir = normalize(-directionalLights[shadowMapId].direction);
     float bias = max(0.01 * (1.0 - dot(normal, lightDir)), 0.005);
 
     // PCF

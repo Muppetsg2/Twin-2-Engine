@@ -7,7 +7,7 @@ namespace Twin2Engine {
 		class SpriteManager;
 	}
 
-	namespace GraphicEngine {
+	namespace Graphic {
 
 		class Sprite {
 		private:

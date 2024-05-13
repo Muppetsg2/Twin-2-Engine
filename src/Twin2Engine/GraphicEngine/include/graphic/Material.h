@@ -11,7 +11,7 @@ namespace Twin2Engine
 		class MaterialsManager;
 	}
 
-	namespace GraphicEngine {
+	namespace Graphic {
 
 		struct MaterialData
 		{

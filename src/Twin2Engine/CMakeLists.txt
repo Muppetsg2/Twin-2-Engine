@@ -1,7 +1,7 @@
 project(Twin2Engine VERSION 1.0)
 
 set(Twin2Engine_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(Twin2Engine_HEADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(Twin2Engine_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(Twin2Engine_PRECOMPILE_HEADERS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)
 
 # Add source files
@@ -11,8 +11,8 @@ file(GLOB_RECURSE SOURCE_FILES
 	
 # Add header files
 file(GLOB_RECURSE HEADER_FILES
-	 ${Twin2Engine_HEADER_DIR}/*.h
-	 ${Twin2Engine_HEADER_DIR}/*.hpp)
+	 ${Twin2Engine_INCLUDE_DIR}/*.h
+	 ${Twin2Engine_INCLUDE_DIR}/*.hpp)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
 	list(FILTER SOURCE_FILES EXCLUDE REGEX ".*(imgui_impl\/).*")
@@ -30,6 +30,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${HEADER_FILES})
 source_group(TREE ${CMAKE_SOURCE_DIR}         FILES ${ASSETS_FILES})
 
 add_subdirectory(GraphicEngine)
+add_subdirectory(PhysicEngine)
+add_subdirectory(Tools)
 
 # ---- Dependency ----
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES} ${ASSETS_FILES})
@@ -42,10 +44,10 @@ get_property(is_miniaudio GLOBAL PROPERTY IS_MINI_AUDIO)
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${Twin2Engine_PRECOMPILE_HEADERS_FILE})
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR}
-														  ${glad_SOURCE_DIR}
-														  ${stb_image_SOURCE_DIR}
-														  ${freetype_SOURCE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC	${Twin2Engine_INCLUDE_DIR}
+													${GRAPHIC_ENGINE_INCLUDE_DIR}
+													${PHYSIC_ENGINE_INCLUDE_DIR}
+													${TOOLS_INCLUDE_DIR})
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
 	target_link_libraries(${PROJECT_NAME} imgui)
@@ -60,20 +62,12 @@ else()
 	target_include_directories(${PROJECT_NAME} PUBLIC ${soloud_SOURCE_DIR})
 endif()
 
+if (is_imgui)
+	target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
+	target_link_libraries(${PROJECT_NAME} imgui)
+endif()
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} glad)
-target_link_libraries(${PROJECT_NAME} stb_image)
-target_link_libraries(${PROJECT_NAME} glfw)
-target_link_libraries(${PROJECT_NAME} spdlog)
-target_link_libraries(${PROJECT_NAME} yaml-cpp)
-target_link_libraries(${PROJECT_NAME} freetype)
-target_link_libraries(${PROJECT_NAME} glm::glm)
-target_link_libraries(${PROJECT_NAME} CollisionSystem)
-
-
-target_include_directories(${PROJECT_NAME} PUBLIC ${GRAPHIC_ENGINE_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} GraphicEngine)
-
-target_include_directories(${PROJECT_NAME} PUBLIC ${LIGHTING_SYSTEM_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} LightingSystem)
+target_link_libraries(${PROJECT_NAME} 	glfw
+										GraphicEngine
+										PhysicEngine
+										Tools)

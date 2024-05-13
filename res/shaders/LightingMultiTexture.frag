@@ -74,12 +74,12 @@ struct DirectionalLight {
 };
 
 layout (std430, binding = 3) buffer Lights {
-	uint numberOfPointLights;
-	uint numberOfSpotLights;
-	uint numberOfDirLights;
     PointLight pointLights[8];
     SpotLight spotLights[8];
     DirectionalLight directionalLights[4];
+	uint numberOfPointLights;
+	uint numberOfSpotLights;
+	uint numberOfDirLights;
 };
 
 layout (std140, binding = 0) uniform CameraData

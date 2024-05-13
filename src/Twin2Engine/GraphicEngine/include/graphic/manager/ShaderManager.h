@@ -24,14 +24,14 @@ namespace Twin2Engine::Manager
 	/// </summary>
 	class ShaderManager
 	{
-		friend class GraphicEngine::Shader;
+		friend class Graphic::Shader;
 
 		struct ShaderProgramData
 		{
 			size_t shaderPathHash;
 			unsigned int shaderProgramId;
 			int useNumber;
-			GraphicEngine::Shader* shader;
+			Graphic::Shader* shader;
 			bool operator<(const ShaderProgramData& other) const {
 				return shaderPathHash < other.shaderPathHash;
 			}
@@ -54,34 +54,24 @@ namespace Twin2Engine::Manager
 		static GLuint CompileShader(GLenum type, const std::string& source);
 
 		static std::vector<char> LoadBinarySource(const std::string& filePath);
-		//static GLuint CompileShaderSPIRV(GLenum type, const std::vector<char>& source);
 		static GLuint CompileShaderSPIRV(GLenum type, const std::string& filePath);
-		//static std::vector<unsigned int> LoadBinarySource(const std::string& filePath);
-		//static GLuint CompileShaderSPIRV(GLenum type, const std::vector<unsigned int>& source);
-		//static GLuint CompileShaderNormal(GLenum type, const string& filePath);
 
 		static inline bool CheckShaderCompilationSuccess(GLuint shaderId);
 		static inline void CheckProgramLinkingSuccess(GLuint programId);
-		//static inline void PrecompileShaders();
 
 		//Dynamic creation
-		//static inline GLuint CreateShaderProgramFromFile(const std::string& shaderProgramName, std::string& shaderName);
-		static inline GraphicEngine::Shader* LoadShaderProgramSHPR(const std::string& shaderName);
+		static inline Graphic::Shader* LoadShaderProgramSHPR(const std::string& shaderName);
 		static inline GLuint CreateShaderProgramFromFile(const std::string& shaderProgramName);
-		//static inline void SaveShaderProgramToFile(GLuint shaderProgramId, const std::string& shaderName);
 
 	public:
-		static GraphicEngine::Shader* DepthShader;
+		static Graphic::Shader* DepthShader;
+		static Graphic::Shader* CameraDepthShader;
 
-		//ShaderManager();
 		static void Init();
 		static void UnloadAll();
 
-		static GraphicEngine::Shader* GetShaderProgram(const std::string& shaderName);
-		static GraphicEngine::Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);
-		//static GraphicEngine::Shader* GetShaderProgram(const std::string& shaderName);
-		//static GraphicEngine::Shader* CreateShaderProgram(const std::string& shaderProgramName);
-		//static GraphicEngine::Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);
+		static Graphic::Shader* GetShaderProgram(const std::string& shaderName);
+		static Graphic::Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);
 
 		//void UpdateDirShadowMapsTab();
 	};

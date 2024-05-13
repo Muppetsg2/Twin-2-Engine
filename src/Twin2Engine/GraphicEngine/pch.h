@@ -35,3 +35,6 @@
 
 // SPDLOG
 #include <spdlog/spdlog.h>
+
+// STB_IMAGE
+#include <stb_image.h>

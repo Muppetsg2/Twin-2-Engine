@@ -1,65 +1,65 @@
 #include <core/PointLightComponent.h>
 #include <core/GameObject.h>
 #include <core/Transform.h>
-#include <core/YamlConverters.h>
+#include <tools/YamlConverters.h>
 
-void Twin2Engine::Core::PointLightComponent::Initialize()
+using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Graphic;
+
+void PointLightComponent::Initialize()
 {
 	OnChangePosition = [this](Transform* transform) {
 		light->position = transform->GetGlobalPosition();
-		LightingSystem::LightingController::Instance()->UpdatePLPosition(light);
+		LightingController::Instance()->UpdatePLPosition(light);
 	};
 
-	//light = new LightingSystem::PointLight;
 	light->position = GetTransform()->GetGlobalPosition();
-	//LightingSystem::LightingController::Instance()->pointLights.insert(light);
-	//LightingSystem::LightingController::Instance()->UpdatePointLights();
 }
 
-void Twin2Engine::Core::PointLightComponent::Update()
+void PointLightComponent::Update()
 {
 	if (dirtyFlag) {
-		LightingSystem::LightingController::Instance()->UpdatePL(light);
+		LightingController::Instance()->UpdatePL(light);
 		dirtyFlag = false;
 	}
 }
 
-void Twin2Engine::Core::PointLightComponent::OnEnable()
+void PointLightComponent::OnEnable()
 {
-	LightingSystem::LightingController::Instance()->pointLights.insert(light);
+	LightingController::Instance()->pointLights.insert(light);
 	OnChangePositionId = GetTransform()->OnEventPositionChanged += OnChangePosition;
-	LightingSystem::LightingController::Instance()->UpdatePointLights();
+	LightingController::Instance()->UpdatePointLights();
 }
 
-void Twin2Engine::Core::PointLightComponent::OnDisable()
+void PointLightComponent::OnDisable()
 {
-	LightingSystem::LightingController::Instance()->pointLights.erase(light);
+	LightingController::Instance()->pointLights.erase(light);
 	GetTransform()->OnEventPositionChanged -= OnChangePositionId;
-	LightingSystem::LightingController::Instance()->UpdatePointLights();
+	LightingController::Instance()->UpdatePointLights();
 }
 
-void Twin2Engine::Core::PointLightComponent::OnDestroy()
+void PointLightComponent::OnDestroy()
 {
-	LightingSystem::LightingController::Instance()->pointLights.erase(light);
+	LightingController::Instance()->pointLights.erase(light);
 	GetTransform()->OnEventPositionChanged -= OnChangePositionId;
-	LightingSystem::LightingController::Instance()->UpdatePointLights();
+	LightingController::Instance()->UpdatePointLights();
 
 	delete light;
 }
 
-void Twin2Engine::Core::PointLightComponent::SetColor(glm::vec3 color)
+void PointLightComponent::SetColor(glm::vec3 color)
 {
 	light->color = color;
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::PointLightComponent::SetPower(float power)
+void PointLightComponent::SetPower(float power)
 {
 	light->power = power;
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::PointLightComponent::SetAtenuation(float constant, float linear, float quadratic)
+void PointLightComponent::SetAtenuation(float constant, float linear, float quadratic)
 {
 	light->constant = constant;
 	light->linear = linear;
@@ -67,7 +67,7 @@ void Twin2Engine::Core::PointLightComponent::SetAtenuation(float constant, float
 	dirtyFlag = true;
 }
 
-YAML::Node Twin2Engine::Core::PointLightComponent::Serialize() const
+YAML::Node PointLightComponent::Serialize() const
 {
 	YAML::Node node = LightComponent::Serialize();
 	node["color"] = light->color;

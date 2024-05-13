@@ -1,7 +1,7 @@
 #include <core/RenderableComponent.h>
 
 using namespace Twin2Engine::Core;
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 using namespace std;
 
 vector<RenderableComponent*> RenderableComponent::_components = vector<RenderableComponent*>();

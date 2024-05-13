@@ -1,6 +1,6 @@
 #include <graphic/Font.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 using namespace std;
 
 Font::Font(size_t managerId, FT_Library lib, FT_Face face) : _managerId(managerId), _lib(lib), _face(face) {}

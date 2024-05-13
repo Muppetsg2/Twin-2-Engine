@@ -6,7 +6,7 @@ namespace Twin2Engine::Core {
 	class SphereColliderComponent : public ColliderComponent {
 		//protected:
 	private:
-		Twin2Engine::Core::Action<Transform*> PositionChangeAction;
+		Tools::Action<Transform*> PositionChangeAction;
 		size_t PositionChangeActionId = 0;
 		bool dirtyFlag = false;
 	public:

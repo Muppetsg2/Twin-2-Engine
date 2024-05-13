@@ -1,22 +1,24 @@
 #include <core/SphereColliderComponent.h>
-#include "core/GameObject.h"
-#include <CollisionManager.h>
-#include <core/YamlConverters.h>
-#include <GameCollider.h>
+#include <core/GameObject.h>
+#include <physic/CollisionManager.h>
+#include <tools/YamlConverters.h>
+#include <physic/GameCollider.h>
 #include <core/ColliderComponent.h>
 
+using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Physic;
 
-Twin2Engine::Core::SphereColliderComponent::SphereColliderComponent() : ColliderComponent()
+SphereColliderComponent::SphereColliderComponent() : ColliderComponent()
 {
-	collider = new CollisionSystem::GameCollider(this, new CollisionSystem::SphereColliderData());
+	collider = new GameCollider(this, new SphereColliderData());
 }
 
-void Twin2Engine::Core::SphereColliderComponent::SetRadius(float radius)
+void SphereColliderComponent::SetRadius(float radius)
 {
-	((CollisionSystem::SphereColliderData*)collider->shapeColliderData)->Radius = radius;
+	((SphereColliderData*)collider->shapeColliderData)->Radius = radius;
 }
 
-void Twin2Engine::Core::SphereColliderComponent::Initialize()
+void SphereColliderComponent::Initialize()
 {
 	collider->colliderComponent = this;
 	PositionChangeAction = [this](Transform* transform) {
@@ -30,29 +32,29 @@ void Twin2Engine::Core::SphereColliderComponent::Initialize()
 	PositionChangeAction(GetTransform());
 }
 
-void Twin2Engine::Core::SphereColliderComponent::OnEnable()
+void SphereColliderComponent::OnEnable()
 {
 	PositionChangeActionId = GetTransform()->OnEventPositionChanged += PositionChangeAction;
-	CollisionSystem::CollisionManager::Instance()->RegisterCollider(collider);
+	CollisionManager::Instance()->RegisterCollider(collider);
 }
 
-void Twin2Engine::Core::SphereColliderComponent::OnDisable()
+void SphereColliderComponent::OnDisable()
 {
 	GetTransform()->OnEventPositionChanged -= PositionChangeActionId;
-	CollisionSystem::CollisionManager::Instance()->UnregisterCollider(collider);
+	CollisionManager::Instance()->UnregisterCollider(collider);
 }
 
-void Twin2Engine::Core::SphereColliderComponent::OnDestroy()
+void SphereColliderComponent::OnDestroy()
 {
 	GetTransform()->OnEventPositionChanged -= PositionChangeActionId;
-	CollisionSystem::CollisionManager::Instance()->UnregisterCollider(collider);
+	CollisionManager::Instance()->UnregisterCollider(collider);
 }
 
-YAML::Node Twin2Engine::Core::SphereColliderComponent::Serialize() const
+YAML::Node SphereColliderComponent::Serialize() const
 {
 	YAML::Node node = ColliderComponent::Serialize();
 	node["subTypes"].push_back(node["type"].as<std::string>());
 	node["type"] = "SphereCollider";
-	node["radius"] = ((CollisionSystem::SphereColliderData*)collider->shapeColliderData)->Radius;
+	node["radius"] = ((SphereColliderData*)collider->shapeColliderData)->Radius;
 	return node;
 }

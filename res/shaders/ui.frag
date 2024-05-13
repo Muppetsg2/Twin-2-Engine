@@ -1,52 +1,86 @@
 #version 450 core
 layout (std140, binding = 1) uniform WindowData
 {
-    vec2 windowSize;
+    ivec2 windowSize;
     float nearPlane;
     float farPlane;
     float gamma;
 };
 
-in VS_OUT {
-    vec2 texCoord;
-    vec3 fragPos;
-} fs_in;
-
-struct SPRITE {
-    vec4 color;
-    float width;
-    float height;
-    float x;
-    float y;
-    float texWidth;
-    float texHeight;
-    sampler2D img;
+layout (std140, binding = 4) uniform CanvasData {
+    mat4 canvasTransform;
+	vec2 canvasSize;
+    bool worldSpaceCanvas;
 };
 
-uniform SPRITE sprite;
-uniform bool isText;
+layout (std140, binding = 5) uniform UIElementData {
+	mat4 elemTransform;
+	mat4 maskTransform;
+	vec4 color;
+	vec2 elemSize;
+	vec2 maskSize;
+	ivec2 spriteOffset;
+	ivec2 spriteSize;
+	ivec2 texSize;
+	bool isText;
+	bool hasTexture;
+	bool hasMaskTexture;
+	bool useMask;
+};
+
+in GS_OUT {
+	vec2 texCoord;
+	vec2 screenPos;
+	vec2 canvasPos;
+	vec4 worldPos;
+} fs_in;
+
+uniform sampler2D image;
+uniform sampler2D maskImage;
 
 out vec4 Color;
 
-float map(float value, float min1, float max1, float min2, float max2) {
-    return ((value - min1) / (max1 - min1)) * (max2 - min2) + min2;
-}
-
-vec2 map(vec2 value, vec2 min1, vec2 max1, vec2 min2, vec2 max2) {
-    return vec2(map(value.x, min1.x, max1.x, min2.x, max2.x), map(value.y, min1.y, max1.y, min2.y, max2.y));
-}
-
 void main() 
 {
-    float InvTexWidth = 1.0 / sprite.texWidth;
-    float InvTexHeight = 1.0 / sprite.texHeight;
-    vec2 uvMin = vec2(sprite.x * InvTexWidth, sprite.y * InvTexHeight);
-    vec2 uvMax = vec2((sprite.x + sprite.width) * InvTexWidth, (sprite.y + sprite.height) * InvTexHeight);
-    vec2 uv = map(fs_in.texCoord, vec2(0.0, 0.0), vec2(1.0, 1.0), uvMin, uvMax);
+    // Is Frag In Screen
+    if (fs_in.screenPos.x > 1.0 || fs_in.screenPos.x < -1.0 || fs_in.screenPos.y > 1.0 || fs_in.screenPos.y < -1.0)
+        discard;
+
+    // Is Frag In Canvas
+    if (fs_in.canvasPos.x > canvasSize.x * 0.5 || fs_in.canvasPos.x < -canvasSize.x * 0.5 || fs_in.canvasPos.y > canvasSize.y * 0.5 || fs_in.canvasPos.y < -canvasSize.y * 0.5)
+        discard;
+
+    float maskPower = 1.0;
+    if (useMask) {
+        // Is Frag In Mask
+        vec2 inMaskPos = vec2(inverse(maskTransform) * vec4(fs_in.canvasPos, 0.0, 1.0));
+        if (inMaskPos.x > maskSize.x * 0.5 || inMaskPos.x < -maskSize.x * 0.5 || inMaskPos.y > maskSize.y * 0.5 || inMaskPos.y < -maskSize.y * 0.5)
+            discard;
+    
+        if (hasMaskTexture) {
+            vec2 invMaskSize = 1.0 / maskSize;
+            vec2 maskTexCoord = vec2(0.5);
+            maskTexCoord.x += invMaskSize.x * inMaskPos.x;
+            maskTexCoord.y += -invMaskSize.y * inMaskPos.y;
+            vec3 maskColor = texture(maskImage, maskTexCoord).rgb;
+            maskPower = (maskColor.r + maskColor.g + maskColor.b) / 3.0;
+        }
+    }
+
+    vec4 gammaColor = vec4(pow(color.rgb, vec3(gamma)), color.a);
+    vec4 elemColor = vec4(1.0);
+    if (hasTexture) {
+        vec2 invTexSize = 1.0 / texSize;
+        vec2 uv = (fs_in.texCoord * spriteSize + spriteOffset) * invTexSize;
+        elemColor = texture(image, uv);
+    }
+
     if (!isText) {
-        Color = texture(sprite.img, uv) * vec4(pow(sprite.color.rgb, vec3(gamma)), sprite.color.a);
+        Color = elemColor * gammaColor;
     }
     else {
-        Color = vec4(1.0, 1.0, 1.0, texture(sprite.img, uv).r) * vec4(pow(sprite.color.rgb, vec3(gamma)), sprite.color.a);
+        Color = vec4(1.0, 1.0, 1.0, elemColor.r) * gammaColor;
     }
+
+    Color.a *= maskPower;
 }

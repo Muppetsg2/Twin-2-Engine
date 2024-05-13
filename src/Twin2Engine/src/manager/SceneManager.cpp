@@ -4,14 +4,15 @@
 #include <graphic/manager/MaterialsManager.h>
 #include <graphic/manager/ModelsManager.h>
 #include <manager/PrefabManager.h>
+#include <tools/EventHandler.h>
 #include <manager/ScriptableObjectManager.h>
-#include <core/EventHandler.h>
 #include <core/ResourceManagement.h>
 
 using namespace Twin2Engine::Manager;
 using namespace std;
 using namespace Twin2Engine::Core;
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Tools;
+using namespace Twin2Engine::Graphic;
 
 size_t SceneManager::_currentSceneId;
 std::string SceneManager::_currentSceneName;
@@ -63,7 +64,7 @@ void SceneManager::AddScene(const string& name, Scene* scene)
 {
 	size_t id = hash<string>()(name);
 	if (_loadedScenes.find(id) != _loadedScenes.end()) {
-		SPDLOG_WARN("Zastêpowanie Sceny o nazwie '{0}'", name);
+		SPDLOG_WARN("Zastï¿½powanie Sceny o nazwie '{0}'", name);
 	}
 	_loadedScenes[id] = scene;
 }
@@ -102,7 +103,7 @@ void SceneManager::AddScene(const string& name, const string& path)
 		}
 		else {
 			if (spriteNode["x"] || spriteNode["y"] || spriteNode["width"] || spriteNode["height"]) {
-				SPDLOG_ERROR("Nie podano wszystkich parametrów poprawnie: x, y, width, height");
+				SPDLOG_ERROR("Nie podano wszystkich parametrï¿½w poprawnie: x, y, width, height");
 			}
 			scene->AddSprite(spriteNode["alias"].as<string>(), texturePaths[spriteNode["texture"].as<size_t>()]);
 		}

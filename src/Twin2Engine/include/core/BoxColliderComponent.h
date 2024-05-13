@@ -8,7 +8,7 @@ namespace Twin2Engine::Core {
 	private:
 		bool dirtyFlag = false;
 
-		Twin2Engine::Core::Action<Transform*> TransformChangeAction;
+		Tools::Action<Transform*> TransformChangeAction;
 		size_t TransformChangeActionId = 0;
 
 	public:

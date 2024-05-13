@@ -140,7 +140,7 @@ GameObjects:
       enabled: true
       position:
         x: -900
-        y: 500
+        y: 480
         z: 0
       scale:
         x: 1

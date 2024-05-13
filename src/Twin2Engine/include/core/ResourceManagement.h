@@ -1,13 +1,13 @@
 #pragma once
-#include <core/EventHandler.h>
+#include <tools/EventHandler.h>
 
 namespace Twin2Engine::Core {
 	template<class T, class U>
-	static std::vector<size_t> LoadResources(const Func<std::string, const T&>& pathGetter,
+	static std::vector<size_t> LoadResources(const Tools::Func<std::string, const T&>& pathGetter,
 		const U& resources, const std::vector<size_t>& loadedIds,
-		const Func<bool, size_t>& unloader,
-		const Func<bool, const std::string&, size_t&>& loader,
-		const Func<std::vector<size_t>, const std::vector<size_t>&, const std::vector<size_t>&>& sorter)
+		const Tools::Func<bool, size_t>& unloader,
+		const Tools::Func<bool, const std::string&, size_t&>& loader,
+		const Tools::Func<std::vector<size_t>, const std::vector<size_t>&, const std::vector<size_t>&>& sorter)
 	{
 		using namespace std;
 
@@ -68,18 +68,6 @@ namespace Twin2Engine::Core {
 			}
 		}
 
-		// Sorting
-		/*vector<size_t> sortedIds;
-		for (size_t i = 0; i < paths.size(); ++i) {
-			size_t pathH = hasher(paths[i]);
-			for (size_t j = 0; j < currentIds.size(); ++j) {
-				if (currentIds[j] == pathH) {
-					sortedIds.push_back(currentIds[j]);
-					break;
-				}
-			}
-		}
-		return sortedIds;*/
 		return sorter(pathHashes, currentIds);
 	}
 }

@@ -24,9 +24,9 @@ namespace Twin2Engine::Core
 			CloneFunctionEnd()
 	private:
 
-		GraphicEngine::InstantiatingModel _model;
+		Graphic::InstantiatingModel _model;
 
-		std::vector<GraphicEngine::Material> _materials;
+		std::vector<Graphic::Material> _materials;
 
 		bool _registered = false;
 		bool _transformChanged = false;
@@ -34,11 +34,11 @@ namespace Twin2Engine::Core
 
 #ifdef MESH_FRUSTUM_CULLING
 		int OnTransformChangedActionId = -1;
-		Twin2Engine::Core::Action<Transform*> OnTransformChangedAction = [this](Transform* transform) {
+		Tools::Action<Transform*> OnTransformChangedAction = [this](Transform* transform) {
 			glm::mat4 tMatrix = transform->GetTransformMatrix();
-			CollisionSystem::SphereColliderData* sphereBV;
+			Physic::SphereColliderData* sphereBV;
 			for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
-				sphereBV = (CollisionSystem::SphereColliderData*)_model.GetMesh(i)->sphericalBV->colliderShape;
+				sphereBV = (Physic::SphereColliderData*)_model.GetMesh(i)->sphericalBV->colliderShape;
 				if (sphereBV != nullptr) {
 					sphereBV->Position = tMatrix * glm::vec4(sphereBV->LocalPosition, 1.0f);
 				}
@@ -60,19 +60,19 @@ namespace Twin2Engine::Core
 		bool IsTransformChanged() const;
 
 #pragma region MODEL_PART
-		GraphicEngine::InstantiatingModel GetModel() const;
+		Graphic::InstantiatingModel GetModel() const;
 		size_t GetMeshCount() const;
-		void SetModel(const GraphicEngine::InstantiatingModel& model);
+		void SetModel(const Graphic::InstantiatingModel& model);
 		void SetModel(size_t modelId);
 #pragma endregion
 
 #pragma region MATERIALS_PART
-		GraphicEngine::InstantiatingMesh* GetMesh(size_t index) const;
+		Graphic::InstantiatingMesh* GetMesh(size_t index) const;
 		size_t GetMaterialCount() const;
-		GraphicEngine::Material GetMaterial(size_t index) const;
-		void AddMaterial(GraphicEngine::Material material);
+		Graphic::Material GetMaterial(size_t index) const;
+		void AddMaterial(Graphic::Material material);
 		void AddMaterial(size_t materialId);
-		void SetMaterial(size_t index, GraphicEngine::Material material);
+		void SetMaterial(size_t index, Graphic::Material material);
 		void SetMaterial(size_t index, size_t materialId);
 #pragma endregion
 

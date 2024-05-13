@@ -1,14 +1,15 @@
 #include <ui/Image.h>
 #include <core/Transform.h>
-#include <core/YamlConverters.h>
+#include <tools/YamlConverters.h>
 #include <manager/SceneManager.h>
 #include <graphic/manager/UIRenderingManager.h>
 #include <graphic/manager/SpriteManager.h>
+#include <core/CameraComponent.h>
 
 using namespace Twin2Engine;
 using namespace UI;
 using namespace Core;
-using namespace GraphicEngine;
+using namespace Graphic;
 using namespace Manager;
 using namespace glm;
 using namespace std;
@@ -17,16 +18,26 @@ void Image::Render()
 {
 	Sprite* sprite = SpriteManager::GetSprite(_spriteId);
 
+	UIElement elem{};
+	elem.canvasSize = Window::GetInstance()->GetContentSize();
+	elem.worldSpaceCanvas = false;
+
 	if (sprite != nullptr) {
-		UIElement elem{};
-		elem.isText = false;
 		elem.textureID = sprite->GetTexture()->GetId();
 		elem.textureSize = { sprite->GetTexture()->GetWidth(), sprite->GetTexture()->GetHeight() };
 		elem.spriteSize = { sprite->GetWidth(), sprite->GetHeight() };
 		elem.spriteOffset = { sprite->GetXOffset(), sprite->GetYOffset() };
 		elem.color = _color;
 		elem.elemSize = { _width, _height };
-		elem.transform = GetTransform()->GetTransformMatrix();
+		elem.elemTransform = GetTransform()->GetTransformMatrix();
+		elem.hasTexture = true;
+		UIRenderingManager::Render(elem);
+	}
+	else {
+		elem.color = _color;
+		elem.elemSize = { _width, _height };
+		elem.elemTransform = GetTransform()->GetTransformMatrix();
+		elem.hasTexture = false;
 		UIRenderingManager::Render(elem);
 	}
 }

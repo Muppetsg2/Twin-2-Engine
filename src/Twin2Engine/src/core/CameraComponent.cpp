@@ -1,18 +1,31 @@
 #include <core/CameraComponent.h>
 #include <core/Transform.h>
-#include <core/YamlConverters.h>
+#include <tools/YamlConverters.h>
 #include <graphic/Window.h>
-#include <GraphicEnigineManager.h>
+#include <GraphicEnigine.h>
 #include <graphic/manager/ModelsManager.h>
-#include <LightingController.h>
+#include <graphic/LightingController.h>
 
 using namespace Twin2Engine::Core;
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Tools;
+using namespace Twin2Engine::Physic;
+using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
 std::vector<CameraComponent*> CameraComponent::Cameras = std::vector<CameraComponent*>();
 GLuint CameraComponent::_uboCameraData = 0;
+STD140Offsets CameraComponent::_uboCameraDataOffsets{
+	STD140Variable<mat4>("projection"),
+	STD140Variable<mat4>("view"),
+	STD140Variable<vec3>("viewerPosition")
+};
 GLuint CameraComponent::_uboWindowData = 0;
+STD140Offsets CameraComponent::_uboWindowDataOffsets{
+		STD140Variable<ivec2>("windowSize"),
+		STD140Variable<float>("nearPlane"),
+		STD140Variable<float>("farPlane"),
+		STD140Variable<float>("gamma"),
+};
 InstantiatingModel CameraComponent::_renderPlane = InstantiatingModel();
 Shader* CameraComponent::_renderShader = nullptr;
 
@@ -366,16 +379,30 @@ void CameraComponent::Render()
 	//Jesli wiecej kamer i kazda ma ze swojego kata dawac obraz
 
 	// DEFAULT
+	
+	STD140Struct tempStruct = STD140Struct(_uboCameraDataOffsets);
+	tempStruct.Set("projection", this->GetProjectionMatrix());
+	tempStruct.Set("view", this->GetViewMatrix());
+	tempStruct.Set("viewerPosition", this->GetTransform()->GetGlobalPosition());
+
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
+	/*glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));*/
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
+
+	tempStruct = STD140Struct(_uboWindowDataOffsets);
+	tempStruct.Set("windowSize", Window::GetInstance()->GetContentSize());
+	tempStruct.Set("nearPlane", this->_near);
+	tempStruct.Set("farPlane", this->_far);
+	tempStruct.Set("gamma", this->_gamma);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ivec2), value_ptr(Window::GetInstance()->GetContentSize()));
+	/*glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ivec2), value_ptr(Window::GetInstance()->GetContentSize()));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2), sizeof(float), &(this->_near));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float), sizeof(float), &(this->_far));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));*/
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
 	
 	// NAMED
 	/*glNamedBufferSubData(_uboMatrices, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
@@ -387,14 +414,14 @@ void CameraComponent::Render()
 	glNamedBufferSubData(_uboWindowData, sizeof(vec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));*/
 
 	// UPDATING RENDERER
-	GraphicEngineManager::UpdateBeforeRendering();
+	GraphicEngine::UpdateBeforeRendering();
 
 	// DEPTH MAP
 	glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
 	glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		GraphicEngineManager::DepthRender();
+	GraphicEngine::DepthRender();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -408,7 +435,7 @@ void CameraComponent::Render()
 	glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		GraphicEngineManager::Render();
+	GraphicEngine::Render();
 
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, _msRenderMapFBO);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _renderMapFBO);
@@ -465,33 +492,48 @@ void CameraComponent::Initialize()
 
 		this->SetIsMain(true);
 
+		// UBO MATRICIES
 		glGenBuffers(1, &_uboCameraData);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
-		glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(mat4) + sizeof(vec3), NULL, GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, _uboCameraDataOffsets.GetSize(), NULL, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0, _uboCameraData);
 
+		STD140Struct tempStruct = STD140Struct(_uboCameraDataOffsets);
+		tempStruct.Set("projection", this->GetProjectionMatrix());
+		tempStruct.Set("view", this->GetViewMatrix());
+		tempStruct.Set("viewerPosition", this->GetTransform()->GetGlobalPosition());
+
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
+		/*glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));*/
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
+		// UBO WINDOW DATA
 		glGenBuffers(1, &_uboWindowData);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-		glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(float) + sizeof(ivec2), NULL, GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, _uboWindowDataOffsets.GetSize(), NULL, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		glBindBufferBase(GL_UNIFORM_BUFFER, 1, _uboWindowData);
 
+		tempStruct = STD140Struct(_uboWindowDataOffsets);
+		tempStruct.Set("windowSize", Window::GetInstance()->GetContentSize());
+		tempStruct.Set("nearPlane", this->_near);
+		tempStruct.Set("farPlane", this->_far);
+		tempStruct.Set("gamma", this->_gamma);
+
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ivec2), value_ptr(Window::GetInstance()->GetContentSize()));
+		/*glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ivec2), value_ptr(Window::GetInstance()->GetContentSize()));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2), sizeof(float), &(this->_near));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float), sizeof(float), &(this->_far));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));*/
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		_renderPlane = ModelsManager::GetPlane();
@@ -635,7 +677,7 @@ void CameraComponent::OnDestroy()
 	}
 }
 
-CollisionSystem::Ray CameraComponent::GetScreenPointRay(glm::vec2 screenPosition)
+Ray CameraComponent::GetScreenPointRay(glm::vec2 screenPosition) const
 {
 	ivec2 size = Window::GetInstance()->GetContentSize();
 	glm::vec3 Origin = GetTransform()->GetGlobalPosition();
@@ -665,7 +707,7 @@ CollisionSystem::Ray CameraComponent::GetScreenPointRay(glm::vec2 screenPosition
 	glm::vec3 Direction(rayWorld);
 	Direction = glm::normalize(Direction);
 
-	return CollisionSystem::Ray(std::move(Direction), std::move(Origin));
+	return Ray(std::move(Direction), std::move(Origin));
 }
 
 YAML::Node CameraComponent::Serialize() const

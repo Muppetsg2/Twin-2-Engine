@@ -11,6 +11,8 @@
 
 #include <mutex>
 
+#include <windows.h>
+
 
 // YAML-CPP
 #include <yaml-cpp/yaml.h>

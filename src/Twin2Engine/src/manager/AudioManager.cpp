@@ -66,17 +66,25 @@ size_t AudioManager::LoadAudio(string path)
         return h;
     }
 
-    Wav* sample = new Wav();
-    result res = sample->load(path.c_str());
-    if (res != 0) {
-        spdlog::error(_soloud.getErrorString(res));
+    if (filesystem::exists(path))
+    {
+        Wav* sample = new Wav();
+        result res = sample->load(path.c_str());
+        if (res != 0) {
+            spdlog::error(_soloud.getErrorString(res));
+            return 0;
+        }
+
+        _loadedAudio[h] = sample;
+        _audiosPaths[h] = path;
+
+        return h;
+    }
+    else
+    {
+        SPDLOG_ERROR("Audio file '{0}' not found!", path);
         return 0;
     }
-
-    _loadedAudio[h] = sample;
-    _audiosPaths[h] = path;
-
-    return h;
 }
 
 handle AudioManager::GetAudioHandle(string path)

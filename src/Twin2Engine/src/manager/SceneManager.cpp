@@ -464,9 +464,14 @@ void SceneManager::AddScene(const string& name, Scene* scene)
 
 void SceneManager::AddScene(const string& name, const string& path)
 {
-	Scene* scene = new Scene();
-	scene->Deserialize(YAML::LoadFile(path));
-	AddScene(name, scene);
+	if (filesystem::exists(path)) {
+		Scene* scene = new Scene();
+		scene->Deserialize(YAML::LoadFile(path));
+		AddScene(name, scene);
+	}
+	else {
+		SPDLOG_ERROR("Scriptable Object file '{0}' not found!", path);
+	}
 }
 
 void SceneManager::LoadScene(const string& name)

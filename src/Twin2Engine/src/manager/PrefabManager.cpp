@@ -46,12 +46,18 @@ Prefab* PrefabManager::LoadPrefab(const string& path)
 		return _prefabs[pathHash];
 	}
 
-	SPDLOG_INFO("Loading Prefab '{0}'", path);
-	Prefab* prefab = new Prefab(pathHash);
-	prefab->Deserialize(YAML::LoadFile(path));
-	_prefabs[pathHash] = prefab;
-	_prefabsPaths[pathHash] = path;
-	return prefab;
+	if (filesystem::exists(path)) {
+		SPDLOG_INFO("Loading Prefab '{0}'", path);
+		Prefab* prefab = new Prefab(pathHash);
+		prefab->Deserialize(YAML::LoadFile(path));
+		_prefabs[pathHash] = prefab;
+		_prefabsPaths[pathHash] = path;
+		return prefab;
+	}
+	else {
+		SPDLOG_CRITICAL("Prefab file '{0}' not found!", path);
+		return nullptr;
+	}
 }
 
 Prefab* PrefabManager::GetPrefab(size_t id)
@@ -77,23 +83,24 @@ string PrefabManager::GetPrefabPath(const Prefab* prefab)
 {
 	if (prefab != nullptr)
 	{
-		size_t id = 0;
-		bool foundId = false;
-		for (const auto& pair : _prefabs)
-		{
-			if (pair.second == prefab)
+		//size_t id = 0;
+		//bool foundId = false;
+		//for (const auto& pair : _prefabs)
+		//{
+		//	if (pair.second == prefab)
+		//	{
+		//		id = pair.first;
+		//		break;
+		//	}
+		//}
+		//if (foundId)
+		//{
+			if (_prefabsPaths.contains(prefab->_id))
 			{
-				id = pair.first;
-				break;
+				//return _prefabsPaths[id];
+				return _prefabsPaths[prefab->_id];
 			}
-		}
-		if (foundId)
-		{
-			if (_prefabsPaths.contains(id))
-			{
-				return _prefabsPaths[id];
-			}
-		}
+		//}
 	}
 	return "";
 }

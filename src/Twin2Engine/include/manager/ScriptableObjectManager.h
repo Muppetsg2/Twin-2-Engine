@@ -51,6 +51,7 @@ namespace Twin2Engine::Manager
 
 		static std::vector<std::string> GetScriptableObjectsNames();
 		static bool CreateScriptableObject(const std::string& dstPath, const std::string& scriptableObjectClassName);
+		static bool Save(const std::string& dstPath, Twin2Engine::Core::ScriptableObject* scriptableObject);
 
 		static std::vector<std::string> GetAllPaths();
 	};

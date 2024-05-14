@@ -1,8 +1,0 @@
-scriptable_object:
-  __SO_RegisteredName__: SectorGeneratorForRegionsByKMeans
-  sectorPrefab: ""
-  sectorsCount: 3
-  isDiscritizedHeight: false
-  lowerHeightRange: 0
-  upperHeightRange: 0
-  heightRangeFacor: 1

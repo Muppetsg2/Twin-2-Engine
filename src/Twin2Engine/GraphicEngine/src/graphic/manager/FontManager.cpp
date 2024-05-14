@@ -13,27 +13,34 @@ map<size_t, Font*> FontManager::_fonts;
 map<size_t, string> FontManager::_fontsPaths;
 
 Font* FontManager::LoadFont(const string& fontPath) {
-	size_t pathHash = _hasher(fontPath);
-    if (_fonts.find(pathHash) != _fonts.end()) {
-        spdlog::info("Font \"{0}\" already loaded", fontPath);
-        return _fonts[pathHash];
-    }
 
-    FT_Library lib;
-    if (FT_Init_FreeType(&lib)) {
-        spdlog::error("ERROR::FREETYPE: Could not init FreeType Library");
+    if (filesystem::exists(fontPath)) {
+        size_t pathHash = _hasher(fontPath);
+        if (_fonts.find(pathHash) != _fonts.end()) {
+            spdlog::info("Font \"{0}\" already loaded", fontPath);
+            return _fonts[pathHash];
+        }
+
+        FT_Library lib;
+        if (FT_Init_FreeType(&lib)) {
+            spdlog::error("ERROR::FREETYPE: Could not init FreeType Library");
+            return nullptr;
+        }
+
+        FT_Face face;
+        if (FT_New_Face(lib, fontPath.c_str(), 0, &face)) {
+            spdlog::error("ERROR::FREETYPE: Failed to load font");
+            return nullptr;
+        }
+        Font* font = new Font(pathHash, lib, face);
+        _fonts[pathHash] = font;
+        _fontsPaths[pathHash] = fontPath;
+        return font;
+    }
+    else {
+        SPDLOG_ERROR("Font file '{0}' not found!", fontPath);
         return nullptr;
     }
-
-    FT_Face face;
-    if (FT_New_Face(lib, fontPath.c_str(), 0, &face)) {
-        spdlog::error("ERROR::FREETYPE: Failed to load font");
-        return nullptr;
-    }
-    Font* font = new Font(pathHash, lib, face);
-    _fonts[pathHash] = font;
-    _fontsPaths[pathHash] = fontPath;
-    return font;
 }
 
 Font* FontManager::GetFont(size_t fontId) {

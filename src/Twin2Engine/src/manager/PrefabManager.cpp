@@ -46,12 +46,18 @@ Prefab* PrefabManager::LoadPrefab(const string& path)
 		return _prefabs[pathHash];
 	}
 
-	SPDLOG_INFO("Loading Prefab '{0}'", path);
-	Prefab* prefab = new Prefab(pathHash);
-	prefab->Deserialize(YAML::LoadFile(path));
-	_prefabs[pathHash] = prefab;
-	_prefabsPaths[pathHash] = path;
-	return prefab;
+	if (filesystem::exists(path)) {
+		SPDLOG_INFO("Loading Prefab '{0}'", path);
+		Prefab* prefab = new Prefab(pathHash);
+		prefab->Deserialize(YAML::LoadFile(path));
+		_prefabs[pathHash] = prefab;
+		_prefabsPaths[pathHash] = path;
+		return prefab;
+	}
+	else {
+		SPDLOG_CRITICAL("Prefab file '{0}' not found!", path);
+		return nullptr;
+	}
 }
 
 Prefab* PrefabManager::GetPrefab(size_t id)

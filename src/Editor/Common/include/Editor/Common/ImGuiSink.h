@@ -129,6 +129,9 @@ namespace Editor::Common
                 buf[0] = '\0';
                 searchContent = buf;
             }
+            ImGui::SameLine();
+            static bool caseSensitive = true;
+            ImGui::Checkbox("Case Sensitive", &caseSensitive);
 
             ImGui::BeginChild("LogWindow", ImVec2(0, 0), true);
             //const vector<ImGuiLogMessage> messages = ImGuiSink<mutex>::getLogMessages();
@@ -138,7 +141,7 @@ namespace Editor::Common
 
                 if (logLevels[MessageHolder::logMessages[index].level])
                 {
-                    if (!searchContent.size() || ContainsString(MessageHolder::logMessages[index].messageContent, searchContent, true))
+                    if (!searchContent.size() || ContainsString(MessageHolder::logMessages[index].messageContent, searchContent, caseSensitive))
                     {
                         switch (MessageHolder::logMessages[index].level)
                         {

@@ -37,6 +37,7 @@ Texture2D* TextureManager::LoadTexture2D(const string& path, const TextureData& 
 
     unsigned int id;
     glGenTextures(1, &id);
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, id);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, data.sWrapMode);
@@ -78,6 +79,7 @@ Texture2D* TextureManager::LoadTexture2D(const string& path, const TextureFileFo
 
     unsigned int id;
     glGenTextures(1, &id);
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, id);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, data.sWrapMode);

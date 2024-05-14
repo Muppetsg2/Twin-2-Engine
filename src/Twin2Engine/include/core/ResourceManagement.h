@@ -15,7 +15,7 @@ namespace Twin2Engine::Core {
 
 		hash<string> hasher = hash<string>();
 
-		for (auto& id : loadedIds) {
+		/*for (auto& id : loadedIds) {
 			if (unloader(id.second)) {
 				
 			}
@@ -29,9 +29,9 @@ namespace Twin2Engine::Core {
 			}
 		}
 
-		return ret;
+		return ret;*/
 
-		/*map<size_t, size_t> finalIds;
+		map<size_t, size_t> finalIds;
 
 
 		map<size_t, size_t> currentIds = loadedIds;
@@ -120,6 +120,6 @@ namespace Twin2Engine::Core {
 			}
 		}
 	
-		return finalIds;*/
+		return finalIds;
 	}
 }

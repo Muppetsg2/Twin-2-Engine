@@ -31,6 +31,7 @@ void Font::LoadCharacter(unsigned int character, uint32_t size) {
     // generate texture
     unsigned int texture;
     glGenTextures(1, &texture);
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
     glTexImage2D(
         GL_TEXTURE_2D,

@@ -123,6 +123,17 @@ void MeshRenderingManager::UnregisterStatic(Twin2Engine::Core::MeshRenderer* mes
 					_renderQueueStatic[material.GetShader()][material][mesh]
 						.modelTransforms.erase(_renderQueueStatic[material.GetShader()][material][mesh].modelTransforms.cbegin() + i);
 
+					if (_renderQueueStatic[material.GetShader()][material][mesh].meshRenderers.size() == 0) {
+						_renderQueueStatic[material.GetShader()][material].erase(mesh);
+
+						if (_renderQueueStatic[material.GetShader()][material].size() == 0) {
+							_renderQueueStatic[material.GetShader()].erase(material);
+
+							if (_renderQueueStatic[material.GetShader()].size() == 0) {
+								_renderQueueStatic.erase(material.GetShader());
+							}
+						}
+					}
 					break;
 				}
 			}
@@ -167,6 +178,18 @@ void MeshRenderingManager::UnregisterDynamic(Twin2Engine::Core::MeshRenderer* me
 
 					_renderQueueDynamic[material.GetShader()][material][mesh]
 						.modelTransforms.erase(_renderQueueDynamic[material.GetShader()][material][mesh].modelTransforms.cbegin() + i);
+
+					if (_renderQueueDynamic[material.GetShader()][material][mesh].meshRenderers.size() == 0) {
+						_renderQueueDynamic[material.GetShader()][material].erase(mesh);
+
+						if (_renderQueueDynamic[material.GetShader()][material].size() == 0) {
+							_renderQueueDynamic[material.GetShader()].erase(material);
+
+							if (_renderQueueDynamic[material.GetShader()].size() == 0) {
+								_renderQueueDynamic.erase(material.GetShader());
+							}
+						}
+					}
 
 					break;
 				}
@@ -509,6 +532,7 @@ void MeshRenderingManager::PreRender()
 
 			currentSegment.begin = nullptr;
 			currentSegment.count = 0u;
+			renderItr = meshPair.second.rendered.begin();
 
 			while (count > MAX_INSTANCE_NUMBER_PER_DRAW)
 			{

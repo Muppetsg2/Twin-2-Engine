@@ -246,6 +246,7 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
     SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/DirLightTest.scene");
 
     SceneManager::LoadScene("testScene");
     SceneManager::Update();
@@ -319,7 +320,6 @@ int main(int, char**)
     tilemapGenerating = glfwGetTime();
     //contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
-    /**/
 
 #pragma endregion
     
@@ -328,12 +328,14 @@ int main(int, char**)
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
 
 #pragma region TestingLighting
-    GameObject* dl_go = SceneManager::CreateGameObject();
+    /*GameObject* dl_go = SceneManager::CreateGameObject();
     dl_go->GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
     DirectionalLightComponent* dl = dl_go->AddComponent<DirectionalLightComponent>();
     dl->SetColor(glm::vec3(1.0f));
     LightingController::Instance()->SetViewerPosition(cameraPos);
     LightingController::Instance()->SetAmbientLight(glm::vec3(0.1f));
+
+    SceneManager::SaveScene("res/scenes/DirLightTest.scene");*/
 #pragma endregion
 
 #if _DEBUG

@@ -108,6 +108,7 @@ void DirectionalLightComponent::SetPower(float power)
 YAML::Node DirectionalLightComponent::Serialize() const
 {
 	YAML::Node node = LightComponent::Serialize();
+	node["type"] = "DirectionalLightComponent";
 	node["direction"] = light->direction;
 	node["color"] = light->color;
 	node["power"] = light->power;

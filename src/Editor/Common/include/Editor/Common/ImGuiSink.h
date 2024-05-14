@@ -65,9 +65,108 @@ namespace Editor::Common
             return MessageHolder::logMessages;
         }
 
-        static void clear()
+        static void Clear()
         {
             MessageHolder::logMessages.clear();
+        }
+
+        static void Draw()
+        {
+            static bool logLevels[7] = { true, true, true, true, true, true, true };
+
+            ImGui::SetNextWindowSizeConstraints(ImVec2(600, 300), ImVec2(1920, 1080));
+
+            ImGui::Begin("Console");
+            ImGui::Checkbox("TRACE", &logLevels[SPDLOG_LEVEL_TRACE]);
+            ImGui::SameLine();
+            ImGui::Checkbox("DEBUG", &logLevels[SPDLOG_LEVEL_DEBUG]);
+            ImGui::SameLine();
+            ImGui::Checkbox("INFO", &logLevels[SPDLOG_LEVEL_INFO]);
+            ImGui::SameLine();
+            ImGui::Checkbox("WARN", &logLevels[SPDLOG_LEVEL_WARN]);
+            ImGui::SameLine();
+            ImGui::Checkbox("ERR", &logLevels[SPDLOG_LEVEL_ERROR]);
+            ImGui::SameLine();
+            ImGui::Checkbox("CRITICAL", &logLevels[SPDLOG_LEVEL_CRITICAL]);
+            ImGui::SameLine();
+            ImGui::Checkbox("OFF", &logLevels[SPDLOG_LEVEL_OFF]);
+
+            float buttonPosX = ImGui::GetWindowWidth() - ImGui::GetStyle().ItemSpacing.x - ImGui::CalcTextSize("Clear").x;
+
+            ImGui::SameLine();
+
+            ImGui::SetCursorPosX(buttonPosX);
+
+            // Draw button
+            if (ImGui::Button("Clear")) {
+                // Handle button click
+                Clear();
+            }
+
+            ImGui::SameLine();
+            float autoScrollPosX = buttonPosX - 4 * ImGui::GetStyle().ItemSpacing.x - ImGui::CalcTextSize("Auto Scroll").x;
+            ImGui::SetCursorPosX(autoScrollPosX);
+
+            static bool autoScroll = true;
+            ImGui::Checkbox("Auto Scroll", &autoScroll);
+
+
+            ImGui::BeginChild("LogWindow", ImVec2(0, 0), true);
+            //const vector<ImGuiLogMessage> messages = ImGuiSink<mutex>::getLogMessages();
+            for (size_t index = 0ull; index < MessageHolder::logMessages.size(); index++)
+            {
+                ImVec4 textColor;
+
+                if (logLevels[MessageHolder::logMessages[index].level])
+                {
+                    switch (MessageHolder::logMessages[index].level)
+                    {
+                    case SPDLOG_LEVEL_TRACE:
+                        textColor = ImVec4(0.0, 0.5, 0.0, 1.0);
+                        break;
+
+                    case SPDLOG_LEVEL_DEBUG:
+                        textColor = ImVec4(0.0, 0.5, 0.0, 1.0);
+                        break;
+
+                    case SPDLOG_LEVEL_INFO:
+                        textColor = ImVec4(0.65, 0.65, 0.65, 1.0);
+                        break;
+
+                    case SPDLOG_LEVEL_WARN:
+                        textColor = ImVec4(1.0, 1.0, 0.0, 1.0);
+                        break;
+
+                    case SPDLOG_LEVEL_ERROR:
+                        textColor = ImVec4(1.0, 0.0, 0.0, 1.0);
+                        break;
+
+                    case SPDLOG_LEVEL_OFF:
+                        textColor = ImVec4(0.5, 0.0, 0.0, 1.0);
+                        break;
+                    }
+
+                    ImGui::TextColored(textColor, "%s", MessageHolder::logMessages[index].messageContent.c_str());
+                }
+            }
+
+            //static float lastScrollPosition = 0.0;
+            //static bool lastFrameOnEnd = true;
+            //cout << "Scroll" << ImGui::GetScrollY() << endl;
+            if (autoScroll)
+            {
+                ImGui::SetScrollHereY(1.0f);
+            }
+            //float currentScrollPos = ImGui::GetScrollY();
+            //if (currentScrollPos == ImGui::GetScrollMaxY())
+            //{
+            //    lastFrameOnEnd = true;
+            //}
+
+            ImGui::EndChild();
+
+
+            ImGui::End();
         }
 
     private:

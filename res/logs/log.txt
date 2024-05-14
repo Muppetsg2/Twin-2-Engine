@@ -1,476 +1,228 @@
-[2024-05-13 21:43:18.426] [logger] [info] Successfully created GLFW Window!
+[2024-05-14 07:38:58.031] [logger] [info] Successfully created GLFW Window!
 
-[2024-05-13 21:43:18.428] [logger] [info] Successfully initialized OpenGL loader!
+[2024-05-14 07:38:58.033] [logger] [info] Successfully initialized OpenGL loader!
 
-[2024-05-13 21:43:18.429] [logger] [info] Graphic Card: Intel(R) Iris(R) Xe Graphics
+[2024-05-14 07:38:58.033] [logger] [info] Graphic Card: Intel(R) Iris(R) Xe Graphics
 
-[2024-05-13 21:43:18.435] [logger] [info] [ShaderManager.cpp:293] Loading shader program: origin/DepthShader!
+[2024-05-14 07:38:58.037] [logger] [info] [ShaderManager.cpp:293] Loading shader program: origin/DepthShader!
 
-[2024-05-13 21:43:18.439] [logger] [info] [ShaderManager.cpp:293] Loading shader program: origin/CameraDepthShader!
+[2024-05-14 07:38:58.050] [logger] [info] [ShaderManager.cpp:293] Loading shader program: origin/CameraDepthShader!
 
-[2024-05-13 21:43:18.443] [logger] [info] [ShaderManager.cpp:293] Loading shader program: origin/UI!
+[2024-05-14 07:38:58.054] [logger] [info] [ShaderManager.cpp:293] Loading shader program: origin/UI!
 
-[2024-05-13 21:43:19.488] [logger] [info] Initialized SoLoud.
+[2024-05-14 07:38:58.707] [logger] [info] Initialized SoLoud.
 
-[2024-05-13 21:43:19.488] [logger] [info] Initialized GameEngine.
+[2024-05-14 07:38:58.708] [logger] [info] Initialized GameEngine.
 
-[2024-05-13 21:43:19.489] [logger] [info] Initialized ImGui.
+[2024-05-14 07:38:58.708] [logger] [info] Initialized ImGui.
 
-[2024-05-13 21:43:20.670] [logger] [info] [MaterialsManager.cpp:104] Loading material 1042142807520817495: hexagonMat!
+[2024-05-14 07:39:00.106] [logger] [info] [MaterialsManager.cpp:104] Loading material 1042142807520817495: hexagonMat!
 
-[2024-05-13 21:43:20.670] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.106] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.671] [logger] [info] [ShaderManager.cpp:293] Loading shader program: origin/Textured!
+[2024-05-14 07:39:00.106] [logger] [info] [ShaderManager.cpp:293] Loading shader program: origin/Textured!
 
-[2024-05-13 21:43:20.678] [logger] [info] [MaterialsManager.cpp:104] Loading material 1564421833862096861: Basic2!
+[2024-05-14 07:39:00.111] [logger] [info] [MaterialsManager.cpp:104] Loading material 1564421833862096861: Basic2!
 
-[2024-05-13 21:43:20.678] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.111] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.679] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.111] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.680] [logger] [info] [ShaderManager.cpp:293] Loading shader program: origin/Basic!
+[2024-05-14 07:39:00.112] [logger] [info] [ShaderManager.cpp:293] Loading shader program: origin/Basic!
 
-[2024-05-13 21:43:20.686] [logger] [info] [MaterialsManager.cpp:104] Loading material 1942760313135343237: GreenHexTile!
+[2024-05-14 07:39:00.116] [logger] [info] [MaterialsManager.cpp:104] Loading material 1942760313135343237: GreenHexTile!
 
-[2024-05-13 21:43:20.686] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.117] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.686] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.117] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.688] [logger] [info] [ShaderManager.cpp:293] Loading shader program: origin/ColoredTexture!
+[2024-05-14 07:39:00.118] [logger] [info] [ShaderManager.cpp:293] Loading shader program: origin/ColoredTexture!
 
-[2024-05-13 21:43:20.695] [logger] [info] [MaterialsManager.cpp:104] Loading material 4473429819045291258: ColoredHexTile!
+[2024-05-14 07:39:00.121] [logger] [info] [MaterialsManager.cpp:104] Loading material 4473429819045291258: ColoredHexTile!
 
-[2024-05-13 21:43:20.695] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.121] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.695] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.121] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.695] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/ColoredTexture!
+[2024-05-14 07:39:00.121] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/ColoredTexture!
 
-[2024-05-13 21:43:20.697] [logger] [info] [MaterialsManager.cpp:104] Loading material 4582786214424138428: metal!
+[2024-05-14 07:39:00.122] [logger] [info] [MaterialsManager.cpp:104] Loading material 4582786214424138428: metal!
 
-[2024-05-13 21:43:20.698] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.122] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.698] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.123] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.698] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/Basic!
+[2024-05-14 07:39:00.123] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/Basic!
 
-[2024-05-13 21:43:20.699] [logger] [info] [MaterialsManager.cpp:104] Loading material 5349800463602179429: multiTexture!
+[2024-05-14 07:39:00.124] [logger] [info] [MaterialsManager.cpp:104] Loading material 5349800463602179429: multiTexture!
 
-[2024-05-13 21:43:20.699] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.124] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.699] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.124] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.701] [logger] [info] [ShaderManager.cpp:293] Loading shader program: origin/MultiTexture!
+[2024-05-14 07:39:00.125] [logger] [info] [ShaderManager.cpp:293] Loading shader program: origin/MultiTexture!
 
-[2024-05-13 21:43:20.706] [logger] [info] [MaterialsManager.cpp:104] Loading material 6322449117059734704: textured!
+[2024-05-14 07:39:00.128] [logger] [info] [MaterialsManager.cpp:104] Loading material 6322449117059734704: textured!
 
-[2024-05-13 21:43:20.707] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.128] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.707] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/Textured!
+[2024-05-14 07:39:00.128] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/Textured!
 
-[2024-05-13 21:43:20.709] [logger] [info] [MaterialsManager.cpp:104] Loading material 7707872786041560219: deska!
+[2024-05-14 07:39:00.129] [logger] [info] [MaterialsManager.cpp:104] Loading material 7707872786041560219: deska!
 
-[2024-05-13 21:43:20.709] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.129] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.709] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.129] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.709] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/Basic!
+[2024-05-14 07:39:00.129] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/Basic!
 
-[2024-05-13 21:43:20.711] [logger] [info] [MaterialsManager.cpp:104] Loading material 9762898079316658359: CityMaterial!
+[2024-05-14 07:39:00.130] [logger] [info] [MaterialsManager.cpp:104] Loading material 9762898079316658359: CityMaterial!
 
-[2024-05-13 21:43:20.711] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.130] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.711] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/Textured!
+[2024-05-14 07:39:00.130] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/Textured!
 
-[2024-05-13 21:43:20.713] [logger] [info] [MaterialsManager.cpp:104] Loading material 10499126339911641094: BlueHexTile!
+[2024-05-14 07:39:00.132] [logger] [info] [MaterialsManager.cpp:104] Loading material 10499126339911641094: BlueHexTile!
 
-[2024-05-13 21:43:20.713] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.132] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.713] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.132] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.713] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/ColoredTexture!
+[2024-05-14 07:39:00.132] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/ColoredTexture!
 
-[2024-05-13 21:43:20.715] [logger] [info] [MaterialsManager.cpp:104] Loading material 12228508516666822189: wallMat!
+[2024-05-14 07:39:00.133] [logger] [info] [MaterialsManager.cpp:104] Loading material 12228508516666822189: wallMat!
 
-[2024-05-13 21:43:20.715] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.133] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.715] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/Textured!
+[2024-05-14 07:39:00.133] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/Textured!
 
-[2024-05-13 21:43:20.717] [logger] [info] [MaterialsManager.cpp:104] Loading material 12615015466244753557: MountainsUnlit!
+[2024-05-14 07:39:00.134] [logger] [info] [MaterialsManager.cpp:104] Loading material 12615015466244753557: MountainsUnlit!
 
-[2024-05-13 21:43:20.717] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.134] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.717] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.134] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.717] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/ColoredTexture!
+[2024-05-14 07:39:00.134] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/ColoredTexture!
 
-[2024-05-13 21:43:20.719] [logger] [info] [MaterialsManager.cpp:104] Loading material 14192941421860949966: FakeBRDF!
+[2024-05-14 07:39:00.135] [logger] [info] [MaterialsManager.cpp:104] Loading material 14192941421860949966: FakeBRDF!
 
-[2024-05-13 21:43:20.719] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.135] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.720] [logger] [info] [ShaderManager.cpp:293] Loading shader program: origin/FakeBRDF!
+[2024-05-14 07:39:00.135] [logger] [info] [ShaderManager.cpp:293] Loading shader program: origin/FakeBRDF!
 
-[2024-05-13 21:43:20.725] [logger] [info] [MaterialsManager.cpp:104] Loading material 14420500609293464293: RedHexTile!
+[2024-05-14 07:39:00.138] [logger] [info] [MaterialsManager.cpp:104] Loading material 14420500609293464293: RedHexTile!
 
-[2024-05-13 21:43:20.725] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.138] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.726] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.138] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.726] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/ColoredTexture!
+[2024-05-14 07:39:00.138] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/ColoredTexture!
 
-[2024-05-13 21:43:20.727] [logger] [info] [MaterialsManager.cpp:104] Loading material 15371342461363381667: roofMat!
+[2024-05-14 07:39:00.139] [logger] [info] [MaterialsManager.cpp:104] Loading material 15371342461363381667: roofMat!
 
-[2024-05-13 21:43:20.727] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
+[2024-05-14 07:39:00.139] [logger] [info] [MaterialsManager.cpp:128] LoadSHPR
 
-[2024-05-13 21:43:20.727] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/Textured!
+[2024-05-14 07:39:00.139] [logger] [info] [ShaderManager.cpp:261] Shader already created: origin/Textured!
 
-[2024-05-13 21:43:20.728] [logger] [info] [ModelsManager.cpp:942] Loading model: res/models/AK47.obj!
+[2024-05-14 07:39:00.140] [logger] [info] [ModelsManager.cpp:942] Loading model: res/models/AK47.obj!
 
-[2024-05-13 21:43:20.855] [logger] [info] [ModelsManager.cpp:942] Loading model: res/models/mountain.obj!
+[2024-05-14 07:39:00.237] [logger] [info] [ModelsManager.cpp:942] Loading model: res/models/mountain.obj!
 
-[2024-05-13 21:43:20.863] [logger] [info] [ModelsManager.cpp:942] Loading model: res/models/radioStation.obj!
+[2024-05-14 07:39:00.245] [logger] [info] [ModelsManager.cpp:942] Loading model: res/models/radioStation.obj!
 
-[2024-05-13 21:43:20.873] [logger] [info] [ModelsManager.cpp:942] Loading model: res/models/hexagon.obj!
+[2024-05-14 07:39:00.252] [logger] [info] [ModelsManager.cpp:942] Loading model: res/models/hexagon.obj!
 
-[2024-05-13 21:43:20.884] [logger] [info] [ModelsManager.cpp:942] Loading model: res/models/castle.obj!
+[2024-05-14 07:39:00.260] [logger] [info] [ModelsManager.cpp:942] Loading model: res/models/castle.obj!
 
-[2024-05-13 21:43:21.238] [logger] [info] [ModelsManager.cpp:942] Loading model: {Cube}!
+[2024-05-14 07:39:00.516] [logger] [info] [ModelsManager.cpp:942] Loading model: {Cube}!
 
-[2024-05-13 21:43:21.238] [logger] [info] [ModelsManager.cpp:226] Creating Simple Cube Model
+[2024-05-14 07:39:00.516] [logger] [info] [ModelsManager.cpp:226] Creating Simple Cube Model
 
-[2024-05-13 21:43:21.238] [logger] [info] [ModelsManager.cpp:942] Loading model: {Plane}!
+[2024-05-14 07:39:00.516] [logger] [info] [ModelsManager.cpp:942] Loading model: {Plane}!
 
-[2024-05-13 21:43:21.238] [logger] [info] [ModelsManager.cpp:292] Creating Simple Plane Model
+[2024-05-14 07:39:00.516] [logger] [info] [ModelsManager.cpp:292] Creating Simple Plane Model
 
-[2024-05-13 21:43:21.238] [logger] [info] [ModelsManager.cpp:942] Loading model: res/models/city.obj!
+[2024-05-14 07:39:00.516] [logger] [info] [ModelsManager.cpp:942] Loading model: res/models/city.obj!
 
-[2024-05-13 21:43:21.256] [logger] [info] [ModelsManager.cpp:942] Loading model: {Sphere}!
+[2024-05-14 07:39:00.530] [logger] [info] [ModelsManager.cpp:942] Loading model: {Sphere}!
 
-[2024-05-13 21:43:21.256] [logger] [info] [ModelsManager.cpp:312] Creating Simple Sphere Model
+[2024-05-14 07:39:00.530] [logger] [info] [ModelsManager.cpp:312] Creating Simple Sphere Model
 
-[2024-05-13 21:43:21.256] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/mapElements/city.prefab'
+[2024-05-14 07:39:00.531] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/mapElements/city.prefab'
 
-[2024-05-13 21:43:21.261] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/testPrefab.yaml'
+[2024-05-14 07:39:00.535] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/testPrefab.yaml'
 
-[2024-05-13 21:43:21.265] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/mapElements/radioStation.prefab'
+[2024-05-14 07:39:00.539] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/mapElements/radioStation.prefab'
 
-[2024-05-13 21:43:21.270] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/tiles/blueHexTile.prefab'
+[2024-05-14 07:39:00.544] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/tiles/blueHexTile.prefab'
 
-[2024-05-13 21:43:21.273] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/tiles/redHexTile.prefab'
+[2024-05-14 07:39:00.549] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/tiles/redHexTile.prefab'
 
-[2024-05-13 21:43:21.276] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/mapSector.prefab'
+[2024-05-14 07:39:00.555] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/mapSector.prefab'
 
-[2024-05-13 21:43:21.281] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/tiles/hexTile.prefab'
+[2024-05-14 07:39:00.559] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/tiles/hexTile.prefab'
 
-[2024-05-13 21:43:21.287] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/tiles/greenHexTile.prefab'
+[2024-05-14 07:39:00.563] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/tiles/greenHexTile.prefab'
 
-[2024-05-13 21:43:21.294] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/mapRegion.prefab'
+[2024-05-14 07:39:00.569] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/mapRegion.prefab'
 
-[2024-05-13 21:43:21.300] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/mapElements/mountains.prefab'
+[2024-05-14 07:39:00.575] [logger] [info] [PrefabManager.cpp:48] Loading Prefab 'res/prefabs/tilemap/mapElements/mountains.prefab'
 
-[2024-05-13 21:43:21.422] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/tiles/hexTile.prefab' already loaded
+[2024-05-14 07:39:00.688] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/tiles/hexTile.prefab' already loaded
 
-[2024-05-13 21:43:21.422] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/tiles/redHexTile.prefab' already loaded
+[2024-05-14 07:39:00.688] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/tiles/redHexTile.prefab' already loaded
 
-[2024-05-13 21:43:21.422] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/tiles/blueHexTile.prefab' already loaded
+[2024-05-14 07:39:00.688] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/tiles/blueHexTile.prefab' already loaded
 
-[2024-05-13 21:43:21.422] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/tiles/greenHexTile.prefab' already loaded
+[2024-05-14 07:39:00.688] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/tiles/greenHexTile.prefab' already loaded
 
-[2024-05-13 21:43:21.422] [logger] [info] [ScriptableObjectManager.cpp:24] Loading ScriptableObject 'res/scriptableobjects/RegionsGeneratorByKMeans.so'
+[2024-05-14 07:39:00.688] [logger] [info] [ScriptableObjectManager.cpp:24] Loading ScriptableObject 'res/scriptableobjects/RegionsGeneratorByKMeans.so'
 
-[2024-05-13 21:43:21.424] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/mapRegion.prefab' already loaded
+[2024-05-14 07:39:00.689] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/mapRegion.prefab' already loaded
 
-[2024-05-13 21:43:21.424] [logger] [info] [main.cpp:196] Adding generator res/scriptableobjects/RegionsGeneratorByKMeans.so, 4049451328
+[2024-05-14 07:39:00.689] [logger] [info] [main.cpp:215] Adding generator res/scriptableobjects/RegionsGeneratorByKMeans.so, 1689378512
 
-[2024-05-13 21:43:21.425] [logger] [info] [ScriptableObjectManager.cpp:24] Loading ScriptableObject 'res/scriptableobjects/SectorGeneratorForRegionsByKMeans.so'
+[2024-05-14 07:39:00.689] [logger] [info] [ScriptableObjectManager.cpp:24] Loading ScriptableObject 'res/scriptableobjects/SectorGeneratorForRegionsByKMeans.so'
 
-[2024-05-13 21:43:21.426] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/mapSector.prefab' already loaded
+[2024-05-14 07:39:00.690] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/mapSector.prefab' already loaded
 
-[2024-05-13 21:43:21.426] [logger] [info] [main.cpp:196] Adding generator res/scriptableobjects/SectorGeneratorForRegionsByKMeans.so, 4049454016
+[2024-05-14 07:39:00.690] [logger] [info] [main.cpp:215] Adding generator res/scriptableobjects/SectorGeneratorForRegionsByKMeans.so, 1689378736
 
-[2024-05-13 21:43:21.426] [logger] [info] [ScriptableObjectManager.cpp:24] Loading ScriptableObject 'res/scriptableobjects/LakeGenerator.so'
+[2024-05-14 07:39:00.691] [logger] [info] [ScriptableObjectManager.cpp:24] Loading ScriptableObject 'res/scriptableobjects/LakeGenerator.so'
 
-[2024-05-13 21:43:21.428] [logger] [info] [main.cpp:196] Adding generator res/scriptableobjects/LakeGenerator.so, 4049846384
+[2024-05-14 07:39:00.691] [logger] [info] [main.cpp:215] Adding generator res/scriptableobjects/LakeGenerator.so, 1689519648
 
-[2024-05-13 21:43:21.428] [logger] [info] [ScriptableObjectManager.cpp:24] Loading ScriptableObject 'res/scriptableobjects/MountainsGenerator.so'
+[2024-05-14 07:39:00.691] [logger] [info] [ScriptableObjectManager.cpp:24] Loading ScriptableObject 'res/scriptableobjects/MountainsGenerator.so'
 
-[2024-05-13 21:43:21.429] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/mapElements/mountains.prefab' already loaded
+[2024-05-14 07:39:00.692] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/mapElements/mountains.prefab' already loaded
 
-[2024-05-13 21:43:21.429] [logger] [info] [main.cpp:196] Adding generator res/scriptableobjects/MountainsGenerator.so, 4049847440
+[2024-05-14 07:39:00.692] [logger] [info] [main.cpp:215] Adding generator res/scriptableobjects/MountainsGenerator.so, 1689519456
 
-[2024-05-13 21:43:21.429] [logger] [info] [ScriptableObjectManager.cpp:24] Loading ScriptableObject 'res/scriptableobjects/CityGenerator.so'
+[2024-05-14 07:39:00.692] [logger] [info] [ScriptableObjectManager.cpp:24] Loading ScriptableObject 'res/scriptableobjects/CityGenerator.so'
 
-[2024-05-13 21:43:21.430] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/mapElements/city.prefab' already loaded
+[2024-05-14 07:39:00.692] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/mapElements/city.prefab' already loaded
 
-[2024-05-13 21:43:21.430] [logger] [info] [main.cpp:196] Adding generator res/scriptableobjects/CityGenerator.so, 4049846960
+[2024-05-14 07:39:00.692] [logger] [info] [main.cpp:215] Adding generator res/scriptableobjects/CityGenerator.so, 1689521184
 
-[2024-05-13 21:43:21.430] [logger] [info] [ScriptableObjectManager.cpp:24] Loading ScriptableObject 'res/scriptableobjects/RadioStationGeneratorSectorBased.so'
+[2024-05-14 07:39:00.692] [logger] [info] [ScriptableObjectManager.cpp:24] Loading ScriptableObject 'res/scriptableobjects/RadioStationGeneratorSectorBased.so'
 
-[2024-05-13 21:43:21.431] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/mapElements/radioStation.prefab' already loaded
+[2024-05-14 07:39:00.693] [logger] [warning] [PrefabManager.cpp:44] Prefab 'res/prefabs/tilemap/mapElements/radioStation.prefab' already loaded
 
-[2024-05-13 21:43:21.431] [logger] [info] [main.cpp:196] Adding generator res/scriptableobjects/RadioStationGeneratorSectorBased.so, 4049846576
+[2024-05-14 07:39:00.693] [logger] [info] [main.cpp:215] Adding generator res/scriptableobjects/RadioStationGeneratorSectorBased.so, 1689517536
 
-[2024-05-13 21:43:21.532] [logger] [info] Tilemap generation: 7.837524416132169e-07
+[2024-05-14 07:39:00.745] [logger] [info] Tilemap generation: 4.1497497571540976e-07
 
-[2024-05-13 21:43:21.533] [logger] [info] Tilemap content generation: 3.979187011005081e-07
+[2024-05-14 07:39:00.745] [logger] [info] Tilemap content generation: 1.7942504881851562e-06
 
-[2024-05-13 21:43:21.533] [logger] [info] [ScriptableObjectEditorManager.cpp:18] ScriptableObject: res/scriptableobjects\CityGenerator.so
+[2024-05-14 07:39:00.745] [logger] [info] [ScriptableObjectEditorManager.cpp:18] ScriptableObject: res/scriptableobjects\CityGenerator.so
 
-[2024-05-13 21:43:21.533] [logger] [info] [ScriptableObjectEditorManager.cpp:18] ScriptableObject: res/scriptableobjects\LakeGenerator.so
+[2024-05-14 07:39:00.745] [logger] [info] [ScriptableObjectEditorManager.cpp:18] ScriptableObject: res/scriptableobjects\LakeGenerator.so
 
-[2024-05-13 21:43:21.533] [logger] [info] [ScriptableObjectEditorManager.cpp:18] ScriptableObject: res/scriptableobjects\MountainsGenerator.so
+[2024-05-14 07:39:00.745] [logger] [info] [ScriptableObjectEditorManager.cpp:18] ScriptableObject: res/scriptableobjects\MountainsGenerator.so
 
-[2024-05-13 21:43:21.533] [logger] [info] [ScriptableObjectEditorManager.cpp:18] ScriptableObject: res/scriptableobjects\RadioStationGeneratorSectorBased.so
+[2024-05-14 07:39:00.745] [logger] [info] [ScriptableObjectEditorManager.cpp:18] ScriptableObject: res/scriptableobjects\RadioStationGeneratorSectorBased.so
 
-[2024-05-13 21:43:21.533] [logger] [info] [ScriptableObjectEditorManager.cpp:18] ScriptableObject: res/scriptableobjects\RegionsGeneratorByKMeans.so
+[2024-05-14 07:39:00.745] [logger] [info] [ScriptableObjectEditorManager.cpp:18] ScriptableObject: res/scriptableobjects\RegionsGeneratorByKMeans.so
 
-[2024-05-13 21:43:21.533] [logger] [info] [ScriptableObjectEditorManager.cpp:18] ScriptableObject: res/scriptableobjects\SectorGeneratorForRegionsByKMeans.so
-
-[2024-05-13 21:43:48.918] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 1 from res/models\AK47.obj.
-
-[2024-05-13 21:43:48.919] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Deska
-
-[2024-05-13 21:43:48.921] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 2 from res/models\AK47.obj.
-
-[2024-05-13 21:43:48.921] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Metal
-
-[2024-05-13 21:43:49.160] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 1 from res/models\castle.obj.
-
-[2024-05-13 21:43:49.161] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Roof
-
-[2024-05-13 21:43:49.163] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 2 from res/models\castle.obj.
-
-[2024-05-13 21:43:49.164] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Walls
-
-[2024-05-13 21:43:49.185] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 1 from res/models\city.obj.
-
-[2024-05-13 21:43:49.185] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.001
-
-[2024-05-13 21:43:49.190] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 2 from res/models\city.obj.
-
-[2024-05-13 21:43:49.191] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.002
-
-[2024-05-13 21:43:49.195] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 3 from res/models\city.obj.
-
-[2024-05-13 21:43:49.196] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.003
-
-[2024-05-13 21:43:49.200] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 4 from res/models\city.obj.
-
-[2024-05-13 21:43:49.201] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.004
-
-[2024-05-13 21:43:49.205] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 5 from res/models\city.obj.
-
-[2024-05-13 21:43:49.206] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.005
-
-[2024-05-13 21:43:49.211] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 6 from res/models\city.obj.
-
-[2024-05-13 21:43:49.211] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.006
-
-[2024-05-13 21:43:49.216] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 7 from res/models\city.obj.
-
-[2024-05-13 21:43:49.216] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.007
-
-[2024-05-13 21:43:49.222] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 8 from res/models\city.obj.
-
-[2024-05-13 21:43:49.222] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.008
-
-[2024-05-13 21:43:49.227] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 9 from res/models\city.obj.
-
-[2024-05-13 21:43:49.227] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.009
-
-[2024-05-13 21:43:49.232] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 10 from res/models\city.obj.
-
-[2024-05-13 21:43:49.232] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.010
-
-[2024-05-13 21:43:49.254] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 1 from res/models\city2.obj.
-
-[2024-05-13 21:43:49.254] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.001
-
-[2024-05-13 21:43:49.256] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 2 from res/models\city2.obj.
-
-[2024-05-13 21:43:49.256] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.002
-
-[2024-05-13 21:43:49.259] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 3 from res/models\city2.obj.
-
-[2024-05-13 21:43:49.259] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.003
-
-[2024-05-13 21:43:49.261] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 4 from res/models\city2.obj.
-
-[2024-05-13 21:43:49.262] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.004
-
-[2024-05-13 21:43:49.264] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 5 from res/models\city2.obj.
-
-[2024-05-13 21:43:49.264] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.005
-
-[2024-05-13 21:43:49.267] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 6 from res/models\city2.obj.
-
-[2024-05-13 21:43:49.267] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.006
-
-[2024-05-13 21:43:49.269] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 7 from res/models\city2.obj.
-
-[2024-05-13 21:43:49.269] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.007
-
-[2024-05-13 21:43:49.271] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 8 from res/models\city2.obj.
-
-[2024-05-13 21:43:49.272] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.008
-
-[2024-05-13 21:43:49.274] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 9 from res/models\city2.obj.
-
-[2024-05-13 21:43:49.274] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.009
-
-[2024-05-13 21:43:49.276] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 10 from res/models\city2.obj.
-
-[2024-05-13 21:43:49.277] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.010
-
-[2024-05-13 21:43:58.245] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 1 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.245] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Body
-
-[2024-05-13 21:43:58.247] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 2 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.247] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Body.001
-
-[2024-05-13 21:43:58.260] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 3 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.260] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Body_Accent
-
-[2024-05-13 21:43:58.262] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 4 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.262] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Body_Accent.001
-
-[2024-05-13 21:43:58.264] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 5 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.265] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Body_Accent.002
-
-[2024-05-13 21:43:58.267] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 6 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.267] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Chrome
-
-[2024-05-13 21:43:58.271] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 7 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.271] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Chrome.002
-
-[2024-05-13 21:43:58.274] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 8 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.274] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Chrome.003
-
-[2024-05-13 21:43:58.277] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 9 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.277] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Chrome.004
-
-[2024-05-13 21:43:58.280] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 10 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.281] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Chrome.005
-
-[2024-05-13 21:43:58.284] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 11 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.284] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Chrome.006
-
-[2024-05-13 21:43:58.287] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 12 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.287] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Chrome.007
-
-[2024-05-13 21:43:58.290] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 13 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.290] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Chrome.008
-
-[2024-05-13 21:43:58.293] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 14 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.294] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Clear
-
-[2024-05-13 21:43:58.297] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 15 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.297] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Clear_Red
-
-[2024-05-13 21:43:58.300] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 16 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.300] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Emission_White
-
-[2024-05-13 21:43:58.304] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 17 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.304] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material
-
-[2024-05-13 21:43:58.307] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 18 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.307] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Mirror
-
-[2024-05-13 21:43:58.310] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 19 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.310] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Odblask_Red
-
-[2024-05-13 21:43:58.314] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 20 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.314] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Odblask_White
-
-[2024-05-13 21:43:58.317] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 21 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.317] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Trim.001
-
-[2024-05-13 21:43:58.321] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 22 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.321] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Trim.002
-
-[2024-05-13 21:43:58.324] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 23 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.324] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Trim.003
-
-[2024-05-13 21:43:58.327] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 24 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.327] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Trim.004
-
-[2024-05-13 21:43:58.330] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 25 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.330] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Trim.005
-
-[2024-05-13 21:43:58.333] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 26 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.333] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Trim.006
-
-[2024-05-13 21:43:58.337] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 27 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.338] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: alloy
-
-[2024-05-13 21:43:58.342] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 28 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.342] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: body
-
-[2024-05-13 21:43:58.344] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 29 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.344] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: body_accent
-
-[2024-05-13 21:43:58.346] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 30 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.347] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: chrome
-
-[2024-05-13 21:43:58.350] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 31 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.350] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: clear
-
-[2024-05-13 21:43:58.353] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 32 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.353] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: emision_white
-
-[2024-05-13 21:43:58.357] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 33 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.357] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: emission_red
-
-[2024-05-13 21:43:58.361] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 34 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.361] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: tires
-
-[2024-05-13 21:43:58.364] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 35 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.364] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: trim
-
-[2024-05-13 21:43:58.367] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 36 from res/models\doger.obj.
-
-[2024-05-13 21:43:58.367] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: window
-
-[2024-05-13 21:43:58.478] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 1 from res/models\Glock18D\glock18D-1500.obj.
-
-[2024-05-13 21:43:58.478] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Glock18D-1500
-
-[2024-05-13 21:43:58.511] [logger] [info] [ProcessingMtlFiles.cpp:52] Loading material: 1 from res/models\radioStation.obj.
-
-[2024-05-13 21:43:58.511] [logger] [info] [ProcessingMtlFiles.cpp:81] Loaded material name: Material.002
+[2024-05-14 07:39:00.745] [logger] [info] [ScriptableObjectEditorManager.cpp:18] ScriptableObject: res/scriptableobjects\SectorGeneratorForRegionsByKMeans.so
 

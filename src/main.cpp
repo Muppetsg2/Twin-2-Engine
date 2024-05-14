@@ -273,9 +273,9 @@ int main(int, char**)
     };
 
     // ADDING SCENES
-    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
-    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.yaml");
+    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
@@ -290,7 +290,7 @@ int main(int, char**)
     obj->SetName("Test Button");
     Transform* tr = obj->GetTransform();
     tr->Rotate(glm::vec3(0, 0, 45.f));
-    tr->Translate(glm::vec3(500.f, -400.f, 0.f));
+    tr->Translate(glm::vec3(0.f, -40.f, 0.f));
     Button* b = obj->AddComponent<Button>();
     b->SetHeight(70);
     b->SetWidth(200);
@@ -313,7 +313,7 @@ int main(int, char**)
     obj = SceneManager::CreateGameObject();
     obj->SetName("Test Input Field");
     tr = obj->GetTransform();
-    tr->Translate(glm::vec3(500.f, -400.f, 0.f));
+    //tr->Translate(glm::vec3(500.f, -400.f, 0.f));
     Image* img = obj->AddComponent<Image>();
     img->SetSprite("white_box");
     img->SetWidth(200);

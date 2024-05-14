@@ -1,5 +1,6 @@
 #pragma once
 
+#include <manager/ScriptableObjectManager.h>
 
 namespace Editor::Common
 {
@@ -29,7 +30,8 @@ namespace Editor::Common
 
 		static std::unordered_map<size_t, ScriptableObjectRecord*> _trackedStrciptableObjects;
 
-		static void DrawNode(ScriptableObjectRecordNode* node);
+		static void AddScriptableObject(const std::filesystem::path& path);
+		static void DrawNode(ScriptableObjectRecordNode* node, const ImGuiTreeNodeFlags& baseFlags, std::string& selectedSOName, std::string& selectedScriptableObjectPath, Twin2Engine::Core::ScriptableObject*& selectedScriptableObject);
 		static void DeleteTree(ScriptableObjectRecordNode* node);
 
 	public:

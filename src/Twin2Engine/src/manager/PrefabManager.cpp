@@ -77,23 +77,24 @@ string PrefabManager::GetPrefabPath(const Prefab* prefab)
 {
 	if (prefab != nullptr)
 	{
-		size_t id = 0;
-		bool foundId = false;
-		for (const auto& pair : _prefabs)
-		{
-			if (pair.second == prefab)
+		//size_t id = 0;
+		//bool foundId = false;
+		//for (const auto& pair : _prefabs)
+		//{
+		//	if (pair.second == prefab)
+		//	{
+		//		id = pair.first;
+		//		break;
+		//	}
+		//}
+		//if (foundId)
+		//{
+			if (_prefabsPaths.contains(prefab->_id))
 			{
-				id = pair.first;
-				break;
+				//return _prefabsPaths[id];
+				return _prefabsPaths[prefab->_id];
 			}
-		}
-		if (foundId)
-		{
-			if (_prefabsPaths.contains(id))
-			{
-				return _prefabsPaths[id];
-			}
-		}
+		//}
 	}
 	return "";
 }

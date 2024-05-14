@@ -177,13 +177,44 @@ bool Twin2Engine::Manager::ScriptableObjectManager::CreateScriptableObject(const
 		else
 		{
 			SPDLOG_ERROR("Couldn't open file: {}, for saving ScriptableObject!", dstPath);
+			file.close();
+			return false;
 		}
 		file.close();
+
+		return true;
 	}
 
 	return false;
 }
 
+bool ScriptableObjectManager::Save(const string& dstPath, ScriptableObject* scriptableObject)
+{
+	if (scriptableObject != nullptr)
+	{
+		YAML::Node node;
+		YAML::Node soNode;
+		scriptableObject->Serialize(soNode);
+		node["scriptable_object"] = soNode;
+
+		ofstream file{ dstPath };
+		if (file.is_open())
+		{
+			file << node;
+		}
+		else
+		{
+			SPDLOG_ERROR("Couldn't open file: {}, for saving ScriptableObject!", dstPath);
+			file.close();
+			return false;
+		}
+		file.close();
+
+		return true;
+	}
+
+	return false;
+}
 
 vector<string> Twin2Engine::Manager::ScriptableObjectManager::GetAllPaths()
 {

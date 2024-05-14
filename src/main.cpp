@@ -358,8 +358,8 @@ int main(int, char**)
     contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
 
-    //Editor::Common::ScriptableObjectEditorManager::Init();
-    //Editor::Common::ScriptableObjectEditorManager::Update();
+    Editor::Common::ScriptableObjectEditorManager::Init();
+    Editor::Common::ScriptableObjectEditorManager::Update();
 
 #pragma endregion
     
@@ -827,42 +827,6 @@ void render_imgui()
 
         ImGui::Separator();
 
-#pragma region ScriptableObjects
-
-        if (ImGui::CollapsingHeader("Scriptable Object Creator")) {
-            static string selectedSO = "";
-            static vector<string> scriptableObjectsNames = ScriptableObjectManager::GetScriptableObjectsNames();
-            if (ImGui::TreeNode("ScriptableObjects")) {
-                for (size_t i = 0; i < scriptableObjectsNames.size(); i++)
-                {
-                    if (ImGui::Selectable(scriptableObjectsNames[i].c_str())) {
-                        selectedSO = scriptableObjectsNames[i];
-                    }
-                }
-                ImGui::TreePop();
-            }
-            ImGui::Text("Selected Scriptable Object to create:");
-            ImGui::SameLine();
-            ImGui::InputText("##selectedItem", &selectedSO[0], selectedSO.size(), ImGuiInputTextFlags_ReadOnly);
-            static char dstPath[255] = { '\0' };
-            ImGui::Text("Destination and output file name:");
-            ImGui::SameLine();
-            ImGui::InputText("##dstPath", dstPath, 254);
-
-            if (ImGui::Button("Create ScriptableObject"))
-            {
-                if (selectedSO.size() > 0)
-                {
-                    string strDstPath(dstPath);
-                    if (strDstPath.size() > 0)
-                    {
-                        ScriptableObjectManager::CreateScriptableObject(strDstPath, selectedSO);
-                    }
-                }
-            }
-        }
-#pragma endregion
-
         if (ImGui::CollapsingHeader("Text test")) {
             Text* t = SceneManager::FindObjectByName("Test Button")->GetComponent<Text>();
             static std::string alignYValue = t->GetTextAlignY() == TextAlignY::CENTER ? "CENTER" : t->GetTextAlignY() == TextAlignY::TOP ? "TOP" : "BOTTOM";
@@ -986,57 +950,16 @@ void render_imgui()
 
         ImGui::Separator();
 
+#pragma region ScriptableObjectsManager
+
+        Editor::Common::ScriptableObjectEditorManager::Draw();
+
+#pragma endregion
 #pragma region MapGenerators
 
         if (ImGui::CollapsingHeader("Map Generator"))
         {
 
-            static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
-
-
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_OpenOnArrow", &base_flags, ImGuiTreeNodeFlags_OpenOnArrow);
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_OpenOnDoubleClick", &base_flags, ImGuiTreeNodeFlags_OpenOnDoubleClick);
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanAvailWidth", &base_flags, ImGuiTreeNodeFlags_SpanAvailWidth); ImGui::SameLine(); //HelpMarker("Extend hit area to all available width instead of allowing more items to be laid out after the node.");
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanFullWidth", &base_flags, ImGuiTreeNodeFlags_SpanFullWidth);
-            //ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanTextWidth", &base_flags, ImGuiTreeNodeFlags_SpanTextWidth); ImGui::SameLine(); HelpMarker("Reduce hit area to the text label and a bit of margin.");
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanAllColumns", &base_flags, ImGuiTreeNodeFlags_SpanAllColumns); ImGui::SameLine(); //HelpMarker("For use in Tables only.");
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_AllowOverlap", &base_flags, ImGuiTreeNodeFlags_AllowOverlap);
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_Framed", &base_flags, ImGuiTreeNodeFlags_Framed); ImGui::SameLine(); //HelpMarker("Draw frame with background (e.g. for CollapsingHeader)");
-
-
-
-
-
-
-
-
-
-
-
-
-            static string selectedSO = "";
-            static vector<string> scriptableObjectsPaths = ScriptableObjectManager::GetAllPaths();
-            static ScriptableObject* selectedScriptableObject = nullptr;
-            if (ImGui::TreeNode("Scriptable Objects")) {
-                for (size_t i = 0; i < scriptableObjectsPaths.size(); i++)
-                {
-                    if (ImGui::Selectable(scriptableObjectsPaths[i].c_str())) {
-                        selectedSO = scriptableObjectsPaths[i];
-                        selectedScriptableObject = ScriptableObjectManager::Get(selectedSO);
-                    }
-                }
-                ImGui::TreePop();
-            }
-            ImGui::Text("Selected Scriptable Object to create:");
-            ImGui::SameLine();
-            ImGui::InputText("##selectedSO", &selectedSO[0], selectedSO.size(), ImGuiInputTextFlags_ReadOnly);
-
-            ImGui::Separator();
-            if (selectedScriptableObject != nullptr)
-            {
-                selectedScriptableObject->DrawEditor();
-            }
-            ImGui::Separator();
 
             if (ImGui::Button("Generate"))
             {

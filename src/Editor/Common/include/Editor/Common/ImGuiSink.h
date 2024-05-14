@@ -32,7 +32,8 @@ namespace Editor::Common
     };
 
     template<typename Mutex>
-    class ImGuiSink : public spdlog::sinks::base_sink<Mutex> {
+    class ImGuiSink : public spdlog::sinks::base_sink<Mutex> 
+    {
     public:
         ImGuiSink(const std::string& filename)
         {
@@ -57,6 +58,8 @@ namespace Editor::Common
         }
 
         void flush_() override {}
+
+
 
     public:
         // Function to retrieve log messages
@@ -110,6 +113,22 @@ namespace Editor::Common
             static bool autoScroll = true;
             ImGui::Checkbox("Auto Scroll", &autoScroll);
 
+            static char buf[128] = "";
+            ImGui::InputText("##search", buf, IM_ARRAYSIZE(buf));
+            ImGui::SameLine();
+            static std::string searchContent;
+
+            //if (ImGui::Button(ICON_FA_SEARCH "##search_button")) {
+            if (ImGui::Button("?""##search_button")) 
+            {
+                searchContent = buf;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("X""##clear_search_button"))
+            {
+                buf[0] = '\0';
+                searchContent = buf;
+            }
 
             ImGui::BeginChild("LogWindow", ImVec2(0, 0), true);
             //const vector<ImGuiLogMessage> messages = ImGuiSink<mutex>::getLogMessages();
@@ -119,34 +138,37 @@ namespace Editor::Common
 
                 if (logLevels[MessageHolder::logMessages[index].level])
                 {
-                    switch (MessageHolder::logMessages[index].level)
+                    if (!searchContent.size() || ContainsString(MessageHolder::logMessages[index].messageContent, searchContent, true))
                     {
-                    case SPDLOG_LEVEL_TRACE:
-                        textColor = ImVec4(0.0, 0.5, 0.0, 1.0);
-                        break;
+                        switch (MessageHolder::logMessages[index].level)
+                        {
+                        case SPDLOG_LEVEL_TRACE:
+                            textColor = ImVec4(0.0, 0.5, 0.0, 1.0);
+                            break;
 
-                    case SPDLOG_LEVEL_DEBUG:
-                        textColor = ImVec4(0.0, 0.5, 0.0, 1.0);
-                        break;
+                        case SPDLOG_LEVEL_DEBUG:
+                            textColor = ImVec4(0.0, 0.5, 0.0, 1.0);
+                            break;
 
-                    case SPDLOG_LEVEL_INFO:
-                        textColor = ImVec4(0.65, 0.65, 0.65, 1.0);
-                        break;
+                        case SPDLOG_LEVEL_INFO:
+                            textColor = ImVec4(0.65, 0.65, 0.65, 1.0);
+                            break;
 
-                    case SPDLOG_LEVEL_WARN:
-                        textColor = ImVec4(1.0, 1.0, 0.0, 1.0);
-                        break;
+                        case SPDLOG_LEVEL_WARN:
+                            textColor = ImVec4(1.0, 1.0, 0.0, 1.0);
+                            break;
 
-                    case SPDLOG_LEVEL_ERROR:
-                        textColor = ImVec4(1.0, 0.0, 0.0, 1.0);
-                        break;
+                        case SPDLOG_LEVEL_ERROR:
+                            textColor = ImVec4(1.0, 0.0, 0.0, 1.0);
+                            break;
 
-                    case SPDLOG_LEVEL_OFF:
-                        textColor = ImVec4(0.5, 0.0, 0.0, 1.0);
-                        break;
+                        case SPDLOG_LEVEL_OFF:
+                            textColor = ImVec4(0.5, 0.0, 0.0, 1.0);
+                            break;
+                        }
+
+                        ImGui::TextColored(textColor, "%s", MessageHolder::logMessages[index].messageContent.c_str());
                     }
-
-                    ImGui::TextColored(textColor, "%s", MessageHolder::logMessages[index].messageContent.c_str());
                 }
             }
 
@@ -170,6 +192,19 @@ namespace Editor::Common
         }
 
     private:
+        static bool ContainsString(const std::string& haystack, const std::string& needle, bool caseSensitive = true) {
+        if (caseSensitive) {
+            return haystack.find(needle) != std::string::npos;
+        }
+        else {
+            // Convert both strings to lowercase for case-insensitive comparison
+            std::string lowercaseHaystack = haystack;
+            std::string lowercaseNeedle = needle;
+            std::transform(lowercaseHaystack.begin(), lowercaseHaystack.end(), lowercaseHaystack.begin(), ::tolower);
+            std::transform(lowercaseNeedle.begin(), lowercaseNeedle.end(), lowercaseNeedle.begin(), ::tolower);
+            return lowercaseHaystack.find(lowercaseNeedle) != std::string::npos;
+        }
+    }
         //static std::vector<std::string> logMessages;
     };
 

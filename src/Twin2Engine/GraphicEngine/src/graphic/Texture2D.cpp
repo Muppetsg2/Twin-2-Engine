@@ -1,6 +1,6 @@
 #include <graphic/Texture2D.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 
 Texture2D::Texture2D(size_t managerId, unsigned int id, unsigned int width, unsigned int height, unsigned int channelsNum, 
 	const TextureFormat& format, const TextureWrapMode& sWrapMode, const TextureWrapMode& tWrapMode, 

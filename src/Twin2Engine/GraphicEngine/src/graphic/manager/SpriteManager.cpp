@@ -2,7 +2,7 @@
 #include <graphic/manager/TextureManager.h>
 
 using namespace Twin2Engine;
-using namespace GraphicEngine;
+using namespace Graphic;
 using namespace Manager;
 using namespace std;
 
@@ -100,14 +100,16 @@ void SpriteManager::UnloadAll()
 YAML::Node SpriteManager::Serialize()
 {
     YAML::Node sprites;
+    size_t id = 0;
     for (const auto& spritePair : SpriteManager::_spriteAliases) {
         Sprite* sprite = SpriteManager::_sprites[spritePair.first];
 
         YAML::Node spriteNode;
+        spriteNode["id"] = id++;
         spriteNode["alias"] = spritePair.second;
         spriteNode["texture"] = sprite->GetTexture()->GetManagerId();
 
-        if (SpriteManager::_spriteLoadData.find(spritePair.first) != SpriteManager::_spriteLoadData.end()) {
+        if (SpriteManager::_spriteLoadData.contains(spritePair.first)) {
             SpriteData data = SpriteManager::_spriteLoadData[spritePair.first];
             spriteNode["x"] = data.x;
             spriteNode["y"] = data.y;

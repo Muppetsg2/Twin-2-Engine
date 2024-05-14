@@ -1,6 +1,6 @@
 #include <graphic/manager/ModelsManager.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
 std::hash<std::string> ModelsManager::_stringHash;
@@ -1222,8 +1222,12 @@ InstantiatingModel ModelsManager::CreateModel(const std::string& modelName, std:
 YAML::Node ModelsManager::Serialize()
 {
     YAML::Node models;
-    for (const auto& modelPair : _modelsPaths) {
-        models.push_back(modelPair.second);
+    size_t id = 0;
+    for (const auto& modelPair : modelsPaths) {
+        YAML::Node model;
+        model["id"] = id++;
+        model["path"] = modelPair.second;
+        models.push_back(model);
     }
     return models;
 }

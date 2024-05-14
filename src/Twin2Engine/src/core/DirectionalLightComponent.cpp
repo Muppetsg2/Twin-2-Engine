@@ -1,33 +1,41 @@
 #include <core/DirectionalLightComponent.h>
 #include <core/GameObject.h>
 #include <core/Transform.h>
-#include <core/YamlConverters.h>
+#include <core/CameraComponent.h>
+#include <tools/YamlConverters.h>
 
+using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Graphic;
 
-void Twin2Engine::Core::DirectionalLightComponent::Initialize()
+void DirectionalLightComponent::Initialize()
 {
 	OnChangePosition = [this](Transform* transform) {
-		light->position = transform->GetGlobalPosition();
+		//light->position = transform->GetGlobalPosition();
 		//light->direction = glm::vec3((transform->GetTransformMatrix() * glm::vec4(localDirection, 1.0f)));
-		LightingSystem::LightingController::Instance()->UpdateDLTransform(light);
+		LightingController::Instance()->UpdateDLTransform(light);
 	};
 
 	OnViewerChange = [this]() {
-		GetTransform()->SetGlobalPosition(LightingSystem::LightingController::RecalculateDirLightSpaceMatrix(light));
+		CameraComponent* camera = CameraComponent::GetMainCamera();
+		CameraData data{
+			.projection = camera->GetProjectionMatrix(),
+			.view = camera->GetViewMatrix(),
+			.pos = camera->GetTransform()->GetGlobalPosition(),
+			.front = camera->GetFrontDir(),
+			.farPlane = camera->GetFarPlane(),
+			.isPerspective = camera->GetCameraType() == CameraType::PERSPECTIVE,
+		};
+		GetTransform()->SetGlobalPosition(LightingController::RecalculateDirLightSpaceMatrix(light, data));
 	};
 
-
-	//SPDLOG_INFO("DLC Initialization!");
-
-	//light = new LightingSystem::DirectionalLight;
-	light->position = GetTransform()->GetGlobalPosition();
+	//light->position = GetTransform()->GetGlobalPosition();
 
 	glGenFramebuffers(1, &light->shadowMapFBO);
 	
 	glGenTextures(1, &light->shadowMap);
 	glBindTexture(GL_TEXTURE_2D, light->shadowMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-		LightingSystem::LightingController::SHADOW_WIDTH, LightingSystem::LightingController::SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		LightingController::SHADOW_WIDTH, LightingController::SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -42,36 +50,36 @@ void Twin2Engine::Core::DirectionalLightComponent::Initialize()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Twin2Engine::Core::DirectionalLightComponent::Update()
+void DirectionalLightComponent::Update()
 {
 	if (dirtyFlag) {
-		LightingSystem::LightingController::Instance()->UpdateDL(light);
+		LightingController::Instance()->UpdateDL(light);
 		dirtyFlag = false;
 	}
 }
 
-void Twin2Engine::Core::DirectionalLightComponent::OnEnable()
+void DirectionalLightComponent::OnEnable()
 {
-	LightingSystem::LightingController::Instance()->dirLights.insert(light);
+	LightingController::Instance()->dirLights.insert(light);
 	OnChangePositionId = GetTransform()->OnEventPositionChanged += OnChangePosition;
-	OnViewerChangeId = LightingSystem::LightingController::Instance()->ViewerTransformChanged += OnViewerChange;
-	LightingSystem::LightingController::Instance()->UpdateDirLights();
+	OnViewerChangeId = LightingController::Instance()->ViewerTransformChanged += OnViewerChange;
+	LightingController::Instance()->UpdateDirLights();
 }
 
-void Twin2Engine::Core::DirectionalLightComponent::OnDisable()
+void DirectionalLightComponent::OnDisable()
 {
-	LightingSystem::LightingController::Instance()->dirLights.erase(light);
+	LightingController::Instance()->dirLights.erase(light);
 	GetTransform()->OnEventPositionChanged -= OnChangePositionId;
-	LightingSystem::LightingController::Instance()->ViewerTransformChanged -= OnViewerChangeId;
-	LightingSystem::LightingController::Instance()->UpdateDirLights();
+	LightingController::Instance()->ViewerTransformChanged -= OnViewerChangeId;
+	LightingController::Instance()->UpdateDirLights();
 }
 
-void Twin2Engine::Core::DirectionalLightComponent::OnDestroy()
+void DirectionalLightComponent::OnDestroy()
 {
-	LightingSystem::LightingController::Instance()->dirLights.erase(light);
+	LightingController::Instance()->dirLights.erase(light);
 	GetTransform()->OnEventPositionChanged -= OnChangePositionId;
-	LightingSystem::LightingController::Instance()->ViewerTransformChanged -= OnViewerChangeId;
-	LightingSystem::LightingController::Instance()->UpdateDirLights();
+	LightingController::Instance()->ViewerTransformChanged -= OnViewerChangeId;
+	LightingController::Instance()->UpdateDirLights();
 
 	glDeleteTextures(GL_TEXTURE_2D, &light->shadowMap);
 	glDeleteFramebuffers(1, &light->shadowMapFBO);
@@ -79,27 +87,28 @@ void Twin2Engine::Core::DirectionalLightComponent::OnDestroy()
 	delete light;
 }
 
-void Twin2Engine::Core::DirectionalLightComponent::SetDirection(glm::vec3 dir)
+void DirectionalLightComponent::SetDirection(glm::vec3 dir)
 {
 	light->direction = dir;
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::DirectionalLightComponent::SetColor(glm::vec3 color)
+void DirectionalLightComponent::SetColor(glm::vec3 color)
 {
 	light->color = color;
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::DirectionalLightComponent::SetPower(float power)
+void DirectionalLightComponent::SetPower(float power)
 {
 	light->power = power;
 	dirtyFlag = true;
 }
 
-YAML::Node Twin2Engine::Core::DirectionalLightComponent::Serialize() const
+YAML::Node DirectionalLightComponent::Serialize() const
 {
 	YAML::Node node = LightComponent::Serialize();
+	node["type"] = "DirectionalLightComponent";
 	node["direction"] = light->direction;
 	node["color"] = light->color;
 	node["power"] = light->power;

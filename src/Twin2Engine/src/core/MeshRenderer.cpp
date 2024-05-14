@@ -6,7 +6,7 @@
 
 
 using namespace Twin2Engine::Core;
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
 void Twin2Engine::Core::MeshRenderer::TransformUpdated()
@@ -272,7 +272,7 @@ void Twin2Engine::Core::MeshRenderer::OnDestroy()
 }
 #endif // MESH_FRUSTUM_CULLING
 
-void MeshRenderer::SetModel(const GraphicEngine::InstantiatingModel& model)
+void MeshRenderer::SetModel(const InstantiatingModel& model)
 {
 	if (_model != model)
 	{

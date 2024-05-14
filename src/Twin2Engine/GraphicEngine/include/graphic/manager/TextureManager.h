@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stb_image.h>
+#include <yaml-cpp/yaml.h>
 #include <graphic/Texture2D.h>
 
 namespace Twin2Engine::Manager {
@@ -89,10 +90,10 @@ namespace Twin2Engine::Manager {
 	};
 
 	struct TextureData {
-		GraphicEngine::TextureWrapMode sWrapMode = GraphicEngine::TextureWrapMode::MIRRORED_REPEAT;
-		GraphicEngine::TextureWrapMode tWrapMode = GraphicEngine::TextureWrapMode::MIRRORED_REPEAT;
-		GraphicEngine::TextureFilterMode minFilterMode = GraphicEngine::TextureFilterMode::NEAREST_MIPMAP_LINEAR;
-		GraphicEngine::TextureFilterMode magFilterMode = GraphicEngine::TextureFilterMode::LINEAR;
+		Graphic::TextureWrapMode sWrapMode = Graphic::TextureWrapMode::MIRRORED_REPEAT;
+		Graphic::TextureWrapMode tWrapMode = Graphic::TextureWrapMode::MIRRORED_REPEAT;
+		Graphic::TextureFilterMode minFilterMode = Graphic::TextureFilterMode::NEAREST_MIPMAP_LINEAR;
+		Graphic::TextureFilterMode magFilterMode = Graphic::TextureFilterMode::LINEAR;
 	};
 
 	class SceneManager;
@@ -101,18 +102,18 @@ namespace Twin2Engine::Manager {
 	class TextureManager {
 	private:
 		static std::hash<std::string> _hasher;
-		static std::map<size_t, GraphicEngine::Texture2D*> _loadedTextures;
+		static std::map<size_t, Graphic::Texture2D*> _loadedTextures;
 
 		static std::map<size_t, std::string> _texturesPaths;
-		static std::map<size_t, std::pair<GraphicEngine::TextureFormat, TextureFileFormat>> _texturesFormats;
+		static std::map<size_t, std::pair<Graphic::TextureFormat, TextureFileFormat>> _texturesFormats;
 
 		static void UnloadTexture2D(size_t managerID);
 		static void UnloadTexture2D(const std::string& path);
 	public:
-		static GraphicEngine::Texture2D* GetTexture2D(size_t managerId);
-		static GraphicEngine::Texture2D* GetTexture2D(const std::string& path);
-		static GraphicEngine::Texture2D* LoadTexture2D(const std::string& path, const TextureData& data = TextureData());
-		static GraphicEngine::Texture2D* LoadTexture2D(const std::string& path, const TextureFileFormat& internalFormat, const GraphicEngine::TextureFormat& format, const TextureData& data = TextureData());
+		static Graphic::Texture2D* GetTexture2D(size_t managerId);
+		static Graphic::Texture2D* GetTexture2D(const std::string& path);
+		static Graphic::Texture2D* LoadTexture2D(const std::string& path, const TextureData& data = TextureData());
+		static Graphic::Texture2D* LoadTexture2D(const std::string& path, const TextureFileFormat& internalFormat, const Graphic::TextureFormat& format, const TextureData& data = TextureData());
 
 		static void UnloadAll();
 
@@ -124,8 +125,8 @@ namespace Twin2Engine::Manager {
 }
 
 namespace YAML {
-	template<> struct convert<Twin2Engine::GraphicEngine::TextureFormat> {
-		using TextureFormat = Twin2Engine::GraphicEngine::TextureFormat;
+	template<> struct convert<Twin2Engine::Graphic::TextureFormat> {
+		using TextureFormat = Twin2Engine::Graphic::TextureFormat;
 
 		static Node encode(const TextureFormat& rhs) {
 			Node node;
@@ -156,8 +157,8 @@ namespace YAML {
 		}
 	};
 
-	template<> struct convert<Twin2Engine::GraphicEngine::TextureWrapMode> {
-		using TextureWrapMode = Twin2Engine::GraphicEngine::TextureWrapMode;
+	template<> struct convert<Twin2Engine::Graphic::TextureWrapMode> {
+		using TextureWrapMode = Twin2Engine::Graphic::TextureWrapMode;
 
 		static Node encode(const TextureWrapMode& rhs) {
 			Node node;
@@ -172,8 +173,8 @@ namespace YAML {
 		}
 	};
 
-	template<> struct convert<Twin2Engine::GraphicEngine::TextureFilterMode> {
-		using TextureFilterMode = Twin2Engine::GraphicEngine::TextureFilterMode;
+	template<> struct convert<Twin2Engine::Graphic::TextureFilterMode> {
+		using TextureFilterMode = Twin2Engine::Graphic::TextureFilterMode;
 
 		static Node encode(const TextureFilterMode& rhs) {
 			Node node;
@@ -190,8 +191,8 @@ namespace YAML {
 
 	template<> struct convert<Twin2Engine::Manager::TextureData> {
 		using TextureData = Twin2Engine::Manager::TextureData;
-		using TextureWrapMode = Twin2Engine::GraphicEngine::TextureWrapMode;
-		using TextureFilterMode = Twin2Engine::GraphicEngine::TextureFilterMode;
+		using TextureWrapMode = Twin2Engine::Graphic::TextureWrapMode;
+		using TextureFilterMode = Twin2Engine::Graphic::TextureFilterMode;
 
 		static Node encode(const TextureData& rhs) {
 			Node node;

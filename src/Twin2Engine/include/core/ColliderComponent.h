@@ -1,12 +1,12 @@
 #pragma once
 
 #include <core/Component.h>
-#include <GameCollider.h>
-#include <BoundingVolume.h>
-#include <core/EventHandler.h>
-#include <LayersData.h>
+#include <physic/GameCollider.h>
+#include <physic/BoundingVolume.h>
+#include <tools/EventHandler.h>
+#include <physic/LayersData.h>
 
-namespace CollisionSystem {
+namespace Twin2Engine::Physic {
 	class GameCollider;
 	class BoundingVolume;
 }
@@ -15,48 +15,45 @@ namespace Twin2Engine::Core {
 	//class GameCollider;
 	class ColliderComponent;
 
-	struct Collision {
-		ColliderComponent* collider;
-		ColliderComponent* otherCollider;
-		glm::vec3 position;
-		glm::vec3 separation;
-	};
-
 	class ColliderComponent : public Component {
 	private:
 		bool dirtyFlag = false;
+		size_t _onCollisionEnterId = 0;
+
+		static void OnCollisionEnter(Physic::Collision* collision);
 	protected:
 		ColliderComponent(); // Powoduje ze klasa jest jakby abstrakcyjna no chyba ze bedzie dziedziczona
-		CollisionSystem::GameCollider* collider = nullptr;
-		CollisionSystem::BoundingVolume* boundingVolume = nullptr;
+		Physic::GameCollider* collider = nullptr;
+		Physic::BoundingVolume* boundingVolume = nullptr;
 
 		void DrawInheritedFields();
 
 	public:
 		virtual ~ColliderComponent();
 
-		EventHandler<Collision*> OnTriggerEnter;
-		EventHandler<ColliderComponent*> OnTriggerExit;
-		EventHandler<Collision*> OnCollisionEnter;
-		EventHandler<ColliderComponent*> OnCollisionExit;
-
-		unsigned int colliderId = 0;
-
 		void SetTrigger(bool v);
 		bool IsTrigger();
 		void SetStatic(bool v);
 		bool IsStatic();
-		void SetLayer(Layer layer);
-		Layer GetLayer();
-		void SetLayersFilter(LayerCollisionFilter& layersFilter);
+		void SetLayer(Physic::Layer layer);
+		Physic::Layer GetLayer();
+		void SetLayersFilter(Physic::LayerCollisionFilter& layersFilter);
 
+		virtual void Initialize() override;
 		virtual void Update() override;
+		virtual void OnEnable() override;
+		virtual void OnDisable() override;
+		virtual void OnDestroy() override;
 
 		void EnableBoundingVolume(bool v);
 		void SetBoundingVolumeRadius(float radius);
 		void SetLocalPosition(float x, float y, float z);
 
-		//void Invoke();
+		Tools::EventHandler<Physic::Collision*>& GetOnTriggerEnterEvent() const;
+		Tools::EventHandler<Physic::GameCollider*>& GetOnTriggerExitEvent() const;
+		Tools::EventHandler<Physic::Collision*>& GetOnCollisionEnterEvent() const;
+		Tools::EventHandler<Physic::GameCollider*>& GetOnCollisionExitEvent() const;
+
 		virtual YAML::Node Serialize() const override;
 		virtual void DrawEditor() override;
 	};

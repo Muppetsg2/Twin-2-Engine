@@ -5,7 +5,7 @@ namespace Twin2Engine {
 		class TextureManager;
 	}
 
-	namespace GraphicEngine {
+	namespace Graphic {
 		enum TextureFormat {
 			RED = GL_RED,
 			RG = GL_RG,

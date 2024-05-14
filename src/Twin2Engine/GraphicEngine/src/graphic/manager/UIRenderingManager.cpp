@@ -1,58 +1,103 @@
 #include <graphic/manager/UIRenderingManager.h>
 #include <graphic/manager/ShaderManager.h>
 #include <graphic/Shader.h>
-#include <graphic/manager/ModelsManager.h>
-#include <graphic/InstantiatingModel.h>
+#include <graphic/Window.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
+using namespace Twin2Engine::Tools;
 using namespace std;
 using namespace glm;
 
 queue<UIElement> UIRenderingManager::_renderQueue = queue<UIElement>();
-InstantiatingModel UIRenderingManager::_spritePlane = InstantiatingModel();
 Shader* UIRenderingManager::_uiShader = nullptr;
+uint32_t UIRenderingManager::_pointVAO = 0;
+uint32_t UIRenderingManager::_pointVBO = 0;
+uint32_t UIRenderingManager::_canvasUBO = 0;
+uint32_t UIRenderingManager::_elemUBO = 0;
 
 void UIRenderingManager::Init() {
-	_spritePlane = ModelsManager::LoadModel(ModelsManager::PLANE_PATH);
 	_uiShader = ShaderManager::GetShaderProgram("origin/UI");
+	
+	// CANVAS UBO
+	glGenBuffers(1, &_canvasUBO);
+	glBindBuffer(GL_UNIFORM_BUFFER, _canvasUBO);
+	glBufferData(GL_UNIFORM_BUFFER, CanvasOffsets.GetSize(), NULL, GL_STATIC_DRAW);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 4, _canvasUBO);
+
+	// UI Element UBO
+	glGenBuffers(1, &_elemUBO);
+	glBindBuffer(GL_UNIFORM_BUFFER, _elemUBO);
+	glBufferData(GL_UNIFORM_BUFFER, UIElementOffsets.GetSize(), NULL, GL_STATIC_DRAW);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 5, _elemUBO);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, NULL);
+
+	// Point Buffer
+	glGenVertexArrays(1, &_pointVAO);
+	glGenBuffers(1, &_pointVBO);
+
+	glBindVertexArray(_pointVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, _pointVBO);
+
+	glm::vec2 point(0.f);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2), &point, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)0);
+
+	glBindVertexArray(NULL);
+	glBindBuffer(GL_ARRAY_BUFFER, NULL);
+}
+
+void UIRenderingManager::UnloadAll() {
+	while (!_renderQueue.empty()) _renderQueue.pop();
+	_uiShader = nullptr;
+
+	glDeleteBuffers(1, &_elemUBO);
+	glDeleteBuffers(1, &_canvasUBO);
+	glDeleteBuffers(1, &_pointVBO);
+	glDeleteVertexArrays(1, &_pointVAO);
 }
 
 void UIRenderingManager::Render()
 {
-	_uiShader->Use();
-	glActiveTexture(GL_TEXTURE0);
-	_uiShader->SetInt("sprite.img", 0);
-	ivec2 canvasSize = Window::GetInstance()->GetWindowSize();
-	_uiShader->SetFloat("canvas.width", canvasSize.x);
-	_uiShader->SetFloat("canvas.height", canvasSize.y);
+	if (_uiShader != nullptr) {
+		_uiShader->Use();
+		_uiShader->SetInt("image", 0);
+		_uiShader->SetInt("maskImage", 1);
 
-	while (_renderQueue.size() > 0) {
-		UIElement elem = _renderQueue.front();
-		
-		_uiShader->SetBool("isText", elem.isText);
+		glBindVertexArray(_pointVAO);
+		while (_renderQueue.size() > 0) {
+			UIElement elem = _renderQueue.front();
 
-		_uiShader->SetVec4("sprite.color", elem.color);
-		_uiShader->SetFloat("sprite.width", (float)elem.spriteSize.x);
-		_uiShader->SetFloat("sprite.height", (float)elem.spriteSize.y);
-		_uiShader->SetFloat("sprite.x", (float)elem.spriteOffset.x);
-		_uiShader->SetFloat("sprite.y", (float)elem.spriteOffset.y);
-		_uiShader->SetFloat("sprite.texWidth", (float)elem.textureSize.x);
-		_uiShader->SetFloat("sprite.texHeight", (float)elem.textureSize.y);
+			glBindBuffer(GL_UNIFORM_BUFFER, _canvasUBO);
+			STD140Struct canvasStruct(CanvasOffsets);
+			canvasStruct.Set("canvasTransform", elem.canvasTransform);
+			canvasStruct.Set("canvasSize", elem.canvasSize);
+			canvasStruct.Set("worldSpaceCanvas", elem.worldSpaceCanvas);
+			glBufferSubData(GL_UNIFORM_BUFFER, 0, canvasStruct.GetSize(), canvasStruct.GetData().data());
 
-		glBindTexture(GL_TEXTURE_2D, elem.textureID);
+			glBindBuffer(GL_UNIFORM_BUFFER, _elemUBO);
+			STD140Struct elemStruct = MakeUIElementStruct(elem);
+			glBufferSubData(GL_UNIFORM_BUFFER, 0, elemStruct.GetSize(), elemStruct.GetData().data());
 
-		_uiShader->SetFloat("canvas.elemWidth", elem.elemSize.x);
-		_uiShader->SetFloat("canvas.elemHeight", elem.elemSize.y);
+			if (elem.hasTexture) {
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, elem.textureID);
+			}
 
-		mat4 normalModel = mat4(mat3(transpose(inverse(elem.transform))));
-		_uiShader->SetMat4("model", elem.transform);
-		_uiShader->SetMat4("normalModel", normalModel);
+			if (elem.hasMaskTexture) {
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, elem.maskTextureID);
+			}
 
-		//_spritePlane.GetMesh(0)->Draw(_uiShader, 1);
-		_spritePlane.GetMesh(0)->Draw(1);
+			glDrawArrays(GL_POINTS, 0, 1);
 
-		_renderQueue.pop();
+			_renderQueue.pop();
+		}
+		glBindBuffer(GL_UNIFORM_BUFFER, NULL);
+		glBindVertexArray(NULL);
 	}
 }
 

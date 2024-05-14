@@ -4,6 +4,10 @@
 //LOGGER
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/details/synchronous_factory.h>
+#include <spdlog/common.h>
+#include <spdlog/details/console_globals.h>
+#include <spdlog/details/null_mutex.h>
 
 // dear imgui: standalone example application for GLFW + OpenGL 3, using programmable pipeline
 // If you are new to dear imgui, see examples/README.txt and documentation at the top of imgui.cpp.

@@ -1,7 +1,7 @@
 #ifndef _PROCESSING_MTL_FILES_H_
 #define _PROCESSING_MTL_FILES_H_
 
-#include <core/YamlConverters.h>
+#include <tools/YamlConverters.h>
 
 namespace Editor::Common
 {

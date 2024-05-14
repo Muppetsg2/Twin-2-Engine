@@ -1,6 +1,6 @@
 #include <graphic/Sprite.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
 
 Sprite::Sprite(size_t managerId, Texture2D* tex, unsigned int xof, unsigned int yof, unsigned int width, unsigned int height)
 	: _managerId(managerId), _tex(tex), _xof(xof), _yof(yof), _width(width), _height(height) {}

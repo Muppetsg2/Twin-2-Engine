@@ -1,11 +1,12 @@
 #include <graphic/Window.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
+using namespace Twin2Engine::Tools;
 using namespace std;
 using namespace glm;
 
 Window* Window::_instance = nullptr;
-Twin2Engine::Core::MethodEventHandler Window::OnWindowSizeEvent;
+MethodEventHandler Window::OnWindowSizeEvent;
 
 Window::Window(const string& title, const ivec2& size, bool fullscreen)
 {

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <LightingController.h>
+#include <graphic/LightingController.h>
 #include <core/Component.h>
-#include <core/EventHandler.h>
+#include <tools/EventHandler.h>
 
 namespace Twin2Engine {
 	namespace Core {

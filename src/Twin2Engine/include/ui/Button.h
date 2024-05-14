@@ -1,7 +1,7 @@
 #pragma once
 
 #include <core/Component.h>
-#include <core/EventHandler.h>
+#include <tools/EventHandler.h>
 
 namespace Twin2Engine::UI {
 	class Button : public Core::Component {
@@ -9,8 +9,7 @@ namespace Twin2Engine::UI {
 		float _width = 0.f;
 		float _height = 0.f;
 		bool _interactable = true;
-		Core::MethodEventHandler _onClickEvent = Core::MethodEventHandler();
-		bool _notHold = true;
+		Tools::MethodEventHandler _onClickEvent = Tools::MethodEventHandler();
 
 	public:
 		void SetWidth(float width);
@@ -20,7 +19,7 @@ namespace Twin2Engine::UI {
 		float GetWidth() const;
 		float GetHeight() const;
 		bool IsInteractable() const;
-		const Core::MethodEventHandler& GetOnClickEvent() const;
+		Tools::MethodEventHandler& GetOnClickEvent();
 
 		virtual void Update() override;
 		virtual YAML::Node Serialize() const override;

@@ -2,7 +2,7 @@
 
 #include <graphic/InstantiatingMesh.h>
 
-namespace Twin2Engine::GraphicEngine
+namespace Twin2Engine::Graphic
 {
     struct ModelData
     {

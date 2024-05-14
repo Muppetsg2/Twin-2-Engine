@@ -15,13 +15,13 @@ namespace Twin2Engine::Manager {
 		static std::map<size_t, Core::Component*> _componentsById;
 
 		// Current Loaded Resources
-		static std::vector<size_t> _texturesIds;
-		static std::vector<size_t> _spritesIds;
-		static std::vector<size_t> _fontsIds;
-		static std::vector<size_t> _audiosIds;
-		static std::vector<size_t> _materialsIds;
-		static std::vector<size_t> _modelsIds;
-		static std::vector<size_t> _prefabsIds;
+		static std::map<size_t, size_t> _texturesIds;
+		static std::map<size_t, size_t> _spritesIds;
+		static std::map<size_t, size_t> _fontsIds;
+		static std::map<size_t, size_t> _audiosIds;
+		static std::map<size_t, size_t> _materialsIds;
+		static std::map<size_t, size_t> _modelsIds;
+		static std::map<size_t, size_t> _prefabsIds;
 		static std::vector<size_t> _scriptableObjectsIds;
 
 		// Loaded Scene Objects
@@ -35,7 +35,7 @@ namespace Twin2Engine::Manager {
 		static void SaveGameObject(const Core::GameObject* obj, YAML::Node gameObjects);
 		static void DrawGameObjectEditor(const Core::GameObject* obj);
 
-		static Core::GameObject* FindObjectBy(Core::GameObject* obj, const Core::Func<bool, const Core::GameObject*>& predicate);
+		static Core::GameObject* FindObjectBy(Core::GameObject* obj, const Tools::Func<bool, const Core::GameObject*>& predicate);
 		
 		template<class T, class... Ts> static std::tuple<T*, Ts*...> AddComponentsToGameObject(Core::GameObject* obj)
 		{
@@ -44,6 +44,17 @@ namespace Twin2Engine::Manager {
 			if constexpr (sizeof...(Ts) > 0) return std::tuple_cat(std::make_tuple(comp), AddComponentsToGameObject<Ts...>(obj));
 			else return std::make_tuple(comp);
 		};
+
+		static Tools::EventHandler<std::string> _onSceneLoaded;
+
+		static bool _loadScene;
+		static std::string _sceneToLoadName;
+		static size_t _sceneToLoadId;
+		static void LoadScene();
+
+		static std::queue<Core::GameObject*> _objectsToDestroy;
+		static void DestroyObject(Core::GameObject* obj);
+		static void DestroyObjects();
 	public:
 		static void AddScene(const std::string& name, Core::Scene* scene);
 		static void AddScene(const std::string& name, const std::string& path);
@@ -54,6 +65,9 @@ namespace Twin2Engine::Manager {
 
 		static void UpdateCurrentScene();
 		static void RenderCurrentScene();
+
+		static void Update();
+		static Tools::EventHandler<std::string>& GetOnSceneLoaded();
 		
 		static Core::GameObject* GetRootObject();
 		static Core::GameObject* FindObjectByName(const std::string& name);

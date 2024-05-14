@@ -1,11 +1,13 @@
-Textures: ~
-Sprites: ~
-Fonts: ~
-Audio: ~
-Materials: ~
+Textures: []
+Sprites: []
+Fonts: []
+Audio: []
+Materials: []
 Models:
-  - "{Plane}"
-Prefabs: ~
+  - id: 0
+    path: "{Plane}"
+Prefabs: []
+ScriptableObjects: []
 Root:
   name: New GameObject
   isStatic: false

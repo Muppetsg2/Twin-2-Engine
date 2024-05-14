@@ -1,12 +1,13 @@
 #pragma once
 
 #include <core/Component.h>
-#include <core/Frustum.h>
-#include <Ray.h>
+#include <graphic/Frustum.h>
+#include <physic/Ray.h>
+#include <tools/STD140Struct.h>
 
 using namespace glm;
 
-namespace Twin2Engine::GraphicEngine {
+namespace Twin2Engine::Graphic {
 	class InstantiatingModel;
 	class Shader;
 }
@@ -37,9 +38,11 @@ namespace Twin2Engine::Core {
 	class CameraComponent : public Component {
 	private:
 		static GLuint _uboCameraData;
+		static Tools::STD140Offsets _uboCameraDataOffsets;
 		static GLuint _uboWindowData;
-		static Twin2Engine::GraphicEngine::InstantiatingModel _renderPlane;
-		static Twin2Engine::GraphicEngine::Shader* _renderShader;
+		static Tools::STD140Offsets _uboWindowDataOffsets;
+		static Graphic::InstantiatingModel _renderPlane;
+		static Graphic::Shader* _renderShader;
 		static Frustum _currentCameraFrustum;
 
 		GLuint _depthMapFBO = NULL;
@@ -97,7 +100,7 @@ namespace Twin2Engine::Core {
 		vec3 GetRight() const;
 		mat4 GetViewMatrix() const;
 		mat4 GetProjectionMatrix() const;
-		Frustum GetFrustum() const;
+		Graphic::Frustum GetFrustum() const;
 
 		bool IsMain() const;
 		bool IsFrustumCullingOn() const;
@@ -131,8 +134,7 @@ namespace Twin2Engine::Core {
 		void OnDestroy() override;
 		YAML::Node Serialize() const override;
 		void DrawEditor() override;
-
-		CollisionSystem::Ray GetScreenPointRay(glm::vec2 screenPosition);
+		Physic::Ray GetScreenPointRay(glm::vec2 screenPosition) const;
 	};
 }
 

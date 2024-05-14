@@ -20,7 +20,7 @@ struct MaterialInput
 
 layout (std140, binding = 1) uniform WindowData
 {
-    vec2 windowSize;
+    ivec2 windowSize;
     float nearPlane;
     float farPlane;
     float gamma;

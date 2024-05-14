@@ -1,8 +1,8 @@
 #ifndef _MATERIAL_PARAMETERS_H_
 #define _MATERIAL_PARAMETERS_H_
 
-#include <core/YamlConverters.h>
-#include <graphic/STD140Struct.h>
+#include <tools/YamlConverters.h>
+#include <tools/STD140Struct.h>
 
 namespace Twin2Engine
  {
@@ -10,7 +10,7 @@ namespace Twin2Engine
 		class MaterialsManager;
 	}
 
-	namespace GraphicEngine {
+	namespace Graphic {
 		class MaterialParametersBuilder;
 
 		class MaterialParameters
@@ -22,29 +22,35 @@ namespace Twin2Engine
 
 			GLuint _materialParametersDataUBO;
 
-			STD140Struct _parameters;
+			Tools::STD140Struct _parameters;
 
 			std::map<size_t, char> _textureMappings;
 			std::vector<GLuint> _textures;
 
 
 			MaterialParameters();
-			MaterialParameters(const STD140Struct& parameters, const std::map<size_t, char>& textureMappings, const std::vector<GLuint>& textures);
+			MaterialParameters(const Tools::STD140Struct& parameters, const std::map<size_t, char>& textureMappings, const std::vector<GLuint>& textures);
 
 		public:
 			template<class T>
-			typename std::enable_if_t<is_in_v<T, bool, int, unsigned int, float, double,
+			typename std::enable_if_t<Tools::is_type_in_v<T, bool, int, unsigned int, float, double,
 									glm::vec2, glm::vec3, glm::vec4,
 									glm::ivec2, glm::ivec3, glm::ivec4>, bool>
 			Set(const std::string& variableName, const T& value) {
-				return _parameters.Set(variableName, value);
+				if (_parameters.Set(variableName, value)) {
+					glBindBuffer(GL_UNIFORM_BUFFER, _materialParametersDataUBO);
+					glBufferSubData(GL_UNIFORM_BUFFER, 0, _parameters.GetSize(), _parameters.GetData().data());
+					glBindBuffer(GL_UNIFORM_BUFFER, NULL);
+					return true;
+				}
+				return false;
 			}
 
 
 			~MaterialParameters();
 
 			template<class T>
-			typename std::enable_if_t<is_in_v<T, bool, int, unsigned int, float, double,
+			typename std::enable_if_t<Tools::is_type_in_v<T, bool, int, unsigned int, float, double,
 									glm::vec2, glm::vec3, glm::vec4,
 									glm::ivec2, glm::ivec3, glm::ivec4>, T>
 			Get(const std::string& variableName) {

@@ -16,7 +16,7 @@ namespace Twin2Engine::Manager
 
 	class ModelsManager
 	{
-		friend class GraphicEngine::InstantiatingModel;
+		friend class Graphic::InstantiatingMesh;
 		friend class SceneManager;
 		friend class PrefabManager;
 
@@ -28,24 +28,24 @@ namespace Twin2Engine::Manager
 		static std::map<size_t, std::string> _modelsPaths;
 
 #if ASSIMP_LOADING
-		static inline void LoadModelAssimp(const std::string& modelPath, GraphicEngine::ModelData* modelData);
-		static inline void ExtractMeshAssimp(const aiMesh* mesh, std::vector<GraphicEngine::Vertex>& vertices, std::vector<unsigned int>& indices);
+		static inline void LoadModelAssimp(const std::string& modelPath, Graphic::ModelData* modelData);
+		static inline void ExtractMeshAssimp(const aiMesh* mesh, std::vector<Graphic::Vertex>& vertices, std::vector<unsigned int>& indices);
 #elif TINYGLTF_LOADING
 		static inline void LoadModelGLTF(const std::string& modelPath, ModelData* modelData);
 		static inline void ExtractMeshGLTF(const tinygltf::Mesh& mesh, const tinygltf::Model& model, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 #endif
 
-		static void LoadCube(GraphicEngine::ModelData* modelData);
-		static void LoadPlane(GraphicEngine::ModelData* modelData);
-		static void LoadSphere(GraphicEngine::ModelData* modelData);
-		static void LoadTorus(GraphicEngine::ModelData* modelData);
-		static void LoadCone(GraphicEngine::ModelData* modelData);
-		static void LoadPiramid(GraphicEngine::ModelData* modelData);
-		static void LoadTetrahedron(GraphicEngine::ModelData* modelData);
-		static void LoadCylinder(GraphicEngine::ModelData* modelData);
-		static void LoadHexagon(GraphicEngine::ModelData* modelData);
+		static void LoadCube(Graphic::ModelData* modelData);
+		static void LoadPlane(Graphic::ModelData* modelData);
+		static void LoadSphere(Graphic::ModelData* modelData);
+		static void LoadTorus(Graphic::ModelData* modelData);
+		static void LoadCone(Graphic::ModelData* modelData);
+		static void LoadPiramid(Graphic::ModelData* modelData);
+		static void LoadTetrahedron(Graphic::ModelData* modelData);
+		static void LoadCylinder(Graphic::ModelData* modelData);
+		static void LoadHexagon(Graphic::ModelData* modelData);
 
-		static GraphicEngine::ModelData* LoadModelData(const std::string& modelPath);
+		static Graphic::ModelData* LoadModelData(const std::string& modelPath);
 		static void UnloadModel(const std::string& path);
 		static void UnloadModel(size_t managerId);
 		static void UnloadCube();
@@ -58,23 +58,23 @@ namespace Twin2Engine::Manager
 		static void UnloadCylinder();
 		static void UnloadHexagon();
 
-		static std::pair<glm::vec3, glm::vec3> CalcTangentBitangent(std::vector<GraphicEngine::Vertex> vertices, unsigned int i1, unsigned int i2, unsigned int i3);
-		static void GenerateCircle(std::vector<GraphicEngine::Vertex>& vertices, std::vector<unsigned int>& indices, unsigned int segments, float y = 0.f, unsigned int cullFace = GL_CCW);
+		static std::pair<glm::vec3, glm::vec3> CalcTangentBitangent(std::vector<Graphic::Vertex>& vertices, unsigned int i1, unsigned int i2, unsigned int i3);
+		static void GenerateCircle(std::vector<Graphic::Vertex>& vertices, std::vector<unsigned int>& indices, unsigned int segments, float y = 0.f, unsigned int cullFace = GL_CCW);
 
 	public:
-		static GraphicEngine::InstantiatingModel LoadModel(const std::string& modelPath);
-		static GraphicEngine::InstantiatingModel GetModel(size_t managerId);
-		static GraphicEngine::InstantiatingModel GetCube();
-		static GraphicEngine::InstantiatingModel GetPlane();
-		static GraphicEngine::InstantiatingModel GetSphere();
-		static GraphicEngine::InstantiatingModel GetTorus();
-		static GraphicEngine::InstantiatingModel GetCone();
-		static GraphicEngine::InstantiatingModel GetPiramid();
-		static GraphicEngine::InstantiatingModel GetTetrahedron();
-		static GraphicEngine::InstantiatingModel GetCylinder();
-		static GraphicEngine::InstantiatingModel GetHexagon();
+		static Graphic::InstantiatingModel LoadModel(const std::string& modelPath);
+		static Graphic::InstantiatingModel GetModel(size_t managerId);
+		static Graphic::InstantiatingModel GetCube();
+		static Graphic::InstantiatingModel GetPlane();
+		static Graphic::InstantiatingModel GetSphere();
+		static Graphic::InstantiatingModel GetTorus();
+		static Graphic::InstantiatingModel GetCone();
+		static Graphic::InstantiatingModel GetPiramid();
+		static Graphic::InstantiatingModel GetTetrahedron();
+		static Graphic::InstantiatingModel GetCylinder();
+		static Graphic::InstantiatingModel GetHexagon();
 
-		static GraphicEngine::InstantiatingModel CreateModel(const std::string& modelName, std::vector<GraphicEngine::Vertex> vertices, std::vector<unsigned int> indices);
+		static Graphic::InstantiatingModel CreateModel(const std::string & modelName, std::vector<Graphic::Vertex> vertices, std::vector<unsigned int> indices);
 		//static void FreeModel(InstantiatingModel*& model);
 
 		static YAML::Node Serialize();

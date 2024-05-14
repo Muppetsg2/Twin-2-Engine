@@ -1,0 +1,138 @@
+Textures:
+  - id: 0
+    path: res/textures/white.png
+    fileFormat: 35904
+    engineFormat: 6407
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
+  - id: 1
+    path: res/textures/grass.png
+    fileFormat: 35906
+    engineFormat: 6408
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
+  - id: 2
+    path: res/textures/brickWall.jpg
+    fileFormat: 35904
+    engineFormat: 6407
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
+  - id: 3
+    path: res/textures/stone.jpg
+    fileFormat: 35904
+    engineFormat: 6407
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
+  - id: 4
+    path: res/textures/woodenRoof2.png
+    fileFormat: 35906
+    engineFormat: 6408
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
+  - id: 5
+    path: res/textures/hexEdgeTexture.png
+    fileFormat: 35906
+    engineFormat: 6408
+    sWrapMode: 33648
+    tWrapMode: 33648
+    minFilterMode: 9986
+    magFilterMode: 9729
+Sprites:
+  - id: 0
+    alias: white_box
+    texture: 0
+  - id: 1
+    alias: grass
+    texture: 1
+  - id: 2
+    alias: stone
+    texture: 3
+Fonts:
+  - id: 0
+    path: res/fonts/Caveat-Regular.ttf
+Audio:
+  - id: 0
+    path: res/music/acoustic-guitar.mp3
+Materials:
+  - id: 0
+    path: hexagonMat
+  - id: 1
+    path: Basic2
+  - id: 2
+    path: metal
+  - id: 3
+    path: textured
+  - id: 4
+    path: deska
+  - id: 5
+    path: wallMat
+  - id: 6
+    path: roofMat
+Models:
+  - id: 0
+    path: res/models/AK47.obj
+  - id: 1
+    path: res/models/castle.obj
+  - id: 2
+    path: "{Cube}"
+  - id: 3
+    path: "{Plane}"
+Prefabs:
+  - id: 0
+    path: res/prefabs/testPrefab.prefab
+ScriptableObjects: []
+Root:
+  name: testPrefabRoot
+  isStatic: false
+  isActive: true
+  transform:
+    id: 25
+    enabled: true
+    position:
+      x: 0
+      y: 0
+      z: 0
+    scale:
+      x: 1
+      y: 1
+      z: 1
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+  components:
+    []
+GameObjects:
+  - id: 12
+    name: testPrefabChild1
+    isStatic: false
+    isActive: true
+    transform:
+      id: 26
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      []
+    children:
+      []

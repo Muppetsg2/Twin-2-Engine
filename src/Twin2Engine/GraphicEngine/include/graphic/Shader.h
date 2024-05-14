@@ -6,7 +6,7 @@ namespace Twin2Engine
         class ShaderManager;
     }
 
-    namespace GraphicEngine 
+    namespace Graphic 
     {
         class Shader
         {

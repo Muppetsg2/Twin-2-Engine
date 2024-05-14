@@ -13,7 +13,7 @@ out vec4 FragColor;
 
 layout (std140, binding = 1) uniform WindowData
 {
-    vec2 windowSize;
+    ivec2 windowSize;
     float nearPlane;
     float farPlane;
     float gamma;
@@ -36,7 +36,7 @@ struct TextureInput
 
 layout(location = 0) uniform TextureInput texturesInput[8];
 
-layout(std140, binding = 4) uniform LightingData {
+layout(std140, binding = 3) uniform LightingData {
     vec3 AmbientLight;
 	vec3 ViewerPosition;
 	int shadingType;
@@ -56,8 +56,8 @@ struct PointLight {
 
 struct SpotLight {
 	vec3 position;      // Position of the spot light in world space
-	vec3 direction;     // Direction of the spot light
 	vec3 color;         // Color of the spot light
+	vec3 direction;     // Direction of the spot light
 	float power;		  // Light source power
 	float innerCutOff;       // Inner cutoff angle (in radians)
 	float outerCutOff;  // Outer cutoff angle (in radians)
@@ -66,20 +66,21 @@ struct SpotLight {
 	float quadratic;    // Quadratic attenuation
 };
 struct DirectionalLight {
-	vec3 position;      // Position of the spot light in world space
-	vec3 direction;     // Direction of the spot light
 	mat4 lightSpaceMatrix;
 	vec3 color;         // Color of the spot light
+	vec3 direction;     // Direction of the spot light
 	float power;		  // Light source power
+	uint shadowMapFBO;
+	uint shadowMap;
 };
 
-layout (std430, binding = 3) buffer Lights {
-	uint numberOfPointLights;
-	uint numberOfSpotLights;
-	uint numberOfDirLights;
+layout (std140, binding = 3) buffer Lights {
     PointLight pointLights[8];
     SpotLight spotLights[8];
     DirectionalLight directionalLights[4];
+	uint numberOfPointLights;
+	uint numberOfSpotLights;
+	uint numberOfDirLights;
 };
 
 // FAKE BRDF

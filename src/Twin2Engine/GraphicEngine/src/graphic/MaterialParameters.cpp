@@ -2,7 +2,8 @@
 
 #include <spdlog/spdlog.h>
 
-using namespace Twin2Engine::GraphicEngine;
+using namespace Twin2Engine::Graphic;
+using namespace Twin2Engine::Tools;
 using namespace glm;
 using namespace std;
 

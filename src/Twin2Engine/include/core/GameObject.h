@@ -6,7 +6,7 @@ using std::string;
 
 #include <core/Component.h>
 #include <core/Transform.h>
-#include <LayersData.h>
+#include <physic/LayersData.h>
 
 using Twin2Engine::Core::Component;
 
@@ -60,8 +60,8 @@ namespace Twin2Engine::Core
 		GameObject();
 
 #pragma region EVENTS
-		EventHandler<GameObject*> OnActiveChanged;
-		EventHandler<GameObject*> OnStaticChanged;
+		Tools::EventHandler<GameObject*> OnActiveChanged;
+		Tools::EventHandler<GameObject*> OnStaticChanged;
 #pragma endregion
 
 		virtual ~GameObject();

@@ -280,9 +280,9 @@ int main(int, char**)
     };
 
     // ADDING SCENES
-    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
-    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
     SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.scene");
     //SceneManager::AddScene("testScene", "res/scenes/DirLightTest.scene");
 
@@ -293,7 +293,7 @@ int main(int, char**)
     obj->SetName("Test Button");
     Transform* tr = obj->GetTransform();
     tr->Rotate(glm::vec3(0, 0, 45.f));
-    tr->Translate(glm::vec3(0.f, -200.f, 0.f));
+    tr->Translate(glm::vec3(0.f, -40.f, 0.f));
     Button* b = obj->AddComponent<Button>();
     b->SetHeight(70);
     b->SetWidth(200);
@@ -315,6 +315,8 @@ int main(int, char**)
 
     obj = SceneManager::CreateGameObject();
     obj->SetName("Test Input Field");
+    tr = obj->GetTransform();
+    //tr->Translate(glm::vec3(500.f, -400.f, 0.f));
     Image* img = obj->AddComponent<Image>();
     img->SetSprite("white_box");
     img->SetWidth(200);
@@ -350,16 +352,17 @@ int main(int, char**)
     MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
     mapGenerator->tilemap = hexagonalTilemap;
     float tilemapGenerating = glfwGetTime();
-    //mapGenerator->Generate();
+    mapGenerator->Generate();
     spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
 
     ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
 
     tilemapGenerating = glfwGetTime();
-    //contentGenerator->GenerateContent(hexagonalTilemap);
+    contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
-    Editor::Common::ScriptableObjectEditorManager::Update();
-
+    //Editor::Common::ScriptableObjectEditorManager::Init();
+    //Editor::Common::ScriptableObjectEditorManager::Update();
+    
 #pragma endregion
     
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
@@ -928,6 +931,30 @@ void render_imgui()
 
         if (ImGui::CollapsingHeader("Map Generator"))
         {
+
+            static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
+
+
+            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_OpenOnArrow", &base_flags, ImGuiTreeNodeFlags_OpenOnArrow);
+            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_OpenOnDoubleClick", &base_flags, ImGuiTreeNodeFlags_OpenOnDoubleClick);
+            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanAvailWidth", &base_flags, ImGuiTreeNodeFlags_SpanAvailWidth); ImGui::SameLine(); //HelpMarker("Extend hit area to all available width instead of allowing more items to be laid out after the node.");
+            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanFullWidth", &base_flags, ImGuiTreeNodeFlags_SpanFullWidth);
+            //ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanTextWidth", &base_flags, ImGuiTreeNodeFlags_SpanTextWidth); ImGui::SameLine(); HelpMarker("Reduce hit area to the text label and a bit of margin.");
+            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanAllColumns", &base_flags, ImGuiTreeNodeFlags_SpanAllColumns); ImGui::SameLine(); //HelpMarker("For use in Tables only.");
+            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_AllowOverlap", &base_flags, ImGuiTreeNodeFlags_AllowOverlap);
+            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_Framed", &base_flags, ImGuiTreeNodeFlags_Framed); ImGui::SameLine(); //HelpMarker("Draw frame with background (e.g. for CollapsingHeader)");
+
+
+
+
+
+
+
+
+
+
+
+
             static string selectedSO = "";
             static vector<string> scriptableObjectsPaths = ScriptableObjectManager::GetAllPaths();
             static ScriptableObject* selectedScriptableObject = nullptr;

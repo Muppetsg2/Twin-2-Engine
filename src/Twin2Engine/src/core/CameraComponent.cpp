@@ -422,6 +422,7 @@ void CameraComponent::Render()
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+			ShaderManager::CameraDepthShader->Use();
 			GraphicEngine::DepthRender();
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);

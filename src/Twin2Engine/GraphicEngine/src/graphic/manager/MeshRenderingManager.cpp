@@ -381,7 +381,6 @@ void MeshRenderingManager::UpdateQueues()
 
 void MeshRenderingManager::PreRender()
 {
-	ShaderManager::CameraDepthShader->Use();
 	size_t instanceIndex = 0;
 	size_t remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
 

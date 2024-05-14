@@ -376,7 +376,7 @@ void input()
     if (Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT)) {
         static int i = 1;
         RaycastHit raycast;
-        Ray ray = c->GetScreenPointRay(Input::GetMousePos());
+        Ray ray = c->GetScreenPointRay(Input::GetCursorPos());
         CollisionManager::Instance()->Raycast(ray, raycast);
         if (raycast.collider != nullptr) {
             SPDLOG_INFO("Click {}. collider: {}\t pos: \t{}\t{}\t{}", i++, raycast.collider->colliderId, raycast.position.x, raycast.position.y, raycast.position.z);

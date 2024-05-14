@@ -693,19 +693,21 @@ Ray CameraComponent::GetScreenPointRay(glm::vec2 screenPosition) const
 	//											   (1.0f - 2.0f * screenPosition.y / size.y) * fov_tan, 1.0f));/**/
 
 	// Normalize screen coordinates to NDC (-1 to 1)
-	float x = (2.0f * screenPosition.x) / size.x - 1.0f;
-	float y = 1.0f - (2.0f * screenPosition.y) / size.y;
-	float z = 1.0f; // NDC Z value (should be 1 for far plane)
-
-	// Unproject to view space
-	glm::vec4 rayClip = glm::vec4(x, y, -1.0f, 1.0f);
-	glm::vec4 rayEye = glm::inverse(GetProjectionMatrix()) * rayClip;
-	rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f); // Set z to -1 for direction
-	glm::vec4 rayWorld = glm::inverse(GetViewMatrix()) * rayEye;
-
-	// Get direction vector in world space
-	glm::vec3 Direction(rayWorld);
+	float x = 2.0f * screenPosition.x / size.x;
+	float y = 2.0f * screenPosition.y / size.y;
+	glm::vec3 Direction = _front + _right * (x * tanf(radians(_fov)) * size.x / size.y) + cross(_right, _front) * (y * tanf(radians(_fov)));
 	Direction = glm::normalize(Direction);
+	//float z = 1.0f; // NDC Z value (should be 1 for far plane)
+
+	// // Unproject to view space
+	//glm::vec4 rayClip = glm::vec4(x, y, -1.0f, 1.0f);
+	//glm::vec4 rayEye = glm::inverse(GetProjectionMatrix()) * rayClip;
+	//rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f); // Set z to -1 for direction
+	//glm::vec4 rayWorld = glm::inverse(GetViewMatrix()) * rayEye;
+	//
+	//// Get direction vector in world space
+	//glm::vec3 Direction(rayWorld);
+	//Direction = glm::normalize(Direction);
 
 	return Ray(std::move(Direction), std::move(Origin));
 }

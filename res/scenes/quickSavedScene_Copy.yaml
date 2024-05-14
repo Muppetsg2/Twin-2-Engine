@@ -456,10 +456,10 @@ GameObjects:
         type: SphereCollider
         subTypes:
           - Collider
-        colliderId: 0
+        colliderId: 1
         trigger: false
         static: false
-        layer: 0
+        layer: 1
         layerFilter:
           - 3
           - 3
@@ -481,10 +481,10 @@ GameObjects:
         type: BoxCollider
         subTypes:
           - Collider
-        colliderId: 0
+        colliderId: 2
         trigger: false
         static: false
-        layer: 0
+        layer: 1
         layerFilter:
           - 3
           - 3
@@ -512,10 +512,10 @@ GameObjects:
         type: CapsuleCollider
         subTypes:
           - Collider
-        colliderId: 0
+        colliderId: 3
         trigger: false
         static: false
-        layer: 0
+        layer: 1
         layerFilter:
           - 3
           - 3

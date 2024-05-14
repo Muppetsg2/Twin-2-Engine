@@ -1,21 +1,29 @@
 Textures:
-  - path: res/textures/hexEdgeTexture.png
+  - id: 0
+    path: res/textures/hexEdgeTexture.png
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-Sprites: ~
-Fonts: ~
-Audio: ~
+Sprites: []
+Fonts: []
+Audio: []
 Materials:
-  - GreenHexTile
-  - ColoredHexTile
-  - BlueHexTile
-  - RedHexTile
+  - id: 0
+    path: GreenHexTile
+  - id: 1
+    path: ColoredHexTile
+  - id: 2
+    path: BlueHexTile
+  - id: 3
+    path: RedHexTile
 Models:
-  - res/models/hexagon.obj
-  - "{Plane}"
-Prefabs: ~
+  - id: 0
+    path: res/models/hexagon.obj
+  - id: 1
+    path: "{Plane}"
+Prefabs: []
+ScriptableObjects: []
 Root:
   name: MapRegion
   isStatic: false

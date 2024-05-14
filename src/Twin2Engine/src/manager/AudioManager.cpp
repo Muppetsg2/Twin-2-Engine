@@ -403,8 +403,12 @@ void AudioManager::UnloadAll()
 YAML::Node AudioManager::Serialize()
 {
     YAML::Node audios;
+    size_t id = 0;
     for (const auto& audioPair : _audiosPaths) {
-        audios.push_back(audioPair.second);
+        YAML::Node audio;
+        audio["id"] = id++;
+        audio["path"] = audioPair.second;
+        audios.push_back(audio);
     }
     return audios;
 }

@@ -10,8 +10,6 @@ namespace Twin2Engine {
 
 		class LightComponent : public Component {
 			protected:
-				LightComponent() : Component() {};
-
 				virtual YAML::Node Serialize() const override {
 					return Component::Serialize();
 				}

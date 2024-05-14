@@ -1,28 +1,39 @@
 Textures:
-  - path: res/textures/stone.jpg
+  - id: 0
+    path: res/textures/stone.jpg
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-  - path: res/textures/hexEdgeTexture.png
+  - id: 1
+    path: res/textures/hexEdgeTexture.png
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-Sprites: ~
-Fonts: ~
-Audio: ~
+Sprites: []
+Fonts: []
+Audio: []
 Materials:
-  - GreenHexTile
-  - ColoredHexTile
-  - BlueHexTile
-  - MountainsUnlit
-  - RedHexTile
+  - id: 0
+    path: GreenHexTile
+  - id: 1
+    path: ColoredHexTile
+  - id: 2
+    path: BlueHexTile
+  - id: 3
+    path: MountainsUnlit
+  - id: 4
+    path: RedHexTile
 Models:
-  - res/models/mountain.obj
-  - res/models/hexagon.obj
-  - "{Plane}"
-Prefabs: ~
+  - id: 0
+    path: res/models/mountain.obj
+  - id: 1
+    path: res/models/hexagon.obj
+  - id: 2
+    path: "{Plane}"
+Prefabs: []
+ScriptableObjects: []
 Root:
   name: Mountain
   isStatic: false

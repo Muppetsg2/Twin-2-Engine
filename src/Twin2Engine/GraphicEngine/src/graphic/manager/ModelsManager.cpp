@@ -1222,8 +1222,12 @@ InstantiatingModel ModelsManager::CreateModel(const std::string& modelName, std:
 YAML::Node ModelsManager::Serialize()
 {
     YAML::Node models;
+    size_t id = 0;
     for (const auto& modelPair : modelsPaths) {
-        models.push_back(modelPair.second);
+        YAML::Node model;
+        model["id"] = id++;
+        model["path"] = modelPair.second;
+        models.push_back(model);
     }
     return models;
 }

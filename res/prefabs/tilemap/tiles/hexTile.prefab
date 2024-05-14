@@ -1,17 +1,21 @@
 Textures:
-  - path: res/textures/hexEdgeTexture.png
+  - id: 0
+    path: res/textures/hexEdgeTexture.png
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-Sprites: ~
-Fonts: ~
-Audio: ~
+Sprites: []
+Fonts: []
+Audio: []
 Materials:
-  - ColoredHexTile
+  - id: 0
+    path: ColoredHexTile
 Models:
-  - res/models/hexagon.obj
-Prefabs: ~
+  - id: 0
+    path: res/models/hexagon.obj
+Prefabs: []
+ScriptableObjects: []
 Root:
   name: MapHexTile
   isStatic: false

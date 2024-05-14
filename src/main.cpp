@@ -266,14 +266,25 @@ int main(int, char**)
 
 #pragma endregion
 
+    SceneManager::GetOnSceneLoaded() += [](std::string sceneName) -> void {
+        Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
+        image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
+        text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
+    };
+
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
     SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.yaml");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
-    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/DirLightTest.scene");
 
     SceneManager::LoadScene("testScene");
+    SceneManager::Update();
 
     GameObject* obj = SceneManager::CreateGameObject();
     obj->SetName("Test Button");
@@ -346,9 +357,9 @@ int main(int, char**)
     tilemapGenerating = glfwGetTime();
     contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
-    /**/
-    Editor::Common::ScriptableObjectEditorManager::Init();
-    Editor::Common::ScriptableObjectEditorManager::Update();
+
+    //Editor::Common::ScriptableObjectEditorManager::Init();
+    //Editor::Common::ScriptableObjectEditorManager::Update();
 
 #pragma endregion
     
@@ -357,12 +368,14 @@ int main(int, char**)
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
 
 #pragma region TestingLighting
-    GameObject* dl_go = SceneManager::CreateGameObject();
+    /*GameObject* dl_go = SceneManager::CreateGameObject();
     dl_go->GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
     DirectionalLightComponent* dl = dl_go->AddComponent<DirectionalLightComponent>();
     dl->SetColor(glm::vec3(1.0f));
     LightingController::Instance()->SetViewerPosition(cameraPos);
     LightingController::Instance()->SetAmbientLight(glm::vec3(0.1f));
+
+    SceneManager::SaveScene("res/scenes/DirLightTest.scene");*/
 #pragma endregion
 
 #if _DEBUG
@@ -453,9 +466,6 @@ void input()
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::R)) {
         SceneManager::LoadScene("testScene");
-        Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
-        image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
-        text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
     }
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::Q)) {

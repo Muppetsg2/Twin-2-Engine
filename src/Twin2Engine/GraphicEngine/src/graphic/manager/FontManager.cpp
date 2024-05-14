@@ -71,8 +71,12 @@ void FontManager::UnloadAll() {
 YAML::Node FontManager::Serialize()
 {
     YAML::Node fonts;
-    for (const auto& fontPair : FontManager::_fontsPaths) {
-        fonts.push_back(fontPair.second);
+    size_t id = 0;
+    for (const auto& fontPair : _fontsPaths) {
+        YAML::Node font;
+        font["id"] = id++;
+        font["path"] = fontPair.second;
+        fonts.push_back(font);
     }
     return fonts;
 }

@@ -56,6 +56,23 @@
 #include <processes/TimerProcess.h>
 
 
+// GENERATION
+#include <Generation/MapGenerator.h>
+#include <Generation/ContentGenerator.h>
+#include <Generation/MapRegion.h>
+#include <Generation/MapSector.h>
+#include <Generation/MapHexTile.h>
+#include <Generation/Generators/CitiesGenerator.h>
+#include <Generation/Generators/LakeGenerator.h>
+#include <Generation/Generators/MountainsGenerator.h>
+#include <Generation/Generators/RadioStationGeneratorRegionBased.h>
+#include <Generation/Generators/RadioStationGeneratorSectorBased.h>
+#include <Generation/Generators/RegionsBySectorsGenerator.h>
+#include <Generation/Generators/SectorsGenerator.h>
+#include <Generation/Generators/RegionsGeneratorByKMeans.h>
+#include <Generation/Generators/SectorGeneratorForRegionsByKMeans.h>
+
+
 namespace Twin2Engine {
 	class GameEngine {
 	private:

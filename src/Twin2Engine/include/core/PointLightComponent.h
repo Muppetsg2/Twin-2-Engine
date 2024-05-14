@@ -14,8 +14,6 @@ namespace Twin2Engine {
 				size_t OnChangePositionId;
 			//protected:
 			public:
-				PointLightComponent() : LightComponent() {};
-
 				virtual void Initialize() override;
 				virtual void Update() override;
 				virtual void OnEnable() override;

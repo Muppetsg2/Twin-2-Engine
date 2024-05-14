@@ -1055,7 +1055,7 @@ size_t SceneManager::GetMaterialSaveIdx(size_t materialId)
 size_t SceneManager::GetModelSaveIdx(size_t modelId)
 {
 	size_t idx = 0;
-	for (const auto& modelPair : ModelsManager::modelsPaths) {
+	for (const auto& modelPair : ModelsManager::_modelsPaths) {
 		if (modelPair.first == modelId) return idx;
 		++idx;
 	}

@@ -17,8 +17,6 @@ namespace Twin2Engine {
 				size_t OnViewerChangeId;
 			//protected:
 			public:
-				DirectionalLightComponent() : LightComponent() {};
-
 				virtual void Initialize() override;
 				virtual void Update() override;
 				virtual void OnEnable() override;

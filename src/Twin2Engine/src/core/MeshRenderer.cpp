@@ -124,6 +124,11 @@ YAML::Node MeshRenderer::Serialize() const
 	return node;
 }
 
+void MeshRenderer::DrawEditor()
+{
+
+}
+
 InstantiatingModel MeshRenderer::GetModel() const
 {
 	return _model;

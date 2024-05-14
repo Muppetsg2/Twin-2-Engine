@@ -22,10 +22,10 @@ namespace Twin2Engine::Manager
 
 		static GLenum binaryFormat;
 
-		static std::hash<std::string> stringHash;
-		static std::map<size_t, GraphicEngine::ModelData*> loadedModels;
+		static std::hash<std::string> _stringHash;
+		static std::map<size_t, GraphicEngine::ModelData*> _loadedModels;
 
-		static std::map<size_t, std::string> modelsPaths;
+		static std::map<size_t, std::string> _modelsPaths;
 
 #if ASSIMP_LOADING
 		static inline void LoadModelAssimp(const std::string& modelPath, GraphicEngine::ModelData* modelData);
@@ -59,7 +59,7 @@ namespace Twin2Engine::Manager
 		static void UnloadHexagon();
 
 		static std::pair<glm::vec3, glm::vec3> CalcTangentBitangent(std::vector<GraphicEngine::Vertex> vertices, unsigned int i1, unsigned int i2, unsigned int i3);
-		static void GenerateCircle(std::vector<GraphicEngine::Vertex> vertices, std::vector<unsigned int> indices, unsigned int segments, float y = 0.f, unsigned int cullFace = GL_CCW);
+		static void GenerateCircle(std::vector<GraphicEngine::Vertex>& vertices, std::vector<unsigned int>& indices, unsigned int segments, float y = 0.f, unsigned int cullFace = GL_CCW);
 
 	public:
 		static GraphicEngine::InstantiatingModel LoadModel(const std::string& modelPath);

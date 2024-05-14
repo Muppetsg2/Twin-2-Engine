@@ -107,5 +107,6 @@ namespace Twin2Engine::GraphicEngine {
 
 		void Use() const;
 		void Update() const;
+		void DrawEditor();
 	};
 }

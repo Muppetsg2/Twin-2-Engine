@@ -15,8 +15,6 @@ namespace Twin2Engine {
 				size_t OnChangeTransformId;
 			//protected:
 			public:
-				SpotLightComponent() : LightComponent() {};
-
 				virtual void Initialize() override;
 				virtual void Update() override;
 				virtual void OnEnable() override;

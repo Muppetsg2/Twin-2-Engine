@@ -3,10 +3,10 @@
 using namespace Twin2Engine::GraphicEngine;
 using namespace Twin2Engine::Manager;
 
-std::hash<std::string> ModelsManager::stringHash;
-std::map<size_t, ModelData*> ModelsManager::loadedModels;
+std::hash<std::string> ModelsManager::_stringHash;
+std::map<size_t, ModelData*> ModelsManager::_loadedModels;
 
-std::map<size_t, std::string> ModelsManager::modelsPaths;
+std::map<size_t, std::string> ModelsManager::_modelsPaths;
 
 #if ASSIMP_LOADING
 
@@ -758,7 +758,7 @@ void ModelsManager::LoadCylinder(ModelData* modelData)
     unsigned int segments = 12;
     float h = 1.f;
 
-    std::vector<Vertex> vertices = std::vector<Vertex>();
+    std::vector<Vertex> vertices = std::vector<Vertex>();   
     std::vector<unsigned int> indices = std::vector<unsigned int>();
 
     GenerateCircle(vertices, indices, segments, h / 2.f, GL_CCW);
@@ -934,10 +934,10 @@ void ModelsManager::LoadHexagon(ModelData* modelData)
 
 ModelData* ModelsManager::LoadModelData(const std::string& modelPath)
 {
-    size_t strHash = stringHash(modelPath);
+    size_t strHash = _stringHash(modelPath);
 
     ModelData* modelData;
-    if (loadedModels.find(strHash) == loadedModels.end())
+    if (_loadedModels.find(strHash) == _loadedModels.end())
     {
         SPDLOG_INFO("Loading model: {}!", modelPath);
 
@@ -980,34 +980,34 @@ ModelData* ModelsManager::LoadModelData(const std::string& modelPath)
 #endif
         }
 
-        loadedModels[strHash] = modelData;
-        modelsPaths[strHash] = modelPath;
+        _loadedModels[strHash] = modelData;
+        _modelsPaths[strHash] = modelPath;
     }
     else
     {
         SPDLOG_INFO("Model already loaded: {}!", modelPath);
-        modelData = loadedModels[strHash];
+        modelData = _loadedModels[strHash];
     }
 
     return modelData;
 }
 
 void ModelsManager::UnloadModel(const std::string& path) {
-    UnloadModel(stringHash(path));
+    UnloadModel(_stringHash(path));
 }
 
 void ModelsManager::UnloadModel(size_t managerId) {
-    if (loadedModels.find(managerId) != loadedModels.end())
+    if (_loadedModels.find(managerId) != _loadedModels.end())
     {
-        ModelData* modelData = loadedModels[managerId];
+        ModelData* modelData = _loadedModels[managerId];
         for (InstantiatingMesh*& mesh : modelData->meshes)
         {
             delete mesh;
         }
 
         delete modelData;
-        loadedModels.erase(managerId);
-        modelsPaths.erase(managerId);
+        _loadedModels.erase(managerId);
+        _modelsPaths.erase(managerId);
     }
 }
 
@@ -1078,7 +1078,7 @@ std::pair<glm::vec3, glm::vec3> ModelsManager::CalcTangentBitangent(std::vector<
     return TB;
 }
 
-void ModelsManager::GenerateCircle(std::vector<Vertex> vertices, std::vector<unsigned int> indices, unsigned int segments, float y, unsigned int cullFace)
+void ModelsManager::GenerateCircle(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, unsigned int segments, float y, unsigned int cullFace)
 {
     std::vector<unsigned int> trisNum;
 
@@ -1150,54 +1150,54 @@ InstantiatingModel ModelsManager::LoadModel(const std::string& modelPath)
 
 InstantiatingModel ModelsManager::GetModel(size_t managerId) {
     InstantiatingModel model;
-    if (loadedModels.find(managerId) != loadedModels.end()) {
-        model = loadedModels[managerId];
+    if (_loadedModels.find(managerId) != _loadedModels.end()) {
+        model = _loadedModels[managerId];
     }
     return model;
 }
 
 InstantiatingModel ModelsManager::GetCube() {
-    return GetModel(stringHash(CUBE_PATH));
+    return GetModel(_stringHash(CUBE_PATH));
 }
 
 InstantiatingModel ModelsManager::GetPlane() {
-    return GetModel(stringHash(PLANE_PATH));
+    return GetModel(_stringHash(PLANE_PATH));
 }
 
 InstantiatingModel ModelsManager::GetSphere() {
-    return GetModel(stringHash(SPHERE_PATH));
+    return GetModel(_stringHash(SPHERE_PATH));
 }
 
 InstantiatingModel ModelsManager::GetTorus() {
-    return GetModel(stringHash(TORUS_PATH));
+    return GetModel(_stringHash(TORUS_PATH));
 }
 
 InstantiatingModel ModelsManager::GetCone() {
-    return GetModel(stringHash(CONE_PATH));
+    return GetModel(_stringHash(CONE_PATH));
 }
 
 InstantiatingModel ModelsManager::GetPiramid() {
-    return GetModel(stringHash(PIRAMID_PATH));
+    return GetModel(_stringHash(PIRAMID_PATH));
 }
 
 InstantiatingModel ModelsManager::GetTetrahedron() {
-    return GetModel(stringHash(TETRAHEDRON_PATH));
+    return GetModel(_stringHash(TETRAHEDRON_PATH));
 }
 
 InstantiatingModel ModelsManager::GetCylinder() {
-    return GetModel(stringHash(CYLINDER_PATH));
+    return GetModel(_stringHash(CYLINDER_PATH));
 }
 
 InstantiatingModel ModelsManager::GetHexagon() {
-    return GetModel(stringHash(HEXAGON_PATH));
+    return GetModel(_stringHash(HEXAGON_PATH));
 }
 
 InstantiatingModel ModelsManager::CreateModel(const std::string& modelName, std::vector<Vertex> vertices, std::vector<unsigned int> indices)
 {
-    size_t strHash = stringHash(modelName);
+    size_t strHash = _stringHash(modelName);
 
     ModelData* modelData = nullptr;
-    if (loadedModels.find(strHash) == loadedModels.end())
+    if (_loadedModels.find(strHash) == _loadedModels.end())
     {
         SPDLOG_INFO("Creating model: {}!", modelName);
 
@@ -1208,12 +1208,12 @@ InstantiatingModel ModelsManager::CreateModel(const std::string& modelName, std:
         };
 
         modelData->meshes.push_back(mesh);
-        loadedModels[strHash] = modelData;
+        _loadedModels[strHash] = modelData;
     }
     else
     {
         SPDLOG_INFO("Model already exist: {}!", modelName);
-        modelData = loadedModels[strHash];
+        modelData = _loadedModels[strHash];
     }
 
     return modelData;
@@ -1222,7 +1222,7 @@ InstantiatingModel ModelsManager::CreateModel(const std::string& modelName, std:
 YAML::Node ModelsManager::Serialize()
 {
     YAML::Node models;
-    for (const auto& modelPair : modelsPaths) {
+    for (const auto& modelPair : _modelsPaths) {
         models.push_back(modelPair.second);
     }
     return models;

@@ -79,7 +79,7 @@ void SpotLightComponent::SetOuterCutOff(float radAngle)
 	dirtyFlag = true;
 }
 
-void SpotLightComponent::SetAtenuation(float constant, float linear, float quadratic)
+void SpotLightComponent::SetAttenuation(float constant, float linear, float quadratic)
 {
 	light->constant = constant;
 	light->linear = linear;

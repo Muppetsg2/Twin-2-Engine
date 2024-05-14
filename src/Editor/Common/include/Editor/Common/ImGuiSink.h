@@ -1,5 +1,4 @@
-#ifndef _IMGUI_SINK_H_
-#define _IMGUI_SINK_H_
+#pragma once
 
 namespace Editor::Common
 {
@@ -216,5 +215,3 @@ namespace Editor::Common
     std::vector<ImGuiLogMessage> MessageHolder::logMessages;
     std::ofstream MessageHolder::logFile;
 }
-
-#endif // !_IMGUI_SINK_H_

@@ -1047,7 +1047,7 @@ void ModelsManager::UnloadHexagon() {
     UnloadModel(HEXAGON_PATH);
 }
 
-std::pair<glm::vec3, glm::vec3> ModelsManager::CalcTangentBitangent(std::vector<Vertex> vertices, unsigned int i1, unsigned int i2, unsigned int i3)
+std::pair<glm::vec3, glm::vec3> ModelsManager::CalcTangentBitangent(std::vector<Vertex>& vertices, unsigned int i1, unsigned int i2, unsigned int i3)
 {
     std::pair<glm::vec3, glm::vec3> TB;
 
@@ -1223,7 +1223,7 @@ YAML::Node ModelsManager::Serialize()
 {
     YAML::Node models;
     size_t id = 0;
-    for (const auto& modelPair : modelsPaths) {
+    for (const auto& modelPair : _modelsPaths) {
         YAML::Node model;
         model["id"] = id++;
         model["path"] = modelPair.second;

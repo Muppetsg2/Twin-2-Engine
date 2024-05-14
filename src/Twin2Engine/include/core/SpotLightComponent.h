@@ -9,7 +9,7 @@ namespace Twin2Engine::Core {
 			bool dirtyFlag = false;
 			glm::vec3 localDirection;
 			Graphic::SpotLight* light = new Graphic::SpotLight();
-			Tools::Core::Action<Transform*> OnChangeTransform;
+			Tools::Action<Transform*> OnChangeTransform;
 			size_t OnChangeTransformId;
 		public:
 			virtual void Initialize() override;

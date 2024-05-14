@@ -19,4 +19,6 @@ namespace ImGui {
 	IMGUI_API bool          ArrowAndWallButton(const char* str_id, ImGuiDir dir, float rounding = 0.0f);	// arrow and wall button with an arrow and wall shapes
 
 	// Smietnik Button zamiast remove button
+
+	const ImWchar* GetGlyphRangesPolish();
 }

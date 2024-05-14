@@ -23,7 +23,7 @@ namespace Twin2Engine::Manager
 		static GLenum binaryFormat;
 
 		static std::hash<std::string> _stringHash;
-		static std::map<size_t, GraphicEngine::ModelData*> _loadedModels;
+		static std::map<size_t, Graphic::ModelData*> _loadedModels;
 
 		static std::map<size_t, std::string> _modelsPaths;
 

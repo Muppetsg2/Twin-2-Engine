@@ -8,6 +8,8 @@
 #include <graphic/manager/FontManager.h>
 #include <map>
 #include <tools/EventHandler.h>
+#include <locale>
+#include <codecvt>
 
 using namespace Twin2Engine;
 using namespace UI;
@@ -350,13 +352,13 @@ void Text::DrawEditor()
 	string name = string("Text##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
-		string buff = _text;
+		string buff = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_text);
 		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll;
 
 		ImGui::InputText(string("Value##").append(id).c_str(), &buff, flags);
 
-		if (buff != _text) {
-			SetText(buff);
+		if (buff != std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_text)) {
+			SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(buff));
 		}
 
 		glm::vec4 c = _color;
@@ -379,8 +381,7 @@ void Text::DrawEditor()
 
 		if (!fontNames.contains(_fontId)) {
 			_fontId = 0;
-			_textCacheDirty = false;
-			_justResizeCache = false;
+			_textDirty = false;
 		}
 
 		if (ImGui::BeginCombo(string("Font##").append(id).c_str(), fontNames[_fontId].c_str())) {
@@ -404,8 +405,7 @@ void Text::DrawEditor()
 				}
 				else {
 					_fontId = 0;
-					_textCacheDirty = false;
-					_justResizeCache = false;
+					_textDirty = false;
 				}
 			}
 

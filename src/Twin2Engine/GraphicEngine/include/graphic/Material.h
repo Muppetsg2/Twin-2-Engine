@@ -1,5 +1,4 @@
-#ifndef _MATERIAL_H_
-#define _MATERIAL_H_
+#pragma once
 
 #include <graphic/Shader.h>
 #include <graphic/MaterialParameters.h>
@@ -53,7 +52,3 @@ namespace Twin2Engine
 	}
 	
 }
-
-#endif
-
-

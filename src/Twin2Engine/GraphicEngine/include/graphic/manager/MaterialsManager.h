@@ -19,7 +19,7 @@ namespace Twin2Engine::Manager
 	private:
 		static std::hash<std::string> _stringHash;
 		static const std::unordered_map<size_t, int> _typeHandleMap;
-		static std::map<size_t, GraphicEngine::MaterialData*> _loadedMaterials;
+		static std::map<size_t, Graphic::MaterialData*> _loadedMaterials;
 
 		// For ImGui
 		static bool _fileDialogOpen;

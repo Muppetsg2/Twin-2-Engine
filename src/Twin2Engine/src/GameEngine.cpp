@@ -199,7 +199,7 @@ void GameEngine::Deserializers()
             PointLightComponent* light = static_cast<PointLightComponent*>(comp);
             light->SetColor(node["color"].as<vec3>());
             light->SetPower(node["power"].as<float>());
-            light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
+            light->SetAttenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
         }
     );
 
@@ -213,7 +213,7 @@ void GameEngine::Deserializers()
             light->SetColor(node["color"].as<vec3>());
             light->SetPower(node["power"].as<float>());
             light->SetOuterCutOff(node["outerCutOff"].as<float>());
-            light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
+            light->SetAttenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
         }
     );
 }

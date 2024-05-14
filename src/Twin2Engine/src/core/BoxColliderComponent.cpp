@@ -50,9 +50,9 @@ void BoxColliderComponent::SetZRotation(float v)
 void BoxColliderComponent::SetRotation(const glm::vec3& rot)
 {
 	glm::vec3 v = glm::radians(rot);
-	((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation.x = v.x;
-	((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation.y = v.y;
-	((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation.z = v.z;
+	((BoxColliderData*)collider->shapeColliderData)->Rotation.x = v.x;
+	((BoxColliderData*)collider->shapeColliderData)->Rotation.y = v.y;
+	((BoxColliderData*)collider->shapeColliderData)->Rotation.z = v.z;
 	dirtyFlag = true;
 }
 
@@ -141,31 +141,31 @@ void Twin2Engine::Core::BoxColliderComponent::DrawEditor()
 	string name = string("Box Collider##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
-		float v = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x;
+		float v = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x;
 		ImGui::DragFloat(string("Width##").append(id).c_str(), &v, 0.1f);
 
-		if (v != ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x) {
+		if (v != ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x) {
 			SetWidth(v);
 		}
 
-		v = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y;
+		v = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y;
 		ImGui::DragFloat(string("Height##").append(id).c_str(), &v, 0.1f);
 
-		if (v != ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y) {
+		if (v != ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y) {
 			SetHeight(v);
 		}
 
-		v = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z;
+		v = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z;
 		ImGui::DragFloat(string("Length##").append(id).c_str(), &v, 0.1f);
 
-		if (v != ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z) {
+		if (v != ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z) {
 			SetLength(v);
 		}
 
-		glm::vec3 rot = ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation;
+		glm::vec3 rot = ((BoxColliderData*)collider->shapeColliderData)->Rotation;
 		ImGui::DragFloat3(string("Rotation##").append(id).c_str(), glm::value_ptr(rot), 0.1f);
 
-		if (rot != ((CollisionSystem::BoxColliderData*)collider->shapeColliderData)->Rotation) {
+		if (rot != ((BoxColliderData*)collider->shapeColliderData)->Rotation) {
 			SetRotation(rot);
 		}
 

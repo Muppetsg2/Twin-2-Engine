@@ -17,7 +17,7 @@ GLuint CameraComponent::_uboCameraData = 0;
 STD140Offsets CameraComponent::_uboCameraDataOffsets{
 	STD140Variable<mat4>("projection"),
 	STD140Variable<mat4>("view"),
-	STD140Variable<vec3>("viewerPosition")
+	STD140Variable<vec3>("viewPos")
 };
 GLuint CameraComponent::_uboWindowData = 0;
 STD140Offsets CameraComponent::_uboWindowDataOffsets{
@@ -28,7 +28,7 @@ STD140Offsets CameraComponent::_uboWindowDataOffsets{
 };
 InstantiatingModel CameraComponent::_renderPlane = InstantiatingModel();
 Shader* CameraComponent::_renderShader = nullptr;
-Frustum CameraComponent::_currentCameraFrustum = Frustum();
+Frustum CameraComponent::_currentCameraFrustum = Graphic::Frustum();
 
 void CameraComponent::OnTransformChange(Transform* trans)
 {
@@ -179,7 +179,7 @@ Frustum CameraComponent::GetFrustum() const
 {
 	ivec2 size = Window::GetInstance()->GetContentSize();
 
-	Frustum frustum;
+	Graphic::Frustum frustum;
 	float halfVSide = _far * tanf(_fov * .5f);
 	float aspect = (float)size.x / (float)size.y;
 	float halfHSide = halfVSide * aspect;
@@ -415,7 +415,7 @@ void CameraComponent::Render()
 
 	if (wSize.y != 0) {
 		// UPDATING RENDERER
-		GraphicEngineManager::UpdateBeforeRendering();
+		GraphicEngine::UpdateBeforeRendering();
 
 		// DEPTH MAP
 		glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);

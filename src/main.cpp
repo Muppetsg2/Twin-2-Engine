@@ -33,16 +33,15 @@
 #include <tools/YamlConverters.h>
 #include <Generation/YamlConverters.h>
 
+#if _DEBUG
 // EDITOR
 #include <Editor/Common/MaterialCreator.h>
 #include <Editor/Common/ProcessingMtlFiles.h>
 #include <Editor/Common/ScriptableObjectEditorManager.h>
-
-
-// Przeniesc do Impl_imgui
 #include <Editor/Common/ImGuiSink.h>
 using Editor::Common::ImGuiSink;
 using Editor::Common::ImGuiLogMessage;
+#endif
 
 using namespace Twin2Engine;
 using namespace Twin2Engine::Manager;
@@ -283,8 +282,8 @@ int main(int, char**)
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
-    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
-    SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.scene");
+    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.scene");
     //SceneManager::AddScene("testScene", "res/scenes/DirLightTest.scene");
 
     SceneManager::LoadScene("testScene");
@@ -562,7 +561,6 @@ void init_imgui()
 
     // Setup style
     ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
 
     // Load Fonts
     // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
@@ -572,12 +570,9 @@ void init_imgui()
     // - Read 'misc/fonts/README.txt' for more instructions and details.
     // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
     //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != NULL);
+    ImFont* font = io.Fonts->AddFontFromFileTTF("./res/fonts/NotoSans-Regular.ttf", 16.f, nullptr, ImGui::GetGlyphRangesPolish());
+    IM_ASSERT(font != NULL);
+    io.Fonts->Build();
 }
 
 void begin_imgui()

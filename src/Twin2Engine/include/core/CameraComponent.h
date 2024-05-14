@@ -43,7 +43,7 @@ namespace Twin2Engine::Core {
 		static Tools::STD140Offsets _uboWindowDataOffsets;
 		static Graphic::InstantiatingModel _renderPlane;
 		static Graphic::Shader* _renderShader;
-		static Frustum _currentCameraFrustum;
+		static Graphic::Frustum _currentCameraFrustum;
 
 		GLuint _depthMapFBO = NULL;
 		GLuint _depthMap = NULL;
@@ -128,7 +128,7 @@ namespace Twin2Engine::Core {
 		void BindDepthTexture(unsigned int index = 0);
 
 		static CameraComponent* GetMainCamera();
-		static Frustum GetCurrentCameraFrustum();
+		static Graphic::Frustum GetCurrentCameraFrustum();
 
 		void Initialize() override;
 		void OnDestroy() override;

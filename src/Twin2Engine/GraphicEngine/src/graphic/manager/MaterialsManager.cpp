@@ -234,7 +234,7 @@ YAML::Node MaterialsManager::Serialize()
 {
 	YAML::Node materials;
 	size_t id = 0;
-	for (const auto& matPair : materialsPaths) {
+	for (const auto& matPair : _materialsPaths) {
 		YAML::Node material;
 		material["id"] = id++;
 		material["path"] = matPair.second;

@@ -59,7 +59,7 @@ void PointLightComponent::SetPower(float power)
 	dirtyFlag = true;
 }
 
-void PointLightComponent::SetAtenuation(float constant, float linear, float quadratic)
+void PointLightComponent::SetAttenuation(float constant, float linear, float quadratic)
 {
 	light->constant = constant;
 	light->linear = linear;

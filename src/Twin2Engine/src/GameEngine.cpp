@@ -311,17 +311,6 @@ bool GameEngine::Init(const string& window_name, int32_t window_width, int32_t w
     }
     spdlog::info("Initialized SoLoud.");
 
-    // Initialize stdout color sink
-    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    console_sink->set_level(spdlog::level::debug);
-
-    // Create a logger with the stdout color sink
-    auto logger = std::make_shared<spdlog::logger>("logger", console_sink);
-    spdlog::register_logger(logger);
-
-    // Set global log level to debug
-    spdlog::set_level(spdlog::level::debug);
-
 	Deserializers();
 
 	return true;

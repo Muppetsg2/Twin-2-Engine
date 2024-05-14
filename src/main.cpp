@@ -1,3 +1,12 @@
+#define USE_IMGUI_CONSOLE_OUTPUT true
+#define USE_WINDOWS_CONSOLE_OUTPUT false
+
+#if USE_IMGUI_CONSOLE_OUTPUT || !USE_WINDOWS_CONSOLE_OUTPUT
+
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+
+#endif
+
 #include <GameEngine.h>
 
 // TILEMAP
@@ -25,8 +34,14 @@
 #include <Generation/YamlConverters.h>
 
 // EDITOR
-#include <Editor/Common/ProcessingMtlFiles.h>
 #include <Editor/Common/MaterialCreator.h>
+#include <Editor/Common/ProcessingMtlFiles.h>
+#include <Editor/Common/ScriptableObjectEditorManager.h>
+#include <Editor/Common/ImGuiSink.h>
+
+using Editor::Common::ImGuiSink;
+using Editor::Common::ImGuiLogMessage;
+
 
 using namespace Twin2Engine;
 using namespace Twin2Engine::Manager;
@@ -108,6 +123,22 @@ GameObject* tilemapGO = nullptr;
 int main(int, char**)
 {
 #pragma region Initialization
+    // LOGGING: SPDLOG INITIALIZATION
+#if USE_IMGUI_CONSOLE_OUTPUT || USE_WINDOWS_CONSOLE_OUTPUT
+
+#if USE_IMGUI_CONSOLE_OUTPUT
+    auto console_sink = std::make_shared<Editor::Common::ImGuiSink<mutex>>("res/logs/log.txt");
+#elif USE_WINDOWS_CONSOLE_OUTPUT
+    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+#endif
+
+    auto logger = std::make_shared<spdlog::logger>("logger", console_sink);
+    spdlog::register_logger(logger);
+    spdlog::set_default_logger(logger);
+
+#else
+    spdlog::set_level(spdlog::level::off);
+#endif  
 
     if (!GameEngine::Init(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_FULLSCREEN, GL_VERSION_MAJOR, GL_VERSION_MINOR))
     {
@@ -320,6 +351,8 @@ int main(int, char**)
     tilemapGenerating = glfwGetTime();
     //contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
+
+    Editor::Common::ScriptableObjectEditorManager::Update();
 
 #pragma endregion
     
@@ -1001,12 +1034,22 @@ void render_imgui()
         }
 
 #pragma endregion
+        
+
 
         ImGui::Separator();
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
         ImGui::End();
+
+#pragma region LOGGING_CONSOLE
+
+#if USE_IMGUI_CONSOLE_OUTPUT
+        ImGuiSink<mutex>::Draw();
+#endif
+        
+#pragma endregion 
     }
 }
 
@@ -1016,4 +1059,5 @@ void end_imgui()
     window->Use();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
+
 #endif

@@ -1,52 +1,60 @@
 Textures:
-  - path: res/textures/white.png
+  - id: 0
+    path: res/textures/white.png
     fileFormat: 35904
     engineFormat: 6407
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-  - path: res/textures/fakeBRDF.png
+  - id: 1
+    path: res/textures/fakeBRDF.png
     fileFormat: 35906
     engineFormat: 6408
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-  - path: res/textures/cityTextureColour.png
+  - id: 2
+    path: res/textures/cityTextureColour.png
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-  - path: res/textures/grass.png
+  - id: 3
+    path: res/textures/grass.png
     fileFormat: 35906
     engineFormat: 6408
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-  - path: res/textures/brickWall.jpg
+  - id: 4
+    path: res/textures/brickWall.jpg
     fileFormat: 35904
     engineFormat: 6407
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-  - path: res/textures/stone.jpg
+  - id: 5
+    path: res/textures/stone.jpg
     fileFormat: 35904
     engineFormat: 6407
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-  - path: res/textures/woodenRoof2.png
+  - id: 6
+    path: res/textures/woodenRoof2.png
     fileFormat: 35906
     engineFormat: 6408
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-  - path: res/textures/hexEdgeTexture.png
+  - id: 7
+    path: res/textures/hexEdgeTexture.png
     fileFormat: 35906
     engineFormat: 6408
     sWrapMode: 33648
@@ -54,54 +62,93 @@ Textures:
     minFilterMode: 9986
     magFilterMode: 9729
 Sprites:
-  - alias: white_box
+  - id: 0
+    alias: white_box
     texture: 0
-  - alias: grass
+  - id: 1
+    alias: grass
     texture: 3
-  - alias: stone
+  - id: 2
+    alias: stone
     texture: 5
 Fonts:
-  - res/fonts/Caveat-Regular.ttf
+  - id: 0
+    path: res/fonts/Caveat-Regular.ttf
 Audio:
-  - res/music/acoustic-guitar.mp3
+  - id: 0
+    path: res/music/acoustic-guitar.mp3
 Materials:
-  - hexagonMat
-  - Basic2
-  - GreenHexTile
-  - ColoredHexTile
-  - metal
-  - multiTexture
-  - textured
-  - deska
-  - CityMaterial
-  - BlueHexTile
-  - wallMat
-  - MountainsUnlit
-  - FakeBRDF
-  - RedHexTile
-  - roofMat
+  - id: 0
+    path: hexagonMat
+  - id: 1
+    path: Basic2
+  - id: 2
+    path: GreenHexTile
+  - id: 3
+    path: ColoredHexTile
+  - id: 4
+    path: metal
+  - id: 5
+    path: multiTexture
+  - id: 6
+    path: textured
+  - id: 7
+    path: deska
+  - id: 8
+    path: CityMaterial
+  - id: 9
+    path: BlueHexTile
+  - id: 10
+    path: wallMat
+  - id: 11
+    path: MountainsUnlit
+  - id: 12
+    path: FakeBRDF
+  - id: 13
+    path: RedHexTile
+  - id: 14
+    path: roofMat
 Models:
-  - res/models/AK47.obj
-  - res/models/mountain.obj
-  - res/models/radioStation.obj
-  - res/models/hexagon.obj
-  - res/models/castle.obj
-  - "{Cube}"
-  - "{Plane}"
-  - res/models/city.obj
-  - "{Sphere}"
+  - id: 0
+    path: res/models/AK47.obj
+  - id: 1
+    path: res/models/mountain.obj
+  - id: 2
+    path: res/models/radioStation.obj
+  - id: 3
+    path: res/models/hexagon.obj
+  - id: 4
+    path: res/models/castle.obj
+  - id: 5
+    path: "{Cube}"
+  - id: 6
+    path: "{Plane}"
+  - id: 7
+    path: res/models/city.obj
+  - id: 8
+    path: "{Sphere}"
 Prefabs:
-  - res/prefabs/tilemap/mapElements/city.prefab
-  - res/prefabs/testPrefab.yaml
-  - res/prefabs/tilemap/mapElements/radioStation.prefab
-  - res/prefabs/tilemap/tiles/blueHexTile.prefab
-  - res/prefabs/tilemap/tiles/redHexTile.prefab
-  - res/prefabs/tilemap/mapSector.prefab
-  - res/prefabs/tilemap/tiles/hexTile.prefab
-  - res/prefabs/tilemap/tiles/greenHexTile.prefab
-  - res/prefabs/tilemap/mapRegion.prefab
-  - res/prefabs/tilemap/mapElements/mountains.prefab
-ScriptableObjects: ~
+  - id: 0
+    path: res/prefabs/tilemap/mapElements/city.prefab
+  - id: 1
+    path: res/prefabs/testPrefab.prefab
+  - id: 2
+    path: res/prefabs/tilemap/mapElements/radioStation.prefab
+  - id: 3
+    path: res/prefabs/tilemap/tiles/blueHexTile.prefab
+  - id: 4
+    path: res/prefabs/tilemap/tiles/redHexTile.prefab
+  - id: 5
+    path: res/prefabs/tilemap/mapSector.prefab
+  - id: 6
+    path: res/prefabs/tilemap/tiles/hexTile.prefab
+  - id: 7
+    path: res/prefabs/tilemap/tiles/greenHexTile.prefab
+  - id: 8
+    path: res/prefabs/tilemap/mapRegion.prefab
+  - id: 9
+    path: res/prefabs/tilemap/mapElements/mountains.prefab
+ScriptableObjects: []
 GameObjects:
   - id: 1
     name: Camera

@@ -15,14 +15,14 @@ namespace Twin2Engine::Core {
 	protected:
 		std::vector<YAML::Node> _gameObjects = std::vector<YAML::Node>();
 
-		std::unordered_map<std::string, Manager::TextureData> _textures;
-		std::unordered_map<std::string, std::pair<Graphic::TextureFormat, Manager::TextureFileFormat>> _texturesFormats;
-		std::unordered_map<std::string, std::tuple<std::string, bool, Manager::SpriteData>> _sprites;
-		std::vector<std::string> _fonts;
-		std::vector<std::string> _audios;
-		std::vector<std::string> _materials;
-		std::vector<std::string> _models;
-		std::vector<std::string> _prefabs;
+		std::map<size_t, std::pair<std::string, Manager::TextureData>> _textures;
+		std::map<std::string, std::pair<Graphic::TextureFormat, Manager::TextureFileFormat>> _texturesFormats;
+		std::map<size_t, std::tuple<std::string, size_t, bool, Manager::SpriteData>> _sprites;
+		std::map<size_t, std::string> _fonts;
+		std::map<size_t, std::string> _audios;
+		std::map<size_t, std::string> _materials;
+		std::map<size_t, std::string> _models;
+		std::map<size_t, std::string> _prefabs;
 		std::vector<std::string> _scriptableObjects;
 	public:
 		Scene() = default;
@@ -31,16 +31,18 @@ namespace Twin2Engine::Core {
 		void AddGameObject(const YAML::Node& gameObjectNode);
 
 		// Scene Resources
-		void AddTexture2D(const std::string& path, const Manager::TextureData& data = Manager::TextureData());
-		void AddTexture2D(const std::string& path, const Graphic::TextureFormat& format, const Manager::TextureFileFormat& fileFormat, const Manager::TextureData& data = Manager::TextureData());
-		void AddSprite(const std::string& name, const std::string& texPath);
-		void AddSprite(const std::string& name, const std::string& texPath, const Manager::SpriteData& data);
-		void AddFont(const std::string& path);
-		void AddAudio(const std::string& path);
-		void AddModel(const std::string& path);
-		void AddMaterial(const std::string& path);
-		void AddPrefab(const std::string& path);
+		void AddTexture2D(size_t id, const std::string& path, const Manager::TextureData& data = Manager::TextureData());
+		void AddTexture2D(size_t id, const std::string& path, const Graphic::TextureFormat& format, const Manager::TextureFileFormat& fileFormat, const Manager::TextureData& data = Manager::TextureData());
+		void AddSprite(size_t id, const std::string& name, size_t textureId);
+		void AddSprite(size_t id, const std::string& name, size_t textureId, const Manager::SpriteData& data);
+		void AddFont(size_t id, const std::string& path);
+		void AddAudio(size_t id, const std::string& path);
+		void AddModel(size_t id, const std::string& path);
+		void AddMaterial(size_t id, const std::string& path);
+		void AddPrefab(size_t id, const std::string& path);
 		void AddScriptableObject(const std::string& path);
+
+		virtual void Deserialize(const YAML::Node& sceneNode);
 
 		friend class Manager::SceneManager;
 	};

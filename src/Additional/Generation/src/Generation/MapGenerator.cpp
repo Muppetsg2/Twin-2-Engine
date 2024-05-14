@@ -251,7 +251,9 @@ void MapGenerator::Generate()
                 hexTile->tile = tile;
 
                 HexagonalColliderComponent* hexCol = tileObject->GetComponent<HexagonalColliderComponent>();
-                hexCol->colliderId = ++i;
+                if (hexCol != nullptr) {
+                    hexCol->colliderId = ++i;
+                }
             }
         }
     }

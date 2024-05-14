@@ -34,19 +34,19 @@ namespace Twin2Engine::Graphic {
 			~LightingController();
 
 			struct Lights {
-				PointLight pointLights[MAX_POINT_LIGHTS];
-				SpotLight spotLights[MAX_SPOT_LIGHTS];
-				DirectionalLight directionalLights[MAX_DIRECTIONAL_LIGHTS];
 				unsigned int numberOfPointLights = 0;
 				unsigned int numberOfSpotLights = 0;
 				unsigned int numberOfDirLights = 0;
+				PointLight pointLights[MAX_POINT_LIGHTS];
+				SpotLight spotLights[MAX_SPOT_LIGHTS];
+				DirectionalLight directionalLights[MAX_DIRECTIONAL_LIGHTS];
 			};
 			static const Tools::STD140Offsets _lightsOffsets;
 
 			struct LightingData {
-				glm::vec3 ambientLight;
-				float shininness;
-				glm::vec3 viewerPosition;
+				glm::vec3 ambientLight = glm::vec3 (0.1f, 0.1f, 0.1f);
+				float shininness = 4.0f;
+				glm::vec3 viewerPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 				int shadingType = 0; // 0 - blinnPhong, 1 - toon, 2 - gooch
 			};
 			static const Tools::STD140Offsets _lightingDataOffsets;
@@ -56,12 +56,12 @@ namespace Twin2Engine::Graphic {
 			Twin2Engine::Tools::MethodEventHandler ViewerTransformChanged;
 			void UpdateOnTransformChange() {
 				//SPDLOG_INFO("VP: {}\t{}\t{}\t\tLVP{}\t{}\t{}", viewerPosition.x, viewerPosition.y, viewerPosition.z, lastViewerPosition.x, lastViewerPosition.y, lastViewerPosition.z);
-				if (lastViewerPositionSet) {
-					if ((glm::abs(lastViewerPosition.x - viewerPosition.x) <= 5.0f) && (glm::abs(lastViewerPosition.y - viewerPosition.y) <= 5.0f)) {
-						//SPDLOG_INFO("2");
-						return;
-					}
-				}
+				//if (lastViewerPositionSet) {
+				//	if ((glm::abs(lastViewerPosition.x - viewerPosition.x) <= 5.0f) && (glm::abs(lastViewerPosition.y - viewerPosition.y) <= 5.0f)) {
+				//		//SPDLOG_INFO("2");
+				//		return;
+				//	}
+				//}
 				ViewerTransformChanged.Invoke();
 				RenderShadowMaps();
 			}
@@ -104,7 +104,7 @@ namespace Twin2Engine::Graphic {
 			void BindLightBuffors(Twin2Engine::Graphic::Shader* shader);
 			//void UpdateShadowMapsTab(Twin2Engine::Graphic::Shader* shader);
 
-			static glm::vec3 RecalculateDirLightSpaceMatrix(DirectionalLight* light, const CameraData& camera); //, const glm::mat4& viewProjectionInverse
+			static glm::vec3 RecalculateDirLightSpaceMatrix(DirectionalLight* light); //, const glm::mat4& viewProjectionInverse
 			void RenderShadowMaps();
 
 			void SetAmbientLight(glm::vec3 ambientLightColor);

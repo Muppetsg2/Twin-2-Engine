@@ -49,7 +49,8 @@ void Twin2Engine::Core::HexagonalColliderComponent::Initialize()
 void Twin2Engine::Core::HexagonalColliderComponent::OnEnable()
 {
 	TransformChangeActionId = GetTransform()->OnEventTransformChanged += TransformChangeAction;
-	Twin2Engine::Physic::CollisionManager::Instance()->RegisterCollider(collider);
+	Twin2Engine::Physic::CollisionManager* cm = Twin2Engine::Physic::CollisionManager::Instance();
+	cm->RegisterCollider(collider);
 }
 
 void Twin2Engine::Core::HexagonalColliderComponent::OnDisable()
@@ -60,7 +61,7 @@ void Twin2Engine::Core::HexagonalColliderComponent::OnDisable()
 
 void Twin2Engine::Core::HexagonalColliderComponent::OnDestroy()
 {
-	GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
+	//GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
 	Twin2Engine::Physic::CollisionManager::Instance()->UnregisterCollider(collider);
 }
 

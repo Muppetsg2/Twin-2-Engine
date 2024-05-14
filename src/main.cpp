@@ -1,3 +1,12 @@
+#define USE_IMGUI_CONSOLE_OUTPUT true
+#define USE_WINDOWS_CONSOLE_OUTPUT false
+
+#if USE_IMGUI_CONSOLE_OUTPUT || !USE_WINDOWS_CONSOLE_OUTPUT
+
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+
+#endif
+
 #include <GameEngine.h>
 
 // TILEMAP
@@ -25,8 +34,14 @@
 #include <Generation/YamlConverters.h>
 
 // EDITOR
-#include <Editor/Common/ProcessingMtlFiles.h>
 #include <Editor/Common/MaterialCreator.h>
+#include <Editor/Common/ProcessingMtlFiles.h>
+#include <Editor/Common/ScriptableObjectEditorManager.h>
+#include <Editor/Common/ImGuiSink.h>
+
+using Editor::Common::ImGuiSink;
+using Editor::Common::ImGuiLogMessage;
+
 
 using namespace Twin2Engine;
 using namespace Twin2Engine::Manager;
@@ -59,6 +74,8 @@ bool mouseNotUsed = true;
 void input();
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void update();
+
+//#undef _DEBUG
 
 #if _DEBUG
 void init_imgui();
@@ -108,6 +125,22 @@ GameObject* tilemapGO = nullptr;
 int main(int, char**)
 {
 #pragma region Initialization
+    // LOGGING: SPDLOG INITIALIZATION
+#if USE_IMGUI_CONSOLE_OUTPUT || USE_WINDOWS_CONSOLE_OUTPUT
+
+#if USE_IMGUI_CONSOLE_OUTPUT
+    auto console_sink = std::make_shared<Editor::Common::ImGuiSink<mutex>>("res/logs/log.txt");
+#elif USE_WINDOWS_CONSOLE_OUTPUT
+    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+#endif
+
+    auto logger = std::make_shared<spdlog::logger>("logger", console_sink);
+    spdlog::register_logger(logger);
+    spdlog::set_default_logger(logger);
+
+#else
+    spdlog::set_level(spdlog::level::off);
+#endif  
 
     if (!GameEngine::Init(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_FULLSCREEN, GL_VERSION_MAJOR, GL_VERSION_MINOR))
     {
@@ -235,21 +268,31 @@ int main(int, char**)
 
 #pragma endregion
 
+    SceneManager::GetOnSceneLoaded() += [](std::string sceneName) -> void {
+        Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
+        image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
+        text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
+    };
+
     // ADDING SCENES
-    SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.yaml");
-    //SceneManager::AddScene("testScene", "res/scenes/MainGameScene.yaml");
-    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.yaml");
+    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
-    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.yaml");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/DirLightTest.scene");
 
     SceneManager::LoadScene("testScene");
+    SceneManager::Update();
 
     GameObject* obj = SceneManager::CreateGameObject();
     obj->SetName("Test Button");
     Transform* tr = obj->GetTransform();
     tr->Rotate(glm::vec3(0, 0, 45.f));
-    tr->Translate(glm::vec3(0.f, -200.f, 0.f));
+    tr->Translate(glm::vec3(0.f, -40.f, 0.f));
     Button* b = obj->AddComponent<Button>();
     b->SetHeight(70);
     b->SetWidth(200);
@@ -271,6 +314,8 @@ int main(int, char**)
 
     obj = SceneManager::CreateGameObject();
     obj->SetName("Test Input Field");
+    tr = obj->GetTransform();
+    //tr->Translate(glm::vec3(500.f, -400.f, 0.f));
     Image* img = obj->AddComponent<Image>();
     img->SetSprite("white_box");
     img->SetWidth(200);
@@ -306,15 +351,17 @@ int main(int, char**)
     MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
     mapGenerator->tilemap = hexagonalTilemap;
     float tilemapGenerating = glfwGetTime();
-    //mapGenerator->Generate();
+    mapGenerator->Generate();
     spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
 
     ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
 
     tilemapGenerating = glfwGetTime();
-    //contentGenerator->GenerateContent(hexagonalTilemap);
+    contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
-    /**/
+
+    //Editor::Common::ScriptableObjectEditorManager::Init();
+    //Editor::Common::ScriptableObjectEditorManager::Update();
 
 #pragma endregion
     
@@ -323,12 +370,14 @@ int main(int, char**)
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
 
 #pragma region TestingLighting
-    GameObject* dl_go = SceneManager::CreateGameObject();
+    /*GameObject* dl_go = SceneManager::CreateGameObject();
     dl_go->GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
     DirectionalLightComponent* dl = dl_go->AddComponent<DirectionalLightComponent>();
     dl->SetColor(glm::vec3(1.0f));
     LightingController::Instance()->SetViewerPosition(cameraPos);
     LightingController::Instance()->SetAmbientLight(glm::vec3(0.1f));
+
+    SceneManager::SaveScene("res/scenes/DirLightTest.scene");*/
 #pragma endregion
 #pragma region HexCollider
     //GameObject* h_go = SceneManager::CreateGameObject();
@@ -437,9 +486,6 @@ void input()
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::R)) {
         SceneManager::LoadScene("testScene");
-        Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
-        image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
-        text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
     }
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::Q)) {
@@ -964,6 +1010,30 @@ void render_imgui()
 
         if (ImGui::CollapsingHeader("Map Generator"))
         {
+
+            static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
+
+
+            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_OpenOnArrow", &base_flags, ImGuiTreeNodeFlags_OpenOnArrow);
+            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_OpenOnDoubleClick", &base_flags, ImGuiTreeNodeFlags_OpenOnDoubleClick);
+            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanAvailWidth", &base_flags, ImGuiTreeNodeFlags_SpanAvailWidth); ImGui::SameLine(); //HelpMarker("Extend hit area to all available width instead of allowing more items to be laid out after the node.");
+            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanFullWidth", &base_flags, ImGuiTreeNodeFlags_SpanFullWidth);
+            //ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanTextWidth", &base_flags, ImGuiTreeNodeFlags_SpanTextWidth); ImGui::SameLine(); HelpMarker("Reduce hit area to the text label and a bit of margin.");
+            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanAllColumns", &base_flags, ImGuiTreeNodeFlags_SpanAllColumns); ImGui::SameLine(); //HelpMarker("For use in Tables only.");
+            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_AllowOverlap", &base_flags, ImGuiTreeNodeFlags_AllowOverlap);
+            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_Framed", &base_flags, ImGuiTreeNodeFlags_Framed); ImGui::SameLine(); //HelpMarker("Draw frame with background (e.g. for CollapsingHeader)");
+
+
+
+
+
+
+
+
+
+
+
+
             static string selectedSO = "";
             static vector<string> scriptableObjectsPaths = ScriptableObjectManager::GetAllPaths();
             static ScriptableObject* selectedScriptableObject = nullptr;
@@ -1015,12 +1085,22 @@ void render_imgui()
         }
 
 #pragma endregion
+        
+
 
         ImGui::Separator();
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
         ImGui::End();
+
+#pragma region LOGGING_CONSOLE
+
+#if USE_IMGUI_CONSOLE_OUTPUT
+        ImGuiSink<mutex>::Draw();
+#endif
+        
+#pragma endregion 
     }
 }
 
@@ -1030,4 +1110,5 @@ void end_imgui()
     window->Use();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
+
 #endif

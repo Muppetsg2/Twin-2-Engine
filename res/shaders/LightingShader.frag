@@ -50,10 +50,10 @@ struct PointLight {
 
 struct SpotLight {
 	vec3 position;      // Position of the spot light in world space
-    vec3 color;         // Color of the spot light
 	vec3 direction;     // Direction of the spot light
 	float power;		  // Light source power
-	float innerCutOff;       // Inner cutoff angle (in radians)
+	vec3 color;         // Color of the spot light
+	float cutOff;       // Inner cutoff angle (in radians)
 	float outerCutOff;  // Outer cutoff angle (in radians)
 	float constant;     // Constant attenuation
 	float linear;       // Linear attenuation
@@ -61,21 +61,19 @@ struct SpotLight {
 };
 
 struct DirectionalLight {
-	mat4 lightSpaceMatrix;
-    vec3 color;         // Color of the spot light
 	vec3 direction;     // Direction of the spot light
+	vec3 color;         // Color of the spot light
+	mat4 lightSpaceMatrix;
 	float power;		  // Light source power
-    uint shadowMapFBO;
-    uint shadowMap;
 };
 
-layout (std140, binding = 3) buffer Lights {
-    PointLight pointLights[8];
-    SpotLight spotLights[8];
-    DirectionalLight directionalLights[4];
+layout (std430, binding = 3) buffer Lights {
 	uint numberOfPointLights;
 	uint numberOfSpotLights;
 	uint numberOfDirLights;
+    PointLight pointLights[8];
+    SpotLight spotLights[8];
+    DirectionalLight directionalLights[4];
 };
 
 layout (std140, binding = 0) uniform CameraData
@@ -129,6 +127,10 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
     }
     //shadow /= 9.0;
     shadow *= 0.11;
+    
+    //ESM
+    //float closestDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy).r; 
+    //float shadow = exp(10.0 * (closestDepth - currentDepth));
     
     // keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
     if(projCoords.z > 1.0)

@@ -13,7 +13,9 @@ bin
 
 [Bb]uild/
 /[Oo]ut/
+#/[Ll]ogs/
 #/[Tt]ools/
 CompiledShaders/
 
 /\.vs/
+/res/logs

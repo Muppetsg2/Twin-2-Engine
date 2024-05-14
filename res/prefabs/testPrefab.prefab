@@ -1,5 +1,6 @@
 Textures:
-    -   path: res/textures/stone.jpg
+    -   id: 0
+        path: res/textures/stone.jpg
         fileFormat: 35904
         engineFormat: 6407
         sWrapMode: 33648
@@ -7,18 +8,25 @@ Textures:
         minFilterMode: 9986
         magFilterMode: 9729
 Sprites:
-    -   alias: stone
+    -   id: 0
+        alias: stone
         texture: 0
 Fonts:
-    - res/fonts/Caveat-Regular.ttf
+    -   id: 0
+        path: res/fonts/Caveat-Regular.ttf
 Audio:
-    - res/music/acoustic-guitar.mp3
+    -   id: 0
+        path: res/music/acoustic-guitar.mp3
 Materials:
-    - textured
+    -   id: 0
+        path: textured
 Models:
-    - "{Cube}"
+    -   id: 0
+        path: "{Cube}"
 Prefabs:
-    - res/prefabs/testPrefab.yaml
+    -   id: 0
+        path: res/prefabs/testPrefab.prefab
+ScriptableObjects: []
 Root:
     name: testPrefabRoot
     isStatic: false

@@ -278,6 +278,7 @@ const char* const tracy_EndFrameName = "EndFrame";
 
 void GameEngine::Loop()
 {
+    ZoneScoped;
     // Main loop
     while (!Window::GetInstance()->IsClosed())
     {

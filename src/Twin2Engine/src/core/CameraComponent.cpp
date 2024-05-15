@@ -6,6 +6,15 @@
 #include <graphic/manager/ModelsManager.h>
 #include <graphic/LightingController.h>
 
+
+
+
+const char* const tracy_RenderDepthBuffer = "RenderDepthBuffer";
+const char* const tracy_UpdateRenderingQueues = "UpdateRenderingQueues";
+const char* const tracy_RenderAll = "RenderAll";
+const char* const tracy_FramebufferTexture = "FramebufferTexture";
+
+
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Tools;
 using namespace Twin2Engine::Physic;
@@ -374,6 +383,8 @@ void CameraComponent::SetFrustumCulling(bool value)
 
 void CameraComponent::Render()
 {
+	ZoneScoped;
+
 	glm::vec3 clear_color = glm::vec3(powf(.1f, _gamma));
 	// UBO's
 	//Jesli wiecej kamer i kazda ma ze swojego kata dawac obraz
@@ -413,17 +424,23 @@ void CameraComponent::Render()
 	glNamedBufferSubData(_uboWindowData, sizeof(vec2) + sizeof(float), sizeof(float), &(this->_far));
 	glNamedBufferSubData(_uboWindowData, sizeof(vec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));*/
 
+
 	// UPDATING RENDERER
+	FrameMarkStart(tracy_UpdateRenderingQueues);
 	GraphicEngine::UpdateBeforeRendering();
+	FrameMarkEnd(tracy_UpdateRenderingQueues);
 
 	// DEPTH MAP
 	glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
 	glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	FrameMarkStart(tracy_RenderDepthBuffer);
+
 	ShaderManager::CameraDepthShader->Use();
 
 	GraphicEngine::DepthRender();
+	FrameMarkEnd(tracy_RenderDepthBuffer);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -437,7 +454,9 @@ void CameraComponent::Render()
 	glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	FrameMarkStart(tracy_RenderAll);
 	GraphicEngine::Render();
+	FrameMarkEnd(tracy_RenderAll);
 
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, _msRenderMapFBO);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _renderMapFBO);
@@ -446,6 +465,7 @@ void CameraComponent::Render()
 
 
 	// RENDERING
+	FrameMarkStart(tracy_FramebufferTexture);
 	if (this->IsMain()) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		BindRenderTexture(0);
@@ -463,6 +483,7 @@ void CameraComponent::Render()
 
 		_renderPlane.GetMesh(0)->Draw(1);
 	}
+	FrameMarkEnd(tracy_FramebufferTexture);
 }
 
 void CameraComponent::BindRenderTexture(unsigned int index)

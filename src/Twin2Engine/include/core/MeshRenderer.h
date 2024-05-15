@@ -55,6 +55,7 @@ namespace Twin2Engine::Core
 
 		virtual void Render() override;
 		virtual YAML::Node Serialize() const override;
+		virtual bool Deserialize(const YAML::Node& node) override;
 
 
 		bool IsTransformChanged() const;

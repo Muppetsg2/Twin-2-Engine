@@ -70,6 +70,7 @@ void PointLightComponent::SetAtenuation(float constant, float linear, float quad
 YAML::Node PointLightComponent::Serialize() const
 {
 	YAML::Node node = LightComponent::Serialize();
+	node["type"] = "PointLight";
 	node["color"] = light->color;
 	node["power"] = light->power;
 	node["constant"] = light->constant;
@@ -77,4 +78,18 @@ YAML::Node PointLightComponent::Serialize() const
 	node["quadratic"] = light->quadratic;
 
 	return node;
+}
+
+bool PointLightComponent::Deserialize(const YAML::Node& node)
+{
+	if (!node["color"] || !node["power"] || !node["constant"] || !node["linear"] || !node["quadratic"] ||
+		!LightComponent::Deserialize(node)) return false;
+
+	light->color = node["color"].as<glm::vec3>();
+	light->power = node["power"].as<float>();
+	light->constant = node["constant"].as<float>();
+	light->linear = node["linear"].as<float>();
+	light->quadratic = node["quadratic"].as<float>();
+
+	return true;
 }

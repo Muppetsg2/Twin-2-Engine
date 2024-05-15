@@ -84,13 +84,33 @@ void SpotLightComponent::SetAtenuation(float constant, float linear, float quadr
 YAML::Node SpotLightComponent::Serialize() const
 {
 	YAML::Node node = LightComponent::Serialize();
+	node["type"] = "SpotLight";
 	node["direction"] = light->direction;
 	node["color"] = light->color;
 	node["power"] = light->power;
-	node["outerCutOff"] = light->power;
+	node["innerCutOff"] = light->innerCutOff;
+	node["outerCutOff"] = light->outerCutOff;
 	node["constant"] = light->constant;
 	node["linear"] = light->linear;
 	node["quadratic"] = light->quadratic;
 
 	return node;
+}
+
+bool SpotLightComponent::Deserialize(const YAML::Node& node)
+{
+	if (!node["direction"] || !node["color"] || !node["power"] || !node["innerCutOff"] ||
+		!node["outerCutOff"] || !node["constant"] || !node["linear"] || !node["quadratic"] ||
+		!LightComponent::Deserialize(node)) return false;
+
+	light->direction = node["direction"].as<glm::vec3>();
+	light->color = node["color"].as<glm::vec3>();
+	light->power = node["power"].as<float>();
+	light->innerCutOff = node["innerCutOff"].as<float>();
+	light->outerCutOff = node["outerCutOff"].as<float>();
+	light->constant = node["constant"].as<float>();
+	light->linear = node["linear"].as<float>();
+	light->quadratic = node["quadratic"].as<float>();
+
+	return true;
 }

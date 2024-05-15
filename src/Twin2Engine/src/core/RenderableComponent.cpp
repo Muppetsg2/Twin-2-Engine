@@ -33,6 +33,14 @@ YAML::Node RenderableComponent::Serialize() const
 	return node;
 }
 
+bool RenderableComponent::Deserialize(const YAML::Node& node) {
+	if (!node["isTransparent"] || !Component::Deserialize(node)) return false;
+
+	_isTransparent = node["isTransparent"].as<bool>();
+
+	return true;
+}
+
 bool RenderableComponent::IsTransparent() const
 {
 	return _isTransparent;

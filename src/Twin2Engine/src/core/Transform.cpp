@@ -852,11 +852,20 @@ void Twin2Engine::Core::Transform::Update()
 
 YAML::Node Twin2Engine::Core::Transform::Serialize() const
 {
-	YAML::Node node = Twin2Engine::Core::Component::Serialize();
+	YAML::Node node = Component::Serialize();
 	node.remove("type");
-	node.remove("subTypes");
 	node["position"] = _localPosition;
 	node["scale"] = _localScale;
 	node["rotation"] = glm::degrees(_localRotation);
 	return node;
+}
+
+bool Twin2Engine::Core::Transform::Deserialize(const YAML::Node& node) {
+	if (!node["position"] || !node["scale"] || !node["rotation"] || !Component::Deserialize(node)) return false;
+
+	_localPosition = node["position"].as<glm::vec3>();
+	_localScale = node["scale"].as<glm::vec3>();
+	_localRotation = glm::radians(node["rotation"].as<glm::vec3>());
+
+	return true;
 }

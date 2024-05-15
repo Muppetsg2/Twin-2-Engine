@@ -25,6 +25,7 @@ namespace Twin2Engine::Core {
 		void SetAtenuation(float constant, float linear, float quadratic);
 
 		virtual YAML::Node Serialize() const override;
+		virtual bool Deserialize(const YAML::Node& node) override;
 	};
 }
 

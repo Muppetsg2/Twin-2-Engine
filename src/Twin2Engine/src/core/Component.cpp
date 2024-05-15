@@ -65,8 +65,16 @@ YAML::Node Component::Serialize() const
 	node["id"] = _id;
 	node["enabled"] = _enabled;
 	node["type"] = "";
-	node["subTypes"] = vector<string>();
 	return node;
+}
+
+bool Component::Deserialize(const YAML::Node& node) {
+	if (!node["id"] || !node["enabled"]) return false;
+
+	_id = node["id"].as<size_t>();
+	_enabled = node["enabled"].as<bool>();
+
+	return true;
 }
 
 void Twin2Engine::Core::Component::DrawEditor()

@@ -293,6 +293,10 @@ YAML::Node GameObject::Serialize() const
 	return node;
 }
 
+bool GameObject::Deserialize(const YAML::Node& node) {
+
+}
+
 void GameObject::DrawEditor()
 {
 	_transform->DrawEditor();

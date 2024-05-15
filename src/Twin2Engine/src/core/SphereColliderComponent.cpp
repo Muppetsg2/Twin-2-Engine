@@ -53,8 +53,16 @@ void SphereColliderComponent::OnDestroy()
 YAML::Node SphereColliderComponent::Serialize() const
 {
 	YAML::Node node = ColliderComponent::Serialize();
-	node["subTypes"].push_back(node["type"].as<std::string>());
 	node["type"] = "SphereCollider";
 	node["radius"] = ((SphereColliderData*)collider->shapeColliderData)->Radius;
 	return node;
+}
+
+bool SphereColliderComponent::Deserialize(const YAML::Node& node)
+{
+	if (!node["radius"] || !ColliderComponent::Deserialize(node)) return false;
+
+	((SphereColliderData*)collider->shapeColliderData)->Radius = node["radius"].as<float>();
+
+	return true;
 }

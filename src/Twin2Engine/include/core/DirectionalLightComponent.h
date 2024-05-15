@@ -28,6 +28,7 @@ namespace Twin2Engine::Core {
 		void SetPower(float power);
 
 		virtual YAML::Node Serialize() const override;
+		virtual bool Deserialize(const YAML::Node& node) override;
 	};
 }
 

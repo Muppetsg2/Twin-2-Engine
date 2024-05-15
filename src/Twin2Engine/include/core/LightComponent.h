@@ -13,6 +13,10 @@ namespace Twin2Engine {
 				virtual YAML::Node Serialize() const override {
 					return Component::Serialize();
 				}
+
+				virtual bool Deserialize(const YAML::Node& node) override {
+					return Component::Deserialize(node);
+				}
 		};
 	}
 }

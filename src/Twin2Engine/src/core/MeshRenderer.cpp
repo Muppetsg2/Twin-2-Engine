@@ -114,7 +114,6 @@ void MeshRenderer::Render()
 YAML::Node MeshRenderer::Serialize() const
 {
 	YAML::Node node = RenderableComponent::Serialize();
-	node["subTypes"].push_back(node["type"].as<string>());
 	node["type"] = "MeshRenderer";
 	node["model"] = SceneManager::GetModelSaveIdx(_model.GetId());
 	node["materials"] = vector<size_t>();
@@ -122,6 +121,19 @@ YAML::Node MeshRenderer::Serialize() const
 		node["materials"].push_back(SceneManager::GetMaterialSaveIdx(mat.GetId()));
 	}
 	return node;
+}
+
+bool MeshRenderer::Deserialize(const YAML::Node& node) {
+	if (!node["model"] || !node["materials"] ||
+		!RenderableComponent::Deserialize(node)) return false;
+
+	_model = ModelsManager::GetModel(SceneManager::GetModel(node["model"].as<size_t>()));
+	_materials = vector<Material>();
+	for (const auto& mat : node["materials"]) {
+		_materials.push_back(MaterialsManager::GetMaterial(SceneManager::GetMaterial(mat.as<size_t>())));
+	}
+
+	return true;
 }
 
 InstantiatingModel MeshRenderer::GetModel() const

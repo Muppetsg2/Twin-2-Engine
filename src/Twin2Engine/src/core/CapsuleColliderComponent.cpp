@@ -75,13 +75,18 @@ void CapsuleColliderComponent::Update()
 YAML::Node CapsuleColliderComponent::Serialize() const
 {
 	YAML::Node node = ColliderComponent::Serialize();
-	node["subTypes"].push_back(node["type"].as<std::string>());
 	node["type"] = "CapsuleCollider";
-	node["endPosition"] = glm::vec3(
-		((CapsuleColliderData*)collider->shapeColliderData)->EndPosition.x,
-		((CapsuleColliderData*)collider->shapeColliderData)->EndPosition.y,
-		((CapsuleColliderData*)collider->shapeColliderData)->EndPosition.z
-	);
+	node["endPosition"] = ((CapsuleColliderData*)collider->shapeColliderData)->EndPosition;
 	node["radius"] = ((CapsuleColliderData*)collider->shapeColliderData)->Radius;
 	return node;
+}
+
+bool CapsuleColliderComponent::Deserialize(const YAML::Node& node)
+{
+	if (!node["endPosition"] || !node["radius"] || !ColliderComponent::Deserialize(node)) return false;
+
+	((CapsuleColliderData*)collider->shapeColliderData)->EndPosition = node["endPosition"].as<glm::vec3>();
+	((CapsuleColliderData*)collider->shapeColliderData)->Radius = node["radius"].as<float>();
+
+	return true;
 }

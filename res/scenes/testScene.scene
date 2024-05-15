@@ -94,6 +94,7 @@ GameObjects:
                 farPlane: 1000.0
                 cameraFilter: 0
                 cameraType: 1
+                cameraMode: 0
                 samples: 4
                 renderRes: 0
                 gamma: 2.2
@@ -106,6 +107,8 @@ GameObjects:
                     y: 1.0
                     z: 0.0
                 isMain: true
+                isFrustum: true
+                isSSAO: true
             -   id: 2
                 enabled: true
                 type: Audio
@@ -414,18 +417,19 @@ GameObjects:
                 type: SphereCollider
                 subTypes:
                     - Collider
+                colliderId: 0
                 trigger: false
                 static: false
                 layer: 0
                 layerFilter:
-                    - 3
-                    - 3
+                    - 2
+                    - 2
                     - 1
                     - 0
-                    - 3
-                    - 3
-                    - 3
-                    - 3
+                    - 2
+                    - 2
+                    - 2
+                    - 2
                 boundingVolume: true
                 boundingVolumeRadius: 2.0
                 position:
@@ -438,18 +442,19 @@ GameObjects:
                 type: BoxCollider
                 subTypes:
                     - Collider
+                colliderId: 0
                 trigger: false
                 static: false
                 layer: 0
                 layerFilter:
-                    - 3
-                    - 3
+                    - 2
+                    - 2
                     - 1
                     - 0
-                    - 3
-                    - 3
-                    - 3
-                    - 3
+                    - 2
+                    - 2
+                    - 2
+                    - 2
                 boundingVolume: true
                 boundingVolumeRadius: 2.0
                 position:
@@ -468,18 +473,19 @@ GameObjects:
                 type: CapsuleCollider
                 subTypes:
                     - Collider
+                colliderId: 0
                 trigger: false
                 static: false
                 layer: 0
                 layerFilter:
-                    - 3
-                    - 3
+                    - 2
+                    - 2
                     - 1
                     - 0
-                    - 3
-                    - 3
-                    - 3
-                    - 3
+                    - 2
+                    - 2
+                    - 2
+                    - 2
                 boundingVolume: true
                 boundingVolumeRadius: 2.0
                 position:

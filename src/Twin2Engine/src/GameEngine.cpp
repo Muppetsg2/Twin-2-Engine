@@ -1,4 +1,5 @@
 #include <GameEngine.h>
+#include <tracy/Tracy.hpp>
 
 using namespace Twin2Engine;
 using namespace Twin2Engine::Tools;
@@ -31,11 +32,14 @@ void GameEngine::Deserializers()
             cam->SetFarPlane(node["farPlane"].as<float>());
             cam->SetCameraFilter(node["cameraFilter"].as<size_t>());
             cam->SetCameraType(node["cameraType"].as<CameraType>());
+            cam->SetDisplayMode(node["cameraMode"].as<CameraDisplayMode>());
             cam->SetSamples(node["samples"].as<size_t>());
-            cam->SetRenderResolution(node["renderRes"].as<RenderResolution>());
+            cam->SetRenderResolution(node["renderRes"].as<CameraRenderResolution>());
             cam->SetGamma(node["gamma"].as<float>());
             cam->SetWorldUp(node["worldUp"].as<vec3>());
             cam->SetIsMain(node["isMain"].as<bool>());
+            cam->SetFrustumCulling(node["isFrustum"].as<bool>());
+            cam->SetSSAO(node["isSSAO"].as<bool>());
         }
     );
 
@@ -120,6 +124,7 @@ void GameEngine::Deserializers()
         },
         [](Component* comp, const YAML::Node& node) -> void {
             ColliderComponent* collider = static_cast<ColliderComponent*>(comp);
+            collider->colliderId = node["colliderId"].as<unsigned int>();
             collider->SetTrigger(node["trigger"].as<bool>());
             collider->SetStatic(node["static"].as<bool>());
             collider->SetLayer(node["layer"].as<Layer>());
@@ -131,6 +136,18 @@ void GameEngine::Deserializers()
             collider->SetLocalPosition(position.x, position.y, position.z);
         }
     );
+
+    ComponentDeserializer::AddDeserializer("HexagonalCollider",
+        []() -> Component* {
+            return new HexagonalColliderComponent();
+        },
+        [](Component* comp, const YAML::Node& node) -> void {
+            HexagonalColliderComponent* hexCollider = static_cast<HexagonalColliderComponent*>(comp);
+            hexCollider->SetBaseLength(node["baselength"].as<float>());
+            hexCollider->SetHalfHeight(node["halfheight"].as<float>());
+            hexCollider->SetYRotation(node["rotation"].as<float>());
+        }
+        );
 
     ComponentDeserializer::AddDeserializer("SphereCollider",
         []() -> Component* {
@@ -199,7 +216,7 @@ void GameEngine::Deserializers()
             PointLightComponent* light = static_cast<PointLightComponent*>(comp);
             light->SetColor(node["color"].as<vec3>());
             light->SetPower(node["power"].as<float>());
-            light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
+            light->SetAttenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
         }
     );
 
@@ -213,7 +230,7 @@ void GameEngine::Deserializers()
             light->SetColor(node["color"].as<vec3>());
             light->SetPower(node["power"].as<float>());
             light->SetOuterCutOff(node["outerCutOff"].as<float>());
-            light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
+            light->SetAttenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
         }
     );
 }
@@ -256,22 +273,38 @@ void GameEngine::EndFrame()
     Window::GetInstance()->Update();
 }
 
+const char* const tracy_FrameName = "Frame";
+const char* const tracy_OnInputFrameName = "OnInput";
+const char* const tracy_UpdateFrameName = "Update";
+const char* const tracy_RenderFrameName = "Render";
+const char* const tracy_EndFrameName = "EndFrame";
+
 void GameEngine::Loop()
 {
+    ZoneScoped;
     // Main loop
     while (!Window::GetInstance()->IsClosed())
     {
+        FrameMarkNamed(tracy_FrameName);
         // Process I/O operations here
+        FrameMarkStart(tracy_OnInputFrameName);
         OnInput();
+        FrameMarkEnd(tracy_OnInputFrameName);
 
         // Update game objects' state here
+        FrameMarkStart(tracy_UpdateFrameName);
         Update();
+        FrameMarkEnd(tracy_UpdateFrameName);
 
         // OpenGL rendering code here
+        FrameMarkStart(tracy_RenderFrameName);
         Render();
+        FrameMarkEnd(tracy_RenderFrameName);
 
         // End frame and swap buffers (double buffering)
+        FrameMarkStart(tracy_EndFrameName);
         EndFrame();
+        FrameMarkEnd(tracy_EndFrameName);
     }
 }
 
@@ -318,6 +351,7 @@ bool GameEngine::Init(const string& window_name, int32_t window_width, int32_t w
 
 void GameEngine::Start()
 {
+    tracy::SetThreadName("GameEngine");
     Loop();
     End();
 }

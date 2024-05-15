@@ -370,6 +370,10 @@ void Twin2Engine::Core::Transform::SetParent(Transform* parent)
 		_parent = parent;
 
 		//_dirtyFlags.dirtyFlag = true;
+		_dirtyFlags.dirtyFlagGlobalPosition = true;
+		_dirtyFlags.dirtyFlagGlobalRotation = true;
+		_dirtyFlags.dirtyFlagGlobalScale = true;
+
 		_dirtyFlags.dirtyFlagInHierarchy = true;
 
 		CallParentChanged();
@@ -390,7 +394,11 @@ inline void Twin2Engine::Core::Transform::JustAddChild(Transform* child)
 inline void Twin2Engine::Core::Transform::JustRemoveChild(Transform* child)
 {
 	if (_children.size() == 0) return;
-	_children.erase(std::find(_children.begin(), _children.end(), child));
+
+	auto t = std::find(_children.begin(), _children.end(), child);
+
+	if (t != _children.end())
+		_children.erase(t);
 
 	// Calling events
 	CallChildrenChanged();
@@ -868,4 +876,54 @@ bool Twin2Engine::Core::Transform::Deserialize(const YAML::Node& node) {
 	_localRotation = glm::radians(node["rotation"].as<glm::vec3>());
 
 	return true;
+}
+
+void Twin2Engine::Core::Transform::DrawEditor()
+{
+	std::string id = std::string(std::to_string(this->GetId()));
+	std::string name = std::string("Transform##Component").append(id);
+	static bool world = false;
+
+	if (ImGui::CollapsingHeader(name.c_str())) {
+		if (ImGui::RadioButton(std::string("Local##").append(id).c_str(), world == false))
+			world = false;
+		ImGui::SameLine();
+		if (ImGui::RadioButton(std::string("World##").append(id).c_str(), world == true))
+			world = true;
+
+		glm::vec3 pos = world ? _globalPosition : _localPosition;
+		glm::vec3 rot = world ? glm::degrees(_globalRotation) : glm::degrees(_localRotation);
+		glm::vec3 sc = world ? _globalScale : _localScale;
+
+		ImGui::DragFloat3(std::string("Position##").append(id).c_str(), glm::value_ptr(pos));
+		ImGui::DragFloat3(std::string("Rotation##").append(id).c_str(), glm::value_ptr(rot));
+		ImGui::DragFloat3(std::string("Scale##").append(id).c_str(), glm::value_ptr(sc));
+
+		if ((world ? _globalPosition : _localPosition) != pos) {
+			if (world) {
+				SetGlobalPosition(pos);
+			}
+			else {
+				SetLocalPosition(pos);
+			}
+		}
+
+		if ((world ? _globalRotation : _localRotation) != rot) {
+			if (world) {
+				SetGlobalRotation(rot);
+			}
+			else {
+				SetLocalRotation(rot);
+			}
+		}
+
+		if ((world ? _globalScale : _localScale) != sc) {
+			if (world) {
+				SetGlobalScale(sc);
+			}
+			else {
+				SetLocalScale(sc);
+			}
+		}
+	}
 }

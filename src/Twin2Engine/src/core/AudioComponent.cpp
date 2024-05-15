@@ -1,9 +1,9 @@
 #include <core/AudioComponent.h>
 #include <manager/AudioManager.h>
 #include <manager/SceneManager.h>
-#include <core/MathExtensions.h>
 #include <format>
 #include <cmath>
+#include <core/MathExtensions.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
@@ -247,33 +247,61 @@ YAML::Node AudioComponent::Serialize() const
 
 void AudioComponent::DrawEditor()
 {
-	if (ImGui::CollapsingHeader("Audio")) {
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Audio##Component").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+
+		std::map<size_t, string> audioNames = AudioManager::GetAllAudiosNames();
+
+		audioNames.insert(std::pair(0, "None"));
+
+		if (!audioNames.contains(_audioId)) {
+			_audioId = 0;
+			_loaded = false;
+			_audioHandle = handle();
+		}
+
+		if (ImGui::BeginCombo(string("Audio##").append(id).c_str(), audioNames[_audioId].c_str())) {
+
+			bool clicked = false;
+			size_t choosed = _audioId;
+			for (auto& item : audioNames) {
+
+				if (ImGui::Selectable(item.second.append("##").append(id).c_str(), item.first == _audioId)) {
+
+					if (clicked) continue;
+
+					choosed = item.first;
+					clicked = true;
+				}
+			}
+
+			if (clicked) {
+				if (choosed != 0) {
+					SetAudio(choosed);
+				}
+				else {
+					_audioId = 0;
+					_loaded = false;
+					_audioHandle = handle();
+				}
+			}
+
+			ImGui::EndCombo();
+		}
+
 
 		if (this->_loaded) {
-			ImGui::Text("File Name: %s", this->_audioName.c_str());
 
-			if (ImGui::Button("Open File")) {
-				_fileDialogOpen = true;
-				_fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
-				_fileDialogInfo.title = "Open File";
-				_fileDialogInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\music");
-			}
-
-			if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
-			{
-				// Result path in: m_fileDialogInfo.resultPath
-				this->SetAudio(_fileDialogInfo.resultPath.string());
-			}
-
-			if (ImGui::ArrowButton("Play Song", ImGuiDir_Right)) {
+			if (ImGui::ArrowButton(string("Play Song##").append(id).c_str(), ImGuiDir_Right)) {
 				this->Play();
 			}
 			ImGui::SameLine();
-			if (ImGui::PauseButton("Pause Song", 1.f)) {
+			if (ImGui::PauseButton(string("Pause Song##").append(id).c_str(), 1.f)) {
 				this->Pause();
 			}
 			ImGui::SameLine();
-			if (ImGui::StopButton("Stop Song", 1.f)) {
+			if (ImGui::StopButton(string("Stop Song##").append(id).c_str(), 1.f)) {
 				this->Stop();
 			}
 
@@ -284,7 +312,7 @@ void AudioComponent::DrawEditor()
 			ImGui::Text("Play Time: %02.0f:%02.0f", std::floor(this->GetPlayTime() / 60.0), mod(this->GetPlayTime(), 60));
 			ImGui::Text("Position: %02.0f:%02.0f / %02.0f:%02.0f", std::floor(pos / 60.f), mod((double)pos, 60.0), std::floor(len / 60.f), mod((double)len, 60.0));
 
-			if (ImGui::SliderFloat("Position Slider", &pos, 0.f, len, std::vformat(string_view("{:02.0f}:{:02.0f}"),
+			if (ImGui::SliderFloat(string("Position Slider##").append(id).c_str(), &pos, 0.f, len, std::vformat(string_view("{:02.0f}:{:02.0f}"),
 				make_format_args(
 					std::floor(pos / 60.f),
 					mod((double)pos, 60.0)
@@ -293,13 +321,10 @@ void AudioComponent::DrawEditor()
 				this->SetPlayPosition((double)pos);
 			}
 		}
-		else {
-			ImGui::Text("Choose File");
-		}
 
 		float vol = this->_volume;
 
-		ImGui::SliderFloat("Volume", &vol, 0.f, 1.f);
+		ImGui::SliderFloat(string("Volume##").append(id).c_str(), &vol, 0.f, 1.f);
 
 		if (this->_volume != vol) {
 			this->SetVolume(vol);
@@ -307,7 +332,7 @@ void AudioComponent::DrawEditor()
 
 		bool loop = this->_loop;
 
-		if (ImGui::Checkbox("Loop", &loop)) {
+		if (ImGui::Checkbox(string("Loop##").append(id).c_str(), &loop)) {
 			if (loop) {
 				if (!this->_loop) {
 					this->Loop();

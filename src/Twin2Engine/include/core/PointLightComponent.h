@@ -1,12 +1,10 @@
-#ifndef _POINTLIGHTCOMPONENT_H_
-#define _POINTLIGHTCOMPONENT_H_
+#pragma once
 
 #include <core/LightComponent.h>
 
 namespace Twin2Engine::Core {
 	class PointLightComponent : public LightComponent {
 		friend class GameObject;
-
 	private:
 		bool dirtyFlag = false;
 		Graphic::PointLight* light = new Graphic::PointLight();
@@ -22,11 +20,10 @@ namespace Twin2Engine::Core {
 
 		void SetColor(glm::vec3 color);
 		void SetPower(float power);
-		void SetAtenuation(float constant, float linear, float quadratic);
+		void SetAttenuation(float constant, float linear, float quadratic);
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
+		virtual void DrawEditor() override;
 	};
 }
-
-#endif // !_POINTLIGHTCOMPONENT_H_

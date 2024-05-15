@@ -11,6 +11,24 @@ map<size_t, Texture2D*> TextureManager::_loadedTextures;
 map<size_t, string> TextureManager::_texturesPaths;
 map<size_t, pair<TextureFormat, TextureFileFormat>> TextureManager::_texturesFormats;
 
+// For ImGui
+bool TextureManager::_fileDialogOpen = false;
+ImFileDialogInfo TextureManager::_fileDialogInfo;
+
+void TextureManager::UnloadTexture2D(size_t managerID)
+{
+    if (_loadedTextures.find(managerID) == _loadedTextures.end()) return;
+    delete _loadedTextures[managerID];
+    _loadedTextures.erase(managerID);
+    _texturesPaths.erase(managerID);
+    _texturesFormats.erase(managerID);
+}
+
+void TextureManager::UnloadTexture2D(const string& path)
+{
+    UnloadTexture2D(_hasher(path));
+}
+
 Texture2D* TextureManager::GetTexture2D(size_t managerId)
 {
     if (_loadedTextures.find(managerId) != _loadedTextures.end()) {
@@ -108,18 +126,23 @@ Texture2D* TextureManager::LoadTexture2D(const string& path, const TextureFileFo
     return tex;
 }
 
-void TextureManager::UnloadTexture2D(size_t managerID)
-{
-    if (_loadedTextures.find(managerID) == _loadedTextures.end()) return;
-    delete _loadedTextures[managerID];
-    _loadedTextures.erase(managerID);
-    _texturesPaths.erase(managerID);
-    _texturesFormats.erase(managerID);
+std::string TextureManager::GetTexture2DName(size_t managerId) {
+    if (_texturesPaths.find(managerId) == _texturesPaths.end()) return "";
+    string p = _texturesPaths[managerId];
+    return std::filesystem::path(p).stem().string();
 }
 
-void TextureManager::UnloadTexture2D(const string& path)
-{
-    UnloadTexture2D(_hasher(path));
+std::string TextureManager::GetTexture2DName(const std::string& path) {
+    return GetTexture2DName(_hasher(path));
+}
+
+std::map<size_t, std::string> TextureManager::GetAllTexture2DNames() {
+    std::map<size_t, std::string> names = std::map<size_t, std::string>();
+
+    for (auto item : _texturesPaths) {
+        names[item.first] = std::filesystem::path(item.second).stem().string();
+    }
+    return names;
 }
 
 void TextureManager::UnloadAll()
@@ -155,4 +178,60 @@ YAML::Node TextureManager::Serialize()
         textures.push_back(texNode);
     }
     return textures;
+}
+
+void TextureManager::DrawEditor(bool* p_open)
+{
+    if (!ImGui::Begin("Texture Manager", p_open)) {
+        ImGui::End();
+        return;
+    }
+
+    ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+    bool node_open = ImGui::TreeNodeEx(string("Textures##Texture Manager").c_str(), node_flag);
+
+    std::list<size_t> clicked = std::list<size_t>();
+    clicked.clear();
+    if (node_open) {
+        int i = 0;
+        for (auto& item : _texturesPaths) {
+            string n = GetTexture2DName(item.second);
+            ImGui::BulletText(n.c_str());
+            ImGui::SameLine(ImGui::GetContentRegionAvail().x - 30);
+            if (ImGui::Button(string("Remove##Texture Manager").append(std::to_string(i)).c_str())) {
+                clicked.push_back(item.first);
+            }
+            ++i;
+        }
+        ImGui::TreePop();
+    }
+
+    if (clicked.size() > 0) {
+        clicked.sort();
+
+        for (int i = clicked.size() - 1; i > -1; --i)
+        {
+            UnloadTexture2D(clicked.back());
+
+            clicked.pop_back();
+        }
+    }
+    clicked.clear();
+
+    if (ImGui::Button("Load Texture##Texture Manager", ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
+        _fileDialogOpen = true;
+        _fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
+        _fileDialogInfo.title = "Open File##Texture Manager";
+        _fileDialogInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\textures");
+    }
+
+    if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
+    {
+        // Result path in: m_fileDialogInfo.resultPath
+        LoadTexture2D(_fileDialogInfo.resultPath.string());
+
+        // Otwieranie okienka do wyboru opcji wczytania tekstury
+    }
+
+    ImGui::End();
 }

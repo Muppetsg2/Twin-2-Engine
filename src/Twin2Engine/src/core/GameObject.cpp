@@ -1,5 +1,5 @@
 #include <core/GameObject.h>
-#include <core/Scene.h>
+#include <manager/SceneManager.h>
 
 using namespace Twin2Engine::Core;
 
@@ -15,9 +15,6 @@ GameObject::GameObject(size_t id) {
 		auto found = find_if(_freedIds.begin(), _freedIds.end(), [&](size_t fId) -> bool { return fId == _id; });
 		if (found != _freedIds.end()) {
 			_freedIds.erase(found);
-
-
-
 		}
 	}
 	if (_currentFreeId <= id) {
@@ -58,7 +55,6 @@ GameObject::GameObject()
 
 	// Setting default name
 	_name = "New GameObject";
-
 
 	_transform = new Transform();
 	_transform->Init(this);
@@ -229,7 +225,7 @@ void GameObject::Update()
 {
 	UpdateComponents();
 
-	for (size_t i = 0; i < _transform->GetChildCount(); i++)
+	for (size_t i = 0; i < _transform->GetChildCount(); ++i)
 	{
 		GameObject* child = _transform->GetChildAt(i)->GetGameObject();
 		if (child->GetActive()) child->Update();
@@ -299,12 +295,51 @@ bool GameObject::Deserialize(const YAML::Node& node) {
 
 void GameObject::DrawEditor()
 {
+	string id = std::to_string(_id);
+	string buff = _name;
+	ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll;
+
+	if (ImGui::InputText(string("Name##GO").append(id).c_str(), &buff, flags)) {
+		if (buff != _name) {
+			if (buff.size() == 0) {
+				buff = "GameObject";
+			}
+			SetName(buff);
+		}
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button(string("Remove##GO").append(id).c_str())) {
+		Manager::SceneManager::DestroyGameObject(this);
+		return;
+	}
+
+	bool v = _isStatic;
+	ImGui::Checkbox(string("Static##GO").append(id).c_str(), &v);
+
+	if (v != _isStatic) {
+		SetIsStatic(v);
+	}
+
+	v = _activeSelf;
+	ImGui::Checkbox(string("Active##GO").append(id).c_str(), &v);
+
+	if (v != _activeSelf) {
+		SetActive(v);
+	}
+
 	_transform->DrawEditor();
+	ImGui::Separator();
 
 	for (Component* comp : components) {
-		if (comp != _transform)
+		if (comp != _transform) {
 			comp->DrawEditor();
+			ImGui::Separator();
+		}
 	}
+
+	// Add Component Button Deserializator
 }
 
 void GameObject::AddComponent(Component* comp)

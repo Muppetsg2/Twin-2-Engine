@@ -1,12 +1,10 @@
-#ifndef _DIRECTIONALLIGHTCOMPONENT_H_
-#define _DIRECTIONALLIGHTCOMPONENT_H_
+#pragma once
 
 #include <core/LightComponent.h>
 
 namespace Twin2Engine::Core {
 	class DirectionalLightComponent : public LightComponent {
 		friend class GameObject;
-
 	private:
 		bool dirtyFlag = false;
 		//glm::vec3 localDirection;
@@ -15,7 +13,7 @@ namespace Twin2Engine::Core {
 		size_t OnChangePositionId;
 		Tools::Method OnViewerChange;
 		size_t OnViewerChangeId;
-		//protected:
+
 	public:
 		virtual void Initialize() override;
 		virtual void Update() override;
@@ -29,7 +27,6 @@ namespace Twin2Engine::Core {
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
+		virtual void DrawEditor() override;
 	};
 }
-
-#endif // !_DIRECTIONALLIGHTCOMPONENT_H_

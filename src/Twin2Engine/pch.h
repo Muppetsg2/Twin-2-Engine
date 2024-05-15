@@ -8,8 +8,13 @@
 	#include <imgui_impl/imgui_user.h>
 	#include <imgui_impl/imgui_filedialog.h>
 	#include <imgui.h>
+	#include <imgui_impl/imgui_stdlib.h>
 	#include <imgui_impl/imgui_impl_glfw.h>
 	#include <imgui_impl/imgui_impl_opengl3.h>
+	
+	#include <tracy/Tracy.hpp>
+	#include <tracy/TracyOpenGL.hpp>
+	#define TRACY_ENABLE
 #endif
 
 #include <stb_image.h>
@@ -42,6 +47,7 @@
 #include <list>
 #include <functional>
 #include <iostream>
+#include <filesystem>
 #include <fstream>
 #include <format>
 #include <memory>
@@ -53,14 +59,5 @@
 
 // MACROS
 #include "SerializationMacros.h"
-
-#if _DEBUG
-#define IMGUI_IMPL_OPENGL_LOADER_GLAD
-#include <imgui_impl/imgui_user.h>
-#include <imgui_impl/imgui_filedialog.h>
-#include <imgui.h>
-#include <imgui_impl/imgui_impl_glfw.h>
-#include <imgui_impl/imgui_impl_opengl3.h>
-#endif
 
 #include <type_traits>

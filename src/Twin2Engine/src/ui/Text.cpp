@@ -6,7 +6,10 @@
 #include <graphic/Shader.h>
 #include <graphic/manager/UIRenderingManager.h>
 #include <graphic/manager/FontManager.h>
+#include <map>
 #include <tools/EventHandler.h>
+#include <locale>
+#include <codecvt>
 
 using namespace Twin2Engine;
 using namespace UI;
@@ -343,8 +346,80 @@ YAML::Node Text::Serialize() const
 	return node;
 }
 
+void Text::DrawEditor()
+{
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Text##Component").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+
+		string buff = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_text);
+		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll;
+
+		ImGui::InputText(string("Value##").append(id).c_str(), &buff, flags);
+
+		if (buff != std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_text)) {
+			SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(buff));
+		}
+
+		glm::vec4 c = _color;
+		ImGui::ColorEdit4(string("Color##").append(id).c_str(), glm::value_ptr(c));
+
+		if (c != _color) {
+			SetColor(c);
+		}
+
+		float s = _size;
+		ImGui::DragFloat(string("Size##").append(id).c_str(), &s);
+
+		if (s != _size) {
+			SetSize(s);
+		}
+
+		std::map<size_t, string> fontNames = FontManager::GetAllFontsNames();
+
+		fontNames.insert(std::pair(0, "None"));
+
+		if (!fontNames.contains(_fontId)) {
+			_fontId = 0;
+			_textDirty = false;
+		}
+
+		if (ImGui::BeginCombo(string("Font##").append(id).c_str(), fontNames[_fontId].c_str())) {
+			
+			bool clicked = false;
+			size_t choosed = _fontId;
+			for (auto& item : fontNames) {
+
+				if (ImGui::Selectable(item.second.append("##").append(id).c_str(), item.first == _fontId)) {
+					
+					if (clicked) continue;
+
+					choosed = item.first;
+					clicked = true;
+				}
+			}
+
+			if (clicked) {
+				if (choosed != 0) {
+					SetFont(choosed);
+				}
+				else {
+					_fontId = 0;
+					_textDirty = false;
+				}
+			}
+
+			ImGui::EndCombo();
+		}
+
+		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
+	}
+}
+
 void Text::SetColor(const vec4& color)
 {
+	if (color.a != 1.f)
+		_isTransparent = true;
 	_color = color;
 }
 
@@ -382,7 +457,11 @@ void Text::SetHeight(float height)
 
 void Text::SetFont(const string& fontPath)
 {
-	SetFont(hash<string>()(fontPath));
+	size_t h = hash<string>()(fontPath);
+	if (FontManager::GetFont(fontPath) == nullptr) {
+		FontManager::LoadFont(fontPath);
+	}
+	SetFont(h);
 }
 
 void Text::SetFont(size_t fontId)

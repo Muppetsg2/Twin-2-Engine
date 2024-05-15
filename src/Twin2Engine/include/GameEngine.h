@@ -29,9 +29,12 @@
 #include <core/MeshRenderer.h>
 #include <core/AudioComponent.h>
 #include <core/CameraComponent.h>
+
 #include <core/BoxColliderComponent.h>
 #include <core/CapsuleColliderComponent.h>
 #include <core/SphereColliderComponent.h>
+#include <core/HexagonalColliderComponent.h>
+
 #include <core/PointLightComponent.h>
 #include <core/SpotLightComponent.h>
 #include <core/DirectionalLightComponent.h>

@@ -3,6 +3,10 @@
 using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
+const char* const tracy_zone_RenderMeshes = "GraphicEngine::Render";
+const char* const tracy_RenderMeshes = "RenderMeshes";
+const char* const tracy_RenderUI = "RenderUI";
+
 #if _DEBUG
 void Twin2Engine::Graphic::glfw_error_callback(int error, const char* description)
 {
@@ -119,19 +123,14 @@ void GraphicEngine::UpdateBeforeRendering()
 
 void GraphicEngine::Render()
 {
-#if DEBUG_GRAPHIC_ENGINE
-	float startRenderingTime = glfwGetTime();
-#endif
-	//MeshRenderingManager::RenderStatic();
+	ZoneScoped;
+	FrameMarkStart(tracy_RenderMeshes);
 	MeshRenderingManager::RenderStatic();
-#if DEBUG_GRAPHIC_ENGINE
-	SPDLOG_INFO("Randering Time: {}", glfwGetTime() - startRenderingTime);
-	float startUIRenderingTime = glfwGetTime();
-#endif
+	FrameMarkEnd(tracy_RenderMeshes);
+
+	FrameMarkStart(tracy_RenderUI);
 	UIRenderingManager::Render();
-#if DEBUG_GRAPHIC_ENGINE
-	SPDLOG_INFO("UIRandering Time: {}", glfwGetTime() - startUIRenderingTime);
-#endif
+	FrameMarkEnd(tracy_RenderUI);
 }
 
 void GraphicEngine::DepthRender()

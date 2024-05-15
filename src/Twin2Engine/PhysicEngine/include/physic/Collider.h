@@ -34,11 +34,20 @@ namespace Twin2Engine::Physic {
 		float LocalRadius = 0.5f;
 	};
 
+	struct HexagonalColliderData : ShapeColliderData {
+		float Rotation = 0.0f;
+		float HalfHeight = 0.5f;
+		float BaseLength = 0.5f;
+		glm::vec3 u = glm::vec3(-0.5f, 0.0f, 0.866f);
+		glm::vec3 v = glm::vec3(0.5f, 0.0f, 0.866f);
+		glm::vec3 w = glm::vec3(1.0f, 0.0f, 0.0f);
+	};
+
 
 	class Collider {
 	public:
 		bool isBoundingVolume = false;
-		enum ColliderShape : uint8_t { SPHERE, BOX, CAPSULE };
+		enum ColliderShape : uint8_t { SPHERE, BOX, CAPSULE, HEXAGONAL };
 
 		ColliderShape colliderShape;
 		ShapeColliderData* shapeColliderData;
@@ -53,6 +62,7 @@ namespace Twin2Engine::Physic {
 		static Collision* SphereBoxCollision(Collider* sphere, Collider* box, bool separate);
 		static Collision* SphereCapsuleCollision(Collider* sphere, Collider* capsule, bool separate);
 		static Collision* BoxCapsuleCollision(Collider* box, Collider* capsule, bool separate);
+		static Collision* HexagonalSphereCollision(Collider* Hexagonal, Collider* sphere, bool separate);
 
 		static Collision* testCollision(Collider* collider, Collider* otherCollider, bool separate);
 	};

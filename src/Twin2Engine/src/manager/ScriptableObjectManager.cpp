@@ -23,17 +23,25 @@ ScriptableObject* ScriptableObjectManager::Load(const std::string& path)
 
 	SPDLOG_INFO("Loading ScriptableObject '{0}'", path);
 
-	YAML::Node soNode = YAML::LoadFile(path)["scriptable_object"];
-	size_t hashedSORegisteredName = _hasher(soNode["__SO_RegisteredName__"].as<string>());
-	ScriptableObject* scriptableObject = ScriptableObject::scriptableObjects[hashedSORegisteredName].createSpecificScriptableObject();
-	scriptableObject->_id = pathHash;
+	if (filesystem::exists(path))
+	{
+		YAML::Node soNode = YAML::LoadFile(path)["scriptable_object"];
+		size_t hashedSORegisteredName = _hasher(soNode["__SO_RegisteredName__"].as<string>());
+		ScriptableObject* scriptableObject = ScriptableObject::scriptableObjects[hashedSORegisteredName].createSpecificScriptableObject();
+		scriptableObject->_id = pathHash;
 
-	scriptableObject->Deserialize(soNode);
+		scriptableObject->Deserialize(soNode);
 
-	_scriptableObjects[pathHash] = scriptableObject;
-	_scriptableObjectsPaths[pathHash] = path;
+		_scriptableObjects[pathHash] = scriptableObject;
+		_scriptableObjectsPaths[pathHash] = path;
 
-	return scriptableObject;
+		return scriptableObject;
+	}
+	else
+	{
+		SPDLOG_ERROR("Scriptable Object file '{0}' not found!", path);
+		return nullptr;
+	}
 }
 
 ScriptableObject* ScriptableObjectManager::Get(const std::string& path)
@@ -64,6 +72,13 @@ std::string ScriptableObjectManager::GetPath(size_t id)
 	}
 	SPDLOG_WARN("ScriptableObject '{0}' not loaded", id);
 	return "";
+}
+
+std::string Twin2Engine::Manager::ScriptableObjectManager::GetName(size_t id)
+{
+	if (_scriptableObjectsPaths.find(id) == _scriptableObjectsPaths.end()) return "";
+	string p = _scriptableObjectsPaths[id];
+	return std::filesystem::path(p).stem().string();
 }
 
 void Twin2Engine::Manager::ScriptableObjectManager::UnloadAll()
@@ -162,13 +177,19 @@ bool Twin2Engine::Manager::ScriptableObjectManager::CreateScriptableObject(const
 		createdSO = ScriptableObject::scriptableObjects[hashedName].createSpecificScriptableObject();
 	}
 
-	if (createdSO != nullptr)
+	return Save(dstPath, createdSO);
+}
+
+bool ScriptableObjectManager::Save(const string& dstPath, ScriptableObject* scriptableObject)
+{
+	if (scriptableObject != nullptr)
 	{
 		YAML::Node node;
 		YAML::Node soNode;
-		createdSO->Serialize(soNode);
+		scriptableObject->Serialize(soNode);
 		node["scriptable_object"] = soNode;
 
+		filesystem::create_directories(filesystem::path(dstPath).parent_path());
 		ofstream file{ dstPath };
 		if (file.is_open())
 		{
@@ -177,13 +198,16 @@ bool Twin2Engine::Manager::ScriptableObjectManager::CreateScriptableObject(const
 		else
 		{
 			SPDLOG_ERROR("Couldn't open file: {}, for saving ScriptableObject!", dstPath);
+			file.close();
+			return false;
 		}
 		file.close();
+
+		return true;
 	}
 
 	return false;
 }
-
 
 vector<string> Twin2Engine::Manager::ScriptableObjectManager::GetAllPaths()
 {

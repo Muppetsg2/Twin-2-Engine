@@ -206,7 +206,8 @@ namespace Twin2Engine::Tools {
 				size_t valueDataSize = glm::min(glm::min(valueData.size(), arrayElemDataSize), _data.size() - valueOffset);
 
 				// SET VALUE DATA
-				memcpy(_data.data() + valueOffset, valueData.size(), valueDataSize);
+				//memcpy(_data.data() + valueOffset, valueData.size(), valueDataSize);
+				memcpy(_data.data() + valueOffset, valueData.data(), valueDataSize);
 			}
 			return true;
 		}

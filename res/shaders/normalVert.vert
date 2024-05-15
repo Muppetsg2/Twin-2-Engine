@@ -8,6 +8,7 @@ layout (std140, binding = 0) uniform CameraData
     mat4 projection;
     mat4 view;
 	vec3 viewPos;
+    bool isSSAO;
 };
 
 layout (std430, binding = 0) buffer InstanceBuffer {
@@ -27,6 +28,7 @@ struct MaterialInput
 out vec3 position;
 out vec2 texCoords;
 out vec3 normal;
+out vec4 clipSpacePos;
 
 flat out uint materialIndex;
 
@@ -39,6 +41,7 @@ void main()
     texCoords = aTexCoords;
 
     gl_Position = projection * view * instanceData.transform[instanceId] * vec4(aPos, 1.0);
+    clipSpacePos = gl_Position;
 
     materialIndex = materialIndexes.materialIndex[instanceId];
 }

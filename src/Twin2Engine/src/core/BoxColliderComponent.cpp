@@ -1,5 +1,5 @@
-#include "core/GameObject.h"
 #include <core/BoxColliderComponent.h>
+#include "core/GameObject.h"
 #include <physic/CollisionManager.h>
 #include <tools/YamlConverters.h>
 
@@ -14,16 +14,19 @@ BoxColliderComponent::BoxColliderComponent() : ColliderComponent()
 void BoxColliderComponent::SetWidth(float v)
 {
 	((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x = v;
+	dirtyFlag = true;
 }
 
 void BoxColliderComponent::SetLength(float v)
 {
 	((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z = v;
+	dirtyFlag = true;
 }
 
 void BoxColliderComponent::SetHeight(float v)
 {
 	((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y = v;
+	dirtyFlag = true;
 }
 
 void BoxColliderComponent::SetXRotation(float v)
@@ -41,6 +44,15 @@ void BoxColliderComponent::SetYRotation(float v)
 void BoxColliderComponent::SetZRotation(float v)
 {
 	((BoxColliderData*)collider->shapeColliderData)->Rotation.z = v;
+	dirtyFlag = true;
+}
+
+void BoxColliderComponent::SetRotation(const glm::vec3& rot)
+{
+	glm::vec3 v = glm::radians(rot);
+	((BoxColliderData*)collider->shapeColliderData)->Rotation.x = v.x;
+	((BoxColliderData*)collider->shapeColliderData)->Rotation.y = v.y;
+	((BoxColliderData*)collider->shapeColliderData)->Rotation.z = v.z;
 	dirtyFlag = true;
 }
 
@@ -121,4 +133,42 @@ YAML::Node BoxColliderComponent::Serialize() const
 		((BoxColliderData*)collider->shapeColliderData)->Rotation.z
 	);
 	return node;
+}
+
+void Twin2Engine::Core::BoxColliderComponent::DrawEditor()
+{
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Box Collider##Component").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+
+		float v = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x;
+		ImGui::DragFloat(string("Width##").append(id).c_str(), &v, 0.1f);
+
+		if (v != ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x) {
+			SetWidth(v);
+		}
+
+		v = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y;
+		ImGui::DragFloat(string("Height##").append(id).c_str(), &v, 0.1f);
+
+		if (v != ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y) {
+			SetHeight(v);
+		}
+
+		v = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z;
+		ImGui::DragFloat(string("Length##").append(id).c_str(), &v, 0.1f);
+
+		if (v != ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z) {
+			SetLength(v);
+		}
+
+		glm::vec3 rot = ((BoxColliderData*)collider->shapeColliderData)->Rotation;
+		ImGui::DragFloat3(string("Rotation##").append(id).c_str(), glm::value_ptr(rot), 0.1f);
+
+		if (rot != ((BoxColliderData*)collider->shapeColliderData)->Rotation) {
+			SetRotation(rot);
+		}
+
+		DrawInheritedFields();
+	}
 }

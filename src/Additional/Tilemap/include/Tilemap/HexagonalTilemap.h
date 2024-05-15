@@ -1,5 +1,4 @@
-#ifndef _HEXAGONAL_TILEMAP_H_
-#define _HEXAGONAL_TILEMAP_H_
+#pragma once
 
 #include <core/GameObject.h>
 #include <core/Component.h>
@@ -67,5 +66,3 @@ namespace Tilemap
 #include <Tilemap/HexagonalTile.h>
 
 #include <Generation/MapHexTile.h>
-
-#endif // !_HEXAGONAL_TILEMAP_H_

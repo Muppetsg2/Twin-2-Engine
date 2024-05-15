@@ -150,6 +150,7 @@ GameObjects:
         farPlane: 1000
         cameraFilter: 0
         cameraType: 1
+        cameraMode: 0
         samples: 4
         renderRes: 0
         gamma: 2.20000005
@@ -158,6 +159,8 @@ GameObjects:
           y: 1
           z: 0
         isMain: true
+        isFrustum: true
+        isSSAO: true
       - id: 2
         enabled: true
         type: Audio
@@ -475,18 +478,19 @@ GameObjects:
         type: SphereCollider
         subTypes:
           - Collider
+        colliderId: 1
         trigger: false
         static: false
-        layer: 0
+        layer: 1
         layerFilter:
-          - 3
-          - 3
+          - 2
+          - 2
           - 1
           - 0
-          - 3
-          - 3
-          - 3
-          - 3
+          - 2
+          - 2
+          - 2
+          - 2
         boundingVolume: true
         boundingVolumeRadius: 2
         position:
@@ -499,18 +503,19 @@ GameObjects:
         type: BoxCollider
         subTypes:
           - Collider
+        colliderId: 2
         trigger: false
         static: false
-        layer: 0
+        layer: 1
         layerFilter:
-          - 3
-          - 3
+          - 2
+          - 2
           - 1
           - 0
-          - 3
-          - 3
-          - 3
-          - 3
+          - 2
+          - 2
+          - 2
+          - 2
         boundingVolume: true
         boundingVolumeRadius: 2
         position:
@@ -529,18 +534,19 @@ GameObjects:
         type: CapsuleCollider
         subTypes:
           - Collider
+        colliderId: 3
         trigger: false
         static: false
-        layer: 0
+        layer: 1
         layerFilter:
-          - 3
-          - 3
+          - 2
+          - 2
           - 1
           - 0
-          - 3
-          - 3
-          - 3
-          - 3
+          - 2
+          - 2
+          - 2
+          - 2
         boundingVolume: true
         boundingVolumeRadius: 2
         position:
@@ -675,3 +681,39 @@ GameObjects:
           - res/scriptableobjects/MountainsGenerator.so
           - res/scriptableobjects/CityGenerator.so
           - res/scriptableobjects/RadioStationGeneratorSectorBased.so
+  - id: 15
+    name: DirectionalLigth
+    isStatic: false
+    isActive: true
+    transform:
+      id: 1235
+      enabled: true
+      position:
+        x: 11.419817
+        y: 11.4163637
+        z: -9.99999905
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 1236
+        enabled: true
+        type: DirectionalLightComponent
+        subTypes:
+          - LightComponent
+        direction:
+          x: -0.66666
+          y: -0.66666
+          z: 0.33333
+        color:
+          x: 1
+          y: 1
+          z: 1
+        power: 1
+    children:
+      []

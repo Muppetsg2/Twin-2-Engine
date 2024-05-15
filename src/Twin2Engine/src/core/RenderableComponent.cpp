@@ -41,6 +41,15 @@ bool RenderableComponent::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
+void RenderableComponent::DrawEditor()
+{
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Renderable##Component").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
+	}
+}
+
 bool RenderableComponent::IsTransparent() const
 {
 	return _isTransparent;

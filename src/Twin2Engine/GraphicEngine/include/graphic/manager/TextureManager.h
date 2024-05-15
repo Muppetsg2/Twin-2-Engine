@@ -110,6 +110,10 @@ namespace Twin2Engine::Manager {
 		static std::map<size_t, std::string> _texturesPaths;
 		static std::map<size_t, std::pair<Graphic::TextureFormat, TextureFileFormat>> _texturesFormats;
 
+		// For ImGui
+		static bool _fileDialogOpen;
+		static ImFileDialogInfo _fileDialogInfo;
+
 		static void UnloadTexture2D(size_t managerID);
 		static void UnloadTexture2D(const std::string& path);
 	public:
@@ -118,9 +122,15 @@ namespace Twin2Engine::Manager {
 		static Graphic::Texture2D* LoadTexture2D(const std::string& path, const TextureData& data = TextureData());
 		static Graphic::Texture2D* LoadTexture2D(const std::string& path, const TextureFileFormat& internalFormat, const Graphic::TextureFormat& format, const TextureData& data = TextureData());
 
+		static std::string GetTexture2DName(size_t managerId);
+		static std::string GetTexture2DName(const std::string& path);
+
+		static std::map<size_t, std::string> GetAllTexture2DNames();
+
 		static void UnloadAll();
 
 		static YAML::Node Serialize();
+		static void DrawEditor(bool* p_open);
 
 		friend class SceneManager;
 		friend class PrefabManager;

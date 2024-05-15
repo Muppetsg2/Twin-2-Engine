@@ -12,6 +12,7 @@ namespace Twin2Engine::Core {
 	public:
 		CapsuleColliderComponent();
 		void SetEndPosition(float x, float y, float z);
+		void SetEndPosition(const glm::vec3& pos);
 		void SetRadius(float radius);
 
 		void Initialize() override;
@@ -22,5 +23,6 @@ namespace Twin2Engine::Core {
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
+		virtual void DrawEditor() override;
 	};
 }

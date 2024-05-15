@@ -13,22 +13,28 @@ namespace Twin2Engine::Graphic {
 }
 
 namespace Twin2Engine::Core {
-	enum CameraType {
+	enum class CameraType{
 		ORTHOGRAPHIC = 0,
 		PERSPECTIVE = 1
 	};
 
-	enum RenderFilter {
+	enum class CameraRenderFilter : uint8_t {
 		NONE = 0,
 		VIGNETTE = 1,
 		BLUR = 2,
 		NEGATIVE = 4,
 		GRAYSCALE = 8,
-		DEPTH = 16,
-		OUTLINE = 32
+		OUTLINE = 16,
+		EVERYTHING = VIGNETTE | BLUR | NEGATIVE | GRAYSCALE | OUTLINE
 	};
 
-	enum RenderResolution {
+	enum class CameraDisplayMode {
+		RENDER = 0,
+		DEPTH = 1,
+		SSAO_MAP = 2
+	};
+
+	enum class CameraRenderResolution {
 		DEFAULT = 0,
 		MEDIUM = 1,
 		HIGH = 2
@@ -40,11 +46,24 @@ namespace Twin2Engine::Core {
 		static Tools::STD140Offsets _uboCameraDataOffsets;
 		static GLuint _uboWindowData;
 		static Tools::STD140Offsets _uboWindowDataOffsets;
-		static Graphic::InstantiatingModel _renderPlane;
-		static Graphic::Shader* _renderShader;
+		static Graphic::InstantiatingModel _screenPlane;
+		static Graphic::Shader* _screenShader;
+		static Graphic::Shader* _ssaoShader;
+		static Graphic::Shader* _ssaoBlurredShader;
+		static Graphic::Shader* _depthShader;
+		static Graphic::Frustum _currentCameraFrustum;
+		static std::vector<glm::vec3> _ssaoKernel;
+		static float* _ssaoTextureData;
+		static GLuint _ssaoNoiseTexture;
 
+		// Depth Pre pass
 		GLuint _depthMapFBO = NULL;
 		GLuint _depthMap = NULL;
+
+		// SSAO
+		GLuint _ssaoFBO = NULL;
+		GLuint _ssaoMap = NULL;
+		GLuint _ssaoBlurredMap = NULL;
 
 		// MSAA Render
 		GLuint _msRenderMapFBO = NULL;
@@ -54,16 +73,18 @@ namespace Twin2Engine::Core {
 		GLuint _renderMap = NULL;
 		GLuint _renderMapFBO = NULL;
 
-		CameraType _type = PERSPECTIVE;
-		uint8_t _filters = NONE;
+		CameraType _type = CameraType::PERSPECTIVE;
+		CameraDisplayMode _mode = CameraDisplayMode::RENDER;
+		uint8_t _filters = (uint8_t)CameraRenderFilter::NONE;
 		uint8_t _samples = 4;
-		RenderResolution _renderRes = DEFAULT;
+		CameraRenderResolution _renderRes = CameraRenderResolution::DEFAULT;
 
 		size_t _camId = 0;
 
 		bool _isMain = false;
 		bool _isInit = false;
 		bool _isFrustumCulling = true;
+		bool _isSsao = true;
 
 		float _near = 0.1f;
 		float _far = 1000.f;
@@ -80,6 +101,8 @@ namespace Twin2Engine::Core {
 		size_t _windowEventId = 0;
 		void OnWindowSizeChange();
 		void SetFrontDir(vec3 dir);
+		void GenerateSSAOKernel();
+		void GenerateSSAONoiseTexture();
 
 	public:
 		static std::vector<CameraComponent*> Cameras;
@@ -87,7 +110,8 @@ namespace Twin2Engine::Core {
 		CameraType GetCameraType() const;
 		uint8_t GetCameraFilters() const;
 		uint8_t GetSamples() const;
-		RenderResolution GetRenderResolution() const;
+		CameraRenderResolution GetRenderResolution() const;
+		CameraDisplayMode GetDisplayMode() const;
 
 		float GetFOV() const;
 		float GetGamma() const;
@@ -102,6 +126,7 @@ namespace Twin2Engine::Core {
 
 		bool IsMain() const;
 		bool IsFrustumCullingOn() const;
+		bool IsSSAO() const;
 
 		void SetFOV(float angle);
 		void SetGamma(float gamma);
@@ -111,7 +136,8 @@ namespace Twin2Engine::Core {
 		void SetCameraFilter(uint8_t filters);
 		void SetCameraType(CameraType value);
 		void SetSamples(uint8_t i = 4);
-		void SetRenderResolution(RenderResolution res);
+		void SetRenderResolution(CameraRenderResolution res);
+		void SetDisplayMode(CameraDisplayMode cdm);
 
 		void SetWorldUp(vec3 value);
 
@@ -119,26 +145,21 @@ namespace Twin2Engine::Core {
 
 		void SetIsMain(bool value);
 		void SetFrustumCulling(bool value);
+		void SetSSAO(bool value);
 
 		void Render();
 
 		void BindRenderTexture(unsigned int index = 0);
+		void BindSSAOTexture(unsigned int index = 0);
 		void BindDepthTexture(unsigned int index = 0);
 
-		// Jesli beda sceny to tu trzeba dodac by scena byla przekazywana
 		static CameraComponent* GetMainCamera();
+		static Graphic::Frustum GetCurrentCameraFrustum();
 
 		void Initialize() override;
 		void OnDestroy() override;
 		YAML::Node Serialize() const override;
 		void DrawEditor() override;
-
-		/*
-		void Update() override;
-		void OnEnable() override;
-		void OnDisable() override;
-		*/
-
 		Physic::Ray GetScreenPointRay(glm::vec2 screenPosition) const;
 	};
 }
@@ -160,18 +181,34 @@ namespace YAML {
 		}
 	};
 
-	template<> struct convert<Twin2Engine::Core::RenderResolution> {
-		using RenderResolution = Twin2Engine::Core::RenderResolution;
+	template<> struct convert<Twin2Engine::Core::CameraRenderResolution> {
+		using CameraRenderResolution = Twin2Engine::Core::CameraRenderResolution;
 
-		static Node encode(const RenderResolution& rhs) {
+		static Node encode(const CameraRenderResolution& rhs) {
 			Node node;
 			node = (size_t)rhs;
 			return node;
 		}
 
-		static bool decode(const Node& node, RenderResolution& rhs) {
+		static bool decode(const Node& node, CameraRenderResolution& rhs) {
 			if (!node.IsScalar()) return false;
-			rhs = (RenderResolution)node.as<size_t>();
+			rhs = (CameraRenderResolution)node.as<size_t>();
+			return true;
+		}
+	};
+
+	template<> struct convert<Twin2Engine::Core::CameraDisplayMode> {
+		using CameraDisplayMode = Twin2Engine::Core::CameraDisplayMode;
+
+		static Node encode(const CameraDisplayMode& rhs) {
+			Node node;
+			node = (size_t)rhs;
+			return node;
+		}
+
+		static bool decode(const Node& node, CameraDisplayMode& rhs) {
+			if (!node.IsScalar()) return false;
+			rhs = (CameraDisplayMode)node.as<size_t>();
 			return true;
 		}
 	};

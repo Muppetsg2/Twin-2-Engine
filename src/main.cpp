@@ -7,6 +7,9 @@
 
 #endif
 
+#define EDITOR_LOGGER
+//#define RELEASE_LOGGER
+
 #include <GameEngine.h>
 
 // TILEMAP
@@ -33,15 +36,18 @@
 #include <tools/YamlConverters.h>
 #include <Generation/YamlConverters.h>
 
+// LOGGER
+#include <tools/FileLoggerSink.h>
+
+#if _DEBUG
 // EDITOR
 #include <Editor/Common/MaterialCreator.h>
 #include <Editor/Common/ProcessingMtlFiles.h>
 #include <Editor/Common/ScriptableObjectEditorManager.h>
 #include <Editor/Common/ImGuiSink.h>
-
 using Editor::Common::ImGuiSink;
 using Editor::Common::ImGuiLogMessage;
-
+#endif
 
 using namespace Twin2Engine;
 using namespace Twin2Engine::Manager;
@@ -75,15 +81,14 @@ void input();
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void update();
 
+//#undef _DEBUG
+
 #if _DEBUG
 void init_imgui();
 void begin_imgui();
 void render_imgui();
 void end_imgui();
 #endif
-
-float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd);
-double mod(double val1, double val2);
 
 #pragma endregion
 
@@ -124,10 +129,12 @@ int main(int, char**)
 {
 #pragma region Initialization
     // LOGGING: SPDLOG INITIALIZATION
+#ifdef EDITOR_LOGGER
+
 #if USE_IMGUI_CONSOLE_OUTPUT || USE_WINDOWS_CONSOLE_OUTPUT
 
 #if USE_IMGUI_CONSOLE_OUTPUT
-    auto console_sink = std::make_shared<Editor::Common::ImGuiSink<mutex>>("res/logs/log.txt");
+    auto console_sink = std::make_shared<Editor::Common::ImGuiSink<mutex>>("res/logs/log.txt", 100.0f);
 #elif USE_WINDOWS_CONSOLE_OUTPUT
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
 #endif
@@ -139,6 +146,19 @@ int main(int, char**)
 #else
     spdlog::set_level(spdlog::level::off);
 #endif  
+
+#endif // EDITOR_LOGGER
+#ifdef RELEASE_LOGGER
+
+    auto fileLoggerSink = std::make_shared<Twin2Engine::Tools::FileLoggerSink<mutex>>("logs.txt", 100.0f);
+    auto fileLogger = std::make_shared<spdlog::logger>("FileLogger", fileLoggerSink);
+    spdlog::register_logger(fileLogger);
+    spdlog::set_default_logger(fileLogger);
+
+    spdlog::set_level(spdlog::level::debug);
+#endif // RELEASE_LOGGER
+
+
 
     if (!GameEngine::Init(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_FULLSCREEN, GL_VERSION_MAJOR, GL_VERSION_MINOR))
     {
@@ -152,9 +172,16 @@ int main(int, char**)
     spdlog::info("Initialized ImGui.");
 #endif
 
-    window = Window::GetInstance();
+    SoLoud::result res = AudioManager::Init();
+    if (res != 0) {
+        spdlog::error(AudioManager::GetErrorString(res));
+        return EXIT_FAILURE;
+    }
+    spdlog::info("Initialized SoLoud.");
 
 #pragma endregion
+
+    window = Window::GetInstance();
 
 #pragma region TILEMAP_DESERIALIZER
 
@@ -273,10 +300,10 @@ int main(int, char**)
     };
 
     // ADDING SCENES
-    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
+    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
-    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
-    SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.scene");
     //SceneManager::AddScene("testScene", "res/scenes/DirLightTest.scene");
 
     SceneManager::LoadScene("testScene");
@@ -286,7 +313,7 @@ int main(int, char**)
     obj->SetName("Test Button");
     Transform* tr = obj->GetTransform();
     tr->Rotate(glm::vec3(0, 0, 45.f));
-    tr->Translate(glm::vec3(0.f, -200.f, 0.f));
+    tr->Translate(glm::vec3(0.f, -40.f, 0.f));
     Button* b = obj->AddComponent<Button>();
     b->SetHeight(70);
     b->SetWidth(200);
@@ -308,6 +335,8 @@ int main(int, char**)
 
     obj = SceneManager::CreateGameObject();
     obj->SetName("Test Input Field");
+    tr = obj->GetTransform();
+    //tr->Translate(glm::vec3(500.f, -400.f, 0.f));
     Image* img = obj->AddComponent<Image>();
     img->SetSprite("white_box");
     img->SetWidth(200);
@@ -337,23 +366,22 @@ int main(int, char**)
     //SceneManager::SaveScene("res/scenes/quickSavedScene_toonShading.yaml");
 
 #pragma region SETTING_UP_GENERATION
-    //*
+
     tilemapGO = SceneManager::GetGameObjectWithId(14);
     HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
     MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
     mapGenerator->tilemap = hexagonalTilemap;
     float tilemapGenerating = glfwGetTime();
-    //mapGenerator->Generate();
+    mapGenerator->Generate();
     spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
 
     ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
 
     tilemapGenerating = glfwGetTime();
-    //contentGenerator->GenerateContent(hexagonalTilemap);
+    contentGenerator->GenerateContent(hexagonalTilemap);
     spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
-
+    Editor::Common::ScriptableObjectEditorManager::Init();
     Editor::Common::ScriptableObjectEditorManager::Update();
-
 #pragma endregion
     
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
@@ -365,10 +393,18 @@ int main(int, char**)
     dl_go->GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
     DirectionalLightComponent* dl = dl_go->AddComponent<DirectionalLightComponent>();
     dl->SetColor(glm::vec3(1.0f));
-    LightingController::Instance()->SetViewerPosition(cameraPos);
+    //LightingController::Instance()->SetViewerPosition(cameraPos);
     LightingController::Instance()->SetAmbientLight(glm::vec3(0.1f));
 
     SceneManager::SaveScene("res/scenes/DirLightTest.scene");*/
+#pragma endregion
+#pragma region HexCollider
+    //GameObject* h_go = SceneManager::CreateGameObject();
+    //HexagonalColliderComponent* hc = h_go->AddComponent<HexagonalColliderComponent>();
+    //hc->SetTrigger(true);
+    //hc->SetLayer(Layer::IGNORE_COLLISION);
+    //hc->SetLocalPosition(0.0f, -0.5f, 0.0f);
+    //PrefabManager::SaveAsPrefab(h_go, "HCCpref.prefab");
 #pragma endregion
 
 #if _DEBUG
@@ -394,7 +430,32 @@ int main(int, char**)
         update();
     };
 
+#ifdef EDITOR_LOGGER
+
+#if USE_IMGUI_CONSOLE_OUTPUT
+    console_sink->StartLogging();
+#endif
+
+#endif
+
+#ifdef RELEASE_LOGGER
+    fileLoggerSink->StartLogging();
+#endif
+
     GameEngine::Start();
+
+#ifdef EDITOR_LOGGER
+
+#if USE_IMGUI_CONSOLE_OUTPUT
+    console_sink->StopLogging();
+#endif
+
+#endif
+
+#ifdef RELEASE_LOGGER
+    fileLoggerSink->StopLogging();
+#endif
+
     return 0;
 }
 
@@ -407,6 +468,19 @@ void input()
     }
 
     CameraComponent* c = CameraComponent::GetMainCamera();
+
+    if (Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT)) {
+        static int i = 1;
+        RaycastHit raycast;
+        Ray ray = c->GetScreenPointRay(Input::GetCursorPos());
+        CollisionManager::Instance()->Raycast(ray, raycast);
+        if (raycast.collider != nullptr) {
+            SPDLOG_INFO("[Click {}].\t {}. collider:\ncolpos: \t{}\t{}\t{} \nintpos: \t{}\t{}\t{}", i++, raycast.collider->colliderId, raycast.collider->collider->shapeColliderData->Position.x, raycast.collider->collider->shapeColliderData->Position.y, raycast.collider->collider->shapeColliderData->Position.z, raycast.position.x, raycast.position.y, raycast.position.z);
+        }
+        else {
+            SPDLOG_INFO("Collision not happened!");
+        }
+    }
 
     bool moved = false;
 
@@ -431,10 +505,10 @@ void input()
         moved = true;
     }
 
-
     if (LightingController::IsInstantiated() && moved) {
-        glm::vec3 cp = c->GetTransform()->GetGlobalPosition();
-        LightingController::Instance()->SetViewerPosition(cp);
+        //glm::vec3 cp = c->GetTransform()->GetGlobalPosition();
+        //LightingController::Instance()->SetViewerPosition(cp);
+        LightingController::Instance()->UpdateOnTransformChange();
     }
 
 
@@ -546,15 +620,15 @@ void init_imgui()
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;   // Enable Keyboard Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;    // Enable Gamepad Controls
 
     ImGui_ImplGlfw_InitForOpenGL(Window::GetInstance()->GetWindow(), true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     // Setup style
     ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
 
     // Load Fonts
     // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
@@ -564,12 +638,9 @@ void init_imgui()
     // - Read 'misc/fonts/README.txt' for more instructions and details.
     // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
     //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != NULL);
+    ImFont* font = io.Fonts->AddFontFromFileTTF("./res/fonts/NotoSans-Regular.ttf", 18.f, nullptr, ImGui::GetGlyphRangesPolish());
+    IM_ASSERT(font != NULL);
+    io.Fonts->Build();
 }
 
 void begin_imgui()
@@ -584,7 +655,61 @@ void render_imgui()
 {
     if (Input::GetCursorState() == CURSOR_STATE::NORMAL)
     {
-        ImGui::Begin("Twin^2 Engine");
+        SceneManager::DrawCurrentSceneEditor();
+
+#pragma region IMGUI_LOGGING_CONSOLE
+
+#if USE_IMGUI_CONSOLE_OUTPUT
+        ImGuiSink<mutex>::Draw();
+#endif
+        
+#pragma endregion 
+
+        if (!ImGui::Begin("Twin^2 Engine", NULL, ImGuiWindowFlags_MenuBar)) {
+            ImGui::End();
+            return;
+        }
+
+        static bool _fontOpened = false;
+        static bool _audioOpened = false;
+        static bool _materialsOpened = false;
+        static bool _texturesOpened = false;
+
+        if (ImGui::BeginMenuBar()) {
+            if (ImGui::BeginMenu("File##Menu"))
+            {
+                //ImGui::MenuItem("Load Scene");
+                //ImGui::MenuItem("Save Scene");
+                //ImGui::MenuItem("Save Scene As...");
+                if (ImGui::MenuItem("Exit##File"))
+                    window->Close();
+
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Resources##Menu"))
+            {
+                ImGui::MenuItem("Font Manager##Resources", NULL, &_fontOpened);
+                ImGui::MenuItem("Audio Manager##Resources", NULL, &_audioOpened);
+                ImGui::MenuItem("Materials Manager##Resources", NULL, &_materialsOpened);
+                ImGui::MenuItem("Textures Manager##Resources", NULL, &_texturesOpened);
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenuBar();
+        }
+
+        if (_fontOpened)
+            FontManager::DrawEditor(&_fontOpened);
+
+        if (_audioOpened)
+            AudioManager::DrawEditor(&_audioOpened);
+
+        if (_materialsOpened)
+            MaterialsManager::DrawEditor(&_materialsOpened);
+
+        if (_texturesOpened)
+            TextureManager::DrawEditor(&_texturesOpened);
+
+        Editor::Common::ScriptableObjectEditorManager::Draw();
 
         ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Hello World!");
 
@@ -596,115 +721,7 @@ void render_imgui()
             ImGui::Spacing();
         }
 
-        ImGui::Separator();
-        Camera->GetComponent<AudioComponent>()->DrawEditor();
-        ImGui::Separator();
-        Camera->GetComponent<CameraComponent>()->DrawEditor();
-        ImGui::Separator();
-
-#pragma region IMGUI_WINDOW_SETUP
-        if (ImGui::CollapsingHeader("Window Setup")) {
-
-            // Window Settings
-            if (window->IsWindowed()) {
-                ImGui::Text("Current State: Windowed");
-
-                int monitorsCount;
-                GLFWmonitor** monitors = glfwGetMonitors(&monitorsCount);
-
-                ImGui::Text("Monitors: ");
-                for (int i = 0; i < monitorsCount; ++i) {
-                    int x, y, mw, mh;
-                    float sx, sy;
-
-                    glfwGetMonitorPos(monitors[i], &x, &y);
-                    const GLFWvidmode* vid = glfwGetVideoMode(monitors[i]);
-                    const char* name = glfwGetMonitorName(monitors[i]);
-                    glfwGetMonitorPhysicalSize(monitors[i], &mw, &mh);
-                    glfwGetMonitorContentScale(monitors[i], &sx, &sy);
-
-                    std::string btnText = std::to_string(i) + ". " + name + ": PS " + std::to_string(mw) + "x" + std::to_string(mh) + ", S " \
-                        + std::to_string(vid->width) + "x" + std::to_string(vid->height) + \
-                        ", Pos " + std::to_string(x) + "x" + std::to_string(y) + \
-                        ", Scale " + std::to_string(sx) + "x" + std::to_string(sy) + \
-                        ", Refresh " + std::to_string(vid->refreshRate) + " Hz";
-                    if (ImGui::Button(btnText.c_str())) {
-                        window->SetFullscreen(monitors[i]);
-                    }
-                }
-
-                ImGui::Text("");
-                static char tempBuff[256] = "Twin^2 Engine";
-                ImGui::InputText("Title", tempBuff, 256);
-                if (std::string(tempBuff) != window->GetTitle()) {
-                    window->SetTitle(std::string(tempBuff));
-                }
-
-                if (ImGui::Button("Request Attention")) {
-                    window->RequestAttention();
-                }
-
-                if (ImGui::Button("Maximize")) {
-                    window->Maximize();
-                }
-
-                if (ImGui::Button("Hide")) {
-                    window->Hide();
-                }
-
-                bool temp = window->IsResizable();
-                if (ImGui::Button(((temp ? string("Disable") : string("Enable")) + string(" Resizability")).c_str())) {
-                    window->EnableResizability(!temp);
-                }
-
-                temp = window->IsDecorated();
-                if (ImGui::Button(((temp ? string("Disable") : string("Enable")) + string(" Decorations")).c_str())) {
-                    window->EnableDecorations(!temp);
-                }
-
-                static float opacity = window->GetOpacity();
-                ImGui::SliderFloat("Opacity", &opacity, 0.f, 1.f);
-                if (opacity != window->GetOpacity()) {
-                    window->SetOpacity(opacity);
-                }
-
-                static glm::ivec2 ratio = window->GetAspectRatio();
-                ImGui::InputInt2("Aspect Ratio", (int*)&ratio);
-                if (ImGui::Button("Apply")) {
-                    window->SetAspectRatio(ratio);
-                    ratio = window->GetAspectRatio();
-                }
-            }
-            else {
-                ImGui::Text("Current State: Fullscreen");
-                if (ImGui::Button("Windowed")) {
-                    window->SetWindowed({ 0, 30 }, { WINDOW_WIDTH, WINDOW_HEIGHT - 50 });
-                }
-
-                static int refreshRate = window->GetRefreshRate();
-                ImGui::InputInt("Refresh Rate", &refreshRate);
-                if (ImGui::Button("Apply")) {
-                    window->SetRefreshRate(refreshRate);
-                    refreshRate = window->GetRefreshRate();
-                }
-            }
-
-            if (ImGui::Button("Minimize")) {
-                window->Minimize();
-            }
-
-            static glm::ivec2 size = window->GetWindowSize();
-            ImGui::InputInt2("Window Size", (int*)&size);
-            if (ImGui::Button("Apply")) {
-                window->SetWindowSize(size);
-                size = window->GetWindowSize();
-            }
-
-            if (ImGui::Button(((window->IsVSyncOn() ? "Disable"s : "Enable"s) + " VSync"s).c_str())) {
-                window->EnableVSync(!window->IsVSyncOn());
-            }
-        }
-#pragma endregion
+        window->DrawEditor();
 
         ImGui::Separator();
 
@@ -820,42 +837,7 @@ void render_imgui()
 
         ImGui::Separator();
 
-#pragma region ScriptableObjects
-
-        if (ImGui::CollapsingHeader("Scriptable Object Creator")) {
-            static string selectedSO = "";
-            static vector<string> scriptableObjectsNames = ScriptableObjectManager::GetScriptableObjectsNames();
-            if (ImGui::TreeNode("ScriptableObjects")) {
-                for (size_t i = 0; i < scriptableObjectsNames.size(); i++)
-                {
-                    if (ImGui::Selectable(scriptableObjectsNames[i].c_str())) {
-                        selectedSO = scriptableObjectsNames[i];
-                    }
-                }
-                ImGui::TreePop();
-            }
-            ImGui::Text("Selected Scriptable Object to create:");
-            ImGui::SameLine();
-            ImGui::InputText("##selectedItem", &selectedSO[0], selectedSO.size(), ImGuiInputTextFlags_ReadOnly);
-            static char dstPath[255] = { '\0' };
-            ImGui::Text("Destination and output file name:");
-            ImGui::SameLine();
-            ImGui::InputText("##dstPath", dstPath, 254);
-
-            if (ImGui::Button("Create ScriptableObject"))
-            {
-                if (selectedSO.size() > 0)
-                {
-                    string strDstPath(dstPath);
-                    if (strDstPath.size() > 0)
-                    {
-                        ScriptableObjectManager::CreateScriptableObject(strDstPath, selectedSO);
-                    }
-                }
-            }
-        }
-#pragma endregion
-
+#pragma region IMGUI_TEXT_TEST
         if (ImGui::CollapsingHeader("Text test")) {
             Text* t = SceneManager::FindObjectByName("Test Button")->GetComponent<Text>();
             static std::string alignYValue = t->GetTextAlignY() == TextAlignY::CENTER ? "CENTER" : t->GetTextAlignY() == TextAlignY::TOP ? "TOP" : "BOTTOM";
@@ -940,10 +922,11 @@ void render_imgui()
                 }
             }
         }
+#pragma endregion
+
         ImGui::Separator();
 
 #pragma region MATERIAL_CREATOR
-
 
         if (ImGui::CollapsingHeader("Material Creator"))
         {
@@ -979,34 +962,11 @@ void render_imgui()
 
         ImGui::Separator();
 
-#pragma region MapGenerators
+        /**/
+#pragma region IMGUI_MAP_GENERATOR
 
         if (ImGui::CollapsingHeader("Map Generator"))
         {
-            static string selectedSO = "";
-            static vector<string> scriptableObjectsPaths = ScriptableObjectManager::GetAllPaths();
-            static ScriptableObject* selectedScriptableObject = nullptr;
-            if (ImGui::TreeNode("Scriptable Objects")) {
-                for (size_t i = 0; i < scriptableObjectsPaths.size(); i++)
-                {
-                    if (ImGui::Selectable(scriptableObjectsPaths[i].c_str())) {
-                        selectedSO = scriptableObjectsPaths[i];
-                        selectedScriptableObject = ScriptableObjectManager::Get(selectedSO);
-                    }
-                }
-                ImGui::TreePop();
-            }
-            ImGui::Text("Selected Scriptable Object to create:");
-            ImGui::SameLine();
-            ImGui::InputText("##selectedSO", &selectedSO[0], selectedSO.size(), ImGuiInputTextFlags_ReadOnly);
-
-            ImGui::Separator();
-            if (selectedScriptableObject != nullptr)
-            {
-                selectedScriptableObject->DrawEditor();
-            }
-            ImGui::Separator();
-
             if (ImGui::Button("Generate"))
             {
                 static Transform* tilemapTransform = tilemapGO->GetTransform();
@@ -1035,21 +995,12 @@ void render_imgui()
 
 #pragma endregion
         
-
-
         ImGui::Separator();
+        /**/
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
         ImGui::End();
-
-#pragma region LOGGING_CONSOLE
-
-#if USE_IMGUI_CONSOLE_OUTPUT
-        ImGuiSink<mutex>::Draw();
-#endif
-        
-#pragma endregion 
     }
 }
 

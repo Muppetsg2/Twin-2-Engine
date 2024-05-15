@@ -3,13 +3,11 @@
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 normal;
 layout (location = 2) in vec2 texCoords;
+layout (location = 3) out vec4 clipSpacePos;
 
-
-layout (location = 3) flat in uint materialIndex;
+layout (location = 4) flat in uint materialIndex;
 
 out vec4 FragColor;
-
-
 
 layout (std140, binding = 1) uniform WindowData
 {
@@ -44,6 +42,8 @@ layout(std140, binding = 3) uniform LightingData {
 
 //shadow maps
 uniform sampler2D DirLightShadowMaps[4];
+uniform sampler2D occlusionMap;
+
 //LIGHTING BEGIN
 struct PointLight {
 	vec3 position;      // Position of the point light in world space
@@ -89,7 +89,6 @@ vec4 fakeBRDF(sampler2D brdfTex, vec3 lightDirection, vec3 viewer)
 {
 	return texture(brdfTex, vec2(clamp(dot(normal, normalize(lightDirection)), 0.0, 1.0), dot(viewer, normal) * 0.5 + 0.5));
 }
-
 
 void main()
 {

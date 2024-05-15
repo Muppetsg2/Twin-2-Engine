@@ -1,5 +1,4 @@
-#ifndef _MAP_SECTOR_H_
-#define _MAP_SECTOR_H_
+#pragma once
 
 #include <Tilemap/HexagonalTile.h>
 #include <Tilemap/HexagonalTilemap.h>
@@ -69,5 +68,3 @@ namespace Generation
 #include <Generation/MapRegion.h>
 #include <Generation/MapHexTile.h>
 //#include "YamlConverters.h"
-
-#endif // !_MAP_SECTOR_H_

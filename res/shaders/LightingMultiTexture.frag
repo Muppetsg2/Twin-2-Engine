@@ -6,8 +6,9 @@ layout(early_fragment_tests) in;
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 normal;
 layout (location = 2) in vec2 texCoords;
+layout (location = 3) out vec4 clipSpacePos;
 
-layout (location = 3) flat in uint materialIndex;
+layout (location = 4) flat in uint materialIndex;
 
 layout (location = 0) out vec4 FragColor;
 
@@ -24,7 +25,13 @@ layout (std140, binding = 1) uniform WindowData
     float gamma;
 };
 
-
+layout (std140, binding = 0) uniform CameraData
+{
+    mat4 projection;
+    mat4 view;
+	vec3 viewPos;
+    bool isSSAO;
+};
 
 layout(std140, binding = 2) uniform MaterialInputBuffer {
     MaterialInput materialInput[8];
@@ -42,6 +49,7 @@ layout(location = 0) uniform TextureInput texturesInput[8];
 //shadow maps
 uniform sampler2D DirLightShadowMaps[4];
 uniform sampler2D DirLightingMap;
+uniform sampler2D occlusionMap;
 
 //LIGHTING BEGIN
 struct PointLight {
@@ -56,7 +64,7 @@ struct PointLight {
 struct SpotLight {
 	vec3 position;      // Position of the spot light in world space
 	vec3 direction;     // Direction of the spot light
-	float power;		// Light source power
+	float power;		  // Light source power
 	vec3 color;         // Color of the spot light
 	float cutOff;       // Inner cutoff angle (in radians)
 	float outerCutOff;  // Outer cutoff angle (in radians)
@@ -66,10 +74,9 @@ struct SpotLight {
 };
 
 struct DirectionalLight {
-	vec3 position;      // Position of the spot light in world space
 	vec3 direction;     // Direction of the spot light
-	mat4 lightSpaceMatrix;
 	vec3 color;         // Color of the spot light
+	mat4 lightSpaceMatrix;
 	float power;		  // Light source power
 };
 
@@ -80,13 +87,6 @@ layout (std430, binding = 3) buffer Lights {
     PointLight pointLights[8];
     SpotLight spotLights[8];
     DirectionalLight directionalLights[4];
-};
-
-layout (std140, binding = 0) uniform CameraData
-{
-    mat4 projection;
-    mat4 view;
-	vec3 viewPos;
 };
 
 layout(std140, binding = 4) uniform LightingData {
@@ -135,6 +135,10 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
     //shadow /= 9.0;
     shadow *= 0.11;
     
+    //ESM
+    //float closestDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy).r; 
+    //float shadow = exp(10.0 * (closestDepth - currentDepth));
+    
     // keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
     if(projCoords.z > 1.0)
         shadow = 1.0;
@@ -161,7 +165,7 @@ void main()
 	
 	vec3 L = vec3(0.0);
     vec3 N = normalize(normal);
-    vec3 E = normalize(viewPos - position);
+    vec3 E = normalize(ViewerPosition - position);
 
 	float attenuation = 0.0;
 	float lambertian = 0.0;
@@ -233,6 +237,10 @@ void main()
     }
     //LightColor += texture(DirLightingMap, gl_FragCoord.xy).r;
 	
-    FragColor *= vec4(LightColor + AmbientLight, 1.0); //
+    vec2 NDCSpaceFragPos = clipSpacePos.xy / clipSpacePos.w;
+    vec2 textureLookupPos = NDCSpaceFragPos * 0.5 + 0.5;
+    float visibility_factor = isSSAO ? texture(occlusionMap, textureLookupPos).r : 1.0;
+
+    FragColor *= vec4(LightColor + AmbientLight * visibility_factor, 1.0); //
 	FragColor = vec4(pow(FragColor.rgb, vec3(gamma)), 1.0);
 }

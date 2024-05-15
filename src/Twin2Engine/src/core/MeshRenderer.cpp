@@ -136,6 +136,11 @@ bool MeshRenderer::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
+void MeshRenderer::DrawEditor()
+{
+
+}
+
 InstantiatingModel MeshRenderer::GetModel() const
 {
 	return _model;

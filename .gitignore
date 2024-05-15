@@ -18,4 +18,4 @@ bin
 CompiledShaders/
 
 /\.vs/
-/res/logs
+/res/logs/

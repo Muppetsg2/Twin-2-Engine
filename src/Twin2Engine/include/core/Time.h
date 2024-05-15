@@ -7,6 +7,7 @@ namespace Twin2Engine::Core {
 
 	public:
 		static void Update();
+		static float GetTime();
 		static float GetDeltaTime();
 	};
 }

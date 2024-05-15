@@ -21,6 +21,7 @@ namespace Twin2Engine::Core {
 		virtual void Render();
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
+		virtual void DrawEditor() override;
 
 		bool IsTransparent() const;
 		void SetIsTransparent(bool value);

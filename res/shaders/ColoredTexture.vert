@@ -8,8 +8,9 @@ layout (location = 2) in vec3 aNormal;
 layout (location = 0) out vec3 position;
 layout (location = 1) out vec3 normal;
 layout (location = 2) out vec2 texCoords;
+layout (location = 3) out vec4 clipSpacePos;
 
-layout (location = 3) flat out uint materialIndex;
+layout (location = 4) flat out uint materialIndex;
 
 // INSTANCE DATA
 
@@ -27,6 +28,7 @@ layout (std140, binding = 0) uniform CameraData
     mat4 projection;
     mat4 view;
 	vec3 viewPos;
+    bool isSSAO;
 };
 
 void main()
@@ -38,6 +40,7 @@ void main()
     texCoords = aTexCoords;
     
     gl_Position = projection * view * instanceData.transform[instanceId] * vec4(aPos, 1.0);
+    clipSpacePos = gl_Position;
 
     materialIndex = materialIndexes.materialIndex[instanceId];
 }

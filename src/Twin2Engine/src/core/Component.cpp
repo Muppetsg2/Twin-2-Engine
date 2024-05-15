@@ -77,9 +77,7 @@ bool Component::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
-void Twin2Engine::Core::Component::DrawEditor()
-{
-}
+void Component::DrawEditor() {}
 
 void Component::SetEnable(bool enable)
 {

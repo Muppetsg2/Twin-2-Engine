@@ -1,5 +1,4 @@
-#ifndef _IMGUI_SINK_H_
-#define _IMGUI_SINK_H_
+#pragma once
 
 namespace Editor::Common
 {
@@ -34,10 +33,66 @@ namespace Editor::Common
     template<typename Mutex>
     class ImGuiSink : public spdlog::sinks::base_sink<Mutex> 
     {
-    public:
-        ImGuiSink(const std::string& filename)
+        std::list<std::string> _queueToSave;
+        std::string _filename;
+        std::mutex _mutex;
+        std::thread* _loggingThread;
+        std::chrono::duration<float, std::milli> _sleepTime;
+        bool _run = true;
+
+        static void ThreadFunction(ImGuiSink* sink)
         {
-            MessageHolder::logFile.open(filename);
+            std::ofstream logFile(sink->_filename);
+
+            std::list<std::string> queueToSave;
+
+            if (logFile.is_open())
+            {
+                while (sink->_run)
+                {
+                    sink->_mutex.lock();
+
+                    queueToSave.swap(sink->_queueToSave);
+
+                    sink->_mutex.unlock();
+
+                    for (const std::string& message : queueToSave)
+                    {
+                        logFile << message;
+                    }
+                    logFile.flush();
+
+                    queueToSave.clear();
+
+                    std::this_thread::sleep_for(sink->_sleepTime);
+                }
+            }
+
+            logFile.close();
+        }
+
+    public:
+        ImGuiSink(const std::string& filename, float sleepTimeMilis)
+        {
+            //MessageHolder::logFile.open(filename);
+            _filename = filename;
+            _sleepTime = std::chrono::duration<float, std::milli>(sleepTimeMilis);
+        }
+
+        void StartLogging()
+        {
+            _run = true;
+
+            _loggingThread = new std::thread(ThreadFunction, this);
+        }
+
+        void StopLogging()
+        {
+            _run = false;
+
+            _loggingThread->join();
+
+            delete _loggingThread;
         }
 
     protected:
@@ -47,19 +102,22 @@ namespace Editor::Common
             this->formatter_->format(msg, formatted);
             std::string message = fmt::to_string(formatted);
 
-            // Store the log message
             MessageHolder::logMessages.emplace_back(ImGuiLogMessage(message, msg.level, msg.source));
 
-            if (MessageHolder::logFile.is_open())
-            {
-                MessageHolder::logFile << message << std::endl;
-                MessageHolder::logFile.flush();
-            }
+            _mutex.lock();
+
+            _queueToSave.push_back(message);
+
+            _mutex.unlock();
+
+            //if (MessageHolder::logFile.is_open())
+            //{
+            //    MessageHolder::logFile << message << std::endl;
+            //    MessageHolder::logFile.flush();
+            //}
         }
 
         void flush_() override {}
-
-
 
     public:
         // Function to retrieve log messages
@@ -216,5 +274,3 @@ namespace Editor::Common
     std::vector<ImGuiLogMessage> MessageHolder::logMessages;
     std::ofstream MessageHolder::logFile;
 }
-
-#endif // !_IMGUI_SINK_H_

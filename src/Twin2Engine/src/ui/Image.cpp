@@ -54,6 +54,72 @@ YAML::Node Image::Serialize() const
 	return node;
 }
 
+void Image::DrawEditor()
+{
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Image##Component").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+
+		std::map<size_t, string> spriteNames = SpriteManager::GetAllSpritesNames();
+
+		spriteNames.insert(std::pair(0, "None"));
+
+		if (!spriteNames.contains(_spriteId)) {
+			_spriteId = 0;
+		}
+
+		if (ImGui::BeginCombo(string("Font##").append(id).c_str(), spriteNames[_spriteId].c_str())) {
+
+			bool clicked = false;
+			size_t choosed = _spriteId;
+			for (auto& item : spriteNames) {
+
+				if (ImGui::Selectable(item.second.append("##").append(id).c_str(), item.first == _spriteId)) {
+
+					if (clicked) continue;
+
+					choosed = item.first;
+					clicked = true;
+				}
+			}
+
+			if (clicked) {
+				if (choosed != 0) {
+					SetSprite(choosed);
+				}
+				else {
+					_spriteId = 0;
+				}
+			}
+
+			ImGui::EndCombo();
+		}
+
+		float v = _width;
+		ImGui::DragFloat(string("Width##").append(id).c_str(), &v, 0.1f);
+
+		if (v != _width) {
+			SetWidth(v);
+		}
+
+		v = _height;
+		ImGui::DragFloat(string("Height##").append(id).c_str(), &v, 0.1f);
+
+		if (v != _height) {
+			SetHeight(v);
+		}
+
+		glm::vec4 c = _color;
+		ImGui::ColorEdit4(string("Color##").append(id).c_str(), glm::value_ptr(c));
+
+		if (c != _color) {
+			SetColor(c);
+		}
+
+		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
+	}
+}
+
 void Image::SetSprite(const std::string& spriteAlias) {
 	_spriteId = hash<string>()(spriteAlias);
 }
@@ -65,6 +131,8 @@ void Image::SetSprite(size_t spriteId)
 
 void Image::SetColor(const vec4& color)
 {
+	if (color.a != 1.f)
+		_isTransparent = true;
 	_color = color;
 }
 

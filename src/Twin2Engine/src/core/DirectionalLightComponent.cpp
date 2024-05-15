@@ -16,16 +16,7 @@ void DirectionalLightComponent::Initialize()
 	};
 
 	OnViewerChange = [this]() {
-		CameraComponent* camera = CameraComponent::GetMainCamera();
-		CameraData data{
-			.projection = camera->GetProjectionMatrix(),
-			.view = camera->GetViewMatrix(),
-			.pos = camera->GetTransform()->GetGlobalPosition(),
-			.front = camera->GetFrontDir(),
-			.farPlane = camera->GetFarPlane(),
-			.isPerspective = camera->GetCameraType() == CameraType::PERSPECTIVE,
-		};
-		GetTransform()->SetGlobalPosition(LightingController::RecalculateDirLightSpaceMatrix(light, data));
+		GetTransform()->SetGlobalPosition(LightingController::RecalculateDirLightSpaceMatrix(light));
 	};
 
 	//light->position = GetTransform()->GetGlobalPosition();
@@ -33,6 +24,7 @@ void DirectionalLightComponent::Initialize()
 	glGenFramebuffers(1, &light->shadowMapFBO);
 	
 	glGenTextures(1, &light->shadowMap);
+	glActiveTexture(GL_TEXTURE0 + LightingController::MAPS_BEGINNING + 3);
 	glBindTexture(GL_TEXTURE_2D, light->shadowMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
 		LightingController::SHADOW_WIDTH, LightingController::SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
@@ -81,8 +73,8 @@ void DirectionalLightComponent::OnDestroy()
 	LightingController::Instance()->ViewerTransformChanged -= OnViewerChangeId;
 	LightingController::Instance()->UpdateDirLights();
 
-	glDeleteFramebuffers(1, &light->shadowMapFBO);
 	glDeleteTextures(GL_TEXTURE_2D, &light->shadowMap);
+	glDeleteFramebuffers(1, &light->shadowMapFBO);
 
 	delete light;
 }
@@ -126,4 +118,30 @@ bool DirectionalLightComponent::Deserialize(const YAML::Node& node)
 	light->power = node["power"].as<float>();
 
 	return true;
+}
+
+void DirectionalLightComponent::DrawEditor()
+{
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Directional Light##Component").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+
+		glm::vec3 v = light->direction;
+		ImGui::DragFloat3(string("Direction##").append(id).c_str(), glm::value_ptr(v), .1f, -1.f, 1.f);
+		if (v != light->direction) {
+			SetDirection(v);
+		}
+
+		v = light->color;
+		ImGui::ColorEdit3(string("Color##").append(id).c_str(), glm::value_ptr(v));
+		if (v != light->color) {
+			SetColor(v);
+		}
+
+		float p = light->power;
+		ImGui::DragFloat(string("Power##").append(id).c_str(), &p);
+		if (p != light->power) {
+			SetPower(p);
+		}
+	}
 }

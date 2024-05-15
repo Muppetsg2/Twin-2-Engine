@@ -99,7 +99,7 @@ Collision* GameCollider::collide(Collider* other) {
 
 				if (isTrigger) {
 					//Execute OnTriggerEnter
-					SPDLOG_INFO("{} - OnTriggerEnter", colliderId);
+					SPDLOG_INFO("{} - OnTriggerEnter", colliderComponent->colliderId);
 					Collision* col = new Collision();
 					col->collider = (GameCollider*)collision->collider;
 					col->otherCollider = (GameCollider*)collision->otherCollider;
@@ -116,7 +116,7 @@ Collision* GameCollider::collide(Collider* other) {
 					if (isStatic) {
 						if (((GameCollider*)other)->isStatic) {
 							//separacja obu gameobjektów
-							SPDLOG_INFO("{} - separacja obu gameobjektów ({}, {}, {})", colliderId, collision->separation.x,
+							SPDLOG_INFO("{} - separacja obu gameobjektów ({}, {}, {})", colliderComponent->colliderId, collision->separation.x,
 								collision->separation.y, collision->separation.z);
 							colliderComponent->GetTransform()->SetGlobalPosition(
 								colliderComponent->GetTransform()->GetGlobalPosition() + collision->separation);
@@ -154,7 +154,7 @@ Collision* GameCollider::collide(Collider* other) {
 					}/**/
 
 					//Execute OnCollisionEnter
-					SPDLOG_INFO("{} - OnCollisionEnter", colliderId);
+					SPDLOG_INFO("{} - OnCollisionEnter", colliderComponent->colliderId);
 					Collision* col = new Collision();
 					col->collider = (GameCollider*)collision->collider;
 					col->otherCollider = (GameCollider*)collision->otherCollider;
@@ -177,13 +177,13 @@ Collision* GameCollider::collide(Collider* other) {
 
 				if (isTrigger) {
 					//Execute OnTriggerExit
-					SPDLOG_INFO("{} - OnTriggerExit", colliderId);
+					SPDLOG_INFO("{} - OnTriggerExit", colliderComponent->colliderId);
 					OnTriggerExit.Invoke((GameCollider*)other);
 					((GameCollider*)other)->OnTriggerExit.Invoke(this);
 				}
 				else {
 					//Execute OnCollisionExit
-					SPDLOG_INFO("{} - OnCollisionExit", colliderId);
+					SPDLOG_INFO("{} - OnCollisionExit", colliderComponent->colliderId);
 					OnCollisionExit.Invoke((GameCollider*)other);
 					((GameCollider*)other)->OnCollisionExit.Invoke(this);
 				}

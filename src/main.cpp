@@ -382,7 +382,10 @@ int main(int, char**)
 #pragma region HexCollider
     //GameObject* h_go = SceneManager::CreateGameObject();
     //HexagonalColliderComponent* hc = h_go->AddComponent<HexagonalColliderComponent>();
-    //hc->SetLocalPosition(0.0f, -0.5f, 0.5f);
+    //hc->SetTrigger(true);
+    //hc->SetLayer(Layer::IGNORE_COLLISION);
+    //hc->SetLocalPosition(0.0f, -0.5f, 0.0f);
+    //PrefabManager::SaveAsPrefab(h_go, "HCCpref.prefab");
 #pragma endregion
 
 #if _DEBUG
@@ -428,7 +431,7 @@ void input()
         Ray ray = c->GetScreenPointRay(Input::GetCursorPos());
         CollisionManager::Instance()->Raycast(ray, raycast);
         if (raycast.collider != nullptr) {
-            SPDLOG_INFO("Click {}. collider: {}\t pos: \t{}\t{}\t{}", i++, raycast.collider->colliderId, raycast.position.x, raycast.position.y, raycast.position.z);
+            SPDLOG_INFO("[Click {}].\t {}. collider:\ncolpos: \t{}\t{}\t{} \nintpos: \t{}\t{}\t{}", i++, raycast.collider->colliderId, raycast.collider->collider->shapeColliderData->Position.x, raycast.collider->collider->shapeColliderData->Position.y, raycast.collider->collider->shapeColliderData->Position.z, raycast.position.x, raycast.position.y, raycast.position.z);
         }
         else {
             SPDLOG_INFO("Collision not happened!");

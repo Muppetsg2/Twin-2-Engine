@@ -699,6 +699,7 @@ Ray CameraComponent::GetScreenPointRay(glm::vec2 screenPosition) const
 	float y = 2.0f * screenPosition.y / size.y;
 	glm::vec3 Direction = _front + _right * (x * tanf(radians(_fov)) * size.x / size.y) + cross(_right, _front) * (y * tanf(radians(_fov)));
 	Direction = glm::normalize(Direction);
+	//SPDLOG_INFO("CF\t{}\t{}\t{}\n\t\t\t\tD\t{}\t{}\t{}", _front.x, _front.y, _front.z, Direction.x, Direction.y, Direction.z);
 	//float z = 1.0f; // NDC Z value (should be 1 for far plane)
 
 	// // Unproject to view space

@@ -22,8 +22,6 @@ namespace Twin2Engine::Physic {
 		std::unordered_set<GameCollider*> LastFrameCollisions;
 
 	public:
-		unsigned int colliderId = 0;
-
 		bool enabled = false;
 		bool isTrigger = false;
 		bool isStatic = false;

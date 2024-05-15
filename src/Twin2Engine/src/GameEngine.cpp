@@ -120,6 +120,7 @@ void GameEngine::Deserializers()
         },
         [](Component* comp, const YAML::Node& node) -> void {
             ColliderComponent* collider = static_cast<ColliderComponent*>(comp);
+            collider->colliderId = node["colliderId"].as<unsigned int>();
             collider->SetTrigger(node["trigger"].as<bool>());
             collider->SetStatic(node["static"].as<bool>());
             collider->SetLayer(node["layer"].as<Layer>());

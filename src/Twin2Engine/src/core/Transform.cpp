@@ -370,6 +370,10 @@ void Twin2Engine::Core::Transform::SetParent(Transform* parent)
 		_parent = parent;
 
 		//_dirtyFlags.dirtyFlag = true;
+		_dirtyFlags.dirtyFlagGlobalPosition = true;
+		_dirtyFlags.dirtyFlagGlobalRotation = true;
+		_dirtyFlags.dirtyFlagGlobalScale = true;
+
 		_dirtyFlags.dirtyFlagInHierarchy = true;
 
 		CallParentChanged();

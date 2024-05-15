@@ -1,4 +1,5 @@
 #include <GameEngine.h>
+#include <tracy/Tracy.hpp>
 
 using namespace Twin2Engine;
 using namespace Twin2Engine::Tools;
@@ -269,22 +270,37 @@ void GameEngine::EndFrame()
     Window::GetInstance()->Update();
 }
 
+const char* const tracy_FrameName = "Frame";
+const char* const tracy_OnInputFrameName = "OnInput";
+const char* const tracy_UpdateFrameName = "Update";
+const char* const tracy_RenderFrameName = "Render";
+const char* const tracy_EndFrameName = "EndFrame";
+
 void GameEngine::Loop()
 {
     // Main loop
     while (!Window::GetInstance()->IsClosed())
     {
+        FrameMarkNamed(tracy_FrameName);
         // Process I/O operations here
+        FrameMarkStart(tracy_OnInputFrameName);
         OnInput();
+        FrameMarkEnd(tracy_OnInputFrameName);
 
         // Update game objects' state here
+        FrameMarkStart(tracy_UpdateFrameName);
         Update();
+        FrameMarkEnd(tracy_UpdateFrameName);
 
         // OpenGL rendering code here
+        FrameMarkStart(tracy_RenderFrameName);
         Render();
+        FrameMarkEnd(tracy_RenderFrameName);
 
         // End frame and swap buffers (double buffering)
+        FrameMarkStart(tracy_EndFrameName);
         EndFrame();
+        FrameMarkEnd(tracy_EndFrameName);
     }
 }
 
@@ -331,6 +347,7 @@ bool GameEngine::Init(const string& window_name, int32_t window_width, int32_t w
 
 void GameEngine::Start()
 {
+    tracy::SetThreadName("GameEngine");
     Loop();
     End();
 }

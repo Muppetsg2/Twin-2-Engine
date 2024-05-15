@@ -25,6 +25,11 @@ source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${GAMESCRIPTS_PRIVATE_INCLUDE_
 # Defining library
 add_library(${PROJECT_NAME} STATIC ${GAMESCRIPTS_SOURCE_FILES})
 
+if(MSVC)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC NOMINMAX)
+    target_compile_options(${PROJECT_NAME} PUBLIC "/Zc:preprocessor")
+endif()
+
 # Adding include to library
 target_include_directories(${PROJECT_NAME}
 						PUBLIC 

@@ -25,6 +25,11 @@ source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${GENERATION_PRIVATE_INCLUDE_F
 # Defining library
 add_library(${PROJECT_NAME} STATIC ${GENERATION_SOURCE_FILES})
 
+if(MSVC)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC NOMINMAX)
+    target_compile_options(${PROJECT_NAME} PUBLIC "/Zc:preprocessor")
+endif()
+
 # Adding include to library
 target_include_directories(${PROJECT_NAME}
 						PUBLIC 

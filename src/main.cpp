@@ -572,7 +572,7 @@ void init_imgui()
     // - Read 'misc/fonts/README.txt' for more instructions and details.
     // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
     //io.Fonts->AddFontDefault();
-    ImFont* font = io.Fonts->AddFontFromFileTTF("./res/fonts/NotoSans-Regular.ttf", 16.f, nullptr, ImGui::GetGlyphRangesPolish());
+    ImFont* font = io.Fonts->AddFontFromFileTTF("./res/fonts/NotoSans-Regular.ttf", 18.f, nullptr, ImGui::GetGlyphRangesPolish());
     IM_ASSERT(font != NULL);
     io.Fonts->Build();
 }
@@ -607,6 +607,7 @@ void render_imgui()
         static bool _fontOpened = false;
         static bool _audioOpened = false;
         static bool _materialsOpened = false;
+        static bool _texturesOpened = false;
 
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("File##Menu"))
@@ -624,6 +625,7 @@ void render_imgui()
                 ImGui::MenuItem("Font Manager##Resources", NULL, &_fontOpened);
                 ImGui::MenuItem("Audio Manager##Resources", NULL, &_audioOpened);
                 ImGui::MenuItem("Materials Manager##Resources", NULL, &_materialsOpened);
+                ImGui::MenuItem("Textures Manager##Resources", NULL, &_texturesOpened);
                 ImGui::EndMenu();
             }
             ImGui::EndMenuBar();
@@ -637,6 +639,9 @@ void render_imgui()
 
         if (_materialsOpened)
             MaterialsManager::DrawEditor(&_materialsOpened);
+
+        if (_texturesOpened)
+            TextureManager::DrawEditor(&_texturesOpened);
 
         Editor::Common::ScriptableObjectEditorManager::Draw();
 

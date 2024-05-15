@@ -10,7 +10,6 @@ std::hash<std::string> ShaderManager::stringHash;
 std::list<ShaderManager::ShaderProgramData> ShaderManager::loadedShaders;
 
 Shader* ShaderManager::DepthShader = nullptr;
-Shader* ShaderManager::CameraDepthShader = nullptr;
 
 const std::unordered_map<size_t, int> ShaderManager::shaderTypeMapping
 {
@@ -215,8 +214,6 @@ inline void ShaderManager::CheckProgramLinkingSuccess(GLuint programId)
 void ShaderManager::Init()
 {
     DepthShader = GetShaderProgram("origin/DepthShader");
-    CameraDepthShader = GetShaderProgram("origin/CameraDepthShader");
-
 }
 
 void ShaderManager::UnloadAll()
@@ -225,7 +222,6 @@ void ShaderManager::UnloadAll()
         delete data.shader;
     }
     DepthShader = nullptr;
-    CameraDepthShader = nullptr;
     loadedShaders.clear();
 }
 

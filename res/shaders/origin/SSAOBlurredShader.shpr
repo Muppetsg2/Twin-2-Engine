@@ -1,0 +1,6 @@
+shaderprogram:
+  name: origin/SSAOBlurredShader
+  shaders:
+    - screen.vert
+    - ssaoBlur.frag
+  parameters:

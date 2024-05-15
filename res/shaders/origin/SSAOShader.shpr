@@ -1,0 +1,6 @@
+shaderprogram:
+  name: origin/SSAOShader
+  shaders:
+    - ssao.vert
+    - ssao.frag
+  parameters:

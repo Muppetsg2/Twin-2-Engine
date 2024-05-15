@@ -119,6 +119,11 @@ namespace Twin2Engine::Manager {
 		static Graphic::Texture2D* LoadTexture2D(const std::string& path, const TextureData& data = TextureData());
 		static Graphic::Texture2D* LoadTexture2D(const std::string& path, const TextureFileFormat& internalFormat, const Graphic::TextureFormat& format, const TextureData& data = TextureData());
 
+		static std::string GetTexture2DName(size_t managerId);
+		static std::string GetTexture2DName(const std::string& path);
+
+		static std::map<size_t, std::string> GetAllTexture2DNames();
+
 		static void UnloadAll();
 
 		static YAML::Node Serialize();

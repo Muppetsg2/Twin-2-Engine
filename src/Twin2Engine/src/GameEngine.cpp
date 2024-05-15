@@ -31,8 +31,9 @@ void GameEngine::Deserializers()
             cam->SetFarPlane(node["farPlane"].as<float>());
             cam->SetCameraFilter(node["cameraFilter"].as<size_t>());
             cam->SetCameraType(node["cameraType"].as<CameraType>());
+            cam->SetDisplayMode(node["cameraMode"].as<CameraDisplayMode>());
             cam->SetSamples(node["samples"].as<size_t>());
-            cam->SetRenderResolution(node["renderRes"].as<RenderResolution>());
+            cam->SetRenderResolution(node["renderRes"].as<CameraRenderResolution>());
             cam->SetGamma(node["gamma"].as<float>());
             cam->SetWorldUp(node["worldUp"].as<vec3>());
             cam->SetIsMain(node["isMain"].as<bool>());

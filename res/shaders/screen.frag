@@ -10,6 +10,7 @@ layout (std140, binding = 1) uniform WindowData
 in vec2 TexCoord;
 uniform sampler2D screenTexture;
 uniform sampler2D depthTexture;
+uniform sampler2D ssaoTexture;
 
 out vec4 Color;  
 
@@ -17,8 +18,10 @@ uniform bool hasBlur;
 uniform bool hasVignette;
 uniform bool hasNegative;
 uniform bool hasGrayscale;
-uniform bool displayDepth;
 uniform bool hasOutline;
+
+uniform bool displayDepth;
+uniform bool displaySSAO;
 
 vec3 applyVignette(vec3 color) {
     vec2 position = TexCoord.xy - vec2(0.5);  
@@ -77,10 +80,10 @@ bool IsEdge(vec2 coord) {
 
 vec3 getColor(vec2 coord) {
     vec3 outlineColor = vec3(1.0);
-    vec3 res = displayDepth ? getDepthValue(coord) : texture(screenTexture, coord).rgb;
+    vec3 res = displayDepth ? getDepthValue(coord) : (displaySSAO ? texture(ssaoTexture, coord).rgb : texture(screenTexture, coord).rgb);
 
     if (hasOutline) {
-        res = IsEdge(coord) ? (displayDepth ? outlineColor / 2.0 : outlineColor) : res;
+        res = IsEdge(coord) ? ((displayDepth || displaySSAO) ? outlineColor / 2.0 : outlineColor) : res;
     }
 
     return res;

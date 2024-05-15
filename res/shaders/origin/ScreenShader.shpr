@@ -1,0 +1,6 @@
+shaderprogram:
+  name: origin/ScreenShader
+  shaders:
+    - screen.vert
+    - screen.frag
+  parameters:

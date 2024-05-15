@@ -82,7 +82,7 @@ size_t AudioManager::LoadAudio(string path)
     }
     else
     {
-        SPDLOG_ERROR("Audio file '{0}' not found!", path);
+        SPDLOG_ERROR("AudioManager::Audio file '{0}' not found!", path);
         return 0;
     }
 }

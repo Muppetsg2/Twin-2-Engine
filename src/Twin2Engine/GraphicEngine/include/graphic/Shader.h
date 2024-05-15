@@ -34,6 +34,7 @@ namespace Twin2Engine
             void SetVec3(const std::string& name, const glm::vec3& value) const;
             void SetVec4(const std::string& name, const glm::vec4& value) const;
             void SetMat4(const std::string& name, glm::mat4& value) const;
+            void SetMat3(const std::string& name, glm::mat3& value) const;
 
             glm::mat4 GetMat4(const std::string& name) const;
         };

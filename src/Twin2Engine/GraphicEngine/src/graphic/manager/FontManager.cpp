@@ -15,6 +15,17 @@ ImFileDialogInfo FontManager::_fileDialogInfo;
 
 map<size_t, string> FontManager::_fontsPaths;
 
+void FontManager::UnloadFont(size_t fontId) {
+    if (_fonts.find(fontId) == _fonts.end()) return;
+    delete _fonts[fontId];
+    _fonts.erase(fontId);
+    _fontsPaths.erase(fontId);
+}
+
+void FontManager::UnloadFont(const string& fontPath) {
+    UnloadFont(hash<string>()(fontPath));
+}
+
 Font* FontManager::LoadFont(const string& fontPath) {
 
     if (filesystem::exists(fontPath)) {
@@ -76,17 +87,6 @@ std::map<size_t, std::string> FontManager::GetAllFontsNames() {
         names[item.first] = std::filesystem::path(item.second).stem().string();
     }
     return names;
-}
-
-void FontManager::UnloadFont(size_t fontId) {
-    if (_fonts.find(fontId) == _fonts.end()) return;
-    delete _fonts[fontId];
-    _fonts.erase(fontId);
-    _fontsPaths.erase(fontId);
-}
-
-void FontManager::UnloadFont(const string& fontPath) {
-    UnloadFont(hash<string>()(fontPath));
 }
 
 void FontManager::UnloadAll() {

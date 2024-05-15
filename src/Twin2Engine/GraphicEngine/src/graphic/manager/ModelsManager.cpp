@@ -973,11 +973,19 @@ ModelData* ModelsManager::LoadModelData(const std::string& modelPath)
             LoadHexagon(modelData);
         }
         else {
+            if (std::filesystem::exists(modelPath))
+            {
 #if ASSIMP_LOADING
-            LoadModelAssimp(modelPath, modelData);
+                LoadModelAssimp(modelPath, modelData);
 #elif TINYGLTF_LOADING
-            LoadModelGLTF(modelPath, modelData);
+                LoadModelGLTF(modelPath, modelData);
 #endif
+            }
+            else
+            {
+                SPDLOG_ERROR("Model file '{0}' not found!", modelPath);
+                return nullptr;
+            }
         }
 
         loadedModels[strHash] = modelData;

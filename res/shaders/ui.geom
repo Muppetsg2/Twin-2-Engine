@@ -10,10 +10,12 @@ layout (std140, binding = 1) uniform WindowData
     float gamma;
 };
 
-layout (std140, binding = 0) uniform Matrices
+layout (std140, binding = 0) uniform CameraData
 {
     mat4 projection;
     mat4 view;
+	vec3 viewPos;
+    bool isSSAO;
 };
 
 layout (std140, binding = 4) uniform CanvasData {

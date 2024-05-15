@@ -191,6 +191,8 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 	_materialsPaths[materialNameHash] = materialName;
 
 	LightingController::Instance()->BindLightBuffors(materialData->shader);
+	materialData->shader->Use();
+	materialData->shader->SetInt("occlusionMap", 31);
 	
 	return Material(materialData);
 }

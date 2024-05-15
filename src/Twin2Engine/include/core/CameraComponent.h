@@ -52,7 +52,7 @@ namespace Twin2Engine::Core {
 		static Graphic::Shader* _ssaoBlurredShader;
 		static Graphic::Shader* _depthShader;
 		static Graphic::Frustum _currentCameraFrustum;
-		static mat3 _ssaoKernel;
+		static std::vector<glm::vec3> _ssaoKernel;
 		static float* _ssaoTextureData;
 		static GLuint _ssaoNoiseTexture;
 
@@ -84,6 +84,7 @@ namespace Twin2Engine::Core {
 		bool _isMain = false;
 		bool _isInit = false;
 		bool _isFrustumCulling = true;
+		bool _isSsao = true;
 
 		float _near = 0.1f;
 		float _far = 1000.f;
@@ -125,6 +126,7 @@ namespace Twin2Engine::Core {
 
 		bool IsMain() const;
 		bool IsFrustumCullingOn() const;
+		bool IsSSAO() const;
 
 		void SetFOV(float angle);
 		void SetGamma(float gamma);
@@ -143,10 +145,12 @@ namespace Twin2Engine::Core {
 
 		void SetIsMain(bool value);
 		void SetFrustumCulling(bool value);
+		void SetSSAO(bool value);
 
 		void Render();
 
 		void BindRenderTexture(unsigned int index = 0);
+		void BindSSAOTexture(unsigned int index = 0);
 		void BindDepthTexture(unsigned int index = 0);
 
 		static CameraComponent* GetMainCamera();

@@ -1,9 +1,9 @@
 #include <core/AudioComponent.h>
 #include <manager/AudioManager.h>
 #include <manager/SceneManager.h>
-#include <core/MathExtensions.h>
 #include <format>
 #include <cmath>
+#include <core/MathExtensions.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;

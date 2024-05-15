@@ -37,6 +37,8 @@ void GameEngine::Deserializers()
             cam->SetGamma(node["gamma"].as<float>());
             cam->SetWorldUp(node["worldUp"].as<vec3>());
             cam->SetIsMain(node["isMain"].as<bool>());
+            cam->SetFrustumCulling(node["isFrustum"].as<bool>());
+            cam->SetSSAO(node["isSSAO"].as<bool>());
         }
     );
 

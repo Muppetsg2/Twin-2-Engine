@@ -4,6 +4,7 @@
 #include <graphic/Window.h>
 #include <GraphicEnigine.h>
 #include <graphic/manager/ModelsManager.h>
+#include <core/MathExtensions.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Tools;
@@ -16,7 +17,8 @@ GLuint CameraComponent::_uboCameraData = 0;
 STD140Offsets CameraComponent::_uboCameraDataOffsets{
 	STD140Variable<mat4>("projection"),
 	STD140Variable<mat4>("view"),
-	STD140Variable<vec3>("viewPos")
+	STD140Variable<vec3>("viewPos"),
+	STD140Variable<bool>("isSSAO")
 };
 GLuint CameraComponent::_uboWindowData = 0;
 STD140Offsets CameraComponent::_uboWindowDataOffsets{
@@ -32,8 +34,8 @@ Shader* CameraComponent::_ssaoBlurredShader = nullptr;
 Shader* CameraComponent::_depthShader = nullptr;
 Frustum CameraComponent::_currentCameraFrustum = Graphic::Frustum();
 
-mat3 CameraComponent::_ssaoKernel = mat3();
-float* _ssaoTextureData = nullptr;
+std::vector<glm::vec3> CameraComponent::_ssaoKernel = std::vector<glm::vec3>();
+float* CameraComponent::_ssaoTextureData = nullptr;
 GLuint CameraComponent::_ssaoNoiseTexture = NULL;
 
 void CameraComponent::OnTransformChange(Transform* trans)
@@ -110,40 +112,34 @@ void CameraComponent::SetFrontDir(vec3 dir)
 
 void CameraComponent::GenerateSSAOKernel()
 {
-	srand(time(0));
-	mat3 kernel = mat3();
-	for (int i = 0; i < 3; ++i) {
+	std::uniform_real_distribution<float> randomFloats(0.0, 1.0); // random floats between [0.0, 1.0]
+	std::default_random_engine generator;
+	for (int i = 0; i < 64; ++i) {
 		vec3 sample = vec3(
-				rand() * 2.0 - 1.0,
-				rand() * 2.0 - 1.0,
-				rand()
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator)
 		);
 
 		// normalize sample
 		sample = normalize(sample);
-		// After normaliztion the sample points lie on the surface of the hemisphere
-		// and each sample point vector has the same length.
-		// We want to randomly change the sample points to sample more 
-		// points inside the hemisphere as close to our fragment as possible.
-		// we will use an accelerating interpolation to do this.
-		float scale = i / 3;
-		float interpolatedScale = glm::mix(0.1, 1.0, scale * scale);
-		sample *= interpolatedScale;
-		kernel[i] = sample;
+		float scale = (float)i / 64.0;
+		scale = lerpf(0.1f, 1.0f, scale * scale);
+		sample *= scale;
+		_ssaoKernel.push_back(sample);
 	}
-
-	_ssaoKernel = kernel;
 }
 
 void CameraComponent::GenerateSSAONoiseTexture()
 {
-	srand(time(0));
+	std::uniform_real_distribution<float> randomFloats(0.0, 1.0); // random floats between [0.0, 1.0]
+	std::default_random_engine generator;
 	_ssaoTextureData = new float[16 * 3];
 	for (int i = 0; i < 16; i++)
 	{
 		vec3 sample = vec3(
-			rand() * 2.0 - 1.0,
-			rand() * 2.0 - 1.0,
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator) * 2.0 - 1.0,
 			0.0
 		);
 		_ssaoTextureData[i * 3 + 0] = sample[0];
@@ -279,6 +275,11 @@ bool CameraComponent::IsMain() const
 bool CameraComponent::IsFrustumCullingOn() const
 {
 	return _isFrustumCulling;
+}
+
+bool CameraComponent::IsSSAO() const
+{
+	return _isSsao;
 }
 
 void CameraComponent::SetFOV(float angle)
@@ -451,6 +452,11 @@ void CameraComponent::SetFrustumCulling(bool value)
 	_isFrustumCulling = value;
 }
 
+void CameraComponent::SetSSAO(bool value)
+{
+	_isSsao = value;
+}
+
 void CameraComponent::Render()
 {
 	if (_isFrustumCulling)
@@ -464,6 +470,7 @@ void CameraComponent::Render()
 	tempStruct.Set("projection", this->GetProjectionMatrix());
 	tempStruct.Set("view", this->GetViewMatrix());
 	tempStruct.Set("viewPos", this->GetTransform()->GetGlobalPosition());
+	tempStruct.Set("isSSAO", _isSsao);
 
 	//Jesli wiecej kamer i kazda ma ze swojego kata dawac obraz
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
@@ -507,34 +514,31 @@ void CameraComponent::Render()
 
 		//LightingSystem::LightingController::Instance()->RenderShadowMaps();
 
-		// SSAO MAP
-		glBindFramebuffer(GL_FRAMEBUFFER, _ssaoFBO);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _ssaoMap, 0);
-		glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		if (_isSsao) {
+			// SSAO MAP
+			glBindFramebuffer(GL_FRAMEBUFFER, _ssaoFBO);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _ssaoMap, 0);
+			glClearColor(1.f, 1.f, 1.f, 1.f);
+			glClear(GL_COLOR_BUFFER_BIT);
 
 			_ssaoShader->Use();
-			/*
-			gl.uniformMatrix4fv(
-				gl.getUniformLocation(ssaoShaderProgram, `u_projection_inverse`),
-					false,
-					camera.getProjectionInverseMatrix()
-				);
-			*/
 			BindDepthTexture(0);
 			_ssaoShader->SetInt("depthTexture", 0);
 			glActiveTexture(GL_TEXTURE0 + 1);
 			glBindTexture(GL_TEXTURE_2D, _ssaoNoiseTexture);
 			_ssaoShader->SetInt("noiseTexture", 1);
-			_ssaoShader->SetFloat("sampleRad", 0.5);
-			_ssaoShader->SetMat3("kernel", _ssaoKernel);
+			_ssaoShader->SetFloat("sampleRadius", 0.5);
+			_ssaoShader->SetFloat("bias", 0.025);
+			for (size_t i = 0; i < 64; ++i) {
+				_ssaoShader->SetVec3(string("kernel[").append(std::to_string(i)).append("]"), _ssaoKernel[i]);
+			}
 
-			GraphicEngine::DepthRender();
+			_screenPlane.GetMesh(0)->Draw(1);
 
 			glBindTexture(GL_TEXTURE_2D, 0);
 
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _ssaoBlurredMap, 0);
-		glClear(GL_COLOR_BUFFER_BIT);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _ssaoBlurredMap, 0);
+			glClear(GL_COLOR_BUFFER_BIT);
 
 			_ssaoBlurredShader->Use();
 			glActiveTexture(GL_TEXTURE0 + 0);
@@ -543,12 +547,16 @@ void CameraComponent::Render()
 
 			_screenPlane.GetMesh(0)->Draw(1);
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
 
 		// RENDER MAP
 		glBindFramebuffer(GL_FRAMEBUFFER, _msRenderMapFBO);
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			glActiveTexture(GL_TEXTURE0 + 31);
+			glBindTexture(GL_TEXTURE_2D, _ssaoBlurredMap);
 
 			GraphicEngine::Render();
 
@@ -576,7 +584,6 @@ void CameraComponent::Render()
 		_screenShader->SetBool("hasNegative", (_filters & (uint8_t)CameraRenderFilter::NEGATIVE) != 0);
 		_screenShader->SetBool("hasGrayscale", (_filters & (uint8_t)CameraRenderFilter::GRAYSCALE) != 0);
 		_screenShader->SetBool("hasOutline", (_filters & (uint8_t)CameraRenderFilter::OUTLINE) != 0);
-		_screenShader->SetBool("displaySSAO", (_filters & (uint8_t)CameraRenderFilter::OUTLINE) != 0);
 
 		_screenShader->SetBool("displayDepth", _mode == CameraDisplayMode::DEPTH);
 		_screenShader->SetBool("displaySSAO", _mode == CameraDisplayMode::SSAO_MAP);
@@ -589,6 +596,12 @@ void CameraComponent::BindRenderTexture(unsigned int index)
 {
 	glActiveTexture(GL_TEXTURE0 + index);
 	glBindTexture(GL_TEXTURE_2D, _renderMap);
+}
+
+void CameraComponent::BindSSAOTexture(unsigned int index)
+{
+	glActiveTexture(GL_TEXTURE0 + index);
+	glBindTexture(GL_TEXTURE_2D, _ssaoBlurredMap);
 }
 
 void CameraComponent::BindDepthTexture(unsigned int index)
@@ -632,6 +645,7 @@ void CameraComponent::Initialize()
 		tempStruct.Set("projection", this->GetProjectionMatrix());
 		tempStruct.Set("view", this->GetViewMatrix());
 		tempStruct.Set("viewPos", this->GetTransform()->GetGlobalPosition());
+		tempStruct.Set("isSSAO", _isSsao);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
@@ -749,7 +763,7 @@ void CameraComponent::Initialize()
 	glGenTextures(1, &_ssaoMap);
 	glBindTexture(GL_TEXTURE_2D, _ssaoMap);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, wSize.x / 2, wSize.y / 2, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, wSize.x, wSize.y, 0, GL_RED, GL_FLOAT, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -760,7 +774,7 @@ void CameraComponent::Initialize()
 	glGenTextures(1, &_ssaoBlurredMap);
 	glBindTexture(GL_TEXTURE_2D, _ssaoBlurredMap);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, wSize.x / 2, wSize.y / 2, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, wSize.x, wSize.y, 0, GL_RED, GL_FLOAT, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -900,6 +914,8 @@ YAML::Node CameraComponent::Serialize() const
 	node["gamma"] = _gamma;
 	node["worldUp"] = _worldUp;
 	node["isMain"] = _isMain;
+	node["isFrustum"] = _isFrustumCulling;
+	node["isSSAO"] = _isSsao;
 	return node;
 }
 
@@ -1040,6 +1056,7 @@ void CameraComponent::DrawEditor()
 		ImGui::InputFloat(string("Gamma##").append(id).c_str(), &this->_gamma);
 		// Brighteness
 		// Contrast
+		ImGui::Checkbox(string("SSAO##").append(id).c_str(), &this->_isSsao);
 		ImGui::Checkbox(string("Frustum Culling##").append(id).c_str(), &this->_isFrustumCulling);
 	}
 }

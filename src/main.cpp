@@ -82,9 +82,6 @@ void render_imgui();
 void end_imgui();
 #endif
 
-float fmapf(float input, float currStart, float currEnd, float expectedStart, float expectedEnd);
-double mod(double val1, double val2);
-
 #pragma endregion
 
 constexpr const char* WINDOW_NAME = "Twin^2 Engine";

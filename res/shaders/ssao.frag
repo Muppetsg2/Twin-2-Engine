@@ -4,6 +4,7 @@ layout (std140, binding = 0) uniform CameraData
     mat4 projection;
     mat4 view;
 	vec3 viewPos;
+    bool isSSAO;
 };
 
 layout (std140, binding = 1) uniform WindowData
@@ -14,39 +15,24 @@ layout (std140, binding = 1) uniform WindowData
     float gamma;
 };
 
-in VS_OUT {
-	vec2 texCoord;
-	vec3 normal;
-	vec3 fragPos;
-} fs_in;
-
-const vec2 HALF_2 = vec2(0.5);      
+in vec2 TexCoord;
+   
 uniform sampler2D depthTexture;
 uniform sampler2D noiseTexture;
 
-// visibility radius
-uniform float sampleRad;
-uniform mat3 kernel;
+uniform float sampleRadius; // 0.5
+uniform float bias; // 0.025
+uniform vec3 kernel[64];
 
-// the fragment shader output is a single component floating point value between 0.0 to 1.0.
-out float Color;
+out vec4 Color;
 
-// this function calculates view position of a fragment from its depth value
-// sampled from the depth texture.
-vec3 calcViewPosition(vec2 coords) {
-        float fragmentDepth = texture(u_depthMap, coords).r;
+vec3 calcFragPosition(vec2 coords) {
+        float fragmentDepth = texture(depthTexture, coords).r;
       
-        // Convert coords and fragmentDepth to 
-        // normalized device coordinates (clip space)
-        vec4 ndc = vec4(
-          coords.x * 2.0 - 1.0, 
-          coords.y * 2.0 - 1.0, 
-          fragmentDepth * 2.0 - 1.0, 
-          1.0
-        );
+        vec4 ndc = vec4(coords.x * 2.0 - 1.0, coords.y * 2.0 - 1.0, fragmentDepth * 2.0 - 1.0, 1.0);
         
         // Transform to view space using inverse camera projection matrix.
-        vec4 vs_pos = u_projection_inverse * ndc;
+        vec4 vs_pos = inverse(projection) * ndc;
       
         // since we used a projection transformation (even if it was in inverse)
         // we need to convert our homogeneous coordinates using the perspective divide.
@@ -56,59 +42,36 @@ vec3 calcViewPosition(vec2 coords) {
 }
 
 void main() {
-        vec3 viewPos = calcViewPosition(texCoords);
+    vec3 fragPos = calcFragPosition(TexCoord);
+    vec3 fragNormal = cross(dFdy(fragPos.xyz), dFdx(fragPos.xyz));
+    fragNormal = normalize(fragNormal * -1.0);
 
-        // the dFdy and dFdX are glsl functions used to calculate two vectors in view space 
-        // that lie on the plane of the surface being drawn. We pass the view space position to these functions.
-        // The cross product of these two vectors give us the normal in view space.
-        vec3 viewNormal = cross(dFdy(viewPos.xyz), dFdx(viewPos.xyz));
 
-        // The normal is initilly away from the screen based on the order in which we calculate the cross products. 
-        // Here, we need to invert it to point towards the screen by multiplying by -1. 
-        // Then we normalize this vector to get a unit normal vector.
-        viewNormal = normalize(viewNormal * -1.0);
-        // we calculate a random offset using the noise texture sample. 
-        //This will be applied as rotation to all samples for our current fragments.
-        vec3 randomVec = texture(u_noise, texCoords * u_noiseScale).xyz; 
-        // here we apply the Gramm-Schmidt process to calculate the TBN matrix 
-        // with a random offset applied. 
-        vec3 tangent = normalize(randomVec - viewNormal * dot(randomVec, viewNormal));
-        vec3 bitangent = cross(viewNormal, tangent);
-        mat3 TBN = mat3(tangent, bitangent, viewNormal); 
-        float occlusion_factor = 0.0;
-        for (int i = 0 ; i < MAX_KERNEL_SIZE ; i++) {
-            vec3 samplePos = TBN * u_kernel[i];
+    vec2 noiseScale = vec2(float(windowSize.x) / 4.0, float(windowSize.y) / 4.0);
+    vec3 randomVec = texture(noiseTexture, TexCoord * noiseScale).xyz;
 
-            // here we calculate the sampling point position in view space.
-            samplePos = viewPos + samplePos * u_sampleRad;
+    vec3 tangent   = normalize(randomVec - fragNormal * dot(randomVec, fragNormal));
+    vec3 bitangent = cross(fragNormal, tangent);
+    mat3 TBN       = mat3(tangent, bitangent, fragNormal);
 
-            // now using the sampling point offset
-            vec4 offset = vec4(samplePos, 1.0);
-            offset = u_projection * offset;
-            offset.xy /= offset.w;
-            offset.xy = offset.xy * HALF_2 + HALF_2;
+    float occlusion = 0.0;
+    for(int i = 0; i < 64; ++i)
+    {
+        // get sample position
+        vec3 samplePos = TBN * kernel[i]; // from tangent to view-space
+        samplePos = fragPos + samplePos * sampleRadius;
 
-            // this is the geometry's depth i.e. the view_space_geometry_depth
-            // this value is negative in my coordinate system
-            float geometryDepth = calcViewPosition(offset.xy).z;
-            
-            float rangeCheck = smoothstep(0.0, 1.0, u_sampleRad / abs(viewPos.z - geometryDepth));
-            
-            // samplePos.z is the sample's depth i.e. the view_space_sampling_position depth
-            // this value is negative in my coordinate system
-            // for occlusion to be true the geometry's depth should be greater or equal (equal or less negative and consequently closer to the camera) than the sample's depth
-            occlusion_factor += float(geometryDepth >= samplePos.z + 0.0001) * rangeCheck; 
-        }
+        vec4 offset = vec4(samplePos, 1.0);
+        offset      = projection * offset;    // from view to clip-space
+        offset.xyz /= offset.w;               // perspective divide
+        offset.xyz  = offset.xyz * 0.5 + 0.5; // transform to range 0.0 - 1.0
 
-        // we will devide the accmulated occlusion by the number of samples to get the average occlusion value. 
-        float average_occlusion_factor = occlusion_factor * INV_MAX_KERNEL_SIZE_F;
-        
-        float visibility_factor = 1.0 - average_occlusion_factor;
+        float sampleDepth = calcFragPosition(offset.xy).z;//texture(depthTexture, offset.xy).z;
 
-        // We can raise the visibility factor to a power to make the transition
-        // more sharp. Experiment with the value of this power to see what works best for you.
-        // Even after raising visibility to a power > 1, the range still remains between [0.0, 1.0].
-        visibility_factor = pow(visibility_factor, 2.0);
+        float rangeCheck = smoothstep(0.0, 1.0, sampleRadius / abs(fragPos.z - sampleDepth));
+        occlusion += (sampleDepth >= samplePos.z + bias ? 1.0 : 0.0) * rangeCheck; 
+    }
 
-        FragColor = visibility_factor;
+    occlusion = 1.0 - (occlusion / 64);
+    Color = vec4(occlusion, 0.0, 0.0, 1.0); 
 }

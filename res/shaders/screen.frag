@@ -80,7 +80,7 @@ bool IsEdge(vec2 coord) {
 
 vec3 getColor(vec2 coord) {
     vec3 outlineColor = vec3(1.0);
-    vec3 res = displayDepth ? getDepthValue(coord) : (displaySSAO ? texture(ssaoTexture, coord).rgb : texture(screenTexture, coord).rgb);
+    vec3 res = displayDepth ? getDepthValue(coord) : (displaySSAO ? texture(ssaoTexture, coord).rrr : texture(screenTexture, coord).rgb);
 
     if (hasOutline) {
         res = IsEdge(coord) ? ((displayDepth || displaySSAO) ? outlineColor / 2.0 : outlineColor) : res;

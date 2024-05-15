@@ -234,10 +234,9 @@ void LightingController::BindLightBuffors(Shader* shader) {
 
 	std::string str = "DirLightShadowMaps[";
 	shader->Use();
-	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "0]").c_str()), MAPS_BEGINNING);
-	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "1]").c_str()), MAPS_BEGINNING + 1);
-	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "2]").c_str()), MAPS_BEGINNING + 2);
-	glUniform1i(glGetUniformLocation(shader->shaderProgramID, (str + "3]").c_str()), MAPS_BEGINNING + 3);
+	for (int i = 0; i < 4; ++i) {
+		shader->SetInt(str.append(std::to_string(i)).append("]").c_str(), MAPS_BEGINNING + i);
+	}
 }
 /*/
 void LightingController::UpdateShadowMapsTab(Shader* shader) {

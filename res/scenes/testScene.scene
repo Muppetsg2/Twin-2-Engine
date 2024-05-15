@@ -107,6 +107,8 @@ GameObjects:
                     y: 1.0
                     z: 0.0
                 isMain: true
+                isFrustum: true
+                isSSAO: true
             -   id: 2
                 enabled: true
                 type: Audio

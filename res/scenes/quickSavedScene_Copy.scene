@@ -510,7 +510,7 @@ GameObjects:
         trigger: false
         static: false
         layer: 1
-        layerFilter:
+        layersFilter:
           - 2
           - 2
           - 1
@@ -535,7 +535,7 @@ GameObjects:
         trigger: false
         static: false
         layer: 1
-        layerFilter:
+        layersFilter:
           - 2
           - 2
           - 1
@@ -566,7 +566,7 @@ GameObjects:
         trigger: false
         static: false
         layer: 1
-        layerFilter:
+        layersFilter:
           - 2
           - 2
           - 1

@@ -45,13 +45,25 @@ void Image::Render()
 YAML::Node Image::Serialize() const
 {
 	YAML::Node node = RenderableComponent::Serialize();
-	node["subTypes"].push_back(node["type"].as<string>());
 	node["type"] = "Image";
 	node["sprite"] = SceneManager::GetSpriteSaveIdx(_spriteId);
 	node["color"] = _color;
 	node["width"] = _width;
 	node["height"] = _height;
 	return node;
+}
+
+bool Image::Deserialize(const YAML::Node& node)
+{
+	if (!node["sprite"] || !node["color"] || !node["width"] || !node["height"] ||
+		!RenderableComponent::Deserialize(node)) return false;
+
+	_spriteId = SceneManager::GetSprite(node["sprite"].as<size_t>());
+	_color = node["color"].as<glm::vec4>();
+	_width = node["width"].as<float>();
+	_height = node["height"].as<float>();
+
+	return true;
 }
 
 void Image::DrawEditor()

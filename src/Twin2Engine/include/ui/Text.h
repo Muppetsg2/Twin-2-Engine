@@ -1,12 +1,12 @@
 #pragma once
 #include <core/RenderableComponent.h>
 #include <graphic/Font.h>
-#include <glm/glm.hpp>
+#include <tools/macros.h>
 
 namespace Twin2Engine::UI {
-	enum class TextAlignX { LEFT = 0, CENTER = 1, RIGHT = 2 };
-	enum class TextAlignY { BOTTOM = 0, CENTER = 1, TOP = 2 };
-	enum class TextOverflow { Overflow = 0, Masking = 1, Truncate = 2, Ellipsis = 3 };
+	ENUM_CLASS_VALUE(TextAlignX, LEFT, 0, CENTER, 1, RIGHT, 2)
+	ENUM_CLASS_VALUE(TextAlignY, BOTTOM, 0, CENTER, 1, TOP, 2)
+	ENUM_CLASS_VALUE(TextOverflow, Overflow, 0, Masking, 1, Truncate, 2, Ellipsis, 3)
 
 	struct TextCharacter {
 		Graphic::Character* character = nullptr;
@@ -52,6 +52,7 @@ namespace Twin2Engine::UI {
 		void Update() override;
 		void Render() override;
 		YAML::Node Serialize() const override;
+		bool Deserialize(const YAML::Node& node) override;
 		virtual void DrawEditor() override;
 
 		void SetColor(const glm::vec4& color);
@@ -84,5 +85,64 @@ namespace Twin2Engine::UI {
 		bool IsAutoSize() const;
 		uint32_t GetMinSize() const;
 		uint32_t GetMaxSize() const;
+	};
+}
+
+namespace YAML {
+	template<> struct convert<Twin2Engine::UI::TextAlignX> {
+		using TextAlignX = Twin2Engine::UI::TextAlignX;
+
+		static YAML::Node encode(const TextAlignX& rhs) {
+			YAML::Node node;
+			node = (size_t)rhs;
+			node.SetTag(to_string(rhs));
+			return node;
+		}
+
+		static bool decode(const YAML::Node& node, TextAlignX& rhs) {
+			if (!node.IsScalar()) return false;
+
+			rhs = (TextAlignX)node.as<size_t>();
+
+			return true;
+		}
+	};
+
+	template<> struct convert<Twin2Engine::UI::TextAlignY> {
+		using TextAlignY = Twin2Engine::UI::TextAlignY;
+
+		static YAML::Node encode(const TextAlignY& rhs) {
+			YAML::Node node;
+			node = (size_t)rhs;
+			node.SetTag(to_string(rhs));
+			return node;
+		}
+
+		static bool decode(const YAML::Node& node, TextAlignY& rhs) {
+			if (!node.IsScalar()) return false;
+
+			rhs = (TextAlignY)node.as<size_t>();
+
+			return true;
+		}
+	};
+
+	template<> struct convert<Twin2Engine::UI::TextOverflow> {
+		using TextOverflow = Twin2Engine::UI::TextOverflow;
+
+		static YAML::Node encode(const TextOverflow& rhs) {
+			YAML::Node node;
+			node = (size_t)rhs;
+			node.SetTag(to_string(rhs));
+			return node;
+		}
+
+		static bool decode(const YAML::Node& node, TextOverflow& rhs) {
+			if (!node.IsScalar()) return false;
+
+			rhs = (TextOverflow)node.as<size_t>();
+
+			return true;
+		}
 	};
 }

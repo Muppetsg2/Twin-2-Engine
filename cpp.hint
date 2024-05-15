@@ -6,7 +6,7 @@
 #define CloneFunctionEnd() }
 
 #define PARENS ()
-#define COMMA ,
+#define NEXT_ELEM ,
 
 #define RESCAN(...) RESCAN1(RESCAN1(RESCAN1(RESCAN1(__VA_ARGS__))))
 #define RESCAN1(...) RESCAN2(RESCAN2(RESCAN2(RESCAN2(__VA_ARGS__))))
@@ -91,3 +91,29 @@
 			return "UNKONWN";\
 		}\
 	}
+
+#define CloneBaseFunc(className, baseClassName, ...)\
+    virtual className* Clone() const override\
+    {\
+        className* cloned = new className();\
+        CloneTo(cloned);\
+        return cloned;\
+    }\
+    void CloneTo(className* cloned) const\
+    {\
+        baseClassName::CloneTo(cloned);\
+        DO_FOR_EACH(CloneField, __VA_ARGS__)\
+    }
+
+#define CloneFunc(className, ...)\
+    protected:\
+    virtual className* Clone() const override\
+    {\
+        className* cloned = new className();\
+        CloneTo(cloned);\
+        return cloned;\
+    }\
+    void CloneTo(className* cloned) const\
+    {\
+        DO_FOR_EACH(CloneField, __VA_ARGS__)\
+    }

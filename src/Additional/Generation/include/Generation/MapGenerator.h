@@ -57,6 +57,7 @@ namespace Generation
         void Generate();
 
         virtual YAML::Node Serialize() const override;
+        virtual bool Deserialize(const YAML::Node& node) override;
 
         virtual void DrawEditor() override;
 	};

@@ -43,11 +43,22 @@ YAML::Node MapHexTile::Serialize() const
 {
     YAML::Node node = Twin2Engine::Core::Component::Serialize();
     node["type"] = "MapHexTile";
-    node.remove("subTypes");
     //node["tilemap"] = tilemap;
     //node["region"] = region;
     //node["sector"] = sector;
     //node["tile"] = tile;
     node["hexTileType"] = type;
     return node;
+}
+
+bool MapHexTile::Deserialize(const YAML::Node& node) {
+    if (!node["hexTileType"] || !Component::Deserialize(node)) return false;
+
+    tilemap = nullptr;
+    region = nullptr;
+    sector = nullptr;
+    tile = nullptr;
+    type = node["hexTileType"].as<MapHexTile::HexTileType>();
+
+    return true;
 }

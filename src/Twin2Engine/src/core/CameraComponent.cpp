@@ -922,7 +922,6 @@ YAML::Node CameraComponent::Serialize() const
 {
 	YAML::Node node = Component::Serialize();
 	node["type"] = "Camera";
-	node.remove("subTypes");
 	node["fov"] = _fov;
 	node["nearPlane"] = _near;
 	node["farPlane"] = _far;
@@ -937,6 +936,30 @@ YAML::Node CameraComponent::Serialize() const
 	node["isFrustum"] = _isFrustumCulling;
 	node["isSSAO"] = _isSsao;
 	return node;
+}
+
+bool CameraComponent::Deserialize(const YAML::Node& node) {
+	if (!node["fov"] || !node["nearPlane"] || !node["farPlane"] ||
+		!node["cameraFilter"] || !node["cameraType"] || !node["cameraMode"] ||
+		!node["samples"] || !node["renderRes"] || !node["gamma"] || !node["worldUp"] ||
+		!node["isMain"] || !node["isFrustum"] || !node["isSSAO"] ||
+		!Component::Deserialize(node)) return false;
+
+	_fov = node["fov"].as<float>();
+	_near = node["nearPlane"].as<float>();
+	_far = node["farPlane"].as<float>();
+	_filters = (uint8_t)node["cameraFilter"].as<size_t>();
+	_type = node["cameraType"].as<CameraType>();
+	_mode = node["cameraMode"].as<CameraDisplayMode>();
+	_samples = (uint8_t)node["samples"].as<size_t>();
+	_renderRes = node["renderRes"].as<CameraRenderResolution>();
+	_gamma = node["gamma"].as<float>();
+	_worldUp = node["worldUp"].as<vec3>();
+	_isMain = node["isMain"].as<bool>();
+	_isFrustumCulling = node["isFrustum"].as<bool>();
+	_isSsao = node["isSSAO"].as<bool>();
+
+	return true;
 }
 
 void CameraComponent::DrawEditor()

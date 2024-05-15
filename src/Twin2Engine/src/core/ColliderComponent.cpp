@@ -393,14 +393,17 @@ YAML::Node ColliderComponent::Serialize() const
 
 bool ColliderComponent::Deserialize(const YAML::Node& node)
 {
-	if (!node["trigger"] || !node["static"] || !node["layer"] || !node["layerFilter"] ||
+	if (!node["colliderId"] || !node["trigger"] || !node["static"] || !node["layer"] || 
+		!node["layersFilter"] ||
 		!node["position"] || !Component::Deserialize(node)) return false;
 
+	colliderId = node["colliderId"].as<size_t>();
 	collider->isTrigger = node["trigger"].as<bool>();
 	collider->isStatic = node["static"].as<bool>();
 	collider->layer = node["layer"].as<Layer>();
 	collider->layersFilter = node["layersFilter"].as<LayerCollisionFilter>();
 	if (node["boundingVolumeRadius"]) {
+		collider->boundingVolume = boundingVolume;
 		((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius = node["boundingVolumeRadius"].as<float>();
 	}
 	collider->shapeColliderData->LocalPosition = node["position"].as<glm::vec3>();

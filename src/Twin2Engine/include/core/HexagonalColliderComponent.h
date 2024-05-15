@@ -26,6 +26,7 @@ namespace Twin2Engine::Core {
 		void Update() override;
 
 		virtual YAML::Node Serialize() const override;
+		virtual bool Deserialize(const YAML::Node& node) override;
 	};
 }
 

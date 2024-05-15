@@ -268,9 +268,8 @@ void MapGenerator::Generate()
 
 YAML::Node MapGenerator::Serialize() const
 {
-    YAML::Node node = Twin2Engine::Core::Component::Serialize();
+    YAML::Node node = Component::Serialize();
     node["type"] = "MapGenerator";
-    //node.remove("subTypes");
     node["preafabHexagonalTile"] = PrefabManager::GetPrefabPath(preafabHexagonalTile);
     node["additionalTile"] = PrefabManager::GetPrefabPath(additionalTile);
     node["filledTile"] = PrefabManager::GetPrefabPath(filledTile);
@@ -281,6 +280,26 @@ YAML::Node MapGenerator::Serialize() const
     node["maxPointsNumber"] = maxPointsNumber;
     node["angleDeltaRange"] = angleDeltaRange;
     return node;
+}
+
+bool MapGenerator::Deserialize(const YAML::Node& node) {
+    if (!node["prefabHexagonalTile"] || !node["additionalTile"] || !node["filledTile"] ||
+        !node["pointTile"] || !node["generationRadiusMin"] || !node["generationRadiusMax"] ||
+        !node["minPointsNumber"] || !node["maxPointsNumber"] || !node["angleDeltaRange"] ||
+        !Component::Deserialize(node)) return false;
+
+    preafabHexagonalTile = PrefabManager::LoadPrefab(node["preafabHexagonalTile"].as<string>());
+    additionalTile = PrefabManager::LoadPrefab(node["additionalTile"].as<string>());
+    filledTile = PrefabManager::LoadPrefab(node["filledTile"].as<string>());
+    pointTile = PrefabManager::LoadPrefab(node["pointTile"].as<string>());
+
+    generationRadiusMin = node["generationRadiusMin"].as<float>();
+    generationRadiusMax = node["generationRadiusMax"].as<float>();
+    minPointsNumber = node["minPointsNumber"].as<int>();
+    maxPointsNumber = node["maxPointsNumber"].as<int>();
+    angleDeltaRange = node["angleDeltaRange"].as<float>();
+
+    return true;
 }
 
 void MapGenerator::DrawEditor()

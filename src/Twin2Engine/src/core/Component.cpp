@@ -64,14 +64,13 @@ YAML::Node Component::Serialize() const
 	YAML::Node node;
 	node["id"] = _id;
 	node["enabled"] = _enabled;
-	node["type"] = "";
+	node["type"] = "Component";
 	return node;
 }
 
 bool Component::Deserialize(const YAML::Node& node) {
-	if (!node["id"] || !node["enabled"]) return false;
+	if (!node["enabled"]) return false;
 
-	_id = node["id"].as<size_t>();
 	_enabled = node["enabled"].as<bool>();
 
 	return true;

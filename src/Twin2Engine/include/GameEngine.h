@@ -39,8 +39,8 @@
 #include <core/SpotLightComponent.h>
 #include <core/DirectionalLightComponent.h>
 
-// DESERIALIZER
-#include <core/ComponentDeserializer.h>
+// COMPONENTS MAP
+#include <core/ComponentsMap.h>
 
 // SCENE
 #include <core/Scene.h>

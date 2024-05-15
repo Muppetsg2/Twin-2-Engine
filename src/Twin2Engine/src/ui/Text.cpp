@@ -337,13 +337,46 @@ void Text::Render()
 YAML::Node Text::Serialize() const
 {
 	YAML::Node node = RenderableComponent::Serialize();
-	node["subTypes"].push_back(node["type"].as<string>());
 	node["type"] = "Text";
-	//node["text"] = _text;
-	node["color"] = _color;
-	node["size"] = _size;
+	node["text"] = string(_text.begin(), _text.end());
 	node["font"] = SceneManager::GetFontSaveIdx(_fontId);
+	node["size"] = _size;
+	node["autoSize"] = _autoSize;
+	node["minSize"] = _minSize;
+	node["maxSize"] = _maxSize;
+	node["width"] = _width;
+	node["height"] = _height;
+	node["color"] = _color;
+	node["alignX"] = _alignX;
+	node["alignY"] = _alignY;
+	node["textWrapping"] = _textWrapping;
+	node["overflow"] = _overflow;
 	return node;
+}
+
+bool Text::Deserialize(const YAML::Node& node)
+{
+	if (!node["text"] || !node["font"] || !node["size"] || !node["autoSize"] ||
+		!node["minSize"] || !node["maxSize"] || !node["width"] || !node["height"] ||
+		!node["color"] || !node["alignX"] || !node["alignY"] || !node["textWrapping"] ||
+		!node["overflow"] || !RenderableComponent::Deserialize(node)) return false;
+
+	string temp = node["text"].as<string>();
+	_text = wstring(temp.begin(), temp.end());
+	_fontId = SceneManager::GetFont(node["font"].as<size_t>());
+	_size = node["size"].as<uint32_t>();
+	_autoSize = node["autoSize"].as<bool>();
+	_minSize = node["minSize"].as<uint32_t>();
+	_maxSize = node["maxSize"].as<uint32_t>();
+	_width = node["width"].as<float>();
+	_height = node["height"].as<float>();
+	_color = node["color"].as<vec4>();
+	_alignX = node["alignX"].as<TextAlignX>();
+	_alignY = node["alignY"].as<TextAlignY>();
+	_textWrapping = node["textWrapping"].as<bool>();
+	_overflow = node["overflow"].as<TextOverflow>();
+
+	return true;
 }
 
 void Text::DrawEditor()

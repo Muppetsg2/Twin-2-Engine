@@ -185,111 +185,21 @@ int main(int, char**)
 
 #pragma region TILEMAP_DESERIALIZER
 
-    ComponentDeserializer::AddDeserializer("HexagonalTilemap",
-        []() -> Component* {
-            return new HexagonalTilemap();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            HexagonalTilemap* hexagonalTilemap = static_cast<HexagonalTilemap*>(comp);
-            hexagonalTilemap->Resize(node["leftBottomPosition"].as<ivec2>(), node["rightTopPosition"].as<ivec2>());
-
-            // tilemap
-        }
-        );
+    ADD_COMPONENT("HexagonalTilemap", HexagonalTilemap);
 
 #pragma endregion
 
 #pragma region GENERATION_DESERIALIZER
 
-    ComponentDeserializer::AddDeserializer("MapGenerator",
-        []() -> Component* {
-            return new MapGenerator();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            MapGenerator* mapGenerator = static_cast<MapGenerator*>(comp);
+    ADD_COMPONENT("MapGenerator", MapGenerator);
 
-            //Tilemap::HexagonalTilemap* tilemap;
-            ////Tilemap::HexagonalTile* tile;
-            //Twin2Engine::Core::GameObject* preafabHexagonalTile;
-            //Twin2Engine::Core::GameObject* additionalTile;
-            //Twin2Engine::Core::GameObject* filledTile;
-            //Twin2Engine::Core::GameObject* pointTile;
+    ADD_COMPONENT("ContentGenerator", ContentGenerator);
 
-            mapGenerator->preafabHexagonalTile = PrefabManager::LoadPrefab(node["preafabHexagonalTile"].as<string>());
-            mapGenerator->additionalTile = PrefabManager::LoadPrefab(node["additionalTile"].as<string>());
-            mapGenerator->filledTile = PrefabManager::LoadPrefab(node["filledTile"].as<string>());
-            mapGenerator->pointTile = PrefabManager::LoadPrefab(node["pointTile"].as<string>());
+    ADD_COMPONENT("MapHexTile", MapHexTile);
 
-            mapGenerator->generationRadiusMin = node["generationRadiusMin"].as<float>();
-            mapGenerator->generationRadiusMax = node["generationRadiusMax"].as<float>();
-            mapGenerator->minPointsNumber = node["minPointsNumber"].as<int>();
-            mapGenerator->maxPointsNumber = node["maxPointsNumber"].as<int>();
-            mapGenerator->angleDeltaRange = node["angleDeltaRange"].as<float>();
-        }
-        );
+    ADD_COMPONENT("MapRegion", MapRegion);
 
-    ComponentDeserializer::AddDeserializer("ContentGenerator",
-        []() -> Component* {
-            return new ContentGenerator();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            ContentGenerator* contentGenerator = static_cast<ContentGenerator*>(comp);
-
-            for (YAML::Node soSceneId : node["mapElementGenerators"])
-            {
-                //AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(ScriptableObjectManager::Deserialize(soSceneId.as<unsigned int>()));
-                AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(ScriptableObjectManager::Load(soSceneId.as<string>()));
-                SPDLOG_INFO("Adding generator {0}, {1}", soSceneId.as<string>(), (unsigned int) generator);
-                if (generator != nullptr)
-                {
-                    contentGenerator->mapElementGenerators.push_back(generator);
-                }
-            }
-            //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("MapHexTile",
-        []() -> Component* {
-            return new MapHexTile();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            MapHexTile* mapHexTile = static_cast<MapHexTile*>(comp);
-
-            mapHexTile->tilemap = nullptr;
-            mapHexTile->region = nullptr;
-            mapHexTile->sector = nullptr;
-            mapHexTile->tile = nullptr;
-            mapHexTile->type = node["hexTileType"].as<MapHexTile::HexTileType>();
-            //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("MapRegion",
-        []() -> Component* {
-            return new MapRegion();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            MapRegion* mapRegion = static_cast<MapRegion*>(comp);
-
-            mapRegion->tilemap = nullptr;
-            mapRegion->type = node["regionType"].as<MapRegion::RegionType>();
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("MapSector",
-        []() -> Component* {
-            return new MapSector();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            MapSector* mapSector = static_cast<MapSector*>(comp);
-
-
-            mapSector->tilemap = nullptr;
-            mapSector->region = nullptr;
-            mapSector->type = node["sectorType"].as<MapSector::SectorType>();
-        }
-        );
+    ADD_COMPONENT("MapSector", MapSector);
 
 #pragma endregion
 

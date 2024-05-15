@@ -428,11 +428,18 @@ glm::vec2 HexagonalTilemap::ConvertToTilemapPosition(const glm::ivec2& position)
 
 YAML::Node HexagonalTilemap::Serialize() const
 {
-	YAML::Node node = Twin2Engine::Core::Component::Serialize();
+	YAML::Node node = Component::Serialize();
 	node["type"] = "HexagonalTilemap";
-	//node.remove("type");
-	node.remove("subTypes");
 	node["leftBottomPosition"] = _leftBottomPosition;
 	node["rightTopPosition"] = _rightTopPosition;
 	return node;
+}
+
+bool HexagonalTilemap::Deserialize(const YAML::Node& node) {
+	if (!node["leftBottomPosition"] || !node["rightTopPosition"] ||
+		!Component::Deserialize(node)) return false;
+
+	Resize(node["leftBottomPosition"].as<glm::ivec2>(), node["rightTopPosition"].as<glm::ivec2>());
+
+	return true;
 }

@@ -3,6 +3,7 @@
 #include <stb_image.h>
 #include <yaml-cpp/yaml.h>
 #include <graphic/Texture2D.h>
+#include <tools/macros.h>
 
 namespace Twin2Engine::Manager {
 	enum TextureFileFormat {
@@ -124,6 +125,8 @@ namespace Twin2Engine::Manager {
 	};
 }
 
+STRINGABLE_ENUM(TEST, A, B, C)
+
 namespace YAML {
 	template<> struct convert<Twin2Engine::Graphic::TextureFormat> {
 		using TextureFormat = Twin2Engine::Graphic::TextureFormat;
@@ -131,6 +134,7 @@ namespace YAML {
 		static Node encode(const TextureFormat& rhs) {
 			Node node;
 			node = (size_t)rhs;
+			node.push_back(YAML::Comment(to_string(TEST::A)));
 			return node;
 		}
 

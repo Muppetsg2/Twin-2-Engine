@@ -7,6 +7,9 @@
 
 #endif
 
+#define EDITOR_LOGGER
+//#define RELEASE_LOGGER
+
 #include <GameEngine.h>
 
 // TILEMAP
@@ -32,6 +35,9 @@
 // YAML CONVERTERS
 #include <tools/YamlConverters.h>
 #include <Generation/YamlConverters.h>
+
+// LOGGER
+#include <tools/FileLoggerSink.h>
 
 #if _DEBUG
 // EDITOR
@@ -74,6 +80,8 @@ bool mouseNotUsed = true;
 void input();
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void update();
+
+//#undef _DEBUG
 
 #if _DEBUG
 void init_imgui();
@@ -121,10 +129,12 @@ int main(int, char**)
 {
 #pragma region Initialization
     // LOGGING: SPDLOG INITIALIZATION
+#ifdef EDITOR_LOGGER
+
 #if USE_IMGUI_CONSOLE_OUTPUT || USE_WINDOWS_CONSOLE_OUTPUT
 
 #if USE_IMGUI_CONSOLE_OUTPUT
-    auto console_sink = std::make_shared<Editor::Common::ImGuiSink<mutex>>("res/logs/log.txt");
+    auto console_sink = std::make_shared<Editor::Common::ImGuiSink<mutex>>("res/logs/log.txt", 100.0f);
 #elif USE_WINDOWS_CONSOLE_OUTPUT
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
 #endif
@@ -136,6 +146,19 @@ int main(int, char**)
 #else
     spdlog::set_level(spdlog::level::off);
 #endif  
+
+#endif // EDITOR_LOGGER
+#ifdef RELEASE_LOGGER
+
+    auto fileLoggerSink = std::make_shared<Twin2Engine::Tools::FileLoggerSink<mutex>>("logs.txt", 100.0f);
+    auto fileLogger = std::make_shared<spdlog::logger>("FileLogger", fileLoggerSink);
+    spdlog::register_logger(fileLogger);
+    spdlog::set_default_logger(fileLogger);
+
+    spdlog::set_level(spdlog::level::debug);
+#endif // RELEASE_LOGGER
+
+
 
     if (!GameEngine::Init(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_FULLSCREEN, GL_VERSION_MAJOR, GL_VERSION_MINOR))
     {
@@ -375,6 +398,14 @@ int main(int, char**)
 
     SceneManager::SaveScene("res/scenes/DirLightTest.scene");*/
 #pragma endregion
+#pragma region HexCollider
+    //GameObject* h_go = SceneManager::CreateGameObject();
+    //HexagonalColliderComponent* hc = h_go->AddComponent<HexagonalColliderComponent>();
+    //hc->SetTrigger(true);
+    //hc->SetLayer(Layer::IGNORE_COLLISION);
+    //hc->SetLocalPosition(0.0f, -0.5f, 0.0f);
+    //PrefabManager::SaveAsPrefab(h_go, "HCCpref.prefab");
+#pragma endregion
 
 #if _DEBUG
     GameEngine::LateRender += []() -> void {
@@ -399,7 +430,32 @@ int main(int, char**)
         update();
     };
 
+#ifdef EDITOR_LOGGER
+
+#if USE_IMGUI_CONSOLE_OUTPUT
+    console_sink->StartLogging();
+#endif
+
+#endif
+
+#ifdef RELEASE_LOGGER
+    fileLoggerSink->StartLogging();
+#endif
+
     GameEngine::Start();
+
+#ifdef EDITOR_LOGGER
+
+#if USE_IMGUI_CONSOLE_OUTPUT
+    console_sink->StopLogging();
+#endif
+
+#endif
+
+#ifdef RELEASE_LOGGER
+    fileLoggerSink->StopLogging();
+#endif
+
     return 0;
 }
 
@@ -412,6 +468,19 @@ void input()
     }
 
     CameraComponent* c = CameraComponent::GetMainCamera();
+
+    if (Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT)) {
+        static int i = 1;
+        RaycastHit raycast;
+        Ray ray = c->GetScreenPointRay(Input::GetCursorPos());
+        CollisionManager::Instance()->Raycast(ray, raycast);
+        if (raycast.collider != nullptr) {
+            SPDLOG_INFO("[Click {}].\t {}. collider:\ncolpos: \t{}\t{}\t{} \nintpos: \t{}\t{}\t{}", i++, raycast.collider->colliderId, raycast.collider->collider->shapeColliderData->Position.x, raycast.collider->collider->shapeColliderData->Position.y, raycast.collider->collider->shapeColliderData->Position.z, raycast.position.x, raycast.position.y, raycast.position.z);
+        }
+        else {
+            SPDLOG_INFO("Collision not happened!");
+        }
+    }
 
     bool moved = false;
 

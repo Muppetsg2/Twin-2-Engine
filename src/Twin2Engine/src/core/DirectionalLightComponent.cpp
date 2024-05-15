@@ -16,16 +16,7 @@ void DirectionalLightComponent::Initialize()
 	};
 
 	OnViewerChange = [this]() {
-		CameraComponent* camera = CameraComponent::GetMainCamera();
-		CameraData data{
-			.projection = camera->GetProjectionMatrix(),
-			.view = camera->GetViewMatrix(),
-			.pos = camera->GetTransform()->GetGlobalPosition(),
-			.front = camera->GetFrontDir(),
-			.farPlane = camera->GetFarPlane(),
-			.isPerspective = camera->GetCameraType() == CameraType::PERSPECTIVE,
-		};
-		GetTransform()->SetGlobalPosition(LightingController::RecalculateDirLightSpaceMatrix(light, data));
+		GetTransform()->SetGlobalPosition(LightingController::RecalculateDirLightSpaceMatrix(light));
 	};
 
 	//light->position = GetTransform()->GetGlobalPosition();
@@ -33,6 +24,7 @@ void DirectionalLightComponent::Initialize()
 	glGenFramebuffers(1, &light->shadowMapFBO);
 	
 	glGenTextures(1, &light->shadowMap);
+	glActiveTexture(GL_TEXTURE0 + LightingController::MAPS_BEGINNING + 3);
 	glBindTexture(GL_TEXTURE_2D, light->shadowMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
 		LightingController::SHADOW_WIDTH, LightingController::SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
@@ -108,6 +100,7 @@ void DirectionalLightComponent::SetPower(float power)
 YAML::Node DirectionalLightComponent::Serialize() const
 {
 	YAML::Node node = LightComponent::Serialize();
+	node["subTypes"].push_back(node["type"].as<std::string>());
 	node["type"] = "DirectionalLightComponent";
 	node["direction"] = light->direction;
 	node["color"] = light->color;

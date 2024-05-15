@@ -13,8 +13,8 @@ void ColliderComponent::OnCollisionEnter(Collision* collision)
 	GameCollider* other = (GameCollider*)collision->otherCollider;
 
 	if (!collider->isStatic && !other->isStatic) {
-		//separacja obu gameobjekt�w
-		SPDLOG_INFO("{} - separacja obu gameobjekt�w ({}, {}, {})", collider->colliderId, collision->separation.x,
+		//separacja obu gameobjektow
+		SPDLOG_INFO("{} - separacja obu gameobjektow ({}, {}, {})", collider->colliderComponent->colliderId, collision->separation.x,
 			collision->separation.y, collision->separation.z);
 		collider->colliderComponent->GetTransform()->SetGlobalPosition(
 			collider->colliderComponent->GetTransform()->GetGlobalPosition() + collision->separation);
@@ -23,21 +23,21 @@ void ColliderComponent::OnCollisionEnter(Collision* collision)
 	}
 	else if (!collider->isStatic) {
 		//separacja tego game objekta
-		SPDLOG_INFO("{} - separacja tego game objekta ({}, {}, {})", collider->colliderId, collision->separation.x,
+		SPDLOG_INFO("{} - separacja tego game objekta ({}, {}, {})", collider->colliderComponent->colliderId, collision->separation.x,
 			collision->separation.y, collision->separation.z);
 		collider->colliderComponent->GetTransform()->SetGlobalPosition(
 			collider->colliderComponent->GetTransform()->GetGlobalPosition() + collision->separation);
 	}
 	else if (!other->isStatic) {
 		//separacje drugiego gameobjekta
-		SPDLOG_INFO("{} - separacje drugiego gameobjekta ({}, {}, {})", collider->colliderId, collision->separation.x,
+		SPDLOG_INFO("{} - separacje drugiego gameobjekta ({}, {}, {})", collider->colliderComponent->colliderId, collision->separation.x,
 			collision->separation.y, collision->separation.z);
 		other->colliderComponent->GetTransform()->SetGlobalPosition(
 			other->colliderComponent->GetTransform()->GetGlobalPosition() - collision->separation);
 	}
 	/*else {
-		//separacja obu gameobjekt�w
-		SPDLOG_INFO("{} - separacja obu gameobjekt�w ({}, {}, {})", collider->colliderId, collision->separation.x,
+		//separacja obu gameobjektow
+		SPDLOG_INFO("{} - separacja obu gameobjektow ({}, {}, {})", collider->colliderId, collision->separation.x,
 			collision->separation.y, collision->separation.z);
 		collider->colliderComponent->GetTransform()->SetGlobalPosition(
 			collider->colliderComponent->GetTransform()->GetGlobalPosition() + collision->separation);
@@ -299,7 +299,13 @@ void ColliderComponent::Initialize()
 void ColliderComponent::Update()
 {
 	if (dirtyFlag) {
-		collider->shapeColliderData->Position = GetTransform()->GetTransformMatrix() * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f);
+		//auto Pos = GetTransform()->GetGlobalPosition();
+		//SPDLOG_INFO("{}.  Pos: \t\t{}\t{}\t{}", colliderId, Pos.x, Pos.y, Pos.z);
+		//SPDLOG_INFO("{}.  ColPos: \t{}\t{}\t{}\t\t\t\tLocPos: \t{}\t{}\t{}", colliderId, collider->shapeColliderData->Position.x, collider->shapeColliderData->Position.y, collider->shapeColliderData->Position.z, collider->shapeColliderData->LocalPosition.x, collider->shapeColliderData->LocalPosition.y, collider->shapeColliderData->LocalPosition.z);
+		//auto TM = GetTransform()->GetTransformMatrix();
+		//auto v4 = GetTransform()->GetTransformMatrix() * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f);
+		collider->shapeColliderData->Position = glm::vec3(GetTransform()->GetTransformMatrix() * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f));
+		//SPDLOG_INFO("{}.  NewPos: \t{}\t{}\t{}\t\t\t\tLocPos: \t{}\t{}\t{}", colliderId, collider->shapeColliderData->Position.x, collider->shapeColliderData->Position.y, collider->shapeColliderData->Position.z, collider->shapeColliderData->LocalPosition.x, collider->shapeColliderData->LocalPosition.y, collider->shapeColliderData->LocalPosition.z);
 
 		if (boundingVolume != nullptr) {
 			boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
@@ -336,11 +342,12 @@ void ColliderComponent::EnableBoundingVolume(bool v)
 
 void ColliderComponent::SetBoundingVolumeRadius(float radius)
 {
-	((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius = radius;
+	((SphereColliderData*)(boundingVolume->shapeColliderData))->Radius = radius;
 }
 
 void ColliderComponent::SetLocalPosition(float x, float y, float z)
 {
+	//auto v = this;
 	collider->shapeColliderData->LocalPosition.x = x;
 	collider->shapeColliderData->LocalPosition.y = y;
 	collider->shapeColliderData->LocalPosition.z = z;
@@ -372,14 +379,13 @@ YAML::Node ColliderComponent::Serialize() const
 {
 	YAML::Node node = Component::Serialize();
 	node["type"] = "Collider";
+	node["colliderId"] = colliderId;
 	node["trigger"] = collider->isTrigger;
 	node["static"] = collider->isStatic;
 	node["layer"] = collider->layer;
 	node["layerFilter"] = collider->layersFilter;
 	node["boundingVolume"] = collider->boundingVolume != nullptr;
-	if (collider->boundingVolume != nullptr) {
-		node["boundingVolumeRadius"] = ((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius;
-	}
+	node["boundingVolumeRadius"] = ((SphereColliderData*)(boundingVolume->shapeColliderData))->Radius;
 	node["position"] = glm::vec3(collider->shapeColliderData->LocalPosition.x, collider->shapeColliderData->LocalPosition.y, collider->shapeColliderData->LocalPosition.z);
 	return node;
 }

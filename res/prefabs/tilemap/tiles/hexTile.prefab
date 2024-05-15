@@ -49,3 +49,30 @@ Root:
       model: 0
       materials:
         - 0
+    - id: 3
+      enabled: true
+      type: HexagonalCollider
+      subTypes:
+        - Collider
+      colliderId: 0
+      trigger: true
+      static: false
+      layer: 2
+      layerFilter:
+        - 3
+        - 3
+        - 1
+        - 0
+        - 3
+        - 3
+        - 3
+        - 3
+      boundingVolume: false
+      boundingVolumeRadius: 0.5
+      position:
+        x: 0.0
+        y: -0.5
+        z: 0.0
+      baselength: 0.5
+      halfheight: 0.5
+      rotation: -1.5705

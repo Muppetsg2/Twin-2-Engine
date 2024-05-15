@@ -6,6 +6,12 @@
 #include <graphic/manager/ModelsManager.h>
 #include <core/MathExtensions.h>
 
+const char* const tracy_RenderDepthBuffer = "RenderDepthBuffer";
+const char* const tracy_RenderSSAOTexture = "RenderSSAOTexture";
+const char* const tracy_UpdateRenderingQueues = "UpdateRenderingQueues";
+const char* const tracy_RenderScreenTexture = "RenderScreenTexture";
+const char* const tracy_OnScreenFramebuffer = "OnScreenFramebuffer";
+
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Tools;
 using namespace Twin2Engine::Physic;
@@ -459,6 +465,7 @@ void CameraComponent::SetSSAO(bool value)
 
 void CameraComponent::Render()
 {
+	ZoneScoped;
 	if (_isFrustumCulling)
 		_currentCameraFrustum = GetFrustum();
 
@@ -500,15 +507,18 @@ void CameraComponent::Render()
 
 	if (wSize.y != 0) {
 		// UPDATING RENDERER
+		FrameMarkStart(tracy_UpdateRenderingQueues);
 		GraphicEngine::UpdateBeforeRendering();
+		FrameMarkEnd(tracy_UpdateRenderingQueues);
 
-		// DEPTH MAP
 		glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
+			FrameMarkStart(tracy_RenderDepthBuffer);
 			_depthShader->Use();
 			GraphicEngine::DepthRender();
+			FrameMarkEnd(tracy_RenderDepthBuffer);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -521,31 +531,33 @@ void CameraComponent::Render()
 			glClearColor(1.f, 1.f, 1.f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			_ssaoShader->Use();
-			BindDepthTexture(0);
-			_ssaoShader->SetInt("depthTexture", 0);
-			glActiveTexture(GL_TEXTURE0 + 1);
-			glBindTexture(GL_TEXTURE_2D, _ssaoNoiseTexture);
-			_ssaoShader->SetInt("noiseTexture", 1);
-			_ssaoShader->SetFloat("sampleRadius", 0.5);
-			_ssaoShader->SetFloat("bias", 0.025);
-			for (size_t i = 0; i < 64; ++i) {
-				_ssaoShader->SetVec3(string("kernel[").append(std::to_string(i)).append("]"), _ssaoKernel[i]);
-			}
+				FrameMarkStart(tracy_RenderSSAOTexture);
+				_ssaoShader->Use();
+				BindDepthTexture(0);
+				_ssaoShader->SetInt("depthTexture", 0);
+				glActiveTexture(GL_TEXTURE0 + 1);
+				glBindTexture(GL_TEXTURE_2D, _ssaoNoiseTexture);
+				_ssaoShader->SetInt("noiseTexture", 1);
+				_ssaoShader->SetFloat("sampleRadius", 0.5);
+				_ssaoShader->SetFloat("bias", 0.025);
+				for (size_t i = 0; i < 64; ++i) {
+					_ssaoShader->SetVec3(string("kernel[").append(std::to_string(i)).append("]"), _ssaoKernel[i]);
+				}
 
-			_screenPlane.GetMesh(0)->Draw(1);
+				_screenPlane.GetMesh(0)->Draw(1);
 
-			glBindTexture(GL_TEXTURE_2D, 0);
+				glBindTexture(GL_TEXTURE_2D, 0);
 
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _ssaoBlurredMap, 0);
-			glClear(GL_COLOR_BUFFER_BIT);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _ssaoBlurredMap, 0);
+				glClear(GL_COLOR_BUFFER_BIT);
 
-			_ssaoBlurredShader->Use();
-			glActiveTexture(GL_TEXTURE0 + 0);
-			glBindTexture(GL_TEXTURE_2D, _ssaoMap);
-			_ssaoBlurredShader->SetInt("ssaoTexture", 0);
+				_ssaoBlurredShader->Use();
+				glActiveTexture(GL_TEXTURE0 + 0);
+				glBindTexture(GL_TEXTURE_2D, _ssaoMap);
+				_ssaoBlurredShader->SetInt("ssaoTexture", 0);
 
-			_screenPlane.GetMesh(0)->Draw(1);
+				_screenPlane.GetMesh(0)->Draw(1);
+				FrameMarkEnd(tracy_RenderSSAOTexture);
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
@@ -555,10 +567,13 @@ void CameraComponent::Render()
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+			FrameMarkStart(tracy_RenderScreenTexture);
 			glActiveTexture(GL_TEXTURE0 + 31);
 			glBindTexture(GL_TEXTURE_2D, _ssaoBlurredMap);
 
 			GraphicEngine::Render();
+			
+			FrameMarkEnd(tracy_RenderScreenTexture);
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, _msRenderMapFBO);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _renderMapFBO);
@@ -568,6 +583,7 @@ void CameraComponent::Render()
 
 	// RENDERING
 	if (this->IsMain()) {
+		FrameMarkStart(tracy_OnScreenFramebuffer);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		BindRenderTexture(0);
 		BindDepthTexture(1);
@@ -589,6 +605,7 @@ void CameraComponent::Render()
 		_screenShader->SetBool("displaySSAO", _mode == CameraDisplayMode::SSAO_MAP);
 
 		_screenPlane.GetMesh(0)->Draw(1);
+		FrameMarkEnd(tracy_OnScreenFramebuffer);
 	}
 }
 
@@ -881,19 +898,22 @@ Ray CameraComponent::GetScreenPointRay(glm::vec2 screenPosition) const
 	//											   (1.0f - 2.0f * screenPosition.y / size.y) * fov_tan, 1.0f));/**/
 
 	// Normalize screen coordinates to NDC (-1 to 1)
-	float x = (2.0f * screenPosition.x) / size.x - 1.0f;
-	float y = 1.0f - (2.0f * screenPosition.y) / size.y;
-	float z = 1.0f; // NDC Z value (should be 1 for far plane)
-
-	// Unproject to view space
-	glm::vec4 rayClip = glm::vec4(x, y, -1.0f, 1.0f);
-	glm::vec4 rayEye = glm::inverse(GetProjectionMatrix()) * rayClip;
-	rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f); // Set z to -1 for direction
-	glm::vec4 rayWorld = glm::inverse(GetViewMatrix()) * rayEye;
-
-	// Get direction vector in world space
-	glm::vec3 Direction(rayWorld);
+	float x = 2.0f * screenPosition.x / size.x;
+	float y = 2.0f * screenPosition.y / size.y;
+	glm::vec3 Direction = _front + _right * (x * tanf(radians(_fov)) * size.x / size.y) + cross(_right, _front) * (y * tanf(radians(_fov)));
 	Direction = glm::normalize(Direction);
+	//SPDLOG_INFO("CF\t{}\t{}\t{}\n\t\t\t\tD\t{}\t{}\t{}", _front.x, _front.y, _front.z, Direction.x, Direction.y, Direction.z);
+	//float z = 1.0f; // NDC Z value (should be 1 for far plane)
+
+	// // Unproject to view space
+	//glm::vec4 rayClip = glm::vec4(x, y, -1.0f, 1.0f);
+	//glm::vec4 rayEye = glm::inverse(GetProjectionMatrix()) * rayClip;
+	//rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f); // Set z to -1 for direction
+	//glm::vec4 rayWorld = glm::inverse(GetViewMatrix()) * rayEye;
+	//
+	//// Get direction vector in world space
+	//glm::vec3 Direction(rayWorld);
+	//Direction = glm::normalize(Direction);
 
 	return Ray(std::move(Direction), std::move(Origin));
 }

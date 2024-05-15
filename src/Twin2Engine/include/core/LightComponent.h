@@ -10,7 +10,9 @@ namespace Twin2Engine {
 		class LightComponent : public Component {
 			protected:
 				virtual YAML::Node Serialize() const override {
-					return Component::Serialize();
+					YAML::Node node = Component::Serialize();
+					node["type"] = "LightComponent";
+					return node;
 				}
 
 				virtual void DrawEditor() override {

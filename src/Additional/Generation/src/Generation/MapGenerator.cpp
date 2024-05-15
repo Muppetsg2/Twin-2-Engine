@@ -1,6 +1,7 @@
 #include <Generation/MapGenerator.h>
 #include <core/Time.h>
 #include <Generation/ContentGenerator.h>
+#include <core/HexagonalColliderComponent.h>
 
 using namespace Generation;
 using namespace Tilemap;
@@ -126,7 +127,7 @@ void MapGenerator::ConnectTiles(ivec2 startTile, ivec2 endTile)
     int dy = endTile.y - startTile.y;
     //int dz = endTile.z - startTile.z;
     
-    int steps = max(abs(dx), abs(dy)); // Zastanowiæ siê czy to jakoœ nie zmieniæ z makr na funckje
+    int steps = max(abs(dx), abs(dy)); // Zastanowiï¿½ siï¿½ czy to jakoï¿½ nie zmieniï¿½ z makr na funckje
     //int steps = Mathf.Max(Mathf.Abs(dx), Mathf.Abs(dy), Mathf.Abs(dz));
     
     float delta_x = dx / (float)steps;
@@ -237,6 +238,7 @@ void MapGenerator::Generate()
     ivec2 leftBottomPosition = tilemap->GetLeftBottomPosition();
     ivec2 rightTopPosition = tilemap->GetRightTopPosition();
     
+    int i = 1000;
     for (int x = leftBottomPosition.x; x <= rightTopPosition.x; x++)
     {
         for (int y = leftBottomPosition.y; y <= rightTopPosition.y; y++)
@@ -249,6 +251,14 @@ void MapGenerator::Generate()
                 MapHexTile* hexTile = tileObject->GetComponent<MapHexTile>();
                 hexTile->tilemap = tilemap;
                 hexTile->tile = tile;
+
+                HexagonalColliderComponent* hexCol = tileObject->GetComponent<HexagonalColliderComponent>();
+                if (hexCol != nullptr) {
+                    hexCol->colliderId = ++i;
+                    auto Pos = hexCol->GetTransform()->GetGlobalPosition();
+                    
+                    SPDLOG_INFO("Pos: {}\t{}\t{}\t\t\t\tColPos: {}\t{}\t{}", Pos.x, Pos.y, Pos.z, hexCol->collider->shapeColliderData->Position.x, Pos.z, hexCol->collider->shapeColliderData->Position.y, Pos.z, hexCol->collider->shapeColliderData->Position.z);
+                }
             }
         }
     }

@@ -417,6 +417,7 @@ GameObjects:
                 type: SphereCollider
                 subTypes:
                     - Collider
+                colliderId: 0
                 trigger: false
                 static: false
                 layer: 0
@@ -441,6 +442,7 @@ GameObjects:
                 type: BoxCollider
                 subTypes:
                     - Collider
+                colliderId: 0
                 trigger: false
                 static: false
                 layer: 0
@@ -471,6 +473,7 @@ GameObjects:
                 type: CapsuleCollider
                 subTypes:
                     - Collider
+                colliderId: 0
                 trigger: false
                 static: false
                 layer: 0

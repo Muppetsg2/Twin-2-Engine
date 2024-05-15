@@ -50,6 +50,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC	${Twin2Engine_INCLUDE_DIR}
 													${TOOLS_INCLUDE_DIR})
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_link_libraries(${PROJECT_NAME} TracyClient)
 	target_link_libraries(${PROJECT_NAME} imgui)
 	target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
 endif()

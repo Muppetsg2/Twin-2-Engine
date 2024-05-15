@@ -7,6 +7,7 @@
 #include <physic/Ray.h>
 #include <graphic/Frustum.h>
 #include <tools/EventHandler.h>
+#include <core/ColliderComponent.h>
 
 namespace Twin2Engine::Core {
 	class ColliderComponent;
@@ -21,8 +22,6 @@ namespace Twin2Engine::Physic {
 		std::unordered_set<GameCollider*> LastFrameCollisions;
 
 	public:
-		unsigned int colliderId = 0;
-
 		bool enabled = false;
 		bool isTrigger = false;
 		bool isStatic = false;
@@ -40,7 +39,7 @@ namespace Twin2Engine::Physic {
 		GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, SphereColliderData* sphereColliderData);
 		GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, BoxColliderData* boxColliderData);
 		GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, CapsuleColliderData* CapsuleColliderData);
-
+		GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, HexagonalColliderData* hexagonalColliderData);
 		virtual ~GameCollider();
 
 		Collision* testBoundingVolume(BoundingVolume* other) const;// = 0;

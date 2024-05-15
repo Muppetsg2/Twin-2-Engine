@@ -11,6 +11,10 @@
 	#include <imgui_impl/imgui_stdlib.h>
 	#include <imgui_impl/imgui_impl_glfw.h>
 	#include <imgui_impl/imgui_impl_opengl3.h>
+	
+	#include <tracy/Tracy.hpp>
+	#include <tracy/TracyOpenGL.hpp>
+	#define TRACY_ENABLE
 #endif
 
 #include <stb_image.h>

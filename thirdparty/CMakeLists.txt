@@ -90,6 +90,7 @@ set_target_properties(glad
                       freetype PROPERTIES FOLDER "thirdparty")
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+    CPMAddPackage("gh:wolfpld/tracy@0.10")
     CPMAddPackage("gh:ocornut/imgui@1.90.6-docking")
 
     set(imgui_SOURCE_DIR ${imgui_SOURCE_DIR} CACHE INTERNAL "")
@@ -99,7 +100,8 @@ if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
 						     ${imgui_SOURCE_DIR}/imgui_tables.cpp
 					         ${imgui_SOURCE_DIR}/imgui_widgets.cpp)
 
-    set_target_properties(imgui PROPERTIES FOLDER "thirdparty")
+    set_target_properties(imgui
+                          TracyClient PROPERTIES FOLDER "thirdparty")
 endif()
           
 if(is_miniaudio)

@@ -1,5 +1,5 @@
-#include "core/GameObject.h"
 #include <core/BoxColliderComponent.h>
+#include "core/GameObject.h"
 #include <physic/CollisionManager.h>
 #include <tools/YamlConverters.h>
 

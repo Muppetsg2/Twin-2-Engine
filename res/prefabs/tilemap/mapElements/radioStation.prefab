@@ -71,8 +71,6 @@ Root:
     - id: 624
       enabled: true
       type: MeshRenderer
-      subTypes:
-        - Renderable
       isTransparent: false
       model: 1
       materials:

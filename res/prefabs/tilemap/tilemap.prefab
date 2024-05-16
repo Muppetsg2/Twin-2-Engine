@@ -6,7 +6,15 @@ Materials: []
 Models:
   - id: 0
     path: "{Plane}"
-Prefabs: []
+Prefabs: 
+  - id: 0
+    path: res/prefabs/tilemap/tiles/hexTile.prefab
+  - id: 1
+    path: res/prefabs/tilemap/tiles/redHexTile.prefab
+  - id: 2
+    path: res/prefabs/tilemap/tiles/blueHexTile.prefab
+  - id: 3
+    path: res/prefabs/tilemap/tiles/greenHexTile.prefab
 ScriptableObjects: []
 Root:
   name: New GameObject
@@ -40,12 +48,10 @@ Root:
     - id: 2
       enabled: true
       type: MapGenerator
-      subTypes:
-        []
-      preafabHexagonalTile: ""
-      additionalTile: ""
-      filledTile: ""
-      pointTile: ""
+      preafabHexagonalTile: 0
+      additionalTile: 1
+      filledTile: 2
+      pointTile: 3
       generationRadiusMin: 7
       generationRadiusMax: 7
       minPointsNumber: 5

@@ -338,7 +338,7 @@ void SceneManager::LoadScene() {
 
 		// Transform
 		Transform* t = obj->GetTransform();
-		if (t->Deserialize(gameObjectNode["transform"])) {
+		if (!t->Deserialize(gameObjectNode["transform"])) {
 			SPDLOG_ERROR("Transform of GameObject {0} data is corupted", objId);
 		}
 

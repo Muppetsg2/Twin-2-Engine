@@ -316,13 +316,22 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "Time: 0.002933"
+        font: 0
+        size: 48
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
         color:
           x: 1
           y: 1
           z: 1
           w: 1
-        size: 48
-        font: 0
+        alignX: 0
+        alignY: 0
+        textWrapping: false
+        overflow: 0
     children:
       []
   - id: 6
@@ -640,9 +649,7 @@ GameObjects:
       - id: 33
         enabled: true
         type: MapGenerator
-        subTypes:
-          []
-        preafabHexagonalTile: 1
+        prefabHexagonalTile: 1
         additionalTile: 2
         filledTile: 3
         pointTile: 4

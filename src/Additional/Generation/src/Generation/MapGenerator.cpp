@@ -270,7 +270,7 @@ YAML::Node MapGenerator::Serialize() const
 {
     YAML::Node node = Component::Serialize();
     node["type"] = "MapGenerator";
-    node["preafabHexagonalTile"] = SceneManager::GetPrefabSaveIdx(preafabHexagonalTile->GetId());
+    node["prefabHexagonalTile"] = SceneManager::GetPrefabSaveIdx(preafabHexagonalTile->GetId());
     node["additionalTile"] = SceneManager::GetPrefabSaveIdx(additionalTile->GetId());
     node["filledTile"] = SceneManager::GetPrefabSaveIdx(filledTile->GetId());
     node["pointTile"] = SceneManager::GetPrefabSaveIdx(pointTile->GetId());

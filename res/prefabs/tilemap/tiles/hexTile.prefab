@@ -43,8 +43,6 @@ Root:
     - id: 2
       enabled: true
       type: MeshRenderer
-      subTypes:
-        - Renderable
       isTransparent: false
       model: 0
       materials:
@@ -52,8 +50,6 @@ Root:
     - id: 3
       enabled: true
       type: HexagonalCollider
-      subTypes:
-        - Collider
       colliderId: 0
       trigger: true
       static: false

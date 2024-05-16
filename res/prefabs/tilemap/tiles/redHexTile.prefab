@@ -47,8 +47,6 @@ Root:
     - id: 5
       enabled: true
       type: MeshRenderer
-      subTypes:
-        - Renderable
       isTransparent: false
       model: 0
       materials:

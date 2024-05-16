@@ -137,15 +137,16 @@ int main(int, char**)
     auto console_sink = std::make_shared<Editor::Common::ImGuiSink<mutex>>("res/logs/log.txt", 100.0f);
 #elif USE_WINDOWS_CONSOLE_OUTPUT
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-#endif
+#endif // USE_IMGUI_CONSOLE_OUTPUT
 
     auto logger = std::make_shared<spdlog::logger>("logger", console_sink);
     spdlog::register_logger(logger);
     spdlog::set_default_logger(logger);
+    console_sink->StartLogging();
 
 #else
     spdlog::set_level(spdlog::level::off);
-#endif  
+#endif // USE_IMGUI_CONSOLE_OUTPUT || USE_WINDOWS_CONSOLE_OUTPUT
 
 #endif // EDITOR_LOGGER
 #ifdef RELEASE_LOGGER
@@ -156,9 +157,8 @@ int main(int, char**)
     spdlog::set_default_logger(fileLogger);
 
     spdlog::set_level(spdlog::level::debug);
+    fileLoggerSink->StartLogging();
 #endif // RELEASE_LOGGER
-
-
 
     if (!GameEngine::Init(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_FULLSCREEN, GL_VERSION_MAJOR, GL_VERSION_MINOR))
     {
@@ -339,18 +339,6 @@ int main(int, char**)
     GameEngine::EarlyUpdate += [&]() -> void {
         update();
     };
-
-#ifdef EDITOR_LOGGER
-
-#if USE_IMGUI_CONSOLE_OUTPUT
-    console_sink->StartLogging();
-#endif
-
-#endif
-
-#ifdef RELEASE_LOGGER
-    fileLoggerSink->StartLogging();
-#endif
 
     GameEngine::Start();
 

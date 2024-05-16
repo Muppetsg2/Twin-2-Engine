@@ -108,6 +108,14 @@ Models:
 Prefabs:
   - id: 0
     path: res/prefabs/testPrefab.prefab
+  - id: 1
+    path: res/prefabs/tilemap/tiles/hexTile.prefab
+  - id: 2
+    path: res/prefabs/tilemap/tiles/redHexTile.prefab
+  - id: 3
+    path: res/prefabs/tilemap/tiles/blueHexTile.prefab
+  - id: 4
+    path: res/prefabs/tilemap/tiles/greenHexTile.prefab
 ScriptableObjects:
   - id: 0
     path: res/scriptablobjects/RegionsGeneratorByKMeans.so
@@ -192,8 +200,6 @@ GameObjects:
       - id: 4
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 2
         color:
@@ -206,8 +212,6 @@ GameObjects:
       - id: 5
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 1
         color:
@@ -242,8 +246,6 @@ GameObjects:
       - id: 7
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 1
         color:
@@ -278,8 +280,6 @@ GameObjects:
       - id: 9
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 0
         color:
@@ -314,8 +314,6 @@ GameObjects:
       - id: 11
         enabled: true
         type: Text
-        subTypes:
-          - Renderable
         isTransparent: false
         text: "Time: 0.002933"
         color:
@@ -350,8 +348,6 @@ GameObjects:
       - id: 13
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -381,8 +377,6 @@ GameObjects:
       - id: 15
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -412,8 +406,6 @@ GameObjects:
       - id: 17
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 2
         materials:
@@ -444,8 +436,6 @@ GameObjects:
       - id: 19
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 0
         materials:
@@ -476,8 +466,6 @@ GameObjects:
       - id: 21
         enabled: true
         type: SphereCollider
-        subTypes:
-          - Collider
         colliderId: 1
         trigger: false
         static: false
@@ -501,8 +489,6 @@ GameObjects:
       - id: 22
         enabled: true
         type: BoxCollider
-        subTypes:
-          - Collider
         colliderId: 2
         trigger: false
         static: false
@@ -532,8 +518,6 @@ GameObjects:
       - id: 23
         enabled: true
         type: CapsuleCollider
-        subTypes:
-          - Collider
         colliderId: 3
         trigger: false
         static: false
@@ -589,8 +573,6 @@ GameObjects:
       - id: 28
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -620,8 +602,6 @@ GameObjects:
       - id: 30
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 5
         materials:
@@ -662,10 +642,10 @@ GameObjects:
         type: MapGenerator
         subTypes:
           []
-        preafabHexagonalTile: res/prefabs/tilemap/tiles/hexTile.prefab
-        additionalTile: res/prefabs/tilemap/tiles/redHexTile.prefab
-        filledTile: res/prefabs/tilemap/tiles/blueHexTile.prefab
-        pointTile: res/prefabs/tilemap/tiles/greenHexTile.prefab
+        preafabHexagonalTile: 1
+        additionalTile: 2
+        filledTile: 3
+        pointTile: 4
         generationRadiusMin: 7
         generationRadiusMax: 7
         minPointsNumber: 5
@@ -703,9 +683,7 @@ GameObjects:
     components:
       - id: 1236
         enabled: true
-        type: DirectionalLightComponent
-        subTypes:
-          - LightComponent
+        type: DirectionalLight
         direction:
           x: -0.66666
           y: -0.66666

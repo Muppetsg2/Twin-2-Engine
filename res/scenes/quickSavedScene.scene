@@ -220,8 +220,6 @@ GameObjects:
       - id: 4
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 2
         color:
@@ -234,8 +232,6 @@ GameObjects:
       - id: 5
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 1
         color:
@@ -270,8 +266,6 @@ GameObjects:
       - id: 7
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 1
         color:
@@ -306,8 +300,6 @@ GameObjects:
       - id: 9
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 0
         color:
@@ -342,8 +334,6 @@ GameObjects:
       - id: 11
         enabled: true
         type: Text
-        subTypes:
-          - Renderable
         isTransparent: false
         text: "Time: 0.005549"
         color:
@@ -378,8 +368,6 @@ GameObjects:
       - id: 13
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 5
         materials:
@@ -409,8 +397,6 @@ GameObjects:
       - id: 15
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 5
         materials:
@@ -440,8 +426,6 @@ GameObjects:
       - id: 17
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 4
         materials:
@@ -472,8 +456,6 @@ GameObjects:
       - id: 19
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 0
         materials:
@@ -504,8 +486,6 @@ GameObjects:
       - id: 21
         enabled: true
         type: SphereCollider
-        subTypes:
-          - Collider
         colliderId: 0
         trigger: false
         static: false
@@ -529,8 +509,6 @@ GameObjects:
       - id: 22
         enabled: true
         type: BoxCollider
-        subTypes:
-          - Collider
         colliderId: 0
         trigger: false
         static: false
@@ -560,8 +538,6 @@ GameObjects:
       - id: 23
         enabled: true
         type: CapsuleCollider
-        subTypes:
-          - Collider
         colliderId: 0
         trigger: false
         static: false
@@ -617,8 +593,6 @@ GameObjects:
       - id: 28
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -648,8 +622,6 @@ GameObjects:
       - id: 30
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 8
         materials:
@@ -688,12 +660,10 @@ GameObjects:
       - id: 33
         enabled: true
         type: MapGenerator
-        subTypes:
-          []
-        preafabHexagonalTile: ""
-        additionalTile: ""
-        filledTile: ""
-        pointTile: ""
+        preafabHexagonalTile: 6
+        additionalTile: 4
+        filledTile: 3
+        pointTile: 7
         generationRadiusMin: 7
         generationRadiusMax: 7
         minPointsNumber: 5
@@ -747,8 +717,6 @@ GameObjects:
       - id: 170
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -840,8 +808,6 @@ GameObjects:
       - id: 260
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -871,8 +837,6 @@ GameObjects:
       - id: 1174
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -906,8 +870,6 @@ GameObjects:
       - id: 265
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -937,8 +899,6 @@ GameObjects:
       - id: 1177
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -972,8 +932,6 @@ GameObjects:
       - id: 930
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1003,8 +961,6 @@ GameObjects:
       - id: 1180
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -1038,8 +994,6 @@ GameObjects:
       - id: 935
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1069,8 +1023,6 @@ GameObjects:
       - id: 1183
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -1104,8 +1056,6 @@ GameObjects:
       - id: 810
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1135,8 +1085,6 @@ GameObjects:
       - id: 1171
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -1200,8 +1148,6 @@ GameObjects:
       - id: 270
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1231,8 +1177,6 @@ GameObjects:
       - id: 1193
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 7
         materials:
@@ -1266,8 +1210,6 @@ GameObjects:
       - id: 275
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:

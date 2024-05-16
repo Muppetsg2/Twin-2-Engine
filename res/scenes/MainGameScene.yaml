@@ -1,47 +1,54 @@
 Textures:
-  - path: res/textures/white.png
+  - id: 0
+    path: res/textures/white.png
     fileFormat: 35904
     engineFormat: 6407
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-  - path: res/textures/grass.png
+  - id: 1
+    path: res/textures/grass.png
     fileFormat: 35906
     engineFormat: 6408
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-  - path: res/textures/brickWall.jpg
+  - id: 2
+    path: res/textures/brickWall.jpg
     fileFormat: 35904
     engineFormat: 6407
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-  - path: res/textures/stone.jpg
+  - id: 3
+    path: res/textures/stone.jpg
     fileFormat: 35904
     engineFormat: 6407
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-  - path: res/textures/woodenRoof2.png
+  - id: 4
+    path: res/textures/woodenRoof2.png
     fileFormat: 35906
     engineFormat: 6408
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-  - path: res/textures/hexEdgeTexture.png
+  - id: 5
+    path: res/textures/hexEdgeTexture.png
     fileFormat: 35906
     engineFormat: 6408
     sWrapMode: 33648
     tWrapMode: 33648
     minFilterMode: 9986
     magFilterMode: 9729
-  - path: res/textures/fakeBRDF.png
+  - id: 6
+    path: res/textures/fakeBRDF.png
     fileFormat: 35906
     engineFormat: 6408
     sWrapMode: 33648
@@ -49,43 +56,79 @@ Textures:
     minFilterMode: 9986
     magFilterMode: 9729
 Sprites:
-  - alias: white_box
+  - id: 0
+    alias: white_box
     texture: 0
-  - alias: grass
+  - id: 1
+    alias: grass
     texture: 1
-  - alias: stone
+  - id: 2
+    alias: stone
     texture: 3
 Fonts:
-  - res/fonts/Caveat-Regular.ttf
+  - id: 0
+    path: res/fonts/Caveat-Regular.ttf
 Audio:
-  - res/music/acoustic-guitar.mp3
+  - id: 0
+    path: res/music/acoustic-guitar.mp3
 Materials:
-  - hexagonMat
-  - Basic2
-  - metal
-  - multiTexture
-  - textured
-  - deska
-  - wallMat
-  - roofMat
-  - multiTexture
-  - FakeBRDF
+  - id: 0
+    path: hexagonMat
+  - id: 1
+    path: Basic2
+  - id: 2
+    path: metal
+  - id: 3
+    path: multiTexture
+  - id: 4
+    path: textured
+  - id: 5
+    path: deska
+  - id: 6
+    path: wallMat
+  - id: 7
+    path: roofMat
+  - id: 8
+    path: multiTexture
+  - id: 9
+    path: FakeBRDF
 Models:
-  - res/models/AK47.obj
-  - res/models/hexagon.obj
-  - res/models/castle.obj
-  - "{Cube}"
-  - "{Plane}"
-  - "{Sphere}"
+  - id: 0
+    path: res/models/AK47.obj
+  - id: 1
+    path: res/models/hexagon.obj
+  - id: 2
+    path: res/models/castle.obj
+  - id: 3
+    path: "{Cube}"
+  - id: 4
+    path: "{Plane}"
+  - id: 5
+    path: "{Sphere}"
 Prefabs:
-  - res/prefabs/testPrefab.yaml
+  - id: 0
+    path: res/prefabs/testPrefab.yaml
+  - id: 1
+    path: res/prefabs/tilemap/tiles/hexTile.prefab
+  - id: 2
+    path: res/prefabs/tilemap/tiles/redHexTile.prefab
+  - id: 3
+    path: res/prefabs/tilemap/tiles/blueHexTile.prefab
+  - id: 4
+    path: res/prefabs/tilemap/tiles/greenHexTile.prefab
 ScriptableObjects:
-  - path: res/scriptablobjects/RegionsGeneratorByKMeans.so
-  - path: res/scriptablobjects/SectorGeneratorForRegionsByKMeans.so
-  - path: res/scriptablobjects/LakeGenerator.so
-  - path: res/scriptablobjects/MountainsGenerator.so
-  - path: res/scriptablobjects/CityGenerator.so
-  - path: res/scriptablobjects/RadioStationGeneratorSectorBased.so
+  - id: 0
+    path: res/scriptablobjects/RegionsGeneratorByKMeans.so
+  - id: 1
+    path: res/scriptablobjects/SectorGeneratorForRegionsByKMeans.so
+  - id: 2
+    path: res/scriptablobjects/LakeGenerator.so
+  - id: 3
+    path: res/scriptablobjects/MountainsGenerator.so
+  - id: 4
+    path: res/scriptablobjects/CityGenerator.so
+  - id: 5
+    path: res/scriptablobjects/RadioStationGeneratorSectorBased.so
 GameObjects:
   - id: 1
     name: Camera
@@ -154,8 +197,6 @@ GameObjects:
       - id: 4
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 2
         color:
@@ -168,8 +209,6 @@ GameObjects:
       - id: 5
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 1
         color:
@@ -204,8 +243,6 @@ GameObjects:
       - id: 7
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 1
         color:
@@ -240,8 +277,6 @@ GameObjects:
       - id: 9
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 0
         color:
@@ -276,8 +311,6 @@ GameObjects:
       - id: 11
         enabled: true
         type: Text
-        subTypes:
-          - Renderable
         isTransparent: false
         text: "Time: 0.002933"
         color:
@@ -321,12 +354,10 @@ GameObjects:
       - id: 33
         enabled: true
         type: MapGenerator
-        subTypes:
-          []
-        preafabHexagonalTile: res/prefabs/tilemap/tiles/hexTile.prefab
-        additionalTile: res/prefabs/tilemap/tiles/redHexTile.prefab
-        filledTile: res/prefabs/tilemap/tiles/blueHexTile.prefab
-        pointTile: res/prefabs/tilemap/tiles/greenHexTile.prefab
+        preafabHexagonalTile: 1
+        additionalTile: 2
+        filledTile: 3
+        pointTile: 4
         generationRadiusMin: 7
         generationRadiusMax: 7
         minPointsNumber: 5

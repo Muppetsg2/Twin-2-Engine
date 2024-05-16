@@ -132,7 +132,7 @@ Prefabs:
     path: res/prefabs/tilemap/mapRegion.prefab
   - id: 9
     path: res/prefabs/tilemap/mapElements/mountains.prefab
-ScriptableObjects: ~
+ScriptableObjects: []
 GameObjects:
   - id: 1
     name: Camera
@@ -204,8 +204,6 @@ GameObjects:
       - id: 4
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 2
         color:
@@ -218,8 +216,6 @@ GameObjects:
       - id: 5
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 1
         color:
@@ -254,8 +250,6 @@ GameObjects:
       - id: 7
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 1
         color:
@@ -290,8 +284,6 @@ GameObjects:
       - id: 9
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 0
         color:
@@ -326,8 +318,6 @@ GameObjects:
       - id: 11
         enabled: true
         type: Text
-        subTypes:
-          - Renderable
         isTransparent: false
         color:
           x: 1
@@ -361,8 +351,6 @@ GameObjects:
       - id: 13
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -392,8 +380,6 @@ GameObjects:
       - id: 15
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -423,8 +409,6 @@ GameObjects:
       - id: 17
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 2
         materials:
@@ -455,8 +439,6 @@ GameObjects:
       - id: 19
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 5
         materials:
@@ -486,8 +468,6 @@ GameObjects:
       - id: 21
         enabled: true
         type: SphereCollider
-        subTypes:
-          - Collider
         trigger: false
         static: false
         layer: 0
@@ -510,8 +490,6 @@ GameObjects:
       - id: 22
         enabled: true
         type: BoxCollider
-        subTypes:
-          - Collider
         trigger: false
         static: false
         layer: 0
@@ -540,8 +518,6 @@ GameObjects:
       - id: 23
         enabled: true
         type: CapsuleCollider
-        subTypes:
-          - Collider
         trigger: false
         static: false
         layer: 0
@@ -596,8 +572,6 @@ GameObjects:
       - id: 28
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -627,8 +601,6 @@ GameObjects:
       - id: 30
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 5
         materials:
@@ -657,9 +629,7 @@ GameObjects:
     components:
       - id: 26
         enabled: true
-        type: DirectionalLightComponent
-        subTypes:
-          []
+        type: DirectionalLight
         direction:
           x: -0.699999988
           y: -0.699999988

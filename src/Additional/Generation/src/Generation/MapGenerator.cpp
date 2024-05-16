@@ -270,10 +270,10 @@ YAML::Node MapGenerator::Serialize() const
 {
     YAML::Node node = Component::Serialize();
     node["type"] = "MapGenerator";
-    node["preafabHexagonalTile"] = PrefabManager::GetPrefabPath(preafabHexagonalTile);
-    node["additionalTile"] = PrefabManager::GetPrefabPath(additionalTile);
-    node["filledTile"] = PrefabManager::GetPrefabPath(filledTile);
-    node["pointTile"] = PrefabManager::GetPrefabPath(pointTile);
+    node["preafabHexagonalTile"] = SceneManager::GetPrefabSaveIdx(preafabHexagonalTile->GetId());
+    node["additionalTile"] = SceneManager::GetPrefabSaveIdx(additionalTile->GetId());
+    node["filledTile"] = SceneManager::GetPrefabSaveIdx(filledTile->GetId());
+    node["pointTile"] = SceneManager::GetPrefabSaveIdx(pointTile->GetId());
     node["generationRadiusMin"] = generationRadiusMin;
     node["generationRadiusMax"] = generationRadiusMax;
     node["minPointsNumber"] = minPointsNumber;
@@ -288,10 +288,10 @@ bool MapGenerator::Deserialize(const YAML::Node& node) {
         !node["minPointsNumber"] || !node["maxPointsNumber"] || !node["angleDeltaRange"] ||
         !Component::Deserialize(node)) return false;
 
-    preafabHexagonalTile = PrefabManager::LoadPrefab(node["preafabHexagonalTile"].as<string>());
-    additionalTile = PrefabManager::LoadPrefab(node["additionalTile"].as<string>());
-    filledTile = PrefabManager::LoadPrefab(node["filledTile"].as<string>());
-    pointTile = PrefabManager::LoadPrefab(node["pointTile"].as<string>());
+    preafabHexagonalTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["prefabHexagonalTile"].as<size_t>()));
+    additionalTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["additionalTile"].as<size_t>()));
+    filledTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["filledTile"].as<size_t>()));
+    pointTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["pointTile"].as<size_t>()));
 
     generationRadiusMin = node["generationRadiusMin"].as<float>();
     generationRadiusMax = node["generationRadiusMax"].as<float>();

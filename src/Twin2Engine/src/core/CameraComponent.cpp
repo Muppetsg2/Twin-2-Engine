@@ -531,6 +531,7 @@ void CameraComponent::Render()
 		glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
 		glClear(GL_DEPTH_BUFFER_BIT);
+		glViewport(0, 0, wSize.x / 2, wSize.y / 2);
 
 			FrameMarkStart(tracy_RenderDepthBuffer);
 			_depthShader->Use();
@@ -547,6 +548,7 @@ void CameraComponent::Render()
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _ssaoMap, 0);
 			glClearColor(1.f, 1.f, 1.f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT);
+			glViewport(0, 0, wSize.x / 2, wSize.y / 2);
 
 				FrameMarkStart(tracy_RenderSSAOTexture);
 				_ssaoShader->Use();
@@ -581,6 +583,7 @@ void CameraComponent::Render()
 		glBindFramebuffer(GL_FRAMEBUFFER, _msRenderMapFBO);
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glViewport(0, 0, wSize.x, wSize.y);
 
 			FrameMarkStart(tracy_RenderScreenTexture);
 			BindSSAOTexture(31);
@@ -600,6 +603,7 @@ void CameraComponent::Render()
 	if (this->IsMain()) {
 		FrameMarkStart(tracy_OnScreenFramebuffer);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glViewport(0, 0, wSize.x, wSize.y);
 		BindRenderTexture(0);
 		BindDepthTexture(1);
 		BindSSAOTexture(2);

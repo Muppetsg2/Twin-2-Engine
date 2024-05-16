@@ -1,13 +1,13 @@
 Textures:
   - id: 0
     path: res/textures/hexEdgeTexture.png
-    sWrapMode: 33648
-    tWrapMode: 33648
-    minFilterMode: 9986
-    magFilterMode: 9729
-Sprites: []
-Fonts: []
-Audio: []
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+Sprites: ~
+Fonts: ~
+Audio: ~
 Materials:
   - id: 0
     path: ColoredHexTile
@@ -18,8 +18,10 @@ Models:
     path: res/models/hexagon.obj
   - id: 1
     path: "{Plane}"
-Prefabs: []
-ScriptableObjects: []
+Prefabs:
+  - id: 0
+    path: res/prefabs/tilemap/tiles/redHexTile.prefab
+ScriptableObjects: ~
 Root:
   name: New GameObject
   isStatic: false
@@ -37,7 +39,7 @@ Root:
       z: 1
     rotation:
       x: 0
-      y: 90
+      y: 1.57079637
       z: 0
   components:
     - id: 4

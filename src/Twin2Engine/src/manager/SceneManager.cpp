@@ -625,10 +625,10 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	Func<bool, const tuple<string, size_t, bool, SpriteData>&, size_t&> spriteLoader = [&](const tuple<string, size_t, bool, SpriteData>& spriteLoadData, size_t& id) -> bool {
 		Sprite* temp = nullptr;
 		if (get<2>(spriteLoadData)) {
-			temp = SpriteManager::MakeSprite(get<0>(spriteLoadData), get<1>(spriteLoadData), get<3>(spriteLoadData));
+			temp = SpriteManager::MakeSprite(get<0>(spriteLoadData), _texturesIds[get<1>(spriteLoadData)], get<3>(spriteLoadData));
 		}
 		else {
-			temp = SpriteManager::MakeSprite(get<0>(spriteLoadData), get<1>(spriteLoadData));
+			temp = SpriteManager::MakeSprite(get<0>(spriteLoadData), _texturesIds[get<1>(spriteLoadData)]);
 		}
 		if (temp != nullptr) {
 			id = temp->GetManagerId();

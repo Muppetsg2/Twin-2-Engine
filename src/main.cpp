@@ -212,30 +212,15 @@ int main(int, char**)
     };
 
     // ADDING SCENES
-    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
     //SceneManager::AddScene("testScene", "res/scenes/ToonShading.scene");
 
-    //SceneManager::LoadScene("testScene");
-    //SceneManager::Update();
+    SceneManager::LoadScene("testScene");
+    SceneManager::Update();
 
     //SceneManager::SaveScene("res/scenes/ToonShading.scene");
-
-    Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/mapElements/city.prefab");
-    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/mapElements/mountains.prefab");
-    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/mapElements/radioStation.prefab");
-    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/tiles/blueHexTile.prefab");
-    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/tiles/greenHexTile.prefab");
-    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/tiles/hexTile.prefab");
-    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/tiles/redHexTile.prefab");
-    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/mapRegion.prefab");
-    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/mapSector.prefab");
-    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/tilemap.prefab");
-    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/savedPrefab.prefab");
-    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/testPrefab.prefab");
-    GameObject* obj = SceneManager::CreateGameObject(p);
-    PrefabManager::SaveAsPrefab(obj, "res/prefabs/tilemap/mapElements/city.prefab");
 
 #pragma region SETTING_UP_GENERATION
 

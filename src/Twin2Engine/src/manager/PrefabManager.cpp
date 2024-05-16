@@ -179,3 +179,11 @@ YAML::Node PrefabManager::Serialize()
 	}
 	return prefabs;
 }
+
+void PrefabManager::DrawEditor(bool* p_open)
+{
+	if (!ImGui::Begin("Prefab Manager", p_open)) {
+		ImGui::End();
+		return;
+	}
+}

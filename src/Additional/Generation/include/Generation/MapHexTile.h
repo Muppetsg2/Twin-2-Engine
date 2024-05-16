@@ -21,15 +21,7 @@ namespace Generation
 		)
 	public:
 
-		enum HexTileType
-		{
-			None,
-			Empty,
-			PointOfInterest,
-			Water,
-			Mountain,
-			RadioStation
-		};
+		ENUM_CLASS(HexTileType, None, Empty, PointOfInterest, Water, Mountain, RadioStation)
 
 	public:
 		Tilemap::HexagonalTilemap* tilemap = nullptr;
@@ -50,7 +42,7 @@ namespace Generation
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
-
+		virtual void DrawEditor() override;
 	};
 }
 

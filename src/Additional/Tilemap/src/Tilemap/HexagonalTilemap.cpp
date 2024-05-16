@@ -443,3 +443,23 @@ bool HexagonalTilemap::Deserialize(const YAML::Node& node) {
 
 	return true;
 }
+
+void HexagonalTilemap::DrawEditor()
+{
+	std::string id = std::string(std::to_string(this->GetId()));
+	std::string name = std::string("Hexagonal Tilemap##Component").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+
+		// TODO: Moze dodac wiecej jesli cos tez trzeba sparametryzowac
+
+		glm::ivec2 v1 = _leftBottomPosition;
+		ImGui::DragInt2(string("Left Bottom Position##").append(id).c_str(), glm::value_ptr(v1));
+
+		glm::ivec2 v2 = _rightTopPosition;
+		ImGui::DragInt2(string("Right Top Position##").append(id).c_str(), glm::value_ptr(v2));
+
+		if (v1 != _leftBottomPosition || v2 != _rightTopPosition) {
+			Resize(v1, v2);
+		}
+	}
+}

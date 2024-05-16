@@ -28,6 +28,7 @@ namespace Twin2Engine::Manager {
 		static void UnloadAll();
 
 		static YAML::Node Serialize();
+		static void DrawEditor(bool* p_open);
 
 		friend class SceneManager;
 	};

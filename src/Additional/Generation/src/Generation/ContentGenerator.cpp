@@ -84,7 +84,7 @@ void ContentGenerator::DrawEditor()
 
         clicked.clear();
 
-        // DODAC
+        // TODO: DODAC
         // przenoszenie kolejnosæi generatorow
         /*
         if (ImGui::Button(string("Add Element Generator##").append(id).c_str())) {

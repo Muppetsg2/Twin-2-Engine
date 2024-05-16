@@ -338,7 +338,7 @@ YAML::Node Text::Serialize() const
 {
 	YAML::Node node = RenderableComponent::Serialize();
 	node["type"] = "Text";
-	node["text"] = string(_text.begin(), _text.end());
+	node["text"] = _text;
 	node["font"] = SceneManager::GetFontSaveIdx(_fontId);
 	node["size"] = _size;
 	node["autoSize"] = _autoSize;
@@ -361,8 +361,7 @@ bool Text::Deserialize(const YAML::Node& node)
 		!node["color"] || !node["alignX"] || !node["alignY"] || !node["textWrapping"] ||
 		!node["overflow"] || !RenderableComponent::Deserialize(node)) return false;
 
-	string temp = node["text"].as<string>();
-	_text = wstring(temp.begin(), temp.end());
+	_text = node["text"].as<wstring>();
 	_fontId = SceneManager::GetFont(node["font"].as<size_t>());
 	_size = node["size"].as<uint32_t>();
 	_autoSize = node["autoSize"].as<bool>();

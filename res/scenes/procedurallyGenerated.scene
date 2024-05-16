@@ -143,7 +143,7 @@ GameObjects:
         z: 0
       rotation:
         x: 0
-        y: -0.027415568
+        y: -8.35125957e-06
         z: 0
     components:
       - id: 1
@@ -311,7 +311,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "Time: 0.002933"
+        text: "\x00T\x00i\x00m\x00e\x00:\x00 \x000\x00.\x000\x000\x002\x009\x003\x003"
         font: 0
         size: 48
         autoSize: false
@@ -434,7 +434,7 @@ GameObjects:
         y: 1
         z: 1
       rotation:
-        x: 0.027415568
+        x: 8.35125957e-06
         y: 0
         z: 0
     components:

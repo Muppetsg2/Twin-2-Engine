@@ -62,4 +62,35 @@ namespace YAML {
 			return true;
 		}
 	};
+
+	template<> struct convert<std::wstring> {
+		static Node encode(const std::wstring& rhs) {
+			Node node;
+			std::string temp;
+			for (const wchar_t& wc : rhs) {
+				temp += (char)(wc >> 8);
+				temp += (char)wc;
+			}
+			node = temp;
+			return node;
+		}
+
+		static bool decode(const Node& node, std::wstring& rhs) {
+			if (!node.IsScalar()) return false;
+
+			rhs = L"";
+			std::string value = node.as<std::string>();
+
+			size_t i = 0;
+			// 0 0 0
+			for (i = 0; i < value.size() - 1; i += 2) {
+				rhs += ((wchar_t)value[i] << 8) | (wchar_t)value[i + 1];
+			}
+			if (i == value.size() - 1) {
+				rhs += ((wchar_t)value[i] << 8);
+			}
+
+			return true;
+		}
+	};
 }

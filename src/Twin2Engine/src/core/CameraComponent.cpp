@@ -63,41 +63,46 @@ void CameraComponent::OnWindowSizeChange()
 
 	unsigned int r_res = GL_RGB;
 	unsigned int d_res = GL_DEPTH_COMPONENT;
+	unsigned int s_res = GL_RED;
 
 	switch (_renderRes) {
 		case CameraRenderResolution::DEFAULT: {
 			r_res = GL_RGB;
 			d_res = GL_DEPTH_COMPONENT;
+			s_res = GL_RED;
 			break;
 		}
 		case CameraRenderResolution::MEDIUM: {
 			r_res = GL_RGB16F;
 			d_res = GL_DEPTH_COMPONENT16;
+			s_res = GL_R16F; //DONT WORK
 			break;
 		}
 		case CameraRenderResolution::HIGH: {
 			r_res = GL_RGB32F;
 			d_res = GL_DEPTH_COMPONENT32F;
+			s_res = GL_R32F;
 			break;
 		}
 		default: {
 			r_res = GL_RGB;
 			d_res = GL_DEPTH_COMPONENT;
+			s_res = GL_RED;
 			break;
 		}
 	}
 
 	glBindTexture(GL_TEXTURE_2D, _depthMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, d_res, wSize.x / 2, wSize.y / 2, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, d_res, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, _renderMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, r_res, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, _ssaoMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, wSize.x / 2, wSize.y / 2, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, s_res, wSize.x, wSize.y, 0, GL_RED, GL_FLOAT, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, _ssaoBlurredMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, wSize.x / 2, wSize.y / 2, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, s_res, wSize.x, wSize.y, 0, GL_RED, GL_FLOAT, NULL);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
@@ -373,26 +378,31 @@ void CameraComponent::SetRenderResolution(CameraRenderResolution res)
 
 		unsigned int r_res = GL_RGB;
 		unsigned int d_res = GL_DEPTH_COMPONENT;
+		unsigned int s_res = GL_RED;
 
 		switch (_renderRes) {
 			case CameraRenderResolution::DEFAULT: {
 				r_res = GL_RGB;
 				d_res = GL_DEPTH_COMPONENT;
+				s_res = GL_RED;
 				break;
 			}
 			case CameraRenderResolution::MEDIUM: {
 				r_res = GL_RGB16F;
 				d_res = GL_DEPTH_COMPONENT16;
+				s_res = GL_R16F;
 				break;
 			}
 			case CameraRenderResolution::HIGH: {
 				r_res = GL_RGB32F;
 				d_res = GL_DEPTH_COMPONENT32F;
+				s_res = GL_R32F;
 				break;
 			}
 			default: {
 				r_res = GL_RGB;
 				d_res = GL_DEPTH_COMPONENT;
+				s_res = GL_RED;
 				break;
 			}
 		}
@@ -402,10 +412,17 @@ void CameraComponent::SetRenderResolution(CameraRenderResolution res)
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
 		glBindTexture(GL_TEXTURE_2D, _depthMap);
-		glTexImage2D(GL_TEXTURE_2D, 0, d_res, wSize.x / 2, wSize.y / 2, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, d_res, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 		glBindTexture(GL_TEXTURE_2D, _renderMap);
 		glTexImage2D(GL_TEXTURE_2D, 0, r_res, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+		glBindTexture(GL_TEXTURE_2D, _ssaoMap);
+		glTexImage2D(GL_TEXTURE_2D, 0, s_res, wSize.x, wSize.y, 0, GL_RED, GL_FLOAT, NULL);
+
+		glBindTexture(GL_TEXTURE_2D, _ssaoBlurredMap);
+		glTexImage2D(GL_TEXTURE_2D, 0, s_res, wSize.x, wSize.y, 0, GL_RED, GL_FLOAT, NULL);
+
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
@@ -538,8 +555,8 @@ void CameraComponent::Render()
 				glActiveTexture(GL_TEXTURE0 + 1);
 				glBindTexture(GL_TEXTURE_2D, _ssaoNoiseTexture);
 				_ssaoShader->SetInt("noiseTexture", 1);
-				_ssaoShader->SetFloat("sampleRadius", 0.5);
-				_ssaoShader->SetFloat("bias", 0.025);
+				_ssaoShader->SetFloat("sampleRadius", _ssaoSampleRadius);
+				_ssaoShader->SetFloat("bias", _ssaoBias);
 				for (size_t i = 0; i < 64; ++i) {
 					_ssaoShader->SetVec3(string("kernel[").append(std::to_string(i)).append("]"), _ssaoKernel[i]);
 				}
@@ -568,8 +585,8 @@ void CameraComponent::Render()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			FrameMarkStart(tracy_RenderScreenTexture);
-			glActiveTexture(GL_TEXTURE0 + 31);
-			glBindTexture(GL_TEXTURE_2D, _ssaoBlurredMap);
+			BindSSAOTexture(31);
+			BindDepthTexture(26);
 
 			GraphicEngine::Render();
 			
@@ -588,8 +605,8 @@ void CameraComponent::Render()
 		BindRenderTexture(0);
 		BindDepthTexture(1);
 		glActiveTexture(GL_TEXTURE0 + 2);
-		glBindTexture(GL_TEXTURE_2D, _ssaoMap);
-		//glBindTexture(GL_TEXTURE_2D, _ssaoBlurredMap);
+		//glBindTexture(GL_TEXTURE_2D, _ssaoMap);
+		glBindTexture(GL_TEXTURE_2D, _ssaoBlurredMap);
 		_screenShader->Use();
 		_screenShader->SetInt("screenTexture", 0);
 		_screenShader->SetInt("depthTexture", 1);
@@ -720,26 +737,31 @@ void CameraComponent::Initialize()
 
 	unsigned int r_res = GL_RGB;
 	unsigned int d_res = GL_DEPTH_COMPONENT;
+	unsigned int s_res = GL_RED;
 
 	switch (_renderRes) {
 		case CameraRenderResolution::DEFAULT: {
 			r_res = GL_RGB;
 			d_res = GL_DEPTH_COMPONENT;
+			s_res = GL_RED;
 			break;
 		}
 		case CameraRenderResolution::MEDIUM: {
 			r_res = GL_RGB16F;
 			d_res = GL_DEPTH_COMPONENT16;
+			s_res = GL_R16F;
 			break;
 		}
 		case CameraRenderResolution::HIGH: {
 			r_res = GL_RGB32F;
 			d_res = GL_DEPTH_COMPONENT32F;
+			s_res = GL_R32F;
 			break;
 		}
 		default: {
 			r_res = GL_RGB;
 			d_res = GL_DEPTH_COMPONENT;
+			s_res = GL_RED;
 			break;
 		}
 	}
@@ -780,7 +802,7 @@ void CameraComponent::Initialize()
 	glGenTextures(1, &_ssaoMap);
 	glBindTexture(GL_TEXTURE_2D, _ssaoMap);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, wSize.x, wSize.y, 0, GL_RED, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, s_res, wSize.x, wSize.y, 0, GL_RED, GL_FLOAT, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -791,7 +813,7 @@ void CameraComponent::Initialize()
 	glGenTextures(1, &_ssaoBlurredMap);
 	glBindTexture(GL_TEXTURE_2D, _ssaoBlurredMap);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, wSize.x, wSize.y, 0, GL_RED, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, s_res, wSize.x, wSize.y, 0, GL_RED, GL_FLOAT, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -1077,6 +1099,10 @@ void CameraComponent::DrawEditor()
 		// Brighteness
 		// Contrast
 		ImGui::Checkbox(string("SSAO##").append(id).c_str(), &this->_isSsao);
+		if (this->_isSsao) {
+			ImGui::DragFloat(string("SSAO Bias##").append(id).c_str(), &this->_ssaoBias, 0.1f);
+			ImGui::DragFloat(string("SSAO Sample Radius##").append(id).c_str(), &this->_ssaoSampleRadius, 0.1f);
+		}
 		ImGui::Checkbox(string("Frustum Culling##").append(id).c_str(), &this->_isFrustumCulling);
 	}
 }

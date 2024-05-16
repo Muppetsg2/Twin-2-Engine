@@ -1239,3 +1239,7 @@ YAML::Node ModelsManager::Serialize()
     }
     return models;
 }
+
+void DrawEditor(bool* p_open) {
+
+}

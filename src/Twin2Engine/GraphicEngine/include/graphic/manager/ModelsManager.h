@@ -78,6 +78,7 @@ namespace Twin2Engine::Manager
 		//static void FreeModel(InstantiatingModel*& model);
 
 		static YAML::Node Serialize();
+		static void DrawEditor(bool* p_open);
 
 		static constexpr const char* CUBE_PATH = "{Cube}";
 		static constexpr const char* PLANE_PATH = "{Plane}";

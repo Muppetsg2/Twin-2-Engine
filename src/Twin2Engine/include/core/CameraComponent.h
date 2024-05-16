@@ -161,6 +161,7 @@ namespace Twin2Engine::Core {
 		void Initialize() override;
 		void OnDestroy() override;
 		YAML::Node Serialize() const override;
+		bool Deserialize(const YAML::Node& node) override;
 		void DrawEditor() override;
 		Physic::Ray GetScreenPointRay(glm::vec2 screenPosition) const;
 	};

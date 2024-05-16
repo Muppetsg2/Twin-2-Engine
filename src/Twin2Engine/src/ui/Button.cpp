@@ -55,11 +55,22 @@ YAML::Node Button::Serialize() const
 {
 	YAML::Node node = Component::Serialize();
 	node["type"] = "Button";
-	node.remove("subTypes");
 	node["width"] = _width;
 	node["height"] = _height;
 	node["interactable"] = _interactable;
 	return node;
+}
+
+bool Button::Deserialize(const YAML::Node& node)
+{
+	if (!node["width"] || !node["height"] || !node["interactable"] ||
+		!Component::Deserialize(node)) return false;
+
+	_width = node["width"].as<float>();
+	_height = node["height"].as<float>();
+	_interactable = node["interactable"].as<bool>();
+
+	return true;
 }
 
 void Button::DrawEditor()

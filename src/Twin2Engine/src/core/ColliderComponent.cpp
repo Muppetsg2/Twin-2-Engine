@@ -383,11 +383,32 @@ YAML::Node ColliderComponent::Serialize() const
 	node["trigger"] = collider->isTrigger;
 	node["static"] = collider->isStatic;
 	node["layer"] = collider->layer;
-	node["layerFilter"] = collider->layersFilter;
-	node["boundingVolume"] = collider->boundingVolume != nullptr;
-	node["boundingVolumeRadius"] = ((SphereColliderData*)(boundingVolume->shapeColliderData))->Radius;
-	node["position"] = glm::vec3(collider->shapeColliderData->LocalPosition.x, collider->shapeColliderData->LocalPosition.y, collider->shapeColliderData->LocalPosition.z);
+	node["layersFilter"] = collider->layersFilter;
+	if (collider->boundingVolume != nullptr) {
+		node["boundingVolumeRadius"] = ((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius;
+	}
+	node["position"] = collider->shapeColliderData->LocalPosition;
 	return node;
+}
+
+bool ColliderComponent::Deserialize(const YAML::Node& node)
+{
+	if (!node["colliderId"] || !node["trigger"] || !node["static"] || !node["layer"] || 
+		!node["layersFilter"] ||
+		!node["position"] || !Component::Deserialize(node)) return false;
+
+	colliderId = node["colliderId"].as<size_t>();
+	collider->isTrigger = node["trigger"].as<bool>();
+	collider->isStatic = node["static"].as<bool>();
+	collider->layer = node["layer"].as<Layer>();
+	collider->layersFilter = node["layersFilter"].as<LayerCollisionFilter>();
+	if (node["boundingVolumeRadius"]) {
+		collider->boundingVolume = boundingVolume;
+		((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius = node["boundingVolumeRadius"].as<float>();
+	}
+	collider->shapeColliderData->LocalPosition = node["position"].as<glm::vec3>();
+
+	return true;
 }
 
 void ColliderComponent::DrawEditor()

@@ -8,13 +8,17 @@ namespace Generation
 	class MapSector;
 	class MapHexTile : public Twin2Engine::Core::Component
 	{
-		CloneFunctionStart(MapHexTile, Twin2Engine::Core::Component)
+		/*CloneFunctionStart(MapHexTile, Twin2Engine::Core::Component)
 			//CloneField(tilemap)
 			//CloneField(region)
 			//CloneField(sector)
 			//CloneField(tile)
 			CloneField(type)
-		CloneFunctionEnd()
+		CloneFunctionEnd()*/
+	protected:
+		CloneBaseFunc(MapHexTile, Twin2Engine::Core::Component,
+			type
+		)
 	public:
 
 		enum HexTileType
@@ -45,6 +49,7 @@ namespace Generation
 
 
 		virtual YAML::Node Serialize() const override;
+		virtual bool Deserialize(const YAML::Node& node) override;
 
 	};
 }

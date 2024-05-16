@@ -17,9 +17,7 @@ void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
 YAML::Node ContentGenerator::Serialize() const
 {
     YAML::Node node = Twin2Engine::Core::Component::Serialize();
-    //node.remove("type");
     node["type"] = "ContentGenerator";
-    node.remove("subTypes");
     size_t index = 0;
     //node["mapElementGenerators"] = std::vector<size_t>();
     node["mapElementGenerators"] = {};
@@ -29,6 +27,25 @@ YAML::Node ContentGenerator::Serialize() const
         node["mapElementGenerators"][index++] = Twin2Engine::Manager::ScriptableObjectManager::GetPath(generator->GetId());
     }
     return node;
+}
+
+bool ContentGenerator::Deserialize(const YAML::Node& node)
+{
+    if (!node["mapElementGenerators"] || !Component::Deserialize(node)) return false;
+
+    for (YAML::Node soSceneId : node["mapElementGenerators"])
+    {
+        //AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(ScriptableObjectManager::Deserialize(soSceneId.as<unsigned int>()));
+        AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(Twin2Engine::Manager::ScriptableObjectManager::Load(soSceneId.as<string>()));
+        SPDLOG_INFO("Adding generator {0}, {1}", soSceneId.as<string>(), (unsigned int)generator);
+        if (generator != nullptr)
+        {
+            mapElementGenerators.push_back(generator);
+        }
+    }
+    //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
+
+    return true;
 }
 
 void ContentGenerator::DrawEditor()

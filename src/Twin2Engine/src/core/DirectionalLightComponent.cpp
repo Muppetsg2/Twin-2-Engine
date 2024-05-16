@@ -100,8 +100,7 @@ void DirectionalLightComponent::SetPower(float power)
 YAML::Node DirectionalLightComponent::Serialize() const
 {
 	YAML::Node node = LightComponent::Serialize();
-	node["subTypes"].push_back(node["type"].as<std::string>());
-	node["type"] = "DirectionalLightComponent";
+	node["type"] = "DirectionalLight";
 	node["direction"] = light->direction;
 	node["color"] = light->color;
 	node["power"] = light->power;
@@ -109,7 +108,19 @@ YAML::Node DirectionalLightComponent::Serialize() const
 	return node;
 }
 
-void Twin2Engine::Core::DirectionalLightComponent::DrawEditor()
+bool DirectionalLightComponent::Deserialize(const YAML::Node& node)
+{
+	if (!node["direction"] || !node["color"] || !node["power"] ||
+		!LightComponent::Deserialize(node)) return false;
+
+	light->direction = node["direction"].as<glm::vec3>();
+	light->color = node["color"].as<glm::vec3>();
+	light->power = node["power"].as<float>();
+
+	return true;
+}
+
+void DirectionalLightComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Directional Light##Component").append(id);

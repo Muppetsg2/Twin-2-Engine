@@ -2,6 +2,8 @@
 #include <core/Time.h>
 #include <core/Transform.h>
 #include <graphic/manager/UIRenderingManager.h>
+#include <manager/SceneManager.h>
+#include <tools/YamlConverters.h>
 
 using namespace Twin2Engine::UI;
 using namespace Twin2Engine::Core;
@@ -188,7 +190,57 @@ void InputField::OnDestroy()
 
 YAML::Node InputField::Serialize() const
 {
-	return YAML::Node();
+	YAML::Node node = RenderableComponent::Serialize();
+	node["type"] = "InputField";
+	node["interactable"] = _interactable;
+	node["width"] = _width;
+	node["height"] = _height;
+	if (_placeHolder != nullptr) {
+		node["placeHolder"] = _placeHolder->GetId();
+	}
+	if (_text != nullptr) {
+		node["text"] = _text->GetId();
+	}
+	node["textValue"] = _textValue;
+	return node;
+}
+
+bool InputField::Deserialize(const YAML::Node& node) {
+	if (!node["interactable"] || !node["width"] || !node["height"] || !node["textValue"] || 
+		!RenderableComponent::Deserialize(node)) return false;
+
+	_interactable = node["interactable"].as<bool>();
+	_width = node["width"].as<float>();
+	_height = node["height"].as<float>();
+	if (node["placeHolder"]) {
+		size_t compId = node["placeHolder"].as<size_t>();
+		Component* comp = SceneManager::GetComponentWithId(compId);
+		if (comp == nullptr) {
+			SPDLOG_ERROR("Couldn't find Component of Id {0}", compId);
+		}
+		else if (dynamic_cast<Text*>(comp) == nullptr) {
+			SPDLOG_ERROR("Component {0} is not Text Component", compId);
+		}
+		else {
+			_placeHolder = (Text*)comp;
+		}
+	}
+	if (node["text"]) {
+		size_t compId = node["text"].as<size_t>();
+		Component* comp = SceneManager::GetComponentWithId(compId);
+		if (comp == nullptr) {
+			SPDLOG_ERROR("Couldn't find Component of Id {0}", compId);
+		}
+		else if (dynamic_cast<Text*>(comp) == nullptr) {
+			SPDLOG_ERROR("Component {0} is not Text Component", compId);
+		}
+		else {
+			_text = (Text*)comp;
+		}
+	}
+	_textValue = node["textValue"].as<wstring>();
+
+	return true;
 }
 
 void InputField::SetPlaceHolderText(Text* placeHolder)

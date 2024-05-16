@@ -167,9 +167,18 @@ YAML::Node MapSector::Serialize() const
 {
 	YAML::Node node = Twin2Engine::Core::Component::Serialize();
 	node["type"] = "MapSector";
-	node.remove("subTypes");
 	//node["tilemap"] = tilemap;
 	//node["region"] = region;
 	node["sectorType"] = type;
 	return node;
+}
+
+bool MapSector::Deserialize(const YAML::Node& node) {
+	if (!node["sectorType"] || !Component::Deserialize(node)) return false;
+
+	tilemap = nullptr;
+	region = nullptr;
+	type = node["sectorType"].as<MapSector::SectorType>();
+
+	return true;
 }

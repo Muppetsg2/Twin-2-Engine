@@ -26,6 +26,11 @@ source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${PHYSIC_ENGINE_PRIVATE_INCLUD
 #Defining library
 add_library(${PROJECT_NAME} STATIC ${PHYSIC_ENGINE_SOURCE_FILES})
 
+if(MSVC)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC NOMINMAX)
+    target_compile_options(${PROJECT_NAME} PUBLIC "/Zc:preprocessor")
+endif()
+
 #Adding precompile header
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${PHYSIC_ENGINE_PRECOMPILE_HEADER})
 

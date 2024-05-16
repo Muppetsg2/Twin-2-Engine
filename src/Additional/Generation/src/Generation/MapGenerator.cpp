@@ -268,19 +268,38 @@ void MapGenerator::Generate()
 
 YAML::Node MapGenerator::Serialize() const
 {
-    YAML::Node node = Twin2Engine::Core::Component::Serialize();
+    YAML::Node node = Component::Serialize();
     node["type"] = "MapGenerator";
-    //node.remove("subTypes");
-    node["preafabHexagonalTile"] = PrefabManager::GetPrefabPath(preafabHexagonalTile);
-    node["additionalTile"] = PrefabManager::GetPrefabPath(additionalTile);
-    node["filledTile"] = PrefabManager::GetPrefabPath(filledTile);
-    node["pointTile"] = PrefabManager::GetPrefabPath(pointTile);
+    node["prefabHexagonalTile"] = SceneManager::GetPrefabSaveIdx(preafabHexagonalTile->GetId());
+    node["additionalTile"] = SceneManager::GetPrefabSaveIdx(additionalTile->GetId());
+    node["filledTile"] = SceneManager::GetPrefabSaveIdx(filledTile->GetId());
+    node["pointTile"] = SceneManager::GetPrefabSaveIdx(pointTile->GetId());
     node["generationRadiusMin"] = generationRadiusMin;
     node["generationRadiusMax"] = generationRadiusMax;
     node["minPointsNumber"] = minPointsNumber;
     node["maxPointsNumber"] = maxPointsNumber;
     node["angleDeltaRange"] = angleDeltaRange;
     return node;
+}
+
+bool MapGenerator::Deserialize(const YAML::Node& node) {
+    if (!node["prefabHexagonalTile"] || !node["additionalTile"] || !node["filledTile"] ||
+        !node["pointTile"] || !node["generationRadiusMin"] || !node["generationRadiusMax"] ||
+        !node["minPointsNumber"] || !node["maxPointsNumber"] || !node["angleDeltaRange"] ||
+        !Component::Deserialize(node)) return false;
+
+    preafabHexagonalTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["prefabHexagonalTile"].as<size_t>()));
+    additionalTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["additionalTile"].as<size_t>()));
+    filledTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["filledTile"].as<size_t>()));
+    pointTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["pointTile"].as<size_t>()));
+
+    generationRadiusMin = node["generationRadiusMin"].as<float>();
+    generationRadiusMax = node["generationRadiusMax"].as<float>();
+    minPointsNumber = node["minPointsNumber"].as<int>();
+    maxPointsNumber = node["maxPointsNumber"].as<int>();
+    angleDeltaRange = node["angleDeltaRange"].as<float>();
+
+    return true;
 }
 
 void MapGenerator::DrawEditor()

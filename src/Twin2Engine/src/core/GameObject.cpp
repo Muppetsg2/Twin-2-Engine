@@ -289,6 +289,16 @@ YAML::Node GameObject::Serialize() const
 	return node;
 }
 
+bool GameObject::Deserialize(const YAML::Node& node) {
+	if (!node["name"] || !node["isStatic"] || !node["isActive"]) return false;
+
+	_name = node["name"].as<string>();
+	_isStatic = node["isStatic"].as<bool>();
+	_activeSelf = node["isActive"].as<bool>();
+
+	return true;
+}
+
 void GameObject::DrawEditor()
 {
 	string id = std::to_string(_id);

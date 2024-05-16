@@ -154,8 +154,15 @@ YAML::Node MapRegion::Serialize() const
 {
 	YAML::Node node = Twin2Engine::Core::Component::Serialize();
 	node["type"] = "MapRegion";
-	node.remove("subTypes");
-	//node["tilemap"] = tilemap;
 	node["regionType"] = type;
 	return node;
+}
+
+bool MapRegion::Deserialize(const YAML::Node& node) {
+	if (!node["regionType"] || !Component::Deserialize(node)) return false;
+
+	tilemap = nullptr;
+	type = node["regionType"].as<MapRegion::RegionType>();
+
+	return true;
 }

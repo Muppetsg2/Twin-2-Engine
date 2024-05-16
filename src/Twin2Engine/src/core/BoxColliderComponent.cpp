@@ -122,20 +122,28 @@ void BoxColliderComponent::Update()
 YAML::Node BoxColliderComponent::Serialize() const
 {
 	YAML::Node node = ColliderComponent::Serialize();
-	node["subTypes"].push_back(node["type"].as<std::string>());
 	node["type"] = "BoxCollider";
 	node["width"] = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x;
-	node["length"] = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z;
 	node["height"] = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y;
-	node["rotation"] = glm::vec3(
-		((BoxColliderData*)collider->shapeColliderData)->Rotation.x,
-		((BoxColliderData*)collider->shapeColliderData)->Rotation.y,
-		((BoxColliderData*)collider->shapeColliderData)->Rotation.z
-	);
+	node["length"] = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z;
+	node["rotation"] = ((BoxColliderData*)collider->shapeColliderData)->Rotation;
 	return node;
 }
 
-void Twin2Engine::Core::BoxColliderComponent::DrawEditor()
+bool BoxColliderComponent::Deserialize(const YAML::Node& node)
+{
+	if (!node["width"] || !node["length"] || !node["height"] || !node["rotation"] ||
+		!ColliderComponent::Deserialize(node)) return false;
+
+	((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x = node["width"].as<float>();
+	((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y = node["height"].as<float>();
+	((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z = node["length"].as<float>();
+	((BoxColliderData*)collider->shapeColliderData)->Rotation = node["rotation"].as<glm::vec3>();
+
+	return true;
+}
+
+void BoxColliderComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Box Collider##Component").append(id);

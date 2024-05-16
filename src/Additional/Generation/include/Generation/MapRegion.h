@@ -8,10 +8,12 @@ namespace Generation
 
 	class MapRegion : public Twin2Engine::Core::Component
 	{
-        CloneFunctionStart(MapRegion, Twin2Engine::Core::Component)
+        /*CloneFunctionStart(MapRegion, Twin2Engine::Core::Component)
             //CloneField(tilemap)
             CloneField(type)
-        CloneFunctionEnd()
+        CloneFunctionEnd()*/
+    protected:
+        CloneBaseFunc(MapRegion, Twin2Engine::Core::Component, type)
     public:
 
         enum RegionType
@@ -58,7 +60,7 @@ namespace Generation
 
 
         virtual YAML::Node Serialize() const override;
-
+        virtual bool Deserialize(const YAML::Node& node) override;
 	};
 }
 

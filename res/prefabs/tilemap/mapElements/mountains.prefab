@@ -1,19 +1,19 @@
 Textures:
   - id: 0
     path: res/textures/stone.jpg
-    sWrapMode: 33648
-    tWrapMode: 33648
-    minFilterMode: 9986
-    magFilterMode: 9729
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
   - id: 1
     path: res/textures/hexEdgeTexture.png
-    sWrapMode: 33648
-    tWrapMode: 33648
-    minFilterMode: 9986
-    magFilterMode: 9729
-Sprites: []
-Fonts: []
-Audio: []
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+Sprites: ~
+Fonts: ~
+Audio: ~
 Materials:
   - id: 0
     path: GreenHexTile
@@ -32,8 +32,8 @@ Models:
     path: res/models/hexagon.obj
   - id: 2
     path: "{Plane}"
-Prefabs: []
-ScriptableObjects: []
+Prefabs: ~
+ScriptableObjects: ~
 Root:
   name: Mountain
   isStatic: false
@@ -57,8 +57,6 @@ Root:
     - id: 620
       enabled: true
       type: MeshRenderer
-      subTypes:
-        - Renderable
       isTransparent: false
       model: 0
       materials:

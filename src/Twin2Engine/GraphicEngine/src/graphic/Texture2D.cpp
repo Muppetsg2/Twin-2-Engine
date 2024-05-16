@@ -17,7 +17,7 @@ Texture2D::~Texture2D()
 void Texture2D::SetWrapModeS(const TextureWrapMode& mode)
 {
 	glBindTexture(GL_TEXTURE_2D, _id);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, mode);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (GLint)mode);
 	_sWrapMode = mode;
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -25,7 +25,7 @@ void Texture2D::SetWrapModeS(const TextureWrapMode& mode)
 void Texture2D::SetWrapModeT(const TextureWrapMode& mode)
 {
 	glBindTexture(GL_TEXTURE_2D, _id);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, mode);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (GLint)mode);
 	_tWrapMode = mode;
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -33,7 +33,7 @@ void Texture2D::SetWrapModeT(const TextureWrapMode& mode)
 void Texture2D::SetMinFilterMode(const TextureFilterMode& mode)
 {
 	glBindTexture(GL_TEXTURE_2D, _id);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mode);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (GLint)mode);
 	_minFilterMode = mode;
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -41,7 +41,7 @@ void Texture2D::SetMinFilterMode(const TextureFilterMode& mode)
 void Texture2D::SetMagFilterMode(const TextureFilterMode& mode)
 {
 	glBindTexture(GL_TEXTURE_2D, _id);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mode);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLint)mode);
 	_magFilterMode = mode;
 	glBindTexture(GL_TEXTURE_2D, 0);
 }

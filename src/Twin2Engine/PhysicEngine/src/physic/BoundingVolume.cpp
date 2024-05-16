@@ -40,8 +40,8 @@ static bool isOverPlane(FrustumPlane& plane, SphereColliderData* colliderData) {
 static bool isOverPlane(FrustumPlane& plane, CapsuleColliderData* colliderData) {
 	float startDist = glm::dot(plane.normal, colliderData->Position) - glm::dot(plane.normal, plane.point);
 	float endDist = glm::dot(plane.normal, colliderData->EndPosition) - glm::dot(plane.normal, plane.point);
-	float minDist = min(startDist, endDist);
-	float maxDist = max(startDist, endDist);
+	float minDist = glm::min(startDist, endDist);
+	float maxDist = glm::max(startDist, endDist);
 	return minDist <= colliderData->Radius && maxDist >= (-colliderData->Radius);
 }
 

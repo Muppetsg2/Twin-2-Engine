@@ -36,6 +36,11 @@ add_subdirectory(Tools)
 # ---- Dependency ----
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES} ${ASSETS_FILES})
 
+if(MSVC)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC NOMINMAX)
+    target_compile_options(${PROJECT_NAME} PUBLIC "/Zc:preprocessor")
+endif()
+
 target_compile_definitions(${PROJECT_NAME} PRIVATE GLFW_INCLUDE_NONE)
 target_compile_definitions(${PROJECT_NAME} PRIVATE LIBRARY_SUFFIX="")
 target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG="$<IF:$<CONFIG:Debug>,1,0>")

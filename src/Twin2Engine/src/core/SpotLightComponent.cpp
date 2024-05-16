@@ -90,6 +90,7 @@ void SpotLightComponent::SetAttenuation(float constant, float linear, float quad
 YAML::Node SpotLightComponent::Serialize() const
 {
 	YAML::Node node = LightComponent::Serialize();
+	node["type"] = "SpotLight";
 	node["direction"] = light->direction;
 	node["color"] = light->color;
 	node["power"] = light->power;
@@ -102,7 +103,25 @@ YAML::Node SpotLightComponent::Serialize() const
 	return node;
 }
 
-void Twin2Engine::Core::SpotLightComponent::DrawEditor()
+bool SpotLightComponent::Deserialize(const YAML::Node& node)
+{
+	if (!node["direction"] || !node["color"] || !node["power"] || !node["innerCutOff"] ||
+		!node["outerCutOff"] || !node["constant"] || !node["linear"] || !node["quadratic"] ||
+		!LightComponent::Deserialize(node)) return false;
+
+	light->direction = node["direction"].as<glm::vec3>();
+	light->color = node["color"].as<glm::vec3>();
+	light->power = node["power"].as<float>();
+	light->innerCutOff = node["innerCutOff"].as<float>();
+	light->outerCutOff = node["outerCutOff"].as<float>();
+	light->constant = node["constant"].as<float>();
+	light->linear = node["linear"].as<float>();
+	light->quadratic = node["quadratic"].as<float>();
+
+	return true;
+}
+
+void SpotLightComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Spot Light##Component").append(id);

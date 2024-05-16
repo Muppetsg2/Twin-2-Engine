@@ -94,12 +94,23 @@ void HexagonalColliderComponent::Update()
 YAML::Node HexagonalColliderComponent::Serialize() const
 {
 	YAML::Node node = ColliderComponent::Serialize();
-	node["subTypes"].push_back(node["type"].as<std::string>());
 	node["type"] = "HexagonalCollider";
 	node["baselength"] = ((HexagonalColliderData*)collider->shapeColliderData)->BaseLength;
 	node["halfheight"] = ((HexagonalColliderData*)collider->shapeColliderData)->HalfHeight;
 	node["rotation"] = ((HexagonalColliderData*)collider->shapeColliderData)->Rotation;
 	return node;
+}
+
+bool HexagonalColliderComponent::Deserialize(const YAML::Node& node)
+{
+	if (!node["baseLength"] || !node["halfHeight"] || !node["rotation"] ||
+		!ColliderComponent::Deserialize(node)) return false;
+
+	((HexagonalColliderData*)collider->shapeColliderData)->BaseLength = node["baseLength"].as<float>();
+	((HexagonalColliderData*)collider->shapeColliderData)->HalfHeight = node["halfHeight"].as<float>();
+	((HexagonalColliderData*)collider->shapeColliderData)->Rotation = node["rotation"].as<float>();
+
+	return true;
 }
 
 void HexagonalColliderComponent::DrawEditor()

@@ -22,6 +22,10 @@ namespace Twin2Engine {
 						ImGui::TextColored(ImVec4(0.5f, 0.4f, 0.5f, 1.f), "Nothing to edit");
 					}
 				}
+
+				virtual bool Deserialize(const YAML::Node& node) override {
+					return Component::Deserialize(node);
+				}
 		};
 	}
 }

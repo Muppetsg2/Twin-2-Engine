@@ -170,3 +170,14 @@ bool ImGui::ArrowAndWallButton(const char* str_id, ImGuiDir dir, float rounding)
     float sz = GetFrameHeight();
     return ArrowAndWallButtonEx(str_id, dir, ImVec2(sz, sz), rounding, ImGuiButtonFlags_None);
 }
+
+const ImWchar* ImGui::GetGlyphRangesPolish()
+{
+    static const ImWchar ranges[] =
+    {
+        0x0020, 0x00FF, // Basic Latin + Latin Supplement
+        0x0100, 0x017F, // Polish + Polish Supplement
+        0,
+    };
+    return &ranges[0];
+}

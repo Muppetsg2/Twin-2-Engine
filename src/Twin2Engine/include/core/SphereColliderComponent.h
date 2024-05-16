@@ -19,5 +19,6 @@ namespace Twin2Engine::Core {
 		void OnDestroy() override;
 
 		virtual YAML::Node Serialize() const override;
+		virtual void DrawEditor() override;
 	};
 }

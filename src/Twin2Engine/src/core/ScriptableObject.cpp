@@ -53,7 +53,4 @@ void ScriptableObject::Init()
 }
 
 
-void ScriptableObject::DrawEditor()
-{
-
-}
+void ScriptableObject::DrawEditor() {}

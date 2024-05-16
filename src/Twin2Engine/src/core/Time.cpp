@@ -15,6 +15,11 @@ void Time::Update()
 	_updateDeltaTime = t2 - t1;
 }
 
+float Twin2Engine::Core::Time::GetTime()
+{
+	return glfwGetTime();
+}
+
 float Time::GetDeltaTime()
 {
 	return _updateDeltaTime;

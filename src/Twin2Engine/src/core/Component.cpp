@@ -69,9 +69,7 @@ YAML::Node Component::Serialize() const
 	return node;
 }
 
-void Twin2Engine::Core::Component::DrawEditor()
-{
-}
+void Twin2Engine::Core::Component::DrawEditor() {}
 
 void Component::SetEnable(bool enable)
 {

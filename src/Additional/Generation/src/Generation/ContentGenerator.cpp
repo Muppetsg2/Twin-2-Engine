@@ -30,3 +30,49 @@ YAML::Node ContentGenerator::Serialize() const
     }
     return node;
 }
+
+void ContentGenerator::DrawEditor()
+{
+    string id = string(std::to_string(this->GetId()));
+    string name = string("Content Generator##Component").append(id);
+    if (ImGui::CollapsingHeader(name.c_str()))
+    {
+		ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+		bool node_open = ImGui::TreeNodeEx(string("Generators##").append(id).c_str(), node_flag);
+
+        std::list<int> clicked = std::list<int>();
+        clicked.clear();
+		if (node_open) {
+            for (int i = 0; i < mapElementGenerators.size(); ++i) {
+                string n = Twin2Engine::Manager::ScriptableObjectManager::GetName(mapElementGenerators[i]->GetId());
+                ImGui::BulletText(n.c_str());
+                ImGui::SameLine(ImGui::GetContentRegionAvail().x - 30);
+                if (ImGui::Button(string("Remove##").append(id).append(std::to_string(i)).c_str())) {
+                    clicked.push_back(i);
+                }
+            }
+            ImGui::TreePop();
+		}
+
+        if (clicked.size() > 0) {
+            clicked.sort();
+
+            for (int i = clicked.size() - 1; i > -1; --i)
+            {
+                mapElementGenerators.erase(mapElementGenerators.begin() + clicked.back());
+
+                clicked.pop_back();
+            }
+        }
+
+        clicked.clear();
+
+        // DODAC
+        // przenoszenie kolejnosæi generatorow
+        /*
+        if (ImGui::Button(string("Add Element Generator##").append(id).c_str())) {
+
+        }
+        */
+    }
+}

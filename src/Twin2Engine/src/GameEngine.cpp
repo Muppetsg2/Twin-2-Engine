@@ -32,11 +32,14 @@ void GameEngine::Deserializers()
             cam->SetFarPlane(node["farPlane"].as<float>());
             cam->SetCameraFilter(node["cameraFilter"].as<size_t>());
             cam->SetCameraType(node["cameraType"].as<CameraType>());
+            cam->SetDisplayMode(node["cameraMode"].as<CameraDisplayMode>());
             cam->SetSamples(node["samples"].as<size_t>());
-            cam->SetRenderResolution(node["renderRes"].as<RenderResolution>());
+            cam->SetRenderResolution(node["renderRes"].as<CameraRenderResolution>());
             cam->SetGamma(node["gamma"].as<float>());
             cam->SetWorldUp(node["worldUp"].as<vec3>());
             cam->SetIsMain(node["isMain"].as<bool>());
+            cam->SetFrustumCulling(node["isFrustum"].as<bool>());
+            cam->SetSSAO(node["isSSAO"].as<bool>());
         }
     );
 
@@ -213,7 +216,7 @@ void GameEngine::Deserializers()
             PointLightComponent* light = static_cast<PointLightComponent*>(comp);
             light->SetColor(node["color"].as<vec3>());
             light->SetPower(node["power"].as<float>());
-            light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
+            light->SetAttenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
         }
     );
 
@@ -227,7 +230,7 @@ void GameEngine::Deserializers()
             light->SetColor(node["color"].as<vec3>());
             light->SetPower(node["power"].as<float>());
             light->SetOuterCutOff(node["outerCutOff"].as<float>());
-            light->SetAtenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
+            light->SetAttenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
         }
     );
 }
@@ -278,6 +281,7 @@ const char* const tracy_EndFrameName = "EndFrame";
 
 void GameEngine::Loop()
 {
+    ZoneScoped;
     // Main loop
     while (!Window::GetInstance()->IsClosed())
     {

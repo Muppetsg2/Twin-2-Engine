@@ -52,7 +52,6 @@ void MeshRenderingManager::Init()
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, nullptr, GL_DYNAMIC_DRAW);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, BINDING_POINT_INSTANCE_DATA, _instanceDataSSBO);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
 	// Tworzenie SSBO materialIndex
 	glGenBuffers(1, &_materialIndexSSBO);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
@@ -200,8 +199,8 @@ void MeshRenderingManager::UnregisterDynamic(Twin2Engine::Core::MeshRenderer* me
 
 void MeshRenderingManager::UpdateQueues()
 {
-	Frustum frustum = CameraComponent::GetMainCamera()->GetFrustum();
-	RenderedSegment renderedSegment{ .begin = nullptr, .count = 0 };
+	Frustum frustum = CameraComponent::GetCurrentCameraFrustum();
+	RenderedSegment renderedSegment { .begin = nullptr, .count = 0 };
 
 	for (auto& meshPair : _depthMapQueueStatic)
 	{
@@ -1290,6 +1289,4 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 #pragma endregion
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//glm::ivec2 wSize = Twin2Engine::GraphicEngine::Window::GetInstance()->GetContentSize();
-	//glViewport(0, 0, wSize.x, wSize.y);
 }

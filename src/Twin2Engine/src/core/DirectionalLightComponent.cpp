@@ -108,3 +108,29 @@ YAML::Node DirectionalLightComponent::Serialize() const
 
 	return node;
 }
+
+void Twin2Engine::Core::DirectionalLightComponent::DrawEditor()
+{
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Directional Light##Component").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+
+		glm::vec3 v = light->direction;
+		ImGui::DragFloat3(string("Direction##").append(id).c_str(), glm::value_ptr(v), .1f, -1.f, 1.f);
+		if (v != light->direction) {
+			SetDirection(v);
+		}
+
+		v = light->color;
+		ImGui::ColorEdit3(string("Color##").append(id).c_str(), glm::value_ptr(v));
+		if (v != light->color) {
+			SetColor(v);
+		}
+
+		float p = light->power;
+		ImGui::DragFloat(string("Power##").append(id).c_str(), &p);
+		if (p != light->power) {
+			SetPower(p);
+		}
+	}
+}

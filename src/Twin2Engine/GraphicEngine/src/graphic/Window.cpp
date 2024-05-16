@@ -433,3 +433,112 @@ void Window::Update() const
 	Use();
 	glfwSwapBuffers(_window);
 }
+
+void Window::DrawEditor() 
+{
+	const unsigned int WINDOW_WIDTH = this->GetWindowSize().x;
+	const unsigned int WINDOW_HEIGHT = this->GetWindowSize().y;
+
+	if (ImGui::CollapsingHeader("Window Setup##WINDOW")) {
+
+		// Window Settings
+		if (this->IsWindowed()) {
+			ImGui::Text("Current State: Windowed");
+
+			int monitorsCount;
+			GLFWmonitor** monitors = glfwGetMonitors(&monitorsCount);
+
+			ImGui::Text("Monitors: ");
+			for (int i = 0; i < monitorsCount; ++i) {
+				int x, y, mw, mh;
+				float sx, sy;
+
+				glfwGetMonitorPos(monitors[i], &x, &y);
+				const GLFWvidmode* vid = glfwGetVideoMode(monitors[i]);
+				const char* name = glfwGetMonitorName(monitors[i]);
+				glfwGetMonitorPhysicalSize(monitors[i], &mw, &mh);
+				glfwGetMonitorContentScale(monitors[i], &sx, &sy);
+
+				std::string btnText = std::to_string(i) + ". " + name + ": PS " + std::to_string(mw) + "x" + std::to_string(mh) + ", S " \
+					+ std::to_string(vid->width) + "x" + std::to_string(vid->height) + \
+					", Pos " + std::to_string(x) + "x" + std::to_string(y) + \
+					", Scale " + std::to_string(sx) + "x" + std::to_string(sy) + \
+					", Refresh " + std::to_string(vid->refreshRate) + " Hz";
+				if (ImGui::Button(btnText.append("##WINDOW").c_str())) {
+					this->SetFullscreen(monitors[i]);
+				}
+			}
+
+			ImGui::Text("");
+			static std::string tempBuff = this->GetTitle();
+			const ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll;
+			ImGui::InputText("Title##WINDOW", &tempBuff, flags);
+			if (tempBuff != this->GetTitle()) {
+				this->SetTitle(tempBuff);
+			}
+
+			if (ImGui::Button("Request Attention##WINDOW")) {
+				this->RequestAttention();
+			}
+
+			if (ImGui::Button("Maximize##WINDOW")) {
+				this->Maximize();
+			}
+
+			if (ImGui::Button("Hide##WINDOW")) {
+				this->Hide();
+			}
+
+			bool temp = this->IsResizable();
+			if (ImGui::Button(((temp ? string("Disable") : string("Enable")) + string(" Resizability##WINDOW")).c_str())) {
+				this->EnableResizability(!temp);
+			}
+
+			temp = this->IsDecorated();
+			if (ImGui::Button(((temp ? string("Disable") : string("Enable")) + string(" Decorations##WINDOW")).c_str())) {
+				this->EnableDecorations(!temp);
+			}
+
+			static float opacity = this->GetOpacity();
+			ImGui::SliderFloat("Opacity##WINDOW", &opacity, 0.f, 1.f);
+			if (opacity != this->GetOpacity()) {
+				this->SetOpacity(opacity);
+			}
+
+			static glm::ivec2 ratio = this->GetAspectRatio();
+			ImGui::InputInt2("Aspect Ratio##WINDOW", (int*)&ratio);
+			if (ImGui::Button("Apply##AspectRatioWINDOW")) {
+				this->SetAspectRatio(ratio);
+				ratio = this->GetAspectRatio();
+			}
+		}
+		else {
+			ImGui::Text("Current State: Fullscreen");
+			if (ImGui::Button("Windowed##WINDOW")) {
+				this->SetWindowed({ 0, 30 }, { WINDOW_WIDTH, WINDOW_HEIGHT - 50 });
+			}
+
+			static int refreshRate = this->GetRefreshRate();
+			ImGui::InputInt("Refresh Rate##WINDOW", &refreshRate);
+			if (ImGui::Button("Apply##RefreshRateWINDOW")) {
+				this->SetRefreshRate(refreshRate);
+				refreshRate = this->GetRefreshRate();
+			}
+		}
+
+		if (ImGui::Button("Minimize##WINDOW")) {
+			this->Minimize();
+		}
+
+		static glm::ivec2 size = this->GetWindowSize();
+		ImGui::InputInt2("Window Size##WINDOW", (int*)&size);
+		if (ImGui::Button("Apply##WindowSizeWINDOW")) {
+			this->SetWindowSize(size);
+			size = this->GetWindowSize();
+		}
+
+		if (ImGui::Button(((this->IsVSyncOn() ? "Disable"s : "Enable"s) + " VSync##WINDOW"s).c_str())) {
+			this->EnableVSync(!this->IsVSyncOn());
+		}
+	}
+}

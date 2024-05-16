@@ -19,6 +19,11 @@ void CapsuleColliderComponent::SetEndPosition(float x, float y, float z)
 	dirtyFlag = true;
 }
 
+void Twin2Engine::Core::CapsuleColliderComponent::SetEndPosition(const glm::vec3& pos)
+{
+	SetEndPosition(pos.x, pos.y, pos.z);
+}
+
 void CapsuleColliderComponent::SetRadius(float radius)
 {
 	((CapsuleColliderData*)collider->shapeColliderData)->Radius = radius;
@@ -78,10 +83,33 @@ YAML::Node CapsuleColliderComponent::Serialize() const
 	node["subTypes"].push_back(node["type"].as<std::string>());
 	node["type"] = "CapsuleCollider";
 	node["endPosition"] = glm::vec3(
-		((CapsuleColliderData*)collider->shapeColliderData)->EndPosition.x,
-		((CapsuleColliderData*)collider->shapeColliderData)->EndPosition.y,
-		((CapsuleColliderData*)collider->shapeColliderData)->EndPosition.z
+		((CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition.x,
+		((CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition.y,
+		((CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition.z
 	);
 	node["radius"] = ((CapsuleColliderData*)collider->shapeColliderData)->Radius;
 	return node;
+}
+
+void Twin2Engine::Core::CapsuleColliderComponent::DrawEditor()
+{
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Capsule Collider##Component").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+		float v = ((CapsuleColliderData*)collider->shapeColliderData)->Radius;
+		ImGui::DragFloat(string("Radius##").append(id).c_str(), &v, 0.1f);
+
+		if (v != ((CapsuleColliderData*)collider->shapeColliderData)->Radius) {
+			SetRadius(v);
+		}
+
+		glm::vec3 ep = ((CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition;
+		ImGui::DragFloat3(string("EndPosition##").append(id).c_str(), glm::value_ptr(ep), 0.1f);
+
+		if (ep != ((CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition) {
+			SetEndPosition(ep);
+		}
+
+		DrawInheritedFields();
+	}
 }

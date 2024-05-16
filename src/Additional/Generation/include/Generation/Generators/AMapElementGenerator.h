@@ -1,5 +1,4 @@
-#ifndef _MAP_ELEMENT_GENERATOR_H_
-#define _MAP_ELEMENT_GENERATOR_H_
+#pragma once
 
 #include <Tilemap/HexagonalTilemap.h>
 
@@ -16,9 +15,7 @@ namespace Generation::Generators
 
 	public:
 		AMapElementGenerator() = default;
-		virtual ~AMapElementGenerator() { } 
+		virtual ~AMapElementGenerator() { }
 		virtual void Generate(Tilemap::HexagonalTilemap* tilemap) = 0;
 	};
 }
-
-#endif // !_MAP_ELEMENT_GENERATOR_H_

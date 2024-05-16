@@ -25,6 +25,8 @@ namespace Twin2Engine::Core {
 		ColliderComponent(); // Powoduje ze klasa jest jakby abstrakcyjna no chyba ze bedzie dziedziczona
 		Physic::BoundingVolume* boundingVolume = nullptr;
 
+		void DrawInheritedFields();
+
 	public:
 		Physic::GameCollider* collider = nullptr;
 		unsigned int colliderId = 0;
@@ -54,5 +56,6 @@ namespace Twin2Engine::Core {
 		Tools::EventHandler<Physic::GameCollider*>& GetOnCollisionExitEvent() const;
 
 		virtual YAML::Node Serialize() const override;
+		virtual void DrawEditor() override;
 	};
 }

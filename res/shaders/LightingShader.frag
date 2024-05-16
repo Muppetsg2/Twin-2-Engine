@@ -4,6 +4,7 @@
 in vec3 position;
 in vec2 texCoords;
 in vec3 normal;
+in vec4 clipSpacePos;
 
 in vec4 color1;
 in vec4 color2;
@@ -15,6 +16,7 @@ out vec4 FragColor;
 //shadow maps
 uniform sampler2D DirLightShadowMaps[4];
 uniform sampler2D DirLightingMap;
+uniform sampler2D occlusionMap;
 
 uniform vec4 uColor;
 uniform bool uNoTexture = true;
@@ -81,6 +83,7 @@ layout (std140, binding = 0) uniform CameraData
     mat4 projection;
     mat4 view;
 	vec3 viewPos;
+    bool isSSAO;
 };
 
 layout(std140, binding = 3) uniform LightingData {
@@ -92,10 +95,8 @@ layout(std140, binding = 3) uniform LightingData {
 
 
 //LIGHTING END
-
 //zero w cieniu ; 1 - o�wietlone
-float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
-{
+float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId) {
     // perform perspective divide
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     // transform to [0,1] range
@@ -149,15 +150,14 @@ float countBlinnPhongPart(vec3 L, vec3 E, vec3 N) {
     return pow(specAngle, shininness); //<---------
 }
 
-void main()
-{
+void main() {
 	FragColor = materialInput[materialIndex].color1 + materialInput[materialIndex].color2;
 
 	vec3 LightColor = vec3(0.0);
 	
 	vec3 L = vec3(0.0);
     vec3 N = normalize(normal);
-    vec3 E = normalize(viewPos - position);
+    vec3 E = normalize(ViewerPosition - position);
 
 	float attenuation = 0.0;
 	float lambertian = 0.0;
@@ -226,6 +226,10 @@ void main()
         LightColor += lambertian * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
     }
 	
-    FragColor *= vec4(LightColor + AmbientLight, 1.0);
+    vec2 NDCSpaceFragPos = clipSpacePos.xy / clipSpacePos.w;
+    vec2 textureLookupPos = NDCSpaceFragPos * 0.5 + 0.5;
+    float visibility_factor = isSSAO ? texture(occlusionMap, textureLookupPos).r : 1.0;
+
+    FragColor *= vec4(LightColor + AmbientLight * visibility_factor, 1.0);
 	FragColor = vec4(pow(FragColor.rgb, vec3(gamma)), 1.0);
 }

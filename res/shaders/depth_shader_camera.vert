@@ -2,7 +2,7 @@
 layout (location = 0) in vec3 aPos;
 
 layout (std430, binding = 0) buffer InstanceBuffer {
-    mat4 transform[8];
+    mat4 transform[1024];
 } instanceData;
 
 layout (std140, binding = 0) uniform CameraData
@@ -10,8 +10,8 @@ layout (std140, binding = 0) uniform CameraData
     mat4 projection;
     mat4 view;
 	vec3 viewPos;
+    bool isSSAO;
 };
-
 
 void main()
 {

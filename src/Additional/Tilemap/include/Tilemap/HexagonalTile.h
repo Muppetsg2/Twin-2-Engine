@@ -1,5 +1,4 @@
-#ifndef _HEXAGONAL_TILE_H_
-#define _HEXAGONAL_TILE_H_
+#pragma once
 
 #include <core/GameObject.h>
 #include <core/Transform.h>
@@ -42,5 +41,3 @@ namespace Tilemap
 		void GetAdjacentGameObjects(Twin2Engine::Core::GameObject** out_adjacentGameObjects) const;
 	};
 }
-
-#endif

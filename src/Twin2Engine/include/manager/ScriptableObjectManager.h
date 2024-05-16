@@ -38,6 +38,7 @@ namespace Twin2Engine::Manager
 		static Twin2Engine::Core::ScriptableObject* Get(const std::string& path);
 		static Twin2Engine::Core::ScriptableObject* Get(size_t id);
 		static std::string GetPath(size_t id);
+		static std::string GetName(size_t id);
 
 		static void UnloadAll();
 

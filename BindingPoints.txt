@@ -13,3 +13,8 @@ UBO:
 3 - LightingData
 4 - UICanvas
 5 - UIElement
+
+TEXTURES:
+0...26 - 
+27...30 - SHADOW_MAP
+31 - SSAO

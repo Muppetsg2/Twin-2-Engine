@@ -4,7 +4,13 @@
 #include <graphic/Window.h>
 #include <GraphicEnigine.h>
 #include <graphic/manager/ModelsManager.h>
-#include <graphic/LightingController.h>
+#include <core/MathExtensions.h>
+
+const char* const tracy_RenderDepthBuffer = "RenderDepthBuffer";
+const char* const tracy_RenderSSAOTexture = "RenderSSAOTexture";
+const char* const tracy_UpdateRenderingQueues = "UpdateRenderingQueues";
+const char* const tracy_RenderScreenTexture = "RenderScreenTexture";
+const char* const tracy_OnScreenFramebuffer = "OnScreenFramebuffer";
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Tools;
@@ -17,7 +23,8 @@ GLuint CameraComponent::_uboCameraData = 0;
 STD140Offsets CameraComponent::_uboCameraDataOffsets{
 	STD140Variable<mat4>("projection"),
 	STD140Variable<mat4>("view"),
-	STD140Variable<vec3>("viewerPosition")
+	STD140Variable<vec3>("viewPos"),
+	STD140Variable<bool>("isSSAO")
 };
 GLuint CameraComponent::_uboWindowData = 0;
 STD140Offsets CameraComponent::_uboWindowDataOffsets{
@@ -26,8 +33,16 @@ STD140Offsets CameraComponent::_uboWindowDataOffsets{
 		STD140Variable<float>("farPlane"),
 		STD140Variable<float>("gamma"),
 };
-InstantiatingModel CameraComponent::_renderPlane = InstantiatingModel();
-Shader* CameraComponent::_renderShader = nullptr;
+InstantiatingModel CameraComponent::_screenPlane = InstantiatingModel();
+Shader* CameraComponent::_screenShader = nullptr;
+Shader* CameraComponent::_ssaoShader = nullptr;
+Shader* CameraComponent::_ssaoBlurredShader = nullptr;
+Shader* CameraComponent::_depthShader = nullptr;
+Frustum CameraComponent::_currentCameraFrustum = Graphic::Frustum();
+
+std::vector<glm::vec3> CameraComponent::_ssaoKernel = std::vector<glm::vec3>();
+float* CameraComponent::_ssaoTextureData = nullptr;
+GLuint CameraComponent::_ssaoNoiseTexture = NULL;
 
 void CameraComponent::OnTransformChange(Transform* trans)
 {
@@ -50,17 +65,17 @@ void CameraComponent::OnWindowSizeChange()
 	unsigned int d_res = GL_DEPTH_COMPONENT;
 
 	switch (_renderRes) {
-		case DEFAULT: {
+		case CameraRenderResolution::DEFAULT: {
 			r_res = GL_RGB;
 			d_res = GL_DEPTH_COMPONENT;
 			break;
 		}
-		case MEDIUM: {
+		case CameraRenderResolution::MEDIUM: {
 			r_res = GL_RGB16F;
 			d_res = GL_DEPTH_COMPONENT16;
 			break;
 		}
-		case HIGH: {
+		case CameraRenderResolution::HIGH: {
 			r_res = GL_RGB32F;
 			d_res = GL_DEPTH_COMPONENT32F;
 			break;
@@ -73,10 +88,16 @@ void CameraComponent::OnWindowSizeChange()
 	}
 
 	glBindTexture(GL_TEXTURE_2D, _depthMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, d_res, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, d_res, wSize.x / 2, wSize.y / 2, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, _renderMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, r_res, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+	glBindTexture(GL_TEXTURE_2D, _ssaoMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, wSize.x / 2, wSize.y / 2, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
+
+	glBindTexture(GL_TEXTURE_2D, _ssaoBlurredMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, wSize.x / 2, wSize.y / 2, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _msRenderMap);
@@ -95,6 +116,56 @@ void CameraComponent::SetFrontDir(vec3 dir)
 	_up = normalize(cross(_right, _front));
 }
 
+void CameraComponent::GenerateSSAOKernel()
+{
+	std::uniform_real_distribution<float> randomFloats(0.0, 1.0); // random floats between [0.0, 1.0]
+	std::default_random_engine generator;
+	for (int i = 0; i < 64; ++i) {
+		vec3 sample = vec3(
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator)
+		);
+
+		// normalize sample
+		sample = normalize(sample);
+		float scale = (float)i / 64.0;
+		scale = lerpf(0.1f, 1.0f, scale * scale);
+		sample *= scale;
+		_ssaoKernel.push_back(sample);
+	}
+}
+
+void CameraComponent::GenerateSSAONoiseTexture()
+{
+	std::uniform_real_distribution<float> randomFloats(0.0, 1.0); // random floats between [0.0, 1.0]
+	std::default_random_engine generator;
+	_ssaoTextureData = new float[16 * 3];
+	for (int i = 0; i < 16; i++)
+	{
+		vec3 sample = vec3(
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator) * 2.0 - 1.0,
+			0.0
+		);
+		_ssaoTextureData[i * 3 + 0] = sample[0];
+		_ssaoTextureData[i * 3 + 1] = sample[1];
+		_ssaoTextureData[i * 3 + 2] = sample[2];
+	}
+
+	glGenTextures(1, &_ssaoNoiseTexture);
+	glBindTexture(GL_TEXTURE_2D, _ssaoNoiseTexture);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 4, 4, 0, GL_RGB, GL_FLOAT, _ssaoTextureData);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 CameraType CameraComponent::GetCameraType() const
 {
 	return _type;
@@ -110,9 +181,14 @@ uint8_t CameraComponent::GetSamples() const
 	return _samples;
 }
 
-RenderResolution CameraComponent::GetRenderResolution() const
+CameraRenderResolution CameraComponent::GetRenderResolution() const
 {
 	return _renderRes;
+}
+
+CameraDisplayMode CameraComponent::GetDisplayMode() const
+{
+	return _mode;
 }
 
 float CameraComponent::GetFOV() const
@@ -162,11 +238,11 @@ mat4 CameraComponent::GetProjectionMatrix() const
 	ivec2 size = Window::GetInstance()->GetContentSize();
 
 	switch (_type) {
-		case ORTHOGRAPHIC: {
+		case CameraType::ORTHOGRAPHIC: {
 			return ortho(0.f, (float)size.x * 0.005f, 0.f, (float)size.y * 0.005f, _near, _far);
 			break;
 		}
-		case PERSPECTIVE: {
+		case CameraType::PERSPECTIVE: {
 			return perspective(radians(_fov), (size.y != 0) ? ((float)size.x / (float)size.y) : 0, _near, _far);
 			break;
 		}
@@ -178,7 +254,7 @@ Frustum CameraComponent::GetFrustum() const
 {
 	ivec2 size = Window::GetInstance()->GetContentSize();
 
-	Frustum frustum;
+	Graphic::Frustum frustum;
 	float halfVSide = _far * tanf(_fov * .5f);
 	float aspect = (float)size.x / (float)size.y;
 	float halfHSide = halfVSide * aspect;
@@ -205,6 +281,11 @@ bool CameraComponent::IsMain() const
 bool CameraComponent::IsFrustumCullingOn() const
 {
 	return _isFrustumCulling;
+}
+
+bool CameraComponent::IsSSAO() const
+{
+	return _isSsao;
 }
 
 void CameraComponent::SetFOV(float angle)
@@ -255,15 +336,15 @@ void CameraComponent::SetSamples(uint8_t i)
 		unsigned int r_res = GL_RGB;
 
 		switch (_renderRes) {
-			case DEFAULT: {
+			case CameraRenderResolution::DEFAULT: {
 				r_res = GL_RGB;
 				break;
 			}
-			case MEDIUM: {
+			case CameraRenderResolution::MEDIUM: {
 				r_res = GL_RGB16F;
 				break;
 			}
-			case HIGH: {
+			case CameraRenderResolution::HIGH: {
 				r_res = GL_RGB32F;
 				break;
 			}
@@ -283,7 +364,7 @@ void CameraComponent::SetSamples(uint8_t i)
 	}
 }
 
-void CameraComponent::SetRenderResolution(RenderResolution res)
+void CameraComponent::SetRenderResolution(CameraRenderResolution res)
 {
 	_renderRes = res;
 
@@ -294,17 +375,17 @@ void CameraComponent::SetRenderResolution(RenderResolution res)
 		unsigned int d_res = GL_DEPTH_COMPONENT;
 
 		switch (_renderRes) {
-			case DEFAULT: {
+			case CameraRenderResolution::DEFAULT: {
 				r_res = GL_RGB;
 				d_res = GL_DEPTH_COMPONENT;
 				break;
 			}
-			case MEDIUM: {
+			case CameraRenderResolution::MEDIUM: {
 				r_res = GL_RGB16F;
 				d_res = GL_DEPTH_COMPONENT16;
 				break;
 			}
-			case HIGH: {
+			case CameraRenderResolution::HIGH: {
 				r_res = GL_RGB32F;
 				d_res = GL_DEPTH_COMPONENT32F;
 				break;
@@ -321,12 +402,17 @@ void CameraComponent::SetRenderResolution(RenderResolution res)
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
 		glBindTexture(GL_TEXTURE_2D, _depthMap);
-		glTexImage2D(GL_TEXTURE_2D, 0, d_res, wSize.x, wSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, d_res, wSize.x / 2, wSize.y / 2, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 		glBindTexture(GL_TEXTURE_2D, _renderMap);
 		glTexImage2D(GL_TEXTURE_2D, 0, r_res, wSize.x, wSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+}
+
+void CameraComponent::SetDisplayMode(CameraDisplayMode cdm)
+{
+	_mode = cdm;
 }
 
 void CameraComponent::SetWorldUp(vec3 value)
@@ -372,96 +458,154 @@ void CameraComponent::SetFrustumCulling(bool value)
 	_isFrustumCulling = value;
 }
 
+void CameraComponent::SetSSAO(bool value)
+{
+	_isSsao = value;
+}
+
 void CameraComponent::Render()
 {
-	glm::vec3 clear_color = glm::vec3(powf(.1f, _gamma));
-	// UBO's
-	//Jesli wiecej kamer i kazda ma ze swojego kata dawac obraz
+	ZoneScoped;
+	if (_isFrustumCulling)
+		_currentCameraFrustum = GetFrustum();
+
+	vec3 clear_color = glm::vec3(powf(.1f, _gamma));
+	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
 	// DEFAULT
-	
 	STD140Struct tempStruct = STD140Struct(_uboCameraDataOffsets);
 	tempStruct.Set("projection", this->GetProjectionMatrix());
 	tempStruct.Set("view", this->GetViewMatrix());
-	tempStruct.Set("viewerPosition", this->GetTransform()->GetGlobalPosition());
+	tempStruct.Set("viewPos", this->GetTransform()->GetGlobalPosition());
+	tempStruct.Set("isSSAO", _isSsao);
 
+	//Jesli wiecej kamer i kazda ma ze swojego kata dawac obraz
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
-	/*glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));*/
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
+	
+	/* Stare
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));
+	*/
 
 	tempStruct = STD140Struct(_uboWindowDataOffsets);
-	tempStruct.Set("windowSize", Window::GetInstance()->GetContentSize());
+	tempStruct.Set("windowSize", wSize);
 	tempStruct.Set("nearPlane", this->_near);
 	tempStruct.Set("farPlane", this->_far);
 	tempStruct.Set("gamma", this->_gamma);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-	/*glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ivec2), value_ptr(Window::GetInstance()->GetContentSize()));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2), sizeof(float), &(this->_near));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float), sizeof(float), &(this->_far));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));*/
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
 	
-	// NAMED
-	/*glNamedBufferSubData(_uboMatrices, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
-	glNamedBufferSubData(_uboMatrices, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
+	/* Stare
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ivec2), value_ptr(wSize));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2), sizeof(float), &(this->_near));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float), sizeof(float), &(this->_far));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
+	*/
 
-	glNamedBufferSubData(_uboWindowData, 0, sizeof(vec2), value_ptr(Window::GetInstance()->GetContentSize()));
-	glNamedBufferSubData(_uboWindowData, sizeof(vec2), sizeof(float), &(this->_near));
-	glNamedBufferSubData(_uboWindowData, sizeof(vec2) + sizeof(float), sizeof(float), &(this->_far));
-	glNamedBufferSubData(_uboWindowData, sizeof(vec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));*/
+	if (wSize.y != 0) {
+		// UPDATING RENDERER
+		FrameMarkStart(tracy_UpdateRenderingQueues);
+		GraphicEngine::UpdateBeforeRendering();
+		FrameMarkEnd(tracy_UpdateRenderingQueues);
 
-	// UPDATING RENDERER
-	GraphicEngine::UpdateBeforeRendering();
+		glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
+		glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
+		glClear(GL_DEPTH_BUFFER_BIT);
 
-	// DEPTH MAP
-	glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
-	glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			FrameMarkStart(tracy_RenderDepthBuffer);
+			_depthShader->Use();
+			GraphicEngine::DepthRender();
+			FrameMarkEnd(tracy_RenderDepthBuffer);
 
-	ShaderManager::CameraDepthShader->Use();
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	GraphicEngine::DepthRender();
+		//LightingSystem::LightingController::Instance()->RenderShadowMaps();
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		if (_isSsao) {
+			// SSAO MAP
+			glBindFramebuffer(GL_FRAMEBUFFER, _ssaoFBO);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _ssaoMap, 0);
+			glClearColor(1.f, 1.f, 1.f, 1.f);
+			glClear(GL_COLOR_BUFFER_BIT);
 
-	ivec2 wSize = Window::GetInstance()->GetContentSize();
+				FrameMarkStart(tracy_RenderSSAOTexture);
+				_ssaoShader->Use();
+				BindDepthTexture(0);
+				_ssaoShader->SetInt("depthTexture", 0);
+				glActiveTexture(GL_TEXTURE0 + 1);
+				glBindTexture(GL_TEXTURE_2D, _ssaoNoiseTexture);
+				_ssaoShader->SetInt("noiseTexture", 1);
+				_ssaoShader->SetFloat("sampleRadius", 0.5);
+				_ssaoShader->SetFloat("bias", 0.025);
+				for (size_t i = 0; i < 64; ++i) {
+					_ssaoShader->SetVec3(string("kernel[").append(std::to_string(i)).append("]"), _ssaoKernel[i]);
+				}
 
+				_screenPlane.GetMesh(0)->Draw(1);
 
-	//LightingSystem::LightingController::Instance()->RenderShadowMaps();
+				glBindTexture(GL_TEXTURE_2D, 0);
 
-	// RENDER MAP
-	glBindFramebuffer(GL_FRAMEBUFFER, _msRenderMapFBO);
-	glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _ssaoBlurredMap, 0);
+				glClear(GL_COLOR_BUFFER_BIT);
 
-	GraphicEngine::Render();
+				_ssaoBlurredShader->Use();
+				glActiveTexture(GL_TEXTURE0 + 0);
+				glBindTexture(GL_TEXTURE_2D, _ssaoMap);
+				_ssaoBlurredShader->SetInt("ssaoTexture", 0);
 
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, _msRenderMapFBO);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _renderMapFBO);
-	glBlitFramebuffer(0, 0, wSize.x, wSize.y, 0, 0, wSize.x, wSize.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				_screenPlane.GetMesh(0)->Draw(1);
+				FrameMarkEnd(tracy_RenderSSAOTexture);
 
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
+
+		// RENDER MAP
+		glBindFramebuffer(GL_FRAMEBUFFER, _msRenderMapFBO);
+		glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			FrameMarkStart(tracy_RenderScreenTexture);
+			glActiveTexture(GL_TEXTURE0 + 31);
+			glBindTexture(GL_TEXTURE_2D, _ssaoBlurredMap);
+
+			GraphicEngine::Render();
+			
+			FrameMarkEnd(tracy_RenderScreenTexture);
+
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, _msRenderMapFBO);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _renderMapFBO);
+		glBlitFramebuffer(0, 0, wSize.x, wSize.y, 0, 0, wSize.x, wSize.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
 
 	// RENDERING
 	if (this->IsMain()) {
+		FrameMarkStart(tracy_OnScreenFramebuffer);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		BindRenderTexture(0);
 		BindDepthTexture(1);
-		_renderShader->Use();
-		_renderShader->SetInt("screenTexture", 0);
-		_renderShader->SetInt("depthTexture", 1);
+		glActiveTexture(GL_TEXTURE0 + 2);
+		glBindTexture(GL_TEXTURE_2D, _ssaoMap);
+		//glBindTexture(GL_TEXTURE_2D, _ssaoBlurredMap);
+		_screenShader->Use();
+		_screenShader->SetInt("screenTexture", 0);
+		_screenShader->SetInt("depthTexture", 1);
+		_screenShader->SetInt("ssaoTexture", 2);
 
-		_renderShader->SetBool("hasBlur", (_filters & RenderFilter::BLUR) != 0);
-		_renderShader->SetBool("hasVignette", (_filters & RenderFilter::VIGNETTE) != 0);
-		_renderShader->SetBool("hasNegative", (_filters & RenderFilter::NEGATIVE) != 0);
-		_renderShader->SetBool("hasGrayscale", (_filters & RenderFilter::GRAYSCALE) != 0);
-		_renderShader->SetBool("displayDepth", (_filters & RenderFilter::DEPTH) != 0);
-		_renderShader->SetBool("hasOutline", (_filters & RenderFilter::OUTLINE) != 0);
+		_screenShader->SetBool("hasBlur", ((uint8_t)_filters & (uint8_t)CameraRenderFilter::BLUR) != 0);
+		_screenShader->SetBool("hasVignette", (_filters & (uint8_t)CameraRenderFilter::VIGNETTE) != 0);
+		_screenShader->SetBool("hasNegative", (_filters & (uint8_t)CameraRenderFilter::NEGATIVE) != 0);
+		_screenShader->SetBool("hasGrayscale", (_filters & (uint8_t)CameraRenderFilter::GRAYSCALE) != 0);
+		_screenShader->SetBool("hasOutline", (_filters & (uint8_t)CameraRenderFilter::OUTLINE) != 0);
 
-		_renderPlane.GetMesh(0)->Draw(1);
+		_screenShader->SetBool("displayDepth", _mode == CameraDisplayMode::DEPTH);
+		_screenShader->SetBool("displaySSAO", _mode == CameraDisplayMode::SSAO_MAP);
+
+		_screenPlane.GetMesh(0)->Draw(1);
+		FrameMarkEnd(tracy_OnScreenFramebuffer);
 	}
 }
 
@@ -469,6 +613,12 @@ void CameraComponent::BindRenderTexture(unsigned int index)
 {
 	glActiveTexture(GL_TEXTURE0 + index);
 	glBindTexture(GL_TEXTURE_2D, _renderMap);
+}
+
+void CameraComponent::BindSSAOTexture(unsigned int index)
+{
+	glActiveTexture(GL_TEXTURE0 + index);
+	glBindTexture(GL_TEXTURE_2D, _ssaoBlurredMap);
 }
 
 void CameraComponent::BindDepthTexture(unsigned int index)
@@ -486,6 +636,11 @@ CameraComponent* CameraComponent::GetMainCamera()
 	}
 
 	return nullptr;
+}
+
+Frustum CameraComponent::GetCurrentCameraFrustum()
+{
+	return _currentCameraFrustum;
 }
 
 void CameraComponent::Initialize()
@@ -506,13 +661,16 @@ void CameraComponent::Initialize()
 		STD140Struct tempStruct = STD140Struct(_uboCameraDataOffsets);
 		tempStruct.Set("projection", this->GetProjectionMatrix());
 		tempStruct.Set("view", this->GetViewMatrix());
-		tempStruct.Set("viewerPosition", this->GetTransform()->GetGlobalPosition());
+		tempStruct.Set("viewPos", this->GetTransform()->GetGlobalPosition());
+		tempStruct.Set("isSSAO", _isSsao);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
-		/*glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));*/
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
+		/* Stare
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));
+		*/
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		// UBO WINDOW DATA
@@ -531,15 +689,23 @@ void CameraComponent::Initialize()
 		tempStruct.Set("gamma", this->_gamma);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-		/*glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ivec2), value_ptr(Window::GetInstance()->GetContentSize()));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
+		/* Stare
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ivec2), value_ptr(Window::GetInstance()->GetContentSize()));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2), sizeof(float), &(this->_near));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float), sizeof(float), &(this->_far));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));*/
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
+		*/
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		_renderPlane = ModelsManager::GetPlane();
-		_renderShader = ShaderManager::CreateShaderProgram("CameraPlaneShader", "/shaders/screen.vert", "/shaders/screen.frag");
+		_screenPlane = ModelsManager::GetPlane();
+		_screenShader = ShaderManager::GetShaderProgram("origin/ScreenShader");
+		_depthShader = ShaderManager::GetShaderProgram("origin/CameraDepthShader");
+		_ssaoShader = ShaderManager::GetShaderProgram("origin/SSAOShader");
+		_ssaoBlurredShader = ShaderManager::GetShaderProgram("origin/SSAOBlurredShader");
+
+		GenerateSSAOKernel();
+		GenerateSSAONoiseTexture();
 	}
 
 	this->_camId = Cameras.size();
@@ -556,17 +722,17 @@ void CameraComponent::Initialize()
 	unsigned int d_res = GL_DEPTH_COMPONENT;
 
 	switch (_renderRes) {
-		case DEFAULT: {
+		case CameraRenderResolution::DEFAULT: {
 			r_res = GL_RGB;
 			d_res = GL_DEPTH_COMPONENT;
 			break;
 		}
-		case MEDIUM: {
+		case CameraRenderResolution::MEDIUM: {
 			r_res = GL_RGB16F;
 			d_res = GL_DEPTH_COMPONENT16;
 			break;
 		}
-		case HIGH: {
+		case CameraRenderResolution::HIGH: {
 			r_res = GL_RGB32F;
 			d_res = GL_DEPTH_COMPONENT32F;
 			break;
@@ -603,6 +769,36 @@ void CameraComponent::Initialize()
 	glReadBuffer(GL_NONE);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+#pragma endregion
+
+#pragma region SSAOBuffer
+
+	glGenFramebuffers(1, &_ssaoFBO);
+
+	glGenTextures(1, &_ssaoMap);
+	glBindTexture(GL_TEXTURE_2D, _ssaoMap);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, wSize.x, wSize.y, 0, GL_RED, GL_FLOAT, NULL);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glGenTextures(1, &_ssaoBlurredMap);
+	glBindTexture(GL_TEXTURE_2D, _ssaoBlurredMap);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, wSize.x, wSize.y, 0, GL_RED, GL_FLOAT, NULL);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 #pragma endregion
@@ -661,6 +857,11 @@ void CameraComponent::OnDestroy()
 	glDeleteTextures(1, &_depthMap);
 	glDeleteFramebuffers(1, &_depthMapFBO);
 
+	// SSAO Map
+	glDeleteTextures(1, &_ssaoMap);
+	glDeleteTextures(1, &_ssaoBlurredMap);
+	glDeleteFramebuffers(1, &_ssaoFBO);
+
 	// Render Map
 	glDeleteTextures(1, &_renderMap);
 	glDeleteTextures(1, &_msRenderMap);
@@ -674,6 +875,8 @@ void CameraComponent::OnDestroy()
 	Cameras.erase(Cameras.begin() + this->_camId);
 
 	if (Cameras.size() == 0) {
+		glDeleteTextures(1, &_ssaoNoiseTexture);
+		delete _ssaoTextureData;
 		glDeleteBuffers(1, &_uboCameraData);
 		glDeleteBuffers(1, &_uboWindowData);
 	}
@@ -725,100 +928,155 @@ YAML::Node CameraComponent::Serialize() const
 	node["farPlane"] = _far;
 	node["cameraFilter"] = (size_t)_filters;
 	node["cameraType"] = _type;
+	node["cameraMode"] = _mode;
 	node["samples"] = (size_t)_samples;
 	node["renderRes"] = _renderRes;
 	node["gamma"] = _gamma;
 	node["worldUp"] = _worldUp;
 	node["isMain"] = _isMain;
+	node["isFrustum"] = _isFrustumCulling;
+	node["isSSAO"] = _isSsao;
 	return node;
 }
 
 void CameraComponent::DrawEditor()
 {
-	if (ImGui::CollapsingHeader("Camera")) {
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Camera##Component").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
 
 		bool per = (this->_type == CameraType::PERSPECTIVE);
-		if (ImGui::BeginCombo("Projection", (per ? "Orthographic" : "Perspective"))) {
-			if (ImGui::Selectable("Orthographic", per == CameraType::ORTHOGRAPHIC))
+		if (ImGui::BeginCombo(string("Projection##").append(id).c_str(), (per ? "Perspective" : "Orthographic"))) {
+			if (ImGui::Selectable(string("Orthographic##").append(id).c_str(), !per))
 			{
 				this->SetCameraType(CameraType::ORTHOGRAPHIC);
 			}
-			else if (ImGui::Selectable("Perspective", per == CameraType::PERSPECTIVE))
+			else if (ImGui::Selectable(string("Perspective##").append(id).c_str(), per))
 			{
 				this->SetCameraType(CameraType::PERSPECTIVE);
 			}
 			ImGui::EndCombo();
 		}
 
-		RenderResolution res = this->_renderRes;
-		if (ImGui::BeginCombo("Render Resolution", res == RenderResolution::DEFAULT ? "Default" : (res == RenderResolution::MEDIUM ? "Medium" : "High")))
+		CameraRenderResolution res = this->_renderRes;
+		if (ImGui::BeginCombo(string("Render Resolution##").append(id).c_str(), res == CameraRenderResolution::DEFAULT ? "Default" : (res == CameraRenderResolution::MEDIUM ? "Medium" : "High")))
 		{
-			if (ImGui::Selectable("Default", res == RenderResolution::DEFAULT))
+			if (ImGui::Selectable(string("Default##").append(id).c_str(), res == CameraRenderResolution::DEFAULT))
 			{
-				this->SetRenderResolution(RenderResolution::DEFAULT);
+				this->SetRenderResolution(CameraRenderResolution::DEFAULT);
 			}
-			else if (ImGui::Selectable("Medium", res == RenderResolution::MEDIUM))
+			else if (ImGui::Selectable(string("Medium##").append(id).c_str(), res == CameraRenderResolution::MEDIUM))
 			{
-				this->SetRenderResolution(RenderResolution::MEDIUM);
+				this->SetRenderResolution(CameraRenderResolution::MEDIUM);
 			}
-			else if (ImGui::Selectable("High", res == RenderResolution::HIGH))
+			else if (ImGui::Selectable(string("High##").append(id).c_str(), res == CameraRenderResolution::HIGH))
 			{
-				this->SetRenderResolution(RenderResolution::HIGH);
+				this->SetRenderResolution(CameraRenderResolution::HIGH);
 			}
 			ImGui::EndCombo();
 		}
 
-		uint8_t acFil = RenderFilter::NONE;
-		uint8_t fil = this->_filters;
-
-		bool g = (fil & RenderFilter::GRAYSCALE) != 0;
-		ImGui::Checkbox("GrayScale", &g);
-		if (g) {
-			acFil |= RenderFilter::GRAYSCALE;
+		CameraDisplayMode cdm = this->_mode;
+		if (ImGui::BeginCombo(string("Display Mode##").append(id).c_str(), cdm == CameraDisplayMode::RENDER ? "Render" : (cdm == CameraDisplayMode::DEPTH ? "Depth" : "SSAO")))
+		{
+			if (ImGui::Selectable(string("Render##").append(id).c_str(), cdm == CameraDisplayMode::RENDER))
+			{
+				this->SetDisplayMode(CameraDisplayMode::RENDER);
+			}
+			else if (ImGui::Selectable(string("Depth##").append(id).c_str(), cdm == CameraDisplayMode::DEPTH))
+			{
+				this->SetDisplayMode(CameraDisplayMode::DEPTH);
+			}
+			else if (ImGui::Selectable(string("SSAO##").append(id).c_str(), cdm == CameraDisplayMode::SSAO_MAP))
+			{
+				this->SetDisplayMode(CameraDisplayMode::SSAO_MAP);
+			}
+			ImGui::EndCombo();
 		}
 
-		g = (fil & RenderFilter::NEGATIVE) != 0;
-		ImGui::Checkbox("Negative", &g);
+		uint8_t acFil = (uint8_t)CameraRenderFilter::NONE;
+		uint8_t fil = (uint8_t)this->_filters;
+
+		bool n = (fil ^ (uint8_t)CameraRenderFilter::NONE) == 0;
+		ImGui::Checkbox(string("Nothing##").append(id).c_str(), &n);
+
+		bool e = (fil ^ (uint8_t)CameraRenderFilter::EVERYTHING) == 0 && !n;
+		bool g = (fil ^ (uint8_t)CameraRenderFilter::EVERYTHING) == 0 && !n;
+		ImGui::Checkbox(string("Everything##").append(id).c_str(), &g);
 		if (g) {
-			acFil |= RenderFilter::NEGATIVE;
+			acFil |= (uint8_t)CameraRenderFilter::EVERYTHING;
 		}
 
-		g = (fil & RenderFilter::VIGNETTE) != 0;
-		ImGui::Checkbox("Vignette", &g);
+		g = (fil & (uint8_t)CameraRenderFilter::GRAYSCALE) != 0 && !n;
+		ImGui::Checkbox(string("GrayScale##").append(id).c_str(), &g);
 		if (g) {
-			acFil |= RenderFilter::VIGNETTE;
+			acFil |= (uint8_t)CameraRenderFilter::GRAYSCALE;
+		}
+		else {
+			if (e) {
+				acFil ^= (uint8_t)CameraRenderFilter::GRAYSCALE;
+			}
 		}
 
-		g = (fil & RenderFilter::BLUR) != 0;
-		ImGui::Checkbox("Blur", &g);
+		g = (fil & (uint8_t)CameraRenderFilter::NEGATIVE) != 0 && !n;
+		ImGui::Checkbox(string("Negative##").append(id).c_str(), &g);
 		if (g) {
-			acFil |= RenderFilter::BLUR;
+			acFil |= (uint8_t)CameraRenderFilter::NEGATIVE;
+		}
+		else {
+			if (e) {
+				acFil ^= (uint8_t)CameraRenderFilter::NEGATIVE;
+			}
 		}
 
-		g = (fil & RenderFilter::DEPTH) != 0;
-		ImGui::Checkbox("Depth", &g);
+		g = (fil & (uint8_t)CameraRenderFilter::VIGNETTE) != 0 && !n;
+		ImGui::Checkbox(string("Vignette##").append(id).c_str(), &g);
 		if (g) {
-			acFil |= RenderFilter::DEPTH;
+			acFil |= (uint8_t)CameraRenderFilter::VIGNETTE;
+		}
+		else {
+			if (e) {
+				acFil ^= (uint8_t)CameraRenderFilter::VIGNETTE;
+			}
 		}
 
-		g = (fil & RenderFilter::OUTLINE) != 0;
-		ImGui::Checkbox("Outline", &g);
+		g = (fil & (uint8_t)CameraRenderFilter::BLUR) != 0 && !n;
+		ImGui::Checkbox(string("Blur##").append(id).c_str(), &g);
 		if (g) {
-			acFil |= RenderFilter::OUTLINE;
+			acFil |= (uint8_t)CameraRenderFilter::BLUR;
+		}
+		else {
+			if (e) {
+				acFil ^= (uint8_t)CameraRenderFilter::BLUR;
+			}
+		}
+
+		g = (fil & (uint8_t)CameraRenderFilter::OUTLINE) != 0 && !n;
+		ImGui::Checkbox(string("Outline##").append(id).c_str(), &g);
+		if (g) {
+			acFil |= (uint8_t)CameraRenderFilter::OUTLINE;
+		}
+		else {
+			if (e) {
+				acFil ^= (uint8_t)CameraRenderFilter::OUTLINE;
+			}
 		}
 
 		this->SetCameraFilter(acFil);
 
 		int s = (int)this->_samples;
-		ImGui::InputInt("MSAA Samples", &s);
+		ImGui::InputInt(string("MSAA Samples##").append(id).c_str(), &s);
 
 		if (s != (int)this->_samples) {
 			this->SetSamples((uint8_t)s);
 		}
 
-		ImGui::InputFloat("Near Plane", &this->_near);
-		ImGui::InputFloat("Far Plane", &this->_far);
-		ImGui::InputFloat("Gamma", &this->_gamma);
-		ImGui::Checkbox("Frustum Culling", &this->_isFrustumCulling);
+		ImGui::InputFloat(string("Near Plane##").append(id).c_str(), &this->_near);
+		ImGui::InputFloat(string("Far Plane##").append(id).c_str(), &this->_far);
+		ImGui::InputFloat(string("Gamma##").append(id).c_str(), &this->_gamma);
+		// Brighteness
+		// Contrast
+		ImGui::Checkbox(string("SSAO##").append(id).c_str(), &this->_isSsao);
+		ImGui::Checkbox(string("Frustum Culling##").append(id).c_str(), &this->_isFrustumCulling);
 	}
 }

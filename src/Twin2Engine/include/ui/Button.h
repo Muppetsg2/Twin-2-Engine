@@ -23,5 +23,6 @@ namespace Twin2Engine::UI {
 
 		virtual void Update() override;
 		virtual YAML::Node Serialize() const override;
+		virtual void DrawEditor() override;
 	};
 }

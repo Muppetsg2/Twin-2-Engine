@@ -4,8 +4,9 @@
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 normal;
 layout (location = 2) in vec2 texCoords;
+layout (location = 3) out vec4 clipSpacePos;
 
-layout (location = 3) flat in uint materialIndex;
+layout (location = 4) flat in uint materialIndex;
 
 layout (location = 0) out vec4 FragColor;
 
@@ -33,11 +34,10 @@ struct TextureInput
 
 layout(location = 0) uniform TextureInput texturesInput[8];
 
-
-
 //shadow maps
 uniform sampler2D DirLightShadowMaps[4];
 uniform sampler2D DirLightingMap;
+uniform sampler2D occlusionMap;
 
 //LIGHTING BEGIN
 struct PointLight {
@@ -85,6 +85,13 @@ layout(std140, binding = 3) uniform LightingData {
 	//float gamma;
 };
 
+layout (std140, binding = 0) uniform CameraData
+{
+    mat4 projection;
+    mat4 view;
+	vec3 viewPos;
+    bool isSSAO;
+};
 
 //LIGHTING END
 
@@ -221,6 +228,10 @@ void main()
         LightColor += lambertian * directionalLights[i].color * directionalLights[i].power * ShadowCalculation(directionalLights[i].lightSpaceMatrix * vec4(position , 1.0), N, i);
     }
 	
-    FragColor *= vec4(LightColor + AmbientLight, 1.0); //
+    vec2 NDCSpaceFragPos = clipSpacePos.xy / clipSpacePos.w;
+    vec2 textureLookupPos = NDCSpaceFragPos * 0.5 + 0.5;
+    float visibility_factor = isSSAO ? texture(occlusionMap, textureLookupPos).r : 1.0;
+
+    FragColor *= vec4(LightColor + AmbientLight * visibility_factor, 1.0); //
 	FragColor = vec4(pow(FragColor.rgb, vec3(gamma)), 1.0);
 }

@@ -11,6 +11,7 @@ in VS_OUT {
 	vec2 texCoord;
 	vec3 normal;
 	vec3 fragPos;
+    vec4 clipSpacePos;
     flat uint materialIndex; // flat = nie interpolowane
 } fs_in;
 
@@ -106,6 +107,7 @@ struct DirectionalLight {
 };
 
 uniform sampler2D DirLightShadowMaps[MAX_DIRECTIONAL_LIGHTS]; // SHADOW MAP
+uniform sampler2D occlusionMap;
 
 layout(std140, binding = 3) buffer Lights {
     PointLight pointLights[MAX_POINT_LIGHTS];
@@ -121,6 +123,7 @@ layout (std140, binding = 0) uniform CameraData
     mat4 projection;
     mat4 view;
 	vec3 viewPos;
+    bool isSSAO;
 };
 
 layout(std140, binding = 3) uniform LightingData {
@@ -254,8 +257,12 @@ vec4 CalculatePointLight(PointLight light) {
         spec = CalculateToon(spec, data.specular_toon_borders, data.inv_specular_toon_borders);
     }
 
+    vec2 NDCSpaceFragPos = fs_in.clipSpacePos.xy / fs_in.clipSpacePos.w;
+    vec2 textureLookupPos = NDCSpaceFragPos * 0.5 + 0.5;
+    float visibility_factor = isSSAO ? texture(occlusionMap, textureLookupPos).r : 1.0;
+
     vec4 lightColor = CalculateGamma(vec4(light.color, 1.0));
-    vec4 ambient = ambientPowerPercent * attenuation * light.power * lightColor * data.mat_diffuse;
+    vec4 ambient = visibility_factor * ambientPowerPercent * attenuation * light.power * lightColor * data.mat_diffuse;
     vec4 diffuse = diffusePowerPercent * attenuation * diff * light.power * lightColor * data.mat_diffuse;
     vec4 specular = specularPowerPercent * attenuation * spec * light.power * lightColor * data.mat_specular;
 
@@ -280,8 +287,12 @@ vec4 CalculateSpotLight(SpotLight light) {
         spec = CalculateToon(spec, data.specular_toon_borders, data.inv_specular_toon_borders);
     }
 
+    vec2 NDCSpaceFragPos = fs_in.clipSpacePos.xy / fs_in.clipSpacePos.w;
+    vec2 textureLookupPos = NDCSpaceFragPos * 0.5 + 0.5;
+    float visibility_factor = isSSAO ? texture(occlusionMap, textureLookupPos).r : 1.0;
+
     vec4 lightColor = CalculateGamma(vec4(light.color, 1.0));
-    vec4 ambient = ambientPowerPercent * attenuation * intensity * light.power * lightColor * data.mat_diffuse;
+    vec4 ambient = visibility_factor * ambientPowerPercent * attenuation * intensity * light.power * lightColor * data.mat_diffuse;
     vec4 diffuse = diffusePowerPercent * attenuation * intensity * diff * light.power * lightColor * data.mat_diffuse;
     vec4 specular = specularPowerPercent * attenuation * intensity * spec * light.power * lightColor * data.mat_specular;
 
@@ -313,8 +324,12 @@ vec4 CalculateDirectionalLight(DirectionalLight light, uint shadowMapId) {
         return CalculateGamma(vec4(gooch + specular, 1.0));
     }
 
+    vec2 NDCSpaceFragPos = fs_in.clipSpacePos.xy / fs_in.clipSpacePos.w;
+    vec2 textureLookupPos = NDCSpaceFragPos * 0.5 + 0.5;
+    float visibility_factor = isSSAO ? texture(occlusionMap, textureLookupPos).r : 1.0;
+
     vec4 lightColor = CalculateGamma(vec4(light.color, 1.0));
-    vec4 ambient = ambientPowerPercent * intensity * light.power * lightColor * data.mat_diffuse;
+    vec4 ambient = visibility_factor * ambientPowerPercent * intensity * light.power * lightColor * data.mat_diffuse;
     vec4 diffuse = diffusePowerPercent * intensity * diff * light.power * lightColor * data.mat_diffuse;
     vec4 specular = specularPowerPercent * intensity * spec * light.power * lightColor * data.mat_specular;
 
@@ -378,8 +393,12 @@ void main()
         Color += CalculateDirectionalLight(directionalLights[i], i);
     }
 
+    vec2 NDCSpaceFragPos = fs_in.clipSpacePos.xy / fs_in.clipSpacePos.w;
+    vec2 textureLookupPos = NDCSpaceFragPos * 0.5 + 0.5;
+    float visibility_factor = isSSAO ? texture(occlusionMap, textureLookupPos).r : 1.0;
+
     // AMBIENT LIGHT
-    Color += CalculateGamma(vec4(ambientLight, 1.0)) * data.mat_diffuse;
+    Color += CalculateGamma(vec4(visibility_factor * ambientLight, 1.0)) * data.mat_diffuse;
 
     Color = vec4(Color.xyz, 1.0);
 }

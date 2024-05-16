@@ -1,6 +1,4 @@
-#ifndef _MAP_HEX_TILE_H_
-#define _MAP_HEX_TILE_H_
-
+#pragma once
 
 #include <Tilemap/HexagonalTilemap.h>
 
@@ -53,6 +51,3 @@ namespace Generation
 
 #include <Generation/MapRegion.h>
 #include <Generation/MapSector.h>
-
-
-#endif // !_MAP_HEX_TILE_H_

@@ -54,7 +54,7 @@ Root:
       trigger: true
       static: false
       layer: 2
-      layerFilter:
+      layersFilter:
         - 3
         - 3
         - 1
@@ -63,12 +63,11 @@ Root:
         - 3
         - 3
         - 3
-      boundingVolume: false
       boundingVolumeRadius: 0.5
       position:
         x: 0.0
         y: -0.5
         z: 0.0
-      baselength: 0.5
-      halfheight: 0.5
+      baseLength: 0.5
+      halfHeight: 0.5
       rotation: -1.5705

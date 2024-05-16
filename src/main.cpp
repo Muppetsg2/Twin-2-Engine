@@ -220,12 +220,13 @@ int main(int, char**)
 
     SceneManager::LoadScene("testScene");
     SceneManager::Update();
+    SceneManager::SaveScene("res/scenes/procedurallyGenerated.scene");
 
     GameObject* obj = SceneManager::CreateGameObject();
     obj->SetName("Test Button");
     Transform* tr = obj->GetTransform();
     tr->Rotate(glm::vec3(0, 0, 45.f));
-    tr->Translate(glm::vec3(0.f, -40.f, 0.f));
+    tr->Translate(glm::vec3(0.f, -200.f, 0.f));
     Button* b = obj->AddComponent<Button>();
     b->SetHeight(70);
     b->SetWidth(200);

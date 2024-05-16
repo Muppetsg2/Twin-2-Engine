@@ -333,13 +333,13 @@ void SceneManager::LoadScene() {
 		size_t objId = gameObjectNode["id"].as<size_t>();
 		GameObject* obj = _gameObjectsById[objId];
 		if (!obj->Deserialize(gameObjectNode)) {
-			SPDLOG_ERROR("GameObject {0} data is corupted", objId);
+			SPDLOG_ERROR("Scene '{0}' GameObject {1} data is corupted", _sceneToLoadName, objId);
 		}
 
 		// Transform
 		Transform* t = obj->GetTransform();
 		if (!t->Deserialize(gameObjectNode["transform"])) {
-			SPDLOG_ERROR("Transform of GameObject {0} data is corupted", objId);
+			SPDLOG_ERROR("Scene '{0}' Transform of GameObject {0} data is corupted", _sceneToLoadName, objId);
 		}
 
 		// Components Node
@@ -392,7 +392,7 @@ void SceneManager::LoadScene() {
 
 			// Fill Component with values
 			if (!comp->Deserialize(componentNode)) {
-				SPDLOG_ERROR("'{0}' Component {1} of GameObject {2} data is corupted", type, compId, compPair.first);
+				SPDLOG_ERROR("Scene '{0}' '{1}' Component {2} of GameObject {3} data is corupted", _sceneToLoadName, type, compId, compPair.first);
 			}
 
 			// Add Component to object
@@ -746,12 +746,12 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	map<size_t, YAML::Node> componentsNodes;
 	// GameObject
 	if (!prefabRoot->Deserialize(prefab->_rootObject)) {
-		SPDLOG_ERROR("Prefab {0} Root GameObject data is corupted", prefab->GetId());
+		SPDLOG_ERROR("Prefab '{0}' Root GameObject data is corupted", PrefabManager::GetPrefabPath(prefab));
 	}
 
 	// Transform
 	if (!prefabRoot->GetTransform()->Deserialize(prefab->_rootObject["transform"])) {
-		SPDLOG_ERROR("Prefab {0} Root GameObject Transform data is corupted", prefab->GetId());
+		SPDLOG_ERROR("Prefab '{0}' Root GameObject Transform data is corupted", PrefabManager::GetPrefabPath(prefab));
 	}
 
 	// Components Node
@@ -763,13 +763,13 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		size_t objId = gameObjectNode["id"].as<size_t>();
 		GameObject* obj = _gameObjectsById[objId];
 		if (!obj->Deserialize(gameObjectNode)) {
-			SPDLOG_ERROR("Prefab {0} GameObject {1} data is corupted", prefab->GetId(), objId);
+			SPDLOG_ERROR("Prefab '{0}' GameObject {1} data is corupted", PrefabManager::GetPrefabPath(prefab), objId);
 		}
 
 		// Transform
 		Transform* t = obj->GetTransform();
 		if (!t->Deserialize(gameObjectNode["transform"])) {
-			SPDLOG_ERROR("Prefab {0} GameObject {1} Transform data is corupted", prefab->GetId(), objId);
+			SPDLOG_ERROR("Prefab '{0}' GameObject {1} Transform data is corupted", PrefabManager::GetPrefabPath(prefab), objId);
 		}
 
 		// Components Node
@@ -824,7 +824,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 
 			// Fill Component with values
 			if (!comp->Deserialize(componentNode)) {
-				SPDLOG_ERROR("Prefab {0} Component {1} of GameObject {2} data is corupted", prefab->GetId(), compId, compPair.first);
+				SPDLOG_ERROR("Prefab '{0}' Component {1} of GameObject {2} data is corupted", PrefabManager::GetPrefabPath(prefab), compId, compPair.first);
 			}
 
 			// Add Component To GameObject

@@ -22,9 +22,7 @@ Models:
     path: res/models/hexagon.obj
   - id: 1
     path: "{Plane}"
-Prefabs:
-  - id: 0
-    path: res/prefabs/tilemap/mapSector.prefab
+Prefabs: ~
 ScriptableObjects: ~
 Root:
   name: MapSector

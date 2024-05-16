@@ -46,9 +46,7 @@ Models:
     path: "{Plane}"
   - id: 4
     path: res/models/city.obj
-Prefabs:
-  - id: 0
-    path: res/prefabs/tilemap/mapElements/radioStation.prefab
+Prefabs: ~
 ScriptableObjects: ~
 Root:
   name: RadioStation

@@ -14,9 +14,7 @@ Materials:
 Models:
   - id: 0
     path: res/models/hexagon.obj
-Prefabs:
-  - id: 0
-    path: res/prefabs/tilemap/tiles/hexTile.prefab
+Prefabs: ~
 ScriptableObjects: ~
 Root:
   name: MapHexTile

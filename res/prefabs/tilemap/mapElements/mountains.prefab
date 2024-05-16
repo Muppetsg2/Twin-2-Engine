@@ -32,9 +32,7 @@ Models:
     path: res/models/hexagon.obj
   - id: 2
     path: "{Plane}"
-Prefabs:
-  - id: 0
-    path: res/prefabs/tilemap/mapElements/mountains.prefab
+Prefabs: ~
 ScriptableObjects: ~
 Root:
   name: Mountain

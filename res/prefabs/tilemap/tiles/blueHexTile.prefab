@@ -20,9 +20,7 @@ Models:
     path: res/models/hexagon.obj
   - id: 1
     path: "{Plane}"
-Prefabs:
-  - id: 0
-    path: res/prefabs/tilemap/tiles/blueHexTile.prefab
+Prefabs: ~
 ScriptableObjects: ~
 Root:
   name: New GameObject

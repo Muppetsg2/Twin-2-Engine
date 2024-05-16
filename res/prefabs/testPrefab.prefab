@@ -23,9 +23,7 @@ Materials:
 Models:
   - id: 0
     path: "{Cube}"
-Prefabs:
-  - id: 0
-    path: res/prefabs/testPrefab.prefab
+Prefabs: ~
 ScriptableObjects: ~
 Root:
   name: testPrefabRoot

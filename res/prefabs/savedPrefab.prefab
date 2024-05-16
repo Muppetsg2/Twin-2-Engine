@@ -90,8 +90,6 @@ Models:
 Prefabs:
   - id: 0
     path: res/prefabs/testPrefab.prefab
-  - id: 1
-    path: res/prefabs/savedPrefab.prefab
 ScriptableObjects: ~
 Root:
   name: testPrefabRoot

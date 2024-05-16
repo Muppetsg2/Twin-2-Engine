@@ -42,9 +42,7 @@ Models:
     path: "{Plane}"
   - id: 3
     path: res/models/city.obj
-Prefabs:
-  - id: 0
-    path: res/prefabs/tilemap/mapElements/city.prefab
+Prefabs: ~
 ScriptableObjects: ~
 Root:
   name: City

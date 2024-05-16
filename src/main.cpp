@@ -6,6 +6,8 @@
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
 #endif
+const char* const tracy_ImGuiDrawingConsole = "ImGuiDrawingConsole";
+const char* const tracy_RenderingImGui = "RenderingImGui";
 
 #define EDITOR_LOGGER
 //#define RELEASE_LOGGER
@@ -319,10 +321,14 @@ int main(int, char**)
 
 #if _DEBUG
     GameEngine::LateRender += []() -> void {
+        ZoneScoped;
+
         // Draw ImGui
+        FrameMarkStart(tracy_RenderingImGui);
         begin_imgui();
         render_imgui(); // edit this function to add your own ImGui controls
-        end_imgui(); // this call effectively renders ImGui        
+        end_imgui(); // this call effectively renders ImGui    
+        FrameMarkEnd(tracy_RenderingImGui);
     };
 
     GameEngine::EarlyEnd += []() -> void {
@@ -551,6 +557,7 @@ void begin_imgui()
 
 void render_imgui()
 {
+    ZoneScoped;
     if (Input::GetCursorState() == CURSOR_STATE::NORMAL)
     {
         SceneManager::DrawCurrentSceneEditor();
@@ -558,7 +565,11 @@ void render_imgui()
 #pragma region IMGUI_LOGGING_CONSOLE
 
 #if USE_IMGUI_CONSOLE_OUTPUT
+
+        FrameMarkStart(tracy_ImGuiDrawingConsole);
         ImGuiSink<mutex>::Draw();
+        FrameMarkEnd(tracy_ImGuiDrawingConsole);
+
 #endif
         
 #pragma endregion 

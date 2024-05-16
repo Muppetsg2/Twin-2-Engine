@@ -212,71 +212,30 @@ int main(int, char**)
     };
 
     // ADDING SCENES
-    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
-    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.scene");
-    //SceneManager::AddScene("testScene", "res/scenes/DirLightTest.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/ToonShading.scene");
 
-    SceneManager::LoadScene("testScene");
-    SceneManager::Update();
-    SceneManager::SaveScene("res/scenes/procedurallyGenerated.scene");
+    //SceneManager::LoadScene("testScene");
+    //SceneManager::Update();
 
-    GameObject* obj = SceneManager::CreateGameObject();
-    obj->SetName("Test Button");
-    Transform* tr = obj->GetTransform();
-    tr->Rotate(glm::vec3(0, 0, 45.f));
-    tr->Translate(glm::vec3(0.f, -200.f, 0.f));
-    Button* b = obj->AddComponent<Button>();
-    b->SetHeight(70);
-    b->SetWidth(200);
-    b->GetOnClickEvent() += []() -> void {
-        spdlog::info("clicked");
-    };
-    Image* i = obj->AddComponent<Image>();
-    i->SetSprite("white_box");
-    i->SetHeight(70);
-    i->SetWidth(200);
-    Text* t = obj->AddComponent<Text>();
-    t->SetText(L"ClickMeeejjjjjjjjj");
-    t->SetFont("res/fonts/Caveat-Regular.ttf");
-    t->SetSize(48);  
-    t->EnableAutoSize(10, 60);
-    t->SetHeight(44);
-    t->SetWidth(196);
-    t->SetColor(glm::vec4(1.f, 0.f, 0.f, 1.f));
+    //SceneManager::SaveScene("res/scenes/ToonShading.scene");
 
-    obj = SceneManager::CreateGameObject();
-    obj->SetName("Test Input Field");
-    tr = obj->GetTransform();
-    //tr->Translate(glm::vec3(500.f, -400.f, 0.f));
-    Image* img = obj->AddComponent<Image>();
-    img->SetSprite("white_box");
-    img->SetWidth(200);
-    img->SetHeight(70);
-    Text* inputText = obj->AddComponent<Text>();
-    inputText->SetFont("res/fonts/Caveat-Regular.ttf");
-    inputText->SetSize(48);
-    inputText->SetWidth(196);
-    inputText->SetHeight(66);
-    inputText->SetTextOverflow(TextOverflow::Truncate);
-    inputText->EnableAutoSize(30, 48);
-    Text* placeHolder = obj->AddComponent<Text>();
-    placeHolder->SetFont("res/fonts/Caveat-Regular.ttf");
-    placeHolder->SetSize(48);
-    placeHolder->SetWidth(196);
-    placeHolder->SetHeight(66);
-    placeHolder->SetText(L"Enter name...");
-    placeHolder->SetTextOverflow(TextOverflow::Ellipsis);
-    placeHolder->EnableAutoSize(30, 48);
-    placeHolder->SetColor({ .5f, .5f, .5f, 1.f });
-    InputField* inp = obj->AddComponent<InputField>();
-    inp->SetInputText(inputText);
-    inp->SetPlaceHolderText(placeHolder);
-    inp->SetWidth(200);
-    inp->SetHeight(70);
-
-    //SceneManager::SaveScene("res/scenes/quickSavedScene_toonShading.yaml");
+    Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/mapElements/city.prefab");
+    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/mapElements/mountains.prefab");
+    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/mapElements/radioStation.prefab");
+    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/tiles/blueHexTile.prefab");
+    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/tiles/greenHexTile.prefab");
+    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/tiles/hexTile.prefab");
+    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/tiles/redHexTile.prefab");
+    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/mapRegion.prefab");
+    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/mapSector.prefab");
+    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/tilemap/tilemap.prefab");
+    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/savedPrefab.prefab");
+    //Prefab* p = PrefabManager::LoadPrefab("res/prefabs/testPrefab.prefab");
+    GameObject* obj = SceneManager::CreateGameObject(p);
+    PrefabManager::SaveAsPrefab(obj, "res/prefabs/tilemap/mapElements/city.prefab");
 
 #pragma region SETTING_UP_GENERATION
 

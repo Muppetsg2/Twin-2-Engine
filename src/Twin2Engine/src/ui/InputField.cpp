@@ -3,6 +3,7 @@
 #include <core/Transform.h>
 #include <graphic/manager/UIRenderingManager.h>
 #include <manager/SceneManager.h>
+#include <tools/YamlConverters.h>
 
 using namespace Twin2Engine::UI;
 using namespace Twin2Engine::Core;
@@ -200,7 +201,7 @@ YAML::Node InputField::Serialize() const
 	if (_text != nullptr) {
 		node["text"] = _text->GetId();
 	}
-	node["textValue"] = string(_textValue.begin(), _textValue.end());
+	node["textValue"] = _textValue;
 	return node;
 }
 
@@ -237,8 +238,7 @@ bool InputField::Deserialize(const YAML::Node& node) {
 			_text = (Text*)comp;
 		}
 	}
-	string temp = node["textValue"].as<string>();
-	_textValue = wstring(temp.begin(), temp.end());
+	_textValue = node["textValue"].as<wstring>();
 
 	return true;
 }

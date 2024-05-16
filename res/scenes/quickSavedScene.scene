@@ -1,66 +1,66 @@
 Textures:
   - id: 0
     path: res/textures/white.png
-    fileFormat: 35904
-    engineFormat: 6407
-    sWrapMode: 33648
-    tWrapMode: 33648
-    minFilterMode: 9986
-    magFilterMode: 9729
+    fileFormat: !<SRGB> 35904
+    engineFormat: !<RGB> 6407
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
   - id: 1
     path: res/textures/fakeBRDF.png
-    fileFormat: 35906
-    engineFormat: 6408
-    sWrapMode: 33648
-    tWrapMode: 33648
-    minFilterMode: 9986
-    magFilterMode: 9729
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
   - id: 2
     path: res/textures/cityTextureColour.png
-    sWrapMode: 33648
-    tWrapMode: 33648
-    minFilterMode: 9986
-    magFilterMode: 9729
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
   - id: 3
     path: res/textures/grass.png
-    fileFormat: 35906
-    engineFormat: 6408
-    sWrapMode: 33648
-    tWrapMode: 33648
-    minFilterMode: 9986
-    magFilterMode: 9729
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
   - id: 4
     path: res/textures/brickWall.jpg
-    fileFormat: 35904
-    engineFormat: 6407
-    sWrapMode: 33648
-    tWrapMode: 33648
-    minFilterMode: 9986
-    magFilterMode: 9729
+    fileFormat: !<SRGB> 35904
+    engineFormat: !<RGB> 6407
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
   - id: 5
     path: res/textures/stone.jpg
-    fileFormat: 35904
-    engineFormat: 6407
-    sWrapMode: 33648
-    tWrapMode: 33648
-    minFilterMode: 9986
-    magFilterMode: 9729
+    fileFormat: !<SRGB> 35904
+    engineFormat: !<RGB> 6407
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
   - id: 6
     path: res/textures/woodenRoof2.png
-    fileFormat: 35906
-    engineFormat: 6408
-    sWrapMode: 33648
-    tWrapMode: 33648
-    minFilterMode: 9986
-    magFilterMode: 9729
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
   - id: 7
     path: res/textures/hexEdgeTexture.png
-    fileFormat: 35906
-    engineFormat: 6408
-    sWrapMode: 33648
-    tWrapMode: 33648
-    minFilterMode: 9986
-    magFilterMode: 9729
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites:
   - id: 0
     alias: white_box
@@ -129,9 +129,9 @@ Models:
     path: "{Sphere}"
 Prefabs:
   - id: 0
-    path: res/prefabs/tilemap/mapElements/city.prefab
-  - id: 1
     path: res/prefabs/testPrefab.prefab
+  - id: 1
+    path: res/prefabs/tilemap/mapElements/city.prefab
   - id: 2
     path: res/prefabs/tilemap/mapElements/radioStation.prefab
   - id: 3
@@ -148,7 +148,7 @@ Prefabs:
     path: res/prefabs/tilemap/mapRegion.prefab
   - id: 9
     path: res/prefabs/tilemap/mapElements/mountains.prefab
-ScriptableObjects: []
+ScriptableObjects: ~
 GameObjects:
   - id: 1
     name: Camera
@@ -167,7 +167,7 @@ GameObjects:
         z: 0
       rotation:
         x: 0
-        y: -90
+        y: -1.57079637
         z: 0
     components:
       - id: 1
@@ -335,14 +335,23 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "Time: 0.005549"
+        text: "\x00T\x00i\x00m\x00e\x00:\x00 \x000\x00.\x000\x000\x002\x009\x003\x003"
+        font: 0
+        size: 48
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
         color:
           x: 1
           y: 1
           z: 1
           w: 1
-        size: 48
-        font: 0
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
     children:
       []
   - id: 6
@@ -449,7 +458,7 @@ GameObjects:
         y: 1
         z: 1
       rotation:
-        x: 90
+        x: 1.57079637
         y: 0
         z: 0
     components:
@@ -499,7 +508,6 @@ GameObjects:
           - 3
           - 3
           - 3
-        boundingVolume: true
         boundingVolumeRadius: 2
         position:
           x: 0
@@ -522,15 +530,14 @@ GameObjects:
           - 3
           - 3
           - 3
-        boundingVolume: true
         boundingVolumeRadius: 2
         position:
           x: 0
           y: 0
           z: 0
         width: 1
-        length: 1
         height: 1
+        length: 1
         rotation:
           x: 0
           y: 0
@@ -551,7 +558,6 @@ GameObjects:
           - 3
           - 3
           - 3
-        boundingVolume: true
         boundingVolumeRadius: 2
         position:
           x: 0
@@ -559,7 +565,7 @@ GameObjects:
           z: 0
         endPosition:
           x: 0
-          y: 40
+          y: 1
           z: 0
         radius: 20
       - id: 24
@@ -660,7 +666,7 @@ GameObjects:
       - id: 33
         enabled: true
         type: MapGenerator
-        preafabHexagonalTile: 6
+        prefabHexagonalTile: 6
         additionalTile: 4
         filledTile: 3
         pointTile: 7
@@ -707,7 +713,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 169
@@ -798,7 +804,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 259
@@ -860,7 +866,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 264
@@ -922,7 +928,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 929
@@ -984,7 +990,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 934
@@ -1046,7 +1052,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 809
@@ -1138,7 +1144,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 269
@@ -1200,7 +1206,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 274
@@ -1233,7 +1239,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 279
@@ -1243,8 +1249,6 @@ GameObjects:
       - id: 280
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1268,7 +1272,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 919
@@ -1278,8 +1282,6 @@ GameObjects:
       - id: 920
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1303,7 +1305,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 924
@@ -1313,8 +1315,6 @@ GameObjects:
       - id: 925
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1369,7 +1369,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 539
@@ -1379,8 +1379,6 @@ GameObjects:
       - id: 540
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1404,7 +1402,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 534
@@ -1414,8 +1412,6 @@ GameObjects:
       - id: 535
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1439,7 +1435,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 669
@@ -1449,8 +1445,6 @@ GameObjects:
       - id: 670
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1474,7 +1468,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 799
@@ -1484,8 +1478,6 @@ GameObjects:
       - id: 800
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1509,7 +1501,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 804
@@ -1519,8 +1511,6 @@ GameObjects:
       - id: 805
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1544,7 +1534,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 674
@@ -1554,8 +1544,6 @@ GameObjects:
       - id: 675
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1638,7 +1626,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 129
@@ -1648,8 +1636,6 @@ GameObjects:
       - id: 130
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1679,8 +1665,6 @@ GameObjects:
       - id: 1190
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 7
         materials:
@@ -1704,7 +1688,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 134
@@ -1714,8 +1698,6 @@ GameObjects:
       - id: 135
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1745,8 +1727,6 @@ GameObjects:
       - id: 1211
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 2
         materials:
@@ -1770,7 +1750,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 124
@@ -1780,8 +1760,6 @@ GameObjects:
       - id: 125
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1805,7 +1783,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 634
@@ -1815,8 +1793,6 @@ GameObjects:
       - id: 635
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1840,7 +1816,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 759
@@ -1850,8 +1826,6 @@ GameObjects:
       - id: 760
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1875,7 +1849,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 764
@@ -1885,8 +1859,6 @@ GameObjects:
       - id: 765
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1941,7 +1913,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 139
@@ -1951,8 +1923,6 @@ GameObjects:
       - id: 140
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -1976,7 +1946,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 739
@@ -1986,8 +1956,6 @@ GameObjects:
       - id: 740
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2011,7 +1979,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 879
@@ -2021,8 +1989,6 @@ GameObjects:
       - id: 880
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2046,7 +2012,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 884
@@ -2056,8 +2022,6 @@ GameObjects:
       - id: 885
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2081,7 +2045,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 734
@@ -2091,8 +2055,6 @@ GameObjects:
       - id: 735
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2116,7 +2078,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 999
@@ -2126,8 +2088,6 @@ GameObjects:
       - id: 1000
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2183,7 +2143,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 624
@@ -2193,8 +2153,6 @@ GameObjects:
       - id: 625
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2218,7 +2176,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 589
@@ -2228,8 +2186,6 @@ GameObjects:
       - id: 590
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2253,7 +2209,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 584
@@ -2263,8 +2219,6 @@ GameObjects:
       - id: 585
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2288,7 +2242,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 404
@@ -2298,8 +2252,6 @@ GameObjects:
       - id: 405
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2323,7 +2275,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 469
@@ -2333,8 +2285,6 @@ GameObjects:
       - id: 470
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2358,7 +2308,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 464
@@ -2368,8 +2318,6 @@ GameObjects:
       - id: 465
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2399,8 +2347,6 @@ GameObjects:
       - id: 1214
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 2
         materials:
@@ -2424,7 +2370,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 504
@@ -2434,8 +2380,6 @@ GameObjects:
       - id: 505
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2519,7 +2463,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 599
@@ -2529,8 +2473,6 @@ GameObjects:
       - id: 600
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2554,7 +2496,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 609
@@ -2564,8 +2506,6 @@ GameObjects:
       - id: 610
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2589,7 +2529,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 99
@@ -2599,8 +2539,6 @@ GameObjects:
       - id: 100
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2624,7 +2562,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 94
@@ -2634,8 +2572,6 @@ GameObjects:
       - id: 95
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2659,7 +2595,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 389
@@ -2669,8 +2605,6 @@ GameObjects:
       - id: 390
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2694,7 +2628,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 479
@@ -2704,8 +2638,6 @@ GameObjects:
       - id: 480
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2735,8 +2667,6 @@ GameObjects:
       - id: 1187
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 7
         materials:
@@ -2760,7 +2690,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 474
@@ -2770,8 +2700,6 @@ GameObjects:
       - id: 475
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2826,7 +2754,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 384
@@ -2836,8 +2764,6 @@ GameObjects:
       - id: 385
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2861,7 +2787,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 614
@@ -2871,8 +2797,6 @@ GameObjects:
       - id: 615
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2896,7 +2820,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 484
@@ -2906,8 +2830,6 @@ GameObjects:
       - id: 485
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2931,7 +2853,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 494
@@ -2941,8 +2863,6 @@ GameObjects:
       - id: 495
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -2966,7 +2886,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 754
@@ -2976,8 +2896,6 @@ GameObjects:
       - id: 755
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3001,7 +2919,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 749
@@ -3011,8 +2929,6 @@ GameObjects:
       - id: 750
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3068,7 +2984,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 109
@@ -3078,8 +2994,6 @@ GameObjects:
       - id: 110
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3103,7 +3017,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 604
@@ -3113,8 +3027,6 @@ GameObjects:
       - id: 605
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3138,7 +3050,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 104
@@ -3148,8 +3060,6 @@ GameObjects:
       - id: 105
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3173,7 +3083,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 594
@@ -3183,8 +3093,6 @@ GameObjects:
       - id: 595
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3208,7 +3116,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 114
@@ -3218,8 +3126,6 @@ GameObjects:
       - id: 115
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3243,7 +3149,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 119
@@ -3253,8 +3159,6 @@ GameObjects:
       - id: 120
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3278,7 +3182,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 744
@@ -3288,8 +3192,6 @@ GameObjects:
       - id: 745
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3373,7 +3275,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 179
@@ -3383,8 +3285,6 @@ GameObjects:
       - id: 180
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3408,7 +3308,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 164
@@ -3418,8 +3318,6 @@ GameObjects:
       - id: 165
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3443,7 +3341,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 159
@@ -3453,8 +3351,6 @@ GameObjects:
       - id: 160
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3478,7 +3374,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 174
@@ -3488,8 +3384,6 @@ GameObjects:
       - id: 175
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3513,7 +3407,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 184
@@ -3523,8 +3417,6 @@ GameObjects:
       - id: 185
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3548,7 +3440,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 984
@@ -3558,8 +3450,6 @@ GameObjects:
       - id: 985
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3583,7 +3473,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 989
@@ -3593,8 +3483,6 @@ GameObjects:
       - id: 990
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3624,8 +3512,6 @@ GameObjects:
       - id: 1208
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 7
         materials:
@@ -3681,7 +3567,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 149
@@ -3691,8 +3577,6 @@ GameObjects:
       - id: 150
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3716,7 +3600,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 154
@@ -3726,8 +3610,6 @@ GameObjects:
       - id: 155
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3751,7 +3633,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 144
@@ -3761,8 +3643,6 @@ GameObjects:
       - id: 145
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3786,7 +3666,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 874
@@ -3796,8 +3676,6 @@ GameObjects:
       - id: 875
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3821,7 +3699,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 1004
@@ -3831,8 +3709,6 @@ GameObjects:
       - id: 1005
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3856,7 +3732,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 1009
@@ -3866,8 +3742,6 @@ GameObjects:
       - id: 1010
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3891,7 +3765,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 994
@@ -3901,8 +3775,6 @@ GameObjects:
       - id: 995
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3959,7 +3831,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 454
@@ -3969,8 +3841,6 @@ GameObjects:
       - id: 455
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -3994,7 +3864,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 574
@@ -4004,8 +3874,6 @@ GameObjects:
       - id: 575
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4029,7 +3897,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 579
@@ -4039,8 +3907,6 @@ GameObjects:
       - id: 580
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4064,7 +3930,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 864
@@ -4074,8 +3940,6 @@ GameObjects:
       - id: 865
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4099,7 +3963,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 724
@@ -4109,8 +3973,6 @@ GameObjects:
       - id: 725
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4134,7 +3996,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 869
@@ -4144,8 +4006,6 @@ GameObjects:
       - id: 870
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4169,7 +4029,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 729
@@ -4179,8 +4039,6 @@ GameObjects:
       - id: 730
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4204,7 +4062,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 719
@@ -4214,8 +4072,6 @@ GameObjects:
       - id: 720
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4300,7 +4156,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 89
@@ -4310,8 +4166,6 @@ GameObjects:
       - id: 90
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4335,7 +4189,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 84
@@ -4345,8 +4199,6 @@ GameObjects:
       - id: 85
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4370,7 +4222,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 79
@@ -4380,8 +4232,6 @@ GameObjects:
       - id: 80
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4405,7 +4255,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 619
@@ -4415,8 +4265,6 @@ GameObjects:
       - id: 620
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4440,7 +4288,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 639
@@ -4450,8 +4298,6 @@ GameObjects:
       - id: 640
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4475,7 +4321,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 489
@@ -4485,8 +4331,6 @@ GameObjects:
       - id: 490
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4510,7 +4354,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 499
@@ -4520,8 +4364,6 @@ GameObjects:
       - id: 500
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4545,7 +4387,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 629
@@ -4555,8 +4397,6 @@ GameObjects:
       - id: 630
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4612,7 +4452,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 59
@@ -4622,8 +4462,6 @@ GameObjects:
       - id: 60
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4647,7 +4485,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 64
@@ -4657,8 +4495,6 @@ GameObjects:
       - id: 65
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4682,7 +4518,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 74
@@ -4692,8 +4528,6 @@ GameObjects:
       - id: 75
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4717,7 +4551,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 69
@@ -4727,8 +4561,6 @@ GameObjects:
       - id: 70
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4752,7 +4584,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 769
@@ -4762,8 +4594,6 @@ GameObjects:
       - id: 770
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4787,7 +4617,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 889
@@ -4797,8 +4627,6 @@ GameObjects:
       - id: 890
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4822,7 +4650,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 894
@@ -4832,8 +4660,6 @@ GameObjects:
       - id: 895
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4863,8 +4689,6 @@ GameObjects:
       - id: 1199
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 7
         materials:
@@ -4919,7 +4743,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 644
@@ -4929,8 +4753,6 @@ GameObjects:
       - id: 645
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4954,7 +4776,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 409
@@ -4964,8 +4786,6 @@ GameObjects:
       - id: 410
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -4989,7 +4809,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 509
@@ -4999,8 +4819,6 @@ GameObjects:
       - id: 510
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5024,7 +4842,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 514
@@ -5034,8 +4852,6 @@ GameObjects:
       - id: 515
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5059,7 +4875,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 649
@@ -5069,8 +4885,6 @@ GameObjects:
       - id: 650
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5094,7 +4908,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 774
@@ -5104,8 +4918,6 @@ GameObjects:
       - id: 775
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5186,7 +4998,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 234
@@ -5196,8 +5008,6 @@ GameObjects:
       - id: 235
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5221,7 +5031,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 834
@@ -5231,8 +5041,6 @@ GameObjects:
       - id: 835
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5256,7 +5064,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 949
@@ -5266,8 +5074,6 @@ GameObjects:
       - id: 950
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5291,7 +5097,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 829
@@ -5301,8 +5107,6 @@ GameObjects:
       - id: 830
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5358,7 +5162,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 564
@@ -5368,8 +5172,6 @@ GameObjects:
       - id: 565
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5393,7 +5195,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 559
@@ -5403,8 +5205,6 @@ GameObjects:
       - id: 560
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5428,7 +5228,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 844
@@ -5438,8 +5238,6 @@ GameObjects:
       - id: 845
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5463,7 +5261,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 704
@@ -5473,8 +5271,6 @@ GameObjects:
       - id: 705
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5498,7 +5294,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 839
@@ -5508,8 +5304,6 @@ GameObjects:
       - id: 840
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5533,7 +5327,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 699
@@ -5543,8 +5337,6 @@ GameObjects:
       - id: 700
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5568,7 +5360,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 959
@@ -5578,8 +5370,6 @@ GameObjects:
       - id: 960
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5609,8 +5399,6 @@ GameObjects:
       - id: 622
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 7
         materials:
@@ -5664,7 +5452,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 229
@@ -5674,8 +5462,6 @@ GameObjects:
       - id: 230
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5699,7 +5485,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 224
@@ -5709,8 +5495,6 @@ GameObjects:
       - id: 225
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5734,7 +5518,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 214
@@ -5744,8 +5528,6 @@ GameObjects:
       - id: 215
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5769,7 +5551,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 219
@@ -5779,8 +5561,6 @@ GameObjects:
       - id: 220
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5804,7 +5584,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 954
@@ -5814,8 +5594,6 @@ GameObjects:
       - id: 955
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5903,7 +5681,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 299
@@ -5913,8 +5691,6 @@ GameObjects:
       - id: 300
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -5944,8 +5720,6 @@ GameObjects:
       - id: 1205
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 7
         materials:
@@ -5969,7 +5743,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 339
@@ -5979,8 +5753,6 @@ GameObjects:
       - id: 340
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6004,7 +5776,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 399
@@ -6014,8 +5786,6 @@ GameObjects:
       - id: 400
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6039,7 +5809,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 414
@@ -6049,8 +5819,6 @@ GameObjects:
       - id: 415
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6074,7 +5842,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 394
@@ -6084,8 +5852,6 @@ GameObjects:
       - id: 395
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6109,7 +5875,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 294
@@ -6119,8 +5885,6 @@ GameObjects:
       - id: 295
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6144,7 +5908,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 324
@@ -6154,8 +5918,6 @@ GameObjects:
       - id: 325
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6179,7 +5941,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 344
@@ -6189,8 +5951,6 @@ GameObjects:
       - id: 345
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6214,7 +5974,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 319
@@ -6224,8 +5984,6 @@ GameObjects:
       - id: 320
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6249,7 +6007,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 329
@@ -6259,8 +6017,6 @@ GameObjects:
       - id: 330
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6284,7 +6040,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 334
@@ -6294,8 +6050,6 @@ GameObjects:
       - id: 335
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6352,7 +6106,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 314
@@ -6362,8 +6116,6 @@ GameObjects:
       - id: 315
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6393,8 +6145,6 @@ GameObjects:
       - id: 1138
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -6418,7 +6168,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 379
@@ -6428,8 +6178,6 @@ GameObjects:
       - id: 380
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6459,8 +6207,6 @@ GameObjects:
       - id: 1141
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -6484,7 +6230,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 374
@@ -6494,8 +6240,6 @@ GameObjects:
       - id: 375
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6525,8 +6269,6 @@ GameObjects:
       - id: 1144
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -6550,7 +6292,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 309
@@ -6560,8 +6302,6 @@ GameObjects:
       - id: 310
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6591,8 +6331,6 @@ GameObjects:
       - id: 1135
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -6616,7 +6354,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 369
@@ -6626,8 +6364,6 @@ GameObjects:
       - id: 370
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6657,8 +6393,6 @@ GameObjects:
       - id: 1147
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -6682,7 +6416,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 364
@@ -6692,8 +6426,6 @@ GameObjects:
       - id: 365
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6723,8 +6455,6 @@ GameObjects:
       - id: 1153
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -6748,7 +6478,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 459
@@ -6758,8 +6488,6 @@ GameObjects:
       - id: 460
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6789,8 +6517,6 @@ GameObjects:
       - id: 1132
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -6814,7 +6540,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 449
@@ -6824,8 +6550,6 @@ GameObjects:
       - id: 450
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6855,8 +6579,6 @@ GameObjects:
       - id: 1150
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -6912,7 +6634,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 349
@@ -6922,8 +6644,6 @@ GameObjects:
       - id: 350
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6947,7 +6667,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 304
@@ -6957,8 +6677,6 @@ GameObjects:
       - id: 305
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -6982,7 +6700,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 289
@@ -6992,8 +6710,6 @@ GameObjects:
       - id: 290
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7017,7 +6733,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 359
@@ -7027,8 +6743,6 @@ GameObjects:
       - id: 360
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7052,7 +6766,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 354
@@ -7062,8 +6776,6 @@ GameObjects:
       - id: 355
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7087,7 +6799,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 419
@@ -7097,8 +6809,6 @@ GameObjects:
       - id: 420
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7122,7 +6832,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 429
@@ -7132,8 +6842,6 @@ GameObjects:
       - id: 430
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7215,7 +6923,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 239
@@ -7225,8 +6933,6 @@ GameObjects:
       - id: 240
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7256,8 +6962,6 @@ GameObjects:
       - id: 1156
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -7281,7 +6985,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 244
@@ -7291,8 +6995,6 @@ GameObjects:
       - id: 245
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7322,8 +7024,6 @@ GameObjects:
       - id: 1159
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -7347,7 +7047,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 944
@@ -7357,8 +7057,6 @@ GameObjects:
       - id: 945
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7388,8 +7086,6 @@ GameObjects:
       - id: 1162
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -7413,7 +7109,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 824
@@ -7423,8 +7119,6 @@ GameObjects:
       - id: 825
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7454,8 +7148,6 @@ GameObjects:
       - id: 1165
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -7479,7 +7171,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 689
@@ -7489,8 +7181,6 @@ GameObjects:
       - id: 690
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7520,8 +7210,6 @@ GameObjects:
       - id: 1168
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -7579,7 +7267,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 434
@@ -7589,8 +7277,6 @@ GameObjects:
       - id: 435
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7620,8 +7306,6 @@ GameObjects:
       - id: 1196
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 7
         materials:
@@ -7645,7 +7329,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 554
@@ -7655,8 +7339,6 @@ GameObjects:
       - id: 555
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7680,7 +7362,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 544
@@ -7690,8 +7372,6 @@ GameObjects:
       - id: 545
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7715,7 +7395,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 439
@@ -7725,8 +7405,6 @@ GameObjects:
       - id: 440
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7750,7 +7428,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 444
@@ -7760,8 +7438,6 @@ GameObjects:
       - id: 445
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7785,7 +7461,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 549
@@ -7795,8 +7471,6 @@ GameObjects:
       - id: 550
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7820,7 +7494,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 684
@@ -7830,8 +7504,6 @@ GameObjects:
       - id: 685
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7855,7 +7527,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 694
@@ -7865,8 +7537,6 @@ GameObjects:
       - id: 695
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7890,7 +7560,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 679
@@ -7900,8 +7570,6 @@ GameObjects:
       - id: 680
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7955,7 +7623,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 254
@@ -7965,8 +7633,6 @@ GameObjects:
       - id: 255
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -7990,7 +7656,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 249
@@ -8000,8 +7666,6 @@ GameObjects:
       - id: 250
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8025,7 +7689,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 814
@@ -8035,8 +7699,6 @@ GameObjects:
       - id: 815
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8060,7 +7722,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 939
@@ -8070,8 +7732,6 @@ GameObjects:
       - id: 940
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8095,7 +7755,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 819
@@ -8105,8 +7765,6 @@ GameObjects:
       - id: 820
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8189,7 +7847,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 204
@@ -8199,8 +7857,6 @@ GameObjects:
       - id: 205
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8224,7 +7880,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 199
@@ -8234,8 +7890,6 @@ GameObjects:
       - id: 200
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8259,7 +7913,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 209
@@ -8269,8 +7923,6 @@ GameObjects:
       - id: 210
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8294,7 +7946,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 964
@@ -8304,8 +7956,6 @@ GameObjects:
       - id: 965
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8329,7 +7979,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 974
@@ -8339,8 +7989,6 @@ GameObjects:
       - id: 975
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8370,8 +8018,6 @@ GameObjects:
       - id: 1202
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 7
         materials:
@@ -8395,7 +8041,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 969
@@ -8405,8 +8051,6 @@ GameObjects:
       - id: 970
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8459,7 +8103,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 189
@@ -8469,8 +8113,6 @@ GameObjects:
       - id: 190
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8494,7 +8136,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 194
@@ -8504,8 +8146,6 @@ GameObjects:
       - id: 195
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8529,7 +8169,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 859
@@ -8539,8 +8179,6 @@ GameObjects:
       - id: 860
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8564,7 +8202,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 979
@@ -8574,8 +8212,6 @@ GameObjects:
       - id: 980
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8629,7 +8265,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 569
@@ -8639,8 +8275,6 @@ GameObjects:
       - id: 570
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8664,7 +8298,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 709
@@ -8674,8 +8308,6 @@ GameObjects:
       - id: 710
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8699,7 +8331,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 849
@@ -8709,8 +8341,6 @@ GameObjects:
       - id: 850
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8734,7 +8364,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 854
@@ -8744,8 +8374,6 @@ GameObjects:
       - id: 855
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8769,7 +8397,7 @@ GameObjects:
         z: 1
       rotation:
         x: 0
-        y: 90
+        y: 1.57079637
         z: 0
     components:
       - id: 714
@@ -8779,8 +8407,6 @@ GameObjects:
       - id: 715
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 3
         materials:
@@ -8809,9 +8435,7 @@ GameObjects:
     components:
       - id: 1217
         enabled: true
-        type: ""
-        subTypes:
-          []
+        type: DirectionalLight
         direction:
           x: -0.699999988
           y: -0.699999988

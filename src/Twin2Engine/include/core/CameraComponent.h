@@ -90,8 +90,8 @@ namespace Twin2Engine::Core {
 		float _far = 1000.f;
 		float _fov = 45.f;
 		float _gamma = 2.2f;
-		float _ssaoSampleRadius = 0.5f;
-		float _ssaoBias = 0.025f;
+		float _ssaoSampleRadius = 0.7f;
+		float _ssaoBias = 0.01f;
 
 		vec3 _front = vec3(0.f, 0.f, -1.f);
 		vec3 _right = vec3(1.f, 0.f, 0.f);
@@ -103,7 +103,7 @@ namespace Twin2Engine::Core {
 		size_t _windowEventId = 0;
 		void OnWindowSizeChange();
 		void SetFrontDir(vec3 dir);
-		void GenerateSSAOKernel();
+		void GenerateSSAOKernel(unsigned int size = 64);
 		void GenerateSSAONoiseTexture();
 
 	public:

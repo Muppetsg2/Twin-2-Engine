@@ -22,7 +22,7 @@ uniform sampler2D noiseTexture;
 
 uniform float sampleRadius; // 0.5
 uniform float bias; // 0.025
-uniform vec3 kernel[64];
+uniform vec3 kernel[32];
 
 out vec4 Color;
 
@@ -47,7 +47,7 @@ void main() {
     fragNormal = normalize(fragNormal * -1.0);
 
 
-    vec2 noiseScale = vec2(float(windowSize.x) / 4.0, float(windowSize.y) / 4.0) / 2.0;
+    vec2 noiseScale = vec2(float(windowSize.x) / 4.0, float(windowSize.y) / 4.0);
     vec3 randomVec = texture(noiseTexture, TexCoord * noiseScale).xyz;
 
     vec3 tangent   = normalize(randomVec - fragNormal * dot(randomVec, fragNormal));
@@ -55,7 +55,7 @@ void main() {
     mat3 TBN       = mat3(tangent, bitangent, fragNormal);
 
     float occlusion = 0.0;
-    for(int i = 0; i < 64; ++i)
+    for(int i = 0; i < 32; ++i)
     {
         // get sample position
         vec3 samplePos = TBN * kernel[i]; // from tangent to view-space
@@ -72,6 +72,6 @@ void main() {
         occlusion += (sampleDepth >= samplePos.z + bias ? 1.0 : 0.0) * rangeCheck; 
     }
 
-    occlusion = 1.0 - (occlusion / 64);
+    occlusion = 1.0 - (occlusion / 32);
     Color = vec4(occlusion, 0.0, 0.0, 1.0); 
 }

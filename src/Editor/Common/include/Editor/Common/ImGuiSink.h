@@ -133,7 +133,7 @@ namespace Editor::Common
 
         static void Draw()
         {
-            static bool logLevels[7] = { true, true, true, true, true, true, true };
+            static bool logLevels[7] = { true, true, true, false, true, true, true };
 
             ImGui::SetNextWindowSizeConstraints(ImVec2(600, 300), ImVec2(1920, 1080));
 

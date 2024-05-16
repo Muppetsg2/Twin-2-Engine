@@ -30,8 +30,8 @@ void Twin2Engine::Core::HexagonalColliderComponent::Initialize()
 	TransformChangeAction = [this](Transform* transform) {
 		Twin2Engine::Physic::HexagonalColliderData* hexData = ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData);
 		glm::quat q = transform->GetGlobalRotationQuat() * glm::angleAxis(hexData->Rotation, glm::vec3(0.0f, 1.0f, 0.0f));
-		hexData->u = q * glm::vec3(-0.5f, 0.0f, 0.866f);
-		hexData->v = q * glm::vec3(0.5f, 0.0f, 0.866f);
+		hexData->u = q * glm::vec3(-0.5f, 0.0f, -0.866f);
+		hexData->v = q * glm::vec3(0.5f, 0.0f, -0.866f);
 		hexData->w = q * glm::vec3(1.0f, 0.0f, 0.0f);
 
 		//hexData->HalfHeight = transform->GetGlobalScale().y * hexData->HalfHeight;
@@ -78,8 +78,8 @@ void Twin2Engine::Core::HexagonalColliderComponent::Update()
 	if (dirtyFlag) {
 		Twin2Engine::Physic::HexagonalColliderData * hexData = ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData);
 		glm::quat q = GetTransform()->GetGlobalRotationQuat() * glm::angleAxis(hexData->Rotation, glm::vec3(0.0f, 1.0f, 0.0f));
-		hexData->u = q * glm::vec3(-0.5f, 0.0f, 0.866f);
-		hexData->v = q * glm::vec3(0.5f, 0.0f, 0.866f);
+		hexData->u = q * glm::vec3(-0.5f, 0.0f, -0.866f);
+		hexData->v = q * glm::vec3(0.5f, 0.0f, -0.866f);
 		hexData->w = q * glm::vec3(1.0f, 0.0f, 0.0f);
 
 		//hexData->HalfHeight = GetTransform()->GetGlobalScale().y * hexData->HalfHeight;

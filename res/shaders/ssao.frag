@@ -47,7 +47,7 @@ void main() {
     fragNormal = normalize(fragNormal * -1.0);
 
 
-    vec2 noiseScale = vec2(float(windowSize.x) / 4.0, float(windowSize.y) / 4.0);
+    vec2 noiseScale = vec2(float(windowSize.x) / 4.0, float(windowSize.y) / 4.0) / 2.0;
     vec3 randomVec = texture(noiseTexture, TexCoord * noiseScale).xyz;
 
     vec3 tangent   = normalize(randomVec - fragNormal * dot(randomVec, fragNormal));

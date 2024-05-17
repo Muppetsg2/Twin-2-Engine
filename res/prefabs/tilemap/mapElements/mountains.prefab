@@ -16,22 +16,10 @@ Fonts: ~
 Audio: ~
 Materials:
   - id: 0
-    path: GreenHexTile
-  - id: 1
-    path: ColoredHexTile
-  - id: 2
-    path: BlueHexTile
-  - id: 3
     path: MountainsUnlit
-  - id: 4
-    path: RedHexTile
 Models:
   - id: 0
-    path: res/models/mountain.obj
-  - id: 1
-    path: res/models/hexagon.obj
-  - id: 2
-    path: "{Plane}"
+    path: res/models/mount3.obj
 Prefabs: ~
 ScriptableObjects: ~
 Root:
@@ -51,7 +39,7 @@ Root:
       z: 1
     rotation:
       x: 0
-      y: 0
+      y: 60
       z: 0
   components:
     - id: 620
@@ -60,4 +48,4 @@ Root:
       isTransparent: false
       model: 0
       materials:
-        - 3
+        - 0

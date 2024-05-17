@@ -873,7 +873,7 @@ bool Twin2Engine::Core::Transform::Deserialize(const YAML::Node& node) {
 
 	SetLocalPosition(node["position"].as<glm::vec3>());
 	SetLocalScale(node["scale"].as<glm::vec3>());
-	SetLocalRotation(glm::radians(node["rotation"].as<glm::vec3>()));
+	SetLocalRotation(node["rotation"].as<glm::vec3>());
 
 	return true;
 }

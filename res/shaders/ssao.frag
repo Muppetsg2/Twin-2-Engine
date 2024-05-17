@@ -20,9 +20,11 @@ in vec2 TexCoord;
 uniform sampler2D depthTexture;
 uniform sampler2D noiseTexture;
 
+const int KERNEL_SIZE = 48;
+
 uniform float sampleRadius; // 0.5
 uniform float bias; // 0.025
-uniform vec3 kernel[32];
+uniform vec3 kernel[KERNEL_SIZE];
 
 out vec4 Color;
 
@@ -55,7 +57,7 @@ void main() {
     mat3 TBN       = mat3(tangent, bitangent, fragNormal);
 
     float occlusion = 0.0;
-    for(int i = 0; i < 32; ++i)
+    for(int i = 0; i < KERNEL_SIZE; ++i)
     {
         // get sample position
         vec3 samplePos = TBN * kernel[i]; // from tangent to view-space
@@ -72,6 +74,6 @@ void main() {
         occlusion += (sampleDepth >= samplePos.z + bias ? 1.0 : 0.0) * rangeCheck; 
     }
 
-    occlusion = 1.0 - (occlusion / 32);
+    occlusion = 1.0 - (occlusion / KERNEL_SIZE);
     Color = vec4(occlusion, 0.0, 0.0, 1.0); 
 }

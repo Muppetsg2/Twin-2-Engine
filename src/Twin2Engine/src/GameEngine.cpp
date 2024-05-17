@@ -103,11 +103,13 @@ void GameEngine::EndFrame()
     FrameMarkStart(tracy_WindowUpdateName);
     Window::GetInstance()->Update();
     FrameMarkEnd(tracy_WindowUpdateName);
+    TracyGpuCollect;
 }
 
 void GameEngine::Loop()
 {
     ZoneScoped;
+    TracyGpuContext;
     // Main loop
     while (!Window::GetInstance()->IsClosed())
     {

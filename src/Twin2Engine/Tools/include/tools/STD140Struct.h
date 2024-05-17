@@ -6,6 +6,30 @@
 #undef min
 
 namespace Twin2Engine::Tools {
+	//class STD140Struct;
+
+	/*template<class T>
+	struct STD140Value {
+	public:
+		using var_type = T;
+
+		const std::string var_name;
+		const bool hasValue;
+		const T value;
+		const size_t array_size;
+
+		template<typename = std::enable_if_t<!std::is_same_v<T, STD140Offsets>>>
+		STD140Value(const std::string& name) : var_name(name), value(), hasValue(false), array_size(0) {}
+
+		STD140Value(const std::string& name, T value) : var_name(name), value(value), hasValue(true), array_size(0) {}
+
+		template<typename = std::enable_if_t<!std::is_same_v<T, STD140Offsets>>>
+		STD140Value(const std::string& name, const size_t& size) : var_name(name), value(), hasValue(false), array_size(size) {}
+
+		template<typename = std::enable_if_t<std::is_same_v<T, STD140Offsets>>>
+		STD140Value(const std::string& name, const T& offsets, const size_t& size) : var_name(name), value(offsets), hasValue(true), array_size(size) {}
+	};*/
+
 	class STD140Struct {
 	private:
 #pragma region CHECKS
@@ -42,6 +66,21 @@ namespace Twin2Engine::Tools {
 		size_t _GetArrayElemSize(const std::vector<size_t>& offsets) const;
 
 #pragma region ADD
+		/*template<class T, class... Ts>
+		void _AddMultiple(const STD140Value<T>& value, const STD140Value<Ts>&... values) {
+			if constexpr (std::is_same_v<T, STD140Offsets>) {
+				Add(value.var_name, value.value, std::vector<char>(value.value.GetSize()));
+			}
+			else {
+				Add(value.var_name, value.value);
+			}
+
+
+			if constexpr (sizeof...(Ts) > 0) {
+				_AddMultiple(values...);
+			}
+		}*/
+
 		template<class T> void _Add(const std::string& name, const T& value) {
 			// ADD TO OFFSETS
 			size_t valueOffset = _dataOffsets.Add<T>(name);
@@ -507,6 +546,15 @@ namespace Twin2Engine::Tools {
 		STD140Struct(const STD140Struct& std140s) = default;
 		STD140Struct(STD140Struct&& std140s) = default;
 		STD140Struct(const STD140Offsets& structOffsets, const std::vector<char>& data = std::vector<char>());
+		template<class... Args>
+		STD140Struct(const STD140Variable<Args>&... vars) {
+			_dataOffsets = STD140Offsets(vars...);
+			_data.resize(_dataOffsets.GetSize());
+		}
+		/*template<class... Args>
+		STD140Struct(const STD140Value<Args>&... values) {
+			_AddMultiple(values...);
+		}*/
 		virtual ~STD140Struct() = default;
 
 		STD140Struct& operator=(STD140Struct& std140s) = default;

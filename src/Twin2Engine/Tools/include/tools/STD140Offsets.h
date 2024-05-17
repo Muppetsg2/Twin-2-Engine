@@ -12,7 +12,7 @@ namespace Twin2Engine::Tools {
 		
 		const std::string var_name;
 		const size_t array_size;
-		typename std::conditional_t<std::is_same_v<T, STD140Offsets>, STD140Offsets, void(*)> struct_offsets;
+		typename type_test_t<std::is_same_v<T, STD140Offsets>, const STD140Offsets, void(*)> struct_offsets;
 
 		template<typename = std::enable_if_t<!std::is_same_v<T, STD140Offsets>>>
 		STD140Variable(const std::string& name) : var_name(name), array_size(0) {}

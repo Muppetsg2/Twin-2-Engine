@@ -56,13 +56,13 @@ namespace Twin2Engine
 				bool isText = false;
 			};
 
-			// STD140 STRUCT OFFSETS
-			static const Tools::STD140Offsets RectTransformOffsets;
-			static const Tools::STD140Offsets SpriteOffsets;
-			static const Tools::STD140Offsets CanvasOffsets;
-			static const Tools::STD140Offsets MaskOffsets;
-			static const Tools::STD140Offsets UIElementOffsets;
-			static const Tools::STD140Offsets UIElementsBufferOffsets;
+			// STD140 STRUCTS
+			static Tools::STD140Struct RectTransformStruct;
+			static Tools::STD140Struct SpriteStruct;
+			static Tools::STD140Struct CanvasStruct;
+			static Tools::STD140Struct MaskStruct;
+			static Tools::STD140Struct UIElementStruct;
+			static Tools::STD140Struct UIElementsBufferStruct;
 
 			// Canvas -> Layer -> Mask -> Texture -> queue
 			static std::map<CanvasData*, std::map<int32_t, std::map<MaskData*, std::map<Graphic::Texture2D*, std::queue<UIElementQueueData>>>>> _renderQueue;

@@ -1,5 +1,4 @@
-#ifndef _HEXAGONALCOLLIDERCOMPONENT_H_
-#define _HEXAGONALCOLLIDERCOMPONENT_H_
+#pragma once
 
 #include <core/ColliderComponent.h>
 
@@ -27,7 +26,6 @@ namespace Twin2Engine::Core {
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
+		virtual void DrawEditor() override;
 	};
 }
-
-#endif // !_HEXAGONALCOLLIDERCOMPONENT_H_

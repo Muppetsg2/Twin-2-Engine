@@ -27,11 +27,13 @@ namespace Generation::Generators
         SO_DESERIALIZE()
 
 
+#if _DEBUG
         virtual void DrawEditor() override
         {
             ImGui::InputInt("mountainsNumber", &mountainsNumber);
             ImGui::InputFloat("mountainsHeight", &mountainsHeight);
         }
+#endif
     };
 }
 

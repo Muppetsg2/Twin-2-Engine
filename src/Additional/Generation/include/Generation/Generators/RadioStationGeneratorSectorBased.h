@@ -24,10 +24,12 @@ namespace Generation::Generators
 		SO_SERIALIZE()
 		SO_DESERIALIZE()
 
+#if _DEBUG
 		virtual void DrawEditor() override
 		{
 			ImGui::InputFloat("densityFactorPerSector", &densityFactorPerSector);
 		}
+#endif
 	};
 }
 

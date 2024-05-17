@@ -121,3 +121,11 @@ YAML::Node SpriteManager::Serialize()
     }
     return sprites;
 }
+
+void SpriteManager::DrawEditor(bool* p_open)
+{
+    if (!ImGui::Begin("Sprite Manager", p_open)) {
+        ImGui::End();
+        return;
+    }
+}

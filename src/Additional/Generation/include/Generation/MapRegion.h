@@ -16,12 +16,7 @@ namespace Generation
         CloneBaseFunc(MapRegion, Twin2Engine::Core::Component, type)
     public:
 
-        enum RegionType
-        {
-            Normal,
-            Water,
-            Mountain
-        };
+        ENUM_CLASS(RegionType, Normal, Water, Mountain)
 
     private:
         //Tilemap::HexagonalTilemap* _tilemap;
@@ -61,6 +56,7 @@ namespace Generation
 
         virtual YAML::Node Serialize() const override;
         virtual bool Deserialize(const YAML::Node& node) override;
+        virtual void DrawEditor() override;
 	};
 }
 

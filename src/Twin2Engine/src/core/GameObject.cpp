@@ -345,7 +345,7 @@ void GameObject::DrawEditor()
 		}
 	}
 
-	// Add Component Button Deserializator
+	// TODO: Add Component Button Deserializator
 }
 
 void GameObject::AddComponent(Component* comp)

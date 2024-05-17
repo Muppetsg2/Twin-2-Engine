@@ -166,3 +166,16 @@ bool MapRegion::Deserialize(const YAML::Node& node) {
 
 	return true;
 }
+
+void Generation::MapRegion::DrawEditor()
+{
+	std::string id = std::string(std::to_string(this->GetId()));
+	std::string name = std::string("Map Region##Component").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+		ImGui::Text("Region Type: ");
+		ImGui::SameLine();
+		ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+		ImGui::Text(to_string(type).c_str());
+		ImGui::PopFont();
+	}
+}

@@ -12,6 +12,10 @@ using namespace std;
 
 hash<string> PrefabManager::_hasher;
 map<size_t, Prefab*> PrefabManager::_prefabs;
+
+bool PrefabManager::_fileDialogOpen = false;
+ImFileDialogInfo PrefabManager::_fileDialogInfo;
+
 map<size_t, string> PrefabManager::_prefabsPaths;
 
 void PrefabManager::SaveGameObject(const GameObject* obj, YAML::Node gameObjects)
@@ -77,6 +81,23 @@ Prefab* PrefabManager::GetPrefab(const string& path)
 		return LoadPrefab(path);
 	}
 	return prefab;
+}
+
+std::string PrefabManager::GetPrefabName(size_t id)
+{
+	if (_prefabs.count(id) == 0) {
+		spdlog::error("PrefabManager::Prefab not found");
+		return "";
+	}
+
+	string p = _prefabsPaths[id];
+	return std::filesystem::path(p).stem().string();
+}
+
+std::string PrefabManager::GetPrefabName(const std::string& path)
+{
+	size_t h = hash<string>{}(path);
+	return GetPrefabName(h);
 }
 
 string PrefabManager::GetPrefabPath(const Prefab* prefab)
@@ -178,4 +199,60 @@ YAML::Node PrefabManager::Serialize()
 		prefabs.push_back(prefab);
 	}
 	return prefabs;
+}
+
+void PrefabManager::DrawEditor(bool* p_open)
+{
+	if (!ImGui::Begin("Prefab Manager", p_open)) {
+		ImGui::End();
+		return;
+	}
+
+	ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+	bool node_open = ImGui::TreeNodeEx(string("Prefabs##Prefab Manager").c_str(), node_flag);
+
+	std::list<size_t> clicked = std::list<size_t>();
+	clicked.clear();
+	if (node_open) {
+		int i = 0;
+		for (auto& item : _prefabsPaths) {
+			string n = GetPrefabName(item.second);
+			ImGui::BulletText(n.c_str());
+			ImGui::SameLine(ImGui::GetContentRegionAvail().x - 30);
+			if (ImGui::Button(string("Remove##Prefab Manager").append(std::to_string(i)).c_str())) {
+				clicked.push_back(item.first);
+			}
+			// TODO: DODAC OPCJE EDIT
+			++i;
+		}
+		ImGui::TreePop();
+	}
+
+	if (clicked.size() > 0) {
+		clicked.sort();
+
+		for (int i = clicked.size() - 1; i > -1; --i)
+		{
+			UnloadPrefab(clicked.back());
+
+			clicked.pop_back();
+		}
+	}
+
+	clicked.clear();
+
+	if (ImGui::Button("Load Prefab##Prefab Manager", ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
+		_fileDialogOpen = true;
+		_fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
+		_fileDialogInfo.title = "Open File##Prefab Manager";
+		_fileDialogInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\prefabs");
+	}
+
+	if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
+	{
+		// Result path in: m_fileDialogInfo.resultPath
+		LoadPrefab(_fileDialogInfo.resultPath.string());
+	}
+
+	ImGui::End();
 }

@@ -29,6 +29,7 @@ namespace Generation::Generators
         SO_SERIALIZE()
         SO_DESERIALIZE()
 
+#if _DEBUG
         virtual void DrawEditor() override
         {
             ImGui::InputInt("regionsCount", &regionsCount);
@@ -36,6 +37,7 @@ namespace Generation::Generators
             ImGui::InputFloat("upperHeightRange", &upperHeightRange);
             ImGui::InputFloat("heightRangeFacor", &heightRangeFacor);
         }
+#endif
     };
 }
 

@@ -24,12 +24,14 @@ namespace Generation::Generators
         SO_SERIALIZE()
         SO_DESERIALIZE()
 
+#if _DEBUG
         virtual void DrawEditor() override
         {
             ImGui::Checkbox("destroyWaterTile", &destroyWaterTile);
             ImGui::InputInt("numberOfLakes", &numberOfLakes);
             ImGui::InputFloat("waterLevel", &waterLevel);
         }
+#endif
     };
 }
 

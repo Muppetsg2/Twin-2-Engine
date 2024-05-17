@@ -32,6 +32,7 @@ namespace Generation::Generators
         SO_DESERIALIZE()
 
 
+#if _DEBUG
         virtual void DrawEditor() override
         {
             ImGui::InputInt("sectorsCount", &sectorsCount);
@@ -40,6 +41,7 @@ namespace Generation::Generators
             ImGui::InputFloat("upperHeightRange", &upperHeightRange);
             ImGui::InputFloat("heightRangeFacor", &heightRangeFacor);
         }
+#endif
     };
 }
 

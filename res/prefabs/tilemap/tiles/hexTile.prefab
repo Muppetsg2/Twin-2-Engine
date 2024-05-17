@@ -55,14 +55,14 @@ Root:
       static: false
       layer: 2
       layersFilter:
-        - 3
-        - 3
+        - 2
+        - 2
         - 1
         - 0
-        - 3
-        - 3
-        - 3
-        - 3
+        - 2
+        - 2
+        - 2
+        - 2
       boundingVolumeRadius: 0.5
       position:
         x: 0

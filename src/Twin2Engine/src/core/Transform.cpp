@@ -873,7 +873,7 @@ bool Twin2Engine::Core::Transform::Deserialize(const YAML::Node& node) {
 
 	SetLocalPosition(node["position"].as<glm::vec3>());
 	SetLocalScale(node["scale"].as<glm::vec3>());
-	SetLocalRotation(glm::radians(node["rotation"].as<glm::vec3>()));
+	SetLocalRotation(node["rotation"].as<glm::vec3>());
 
 	return true;
 }
@@ -908,7 +908,7 @@ void Twin2Engine::Core::Transform::DrawEditor()
 			}
 		}
 
-		if ((world ? _globalRotation : _localRotation) != rot) {
+		if ((world ? glm::degrees(_globalRotation) : glm::degrees(_localRotation)) != rot) {
 			if (world) {
 				SetGlobalRotation(rot);
 			}

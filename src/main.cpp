@@ -1,7 +1,7 @@
 #define USE_IMGUI_CONSOLE_OUTPUT true
 #define USE_WINDOWS_CONSOLE_OUTPUT false
 
-#if USE_IMGUI_CONSOLE_OUTPUT || !USE_WINDOWS_CONSOLE_OUTPUT
+#if USE_IMGUI_CONSOLE_OUTPUT || !USE_WINDOWS_CONSOLE_OUTPUT || !_DEBUG
 
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
@@ -131,7 +131,7 @@ int main(int, char**)
 {
 #pragma region Initialization
     // LOGGING: SPDLOG INITIALIZATION
-#ifdef EDITOR_LOGGER
+#if _DEBUG
 
 #if USE_IMGUI_CONSOLE_OUTPUT || USE_WINDOWS_CONSOLE_OUTPUT
 
@@ -149,8 +149,8 @@ int main(int, char**)
     spdlog::set_level(spdlog::level::off);
 #endif  
 
-#endif // EDITOR_LOGGER
-#ifdef RELEASE_LOGGER
+#endif
+#if !_DEBUG
 
     auto fileLoggerSink = std::make_shared<Twin2Engine::Tools::FileLoggerSink<mutex>>("logs.txt", 100.0f);
     auto fileLogger = std::make_shared<spdlog::logger>("FileLogger", fileLoggerSink);
@@ -158,7 +158,7 @@ int main(int, char**)
     spdlog::set_default_logger(fileLogger);
 
     spdlog::set_level(spdlog::level::debug);
-#endif // RELEASE_LOGGER
+#endif // !_DEBUG
 
 
 
@@ -436,29 +436,21 @@ int main(int, char**)
         update();
     };
 
-#ifdef EDITOR_LOGGER
-
+#ifdef _DEBUG
 #if USE_IMGUI_CONSOLE_OUTPUT
     console_sink->StartLogging();
 #endif
-
-#endif
-
-#ifdef RELEASE_LOGGER
+#elif
     fileLoggerSink->StartLogging();
 #endif
 
     GameEngine::Start();
 
-#ifdef EDITOR_LOGGER
-
+#ifdef _DEBUG
 #if USE_IMGUI_CONSOLE_OUTPUT
     console_sink->StopLogging();
 #endif
-
-#endif
-
-#ifdef RELEASE_LOGGER
+#elif
     fileLoggerSink->StopLogging();
 #endif
 

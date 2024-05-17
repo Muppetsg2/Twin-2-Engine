@@ -1,9 +1,4 @@
-// Pliki wskazówek ułatwiają interpretowanie identyfikatorów programu Visual C++ w środowisku Visual Studio IDE
-// takich jak nazwy funkcji i makr.
-// Aby uzyskać więcej informacji, zobacz https://go.microsoft.com/fwlink/?linkid=865984
-#define CloneFunctionStart(className, baseClassName) protected: virtual className* Clone() const override { className* cloned = new className(); CloneTo(cloned); return cloned; } void CloneTo(className* cloned) const { baseClassName::CloneTo(cloned);
-#define CloneField(fieldName)
-#define CloneFunctionEnd() }
+#pragma once
 
 #define PARENS ()
 #define NEXT_ELEM ,
@@ -25,7 +20,7 @@
 	__VA_OPT__(RESCAN(LIST_DO_FOR_EACH_HELPER(func, __VA_ARGS__)))
 #define LIST_DO_FOR_EACH_HELPER(func, a1, ...)\
 	func(a1)\
-	__VA_OPT__(COMMA LIST_DO_FOR_EACH_AGAIN PARENS (func, __VA_ARGS__))
+	__VA_OPT__(NEXT_ELEM LIST_DO_FOR_EACH_AGAIN PARENS (func, __VA_ARGS__))
 #define LIST_DO_FOR_EACH_AGAIN() LIST_DO_FOR_EACH_HELPER
 
 #define DO_FOR_EACH_PAIR(func, a1, ...)\
@@ -39,7 +34,7 @@
 	__VA_OPT__(RESCAN(LIST_DO_FOR_EACH_PAIR_HELPER(func, a1, __VA_ARGS__)))
 #define LIST_DO_FOR_EACH_PAIR_HELPER(func, a1, a2, ...)\
 	func(a1, a2)\
-	__VA_OPT__(COMMA LIST_DO_FOR_EACH_PAIR_AGAIN PARENS (func, __VA_ARGS__))
+	__VA_OPT__(NEXT_ELEM LIST_DO_FOR_EACH_PAIR_AGAIN PARENS (func, __VA_ARGS__))
 #define LIST_DO_FOR_EACH_PAIR_AGAIN() LIST_DO_FOR_EACH_PAIR_HELPER
 
 // STANDARD ENUMS
@@ -91,29 +86,3 @@
 			return "UNKONWN";\
 		}\
 	}
-
-#define CloneBaseFunc(className, baseClassName, ...)\
-    virtual className* Clone() const override\
-    {\
-        className* cloned = new className();\
-        CloneTo(cloned);\
-        return cloned;\
-    }\
-    void CloneTo(className* cloned) const\
-    {\
-        baseClassName::CloneTo(cloned);\
-        DO_FOR_EACH(CloneField, __VA_ARGS__)\
-    }
-
-#define CloneFunc(className, ...)\
-    protected:\
-    virtual className* Clone() const override\
-    {\
-        className* cloned = new className();\
-        CloneTo(cloned);\
-        return cloned;\
-    }\
-    void CloneTo(className* cloned) const\
-    {\
-        DO_FOR_EACH(CloneField, __VA_ARGS__)\
-    }

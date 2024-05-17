@@ -166,8 +166,6 @@ GameObjects:
       - id: 4
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 2
         color:
@@ -180,8 +178,6 @@ GameObjects:
       - id: 5
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 1
         color:
@@ -216,8 +212,6 @@ GameObjects:
       - id: 7
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 1
         color:
@@ -252,8 +246,6 @@ GameObjects:
       - id: 9
         enabled: true
         type: Image
-        subTypes:
-          - Renderable
         isTransparent: false
         sprite: 0
         color:
@@ -288,8 +280,6 @@ GameObjects:
       - id: 11
         enabled: true
         type: Text
-        subTypes:
-          - Renderable
         isTransparent: false
         text: "Time: 0.0000"
         color:
@@ -324,8 +314,6 @@ GameObjects:
       - id: 13
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 2
         materials:
@@ -355,8 +343,6 @@ GameObjects:
       - id: 15
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 2
         materials:
@@ -386,8 +372,6 @@ GameObjects:
       - id: 17
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 1
         materials:
@@ -418,8 +402,6 @@ GameObjects:
       - id: 19
         enabled: true
         type: MeshRenderer
-        subTypes:
-          - Renderable
         isTransparent: false
         model: 0
         materials:
@@ -450,13 +432,11 @@ GameObjects:
       - id: 21
         enabled: true
         type: SphereCollider
-        subTypes:
-          - Collider
         colliderId: 0
         trigger: false
         static: false
         layer: 0
-        layerFilter:
+        layersFilter:
           - 2
           - 2
           - 1
@@ -475,13 +455,11 @@ GameObjects:
       - id: 22
         enabled: true
         type: BoxCollider
-        subTypes:
-          - Collider
         colliderId: 0
         trigger: false
         static: false
         layer: 0
-        layerFilter:
+        layersFilter:
           - 2
           - 2
           - 1
@@ -506,13 +484,11 @@ GameObjects:
       - id: 23
         enabled: true
         type: CapsuleCollider
-        subTypes:
-          - Collider
         colliderId: 0
         trigger: false
         static: false
         layer: 0
-        layerFilter:
+        layersFilter:
           - 2
           - 2
           - 1

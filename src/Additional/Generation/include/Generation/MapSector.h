@@ -13,11 +13,14 @@ namespace Generation
 
 	class MapSector : public Twin2Engine::Core::Component
 	{
-        CloneFunctionStart(MapSector, Twin2Engine::Core::Component)
+        /*CloneFunctionStart(MapSector, Twin2Engine::Core::Component)
             //CloneField(tilemap)
             //CloneField(region)
             CloneField(type)
-        CloneFunctionEnd()
+        CloneFunctionEnd()*/
+    protected:
+        CloneBaseFunc(MapSector, Twin2Engine::Core::Component, type)
+
     public:
 
         enum SectorType
@@ -62,6 +65,7 @@ namespace Generation
         bool IsInternalSector() const;
 
         virtual YAML::Node Serialize() const override;
+        virtual bool Deserialize(const YAML::Node& node) override;
 	};
 }
 

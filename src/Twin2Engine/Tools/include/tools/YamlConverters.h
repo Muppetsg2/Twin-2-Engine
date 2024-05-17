@@ -1,235 +1,43 @@
 #pragma once
+#include <tools/templates.h>
 
 namespace YAML {
-	template<> struct convert<glm::vec2> {
-		static Node encode(const glm::vec2& rhs) {
+	template<class T, size_t L> struct convert<glm::vec<L, T>> {
+		template<class R> using vec_test = std::enable_if_t<Twin2Engine::Tools::is_num_in_range_v<L, 1, 4>, R>;
+		static inline const std::string valueNames[4] = { "x", "y", "z", "w" };
+
+		static typename vec_test<Node> encode(const glm::vec<L, T>& rhs) {
 			Node node;
-			node["x"] = rhs.x;
-			node["y"] = rhs.y;
+			for (size_t i = 0; i < L; ++i) {
+				node[valueNames[i]] = rhs[i];
+			}
 			return node;
 		}
 
-		static bool decode(const Node& node, glm::vec2& rhs) {
+		static typename vec_test<bool> decode(const Node& node, glm::vec<L, T>& rhs) {
+			if (node.IsMap()) {
+				for (size_t i = 0; i < L; ++i) {
+					if (!node[valueNames[i]]) return false;
 
-			if (node.IsMap())
-			{
-				if (!node["x"] || !node["y"]) return false;
-
-				rhs.x = node["x"].as<float>();
-				rhs.y = node["y"].as<float>();
-			}
-			else if (node.IsSequence())
-			{
-				int i = 0;
-				for (; i < node.size() && i < 2; i++)
-				{
-					rhs[i] = node[i].as<float>();
+					rhs[i] = node[valueNames[i]].as<T>();
 				}
-				for (; i < 2; i++)
+
+				return true;
+			}
+			else if (node.IsSequence()) {
+				size_t i = 0;
+				for (; i < node.size() && i < L; i++)
 				{
-					rhs[i] = 0;
+					rhs[i] = node[i].as<T>();
 				}
-			}
-			else
-			{
-				return false;
-			}
-			return true;
-		}
-	};
-
-	template<> struct convert<glm::vec3> {
-		static Node encode(const glm::vec3& rhs) {
-			Node node;
-			node["x"] = rhs.x;
-			node["y"] = rhs.y;
-			node["z"] = rhs.z;
-			return node;
-		}
-
-		static bool decode(const Node& node, glm::vec3& rhs) {
-
-			if (node.IsMap())
-			{
-				if (!node["x"] || !node["y"] || !node["z"]) return false;
-
-				rhs.x = node["x"].as<float>();
-				rhs.y = node["y"].as<float>();
-				rhs.z = node["z"].as<float>();
-			}
-			else if (node.IsSequence())
-			{
-				int i = 0;
-				for (; i < node.size() && i < 3; i++)
-				{
-					rhs[i] = node[i].as<float>();
-				}
-				for (; i < 3; i++)
+				for (; i < L; i++)
 				{
 					rhs[i] = 0;
 				}
-			}
-			else
-			{
-				return false;
-			}
-			return true;
-		}
-	};
 
-	template<> struct convert<glm::vec4> {
-		static Node encode(const glm::vec4& rhs) {
-			Node node;
-			node["x"] = rhs.x;
-			node["y"] = rhs.y;
-			node["z"] = rhs.z;
-			node["w"] = rhs.w;
-			return node;
-		}
-
-		static bool decode(const Node& node, glm::vec4& rhs) {
-
-			if (node.IsMap())
-			{
-				if (!node["x"] || !node["y"] || !node["z"] || !node["w"]) return false;
-
-				rhs.x = node["x"].as<float>();
-				rhs.y = node["y"].as<float>();
-				rhs.z = node["z"].as<float>();
-				rhs.w = node["w"].as<float>();
+				return true;
 			}
-			else if (node.IsSequence())
-			{
-				int i = 0;
-				for (; i < node.size() && i < 4; i++)
-				{
-					rhs[i] = node[i].as<float>();
-				}
-				for (; i < 4; i++)
-				{
-					rhs[i] = 0;
-				}
-			}
-			else
-			{
-				return false;
-			}
-			return true;
-		}
-	};
-
-
-	template<> struct convert<glm::ivec2> {
-		static Node encode(const glm::ivec2& rhs) {
-			Node node;
-			node["x"] = rhs.x;
-			node["y"] = rhs.y;
-			return node;
-		}
-
-		static bool decode(const Node& node, glm::ivec2& rhs) {
-			if (node.IsMap())
-			{
-				if (!node["x"] || !node["y"]) return false;
-
-				rhs.x = node["x"].as<int>();
-				rhs.y = node["y"].as<int>();
-			}
-			else if (node.IsSequence())
-			{
-				int i = 0;
-				for (; i < node.size() && i < 2; i++)
-				{
-					rhs[i] = node[i].as<int>();
-				}
-				for (; i < 2; i++)
-				{
-					rhs[i] = 0;
-				}
-			}
-			else
-			{
-				return false;
-			}
-			return true;
-		}
-	};
-
-	template<> struct convert<glm::ivec3> {
-		static Node encode(const glm::ivec3& rhs) {
-			Node node;
-			node["x"] = rhs.x;
-			node["y"] = rhs.y;
-			node["z"] = rhs.z;
-			return node;
-		}
-
-		static bool decode(const Node& node, glm::ivec3& rhs) {
-			if (node.IsMap())
-			{
-				if (!node["x"] || !node["y"] || !node["z"]) return false;
-
-				rhs.x = node["x"].as<int>();
-				rhs.y = node["y"].as<int>();
-				rhs.z = node["z"].as<int>();
-			}
-			else if (node.IsSequence())
-			{
-				int i = 0;
-				for (; i < node.size() && i < 3; i++)
-				{
-					rhs[i] = node[i].as<int>();
-				}
-				for (; i < 3; i++)
-				{
-					rhs[i] = 0;
-				}
-			}
-			else
-			{
-				return false;
-			}
-			return true;
-		}
-	};
-
-	template<> struct convert<glm::ivec4> {
-		static Node encode(const glm::ivec4& rhs) {
-			Node node;
-			node["x"] = rhs.x;
-			node["y"] = rhs.y;
-			node["z"] = rhs.z;
-			node["w"] = rhs.w;
-			return node;
-		}
-
-		static bool decode(const Node& node, glm::ivec4& rhs) {
-			if (node.IsMap())
-			{
-				if (!node["x"] || !node["y"] || !node["z"] || !node["w"]) return false;
-
-				rhs.x = node["x"].as<int>();
-				rhs.y = node["y"].as<int>();
-				rhs.z = node["z"].as<int>();
-				rhs.w = node["w"].as<int>();
-			}
-			else if (node.IsSequence())
-			{
-				int i = 0;
-				for (; i < node.size() && i < 4; i++)
-				{
-					rhs[i] = node[i].as<int>();
-				}
-				for (; i < 4; i++)
-				{
-					rhs[i] = 0;
-				}
-			}
-			else
-			{
-				return false;
-			}
-			return true;
+			return false;
 		}
 	};
 
@@ -251,6 +59,37 @@ namespace YAML {
 			rhs.y = node["i"].as<float>();
 			rhs.z = node["j"].as<float>();
 			rhs.w = node["k"].as<float>();
+			return true;
+		}
+	};
+
+	template<> struct convert<std::wstring> {
+		static Node encode(const std::wstring& rhs) {
+			Node node;
+			std::string temp;
+			for (const wchar_t& wc : rhs) {
+				temp += (char)(wc >> 8);
+				temp += (char)wc;
+			}
+			node = temp;
+			return node;
+		}
+
+		static bool decode(const Node& node, std::wstring& rhs) {
+			if (!node.IsScalar()) return false;
+
+			rhs = L"";
+			std::string value = node.as<std::string>();
+
+			size_t i = 0;
+			// 0 0 0
+			for (i = 0; i < value.size() - 1; i += 2) {
+				rhs += ((wchar_t)value[i] << 8) | (wchar_t)value[i + 1];
+			}
+			if (i == value.size() - 1) {
+				rhs += ((wchar_t)value[i] << 8);
+			}
+
 			return true;
 		}
 	};

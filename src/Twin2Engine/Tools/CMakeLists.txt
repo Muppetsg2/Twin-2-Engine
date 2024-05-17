@@ -26,6 +26,11 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${TOOLS_PRIVATE_INCLUDE_FILE
 #Defining library
 add_library(${PROJECT_NAME} STATIC ${TOOLS_SOURCE_FILES} ${TOOLS_INCLUDE_DIR})
 
+if(MSVC)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC NOMINMAX)
+    target_compile_options(${PROJECT_NAME} PUBLIC "/Zc:preprocessor")
+endif()
+
 # Adding precompile Headers to library
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${TOOLS_PRECOMPILE_HEADER})
 

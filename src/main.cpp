@@ -139,28 +139,25 @@ int main(int, char**)
     auto console_sink = std::make_shared<Editor::Common::ImGuiSink<mutex>>("res/logs/log.txt", 100.0f);
 #elif USE_WINDOWS_CONSOLE_OUTPUT
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-#endif
+#endif // USE_IMGUI_CONSOLE_OUTPUT
 
     auto logger = std::make_shared<spdlog::logger>("logger", console_sink);
     spdlog::register_logger(logger);
     spdlog::set_default_logger(logger);
+    console_sink->StartLogging();
 
 #else
     spdlog::set_level(spdlog::level::off);
-#endif  
+#endif // USE_IMGUI_CONSOLE_OUTPUT || USE_WINDOWS_CONSOLE_OUTPUT
 
-#endif
-#if !_DEBUG
-
+#else
     auto fileLoggerSink = std::make_shared<Twin2Engine::Tools::FileLoggerSink<mutex>>("logs.txt", 100.0f);
     auto fileLogger = std::make_shared<spdlog::logger>("FileLogger", fileLoggerSink);
     spdlog::register_logger(fileLogger);
     spdlog::set_default_logger(fileLogger);
 
     spdlog::set_level(spdlog::level::debug);
-#endif // !_DEBUG
-
-
+#endif 
 
     if (!GameEngine::Init(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_FULLSCREEN, GL_VERSION_MAJOR, GL_VERSION_MINOR))
     {
@@ -187,111 +184,21 @@ int main(int, char**)
 
 #pragma region TILEMAP_DESERIALIZER
 
-    ComponentDeserializer::AddDeserializer("HexagonalTilemap",
-        []() -> Component* {
-            return new HexagonalTilemap();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            HexagonalTilemap* hexagonalTilemap = static_cast<HexagonalTilemap*>(comp);
-            hexagonalTilemap->Resize(node["leftBottomPosition"].as<ivec2>(), node["rightTopPosition"].as<ivec2>());
-
-            // tilemap
-        }
-        );
+    ADD_COMPONENT("HexagonalTilemap", HexagonalTilemap);
 
 #pragma endregion
 
 #pragma region GENERATION_DESERIALIZER
 
-    ComponentDeserializer::AddDeserializer("MapGenerator",
-        []() -> Component* {
-            return new MapGenerator();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            MapGenerator* mapGenerator = static_cast<MapGenerator*>(comp);
+    ADD_COMPONENT("MapGenerator", MapGenerator);
 
-            //Tilemap::HexagonalTilemap* tilemap;
-            ////Tilemap::HexagonalTile* tile;
-            //Twin2Engine::Core::GameObject* preafabHexagonalTile;
-            //Twin2Engine::Core::GameObject* additionalTile;
-            //Twin2Engine::Core::GameObject* filledTile;
-            //Twin2Engine::Core::GameObject* pointTile;
+    ADD_COMPONENT("ContentGenerator", ContentGenerator);
 
-            mapGenerator->preafabHexagonalTile = PrefabManager::LoadPrefab(node["preafabHexagonalTile"].as<string>());
-            mapGenerator->additionalTile = PrefabManager::LoadPrefab(node["additionalTile"].as<string>());
-            mapGenerator->filledTile = PrefabManager::LoadPrefab(node["filledTile"].as<string>());
-            mapGenerator->pointTile = PrefabManager::LoadPrefab(node["pointTile"].as<string>());
+    ADD_COMPONENT("MapHexTile", MapHexTile);
 
-            mapGenerator->generationRadiusMin = node["generationRadiusMin"].as<float>();
-            mapGenerator->generationRadiusMax = node["generationRadiusMax"].as<float>();
-            mapGenerator->minPointsNumber = node["minPointsNumber"].as<int>();
-            mapGenerator->maxPointsNumber = node["maxPointsNumber"].as<int>();
-            mapGenerator->angleDeltaRange = node["angleDeltaRange"].as<float>();
-        }
-        );
+    ADD_COMPONENT("MapRegion", MapRegion);
 
-    ComponentDeserializer::AddDeserializer("ContentGenerator",
-        []() -> Component* {
-            return new ContentGenerator();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            ContentGenerator* contentGenerator = static_cast<ContentGenerator*>(comp);
-
-            for (YAML::Node soSceneId : node["mapElementGenerators"])
-            {
-                //AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(ScriptableObjectManager::Deserialize(soSceneId.as<unsigned int>()));
-                AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(ScriptableObjectManager::Load(soSceneId.as<string>()));
-                SPDLOG_INFO("Adding generator {0}, {1}", soSceneId.as<string>(), (unsigned int) generator);
-                if (generator != nullptr)
-                {
-                    contentGenerator->mapElementGenerators.push_back(generator);
-                }
-            }
-            //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("MapHexTile",
-        []() -> Component* {
-            return new MapHexTile();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            MapHexTile* mapHexTile = static_cast<MapHexTile*>(comp);
-
-            mapHexTile->tilemap = nullptr;
-            mapHexTile->region = nullptr;
-            mapHexTile->sector = nullptr;
-            mapHexTile->tile = nullptr;
-            mapHexTile->type = node["hexTileType"].as<MapHexTile::HexTileType>();
-            //contentGenerator->mapElementGenerators = node["mapElementGenerators"].as<std::list<Generators::AMapElementGenerator*>>();
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("MapRegion",
-        []() -> Component* {
-            return new MapRegion();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            MapRegion* mapRegion = static_cast<MapRegion*>(comp);
-
-            mapRegion->tilemap = nullptr;
-            mapRegion->type = node["regionType"].as<MapRegion::RegionType>();
-        }
-        );
-
-    ComponentDeserializer::AddDeserializer("MapSector",
-        []() -> Component* {
-            return new MapSector();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            MapSector* mapSector = static_cast<MapSector*>(comp);
-
-
-            mapSector->tilemap = nullptr;
-            mapSector->region = nullptr;
-            mapSector->type = node["sectorType"].as<MapSector::SectorType>();
-        }
-        );
+    ADD_COMPONENT("MapSector", MapSector);
 
 #pragma endregion
 
@@ -305,67 +212,12 @@ int main(int, char**)
     SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
-    //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_toonShading.scene");
-    //SceneManager::AddScene("testScene", "res/scenes/DirLightTest.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/ToonShading.scene");
 
     SceneManager::LoadScene("testScene");
     SceneManager::Update();
 
-    GameObject* obj = SceneManager::CreateGameObject();
-    obj->SetName("Test Button");
-    Transform* tr = obj->GetTransform();
-    tr->Rotate(glm::vec3(0, 0, 45.f));
-    tr->Translate(glm::vec3(0.f, -40.f, 0.f));
-    Button* b = obj->AddComponent<Button>();
-    b->SetHeight(70);
-    b->SetWidth(200);
-    b->GetOnClickEvent() += []() -> void {
-        spdlog::info("clicked");
-    };
-    Image* i = obj->AddComponent<Image>();
-    i->SetSprite("white_box");
-    i->SetHeight(70);
-    i->SetWidth(200);
-    Text* t = obj->AddComponent<Text>();
-    t->SetText(L"ClickMeeejjjjjjjjj");
-    t->SetFont("res/fonts/Caveat-Regular.ttf");
-    t->SetSize(48);  
-    t->EnableAutoSize(10, 60);
-    t->SetHeight(44);
-    t->SetWidth(196);
-    t->SetColor(glm::vec4(1.f, 0.f, 0.f, 1.f));
-
-    obj = SceneManager::CreateGameObject();
-    obj->SetName("Test Input Field");
-    tr = obj->GetTransform();
-    //tr->Translate(glm::vec3(500.f, -400.f, 0.f));
-    Image* img = obj->AddComponent<Image>();
-    img->SetSprite("white_box");
-    img->SetWidth(200);
-    img->SetHeight(70);
-    Text* inputText = obj->AddComponent<Text>();
-    inputText->SetFont("res/fonts/Caveat-Regular.ttf");
-    inputText->SetSize(48);
-    inputText->SetWidth(196);
-    inputText->SetHeight(66);
-    inputText->SetTextOverflow(TextOverflow::Truncate);
-    inputText->EnableAutoSize(30, 48);
-    Text* placeHolder = obj->AddComponent<Text>();
-    placeHolder->SetFont("res/fonts/Caveat-Regular.ttf");
-    placeHolder->SetSize(48);
-    placeHolder->SetWidth(196);
-    placeHolder->SetHeight(66);
-    placeHolder->SetText(L"Enter name...");
-    placeHolder->SetTextOverflow(TextOverflow::Ellipsis);
-    placeHolder->EnableAutoSize(30, 48);
-    placeHolder->SetColor({ .5f, .5f, .5f, 1.f });
-    InputField* inp = obj->AddComponent<InputField>();
-    inp->SetInputText(inputText);
-    inp->SetPlaceHolderText(placeHolder);
-    inp->SetWidth(200);
-    inp->SetHeight(70);
-
-    //SceneManager::SaveScene("res/scenes/quickSavedScene_toonShading.yaml");
+    //SceneManager::SaveScene("res/scenes/ToonShading.scene");
 
 #pragma region SETTING_UP_GENERATION
 
@@ -436,21 +288,20 @@ int main(int, char**)
         update();
     };
 
-#ifdef _DEBUG
+#if _DEBUG
 #if USE_IMGUI_CONSOLE_OUTPUT
     console_sink->StartLogging();
 #endif
-#elif
+#else
     fileLoggerSink->StartLogging();
 #endif
-
     GameEngine::Start();
 
 #ifdef _DEBUG
 #if USE_IMGUI_CONSOLE_OUTPUT
     console_sink->StopLogging();
 #endif
-#elif
+#else
     fileLoggerSink->StopLogging();
 #endif
 

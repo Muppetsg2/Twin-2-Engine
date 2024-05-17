@@ -1,6 +1,6 @@
 #include <manager/SceneManager.h>
 #include <core/RenderableComponent.h>
-#include <core/ComponentDeserializer.h>
+#include <core/ComponentsMap.h>
 #include <graphic/manager/MaterialsManager.h>
 #include <graphic/manager/ModelsManager.h>
 #include <manager/PrefabManager.h>
@@ -314,7 +314,7 @@ void SceneManager::LoadScene() {
 	for (const YAML::Node& gameObjectNode : sceneToLoad->_gameObjects) {
 		size_t id = gameObjectNode["id"].as<size_t>();
 		if (id == 0) {
-			SPDLOG_ERROR("Object ID cannot be equal 0");
+			SPDLOG_ERROR("Object ID cannot be equal 0. Skipping...");
 			continue;
 		}
 		GameObject* obj = new GameObject(id);
@@ -330,31 +330,30 @@ void SceneManager::LoadScene() {
 	map<size_t, YAML::Node> componentsNodes;
 	for (const YAML::Node& gameObjectNode : sceneToLoad->_gameObjects) {
 		// GameObject
-		GameObject* obj = _gameObjectsById[gameObjectNode["id"].as<size_t>()];
-		obj->SetName(gameObjectNode["name"].as<string>());
-		obj->SetIsStatic(gameObjectNode["isStatic"].as<bool>());
-		obj->SetActive(gameObjectNode["isActive"].as<bool>());
+		size_t objId = gameObjectNode["id"].as<size_t>();
+		GameObject* obj = _gameObjectsById[objId];
+		if (!obj->Deserialize(gameObjectNode)) {
+			SPDLOG_ERROR("Scene '{0}' GameObject {1} data is corupted", _sceneToLoadName, objId);
+		}
 
 		// Transform
-		const YAML::Node& transformNode = gameObjectNode["transform"];
 		Transform* t = obj->GetTransform();
-		t->SetEnable(transformNode["enabled"].as<bool>());
-		t->SetLocalPosition(transformNode["position"].as<glm::vec3>());
-		t->SetLocalScale(transformNode["scale"].as<glm::vec3>());
-		t->SetLocalRotation(transformNode["rotation"].as<glm::vec3>());
+		if (!t->Deserialize(gameObjectNode["transform"])) {
+			SPDLOG_ERROR("Scene '{0}' Transform of GameObject {0} data is corupted", _sceneToLoadName, objId);
+		}
 
 		// Components Node
-		componentsNodes[obj->Id()] = gameObjectNode["components"];
+		componentsNodes[objId] = gameObjectNode["components"];
 
 		// Set Children
 		for (const YAML::Node& childNode : gameObjectNode["children"]) {
 			size_t id = childNode.as<size_t>();
 			if (id == 0) {
-				SPDLOG_ERROR("Couldn't set rootObject (id: 0) as Child of gameObject");
+				SPDLOG_ERROR("Couldn't set rootObject (id: 0) as Child of gameObject. Skipping...");
 				continue;
 			}
-			if (_gameObjectsById.find(id) == _gameObjectsById.end()) {
-				SPDLOG_ERROR("Couldn't find gameObject with id: {0}, provided in children list of gameObject {1}", id, obj->Id());
+			if (!_gameObjectsById.contains(id)) {
+				SPDLOG_ERROR("Couldn't find gameObject with id: {0}, provided in children list of gameObject {1}. Skipping...", id, objId);
 				continue;
 			}
 			t->AddChild(_gameObjectsById[id]->GetTransform());
@@ -366,14 +365,14 @@ void SceneManager::LoadScene() {
 		GameObject* obj = _gameObjectsById[compPair.first];
 		for (const YAML::Node& componentNode : compPair.second) {
 			string type = componentNode["type"].as<string>();
-			if (!ComponentDeserializer::HasDeserializer(type)) {
-				SPDLOG_ERROR("Couldn't find deserializer for component of type '{0}'", type);
+			if (!ComponentsMap::HasComponent(type)) {
+				SPDLOG_ERROR("Couldn't find create function for component of type '{0}'. Skipping...", type);
 				continue;
 			}
 
 			// Create Component of type
 			size_t id = componentNode["id"].as<size_t>();
-			_componentsById[id] = ComponentDeserializer::GetComponentFunc(type)();
+			_componentsById[id] = ComponentsMap::CreateComponent(type);
 			objectByComponentId[id] = obj;
 		}
 	}
@@ -383,33 +382,20 @@ void SceneManager::LoadScene() {
 		GameObject* obj = _gameObjectsById[compPair.first];
 		for (const YAML::Node& componentNode : compPair.second) {
 			string type = componentNode["type"].as<string>();
-			if (!ComponentDeserializer::HasDeserializer(type)) {
-				SPDLOG_ERROR("Couldn't find deserializer for component of type '{0}'", type);
+			if (!ComponentsMap::HasComponent(type)) {
+				SPDLOG_ERROR("Couldn't find create function for component of type '{0}'. Skipping...", type);
 				continue;
 			}
 
-			Component* comp = _componentsById[componentNode["id"].as<size_t>()];
+			size_t compId = componentNode["id"].as<size_t>();
+			Component* comp = _componentsById[compId];
 
 			// Fill Component with values
-			comp->SetEnable(componentNode["enabled"].as<bool>());
-
-			if (componentNode["subTypes"]) {
-				// Fill Component with SubTypes values
-				for (const YAML::Node& subTypeNode : componentNode["subTypes"]) {
-					string subType = subTypeNode.as<string>();
-					if (!ComponentDeserializer::HasDeserializer(subType)) {
-						SPDLOG_ERROR("Couldn't find deserializer for component of subType '{0}'", subType);
-						continue;
-					}
-
-					ComponentDeserializer::GetDeserializeAction(subType)(comp, componentNode);
-				}
+			if (!comp->Deserialize(componentNode)) {
+				SPDLOG_ERROR("Scene '{0}' '{1}' Component {2} of GameObject {3} data is corupted", _sceneToLoadName, type, compId, compPair.first);
 			}
 
-
-			// Fill Component with Type values
-			ComponentDeserializer::GetDeserializeAction(type)(comp, componentNode);
-
+			// Add Component to object
 			obj->AddComponent(comp);
 		}
 	}
@@ -639,10 +625,10 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	Func<bool, const tuple<string, size_t, bool, SpriteData>&, size_t&> spriteLoader = [&](const tuple<string, size_t, bool, SpriteData>& spriteLoadData, size_t& id) -> bool {
 		Sprite* temp = nullptr;
 		if (get<2>(spriteLoadData)) {
-			temp = SpriteManager::MakeSprite(get<0>(spriteLoadData), get<1>(spriteLoadData), get<3>(spriteLoadData));
+			temp = SpriteManager::MakeSprite(get<0>(spriteLoadData), _texturesIds[get<1>(spriteLoadData)], get<3>(spriteLoadData));
 		}
 		else {
-			temp = SpriteManager::MakeSprite(get<0>(spriteLoadData), get<1>(spriteLoadData));
+			temp = SpriteManager::MakeSprite(get<0>(spriteLoadData), _texturesIds[get<1>(spriteLoadData)]);
 		}
 		if (temp != nullptr) {
 			id = temp->GetManagerId();
@@ -759,17 +745,14 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	// LOAD ROOT OBJECT AND TRANSFORM VALUES
 	map<size_t, YAML::Node> componentsNodes;
 	// GameObject
-	prefabRoot->SetName(prefab->_rootObject["name"].as<string>());
-	prefabRoot->SetIsStatic(prefab->_rootObject["isStatic"].as<bool>());
-	prefabRoot->SetActive(prefab->_rootObject["isActive"].as<bool>());
+	if (!prefabRoot->Deserialize(prefab->_rootObject)) {
+		SPDLOG_ERROR("Prefab '{0}' Root GameObject data is corupted", PrefabManager::GetPrefabPath(prefab));
+	}
 
 	// Transform
-	const YAML::Node& transformNode = prefab->_rootObject["transform"];
-	Transform* t = prefabRoot->GetTransform();
-	t->SetEnable(transformNode["enabled"].as<bool>());
-	t->SetLocalPosition(transformNode["position"].as<glm::vec3>());
-	t->SetLocalScale(transformNode["scale"].as<glm::vec3>());
-	t->SetLocalRotation(transformNode["rotation"].as<glm::vec3>());
+	if (!prefabRoot->GetTransform()->Deserialize(prefab->_rootObject["transform"])) {
+		SPDLOG_ERROR("Prefab '{0}' Root GameObject Transform data is corupted", PrefabManager::GetPrefabPath(prefab));
+	}
 
 	// Components Node
 	componentsNodes[0] = prefab->_rootObject["components"];
@@ -777,18 +760,17 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	// LOAD GAMEOBJECTS AND TRASFORMS VALUES
 	for (const YAML::Node& gameObjectNode : prefab->_gameObjects) {
 		// GameObject
-		GameObject* obj = _gameObjectsById[gameObjectNode["id"].as<size_t>()];
-		obj->SetName(gameObjectNode["name"].as<string>());
-		obj->SetIsStatic(gameObjectNode["isStatic"].as<bool>());
-		obj->SetActive(gameObjectNode["isActive"].as<bool>());
+		size_t objId = gameObjectNode["id"].as<size_t>();
+		GameObject* obj = _gameObjectsById[objId];
+		if (!obj->Deserialize(gameObjectNode)) {
+			SPDLOG_ERROR("Prefab '{0}' GameObject {1} data is corupted", PrefabManager::GetPrefabPath(prefab), objId);
+		}
 
 		// Transform
-		const YAML::Node& transformNode = gameObjectNode["transform"];
 		Transform* t = obj->GetTransform();
-		t->SetEnable(transformNode["enabled"].as<bool>());
-		t->SetLocalPosition(transformNode["position"].as<glm::vec3>());
-		t->SetLocalScale(transformNode["scale"].as<glm::vec3>());
-		t->SetLocalRotation(transformNode["rotation"].as<glm::vec3>());
+		if (!t->Deserialize(gameObjectNode["transform"])) {
+			SPDLOG_ERROR("Prefab '{0}' GameObject {1} Transform data is corupted", PrefabManager::GetPrefabPath(prefab), objId);
+		}
 
 		// Components Node
 		componentsNodes[obj->Id()] = gameObjectNode["components"];
@@ -800,7 +782,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 				SPDLOG_ERROR("Couldn't set rootObject (id: 0) as Child of gameObject");
 				continue;
 			}
-			if (_gameObjectsById.find(id) == _gameObjectsById.end()) {
+			if (!_gameObjectsById.contains(id)) {
 				SPDLOG_ERROR("Couldn't find gameObject with id: {0}, provided in children list of gameObject {1}", id, obj->Id());
 				continue;
 			}
@@ -813,13 +795,13 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		GameObject* obj = _gameObjectsById[compPair.first];
 		for (const YAML::Node& componentNode : compPair.second) {
 			string type = componentNode["type"].as<string>();
-			if (!ComponentDeserializer::HasDeserializer(type)) {
-				SPDLOG_ERROR("Couldn't find deserializer for component of type '{0}'", type);
+			if (!ComponentsMap::HasComponent(type)) {
+				SPDLOG_ERROR("Couldn't find create function for component of type '{0}'", type);
 				continue;
 			}
 
 			// Create Component of type
-			Component* comp = ComponentDeserializer::GetComponentFunc(type)();
+			Component* comp = ComponentsMap::CreateComponent(type);
 
 			size_t id = componentNode["id"].as<size_t>();
 			CheckComponentTakenID(comp, id);
@@ -832,33 +814,20 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		GameObject* obj = _gameObjectsById[compPair.first];
 		for (const YAML::Node& componentNode : compPair.second) {
 			string type = componentNode["type"].as<string>();
-			if (!ComponentDeserializer::HasDeserializer(type)) {
-				SPDLOG_ERROR("Couldn't find deserializer for component of type '{0}'", type);
+			if (!ComponentsMap::HasComponent(type)) {
+				SPDLOG_ERROR("Couldn't find create function for component of type '{0}'", type);
 				continue;
 			}
 
-			Component* comp = _componentsById[componentNode["id"].as<size_t>()];
+			size_t compId = componentNode["id"].as<size_t>();
+			Component* comp = _componentsById[compId];
 
 			// Fill Component with values
-			comp->SetEnable(componentNode["enabled"].as<bool>());
-
-			if (componentNode["subTypes"]) {
-				// Fill Component with SubTypes values
-				for (const YAML::Node& subTypeNode : componentNode["subTypes"]) {
-					string subType = subTypeNode.as<string>();
-					if (!ComponentDeserializer::HasDeserializer(subType)) {
-						SPDLOG_ERROR("Couldn't find deserializer for component of subType '{0}'", subType);
-						continue;
-					}
-
-					ComponentDeserializer::GetDeserializeAction(subType)(comp, componentNode);
-				}
+			if (!comp->Deserialize(componentNode)) {
+				SPDLOG_ERROR("Prefab '{0}' Component {1} of GameObject {2} data is corupted", PrefabManager::GetPrefabPath(prefab), compId, compPair.first);
 			}
 
-
-			// Fill Component with Type values
-			ComponentDeserializer::GetDeserializeAction(type)(comp, componentNode);
-
+			// Add Component To GameObject
 			obj->AddComponent(comp);
 		}
 	}

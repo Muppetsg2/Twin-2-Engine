@@ -21,218 +21,31 @@ bool GameEngine::updateShadowLightingMap = false;
 void GameEngine::Deserializers()
 {
     // COMPONENTS DESELIALIZERS
-    ComponentDeserializer::AddDeserializer("Camera",
-        []() -> Component* {
-            return new CameraComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            CameraComponent* cam = static_cast<CameraComponent*>(comp);
-            cam->SetFOV(node["fov"].as<float>());
-            cam->SetNearPlane(node["nearPlane"].as<float>());
-            cam->SetFarPlane(node["farPlane"].as<float>());
-            cam->SetCameraFilter(node["cameraFilter"].as<size_t>());
-            cam->SetCameraType(node["cameraType"].as<CameraType>());
-            cam->SetDisplayMode(node["cameraMode"].as<CameraDisplayMode>());
-            cam->SetSamples(node["samples"].as<size_t>());
-            cam->SetRenderResolution(node["renderRes"].as<CameraRenderResolution>());
-            cam->SetGamma(node["gamma"].as<float>());
-            cam->SetWorldUp(node["worldUp"].as<vec3>());
-            cam->SetIsMain(node["isMain"].as<bool>());
-            cam->SetFrustumCulling(node["isFrustum"].as<bool>());
-            cam->SetSSAO(node["isSSAO"].as<bool>());
-        }
-    );
+    ADD_COMPONENT("Camera", CameraComponent);
 
-    ComponentDeserializer::AddDeserializer("Audio",
-        []() -> Component* {
-            return new AudioComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            AudioComponent* audio = static_cast<AudioComponent*>(comp);
-            audio->SetAudio(SceneManager::GetAudio(node["audio"].as<size_t>()));
-            if (node["loop"].as<bool>()) audio->Loop(); else audio->UnLoop();
-            audio->SetVolume(node["volume"].as<float>());
-        }
-    );
+    ADD_COMPONENT("Audio", AudioComponent);
 
-    ComponentDeserializer::AddDeserializer("Button",
-        []() -> Component* {
-            return new Button();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            Button* button = static_cast<Button*>(comp);
-            button->SetWidth(node["width"].as<float>());
-            button->SetHeight(node["height"].as<float>());
-            button->SetInteractable(node["interactable"].as<bool>());
-        }
-    );
+    ADD_COMPONENT("Button", Button);
 
-    // Only for subTypes
-    ComponentDeserializer::AddDeserializer("Renderable",
-        []() -> Component* {
-            return nullptr;
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            RenderableComponent* renderable = static_cast<RenderableComponent*>(comp);
-            renderable->SetIsTransparent(node["isTransparent"].as<bool>());
-        }
-    );
+    ADD_COMPONENT("Image", Image);
 
-    ComponentDeserializer::AddDeserializer("Image",
-        []() -> Component* {
-            return new Image();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            Image* img = static_cast<Image*>(comp);
-            img->SetSprite(SceneManager::GetSprite(node["sprite"].as<size_t>()));
-            img->SetColor(node["color"].as<vec4>());
-            img->SetWidth(node["width"].as<float>());
-            img->SetHeight(node["height"].as<float>());
-        }
-    );
+    ADD_COMPONENT("Text", Text);
 
-    ComponentDeserializer::AddDeserializer("Text",
-        []() -> Component* {
-            return new Text();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            Text* text = static_cast<Text*>(comp);
-            //text->SetText(node["text"].as<wstring>());
-            text->SetColor(node["color"].as<vec4>());
-            text->SetSize(node["size"].as<uint32_t>());
-            text->SetFont(SceneManager::GetFont(node["font"].as<size_t>()));
-        }
-    );
+    ADD_COMPONENT("MeshRenderer", MeshRenderer);
 
-    ComponentDeserializer::AddDeserializer("MeshRenderer",
-        []() -> Component* {
-            return new MeshRenderer();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            MeshRenderer* meshRenderer = static_cast<MeshRenderer*>(comp);
-            for (const YAML::Node& matNode : node["materials"]) {
-                meshRenderer->AddMaterial(SceneManager::GetMaterial(matNode.as<size_t>()));
-            }
-            meshRenderer->SetModel(SceneManager::GetModel(node["model"].as<size_t>()));
-        }
-    );
+    ADD_COMPONENT("HexagonalCollider", HexagonalColliderComponent);
 
-    // Only for subTypes
-    ComponentDeserializer::AddDeserializer("Collider",
-        []() -> Component* {
-            return nullptr;
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            ColliderComponent* collider = static_cast<ColliderComponent*>(comp);
-            collider->colliderId = node["colliderId"].as<unsigned int>();
-            collider->SetTrigger(node["trigger"].as<bool>());
-            collider->SetStatic(node["static"].as<bool>());
-            collider->SetLayer(node["layer"].as<Layer>());
-            LayerCollisionFilter filter = node["layerFilter"].as<LayerCollisionFilter>();
-            collider->SetLayersFilter(filter);
-            collider->EnableBoundingVolume(node["boundingVolume"].as<bool>());
-            collider->SetBoundingVolumeRadius(node["boundingVolumeRadius"].as<float>());
-            vec3 position = node["position"].as<vec3>();
-            collider->SetLocalPosition(position.x, position.y, position.z);
-        }
-    );
+    ADD_COMPONENT("SphereCollider", SphereColliderComponent);
 
-    ComponentDeserializer::AddDeserializer("HexagonalCollider",
-        []() -> Component* {
-            return new HexagonalColliderComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            HexagonalColliderComponent* hexCollider = static_cast<HexagonalColliderComponent*>(comp);
-            hexCollider->SetBaseLength(node["baselength"].as<float>());
-            hexCollider->SetHalfHeight(node["halfheight"].as<float>());
-            hexCollider->SetYRotation(node["rotation"].as<float>());
-        }
-        );
+    ADD_COMPONENT("BoxCollider", BoxColliderComponent);
 
-    ComponentDeserializer::AddDeserializer("SphereCollider",
-        []() -> Component* {
-            return new SphereColliderComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            SphereColliderComponent* sphereCollider = static_cast<SphereColliderComponent*>(comp);
-            sphereCollider->SetRadius(node["radius"].as<float>());
-        }
-    );
+    ADD_COMPONENT("CapsuleCollider", CapsuleColliderComponent);
 
-    ComponentDeserializer::AddDeserializer("BoxCollider",
-        []() -> Component* {
-            return new BoxColliderComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            BoxColliderComponent* boxCollider = static_cast<BoxColliderComponent*>(comp);
-            boxCollider->SetWidth(node["width"].as<float>());
-            boxCollider->SetLength(node["length"].as<float>());
-            boxCollider->SetHeight(node["height"].as<float>());
-            vec3 rotation = node["rotation"].as<vec3>();
-            boxCollider->SetXRotation(rotation.x);
-            boxCollider->SetYRotation(rotation.y);
-            boxCollider->SetZRotation(rotation.z);
-        }
-    );
+    ADD_COMPONENT("DirectionalLight", DirectionalLightComponent);
 
-    ComponentDeserializer::AddDeserializer("CapsuleCollider",
-        []() -> Component* {
-            return new CapsuleColliderComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            CapsuleColliderComponent* capsuleCollider = static_cast<CapsuleColliderComponent*>(comp);
-            vec3 endPos = node["endPosition"].as<vec3>();
-            capsuleCollider->SetEndPosition(endPos.x, endPos.y, endPos.z);
-            capsuleCollider->SetRadius(node["radius"].as<float>());
-        }
-    );
+    ADD_COMPONENT("PointLight", PointLightComponent);
 
-    ComponentDeserializer::AddDeserializer("LightComponent",
-        []() -> Component* {
-            return nullptr;
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            //LightingSystem::LightComponent* lightComponent = static_cast<LightingSystem::LightComponent*>(comp);
-        }
-    );
-
-    ComponentDeserializer::AddDeserializer("DirectionalLightComponent",
-        []() -> Component* {
-            return new DirectionalLightComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            DirectionalLightComponent* light = static_cast<DirectionalLightComponent*>(comp);
-            light->SetDirection(node["direction"].as<vec3>());
-            light->SetColor(node["color"].as<vec3>());
-            light->SetPower(node["power"].as<float>());
-        }
-    );
-
-    ComponentDeserializer::AddDeserializer("PointLightComponent",
-        []() -> Component* {
-            return new PointLightComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            PointLightComponent* light = static_cast<PointLightComponent*>(comp);
-            light->SetColor(node["color"].as<vec3>());
-            light->SetPower(node["power"].as<float>());
-            light->SetAttenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
-        }
-    );
-
-    ComponentDeserializer::AddDeserializer("SpotLightComponent",
-        []() -> Component* {
-            return new SpotLightComponent();
-        },
-        [](Component* comp, const YAML::Node& node) -> void {
-            SpotLightComponent* light = static_cast<SpotLightComponent*>(comp);
-            light->SetDirection(node["direction"].as<vec3>());
-            light->SetColor(node["color"].as<vec3>());
-            light->SetPower(node["power"].as<float>());
-            light->SetOuterCutOff(node["outerCutOff"].as<float>());
-            light->SetAttenuation(node["constant"].as<float>(), node["linear"].as<float>(), node["quadratic"].as<float>());
-        }
-    );
+    ADD_COMPONENT("SpotLight", SpotLightComponent);
 }
 
 void GameEngine::Update()

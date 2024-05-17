@@ -91,10 +91,21 @@ void Twin2Engine::Core::HexagonalColliderComponent::Update()
 YAML::Node Twin2Engine::Core::HexagonalColliderComponent::Serialize() const
 {
 	YAML::Node node = ColliderComponent::Serialize();
-	node["subTypes"].push_back(node["type"].as<std::string>());
 	node["type"] = "HexagonalCollider";
-	node["baselength"] = ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->BaseLength;
-	node["halfheight"] = ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->HalfHeight;
+	node["baseLength"] = ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->BaseLength;
+	node["halfHeight"] = ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->HalfHeight;
 	node["rotation"] = ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->Rotation;
 	return node;
+}
+
+bool Twin2Engine::Core::HexagonalColliderComponent::Deserialize(const YAML::Node& node)
+{
+	if (!node["baseLength"] || !node["halfHeight"] || !node["rotation"] ||
+		!ColliderComponent::Deserialize(node)) return false;
+
+	((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->BaseLength = node["baseLength"].as<float>();
+	((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->HalfHeight = node["halfHeight"].as<float>();
+	((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->Rotation = node["rotation"].as<float>();
+
+	return true;
 }

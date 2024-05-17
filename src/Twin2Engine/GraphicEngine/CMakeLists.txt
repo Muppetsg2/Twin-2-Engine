@@ -25,6 +25,11 @@ source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${GRAPHIC_ENGINE_PRIVATE_INCLU
 # Defining library
 add_library(${PROJECT_NAME} STATIC ${GRAPHIC_ENGINE_SOURCE_FILES})
 
+if(MSVC)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC NOMINMAX)
+    target_compile_options(${PROJECT_NAME} PUBLIC "/Zc:preprocessor")
+endif()
+
 # Adding include to library
 target_include_directories(${PROJECT_NAME} PUBLIC	${GRAPHIC_ENGINE_INCLUDE_DIR}
 													${PHYSIC_ENGINE_INCLUDE_DIR}

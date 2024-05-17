@@ -238,11 +238,22 @@ YAML::Node AudioComponent::Serialize() const
 {
 	YAML::Node node = Component::Serialize();
 	node["type"] = "Audio";
-	node.remove("subTypes");
 	node["audio"] = SceneManager::GetAudioSaveIdx(_audioId);
 	node["loop"] = _loop;
 	node["volume"] = _volume;
 	return node;
+}
+
+bool AudioComponent::Deserialize(const YAML::Node& node)
+{
+	if (!node["audio"] || !node["loop"] || !node["volume"] ||
+		!Component::Deserialize(node)) return false;
+
+	_audioId = SceneManager::GetAudio(node["audio"].as<size_t>());
+	_loop = node["loop"].as<bool>();
+	_volume = node["volume"].as<float>();
+
+	return true;
 }
 
 void AudioComponent::DrawEditor()

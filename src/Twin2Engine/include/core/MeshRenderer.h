@@ -18,10 +18,14 @@ namespace Twin2Engine::Core
 	{
 		friend class Twin2Engine::Manager::MeshRenderingManager;
 
-		CloneFunctionStart(MeshRenderer, RenderableComponent)
+		/*CloneFunctionStart(MeshRenderer, RenderableComponent)
 			CloneField(_model)
 			CloneField(_materials)
-			CloneFunctionEnd()
+		CloneFunctionEnd()*/
+
+	protected:
+		CloneBaseFunc(MeshRenderer, RenderableComponent, _model, _materials)
+
 	private:
 
 		Graphic::InstantiatingModel _model;
@@ -55,6 +59,7 @@ namespace Twin2Engine::Core
 
 		virtual void Render() override;
 		virtual YAML::Node Serialize() const override;
+		virtual bool Deserialize(const YAML::Node& node) override;
 		virtual void DrawEditor() override;
 
 

@@ -1,21 +1,21 @@
 Textures:
   - id: 0
     path: res/textures/hexEdgeTexture.png
-    sWrapMode: 33648
-    tWrapMode: 33648
-    minFilterMode: 9986
-    magFilterMode: 9729
-Sprites: []
-Fonts: []
-Audio: []
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+Sprites: ~
+Fonts: ~
+Audio: ~
 Materials:
   - id: 0
     path: ColoredHexTile
 Models:
   - id: 0
     path: res/models/hexagon.obj
-Prefabs: []
-ScriptableObjects: []
+Prefabs: ~
+ScriptableObjects: ~
 Root:
   name: MapHexTile
   isStatic: false
@@ -43,8 +43,6 @@ Root:
     - id: 2
       enabled: true
       type: MeshRenderer
-      subTypes:
-        - Renderable
       isTransparent: false
       model: 0
       materials:
@@ -52,13 +50,11 @@ Root:
     - id: 3
       enabled: true
       type: HexagonalCollider
-      subTypes:
-        - Collider
       colliderId: 0
       trigger: true
       static: false
       layer: 2
-      layerFilter:
+      layersFilter:
         - 3
         - 3
         - 1
@@ -67,12 +63,11 @@ Root:
         - 3
         - 3
         - 3
-      boundingVolume: false
       boundingVolumeRadius: 0.5
       position:
-        x: 0.0
+        x: 0
         y: -0.5
-        z: 0.0
-      baselength: 0.5
-      halfheight: 0.5
-      rotation: -1.5705
+        z: 0
+      baseLength: 0.5
+      halfHeight: 0.5
+      rotation: -1.57050002

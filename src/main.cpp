@@ -1,7 +1,7 @@
 #define USE_IMGUI_CONSOLE_OUTPUT true
 #define USE_WINDOWS_CONSOLE_OUTPUT false
 
-#if USE_IMGUI_CONSOLE_OUTPUT || !USE_WINDOWS_CONSOLE_OUTPUT
+#if USE_IMGUI_CONSOLE_OUTPUT || !USE_WINDOWS_CONSOLE_OUTPUT || !_DEBUG
 
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
@@ -288,6 +288,13 @@ int main(int, char**)
         update();
     };
 
+#if _DEBUG
+#if USE_IMGUI_CONSOLE_OUTPUT
+    console_sink->StartLogging();
+#endif
+#else
+    fileLoggerSink->StartLogging();
+#endif
     GameEngine::Start();
 
 #if _DEBUG

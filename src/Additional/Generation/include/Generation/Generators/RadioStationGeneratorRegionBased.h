@@ -25,10 +25,12 @@ namespace Generation::Generators
 		SO_DESERIALIZE()
 
 
+#if _DEBUG
         virtual void DrawEditor() override
         {
             ImGui::InputFloat("densityFactorPerRegion", &densityFactorPerRegion);
         }
+#endif
 	};
 }
 

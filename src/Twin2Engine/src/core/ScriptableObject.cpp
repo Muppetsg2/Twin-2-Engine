@@ -51,6 +51,3 @@ void ScriptableObject::Init()
 	scriptableObjects = *scriptableObjectsTemp;
 	delete scriptableObjectsTemp;
 }
-
-
-void ScriptableObject::DrawEditor() {}

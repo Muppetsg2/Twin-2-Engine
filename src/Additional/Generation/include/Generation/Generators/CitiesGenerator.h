@@ -27,11 +27,13 @@ namespace Generation::Generators
 		SO_DESERIALIZE()
 
 
+#if _DEBUG
 		virtual void DrawEditor() override
 		{
 			ImGui::Checkbox("byRegions", &byRegions);
 			ImGui::SliderFloat("Density", &density, 0.0f, 1.0f);
 		}
+#endif
 	};
 }
 

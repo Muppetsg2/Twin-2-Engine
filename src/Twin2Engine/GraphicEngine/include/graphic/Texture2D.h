@@ -7,6 +7,7 @@ namespace Twin2Engine {
 	}
 
 	namespace Graphic {
+		class Font;
 #undef RGB
 
 		ENUM_CLASS_VALUE(TextureFormat,
@@ -49,8 +50,7 @@ namespace Twin2Engine {
 			size_t _managerId;
 
 			unsigned int _id;
-			unsigned int _width;
-			unsigned int _height;
+			glm::uvec2 _size;
 			unsigned int _channelsNum;
 
 			TextureFormat _format;
@@ -60,6 +60,7 @@ namespace Twin2Engine {
 			TextureFilterMode _magFilterMode;
 
 			Texture2D(size_t managerId, unsigned int id, unsigned int width, unsigned int height, unsigned int channelsNum, const TextureFormat& format, const TextureWrapMode& sWrapMode, const TextureWrapMode& tWrapMode, const TextureFilterMode& minFilterMode, const TextureFilterMode& magFilterMode);
+			Texture2D(size_t managerId, unsigned int id, glm::uvec2 size, unsigned int channelsNum, const TextureFormat& format, const TextureWrapMode& sWrapMode, const TextureWrapMode& tWrapMode, const TextureFilterMode& minFilterMode, const TextureFilterMode& magFilterMode);
 
 		public:
 			virtual ~Texture2D();
@@ -71,6 +72,7 @@ namespace Twin2Engine {
 
 			size_t GetManagerId() const;
 			unsigned int GetId() const;
+			glm::uvec2 GetSize() const;
 			unsigned int GetWidth() const;
 			unsigned int GetHeight() const;
 			unsigned int GetChannelsNum() const;
@@ -82,6 +84,7 @@ namespace Twin2Engine {
 			void Use(unsigned int samplerId = 0) const;
 
 			friend Manager::TextureManager;
+			friend Font;
 		};
 	}
 }

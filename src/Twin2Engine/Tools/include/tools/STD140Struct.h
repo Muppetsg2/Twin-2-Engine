@@ -930,6 +930,7 @@ namespace Twin2Engine::Tools {
 		size_t GetBaseAligement() const;
 		size_t GetSize() const;
 
+		void ClearData();
 		void Clear();
 	};
 }

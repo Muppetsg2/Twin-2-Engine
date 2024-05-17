@@ -18,28 +18,20 @@ void Image::Render()
 {
 	Sprite* sprite = SpriteManager::GetSprite(_spriteId);
 
-	UIElement elem{};
-	elem.canvasSize = Window::GetInstance()->GetContentSize();
-	elem.worldSpaceCanvas = false;
+	UIImageData image{};
+	image.canvas = nullptr; // Na ten moment tylko na ekranie siê wyœwietla
+	image.mask = nullptr; // Na ten moment nie ma maski
+	image.layer = 0; // Domyœlny layer
 
-	if (sprite != nullptr) {
-		elem.textureID = sprite->GetTexture()->GetId();
-		elem.textureSize = { sprite->GetTexture()->GetWidth(), sprite->GetTexture()->GetHeight() };
-		elem.spriteSize = { sprite->GetWidth(), sprite->GetHeight() };
-		elem.spriteOffset = { sprite->GetXOffset(), sprite->GetYOffset() };
-		elem.color = _color;
-		elem.elemSize = { _width, _height };
-		elem.elemTransform = GetTransform()->GetTransformMatrix();
-		elem.hasTexture = true;
-		UIRenderingManager::Render(elem);
-	}
-	else {
-		elem.color = _color;
-		elem.elemSize = { _width, _height };
-		elem.elemTransform = GetTransform()->GetTransformMatrix();
-		elem.hasTexture = false;
-		UIRenderingManager::Render(elem);
-	}
+	image.rectTransform = UIRectData{
+		.transform = GetTransform()->GetTransformMatrix(),
+		.size = { _width, _height }
+	};
+
+	image.sprite = sprite;
+	image.color = _color;
+
+	UIRenderingManager::Render(image);
 }
 
 YAML::Node Image::Serialize() const

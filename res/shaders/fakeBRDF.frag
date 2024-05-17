@@ -74,13 +74,13 @@ struct DirectionalLight {
 	uint shadowMap;
 };
 
-layout (std140, binding = 3) buffer Lights {
-    PointLight pointLights[8];
-    SpotLight spotLights[8];
-    DirectionalLight directionalLights[4];
+layout (std430, binding = 2) buffer Lights {
 	uint numberOfPointLights;
 	uint numberOfSpotLights;
 	uint numberOfDirLights;
+	PointLight pointLights[8];
+    SpotLight spotLights[8];
+    DirectionalLight directionalLights[4];
 };
 
 // FAKE BRDF

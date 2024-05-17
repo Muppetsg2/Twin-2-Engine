@@ -21,7 +21,7 @@ namespace Twin2Engine::Tools {
 		STD140Variable(const std::string& name, const size_t& size) : var_name(name), array_size(size) {}
 
 		template<typename = std::enable_if_t<std::is_same_v<T, STD140Offsets>>>
-		STD140Variable(const std::string& name, const STD140Offsets& offsets) : var_name(name), struct_offsets(offsets) {}
+		STD140Variable(const std::string& name, const STD140Offsets& offsets) : var_name(name), struct_offsets(offsets), array_size(0) {}
 
 		template<typename = std::enable_if_t<std::is_same_v<T, STD140Offsets>>>
 		STD140Variable(const std::string& name, const STD140Offsets& offsets, const size_t& size) : var_name(name), struct_offsets(offsets), array_size(size) {}
@@ -181,6 +181,7 @@ namespace Twin2Engine::Tools {
 			// SET ARRAY BEGIN POINTER
 			size_t nameHash = _hasher(name);
 			_offsets[nameHash] = values[0];
+			_names[nameHash] = name;
 
 			return values;
 		}
@@ -193,8 +194,10 @@ namespace Twin2Engine::Tools {
 
 			size_t aligementOffset = Add(name, structTemplate.GetBaseAligement(), structTemplate._currentOffset);
 			for (const auto& off : structTemplate._offsets) {
-				size_t nameHash = _hasher(name + "." + (*structTemplate._names.find(off.first)).second);
+				std::string valueName = name + "." + (*structTemplate._names.find(off.first)).second;
+				size_t nameHash = _hasher(valueName);
 				_offsets[nameHash] = aligementOffset + off.second;
+				_names[nameHash] = valueName;
 			}
 			if (_currentOffset % 16 != 0) {
 				_currentOffset += 16 - (_currentOffset % 16);
@@ -214,6 +217,7 @@ namespace Twin2Engine::Tools {
 			// SET ARRAY BEGIN POINTER
 			size_t nameHash = _hasher(name);
 			_offsets[nameHash] = values[0];
+			_names[nameHash] = name;
 
 			return values;
 		}

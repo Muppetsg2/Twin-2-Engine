@@ -8,7 +8,7 @@ Font::Font(size_t managerId, FT_Library lib, FT_Face face) : _managerId(managerI
 Font::~Font() {
 	for (auto& s : _glyphs) {
 		for (auto& g : s.second) {
-			glDeleteTextures(1, &g.second->TextureID);
+            delete g.second->texture;
 			delete g.second;
 		}
 		s.second.clear();
@@ -29,10 +29,10 @@ void Font::LoadCharacter(unsigned int character, uint32_t size) {
         spdlog::error("ERROR::FREETYTPE: Failed to load Glyph");
     }
     // generate texture
-    unsigned int texture;
-    glGenTextures(1, &texture);
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, textureID);
     glTexImage2D(
         GL_TEXTURE_2D,
         0,
@@ -50,8 +50,14 @@ void Font::LoadCharacter(unsigned int character, uint32_t size) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // now store character for later use
+    Texture2D* charTexture = new Texture2D(
+        0, textureID, { _face->glyph->bitmap.width, _face->glyph->bitmap.rows }, 1,
+        TextureFormat::RED, TextureWrapMode::CLAMP_TO_EDGE,
+        TextureWrapMode::CLAMP_TO_EDGE, TextureFilterMode::LINEAR,
+        TextureFilterMode::LINEAR
+    );
     Character* glyph = new Character{
-        texture,
+        charTexture,
         glm::ivec2(_face->glyph->bitmap.width, _face->glyph->bitmap.rows),
         glm::ivec2(_face->glyph->bitmap_left, _face->glyph->bitmap_top),
         (unsigned int)_face->glyph->advance.x

@@ -1,5 +1,6 @@
 #pragma once
 #include <core/RenderableComponent.h>
+#include <graphic/manager/UIRenderingManager.h>
 #include <graphic/Font.h>
 #include <tools/macros.h>
 
@@ -40,6 +41,7 @@ namespace Twin2Engine::UI {
 		bool _textWrapping = false;
 
 		TextOverflow _overflow = TextOverflow::Overflow;
+		Manager::MaskData _textMask;
 
 		bool _textDirty = true;
 		std::vector<TextCharacter> _textCharCache;

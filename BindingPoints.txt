@@ -1,20 +1,22 @@
-SSBO:
-0 - InstanceBuffer
-1 - MaterialIndexes
-2 - 
-3 - Lights
+SSBO (MAX BINDINGS POINTS 37085 -> LAST 37084):
+0 - InstanceBuffer			(std430)
+1 - MaterialIndexes			(std430)
+2 - Lights					(std430)
+3 - UIElements				(std140)
 4 - 
 5 - 
 
-UBO:
-0 - CameraData
-1 - WindowData
-2 - MaterialInput
-3 - LightingData
-4 - UICanvas
-5 - UIElement
+UBO (MAX BINDINGS POINTS 35375 -> LAST 35374):
+0 - CameraData			(std140)
+1 - WindowData			(std140)
+2 - MaterialInput		(std140)
+3 - LightingData		(std140)
+4 - UICanvas			(std140)
+5 - UIMask				(std140)
 
 TEXTURES:
-0...26 - 
+0...3 - Dynamic
+4...25 - Wolne
+26 - DEPTH_MAP
 27...30 - SHADOW_MAP
 31 - SSAO

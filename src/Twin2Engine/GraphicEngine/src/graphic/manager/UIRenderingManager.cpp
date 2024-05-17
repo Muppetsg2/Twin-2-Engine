@@ -121,6 +121,7 @@ void UIRenderingManager::UnloadAll() {
 	glDeleteVertexArrays(1, &_pointVAO);
 }
 
+const char* const tracy_RenderUIShader = "Render UI Shader";
 const char* const tracy_RenderUIInitStructs = "Render UI Init Structs";
 char* const tracy_RenderUICanvasName = new char[25];
 char* const tracy_RenderUICanvasUBOName = new char[29];
@@ -128,22 +129,28 @@ char* const tracy_RenderUILayerName = new char[23];
 char* const tracy_RenderUIMaskName = new char[23];
 char* const tracy_RenderUIMaskUBOName = new char[27];
 char* const tracy_RenderUITextureName = new char[26];
-char* const tracy_RenderUIElementsBufferName = new char[34];
 char* const tracy_RenderUIElementName = new char[26];
 char* const tracy_RenderUIElementDataName = new char[31];
+const char* const tracy_RenderUIEnd = "Render UI End";
 
 void UIRenderingManager::Render()
 {
 	ZoneScoped;
 
 	if (_uiShader != nullptr) {
+		FrameMarkStart(tracy_RenderUIShader);
 		_uiShader->Use();
 		_uiShader->SetInt("image", 0);
 		_uiShader->SetInt("maskImage", 1);
+		FrameMarkEnd(tracy_RenderUIShader);
 
 		// INIT STRUCTS
 		FrameMarkStart(tracy_RenderUIInitStructs);
 		STD140Struct elementsBuffer(UIElementsBufferOffsets);
+		STD140Struct canvasStruct(CanvasOffsets);
+		STD140Struct maskStruct(MaskOffsets);
+		STD140Struct spriteStruct(SpriteOffsets);
+		STD140Struct element(UIElementOffsets);
 		FrameMarkEnd(tracy_RenderUIInitStructs);
 
 		glBindVertexArray(_pointVAO);
@@ -158,17 +165,15 @@ void UIRenderingManager::Render()
 			FrameMarkStart(tracy_RenderUICanvasUBOName);
 			glBindBuffer(GL_UNIFORM_BUFFER, _canvasUBO);
 			if (canvasData != nullptr) {
-				STD140Struct canvasStruct(CanvasOffsets);
 				canvasStruct.Set("canvasRect.transform", canvasData->rectTransform.transform);
 				canvasStruct.Set("canvasRect.size", canvasData->rectTransform.size);
 				canvasStruct.Set("canvasIsInWorldSpace", canvasData->worldSpaceCanvas);
 				canvasStruct.Set("canvasIsActive", true);
-				glBufferSubData(GL_UNIFORM_BUFFER, 0, canvasStruct.GetSize(), canvasStruct.GetData().data());
 			}
 			else {
-				const bool falseBool = false;
-				glBufferSubData(GL_UNIFORM_BUFFER, CanvasOffsets.Get("canvasIsActive"), sizeof(bool), &falseBool);
+				canvasStruct.Set("canvasIsActive", false);
 			}
+			glBufferSubData(GL_UNIFORM_BUFFER, 0, canvasStruct.GetSize(), canvasStruct.GetData().data());
 			FrameMarkEnd(tracy_RenderUICanvasUBOName);
 
 			for (const auto& layer : canvas.second) {
@@ -186,23 +191,18 @@ void UIRenderingManager::Render()
 					FrameMarkStart(tracy_RenderUIMaskUBOName);
 					glBindBuffer(GL_UNIFORM_BUFFER, _maskUBO);
 					if (maskData != nullptr) {
-						STD140Struct maskStruct(MaskOffsets);
 						maskStruct.Set("maskRect.transform", maskData->rectTransform.transform);
 						maskStruct.Set("maskRect.size", maskData->rectTransform.size);
 						
 						if (maskData->maskSprite != nullptr) {
-							STD140Struct spriteStruct(SpriteOffsets);
 							spriteStruct.Set("offset", maskData->maskSprite->GetOffset());
 							spriteStruct.Set("size", maskData->maskSprite->GetSize());
 							spriteStruct.Set("texSize", maskData->maskSprite->GetTexture()->GetSize());
-							spriteStruct.Set("isActive", true);
 							maskStruct.Set("maskSprite", spriteStruct);
 
 							maskData->maskSprite->Use(1);
 						}
-						else {
-							maskStruct.Set("maskSprite.isActive", false);
-						}
+						maskStruct.Set("maskSprite.isActive", false);
 						glBufferSubData(GL_UNIFORM_BUFFER, 0, maskStruct.GetSize(), maskStruct.GetData().data());
 					}
 					else {
@@ -218,11 +218,7 @@ void UIRenderingManager::Render()
 
 						Texture2D* textureData = texture.first;
 
-						snprintf(tracy_RenderUIElementsBufferName, 34, "Render UI Elements Buffer %zu", textureId);
-						FrameMarkStart(tracy_RenderUIElementsBufferName);
 						glBindBuffer(GL_SHADER_STORAGE_BUFFER, _elemsSSBO);
-						elementsBuffer.ClearData();
-						FrameMarkEnd(tracy_RenderUIElementsBufferName);
 
 						if (textureData != nullptr) {
 							textureData->Use(0);
@@ -239,23 +235,22 @@ void UIRenderingManager::Render()
 
 							snprintf(tracy_RenderUIElementDataName, 31, "Render UI Element Data %zu", elementId);
 							FrameMarkStart(tracy_RenderUIElementDataName);
-
-							STD140Struct element(UIElementOffsets);
 							element.Set("rect.transform", uiElem.rectTransform.transform);
 							element.Set("rect.size", uiElem.rectTransform.size);
 							element.Set("color", uiElem.color);
 							element.Set("isText", uiElem.isText);
 
-							element.Set("sprite.isActive", textureData != nullptr);
+							
 							if (textureData != nullptr) {
-								element.Set("sprite.offset", uiElem.spriteOffset);
-								element.Set("sprite.size", uiElem.spriteSize);
-								element.Set("sprite.texSize", textureData->GetSize());
+								spriteStruct.Set("offset", uiElem.spriteOffset);
+								spriteStruct.Set("size", uiElem.spriteSize);
+								spriteStruct.Set("texSize", textureData->GetSize());
+								element.Set("sprite", spriteStruct);
 							}
+							element.Set("sprite.isActive", textureData != nullptr);
+							FrameMarkEnd(tracy_RenderUIElementDataName);
 
 							elementsBuffer.Set("uiElements[" + to_string(i) + "]", element);
-
-							FrameMarkEnd(tracy_RenderUIElementDataName);
 
 							if (++i == maxUIElementsPerRender) {
 								glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, elementsBuffer.GetSize(), elementsBuffer.GetData().data());
@@ -287,10 +282,13 @@ void UIRenderingManager::Render()
 			FrameMarkEnd(tracy_RenderUICanvasName);
 			++canvasId;
 		}
+
+		FrameMarkStart(tracy_RenderUIEnd);
 		_renderQueue.clear();
 		glBindBuffer(GL_UNIFORM_BUFFER, NULL);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, NULL);
 		glBindVertexArray(NULL);
+		FrameMarkEnd(tracy_RenderUIEnd);
 	}
 }
 

@@ -428,10 +428,15 @@ void Window::Use() const
 	glfwMakeContextCurrent(_window);
 }
 
+const char* const tracy_WindowSwapBuffersName = "SwapBuffersWindow";
+
 void Window::Update() const
 {
+	ZoneScoped;
 	Use();
+	FrameMarkStart(tracy_WindowSwapBuffersName);
 	glfwSwapBuffers(_window);
+	FrameMarkEnd(tracy_WindowSwapBuffersName);
 }
 
 void Window::DrawEditor() 

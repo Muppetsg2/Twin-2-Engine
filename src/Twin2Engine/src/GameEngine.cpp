@@ -73,28 +73,43 @@ void GameEngine::Render()
     LateRender();
 }
 
-void GameEngine::EndFrame()
-{
-    // Poll and handle events (inputs, window resize, etc.)
-    // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-    // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
-    // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
-    // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-    SceneManager::Update();
-    Time::Update();
-    Input::Update();
-    Window::GetInstance()->Update();
-}
-
 const char* const tracy_FrameName = "Frame";
 const char* const tracy_OnInputFrameName = "OnInput";
 const char* const tracy_UpdateFrameName = "Update";
 const char* const tracy_RenderFrameName = "Render";
 const char* const tracy_EndFrameName = "EndFrame";
+const char* const tracy_SceneManagerUpdateName = "SceneManagerUpdate";
+const char* const tracy_TimeUpdateName = "TimeUpdate";
+const char* const tracy_InputUpdateName = "InputUpdate";
+const char* const tracy_WindowUpdateName = "WindowUpdate";
+
+void GameEngine::EndFrame()
+{
+    ZoneScoped;
+    // Poll and handle events (inputs, window resize, etc.)
+    // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
+    // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
+    // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
+    // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
+    FrameMarkStart(tracy_SceneManagerUpdateName);
+    SceneManager::Update();
+    FrameMarkEnd(tracy_SceneManagerUpdateName);
+    FrameMarkStart(tracy_TimeUpdateName);
+    Time::Update();
+    FrameMarkEnd(tracy_TimeUpdateName);
+    FrameMarkStart(tracy_InputUpdateName);
+    Input::Update();
+    FrameMarkEnd(tracy_InputUpdateName);
+    FrameMarkStart(tracy_WindowUpdateName);
+    Window::GetInstance()->Update();
+    FrameMarkEnd(tracy_WindowUpdateName);
+    TracyGpuCollect;
+}
 
 void GameEngine::Loop()
 {
     ZoneScoped;
+    TracyGpuContext;
     // Main loop
     while (!Window::GetInstance()->IsClosed())
     {

@@ -28,9 +28,10 @@ SO_DESERIALIZATION_END()
 void RadioStationGeneratorSectorBased::Generate(Tilemap::HexagonalTilemap* tilemap)
 {
     vector<MapSector*> sectors;
+    hash<std::string> hasher = hash<std::string>();
     for (MapSector* region : tilemap->GetGameObject()->GetComponentsInChildren<MapSector>())
-    {
-        if (region->type == MapRegion::RegionType::Normal)
+    {   
+        if (hasher(MapSector::to_string(region->type)) == hasher(MapRegion::to_string(MapRegion::RegionType::Normal)))
         {
             sectors.push_back(region);
         }

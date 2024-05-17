@@ -230,7 +230,7 @@ void TextureManager::DrawEditor(bool* p_open)
         // Result path in: m_fileDialogInfo.resultPath
         LoadTexture2D(_fileDialogInfo.resultPath.string());
 
-        // Otwieranie okienka do wyboru opcji wczytania tekstury
+        // TODO: Otwieranie okienka do wyboru opcji wczytania tekstury
     }
 
     ImGui::End();

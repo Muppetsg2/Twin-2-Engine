@@ -71,6 +71,8 @@ namespace Twin2Engine::Manager
 		static Graphic::Shader* GetShaderProgram(const std::string& shaderName);
 		static Graphic::Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);
 
+		// TODO: Moze jakies okienko Imgui DrawEditor?
+
 		//void UpdateDirShadowMapsTab();
 	};
 }

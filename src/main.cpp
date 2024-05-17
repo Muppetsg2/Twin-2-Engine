@@ -130,25 +130,24 @@ GameObject* tilemapGO = nullptr;
 int main(int, char**)
 {
 #pragma region Initialization
+    
     // LOGGING: SPDLOG INITIALIZATION
 #if _DEBUG
-
-#if USE_IMGUI_CONSOLE_OUTPUT || USE_WINDOWS_CONSOLE_OUTPUT
 
 #if USE_IMGUI_CONSOLE_OUTPUT
     auto console_sink = std::make_shared<Editor::Common::ImGuiSink<mutex>>("res/logs/log.txt", 100.0f);
 #elif USE_WINDOWS_CONSOLE_OUTPUT
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-#endif // USE_IMGUI_CONSOLE_OUTPUT
+#else
+    spdlog::set_level(spdlog::level::off);
+#endif
 
+#if USE_IMGUI_CONSOLE_OUTPUT || USE_WINDOWS_CONSOLE_OUTPUT
     auto logger = std::make_shared<spdlog::logger>("logger", console_sink);
     spdlog::register_logger(logger);
     spdlog::set_default_logger(logger);
     console_sink->StartLogging();
-
-#else
-    spdlog::set_level(spdlog::level::off);
-#endif // USE_IMGUI_CONSOLE_OUTPUT || USE_WINDOWS_CONSOLE_OUTPUT
+#endif
 
 #else
     auto fileLoggerSink = std::make_shared<Twin2Engine::Tools::FileLoggerSink<mutex>>("logs.txt", 100.0f);
@@ -157,7 +156,8 @@ int main(int, char**)
     spdlog::set_default_logger(fileLogger);
 
     spdlog::set_level(spdlog::level::debug);
-#endif 
+    fileLoggerSink->StartLogging();
+#endif
 
     if (!GameEngine::Init(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_FULLSCREEN, GL_VERSION_MAJOR, GL_VERSION_MINOR))
     {
@@ -297,10 +297,12 @@ int main(int, char**)
 #endif
     GameEngine::Start();
 
-#ifdef _DEBUG
+#if _DEBUG
+
 #if USE_IMGUI_CONSOLE_OUTPUT
     console_sink->StopLogging();
 #endif
+
 #else
     fileLoggerSink->StopLogging();
 #endif
@@ -449,20 +451,6 @@ void update()
 }
 
 #if _DEBUG
-struct HierarchicalItem {
-    std::string label;
-    std::vector<HierarchicalItem> children;
-};
-// Recursive function to render the hierarchical list
-static void renderHierarchicalList(const HierarchicalItem& item) {
-    if (ImGui::TreeNode(item.label.c_str())) {
-        for (const auto& child : item.children) {
-            renderHierarchicalList(child);
-        }
-        ImGui::TreePop();
-    }
-}
-
 void init_imgui()
 {
     // Setup Dear ImGui binding
@@ -472,6 +460,8 @@ void init_imgui()
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;   // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;    // Enable Gamepad Controls
+
+    io.ConfigDockingTransparentPayload = true;  // Enable Docking Transparent
 
     ImGui_ImplGlfw_InitForOpenGL(Window::GetInstance()->GetWindow(), true);
     ImGui_ImplOpenGL3_Init(glsl_version);
@@ -488,6 +478,8 @@ void init_imgui()
     // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
     //io.Fonts->AddFontDefault();
     ImFont* font = io.Fonts->AddFontFromFileTTF("./res/fonts/NotoSans-Regular.ttf", 18.f, nullptr, ImGui::GetGlyphRangesPolish());
+    IM_ASSERT(font != NULL);
+    font = io.Fonts->AddFontFromFileTTF("./res/fonts/NotoSans-Bold.ttf", 18.f, nullptr, ImGui::GetGlyphRangesPolish());
     IM_ASSERT(font != NULL);
     io.Fonts->Build();
 }
@@ -528,6 +520,9 @@ void render_imgui()
         static bool _audioOpened = false;
         static bool _materialsOpened = false;
         static bool _texturesOpened = false;
+        static bool _spriteOpened = false;
+        static bool _modelsOpened = false;
+        static bool _prefabOpened = false;
 
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("File##Menu"))
@@ -546,6 +541,9 @@ void render_imgui()
                 ImGui::MenuItem("Audio Manager##Resources", NULL, &_audioOpened);
                 ImGui::MenuItem("Materials Manager##Resources", NULL, &_materialsOpened);
                 ImGui::MenuItem("Textures Manager##Resources", NULL, &_texturesOpened);
+                ImGui::MenuItem("Sprite Manager##Resources", NULL, &_spriteOpened);
+                ImGui::MenuItem("Models Manager##Resources", NULL, &_modelsOpened);
+                ImGui::MenuItem("Prefab Manager##Resources", NULL, &_prefabOpened);
                 ImGui::EndMenu();
             }
             ImGui::EndMenuBar();
@@ -562,6 +560,15 @@ void render_imgui()
 
         if (_texturesOpened)
             TextureManager::DrawEditor(&_texturesOpened);
+
+        if (_spriteOpened)
+            SpriteManager::DrawEditor(&_spriteOpened);
+
+        if (_modelsOpened)
+            ModelsManager::DrawEditor(&_modelsOpened);
+
+        if (_prefabOpened)
+            PrefabManager::DrawEditor(&_prefabOpened);
 
         Editor::Common::ScriptableObjectEditorManager::Draw();
 
@@ -815,42 +822,6 @@ void render_imgui()
 #pragma endregion
 
         ImGui::Separator();
-
-        /**/
-#pragma region IMGUI_MAP_GENERATOR
-
-        if (ImGui::CollapsingHeader("Map Generator"))
-        {
-            if (ImGui::Button("Generate"))
-            {
-                static Transform* tilemapTransform = tilemapGO->GetTransform();
-                static HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
-                hexagonalTilemap->Clear();
-                while (tilemapTransform->GetChildCount())
-                {
-                    Transform* child = tilemapTransform->GetChildAt(0ull);
-                    tilemapTransform->RemoveChild(child);
-                    SceneManager::DestroyGameObject(child->GetGameObject());
-                }
-                
-                static MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
-                
-                float tilemapGenerating = glfwGetTime();
-                mapGenerator->Generate();
-                spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
-                
-                static ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
-                
-                tilemapGenerating = glfwGetTime();
-                contentGenerator->GenerateContent(hexagonalTilemap);
-                spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
-            }
-        }
-
-#pragma endregion
-        
-        ImGui::Separator();
-        /**/
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 

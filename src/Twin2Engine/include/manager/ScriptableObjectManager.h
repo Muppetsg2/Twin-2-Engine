@@ -48,6 +48,8 @@ namespace Twin2Engine::Manager
 		// Deserialization of ScriptableObjects for scene
 		static Twin2Engine::Core::ScriptableObject* Deserialize(unsigned int sceneSerializationId);
 
+		// TODO: Dodac DrawEditor
+
 
 		static std::vector<std::string> GetScriptableObjectsNames();
 		static bool CreateScriptableObject(const std::string& dstPath, const std::string& scriptableObjectClassName);

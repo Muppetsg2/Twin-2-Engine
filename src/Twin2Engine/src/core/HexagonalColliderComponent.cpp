@@ -3,32 +3,35 @@
 #include <physic/CollisionManager.h>
 #include <tools/YamlConverters.h>
 
-Twin2Engine::Core::HexagonalColliderComponent::HexagonalColliderComponent() : ColliderComponent()
+using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Physic;
+
+HexagonalColliderComponent::HexagonalColliderComponent() : ColliderComponent()
 {
-	collider = new Twin2Engine::Physic::GameCollider(this, new Twin2Engine::Physic::HexagonalColliderData());
+	collider = new GameCollider(this, new HexagonalColliderData());
 }
 
-void Twin2Engine::Core::HexagonalColliderComponent::SetBaseLength(float v)
+void HexagonalColliderComponent::SetBaseLength(float v)
 {
-	((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->BaseLength = v;
+	((HexagonalColliderData*)collider->shapeColliderData)->BaseLength = v;
 }
 
-void Twin2Engine::Core::HexagonalColliderComponent::SetHalfHeight(float v)
+void HexagonalColliderComponent::SetHalfHeight(float v)
 {
-	((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->HalfHeight = v;
+	((HexagonalColliderData*)collider->shapeColliderData)->HalfHeight = v;
 }
 
-void Twin2Engine::Core::HexagonalColliderComponent::SetYRotation(float v)
+void HexagonalColliderComponent::SetYRotation(float v)
 {
-	((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->Rotation = v;
+	((HexagonalColliderData*)collider->shapeColliderData)->Rotation = v;
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::HexagonalColliderComponent::Initialize()
+void HexagonalColliderComponent::Initialize()
 {
 	collider->colliderComponent = this;
 	TransformChangeAction = [this](Transform* transform) {
-		Twin2Engine::Physic::HexagonalColliderData* hexData = ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData);
+		HexagonalColliderData* hexData = ((HexagonalColliderData*)collider->shapeColliderData);
 		glm::quat q = transform->GetGlobalRotationQuat() * glm::angleAxis(hexData->Rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 		hexData->u = q * glm::vec3(-0.5f, 0.0f, 0.866f);
 		hexData->v = q * glm::vec3(0.5f, 0.0f, 0.866f);
@@ -52,31 +55,31 @@ void Twin2Engine::Core::HexagonalColliderComponent::Initialize()
 	//TransformChangeAction(GetTransform());
 }
 
-void Twin2Engine::Core::HexagonalColliderComponent::OnEnable()
+void HexagonalColliderComponent::OnEnable()
 {
 	TransformChangeActionId = GetTransform()->OnEventTransformChanged += TransformChangeAction;
-	Twin2Engine::Physic::CollisionManager* cm = Twin2Engine::Physic::CollisionManager::Instance();
+	CollisionManager* cm = CollisionManager::Instance();
 	cm->RegisterCollider(collider);
 }
 
-void Twin2Engine::Core::HexagonalColliderComponent::OnDisable()
+void HexagonalColliderComponent::OnDisable()
 {
 	GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
-	Twin2Engine::Physic::CollisionManager::Instance()->UnregisterCollider(collider);
+	CollisionManager::Instance()->UnregisterCollider(collider);
 }
 
-void Twin2Engine::Core::HexagonalColliderComponent::OnDestroy()
+void HexagonalColliderComponent::OnDestroy()
 {
 	//GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
-	Twin2Engine::Physic::CollisionManager::Instance()->UnregisterCollider(collider);
+	CollisionManager::Instance()->UnregisterCollider(collider);
 }
 
-void Twin2Engine::Core::HexagonalColliderComponent::Update()
+void HexagonalColliderComponent::Update()
 {
-	Twin2Engine::Core::ColliderComponent::Update();
+	ColliderComponent::Update();
 
 	if (dirtyFlag) {
-		Twin2Engine::Physic::HexagonalColliderData * hexData = ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData);
+		HexagonalColliderData * hexData = ((HexagonalColliderData*)collider->shapeColliderData);
 		glm::quat q = GetTransform()->GetGlobalRotationQuat() * glm::angleAxis(hexData->Rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 		hexData->u = q * glm::vec3(-0.5f, 0.0f, 0.866f);
 		hexData->v = q * glm::vec3(0.5f, 0.0f, 0.866f);
@@ -88,24 +91,55 @@ void Twin2Engine::Core::HexagonalColliderComponent::Update()
 	}
 }
 
-YAML::Node Twin2Engine::Core::HexagonalColliderComponent::Serialize() const
+YAML::Node HexagonalColliderComponent::Serialize() const
 {
 	YAML::Node node = ColliderComponent::Serialize();
 	node["type"] = "HexagonalCollider";
-	node["baseLength"] = ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->BaseLength;
-	node["halfHeight"] = ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->HalfHeight;
-	node["rotation"] = ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->Rotation;
+	node["baselength"] = ((HexagonalColliderData*)collider->shapeColliderData)->BaseLength;
+	node["halfheight"] = ((HexagonalColliderData*)collider->shapeColliderData)->HalfHeight;
+	node["rotation"] = ((HexagonalColliderData*)collider->shapeColliderData)->Rotation;
 	return node;
 }
 
-bool Twin2Engine::Core::HexagonalColliderComponent::Deserialize(const YAML::Node& node)
+bool HexagonalColliderComponent::Deserialize(const YAML::Node& node)
 {
 	if (!node["baseLength"] || !node["halfHeight"] || !node["rotation"] ||
 		!ColliderComponent::Deserialize(node)) return false;
 
-	((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->BaseLength = node["baseLength"].as<float>();
-	((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->HalfHeight = node["halfHeight"].as<float>();
-	((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->Rotation = node["rotation"].as<float>();
+	((HexagonalColliderData*)collider->shapeColliderData)->BaseLength = node["baseLength"].as<float>();
+	((HexagonalColliderData*)collider->shapeColliderData)->HalfHeight = node["halfHeight"].as<float>();
+	((HexagonalColliderData*)collider->shapeColliderData)->Rotation = node["rotation"].as<float>();
 
 	return true;
+}
+
+void HexagonalColliderComponent::DrawEditor()
+{
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Hexagonal Collider##Component").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+
+		float v = ((HexagonalColliderData*)collider->shapeColliderData)->BaseLength;
+		ImGui::DragFloat(string("Base Length##").append(id).c_str(), &v, 0.1f);
+
+		if (v != ((HexagonalColliderData*)collider->shapeColliderData)->BaseLength) {
+			SetBaseLength(v);
+		}
+
+		v = ((HexagonalColliderData*)collider->shapeColliderData)->HalfHeight;
+		ImGui::DragFloat(string("Half Height##").append(id).c_str(), &v, 0.1f);
+
+		if (v != ((HexagonalColliderData*)collider->shapeColliderData)->HalfHeight) {
+			SetHalfHeight(v);
+		}
+
+		v = ((HexagonalColliderData*)collider->shapeColliderData)->Rotation;
+		ImGui::DragFloat(string("Rotation Y##").append(id).c_str(), &v, 0.1f);
+
+		if (v != ((HexagonalColliderData*)collider->shapeColliderData)->Rotation) {
+			SetYRotation(v);
+		}
+
+		DrawInheritedFields();
+	}
 }

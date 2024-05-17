@@ -15,6 +15,7 @@ UBO:
 5 - UIElement
 
 TEXTURES:
-0...26 - 
+0...25 - Wolne
+26 - DEPTH_MAP
 27...30 - SHADOW_MAP
 31 - SSAO

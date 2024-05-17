@@ -908,7 +908,7 @@ void Twin2Engine::Core::Transform::DrawEditor()
 			}
 		}
 
-		if ((world ? _globalRotation : _localRotation) != rot) {
+		if ((world ? glm::degrees(_globalRotation) : glm::degrees(_localRotation)) != rot) {
 			if (world) {
 				SetGlobalRotation(rot);
 			}

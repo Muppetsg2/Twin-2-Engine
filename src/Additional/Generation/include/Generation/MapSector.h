@@ -23,12 +23,7 @@ namespace Generation
 
     public:
 
-        enum SectorType
-        {
-            Normal,
-            Water,
-            Mountain
-        };
+        ENUM_CLASS(SectorType, Normal, Water, Mountain)
 
     private:
 
@@ -66,6 +61,7 @@ namespace Generation
 
         virtual YAML::Node Serialize() const override;
         virtual bool Deserialize(const YAML::Node& node) override;
+        virtual void DrawEditor() override;
 	};
 }
 

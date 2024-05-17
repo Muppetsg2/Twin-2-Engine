@@ -1056,6 +1056,8 @@ void SceneManager::DrawCurrentSceneEditor()
 			if (ImGui::MenuItem(string("Add GameObject##Create").append(SceneManager::GetCurrentSceneName()).c_str()))
 				CreateGameObject();
 
+			// TODO: Dodac pod menu do create ktore jest (nowy gameobject i na podstawie prefabu)
+
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();

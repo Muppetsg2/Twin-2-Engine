@@ -62,7 +62,6 @@ namespace Twin2Engine::Core
 		virtual bool Deserialize(const YAML::Node& node) override;
 		virtual void DrawEditor() override;
 
-
 		bool IsTransformChanged() const;
 
 #pragma region MODEL_PART

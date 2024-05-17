@@ -1227,6 +1227,23 @@ InstantiatingModel ModelsManager::CreateModel(const std::string& modelName, std:
     return modelData;
 }
 
+std::string ModelsManager::GetModelName(size_t id)
+{
+    if (_loadedModels.count(id) == 0) {
+        SPDLOG_ERROR("ModelsManager::Model not found");
+        return "";
+    }
+
+    std::string p = _modelsPaths[id];
+    return std::filesystem::path(p).stem().string();
+}
+
+std::string ModelsManager::GetModelName(const std::string& modelPath)
+{
+    size_t h = std::hash<std::string>{}(modelPath);
+    return GetModelName(h);
+}
+
 YAML::Node ModelsManager::Serialize()
 {
     YAML::Node models;
@@ -1238,4 +1255,62 @@ YAML::Node ModelsManager::Serialize()
         models.push_back(model);
     }
     return models;
+}
+
+void ModelsManager::DrawEditor(bool* p_open)
+{
+    if (!ImGui::Begin("Models Manager", p_open)) {
+        ImGui::End();
+        return;
+    }
+
+    ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+    bool node_open = ImGui::TreeNodeEx(std::string("Models##Model Manager").c_str(), node_flag);
+
+    std::list<size_t> clicked = std::list<size_t>();
+    clicked.clear();
+    if (node_open) {
+        int i = 0;
+        for (auto& item : _modelsPaths) {
+            std::string n = GetModelName(item.second);
+            ImGui::BulletText(n.c_str());
+            ImGui::SameLine(ImGui::GetContentRegionAvail().x - 30);
+            if (ImGui::Button(std::string("Remove##Models Manager").append(std::to_string(i)).c_str())) {
+                clicked.push_back(item.first);
+            }
+            ++i;
+        }
+        ImGui::TreePop();
+    }
+
+    if (clicked.size() > 0) {
+        clicked.sort();
+
+        for (int i = clicked.size() - 1; i > -1; --i)
+        {
+            UnloadModel(clicked.back());
+
+            clicked.pop_back();
+        }
+    }
+
+    clicked.clear();
+
+    // TODO: Dodac przycisk load z mozliwoscia wybrania trybu zaczytania
+    /*
+    if (ImGui::Button("Load Model##Models Manager", ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
+        _fileDialogOpen = true;
+        _fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
+        _fileDialogInfo.title = "Open File##Models Manager";
+        _fileDialogInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\models");
+    }
+
+    if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
+    {
+        // Result path in: m_fileDialogInfo.resultPath
+        LoadModel(_fileDialogInfo.resultPath.string());
+    }
+    */
+
+    ImGui::End();
 }

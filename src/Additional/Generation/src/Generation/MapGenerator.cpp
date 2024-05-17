@@ -257,7 +257,7 @@ void MapGenerator::Generate()
                     hexCol->colliderId = ++i;
                     auto Pos = hexCol->GetTransform()->GetGlobalPosition();
                     
-                    SPDLOG_INFO("Pos: {}\t{}\t{}\t\t\t\tColPos: {}\t{}\t{}", Pos.x, Pos.y, Pos.z, hexCol->collider->shapeColliderData->Position.x, Pos.z, hexCol->collider->shapeColliderData->Position.y, Pos.z, hexCol->collider->shapeColliderData->Position.z);
+                    //SPDLOG_INFO("Pos: {}\t{}\t{}\t\t\t\tColPos: {}\t{}\t{}", Pos.x, Pos.y, Pos.z, hexCol->collider->shapeColliderData->Position.x, Pos.z, hexCol->collider->shapeColliderData->Position.y, Pos.z, hexCol->collider->shapeColliderData->Position.z);
                 }
             }
         }

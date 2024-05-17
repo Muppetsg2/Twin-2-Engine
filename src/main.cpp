@@ -288,13 +288,6 @@ int main(int, char**)
         update();
     };
 
-#if _DEBUG
-#if USE_IMGUI_CONSOLE_OUTPUT
-    console_sink->StartLogging();
-#endif
-#else
-    fileLoggerSink->StartLogging();
-#endif
     GameEngine::Start();
 
 #if _DEBUG

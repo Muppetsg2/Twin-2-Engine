@@ -1,5 +1,7 @@
 #pragma once
 
+#define MAX_LOG_DRAW 250
+
 namespace Editor::Common
 {
     template<typename Mutex>
@@ -28,6 +30,11 @@ namespace Editor::Common
         static std::vector<ImGuiLogMessage> logMessages;
         static std::ofstream logFile;
 
+    };
+
+    struct MessageToDisplay {
+        ImVec4 color;
+        std::string content;
     };
 
     template<typename Mutex>
@@ -75,6 +82,7 @@ namespace Editor::Common
         ImGuiSink(const std::string& filename, float sleepTimeMilis)
         {
             //MessageHolder::logFile.open(filename);
+            _loggingThread = nullptr;
             _filename = filename;
             _sleepTime = std::chrono::duration<float, std::milli>(sleepTimeMilis);
         }
@@ -110,6 +118,10 @@ namespace Editor::Common
 
             _mutex.unlock();
 
+            if (MessageHolder::logMessages.size() == ULLONG_MAX) {
+                MessageHolder::logMessages.erase(MessageHolder::logMessages.begin(), MessageHolder::logMessages.begin() + MessageHolder::logMessages.size() / 2 + 1);
+            }
+
             //if (MessageHolder::logFile.is_open())
             //{
             //    MessageHolder::logFile << message << std::endl;
@@ -133,7 +145,7 @@ namespace Editor::Common
 
         static void Draw()
         {
-            ImGui::SetNextWindowSizeConstraints(ImVec2(600, 300), ImVec2(1920, 1080));
+            ImGui::SetNextWindowSizeConstraints(ImVec2(700, 300), ImVec2(1920, 1080));
 
             if (!ImGui::Begin("Console")) {
                 ImGui::End();
@@ -156,7 +168,7 @@ namespace Editor::Common
             ImGui::SameLine();
             ImGui::Checkbox("OFF##Console", &logLevels[SPDLOG_LEVEL_OFF]);
 
-            float buttonPosX = ImGui::GetWindowWidth() - ImGui::GetStyle().ItemSpacing.x - ImGui::CalcTextSize("Clear").x;
+            float buttonPosX = ImGui::GetWindowWidth() - ImGui::GetStyle().ItemSpacing.x - ImGui::CalcTextSize("Clear").x - 5;
 
             ImGui::SameLine();
 
@@ -197,15 +209,19 @@ namespace Editor::Common
 
             ImGui::BeginChild("LogWindow##Console", ImVec2(0, 0), true);
             //const vector<ImGuiLogMessage> messages = ImGuiSink<mutex>::getLogMessages();
-            for (size_t index = 0ull; index < MessageHolder::logMessages.size(); index++)
-            {
-                ImVec4 textColor;
 
-                if (logLevels[MessageHolder::logMessages[index].level])
+            std::vector<MessageToDisplay> messages = std::vector<MessageToDisplay>();
+
+            for (size_t index = MessageHolder::logMessages.size(); index > 0 ; --index)
+            {
+                if (messages.size() == MAX_LOG_DRAW) break;
+
+                if (logLevels[MessageHolder::logMessages[index - 1].level])
                 {
-                    if (!searchContent.size() || ContainsString(MessageHolder::logMessages[index].messageContent, searchContent, caseSensitive))
+                    if (!searchContent.size() || ContainsString(MessageHolder::logMessages[index - 1].messageContent, searchContent, caseSensitive))
                     {
-                        switch (MessageHolder::logMessages[index].level)
+                        ImVec4 textColor;
+                        switch (MessageHolder::logMessages[index - 1].level)
                         {
                         case SPDLOG_LEVEL_TRACE:
                             textColor = ImVec4(0.0, 0.5, 0.0, 1.0);
@@ -232,9 +248,14 @@ namespace Editor::Common
                             break;
                         }
 
-                        ImGui::TextColored(textColor, "%s", MessageHolder::logMessages[index].messageContent.c_str());
+                        messages.push_back({ .color = textColor, .content = MessageHolder::logMessages[index - 1].messageContent });
+                        //ImGui::TextColored(textColor, "%s", MessageHolder::logMessages[index].messageContent.c_str());
                     }
                 }
+            }
+
+            for (size_t i = messages.size(); i > 0; --i) {
+                ImGui::TextColored(messages[i - 1].color, "%s", messages[i - 1].content.c_str());
             }
 
             //static float lastScrollPosition = 0.0;

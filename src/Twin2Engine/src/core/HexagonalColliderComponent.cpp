@@ -98,3 +98,35 @@ YAML::Node Twin2Engine::Core::HexagonalColliderComponent::Serialize() const
 	node["rotation"] = ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->Rotation;
 	return node;
 }
+
+
+
+void Twin2Engine::Core::HexagonalColliderComponent::DrawEditor()
+{
+	string id = string(std::to_string(this->GetId()));
+	string name = string("Hexagonal Collider##Component").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+		float v = ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->BaseLength;
+		ImGui::DragFloat(string("BaseLength##").append(id).c_str(), &v, 0.1f);
+
+		if (v != ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->BaseLength) {
+			SetBaseLength(v);
+		}
+
+		v = ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->HalfHeight;
+		ImGui::DragFloat(string("HalfHeight##").append(id).c_str(), &v, 0.1f);
+
+		if (v != ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->HalfHeight) {
+			SetHalfHeight(v);
+		}
+
+		v = ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->Rotation;
+		ImGui::DragFloat(string("Rotation##").append(id).c_str(), &v, 0.1f);
+
+		if (v != ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->BaseLength) {
+			SetYRotation(v);
+		}
+
+		DrawInheritedFields();
+	}
+}

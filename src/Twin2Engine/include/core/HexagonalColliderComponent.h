@@ -26,7 +26,10 @@ namespace Twin2Engine::Core {
 		void Update() override;
 
 		virtual YAML::Node Serialize() const override;
+		virtual void DrawEditor() override;
 	};
 }
+
+
 
 #endif // !_HEXAGONALCOLLIDERCOMPONENT_H_

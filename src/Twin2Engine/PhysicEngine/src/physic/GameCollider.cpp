@@ -388,6 +388,9 @@ bool GameCollider::rayCollision(Ray& ray, RaycastHit& raycastHit) {
 	{
 		HexagonalColliderData* hexData = (HexagonalColliderData*)shapeColliderData;
 		glm::vec3 dir = -ray.Direction;
+		if (colliderComponent->colliderId == 1159) {
+			bool b = true;
+		}
 		dir.y = 0.0f;
 		dir = glm::normalize(dir);
 		float up = glm::dot(dir, hexData->u);

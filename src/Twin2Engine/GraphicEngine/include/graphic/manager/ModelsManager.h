@@ -29,7 +29,8 @@ namespace Twin2Engine::Manager
 
 #if ASSIMP_LOADING
 		static inline void LoadModelAssimp(const std::string& modelPath, Graphic::ModelData* modelData);
-		static inline void ExtractMeshAssimp(const aiMesh* mesh, std::vector<Graphic::Vertex>& vertices, std::vector<unsigned int>& indices);
+		static inline void ProcessNodeAssimp(aiNode* node, const aiScene* scene, Graphic::ModelData* modelData);
+		static inline void ExtractMeshAssimp(aiMesh* mesh, std::vector<Graphic::Vertex>& vertices, std::vector<unsigned int>& indices);
 #elif TINYGLTF_LOADING
 		static inline void LoadModelGLTF(const std::string& modelPath, ModelData* modelData);
 		static inline void ExtractMeshGLTF(const tinygltf::Mesh& mesh, const tinygltf::Model& model, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
@@ -73,6 +74,8 @@ namespace Twin2Engine::Manager
 		static Graphic::InstantiatingModel GetTetrahedron();
 		static Graphic::InstantiatingModel GetCylinder();
 		static Graphic::InstantiatingModel GetHexagon();
+
+		static void UnloadAll();
 
 		static Graphic::InstantiatingModel CreateModel(const std::string & modelName, std::vector<Graphic::Vertex> vertices, std::vector<unsigned int> indices);
 		//static void FreeModel(InstantiatingModel*& model);

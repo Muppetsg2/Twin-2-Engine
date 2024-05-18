@@ -71,7 +71,7 @@ if(find_memory_leaks AND (NOT CMAKE_BUILD_TYPE STREQUAL "Release"))
 endif()
 
 # other
-CPMAddPackage("gh:assimp/assimp@5.3.1")
+CPMAddPackage("gh:assimp/assimp@5.4.1")
 CPMAddPackage("gh:glfw/glfw#3.4")
 #CPMAddPackage("gh:syoyo/tinygltf@2.8.21")
 CPMAddPackage("gh:g-truc/glm#1.0.1")

@@ -111,6 +111,7 @@ void GraphicEngine::End()
 	TextureManager::UnloadAll();
 	FontManager::UnloadAll();
 	LightingController::UnloadAll();
+	ModelsManager::UnloadAll();
 	Window::FreeAll();
 
 	glfwTerminate();

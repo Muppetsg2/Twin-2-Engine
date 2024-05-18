@@ -13,67 +13,142 @@ std::map<size_t, std::string> ModelsManager::_modelsPaths;
 inline void ModelsManager::LoadModelAssimp(const std::string& modelPath, ModelData* modelData)
 {
     // Create an instance of the Assimp importer
-    Assimp::Importer importer;
+    Assimp::Importer importer = Assimp::Importer();
 
     // Read the file with Assimp
     const aiScene* scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
     // Check if the scene was loaded successfully
-    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+    if (scene == nullptr) {
+        SPDLOG_ERROR("Assimp error: {}", importer.GetErrorString());
+        return;
+    }
+    
+    if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || scene->mRootNode == nullptr) {
         SPDLOG_ERROR("Assimp error: {}", importer.GetErrorString());
         return;
     }
 
-    modelData->meshes.resize(scene->mNumMeshes);
+    ProcessNodeAssimp(scene->mRootNode, scene, modelData);
 
+    //modelData->meshes.resize(scene->mNumMeshes);
+    //if (modelPath == "res/models/castle.obj") SPDLOG_INFO("{}", scene->mNumMeshes);
+
+    /*
     // Extract mesh data
     for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
-        const aiMesh* mesh = scene->mMeshes[i];
+        //const aiMesh* mesh = scene->mMeshes[i];
 
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
-        ExtractMeshAssimp(mesh, vertices, indices);
+        ExtractMeshAssimp(scene->mMeshes[i], &vertices, &indices);
 
-        modelData->meshes[i] = new InstantiatingMesh(vertices, indices);
-        //modelData->meshes.push_back(new InstantiatingMesh(vertices, indices));
+        //modelData->meshes[i] = new InstantiatingMesh(vertices, indices);
+        modelData->meshes.emplace_back(new InstantiatingMesh(&vertices, &indices));
+        vertices.clear();
+        indices.clear();
+    }
+    */
+
+    //if (modelPath == "res/models/castle.obj") SPDLOG_INFO("{}", modelData->meshes.size());
+    importer.FreeScene();
+}
+
+inline void ModelsManager::ProcessNodeAssimp(aiNode* node, const aiScene* scene, ModelData* modelData) {
+    // process all the node's meshes (if any)
+
+    std::vector<Vertex> vertices = std::vector<Vertex>();
+    std::vector<unsigned int> indices = std::vector<unsigned int>();
+
+    for (unsigned int i = 0; i < node->mNumMeshes; i++)
+    {
+        ExtractMeshAssimp(scene->mMeshes[node->mMeshes[i]], vertices, indices);
+        modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
+
+        vertices.clear();
+        indices.clear();
+    }
+
+    // then do the same for each of its children
+    for (unsigned int i = 0; i < node->mNumChildren; i++)
+    {
+        ProcessNodeAssimp(node->mChildren[i], scene, modelData);
     }
 }
 
-inline void ModelsManager::ExtractMeshAssimp(const aiMesh* mesh, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
+inline void ModelsManager::ExtractMeshAssimp(aiMesh* mesh, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
 {
     // Reserve memory for vertices
-    vertices.resize(mesh->mNumVertices);
+    //vertices->resize(mesh->mNumVertices);
+
+    bool texCoord = mesh->HasTextureCoords(0);
+    bool normal = mesh->HasNormals();
+    bool tanBitan = mesh->HasTangentsAndBitangents();
+    unsigned int size = mesh->mNumVertices;
+
+    Vertex v;
 
     // Extract vertex data
-    for (unsigned int i = 0; i < mesh->mNumVertices; ++i) {
+    for (unsigned int i = 0; i < size; ++i) {
+
+        v.Position.x = mesh->mVertices[i].x;
+        v.Position.y = mesh->mVertices[i].y;
+        v.Position.z = mesh->mVertices[i].z;
+
+        if (texCoord) {
+            v.TexCoords.x = mesh->mTextureCoords[0][i].x;
+            v.TexCoords.y = mesh->mTextureCoords[0][i].y;
+        }
+
+        if (normal) {
+            v.Normal.x = mesh->mNormals[i].x;
+            v.Normal.y = mesh->mNormals[i].y;
+            v.Normal.z = mesh->mNormals[i].z;
+        }
+
+        if (tanBitan) {
+            v.Tangent.x = mesh->mTangents[i].x;
+            v.Tangent.y = mesh->mTangents[i].y;
+            v.Tangent.z = mesh->mTangents[i].z;
+            v.Bitangent.x = mesh->mBitangents[i].x;
+            v.Bitangent.y = mesh->mBitangents[i].y;
+            v.Bitangent.z = mesh->mBitangents[i].z;
+        }
+
+        vertices.push_back(v);
+        
+        /*
         // Position
-        vertices[i].Position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+        (*vertices)[i].Position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
 
         // Texture coordinates
         if (mesh->HasTextureCoords(0)) {
-            vertices[i].TexCoords = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+            (*vertices)[i].TexCoords = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
         }
 
         // Normal
         if (mesh->HasNormals()) {
-            vertices[i].Normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+            (*vertices)[i].Normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
         }
 
         if (mesh->HasTangentsAndBitangents()) {
-            vertices[i].Tangent = glm::vec3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z);
-            vertices[i].Bitangent = glm::vec3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z);
+            (*vertices)[i].Tangent = glm::vec3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z);
+            (*vertices)[i].Bitangent = glm::vec3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z);
         }
+        */
     }
 
     // Reserve memory for indices
-    indices.reserve(mesh->mNumFaces * 3); // Assuming triangles
+    //indices->reserve(mesh->mNumFaces * 3); // Assuming triangles
 
+    size = mesh->mNumFaces;
     // Extract index data
-    for (unsigned int i = 0; i < mesh->mNumFaces; ++i) {
-        const aiFace& face = mesh->mFaces[i];
-        for (unsigned int j = 0; j < face.mNumIndices; ++j) {
+    for (unsigned int i = 0; i < size; i++)
+    {
+        aiFace face = mesh->mFaces[i];
+        unsigned int size2 = face.mNumIndices;
+        for (unsigned int j = 0; j < size2; j++)
             indices.push_back(face.mIndices[j]);
-        }
     }
 }
 
@@ -283,8 +358,9 @@ void ModelsManager::LoadCube(ModelData* modelData)
         20, 22, 21
     };
 
-    modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    //modelData->meshes.resize(1);
+    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
 void ModelsManager::LoadPlane(ModelData* modelData)
@@ -303,8 +379,9 @@ void ModelsManager::LoadPlane(ModelData* modelData)
         2, 3, 1
     };
 
-    modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    //modelData->meshes.resize(1);
+    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
 void ModelsManager::LoadSphere(ModelData* modelData)
@@ -478,8 +555,9 @@ void ModelsManager::LoadSphere(ModelData* modelData)
 
     trisNum.clear();
 
-    modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    //modelData->meshes.resize(1);
+    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
 void ModelsManager::LoadTorus(ModelData* modelData)
@@ -583,8 +661,9 @@ void ModelsManager::LoadTorus(ModelData* modelData)
 
     trisNum.clear();
 
-    modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    //modelData->meshes.resize(1);
+    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
 void ModelsManager::LoadCone(ModelData* modelData)
@@ -667,8 +746,9 @@ void ModelsManager::LoadCone(ModelData* modelData)
 
     trisNum.clear();
 
-    modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    //modelData->meshes.resize(1);
+    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
 void ModelsManager::LoadPiramid(ModelData* modelData)
@@ -711,8 +791,9 @@ void ModelsManager::LoadPiramid(ModelData* modelData)
         13, 14, 15
     };
 
-    modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    //modelData->meshes.resize(1);
+    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
 void ModelsManager::LoadTetrahedron(ModelData* modelData)
@@ -747,8 +828,9 @@ void ModelsManager::LoadTetrahedron(ModelData* modelData)
         9, 10, 11
     };
 
-    modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    //modelData->meshes.resize(1);
+    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
 void ModelsManager::LoadCylinder(ModelData* modelData)
@@ -838,8 +920,9 @@ void ModelsManager::LoadCylinder(ModelData* modelData)
 
     GenerateCircle(vertices, indices, segments, -h / 2.f, GL_CW);
 
-    modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    //modelData->meshes.resize(1);
+    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
 void ModelsManager::LoadHexagon(ModelData* modelData)
@@ -928,20 +1011,23 @@ void ModelsManager::LoadHexagon(ModelData* modelData)
         31, 36, 37
     };
 
-    modelData->meshes.resize(1);
-    modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    //modelData->meshes.resize(1);
+    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
+    modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
 ModelData* ModelsManager::LoadModelData(const std::string& modelPath)
 {
     size_t strHash = _stringHash(modelPath);
 
-    ModelData* modelData;
+    //if (strHash == 10269728616568091294) SPDLOG_INFO("{}", modelPath);
+
+    //ModelData* modelData = nullptr;
     if (_loadedModels.find(strHash) == _loadedModels.end())
     {
         SPDLOG_INFO("Loading model: {}!", modelPath);
 
-        modelData = new ModelData{
+        ModelData* modelData = new ModelData{
             .id = strHash,
         };
 
@@ -984,6 +1070,7 @@ ModelData* ModelsManager::LoadModelData(const std::string& modelPath)
             else
             {
                 SPDLOG_ERROR("Model file '{0}' not found!", modelPath);
+                delete modelData;
                 return nullptr;
             }
         }
@@ -994,10 +1081,10 @@ ModelData* ModelsManager::LoadModelData(const std::string& modelPath)
     else
     {
         SPDLOG_INFO("Model already loaded: {}!", modelPath);
-        modelData = _loadedModels[strHash];
+        //modelData = _loadedModels[strHash];
     }
 
-    return modelData;
+    return _loadedModels[strHash];
 }
 
 void ModelsManager::UnloadModel(const std::string& path) {
@@ -1013,6 +1100,7 @@ void ModelsManager::UnloadModel(size_t managerId) {
             delete mesh;
         }
 
+        modelData->meshes.clear();
         delete modelData;
         _loadedModels.erase(managerId);
         _modelsPaths.erase(managerId);
@@ -1149,11 +1237,7 @@ void ModelsManager::GenerateCircle(std::vector<Vertex>& vertices, std::vector<un
 
 InstantiatingModel ModelsManager::LoadModel(const std::string& modelPath)
 {
-    ModelData* modelData = LoadModelData(modelPath);
-
-    InstantiatingModel model = InstantiatingModel(modelData);
-
-    return model;
+    return InstantiatingModel(LoadModelData(modelPath));
 }
 
 InstantiatingModel ModelsManager::GetModel(size_t managerId) {
@@ -1200,31 +1284,53 @@ InstantiatingModel ModelsManager::GetHexagon() {
     return GetModel(_stringHash(HEXAGON_PATH));
 }
 
+void ModelsManager::UnloadAll() {
+    
+    for (auto item : _loadedModels) {
+        for (InstantiatingMesh* mesh : item.second->meshes)
+        {
+            delete mesh;
+        }
+
+        item.second->meshes.clear();
+        delete item.second;
+    }
+
+    _loadedModels.clear();
+    _modelsPaths.clear();
+}
+
 InstantiatingModel ModelsManager::CreateModel(const std::string& modelName, std::vector<Vertex> vertices, std::vector<unsigned int> indices)
 {
     size_t strHash = _stringHash(modelName);
 
-    ModelData* modelData = nullptr;
+    //ModelData* modelData = nullptr;
     if (_loadedModels.find(strHash) == _loadedModels.end())
     {
         SPDLOG_INFO("Creating model: {}!", modelName);
 
-        InstantiatingMesh* mesh = new InstantiatingMesh(vertices, indices);
-
+        /*
         modelData = new ModelData{
             .id = strHash,
+            .meshes { new InstantiatingMesh(vertices, indices) }
         };
+        */
 
-        modelData->meshes.push_back(mesh);
-        _loadedModels[strHash] = modelData;
+        _loadedModels.emplace(strHash, new ModelData {
+            .id = strHash,
+            .meshes { new InstantiatingMesh(vertices, indices) }
+            }
+        );
+
+        //_loadedModels[strHash] = modelData;
     }
     else
     {
         SPDLOG_INFO("Model already exist: {}!", modelName);
-        modelData = _loadedModels[strHash];
+        //modelData = _loadedModels[strHash];
     }
 
-    return modelData;
+    return _loadedModels[strHash];
 }
 
 std::string ModelsManager::GetModelName(size_t id)

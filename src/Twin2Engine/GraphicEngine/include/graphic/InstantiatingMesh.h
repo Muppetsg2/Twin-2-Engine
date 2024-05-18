@@ -18,11 +18,11 @@ namespace Twin2Engine::Graphic
         GLuint _EBO;
 
     public:
-        InstantiatingMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
+        InstantiatingMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
         virtual ~InstantiatingMesh();
 
 #ifdef MESH_FRUSTUM_CULLING
-        Physic::BoundingVolume* sphericalBV = nullptr;
+        Physic::BoundingVolume* SphericalBV = nullptr;
         bool IsOnFrustum(Frustum& frustum, glm::mat4 model);
 #endif // MESH_FRUSTUM_CULLING
 

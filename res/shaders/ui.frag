@@ -7,28 +7,44 @@ layout (std140, binding = 1) uniform WindowData
     float gamma;
 };
 
-layout (std140, binding = 4) uniform CanvasData {
-    mat4 canvasTransform;
-	vec2 canvasSize;
-    bool worldSpaceCanvas;
+struct RectTransform {
+    mat4 transform;
+    vec2 size;
 };
 
-layout (std140, binding = 5) uniform UIElementData {
-	mat4 elemTransform;
-	mat4 maskTransform;
-	vec4 color;
-	vec2 elemSize;
-	vec2 maskSize;
-	ivec2 spriteOffset;
-	ivec2 spriteSize;
-	ivec2 texSize;
-	bool isText;
-	bool hasTexture;
-	bool hasMaskTexture;
-	bool useMask;
+struct Sprite {
+    uvec2 offset;
+    uvec2 size;
+    uvec2 texSize;
+    bool isActive;
+};
+
+layout (std140, binding = 4) uniform CanvasData {
+    RectTransform canvasRect;
+	bool canvasIsInWorldSpace;
+    bool canvasIsActive;
+};
+
+layout (std140, binding = 5) uniform MaskData {
+    RectTransform maskRect;
+    Sprite maskSprite;
+    bool maskIsActive;
+};
+
+struct UIElement {
+    RectTransform rect;
+    Sprite sprite;
+    vec4 color;
+    bool isText;
+};
+
+const uint maxUIElements = 8;
+layout (std140, binding = 3) buffer UIElementsBuffer {
+	UIElement uiElements[maxUIElements];
 };
 
 in GS_OUT {
+    flat uint instanceID;
 	vec2 texCoord;
 	vec2 screenPos;
 	vec2 canvasPos;
@@ -46,19 +62,15 @@ void main()
     if (fs_in.screenPos.x > 1.0 || fs_in.screenPos.x < -1.0 || fs_in.screenPos.y > 1.0 || fs_in.screenPos.y < -1.0)
         discard;
 
-    // Is Frag In Canvas
-    if (fs_in.canvasPos.x > canvasSize.x * 0.5 || fs_in.canvasPos.x < -canvasSize.x * 0.5 || fs_in.canvasPos.y > canvasSize.y * 0.5 || fs_in.canvasPos.y < -canvasSize.y * 0.5)
-        discard;
-
     float maskPower = 1.0;
-    if (useMask) {
+    if (maskIsActive) {
         // Is Frag In Mask
-        vec2 inMaskPos = vec2(inverse(maskTransform) * vec4(fs_in.canvasPos, 0.0, 1.0));
-        if (inMaskPos.x > maskSize.x * 0.5 || inMaskPos.x < -maskSize.x * 0.5 || inMaskPos.y > maskSize.y * 0.5 || inMaskPos.y < -maskSize.y * 0.5)
+        vec2 inMaskPos = vec2(inverse(maskRect.transform) * vec4(fs_in.canvasPos, 0.0, 1.0));
+        if (inMaskPos.x > maskRect.size.x * 0.5 || inMaskPos.x < -maskRect.size.x * 0.5 || inMaskPos.y > maskRect.size.y * 0.5 || inMaskPos.y < -maskRect.size.y * 0.5)
             discard;
     
-        if (hasMaskTexture) {
-            vec2 invMaskSize = 1.0 / maskSize;
+        if (maskSprite.isActive) {
+            vec2 invMaskSize = 1.0 / maskRect.size;
             vec2 maskTexCoord = vec2(0.5);
             maskTexCoord.x += invMaskSize.x * inMaskPos.x;
             maskTexCoord.y += -invMaskSize.y * inMaskPos.y;
@@ -67,15 +79,17 @@ void main()
         }
     }
 
-    vec4 gammaColor = vec4(pow(color.rgb, vec3(gamma)), color.a);
+    UIElement element = uiElements[fs_in.instanceID];
+
+    vec4 gammaColor = vec4(pow(element.color.rgb, vec3(gamma)), element.color.a);
     vec4 elemColor = vec4(1.0);
-    if (hasTexture) {
-        vec2 invTexSize = 1.0 / texSize;
-        vec2 uv = (fs_in.texCoord * spriteSize + spriteOffset) * invTexSize;
+    if (element.sprite.isActive) {
+        vec2 invTexSize = 1.0 / element.sprite.texSize;
+        vec2 uv = (fs_in.texCoord * element.sprite.texSize + element.sprite.offset) * invTexSize;
         elemColor = texture(image, uv);
     }
 
-    if (!isText) {
+    if (!element.isText) {
         Color = elemColor * gammaColor;
     }
     else {

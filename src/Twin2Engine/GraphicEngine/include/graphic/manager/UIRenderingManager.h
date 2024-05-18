@@ -1,6 +1,7 @@
 #pragma once
 
 #include <tools/STD140Struct.h>
+#include <graphic/Sprite.h>
 
 namespace Twin2Engine
 {
@@ -10,68 +11,63 @@ namespace Twin2Engine
 	}
 
 	namespace Manager {
-		struct UIElement {
-			glm::mat4 canvasTransform = glm::mat4(1.f);
-			glm::mat4 elemTransform = glm::mat4(1.f);
-			glm::mat4 maskTransform = glm::mat4(1.f);
-			glm::vec4 color = glm::vec4(0.f);
-			glm::vec2 canvasSize = glm::vec2(0.f);
-			glm::vec2 elemSize = glm::vec2(0.f);
-			glm::vec2 maskSize = glm::vec2(0.f);
-			glm::ivec2 spriteSize = glm::ivec2(0);
-			glm::ivec2 spriteOffset = glm::ivec2(0);
-			glm::ivec2 textureSize = glm::ivec2(0);
-			uint32_t textureID = 0;
-			uint32_t maskTextureID = 0;
-			bool isText = false;
-			bool hasTexture = false;
+		struct UIRectData {
+			glm::mat4 transform = glm::mat4(1.f);
+			glm::vec2 size = glm::vec2(0.f);
+		};
+
+		struct CanvasData {
+			UIRectData rectTransform;
 			bool worldSpaceCanvas = false;
-			bool hasMaskTexture = false;
-			bool useMask = false;
 		};
 
-		static const Tools::STD140Offsets CanvasOffsets{
-			Tools::STD140Variable<glm::mat4>("canvasTransform"),
-			Tools::STD140Variable<glm::vec2>("canvasSize"),
-			Tools::STD140Variable<bool>("worldSpaceCanvas")
+		struct MaskData {
+			UIRectData rectTransform;
+			Graphic::Sprite* maskSprite = nullptr;
 		};
 
-		static const Tools::STD140Offsets UIElementOffsets{
-			Tools::STD140Variable<glm::mat4>("elemTransform"),
-			Tools::STD140Variable<glm::mat4>("maskTransform"),
-			Tools::STD140Variable<glm::vec4>("color"),
-			Tools::STD140Variable<glm::vec2>("elemSize"),
-			Tools::STD140Variable<glm::vec2>("maskSize"),
-			Tools::STD140Variable<glm::ivec2>("spriteOffset"),
-			Tools::STD140Variable<glm::ivec2>("spriteSize"),
-			Tools::STD140Variable<glm::ivec2>("texSize"),
-			Tools::STD140Variable<bool>("isText"),
-			Tools::STD140Variable<bool>("hasTexture"),
-			Tools::STD140Variable<bool>("hasMaskTexture"),
-			Tools::STD140Variable<bool>("useMask")
+		struct UIElementData {
+			CanvasData* canvas = nullptr;
+			MaskData* mask = nullptr;
+			
+			UIRectData rectTransform;
+			glm::vec4 color = glm::vec4(0.f);
+			int32_t layer = 0;
 		};
 
-		static Tools::STD140Struct MakeUIElementStruct(const UIElement& uiElem) {
-			Tools::STD140Struct uiElemStruct(UIElementOffsets);
-			uiElemStruct.Set("elemTransform", uiElem.elemTransform);
-			uiElemStruct.Set("maskTransform", uiElem.maskTransform);
-			uiElemStruct.Set("color", uiElem.color);
-			uiElemStruct.Set("elemSize", uiElem.elemSize);
-			uiElemStruct.Set("maskSize", uiElem.maskSize);
-			uiElemStruct.Set("spriteOffset", uiElem.spriteOffset);
-			uiElemStruct.Set("spriteSize", uiElem.spriteSize);
-			uiElemStruct.Set("texSize", uiElem.textureSize);
-			uiElemStruct.Set("isText", uiElem.isText);
-			uiElemStruct.Set("hasTexture", uiElem.hasTexture);
-			uiElemStruct.Set("hasMaskTexture", uiElem.hasMaskTexture);
-			uiElemStruct.Set("useMask", uiElem.useMask);
-			return uiElemStruct;
-		}
+		struct UIImageData : public UIElementData {
+			Graphic::Sprite* sprite = nullptr;
+		};
+
+		struct UITextData : public UIElementData {
+			Graphic::Texture2D* charTexture = nullptr;
+		};
 
 		class UIRenderingManager
 		{
 		private:
-			static std::queue<UIElement> _renderQueue;
+			static constexpr const uint32_t maxUIElementsPerRender = 8;
+
+			struct UIElementQueueData {
+				UIRectData rectTransform;
+				glm::vec4 color = glm::vec4(0.f);
+				glm::ivec2 spriteSize = glm::ivec2(0);
+				glm::ivec2 spriteOffset = glm::ivec2(0);
+				bool isText = false;
+			};
+
+			// STD140 STRUCTS
+			static Tools::STD140Struct RectTransformStruct;
+			static Tools::STD140Struct SpriteStruct;
+			static Tools::STD140Struct CanvasStruct;
+			static Tools::STD140Struct MaskStruct;
+			static Tools::STD140Struct UIElementStruct;
+			static Tools::STD140Struct UIElementsBufferStruct;
+
+			// Canvas -> Layer -> Mask -> Texture -> queue
+			static std::map<CanvasData*, std::map<int32_t, std::map<MaskData*, std::map<Graphic::Texture2D*, std::queue<UIElementQueueData>>>>> _renderQueue;
+			
+			// SHADER
 			static Graphic::Shader* _uiShader;
 
 			// POINT
@@ -80,14 +76,18 @@ namespace Twin2Engine
 
 			// UBOs
 			static uint32_t _canvasUBO;
-			static uint32_t _elemUBO;
+			static uint32_t _maskUBO;
+
+			// SSBO
+			static uint32_t _elemsSSBO;
 
 			static void Init();
 			static void UnloadAll();
 
 			static void Render();
 		public:
-			static void Render(UIElement elem);
+			static void Render(UITextData textData);
+			static void Render(UIImageData imageData);
 
 			friend class Graphic::GraphicEngine;
 		};

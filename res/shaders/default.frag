@@ -109,13 +109,13 @@ struct DirectionalLight {
 uniform sampler2D DirLightShadowMaps[MAX_DIRECTIONAL_LIGHTS]; // SHADOW MAP
 uniform sampler2D occlusionMap;
 
-layout(std140, binding = 3) buffer Lights {
-    PointLight pointLights[MAX_POINT_LIGHTS];
-    SpotLight spotLights[MAX_SPOT_LIGHTS];
-    DirectionalLight directionalLights[MAX_DIRECTIONAL_LIGHTS];
+layout(std430, binding = 2) buffer Lights {
     uint numberOfPointLights;
     uint numberOfSpotLights;
     uint numberOfDirLights;
+    PointLight pointLights[MAX_POINT_LIGHTS];
+    SpotLight spotLights[MAX_SPOT_LIGHTS];
+    DirectionalLight directionalLights[MAX_DIRECTIONAL_LIGHTS];
 };
 
 layout (std140, binding = 0) uniform CameraData

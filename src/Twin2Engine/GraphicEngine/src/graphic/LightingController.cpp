@@ -21,7 +21,7 @@ LightingController::LightingController() {
 	glGenBuffers(1, &LightsBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, LightsBuffer);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Lights), NULL, GL_DYNAMIC_DRAW);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, LightsBuffer);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, LightsBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
 

@@ -30,6 +30,8 @@ namespace Twin2Engine::UI {
 		void OnTextInput(unsigned int character);
 
 		bool _insertCursorMode = false;
+
+		Manager::MaskData _inputMask;
 	public:
 		virtual void Initialize() override;
 		virtual void Update() override;

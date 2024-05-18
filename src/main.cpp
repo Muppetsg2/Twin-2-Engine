@@ -13,6 +13,7 @@ const char* const tracy_RenderingImGui = "RenderingImGui";
 //#define RELEASE_LOGGER
 
 #include <GameEngine.h>
+#include <GameEngine.h>
 
 // TILEMAP
 #include <Tilemap/HexagonalTilemap.h>

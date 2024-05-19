@@ -12,6 +12,7 @@ namespace Twin2Engine::Core {
 		size_t TransformChangeActionId = 0;
 
 	public:
+		static int VER_COL_ID;
 		HexagonalColliderComponent();
 		void SetBaseLength(float v);
 		//Along Y

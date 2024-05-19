@@ -3,6 +3,8 @@
 #include <physic/CollisionManager.h>
 #include <tools/YamlConverters.h>
 
+int Twin2Engine::Core::HexagonalColliderComponent::VER_COL_ID = 0;
+
 Twin2Engine::Core::HexagonalColliderComponent::HexagonalColliderComponent() : ColliderComponent()
 {
 	collider = new Twin2Engine::Physic::GameCollider(this, new Twin2Engine::Physic::HexagonalColliderData());
@@ -106,6 +108,10 @@ void Twin2Engine::Core::HexagonalColliderComponent::DrawEditor()
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Hexagonal Collider##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
+		//int vint = VER_COL_ID;
+		ImGui::InputInt(string("VerColId##").append(id).c_str(), &VER_COL_ID);
+		//VER_COL_ID = vint;
+
 		float v = ((Twin2Engine::Physic::HexagonalColliderData*)collider->shapeColliderData)->BaseLength;
 		ImGui::DragFloat(string("BaseLength##").append(id).c_str(), &v, 0.1f);
 

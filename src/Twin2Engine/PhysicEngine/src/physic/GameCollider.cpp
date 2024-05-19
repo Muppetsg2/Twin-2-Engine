@@ -1,4 +1,5 @@
 #include <physic/GameCollider.h>
+#include <core/HexagonalColliderComponent.h>
 #include <core/Transform.h>
 
 //#define USE_BOUNDING_VOLUMES
@@ -388,15 +389,15 @@ bool GameCollider::rayCollision(Ray& ray, RaycastHit& raycastHit) {
 	{
 		HexagonalColliderData* hexData = (HexagonalColliderData*)shapeColliderData;
 		glm::vec3 dir = -ray.Direction;
-		if (colliderComponent->colliderId == 1159) {
-			bool b = true;
-		}
 		dir.y = 0.0f;
 		dir = glm::normalize(dir);
 		float up = glm::dot(dir, hexData->u);
 		float vp = glm::dot(dir, hexData->v);
 		float wp = glm::dot(dir, hexData->w);
 
+		if (colliderComponent->colliderId == Twin2Engine::Core::HexagonalColliderComponent::VER_COL_ID) {
+			bool b = true;
+		}
 		glm::vec3 intersectionPoint(0.0f);
 		glm::vec3 o = ray.Origin;
 		o.y = hexData->Position.y;

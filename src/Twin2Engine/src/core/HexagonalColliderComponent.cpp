@@ -70,7 +70,7 @@ void HexagonalColliderComponent::OnDisable()
 
 void HexagonalColliderComponent::OnDestroy()
 {
-	//GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
+	GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
 	CollisionManager::Instance()->UnregisterCollider(collider);
 }
 

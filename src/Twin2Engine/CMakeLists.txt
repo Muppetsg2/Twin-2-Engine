@@ -55,25 +55,20 @@ target_include_directories(${PROJECT_NAME} PUBLIC	${Twin2Engine_INCLUDE_DIR}
 													${TOOLS_INCLUDE_DIR})
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
-    target_link_libraries(${PROJECT_NAME} TracyClient)
-	target_link_libraries(${PROJECT_NAME} imgui)
-	target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
+    target_link_libraries(${PROJECT_NAME} PUBLIC TracyClient)
+	 target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
+	 target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
 endif()
 
 if(is_miniaudio)
-	target_link_libraries(${PROJECT_NAME} miniaudio)
+	target_link_libraries(${PROJECT_NAME} PUBLIC miniaudio)
 	target_include_directories(${PROJECT_NAME} PUBLIC ${miniaudio_SOURCE_DIR})
 else()
-	target_link_libraries(${PROJECT_NAME} soloud)
+	target_link_libraries(${PROJECT_NAME} PUBLIC soloud)
 	target_include_directories(${PROJECT_NAME} PUBLIC ${soloud_SOURCE_DIR})
 endif()
 
-if (is_imgui)
-	target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
-	target_link_libraries(${PROJECT_NAME} imgui)
-endif()
-
-target_link_libraries(${PROJECT_NAME} 	glfw
+target_link_libraries(${PROJECT_NAME} PUBLIC glfw
 										GraphicEngine
 										PhysicEngine
 										Tools)

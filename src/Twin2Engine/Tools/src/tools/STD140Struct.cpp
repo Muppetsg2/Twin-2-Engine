@@ -5,6 +5,8 @@ using namespace std;
 
 size_t STD140Struct::_GetArrayElemSize(const vector<size_t>& offsets) const
 {
+	ZoneScoped;
+
 	if (offsets.size() > 1) {
 		return offsets[1] - offsets[0];
 	}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <tools/templates.h>
+#include <tools/stringExtension.h>
 
 namespace Twin2Engine::Tools {
 	class STD140Offsets;

@@ -251,8 +251,6 @@ void UIRenderingManager::Render()
 								vec2 maxPointInMask = invMaskTransform * vec4(maxPoint, 0.f, 1.f);
 								vec2 minPointInMask = invMaskTransform * vec4(minPoint, 0.f, 1.f);
 
-
-								// PRZETESTUJ..........
 								if (minPointInMask.x < -maskData->rectTransform.size.x * .5f || minPointInMask.y < -maskData->rectTransform.size.y * .5f || maxPointInMask.x > maskData->rectTransform.size.x * .5f || maxPointInMask.y > maskData->rectTransform.size.y * .5f) {
 									renderQueue.pop();
 									continue;

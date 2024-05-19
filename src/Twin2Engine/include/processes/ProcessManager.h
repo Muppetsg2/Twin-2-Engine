@@ -1,5 +1,4 @@
-#ifndef _PROCESSMANAGER_H_
-#define _PROCESSMANAGER_H_
+#pragma once
 
 #include <unordered_set>
 #include <processes/SynchronizedProcess.h>
@@ -15,7 +14,7 @@ namespace Twin2Engine::Processes {
 			static ProcessManager* instance;
 			std::unordered_set<SynchronizedProcess*> synchronizedProcesses;
 			std::unordered_set<Process*> otherProcesses;
-			ProcessManager() {}
+			ProcessManager() = default;
 
 			void AddProcess(SynchronizedProcess* process);
 			void AddProcess(ThreadProcess* process);
@@ -34,5 +33,3 @@ namespace Twin2Engine::Processes {
 			void ReloadProcesses();
 	};
 }
-
-#endif // !_PROCESSMANAGER_H_

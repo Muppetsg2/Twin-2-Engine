@@ -148,6 +148,8 @@ void GameEngine::End()
     Input::FreeAllWindows();
 
     GraphicEngine::End();
+    ScriptableObjectManager::UnloadAll();
+    ProcessManager::DeleteInstance();
 }
 
 MethodEventHandler GameEngine::OnInput;

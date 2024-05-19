@@ -232,6 +232,19 @@ std::map<size_t, std::string> MaterialsManager::GetAllMaterialsNames() {
 	return names;
 }
 
+void MaterialsManager::UnloadAll() 
+{
+	for (auto item : _loadedMaterials) {
+		delete item.second->materialParameters;
+		item.second->shader = nullptr;
+		delete item.second;
+	}
+
+	_loadedMaterials.clear();
+	//_typeHandleMap.clear();
+	_materialsPaths.clear();
+}
+
 YAML::Node MaterialsManager::Serialize()
 {
 	YAML::Node materials;

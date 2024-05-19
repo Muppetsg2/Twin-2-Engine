@@ -1,5 +1,4 @@
-#ifndef GRAPHIC_ENGINE_H
-#define GRAPHIC_ENGINE_H
+#pragma once
 
 #include <graphic/manager/ShaderManager.h>
 #include <graphic/manager/FontManager.h>
@@ -33,5 +32,3 @@ namespace Twin2Engine::Graphic
 		static void DepthRender();
 	};
 }
-
-#endif

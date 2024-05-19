@@ -1,6 +1,4 @@
-#ifndef _PROCESS_H_
-#define _PROCESS_H_
-
+#pragma once
 #include <unordered_set>
 #include <string>
 #include <tools/YamlConverters.h>
@@ -43,5 +41,3 @@ namespace Twin2Engine::Processes {
 			virtual YAML::Node Serialize() const;
 	};
 }
-
-#endif // !_PROCESS_H_

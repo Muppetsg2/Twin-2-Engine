@@ -58,6 +58,15 @@ if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     target_link_libraries(${PROJECT_NAME} TracyClient)
 	target_link_libraries(${PROJECT_NAME} imgui)
 	target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
+
+	get_property(with_vld GLOBAL PROPERTY WITH_VLD)
+
+	if (with_vld AND MSVC)
+		message("Enabling Visual Leak Detector")
+		target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/../../lib/vld/Win64/vld.lib)
+		target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../../thirdparty/vld/include)
+		message("VLD Included")
+	endif()
 endif()
 
 if(is_miniaudio)
@@ -66,11 +75,6 @@ if(is_miniaudio)
 else()
 	target_link_libraries(${PROJECT_NAME} soloud)
 	target_include_directories(${PROJECT_NAME} PUBLIC ${soloud_SOURCE_DIR})
-endif()
-
-if (is_imgui)
-	target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
-	target_link_libraries(${PROJECT_NAME} imgui)
 endif()
 
 target_link_libraries(${PROJECT_NAME} 	glfw

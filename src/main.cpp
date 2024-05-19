@@ -1,11 +1,15 @@
+#define VERSION "0.7"
+
 #define USE_IMGUI_CONSOLE_OUTPUT true
 #define USE_WINDOWS_CONSOLE_OUTPUT false
+#define WITH_VLD false
 
 #if USE_IMGUI_CONSOLE_OUTPUT || !USE_WINDOWS_CONSOLE_OUTPUT || !_DEBUG
 
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
 #endif
+
 const char* const tracy_ImGuiDrawingConsole = "ImGuiDrawingConsole";
 const char* const tracy_RenderingImGui = "RenderingImGui";
 
@@ -43,6 +47,10 @@ const char* const tracy_RenderingImGui = "RenderingImGui";
 
 #if _DEBUG
 // EDITOR
+
+#if WITH_VLD
+#include <vld.h>
+#endif
 #include <Editor/Common/MaterialCreator.h>
 #include <Editor/Common/ProcessingMtlFiles.h>
 #include <Editor/Common/ScriptableObjectEditorManager.h>
@@ -82,8 +90,6 @@ bool mouseNotUsed = true;
 void input();
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void update();
-
-//#undef _DEBUG
 
 #if _DEBUG
 void init_imgui();
@@ -157,6 +163,14 @@ int main(int, char**)
 
     spdlog::set_level(spdlog::level::debug);
     fileLoggerSink->StartLogging();
+#endif
+
+    SPDLOG_INFO("Twin^2 Engine Version: %s", VERSION);
+
+#if _DEBUG
+    SPDLOG_INFO("Configuration: DEBUG");
+#else
+    SPDLOG_INFO("Configuration: RELEASE");
 #endif
 
     if (!GameEngine::Init(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_FULLSCREEN, GL_VERSION_MAJOR, GL_VERSION_MINOR))
@@ -277,6 +291,8 @@ int main(int, char**)
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
+
+        Editor::Common::ScriptableObjectEditorManager::End();
     };
 #endif
 
@@ -497,7 +513,7 @@ void render_imgui()
 #if USE_IMGUI_CONSOLE_OUTPUT
 
         FrameMarkStart(tracy_ImGuiDrawingConsole);
-        ImGuiSink<mutex>::Draw();
+        //ImGuiSink<mutex>::Draw();
         FrameMarkEnd(tracy_ImGuiDrawingConsole);
 
 #endif

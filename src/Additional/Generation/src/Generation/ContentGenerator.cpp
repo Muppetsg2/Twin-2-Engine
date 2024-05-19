@@ -14,6 +14,10 @@ void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
     }
 }
 
+void ContentGenerator::OnDestroy() {
+    mapElementGenerators.clear();
+}
+
 YAML::Node ContentGenerator::Serialize() const
 {
     YAML::Node node = Twin2Engine::Core::Component::Serialize();

@@ -143,7 +143,7 @@ Collision* GameCollider::collide(Collider* other) {
 						}
 						else {
 							//separacja obu gameobjektów
-							SPDLOG_INFO("{} - separacja obu gameobjektów \t({} {})\t ({}, {}, {})", colliderComponent->colliderId, colliderShape, other->colliderShape, collision->separation.x,
+							SPDLOG_INFO("{} - separacja obu gameobjektów \t({} {})\t ({}, {}, {})", colliderComponent->colliderId, Twin2Engine::Physic::to_string(colliderShape), Twin2Engine::Physic::to_string(other->colliderShape), collision->separation.x,
 								collision->separation.y, collision->separation.z);
 							//std::cout << colliderComponent->colliderId << " - separacja obu gameobjektów\n";
 							colliderComponent->GetTransform()->SetGlobalPosition(

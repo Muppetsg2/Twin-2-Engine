@@ -121,19 +121,19 @@ void UIRenderingManager::UnloadAll() {
 	glDeleteVertexArrays(1, &_pointVAO);
 }
 
-const char* const tracy_RenderUIShader = "Render UI Shader";
-char* const tracy_RenderUICanvasName = new char[25];
-char* const tracy_RenderUICanvasUBOName = new char[29];
-char* const tracy_RenderUILayerName = new char[23];
-char* const tracy_RenderUIMaskName = new char[23];
-char* const tracy_RenderUIMaskUBOName = new char[27];
-char* const tracy_RenderUITextureName = new char[26];
-char* const tracy_RenderUIElementName = new char[26];
-char* const tracy_RenderUIElementDataName = new char[31];
-const char* const tracy_RenderUIEnd = "Render UI End";
-
 void UIRenderingManager::Render()
 {
+	const char* const tracy_RenderUIShader = "Render UI Shader";
+	char* const tracy_RenderUICanvasName = new char[50];
+	char* const tracy_RenderUICanvasUBOName = new char[50];
+	char* const tracy_RenderUILayerName = new char[50];
+	char* const tracy_RenderUIMaskName = new char[50];
+	char* const tracy_RenderUIMaskUBOName = new char[50];
+	char* const tracy_RenderUITextureName = new char[50];
+	char* const tracy_RenderUIElementName = new char[50];
+	char* const tracy_RenderUIElementDataName = new char[50];
+	const char* const tracy_RenderUIEnd = "Render UI End";
+
 	ZoneScoped;
 
 	if (_uiShader != nullptr) {
@@ -146,12 +146,12 @@ void UIRenderingManager::Render()
 		glBindVertexArray(_pointVAO);
 		size_t canvasId = 0;
 		for (const auto& canvas : _renderQueue) {
-			snprintf(tracy_RenderUICanvasName, 25, "Render UI Canvas %zu", canvasId);
+			sprintf(tracy_RenderUICanvasName, "Render UI Canvas %zu", canvasId);
 			FrameMarkStart(tracy_RenderUICanvasName);
 			
 			CanvasData* canvasData = canvas.first;
 
-			snprintf(tracy_RenderUICanvasUBOName, 29, "Render UI Canvas UBO %zu", canvasId);
+			sprintf(tracy_RenderUICanvasUBOName, "Render UI Canvas UBO %zu", canvasId);
 			FrameMarkStart(tracy_RenderUICanvasUBOName);
 			glBindBuffer(GL_UNIFORM_BUFFER, _canvasUBO);
 			if (canvasData != nullptr) {
@@ -166,17 +166,17 @@ void UIRenderingManager::Render()
 			FrameMarkEnd(tracy_RenderUICanvasUBOName);
 
 			for (const auto& layer : canvas.second) {
-				snprintf(tracy_RenderUILayerName, 23, "Render UI Layer %d", layer.first);
+				sprintf(tracy_RenderUILayerName, "Render UI Layer %d", layer.first);
 				FrameMarkStart(tracy_RenderUILayerName);
 
 				size_t maskId = 0;
 				for (const auto& mask : layer.second) {
-					snprintf(tracy_RenderUIMaskName, 23, "Render UI Mask %zu", maskId);
+					sprintf(tracy_RenderUIMaskName, "Render UI Mask %zu", maskId);
 					FrameMarkStart(tracy_RenderUIMaskName);
 
 					MaskData* maskData = mask.first;
 
-					snprintf(tracy_RenderUIMaskUBOName, 27, "Render UI Mask UBO %zu", maskId);
+					sprintf(tracy_RenderUIMaskUBOName, "Render UI Mask UBO %zu", maskId);
 					FrameMarkStart(tracy_RenderUIMaskUBOName);
 					glBindBuffer(GL_UNIFORM_BUFFER, _maskUBO);
 					if (maskData != nullptr) {
@@ -202,7 +202,7 @@ void UIRenderingManager::Render()
 
 					size_t textureId = 0;
 					for (const auto& texture : mask.second) {
-						snprintf(tracy_RenderUITextureName, 26, "Render UI Texture %zu", textureId);
+						sprintf(tracy_RenderUITextureName, "Render UI Texture %zu", textureId);
 						FrameMarkStart(tracy_RenderUITextureName);
 
 						Texture2D* textureData = texture.first;
@@ -217,12 +217,12 @@ void UIRenderingManager::Render()
 						size_t i = 0;
 						size_t elementId = 0;
 						while (renderQueue.size() > 0) {
-							snprintf(tracy_RenderUIElementName, 26, "Render UI Element %zu", elementId);
+							sprintf(tracy_RenderUIElementName, "Render UI Element %zu", elementId);
 							FrameMarkStart(tracy_RenderUIElementName);
 
 							const UIElementQueueData& uiElem = renderQueue.front();
 
-							snprintf(tracy_RenderUIElementDataName, 31, "Render UI Element Data %zu", elementId);
+							sprintf(tracy_RenderUIElementDataName, "Render UI Element Data %zu", elementId);
 							FrameMarkStart(tracy_RenderUIElementDataName);
 							RectTransformStruct.Set("transform", uiElem.rectTransform.transform);
 							RectTransformStruct.Set("size", uiElem.rectTransform.size);
@@ -282,6 +282,15 @@ void UIRenderingManager::Render()
 		glBindVertexArray(NULL);
 		FrameMarkEnd(tracy_RenderUIEnd);
 	}
+
+	delete[] tracy_RenderUICanvasName;
+	delete[] tracy_RenderUICanvasUBOName;
+	delete[] tracy_RenderUILayerName;
+	delete[] tracy_RenderUIMaskName;
+	delete[] tracy_RenderUIMaskUBOName;
+	delete[] tracy_RenderUITextureName;
+	delete[] tracy_RenderUIElementName;
+	delete[] tracy_RenderUIElementDataName;
 }
 
 void UIRenderingManager::Render(UITextData text) 

@@ -87,6 +87,8 @@ void Twin2Engine::Manager::ScriptableObjectManager::UnloadAll()
 	{
 		delete pair.second;
 	}
+	_scriptableObjects.clear();
+	_scriptableObjectsPaths.clear();
 }
 
 YAML::Node Twin2Engine::Manager::ScriptableObjectManager::Serialize()

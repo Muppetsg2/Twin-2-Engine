@@ -75,7 +75,7 @@ CPMAddPackage("gh:assimp/assimp@5.4.1")
 CPMAddPackage("gh:glfw/glfw#3.4")
 #CPMAddPackage("gh:syoyo/tinygltf@2.8.21")
 CPMAddPackage("gh:g-truc/glm#1.0.1")
-CPMAddPackage("gh:gabime/spdlog@1.13.0")
+CPMAddPackage("gh:gabime/spdlog@1.14.1")
 CPMAddPackage("gh:jbeder/yaml-cpp#0.8.0")
 CPMAddPackage("gh:freetype/freetype#VER-2-13-2")
 

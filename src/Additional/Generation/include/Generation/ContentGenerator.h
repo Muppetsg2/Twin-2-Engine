@@ -12,6 +12,8 @@ namespace Generation
         std::vector<Generators::AMapElementGenerator*> mapElementGenerators;
         void GenerateContent(Tilemap::HexagonalTilemap* targetTilemap);
 
+        virtual void OnDestroy() override;
+
         virtual YAML::Node Serialize() const override;
         virtual bool Deserialize(const YAML::Node& node) override;
 

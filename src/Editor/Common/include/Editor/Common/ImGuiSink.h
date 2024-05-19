@@ -110,6 +110,8 @@ namespace Editor::Common
             this->formatter_->format(msg, formatted);
             std::string message = fmt::to_string(formatted);
 
+            // TODO: Dodac by powtarzajace sie wiadomosci dostawaly ++size_t jak w Unity jesli wystepuja od razu po sobie (Mysle nad sposobem optymalizacji pamieci)
+            // TODO: A moze ciagla praca na otwartym pliku???
             MessageHolder::logMessages.emplace_back(ImGuiLogMessage(message, msg.level, msg.source));
 
             _mutex.lock();

@@ -243,7 +243,7 @@ void MeshRenderingManager::UpdateQueues()
 									meshPair.second.rendered.push_back(renderedSegment);
 									meshPair.second.renderedCount += renderedSegment.count;
 
-									renderedSegment.begin += renderedSegment.count;
+									renderedSegment.begin += renderedSegment.count + 1;
 									renderedSegment.count = 0u;
 								}
 								else
@@ -264,7 +264,7 @@ void MeshRenderingManager::UpdateQueues()
 							meshPair.second.rendered.push_back(renderedSegment);
 							meshPair.second.renderedCount += renderedSegment.count;
 
-							renderedSegment.begin += renderedSegment.count;
+							renderedSegment.begin += renderedSegment.count + 1;
 							renderedSegment.count = 0u;
 						}
 						else
@@ -329,7 +329,7 @@ void MeshRenderingManager::UpdateQueues()
 									meshPair.second.rendered.push_back(renderedSegment);
 									meshPair.second.renderedCount += renderedSegment.count;
 
-									renderedSegment.begin += renderedSegment.count;
+									renderedSegment.begin += renderedSegment.count + 1;
 									renderedSegment.count = 0u;
 								}
 								else
@@ -350,7 +350,7 @@ void MeshRenderingManager::UpdateQueues()
 							meshPair.second.rendered.push_back(renderedSegment);
 							meshPair.second.renderedCount += renderedSegment.count;
 
-							renderedSegment.begin += renderedSegment.count;
+							renderedSegment.begin += renderedSegment.count + 1;
 							renderedSegment.count = 0u;
 						}
 						else

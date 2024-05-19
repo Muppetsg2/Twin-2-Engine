@@ -170,7 +170,11 @@ void GameObject::SetActive(bool active)
 	{
 		_activeSelf = active;
 
-		SetActiveInHierarchy(active);
+		//SetActiveInHierarchy(active);
+		for (int index = 0; index < _transform->GetChildCount(); index++)
+		{
+			_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(_activeSelf);
+		}
 
 		OnActiveChanged.Invoke(this); // Wywo³ywanie eventu
 	}

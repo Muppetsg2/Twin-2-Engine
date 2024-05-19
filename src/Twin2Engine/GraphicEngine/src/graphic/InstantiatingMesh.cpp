@@ -116,7 +116,7 @@ InstantiatingMesh::~InstantiatingMesh()
 }
 
 #ifdef MESH_FRUSTUM_CULLING
-bool InstantiatingMesh::IsOnFrustum(Frustum& frustum, glm::mat4 model)
+bool InstantiatingMesh::IsOnFrustum(Frustum& frustum, const glm::mat4& model)
 {
     if (sphericalBV != nullptr) {
         sphericalBV->shapeColliderData->Position = glm::vec3(model * glm::vec4(sphericalBV->shapeColliderData->LocalPosition, 1.0f));

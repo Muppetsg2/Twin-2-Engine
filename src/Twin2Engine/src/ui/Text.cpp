@@ -4,7 +4,6 @@
 #include <tools/YamlConverters.h>
 #include <manager/SceneManager.h>
 #include <graphic/Shader.h>
-#include <graphic/manager/UIRenderingManager.h>
 #include <graphic/manager/FontManager.h>
 #include <map>
 #include <tools/EventHandler.h>
@@ -302,19 +301,20 @@ void Text::Update()
 
 void Text::Render()
 {
-	UIElement elem{};
-	elem.hasTexture = true;
-	elem.isText = true;
-	elem.color = _color;
-	elem.spriteOffset = { 0, 0 };
-	elem.canvasSize = Window::GetInstance()->GetContentSize();
-	elem.worldSpaceCanvas = false;
+	UITextData text{};
+	text.canvas = nullptr; // Na razie tylko na ekranie
+	text.layer = 0; // Domyœlny layer
+	text.color = _color;
 
 	mat4 model = GetTransform()->GetTransformMatrix();
+	text.mask = nullptr;
 	if (_overflow != TextOverflow::Overflow) {
-		elem.maskTransform = model;
-		elem.maskSize = { _width, _height };
-		elem.useMask = true;
+		text.mask = &_textMask;
+		_textMask.rectTransform.transform = model;
+		_textMask.rectTransform.size = { _width, _height };
+	}
+	else {
+		text.mask = nullptr;
 	}
 
 	// iterate through all characters
@@ -324,13 +324,11 @@ void Text::Render()
 		float h = c.character->Size.y;
 
 		glm::mat4 tempModel = glm::translate(model, glm::vec3(c.position, 0.f));
-		elem.elemSize = { w, h };
-		elem.textureSize = { w, h };
-		elem.spriteSize = { w, h };
-		elem.elemTransform = tempModel;
-		elem.textureID = c.character->TextureID;
+		text.rectTransform.transform = tempModel;
+		text.rectTransform.size = { w, h };
+		text.charTexture = c.character->texture;
 
-		UIRenderingManager::Render(elem);
+		UIRenderingManager::Render(text);
 	}
 }
 

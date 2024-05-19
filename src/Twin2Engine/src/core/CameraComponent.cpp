@@ -631,6 +631,8 @@ void CameraComponent::Render()
 		_screenShader->SetBool("displayDepth", _mode == CameraDisplayMode::DEPTH);
 		_screenShader->SetBool("displaySSAO", _mode == CameraDisplayMode::SSAO_MAP);
 
+		_screenShader->SetBool("enableDepthOfField", (_filters& (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0);
+
 		_screenPlane.GetMesh(0)->Draw(1);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		FrameMarkEnd(tracy_OnScreenFramebuffer);
@@ -1102,6 +1104,17 @@ void CameraComponent::DrawEditor()
 		else {
 			if (e) {
 				acFil ^= (uint8_t)CameraRenderFilter::OUTLINE;
+			}
+		}
+
+		g = (fil & (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0 && !n;
+		ImGui::Checkbox(string("Depth of Field##").append(id).c_str(), &g);
+		if (g) {
+			acFil |= (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD;
+		}
+		else {
+			if (e) {
+				acFil ^= (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD;
 			}
 		}
 

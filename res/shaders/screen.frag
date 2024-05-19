@@ -23,6 +23,8 @@ uniform bool hasOutline;
 uniform bool displayDepth;
 uniform bool displaySSAO;
 
+uniform bool enableDepthOfField;
+
 vec3 applyVignette(vec3 color) {
     vec2 position = TexCoord.xy - vec2(0.5);  
     float dist = length(position * 2);
@@ -111,6 +113,26 @@ vec3 applyBlur() {
     return color;
 }
 
+vec3 applyDepthOfField(vec3 currentOutput)
+{
+    float currentDepth = getDepthValue(TexCoord).r;
+    float centerDepth = getDepthValue(vec2(0.5, 0.5)).r;
+
+    //vec3 blurred = vec3(0.0, 0.0, 0.0);
+    vec3 blurred = applyBlur();
+    
+    vec2 resolution = textureSize(screenTexture, 0);
+
+    //float distance = currentDepth - centerDepth;
+    float distance = length(currentDepth - centerDepth) * 150;
+    distance = (distance < 0) ? -distance : distance;
+
+    distance = clamp(distance, 0.0, 1.0);
+
+    //return distance * blurred + (1.0 - distance) * currentOutput;
+    return distance * blurred + (1.0 - distance) * currentOutput;
+}
+
 void main() {
 
     vec3 res = getColor(TexCoord);
@@ -129,6 +151,11 @@ void main() {
     
     if (hasNegative) {
         res = applyNegative(res);
+    }
+
+    if (enableDepthOfField)
+    {
+        res = applyDepthOfField(res);
     }
 
     Color = vec4(pow(res, vec3(1.0/gamma)), 1.0);

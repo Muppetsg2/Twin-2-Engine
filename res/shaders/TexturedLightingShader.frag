@@ -68,7 +68,7 @@ struct DirectionalLight {
 	float power;		  // Light source power
 };
 
-layout (std430, binding = 3) buffer Lights {
+layout (std430, binding = 2) buffer Lights {
 	uint numberOfPointLights;
 	uint numberOfSpotLights;
 	uint numberOfDirLights;

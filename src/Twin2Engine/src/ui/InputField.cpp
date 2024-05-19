@@ -10,6 +10,7 @@ using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 using namespace std;
+using namespace glm;
 
 const float InputField::_cursorDelay = 1.f;
 
@@ -146,9 +147,14 @@ void InputField::Render()
 {
 	// Render Cursor
 	if (_cursorVisible) {
-		UIElement elem{};
+		UIImageData cursorImage{};
 		// KALKULACJA POZYCJI KURSORA
-		elem.elemTransform = _text->GetTransform()->GetTransformMatrix();
+		cursorImage.canvas = nullptr; // Na ekranie na razie
+		cursorImage.layer = 1; // Nad tekstem
+		cursorImage.rectTransform.transform = _text->GetTransform()->GetTransformMatrix();
+		cursorImage.rectTransform.size = uvec2(0.f);
+		cursorImage.color = glm::vec4(.5f, .5f, .5f, .9f);
+
 		glm::vec2 cursor = glm::vec2(-_text->_width * .5f + 1, 0.f);
 		if (_text->_displayTextCharCache.size() != 0) {
 			if (_cursorPos - _textOffset >= _text->_displayTextCharCache.size()) {
@@ -159,27 +165,27 @@ void InputField::Render()
 				cursor += _text->_displayTextCharCache[_cursorPos - _textOffset].cursorPos;
 			}
 		}
-		elem.elemTransform = glm::translate(elem.elemTransform, glm::vec3(cursor, 0.f));
+		cursorImage.rectTransform.transform = glm::translate(cursorImage.rectTransform.transform, glm::vec3(cursor, 0.f));
 
 		if (_text->_overflow != TextOverflow::Overflow) {
-			elem.useMask = true;
-			elem.maskSize = { _text->_width + 4, _text->_height };
-			elem.maskTransform = _text->GetTransform()->GetTransformMatrix();
+			cursorImage.mask = &_inputMask;
+			_inputMask.maskSprite = nullptr;
+			_inputMask.rectTransform.transform = cursorImage.rectTransform.transform;
+			_inputMask.rectTransform.size = { _text->_width + 4, _text->_height };
+		}
+		else {
+			cursorImage.mask = nullptr;
 		}
 
 		if (_insertCursorMode && _cursorPos - _textOffset < _text->_displayTextCharCache.size()) {
-			elem.elemSize = glm::ivec2(_text->_displayTextCharCache[_cursorPos - _textOffset].character->Size.x, _text->GetSize());
-			elem.elemTransform = glm::translate(elem.elemTransform, glm::vec3(elem.elemSize.x * .5f, 0.f, 0.f));
+			cursorImage.rectTransform.size = glm::uvec2(_text->_displayTextCharCache[_cursorPos - _textOffset].character->Size.x, _text->GetSize());
+			cursorImage.rectTransform.transform = glm::translate(cursorImage.rectTransform.transform, glm::vec3(cursorImage.rectTransform.size.x * .5f, 0.f, 0.f));
 		}
 		else {
-			elem.elemSize = glm::ivec2(2, _text->GetSize());
+			cursorImage.rectTransform.size = glm::uvec2(2U, _text->GetSize());
 		}
 
-		elem.color = glm::vec4(.5f, .5f, .5f, .9f);
-		elem.hasTexture = false;
-		elem.worldSpaceCanvas = false;
-		elem.canvasSize = Window::GetInstance()->GetContentSize();
-		UIRenderingManager::Render(elem);
+		UIRenderingManager::Render(cursorImage);
 	}
 }
 

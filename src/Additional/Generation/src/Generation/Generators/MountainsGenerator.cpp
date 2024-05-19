@@ -48,7 +48,7 @@ void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
 
         for (MapHexTile* tile : sector->GetTiles())
         {
-            SPDLOG_WARN("Dodaæ warstwy w GameObjectach");
+            //SPDLOG_WARN("Dodaæ warstwy w GameObjectach");
             //tile->layer = LayerMask::NameToLayer("Mountain");
             tile->type = MapHexTile::HexTileType::Mountain;
 

@@ -247,6 +247,11 @@ size_t STD140Struct::GetSize() const
 	return _data.size();
 }
 
+void STD140Struct::ClearData() {
+	_data.clear();
+	_data.resize(_dataOffsets.GetSize());
+}
+
 void STD140Struct::Clear()
 {
 	_dataOffsets.Clear();

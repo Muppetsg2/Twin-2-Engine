@@ -13,6 +13,7 @@ const char* const tracy_RenderingImGui = "RenderingImGui";
 //#define RELEASE_LOGGER
 
 #include <GameEngine.h>
+#include <GameEngine.h>
 
 // TILEMAP
 #include <Tilemap/HexagonalTilemap.h>
@@ -288,13 +289,6 @@ int main(int, char**)
         update();
     };
 
-#if _DEBUG
-#if USE_IMGUI_CONSOLE_OUTPUT
-    console_sink->StartLogging();
-#endif
-#else
-    fileLoggerSink->StartLogging();
-#endif
     GameEngine::Start();
 
 #if _DEBUG
@@ -691,95 +685,6 @@ void render_imgui()
                     if (highlightSquareX != defaultMat.GetMaterialParameters()->Get<float>("highlight_square_x")) {
                         defaultMat.GetMaterialParameters()->Set("highlight_square_x", highlightSquareX);
                     }
-                }
-            }
-        }
-#pragma endregion
-
-        ImGui::Separator();
-
-#pragma region IMGUI_TEXT_TEST
-        if (ImGui::CollapsingHeader("Text test")) {
-            Text* t = SceneManager::FindObjectByName("Test Button")->GetComponent<Text>();
-            static std::string alignYValue = t->GetTextAlignY() == TextAlignY::CENTER ? "CENTER" : t->GetTextAlignY() == TextAlignY::TOP ? "TOP" : "BOTTOM";
-            if (ImGui::BeginCombo("Align Y", alignYValue.c_str())) {
-                TextAlignY alignY = t->GetTextAlignY();
-                if (ImGui::Selectable("BOTTOM")) {
-                    if (alignY != TextAlignY::BOTTOM) {
-                        t->SetTextAlignY(TextAlignY::BOTTOM);
-                        alignYValue = "BOTTOM";
-                    }
-                }
-                if (ImGui::Selectable("CENTER")) {
-                    if (alignY != TextAlignY::CENTER) {
-                        t->SetTextAlignY(TextAlignY::CENTER);
-                        alignYValue = "CENTER";
-                    }
-                }
-                if (ImGui::Selectable("TOP")) {
-                    if (alignY != TextAlignY::TOP) {
-                        t->SetTextAlignY(TextAlignY::TOP);
-                        alignYValue = "TOP";
-                    }
-                }
-                ImGui::EndCombo();
-            }
-            static std::string alignXValue = t->GetTextAlignX() == TextAlignX::CENTER ? "CENTER" : t->GetTextAlignX() == TextAlignX::LEFT ? "LEFT" : "RIGHT";
-            if (ImGui::BeginCombo("Align X", alignXValue.c_str())) {
-                TextAlignX alignX = t->GetTextAlignX();
-                if (ImGui::Selectable("LEFT")) {
-                    if (alignX != TextAlignX::LEFT) {
-                        t->SetTextAlignX(TextAlignX::LEFT);
-                        alignXValue = "LEFT";
-                    }
-                }
-                if (ImGui::Selectable("CENTER")) {
-                    if (alignX != TextAlignX::CENTER) {
-                        t->SetTextAlignX(TextAlignX::CENTER);
-                        alignXValue = "CENTER";
-                    }
-                }
-                if (ImGui::Selectable("RIGHT")) {
-                    if (alignX != TextAlignX::RIGHT) {
-                        t->SetTextAlignX(TextAlignX::RIGHT);
-                        alignXValue = "RIGHT";
-                    }
-                }
-                ImGui::EndCombo();
-            }
-            static std::string overflowValue = t->GetTextOverflow() == TextOverflow::Overflow ? "OVERFLOW" : t->GetTextOverflow() == TextOverflow::Ellipsis ? "ELLIPSIS" : t->GetTextOverflow() == TextOverflow::Masking ? "MASKING" : "TRUNCATE";
-            if (ImGui::BeginCombo("Overflow", overflowValue.c_str())) {
-                TextOverflow overflow = t->GetTextOverflow();
-                if (ImGui::Selectable("OVERFLOW")) {
-                    if (overflow != TextOverflow::Overflow) {
-                        t->SetTextOverflow(TextOverflow::Overflow);
-                        overflowValue = "OVERFLOW";
-                    }
-                }
-                if (ImGui::Selectable("ELLIPSIS")) {
-                    if (overflow != TextOverflow::Ellipsis) {
-                        t->SetTextOverflow(TextOverflow::Ellipsis);
-                        overflowValue = "ELLIPSIS";
-                    }
-                }
-                if (ImGui::Selectable("MASKING")) {
-                    if (overflow != TextOverflow::Masking) {
-                        t->SetTextOverflow(TextOverflow::Masking);
-                        overflowValue = "MASKING";
-                    }
-                }
-                if (ImGui::Selectable("TRUNCATE")) {
-                    if (overflow != TextOverflow::Truncate) {
-                        t->SetTextOverflow(TextOverflow::Truncate);
-                        overflowValue = "TRUNCATE";
-                    }
-                }
-                ImGui::EndCombo();
-            }
-            bool wrapping = t->IsTextWrapping();
-            if (ImGui::Checkbox("Text Wrapping", &wrapping)) {
-                if (wrapping != t->IsTextWrapping()) {
-                    t->SetTextWrapping(wrapping);
                 }
             }
         }

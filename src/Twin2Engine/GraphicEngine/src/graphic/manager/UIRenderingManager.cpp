@@ -121,16 +121,17 @@ void UIRenderingManager::UnloadAll() {
 	glDeleteVertexArrays(1, &_pointVAO);
 }
 
-const char* const tracy_RenderUIShader = "Render UI Shader";
-char* const tracy_RenderUICanvasName = new char[25];
-char* const tracy_RenderUICanvasUBOName = new char[29];
-char* const tracy_RenderUILayerName = new char[23];
-char* const tracy_RenderUIMaskName = new char[23];
-char* const tracy_RenderUIMaskUBOName = new char[27];
-char* const tracy_RenderUITextureName = new char[26];
-char* const tracy_RenderUIElementName = new char[26];
-char* const tracy_RenderUIElementDataName = new char[31];
-const char* const tracy_RenderUIEnd = "Render UI End";
+static const char* const tracy_RenderUIShader = "Render UI Shader";
+static char* const tracy_RenderUICanvasName = new char[25];
+static char* const tracy_RenderUICanvasUBOName = new char[29];
+static char* const tracy_RenderUILayerName = new char[23];
+static char* const tracy_RenderUIMaskName = new char[23];
+static char* const tracy_RenderUIMaskUBOName = new char[27];
+static char* const tracy_RenderUITextureName = new char[26];
+static char* const tracy_RenderUIElementName = new char[26];
+static char* const tracy_RenderUIElementMaskCheck = new char[37];
+static char* const tracy_RenderUIElementDataName = new char[31];
+static const char* const tracy_RenderUIEnd = "Render UI End";
 
 void UIRenderingManager::Render()
 {
@@ -175,11 +176,14 @@ void UIRenderingManager::Render()
 					FrameMarkStart(tracy_RenderUIMaskName);
 
 					MaskData* maskData = mask.first;
+					mat4 invMaskTransform = mat4(1.f);
 
 					snprintf(tracy_RenderUIMaskUBOName, 27, "Render UI Mask UBO %zu", maskId);
 					FrameMarkStart(tracy_RenderUIMaskUBOName);
 					glBindBuffer(GL_UNIFORM_BUFFER, _maskUBO);
 					if (maskData != nullptr) {
+						invMaskTransform = inverse(maskData->rectTransform.transform);
+
 						RectTransformStruct.Set("transform", maskData->rectTransform.transform);
 						RectTransformStruct.Set("size", maskData->rectTransform.size);
 						
@@ -221,6 +225,41 @@ void UIRenderingManager::Render()
 							FrameMarkStart(tracy_RenderUIElementName);
 
 							const UIElementQueueData& uiElem = renderQueue.front();
+
+							snprintf(tracy_RenderUIElementMaskCheck, 37, "Render UI Element Mask Check %zu", elementId);
+							FrameMarkStart(tracy_RenderUIElementMaskCheck);
+
+							// ADD MASK CHECKING
+							if (maskData != nullptr) {
+								vec4 planePoint1 = vec4(-uiElem.rectTransform.size.x * .5f, uiElem.rectTransform.size.y * .5f, 0.f, 1.f);
+								vec4 planePoint2 = vec4(uiElem.rectTransform.size.x * .5f, uiElem.rectTransform.size.y * .5f, 0.f, 1.f);
+								vec4 planePoint3 = vec4(uiElem.rectTransform.size.x * .5f, -uiElem.rectTransform.size.y * .5f, 0.f, 1.f);
+								vec4 planePoint4 = vec4(-uiElem.rectTransform.size.x * .5f, -uiElem.rectTransform.size.y * .5f, 0.f, 1.f);
+
+								planePoint1 = uiElem.rectTransform.transform * planePoint1;
+								planePoint2 = uiElem.rectTransform.transform * planePoint2;
+								planePoint3 = uiElem.rectTransform.transform * planePoint3;
+								planePoint4 = uiElem.rectTransform.transform * planePoint4;
+
+								vec2 maxPoint{};
+								maxPoint.x = glm::max(glm::max(glm::max(planePoint1.x, planePoint2.x), planePoint3.x), planePoint4.x);
+								maxPoint.y = glm::max(glm::max(glm::max(planePoint1.y, planePoint2.y), planePoint3.y), planePoint4.y);
+								vec2 minPoint{};
+								minPoint.x = glm::min(glm::min(glm::min(planePoint1.x, planePoint2.x), planePoint3.x), planePoint4.x);
+								minPoint.y = glm::min(glm::min(glm::min(planePoint1.y, planePoint2.y), planePoint3.y), planePoint4.y);
+
+								vec2 maxPointInMask = invMaskTransform * vec4(maxPoint, 0.f, 1.f);
+								vec2 minPointInMask = invMaskTransform * vec4(minPoint, 0.f, 1.f);
+
+
+								// PRZETESTUJ..........
+								if (minPointInMask.x < -maskData->rectTransform.size.x * .5f || minPointInMask.y < -maskData->rectTransform.size.y * .5f || maxPointInMask.x > maskData->rectTransform.size.x * .5f || maxPointInMask.y > maskData->rectTransform.size.y * .5f) {
+									renderQueue.pop();
+									continue;
+								}
+							}
+
+							FrameMarkEnd(tracy_RenderUIElementMaskCheck);
 
 							snprintf(tracy_RenderUIElementDataName, 31, "Render UI Element Data %zu", elementId);
 							FrameMarkStart(tracy_RenderUIElementDataName);

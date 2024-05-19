@@ -29,7 +29,7 @@ Root:
   isStatic: false
   isActive: true
   transform:
-    id: 9
+    id: 12
     enabled: true
     position:
       x: 5
@@ -44,14 +44,38 @@ Root:
       y: 90
       z: 0
   components:
-    - id: 10
+    - id: 13
       enabled: true
       type: MapHexTile
       hexTileType: 0
-    - id: 11
+    - id: 14
       enabled: true
       type: MeshRenderer
       isTransparent: false
       model: 0
       materials:
         - 0
+    - id: 15
+      enabled: true
+      type: HexagonalCollider
+      colliderId: 0
+      trigger: true
+      static: false
+      layer: 2
+      layersFilter:
+        - 2
+        - 2
+        - 1
+        - 0
+        - 2
+        - 2
+        - 2
+        - 2
+      boundingVolumeRadius: 0.5
+      position:
+        x: 0
+        y: -0.5
+        z: 0
+      baseLength: 0.5
+      halfHeight: 0.5
+      rotation: -1.57050002

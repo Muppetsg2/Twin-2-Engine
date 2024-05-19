@@ -38,8 +38,8 @@ namespace Twin2Engine::Physic {
 		float Rotation = 0.0f;
 		float HalfHeight = 0.5f;
 		float BaseLength = 0.5f;
-		glm::vec3 u = glm::vec3(-0.5f, 0.0f, 0.866f);
-		glm::vec3 v = glm::vec3(0.5f, 0.0f, 0.866f);
+		glm::vec3 u = glm::vec3(-0.5f, 0.0f, -0.866f);
+		glm::vec3 v = glm::vec3(0.5f, 0.0f, -0.866f);
 		glm::vec3 w = glm::vec3(1.0f, 0.0f, 0.0f);
 	};
 

@@ -82,10 +82,17 @@ vector<size_t> STD140Offsets::AddArray(const string& name, size_t arraySize, siz
 {
 	static const char* const tracy_AddArray = "STD140Offsets AddArray";
 	static const char* const tracy_AddArraySetBaseAligement = "STD140Offsets AddArray Set Base Aligement";
-	static const char* const tracy_AddArrayAddArrayValues = "STD140Offsets AddArray Add Array Values";
-	static const char* const tracy_AddArrayAddArrayValuesAddElem = "STD140Offsets AddArray Add Array Values Add Element";
-	static const char* const tracy_AddArraySetArrayBeginPointer = "STD140Offsets AddArray Set Array Begin Pointer";
-	static const char* const tracy_AddArrayUpdateCurrentOffset = "STD140Offsets AddArray Update Current Offset";
+	static const char* const tracy_AddArrayCheckMaxAligement = "STD140Offsets AddArray Check Max Aligement";
+	static const char* const tracy_AddArrayCalculateAligementOffset = "STD140Offsets AddArray Calculate Aligement Offset";
+	static const char* const tracy_AddArrayAddValues = "STD140Offsets AddArray Add Values";
+	static const char* const tracy_AddArrayAddValuesAddElem = "STD140Offsets AddArray Add Values Add Element";
+	static const char* const tracy_AddArrayAddValuesElemName = "STD140Offsets AddArray Add Values Element Name";
+	static const char* const tracy_AddArrayAddValuesElemNameHash = "STD140Offsets AddArray Add Values Element Name Hash";
+	static const char* const tracy_AddArrayAddValuesAddElemOffset = "STD140Offsets AddArray Add Values Add Element Offset";
+	static const char* const tracy_AddArrayAddValuesAddElemName = "STD140Offsets AddArray Add Values Add Element Name";
+	static const char* const tracy_AddArrayUpdateSize = "STD140Offsets AddArray Update Size";
+	static const char* const tracy_AddArraySetBeginPointer = "STD140Offsets AddArray Set Begin Pointer";
+	//static const char* const tracy_AddArrayUpdateCurrentOffset = "STD140Offsets AddArray Update Current Offset";
 	ZoneScoped;
 
 	FrameMarkStart(tracy_AddArray);
@@ -96,34 +103,77 @@ vector<size_t> STD140Offsets::AddArray(const string& name, size_t arraySize, siz
 		// SET BASE ALIGEMENT
 		FrameMarkStart(tracy_AddArraySetBaseAligement);
 		if (baseAligement % 16 != 0) {
-			baseAligement += move(16 - (baseAligement % 16));
+			baseAligement += 16 - (baseAligement % 16);
 		}
 		FrameMarkEnd(tracy_AddArraySetBaseAligement);
+
+		// CHECK MAX ALIGEMENT
+		FrameMarkStart(tracy_AddArrayCheckMaxAligement);
+		if (baseAligement > _maxAligement) {
+			_maxAligement = baseAligement;
+		}
+		FrameMarkEnd(tracy_AddArrayCheckMaxAligement);
+
+		// CALCULATE ALIGEMENT OFFSET]
+		FrameMarkStart(tracy_AddArrayCalculateAligementOffset);
+		size_t aligementOffset = _currentOffset;
+		if (aligementOffset % baseAligement != 0) {
+			aligementOffset += baseAligement - (aligementOffset % baseAligement);
+		}
+		FrameMarkEnd(tracy_AddArrayCalculateAligementOffset);
 		
 		// ADD ARRAY VALUES
-		FrameMarkStart(tracy_AddArrayAddArrayValues);
-		string valueName = move(concat(name, "["));
+		FrameMarkStart(tracy_AddArrayAddValues);
+		string valueName;
+		size_t valueNameHash;
+		const string valueNameFormat = move(concat(name, "[{}]"));
 		for (size_t i = 0; i < arraySize; ++i) {
-			string elemName = move(concat(valueName, move(to_string(i)), "]"));
-			FrameMarkStart(tracy_AddArrayAddArrayValuesAddElem);
-			arrayElemOffsets.push_back(move(Add(elemName, baseAligement, baseOffset)));
-			FrameMarkEnd(tracy_AddArrayAddArrayValuesAddElem);
+			FrameMarkStart(tracy_AddArrayAddValuesAddElem);
+
+			// ELEMENT VALUE NAME
+			FrameMarkStart(tracy_AddArrayAddValuesElemName);
+			valueName = move(vformat(valueNameFormat, make_format_args(i)));
+			FrameMarkEnd(tracy_AddArrayAddValuesElemName);
+
+			// ELEMENT VALUE NAME HASH
+			FrameMarkStart(tracy_AddArrayAddValuesElemNameHash);
+			valueNameHash = move(_hasher(valueName));
+			FrameMarkEnd(tracy_AddArrayAddValuesElemNameHash);
+
+			// SET ELEMENT VALUE OFFSET
+			FrameMarkStart(tracy_AddArrayAddValuesAddElemOffset);
+			arrayElemOffsets.push_back((_offsets[valueNameHash] = aligementOffset + i * baseAligement));
+			FrameMarkEnd(tracy_AddArrayAddValuesAddElemOffset);
+
+			// SET ELEMENT VALUE NAME
+			FrameMarkStart(tracy_AddArrayAddValuesAddElemName);
+			_names[valueNameHash] = move(valueName);
+			FrameMarkEnd(tracy_AddArrayAddValuesAddElemName);
+
+			FrameMarkEnd(tracy_AddArrayAddValuesAddElem);
 		}
-		FrameMarkEnd(tracy_AddArrayAddArrayValues);
-		
+		FrameMarkEnd(tracy_AddArrayAddValues);
+
+		// UPDATE SIZE
+		FrameMarkStart(tracy_AddArrayUpdateSize);
+		//_currentOffset = aligementOffset + (arraySize - 1) * baseAligement;
+		_currentOffset = aligementOffset + arraySize * baseAligement;	
+		FrameMarkEnd(tracy_AddArrayUpdateSize);
+
+
+		// UPDATE CURRENT OFFSET (ADD PADDING)
+		/*FrameMarkStart(tracy_AddArrayUpdateCurrentOffset);
+		if (_currentOffset % 16 != 0) {
+			_currentOffset += 16 - (_currentOffset % 16);
+		}
+		FrameMarkEnd(tracy_AddArrayUpdateCurrentOffset);*/
+
 		// SET ARRAY BEGIN POINTER
-		FrameMarkStart(tracy_AddArraySetArrayBeginPointer);
+		FrameMarkStart(tracy_AddArraySetBeginPointer);
 		size_t nameHash = move(_hasher(name));
 		_offsets[nameHash] = arrayElemOffsets[0];
 		_names[nameHash] = name;
-		FrameMarkEnd(tracy_AddArraySetArrayBeginPointer);
-
-		// UPDATE CURRENT OFFSET (ADD PADDING)
-		FrameMarkStart(tracy_AddArrayUpdateCurrentOffset);
-		if (_currentOffset % 16 != 0) {
-			_currentOffset += move(16 - (_currentOffset % 16));
-		}
-		FrameMarkEnd(tracy_AddArrayUpdateCurrentOffset);
+		FrameMarkEnd(tracy_AddArraySetBeginPointer);
 	}
 
 	FrameMarkEnd(tracy_AddArray);

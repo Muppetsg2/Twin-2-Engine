@@ -3,7 +3,7 @@
 namespace Twin2Engine::Tools {
 	
 	template<class String, class... Strings> void concat_impl(std::string& out, String&& string, Strings&&... strings) {
-		out.append(string);
+		out += string;
 		if constexpr (sizeof...(strings) > 0) {
 			concat_impl(out, std::forward<Strings>(strings)...);
 		}

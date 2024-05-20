@@ -69,6 +69,7 @@ namespace Twin2Engine::Core
 		size_t Id() const;
 
 		bool GetActiveInHierarchy() const;
+		bool GetActiveSelf() const;
 		bool GetActive() const;
 		void SetActive(bool active);
 

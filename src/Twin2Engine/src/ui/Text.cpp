@@ -382,6 +382,7 @@ void Text::DrawEditor()
 	string name = string("Text##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
+		Component::DrawInheritedFields();
 		string buff = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_text);
 		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll;
 

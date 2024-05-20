@@ -460,16 +460,13 @@ void HexagonalTilemap::DrawEditor()
 	std::string name = std::string("Hexagonal Tilemap##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
-		// TODO: Moze dodac wiecej jesli cos tez trzeba sparametryzowac
+		Component::DrawInheritedFields();
 
-		glm::ivec2 v1 = _leftBottomPosition;
-		ImGui::DragInt2(string("Left Bottom Position##").append(id).c_str(), glm::value_ptr(v1));
+		float dbt = _distanceBetweenTiles;
+		ImGui::DragFloat(string("Distance Between Tiles##").append(id).c_str(), &dbt, 0.1f, 0.0f);
 
-		glm::ivec2 v2 = _rightTopPosition;
-		ImGui::DragInt2(string("Right Top Position##").append(id).c_str(), glm::value_ptr(v2));
-
-		if (v1 != _leftBottomPosition || v2 != _rightTopPosition) {
-			Resize(v1, v2);
+		if (dbt != _distanceBetweenTiles) {
+			SetDistanceBetweenTiles(dbt);
 		}
 	}
 }

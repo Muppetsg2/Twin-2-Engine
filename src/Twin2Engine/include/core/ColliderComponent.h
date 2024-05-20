@@ -22,15 +22,12 @@ namespace Twin2Engine::Core {
 
 		static void OnCollisionEnter(Physic::Collision* collision);
 	protected:
-		ColliderComponent(); // Powoduje ze klasa jest jakby abstrakcyjna no chyba ze bedzie dziedziczona
 		Physic::BoundingVolume* boundingVolume = nullptr;
 
-		void DrawInheritedFields();
-
+		void DrawInheritedFields() override;
 	public:
 		Physic::GameCollider* collider = nullptr;
 		unsigned int colliderId = 0;
-		virtual ~ColliderComponent();
 
 		void SetTrigger(bool v);
 		bool IsTrigger();

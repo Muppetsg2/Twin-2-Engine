@@ -74,7 +74,7 @@ unsigned int ShaderManager::LoadShaderProgram(const std::string& shaderName)
     }
     else
     {
-        SPDLOG_INFO("Shader already loaded: {}!", shaderPath);
+        SPDLOG_WARN("Shader already loaded: {}!", shaderPath);
         shaderProgramID = (*found).shaderProgramId;
         (*found).useNumber++;
     }
@@ -254,7 +254,7 @@ inline Shader* ShaderManager::LoadShaderProgramSHPR(const std::string& shaderNam
     }
     else
     {
-        SPDLOG_INFO("Shader already created: {}!", shaderName);
+        SPDLOG_WARN("Shader already created: {}!", shaderName);
         (*found).useNumber++;
         shader = (*found).shader;
     }
@@ -263,8 +263,6 @@ inline Shader* ShaderManager::LoadShaderProgramSHPR(const std::string& shaderNam
 
 GLuint ShaderManager::CreateShaderProgramFromFile(const std::string& shaderProgramName)
 {
-
-    //SPDLOG_INFO("From File");
     std::string shaderProgramPath = "res/shaders/" + shaderProgramName + ".shpr";
 
     GLuint shaderProgram = 0;
@@ -313,19 +311,16 @@ GLuint ShaderManager::CreateShaderProgramFromFile(const std::string& shaderProgr
         GLuint shaderId = CompileShader(shaderTypeMapping.at(extensionHash), LoadShaderSource(SHADERS_ORIGIN_DIRETORY + ("/shaders/" + shaderName)));
 
 #endif
-
-        //SPDLOG_INFO("TU1");
         glAttachShader(shaderProgram, shaderId);
 
         shaderIds.push_back(shaderId);
     }
 
-    //SPDLOG_INFO("Before linking");
     glLinkProgram(shaderProgram);
     {
         GLenum error = glGetError();
         if (error != GL_NO_ERROR) {
-            SPDLOG_ERROR("Error: {}", error);
+            SPDLOG_ERROR("Shader Manager::Error: {}", error);
         }
     }
     CheckProgramLinkingSuccess(shaderProgram);
@@ -383,7 +378,7 @@ Shader* ShaderManager::CreateShaderProgram(const std::string& shaderName, const 
     }
     else
     {
-        SPDLOG_INFO("Shader already created: {}!", shaderName);
+        SPDLOG_WARN("Shader already created: {}!", shaderName);
         (*found).useNumber++;
         shader = (*found).shader;
     }

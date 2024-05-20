@@ -49,9 +49,6 @@ namespace Twin2Engine::Tools {
 
 		static std::hash<std::string> _hasher;
 
-		static const std::string _arrayElemFormat;
-		static const std::string _subElemFormat;
-
 		static const char* const tracy_AddScalar;
 		static const char* const tracy_AddScalarArray;
 		static const char* const tracy_AddVec;
@@ -98,6 +95,9 @@ namespace Twin2Engine::Tools {
 
 		size_t _Add(const std::string& name, size_t baseAligement, size_t baseOffset);
 		std::vector<size_t> _AddArray(const std::string& name, size_t arraySize, size_t baseAligement, size_t baseOffset);
+
+		static const std::string& _GetArrayElemFormat();
+		static const std::string& _GetSubElemFormat();
 
 	public:
 		STD140Offsets() = default;
@@ -164,6 +164,7 @@ namespace Twin2Engine::Tools {
 				return _AddArray(name, size, sizeof(T), sizeof(T));
 			}
 		}
+
 #pragma endregion
 #pragma endregion
 
@@ -235,6 +236,7 @@ namespace Twin2Engine::Tools {
 				}
 			}
 		}
+
 #pragma endregion
 #pragma endregion
 
@@ -293,18 +295,18 @@ namespace Twin2Engine::Tools {
 				if constexpr (std::is_same_v<T, bool>) {
 					// sizeof(unsigned int) = 4
 					if constexpr (is_num_in_v<R, 1, 2, 4>) {
-						values.push_back(_AddArray(std::vformat(_arrayElemFormat, std::make_format_args(name, i)), C, 4 * R, 4 * R)[0]);
+						values.push_back(std::move(_AddArray(std::move(std::vformat(_GetArrayElemFormat(), std::make_format_args(name, i))), C, 4 * R, 4 * R)[0]));
 					}
 					else if constexpr (is_num_in_v<R, 3>) {
-						values.push_back(_AddArray(std::vformat(_arrayElemFormat, std::make_format_args(name, i)), C, 4 * (R + 1), 4 * R)[0]);
+						values.push_back(std::move(_AddArray(std::move(std::vformat(_GetArrayElemFormat(), std::make_format_args(name, i))), C, 4 * (R + 1), 4 * R)[0]));
 					}
 				}
 				else {
 					if constexpr (is_num_in_v<R, 1, 2, 4>) {
-						values.push_back(_AddArray(std::vformat(_arrayElemFormat, std::make_format_args(name, i)), C, sizeof(T) * R, sizeof(T) * R)[0]);
+						values.push_back(std::move(_AddArray(std::move(std::vformat(_GetArrayElemFormat(), std::make_format_args(name, i))), C, sizeof(T) * R, sizeof(T) * R)[0]));
 					}
 					else if constexpr (is_num_in_v<R, 3>) {
-						values.push_back(_AddArray(std::vformat(_arrayElemFormat, std::make_format_args(name, i)), C, sizeof(T) * (R + 1), sizeof(T) * R)[0]);
+						values.push_back(std::move(_AddArray(std::move(std::vformat(_GetArrayElemFormat(), std::make_format_args(name, i))), C, sizeof(T) * (R + 1), sizeof(T) * R)[0]));
 					}
 				}
 				FrameMarkEnd(tracy_AddMatArrayElem);
@@ -320,6 +322,7 @@ namespace Twin2Engine::Tools {
 			FrameMarkEnd(tracy_AddMatArray);
 			return values;
 		}
+
 #pragma endregion
 #pragma endregion
 
@@ -333,12 +336,12 @@ namespace Twin2Engine::Tools {
 				return 0;
 			}
 
-			size_t aligementOffset = _Add(name, structTemplate.GetBaseAligement(), structTemplate._currentOffset);
+			size_t aligementOffset = std::move(_Add(name, structTemplate.GetBaseAligement(), structTemplate._currentOffset));
 			std::string valueName;
 			size_t nameHash;
 			for (const auto& off : structTemplate._offsets) {
 				FrameMarkStart(tracy_AddStructSetElem);
-				valueName = std::move(std::vformat(_subElemFormat, std::make_format_args(name, (*structTemplate._names.find(off.first)).second)));
+				valueName = std::move(std::vformat(_GetSubElemFormat(), std::make_format_args(name, (*structTemplate._names.find(off.first)).second)));
 				
 				nameHash = std::move(_hasher(valueName));
 				_offsets[nameHash] = aligementOffset + off.second;
@@ -382,19 +385,20 @@ namespace Twin2Engine::Tools {
 			for (size_t i = 0; i < size; ++i) {
 				FrameMarkStart(tracy_AddStructArrayAddElem);
 
-				arrayElemName = std::move(std::vformat(_arrayElemFormat, std::make_format_args(name, i)));
-				aligementOffset = _Add(arrayElemName, structTemplate.GetBaseAligement(), structTemplate._currentOffset);
+				arrayElemName = std::move(std::vformat(_GetArrayElemFormat(), std::make_format_args(name, i)));
+				values.push_back((aligementOffset = std::move(_Add(arrayElemName, structTemplate.GetBaseAligement(), structTemplate._currentOffset))));
 
 				FrameMarkStart(tracy_AddStructArrayAddElemSubValues);
 				for (const auto& off : structTemplate._offsets) {
 					FrameMarkStart(tracy_AddStructArrayAddElemSubValue);
-					valueName = std::move(std::vformat(_subElemFormat, std::make_format_args(arrayElemName, (*structTemplate._names.find(off.first)).second)));
+					valueName = std::move(std::vformat(_GetSubElemFormat(), std::make_format_args(arrayElemName, (*structTemplate._names.find(off.first)).second)));
 
 					nameHash = std::move(_hasher(valueName));
 					_offsets[nameHash] = aligementOffset + off.second;
 					_names[nameHash] = valueName;
 					FrameMarkEnd(tracy_AddStructArrayAddElemSubValue);
 				}
+				FrameMarkEnd(tracy_AddStructArrayAddElemSubValues);
 
 				// ADD PADDING
 				FrameMarkStart(tracy_AddStructArrayAddElemPadding);
@@ -417,6 +421,7 @@ namespace Twin2Engine::Tools {
 			FrameMarkEnd(tracy_AddStructArray);
 			return values;
 		}
+
 #pragma endregion
 #pragma endregion
 

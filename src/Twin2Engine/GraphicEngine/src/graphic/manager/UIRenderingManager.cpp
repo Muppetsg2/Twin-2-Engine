@@ -123,7 +123,7 @@ void UIRenderingManager::UnloadAll() {
 
 void UIRenderingManager::Render()
 {
-	const char* const tracy_RenderUIShader = "Render UI Shader";
+	static const char* const tracy_RenderUIShader = "Render UI Shader";
 	char* const tracy_RenderUICanvasName = new char[50];
 	char* const tracy_RenderUICanvasUBOName = new char[50];
 	char* const tracy_RenderUILayerName = new char[50];
@@ -131,8 +131,9 @@ void UIRenderingManager::Render()
 	char* const tracy_RenderUIMaskUBOName = new char[50];
 	char* const tracy_RenderUITextureName = new char[50];
 	char* const tracy_RenderUIElementName = new char[50];
+	char* const tracy_RenderUIElementMaskCheck = new char[50];
 	char* const tracy_RenderUIElementDataName = new char[50];
-	const char* const tracy_RenderUIEnd = "Render UI End";
+	static const char* const tracy_RenderUIEnd = "Render UI End";
 
 	ZoneScoped;
 
@@ -225,7 +226,7 @@ void UIRenderingManager::Render()
 
 							const UIElementQueueData& uiElem = renderQueue.front();
 
-							snprintf(tracy_RenderUIElementMaskCheck, 37, "Render UI Element Mask Check %zu", elementId);
+							sprintf(tracy_RenderUIElementMaskCheck, "Render UI Element Mask Check %zu", elementId);
 							FrameMarkStart(tracy_RenderUIElementMaskCheck);
 
 							// ADD MASK CHECKING
@@ -326,6 +327,7 @@ void UIRenderingManager::Render()
 	delete[] tracy_RenderUIMaskUBOName;
 	delete[] tracy_RenderUITextureName;
 	delete[] tracy_RenderUIElementName;
+	delete[] tracy_RenderUIElementMaskCheck;
 	delete[] tracy_RenderUIElementDataName;
 }
 

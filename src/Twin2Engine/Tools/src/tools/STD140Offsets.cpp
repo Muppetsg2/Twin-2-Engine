@@ -92,7 +92,6 @@ vector<size_t> STD140Offsets::_AddArray(const string& name, size_t arraySize, si
 	static const char* const tracy_AddArrayAddValuesAddElemName = "STD140Offsets AddArray Add Values Add Element Name";
 	static const char* const tracy_AddArrayUpdateSize = "STD140Offsets AddArray Update Size";
 	static const char* const tracy_AddArraySetBeginPointer = "STD140Offsets AddArray Set Begin Pointer";
-	//static const char* const tracy_AddArrayUpdateCurrentOffset = "STD140Offsets AddArray Update Current Offset";
 	ZoneScoped;
 
 	FrameMarkStart(tracy_AddArray);

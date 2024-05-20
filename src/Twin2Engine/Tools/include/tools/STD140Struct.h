@@ -99,6 +99,8 @@ namespace Twin2Engine::Tools {
 
 			// SET VALUE DATA
 			memcpy(_data.data() + valueOffset, valueData.data(), valueData.size());
+
+			valueData.clear();
 		}
 		template<class T> void _AddArray(const std::string& name, const std::vector<T>& values) {
 			if (values.size() == 0) return;
@@ -122,7 +124,11 @@ namespace Twin2Engine::Tools {
 
 				// SET VALUE DATA
 				memcpy(_data.data() + valuesOffsets[i], valueData.data(), valueData.size());
+
+				valueData.clear();
 			}
+
+			valuesOffsets.clear();
 		}
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		void _AddMat(const std::string& name, const M& value) {
@@ -145,7 +151,11 @@ namespace Twin2Engine::Tools {
 
 				// SET VALUE DATA
 				memcpy(_data.data() + rowsOffsets[i], valueData.data(), valueData.size());
+
+				valueData.clear();
 			}
+
+			rowsOffsets.clear();
 		}
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		void _AddMatArray(const std::string& name, const std::vector<M>& values) {
@@ -175,8 +185,14 @@ namespace Twin2Engine::Tools {
 
 					// SET VALUE DATA
 					memcpy(_data.data() + rowsOffsets[r], valueData.data(), valueData.size());
+
+					valueData.clear();
 				}
+
+				rowsOffsets.clear();
 			}
+
+			valuesOffsets.clear();
 		}
 		void _AddStruct(const std::string& name, const STD140Struct& value);
 		void _AddStructArray(const std::string& name, const STD140Offsets& structOffsets, const std::vector<std::vector<char>>& values);
@@ -210,6 +226,8 @@ namespace Twin2Engine::Tools {
 
 			// SET VALUE DATA
 			memcpy(_data.data() + valueOffset, valueData.data(), valueDataSize);
+
+			valueData.clear();
 			return true;
 		}
 		template<class T> bool _SetArray(const std::string& name, const std::vector<T>& values) {
@@ -247,7 +265,11 @@ namespace Twin2Engine::Tools {
 				// SET VALUE DATA
 				//memcpy(_data.data() + valueOffset, valueData.size(), valueDataSize);
 				memcpy(_data.data() + valueOffset, valueData.data(), valueDataSize);
+
+				valueData.clear();
 			}
+
+			valuesOffsets.clear();
 			return true;
 		}
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
@@ -280,7 +302,11 @@ namespace Twin2Engine::Tools {
 
 				// SET VALUE DATA
 				memcpy(_data.data() + rowsOffsets[i], valueData.data(), valueDataSize);
+
+				valueData.clear();
 			}
+
+			rowsOffsets.clear();
 			return true;
 		}
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
@@ -332,8 +358,14 @@ namespace Twin2Engine::Tools {
 
 					// SET VALUE DATA
 					memcpy(_data.data() + rowsOffsets[r], valueData.data(), valueDataSize);
+
+					valueData.clear();
 				}
+
+				rowsOffsets.clear();
 			}
+
+			valuesOffsets.clear();
 			return true;
 		}
 		bool _SetStruct(const std::string& name, const STD140Struct& value);
@@ -409,8 +441,12 @@ namespace Twin2Engine::Tools {
 				memcpy(valueData.data(), _data.data() + valuesOffsets[i], valueDataSize);
 
 				// GET VALUE
-				values.push_back(*reinterpret_cast<T*>(valueData.data()));
+				values.push_back(*reinterpret_cast<T*>(valueData.data())); 
+
+				valueData.clear();
 			}
+
+			valuesOffsets.clear();
 			
 			// RETURN VALUES
 			return values;
@@ -455,7 +491,11 @@ namespace Twin2Engine::Tools {
 
 				// SET ROW
 				value[i] = row;
+
+				rowData.clear();
 			}
+
+			rowsOffsets.clear();
 
 			// RETURN VALUE
 			return value;
@@ -514,14 +554,18 @@ namespace Twin2Engine::Tools {
 					memcpy(rowData.data(), _data.data() + rowsOffsets[r], rowDataSize);
 
 					// GET ROW
-					glm::vec<R, T> row = *reinterpret_cast<glm::vec<R, T>*>(rowData.data());
+					glm::vec<R, T> row = *reinterpret_cast<glm::vec<R, T>*>(rowData.data()); // To samo co wyzej...???
 
 					// SET ROW
 					value[r] = row;
 				}
 
 				values.push_back(value);
+
+				rowsOffsets.clear();
 			}
+
+			valuesOffsets.clear();
 
 			// RETURN VALUES
 			return values;
@@ -853,6 +897,7 @@ namespace Twin2Engine::Tools {
 				values = _GetArray<T>(name);
 			}
 			memcpy(valuesDest, values.data(), glm::min(values.size(), size));
+			values.clear();
 		}
 
 		template<class V, class T = V::value_type>
@@ -891,6 +936,7 @@ namespace Twin2Engine::Tools {
 				values = _GetArray<V>(name);
 			}
 			memcpy(valuesDest, values.data(), glm::min(values.size(), size));
+			values.clear();
 		}
 
 		template<class Vec, class V = Vec::value_type, class T = V::value_type, size_t L = V::length()>
@@ -932,6 +978,7 @@ namespace Twin2Engine::Tools {
 				values = _GetMatArray<M>(name);
 			}
 			memcpy(valuesDest, values.data(), glm::min(values.size(), size));
+			values.clear();
 		}
 
 		template<class Vec, class M = Vec::value_type, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>

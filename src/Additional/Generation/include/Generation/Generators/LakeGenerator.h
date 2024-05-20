@@ -1,5 +1,4 @@
-#ifndef _LAKE_GENERATOR_H_
-#define _LAKE_GENERATOR_H_
+#pragma once
 
 #include <Generation/Generators/AMapElementGenerator.h>
 
@@ -36,5 +35,3 @@ namespace Generation::Generators
 }
 
 SERIALIZABLE_SCRIPTABLE_OBJECT(LakeGenerator, Generation::Generators)
-
-#endif // !_LAKE_GENERATOR_H_

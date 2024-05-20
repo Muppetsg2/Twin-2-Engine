@@ -57,6 +57,9 @@ void ColliderComponent::DrawInheritedFields()
 	glm::vec3 pos = collider->shapeColliderData->LocalPosition;
 	ImGui::DragFloat3(string("Offset##").append(id).c_str(), glm::value_ptr(pos), 0.1f);
 
+	int colId = colliderId;
+	ImGui::InputInt(string("ColliderId##").append(id).c_str(), &colId);
+
 	if (pos != collider->shapeColliderData->LocalPosition) {
 		collider->shapeColliderData->LocalPosition = pos;
 	}

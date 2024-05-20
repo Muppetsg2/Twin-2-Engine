@@ -1,5 +1,4 @@
-#ifndef _REGIONS_BY_SECTORS_GENERATOR_H_
-#define _REGIONS_BY_SECTORS_GENERATOR_H_
+#pragma once
 
 #include <Generation/Generators/AMapElementGenerator.h>
 
@@ -55,5 +54,3 @@ namespace Generation::Generators
 }
 
 SERIALIZABLE_SCRIPTABLE_OBJECT(RegionsBySectorsGenerator, Generation::Generators)
-
-#endif // !_REGIONS_BY_SECTORS_GENERATOR_H_

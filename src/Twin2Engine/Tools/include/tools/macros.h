@@ -51,8 +51,30 @@
 		}\
 	}
 
+#define ENUM_BASE(name, base, ...)\
+	enum name : base { LIST_DO_FOR_EACH(ENUM_ELEMENT, __VA_ARGS__) };\
+	static std::string to_string(name value) {\
+		using enum name;\
+		switch(value) {\
+		DO_FOR_EACH(ENUM_CASE, __VA_ARGS__)\
+		default:\
+			return "UNKONWN";\
+		}\
+	}
+
 #define ENUM_CLASS(name, ...)\
 	enum class name { LIST_DO_FOR_EACH(ENUM_ELEMENT, __VA_ARGS__) };\
+	static std::string to_string(name value) {\
+		using enum name;\
+		switch(value) {\
+		DO_FOR_EACH(ENUM_CASE, __VA_ARGS__)\
+		default:\
+			return "UNKNOWN";\
+		}\
+	}
+
+#define ENUM_CLASS_BASE(name, base, ...)\
+	enum class name : base { LIST_DO_FOR_EACH(ENUM_ELEMENT, __VA_ARGS__) };\
 	static std::string to_string(name value) {\
 		using enum name;\
 		switch(value) {\
@@ -76,8 +98,30 @@
 		}\
 	}
 
+#define ENUM_BASE_VALUE(name, base, ...)\
+	enum name : base { LIST_DO_FOR_EACH_PAIR(ENUM_ELEMENT_VALUE, __VA_ARGS__) };\
+	static std::string to_string(name value) {\
+		using enum name;\
+		switch(value) {\
+		DO_FOR_EACH_PAIR(ENUM_CASE_VALUE, __VA_ARGS__)\
+		default:\
+			return "UNKONWN";\
+		}\
+	}
+
 #define ENUM_CLASS_VALUE(name, ...)\
 	enum class name { LIST_DO_FOR_EACH_PAIR(ENUM_ELEMENT_VALUE, __VA_ARGS__) };\
+	static std::string to_string(name value) {\
+		using enum name;\
+		switch(value) {\
+		DO_FOR_EACH_PAIR(ENUM_CASE_VALUE, __VA_ARGS__)\
+		default:\
+			return "UNKONWN";\
+		}\
+	}
+
+#define ENUM_CLASS_BASE_VALUE(name, base, ...)\
+	enum class name : base { LIST_DO_FOR_EACH_PAIR(ENUM_ELEMENT_VALUE, __VA_ARGS__) };\
 	static std::string to_string(name value) {\
 		using enum name;\
 		switch(value) {\

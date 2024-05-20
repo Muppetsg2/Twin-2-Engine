@@ -29,3 +29,7 @@ namespace Twin2Engine::Core {
 		virtual void DrawEditor() override;
 	};
 }
+
+
+
+//#endif // !_HEXAGONALCOLLIDERCOMPONENT_H_

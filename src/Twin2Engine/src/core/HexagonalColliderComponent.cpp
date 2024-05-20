@@ -33,8 +33,8 @@ void HexagonalColliderComponent::Initialize()
 	TransformChangeAction = [this](Transform* transform) {
 		HexagonalColliderData* hexData = ((HexagonalColliderData*)collider->shapeColliderData);
 		glm::quat q = transform->GetGlobalRotationQuat() * glm::angleAxis(hexData->Rotation, glm::vec3(0.0f, 1.0f, 0.0f));
-		hexData->u = q * glm::vec3(-0.5f, 0.0f, 0.866f);
-		hexData->v = q * glm::vec3(0.5f, 0.0f, 0.866f);
+		hexData->u = q * glm::vec3(-0.5f, 0.0f, -0.866f);
+		hexData->v = q * glm::vec3(0.5f, 0.0f, -0.866f);
 		hexData->w = q * glm::vec3(1.0f, 0.0f, 0.0f);
 
 		//hexData->HalfHeight = transform->GetGlobalScale().y * hexData->HalfHeight;
@@ -70,7 +70,7 @@ void HexagonalColliderComponent::OnDisable()
 
 void HexagonalColliderComponent::OnDestroy()
 {
-	//GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
+	GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
 	CollisionManager::Instance()->UnregisterCollider(collider);
 }
 
@@ -81,8 +81,8 @@ void HexagonalColliderComponent::Update()
 	if (dirtyFlag) {
 		HexagonalColliderData * hexData = ((HexagonalColliderData*)collider->shapeColliderData);
 		glm::quat q = GetTransform()->GetGlobalRotationQuat() * glm::angleAxis(hexData->Rotation, glm::vec3(0.0f, 1.0f, 0.0f));
-		hexData->u = q * glm::vec3(-0.5f, 0.0f, 0.866f);
-		hexData->v = q * glm::vec3(0.5f, 0.0f, 0.866f);
+		hexData->u = q * glm::vec3(-0.5f, 0.0f, -0.866f);
+		hexData->v = q * glm::vec3(0.5f, 0.0f, -0.866f);
 		hexData->w = q * glm::vec3(1.0f, 0.0f, 0.0f);
 
 		//hexData->HalfHeight = GetTransform()->GetGlobalScale().y * hexData->HalfHeight;
@@ -118,7 +118,6 @@ void HexagonalColliderComponent::DrawEditor()
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Hexagonal Collider##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
-
 		float v = ((HexagonalColliderData*)collider->shapeColliderData)->BaseLength;
 		ImGui::DragFloat(string("Base Length##").append(id).c_str(), &v, 0.1f);
 

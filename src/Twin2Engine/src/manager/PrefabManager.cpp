@@ -181,7 +181,7 @@ void PrefabManager::SaveAsPrefab(const GameObject* obj, const std::string& path)
 
 void PrefabManager::UnloadAll()
 {
-	for (const auto& prefabPair : _prefabs) {
+	for (auto& prefabPair : _prefabs) {
 		delete prefabPair.second;
 	}
 	_prefabs.clear();

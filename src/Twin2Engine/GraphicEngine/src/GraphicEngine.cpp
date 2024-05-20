@@ -107,10 +107,12 @@ void GraphicEngine::End()
 	MeshRenderingManager::UnloadAll();
 	UIRenderingManager::UnloadAll();
 	ShaderManager::UnloadAll();
+	MaterialsManager::UnloadAll();
 	SpriteManager::UnloadAll();
 	TextureManager::UnloadAll();
 	FontManager::UnloadAll();
 	LightingController::UnloadAll();
+	ModelsManager::UnloadAll();
 	Window::FreeAll();
 
 	glfwTerminate();

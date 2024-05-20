@@ -1,5 +1,4 @@
-#ifndef _RADIO_STATION_GENERATOR_SECTOR_BASED_H_
-#define _RADIO_STATION_GENERATOR_SECTOR_BASED_H_
+#pragma once
 
 #include <Generation/Generators/AMapElementGenerator.h>
 
@@ -34,5 +33,3 @@ namespace Generation::Generators
 }
 
 SERIALIZABLE_SCRIPTABLE_OBJECT(RadioStationGeneratorSectorBased, Generation::Generators)
-
-#endif // !_RADIO_STATION_GENERATOR_SECTOR_BASED_H_

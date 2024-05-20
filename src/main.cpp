@@ -1,3 +1,5 @@
+#define VERSION "0.7"
+
 #define USE_IMGUI_CONSOLE_OUTPUT true
 #define USE_WINDOWS_CONSOLE_OUTPUT false
 
@@ -6,12 +8,14 @@
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
 #endif
+
 const char* const tracy_ImGuiDrawingConsole = "ImGuiDrawingConsole";
 const char* const tracy_RenderingImGui = "RenderingImGui";
 
 #define EDITOR_LOGGER
 //#define RELEASE_LOGGER
 
+#include <GameEngine.h>
 #include <GameEngine.h>
 
 // TILEMAP
@@ -43,6 +47,7 @@ const char* const tracy_RenderingImGui = "RenderingImGui";
 
 #if _DEBUG
 // EDITOR
+
 #include <Editor/Common/MaterialCreator.h>
 #include <Editor/Common/ProcessingMtlFiles.h>
 #include <Editor/Common/ScriptableObjectEditorManager.h>
@@ -82,8 +87,6 @@ bool mouseNotUsed = true;
 void input();
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void update();
-
-//#undef _DEBUG
 
 #if _DEBUG
 void init_imgui();
@@ -157,6 +160,14 @@ int main(int, char**)
 
     spdlog::set_level(spdlog::level::debug);
     fileLoggerSink->StartLogging();
+#endif
+
+    SPDLOG_INFO("Twin^2 Engine Version: %s", VERSION);
+
+#if _DEBUG
+    SPDLOG_INFO("Configuration: DEBUG");
+#else
+    SPDLOG_INFO("Configuration: RELEASE");
 #endif
 
     if (!GameEngine::Init(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_FULLSCREEN, GL_VERSION_MAJOR, GL_VERSION_MINOR))
@@ -277,6 +288,8 @@ int main(int, char**)
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
+
+        Editor::Common::ScriptableObjectEditorManager::End();
     };
 #endif
 
@@ -313,18 +326,18 @@ void input()
 
     CameraComponent* c = CameraComponent::GetMainCamera();
 
-    if (Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT)) {
-        static int i = 1;
-        RaycastHit raycast;
-        Ray ray = c->GetScreenPointRay(Input::GetCursorPos());
-        CollisionManager::Instance()->Raycast(ray, raycast);
-        if (raycast.collider != nullptr) {
-            SPDLOG_INFO("[Click {}].\t {}. collider:\ncolpos: \t{}\t{}\t{} \nintpos: \t{}\t{}\t{}", i++, raycast.collider->colliderId, raycast.collider->collider->shapeColliderData->Position.x, raycast.collider->collider->shapeColliderData->Position.y, raycast.collider->collider->shapeColliderData->Position.z, raycast.position.x, raycast.position.y, raycast.position.z);
-        }
-        else {
-            SPDLOG_INFO("Collision not happened!");
-        }
-    }
+    //if (Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT)) {
+    //    static int i = 1;
+    //    RaycastHit raycast;
+    //    Ray ray = c->GetScreenPointRay(Input::GetCursorPos());
+    //    CollisionManager::Instance()->Raycast(ray, raycast);
+    //    if (raycast.collider != nullptr) {
+    //        SPDLOG_INFO("[Click {}].\t {}. collider:\ncolpos: \t{}\t{}\t{} \nintpos: \t{}\t{}\t{}", i++, raycast.collider->colliderId, raycast.collider->collider->shapeColliderData->Position.x, raycast.collider->collider->shapeColliderData->Position.y, raycast.collider->collider->shapeColliderData->Position.z, raycast.position.x, raycast.position.y, raycast.position.z);
+    //    }
+    //    else {
+    //        SPDLOG_INFO("Collision not happened!");
+    //    }
+    //}
 
     bool moved = false;
 

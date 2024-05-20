@@ -9,13 +9,12 @@ using namespace std;
 
  std::hash<std::string> MaterialParameters::hasher;
 
-MaterialParameters::MaterialParameters()
-{
-
-}
+MaterialParameters::MaterialParameters() {}
 
 MaterialParameters::~MaterialParameters()
 {
+	_textureMappings.clear();
+	_textures.clear();
 	glDeleteBuffers(1, &_materialParametersDataUBO);
 }
 

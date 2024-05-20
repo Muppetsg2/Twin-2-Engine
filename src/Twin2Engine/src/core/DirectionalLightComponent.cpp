@@ -73,7 +73,7 @@ void DirectionalLightComponent::OnDestroy()
 	LightingController::Instance()->ViewerTransformChanged -= OnViewerChangeId;
 	LightingController::Instance()->UpdateDirLights();
 
-	glDeleteTextures(GL_TEXTURE_2D, &light->shadowMap);
+	glDeleteTextures(1, &light->shadowMap);
 	glDeleteFramebuffers(1, &light->shadowMapFBO);
 
 	delete light;

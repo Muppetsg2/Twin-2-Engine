@@ -17,6 +17,7 @@ const char* const tracy_RenderingImGui = "RenderingImGui";
 //#define RELEASE_LOGGER
 
 #include <GameEngine.h>
+#include <GameEngine.h>
 
 // TILEMAP
 #include <Tilemap/HexagonalTilemap.h>
@@ -329,18 +330,18 @@ void input()
 
     CameraComponent* c = CameraComponent::GetMainCamera();
 
-    if (Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT)) {
-        static int i = 1;
-        RaycastHit raycast;
-        Ray ray = c->GetScreenPointRay(Input::GetCursorPos());
-        CollisionManager::Instance()->Raycast(ray, raycast);
-        if (raycast.collider != nullptr) {
-            SPDLOG_INFO("[Click {}].\t {}. collider:\ncolpos: \t{}\t{}\t{} \nintpos: \t{}\t{}\t{}", i++, raycast.collider->colliderId, raycast.collider->collider->shapeColliderData->Position.x, raycast.collider->collider->shapeColliderData->Position.y, raycast.collider->collider->shapeColliderData->Position.z, raycast.position.x, raycast.position.y, raycast.position.z);
-        }
-        else {
-            SPDLOG_INFO("Collision not happened!");
-        }
-    }
+    //if (Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT)) {
+    //    static int i = 1;
+    //    RaycastHit raycast;
+    //    Ray ray = c->GetScreenPointRay(Input::GetCursorPos());
+    //    CollisionManager::Instance()->Raycast(ray, raycast);
+    //    if (raycast.collider != nullptr) {
+    //        SPDLOG_INFO("[Click {}].\t {}. collider:\ncolpos: \t{}\t{}\t{} \nintpos: \t{}\t{}\t{}", i++, raycast.collider->colliderId, raycast.collider->collider->shapeColliderData->Position.x, raycast.collider->collider->shapeColliderData->Position.y, raycast.collider->collider->shapeColliderData->Position.z, raycast.position.x, raycast.position.y, raycast.position.z);
+    //    }
+    //    else {
+    //        SPDLOG_INFO("Collision not happened!");
+    //    }
+    //}
 
     bool moved = false;
 

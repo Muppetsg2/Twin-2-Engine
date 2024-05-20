@@ -261,19 +261,28 @@ Frustum CameraComponent::GetFrustum() const
 	ivec2 size = Window::GetInstance()->GetContentSize();
 
 	Graphic::Frustum frustum;
-	float halfVSide = _far * tanf(_fov * .5f);
+	float halfVSide = _far * tanf(_fov * 0.5f);
 	float aspect = (float)size.x / (float)size.y;
 	float halfHSide = halfVSide * aspect;
 	vec3 frontMultFar = _far * _front;
 
 	vec3 pos = GetTransform()->GetGlobalPosition();
 
+	//frustum.nearFace = { pos + _near * _front, _front };
+	//frustum.farFace = { pos + frontMultFar, -_front };
+	//frustum.rightFace = { pos, glm::normalize(cross(frontMultFar - _right * halfHSide, _up)) };
+	//frustum.leftFace = { pos, glm::normalize(cross(_up, frontMultFar + _right * halfHSide)) };
+	//frustum.topFace = { pos, glm::normalize(cross(_right, frontMultFar - _up * halfVSide)) };
+	//frustum.bottomFace = { pos, glm::normalize(cross(frontMultFar + _up * halfVSide, _right)) };
+
+
+
 	frustum.nearFace = { pos + _near * _front, _front };
 	frustum.farFace = { pos + frontMultFar, -_front };
-	frustum.rightFace = { pos, glm::normalize(cross(frontMultFar - _right * halfHSide, _up)) };
-	frustum.leftFace = { pos, glm::normalize(cross(_up, frontMultFar + _right * halfHSide)) };
-	frustum.topFace = { pos, glm::normalize(cross(_right, frontMultFar - _up * halfVSide)) };
-	frustum.bottomFace = { pos, glm::normalize(cross(frontMultFar + _up * halfVSide, _right)) };
+	frustum.rightFace = { pos, glm::normalize(cross(_up, frontMultFar + _right * halfHSide)) };
+	frustum.leftFace = { pos, glm::normalize(cross(frontMultFar - _right * halfHSide, _up)) };
+	frustum.topFace = { pos, glm::normalize(cross(frontMultFar + _up * halfVSide, _right)) };
+	frustum.bottomFace = { pos, glm::normalize(cross(_right, frontMultFar - _up * halfVSide)) };
 
 	return frustum;
 }
@@ -631,6 +640,8 @@ void CameraComponent::Render()
 		_screenShader->SetBool("displayDepth", _mode == CameraDisplayMode::DEPTH);
 		_screenShader->SetBool("displaySSAO", _mode == CameraDisplayMode::SSAO_MAP);
 
+		_screenShader->SetBool("enableDepthOfField", (_filters& (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0);
+
 		_screenPlane.GetMesh(0)->Draw(1);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		FrameMarkEnd(tracy_OnScreenFramebuffer);
@@ -925,33 +936,15 @@ Ray CameraComponent::GetScreenPointRay(glm::vec2 screenPosition) const
 	ivec2 size = Window::GetInstance()->GetContentSize();
 	glm::vec3 Origin = GetTransform()->GetGlobalPosition();
 
-	/*/glm::vec4 Position = glm::inverse(GetProjectionMatrix() * GetViewMatrix()) * glm::vec4(2.0f * screenPosition.x / size.x - 1.0f,
-																						   2.0f * screenPosition.y / size.y - 1.0f, 1.0f, 1.0f);
-	//SPDLOG_INFO("P: {}, {}, {}, {}", Position.x, Position.y, Position.z, Position.w);
-	//float fov_tan = glm::tan(3.141 * _fov / 180.0f);
-	
-
-	glm::vec3 Direction = glm::normalize(glm::vec3(Position) - Origin);
-	//glm::vec3 Direction = glm::normalize(glm::vec3((2.0f * screenPosition.x / size.x - 1.0f) * fov_tan,
-	//											   (1.0f - 2.0f * screenPosition.y / size.y) * fov_tan, 1.0f));/**/
-
-	// Normalize screen coordinates to NDC (-1 to 1)
-	float x = 2.0f * screenPosition.x / size.x;
-	float y = 2.0f * screenPosition.y / size.y;
-	glm::vec3 Direction = _front + _right * (x * tanf(radians(_fov)) * size.x / size.y) + cross(_right, _front) * (y * tanf(radians(_fov)));
-	Direction = glm::normalize(Direction);
-	//SPDLOG_INFO("CF\t{}\t{}\t{}\n\t\t\t\tD\t{}\t{}\t{}", _front.x, _front.y, _front.z, Direction.x, Direction.y, Direction.z);
+	float x = 2.0f * screenPosition.x / size.x;	//2.0f * 
+	float y = 2.0f * screenPosition.y / size.y;	//2.0f * 
+	//float x2 = 2.0f * screenPosition.x / size.x;	//
+	//float y2 = 2.0f * screenPosition.y / size.y;	//
+	glm::vec3 Direction = _front + _right * (x * tanf(radians(_fov * 0.5)) * size.x / size.y) + cross(_right, _front) * (y * tanf(radians(_fov * 0.5)));
+	//glm::vec3 Direction2 = _front + _right * (x2 * tanf(radians(_fov * 0.5)) * size.x / size.y) + cross(_right, _front) * (y2 * tanf(radians(_fov * 0.5)));
+	Direction = glm::normalize(Direction); 
+	//SPDLOG_INFO("CP: \t{}\t{}\n\t\tF\t{}\t{}\t{}\n\t\tD\t{}\t{}\t{}\n\t\tD2\t{}\t{}\t{}", screenPosition.x, screenPosition.y, _front.x, _front.y, _front.z, Direction.x, Direction.y, Direction.z, Direction2.x, Direction2.y, Direction2.z);
 	//float z = 1.0f; // NDC Z value (should be 1 for far plane)
-
-	// // Unproject to view space
-	//glm::vec4 rayClip = glm::vec4(x, y, -1.0f, 1.0f);
-	//glm::vec4 rayEye = glm::inverse(GetProjectionMatrix()) * rayClip;
-	//rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f); // Set z to -1 for direction
-	//glm::vec4 rayWorld = glm::inverse(GetViewMatrix()) * rayEye;
-	//
-	//// Get direction vector in world space
-	//glm::vec3 Direction(rayWorld);
-	//Direction = glm::normalize(Direction);
 
 	return Ray(std::move(Direction), std::move(Origin));
 }
@@ -1120,6 +1113,17 @@ void CameraComponent::DrawEditor()
 		else {
 			if (e) {
 				acFil ^= (uint8_t)CameraRenderFilter::OUTLINE;
+			}
+		}
+
+		g = (fil & (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0 && !n;
+		ImGui::Checkbox(string("Depth of Field##").append(id).c_str(), &g);
+		if (g) {
+			acFil |= (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD;
+		}
+		else {
+			if (e) {
+				acFil ^= (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD;
 			}
 		}
 

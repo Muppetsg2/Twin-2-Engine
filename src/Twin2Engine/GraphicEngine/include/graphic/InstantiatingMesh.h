@@ -22,8 +22,8 @@ namespace Twin2Engine::Graphic
         virtual ~InstantiatingMesh();
 
 #ifdef MESH_FRUSTUM_CULLING
-        Physic::BoundingVolume* SphericalBV = nullptr;
-        bool IsOnFrustum(Frustum& frustum, glm::mat4 model);
+        Physic::BoundingVolume* sphericalBV = nullptr;
+        bool IsOnFrustum(Frustum& frustum, const glm::mat4& model);
 #endif // MESH_FRUSTUM_CULLING
 
         void Draw(unsigned int number);

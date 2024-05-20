@@ -1,4 +1,5 @@
 #include <physic/GameCollider.h>
+#include <core/HexagonalColliderComponent.h>
 #include <core/Transform.h>
 
 //#define USE_BOUNDING_VOLUMES
@@ -196,7 +197,7 @@ Collision* GameCollider::collide(Collider* other) {
 	return nullptr;
 };
 
-bool lineSegmentIntersection(const glm::vec3& p, const glm::vec3& d, const glm::vec3 a, const glm::vec3 b, glm::vec3& intersection) {
+bool lineSegmentIntersection3D(const glm::vec3& p, const glm::vec3& d, const glm::vec3 a, const glm::vec3 b, glm::vec3& intersection) {
 	glm::vec3 ab = b - a;
 	glm::vec3 pa = a - p;
 
@@ -220,20 +221,43 @@ bool lineSegmentIntersection(const glm::vec3& p, const glm::vec3& d, const glm::
 	return true;
 }
 
-bool planeLineIntersection(const glm::vec3 normal, float d, const glm::vec3& p, const glm::vec3& dir, glm::vec3& intersection) {
+bool lineSegmentIntersection2D(const glm::vec3& p, const glm::vec3& d, const glm::vec3 a, const glm::vec3 b, glm::vec3& intersection) {
+	glm::vec3 AB = b - a;
+	double determinant = d.x * (-AB.z) - d.z * (-AB.x);
+
+	if (determinant == 0) {
+		// Lines are parallel
+		return false;
+	}
+
+	glm::vec3 PA = a - p;
+	float t = (PA.x * (-AB.z) - PA.z * (-AB.x)) / determinant;
+	float u = (d.x * PA.z - d.z * PA.x) / determinant;
+
+	if (u >= 0.0 && u <= 1.0) {
+		intersection = p + d * t;
+		return true;
+	}
+
+	return false;
+}
+
+bool planeLineIntersection(const glm::vec3 normal, float d, const glm::vec3& origin, const glm::vec3& dir, glm::vec3& intersection) {
 	float denom = glm::dot(normal, dir);
 
 	// Check if the line and plane are parallel
 	if (fabs(denom) < 1e-8)
 		return false;
 
-	float t = -((glm::dot(normal, p) + d) / denom);
+	//float t = -((glm::dot(normal, p) + d) / denom);
+
+	float t = glm::dot(normal * d - origin, normal) / glm::dot(dir, normal);
 
 	// Check if the intersection point lies on the line
 	if (t < 0.0)
 		return false;
 
-	intersection = p + dir * t; // Compute the intersection point
+	intersection = origin + dir * t; // Compute the intersection point
 	return true;
 }
 
@@ -379,68 +403,68 @@ bool GameCollider::rayCollision(Ray& ray, RaycastHit& raycastHit) {
 		bool intersect = false;
 
 		if (up >= 0.5 && vp >= 0.5) {
-			if (lineSegmentIntersection(o, dir, std::move(hexData->Position - hexData->w), std::move(hexData->Position + hexData->u), intersectionPoint)) {
+			if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position - hexData->w * hexData->BaseLength), std::move(hexData->Position + hexData->u * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
-			else if (lineSegmentIntersection(o, dir, std::move(hexData->Position + hexData->u), std::move(hexData->Position + hexData->v), intersectionPoint)) {
+			else if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position + hexData->u * hexData->BaseLength), std::move(hexData->Position + hexData->v * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
-			else if (lineSegmentIntersection(o, dir, std::move(hexData->Position + hexData->v), std::move(hexData->Position + hexData->w), intersectionPoint)) {
+			else if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position + hexData->v * hexData->BaseLength), std::move(hexData->Position + hexData->w * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
 		}
 		else if (vp >= 0.5 && wp >= 0.5) {
-			if (lineSegmentIntersection(o, dir, std::move(hexData->Position + hexData->u), std::move(hexData->Position + hexData->v), intersectionPoint)) {
+			if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position + hexData->u * hexData->BaseLength), std::move(hexData->Position + hexData->v * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
-			else if (lineSegmentIntersection(o, dir, std::move(hexData->Position + hexData->v), std::move(hexData->Position + hexData->w), intersectionPoint)) {
+			else if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position + hexData->v * hexData->BaseLength), std::move(hexData->Position + hexData->w * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
-			else if (lineSegmentIntersection(o, dir, std::move(hexData->Position + hexData->w), std::move(hexData->Position - hexData->u), intersectionPoint)) {
+			else if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position + hexData->w * hexData->BaseLength), std::move(hexData->Position - hexData->u * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
 		}
 		else if (wp >= 0.5 && up <= -0.5) {
-			if (lineSegmentIntersection(o, dir, std::move(hexData->Position + hexData->v), std::move(hexData->Position + hexData->w), intersectionPoint)) {
+			if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position + hexData->v * hexData->BaseLength), std::move(hexData->Position + hexData->w * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
-			else if (lineSegmentIntersection(o, dir, std::move(hexData->Position + hexData->w), std::move(hexData->Position - hexData->u), intersectionPoint)) {
+			else if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position + hexData->w * hexData->BaseLength), std::move(hexData->Position - hexData->u * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
-			else if (lineSegmentIntersection(o, dir, std::move(hexData->Position - hexData->u), std::move(hexData->Position - hexData->v), intersectionPoint)) {
+			else if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position - hexData->u * hexData->BaseLength), std::move(hexData->Position - hexData->v * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
 		}
 		else if (up <= -0.5 && vp <= -0.5) {
-			if (lineSegmentIntersection(o, dir, std::move(hexData->Position + hexData->w), std::move(hexData->Position - hexData->u), intersectionPoint)) {
+			if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position + hexData->w * hexData->BaseLength), std::move(hexData->Position - hexData->u * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
-			else if (lineSegmentIntersection(o, dir, std::move(hexData->Position - hexData->u), std::move(hexData->Position - hexData->v), intersectionPoint)) {
+			else if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position - hexData->u * hexData->BaseLength), std::move(hexData->Position - hexData->v * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
-			else if (lineSegmentIntersection(o, dir, std::move(hexData->Position - hexData->v), std::move(hexData->Position - hexData->w), intersectionPoint)) {
+			else if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position - hexData->v * hexData->BaseLength), std::move(hexData->Position - hexData->w * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
 		}
 		else if (vp <= -0.5 && wp <= -0.5) {
-			if (lineSegmentIntersection(o, dir, std::move(hexData->Position - hexData->u), std::move(hexData->Position - hexData->v), intersectionPoint)) {
+			if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position - hexData->u * hexData->BaseLength), std::move(hexData->Position - hexData->v * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
-			else if (lineSegmentIntersection(o, dir, std::move(hexData->Position - hexData->v), std::move(hexData->Position - hexData->w), intersectionPoint)) {
+			else if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position - hexData->v * hexData->BaseLength), std::move(hexData->Position - hexData->w * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
-			else if (lineSegmentIntersection(o, dir, std::move(hexData->Position - hexData->w), std::move(hexData->Position + hexData->u), intersectionPoint)) {
+			else if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position - hexData->w * hexData->BaseLength), std::move(hexData->Position + hexData->u * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
 		}
 		else if (wp <= -0.5 && up >= 0.5) {
-			if (lineSegmentIntersection(o, dir, std::move(hexData->Position - hexData->v), std::move(hexData->Position - hexData->w), intersectionPoint)) {
+			if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position - hexData->v * hexData->BaseLength), std::move(hexData->Position - hexData->w * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
-			else if (lineSegmentIntersection(o, dir, std::move(hexData->Position - hexData->w), std::move(hexData->Position + hexData->u), intersectionPoint)) {
+			else if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position - hexData->w * hexData->BaseLength), std::move(hexData->Position + hexData->u * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
-			else if (lineSegmentIntersection(o, dir, std::move(hexData->Position + hexData->u), std::move(hexData->Position + hexData->v), intersectionPoint)) {
+			else if (lineSegmentIntersection2D(o, dir, std::move(hexData->Position + hexData->u * hexData->BaseLength), std::move(hexData->Position + hexData->v * hexData->BaseLength), intersectionPoint)) {
 				intersect = true;
 			}
 		}
@@ -452,7 +476,7 @@ bool GameCollider::rayCollision(Ray& ray, RaycastHit& raycastHit) {
 			o.y += hexData->HalfHeight;
 			baseIntersec = planeLineIntersection(glm::vec3(0.0f, 1.0f, 0.0f), o.y, ray.Origin, ray.Direction, baseIntersectionPoint);
 		}
-		else if (ray.Origin.y > (hexData->Position.y - hexData->HalfHeight)) {
+		else if (ray.Origin.y < (hexData->Position.y - hexData->HalfHeight)) {
 			o = hexData->Position;
 			o.y -= hexData->HalfHeight;
 			baseIntersec = planeLineIntersection(glm::vec3(0.0f, -1.0f, 0.0f), o.y, ray.Origin, ray.Direction, baseIntersectionPoint);
@@ -463,17 +487,17 @@ bool GameCollider::rayCollision(Ray& ray, RaycastHit& raycastHit) {
 			return true;
 		}
 
-		if (baseIntersec) {
-			float dist1Sqr = (hexData->Position.x - intersectionPoint.x) * (hexData->Position.x - intersectionPoint.x) + (hexData->Position.y - intersectionPoint.y) * (hexData->Position.y - intersectionPoint.y);
-			float dist2Sqr = (hexData->Position.x - baseIntersectionPoint.x) * (hexData->Position.x - baseIntersectionPoint.x) + (hexData->Position.y - baseIntersectionPoint.y) * (hexData->Position.y - baseIntersectionPoint.y);
+		if (baseIntersec && intersect) {
+			float dist1Sqr = (hexData->Position.x - intersectionPoint.x) * (hexData->Position.x - intersectionPoint.x) + (hexData->Position.z - intersectionPoint.z) * (hexData->Position.z - intersectionPoint.z);
+			float dist2Sqr = (hexData->Position.x - baseIntersectionPoint.x) * (hexData->Position.x - baseIntersectionPoint.x) + (hexData->Position.z - baseIntersectionPoint.z) * (hexData->Position.z - baseIntersectionPoint.z);
 
 			if (dist2Sqr < dist1Sqr) {
 				intersectionPoint = baseIntersectionPoint;
 			}
 			else {
-				if (!lineSegmentIntersection(ray.Origin, ray.Direction,
-					std::move(glm::vec3(hexData->Position.x, hexData->Position.y + hexData->HalfHeight, hexData->Position.z)),
-					std::move(glm::vec3(hexData->Position.x, hexData->Position.y - hexData->HalfHeight, hexData->Position.z)), intersectionPoint)) {
+				if (!lineSegmentIntersection3D(ray.Origin, ray.Direction,
+					std::move(glm::vec3(intersectionPoint.x, hexData->Position.y + hexData->HalfHeight, intersectionPoint.z)),
+					std::move(glm::vec3(intersectionPoint.x, hexData->Position.y - hexData->HalfHeight, intersectionPoint.z)), intersectionPoint)) {
 					return false;
 				}
 			}

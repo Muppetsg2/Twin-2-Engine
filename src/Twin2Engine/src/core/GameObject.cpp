@@ -170,7 +170,11 @@ void GameObject::SetActive(bool active)
 	{
 		_activeSelf = active;
 
-		SetActiveInHierarchy(active);
+		//SetActiveInHierarchy(active);
+		for (int index = 0; index < _transform->GetChildCount(); index++)
+		{
+			_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(_activeSelf);
+		}
 
 		OnActiveChanged.Invoke(this); // Wywo³ywanie eventu
 	}
@@ -328,12 +332,13 @@ void GameObject::DrawEditor()
 		SetIsStatic(v);
 	}
 
-	v = _activeSelf;
-	ImGui::Checkbox(string("Active##GO").append(id).c_str(), &v);
+	bool v2 = _activeSelf;
+	ImGui::Checkbox(string("Active##GO").append(id).c_str(), &v2);
 
-	if (v != _activeSelf) {
-		SetActive(v);
-	}
+	SetActive(v2);
+	//if (v2 != _activeSelf) {
+	//	SetActive(v2);
+	//}
 
 	_transform->DrawEditor();
 	ImGui::Separator();

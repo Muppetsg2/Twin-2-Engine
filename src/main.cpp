@@ -15,6 +15,7 @@ const char* const tracy_RenderingImGui = "RenderingImGui";
 #include <GameEngine.h>
 #include <GameEngine.h>
 
+
 // TILEMAP
 #include <Tilemap/HexagonalTilemap.h>
 #include <Tilemap/HexagonalTile.h>
@@ -243,23 +244,11 @@ int main(int, char**)
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
 
-#pragma region TestingLighting
-    /*GameObject* dl_go = SceneManager::CreateGameObject();
-    dl_go->GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
-    DirectionalLightComponent* dl = dl_go->AddComponent<DirectionalLightComponent>();
-    dl->SetColor(glm::vec3(1.0f));
-    //LightingController::Instance()->SetViewerPosition(cameraPos);
-    LightingController::Instance()->SetAmbientLight(glm::vec3(0.1f));
 
-    SceneManager::SaveScene("res/scenes/DirLightTest.scene");*/
-#pragma endregion
-#pragma region HexCollider
-    //GameObject* h_go = SceneManager::CreateGameObject();
-    //HexagonalColliderComponent* hc = h_go->AddComponent<HexagonalColliderComponent>();
-    //hc->SetTrigger(true);
-    //hc->SetLayer(Layer::IGNORE_COLLISION);
-    //hc->SetLocalPosition(0.0f, -0.5f, 0.0f);
-    //PrefabManager::SaveAsPrefab(h_go, "HCCpref.prefab");
+#pragma region GAMESCRIPTS_PREFABS
+    //GameObject* gs_go = SceneManager::CreateGameObject();
+    //GameScripts::MovementController* gsc = gs_go->AddComponent<GameScripts::MovementController>();
+    //PrefabManager::SaveAsPrefab(gs_go, "MovementControllerPref.prefab");
 #pragma endregion
 
 #if _DEBUG
@@ -288,6 +277,8 @@ int main(int, char**)
     GameEngine::EarlyUpdate += [&]() -> void {
         update();
     };
+
+    
 
     GameEngine::Start();
 
@@ -327,34 +318,31 @@ void input()
     //    }
     //}
 
-    bool moved = false;
 
+#if _DEBUG
     if (Input::IsKeyDown(KEY::W) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
-        moved = true;
     }
     if (Input::IsKeyDown(KEY::S) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
-        moved = true;
     }
     if (Input::IsKeyDown(KEY::A) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
-        moved = true;
     }
     if (Input::IsKeyDown(KEY::D) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
-        moved = true;
     }
+#endif
 
-    if (LightingController::IsInstantiated() && moved) {
-        //glm::vec3 cp = c->GetTransform()->GetGlobalPosition();
-        //LightingController::Instance()->SetViewerPosition(cp);
-        LightingController::Instance()->UpdateOnTransformChange();
-    }
+    //if (LightingController::IsInstantiated() && moved) {
+    //    //glm::vec3 cp = c->GetTransform()->GetGlobalPosition();
+    //    //LightingController::Instance()->SetViewerPosition(cp);
+    //    LightingController::Instance()->UpdateOnTransformChange();
+    //}
 
 
     if (Input::IsKeyPressed(KEY::LEFT_ALT))
@@ -387,6 +375,8 @@ void input()
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
+#if _DEBUG
+
     if (mouseNotUsed)
     {
         lastX = xpos;
@@ -420,6 +410,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     }
 
     Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x, rot.y + xoffset, rot.z));
+#endif 
 }
 
 void update()

@@ -58,6 +58,9 @@
 #include <processes/ThreadProcess.h>
 #include <processes/TimerProcess.h>
 
+//GAMESCRIPTS
+#include <MovementController.h>
+
 
 namespace Twin2Engine {
 	class GameEngine {

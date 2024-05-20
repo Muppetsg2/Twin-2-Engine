@@ -7,6 +7,7 @@
 #include <tools/EventHandler.h>
 #include <manager/ScriptableObjectManager.h>
 #include <core/ResourceManagement.h>
+#include <GameEngine.h>
 
 using namespace Twin2Engine::Manager;
 using namespace std;

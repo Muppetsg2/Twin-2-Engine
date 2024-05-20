@@ -641,6 +641,16 @@ GameObjects:
           y: 0
       - id: 33
         enabled: true
+        type: ContentGenerator
+        mapElementGenerators:
+          - res/scriptableobjects/RegionsGeneratorByKMeans.so
+          - res/scriptableobjects/SectorGeneratorForRegionsByKMeans.so
+          - res/scriptableobjects/LakeGenerator.so
+          - res/scriptableobjects/MountainsGenerator.so
+          - res/scriptableobjects/CityGenerator.so
+          - res/scriptableobjects/RadioStationGeneratorSectorBased.so
+      - id: 34
+        enabled: true
         type: MapGenerator
         prefabHexagonalTile: 6
         additionalTile: 4
@@ -651,16 +661,6 @@ GameObjects:
         minPointsNumber: 5
         maxPointsNumber: 5
         angleDeltaRange: 5
-      - id: 34
-        enabled: true
-        type: ContentGenerator
-        mapElementGenerators:
-          - res/scriptableobjects/RegionsGeneratorByKMeans.so
-          - res/scriptableobjects/SectorGeneratorForRegionsByKMeans.so
-          - res/scriptableobjects/LakeGenerator.so
-          - res/scriptableobjects/MountainsGenerator.so
-          - res/scriptableobjects/CityGenerator.so
-          - res/scriptableobjects/RadioStationGeneratorSectorBased.so
     children:
       []
   - id: 15

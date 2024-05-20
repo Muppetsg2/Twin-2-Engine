@@ -237,20 +237,23 @@ int main(int, char**)
 #pragma region SETTING_UP_GENERATION
 
     tilemapGO = SceneManager::GetGameObjectWithId(14);
-    HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
+    //HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
     MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
-    mapGenerator->tilemap = hexagonalTilemap;
-    float tilemapGenerating = glfwGetTime();
+    //mapGenerator->tilemap = hexagonalTilemap;
+    //float tilemapGenerating = glfwGetTime();
     mapGenerator->Generate();
-    spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
+    //spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
 
-    ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
+    //ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
 
-    tilemapGenerating = glfwGetTime();
-    contentGenerator->GenerateContent(hexagonalTilemap);
-    spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
+    //tilemapGenerating = glfwGetTime();
+    //contentGenerator->GenerateContent(hexagonalTilemap);
+    //spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
+#if _DEBUG
     Editor::Common::ScriptableObjectEditorManager::Init();
     Editor::Common::ScriptableObjectEditorManager::Update();
+#endif
+
 #pragma endregion
     
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();

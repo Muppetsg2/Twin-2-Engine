@@ -9,6 +9,8 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/pch
 
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     add_subdirectory(Editor)
+else()
+    target_compile_options(${PROJECT_NAME} PUBLIC "-O2")
 endif()
 
 add_subdirectory(Additional)

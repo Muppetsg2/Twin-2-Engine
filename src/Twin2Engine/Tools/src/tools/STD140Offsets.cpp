@@ -5,6 +5,28 @@ using namespace std;
 
 hash<string> STD140Offsets::_hasher;
 
+const string STD140Offsets::_arrayElemFormat = "{0}[{1}]";
+const string STD140Offsets::_subElemFormat = "{0}.{1}";
+
+const char* const STD140Offsets::tracy_AddScalar = "STD140Offsets AddScalar";
+const char* const STD140Offsets::tracy_AddScalarArray = "STD140Offsets AddScalarArray";
+const char* const STD140Offsets::tracy_AddVec = "STD140Offsets AddVecArray";
+const char* const STD140Offsets::tracy_AddVecArray = "STD140Offsets AddVecArray";
+const char* const STD140Offsets::tracy_AddMat = "STD140Offsets AddMat";
+const char* const STD140Offsets::tracy_AddMatArray = "STD140Offsets AddMatArray";
+const char* const STD140Offsets::tracy_AddMatArrayElem = "STD140Offsets AddMatArray Add Elemement";
+const char* const STD140Offsets::tracy_AddMatArraySetBeginPointer = "STD140Offsets AddMatArray Set Begin Pointer";
+const char* const STD140Offsets::tracy_AddStruct = "STD140Offsets AddStruct";
+const char* const STD140Offsets::tracy_AddStructSetElem = "STD140Offsets AddStruct Set Element";
+const char* const STD140Offsets::tracy_AddStructAddPadding = "STD140Offsets AddStruct Add Padding";
+const char* const STD140Offsets::tracy_AddStructArray = "STD140Offsets AddStructArray";
+const char* const STD140Offsets::tracy_AddStructArrayAddElems = "STD140Offsets AddStructArray Add Elements";
+const char* const STD140Offsets::tracy_AddStructArrayAddElem = "STD140Offsets AddStructArray Add Element";
+const char* const STD140Offsets::tracy_AddStructArrayAddElemSubValues = "STD140Offsets AddStructArray Add Element Sub Values";
+const char* const STD140Offsets::tracy_AddStructArrayAddElemSubValue = "STD140Offsets AddStructArray Add Element Sub Value";
+const char* const STD140Offsets::tracy_AddStructArrayAddElemPadding = "STD140Offsets AddStructArray Add Element Padding";
+const char* const STD140Offsets::tracy_AddStructArraySetBeginPointer = "STD140Offsets AddStructArray Set Begin Pointer";
+
 bool STD140Offsets::_CheckVariable(const std::string& name) const
 {
 	static const char* const tracy_CheckVariable = "STD140Offsets Check Variable";
@@ -125,13 +147,12 @@ vector<size_t> STD140Offsets::_AddArray(const string& name, size_t arraySize, si
 		FrameMarkStart(tracy_AddArrayAddValues);
 		string valueName;
 		size_t valueNameHash;
-		const string valueNameFormat = move(concat(name, "[{}]"));
 		for (size_t i = 0; i < arraySize; ++i) {
 			FrameMarkStart(tracy_AddArrayAddValuesAddElem);
 
 			// ELEMENT VALUE NAME
 			FrameMarkStart(tracy_AddArrayAddValuesElemName);
-			valueName = move(vformat(valueNameFormat, make_format_args(i)));
+			valueName = move(vformat(_arrayElemFormat, make_format_args(name, i)));
 			FrameMarkEnd(tracy_AddArrayAddValuesElemName);
 
 			// ELEMENT VALUE NAME HASH
@@ -194,11 +215,10 @@ vector<size_t> STD140Offsets::GetArray(const string& name) const
 
 	FrameMarkStart(tracy_GetArray);
 
-	const string elemNameFormat = move(concat(name, "[{}]"));
 	vector<size_t> values;
 
 	FrameMarkStart(tracy_GetArrayFindElemOffset);
-	map<size_t, size_t>::const_iterator map_iterator = _offsets.find(_hasher(vformat(elemNameFormat, make_format_args(0))));
+	map<size_t, size_t>::const_iterator map_iterator = _offsets.find(_hasher(vformat(_arrayElemFormat, make_format_args(name, 0))));
 	FrameMarkEnd(tracy_GetArrayFindElemOffset);
 
 	size_t i = 1;
@@ -207,7 +227,7 @@ vector<size_t> STD140Offsets::GetArray(const string& name) const
 		values.push_back((*map_iterator).second);
 
 		FrameMarkStart(tracy_GetArrayFindElemOffset);
-		map_iterator = _offsets.find(_hasher(vformat(elemNameFormat, make_format_args(i++))));
+		map_iterator = _offsets.find(_hasher(vformat(_arrayElemFormat, make_format_args(name, i++))));
 		FrameMarkEnd(tracy_GetArrayFindElemOffset);
 
 		FrameMarkEnd(tracy_GetArrayGetElemOffset);

@@ -156,17 +156,8 @@ vector<size_t> STD140Offsets::AddArray(const string& name, size_t arraySize, siz
 
 		// UPDATE SIZE
 		FrameMarkStart(tracy_AddArrayUpdateSize);
-		//_currentOffset = aligementOffset + (arraySize - 1) * baseAligement;
 		_currentOffset = aligementOffset + arraySize * baseAligement;	
 		FrameMarkEnd(tracy_AddArrayUpdateSize);
-
-
-		// UPDATE CURRENT OFFSET (ADD PADDING)
-		/*FrameMarkStart(tracy_AddArrayUpdateCurrentOffset);
-		if (_currentOffset % 16 != 0) {
-			_currentOffset += 16 - (_currentOffset % 16);
-		}
-		FrameMarkEnd(tracy_AddArrayUpdateCurrentOffset);*/
 
 		// SET ARRAY BEGIN POINTER
 		FrameMarkStart(tracy_AddArraySetBeginPointer);
@@ -182,50 +173,89 @@ vector<size_t> STD140Offsets::AddArray(const string& name, size_t arraySize, siz
 
 size_t STD140Offsets::Get(const string& name) const
 {
-	size_t nameHash = _hasher(name);
-	if (!_offsets.contains(nameHash)) return 0;
-	else return (*_offsets.find(nameHash)).second;
+	static const char* const tracy_Get = "STD140Offsets Get";
+	ZoneScoped;
+
+	FrameMarkStart(tracy_Get);
+	size_t value = 0;
+	map<size_t, size_t>::const_iterator map_iterator = _offsets.find(_hasher(name));
+	if (map_iterator != _offsets.end()) {
+		value = (*map_iterator).second;
+	}
+	FrameMarkEnd(tracy_Get);
+	return value;
 }
 
 vector<size_t> STD140Offsets::GetArray(const string& name) const
 {
-	size_t nameHash = _hasher(name);
-	if (!_offsets.contains(nameHash)) return vector<size_t>();
-	
+	static const char* const tracy_GetArray = "STD140Offsets GetArray";
+	static const char* const tracy_GetArrayFindElemOffset = "STD140Offsets GetArray Find Element Offset";
+	static const char* const tracy_GetArrayGetElemOffset = "STD140Offsets GetArray Get Element Offset";
+	ZoneScoped;
+
+	FrameMarkStart(tracy_GetArray);
+
+	const string elemNameFormat = move(concat(name, "[{}]"));
 	vector<size_t> values;
-	nameHash = _hasher(name + "[0]");
+
+	FrameMarkStart(tracy_GetArrayFindElemOffset);
+	map<size_t, size_t>::const_iterator map_iterator = _offsets.find(_hasher(vformat(elemNameFormat, make_format_args(0))));
+	FrameMarkEnd(tracy_GetArrayFindElemOffset);
+
 	size_t i = 1;
-	while (_offsets.contains(nameHash)) {
-		values.push_back((*_offsets.find(nameHash)).second);
-		nameHash = _hasher(name + "[" + to_string(i) + "]");
-		++i;
+	while (map_iterator != _offsets.end()) {
+		FrameMarkStart(tracy_GetArrayGetElemOffset);
+		values.push_back((*map_iterator).second);
+
+		FrameMarkStart(tracy_GetArrayFindElemOffset);
+		map_iterator = _offsets.find(_hasher(vformat(elemNameFormat, make_format_args(i++))));
+		FrameMarkEnd(tracy_GetArrayFindElemOffset);
+
+		FrameMarkEnd(tracy_GetArrayGetElemOffset);
 	}
+
+	FrameMarkEnd(tracy_GetArray);
 	return values;
 }
 
 size_t STD140Offsets::GetBaseAligement() const
 {
+	static const char* const tracy_GetBaseAligement = "STD140Offsets GetBaseAligement";
+	ZoneScoped;
+
+	FrameMarkStart(tracy_GetBaseAligement);
 	size_t baseAligement = _maxAligement;
 	if (_maxAligement % 16 != 0) {
 		baseAligement += 16 - (baseAligement % 16);
 	}
+	FrameMarkEnd(tracy_GetBaseAligement);
 	return baseAligement;
 }
 
 size_t STD140Offsets::GetSize() const
 {
+	static const char* const tracy_GetSize = "STD140Offsets GetSize";
+	ZoneScoped;
+
+	FrameMarkStart(tracy_GetSize);
 	size_t size = _currentOffset;
 	if (size % 16 != 0) {
 		size += 16 - (size % 16);
 	}
+	FrameMarkEnd(tracy_GetSize);
 	return size;
 }
 
 void STD140Offsets::Clear()
 {
+	static const char* const tracy_Clear = "STD140Offsets Clear";
+	ZoneScoped;
+
+	FrameMarkStart(tracy_Clear);
 	_currentOffset = 0;
 	_maxAligement = 0;
 
 	_offsets.clear();
 	_names.clear();
+	FrameMarkEnd(tracy_Clear);
 }

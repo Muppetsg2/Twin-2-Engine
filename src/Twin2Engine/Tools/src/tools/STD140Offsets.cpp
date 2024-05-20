@@ -5,7 +5,7 @@ using namespace std;
 
 hash<string> STD140Offsets::_hasher;
 
-bool STD140Offsets::CheckVariable(const std::string& name) const
+bool STD140Offsets::_CheckVariable(const std::string& name) const
 {
 	static const char* const tracy_CheckVariable = "STD140Offsets Check Variable";
 	static const char* const tracy_CheckVariableContains = "STD140Offsets Check Variable Contains";
@@ -31,7 +31,7 @@ bool STD140Offsets::Contains(const std::string& name) const
 	return _offsets.contains(move(_hasher(name)));
 }
 
-size_t STD140Offsets::Add(const string& name, size_t baseAligement, size_t baseOffset)
+size_t STD140Offsets::_Add(const string& name, size_t baseAligement, size_t baseOffset)
 {
 	static const char* const tracy_Add = "STD140Offsets Add";
 	static const char* const tracy_AddGetNameHash = "STD140Offsets Add Get Name Hash";
@@ -78,7 +78,7 @@ size_t STD140Offsets::Add(const string& name, size_t baseAligement, size_t baseO
 	return aligementOffset;
 }
 
-vector<size_t> STD140Offsets::AddArray(const string& name, size_t arraySize, size_t baseAligement, size_t baseOffset)
+vector<size_t> STD140Offsets::_AddArray(const string& name, size_t arraySize, size_t baseAligement, size_t baseOffset)
 {
 	static const char* const tracy_AddArray = "STD140Offsets AddArray";
 	static const char* const tracy_AddArraySetBaseAligement = "STD140Offsets AddArray Set Base Aligement";

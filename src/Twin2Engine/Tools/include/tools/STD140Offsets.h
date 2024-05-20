@@ -49,10 +49,10 @@ namespace Twin2Engine::Tools {
 
 		static std::hash<std::string> _hasher;
 
-		bool CheckVariable(const std::string& name) const;
+		bool _CheckVariable(const std::string& name) const;
 
 		template<class T, class... Ts>
-		void AddMultiple(const STD140Variable<T>& var, const STD140Variable<Ts>&... vars) {
+		void _AddMultiple(const STD140Variable<T>& var, const STD140Variable<Ts>&... vars) {
 			if constexpr (std::is_same_v<T, STD140Offsets>) {
 				if (var.array_size == 0) {
 					Add(var.var_name, var.struct_offsets);
@@ -74,8 +74,8 @@ namespace Twin2Engine::Tools {
 			}
 		}
 
-		size_t Add(const std::string& name, size_t baseAligement, size_t baseOffset);
-		std::vector<size_t> AddArray(const std::string& name, size_t arraySize, size_t baseAligement, size_t baseOffset);
+		size_t _Add(const std::string& name, size_t baseAligement, size_t baseOffset);
+		std::vector<size_t> _AddArray(const std::string& name, size_t arraySize, size_t baseAligement, size_t baseOffset);
 
 	public:
 		STD140Offsets() = default;
@@ -84,7 +84,7 @@ namespace Twin2Engine::Tools {
 		STD140Offsets(STD140Offsets&& std140off) = default;
 		template<class... Args>
 		STD140Offsets(const STD140Variable<Args>&... vars) {
-			AddMultiple(vars...);
+			_AddMultiple(vars...);
 		}
 		virtual ~STD140Offsets() = default;
 
@@ -98,6 +98,8 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T, size_t>
 		Add(const std::string& name) {
+			ZoneScoped;
+
 			if (CheckVariable(name)) return 0;
 
 			size_t tSize;

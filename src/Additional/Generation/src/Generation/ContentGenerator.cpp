@@ -67,9 +67,11 @@ void ContentGenerator::DrawEditor()
     string name = string("Content Generator##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str()))
     {
+        Component::DrawInheritedFields();
 		ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 		bool node_open = ImGui::TreeNodeEx(string("Generators##").append(id).c_str(), node_flag);
 
+        // TODO: Dodac przenoszenie
         std::list<int> clicked = std::list<int>();
         clicked.clear();
 		if (node_open) {

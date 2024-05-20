@@ -46,11 +46,6 @@ void ColliderComponent::OnCollisionEnter(Collision* collision)
 	}*/
 }
 
-ColliderComponent::ColliderComponent() : Component()
-{
-	boundingVolume = new BoundingVolume(new SphereColliderData());
-}
-
 void ColliderComponent::DrawInheritedFields()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -247,15 +242,6 @@ void ColliderComponent::DrawInheritedFields()
 	}
 }
 
-ColliderComponent::~ColliderComponent()
-{
-	delete collider;
-	collider = nullptr;
-	delete boundingVolume;
-	boundingVolume = nullptr;
-}
-
-
 void ColliderComponent::SetTrigger(bool v)
 {
 	collider->isTrigger = v;
@@ -295,6 +281,9 @@ void ColliderComponent::SetLayersFilter(LayerCollisionFilter& layersFilter)
 
 void ColliderComponent::Initialize()
 {
+	if (boundingVolume == nullptr) {
+		boundingVolume = new BoundingVolume(new SphereColliderData());
+	}
 	collider->colliderComponent = this;
 	_onCollisionEnterId = collider->OnCollisionEnter += [](Collision* collision) -> void { OnCollisionEnter(collision); };
 }
@@ -331,6 +320,10 @@ void ColliderComponent::OnDisable()
 void ColliderComponent::OnDestroy()
 {
 	collider->OnCollisionEnter -= _onCollisionEnterId;
+	delete collider;
+	collider = nullptr;
+	delete boundingVolume;
+	boundingVolume = nullptr;
 }
 
 void ColliderComponent::EnableBoundingVolume(bool v)
@@ -406,6 +399,7 @@ bool ColliderComponent::Deserialize(const YAML::Node& node)
 	collider->layer = node["layer"].as<Layer>();
 	collider->layersFilter = node["layersFilter"].as<LayerCollisionFilter>();
 	if (node["boundingVolumeRadius"]) {
+		boundingVolume = new BoundingVolume(new SphereColliderData());
 		collider->boundingVolume = boundingVolume;
 		((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius = node["boundingVolumeRadius"].as<float>();
 	}
@@ -418,6 +412,7 @@ void ColliderComponent::DrawEditor()
 {
 	string name = string("Collider##Component").append(std::to_string(this->GetId()));
 	if (ImGui::CollapsingHeader(name.c_str())) {
+		Component::DrawInheritedFields();
 		DrawInheritedFields();
 	}
 }

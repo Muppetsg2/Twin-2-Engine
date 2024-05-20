@@ -2,7 +2,6 @@
 
 #define USE_IMGUI_CONSOLE_OUTPUT true
 #define USE_WINDOWS_CONSOLE_OUTPUT false
-#define WITH_VLD false
 
 #if USE_IMGUI_CONSOLE_OUTPUT || !USE_WINDOWS_CONSOLE_OUTPUT || !_DEBUG
 
@@ -48,10 +47,6 @@ const char* const tracy_RenderingImGui = "RenderingImGui";
 
 #if _DEBUG
 // EDITOR
-
-#if WITH_VLD
-#include <vld.h>
-#endif
 #include <Editor/Common/MaterialCreator.h>
 #include <Editor/Common/ProcessingMtlFiles.h>
 #include <Editor/Common/ScriptableObjectEditorManager.h>

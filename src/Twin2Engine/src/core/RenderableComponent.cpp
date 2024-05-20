@@ -46,6 +46,7 @@ void RenderableComponent::DrawEditor()
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Renderable##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
+		Component::DrawInheritedFields();
 		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
 	}
 }

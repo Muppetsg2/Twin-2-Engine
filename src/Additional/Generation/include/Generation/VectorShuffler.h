@@ -1,5 +1,4 @@
-#ifndef _VECTOR_SHUFFLER_H_
-#define _VECTOR_SHUFFLER_H_
+#pragma once
 
 #include <core/Random.h>
 
@@ -28,7 +27,3 @@ namespace Generation
         }
     }
 }
-
-
-
-#endif // !_VECTOR_SHUFFLER_H_

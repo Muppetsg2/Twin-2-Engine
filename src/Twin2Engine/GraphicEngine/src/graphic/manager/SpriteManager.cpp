@@ -36,7 +36,7 @@ Sprite* SpriteManager::MakeSprite(const string& spriteAlias, Texture2D* tex, con
 {
     size_t aliasHash = _hasher(spriteAlias);
     if (_sprites.find(aliasHash) != _sprites.end()) {
-        spdlog::warn("Sprite o aliasie '{0}' ju¿ istnieje", aliasHash);
+        SPDLOG_WARN("Sprite '{0}' already created", aliasHash);
         return _sprites[aliasHash];
     }
     Sprite* spr = new Sprite(aliasHash, tex, data.x, data.y, data.width, data.height);
@@ -128,4 +128,8 @@ void SpriteManager::DrawEditor(bool* p_open)
         ImGui::End();
         return;
     }
+
+    // TODO: Zrobic Sprite Manager
+
+    ImGui::End();
 }

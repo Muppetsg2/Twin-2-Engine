@@ -319,6 +319,8 @@ void MapGenerator::DrawEditor()
     string name = string("Map Generator##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str()))
     {
+        Component::DrawInheritedFields();
+
         // TODO: DODAC
         /*
         node["preafabHexagonalTile"] = PrefabManager::GetPrefabPath(preafabHexagonalTile);

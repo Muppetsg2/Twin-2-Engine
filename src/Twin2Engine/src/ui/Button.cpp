@@ -79,6 +79,7 @@ void Button::DrawEditor()
 	string name = string("Button##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 		
+		Component::DrawInheritedFields();
 		float v = _width;
 		ImGui::DragFloat(string("Width##").append(id).c_str(), &v, 0.1f);
 		if (v != _width) {

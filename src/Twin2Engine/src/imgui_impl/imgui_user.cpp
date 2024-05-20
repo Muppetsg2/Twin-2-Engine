@@ -181,3 +181,23 @@ const ImWchar* ImGui::GetGlyphRangesPolish()
     };
     return &ranges[0];
 }
+
+bool ImGui::DragUInt(const char* label, unsigned int* v, float v_speed, unsigned int v_min, unsigned int v_max, const char* format, ImGuiSliderFlags flags)
+{
+    return DragScalar(label, ImGuiDataType_U32, v, v_speed, &v_min, &v_max, format, flags);
+}
+
+bool ImGui::DragUInt2(const char* label, unsigned int v[2], float v_speed, unsigned int v_min, unsigned int v_max, const char* format, ImGuiSliderFlags flags)
+{
+    return DragScalarN(label, ImGuiDataType_U32, v, 2, v_speed, &v_min, &v_max, format, flags);
+}
+
+bool ImGui::DragUInt3(const char* label, unsigned int v[3], float v_speed, unsigned int v_min, unsigned int v_max, const char* format, ImGuiSliderFlags flags)
+{
+    return DragScalarN(label, ImGuiDataType_U32, v, 3, v_speed, &v_min, &v_max, format, flags);
+}
+
+bool ImGui::DragUInt4(const char* label, unsigned int v[4], float v_speed, unsigned int v_min, unsigned int v_max, const char* format, ImGuiSliderFlags flags)
+{
+    return DragScalarN(label, ImGuiDataType_U32, v, 4, v_speed, &v_min, &v_max, format, flags);
+}

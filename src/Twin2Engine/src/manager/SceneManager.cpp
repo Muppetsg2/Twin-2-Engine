@@ -7,6 +7,7 @@
 #include <tools/EventHandler.h>
 #include <manager/ScriptableObjectManager.h>
 #include <core/ResourceManagement.h>
+#include <regex>
 
 using namespace Twin2Engine::Manager;
 using namespace std;
@@ -974,6 +975,7 @@ size_t SceneManager::GetModelSaveIdx(size_t modelId)
 {
 	size_t idx = 0;
 	for (const auto& modelPair : ModelsManager::_modelsPaths) {
+		if (std::regex_match(modelPair.second, std::regex("[{]\\w+[_](?:GENERATED)[_]\\d+[}]"))) continue;
 		if (modelPair.first == modelId) return idx;
 		++idx;
 	}

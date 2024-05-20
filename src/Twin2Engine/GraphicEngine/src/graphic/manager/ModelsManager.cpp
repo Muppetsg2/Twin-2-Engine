@@ -1,4 +1,5 @@
 #include <graphic/manager/ModelsManager.h>
+#include <regex>
 
 using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
@@ -1087,93 +1088,6 @@ ModelData* ModelsManager::LoadModelData(const std::string& modelPath)
     return _loadedModels[strHash];
 }
 
-void ModelsManager::UnloadModel(const std::string& path) {
-    UnloadModel(_stringHash(path));
-}
-
-void ModelsManager::UnloadModel(size_t managerId) {
-    if (_loadedModels.find(managerId) != _loadedModels.end())
-    {
-        ModelData* modelData = _loadedModels[managerId];
-        for (InstantiatingMesh*& mesh : modelData->meshes)
-        {
-            delete mesh;
-        }
-
-        modelData->meshes.clear();
-        delete modelData;
-        _loadedModels.erase(managerId);
-        _modelsPaths.erase(managerId);
-    }
-}
-
-void ModelsManager::UnloadCube() {
-    UnloadModel(CUBE_PATH);
-}
-
-void ModelsManager::UnloadPlane() {
-    UnloadModel(PLANE_PATH);
-}
-
-void ModelsManager::UnloadSphere() {
-    UnloadModel(SPHERE_PATH);
-}
-
-void ModelsManager::UnloadTorus() {
-    UnloadModel(TORUS_PATH);
-}
-
-void ModelsManager::UnloadCone() {
-    UnloadModel(CONE_PATH);
-}
-
-void ModelsManager::UnloadPiramid() {
-    UnloadModel(PIRAMID_PATH);
-}
-
-void ModelsManager::UnloadTetrahedron() {
-    UnloadModel(TETRAHEDRON_PATH);
-}
-
-void ModelsManager::UnloadCylinder() {
-    UnloadModel(CYLINDER_PATH);
-}
-
-void ModelsManager::UnloadHexagon() {
-    UnloadModel(HEXAGON_PATH);
-}
-
-std::pair<glm::vec3, glm::vec3> ModelsManager::CalcTangentBitangent(std::vector<Vertex>& vertices, unsigned int i1, unsigned int i2, unsigned int i3)
-{
-    std::pair<glm::vec3, glm::vec3> TB;
-
-    Vertex v0 = vertices[i1];
-    Vertex v1 = vertices[i2];
-    Vertex v2 = vertices[i3];
-
-    glm::vec3 pos0 = v0.Position;
-    glm::vec3 pos1 = v1.Position;
-    glm::vec3 pos2 = v2.Position;
-
-    glm::vec2 uv0 = v0.TexCoords;
-    glm::vec2 uv1 = v1.TexCoords;
-    glm::vec2 uv2 = v2.TexCoords;
-
-    glm::vec3 delta_pos1 = pos1 - pos0;
-    glm::vec3 delta_pos2 = pos2 - pos0;
-
-    glm::vec2 delta_uv1 = uv1 - uv0;
-    glm::vec2 delta_uv2 = uv2 - uv0;
-
-    float r = 1.0f / (delta_uv1.x * delta_uv2.y - delta_uv1.y * delta_uv2.x);
-
-    // Save the results
-    TB.first = (delta_pos1 * delta_uv2.y - delta_pos2 * delta_uv1.y) * r;
-    TB.second = (delta_pos2 * delta_uv1.x - delta_pos1 * delta_uv2.x) * r;
-
-    return TB;
-}
-
 void ModelsManager::GenerateCircle(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, unsigned int segments, float y, unsigned int cullFace)
 {
     std::vector<unsigned int> trisNum;
@@ -1235,6 +1149,14 @@ void ModelsManager::GenerateCircle(std::vector<Vertex>& vertices, std::vector<un
     trisNum.clear();
 }
 
+bool ModelsManager::IsModelLoaded(const std::string& modelPath) {
+    return _loadedModels.find(_stringHash(modelPath)) != _loadedModels.end();
+}
+
+bool ModelsManager::IsModelLoaded(size_t managerId) {
+    return _loadedModels.find(managerId) != _loadedModels.end();
+}
+
 InstantiatingModel ModelsManager::LoadModel(const std::string& modelPath)
 {
     return InstantiatingModel(LoadModelData(modelPath));
@@ -1282,6 +1204,62 @@ InstantiatingModel ModelsManager::GetCylinder() {
 
 InstantiatingModel ModelsManager::GetHexagon() {
     return GetModel(_stringHash(HEXAGON_PATH));
+}
+
+void ModelsManager::UnloadModel(const std::string& path) {
+    UnloadModel(_stringHash(path));
+}
+
+void ModelsManager::UnloadModel(size_t managerId) {
+    if (_loadedModels.find(managerId) != _loadedModels.end())
+    {
+        ModelData* modelData = _loadedModels[managerId];
+        for (InstantiatingMesh*& mesh : modelData->meshes)
+        {
+            delete mesh;
+        }
+
+        modelData->meshes.clear();
+        delete modelData;
+        _loadedModels.erase(managerId);
+        _modelsPaths.erase(managerId);
+    }
+}
+
+void ModelsManager::UnloadCube() {
+    UnloadModel(CUBE_PATH);
+}
+
+void ModelsManager::UnloadPlane() {
+    UnloadModel(PLANE_PATH);
+}
+
+void ModelsManager::UnloadSphere() {
+    UnloadModel(SPHERE_PATH);
+}
+
+void ModelsManager::UnloadTorus() {
+    UnloadModel(TORUS_PATH);
+}
+
+void ModelsManager::UnloadCone() {
+    UnloadModel(CONE_PATH);
+}
+
+void ModelsManager::UnloadPiramid() {
+    UnloadModel(PIRAMID_PATH);
+}
+
+void ModelsManager::UnloadTetrahedron() {
+    UnloadModel(TETRAHEDRON_PATH);
+}
+
+void ModelsManager::UnloadCylinder() {
+    UnloadModel(CYLINDER_PATH);
+}
+
+void ModelsManager::UnloadHexagon() {
+    UnloadModel(HEXAGON_PATH);
 }
 
 void ModelsManager::UnloadAll() {
@@ -1355,6 +1333,9 @@ YAML::Node ModelsManager::Serialize()
     YAML::Node models;
     size_t id = 0;
     for (const auto& modelPair : _modelsPaths) {
+
+        if (std::regex_match(modelPair.second, std::regex("[{]\\w+[_](?:GENERATED)[_]\\d+[}]"))) continue;
+
         YAML::Node model;
         model["id"] = id++;
         model["path"] = modelPair.second;
@@ -1378,6 +1359,9 @@ void ModelsManager::DrawEditor(bool* p_open)
     if (node_open) {
         int i = 0;
         for (auto& item : _modelsPaths) {
+
+            if (std::regex_match(item.second, std::regex("[{]\\w+[_](?:GENERATED)[_]\\d+[}]"))) continue;
+
             std::string n = GetModelName(item.second);
             ImGui::BulletText(n.c_str());
             ImGui::SameLine(ImGui::GetContentRegionAvail().x - 30);

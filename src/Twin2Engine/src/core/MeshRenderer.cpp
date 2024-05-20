@@ -9,7 +9,7 @@ using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
-void Twin2Engine::Core::MeshRenderer::TransformUpdated()
+void MeshRenderer::TransformUpdated()
 {
 	_toUpdate--;
 	if (!_toUpdate)
@@ -18,13 +18,30 @@ void Twin2Engine::Core::MeshRenderer::TransformUpdated()
 	}
 }
 
-bool Twin2Engine::Core::MeshRenderer::IsTransformChanged() const
+void MeshRenderer::OnModelDataDestroyed()
+{
+	if (_loadedModel != 0 && OnTransformChangedActionId != -1) {
+		GetTransform()->OnEventTransformChanged -= OnTransformChangedActionId;
+	}
+	if (_registered)
+	{
+		if (GetGameObject()->GetIsStatic())
+		{
+			MeshRenderingManager::UnregisterStatic(this);
+		}
+		else
+		{
+			MeshRenderingManager::UnregisterDynamic(this);
+		}
+	}
+}
+
+bool MeshRenderer::IsTransformChanged() const
 {
 	return _transformChanged;
 }
 
-
-void Twin2Engine::Core::MeshRenderer::Initialize()
+void MeshRenderer::Initialize()
 {
 	GetGameObject()->OnStaticChanged += [this](GameObject* gameObject) {
 		if (gameObject->GetIsStatic())
@@ -45,7 +62,7 @@ void Twin2Engine::Core::MeshRenderer::Initialize()
 			MeshRenderingManager::RegisterDynamic(this);
 			_registered = true;
 		}
-		};
+	};
 
 	_transformChanged = false;
 	if (GetGameObject()->GetIsStatic())
@@ -66,49 +83,20 @@ void Twin2Engine::Core::MeshRenderer::Initialize()
 	}
 	_registered = true;
 
-	GetTransform()->OnEventTransformChanged += [this](Transform* transform) {
+	OnTransformChangedActionId = GetTransform()->OnEventTransformChanged += [this](Transform* transform) {
+
 		_transformChanged = true;
 		_toUpdate = _model.GetMeshCount();
-		};
-	GetTransform()->OnEventInHierarchyParentChanged += [this](Transform* transform) {
+	};
+	OnEventInHierarchyParentChangedId = GetTransform()->OnEventInHierarchyParentChanged += [this](Transform* transform) {
 		_transformChanged = true;
 		_toUpdate = _model.GetMeshCount();
-		};
+	};
 }
 
-void MeshRenderer::Render()
+void MeshRenderer::Update()
 {
-	//if (!GetGameObject()->GetIsStatic())
-	//{
-	//	MeshRenderData data{};
-	//	data.transform = GetTransform()->GetTransformMatrix();
-	//	data.meshes = std::vector<InstantiatingMesh*>();
-	//	data.materials = std::vector<Material>();
-	//	data.isTransparent = IsTransparent();
-	//
-	//
-	//	if (CameraComponent::GetMainCamera()->IsFrustumCullingOn)
-	//	{
-	//		InstantiatingMesh* tMesh;
-	//		Frustum frustum = CameraComponent::GetMainCamera()->GetFrustum();
-	//		for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
-	//			tMesh = _model.GetMesh(i);
-	//			if (tMesh->IsOnFrustum(frustum, data.transform)) {
-	//				data.meshes.push_back(tMesh);
-	//				data.materials.push_back(GetMaterial(i));
-	//			}
-	//		}
-	//	}
-	//	else
-	//	{
-	//		for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
-	//			data.meshes.push_back(_model.GetMesh(i));
-	//			data.materials.push_back(GetMaterial(i));
-	//		}
-	//	}
-	//
-	//	MeshRenderingManager::Render(data);
-	//}
+	if (ModelsManager::IsModelLoaded(_loadedModel)) OnModelDataDestroyed();
 }
 
 YAML::Node MeshRenderer::Serialize() const
@@ -256,23 +244,23 @@ void MeshRenderer::SetMaterial(size_t index, size_t materialId)
 }
 
 #ifdef MESH_FRUSTUM_CULLING
-void Twin2Engine::Core::MeshRenderer::OnEnable()
+void MeshRenderer::OnEnable()
 {
-	if (_model != nullptr && OnTransformChangedActionId == -1) {
+	if (_loadedModel != 0 && OnTransformChangedActionId == -1) {
 		OnTransformChangedActionId = GetTransform()->OnEventTransformChanged += OnTransformChangedAction;
 	}
 }
 
-void Twin2Engine::Core::MeshRenderer::OnDisable()
+void MeshRenderer::OnDisable()
 {
-	if (_model != nullptr && OnTransformChangedActionId != -1) {
+	if (_loadedModel != 0 && OnTransformChangedActionId != -1) {
 		GetTransform()->OnEventTransformChanged -= OnTransformChangedActionId;
 	}
 }
 
-void Twin2Engine::Core::MeshRenderer::OnDestroy()
+void MeshRenderer::OnDestroy()
 {
-	if (_model != nullptr && OnTransformChangedActionId != -1) {
+	if (_loadedModel != 0 && OnTransformChangedActionId != -1) {
 		GetTransform()->OnEventTransformChanged -= OnTransformChangedActionId;
 	}
 	if (_registered)
@@ -306,6 +294,7 @@ void MeshRenderer::SetModel(const InstantiatingModel& model)
 		}
 
 		_model = model;
+		_loadedModel = _model.GetId();
 
 		if (_registered)
 		{

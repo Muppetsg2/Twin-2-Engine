@@ -21,9 +21,7 @@ RenderableComponent::~RenderableComponent()
 	}
 }
 
-void RenderableComponent::Render()
-{
-}
+void RenderableComponent::Render() {}
 
 YAML::Node RenderableComponent::Serialize() const
 {

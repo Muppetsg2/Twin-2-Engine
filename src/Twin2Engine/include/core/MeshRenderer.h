@@ -1,5 +1,7 @@
 #pragma once
 
+// TODO: FIX MESH RENDERER
+
 #include <core/RenderableComponent.h>
 #include <core/Transform.h>
 
@@ -28,22 +30,21 @@ namespace Twin2Engine::Core
 
 	private:
 
+		size_t _loadedModel = 0;
 		Graphic::InstantiatingModel _model;
-
 		std::vector<Graphic::Material> _materials;
 
 		bool _registered = false;
 		bool _transformChanged = false;
 		unsigned int _toUpdate = 0;
 
+		int OnStaticChangedId = -1;
+		int OnEventInHierarchyParentChangedId = -1;
+
 #ifdef MESH_FRUSTUM_CULLING
 		int OnTransformChangedActionId = -1;
 		Tools::Action<Transform*> OnTransformChangedAction = [this](Transform* transform) {
 			glm::mat4 tMatrix = transform->GetTransformMatrix();
-
-			//if (_model.GetId() == 10269728616568091294) {
-				//SPDLOG_INFO(_model.GetMeshCount());
-			//}
 
 			for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
 				Physic::SphereColliderData* sphereBV = (Physic::SphereColliderData*)_model.GetMesh(i)->sphericalBV->colliderShape;
@@ -52,17 +53,18 @@ namespace Twin2Engine::Core
 				}
 				sphereBV = nullptr;
 			}
-			};
+		};
 #endif // MESH_FRUSTUM_CULLING
 
 		void TransformUpdated();
 
+		void OnModelDataDestroyed();
+
 	public:
 
-		virtual void Initialize();
+		virtual void Initialize() override;
+		virtual void Update() override;
 
-
-		virtual void Render() override;
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
 		virtual void DrawEditor() override;

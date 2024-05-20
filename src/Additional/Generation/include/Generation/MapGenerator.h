@@ -17,9 +17,8 @@
 
 namespace Generation
 {
-	class MapGenerator : public ::Twin2Engine::Core::Component
+	class MapGenerator : public Component
 	{
-
         void GenerateFloatHull(const std::vector<glm::vec2>& hull);
 
         void GeneratePositions(const std::vector<glm::ivec2>& positions);

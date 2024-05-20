@@ -118,6 +118,7 @@ void HexagonalColliderComponent::DrawEditor()
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Hexagonal Collider##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
+		Component::DrawInheritedFields();
 		float v = ((HexagonalColliderData*)collider->shapeColliderData)->BaseLength;
 		ImGui::DragFloat(string("Base Length##").append(id).c_str(), &v, 0.1f);
 

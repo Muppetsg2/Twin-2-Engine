@@ -249,6 +249,16 @@ bool InputField::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
+void InputField::DrawEditor()
+{
+	// TODO: Zrobic
+	string id = string(std::to_string(this->GetId()));
+	string name = string("InputField##Component").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+		Component::DrawInheritedFields();
+	}
+}
+
 void InputField::SetPlaceHolderText(Text* placeHolder)
 {
 	_placeHolder = placeHolder;

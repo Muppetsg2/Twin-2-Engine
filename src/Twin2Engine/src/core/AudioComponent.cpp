@@ -262,6 +262,7 @@ void AudioComponent::DrawEditor()
 	string name = string("Audio##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
+		Component::DrawInheritedFields();
 		std::map<size_t, string> audioNames = AudioManager::GetAllAudiosNames();
 
 		audioNames.insert(std::pair(0, "None"));

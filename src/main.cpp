@@ -47,7 +47,6 @@ const char* const tracy_RenderingImGui = "RenderingImGui";
 
 #if _DEBUG
 // EDITOR
-
 #include <Editor/Common/MaterialCreator.h>
 #include <Editor/Common/ProcessingMtlFiles.h>
 #include <Editor/Common/ScriptableObjectEditorManager.h>

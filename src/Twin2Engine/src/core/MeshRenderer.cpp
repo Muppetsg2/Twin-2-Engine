@@ -141,7 +141,8 @@ void MeshRenderer::DrawEditor()
 	std::string id = std::string(std::to_string(this->GetId()));
 	std::string name = std::string("Mesh Renderer##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
-
+		Component::DrawInheritedFields();
+		// TODO: Zrobic
 	}
 }
 

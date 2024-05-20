@@ -99,6 +99,7 @@ void PointLightComponent::DrawEditor()
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Point Light##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
+		Component::DrawInheritedFields();
 		glm::vec3 v = light->color;
 		ImGui::ColorEdit3(string("Color##").append(id).c_str(), glm::value_ptr(v));
 		if (v != light->color) {

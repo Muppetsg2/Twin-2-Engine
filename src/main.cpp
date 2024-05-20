@@ -2,7 +2,7 @@
 
 #define USE_IMGUI_CONSOLE_OUTPUT true
 #define USE_WINDOWS_CONSOLE_OUTPUT false
-#define WITH_VLD false
+#define WITH_VLD true
 
 #if USE_IMGUI_CONSOLE_OUTPUT || !USE_WINDOWS_CONSOLE_OUTPUT || !_DEBUG
 
@@ -55,9 +55,11 @@ const char* const tracy_RenderingImGui = "RenderingImGui";
 #include <Editor/Common/MaterialCreator.h>
 #include <Editor/Common/ProcessingMtlFiles.h>
 #include <Editor/Common/ScriptableObjectEditorManager.h>
+/*
 #include <Editor/Common/ImGuiSink.h>
 using Editor::Common::ImGuiSink;
 using Editor::Common::ImGuiLogMessage;
+*/
 #endif
 
 using namespace Twin2Engine;
@@ -142,7 +144,7 @@ int main(int, char**)
 #if _DEBUG
 
 #if USE_IMGUI_CONSOLE_OUTPUT
-    auto console_sink = std::make_shared<Editor::Common::ImGuiSink<mutex>>("res/logs/log.txt", 100.0f);
+    //auto console_sink = std::make_shared<Editor::Common::ImGuiSink<mutex>>("res/logs/log.txt", 100.0f);
 #elif USE_WINDOWS_CONSOLE_OUTPUT
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
 #else
@@ -150,10 +152,12 @@ int main(int, char**)
 #endif
 
 #if USE_IMGUI_CONSOLE_OUTPUT || USE_WINDOWS_CONSOLE_OUTPUT
+    /*
     auto logger = std::make_shared<spdlog::logger>("logger", console_sink);
     spdlog::register_logger(logger);
     spdlog::set_default_logger(logger);
     console_sink->StartLogging();
+    */
 #endif
 
 #else
@@ -310,7 +314,7 @@ int main(int, char**)
 #if _DEBUG
 
 #if USE_IMGUI_CONSOLE_OUTPUT
-    console_sink->StopLogging();
+    //console_sink->StopLogging();
 #endif
 
 #else
@@ -514,7 +518,7 @@ void render_imgui()
 #if USE_IMGUI_CONSOLE_OUTPUT
 
         FrameMarkStart(tracy_ImGuiDrawingConsole);
-        ImGuiSink<mutex>::Draw();
+        //ImGuiSink<mutex>::Draw();
         FrameMarkEnd(tracy_ImGuiDrawingConsole);
 
 #endif

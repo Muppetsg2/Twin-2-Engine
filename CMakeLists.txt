@@ -3,7 +3,6 @@ project(Twin2Game VERSION 1.0)
 
 set_property(GLOBAL PROPERTY IS_MINI_AUDIO false)
 set_property(GLOBAL PROPERTY FIND_MEMORY_LEAKS false)
-set_property(GLOBAL PROPERTY WITH_VLD false)
 
 IF (WIN32)
   message(NOTICE "\n")

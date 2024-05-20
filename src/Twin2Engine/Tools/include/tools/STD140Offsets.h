@@ -70,7 +70,7 @@ namespace Twin2Engine::Tools {
 				}
 			}
 			if constexpr (sizeof...(Ts) > 0) {
-				AddMultiple(vars...);
+				_AddMultiple(vars...);
 			}
 		}
 

@@ -46,7 +46,7 @@ namespace Twin2Engine::Core
 			//}
 
 			for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
-				Physic::SphereColliderData* sphereBV = (Physic::SphereColliderData*)_model.GetMesh(i)->SphericalBV->colliderShape;
+				Physic::SphereColliderData* sphereBV = (Physic::SphereColliderData*)_model.GetMesh(i)->sphericalBV->colliderShape;
 				if (sphereBV != nullptr) {
 					sphereBV->Position = tMatrix * glm::vec4(sphereBV->LocalPosition, 1.0f);
 				}

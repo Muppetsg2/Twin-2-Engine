@@ -260,6 +260,8 @@ namespace Editor::Common
                 ImGui::TextColored(messages[i - 1].color, "%s", messages[i - 1].content.c_str());
             }
 
+            messages.clear();
+
             //static float lastScrollPosition = 0.0;
             //static bool lastFrameOnEnd = true;
             //cout << "Scroll" << ImGui::GetScrollY() << endl;

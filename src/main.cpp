@@ -514,7 +514,7 @@ void render_imgui()
 #if USE_IMGUI_CONSOLE_OUTPUT
 
         FrameMarkStart(tracy_ImGuiDrawingConsole);
-        //ImGuiSink<mutex>::Draw();
+        ImGuiSink<mutex>::Draw();
         FrameMarkEnd(tracy_ImGuiDrawingConsole);
 
 #endif

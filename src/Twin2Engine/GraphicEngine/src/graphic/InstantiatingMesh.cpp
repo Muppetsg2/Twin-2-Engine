@@ -94,9 +94,9 @@ InstantiatingMesh::InstantiatingMesh(std::vector<Vertex>& vertices, std::vector<
         }
 
         //SPDLOG_INFO("BV has been created! R: {}", radius);
-        SphericalBV = new Physic::BoundingVolume(new Physic::SphereColliderData);
-        ((Physic::SphereColliderData*)SphericalBV->shapeColliderData)->LocalPosition = center;
-        ((Physic::SphereColliderData*)SphericalBV->shapeColliderData)->Radius = radius;
+        sphericalBV = new Physic::BoundingVolume(new Physic::SphereColliderData);
+        ((Physic::SphereColliderData*)sphericalBV->shapeColliderData)->LocalPosition = center;
+        ((Physic::SphereColliderData*)sphericalBV->shapeColliderData)->Radius = radius;
     }
 #endif // MESH_FRUSTUM_CULLING
 }
@@ -112,8 +112,8 @@ InstantiatingMesh::~InstantiatingMesh()
     glDeleteVertexArrays(1, &_VAO);
 
     #ifdef MESH_FRUSTUM_CULLING
-    if (SphericalBV != nullptr) {
-        delete SphericalBV;
+    if (sphericalBV != nullptr) {
+        delete sphericalBV;
     }
     #endif // MESH_FRUSTUM_CULLING
 }
@@ -121,9 +121,9 @@ InstantiatingMesh::~InstantiatingMesh()
 #ifdef MESH_FRUSTUM_CULLING
 bool InstantiatingMesh::IsOnFrustum(Frustum& frustum, const glm::mat4& model)
 {
-    if (SphericalBV != nullptr) {
-        SphericalBV->shapeColliderData->Position = glm::vec3(model * glm::vec4(SphericalBV->shapeColliderData->LocalPosition, 1.0f));
-        return SphericalBV->isOnFrustum(frustum);
+    if (sphericalBV != nullptr) {
+        sphericalBV->shapeColliderData->Position = glm::vec3(model * glm::vec4(sphericalBV->shapeColliderData->LocalPosition, 1.0f));
+        return sphericalBV->isOnFrustum(frustum);
     }
     return true;
 }

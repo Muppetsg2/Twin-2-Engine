@@ -64,6 +64,7 @@ void Image::DrawEditor()
 	string name = string("Image##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
+		Component::DrawInheritedFields();
 		std::map<size_t, string> spriteNames = SpriteManager::GetAllSpritesNames();
 
 		spriteNames.insert(std::pair(0, "None"));

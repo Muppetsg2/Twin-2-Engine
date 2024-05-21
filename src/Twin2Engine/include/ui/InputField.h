@@ -39,6 +39,7 @@ namespace Twin2Engine::UI {
 		virtual void OnDestroy() override;
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
+		virtual void DrawEditor() override;
 
 		void SetPlaceHolderText(Text* placeHolder);
 		void SetInputText(Text* text);

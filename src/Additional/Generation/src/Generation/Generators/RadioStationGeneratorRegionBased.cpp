@@ -23,8 +23,6 @@ SO_DESERIALIZE_FIELD_F_T(prefabRadioStation, PrefabManager::LoadPrefab, string)
 SO_DESERIALIZE_FIELD(densityFactorPerRegion)
 SO_DESERIALIZATION_END()
 
-
-
 void RadioStationGeneratorRegionBased::Generate(Tilemap::HexagonalTilemap* tilemap)
 {
     std::vector<MapRegion*> regions;

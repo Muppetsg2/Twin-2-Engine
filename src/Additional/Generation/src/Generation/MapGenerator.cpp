@@ -10,6 +10,17 @@ using namespace Twin2Engine::Manager;
 using namespace std;
 using namespace glm;
 
+
+void MapGenerator::Initialize()
+{
+    tilemap = GetGameObject()->GetComponent<Tilemap::HexagonalTilemap>();
+}
+
+void MapGenerator::OnEnable()
+{
+    //Generate();
+}
+
 void MapGenerator::GenerateFloatHull(const vector<vec2>& hull)
 {
     vector<ivec2> hullInt(hull.size());
@@ -263,7 +274,7 @@ void MapGenerator::Generate()
         }
     }
     
-    //GetComponent<IContentGenerator>() ? .GenerateContent();
+    GetGameObject()->GetComponent<ContentGenerator>()->GenerateContent(tilemap);
 }
 
 YAML::Node MapGenerator::Serialize() const
@@ -308,6 +319,8 @@ void MapGenerator::DrawEditor()
     string name = string("Map Generator##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str()))
     {
+        Component::DrawInheritedFields();
+
         // TODO: DODAC
         /*
         node["preafabHexagonalTile"] = PrefabManager::GetPrefabPath(preafabHexagonalTile);

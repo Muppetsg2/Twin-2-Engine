@@ -404,6 +404,7 @@ void SceneManager::LoadScene() {
 	// INIT COMPONENTS
 	for (const auto& compPair : _componentsById) {
 		compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
+		//compPair.second->Initialize();
 	}
 #pragma endregion
 
@@ -411,6 +412,13 @@ void SceneManager::LoadScene() {
 
 	_currentSceneName = _sceneToLoadName;
 	_currentSceneId = _sceneToLoadId;
+
+	for (const auto& compPair : _componentsById) {
+		if (compPair.second->_enabled)
+		{
+			compPair.second->OnEnable();
+		}
+	}
 
 	_onSceneLoaded(_sceneToLoadName);
 }
@@ -861,6 +869,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	// INIT COMPONENTS
 	for (const auto& compPair : prefabComponentsById) {
 		compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
+		//compPair.second->Initialize();
 	}
 #pragma endregion
 
@@ -868,6 +877,14 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 
 	if (_rootObject == nullptr) _rootObject = new GameObject();
 	prefabRoot->GetTransform()->SetParent(parent != nullptr ? parent : _rootObject->GetTransform());
+
+	for (const auto& compPair : _componentsById) {
+		if (compPair.second->_enabled)
+		{
+			compPair.second->OnEnable();
+		}
+	}
+
 	return prefabRoot;
 }
 

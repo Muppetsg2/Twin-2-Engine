@@ -1,5 +1,4 @@
-#ifndef _MOUNTAINS_GENERATOR_H_
-#define _MOUNTAINS_GENERATOR_H_
+#pragma once
 
 #include <Generation/Generators/AMapElementGenerator.h>
 #include <Generation/MapRegion.h>
@@ -38,5 +37,3 @@ namespace Generation::Generators
 }
 
 SERIALIZABLE_SCRIPTABLE_OBJECT(MountainsGenerator, Generation::Generators)
-
-#endif // !_MOUNTAINS_GENERATOR_H_

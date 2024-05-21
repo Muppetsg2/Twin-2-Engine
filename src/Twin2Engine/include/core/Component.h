@@ -23,6 +23,7 @@ namespace Twin2Engine::Core
 
 	protected:
 		Component();
+		virtual void DrawInheritedFields();
 	public:
 		virtual ~Component();
 

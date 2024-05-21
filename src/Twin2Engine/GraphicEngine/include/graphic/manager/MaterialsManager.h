@@ -38,6 +38,8 @@ namespace Twin2Engine::Manager
 		static std::string GetMaterialName(size_t managerId);
 		static std::map<size_t, std::string> GetAllMaterialsNames();
 
+		static void UnloadAll();
+
 		static YAML::Node Serialize();
 		static void DrawEditor(bool* p_open);
 	};

@@ -20,19 +20,21 @@ namespace Tilemap
 	class HexagonalTilemap : public Twin2Engine::Core::Component
 	{
 		HexagonalTile*** _tilemap;
-		unsigned int _width;
-		unsigned int _height;
-		float _distanceBetweenTiles;
-		float _edgeLength;
-		glm::ivec2 _leftBottomPosition;
-		glm::ivec2 _rightTopPosition;
-		glm::ivec2 _toCenter;
+		unsigned int _width = 1;
+		unsigned int _height = 1;
+		float _distanceBetweenTiles = 1.f;
+		float _edgeLength = 1.f / glm::sqrt(3.f);
+		glm::ivec2 _leftBottomPosition = glm::ivec2(0);
+		glm::ivec2 _rightTopPosition = glm::ivec2(0);
+		glm::ivec2 _toCenter = glm::ivec2(0);
+
+		bool _initialized = false;
 
 
 	public:
 		//HexagonalTilemap(glm::ivec2 leftBottomPosition, glm::ivec2 rightTopPosition, float length, bool isDistanceBetweenTiles);
-		HexagonalTilemap();
-		~HexagonalTilemap();
+		//HexagonalTilemap();
+		//~HexagonalTilemap();
 
 		void Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTopPosition);
 		void Clear();
@@ -63,6 +65,8 @@ namespace Tilemap
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
 		virtual void DrawEditor() override;
+		virtual void Initialize() override;
+		virtual void OnDestroy() override;
 	};
 }
 #include <Tilemap/HexagonalTile.h>

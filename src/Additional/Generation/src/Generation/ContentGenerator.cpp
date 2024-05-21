@@ -6,12 +6,25 @@ using namespace Tilemap;
 
 void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
 {
+    //if (_tilemap == nullptr)
+    //{
+    //    _tilemap = targetTilemap;
+    //}
     SPDLOG_INFO("Starting content");
     for (AMapElementGenerator* generator : mapElementGenerators)
     {
         SPDLOG_INFO("Generating element");
         generator->Generate(targetTilemap);
     }
+}
+
+void ContentGenerator::Initialize()
+{
+    //_tilemap = GetGameObject()->GetComponent<Tilemap::HexagonalTilemap>();
+}
+
+void ContentGenerator::OnDestroy() {
+    mapElementGenerators.clear();
 }
 
 YAML::Node ContentGenerator::Serialize() const
@@ -54,9 +67,11 @@ void ContentGenerator::DrawEditor()
     string name = string("Content Generator##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str()))
     {
+        Component::DrawInheritedFields();
 		ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 		bool node_open = ImGui::TreeNodeEx(string("Generators##").append(id).c_str(), node_flag);
 
+        // TODO: Dodac przenoszenie
         std::list<int> clicked = std::list<int>();
         clicked.clear();
 		if (node_open) {

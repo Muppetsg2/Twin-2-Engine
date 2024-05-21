@@ -72,6 +72,7 @@ void Twin2Engine::Core::SphereColliderComponent::DrawEditor()
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Sphere Collider##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
+		Component::DrawInheritedFields();
 		ImGui::DragFloat(string("Radius##").append(id).c_str(), &((SphereColliderData*)collider->shapeColliderData)->Radius, 0.1f);
 
 		DrawInheritedFields();

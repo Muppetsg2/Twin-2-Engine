@@ -1,5 +1,4 @@
-#ifndef _CITIES_GENERATOR_H_
-#define _CITIES_GENERATOR_H_
+#pragma once
 
 #include <Generation/Generators/AMapElementGenerator.h>
 
@@ -16,20 +15,20 @@ namespace Generation::Generators
 
 	public:
 		//Twin2Engine::Core::GameObject* prefabCity;
-		Twin2Engine::Core::Prefab* prefabCity;
-		
+		Twin2Engine::Core::Prefab* prefabCity = nullptr;
+
 		bool byRegions = true;
 		float density = 1.0f;
 
 		virtual void Generate(Tilemap::HexagonalTilemap* tilemap) override;
-		
-		SO_SERIALIZE()
-		SO_DESERIALIZE()
 
+		SO_SERIALIZE()
+			SO_DESERIALIZE()
 
 #if _DEBUG
 		virtual void DrawEditor() override
 		{
+			// TODO: Dodac prefab City do edytora
 			ImGui::Checkbox("byRegions", &byRegions);
 			ImGui::SliderFloat("Density", &density, 0.0f, 1.0f);
 		}
@@ -38,5 +37,3 @@ namespace Generation::Generators
 }
 
 SERIALIZABLE_SCRIPTABLE_OBJECT(CitiesGenerator, Generation::Generators)
-
-#endif // !_CITIES_GENERATOR_H_

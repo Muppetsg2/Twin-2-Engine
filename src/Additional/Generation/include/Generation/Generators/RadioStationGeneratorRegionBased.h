@@ -1,5 +1,4 @@
-#ifndef _RADIO_STATION_GENERATOR_REGION_BASED_H_
-#define _RADIO_STATION_GENERATOR_REGION_BASED_H_
+#pragma once
 
 #include <Generation/Generators/AMapElementGenerator.h>
 
@@ -24,10 +23,10 @@ namespace Generation::Generators
 		SO_SERIALIZE()
 		SO_DESERIALIZE()
 
-
 #if _DEBUG
         virtual void DrawEditor() override
         {
+            // TODO: Prefab Radio Station
             ImGui::InputFloat("densityFactorPerRegion", &densityFactorPerRegion);
         }
 #endif
@@ -35,5 +34,3 @@ namespace Generation::Generators
 }
 
 SERIALIZABLE_SCRIPTABLE_OBJECT(RadioStationGeneratorRegionBased, Generation::Generators)
-
-#endif // !_RADIO_STATION_GENERATOR_REGION_BASED_H_

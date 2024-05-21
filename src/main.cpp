@@ -1,3 +1,5 @@
+#define VERSION "0.7"
+
 #define USE_IMGUI_CONSOLE_OUTPUT true
 #define USE_WINDOWS_CONSOLE_OUTPUT false
 
@@ -6,6 +8,7 @@
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
 #endif
+
 const char* const tracy_ImGuiDrawingConsole = "ImGuiDrawingConsole";
 const char* const tracy_RenderingImGui = "RenderingImGui";
 
@@ -85,8 +88,6 @@ void input();
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void update();
 
-//#undef _DEBUG
-
 #if _DEBUG
 void init_imgui();
 void begin_imgui();
@@ -161,6 +162,14 @@ int main(int, char**)
     fileLoggerSink->StartLogging();
 #endif
 
+    SPDLOG_INFO("Twin^2 Engine Version: %s", VERSION);
+
+#if _DEBUG
+    SPDLOG_INFO("Configuration: DEBUG");
+#else
+    SPDLOG_INFO("Configuration: RELEASE");
+#endif
+
     if (!GameEngine::Init(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_FULLSCREEN, GL_VERSION_MAJOR, GL_VERSION_MINOR))
     {
         spdlog::error("Failed to initialize GameEngine!");
@@ -224,20 +233,23 @@ int main(int, char**)
 #pragma region SETTING_UP_GENERATION
 
     tilemapGO = SceneManager::GetGameObjectWithId(14);
-    HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
+    //HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
     MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
-    mapGenerator->tilemap = hexagonalTilemap;
-    float tilemapGenerating = glfwGetTime();
+    //mapGenerator->tilemap = hexagonalTilemap;
+    //float tilemapGenerating = glfwGetTime();
     mapGenerator->Generate();
-    spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
+    //spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
 
-    ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
+    //ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
 
-    tilemapGenerating = glfwGetTime();
-    contentGenerator->GenerateContent(hexagonalTilemap);
-    spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
+    //tilemapGenerating = glfwGetTime();
+    //contentGenerator->GenerateContent(hexagonalTilemap);
+    //spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
+#if _DEBUG
     Editor::Common::ScriptableObjectEditorManager::Init();
     Editor::Common::ScriptableObjectEditorManager::Update();
+#endif
+
 #pragma endregion
     
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
@@ -267,6 +279,8 @@ int main(int, char**)
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
+
+        Editor::Common::ScriptableObjectEditorManager::End();
     };
 #endif
 

@@ -2,10 +2,12 @@
 
 using namespace Twin2Engine::Graphic;
 
-InstantiatingMesh::InstantiatingMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices)
+InstantiatingMesh::InstantiatingMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
 {
-    _vertices = vertices;
-    _indices = indices;
+    _vertices = std::vector<Vertex>();
+    _vertices.swap(vertices);
+    _indices = std::vector<unsigned int>();
+    _indices.swap(indices);
 
     glGenVertexArrays(1, &_VAO);
     glGenBuffers(1, &_VBO);
@@ -14,10 +16,10 @@ InstantiatingMesh::InstantiatingMesh(const std::vector<Vertex>& vertices, const 
     glBindVertexArray(_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, _VBO);
 
-    glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(Vertex), &_vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(Vertex), _vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(unsigned int), &_indices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(unsigned int), _indices.data(), GL_STATIC_DRAW);
 
     // pozycje wierzcho³ków
     glEnableVertexAttribArray(0);
@@ -36,16 +38,16 @@ InstantiatingMesh::InstantiatingMesh(const std::vector<Vertex>& vertices, const 
     glBindVertexArray(0);
 
 #ifdef MESH_FRUSTUM_CULLING
-    if (!vertices.empty())
+    if (!_vertices.empty())
     {
-        glm::vec3 p0 = vertices[0].Position;
+        glm::vec3 p0 = _vertices[0].Position;
 
         // Step 2: Find the farthest point from X
         glm::vec3 p1 = p0;
         float maxDistSqr = 0;
         glm::vec3 t;
         float d;
-        for (const auto& v : vertices) {
+        for (const auto& v : _vertices) {
             t = v.Position - p0;
             d = glm::dot(t, t);
             if (d > maxDistSqr) {
@@ -57,7 +59,7 @@ InstantiatingMesh::InstantiatingMesh(const std::vector<Vertex>& vertices, const 
         // Step 3: Find the farthest point from Y
         glm::vec3 p2 = p1;
         maxDistSqr = 0;
-        for (const auto& v : vertices) {
+        for (const auto& v : _vertices) {
             t = v.Position - p1;
             d = glm::dot(t, t);
             if (d > maxDistSqr) {
@@ -77,7 +79,7 @@ InstantiatingMesh::InstantiatingMesh(const std::vector<Vertex>& vertices, const 
             float newRadius;
             float radiusDiff;
             glm::vec3 dir;
-            for (const auto& v : vertices) {
+            for (const auto& v : _vertices) {
                 t = v.Position - center;
                 d = glm::dot(t, t);
                 if (d > maxDistSqr) { // Point is outside the sphere
@@ -91,12 +93,10 @@ InstantiatingMesh::InstantiatingMesh(const std::vector<Vertex>& vertices, const 
             }
         }
 
-
-        Physic::SphereColliderData* sphereCD = new Physic::SphereColliderData;
-        sphereCD->LocalPosition = center;
-        sphereCD->Radius = radius;
         //SPDLOG_INFO("BV has been created! R: {}", radius);
-        sphericalBV = new Physic::BoundingVolume(sphereCD);
+        sphericalBV = new Physic::BoundingVolume(new Physic::SphereColliderData);
+        ((Physic::SphereColliderData*)sphericalBV->shapeColliderData)->LocalPosition = center;
+        ((Physic::SphereColliderData*)sphericalBV->shapeColliderData)->Radius = radius;
     }
 #endif // MESH_FRUSTUM_CULLING
 }
@@ -104,6 +104,9 @@ InstantiatingMesh::InstantiatingMesh(const std::vector<Vertex>& vertices, const 
 
 InstantiatingMesh::~InstantiatingMesh()
 {
+    _vertices.clear();
+    _indices.clear();
+
     glDeleteBuffers(1, &_EBO);
     glDeleteBuffers(1, &_VBO);
     glDeleteVertexArrays(1, &_VAO);

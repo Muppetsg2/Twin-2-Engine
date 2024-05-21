@@ -40,12 +40,17 @@ namespace Twin2Engine::Core
 		int OnTransformChangedActionId = -1;
 		Tools::Action<Transform*> OnTransformChangedAction = [this](Transform* transform) {
 			glm::mat4 tMatrix = transform->GetTransformMatrix();
-			Physic::SphereColliderData* sphereBV;
+
+			//if (_model.GetId() == 10269728616568091294) {
+				//SPDLOG_INFO(_model.GetMeshCount());
+			//}
+
 			for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
-				sphereBV = (Physic::SphereColliderData*)_model.GetMesh(i)->sphericalBV->colliderShape;
+				Physic::SphereColliderData* sphereBV = (Physic::SphereColliderData*)_model.GetMesh(i)->sphericalBV->colliderShape;
 				if (sphereBV != nullptr) {
 					sphereBV->Position = tMatrix * glm::vec4(sphereBV->LocalPosition, 1.0f);
 				}
+				sphereBV = nullptr;
 			}
 			};
 #endif // MESH_FRUSTUM_CULLING

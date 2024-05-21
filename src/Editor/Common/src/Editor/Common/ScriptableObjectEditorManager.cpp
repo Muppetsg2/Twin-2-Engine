@@ -26,6 +26,39 @@ void ScriptableObjectEditorManager::AddScriptableObject(const fs::path& path)
     SPDLOG_INFO("ScriptableObject: {}", path.string());
     SPDLOG_INFO("ScriptableObject: {}", filePath.string());
 
+    vector<string> categoriesNames;
+    vector<size_t> categoriesHashes;
+    size_t id = hasher(path.string());
+    for (auto pathElement = filePath.begin(); pathElement != (--filePath.end()); pathElement++)
+    {
+        categoriesNames.push_back(pathElement->string());
+        categoriesHashes.push_back(hasher(pathElement->string()));
+    }
+    
+    ScriptableObjectRecordNode* currentNode = _root;
+
+    for (size_t index = 0; index < categoriesHashes.size(); index++)
+    {
+        if (!currentNode->subcateogries.contains(categoriesHashes[index]))
+        {
+            currentNode->subcateogries[categoriesHashes[index]] = new ScriptableObjectRecordNode{
+                .nodeName = categoriesNames[index]
+            };
+        }
+
+        currentNode = currentNode->subcateogries[categoriesHashes[index]];
+    }
+
+    currentNode->scriptableObjects[id] = new ScriptableObjectRecord{
+        .id = hasher(path.string()),
+        .name = path.filename().string(),
+        .fullName = filePath.string(),
+        .path = path.string(),
+        .categoriesHashes = categoriesHashes
+    };
+    
+    _trackedStrciptableObjects[id] = currentNode->scriptableObjects[id];
+    /*
     ScriptableObjectRecord* record = new ScriptableObjectRecord();
     record->name = path.filename().string();
     record->fullName = filePath.string();
@@ -61,6 +94,7 @@ void ScriptableObjectEditorManager::AddScriptableObject(const fs::path& path)
     }
 
     currentNode->scriptableObjects[record->id] = record;
+    */
 }
 void ScriptableObjectEditorManager::Update()
 {
@@ -126,6 +160,7 @@ void ScriptableObjectEditorManager::End()
 {
     for (auto& pair : _trackedStrciptableObjects)
     {
+        pair.second->categoriesHashes.clear();
         delete pair.second;
     }
 
@@ -138,6 +173,12 @@ void ScriptableObjectEditorManager::DeleteTree(ScriptableObjectRecordNode* node)
     {
         DeleteTree(pair.second);
     }
+
+    for (auto& item : node->scriptableObjects) {
+        item.second = nullptr;
+    }
+
+    node->scriptableObjects.clear();
 
     delete node;
 }

@@ -20,7 +20,7 @@ namespace Twin2Engine::Core
 
 		friend class ScriptableObjectRegister<ScriptableObject>;
 		static void Register();
-		size_t _id;
+		size_t _id = 0;
 	protected:
 		static std::hash<std::string> hasher;
 		struct ScriptableObjectData
@@ -33,7 +33,6 @@ namespace Twin2Engine::Core
 		static std::unordered_map<size_t, ScriptableObjectData>* scriptableObjectsTemp;
 
 		static void Register(size_t hash, const ScriptableObjectData& soData);
-
 
 	public:
 		size_t GetId() const;
@@ -75,7 +74,7 @@ namespace Twin2Engine::Core
 		friend class Twin2Engine::Core::ScriptableObjectRegister<ScriptableObjectClass>; \
 		static std::string _registeredName; \
 		static Twin2Engine::Core::ScriptableObject* Create(); \
-		static void Register(); \
+		static void Register();
 		//static Twin2Engine::Core::ScriptableObjectRegister<ScriptableObjectClass> registererInstance##ScriptableObjectClass; \
 
 #define SCRIPTABLE_OBJECT_SOURCE_CODE(ScriptableObjectClass, ScriptableObjectNamespace, RegisteredName) \
@@ -89,12 +88,9 @@ namespace ScriptableObjectNamespace \
 	  \
 	void ScriptableObjectClass::Register() \
 	{ \
-		std::hash<std::string> hasher; \
-		_registeredName = RegisteredName; \
-		Twin2Engine::Core::ScriptableObject::Register(hasher(RegisteredName), ScriptableObjectData { .scriptableObjectName = RegisteredName, .createSpecificScriptableObject = ScriptableObjectClass::Create }); \
+		Twin2Engine::Core::ScriptableObject::Register(Twin2Engine::Core::ScriptableObject::hasher(RegisteredName), ScriptableObjectData { .scriptableObjectName = RegisteredName, .createSpecificScriptableObject = ScriptableObjectClass::Create }); \
 	} \
-	  \
-} \
+}
 
 //scriptableObjects[hasher(_registeredName)] = ScriptableObjectData { .scriptableObjectName = _registeredName, .createSpecificScriptableObject = ScriptableObjectClass::Create }; \
 //template<class T>
@@ -130,7 +126,7 @@ namespace ScriptableObjectNamespace \
 
 //*
 #define SERIALIZABLE_SCRIPTABLE_OBJECT(ScriptableObjectClass, ScriptableObjectNamespace) \
-	static Twin2Engine::Core::ScriptableObjectRegister<ScriptableObjectNamespace::ScriptableObjectClass> registererInstance##ScriptableObjectClass; \
+	static Twin2Engine::Core::ScriptableObjectRegister<ScriptableObjectNamespace::ScriptableObjectClass> registererInstance##ScriptableObjectClass;
 //template<> struct YAML::convert<ScriptableObjectClass> { \
 //	static Node encode(const ScriptableObjectClass& rhs) { \
 //		Node node; \

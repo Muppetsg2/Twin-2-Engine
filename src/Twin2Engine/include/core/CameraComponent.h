@@ -32,7 +32,8 @@ namespace Twin2Engine::Core {
 	enum class CameraDisplayMode {
 		RENDER = 0,
 		DEPTH = 1,
-		SSAO_MAP = 2
+		SSAO_MAP = 2,
+		WIREFRAME = 3
 	};
 
 	enum class CameraRenderResolution {

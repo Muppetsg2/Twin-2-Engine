@@ -145,12 +145,15 @@ void GameEngine::End()
     // Cleanup
     EarlyEnd();
 
+    PrefabManager::UnloadAll();
     SceneManager::UnloadAll();
     AudioManager::UnloadAll();
     CollisionManager::UnloadAll();
     Input::FreeAllWindows();
 
     GraphicEngine::End();
+    ScriptableObjectManager::UnloadAll();
+    ProcessManager::DeleteInstance();
 }
 
 MethodEventHandler GameEngine::OnInput;

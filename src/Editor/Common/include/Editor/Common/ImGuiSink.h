@@ -110,6 +110,7 @@ namespace Editor::Common
             this->formatter_->format(msg, formatted);
             std::string message = fmt::to_string(formatted);
 
+            // TODO: Dodac by powtarzajace sie wiadomosci dostawaly ++size_t jak w Unity jesli wystepuja od razu po sobie (Dodanie z wyswietlaniem liczby nie wplywa na max_draw, bo to jest liczone jak jedno tylko z liczba)
             MessageHolder::logMessages.emplace_back(ImGuiLogMessage(message, msg.level, msg.source));
 
             _mutex.lock();
@@ -257,6 +258,8 @@ namespace Editor::Common
             for (size_t i = messages.size(); i > 0; --i) {
                 ImGui::TextColored(messages[i - 1].color, "%s", messages[i - 1].content.c_str());
             }
+
+            messages.clear();
 
             //static float lastScrollPosition = 0.0;
             //static bool lastFrameOnEnd = true;

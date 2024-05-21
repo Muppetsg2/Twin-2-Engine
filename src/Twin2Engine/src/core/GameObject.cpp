@@ -159,6 +159,11 @@ bool GameObject::GetActiveInHierarchy() const
 	return _activeInHierarchy;
 }
 
+bool GameObject::GetActiveSelf() const
+{
+	return _activeSelf;
+}
+
 bool GameObject::GetActive() const
 {
 	return _activeSelf && _activeInHierarchy;

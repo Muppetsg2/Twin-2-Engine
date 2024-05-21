@@ -39,7 +39,7 @@ Twin2Engine::Graphic::InstantiatingModel::InstantiatingModel()
 }
 
 Twin2Engine::Graphic::InstantiatingModel::~InstantiatingModel() {
-
+    modelData = nullptr;
 }
 
 size_t Twin2Engine::Graphic::InstantiatingModel::GetId() const {

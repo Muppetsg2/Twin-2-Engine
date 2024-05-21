@@ -42,12 +42,20 @@ namespace Twin2Engine::Physic {
 		glm::vec3 v = glm::vec3(0.5f, 0.0f, -0.866f);
 		glm::vec3 w = glm::vec3(1.0f, 0.0f, 0.0f);
 	};
-
+	
+	ENUM_CLASS_BASE_VALUE(ColliderShape, uint8_t, SPHERE, 0, BOX, 1, CAPSULE, 2, HEXAGONAL, 4);
+	/*
+	enum class ColliderShape : uint8_t {
+		SPHERE = 0,
+		BOX = 1,
+		CAPSULE = 2,
+		HEXAGONAL = 4
+	};
+	*/
 
 	class Collider {
 	public:
 		bool isBoundingVolume = false;
-		enum ColliderShape : uint8_t { SPHERE, BOX, CAPSULE, HEXAGONAL };
 
 		ColliderShape colliderShape;
 		ShapeColliderData* shapeColliderData;

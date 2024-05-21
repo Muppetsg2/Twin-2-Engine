@@ -68,11 +68,6 @@ else()
 	target_include_directories(${PROJECT_NAME} PUBLIC ${soloud_SOURCE_DIR})
 endif()
 
-if (is_imgui)
-	target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
-	target_link_libraries(${PROJECT_NAME} imgui)
-endif()
-
 target_link_libraries(${PROJECT_NAME} 	glfw
 										GraphicEngine
 										PhysicEngine

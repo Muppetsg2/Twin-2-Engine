@@ -42,8 +42,6 @@ SO_DESERIALIZATION_END()
 //    return baseReturned;
 //}
 
-
-
 void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
 {
     if (byRegions)

@@ -122,7 +122,7 @@ Twin2Engine::Processes::ProcessManager* Twin2Engine::Processes::ProcessManager::
 
 void Twin2Engine::Processes::ProcessManager::DeleteInstance()
 {
-	if (instance == nullptr) {
+	if (instance != nullptr) {
 		delete instance;
 		instance = nullptr;
 	}
@@ -130,13 +130,15 @@ void Twin2Engine::Processes::ProcessManager::DeleteInstance()
 
 Twin2Engine::Processes::ProcessManager::~ProcessManager()
 {
-	while (synchronizedProcesses.size() > 0) {
-		auto v = synchronizedProcesses.extract(synchronizedProcesses.begin());
-		delete v.value();
+	for (auto& item : synchronizedProcesses) {
+		delete item;
 	}
 
-	while (otherProcesses.size() > 0) {
-		auto v = otherProcesses.extract(otherProcesses.begin());
-		delete v.value();
+	synchronizedProcesses.clear();
+
+	for (auto& item : otherProcesses) {
+		delete item;
 	}
+
+	otherProcesses.clear();
 }

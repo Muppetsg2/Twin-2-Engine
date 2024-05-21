@@ -501,6 +501,10 @@ void CameraComponent::SetSSAO(bool value)
 
 void CameraComponent::Render()
 {
+	if (!IsEnable() || !GetGameObject()->GetActive()) {
+		return;
+	}
+
 	ZoneScoped;
 	if (_isFrustumCulling)
 		_currentCameraFrustum = GetFrustum();
@@ -552,6 +556,7 @@ void CameraComponent::Render()
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glViewport(0, 0, wSize.x, wSize.y);
 		glEnable(GL_DEPTH_TEST);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 			FrameMarkStart(tracy_RenderDepthBuffer);
 			_depthShader->Use();
@@ -570,6 +575,7 @@ void CameraComponent::Render()
 			glClear(GL_COLOR_BUFFER_BIT);
 			glViewport(0, 0, wSize.x / 2, wSize.y / 2);
 			glDisable(GL_DEPTH_TEST);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 				FrameMarkStart(tracy_RenderSSAOTexture);
 				_ssaoShader->Use();
@@ -611,6 +617,13 @@ void CameraComponent::Render()
 			glViewport(0, 0, wSize.x, wSize.y);
 			glEnable(GL_DEPTH_TEST);
 
+			if (_mode == CameraDisplayMode::WIREFRAME) {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			}
+			else {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			}
+
 			FrameMarkStart(tracy_RenderScreenTexture);
 			BindSSAOTexture(31);
 			BindDepthTexture(26);
@@ -631,7 +644,8 @@ void CameraComponent::Render()
 		FrameMarkStart(tracy_OnScreenFramebuffer);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glViewport(0, 0, wSize.x, wSize.y);
-		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_DEPTH_TEST);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		BindRenderTexture(0);
 		BindDepthTexture(1);
 		BindSSAOTexture(2);
@@ -1012,6 +1026,7 @@ void CameraComponent::DrawEditor()
 	string name = string("Camera##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
+		Component::DrawInheritedFields();
 		bool per = (this->_type == CameraType::PERSPECTIVE);
 		if (ImGui::BeginCombo(string("Projection##").append(id).c_str(), (per ? "Perspective" : "Orthographic"))) {
 			if (ImGui::Selectable(string("Orthographic##").append(id).c_str(), !per))
@@ -1044,7 +1059,7 @@ void CameraComponent::DrawEditor()
 		}
 
 		CameraDisplayMode cdm = this->_mode;
-		if (ImGui::BeginCombo(string("Display Mode##").append(id).c_str(), cdm == CameraDisplayMode::RENDER ? "Render" : (cdm == CameraDisplayMode::DEPTH ? "Depth" : "SSAO")))
+		if (ImGui::BeginCombo(string("Display Mode##").append(id).c_str(), cdm == CameraDisplayMode::RENDER ? "Render" : (cdm == CameraDisplayMode::DEPTH ? "Depth" : (cdm == CameraDisplayMode::SSAO_MAP ? "SSAO" : "Wireframe"))))
 		{
 			if (ImGui::Selectable(string("Render##").append(id).c_str(), cdm == CameraDisplayMode::RENDER))
 			{
@@ -1057,6 +1072,10 @@ void CameraComponent::DrawEditor()
 			else if (ImGui::Selectable(string("SSAO##").append(id).c_str(), cdm == CameraDisplayMode::SSAO_MAP))
 			{
 				this->SetDisplayMode(CameraDisplayMode::SSAO_MAP);
+			}
+			else if (ImGui::Selectable(string("Wireframe##").append(id).c_str(), cdm == CameraDisplayMode::WIREFRAME))
+			{
+				this->SetDisplayMode(CameraDisplayMode::WIREFRAME);
 			}
 			ImGui::EndCombo();
 		}

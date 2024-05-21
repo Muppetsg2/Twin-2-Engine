@@ -126,6 +126,7 @@ void SpotLightComponent::DrawEditor()
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Spot Light##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
+		Component::DrawInheritedFields();
 		glm::vec3 v = light->direction;
 		ImGui::DragFloat3(string("Direction##").append(id).c_str(), glm::value_ptr(v), .1f, -1.f, 1.f);
 		if (v != light->direction) {

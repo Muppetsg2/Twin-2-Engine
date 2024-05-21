@@ -1,5 +1,4 @@
-#ifndef _MATERIAL_PARAMETERS_H_
-#define _MATERIAL_PARAMETERS_H_
+#pragma once
 
 #include <tools/YamlConverters.h>
 #include <tools/STD140Struct.h>
@@ -20,7 +19,7 @@ namespace Twin2Engine
 
 			static std::hash<std::string> hasher;
 
-			GLuint _materialParametersDataUBO;
+			GLuint _materialParametersDataUBO = 0;
 
 			Tools::STD140Struct _parameters;
 
@@ -67,5 +66,3 @@ namespace Twin2Engine
 		};
 	}
 }
-
-#endif

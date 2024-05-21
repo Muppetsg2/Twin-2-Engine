@@ -12,14 +12,15 @@
 
 #include <Generation/MapHexTile.h>
 
+#include <Generation/ContentGenerator.h>
+
 #define HEX_DIRECTION_CONNECTING true
 #define GRADIENT_CONNECTING false
 
 namespace Generation
 {
-	class MapGenerator : public ::Twin2Engine::Core::Component
+	class MapGenerator : public Component
 	{
-
         void GenerateFloatHull(const std::vector<glm::vec2>& hull);
 
         void GeneratePositions(const std::vector<glm::ivec2>& positions);
@@ -55,6 +56,9 @@ namespace Generation
 
 #pragma endregion
         void Generate();
+
+        virtual void Initialize() override;
+        virtual void OnEnable() override;
 
         virtual YAML::Node Serialize() const override;
         virtual bool Deserialize(const YAML::Node& node) override;

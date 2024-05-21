@@ -1,5 +1,4 @@
-#ifndef _SYNCHRONIZEDPROCESS_H_
-#define _SYNCHRONIZEDPROCESS_H_
+#pragma once
 
 #include <processes/Process.h>
 #include <tools/EventHandler.h>
@@ -22,5 +21,3 @@ namespace Twin2Engine::Processes {
 			virtual YAML::Node Serialize() const override;
 	};
 }
-
-#endif // !_SYNCHRONIZEDPROCESS_H_

@@ -47,8 +47,12 @@ target_link_libraries(${PROJECT_NAME} PUBLIC spdlog)
 target_link_libraries(${PROJECT_NAME} PUBLIC Generation)
 target_link_libraries(${PROJECT_NAME} PUBLIC yaml-cpp)
 
-if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+get_property(tracy_profiler GLOBAL PROPERTY TRACY_PROFILER)
+if (tracy_profiler)
     target_link_libraries(${PROJECT_NAME} PUBLIC TracyClient)
+endif()
+
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
 	 target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
 	 target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
 else()

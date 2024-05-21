@@ -259,7 +259,6 @@ int main(int, char**)
     //MeshRenderer* humanMR = human->AddComponent<MeshRenderer>();
     //human->AddComponent<Human>();
     //human->AddComponent<HumanMovement>();
-
     //PrefabManager::SaveAsPrefab(human, "res/prefabs/Human.prefab");
 
 

@@ -65,6 +65,8 @@ namespace Twin2Engine::Tools {
 
 		size_t _GetArrayElemSize(const std::vector<size_t>& offsets) const;
 
+		// TODO: FIX ADD_MAT I SET_MAT
+
 #pragma region ADD
 		/*template<class T, class... Ts>
 		void _AddMultiple(const STD140Value<T>& value, const STD140Value<Ts>&... values) {

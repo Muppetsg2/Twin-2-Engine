@@ -56,11 +56,13 @@ namespace Twin2Engine::Tools {
 		std::vector<char> _data;
 
 		template<class T> std::vector<char> _GetValueData(const T& value) const {
-			std::vector<char> valueData;
-			valueData.resize(sizeof(T));
+			//std::vector<char> valueData;
+			//valueData.resize(sizeof(T));
+			//const char* valueDataPtr = ;
+			//memcpy(valueData.data(), valueDataPtr, sizeof(T));
+			//valueData.insert(valueData.end(), sizeof(T), reinterpret_cast<const char*>(&value));
+			//return std::vector<char>(sizeof(T), *reinterpret_cast<const char*>(&value));
 			const char* valueDataPtr = reinterpret_cast<const char*>(&value);
-			memcpy(valueData.data(), valueDataPtr, sizeof(T));
-			return valueData;
 		}
 
 		size_t _GetArrayElemSize(const std::vector<size_t>& offsets) const;

@@ -5,6 +5,9 @@ using namespace std;
 
 hash<string> STD140Offsets::_hasher;
 
+const char* const STD140Offsets::_arrayElemFormat = "{0}[{1}]";
+const char* const STD140Offsets::_subElemFormat = "{0}.{1}";
+
 const char* const STD140Offsets::tracy_AddScalar = "STD140Offsets AddScalar";
 const char* const STD140Offsets::tracy_AddScalarArray = "STD140Offsets AddScalarArray";
 const char* const STD140Offsets::tracy_AddVec = "STD140Offsets AddVecArray";
@@ -149,7 +152,7 @@ vector<size_t> STD140Offsets::_AddArray(const string& name, size_t arraySize, si
 
 			// ELEMENT VALUE NAME
 			FrameMarkStart(tracy_AddArrayAddValuesElemName);
-			valueName = move(vformat(_GetArrayElemFormat(), make_format_args(name, i)));
+			valueName = move(vformat(_arrayElemFormat, make_format_args(name, i)));
 			FrameMarkEnd(tracy_AddArrayAddValuesElemName);
 
 			// ELEMENT VALUE NAME HASH
@@ -188,7 +191,7 @@ vector<size_t> STD140Offsets::_AddArray(const string& name, size_t arraySize, si
 	return arrayElemOffsets;
 }
 
-const string& STD140Offsets::_GetArrayElemFormat() {
+/*const string& STD140Offsets::_GetArrayElemFormat() {
 	static const string arrayElemFormat = "{0}[{1}]";
 	return arrayElemFormat;
 }
@@ -196,7 +199,7 @@ const string& STD140Offsets::_GetArrayElemFormat() {
 const string& STD140Offsets::_GetSubElemFormat() {
 	static const string subElemFormat = "{0}.{1}";
 	return subElemFormat;
-}
+}*/
 
 size_t STD140Offsets::Get(const string& name) const
 {
@@ -225,7 +228,7 @@ vector<size_t> STD140Offsets::GetArray(const string& name) const
 	vector<size_t> values;
 
 	FrameMarkStart(tracy_GetArrayFindElemOffset);
-	map<size_t, size_t>::const_iterator map_iterator = _offsets.find(move(_hasher(move(vformat(_GetArrayElemFormat(), make_format_args(name, 0))))));
+	map<size_t, size_t>::const_iterator map_iterator = _offsets.find(move(_hasher(move(vformat(_arrayElemFormat, make_format_args(name, 0))))));
 	FrameMarkEnd(tracy_GetArrayFindElemOffset);
 
 	size_t i = 1;
@@ -234,7 +237,7 @@ vector<size_t> STD140Offsets::GetArray(const string& name) const
 		values.push_back((*map_iterator).second);
 
 		FrameMarkStart(tracy_GetArrayFindElemOffset);
-		map_iterator = _offsets.find(move(_hasher(move(vformat(_GetArrayElemFormat(), make_format_args(name, i++))))));
+		map_iterator = _offsets.find(move(_hasher(move(vformat(_arrayElemFormat, make_format_args(name, i++))))));
 		FrameMarkEnd(tracy_GetArrayFindElemOffset);
 
 		FrameMarkEnd(tracy_GetArrayGetElemOffset);

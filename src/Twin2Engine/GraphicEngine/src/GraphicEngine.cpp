@@ -129,13 +129,16 @@ void GraphicEngine::Render()
 	FrameMarkStart(tracy_RenderMeshes);
 	MeshRenderingManager::RenderStatic();
 	FrameMarkEnd(tracy_RenderMeshes);
+}
 
+void GraphicEngine::RenderGUI() 
+{
 	FrameMarkStart(tracy_RenderUI);
 	UIRenderingManager::Render();
 	FrameMarkEnd(tracy_RenderUI);
 }
 
-void GraphicEngine::DepthRender()
+void GraphicEngine::PreRender()
 {
 #if DEBUG_GRAPHIC_ENGINE
 	float startDepthRenderingTime = glfwGetTime();

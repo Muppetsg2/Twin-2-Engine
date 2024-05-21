@@ -1,5 +1,7 @@
 #pragma once
 
+// TODO: FIX MESH RENDERER
+
 #include <core/RenderableComponent.h>
 #include <core/Transform.h>
 
@@ -17,52 +19,45 @@ namespace Twin2Engine::Core
 	class MeshRenderer : public RenderableComponent
 	{
 		friend class Twin2Engine::Manager::MeshRenderingManager;
-
-		/*CloneFunctionStart(MeshRenderer, RenderableComponent)
-			CloneField(_model)
-			CloneField(_materials)
-		CloneFunctionEnd()*/
-
 	protected:
 		CloneBaseFunc(MeshRenderer, RenderableComponent, _model, _materials)
 
+		std::vector<Graphic::Material> _materials = std::vector<Graphic::Material>();
+
+		void Register();
+		void Unregister();
+
+		void OnModelDataDestroyed();
 	private:
 
+		size_t _loadedModel = 0;
 		Graphic::InstantiatingModel _model;
-
-		std::vector<Graphic::Material> _materials;
 
 		bool _registered = false;
 		bool _transformChanged = false;
-		unsigned int _toUpdate = 0;
+		unsigned int _meshesToUpdate = 0;
 
-#ifdef MESH_FRUSTUM_CULLING
-		int OnTransformChangedActionId = -1;
-		Tools::Action<Transform*> OnTransformChangedAction = [this](Transform* transform) {
-			glm::mat4 tMatrix = transform->GetTransformMatrix();
+		bool materialsErasedEventDone = false;
 
-			//if (_model.GetId() == 10269728616568091294) {
-				//SPDLOG_INFO(_model.GetMeshCount());
-			//}
+		// Events
+		int OnStaticChangedId = -1;
+		int OnEventInHierarchyParentChangedId = -1;
+		int OnTransformMatrixChangedId = -1;
 
-			for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
-				Physic::SphereColliderData* sphereBV = (Physic::SphereColliderData*)_model.GetMesh(i)->sphericalBV->colliderShape;
-				if (sphereBV != nullptr) {
-					sphereBV->Position = tMatrix * glm::vec4(sphereBV->LocalPosition, 1.0f);
-				}
-				sphereBV = nullptr;
-			}
-			};
-#endif // MESH_FRUSTUM_CULLING
+		void OnGameObjectStaticChanged(GameObject* gameObject);
+		void OnTransformMatrixChanged(Transform* transform);
+		void OnMaterialsErased();
 
 		void TransformUpdated();
 
 	public:
 
-		virtual void Initialize();
+		virtual void Initialize() override;
+		virtual void Update() override;
+		virtual void OnEnable() override;
+		virtual void OnDisable() override;
+		virtual void OnDestroy() override;
 
-
-		virtual void Render() override;
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
 		virtual void DrawEditor() override;
@@ -72,12 +67,12 @@ namespace Twin2Engine::Core
 #pragma region MODEL_PART
 		Graphic::InstantiatingModel GetModel() const;
 		size_t GetMeshCount() const;
+		Graphic::InstantiatingMesh* GetMesh(size_t index) const;
 		void SetModel(const Graphic::InstantiatingModel& model);
 		void SetModel(size_t modelId);
 #pragma endregion
 
 #pragma region MATERIALS_PART
-		Graphic::InstantiatingMesh* GetMesh(size_t index) const;
 		size_t GetMaterialCount() const;
 		Graphic::Material GetMaterial(size_t index) const;
 		void AddMaterial(Graphic::Material material);
@@ -85,13 +80,5 @@ namespace Twin2Engine::Core
 		void SetMaterial(size_t index, Graphic::Material material);
 		void SetMaterial(size_t index, size_t materialId);
 #pragma endregion
-
-#ifdef MESH_FRUSTUM_CULLING
-		virtual void OnEnable() override;
-		virtual void OnDisable() override;
-		virtual void OnDestroy() override;
-#endif // MESH_FRUSTUM_CULLING
-
-
 	};
 }

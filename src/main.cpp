@@ -16,7 +16,9 @@ const char* const tracy_RenderingImGui = "RenderingImGui";
 //#define RELEASE_LOGGER
 
 #include <GameEngine.h>
-#include <GameEngine.h>
+
+// GAME SCRIPTS
+#include <PlaneGenerator.h>
 
 // TILEMAP
 #include <Tilemap/HexagonalTilemap.h>
@@ -212,6 +214,13 @@ int main(int, char**)
 
 #pragma endregion
 
+#pragma region GAME_SCRIPTS_COMPONENTS
+
+    ADD_COMPONENT("PlaneGenerator", PlaneGenerator);
+
+#pragma endregion
+
+
     SceneManager::GetOnSceneLoaded() += [](std::string sceneName) -> void {
         Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
         image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
@@ -232,43 +241,34 @@ int main(int, char**)
 #pragma region SETTING_UP_GENERATION
 
     tilemapGO = SceneManager::GetGameObjectWithId(14);
-    HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
+    //HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
     MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
-    mapGenerator->tilemap = hexagonalTilemap;
-    float tilemapGenerating = glfwGetTime();
+    //mapGenerator->tilemap = hexagonalTilemap;
+    //float tilemapGenerating = glfwGetTime();
     mapGenerator->Generate();
-    spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
+    //spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
 
-    ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
+    //ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
 
-    tilemapGenerating = glfwGetTime();
-    contentGenerator->GenerateContent(hexagonalTilemap);
-    spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
+    //tilemapGenerating = glfwGetTime();
+    //contentGenerator->GenerateContent(hexagonalTilemap);
+    //spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
+#if _DEBUG
     Editor::Common::ScriptableObjectEditorManager::Init();
     Editor::Common::ScriptableObjectEditorManager::Update();
+#endif
+
 #pragma endregion
     
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
     image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
     text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
 
-#pragma region TestingLighting
-    /*GameObject* dl_go = SceneManager::CreateGameObject();
-    dl_go->GetTransform()->SetLocalPosition(glm::vec3(10.0f, 10.0f, 0.0f));
-    DirectionalLightComponent* dl = dl_go->AddComponent<DirectionalLightComponent>();
-    dl->SetColor(glm::vec3(1.0f));
-    //LightingController::Instance()->SetViewerPosition(cameraPos);
-    LightingController::Instance()->SetAmbientLight(glm::vec3(0.1f));
 
-    SceneManager::SaveScene("res/scenes/DirLightTest.scene");*/
-#pragma endregion
-#pragma region HexCollider
-    //GameObject* h_go = SceneManager::CreateGameObject();
-    //HexagonalColliderComponent* hc = h_go->AddComponent<HexagonalColliderComponent>();
-    //hc->SetTrigger(true);
-    //hc->SetLayer(Layer::IGNORE_COLLISION);
-    //hc->SetLocalPosition(0.0f, -0.5f, 0.0f);
-    //PrefabManager::SaveAsPrefab(h_go, "HCCpref.prefab");
+#pragma region GAMESCRIPTS_PREFABS
+    //GameObject* gs_go = SceneManager::CreateGameObject();
+    //GameScripts::MovementController* gsc = gs_go->AddComponent<GameScripts::MovementController>();
+    //PrefabManager::SaveAsPrefab(gs_go, "MovementControllerPref.prefab");
 #pragma endregion
 
 #if _DEBUG
@@ -311,7 +311,6 @@ int main(int, char**)
 #else
     fileLoggerSink->StopLogging();
 #endif
-
     return 0;
 }
 
@@ -338,34 +337,31 @@ void input()
     //    }
     //}
 
-    bool moved = false;
 
+#if _DEBUG
     if (Input::IsKeyDown(KEY::W) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
-        moved = true;
     }
     if (Input::IsKeyDown(KEY::S) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());
-        moved = true;
     }
     if (Input::IsKeyDown(KEY::A) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() - c->GetRight() * cameraSpeed * Time::GetDeltaTime());
-        moved = true;
     }
     if (Input::IsKeyDown(KEY::D) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
-        moved = true;
     }
+#endif
 
-    if (LightingController::IsInstantiated() && moved) {
-        //glm::vec3 cp = c->GetTransform()->GetGlobalPosition();
-        //LightingController::Instance()->SetViewerPosition(cp);
-        LightingController::Instance()->UpdateOnTransformChange();
-    }
+    //if (LightingController::IsInstantiated() && moved) {
+    //    //glm::vec3 cp = c->GetTransform()->GetGlobalPosition();
+    //    //LightingController::Instance()->SetViewerPosition(cp);
+    //    LightingController::Instance()->UpdateOnTransformChange();
+    //}
 
 
     if (Input::IsKeyPressed(KEY::LEFT_ALT))
@@ -398,6 +394,8 @@ void input()
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
+#if _DEBUG
+
     if (mouseNotUsed)
     {
         lastX = xpos;
@@ -431,12 +429,13 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     }
 
     Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x, rot.y + xoffset, rot.z));
+#endif 
 }
 
 void update()
 {
     // Update game objects' state here
-    text->SetText(L"Time: " + std::to_wstring(Time::GetDeltaTime()));
+    text->SetText(L"FPS: " + std::to_wstring(1.f / Time::GetDeltaTime()));
     colorSpan -= Time::GetDeltaTime() * 0.2f;
     if (colorSpan <= 0.f) {
         colorSpan = 1.f;

@@ -19,6 +19,8 @@ using namespace Twin2Engine::Physic;
 using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
+size_t TransformChangeEventId = 0;
+
 std::vector<CameraComponent*> CameraComponent::Cameras = std::vector<CameraComponent*>();
 GLuint CameraComponent::_uboCameraData = 0;
 STD140Offsets CameraComponent::_uboCameraDataOffsets{
@@ -465,6 +467,7 @@ void CameraComponent::SetIsMain(bool value)
 	if (value) {
 		for (auto c : Cameras) {
 			if (c != this) {
+				c->GetTransform()->OnEventTransformChanged -= TransformChangeEventId;
 				c->SetIsMain(false);
 			}
 		}
@@ -472,9 +475,15 @@ void CameraComponent::SetIsMain(bool value)
 	else if (!value && this->_isMain) {
 		if (this->_camId == 0 && Cameras.size() > 1) {
 			Cameras[1]->SetIsMain(true);
+			TransformChangeEventId = Cameras[1]->GetTransform()->OnEventTransformChanged += [](Transform* transform) {
+				LightingController::Instance()->UpdateOnTransformChange();
+			};
 		}
 		else {
 			Cameras[0]->SetIsMain(true);
+			TransformChangeEventId = Cameras[0]->GetTransform()->OnEventTransformChanged += [](Transform* transform) {
+				LightingController::Instance()->UpdateOnTransformChange();
+			};
 		}
 	}
 	_isMain = value;
@@ -543,7 +552,7 @@ void CameraComponent::Render()
 
 			FrameMarkStart(tracy_RenderDepthBuffer);
 			_depthShader->Use();
-			GraphicEngine::DepthRender();
+			GraphicEngine::PreRender();
 			FrameMarkEnd(tracy_RenderDepthBuffer);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -649,6 +658,8 @@ void CameraComponent::Render()
 		_screenShader->SetBool("enableDepthOfField", (_filters& (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0);
 
 		_screenPlane.GetMesh(0)->Draw(1);
+
+		GraphicEngine::RenderGUI();
 		glBindTexture(GL_TEXTURE_2D, 0);
 		FrameMarkEnd(tracy_OnScreenFramebuffer);
 	}
@@ -740,6 +751,10 @@ void CameraComponent::Initialize()
 		for (size_t i = 0; i < 48; ++i) {
 			_ssaoShader->SetVec3(string("kernel[").append(std::to_string(i)).append("]"), _ssaoKernel[i]);
 		}
+
+		TransformChangeEventId = GetTransform()->OnEventTransformChanged += [](Transform* transform) {
+			LightingController::Instance()->UpdateOnTransformChange();
+		};
 	}
 
 	this->_camId = Cameras.size();

@@ -34,7 +34,7 @@ GameObject::GameObject(size_t id) {
 	_name = "New GameObject";
 
 	_transform = new Transform();
-	_transform->Init(this);
+	//_transform->Init(this);
 
 	//components = list<Component*>();
 	components = std::list<Component*>();

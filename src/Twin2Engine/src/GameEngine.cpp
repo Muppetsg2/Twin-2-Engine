@@ -10,6 +10,8 @@ using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Physic;
 using namespace Twin2Engine::Processes;
 
+using namespace GameScripts;
+
 using Twin2Engine::Core::Input;
 using Twin2Engine::Core::KEY;
 using Twin2Engine::Core::MOUSE_BUTTON;
@@ -46,6 +48,8 @@ void GameEngine::Deserializers()
     ADD_COMPONENT("PointLight", PointLightComponent);
 
     ADD_COMPONENT("SpotLight", SpotLightComponent);
+
+    ADD_COMPONENT("MovementController", MovementController);
 }
 
 void GameEngine::Update()

@@ -7,6 +7,7 @@
 #include <tools/EventHandler.h>
 #include <manager/ScriptableObjectManager.h>
 #include <core/ResourceManagement.h>
+#include <regex>
 
 using namespace Twin2Engine::Manager;
 using namespace std;
@@ -403,13 +404,22 @@ void SceneManager::LoadScene() {
 	// INIT COMPONENTS
 	for (const auto& compPair : _componentsById) {
 		compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
+		//compPair.second->Initialize();
 	}
+	static_cast<Component*>(_rootObject->GetTransform())->Init(_rootObject);
 #pragma endregion
 
 	ScriptableObjectManager::SceneDeserializationEnd();
 
 	_currentSceneName = _sceneToLoadName;
 	_currentSceneId = _sceneToLoadId;
+
+	for (const auto& compPair : _componentsById) {
+		if (compPair.second->_enabled)
+		{
+			compPair.second->OnEnable();
+		}
+	}
 
 	_onSceneLoaded(_sceneToLoadName);
 }
@@ -425,6 +435,13 @@ void SceneManager::DestroyObject(GameObject* obj) {
 
 		GameObject* childObj = child->GetGameObject();
 		if (_gameObjectsById.size() > 0) _gameObjectsById.erase(childObj->Id());
+
+		for (auto& comp : childObj->GetComponents<Component>()) {
+			if (_componentsById.size() > 0) {
+				_componentsById.erase(comp->GetId());
+			}
+		}
+
 		DestroyObject(childObj);
 	}
 	delete obj;
@@ -436,6 +453,21 @@ void SceneManager::DestroyObjects() {
 	while (_objectsToDestroy.size() > 0) {
 		DestroyObject(_objectsToDestroy.front());
 		_objectsToDestroy.pop();
+	}
+}
+
+void SceneManager::AddComponentWithId(Component* comp)
+{
+	_componentsById[comp->GetId()] = comp;
+}
+
+void SceneManager::RemoveComponentWithId(Component* comp)
+{
+	map<size_t, Component*>::const_iterator comp_iter = _componentsById.find(comp->GetId());
+	if (comp_iter != _componentsById.end()) {
+		if ((*comp_iter).second == comp) {
+			_componentsById.erase((*comp_iter).first);
+		}
 	}
 }
 
@@ -860,6 +892,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	// INIT COMPONENTS
 	for (const auto& compPair : prefabComponentsById) {
 		compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
+		//compPair.second->Initialize();
 	}
 #pragma endregion
 
@@ -867,6 +900,14 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 
 	if (_rootObject == nullptr) _rootObject = new GameObject();
 	prefabRoot->GetTransform()->SetParent(parent != nullptr ? parent : _rootObject->GetTransform());
+
+	for (const auto& compPair : _componentsById) {
+		if (compPair.second->_enabled)
+		{
+			compPair.second->OnEnable();
+		}
+	}
+
 	return prefabRoot;
 }
 
@@ -974,6 +1015,7 @@ size_t SceneManager::GetModelSaveIdx(size_t modelId)
 {
 	size_t idx = 0;
 	for (const auto& modelPair : ModelsManager::_modelsPaths) {
+		if (std::regex_match(modelPair.second, std::regex("[{]\\w+[_](?:GENERATED)[_]\\d+[}]"))) continue;
 		if (modelPair.first == modelId) return idx;
 		++idx;
 	}

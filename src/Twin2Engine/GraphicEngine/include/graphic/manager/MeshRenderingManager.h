@@ -77,6 +77,11 @@ namespace Twin2Engine
 				std::list<RenderedSegment> rendered;
 				unsigned int renderedCount;
 			};
+			struct DataToUnregister {
+				Graphic::Material _mat;
+				Graphic::InstantiatingMesh* _mesh;
+				size_t _pos;
+			};
 
 			static std::unordered_map<Graphic::Shader*, std::map<Graphic::Material, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _renderQueueStatic;
 			//static std::unordered_map<Graphic::Shader*, std::map<Graphic::Material, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _depthMapenderQueueStatic;
@@ -108,11 +113,11 @@ namespace Twin2Engine
 			static void Init();
 			static void UnloadAll();
 
-			static void RegisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer);
-			static void UnregisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer);
+			static bool RegisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer);
+			static bool UnregisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer);
 
-			static void RegisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer);
-			static void UnregisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer);
+			static bool RegisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer);
+			static bool UnregisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer);
 
 			//Przed u¿yciem tej funkcji nale¿y zapewniæ, i¿ glViewport jest ustawiony w nastêpuj¹cy sposób: glViewport(0, 0, depthTexWidth, depthTexHeight), po uruchomieñiu funkcji nale¿y przywróciæ rozmiar viewportu do rozmiaru okna gry
 			static void RenderDepthMapStatic(const GLuint& depthFBO, glm::mat4& projectionViewMatrix);

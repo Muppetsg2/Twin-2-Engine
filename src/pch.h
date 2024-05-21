@@ -1,4 +1,5 @@
 #pragma once
+
 #include <memory>
 
 //LOGGER
@@ -16,6 +17,12 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#ifdef TRACY_PROFILER
+	#include <tracy/Tracy.hpp>
+	#include <tracy/TracyOpenGL.hpp>
+	#define TRACY_ENABLE
+#endif
+
 #if _DEBUG
 	#define IMGUI_IMPL_OPENGL_LOADER_GLAD
 	#include <imgui_impl/imgui_user.h>
@@ -24,10 +31,6 @@
 	#include <imgui_impl/imgui_stdlib.h>
 	#include <imgui_impl/imgui_impl_glfw.h>
 	#include <imgui_impl/imgui_impl_opengl3.h>
-
-	#include <tracy/Tracy.hpp>
-	#include <tracy/TracyOpenGL.hpp>
-	#define TRACY_ENABLE
 #endif
 
 #include <stb_image.h>

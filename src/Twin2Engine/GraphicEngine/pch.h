@@ -39,9 +39,8 @@
 // STB_IMAGE
 #include <stb_image.h>
 
-
-
-#if _DEBUG
+// TRACY
+#ifdef TRACY_PROFILER
 	#include <tracy/Tracy.hpp>
 	#include <tracy/TracyOpenGL.hpp>
 	#define TRACY_ENABLE

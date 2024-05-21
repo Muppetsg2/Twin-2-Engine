@@ -135,15 +135,15 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: 0
-        z: 0
+        y: 14.5
+        z: 11
       scale:
         x: 0
         y: 0
         z: 0
       rotation:
-        x: 0
-        y: -1.45756971e-07
+        x: -55.5
+        y: -88.6
         z: 0
     components:
       - id: 1
@@ -171,6 +171,15 @@ GameObjects:
         audio: 0
         loop: true
         volume: 1
+      - id: 3
+        enabled: true
+        type: MovementController
+        DragControl: true
+        DragScale: 0.01
+        WsadControl: true
+        WsadVelocity: 4.5
+        BorderControl: false
+        BorderVelocity: 3.0
     children:
       []
   - id: 2
@@ -178,7 +187,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 3
+      id: 4
       enabled: true
       position:
         x: -900
@@ -193,7 +202,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 4
+      - id: 5
         enabled: true
         type: Image
         isTransparent: false
@@ -205,7 +214,7 @@ GameObjects:
           w: 1
         width: 100
         height: 100
-      - id: 5
+      - id: 6
         enabled: true
         type: Image
         isTransparent: false
@@ -224,7 +233,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 6
+      id: 7
       enabled: true
       position:
         x: 900
@@ -239,7 +248,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 7
+      - id: 8
         enabled: true
         type: Image
         isTransparent: false
@@ -258,7 +267,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 8
+      id: 9
       enabled: true
       position:
         x: 0
@@ -273,7 +282,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 9
+      - id: 10
         enabled: true
         type: Image
         isTransparent: false
@@ -292,7 +301,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 10
+      id: 11
       enabled: true
       position:
         x: 400
@@ -307,7 +316,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 11
+      - id: 12
         enabled: true
         type: Text
         isTransparent: false
@@ -335,7 +344,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 12
+      id: 13
       enabled: true
       position:
         x: 2
@@ -350,7 +359,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 13
+      - id: 14
         enabled: true
         type: MeshRenderer
         isTransparent: false
@@ -364,7 +373,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 14
+      id: 15
       enabled: true
       position:
         x: 2
@@ -379,7 +388,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 15
+      - id: 16
         enabled: true
         type: MeshRenderer
         isTransparent: false
@@ -393,7 +402,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 16
+      id: 17
       enabled: true
       position:
         x: 0
@@ -408,7 +417,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 17
+      - id: 18
         enabled: true
         type: MeshRenderer
         isTransparent: false
@@ -423,7 +432,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 18
+      id: 19
       enabled: true
       position:
         x: 0
@@ -438,7 +447,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 19
+      - id: 20
         enabled: true
         type: MeshRenderer
         isTransparent: false
@@ -453,7 +462,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 20
+      id: 21
       enabled: true
       position:
         x: 0
@@ -468,7 +477,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 21
+      - id: 22
         enabled: true
         type: SphereCollider
         colliderId: 1
@@ -490,7 +499,7 @@ GameObjects:
           y: 0
           z: 0
         radius: 20
-      - id: 22
+      - id: 23
         enabled: true
         type: BoxCollider
         colliderId: 2
@@ -518,7 +527,7 @@ GameObjects:
           x: 0
           y: 0
           z: 0
-      - id: 23
+      - id: 24
         enabled: true
         type: CapsuleCollider
         colliderId: 3
@@ -544,7 +553,7 @@ GameObjects:
           y: 1
           z: 0
         radius: 20
-      - id: 24
+      - id: 25
         enabled: true
         type: Button
         width: 100
@@ -557,7 +566,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 27
+      id: 26
       enabled: true
       position:
         x: 2
@@ -572,7 +581,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 28
+      - id: 27
         enabled: true
         type: MeshRenderer
         isTransparent: false
@@ -586,7 +595,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 29
+      id: 28
       enabled: true
       position:
         x: 2
@@ -601,7 +610,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 30
+      - id: 29
         enabled: true
         type: MeshRenderer
         isTransparent: false
@@ -615,7 +624,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 31
+      id: 30
       enabled: true
       position:
         x: 0
@@ -630,7 +639,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 32
+      - id: 31
         enabled: true
         type: HexagonalTilemap
         leftBottomPosition:
@@ -639,6 +648,16 @@ GameObjects:
         rightTopPosition:
           x: 0
           y: 0
+      - id: 32
+        enabled: true
+        type: ContentGenerator
+        mapElementGenerators:
+          - res/scriptableobjects/RegionsGeneratorByKMeans.so
+          - res/scriptableobjects/SectorGeneratorForRegionsByKMeans.so
+          - res/scriptableobjects/LakeGenerator.so
+          - res/scriptableobjects/MountainsGenerator.so
+          - res/scriptableobjects/CityGenerator.so
+          - res/scriptableobjects/RadioStationGeneratorSectorBased.so
       - id: 33
         enabled: true
         type: MapGenerator
@@ -651,16 +670,6 @@ GameObjects:
         minPointsNumber: 5
         maxPointsNumber: 5
         angleDeltaRange: 5
-      - id: 34
-        enabled: true
-        type: ContentGenerator
-        mapElementGenerators:
-          - res/scriptableobjects/RegionsGeneratorByKMeans.so
-          - res/scriptableobjects/SectorGeneratorForRegionsByKMeans.so
-          - res/scriptableobjects/LakeGenerator.so
-          - res/scriptableobjects/MountainsGenerator.so
-          - res/scriptableobjects/CityGenerator.so
-          - res/scriptableobjects/RadioStationGeneratorSectorBased.so
     children:
       []
   - id: 15
@@ -668,7 +677,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 1235
+      id: 34
       enabled: true
       position:
         x: 11.419817
@@ -683,7 +692,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 1236
+      - id: 35
         enabled: true
         type: DirectionalLight
         direction:
@@ -695,5 +704,35 @@ GameObjects:
           y: 1
           z: 1
         power: 1
+    children:
+      []
+  - id: 16
+    name: Plane
+    isStatic: false
+    isActive: true
+    transform:
+      id: 36
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 5
+        y: 5
+        z: 5
+      rotation:
+        x: -90
+        y: 0
+        z: 0
+    components:
+      - id: 37
+        enabled: true
+        type: PlaneGenerator
+        isTransparent: true
+        rows: 4
+        columns: 4
+        materials:
+          - 1
     children:
       []

@@ -6,12 +6,21 @@ using namespace Tilemap;
 
 void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
 {
+    //if (_tilemap == nullptr)
+    //{
+    //    _tilemap = targetTilemap;
+    //}
     SPDLOG_INFO("Starting content");
     for (AMapElementGenerator* generator : mapElementGenerators)
     {
         SPDLOG_INFO("Generating element");
         generator->Generate(targetTilemap);
     }
+}
+
+void ContentGenerator::Initialize()
+{
+    //_tilemap = GetGameObject()->GetComponent<Tilemap::HexagonalTilemap>();
 }
 
 void ContentGenerator::OnDestroy() {

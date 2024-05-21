@@ -3,8 +3,6 @@
 #include <tools/EventHandler.h>
 #include <tools/STD140Offsets.h>
 
-#undef min
-
 namespace Twin2Engine::Tools {
 	//class STD140Struct;
 
@@ -55,15 +53,35 @@ namespace Twin2Engine::Tools {
 		STD140Offsets _dataOffsets;
 		std::vector<char> _data;
 
+		static const char* const tracy_GetValueData;
+		static const char* const tracy_Add;
+		static const char* const tracy_AddGetOffset;
+		static const char* const tracy_AddCheckError;
+		static const char* const tracy_AddReserveSize;
+		static const char* const tracy_AddCheckValuePadding;
+		static const char* const tracy_AddGetValueData;
+		static const char* const tracy_AddSetValueData;
+		static const char* const tracy_AddUpdateSize;
+		static const char* const tracy_AddClearTempValueData;
+		static const char* const tracy_AddArray;
+		static const char* const tracy_AddArrayCheckSize;
+		static const char* const tracy_AddArrayGetOffsets;
+		static const char* const tracy_AddArrayCheckError;
+		static const char* const tracy_AddArrayReserveSize;
+		static const char* const tracy_AddArraySetValuesData;
+		static const char* const tracy_AddArrayCheckValuePadding;
+		static const char* const tracy_AddArrayGetValueData;
+		static const char* const tracy_AddArraySetValueData;
+		static const char* const tracy_AddArrayClearValueTempData;
+		static const char* const tracy_AddArrayUpdateSize;
+		static const char* const tracy_AddArrayClearValuesOffsets;
+
 		template<class T> std::vector<char> _GetValueData(const T& value) const {
-			//std::vector<char> valueData;
-			//valueData.resize(sizeof(T));
-			//const char* valueDataPtr = ;
-			//memcpy(valueData.data(), valueDataPtr, sizeof(T));
-			//valueData.insert(valueData.end(), sizeof(T), reinterpret_cast<const char*>(&value));
-			//return std::vector<char>(sizeof(T), *reinterpret_cast<const char*>(&value));
+			ZoneScoped;
+			FrameMarkStart(tracy_GetValueData);
 			const char* valueDataPtr = reinterpret_cast<const char*>(&value);
-			return 
+			FrameMarkEnd(tracy_GetValueData);
+			return std::vector<char>(valueDataPtr, valueDataPtr + sizeof(T));
 		}
 
 		size_t _GetArrayElemSize(const std::vector<size_t>& offsets) const;
@@ -85,54 +103,137 @@ namespace Twin2Engine::Tools {
 		}*/
 
 		template<class T> void _Add(const std::string& name, const T& value) {
+			ZoneScoped;
+			FrameMarkStart(tracy_Add);
+
 			// ADD TO OFFSETS
+			FrameMarkStart(tracy_AddGetOffset);
 			size_t valueOffset = _dataOffsets.Add<T>(name);
+			FrameMarkEnd(tracy_AddGetOffset);
 
 			// CHECK ERROR
+			FrameMarkStart(tracy_AddCheckError);
 			if (valueOffset == 0 && _data.size() != 0) {
 				SPDLOG_ERROR("Variable '{0}' already added to structure", name);
+				FrameMarkEnd(tracy_AddCheckError);
+				FrameMarkEnd(tracy_Add);
 				return;
 			}
-
-			// UPDATE SIZE
-			_data.resize(_dataOffsets.GetSize());
+			FrameMarkEnd(tracy_AddCheckError);
 
 			// GET VALUE DATA
-			std::vector<char> valueData = _GetValueData(value);
+			FrameMarkStart(tracy_AddGetValueData);
+			std::vector<char> valueData = std::move(_GetValueData(value));
+			FrameMarkEnd(tracy_AddGetValueData);
+
+			// RESERVE SIZE
+			FrameMarkStart(tracy_AddReserveSize);
+			_data.reserve(_dataOffsets.GetSize());
+			FrameMarkEnd(tracy_AddReserveSize);
+
+			// CHECK VALUE PADDING
+			FrameMarkStart(tracy_AddCheckValuePadding);
+			if (_data.size() < valueOffset) {
+				_data.resize(valueOffset);
+			}
+			FrameMarkEnd(tracy_AddCheckValuePadding);
 
 			// SET VALUE DATA
-			memcpy(_data.data() + valueOffset, valueData.data(), valueData.size());
-
-			valueData.clear();
-		}
-		template<class T> void _AddArray(const std::string& name, const std::vector<T>& values) {
-			if (values.size() == 0) return;
-
-			// ADD TO OFFSETS
-			std::vector<size_t> valuesOffsets = _dataOffsets.Add<T>(name, values.size());
-
-			// CHECK ERROR
-			if (valuesOffsets.size() == 0) {
-				SPDLOG_ERROR("Variable '{0}' already added to structure", name);
-				return;
-			}
+			FrameMarkStart(tracy_AddSetValueData);
+			_data.insert(_data.end(), valueData.begin(), valueData.end());
+			FrameMarkEnd(tracy_AddSetValueData);
 
 			// UPDATE SIZE
-			_data.resize(_dataOffsets.GetSize());
+			FrameMarkStart(tracy_AddUpdateSize);
+			if (_data.size() < _data.capacity()) {
+				_data.resize(_data.capacity());
+			}
+			FrameMarkEnd(tracy_AddUpdateSize);
+
+			// CLEAR TEMP VALUE DATA
+			FrameMarkStart(tracy_AddClearTempValueData);
+			valueData.clear();
+			FrameMarkEnd(tracy_AddClearTempValueData);
+
+			FrameMarkEnd(tracy_Add);
+		}
+
+		template<class T> void _AddArray(const std::string& name, const std::vector<T>& values) {
+			ZoneScoped;
+			FrameMarkStart(tracy_AddArray);
+
+			// CHECK SIZE
+			FrameMarkStart(tracy_AddArrayCheckSize);
+			if (values.size() == 0) {
+				FrameMarkEnd(tracy_AddArrayCheckSize);
+				FrameMarkEnd(tracy_AddArray);
+				return;
+			}
+			FrameMarkEnd(tracy_AddArrayCheckSize);
+
+			// ADD TO OFFSETS
+			FrameMarkStart(tracy_AddArrayGetOffsets);
+			std::vector<size_t> valuesOffsets = std::move(_dataOffsets.Add<T>(name, values.size()));
+			FrameMarkEnd(tracy_AddArrayGetOffsets);
+
+			// CHECK ERROR
+			FrameMarkStart(tracy_AddArrayCheckError);
+			if (valuesOffsets.size() == 0) {
+				SPDLOG_ERROR("Variable '{0}' already added to structure", name);
+				FrameMarkEnd(tracy_AddArrayCheckError);
+				FrameMarkEnd(tracy_AddArray);
+				return;
+			}
+			FrameMarkEnd(tracy_AddArrayCheckError);
+
+			// RESERVE SIZE
+			FrameMarkStart(tracy_AddArrayReserveSize);
+			_data.reserve(_dataOffsets.GetSize());
+			FrameMarkEnd(tracy_AddArrayReserveSize);
 
 			// SET VALUES DATA
+			FrameMarkStart(tracy_AddArraySetValuesData);
+			std::vector<char> valueData;
 			for (size_t i = 0; i < valuesOffsets.size() && i < values.size(); ++i) {
+				// CHECK VALUE PADDING
+				FrameMarkStart(tracy_AddArrayCheckValuePadding);
+				if (_data.size() < valuesOffsets[i]) {
+					_data.resize(valuesOffsets[i]);
+				}
+				FrameMarkEnd(tracy_AddArrayCheckValuePadding);
+
 				// GET VALUE DATA
-				std::vector<char> valueData = _GetValueData(values[i]);
+				FrameMarkStart(tracy_AddArrayGetValueData);
+				valueData = std::move(_GetValueData(values[i]));
+				FrameMarkEnd(tracy_AddArrayGetValueData);
 
 				// SET VALUE DATA
-				memcpy(_data.data() + valuesOffsets[i], valueData.data(), valueData.size());
+				FrameMarkStart(tracy_AddArraySetValueData);
+				_data.insert(_data.end(), valueData.begin(), valueData.end());
+				FrameMarkEnd(tracy_AddArraySetValueData);
 
+				// CLEAR VALUE TEMP DATA
+				FrameMarkStart(tracy_AddArrayClearValueTempData);
 				valueData.clear();
+				FrameMarkEnd(tracy_AddArrayClearValueTempData);
 			}
+			FrameMarkEnd(tracy_AddArraySetValuesData);
 
+			// UPDATE SIZE
+			FrameMarkStart(tracy_AddArrayUpdateSize);
+			if (_data.size() < _data.capacity()) {
+				_data.resize(_data.capacity());
+			}
+			FrameMarkEnd(tracy_AddArrayUpdateSize);
+
+			// CLEAR VALUES OFFSETS
+			FrameMarkStart(tracy_AddArrayClearValuesOffsets);
 			valuesOffsets.clear();
+			FrameMarkEnd(tracy_AddArrayClearValuesOffsets);
+
+			FrameMarkEnd(tracy_AddArray);
 		}
+
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		void _AddMat(const std::string& name, const M& value) {
 			// ADD TO OFFSETS AND CHECK ERROR
@@ -160,6 +261,7 @@ namespace Twin2Engine::Tools {
 
 			rowsOffsets.clear();
 		}
+
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		void _AddMatArray(const std::string& name, const std::vector<M>& values) {
 			if (values.size() == 0) return;
@@ -197,7 +299,9 @@ namespace Twin2Engine::Tools {
 
 			valuesOffsets.clear();
 		}
+
 		void _AddStruct(const std::string& name, const STD140Struct& value);
+
 		void _AddStructArray(const std::string& name, const STD140Offsets& structOffsets, const std::vector<std::vector<char>>& values);
 
 		template<class S, class C, class T>
@@ -233,6 +337,7 @@ namespace Twin2Engine::Tools {
 			valueData.clear();
 			return true;
 		}
+
 		template<class T> bool _SetArray(const std::string& name, const std::vector<T>& values) {
 			if (values.size() == 0) return false;
 
@@ -275,6 +380,7 @@ namespace Twin2Engine::Tools {
 			valuesOffsets.clear();
 			return true;
 		}
+
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		bool _SetMat(const std::string& name, const M& value) {
 			// CHECK VARIABLE
@@ -312,6 +418,7 @@ namespace Twin2Engine::Tools {
 			rowsOffsets.clear();
 			return true;
 		}
+
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		bool _SetMatArray(const std::string& name, const std::vector<M>& values) {
 			if (values.size() == 0) return false;
@@ -371,7 +478,9 @@ namespace Twin2Engine::Tools {
 			valuesOffsets.clear();
 			return true;
 		}
+
 		bool _SetStruct(const std::string& name, const STD140Struct& value);
+
 		bool _SetStructArray(const std::string& name, const STD140Offsets& structOffsets, const std::vector<std::vector<char>>& values);
 
 		template<class S, class C, class T>
@@ -411,6 +520,7 @@ namespace Twin2Engine::Tools {
 			// RETURN VALUE
 			return value;
 		}
+
 		template<class T> std::vector<T> _GetArray(const std::string& name) const {
 			// CHECK VARIABLE
 			if (!_dataOffsets.Contains(name)) {
@@ -454,6 +564,7 @@ namespace Twin2Engine::Tools {
 			// RETURN VALUES
 			return values;
 		}
+
 		template<class M, class T = M::value_type, size_t R = M::column_type::length()>
 		M _GetMat(const std::string& name) const {
 			// CHECK VARIABLE
@@ -503,6 +614,7 @@ namespace Twin2Engine::Tools {
 			// RETURN VALUE
 			return value;
 		}
+
 		template<class M, class T = M::value_type, size_t R = M::column_type::length()>
 		std::vector<M> _GetMatArray(const std::string& name) const {
 			// CHECK VARIABLE
@@ -573,7 +685,9 @@ namespace Twin2Engine::Tools {
 			// RETURN VALUES
 			return values;
 		}
+
 		STD140Struct _GetStruct(const std::string& name, const STD140Offsets& structOffsets) const;
+
 		std::vector<STD140Struct> _GetStructArray(const std::string& name, const STD140Offsets& structOffsets) const;
 
 		template<class S, class C>

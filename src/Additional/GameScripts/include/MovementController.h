@@ -1,4 +1,4 @@
-
+#pragma once
 //#include <GameEngine.h>
 #include <core/Input.h>
 #include <core/Transform.h>

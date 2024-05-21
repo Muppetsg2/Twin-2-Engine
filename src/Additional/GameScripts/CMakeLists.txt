@@ -42,6 +42,7 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC ${GAMESCRIPTS_PRECOMPILE_HEADER
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Twin2Engine)
 target_link_libraries(${PROJECT_NAME} PRIVATE Tilemap)
+target_link_libraries(${PROJECT_NAME} PRIVATE Generation)
 target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
 target_link_libraries(${PROJECT_NAME} PRIVATE spdlog)
 target_link_libraries(${PROJECT_NAME} PRIVATE EngineAlgorithms)

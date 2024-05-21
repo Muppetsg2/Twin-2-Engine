@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Tilemap/HexagonalTilemap.h>
+#include <GameManager.h>
 
 namespace Generation
 {
@@ -29,6 +30,10 @@ namespace Generation
 		MapSector* sector = nullptr;
 		Tilemap::HexagonalTile* tile = nullptr;
 		HexTileType type = HexTileType::None;
+
+
+		Playable* takenEntity = nullptr;
+		float percentage = 0.0f;
 
 		//inline void SetTilemap(Tilemap::HexagonalTilemap* tilemap);
 		//inline Tilemap::HexagonalTilemap* GetTilemap() const;

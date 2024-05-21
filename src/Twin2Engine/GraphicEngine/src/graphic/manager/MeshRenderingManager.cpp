@@ -1022,6 +1022,7 @@ void MeshRenderingManager::RenderStatic()
 
 void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat4& projectionViewMatrix)
 {
+	glEnable(GL_DEPTH_TEST);
 	ShaderManager::DepthShader->Use();
 	ShaderManager::DepthShader->SetMat4("lightSpaceMatrix", projectionViewMatrix);
 
@@ -1157,6 +1158,11 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 			meshPair.first->Draw(count);
 
 			meshPair.second.rendered.clear();
+
+			GLenum error = glGetError();
+			if (error != GL_NO_ERROR) {
+				SPDLOG_ERROR("Error: {}", error);
+			}
 		}
 	}
 
@@ -1283,6 +1289,11 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 			meshPair.first->Draw(count);
 
 			meshPair.second.rendered.clear();
+
+			GLenum error = glGetError();
+			if (error != GL_NO_ERROR) {
+				SPDLOG_ERROR("Error: {}", error);
+			}
 		}
 	}
 

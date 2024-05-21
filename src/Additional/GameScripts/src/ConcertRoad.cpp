@@ -1,5 +1,6 @@
 #include <ConcertRoad.h>
 #include <GameManager.h>
+#include <core/Random.h>
 #include <manager/SceneManager.h>
 #include <algorithm>
 
@@ -50,23 +51,23 @@ void ConcertRoad::Update() {
 
     for(auto tile : RoadMapPoints)
     {
-        //if (tile->takenEntity != nullptr)
-        //{
-        //    auto posItr = std::find(GameManager::instance->entities.begin(), GameManager::instance->entities.end(), tile->takenEntity);
-        //    int pos = std::distance(GameManager::instance->entities.begin(), posItr);
-        //    entityPoints[pos] += 1;
-        //    //entityPoints[GameManager::instance->entities.IndexOf(tile->takenEntity)] += 1;
-        //
-        //    for (int i = 3; i >= 0; --i)
-        //    {
-        //        if (tile->percentage >= mulPercentage[i])
-        //        {
-        //            float mul = (i != 3 ? mulPercentage[i + 1] : 100.0f) / 100.0f;
-        //            entityMultiplier[pos] += ((maxMultiplier - minMultiplier) / NumberOfPoints) * mul;
-        //            break;
-        //        }
-        //    }
-        //}
+        if (tile->takenEntity != nullptr)
+        {
+            auto posItr = std::find(GameManager::instance->entities.begin(), GameManager::instance->entities.end(), tile->takenEntity);
+            int pos = std::distance(GameManager::instance->entities.begin(), posItr);
+            entityPoints[pos] += 1;
+            //entityPoints[GameManager::instance->entities.IndexOf(tile->takenEntity)] += 1;
+        
+            for (int i = 3; i >= 0; --i)
+            {
+                if (tile->percentage >= mulPercentage[i])
+                {
+                    float mul = (i != 3 ? mulPercentage[i + 1] : 100.0f) / 100.0f;
+                    entityMultiplier[pos] += ((maxMultiplier - minMultiplier) / NumberOfPoints) * mul;
+                    break;
+                }
+            }
+        }
 
         /*
         if (tile.percentage >= 90.0f)
@@ -137,35 +138,48 @@ void ConcertRoad::Use() {
 }
 
 void ConcertRoad::Begin() {
-    Twin2Engine::Manager::SceneManager::FindObjectByName("MapGenerator")->GetComponentsInChildren<MapHexTile>();
-    std::unordered_set<Generation::MapHexTile*> tiles;// (Twin2Engine::Manager::SceneManager::FindObjectByName("MapGenerator")->GetComponentsInChildren<MapHexTile>().);
+    //std::vector<Generation::MapHexTile*> tiles();// (Twin2Engine::Manager::SceneManager::FindObjectByName("MapGenerator")->GetComponentsInChildren<MapHexTile>().);
 
     RoadMapPoints.clear();
     entityPoints.clear();
     entityMultiplier.clear();
 
-    for (MapHexTile* t : tiles)
+    for (MapHexTile* t : Twin2Engine::Manager::SceneManager::FindObjectByName("MapGenerator")->GetComponentsInChildren<MapHexTile>())
     {
         //if (t->Type == TileType.PointOfInterest)
-        //{
-        //    if (t.percentage == 0.0f || ConsiderInfluenced)
-        //    {
-        //        RoadMapPoints.Add(t);
-        //    }
-        //}
+        {
+            if (t->percentage == 0.0f || ConsiderInfluenced)
+            {
+                RoadMapPoints.insert(t);
+            }
+        }
     }
 
-    //System.Random rnd = new();
+    //Usuwanie na losowej pozycji w RoadMapPoints dopóki nie pozostanie zadana iloœæ
+    std::vector<int> indexes;
+    for (int i = RoadMapPoints.size() - 1; i > NumberOfPoints; --i) {
+        indexes.push_back(Random::Range<int>(0, i));
+    }
+    std::sort(indexes.begin(), indexes.end());
 
+    auto endItr = RoadMapPoints.end();
+    --endItr;
     while (RoadMapPoints.size() > NumberOfPoints)
     {
-        //RoadMapPoints.RemoveAt(rnd.Next(RoadMapPoints.Count));
+        for (int i = RoadMapPoints.size() - indexes.back(); i > 0; --i) {
+            --endItr;
+        }
+        indexes.pop_back();
+        RoadMapPoints.erase(endItr);
     }
+    ///
+
 
     for(MapHexTile* t : RoadMapPoints)
     {
-        //GameObject m = Instantiate(Marker, t.transform);
-        //m.transform.localPosition = new(0f, height, 0f);
+        GameObject* m = Twin2Engine::Manager::SceneManager::CreateGameObject(Marker, t->GetTransform());
+        
+        m->GetTransform()->SetLocalPosition(glm::vec3(0.0f, height, 0.0f));
     }
 
     //textField.text = new StringBuilder()

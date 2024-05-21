@@ -3,6 +3,7 @@
 #include <core/Transform.h>
 #include <core/GameObject.h>
 #include <core/Component.h>
+#include <core/Prefab.h>
 #include <unordered_set>
 #include <vector>
 #include <Generation/MapHexTile.h>
@@ -14,7 +15,7 @@ class ConcertRoad : public Component {
 	public:
         static ConcertRoad* instance;
         std::unordered_set<Generation::MapHexTile*> RoadMapPoints;
-        GameObject* Marker = nullptr;
+        Prefab* Marker = nullptr;
         int NumberOfPoints = 3;
 
         bool ConsiderInfluenced = false;

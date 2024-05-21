@@ -2,7 +2,7 @@
 layout (location = 0) in vec3 aPos;
 
 layout (std430, binding = 0) buffer InstanceBuffer {
-    mat4 transform[1024];
+    mat4 transform[8];
 } instanceData;
 
 uniform mat4 lightSpaceMatrix;

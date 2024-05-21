@@ -12,6 +12,8 @@
 
 #include <Generation/MapHexTile.h>
 
+#include <Generation/ContentGenerator.h>
+
 #define HEX_DIRECTION_CONNECTING true
 #define GRADIENT_CONNECTING false
 
@@ -54,6 +56,9 @@ namespace Generation
 
 #pragma endregion
         void Generate();
+
+        virtual void Initialize() override;
+        virtual void OnEnable() override;
 
         virtual YAML::Node Serialize() const override;
         virtual bool Deserialize(const YAML::Node& node) override;

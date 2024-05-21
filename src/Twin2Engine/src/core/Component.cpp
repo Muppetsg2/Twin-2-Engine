@@ -148,7 +148,7 @@ void Component::Init(GameObject* obj, size_t id)
 		_currentFreeId = _id + 1;
 	}
 	_gameObject = obj;
-	_enabled = true;
+	//_enabled = true;
 	Initialize();
-	OnEnable();
+	//OnEnable();
 }

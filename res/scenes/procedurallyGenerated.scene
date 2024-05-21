@@ -135,15 +135,15 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: 0
-        z: 0
+        y: 14.5
+        z: 11
       scale:
         x: 0
         y: 0
         z: 0
       rotation:
-        x: 0
-        y: 0
+        x: -55.5
+        y: -88.6
         z: 0
     components:
       - id: 1
@@ -171,6 +171,15 @@ GameObjects:
         audio: 0
         loop: true
         volume: 1
+      - id: 2001
+        enabled: true
+        type: MovementController
+        DragControl: true
+        DragScale: 0.01
+        WsadControl: true
+        WsadVelocity: 4.5
+        BorderControl: false
+        BorderVelocity: 3.0
     children:
       []
   - id: 2
@@ -641,6 +650,16 @@ GameObjects:
           y: 0
       - id: 33
         enabled: true
+        type: ContentGenerator
+        mapElementGenerators:
+          - res/scriptableobjects/RegionsGeneratorByKMeans.so
+          - res/scriptableobjects/SectorGeneratorForRegionsByKMeans.so
+          - res/scriptableobjects/LakeGenerator.so
+          - res/scriptableobjects/MountainsGenerator.so
+          - res/scriptableobjects/CityGenerator.so
+          - res/scriptableobjects/RadioStationGeneratorSectorBased.so
+      - id: 34
+        enabled: true
         type: MapGenerator
         prefabHexagonalTile: 6
         additionalTile: 4
@@ -651,16 +670,6 @@ GameObjects:
         minPointsNumber: 5
         maxPointsNumber: 5
         angleDeltaRange: 5
-      - id: 34
-        enabled: true
-        type: ContentGenerator
-        mapElementGenerators:
-          - res/scriptableobjects/RegionsGeneratorByKMeans.so
-          - res/scriptableobjects/SectorGeneratorForRegionsByKMeans.so
-          - res/scriptableobjects/LakeGenerator.so
-          - res/scriptableobjects/MountainsGenerator.so
-          - res/scriptableobjects/CityGenerator.so
-          - res/scriptableobjects/RadioStationGeneratorSectorBased.so
     children:
       []
   - id: 15

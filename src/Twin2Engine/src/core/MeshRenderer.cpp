@@ -9,10 +9,40 @@ using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
+void MeshRenderer::OnGameObjectStaticChanged(GameObject* gameObject)
+{
+	if (gameObject->GetIsStatic())
+	{
+		if (_registered)
+		{
+			MeshRenderingManager::UnregisterDynamic(this);
+		}
+		MeshRenderingManager::RegisterStatic(this);
+		_registered = true;
+	}
+	else
+	{
+		if (_registered)
+		{
+			MeshRenderingManager::UnregisterStatic(this);
+		}
+		MeshRenderingManager::RegisterDynamic(this);
+		_registered = true;
+	}
+}
+
+void MeshRenderer::OnTransformChanged(Transform* transform)
+{
+	if (_loadedModel != 0) {
+		_transformChanged = true;
+		_meshesToUpdate = _model.GetMeshCount();
+	}
+}
+
 void MeshRenderer::TransformUpdated()
 {
-	_toUpdate--;
-	if (!_toUpdate)
+	_meshesToUpdate--;
+	if (!_meshesToUpdate)
 	{
 		_transformChanged = false;
 	}
@@ -36,6 +66,67 @@ void MeshRenderer::OnModelDataDestroyed()
 	}
 }
 
+void MeshRenderer::Register()
+{
+	if (_registered) return;
+
+	// EVENTS
+	if (OnStaticChangedId == -1) {
+		OnStaticChangedId = GetGameObject()->OnStaticChanged += [&](GameObject* g) -> void { OnGameObjectStaticChanged(g); };
+	}
+
+	if (OnTransformChangedActionId == -1) {
+		OnTransformChangedActionId = GetTransform()->OnEventTransformChanged += [&](Transform* t) -> void { OnTransformChanged(t); };
+	}
+
+	if (OnEventInHierarchyParentChangedId == -1) {
+		OnEventInHierarchyParentChangedId = GetTransform()->OnEventInHierarchyParentChanged += [&](Transform* t) -> void { OnTransformChanged(t); };
+	}
+
+	if (GetGameObject()->GetIsStatic())
+	{
+		MeshRenderingManager::RegisterStatic(this);
+	}
+	else
+	{
+		MeshRenderingManager::RegisterDynamic(this);
+	}
+
+	_registered = true;
+}
+
+void MeshRenderer::Unregister()
+{
+	if (!_registered) return;
+
+	// EVENTS
+	if (OnStaticChangedId != -1) {
+		GetGameObject()->OnStaticChanged -= OnStaticChangedId;
+		OnStaticChangedId = -1;
+	}
+
+	if (OnTransformChangedActionId != -1) {
+		GetTransform()->OnEventTransformChanged -= OnTransformChangedActionId;
+		OnTransformChangedActionId = -1;
+	}
+
+	if (OnEventInHierarchyParentChangedId != -1) {
+		GetTransform()->OnEventInHierarchyParentChanged -= OnEventInHierarchyParentChangedId;
+		OnEventInHierarchyParentChangedId = -1;
+	}
+
+	if (GetGameObject()->GetIsStatic())
+	{
+		MeshRenderingManager::UnregisterDynamic(this);
+	}
+	else
+	{
+		MeshRenderingManager::UnregisterStatic(this);
+	}
+
+	_registered = false;
+}
+
 bool MeshRenderer::IsTransformChanged() const
 {
 	return _transformChanged;
@@ -43,55 +134,7 @@ bool MeshRenderer::IsTransformChanged() const
 
 void MeshRenderer::Initialize()
 {
-	GetGameObject()->OnStaticChanged += [this](GameObject* gameObject) {
-		if (gameObject->GetIsStatic())
-		{
-			if (_registered)
-			{
-				MeshRenderingManager::UnregisterDynamic(this);
-			}
-			MeshRenderingManager::RegisterStatic(this);
-			_registered = true;
-		}
-		else
-		{
-			if (_registered)
-			{
-				MeshRenderingManager::UnregisterStatic(this);
-			}
-			MeshRenderingManager::RegisterDynamic(this);
-			_registered = true;
-		}
-	};
-
 	_transformChanged = false;
-	if (GetGameObject()->GetIsStatic())
-	{
-		if (_registered)
-		{
-			MeshRenderingManager::UnregisterDynamic(this);
-		}
-		MeshRenderingManager::RegisterStatic(this);
-	}
-	else
-	{
-		if (_registered)
-		{
-			MeshRenderingManager::UnregisterStatic(this);
-		}
-		MeshRenderingManager::RegisterDynamic(this);
-	}
-	_registered = true;
-
-	OnTransformChangedActionId = GetTransform()->OnEventTransformChanged += [this](Transform* transform) {
-
-		_transformChanged = true;
-		_toUpdate = _model.GetMeshCount();
-	};
-	OnEventInHierarchyParentChangedId = GetTransform()->OnEventInHierarchyParentChanged += [this](Transform* transform) {
-		_transformChanged = true;
-		_toUpdate = _model.GetMeshCount();
-	};
 }
 
 void MeshRenderer::Update()

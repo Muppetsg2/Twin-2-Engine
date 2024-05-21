@@ -19,15 +19,8 @@ namespace Twin2Engine::Core
 	class MeshRenderer : public RenderableComponent
 	{
 		friend class Twin2Engine::Manager::MeshRenderingManager;
-
-		/*CloneFunctionStart(MeshRenderer, RenderableComponent)
-			CloneField(_model)
-			CloneField(_materials)
-		CloneFunctionEnd()*/
-
 	protected:
 		CloneBaseFunc(MeshRenderer, RenderableComponent, _model, _materials)
-
 	private:
 
 		size_t _loadedModel = 0;
@@ -36,8 +29,9 @@ namespace Twin2Engine::Core
 
 		bool _registered = false;
 		bool _transformChanged = false;
-		unsigned int _toUpdate = 0;
+		unsigned int _meshesToUpdate = 0;
 
+		// Events
 		int OnStaticChangedId = -1;
 		int OnEventInHierarchyParentChangedId = -1;
 
@@ -56,9 +50,15 @@ namespace Twin2Engine::Core
 		};
 #endif // MESH_FRUSTUM_CULLING
 
+		void OnGameObjectStaticChanged(GameObject* gameObject);
+		void OnTransformChanged(Transform* transform);
+
 		void TransformUpdated();
 
 		void OnModelDataDestroyed();
+
+		void Register();
+		void Unregister();
 
 	public:
 
@@ -93,7 +93,5 @@ namespace Twin2Engine::Core
 		virtual void OnDisable() override;
 		virtual void OnDestroy() override;
 #endif // MESH_FRUSTUM_CULLING
-
-
 	};
 }

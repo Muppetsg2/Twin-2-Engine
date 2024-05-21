@@ -19,7 +19,7 @@ using namespace Twin2Engine::Physic;
 using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
-size_t TransforChangeEventId = 0;
+size_t TransformChangeEventId = 0;
 
 std::vector<CameraComponent*> CameraComponent::Cameras = std::vector<CameraComponent*>();
 GLuint CameraComponent::_uboCameraData = 0;
@@ -467,7 +467,7 @@ void CameraComponent::SetIsMain(bool value)
 	if (value) {
 		for (auto c : Cameras) {
 			if (c != this) {
-				c->GetTransform()->OnEventTransformChanged -= TransforChangeEventId;
+				c->GetTransform()->OnEventTransformChanged -= TransformChangeEventId;
 				c->SetIsMain(false);
 			}
 		}
@@ -475,15 +475,15 @@ void CameraComponent::SetIsMain(bool value)
 	else if (!value && this->_isMain) {
 		if (this->_camId == 0 && Cameras.size() > 1) {
 			Cameras[1]->SetIsMain(true);
-			TransforChangeEventId = Cameras[1]->GetTransform()->OnEventTransformChanged += [](Twin2Engine::Core::Transform* transform) {
+			TransformChangeEventId = Cameras[1]->GetTransform()->OnEventTransformChanged += [](Transform* transform) {
 				LightingController::Instance()->UpdateOnTransformChange();
-				};
+			};
 		}
 		else {
 			Cameras[0]->SetIsMain(true);
-			TransforChangeEventId = Cameras[0]->GetTransform()->OnEventTransformChanged += [](Twin2Engine::Core::Transform* transform) {
+			TransformChangeEventId = Cameras[0]->GetTransform()->OnEventTransformChanged += [](Transform* transform) {
 				LightingController::Instance()->UpdateOnTransformChange();
-				};
+			};
 		}
 	}
 	_isMain = value;
@@ -774,9 +774,9 @@ void CameraComponent::Initialize()
 			_ssaoShader->SetVec3(string("kernel[").append(std::to_string(i)).append("]"), _ssaoKernel[i]);
 		}
 
-		TransforChangeEventId = GetTransform()->OnEventTransformChanged += [](Twin2Engine::Core::Transform* transform) {
+		TransformChangeEventId = GetTransform()->OnEventTransformChanged += [](Transform* transform) {
 			LightingController::Instance()->UpdateOnTransformChange();
-			};
+		};
 	}
 
 	this->_camId = Cameras.size();

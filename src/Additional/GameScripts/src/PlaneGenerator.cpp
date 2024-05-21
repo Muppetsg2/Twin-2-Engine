@@ -152,6 +152,12 @@ void PlaneGenerator::DrawEditor()
     if (ImGui::CollapsingHeader(name.c_str())) {
         Component::DrawInheritedFields();
         
+        ImGui::Text("Model: ");
+        ImGui::SameLine();
+        ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+        ImGui::Text(_modelName.c_str());
+        ImGui::PopFont();
+
         unsigned int r = _rows;
         ImGui::DragUInt(string("Rows##").append(id).c_str(), &r, 1.f, 2);
 

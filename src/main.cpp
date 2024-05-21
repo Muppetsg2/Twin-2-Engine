@@ -16,12 +16,17 @@ const char* const tracy_RenderingImGui = "RenderingImGui";
 //#define RELEASE_LOGGER
 
 #include <GameEngine.h>
-#include <GameEngine.h>
 
 
 // TILEMAP
 #include <Tilemap/HexagonalTilemap.h>
 #include <Tilemap/HexagonalTile.h>
+
+// HUMANS
+#include <Humans/Human.h>
+#include <Humans/HumanMovement.h>
+
+using namespace Humans;
 
 // GENERATION
 #include <Generation/MapGenerator.h>
@@ -211,6 +216,10 @@ int main(int, char**)
 
     ADD_COMPONENT("MapSector", MapSector);
 
+    ADD_COMPONENT("Human", Human);
+
+    ADD_COMPONENT("HumanMovement", HumanMovement);
+
 #pragma endregion
 
     SceneManager::GetOnSceneLoaded() += [](std::string sceneName) -> void {
@@ -245,6 +254,15 @@ int main(int, char**)
     //tilemapGenerating = glfwGetTime();
     //contentGenerator->GenerateContent(hexagonalTilemap);
     //spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
+
+    //GameObject* human = new GameObject();
+    //MeshRenderer* humanMR = human->AddComponent<MeshRenderer>();
+    //human->AddComponent<Human>();
+    //human->AddComponent<HumanMovement>();
+
+    PrefabManager::SaveAsPrefab(human, "res/prefabs/Human.prefab");
+
+
 #if _DEBUG
     Editor::Common::ScriptableObjectEditorManager::Init();
     Editor::Common::ScriptableObjectEditorManager::Update();

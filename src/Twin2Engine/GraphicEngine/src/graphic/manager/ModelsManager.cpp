@@ -1283,7 +1283,7 @@ InstantiatingModel ModelsManager::CreateModel(const std::string& modelName, std:
     size_t strHash = _stringHash(modelName);
 
     //ModelData* modelData = nullptr;
-    if (_loadedModels.find(strHash) == _loadedModels.end())
+    if (!_loadedModels.contains(strHash))
     {
         SPDLOG_INFO("Creating model: {}!", modelName);
 
@@ -1299,6 +1299,9 @@ InstantiatingModel ModelsManager::CreateModel(const std::string& modelName, std:
             .meshes { new InstantiatingMesh(vertices, indices) }
             }
         );
+
+        vertices.clear();
+        indices.clear();
 
         //_loadedModels[strHash] = modelData;
     }

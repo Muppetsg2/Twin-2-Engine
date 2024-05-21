@@ -96,6 +96,7 @@ void PlaneGenerator::Generate()
     trisNum.clear();
 
     if (ModelsManager::IsModelLoaded(_modelName)) {
+        MeshRenderer::OnModelDataDestroyed();
         ModelsManager::UnloadModel(_modelName);
     }
 

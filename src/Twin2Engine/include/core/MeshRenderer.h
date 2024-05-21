@@ -23,6 +23,11 @@ namespace Twin2Engine::Core
 		CloneBaseFunc(MeshRenderer, RenderableComponent, _model, _materials)
 
 		std::vector<Graphic::Material> _materials = std::vector<Graphic::Material>();
+
+		void Register();
+		void Unregister();
+
+		void OnModelDataDestroyed();
 	private:
 
 		size_t _loadedModel = 0;
@@ -41,13 +46,9 @@ namespace Twin2Engine::Core
 
 		void OnGameObjectStaticChanged(GameObject* gameObject);
 		void OnTransformMatrixChanged(Transform* transform);
-		void OnModelDataDestroyed();
 		void OnMaterialsErased();
 
 		void TransformUpdated();
-
-		void Register();
-		void Unregister();
 
 	public:
 

@@ -9,86 +9,6 @@ using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
-void MeshRenderer::OnGameObjectStaticChanged(GameObject* gameObject)
-{
-	if (gameObject->GetIsStatic())
-	{
-		bool res = true;
-		if (_registered)
-		{
-			res = MeshRenderingManager::UnregisterDynamic(this);
-		}
-
-		if (!res) {
-			res = MeshRenderingManager::UnregisterStatic(this);
-		}
-
-		res = MeshRenderingManager::RegisterStatic(this);
-		_registered = res;
-	}
-	else
-	{
-		bool res = true;
-		if (_registered)
-		{
-			res = MeshRenderingManager::UnregisterStatic(this);
-		}
-
-		if (!res) {
-			res = MeshRenderingManager::UnregisterDynamic(this);
-		}
-
-		res = MeshRenderingManager::RegisterDynamic(this);
-		_registered = res;
-	}
-}
-
-void MeshRenderer::OnTransformMatrixChanged(Transform* transform)
-{
-	if (_loadedModel != 0) {
-		_transformChanged = true;
-		_meshesToUpdate = _model.GetMeshCount();
-
-#ifdef MESH_FRUSTUM_CULLING
-		glm::mat4 tMatrix = transform->GetTransformMatrix();
-
-		for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
-			Physic::SphereColliderData* sphereBV = (Physic::SphereColliderData*)_model.GetMesh(i)->sphericalBV->colliderShape;
-			if (sphereBV != nullptr) {
-				sphereBV->Position = tMatrix * glm::vec4(sphereBV->LocalPosition, 1.0f);
-			}
-			sphereBV = nullptr;
-		}
-#endif
-	}
-}
-
-void MeshRenderer::OnModelDataDestroyed()
-{
-	if (_loadedModel == 0) return;
-	Unregister();
-	_meshesToUpdate = 0;
-	_transformChanged = false;
-	_loadedModel = 0;
-	_model = InstantiatingModel();
-}
-
-void MeshRenderer::OnMaterialsErased()
-{
-	if (materialsErasedEventDone) return;
-	Unregister();
-	materialsErasedEventDone = true;
-}
-
-void MeshRenderer::TransformUpdated()
-{
-	_meshesToUpdate--;
-	if (!_meshesToUpdate)
-	{
-		_transformChanged = false;
-	}
-}
-
 void MeshRenderer::Register()
 {
 	if (_registered) return;
@@ -158,6 +78,85 @@ void MeshRenderer::Unregister()
 	_registered = !res;
 }
 
+void MeshRenderer::OnModelDataDestroyed()
+{
+	if (_loadedModel == 0) return;
+	Unregister();
+	_meshesToUpdate = 0;
+	_transformChanged = false;
+	_loadedModel = 0;
+	_model = InstantiatingModel();
+}
+
+void MeshRenderer::OnGameObjectStaticChanged(GameObject* gameObject)
+{
+	if (gameObject->GetIsStatic())
+	{
+		bool res = true;
+		if (_registered)
+		{
+			res = MeshRenderingManager::UnregisterDynamic(this);
+		}
+
+		if (!res) {
+			res = MeshRenderingManager::UnregisterStatic(this);
+		}
+
+		res = MeshRenderingManager::RegisterStatic(this);
+		_registered = res;
+	}
+	else
+	{
+		bool res = true;
+		if (_registered)
+		{
+			res = MeshRenderingManager::UnregisterStatic(this);
+		}
+
+		if (!res) {
+			res = MeshRenderingManager::UnregisterDynamic(this);
+		}
+
+		res = MeshRenderingManager::RegisterDynamic(this);
+		_registered = res;
+	}
+}
+
+void MeshRenderer::OnTransformMatrixChanged(Transform* transform)
+{
+	if (_loadedModel != 0) {
+		_transformChanged = true;
+		_meshesToUpdate = _model.GetMeshCount();
+
+#ifdef MESH_FRUSTUM_CULLING
+		glm::mat4 tMatrix = transform->GetTransformMatrix();
+
+		for (size_t i = 0; i < _model.GetMeshCount(); ++i) {
+			Physic::SphereColliderData* sphereBV = (Physic::SphereColliderData*)_model.GetMesh(i)->sphericalBV->colliderShape;
+			if (sphereBV != nullptr) {
+				sphereBV->Position = tMatrix * glm::vec4(sphereBV->LocalPosition, 1.0f);
+			}
+			sphereBV = nullptr;
+		}
+#endif
+	}
+}
+
+void MeshRenderer::OnMaterialsErased()
+{
+	if (materialsErasedEventDone) return;
+	Unregister();
+	materialsErasedEventDone = true;
+}
+
+void MeshRenderer::TransformUpdated()
+{
+	_meshesToUpdate--;
+	if (!_meshesToUpdate)
+	{
+		_transformChanged = false;
+	}
+}
 
 void MeshRenderer::Initialize()
 {

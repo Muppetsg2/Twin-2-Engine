@@ -1,0 +1,9 @@
+shaderprogram:
+  name: origin/Water
+  shaders:
+    - water.vert
+    - water.frag
+  parameters:
+    - name: depthMap
+      type: texture2D
+      value: res/textures/stone.jpg

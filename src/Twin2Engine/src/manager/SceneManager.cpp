@@ -406,6 +406,7 @@ void SceneManager::LoadScene() {
 		compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
 		//compPair.second->Initialize();
 	}
+	static_cast<Component*>(_rootObject->GetTransform())->Init(_rootObject);
 #pragma endregion
 
 	ScriptableObjectManager::SceneDeserializationEnd();
@@ -434,6 +435,13 @@ void SceneManager::DestroyObject(GameObject* obj) {
 
 		GameObject* childObj = child->GetGameObject();
 		if (_gameObjectsById.size() > 0) _gameObjectsById.erase(childObj->Id());
+
+		for (auto& comp : childObj->GetComponents<Component>()) {
+			if (_componentsById.size() > 0) {
+				_componentsById.erase(comp->GetId());
+			}
+		}
+
 		DestroyObject(childObj);
 	}
 	delete obj;
@@ -445,6 +453,21 @@ void SceneManager::DestroyObjects() {
 	while (_objectsToDestroy.size() > 0) {
 		DestroyObject(_objectsToDestroy.front());
 		_objectsToDestroy.pop();
+	}
+}
+
+void SceneManager::AddComponentWithId(Component* comp)
+{
+	_componentsById[comp->GetId()] = comp;
+}
+
+void SceneManager::RemoveComponentWithId(Component* comp)
+{
+	map<size_t, Component*>::const_iterator comp_iter = _componentsById.find(comp->GetId());
+	if (comp_iter != _componentsById.end()) {
+		if ((*comp_iter).second == comp) {
+			_componentsById.erase((*comp_iter).first);
+		}
 	}
 }
 

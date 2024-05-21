@@ -560,7 +560,7 @@ void CameraComponent::Render()
 
 			FrameMarkStart(tracy_RenderDepthBuffer);
 			_depthShader->Use();
-			GraphicEngine::DepthRender();
+			GraphicEngine::PreRender();
 			FrameMarkEnd(tracy_RenderDepthBuffer);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -666,6 +666,8 @@ void CameraComponent::Render()
 		_screenShader->SetBool("enableDepthOfField", (_filters& (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0);
 
 		_screenPlane.GetMesh(0)->Draw(1);
+
+		GraphicEngine::RenderGUI();
 		glBindTexture(GL_TEXTURE_2D, 0);
 		FrameMarkEnd(tracy_OnScreenFramebuffer);
 	}

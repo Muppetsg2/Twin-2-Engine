@@ -1150,11 +1150,11 @@ void ModelsManager::GenerateCircle(std::vector<Vertex>& vertices, std::vector<un
 }
 
 bool ModelsManager::IsModelLoaded(const std::string& modelPath) {
-    return _loadedModels.find(_stringHash(modelPath)) != _loadedModels.end();
+    return _loadedModels.contains(_stringHash(modelPath));
 }
 
 bool ModelsManager::IsModelLoaded(size_t managerId) {
-    return _loadedModels.find(managerId) != _loadedModels.end();
+    return _loadedModels.contains(managerId);
 }
 
 InstantiatingModel ModelsManager::LoadModel(const std::string& modelPath)

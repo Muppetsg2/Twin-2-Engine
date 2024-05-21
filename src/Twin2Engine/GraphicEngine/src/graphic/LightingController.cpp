@@ -247,6 +247,7 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 
 void LightingController::RenderShadowMaps() {
 	glCullFace(GL_FRONT);
+	glEnable(GL_DEPTH_TEST);
 
 	int i = 0;
 

@@ -300,8 +300,6 @@ int main(int, char**)
         update();
     };
 
-    
-
     GameEngine::Start();
 
 #if _DEBUG
@@ -313,7 +311,6 @@ int main(int, char**)
 #else
     fileLoggerSink->StopLogging();
 #endif
-
     return 0;
 }
 

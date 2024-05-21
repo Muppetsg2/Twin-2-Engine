@@ -113,6 +113,7 @@ void PlaneGenerator::Initialize()
 
 void PlaneGenerator::Update()
 {
+    MeshRenderer::Update();
     if (_dirty) Generate();
 }
 
@@ -122,10 +123,10 @@ YAML::Node PlaneGenerator::Serialize() const
     node["type"] = "PlaneGenerator";
     node["rows"] = _rows;
     node["columns"] = _columns;
-    node["materials"] = std::vector<size_t>();
-    for (size_t i = 0; i < GetMaterialCount(); ++i) {
-        node["materials"].push_back(SceneManager::GetMaterialSaveIdx(GetMaterial(i).GetId()));
-    }
+	node["materials"] = vector<size_t>();
+	for (const auto& mat : _materials) {
+		node["materials"].push_back(SceneManager::GetMaterialSaveIdx(mat.GetId()));
+	}
     return node;
 }
 
@@ -138,8 +139,9 @@ bool PlaneGenerator::Deserialize(const YAML::Node& node)
 
     SetGridValues(node["rows"].as<unsigned int>(), node["columns"].as<unsigned int>());
 
+    _materials = vector<Material>();
     for (const auto& mat : node["materials"]) {
-        AddMaterial(MaterialsManager::GetMaterial(SceneManager::GetMaterial(mat.as<size_t>())));
+        _materials.push_back(MaterialsManager::GetMaterial(SceneManager::GetMaterial(mat.as<size_t>())));
     }
 
     return true;

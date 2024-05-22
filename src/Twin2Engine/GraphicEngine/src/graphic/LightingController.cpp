@@ -205,11 +205,15 @@ void LightingController::BindLightBuffors(Twin2Engine::Graphic::Shader* shader) 
 	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, LightsBuffer);
 	//glBindBufferBase(GL_UNIFORM_BUFFER, 3, LightingDataBuffer);
 
-	std::string str = "DirLightShadowMaps[";
 	shader->Use();
-	for (int i = 0; i < 4; ++i) {
-		shader->SetInt(str.append(std::to_string(i)).append("]").c_str(), MAPS_BEGINNING + i);
-	}
+	shader->SetInt(std::string("DirLightShadowMaps[0]").c_str(), MAPS_BEGINNING);
+	shader->SetInt(std::string("DirLightShadowMaps[1]").c_str(), MAPS_BEGINNING + 1);
+	shader->SetInt(std::string("DirLightShadowMaps[2]").c_str(), MAPS_BEGINNING + 2);
+	shader->SetInt(std::string("DirLightShadowMaps[3]").c_str(), MAPS_BEGINNING + 3);
+	//std::string str = "DirLightShadowMaps[";
+	//for (int i = 0; i < 4; ++i) {
+	//	shader->SetInt(str.append(std::to_string(i)).append("]").c_str(), MAPS_BEGINNING + i);
+	//}
 }
 /*/
 void LightingController::UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader* shader) {

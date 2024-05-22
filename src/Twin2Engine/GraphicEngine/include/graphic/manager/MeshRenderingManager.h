@@ -59,21 +59,23 @@ namespace Twin2Engine
 		{
 			friend class Twin2Engine::Graphic::GraphicEngine;
 
-		private:
+		public:
 			struct RenderedSegment
 			{
 				glm::mat4* begin;
 				unsigned int count;
 			};
+			struct MeshRenderingDataDepthMap
+			{
+				std::list<RenderedSegment> rendered;
+				unsigned int renderedCount;
+			};
+
+		private:
 			struct MeshRenderingData
 			{
 				std::vector<glm::mat4> modelTransforms;
 				std::vector<Twin2Engine::Core::MeshRenderer*> meshRenderers;
-				std::list<RenderedSegment> rendered;
-				unsigned int renderedCount;
-			};
-			struct MeshRenderingDataDepthMap
-			{
 				std::list<RenderedSegment> rendered;
 				unsigned int renderedCount;
 			};
@@ -121,6 +123,21 @@ namespace Twin2Engine
 
 			//Przed u¿yciem tej funkcji nale¿y zapewniæ, i¿ glViewport jest ustawiony w nastêpuj¹cy sposób: glViewport(0, 0, depthTexWidth, depthTexHeight), po uruchomieñiu funkcji nale¿y przywróciæ rozmiar viewportu do rozmiaru okna gry
 			static void RenderDepthMapStatic(const GLuint& depthFBO, glm::mat4& projectionViewMatrix);
+			static void RenderCloudDepthMap(std::unordered_map<Twin2Engine::Graphic::InstantiatingMesh*, std::vector<glm::mat4>>& depthQueue) {
+				for (auto& pair : depthQueue) {
+					if (pair.second.size() != 0) {
+						glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+						glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * pair.second.size(), pair.second.data());
+						glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+						pair.first->Draw(pair.second.size());
+
+						GLenum error = glGetError();
+						if (error != GL_NO_ERROR) {
+							SPDLOG_ERROR("Error: {}", error);
+						}
+					}
+				}
+			}
 		};
 	}
 }

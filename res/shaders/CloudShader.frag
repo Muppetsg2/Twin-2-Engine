@@ -1,4 +1,5 @@
 #version 430 core
+//CloudShader.frag
 
 layout (location = 0) in vec3 FragPos;
 
@@ -9,8 +10,8 @@ layout (location = 0) out vec4 FragColor;
 vec3 cloudColor = vec3(1.0, 1.0, 1.0);
 float ABSORPTION = 4.0;
 
-uniform sampler2D viewerBackDepthMap;
 uniform sampler2D lightFrontDepthMap;
+uniform sampler2D viewerBackDepthMap;
 
 //uniform vec3 lightDir;
 //uniform vec3 cameraPos;
@@ -71,7 +72,7 @@ layout(std140, binding = 3) uniform LightingData {
 
 void main()
 {	
-    vec2 viewerDepthCoord = gl_FragCoord * 0.5 + 0.5;
+    vec2 viewerDepthCoord = gl_FragCoord.xy * 0.5 + 0.5;
 	float totalDistance = length(texture(viewerBackDepthMap, viewerDepthCoord).xyz - FragPos);
 	float alpha = 1.0 - exp(-totalDistance * ABSORPTION);
 

@@ -267,8 +267,9 @@ int main(int, char**)
 
 #pragma region GAMESCRIPTS_PREFABS
     //GameObject* gs_go = SceneManager::CreateGameObject();
-    //GameScripts::MovementController* gsc = gs_go->AddComponent<GameScripts::MovementController>();
-    //PrefabManager::SaveAsPrefab(gs_go, "MovementControllerPref.prefab");
+    //MeshRenderer* mrc = gs_go->AddComponent<MeshRenderer>();
+    //Cloud* gsc = gs_go->AddComponent<Cloud>();
+    //PrefabManager::SaveAsPrefab(gs_go, "Cloud.prefab");
 #pragma endregion
 
 #if _DEBUG

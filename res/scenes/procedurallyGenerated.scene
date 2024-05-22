@@ -90,6 +90,8 @@ Materials:
     path: FakeBRDF
   - id: 8
     path: roofMat
+  - id: 9
+    path: enviroment/CloudMaterial
 Models:
   - id: 0
     path: res/models/AK47.obj
@@ -734,5 +736,47 @@ GameObjects:
         columns: 4
         materials:
           - 1
+    children:
+      []
+  - id: 17
+    name: Cloud1
+    isStatic: false
+    isActive: true
+    transform:
+      id: 38
+      enabled: true
+      position:
+        x: -7
+        y: 7
+        z: -5
+      scale:
+        x: 5
+        y: 5
+        z: 5
+      rotation:
+        x: -90
+        y: 0
+        z: 0
+    components:
+      - id: 39
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 5
+        materials:
+          - 9
+      - id: 40
+        enabled: true
+        type: Cloud
+        direction:
+          x: 1
+          y: 0
+          z: 0
+        velocity: 0.200000003
+        startPosition:
+          x: -7
+          y: 8
+          z: -5
+        maxDistance: 10
     children:
       []

@@ -3,6 +3,10 @@
 #include <core/Component.h>
 #include <tools/EventHandler.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 namespace Twin2Engine
 {
 	namespace Core {

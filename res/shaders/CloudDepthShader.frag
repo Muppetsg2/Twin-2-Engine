@@ -1,13 +1,14 @@
 #version 430 core
+//CloudDepthShader.frag
 
 layout(early_fragment_tests) in;
 
 
-in vec3 FragPos;
+in vec4 FragPos;
 
-out vec3 BackFragPos;
+layout (location = 0) out vec3 BackFragPos;
 
 void main()
 {             
-    BackFragPos = FragPos;
+    BackFragPos = vec4(FragPos, 1.0);
 }

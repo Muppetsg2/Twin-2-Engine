@@ -60,6 +60,7 @@
 
 //GAMESCRIPTS
 #include <MovementController.h>
+#include <Clouds/Cloud.h>
 
 
 namespace Twin2Engine {

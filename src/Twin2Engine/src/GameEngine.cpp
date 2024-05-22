@@ -50,6 +50,8 @@ void GameEngine::Deserializers()
     ADD_COMPONENT("SpotLight", SpotLightComponent);
 
     ADD_COMPONENT("MovementController", MovementController);
+
+    ADD_COMPONENT("Cloud", Cloud);
 }
 
 void GameEngine::Update()

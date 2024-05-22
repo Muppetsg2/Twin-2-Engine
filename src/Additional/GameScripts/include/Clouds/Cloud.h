@@ -12,6 +12,9 @@ class Cloud : public Component {
 
 		virtual void Initialize() override;
 		virtual void Update() override;
+		virtual void OnEnable() override;
+		virtual void OnDisable() override;
+		virtual void OnDestroy() override;
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;

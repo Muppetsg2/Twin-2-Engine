@@ -31,7 +31,6 @@ namespace Generation
 		Tilemap::HexagonalTile* tile = nullptr;
 		HexTileType type = HexTileType::None;
 
-
 		Playable* takenEntity = nullptr;
 		float percentage = 0.0f;
 

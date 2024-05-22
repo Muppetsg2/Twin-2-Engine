@@ -5,6 +5,11 @@ using namespace std;
 
 const char* const STD140Struct::tracy__GetValueData = "STD140Struct _GetValueData";
 
+const char* const STD140Struct::tracy__ConvertArray = "STD140Struct _ConvertArray";
+const char* const STD140Struct::tracy__ConvertArrayValues = "STD140Struct _ConvertArray Values";
+const char* const STD140Struct::tracy__ConvertArrayValue = "STD140Struct _ConvertArray Value";
+const char* const STD140Struct::tracy__ConvertArrayFunc = "STD140Struct _ConvertArray Func";
+
 const char* const STD140Struct::tracy__Add = "STD140Struct _Add";
 const char* const STD140Struct::tracy__AddGetOffset = "STD140Struct _Add Get Offset";
 const char* const STD140Struct::tracy__AddCheckError = "STD140Struct _Add Check Error";
@@ -28,11 +33,6 @@ const char* const STD140Struct::tracy__AddArrayClearTempValueData = "STD140Struc
 const char* const STD140Struct::tracy__AddArrayClearValuesOffsets = "STD140Struct _AddArray Clear Values Offsets";
 const char* const STD140Struct::tracy__AddArrayUpdateSize = "STD140Struct _AddArray Update Size";
 
-const char* const STD140Struct::tracy__AddArrayConvert = "STD140Struct _AddArrayConvert";
-const char* const STD140Struct::tracy__AddArrayConvertValues = "STD140Struct _AddArrayConvert Values";
-const char* const STD140Struct::tracy__AddArrayConvertValue = "STD140Struct _AddArrayConvert Value";
-const char* const STD140Struct::tracy__AddArrayConvertAddArray = "STD140Struct _AddArrayConvert AddArray";
-
 const char* const STD140Struct::tracy__Set = "STD140Struct _Set";
 const char* const STD140Struct::tracy__SetCheckVariable = "STD140Struct _Set Check Variable";
 const char* const STD140Struct::tracy__SetGetOffset = "STD140Struct _Set Get Offset";
@@ -51,10 +51,6 @@ const char* const STD140Struct::tracy__SetArrayGetValueData = "STD140Struct _Set
 const char* const STD140Struct::tracy__SetArraySetValueData = "STD140Struct _SetArray Set Value Data";
 const char* const STD140Struct::tracy__SetArrayClearTempValueData = "STD140Struct _SetArray Clear Temp Value Data";
 const char* const STD140Struct::tracy__SetArrayClearValuesOffsets = "STD140Struct _SetArray Clear Values Offsets";
-
-const char* const STD140Struct::tracy__SetArrayConvert = "STD140Struct _SetArrayConvert";
-const char* const STD140Struct::tracy__SetArrayConvertValues = "STD140Struct _SetArrayConvert Values";
-const char* const STD140Struct::tracy__SetArrayConvertValue = "STD140Struct _SetArrayConvert Value";
 
 size_t STD140Struct::_GetArrayElemSize(const vector<size_t>& offsets) const
 {
@@ -268,7 +264,7 @@ void STD140Struct::Add(const string& name, const STD140Struct& value)
 
 void STD140Struct::Add(const string& name, const STD140Offsets& structOffsets, const vector<char>*& values, size_t size)
 {
-	_AddArray<vector<char>, vector<char>>(name, values, size,
+	_ConvertArray<vector<char>, vector<char>>(name, values, size,
 		[&](const string& name, const vector<vector<char>>& convs) -> void {
 			_AddStructArray(name, structOffsets, convs);
 		});
@@ -286,7 +282,7 @@ bool STD140Struct::Set(const string& name, const STD140Struct& value)
 
 bool STD140Struct::Set(const string& name, const STD140Offsets& structOffsets, const vector<char>*& values, size_t size)
 {
-	return _SetArray<vector<char>, vector<char>>(name, values, size,
+	return _ConvertArray<vector<char>, vector<char>>(name, values, size,
 		[&](const string& name, const vector<vector<char>>& values) -> bool {
 			return _SetStructArray(name, structOffsets, values);
 		});

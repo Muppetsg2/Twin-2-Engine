@@ -264,10 +264,12 @@ void STD140Struct::Add(const string& name, const STD140Struct& value)
 
 void STD140Struct::Add(const string& name, const STD140Offsets& structOffsets, const vector<char>*& values, size_t size)
 {
+	Func<void, const string&, const vector<vector<char>>&> f = [&](const string& name, const vector<vector<char>>& convs) -> void {
+		_AddStructArray(name, structOffsets, convs);
+		};
+
 	_ConvertArray<vector<char>, vector<char>>(name, values, size,
-		[&](const string& name, const vector<vector<char>>& convs) -> void {
-			_AddStructArray(name, structOffsets, convs);
-		});
+		f);
 }
 
 void STD140Struct::Add(const string& name, const STD140Offsets& structOffsets, const vector<vector<char>>& values)
@@ -282,10 +284,12 @@ bool STD140Struct::Set(const string& name, const STD140Struct& value)
 
 bool STD140Struct::Set(const string& name, const STD140Offsets& structOffsets, const vector<char>*& values, size_t size)
 {
+	Func<bool, const string&, const vector<vector<char>>&> f = [&](const string& name, const vector<vector<char>>& values) -> bool {
+		return _SetStructArray(name, structOffsets, values);
+		};
+
 	return _ConvertArray<vector<char>, vector<char>>(name, values, size,
-		[&](const string& name, const vector<vector<char>>& values) -> bool {
-			return _SetStructArray(name, structOffsets, values);
-		});
+		f);
 }
 
 bool STD140Struct::Set(const string& name, const STD140Offsets& structOffsets, const vector<vector<char>>& values)

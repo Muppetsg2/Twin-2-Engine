@@ -5,6 +5,8 @@ layout (std140, binding = 1) uniform WindowData
     float nearPlane;
     float farPlane;
     float gamma;
+    float time;
+    float deltaTime;
 };
 
 in vec2 TexCoord;
@@ -113,8 +115,7 @@ vec3 applyBlur() {
     return color;
 }
 
-vec3 applyDepthOfField(vec3 currentOutput)
-{
+vec3 applyDepthOfField(vec3 currentOutput) {
     float currentDepth = getDepthValue(TexCoord).r;
     float centerDepth = getDepthValue(vec2(0.5, 0.5)).r;
 

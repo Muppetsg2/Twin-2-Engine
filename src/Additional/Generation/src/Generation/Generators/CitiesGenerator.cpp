@@ -94,6 +94,7 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
                 found->GetComponent<MapHexTile>()->type = MapHexTile::HexTileType::PointOfInterest;
                 GameObject* instantiated = SceneManager::CreateGameObject(prefabCity, found->GetTransform());
                 //GameObject* instantiated = GameObject::Instantiate(prefabCity, found->GetTransform());
+                CitiesManager::AddCity(instantiated);
             }
         }
     }
@@ -144,6 +145,7 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
                 found->GetComponent<MapHexTile>()->type = MapHexTile::HexTileType::PointOfInterest;
                 GameObject* instantiated = SceneManager::CreateGameObject(prefabCity, found->GetTransform());
                 //GameObject* instantiated = GameObject::Instantiate(prefabCity, found->GetTransform());
+                CitiesManager::AddCity(instantiated);
             }
         }
     }

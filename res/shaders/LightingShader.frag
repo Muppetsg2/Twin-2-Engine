@@ -1,4 +1,4 @@
-#version 430
+#version 450
 //LightingShader.frag
 
 in vec3 position;
@@ -34,6 +34,8 @@ layout (std140, binding = 1) uniform WindowData
     float nearPlane;
     float farPlane;
     float gamma;
+    float time;
+    float deltaTime;
 };
 
 layout(std140, binding = 2) uniform MaterialInputBuffer {

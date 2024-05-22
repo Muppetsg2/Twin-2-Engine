@@ -127,6 +127,8 @@ void UIRenderingManager::UnloadAll() {
 
 void UIRenderingManager::Render()
 {
+	ZoneScoped;
+
 	static const char* const tracy_RenderUIShader = "Render UI Shader";
 	static const char* const tracy_RenderUICanvasName = "Render UI Canvas";
 	static const char* const tracy_RenderUICanvasUBOName = "Render UI Canvas UBO";
@@ -139,7 +141,6 @@ void UIRenderingManager::Render()
 	static const char* const tracy_RenderUIElementDataName = "Render UI Element Data";
 	static const char* const tracy_RenderUIEnd = "Render UI End";
 
-	ZoneScoped;
 
 	if (_uiShader != nullptr) {
 		FrameMarkStart(tracy_RenderUIShader);

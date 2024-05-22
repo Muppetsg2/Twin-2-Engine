@@ -5,6 +5,7 @@
 #include <GraphicEnigine.h>
 #include <graphic/manager/ModelsManager.h>
 #include <core/MathExtensions.h>
+#include <core/Time.h>
 
 const char* const tracy_RenderDepthBuffer = "RenderDepthBuffer";
 const char* const tracy_RenderSSAOTexture = "RenderSSAOTexture";
@@ -35,6 +36,8 @@ STD140Offsets CameraComponent::_uboWindowDataOffsets{
 		STD140Variable<float>("nearPlane"),
 		STD140Variable<float>("farPlane"),
 		STD140Variable<float>("gamma"),
+		STD140Variable<float>("time"),
+		STD140Variable<float>("deltaTime")
 };
 InstantiatingModel CameraComponent::_screenPlane = InstantiatingModel();
 Shader* CameraComponent::_screenShader = nullptr;
@@ -532,6 +535,11 @@ void CameraComponent::Render()
 	tempStruct.Set("nearPlane", this->_near);
 	tempStruct.Set("farPlane", this->_far);
 	tempStruct.Set("gamma", this->_gamma);
+	tempStruct.Set("time", Time::GetTime());
+	tempStruct.Set("deltaTime", Time::GetDeltaTime());
+
+	glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
 	
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
 	tempStruct.Clear();
@@ -732,6 +740,8 @@ void CameraComponent::Initialize()
 		tempStruct.Set("nearPlane", this->_near);
 		tempStruct.Set("farPlane", this->_far);
 		tempStruct.Set("gamma", this->_gamma);
+		tempStruct.Set("time", Time::GetTime());
+		tempStruct.Set("deltaTime", Time::GetDeltaTime());
 
 		glBufferData(GL_UNIFORM_BUFFER, tempStruct.GetSize(), tempStruct.GetData().data(), GL_STATIC_DRAW);
 

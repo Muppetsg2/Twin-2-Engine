@@ -193,6 +193,7 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 	LightingController::Instance()->BindLightBuffors(materialData->shader);
 	materialData->shader->Use();
 	materialData->shader->SetInt("occlusionMap", 31);
+	materialData->shader->SetInt("depthMap", 26);
 	
 	return Material(materialData);
 }
@@ -217,9 +218,9 @@ Material MaterialsManager::GetMaterial(const std::string& name)
 	return LoadMaterial(name);
 }
 
-std::string MaterialsManager::GetMaterialName(size_t fontId) {
-	if (_materialsPaths.find(fontId) == _materialsPaths.end()) return "";
-	std::string p = _materialsPaths[fontId];
+std::string MaterialsManager::GetMaterialName(size_t managerId) {
+	if (!_materialsPaths.contains(managerId)) return "";
+	std::string p = _materialsPaths[managerId];
 	return std::filesystem::path(p).stem().string();
 }
 

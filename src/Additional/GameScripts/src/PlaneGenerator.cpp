@@ -161,6 +161,12 @@ void PlaneGenerator::DrawEditor()
         ImGui::Text(_modelName.c_str());
         ImGui::PopFont();
 
+        ImGui::Text("Material: ");
+        ImGui::SameLine();
+        ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+        ImGui::Text(MaterialsManager::GetMaterialName(_materials[0].GetId()).c_str());
+        ImGui::PopFont();
+
         unsigned int r = _rows;
         ImGui::DragUInt(string("Rows##").append(id).c_str(), &r, 1.f, 2);
 

@@ -17,9 +17,11 @@ namespace Twin2Engine::Manager {
 		static Soloud _soloud;
 		static map<size_t, Wav*> _loadedAudio;
 
+#if _DEBUG
 		// For ImGui
 		static bool _fileDialogOpen;
 		static ImFileDialogInfo _fileDialogInfo;
+#endif
 
 		static map<size_t, string> _audiosPaths;
 
@@ -68,7 +70,9 @@ namespace Twin2Engine::Manager {
 		static void UnloadAll();
 
 		static YAML::Node Serialize();
+#if _DEBUG
 		static void DrawEditor(bool* p_open);
+#endif
 
 		friend class SceneManager;
 		friend class PrefabManager;

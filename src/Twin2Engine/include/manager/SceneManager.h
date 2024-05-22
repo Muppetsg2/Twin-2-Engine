@@ -27,10 +27,12 @@ namespace Twin2Engine::Manager {
 		// Loaded Scene Objects
 		static std::map<size_t, Core::Scene*> _loadedScenes;
 
+#if _DEBUG
 		// For ImGui
 		static ImGuiID selected;
 		static bool inspectorOpened;
 		static const std::string payloadType;
+#endif
 
 		static void SaveGameObject(const Core::GameObject* obj, YAML::Node gameObjects);
 		static void DrawGameObjectEditor(const Core::GameObject* obj);

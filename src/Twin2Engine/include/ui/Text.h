@@ -57,7 +57,9 @@ namespace Twin2Engine::UI {
 		void Render() override;
 		YAML::Node Serialize() const override;
 		bool Deserialize(const YAML::Node& node) override;
+#if _DEBUG
 		virtual void DrawEditor() override;
+#endif
 
 		void SetColor(const glm::vec4& color);
 		void SetText(const std::wstring& text);

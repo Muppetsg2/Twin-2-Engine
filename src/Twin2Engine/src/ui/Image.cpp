@@ -60,6 +60,7 @@ bool Image::Deserialize(const YAML::Node& node)
 	return true;
 }
 
+#if _DEBUG
 void Image::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -128,6 +129,7 @@ void Image::DrawEditor()
 		// TODO: Zaktualizowaæ dodaæ layer
 	}
 }
+#endif
 
 void Image::SetSprite(const std::string& spriteAlias) {
 	_spriteId = hash<string>()(spriteAlias);

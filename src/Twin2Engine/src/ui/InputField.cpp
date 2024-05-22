@@ -250,6 +250,7 @@ bool InputField::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
+#if _DEBUG
 void InputField::DrawEditor()
 {
 	// TODO: Zrobic
@@ -259,6 +260,7 @@ void InputField::DrawEditor()
 		Component::DrawInheritedFields();
 	}
 }
+#endif
 
 void InputField::SetPlaceHolderText(Text* placeHolder)
 {

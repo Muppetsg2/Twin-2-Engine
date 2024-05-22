@@ -127,6 +127,7 @@ void UIRenderingManager::UnloadAll() {
 
 void UIRenderingManager::Render()
 {
+#if TRACY_PROFILER
 	ZoneScoped;
 
 	static const char* const tracy_RenderUIShader = "Render UI Shader";
@@ -140,24 +141,32 @@ void UIRenderingManager::Render()
 	static const char* const tracy_RenderUIElementMaskCheck = "Render UI Element Mask Check";
 	static const char* const tracy_RenderUIElementDataName = "Render UI Element Data";
 	static const char* const tracy_RenderUIEnd = "Render UI End";
-
+#endif
 
 	if (_uiShader != nullptr) {
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, _elemsSSBO);
 
+#if TRACY_PROFILER
 		FrameMarkStart(tracy_RenderUIShader);
+#endif
 		_uiShader->Use();
 		_uiShader->SetInt("image", 0);
 		_uiShader->SetInt("maskImage", 1);
+#if TRACY_PROFILER
 		FrameMarkEnd(tracy_RenderUIShader);
+#endif
 
 		glBindVertexArray(_pointVAO);
 		for (const auto& canvas : _renderQueue) {
+#if TRACY_PROFILER
 			FrameMarkStart(tracy_RenderUICanvasName);
+#endif
 			
 			CanvasData* canvasData = canvas.first;
 
+#if TRACY_PROFILER
 			FrameMarkStart(tracy_RenderUICanvasUBOName);
+#endif
 			glBindBuffer(GL_UNIFORM_BUFFER, _canvasUBO);
 			if (canvasData != nullptr) {
 				CanvasStruct.Set("canvasRect.transform", canvasData->rectTransform.transform);
@@ -166,18 +175,26 @@ void UIRenderingManager::Render()
 			}
 			CanvasStruct.Set("canvasIsActive", canvasData != nullptr);
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, CanvasStruct.GetSize(), CanvasStruct.GetData().data());
+#if TRACY_PROFILER
 			FrameMarkEnd(tracy_RenderUICanvasUBOName);
+#endif
 
 			for (const auto& layer : canvas.second) {
+#if TRACY_PROFILER
 				FrameMarkStart(tracy_RenderUILayerName);
+#endif
 
 				for (const auto& mask : layer.second) {
+#if TRACY_PROFILER
 					FrameMarkStart(tracy_RenderUIMaskName);
+#endif
 
 					MaskData* maskData = mask.first;
 					mat4 invMaskTransform = mat4(1.f);
 
+#if TRACY_PROFILER
 					FrameMarkStart(tracy_RenderUIMaskUBOName);
+#endif
 					glBindBuffer(GL_UNIFORM_BUFFER, _maskUBO);
 					if (maskData != nullptr) {
 						invMaskTransform = inverse(maskData->rectTransform.transform);
@@ -196,10 +213,14 @@ void UIRenderingManager::Render()
 					}
 					MaskStruct.Set("maskIsActive", maskData != nullptr);
 					glBufferSubData(GL_UNIFORM_BUFFER, 0, MaskStruct.GetSize(), MaskStruct.GetData().data());
+#if TRACY_PROFILER
 					FrameMarkEnd(tracy_RenderUIMaskUBOName);
+#endif
 
 					for (const auto& texture : mask.second) {
+#if TRACY_PROFILER
 						FrameMarkStart(tracy_RenderUITextureName);
+#endif
 
 						Texture2D* textureData = texture.first;
 
@@ -212,11 +233,15 @@ void UIRenderingManager::Render()
 						queue<UIElementQueueData> renderQueue = texture.second;
 						size_t i = 0;
 						while (renderQueue.size() > 0) {
+#if TRACY_PROFILER
 							FrameMarkStart(tracy_RenderUIElementName);
+#endif
 
 							const UIElementQueueData& uiElem = renderQueue.front();
 
+#if TRACY_PROFILER
 							FrameMarkStart(tracy_RenderUIElementMaskCheck);
+#endif
 
 							// ADD MASK CHECKING
 							if (maskData != nullptr) {
@@ -246,9 +271,11 @@ void UIRenderingManager::Render()
 								}
 							}
 
+#if TRACY_PROFILER
 							FrameMarkEnd(tracy_RenderUIElementMaskCheck);
 
 							FrameMarkStart(tracy_RenderUIElementDataName);
+#endif
 
 							string elemName = vformat(_uiBufforElemFormat, make_format_args(i));
 
@@ -264,7 +291,9 @@ void UIRenderingManager::Render()
 								}
 								UIElementsBufferStruct.Set(move(concat(elemName, ".sprite.isActive")), uiElem.sprite != nullptr);
 							}
+#if TRACY_PROFILER
 							FrameMarkEnd(tracy_RenderUIElementDataName);
+#endif
 
 							if (++i == maxUIElementsPerRender) {
 								glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, UIElementsBufferStruct.GetSize(), UIElementsBufferStruct.GetData().data());
@@ -274,7 +303,9 @@ void UIRenderingManager::Render()
 
 							renderQueue.pop();
 
+#if TRACY_PROFILER
 							FrameMarkEnd(tracy_RenderUIElementName);
+#endif
 						}
 
 						if (i != 0) {
@@ -282,24 +313,36 @@ void UIRenderingManager::Render()
 							glDrawArraysInstanced(GL_POINTS, 0, 1, i);
 						}
 
+#if TRACY_PROFILER
 						FrameMarkEnd(tracy_RenderUITextureName);
+#endif
 					}
 
+#if TRACY_PROFILER
 					FrameMarkEnd(tracy_RenderUIMaskName);
+#endif
 				}
 
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_RenderUILayerName);
+#endif
 			}
 
+#if TRACY_PROFILER
 			FrameMarkEnd(tracy_RenderUICanvasName);
+#endif
 		}
 
+#if TRACY_PROFILER
 		FrameMarkStart(tracy_RenderUIEnd);
+#endif
 		_renderQueue.clear();
 		glBindBuffer(GL_UNIFORM_BUFFER, NULL);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, NULL);
 		glBindVertexArray(NULL);
+#if TRACY_PROFILER
 		FrameMarkEnd(tracy_RenderUIEnd);
+#endif
 	}
 }
 

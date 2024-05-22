@@ -454,6 +454,7 @@ bool HexagonalTilemap::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
+#if _DEBUG
 void HexagonalTilemap::DrawEditor()
 {
 	std::string id = std::string(std::to_string(this->GetId()));
@@ -470,6 +471,7 @@ void HexagonalTilemap::DrawEditor()
 		}
 	}
 }
+#endif
 
 void HexagonalTilemap::Initialize()
 {

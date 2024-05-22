@@ -53,8 +53,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENGL_LIBRARIES}
 										Twin2Engine
 										Tools)
 
-get_property(tracy_profiler GLOBAL PROPERTY TRACY_PROFILER)
-if (tracy_profiler)
+if (TRACY_PROFILER)
     target_link_libraries(${PROJECT_NAME} PUBLIC TracyClient)
 endif()
 

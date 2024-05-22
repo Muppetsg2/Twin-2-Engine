@@ -504,7 +504,9 @@ void CameraComponent::SetSSAO(bool value)
 
 void CameraComponent::Render()
 {
+#if TRACY_PROFILER
 	ZoneScoped;
+#endif
 	if (!IsEnable() || !GetGameObject()->GetActive()) {
 		return;
 	}
@@ -547,9 +549,13 @@ void CameraComponent::Render()
 
 	if (wSize.y != 0) {
 		// UPDATING RENDERER
+#if TRACY_PROFILER
 		FrameMarkStart(tracy_UpdateRenderingQueues);
+#endif
 		GraphicEngine::UpdateBeforeRendering();
+#if TRACY_PROFILER
 		FrameMarkEnd(tracy_UpdateRenderingQueues);
+#endif
 
 		glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
@@ -558,10 +564,14 @@ void CameraComponent::Render()
 		glEnable(GL_DEPTH_TEST);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+#if TRACY_PROFILER
 			FrameMarkStart(tracy_RenderDepthBuffer);
+#endif
 			_depthShader->Use();
 			GraphicEngine::PreRender();
+#if TRACY_PROFILER
 			FrameMarkEnd(tracy_RenderDepthBuffer);
+#endif
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -577,7 +587,9 @@ void CameraComponent::Render()
 			glDisable(GL_DEPTH_TEST);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+#if TRACY_PROFILER
 				FrameMarkStart(tracy_RenderSSAOTexture);
+#endif
 				_ssaoShader->Use();
 				BindDepthTexture(0);
 				_ssaoShader->SetInt("depthTexture", 0);
@@ -590,9 +602,11 @@ void CameraComponent::Render()
 				_screenPlane.GetMesh(0)->Draw(1);
 
 				glBindTexture(GL_TEXTURE_2D, 0);
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_RenderSSAOTexture);
 
 				FrameMarkStart(tracy_BlurSSAOTexture);
+#endif
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _ssaoBlurredMap, 0);
 				glClearColor(1.f, 1.f, 1.f, 1.f);
 				glViewport(0, 0, wSize.x, wSize.y);
@@ -604,7 +618,9 @@ void CameraComponent::Render()
 				_ssaoBlurredShader->SetInt("ssaoTexture", 0);
 
 				_screenPlane.GetMesh(0)->Draw(1);
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_BlurSSAOTexture);
+#endif
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
@@ -624,13 +640,17 @@ void CameraComponent::Render()
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
 
+#if TRACY_PROFILER
 			FrameMarkStart(tracy_RenderScreenTexture);
+#endif
 			BindSSAOTexture(31);
 			BindDepthTexture(26);
 
 			GraphicEngine::Render();
 
+#if TRACY_PROFILER
 			FrameMarkEnd(tracy_RenderScreenTexture);
+#endif
 
 			glBindFramebuffer(GL_READ_FRAMEBUFFER, _msRenderMapFBO);
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _renderMapFBO);
@@ -641,7 +661,9 @@ void CameraComponent::Render()
 
 	// RENDERING
 	if (this->IsMain()) {
+#if TRACY_PROFILER
 		FrameMarkStart(tracy_OnScreenFramebuffer);
+#endif
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glViewport(0, 0, wSize.x, wSize.y);
 		glDisable(GL_DEPTH_TEST);
@@ -669,7 +691,9 @@ void CameraComponent::Render()
 
 		GraphicEngine::RenderGUI();
 		glBindTexture(GL_TEXTURE_2D, 0);
+#if TRACY_PROFILER
 		FrameMarkEnd(tracy_OnScreenFramebuffer);
+#endif
 	}
 }
 
@@ -1008,6 +1032,7 @@ bool CameraComponent::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
+#if _DEBUG
 void CameraComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -1169,3 +1194,4 @@ void CameraComponent::DrawEditor()
 		ImGui::Checkbox(string("Frustum Culling##").append(id).c_str(), &this->_isFrustumCulling);
 	}
 }
+#endif

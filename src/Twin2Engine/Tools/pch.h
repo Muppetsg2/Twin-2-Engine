@@ -16,7 +16,7 @@
 // GLAD
 #include <glad/glad.h>
 
-#if _DEBUG
+#if TRACY_PROFILER
 	#include <tracy/Tracy.hpp>
 	#include <tracy/TracyOpenGL.hpp>
 	#define TRACY_ENABLE

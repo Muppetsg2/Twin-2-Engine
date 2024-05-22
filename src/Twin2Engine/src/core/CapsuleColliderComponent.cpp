@@ -96,6 +96,7 @@ bool CapsuleColliderComponent::Deserialize(const YAML::Node& node)
 	return true;
 }
 
+#if _DEBUG
 void Twin2Engine::Core::CapsuleColliderComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -120,3 +121,4 @@ void Twin2Engine::Core::CapsuleColliderComponent::DrawEditor()
 		DrawInheritedFields();
 	}
 }
+#endif

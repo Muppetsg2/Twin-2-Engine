@@ -9,8 +9,10 @@ using namespace glm;
 std::hash<std::string> MaterialsManager::_stringHash;
 std::map<size_t, MaterialData*> MaterialsManager::_loadedMaterials;
 
+#if _DEBUG
 bool MaterialsManager::_fileDialogOpen = false;
 ImFileDialogInfo MaterialsManager::_fileDialogInfo;
+#endif
 
 std::map<size_t, std::string> MaterialsManager::_materialsPaths;
 
@@ -259,6 +261,7 @@ YAML::Node MaterialsManager::Serialize()
 	return materials;
 }
 
+#if _DEBUG
 void MaterialsManager::DrawEditor(bool* p_open)
 {
 	if (!ImGui::Begin("Materials Manager", p_open)) {
@@ -314,3 +317,4 @@ void MaterialsManager::DrawEditor(bool* p_open)
 
 	ImGui::End();
 }
+#endif

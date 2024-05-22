@@ -1,0 +1,6 @@
+shaderprogram:
+  name: origin/CloudDepthShader
+  shaders:
+    - CloudDepthShader.vert
+    - CloudDepthShader.frag
+  parameters:

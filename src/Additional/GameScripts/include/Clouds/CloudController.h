@@ -7,6 +7,7 @@ class CloudController {
 	private:
 		static CloudController* instance;
 		Twin2Engine::Graphic::Shader* CloudDepthShader;
+		Twin2Engine::Graphic::Shader* CloudShader;
 		GLuint depthmapFBO;
 		GLuint depthmap;
 

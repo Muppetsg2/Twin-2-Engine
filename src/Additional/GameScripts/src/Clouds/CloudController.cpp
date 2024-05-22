@@ -1,15 +1,37 @@
 #include <Clouds/CloudController.h>
 #include <processes/SynchronizedProcess.h>
 #include <graphic/Window.h>
+#include <graphic/manager/ShaderManager.h>
 
 using namespace Twin2Engine::Processes;
 using namespace Twin2Engine::Graphic;
+using namespace Twin2Engine::Manager;
+
+class CloudControllerSyncProc : public SynchronizedProcess {
+	public:
+		CloudControllerSyncProc() : SynchronizedProcess() {}
+
+		~CloudControllerSyncProc() {
+			CloudController::DeleteInstance();
+		}
+
+		void Initialize() override {
+			SynchronizedProcess::Initialize();
+		}
+
+		void Update() {
+			CloudController::Instance()->RenderCloudBackDepthMap();
+		}
+};
 
 CloudController* CloudController::instance = nullptr;
 const int CloudController::CLOUD_DEPTH_MAP_ID = 20;
 
 CloudController::CloudController() {
 	glm::ivec2 size = Window::GetInstance()->GetContentSize();
+	CloudDepthShader = ShaderManager::GetShaderProgram("origin/CloudDepthShader");
+	CloudShader = ShaderManager::GetShaderProgram("origin/CloudShader");
+	CloudShader->SetInt("viewerBackDepthMap", CLOUD_DEPTH_MAP_ID);
 
 	//glGenFramebuffers(1, &depthmapFBO);
 	//
@@ -31,7 +53,6 @@ CloudController::CloudController() {
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
-	// Intermidiate Render FBO
 	glGenFramebuffers(1, &depthmapFBO);
 	glBindFramebuffer(GL_FRAMEBUFFER, depthmapFBO);
 
@@ -59,13 +80,15 @@ CloudController::CloudController() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 
-	SynchronizedProcess* proc = new SynchronizedProcess([this]() {
-		this->RenderCloudBackDepthMap();
-		});
+	SynchronizedProcess* proc = new CloudControllerSyncProc();
+	//SynchronizedProcess* proc = new SynchronizedProcess([this]() {
+	//	this->RenderCloudBackDepthMap();
+	//	});
 }
 
 CloudController::~CloudController() {
-	//usuniêcie framebuffera dla renderingu cloudBackDepthMap
+	glDeleteTextures(1, &depthmap);
+	glDeleteFramebuffers(1, &depthmapFBO);
 }
 
 CloudController* CloudController::Instance() {
@@ -85,5 +108,11 @@ void CloudController::DeleteInstance() {
 
 void CloudController::RenderCloudBackDepthMap() {
 	glEnable(GL_DEPTH_TEST);
+	glCullFace(GL_FRONT);
 
+
+	glActiveTexture(GL_TEXTURE0 + CLOUD_DEPTH_MAP_ID);
+	glBindTexture(GL_TEXTURE_2D, depthmap);
+
+	glCullFace(GL_BACK);
 }

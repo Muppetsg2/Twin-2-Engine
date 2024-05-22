@@ -26,8 +26,12 @@ struct RectTransform {
 struct Sprite {
     uvec2 offset;
     uvec2 size;
-    uvec2 texSize;
     bool isActive;
+};
+
+struct Texture {
+	uvec2 size;
+	bool isActive;
 };
 
 layout (std140, binding = 4) uniform CanvasData {
@@ -39,6 +43,7 @@ layout (std140, binding = 4) uniform CanvasData {
 layout (std140, binding = 5) uniform MaskData {
     RectTransform maskRect;
     Sprite maskSprite;
+	uvec2 maskTextureSize;
     bool maskIsActive;
 };
 
@@ -52,6 +57,7 @@ struct UIElement {
 const uint maxUIElements = 8;
 layout (std140, binding = 3) buffer UIElementsBuffer {
 	UIElement uiElements[maxUIElements];
+	Texture elementTexture;
 };
 
 in VS_OUT {

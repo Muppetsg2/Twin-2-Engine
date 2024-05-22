@@ -327,6 +327,7 @@ void Text::Render()
 		text.rectTransform.transform = tempModel;
 		text.rectTransform.size = { w, h };
 		text.charTexture = c.character->texture;
+		text.layer = _layer;
 
 		UIRenderingManager::Render(text);
 	}
@@ -349,6 +350,7 @@ YAML::Node Text::Serialize() const
 	node["alignY"] = _alignY;
 	node["textWrapping"] = _textWrapping;
 	node["overflow"] = _overflow;
+	node["layer"] = _layer;
 	return node;
 }
 
@@ -357,7 +359,7 @@ bool Text::Deserialize(const YAML::Node& node)
 	if (!node["text"] || !node["font"] || !node["size"] || !node["autoSize"] ||
 		!node["minSize"] || !node["maxSize"] || !node["width"] || !node["height"] ||
 		!node["color"] || !node["alignX"] || !node["alignY"] || !node["textWrapping"] ||
-		!node["overflow"] || !RenderableComponent::Deserialize(node)) return false;
+		!node["overflow"] || !node["layer"] || !RenderableComponent::Deserialize(node)) return false;
 
 	_text = node["text"].as<wstring>();
 	_fontId = SceneManager::GetFont(node["font"].as<size_t>());
@@ -372,6 +374,7 @@ bool Text::Deserialize(const YAML::Node& node)
 	_alignY = node["alignY"].as<TextAlignY>();
 	_textWrapping = node["textWrapping"].as<bool>();
 	_overflow = node["overflow"].as<TextOverflow>();
+	_layer = node["layer"].as<int32_t>();
 
 	return true;
 }
@@ -444,6 +447,8 @@ void Text::DrawEditor()
 		}
 
 		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
+
+		// TODO: Zaktualizowaæ Inspector
 	}
 }
 
@@ -535,6 +540,11 @@ void Text::SetTextOverflow(const TextOverflow& overflow)
 	}
 }
 
+void Text::SetLayer(int32_t layer)
+{
+	_layer = layer;
+}
+
 void Text::EnableAutoSize(uint32_t minSize, uint32_t maxSize)
 {
 	if (!_autoSize || _minSize != minSize || _maxSize != maxSize) {
@@ -603,6 +613,11 @@ bool Text::IsTextWrapping() const
 TextOverflow Text::GetTextOverflow() const
 {
 	return _overflow;
+}
+
+int32_t Text::GetLayer() const
+{
+	return _layer;
 }
 
 float Text::GetTextWidth() const

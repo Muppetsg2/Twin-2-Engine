@@ -9,50 +9,51 @@ using namespace Twin2Engine::Tools;
 using namespace std;
 using namespace glm;
 
-// STD140 STRUCTS
-// STRUCT
-STD140Struct UIRenderingManager::RectTransformStruct{
+// STD140 OFFSETS
+STD140Offsets UIRenderingManager::RectTransformOffsets{
 	STD140Variable<mat4>("transform"),
 	STD140Variable<vec2>("size")
 };
 
-// STRUCT
-STD140Struct UIRenderingManager::SpriteStruct{
+STD140Offsets UIRenderingManager::SpriteOffsets{
 	STD140Variable<uvec2>("offset"),
 	STD140Variable<uvec2>("size"),
-	STD140Variable<uvec2>("texSize"),
 	STD140Variable<bool>("isActive")
 };
 
-// UBO DATA
-STD140Struct UIRenderingManager::CanvasStruct{
-	STD140Variable<STD140Offsets>("canvasRect", UIRenderingManager::RectTransformStruct.GetOffsets()),
-	STD140Variable<bool>("canvasIsInWorldSpace"),
-	STD140Variable<bool>("canvasIsActive")
+STD140Offsets UIRenderingManager::TextureOffsets{
+	STD140Variable<uvec2>("size"),
+	STD140Variable<bool>("isActive")
 };
 
-// UBO DATA
-STD140Struct UIRenderingManager::MaskStruct{
-	STD140Variable<STD140Offsets>("maskRect", UIRenderingManager::RectTransformStruct.GetOffsets()),
-	STD140Variable<STD140Offsets>("maskSprite", UIRenderingManager::SpriteStruct.GetOffsets()),
-	STD140Variable<bool>("maskIsActive")
-};
-
-// STRUCT
-STD140Struct UIRenderingManager::UIElementStruct{
-	STD140Variable<STD140Offsets>("rect", UIRenderingManager::RectTransformStruct.GetOffsets()),
-	STD140Variable<STD140Offsets>("sprite", UIRenderingManager::SpriteStruct.GetOffsets()),
+STD140Offsets UIRenderingManager::UIElementOffsets{
+	STD140Variable<STD140Offsets>("rect", UIRenderingManager::RectTransformOffsets),
+	STD140Variable<STD140Offsets>("sprite", UIRenderingManager::SpriteOffsets),
 	STD140Variable<vec4>("color"),
 	STD140Variable<bool>("isText")
 };
 
-// UBO DATA
+// STD140 STRUCTS
+STD140Struct UIRenderingManager::CanvasStruct{
+	STD140Variable<STD140Offsets>("canvasRect", UIRenderingManager::RectTransformOffsets),
+	STD140Variable<bool>("canvasIsInWorldSpace"),
+	STD140Variable<bool>("canvasIsActive")
+};
+
+STD140Struct UIRenderingManager::MaskStruct{
+	STD140Variable<STD140Offsets>("maskRect", UIRenderingManager::RectTransformOffsets),
+	STD140Variable<STD140Offsets>("maskSprite", UIRenderingManager::SpriteOffsets),
+	STD140Variable<uvec2>("maskTexureSize"),
+	STD140Variable<bool>("maskIsActive")
+};
+
 STD140Struct UIRenderingManager::UIElementsBufferStruct{
-	STD140Variable<STD140Offsets>("uiElements", UIRenderingManager::UIElementStruct.GetOffsets(), UIRenderingManager::maxUIElementsPerRender)
+	STD140Variable<STD140Offsets>("uiElements", UIRenderingManager::UIElementOffsets, UIRenderingManager::maxUIElementsPerRender),
+	STD140Variable<STD140Offsets>("elementTexture", UIRenderingManager::TextureOffsets)
 };
 
 // QUEUE
-map<CanvasData*, map<int32_t, map<MaskData*, map<Texture2D*, queue<UIRenderingManager::UIElementQueueData>>>>> UIRenderingManager::_renderQueue;
+unordered_map<CanvasData*, map<int32_t, unordered_map<MaskData*, unordered_map<Texture2D*, queue<UIRenderingManager::UIElementQueueData>>>>> UIRenderingManager::_renderQueue;
 
 // SHADER
 Shader* UIRenderingManager::_uiShader = nullptr;
@@ -67,6 +68,9 @@ uint32_t UIRenderingManager::_maskUBO = 0;
 
 // SSBO
 uint32_t UIRenderingManager::_elemsSSBO = 0;
+
+// FORMAT
+const char* const UIRenderingManager::_uiBufforElemFormat = "uiElements[{0}]";
 
 void UIRenderingManager::Init() {
 	_uiShader = ShaderManager::GetShaderProgram("origin/UI");
@@ -153,10 +157,8 @@ void UIRenderingManager::Render()
 			FrameMarkStart(tracy_RenderUICanvasUBOName);
 			glBindBuffer(GL_UNIFORM_BUFFER, _canvasUBO);
 			if (canvasData != nullptr) {
-				RectTransformStruct.Set("transform", canvasData->rectTransform.transform);
-				RectTransformStruct.Set("size", canvasData->rectTransform.transform);
-
-				CanvasStruct.Set("canvasRect", RectTransformStruct);
+				CanvasStruct.Set("canvasRect.transform", canvasData->rectTransform.transform);
+				CanvasStruct.Set("canvasRect.size", canvasData->rectTransform.size);
 				CanvasStruct.Set("canvasIsInWorldSpace", canvasData->worldSpaceCanvas);
 			}
 			CanvasStruct.Set("canvasIsActive", canvasData != nullptr);
@@ -177,17 +179,13 @@ void UIRenderingManager::Render()
 					if (maskData != nullptr) {
 						invMaskTransform = inverse(maskData->rectTransform.transform);
 
-						RectTransformStruct.Set("transform", maskData->rectTransform.transform);
-						RectTransformStruct.Set("size", maskData->rectTransform.size);
-						
-						MaskStruct.Set("maskRect", RectTransformStruct);
+						MaskStruct.Set("maskRect.transform", maskData->rectTransform.transform);
+						MaskStruct.Set("maskRect.size", maskData->rectTransform.size);
 						
 						if (maskData->maskSprite != nullptr) {
-							SpriteStruct.Set("offset", maskData->maskSprite->GetOffset());
-							SpriteStruct.Set("size", maskData->maskSprite->GetSize());
-							SpriteStruct.Set("texSize", maskData->maskSprite->GetTexture()->GetSize());
-
-							MaskStruct.Set("maskSprite", SpriteStruct);
+							MaskStruct.Set("maskSprite.offset", maskData->maskSprite->GetOffset());
+							MaskStruct.Set("maskSprite.size", maskData->maskSprite->GetSize());
+							MaskStruct.Set("maskTextureSize", maskData->maskSprite->GetTexture()->GetSize());
 
 							maskData->maskSprite->Use(1);
 						}
@@ -206,7 +204,9 @@ void UIRenderingManager::Render()
 
 						if (textureData != nullptr) {
 							textureData->Use(0);
+							UIElementsBufferStruct.Set("elementTexture.size", textureData->GetSize());
 						}
+						UIElementsBufferStruct.Set("elementTexture.isActive", textureData != nullptr);
 
 						queue<UIElementQueueData> renderQueue = texture.second;
 						size_t i = 0;
@@ -248,24 +248,22 @@ void UIRenderingManager::Render()
 							FrameMarkEnd(tracy_RenderUIElementMaskCheck);
 
 							FrameMarkStart(tracy_RenderUIElementDataName);
-							RectTransformStruct.Set("transform", uiElem.rectTransform.transform);
-							RectTransformStruct.Set("size", uiElem.rectTransform.size);
 
-							UIElementStruct.Set("rect", RectTransformStruct);
-							UIElementStruct.Set("color", uiElem.color);
-							UIElementStruct.Set("isText", uiElem.isText);
+							string elemName = vformat(_uiBufforElemFormat, make_format_args(i));
+
+							UIElementsBufferStruct.Set(move(concat(elemName, ".rect.transform")), uiElem.rectTransform.transform);
+							UIElementsBufferStruct.Set(move(concat(elemName, ".rect.size")), uiElem.rectTransform.size);
+							UIElementsBufferStruct.Set(move(concat(elemName, ".color")), uiElem.color);
+							UIElementsBufferStruct.Set(move(concat(elemName, ".isText")), uiElem.isText);
 							
 							if (textureData != nullptr) {
-								SpriteStruct.Set("offset", uiElem.spriteOffset);
-								SpriteStruct.Set("size", uiElem.spriteSize);
-								SpriteStruct.Set("texSize", textureData->GetSize());
-
-								UIElementStruct.Set("sprite", SpriteStruct);
+								if (uiElem.sprite != nullptr) {
+									UIElementsBufferStruct.Set(move(concat(elemName, ".sprite.offset")), uiElem.sprite->GetOffset());
+									UIElementsBufferStruct.Set(move(concat(elemName, ".sprite.size")), uiElem.sprite->GetSize());
+								}
+								UIElementsBufferStruct.Set(move(concat(elemName, ".sprite.isActive")), uiElem.sprite != nullptr);
 							}
-							UIElementStruct.Set("sprite.isActive", textureData != nullptr);
 							FrameMarkEnd(tracy_RenderUIElementDataName);
-
-							UIElementsBufferStruct.Set("uiElements[" + to_string(i) + "]", UIElementStruct);
 
 							if (++i == maxUIElementsPerRender) {
 								glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, UIElementsBufferStruct.GetSize(), UIElementsBufferStruct.GetData().data());
@@ -306,22 +304,24 @@ void UIRenderingManager::Render()
 
 void UIRenderingManager::Render(UITextData text) 
 {
+	if (text.color.a == 0.f) return;
+
 	_renderQueue[text.canvas][text.layer][text.mask][text.charTexture].push(UIElementQueueData{
 		.rectTransform = text.rectTransform,
+		.sprite = nullptr,
 		.color = text.color,
-		.spriteSize = text.charTexture->GetSize(),
-		.spriteOffset = uvec2(0.f),
 		.isText = true
 	});
 }
 
 void UIRenderingManager::Render(UIImageData image)
 {
+	if (image.color.a == 0.f) return;
+
 	_renderQueue[image.canvas][image.layer][image.mask][image.sprite->GetTexture()].push(UIElementQueueData{
 		.rectTransform = image.rectTransform,
+		.sprite = image.sprite,
 		.color = image.color,
-		.spriteSize = image.sprite->GetSize(),
-		.spriteOffset = image.sprite->GetOffset(),
 		.isText = false
 	});
 }

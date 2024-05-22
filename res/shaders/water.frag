@@ -8,6 +8,8 @@ layout (std140, binding = 1) uniform WindowData {
     float nearPlane;
     float farPlane;
     float gamma;
+    float time;
+    float deltaTime;
 };
 
 layout (std140, binding = 0) uniform CameraData
@@ -18,24 +20,20 @@ layout (std140, binding = 0) uniform CameraData
     bool isSSAO;
 };
 
-in VS_OUT {
-    vec2 texCoord;
-    vec3 normal;
-    vec3 fragPos;
-    float wValue;
-    vec3 objPos;
-} fs_in;
-
-struct DirectionalLight {
-    mat4 lightSpaceMatrix;  // For Shadow Mapping
-    vec3 color;             // Color of the dir light
-	vec3 direction;         // Direction of the dir light
-	float power;		    // Light source power
-    uint shadowMapFBO;
-    uint shadowMap;
+layout (std430, binding = 0) buffer InstanceBuffer {
+    mat4 transform[1024];
 };
 
-struct FragWater {
+in VS_OUT {
+    vec3 normal;
+    vec3 fragPos;
+    vec3 objPos;
+    vec2 texCoord;
+    float wValue;
+    flat uint instance_id;
+} fs_in;
+
+struct MaterialInput {
     // Colors
     vec4 shallowColor;
     vec4 deepColor;
@@ -48,15 +46,53 @@ struct FragWater {
     
     // Depth Values
     float depthFade;
+
+    // Vertex Modification Data
+    float waterScale;
+	float waterHeight;
+	float waterSpeed;
 };
 
-uniform float time;
-uniform mat4 model;
-uniform FragWater fWater;
+layout(std140, binding = 2) uniform MaterialInputBuffer {
+    MaterialInput materialInputs[8];
+};
 
-uniform DirectionalLight dirLight;
-uniform float shininess;
-uniform mat4 normalModel;
+struct PointLight {
+	vec3 position;      // Position of the point light in world space
+	vec3 color;         // Color of the point light
+	float power;		  // Light source power
+	float constant;     // Constant attenuation
+	float linear;       // Linear attenuation
+	float quadratic;    // Quadratic attenuation
+};
+
+struct SpotLight {
+	vec3 position;      // Position of the spot light in world space
+	vec3 direction;     // Direction of the spot light
+	float power;		  // Light source power
+	vec3 color;         // Color of the spot light
+	float cutOff;       // Inner cutoff angle (in radians)
+	float outerCutOff;  // Outer cutoff angle (in radians)
+	float constant;     // Constant attenuation
+	float linear;       // Linear attenuation
+	float quadratic;    // Quadratic attenuation
+};
+
+struct DirectionalLight {
+	vec3 direction;     // Direction of the spot light
+	vec3 color;         // Color of the spot light
+	mat4 lightSpaceMatrix;
+	float power;		  // Light source power
+};
+
+layout (std430, binding = 2) buffer Lights {
+	uint numberOfPointLights;
+	uint numberOfSpotLights;
+	uint numberOfDirLights;
+    PointLight pointLights[8];
+    SpotLight spotLights[8];
+    DirectionalLight directionalLights[4];
+};
 
 uniform sampler2D depthMap;
 
@@ -70,17 +106,17 @@ vec2 random2(vec2 st){
     return -1. + 2. * fract(sin(s) * MAGIC);
 }
 
-vec2 scale (vec2 p, float s) {
+vec2 scale(vec2 p, float s) {
     return p * s;
 }
 
-float interpolate (float t) {
+float interpolate(float t) {
     // return t;
     // return t * t * (3. - 2. * t); // smoothstep
     return t * t * t * (10. + t * (6. * t - 15.)); // smootherstep
 }
 
-vec4 gradientNoise (vec2 p) {
+vec4 gradientNoise(vec2 p) {
     vec2 i = floor(p);
     vec2 f = fract(p);
 
@@ -92,7 +128,7 @@ vec4 gradientNoise (vec2 p) {
     return vec4(f11, f12, f21, f22);
 }
 
-float noise (vec2 p) {
+float noise(vec2 p) {
     vec4 v = gradientNoise(p);
     
     vec2 f = fract(p);
@@ -134,30 +170,33 @@ float LinearEyeDepth(float depth, float near, float far) {
     return 1.0 / (((1.0 - (far / near)) / far) * depth + ((far / near) / far));
 }
 
-void main()
-{
-    vec3 N = normalize(vec3(mat3(normalModel) * cross(dFdy(fs_in.objPos), dFdx(fs_in.objPos)))) * -1.0;
+void main() {
+
+    mat4 model = transform[fs_in.instance_id];
+    vec3 N = normalize(vec3(mat3(transpose(inverse(model))) * cross(dFdy(fs_in.objPos), dFdx(fs_in.objPos)))) * -1.0;
 
     vec3 viewDir  = normalize(viewPos - fs_in.fragPos);
 
     vec4 screenPos = vec4(gl_FragCoord.xy / windowSize.xy, gl_FragCoord.z * fs_in.wValue, fs_in.wValue);
     float depthRaw = texture(depthMap, screenPos.xy).x;
     float depthEye = LinearEyeDepth(depthRaw, nearPlane, farPlane); // Eye
-    vec2 uv = fs_in.fragPos.xz + (fWater.foamSpeed * time);
+    vec2 uv = fs_in.fragPos.xz + (materialInputs[0].foamSpeed * time);
 
-    vec4 result = vec4(0.f, 0.f, 0.f, 1.f);
+    vec4 result = vec4(vec3(0.0), 1.0);
 
-    result += vec4(vec3(noise(scale(uv, fWater.foamScale))), 1.0);
+    result += vec4(vec3(noise(scale(uv, materialInputs[0].foamScale))), 1.0);
 
     float depth = depthEye - screenPos.w;
 
     result += vec4(vec3(depth), 1.0);
 
-    result /= fWater.foamDepth;
+    result /= materialInputs[0].foamDepth;
 
-    result = step(result, fWater.foamColor);
+    result = step(result, materialInputs[0].foamColor);
 
-    result += vec4(CalcDirLight(dirLight, N, viewDir, vec3(mix(fWater.deepColor, fWater.shallowColor, clamp(depth / fWater.depthFade, 0, 1)))), 1.0);
+    for (int i = 0; i < numberOfDirLights; ++i) {
+        result += vec4(CalcDirLight(directionalLights[i], N, viewDir, vec3(mix(materialInputs[0].deepColor, materialInputs[0].shallowColor, clamp(depth / materialInputs[0].depthFade, 0.0, 1.0)))), 1.0);
+    }
 
     Color = vec4(vec3(pow(result.rgb, vec3(gamma))), 1.0);
 }

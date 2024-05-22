@@ -8,6 +8,8 @@ layout (std140, binding = 1) uniform WindowData
     float nearPlane;
     float farPlane;
     float gamma;
+	float time;
+    float deltaTime;
 };
 
 layout (std140, binding = 0) uniform CameraData

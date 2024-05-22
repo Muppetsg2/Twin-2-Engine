@@ -1,4 +1,4 @@
-#version 430
+#version 450
 //ShadowMapShader.frag
 
 layout(early_fragment_tests) in;

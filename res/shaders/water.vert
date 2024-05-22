@@ -6,6 +6,19 @@ layout (location = 0) in vec3 position;
 layout (location = 1) in vec2 texCoord;
 layout (location = 2) in vec3 normal;
 
+layout (std430, binding = 0) buffer InstanceBuffer {
+    mat4 transform[1024];
+};
+
+layout (std140, binding = 1) uniform WindowData {
+    ivec2 windowSize;
+    float nearPlane;
+    float farPlane;
+    float gamma;
+    float time;
+    float deltaTime;
+};
+
 layout (std140, binding = 0) uniform CameraData
 {
     mat4 projection;
@@ -15,23 +28,37 @@ layout (std140, binding = 0) uniform CameraData
 };
 
 out VS_OUT {
-	vec2 texCoord;
 	vec3 normal;
 	vec3 fragPos;
-	float wValue;
     vec3 objPos;
+	vec2 texCoord;
+	float wValue;
+    flat uint instance_id;
 } vs_out;
 
-struct VertWater {
-	float waterScale;
+struct MaterialInput {
+    // Colors
+    vec4 shallowColor;
+    vec4 deepColor;
+    vec4 foamColor;
+    
+    // Foam Values
+    float foamSpeed;
+    float foamScale;
+    float foamDepth;
+    
+    // Depth Values
+    float depthFade;
+
+    // Vertex Modification Data
+    float waterScale;
 	float waterHeight;
 	float waterSpeed;
 };
 
-uniform VertWater vWater;
-uniform float time;
-uniform mat4 model;
-uniform mat4 normalModel;
+layout(std140, binding = 2) uniform MaterialInputBuffer {
+    MaterialInput materialInputs[8];
+};
 
 vec2 random2(vec2 st){
     vec2 s = vec2(
@@ -81,16 +108,19 @@ float noise (vec2 p) {
 
 void main()  
 {
-	vec4 worldPos = model * vec4(position, 1.f);
+    mat4 model = transform[gl_InstanceID];
 
-    vec2 uv = worldPos.xz + (vWater.waterSpeed * time);
+	vec4 worldPos = model * vec4(position, 1.0);
+    
+    vec2 uv = worldPos.xz + (materialInputs[0].waterSpeed * time);
 
-    vec3 pos = vec3(position.x, noise(scale(uv, vWater.waterScale)) * vWater.waterHeight, position.z);
+    vec3 pos = vec3(position.x, noise(scale(uv, materialInputs[0].waterScale)) * materialInputs[0].waterHeight, position.z);
 
-	gl_Position = projection * view * model * vec4(pos, 1.f);
-	vs_out.wValue = gl_Position.w;
+	gl_Position = projection * view * model * vec4(pos, 1.0);
+	vs_out.normal = mat3(transpose(inverse(model))) * normal;
+	vs_out.fragPos = vec3(model * vec4(pos, 1.0));
 	vs_out.texCoord = texCoord;
-	vs_out.normal = mat3(normalModel) * normal;
-	vs_out.fragPos = vec3(model * vec4(pos, 1.f));
+	vs_out.wValue = gl_Position.w;
     vs_out.objPos = pos;
+    vs_out.instance_id = gl_InstanceID;
 }

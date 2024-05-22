@@ -90,6 +90,8 @@ Materials:
     path: FakeBRDF
   - id: 8
     path: roofMat
+  - id: 9
+    path: Water
 Models:
   - id: 0
     path: res/models/AK47.obj
@@ -718,11 +720,11 @@ GameObjects:
         y: 0
         z: 0
       scale:
-        x: 5
-        y: 5
-        z: 5
+        x: 16
+        y: 1
+        z: 16
       rotation:
-        x: -90
+        x: 0
         y: 0
         z: 0
     components:
@@ -730,9 +732,9 @@ GameObjects:
         enabled: true
         type: PlaneGenerator
         isTransparent: true
-        rows: 4
-        columns: 4
+        rows: 16
+        columns: 16
         materials:
-          - 1
+          - 9
     children:
       []

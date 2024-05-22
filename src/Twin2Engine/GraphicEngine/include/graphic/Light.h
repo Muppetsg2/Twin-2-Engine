@@ -1,12 +1,9 @@
-#ifndef _LIGHT_H_
-#define _LIGHT_H_
+#pragma once
 
 #include <tools/STD140Struct.h>
 
 namespace Twin2Engine::Graphic {
-	struct Light {
-
-	};
+	struct Light {};
 
 	struct PointLight : public Light {
 		alignas(16) glm::vec3 position;      // Position of the point light in world space
@@ -38,5 +35,3 @@ namespace Twin2Engine::Graphic {
 		alignas(16) float power = 1.0f;		  // Light source power
 	};
 }
-
-#endif // !_LIGHT_H_

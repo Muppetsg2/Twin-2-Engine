@@ -21,9 +21,11 @@ namespace Twin2Engine::Manager
 		static const std::unordered_map<size_t, int> _typeHandleMap;
 		static std::map<size_t, Graphic::MaterialData*> _loadedMaterials;
 
+#if _DEBUG
 		// For ImGui
 		static bool _fileDialogOpen;
 		static ImFileDialogInfo _fileDialogInfo;
+#endif
 
 		static std::map<size_t, std::string> _materialsPaths;
 
@@ -41,6 +43,9 @@ namespace Twin2Engine::Manager
 		static void UnloadAll();
 
 		static YAML::Node Serialize();
+
+#if _DEBUG
 		static void DrawEditor(bool* p_open);
+#endif
 	};
 }

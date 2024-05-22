@@ -454,23 +454,6 @@ bool HexagonalTilemap::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
-void HexagonalTilemap::DrawEditor()
-{
-	std::string id = std::string(std::to_string(this->GetId()));
-	std::string name = std::string("Hexagonal Tilemap##Component").append(id);
-	if (ImGui::CollapsingHeader(name.c_str())) {
-
-		Component::DrawInheritedFields();
-
-		float dbt = _distanceBetweenTiles;
-		ImGui::DragFloat(string("Distance Between Tiles##").append(id).c_str(), &dbt, 0.1f, 0.0f);
-
-		if (dbt != _distanceBetweenTiles) {
-			SetDistanceBetweenTiles(dbt);
-		}
-	}
-}
-
 void HexagonalTilemap::Initialize()
 {
 	_tilemap = new HexagonalTile * *[1];
@@ -501,3 +484,22 @@ void HexagonalTilemap::OnDestroy()
 
 	delete[] _tilemap;
 }
+
+#if _DEBUG
+void HexagonalTilemap::DrawEditor()
+{
+	std::string id = std::string(std::to_string(this->GetId()));
+	std::string name = std::string("Hexagonal Tilemap##Component").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {
+
+		Component::DrawInheritedFields();
+
+		float dbt = _distanceBetweenTiles;
+		ImGui::DragFloat(string("Distance Between Tiles##").append(id).c_str(), &dbt, 0.1f, 0.0f);
+
+		if (dbt != _distanceBetweenTiles) {
+			SetDistanceBetweenTiles(dbt);
+		}
+	}
+}
+#endif

@@ -1,5 +1,4 @@
-#ifndef _GAMEOBJECT_H_
-#define _GAMEOBJECT_H_
+#pragma once
 
 using std::list;
 using std::string;
@@ -91,7 +90,10 @@ namespace Twin2Engine::Core
 
 		YAML::Node Serialize() const;
 		bool Deserialize(const YAML::Node& node);
+
+#if _DEBUG
 		void DrawEditor();
+#endif
 
 #pragma region COMPONENTS_MANAGEMENT
 
@@ -241,5 +243,3 @@ Twin2Engine::Core::GameObject::GetComponentsInParent()
 	if (parent == nullptr) return nullptr;
 	return parent->GetGameObject()->GetComponents<T>();
 }
-
-#endif // !_GAMEOBJECT_H_

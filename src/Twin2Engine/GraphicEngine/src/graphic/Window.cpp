@@ -439,6 +439,7 @@ void Window::Update() const
 	FrameMarkEnd(tracy_WindowSwapBuffersName);
 }
 
+#if _DEBUG
 void Window::DrawEditor() 
 {
 	const unsigned int WINDOW_WIDTH = this->GetWindowSize().x;
@@ -547,3 +548,4 @@ void Window::DrawEditor()
 		}
 	}
 }
+#endif

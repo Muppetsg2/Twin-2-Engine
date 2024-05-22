@@ -16,13 +16,17 @@ namespace Twin2Engine::Core {
 	public:
 		virtual ~RenderableComponent();
 
-		virtual void Render();
-		virtual YAML::Node Serialize() const override;
-		virtual bool Deserialize(const YAML::Node& node) override;
-		virtual void DrawEditor() override;
-
 		bool IsTransparent() const;
 		void SetIsTransparent(bool value);
+
+		virtual void Render();
+
+		virtual YAML::Node Serialize() const override;
+		virtual bool Deserialize(const YAML::Node& node) override;
+		
+#if _DEBUG
+		virtual void DrawEditor() override;
+#endif
 
 		static std::vector<RenderableComponent*> _components;
 	};

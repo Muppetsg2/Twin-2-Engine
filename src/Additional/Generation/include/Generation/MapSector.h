@@ -13,11 +13,6 @@ namespace Generation
 
 	class MapSector : public Twin2Engine::Core::Component
 	{
-        /*CloneFunctionStart(MapSector, Twin2Engine::Core::Component)
-            //CloneField(tilemap)
-            //CloneField(region)
-            CloneField(type)
-        CloneFunctionEnd()*/
     protected:
         CloneBaseFunc(MapSector, Twin2Engine::Core::Component, type)
 
@@ -27,7 +22,6 @@ namespace Generation
 
     private:
 
-        //std::vector<Tilemap::HexagonalTile*> _sectorTiles;
         std::unordered_set<MapHexTile*> _sectorTiles;
 
     public:
@@ -35,22 +29,12 @@ namespace Generation
         MapRegion* region = nullptr;
         SectorType type = SectorType::Normal;
 
-
-        //void SetTilemap(HexagonalTilemap* tilemap);
-        //inline HexagonalTilemap* GetTilemap() const;
-        //void SetRegion(MapRegion* region);
-        //inline MapRegion* GetRegion() const;
-        //void SetType(const SectorType& type);
-        //inline SectorType GetType();
-
-        //inline const std::vector<MapHexTile*>& GetTiles() const;
         const std::unordered_set<MapHexTile*>& GetTiles() const;
         void AddTile(MapHexTile* tile);
         void AddTiles(const std::vector<MapHexTile*>& tiles);
         void JoinSector(MapSector* otherSector);
 
         void RemoveTile(MapHexTile* tile);
-        //void RemoveTiles(const std::vector<MapHexTile*>& tiles);
         void RemoveTiles(const std::unordered_set<MapHexTile*>& tiles);
         size_t GetTilesCount() const;
 
@@ -61,7 +45,10 @@ namespace Generation
 
         virtual YAML::Node Serialize() const override;
         virtual bool Deserialize(const YAML::Node& node) override;
+
+#if _DEBUG
         virtual void DrawEditor() override;
+#endif
 	};
 }
 

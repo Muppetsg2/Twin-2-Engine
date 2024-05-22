@@ -17,9 +17,6 @@ namespace Twin2Engine::Core {
 		bool _loop = false;
 		float _volume = 1.0f;
 
-		// For ImGui
-		bool _fileDialogOpen;
-		ImFileDialogInfo _fileDialogInfo;
 	public:
 
 		void SetAudio(string path);
@@ -47,6 +44,9 @@ namespace Twin2Engine::Core {
 		void OnDestroy() override;
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
+
+#if _DEBUG
 		virtual void DrawEditor() override;
+#endif
 	};
 }

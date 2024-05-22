@@ -64,9 +64,12 @@ namespace Tilemap
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
-		virtual void DrawEditor() override;
 		virtual void Initialize() override;
 		virtual void OnDestroy() override;
+
+#if _DEBUG
+		virtual void DrawEditor() override;
+#endif
 	};
 }
 #include <Tilemap/HexagonalTile.h>

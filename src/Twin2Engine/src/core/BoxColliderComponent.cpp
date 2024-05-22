@@ -143,6 +143,7 @@ bool BoxColliderComponent::Deserialize(const YAML::Node& node)
 	return true;
 }
 
+#if _DEBUG
 void BoxColliderComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -181,3 +182,4 @@ void BoxColliderComponent::DrawEditor()
 		DrawInheritedFields();
 	}
 }
+#endif

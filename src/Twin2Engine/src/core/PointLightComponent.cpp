@@ -2,6 +2,7 @@
 #include <core/GameObject.h>
 #include <core/Transform.h>
 #include <tools/YamlConverters.h>
+#include <graphic/LightingController.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;
@@ -94,6 +95,7 @@ bool PointLightComponent::Deserialize(const YAML::Node& node)
 	return true;
 }
 
+#if _DEBUG
 void PointLightComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -126,3 +128,4 @@ void PointLightComponent::DrawEditor()
 		}
 	}
 }
+#endif

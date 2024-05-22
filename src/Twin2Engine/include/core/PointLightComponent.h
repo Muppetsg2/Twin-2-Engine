@@ -1,5 +1,6 @@
 #pragma once
 
+#include <graphic/Light.h>
 #include <core/LightComponent.h>
 
 namespace Twin2Engine::Core {
@@ -24,6 +25,9 @@ namespace Twin2Engine::Core {
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
+
+#if _DEBUG
 		virtual void DrawEditor() override;
+#endif
 	};
 }

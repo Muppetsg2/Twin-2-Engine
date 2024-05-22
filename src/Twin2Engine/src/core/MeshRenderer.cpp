@@ -232,6 +232,7 @@ bool MeshRenderer::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
+#if _DEBUG
 void MeshRenderer::DrawEditor()
 {
 	std::string id = std::string(std::to_string(this->GetId()));
@@ -241,6 +242,7 @@ void MeshRenderer::DrawEditor()
 		// TODO: Zrobic
 	}
 }
+#endif
 
 bool MeshRenderer::IsTransformChanged() const
 {

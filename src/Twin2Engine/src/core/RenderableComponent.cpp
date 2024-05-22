@@ -21,6 +21,16 @@ RenderableComponent::~RenderableComponent()
 	}
 }
 
+bool RenderableComponent::IsTransparent() const
+{
+	return _isTransparent;
+}
+
+void RenderableComponent::SetIsTransparent(bool value)
+{
+	_isTransparent = value;
+}
+
 void RenderableComponent::Render() {}
 
 YAML::Node RenderableComponent::Serialize() const
@@ -39,6 +49,7 @@ bool RenderableComponent::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
+#if _DEBUG
 void RenderableComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -48,13 +59,4 @@ void RenderableComponent::DrawEditor()
 		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
 	}
 }
-
-bool RenderableComponent::IsTransparent() const
-{
-	return _isTransparent;
-}
-
-void RenderableComponent::SetIsTransparent(bool value)
-{
-	_isTransparent = value;
-}
+#endif

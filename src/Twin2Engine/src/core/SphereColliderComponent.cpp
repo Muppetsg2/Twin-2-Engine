@@ -67,7 +67,8 @@ bool SphereColliderComponent::Deserialize(const YAML::Node& node)
 	return true;
 }
 
-void Twin2Engine::Core::SphereColliderComponent::DrawEditor()
+#if _DEBUG
+void SphereColliderComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Sphere Collider##Component").append(id);
@@ -78,3 +79,4 @@ void Twin2Engine::Core::SphereColliderComponent::DrawEditor()
 		DrawInheritedFields();
 	}
 }
+#endif

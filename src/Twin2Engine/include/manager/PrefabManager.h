@@ -10,9 +10,11 @@ namespace Twin2Engine::Manager {
 		static std::hash<std::string> _hasher;
 		static std::map<size_t, Core::Prefab*> _prefabs;
 
+#if _DEBUG
 		// For ImGui
 		static bool _fileDialogOpen;
 		static ImFileDialogInfo _fileDialogInfo;
+#endif
 
 		static std::map<size_t, std::string> _prefabsPaths;
 
@@ -34,7 +36,10 @@ namespace Twin2Engine::Manager {
 		static void UnloadAll();
 
 		static YAML::Node Serialize();
+
+#if _DEBUG
 		static void DrawEditor(bool* p_open);
+#endif
 
 		friend class SceneManager;
 	};

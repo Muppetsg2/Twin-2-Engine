@@ -376,6 +376,7 @@ bool Text::Deserialize(const YAML::Node& node)
 	return true;
 }
 
+#if _DEBUG
 void Text::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -446,6 +447,7 @@ void Text::DrawEditor()
 		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
 	}
 }
+#endif
 
 void Text::SetColor(const vec4& color)
 {

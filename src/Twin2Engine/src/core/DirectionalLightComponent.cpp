@@ -3,6 +3,7 @@
 #include <core/Transform.h>
 #include <core/CameraComponent.h>
 #include <tools/YamlConverters.h>
+#include <graphic/LightingController.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;
@@ -120,6 +121,7 @@ bool DirectionalLightComponent::Deserialize(const YAML::Node& node)
 	return true;
 }
 
+#if _DEBUG
 void DirectionalLightComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -147,3 +149,4 @@ void DirectionalLightComponent::DrawEditor()
 		}
 	}
 }
+#endif

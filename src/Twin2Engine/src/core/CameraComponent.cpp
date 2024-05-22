@@ -1029,6 +1029,7 @@ bool CameraComponent::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
+#if _DEBUG
 void CameraComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -1190,3 +1191,4 @@ void CameraComponent::DrawEditor()
 		ImGui::Checkbox(string("Frustum Culling##").append(id).c_str(), &this->_isFrustumCulling);
 	}
 }
+#endif

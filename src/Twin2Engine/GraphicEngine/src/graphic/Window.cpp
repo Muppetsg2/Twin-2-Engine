@@ -432,11 +432,21 @@ const char* const tracy_WindowSwapBuffersName = "SwapBuffersWindow";
 
 void Window::Update() const
 {
+#if TRACY_PROFILER
 	ZoneScoped;
+#endif
+
 	Use();
+
+#if TRACY_PROFILER
 	FrameMarkStart(tracy_WindowSwapBuffersName);
+#endif
+
 	glfwSwapBuffers(_window);
+
+#if TRACY_PROFILER
 	FrameMarkEnd(tracy_WindowSwapBuffersName);
+#endif
 }
 
 #if _DEBUG

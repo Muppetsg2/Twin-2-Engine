@@ -123,6 +123,7 @@ void UIRenderingManager::UnloadAll() {
 
 void UIRenderingManager::Render()
 {
+#if TRACY_PROFILER
 	const char* const tracy_RenderUIShader = "Render UI Shader";
 	char* const tracy_RenderUICanvasName = new char[50];
 	char* const tracy_RenderUICanvasUBOName = new char[50];
@@ -135,24 +136,37 @@ void UIRenderingManager::Render()
 	const char* const tracy_RenderUIEnd = "Render UI End";
 
 	ZoneScoped;
+#endif
 
 	if (_uiShader != nullptr) {
+#if TRACY_PROFILER
 		FrameMarkStart(tracy_RenderUIShader);
+#endif
+
 		_uiShader->Use();
 		_uiShader->SetInt("image", 0);
 		_uiShader->SetInt("maskImage", 1);
+
+#if TRACY_PROFILER
 		FrameMarkEnd(tracy_RenderUIShader);
+#endif
 
 		glBindVertexArray(_pointVAO);
 		size_t canvasId = 0;
 		for (const auto& canvas : _renderQueue) {
+
+#if TRACY_PROFILER
 			sprintf(tracy_RenderUICanvasName, "Render UI Canvas %zu", canvasId);
 			FrameMarkStart(tracy_RenderUICanvasName);
+#endif
 			
 			CanvasData* canvasData = canvas.first;
 
+#if TRACY_PROFILER
 			sprintf(tracy_RenderUICanvasUBOName, "Render UI Canvas UBO %zu", canvasId);
 			FrameMarkStart(tracy_RenderUICanvasUBOName);
+#endif
+
 			glBindBuffer(GL_UNIFORM_BUFFER, _canvasUBO);
 			if (canvasData != nullptr) {
 				RectTransformStruct.Set("transform", canvasData->rectTransform.transform);
@@ -163,21 +177,33 @@ void UIRenderingManager::Render()
 			}
 			CanvasStruct.Set("canvasIsActive", canvasData != nullptr);
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, CanvasStruct.GetSize(), CanvasStruct.GetData().data());
+
+#if TRACY_PROFILER
 			FrameMarkEnd(tracy_RenderUICanvasUBOName);
+#endif
 
 			for (const auto& layer : canvas.second) {
+
+#if TRACY_PROFILER
 				sprintf(tracy_RenderUILayerName, "Render UI Layer %d", layer.first);
 				FrameMarkStart(tracy_RenderUILayerName);
+#endif
 
 				size_t maskId = 0;
 				for (const auto& mask : layer.second) {
+
+#if TRACY_PROFILER
 					sprintf(tracy_RenderUIMaskName, "Render UI Mask %zu", maskId);
 					FrameMarkStart(tracy_RenderUIMaskName);
+#endif
 
 					MaskData* maskData = mask.first;
 
+#if TRACY_PROFILER
 					sprintf(tracy_RenderUIMaskUBOName, "Render UI Mask UBO %zu", maskId);
 					FrameMarkStart(tracy_RenderUIMaskUBOName);
+#endif
+
 					glBindBuffer(GL_UNIFORM_BUFFER, _maskUBO);
 					if (maskData != nullptr) {
 						RectTransformStruct.Set("transform", maskData->rectTransform.transform);
@@ -198,12 +224,17 @@ void UIRenderingManager::Render()
 					}
 					MaskStruct.Set("maskIsActive", maskData != nullptr);
 					glBufferSubData(GL_UNIFORM_BUFFER, 0, MaskStruct.GetSize(), MaskStruct.GetData().data());
+
+#if TRACY_PROFILER
 					FrameMarkEnd(tracy_RenderUIMaskUBOName);
+#endif
 
 					size_t textureId = 0;
 					for (const auto& texture : mask.second) {
+#if TRACY_PROFILER
 						sprintf(tracy_RenderUITextureName, "Render UI Texture %zu", textureId);
 						FrameMarkStart(tracy_RenderUITextureName);
+#endif
 
 						Texture2D* textureData = texture.first;
 
@@ -217,13 +248,18 @@ void UIRenderingManager::Render()
 						size_t i = 0;
 						size_t elementId = 0;
 						while (renderQueue.size() > 0) {
+#if TRACY_PROFILER
 							sprintf(tracy_RenderUIElementName, "Render UI Element %zu", elementId);
 							FrameMarkStart(tracy_RenderUIElementName);
+#endif
 
 							const UIElementQueueData& uiElem = renderQueue.front();
 
+#if TRACY_PROFILER
 							sprintf(tracy_RenderUIElementDataName, "Render UI Element Data %zu", elementId);
 							FrameMarkStart(tracy_RenderUIElementDataName);
+#endif
+
 							RectTransformStruct.Set("transform", uiElem.rectTransform.transform);
 							RectTransformStruct.Set("size", uiElem.rectTransform.size);
 
@@ -239,7 +275,10 @@ void UIRenderingManager::Render()
 								UIElementStruct.Set("sprite", SpriteStruct);
 							}
 							UIElementStruct.Set("sprite.isActive", textureData != nullptr);
+
+#if TRACY_PROFILER
 							FrameMarkEnd(tracy_RenderUIElementDataName);
+#endif
 
 							UIElementsBufferStruct.Set("uiElements[" + to_string(i) + "]", UIElementStruct);
 
@@ -251,7 +290,10 @@ void UIRenderingManager::Render()
 
 							renderQueue.pop();
 
+#if TRACY_PROFILER
 							FrameMarkEnd(tracy_RenderUIElementName);
+#endif
+
 							++elementId;
 						}
 
@@ -260,29 +302,47 @@ void UIRenderingManager::Render()
 							glDrawArraysInstanced(GL_POINTS, 0, 1, i);
 						}
 
+#if TRACY_PROFILER
 						FrameMarkEnd(tracy_RenderUITextureName);
+#endif
+
 						++textureId;
 					}
 
+#if TRACY_PROFILER
 					FrameMarkEnd(tracy_RenderUIMaskName);
+#endif
+
 					++maskId;
 				}
 
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_RenderUILayerName);
+#endif
 			}
 
+#if TRACY_PROFILER
 			FrameMarkEnd(tracy_RenderUICanvasName);
+#endif
+
 			++canvasId;
 		}
 
+#if TRACY_PROFILER
 		FrameMarkStart(tracy_RenderUIEnd);
+#endif
+
 		_renderQueue.clear();
 		glBindBuffer(GL_UNIFORM_BUFFER, NULL);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, NULL);
 		glBindVertexArray(NULL);
+
+#if TRACY_PROFILER
 		FrameMarkEnd(tracy_RenderUIEnd);
+#endif
 	}
 
+#if TRACY_PROFILER
 	delete[] tracy_RenderUICanvasName;
 	delete[] tracy_RenderUICanvasUBOName;
 	delete[] tracy_RenderUILayerName;
@@ -291,6 +351,7 @@ void UIRenderingManager::Render()
 	delete[] tracy_RenderUITextureName;
 	delete[] tracy_RenderUIElementName;
 	delete[] tracy_RenderUIElementDataName;
+#endif
 }
 
 void UIRenderingManager::Render(UITextData text) 

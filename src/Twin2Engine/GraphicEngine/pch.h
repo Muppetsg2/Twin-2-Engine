@@ -40,7 +40,7 @@
 #include <stb_image.h>
 
 // TRACY
-#ifdef TRACY_PROFILER
+#if TRACY_PROFILER
 	#include <tracy/Tracy.hpp>
 	#include <tracy/TracyOpenGL.hpp>
 	#define TRACY_ENABLE

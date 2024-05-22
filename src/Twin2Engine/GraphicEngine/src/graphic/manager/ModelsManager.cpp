@@ -1347,6 +1347,7 @@ YAML::Node ModelsManager::Serialize()
     return models;
 }
 
+#if _DEBUG
 void ModelsManager::DrawEditor(bool* p_open)
 {
     if (!ImGui::Begin("Models Manager", p_open)) {
@@ -1407,3 +1408,4 @@ void ModelsManager::DrawEditor(bool* p_open)
 
     ImGui::End();
 }
+#endif

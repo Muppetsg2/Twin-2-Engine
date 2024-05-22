@@ -11,8 +11,6 @@
 #include <graphic/LightingController.h>
 #include <graphic/Window.h>
 
-#define DEBUG_GRAPHIC_ENGINE false
-
 namespace Twin2Engine::Graphic
 {
 #if _DEBUG

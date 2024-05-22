@@ -249,9 +249,10 @@ bool AudioComponent::Deserialize(const YAML::Node& node)
 	if (!node["audio"] || !node["loop"] || !node["volume"] ||
 		!Component::Deserialize(node)) return false;
 
-	_audioId = SceneManager::GetAudio(node["audio"].as<size_t>());
 	_loop = node["loop"].as<bool>();
 	_volume = node["volume"].as<float>();
+
+	SetAudio(SceneManager::GetAudio(node["audio"].as<size_t>()));
 
 	return true;
 }
@@ -325,10 +326,13 @@ void AudioComponent::DrawEditor()
 			ImGui::Text("Play Time: %02.0f:%02.0f", std::floor(this->GetPlayTime() / 60.0), mod(this->GetPlayTime(), 60));
 			ImGui::Text("Position: %02.0f:%02.0f / %02.0f:%02.0f", std::floor(pos / 60.f), mod((double)pos, 60.0), std::floor(len / 60.f), mod((double)len, 60.0));
 
+			double minut = std::floor((double)pos / 60.0);
+			double seconds = mod((double)pos, 60.0);
+
 			if (ImGui::SliderFloat(string("Position Slider##").append(id).c_str(), &pos, 0.f, len, std::vformat(string_view("{:02.0f}:{:02.0f}"),
-				make_format_args(
-					std::floor(pos / 60.f),
-					mod((double)pos, 60.0)
+				std::make_format_args(
+					minut,
+					seconds
 				)).c_str()))
 			{
 				this->SetPlayPosition((double)pos);

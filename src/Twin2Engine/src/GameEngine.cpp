@@ -1,5 +1,4 @@
 #include <GameEngine.h>
-#include <tracy/Tracy.hpp>
 
 using namespace Twin2Engine;
 using namespace Twin2Engine::Tools;
@@ -77,6 +76,7 @@ void GameEngine::Render()
     LateRender();
 }
 
+#if TRACY_PROFILER
 const char* const tracy_FrameName = "Frame";
 const char* const tracy_OnInputFrameName = "OnInput";
 const char* const tracy_UpdateFrameName = "Update";
@@ -86,9 +86,11 @@ const char* const tracy_SceneManagerUpdateName = "SceneManagerUpdate";
 const char* const tracy_TimeUpdateName = "TimeUpdate";
 const char* const tracy_InputUpdateName = "InputUpdate";
 const char* const tracy_WindowUpdateName = "WindowUpdate";
+#endif
 
 void GameEngine::EndFrame()
 {
+#if TRACY_PROFILER
     ZoneScoped;
     // Poll and handle events (inputs, window resize, etc.)
     // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
@@ -96,47 +98,85 @@ void GameEngine::EndFrame()
     // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
     // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
     FrameMarkStart(tracy_SceneManagerUpdateName);
+#endif
+
     SceneManager::Update();
+
+#if TRACY_PROFILER
     FrameMarkEnd(tracy_SceneManagerUpdateName);
     FrameMarkStart(tracy_TimeUpdateName);
+#endif
+
     Time::Update();
+
+#if TRACY_PROFILER
     FrameMarkEnd(tracy_TimeUpdateName);
     FrameMarkStart(tracy_InputUpdateName);
+#endif
+
     Input::Update();
+
+#if TRACY_PROFILER
     FrameMarkEnd(tracy_InputUpdateName);
     FrameMarkStart(tracy_WindowUpdateName);
+#endif
+
     Window::GetInstance()->Update();
+
+#if TRACY_PROFILER
     FrameMarkEnd(tracy_WindowUpdateName);
     TracyGpuCollect;
+#endif
 }
 
 void GameEngine::Loop()
 {
+#if TRACY_PROFILER
     ZoneScoped;
     TracyGpuContext;
+#endif
+
     // Main loop
     while (!Window::GetInstance()->IsClosed())
     {
+#if TRACY_PROFILER
         FrameMarkNamed(tracy_FrameName);
         // Process I/O operations here
         FrameMarkStart(tracy_OnInputFrameName);
+#endif
+
         OnInput();
+        
+#if TRACY_PROFILER
         FrameMarkEnd(tracy_OnInputFrameName);
 
         // Update game objects' state here
         FrameMarkStart(tracy_UpdateFrameName);
+#endif
+
         Update();
+
+#if TRACY_PROFILER
         FrameMarkEnd(tracy_UpdateFrameName);
 
         // OpenGL rendering code here
         FrameMarkStart(tracy_RenderFrameName);
+#endif
+
         Render();
+
+#if TRACY_PROFILER
         FrameMarkEnd(tracy_RenderFrameName);
 
         // End frame and swap buffers (double buffering)
         FrameMarkStart(tracy_EndFrameName);
+#endif
+
         EndFrame();
+
+#if TRACY_PROFILER
         FrameMarkEnd(tracy_EndFrameName);
+#endif
     }
 }
 
@@ -186,7 +226,9 @@ bool GameEngine::Init(const string& window_name, int32_t window_width, int32_t w
 
 void GameEngine::Start()
 {
+#if TRACY_PROFILER
     tracy::SetThreadName("GameEngine");
+#endif
     Loop();
     End();
 }

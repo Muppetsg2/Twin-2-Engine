@@ -167,7 +167,8 @@ bool MapRegion::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
-void Generation::MapRegion::DrawEditor()
+#if _DEBUG
+void MapRegion::DrawEditor()
 {
 	std::string id = std::string(std::to_string(this->GetId()));
 	std::string name = std::string("Map Region##Component").append(id);
@@ -179,3 +180,4 @@ void Generation::MapRegion::DrawEditor()
 		ImGui::PopFont();
 	}
 }
+#endif

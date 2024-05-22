@@ -107,7 +107,8 @@ void PlaneGenerator::Generate()
 
 void PlaneGenerator::Initialize()
 {
-    _modelName = std::vformat(std::string_view(_modelName), std::make_format_args("{", this->GetId(), "}"));
+    size_t id = this->GetId();
+    _modelName = std::vformat(std::string_view(_modelName), std::make_format_args("{", id, "}"));
     Generate();
 	MeshRenderer::Initialize();
 }
@@ -148,6 +149,7 @@ bool PlaneGenerator::Deserialize(const YAML::Node& node)
     return true;
 }
 
+#if _DEBUG
 void PlaneGenerator::DrawEditor() 
 {
     std::string id = std::string(std::to_string(this->GetId()));
@@ -180,6 +182,7 @@ void PlaneGenerator::DrawEditor()
         // TODO: Dodac opcje zmiany Material
     }
 }
+#endif
 
 unsigned int PlaneGenerator::GetRowsCount()
 {

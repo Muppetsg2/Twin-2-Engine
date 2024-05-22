@@ -3,9 +3,12 @@
 using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
-const char* const tracy_zone_RenderMeshes = "GraphicEngine::Render";
-const char* const tracy_RenderMeshes = "RenderMeshes";
-const char* const tracy_RenderUI = "RenderUI";
+#if TRACY_PROFILER
+//const char* const tracy_zone_RenderMeshesName = "GraphicEngine::Render";
+const char* const tracy_RenderMeshesName = "RenderMeshes";
+const char* const tracy_RenderUIName = "RenderUI";
+const char* const tracy_PreRenderName = "PreRender";
+#endif
 
 #if _DEBUG
 void Twin2Engine::Graphic::glfw_error_callback(int error, const char* description)
@@ -73,7 +76,7 @@ void GraphicEngine::Init(const std::string& window_name, int32_t window_width, i
 	spdlog::info("Successfully initialized OpenGL loader!");
 
 
-#ifdef _DEBUG
+#if _DEBUG
 	// Debugging
 	glEnable(GL_DEBUG_OUTPUT);
 	glDebugMessageCallback(ErrorMessageCallback, 0);
@@ -125,27 +128,41 @@ void GraphicEngine::UpdateBeforeRendering()
 
 void GraphicEngine::Render()
 {
+#if TRACY_PROFILER
 	ZoneScoped;
-	FrameMarkStart(tracy_RenderMeshes);
+	FrameMarkStart(tracy_RenderMeshesName);
+#endif
+
 	MeshRenderingManager::RenderStatic();
-	FrameMarkEnd(tracy_RenderMeshes);
+
+#if TRACY_PROFILER
+	FrameMarkEnd(tracy_RenderMeshesName);
+#endif
 }
 
 void GraphicEngine::RenderGUI() 
 {
-	FrameMarkStart(tracy_RenderUI);
+#if TRACY_PROFILER
+	ZoneScoped;
+	FrameMarkStart(tracy_RenderUIName);
+#endif
+
 	UIRenderingManager::Render();
-	FrameMarkEnd(tracy_RenderUI);
+
+#if TRACY_PROFILER
+	FrameMarkEnd(tracy_RenderUIName);
+#endif
 }
 
 void GraphicEngine::PreRender()
 {
-#if DEBUG_GRAPHIC_ENGINE
-	float startDepthRenderingTime = glfwGetTime();
+#if TRACY_PROFILER
+	ZoneScoped;
+	FrameMarkStart(tracy_PreRenderName);
 #endif
 	MeshRenderingManager::PreRender();
-	//MeshRenderingManager::RenderDepthMapStatic();
-#if DEBUG_GRAPHIC_ENGINE
-	SPDLOG_INFO("Depth Randering Time: {}", glfwGetTime() - startDepthRenderingTime);
+
+#if TRACY_PROFILER
+	FrameMarkEnd(tracy_PreRenderName);
 #endif
 }

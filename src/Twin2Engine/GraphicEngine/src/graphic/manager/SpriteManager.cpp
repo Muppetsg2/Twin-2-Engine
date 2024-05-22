@@ -122,6 +122,7 @@ YAML::Node SpriteManager::Serialize()
     return sprites;
 }
 
+#if _DEBUG
 void SpriteManager::DrawEditor(bool* p_open)
 {
     if (!ImGui::Begin("Sprite Manager", p_open)) {
@@ -133,3 +134,4 @@ void SpriteManager::DrawEditor(bool* p_open)
 
     ImGui::End();
 }
+#endif

@@ -12,12 +12,14 @@ namespace Editor::Common
         std::string messageContent;
         spdlog::level::level_enum level;
         spdlog::source_loc source;
+        size_t count;
 
-        ImGuiLogMessage(const std::string& messageContent, const spdlog::level::level_enum& level, const spdlog::source_loc& source)
+        ImGuiLogMessage(const std::string& messageContent, const spdlog::level::level_enum& level, const spdlog::source_loc& source, size_t count)
         {
             ImGuiLogMessage::messageContent = messageContent;
             ImGuiLogMessage::level = level;
             ImGuiLogMessage::source = source;
+            ImGuiLogMessage::count = count;
         }
     };
 
@@ -35,6 +37,7 @@ namespace Editor::Common
     struct MessageToDisplay {
         ImVec4 color;
         std::string content;
+        size_t count;
     };
 
     template<typename Mutex>
@@ -110,8 +113,22 @@ namespace Editor::Common
             this->formatter_->format(msg, formatted);
             std::string message = fmt::to_string(formatted);
 
-            // TODO: Dodac by powtarzajace sie wiadomosci dostawaly ++size_t jak w Unity jesli wystepuja od razu po sobie (Dodanie z wyswietlaniem liczby nie wplywa na max_draw, bo to jest liczone jak jedno tylko z liczba)
-            MessageHolder::logMessages.emplace_back(ImGuiLogMessage(message, msg.level, msg.source));
+            bool saved = false;
+            size_t size = MessageHolder::logMessages.size();
+            if (size > 1) {
+                ImGuiLogMessage& m = MessageHolder::logMessages[size - 1];
+                std::string m1 = message.substr(26);
+                std::string m2 = m.messageContent.substr(26);
+                if (msg.level == m.level && msg.source.filename == m.source.filename && msg.source.line == m.source.line && m1 == m2) {
+                    if (m.count != ULLONG_MAX) ++m.count;
+                    m.messageContent = message;
+                    saved = true;
+                }
+            }
+            
+            if (!saved) {
+                MessageHolder::logMessages.emplace_back(ImGuiLogMessage(message, msg.level, msg.source, 1));
+            }
 
             _mutex.lock();
 
@@ -249,14 +266,30 @@ namespace Editor::Common
                             break;
                         }
 
-                        messages.push_back({ .color = textColor, .content = MessageHolder::logMessages[index - 1].messageContent });
+                        messages.push_back({ .color = textColor, .content = MessageHolder::logMessages[index - 1].messageContent, .count = MessageHolder::logMessages[index - 1].count });
                         //ImGui::TextColored(textColor, "%s", MessageHolder::logMessages[index].messageContent.c_str());
                     }
                 }
             }
 
+            const ImVec2 p = ImGui::GetCursorScreenPos();
+            const float maxTextWidth = ImGui::CalcTextSize("999+").x;
+            ImDrawList* draw_list = ImGui::GetWindowDrawList();
+            float x = p.x + ImGui::GetContentRegionAvail().x - 30, y = p.y ;
+
             for (size_t i = messages.size(); i > 0; --i) {
                 ImGui::TextColored(messages[i - 1].color, "%s", messages[i - 1].content.c_str());
+
+                if (messages[i - 1].count > 1) {
+                    draw_list->AddRectFilled(ImVec2(x, y), ImVec2(x + maxTextWidth, y + ImGui::GetTextLineHeight()), ImColor(ImVec4(0.5f, 0.5f, 0.5f, 1.0f)), 10.0f);
+                    std::string text = messages[i - 1].count > 999 ? std::string("999+") : std::to_string(messages[i - 1].count);
+
+                    float width = ImGui::CalcTextSize(text.c_str()).x;
+
+                    draw_list->AddText(ImVec2(x + (maxTextWidth - width) / 2.f, y), ImColor(ImVec4(1.0f, 1.0f, 1.0f, 1.0f)), text.c_str());
+                }
+
+                y += ImGui::GetTextLineHeight() + 4;
             }
 
             messages.clear();

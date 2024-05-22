@@ -1,4 +1,4 @@
-#define VERSION "0.7"
+#define TWIN2_VERSION "0.7"
 
 #define USE_IMGUI_CONSOLE_OUTPUT true
 #define USE_WINDOWS_CONSOLE_OUTPUT false
@@ -163,7 +163,7 @@ int main(int, char**)
     fileLoggerSink->StartLogging();
 #endif
 
-    SPDLOG_INFO("Twin^2 Engine Version: %s", VERSION);
+    SPDLOG_INFO("Twin^2 Engine Version: {}", TWIN2_VERSION);
 
 #if _DEBUG
     SPDLOG_INFO("Configuration: DEBUG");
@@ -273,14 +273,23 @@ int main(int, char**)
 
 #if _DEBUG
     GameEngine::LateRender += []() -> void {
-        ZoneScoped;
 
+#if TRACY_PROFILER
+        ZoneScoped;
+#endif
+
+#if TRACY_PROFILER
         // Draw ImGui
         FrameMarkStart(tracy_RenderingImGui);
+#endif
+
         begin_imgui();
         render_imgui(); // edit this function to add your own ImGui controls
-        end_imgui(); // this call effectively renders ImGui    
+        end_imgui(); // this call effectively renders ImGui
+
+#if TRACY_PROFILER
         FrameMarkEnd(tracy_RenderingImGui);
+#endif
     };
 
     GameEngine::EarlyEnd += []() -> void {
@@ -498,7 +507,10 @@ void begin_imgui()
 
 void render_imgui()
 {
+#if TRACY_PROFILER
     ZoneScoped;
+#endif
+
     if (Input::GetCursorState() == CURSOR_STATE::NORMAL)
     {
         SceneManager::DrawCurrentSceneEditor();
@@ -507,9 +519,15 @@ void render_imgui()
 
 #if USE_IMGUI_CONSOLE_OUTPUT
 
+#if TRACY_PROFILER
         FrameMarkStart(tracy_ImGuiDrawingConsole);
+#endif
+
         ImGuiSink<mutex>::Draw();
+
+#if TRACY_PROFILER
         FrameMarkEnd(tracy_ImGuiDrawingConsole);
+#endif
 
 #endif
         

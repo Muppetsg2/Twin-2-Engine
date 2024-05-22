@@ -1,7 +1,5 @@
 #pragma once
 
-//#define USE_BOUNDING_VOLUMES
-
 #include <physic/GameCollider.h>
 #include <physic/BoundingVolume.h>
 
@@ -22,10 +20,6 @@ namespace Twin2Engine::Physic {
 		std::unordered_set<GameCollider*> Layer2;
 		std::unordered_set<GameCollider*> Layer3;
 		std::unordered_set<GameCollider*> Layer4;
-
-#ifdef USE_BOUNDING_VOLUMES
-
-#endif // USE_BOUNDING_VOLUMES
 
 		static CollisionManager* Instance();
 		static void UnloadAll();

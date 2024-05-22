@@ -44,6 +44,8 @@ using namespace Humans;
 #include <Generation/Generators/RegionsGeneratorByKMeans.h>
 #include <Generation/Generators/SectorGeneratorForRegionsByKMeans.h>
 
+#include <Humans/HumansGenerator.h>
+
 // YAML CONVERTERS
 #include <tools/YamlConverters.h>
 #include <Generation/YamlConverters.h>

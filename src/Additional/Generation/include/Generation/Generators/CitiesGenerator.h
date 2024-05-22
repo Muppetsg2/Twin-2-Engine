@@ -2,6 +2,7 @@
 
 #include <Generation/Generators/AMapElementGenerator.h>
 
+#include <Generation/CitiesManager.h>
 #include <Generation/MapRegion.h>
 #include <Generation/VectorShuffler.h>
 
@@ -23,7 +24,7 @@ namespace Generation::Generators
 		virtual void Generate(Tilemap::HexagonalTilemap* tilemap) override;
 
 		SO_SERIALIZE()
-			SO_DESERIALIZE()
+		SO_DESERIALIZE()
 
 #if _DEBUG
 		virtual void DrawEditor() override

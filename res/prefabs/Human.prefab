@@ -85,55 +85,9 @@ Audio:
     path: res/music/acoustic-guitar.mp3
 Materials:
   - id: 0
-    path: hexagonMat
-  - id: 1
     path: Basic2
-  - id: 2
-    path: GreenHexTile
-  - id: 3
-    path: ColoredHexTile
-  - id: 4
-    path: metal
-  - id: 5
-    path: multiTexture
-  - id: 6
-    path: textured
-  - id: 7
-    path: deska
-  - id: 8
-    path: CityMaterial
-  - id: 9
-    path: BlueHexTile
-  - id: 10
-    path: wallMat
-  - id: 11
-    path: MountainsUnlit
-  - id: 12
-    path: FakeBRDF
-  - id: 13
-    path: RedHexTile
-  - id: 14
-    path: roofMat
 Models:
   - id: 0
-    path: res/models/AK47.obj
-  - id: 1
-    path: res/models/mountain.obj
-  - id: 2
-    path: res/models/radioStation.obj
-  - id: 3
-    path: res/models/mount3.obj
-  - id: 4
-    path: res/models/hexagon.obj
-  - id: 5
-    path: res/models/castle.obj
-  - id: 6
-    path: "{Cube}"
-  - id: 7
-    path: "{Plane}"
-  - id: 8
-    path: res/models/city.obj
-  - id: 9
     path: "{Sphere}"
 Prefabs:
   - id: 0
@@ -158,7 +112,7 @@ Prefabs:
     path: res/prefabs/tilemap/mapElements/mountains.prefab
 ScriptableObjects: ~
 Root:
-  name: New GameObject
+  name: Human
   isStatic: false
   isActive: true
   transform:
@@ -169,9 +123,9 @@ Root:
       y: 0
       z: 0
     scale:
-      x: 1
-      y: 1
-      z: 1
+      x: 0.05
+      y: 0.05
+      z: 0.05
     rotation:
       x: 0
       y: 0
@@ -181,9 +135,9 @@ Root:
       enabled: true
       type: MeshRenderer
       isTransparent: false
-      model: 10
+      model: 0
       materials:
-        []
+        - 0
     - id: 1272
       enabled: true
       type: Human

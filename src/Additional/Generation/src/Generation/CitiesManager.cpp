@@ -46,10 +46,10 @@ void CitiesManager::MapCitiesConnections(bool byRegions) {
     }
 
     for (size_t i = 0; i < cities.size(); ++i) {
-        auto adjacentSectors = cities[i]->GetTransform()->GetParent()->GetGameObject()->GetComponent<MapSector>()->GetAdjacentSectors();
+        auto adjacentSectors = cities[i]->GetTransform()->GetParent()->GetParent()->GetGameObject()->GetComponent<MapSector>()->GetAdjacentSectors();
 
         for (size_t j = i + 1; j < cities.size(); ++j) {
-            if (std::find(adjacentSectors.begin(), adjacentSectors.end(), cities[j]->GetTransform()->GetParent()->GetGameObject()->GetComponent<MapSector>()) != adjacentSectors.end()) {
+            if (std::find(adjacentSectors.begin(), adjacentSectors.end(), cities[j]->GetTransform()->GetParent()->GetParent()->GetGameObject()->GetComponent<MapSector>()) != adjacentSectors.end()) {
                 citiesGraph[cities[i]].push_back(cities[j]);
                 citiesGraph[cities[j]].push_back(cities[i]);
             }

@@ -1,4 +1,4 @@
-#version 430
+#version 450
 //TexturedLightingShader.frag
 
 layout (location = 0) in vec3 position;
@@ -21,6 +21,8 @@ layout (std140, binding = 1) uniform WindowData
     float nearPlane;
     float farPlane;
     float gamma;
+    float time;
+    float deltaTime;
 };
 
 layout(std140, binding = 2) uniform MaterialInputBuffer {
@@ -233,5 +235,6 @@ void main()
     float visibility_factor = isSSAO ? texture(occlusionMap, textureLookupPos).r : 1.0;
 
     FragColor *= vec4(LightColor + AmbientLight * visibility_factor, 1.0); //
-	FragColor = vec4(pow(FragColor.rgb, vec3(gamma)), 1.0);
+	//FragColor = vec4(pow(FragColor.rgb, vec3(gamma)), 1.0);
+	FragColor = vec4(FragColor.rgb, 1.0);
 }

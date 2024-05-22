@@ -1,0 +1,48 @@
+shaderprogram:
+  name: origin/Water
+  shaders:
+    - water.vert
+    - water.frag
+  parameters:
+    - name: shallowColor
+      type: vec4
+      value:
+        - 0
+        - 0
+        - 1
+        - 1
+    - name: deepColor
+      type: vec4
+      value:
+        - 0
+        - 0
+        - 0
+        - 1
+    - name: foamColor
+      type: vec4
+      value:
+        - 1
+        - 1
+        - 1
+        - 1
+    - name: foamSpeed
+      type: float
+      value: 0.1
+    - name: foamScale
+      type: float
+      value: 1
+    - name: foamDepth
+      type: float
+      value: 0.2
+    - name: depthFade
+      type: float
+      value: 0.1
+    - name: waterScale
+      type: float
+      value: 1
+    - name: waterHeight
+      type: float
+      value: 1
+    - name: waterSpeed
+      type: float
+      value: 1

@@ -1,0 +1,4 @@
+material:
+  name: enviroment/CloudMaterial
+  shader: origin/CloudShader
+  parameters: []

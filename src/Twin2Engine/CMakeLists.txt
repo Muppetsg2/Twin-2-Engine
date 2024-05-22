@@ -45,6 +45,11 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE GLFW_INCLUDE_NONE)
 target_compile_definitions(${PROJECT_NAME} PRIVATE LIBRARY_SUFFIX="")
 target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG="$<IF:$<CONFIG:Debug>,1,0>")
 
+get_property(tracy_profiler GLOBAL PROPERTY TRACY_PROFILER)
+if (tracy_profiler)
+	target_compile_definitions(${PROJECT_NAME} PUBLIC TRACY_PROFILER)
+endif()
+
 get_property(is_miniaudio GLOBAL PROPERTY IS_MINI_AUDIO)
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${Twin2Engine_PRECOMPILE_HEADERS_FILE})

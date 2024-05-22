@@ -17,6 +17,8 @@ const char* const tracy_RenderingImGui = "RenderingImGui";
 
 #include <GameEngine.h>
 
+// GAME SCRIPTS
+#include <PlaneGenerator.h>
 
 // TILEMAP
 #include <Tilemap/HexagonalTilemap.h>
@@ -224,6 +226,13 @@ int main(int, char**)
 
 #pragma endregion
 
+#pragma region GAME_SCRIPTS_COMPONENTS
+
+    ADD_COMPONENT("PlaneGenerator", PlaneGenerator);
+
+#pragma endregion
+
+
     SceneManager::GetOnSceneLoaded() += [](std::string sceneName) -> void {
         Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
         image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
@@ -311,8 +320,6 @@ int main(int, char**)
         update();
     };
 
-    
-
     GameEngine::Start();
 
 #if _DEBUG
@@ -324,7 +331,6 @@ int main(int, char**)
 #else
     fileLoggerSink->StopLogging();
 #endif
-
     return 0;
 }
 
@@ -449,7 +455,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void update()
 {
     // Update game objects' state here
-    text->SetText(L"Time: " + std::to_wstring(Time::GetDeltaTime()));
+    text->SetText(L"FPS: " + std::to_wstring(1.f / Time::GetDeltaTime()));
     colorSpan -= Time::GetDeltaTime() * 0.2f;
     if (colorSpan <= 0.f) {
         colorSpan = 1.f;

@@ -55,6 +55,11 @@ namespace Twin2Engine::Manager {
 		static std::queue<Core::GameObject*> _objectsToDestroy;
 		static void DestroyObject(Core::GameObject* obj);
 		static void DestroyObjects();
+
+		static void AddComponentWithId(Core::Component* comp);
+		static void RemoveComponentWithId(Core::Component* comp);
+
+		friend class Core::Component;
 	public:
 		static void AddScene(const std::string& name, Core::Scene* scene);
 		static void AddScene(const std::string& name, const std::string& path);

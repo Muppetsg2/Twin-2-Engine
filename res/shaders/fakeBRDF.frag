@@ -1,4 +1,4 @@
-#version 430
+#version 450
 
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 normal;
@@ -15,6 +15,8 @@ layout (std140, binding = 1) uniform WindowData
     float nearPlane;
     float farPlane;
     float gamma;
+    float time;
+    float deltaTime;
 };
 
 //struct MaterialInput

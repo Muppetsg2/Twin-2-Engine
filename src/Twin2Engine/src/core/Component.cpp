@@ -1,8 +1,9 @@
 #include <core/Component.h>
 #include <core/GameObject.h>
-#include <tools/YamlConverters.h>
+#include <manager/SceneManager.h>
 
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Manager;
 using namespace std;
 
 size_t Component::_currentFreeId = 0;
@@ -43,6 +44,7 @@ void Component::DrawInheritedFields()
 
 Component::~Component()
 {
+	SceneManager::RemoveComponentWithId(this);
 	_gameObject = nullptr;
 }
 
@@ -127,6 +129,7 @@ string Component::GetName() const
 void Component::Init(GameObject* obj)
 {
 	_id = GetFreeId();
+	SceneManager::AddComponentWithId(this);
 	_gameObject = obj;
 	_enabled = true;
 	Initialize();

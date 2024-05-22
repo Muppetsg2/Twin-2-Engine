@@ -86,7 +86,7 @@ void MeshRenderingManager::UnloadAll()
 	_depthQueueDynamic.clear();
 }
 
-void MeshRenderingManager::RegisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer)
+bool MeshRenderingManager::RegisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer)
 {
 	if (meshRenderer->GetModel() != nullptr && meshRenderer->GetMaterialCount() != 0)
 	{
@@ -99,50 +99,233 @@ void MeshRenderingManager::RegisterStatic(Twin2Engine::Core::MeshRenderer* meshR
 			queueElement.meshRenderers.push_back(meshRenderer);
 			queueElement.modelTransforms.push_back(meshRenderer->GetTransform()->GetTransformMatrix());
 		}
+
+		return true;
 	}
+
+	return false;
 }
 
-void MeshRenderingManager::UnregisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer)
+bool MeshRenderingManager::UnregisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer)
 {
 	if (meshRenderer->GetModel() != nullptr && meshRenderer->GetMaterialCount() != 0)
 	{
+		// MAMY WSZYSTKIE DANE WIEC PRZECHODZIMY PO KAZDYM MESHU I GO WYREJESTROWUJEMY
 		InstantiatingMesh* mesh;
 		for (size_t i = 0; i < meshRenderer->GetMeshCount(); ++i) {
 			mesh = meshRenderer->GetMesh(i);
 			Material material = meshRenderer->GetMaterial(i);
 
-			auto& meshRenderers = _renderQueueStatic[material.GetShader()][material][mesh].meshRenderers;
+			auto& meshRenderingData = _renderQueueStatic[material.GetShader()][material][mesh];
 
-			for (size_t i = 0; i < meshRenderers.size(); i++)
+			size_t pos = 0;
+			for (size_t z = 0; z < meshRenderingData.meshRenderers.size(); ++z)
 			{
-				if (meshRenderers[i] == meshRenderer)
+				if (meshRenderingData.meshRenderers[z] == meshRenderer)
 				{
-					meshRenderers.erase(meshRenderers.cbegin() + i);
-
-					_renderQueueStatic[material.GetShader()][material][mesh]
-						.modelTransforms.erase(_renderQueueStatic[material.GetShader()][material][mesh].modelTransforms.cbegin() + i);
-
-					if (_renderQueueStatic[material.GetShader()][material][mesh].meshRenderers.size() == 0) {
-						_renderQueueStatic[material.GetShader()][material].erase(mesh);
-
-						if (_renderQueueStatic[material.GetShader()][material].size() == 0) {
-							_renderQueueStatic[material.GetShader()].erase(material);
-
-							if (_renderQueueStatic[material.GetShader()].size() == 0) {
-								_renderQueueStatic.erase(material.GetShader());
-							}
-						}
-					}
+					pos = z;
 					break;
 				}
 			}
+
+			if (meshRenderingData.meshRenderers.size() != 0) {
+				meshRenderingData.meshRenderers.erase(meshRenderingData.meshRenderers.cbegin() + pos);
+			}
+			if (meshRenderingData.modelTransforms.size() != 0) {
+				meshRenderingData.modelTransforms.erase(meshRenderingData.modelTransforms.cbegin() + pos);
+			}
+
+			if (meshRenderingData.meshRenderers.size() == 0) {
+				_renderQueueStatic[material.GetShader()][material].erase(mesh);
+
+				if (_renderQueueStatic[material.GetShader()][material].size() == 0) {
+					_renderQueueStatic[material.GetShader()].erase(material);
+
+					if (_renderQueueStatic[material.GetShader()].size() == 0) {
+						_renderQueueStatic.erase(material.GetShader());
+					}
+				}
+			}
 		}
+
+		return true;
 	}
+	else if (meshRenderer->GetModel() == nullptr && meshRenderer->GetMaterialCount() != 0)
+	{
+		// NIE MAMY MESHY, ALE WIEMY, ZE KAZDY MESH W MODELU MUSI MIEC JEDEN Z MATERIALOW. 
+		// PRZECHODZIMY WIEC PO MESACH W KAZDYM MATERIALE I SPRAWDZAMY CZY POSIADA KTORYS MESH NASZ MESH_RENDERER
+		std::vector<DataToUnregister> pos = std::vector<DataToUnregister>();
+
+		for (size_t i = 0; i < meshRenderer->GetMaterialCount(); ++i) {
+
+			Material material = meshRenderer->GetMaterial(i);
+			auto& materialPairs = _renderQueueStatic[material.GetShader()][material];
+
+			for (auto& meshPair : materialPairs) {
+
+				for (size_t z = 0; z < materialPairs[meshPair.first].meshRenderers.size(); ++z)
+				{
+					if (materialPairs[meshPair.first].meshRenderers[z] == meshRenderer)
+					{
+						pos.push_back(DataToUnregister{
+							._mat = material,
+							._mesh = meshPair.first,
+							._pos = z
+							});
+						break;
+					}
+				}
+			}
+		}
+
+		for (auto& p : pos) {
+			auto& meshRenderingData = _renderQueueStatic[p._mat.GetShader()][p._mat][p._mesh];
+
+			if (meshRenderingData.meshRenderers.size() != 0) {
+				meshRenderingData.meshRenderers.erase(meshRenderingData.meshRenderers.cbegin() + p._pos);
+			}
+			if (meshRenderingData.modelTransforms.size() != 0) {
+				meshRenderingData.modelTransforms.erase(meshRenderingData.modelTransforms.cbegin() + p._pos);
+			}
+
+			if (meshRenderingData.meshRenderers.size() == 0) {
+				_renderQueueStatic[p._mat.GetShader()][p._mat].erase(p._mesh);
+
+				if (_renderQueueStatic[p._mat.GetShader()][p._mat].size() == 0) {
+					_renderQueueStatic[p._mat.GetShader()].erase(p._mat);
+
+					if (_renderQueueStatic[p._mat.GetShader()].size() == 0) {
+						_renderQueueStatic.erase(p._mat.GetShader());
+					}
+				}
+			}
+		}
+
+		pos.clear();
+
+		return true;
+	}
+	else if (meshRenderer->GetModel() != nullptr && meshRenderer->GetMaterialCount() == 0)
+	{
+		// POSIADAMY MODEL, ALE NIE POSIADAMY MATERIALOW. WIEC PRZECHODZIMY PO WSZYSTKICH MATERIALACH I SPRAWDZAMY CZY JEST W KTORYMS Z MATERIALOW NASZ MESH.
+		// JESLI SIE ZNAJDUJE TO GO USUWAMY I SZUKAMY DLA KOLEJNEGO MESHA
+		InstantiatingMesh* mesh;
+		for (size_t i = 0; i < meshRenderer->GetMeshCount(); ++i) {
+			mesh = meshRenderer->GetMesh(i);
+
+			DataToUnregister pos;
+			bool found = false;
+
+			for (auto& shaderPair : _renderQueueStatic) {
+
+				for (auto& materialPair : shaderPair.second) {
+
+					if (materialPair.second.contains(mesh)) {
+
+						for (size_t z = 0; z < materialPair.second[mesh].meshRenderers.size(); ++z)
+						{
+							if (materialPair.second[mesh].meshRenderers[z] == meshRenderer)
+							{
+								pos = DataToUnregister{
+									._mat = materialPair.first,
+									._mesh = mesh,
+									._pos = z
+								};
+								found = true;
+								break;
+							}
+						}
+					}
+
+					if (found) break;
+				}
+
+				if (found) break;
+			}
+
+			auto& meshRenderingData = _renderQueueStatic[pos._mat.GetShader()][pos._mat][pos._mesh];
+
+			if (meshRenderingData.meshRenderers.size() != 0) {
+				meshRenderingData.meshRenderers.erase(meshRenderingData.meshRenderers.cbegin() + pos._pos);
+			}
+			if (meshRenderingData.modelTransforms.size() != 0) {
+				meshRenderingData.modelTransforms.erase(meshRenderingData.modelTransforms.cbegin() + pos._pos);
+			}
+
+			if (meshRenderingData.meshRenderers.size() == 0) {
+				_renderQueueStatic[pos._mat.GetShader()][pos._mat].erase(pos._mesh);
+
+				if (_renderQueueStatic[pos._mat.GetShader()][pos._mat].size() == 0) {
+					_renderQueueStatic[pos._mat.GetShader()].erase(pos._mat);
+
+					if (_renderQueueStatic[pos._mat.GetShader()].size() == 0) {
+						_renderQueueStatic.erase(pos._mat.GetShader());
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+	else {
+
+		// NICZEGO NIE ZNAMY WIEC SZUKAMY WSZEDZIE NASZEGO MESH_RENDERERA
+		std::vector<DataToUnregister> pos = std::vector<DataToUnregister>();
+
+		for (auto& shaderPair : _renderQueueStatic) {
+
+			for (auto& materialPair : shaderPair.second) {
+
+				for (auto& meshPair : materialPair.second) {
+
+					for (size_t z = 0; z < materialPair.second[meshPair.first].meshRenderers.size(); ++z)
+					{
+						if (materialPair.second[meshPair.first].meshRenderers[z] == meshRenderer)
+						{
+							pos.push_back(DataToUnregister{
+								._mat = materialPair.first,
+								._mesh = meshPair.first,
+								._pos = z
+								});
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		for (auto& p : pos) {
+			auto& meshRenderingData = _renderQueueStatic[p._mat.GetShader()][p._mat][p._mesh];
+
+			if (meshRenderingData.meshRenderers.size() != 0) {
+				meshRenderingData.meshRenderers.erase(meshRenderingData.meshRenderers.cbegin() + p._pos);
+			}
+			if (meshRenderingData.modelTransforms.size() != 0) {
+				meshRenderingData.modelTransforms.erase(meshRenderingData.modelTransforms.cbegin() + p._pos);
+			}
+
+			if (meshRenderingData.meshRenderers.size() == 0) {
+				_renderQueueStatic[p._mat.GetShader()][p._mat].erase(p._mesh);
+
+				if (_renderQueueStatic[p._mat.GetShader()][p._mat].size() == 0) {
+					_renderQueueStatic[p._mat.GetShader()].erase(p._mat);
+
+					if (_renderQueueStatic[p._mat.GetShader()].size() == 0) {
+						_renderQueueStatic.erase(p._mat.GetShader());
+					}
+				}
+			}
+		}
+
+		pos.clear();
+
+		return true;
+	}
+
+	return false;
 }
 
-
-
-void MeshRenderingManager::RegisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer)
+bool MeshRenderingManager::RegisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer)
 {
 	if (meshRenderer->GetModel() != nullptr && meshRenderer->GetMaterialCount() != 0)
 	{
@@ -155,46 +338,227 @@ void MeshRenderingManager::RegisterDynamic(Twin2Engine::Core::MeshRenderer* mesh
 			queueElement.meshRenderers.push_back(meshRenderer);
 			queueElement.modelTransforms.push_back(meshRenderer->GetTransform()->GetTransformMatrix());
 		}
+
+		return true;
 	}
+
+	return false;
 }
 
-void MeshRenderingManager::UnregisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer)
+bool MeshRenderingManager::UnregisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer)
 {
 	if (meshRenderer->GetModel() != nullptr && meshRenderer->GetMaterialCount() != 0)
 	{
+		// MAMY WSZYSTKIE DANE WIEC PRZECHODZIMY PO KAZDYM MESHU I GO WYREJESTROWUJEMY
 		InstantiatingMesh* mesh;
 		for (size_t i = 0; i < meshRenderer->GetMeshCount(); ++i) {
 			mesh = meshRenderer->GetMesh(i);
 			Material material = meshRenderer->GetMaterial(i);
 
-			auto& meshRenderers = _renderQueueDynamic[material.GetShader()][material][mesh].meshRenderers;
+			auto& meshRenderingData = _renderQueueDynamic[material.GetShader()][material][mesh];
 
-			for (size_t i = 0; i < meshRenderers.size(); i++)
+			size_t pos = 0;
+			for (size_t z = 0; z < meshRenderingData.meshRenderers.size(); ++z)
 			{
-				if (meshRenderers[i] == meshRenderer)
+				if (meshRenderingData.meshRenderers[z] == meshRenderer)
 				{
-					meshRenderers.erase(meshRenderers.cbegin() + i);
+					pos = z;
+					break;
+				}
+			}
 
-					_renderQueueDynamic[material.GetShader()][material][mesh]
-						.modelTransforms.erase(_renderQueueDynamic[material.GetShader()][material][mesh].modelTransforms.cbegin() + i);
+			if (meshRenderingData.meshRenderers.size() != 0) {
+				meshRenderingData.meshRenderers.erase(meshRenderingData.meshRenderers.cbegin() + pos);
+			}
+			if (meshRenderingData.modelTransforms.size() != 0) {
+				meshRenderingData.modelTransforms.erase(meshRenderingData.modelTransforms.cbegin() + pos);
+			}
 
-					if (_renderQueueDynamic[material.GetShader()][material][mesh].meshRenderers.size() == 0) {
-						_renderQueueDynamic[material.GetShader()][material].erase(mesh);
+			if (meshRenderingData.meshRenderers.size() == 0) {
+				_renderQueueDynamic[material.GetShader()][material].erase(mesh);
 
-						if (_renderQueueDynamic[material.GetShader()][material].size() == 0) {
-							_renderQueueDynamic[material.GetShader()].erase(material);
+				if (_renderQueueDynamic[material.GetShader()][material].size() == 0) {
+					_renderQueueDynamic[material.GetShader()].erase(material);
 
-							if (_renderQueueDynamic[material.GetShader()].size() == 0) {
-								_renderQueueDynamic.erase(material.GetShader());
+					if (_renderQueueDynamic[material.GetShader()].size() == 0) {
+						_renderQueueDynamic.erase(material.GetShader());
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+	else if (meshRenderer->GetModel() == nullptr && meshRenderer->GetMaterialCount() != 0) 
+	{
+		// NIE MAMY MESHY, ALE WIEMY, ZE KAZDY MESH W MODELU MUSI MIEC JEDEN Z MATERIALOW. 
+		// PRZECHODZIMY WIEC PO MESACH W KAZDYM MATERIALE I SPRAWDZAMY CZY POSIADA KTORYS MESH NASZ MESH_RENDERER
+		std::vector<DataToUnregister> pos = std::vector<DataToUnregister>();
+
+		for (size_t i = 0; i < meshRenderer->GetMaterialCount(); ++i) {
+
+			Material material = meshRenderer->GetMaterial(i);
+			auto& materialPairs = _renderQueueDynamic[material.GetShader()][material];
+
+			for (auto& meshPair : materialPairs) {
+
+				for (size_t z = 0; z < materialPairs[meshPair.first].meshRenderers.size(); ++z)
+				{
+					if (materialPairs[meshPair.first].meshRenderers[z] == meshRenderer)
+					{
+						pos.push_back(DataToUnregister{
+							._mat = material,
+							._mesh = meshPair.first,
+							._pos = z
+						});
+						break;
+					}
+				}
+			}
+		}
+
+		for (auto& p : pos) {
+			auto& meshRenderingData = _renderQueueDynamic[p._mat.GetShader()][p._mat][p._mesh];
+
+			if (meshRenderingData.meshRenderers.size() != 0) {
+				meshRenderingData.meshRenderers.erase(meshRenderingData.meshRenderers.cbegin() + p._pos);
+			}
+			if (meshRenderingData.modelTransforms.size() != 0) {
+				meshRenderingData.modelTransforms.erase(meshRenderingData.modelTransforms.cbegin() + p._pos);
+			}
+
+			if (meshRenderingData.meshRenderers.size() == 0) {
+				_renderQueueDynamic[p._mat.GetShader()][p._mat].erase(p._mesh);
+
+				if (_renderQueueDynamic[p._mat.GetShader()][p._mat].size() == 0) {
+					_renderQueueDynamic[p._mat.GetShader()].erase(p._mat);
+
+					if (_renderQueueDynamic[p._mat.GetShader()].size() == 0) {
+						_renderQueueDynamic.erase(p._mat.GetShader());
+					}
+				}
+			}
+		}
+
+		pos.clear();
+		return true;
+	}
+	else if (meshRenderer->GetModel() != nullptr && meshRenderer->GetMaterialCount() == 0) 
+	{
+		// POSIADAMY MODEL, ALE NIE POSIADAMY MATERIALOW. WIEC PRZECHODZIMY PO WSZYSTKICH MATERIALACH I SPRAWDZAMY CZY JEST W KTORYMS Z MATERIALOW NASZ MESH.
+		// JESLI SIE ZNAJDUJE TO GO USUWAMY I SZUKAMY DLA KOLEJNEGO MESHA
+		InstantiatingMesh* mesh;
+		for (size_t i = 0; i < meshRenderer->GetMeshCount(); ++i) {
+			mesh = meshRenderer->GetMesh(i);
+
+			DataToUnregister pos;
+			bool found = false;
+
+			for (auto& shaderPair : _renderQueueDynamic) {
+				
+				for (auto& materialPair : shaderPair.second) {
+
+					if (materialPair.second.contains(mesh)) {
+
+						for (size_t z = 0; z < materialPair.second[mesh].meshRenderers.size(); ++z)
+						{
+							if (materialPair.second[mesh].meshRenderers[z] == meshRenderer)
+							{
+								pos = DataToUnregister{
+									._mat = materialPair.first,
+									._mesh = mesh,
+									._pos = z
+								};
+								found = true;
+								break;
 							}
 						}
 					}
 
-					break;
+					if (found) break;
+				}
+
+				if (found) break;
+			}
+
+			auto& meshRenderingData = _renderQueueDynamic[pos._mat.GetShader()][pos._mat][pos._mesh];
+
+			if (meshRenderingData.meshRenderers.size() != 0) {
+				meshRenderingData.meshRenderers.erase(meshRenderingData.meshRenderers.cbegin() + pos._pos);
+			}
+			if (meshRenderingData.modelTransforms.size() != 0) {
+				meshRenderingData.modelTransforms.erase(meshRenderingData.modelTransforms.cbegin() + pos._pos);
+			}
+
+			if (meshRenderingData.meshRenderers.size() == 0) {
+				_renderQueueDynamic[pos._mat.GetShader()][pos._mat].erase(pos._mesh);
+
+				if (_renderQueueDynamic[pos._mat.GetShader()][pos._mat].size() == 0) {
+					_renderQueueDynamic[pos._mat.GetShader()].erase(pos._mat);
+
+					if (_renderQueueDynamic[pos._mat.GetShader()].size() == 0) {
+						_renderQueueDynamic.erase(pos._mat.GetShader());
+					}
 				}
 			}
 		}
+		return true;
 	}
+	else {
+
+		// NICZEGO NIE ZNAMY WIEC SZUKAMY WSZEDZIE NASZEGO MESH_RENDERERA
+		std::vector<DataToUnregister> pos = std::vector<DataToUnregister>();
+
+		for (auto& shaderPair : _renderQueueDynamic) {
+
+			for (auto& materialPair : shaderPair.second) {
+
+				for (auto& meshPair : materialPair.second) {
+
+					for (size_t z = 0; z < materialPair.second[meshPair.first].meshRenderers.size(); ++z)
+					{
+						if (materialPair.second[meshPair.first].meshRenderers[z] == meshRenderer)
+						{
+							pos.push_back(DataToUnregister{
+								._mat = materialPair.first,
+								._mesh = meshPair.first,
+								._pos = z
+							});
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		for (auto& p : pos) {
+			auto& meshRenderingData = _renderQueueDynamic[p._mat.GetShader()][p._mat][p._mesh];
+
+			if (meshRenderingData.meshRenderers.size() != 0) {
+				meshRenderingData.meshRenderers.erase(meshRenderingData.meshRenderers.cbegin() + p._pos);
+			}
+			if (meshRenderingData.modelTransforms.size() != 0) {
+				meshRenderingData.modelTransforms.erase(meshRenderingData.modelTransforms.cbegin() + p._pos);
+			}
+
+			if (meshRenderingData.meshRenderers.size() == 0) {
+				_renderQueueDynamic[p._mat.GetShader()][p._mat].erase(p._mesh);
+
+				if (_renderQueueDynamic[p._mat.GetShader()][p._mat].size() == 0) {
+					_renderQueueDynamic[p._mat.GetShader()].erase(p._mat);
+
+					if (_renderQueueDynamic[p._mat.GetShader()].size() == 0) {
+						_renderQueueDynamic.erase(p._mat.GetShader());
+					}
+				}
+			}
+		}
+
+		pos.clear();
+		return true;
+	}
+
+	return false;
 }
 
 void MeshRenderingManager::UpdateQueues()
@@ -293,6 +657,7 @@ void MeshRenderingManager::UpdateQueues()
 #pragma endregion
 
 #pragma region UPDATE_FOR_DYNAMIC
+
 	for (auto& shaderPair : _renderQueueDynamic)
 	{
 		for (auto& materialPair : shaderPair.second)
@@ -1022,6 +1387,7 @@ void MeshRenderingManager::RenderStatic()
 
 void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat4& projectionViewMatrix)
 {
+	glEnable(GL_DEPTH_TEST);
 	ShaderManager::DepthShader->Use();
 	ShaderManager::DepthShader->SetMat4("lightSpaceMatrix", projectionViewMatrix);
 
@@ -1157,6 +1523,11 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 			meshPair.first->Draw(count);
 
 			meshPair.second.rendered.clear();
+
+			GLenum error = glGetError();
+			if (error != GL_NO_ERROR) {
+				SPDLOG_ERROR("Error: {}", error);
+			}
 		}
 	}
 
@@ -1283,6 +1654,11 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 			meshPair.first->Draw(count);
 
 			meshPair.second.rendered.clear();
+
+			GLenum error = glGetError();
+			if (error != GL_NO_ERROR) {
+				SPDLOG_ERROR("Error: {}", error);
+			}
 		}
 	}
 

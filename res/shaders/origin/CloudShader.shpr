@@ -1,0 +1,6 @@
+shaderprogram:
+  name: origin/CloudShader
+  shaders:
+    - CloudShader.vert
+    - CloudShader.frag
+  parameters:

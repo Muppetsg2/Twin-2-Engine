@@ -5,10 +5,7 @@
 
 namespace Twin2Engine::Core {
 
-	class RenderableComponent : public Component {
-		/*CloneFunctionStart(RenderableComponent, Component)
-			CloneField(_isTransparent)
-		CloneFunctionEnd()*/		
+	class RenderableComponent : public Component {	
 
 	protected:
 		CloneBaseFunc(RenderableComponent, Component, _isTransparent)

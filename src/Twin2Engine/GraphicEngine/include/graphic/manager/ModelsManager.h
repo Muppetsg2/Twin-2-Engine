@@ -47,22 +47,13 @@ namespace Twin2Engine::Manager
 		static void LoadHexagon(Graphic::ModelData* modelData);
 
 		static Graphic::ModelData* LoadModelData(const std::string& modelPath);
-		static void UnloadModel(const std::string& path);
-		static void UnloadModel(size_t managerId);
-		static void UnloadCube();
-		static void UnloadPlane();
-		static void UnloadSphere();
-		static void UnloadTorus();
-		static void UnloadCone();
-		static void UnloadPiramid();
-		static void UnloadTetrahedron();
-		static void UnloadCylinder();
-		static void UnloadHexagon();
 
-		static std::pair<glm::vec3, glm::vec3> CalcTangentBitangent(std::vector<Graphic::Vertex>& vertices, unsigned int i1, unsigned int i2, unsigned int i3);
 		static void GenerateCircle(std::vector<Graphic::Vertex>& vertices, std::vector<unsigned int>& indices, unsigned int segments, float y = 0.f, unsigned int cullFace = GL_CCW);
 
 	public:
+		static bool IsModelLoaded(const std::string& modelPath);
+		static bool IsModelLoaded(size_t managerId);
+
 		static Graphic::InstantiatingModel LoadModel(const std::string& modelPath);
 		static Graphic::InstantiatingModel GetModel(size_t managerId);
 		static Graphic::InstantiatingModel GetCube();
@@ -75,9 +66,21 @@ namespace Twin2Engine::Manager
 		static Graphic::InstantiatingModel GetCylinder();
 		static Graphic::InstantiatingModel GetHexagon();
 
+		static void UnloadModel(const std::string& path);
+		static void UnloadModel(size_t managerId);
+		static void UnloadCube();
+		static void UnloadPlane();
+		static void UnloadSphere();
+		static void UnloadTorus();
+		static void UnloadCone();
+		static void UnloadPiramid();
+		static void UnloadTetrahedron();
+		static void UnloadCylinder();
+		static void UnloadHexagon();
+
 		static void UnloadAll();
 
-		static Graphic::InstantiatingModel CreateModel(const std::string & modelName, std::vector<Graphic::Vertex> vertices, std::vector<unsigned int> indices);
+		static Graphic::InstantiatingModel CreateModel(const std::string& modelName, std::vector<Graphic::Vertex> vertices, std::vector<unsigned int> indices);
 		//static void FreeModel(InstantiatingModel*& model);
 
 		static std::string GetModelName(size_t id);

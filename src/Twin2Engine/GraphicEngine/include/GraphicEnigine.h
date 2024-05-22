@@ -29,6 +29,7 @@ namespace Twin2Engine::Graphic
 
 		static void UpdateBeforeRendering();
 		static void Render();
-		static void DepthRender();
+		static void RenderGUI();
+		static void PreRender();
 	};
 }

@@ -1,4 +1,4 @@
-#version 430
+#version 450
 //LightingMultiTexture.frag
 
 layout(early_fragment_tests) in;
@@ -23,6 +23,8 @@ layout (std140, binding = 1) uniform WindowData
     float nearPlane;
     float farPlane;
     float gamma;
+    float time;
+    float deltaTime;
 };
 
 layout (std140, binding = 0) uniform CameraData
@@ -44,7 +46,6 @@ struct TextureInput
 };
 
 layout(location = 0) uniform TextureInput texturesInput[8];
-
 
 //shadow maps
 uniform sampler2D DirLightShadowMaps[4];
@@ -242,5 +243,6 @@ void main()
     float visibility_factor = isSSAO ? texture(occlusionMap, textureLookupPos).r : 1.0;
 
     FragColor *= vec4(LightColor + AmbientLight * visibility_factor, 1.0); //
-	FragColor = vec4(pow(FragColor.rgb, vec3(gamma)), 1.0);
+	//FragColor = vec4(pow(FragColor.rgb, vec3(gamma)), 1.0);
+	FragColor = vec4(FragColor.rgb, 1.0);
 }

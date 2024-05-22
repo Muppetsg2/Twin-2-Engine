@@ -52,6 +52,33 @@ const char* const STD140Struct::tracy__SetArraySetValueData = "STD140Struct _Set
 const char* const STD140Struct::tracy__SetArrayClearTempValueData = "STD140Struct _SetArray Clear Temp Value Data";
 const char* const STD140Struct::tracy__SetArrayClearValuesOffsets = "STD140Struct _SetArray Clear Values Offsets";
 
+const char* const STD140Struct::tracy__Get = "STD140Struct _Get";
+const char* const STD140Struct::tracy__GetCheckVariable = "STD140Struct _Get Check Variable";
+const char* const STD140Struct::tracy__GetValueOffset = "STD140Struct _Get Value Offset";
+const char* const STD140Struct::tracy__GetEmptyValueData = "STD140Struct _Get Empty Value Data";
+const char* const STD140Struct::tracy__GetReserveSpace = "STD140Struct _Get Reserve Space";
+const char* const STD140Struct::tracy__GetGetValueData = "STD140Struct _Get Value Data";
+const char* const STD140Struct::tracy__GetCheckValueDataSize = "STD140Struct _Get Check Value Data Size";
+const char* const STD140Struct::tracy__GetValue = "STD140Struct _Get Value";
+const char* const STD140Struct::tracy__GetClearTempValueData = "STD140Struct _Get Clear Temp Value Data";
+
+const char* const STD140Struct::tracy__GetArray = "STD140Struct _GetArray";
+const char* const STD140Struct::tracy__GetArrayCheckVariable = "STD140Struct _GetArray Check Variable";
+const char* const STD140Struct::tracy__GetArrayValuesOffsets = "STD140Struct _GetArray Values Offsets";
+const char* const STD140Struct::tracy__GetArrayCheckValuesOffsets = "STD140Struct _GetArray Check Values Offsets";
+const char* const STD140Struct::tracy__GetArrayMaxElemSize = "STD140Struct _GetArray Max Element Size";
+const char* const STD140Struct::tracy__GetArrayValuesData = "STD140Struct _GetArray Values Data";
+const char* const STD140Struct::tracy__GetArrayMaxValueSize = "STD140Struct _GetArray Max Value Size";
+const char* const STD140Struct::tracy__GetArrayValueData = "STD140Struct _GetArray Value Data";
+const char* const STD140Struct::tracy__GetArrayCheckValueDataSize = "STD140Struct _GetArray Check Value Data Size";
+const char* const STD140Struct::tracy__GetArrayValue = "STD140Struct _GetArray Value";
+const char* const STD140Struct::tracy__GetArrayClearTempValueData = "STD140Struct _GetArray Clear Temp Value Data";
+const char* const STD140Struct::tracy__GetArrayClearValuesOffsets = "STD140Struct _GetArray Clear Values Offsets";
+
+const char* const STD140Struct::tracy__GetArrayConvert = "STD140Struct _GetArrayConvert";
+const char* const STD140Struct::tracy__GetArrayConvertValues = "STD140Struct _GetArrayConvert Values";
+const char* const STD140Struct::tracy__GetArrayConvertValue = "STD140Struct _GetArrayConvert Value";
+
 size_t STD140Struct::_GetArrayElemSize(const vector<size_t>& offsets) const
 {
 	ZoneScoped;
@@ -264,12 +291,10 @@ void STD140Struct::Add(const string& name, const STD140Struct& value)
 
 void STD140Struct::Add(const string& name, const STD140Offsets& structOffsets, const vector<char>*& values, size_t size)
 {
-	Func<void, const string&, const vector<vector<char>>&> f = [&](const string& name, const vector<vector<char>>& convs) -> void {
-		_AddStructArray(name, structOffsets, convs);
-		};
-
-	_ConvertArray<vector<char>, vector<char>>(name, values, size,
-		f);
+	_ConvertArray<vector<char>, vector<char>, const vector<char>*&, void>(name, values, size,
+		[&](const string& name, const vector<vector<char>>& convs) -> void {
+			_AddStructArray(name, structOffsets, convs);
+	});
 }
 
 void STD140Struct::Add(const string& name, const STD140Offsets& structOffsets, const vector<vector<char>>& values)
@@ -284,12 +309,10 @@ bool STD140Struct::Set(const string& name, const STD140Struct& value)
 
 bool STD140Struct::Set(const string& name, const STD140Offsets& structOffsets, const vector<char>*& values, size_t size)
 {
-	Func<bool, const string&, const vector<vector<char>>&> f = [&](const string& name, const vector<vector<char>>& values) -> bool {
-		return _SetStructArray(name, structOffsets, values);
-		};
-
-	return _ConvertArray<vector<char>, vector<char>>(name, values, size,
-		f);
+	return _ConvertArray<vector<char>, vector<char>, const vector<char>*&, bool>(name, values, size,
+		[&](const string& name, const vector<vector<char>>& values) -> bool {
+			return _SetStructArray(name, structOffsets, values);
+	});
 }
 
 bool STD140Struct::Set(const string& name, const STD140Offsets& structOffsets, const vector<vector<char>>& values)

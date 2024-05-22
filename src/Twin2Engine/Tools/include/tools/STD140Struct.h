@@ -3,8 +3,6 @@
 #include <tools/EventHandler.h>
 #include <tools/STD140Offsets.h>
 
-#undef min
-
 namespace Twin2Engine::Tools {
 	//class STD140Struct;
 
@@ -55,15 +53,73 @@ namespace Twin2Engine::Tools {
 		STD140Offsets _dataOffsets;
 		std::vector<char> _data;
 
-		template<class T> std::vector<char> _GetValueData(const T& value) const {
-			std::vector<char> valueData;
-			valueData.resize(sizeof(T));
+		static const char* const tracy__GetValueData;
+
+		template<class T> 
+		std::vector<char> _GetValueData(const T& value) const {
+			ZoneScoped;
+			FrameMarkStart(tracy__GetValueData);
 			const char* valueDataPtr = reinterpret_cast<const char*>(&value);
-			memcpy(valueData.data(), valueDataPtr, sizeof(T));
-			return valueData;
+			FrameMarkEnd(tracy__GetValueData);
+			return std::vector<char>(valueDataPtr, valueDataPtr + sizeof(T));
 		}
 
 		size_t _GetArrayElemSize(const std::vector<size_t>& offsets) const;
+
+		static const char* const tracy__ConvertArray;
+		static const char* const tracy__ConvertArrayValues;
+		static const char* const tracy__ConvertArrayValue;
+		static const char* const tracy__ConvertArrayFunc;
+
+		template<class S, class C, class T, class R>
+		R _ConvertArray(const std::string& name, const T& values, size_t size, const Func<R, const std::string&, const std::vector<C>&>& arrayFunc) {
+			ZoneScoped;
+			FrameMarkStart(tracy__ConvertArray);
+
+			if constexpr (std::is_same_v<T, std::vector<S>> && std::is_same_v<S, C>) {
+				if constexpr (std::is_void_v<R>) {
+					FrameMarkStart(tracy__ConvertArrayFunc);
+					arrayFunc(name, values);
+					FrameMarkEnd(tracy__ConvertArrayFunc);
+				}
+				else {
+					FrameMarkEnd(tracy__ConvertArray);
+					return arrayFunc(name, values);
+				}
+			}
+			else {
+				FrameMarkStart(tracy__ConvertArrayValues);
+				std::vector<C> convertedValues;
+				convertedValues.reserve(size);
+				for (size_t i = 0; i < size; ++i) {
+					FrameMarkStart(tracy__ConvertArrayValue);
+					if constexpr (std::is_same_v<S, C>) {
+						convertedValues.insert(convertedValues.end(), values[i]);
+					}
+					else {
+						convertedValues.insert(convertedValues.end(), (C)values[i]);
+					}
+					FrameMarkEnd(tracy__ConvertArrayValue);
+				}
+				FrameMarkEnd(tracy__ConvertArrayValues);
+
+				if constexpr (std::is_void_v<R>) {
+					FrameMarkStart(tracy__ConvertArrayFunc);
+					arrayFunc(name, std::move(convertedValues));
+					FrameMarkEnd(tracy__ConvertArrayFunc);
+				}
+				else {
+					FrameMarkEnd(tracy__ConvertArray);
+					return arrayFunc(name, std::move(convertedValues));
+				}
+			}
+
+			if constexpr (std::is_void_v<R>) {
+				FrameMarkEnd(tracy__ConvertArray);
+			}
+		}
+
+		// TODO: SPRAWDZIÆ KA¯DY MAT (TYLKO MAT4 SPRAWDZONY)
 
 #pragma region ADD
 		/*template<class T, class... Ts>
@@ -81,506 +137,496 @@ namespace Twin2Engine::Tools {
 			}
 		}*/
 
+		static const char* const tracy__Add;
+		static const char* const tracy__AddGetOffset;
+		static const char* const tracy__AddCheckError;
+		static const char* const tracy__AddReserveSize;
+		static const char* const tracy__AddCheckValuePadding;
+		static const char* const tracy__AddGetValueData;
+		static const char* const tracy__AddSetValueData;
+		static const char* const tracy__AddClearTempValueData;
+		static const char* const tracy__AddUpdateSize;
+
 		template<class T> void _Add(const std::string& name, const T& value) {
+			ZoneScoped;
+			FrameMarkStart(tracy__Add);
+
 			// ADD TO OFFSETS
-			size_t valueOffset = _dataOffsets.Add<T>(name);
+			FrameMarkStart(tracy__AddGetOffset);
+			size_t valueOffset = std::move(_dataOffsets.Add<T>(name));
+			FrameMarkEnd(tracy__AddGetOffset);
 
 			// CHECK ERROR
+			FrameMarkStart(tracy__AddCheckError);
 			if (valueOffset == 0 && _data.size() != 0) {
 				SPDLOG_ERROR("Variable '{0}' already added to structure", name);
+				FrameMarkEnd(tracy__AddCheckError);
+				FrameMarkEnd(tracy__Add);
 				return;
 			}
+			FrameMarkEnd(tracy__AddCheckError);
 
-			// UPDATE SIZE
-			_data.resize(_dataOffsets.GetSize());
+			// RESERVE SIZE
+			FrameMarkStart(tracy__AddReserveSize);
+			_data.reserve(_dataOffsets.GetSize());
+			FrameMarkEnd(tracy__AddReserveSize);
+
+			// CHECK VALUE PADDING
+			FrameMarkStart(tracy__AddCheckValuePadding);
+			if (_data.size() < valueOffset) {
+				_data.resize(valueOffset);
+			}
+			FrameMarkEnd(tracy__AddCheckValuePadding);
 
 			// GET VALUE DATA
-			std::vector<char> valueData = _GetValueData(value);
+			FrameMarkStart(tracy__AddGetValueData);
+			std::vector<char> valueData = std::move(_GetValueData(value));
+			FrameMarkEnd(tracy__AddGetValueData);
 
 			// SET VALUE DATA
-			memcpy(_data.data() + valueOffset, valueData.data(), valueData.size());
+			FrameMarkStart(tracy__AddSetValueData);
+			_data.insert(_data.end(), valueData.begin(), valueData.end());
+			FrameMarkEnd(tracy__AddSetValueData);
 
+			// CLEAR TEMP VALUE DATA
+			FrameMarkStart(tracy__AddClearTempValueData);
 			valueData.clear();
-		}
-		template<class T> void _AddArray(const std::string& name, const std::vector<T>& values) {
-			if (values.size() == 0) return;
+			FrameMarkEnd(tracy__AddClearTempValueData);
 
-			// ADD TO OFFSETS
-			std::vector<size_t> valuesOffsets = _dataOffsets.Add<T>(name, values.size());
+			// UPDATE SIZE
+			FrameMarkStart(tracy__AddUpdateSize);
+			if (_data.size() < _data.capacity()) {
+				_data.resize(_data.capacity());
+			}
+			FrameMarkEnd(tracy__AddUpdateSize);
+
+			FrameMarkEnd(tracy__Add);
+		}
+
+		static const char* const tracy__AddArray;
+		static const char* const tracy__AddArrayCheckSize;
+		static const char* const tracy__AddArrayGetOffsets;
+		static const char* const tracy__AddArrayCheckError;
+		static const char* const tracy__AddArrayReserveSize;
+		static const char* const tracy__AddArraySetValuesData;
+		static const char* const tracy__AddArrayCheckValuePadding;
+		static const char* const tracy__AddArrayGetValueData;
+		static const char* const tracy__AddArraySetValueData;
+		static const char* const tracy__AddArrayClearTempValueData;
+		static const char* const tracy__AddArrayClearValuesOffsets;
+		static const char* const tracy__AddArrayUpdateSize;
+
+		template<class T> void _AddArray(const std::string& name, const std::vector<T>& values) {
+			ZoneScoped;
+			FrameMarkStart(tracy__AddArray);
+
+			// CHECK SIZE
+			FrameMarkStart(tracy__AddArrayCheckSize);
+			if (values.size() == 0) {
+				FrameMarkEnd(tracy__AddArrayCheckSize);
+				FrameMarkEnd(tracy__AddArray);
+				return;
+			}
+			FrameMarkEnd(tracy__AddArrayCheckSize);
+
+			// GET OFFSETS
+			FrameMarkStart(tracy__AddArrayGetOffsets);
+			std::vector<size_t> valuesOffsets = std::move(_dataOffsets.Add<T>(name, values.size()));
+			FrameMarkEnd(tracy__AddArrayGetOffsets);
 
 			// CHECK ERROR
+			FrameMarkStart(tracy__AddArrayCheckError);
 			if (valuesOffsets.size() == 0) {
 				SPDLOG_ERROR("Variable '{0}' already added to structure", name);
+				FrameMarkEnd(tracy__AddArrayCheckError);
+				FrameMarkEnd(tracy__AddArray);
 				return;
 			}
+			FrameMarkEnd(tracy__AddArrayCheckError);
 
-			// UPDATE SIZE
-			_data.resize(_dataOffsets.GetSize());
+			// RESERVE SIZE
+			FrameMarkStart(tracy__AddArrayReserveSize);
+			_data.reserve(_dataOffsets.GetSize());
+			FrameMarkEnd(tracy__AddArrayReserveSize);
 
 			// SET VALUES DATA
+			FrameMarkStart(tracy__AddArraySetValuesData);
+			std::vector<char> valueData;
 			for (size_t i = 0; i < valuesOffsets.size() && i < values.size(); ++i) {
-				// GET VALUE DATA
-				std::vector<char> valueData = _GetValueData(values[i]);
-
-				// SET VALUE DATA
-				memcpy(_data.data() + valuesOffsets[i], valueData.data(), valueData.size());
-
-				valueData.clear();
-			}
-
-			valuesOffsets.clear();
-		}
-		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
-		void _AddMat(const std::string& name, const M& value) {
-			// ADD TO OFFSETS AND CHECK ERROR
-			if (_dataOffsets.Add<M>(name) == 0 && _data.size() != 0) {
-				SPDLOG_ERROR("Variable '{0}' already added to structure", name);
-				return;
-			}
-
-			// UPDATE SIZE
-			_data.resize(_dataOffsets.GetSize());
-
-			// GET ROWS OFFSETS
-			std::vector<size_t> rowsOffsets = _dataOffsets.GetArray(name);
-
-			// SET ROWS DATA
-			for (size_t i = 0; i < C && i < rowsOffsets.size(); ++i) {
-				// GET VALUE DATA
-				std::vector<char> valueData = _GetValueData(value[i]);
-
-				// SET VALUE DATA
-				memcpy(_data.data() + rowsOffsets[i], valueData.data(), valueData.size());
-
-				valueData.clear();
-			}
-
-			rowsOffsets.clear();
-		}
-		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
-		void _AddMatArray(const std::string& name, const std::vector<M>& values) {
-			if (values.size() == 0) return;
-
-			// ADD TO OFFSETS
-			std::vector<size_t> valuesOffsets = _dataOffsets.Add<M>(name, values.size());
-			
-			// ADD TO OFFSETS AND CHECK ERROR
-			if (valuesOffsets.size() == 0) {
-				SPDLOG_ERROR("Variable '{0}' already added to structure", name);
-				return;
-			}
-
-			// UPDATE SIZE
-			_data.resize(_dataOffsets.GetSize());
-
-			// SET VALUES DATA
-			for (size_t i = 0; i < valuesOffsets.size() && i < values.size(); ++i) {
-				// GET ROWS OFFSETS
-				std::vector<size_t> rowsOffsets = _dataOffsets.GetArray<glm::vec<R, T>>(name + "[" + std::to_string(i) + "]");
-
-				// SET ROWS DATA
-				for (size_t r = 0; r < C && r < rowsOffsets.size(); ++r) {
-					// GET VALUE DATA
-					std::vector<char> valueData = _GetValueData(values[i][r]);
-
-					// SET VALUE DATA
-					memcpy(_data.data() + rowsOffsets[r], valueData.data(), valueData.size());
-
-					valueData.clear();
+				// CHECK VALUE PADDING
+				FrameMarkStart(tracy__AddArrayCheckValuePadding);
+				if (_data.size() < valuesOffsets[i]) {
+					_data.resize(valuesOffsets[i]);
 				}
+				FrameMarkEnd(tracy__AddArrayCheckValuePadding);
 
-				rowsOffsets.clear();
+				// GET VALUE DATA
+				FrameMarkStart(tracy__AddArrayGetValueData);
+				valueData = std::move(_GetValueData(values[i]));
+				FrameMarkEnd(tracy__AddArrayGetValueData);
+
+				// SET VALUE DATA
+				FrameMarkStart(tracy__AddArraySetValueData);
+				_data.insert(_data.end(), valueData.begin(), valueData.end());
+				FrameMarkEnd(tracy__AddArraySetValueData);
+
+				// CLEAR VALUE TEMP DATA
+				FrameMarkStart(tracy__AddArrayClearTempValueData);
+				valueData.clear();
+				FrameMarkEnd(tracy__AddArrayClearTempValueData);
 			}
+			FrameMarkEnd(tracy__AddArraySetValuesData);
 
+			// CLEAR VALUES OFFSETS
+			FrameMarkStart(tracy__AddArrayClearValuesOffsets);
 			valuesOffsets.clear();
+			FrameMarkEnd(tracy__AddArrayClearValuesOffsets);
+
+			// UPDATE SIZE
+			FrameMarkStart(tracy__AddArrayUpdateSize);
+			if (_data.size() < _data.capacity()) {
+				_data.resize(_data.capacity());
+			}
+			FrameMarkEnd(tracy__AddArrayUpdateSize);
+
+			FrameMarkEnd(tracy__AddArray);
 		}
+
 		void _AddStruct(const std::string& name, const STD140Struct& value);
+
 		void _AddStructArray(const std::string& name, const STD140Offsets& structOffsets, const std::vector<std::vector<char>>& values);
 
-		template<class S, class C, class T>
-		void _AddArray(const std::string& name, const T& values, size_t size, const Action<const std::string&, const std::vector<C>&>& addArrayFunc) {
-			std::vector<C> convertedValues;
-			for (size_t i = 0; i < size; ++i) {
-				convertedValues.push_back((C)values[i]);
-			}
-			addArrayFunc(name, convertedValues);
-		}
 #pragma endregion
 
 #pragma region SET
+		static const char* const tracy__Set;
+		static const char* const tracy__SetCheckVariable;
+		static const char* const tracy__SetGetOffset;
+		static const char* const tracy__SetGetValueData;
+		static const char* const tracy__SetSetValueData;
+		static const char* const tracy__SetClearTempValueData;
+
 		template<class T> bool _Set(const std::string& name, const T& value) {
+			ZoneScoped;
+			FrameMarkStart(tracy__Set);
+
 			// CHECK VARIABLE
+			FrameMarkStart(tracy__SetCheckVariable);
 			if (!_dataOffsets.Contains(name)) {
 				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
+				FrameMarkEnd(tracy__SetCheckVariable);
+				FrameMarkEnd(tracy__Set);
 				return false;
 			}
+			FrameMarkEnd(tracy__SetCheckVariable);
 
 			// GET VALUE OFFSET
-			size_t valueOffset = _dataOffsets.Get(name);
+			FrameMarkStart(tracy__SetGetOffset);
+			size_t valueOffset = std::move(_dataOffsets.Get(name));
+			FrameMarkEnd(tracy__SetGetOffset);
 
 			// GET VALUE DATA
-			std::vector<char> valueData = _GetValueData(value);
-
-			// GET VALUE DATA MAX SIZE
-			size_t valueDataSize = glm::min(valueData.size(), _data.size() - valueOffset);
+			FrameMarkStart(tracy__SetGetValueData);
+			std::vector<char> valueData = std::move(_GetValueData(value));
+			FrameMarkEnd(tracy__SetGetValueData);
 
 			// SET VALUE DATA
-			memcpy(_data.data() + valueOffset, valueData.data(), valueDataSize);
+			FrameMarkStart(tracy__SetSetValueData);
+			memcpy(_data.data() + valueOffset, valueData.data(), glm::min(valueData.size(), _data.size() - valueOffset));
+			FrameMarkEnd(tracy__SetSetValueData);
 
+			// CLEAR TEMP VALUE DATA
+			FrameMarkStart(tracy__SetClearTempValueData);
 			valueData.clear();
+			FrameMarkEnd(tracy__SetClearTempValueData);
+
+			FrameMarkEnd(tracy__Set);
 			return true;
 		}
+
+		static const char* const tracy__SetArray;
+		static const char* const tracy__SetArrayCheckSize;
+		static const char* const tracy__SetArrayCheckVariable;
+		static const char* const tracy__SetArrayGetValuesOffsets;
+		static const char* const tracy__SetArrayCheckValuesOffsets;
+		static const char* const tracy__SetArrayGetElemSize;
+		static const char* const tracy__SetArraySetValues;
+		static const char* const tracy__SetArrayGetValueData;
+		static const char* const tracy__SetArraySetValueData;
+		static const char* const tracy__SetArrayClearTempValueData;
+		static const char* const tracy__SetArrayClearValuesOffsets;
+
 		template<class T> bool _SetArray(const std::string& name, const std::vector<T>& values) {
-			if (values.size() == 0) return false;
+			ZoneScoped;
+			FrameMarkStart(tracy__SetArray);
 
-			// CHECK VARIABLE
-			if (!_dataOffsets.Contains(name)) {
-				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
+			// CHECK SIZE
+			FrameMarkStart(tracy__SetArrayCheckSize);
+			if (values.size() == 0) {
+				FrameMarkEnd(tracy__SetArrayCheckSize);
+				FrameMarkEnd(tracy__SetArray);
 				return false;
 			}
+			FrameMarkEnd(tracy__SetArrayCheckSize);
+
+			// CHECK VARIABLE
+			FrameMarkStart(tracy__SetArrayCheckVariable);
+			if (!_dataOffsets.Contains(name)) {
+				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
+				FrameMarkEnd(tracy__SetArrayCheckVariable);
+				FrameMarkEnd(tracy__SetArray);
+				return false;
+			}
+			FrameMarkEnd(tracy__SetArrayCheckVariable);
 
 			// GET VALUES OFFSETS
-			std::vector<size_t> valuesOffsets = _dataOffsets.GetArray(name);
+			FrameMarkStart(tracy__SetArrayGetValuesOffsets);
+			std::vector<size_t> valuesOffsets = std::move(_dataOffsets.GetArray(name));
+			FrameMarkEnd(tracy__SetArrayGetValuesOffsets);
 
 			// CHECK ARRAY ELEMENTS OFFSETS
+			FrameMarkStart(tracy__SetArrayCheckValuesOffsets);
 			if (valuesOffsets.size() == 0) {
 				SPDLOG_ERROR("Value '{0}' was not declared as any array", name);
+				FrameMarkEnd(tracy__SetArrayCheckValuesOffsets);
+				FrameMarkEnd(tracy__SetArray);
 				return false;
 			}
+			FrameMarkEnd(tracy__SetArrayCheckValuesOffsets);
 
 			// GET ARRAY ELEM DATA MAX SIZE
+			FrameMarkStart(tracy__SetArrayGetElemSize);
 			size_t arrayElemDataSize = _GetArrayElemSize(valuesOffsets);
+			FrameMarkEnd(tracy__SetArrayGetElemSize);
 
 			// SET VALUES DATA
+			FrameMarkStart(tracy__SetArraySetValues);
+			std::vector<char> valueData;
 			for (size_t i = 0; i < valuesOffsets.size() && i < values.size(); ++i) {
-				// GET VALUE OFFSET
-				size_t valueOffset = valuesOffsets[i];
-
 				// GET VALUE DATA
-				std::vector<char> valueData = _GetValueData(values[i]);
-
-				// GET LOCAL VALUE DATA MAX SIZE
-				size_t valueDataSize = glm::min(glm::min(valueData.size(), arrayElemDataSize), _data.size() - valueOffset);
+				FrameMarkStart(tracy__SetArrayGetValueData);
+				valueData = std::move(_GetValueData(values[i]));
+				FrameMarkEnd(tracy__SetArrayGetValueData);
 
 				// SET VALUE DATA
-				//memcpy(_data.data() + valueOffset, valueData.size(), valueDataSize);
-				memcpy(_data.data() + valueOffset, valueData.data(), valueDataSize);
+				FrameMarkStart(tracy__SetArraySetValueData);
+				memcpy(_data.data(), valueData.data(), glm::min(glm::min(valueData.size(), arrayElemDataSize), _data.size() - valuesOffsets[i]));
+				FrameMarkEnd(tracy__SetArraySetValueData);
 
+				// CLEAR TEMP VALUE DATA
+				FrameMarkStart(tracy__SetArrayClearTempValueData);
 				valueData.clear();
+				FrameMarkEnd(tracy__SetArrayClearTempValueData);
 			}
+			FrameMarkEnd(tracy__SetArraySetValues);
 
+			// CLEAR VALUES OFFSETS
+			FrameMarkStart(tracy__SetArrayClearValuesOffsets);
 			valuesOffsets.clear();
+			FrameMarkEnd(tracy__SetArrayClearValuesOffsets);
+
+			FrameMarkEnd(tracy__SetArray);
 			return true;
 		}
-		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
-		bool _SetMat(const std::string& name, const M& value) {
-			// CHECK VARIABLE
-			if (!_dataOffsets.Contains(name)) {
-				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
-				return false;
-			}
 
-			// GET ROWS OFFSETS
-			std::vector<size_t> rowsOffsets = _dataOffsets.GetArray(name);
-
-			// CHECK ROWS ARRAY ELEMENTS OFFSETS
-			if (rowsOffsets.size() == 0) {
-				SPDLOG_ERROR("Value '{0}' was not declared as any matrix", name);
-				return false;
-			}
-
-			// GET ROWS ARRAY ELEM MAX SIZE
-			size_t rowsArrayElemSize = _GetArrayElemSize(rowsOffsets);
-
-			// SET ROWS DATA
-			for (size_t i = 0; i < C && i < rowsOffsets.size(); ++i) {
-				// GET VALUE DATA
-				std::vector<char> valueData = _GetValueData(value[i]);
-
-				// GET VALUE DATA MAX SIZE
-				size_t valueDataSize = glm::min(glm::min(valueData.size(), rowsArrayElemSize), _data.size() - rowsOffsets[i]);
-
-				// SET VALUE DATA
-				memcpy(_data.data() + rowsOffsets[i], valueData.data(), valueDataSize);
-
-				valueData.clear();
-			}
-
-			rowsOffsets.clear();
-			return true;
-		}
-		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
-		bool _SetMatArray(const std::string& name, const std::vector<M>& values) {
-			if (values.size() == 0) return false;
-
-			// CHECK VARIABLE
-			if (!_dataOffsets.Contains(name)) {
-				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
-				return false;
-			}
-
-			// GET VALUES OFFSETS
-			std::vector<size_t> valuesOffsets = _dataOffsets.GetArray(name);
-
-			// CHECK ARRAY ELEMENTS OFFSETS
-			if (valuesOffsets.size() == 0) {
-				SPDLOG_ERROR("Value '{0}' was not declared as any array", name);
-				return false;
-			}
-
-			// GET ARRAY ELEM DATA MAX SIZE
-			size_t arrayElemDataSize = _GetArrayElemSize(valuesOffsets);
-
-			// SET VALUES DATA
-			for (size_t i = 0; i < valuesOffsets.size() && i < values.size(); ++i) {
-				// GET ROWS OFFSETS
-				std::vector<size_t> rowsOffsets = _dataOffsets.GetArray(name + "[" + std::to_string(i) + "]");
-
-				// CHECK ROWS ARRAY ELEMENTS OFFSETS
-				if (rowsOffsets.size() == 0) {
-					SPDLOG_ERROR("Value '{0}' was not declared as any matrix", name + "[" + std::to_string(i) + "]");
-					return false;
-				}
-
-				// GET ROWS ARRAY ELEM DATA MAX SIZE
-				size_t rowsArrayElemDataSize = _GetArrayElemSize(rowsOffsets);
-
-				// GET MATRIX DATA MAX SIZE
-				size_t matrixDataSize = glm::min(arrayElemDataSize, _data.size() - valuesOffsets[i]);
-
-				// SET ROWS DATA
-				for (size_t r = 0; r < C && r < rowsOffsets.size(); ++r) {
-					// GET VALUE DATA
-					std::vector<char> valueData = _GetValueData(values[i][r]);
-
-					// GET VALUE DATA MAX SIZE
-					size_t valueDataSize = glm::min(glm::min(valueData.size(), rowsArrayElemDataSize), valuesOffsets[i] + matrixDataSize - rowsOffsets[r]);
-
-					// SET VALUE DATA
-					memcpy(_data.data() + rowsOffsets[r], valueData.data(), valueDataSize);
-
-					valueData.clear();
-				}
-
-				rowsOffsets.clear();
-			}
-
-			valuesOffsets.clear();
-			return true;
-		}
 		bool _SetStruct(const std::string& name, const STD140Struct& value);
+
 		bool _SetStructArray(const std::string& name, const STD140Offsets& structOffsets, const std::vector<std::vector<char>>& values);
 
-		template<class S, class C, class T>
-		bool _SetArray(const std::string& name, const T& values, size_t size, const Func<bool, const std::string&, const std::vector<C>&>& setArrayFunc) {
-			std::vector<C> convertedValues;
-			for (size_t i = 0; i < size; ++i) {
-				convertedValues.push_back((C)values[i]);
-			}
-			return setArrayFunc(name, convertedValues);
-		}
 #pragma endregion
 
 #pragma region GET
+		static const char* const tracy__Get;
+		static const char* const tracy__GetCheckVariable;
+		static const char* const tracy__GetValueOffset;
+		static const char* const tracy__GetEmptyValueData;
+		static const char* const tracy__GetReserveSpace;
+		static const char* const tracy__GetGetValueData;
+		static const char* const tracy__GetCheckValueDataSize;
+		static const char* const tracy__GetValue;
+		static const char* const tracy__GetClearTempValueData;
+
 		template<class T> T _Get(const std::string& name) const {
+			ZoneScoped;
+			FrameMarkStart(tracy__Get);
+
 			// CHECK VARIABLE
+			FrameMarkStart(tracy__GetCheckVariable);
 			if (!_dataOffsets.Contains(name)) {
 				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
+				FrameMarkEnd(tracy__GetCheckVariable);
+				FrameMarkEnd(tracy__Get);
 				return T();
 			}
+			FrameMarkEnd(tracy__GetCheckVariable);
 
 			// GET VALUE OFFSET
+			FrameMarkStart(tracy__GetValueOffset);
 			size_t valueOffset = _dataOffsets.Get(name);
+			FrameMarkEnd(tracy__GetValueOffset);
 
 			// MAKE EMPTY VALUE DATA
+			FrameMarkStart(tracy__GetEmptyValueData);
 			std::vector<char> valueData;
-			valueData.resize(sizeof(T));
+			FrameMarkEnd(tracy__GetEmptyValueData);
 
-			// GET MAX VALUE DATA
-			size_t valueDataSize = glm::min(valueData.size(), _data.size() - valueOffset);
+			// RESERVE SPACE
+			FrameMarkStart(tracy__GetReserveSpace);
+			valueData.reserve(sizeof(T));
+			FrameMarkEnd(tracy__GetReserveSpace);
 
 			// GET VALUE DATA
-			memcpy(valueData.data(), _data.data() + valueOffset, valueDataSize);
+			FrameMarkStart(tracy__GetGetValueData);
+			valueData.insert(valueData.begin(), _data.begin() + valueOffset, _data.begin() + valueOffset + glm::min(valueData.capacity(), _data.size() - valueOffset));
+			FrameMarkEnd(tracy__GetGetValueData);
+
+			// CHECK VALUE DATA SIZE
+			FrameMarkStart(tracy__GetCheckValueDataSize);
+			if (valueData.size() < valueData.capacity()) {
+				valueData.resize(valueData.capacity());
+			}
+			FrameMarkEnd(tracy__GetCheckValueDataSize);
 
 			// GET VALUE
+			FrameMarkStart(tracy__GetValue);
 			T value = *reinterpret_cast<T*>(valueData.data());
+			FrameMarkEnd(tracy__GetValue);
+
+			// CLEAR TEMP VALUE DATA
+			FrameMarkStart(tracy__GetClearTempValueData);
+			valueData.clear();
+			FrameMarkEnd(tracy__GetClearTempValueData);
 
 			// RETURN VALUE
+			FrameMarkEnd(tracy__Get);
 			return value;
 		}
+
+		static const char* const tracy__GetArray;
+		static const char* const tracy__GetArrayCheckVariable;
+		static const char* const tracy__GetArrayValuesOffsets;
+		static const char* const tracy__GetArrayCheckValuesOffsets;
+		static const char* const tracy__GetArrayMaxElemSize;
+		static const char* const tracy__GetArrayValuesData;
+		static const char* const tracy__GetArrayMaxValueSize;
+		static const char* const tracy__GetArrayValueData;
+		static const char* const tracy__GetArrayCheckValueDataSize;
+		static const char* const tracy__GetArrayValue;
+		static const char* const tracy__GetArrayClearTempValueData;
+		static const char* const tracy__GetArrayClearValuesOffsets;
+
 		template<class T> std::vector<T> _GetArray(const std::string& name) const {
+			ZoneScoped;
+			FrameMarkStart(tracy__GetArray);
+
 			// CHECK VARIABLE
+			FrameMarkStart(tracy__GetArrayCheckVariable);
 			if (!_dataOffsets.Contains(name)) {
 				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
+				FrameMarkEnd(tracy__GetArrayCheckVariable);
+				FrameMarkEnd(tracy__GetArray);
 				return std::vector<T>();
 			}
+			FrameMarkEnd(tracy__GetArrayCheckVariable);
 
 			// GET VALUES OFFSETS
-			std::vector<size_t> valuesOffsets = _dataOffsets.GetArray(name);
+			FrameMarkStart(tracy__GetArrayValuesOffsets);
+			std::vector<size_t> valuesOffsets = std::move(_dataOffsets.GetArray(name));
+			FrameMarkEnd(tracy__GetArrayValuesOffsets);
 
 			// CHECK ARRAY ELEMENTS OFFSETS
+			FrameMarkStart(tracy__GetArrayCheckValuesOffsets);
 			if (valuesOffsets.size() == 0) {
 				SPDLOG_ERROR("Value '{0}' was not declared as any array", name);
+				FrameMarkEnd(tracy__GetArrayCheckValuesOffsets);
+				FrameMarkEnd(tracy__GetArray);
 				return std::vector<T>();
 			}
+			FrameMarkEnd(tracy__GetArrayCheckValuesOffsets);
 
 			// GET ARRAY ELEM DATA MAX SIZE
-			size_t arrayElemDataSize = _GetArrayElemSize(valuesOffsets);
+			FrameMarkStart(tracy__GetArrayMaxElemSize);
+			size_t arrayElemDataSize = glm::min(_GetArrayElemSize(valuesOffsets), sizeof(T));
+			FrameMarkEnd(tracy__GetArrayMaxElemSize);
 
 			// GET VALUES DATA
+			FrameMarkStart(tracy__GetArrayValuesData);
 			std::vector<T> values;
+			std::vector<char> valueData;
+			valueData.resize(sizeof(T));
+			size_t maxSize;
 			for (size_t i = 0; i < valuesOffsets.size(); ++i) {
-				// MAKE EMPTY VALUE DATA
-				std::vector<char> valueData;
-				valueData.resize(sizeof(T));
-
-				// GET MAX VALUE DATA
-				size_t valueDataSize = glm::min(glm::min(valueData.size(), arrayElemDataSize), _data.size() - valuesOffsets[i]);
+				// GET MAX VALUE SIZE
+				FrameMarkStart(tracy__GetArrayMaxValueSize);
+				maxSize = glm::min(arrayElemDataSize, _data.size() - valuesOffsets[i]);
+				FrameMarkEnd(tracy__GetArrayMaxValueSize);
 
 				// GET VALUE DATA
-				memcpy(valueData.data(), _data.data() + valuesOffsets[i], valueDataSize);
+				FrameMarkStart(tracy__GetArrayValueData);
+				memcpy(valueData.data(), _data.data() + valuesOffsets[i], maxSize);
+				FrameMarkEnd(tracy__GetArrayValueData);
+
+				// CHECK VALUE DATA SIZE
+				FrameMarkStart(tracy__GetArrayCheckValueDataSize);
+				if (maxSize < sizeof(T)) {
+					memset(valueData.data() + maxSize, 0, sizeof(T) - maxSize);
+				}
+				FrameMarkEnd(tracy__GetArrayCheckValueDataSize);
 
 				// GET VALUE
-				values.push_back(*reinterpret_cast<T*>(valueData.data())); 
-
-				valueData.clear();
+				FrameMarkStart(tracy__GetArrayValue);
+				values.push_back(*reinterpret_cast<T*>(valueData.data()));
+				FrameMarkEnd(tracy__GetArrayValue);
 			}
+			FrameMarkEnd(tracy__GetArrayValuesData);
 
+			// CLEAR TEMP VALUE DATA
+			FrameMarkStart(tracy__GetArrayClearTempValueData);
+			valueData.clear();
+			FrameMarkEnd(tracy__GetArrayClearTempValueData);
+
+			// CLEAR VALUES OFFSETS
+			FrameMarkStart(tracy__GetArrayClearValuesOffsets);
 			valuesOffsets.clear();
+			FrameMarkEnd(tracy__GetArrayClearValuesOffsets);
 			
 			// RETURN VALUES
+			FrameMarkEnd(tracy__GetArray);
 			return values;
 		}
-		template<class M, class T = M::value_type, size_t R = M::column_type::length()>
-		M _GetMat(const std::string& name) const {
-			// CHECK VARIABLE
-			if (!_dataOffsets.Contains(name)) {
-				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
-				return M();
-			}
 
-			// GET ROWS OFFSETS
-			std::vector<size_t> rowsOffsets = _dataOffsets.GetArray(name);
-
-			// CHECK ARRAY ELEMENTS OFFSETS
-			if (rowsOffsets.size() == 0) {
-				SPDLOG_ERROR("Value '{0}' was not declared as any matrix", name);
-				return M();
-			}
-
-			// GET ARRAY ELEM DATA MAX SIZE
-			size_t rowsArrayElemDataSize = _GetArrayElemSize(rowsOffsets);
-
-			// MAKE EMPTY MAT
-			M value{};
-
-			// GET ROWS DATA
-			for (size_t i = 0; i < M::row_type::length() && i < rowsOffsets.size(); ++i) {
-				// MAKE EMPTY ROW DATA
-				std::vector<char> rowData;
-				rowData.resize(sizeof(glm::vec<R, T>));
-
-				// GET MAX VALUE DATA
-				size_t rowDataSize = glm::min(glm::min(rowData.size(), rowsArrayElemDataSize), _data.size() - rowsOffsets[i]);
-
-				// GET ROW DATA
-				memcpy(rowData.data(), _data.data() + rowsOffsets[i], rowDataSize);
-
-				// GET ROW
-				glm::vec<R, T> row = *reinterpret_cast<glm::vec<R, T>*>(rowData.data());
-
-				// SET ROW
-				value[i] = row;
-
-				rowData.clear();
-			}
-
-			rowsOffsets.clear();
-
-			// RETURN VALUE
-			return value;
-		}
-		template<class M, class T = M::value_type, size_t R = M::column_type::length()>
-		std::vector<M> _GetMatArray(const std::string& name) const {
-			// CHECK VARIABLE
-			if (!_dataOffsets.Contains(name)) {
-				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
-				return std::vector<M>();
-			}
-
-			// GET OFFSETS
-			std::vector<size_t> valuesOffsets = _dataOffsets.GetArray(name);
-
-			// CHECK ARRAY ELEMENTS OFFSETS
-			if (valuesOffsets.size() == 0) {
-				SPDLOG_ERROR("Value '{0}' was not declared as any array", name);
-				return std::vector<M>();
-			}
-
-			// GET ARRAY ELEM DATA MAX SIZE
-			size_t arrayElemDataSize = _GetArrayElemSize(valuesOffsets);
-
-			// GET VALUES DATA
-			std::vector<M> values;
-			for (size_t i = 0; i < valuesOffsets.size(); ++i) {
-				// GET ROWS OFFSETS
-				std::vector<size_t> rowsOffsets = _dataOffsets.GetArray(name + "[" + std::to_string(i) + "]");
-
-				// CHECK ROWS ARRAY ELEMENTS OFFSETS
-				if (rowsOffsets.size() == 0) {
-					SPDLOG_ERROR("Value '{0}' was not declared as any matrix", name + "[" + std::to_string(i) + "]");
-					return std::vector<M>();
-				}
-
-				// GET ROWS ARRAY ELEM DATA MAX SIZE
-				size_t rowsArrayElemDataSize = _GetArrayElemSize(rowsOffsets);
-
-				// GET MATRIX DATA SIZE
-				size_t matrixDataSize = glm::min(arrayElemDataSize, _data.size() - valuesOffsets[i]);
-
-				// MAKE EMPTY MAT
-				M value{};
-
-				// GET ROWS DATA
-				for (size_t r = 0; r < M::row_type::length() && r < rowsOffsets.size(); ++r) {
-					// MAKE EMPTY ROW DATA
-					std::vector<char> rowData;
-					rowData.resize(sizeof(glm::vec<R, T>));
-
-					// GET MAX VALUE DATA
-					size_t rowDataSize = glm::min(glm::min(rowData.size(), rowsArrayElemDataSize), valuesOffsets[i] + matrixDataSize - rowsOffsets[r]);
-
-					// GET ROW DATA
-					memcpy(rowData.data(), _data.data() + rowsOffsets[r], rowDataSize);
-
-					// GET ROW
-					glm::vec<R, T> row = *reinterpret_cast<glm::vec<R, T>*>(rowData.data()); // To samo co wyzej...???
-
-					// SET ROW
-					value[r] = row;
-				}
-
-				values.push_back(value);
-
-				rowsOffsets.clear();
-			}
-
-			valuesOffsets.clear();
-
-			// RETURN VALUES
-			return values;
-		}
 		STD140Struct _GetStruct(const std::string& name, const STD140Offsets& structOffsets) const;
+
 		std::vector<STD140Struct> _GetStructArray(const std::string& name, const STD140Offsets& structOffsets) const;
+
+		static const char* const tracy__GetArrayConvert;
+		static const char* const tracy__GetArrayConvertValues;
+		static const char* const tracy__GetArrayConvertValue;
 
 		template<class S, class C>
 		std::vector<C> _GetArray(const std::string& name, const Func<std::vector<S>, const std::string&>& getArrayFunc) {
-			std::vector<S> values = getArrayFunc(name);
-			std::vector<C> convertedValues;
-			for (auto& val : values) {
-				convertedValues.push_back((C)val);
+			ZoneScoped;
+			FrameMarkStart(tracy__GetArrayConvert);
+
+			if (std::is_same_v<S, C>) {
+				FrameMarkEnd(tracy__GetArrayConvert);
+				return getArrayFunc(name);
 			}
-			return convertedValues;
+			else {
+				std::vector<S> values = getArrayFunc(name);
+
+				FrameMarkStart(tracy__GetArrayConvertValues);
+				std::vector<C> convertedValues;
+				for (auto& val : values) {
+					FrameMarkStart(tracy__GetArrayConvertValue);
+					convertedValues.push_back((C)val);
+					FrameMarkEnd(tracy__GetArrayConvertValue);
+				}
+				FrameMarkEnd(tracy__GetArrayConvertValues);
+
+				FrameMarkEnd(tracy__GetArrayConvert);
+				return convertedValues;
+			}
 		}
 #pragma endregion
 
@@ -592,6 +638,7 @@ namespace Twin2Engine::Tools {
 		STD140Struct(const STD140Offsets& structOffsets, const std::vector<char>& data = std::vector<char>());
 		template<class... Args>
 		STD140Struct(const STD140Variable<Args>&... vars) {
+			ZoneScoped;
 			_dataOffsets = STD140Offsets(vars...);
 			_data.resize(_dataOffsets.GetSize());
 		}
@@ -609,36 +656,41 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T>
 		Add(const std::string& name, const T& value) {
-			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
-			_Add(name, (type)value);
+			ZoneScoped;
+			if constexpr (std::is_same_v<T, bool>) {
+				_Add(name, (unsigned int)value);
+			}
+			else {
+				_Add(name, value);
+			}
 		}
 
 #pragma region ADD_SCALARS_ARRAYS
 		template<class T>
 		typename scalar_enable_if_t<T>
 		Add(const std::string& name, const T*& values, size_t size) {
+			ZoneScoped;
 			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
-			_AddArray<T, type>(name, values, size, [&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
+			_ConvertArray<T, type>(name, values, size, [&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
 		}
 
 		template<class T, size_t N>
 		typename scalar_enable_if_t<T>
 		Add(const std::string& name, const T(&values)[N]) {
+			ZoneScoped;
 			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
-			_AddArray<T, type>(name, values, N, [&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
+			_ConvertArray<T, type>(name, values, N, [&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
 		}
 
 		template<class T>
 		typename scalar_enable_if_t<T>
 		Add(const std::string& name, const std::vector<T>& values) {
-			if constexpr (std::is_same_v<T, bool>) {
-				_AddArray<T, unsigned int>(name, values, values.size(), 
-					[&](const std::string& name, const std::vector<unsigned int>& values) -> void { _AddArray(name, values); });
-			}
-			else {
-				_AddArray(name, values);
-			}
+			ZoneScoped;
+			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
+			_ConvertArray<T, type>(name, values, values.size(),
+				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
 		}
+
 #pragma endregion
 #pragma endregion
 
@@ -646,39 +698,44 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L>
 		Add(const std::string& name, const V& value) {
-			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
-			_Add(name, (type)value);
+			ZoneScoped;
+			if constexpr (std::is_same_v<T, bool>) {
+				using type = glm::vec<L, unsigned int>;
+				_Add(name, (type)value);
+			}
+			else {
+				_Add(name, value);
+			}
 		}
 
 #pragma region ADD_VEC_ARRAYS
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L>
 		Add(const std::string& name, const V*& values, size_t size) {
+			ZoneScoped;
 			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
-			_AddArray<V, type>(name, values, size, 
+			_ConvertArray<V, type>(name, values, size, 
 				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
 		}
 
 		template<class V, class T = V::value_type, size_t L = V::length(), size_t N>
 		typename vec_enable_if_t<V, T, L>
 		Add(const std::string& name, const V(&values)[N]) {
+			ZoneScoped;
 			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
-			_AddArray<V, type>(name, values, N, 
+			_ConvertArray<V, type>(name, values, N, 
 				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
 		}
 
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L>
 		Add(const std::string& name, const std::vector<V>& values) {
-			if constexpr (std::is_same_v<T, bool>) {
-				using type = glm::vec<L, unsigned int>;
-				_AddArray<V, type>(name, values, values.size(), 
-					[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
-			}
-			else {
-				_AddArray(name, values);
-			}
+			ZoneScoped;
+			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			_ConvertArray<V, type>(name, values, values.size(),
+				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
 		}
+
 #pragma endregion
 #pragma endregion
 
@@ -686,39 +743,44 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R>
 		Add(const std::string& name, const M& value) {
-			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
-			_AddMat(name, (type)value);
+			ZoneScoped;
+			if constexpr (std::is_same_v<T, bool>) {
+				using type = glm::mat<C, R, unsigned int>;
+				_Add(name, (type)value);
+			}
+			else {
+				_Add(name, value);
+			}
 		}
 
 #pragma region ADD_MAT_ARRAYS
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R>
 		Add(const std::string& name, const M*& values, size_t size) {
+			ZoneScoped;
 			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
-			_AddArray<M, type>(name, values, size, 
-				[&](const std::string& name, const std::vector<type>& values) -> void { _AddMatArray(name, values); });
+			_ConvertArray<M, type>(name, values, size, 
+				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
 		}
 
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length(), size_t N>
 		typename mat_enable_if_t<M, T, C, R>
 		Add(const std::string& name, const M(&values)[N]) {
+			ZoneScoped;
 			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
-			_AddArray<M, type>(name, values, N, 
-				[&](const std::string& name, const std::vector<type>& values) -> void { _AddMatArray(name, values); });
+			_ConvertArray<M, type>(name, values, N, 
+				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
 		}
 
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, typename M::value_type, M::row_type::length(), M::column_type::length()>
 		Add(const std::string& name, const std::vector<M>& values) {
-			if constexpr (std::is_same_v<T, bool>) {
-				using type = glm::mat<C, R, unsigned int>;
-				_AddArray<M, type>(name, values, values.size(), 
-					[&](const std::string& name, const std::vector<type>& values) -> void { _AddMatArray(name, values); });
-			}
-			else {
-				_AddMatArray(name, values);
-			}
+			ZoneScoped;
+			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			_ConvertArray<M, type>(name, values, values.size(),
+				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
 		}
+
 #pragma endregion
 #pragma endregion
 
@@ -729,7 +791,8 @@ namespace Twin2Engine::Tools {
 		void Add(const std::string& name, const STD140Offsets& structOffsets, const std::vector<char>*& values, size_t size);
 
 		template<size_t N> void Add(const std::string& name, const STD140Offsets& structOffsets, const std::vector<char>(&values)[N]) {
-			_AddArray<std::vector<char>, std::vector<char>>(name, values, N,
+			ZoneScoped;
+			_ConvertArray<std::vector<char>, std::vector<char>>(name, values, N,
 				[&](const std::string& name, const std::vector<std::vector<char>>& convs) -> void {
 					_AddStructArray(name, structOffsets, convs);
 				}
@@ -737,6 +800,7 @@ namespace Twin2Engine::Tools {
 		}
 
 		void Add(const std::string& name, const STD140Offsets& structOffsets, const std::vector<std::vector<char>>& values);
+
 #pragma endregion
 #pragma endregion
 
@@ -745,37 +809,43 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T, bool>
 		Set(const std::string& name, const T& value) {
-			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
-			return _Set(name, (type)value);
+			ZoneScoped;
+			if constexpr (std::is_same_v<T, bool>) {
+				return _Set(name, (unsigned int)value);
+			}
+			else {
+				return _Set(name, value);
+			}
 		}
+
 #pragma region SET_SCALARS_ARRAYS
 		template<class T>
 		typename scalar_enable_if_t<T, bool>
 		Set(const std::string& name, const T*& values, size_t size) {
+			ZoneScoped;
 			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
-			return _SetArray<T, type>(name, values, size, 
+			return _ConvertArray<T, type>(name, values, size, 
 				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
 		}
 
 		template<class T, size_t N>
 		typename scalar_enable_if_t<T, bool>
 		Set(const std::string& name, const T(&values)[N]) {
+			ZoneScoped;
 			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
-			return _SetArray<T, type>(name, values, N, 
+			return _ConvertArray<T, type>(name, values, N, 
 				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
 		}
 
 		template<class T>
 		typename scalar_enable_if_t<T, bool>
 		Set(const std::string& name, const std::vector<T>& values) {
-			if constexpr (std::is_same_v<T, bool>) {
-				return _SetArray<T, unsigned int>(name, values, values.size(), 
-					[&](const std::string& name, const std::vector<unsigned int>& values) -> bool { return _SetArray(name, values); });
-			}
-			else {
-				return _SetArray(name, values);
-			}
+			ZoneScoped;
+			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
+			return _ConvertArray<T, type>(name, values, values.size(),
+				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
 		}
+
 #pragma endregion
 #pragma endregion
 
@@ -783,39 +853,44 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L, bool>
 		Set(const std::string& name, const V& value) {
-			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
-			return _Set(name, (type)value);
+			ZoneScoped;
+			if constexpr (std::is_same_v<T, bool>) {
+				using type = glm::vec<L, unsigned int>;
+				return _Set(name, (type)value);
+			}
+			else {
+				return _Set(name, value);
+			}
 		}
 
 #pragma region SET_VEC_ARRAYS
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L, bool>
 		Set(const std::string& name, const V*& values, size_t size) {
+			ZoneScoped;
 			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
-			return _SetArray<V, type>(name, values, size, 
+			return _ConvertArray<V, type>(name, values, size, 
 				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
 		}
 
 		template<class V, class T = V::value_type, size_t L = V::length(), size_t N>
 		typename vec_enable_if_t<V, T, L, bool>
 		Set(const std::string& name, const V(&values)[N]) {
+			ZoneScoped;
 			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
-			return _SetArray<V, type>(name, values, N, 
+			return _ConvertArray<V, type>(name, values, N, 
 				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
 		}
 
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L, bool>
 		Set(const std::string& name, const std::vector<V>& values) {
-			if constexpr (std::is_same_v<T, bool>) {
-				using type = glm::vec<L, unsigned int>;
-				return _SetArray<V, type>(name, values, values.size(),
-					[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
-			}
-			else {
-				return _SetArray(name, values);
-			}
+			ZoneScoped;
+			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			return _ConvertArray<V, type>(name, values, values.size(),
+				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
 		}
+
 #pragma endregion
 #pragma endregion
 
@@ -823,39 +898,44 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R, bool>
 		Set(const std::string& name, const M& value) {
-			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
-			return _SetMat(name, (type)value);
+			ZoneScoped;
+			if constexpr (std::is_same_v<T, bool>) {
+				using type = glm::mat<C, R, unsigned int>;
+				return _Set(name, (type)value);
+			}
+			else {
+				return _Set(name, value);
+			}
 		}
 
 #pragma region SET_MAT_ARRAYS
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R, bool>
 		Set(const std::string& name, const M*& values, size_t size) {
+			ZoneScoped;
 			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
-			return _SetArray<M, type>(name, values, size, 
-				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetMatArray(name, values); });
+			return _ConvertArray<M, type>(name, values, size, 
+				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
 		}
 
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length(), size_t N>
 		typename mat_enable_if_t<M, T, C, R, bool>
 		Set(const std::string& name, const M(&values)[N]) {
+			ZoneScoped;
 			using type = glm::mat<C, R, type_test_t<std::is_same<T, bool>, unsigned int, T>>;
-			return _SetArray<M, type>(name, values, N, 
-				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetMatArray(name, values); });
+			return _ConvertArray<M, type>(name, values, N, 
+				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
 		}
 
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R, bool>
 		Set(const std::string& name, const std::vector<M>& values) {
-			if constexpr (std::is_same_v<T, bool>) {
-				using type = glm::mat<C, R, unsigned int>;
-				return _SetArray<M, type>(name, values, values.size(),
-					[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
-			}
-			else {
-				return _SetMatArray(name, values);
-			}
+			ZoneScoped;
+			using type = glm::mat<C, R, type_test_t<std::is_same<T, bool>, unsigned int, T>>;
+			return _ConvertArray<M, type>(name, values, values.size(),
+				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
 		}
+
 #pragma endregion
 #pragma endregion
 
@@ -866,7 +946,8 @@ namespace Twin2Engine::Tools {
 		bool Set(const std::string& name, const STD140Offsets& structOffsets, const std::vector<char>*& values, size_t size);
 
 		template<size_t N> bool Set(const std::string& name, const STD140Offsets& structOffsets, const std::vector<char>(&values)[N]) {
-			return _SetArray<std::vector<char>, std::vector<char>>(name, values, N, 
+			ZoneScoped;
+			return _ConvertArray<std::vector<char>, std::vector<char>>(name, values, N, 
 				[&](const std::string& name, const std::vector<std::vector<char>>& values) -> bool { 
 					return _SetStructArray(name, structOffsets, values);
 				});
@@ -881,14 +962,20 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T, T>
 		Get(const std::string& name) const {
-			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
-			return (T)_Get<type>(name);
+			ZoneScoped;
+			if constexpr (std::is_same_v<T, bool>) {
+				return (T)_Get<unsigned int>(name);
+			}
+			else {
+				return _Get<T>(name);
+			}
 		}
 
 #pragma region GET_SCALARS_ARRAYS
 		template<class T>
 		typename scalar_enable_if_t<T>
 		Get(const std::string& name, T*& valuesDest, size_t size) const {
+			ZoneScoped;
 			std::vector<T> values;
 			if constexpr (std::is_same_v<T, bool>) {
 				values = _GetArray<unsigned int, T>(name, [&](const std::string& name) -> std::vector<T> { return _GetArray<unsigned int>(name); });
@@ -903,6 +990,7 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type>
 		typename get_vector_enable_if_t<V, T, type_check_v<T>, V>
 		Get(const std::string& name) const {
+			ZoneScoped;
 			if constexpr (std::is_same_v<T, bool>) {
 				return _GetArray<unsigned int, T>(name, [&](const std::string& name) -> std::vector<T> { return _GetArray<unsigned int>(name); });
 			}
@@ -910,6 +998,7 @@ namespace Twin2Engine::Tools {
 				return _GetArray<T>(name);
 			}
 		}
+
 #pragma endregion
 #pragma endregion
 
@@ -917,14 +1006,21 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L, V>
 		Get(const std::string& name) const {
-			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
-			return (V)_Get<type>(name);
+			ZoneScoped;
+			if (std::is_same_v<T, bool>) {
+				using type = glm::vec<L, unsigned int>;
+				return (V)_Get<type>(name);
+			}
+			else {
+				return _Get<V>(name);
+			}
 		}
 
 #pragma region GET_VEC_ARRAYS
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L>
 		Get(const std::string& name, V*& valuesDest, size_t size) const {
+			ZoneScoped;
 			std::vector<V> values;
 			if constexpr (std::is_same_v<T, bool>) {
 				using type = glm::vec<L, unsigned int>;
@@ -942,6 +1038,7 @@ namespace Twin2Engine::Tools {
 		template<class Vec, class V = Vec::value_type, class T = V::value_type, size_t L = V::length()>
 		typename get_vector_enable_if_t<Vec, V, vec_check_v<V, T, L>, Vec>
 		Get(const std::string& name) const {
+			ZoneScoped;
 			if constexpr (std::is_same_v<T, bool>) {
 				using type = glm::vec<L, unsigned int>;
 				return _GetArray<type, V>(name, [&](const std::string& name) -> std::vector<type> {
@@ -952,6 +1049,7 @@ namespace Twin2Engine::Tools {
 				return GetArray<V>(name);
 			}
 		}
+
 #pragma endregion
 #pragma endregion
 
@@ -959,23 +1057,30 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R, M>
 		Get(const std::string& name) const {
-			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
-			return (M)_GetMat<type>(name);
+			ZoneScoped;
+			if constexpr (std::is_same_v<T, bool>) {
+				using type = glm::mat<C, R, unsigned int>;
+				return (M)_Get<type>(name);
+			}
+			else {
+				return _Get<M>(name);
+			}
 		}
 
 #pragma region GET_MAT_ARRAYS
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R>
 		Get(const std::string& name, M*& valuesDest, size_t size) const {
+			ZoneScoped;
 			std::vector<M> values;
 			if constexpr (std::is_same_v<T, bool>) {
 				using type = glm::mat<C, R, unsigned int>;
 				values = _GetArray<type, M>(name, [&](const std::string& name) -> std::vector<type> {
-						return _GetMatArray<type>(name); 
+						return _GetArray<type>(name); 
 					});
 			}
 			else {
-				values = _GetMatArray<M>(name);
+				values = _GetArray<M>(name);
 			}
 			memcpy(valuesDest, values.data(), glm::min(values.size(), size));
 			values.clear();
@@ -984,16 +1089,18 @@ namespace Twin2Engine::Tools {
 		template<class Vec, class M = Vec::value_type, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename get_vector_enable_if_t<Vec, M, mat_check_v<M, T, C, R>, Vec>
 		Get(const std::string& name) const {
+			ZoneScoped;
 			if constexpr (std::is_same_v<T, bool>) {
 				using type = glm::mat<C, R, unsigned int>;
 				return _GetArray<type, M>(name, [&](const std::string& name) -> std::vector<type> {
-						return _GetMatArray<type>(name); 
+						return _GetArray<type>(name); 
 					});
 			}
 			else {
-				return _GetMatArray<M>(name);
+				return _GetArray<M>(name);
 			}
 		}
+
 #pragma endregion
 #pragma endregion
 
@@ -1001,6 +1108,7 @@ namespace Twin2Engine::Tools {
 		template<class S>
 		typename std::enable_if_t<std::is_same_v<S, STD140Struct>, S>
 		Get(const std::string& name, const STD140Offsets& structOffsets) const {
+			ZoneScoped;
 			return _GetStruct(name, structOffsets);
 		}
 
@@ -1008,6 +1116,7 @@ namespace Twin2Engine::Tools {
 		template<class S>
 		typename std::enable_if_t<std::is_same_v<S, STD140Struct>>
 		Get(const std::string& name, const STD140Offsets& structOffsets, STD140Struct*& valueDest, size_t size) const {
+			ZoneScoped;
 			std::vector<STD140Struct> values = _GetStructArray(name, structOffsets);
 			memcpy(valueDest, values.data(), glm::min(values.size(), size));
 		}
@@ -1015,8 +1124,10 @@ namespace Twin2Engine::Tools {
 		template<class V, class S = V::value_type>
 		typename get_vector_enable_if_t<V, S, std::is_same_v<S, STD140Struct>, V>
 		Get(const std::string& name, const STD140Offsets& structTemplate) const {
+			ZoneScoped;
 			return _GetStructArray(name, structTemplate);
 		}
+
 #pragma endregion
 #pragma endregion
 

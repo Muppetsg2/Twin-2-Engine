@@ -47,7 +47,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG="$<IF:$<CONFIG:Debug>,1
 
 get_property(tracy_profiler GLOBAL PROPERTY TRACY_PROFILER)
 if (tracy_profiler)
-    target_link_libraries(${PROJECT_NAME} TracyClient)
+    target_link_libraries(${PROJECT_NAME} PUBLIC TracyClient)
 	target_compile_definitions(${PROJECT_NAME} PUBLIC TRACY_PROFILER)
 endif()
 
@@ -61,19 +61,21 @@ target_include_directories(${PROJECT_NAME} PUBLIC	${Twin2Engine_INCLUDE_DIR}
 													${TOOLS_INCLUDE_DIR})
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
-	target_link_libraries(${PROJECT_NAME} imgui)
-	target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
+	 target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
+	 target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
+else()
+    target_compile_options(${PROJECT_NAME} PUBLIC "-O2")
 endif()
 
 if(is_miniaudio)
-	target_link_libraries(${PROJECT_NAME} miniaudio)
+	target_link_libraries(${PROJECT_NAME} PUBLIC miniaudio)
 	target_include_directories(${PROJECT_NAME} PUBLIC ${miniaudio_SOURCE_DIR})
 else()
-	target_link_libraries(${PROJECT_NAME} soloud)
+	target_link_libraries(${PROJECT_NAME} PUBLIC soloud)
 	target_include_directories(${PROJECT_NAME} PUBLIC ${soloud_SOURCE_DIR})
 endif()
 
-target_link_libraries(${PROJECT_NAME} 	glfw
+target_link_libraries(${PROJECT_NAME} PUBLIC glfw
 										GraphicEngine
 										PhysicEngine
 										GameScripts

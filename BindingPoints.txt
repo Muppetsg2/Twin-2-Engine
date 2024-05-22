@@ -1,7 +1,7 @@
 SSBO (MAX BINDINGS POINTS 37085 -> LAST 37084):
 0 - InstanceBuffer			(std430)
 1 - MaterialIndexes			(std430)
-2 - Lights					(std430)
+2 - Lights				(std430)
 3 - UIElements				(std140)
 4 - 
 5 - 
@@ -12,7 +12,7 @@ UBO (MAX BINDINGS POINTS 35375 -> LAST 35374):
 2 - MaterialInput		(std140)
 3 - LightingData		(std140)
 4 - UICanvas			(std140)
-5 - UIMask				(std140)
+5 - UIMask			(std140)
 
 TEXTURES:
 0...3 - Dynamic

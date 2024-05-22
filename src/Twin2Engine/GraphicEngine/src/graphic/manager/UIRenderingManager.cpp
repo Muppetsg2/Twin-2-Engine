@@ -143,6 +143,8 @@ void UIRenderingManager::Render()
 
 
 	if (_uiShader != nullptr) {
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, _elemsSSBO);
+
 		FrameMarkStart(tracy_RenderUIShader);
 		_uiShader->Use();
 		_uiShader->SetInt("image", 0);
@@ -200,8 +202,6 @@ void UIRenderingManager::Render()
 						FrameMarkStart(tracy_RenderUITextureName);
 
 						Texture2D* textureData = texture.first;
-
-						glBindBuffer(GL_SHADER_STORAGE_BUFFER, _elemsSSBO);
 
 						if (textureData != nullptr) {
 							textureData->Use(0);

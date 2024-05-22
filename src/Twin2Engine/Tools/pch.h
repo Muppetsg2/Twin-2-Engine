@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <format>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -16,7 +17,7 @@
 // GLAD
 #include <glad/glad.h>
 
-#if _DEBUG
+#if TRACY_PROFILER
 	#include <tracy/Tracy.hpp>
 	#include <tracy/TracyOpenGL.hpp>
 	#define TRACY_ENABLE

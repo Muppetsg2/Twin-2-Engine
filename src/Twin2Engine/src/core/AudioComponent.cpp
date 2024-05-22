@@ -4,6 +4,7 @@
 #include <format>
 #include <cmath>
 #include <core/MathExtensions.h>
+#include <tools/templates.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
@@ -326,13 +327,10 @@ void AudioComponent::DrawEditor()
 			ImGui::Text("Play Time: %02.0f:%02.0f", std::floor(this->GetPlayTime() / 60.0), mod(this->GetPlayTime(), 60));
 			ImGui::Text("Position: %02.0f:%02.0f / %02.0f:%02.0f", std::floor(pos / 60.f), mod((double)pos, 60.0), std::floor(len / 60.f), mod((double)len, 60.0));
 
-			double minut = std::floor((double)pos / 60.0);
-			double seconds = mod((double)pos, 60.0);
-
 			if (ImGui::SliderFloat(string("Position Slider##").append(id).c_str(), &pos, 0.f, len, std::vformat(string_view("{:02.0f}:{:02.0f}"),
 				std::make_format_args(
-					minut,
-					seconds
+					Twin2Engine::Tools::unmove(std::floor((double)pos / 60.0)),
+					Twin2Engine::Tools::unmove(mod((double)pos, 60.0))
 				)).c_str()))
 			{
 				this->SetPlayPosition((double)pos);

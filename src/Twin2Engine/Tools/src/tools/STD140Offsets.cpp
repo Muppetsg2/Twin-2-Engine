@@ -228,7 +228,7 @@ vector<size_t> STD140Offsets::GetArray(const string& name) const
 	vector<size_t> values;
 
 	FrameMarkStart(tracy_GetArrayFindElemOffset);
-	map<size_t, size_t>::const_iterator map_iterator = _offsets.find(move(_hasher(move(vformat(_arrayElemFormat, make_format_args(name, 0))))));
+	map<size_t, size_t>::const_iterator map_iterator = _offsets.find(move(_hasher(std::move(std::vformat(_arrayElemFormat, std::make_format_args(name, unmove(0)))))));
 	FrameMarkEnd(tracy_GetArrayFindElemOffset);
 
 	size_t i = 1;
@@ -237,7 +237,7 @@ vector<size_t> STD140Offsets::GetArray(const string& name) const
 		values.push_back((*map_iterator).second);
 
 		FrameMarkStart(tracy_GetArrayFindElemOffset);
-		map_iterator = _offsets.find(move(_hasher(move(vformat(_arrayElemFormat, make_format_args(name, i++))))));
+		map_iterator = _offsets.find(move(_hasher(std::move(std::vformat(_arrayElemFormat, std::make_format_args(name, unmove(i++)))))));
 		FrameMarkEnd(tracy_GetArrayFindElemOffset);
 
 		FrameMarkEnd(tracy_GetArrayGetElemOffset);

@@ -55,7 +55,8 @@ namespace Twin2Engine::Tools {
 
 		static const char* const tracy__GetValueData;
 
-		template<class T> std::vector<char> _GetValueData(const T& value) const {
+		template<class T> 
+		std::vector<char> _GetValueData(const T& value) const {
 			ZoneScoped;
 			FrameMarkStart(tracy__GetValueData);
 			const char* valueDataPtr = reinterpret_cast<const char*>(&value);
@@ -65,7 +66,7 @@ namespace Twin2Engine::Tools {
 
 		size_t _GetArrayElemSize(const std::vector<size_t>& offsets) const;
 
-		// TODO: FIX ADD_MAT I SET_MAT
+		// TODO: SPRAWDZIÆ KA¯DY MAT (TYLKO MAT4 SPRAWDZONY)
 
 #pragma region ADD
 		/*template<class T, class... Ts>
@@ -252,18 +253,29 @@ namespace Twin2Engine::Tools {
 			ZoneScoped;
 			FrameMarkStart(tracy__AddArrayConvert);
 
-			FrameMarkStart(tracy__AddArrayConvertValues);
-			std::vector<C> convertedValues;
-			for (size_t i = 0; i < size; ++i) {
-				FrameMarkStart(tracy__AddArrayConvertValue);
-				convertedValues.push_back((C)values[i]);
-				FrameMarkEnd(tracy__AddArrayConvertValue);
+			if constexpr (std::is_same_v<T, std::vector<S>> && std::is_same_v<S, C>) {
+				addArrayFunc(name, values);
 			}
-			FrameMarkEnd(tracy__AddArrayConvertValues);
+			else {
+				FrameMarkStart(tracy__AddArrayConvertValues);
+				std::vector<C> convertedValues;
+				convertedValues.reserve(size);
+				for (size_t i = 0; i < size; ++i) {
+					FrameMarkStart(tracy__AddArrayConvertValue);
+					if constexpr (std::is_same_v<S, C>) {
+						convertedValues.insert(convertedValues.end(), values[i]);
+					}
+					else {
+						convertedValues.insert(convertedValue.end(), (C)values[i]);
+					}
+					FrameMarkEnd(tracy__AddArrayConvertValue);
+				}
+				FrameMarkEnd(tracy__AddArrayConvertValues);
 
-			FrameMarkStart(tracy__AddArrayConvertAddArray);
-			addArrayFunc(name, std::move(convertedValues));
-			FrameMarkEnd(tracy__AddArrayConvertAddArray);
+				FrameMarkStart(tracy__AddArrayConvertAddArray);
+				addArrayFunc(name, std::move(convertedValues));
+				FrameMarkEnd(tracy__AddArrayConvertAddArray);
+			}
 
 			FrameMarkEnd(tracy__AddArrayConvert);
 		}
@@ -303,7 +315,7 @@ namespace Twin2Engine::Tools {
 
 			// SET VALUE DATA
 			FrameMarkStart(tracy__SetSetValueData);
-			_data.insert(_data.begin() + valueOffset, valueData.begin(), valueData.begin() + glm::min(valueData.size(), _data.size() - valueOffset));
+			memcpy(_data.data() + valueOffset, valueData.data(), glm::min(valueData.size(), _data.size() - valueOffset));
 			FrameMarkEnd(tracy__SetSetValueData);
 
 			// CLEAR TEMP VALUE DATA
@@ -381,7 +393,7 @@ namespace Twin2Engine::Tools {
 
 				// SET VALUE DATA
 				FrameMarkStart(tracy__SetArraySetValueData);
-				_data.insert(_data.begin() + valuesOffsets[i], valueData.begin(), valueData.begin() + glm::min(glm::min(valueData.size(), arrayElemDataSize), _data.size() - valuesOffsets[i]));
+				memcpy(_data.data(), valueData.data(), glm::min(glm::min(valueData.size(), arrayElemDataSize), _data.size() - valuesOffsets[i]));
 				FrameMarkEnd(tracy__SetArraySetValueData);
 
 				// CLEAR TEMP VALUE DATA
@@ -413,17 +425,28 @@ namespace Twin2Engine::Tools {
 			ZoneScoped;
 			FrameMarkStart(tracy__SetArrayConvert);
 
-			FrameMarkStart(tracy__SetArrayConvertValues);
-			std::vector<C> convertedValues;
-			for (size_t i = 0; i < size; ++i) {
-				FrameMarkStart(tracy__SetArrayConvertValue);
-				convertedValues.push_back((C)values[i]);
-				FrameMarkEnd(tracy__SetArrayConvertValue);
+			if constexpr (std::is_same_v<T, std::vector<S>> && std::is_same_v<S, C>) {
+				return setArrayFunc(name, values);
 			}
-			FrameMarkEnd(tracy__SetArrayConvertValues);
+			else {
+				FrameMarkStart(tracy__SetArrayConvertValues);
+				std::vector<C> convertedValues;
+				convertedValues.reserve(size);
+				for (size_t i = 0; i < size; ++i) {
+					FrameMarkStart(tracy__SetArrayConvertValue);
+					if constexpr (std::is_same_v<S, C>) {
+						convertedValues.insert(convertedValues.end(), values[i]);
+					}
+					else {
+						convertedValues.insert(convertedValues.end(), (C)values[i]);
+					}
+					FrameMarkEnd(tracy__SetArrayConvertValue);
+				}
+				FrameMarkEnd(tracy__SetArrayConvertValues);
 
-			FrameMarkEnd(tracy__SetArrayConvert);
-			return setArrayFunc(name, convertedValues);
+				FrameMarkEnd(tracy__SetArrayConvert);
+				return setArrayFunc(name, convertedValues);
+			}
 		}
 #pragma endregion
 
@@ -737,7 +760,7 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R>
 		Add(const std::string& name, const M& value) {
-			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			using type = glm::mat<C, 4, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			_Add(name, (type)value);
 		}
 
@@ -745,7 +768,7 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R>
 		Add(const std::string& name, const M*& values, size_t size) {
-			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			using type = glm::mat<C, 4, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			_AddArray<M, type>(name, values, size, 
 				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
 		}
@@ -753,7 +776,7 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length(), size_t N>
 		typename mat_enable_if_t<M, T, C, R>
 		Add(const std::string& name, const M(&values)[N]) {
-			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			using type = glm::mat<C, 4, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			_AddArray<M, type>(name, values, N, 
 				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
 		}
@@ -761,14 +784,9 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, typename M::value_type, M::row_type::length(), M::column_type::length()>
 		Add(const std::string& name, const std::vector<M>& values) {
-			if constexpr (std::is_same_v<T, bool>) {
-				using type = glm::mat<C, R, unsigned int>;
-				_AddArray<M, type>(name, values, values.size(), 
-					[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
-			}
-			else {
-				_AddArray(name, values);
-			}
+			using type = glm::mat<C, 4, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
+			_AddArray<M, type>(name, values, values.size(),
+				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
 		}
 #pragma endregion
 #pragma endregion
@@ -796,9 +814,14 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T, bool>
 		Set(const std::string& name, const T& value) {
-			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
-			return _Set(name, (type)value);
+			if constexpr (std::is_same_v<T, bool>) {
+				return _Set(name, (unsigned int)value);
+			}
+			else {
+				return _Set(name, value);
+			}
 		}
+
 #pragma region SET_SCALARS_ARRAYS
 		template<class T>
 		typename scalar_enable_if_t<T, bool>
@@ -819,14 +842,11 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T, bool>
 		Set(const std::string& name, const std::vector<T>& values) {
-			if constexpr (std::is_same_v<T, bool>) {
-				return _SetArray<T, unsigned int>(name, values, values.size(), 
-					[&](const std::string& name, const std::vector<unsigned int>& values) -> bool { return _SetArray(name, values); });
-			}
-			else {
-				return _SetArray(name, values);
-			}
+			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
+			return _SetArray<T, type>(name, values, values.size(),
+				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
 		}
+
 #pragma endregion
 #pragma endregion
 
@@ -874,8 +894,13 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R, bool>
 		Set(const std::string& name, const M& value) {
-			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
-			return _Set(name, (type)value);
+			if constexpr (std::is_same_v<T, bool>) {
+				using type = glm::mat<C, R, unsigned int>;
+				return _Set(name, (type)value);
+			}
+			else {
+				return _Set(name, value);
+			}
 		}
 
 #pragma region SET_MAT_ARRAYS
@@ -898,14 +923,9 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R, bool>
 		Set(const std::string& name, const std::vector<M>& values) {
-			if constexpr (std::is_same_v<T, bool>) {
-				using type = glm::mat<C, R, unsigned int>;
-				return _SetArray<M, type>(name, values, values.size(),
-					[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
-			}
-			else {
-				return _SetArray(name, values);
-			}
+			using type = glm::mat<C, R, type_test_t<std::is_same<T, bool>, unsigned int, T>>;
+			return _SetArray<M, type>(name, values, values.size(),
+				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
 		}
 #pragma endregion
 #pragma endregion

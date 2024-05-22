@@ -24,9 +24,9 @@
 //#include <Tilemap/HexagonalTilemap.h>
 
 // TWIN2ENGINE::CORE
-//#include <core/Component.h>
-//#include <core/GameObject.h>
+#include <core/Component.h>
+#include <core/GameObject.h>
+#include <core/Transform.h>
 //#include <core/Random.h>
-//#include <core/Transform.h>
 // 
 // ALGORITHMS

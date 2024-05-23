@@ -34,7 +34,7 @@ void HumanMovement::Update()
 
     //Debug.Log("Hits: " + forawrdHit.Length);
     MapHexTile* forwardHexTile = nullptr;
-    SPDLOG_INFO("Found frwdRay: {}", forawrdHit.collider != nullptr);
+    //SPDLOG_INFO("Found frwdRay: {}", forawrdHit.collider != nullptr);
     if (forawrdHit.collider)
     {
         forwardHexTile = forawrdHit.collider->GetGameObject()->GetComponent<MapHexTile>();
@@ -50,7 +50,7 @@ void HumanMovement::Update()
     //    }
     //}
     //
-    SPDLOG_INFO("Found crrntRay: {}", currentHit.collider != nullptr);
+    //SPDLOG_INFO("Found crrntRay: {}", currentHit.collider != nullptr);
     MapHexTile* currentHexTile = nullptr;
     if (currentHit.collider)
     {

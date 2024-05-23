@@ -61,6 +61,7 @@ bool ContentGenerator::Deserialize(const YAML::Node& node)
     return true;
 }
 
+#if _DEBUG
 void ContentGenerator::DrawEditor()
 {
     string id = string(std::to_string(this->GetId()));
@@ -108,3 +109,4 @@ void ContentGenerator::DrawEditor()
         */
     }
 }
+#endif

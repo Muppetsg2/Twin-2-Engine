@@ -114,6 +114,7 @@ bool HumanMovement::Deserialize(const YAML::Node& node)
     return true;
 }
 
+#if _DEBUG
 void HumanMovement::DrawEditor()
 {
     std::string id = std::string(std::to_string(this->GetId()));
@@ -128,3 +129,4 @@ void HumanMovement::DrawEditor()
         ImGui::PopFont();
     }
 }
+#endif

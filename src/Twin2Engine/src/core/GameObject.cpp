@@ -308,6 +308,7 @@ bool GameObject::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
+#if _DEBUG
 void GameObject::DrawEditor()
 {
 	string id = std::to_string(_id);
@@ -357,6 +358,7 @@ void GameObject::DrawEditor()
 
 	// TODO: Add Component Button Deserializator
 }
+#endif
 
 void GameObject::AddComponent(Component* comp)
 {

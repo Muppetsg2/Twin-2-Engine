@@ -313,6 +313,7 @@ bool MapGenerator::Deserialize(const YAML::Node& node) {
     return true;
 }
 
+#if _DEBUG
 void MapGenerator::DrawEditor()
 {
     string id = string(std::to_string(this->GetId()));
@@ -391,3 +392,4 @@ void MapGenerator::DrawEditor()
         }
     }
 }
+#endif

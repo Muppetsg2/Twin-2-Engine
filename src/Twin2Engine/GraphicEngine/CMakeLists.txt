@@ -40,7 +40,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC	${GRAPHIC_ENGINE_INCLUDE_DIR}
 # Adding precompile Headers to library
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${GRAPHIC_ENGINE_PRECOMPILE_HEADER})
 
-target_link_libraries(${PROJECT_NAME}	${OPENGL_LIBRARIES}
+target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENGL_LIBRARIES}
 										glad
 										stb_image
 										assimp
@@ -52,3 +52,14 @@ target_link_libraries(${PROJECT_NAME}	${OPENGL_LIBRARIES}
 										PhysicEngine
 										Twin2Engine
 										Tools)
+
+if (TRACY_PROFILER)
+    target_link_libraries(${PROJECT_NAME} PUBLIC TracyClient)
+endif()
+
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+	 target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
+	 target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
+else()
+    target_compile_options(${PROJECT_NAME} PUBLIC "-O2")
+endif()

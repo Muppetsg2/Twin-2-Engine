@@ -98,6 +98,7 @@ namespace GameScripts {
 				return true;
 			}
 
+#if _DEBUG
 			virtual void DrawEditor() override {
 				std::string id = std::string(std::to_string(this->GetId()));
 				std::string name = std::string("MovementController##").append(id);
@@ -132,6 +133,7 @@ namespace GameScripts {
 					BorderVelocity = v;
 				}
 			}
+#endif
 
 
             void CheckDragInput()

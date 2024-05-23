@@ -31,10 +31,10 @@ namespace Humans
 		virtual void DrawEditor() override
 		{
 			// TODO: Dodac prefab Human do edytora
-			ImGui::DragInt("Density", (int*) &number, 1, 0);
+			ImGui::DragInt("Density", (int*)&number, 1, 0);
 		}
-	};
 #endif
+	};
 }
 
 SERIALIZABLE_SCRIPTABLE_OBJECT(HumansGenerator, Humans)

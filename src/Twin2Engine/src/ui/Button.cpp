@@ -73,6 +73,7 @@ bool Button::Deserialize(const YAML::Node& node)
 	return true;
 }
 
+#if _DEBUG
 void Button::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -95,3 +96,4 @@ void Button::DrawEditor()
 		ImGui::Checkbox(string("Interactable##").append(id).c_str(), &_interactable);
 	}
 }
+#endif

@@ -148,6 +148,7 @@ GameObjects:
                     w: 1.0
                 width: 100.0
                 height: 100.0
+                layer: 0
             -   id: 5
                 enabled: true
                 type: Image
@@ -160,6 +161,7 @@ GameObjects:
                     w: 1.0
                 width: 100.0
                 height: 100.0
+                layer: 1
         children: []
     -   id: 3
         name: imageObj2
@@ -193,6 +195,7 @@ GameObjects:
                     w: 1.0
                 width: 100.0
                 height: 100.0
+                layer: 0
         children: []
     -   id: 4
         name: imageObj3
@@ -226,6 +229,7 @@ GameObjects:
                     w: 1.0
                 width: 1000.0
                 height: 100.0
+                layer: 0
         children: []
     -   id: 5
         name: textObj
@@ -259,6 +263,7 @@ GameObjects:
                     w: 1.0
                 size: 48
                 font: 0
+                layer: 0
         children: []
     -   id: 6
         name: gameObject

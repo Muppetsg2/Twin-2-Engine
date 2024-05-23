@@ -125,17 +125,25 @@ void GraphicEngine::UpdateBeforeRendering()
 
 void GraphicEngine::Render()
 {
+#if TRACY_PROFILER
 	ZoneScoped;
 	FrameMarkStart(tracy_RenderMeshes);
+#endif
 	MeshRenderingManager::RenderStatic();
+#if TRACY_PROFILER
 	FrameMarkEnd(tracy_RenderMeshes);
+#endif
 }
 
 void GraphicEngine::RenderGUI() 
 {
+#if TRACY_PROFILER
 	FrameMarkStart(tracy_RenderUI);
+#endif
 	UIRenderingManager::Render();
+#if TRACY_PROFILER
 	FrameMarkEnd(tracy_RenderUI);
+#endif
 }
 
 void GraphicEngine::PreRender()

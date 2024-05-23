@@ -7,8 +7,10 @@ using namespace Twin2Engine::Manager;
 Soloud AudioManager::_soloud = Soloud();
 map<size_t, Wav*> AudioManager::_loadedAudio = map<size_t, Wav*>();
 
+#if _DEBUG
 bool AudioManager::_fileDialogOpen = false;
 ImFileDialogInfo AudioManager::_fileDialogInfo;
+#endif
 
 map<size_t, string> AudioManager::_audiosPaths;
 
@@ -445,6 +447,7 @@ YAML::Node AudioManager::Serialize()
     return audios;
 }
 
+#if _DEBUG
 void AudioManager::DrawEditor(bool* p_open)
 {
     if (!ImGui::Begin("Audio Manager", p_open)) {
@@ -499,3 +502,4 @@ void AudioManager::DrawEditor(bool* p_open)
 
     ImGui::End();
 }
+#endif

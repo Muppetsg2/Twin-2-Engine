@@ -5,6 +5,8 @@ layout (std140, binding = 1) uniform WindowData
     float nearPlane;
     float farPlane;
     float gamma;
+    float time;
+    float deltaTime;
 };
 
 struct RectTransform {
@@ -15,7 +17,11 @@ struct RectTransform {
 struct Sprite {
     uvec2 offset;
     uvec2 size;
-    uvec2 texSize;
+    bool isActive;
+};
+
+struct Texture {
+    uvec2 size;
     bool isActive;
 };
 
@@ -28,6 +34,7 @@ layout (std140, binding = 4) uniform CanvasData {
 layout (std140, binding = 5) uniform MaskData {
     RectTransform maskRect;
     Sprite maskSprite;
+    uvec2 maskTextureSize;
     bool maskIsActive;
 };
 
@@ -41,6 +48,7 @@ struct UIElement {
 const uint maxUIElements = 8;
 layout (std140, binding = 3) buffer UIElementsBuffer {
 	UIElement uiElements[maxUIElements];
+    Texture elementTexture;
 };
 
 in GS_OUT {
@@ -76,17 +84,28 @@ void main()
             maskTexCoord.y += -invMaskSize.y * inMaskPos.y;
             vec3 maskColor = texture(maskImage, maskTexCoord).rgb;
             maskPower = (maskColor.r + maskColor.g + maskColor.b) / 3.0;
+
+            if (maskPower == 0.0)
+                discard;
         }
     }
 
     UIElement element = uiElements[fs_in.instanceID];
 
+    if (element.color.a == 0.0)
+        discard;
+
     vec4 gammaColor = vec4(pow(element.color.rgb, vec3(gamma)), element.color.a);
     vec4 elemColor = vec4(1.0);
-    if (element.sprite.isActive) {
-        vec2 invTexSize = 1.0 / element.sprite.texSize;
-        vec2 uv = (fs_in.texCoord * element.sprite.texSize + element.sprite.offset) * invTexSize;
-        elemColor = texture(image, uv);
+    if (elementTexture.isActive) {
+        if (element.sprite.isActive) {
+            vec2 invTexSize = 1.0 / elementTexture.size;
+            vec2 uv = (fs_in.texCoord * elementTexture.size + element.sprite.offset) * invTexSize;
+            elemColor = texture(image, uv);
+        }
+        else {
+            elemColor = texture(image, fs_in.texCoord);
+        }
     }
 
     if (!element.isText) {
@@ -96,6 +115,5 @@ void main()
         Color = vec4(1.0, 1.0, 1.0, elemColor.r) * gammaColor;
     }
 
-    Color = vec4(pow(Color.rgb, vec3(1.0 / gamma)), Color.a);
-    Color.a *= maskPower;
+    Color = vec4(pow(Color.rgb, vec3(1.0 / gamma)), Color.a * maskPower);
 }

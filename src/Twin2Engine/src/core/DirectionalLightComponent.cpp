@@ -120,6 +120,7 @@ bool DirectionalLightComponent::Deserialize(const YAML::Node& node)
 	return true;
 }
 
+#if _DEBUG
 void DirectionalLightComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -147,3 +148,4 @@ void DirectionalLightComponent::DrawEditor()
 		}
 	}
 }
+#endif

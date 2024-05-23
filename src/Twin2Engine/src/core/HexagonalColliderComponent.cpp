@@ -113,6 +113,7 @@ bool HexagonalColliderComponent::Deserialize(const YAML::Node& node)
 	return true;
 }
 
+#if _DEBUG
 void HexagonalColliderComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -143,3 +144,4 @@ void HexagonalColliderComponent::DrawEditor()
 		DrawInheritedFields();
 	}
 }
+#endif

@@ -1,0 +1,4 @@
+material:
+  name: test
+  shader: origin/Test
+  parameters: []

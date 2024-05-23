@@ -10,8 +10,10 @@ using namespace std;
 hash<string> FontManager::_hasher;
 map<size_t, Font*> FontManager::_fonts;
 
+#if _DEBUG
 bool FontManager::_fileDialogOpen = false;
 ImFileDialogInfo FontManager::_fileDialogInfo;
+#endif
 
 map<size_t, string> FontManager::_fontsPaths;
 
@@ -110,6 +112,7 @@ YAML::Node FontManager::Serialize()
     return fonts;
 }
 
+#if _DEBUG
 void FontManager::DrawEditor(bool* p_open) {
 
     if (!ImGui::Begin("Font Manager", p_open)) {
@@ -164,3 +167,4 @@ void FontManager::DrawEditor(bool* p_open) {
 
     ImGui::End();
 }
+#endif

@@ -50,22 +50,24 @@ namespace Twin2Engine
 
 			struct UIElementQueueData {
 				UIRectData rectTransform;
+				Graphic::Sprite* sprite = nullptr;
 				glm::vec4 color = glm::vec4(0.f);
-				glm::ivec2 spriteSize = glm::ivec2(0);
-				glm::ivec2 spriteOffset = glm::ivec2(0);
 				bool isText = false;
 			};
 
+			// STD140 OFFSETS
+			static Tools::STD140Offsets RectTransformOffsets;
+			static Tools::STD140Offsets SpriteOffsets;
+			static Tools::STD140Offsets TextureOffsets;
+			static Tools::STD140Offsets UIElementOffsets;
+
 			// STD140 STRUCTS
-			static Tools::STD140Struct RectTransformStruct;
-			static Tools::STD140Struct SpriteStruct;
 			static Tools::STD140Struct CanvasStruct;
 			static Tools::STD140Struct MaskStruct;
-			static Tools::STD140Struct UIElementStruct;
 			static Tools::STD140Struct UIElementsBufferStruct;
 
 			// Canvas -> Layer -> Mask -> Texture -> queue
-			static std::map<CanvasData*, std::map<int32_t, std::map<MaskData*, std::map<Graphic::Texture2D*, std::queue<UIElementQueueData>>>>> _renderQueue;
+			static std::unordered_map<CanvasData*, std::map<int32_t, std::unordered_map<MaskData*, std::unordered_map<Graphic::Texture2D*, std::queue<UIElementQueueData>>>>> _renderQueue;
 			
 			// SHADER
 			static Graphic::Shader* _uiShader;
@@ -80,6 +82,9 @@ namespace Twin2Engine
 
 			// SSBO
 			static uint32_t _elemsSSBO;
+
+			// FORMAT
+			static const char* const _uiBufforElemFormat;
 
 			static void Init();
 			static void UnloadAll();

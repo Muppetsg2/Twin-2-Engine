@@ -39,5 +39,17 @@ target_include_directories(${PROJECT_NAME}
                         PUBLIC 
                         ${TOOLS_INCLUDE_DIR})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE spdlog
-                                              glm::glm)
+target_link_libraries(${PROJECT_NAME} PUBLIC spdlog
+                                             glm::glm
+                                             GraphicEngine)
+
+if (TRACY_PROFILER)
+    target_link_libraries(${PROJECT_NAME} PUBLIC TracyClient)
+endif()
+
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+	 target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
+	 target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
+else()
+    target_compile_options(${PROJECT_NAME} PUBLIC "-O2")
+endif()

@@ -22,3 +22,8 @@ set(ASSIMP_BUILD_OBJ_IMPORTER             ON  CACHE BOOL "")
 set(ASSIMP_BUILD_GLTF_IMPORTER            ON  CACHE BOOL "")
 set(ASSIMP_BUILD_FBX_IMPORTER             ON  CACHE BOOL "")
 set(ASSIMP_BUILD_MD5_IMPORTER             ON  CACHE BOOL "")
+
+# Our Settings
+set(IS_MINI_AUDIO		OFF	CACHE BOOL "Use Mini Audio Library")
+set(FIND_MEMORY_LEAKS	OFF CACHE BOOL "Find Memory Leaks")
+set(TRACY_PROFILER		OFF CACHE BOOL "Use Tracy Profiler")

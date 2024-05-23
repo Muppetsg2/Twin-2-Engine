@@ -90,6 +90,8 @@ Materials:
     path: FakeBRDF
   - id: 8
     path: roofMat
+  - id: 9
+    path: Water
 Models:
   - id: 0
     path: res/models/AK47.obj
@@ -214,6 +216,7 @@ GameObjects:
           w: 1
         width: 100
         height: 100
+        layer: 0
       - id: 6
         enabled: true
         type: Image
@@ -226,6 +229,7 @@ GameObjects:
           w: 1
         width: 100
         height: 100
+        layer: 1
     children:
       []
   - id: 3
@@ -260,6 +264,7 @@ GameObjects:
           w: 1
         width: 100
         height: 100
+        layer: 0
     children:
       []
   - id: 4
@@ -294,6 +299,7 @@ GameObjects:
           w: 1
         width: 769.506531
         height: 100
+        layer: 0
     children:
       []
   - id: 5
@@ -337,6 +343,7 @@ GameObjects:
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
+        layer: 0
     children:
       []
   - id: 6
@@ -657,7 +664,8 @@ GameObjects:
           - res/scriptableobjects/LakeGenerator.so
           - res/scriptableobjects/MountainsGenerator.so
           - res/scriptableobjects/CityGenerator.so
-          - res/scriptableobjects/RadioStationGeneratorSectorBased.so
+          - res/scriptableobjects/RadioStationGeneratorSectorBased.s
+          - res/scriptableobjects/HumansGenerator.so
       - id: 33
         enabled: true
         type: MapGenerator
@@ -718,11 +726,11 @@ GameObjects:
         y: 0
         z: 0
       scale:
-        x: 5
-        y: 5
-        z: 5
+        x: 16
+        y: 1
+        z: 16
       rotation:
-        x: -90
+        x: 0
         y: 0
         z: 0
     components:
@@ -730,10 +738,10 @@ GameObjects:
         enabled: true
         type: PlaneGenerator
         isTransparent: true
-        rows: 4
-        columns: 4
+        rows: 16
+        columns: 16
         materials:
-          - 1
+          - 9
     children:
       []
   - id: 101

@@ -1,0 +1,6 @@
+shaderprogram:
+  name: origin/Test
+  shaders:
+    - default.vert
+    - normal.frag
+  parameters: []

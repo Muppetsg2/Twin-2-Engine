@@ -261,6 +261,24 @@ bool planeLineIntersection(const glm::vec3 normal, float d, const glm::vec3& ori
 	return true;
 }
 
+bool pointInTriangle(const glm::vec2& p, const glm::vec2& a, const glm::vec2& b, const glm::vec2& c) {
+	glm::vec2 v0 = c - a;
+	glm::vec2 v1 = b - a;
+	glm::vec2 v2 = p - a;
+
+	float dot00 = v0.x * v0.x + v0.y * v0.y;
+	float dot01 = v0.x * v1.x + v0.y * v1.y;
+	float dot02 = v0.x * v2.x + v0.y * v2.y;
+	float dot11 = v1.x * v1.x + v1.y * v1.y;
+	float dot12 = v1.x * v2.x + v1.y * v2.y;
+
+	float invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+	float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+	float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+	return (u >= 0) && (v >= 0) && (u + v < 1);
+}
+
 bool GameCollider::rayCollision(Ray& ray, RaycastHit& raycastHit) {
 	//Collision* collision = new Collision;
 	raycastHit.collider = this->colliderComponent;
@@ -505,6 +523,22 @@ bool GameCollider::rayCollision(Ray& ray, RaycastHit& raycastHit) {
 			raycastHit.position = intersectionPoint;
 			return true;
 		}
+
+		if (baseIntersec) {
+			glm::vec2 p(baseIntersectionPoint.x, baseIntersectionPoint.z);
+			glm::vec2 p1(hexData->Position.x + hexData->u.x, hexData->Position.z + hexData->u.z);
+			glm::vec2 p2(hexData->Position.x + hexData->v.x, hexData->Position.z + hexData->v.z);
+			glm::vec2 p3(hexData->Position.x + hexData->w.x, hexData->Position.z + hexData->w.z);
+			glm::vec2 p4(hexData->Position.x - hexData->u.x, hexData->Position.z - hexData->u.z);
+			glm::vec2 p5(hexData->Position.x - hexData->v.x, hexData->Position.z - hexData->v.z);
+			glm::vec2 p6(hexData->Position.x - hexData->w.x, hexData->Position.z - hexData->w.z);
+
+			if (pointInTriangle(p, p1, p2, p3) || pointInTriangle(p, p4, p5, p6) || pointInTriangle(p, p1, p3, p4) || pointInTriangle(p, p4, p6, p1)) {
+				raycastHit.position = baseIntersectionPoint;
+				return true;
+			}
+		}
+
 		return false;
 	}
 	break;

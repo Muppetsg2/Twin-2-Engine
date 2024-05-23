@@ -10,8 +10,15 @@
 #include <AstarPathfinding/AStarPathfindingNode.h>
 #include <AstarPathfinding/AStarPath.h>
 
+#include <Twin2DataStructures/PriorityQueue.h>
+
 namespace AStar
 {
+	// Potencjalne b³êdy:
+	// - zmiany grafu node'ów podczas generowania mo¿e skutkowaæ nie spójnoœci¹ co mo¿e skutkowaæ b³êdami w w¹tkach
+	// Potencjalne rozwi¹zania:
+	// - pe³na synchronizacja pathfindingu
+	// - od³o¿enie zmian w strukturze do momentu zakoñczenia w¹tkó wyszukuj¹cych
 	class AStarPathfindingNode;
 
 	class AStarPathfinder : Twin2Engine::Core::Component
@@ -39,11 +46,13 @@ namespace AStar
 
 		static void RemapNodes();
 
+		static AStarPathfindingNode* FindClosestNode(glm::vec3 position);
+
 		//static void RemoveThread(std::thread* pathfindingThread);
-		static void FindingPath(size_t threadId, glm::vec3 beginPosition, glm::vec3 endPosition,
+		static void FindingPath(size_t threadId, glm::vec3 beginPosition, glm::vec3 endPosition, unsigned int maxPathNodesNumber,
 			Twin2Engine::Tools::Action<const AStarPath&> success, Twin2Engine::Tools::Action<> failure);
 	public:
-		static bool FindPath(const glm::vec3& beginPosition, const glm::vec3& endPosition,
+		static bool FindPath(const glm::vec3& beginPosition, const glm::vec3& endPosition, unsigned int maxPathNodesNumber,
 								Twin2Engine::Tools::Action<const AStarPath&> success, Twin2Engine::Tools::Action<> failure);
 
 		virtual YAML::Node Serialize() const override;

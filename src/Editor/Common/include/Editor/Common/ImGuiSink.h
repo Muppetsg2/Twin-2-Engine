@@ -295,7 +295,7 @@ namespace Editor::Common
                             break;
                         }
 
-                        messages.insert(messages.begin() + (i++), { .color = textColor, .content = MessageHolder::logMessages[index - 1].messageContent, .count = MessageHolder::logMessages[index - 1].count });
+                        messages.insert(messages.begin() + (i++), MessageToDisplay{ .color = textColor, .content = MessageHolder::logMessages[index - 1].messageContent, .count = MessageHolder::logMessages[index - 1].count });
                         //ImGui::TextColored(textColor, "%s", MessageHolder::logMessages[index].messageContent.c_str());
                     }
                 }

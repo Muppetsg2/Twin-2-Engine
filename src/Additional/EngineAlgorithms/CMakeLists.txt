@@ -43,6 +43,7 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC ${EngineAlgorithms_PRECOMPILE_H
 
 target_link_libraries(${PROJECT_NAME} PUBLIC glm::glm)
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog)
+target_link_libraries(${PROJECT_NAME} PUBLIC Twin2Engine)
 #target_link_libraries(${PROJECT_NAME} PUBLIC yaml-cpp)
 
 if (TRACY_PROFILER)

@@ -54,7 +54,9 @@ void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 {
 	size_t clicked_elem = 0;
 	Transform* objT = obj->GetTransform();
+
 	for (size_t i = 0; i < objT->GetChildCount(); ++i) {
+
 		//ImGuiDragDropFlags drop_target_flags = ImGuiDragDropFlags_AcceptBeforeDelivery;
 		ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
 		const string name = objT->GetChildAt(i)->GetName().append("##").append(objT->GetName()).append(std::to_string(i));

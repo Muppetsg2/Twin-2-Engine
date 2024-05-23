@@ -26,14 +26,14 @@ size_t TransformChangeEventId = 0;
 
 std::vector<CameraComponent*> CameraComponent::Cameras = std::vector<CameraComponent*>();
 GLuint CameraComponent::_uboCameraData = 0;
-STD140Offsets CameraComponent::_uboCameraDataOffsets{
+STD140Struct CameraComponent::_uboCameraDataStruct{
 	STD140Variable<mat4>("projection"),
 	STD140Variable<mat4>("view"),
 	STD140Variable<vec3>("viewPos"),
 	STD140Variable<bool>("isSSAO")
 };
 GLuint CameraComponent::_uboWindowData = 0;
-STD140Offsets CameraComponent::_uboWindowDataOffsets{
+STD140Struct CameraComponent::_uboWindowDataStruct{
 		STD140Variable<ivec2>("windowSize"),
 		STD140Variable<float>("nearPlane"),
 		STD140Variable<float>("farPlane"),
@@ -497,31 +497,26 @@ void CameraComponent::Render()
 	// DEFAULT
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
 
-	STD140Struct tempStruct = STD140Struct(_uboCameraDataOffsets);
-	tempStruct.Set("projection", this->GetProjectionMatrix());
-	tempStruct.Set("view", this->GetViewMatrix());
-	tempStruct.Set("viewPos", this->GetTransform()->GetGlobalPosition());
-	tempStruct.Set("isSSAO", _isSsao);
+	_uboCameraDataStruct.Set("projection", this->GetProjectionMatrix());
+	_uboCameraDataStruct.Set("view", this->GetViewMatrix());
+	_uboCameraDataStruct.Set("viewPos", this->GetTransform()->GetGlobalPosition());
+	_uboCameraDataStruct.Set("isSSAO", _isSsao);
 
 	//Jesli wiecej kamer i kazda ma ze swojego kata dawac obraz
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
-	tempStruct.Clear();
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, _uboCameraDataStruct.GetSize(), _uboCameraDataStruct.GetData().data());
 
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
 
-	tempStruct = STD140Struct(_uboWindowDataOffsets);
-	tempStruct.Set("windowSize", wSize);
-	tempStruct.Set("nearPlane", this->_near);
-	tempStruct.Set("farPlane", this->_far);
-	tempStruct.Set("gamma", this->_gamma);
-	tempStruct.Set("time", Time::GetTime());
-	tempStruct.Set("deltaTime", Time::GetDeltaTime());
+	_uboWindowDataStruct.Set("windowSize", wSize);
+	_uboWindowDataStruct.Set("nearPlane", this->_near);
+	_uboWindowDataStruct.Set("farPlane", this->_far);
+	_uboWindowDataStruct.Set("gamma", this->_gamma);
+	_uboWindowDataStruct.Set("time", Time::GetTime());
+	_uboWindowDataStruct.Set("deltaTime", Time::GetDeltaTime());
 
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
-	
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
-	tempStruct.Clear();
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, _uboWindowDataStruct.GetSize(), _uboWindowDataStruct.GetData().data());
+
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	if (wSize.y != 0) {
@@ -732,15 +727,12 @@ void CameraComponent::Initialize()
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0, _uboCameraData);
 
-		STD140Struct tempStruct = STD140Struct(_uboCameraDataOffsets);
-		tempStruct.Set("projection", this->GetProjectionMatrix());
-		tempStruct.Set("view", this->GetViewMatrix());
-		tempStruct.Set("viewPos", this->GetTransform()->GetGlobalPosition());
-		tempStruct.Set("isSSAO", _isSsao);
+		_uboCameraDataStruct.Set("projection", this->GetProjectionMatrix());
+		_uboCameraDataStruct.Set("view", this->GetViewMatrix());
+		_uboCameraDataStruct.Set("viewPos", this->GetTransform()->GetGlobalPosition());
+		_uboCameraDataStruct.Set("isSSAO", _isSsao);
 
-		glBufferData(GL_UNIFORM_BUFFER, tempStruct.GetSize(), tempStruct.GetData().data(), GL_STATIC_DRAW);
-
-		tempStruct.Clear();
+		glBufferData(GL_UNIFORM_BUFFER, _uboCameraDataStruct.GetSize(), _uboCameraDataStruct.GetData().data(), GL_STATIC_DRAW);
 
 		// UBO WINDOW DATA
 		glGenBuffers(1, &_uboWindowData);
@@ -748,17 +740,15 @@ void CameraComponent::Initialize()
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
 		glBindBufferBase(GL_UNIFORM_BUFFER, 1, _uboWindowData);
 
-		tempStruct = STD140Struct(_uboWindowDataOffsets);
-		tempStruct.Set("windowSize", Window::GetInstance()->GetContentSize());
-		tempStruct.Set("nearPlane", this->_near);
-		tempStruct.Set("farPlane", this->_far);
-		tempStruct.Set("gamma", this->_gamma);
-		tempStruct.Set("time", Time::GetTime());
-		tempStruct.Set("deltaTime", Time::GetDeltaTime());
+		_uboWindowDataStruct.Set("windowSize", Window::GetInstance()->GetContentSize());
+		_uboWindowDataStruct.Set("nearPlane", this->_near);
+		_uboWindowDataStruct.Set("farPlane", this->_far);
+		_uboWindowDataStruct.Set("gamma", this->_gamma);
+		_uboWindowDataStruct.Set("time", Time::GetTime());
+		_uboWindowDataStruct.Set("deltaTime", Time::GetDeltaTime());
 
-		glBufferData(GL_UNIFORM_BUFFER, tempStruct.GetSize(), tempStruct.GetData().data(), GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, _uboWindowDataStruct.GetSize(), _uboWindowDataStruct.GetData().data(), GL_STATIC_DRAW);
 
-		tempStruct.Clear();
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		_screenPlane = ModelsManager::GetPlane();

@@ -196,6 +196,14 @@ namespace GameScripts {
                 {
                     WsadDir.y -= 1.0f;
                 }
+
+                if (Input::IsKeyUp(RightKey) && Input::IsKeyUp(LeftKey)) {
+                    WsadDir.x = 0.0f;
+                }
+
+                if (Input::IsKeyUp(UpKey) && Input::IsKeyUp(DownKey)) {
+                    WsadDir.y = 0.0f;
+                }
             }
 
             void WsadMove()

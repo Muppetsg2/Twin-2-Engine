@@ -45,9 +45,9 @@ namespace Twin2Engine::Core {
 	class CameraComponent : public Component {
 	private:
 		static GLuint _uboCameraData;
-		static Tools::STD140Offsets _uboCameraDataOffsets;
+		static Tools::STD140Struct _uboCameraDataStruct;
 		static GLuint _uboWindowData;
-		static Tools::STD140Offsets _uboWindowDataOffsets;
+		static Tools::STD140Struct _uboWindowDataStruct;
 		static Graphic::InstantiatingModel _screenPlane;
 		static Graphic::Shader* _screenShader;
 		static Graphic::Shader* _ssaoShader;

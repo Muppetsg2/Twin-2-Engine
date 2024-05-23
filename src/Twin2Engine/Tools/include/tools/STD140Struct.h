@@ -229,7 +229,7 @@ namespace Twin2Engine::Tools {
 			// SET VALUE DATA
 			FrameMarkStart(tracy__AddSetValueData);
 #endif
-			_data.insert(_data.end(), valueData.begin(), valueData.end());
+			_data.insert(_data.begin() + valueOffset, valueData.begin(), valueData.end());
 #if TRACY_PROFILER
 			FrameMarkEnd(tracy__AddSetValueData);
 
@@ -337,7 +337,7 @@ namespace Twin2Engine::Tools {
 				// SET VALUE DATA
 				FrameMarkStart(tracy__AddArraySetValueData);
 #endif
-				_data.insert(_data.end(), valueData.begin(), valueData.end());
+				_data.insert(_data.begin() + valuesOffsets[i], valueData.begin(), valueData.end());
 #if TRACY_PROFILER
 				FrameMarkEnd(tracy__AddArraySetValueData);
 

@@ -257,7 +257,7 @@ size_t STD140Offsets::Get(const string& name) const
 	FrameMarkStart(tracy_Get);
 #endif
 	size_t value = 0;
-	map<size_t, size_t>::const_iterator map_iterator = _offsets.find(move(_hasher(name)));
+	unordered_map<size_t, size_t>::const_iterator map_iterator = _offsets.find(move(_hasher(name)));
 	if (map_iterator != _offsets.end()) {
 		value = (*map_iterator).second;
 	}

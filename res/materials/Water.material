@@ -37,10 +37,12 @@ material:
       value: 1
     - name: waterScale
       type: float
-      value: 0.2
+      value: 0.3
     - name: waterHeight
       type: float
-      value: 4
+      value: 3
     - name: waterSpeed
       type: float
       value: 2
+
+      # -1.8 na y

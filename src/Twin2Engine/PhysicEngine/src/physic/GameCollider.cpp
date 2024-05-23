@@ -499,6 +499,16 @@ bool GameCollider::rayCollision(Ray& ray, RaycastHit& raycastHit) {
 			o.y -= hexData->HalfHeight;
 			baseIntersec = planeLineIntersection(glm::vec3(0.0f, -1.0f, 0.0f), o.y, ray.Origin, ray.Direction, baseIntersectionPoint);
 		}
+		else if (ray.Direction.y > 0.0f) {
+			o = hexData->Position;
+			o.y += hexData->HalfHeight;
+			baseIntersec = planeLineIntersection(glm::vec3(0.0f, 1.0f, 0.0f), o.y, ray.Origin, ray.Direction, baseIntersectionPoint);
+		}
+		else if (ray.Direction.y < 0.0f) {
+			o = hexData->Position;
+			o.y -= hexData->HalfHeight;
+			baseIntersec = planeLineIntersection(glm::vec3(0.0f, -1.0f, 0.0f), o.y, ray.Origin, ray.Direction, baseIntersectionPoint);
+		}
 
 		if ((!baseIntersec) && intersect) {
 			raycastHit.position = intersectionPoint;

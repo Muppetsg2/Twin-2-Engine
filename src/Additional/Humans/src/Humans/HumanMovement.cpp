@@ -26,9 +26,8 @@ void HumanMovement::Update()
     RaycastHit forawrdHit; // = Physics.RaycastAll(transform.position + new Vector3(0, 1, 0) + direction * _forwardDetectionDistance, Vector3.down, 5f);
     RaycastHit currentHit; // = Physics.RaycastAll(transform.position + new Vector3(0, 1, 0), Vector3.down, 5f);
 
-    Ray forwardRay(vec3(0.0f, -1.0f, 0.0f), globalPosition + vec3(0, 1, 0) + direction * _forwardDetectionDistance);
-    //Ray forwardRay(glm::normalize(vec3(direction.x, 0.0f, direction.z)), globalPosition + vec3(0, 0.1, 0) + direction * _forwardDetectionDistance);
-    Ray currentRay(vec3(0.0f, -1.0f, 0.0f), globalPosition + vec3(0, 1, 0));
+    Ray forwardRay(vec3(0.0f, -1.0f, 0.0f), globalPosition + vec3(0, 0.1, 0) + direction * _forwardDetectionDistance);
+    Ray currentRay(vec3(0.0f, -1.0f, 0.0f), globalPosition + vec3(0, 0.1, 0));
 
     bool fHit = CollisionManager::Instance()->Raycast(forwardRay, forawrdHit);
     bool cHit = CollisionManager::Instance()->Raycast(currentRay, currentHit);

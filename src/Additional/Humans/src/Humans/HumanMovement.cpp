@@ -16,7 +16,9 @@ void HumanMovement::Initialize()
 
 void HumanMovement::Update()
 {
-    glm::vec3 direction = normalize((_targetDestination - GetTransform()->GetGlobalPosition()));
+    glm::vec3 globalPosition = GetTransform()->GetGlobalPosition();
+    glm::vec3 direction = normalize((_targetDestination - globalPosition));
+
     GetTransform()->Translate(direction * _speed * Time::GetDeltaTime());
 
 
@@ -24,14 +26,15 @@ void HumanMovement::Update()
     RaycastHit forawrdHit; // = Physics.RaycastAll(transform.position + new Vector3(0, 1, 0) + direction * _forwardDetectionDistance, Vector3.down, 5f);
     RaycastHit currentHit; // = Physics.RaycastAll(transform.position + new Vector3(0, 1, 0), Vector3.down, 5f);
 
-    Ray forwardRay(vec3(0.0f, -1.0f, 0.0f), GetTransform()->GetGlobalPosition() + vec3(0, 1, 0) + direction * _forwardDetectionDistance);
-    Ray currentRay(vec3(0.0f, -1.0f, 0.0f), GetTransform()->GetGlobalPosition() + vec3(0, 1, 0) + direction * _forwardDetectionDistance);
+    Ray forwardRay(vec3(0.0f, -1.0f, 0.0f), globalPosition + vec3(0, 0.1, 0) + direction * _forwardDetectionDistance);
+    Ray currentRay(vec3(0.0f, -1.0f, 0.0f), globalPosition + vec3(0, 0.1, 0));
 
     CollisionManager::Instance()->Raycast(forwardRay, forawrdHit);
     CollisionManager::Instance()->Raycast(currentRay, currentHit);
 
     //Debug.Log("Hits: " + forawrdHit.Length);
     MapHexTile* forwardHexTile = nullptr;
+    SPDLOG_INFO("Found frwdRay: {}", forawrdHit.collider != nullptr);
     if (forawrdHit.collider)
     {
         forwardHexTile = forawrdHit.collider->GetGameObject()->GetComponent<MapHexTile>();
@@ -47,6 +50,7 @@ void HumanMovement::Update()
     //    }
     //}
     //
+    SPDLOG_INFO("Found crrntRay: {}", currentHit.collider != nullptr);
     MapHexTile* currentHexTile = nullptr;
     if (currentHit.collider)
     {

@@ -11,7 +11,8 @@ using namespace std;
 void Human::Initialize()
 {
     _movement = GetGameObject()->GetComponent<HumanMovement>();
-    //targetCity = CitiesManager.Instance.GetClosestCity(transform.position);
+    _targetCity = CitiesManager::GetClosestCity(GetTransform()->GetGlobalPosition());
+    _movement->MoveTo(_targetCity->GetTransform()->GetGlobalPosition());
 }
 
 // Update is called once per frame
@@ -19,15 +20,15 @@ void Human::Update()
 {
     if (glm::distance(GetTransform()->GetGlobalPosition(), _movement->GetTargetDestination()) <= achievingDestinationAccuracity)
     {
-        vector<GameObject*> possibleTargetCities = CitiesManager::GetConnectedCities(targetCity);
+        vector<GameObject*> possibleTargetCities = CitiesManager::GetConnectedCities(_targetCity);
         if (possibleTargetCities.size() > 0)
         {
-            targetCity = possibleTargetCities[Random::Range(0ull, possibleTargetCities.size() - 1)];
-            _movement->MoveTo(targetCity->GetTransform()->GetGlobalPosition());
+            _targetCity = possibleTargetCities[Random::Range(0ull, possibleTargetCities.size() - 1)];
+            _movement->MoveTo(_targetCity->GetTransform()->GetGlobalPosition());
         }
         else
         {
-            //Debug.LogWarning("Lack of connected cities" + gameObject.GetInstanceID());
+            SPDLOG_DEBUG("Lack of connected cities");
         }
     }
 }

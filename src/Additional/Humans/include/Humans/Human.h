@@ -19,7 +19,7 @@ namespace Humans
 
         HumanMovement* _movement;
 
-        Twin2Engine::Core::GameObject* targetCity = nullptr;
+        Twin2Engine::Core::GameObject* _targetCity = nullptr;
 
     public:
         // Start is called before the first frame update

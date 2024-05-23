@@ -1,6 +1,7 @@
 #pragma once
 
 #define MAX_LOG_DRAW 250
+#define COLLAPSE true
 
 namespace Editor::Common
 {
@@ -116,9 +117,17 @@ namespace Editor::Common
             bool saved = false;
             size_t size = MessageHolder::logMessages.size();
             if (size > 1) {
-                ImGuiLogMessage& m = MessageHolder::logMessages[size - 1];
                 std::string m1 = message.substr(26);
+                /*
+                std::iterator<ImGuiLogMessage> iter = std::find_if(MessageHolder::logMessages.begin(), MessageHolder::logMessages.end(), [&](ImGuiLogMessage& mess) bool -> {
+                    std::string m2 = mess.messageContent.substr(26);
+                    return msg.level == m.level && msg.source.filename == m.source.filename && msg.source.line == m.source.line && m1 == m2;
+                });
+                */
+                ImGuiLogMessage& m = MessageHolder::logMessages[size - 1];
                 std::string m2 = m.messageContent.substr(26);
+                /*
+                */
                 if (msg.level == m.level && msg.source.filename == m.source.filename && msg.source.line == m.source.line && m1 == m2) {
                     if (m.count != ULLONG_MAX) ++m.count;
                     m.messageContent = message;
@@ -229,7 +238,8 @@ namespace Editor::Common
             //const vector<ImGuiLogMessage> messages = ImGuiSink<mutex>::getLogMessages();
 
             std::vector<MessageToDisplay> messages = std::vector<MessageToDisplay>();
-
+            messages.reserve(MAX_LOG_DRAW);
+            size_t i = 0;
             for (size_t index = MessageHolder::logMessages.size(); index > 0 ; --index)
             {
                 if (messages.size() == MAX_LOG_DRAW) break;
@@ -266,7 +276,7 @@ namespace Editor::Common
                             break;
                         }
 
-                        messages.push_back({ .color = textColor, .content = MessageHolder::logMessages[index - 1].messageContent, .count = MessageHolder::logMessages[index - 1].count });
+                        messages.insert(messages.begin() + (i++), { .color = textColor, .content = MessageHolder::logMessages[index - 1].messageContent, .count = MessageHolder::logMessages[index - 1].count });
                         //ImGui::TextColored(textColor, "%s", MessageHolder::logMessages[index].messageContent.c_str());
                     }
                 }

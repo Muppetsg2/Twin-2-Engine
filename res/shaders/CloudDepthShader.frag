@@ -4,9 +4,9 @@
 layout(early_fragment_tests) in;
 
 
-in vec4 FragPos;
+in vec3 FragPos;
 
-layout (location = 0) out vec3 BackFragPos;
+layout (location = 0) out vec4 BackFragPos;
 
 void main()
 {             

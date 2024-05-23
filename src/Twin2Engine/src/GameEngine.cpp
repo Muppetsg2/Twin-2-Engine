@@ -183,6 +183,8 @@ bool GameEngine::Init(const string& window_name, int32_t window_width, int32_t w
 
 	Deserializers();
 
+    glEnable(GL_BLEND);
+
 	return true;
 }
 

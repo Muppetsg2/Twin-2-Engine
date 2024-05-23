@@ -748,11 +748,11 @@ GameObjects:
       position:
         x: -7
         y: 7
-        z: -5
+        z: 0
       scale:
-        x: 5
-        y: 5
-        z: 5
+        x: 2
+        y: 2
+        z: 2
       rotation:
         x: -90
         y: 0
@@ -766,6 +766,48 @@ GameObjects:
         materials:
           - 9
       - id: 40
+        enabled: true
+        type: Cloud
+        direction:
+          x: 1
+          y: 0
+          z: 0
+        velocity: 0.200000003
+        startPosition:
+          x: -7
+          y: 8
+          z: -5
+        maxDistance: 10
+    children:
+      []
+  - id: 41
+    name: Cloud2
+    isStatic: false
+    isActive: true
+    transform:
+      id: 42
+      enabled: true
+      position:
+        x: 7
+        y: 7
+        z: 0
+      scale:
+        x: 2
+        y: 2
+        z: 2
+      rotation:
+        x: -90
+        y: 0
+        z: 0
+    components:
+      - id: 43
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 3
+        materials:
+          - 9
+      - id: 44
         enabled: true
         type: Cloud
         direction:

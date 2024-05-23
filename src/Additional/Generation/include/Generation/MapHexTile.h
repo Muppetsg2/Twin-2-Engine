@@ -2,6 +2,9 @@
 
 #include <Tilemap/HexagonalTilemap.h>
 #include <GameManager.h>
+#include <Playable.h>
+
+class GameManager;
 
 namespace Generation
 {
@@ -31,9 +34,10 @@ namespace Generation
 		Tilemap::HexagonalTile* tile = nullptr;
 		HexTileType type = HexTileType::None;
 
-
+		bool IsFighting = false;
 		Playable* takenEntity = nullptr;
 		float percentage = 0.0f;
+		float currCooldown = 0.0f;
 
 		//inline void SetTilemap(Tilemap::HexagonalTilemap* tilemap);
 		//inline Tilemap::HexagonalTilemap* GetTilemap() const;

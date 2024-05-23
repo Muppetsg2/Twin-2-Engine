@@ -133,7 +133,7 @@ void ConcertRoad::Update() {
 }
 
 void ConcertRoad::Use() {
-    //NumberOfPoints = min(NumberOfPoints, CitiesManager::Instance.GetAllCities().Count);
+    //NumberOfPoints = std::min(NumberOfPoints, CitiesManager::Instance->GetAllCities().size());
     Begin();
 }
 
@@ -146,7 +146,7 @@ void ConcertRoad::Begin() {
 
     for (MapHexTile* t : Twin2Engine::Manager::SceneManager::FindObjectByName("MapGenerator")->GetComponentsInChildren<MapHexTile>())
     {
-        //if (t->Type == TileType.PointOfInterest)
+        if (t->type == Generation::MapHexTile::HexTileType::PointOfInterest)
         {
             if (t->percentage == 0.0f || ConsiderInfluenced)
             {

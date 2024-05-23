@@ -736,3 +736,28 @@ GameObjects:
           - 1
     children:
       []
+  - id: 101
+    name: GameManager
+    isStatic: false
+    isActive: true
+    transform:
+      id: 102
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 103
+        enabled: true
+        type: GameManager
+    children:
+      []

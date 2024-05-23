@@ -50,6 +50,11 @@ void GameEngine::Deserializers()
     ADD_COMPONENT("SpotLight", SpotLightComponent);
 
     ADD_COMPONENT("MovementController", MovementController);
+
+    ADD_COMPONENT("GameManager", GameManager);
+    ADD_COMPONENT("PlayerMovement", PlayerMovement);
+    ADD_COMPONENT("Player", Player);
+    ADD_COMPONENT("Enemy", Enemy);
 }
 
 void GameEngine::Update()

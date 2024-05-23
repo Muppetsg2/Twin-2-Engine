@@ -43,6 +43,9 @@ if(MSVC)
     target_compile_options(${PROJECT_NAME} PUBLIC "/Zc:preprocessor")
 endif()
 
+target_link_libraries(${PROJECT_NAME} PRIVATE Generation)
+target_link_libraries(${PROJECT_NAME} PRIVATE GameScripts)
+
 # Set the directory paths
 #set(SHADERS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/res/shaders/SPIRV")
 #set(SHADERS_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/res/CompiledShaders/SPIRV")

@@ -23,6 +23,8 @@ uniform bool hasGrayscale;
 uniform bool hasOutline;
 uniform bool hasDepthOfField;
 
+uniform bool depthOfField2;
+
 uniform bool displayDepth;
 uniform bool displaySSAO;
 
@@ -163,8 +165,12 @@ void main() {
 
     if (hasDepthOfField)
     {
-        //res = applyDepthOfField(res);
-        res = applyDepthOfField2(res);
+        if (depthOfField2) {
+            res = applyDepthOfField2(res);
+        }
+        else {
+            res = applyDepthOfField(res);
+        }        
     }
 
     if (hasGrayscale) {

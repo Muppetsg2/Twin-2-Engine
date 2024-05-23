@@ -40,7 +40,7 @@ material:
       value: 0.2
     - name: waterHeight
       type: float
-      value: 0.6
+      value: 4
     - name: waterSpeed
       type: float
       value: 2

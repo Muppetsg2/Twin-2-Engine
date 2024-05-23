@@ -37,4 +37,8 @@ namespace Twin2Engine::Tools {
 		using type = types_holder<Ts...>;
 	};
 	template<class... Ts> using unique_types = unique_impl<types_holder<>, types_holder<Ts...>>::type;
+
+	template<typename T> const T& unmove(T&& x) {
+		return x;
+	};
 }

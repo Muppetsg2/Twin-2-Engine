@@ -4,6 +4,7 @@
 #include <format>
 #include <cmath>
 #include <core/MathExtensions.h>
+#include <tools/templates.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
@@ -327,8 +328,8 @@ void AudioComponent::DrawEditor()
 
 			if (ImGui::SliderFloat(string("Position Slider##").append(id).c_str(), &pos, 0.f, len, std::vformat(string_view("{:02.0f}:{:02.0f}"),
 				make_format_args(
-					std::floor(pos / 60.f),
-					mod((double)pos, 60.0)
+					Twin2Engine::Tools::unmove(std::floor((double)pos / 60.0)),
+					Twin2Engine::Tools::unmove(mod((double)pos, 60.0))
 				)).c_str()))
 			{
 				this->SetPlayPosition((double)pos);

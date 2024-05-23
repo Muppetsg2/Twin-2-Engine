@@ -278,7 +278,7 @@ vector<size_t> STD140Offsets::GetArray(const string& name) const
 #if TRACY_PROFILER
 	FrameMarkStart(tracy_GetArrayFindElemOffset);
 #endif
-	unordered_map<size_t, size_t>::const_iterator map_iterator = _offsets.find(move(_hasher(move(vformat(_arrayElemFormat, make_format_args(name, 0))))));
+	unordered_map<size_t, size_t>::const_iterator map_iterator = _offsets.find(move(_hasher(move(vformat(_arrayElemFormat, make_format_args(name, Twin2Engine::Tools::unmove(0)))))));
 #if TRACY_PROFILER
 	FrameMarkEnd(tracy_GetArrayFindElemOffset);
 #endif
@@ -293,7 +293,7 @@ vector<size_t> STD140Offsets::GetArray(const string& name) const
 #if TRACY_PROFILER
 		FrameMarkStart(tracy_GetArrayFindElemOffset);
 #endif
-		map_iterator = _offsets.find(move(_hasher(move(vformat(_arrayElemFormat, make_format_args(name, i++))))));
+		map_iterator = _offsets.find(move(_hasher(move(vformat(_arrayElemFormat, make_format_args(name, Twin2Engine::Tools::unmove(i++)))))));
 #if TRACY_PROFILER
 		FrameMarkEnd(tracy_GetArrayFindElemOffset);
 

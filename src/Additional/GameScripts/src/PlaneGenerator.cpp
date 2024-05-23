@@ -107,7 +107,7 @@ void PlaneGenerator::Generate()
 
 void PlaneGenerator::Initialize()
 {
-    _modelName = std::vformat(std::string_view(_modelName), std::make_format_args("{", this->GetId(), "}"));
+    _modelName = std::vformat(std::string_view(_modelName), std::make_format_args("{", Twin2Engine::Tools::unmove(this->GetId()), "}"));
     Generate();
 	MeshRenderer::Initialize();
 }

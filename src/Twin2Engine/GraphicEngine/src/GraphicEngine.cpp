@@ -13,7 +13,7 @@ const char* const tracy_PreRenderName = "PreRender";
 #if _DEBUG
 void Twin2Engine::Graphic::glfw_error_callback(int error, const char* description)
 {
-	spdlog::error("Glfw Error {0}: {1}\n", error, description);
+	SPDLOG_ERROR("Glfw Error {0}: {1}", error, description);
 }
 
 void GLAPIENTRY Twin2Engine::Graphic::ErrorMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
@@ -27,10 +27,10 @@ void GLAPIENTRY Twin2Engine::Graphic::ErrorMessageCallback(GLenum source, GLenum
 	else if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) severityS = "NOTIFICATION";
 
 	if (type == GL_DEBUG_TYPE_ERROR) {
-		spdlog::error("GL CALLBACK: type = ERROR, severity = {0}, message = {1}\n", severityS, message);
+		SPDLOG_ERROR("GL CALLBACK: type = ERROR, severity = {0}, message = {1}\n", severityS, message);
 	}
 	else if (type == GL_DEBUG_TYPE_MARKER) {
-		spdlog::info("GL CALLBACK: type = MARKER, severity = {0}, message = {1}\n", severityS, message);
+		SPDLOG_INFO("GL CALLBACK: type = MARKER, severity = {0}, message = {1}\n", severityS, message);
 	}
 	else {
 		std::string typeS = "";
@@ -41,7 +41,7 @@ void GLAPIENTRY Twin2Engine::Graphic::ErrorMessageCallback(GLenum source, GLenum
 		else if (type == GL_DEBUG_TYPE_PUSH_GROUP) typeS = "PUSH GROUP";
 		else if (type == GL_DEBUG_TYPE_POP_GROUP) typeS = "POP GROUP";
 		else if (type == GL_DEBUG_TYPE_OTHER) typeS = "OTHER";
-		spdlog::warn("GL CALLBACK: type = {0}, severity = {1}, message = {2}\n", typeS, severityS, message);
+		SPDLOG_WARN("GL CALLBACK: type = {0}, severity = {1}, message = {2}", typeS, severityS, message);
 	}
 }
 #endif

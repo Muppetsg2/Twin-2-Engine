@@ -1,7 +1,7 @@
 #pragma once
 
 #define MAX_LOG_DRAW 250
-#define COLLAPSE true
+#define COLLAPSE 2
 
 namespace Editor::Common
 {
@@ -114,20 +114,15 @@ namespace Editor::Common
             this->formatter_->format(msg, formatted);
             std::string message = fmt::to_string(formatted);
 
+#if COLLAPSE == 0
+            MessageHolder::logMessages.emplace_back(ImGuiLogMessage(message, msg.level, msg.source, 1));
+#elif COLLAPSE == 1
             bool saved = false;
             size_t size = MessageHolder::logMessages.size();
             if (size > 1) {
-                std::string m1 = message.substr(26);
-                /*
-                std::iterator<ImGuiLogMessage> iter = std::find_if(MessageHolder::logMessages.begin(), MessageHolder::logMessages.end(), [&](ImGuiLogMessage& mess) bool -> {
-                    std::string m2 = mess.messageContent.substr(26);
-                    return msg.level == m.level && msg.source.filename == m.source.filename && msg.source.line == m.source.line && m1 == m2;
-                });
-                */
                 ImGuiLogMessage& m = MessageHolder::logMessages[size - 1];
+                std::string m1 = message.substr(26);
                 std::string m2 = m.messageContent.substr(26);
-                /*
-                */
                 if (msg.level == m.level && msg.source.filename == m.source.filename && msg.source.line == m.source.line && m1 == m2) {
                     if (m.count != ULLONG_MAX) ++m.count;
                     m.messageContent = message;
@@ -138,6 +133,30 @@ namespace Editor::Common
             if (!saved) {
                 MessageHolder::logMessages.emplace_back(ImGuiLogMessage(message, msg.level, msg.source, 1));
             }
+#elif COLLAPSE == 2:
+            bool saved = false;
+            size_t size = MessageHolder::logMessages.size();
+            if (size > 1) {
+                std::string m1 = message.substr(26);
+
+                MessageHolder::logMessages.begin();
+
+                auto item = std::find_if(MessageHolder::logMessages.begin(), MessageHolder::logMessages.end(), [&](ImGuiLogMessage& mess) -> bool {
+                    std::string m2 = mess.messageContent.substr(26);
+                    return msg.level == mess.level && msg.source.filename == mess.source.filename && msg.source.line == mess.source.line && m1 == m2; 
+                });
+
+                if (item != MessageHolder::logMessages.end()) {
+                    if ((*item).count != ULLONG_MAX) ++(*item).count;
+                    (*item).messageContent = message;
+                    saved = true;
+                }
+            }
+
+            if (!saved) {
+                MessageHolder::logMessages.emplace_back(ImGuiLogMessage(message, msg.level, msg.source, 1));
+            }
+#endif
 
             _mutex.lock();
 
@@ -282,12 +301,20 @@ namespace Editor::Common
                 }
             }
 
+#if COLLAPSE == 0
+            for (size_t i = messages.size(); i > 0; --i) {
+                ImGui::Separator();
+                ImGui::TextColored(messages[i - 1].color, "%s", messages[i - 1].content.c_str());
+            }
+            ImGui::Separator();
+#elif COLLAPSE == 1
             const ImVec2 p = ImGui::GetCursorScreenPos();
-            const float maxTextWidth = ImGui::CalcTextSize("999+").x;
+            const float maxTextWidth = ImGui::CalcTextSize("  999+  ").x;
             ImDrawList* draw_list = ImGui::GetWindowDrawList();
-            float x = p.x + ImGui::GetContentRegionAvail().x - 30, y = p.y ;
+            float x = p.x + ImGui::GetContentRegionAvail().x - 45, y = p.y + 4; // 4 is for separator
 
             for (size_t i = messages.size(); i > 0; --i) {
+                ImGui::Separator();
                 ImGui::TextColored(messages[i - 1].color, "%s", messages[i - 1].content.c_str());
 
                 if (messages[i - 1].count > 1) {
@@ -299,8 +326,30 @@ namespace Editor::Common
                     draw_list->AddText(ImVec2(x + (maxTextWidth - width) / 2.f, y), ImColor(ImVec4(1.0f, 1.0f, 1.0f, 1.0f)), text.c_str());
                 }
 
-                y += ImGui::GetTextLineHeight() + 4;
+                y += ImGui::GetTextLineHeight() + 4 + 4;
             }
+            ImGui::Separator();
+#elif COLLAPSE == 2
+            const ImVec2 p = ImGui::GetCursorScreenPos();
+            const float maxTextWidth = ImGui::CalcTextSize("  999+  ").x;
+            ImDrawList* draw_list = ImGui::GetWindowDrawList();
+            float x = p.x + ImGui::GetContentRegionAvail().x - 45, y = p.y + 4; // 4 is for separator
+
+            for (size_t i = messages.size(); i > 0; --i) {
+                ImGui::Separator();
+                ImGui::TextColored(messages[i - 1].color, "%s", messages[i - 1].content.c_str());
+
+                draw_list->AddRectFilled(ImVec2(x, y), ImVec2(x + maxTextWidth, y + ImGui::GetTextLineHeight()), ImColor(ImVec4(0.5f, 0.5f, 0.5f, 1.0f)), 10.0f);
+                std::string text = messages[i - 1].count > 999 ? std::string("999+") : std::to_string(messages[i - 1].count);
+
+                float width = ImGui::CalcTextSize(text.c_str()).x;
+
+                draw_list->AddText(ImVec2(x + (maxTextWidth - width) / 2.f, y), ImColor(ImVec4(1.0f, 1.0f, 1.0f, 1.0f)), text.c_str());
+
+                y += ImGui::GetTextLineHeight() + 4 + 4;
+            }
+            ImGui::Separator();
+#endif
 
             messages.clear();
 

@@ -12,7 +12,9 @@ void Human::Initialize()
 {
     _movement = GetGameObject()->GetComponent<HumanMovement>();
     _targetCity = CitiesManager::GetClosestCity(GetTransform()->GetGlobalPosition());
-    _movement->MoveTo(_targetCity->GetTransform()->GetGlobalPosition());
+    vec3 destination = _targetCity->GetTransform()->GetGlobalPosition();
+    destination.y = 0.0f;
+    _movement->MoveTo(destination);
 }
 
 // Update is called once per frame
@@ -24,11 +26,13 @@ void Human::Update()
         if (possibleTargetCities.size() > 0)
         {
             _targetCity = possibleTargetCities[Random::Range(0ull, possibleTargetCities.size() - 1)];
-            _movement->MoveTo(_targetCity->GetTransform()->GetGlobalPosition());
+            vec3 destination = _targetCity->GetTransform()->GetGlobalPosition();
+            destination.y = 0.0f;
+            _movement->MoveTo(destination);
         }
         else
         {
-            SPDLOG_DEBUG("Lack of connected cities");
+            SPDLOG_INFO("Lack of connected cities");
         }
     }
 }

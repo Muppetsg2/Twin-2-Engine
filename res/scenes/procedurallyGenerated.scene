@@ -650,6 +650,7 @@ GameObjects:
         rightTopPosition:
           x: 0
           y: 0
+        edgeLength: 0.5
       - id: 32
         enabled: true
         type: ContentGenerator
@@ -668,8 +669,8 @@ GameObjects:
         additionalTile: 4
         filledTile: 3
         pointTile: 7
-        generationRadiusMin: 7
-        generationRadiusMax: 7
+        generationRadiusMin: 5
+        generationRadiusMax: 5
         minPointsNumber: 5
         maxPointsNumber: 5
         angleDeltaRange: 5

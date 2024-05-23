@@ -330,6 +330,8 @@ void GameObject::DrawEditor()
 		return;
 	}
 
+	ImGui::Text("Id: %d", _id);
+
 	bool v = _isStatic;
 	ImGui::Checkbox(string("Static##GO").append(id).c_str(), &v);
 

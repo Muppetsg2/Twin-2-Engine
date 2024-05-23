@@ -10,77 +10,75 @@ using namespace std;
 
 void HumanMovement::Initialize()
 {
-    _targetDestination = GetTransform()->GetGlobalPosition();
+    //_targetDestination = GetTransform()->GetGlobalPosition();
 
 }
 
 void HumanMovement::Update()
 {
     glm::vec3 globalPosition = GetTransform()->GetGlobalPosition();
-    glm::vec3 direction = normalize((_targetDestination - globalPosition));
+    globalPosition.y = 0.0f;
+    glm::vec3 direction = normalize(_targetDestination - globalPosition);
 
     GetTransform()->Translate(direction * _speed * Time::GetDeltaTime());
 
+    globalPosition = GetTransform()->GetGlobalPosition();
 
-
-    RaycastHit forawrdHit; // = Physics.RaycastAll(transform.position + new Vector3(0, 1, 0) + direction * _forwardDetectionDistance, Vector3.down, 5f);
-    RaycastHit currentHit; // = Physics.RaycastAll(transform.position + new Vector3(0, 1, 0), Vector3.down, 5f);
-
-    Ray forwardRay(vec3(0.0f, -1.0f, 0.0f), globalPosition + vec3(0, 0.1, 0) + direction * _forwardDetectionDistance);
-    Ray currentRay(vec3(0.0f, -1.0f, 0.0f), globalPosition + vec3(0, 0.1, 0));
-
-    bool fHit = CollisionManager::Instance()->Raycast(forwardRay, forawrdHit);
-    bool cHit = CollisionManager::Instance()->Raycast(currentRay, currentHit);
-
-    //Debug.Log("Hits: " + forawrdHit.Length);
-    MapHexTile* forwardHexTile = nullptr;
-    //SPDLOG_INFO("Found frwdRay: {}", forawrdHit.collider != nullptr);
-    if (fHit)
-    {
-        forwardHexTile = forawrdHit.collider->GetGameObject()->GetComponent<MapHexTile>();
-    }
-    //for (int i = 0; i < forawrdHit.Length; i++)
-    //{
-    //    forwardHexTile = forawrdHit[i].collider.GetComponent<MapHexTile>();
-    //    if (forwardHexTile != nullptr)
-    //    {
-    //        //transform.position = new Vector3(transform.position.x, forwardHexTile.transform.position.y, transform.position.z);
-    //
-    //        break;
-    //    }
-    //}
-    //
-    //SPDLOG_INFO("Found crrntRay: {}", currentHit.collider != nullptr);
-    MapHexTile* currentHexTile = nullptr;
-    if (cHit)
-    {
-        currentHexTile = currentHit.collider->GetGameObject()->GetComponent<MapHexTile>();
-    }
-    //for (int i = 0; i < currentHit.Length; i++)
-    //{
-    //    currentHexTile = currentHit[i].collider.GetComponent<MapHexTile>();
-    //    if (currentHexTile != nullptr)
-    //    {
-    //        //transform.position = new Vector3(transform.position.x, currentHexTile.transform.position.y, transform.position.z);
-    //
-    //        break;
-    //    }
-    //}
     
-    //if (currentHexTile != nullptr && forwardHexTile != nullptr)
-    if (fHit && cHit)
-    {
-        float currentPositionY = currentHexTile->GetTransform()->GetGlobalPosition().y + 0.06f;
-        float forwardPositionY = forwardHexTile->GetTransform()->GetGlobalPosition().y + 0.06f;
-        if (currentPositionY > forwardPositionY)
-        {
-            GetTransform()->SetGlobalPosition(vec3(GetTransform()->GetGlobalPosition().x, currentPositionY, GetTransform()->GetGlobalPosition().z));
-        }
-        else
-        {
-            GetTransform()->SetGlobalPosition(vec3(GetTransform()->GetGlobalPosition().x, forwardPositionY, GetTransform()->GetGlobalPosition().z));
-        }
-    }
+    //Tilemap::HexagonalTile* tile = _tilemap->GetTile(
+    //    _tilemap->ConvertToTilemapPosition(
+    //        vec2(globalPosition.x, globalPosition.z) + vec2(direction.x, direction.z) * _forwardDetectionDistance));
+    //
+    //if (tile && tile->GetGameObject())
+    //{
+    //    GameObject* tileGO = tile->GetGameObject();
+    //    Transform* tileT = tileGO->GetTransform();
+    //    tileT->GetGlobalPosition().y;
+    //    GetTransform()->SetGlobalPosition(vec3(globalPosition.x, tile->GetGameObject()->GetTransform()->GetGlobalPosition().y, globalPosition.z));
+    //}
+    //RaycastHit forawrdHit; // = Physics.RaycastAll(transform.position + new Vector3(0, 1, 0) + direction * _forwardDetectionDistance, Vector3.down, 5f);
+    //RaycastHit currentHit; // = Physics.RaycastAll(transform.position + new Vector3(0, 1, 0), Vector3.down, 5f);
+    //
+    //Ray forwardRay(vec3(0.0f, -1.0f, 0.0f), globalPosition + vec3(0, 2, 0) + direction * _forwardDetectionDistance);
+    //Ray currentRay(vec3(0.0f, -1.0f, 0.0f), globalPosition + vec3(0, 0.1, 0));
+    //
+    //bool fHit = CollisionManager::Instance()->Raycast(forwardRay, forawrdHit);
+    //bool cHit = CollisionManager::Instance()->Raycast(currentRay, currentHit);
+
+    ////Debug.Log("Hits: " + forawrdHit.Length);
+    //MapHexTile* forwardHexTile = nullptr;
+    ////SPDLOG_INFO("Found frwdRay: {}", forawrdHit.collider != nullptr);
+    //if (fHit)
+    //{
+    //    forwardHexTile = forawrdHit.collider->GetGameObject()->GetComponent<MapHexTile>();
+    //}
+    //
+    //MapHexTile* currentHexTile = nullptr;
+    //if (cHit)
+    //{
+    //    currentHexTile = currentHit.collider->GetGameObject()->GetComponent<MapHexTile>();
+    //}
+    //
+    ////if (currentHexTile != nullptr && forwardHexTile != nullptr)
+    //if (fHit && cHit)
+    //{
+    //    float currentPositionY = currentHexTile->GetTransform()->GetGlobalPosition().y;
+    //    float forwardPositionY = forwardHexTile->GetTransform()->GetGlobalPosition().y;
+    //    if (currentPositionY > forwardPositionY)
+    //    {
+    //        GetTransform()->SetGlobalPosition(vec3(GetTransform()->GetGlobalPosition().x, currentPositionY, GetTransform()->GetGlobalPosition().z));
+    //    }
+    //    else
+    //    {
+    //        GetTransform()->SetGlobalPosition(vec3(GetTransform()->GetGlobalPosition().x, forwardPositionY, GetTransform()->GetGlobalPosition().z));
+    //    }
+    //}
+}
+
+
+void HumanMovement::SetTilemap(Tilemap::HexagonalTilemap* tilemap)
+{
+    _tilemap = tilemap;
 }
 
 void HumanMovement::MoveTo(glm::vec3 destination)
@@ -122,7 +120,7 @@ void HumanMovement::DrawEditor()
     std::string name = std::string("Human Movement##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str())) {
         ImGui::InputFloat("Speed: ", &_speed);
-        ImGui::InputFloat("Speed: ", &_forwardDetectionDistance);
+        ImGui::InputFloat("ForwardDetectionDistance: ", &_forwardDetectionDistance);
         ImGui::Text("Target Destination: ");
         ImGui::SameLine();
         ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);

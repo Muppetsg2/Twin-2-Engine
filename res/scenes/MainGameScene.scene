@@ -351,6 +351,7 @@ GameObjects:
         rightTopPosition:
           x: 0
           y: 0
+        edgeLength: 0.5
       - id: 33
         enabled: true
         type: MapGenerator

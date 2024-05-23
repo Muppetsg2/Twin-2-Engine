@@ -109,6 +109,12 @@ namespace Editor::Common
 
     protected:
         void sink_it_(const spdlog::details::log_msg& msg) override {
+
+            static const char* const tracy_GettingLogsName = "ImGui::Getting Loggs";
+
+            ZoneScoped;
+            FrameMarkStart(tracy_GettingLogsName);
+
             // Convert log message to string
             spdlog::memory_buf_t formatted;
             this->formatter_->format(msg, formatted);
@@ -173,6 +179,8 @@ namespace Editor::Common
             //    MessageHolder::logFile << message << std::endl;
             //    MessageHolder::logFile.flush();
             //}
+
+            FrameMarkEnd(tracy_GettingLogsName);
         }
 
         void flush_() override {}

@@ -158,6 +158,7 @@ bool GameManager::Deserialize(const YAML::Node& node)
     return true;
 }
 
+#if _DEBUG
 void GameManager::DrawEditor()
 {
     std::string id = std::string(std::to_string(this->GetId()));
@@ -178,3 +179,4 @@ void GameManager::DrawEditor()
         //}
     }
 }
+#endif

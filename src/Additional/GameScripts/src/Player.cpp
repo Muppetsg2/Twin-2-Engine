@@ -24,6 +24,7 @@ bool Player::Deserialize(const YAML::Node& node)
     return true;
 }
 
+#if _DEBUG
 void Player::DrawEditor()
 {
     std::string id = std::string(std::to_string(this->GetId()));
@@ -44,3 +45,4 @@ void Player::DrawEditor()
         //}
     }
 }
+#endif

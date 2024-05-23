@@ -55,14 +55,6 @@ GLuint CameraComponent::_ssaoNoiseTexture = NULL;
 void CameraComponent::OnTransformChange(Transform* trans)
 {
 	UpdateFrontDir();
-	/*
-	if (this->_isMain) {
-		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-	}
-	*/
 }
 
 void CameraComponent::OnWindowSizeChange()
@@ -678,11 +670,14 @@ void CameraComponent::Render()
 		_screenShader->SetBool("hasNegative", (_filters & (uint8_t)CameraRenderFilter::NEGATIVE) != 0);
 		_screenShader->SetBool("hasGrayscale", (_filters & (uint8_t)CameraRenderFilter::GRAYSCALE) != 0);
 		_screenShader->SetBool("hasOutline", (_filters & (uint8_t)CameraRenderFilter::OUTLINE) != 0);
+		_screenShader->SetBool("hasDepthOfField", (_filters & (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0);
 
 		_screenShader->SetBool("displayDepth", _mode == CameraDisplayMode::DEPTH);
 		_screenShader->SetBool("displaySSAO", _mode == CameraDisplayMode::SSAO_MAP);
 
-		_screenShader->SetBool("enableDepthOfField", (_filters& (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0);
+		_screenShader->SetFloat("quadraticDepthOfField", _quadraticDepthOfField);
+		_screenShader->SetFloat("linearDepthOfField", _linearDepthOfField);
+		_screenShader->SetFloat("constantDepthOfField", _constantDepthOfField);
 
 		_screenPlane.GetMesh(0)->Draw(1);
 
@@ -1165,6 +1160,27 @@ void CameraComponent::DrawEditor()
 		}
 
 		this->SetCameraFilter(acFil);
+
+		if ((acFil & (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0) {
+			float quadratic = this->_quadraticDepthOfField;
+			if (ImGui::InputFloat(string("Quadratic Depth Of Field##").append(id).c_str(), &quadratic)) {
+				if (this->_quadraticDepthOfField != quadratic) {
+					this->_quadraticDepthOfField = quadratic;
+				}
+			}
+			float linear = this->_linearDepthOfField;
+			if (ImGui::InputFloat(string("Linear Depth Of Field##").append(id).c_str(), &linear)) {
+				if (this->_linearDepthOfField != linear) {
+					this->_linearDepthOfField = linear;
+				}
+			}
+			float constant = this->_constantDepthOfField;
+			if (ImGui::InputFloat(string("Constant Depth Of Field##").append(id).c_str(), &constant)) {
+				if (this->_constantDepthOfField != constant) {
+					this->_constantDepthOfField = constant;
+				}
+			}
+		}
 
 		int s = (int)this->_samples;
 		ImGui::InputInt(string("MSAA Samples##").append(id).c_str(), &s);

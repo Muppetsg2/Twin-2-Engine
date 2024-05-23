@@ -21,11 +21,10 @@ uniform bool hasVignette;
 uniform bool hasNegative;
 uniform bool hasGrayscale;
 uniform bool hasOutline;
+uniform bool hasDepthOfField;
 
 uniform bool displayDepth;
 uniform bool displaySSAO;
-
-uniform bool enableDepthOfField;
 
 vec3 applyVignette(vec3 color) {
     vec2 position = TexCoord.xy - vec2(0.5);  
@@ -134,17 +133,22 @@ vec3 applyDepthOfField(vec3 currentOutput) {
     return distance * blurred + (1.0 - distance) * currentOutput;
 }
 
-float minDistance = 0.1;
-float maxDistance = 1.0;
+uniform float quadraticDepthOfField;
+uniform float linearDepthOfField;
+uniform float constantDepthOfField;
 
 vec3 applyDepthOfField2(vec3 color) {
 
     vec3 focusColor = color;
     vec3 outOfFocusColor = applyBlur();
 
-    float dist = getDepthValue(TexCoord).r;
+    float focusDist = texture(depthTexture, vec2(0.5)).r;
 
-    float blur = smoothstep(minDistance, maxDistance, dist);
+    float currDist = texture(depthTexture, TexCoord).r;
+
+    float dist = abs(focusDist - currDist);
+
+    float blur = clamp(quadraticDepthOfField * dist * dist + linearDepthOfField * dist + constantDepthOfField, 0.0, 1.0);
 
     return mix(focusColor, outOfFocusColor, blur);
 }
@@ -157,6 +161,12 @@ void main() {
         res = applyBlur();
     }
 
+    if (hasDepthOfField)
+    {
+        //res = applyDepthOfField(res);
+        res = applyDepthOfField2(res);
+    }
+
     if (hasGrayscale) {
         res = applyGrayscale(res);
     }
@@ -167,12 +177,6 @@ void main() {
     
     if (hasNegative) {
         res = applyNegative(res);
-    }
-
-    if (enableDepthOfField)
-    {
-        //res = applyDepthOfField(res);
-        res = applyDepthOfField2(res);
     }
 
     Color = vec4(pow(res, vec3(1.0/gamma)), 1.0);

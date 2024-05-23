@@ -95,6 +95,11 @@ namespace Twin2Engine::Core {
 		float _ssaoSampleRadius = 0.7f;
 		float _ssaoBias = 0.01f;
 
+		bool _depthOfField2 = true;
+		float _quadraticDepthOfField = 100000.f;
+		float _linearDepthOfField = 10.f;
+		float _constantDepthOfField = 0.f;
+
 		vec3 _front = vec3(0.f, 0.f, -1.f);
 		vec3 _right = vec3(1.f, 0.f, 0.f);
 		vec3 _up = vec3(0.f, 1.f, 0.f);

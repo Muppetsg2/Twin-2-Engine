@@ -32,6 +32,8 @@ void GameEngine::Deserializers()
 
     ADD_COMPONENT("Text", Text);
 
+    ADD_COMPONENT("InputField", InputField);
+
     ADD_COMPONENT("MeshRenderer", MeshRenderer);
 
     ADD_COMPONENT("HexagonalCollider", HexagonalColliderComponent);
@@ -49,6 +51,11 @@ void GameEngine::Deserializers()
     ADD_COMPONENT("SpotLight", SpotLightComponent);
 
     ADD_COMPONENT("MovementController", MovementController);
+
+    ADD_COMPONENT("GameManager", GameManager);
+    ADD_COMPONENT("PlayerMovement", PlayerMovement);
+    ADD_COMPONENT("Player", Player);
+    ADD_COMPONENT("Enemy", Enemy);
 }
 
 void GameEngine::Update()

@@ -15,10 +15,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Twin2Engine)
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     add_subdirectory(Editor)
 
-    # For Tracey_Leak_Finder
-    get_property(find_memory_leaks GLOBAL PROPERTY FIND_MEMORY_LEAKS)
-
-    if (find_memory_leaks)
+    if (FIND_MEMORY_LEAKS)
         set(THREADS_PREFER_PTHREAD_FLAG ON)
         find_package(Threads REQUIRED)
         target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
@@ -44,6 +41,9 @@ if(MSVC)
     target_compile_definitions(${PROJECT_NAME} PUBLIC NOMINMAX)
     target_compile_options(${PROJECT_NAME} PUBLIC "/Zc:preprocessor")
 endif()
+
+target_link_libraries(${PROJECT_NAME} PRIVATE Generation)
+target_link_libraries(${PROJECT_NAME} PRIVATE GameScripts)
 
 # Set the directory paths
 #set(SHADERS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/res/shaders/SPIRV")

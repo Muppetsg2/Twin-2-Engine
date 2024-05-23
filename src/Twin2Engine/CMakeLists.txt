@@ -45,13 +45,10 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE GLFW_INCLUDE_NONE)
 target_compile_definitions(${PROJECT_NAME} PRIVATE LIBRARY_SUFFIX="")
 target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG="$<IF:$<CONFIG:Debug>,1,0>")
 
-get_property(tracy_profiler GLOBAL PROPERTY TRACY_PROFILER)
-if (tracy_profiler)
+if (TRACY_PROFILER)
     target_link_libraries(${PROJECT_NAME} PUBLIC TracyClient)
 	target_compile_definitions(${PROJECT_NAME} PUBLIC TRACY_PROFILER)
 endif()
-
-get_property(is_miniaudio GLOBAL PROPERTY IS_MINI_AUDIO)
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${Twin2Engine_PRECOMPILE_HEADERS_FILE})
 
@@ -67,7 +64,7 @@ else()
     target_compile_options(${PROJECT_NAME} PUBLIC "-O2")
 endif()
 
-if(is_miniaudio)
+if(IS_MINI_AUDIO)
 	target_link_libraries(${PROJECT_NAME} PUBLIC miniaudio)
 	target_include_directories(${PROJECT_NAME} PUBLIC ${miniaudio_SOURCE_DIR})
 else()
@@ -78,5 +75,7 @@ endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC glfw
 										GraphicEngine
 										PhysicEngine
+										Tilemap
+										Generation
 										GameScripts
 										Tools)

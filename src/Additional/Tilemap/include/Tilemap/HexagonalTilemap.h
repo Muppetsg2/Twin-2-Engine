@@ -30,11 +30,7 @@ namespace Tilemap
 
 		bool _initialized = false;
 
-
 	public:
-		//HexagonalTilemap(glm::ivec2 leftBottomPosition, glm::ivec2 rightTopPosition, float length, bool isDistanceBetweenTiles);
-		//HexagonalTilemap();
-		//~HexagonalTilemap();
 
 		void Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTopPosition);
 		void Clear();
@@ -62,10 +58,11 @@ namespace Tilemap
 
 		static glm::ivec2 GetPositionInDirection(const glm::ivec2& position, unsigned int direction);
 
-		virtual YAML::Node Serialize() const override;
-		virtual bool Deserialize(const YAML::Node& node) override;
 		virtual void Initialize() override;
 		virtual void OnDestroy() override;
+		
+		virtual YAML::Node Serialize() const override;
+		virtual bool Deserialize(const YAML::Node& node) override;
 
 #if _DEBUG
 		virtual void DrawEditor() override;

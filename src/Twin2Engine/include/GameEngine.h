@@ -60,6 +60,10 @@
 
 //GAMESCRIPTS
 #include <MovementController.h>
+#include <GameManager.h>
+#include <PlayerMovement.h>
+#include <Player.h>
+#include <Enemy.h>
 
 
 namespace Twin2Engine {

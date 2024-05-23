@@ -178,7 +178,7 @@ void UIRenderingManager::Render()
 			}
 			CanvasStruct.Set("canvasIsActive", canvasData != nullptr);
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, CanvasStruct.GetSize(), CanvasStruct.GetData().data());
-
+			
 #if TRACY_PROFILER
 			FrameMarkEnd(tracy_RenderUICanvasUBOName);
 #endif
@@ -277,9 +277,11 @@ void UIRenderingManager::Render()
 								}
 							}
 
+#if TRACY_PROFILER
 							FrameMarkEnd(tracy_RenderUIElementMaskCheck);
 
 							FrameMarkStart(tracy_RenderUIElementDataName);
+#endif
 
 							string elemName = vformat(_uiBufforElemFormat, make_format_args(i));
 
@@ -345,7 +347,7 @@ void UIRenderingManager::Render()
 		glBindBuffer(GL_UNIFORM_BUFFER, NULL);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, NULL);
 		glBindVertexArray(NULL);
-
+		
 #if TRACY_PROFILER
 		FrameMarkEnd(tracy_RenderUIEnd);
 #endif

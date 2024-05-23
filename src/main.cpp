@@ -286,9 +286,18 @@ int main(int, char**)
 
 
 #pragma region GAMESCRIPTS_PREFABS
-    //GameObject* gs_go = SceneManager::CreateGameObject();
-    //GameScripts::MovementController* gsc = gs_go->AddComponent<GameScripts::MovementController>();
-    //PrefabManager::SaveAsPrefab(gs_go, "MovementControllerPref.prefab");
+    //GameObject* gms_go = SceneManager::CreateGameObject();
+    //GameManager* gmc = gms_go->AddComponent<GameManager>();
+    //PrefabManager::SaveAsPrefab(gms_go, "GameManager.prefab");
+    //GameObject* p_go = SceneManager::CreateGameObject();
+    //MeshRenderer* mrc = p_go->AddComponent<MeshRenderer>();
+    //Player* pc = p_go->AddComponent<Player>();
+    //PlayerMovement* pmc = p_go->AddComponent<PlayerMovement>();
+    //PrefabManager::SaveAsPrefab(p_go, "Player.prefab");
+    //GameObject* e_go = SceneManager::CreateGameObject();
+    //MeshRenderer* emrc = e_go->AddComponent<MeshRenderer>();
+    //Enemy* ec = e_go->AddComponent<Enemy>();
+    //PrefabManager::SaveAsPrefab(e_go, "Enemy.prefab");
 #pragma endregion
 
 #if _DEBUG

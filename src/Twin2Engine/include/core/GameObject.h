@@ -49,7 +49,6 @@ namespace Twin2Engine::Core
 
 		bool _isStatic;
 
-
 		//Layer
 		//Tag
 		void SetActiveInHierarchy(bool activeInHierarchy);
@@ -90,7 +89,7 @@ namespace Twin2Engine::Core
 
 		YAML::Node Serialize() const;
 		bool Deserialize(const YAML::Node& node);
-
+		
 #if _DEBUG
 		void DrawEditor();
 #endif

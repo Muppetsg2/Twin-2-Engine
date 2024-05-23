@@ -75,6 +75,10 @@ namespace Twin2Engine::Tools {
 
 		template<class T, class... Ts>
 		void _AddMultiple(const STD140Variable<T>& var, const STD140Variable<Ts>&... vars) {
+#if TRACY_PROFILER
+			ZoneScoped;
+#endif
+
 			if constexpr (std::is_same_v<T, STD140Offsets>) {
 				if (var.array_size == 0) {
 					Add(var.var_name, var.struct_offsets);
@@ -123,15 +127,20 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T, size_t>
 		Add(const std::string& name) {
+#if TRACY_PROFILER
 			ZoneScoped;
 
 			FrameMarkStart(tracy_AddScalar);
+#endif
 			if (_CheckVariable(name)) {
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_AddScalar);
+#endif
 				return 0;
 			}
-
+#if TRACY_PROFILER
 			FrameMarkEnd(tracy_AddScalar);
+#endif
 			if constexpr (std::is_same_v<T, bool>) {
 				// sizeof(unsigned int) = 4
 				return _Add(name, 4, 4);
@@ -145,20 +154,28 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T, std::vector<size_t>>
 		Add(const std::string& name, size_t size) {
+#if TRACY_PROFILER
 			ZoneScoped;
 
 			FrameMarkStart(tracy_AddScalarArray);
+#endif
 			if (size == 0) {
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_AddScalarArray);
+#endif
 				return std::vector<size_t>();
 			}
 
 			if (_CheckVariable(name)) {
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_AddScalarArray);
+#endif
 				return std::vector<size_t>();
 			}
 
+#if TRACY_PROFILER
 			FrameMarkEnd(tracy_AddScalarArray);
+#endif
 			if constexpr (std::is_same_v<T, bool>) {
 				// sizeof(unsigned int) = 4
 				return _AddArray(name, size, 4, 4);
@@ -175,15 +192,21 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L, size_t>
 		Add(const std::string& name) {
+#if TRACY_PROFILER
 			ZoneScoped;
 
 			FrameMarkStart(tracy_AddVec);
+#endif
 			if (_CheckVariable(name)) {
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_AddVec);
+#endif
 				return 0;
 			}
 
+#if TRACY_PROFILER
 			FrameMarkEnd(tracy_AddVec);
+#endif
 			if constexpr (std::is_same_v<T, bool>) {
 				// sizeof(unsigned int) = 4
 				if constexpr (is_num_in_v<L, 1, 2, 4>) {
@@ -207,20 +230,28 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L, std::vector<size_t>>
 		Add(const std::string& name, size_t size) {
+#if TRACY_PROFILER
 			ZoneScoped;
 
 			FrameMarkStart(tracy_AddVecArray);
+#endif
 			if (size == 0) {
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_AddVecArray);
+#endif
 				return std::vector<size_t>();
 			}
 
 			if (_CheckVariable(name)) {
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_AddVecArray);
+#endif
 				return std::vector<size_t>();
 			}
 
+#if TRACY_PROFILER
 			FrameMarkEnd(tracy_AddVecArray);
+#endif
 			if constexpr (std::is_same_v<T, bool>) {
 				// sizeof(unsigned int) = 4
 				if constexpr (is_num_in_v<L, 1, 2, 4>) {
@@ -247,15 +278,21 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R, size_t>
 		Add(const std::string& name) {
+#if TRACY_PROFILER
 			ZoneScoped;
 			FrameMarkStart(tracy_AddMat);
+#endif
 
 			if (_CheckVariable(name)) {
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_AddMat);
+#endif
 				return 0;
 			}
 
+#if TRACY_PROFILER
 			FrameMarkEnd(tracy_AddMat);
+#endif
 			if constexpr (std::is_same_v<T, bool>) {
 				// sizeof(unsigned int) = 4
 				if constexpr (is_num_in_v<R, 1, 2, 4>) {
@@ -279,22 +316,30 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R, std::vector<size_t>>
 		Add(const std::string& name, size_t size) {
+#if TRACY_PROFILER
 			ZoneScoped;
 			FrameMarkStart(tracy_AddMatArray);
+#endif
 
 			if (size == 0) {
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_AddMatArray);
+#endif
 				return std::vector<size_t>();
 			}
 
 			if (_CheckVariable(name)) {
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_AddMatArray);
+#endif
 				return std::vector<size_t>();
 			}
 
 			std::vector<size_t> values;
 			for (size_t i = 0; i < size; ++i) {
+#if TRACY_PROFILER
 				FrameMarkStart(tracy_AddMatArrayElem);
+#endif
 				if constexpr (std::is_same_v<T, bool>) {
 					// sizeof(unsigned int) = 4
 					if constexpr (is_num_in_v<R, 1, 2, 4>) {
@@ -312,17 +357,23 @@ namespace Twin2Engine::Tools {
 						values.push_back(std::move(_AddArray(std::move(std::vformat(_arrayElemFormat, std::make_format_args(name, i))), C, sizeof(T) * (R + 1), sizeof(T) * R)[0]));
 					}
 				}
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_AddMatArrayElem);
+#endif
 			}
 
 			// SET ARRAY BEGIN POINTER
+#if TRACY_PROFILER
 			FrameMarkStart(tracy_AddMatArraySetBeginPointer);
+#endif
 			size_t nameHash = std::move(_hasher(name));
 			_offsets[nameHash] = values[0];
 			_names[nameHash] = name;
+#if TRACY_PROFILER
 			FrameMarkEnd(tracy_AddMatArrayElem);
 
 			FrameMarkEnd(tracy_AddMatArray);
+#endif
 			return values;
 		}
 
@@ -331,11 +382,15 @@ namespace Twin2Engine::Tools {
 
 #pragma region ADD_STRUCT
 		size_t Add(const std::string& name, const STD140Offsets& structTemplate) {
+#if TRACY_PROFILER
 			ZoneScoped;
 			FrameMarkStart(tracy_AddStruct);
+#endif
 			
 			if (_CheckVariable(name)) {
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_AddStruct);
+#endif
 				return 0;
 			}
 
@@ -343,38 +398,52 @@ namespace Twin2Engine::Tools {
 			std::string valueName;
 			size_t nameHash;
 			for (const auto& off : structTemplate._offsets) {
+#if TRACY_PROFILER
 				FrameMarkStart(tracy_AddStructSetElem);
+#endif
 				valueName = std::move(std::vformat(_subElemFormat, std::make_format_args(name, (*structTemplate._names.find(off.first)).second)));
 				
 				nameHash = std::move(_hasher(valueName));
 				_offsets[nameHash] = aligementOffset + off.second;
 				_names[nameHash] = valueName;
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_AddStructSetElem);
+#endif
 			}
 
 			// ADD PADDING
+#if TRACY_PROFILER
 			FrameMarkStart(tracy_AddStructAddPadding);
+#endif
 			if (_currentOffset % 16 != 0) {
 				_currentOffset += 16 - (_currentOffset % 16);
 			}
+#if TRACY_PROFILER
 			FrameMarkEnd(tracy_AddStructAddPadding);
 
 			FrameMarkEnd(tracy_AddStruct);
+#endif
 			return aligementOffset;
 		}
 
 #pragma region ADD_STRUCT_ARRAY
 		std::vector<size_t> Add(const std::string& name, const STD140Offsets& structTemplate, size_t size) {
+#if TRACY_PROFILER
 			ZoneScoped;
 			FrameMarkStart(tracy_AddStructArray);
+#endif
 
 			if (size == 0) {
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_AddStructArray);
+#endif
 				return std::vector<size_t>();
 			}
 
 			if (_CheckVariable(name)) {
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_AddStructArray);
+#endif
 				return std::vector<size_t>();
 			}
 
@@ -384,44 +453,66 @@ namespace Twin2Engine::Tools {
 			std::string valueName;
 			size_t nameHash;
 
+#if TRACY_PROFILER
 			FrameMarkStart(tracy_AddStructArrayAddElems);
+#endif
 			for (size_t i = 0; i < size; ++i) {
+#if TRACY_PROFILER
 				FrameMarkStart(tracy_AddStructArrayAddElem);
+#endif
 
 				arrayElemName = std::move(std::vformat(_arrayElemFormat, std::make_format_args(name, i)));
 				values.push_back((aligementOffset = std::move(_Add(arrayElemName, structTemplate.GetBaseAligement(), structTemplate._currentOffset))));
 
+#if TRACY_PROFILER
 				FrameMarkStart(tracy_AddStructArrayAddElemSubValues);
+#endif
 				for (const auto& off : structTemplate._offsets) {
+#if TRACY_PROFILER
 					FrameMarkStart(tracy_AddStructArrayAddElemSubValue);
+#endif
 					valueName = std::move(std::vformat(_subElemFormat, std::make_format_args(arrayElemName, (*structTemplate._names.find(off.first)).second)));
 
 					nameHash = std::move(_hasher(valueName));
 					_offsets[nameHash] = aligementOffset + off.second;
 					_names[nameHash] = valueName;
+#if TRACY_PROFILER
 					FrameMarkEnd(tracy_AddStructArrayAddElemSubValue);
+#endif
 				}
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_AddStructArrayAddElemSubValues);
+#endif
 
 				// ADD PADDING
+#if TRACY_PROFILER
 				FrameMarkStart(tracy_AddStructArrayAddElemPadding);
+#endif
 				if (_currentOffset % 16 != 0) {
 					_currentOffset += 16 - (_currentOffset % 16);
 				}
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_AddStructArrayAddElemPadding);
 
 				FrameMarkEnd(tracy_AddStructArrayAddElem);
+#endif
 			}
+#if TRACY_PROFILER
 			FrameMarkEnd(tracy_AddStructArrayAddElems);
+#endif
 
 			// SET ARRAY BEGIN POINTER
+#if TRACY_PROFILER
 			FrameMarkStart(tracy_AddStructArraySetBeginPointer);
+#endif
 			nameHash = std::move(_hasher(name));
 			_offsets[nameHash] = values[0];
 			_names[nameHash] = name;
+#if TRACY_PROFILER
 			FrameMarkEnd(tracy_AddStructArraySetBeginPointer);
 
 			FrameMarkEnd(tracy_AddStructArray);
+#endif
 			return values;
 		}
 

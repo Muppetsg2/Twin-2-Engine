@@ -428,11 +428,11 @@ void Window::Use() const
 	glfwMakeContextCurrent(_window);
 }
 
-const char* const tracy_WindowSwapBuffersName = "SwapBuffersWindow";
-
 void Window::Update() const
 {
 #if TRACY_PROFILER
+	static const char* const tracy_WindowSwapBuffersName = "SwapBuffersWindow";
+
 	ZoneScoped;
 #endif
 

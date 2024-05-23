@@ -55,14 +55,6 @@ GLuint CameraComponent::_ssaoNoiseTexture = NULL;
 void CameraComponent::OnTransformChange(Transform* trans)
 {
 	UpdateFrontDir();
-	/*
-	if (this->_isMain) {
-		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-	}
-	*/
 }
 
 void CameraComponent::OnWindowSizeChange()
@@ -275,15 +267,6 @@ Frustum CameraComponent::GetFrustum() const
 
 	vec3 pos = GetTransform()->GetGlobalPosition();
 
-	//frustum.nearFace = { pos + _near * _front, _front };
-	//frustum.farFace = { pos + frontMultFar, -_front };
-	//frustum.rightFace = { pos, glm::normalize(cross(frontMultFar - _right * halfHSide, _up)) };
-	//frustum.leftFace = { pos, glm::normalize(cross(_up, frontMultFar + _right * halfHSide)) };
-	//frustum.topFace = { pos, glm::normalize(cross(_right, frontMultFar - _up * halfVSide)) };
-	//frustum.bottomFace = { pos, glm::normalize(cross(frontMultFar + _up * halfVSide, _right)) };
-
-
-
 	frustum.nearFace = { pos + _near * _front, _front };
 	frustum.farFace = { pos + frontMultFar, -_front };
 	frustum.rightFace = { pos, glm::normalize(cross(_up, frontMultFar + _right * halfHSide)) };
@@ -338,14 +321,6 @@ void CameraComponent::SetCameraFilter(uint8_t filters)
 void CameraComponent::SetCameraType(CameraType value)
 {
 	_type = value;
-
-	/*
-	if (this->IsMain()) {
-		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-	}
-	*/
 }
 
 void CameraComponent::SetSamples(uint8_t i)
@@ -609,7 +584,7 @@ void CameraComponent::Render()
 				_screenPlane.GetMesh(0)->Draw(1);
 
 				glBindTexture(GL_TEXTURE_2D, 0);
-
+				
 #if TRACY_PROFILER
 				FrameMarkEnd(tracy_RenderSSAOTexture);
 
@@ -627,7 +602,7 @@ void CameraComponent::Render()
 				_ssaoBlurredShader->SetInt("ssaoTexture", 0);
 
 				_screenPlane.GetMesh(0)->Draw(1);
-
+				
 #if TRACY_PROFILER
 				FrameMarkEnd(tracy_BlurSSAOTexture);
 #endif
@@ -704,7 +679,7 @@ void CameraComponent::Render()
 
 		GraphicEngine::RenderGUI();
 		glBindTexture(GL_TEXTURE_2D, 0);
-
+		
 #if TRACY_PROFILER
 		FrameMarkEnd(tracy_OnScreenFramebuffer);
 #endif

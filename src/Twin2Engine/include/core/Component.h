@@ -37,7 +37,7 @@ namespace Twin2Engine::Core
 		virtual void OnDestroy();
 		virtual YAML::Node Serialize() const;
 		virtual bool Deserialize(const YAML::Node& node);
-
+		
 #if _DEBUG
 		virtual void DrawEditor();
 #endif

@@ -6,96 +6,6 @@ constexpr const float SQRT_3 = 1.7320508075688772935274463415059f;
 
 using namespace Tilemap;
 
-/*
-HexagonalTilemap::HexagonalTilemap()
-{
-	_leftBottomPosition = glm::ivec2(0, 0);
-	_rightTopPosition = glm::ivec2(0, 0);
-	_toCenter = glm::ivec2(0, 0);
-
-	_width = 1;
-	_height = 1;
-	_distanceBetweenTiles = 1.0f;
-	_edgeLength = _distanceBetweenTiles / glm::sqrt(3.f);
-
-	_tilemap = new HexagonalTile** [1];
-	_tilemap[0] = new HexagonalTile*[1];
-	_tilemap[0][0] = new HexagonalTile();
-	_tilemap[0][0]->SetTilemap(this);
-	_tilemap[0][0]->SetPosition(glm::ivec2(0, 0));
-}
-*/
-//HexagonalTilemap::HexagonalTilemap(glm::ivec2 leftBottomPosition, glm::ivec2 rightTopPosition, float length, bool isDistanceBetweenTiles)
-//{
-//	if (isDistanceBetweenTiles)
-//	{
-//		_distanceBetweenTiles = length;
-//		_edgeLength = length / glm::sqrt(3.f);
-//	}
-//	else
-//	{
-//		_edgeLength = length;
-//		_distanceBetweenTiles = 0.5f * length * glm::sqrt(3.f);
-//	}
-//
-//	// Creating new tilemap
-//	if (leftBottomPosition.x < rightTopPosition.x)
-//	{
-//		_leftBottomPosition.x = leftBottomPosition.x;
-//		_rightTopPosition.x = rightTopPosition.x;
-//	}
-//	if (leftBottomPosition.y < rightTopPosition.y)
-//	{
-//		_leftBottomPosition.y = leftBottomPosition.y;
-//		_rightTopPosition.y = rightTopPosition.y;
-//	}
-//
-//	_toCenter = -_leftBottomPosition;
-//
-//	_width = _rightTopPosition.x - _leftBottomPosition.x + 1;
-//	_height = _rightTopPosition.y - _leftBottomPosition.x + 1;
-//
-//	_tilemap = new HexagonalTile * [_width];
-//
-//	for (int i = 0; i < _width; i++)
-//	{
-//		_tilemap[i] = new HexagonalTile[_height];
-//
-//		for (int j = 0; j < _height; j++)
-//		{
-//			_tilemap[i][j].SetTilemap(this);
-//			_tilemap[i][j].SetPosition(glm::ivec2(i + _leftBottomPosition.x, j + _leftBottomPosition.y));
-//		}
-//	}
-//}
-
-/*
-HexagonalTilemap::~HexagonalTilemap()
-{
-	for (int i = 0; i < _width; i++)
-	{
-		delete[] _tilemap[i];
-	}
-
-	delete[] _tilemap;
-
-	_leftBottomPosition = glm::ivec2(0, 0);
-	_rightTopPosition = glm::ivec2(0, 0);
-	_toCenter = glm::ivec2(0, 0);
-
-	_width = 1;
-	_height = 1;
-	_distanceBetweenTiles = 1.0f;
-	_edgeLength = _distanceBetweenTiles / glm::sqrt(3.f);
-
-	_tilemap = new HexagonalTile * *[1];
-	_tilemap[0] = new HexagonalTile * [1];
-	_tilemap[0][0] = new HexagonalTile();
-	_tilemap[0][0]->SetTilemap(this);
-	_tilemap[0][0]->SetPosition(glm::ivec2(0, 0));
-}
-*/
-
 void HexagonalTilemap::Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTopPosition)
 {
 	if (!_initialized) {
@@ -436,24 +346,6 @@ glm::vec2 HexagonalTilemap::ConvertToTilemapPosition(const glm::ivec2& position)
 	return glm::ivec2(position.x / (_distanceBetweenTiles * 0.75f), glm::floor((position.y / (_distanceBetweenTiles * 0.5f * SQRT_3))));
 }
 
-YAML::Node HexagonalTilemap::Serialize() const
-{
-	YAML::Node node = Component::Serialize();
-	node["type"] = "HexagonalTilemap";
-	node["leftBottomPosition"] = _leftBottomPosition;
-	node["rightTopPosition"] = _rightTopPosition;
-	return node;
-}
-
-bool HexagonalTilemap::Deserialize(const YAML::Node& node) {
-	if (!node["leftBottomPosition"] || !node["rightTopPosition"] ||
-		!Component::Deserialize(node)) return false;
-
-	Resize(node["leftBottomPosition"].as<glm::ivec2>(), node["rightTopPosition"].as<glm::ivec2>());
-
-	return true;
-}
-
 void HexagonalTilemap::Initialize()
 {
 	_tilemap = new HexagonalTile * *[1];
@@ -483,6 +375,24 @@ void HexagonalTilemap::OnDestroy()
 	}
 
 	delete[] _tilemap;
+}
+
+YAML::Node HexagonalTilemap::Serialize() const
+{
+	YAML::Node node = Component::Serialize();
+	node["type"] = "HexagonalTilemap";
+	node["leftBottomPosition"] = _leftBottomPosition;
+	node["rightTopPosition"] = _rightTopPosition;
+	return node;
+}
+
+bool HexagonalTilemap::Deserialize(const YAML::Node& node) {
+	if (!node["leftBottomPosition"] || !node["rightTopPosition"] ||
+		!Component::Deserialize(node)) return false;
+
+	Resize(node["leftBottomPosition"].as<glm::ivec2>(), node["rightTopPosition"].as<glm::ivec2>());
+
+	return true;
 }
 
 #if _DEBUG

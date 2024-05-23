@@ -36,7 +36,7 @@ namespace Twin2Engine::Manager {
 		static void UnloadAll();
 
 		static YAML::Node Serialize();
-
+		
 #if _DEBUG
 		static void DrawEditor(bool* p_open);
 #endif

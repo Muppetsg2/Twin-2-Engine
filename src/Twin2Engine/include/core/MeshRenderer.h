@@ -1,7 +1,5 @@
 #pragma once
 
-// TODO: FIX MESH RENDERER
-
 #include <core/RenderableComponent.h>
 #include <core/Transform.h>
 
@@ -60,7 +58,7 @@ namespace Twin2Engine::Core
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
-
+		
 #if _DEBUG
 		virtual void DrawEditor() override;
 #endif

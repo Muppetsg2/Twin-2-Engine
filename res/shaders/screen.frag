@@ -134,6 +134,21 @@ vec3 applyDepthOfField(vec3 currentOutput) {
     return distance * blurred + (1.0 - distance) * currentOutput;
 }
 
+float minDistance = 0.1;
+float maxDistance = 1.0;
+
+vec3 applyDepthOfField2(vec3 color) {
+
+    vec3 focusColor = color;
+    vec3 outOfFocusColor = applyBlur();
+
+    float dist = getDepthValue(TexCoord).r;
+
+    float blur = smoothstep(minDistance, maxDistance, dist);
+
+    return mix(focusColor, outOfFocusColor, blur);
+}
+
 void main() {
 
     vec3 res = getColor(TexCoord);
@@ -156,7 +171,8 @@ void main() {
 
     if (enableDepthOfField)
     {
-        res = applyDepthOfField(res);
+        //res = applyDepthOfField(res);
+        res = applyDepthOfField2(res);
     }
 
     Color = vec4(pow(res, vec3(1.0/gamma)), 1.0);

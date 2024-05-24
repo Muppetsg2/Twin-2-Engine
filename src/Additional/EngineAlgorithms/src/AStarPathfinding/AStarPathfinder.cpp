@@ -16,6 +16,7 @@ unordered_map<AStarPathfindingNode*, vector<AStarPathfinder::AStarTargetNodeInfo
 unordered_map<size_t, thread*> AStarPathfinder::_pathfindingThreads;
 
 float AStarPathfinder::_maxMappingDistance = 0.0f;
+bool AStarPathfinder::_needsRemapping = true;
 
 void AStarPathfinder::Register(AStarPathfindingNode* node)
 {
@@ -36,6 +37,8 @@ void AStarPathfinder::Register(AStarPathfindingNode* node)
 		if (canBeRegistered)
 		{
 			_registeredNodes.push_back(node);
+
+			_needsRemapping = true;
 
 			// TODO: Dodaæ deynamiczne mapowanie dodawanego node'a
 		}
@@ -71,6 +74,8 @@ void AStarPathfinder::Unregister(AStarPathfindingNode* node)
 
 					_nodesGraph.erase(node);
 				}
+
+				_needsRemapping = true;
 				break;
 			}
 		}
@@ -254,6 +259,11 @@ bool AStarPathfinder::FindPath(const glm::vec3& beginPosition,
 {
 	if (_pathfindingThreads.size() == numeric_limits<size_t>().max()) 
 		return false;
+
+	if (_needsRemapping)
+	{
+		RemapNodes();
+	}
 
 	static size_t pathFindingThreadsIds = 0;
 	size_t threadId = pathFindingThreadsIds++;

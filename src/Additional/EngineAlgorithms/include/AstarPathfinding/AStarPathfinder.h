@@ -41,10 +41,11 @@ namespace AStar
 
 		static float _maxMappingDistance;
 
+		static bool _needsRemapping;
+
 		static void Register(AStarPathfindingNode* node);
 		static void Unregister(AStarPathfindingNode* node);
 
-		static void RemapNodes();
 
 		static AStarPathfindingNode* FindClosestNode(glm::vec3 position);
 
@@ -52,6 +53,8 @@ namespace AStar
 		static void FindingPath(size_t threadId, glm::vec3 beginPosition, glm::vec3 endPosition, unsigned int maxPathNodesNumber,
 			Twin2Engine::Tools::Action<const AStarPath&> success, Twin2Engine::Tools::Action<> failure);
 	public:
+		static void RemapNodes();
+
 		static bool FindPath(const glm::vec3& beginPosition, const glm::vec3& endPosition, unsigned int maxPathNodesNumber,
 								Twin2Engine::Tools::Action<const AStarPath&> success, Twin2Engine::Tools::Action<> failure);
 

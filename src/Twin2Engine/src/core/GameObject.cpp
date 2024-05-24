@@ -66,6 +66,8 @@ GameObject::GameObject()
 
 GameObject::~GameObject()
 {
+	OnDestroyedEvent(this);
+
 	for (Component* component : components)
 	{
 		component->OnDestroy();

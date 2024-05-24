@@ -10,7 +10,7 @@
 
 void Twin2Engine::Core::Transform::SetDirtyFlagInChildren()
 {
-	if (!_dirtyFlags.dirtyFlagInHierarchy)
+	//if (!_dirtyFlags.dirtyFlagInHierarchy)
 	{
 		const size_t size = _children.size();
 		for (size_t index = 0ull; index < size; ++index)
@@ -21,17 +21,22 @@ void Twin2Engine::Core::Transform::SetDirtyFlagInChildren()
 
 			_children[index]->SetDirtyFlagInChildren();
 
-			_children[index]->_dirtyFlags.dirtyFlagInHierarchy = true;
-			_children[index]->_dirtyFlags.dirtyFlagGlobalPosition = true;
-			_children[index]->_dirtyFlags.dirtyFlagGlobalRotation = true;
-			_children[index]->_dirtyFlags.dirtyFlagGlobalScale = true;
+			//_children[index]->_dirtyFlags.dirtyFlagInHierarchy = true;
+			//_children[index]->_dirtyFlags.dirtyFlagGlobalPosition = true;
+			//_children[index]->_dirtyFlags.dirtyFlagGlobalRotation = true;
+			//_children[index]->_dirtyFlags.dirtyFlagGlobalScale = true;
 		}
 	}
+
+	_dirtyFlags.dirtyFlagInHierarchy = true;
+	_dirtyFlags.dirtyFlagGlobalPosition = true;
+	_dirtyFlags.dirtyFlagGlobalRotation = true;
+	_dirtyFlags.dirtyFlagGlobalScale = true;
 }
 
 void Twin2Engine::Core::Transform::SetDirtyFlagGlobalPositionInChildren()
 {
-	if (!_dirtyFlags.dirtyFlagGlobalPosition)
+	//if (!_dirtyFlags.dirtyFlagGlobalPosition)
 	{
 		const size_t size = _children.size();
 		for (size_t index = 0ull; index < size; ++index)
@@ -40,15 +45,18 @@ void Twin2Engine::Core::Transform::SetDirtyFlagGlobalPositionInChildren()
 
 			_children[index]->SetDirtyFlagGlobalPositionInChildren();
 
-			_children[index]->_dirtyFlags.dirtyFlagGlobalPosition = true;
+			//_children[index]->_dirtyFlags.dirtyFlagGlobalPosition = true;
 			_children[index]->_dirtyFlags.dirtyFlagInHierarchy = true;
 		}
 	}
+
+	_dirtyFlags.dirtyFlagGlobalPosition = true;
+	//_dirtyFlags.dirtyFlagInHierarchy = true;
 }
 
 void Twin2Engine::Core::Transform::SetDirtyFlagGlobalRotationInChildren()
 {
-	if (!_dirtyFlags.dirtyFlagGlobalRotation)
+	//if (!_dirtyFlags.dirtyFlagGlobalRotation)
 	{
 		const size_t size = _children.size();
 		for (size_t index = 0ull; index < size; ++index)
@@ -57,15 +65,18 @@ void Twin2Engine::Core::Transform::SetDirtyFlagGlobalRotationInChildren()
 
 			_children[index]->SetDirtyFlagGlobalRotationInChildren();
 
-			_children[index]->_dirtyFlags.dirtyFlagGlobalRotation = true;
+			//_children[index]->_dirtyFlags.dirtyFlagGlobalRotation = true;
 			_children[index]->_dirtyFlags.dirtyFlagInHierarchy = true;
 		}
 	}
+
+	_dirtyFlags.dirtyFlagGlobalRotation = true;
+	//_dirtyFlags.dirtyFlagInHierarchy = true;
 }
 
 void Twin2Engine::Core::Transform::SetDirtyFlagGlobalScaleInChildren()
 {
-	if (!_dirtyFlags.dirtyFlagGlobalScale)
+	//if (!_dirtyFlags.dirtyFlagGlobalScale)
 	{
 		const size_t size = _children.size();
 		for (size_t index = 0ull; index < size; ++index)
@@ -74,10 +85,13 @@ void Twin2Engine::Core::Transform::SetDirtyFlagGlobalScaleInChildren()
 
 			_children[index]->SetDirtyFlagGlobalScaleInChildren();
 
-			_children[index]->_dirtyFlags.dirtyFlagGlobalScale = true;
+			//_children[index]->_dirtyFlags.dirtyFlagGlobalScale = true;
 			_children[index]->_dirtyFlags.dirtyFlagInHierarchy = true;
 		}
 	}
+
+	_dirtyFlags.dirtyFlagGlobalScale = true;
+	//_dirtyFlags.dirtyFlagInHierarchy = true;
 }
 
 inline bool Twin2Engine::Core::Transform::GetDirtyFlag() const
@@ -381,11 +395,11 @@ void Twin2Engine::Core::Transform::SetParent(Transform* parent)
 		SetDirtyFlagInChildren();
 
 		//_dirtyFlags.dirtyFlag = true;
-		_dirtyFlags.dirtyFlagGlobalPosition = true;
-		_dirtyFlags.dirtyFlagGlobalRotation = true;
-		_dirtyFlags.dirtyFlagGlobalScale = true;
+		//_dirtyFlags.dirtyFlagGlobalPosition = true;
+		//_dirtyFlags.dirtyFlagGlobalRotation = true;
+		//_dirtyFlags.dirtyFlagGlobalScale = true;
 
-		_dirtyFlags.dirtyFlagInHierarchy = true;
+		//_dirtyFlags.dirtyFlagInHierarchy = true;
 
 		CallParentChanged();
 		CallInHierarchyParentChanged();

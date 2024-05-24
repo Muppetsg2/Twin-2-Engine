@@ -75,7 +75,17 @@ inline glm::ivec2 HexagonalTile::GetPosition() const
 
 void Tilemap::HexagonalTile::SetGameObject(GameObject* gameObject)
 {
+	if (_gameObject)
+	{
+		_gameObject->OnDestroyedEvent -= _onGameoObjectDestroyedEventId;
+	}
 	_gameObject = gameObject;
+	if (_gameObject)
+	{
+		_onGameoObjectDestroyedEventId = _gameObject->OnDestroyedEvent += [&](GameObject* gameObject) {
+			_gameObject = nullptr;
+			};
+	}
 }
 GameObject* HexagonalTile::GetGameObject() const
 {

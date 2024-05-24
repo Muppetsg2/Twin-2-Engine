@@ -25,17 +25,19 @@ void HumanMovement::Update()
     globalPosition = GetTransform()->GetGlobalPosition();
 
     
-    //Tilemap::HexagonalTile* tile = _tilemap->GetTile(
-    //    _tilemap->ConvertToTilemapPosition(
-    //        vec2(globalPosition.x, globalPosition.z) + vec2(direction.x, direction.z) * _forwardDetectionDistance));
-    //
-    //if (tile && tile->GetGameObject())
-    //{
-    //    GameObject* tileGO = tile->GetGameObject();
-    //    Transform* tileT = tileGO->GetTransform();
-    //    tileT->GetGlobalPosition().y;
-    //    GetTransform()->SetGlobalPosition(vec3(globalPosition.x, tile->GetGameObject()->GetTransform()->GetGlobalPosition().y, globalPosition.z));
-    //}
+    Tilemap::HexagonalTile* tile = _tilemap->GetTile(
+        _tilemap->ConvertToTilemapPosition(
+            vec2(globalPosition.x, globalPosition.z) + vec2(direction.x, direction.z) * _forwardDetectionDistance));
+    
+    if (tile && tile->GetGameObject())
+    {
+        GameObject* tileGO = tile->GetGameObject();
+        Transform* tileT = tileGO->GetTransform();
+        globalPosition.y = tileT->GetGlobalPosition().y;
+        //GetTransform()->SetGlobalPosition(vec3(globalPosition.x, tile->GetGameObject()->GetTransform()->GetGlobalPosition().y, globalPosition.z));
+        GetTransform()->SetGlobalPosition(globalPosition);
+    }
+
     //RaycastHit forawrdHit; // = Physics.RaycastAll(transform.position + new Vector3(0, 1, 0) + direction * _forwardDetectionDistance, Vector3.down, 5f);
     //RaycastHit currentHit; // = Physics.RaycastAll(transform.position + new Vector3(0, 1, 0), Vector3.down, 5f);
     //

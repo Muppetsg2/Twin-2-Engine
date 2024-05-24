@@ -349,7 +349,7 @@ glm::ivec2 HexagonalTilemap::GetPositionInDirection(const glm::ivec2& position, 
 
 void HexagonalTilemap::RemoveTile(const glm::ivec2& position)
 {
-
+	Twin2Engine::Manager::SceneManager::DestroyGameObject(_tilemap[position.x][position.y]->_gameObject);
 }
 
 void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::Prefab* prefab)
@@ -469,7 +469,8 @@ glm::vec2 HexagonalTilemap::ConvertToRealPosition(const glm::ivec2& position) co
 
 glm::ivec2 HexagonalTilemap::ConvertToTilemapPosition(const glm::vec2& position) const
 {
-	return glm::ivec2(position.x / (_edgeLength * 1.5f), glm::floor((position.y / _distanceBetweenTiles)));
+	int x = glm::round(position.x / (_edgeLength * 1.5f));
+	return glm::ivec2(x, glm::round((position.y / _distanceBetweenTiles - 0.5f * (x % 2))));
 	//return glm::ivec2(glm::floor(0.25f * position.x / _edgeLength), 2.0f * position.y / _distanceBetweenTiles);
 }
 

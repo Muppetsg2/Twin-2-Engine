@@ -18,6 +18,8 @@ YAML::Node AStarPathfindingNode::Serialize() const
 	YAML::Node node = Component::Serialize();
 
 	node["passable"] = passable;
+
+	return node;
 }
 
 bool AStarPathfindingNode::Deserialize(const YAML::Node& node)

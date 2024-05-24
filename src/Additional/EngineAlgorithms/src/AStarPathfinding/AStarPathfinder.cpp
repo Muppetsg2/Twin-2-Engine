@@ -116,6 +116,8 @@ AStarPathfindingNode* AStarPathfinder::FindClosestNode(vec3 position)
 		if (distance < minDistance)
 			closestNode = _registeredNodes[index];
 	}
+
+	return closestNode;
 }
 
 struct AStarNode
@@ -268,6 +270,8 @@ YAML::Node AStarPathfinder::Serialize() const
 	YAML::Node node = Component::Serialize();
 
 	node["maxMappingDistance"] = _maxMappingDistance;
+
+	return node;
 }
 
 bool AStarPathfinder::Deserialize(const YAML::Node& node)

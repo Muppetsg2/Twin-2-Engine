@@ -148,6 +148,7 @@ bool PlaneGenerator::Deserialize(const YAML::Node& node)
     return true;
 }
 
+#if _DEBUG
 void PlaneGenerator::DrawEditor() 
 {
     std::string id = std::string(std::to_string(this->GetId()));
@@ -180,6 +181,7 @@ void PlaneGenerator::DrawEditor()
         // TODO: Dodac opcje zmiany Material
     }
 }
+#endif
 
 unsigned int PlaneGenerator::GetRowsCount()
 {

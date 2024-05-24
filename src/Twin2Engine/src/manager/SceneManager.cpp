@@ -33,9 +33,11 @@ vector<size_t> SceneManager::_scriptableObjectsIds;
 
 map<size_t, Scene*> SceneManager::_loadedScenes;
 
+#if _DEBUG
 ImGuiID SceneManager::selected = 0;
 bool SceneManager::inspectorOpened = true;
 const std::string SceneManager::payloadType = "SceneHierarchyObject";
+#endif
 
 void SceneManager::SaveGameObject(const GameObject* obj, YAML::Node gameObjects)
 {
@@ -47,6 +49,7 @@ void SceneManager::SaveGameObject(const GameObject* obj, YAML::Node gameObjects)
 	}
 }
 
+#if _DEBUG
 void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 {
 	size_t clicked_elem = 0;
@@ -144,6 +147,7 @@ void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 		inspectorOpened = true;
 	}
 }
+#endif
 
 GameObject* SceneManager::FindObjectBy(GameObject* obj, const Func<bool, const GameObject*>& predicate)
 {
@@ -1083,6 +1087,7 @@ void SceneManager::UnloadAll()
 	_loadedScenes.clear();
 }
 
+#if _DEBUG
 void SceneManager::DrawCurrentSceneEditor()
 {
 	if (!ImGui::Begin(SceneManager::GetCurrentSceneName().c_str(), NULL, ImGuiWindowFlags_MenuBar)) {
@@ -1127,3 +1132,4 @@ void SceneManager::DrawCurrentSceneEditor()
 
 	ImGui::End();
 }
+#endif

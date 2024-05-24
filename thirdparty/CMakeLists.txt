@@ -30,9 +30,7 @@ target_include_directories(stb_image PRIVATE ${STB_IMAGE_DIR})
 ##target_include_directories(tinygltf PRIVATE ${TINY_GTLF_DIR} ${stb_image_SOURCE_DIR})
 #target_include_directories(tinygltf PRIVATE ${TINY_GTLF_DIR})
 
-get_property(is_miniaudio GLOBAL PROPERTY IS_MINI_AUDIO)
-
-if(is_miniaudio)
+if(IS_MINI_AUDIO)
     # miniaudio
     set(MINIAUDIO_DIR ${CMAKE_CURRENT_LIST_DIR}/miniaudio)
     set(miniaudio_SOURCE_DIR ${MINIAUDIO_DIR}/include CACHE INTERNAL "")
@@ -88,8 +86,7 @@ if (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
 
     set_target_properties(imgui PROPERTIES FOLDER "thirdparty")
 
-    get_property(find_memory_leaks GLOBAL PROPERTY FIND_MEMORY_LEAKS)
-    if(find_memory_leaks)
+    if(FIND_MEMORY_LEAKS)
         set(TRACEY_LEAK_DIR ${CMAKE_CURRENT_LIST_DIR}/tracey_leak)
         set(tracey_leak_SOURCE_DIR ${TRACEY_LEAK_DIR}/include CACHE INTERNAL "")
         file(GLOB_RECURSE tracey_leak_SOURCE_FILES 
@@ -104,8 +101,7 @@ if (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     endif()
 endif()
 
-get_property(tracy_profiler GLOBAL PROPERTY TRACY_PROFILER)
-if(tracy_profiler)
+if(TRACY_PROFILER)
     CPMAddPackage("gh:wolfpld/tracy@0.10")
     set_target_properties(TracyClient PROPERTIES FOLDER "thirdparty")
 endif()

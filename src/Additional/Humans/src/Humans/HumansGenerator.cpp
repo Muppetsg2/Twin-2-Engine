@@ -27,10 +27,15 @@ void HumansGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
 {
     CitiesManager::MapCitiesConnections(false);
     vector<GameObject*> cities = CitiesManager::GetAllCities();
+
+    GameObject* humanContainer = SceneManager::CreateGameObject();
+    humanContainer->SetName("HumansContainer");
+
     for (unsigned int i = 0; i < number; ++i)
     {
         GameObject* city = cities[Random::Range(0ull, cities.size() - 1ull)];
-        GameObject* human = SceneManager::CreateGameObject(prefabHuman, nullptr);
+        GameObject* human = SceneManager::CreateGameObject(prefabHuman, humanContainer->GetTransform());
         human->GetTransform()->SetGlobalPosition(city->GetTransform()->GetGlobalPosition());
+        human->GetComponent<HumanMovement>()->SetTilemap(tilemap);
     }
 }

@@ -13,8 +13,10 @@ using namespace std;
 hash<string> PrefabManager::_hasher;
 map<size_t, Prefab*> PrefabManager::_prefabs;
 
+#if _DEBUG
 bool PrefabManager::_fileDialogOpen = false;
 ImFileDialogInfo PrefabManager::_fileDialogInfo;
+#endif
 
 map<size_t, string> PrefabManager::_prefabsPaths;
 
@@ -201,6 +203,7 @@ YAML::Node PrefabManager::Serialize()
 	return prefabs;
 }
 
+#if _DEBUG
 void PrefabManager::DrawEditor(bool* p_open)
 {
 	if (!ImGui::Begin("Prefab Manager", p_open)) {
@@ -256,3 +259,4 @@ void PrefabManager::DrawEditor(bool* p_open)
 
 	ImGui::End();
 }
+#endif

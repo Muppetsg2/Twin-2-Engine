@@ -70,6 +70,7 @@ void LakeGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
         for (MapRegion* region : waterRegions)
         {
             region->GetTransform()->SetParent(nullptr);
+            //tilemap->RemoveTile();
             SceneManager::DestroyGameObject(region->GetGameObject());
         }
     }

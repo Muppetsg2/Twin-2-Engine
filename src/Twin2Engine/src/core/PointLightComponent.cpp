@@ -94,6 +94,7 @@ bool PointLightComponent::Deserialize(const YAML::Node& node)
 	return true;
 }
 
+#if _DEBUG
 void PointLightComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -126,3 +127,4 @@ void PointLightComponent::DrawEditor()
 		}
 	}
 }
+#endif

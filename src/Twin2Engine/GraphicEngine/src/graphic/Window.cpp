@@ -428,17 +428,24 @@ void Window::Use() const
 	glfwMakeContextCurrent(_window);
 }
 
-const char* const tracy_WindowSwapBuffersName = "SwapBuffersWindow";
-
 void Window::Update() const
 {
+#if TRACY_PROFILER
+	static const char* const tracy_WindowSwapBuffersName = "SwapBuffersWindow";
+
 	ZoneScoped;
+#endif
 	Use();
+#if TRACY_PROFILER
 	FrameMarkStart(tracy_WindowSwapBuffersName);
+#endif
 	glfwSwapBuffers(_window);
+#if TRACY_PROFILER
 	FrameMarkEnd(tracy_WindowSwapBuffersName);
+#endif
 }
 
+#if _DEBUG
 void Window::DrawEditor() 
 {
 	const unsigned int WINDOW_WIDTH = this->GetWindowSize().x;
@@ -547,3 +554,4 @@ void Window::DrawEditor()
 		}
 	}
 }
+#endif

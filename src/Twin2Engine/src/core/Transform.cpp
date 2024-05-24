@@ -1,6 +1,8 @@
 #include <core/Transform.h>
 #include <tools/YamlConverters.h>
 
+#include <core/GameObject.h>
+
 //Nie moze byc nullptr gdyz niektore warunki w set parent moga sie posypac
 //Twin2Engine::Core::Transform* Twin2Engine::Core::Transform::originTransform = new Transform();
 
@@ -8,67 +10,88 @@
 
 void Twin2Engine::Core::Transform::SetDirtyFlagInChildren()
 {
-	if (!_dirtyFlags.dirtyFlagInHierarchy)
+	//if (!_dirtyFlags.dirtyFlagInHierarchy)
 	{
-		for (int index = 0; index < _children.size(); index++)
+		const size_t size = _children.size();
+		for (size_t index = 0ull; index < size; ++index)
 		{
-			_children[index]->_dirtyFlags.dirtyFlagInHierarchy = true;
-			_children[index]->_dirtyFlags.dirtyFlagGlobalPosition = true;
-			_children[index]->_dirtyFlags.dirtyFlagGlobalRotation = true;
-			_children[index]->_dirtyFlags.dirtyFlagGlobalScale = true;
+			_children[index]->CallPositionChanged();
+			_children[index]->CallRotationChanged();
+			_children[index]->CallScaleChanged();
 
 			_children[index]->SetDirtyFlagInChildren();
+
+			//_children[index]->_dirtyFlags.dirtyFlagInHierarchy = true;
+			//_children[index]->_dirtyFlags.dirtyFlagGlobalPosition = true;
+			//_children[index]->_dirtyFlags.dirtyFlagGlobalRotation = true;
+			//_children[index]->_dirtyFlags.dirtyFlagGlobalScale = true;
 		}
 	}
+
+	_dirtyFlags.dirtyFlagInHierarchy = true;
+	_dirtyFlags.dirtyFlagGlobalPosition = true;
+	_dirtyFlags.dirtyFlagGlobalRotation = true;
+	_dirtyFlags.dirtyFlagGlobalScale = true;
 }
 
 void Twin2Engine::Core::Transform::SetDirtyFlagGlobalPositionInChildren()
 {
-	if (!_dirtyFlags.dirtyFlagGlobalPosition)
+	//if (!_dirtyFlags.dirtyFlagGlobalPosition)
 	{
-		for (int index = 0; index < _children.size(); index++)
+		const size_t size = _children.size();
+		for (size_t index = 0ull; index < size; ++index)
 		{
-			_children[index]->_dirtyFlags.dirtyFlagGlobalPosition = true;
-			_children[index]->_dirtyFlags.dirtyFlagInHierarchy = true;
-
 			_children[index]->CallPositionChanged();
 
 			_children[index]->SetDirtyFlagGlobalPositionInChildren();
+
+			//_children[index]->_dirtyFlags.dirtyFlagGlobalPosition = true;
+			_children[index]->_dirtyFlags.dirtyFlagInHierarchy = true;
 		}
 	}
+
+	_dirtyFlags.dirtyFlagGlobalPosition = true;
+	//_dirtyFlags.dirtyFlagInHierarchy = true;
 }
 
 void Twin2Engine::Core::Transform::SetDirtyFlagGlobalRotationInChildren()
 {
-	if (!_dirtyFlags.dirtyFlagGlobalRotation)
+	//if (!_dirtyFlags.dirtyFlagGlobalRotation)
 	{
-
-		for (int index = 0; index < _children.size(); index++)
+		const size_t size = _children.size();
+		for (size_t index = 0ull; index < size; ++index)
 		{
-			_children[index]->_dirtyFlags.dirtyFlagGlobalRotation = true;
-			_children[index]->_dirtyFlags.dirtyFlagInHierarchy = true;
-
 			_children[index]->CallRotationChanged();
 
 			_children[index]->SetDirtyFlagGlobalRotationInChildren();
+
+			//_children[index]->_dirtyFlags.dirtyFlagGlobalRotation = true;
+			_children[index]->_dirtyFlags.dirtyFlagInHierarchy = true;
 		}
 	}
+
+	_dirtyFlags.dirtyFlagGlobalRotation = true;
+	//_dirtyFlags.dirtyFlagInHierarchy = true;
 }
 
 void Twin2Engine::Core::Transform::SetDirtyFlagGlobalScaleInChildren()
 {
-	if (!_dirtyFlags.dirtyFlagGlobalScale)
+	//if (!_dirtyFlags.dirtyFlagGlobalScale)
 	{
-		for (int index = 0; index < _children.size(); index++)
+		const size_t size = _children.size();
+		for (size_t index = 0ull; index < size; ++index)
 		{
-			_children[index]->_dirtyFlags.dirtyFlagGlobalScale = true;
-			_children[index]->_dirtyFlags.dirtyFlagInHierarchy = true;
-
 			_children[index]->CallScaleChanged();
 
 			_children[index]->SetDirtyFlagGlobalScaleInChildren();
+
+			//_children[index]->_dirtyFlags.dirtyFlagGlobalScale = true;
+			_children[index]->_dirtyFlags.dirtyFlagInHierarchy = true;
 		}
 	}
+
+	_dirtyFlags.dirtyFlagGlobalScale = true;
+	//_dirtyFlags.dirtyFlagInHierarchy = true;
 }
 
 inline bool Twin2Engine::Core::Transform::GetDirtyFlag() const
@@ -248,15 +271,15 @@ void Twin2Engine::Core::Transform::Translate(const glm::vec3& translation)
 
 	_localPosition += translation;
 
+	// Setting dirty flags
+	SetDirtyFlagGlobalPositionInChildren();
+
 	_dirtyFlags.dirtyFlag = true;
 	_dirtyFlags.dirtyFlagGlobalPosition = true;
 	_dirtyFlags.dirtyFlagLocalPosition = false;
 
 	// Calling Events
 	CallPositionChanged();
-
-	// Setting dirty flags
-	SetDirtyFlagGlobalPositionInChildren();
 }
 
 void Twin2Engine::Core::Transform::Rotate(const glm::vec3& rotation)
@@ -266,15 +289,15 @@ void Twin2Engine::Core::Transform::Rotate(const glm::vec3& rotation)
 	_localRotation += glm::radians(rotation);
 	_localRotationQuat = glm::quat(_localRotation);
 
+	// Setting dirty flags
+	SetDirtyFlagGlobalRotationInChildren();
+
 	_dirtyFlags.dirtyFlag = true;
 	_dirtyFlags.dirtyFlagGlobalRotation = true;
 	_dirtyFlags.dirtyFlagLocalRotation = false;
 
 	// Calling Events
 	CallRotationChanged();
-
-	// Setting dirty flags
-	SetDirtyFlagGlobalRotationInChildren();
 }
 
 void Twin2Engine::Core::Transform::Rotate(const glm::quat& rotation)
@@ -284,15 +307,15 @@ void Twin2Engine::Core::Transform::Rotate(const glm::quat& rotation)
 	_localRotationQuat *= rotation;
 	_localRotation = glm::eulerAngles(_localRotationQuat);
 
+	// Setting dirty flags
+	SetDirtyFlagGlobalRotationInChildren();
+
 	_dirtyFlags.dirtyFlag = true;
 	_dirtyFlags.dirtyFlagGlobalRotation = true;
 	_dirtyFlags.dirtyFlagLocalRotation = false;
 
 	// Calling Events
 	CallRotationChanged();
-
-	// Setting dirty flags
-	SetDirtyFlagGlobalRotationInChildren();
 }
 
 void Twin2Engine::Core::Transform::Scale(const glm::vec3& scaling)
@@ -300,6 +323,9 @@ void Twin2Engine::Core::Transform::Scale(const glm::vec3& scaling)
 	RecalculateLocalScale();
 
 	_localScale *= scaling;
+
+	// Setting dirty flags
+	SetDirtyFlagGlobalScaleInChildren();
 
 	_dirtyFlags.dirtyFlag = true;
 	_dirtyFlags.dirtyFlagGlobalScale = true;
@@ -315,9 +341,6 @@ void Twin2Engine::Core::Transform::Scale(const glm::vec3& scaling)
 
 	// Calling Events
 	CallScaleChanged();
-
-	// Setting dirty flags
-	SetDirtyFlagGlobalScaleInChildren();
 }
 
 #pragma endregion
@@ -369,17 +392,17 @@ void Twin2Engine::Core::Transform::SetParent(Transform* parent)
 		}
 		_parent = parent;
 
-		//_dirtyFlags.dirtyFlag = true;
-		_dirtyFlags.dirtyFlagGlobalPosition = true;
-		_dirtyFlags.dirtyFlagGlobalRotation = true;
-		_dirtyFlags.dirtyFlagGlobalScale = true;
+		SetDirtyFlagInChildren();
 
-		_dirtyFlags.dirtyFlagInHierarchy = true;
+		//_dirtyFlags.dirtyFlag = true;
+		//_dirtyFlags.dirtyFlagGlobalPosition = true;
+		//_dirtyFlags.dirtyFlagGlobalRotation = true;
+		//_dirtyFlags.dirtyFlagGlobalScale = true;
+
+		//_dirtyFlags.dirtyFlagInHierarchy = true;
 
 		CallParentChanged();
 		CallInHierarchyParentChanged();
-
-		SetDirtyFlagInChildren();
 	}
 }
 
@@ -434,15 +457,15 @@ void Twin2Engine::Core::Transform::SetLocalPosition(const glm::vec3& localPositi
 {
 	_localPosition = localPosition;
 
+	// Setting dirty flags
+	SetDirtyFlagGlobalPositionInChildren();
+
 	_dirtyFlags.dirtyFlag = true;
 	_dirtyFlags.dirtyFlagGlobalPosition = true;
 	_dirtyFlags.dirtyFlagLocalPosition = false;
 
 	// Calling Events
 	CallPositionChanged();
-
-	// Setting dirty flags
-	SetDirtyFlagGlobalPositionInChildren();
 }
 
 
@@ -477,17 +500,17 @@ void Twin2Engine::Core::Transform::SetGlobalPosition(const glm::vec3& globalPosi
 {
 	_globalPosition = globalPosition;
 
+	// Setting dirty flags
+	SetDirtyFlagGlobalPositionInChildren();
+
 	_dirtyFlags.dirtyFlag = true;
 	_dirtyFlags.dirtyFlagLocalPosition = true;
 	_dirtyFlags.dirtyFlagGlobalPosition = false;
 
+	RecalculateLocalPosition();
+	
 	// Calling Events
 	CallPositionChanged();
-
-	RecalculateLocalPosition();
-
-	// Setting dirty flags
-	SetDirtyFlagGlobalPositionInChildren();
 }
 
 glm::vec3 Twin2Engine::Core::Transform::GetGlobalPosition()
@@ -519,15 +542,15 @@ void Twin2Engine::Core::Transform::SetLocalRotation(const glm::vec3& localRotati
 	_localRotation = glm::radians(localRotation);
 	_localRotationQuat = glm::quat(_localRotation);
 
+	// Setting dirty flags
+	SetDirtyFlagGlobalRotationInChildren();
+
 	_dirtyFlags.dirtyFlag = true;
 	_dirtyFlags.dirtyFlagGlobalRotation = true;
 	_dirtyFlags.dirtyFlagLocalRotation = false;
 
 	// Calling Events
 	CallRotationChanged();
-
-	// Setting dirty flags
-	SetDirtyFlagGlobalRotationInChildren();
 }
 
 // IN EULAR ANGLES
@@ -543,15 +566,15 @@ void Twin2Engine::Core::Transform::SetLocalRotation(const glm::quat& localRotati
 	_localRotationQuat = localRotation;
 	_localRotation = glm::eulerAngles(localRotation);
 
+	// Setting dirty flags
+	SetDirtyFlagGlobalRotationInChildren();
+
 	_dirtyFlags.dirtyFlag = true;
 	_dirtyFlags.dirtyFlagGlobalRotation = true;
 	_dirtyFlags.dirtyFlagLocalRotation = false;
 
 	// Calling Events
 	CallRotationChanged();
-
-	// Setting dirty flags
-	SetDirtyFlagGlobalRotationInChildren();
 }
 glm::quat Twin2Engine::Core::Transform::GetLocalRotationQuat()
 {
@@ -595,18 +618,17 @@ void Twin2Engine::Core::Transform::SetGlobalRotation(const glm::vec3& globalRota
 	_globalRotation = glm::radians(globalRotation);
 	_globalRotationQuat = glm::quat(_globalRotation);
 
+	// Setting dirty flags
+	SetDirtyFlagGlobalRotationInChildren();
 
 	_dirtyFlags.dirtyFlag = true;
 	_dirtyFlags.dirtyFlagLocalRotation = true;
 	_dirtyFlags.dirtyFlagGlobalRotation = false;
 
-	// Calling Events
-	CallRotationChanged();
-
 	RecalculateLocalRotation();
 
-	// Setting dirty flags
-	SetDirtyFlagGlobalRotationInChildren();
+	// Calling Events
+	CallRotationChanged();
 }
 
 // IN EULAR ANGLES
@@ -670,15 +692,15 @@ void Twin2Engine::Core::Transform::SetLocalScale(const glm::vec3& localScale)
 {
 	_localScale = localScale;
 
+	// Setting dirty flags
+	SetDirtyFlagGlobalScaleInChildren();
+
 	_dirtyFlags.dirtyFlag = true;
 	_dirtyFlags.dirtyFlagGlobalScale = true;
 	_dirtyFlags.dirtyFlagLocalScale = false;
 
 	// Calling Events
 	CallScaleChanged();
-
-	// Setting dirty flags
-	SetDirtyFlagGlobalScaleInChildren();
 }
 
 glm::vec3 Twin2Engine::Core::Transform::GetLocalScale()
@@ -712,17 +734,17 @@ void Twin2Engine::Core::Transform::SetGlobalScale(const glm::vec3& globalScale)
 {
 	_globalScale = globalScale;
 
+	// Setting dirty flags
+	SetDirtyFlagGlobalScaleInChildren();
+
 	_dirtyFlags.dirtyFlag = true;
 	_dirtyFlags.dirtyFlagLocalScale = true;
 	_dirtyFlags.dirtyFlagGlobalScale = false;
 
-	// Calling Events
-	CallScaleChanged();
-
 	RecalculateLocalScale();
 
-	// Setting dirty flags
-	SetDirtyFlagGlobalScaleInChildren();
+	// Calling Events
+	CallScaleChanged();
 }
 
 glm::vec3 Twin2Engine::Core::Transform::GetGlobalScale()
@@ -878,6 +900,7 @@ bool Twin2Engine::Core::Transform::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
+#if _DEBUG
 void Twin2Engine::Core::Transform::DrawEditor()
 {
 	std::string id = std::string(std::to_string(this->GetId()));
@@ -885,21 +908,32 @@ void Twin2Engine::Core::Transform::DrawEditor()
 	static bool world = false;
 
 	if (ImGui::CollapsingHeader(name.c_str())) {
+
+		if (_parent->GetGameObject()->Id())
+		{
+			ImGui::Text("Parent: %d", _parent->GetGameObject()->Id());
+		}
+
 		if (ImGui::RadioButton(std::string("Local##").append(id).c_str(), world == false))
 			world = false;
 		ImGui::SameLine();
 		if (ImGui::RadioButton(std::string("World##").append(id).c_str(), world == true))
 			world = true;
 
-		glm::vec3 pos = world ? _globalPosition : _localPosition;
-		glm::vec3 rot = world ? glm::degrees(_globalRotation) : glm::degrees(_localRotation);
-		glm::vec3 sc = world ? _globalScale : _localScale;
+		//glm::vec3 pos = world ? _globalPosition : _localPosition;
+		//glm::vec3 rot = world ? glm::degrees(_globalRotation) : glm::degrees(_localRotation);
+		//glm::vec3 sc = world ? _globalScale : _localScale;
 
-		ImGui::DragFloat3(std::string("Position##").append(id).c_str(), glm::value_ptr(pos));
-		ImGui::DragFloat3(std::string("Rotation##").append(id).c_str(), glm::value_ptr(rot));
-		ImGui::DragFloat3(std::string("Scale##").append(id).c_str(), glm::value_ptr(sc));
+		glm::vec3 pos = world ? GetGlobalPosition() : GetLocalPosition();
+		glm::vec3 rot = world ? GetGlobalRotation() : GetLocalRotation();
+		glm::vec3 sc = world ? GetGlobalScale() : GetLocalScale();
 
-		if ((world ? _globalPosition : _localPosition) != pos) {
+		//ImGui::DragFloat3(std::string("Position##").append(id).c_str(), glm::value_ptr(pos));
+		//ImGui::DragFloat3(std::string("Rotation##").append(id).c_str(), glm::value_ptr(rot));
+		//ImGui::DragFloat3(std::string("Scale##").append(id).c_str(), glm::value_ptr(sc));
+
+		//if ((world ? _globalPosition : _localPosition) != pos) {
+		if (ImGui::DragFloat3(std::string("Position##").append(id).c_str(), glm::value_ptr(pos))) {
 			if (world) {
 				SetGlobalPosition(pos);
 			}
@@ -908,7 +942,8 @@ void Twin2Engine::Core::Transform::DrawEditor()
 			}
 		}
 
-		if ((world ? glm::degrees(_globalRotation) : glm::degrees(_localRotation)) != rot) {
+		//if ((world ? glm::degrees(_globalRotation) : glm::degrees(_localRotation)) != rot) {
+		if (ImGui::DragFloat3(std::string("Rotation##").append(id).c_str(), glm::value_ptr(rot))) {
 			if (world) {
 				SetGlobalRotation(rot);
 			}
@@ -917,7 +952,8 @@ void Twin2Engine::Core::Transform::DrawEditor()
 			}
 		}
 
-		if ((world ? _globalScale : _localScale) != sc) {
+		//if ((world ? _globalScale : _localScale) != sc) {
+		if (ImGui::DragFloat3(std::string("Scale##").append(id).c_str(), glm::value_ptr(sc))) {
 			if (world) {
 				SetGlobalScale(sc);
 			}
@@ -927,3 +963,4 @@ void Twin2Engine::Core::Transform::DrawEditor()
 		}
 	}
 }
+#endif

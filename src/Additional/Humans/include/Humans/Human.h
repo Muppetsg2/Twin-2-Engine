@@ -19,7 +19,7 @@ namespace Humans
 
         HumanMovement* _movement;
 
-        Twin2Engine::Core::GameObject* targetCity = nullptr;
+        Twin2Engine::Core::GameObject* _targetCity = nullptr;
 
     public:
         // Start is called before the first frame update
@@ -31,6 +31,8 @@ namespace Humans
 
         virtual YAML::Node Serialize() const override;
         virtual bool Deserialize(const YAML::Node& node) override;
+#if _DEBUG
         virtual void DrawEditor() override;
+#endif
 	};
 }

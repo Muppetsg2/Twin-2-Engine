@@ -11,9 +11,11 @@ map<size_t, Texture2D*> TextureManager::_loadedTextures;
 map<size_t, string> TextureManager::_texturesPaths;
 map<size_t, pair<TextureFormat, TextureFileFormat>> TextureManager::_texturesFormats;
 
+#if _DEBUG
 // For ImGui
 bool TextureManager::_fileDialogOpen = false;
 ImFileDialogInfo TextureManager::_fileDialogInfo;
+#endif
 
 void TextureManager::UnloadTexture2D(size_t managerID)
 {
@@ -180,6 +182,7 @@ YAML::Node TextureManager::Serialize()
     return textures;
 }
 
+#if _DEBUG
 void TextureManager::DrawEditor(bool* p_open)
 {
     if (!ImGui::Begin("Texture Manager", p_open)) {
@@ -235,3 +238,4 @@ void TextureManager::DrawEditor(bool* p_open)
 
     ImGui::End();
 }
+#endif

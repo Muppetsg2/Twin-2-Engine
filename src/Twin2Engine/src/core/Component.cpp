@@ -35,12 +35,14 @@ Component::Component()
 	_enabled = true;
 }
 
+#if _DEBUG
 void Component::DrawInheritedFields()
 {
 	string id = string(std::to_string(this->GetId()));
 	bool e = IsEnable();
 	ImGui::Checkbox(string("Enable##").append(id).c_str(), &e);
 }
+#endif
 
 Component::~Component()
 {
@@ -85,12 +87,14 @@ bool Component::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
+#if _DEBUG
 void Component::DrawEditor() {
 	string name = string("Component##Component").append(std::to_string(this->GetId()));
 	if (ImGui::CollapsingHeader(name.c_str())) {
 		Component::DrawInheritedFields();
 	}
 }
+#endif
 
 void Component::SetEnable(bool enable)
 {

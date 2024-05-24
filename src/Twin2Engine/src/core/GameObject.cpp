@@ -66,6 +66,8 @@ GameObject::GameObject()
 
 GameObject::~GameObject()
 {
+	OnDestroyedEvent(this);
+
 	for (Component* component : components)
 	{
 		component->OnDestroy();
@@ -308,6 +310,7 @@ bool GameObject::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
+#if _DEBUG
 void GameObject::DrawEditor()
 {
 	string id = std::to_string(_id);
@@ -329,6 +332,8 @@ void GameObject::DrawEditor()
 		Manager::SceneManager::DestroyGameObject(this);
 		return;
 	}
+
+	ImGui::Text("Id: %d", _id);
 
 	bool v = _isStatic;
 	ImGui::Checkbox(string("Static##GO").append(id).c_str(), &v);
@@ -357,6 +362,7 @@ void GameObject::DrawEditor()
 
 	// TODO: Add Component Button Deserializator
 }
+#endif
 
 void GameObject::AddComponent(Component* comp)
 {

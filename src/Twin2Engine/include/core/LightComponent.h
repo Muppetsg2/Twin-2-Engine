@@ -1,8 +1,5 @@
 #pragma once
-
-#include <graphic/LightingController.h>
 #include <core/Component.h>
-#include <tools/EventHandler.h>
 
 namespace Twin2Engine {
 	namespace Core {
@@ -15,6 +12,10 @@ namespace Twin2Engine {
 					return node;
 				}
 
+				virtual bool Deserialize(const YAML::Node& node) override {
+					return Component::Deserialize(node);
+				}
+
 #if _DEBUG
 				virtual void DrawEditor() override {
 					std::string id = std::string(std::to_string(this->GetId()));
@@ -25,10 +26,6 @@ namespace Twin2Engine {
 					}
 				}
 #endif
-
-				virtual bool Deserialize(const YAML::Node& node) override {
-					return Component::Deserialize(node);
-				}
 		};
 	}
 }

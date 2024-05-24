@@ -97,7 +97,7 @@ bool CapsuleColliderComponent::Deserialize(const YAML::Node& node)
 }
 
 #if _DEBUG
-void Twin2Engine::Core::CapsuleColliderComponent::DrawEditor()
+void CapsuleColliderComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Capsule Collider##Component").append(id);

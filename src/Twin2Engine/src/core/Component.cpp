@@ -50,25 +50,15 @@ Component::~Component()
 	_gameObject = nullptr;
 }
 
-void Component::Initialize()
-{
-}
+void Component::Initialize() {}
 
-void Component::Update()
-{
-}
+void Component::Update() {}
 
-void Component::OnEnable()
-{
-}
+void Component::OnEnable() {}
 
-void Component::OnDisable()
-{
-}
+void Component::OnDisable() {}
 
-void Component::OnDestroy()
-{
-}
+void Component::OnDestroy() {}
 
 YAML::Node Component::Serialize() const
 {

@@ -44,8 +44,8 @@ namespace Twin2Engine::Tools {
 		size_t _currentOffset = 0;
 		size_t _maxAligement = 0;
 
-		std::map<size_t, size_t> _offsets;
-		std::map<size_t, std::string> _names;
+		std::unordered_map<size_t, size_t> _offsets;
+		std::unordered_map<size_t, std::string> _names;
 
 		static std::hash<std::string> _hasher;
 

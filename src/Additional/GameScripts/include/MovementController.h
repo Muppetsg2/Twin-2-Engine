@@ -135,7 +135,6 @@ namespace GameScripts {
 			}
 #endif
 
-
             void CheckDragInput()
             {
                 if (Input::IsMouseButtonDown(Input::GetMainWindow(), MOUSE_BUTTON::MIDDLE))
@@ -196,6 +195,14 @@ namespace GameScripts {
                 if (Input::IsKeyReleased(DownKey))
                 {
                     WsadDir.y -= 1.0f;
+                }
+
+                if (Input::IsKeyUp(RightKey) && Input::IsKeyUp(LeftKey)) {
+                    WsadDir.x = 0.0f;
+                }
+
+                if (Input::IsKeyUp(UpKey) && Input::IsKeyUp(DownKey)) {
+                    WsadDir.y = 0.0f;
                 }
             }
 

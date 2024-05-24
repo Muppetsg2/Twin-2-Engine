@@ -7,12 +7,14 @@
 #include <core/MathExtensions.h>
 #include <core/Time.h>
 
+#if TRACY_PROFILER
 const char* const tracy_RenderDepthBuffer = "RenderDepthBuffer";
 const char* const tracy_RenderSSAOTexture = "RenderSSAOTexture";
 const char* const tracy_BlurSSAOTexture = "BlurSSAOTexture";
 const char* const tracy_UpdateRenderingQueues = "UpdateRenderingQueues";
 const char* const tracy_RenderScreenTexture = "RenderScreenTexture";
 const char* const tracy_OnScreenFramebuffer = "OnScreenFramebuffer";
+#endif
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Tools;
@@ -24,14 +26,14 @@ size_t TransformChangeEventId = 0;
 
 std::vector<CameraComponent*> CameraComponent::Cameras = std::vector<CameraComponent*>();
 GLuint CameraComponent::_uboCameraData = 0;
-STD140Offsets CameraComponent::_uboCameraDataOffsets{
+STD140Struct CameraComponent::_uboCameraDataStruct{
 	STD140Variable<mat4>("projection"),
 	STD140Variable<mat4>("view"),
 	STD140Variable<vec3>("viewPos"),
 	STD140Variable<bool>("isSSAO")
 };
 GLuint CameraComponent::_uboWindowData = 0;
-STD140Offsets CameraComponent::_uboWindowDataOffsets{
+STD140Struct CameraComponent::_uboWindowDataStruct{
 		STD140Variable<ivec2>("windowSize"),
 		STD140Variable<float>("nearPlane"),
 		STD140Variable<float>("farPlane"),
@@ -53,14 +55,6 @@ GLuint CameraComponent::_ssaoNoiseTexture = NULL;
 void CameraComponent::OnTransformChange(Transform* trans)
 {
 	UpdateFrontDir();
-	/*
-	if (this->_isMain) {
-		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-	}
-	*/
 }
 
 void CameraComponent::OnWindowSizeChange()
@@ -273,15 +267,6 @@ Frustum CameraComponent::GetFrustum() const
 
 	vec3 pos = GetTransform()->GetGlobalPosition();
 
-	//frustum.nearFace = { pos + _near * _front, _front };
-	//frustum.farFace = { pos + frontMultFar, -_front };
-	//frustum.rightFace = { pos, glm::normalize(cross(frontMultFar - _right * halfHSide, _up)) };
-	//frustum.leftFace = { pos, glm::normalize(cross(_up, frontMultFar + _right * halfHSide)) };
-	//frustum.topFace = { pos, glm::normalize(cross(_right, frontMultFar - _up * halfVSide)) };
-	//frustum.bottomFace = { pos, glm::normalize(cross(frontMultFar + _up * halfVSide, _right)) };
-
-
-
 	frustum.nearFace = { pos + _near * _front, _front };
 	frustum.farFace = { pos + frontMultFar, -_front };
 	frustum.rightFace = { pos, glm::normalize(cross(_up, frontMultFar + _right * halfHSide)) };
@@ -336,14 +321,6 @@ void CameraComponent::SetCameraFilter(uint8_t filters)
 void CameraComponent::SetCameraType(CameraType value)
 {
 	_type = value;
-
-	/*
-	if (this->IsMain()) {
-		glBindBuffer(GL_UNIFORM_BUFFER, _uboMatrices);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-	}
-	*/
 }
 
 void CameraComponent::SetSamples(uint8_t i)
@@ -520,31 +497,26 @@ void CameraComponent::Render()
 	// DEFAULT
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
 
-	STD140Struct tempStruct = STD140Struct(_uboCameraDataOffsets);
-	tempStruct.Set("projection", this->GetProjectionMatrix());
-	tempStruct.Set("view", this->GetViewMatrix());
-	tempStruct.Set("viewPos", this->GetTransform()->GetGlobalPosition());
-	tempStruct.Set("isSSAO", _isSsao);
+	_uboCameraDataStruct.Set("projection", this->GetProjectionMatrix());
+	_uboCameraDataStruct.Set("view", this->GetViewMatrix());
+	_uboCameraDataStruct.Set("viewPos", this->GetTransform()->GetGlobalPosition());
+	_uboCameraDataStruct.Set("isSSAO", _isSsao);
 
 	//Jesli wiecej kamer i kazda ma ze swojego kata dawac obraz
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
-	tempStruct.Clear();
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, _uboCameraDataStruct.GetSize(), _uboCameraDataStruct.GetData().data());
 
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
 
-	tempStruct = STD140Struct(_uboWindowDataOffsets);
-	tempStruct.Set("windowSize", wSize);
-	tempStruct.Set("nearPlane", this->_near);
-	tempStruct.Set("farPlane", this->_far);
-	tempStruct.Set("gamma", this->_gamma);
-	tempStruct.Set("time", Time::GetTime());
-	tempStruct.Set("deltaTime", Time::GetDeltaTime());
+	_uboWindowDataStruct.Set("windowSize", wSize);
+	_uboWindowDataStruct.Set("nearPlane", this->_near);
+	_uboWindowDataStruct.Set("farPlane", this->_far);
+	_uboWindowDataStruct.Set("gamma", this->_gamma);
+	_uboWindowDataStruct.Set("time", Time::GetTime());
+	_uboWindowDataStruct.Set("deltaTime", Time::GetDeltaTime());
 
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
-	
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
-	tempStruct.Clear();
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, _uboWindowDataStruct.GetSize(), _uboWindowDataStruct.GetData().data());
+
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	if (wSize.y != 0) {
@@ -552,7 +524,9 @@ void CameraComponent::Render()
 #if TRACY_PROFILER
 		FrameMarkStart(tracy_UpdateRenderingQueues);
 #endif
+
 		GraphicEngine::UpdateBeforeRendering();
+
 #if TRACY_PROFILER
 		FrameMarkEnd(tracy_UpdateRenderingQueues);
 #endif
@@ -567,8 +541,10 @@ void CameraComponent::Render()
 #if TRACY_PROFILER
 			FrameMarkStart(tracy_RenderDepthBuffer);
 #endif
+
 			_depthShader->Use();
 			GraphicEngine::PreRender();
+
 #if TRACY_PROFILER
 			FrameMarkEnd(tracy_RenderDepthBuffer);
 #endif
@@ -590,6 +566,7 @@ void CameraComponent::Render()
 #if TRACY_PROFILER
 				FrameMarkStart(tracy_RenderSSAOTexture);
 #endif
+
 				_ssaoShader->Use();
 				BindDepthTexture(0);
 				_ssaoShader->SetInt("depthTexture", 0);
@@ -602,11 +579,13 @@ void CameraComponent::Render()
 				_screenPlane.GetMesh(0)->Draw(1);
 
 				glBindTexture(GL_TEXTURE_2D, 0);
+				
 #if TRACY_PROFILER
 				FrameMarkEnd(tracy_RenderSSAOTexture);
 
 				FrameMarkStart(tracy_BlurSSAOTexture);
 #endif
+
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _ssaoBlurredMap, 0);
 				glClearColor(1.f, 1.f, 1.f, 1.f);
 				glViewport(0, 0, wSize.x, wSize.y);
@@ -618,6 +597,7 @@ void CameraComponent::Render()
 				_ssaoBlurredShader->SetInt("ssaoTexture", 0);
 
 				_screenPlane.GetMesh(0)->Draw(1);
+				
 #if TRACY_PROFILER
 				FrameMarkEnd(tracy_BlurSSAOTexture);
 #endif
@@ -643,6 +623,7 @@ void CameraComponent::Render()
 #if TRACY_PROFILER
 			FrameMarkStart(tracy_RenderScreenTexture);
 #endif
+
 			BindSSAOTexture(31);
 			BindDepthTexture(26);
 
@@ -661,9 +642,11 @@ void CameraComponent::Render()
 
 	// RENDERING
 	if (this->IsMain()) {
+
 #if TRACY_PROFILER
 		FrameMarkStart(tracy_OnScreenFramebuffer);
 #endif
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glViewport(0, 0, wSize.x, wSize.y);
 		glDisable(GL_DEPTH_TEST);
@@ -681,16 +664,20 @@ void CameraComponent::Render()
 		_screenShader->SetBool("hasNegative", (_filters & (uint8_t)CameraRenderFilter::NEGATIVE) != 0);
 		_screenShader->SetBool("hasGrayscale", (_filters & (uint8_t)CameraRenderFilter::GRAYSCALE) != 0);
 		_screenShader->SetBool("hasOutline", (_filters & (uint8_t)CameraRenderFilter::OUTLINE) != 0);
+		_screenShader->SetBool("hasDepthOfField", (_filters & (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0);
 
 		_screenShader->SetBool("displayDepth", _mode == CameraDisplayMode::DEPTH);
 		_screenShader->SetBool("displaySSAO", _mode == CameraDisplayMode::SSAO_MAP);
 
-		_screenShader->SetBool("enableDepthOfField", (_filters& (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0);
+		_screenShader->SetFloat("quadraticDepthOfField", _quadraticDepthOfField);
+		_screenShader->SetFloat("linearDepthOfField", _linearDepthOfField);
+		_screenShader->SetFloat("constantDepthOfField", _constantDepthOfField);
 
 		_screenPlane.GetMesh(0)->Draw(1);
 
 		GraphicEngine::RenderGUI();
 		glBindTexture(GL_TEXTURE_2D, 0);
+		
 #if TRACY_PROFILER
 		FrameMarkEnd(tracy_OnScreenFramebuffer);
 #endif
@@ -743,15 +730,12 @@ void CameraComponent::Initialize()
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0, _uboCameraData);
 
-		STD140Struct tempStruct = STD140Struct(_uboCameraDataOffsets);
-		tempStruct.Set("projection", this->GetProjectionMatrix());
-		tempStruct.Set("view", this->GetViewMatrix());
-		tempStruct.Set("viewPos", this->GetTransform()->GetGlobalPosition());
-		tempStruct.Set("isSSAO", _isSsao);
+		_uboCameraDataStruct.Set("projection", this->GetProjectionMatrix());
+		_uboCameraDataStruct.Set("view", this->GetViewMatrix());
+		_uboCameraDataStruct.Set("viewPos", this->GetTransform()->GetGlobalPosition());
+		_uboCameraDataStruct.Set("isSSAO", _isSsao);
 
-		glBufferData(GL_UNIFORM_BUFFER, tempStruct.GetSize(), tempStruct.GetData().data(), GL_STATIC_DRAW);
-
-		tempStruct.Clear();
+		glBufferData(GL_UNIFORM_BUFFER, _uboCameraDataStruct.GetSize(), _uboCameraDataStruct.GetData().data(), GL_STATIC_DRAW);
 
 		// UBO WINDOW DATA
 		glGenBuffers(1, &_uboWindowData);
@@ -759,17 +743,15 @@ void CameraComponent::Initialize()
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
 		glBindBufferBase(GL_UNIFORM_BUFFER, 1, _uboWindowData);
 
-		tempStruct = STD140Struct(_uboWindowDataOffsets);
-		tempStruct.Set("windowSize", Window::GetInstance()->GetContentSize());
-		tempStruct.Set("nearPlane", this->_near);
-		tempStruct.Set("farPlane", this->_far);
-		tempStruct.Set("gamma", this->_gamma);
-		tempStruct.Set("time", Time::GetTime());
-		tempStruct.Set("deltaTime", Time::GetDeltaTime());
+		_uboWindowDataStruct.Set("windowSize", Window::GetInstance()->GetContentSize());
+		_uboWindowDataStruct.Set("nearPlane", this->_near);
+		_uboWindowDataStruct.Set("farPlane", this->_far);
+		_uboWindowDataStruct.Set("gamma", this->_gamma);
+		_uboWindowDataStruct.Set("time", Time::GetTime());
+		_uboWindowDataStruct.Set("deltaTime", Time::GetDeltaTime());
 
-		glBufferData(GL_UNIFORM_BUFFER, tempStruct.GetSize(), tempStruct.GetData().data(), GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, _uboWindowDataStruct.GetSize(), _uboWindowDataStruct.GetData().data(), GL_STATIC_DRAW);
 
-		tempStruct.Clear();
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		_screenPlane = ModelsManager::GetPlane();
@@ -1173,6 +1155,36 @@ void CameraComponent::DrawEditor()
 		}
 
 		this->SetCameraFilter(acFil);
+
+		if ((acFil & (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0) {
+
+			bool c = this->_depthOfField2;
+			ImGui::Checkbox(string("Depth Of Field 2##").append(id).c_str(), &c);
+			if (c != this->_depthOfField2) {
+				this->_depthOfField2 = c;
+			}
+
+			if (this->_depthOfField2) {
+				float quadratic = this->_quadraticDepthOfField;
+				if (ImGui::InputFloat(string("Quadratic Depth Of Field##").append(id).c_str(), &quadratic)) {
+					if (this->_quadraticDepthOfField != quadratic) {
+						this->_quadraticDepthOfField = quadratic;
+					}
+				}
+				float linear = this->_linearDepthOfField;
+				if (ImGui::InputFloat(string("Linear Depth Of Field##").append(id).c_str(), &linear)) {
+					if (this->_linearDepthOfField != linear) {
+						this->_linearDepthOfField = linear;
+					}
+				}
+				float constant = this->_constantDepthOfField;
+				if (ImGui::InputFloat(string("Constant Depth Of Field##").append(id).c_str(), &constant)) {
+					if (this->_constantDepthOfField != constant) {
+						this->_constantDepthOfField = constant;
+					}
+				}
+			}
+		}
 
 		int s = (int)this->_samples;
 		ImGui::InputInt(string("MSAA Samples##").append(id).c_str(), &s);

@@ -2,6 +2,9 @@
 
 #include <Tilemap/HexagonalTilemap.h>
 #include <GameManager.h>
+#include <Playable.h>
+
+class GameManager;
 
 namespace Generation
 {
@@ -9,13 +12,6 @@ namespace Generation
 	class MapSector;
 	class MapHexTile : public Twin2Engine::Core::Component
 	{
-		/*CloneFunctionStart(MapHexTile, Twin2Engine::Core::Component)
-			//CloneField(tilemap)
-			//CloneField(region)
-			//CloneField(sector)
-			//CloneField(tile)
-			CloneField(type)
-		CloneFunctionEnd()*/
 	protected:
 		CloneBaseFunc(MapHexTile, Twin2Engine::Core::Component,
 			type
@@ -31,9 +27,10 @@ namespace Generation
 		Tilemap::HexagonalTile* tile = nullptr;
 		HexTileType type = HexTileType::None;
 
-
+		bool IsFighting = false;
 		Playable* takenEntity = nullptr;
 		float percentage = 0.0f;
+		float currCooldown = 0.0f;
 
 		//inline void SetTilemap(Tilemap::HexagonalTilemap* tilemap);
 		//inline Tilemap::HexagonalTilemap* GetTilemap() const;
@@ -47,6 +44,7 @@ namespace Generation
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
+		
 #if _DEBUG
 		virtual void DrawEditor() override;
 #endif

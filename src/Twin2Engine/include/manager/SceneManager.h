@@ -35,7 +35,10 @@ namespace Twin2Engine::Manager {
 #endif
 
 		static void SaveGameObject(const Core::GameObject* obj, YAML::Node gameObjects);
+
+#if _DEBUG
 		static void DrawGameObjectEditor(const Core::GameObject* obj);
+#endif
 
 		static Core::GameObject* FindObjectBy(Core::GameObject* obj, const Tools::Func<bool, const Core::GameObject*>& predicate);
 		
@@ -119,6 +122,8 @@ namespace Twin2Engine::Manager {
 		static void UnloadScene(const std::string& name);
 		static void UnloadAll();
 
+#if _DEBUG
 		static void DrawCurrentSceneEditor();
+#endif
 	};
 }

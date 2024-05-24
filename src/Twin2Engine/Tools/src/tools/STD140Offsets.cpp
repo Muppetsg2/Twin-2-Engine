@@ -40,18 +40,23 @@ bool STD140Offsets::_CheckVariable(const std::string& name) const
 	FrameMarkStart(tracy_CheckVariable);
 	FrameMarkStart(tracy_CheckVariableContains);
 #endif
+
 	bool c = move(Contains(name));
+
 #if TRACY_PROFILER
 	FrameMarkEnd(tracy_CheckVariableContains);
 	FrameMarkStart(tracy_CheckVariableErrorCheck);
 #endif
+
 	if (c) {
 		SPDLOG_ERROR("Variable '{0}' already added to structure", name);
 	}
+
 #if TRACY_PROFILER
 	FrameMarkEnd(tracy_CheckVariableErrorCheck);
 	FrameMarkEnd(tracy_CheckVariable);
 #endif
+
 	return c;
 }
 
@@ -252,7 +257,7 @@ size_t STD140Offsets::Get(const string& name) const
 	FrameMarkStart(tracy_Get);
 #endif
 	size_t value = 0;
-	map<size_t, size_t>::const_iterator map_iterator = _offsets.find(move(_hasher(name)));
+	unordered_map<size_t, size_t>::const_iterator map_iterator = _offsets.find(move(_hasher(name)));
 	if (map_iterator != _offsets.end()) {
 		value = (*map_iterator).second;
 	}
@@ -278,7 +283,9 @@ vector<size_t> STD140Offsets::GetArray(const string& name) const
 #if TRACY_PROFILER
 	FrameMarkStart(tracy_GetArrayFindElemOffset);
 #endif
-	map<size_t, size_t>::const_iterator map_iterator = _offsets.find(move(_hasher(move(vformat(_arrayElemFormat, make_format_args(name, 0))))));
+
+	unordered_map<size_t, size_t>::const_iterator map_iterator = _offsets.find(move(_hasher(move(vformat(_arrayElemFormat, make_format_args(name, unmove(0)))))));
+
 #if TRACY_PROFILER
 	FrameMarkEnd(tracy_GetArrayFindElemOffset);
 #endif
@@ -293,10 +300,11 @@ vector<size_t> STD140Offsets::GetArray(const string& name) const
 #if TRACY_PROFILER
 		FrameMarkStart(tracy_GetArrayFindElemOffset);
 #endif
-		map_iterator = _offsets.find(move(_hasher(move(vformat(_arrayElemFormat, make_format_args(name, i++))))));
+
+		map_iterator = _offsets.find(move(_hasher(move(vformat(_arrayElemFormat, make_format_args(name, unmove(i++)))))));
+		
 #if TRACY_PROFILER
 		FrameMarkEnd(tracy_GetArrayFindElemOffset);
-
 		FrameMarkEnd(tracy_GetArrayGetElemOffset);
 #endif
 	}

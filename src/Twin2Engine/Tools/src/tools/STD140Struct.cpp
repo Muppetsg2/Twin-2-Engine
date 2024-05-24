@@ -119,7 +119,7 @@ void STD140Struct::_AddStruct(const string& name, const STD140Struct& value)
 	}
 
 	// SET VALUE DATA
-	_data.insert(_data.end(), value._data.begin(), value._data.end());
+	_data.insert(_data.begin() + valueOffset, value._data.begin(), value._data.end());
 
 	// CHECK DATA SIZE
 	if (_data.size() < _data.capacity()) {
@@ -156,7 +156,7 @@ void STD140Struct::_AddStructArray(const string& name, const STD140Offsets& stru
 		}
 
 		// SET VALUE DATA
-		_data.insert(_data.end(), values[i].begin(), values[i].end());
+		_data.insert(_data.begin() + valuesOffsets[i], values[i].begin(), values[i].end());
 	}
 
 	// CLEAR VALUES OFFSETS

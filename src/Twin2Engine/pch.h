@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#ifdef TRACY_PROFILER
+#if TRACY_PROFILER
 	#include <tracy/Tracy.hpp>
 	#include <tracy/TracyOpenGL.hpp>
 	#define TRACY_ENABLE

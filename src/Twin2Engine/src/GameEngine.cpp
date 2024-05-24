@@ -51,6 +51,11 @@ void GameEngine::Deserializers()
     ADD_COMPONENT("SpotLight", SpotLightComponent);
 
     ADD_COMPONENT("MovementController", MovementController);
+
+    ADD_COMPONENT("GameManager", GameManager);
+    ADD_COMPONENT("PlayerMovement", PlayerMovement);
+    ADD_COMPONENT("Player", Player);
+    ADD_COMPONENT("Enemy", Enemy);
 }
 
 void GameEngine::Update()
@@ -78,6 +83,7 @@ void GameEngine::Render()
     LateRender();
 }
 
+#if TRACY_PROFILER
 const char* const tracy_FrameName = "Frame";
 const char* const tracy_OnInputFrameName = "OnInput";
 const char* const tracy_UpdateFrameName = "Update";
@@ -87,6 +93,7 @@ const char* const tracy_SceneManagerUpdateName = "SceneManagerUpdate";
 const char* const tracy_TimeUpdateName = "TimeUpdate";
 const char* const tracy_InputUpdateName = "InputUpdate";
 const char* const tracy_WindowUpdateName = "WindowUpdate";
+#endif
 
 void GameEngine::EndFrame()
 {
@@ -99,22 +106,30 @@ void GameEngine::EndFrame()
     // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
     FrameMarkStart(tracy_SceneManagerUpdateName);
 #endif
+
     SceneManager::Update();
+
 #if TRACY_PROFILER
     FrameMarkEnd(tracy_SceneManagerUpdateName);
     FrameMarkStart(tracy_TimeUpdateName);
 #endif
+
     Time::Update();
+
 #if TRACY_PROFILER
     FrameMarkEnd(tracy_TimeUpdateName);
     FrameMarkStart(tracy_InputUpdateName);
 #endif
+
     Input::Update();
+
 #if TRACY_PROFILER
     FrameMarkEnd(tracy_InputUpdateName);
     FrameMarkStart(tracy_WindowUpdateName);
 #endif
+
     Window::GetInstance()->Update();
+
 #if TRACY_PROFILER
     FrameMarkEnd(tracy_WindowUpdateName);
     TracyGpuCollect;
@@ -127,6 +142,7 @@ void GameEngine::Loop()
     ZoneScoped;
     TracyGpuContext;
 #endif
+
     // Main loop
     while (!Window::GetInstance()->IsClosed())
     {
@@ -135,28 +151,36 @@ void GameEngine::Loop()
         // Process I/O operations here
         FrameMarkStart(tracy_OnInputFrameName);
 #endif
+
         OnInput();
+        
 #if TRACY_PROFILER
         FrameMarkEnd(tracy_OnInputFrameName);
 
         // Update game objects' state here
         FrameMarkStart(tracy_UpdateFrameName);
 #endif
+
         Update();
+
 #if TRACY_PROFILER
         FrameMarkEnd(tracy_UpdateFrameName);
 
         // OpenGL rendering code here
         FrameMarkStart(tracy_RenderFrameName);
 #endif
+
         Render();
+
 #if TRACY_PROFILER
         FrameMarkEnd(tracy_RenderFrameName);
 
         // End frame and swap buffers (double buffering)
         FrameMarkStart(tracy_EndFrameName);
 #endif
+
         EndFrame();
+
 #if TRACY_PROFILER
         FrameMarkEnd(tracy_EndFrameName);
 #endif

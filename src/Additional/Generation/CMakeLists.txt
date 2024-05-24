@@ -40,12 +40,13 @@ target_include_directories(${PROJECT_NAME}
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${GENERATION_PRECOMPILE_HEADER})
 
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Twin2Engine)
-target_link_libraries(${PROJECT_NAME} PUBLIC Tilemap)
-target_link_libraries(${PROJECT_NAME} PUBLIC glm::glm)
-target_link_libraries(${PROJECT_NAME} PUBLIC spdlog)
-target_link_libraries(${PROJECT_NAME} PUBLIC EngineAlgorithms)
-target_link_libraries(${PROJECT_NAME} PUBLIC yaml-cpp)
+target_link_libraries(${PROJECT_NAME} PRIVATE Twin2Engine)
+target_link_libraries(${PROJECT_NAME} PRIVATE Tilemap)
+target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
+target_link_libraries(${PROJECT_NAME} PRIVATE spdlog)
+target_link_libraries(${PROJECT_NAME} PRIVATE EngineAlgorithms)
+target_link_libraries(${PROJECT_NAME} PRIVATE yaml-cpp)
+target_link_libraries(${PROJECT_NAME} PRIVATE GameScripts)
 
 if (TRACY_PROFILER)
     target_link_libraries(${PROJECT_NAME} PUBLIC TracyClient)

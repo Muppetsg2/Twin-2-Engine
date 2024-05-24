@@ -3,9 +3,9 @@
 #include <glm/glm.hpp>
 #include <core/MeshRenderer.h>
 
-class PlaneGenerator : public Twin2Engine::Core::MeshRenderer {
-private:
+// TODO: Przeniesc z Water
 
+class PlaneGenerator : public Twin2Engine::Core::MeshRenderer {
 	string _modelName = "{}PLANE_GENERATED_{}{}";
 
 	unsigned int _rows = 2;
@@ -21,6 +21,7 @@ public:
 
 	virtual YAML::Node Serialize() const override;
 	virtual bool Deserialize(const YAML::Node& node) override;
+	
 #if _DEBUG
 	virtual void DrawEditor() override;
 #endif

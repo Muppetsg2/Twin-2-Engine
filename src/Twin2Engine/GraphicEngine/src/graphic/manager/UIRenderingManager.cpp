@@ -149,9 +149,11 @@ void UIRenderingManager::Render()
 #if TRACY_PROFILER
 		FrameMarkStart(tracy_RenderUIShader);
 #endif
+
 		_uiShader->Use();
 		_uiShader->SetInt("image", 0);
 		_uiShader->SetInt("maskImage", 1);
+
 #if TRACY_PROFILER
 		FrameMarkEnd(tracy_RenderUIShader);
 #endif
@@ -167,6 +169,7 @@ void UIRenderingManager::Render()
 #if TRACY_PROFILER
 			FrameMarkStart(tracy_RenderUICanvasUBOName);
 #endif
+
 			glBindBuffer(GL_UNIFORM_BUFFER, _canvasUBO);
 			if (canvasData != nullptr) {
 				CanvasStruct.Set("canvasRect.transform", canvasData->rectTransform.transform);
@@ -175,6 +178,7 @@ void UIRenderingManager::Render()
 			}
 			CanvasStruct.Set("canvasIsActive", canvasData != nullptr);
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, CanvasStruct.GetSize(), CanvasStruct.GetData().data());
+			
 #if TRACY_PROFILER
 			FrameMarkEnd(tracy_RenderUICanvasUBOName);
 #endif
@@ -195,6 +199,7 @@ void UIRenderingManager::Render()
 #if TRACY_PROFILER
 					FrameMarkStart(tracy_RenderUIMaskUBOName);
 #endif
+
 					glBindBuffer(GL_UNIFORM_BUFFER, _maskUBO);
 					if (maskData != nullptr) {
 						invMaskTransform = inverse(maskData->rectTransform.transform);
@@ -213,6 +218,7 @@ void UIRenderingManager::Render()
 					}
 					MaskStruct.Set("maskIsActive", maskData != nullptr);
 					glBufferSubData(GL_UNIFORM_BUFFER, 0, MaskStruct.GetSize(), MaskStruct.GetData().data());
+
 #if TRACY_PROFILER
 					FrameMarkEnd(tracy_RenderUIMaskUBOName);
 #endif
@@ -336,10 +342,12 @@ void UIRenderingManager::Render()
 #if TRACY_PROFILER
 		FrameMarkStart(tracy_RenderUIEnd);
 #endif
+
 		_renderQueue.clear();
 		glBindBuffer(GL_UNIFORM_BUFFER, NULL);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, NULL);
 		glBindVertexArray(NULL);
+		
 #if TRACY_PROFILER
 		FrameMarkEnd(tracy_RenderUIEnd);
 #endif

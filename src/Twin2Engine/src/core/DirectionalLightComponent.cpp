@@ -3,6 +3,7 @@
 #include <core/Transform.h>
 #include <core/CameraComponent.h>
 #include <tools/YamlConverters.h>
+#include <graphic/LightingController.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;

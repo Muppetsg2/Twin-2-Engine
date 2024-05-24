@@ -45,9 +45,9 @@ namespace Twin2Engine::Core {
 	class CameraComponent : public Component {
 	private:
 		static GLuint _uboCameraData;
-		static Tools::STD140Offsets _uboCameraDataOffsets;
+		static Tools::STD140Struct _uboCameraDataStruct;
 		static GLuint _uboWindowData;
-		static Tools::STD140Offsets _uboWindowDataOffsets;
+		static Tools::STD140Struct _uboWindowDataStruct;
 		static Graphic::InstantiatingModel _screenPlane;
 		static Graphic::Shader* _screenShader;
 		static Graphic::Shader* _ssaoShader;
@@ -94,6 +94,11 @@ namespace Twin2Engine::Core {
 		float _gamma = 2.2f;
 		float _ssaoSampleRadius = 0.7f;
 		float _ssaoBias = 0.01f;
+
+		bool _depthOfField2 = true;
+		float _quadraticDepthOfField = 100000.f;
+		float _linearDepthOfField = 10.f;
+		float _constantDepthOfField = 0.f;
 
 		vec3 _front = vec3(0.f, 0.f, -1.f);
 		vec3 _right = vec3(1.f, 0.f, 0.f);
@@ -164,6 +169,7 @@ namespace Twin2Engine::Core {
 		void OnDestroy() override;
 		YAML::Node Serialize() const override;
 		bool Deserialize(const YAML::Node& node) override;
+		
 #if _DEBUG
 		void DrawEditor() override;
 #endif

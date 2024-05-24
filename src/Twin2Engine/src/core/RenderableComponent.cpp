@@ -21,6 +21,16 @@ RenderableComponent::~RenderableComponent()
 	}
 }
 
+bool RenderableComponent::IsTransparent() const
+{
+	return _isTransparent;
+}
+
+void RenderableComponent::SetIsTransparent(bool value)
+{
+	_isTransparent = value;
+}
+
 void RenderableComponent::Render() {}
 
 YAML::Node RenderableComponent::Serialize() const
@@ -50,13 +60,3 @@ void RenderableComponent::DrawEditor()
 	}
 }
 #endif
-
-bool RenderableComponent::IsTransparent() const
-{
-	return _isTransparent;
-}
-
-void RenderableComponent::SetIsTransparent(bool value)
-{
-	_isTransparent = value;
-}

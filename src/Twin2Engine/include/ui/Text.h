@@ -43,6 +43,8 @@ namespace Twin2Engine::UI {
 		TextOverflow _overflow = TextOverflow::Overflow;
 		Manager::MaskData _textMask;
 
+		int32_t _layer = 0;
+
 		bool _textDirty = true;
 		std::vector<TextCharacter> _textCharCache;
 		std::vector<TextCharacter> _displayTextCharCache;
@@ -55,7 +57,9 @@ namespace Twin2Engine::UI {
 		void Render() override;
 		YAML::Node Serialize() const override;
 		bool Deserialize(const YAML::Node& node) override;
+#if _DEBUG
 		virtual void DrawEditor() override;
+#endif
 
 		void SetColor(const glm::vec4& color);
 		void SetText(const std::wstring& text);
@@ -68,6 +72,7 @@ namespace Twin2Engine::UI {
 		void SetTextAlignY(const TextAlignY& alignY);
 		void SetTextWrapping(bool textWrapping);
 		void SetTextOverflow(const TextOverflow& overflow);
+		void SetLayer(int32_t layer);
 		void EnableAutoSize(uint32_t minSize, uint32_t maxSize);
 		void DisableAutoSize();
 
@@ -82,6 +87,7 @@ namespace Twin2Engine::UI {
 		TextAlignY GetTextAlignY() const;
 		bool IsTextWrapping() const;
 		TextOverflow GetTextOverflow() const;
+		int32_t GetLayer() const;
 		float GetTextWidth() const;
 		float GetTextHeight() const;
 		bool IsAutoSize() const;

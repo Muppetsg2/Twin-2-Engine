@@ -46,6 +46,7 @@ void ColliderComponent::OnCollisionEnter(Collision* collision)
 	}*/
 }
 
+#if _DEBUG
 void ColliderComponent::DrawInheritedFields()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -241,6 +242,7 @@ void ColliderComponent::DrawInheritedFields()
 		ImGui::DragFloat(string("Bounding Volume Radius##").append(id).c_str(), &((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius, 0.1f);
 	}
 }
+#endif
 
 void ColliderComponent::SetTrigger(bool v)
 {
@@ -408,6 +410,7 @@ bool ColliderComponent::Deserialize(const YAML::Node& node)
 	return true;
 }
 
+#if _DEBUG
 void ColliderComponent::DrawEditor()
 {
 	string name = string("Collider##Component").append(std::to_string(this->GetId()));
@@ -416,3 +419,4 @@ void ColliderComponent::DrawEditor()
 		DrawInheritedFields();
 	}
 }
+#endif

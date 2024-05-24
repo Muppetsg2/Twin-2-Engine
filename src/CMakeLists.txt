@@ -7,7 +7,6 @@ add_executable(${PROJECT_NAME} main.cpp)
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)
 
-
 add_subdirectory(Additional)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${Twin2Engine_HEADER_DIR})
@@ -16,16 +15,16 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Twin2Engine)
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     add_subdirectory(Editor)
 
-    # For Tracey_Leak_Finder
-    get_property(find_memory_leaks GLOBAL PROPERTY FIND_MEMORY_LEAKS)
-
-    if (find_memory_leaks)
+    if (FIND_MEMORY_LEAKS)
         set(THREADS_PREFER_PTHREAD_FLAG ON)
         find_package(Threads REQUIRED)
         target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
 
         target_link_libraries(${PROJECT_NAME} PRIVATE tracey_leak)
     endif()
+    
+else()
+    target_compile_options(${PROJECT_NAME} PUBLIC "-O2")
 endif()
 
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog)

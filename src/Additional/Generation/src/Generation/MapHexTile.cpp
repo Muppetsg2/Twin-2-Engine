@@ -63,6 +63,7 @@ bool MapHexTile::Deserialize(const YAML::Node& node) {
     return true;
 }
 
+#if _DEBUG
 void MapHexTile::DrawEditor()
 {
     std::string id = std::string(std::to_string(this->GetId()));
@@ -75,3 +76,4 @@ void MapHexTile::DrawEditor()
         ImGui::PopFont();
     }
 }
+#endif

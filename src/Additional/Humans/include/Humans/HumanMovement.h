@@ -36,6 +36,8 @@ namespace Humans
 
         virtual YAML::Node Serialize() const override;
         virtual bool Deserialize(const YAML::Node& node) override;
+#if _DEBUG
         virtual void DrawEditor() override;
+#endif
     };
 }

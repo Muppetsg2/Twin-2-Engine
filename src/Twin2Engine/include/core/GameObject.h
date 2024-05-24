@@ -92,7 +92,9 @@ namespace Twin2Engine::Core
 
 		YAML::Node Serialize() const;
 		bool Deserialize(const YAML::Node& node);
+#if _DEBUG
 		void DrawEditor();
+#endif
 
 #pragma region COMPONENTS_MANAGEMENT
 

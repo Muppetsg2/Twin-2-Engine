@@ -900,6 +900,7 @@ bool Twin2Engine::Core::Transform::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
+#if _DEBUG
 void Twin2Engine::Core::Transform::DrawEditor()
 {
 	std::string id = std::string(std::to_string(this->GetId()));
@@ -962,3 +963,4 @@ void Twin2Engine::Core::Transform::DrawEditor()
 		}
 	}
 }
+#endif

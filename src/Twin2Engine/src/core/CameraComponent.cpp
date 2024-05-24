@@ -504,11 +504,13 @@ void CameraComponent::SetSSAO(bool value)
 
 void CameraComponent::Render()
 {
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
 	if (!IsEnable() || !GetGameObject()->GetActive()) {
 		return;
 	}
 
-	ZoneScoped;
 	if (_isFrustumCulling)
 		_currentCameraFrustum = GetFrustum();
 
@@ -516,6 +518,8 @@ void CameraComponent::Render()
 	ivec2 wSize = Window::GetInstance()->GetContentSize();
 
 	// DEFAULT
+	glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
+
 	STD140Struct tempStruct = STD140Struct(_uboCameraDataOffsets);
 	tempStruct.Set("projection", this->GetProjectionMatrix());
 	tempStruct.Set("view", this->GetViewMatrix());
@@ -523,14 +527,10 @@ void CameraComponent::Render()
 	tempStruct.Set("isSSAO", _isSsao);
 
 	//Jesli wiecej kamer i kazda ma ze swojego kata dawac obraz
-	glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
-	
-	/* Stare
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));
-	*/
+	tempStruct.Clear();
+
+	glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
 
 	tempStruct = STD140Struct(_uboWindowDataOffsets);
 	tempStruct.Set("windowSize", wSize);
@@ -543,18 +543,19 @@ void CameraComponent::Render()
 	glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
 	
-	/* Stare
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ivec2), value_ptr(wSize));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2), sizeof(float), &(this->_near));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float), sizeof(float), &(this->_far));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
-	*/
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
+	tempStruct.Clear();
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	if (wSize.y != 0) {
 		// UPDATING RENDERER
+#if TRACY_PROFILER
 		FrameMarkStart(tracy_UpdateRenderingQueues);
+#endif
 		GraphicEngine::UpdateBeforeRendering();
+#if TRACY_PROFILER
 		FrameMarkEnd(tracy_UpdateRenderingQueues);
+#endif
 
 		glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.f);
@@ -563,10 +564,14 @@ void CameraComponent::Render()
 		glEnable(GL_DEPTH_TEST);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+#if TRACY_PROFILER
 			FrameMarkStart(tracy_RenderDepthBuffer);
+#endif
 			_depthShader->Use();
 			GraphicEngine::PreRender();
+#if TRACY_PROFILER
 			FrameMarkEnd(tracy_RenderDepthBuffer);
+#endif
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -582,7 +587,9 @@ void CameraComponent::Render()
 			glDisable(GL_DEPTH_TEST);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+#if TRACY_PROFILER
 				FrameMarkStart(tracy_RenderSSAOTexture);
+#endif
 				_ssaoShader->Use();
 				BindDepthTexture(0);
 				_ssaoShader->SetInt("depthTexture", 0);
@@ -595,9 +602,11 @@ void CameraComponent::Render()
 				_screenPlane.GetMesh(0)->Draw(1);
 
 				glBindTexture(GL_TEXTURE_2D, 0);
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_RenderSSAOTexture);
 
 				FrameMarkStart(tracy_BlurSSAOTexture);
+#endif
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _ssaoBlurredMap, 0);
 				glClearColor(1.f, 1.f, 1.f, 1.f);
 				glViewport(0, 0, wSize.x, wSize.y);
@@ -609,7 +618,9 @@ void CameraComponent::Render()
 				_ssaoBlurredShader->SetInt("ssaoTexture", 0);
 
 				_screenPlane.GetMesh(0)->Draw(1);
+#if TRACY_PROFILER
 				FrameMarkEnd(tracy_BlurSSAOTexture);
+#endif
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
@@ -629,13 +640,17 @@ void CameraComponent::Render()
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
 
+#if TRACY_PROFILER
 			FrameMarkStart(tracy_RenderScreenTexture);
+#endif
 			BindSSAOTexture(31);
 			BindDepthTexture(26);
 
 			GraphicEngine::Render();
 
+#if TRACY_PROFILER
 			FrameMarkEnd(tracy_RenderScreenTexture);
+#endif
 
 			glBindFramebuffer(GL_READ_FRAMEBUFFER, _msRenderMapFBO);
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _renderMapFBO);
@@ -646,7 +661,9 @@ void CameraComponent::Render()
 
 	// RENDERING
 	if (this->IsMain()) {
+#if TRACY_PROFILER
 		FrameMarkStart(tracy_OnScreenFramebuffer);
+#endif
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glViewport(0, 0, wSize.x, wSize.y);
 		glDisable(GL_DEPTH_TEST);
@@ -674,7 +691,9 @@ void CameraComponent::Render()
 
 		GraphicEngine::RenderGUI();
 		glBindTexture(GL_TEXTURE_2D, 0);
+#if TRACY_PROFILER
 		FrameMarkEnd(tracy_OnScreenFramebuffer);
+#endif
 	}
 }
 
@@ -722,9 +741,6 @@ void CameraComponent::Initialize()
 		glGenBuffers(1, &_uboCameraData);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
-		glBufferData(GL_UNIFORM_BUFFER, _uboCameraDataOffsets.GetSize(), NULL, GL_STATIC_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0, _uboCameraData);
 
 		STD140Struct tempStruct = STD140Struct(_uboCameraDataOffsets);
@@ -733,22 +749,14 @@ void CameraComponent::Initialize()
 		tempStruct.Set("viewPos", this->GetTransform()->GetGlobalPosition());
 		tempStruct.Set("isSSAO", _isSsao);
 
-		glBindBuffer(GL_UNIFORM_BUFFER, _uboCameraData);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
-		/* Stare
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(this->GetProjectionMatrix()));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(this->GetViewMatrix()));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4) * 2, sizeof(vec3), value_ptr(this->GetTransform()->GetGlobalPosition()));
-		*/
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		glBufferData(GL_UNIFORM_BUFFER, tempStruct.GetSize(), tempStruct.GetData().data(), GL_STATIC_DRAW);
+
+		tempStruct.Clear();
 
 		// UBO WINDOW DATA
 		glGenBuffers(1, &_uboWindowData);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-		glBufferData(GL_UNIFORM_BUFFER, _uboWindowDataOffsets.GetSize(), NULL, GL_STATIC_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
 		glBindBufferBase(GL_UNIFORM_BUFFER, 1, _uboWindowData);
 
 		tempStruct = STD140Struct(_uboWindowDataOffsets);
@@ -759,14 +767,9 @@ void CameraComponent::Initialize()
 		tempStruct.Set("time", Time::GetTime());
 		tempStruct.Set("deltaTime", Time::GetDeltaTime());
 
-		glBindBuffer(GL_UNIFORM_BUFFER, _uboWindowData);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, tempStruct.GetSize(), tempStruct.GetData().data());
-		/* Stare
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ivec2), value_ptr(Window::GetInstance()->GetContentSize()));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2), sizeof(float), &(this->_near));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float), sizeof(float), &(this->_far));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(ivec2) + sizeof(float) * 2, sizeof(float), &(this->_gamma));
-		*/
+		glBufferData(GL_UNIFORM_BUFFER, tempStruct.GetSize(), tempStruct.GetData().data(), GL_STATIC_DRAW);
+
+		tempStruct.Clear();
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		_screenPlane = ModelsManager::GetPlane();
@@ -1029,6 +1032,7 @@ bool CameraComponent::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
+#if _DEBUG
 void CameraComponent::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -1190,3 +1194,4 @@ void CameraComponent::DrawEditor()
 		ImGui::Checkbox(string("Frustum Culling##").append(id).c_str(), &this->_isFrustumCulling);
 	}
 }
+#endif

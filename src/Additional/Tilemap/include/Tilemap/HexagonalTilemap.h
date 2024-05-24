@@ -64,7 +64,9 @@ namespace Tilemap
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
+#if _DEBUG
 		virtual void DrawEditor() override;
+#endif
 		virtual void Initialize() override;
 		virtual void OnDestroy() override;
 	};

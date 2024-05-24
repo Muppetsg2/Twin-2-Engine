@@ -29,6 +29,7 @@ void InputField::Initialize()
 		if (!_typing) return;
 		OnTextInput(character);
 	};
+	_isTransparent = true;
 }
 
 void InputField::Update()
@@ -150,7 +151,7 @@ void InputField::Render()
 		UIImageData cursorImage{};
 		// KALKULACJA POZYCJI KURSORA
 		cursorImage.canvas = nullptr; // Na ekranie na razie
-		cursorImage.layer = 1; // Nad tekstem
+		cursorImage.layer = _text->_layer + 1; // Nad tekstem
 		cursorImage.rectTransform.transform = _text->GetTransform()->GetTransformMatrix();
 		cursorImage.rectTransform.size = uvec2(0.f);
 		cursorImage.color = glm::vec4(.5f, .5f, .5f, .9f);
@@ -249,6 +250,7 @@ bool InputField::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
+#if _DEBUG
 void InputField::DrawEditor()
 {
 	// TODO: Zrobic
@@ -258,6 +260,7 @@ void InputField::DrawEditor()
 		Component::DrawInheritedFields();
 	}
 }
+#endif
 
 void InputField::SetPlaceHolderText(Text* placeHolder)
 {

@@ -216,6 +216,7 @@ GameObjects:
           w: 1
         width: 100
         height: 100
+        layer: 0
       - id: 6
         enabled: true
         type: Image
@@ -228,6 +229,7 @@ GameObjects:
           w: 1
         width: 100
         height: 100
+        layer: 1
     children:
       []
   - id: 3
@@ -262,6 +264,7 @@ GameObjects:
           w: 1
         width: 100
         height: 100
+        layer: 0
     children:
       []
   - id: 4
@@ -296,6 +299,7 @@ GameObjects:
           w: 1
         width: 769.506531
         height: 100
+        layer: 0
     children:
       []
   - id: 5
@@ -339,6 +343,7 @@ GameObjects:
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
+        layer: 0
     children:
       []
   - id: 6

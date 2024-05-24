@@ -21,7 +21,7 @@ void Image::Render()
 	UIImageData image{};
 	image.canvas = nullptr; // Na ten moment tylko na ekranie siê wyœwietla
 	image.mask = nullptr; // Na ten moment nie ma maski
-	image.layer = 0; // Domyœlny layer
+	image.layer = _layer;
 
 	image.rectTransform = UIRectData{
 		.transform = GetTransform()->GetTransformMatrix(),
@@ -42,22 +42,25 @@ YAML::Node Image::Serialize() const
 	node["color"] = _color;
 	node["width"] = _width;
 	node["height"] = _height;
+	node["layer"] = _layer;
 	return node;
 }
 
 bool Image::Deserialize(const YAML::Node& node)
 {
 	if (!node["sprite"] || !node["color"] || !node["width"] || !node["height"] ||
-		!RenderableComponent::Deserialize(node)) return false;
+		!node["layer"] || !RenderableComponent::Deserialize(node)) return false;
 
 	_spriteId = SceneManager::GetSprite(node["sprite"].as<size_t>());
 	_color = node["color"].as<glm::vec4>();
 	_width = node["width"].as<float>();
 	_height = node["height"].as<float>();
+	_layer = node["layer"].as<int32_t>();
 
 	return true;
 }
 
+#if _DEBUG
 void Image::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -122,8 +125,11 @@ void Image::DrawEditor()
 		}
 
 		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
+
+		// TODO: Zaktualizowaæ dodaæ layer
 	}
 }
+#endif
 
 void Image::SetSprite(const std::string& spriteAlias) {
 	_spriteId = hash<string>()(spriteAlias);
@@ -151,6 +157,11 @@ void Image::SetHeight(float height)
 	_height = height;
 }
 
+void Image::SetLayer(int32_t layer)
+{
+	_layer = layer;
+}
+
 Sprite* Image::GetSprite() const
 {
 	return SpriteManager::GetSprite(_spriteId);
@@ -169,4 +180,9 @@ float Image::GetWidth() const
 float Image::GetHeight() const
 {
 	return _height;
+}
+
+int32_t Image::GetLayer() const
+{
+	return _layer;
 }

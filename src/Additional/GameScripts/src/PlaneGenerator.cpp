@@ -154,7 +154,7 @@ void PlaneGenerator::DrawEditor()
     std::string id = std::string(std::to_string(this->GetId()));
     std::string name = std::string("Plane Generator##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str())) {
-        Component::DrawInheritedFields();
+        if (Component::DrawInheritedFields()) return;
         
         ImGui::Text("Model: ");
         ImGui::SameLine();

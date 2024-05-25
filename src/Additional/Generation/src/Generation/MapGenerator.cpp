@@ -320,15 +320,151 @@ void MapGenerator::DrawEditor()
     string name = string("Map Generator##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str()))
     {
-        Component::DrawInheritedFields();
+        if (Component::DrawInheritedFields()) return;
+        
+        // PREFABS
+        std::map<size_t, string> prefabNames = Twin2Engine::Manager::PrefabManager::GetAllPrefabsNames();
+        prefabNames.insert(std::pair(0, "None"));
 
-        // TODO: DODAC
-        /*
-        node["preafabHexagonalTile"] = PrefabManager::GetPrefabPath(preafabHexagonalTile);
-        node["additionalTile"] = PrefabManager::GetPrefabPath(additionalTile);
-        node["filledTile"] = PrefabManager::GetPrefabPath(filledTile);
-        node["pointTile"] = PrefabManager::GetPrefabPath(pointTile);
-        */
+        // Check prefabs
+        if (preafabHexagonalTile != nullptr) {
+            if (!prefabNames.contains(preafabHexagonalTile->GetId())) {
+                preafabHexagonalTile = nullptr;
+            }
+        }
+
+        if (additionalTile != nullptr) {
+            if (!prefabNames.contains(additionalTile->GetId())) {
+                additionalTile = nullptr;
+            }
+        }
+
+        if (filledTile != nullptr) {
+            if (!prefabNames.contains(filledTile->GetId())) {
+                filledTile = nullptr;
+            }
+        }
+
+        if (pointTile != nullptr) {
+            if (!prefabNames.contains(pointTile->GetId())) {
+                pointTile = nullptr;
+            }
+        }
+
+        // PrefabIds
+        size_t preafabHexagonalTileId = preafabHexagonalTile != nullptr ? preafabHexagonalTile->GetId() : 0;
+        size_t additionalTileId = additionalTile != nullptr ? additionalTile->GetId() : 0;
+        size_t filledTileId = filledTile != nullptr ? filledTile->GetId() : 0;
+        size_t pointTileId = pointTile != nullptr ? pointTile->GetId() : 0;
+
+        // ComboBoxes for prefabs
+        if (ImGui::BeginCombo(string("Preafab Hexagonal Tile##").append(id).c_str(), prefabNames[preafabHexagonalTileId].c_str())) {
+
+            bool clicked = false;
+            size_t choosed = preafabHexagonalTileId;
+            for (auto& item : prefabNames) {
+
+                if (ImGui::Selectable(item.second.append("##").append(id).c_str(), item.first == preafabHexagonalTileId)) {
+
+                    if (clicked) continue;
+
+                    choosed = item.first;
+                    clicked = true;
+                }
+            }
+
+            if (clicked) {
+                if (choosed != 0) {
+                    preafabHexagonalTile = Twin2Engine::Manager::PrefabManager::GetPrefab(choosed);
+                }
+                else {
+                    preafabHexagonalTile = nullptr;
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+
+        if (ImGui::BeginCombo(string("Additional Tile##").append(id).c_str(), prefabNames[additionalTileId].c_str())) {
+
+            bool clicked = false;
+            size_t choosed = additionalTileId;
+            for (auto& item : prefabNames) {
+
+                if (ImGui::Selectable(item.second.append("##").append(id).c_str(), item.first == additionalTileId)) {
+
+                    if (clicked) continue;
+
+                    choosed = item.first;
+                    clicked = true;
+                }
+            }
+
+            if (clicked) {
+                if (choosed != 0) {
+                    additionalTile = Twin2Engine::Manager::PrefabManager::GetPrefab(choosed);
+                }
+                else {
+                    additionalTile = nullptr;
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+
+        if (ImGui::BeginCombo(string("Filled Tile##").append(id).c_str(), prefabNames[filledTileId].c_str())) {
+
+            bool clicked = false;
+            size_t choosed = filledTileId;
+            for (auto& item : prefabNames) {
+
+                if (ImGui::Selectable(item.second.append("##").append(id).c_str(), item.first == filledTileId)) {
+
+                    if (clicked) continue;
+
+                    choosed = item.first;
+                    clicked = true;
+                }
+            }
+
+            if (clicked) {
+                if (choosed != 0) {
+                    filledTile = Twin2Engine::Manager::PrefabManager::GetPrefab(choosed);
+                }
+                else {
+                    filledTile = nullptr;
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+
+        if (ImGui::BeginCombo(string("pointTile##").append(id).c_str(), prefabNames[pointTileId].c_str())) {
+
+            bool clicked = false;
+            size_t choosed = pointTileId;
+            for (auto& item : prefabNames) {
+
+                if (ImGui::Selectable(item.second.append("##").append(id).c_str(), item.first == pointTileId)) {
+
+                    if (clicked) continue;
+
+                    choosed = item.first;
+                    clicked = true;
+                }
+            }
+
+            if (clicked) {
+                if (choosed != 0) {
+                    pointTile = Twin2Engine::Manager::PrefabManager::GetPrefab(choosed);
+                }
+                else {
+                    pointTile = nullptr;
+                }
+            }
+
+            ImGui::EndCombo();
+        }
 
         float v = generationRadiusMin;
         ImGui::DragFloat(string("Generation Radius Min##").append(id).c_str(), &v, 0.1f);

@@ -102,7 +102,7 @@ void CapsuleColliderComponent::DrawEditor()
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Capsule Collider##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
-		Component::DrawInheritedFields();
+		if (Component::DrawInheritedFields()) return;
 
 		float v = ((CapsuleColliderData*)collider->shapeColliderData)->Radius;
 		ImGui::DragFloat(string("Radius##").append(id).c_str(), &v, 0.1f);

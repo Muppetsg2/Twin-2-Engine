@@ -228,6 +228,13 @@ bool AudioComponent::IsLooping()
 	return AudioManager::IsLooping(_audioHandle);
 }
 
+void AudioComponent::OnDisable()
+{
+	if (_loaded) {
+		if (!IsPaused()) Pause();
+	}
+}
+
 void AudioComponent::OnDestroy()
 {
 	if (AudioManager::IsHandleValid(_audioHandle)) {
@@ -265,7 +272,7 @@ void AudioComponent::DrawEditor()
 	string name = string("Audio##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
-		Component::DrawInheritedFields();
+		if (Component::DrawInheritedFields()) return;
 		std::map<size_t, string> audioNames = AudioManager::GetAllAudiosNames();
 
 		audioNames.insert(std::pair(0, "None"));

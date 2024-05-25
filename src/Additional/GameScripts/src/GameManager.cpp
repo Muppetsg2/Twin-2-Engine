@@ -165,7 +165,7 @@ void GameManager::DrawEditor()
     std::string name = std::string("GameManager##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str())) {
 
-        Component::DrawInheritedFields();
+        if (Component::DrawInheritedFields()) return;
 
         //glm::vec3 v = light->direction;
         //ImGui::DragFloat3(string("Direction##").append(id).c_str(), glm::value_ptr(v), .1f, -1.f, 1.f);

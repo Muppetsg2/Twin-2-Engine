@@ -25,7 +25,7 @@ namespace Twin2Engine::Core {
 		Physic::BoundingVolume* boundingVolume = nullptr;
 
 #if _DEBUG
-		void DrawInheritedFields() override;
+		bool DrawInheritedFields() override;
 #endif
 	public:
 		Physic::GameCollider* collider = nullptr;

@@ -26,7 +26,17 @@ namespace Generation::Generators
 #if _DEBUG
 		virtual void DrawEditor() override
 		{
-			ImGui::InputFloat("densityFactorPerSector", &densityFactorPerSector);
+			string id = to_string(GetId());
+
+			ImGui::Text("Name: ");
+			ImGui::SameLine();
+			ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+			ImGui::Text(Twin2Engine::Manager::ScriptableObjectManager::GetName(GetId()).c_str());
+			ImGui::PopFont();
+
+			ImGui::InputFloat(string("densityFactorPerSector##SO").append(id).c_str(), &densityFactorPerSector);
+
+			ScriptableObject::DrawInheritedFields();
 		}
 #endif
 	};

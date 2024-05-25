@@ -68,7 +68,7 @@ Prefab* PrefabManager::LoadPrefab(const string& path)
 
 Prefab* PrefabManager::GetPrefab(size_t id)
 {
-	if (_prefabs.find(id) == _prefabs.end()) {
+	if (!_prefabs.contains(id)) {
 		SPDLOG_ERROR("Prefab of ID '{0}' not found", id);
 		return nullptr;
 	}
@@ -126,6 +126,15 @@ string PrefabManager::GetPrefabPath(const Prefab* prefab)
 		//}
 	}
 	return "";
+}
+
+std::map<size_t, string> PrefabManager::GetAllPrefabsNames() {
+	std::map<size_t, std::string> names = std::map<size_t, std::string>();
+
+	for (auto item : _prefabsPaths) {
+		names[item.first] = std::filesystem::path(item.second).stem().string();
+	}
+	return names;
 }
 
 void PrefabManager::SaveAsPrefab(const GameObject* obj, const std::string& path)

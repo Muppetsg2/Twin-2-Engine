@@ -33,9 +33,19 @@ namespace Generation::Generators
 #if _DEBUG
 		virtual void DrawEditor() override
 		{
-			ImGui::InputInt("minTilesPerSector", &minTilesPerSector);
-			ImGui::InputInt("maxTilesPerSector", &maxTilesPerSector);
-			ImGui::InputFloat("accuracyFactor", &accuracyFactor);
+			string id = to_string(GetId());
+
+			ImGui::Text("Name: ");
+			ImGui::SameLine();
+			ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+			ImGui::Text(Twin2Engine::Manager::ScriptableObjectManager::GetName(GetId()).c_str());
+			ImGui::PopFont();
+
+			ImGui::InputInt(string("minTilesPerSector##SO").append(id).c_str(), &minTilesPerSector);
+			ImGui::InputInt(string("maxTilesPerSector##SO").append(id).c_str(), &maxTilesPerSector);
+			ImGui::InputFloat(string("accuracyFactor##SO").append(id).c_str(), &accuracyFactor);
+
+			ScriptableObject::DrawInheritedFields();
 		}
 #endif
 	};

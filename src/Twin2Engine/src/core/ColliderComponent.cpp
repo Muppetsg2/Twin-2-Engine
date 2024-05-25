@@ -47,7 +47,7 @@ void ColliderComponent::OnCollisionEnter(Collision* collision)
 }
 
 #if _DEBUG
-void ColliderComponent::DrawInheritedFields()
+bool ColliderComponent::DrawInheritedFields()
 {
 	string id = string(std::to_string(this->GetId()));
 	glm::vec3 pos = collider->shapeColliderData->LocalPosition;
@@ -60,29 +60,19 @@ void ColliderComponent::DrawInheritedFields()
 		collider->shapeColliderData->LocalPosition = pos;
 	}
 
-	std::map<Layer, string> ls = {
-		std::pair(Layer::DEFAULT, "DEFAULT"),
-		std::pair(Layer::IGNORE_RAYCAST, "IGNORE_RAYCAST"),
-		std::pair(Layer::IGNORE_COLLISION, "IGNORE_COLLISION"),
-		std::pair(Layer::UI, "UI"),
-		std::pair(Layer::LAYER_1, "LAYER_1"),
-		std::pair(Layer::LAYER_2, "LAYER_2"),
-		std::pair(Layer::LAYER_3, "LAYER_3"),
-		std::pair(Layer::LAYER_4, "LAYER_4"),
-	};
-
 	Layer l = collider->layer;
 	bool clicked = false;
-	if (ImGui::BeginCombo(string("Layer##").append(id).c_str(), ls[l].c_str())) {
+	if (ImGui::BeginCombo(string("Layer##").append(id).c_str(), to_string(l).c_str())) {
 
-		for (auto& item : ls)
+		for (size_t i = 0; i < size<Layer>(); ++i)
 		{
-			if (ImGui::Selectable(item.second.append("##").append(id).c_str(), l == item.first))
+			Layer lc = (Layer)(uint8_t)(i == 0 ? 0 : powf(2.f, (float)(i - 1)));
+			if (ImGui::Selectable(to_string(lc).append("##").append(id).c_str(), l == lc))
 			{
 				if (clicked) {
 					continue;
 				}
-				l = item.first;
+				l = lc;
 				clicked = true;
 			}
 		}
@@ -93,22 +83,11 @@ void ColliderComponent::DrawInheritedFields()
 		this->SetLayer(l);
 	}
 
-	std::unordered_map<CollisionMode, string> cms = {
-		std::pair(CollisionMode::IGNORING, "IGNORING"),
-		std::pair(CollisionMode::NEUTRAL, "NEUTRAL"),
-		std::pair(CollisionMode::ACTIVE, "ACTIVE")
-	};
+	std::vector<string> lcfs = std::vector<string>();
 
-	std::vector<string> lcfs = {
-		"DEFAULT",
-		"IGNORE_RAYCAST",
-		"IGNORE_COLLISION",
-		"UI",
-		"LAYER_1",
-		"LAYER_2",
-		"LAYER_3",
-		"LAYER_4",
-	};
+	for (size_t i = 0; i < size<Layer>(); ++i) {
+		lcfs.push_back(to_string((Layer)(uint8_t)(i == 0 ? 0 : powf(2.f, (float)(i - 1)))));
+	}
 
 	ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 	bool node_open = ImGui::TreeNodeEx(string("Layers Filters##").append(id).c_str(), node_flag);
@@ -162,16 +141,16 @@ void ColliderComponent::DrawInheritedFields()
 				}
 			}
 
-			if (ImGui::BeginCombo(lcfs[i].append("##").append(id).c_str(), cms[m].c_str())) {
+			if (ImGui::BeginCombo(lcfs[i].append("##").append(id).c_str(), to_string((CollisionMode)m).c_str())) {
 
-				for (auto& item : cms)
+				for (size_t z = 0; z < size<CollisionMode>(); ++z)
 				{
-					if (ImGui::Selectable(item.second.append("##").append(id).c_str(), m == item.first))
+					if (ImGui::Selectable(to_string((CollisionMode)z).append("##").append(id).c_str(), m == (CollisionMode)z))
 					{
 						if (clicked) {
 							continue;
 						}
-						m = item.first;
+						m = (CollisionMode)z;
 						clicked = true;
 					}
 				}
@@ -241,6 +220,8 @@ void ColliderComponent::DrawInheritedFields()
 	if (v) {
 		ImGui::DragFloat(string("Bounding Volume Radius##").append(id).c_str(), &((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius, 0.1f);
 	}
+
+	return false;
 }
 #endif
 
@@ -415,7 +396,7 @@ void ColliderComponent::DrawEditor()
 {
 	string name = string("Collider##Component").append(std::to_string(this->GetId()));
 	if (ImGui::CollapsingHeader(name.c_str())) {
-		Component::DrawInheritedFields();
+		if (Component::DrawInheritedFields()) return;
 		DrawInheritedFields();
 	}
 }

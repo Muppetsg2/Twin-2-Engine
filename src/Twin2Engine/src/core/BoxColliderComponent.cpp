@@ -150,7 +150,7 @@ void BoxColliderComponent::DrawEditor()
 	string name = string("Box Collider##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
-		Component::DrawInheritedFields();
+		if (Component::DrawInheritedFields()) return;
 		float v = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x;
 		ImGui::DragFloat(string("Width##").append(id).c_str(), &v, 0.1f);
 

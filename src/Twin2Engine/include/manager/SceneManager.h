@@ -26,6 +26,8 @@ namespace Twin2Engine::Manager {
 
 		// Loaded Scene Objects
 		static std::map<size_t, Core::Scene*> _loadedScenes;
+		static std::map<size_t, std::string> _loadedScenesNames;
+		static std::map<size_t, std::string> _loadedScenesPaths;
 
 #if _DEBUG
 		// For ImGui
@@ -101,6 +103,9 @@ namespace Twin2Engine::Manager {
 
 		static size_t GetCurrentSceneId();
 		static std::string GetCurrentSceneName();
+		static std::string GetCurrentScenePath();
+
+		static std::vector<std::string> GetAllLoadedScenesNames();
 
 		static size_t GetTexture2D(size_t loadIdx);
 		static size_t GetSprite(size_t loadIdx);

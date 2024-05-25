@@ -11,11 +11,13 @@ namespace Twin2Engine::Core {
 
 		static std::hash<std::string> _hasher;
 		static std::map<size_t, ComponentFunc> _components;
+		static std::map<size_t, std::string> _componentsNames;
 	public:
 		static bool HasComponent(const std::string& type);
 		static void AddComponent(const std::string& type, const ComponentFunc componentFunc);
 		static void RemoveComponent(const std::string& type);
 		static Component* CreateComponent(const std::string& type);
+		static std::map<size_t, string> GetComponentsTypes();
 	};
 }
 

@@ -1,4 +1,5 @@
 #include <Editor/Common/ScriptableObjectEditorManager.h>
+#include <core/ScriptableObject.h>
 
 using namespace Editor::Common;
 using namespace std;
@@ -191,7 +192,7 @@ void ScriptableObjectEditorManager::Draw()
         if (ImGui::CollapsingHeader("Scriptable Object Creator"))
         {
             static string selectedSO = "";
-            static vector<string> scriptableObjectsNames = ScriptableObjectManager::GetScriptableObjectsNames();
+            static vector<string> scriptableObjectsNames = ScriptableObjectManager::GetScriptableObjectsClassNames();
             if (ImGui::TreeNode("ScriptableObjects")) {
                 for (size_t i = 0; i < scriptableObjectsNames.size(); i++)
                 {

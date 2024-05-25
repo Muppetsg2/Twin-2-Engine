@@ -56,7 +56,7 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
         }
         VectorShuffler::Shuffle(regions);
 
-        for (int i = 0; i < static_cast<int>(density * regions.size()); i++)
+        for (int i = 0; i < static_cast<int>(density * regions.size()); ++i)
         {
             std::vector<GameObject*> foundOnes;
             for (MapSector* sector : regions[i]->GetSectors())

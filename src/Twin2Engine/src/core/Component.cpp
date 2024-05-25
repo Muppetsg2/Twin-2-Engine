@@ -36,11 +36,22 @@ Component::Component()
 }
 
 #if _DEBUG
-void Component::DrawInheritedFields()
+bool Component::DrawInheritedFields()
 {
 	string id = string(std::to_string(this->GetId()));
-	bool e = IsEnable();
+	bool e = _enabled;
 	ImGui::Checkbox(string("Enable##").append(id).c_str(), &e);
+
+	if (e != _enabled) {
+		SetEnable(e);
+	}
+
+	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 50);
+	if (ImGui::Button(std::string("Remove##").append(id).c_str())) {
+		_gameObject->RemoveComponent(this);
+		return true;
+	}
+	return false;
 }
 #endif
 
@@ -81,7 +92,7 @@ bool Component::Deserialize(const YAML::Node& node) {
 void Component::DrawEditor() {
 	string name = string("Component##Component").append(std::to_string(this->GetId()));
 	if (ImGui::CollapsingHeader(name.c_str())) {
-		Component::DrawInheritedFields();
+		if (Component::DrawInheritedFields()) return;
 	}
 }
 #endif

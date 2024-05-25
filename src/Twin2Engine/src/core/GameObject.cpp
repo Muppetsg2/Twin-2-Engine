@@ -1,4 +1,5 @@
 #include <core/GameObject.h>
+#include <core/ComponentsMap.h>
 #include <manager/SceneManager.h>
 
 using namespace Twin2Engine::Core;
@@ -342,21 +343,70 @@ void GameObject::DrawEditor()
 	ImGui::Checkbox(string("Active##GO").append(id).c_str(), &v2);
 
 	SetActive(v2);
-	//if (v2 != _activeSelf) {
-	//	SetActive(v2);
-	//}
 
 	_transform->DrawEditor();
 	ImGui::Separator();
 
+	std::list cs(components);
+
+	for (size_t i = 0; i < components.size(); ++i) {
+		if (cs.front() != _transform) {
+			cs.front()->DrawEditor();
+			ImGui::Separator();
+		}
+		cs.pop_front();
+	}
+
+	/*
 	for (Component* comp : components) {
 		if (comp != _transform) {
 			comp->DrawEditor();
 			ImGui::Separator();
 		}
 	}
+	*/
 
-	// TODO: Add Component Button Deserializator
+	if (ImGui::Button(string("Add Component##GO").append(id).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
+		ImGui::OpenPopup(string("Add Component PopUp##GO").append(id).c_str(), ImGuiPopupFlags_NoReopen);
+	}
+
+	if (ImGui::BeginPopup(string("Add Component PopUp##GO").append(id).c_str(), ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDocking)) {
+
+		map<size_t, string> types = ComponentsMap::GetComponentsTypes();
+
+		size_t choosed = 0;
+
+		if (ImGui::BeginCombo(string("##GO POP UP COMPONENTS").append(id).c_str(), choosed == 0 ? "None" : types[choosed].c_str())) {
+
+			bool clicked = false;
+			for (auto& item : types) {
+
+				if (ImGui::Selectable(std::string(item.second).append("##").append(id).c_str(), item.first == choosed)) {
+
+					if (clicked) continue;
+
+					choosed = item.first;
+					clicked = true;
+				}
+			}
+
+			if (clicked) {
+				if (choosed != 0) {
+					Component* comp = ComponentsMap::CreateComponent(types[choosed]);
+					this->AddComponent(comp);
+					comp->Init(this);
+				}
+			}
+
+			ImGui::EndCombo();
+		}
+
+		if (choosed != 0) {
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
 }
 #endif
 
@@ -369,10 +419,12 @@ void GameObject::AddComponent(Component* comp)
 
 void GameObject::RemoveComponent(Component* component)
 {
-	if (components.remove(component))
+	size_t temp = components.size();
+	size_t temp2 = components.remove(component);
+	if (temp2 < temp)
 	{
 		component->OnDestroy();
-		//delete component;
+		delete component;
 	}
 	//std::remove_if(components.begin(), components.end(), [component](Component* comp) { return comp == component; });
 }

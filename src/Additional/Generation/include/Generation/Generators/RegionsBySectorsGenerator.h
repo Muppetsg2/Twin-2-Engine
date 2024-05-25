@@ -39,15 +39,25 @@ namespace Generation::Generators
 #if _DEBUG
         virtual void DrawEditor() override
         {
-            ImGui::Checkbox("mergeByNumberTilesPerRegion", &mergeByNumberTilesPerRegion);
-            ImGui::InputInt("minTilesPerRegion", &minTilesPerRegion);
-            ImGui::InputInt("maxTilesPerRegion", &maxTilesPerRegion);
-            ImGui::InputInt("minSectorsPerRegion", &minSectorsPerRegion);
-            ImGui::InputInt("maxSectorsPerRegion", &maxSectorsPerRegion);
-            ImGui::Checkbox("isDiscritizedHeight", &isDiscritizedHeight);
-            ImGui::InputFloat("upperHeightRange", &upperHeightRange);
-            ImGui::InputFloat("upperHeightRange", &upperHeightRange);
-            ImGui::InputFloat("heightRangeFacor", &heightRangeFacor);
+            string id = to_string(GetId());
+
+            ImGui::Text("Name: ");
+            ImGui::SameLine();
+            ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+            ImGui::Text(Twin2Engine::Manager::ScriptableObjectManager::GetName(GetId()).c_str());
+            ImGui::PopFont();
+
+            ImGui::Checkbox(string("mergeByNumberTilesPerRegion##SO").append(id).c_str(), &mergeByNumberTilesPerRegion);
+            ImGui::InputInt(string("minTilesPerRegion##SO").append(id).c_str(), &minTilesPerRegion);
+            ImGui::InputInt(string("maxTilesPerRegion##SO").append(id).c_str(), &maxTilesPerRegion);
+            ImGui::InputInt(string("minSectorsPerRegion##SO").append(id).c_str(), &minSectorsPerRegion);
+            ImGui::InputInt(string("maxSectorsPerRegion##SO").append(id).c_str(), &maxSectorsPerRegion);
+            ImGui::Checkbox(string("isDiscritizedHeight##SO").append(id).c_str(), &isDiscritizedHeight);
+            ImGui::InputFloat(string("upperHeightRange##SO").append(id).c_str(), &upperHeightRange);
+            ImGui::InputFloat(string("upperHeightRange##SO").append(id).c_str(), &upperHeightRange);
+            ImGui::InputFloat(string("heightRangeFacor##SO").append(id).c_str(), &heightRangeFacor);
+
+            ScriptableObject::DrawInheritedFields();
         }
 #endif
     };

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <core/ScriptableObject.h>
 namespace Twin2Engine::Core
 {
 	class ScriptableObject;
 }
+
 namespace Twin2Engine::Manager
 {
 	class SceneManager;
@@ -16,6 +16,12 @@ namespace Twin2Engine::Manager
 		friend class PrefabManager;
 
 		static std::hash<std::string> _hasher;
+
+#if _DEBUG
+		// For ImGui
+		static bool _fileDialogOpen;
+		static ImFileDialogInfo _fileDialogInfo;
+#endif
 
 		// Containing of ScriptableObjects
 		static std::unordered_map<size_t, Twin2Engine::Core::ScriptableObject*> _scriptableObjects;
@@ -32,12 +38,20 @@ namespace Twin2Engine::Manager
 		static void SceneDeserializationBegin();
 		static size_t SceneDeserialize(unsigned int sceneSerializationId, const std::string& path);
 		static void SceneDeserializationEnd();
+
+#if _DEBUG
+		static void DrawCreator(bool* p_open);
+#endif
+
 	public: 
 		static Twin2Engine::Core::ScriptableObject* Load(const std::string& path);
+		static void Unload(const std::string& path);
+		static void Unload(size_t id);
 
 		static Twin2Engine::Core::ScriptableObject* Get(const std::string& path);
 		static Twin2Engine::Core::ScriptableObject* Get(size_t id);
 		static std::string GetPath(size_t id);
+		static std::string GetName(const std::string& path);
 		static std::string GetName(size_t id);
 
 		static void UnloadAll();
@@ -48,10 +62,12 @@ namespace Twin2Engine::Manager
 		// Deserialization of ScriptableObjects for scene
 		static Twin2Engine::Core::ScriptableObject* Deserialize(unsigned int sceneSerializationId);
 
-		// TODO: Dodac DrawEditor
-
+#if _DEBUG
+		static void DrawEditor(bool* p_open);
+#endif
 
 		static std::vector<std::string> GetScriptableObjectsNames();
+		static std::vector<std::string> GetScriptableObjectsClassNames();
 		static bool CreateScriptableObject(const std::string& dstPath, const std::string& scriptableObjectClassName);
 		static bool Save(const std::string& dstPath, Twin2Engine::Core::ScriptableObject* scriptableObject);
 

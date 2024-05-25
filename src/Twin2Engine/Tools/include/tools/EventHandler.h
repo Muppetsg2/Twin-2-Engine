@@ -42,14 +42,16 @@ namespace Twin2Engine::Tools {
 			return e.ID;
 		}
 
-		void RemoveCallback(size_t callbackId) {
+		bool RemoveCallback(size_t callbackId) {
 			for (size_t i = 0; i < _events.size(); ++i) {
 				if (_events[i].ID == callbackId) {
 					_events.erase(_events.begin() + i);
 					_removedIds.push(callbackId);
-					break;
+					return true;
 				}
 			}
+
+			return false;
 		}
 		constexpr void RemoveAllCallbacks() {
 			_events.clear();
@@ -66,8 +68,8 @@ namespace Twin2Engine::Tools {
 		constexpr size_t operator+=(const Action<Args...>& callback) {
 			return AddCallback(callback);
 		}
-		constexpr void operator-=(size_t callbackId) {
-			RemoveCallback(callbackId);
+		constexpr bool operator-=(size_t callbackId) {
+			return RemoveCallback(callbackId);
 		}
 		constexpr void operator()(Args... args) const {
 			Invoke(args...);

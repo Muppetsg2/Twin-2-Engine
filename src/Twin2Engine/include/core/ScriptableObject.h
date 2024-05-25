@@ -2,10 +2,12 @@
 
 #include <manager/ScriptableObjectManager.h>
 
+/*
 namespace Twin2Engine::Manager
 {
 	class ScriptableObjectManager;
 }
+*/
 
 namespace Twin2Engine::Core
 {
@@ -33,6 +35,39 @@ namespace Twin2Engine::Core
 		static std::unordered_map<size_t, ScriptableObjectData>* scriptableObjectsTemp;
 
 		static void Register(size_t hash, const ScriptableObjectData& soData);
+
+#if _DEBUG
+		void DrawInheritedFields() {
+
+			static bool err = false;
+			static bool saved = false;
+
+			if (ImGui::Button(std::string("Save##SO").append(std::to_string(GetId())).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
+				bool res = Twin2Engine::Manager::ScriptableObjectManager::Save(Twin2Engine::Manager::ScriptableObjectManager::GetPath(GetId()), this);
+
+				if (res) {
+					saved = true;
+					err = false;
+					ImGui::OpenPopup(std::string("SavedPopUp##SO").append(std::to_string(GetId())).c_str(), ImGuiPopupFlags_NoReopen);
+				}
+				else {
+					saved = true;
+					err = false;
+					ImGui::OpenPopup(std::string("SavedPopUp##SO").append(std::to_string(GetId())).c_str(), ImGuiPopupFlags_NoReopen);
+				}
+			}
+
+			if (ImGui::BeginPopup(std::string("SavedPopUp##SO").append(std::to_string(GetId())).c_str(), ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDocking)) {
+				if (saved) ImGui::TextColored(ImVec4(0.f, 1.f, 0.f, 1.f), "File Saved!");
+				if (err) ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Error occured when saving file!");
+				ImGui::EndPopup();
+			}
+			else {
+				saved = false;
+				err = false;
+			}
+		}
+#endif
 
 	public:
 		size_t GetId() const;

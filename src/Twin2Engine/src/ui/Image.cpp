@@ -67,7 +67,11 @@ void Image::DrawEditor()
 	string name = string("Image##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
-		Component::DrawInheritedFields();
+		if (Component::DrawInheritedFields()) return;
+
+		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll;
+		ImGui::InputInt(string("Layer##").append(id).c_str(), &_layer, flags);
+
 		std::map<size_t, string> spriteNames = SpriteManager::GetAllSpritesNames();
 
 		spriteNames.insert(std::pair(0, "None"));
@@ -125,8 +129,6 @@ void Image::DrawEditor()
 		}
 
 		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
-
-		// TODO: Zaktualizowaæ dodaæ layer
 	}
 }
 #endif

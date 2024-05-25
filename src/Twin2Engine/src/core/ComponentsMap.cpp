@@ -6,6 +6,7 @@ using namespace Twin2Engine::Core;
 
 hash<string> ComponentsMap::_hasher;
 map<size_t, ComponentsMap::ComponentFunc> ComponentsMap::_components;
+map<size_t, string> ComponentsMap::_componentsNames;
 
 bool ComponentsMap::HasComponent(const string& type)
 {
@@ -17,10 +18,11 @@ void ComponentsMap::AddComponent(const string& type, const ComponentsMap::Compon
 	size_t typeHash = _hasher(type);
 	if (_components.contains(typeHash))
 	{
-		SPDLOG_WARN("Istnieje funkcja tworz¹ca komponent o podanym typie '{0}'. Pomijanie", type);
+		SPDLOG_WARN("There is a function that creates a component with the given type '{0}'. Skip", type);
 		return;
 	}
 	_components[typeHash] = componentFunc;
+	_componentsNames[typeHash] = type;
 }
 
 void ComponentsMap::RemoveComponent(const string& type)
@@ -28,18 +30,29 @@ void ComponentsMap::RemoveComponent(const string& type)
 	size_t typeHash = _hasher(type);
 	if (!_components.contains(typeHash))
 	{
-		SPDLOG_WARN("Nie znaleziono funkcji tworz¹cej komponent o podanym typie '{0}'", type);
+		SPDLOG_WARN("No function found to create a component with the given type '{0}'", type);
 		return;
 	}
 	_components.erase(typeHash);
+	_componentsNames.erase(typeHash);
 }
 
 Component* ComponentsMap::CreateComponent(const string& type)
 {
 	size_t typeHash = _hasher(type);
 	if (!_components.contains(typeHash)) {
-		SPDLOG_ERROR("Nie znaleziono funkcji tworz¹cej komponent o podanym typie '{0}'", type);
+		SPDLOG_ERROR("No function found to create a component with the given type '{0}'", type);
 		return nullptr;
 	}
 	return _components[typeHash]();
+}
+
+map<size_t, string> ComponentsMap::GetComponentsTypes()
+{
+	std::map<size_t, std::string> names = std::map<size_t, std::string>();
+
+	for (auto item : _componentsNames) {
+		names[item.first] = std::filesystem::path(item.second).stem().string();
+	}
+	return names;
 }

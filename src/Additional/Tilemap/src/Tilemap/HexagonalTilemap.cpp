@@ -402,7 +402,7 @@ void HexagonalTilemap::DrawEditor()
 	std::string name = std::string("Hexagonal Tilemap##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
-		Component::DrawInheritedFields();
+		if (Component::DrawInheritedFields()) return;
 
 		float dbt = _distanceBetweenTiles;
 		ImGui::DragFloat(string("Distance Between Tiles##").append(id).c_str(), &dbt, 0.1f, 0.0f);

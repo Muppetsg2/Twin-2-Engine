@@ -32,6 +32,8 @@ map<size_t, size_t> SceneManager::_prefabsIds;
 vector<size_t> SceneManager::_scriptableObjectsIds;
 
 map<size_t, Scene*> SceneManager::_loadedScenes;
+map<size_t, string> SceneManager::_loadedScenesNames;
+map<size_t, string> SceneManager::_loadedScenesPaths;
 
 #if _DEBUG
 ImGuiID SceneManager::selected = 0;
@@ -480,10 +482,11 @@ void SceneManager::RemoveComponentWithId(Component* comp)
 void SceneManager::AddScene(const string& name, Scene* scene)
 {
 	size_t id = hash<string>()(name);
-	if (_loadedScenes.find(id) != _loadedScenes.end()) {
-		SPDLOG_WARN("Zast�powanie Sceny o nazwie '{0}'", name);
+	if (_loadedScenes.contains(id)) {
+		SPDLOG_WARN("Replacing a Scene Named '{0}'", name);
 	}
 	_loadedScenes[id] = scene;
+	_loadedScenesNames[id] = name;
 }
 
 void SceneManager::AddScene(const string& name, const string& path)
@@ -491,6 +494,11 @@ void SceneManager::AddScene(const string& name, const string& path)
 	if (filesystem::exists(path)) {
 		Scene* scene = new Scene();
 		scene->Deserialize(YAML::LoadFile(path));
+		size_t id = hash<string>()(name);
+		if (_loadedScenesPaths.contains(id)) {
+			SPDLOG_WARN("Replacing a Scene Named '{0}'", name);
+		}
+		_loadedScenesPaths[id] = path;
 		AddScene(name, scene);
 	}
 	else {
@@ -502,8 +510,8 @@ void SceneManager::LoadScene(const string& name)
 {
 	hash<string> hasher;
 	size_t sceneId = hasher(name);
-	if (_loadedScenes.find(sceneId) == _loadedScenes.end()) {
-		SPDLOG_WARN("Nie znaleziono sceny o nazwie '{0}'", name);
+	if (!_loadedScenes.contains(sceneId)) {
+		SPDLOG_WARN("No scene named '{0}' found", name);
 		return;
 	}
 
@@ -907,7 +915,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	if (_rootObject == nullptr) _rootObject = new GameObject();
 	prefabRoot->GetTransform()->SetParent(parent != nullptr ? parent : _rootObject->GetTransform());
 
-	for (const auto& compPair : _componentsById) {
+	for (const auto& compPair : prefabComponentsById) {
 		if (compPair.second->_enabled)
 		{
 			compPair.second->OnEnable();
@@ -925,6 +933,24 @@ size_t SceneManager::GetCurrentSceneId()
 string SceneManager::GetCurrentSceneName()
 {
 	return _currentSceneName;
+}
+
+string SceneManager::GetCurrentScenePath()
+{
+	return _loadedScenesPaths[_currentSceneId];
+}
+
+vector<string> SceneManager::GetAllLoadedScenesNames() {
+	vector<string> names = vector<string>();
+
+	names.reserve(_loadedScenes.size());
+
+	size_t i = 0;
+	for (auto& scen : _loadedScenesNames) {
+		names.insert(names.begin() + (i++), scen.second);
+	}
+
+	return names;
 }
 
 size_t SceneManager::GetTexture2D(size_t loadIdx)
@@ -1067,7 +1093,7 @@ void SceneManager::UnloadCurrent()
 void SceneManager::UnloadScene(const std::string& name)
 {
 	size_t sceneId = hash<string>()(name);
-	if (_loadedScenes.find(sceneId) == _loadedScenes.end()) {
+	if (!_loadedScenes.contains(sceneId)) {
 		SPDLOG_INFO("Failed to unload scene - Scene '{0}' not found", name);
 		return;
 	}
@@ -1078,6 +1104,8 @@ void SceneManager::UnloadScene(const std::string& name)
 	}
 	delete scene;
 	_loadedScenes.erase(sceneId);
+	_loadedScenesPaths.erase(sceneId);
+	_loadedScenesNames.erase(sceneId);
 }
 
 void SceneManager::UnloadAll()
@@ -1087,6 +1115,8 @@ void SceneManager::UnloadAll()
 		delete sceneP.second;
 	}
 	_loadedScenes.clear();
+	_loadedScenesPaths.clear();
+	_loadedScenesNames.clear();
 }
 
 #if _DEBUG

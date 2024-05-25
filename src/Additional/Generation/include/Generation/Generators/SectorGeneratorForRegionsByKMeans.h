@@ -35,11 +35,21 @@ namespace Generation::Generators
 #if _DEBUG
         virtual void DrawEditor() override
         {
-            ImGui::InputInt("sectorsCount", &sectorsCount);
-            ImGui::Checkbox("isDiscritizedHeight", &isDiscritizedHeight);
-            ImGui::InputFloat("lowerHeightRange", &lowerHeightRange);
-            ImGui::InputFloat("upperHeightRange", &upperHeightRange);
-            ImGui::InputFloat("heightRangeFacor", &heightRangeFacor);
+            string id = to_string(GetId());
+
+            ImGui::Text("Name: ");
+            ImGui::SameLine();
+            ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+            ImGui::Text(Twin2Engine::Manager::ScriptableObjectManager::GetName(GetId()).c_str());
+            ImGui::PopFont();
+
+            ImGui::InputInt(string("sectorsCount##SO").append(id).c_str(), &sectorsCount);
+            ImGui::Checkbox(string("isDiscritizedHeight##SO").append(id).c_str(), &isDiscritizedHeight);
+            ImGui::InputFloat(string("lowerHeightRange##SO").append(id).c_str(), &lowerHeightRange);
+            ImGui::InputFloat(string("upperHeightRange##SO").append(id).c_str(), &upperHeightRange);
+            ImGui::InputFloat(string("heightRangeFacor##SO").append(id).c_str(), &heightRangeFacor);
+
+            ScriptableObject::DrawInheritedFields();
         }
 #endif
     };

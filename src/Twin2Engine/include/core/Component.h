@@ -24,7 +24,7 @@ namespace Twin2Engine::Core
 	protected:
 		Component();
 #if _DEBUG
-		virtual void DrawInheritedFields();
+		virtual bool DrawInheritedFields();
 #endif
 	public:
 		virtual ~Component();

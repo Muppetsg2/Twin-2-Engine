@@ -59,7 +59,7 @@ using namespace Humans;
 // EDITOR
 #include <Editor/Common/MaterialCreator.h>
 #include <Editor/Common/ProcessingMtlFiles.h>
-#include <Editor/Common/ScriptableObjectEditorManager.h>
+//#include <Editor/Common/ScriptableObjectEditorManager.h>
 #include <Editor/Common/ImGuiSink.h>
 using Editor::Common::ImGuiSink;
 using Editor::Common::ImGuiLogMessage;
@@ -115,6 +115,15 @@ constexpr bool WINDOW_FULLSCREEN = false;
 constexpr int32_t GL_VERSION_MAJOR = 4;
 constexpr int32_t GL_VERSION_MINOR = 5;
 constexpr const char* glsl_version = "#version 450";
+
+#if _DEBUG
+// For ImGui
+static bool _openLoadSceneWindow = false;
+static bool _fileDialogSceneOpen;
+static bool _fileDialogSceneSave;
+static ImFileDialogInfo _fileDialogSceneOpenInfo;
+static ImFileDialogInfo _fileDialogSceneSaveInfo;
+#endif
 
 Window* window;
 
@@ -274,8 +283,8 @@ int main(int, char**)
 
 
 #if _DEBUG
-    Editor::Common::ScriptableObjectEditorManager::Init();
-    Editor::Common::ScriptableObjectEditorManager::Update();
+    //Editor::Common::ScriptableObjectEditorManager::Init();
+    //Editor::Common::ScriptableObjectEditorManager::Update();
 #endif
 
 #pragma endregion
@@ -326,7 +335,7 @@ int main(int, char**)
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
 
-        Editor::Common::ScriptableObjectEditorManager::End();
+        //Editor::Common::ScriptableObjectEditorManager::End();
     };
 #endif
 
@@ -421,6 +430,7 @@ void input()
         }
     }
 
+    /*
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::R)) {
         SceneManager::LoadScene("testScene");
     }
@@ -428,6 +438,41 @@ void input()
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::Q)) {
         SceneManager::SaveScene("res/scenes/quickSavedScene.yaml");
     }
+    */
+
+#if _DEBUG
+    if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::L)) {
+        // Load Scene
+        //ImGui::OpenPopup("Load Scene##File_Scene_Load_Internal", ImGuiPopupFlags_NoReopen);
+        _openLoadSceneWindow = true;
+    }
+
+    if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyDown(KEY::LEFT_SHIFT) && Input::IsKeyPressed(KEY::L)) {
+        // Load Scene From File
+        _fileDialogSceneOpen = true;
+        _fileDialogSceneOpenInfo.type = ImGuiFileDialogType_OpenFile;
+        _fileDialogSceneOpenInfo.title = "Load Scene##File_Scene_Load";
+        _fileDialogSceneOpenInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\scenes");
+    }
+
+    if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::R)) {
+        // Reload Scene
+        SceneManager::LoadScene(SceneManager::GetCurrentSceneName());
+    }
+
+    if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::S)) {
+        // Save Scene
+        SceneManager::SaveScene(SceneManager::GetCurrentScenePath());
+    }
+
+    if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyDown(KEY::LEFT_SHIFT) && Input::IsKeyPressed(KEY::S)) {
+        // Save Scene As...
+        _fileDialogSceneSave = true;
+        _fileDialogSceneSaveInfo.type = ImGuiFileDialogType_SaveFile;
+        _fileDialogSceneSaveInfo.title = "Load Scene##File_Scene_Save";
+        _fileDialogSceneSaveInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\scenes");
+    }
+#endif
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -473,7 +518,10 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void update()
 {
     // Update game objects' state here
-    text->SetText(L"FPS: " + std::to_wstring(1.f / Time::GetDeltaTime()));
+    text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
+    if (text != nullptr) {
+        text->SetText(L"FPS: " + std::to_wstring(1.f / Time::GetDeltaTime()));
+    }
     colorSpan -= Time::GetDeltaTime() * 0.2f;
     if (colorSpan <= 0.f) {
         colorSpan = 1.f;
@@ -574,14 +622,38 @@ void render_imgui()
         static bool _spriteOpened = false;
         static bool _modelsOpened = false;
         static bool _prefabOpened = false;
+        static bool _scriptableOpened = false;
 
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("File##Menu"))
             {
-                //ImGui::MenuItem("Load Scene");
-                //ImGui::MenuItem("Save Scene");
-                //ImGui::MenuItem("Save Scene As...");
-                if (ImGui::MenuItem("Exit##File"))
+                if (ImGui::MenuItem("Load Scene", "Ctrl+L")) {
+                    //ImGui::OpenPopup("Load Scene##File_Scene_Load_Internal", ImGuiPopupFlags_NoReopen);
+                    _openLoadSceneWindow = true;
+                }
+
+                if (ImGui::MenuItem("Load Scene From File", "Ctrl+Shift+L")) {
+                    _fileDialogSceneOpen = true;
+                    _fileDialogSceneOpenInfo.type = ImGuiFileDialogType_OpenFile;
+                    _fileDialogSceneOpenInfo.title = "Load Scene##File_Scene_Load_File";
+                    _fileDialogSceneOpenInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\scenes");
+                }
+
+                if (ImGui::MenuItem("Reload Scene", "Ctrl+R")) {
+                    SceneManager::LoadScene(SceneManager::GetCurrentSceneName());
+                }
+
+                if (ImGui::MenuItem("Save Scene##File", "Ctrl+S"))
+                    SceneManager::SaveScene(SceneManager::GetCurrentScenePath());
+
+                if (ImGui::MenuItem("Save Scene As...##File", "Ctrl+Shift+S")) {
+                    _fileDialogSceneSave = true;
+                    _fileDialogSceneSaveInfo.type = ImGuiFileDialogType_SaveFile;
+                    _fileDialogSceneSaveInfo.title = "Load Scene##File_Scene_Save";
+                    _fileDialogSceneSaveInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\scenes");
+                }
+
+                if (ImGui::MenuItem("Exit##File", "Esc"))
                     window->Close();
 
                 ImGui::EndMenu();
@@ -595,6 +667,7 @@ void render_imgui()
                 ImGui::MenuItem("Sprite Manager##Resources", NULL, &_spriteOpened);
                 ImGui::MenuItem("Models Manager##Resources", NULL, &_modelsOpened);
                 ImGui::MenuItem("Prefab Manager##Resources", NULL, &_prefabOpened);
+                ImGui::MenuItem("Scriptable Objects Manager##Resources", NULL, &_scriptableOpened);
                 ImGui::EndMenu();
             }
             ImGui::EndMenuBar();
@@ -621,7 +694,60 @@ void render_imgui()
         if (_prefabOpened)
             PrefabManager::DrawEditor(&_prefabOpened);
 
-        Editor::Common::ScriptableObjectEditorManager::Draw();
+        if (_scriptableOpened)
+            ScriptableObjectManager::DrawEditor(&_scriptableOpened);
+
+        if (_openLoadSceneWindow) {
+            if (ImGui::Begin("Load Scene##File_Scene_Load_Internal", &_openLoadSceneWindow, ImGuiWindowFlags_NoDocking)) {
+
+                vector<string> scenes = SceneManager::GetAllLoadedScenesNames();
+
+                string choosed = SceneManager::GetCurrentSceneName();
+
+                bool clicked = false;
+
+                if (ImGui::BeginCombo("Scenes##File_Scene_Load_Internal SCENES POPUP COMBO", choosed.c_str())) {
+
+                    for (auto& item : scenes) {
+
+                        if (ImGui::Selectable(std::string(item).append("##File_Scene_Load_Internal SCENES POPUP COMBO").c_str(), item == choosed)) {
+
+                            if (clicked) continue;
+
+                            choosed = item;
+                            clicked = true;
+                        }
+                    }
+
+                    if (clicked) {
+                        SceneManager::LoadScene(choosed);
+                    }
+
+                    ImGui::EndCombo();
+                }
+
+                if (clicked) {
+                    _openLoadSceneWindow = false;
+                }
+
+                ImGui::End();
+            }
+        }
+
+        if (ImGui::FileDialog(&_fileDialogSceneOpen, &_fileDialogSceneOpenInfo))
+        {
+            // Result path in: m_fileDialogInfo.resultPath
+            std::string path = _fileDialogSceneOpenInfo.resultPath.string();
+            std::string name = std::filesystem::path(path).stem().string();
+            SceneManager::AddScene(name, path);
+            SceneManager::LoadScene(name);
+        }
+
+        if (ImGui::FileDialog(&_fileDialogSceneSave, &_fileDialogSceneSaveInfo))
+        {
+            // Result path in: m_fileDialogInfo.resultPath
+            SceneManager::SaveScene(_fileDialogSceneOpenInfo.resultPath.string());
+        }
 
         ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Hello World!");
 
@@ -636,6 +762,8 @@ void render_imgui()
         window->DrawEditor();
 
         ImGui::Separator();
+
+        //Editor::Common::ScriptableObjectEditorManager::Draw();
 
 #pragma region IMGUI_LIGHTING_SETUP
         if (ImGui::CollapsingHeader("Lighting Setup")) {

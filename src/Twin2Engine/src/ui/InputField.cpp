@@ -257,7 +257,7 @@ void InputField::DrawEditor()
 	string id = string(std::to_string(this->GetId()));
 	string name = string("InputField##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
-		Component::DrawInheritedFields();
+		if (Component::DrawInheritedFields()) return;
 	}
 }
 #endif

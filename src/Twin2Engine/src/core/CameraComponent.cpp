@@ -942,9 +942,14 @@ void CameraComponent::OnDestroy()
 	GetTransform()->OnEventTransformChanged -= _transformEventId;
 	Window::GetInstance()->OnWindowSizeEvent -= _windowEventId;
 
+	_transformEventId = 0;
+	_windowEventId = 0;
+
 	Cameras.erase(Cameras.begin() + this->_camId);
 
 	if (Cameras.size() == 0) {
+		GetTransform()->OnEventTransformChanged -= TransformChangeEventId;
+		TransformChangeEventId = 0;
 		glDeleteTextures(1, &_ssaoNoiseTexture);
 		delete _ssaoTextureData;
 		glDeleteBuffers(1, &_uboCameraData);
@@ -1021,7 +1026,7 @@ void CameraComponent::DrawEditor()
 	string name = string("Camera##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
-		Component::DrawInheritedFields();
+		if (Component::DrawInheritedFields()) return;
 		bool per = (this->_type == CameraType::PERSPECTIVE);
 		if (ImGui::BeginCombo(string("Projection##").append(id).c_str(), (per ? "Perspective" : "Orthographic"))) {
 			if (ImGui::Selectable(string("Orthographic##").append(id).c_str(), !per))

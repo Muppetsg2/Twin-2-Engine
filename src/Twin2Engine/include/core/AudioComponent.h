@@ -35,12 +35,7 @@ namespace Twin2Engine::Core {
 		bool IsPaused();
 		bool IsLooping();
 
-		/*
-		virtual void Initialize();
-		virtual void Update();
-		virtual void OnEnable();
-		virtual void OnDisable();
-		*/
+		void OnDisable() override;
 		void OnDestroy() override;
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;

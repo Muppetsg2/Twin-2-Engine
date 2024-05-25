@@ -39,9 +39,15 @@
 
 // STANDARD ENUMS
 #define ENUM_ELEMENT(name) name
+#define ENUM_ELEMENT_COUNT(name) 1 +
 #define ENUM_CASE(name) case name: return #name;
 #define ENUM(name, ...)\
 	enum name { LIST_DO_FOR_EACH(ENUM_ELEMENT, __VA_ARGS__) };\
+	template<class T> static size_t size();\
+	template<> static size_t size<name>() {\
+		using enum name;\
+		return DO_FOR_EACH(ENUM_ELEMENT_COUNT, __VA_ARGS__) 0;\
+	}\
 	static std::string to_string(name value) {\
 		using enum name;\
 		switch(value) {\
@@ -53,6 +59,11 @@
 
 #define ENUM_BASE(name, base, ...)\
 	enum name : base { LIST_DO_FOR_EACH(ENUM_ELEMENT, __VA_ARGS__) };\
+	template<class T> static size_t size();\
+	template<> static size_t size<name>() {\
+		using enum name;\
+		return DO_FOR_EACH(ENUM_ELEMENT_COUNT, __VA_ARGS__) 0;\
+	}\
 	static std::string to_string(name value) {\
 		using enum name;\
 		switch(value) {\
@@ -64,6 +75,11 @@
 
 #define ENUM_CLASS(name, ...)\
 	enum class name { LIST_DO_FOR_EACH(ENUM_ELEMENT, __VA_ARGS__) };\
+	template<class T> static size_t size();\
+	template<> static size_t size<name>() {\
+		using enum name;\
+		return DO_FOR_EACH(ENUM_ELEMENT_COUNT, __VA_ARGS__) 0;\
+	}\
 	static std::string to_string(name value) {\
 		using enum name;\
 		switch(value) {\
@@ -75,6 +91,11 @@
 
 #define ENUM_CLASS_BASE(name, base, ...)\
 	enum class name : base { LIST_DO_FOR_EACH(ENUM_ELEMENT, __VA_ARGS__) };\
+	template<class T> static size_t size();\
+	template<> static size_t size<name>() {\
+		using enum name;\
+		return DO_FOR_EACH(ENUM_ELEMENT_COUNT, __VA_ARGS__) 0;\
+	}\
 	static std::string to_string(name value) {\
 		using enum name;\
 		switch(value) {\
@@ -86,9 +107,15 @@
 
 // ENUMS WITH VALUES
 #define ENUM_ELEMENT_VALUE(name, value) name = value
+#define ENUM_ELEMENT_VALUE_COUNT(name, value) 1 +
 #define ENUM_CASE_VALUE(name, value) case name: return #name;
 #define ENUM_VALUE(name, ...)\
 	enum name { LIST_DO_FOR_EACH_PAIR(ENUM_ELEMENT_VALUE, __VA_ARGS__) };\
+	template<class T> static size_t size();\
+	template<> static size_t size<name>() {\
+		using enum name;\
+		return DO_FOR_EACH_PAIR(ENUM_ELEMENT_VALUE_COUNT, __VA_ARGS__) 0;\
+	}\
 	static std::string to_string(name value) {\
 		using enum name;\
 		switch(value) {\
@@ -100,6 +127,11 @@
 
 #define ENUM_BASE_VALUE(name, base, ...)\
 	enum name : base { LIST_DO_FOR_EACH_PAIR(ENUM_ELEMENT_VALUE, __VA_ARGS__) };\
+	template<class T> static size_t size();\
+	template<> static size_t size<name>() {\
+		using enum name;\
+		return DO_FOR_EACH_PAIR(ENUM_ELEMENT_VALUE_COUNT, __VA_ARGS__) 0;\
+	}\
 	static std::string to_string(name value) {\
 		using enum name;\
 		switch(value) {\
@@ -111,6 +143,11 @@
 
 #define ENUM_CLASS_VALUE(name, ...)\
 	enum class name { LIST_DO_FOR_EACH_PAIR(ENUM_ELEMENT_VALUE, __VA_ARGS__) };\
+	template<class T> static size_t size();\
+	template<> static size_t size<name>() {\
+		using enum name;\
+		return DO_FOR_EACH_PAIR(ENUM_ELEMENT_VALUE_COUNT, __VA_ARGS__) 0;\
+	}\
 	static std::string to_string(name value) {\
 		using enum name;\
 		switch(value) {\
@@ -122,6 +159,11 @@
 
 #define ENUM_CLASS_BASE_VALUE(name, base, ...)\
 	enum class name : base { LIST_DO_FOR_EACH_PAIR(ENUM_ELEMENT_VALUE, __VA_ARGS__) };\
+	template<class T> static size_t size();\
+	template<> static size_t size<name>() {\
+		using enum name;\
+		return DO_FOR_EACH_PAIR(ENUM_ELEMENT_VALUE_COUNT, __VA_ARGS__) 0;\
+	}\
 	static std::string to_string(name value) {\
 		using enum name;\
 		switch(value) {\

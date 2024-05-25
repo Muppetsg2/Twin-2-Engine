@@ -60,6 +60,7 @@ namespace Twin2Engine::Core
 #pragma region EVENTS
 		Tools::EventHandler<GameObject*> OnActiveChanged;
 		Tools::EventHandler<GameObject*> OnStaticChanged;
+		Tools::EventHandler<GameObject*> OnDestroyedEvent;
 #pragma endregion
 
 		virtual ~GameObject();

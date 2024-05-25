@@ -141,9 +141,9 @@ Root:
     - id: 1272
       enabled: true
       type: Human
-      achievingDestinationAccuracity: 0.200000003
+      achievingDestinationAccuracity: 0.300000003
     - id: 1273
       enabled: true
       type: HumanMovement
       speed: 1
-      forwardDetectionDistance: 0.100000001
+      forwardDetectionDistance: 0.05

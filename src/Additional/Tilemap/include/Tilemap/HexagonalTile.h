@@ -19,6 +19,8 @@ namespace Tilemap
 
 		glm::ivec2 _position;
 
+		int _onGameoObjectDestroyedEventId = -1;
+
 
 		static const glm::ivec2 adjacentDirectionsEvenY[6];
 		static const glm::ivec2 adjacentDirectionsOddY[6];

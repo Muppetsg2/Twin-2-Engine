@@ -10,6 +10,8 @@
 
 #include <Generation/Generators/AMapElementGenerator.h>
 
+#include <Humans/HumanMovement.h>
+
 namespace Humans
 {
 	class HumansGenerator : public Generation::Generators::AMapElementGenerator

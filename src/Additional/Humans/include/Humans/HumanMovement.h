@@ -18,6 +18,7 @@ namespace Humans
     {
         float _speed = 1.0f;
         glm::vec3 _targetDestination;
+        Tilemap::HexagonalTilemap* _tilemap;
 
         float _forwardDetectionDistance = 0.1f;
         // Start is called before the first frame update
@@ -31,6 +32,7 @@ namespace Humans
 
         glm::vec3 GetTargetDestination() const;
 
+        void SetTilemap(Tilemap::HexagonalTilemap* tilemap);
 
         virtual YAML::Node Serialize() const override;
         virtual bool Deserialize(const YAML::Node& node) override;

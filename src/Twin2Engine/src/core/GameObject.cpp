@@ -67,6 +67,8 @@ GameObject::GameObject()
 
 GameObject::~GameObject()
 {
+	OnDestroyedEvent(this);
+
 	for (Component* component : components)
 	{
 		component->OnDestroy();
@@ -331,6 +333,8 @@ void GameObject::DrawEditor()
 		Manager::SceneManager::DestroyGameObject(this);
 		return;
 	}
+
+	ImGui::Text("Id: %d", _id);
 
 	bool v = _isStatic;
 	ImGui::Checkbox(string("Static##GO").append(id).c_str(), &v);

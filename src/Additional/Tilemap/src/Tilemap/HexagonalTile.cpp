@@ -3,15 +3,36 @@
 using namespace Tilemap;
 using namespace Twin2Engine::Core;
 
+//const glm::ivec2 HexagonalTile::adjacentDirectionsEvenY[6] = {
+//	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 0),
+//	glm::ivec2(0, -1), glm::ivec2(-1, -1), glm::ivec2(-1, 0)
+//};
+//
+//const glm::ivec2 HexagonalTile::adjacentDirectionsOddY[6] = {
+//	glm::ivec2(0, 1), glm::ivec2(1, 1), glm::ivec2(1, 0),
+//	glm::ivec2(1, -1), glm::ivec2(0, -1), glm::ivec2(-1, 0)
+//};
+
+
 const glm::ivec2 HexagonalTile::adjacentDirectionsEvenY[6] = {
-	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 0),
-	glm::ivec2(0, -1), glm::ivec2(-1, -1), glm::ivec2(-1, 0)
+	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
+	glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
 };
 
 const glm::ivec2 HexagonalTile::adjacentDirectionsOddY[6] = {
-	glm::ivec2(0, 1), glm::ivec2(1, 1), glm::ivec2(1, 0),
-	glm::ivec2(1, -1), glm::ivec2(0, -1), glm::ivec2(-1, 0)
+	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
+	glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
 };
+
+//const glm::ivec2 HexagonalTile::adjacentDirectionsEvenY[6] = {
+//	glm::ivec2(-1, 1), glm::ivec2(0, 2), glm::ivec2(0, 1),
+//	glm::ivec2(0, -1), glm::ivec2(0, -2), glm::ivec2(-1, -1)
+//};
+//
+//const glm::ivec2 HexagonalTile::adjacentDirectionsOddY[6] = {
+//	glm::ivec2(-1, 1), glm::ivec2(0, 2), glm::ivec2(0, 1),
+//	glm::ivec2(0, -1), glm::ivec2(0, -2), glm::ivec2(-1, -1)
+//};
 
 HexagonalTile::HexagonalTile()
 {
@@ -54,7 +75,17 @@ inline glm::ivec2 HexagonalTile::GetPosition() const
 
 void Tilemap::HexagonalTile::SetGameObject(GameObject* gameObject)
 {
+	if (_gameObject)
+	{
+		_gameObject->OnDestroyedEvent -= _onGameoObjectDestroyedEventId;
+	}
 	_gameObject = gameObject;
+	if (_gameObject)
+	{
+		_onGameoObjectDestroyedEventId = _gameObject->OnDestroyedEvent += [&](GameObject* gameObject) {
+			_gameObject = nullptr;
+			};
+	}
 }
 GameObject* HexagonalTile::GetGameObject() const
 {

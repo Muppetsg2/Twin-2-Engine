@@ -54,7 +54,7 @@ namespace Tilemap
 		inline float GetEdgeLength() const;
 
 		glm::vec2 ConvertToRealPosition(const glm::ivec2& position) const;
-		glm::vec2 ConvertToTilemapPosition(const glm::ivec2& position) const;
+		glm::ivec2 ConvertToTilemapPosition(const glm::vec2& position) const;
 
 		static glm::ivec2 GetPositionInDirection(const glm::ivec2& position, unsigned int direction);
 

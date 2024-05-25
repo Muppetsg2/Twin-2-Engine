@@ -63,7 +63,7 @@ namespace AStar
 
 #if _DEBUG
 	protected:
-		virtual void DrawInheritedFields() override;
+		virtual bool DrawInheritedFields() override;
 	public:
 		virtual void DrawEditor() override;
 #endif

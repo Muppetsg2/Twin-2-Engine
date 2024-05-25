@@ -296,9 +296,11 @@ bool AStarPathfinder::Deserialize(const YAML::Node& node)
 
 #if _DEBUG
 
-void AStarPathfinder::DrawInheritedFields()
+bool AStarPathfinder::DrawInheritedFields()
 {
-	ImGui::InputFloat("MaxMappingDistance", &_maxMappingDistance);
+	string id = string(std::to_string(this->GetId()));
+	ImGui::InputFloat(string("MaxMappingDistance##").append(id).c_str(), &_maxMappingDistance);
+	return false;
 }
 
 void AStarPathfinder::DrawEditor()
@@ -307,6 +309,7 @@ void AStarPathfinder::DrawEditor()
 	string name = string("AStarPathfinder##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str()))
 	{
+		if (Twin2Engine::Core::Component::DrawInheritedFields()) return;
 		DrawInheritedFields();
 	}
 }

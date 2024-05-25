@@ -386,22 +386,23 @@ glm::ivec2 HexagonalTilemap::ConvertToTilemapPosition(const glm::vec2& position)
 
 void HexagonalTilemap::Initialize()
 {
-	_tilemap = new HexagonalTile * *[1];
-	_tilemap[0] = new HexagonalTile * [1];
-	_tilemap[0][0] = new HexagonalTile();
-	_tilemap[0][0]->SetTilemap(this);
-	_tilemap[0][0]->SetPosition(glm::ivec2(0, 0));
-
+	//_tilemap = new HexagonalTile * *[1];
+	//_tilemap[0] = new HexagonalTile * [1];
+	//_tilemap[0][0] = new HexagonalTile();
+	//_tilemap[0][0]->SetTilemap(this);
+	//_tilemap[0][0]->SetPosition(glm::ivec2(0, 0));
+	//
 	_initialized = true;
 
-	Resize(_leftBottomPosition, _rightTopPosition);
+
+	//Resize(_leftBottomPosition, _rightTopPosition);
 }
 
 void HexagonalTilemap::OnDestroy()
 {
-	for (int i = 0; i < _width; i++)
+	for (int i = 0; i < _width; ++i)
 	{
-		for (int j = 0; j < _height; j++)
+		for (int j = 0; j < _height; ++j)
 		{
 			if (_tilemap[i][j] != nullptr)
 			{
@@ -533,35 +534,3 @@ void HexagonalTilemap::DrawEditor()
 	}
 }
 #endif
-
-void HexagonalTilemap::Initialize()
-{
-	//_tilemap = new HexagonalTile * *[1];
-	//_tilemap[0] = new HexagonalTile * [1];
-	//_tilemap[0][0] = new HexagonalTile();
-	//_tilemap[0][0]->SetTilemap(this);
-	//_tilemap[0][0]->SetPosition(glm::ivec2(0, 0));
-	//
-	_initialized = true;
-
-
-	//Resize(_leftBottomPosition, _rightTopPosition);
-}
-
-void HexagonalTilemap::OnDestroy()
-{
-	for (int i = 0; i < _width; ++i)
-	{
-		for (int j = 0; j < _height; ++j)
-		{
-			if (_tilemap[i][j] != nullptr)
-			{
-				delete _tilemap[i][j];
-			}
-		}
-
-		delete[] _tilemap[i];
-	}
-
-	delete[] _tilemap;
-}

@@ -1,5 +1,4 @@
-#ifndef _ASTAR_NODE_H_
-#define _ASTAR_NODE_H_
+#pragma once
 
 #include <core/Component.h>
 
@@ -22,12 +21,9 @@ namespace AStar
 
 #if _DEBUG
 	protected:
-		virtual void DrawInheritedFields() override;
+		virtual bool DrawInheritedFields() override;
 	public:
 		virtual void DrawEditor() override;
 #endif
 	};
 }
-
-
-#endif // !_ASTAR_NODE_H_

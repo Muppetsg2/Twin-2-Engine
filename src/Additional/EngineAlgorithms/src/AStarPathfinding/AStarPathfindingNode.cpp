@@ -35,9 +35,11 @@ bool AStarPathfindingNode::Deserialize(const YAML::Node& node)
 
 #if _DEBUG
 
-void AStarPathfindingNode::DrawInheritedFields()
+bool AStarPathfindingNode::DrawInheritedFields()
 {
-	ImGui::Checkbox("Passable", &passable);
+	string id = string(std::to_string(this->GetId()));
+	ImGui::Checkbox(string("Passable##").append(id).c_str(), &passable);
+	return false;
 }
 
 void AStarPathfindingNode::DrawEditor()
@@ -46,6 +48,7 @@ void AStarPathfindingNode::DrawEditor()
 	string name = string("AStarPathfindingNode##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str()))
 	{
+		if (Twin2Engine::Core::Component::DrawInheritedFields()) return;
 		DrawInheritedFields();
 	}
 }

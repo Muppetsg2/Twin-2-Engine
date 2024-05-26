@@ -1,4 +1,4 @@
 scriptable_object:
   __SO_RegisteredName__: HumansGenerator
   prefabHuman: res/prefabs/Human.prefab
-  number: 20
+  number: 1

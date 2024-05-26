@@ -4,6 +4,7 @@ using namespace Generation;
 using namespace Generation::Generators;
 
 using namespace Tilemap;
+using namespace AStar;
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
@@ -51,6 +52,7 @@ void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
             //SPDLOG_WARN("Dodaæ warstwy w GameObjectach");
             //tile->layer = LayerMask::NameToLayer("Mountain");
             tile->type = MapHexTile::HexTileType::Mountain;
+            tile->GetGameObject()->GetComponent<AStarPathfindingNode>()->passable = false;
 
             GameObject* mountain = SceneManager::CreateGameObject(prefabMountains, tile->GetGameObject()->GetTransform());
             //GameObject* mountain = GameObject::Instantiate(prefabMountains, tile->GetGameObject()->GetTransform());

@@ -147,3 +147,4 @@ Root:
       type: HumanMovement
       speed: 1
       forwardDetectionDistance: 0.05
+      achievingDestinationAccuracity: 0.1

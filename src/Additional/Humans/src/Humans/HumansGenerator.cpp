@@ -37,5 +37,6 @@ void HumansGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
         GameObject* human = SceneManager::CreateGameObject(prefabHuman, humanContainer->GetTransform());
         human->GetTransform()->SetGlobalPosition(city->GetTransform()->GetGlobalPosition());
         human->GetComponent<HumanMovement>()->SetTilemap(tilemap);
+        human->GetComponent<Human>()->StartWorking();
     }
 }

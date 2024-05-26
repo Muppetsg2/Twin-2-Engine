@@ -5,6 +5,8 @@
 #include <Generation/MapSector.h>
 #include <Generation/MapHexTile.h>
 
+#include<AstarPathfinding/AStarPathfindingNode.h>
+
 #include <core/Random.h>
 
 namespace Generation::Generators

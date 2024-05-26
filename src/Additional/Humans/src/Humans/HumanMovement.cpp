@@ -5,6 +5,8 @@ using namespace Generation;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Physic;
 
+using namespace AStar;
+
 using namespace glm;
 using namespace std;
 
@@ -17,8 +19,28 @@ void HumanMovement::Initialize()
 void HumanMovement::Update()
 {
     glm::vec3 globalPosition = GetTransform()->GetGlobalPosition();
+
     globalPosition.y = 0.0f;
-    glm::vec3 direction = normalize(_targetDestination - globalPosition);
+
+    if (_foundPath)
+    {
+        if (glm::distance(globalPosition, _currentDestination) <= _achievingDestinationAccuracity)
+        {
+            if (_path.IsOnEnd())
+            {
+                _findingPath = false;
+                _foundPath = false;
+            }
+            _currentDestination = _path.Next();
+            _currentDestination.y = 0.0f;
+        }
+    }
+
+    //SPDLOG_WARN("Current destination: {} {} {}", _currentDestination.x, _currentDestination.y, _currentDestination.z);
+
+    //vec3 processedDestination = _currentDestination;
+    //processedDestination.y = 0;
+    glm::vec3 direction = normalize(_currentDestination - globalPosition);
 
     GetTransform()->Translate(direction * _speed * Time::GetDeltaTime());
 
@@ -27,56 +49,40 @@ void HumanMovement::Update()
     
     Tilemap::HexagonalTile* tile = _tilemap->GetTile(
         _tilemap->ConvertToTilemapPosition(
-            vec2(globalPosition.x, globalPosition.z) + vec2(direction.x, direction.z) * _forwardDetectionDistance));
+            vec2(globalPosition.x, globalPosition.z) + glm::normalize(vec2(direction.x, direction.z)) * _forwardDetectionDistance));
     
     if (tile && tile->GetGameObject())
     {
         GameObject* tileGO = tile->GetGameObject();
         Transform* tileT = tileGO->GetTransform();
         globalPosition.y = tileT->GetGlobalPosition().y;
-        //GetTransform()->SetGlobalPosition(vec3(globalPosition.x, tile->GetGameObject()->GetTransform()->GetGlobalPosition().y, globalPosition.z));
         GetTransform()->SetGlobalPosition(globalPosition);
+        //GetTransform()->SetGlobalPosition(vec3(globalPosition.x, tile->GetGameObject()->GetTransform()->GetGlobalPosition().y, globalPosition.z));
     }
-
-    //RaycastHit forawrdHit; // = Physics.RaycastAll(transform.position + new Vector3(0, 1, 0) + direction * _forwardDetectionDistance, Vector3.down, 5f);
-    //RaycastHit currentHit; // = Physics.RaycastAll(transform.position + new Vector3(0, 1, 0), Vector3.down, 5f);
-    //
-    //Ray forwardRay(vec3(0.0f, -1.0f, 0.0f), globalPosition + vec3(0, 2, 0) + direction * _forwardDetectionDistance);
-    //Ray currentRay(vec3(0.0f, -1.0f, 0.0f), globalPosition + vec3(0, 0.1, 0));
-    //
-    //bool fHit = CollisionManager::Instance()->Raycast(forwardRay, forawrdHit);
-    //bool cHit = CollisionManager::Instance()->Raycast(currentRay, currentHit);
-
-    ////Debug.Log("Hits: " + forawrdHit.Length);
-    //MapHexTile* forwardHexTile = nullptr;
-    ////SPDLOG_INFO("Found frwdRay: {}", forawrdHit.collider != nullptr);
-    //if (fHit)
-    //{
-    //    forwardHexTile = forawrdHit.collider->GetGameObject()->GetComponent<MapHexTile>();
-    //}
-    //
-    //MapHexTile* currentHexTile = nullptr;
-    //if (cHit)
-    //{
-    //    currentHexTile = currentHit.collider->GetGameObject()->GetComponent<MapHexTile>();
-    //}
-    //
-    ////if (currentHexTile != nullptr && forwardHexTile != nullptr)
-    //if (fHit && cHit)
-    //{
-    //    float currentPositionY = currentHexTile->GetTransform()->GetGlobalPosition().y;
-    //    float forwardPositionY = forwardHexTile->GetTransform()->GetGlobalPosition().y;
-    //    if (currentPositionY > forwardPositionY)
-    //    {
-    //        GetTransform()->SetGlobalPosition(vec3(GetTransform()->GetGlobalPosition().x, currentPositionY, GetTransform()->GetGlobalPosition().z));
-    //    }
-    //    else
-    //    {
-    //        GetTransform()->SetGlobalPosition(vec3(GetTransform()->GetGlobalPosition().x, forwardPositionY, GetTransform()->GetGlobalPosition().z));
-    //    }
-    //}
+    
 }
 
+void HumanMovement::PathFindingSuccess(const AStarPath& path)
+{
+    _path = path;
+    _targetDestination = _bufferedTargetDestination;
+    _targetDestination.y = 0.0f;
+    _currentDestination = _path.Next();
+    _currentDestination.y = 0.0f;
+    _foundPath = true;
+
+
+    SPDLOG_INFO("PATH_FINDING success");
+    SPDLOG_ERROR("{}Current destination: {} {} {}", GetGameObject()->Id(), _currentDestination.x, _currentDestination.y, _currentDestination.z);
+}
+
+void HumanMovement::PathFindingFailure()
+{
+    _foundPath = false;
+    _findingPath = false;
+
+    SPDLOG_INFO("PATH_FINDING failure");
+}
 
 void HumanMovement::SetTilemap(Tilemap::HexagonalTilemap* tilemap)
 {
@@ -85,7 +91,20 @@ void HumanMovement::SetTilemap(Tilemap::HexagonalTilemap* tilemap)
 
 void HumanMovement::MoveTo(glm::vec3 destination)
 {
-    _targetDestination = destination;
+    if (_findingPath)
+        return;
+
+    _findingPath = true;
+
+    destination.x = 0.0f;
+
+    vec3 globalPosition = GetTransform()->GetGlobalPosition();
+    globalPosition.y = 0.0f;
+
+    AStarPathfinder::FindPath(globalPosition, destination, 0,
+        [&](const AStarPath& path) { this->PathFindingSuccess(path); }, [&]() { PathFindingFailure(); });
+
+    _bufferedTargetDestination = destination;
 }
 
 glm::vec3 HumanMovement::GetTargetDestination() const
@@ -101,6 +120,7 @@ YAML::Node HumanMovement::Serialize() const
     node["type"] = "HumanMovement";
     node["speed"] = _speed;
     node["forwardDetectionDistance"] = _forwardDetectionDistance;
+    node["achievingDestinationAccuracity"] = _achievingDestinationAccuracity;
 
     return node;
 }
@@ -112,6 +132,7 @@ bool HumanMovement::Deserialize(const YAML::Node& node)
 
     _speed = node["speed"].as<float>();
     _forwardDetectionDistance = node["forwardDetectionDistance"].as<float>();
+    _achievingDestinationAccuracity = node["achievingDestinationAccuracity"].as<float>();
 
     return true;
 }
@@ -124,10 +145,18 @@ void HumanMovement::DrawEditor()
     if (ImGui::CollapsingHeader(name.c_str())) {
         ImGui::InputFloat("Speed: ", &_speed);
         ImGui::InputFloat("ForwardDetectionDistance: ", &_forwardDetectionDistance);
+        ImGui::InputFloat("AchievingDestinationAccuracity: ", &_achievingDestinationAccuracity);
+
+
         ImGui::Text("Target Destination: ");
         ImGui::SameLine();
         ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
         ImGui::Text("%f\t%f\t%f", _targetDestination.x, _targetDestination.y, _targetDestination.z);
+        ImGui::PopFont();
+        ImGui::Text("Current Destination: ");
+        ImGui::SameLine();
+        ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+        ImGui::Text("%f\t%f\t%f", _currentDestination.x, _currentDestination.y, _currentDestination.z);
         ImGui::PopFont();
     }
 }

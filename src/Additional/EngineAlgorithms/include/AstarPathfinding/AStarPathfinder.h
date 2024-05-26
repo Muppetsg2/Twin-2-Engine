@@ -21,7 +21,7 @@ namespace AStar
 	// - od³o¿enie zmian w strukturze do momentu zakoñczenia w¹tkó wyszukuj¹cych
 	class AStarPathfindingNode;
 
-	class AStarPathfinder : Twin2Engine::Core::Component
+	class AStarPathfinder : public Twin2Engine::Core::Component
 	{
 		friend class AStarPathfindingNode;
 

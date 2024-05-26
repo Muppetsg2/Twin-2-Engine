@@ -284,25 +284,25 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::Prefa
 
 	// Define the neighboring directions for hexagonal tiles
 	
-	//const glm::ivec2 HexagonalTile::adjacentDirectionsEvenY[6] = {
-	//	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 0),
-	//	glm::ivec2(0, -1), glm::ivec2(-1, -1), glm::ivec2(-1, 0)
+	const glm::ivec2 adjacentDirectionsEvenY[6] = {
+		glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 0),
+		glm::ivec2(0, -1), glm::ivec2(-1, -1), glm::ivec2(-1, 0)
+	};
+	
+	const glm::ivec2 adjacentDirectionsOddY[6] = {
+		glm::ivec2(0, 1), glm::ivec2(1, 1), glm::ivec2(1, 0),
+		glm::ivec2(1, -1), glm::ivec2(0, -1), glm::ivec2(-1, 0)
+	};
+
+	//const glm::ivec2 adjacentDirectionsEvenY[6] = {
+	//	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
+	//	glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
 	//};
 	//
-	//const glm::ivec2 HexagonalTile::adjacentDirectionsOddY[6] = {
-	//	glm::ivec2(0, 1), glm::ivec2(1, 1), glm::ivec2(1, 0),
-	//	glm::ivec2(1, -1), glm::ivec2(0, -1), glm::ivec2(-1, 0)
+	//const glm::ivec2 adjacentDirectionsOddY[6] = {
+	//	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
+	//	glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
 	//};
-
-	const glm::ivec2 adjacentDirectionsEvenY[6] = {
-		glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
-		glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
-	};
-
-	const glm::ivec2 adjacentDirectionsOddY[6] = {
-		glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
-		glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
-	};
 
 
 	glm::ivec2 currentPos;
@@ -379,40 +379,24 @@ glm::vec2 HexagonalTilemap::ConvertToRealPosition(const glm::ivec2& position) co
 
 glm::ivec2 HexagonalTilemap::ConvertToTilemapPosition(const glm::vec2& position) const
 {
-	int x = glm::round(position.x / (_edgeLength * 1.5f));
-	return glm::ivec2(x, glm::round((position.y / _distanceBetweenTiles - 0.5f * (x % 2))));
-	//return glm::ivec2(glm::floor(0.25f * position.x / _edgeLength), 2.0f * position.y / _distanceBetweenTiles);
-}
-
-void HexagonalTilemap::Initialize()
-{
-	_tilemap = new HexagonalTile * *[1];
-	_tilemap[0] = new HexagonalTile * [1];
-	_tilemap[0][0] = new HexagonalTile();
-	_tilemap[0][0]->SetTilemap(this);
-	_tilemap[0][0]->SetPosition(glm::ivec2(0, 0));
-
-	_initialized = true;
-
-	Resize(_leftBottomPosition, _rightTopPosition);
-}
-
-void HexagonalTilemap::OnDestroy()
-{
-	for (int i = 0; i < _width; i++)
+	float fx = position.x / (_edgeLength * 1.5f);
+	int x = glm::round(fx);
+	if (x % 2)
 	{
-		for (int j = 0; j < _height; j++)
+		if (fx > (x + 0.25f))
 		{
-			if (_tilemap[i][j] != nullptr)
-			{
-				delete _tilemap[i][j];
-			}
+			--x;
 		}
-
-		delete[] _tilemap[i];
+		else if (fx <= (x - 0.25f))
+		{
+			++x;
+		}
 	}
+	//return glm::ivec2(x, glm::round((position.y / _distanceBetweenTiles)));
+	int y = glm::round(((position.y - 0.5f * (abs(x) % 2)) / _distanceBetweenTiles));
 
-	delete[] _tilemap;
+	return glm::ivec2(x, y);
+	//return glm::ivec2(glm::floor(0.25f * position.x / _edgeLength), 2.0f * position.y / _distanceBetweenTiles);
 }
 
 YAML::Node HexagonalTilemap::Serialize() const

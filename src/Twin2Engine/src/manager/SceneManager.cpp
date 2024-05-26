@@ -410,6 +410,10 @@ void SceneManager::LoadScene() {
 	// INIT COMPONENTS
 	for (const auto& compPair : _componentsById) {
 		compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
+		compPair.second->Initialize();
+	}
+	for (const auto& compPair : _componentsById) {
+		//compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
 		//compPair.second->Initialize();
 	}
 	static_cast<Component*>(_rootObject->GetTransform())->Init(_rootObject);
@@ -900,6 +904,10 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
 		//compPair.second->Initialize();
 	}
+	for (const auto& compPair : prefabComponentsById) {
+		//compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
+		compPair.second->Initialize();
+	}
 #pragma endregion
 
 	ScriptableObjectManager::SceneDeserializationEnd();
@@ -907,7 +915,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	if (_rootObject == nullptr) _rootObject = new GameObject();
 	prefabRoot->GetTransform()->SetParent(parent != nullptr ? parent : _rootObject->GetTransform());
 
-	for (const auto& compPair : _componentsById) {
+	for (const auto& compPair : prefabComponentsById) {
 		if (compPair.second->_enabled)
 		{
 			compPair.second->OnEnable();

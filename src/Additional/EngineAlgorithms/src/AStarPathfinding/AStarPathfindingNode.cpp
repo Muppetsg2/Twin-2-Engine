@@ -9,6 +9,7 @@ void AStarPathfindingNode::Initialize()
 
 void AStarPathfindingNode::OnDestroy()
 {
+	SPDLOG_INFO("Unregistering Node");
 	AStarPathfinder::Unregister(this);
 }
 
@@ -17,6 +18,7 @@ YAML::Node AStarPathfindingNode::Serialize() const
 {
 	YAML::Node node = Component::Serialize();
 
+	node["type"] = "AStarPathfindingNode";
 	node["passable"] = passable;
 
 	return node;

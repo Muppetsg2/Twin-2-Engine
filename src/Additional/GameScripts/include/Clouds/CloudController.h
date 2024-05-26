@@ -2,6 +2,7 @@
 
 #include <Clouds/Cloud.h>
 #include <graphic/Shader.h>
+#include <graphic/Texture2D.h>
 #include <graphic/InstantiatingMesh.h>
 
 class CloudController {
@@ -10,8 +11,11 @@ class CloudController {
 		std::unordered_map<Twin2Engine::Graphic::InstantiatingMesh*, std::vector<glm::mat4>> depthQueue;
 		Twin2Engine::Graphic::Shader* CloudDepthShader;
 		Twin2Engine::Graphic::Shader* CloudShader;
+		Twin2Engine::Graphic::Texture2D* NoiseTexture;
+		GLuint noiseTexture3d;
 		GLuint depthmapFBO;
 		GLuint depthmap;
+		GLuint lightdepthmap;
 		GLuint dmap;
 
 	public:
@@ -28,4 +32,5 @@ class CloudController {
 		static void DeleteInstance();
 
 		void RenderCloudBackDepthMap();
+		void RenderClouds();
 };

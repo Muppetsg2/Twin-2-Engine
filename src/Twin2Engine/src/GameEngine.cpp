@@ -184,6 +184,8 @@ bool GameEngine::Init(const string& window_name, int32_t window_width, int32_t w
 	Deserializers();
 
     glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+    //glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
 	return true;
 }

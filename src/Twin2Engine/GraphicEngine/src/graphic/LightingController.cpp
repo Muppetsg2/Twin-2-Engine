@@ -2,17 +2,19 @@
 #include <graphic/Window.h>
 
 #include <graphic/manager/MeshRenderingManager.h>
+#include <graphic/manager/ShaderManager.h>
 
 #define max max
 
 using namespace Twin2Engine::Graphic;
+using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Tools;
 
 LightingController* LightingController::instance = nullptr;
 const int LightingController::SHADOW_WIDTH = 2048;
 const int LightingController::SHADOW_HEIGHT = 2048;
 const int LightingController::MAPS_BEGINNING = 27;
-float LightingController::DLShadowCastingRange = 20.0f;
+float LightingController::DLShadowCastingRange = 15.0f;
 glm::vec3 LightingController::viewerPosition(0.0f);
 bool LightingController::lastViewerPositionSet = false;
 glm::vec3 LightingController::lastViewerPosition(0.0f);
@@ -233,11 +235,12 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 	Twin2Engine::Core::CameraComponent* mainCam = Twin2Engine::Core::CameraComponent::GetMainCamera();
 
 	float zLength = 100.0f;
-	glm::vec3 lightNewPos = viewerPosition + mainCam->GetFrontDir() * DLShadowCastingRange - light->direction * (zLength * 0.5f);
+	glm::vec3 offset(-18.0f, 0.0f, 18.0f);
+	glm::vec3 lightNewPos = viewerPosition + mainCam->GetFrontDir() * DLShadowCastingRange - light->direction * (zLength * 0.5f) + offset;
 	glm::mat4 viewMatrix = glm::lookAt(lightNewPos, lightNewPos + light->direction, glm::vec3(0.0f, 1.0f, 0.0f));
 
-	float orthoHeight = 20.0f;
-	float orthoWidth = 20.0f;
+	float orthoHeight = 13.0f;
+	float orthoWidth = 13.0f;
 
 	//light->lightSpaceMatrix = glm::ortho(-(maxX + lightMargin), maxX + lightMargin, -(maxY + lightMargin), maxY + lightMargin, -zLength, zLength) * viewMatrix;/**/
 	light->lightSpaceMatrix = glm::ortho(-orthoWidth, orthoWidth, -orthoHeight, orthoHeight, -zLength, zLength) * viewMatrix;/**/
@@ -245,6 +248,9 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 
 	lastViewerPosition = viewerPosition;
 	lastViewerPositionSet = true;
+
+	ShaderManager::CloudLightDepthShader->Use();
+	ShaderManager::CloudLightDepthShader->SetMat4("projectionViewMatrix", light->lightSpaceMatrix);
 
 	return std::move(lightNewPos);
 }

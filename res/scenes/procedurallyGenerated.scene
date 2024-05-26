@@ -105,6 +105,8 @@ Models:
     path: "{Plane}"
   - id: 5
     path: "{Sphere}"
+  - id: 6
+    path: res/models/cloud.obj
 Prefabs:
   - id: 0
     path: res/prefabs/testPrefab.prefab
@@ -750,19 +752,19 @@ GameObjects:
         y: 7
         z: 0
       scale:
-        x: 2
-        y: 2
-        z: 2
+        x: 0.8
+        y: 0.8
+        z: 0.8
       rotation:
         x: -90
         y: 0
-        z: 0
+        z: 30
     components:
       - id: 39
         enabled: true
         type: MeshRenderer
         isTransparent: false
-        model: 5
+        model: 6
         materials:
           - 9
       - id: 40
@@ -792,19 +794,19 @@ GameObjects:
         y: 7
         z: 0
       scale:
-        x: 2
-        y: 2
-        z: 2
+        x: 1.1
+        y: 1.1
+        z: 1.1
       rotation:
         x: -90
         y: 0
-        z: 0
+        z: 30
     components:
       - id: 43
         enabled: true
         type: MeshRenderer
         isTransparent: false
-        model: 3
+        model: 6
         materials:
           - 9
       - id: 44

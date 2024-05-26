@@ -1,5 +1,5 @@
 #version 430 core
-//CloudDepthShader.frag
+//CloudLightDepthShader.frag
 
 //layout(early_fragment_tests) in;
 

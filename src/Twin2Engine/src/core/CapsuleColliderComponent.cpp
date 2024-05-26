@@ -105,7 +105,7 @@ void CapsuleColliderComponent::DrawEditor()
 		if (Component::DrawInheritedFields()) return;
 
 		float v = ((CapsuleColliderData*)collider->shapeColliderData)->Radius;
-		ImGui::DragFloat(string("Radius##").append(id).c_str(), &v, 0.1f);
+		ImGui::DragFloat(string("Radius##").append(id).c_str(), &v, 0.1f, 0.f, FLT_MAX);
 
 		if (v != ((CapsuleColliderData*)collider->shapeColliderData)->Radius) {
 			SetRadius(v);

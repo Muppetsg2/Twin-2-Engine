@@ -515,7 +515,7 @@ void HexagonalTilemap::DrawEditor()
 		if (Component::DrawInheritedFields()) return;
 
 		float dbt = _distanceBetweenTiles;
-		ImGui::DragFloat(string("Distance Between Tiles##").append(id).c_str(), &dbt, 0.1f, 0.0f);
+		ImGui::DragFloat(string("Distance Between Tiles##").append(id).c_str(), &dbt, 0.1f, 0.0f, FLT_MAX);
 
 		if (dbt != _distanceBetweenTiles) {
 			SetDistanceBetweenTiles(dbt);

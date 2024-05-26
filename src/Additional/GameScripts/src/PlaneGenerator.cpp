@@ -169,10 +169,10 @@ void PlaneGenerator::DrawEditor()
         ImGui::PopFont();
 
         unsigned int r = _rows;
-        ImGui::DragUInt(string("Rows##").append(id).c_str(), &r, 1.f, 2);
+        ImGui::DragUInt(string("Rows##").append(id).c_str(), &r, 1.f, 2, UINT_MAX);
 
         unsigned int c = _columns;
-        ImGui::DragUInt(string("Columns##").append(id).c_str(), &c, 1.f, 2);
+        ImGui::DragUInt(string("Columns##").append(id).c_str(), &c, 1.f, 2, UINT_MAX);
 
         if (r != _rows || c != _columns) {
             SetGridValues(r, c);

@@ -152,21 +152,21 @@ void BoxColliderComponent::DrawEditor()
 
 		if (Component::DrawInheritedFields()) return;
 		float v = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x;
-		ImGui::DragFloat(string("Width##").append(id).c_str(), &v, 0.1f);
+		ImGui::DragFloat(string("Width##").append(id).c_str(), &v, 0.1f, 0.f, FLT_MAX);
 
 		if (v != ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x) {
 			SetWidth(v);
 		}
 
 		v = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y;
-		ImGui::DragFloat(string("Height##").append(id).c_str(), &v, 0.1f);
+		ImGui::DragFloat(string("Height##").append(id).c_str(), &v, 0.1f, 0.f, FLT_MAX);
 
 		if (v != ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y) {
 			SetHeight(v);
 		}
 
 		v = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z;
-		ImGui::DragFloat(string("Length##").append(id).c_str(), &v, 0.1f);
+		ImGui::DragFloat(string("Length##").append(id).c_str(), &v, 0.1f, 0.f, FLT_MAX);
 
 		if (v != ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z) {
 			SetLength(v);

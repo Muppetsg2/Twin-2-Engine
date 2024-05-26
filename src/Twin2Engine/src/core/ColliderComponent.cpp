@@ -218,7 +218,7 @@ bool ColliderComponent::DrawInheritedFields()
 	}
 
 	if (v) {
-		ImGui::DragFloat(string("Bounding Volume Radius##").append(id).c_str(), &((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius, 0.1f);
+		ImGui::DragFloat(string("Bounding Volume Radius##").append(id).c_str(), &((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius, 0.1f, 0.f, FLT_MAX);
 	}
 
 	return false;

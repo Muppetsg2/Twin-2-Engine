@@ -467,28 +467,28 @@ void MapGenerator::DrawEditor()
         }
 
         float v = generationRadiusMin;
-        ImGui::DragFloat(string("Generation Radius Min##").append(id).c_str(), &v, 0.1f);
+        ImGui::DragFloat(string("Generation Radius Min##").append(id).c_str(), &v, 0.1f, 0.f, FLT_MAX);
 
         if (v != generationRadiusMin) {
             generationRadiusMin = v;
         }
 
         v = generationRadiusMax;
-        ImGui::DragFloat(string("Generation Radius Max##").append(id).c_str(), &v, 0.1f);
+        ImGui::DragFloat(string("Generation Radius Max##").append(id).c_str(), &v, 0.1f, generationRadiusMin, FLT_MAX);
 
         if (v != generationRadiusMax) {
             generationRadiusMax = v;
         }
 
         v = minPointsNumber;
-        ImGui::DragFloat(string("Points Number Min##").append(id).c_str(), &v, 0.1f);
+        ImGui::DragFloat(string("Points Number Min##").append(id).c_str(), &v, 0.1f, 0.f, FLT_MAX);
 
         if (v != minPointsNumber) {
             minPointsNumber = v;
         }
 
         v = maxPointsNumber;
-        ImGui::DragFloat(string("Points Number Max##").append(id).c_str(), &v, 0.1f);
+        ImGui::DragFloat(string("Points Number Max##").append(id).c_str(), &v, 0.1f, minPointsNumber, FLT_MAX);
 
         if (v != maxPointsNumber) {
             maxPointsNumber = v;

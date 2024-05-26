@@ -33,7 +33,7 @@ namespace Humans
 		virtual void DrawEditor() override
 		{
 			// TODO: Dodac prefab Human do edytora
-			ImGui::DragInt("Density", (int*)&number, 1, 0);
+			ImGui::DragUInt(std::string("Density##").append(to_string(this->GetId())).c_str(), &number, 1, 0, UINT_MAX);
 		}
 #endif
 	};

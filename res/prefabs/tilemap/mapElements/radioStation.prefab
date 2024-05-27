@@ -12,7 +12,7 @@ Materials:
   - id: 0
     path: RadioTower
   - id: 1
-    path: CityMaterial
+    path: RadioTowerBuilding
 Models:
   - id: 0
     path: res/models/radioTower.obj
@@ -31,7 +31,7 @@ Root:
       z: 0
     scale:
       x: 1
-      y: 0.5
+      y: 1
       z: 1
     rotation:
       x: 0

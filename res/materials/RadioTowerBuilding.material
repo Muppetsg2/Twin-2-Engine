@@ -1,7 +1,7 @@
 material:
-  name: RadioTower
+  name: RadioTowerBuilding
   shader: origin/Textured
   parameters:
     - name: texture1
       type: texture2D
-      value: res/textures/radioTowerTexture.png
+      value: res/textures/radioTowerBuildingTexture.png

@@ -26,18 +26,23 @@ namespace AStar
 	{
 		friend class AStarPathfinder;
 	private:
-		std::jthread* _thread;
+		size_t _threadId;
+		std::thread* _thread;
 		bool* _searching;
 	public:
 		AStarPathfindingInfo() : _thread(nullptr), _searching(nullptr) { }
 		~AStarPathfindingInfo() {
-			if (_searching) delete _searching;
-			_searching = nullptr;
+			WaitForFinding();
+			//if (IsSearching() && _thread)
+			//	_thread->join();
+			//if (_searching) delete _searching;
+			//_searching = nullptr;
 		}
-		AStarPathfindingInfo(std::jthread* thread, bool* searching) : _thread(thread), _searching(searching) { }
+		AStarPathfindingInfo(size_t threadId, std::thread* thread, bool* searching) : _threadId(threadId), _thread(thread), _searching(searching) { }
 		AStarPathfindingInfo(const AStarPathfindingInfo&) = delete;
 		AStarPathfindingInfo(AStarPathfindingInfo&& other)
 		{
+			_threadId = other._threadId;
 			_thread = other._thread;
 			_searching = other._searching;
 			other._thread = nullptr;
@@ -46,7 +51,12 @@ namespace AStar
 		AStarPathfindingInfo& operator=(const AStarPathfindingInfo&) = delete;
 		AStarPathfindingInfo& operator=(AStarPathfindingInfo&& other)
 		{
+			_threadId = other._threadId;
 			_thread = other._thread;
+
+			if (_searching)
+				delete _searching;
+
 			_searching = other._searching;
 			other._thread = nullptr;
 			other._searching = nullptr;
@@ -57,7 +67,12 @@ namespace AStar
 		void WaitForFinding()
 		{
 			if (IsSearching() && _thread)
+			{
 				_thread->join();
+				delete _searching;
+				_searching = nullptr;
+				_thread = nullptr;
+			}
 		}
 		bool IsSearching()
 		{
@@ -74,6 +89,7 @@ namespace AStar
 	class AStarPathfinder : public Twin2Engine::Core::Component
 	{
 		friend class AStarPathfindingNode;
+		friend class AStarPathfindingInfo;
 
 		struct AStarTargetNodeInfo
 		{
@@ -84,11 +100,13 @@ namespace AStar
 
 		static std::vector<AStarPathfindingNode*> _registeredNodes;
 
-		//static std::unordered_map<AStarPathfindingNode*, std::vector<AStarPathfindingNode*>> _nodesGraph;
 		static std::unordered_map<AStarPathfindingNode*, std::vector<AStarTargetNodeInfo>> _nodesGraph;
 
-		static std::unordered_map<size_t, std::jthread> _pathfindingThreads;
+		static std::unordered_map<size_t, std::thread> _pathfindingThreads;
 		static std::unordered_map<size_t, bool*> _pathfindingThreadsSearchingPtrs;
+
+		static std::mutex _endedThreadsMutex;
+		static std::list<size_t> _endedThreads;
 
 		static float _maxMappingDistance;
 
@@ -112,6 +130,7 @@ namespace AStar
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
 
+		virtual void Update() override;
 		virtual void OnDestroy() override;
 
 #if _DEBUG

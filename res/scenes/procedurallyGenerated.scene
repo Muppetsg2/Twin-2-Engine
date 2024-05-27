@@ -665,7 +665,7 @@ GameObjects:
           - res/scriptableobjects/LakeGenerator.so
           - res/scriptableobjects/MountainsGenerator.so
           - res/scriptableobjects/CityGenerator.so
-          - res/scriptableobjects/RadioStationGeneratorSectorBased.s
+          - res/scriptableobjects/RadioStationGeneratorSectorBased.so
           - res/scriptableobjects/HumansGenerator.so
       - id: 33
         enabled: true

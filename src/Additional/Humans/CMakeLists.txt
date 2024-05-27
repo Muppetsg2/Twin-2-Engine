@@ -45,6 +45,7 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC ${HUMANS_PRECOMPILE_HEADER})
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Twin2Engine)
+target_link_libraries(${PROJECT_NAME} PRIVATE EngineAlgorithms)
 target_link_libraries(${PROJECT_NAME} PRIVATE PhysicEngine)
 target_link_libraries(${PROJECT_NAME} PRIVATE Generation)
 target_link_libraries(${PROJECT_NAME} PRIVATE Tilemap)

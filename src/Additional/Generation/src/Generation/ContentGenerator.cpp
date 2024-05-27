@@ -24,6 +24,13 @@ void ContentGenerator::Initialize()
 }
 
 void ContentGenerator::OnDestroy() {
+
+    SPDLOG_INFO("Cleaning content");
+    for (AMapElementGenerator* generator : mapElementGenerators)
+    {
+        SPDLOG_INFO("Generating element");
+        generator->Clean();
+    }
     mapElementGenerators.clear();
 }
 
@@ -66,9 +73,22 @@ void ContentGenerator::DrawEditor()
 {
     string id = string(std::to_string(this->GetId()));
     string name = string("Content Generator##Component").append(id);
+
+    // Edition Type
+    // 0 - move
+    // 1 - remove
+    static int type = 0;
+
     if (ImGui::CollapsingHeader(name.c_str()))
     {
         if (Component::DrawInheritedFields()) return;
+
+        if (ImGui::RadioButton(std::string("Move##RadioButton").append(id).c_str(), type == 0))
+            type = 0;
+        ImGui::SameLine();
+        if (ImGui::RadioButton(std::string("Remove##RadioButton").append(id).c_str(), type == 1))
+            type = 1;
+
 		ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 		bool node_open = ImGui::TreeNodeEx(string("Generators##").append(id).c_str(), node_flag);
 
@@ -76,17 +96,37 @@ void ContentGenerator::DrawEditor()
         clicked.clear();
 		if (node_open) {
             for (int i = 0; i < mapElementGenerators.size(); ++i) {
-                string n = Twin2Engine::Manager::ScriptableObjectManager::GetName(mapElementGenerators[i]->GetId());
-                ImGui::BulletText(n.c_str());
-                ImGui::SameLine(ImGui::GetContentRegionAvail().x - 30);
-                if (ImGui::Button(string("Remove##").append(id).append(std::to_string(i)).c_str())) {
-                    clicked.push_back(i);
+                AMapElementGenerator* item = mapElementGenerators[i];
+                string n = Twin2Engine::Manager::ScriptableObjectManager::GetName(item->GetId()).append("##").append(id);
+                ImGui::Text(to_string(i + 1).append(". "s).c_str());
+                ImGui::SameLine();
+                ImGui::Selectable(n.c_str(), false, NULL, ImVec2(ImGui::GetContentRegionAvail().x - 80, 0.f));
+
+                bool v = false;
+                if (type == 0) v = ImGui::IsItemActive() && !ImGui::IsItemHovered();
+
+                if (type == 1) {
+                    ImGui::SameLine(ImGui::GetContentRegionAvail().x - 30);
+                    if (ImGui::Button(string("Remove##").append(id).append(std::to_string(i)).c_str())) {
+                        clicked.push_back(i);
+                    }
+                }
+
+                if (type == 0 && v)
+                {
+                    size_t i_next = i + (ImGui::GetMouseDragDelta(0).y < 0.f ? -1 : 1);
+                    if (i_next >= 0 && i_next < mapElementGenerators.size())
+                    {
+                        mapElementGenerators[i] = mapElementGenerators[i_next];
+                        mapElementGenerators[i_next] = item;
+                        ImGui::ResetMouseDragDelta();
+                    }
                 }
             }
             ImGui::TreePop();
 		}
 
-        if (clicked.size() > 0) {
+        if (clicked.size() > 0 && type == 1) {
             clicked.sort();
 
             for (int i = clicked.size() - 1; i > -1; --i)
@@ -100,7 +140,6 @@ void ContentGenerator::DrawEditor()
         clicked.clear();
 
         // TODO: DODAC
-        // przenoszenie kolejnosæi generatorow
         /*
         if (ImGui::Button(string("Add Element Generator##").append(id).c_str())) {
 

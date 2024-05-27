@@ -82,13 +82,13 @@ void Button::DrawEditor()
 		
 		if (Component::DrawInheritedFields()) return;
 		float v = _width;
-		ImGui::DragFloat(string("Width##").append(id).c_str(), &v, 0.1f);
+		ImGui::DragFloat(string("Width##").append(id).c_str(), &v, 0.1f, 0.f, FLT_MAX);
 		if (v != _width) {
 			SetWidth(v);
 		}
 
 		v = _height;
-		ImGui::DragFloat(string("Height##").append(id).c_str(), &v, 0.1f);
+		ImGui::DragFloat(string("Height##").append(id).c_str(), &v, 0.1f, 0.f, FLT_MAX);
 		if (v != _height) {
 			SetHeight(v);
 		}

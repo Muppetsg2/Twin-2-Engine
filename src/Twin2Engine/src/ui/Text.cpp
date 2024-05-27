@@ -404,12 +404,46 @@ void Text::DrawEditor()
 			SetColor(c);
 		}
 
-		float s = _size;
-		ImGui::DragFloat(string("Size##").append(id).c_str(), &s);
+		uint32_t s = _size;
+		ImGui::DragUInt(string("Size##").append(id).c_str(), &s, 1.f, 0, UINT32_MAX);
 
 		if (s != _size) {
 			SetSize(s);
 		}
+
+		bool bvalue = _autoSize;
+		ImGui::Checkbox(string("Auto Size##").append(id).c_str(), &bvalue);
+
+		uint32_t mis = _minSize;
+		uint32_t mas = _maxSize;
+		if (bvalue) {
+			ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.3f);
+			ImGui::DragUInt(string("Min##").append(id).c_str(), &mis, 1.f, 0, UINT32_MAX);
+
+			ImGui::SameLine();
+
+			ImGui::DragUInt(string("Max##").append(id).c_str(), &mas, 1.f, mis, UINT32_MAX);
+			ImGui::PopItemWidth();
+		}
+
+		if (bvalue != _autoSize || mis != _minSize || mas != _maxSize) {
+			if (bvalue) {
+				EnableAutoSize(mis, mas);
+			}
+			else {
+				DisableAutoSize();
+			}
+		}
+
+		float w = _width;
+		ImGui::DragFloat(string("Width##").append(id).c_str(), &w, 0.1f, 0.f, FLT_MAX);
+
+		if (w != _width) SetWidth(w);
+
+		float h = _height;
+		ImGui::DragFloat(string("Height##").append(id).c_str(), &h, 0.1f, 0.f, FLT_MAX);
+
+		if (h != _height) SetHeight(h);
 
 		std::map<size_t, string> fontNames = FontManager::GetAllFontsNames();
 
@@ -448,9 +482,86 @@ void Text::DrawEditor()
 			ImGui::EndCombo();
 		}
 
-		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
+		TextAlignX tax = _alignX;
+		bvalue = false;
+		if (ImGui::BeginCombo(string("Align X##").append(id).c_str(), to_string(tax).c_str())) {
 
-		// TODO: Zaktualizowaæ Inspector
+			for (size_t i = 0; i < size<TextAlignX>(); ++i)
+			{
+				TextAlignX tax2 = (TextAlignX)i;
+				if (ImGui::Selectable(to_string(tax2).append("##").append(id).c_str(), tax == tax2))
+				{
+					if (bvalue) {
+						continue;
+					}
+					tax = tax2;
+					bvalue = true;
+				}
+			}
+			ImGui::EndCombo();
+		}
+
+		if (bvalue) {
+			this->SetTextAlignX(tax);
+		}
+
+		TextAlignY tay = _alignY;
+		bvalue = false;
+		if (ImGui::BeginCombo(string("Align Y##").append(id).c_str(), to_string(tay).c_str())) {
+
+			for (size_t i = 0; i < size<TextAlignY>(); ++i)
+			{
+				TextAlignY tay2 = (TextAlignY)i;
+				if (ImGui::Selectable(to_string(tay2).append("##").append(id).c_str(), tay == tay2))
+				{
+					if (bvalue) {
+						continue;
+					}
+					tay = tay2;
+					bvalue = true;
+				}
+			}
+			ImGui::EndCombo();
+		}
+
+		if (bvalue) {
+			this->SetTextAlignY(tay);
+		}
+
+		bvalue = _textWrapping;
+		ImGui::Checkbox(string("Text Wrapping##").append(id).c_str(), &bvalue);
+
+		if (bvalue != _textWrapping) SetTextWrapping(bvalue);
+
+		TextOverflow ov = _overflow;
+		bvalue = false;
+		if (ImGui::BeginCombo(string("Overflow##").append(id).c_str(), to_string(ov).c_str())) {
+
+			for (size_t i = 0; i < size<TextOverflow>(); ++i)
+			{
+				TextOverflow ov2 = (TextOverflow)i;
+				if (ImGui::Selectable(to_string(ov2).append("##").append(id).c_str(), ov == ov2))
+				{
+					if (bvalue) {
+						continue;
+					}
+					ov = ov2;
+					bvalue = true;
+				}
+			}
+			ImGui::EndCombo();
+		}
+
+		if (bvalue) {
+			this->SetTextOverflow(ov);
+		}
+
+		int32_t l = _layer;
+		ImGui::InputInt(string("Layer##").append(id).c_str(), &l);
+
+		if (l != _layer) SetLayer(l);
+
+		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
 	}
 }
 #endif

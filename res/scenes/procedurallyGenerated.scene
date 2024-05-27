@@ -665,7 +665,7 @@ GameObjects:
           - res/scriptableobjects/LakeGenerator.so
           - res/scriptableobjects/MountainsGenerator.so
           - res/scriptableobjects/CityGenerator.so
-          - res/scriptableobjects/RadioStationGeneratorSectorBased.s
+          - res/scriptableobjects/RadioStationGeneratorSectorBased.so
           - res/scriptableobjects/HumansGenerator.so
       - id: 33
         enabled: true
@@ -679,6 +679,10 @@ GameObjects:
         minPointsNumber: 5
         maxPointsNumber: 5
         angleDeltaRange: 5
+      - id: 38
+        enabled: true
+        type: AStarPathfinder
+        maxMappingDistance: 1
     children:
       []
   - id: 15
@@ -724,7 +728,7 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: 0
+        y: -2
         z: 0
       scale:
         x: 16

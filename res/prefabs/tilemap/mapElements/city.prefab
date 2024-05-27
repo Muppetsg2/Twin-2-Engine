@@ -56,9 +56,9 @@ Root:
       y: 0
       z: 0
     scale:
-      x: 0.8
-      y: 0.8
-      z: 0.8
+      x: 0.6
+      y: 0.6
+      z: 0.6
     rotation:
       x: 0
       y: 0

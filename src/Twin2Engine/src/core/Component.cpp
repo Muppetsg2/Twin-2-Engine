@@ -136,9 +136,9 @@ void Component::Init(GameObject* obj)
 	_id = GetFreeId();
 	SceneManager::AddComponentWithId(this);
 	_gameObject = obj;
-	_enabled = true;
-	Initialize();
-	OnEnable();
+	//_enabled = true;
+	//Initialize();
+	//OnEnable();
 }
 
 void Component::Init(GameObject* obj, size_t id)
@@ -157,6 +157,6 @@ void Component::Init(GameObject* obj, size_t id)
 	}
 	_gameObject = obj;
 	//_enabled = true;
-	Initialize();
+	//Initialize();
 	//OnEnable();
 }

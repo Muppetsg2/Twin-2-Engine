@@ -121,14 +121,14 @@ void HexagonalColliderComponent::DrawEditor()
 	if (ImGui::CollapsingHeader(name.c_str())) {
 		if (Component::DrawInheritedFields()) return;
 		float v = ((HexagonalColliderData*)collider->shapeColliderData)->BaseLength;
-		ImGui::DragFloat(string("Base Length##").append(id).c_str(), &v, 0.1f);
+		ImGui::DragFloat(string("Base Length##").append(id).c_str(), &v, 0.1f, 0.f, FLT_MAX);
 
 		if (v != ((HexagonalColliderData*)collider->shapeColliderData)->BaseLength) {
 			SetBaseLength(v);
 		}
 
 		v = ((HexagonalColliderData*)collider->shapeColliderData)->HalfHeight;
-		ImGui::DragFloat(string("Half Height##").append(id).c_str(), &v, 0.1f);
+		ImGui::DragFloat(string("Half Height##").append(id).c_str(), &v, 0.1f, 0.f, FLT_MAX);
 
 		if (v != ((HexagonalColliderData*)collider->shapeColliderData)->HalfHeight) {
 			SetHalfHeight(v);

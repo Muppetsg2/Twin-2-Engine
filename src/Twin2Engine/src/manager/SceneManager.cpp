@@ -412,6 +412,10 @@ void SceneManager::LoadScene() {
 	// INIT COMPONENTS
 	for (const auto& compPair : _componentsById) {
 		compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
+		compPair.second->Initialize();
+	}
+	for (const auto& compPair : _componentsById) {
+		//compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
 		//compPair.second->Initialize();
 	}
 	static_cast<Component*>(_rootObject->GetTransform())->Init(_rootObject);
@@ -907,6 +911,10 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	for (const auto& compPair : prefabComponentsById) {
 		compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
 		//compPair.second->Initialize();
+	}
+	for (const auto& compPair : prefabComponentsById) {
+		//compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
+		compPair.second->Initialize();
 	}
 #pragma endregion
 

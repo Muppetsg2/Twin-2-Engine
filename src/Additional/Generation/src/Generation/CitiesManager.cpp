@@ -62,9 +62,10 @@ vector<GameObject*> CitiesManager::GetAllCities() {
 }
 
 vector<GameObject*> CitiesManager::GetConnectedCities(GameObject* city) {
-    auto it = citiesGraph.find(city);
-    if (it != citiesGraph.end()) {
-        return it->second;
+    //auto it = citiesGraph.find(city);
+    //if (it != citiesGraph.end()) {
+    if (citiesGraph.contains(city)) {
+        return citiesGraph[city];
     }
     return {};
 }

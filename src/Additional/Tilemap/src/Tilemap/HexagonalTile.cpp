@@ -3,26 +3,35 @@
 using namespace Tilemap;
 using namespace Twin2Engine::Core;
 
-//const glm::ivec2 HexagonalTile::adjacentDirectionsEvenY[6] = {
-//	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 0),
-//	glm::ivec2(0, -1), glm::ivec2(-1, -1), glm::ivec2(-1, 0)
-//};
-//
-//const glm::ivec2 HexagonalTile::adjacentDirectionsOddY[6] = {
-//	glm::ivec2(0, 1), glm::ivec2(1, 1), glm::ivec2(1, 0),
-//	glm::ivec2(1, -1), glm::ivec2(0, -1), glm::ivec2(-1, 0)
-//};
-
-
 const glm::ivec2 HexagonalTile::adjacentDirectionsEvenY[6] = {
-	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
-	glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
+	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 0),
+	glm::ivec2(0, -1), glm::ivec2(-1, -1), glm::ivec2(-1, 0)
 };
 
 const glm::ivec2 HexagonalTile::adjacentDirectionsOddY[6] = {
-	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
-	glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
+	glm::ivec2(0, 1), glm::ivec2(1, 1), glm::ivec2(1, 0),
+	glm::ivec2(1, -1), glm::ivec2(0, -1), glm::ivec2(-1, 0)
 };
+
+//const glm::ivec2 HexagonalTile::adjacentDirectionsEvenX[6] = {
+//	glm::ivec2(-1, 0), glm::ivec2(0, 1), glm::ivec2(1, 0),
+//	glm::ivec2(1, -1), glm::ivec2(0, -1), glm::ivec2(-1, -1)
+//};
+//
+//const glm::ivec2 HexagonalTile::adjacentDirectionsOddX[6] = {
+//	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
+//	glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
+//};
+
+//const glm::ivec2 HexagonalTile::adjacentDirectionsEvenY[6] = {
+//	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
+//	glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
+//};
+//
+//const glm::ivec2 HexagonalTile::adjacentDirectionsOddY[6] = {
+//	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
+//	glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
+//};
 
 //const glm::ivec2 HexagonalTile::adjacentDirectionsEvenY[6] = {
 //	glm::ivec2(-1, 1), glm::ivec2(0, 2), glm::ivec2(0, 1),

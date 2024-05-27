@@ -22,6 +22,7 @@ namespace Generation::Generators
 		float density = 1.0f;
 
 		virtual void Generate(Tilemap::HexagonalTilemap* tilemap) override;
+        virtual void Clean() override;
 
 		SO_SERIALIZE()
 		SO_DESERIALIZE()

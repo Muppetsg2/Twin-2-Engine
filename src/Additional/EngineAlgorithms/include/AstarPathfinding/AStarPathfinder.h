@@ -30,6 +30,10 @@ namespace AStar
 		bool* _searching;
 	public:
 		AStarPathfindingInfo() : _thread(nullptr), _searching(nullptr) { }
+		~AStarPathfindingInfo() {
+			if (_searching) delete _searching;
+			_searching = nullptr;
+		}
 		AStarPathfindingInfo(std::jthread* thread, bool* searching) : _thread(thread), _searching(searching) { }
 		AStarPathfindingInfo(const AStarPathfindingInfo&) = delete;
 		AStarPathfindingInfo(AStarPathfindingInfo&& other)
@@ -107,6 +111,8 @@ namespace AStar
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
+
+		virtual void OnDestroy() override;
 
 #if _DEBUG
 	protected:

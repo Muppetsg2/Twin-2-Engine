@@ -24,6 +24,13 @@ void ContentGenerator::Initialize()
 }
 
 void ContentGenerator::OnDestroy() {
+
+    SPDLOG_INFO("Cleaning content");
+    for (AMapElementGenerator* generator : mapElementGenerators)
+    {
+        SPDLOG_INFO("Generating element");
+        generator->Clean();
+    }
     mapElementGenerators.clear();
 }
 

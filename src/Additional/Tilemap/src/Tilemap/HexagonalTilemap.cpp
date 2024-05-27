@@ -381,11 +381,12 @@ glm::ivec2 HexagonalTilemap::ConvertToTilemapPosition(const glm::vec2& position)
 {
 	float fx = position.x / (_edgeLength * 1.5f);
 	int x = glm::round(fx);
+
+	float factor = position.y / _distanceBetweenTiles * 2;
+	factor -= glm::floor(factor);
+	factor = glm::abs(factor) * 0.5f;
 	if (x % 2)
 	{
-		float factor = position.y / _distanceBetweenTiles * 2;
-		factor = factor - glm::floor(factor);
-		factor = glm::abs(factor) * 0.5f;
 		if (fx > (x + 0.25f + factor))
 		{
 			++x;
@@ -395,30 +396,21 @@ glm::ivec2 HexagonalTilemap::ConvertToTilemapPosition(const glm::vec2& position)
 			--x;
 		}
 	}
-	//return glm::ivec2(x, glm::round((position.y / _distanceBetweenTiles)));
+	else
+	{
+		if (fx > (x + 0.75f - factor))
+		{
+			++x;
+		}
+		else if (fx <= (x - 0.75f + factor))
+		{
+			--x;
+		}
+	}
+
 	int y = glm::round(((position.y - 0.5f * (abs(x) % 2)) / _distanceBetweenTiles));
 
 	return glm::ivec2(x, y);
-
-	//return glm::ivec2(glm::floor(0.25f * position.x / _edgeLength), 2.0f * position.y / _distanceBetweenTiles);
-	//float q = (2.0 / 3.0 * position.x) / _edgeLength;
-	//float r = (-1.0 / 3.0 * position.x + sqrt(3.0) / 3.0 * position.y) / _edgeLength;
-	//float rq = round(q);
-	//float rr = round(r);
-	//float rs = round(-q - r);
-	//
-	//float q_diff = fabs(rq - q);
-	//float r_diff = fabs(rr - r);
-	//float s_diff = fabs(rs + q + r);
-	//
-	//if (q_diff > r_diff && q_diff > s_diff) {
-	//	rq = -rr - rs;
-	//}
-	//else if (r_diff > s_diff) {
-	//	rr = -rq - rs;
-	//}
-	//
-	//return glm::ivec2(rq, rr);
 
 }
 

@@ -373,6 +373,22 @@ bool AStarPathfinder::Deserialize(const YAML::Node& node)
 	return true;
 }
 
+void AStarPathfinder::OnDestroy()
+{
+	for (auto& pair : _pathfindingThreads)
+	{
+		pair.second.join();
+	}
+	_pathfindingThreads.clear();
+
+	for (auto& pair : _pathfindingThreadsSearchingPtrs)
+	{
+		(*pair.second) = false;
+	}
+	_pathfindingThreadsSearchingPtrs.clear();
+
+}
+
 #if _DEBUG
 
 bool AStarPathfinder::DrawInheritedFields()

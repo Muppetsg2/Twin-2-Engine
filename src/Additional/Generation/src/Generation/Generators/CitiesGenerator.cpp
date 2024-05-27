@@ -150,3 +150,8 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
         }
     }
 }
+
+void CitiesGenerator::Clean()
+{
+    CitiesManager::RemoveAllCities();
+}

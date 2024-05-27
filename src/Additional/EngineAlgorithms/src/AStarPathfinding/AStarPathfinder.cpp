@@ -16,6 +16,9 @@ unordered_map<AStarPathfindingNode*, vector<AStarPathfinder::AStarTargetNodeInfo
 unordered_map<size_t, jthread> AStarPathfinder::_pathfindingThreads;
 unordered_map<size_t, bool*> AStarPathfinder::_pathfindingThreadsSearchingPtrs;
 
+mutex AStarPathfinder::_endedThreadsMutex;
+list<size_t> AStarPathfinder::_endedThreads;
+
 float AStarPathfinder::_maxMappingDistance = 0.0f;
 bool AStarPathfinder::_needsRemapping = true;
 
@@ -301,7 +304,7 @@ void AStarPathfinder::FindingPath(size_t threadId,
 
 	(*_pathfindingThreadsSearchingPtrs[threadId]) = false;
 
-	_pathfindingThreadsSearchingPtrs.erase(threadId);
+	//_pathfindingThreadsSearchingPtrs.erase(threadId);
 	//_pathfindingThreads.erase(threadId);
 
 	// Returning result
@@ -322,7 +325,7 @@ AStarPathfindingInfo&& AStarPathfinder::FindPath(const glm::vec3& beginPosition,
 							   Twin2Engine::Tools::Action<> failure)
 {
 	if (_pathfindingThreads.size() == numeric_limits<size_t>().max()) 
-		return AStarPathfindingInfo(nullptr, nullptr);
+		return AStarPathfindingInfo(0, nullptr, nullptr);
 
 	if (_needsRemapping)
 	{
@@ -330,27 +333,18 @@ AStarPathfindingInfo&& AStarPathfinder::FindPath(const glm::vec3& beginPosition,
 	}
 
 	static size_t pathFindingThreadsIds = 0;
-	size_t threadId = pathFindingThreadsIds++;
 
-	while (_pathfindingThreads.contains(threadId)) threadId = pathFindingThreadsIds++;
+	while (_pathfindingThreads.contains(++pathFindingThreadsIds));
+	size_t threadId = pathFindingThreadsIds;
 
-	//{
-	//	unordered_set<size_t> threadsToDelete;
-	//	for (auto& pair : _pathfindingThreads)
-	//	{
-	//		if (pair.second.)
-	//	}
-	//}
+	bool* searching = new bool(true);
+
+	_pathfindingThreadsSearchingPtrs[threadId] = searching;
 
 	_pathfindingThreads[threadId] = jthread(FindingPath, threadId, beginPosition, endPosition, maxPathNodesNumber, success, failure);
 
-	//thread** ptr = new thread*(&_pathfindingThreads[threadId]);
-	bool* searching = new bool(true);
 
-	//AStarPathfindingInfo info(&_pathfindingThreads[threadId], searching);
-	_pathfindingThreadsSearchingPtrs[threadId] = searching;
-
-	return AStarPathfindingInfo(&_pathfindingThreads[threadId], searching);
+	return AStarPathfindingInfo(threadId, &_pathfindingThreads[threadId], searching);
 }
 
 YAML::Node AStarPathfinder::Serialize() const
@@ -377,14 +371,15 @@ void AStarPathfinder::OnDestroy()
 {
 	for (auto& pair : _pathfindingThreads)
 	{
-		pair.second.join();
+		if (pair.second.joinable())
+			pair.second.join();
 	}
 	_pathfindingThreads.clear();
 
-	for (auto& pair : _pathfindingThreadsSearchingPtrs)
-	{
-		(*pair.second) = false;
-	}
+	//for (auto& pair : _pathfindingThreadsSearchingPtrs)
+	//{
+	//	(*pair.second) = false;
+	//}
 	_pathfindingThreadsSearchingPtrs.clear();
 
 }

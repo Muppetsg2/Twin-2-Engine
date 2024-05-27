@@ -26,18 +26,23 @@ namespace AStar
 	{
 		friend class AStarPathfinder;
 	private:
+		size_t _threadId;
 		std::jthread* _thread;
 		bool* _searching;
 	public:
 		AStarPathfindingInfo() : _thread(nullptr), _searching(nullptr) { }
 		~AStarPathfindingInfo() {
-			if (_searching) delete _searching;
-			_searching = nullptr;
+			WaitForFinding();
+			//if (IsSearching() && _thread)
+			//	_thread->join();
+			//if (_searching) delete _searching;
+			//_searching = nullptr;
 		}
-		AStarPathfindingInfo(std::jthread* thread, bool* searching) : _thread(thread), _searching(searching) { }
+		AStarPathfindingInfo(size_t threadId, std::jthread* thread, bool* searching) : _threadId(threadId), _thread(thread), _searching(searching) { }
 		AStarPathfindingInfo(const AStarPathfindingInfo&) = delete;
 		AStarPathfindingInfo(AStarPathfindingInfo&& other)
 		{
+			_threadId = other._threadId;
 			_thread = other._thread;
 			_searching = other._searching;
 			other._thread = nullptr;
@@ -46,7 +51,18 @@ namespace AStar
 		AStarPathfindingInfo& operator=(const AStarPathfindingInfo&) = delete;
 		AStarPathfindingInfo& operator=(AStarPathfindingInfo&& other)
 		{
+			_threadId = other._threadId;
+
+			if (_thread) {
+				delete _searching;
+				//AStarPathfinder::_pathfindingThreads.erase(_threadId);
+			}
 			_thread = other._thread;
+
+			if (_searching) {
+				delete _searching;
+				//AStarPathfinder::_pathfindingThreadsSearchingPtrs.erase(_threadId);
+			}
 			_searching = other._searching;
 			other._thread = nullptr;
 			other._searching = nullptr;
@@ -57,13 +73,22 @@ namespace AStar
 		void WaitForFinding()
 		{
 			if (IsSearching() && _thread)
+			{
 				_thread->join();
+				delete _searching;
+				//AStarPathfinder::_pathfindingThreads.erase(_threadId);
+				//AStarPathfinder::_pathfindingThreadsSearchingPtrs.erase(_threadId);
+				_searching = nullptr;
+				_thread = nullptr;
+			}
 		}
 		bool IsSearching()
 		{
 			if (_searching && !(*_searching))
 			{
 				delete _searching;
+				//AStarPathfinder::_pathfindingThreads.erase(_threadId);
+				//AStarPathfinder::_pathfindingThreadsSearchingPtrs.erase(_threadId);
 				_searching = nullptr;
 				_thread = nullptr;
 			}
@@ -74,6 +99,7 @@ namespace AStar
 	class AStarPathfinder : public Twin2Engine::Core::Component
 	{
 		friend class AStarPathfindingNode;
+		friend class AStarPathfindingInfo;
 
 		struct AStarTargetNodeInfo
 		{
@@ -89,6 +115,9 @@ namespace AStar
 
 		static std::unordered_map<size_t, std::jthread> _pathfindingThreads;
 		static std::unordered_map<size_t, bool*> _pathfindingThreadsSearchingPtrs;
+
+		static std::mutex _endedThreadsMutex;
+		static std::list<size_t> _endedThreads;
 
 		static float _maxMappingDistance;
 

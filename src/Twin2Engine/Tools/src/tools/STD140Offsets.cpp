@@ -378,6 +378,10 @@ void STD140Offsets::Clear()
 
 	_offsets.clear();
 	_names.clear();
+	for (auto& type : _types) {
+		delete type.second;
+	}
+	_types.clear();
 #if TRACY_PROFILER
 	FrameMarkEnd(tracy_Clear);
 #endif

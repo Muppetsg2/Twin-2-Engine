@@ -68,8 +68,6 @@ void HumanMovement::Update()
         //SPDLOG_INFO("Chack IsNan1:");
         direction = normalize(direction);
     }
-    //if (!isnan(direction.x))
-    //    SPDLOG_INFO("Not IsNan2:");
 
     GetTransform()->Translate(direction * _speed * Time::GetDeltaTime());
 

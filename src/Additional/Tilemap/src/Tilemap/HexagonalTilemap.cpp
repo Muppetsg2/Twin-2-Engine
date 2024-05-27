@@ -383,13 +383,16 @@ glm::ivec2 HexagonalTilemap::ConvertToTilemapPosition(const glm::vec2& position)
 	int x = glm::round(fx);
 	if (x % 2)
 	{
-		if (fx > (x + 0.25f))
-		{
-			--x;
-		}
-		else if (fx <= (x - 0.25f))
+		float factor = position.y / _distanceBetweenTiles * 2;
+		factor = factor - glm::floor(factor);
+		factor = glm::abs(factor) * 0.5f;
+		if (fx > (x + 0.25f + factor))
 		{
 			++x;
+		}
+		else if (fx <= (x - 0.25f - factor))
+		{
+			--x;
 		}
 	}
 	//return glm::ivec2(x, glm::round((position.y / _distanceBetweenTiles)));

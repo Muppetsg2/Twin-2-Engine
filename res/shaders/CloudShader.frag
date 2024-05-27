@@ -242,7 +242,7 @@ float SampleHighResolutionCloudDetail(float cloudSDF, vec3 worldPos, vec3 camera
 	float cloud = circularOut(linearstep(0.0, -CLOUD_FALLOFF, cloudSDF)) * 0.85;
 	
 	if(cloud > 0.0) {
-		vec3 samplePos = worldPos + vec3(-2.0 * curTime, 0.0, curTime) * 1.5;
+		vec3 samplePos = worldPos + vec3(-2.0 * time, 0.0, time) * 1.5;
 		
 		float shapeSize = 0.4;
 		vec4 perlinWorleySample = SamplePerlinWorleyNoise(samplePos * shapeSize);
@@ -251,11 +251,11 @@ float SampleHighResolutionCloudDetail(float cloudSDF, vec3 worldPos, vec3 camera
 		cloud = saturate(remap(cloud, shapeStrength * perlinWorleySample.x, 1.0, 0.0, 1.0));
 		
 		if(cloud > 0.0) {
-			float distToSample = distance(cameraOrigin, worldPos);
+			float distToSample = distance(ViewerPosition, worldPos);
 			float t_detailDropout = smoothstep(1000.0, 800.0, distToSample);
 			
 			if (t_detailDropout > 0.0) {
-				samplePos += vec3(4.0 * curTime, 3.0 * curTime, 2.0 * curTime) * 0.01;
+				samplePos += vec3(4.0 * time, 3.0 * time, 2.0 * time) * 0.01;
 				
 				float detailSize = 1.8;
 				float detailStrength = CLOUD_DETAIL_STRENGTH * t_detailDropout;
@@ -294,9 +294,24 @@ vec3 MultipleOctaveScattering(float density, float mu) {
 	return luminance;
 }
 
+vec4 probeLightDepthTex(vec3 pos) {
+	vec4 projPos = directionalLights[0].lightSpaceMatrix * vec4(FragPos , 1.0);
+    vec3 projCoords = projPos.xyz / projPos.w;
+    projCoords = projCoords * 0.5 + 0.5;
 
-vec3 CalculateLightEnergy(
-	vec3 lightOrigin, vec3 lightDirection, vec3 cameraOrigin, float mu, float maxDistance, float curTime) {
+	return texture(lightFrontDepthMap, projCoords.xy);
+}
+
+vec3 CalculateLightEnergy(vec3 lightOrigin, vec3 lightDirection, vec3 cameraOrigin, float mu, float maxDistance, float curTime) 
+{
+	vec4 lightInPos = probeLightDepthTex(lightOrigin);
+	if (lightInPos.w == 0.0) {
+		maxDistance = 0.05;
+	}
+	else {
+		maxDistance = distance(lightInPos.xyz, lightOrigin);
+	}
+
 	float stepLength = maxDistance / CLOUD_LIGHT_STEPS;
 	float lightRayDensity = 0.0;
 	float distAccumulated = 0.0;
@@ -322,30 +337,23 @@ struct ScatteringTransmittance {
 }; //noiseTexture
 
 
-ScatteringTransmittance CloudMarch(vec2 pixelCoords, vec3 cameraOrigin, vec3 cameraDirection, float curTime) {
-	AABB cloudAABB;
-	cloudAABB.min = CLOUD_BOUNDS_MIN;
-	cloudAABB.max = CLOUD_BOUNDS_MAX;
-	
+ScatteringTransmittance CloudMarch(vec2 pixelCoords, vec3 cameraOrigin, vec3 cameraDirection, float curTime) 
+{
 	ScatteringTransmittance result;
 	result.scattering = vec3(0.0);
 	result.transmittance = vec3(1.0);
-	
-	AABBIntersectResult rayCloudIntersection = intersectAABB(cameraOrigin, cameraDirection, cloudAABB);
-	if (rayCloudIntersection.near >= rayCloudIntersection.far) {
-	  // Debug
-	  // return vec4(vec3(0.0), 0.0);
-	  return result;
-	}
-	
-	if (insideAABB(cameraOrigin, cloudAABB)) {
-	  rayCloudIntersection.near = 0.0;
-	}
-	
+
 	vec3 sunDirection = CLOUD_LIGHT_DIR;
 	vec3 sunLightColour = vec3(1.0);
 	vec3 sunLight = sunLightColour * CLOUD_LIGHT_MULTIPLIER;
 	vec3 ambient = vec3(AMBIENT_STRENGTH * sunLightColour);
+	
+	vec2 fragNDCoord = gl_FragCoord.xy / resolution;
+	vec4 FragOutPos = texture(viewerBackDepthMap, fragNDCoord);
+	if (FragOutPos.w == 0.0) {
+		discard;
+	}
+	vec3 dir = normalize(FragOutPos.xyz - FragPos);
 	
 	// TODO: Cap steps based on distance
 	vec2 aspect = vec2(1.0, resolution.y / resolution.x);
@@ -353,11 +361,12 @@ ScatteringTransmittance CloudMarch(vec2 pixelCoords, vec3 cameraOrigin, vec3 cam
 
 	blueNoiseSample = fract(blueNoiseSample + float(int(curTime * 144.0) % 32) * GOLDEN_RATIO);
 	
-	float mu = dot(cameraDirection, sunDirection);
+	float mu = dot(dir, sunDirection);
 	float phaseFunction = PhaseFunction(0.3, mu);
+
 	
-	float distNearToFar = rayCloudIntersection.far - rayCloudIntersection.near;
-	float stepDropoff = linearstep(1.0, 0.0, pow(dot(vec3(0.0, 1.0, 0.0), cameraDirection), 4.0));
+	float distNearToFar = distance(FragPos, FragOutPos.xyz);//rayCloudIntersection.far - rayCloudIntersection.near;
+	float stepDropoff = linearstep(1.0, 0.0, pow(dot(vec3(0.0, 1.0, 0.0), dir), 4.0));
 	
 	const int NUM_COUNT = 16;
 	float lqStepLength = distNearToFar / CLOUD_STEPS_MIN; 
@@ -365,24 +374,22 @@ ScatteringTransmittance CloudMarch(vec2 pixelCoords, vec3 cameraOrigin, vec3 cam
 	float numCloudSteps = CLOUD_STEPS_MAX;
 	
 	float offset = lqStepLength * blueNoiseSample;
-	float distTravelled = rayCloudIntersection.near;
+	float distTravelled = 0.0;
 	
 	int hqMarcherCountdown = 0;
-	
 	float previousStepLength = 0.0;
 	
+	vec3 samplePos = FragPos;
 	for (float i = 0.0; i < numCloudSteps; i++) {
-		if (distTravelled > rayCloudIntersection.far) {
+		if (distTravelled > distNearToFar) {
 			break;
 		}
 		
-		vec3 samplePos = cameraOrigin + cameraDirection * distTravelled;
-		float cloudMapSDFSample = SampleLowResolutionCloudMap(samplePos);
-		
-		float currentStepLength = cloudMapSDFSample;
+		//float cloudMapSDFSample = SampleLowResolutionCloudMap(samplePos);
+		float currentStepLength = SampleLowResolutionCloudMap(samplePos);//cloudMapSDFSample;
 		
 		if (hqMarcherCountdown <= 0) {
-			if (cloudMapSDFSample < hqStepLength) {
+			if (currentStepLength < hqStepLength) {
 				// Hit some clouds, step back
 				hqMarcherCountdown = NUM_COUNT;
 				
@@ -396,10 +403,10 @@ ScatteringTransmittance CloudMarch(vec2 pixelCoords, vec3 cameraOrigin, vec3 cam
 		if (hqMarcherCountdown > 0) {
 			hqMarcherCountdown--;
 			
-			if (cloudMapSDFSample < 0.0) {
+			if (currentStepLength < 0.0) {
 				hqMarcherCountdown = NUM_COUNT;
 				
-				float extinction = SampleHighResolutionCloudDetail(cloudMapSDFSample, samplePos, cameraOrigin, curTime);
+				float extinction = SampleHighResolutionCloudDetail(currentStepLength, samplePos, cameraOrigin, curTime);
 				
 				if (extinction > 0.01) {
 					vec3 luminance = ambient + sunLight * CalculateLightEnergy(samplePos, sunDirection, cameraOrigin, mu, 50.0, curTime);
@@ -419,6 +426,7 @@ ScatteringTransmittance CloudMarch(vec2 pixelCoords, vec3 cameraOrigin, vec3 cam
 			distTravelled += hqStepLength;
 		}
 		
+		samplePos = FragPos + dir * distTravelled;
 		previousStepLength = currentStepLength;
 	}
 	

@@ -68,7 +68,7 @@ bool STD140Offsets::Contains(const std::string& name) const
 	return _offsets.contains(move(_hasher(name)));
 }
 
-size_t STD140Offsets::_Add(const string& name, size_t baseAligement, size_t baseOffset)
+size_t STD140Offsets::_Add(const string& name, size_t baseAligement, size_t baseOffset, const ValueType*& type)
 {
 #if TRACY_PROFILER
 	static const char* const tracy_Add = "STD140Offsets Add";
@@ -129,7 +129,7 @@ size_t STD140Offsets::_Add(const string& name, size_t baseAligement, size_t base
 	return aligementOffset;
 }
 
-vector<size_t> STD140Offsets::_AddArray(const string& name, size_t arraySize, size_t baseAligement, size_t baseOffset)
+vector<size_t> STD140Offsets::_AddArray(const string& name, size_t arraySize, size_t baseAligement, size_t baseOffset, const ValueType*& type)
 {
 #if TRACY_PROFILER
 	static const char* const tracy_AddArray = "STD140Offsets AddArray";
@@ -313,6 +313,20 @@ vector<size_t> STD140Offsets::GetArray(const string& name) const
 	FrameMarkEnd(tracy_GetArray);
 #endif
 	return values;
+}
+
+const ValueType* STD140Offsets::GetType(const string& name) const
+{
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
+	const ValueType* value = nullptr;
+	unordered_map<size_t, const ValueType*>::const_iterator map_iterator = _types.find(move(_hasher(name)));
+	if (map_iterator != _types.end()) {
+		value = (*map_iterator).second;
+	}
+	return value;
 }
 
 size_t STD140Offsets::GetBaseAligement() const

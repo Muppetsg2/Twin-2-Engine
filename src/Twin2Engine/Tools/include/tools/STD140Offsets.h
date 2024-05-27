@@ -2,6 +2,7 @@
 
 #include <tools/templates.h>
 #include <tools/stringExtension.h>
+#include <tools/ValueTypes.h>
 
 namespace Twin2Engine::Tools {
 	class STD140Offsets;
@@ -46,6 +47,7 @@ namespace Twin2Engine::Tools {
 
 		std::unordered_map<size_t, size_t> _offsets;
 		std::unordered_map<size_t, std::string> _names;
+		std::unordered_map<size_t, const ValueType*> _types;
 
 		static std::hash<std::string> _hasher;
 
@@ -100,11 +102,8 @@ namespace Twin2Engine::Tools {
 			}
 		}
 
-		size_t _Add(const std::string& name, size_t baseAligement, size_t baseOffset);
-		std::vector<size_t> _AddArray(const std::string& name, size_t arraySize, size_t baseAligement, size_t baseOffset);
-
-		//static const std::string& _GetArrayElemFormat();
-		//static const std::string& _GetSubElemFormat();
+		size_t _Add(const std::string& name, size_t baseAligement, size_t baseOffset, const ValueType*& type);
+		std::vector<size_t> _AddArray(const std::string& name, size_t arraySize, size_t baseAligement, size_t baseOffset, const ValueType*&);
 
 	public:
 		STD140Offsets() = default;
@@ -521,6 +520,8 @@ namespace Twin2Engine::Tools {
 
 		size_t Get(const std::string& name) const;
 		std::vector<size_t> GetArray(const std::string& name) const;
+
+		const ValueType* GetType(const std::string& name) const;
 
 		size_t GetBaseAligement() const;
 		size_t GetSize() const;

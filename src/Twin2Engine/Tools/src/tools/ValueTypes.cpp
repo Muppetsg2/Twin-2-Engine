@@ -1,4 +1,7 @@
 #include <tools/ValueTypes.h>
+#include <tools/STD140Offsets.h>
+
+#if _DEBUG
 
 using namespace Twin2Engine::Tools;
 
@@ -67,11 +70,14 @@ size_t MatType::GetCols() const
 	return _cols;
 }
 
-StructType::StructType(const STD140Offsets*& offsets) : ValueType(), _offsets(offsets) {
+StructType::StructType(const STD140Offsets& offsets) : ValueType() {
 #if TRACY_PROFILER
 	ZoneScoped;
 #endif
+	_offsets = new STD140Offsets(offsets);
 }
+
+DefineCloneBaseFunc(StructType, ValueType, PointerDeepClone(_offsets, STD140Offsets))
 
 const STD140Offsets* StructType::GetOffsets() const
 {
@@ -81,18 +87,11 @@ const STD140Offsets* StructType::GetOffsets() const
 	return _offsets;
 }
 
-ArrayType::ArrayType(const ValueType*& type, const size_t& length) : ValueType(), _type(type), _length(length) {
+ArrayType::ArrayType(const ValueType*& type, const size_t& length) : ValueType(), _length(length) {
 #if TRACY_PROFILER
 	ZoneScoped;
 #endif
-}
-
-ArrayType::~ArrayType()
-{
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-	delete _type;
+	_type = type->Clone();
 }
 
 const ValueType* ArrayType::GetType() const
@@ -110,3 +109,5 @@ size_t ArrayType::GetLength() const
 #endif
 	return _length;
 }
+
+#endif

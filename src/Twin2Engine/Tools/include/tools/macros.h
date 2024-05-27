@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma region FOR_EACH
+
 #define PARENS ()
 #define NEXT_ELEM ,
 
@@ -36,6 +38,10 @@
 	func(a1, a2)\
 	__VA_OPT__(NEXT_ELEM LIST_DO_FOR_EACH_PAIR_AGAIN PARENS (func, __VA_ARGS__))
 #define LIST_DO_FOR_EACH_PAIR_AGAIN() LIST_DO_FOR_EACH_PAIR_HELPER
+
+#pragma endregion
+
+#pragma region ENUMS
 
 // STANDARD ENUMS
 #define ENUM_ELEMENT(name) name
@@ -164,3 +170,83 @@
 			return "UNKONWN";\
 		}\
 	}
+
+#pragma endregion
+
+#pragma region CLONE_FUNC
+
+#define CloneFuncDeclaration(className)\
+    virtual className* Clone() const;\
+    void CloneTo(className* cloned) const;
+
+#define CloneBaseFuncDeclaration(className)\
+    virtual className* Clone() const override;\
+    void CloneTo(className* cloned) const;
+
+#define StandardClone(fieldName) fieldName, fieldName
+#define PointerDeepClone(fieldName, valueType) fieldName, new valueType(*fieldName)
+#define CloneFieldPair(fieldName, value) cloned->fieldName = value;
+
+#define CloneFuncInClassDefinition(className, ...)\
+    virtual className* Clone() const\
+    {\
+        className* cloned = new className();\
+        CloneTo(cloned);\
+        return cloned;\
+    }\
+    void CloneTo(className* cloned) const\
+    {\
+        DO_FOR_EACH_PAIR(CloneFieldPair, __VA_ARGS__)\
+    }
+
+#define CloneBaseFuncInClassDefinition(className, baseClassName, ...)\
+    virtual className* Clone() const override\
+    {\
+        className* cloned = new className();\
+        CloneTo(cloned);\
+        return cloned;\
+    }\
+    void CloneTo(className* cloned) const\
+    {\
+        baseClassName::CloneTo(cloned);\
+        DO_FOR_EACH_PAIR(CloneFieldPair, __VA_ARGS__)\
+    }
+
+#define CloneFuncDefinition(className, ...)\
+    virtual className* className::Clone() const\
+    {\
+        className* cloned = new className();\
+        CloneTo(cloned);\
+        return cloned;\
+    }\
+    void className::CloneTo(className* cloned) const\
+    {\
+        DO_FOR_EACH_PAIR(CloneFieldPair, __VA_ARGS__)\
+    }
+
+#define CloneBaseFuncDefinition(className, baseClassName, ...)\
+    className* className::Clone() const\
+    {\
+        className* cloned = new className();\
+        CloneTo(cloned);\
+        return cloned;\
+    }\
+    void className::CloneTo(className* cloned) const\
+    {\
+        baseClassName::CloneTo(cloned);\
+        DO_FOR_EACH_PAIR(CloneFieldPair, __VA_ARGS__)\
+    }
+
+
+#define CloneAdvancedBaseFunc(className, baseClassName, ...) CloneBaseFuncInClassDefinition(className, baseClassName, __VA_ARGS__)
+#define CloneAdvancedFunc(className, baseClassName, ...) CloneFuncInClassDefinition(className, baseClassName, __VA_ARGS__)
+#define CloneFunc(className, ...) CloneAdvancedFunc(className, LIST_DO_FOR_EACH(StandardClone, __VA_ARGS__))
+#define CloneBaseFunc(className, baseClassName, ...) CloneAdvancedBaseFunc(className, baseClassName, LIST_DO_FOR_EACH(StandardClone, __VA_ARGS__))
+
+#define DeclareCloneFunc(className) CloneFuncDeclaration(className)
+#define DeclareCloneBaseFunc(className) CloneBaseFuncDeclaration(className)
+
+#define DefineCloneFunc(className, ...) CloneFuncDefinition(className, __VA_ARGS__)
+#define DefineCloneBaseFunc(className, baseClassName, ...) CloneBaseFuncDefinition(className, baseClassName, __VA_ARGS__)
+
+#pragma endregion

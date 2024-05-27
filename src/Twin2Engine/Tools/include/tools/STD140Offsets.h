@@ -2,7 +2,9 @@
 
 #include <tools/templates.h>
 #include <tools/stringExtension.h>
+#if _DEBUG
 #include <tools/ValueTypes.h>
+#endif
 
 namespace Twin2Engine::Tools {
 	class STD140Offsets;
@@ -47,13 +49,16 @@ namespace Twin2Engine::Tools {
 
 		std::unordered_map<size_t, size_t> _offsets;
 		std::unordered_map<size_t, std::string> _names;
+#if _DEBUG
 		std::unordered_map<size_t, const ValueType*> _types;
+#endif
 
 		static std::hash<std::string> _hasher;
 
 		static const char* const _arrayElemFormat;
 		static const char* const _subElemFormat;
 
+#if TRACY_PROFILER
 		static const char* const tracy_AddScalar;
 		static const char* const tracy_AddScalarArray;
 		static const char* const tracy_AddVec;
@@ -72,6 +77,7 @@ namespace Twin2Engine::Tools {
 		static const char* const tracy_AddStructArrayAddElemSubValue;
 		static const char* const tracy_AddStructArrayAddElemPadding;
 		static const char* const tracy_AddStructArraySetBeginPointer;
+#endif
 
 		bool _CheckVariable(const std::string& name) const;
 
@@ -102,8 +108,16 @@ namespace Twin2Engine::Tools {
 			}
 		}
 
-		size_t _Add(const std::string& name, size_t baseAligement, size_t baseOffset, const ValueType*& type);
-		std::vector<size_t> _AddArray(const std::string& name, size_t arraySize, size_t baseAligement, size_t baseOffset, const ValueType*&);
+		size_t _Add(const std::string& name, size_t baseAligement, size_t baseOffset 
+#if _DEBUG 
+			, const ValueType* type 
+#endif
+		);
+		std::vector<size_t> _AddArray(const std::string& name, size_t arraySize, size_t baseAligement, size_t baseOffset
+#if _DEBUG
+			, const ValueType* type
+#endif
+		);
 
 	public:
 		STD140Offsets() = default;
@@ -142,10 +156,18 @@ namespace Twin2Engine::Tools {
 #endif
 			if constexpr (std::is_same_v<T, bool>) {
 				// sizeof(unsigned int) = 4
-				return _Add(name, 4, 4);
+				return _Add(name, 4, 4
+#if _DEBUG
+					, new ScalarType(GetValueType<T>())
+#endif
+				);
 			}
 			else {
-				return _Add(name, sizeof(T), sizeof(T));
+				return _Add(name, sizeof(T), sizeof(T)
+#if _DEBUG
+					, new ScalarType(GetValueType<T>())
+#endif
+				);
 			}
 		}
 
@@ -177,10 +199,18 @@ namespace Twin2Engine::Tools {
 #endif
 			if constexpr (std::is_same_v<T, bool>) {
 				// sizeof(unsigned int) = 4
-				return _AddArray(name, size, 4, 4);
+				return _AddArray(name, size, 4, 4
+#if _DEBUG
+					, new ScalarType(GetValueType<T>())
+#endif
+				);
 			}
 			else {
-				return _AddArray(name, size, sizeof(T), sizeof(T));
+				return _AddArray(name, size, sizeof(T), sizeof(T)
+#if _DEBUG
+					, new ScalarType(GetValueType<T>())
+#endif
+				);
 			}
 		}
 
@@ -209,18 +239,34 @@ namespace Twin2Engine::Tools {
 			if constexpr (std::is_same_v<T, bool>) {
 				// sizeof(unsigned int) = 4
 				if constexpr (is_num_in_v<L, 1, 2, 4>) {
-					return _Add(name, 4 * L, 4 * L);
+					return _Add(name, 4 * L, 4 * L
+#if _DEBUG
+						, new VecType(GetValueType<T>(), L)
+#endif
+					);
 				}
 				else if constexpr (is_num_in_v<L, 3>) {
-					return _Add(name, 4 * (L + 1), 4 * L);
+					return _Add(name, 4 * (L + 1), 4 * L
+#if _DEBUG
+						, new VecType(GetValueType<T>(), L)
+#endif
+					);
 				}
 			}
 			else {
 				if constexpr (is_num_in_v<L, 1, 2, 4>) {
-					return _Add(name, sizeof(T) * L, sizeof(T) * L);
+					return _Add(name, sizeof(T) * L, sizeof(T) * L
+#if _DEBUG
+						, new VecType(GetValueType<T>(), L)
+#endif
+					);
 				}
 				else if constexpr (is_num_in_v<L, 3>) {
-					return _Add(name, sizeof(T) * (L + 1), sizeof(T) * L);
+					return _Add(name, sizeof(T) * (L + 1), sizeof(T) * L
+#if _DEBUG
+						, new VecType(GetValueType<T>(), L)
+#endif
+					);
 				}
 			}
 		}
@@ -254,18 +300,34 @@ namespace Twin2Engine::Tools {
 			if constexpr (std::is_same_v<T, bool>) {
 				// sizeof(unsigned int) = 4
 				if constexpr (is_num_in_v<L, 1, 2, 4>) {
-					return _AddArray(name, size, 4 * L, 4 * L);
+					return _AddArray(name, size, 4 * L, 4 * L
+#if _DEBUG
+						, new VecType(GetValueType<T>(), L)
+#endif
+					);
 				}
 				else if constexpr (is_num_in_v<L, 3>) {
-					return _AddArray(name, size, 4 * (L + 1), 4 * L);
+					return _AddArray(name, size, 4 * (L + 1), 4 * L
+#if _DEBUG
+						, new VecType(GetValueType<T>(), L)
+#endif
+					);
 				}
 			}
 			else {
 				if constexpr (is_num_in_v<L, 1, 2, 4>) {
-					return _AddArray(name, size, sizeof(T) * L, sizeof(T) * L);
+					return _AddArray(name, size, sizeof(T) * L, sizeof(T) * L
+#if _DEBUG
+						, new VecType(GetValueType<T>(), L)
+#endif
+					);
 				}
 				else if constexpr (is_num_in_v<L, 3>) {
-					return _AddArray(name, size, sizeof(T) * (L + 1), sizeof(T) * L);
+					return _AddArray(name, size, sizeof(T) * (L + 1), sizeof(T) * L
+#if _DEBUG
+						, new VecType(GetValueType<T>(), L)
+#endif
+					);
 				}
 			}
 		}
@@ -295,18 +357,50 @@ namespace Twin2Engine::Tools {
 			if constexpr (std::is_same_v<T, bool>) {
 				// sizeof(unsigned int) = 4
 				if constexpr (is_num_in_v<R, 1, 2, 4>) {
+#if _DEBUG
+					size_t offset = _AddArray(name, C, 4 * R, 4 * R, new VecType(GetValueType<T>(), R))[0];
+					size_t nameHash = _hasher(name);
+					delete _types[nameHash];
+					_types[nameHash] = new MatType(GetValueType<T>(), C, R);
+					return offset;
+#else
 					return _AddArray(name, C, 4 * R, 4 * R)[0];
+#endif
 				}
 				else if constexpr (is_num_in_v<R, 3>) {
+#if _DEBUG
+					size_t offset = _AddArray(name, C, 4 * (R + 1), 4 * R, new VecType(GetValueType<T>(), R))[0];
+					size_t nameHash = _hasher(name);
+					delete _types[nameHash];
+					_types[nameHash] = new MatType(GetValueType<T>(), C, R);
+					return offset;
+#else
 					return _AddArray(name, C, 4 * (R + 1), 4 * R)[0];
+#endif
 				}
 			}
 			else {
 				if constexpr (is_num_in_v<R, 1, 2, 4>) {
+#if _DEBUG
+					size_t offset = _AddArray(name, C, sizeof(T) * R, sizeof(T) * R, new VecType(GetValueType<T>(), R))[0];
+					size_t nameHash = _hasher(name);
+					delete _types[nameHash];
+					_types[nameHash] = new MatType(GetValueType<T>(), C, R);
+					return offset;
+#else
 					return _AddArray(name, C, sizeof(T) * R, sizeof(T) * R)[0];
+#endif
 				}
 				else if constexpr (is_num_in_v<R, 3>) {
+#if _DEBUG
+					size_t offset = _AddArray(name, C, sizeof(T) * (R + 1), sizeof(T) * R, new VecType(GetValueType<T>(), R))[0];
+					size_t nameHash = _hasher(name);
+					delete _types[nameHash];
+					_types[nameHash] = new MatType(GetValueType<T>(), C, R);
+					return offset;
+#else
 					return _AddArray(name, C, sizeof(T) * (R + 1), sizeof(T) * R)[0];
+#endif
 				}
 			}
 		}
@@ -335,6 +429,10 @@ namespace Twin2Engine::Tools {
 			}
 
 			std::vector<size_t> values;
+#if _DEBUG
+			const ValueType* matType = new MatType(GetValueType<T>(), C, R);
+			const ValueType* rowType = new VecType(GetValueType<T>(), R);
+#endif
 			for (size_t i = 0; i < size; ++i) {
 #if TRACY_PROFILER
 				FrameMarkStart(tracy_AddMatArrayElem);
@@ -342,18 +440,50 @@ namespace Twin2Engine::Tools {
 				if constexpr (std::is_same_v<T, bool>) {
 					// sizeof(unsigned int) = 4
 					if constexpr (is_num_in_v<R, 1, 2, 4>) {
+#if _DEBUG
+						std::string valueName = std::vformat(_arrayElemFormat, std::make_format_args(name, i));
+						values.push_back(std::move(_AddArray(valueName, C, 4 * R, 4 * R, rowType)[0]));
+						size_t nameHash = _hasher(valueName);
+						delete _types[nameHash];
+						_types[nameHash] = matType;
+#else
 						values.push_back(std::move(_AddArray(std::move(std::vformat(_arrayElemFormat, std::make_format_args(name, i))), C, 4 * R, 4 * R)[0]));
+#endif
 					}
 					else if constexpr (is_num_in_v<R, 3>) {
+#if _DEBUG
+						std::string valueName = std::vformat(_arrayElemFormat, std::make_format_args(name, i));
+						values.push_back(std::move(_AddArray(valueName, C, 4 * (R + 1), 4 * R, rowType)[0]));
+						size_t nameHash = _hasher(valueName);
+						delete _types[nameHash];
+						_types[nameHash] = matType;
+#else
 						values.push_back(std::move(_AddArray(std::move(std::vformat(_arrayElemFormat, std::make_format_args(name, i))), C, 4 * (R + 1), 4 * R)[0]));
+#endif
 					}
 				}
 				else {
 					if constexpr (is_num_in_v<R, 1, 2, 4>) {
+#if _DEBUG
+						std::string valueName = std::vformat(_arrayElemFormat, std::make_format_args(name, i));
+						values.push_back(std::move(_AddArray(valueName, C, sizeof(T) * R, sizeof(T) * R, rowType)[0]));
+						size_t nameHash = _hasher(valueName);
+						delete _types[nameHash];
+						_types[nameHash] = matType;
+#else
 						values.push_back(std::move(_AddArray(std::move(std::vformat(_arrayElemFormat, std::make_format_args(name, i))), C, sizeof(T) * R, sizeof(T) * R)[0]));
+#endif
 					}
 					else if constexpr (is_num_in_v<R, 3>) {
+#if _DEBUG
+						std::string valueName = std::vformat(_arrayElemFormat, std::make_format_args(name, i));
+						values.push_back(std::move(_AddArray(valueName, C, sizeof(T) * (R + 1), sizeof(T) * R, rowType)[0]));
+						size_t nameHash = _hasher(valueName);
+						delete _types[nameHash];
+						_types[nameHash] = matType;
+#else
 						values.push_back(std::move(_AddArray(std::move(std::vformat(_arrayElemFormat, std::make_format_args(name, i))), C, sizeof(T) * (R + 1), sizeof(T) * R)[0]));
+#endif
 					}
 				}
 #if TRACY_PROFILER
@@ -368,6 +498,9 @@ namespace Twin2Engine::Tools {
 			size_t nameHash = std::move(_hasher(name));
 			_offsets[nameHash] = values[0];
 			_names[nameHash] = name;
+#if _DEBUG
+			_types[nameHash] = new ArrayType(matType, size);
+#endif
 #if TRACY_PROFILER
 			FrameMarkEnd(tracy_AddMatArrayElem);
 
@@ -393,7 +526,11 @@ namespace Twin2Engine::Tools {
 				return 0;
 			}
 
-			size_t aligementOffset = std::move(_Add(name, structTemplate.GetBaseAligement(), structTemplate._currentOffset));
+			size_t aligementOffset = std::move(_Add(name, structTemplate.GetBaseAligement(), structTemplate._currentOffset
+#if _DEBUG
+				, new StructType(structTemplate))
+#endif
+			);
 			std::string valueName;
 			size_t nameHash;
 			for (const auto& off : structTemplate._offsets) {
@@ -405,6 +542,9 @@ namespace Twin2Engine::Tools {
 				nameHash = std::move(_hasher(valueName));
 				_offsets[nameHash] = aligementOffset + off.second;
 				_names[nameHash] = valueName;
+#if _DEBUG
+				_types[nameHash] = (*structTemplate._types.find(off.first)).second->Clone();
+#endif
 #if TRACY_PROFILER
 				FrameMarkEnd(tracy_AddStructSetElem);
 #endif
@@ -455,13 +595,20 @@ namespace Twin2Engine::Tools {
 #if TRACY_PROFILER
 			FrameMarkStart(tracy_AddStructArrayAddElems);
 #endif
+#if _DEBUG
+			const ValueType* structType = new StructType(structTemplate);
+#endif
 			for (size_t i = 0; i < size; ++i) {
 #if TRACY_PROFILER
 				FrameMarkStart(tracy_AddStructArrayAddElem);
 #endif
 
 				arrayElemName = std::move(std::vformat(_arrayElemFormat, std::make_format_args(name, i)));
-				values.push_back((aligementOffset = std::move(_Add(arrayElemName, structTemplate.GetBaseAligement(), structTemplate._currentOffset))));
+				values.push_back((aligementOffset = std::move(_Add(arrayElemName, structTemplate.GetBaseAligement(), structTemplate._currentOffset
+#if _DEBUG
+					, structType
+#endif
+				))));
 
 #if TRACY_PROFILER
 				FrameMarkStart(tracy_AddStructArrayAddElemSubValues);
@@ -475,6 +622,9 @@ namespace Twin2Engine::Tools {
 					nameHash = std::move(_hasher(valueName));
 					_offsets[nameHash] = aligementOffset + off.second;
 					_names[nameHash] = valueName;
+#if _DEBUG
+					_types[nameHash] = (*structTemplate._types.find(off.first)).second->Clone();
+#endif
 #if TRACY_PROFILER
 					FrameMarkEnd(tracy_AddStructArrayAddElemSubValue);
 #endif
@@ -507,6 +657,9 @@ namespace Twin2Engine::Tools {
 			nameHash = std::move(_hasher(name));
 			_offsets[nameHash] = values[0];
 			_names[nameHash] = name;
+#if _DEBUG
+			_types[nameHash] = new ArrayType(structType, size);
+#endif
 #if TRACY_PROFILER
 			FrameMarkEnd(tracy_AddStructArraySetBeginPointer);
 
@@ -521,7 +674,9 @@ namespace Twin2Engine::Tools {
 		size_t Get(const std::string& name) const;
 		std::vector<size_t> GetArray(const std::string& name) const;
 
+#if _DEBUG
 		const ValueType* GetType(const std::string& name) const;
+#endif
 
 		size_t GetBaseAligement() const;
 		size_t GetSize() const;

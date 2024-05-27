@@ -11,6 +11,8 @@
 #include <Generation/CitiesManager.h>
 #include <Generation/MapHexTile.h>
 
+#include <AstarPathfinding/AStarPathfinder.h>
+
 
 namespace Humans
 {
@@ -18,13 +20,31 @@ namespace Humans
     {
         float _speed = 1.0f;
         glm::vec3 _targetDestination;
+        glm::vec3 _bufferedTargetDestination;
+        glm::vec3 _currentDestination;
         Tilemap::HexagonalTilemap* _tilemap;
 
+        AStar::AStarPathfindingInfo _pathfindingInfo;
+
         float _forwardDetectionDistance = 0.1f;
+
+        float _achievingDestinationAccuracity = 0.2f;
+        
         // Start is called before the first frame update
 
+        AStar::AStarPath _path;
+        bool _notDestroyed = true;
+        bool _findingPath = false;
+        bool _foundPath = false;
+
+        void PathFindingSuccess(const AStar::AStarPath& path);
+        void PathFindingFailure();
+
     public:
+        //HumanMovement() : Twin2Engine::Core::Component() { }
+
         virtual void Initialize() override;
+        virtual void OnDestroy() override;
 
         virtual void Update() override;
 

@@ -1,4 +1,4 @@
-#include <Tilemap/HexagonalTilemap.h>
+ï»¿#include <Tilemap/HexagonalTilemap.h>
 
 #include <tools/YamlConverters.h>
 
@@ -48,7 +48,7 @@ void HexagonalTilemap::Resize(glm::ivec2 leftBottomPosition, glm::ivec2 rightTop
 	_width = _rightTopPosition.x - _leftBottomPosition.x + 1;
 	_height = _rightTopPosition.y - _leftBottomPosition.y + 1;
 
-	_tilemap = new HexagonalTile**[_width];
+	_tilemap = new HexagonalTile * *[_width];
 	for (int i = 0; i < _width; ++i)
 	{
 		_tilemap[i] = new HexagonalTile * [_height](nullptr);
@@ -222,7 +222,7 @@ void HexagonalTilemap::SetTile(const glm::ivec2& position, Twin2Engine::Core::Pr
 
 	//instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3(position.x * _distanceBetweenTiles, 0.0f, position.y * _distanceBetweenTiles));
 	//instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3((position.x * _distanceBetweenTiles + (position.y % 2) * 0.5f * _distanceBetweenTiles) * 1.5f, 0.0f, position.y * _distanceBetweenTiles * 0.25f * SQRT_3));
-	
+
 
 	instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3(position.x * _edgeLength * 1.5f, 0.0f, (position.y + (abs(position.x) % 2) * 0.5f) * _distanceBetweenTiles));
 	//instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3((position.x + (abs(position.y) % 2) * 0.5f) * _edgeLength * 4.0f, 0.0f, position.y * 0.5f * _distanceBetweenTiles));
@@ -264,7 +264,7 @@ void HexagonalTilemap::RemoveTile(const glm::ivec2& position)
 
 void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::Prefab* prefab)
 {
-	
+
 
 	// Check if the given position is within the tilemap bounds
 	if (position.x < _leftBottomPosition.x || position.x > _rightTopPosition.x ||
@@ -283,26 +283,26 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::Prefa
 	//visited.insert(position);
 
 	// Define the neighboring directions for hexagonal tiles
-	
-	//const glm::ivec2 HexagonalTile::adjacentDirectionsEvenY[6] = {
-	//	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 0),
-	//	glm::ivec2(0, -1), glm::ivec2(-1, -1), glm::ivec2(-1, 0)
-	//};
-	//
-	//const glm::ivec2 HexagonalTile::adjacentDirectionsOddY[6] = {
-	//	glm::ivec2(0, 1), glm::ivec2(1, 1), glm::ivec2(1, 0),
-	//	glm::ivec2(1, -1), glm::ivec2(0, -1), glm::ivec2(-1, 0)
-	//};
 
 	const glm::ivec2 adjacentDirectionsEvenY[6] = {
-		glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
-		glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
+		glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 0),
+		glm::ivec2(0, -1), glm::ivec2(-1, -1), glm::ivec2(-1, 0)
 	};
 
 	const glm::ivec2 adjacentDirectionsOddY[6] = {
-		glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
-		glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
+		glm::ivec2(0, 1), glm::ivec2(1, 1), glm::ivec2(1, 0),
+		glm::ivec2(1, -1), glm::ivec2(0, -1), glm::ivec2(-1, 0)
 	};
+
+	//const glm::ivec2 adjacentDirectionsEvenY[6] = {
+	//	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
+	//	glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
+	//};
+	//
+	//const glm::ivec2 adjacentDirectionsOddY[6] = {
+	//	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
+	//	glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
+	//};
 
 
 	glm::ivec2 currentPos;
@@ -379,41 +379,44 @@ glm::vec2 HexagonalTilemap::ConvertToRealPosition(const glm::ivec2& position) co
 
 glm::ivec2 HexagonalTilemap::ConvertToTilemapPosition(const glm::vec2& position) const
 {
-	int x = glm::round(position.x / (_edgeLength * 1.5f));
-	return glm::ivec2(x, glm::round((position.y / _distanceBetweenTiles - 0.5f * (x % 2))));
-	//return glm::ivec2(glm::floor(0.25f * position.x / _edgeLength), 2.0f * position.y / _distanceBetweenTiles);
-}
-
-void HexagonalTilemap::Initialize()
-{
-	//_tilemap = new HexagonalTile * *[1];
-	//_tilemap[0] = new HexagonalTile * [1];
-	//_tilemap[0][0] = new HexagonalTile();
-	//_tilemap[0][0]->SetTilemap(this);
-	//_tilemap[0][0]->SetPosition(glm::ivec2(0, 0));
-	//
-	_initialized = true;
-
-
-	//Resize(_leftBottomPosition, _rightTopPosition);
-}
-
-void HexagonalTilemap::OnDestroy()
-{
-	for (int i = 0; i < _width; ++i)
+	float fx = position.x / (_edgeLength * 1.5f);
+	int x = glm::round(fx);
+	if (x % 2)
 	{
-		for (int j = 0; j < _height; ++j)
+		if (fx > (x + 0.25f))
 		{
-			if (_tilemap[i][j] != nullptr)
-			{
-				delete _tilemap[i][j];
-			}
+			--x;
 		}
-
-		delete[] _tilemap[i];
+		else if (fx <= (x - 0.25f))
+		{
+			++x;
+		}
 	}
+	//return glm::ivec2(x, glm::round((position.y / _distanceBetweenTiles)));
+	int y = glm::round(((position.y - 0.5f * (abs(x) % 2)) / _distanceBetweenTiles));
 
-	delete[] _tilemap;
+	return glm::ivec2(x, y);
+
+	//return glm::ivec2(glm::floor(0.25f * position.x / _edgeLength), 2.0f * position.y / _distanceBetweenTiles);
+	//float q = (2.0 / 3.0 * position.x) / _edgeLength;
+	//float r = (-1.0 / 3.0 * position.x + sqrt(3.0) / 3.0 * position.y) / _edgeLength;
+	//float rq = round(q);
+	//float rr = round(r);
+	//float rs = round(-q - r);
+	//
+	//float q_diff = fabs(rq - q);
+	//float r_diff = fabs(rr - r);
+	//float s_diff = fabs(rs + q + r);
+	//
+	//if (q_diff > r_diff && q_diff > s_diff) {
+	//	rq = -rr - rs;
+	//}
+	//else if (r_diff > s_diff) {
+	//	rr = -rq - rs;
+	//}
+	//
+	//return glm::ivec2(rq, rr);
+
 }
 
 YAML::Node HexagonalTilemap::Serialize() const
@@ -423,7 +426,7 @@ YAML::Node HexagonalTilemap::Serialize() const
 	node["leftBottomPosition"] = _leftBottomPosition;
 	node["rightTopPosition"] = _rightTopPosition;
 	node["edgeLength"] = _edgeLength;
-	// TODO: Zrobiæ serializacjê zawartoœci tilemapy w formie par pozycja, gameObject
+	// TODO: ZrobiÃ¦ serializacjÃª zawartoÂœci tilemapy w formie par pozycja, gameObject
 	//GameObject* processed = nullptr;
 	//
 	//YAML::Node listNode = YAML::Node(YAML::NodeType::Sequence);
@@ -488,19 +491,19 @@ bool HexagonalTilemap::Deserialize(const YAML::Node& node) {
 		}
 	}
 
-	// TODO: Zrobiæ deserializacjê zawartoœci tilemapy w formie par pozycja, gameObject
+	// TODO: ZrobiÃ¦ deserializacjÃª zawartoÂœci tilemapy w formie par pozycja, gameObject
 	//glm::ivec2 position;
 	//size_t id;
 	//for (const YAML::Node& seqNode : node["tilemapGameObjects"])
 	//{
 	//	position = seqNode["position"].as<glm::ivec2>();
 	//	id = seqNode["id"].as<size_t>();
-	//	// TODO: Okreœliæ mapowanie zapisanych id gamoeobject w tilemapie na obecne id gameobject w secenie.
+	//	// TODO: OkreÂœliÃ¦ mapowanie zapisanych id gamoeobject w tilemapie na obecne id gameobject w secenie.
 	//	//_tilemap[position.x][position.y]->SetGameObject(Twin2Engine::Manager::SceneManager::GetGameObjectWithId(id));
 	//}
-	
-	 
-	//Resize(node["leftBottomPosition"].as<glm::ivec2>(), node["rightTopPosition"].as<glm::ivec2>()); Raczej do usuniêcia
+
+
+	//Resize(node["leftBottomPosition"].as<glm::ivec2>(), node["rightTopPosition"].as<glm::ivec2>()); Raczej do usuniÃªcia
 
 	return true;
 }
@@ -512,10 +515,10 @@ void HexagonalTilemap::DrawEditor()
 	std::string name = std::string("Hexagonal Tilemap##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
-		if (Component::DrawInheritedFields()) return;
+		Component::DrawInheritedFields();
 
 		float dbt = _distanceBetweenTiles;
-		ImGui::DragFloat(string("Distance Between Tiles##").append(id).c_str(), &dbt, 0.1f, 0.0f, FLT_MAX);
+		ImGui::DragFloat(string("Distance Between Tiles##").append(id).c_str(), &dbt, 0.1f, 0.0f);
 
 		if (dbt != _distanceBetweenTiles) {
 			SetDistanceBetweenTiles(dbt);
@@ -534,3 +537,35 @@ void HexagonalTilemap::DrawEditor()
 	}
 }
 #endif
+
+void HexagonalTilemap::Initialize()
+{
+	//_tilemap = new HexagonalTile * *[1];
+	//_tilemap[0] = new HexagonalTile * [1];
+	//_tilemap[0][0] = new HexagonalTile();
+	//_tilemap[0][0]->SetTilemap(this);
+	//_tilemap[0][0]->SetPosition(glm::ivec2(0, 0));
+	//
+	_initialized = true;
+
+
+	//Resize(_leftBottomPosition, _rightTopPosition);
+}
+
+void HexagonalTilemap::OnDestroy()
+{
+	for (int i = 0; i < _width; ++i)
+	{
+		for (int j = 0; j < _height; ++j)
+		{
+			if (_tilemap[i][j] != nullptr)
+			{
+				delete _tilemap[i][j];
+			}
+		}
+
+		delete[] _tilemap[i];
+	}
+
+	delete[] _tilemap;
+}

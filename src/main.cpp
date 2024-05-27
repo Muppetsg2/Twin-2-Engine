@@ -48,6 +48,11 @@ using namespace Humans;
 
 #include <Humans/HumansGenerator.h>
 
+// ASTAR PATHFINDING
+#include <AstarPathfinding/AStarPathfinder.h>
+
+using namespace AStar;
+
 // YAML CONVERTERS
 #include <tools/YamlConverters.h>
 #include <Generation/YamlConverters.h>
@@ -232,6 +237,10 @@ int main(int, char**)
     ADD_COMPONENT("Human", Human);
 
     ADD_COMPONENT("HumanMovement", HumanMovement);
+
+    ADD_COMPONENT("AStarPathfindingNode", AStarPathfindingNode);
+
+    ADD_COMPONENT("AStarPathfinder", AStarPathfinder);
 
 #pragma endregion
 

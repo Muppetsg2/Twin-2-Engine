@@ -18,6 +18,7 @@ namespace Humans
 
 
         HumanMovement* _movement;
+        bool _work = false;
 
         Twin2Engine::Core::GameObject* _targetCity = nullptr;
 
@@ -28,6 +29,8 @@ namespace Humans
         // Update is called once per frame
         void Update();
 
+        void StartWorking();
+        void StopWorking();
 
         virtual YAML::Node Serialize() const override;
         virtual bool Deserialize(const YAML::Node& node) override;

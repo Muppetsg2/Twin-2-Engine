@@ -1,0 +1,23 @@
+Fighting:
+- Paper
+- Rock
+- Scisors
+
+Taking Over:
+- Album Ability
+- Concert Ability
+- Fans Meeting Ability
+- Move
+
+Moving:
+- Start Taking Over
+- Fight
+- Album Ability
+- Concert Ability
+
+Radio Station:
+- Fail
+- Good 1
+- Good 2
+- Good 3
+- Good 4

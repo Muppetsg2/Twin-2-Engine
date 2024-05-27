@@ -54,16 +54,17 @@ CloudController* CloudController::instance = nullptr;
 const int CloudController::CLOUD_DEPTH_MAP_ID = 20;
 
 CloudController::CloudController() {
-	NoiseTexture = TextureManager::GetTexture2D("res/textures/density_noise.png");
+	//NoiseTexture = TextureManager::GetTexture2D("res/textures/density_noise.png");
+	NoiseTexture = TextureManager::GetTexture2D("res/textures/blueNoise.png");
 	NoiseTexture->SetWrapModeS(TextureWrapMode::MIRRORED_REPEAT);
 	NoiseTexture->SetWrapModeT(TextureWrapMode::MIRRORED_REPEAT);
 
-	const int width = 48;
-	const int height = 48;
-	const int depth = 48;
+	const int width  = 96;
+	const int height = 96;
+	const int depth  = 96;
 
 	//auto noiseData = generate3DPerlinNoise(width, height, depth, 20.0f);
-	auto noiseData = generate3DPerlinWorleyNoise(width, height, depth, 100.0f);
+	auto noiseData = generate3DPerlinWorleyNoise(width, height, depth, 10.0f);
 	noiseTexture3d = create3DNoiseTexture(noiseData, width, height, depth);
 
 

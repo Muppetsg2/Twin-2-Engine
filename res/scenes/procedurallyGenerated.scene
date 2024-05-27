@@ -748,23 +748,23 @@ GameObjects:
       id: 38
       enabled: true
       position:
-        x: -7
+        x: 0
         y: 7
         z: 0
       scale:
-        x: 0.8
-        y: 0.8
-        z: 0.8
+        x: 5
+        y: 2
+        z: 5
       rotation:
-        x: -90
+        x: 0
         y: 0
-        z: 30
+        z: 0
     components:
       - id: 39
         enabled: true
         type: MeshRenderer
         isTransparent: false
-        model: 6
+        model: 3
         materials:
           - 9
       - id: 40

@@ -7,18 +7,18 @@ layout (location = 0) out vec4 FragColor;
 
 
 
-vec3 cloudColor = vec3(1.0, 1.0, 1.0);
-const float ABSORPTION = 5;
-const float DENSITY_FAC = 0.7;
-const float SEGMENT_LENGTH = 0.01;
-const float SEGMENT_OFFSET = 0.001;
-const float NOISE_D_VEL = 0.02;
-vec3 NOISE_D_VEL_3D = vec3(-0.02, 0.0, 0.0);
+//vec3 cloudColor = vec3(1.0, 1.0, 1.0);
+//const float ABSORPTION = 5;
+//const float DENSITY_FAC = 0.7;
+//const float SEGMENT_LENGTH = 0.01;
+//const float SEGMENT_OFFSET = 0.001;
+//const float NOISE_D_VEL = 0.02;
+//vec3 NOISE_D_VEL_3D = vec3(-0.02, 0.0, 0.0);
 
-const float LIGHT_STEP_LENGTH = 0.01;
-//const float CLOUD_LIGHT_MULTIPLIER = 50.0;
+//const float LIGHT_STEP_LENGTH = 0.01;
+////const float CLOUD_LIGHT_MULTIPLIER = 50.0;
 
-vec2 resolution = vec2(1920.0, 1055.0);
+//vec2 resolution = vec2(1920.0, 1055.0);
 
 uniform sampler2D viewerBackDepthMap;
 uniform sampler2D noiseTexture;
@@ -85,23 +85,76 @@ layout(std140, binding = 3) uniform LightingData {
 //    float gamma;
 //};
 
-//LIGHTING END
 
+// Shape settings
+//vec4 params;
+//int3 mapSize;
+float densityMultiplier = 1.07;
+float densityOffset = -4.27;
+float scale = 0.62;
+float detailNoiseScale = 3;
+float detailNoiseWeight = 3.42;
+vec3 detailWeights = vec3(1, 0.5, 0.5);
+vec4 shapeNoiseWeights = vec4(1, 0.48, 0.15, 0);
+float forwardScattering = 0.811;
+float backScattering = 0.33;
+float baseBrightness = 1;
+float phaseFactor = 0.488;
+vec4 phaseParams = vec4(forwardScattering, backScattering, baseBrightness, phaseFactor);
 
-float PI = 3.14159265359;
+// March settings
+int numStepsLight = 8;
+float rayOffsetStrength = 10;
+
+vec3 boundsMin = vec3(-5.0, 5.0, -5.0);
+vec3 boundsMax = vec3(5.0, 9.0, 5.0);
+
+vec3 shapeOffset  = vec3(190.44, 0, 0);//vec3(190.44, 0, 0);
+vec3 detailOffset = vec3(51.25, 0, 0);//vec3(51.25, y: 0, z: 0);
+
+// Light settings
+float lightAbsorptionTowardSun = 1.21;
+float lightAbsorptionThroughCloud = 0.75;
+float darknessThreshold = 0.15;
+vec4 _LightColor0 = vec4(1.0, 1.0, 1.0, 1.0);
+vec4 colA = vec4(0.8915094, 0.94486547, 1, 1);
+vec4 colB = vec4(0.44313726, 0.6431373, 0.8, 1);
+
+// Animation settings
+float timeScale = 1;
+float baseSpeed = 0.5;
+float detailSpeed = 1;
+
 
 float saturate(float x) {
 	 return clamp(x, 0.0, 1.0);
 }
 
-vec3 saturate3(vec3 x) {
-	return clamp(x, vec3(0.0), vec3(1.0));
-}
-
-
-float linearstep(float minValue, float maxValue, float v) {
-	return clamp((v - minValue) / (maxValue - minValue), 0.0, 1.0);
-}
+//vec3 MultipleOctaveScattering(float density, float mu) {
+//	float attenuation = 0.2;
+//	float contribution = 0.2;
+//	float phaseAttenuation = 0.5;
+//	
+//	float a = 1.0;
+//	float b = 1.0;
+//	float c = 1.0;
+//	float g = 0.85;
+//	const float scatteringOctaves = 4.0;
+//	
+//	vec3 luminance = vec3(0.0);
+//	
+//	for (float i = 0.0; i < scatteringOctaves; i++) {
+//		float phaseFunction = PhaseFunction(0.3 * c, mu);
+//		vec3 beers = exp(-density * EXTINCTION_MULT * a);
+//		
+//		luminance += b * phaseFunction * beers;
+//		
+//		a *= attenuation;
+//		b *= contribution;
+//		c *= (1.0 - phaseAttenuation);
+//	}
+//	return luminance;
+//}
 
 float inverseLerp(float minValue, float maxValue, float v) {
 	return (v - minValue) / (maxValue - minValue);
@@ -112,188 +165,6 @@ float remap(float v, float inMin, float inMax, float outMin, float outMax) {
 	return mix(outMin, outMax, t);
 }
 
-float circularOut(float t) {
-	return sqrt((2.0 - t) * t);
-}
-
-float sdfBox( vec3 p, vec3 b ) {
-	vec3 q = abs(p) - b;
-	return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
-}
-
-float sdCutSphere( vec3 p, float r, float h )
-{
-	// sampling independent computations (only depend on shape)
-	float w = sqrt(r*r-h*h);
-	
-	// sampling dependant computations
-	vec2 q = vec2( length(p.xz), p.y );
-	float s = max( (h-r)*q.x*q.x+w*w*(h+r-2.0*q.y), h*q.x-w*q.y );
-	return (s<0.0) ? length(q)-r :
-	       (q.x<w) ? h - q.y     :
-	                 length(q-vec2(w,h));
-}
-
-vec3 ACESToneMap(vec3 color){	
-	mat3 m1 = mat3(
-        0.59719, 0.07600, 0.02840,
-        0.35458, 0.90834, 0.13383,
-        0.04823, 0.01566, 0.83777
-	);
-	mat3 m2 = mat3(
-        1.60475, -0.10208, -0.00327,
-        -0.53108,  1.10813, -0.07276,
-        -0.07367, -0.00605,  1.07602
-	);
-	vec3 v = m1 * color;    
-	vec3 a = v * (v + 0.0245786) - 0.000090537;
-	vec3 b = v * (0.983729 * v + 0.4329510) + 0.238081;
-	return saturate3(m2 * (a / b));	
-}
-
-struct AABB {
-	vec3 min;
-	vec3 max;
-};
-
-struct AABBIntersectResult {
-	float near;
-	float far;
-};
-
-bool insideAABB(vec3 rayOrigin, AABB box) {
-	return all(lessThanEqual(rayOrigin, box.max)) && all(lessThan(box.min, rayOrigin));
-}
-
-// https://gist.github.com/DomNomNom/46bb1ce47f68d255fd5d
-// Compute the near and far intersections using the slab method.
-// No intersection if tNear > tFar.
-AABBIntersectResult intersectAABB(vec3 rayOrigin, vec3 rayDir, AABB box) {
-    vec3 tMin = (box.min - rayOrigin) / rayDir;
-    vec3 tMax = (box.max - rayOrigin) / rayDir;
-    vec3 t1 = min(tMin, tMax);
-    vec3 t2 = max(tMin, tMax);
-    float tNear = max(max(t1.x, t1.y), t1.z);
-    float tFar = min(min(t2.x, t2.y), t2.z);
-    return AABBIntersectResult(tNear, tFar);
-}
-
-const float GOLDEN_RATIO = 1.61803398875;
-const vec3 EXTINCTION_MULT = vec3(0.8, 0.8, 1.0);
-
-const float DUAL_LOBE_WEIGHT = 0.7;
-const float AMBIENT_STRENGTH = 0.1;
-
-const float CLOUD_LIGHT_MULTIPLIER = 50.0;
-vec3 CLOUD_LIGHT_DIR = normalize(vec3(-1.0, 0.0, 0.0));
-
-const float CLOUD_EXPOSURE = 1.0;
-const float CLOUD_STEPS_MIN = 16.0;
-const float CLOUD_STEPS_MAX = 128.0;
-const float CLOUD_LIGHT_STEPS = 12.0;
-const float CLOUD_DENSITY = 0.5;
-
-const vec3 CLOUD_OFFSET = vec3(0.0, 0.0, 0.0);
-
-vec3 CLOUD_SIZE = vec3(4000.0);
-vec3 CLOUD_BOUNDS_MIN;
-vec3 CLOUD_BOUNDS_MAX;
-
-const float CLOUD_BASE_STRENGTH = 0.8;
-const float CLOUD_DETAIL_STRENGTH = 0.2;
-
-const vec3 CLOUD_COLOUR = vec3(1.0);
-const float CLOUD_FALLOFF = 25.0;
-
-
-float HenyeyGreenstein(float g, float mu) {
-	float gg = g * g;
-	return (1.0 / (4.0 * PI))  * ((1.0 - gg) / pow(1.0 + gg - 2.0 * g * mu, 1.5));
-}
-
-float DualHenyeyGreenstein(float g, float costh) {
-	return mix(HenyeyGreenstein(-g, costh), HenyeyGreenstein(g, costh), DUAL_LOBE_WEIGHT);
-}
-
-float PhaseFunction(float g, float costh) {
-	return DualHenyeyGreenstein(g, costh);
-}
-
-
-vec4 SamplePerlinWorleyNoise(vec3 pos) {
-	vec3 coord = pos.xzy * vec3(1.0 / 32.0, 1.0 / 32.0, 1.0 / 64.0) * 1.0;
-	vec4 s = texture(noiseTexture3d, coord);
-	
-	return s;
-}
-
-
-float SampleLowResolutionCloudMap(vec3 p) {
-	float sdfValue = sdfBox(p, vec3(50.0));
-	
-	sdfValue = sdCutSphere(p, 60.0, -40.0);
-	sdfValue = min(sdfValue, sdCutSphere(p - vec3(60.0, -20.0, 0.0), 40.0, -20.0));
-	sdfValue = min(sdfValue, sdCutSphere(p - vec3(-60.0, -20.0, -50.0), 20.0, -20.0));
-	
-	return sdfValue;
-}
-
-float SampleHighResolutionCloudDetail(float cloudSDF, vec3 worldPos, vec3 cameraOrigin, float curTime) {
-	float cloud = circularOut(linearstep(0.0, -CLOUD_FALLOFF, cloudSDF)) * 0.85;
-	
-	if(cloud > 0.0) {
-		vec3 samplePos = worldPos + vec3(-2.0 * time, 0.0, time) * 1.5;
-		
-		float shapeSize = 0.4;
-		vec4 perlinWorleySample = SamplePerlinWorleyNoise(samplePos * shapeSize);
-		
-		float shapeStrength = CLOUD_BASE_STRENGTH;
-		cloud = saturate(remap(cloud, shapeStrength * perlinWorleySample.x, 1.0, 0.0, 1.0));
-		
-		if(cloud > 0.0) {
-			float distToSample = distance(ViewerPosition, worldPos);
-			float t_detailDropout = smoothstep(1000.0, 800.0, distToSample);
-			
-			if (t_detailDropout > 0.0) {
-				samplePos += vec3(4.0 * time, 3.0 * time, 2.0 * time) * 0.01;
-				
-				float detailSize = 1.8;
-				float detailStrength = CLOUD_DETAIL_STRENGTH * t_detailDropout;
-				float detail = SamplePerlinWorleyNoise(detailSize * samplePos).y;
-				cloud = saturate(remap(cloud, detailStrength * detail, 1.0, 0.0, 1.0));
-			}
-		}
-	}
-	
-	return cloud * CLOUD_DENSITY;
-}
-
-vec3 MultipleOctaveScattering(float density, float mu) {
-	float attenuation = 0.2;
-	float contribution = 0.2;
-	float phaseAttenuation = 0.5;
-	
-	float a = 1.0;
-	float b = 1.0;
-	float c = 1.0;
-	float g = 0.85;
-	const float scatteringOctaves = 4.0;
-	
-	vec3 luminance = vec3(0.0);
-	
-	for (float i = 0.0; i < scatteringOctaves; i++) {
-		float phaseFunction = PhaseFunction(0.3 * c, mu);
-		vec3 beers = exp(-density * EXTINCTION_MULT * a);
-		
-		luminance += b * phaseFunction * beers;
-		
-		a *= attenuation;
-		b *= contribution;
-		c *= (1.0 - phaseAttenuation);
-	}
-	return luminance;
-}
-
 vec4 probeLightDepthTex(vec3 pos) {
 	vec4 projPos = directionalLights[0].lightSpaceMatrix * vec4(FragPos , 1.0);
     vec3 projCoords = projPos.xyz / projPos.w;
@@ -302,245 +173,185 @@ vec4 probeLightDepthTex(vec3 pos) {
 	return texture(lightFrontDepthMap, projCoords.xy);
 }
 
-vec3 CalculateLightEnergy(vec3 lightOrigin, vec3 lightDirection, vec3 cameraOrigin, float mu, float maxDistance, float curTime) 
-{
-	vec4 lightInPos = probeLightDepthTex(lightOrigin);
-	if (lightInPos.w == 0.0) {
-		maxDistance = 0.05;
-	}
-	else {
-		maxDistance = distance(lightInPos.xyz, lightOrigin);
-	}
 
-	float stepLength = maxDistance / CLOUD_LIGHT_STEPS;
-	float lightRayDensity = 0.0;
-	float distAccumulated = 0.0;
 
-	for(float j = 0.0; j < CLOUD_LIGHT_STEPS; j++) {
-		vec3 lightSamplePos = lightOrigin + lightDirection * distAccumulated;
-		
-		float cloudSDF = SampleLowResolutionCloudMap(lightSamplePos);
-		
-		lightRayDensity += SampleHighResolutionCloudDetail(cloudSDF, lightSamplePos, cameraOrigin, curTime) * stepLength;
-		distAccumulated += stepLength;
-	}
-
-	vec3 beersLaw = MultipleOctaveScattering(lightRayDensity, mu);
-	vec3 powder = 1.0 - exp(-lightRayDensity * 2.0 * EXTINCTION_MULT);
-
-	return beersLaw * mix(2.0 * powder, vec3(1.0), remap(mu, -1.0, 1.0, 0.0, 1.0));
+// Henyey-Greenstein
+float hg(float a, float g) {
+    float g2 = g * g;
+    return (1 - g2) / (4 * 3.1415 * pow(1 + g2 - 2 * g * (a), 1.5));
 }
 
-struct ScatteringTransmittance {
-	  vec3 scattering;
-	  vec3 transmittance;
-}; //noiseTexture
-
-
-ScatteringTransmittance CloudMarch(vec2 pixelCoords, vec3 cameraOrigin, vec3 cameraDirection, float curTime) 
-{
-	ScatteringTransmittance result;
-	result.scattering = vec3(0.0);
-	result.transmittance = vec3(1.0);
-
-	vec3 sunDirection = CLOUD_LIGHT_DIR;
-	vec3 sunLightColour = vec3(1.0);
-	vec3 sunLight = sunLightColour * CLOUD_LIGHT_MULTIPLIER;
-	vec3 ambient = vec3(AMBIENT_STRENGTH * sunLightColour);
-	
-	vec2 fragNDCoord = gl_FragCoord.xy / resolution;
-	vec4 FragOutPos = texture(viewerBackDepthMap, fragNDCoord);
-	if (FragOutPos.w == 0.0) {
-		discard;
-	}
-	vec3 dir = normalize(FragOutPos.xyz - FragPos);
-	
-	// TODO: Cap steps based on distance
-	vec2 aspect = vec2(1.0, resolution.y / resolution.x);
-	float blueNoiseSample = texture2D(noiseTexture, (pixelCoords / resolution + 0.5) * aspect * (resolution.x / 32.0)).x;
-
-	blueNoiseSample = fract(blueNoiseSample + float(int(curTime * 144.0) % 32) * GOLDEN_RATIO);
-	
-	float mu = dot(dir, sunDirection);
-	float phaseFunction = PhaseFunction(0.3, mu);
-
-	
-	float distNearToFar = distance(FragPos, FragOutPos.xyz);//rayCloudIntersection.far - rayCloudIntersection.near;
-	float stepDropoff = linearstep(1.0, 0.0, pow(dot(vec3(0.0, 1.0, 0.0), dir), 4.0));
-	
-	const int NUM_COUNT = 16;
-	float lqStepLength = distNearToFar / CLOUD_STEPS_MIN; 
-	float hqStepLength = lqStepLength / float(NUM_COUNT);
-	float numCloudSteps = CLOUD_STEPS_MAX;
-	
-	float offset = lqStepLength * blueNoiseSample;
-	float distTravelled = 0.0;
-	
-	int hqMarcherCountdown = 0;
-	float previousStepLength = 0.0;
-	
-	vec3 samplePos = FragPos;
-	for (float i = 0.0; i < numCloudSteps; i++) {
-		if (distTravelled > distNearToFar) {
-			break;
-		}
-		
-		//float cloudMapSDFSample = SampleLowResolutionCloudMap(samplePos);
-		float currentStepLength = SampleLowResolutionCloudMap(samplePos);//cloudMapSDFSample;
-		
-		if (hqMarcherCountdown <= 0) {
-			if (currentStepLength < hqStepLength) {
-				// Hit some clouds, step back
-				hqMarcherCountdown = NUM_COUNT;
-				
-				distTravelled += hqStepLength * blueNoiseSample;
-			} else {
-				distTravelled += currentStepLength;
-				continue;
-			}
-		}
-		
-		if (hqMarcherCountdown > 0) {
-			hqMarcherCountdown--;
-			
-			if (currentStepLength < 0.0) {
-				hqMarcherCountdown = NUM_COUNT;
-				
-				float extinction = SampleHighResolutionCloudDetail(currentStepLength, samplePos, cameraOrigin, curTime);
-				
-				if (extinction > 0.01) {
-					vec3 luminance = ambient + sunLight * CalculateLightEnergy(samplePos, sunDirection, cameraOrigin, mu, 50.0, curTime);
-					vec3 transmittance = exp(-extinction * hqStepLength * EXTINCTION_MULT);
-					vec3 integScatt = extinction * (luminance - luminance * transmittance) / extinction;
-					
-					result.scattering += result.transmittance * integScatt;
-					result.transmittance *= transmittance;  
-					
-					if (length(result.transmittance) <= 0.01) {
-						result.transmittance = vec3(0.0);
-						break;
-					}
-				}
-			}
-			
-			distTravelled += hqStepLength;
-		}
-		
-		samplePos = FragPos + dir * distTravelled;
-		previousStepLength = currentStepLength;
-	}
-	
-	result.scattering = result.scattering * CLOUD_COLOUR; //col3(result.scattering) * CLOUD_COLOUR;
-	result.transmittance = saturate3(result.transmittance);
-	return result;
-}
-
-mat3 MakeCamera(vec3 ro, vec3 rd, vec3 ru) {
-	vec3 z = normalize(rd - ro);
-	vec3 cp = ru;
-	vec3 x = normalize(cross(z, cp));
-	vec3 y = cross(x, z);
-  return mat3(x, y, z);
+float phase(float a) {
+    float blend = 0.5;
+    float hgBlend = hg(a, phaseParams.x) * (1 - blend) + hg(a, -phaseParams.y) * blend;
+    return phaseParams.z + hgBlend*phaseParams.w;
 }
 
 
-//void main() 
-//{
-//	vec2 pixelCoords = gl_FragCoord.xy;
-//	
-//	CLOUD_SIZE = vec3(100.0);
-//	CLOUD_BOUNDS_MIN = CLOUD_OFFSET - CLOUD_SIZE;
-//	CLOUD_BOUNDS_MAX = CLOUD_OFFSET + CLOUD_SIZE;
-//	CLOUD_LIGHT_DIR = directionalLights[0].direction;
-//	
-//	vec3 rayOrigin = vec3(200.0, 50.0, -150.0) * 0.75;
-//	vec3 rayLookAt = vec3(80.0, -10.0, 45.0) + CLOUD_LIGHT_DIR * 150.0;
-//	mat3 camera = MakeCamera(rayOrigin, rayLookAt, vec3(0.0, 1.0, 0.0));
-//	
-//	vec2 rayCoords = (2.0 * (gl_FragCoord.xy - 0.5) - resolution) / resolution.y;
-//	vec3 rayDir = normalize(vec3(rayCoords, 2.0));
-//
-//	ScatteringTransmittance scatterTransmittance = CloudMarch(pixelCoords, rayOrigin, normalize(camera * rayDir), time);
-//	
-//	vec3 colour;
-//	
-//	colour = scatterTransmittance.transmittance + scatterTransmittance.scattering * CLOUD_EXPOSURE;
-//	colour = ACESToneMap(colour);
-//
-//	FragColor = vec4(colour, 1.0);
-//}
+
+vec2 squareUV(vec2 uv) {
+    //float width = _ScreenParams.x;
+    //float height =_ScreenParams.y;
+    //float minDim = min(width, height);
+    float scale = 1000;
+    //float x = uv.x * width;
+    //float y = uv.y * height;
+    return gl_FragCoord.xy / scale;//float2 (x/scale, y/scale);
+}
 
 float density3d(vec3 pos) {
 	float f = 2.07;
 	//return texture(noiseTexture, pos.xy * f + NOISE_D_VEL_3D.xy * time).r * texture(noiseTexture, pos.xz * f +  NOISE_D_VEL_3D.xz * time).r * texture(noiseTexture, pos.zy * f + NOISE_D_VEL_3D.zy * time).r;
 	//return sqrt(texture(noiseTexture, pos.xy * f + NOISE_D_VEL_3D.xy * time).r * texture(noiseTexture, pos.xz * f +  NOISE_D_VEL_3D.xz * time).r * texture(noiseTexture, pos.zy * f + NOISE_D_VEL_3D.zy * time).r);
-	return texture(noiseTexture3d, pos * 0.7 + NOISE_D_VEL_3D * time).r * DENSITY_FAC;
+	//return texture(noiseTexture3d, pos * 0.7 + NOISE_D_VEL_3D * time).r * DENSITY_FAC;
+	return texture(noiseTexture3d, pos * 0.7).r;
 }
+
+
+float sampleDensity(vec3 rayPos) {
+    // Constants:
+    const int mipLevel = 0;
+    const float baseScale = 1/1000.0;
+    const float offsetSpeed = 1/100.0;
+
+    // Calculate texture sample positions
+    float _time = time * timeScale;
+    vec3 size = boundsMax - boundsMin;
+    vec3 boundsCentre = (boundsMin + boundsMax) * 0.5;
+    vec3 uvw = (size * 0.5 + rayPos) * baseScale * scale;
+    vec3 shapeSamplePos = uvw + shapeOffset * offsetSpeed + vec3(_time, _time * 0.1, _time * 0.2) * baseSpeed;
+
+    // Calculate falloff at along x/z edges of the cloud container
+    const float containerEdgeFadeDst = 50;
+    float dstFromEdgeX = min(containerEdgeFadeDst, min(rayPos.x - boundsMin.x, boundsMax.x - rayPos.x));
+    float dstFromEdgeZ = min(containerEdgeFadeDst, min(rayPos.z - boundsMin.z, boundsMax.z - rayPos.z));
+    float edgeWeight = min(dstFromEdgeZ, dstFromEdgeX) / containerEdgeFadeDst;
+    
+    // Calculate height gradient from weather map
+    float gMin = 0.2;
+    float gMax = 0.7;
+    float heightPercent = (rayPos.y - boundsMin.y) / size.y;
+    float heightGradient = saturate(remap(heightPercent, 0.0, gMin, 0, 1)) * saturate(remap(heightPercent, 1, gMax, 0, 1));
+    heightGradient *= edgeWeight;
+
+    // Calculate base shape density
+    //vec4 shapeNoise = NoiseTex.SampleLevel(samplerNoiseTex, shapeSamplePos, mipLevel);
+    //vec4 normalizedShapeWeights = shapeNoiseWeights / dot(shapeNoiseWeights, 1);
+    float shapeFBM = density3d(shapeSamplePos) * heightGradient;//dot(shapeNoise, normalizedShapeWeights) * heightGradient;
+    float baseShapeDensity = shapeFBM + densityOffset * 0.1;
+
+    // Save sampling from detail tex if shape density <= 0
+    if (baseShapeDensity > 0) {
+        //// Sample detail noise
+        //vec3 detailSamplePos = uvw * detailNoiseScale + detailOffset * offsetSpeed + vec3(time*.4,-time,time*0.1)*detailSpeed;
+        //vec4 detailNoise = DetailNoiseTex.SampleLevel(samplerDetailNoiseTex, detailSamplePos, mipLevel);
+        //vec3 normalizedDetailWeights = detailWeights / dot(detailWeights, 1);
+        //float detailFBM = dot(detailNoise, normalizedDetailWeights);
+		//
+        //// Subtract detail noise from base shape (weighted by inverse density so that edges get eroded more than centre)
+        //float oneMinusShape = 1 - shapeFBM;
+        //float detailErodeWeight = oneMinusShape * oneMinusShape * oneMinusShape;
+        float cloudDensity = baseShapeDensity;// - (1-detailFBM) * detailErodeWeight * detailNoiseWeight;
+
+        return cloudDensity * densityMultiplier * 0.1;
+    }
+    return 0;
+}
+
+// Calculate proportion of light that reaches the given point from the lightsource
+float lightmarch(vec3 position) {
+    vec3 dirToLight = -directionalLights[0].direction;
+    float dstInsideBox = 0.0;//rayBoxDst(boundsMin, boundsMax, position, 1/dirToLight).y;
+	vec4 lightInPos = probeLightDepthTex(position);
+	//if (lightInPos.w == 0.0) {
+	//	dstInsideBox = 0.05;
+	//}
+	//else {
+	//	dstInsideBox = distance(lightInPos.xyz, position);
+	//}
+	dstInsideBox = distance(lightInPos.xyz, position);
+    
+    float stepSize = dstInsideBox/numStepsLight;
+    float totalDensity = 0;
+
+    for (int step = 0; step < numStepsLight; step ++) {
+        position += dirToLight * stepSize;
+        totalDensity += max(0, sampleDensity(position) * stepSize);
+    }
+
+    float transmittance = exp(-totalDensity * lightAbsorptionTowardSun);
+    return darknessThreshold + transmittance * (1-darknessThreshold);
+}
+
 
 void main()
 {	
-    vec2 viewerDepthCoord = gl_FragCoord.xy;
+	vec2 viewerDepthCoord = gl_FragCoord.xy;
 	viewerDepthCoord.x = viewerDepthCoord.x / 1920.0;
 	viewerDepthCoord.y = viewerDepthCoord.y / 1055.0;
 
-	vec4 outPos = texture(viewerBackDepthMap, viewerDepthCoord);
-
-	if (outPos.w == 0.0) {
+	// Create ray
+	vec3 rayPos = ViewerPosition;
+	//float viewLength = length(i.viewVector);
+	//vec3 rayDir = i.viewVector / viewLength;
+	vec4 FratOutPos = texture(viewerBackDepthMap, viewerDepthCoord);
+	if (FratOutPos.w == 0.0) {
 		discard;
 	}
-
-	vec3 dir = normalize(FragPos - ViewerPosition);
-
-	float totalDistance = distance(vec3(outPos), FragPos);
-	float dist = 0.0;
-	float number_of_steps = 100.0f;
-	float stepL = totalDistance / number_of_steps;
+	vec3 rayDir = normalize(FratOutPos.xyz - FragPos);
 	
-	vec4 lightPos = probeLightDepthTex(FragPos);
-	float lightTotalDistance = distance(vec3(lightPos), FragPos);
-
-	//for (float i = 0.0; i < number_of_steps; ) {
-	//	dist += SEGMENT_LENGTH * density_i(viewerDepthCoord, SEGMENT_OFFSET * i);
-	//	i += 1.0;
-	//}
-	//dist += (totalDistance - number_of_steps * SEGMENT_LENGTH) * density_i(viewerDepthCoord, SEGMENT_OFFSET * number_of_steps);
+	// Depth and cloud container intersection info:
+	//float nonlin_depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);
+	//float depth = LinearEyeDepth(nonlin_depth) * viewLength;
+	//float2 rayToContainerInfo = rayBoxDst(boundsMin, boundsMax, rayPos, 1/rayDir);
+	//float dstToBox = rayToContainerInfo.x;
+	//float dstInsideBox = rayToContainerInfo.y;
+	float dstToBox = distance(rayPos, FragPos);
+	float dstInsideBox = distance(FratOutPos.xyz, FragPos);
 	
-
-	//for (float i = 0.0; i < number_of_steps; ) {
-	//	dist += SEGMENT_LENGTH * density3d(ViewerPosition + dir * SEGMENT_LENGTH * i);
-	//	i += 1.0;
-	//}	
-	//dist += (totalDistance - number_of_steps * SEGMENT_LENGTH) * density3d(ViewerPosition + dir * totalDistance);
+	// point of intersection with the cloud container
+	vec3 entryPoint = FragPos;
 	
-	for (float i = 0.0; i < number_of_steps; ) {
-		dist += stepL * density3d(ViewerPosition + dir * stepL * i);
-		i += 1.0;
-	}	
+	// random starting offset (makes low-res results noisy rather than jagged/glitchy, which is nicer)
+	float randomOffset = texture(noiseTexture, squareUV(viewerDepthCoord.xy * 3.0)).r;// BlueNoise.SampleLevel(samplerBlueNoise, squareUV(i.uv*3), 0);
+	randomOffset *= rayOffsetStrength;
 	
-
-
-	float alpha = 1.0 - exp(-dist * ABSORPTION);
-	float alpha2 = exp(-dist * ABSORPTION);
-	//float alpha = 1.0 - exp(-totalDistance * ABSORPTION);
-	//float alpha = 1.0 - pow(exp(-totalDistance * ABSORPTION), 3.17);
+	// Phase function makes clouds brighter around sun
+	float cosAngle = dot(rayDir, -directionalLights[0].direction);
+	float phaseVal = phase(cosAngle);
 	
-	if (alpha < 0.2) {
-		discard;
+	float dstTravelled = randomOffset;
+	float dstLimit = dstInsideBox;//min(depth - dstToBox, dstInsideBox);
+	
+	
+	
+	const float stepSize = 0.01;//11;
+	
+	// March through volume:
+	float transmittance = 1;
+	vec3 lightEnergy = vec3(0.0, 0.0, 0.0);
+	
+	while (dstTravelled < dstLimit) {
+	    rayPos = entryPoint + rayDir * dstTravelled;
+	    float density = sampleDensity(rayPos);
+	    
+	    if (density > 0) {
+	        float lightTransmittance = lightmarch(rayPos);
+	        lightEnergy += density * stepSize * transmittance * lightTransmittance * phaseVal;
+	        transmittance *= exp(-density * stepSize * lightAbsorptionThroughCloud);
+	    
+	        // Exit early if T is close to zero as further samples won't affect the result much
+	        if (transmittance < 0.01) {
+	            break;
+	        }
+	    }
+	    dstTravelled += stepSize;
 	}
 
-	ScatteringTransmittance scatterTransmittance = CloudMarch(gl_FragCoord.xy, ViewerPosition,vec3(0.0, 0.0, 0.0), time);
-	vec3 colour = scatterTransmittance.transmittance + scatterTransmittance.scattering * CLOUD_EXPOSURE;
-	colour = ACESToneMap(colour);
-
-	if ((1.0 - cloudColor * alpha2).r < 0.15) {
-		discard;
-	}
-
-    //FragColor = vec4(colour, alpha);
-    FragColor = vec4(cloudColor, alpha);
-    //FragColor = vec4((1.0 - cloudColor * alpha2) * colour, 1.0);
-
-	//float n = density_i(viewerDepthCoord, SEGMENT_OFFSET);
-    //FragColor = vec4(n, n, n, 1.0);
-    //FragColor = vec4(probeLightDepthTex(FragPos), 1.0);
+	// Add clouds to background
+	vec3 cloudCol = lightEnergy * _LightColor0.xyz;
+	//vec3 backgroundCol = vec3(0.0, 0.0, 0.0); //texture(_MainTex, viewerDepthCoord).xyz;
+	//vec3 col = backgroundCol * transmittance + cloudCol;	
+	//FragColor = vec4(col, 1.0);
+	FragColor = vec4(cloudCol, 1.0 - transmittance);
 }

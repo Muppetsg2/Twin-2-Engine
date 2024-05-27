@@ -28,6 +28,12 @@ void HumansGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
     CitiesManager::MapCitiesConnections(false);
     vector<GameObject*> cities = CitiesManager::GetAllCities();
 
+    for (auto& city : cities)
+    {
+        vec3 position = city->GetTransform()->GetGlobalPosition();
+        SPDLOG_INFO("City pos: {} {} {}", position.x, position.y, position.z);
+    }
+
     GameObject* humanContainer = SceneManager::CreateGameObject();
     humanContainer->SetName("HumansContainer");
 

@@ -18,7 +18,8 @@ void Human::StartWorking()
     _work = true;
     _targetCity = CitiesManager::GetClosestCity(GetTransform()->GetGlobalPosition());
     vec3 destination = _targetCity->GetTransform()->GetGlobalPosition();
-    //destination.y = 0.0f;
+   destination.y = 0.0f;
+    SPDLOG_ERROR("{}destination: {} {} {}", GetGameObject()->Id(), destination.x, destination.y, destination.z);
     _movement->MoveTo(destination);
 }
 
@@ -27,9 +28,16 @@ void Human::StopWorking()
     _work = false;
 }
 
-// Update is called once per frame
+#if TRACY_PROFILER
+const char* const tracy_HumanUpdate = "HumanUpdate";
+#endif
 void Human::Update()
 {
+#if TRACY_PROFILER
+    ZoneScoped;
+    FrameMarkStart(tracy_HumanUpdate);
+#endif
+
     if (_work)
     {
         vec3 globalPosition = GetTransform()->GetGlobalPosition();
@@ -42,6 +50,7 @@ void Human::Update()
                 _targetCity = possibleTargetCities[Random::Range(0ull, possibleTargetCities.size() - 1ull)];
                 vec3 destination = _targetCity->GetTransform()->GetGlobalPosition();
                 destination.y = 0.0f;
+                SPDLOG_ERROR("{}destination: {} {} {}", GetGameObject()->Id(), destination.x, destination.y, destination.z);
                 _movement->MoveTo(destination);
             }
             else
@@ -50,6 +59,9 @@ void Human::Update()
             }
         }
     }
+#if TRACY_PROFILER
+    FrameMarkEnd(tracy_HumanUpdate);
+#endif
 }
 
 

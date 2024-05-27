@@ -20,6 +20,52 @@ namespace AStar
 	// - pe³na synchronizacja pathfindingu
 	// - od³o¿enie zmian w strukturze do momentu zakoñczenia w¹tkó wyszukuj¹cych
 	class AStarPathfindingNode;
+	class AStarPathfinder;
+
+	class AStarPathfindingInfo
+	{
+		friend class AStarPathfinder;
+	private:
+		std::jthread* _thread;
+		bool* _searching;
+	public:
+		AStarPathfindingInfo() : _thread(nullptr), _searching(nullptr) { }
+		AStarPathfindingInfo(std::jthread* thread, bool* searching) : _thread(thread), _searching(searching) { }
+		AStarPathfindingInfo(const AStarPathfindingInfo&) = delete;
+		AStarPathfindingInfo(AStarPathfindingInfo&& other)
+		{
+			_thread = other._thread;
+			_searching = other._searching;
+			other._thread = nullptr;
+			other._searching = nullptr;
+		}
+		AStarPathfindingInfo& operator=(const AStarPathfindingInfo&) = delete;
+		AStarPathfindingInfo& operator=(AStarPathfindingInfo&& other)
+		{
+			_thread = other._thread;
+			_searching = other._searching;
+			other._thread = nullptr;
+			other._searching = nullptr;
+
+			return *this;
+		}
+
+		void WaitForFinding()
+		{
+			if (IsSearching() && _thread)
+				_thread->join();
+		}
+		bool IsSearching()
+		{
+			if (_searching && !(*_searching))
+			{
+				delete _searching;
+				_searching = nullptr;
+				_thread = nullptr;
+			}
+			return _searching;
+		}
+	};
 
 	class AStarPathfinder : public Twin2Engine::Core::Component
 	{
@@ -37,7 +83,8 @@ namespace AStar
 		//static std::unordered_map<AStarPathfindingNode*, std::vector<AStarPathfindingNode*>> _nodesGraph;
 		static std::unordered_map<AStarPathfindingNode*, std::vector<AStarTargetNodeInfo>> _nodesGraph;
 
-		static std::unordered_map<size_t, std::thread*> _pathfindingThreads;
+		static std::unordered_map<size_t, std::jthread> _pathfindingThreads;
+		static std::unordered_map<size_t, bool*> _pathfindingThreadsSearchingPtrs;
 
 		static float _maxMappingDistance;
 
@@ -55,7 +102,7 @@ namespace AStar
 	public:
 		static void RemapNodes();
 
-		static bool FindPath(const glm::vec3& beginPosition, const glm::vec3& endPosition, unsigned int maxPathNodesNumber,
+		static AStarPathfindingInfo&& FindPath(const glm::vec3& beginPosition, const glm::vec3& endPosition, unsigned int maxPathNodesNumber,
 								Twin2Engine::Tools::Action<const AStarPath&> success, Twin2Engine::Tools::Action<> failure);
 
 		virtual YAML::Node Serialize() const override;

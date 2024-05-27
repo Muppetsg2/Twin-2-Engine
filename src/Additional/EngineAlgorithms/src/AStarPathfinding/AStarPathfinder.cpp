@@ -13,7 +13,8 @@ vector<AStarPathfindingNode*> AStarPathfinder::_registeredNodes;
 unordered_map<AStarPathfindingNode*, vector<AStarPathfinder::AStarTargetNodeInfo>> AStarPathfinder::_nodesGraph;
 
 
-unordered_map<size_t, thread*> AStarPathfinder::_pathfindingThreads;
+unordered_map<size_t, jthread> AStarPathfinder::_pathfindingThreads;
+unordered_map<size_t, bool*> AStarPathfinder::_pathfindingThreadsSearchingPtrs;
 
 float AStarPathfinder::_maxMappingDistance = 0.0f;
 bool AStarPathfinder::_needsRemapping = true;
@@ -22,7 +23,7 @@ void AStarPathfinder::Register(AStarPathfindingNode* node)
 {
 	if (node)
 	{
-		SPDLOG_INFO("Registering");
+		//SPDLOG_INFO("Registering");
 
 		bool canBeRegistered = true;
 
@@ -55,7 +56,7 @@ void AStarPathfinder::Unregister(AStarPathfindingNode* node)
 		{
 			if (_registeredNodes[index] == node)
 			{
-				SPDLOG_INFO("Unregistering Node in");
+				//SPDLOG_INFO("Unregistering Node in");
 				_registeredNodes.erase(_registeredNodes.cbegin() + index);
 
 				if (_nodesGraph.contains(node))
@@ -106,7 +107,7 @@ void AStarPathfinder::RemapNodes()
 	{
 		currentPos = _registeredNodes[i]->GetTransform()->GetGlobalPosition();
 		currentPos.y = 0.0f;
-		SPDLOG_INFO("REMAPPING Target pos: {} {} {}", currentPos.x, currentPos.y, currentPos.z);
+		//SPDLOG_INFO("REMAPPING Target pos: {} {} {}", currentPos.x, currentPos.y, currentPos.z);
 
 		for (size_t j = i + 1ull; j < size; ++j)
 		{
@@ -114,7 +115,7 @@ void AStarPathfinder::RemapNodes()
 			targetPos.y = 0.0f;
 
 			distance = glm::distance(currentPos, targetPos);
-			if (distance < _maxMappingDistance)
+			if (distance <= _maxMappingDistance)
 			{
 				_nodesGraph[_registeredNodes[i]].emplace_back(_registeredNodes[j], targetPos, distance);
 				_nodesGraph[_registeredNodes[j]].emplace_back(_registeredNodes[i], currentPos, distance);
@@ -296,10 +297,12 @@ void AStarPathfinder::FindingPath(size_t threadId,
 
 	//Deleting informations about thread
 	
-	SPDLOG_ERROR("Zastanowiæ siê czy mo¿na wywo³aæ delete na thread");
-	//delete _pathfindingThreads[threadId];
+	//SPDLOG_ERROR("Zastanowiæ siê czy mo¿na wywo³aæ delete na thread");
 
-	_pathfindingThreads.erase(threadId);
+	(*_pathfindingThreadsSearchingPtrs[threadId]) = false;
+
+	_pathfindingThreadsSearchingPtrs.erase(threadId);
+	//_pathfindingThreads.erase(threadId);
 
 	// Returning result
 	if (result)
@@ -312,14 +315,14 @@ void AStarPathfinder::FindingPath(size_t threadId,
 	}
 }
 
-bool AStarPathfinder::FindPath(const glm::vec3& beginPosition,
+AStarPathfindingInfo&& AStarPathfinder::FindPath(const glm::vec3& beginPosition,
 							   const glm::vec3& endPosition,
 							   unsigned int maxPathNodesNumber,
 							   Twin2Engine::Tools::Action<const AStarPath&> success,
 							   Twin2Engine::Tools::Action<> failure)
 {
 	if (_pathfindingThreads.size() == numeric_limits<size_t>().max()) 
-		return false;
+		return AStarPathfindingInfo(nullptr, nullptr);
 
 	if (_needsRemapping)
 	{
@@ -331,9 +334,23 @@ bool AStarPathfinder::FindPath(const glm::vec3& beginPosition,
 
 	while (_pathfindingThreads.contains(threadId)) threadId = pathFindingThreadsIds++;
 
-	thread* pathfindingThread = new thread(FindingPath, threadId, beginPosition, endPosition, maxPathNodesNumber, success, failure);
+	//{
+	//	unordered_set<size_t> threadsToDelete;
+	//	for (auto& pair : _pathfindingThreads)
+	//	{
+	//		if (pair.second.)
+	//	}
+	//}
 
-	_pathfindingThreads[threadId] = pathfindingThread;
+	_pathfindingThreads[threadId] = jthread(FindingPath, threadId, beginPosition, endPosition, maxPathNodesNumber, success, failure);
+
+	//thread** ptr = new thread*(&_pathfindingThreads[threadId]);
+	bool* searching = new bool(true);
+
+	//AStarPathfindingInfo info(&_pathfindingThreads[threadId], searching);
+	_pathfindingThreadsSearchingPtrs[threadId] = searching;
+
+	return AStarPathfindingInfo(&_pathfindingThreads[threadId], searching);
 }
 
 YAML::Node AStarPathfinder::Serialize() const

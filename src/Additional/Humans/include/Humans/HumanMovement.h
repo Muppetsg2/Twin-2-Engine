@@ -24,6 +24,8 @@ namespace Humans
         glm::vec3 _currentDestination;
         Tilemap::HexagonalTilemap* _tilemap;
 
+        AStar::AStarPathfindingInfo _pathfindingInfo;
+
         float _forwardDetectionDistance = 0.1f;
 
         float _achievingDestinationAccuracity = 0.2f;
@@ -31,6 +33,7 @@ namespace Humans
         // Start is called before the first frame update
 
         AStar::AStarPath _path;
+        bool _notDestroyed = true;
         bool _findingPath = false;
         bool _foundPath = false;
 
@@ -41,6 +44,7 @@ namespace Humans
         //HumanMovement() : Twin2Engine::Core::Component() { }
 
         virtual void Initialize() override;
+        virtual void OnDestroy() override;
 
         virtual void Update() override;
 

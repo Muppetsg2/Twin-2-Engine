@@ -15,9 +15,27 @@ void HumanMovement::Initialize()
     //_targetDestination = GetTransform()->GetGlobalPosition();
 
 }
+void HumanMovement::OnDestroy()
+{
+    _notDestroyed = false;
+
+    Component::OnDestroy();
+
+    _findingPath = false;
+    _foundPath = false;
+
+    _pathfindingInfo.WaitForFinding();
+}
+#if TRACY_PROFILER
+const char* const tracy_HumanMovementUpdate = "HumanMovementUpdate";
+#endif
 
 void HumanMovement::Update()
 {
+#if TRACY_PROFILER
+    ZoneScoped;
+    FrameMarkStart(tracy_HumanMovementUpdate);
+#endif
     glm::vec3 globalPosition = GetTransform()->GetGlobalPosition();
 
     globalPosition.y = 0.0f;
@@ -40,17 +58,34 @@ void HumanMovement::Update()
 
     //vec3 processedDestination = _currentDestination;
     //processedDestination.y = 0;
-    glm::vec3 direction = normalize(_currentDestination - globalPosition);
+    glm::vec3 direction = _currentDestination - globalPosition;
+
+    //if (!isnan(direction.x))
+    //    SPDLOG_INFO("Not IsNan1:");
+
+    if (glm::dot(direction, direction))
+    {
+        //SPDLOG_INFO("Chack IsNan1:");
+        direction = normalize(direction);
+    }
+    //if (!isnan(direction.x))
+    //    SPDLOG_INFO("Not IsNan2:");
 
     GetTransform()->Translate(direction * _speed * Time::GetDeltaTime());
 
     globalPosition = GetTransform()->GetGlobalPosition();
 
-    
+
+    //if (!isnan(globalPosition.x))
+    //    SPDLOG_INFO("Not IsNan3:");
+
     Tilemap::HexagonalTile* tile = _tilemap->GetTile(
         _tilemap->ConvertToTilemapPosition(
-            vec2(globalPosition.x, globalPosition.z) + glm::normalize(vec2(direction.x, direction.z)) * _forwardDetectionDistance));
-    
+            vec2(globalPosition.x, globalPosition.z) + vec2(direction.x, direction.z) * _forwardDetectionDistance));
+
+    //if (!isnan(globalPosition.x))
+    //    SPDLOG_INFO("Not IsNan4:");
+
     if (tile && tile->GetGameObject())
     {
         GameObject* tileGO = tile->GetGameObject();
@@ -59,21 +94,27 @@ void HumanMovement::Update()
         GetTransform()->SetGlobalPosition(globalPosition);
         //GetTransform()->SetGlobalPosition(vec3(globalPosition.x, tile->GetGameObject()->GetTransform()->GetGlobalPosition().y, globalPosition.z));
     }
-    
+
+#if TRACY_PROFILER
+    FrameMarkEnd(tracy_HumanMovementUpdate);
+#endif
 }
 
 void HumanMovement::PathFindingSuccess(const AStarPath& path)
 {
-    _path = path;
-    _targetDestination = _bufferedTargetDestination;
-    _targetDestination.y = 0.0f;
-    _currentDestination = _path.Next();
-    _currentDestination.y = 0.0f;
-    _foundPath = true;
+    if (_notDestroyed)
+    {
+        _path = path;
+        _targetDestination = _bufferedTargetDestination;
+        _targetDestination.y = 0.0f;
+        _currentDestination = _path.Next();
+        _currentDestination.y = 0.0f;
+        _foundPath = true;
 
 
-    SPDLOG_INFO("PATH_FINDING success");
-    SPDLOG_ERROR("{}Current destination: {} {} {}", GetGameObject()->Id(), _currentDestination.x, _currentDestination.y, _currentDestination.z);
+        SPDLOG_INFO("PATH_FINDING success");
+        SPDLOG_ERROR("{}Current destination: {} {} {}", GetGameObject()->Id(), _currentDestination.x, _currentDestination.y, _currentDestination.z);
+    }
 }
 
 void HumanMovement::PathFindingFailure()
@@ -91,20 +132,21 @@ void HumanMovement::SetTilemap(Tilemap::HexagonalTilemap* tilemap)
 
 void HumanMovement::MoveTo(glm::vec3 destination)
 {
-    if (_findingPath)
+    if (_findingPath || !_notDestroyed)
         return;
 
     _findingPath = true;
 
-    destination.x = 0.0f;
+    destination.y = 0.0f;
+    _bufferedTargetDestination = destination;
 
     vec3 globalPosition = GetTransform()->GetGlobalPosition();
     globalPosition.y = 0.0f;
 
-    AStarPathfinder::FindPath(globalPosition, destination, 0,
+    _pathfindingInfo = AStarPathfinder::FindPath(globalPosition, destination, 0,
         [&](const AStarPath& path) { this->PathFindingSuccess(path); }, [&]() { PathFindingFailure(); });
 
-    _bufferedTargetDestination = destination;
+    _findingPath = _pathfindingInfo.IsSearching();
 }
 
 glm::vec3 HumanMovement::GetTargetDestination() const

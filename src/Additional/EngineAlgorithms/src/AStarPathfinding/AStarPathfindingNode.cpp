@@ -9,7 +9,7 @@ void AStarPathfindingNode::Initialize()
 
 void AStarPathfindingNode::OnDestroy()
 {
-	SPDLOG_INFO("Unregistering Node");
+	//SPDLOG_INFO("Unregistering Node");
 	AStarPathfinder::Unregister(this);
 }
 

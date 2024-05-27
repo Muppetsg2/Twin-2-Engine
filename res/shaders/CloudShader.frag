@@ -444,82 +444,103 @@ mat3 MakeCamera(vec3 ro, vec3 rd, vec3 ru) {
 }
 
 
-void main() 
-{
-	vec2 pixelCoords = gl_FragCoord.xy;
-	
-	CLOUD_SIZE = vec3(100.0);
-	CLOUD_BOUNDS_MIN = CLOUD_OFFSET - CLOUD_SIZE;
-	CLOUD_BOUNDS_MAX = CLOUD_OFFSET + CLOUD_SIZE;
-	CLOUD_LIGHT_DIR = directionalLights[0].direction;
-	
-	vec3 rayOrigin = vec3(200.0, 50.0, -150.0) * 0.75;
-	vec3 rayLookAt = vec3(80.0, -10.0, 45.0) + CLOUD_LIGHT_DIR * 150.0;
-	mat3 camera = MakeCamera(rayOrigin, rayLookAt, vec3(0.0, 1.0, 0.0));
-	
-	vec2 rayCoords = (2.0 * (gl_FragCoord.xy - 0.5) - resolution) / resolution.y;
-	vec3 rayDir = normalize(vec3(rayCoords, 2.0));
+//void main() 
+//{
+//	vec2 pixelCoords = gl_FragCoord.xy;
+//	
+//	CLOUD_SIZE = vec3(100.0);
+//	CLOUD_BOUNDS_MIN = CLOUD_OFFSET - CLOUD_SIZE;
+//	CLOUD_BOUNDS_MAX = CLOUD_OFFSET + CLOUD_SIZE;
+//	CLOUD_LIGHT_DIR = directionalLights[0].direction;
+//	
+//	vec3 rayOrigin = vec3(200.0, 50.0, -150.0) * 0.75;
+//	vec3 rayLookAt = vec3(80.0, -10.0, 45.0) + CLOUD_LIGHT_DIR * 150.0;
+//	mat3 camera = MakeCamera(rayOrigin, rayLookAt, vec3(0.0, 1.0, 0.0));
+//	
+//	vec2 rayCoords = (2.0 * (gl_FragCoord.xy - 0.5) - resolution) / resolution.y;
+//	vec3 rayDir = normalize(vec3(rayCoords, 2.0));
+//
+//	ScatteringTransmittance scatterTransmittance = CloudMarch(pixelCoords, rayOrigin, normalize(camera * rayDir), time);
+//	
+//	vec3 colour;
+//	
+//	colour = scatterTransmittance.transmittance + scatterTransmittance.scattering * CLOUD_EXPOSURE;
+//	colour = ACESToneMap(colour);
+//
+//	FragColor = vec4(colour, 1.0);
+//}
 
-	ScatteringTransmittance scatterTransmittance = CloudMarch(pixelCoords, rayOrigin, normalize(camera * rayDir), time);
-	
-	vec3 colour;
-	
-	colour = scatterTransmittance.transmittance + scatterTransmittance.scattering * CLOUD_EXPOSURE;
-	colour = ACESToneMap(colour);
-
-	FragColor = vec4(colour, 1.0);
+float density3d(vec3 pos) {
+	float f = 2.07;
+	//return texture(noiseTexture, pos.xy * f + NOISE_D_VEL_3D.xy * time).r * texture(noiseTexture, pos.xz * f +  NOISE_D_VEL_3D.xz * time).r * texture(noiseTexture, pos.zy * f + NOISE_D_VEL_3D.zy * time).r;
+	//return sqrt(texture(noiseTexture, pos.xy * f + NOISE_D_VEL_3D.xy * time).r * texture(noiseTexture, pos.xz * f +  NOISE_D_VEL_3D.xz * time).r * texture(noiseTexture, pos.zy * f + NOISE_D_VEL_3D.zy * time).r);
+	return texture(noiseTexture3d, pos * 0.7 + NOISE_D_VEL_3D * time).r * DENSITY_FAC;
 }
 
+void main()
+{	
+    vec2 viewerDepthCoord = gl_FragCoord.xy;
+	viewerDepthCoord.x = viewerDepthCoord.x / 1920.0;
+	viewerDepthCoord.y = viewerDepthCoord.y / 1055.0;
 
-//void main()
-//{	
-//    vec2 viewerDepthCoord = gl_FragCoord.xy;
-//	viewerDepthCoord.x = viewerDepthCoord.x / 1920.0;
-//	viewerDepthCoord.y = viewerDepthCoord.y / 1055.0;
-//
-//	vec4 outPos = texture(viewerBackDepthMap, viewerDepthCoord);
-//
-//	if (outPos.w == 0.0) {
-//		discard;
-//	}
-//
-//	vec3 dir = normalize(FragPos - ViewerPosition);
-//
-//	float totalDistance = distance(vec3(outPos), FragPos);
-//	float dist = 0.0;
-//	float number_of_steps = floor(totalDistance / SEGMENT_LENGTH);
-//	
-//	vec4 lightPos = probeLightDepthTex(FragPos);
-//	float lightTotalDistance = distance(vec3(lightPos), FragPos);
-//
-//	//for (float i = 0.0; i < number_of_steps; ) {
-//	//	dist += SEGMENT_LENGTH * density_i(viewerDepthCoord, SEGMENT_OFFSET * i);
-//	//	i += 1.0;
-//	//}
-//	//dist += (totalDistance - number_of_steps * SEGMENT_LENGTH) * density_i(viewerDepthCoord, SEGMENT_OFFSET * number_of_steps);
-//	
-//
-//	for (float i = 0.0; i < number_of_steps; ) {
-//		dist += SEGMENT_LENGTH * density3d(ViewerPosition + dir * SEGMENT_LENGTH * i);
-//		i += 1.0;
-//	}	
-//	dist += (totalDistance - number_of_steps * SEGMENT_LENGTH) * density3d(ViewerPosition + dir * totalDistance);
-//
-//	
-//
-//
-//	float alpha = 1.0 - exp(-dist * ABSORPTION);
-//	//float alpha = exp(-dist * ABSORPTION);
-//	//float alpha = 1.0 - exp(-totalDistance * ABSORPTION);
-//	//float alpha = 1.0 - pow(exp(-totalDistance * ABSORPTION), 3.17);
-//	
-//	if (alpha < 0.3) {
-//		discard;
-//	}
-//
-//    FragColor = vec4(cloudColor, alpha);
-//
-//	//float n = density_i(viewerDepthCoord, SEGMENT_OFFSET);
-//    //FragColor = vec4(n, n, n, 1.0);
-//    //FragColor = vec4(probeLightDepthTex(FragPos), 1.0);
-//}
+	vec4 outPos = texture(viewerBackDepthMap, viewerDepthCoord);
+
+	if (outPos.w == 0.0) {
+		discard;
+	}
+
+	vec3 dir = normalize(FragPos - ViewerPosition);
+
+	float totalDistance = distance(vec3(outPos), FragPos);
+	float dist = 0.0;
+	float number_of_steps = 100.0f;
+	float stepL = totalDistance / number_of_steps;
+	
+	vec4 lightPos = probeLightDepthTex(FragPos);
+	float lightTotalDistance = distance(vec3(lightPos), FragPos);
+
+	//for (float i = 0.0; i < number_of_steps; ) {
+	//	dist += SEGMENT_LENGTH * density_i(viewerDepthCoord, SEGMENT_OFFSET * i);
+	//	i += 1.0;
+	//}
+	//dist += (totalDistance - number_of_steps * SEGMENT_LENGTH) * density_i(viewerDepthCoord, SEGMENT_OFFSET * number_of_steps);
+	
+
+	//for (float i = 0.0; i < number_of_steps; ) {
+	//	dist += SEGMENT_LENGTH * density3d(ViewerPosition + dir * SEGMENT_LENGTH * i);
+	//	i += 1.0;
+	//}	
+	//dist += (totalDistance - number_of_steps * SEGMENT_LENGTH) * density3d(ViewerPosition + dir * totalDistance);
+	
+	for (float i = 0.0; i < number_of_steps; ) {
+		dist += stepL * density3d(ViewerPosition + dir * stepL * i);
+		i += 1.0;
+	}	
+	
+
+
+	float alpha = 1.0 - exp(-dist * ABSORPTION);
+	float alpha2 = exp(-dist * ABSORPTION);
+	//float alpha = 1.0 - exp(-totalDistance * ABSORPTION);
+	//float alpha = 1.0 - pow(exp(-totalDistance * ABSORPTION), 3.17);
+	
+	if (alpha < 0.2) {
+		discard;
+	}
+
+	ScatteringTransmittance scatterTransmittance = CloudMarch(gl_FragCoord.xy, ViewerPosition,vec3(0.0, 0.0, 0.0), time);
+	vec3 colour = scatterTransmittance.transmittance + scatterTransmittance.scattering * CLOUD_EXPOSURE;
+	colour = ACESToneMap(colour);
+
+	if ((1.0 - cloudColor * alpha2).r < 0.15) {
+		discard;
+	}
+
+    //FragColor = vec4(colour, alpha);
+    FragColor = vec4(cloudColor, alpha);
+    //FragColor = vec4((1.0 - cloudColor * alpha2) * colour, 1.0);
+
+	//float n = density_i(viewerDepthCoord, SEGMENT_OFFSET);
+    //FragColor = vec4(n, n, n, 1.0);
+    //FragColor = vec4(probeLightDepthTex(FragPos), 1.0);
+}

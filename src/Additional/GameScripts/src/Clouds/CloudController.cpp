@@ -58,12 +58,12 @@ CloudController::CloudController() {
 	NoiseTexture->SetWrapModeS(TextureWrapMode::MIRRORED_REPEAT);
 	NoiseTexture->SetWrapModeT(TextureWrapMode::MIRRORED_REPEAT);
 
-	const int width = 32;
-	const int height = 32;
-	const int depth = 32;
+	const int width = 48;
+	const int height = 48;
+	const int depth = 48;
 
 	//auto noiseData = generate3DPerlinNoise(width, height, depth, 20.0f);
-	auto noiseData = generate3DPerlinWorleyNoise(width, height, depth, 10.0f);
+	auto noiseData = generate3DPerlinWorleyNoise(width, height, depth, 100.0f);
 	noiseTexture3d = create3DNoiseTexture(noiseData, width, height, depth);
 
 

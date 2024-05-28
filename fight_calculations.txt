@@ -1,0 +1,11 @@
+sumTiles(entity)[0-100] = GlobalAvg(entity)[0-100] * 0.25 + LocalAvg(entity)[0-100] * 0.75
+score[-100-200] = rand(0, 100) + (sumTiles(Player) - sumTiles(Enemy))
+
+winChance + drawChance <= 90 (At least 10 loseChance)
+
+// WIN
+0 <= score <= winChance
+// DRAW
+winChance < score <= winChance + drawChance
+// LOSE
+winChance + drawChance < score <= 100

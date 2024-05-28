@@ -1,7 +1,7 @@
 Fighting:
-- Paper
-- Rock
-- Scisors
+- Draw
+- Win
+- Lose
 
 Taking Over:
 - Album Ability

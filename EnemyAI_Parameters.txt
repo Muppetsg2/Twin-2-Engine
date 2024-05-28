@@ -1,1 +1,1 @@
-- skillLevel
+- noteLuck (range: 0%-100%)

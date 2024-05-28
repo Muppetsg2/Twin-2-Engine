@@ -66,6 +66,21 @@ namespace Twin2Engine::Manager
 		static void DrawEditor(bool* p_open);
 #endif
 
+		template<class T>
+		static typename std::enable_if_t<std::is_base_of_v<Twin2Engine::Core::ScriptableObject, T>, std::map<size_t, Twin2Engine::Core::ScriptableObject*>> GetScriptableObjectsDerivedByType() {
+			
+			std::map<size_t, Twin2Engine::Core::ScriptableObject*> ret = std::map<size_t, Twin2Engine::Core::ScriptableObject*>();
+
+			for (auto& item : _scriptableObjects) {
+				
+				if (dynamic_cast<T*>(item.second) != nullptr) {
+					ret[item.first] = item.second;
+				}
+			}
+
+			return ret;
+		}
+
 		static std::vector<std::string> GetScriptableObjectsNames();
 		static std::vector<std::string> GetScriptableObjectsClassNames();
 		static bool CreateScriptableObject(const std::string& dstPath, const std::string& scriptableObjectClassName);

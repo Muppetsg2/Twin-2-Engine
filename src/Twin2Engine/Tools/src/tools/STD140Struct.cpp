@@ -385,6 +385,21 @@ STD140Offsets STD140Struct::GetOffsets() const
 	return _dataOffsets;
 }
 
+size_t STD140Struct::GetOffset(const string& name) const
+{
+	return _dataOffsets.Get(name);
+}
+
+vector<size_t> STD140Struct::GetArrayOffsets(const string& name) const
+{
+	return _dataOffsets.GetArray(name);
+}
+
+const ValueType* STD140Struct::GetType(const string& name) const
+{
+	return _dataOffsets.GetType(name);
+}
+
 vector<char> STD140Struct::GetData() const
 {
 #if TRACY_PROFILER

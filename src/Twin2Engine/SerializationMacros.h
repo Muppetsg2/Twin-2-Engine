@@ -4,8 +4,8 @@
 #include <tools/macros.h>
 
 // Macro to clone each field
-#define CloneField(fieldName) \
-    cloned->fieldName = fieldName; \
+/*#define CloneField(fieldName) \
+    cloned->fieldName = fieldName;
 
 
 
@@ -25,33 +25,7 @@
 
 // Macro to end the clone function definition
 #define CloneFunctionEnd() \
-    } \
-
-#define CloneBaseFunc(className, baseClassName, ...)\
-    virtual className* Clone() const override\
-    {\
-        className* cloned = new className();\
-        CloneTo(cloned);\
-        return cloned;\
-    }\
-    void CloneTo(className* cloned) const\
-    {\
-        baseClassName::CloneTo(cloned);\
-        DO_FOR_EACH(CloneField, __VA_ARGS__)\
-    }
-
-#define CloneFunc(className, ...)\
-    protected:\
-    virtual className* Clone() const override\
-    {\
-        className* cloned = new className();\
-        CloneTo(cloned);\
-        return cloned;\
-    }\
-    void CloneTo(className* cloned) const\
-    {\
-        DO_FOR_EACH(CloneField, __VA_ARGS__)\
-    }
+    } \*/
 
 // Macro to define the clone function
 //#define CloneFunction(className, baseClassName, ...) \

@@ -68,7 +68,11 @@ bool STD140Offsets::Contains(const std::string& name) const
 	return _offsets.contains(move(_hasher(name)));
 }
 
-size_t STD140Offsets::_Add(const string& name, size_t baseAligement, size_t baseOffset)
+size_t STD140Offsets::_Add(const string& name, size_t baseAligement, size_t baseOffset
+#if _DEBUG
+	, const ValueType* type
+#endif
+	)
 {
 #if TRACY_PROFILER
 	static const char* const tracy_Add = "STD140Offsets Add";
@@ -76,6 +80,9 @@ size_t STD140Offsets::_Add(const string& name, size_t baseAligement, size_t base
 	static const char* const tracy_AddCalculateAligement = "STD140Offsets Add Calculate Aligement";
 	static const char* const tracy_AddCalculateAligementPushOffset = "STD140Offsets Add Calculate Aligement Push Offset";
 	static const char* const tracy_AddCalculateAligementPushName = "STD140Offsets Add Calculate Aligement Push Name";
+#if _DEBUG
+	static const char* const tracy_AddCalculateAligementPushType = "STD140Offsets Add Calculate Aligement Push Type";
+#endif
 	static const char* const tracy_AddUpdateSize = "STD140Offsets Add Update Size";
 	static const char* const tracy_AddCheckMaxAligement = "STD140Offsets Add Check Max Aligement";
 	ZoneScoped;
@@ -106,6 +113,17 @@ size_t STD140Offsets::_Add(const string& name, size_t baseAligement, size_t base
 	_names[nameHash] = name;
 #if TRACY_PROFILER
 	FrameMarkEnd(tracy_AddCalculateAligementPushName);
+#if _DEBUG
+	FrameMarkStart(tracy_AddCalculateAligementPushType);
+#endif
+#endif
+#if _DEBUG
+	_types[nameHash] = type;
+#endif
+#if TRACY_PROFILER
+#if _DEBUG
+	FrameMarkEnd(tracy_AddCalculateAligementPushType);
+#endif
 	FrameMarkEnd(tracy_AddCalculateAligement);
 
 	// UPDATE SIZE
@@ -129,7 +147,11 @@ size_t STD140Offsets::_Add(const string& name, size_t baseAligement, size_t base
 	return aligementOffset;
 }
 
-vector<size_t> STD140Offsets::_AddArray(const string& name, size_t arraySize, size_t baseAligement, size_t baseOffset)
+vector<size_t> STD140Offsets::_AddArray(const string& name, size_t arraySize, size_t baseAligement, size_t baseOffset
+#if _DEBUG
+	, const ValueType* type
+#endif	
+	)
 {
 #if TRACY_PROFILER
 	static const char* const tracy_AddArray = "STD140Offsets AddArray";
@@ -142,6 +164,9 @@ vector<size_t> STD140Offsets::_AddArray(const string& name, size_t arraySize, si
 	static const char* const tracy_AddArrayAddValuesElemNameHash = "STD140Offsets AddArray Add Values Element Name Hash";
 	static const char* const tracy_AddArrayAddValuesAddElemOffset = "STD140Offsets AddArray Add Values Add Element Offset";
 	static const char* const tracy_AddArrayAddValuesAddElemName = "STD140Offsets AddArray Add Values Add Element Name";
+#if _DEBUG
+	static const char* const tracy_AddArrayAddValuesAddElemType = "STD140Offsets AddArray Add Values Add Element Type";
+#endif
 	static const char* const tracy_AddArrayUpdateSize = "STD140Offsets AddArray Update Size";
 	static const char* const tracy_AddArraySetBeginPointer = "STD140Offsets AddArray Set Begin Pointer";
 	ZoneScoped;
@@ -218,6 +243,18 @@ vector<size_t> STD140Offsets::_AddArray(const string& name, size_t arraySize, si
 #if TRACY_PROFILER
 			FrameMarkEnd(tracy_AddArrayAddValuesAddElemName);
 
+#if _DEBUG
+			// SET ELEMENT VALUE TYPE
+			FrameMarkStart(tracy_AddArrayAddValuesAddElemType);
+#endif
+#endif
+#if _DEBUG
+			_types[valueNameHash] = type;
+#endif
+#if TRACY_PROFILER
+#if _DEBUG
+			FrameMarkEnd(tracy_AddArrayAddValuesAddElemType);
+#endif
 			FrameMarkEnd(tracy_AddArrayAddValuesAddElem);
 #endif
 		}
@@ -237,6 +274,9 @@ vector<size_t> STD140Offsets::_AddArray(const string& name, size_t arraySize, si
 		size_t nameHash = move(_hasher(name));
 		_offsets[nameHash] = arrayElemOffsets[0];
 		_names[nameHash] = name;
+#if _DEBUG
+		_types[nameHash] = new ArrayType(type, arraySize);
+#endif
 #if TRACY_PROFILER
 		FrameMarkEnd(tracy_AddArraySetBeginPointer);
 #endif
@@ -315,6 +355,22 @@ vector<size_t> STD140Offsets::GetArray(const string& name) const
 	return values;
 }
 
+#if _DEBUG
+const ValueType* STD140Offsets::GetType(const string& name) const
+{
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
+	const ValueType* value = nullptr;
+	unordered_map<size_t, const ValueType*>::const_iterator map_iterator = _types.find(move(_hasher(name)));
+	if (map_iterator != _types.end()) {
+		value = (*map_iterator).second;
+	}
+	return value;
+}
+#endif
+
 size_t STD140Offsets::GetBaseAligement() const
 {
 #if TRACY_PROFILER
@@ -364,6 +420,10 @@ void STD140Offsets::Clear()
 
 	_offsets.clear();
 	_names.clear();
+	for (auto& type : _types) {
+		delete type.second;
+	}
+	_types.clear();
 #if TRACY_PROFILER
 	FrameMarkEnd(tracy_Clear);
 #endif

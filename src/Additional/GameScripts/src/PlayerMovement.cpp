@@ -7,11 +7,27 @@
 #include <cmath>
 #include <string>
 
+// PATH FINDING
+#include <AstarPathfinding/AStarPath.h>
+#include <AstarPathfinding/AStarPathfinder.h>
+
 using namespace Twin2Engine::Physic;
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Manager;
+
+using namespace Generation;
+using namespace AStar;
 
 void PlayerMovement::Initialize() {
-	seeker = GetGameObject()->GetComponent<Seeker>();
+	//seeker = GetGameObject()->GetComponent<Seeker>();
+    _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
+}
+
+void PlayerMovement::OnDestroy() {
+    //seeker = GetGameObject()->GetComponent<Seeker>();
+    if (_path) {
+        delete _path;
+    }
 }
 
 void PlayerMovement::Update() {
@@ -51,9 +67,11 @@ void PlayerMovement::Update() {
     {
         if (CollisionManager::Instance()->Raycast(ray, raycastHit))
         {
-            Generation::MapHexTile* t = raycastHit.collider->GetGameObject()->GetComponent<Generation::MapHexTile>();
-            //if (raycastHit.transform != null && raycastHit.transform.gameObject.TryGetComponent(out HexTile t) && t.Type != TileType.Mountain && !(t.Type == TileType.RadioStation && t.currCooldown > 0f) && !t.IsFighting)
-            if (t->type != Generation::MapHexTile::HexTileType::Mountain && !(t->type == Generation::MapHexTile::HexTileType::RadioStation && t->currCooldown > 0.0f) && !t->IsFighting)
+            SPDLOG_INFO("COL_ID: {}", raycastHit.collider->colliderId);
+            HexTile* hexTile = raycastHit.collider->GetGameObject()->GetComponent<HexTile>();
+            MapHexTile* mapHexTile = hexTile->GetMapHexTile();
+            //if (raycastHit.transform != null && raycastHit.transform.gameObject.TryGetComponent(out HexTile hexTile) && hexTile.Type != TileType.Mountain && !(hexTile.Type == TileType.RadioStation && hexTile.currCooldown > 0f) && !hexTile.IsFighting)
+            if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && hexTile->currCooldown > 0.0f) && !hexTile->IsFighting)
             {
                 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 //if (!EventSystem.current.IsPointerOverGameObject())
@@ -61,23 +79,23 @@ void PlayerMovement::Update() {
                     /*
                     if (!GameManager.instance.gameStarted)
                     {
-                        transform.position = t.sterowiecPos;
-                        OnStartMoving?.Invoke(gameObject, t);
-                        destinatedTile = t;
+                        transform.position = hexTile.sterowiecPos;
+                        OnStartMoving?.Invoke(gameObject, hexTile);
+                        destinatedTile = hexTile;
                     }
                     else if (InCircle(raycastHit.transform.position))
                     {
                         if (seeker.IsDone())
                         {
                             tempDest = raycastHit.transform.position;
-                            tempDest.y = t.sterowiecPos.y;
+                            tempDest.y = hexTile.sterowiecPos.y;
                             seeker.StartPath(transform.position, tempDest, OnPathComplete);
-                            tempDestTile = t;
+                            tempDestTile = hexTile;
                         }
                     }
                     */
 
-                    SetDestination(t);
+                    SetDestination(hexTile);
                     position = transform->GetGlobalPosition();
                 }
             }
@@ -161,86 +179,73 @@ void PlayerMovement::Update() {
     */
 
     if (!reachEnd) {
-        float dist = glm::distance(position, destination);
+        position = transform->GetGlobalPosition();
+
+        vec3 directionPos = position;
+        directionPos.y = 0.0f;
+
+        float dist = glm::distance(directionPos, _waypoint);
         float walk_dist = Time::GetDeltaTime() * speed;
 
+        Tilemap::HexagonalTile* tile = _tilemap->GetTile(_tilemap->ConvertToTilemapPosition(vec2(_waypoint.x, _waypoint.z)));
+        vec3 tempWaypointPos = _waypoint;
+        tempWaypointPos.y = tile->GetGameObject()->GetTransform()->GetGlobalPosition().y + 0.5f;
+
         if (dist <= walk_dist) {
-            transform->SetGlobalPosition(destination); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
-            reachEnd = true;
+            if (_path->IsOnEnd())
+            {
+                reachEnd = true;
+            }
+            //transform->SetGlobalPosition(_waypoint + vec3(0.0f, 0.5f, 0.0f)); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
+            transform->SetGlobalPosition(tempWaypointPos); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
+            _waypoint = _path->Next();
         }
         else {
-            transform->SetGlobalPosition(position + glm::normalize(destination - position) * walk_dist);
+            //transform->SetGlobalPosition(glm::vec3(glm::mix(position, tempWaypointPos, 0.5f)) + vec3(0.0f, 0.5f, 0.0f));
+            transform->Translate(glm::normalize(tempWaypointPos - position) * walk_dist);
         }
     }
-
-    //float dist = glm::distance(position, destination);
-    //float walk_dist = Time::GetDeltaTime() * speed;
-    //
-    ////if (currWaypoint + 1 == path->vectorPath.Count || currWaypoint == 0)
-    //{
-    //    transform->SetGlobalPosition(glm::vec3(std::lerp(position.x, waypoint.x, walk_dist), position.y, glm::vec3(std::lerp(position.z, waypoint.z, walk_dist))));// = Vector3.Lerp(transform.position, waypoint, Time.deltaTime * speed); //Time::GetDeltaTime() * speed
-    //}
-    //else
-    //{
-    //    if (dist <= walk_dist) {
-    //        transform->SetGlobalPosition(destination); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
-    //    }
-    //    else {
-    //        transform->SetGlobalPosition(position + glm::normalize(waypoint - position) * walk_dist);
-    //    }
-    //}
-    //
-    ////if (dist <= nextWaypointDistance)
-    //{
-    //    ++currWaypoint;
-    //}
 }   
 
 
-void PlayerMovement::OnPathComplete(Path* p) {
-    //if (!p->error)
-    //{
-    //    if (p->vectorPath.Count <= maxSteps)
-    //    {
-    //        path = p;
-    //        currWaypoint = 0;
-    //        //actualEnd = p.vectorPath.Count;
-    //
-    //        destination = tempDest;
-    //        destinatedTile = tempDestTile;
-    //        OnStartMoving.Invoke(GetGameObject(), destinatedTile);
-    //    }
-    //    else
-    //    {
-    //        //!!!!!!!!!!!!!!!
-    //        //HUDInfo obj = FindObjectOfType<HUDInfo>();
-    //        //if (obj != null)
-    //        //{
-    //        //    obj.SetInfo("The specified field is too far away.", 2f);
-    //        //}
-    //        EndMoveAction();
-    //        OnFindPathError.Invoke(GetGameObject(), tempDestTile);
-    //    }
-    //}
-    //else
-    {
-        EndMoveAction();
-        OnFindPathError.Invoke(GetGameObject(), tempDestTile);
+void PlayerMovement::OnPathComplete(const AStarPath& p) {
+
+    if (_path) {
+        delete _path;
     }
 
+    _path = new AStarPath(p);
+
+    destination = tempDest;
+    destinatedTile = tempDestTile;
+    _waypoint = _path->Next();
+
+    reachEnd = false;
+
+    OnStartMoving.Invoke(GetGameObject(), destinatedTile);
+
+
     tempDestTile = nullptr;
+}
+
+void PlayerMovement::OnPathFailure() {
+    EndMoveAction();
 }
 
 void PlayerMovement::EndMoveAction() {
     reachEnd = true;
     //alreadyChecked = false;
-    path = nullptr;
+    if (_path) {
+        delete _path;
+        _path = nullptr;
+    }
 }
 
-void PlayerMovement::MoveAndSetDestination(Generation::MapHexTile* dest) {
+void PlayerMovement::MoveAndSetDestination(HexTile* dest) {
     if (reachEnd && !GameManager::instance->minigameActive)
     {
-        if (dest->type != Generation::MapHexTile::HexTileType::Mountain && !(dest->type == Generation::MapHexTile::HexTileType::RadioStation && dest->currCooldown > 0.0f) && !dest->IsFighting)
+        MapHexTile* mapHexTile = dest->GetMapHexTile();
+        if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && dest->currCooldown > 0.0f) && !dest->IsFighting)
         {
             SetDestination(dest);
         }
@@ -254,8 +259,8 @@ bool PlayerMovement::InCircle(glm::vec3 point) {
     return (point.x - position.x) * (point.x - position.x) + (point.z - position.z) * (point.z - position.z) < radius * radius;
 }
 
-void PlayerMovement::SetDestination(Generation::MapHexTile* dest) {
-    glm::vec3 destPos = dest->GetTransform()->GetGlobalPosition() + glm::vec3(0.0f, 1.0f, 0.0f);
+void PlayerMovement::SetDestination(HexTile* dest) {
+    glm::vec3 destPos = dest->GetTransform()->GetGlobalPosition() + glm::vec3(0.0f, 0.5f, 0.0f);
     if (!GameManager::instance->gameStarted)
     {
         GetTransform()->SetGlobalPosition(destPos);
@@ -266,10 +271,15 @@ void PlayerMovement::SetDestination(Generation::MapHexTile* dest) {
     }
     else if (InCircle(destPos))
     {
-        reachEnd = false;
-        destinatedTile = dest;
-        destination = destPos;
-        OnStartMoving.Invoke(GetGameObject(), dest);
+
+        if (!_path || _path->IsOnEnd())
+        {
+            tempDestTile = dest;
+            AStarPathfinder::FindPath(GetTransform()->GetGlobalPosition(), dest->GetTransform()->GetGlobalPosition(), maxSteps,
+                [&](const AStarPath& path) { OnPathComplete(path); }, [&]() { OnPathFailure(); });
+
+        }
+
         //if (seeker->IsDone())
         //{
         //    tempDest = dest->GetTransform()->GetGlobalPosition();
@@ -322,7 +332,7 @@ void PlayerMovement::DrawLine(glm::vec3 startPos, glm::vec3 endPos) {
 }
 
 void PlayerMovement::OnDrawGizmos() {
-    if (path != nullptr)
+    if (_path != nullptr)
     {
         //Gizmos.color = glm::vec3(1.0f, 0.0f, 0.0f);
         //if (currWaypoint >= path->vectorPath.Count)

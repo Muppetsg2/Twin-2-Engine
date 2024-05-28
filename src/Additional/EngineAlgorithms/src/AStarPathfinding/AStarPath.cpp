@@ -25,6 +25,16 @@ inline bool AStarPath::IsOnBegin() const
 	return _current == 0;
 }
 
+inline unsigned AStarPath::Current() const
+{
+	return _current;
+}
+
+inline unsigned AStarPath::Count() const
+{
+	return _pathNodes.size();
+}
+
 vec3 AStarPath::GetNext() const
 {
 	if (IsOnEnd())

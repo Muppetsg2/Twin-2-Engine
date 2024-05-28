@@ -385,6 +385,7 @@ bool ColliderComponent::Deserialize(const YAML::Node& node)
 		boundingVolume = new BoundingVolume(new SphereColliderData());
 		collider->boundingVolume = boundingVolume;
 		((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius = node["boundingVolumeRadius"].as<float>();
+		EnableBoundingVolume(false);
 	}
 	collider->shapeColliderData->LocalPosition = node["position"].as<glm::vec3>();
 

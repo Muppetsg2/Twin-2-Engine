@@ -18,8 +18,8 @@ void Human::StartWorking()
     _work = true;
     _targetCity = CitiesManager::GetClosestCity(GetTransform()->GetGlobalPosition());
     vec3 destination = _targetCity->GetTransform()->GetGlobalPosition();
-   destination.y = 0.0f;
-    SPDLOG_ERROR("{}destination: {} {} {}", GetGameObject()->Id(), destination.x, destination.y, destination.z);
+    destination.y = 0.0f;
+    //SPDLOG_ERROR("{}destination: {} {} {}", GetGameObject()->Id(), destination.x, destination.y, destination.z);
     _movement->MoveTo(destination);
 }
 
@@ -50,12 +50,12 @@ void Human::Update()
                 _targetCity = possibleTargetCities[Random::Range(0ull, possibleTargetCities.size() - 1ull)];
                 vec3 destination = _targetCity->GetTransform()->GetGlobalPosition();
                 destination.y = 0.0f;
-                SPDLOG_ERROR("{}destination: {} {} {}", GetGameObject()->Id(), destination.x, destination.y, destination.z);
+                //SPDLOG_ERROR("{}destination: {} {} {}", GetGameObject()->Id(), destination.x, destination.y, destination.z);
                 _movement->MoveTo(destination);
             }
             else
             {
-                SPDLOG_INFO("Lack of connected cities");
+                //SPDLOG_INFO("Lack of connected cities");
             }
         }
     }

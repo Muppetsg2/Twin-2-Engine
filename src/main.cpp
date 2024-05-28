@@ -49,6 +49,7 @@ using namespace Humans;
 #include <Humans/HumansGenerator.h>
 
 // ASTAR PATHFINDING
+#include <AstarPathfinding/AStarPath.h>
 #include <AstarPathfinding/AStarPathfinder.h>
 
 using namespace AStar;
@@ -241,6 +242,8 @@ int main(int, char**)
     ADD_COMPONENT("AStarPathfindingNode", AStarPathfindingNode);
 
     ADD_COMPONENT("AStarPathfinder", AStarPathfinder);
+
+    ADD_COMPONENT("HexTile", HexTile);
 
 #pragma endregion
 

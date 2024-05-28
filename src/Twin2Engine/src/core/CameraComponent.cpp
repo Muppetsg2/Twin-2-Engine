@@ -962,11 +962,15 @@ Ray CameraComponent::GetScreenPointRay(glm::vec2 screenPosition) const
 	ivec2 size = Window::GetInstance()->GetContentSize();
 	glm::vec3 Origin = GetTransform()->GetGlobalPosition();
 
-	float x = 2.0f * screenPosition.x / size.x;	//2.0f * 
+	//float x = 2.0f * screenPosition.x / size.x;	//2.0f * //Zakomentowane bo na razie jest niepotrzebne
 	float y = 2.0f * screenPosition.y / size.y;	//2.0f * 
 	//float x2 = 2.0f * screenPosition.x / size.x;	//
 	//float y2 = 2.0f * screenPosition.y / size.y;	//
-	glm::vec3 Direction = _front + _right * (x * tanf(radians(_fov * 0.5)) * size.x / size.y) + cross(_right, _front) * (y * tanf(radians(_fov * 0.5)));
+
+	//glm::vec3 Direction = _front + _right * (x * tanf(radians(_fov * 0.5)) * size.x / size.y) + cross(_right, _front) * (y * tanf(radians(_fov * 0.5))); // Zapis w razie czego
+	float tanValue = tanf(radians(_fov * 0.5));
+	glm::vec3 Direction = _front + _right * (2.0f * screenPosition.x * tanValue / size.y) + cross(_right, _front) * (y * tanValue);
+
 	//glm::vec3 Direction2 = _front + _right * (x2 * tanf(radians(_fov * 0.5)) * size.x / size.y) + cross(_right, _front) * (y2 * tanf(radians(_fov * 0.5)));
 	Direction = glm::normalize(Direction); 
 	//SPDLOG_INFO("CP: \t{}\t{}\n\t\tF\t{}\t{}\t{}\n\t\tD\t{}\t{}\t{}\n\t\tD2\t{}\t{}\t{}", screenPosition.x, screenPosition.y, _front.x, _front.y, _front.z, Direction.x, Direction.y, Direction.z, Direction2.x, Direction2.y, Direction2.z);

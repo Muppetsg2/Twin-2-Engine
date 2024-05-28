@@ -1,10 +1,16 @@
 #pragma once
 
+
 #include <core/Component.h>
 #include <core/Transform.h>
 #include <core/GameObject.h>
+
+#include <manager/SceneManager.h>
+
 #include <Generation/MapHexTile.h>
+#include <AreaTaking/HexTile.h>
 #include <tools/EventHandler.h>
+
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Tools;
@@ -14,15 +20,24 @@ class LineRenderer;
 class Seeker : public Component {
 };
 
+namespace AStar
+{
+	class AStarPath;
+	class AStarPathfinder;
+}
+
 class PlayerMovement : public Component {
 	private:
-		Generation::MapHexTile* destinatedTile = nullptr;
+		HexTile* destinatedTile = nullptr;
 
 		glm::vec3 tempDest;
-		Generation::MapHexTile* tempDestTile;
+		HexTile* tempDestTile;
+
+		AStar::AStarPath* _path = nullptr;
+		Tilemap::HexagonalTilemap* _tilemap = nullptr;
 
 		bool InCircle(glm::vec3 point);
-		void SetDestination(Generation::MapHexTile* dest);
+		void SetDestination(HexTile* dest);
 		void DrawCircle(int steps, float radius);
 		void DrawLine(glm::vec3 startPos, glm::vec3 endPos);
 		void OnDrawGizmos();
@@ -46,21 +61,24 @@ class PlayerMovement : public Component {
 
 		LineRenderer* lineRenderer;
 
-		Seeker* seeker;
-		Path* path;
+		//Seeker* seeker;
+		//Path* path;
 		int currWaypoint = 0;
 		bool reachEnd = true;
-		EventHandler<GameObject*, Generation::MapHexTile*> OnFindPathError;
-		EventHandler<GameObject*, Generation::MapHexTile*> OnStartMoving;
-		EventHandler<GameObject*, Generation::MapHexTile*> OnFinishMoving;
+		glm::vec3 _waypoint;
+		EventHandler<GameObject*, HexTile*> OnFindPathError;
+		EventHandler<GameObject*, HexTile*> OnStartMoving;
+		EventHandler<GameObject*, HexTile*> OnFinishMoving;
 
 
 		virtual void Initialize() override;
 		virtual void Update() override;
+		virtual void OnDestroy() override;
 
-		void OnPathComplete(Path* p);
+		void OnPathComplete(const AStar::AStarPath& p);
+		void OnPathFailure();
 		void EndMoveAction();
-		void MoveAndSetDestination(Generation::MapHexTile* dest);
+		void MoveAndSetDestination(HexTile* dest);
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;

@@ -7,6 +7,7 @@
 #include <unordered_set>
 #include <vector>
 #include <Generation/MapHexTile.h>
+#include <AreaTaking/HexTile.h>
 //#include <pch.h>
 
 using namespace Twin2Engine::Core;
@@ -14,7 +15,7 @@ using namespace Twin2Engine::Core;
 class ConcertRoad : public Component {
 	public:
         static ConcertRoad* instance;
-        std::unordered_set<Generation::MapHexTile*> RoadMapPoints;
+        std::unordered_set<HexTile*> RoadMapPoints;
         Prefab* Marker = nullptr;
         int NumberOfPoints = 3;
 

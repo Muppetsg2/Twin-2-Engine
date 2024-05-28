@@ -26,8 +26,6 @@ void AStarPathfinder::Register(AStarPathfindingNode* node)
 {
 	if (node)
 	{
-		//SPDLOG_INFO("Registering");
-
 		bool canBeRegistered = true;
 
 		for (size_t index = 0ull; index < _registeredNodes.size(); ++index)
@@ -59,7 +57,6 @@ void AStarPathfinder::Unregister(AStarPathfindingNode* node)
 		{
 			if (_registeredNodes[index] == node)
 			{
-				//SPDLOG_INFO("Unregistering Node in");
 				_registeredNodes.erase(_registeredNodes.cbegin() + index);
 
 				if (_nodesGraph.contains(node))
@@ -99,7 +96,7 @@ void AStarPathfinder::RemapNodes()
 	}
 	_nodesGraph.clear();
 
-	SPDLOG_INFO("REMAPPING");
+	//SPDLOG_INFO("REMAPPING");
 
 	const size_t size = _registeredNodes.size();
 	vec3 currentPos;
@@ -269,7 +266,7 @@ void AStarPathfinder::FindingPath(size_t threadId,
 
 			while (processedNode)
 			{
-				SPDLOG_ERROR("FP: {} {} {}", processedNode->position.x, processedNode->position.y, processedNode->position.z);
+				//SPDLOG_ERROR("FP: {} {} {}", processedNode->position.x, processedNode->position.y, processedNode->position.z);
 				path[insertedIndex] = processedNode->position;
 				--insertedIndex;
 				processedNode = processedNode->previous;

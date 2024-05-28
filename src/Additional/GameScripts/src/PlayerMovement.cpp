@@ -184,12 +184,14 @@ void PlayerMovement::Update() {
         vec3 directionPos = position;
         directionPos.y = 0.0f;
 
-        float dist = glm::distance(directionPos, _waypoint);
+        //vec3 tempWaypointPos = _waypoint;
+        //tempWaypointPos.y = tile->GetGameObject()->GetTransform()->GetGlobalPosition().y + 0.5f;
+        //tempWaypointPos.y += 0.5f;
+
+        float dist = glm::distance(position, _waypoint);
         float walk_dist = Time::GetDeltaTime() * speed;
 
         Tilemap::HexagonalTile* tile = _tilemap->GetTile(_tilemap->ConvertToTilemapPosition(vec2(_waypoint.x, _waypoint.z)));
-        vec3 tempWaypointPos = _waypoint;
-        tempWaypointPos.y = tile->GetGameObject()->GetTransform()->GetGlobalPosition().y + 0.5f;
 
         if (dist <= walk_dist) {
             if (_path->IsOnEnd())
@@ -197,12 +199,13 @@ void PlayerMovement::Update() {
                 reachEnd = true;
             }
             //transform->SetGlobalPosition(_waypoint + vec3(0.0f, 0.5f, 0.0f)); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
-            transform->SetGlobalPosition(tempWaypointPos); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
+            transform->SetGlobalPosition(_waypoint); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
             _waypoint = _path->Next();
+            _waypoint.y += 0.5f;
         }
         else {
             //transform->SetGlobalPosition(glm::vec3(glm::mix(position, tempWaypointPos, 0.5f)) + vec3(0.0f, 0.5f, 0.0f));
-            transform->Translate(glm::normalize(tempWaypointPos - position) * walk_dist);
+            transform->Translate(glm::normalize(_waypoint - position) * walk_dist);
         }
     }
 }   
@@ -219,6 +222,7 @@ void PlayerMovement::OnPathComplete(const AStarPath& p) {
     destination = tempDest;
     destinatedTile = tempDestTile;
     _waypoint = _path->Next();
+    _waypoint.y += 0.5f;
 
     reachEnd = false;
 

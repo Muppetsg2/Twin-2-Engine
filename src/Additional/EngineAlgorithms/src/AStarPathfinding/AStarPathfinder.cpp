@@ -100,21 +100,23 @@ void AStarPathfinder::RemapNodes()
 
 	const size_t size = _registeredNodes.size();
 	vec3 currentPos;
+	vec3 currentPosY0;
 	vec3 targetPos;
+	vec3 targetPosY0;
 	float distance;
 
 	for (size_t i = 0ull; i < size; ++i)
 	{
-		currentPos = _registeredNodes[i]->GetTransform()->GetGlobalPosition();
-		currentPos.y = 0.0f;
+		currentPosY0 = currentPos = _registeredNodes[i]->GetTransform()->GetGlobalPosition();
+		currentPosY0.y = 0.0f;
 		//SPDLOG_INFO("REMAPPING Target pos: {} {} {}", currentPos.x, currentPos.y, currentPos.z);
 
 		for (size_t j = i + 1ull; j < size; ++j)
 		{
-			targetPos = _registeredNodes[j]->GetTransform()->GetGlobalPosition();
-			targetPos.y = 0.0f;
+			targetPosY0 = targetPos = _registeredNodes[j]->GetTransform()->GetGlobalPosition();
+			//targetPosY0.y = 0.0f;
 
-			distance = glm::distance(currentPos, targetPos);
+			distance = glm::distance(currentPosY0, targetPosY0);
 			if (distance <= _maxMappingDistance)
 			{
 				_nodesGraph[_registeredNodes[i]].emplace_back(_registeredNodes[j], targetPos, distance);
@@ -191,7 +193,7 @@ void AStarPathfinder::FindingPath(size_t threadId,
 		result = (AStarNode*)1;
 
 		vec3 tempPos = closestToBegin->GetTransform()->GetGlobalPosition();
-		tempPos.y = 0.0f;
+		//tempPos.y = 0.0f;
 		path.push_back(tempPos);
 
 		path.push_back(endPosition);
@@ -206,9 +208,8 @@ void AStarPathfinder::FindingPath(size_t threadId,
 
 		list<AStarNode*> allocatedNodes;
 		vec3 tempPos = closestToBegin->GetTransform()->GetGlobalPosition();
-		tempPos.y = 0.0f;
+		//tempPos.y = 0.0f; ///
 		AStarNode* allocatedNode = new AStarNode(closestToBegin, nullptr, tempPos, 0, 0.0f);
-		//allocatedNode->position.y = 0.0f;
 
 		allocatedNodes.push_back(allocatedNode);
 

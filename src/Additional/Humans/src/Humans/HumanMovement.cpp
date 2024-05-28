@@ -135,11 +135,11 @@ void HumanMovement::MoveTo(glm::vec3 destination)
 
     _findingPath = true;
 
-    destination.y = 0.0f;
+    //destination.y = 0.0f;
     _bufferedTargetDestination = destination;
 
     vec3 globalPosition = GetTransform()->GetGlobalPosition();
-    globalPosition.y = 0.0f;
+    //globalPosition.y = 0.0f;
 
     _pathfindingInfo = AStarPathfinder::FindPath(globalPosition, destination, 0,
         [&](const AStarPath& path) { this->PathFindingSuccess(path); }, [&]() { PathFindingFailure(); });

@@ -7,13 +7,14 @@ Taking Over:
 - Album Ability
 - Concert Ability
 - Fans Meeting Ability
-- Move
+- Move to Next Tile
 
 Moving:
 - Start Taking Over
 - Fight
 - Album Ability
 - Concert Ability
+- Move to Next Tile
 
 Radio Station:
 - Fail

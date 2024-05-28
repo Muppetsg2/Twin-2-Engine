@@ -189,11 +189,10 @@ void PlayerMovement::Update() {
         //tempWaypointPos.y += 0.5f;
 
         float dist = glm::distance(position, _waypoint);
-        float walk_dist = Time::GetDeltaTime() * speed;
 
         Tilemap::HexagonalTile* tile = _tilemap->GetTile(_tilemap->ConvertToTilemapPosition(vec2(_waypoint.x, _waypoint.z)));
 
-        if (dist <= walk_dist) {
+        if (dist <= nextWaypointDistance) {
             if (_path->IsOnEnd())
             {
                 reachEnd = true;
@@ -205,6 +204,7 @@ void PlayerMovement::Update() {
         }
         else {
             //transform->SetGlobalPosition(glm::vec3(glm::mix(position, tempWaypointPos, 0.5f)) + vec3(0.0f, 0.5f, 0.0f));
+            float walk_dist = Time::GetDeltaTime() * speed;
             transform->Translate(glm::normalize(_waypoint - position) * walk_dist);
         }
     }
@@ -275,40 +275,21 @@ void PlayerMovement::SetDestination(HexTile* dest) {
     }
     else if (InCircle(destPos))
     {
-
         if (!_path || _path->IsOnEnd())
         {
             tempDestTile = dest;
-            AStarPathfinder::FindPath(GetTransform()->GetGlobalPosition(), dest->GetTransform()->GetGlobalPosition(), maxSteps,
-                [&](const AStarPath& path) { OnPathComplete(path); }, [&]() { OnPathFailure(); });
+
+            //if (_info)
+            //{
+            //    delete _info;
+            //}
+            //
+            //_info = new AStarPathfindingInfo(AStarPathfinder::FindPath(GetTransform()->GetGlobalPosition(), dest->GetTransform()->GetGlobalPosition(), maxSteps,
+            //    [&](const AStarPath& path) { OnPathComplete(path); }, [&]() { OnPathFailure(); }));
+                AStarPathfinder::FindPath(GetTransform()->GetGlobalPosition(), dest->GetTransform()->GetGlobalPosition(), maxSteps,
+                    [&](const AStarPath& path) { OnPathComplete(path); }, [&]() { OnPathFailure(); });
 
         }
-
-        //if (seeker->IsDone())
-        //{
-        //    tempDest = dest->GetTransform()->GetGlobalPosition();
-        //    tempDest.y = dest->sterowiecPos.y;
-        //    tempDestTile = dest;
-        //
-        //    GraphNode node1 = AstarPath.active.GetNearest(transform.position, NNConstraint.Default).node;
-        //    GraphNode node2 = AstarPath.active.GetNearest(tempDest, NNConstraint.Default).node;
-        //
-        //    if (PathUtilities.IsPathPossible(node1, node2))
-        //    {
-        //        seeker->StartPath(GetTransform()->GetGlobalPosition(), tempDest, OnPathComplete);
-        //    }
-        //    else
-        //    {
-        //        //!!!!!!!!!!!!!!!!!
-        //        //HUDInfo obj = FindObjectOfType<HUDInfo>();
-        //        //if (obj != null)
-        //        //{
-        //        //    obj.SetInfo("The specified field is not accessible", 2f);
-        //        //}
-        //        EndMoveAction();
-        //        OnFindPathError.Invoke(GetGameObject(), tempDestTile);
-        //    }
-        //}
     }
 }
 
@@ -333,21 +314,6 @@ void PlayerMovement::DrawLine(glm::vec3 startPos, glm::vec3 endPos) {
     //lineRenderer->positionCount = 2;
     //lineRenderer->SetPosition(0, startPos);
     //lineRenderer->SetPosition(1, endPos);
-}
-
-void PlayerMovement::OnDrawGizmos() {
-    if (_path != nullptr)
-    {
-        //Gizmos.color = glm::vec3(1.0f, 0.0f, 0.0f);
-        //if (currWaypoint >= path->vectorPath.Count)
-        //{
-        //    Gizmos.DrawWireSphere(path->vectorPath[path->vectorPath.Count - 1], 0.2f);
-        //}
-        //else
-        //{
-        //    Gizmos.DrawWireSphere(path->vectorPath[currWaypoint], 0.2f);
-        //}
-    }
 }
 
 YAML::Node PlayerMovement::Serialize() const

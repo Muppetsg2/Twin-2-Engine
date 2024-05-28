@@ -24,6 +24,7 @@ namespace AStar
 {
 	class AStarPath;
 	class AStarPathfinder;
+	class AStarPathfindingInfo;
 }
 
 class PlayerMovement : public Component {
@@ -33,14 +34,18 @@ class PlayerMovement : public Component {
 		glm::vec3 tempDest;
 		HexTile* tempDestTile;
 
+		AStar::AStarPathfindingInfo* _info;
+
 		AStar::AStarPath* _path = nullptr;
 		Tilemap::HexagonalTilemap* _tilemap = nullptr;
+		//int currWaypoint = 0;
+		bool reachEnd = true;
+		glm::vec3 _waypoint;
 
 		bool InCircle(glm::vec3 point);
 		void SetDestination(HexTile* dest);
 		void DrawCircle(int steps, float radius);
 		void DrawLine(glm::vec3 startPos, glm::vec3 endPos);
-		void OnDrawGizmos();
 			
 	public:
 		//Moving
@@ -63,9 +68,6 @@ class PlayerMovement : public Component {
 
 		//Seeker* seeker;
 		//Path* path;
-		int currWaypoint = 0;
-		bool reachEnd = true;
-		glm::vec3 _waypoint;
 		EventHandler<GameObject*, HexTile*> OnFindPathError;
 		EventHandler<GameObject*, HexTile*> OnStartMoving;
 		EventHandler<GameObject*, HexTile*> OnFinishMoving;

@@ -156,13 +156,8 @@ float saturate(float x) {
 //	return luminance;
 //}
 
-float inverseLerp(float minValue, float maxValue, float v) {
-	return (v - minValue) / (maxValue - minValue);
-}
-
-float remap(float v, float inMin, float inMax, float outMin, float outMax) {
-	float t = inverseLerp(inMin, inMax, v);
-	return mix(outMin, outMax, t);
+float remap(float v, float minOld, float maxOld, float minNew, float maxNew) {
+    return minNew + (v-minOld) * (maxNew - minNew) / (maxOld-minOld);
 }
 
 vec4 probeLightDepthTex(vec3 pos) {
@@ -173,6 +168,28 @@ vec4 probeLightDepthTex(vec3 pos) {
 	return texture(lightFrontDepthMap, projCoords.xy);
 }
 
+vec2 rayBoxDst(vec3 boundsMin, vec3 boundsMax, vec3 rayOrigin, vec3 invRaydir) {
+    // Adapted from: http://jcgt.org/published/0007/03/04/
+    vec3 t0 = (boundsMin - rayOrigin) * invRaydir;
+    vec3 t1 = (boundsMax - rayOrigin) * invRaydir;
+    vec3 tmin = min(t0, t1);
+    vec3 tmax = max(t0, t1);
+    
+    float dstA = max(max(tmin.x, tmin.y), tmin.z);
+    float dstB = min(tmax.x, min(tmax.y, tmax.z));
+
+    // CASE 1: ray intersects box from outside (0 <= dstA <= dstB)
+    // dstA is dst to nearest intersection, dstB dst to far intersection
+
+    // CASE 2: ray intersects box from inside (dstA < 0 < dstB)
+    // dstA is the dst to intersection behind the ray, dstB is dst to forward intersection
+
+    // CASE 3: ray misses box (dstA > dstB)
+
+    float dstToBox = max(0, dstA);
+    float dstInsideBox = max(0, dstB - dstToBox);
+    return vec2(dstToBox, dstInsideBox);
+}
 
 
 // Henyey-Greenstein
@@ -222,7 +239,7 @@ float sampleDensity(vec3 rayPos) {
     vec3 shapeSamplePos = uvw + shapeOffset * offsetSpeed + vec3(_time, _time * 0.1, _time * 0.2) * baseSpeed;
 
     // Calculate falloff at along x/z edges of the cloud container
-    const float containerEdgeFadeDst = 50;
+    const float containerEdgeFadeDst = 0.5; //50
     float dstFromEdgeX = min(containerEdgeFadeDst, min(rayPos.x - boundsMin.x, boundsMax.x - rayPos.x));
     float dstFromEdgeZ = min(containerEdgeFadeDst, min(rayPos.z - boundsMin.z, boundsMax.z - rayPos.z));
     float edgeWeight = min(dstFromEdgeZ, dstFromEdgeX) / containerEdgeFadeDst;
@@ -236,8 +253,9 @@ float sampleDensity(vec3 rayPos) {
 
     // Calculate base shape density
     //vec4 shapeNoise = NoiseTex.SampleLevel(samplerNoiseTex, shapeSamplePos, mipLevel);
-    //vec4 normalizedShapeWeights = shapeNoiseWeights / dot(shapeNoiseWeights, 1);
-    float shapeFBM = density3d(shapeSamplePos) * heightGradient;//dot(shapeNoise, normalizedShapeWeights) * heightGradient;
+    vec4 normalizedShapeWeights = normalize(shapeNoiseWeights);//shapeNoiseWeights / dot(shapeNoiseWeights, 1);
+    //float shapeFBM = density3d(shapeSamplePos) * heightGradient;//dot(vec4(density3d(shapeSamplePos), 0.0, 0.0, 0.0), normalizedShapeWeights) * heightGradient;
+    float shapeFBM = dot(vec4(density3d(shapeSamplePos), 0.0, 0.0, 0.0), normalizedShapeWeights) * heightGradient;
     float baseShapeDensity = shapeFBM + densityOffset * 0.1;
 
     // Save sampling from detail tex if shape density <= 0
@@ -261,17 +279,18 @@ float sampleDensity(vec3 rayPos) {
 // Calculate proportion of light that reaches the given point from the lightsource
 float lightmarch(vec3 position) {
     vec3 dirToLight = -directionalLights[0].direction;
-    float dstInsideBox = 0.0;//rayBoxDst(boundsMin, boundsMax, position, 1/dirToLight).y;
-	vec4 lightInPos = probeLightDepthTex(position);
-	//if (lightInPos.w == 0.0) {
-	//	dstInsideBox = 0.05;
-	//}
-	//else {
-	//	dstInsideBox = distance(lightInPos.xyz, position);
-	//}
-	dstInsideBox = distance(lightInPos.xyz, position);
+    float dstInsideBox = rayBoxDst(boundsMin, boundsMax, position, 1/dirToLight).y;
+    //float dstInsideBox = 0.0;
+	//vec4 lightInPos = probeLightDepthTex(position);
+	////if (lightInPos.w == 0.0) {
+	////	dstInsideBox = 0.05;
+	////}
+	////else {
+	////	dstInsideBox = distance(lightInPos.xyz, position);
+	////}
+	//dstInsideBox = distance(lightInPos.xyz, position);
     
-    float stepSize = dstInsideBox/numStepsLight;
+    float stepSize = dstInsideBox / numStepsLight;
     float totalDensity = 0;
 
     for (int step = 0; step < numStepsLight; step ++) {
@@ -295,19 +314,19 @@ void main()
 	//float viewLength = length(i.viewVector);
 	//vec3 rayDir = i.viewVector / viewLength;
 	vec4 FratOutPos = texture(viewerBackDepthMap, viewerDepthCoord);
-	if (FratOutPos.w == 0.0) {
-		discard;
-	}
+	//if (FratOutPos.w == 0.0) {
+	//	discard;
+	//}
 	vec3 rayDir = normalize(FratOutPos.xyz - FragPos);
 	
 	// Depth and cloud container intersection info:
 	//float nonlin_depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);
 	//float depth = LinearEyeDepth(nonlin_depth) * viewLength;
-	//float2 rayToContainerInfo = rayBoxDst(boundsMin, boundsMax, rayPos, 1/rayDir);
-	//float dstToBox = rayToContainerInfo.x;
-	//float dstInsideBox = rayToContainerInfo.y;
-	float dstToBox = distance(rayPos, FragPos);
-	float dstInsideBox = distance(FratOutPos.xyz, FragPos);
+	vec2 rayToContainerInfo = rayBoxDst(boundsMin, boundsMax, rayPos, 1/rayDir);
+	float dstToBox = rayToContainerInfo.x;
+	float dstInsideBox = rayToContainerInfo.y;
+	//float dstToBox = distance(rayPos, FragPos);
+	//float dstInsideBox = distance(FratOutPos.xyz, FragPos);
 	
 	// point of intersection with the cloud container
 	vec3 entryPoint = FragPos;
@@ -321,7 +340,7 @@ void main()
 	float phaseVal = phase(cosAngle);
 	
 	float dstTravelled = randomOffset;
-	float dstLimit = dstInsideBox;//min(depth - dstToBox, dstInsideBox);
+	float dstLimit = min(distance(FratOutPos.xyz, FragPos), dstInsideBox);//dstInsideBox;//min(depth - dstToBox, dstInsideBox);
 	
 	
 	
@@ -341,7 +360,7 @@ void main()
 	        transmittance *= exp(-density * stepSize * lightAbsorptionThroughCloud);
 	    
 	        // Exit early if T is close to zero as further samples won't affect the result much
-	        if (transmittance < 0.01) {
+	        if (transmittance < 0.0001) {
 	            break;
 	        }
 	    }

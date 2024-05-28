@@ -8,6 +8,7 @@ Taking Over:
 - Concert Ability
 - Fans Meeting Ability
 - Move to Next Tile
+- Nothing
 
 Moving:
 - Start Taking Over

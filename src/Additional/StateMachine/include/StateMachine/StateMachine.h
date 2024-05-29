@@ -2,24 +2,27 @@
 
 #include <StateMachine/State.h>
 
-template<class T>
+template<class _Entity>
 class StateMachine {
 private:
-	State<T>* _currentState = nullptr;
+	State<_Entity>* _currentState = nullptr;
 
 public:
-	void Update(T* entity);
-	void ChangeState(T* entity, State<T>* newState);
+	StateMachine() = default;
+	virtual ~StateMachine() = default;
+
+	void Update(_Entity* entity);
+	void ChangeState(_Entity* entity, State<_Entity>* newState);
 };
 
-template<class T>
-void StateMachine<T>::Update(T* entity) {
+template<class _Entity>
+void StateMachine<_Entity>::Update(_Entity* entity) {
 	if (_currentState == nullptr) return;
 	_currentState->Update(entity);
 }
 
-template<class T>
-void StateMachine<T>::ChangeState(T* entity, State<T>* newState) {
+template<class _Entity>
+void StateMachine<_Entity>::ChangeState(_Entity* entity, State<_Entity>* newState) {
 	if (_currentState != nullptr) _currentState->Exit(entity);
 	_currentState = newState;
 	_currentState->Enter(entity);

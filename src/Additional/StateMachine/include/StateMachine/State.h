@@ -1,11 +1,12 @@
 #pragma once
 
-template<class T>
+template<class _Entity>
 class State {
 public:
+	State() = default;
 	virtual ~State() = default;
 
-	virtual void Enter(T* entity) = 0;
-	virtual void Update(T* entity) = 0;
-	virtual void Exit(T* entity) = 0;
+	virtual void Enter(_Entity* entity) = 0;
+	virtual void Update(_Entity* entity) = 0;
+	virtual void Exit(_Entity* entity) = 0;
 };

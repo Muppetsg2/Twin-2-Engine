@@ -3,14 +3,14 @@
 #include <StateMachine/State.h>
 #include <DecisionTree/DecisionTree.h>
 
-class Enemy;
+class EnemyAI;
 
-class FightingState : public State<Enemy> {
+class FightingState : public State<EnemyAI> {
 private:
-	static DecisionTree<Enemy, bool> _decisionTree;
+	static DecisionTree<EnemyAI, bool> _decisionTree;
 
 public:
-	void Enter(Enemy* enemy) override;
-	void Update(Enemy* enemy) override;
-	void Exit(Enemy* enemy) override;
+	void Enter(EnemyAI* enemy) override;
+	void Update(EnemyAI* enemy) override;
+	void Exit(EnemyAI* enemy) override;
 };

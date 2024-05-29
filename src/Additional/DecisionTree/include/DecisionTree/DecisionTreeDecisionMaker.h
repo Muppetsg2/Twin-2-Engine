@@ -24,7 +24,7 @@ inline DecisionTreeDecisionMaker<_Entity, _Type>::DecisionTreeDecisionMaker(cons
 template<class _Entity, class _Type>
 inline void DecisionTreeDecisionMaker<_Entity, _Type>::ProcessNode(_Entity* entity)
 {
-	auto& nodesIter = _nodes.find(_decision(entity));
+	auto nodesIter = _nodes.find(_decision(entity));
 	if (nodesIter != _nodes.end()) {
 		(*nodesIter).second->ProcessNode(entity);
 	}

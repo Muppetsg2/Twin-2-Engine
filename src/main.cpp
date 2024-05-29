@@ -53,6 +53,9 @@ using namespace Humans;
 
 using namespace AStar;
 
+// ENEMY AI
+#include <EnemyAI/EnemyAI.h>
+
 // YAML CONVERTERS
 #include <tools/YamlConverters.h>
 #include <Generation/YamlConverters.h>
@@ -255,6 +258,8 @@ int main(int, char**)
         Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
         image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
         text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
+
+        EnemyAI* e = text->GetGameObject()->AddComponent<EnemyAI>();
     };
 
     // ADDING SCENES

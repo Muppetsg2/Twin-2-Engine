@@ -4,12 +4,13 @@
 #include <StateMachine/StateMachine.h>
 #include <EnemyAI/FightingState.h>
 
-class Enemy : public Twin2Engine::Core::Component {
+class EnemyAI : public Twin2Engine::Core::Component {
 private:
 	static FightingState _fightingState;
 
-	StateMachine<Enemy> _stateMachine;
+	StateMachine<EnemyAI> _stateMachine;
 
 public:
+	void Initialize() override;
 	void Update() override;
 };

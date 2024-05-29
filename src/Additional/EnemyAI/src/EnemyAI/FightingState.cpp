@@ -1,21 +1,21 @@
 #include <EnemyAI/FightingState.h>
-#include <EnemyAI/Enemy.h>
+#include <EnemyAI/EnemyAI.h>
 
 // DECISION TREE
 //   [?]
 // F / \ T
 //  -   ()
 
-DecisionTree<Enemy, bool> FightingState::_decisionTree{
-	[](Enemy* enemy) -> bool {
+DecisionTree<EnemyAI, bool> FightingState::_decisionTree{
+	[](EnemyAI* enemy) -> bool {
 		return true;
 	},
 	{
 		{ 
 			true, 
-			new DecisionTreeLeaf<Enemy>
+			new DecisionTreeLeaf<EnemyAI>
 			(
-				[](Enemy* enemy) -> void {
+				[](EnemyAI* enemy) -> void {
 					SPDLOG_INFO("True Fighting Decision");
 				}
 			)
@@ -23,18 +23,18 @@ DecisionTree<Enemy, bool> FightingState::_decisionTree{
 	}
 };
 
-void FightingState::Enter(Enemy* enemy)
+void FightingState::Enter(EnemyAI* enemy)
 {
 	SPDLOG_INFO("Fighting State Enter");
 }
 
-void FightingState::Update(Enemy* enemy)
+void FightingState::Update(EnemyAI* enemy)
 {
 	SPDLOG_INFO("Fighting State Update");
 	_decisionTree.ProcessNode(enemy);
 }
 
-void FightingState::Exit(Enemy* enemy)
+void FightingState::Exit(EnemyAI* enemy)
 {
 	SPDLOG_INFO("Fighting State Exit");
 }

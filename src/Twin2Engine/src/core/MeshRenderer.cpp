@@ -241,6 +241,9 @@ void MeshRenderer::DrawEditor()
 		if (Component::DrawInheritedFields()) return;
 		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
 		// TODO: Zrobic
+
+		// Dropdown for Model
+		// List of Materials with addMaterial and RemoveMaterial and reordering
 	}
 }
 #endif

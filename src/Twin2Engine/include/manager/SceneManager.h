@@ -31,9 +31,9 @@ namespace Twin2Engine::Manager {
 
 #if _DEBUG
 		// For ImGui
-		static ImGuiID selected;
-		static bool inspectorOpened;
-		static const std::string payloadType;
+		static ImGuiID _selected;
+		static bool _inspectorOpened;
+		static const std::string _payloadType;
 #endif
 
 		static void SaveGameObject(const Core::GameObject* obj, YAML::Node gameObjects);
@@ -89,6 +89,19 @@ namespace Twin2Engine::Manager {
 		template<class T> static T* GetComponentWithId(size_t id) {
 			static_assert(is_base_of_v<Core::Component, T>);
 			return static_cast<T*>(GetComponentWithId(id));
+		};
+
+		template<class T> 
+		static typename std::enable_if_t<is_base_of_v<Core::Component, T>, std::unordered_map<size_t, Core::Component*>> GetComponentsOfType() {
+			std::unordered_map<size_t, Core::Component*> items = std::unordered_map<size_t, Core::Component*>();
+
+			for (auto& i : _componentsById) {
+				if (dynamic_cast<T*>(i.second) != nullptr) {
+					items[i.first] = i.second;
+				}
+			}
+
+			return items;
 		};
 
 		static void DestroyGameObject(Core::GameObject* obj);

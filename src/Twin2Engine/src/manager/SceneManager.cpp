@@ -36,9 +36,9 @@ map<size_t, string> SceneManager::_loadedScenesNames;
 map<size_t, string> SceneManager::_loadedScenesPaths;
 
 #if _DEBUG
-ImGuiID SceneManager::selected = 0;
-bool SceneManager::inspectorOpened = true;
-const std::string SceneManager::payloadType = "SceneHierarchyObject";
+ImGuiID SceneManager::_selected = 0;
+bool SceneManager::_inspectorOpened = true;
+const std::string SceneManager::_payloadType = "SceneHierarchyObject";
 #endif
 
 void SceneManager::SaveGameObject(const GameObject* obj, YAML::Node gameObjects)
@@ -63,18 +63,18 @@ void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 		ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
 		const string name = objT->GetChildAt(i)->GetName().append("##").append(objT->GetName()).append(std::to_string(i));
 		const size_t id = objT->GetChildAt(i)->GetGameObject()->Id();
-		const bool is_selected = id == selected;
+		const bool is_selected = id == _selected;
 
 		if (is_selected) {
 			node_flag |= ImGuiTreeNodeFlags_Selected;
 
-			if (ImGui::Begin("Inspector", &inspectorOpened)) {
+			if (ImGui::Begin("Inspector", &_inspectorOpened)) {
 				objT->GetChildAt(i)->GetGameObject()->DrawEditor();
 			}
 			ImGui::End();
 
-			if (!inspectorOpened) {
-				selected = 0;
+			if (!_inspectorOpened) {
+				_selected = 0;
 			}
 		}
 
@@ -90,13 +90,13 @@ void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 
 			if (ImGui::BeginDragDropTarget()) {
 
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(payloadType.c_str()))
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(_payloadType.c_str()))
 				{
 					size_t payload_n = *(const size_t*)payload->Data;
 					Transform* t = SceneManager::GetGameObjectWithId(payload_n)->GetTransform();
 					if (objT->GetChildAt(i) != t) {
 						t->SetParent(objT->GetChildAt(i));
-						selected = objT->GetChildAt(i)->GetGameObject()->Id();
+						_selected = objT->GetChildAt(i)->GetGameObject()->Id();
 					}
 				}
 
@@ -105,7 +105,7 @@ void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 
 			if (ImGui::BeginDragDropSource()) {
 				size_t n = objT->GetChildAt(i)->GetGameObject()->Id();
-				ImGui::SetDragDropPayload(payloadType.c_str(), &n, sizeof(size_t), ImGuiCond_Once);
+				ImGui::SetDragDropPayload(_payloadType.c_str(), &n, sizeof(size_t), ImGuiCond_Once);
 				ImGui::Text(objT->GetChildAt(i)->GetName().c_str());
 				ImGui::EndDragDropSource();
 			}
@@ -119,13 +119,13 @@ void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 
 			if (ImGui::BeginDragDropTarget()) {
 
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(payloadType.c_str()))
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(_payloadType.c_str()))
 				{
 					size_t payload_n = *(const size_t*)payload->Data;
 					Transform* t = SceneManager::GetGameObjectWithId(payload_n)->GetTransform();
 					if (objT->GetChildAt(i) != t) {
 						t->SetParent(objT->GetChildAt(i));
-						selected = objT->GetChildAt(i)->GetGameObject()->Id();
+						_selected = objT->GetChildAt(i)->GetGameObject()->Id();
 					}
 				}
 
@@ -134,7 +134,7 @@ void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 
 			if (ImGui::BeginDragDropSource()) {
 				size_t n = objT->GetChildAt(i)->GetGameObject()->Id();
-				ImGui::SetDragDropPayload(payloadType.c_str(), &n, sizeof(size_t), ImGuiCond_Once);
+				ImGui::SetDragDropPayload(_payloadType.c_str(), &n, sizeof(size_t), ImGuiCond_Once);
 				ImGui::Text(objT->GetChildAt(i)->GetName().c_str());
 				ImGui::EndDragDropSource();
 			}
@@ -147,8 +147,8 @@ void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 	}
 
 	if (clicked_elem != 0) {
-		selected = clicked_elem;
-		inspectorOpened = true;
+		_selected = clicked_elem;
+		_inspectorOpened = true;
 	}
 }
 #endif
@@ -1148,7 +1148,7 @@ void SceneManager::DrawCurrentSceneEditor()
 
 	if (ImGui::BeginDragDropTarget()) {
 
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(payloadType.c_str()))
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(_payloadType.c_str()))
 		{
 			size_t payload_n = *(const size_t*)payload->Data;
 			Transform* t = SceneManager::GetGameObjectWithId(payload_n)->GetTransform();

@@ -5,6 +5,9 @@
 #include <manager/SceneManager.h>
 #include <tools/YamlConverters.h>
 
+#include <locale>
+#include <codecvt>
+
 using namespace Twin2Engine::UI;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;
@@ -253,11 +256,41 @@ bool InputField::Deserialize(const YAML::Node& node) {
 #if _DEBUG
 void InputField::DrawEditor()
 {
-	// TODO: Zrobic
 	string id = string(std::to_string(this->GetId()));
 	string name = string("InputField##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 		if (Component::DrawInheritedFields()) return;
+
+		float v = _width;
+		ImGui::DragFloat(string("Width##").append(id).c_str(), &v, 0.1f, 0.f, FLT_MAX);
+		if (v != _width) {
+			SetWidth(v);
+		}
+
+		v = _height;
+		ImGui::DragFloat(string("Height##").append(id).c_str(), &v, 0.1f, 0.f, FLT_MAX);
+		if (v != _height) {
+			SetHeight(v);
+		}
+
+		ImGui::Checkbox(string("Interactable##").append(id).c_str(), &_interactable);
+
+		string buff = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_placeHolder->GetText());
+		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll;
+
+		ImGui::InputText(string("Placeholder##").append(id).c_str(), &buff, flags);
+
+		if (buff != std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_placeHolder->GetText())) {
+			SetPlaceHolder(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(buff));
+		}
+
+		buff = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_textValue);
+
+		ImGui::InputText(string("Value##").append(id).c_str(), &buff, flags);
+
+		if (buff != std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_textValue)) {
+			SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(buff));
+		}
 	}
 }
 #endif

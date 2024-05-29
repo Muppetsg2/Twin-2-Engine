@@ -133,7 +133,6 @@ void ContentGenerator::DrawEditor()
 
         clicked.clear();
 
-        /*
         if (ImGui::Button(string("Add Element Generator##").append(id).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
             ImGui::OpenPopup(string("Add Element Generator PopUp##Content Generator").append(id).c_str(), ImGuiPopupFlags_NoReopen);
         }
@@ -204,7 +203,6 @@ void ContentGenerator::DrawEditor()
 
             ImGui::EndPopup();
         }
-        */
     }
 }
 #endif

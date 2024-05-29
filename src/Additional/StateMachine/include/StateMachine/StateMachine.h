@@ -9,5 +9,18 @@ private:
 
 public:
 	void Update(T* entity);
-	void ChangeState(State<T>* newState);
+	void ChangeState(T* entity, State<T>* newState);
 };
+
+template<class T>
+void StateMachine<T>::Update(T* entity) {
+	if (_currentState == nullptr) return;
+	_currentState->Update(entity);
+}
+
+template<class T>
+void StateMachine<T>::ChangeState(T* entity, State<T>* newState) {
+	if (_currentState != nullptr) _currentState->Exit(entity);
+	_currentState = newState;
+	_currentState->Enter(entity);
+}

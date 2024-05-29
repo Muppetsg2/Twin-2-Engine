@@ -18,7 +18,7 @@ void MapGenerator::Initialize()
 
 void MapGenerator::OnEnable()
 {
-    //Generate();
+    Generate();
 }
 
 void MapGenerator::GenerateFloatHull(const vector<vec2>& hull)

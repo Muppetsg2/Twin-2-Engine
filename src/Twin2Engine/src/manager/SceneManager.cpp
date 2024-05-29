@@ -412,19 +412,14 @@ void SceneManager::LoadScene() {
 	// INIT COMPONENTS
 	for (const auto& compPair : _componentsById) {
 		compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
-		compPair.second->Initialize();
 	}
 	for (const auto& compPair : _componentsById) {
+		compPair.second->Initialize();
 		//compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
 		//compPair.second->Initialize();
 	}
 	static_cast<Component*>(_rootObject->GetTransform())->Init(_rootObject);
 #pragma endregion
-
-	ScriptableObjectManager::SceneDeserializationEnd();
-
-	_currentSceneName = _sceneToLoadName;
-	_currentSceneId = _sceneToLoadId;
 
 	for (const auto& compPair : _componentsById) {
 		if (compPair.second->_enabled)
@@ -432,6 +427,12 @@ void SceneManager::LoadScene() {
 			compPair.second->OnEnable();
 		}
 	}
+
+	ScriptableObjectManager::SceneDeserializationEnd();
+
+	_currentSceneName = _sceneToLoadName;
+	_currentSceneId = _sceneToLoadId;
+
 
 	_onSceneLoaded(_sceneToLoadName);
 }
@@ -918,17 +919,18 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	}
 #pragma endregion
 
-	ScriptableObjectManager::SceneDeserializationEnd();
-
-	if (_rootObject == nullptr) _rootObject = new GameObject();
-	prefabRoot->GetTransform()->SetParent(parent != nullptr ? parent : _rootObject->GetTransform());
-
 	for (const auto& compPair : prefabComponentsById) {
 		if (compPair.second->_enabled)
 		{
 			compPair.second->OnEnable();
 		}
 	}
+
+	ScriptableObjectManager::SceneDeserializationEnd();
+
+	if (_rootObject == nullptr) _rootObject = new GameObject();
+	prefabRoot->GetTransform()->SetParent(parent != nullptr ? parent : _rootObject->GetTransform());
+
 
 	return prefabRoot;
 }

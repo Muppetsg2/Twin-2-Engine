@@ -1,11 +1,10 @@
 #include <EnemyMovement.h>
+
 #include <physic/CollisionManager.h>
 #include <physic/Ray.h>
 #include <core/CameraComponent.h>
 #include <core/Input.h>
 #include <core/Time.h>
-#include <cmath>
-#include <string>
 
 // PATH FINDING
 #include <AstarPathfinding/AStarPath.h>
@@ -27,14 +26,15 @@ void EnemyMovement::OnDestroy() {
     //seeker = GetGameObject()->GetComponent<Seeker>();
     if (_path) {
         delete _path;
+        _path = nullptr;
     }
+    _info.WaitForFinding();
 }
 
 void EnemyMovement::Update() {
     Transform* transform = GetTransform();
     glm::vec3 position = transform->GetGlobalPosition();
-
-    if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive)
+   if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive)
     {
 
     }
@@ -47,13 +47,6 @@ void EnemyMovement::Update() {
     if (!reachEnd) {
         position = transform->GetGlobalPosition();
 
-        vec3 directionPos = position;
-        directionPos.y = 0.0f;
-
-        //vec3 tempWaypointPos = _waypoint;
-        //tempWaypointPos.y = tile->GetGameObject()->GetTransform()->GetGlobalPosition().y + 0.5f;
-        //tempWaypointPos.y += 0.5f;
-
         float dist = glm::distance(position, _waypoint);
 
         Tilemap::HexagonalTile* tile = _tilemap->GetTile(_tilemap->ConvertToTilemapPosition(vec2(_waypoint.x, _waypoint.z)));
@@ -62,6 +55,7 @@ void EnemyMovement::Update() {
             if (_path->IsOnEnd())
             {
                 reachEnd = true;
+                OnFinishMoving(GetGameObject(), destinatedTile);
             }
             //transform->SetGlobalPosition(_waypoint + vec3(0.0f, 0.5f, 0.0f)); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
             transform->SetGlobalPosition(_waypoint); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
@@ -81,6 +75,7 @@ void EnemyMovement::OnPathComplete(const AStarPath& p) {
 
     if (_path) {
         delete _path;
+        _path = nullptr;
     }
 
     _path = new AStarPath(p);
@@ -99,6 +94,7 @@ void EnemyMovement::OnPathComplete(const AStarPath& p) {
 
 void EnemyMovement::OnPathFailure() {
     EndMoveAction();
+    OnFindPathError(GetGameObject(), tempDestTile);
 }
 
 void EnemyMovement::EndMoveAction() {
@@ -130,7 +126,7 @@ void EnemyMovement::SetDestination(HexTile* dest) {
         if (!_path || _path->IsOnEnd())
         {
             tempDestTile = dest;
-            AStarPathfinder::FindPath(GetTransform()->GetGlobalPosition(), dest->GetTransform()->GetGlobalPosition(), maxSteps,
+            _info = AStarPathfinder::FindPath(GetTransform()->GetGlobalPosition(), dest->GetTransform()->GetGlobalPosition(), maxSteps,
                 [&](const AStarPath& path) { OnPathComplete(path); }, [&]() { OnPathFailure(); });
 
         }

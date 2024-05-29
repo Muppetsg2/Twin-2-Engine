@@ -1,7 +1,7 @@
 material:
-  name: CityMaterial
+  name: CarMaterial_Blue
   shader: origin/Textured
   parameters:
     - name: texture1
       type: texture2D
-      value: res/textures/cityTextureColour.png
+      value: res/textures/carTextures/blue.png

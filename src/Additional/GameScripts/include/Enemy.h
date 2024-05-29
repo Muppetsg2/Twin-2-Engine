@@ -1,10 +1,25 @@
 #pragma once 
 
 #include <Playable.h>
+#include <manager/SceneManager.h>
+
+// TILEMAP
+#include <Tilemap/HexagonalTilemap.h>
+#include <AreaTaking/HexTile.h>
+
+// CORE
+#include <core/Random.h>
+
+class HexTile;
+class EnemyMovement;
 
 using namespace Twin2Engine::Core;
 
 class Enemy : public Playable {
+	Tilemap::HexagonalTilemap* _tilemap = nullptr;
+	EnemyMovement* _movement = nullptr;
+	std::vector<HexTile*> _tiles;
+
 public:
 	int colorIdx = 0;
 	float TakeOverSpeed = 1.0f;
@@ -25,6 +40,13 @@ public:
 
 	float functionData = 1.0f;
 	float upgradeChance = 1.0f;
+
+	virtual void Initialize() override;
+	virtual void OnEnable() override;
+	virtual void Update() override;
+	virtual void OnDestroy() override;
+
+	void PerformMovement();
 
 	virtual YAML::Node Serialize() const override;
 	virtual bool Deserialize(const YAML::Node& node) override;

@@ -83,6 +83,16 @@ using Tilemap::HexagonalTilemap;
 using namespace Generation;
 using namespace Generation::Generators;
 
+//GAMESCRIPTS
+#include <MovementController.h>
+#include <GameManager.h>
+#include <PlayerMovement.h>
+#include <Player.h>
+#include <Enemy.h>
+#include <EnemyMovement.h>
+
+using namespace GameScripts;
+
 #pragma region CAMERA_CONTROLLING
 
 glm::vec3 cameraPos(0.f, 2.f, 5.f);
@@ -243,9 +253,20 @@ int main(int, char**)
 
     ADD_COMPONENT("AStarPathfinder", AStarPathfinder);
 
-    ADD_COMPONENT("HexTile", HexTile);
 
 #pragma endregion
+
+
+    ADD_COMPONENT("MovementController", MovementController);
+
+    ADD_COMPONENT("GameManager", GameManager);
+    ADD_COMPONENT("PlayerMovement", PlayerMovement);
+    ADD_COMPONENT("Player", Player);
+
+    ADD_COMPONENT("HexTile", HexTile);
+
+    ADD_COMPONENT("Enemy", Enemy);
+    ADD_COMPONENT("EnemyMovement", EnemyMovement);
 
 #pragma region GAME_SCRIPTS_COMPONENTS
 
@@ -278,7 +299,7 @@ int main(int, char**)
     MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
     //mapGenerator->tilemap = hexagonalTilemap;
     //float tilemapGenerating = glfwGetTime();
-    mapGenerator->Generate();
+    //mapGenerator->Generate();
     //spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
 
     //ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();

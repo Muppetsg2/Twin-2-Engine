@@ -27,7 +27,9 @@ void PlayerMovement::OnDestroy() {
     //seeker = GetGameObject()->GetComponent<Seeker>();
     if (_path) {
         delete _path;
+        _path = nullptr;
     }
+    _info.WaitForFinding();
 }
 
 void PlayerMovement::Update() {
@@ -181,13 +183,6 @@ void PlayerMovement::Update() {
     if (!reachEnd) {
         position = transform->GetGlobalPosition();
 
-        vec3 directionPos = position;
-        directionPos.y = 0.0f;
-
-        //vec3 tempWaypointPos = _waypoint;
-        //tempWaypointPos.y = tile->GetGameObject()->GetTransform()->GetGlobalPosition().y + 0.5f;
-        //tempWaypointPos.y += 0.5f;
-
         float dist = glm::distance(position, _waypoint);
 
         Tilemap::HexagonalTile* tile = _tilemap->GetTile(_tilemap->ConvertToTilemapPosition(vec2(_waypoint.x, _waypoint.z)));
@@ -196,11 +191,11 @@ void PlayerMovement::Update() {
             if (_path->IsOnEnd())
             {
                 reachEnd = true;
+                OnFinishMoving(GetGameObject(), destinatedTile);
             }
-            //transform->SetGlobalPosition(_waypoint + vec3(0.0f, 0.5f, 0.0f)); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
-            transform->SetGlobalPosition(_waypoint); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
+            transform->SetGlobalPosition(_waypoint);
             _waypoint = _path->Next();
-            _waypoint.y += 0.5f;
+            _waypoint.y += _heightOverSurface;
         }
         else {
             //transform->SetGlobalPosition(glm::vec3(glm::mix(position, tempWaypointPos, 0.5f)) + vec3(0.0f, 0.5f, 0.0f));
@@ -215,6 +210,7 @@ void PlayerMovement::OnPathComplete(const AStarPath& p) {
 
     if (_path) {
         delete _path;
+        _path = nullptr;
     }
 
     _path = new AStarPath(p);
@@ -222,7 +218,7 @@ void PlayerMovement::OnPathComplete(const AStarPath& p) {
     destination = tempDest;
     destinatedTile = tempDestTile;
     _waypoint = _path->Next();
-    _waypoint.y += 0.5f;
+    _waypoint.y += _heightOverSurface;
 
     reachEnd = false;
 
@@ -234,6 +230,7 @@ void PlayerMovement::OnPathComplete(const AStarPath& p) {
 
 void PlayerMovement::OnPathFailure() {
     EndMoveAction();
+    OnFindPathError(GetGameObject(), tempDestTile);
 }
 
 void PlayerMovement::EndMoveAction() {
@@ -286,7 +283,7 @@ void PlayerMovement::SetDestination(HexTile* dest) {
             //
             //_info = new AStarPathfindingInfo(AStarPathfinder::FindPath(GetTransform()->GetGlobalPosition(), dest->GetTransform()->GetGlobalPosition(), maxSteps,
             //    [&](const AStarPath& path) { OnPathComplete(path); }, [&]() { OnPathFailure(); }));
-                AStarPathfinder::FindPath(GetTransform()->GetGlobalPosition(), dest->GetTransform()->GetGlobalPosition(), maxSteps,
+            _info = AStarPathfinder::FindPath(GetTransform()->GetGlobalPosition(), dest->GetTransform()->GetGlobalPosition(), maxSteps,
                     [&](const AStarPath& path) { OnPathComplete(path); }, [&]() { OnPathFailure(); });
 
         }

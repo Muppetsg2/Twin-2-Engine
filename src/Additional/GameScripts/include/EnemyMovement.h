@@ -2,39 +2,45 @@
 
 #pragma once
 
-
+// CORE
 #include <core/Component.h>
 #include <core/Transform.h>
 #include <core/GameObject.h>
-
 #include <manager/SceneManager.h>
-
-#include <Generation/MapHexTile.h>
-#include <AreaTaking/HexTile.h>
 #include <tools/EventHandler.h>
 
+#include <GameManager.h>
 
-using namespace Twin2Engine::Core;
-using namespace Twin2Engine::Tools;
+// MAP
+#include <Generation/MapHexTile.h>
+#include <AreaTaking/HexTile.h>
 
-class Path;
-class LineRenderer;
-class Seeker : public Component {
-};
+// ENEMY
+//#include <Enemy.h>
+
+// PATH FINDING
+#include <AstarPathfinding/AStarPath.h>
+#include <AstarPathfinding/AStarPathfinder.h>
+
+//using namespace Twin2Engine::Core;
+//using namespace Twin2Engine::Tools;
 
 namespace AStar
 {
 	class AStarPath;
 	class AStarPathfinder;
 }
+class Enemy;
 
-class EnemyMovement : public Component {
+class EnemyMovement : public Twin2Engine::Core::Component {
 private:
+	friend class Enemy;
 	HexTile* destinatedTile = nullptr;
 
 	glm::vec3 tempDest;
 	HexTile* tempDestTile;
 
+	AStar::AStarPathfindingInfo _info;
 	AStar::AStarPath* _path = nullptr;
 	Tilemap::HexagonalTilemap* _tilemap = nullptr;
 	//int currWaypoint = 0;
@@ -43,6 +49,9 @@ private:
 
 	bool InCircle(glm::vec3 point);
 	void SetDestination(HexTile* dest);
+	void OnPathComplete(const AStar::AStarPath& p);
+	void OnPathFailure();
+	void EndMoveAction();
 
 public:
 	//Moving
@@ -53,30 +62,19 @@ public:
 	float nextWaypointDistance = 0.001f;
 
 
-	//Circle
-
-	LineRenderer* circleRenderer;
 	float radius = 3.0f;
 	int steps = 20;
 
-	//Line
 
-	LineRenderer* lineRenderer;
-
-	//Seeker* seeker;
-	//Path* path;
-	EventHandler<GameObject*, HexTile*> OnFindPathError;
-	EventHandler<GameObject*, HexTile*> OnStartMoving;
-	EventHandler<GameObject*, HexTile*> OnFinishMoving;
+	Twin2Engine::Tools::EventHandler<Twin2Engine::Core::GameObject*, HexTile*> OnFindPathError;
+	Twin2Engine::Tools::EventHandler<Twin2Engine::Core::GameObject*, HexTile*> OnStartMoving;
+	Twin2Engine::Tools::EventHandler<Twin2Engine::Core::GameObject*, HexTile*> OnFinishMoving;
 
 
 	virtual void Initialize() override;
 	virtual void Update() override;
 	virtual void OnDestroy() override;
 
-	void OnPathComplete(const AStar::AStarPath& p);
-	void OnPathFailure();
-	void EndMoveAction();
 
 	virtual YAML::Node Serialize() const override;
 	virtual bool Deserialize(const YAML::Node& node) override;

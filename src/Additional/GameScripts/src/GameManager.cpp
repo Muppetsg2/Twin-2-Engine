@@ -7,6 +7,8 @@
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
 
+using namespace std;
+
 GameManager* GameManager::instance = nullptr;
 
 
@@ -23,6 +25,11 @@ void GameManager::Initialize() {
     {
         Twin2Engine::Manager::SceneManager::DestroyGameObject(this->GetGameObject());
     }
+}
+
+void GameManager::OnEnable() {
+    SPDLOG_INFO("Creating enenmy");
+    GenerateEnemy();
 }
 
 void GameManager::Update() {
@@ -49,10 +56,10 @@ GameObject* GameManager::GeneratePlayer() {
 }
 
 GameObject* GameManager::GenerateEnemy() {
-    if (freeColors.size() == 0)
-    {
-        return nullptr;
-    }
+    //if (freeColors.size() == 0)
+    //{
+    //    return nullptr;
+    //}
 
     GameObject* enemy = Twin2Engine::Manager::SceneManager::CreateGameObject(enemyPrefab);
     //GameObject* enemy = Instantiate(enemyPrefab, new Vector3(), Quaternion.identity, gameObject.transform);
@@ -85,10 +92,10 @@ GameObject* GameManager::GenerateEnemy() {
     }
     e.Color = Color.HSVToRGB(h, s, v);*/
 
-    int idx = freeColors[Random::Range<int>(0, (freeColors.size() - 1))];
-    freeColors.erase(std::find(freeColors.begin(), freeColors.end(), idx));
+    //int idx = freeColors[Random::Range<int>(0, (freeColors.size() - 1))];
+    //freeColors.erase(std::find(freeColors.begin(), freeColors.end(), idx));
 
-    e->colorIdx = idx;
+    //e->colorIdx = idx;
 
     float minutes = 10.0f; // (GameTimer::Instance != nullptr ? GameTimer::Instance->TotalSeconds : 0.0f) / 60.0f;
 
@@ -141,6 +148,8 @@ YAML::Node GameManager::Serialize() const
 {
     YAML::Node node = Component::Serialize();
     node["type"] = "GameManager";
+
+    node["enemyPrefab"] = PrefabManager::GetPrefabPath(enemyPrefab);
     //node["direction"] = light->direction;
     //node["power"] = light->power;
 
@@ -152,6 +161,7 @@ bool GameManager::Deserialize(const YAML::Node& node)
     if (!Component::Deserialize(node))
         return false;
 
+    enemyPrefab = PrefabManager::LoadPrefab(node["enemyPrefab"].as<string>());
     //light->direction = node["direction"].as<glm::vec3>();
     //light->power = node["power"].as<float>();
 

@@ -347,26 +347,26 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::Prefa
 	}
 }
 
-inline void HexagonalTilemap::SetDistanceBetweenTiles(float distanceBetweenTiles)
+void HexagonalTilemap::SetDistanceBetweenTiles(float distanceBetweenTiles)
 {
 	_distanceBetweenTiles = distanceBetweenTiles;
 
 	_edgeLength = _distanceBetweenTiles / SQRT_3;
 }
 
-inline float HexagonalTilemap::GetDistanceBetweenTiles() const
+float HexagonalTilemap::GetDistanceBetweenTiles() const
 {
 	return _distanceBetweenTiles;
 }
 
-inline void HexagonalTilemap::SetEdgeLength(float edgeLength)
+void HexagonalTilemap::SetEdgeLength(float edgeLength)
 {
 	_edgeLength = edgeLength;
 
 	_distanceBetweenTiles = _edgeLength * SQRT_3;
 }
 
-inline float HexagonalTilemap::GetEdgeLength() const
+float HexagonalTilemap::GetEdgeLength() const
 {
 	return _edgeLength;
 }

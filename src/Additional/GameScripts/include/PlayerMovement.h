@@ -11,6 +11,8 @@
 #include <AreaTaking/HexTile.h>
 #include <tools/EventHandler.h>
 
+#include <AstarPathfinding/AStarPathfinder.h>
+#include <GameManager.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Tools;
@@ -34,13 +36,14 @@ class PlayerMovement : public Component {
 		glm::vec3 tempDest;
 		HexTile* tempDestTile;
 
-		AStar::AStarPathfindingInfo* _info;
+		AStar::AStarPathfindingInfo _info;
 
 		AStar::AStarPath* _path = nullptr;
 		Tilemap::HexagonalTilemap* _tilemap = nullptr;
 		//int currWaypoint = 0;
 		bool reachEnd = true;
 		glm::vec3 _waypoint;
+		float _heightOverSurface = 0.0f;
 
 		bool InCircle(glm::vec3 point);
 		void SetDestination(HexTile* dest);

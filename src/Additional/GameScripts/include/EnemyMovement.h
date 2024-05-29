@@ -43,6 +43,7 @@ private:
 	AStar::AStarPathfindingInfo _info;
 	AStar::AStarPath* _path = nullptr;
 	Tilemap::HexagonalTilemap* _tilemap = nullptr;
+	float _heightOverSurface = 0.1f;
 	//int currWaypoint = 0;
 	bool reachEnd = true;
 	glm::vec3 _waypoint;

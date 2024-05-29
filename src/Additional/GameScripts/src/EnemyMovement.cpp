@@ -60,7 +60,7 @@ void EnemyMovement::Update() {
             //transform->SetGlobalPosition(_waypoint + vec3(0.0f, 0.5f, 0.0f)); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
             transform->SetGlobalPosition(_waypoint); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
             _waypoint = _path->Next();
-            _waypoint.y += 0.5f;
+            _waypoint.y += _heightOverSurface;
         }
         else {
             //transform->SetGlobalPosition(glm::vec3(glm::mix(position, tempWaypointPos, 0.5f)) + vec3(0.0f, 0.5f, 0.0f));
@@ -112,16 +112,17 @@ bool EnemyMovement::InCircle(glm::vec3 point) {
 }
 
 void EnemyMovement::SetDestination(HexTile* dest) {
-    glm::vec3 destPos = dest->GetTransform()->GetGlobalPosition() + glm::vec3(0.0f, 0.5f, 0.0f);
-    if (!GameManager::instance->gameStarted)
-    {
-        GetTransform()->SetGlobalPosition(destPos);
-        destinatedTile = dest;
-        destination = destPos;
-        GameManager::instance->gameStarted = true;
-        OnStartMoving.Invoke(GetGameObject(), dest);
-    }
-    else if (InCircle(destPos))
+    glm::vec3 destPos = dest->GetTransform()->GetGlobalPosition() + glm::vec3(0.0f, _heightOverSurface, 0.0f);
+    //if (!GameManager::instance->gameStarted)
+    //{
+    //    GetTransform()->SetGlobalPosition(destPos);
+    //    destinatedTile = dest;
+    //    destination = destPos;
+    //    GameManager::instance->gameStarted = true;
+    //    OnStartMoving.Invoke(GetGameObject(), dest);
+    //}
+    //else 
+    //if (InCircle(destPos))
     {
         if (!_path || _path->IsOnEnd())
         {

@@ -376,6 +376,9 @@ void AStarPathfinder::Update()
 		_endedThreadsMutex.lock();
 		for (size_t threadId : _endedThreads)
 		{
+			if (_pathfindingThreads[threadId].joinable())
+				_pathfindingThreads[threadId].join();
+
 			_pathfindingThreadsSearchingPtrs.erase(threadId);
 			_pathfindingThreads.erase(threadId);
 		}

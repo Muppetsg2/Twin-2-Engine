@@ -1,0 +1,7 @@
+material:
+  name: car/CarMaterial_Pink
+  shader: origin/Textured
+  parameters:
+    - name: texture1
+      type: texture2D
+      value: res/textures/carTextures/pink.png

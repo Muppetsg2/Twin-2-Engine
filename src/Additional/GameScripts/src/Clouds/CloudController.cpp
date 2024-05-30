@@ -67,11 +67,6 @@ float CloudController::DENSITY_TRESHOLD = 0.0;
 glm::vec3 CloudController::NOISE_D_VEL_3D = vec3(-0.05, -0.04, 0.02);
 
 CloudController::CloudController() {
-	//NoiseTexture = TextureManager::GetTexture2D("res/textures/density_noise.png");
-	//NoiseTexture = TextureManager::GetTexture2D("res/textures/blueNoise.png");
-	//NoiseTexture->SetWrapModeS(TextureWrapMode::MIRRORED_REPEAT);
-	//NoiseTexture->SetWrapModeT(TextureWrapMode::MIRRORED_REPEAT);
-
 	const int width  = 256;
 	const int height = 256;
 	const int depth  = 256;
@@ -95,46 +90,6 @@ CloudController::CloudController() {
 
 	CloudDepthShader = ShaderManager::GetShaderProgram("origin/CloudDepthShader");
 	CloudShader = ShaderManager::GetShaderProgram("origin/CloudShader");
-
-
-	//glGenFramebuffers(1, &depthmapFBO);
-	//
-	//glGenTextures(1, &dmap);
-	//glActiveTexture(GL_TEXTURE0 + CLOUD_DEPTH_MAP_ID);
-	//glBindTexture(GL_TEXTURE_2D, dmap);
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, size.x, size.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	//GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
-	//glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-	//
-	//glBindFramebuffer(GL_FRAMEBUFFER, depthmapFBO);
-	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, dmap, 0);
-	//glDrawBuffer(GL_NONE);
-	//glReadBuffer(GL_NONE);
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
-	//glGenFramebuffers(1, &depthmapFBO);
-	//glBindFramebuffer(GL_FRAMEBUFFER, depthmapFBO);
-	//
-	//glGenTextures(1, &depthmap);
-	//glActiveTexture(GL_TEXTURE0 + CLOUD_DEPTH_MAP_ID);
-	//glBindTexture(GL_TEXTURE_2D, depthmap);
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, size.x, size.y, 0, GL_RGB, GL_FLOAT, NULL);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	////GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
-	////glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-	//
-	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthmap, 0);
-	////glDrawBuffer(GL_NONE);
-	//glReadBuffer(GL_NONE);
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	glm::ivec2 size = Window::GetInstance()->GetContentSize();
 
@@ -168,7 +123,7 @@ CloudController::CloudController() {
 
 
 	glGenTextures(1, &lightdepthmap);
-	glActiveTexture(GL_TEXTURE0 + CLOUD_DEPTH_MAP_ID + 3);
+	glActiveTexture(GL_TEXTURE0 + CLOUD_DEPTH_MAP_ID + 1);
 	glBindTexture(GL_TEXTURE_2D, lightdepthmap);
 
 	//glTexImage2D(GL_TEXTURE_2D, 0, r_res, size.x, size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
@@ -195,15 +150,12 @@ CloudController::CloudController() {
 
 	UpdateCloudShaderUniforms();
 
-	//glActiveTexture(GL_TEXTURE0 + CLOUD_DEPTH_MAP_ID + 1);
-	//glBindTexture(GL_TEXTURE_2D, NoiseTexture->GetId());
-	//CloudShader->SetInt("noiseTexture", CLOUD_DEPTH_MAP_ID + 1);
+	glActiveTexture(GL_TEXTURE0 + CLOUD_DEPTH_MAP_ID + 1);
+	glBindTexture(GL_TEXTURE_2D, lightdepthmap);
+	CloudShader->SetInt("lightFrontDepthMap", CLOUD_DEPTH_MAP_ID + 1);
 	glActiveTexture(GL_TEXTURE0 + CLOUD_DEPTH_MAP_ID + 2);
 	glBindTexture(GL_TEXTURE_3D, noiseTexture3d);
 	CloudShader->SetInt("noiseTexture3d", CLOUD_DEPTH_MAP_ID + 2);
-	glActiveTexture(GL_TEXTURE0 + CLOUD_DEPTH_MAP_ID + 3);
-	glBindTexture(GL_TEXTURE_2D, lightdepthmap);
-	CloudShader->SetInt("lightFrontDepthMap", CLOUD_DEPTH_MAP_ID + 3);
 
 	SynchronizedProcess* proc = new CloudControllerSyncProc();
 	proc->Initialize();
@@ -215,8 +167,7 @@ CloudController::CloudController() {
 
 CloudController::~CloudController() {
 	glDeleteTextures(1, &lightdepthmap);
-	//glDeleteTextures(1, &noiseTexture3d);
-	//glDeleteTextures(1, &dmap);
+	glDeleteTextures(1, &noiseTexture3d);
 	glDeleteTextures(1, &depthmap);
 	glDeleteFramebuffers(1, &depthmapFBO);
 }

@@ -11,7 +11,6 @@ class CloudController {
 		std::unordered_map<Twin2Engine::Graphic::InstantiatingMesh*, std::vector<Transform*>> depthQueue;
 		Twin2Engine::Graphic::Shader* CloudDepthShader;
 		Twin2Engine::Graphic::Shader* CloudShader;
-		Twin2Engine::Graphic::Texture2D* NoiseTexture;
 		GLuint noiseTexture3d;
 		GLuint depthmapFBO;
 		GLuint depthmap;

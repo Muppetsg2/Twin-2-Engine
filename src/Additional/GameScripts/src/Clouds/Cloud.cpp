@@ -9,19 +9,22 @@ using namespace Twin2Engine::Core;
 
 void Cloud::Initialize() {
 	glm::vec3 positionOffset;
-	positionOffset.x = Random::Range<float>(-0.4, 0.4);
-	positionOffset.y = Random::Range<float>(-0.1, 0.2);
-	positionOffset.z = Random::Range<float>(-0.4, 0.4);
+	positionOffset.x = Random::Range<float>(-0.4f, 0.4f);
+	positionOffset.y = Random::Range<float>(-0.1f, 0.2f);
+	positionOffset.z = Random::Range<float>(-0.4f, 0.4f);
 
 	GetTransform()->Translate(positionOffset);
 
-	startingScale.x = Random::Range<float>(0.4, 0.6);
-	startingScale.y = Random::Range<float>(0.4, 0.6);
-	startingScale.z = Random::Range<float>(0.4, 0.6);
+	startingScale.x = Random::Range<float>(0.25f, 0.4f);
+	startingScale.y = Random::Range<float>(0.25f, 0.4f);
+	startingScale.z = Random::Range<float>(0.25f, 0.4f);
 
-	scaleVelocity.x = Random::Range<float>(-0.1, 0.1);
-	scaleVelocity.y = Random::Range<float>(-0.1, 0.1);
-	scaleVelocity.z = Random::Range<float>(-0.1, 0.1);
+	scaleVelocity.x = Random::Range<float>(-0.1f, 0.1f);
+	scaleVelocity.y = Random::Range<float>(-0.1f, 0.1f);
+	scaleVelocity.z = Random::Range<float>(-0.1f, 0.1f);
+
+	glm::vec3 rotation(-90.0f, 0.0f, -0.0f);
+	rotation.z = Random::Range<float>(-30.0f, 30.0f);
 }
 
 void Cloud::Update() {

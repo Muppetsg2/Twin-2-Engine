@@ -110,8 +110,8 @@ void HumanMovement::PathFindingSuccess(const AStarPath& path)
         _foundPath = true;
 
 
-        SPDLOG_INFO("PATH_FINDING success");
-        SPDLOG_ERROR("{}Current destination: {} {} {}", GetGameObject()->Id(), _currentDestination.x, _currentDestination.y, _currentDestination.z);
+        //SPDLOG_INFO("PATH_FINDING success");
+        //SPDLOG_ERROR("{}Current destination: {} {} {}", GetGameObject()->Id(), _currentDestination.x, _currentDestination.y, _currentDestination.z);
     }
 }
 
@@ -120,7 +120,7 @@ void HumanMovement::PathFindingFailure()
     _foundPath = false;
     _findingPath = false;
 
-    SPDLOG_INFO("PATH_FINDING failure");
+    //SPDLOG_INFO("PATH_FINDING failure");
 }
 
 void HumanMovement::SetTilemap(Tilemap::HexagonalTilemap* tilemap)
@@ -135,11 +135,11 @@ void HumanMovement::MoveTo(glm::vec3 destination)
 
     _findingPath = true;
 
-    destination.y = 0.0f;
+    //destination.y = 0.0f;
     _bufferedTargetDestination = destination;
 
     vec3 globalPosition = GetTransform()->GetGlobalPosition();
-    globalPosition.y = 0.0f;
+    //globalPosition.y = 0.0f;
 
     _pathfindingInfo = AStarPathfinder::FindPath(globalPosition, destination, 0,
         [&](const AStarPath& path) { this->PathFindingSuccess(path); }, [&]() { PathFindingFailure(); });

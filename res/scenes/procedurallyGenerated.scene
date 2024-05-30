@@ -772,5 +772,6 @@ GameObjects:
       - id: 103
         enabled: true
         type: GameManager
+        enemyPrefab: res/prefabs/Enemy.prefab
     children:
       []

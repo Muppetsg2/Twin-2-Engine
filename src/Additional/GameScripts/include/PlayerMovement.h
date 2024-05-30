@@ -1,10 +1,18 @@
 #pragma once
 
+
 #include <core/Component.h>
 #include <core/Transform.h>
 #include <core/GameObject.h>
+
+#include <manager/SceneManager.h>
+
 #include <Generation/MapHexTile.h>
+#include <AreaTaking/HexTile.h>
 #include <tools/EventHandler.h>
+
+#include <AstarPathfinding/AStarPathfinder.h>
+#include <GameManager.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Tools;
@@ -14,18 +22,33 @@ class LineRenderer;
 class Seeker : public Component {
 };
 
+namespace AStar
+{
+	class AStarPath;
+	class AStarPathfinder;
+	class AStarPathfindingInfo;
+}
+
 class PlayerMovement : public Component {
 	private:
-		Generation::MapHexTile* destinatedTile = nullptr;
+		HexTile* destinatedTile = nullptr;
 
 		glm::vec3 tempDest;
-		Generation::MapHexTile* tempDestTile;
+		HexTile* tempDestTile;
+
+		AStar::AStarPathfindingInfo _info;
+
+		AStar::AStarPath* _path = nullptr;
+		Tilemap::HexagonalTilemap* _tilemap = nullptr;
+		//int currWaypoint = 0;
+		bool reachEnd = true;
+		glm::vec3 _waypoint;
+		float _heightOverSurface = 0.0f;
 
 		bool InCircle(glm::vec3 point);
-		void SetDestination(Generation::MapHexTile* dest);
+		void SetDestination(HexTile* dest);
 		void DrawCircle(int steps, float radius);
 		void DrawLine(glm::vec3 startPos, glm::vec3 endPos);
-		void OnDrawGizmos();
 			
 	public:
 		//Moving
@@ -33,7 +56,7 @@ class PlayerMovement : public Component {
 		glm::vec3 destination;
 		float speed = 0.7f;
 		int maxSteps = 5;
-		float nextWaypointDistance = 0.001f;
+		float nextWaypointDistance = 0.05f;
 		
 
 		//Circle
@@ -46,21 +69,21 @@ class PlayerMovement : public Component {
 
 		LineRenderer* lineRenderer;
 
-		Seeker* seeker;
-		Path* path;
-		int currWaypoint = 0;
-		bool reachEnd = true;
-		EventHandler<GameObject*, Generation::MapHexTile*> OnFindPathError;
-		EventHandler<GameObject*, Generation::MapHexTile*> OnStartMoving;
-		EventHandler<GameObject*, Generation::MapHexTile*> OnFinishMoving;
+		//Seeker* seeker;
+		//Path* path;
+		EventHandler<GameObject*, HexTile*> OnFindPathError;
+		EventHandler<GameObject*, HexTile*> OnStartMoving;
+		EventHandler<GameObject*, HexTile*> OnFinishMoving;
 
 
 		virtual void Initialize() override;
 		virtual void Update() override;
+		virtual void OnDestroy() override;
 
-		void OnPathComplete(Path* p);
+		void OnPathComplete(const AStar::AStarPath& p);
+		void OnPathFailure();
 		void EndMoveAction();
-		void MoveAndSetDestination(Generation::MapHexTile* dest);
+		void MoveAndSetDestination(HexTile* dest);
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;

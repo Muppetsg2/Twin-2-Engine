@@ -26,8 +26,6 @@ void AStarPathfinder::Register(AStarPathfindingNode* node)
 {
 	if (node)
 	{
-		//SPDLOG_INFO("Registering");
-
 		bool canBeRegistered = true;
 
 		for (size_t index = 0ull; index < _registeredNodes.size(); ++index)
@@ -59,7 +57,6 @@ void AStarPathfinder::Unregister(AStarPathfindingNode* node)
 		{
 			if (_registeredNodes[index] == node)
 			{
-				//SPDLOG_INFO("Unregistering Node in");
 				_registeredNodes.erase(_registeredNodes.cbegin() + index);
 
 				if (_nodesGraph.contains(node))
@@ -99,25 +96,27 @@ void AStarPathfinder::RemapNodes()
 	}
 	_nodesGraph.clear();
 
-	SPDLOG_INFO("REMAPPING");
+	//SPDLOG_INFO("REMAPPING");
 
 	const size_t size = _registeredNodes.size();
 	vec3 currentPos;
+	vec3 currentPosY0;
 	vec3 targetPos;
+	vec3 targetPosY0;
 	float distance;
 
 	for (size_t i = 0ull; i < size; ++i)
 	{
-		currentPos = _registeredNodes[i]->GetTransform()->GetGlobalPosition();
-		currentPos.y = 0.0f;
+		currentPosY0 = currentPos = _registeredNodes[i]->GetTransform()->GetGlobalPosition();
+		currentPosY0.y = 0.0f;
 		//SPDLOG_INFO("REMAPPING Target pos: {} {} {}", currentPos.x, currentPos.y, currentPos.z);
 
 		for (size_t j = i + 1ull; j < size; ++j)
 		{
-			targetPos = _registeredNodes[j]->GetTransform()->GetGlobalPosition();
-			targetPos.y = 0.0f;
+			targetPosY0 = targetPos = _registeredNodes[j]->GetTransform()->GetGlobalPosition();
+			//targetPosY0.y = 0.0f;
 
-			distance = glm::distance(currentPos, targetPos);
+			distance = glm::distance(currentPosY0, targetPosY0);
 			if (distance <= _maxMappingDistance)
 			{
 				_nodesGraph[_registeredNodes[i]].emplace_back(_registeredNodes[j], targetPos, distance);
@@ -194,7 +193,7 @@ void AStarPathfinder::FindingPath(size_t threadId,
 		result = (AStarNode*)1;
 
 		vec3 tempPos = closestToBegin->GetTransform()->GetGlobalPosition();
-		tempPos.y = 0.0f;
+		//tempPos.y = 0.0f;
 		path.push_back(tempPos);
 
 		path.push_back(endPosition);
@@ -209,9 +208,8 @@ void AStarPathfinder::FindingPath(size_t threadId,
 
 		list<AStarNode*> allocatedNodes;
 		vec3 tempPos = closestToBegin->GetTransform()->GetGlobalPosition();
-		tempPos.y = 0.0f;
+		//tempPos.y = 0.0f; ///
 		AStarNode* allocatedNode = new AStarNode(closestToBegin, nullptr, tempPos, 0, 0.0f);
-		//allocatedNode->position.y = 0.0f;
 
 		allocatedNodes.push_back(allocatedNode);
 
@@ -269,7 +267,7 @@ void AStarPathfinder::FindingPath(size_t threadId,
 
 			while (processedNode)
 			{
-				SPDLOG_ERROR("FP: {} {} {}", processedNode->position.x, processedNode->position.y, processedNode->position.z);
+				//SPDLOG_ERROR("FP: {} {} {}", processedNode->position.x, processedNode->position.y, processedNode->position.z);
 				path[insertedIndex] = processedNode->position;
 				--insertedIndex;
 				processedNode = processedNode->previous;
@@ -304,9 +302,6 @@ void AStarPathfinder::FindingPath(size_t threadId,
 
 	(*_pathfindingThreadsSearchingPtrs[threadId]) = false;
 
-	_endedThreadsMutex.lock();
-	_endedThreads.push_back(threadId);
-	_endedThreadsMutex.unlock();
 	//_pathfindingThreadsSearchingPtrs.erase(threadId);
 	//_pathfindingThreads.erase(threadId);
 
@@ -319,6 +314,10 @@ void AStarPathfinder::FindingPath(size_t threadId,
 	{
 		failure();
 	}
+
+	_endedThreadsMutex.lock();
+	_endedThreads.push_back(threadId);
+	_endedThreadsMutex.unlock();
 }
 
 AStarPathfindingInfo&& AStarPathfinder::FindPath(const glm::vec3& beginPosition,
@@ -377,6 +376,9 @@ void AStarPathfinder::Update()
 		_endedThreadsMutex.lock();
 		for (size_t threadId : _endedThreads)
 		{
+			if (_pathfindingThreads[threadId].joinable())
+				_pathfindingThreads[threadId].join();
+
 			_pathfindingThreadsSearchingPtrs.erase(threadId);
 			_pathfindingThreads.erase(threadId);
 		}

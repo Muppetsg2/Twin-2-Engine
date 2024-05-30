@@ -1,68 +1,8 @@
 Textures:
   - id: 0
-    path: res/textures/white.png
+    path: res/textures/carTextures/blue.png
     fileFormat: !<SRGB> 35904
     engineFormat: !<RGB> 6407
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 1
-    path: res/textures/fakeBRDF.png
-    fileFormat: !<SRGBA> 35906
-    engineFormat: !<RGBA> 6408
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 2
-    path: res/textures/mountainTex2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 3
-    path: res/textures/cityTextureColour.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 4
-    path: res/textures/grass.png
-    fileFormat: !<SRGBA> 35906
-    engineFormat: !<RGBA> 6408
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 5
-    path: res/textures/brickWall.jpg
-    fileFormat: !<SRGB> 35904
-    engineFormat: !<RGB> 6407
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 6
-    path: res/textures/stone.jpg
-    fileFormat: !<SRGB> 35904
-    engineFormat: !<RGB> 6407
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 7
-    path: res/textures/woodenRoof2.png
-    fileFormat: !<SRGBA> 35906
-    engineFormat: !<RGBA> 6408
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 8
-    path: res/textures/hexEdgeTexture.png
-    fileFormat: !<SRGBA> 35906
-    engineFormat: !<RGBA> 6408
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
@@ -77,10 +17,10 @@ Audio:
   []
 Materials:
   - id: 0
-    path: Basic2
+    path: car/CarMaterial_Blue
 Models:
   - id: 0
-    path: "{Cube}"
+    path: res/models/car.obj
 Prefabs:
   []
 ScriptableObjects: ~
@@ -96,9 +36,9 @@ Root:
       y: 0
       z: 0
     scale:
-      x: 0.3
-      y: 0.3
-      z: 0.3
+      x: 0.125
+      y: 0.125
+      z: 0.125
     rotation:
       x: 0
       y: 0

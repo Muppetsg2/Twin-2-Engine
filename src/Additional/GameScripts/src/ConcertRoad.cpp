@@ -144,9 +144,10 @@ void ConcertRoad::Begin() {
     entityPoints.clear();
     entityMultiplier.clear();
 
-    for (MapHexTile* t : Twin2Engine::Manager::SceneManager::FindObjectByName("MapGenerator")->GetComponentsInChildren<MapHexTile>())
+    for (HexTile* t : Twin2Engine::Manager::SceneManager::FindObjectByName("MapGenerator")->GetComponentsInChildren<HexTile>())
     {
-        if (t->type == Generation::MapHexTile::HexTileType::PointOfInterest)
+        MapHexTile* mapHexTile = t->GetMapHexTile();
+        if (mapHexTile->type == Generation::MapHexTile::HexTileType::PointOfInterest)
         {
             if (t->percentage == 0.0f || ConsiderInfluenced)
             {
@@ -175,7 +176,7 @@ void ConcertRoad::Begin() {
     ///
 
 
-    for(MapHexTile* t : RoadMapPoints)
+    for (HexTile* t : RoadMapPoints)
     {
         GameObject* m = Twin2Engine::Manager::SceneManager::CreateGameObject(Marker, t->GetTransform());
         

@@ -75,3 +75,6 @@ Root:
       enabled: true
       type: AStarPathfindingNode
       passable: true
+    - id: 5
+      enabled: true
+      type: HexTile

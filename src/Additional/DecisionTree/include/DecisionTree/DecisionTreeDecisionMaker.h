@@ -9,12 +9,12 @@ private:
 	using DecisionFunc = Twin2Engine::Tools::Func<_Type, _Entity*>;
 
 	DecisionFunc _decision;
-	std::unordered_map<_Type, DecisionTreeNode<_Entity>*> _nodes;
+	std::unordered_map<_Type, DecisionTreeNode<_Entity>*> _nodes; // Czyœciæ w destruktorze
 
 public:
 	DecisionTreeDecisionMaker(const DecisionFunc& decision, const std::unordered_map<_Type, DecisionTreeNode<_Entity>*>& nodes);
 
-	void ProcessNode(_Entity* entity);
+	void ProcessNode(_Entity* entity) override;
 };
 
 template<class _Entity, class _Type>

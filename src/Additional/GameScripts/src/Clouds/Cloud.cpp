@@ -14,11 +14,24 @@ void Cloud::Update() {
 
 	travelledDistance += velocity * Time::GetDeltaTime();
 	transform->SetGlobalPosition(startPosition + direction * travelledDistance);
-	transform->Translate(direction * velocity * Time::GetDeltaTime());
+	//transform->Translate(direction * velocity * Time::GetDeltaTime());
+	
+	startingScale += scaleVelocity * Time::GetDeltaTime();
+	transform->SetGlobalScale(startingScale);
 
 	if (travelledDistance > maxDistance) {
 		transform->SetGlobalPosition(startPosition);
 		travelledDistance = 0.0;
+	}
+
+	if (startingScale.x > 1.2f || startingScale.x < 0.8f) {
+		scaleVelocity.x *= -1.0f;
+	}
+	if (startingScale.y > 1.2f || startingScale.y < 0.8f) {
+		scaleVelocity.y *= -1.0f;
+	}
+	if (startingScale.z > 1.2f || startingScale.z < 0.8f) {
+		scaleVelocity.z *= -1.0f;
 	}
 }
 
@@ -41,7 +54,10 @@ YAML::Node Cloud::Serialize() const {
 	node["direction"] = direction;
 	node["velocity"] = velocity;
 	node["startPosition"] = startPosition;
+	node["startingScale"] = startingScale;
+	node["scaleVelocity"] = scaleVelocity;
 	node["maxDistance"] = maxDistance;
+	node["travelledDistance"] = travelledDistance;
 	return node;
 }
 
@@ -52,7 +68,10 @@ bool Cloud::Deserialize(const YAML::Node& node) {
 	direction = node["direction"].as<glm::vec3>();
 	velocity = node["velocity"].as<float>();
 	startPosition = node["startPosition"].as<glm::vec3>();
+	startingScale = node["startingScale"].as<glm::vec3>();
+	scaleVelocity = node["scaleVelocity"].as<glm::vec3>();
 	maxDistance = node["maxDistance"].as<float>();
+	travelledDistance = node["travelledDistance"].as<float>();
 
 	return true;
 }

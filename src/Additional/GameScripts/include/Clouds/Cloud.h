@@ -13,6 +13,9 @@ class Cloud : public Component {
 		float maxDistance = 10.0f;
 		float travelledDistance = 0.0f;
 
+		glm::vec3 startingScale = glm::vec3(1.0, 0.8, 1.2);
+		glm::vec3 scaleVelocity = glm::vec3(0.1, 0.1, 0.1);
+
 		virtual void Initialize() override;
 		virtual void Update() override;
 		virtual void OnEnable() override;

@@ -1,8 +1,6 @@
 #pragma once
 
 #include <Tilemap/HexagonalTilemap.h>
-#include <GameManager.h>
-#include <Playable.h>
 
 class GameManager;
 

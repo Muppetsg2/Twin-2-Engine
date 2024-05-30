@@ -2,35 +2,50 @@
 #include <Clouds/CloudController.h>
 #include <tools/YamlConverters.h>
 #include <core/Time.h>
+#include <core/Random.h>
+
 
 using namespace Twin2Engine::Core;
 
 void Cloud::Initialize() {
+	glm::vec3 positionOffset;
+	positionOffset.x = Random::Range<float>(-0.4, 0.4);
+	positionOffset.y = Random::Range<float>(-0.1, 0.2);
+	positionOffset.z = Random::Range<float>(-0.4, 0.4);
 
+	GetTransform()->Translate(positionOffset);
+
+	startingScale.x = Random::Range<float>(0.4, 0.6);
+	startingScale.y = Random::Range<float>(0.4, 0.6);
+	startingScale.z = Random::Range<float>(0.4, 0.6);
+
+	scaleVelocity.x = Random::Range<float>(-0.1, 0.1);
+	scaleVelocity.y = Random::Range<float>(-0.1, 0.1);
+	scaleVelocity.z = Random::Range<float>(-0.1, 0.1);
 }
 
 void Cloud::Update() {
 	Transform* transform = GetTransform();
 
-	travelledDistance += velocity * Time::GetDeltaTime();
-	transform->SetGlobalPosition(startPosition + direction * travelledDistance);
-	//transform->Translate(direction * velocity * Time::GetDeltaTime());
+	//travelledDistance += velocity * Time::GetDeltaTime();
+	//transform->SetGlobalPosition(startPosition + direction * travelledDistance);
+	////transform->Translate(direction * velocity * Time::GetDeltaTime());
+	//
+	//if (travelledDistance > maxDistance) {
+	//	transform->SetGlobalPosition(startPosition);
+	//	travelledDistance = 0.0;
+	//}
 	
 	startingScale += scaleVelocity * Time::GetDeltaTime();
 	transform->SetGlobalScale(startingScale);
 
-	if (travelledDistance > maxDistance) {
-		transform->SetGlobalPosition(startPosition);
-		travelledDistance = 0.0;
-	}
-
-	if (startingScale.x > 1.2f || startingScale.x < 0.8f) {
+	if (startingScale.x > 0.6f || startingScale.x < 0.4f) {
 		scaleVelocity.x *= -1.0f;
 	}
-	if (startingScale.y > 1.2f || startingScale.y < 0.8f) {
+	if (startingScale.y > 0.6f || startingScale.y < 0.4f) {
 		scaleVelocity.y *= -1.0f;
 	}
-	if (startingScale.z > 1.2f || startingScale.z < 0.8f) {
+	if (startingScale.z > 0.6f || startingScale.z < 0.4f) {
 		scaleVelocity.z *= -1.0f;
 	}
 }

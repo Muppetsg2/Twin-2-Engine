@@ -55,12 +55,12 @@ class CloudControllerSyncProc : public SynchronizedProcess {
 CloudController* CloudController::instance = nullptr;
 const int CloudController::CLOUD_DEPTH_MAP_ID = 20;
 
-float CloudController::ABSORPTION		= 5.0;
-float CloudController::DENSITY_FAC		= 7.0;
-float CloudController::NUMBER_OF_STEPS	= 25;
+float CloudController::ABSORPTION		= 9.0;
+float CloudController::DENSITY_FAC		= 8.0;
+float CloudController::NUMBER_OF_STEPS	= 10;
 float CloudController::CLOUD_LIGHT_STEPS = 10;
-float CloudController::CLOUD_LIGHT_MULTIPLIER = 0.5;
-float CloudController::CLOUD_EXPOSURE	= 0.9;
+float CloudController::CLOUD_LIGHT_MULTIPLIER = 0.1;
+float CloudController::CLOUD_EXPOSURE	= 0.5;
 float CloudController::POS_MULT			= 0.2;
 float CloudController::APLPHA_TRESHOLD	= 0.0;
 float CloudController::DENSITY_TRESHOLD = 0.0;

@@ -77,10 +77,10 @@ Audio:
   []
 Materials:
   - id: 0
-    path: Basic2
+    path: car/CarMaterial_Red
 Models:
   - id: 0
-    path: "{Cube}"
+    path: res/models/car.obj
 Prefabs:
   []
 ScriptableObjects: ~
@@ -96,9 +96,9 @@ Root:
       y: 0
       z: 0
     scale:
-      x: 1
-      y: 1
-      z: 1
+      x: 0.125
+      y: 0.125
+      z: 0.125
     rotation:
       x: 0
       y: 0
@@ -110,7 +110,10 @@ Root:
       isTransparent: false
       model: 0
       materials:
-        []
+        - 0
     - id: 4
       enabled: true
       type: Enemy
+    - id: 5
+      enabled: true
+      type: EnemyMovement

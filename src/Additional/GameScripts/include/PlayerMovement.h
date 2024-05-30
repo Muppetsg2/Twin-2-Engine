@@ -11,6 +11,8 @@
 #include <AreaTaking/HexTile.h>
 #include <tools/EventHandler.h>
 
+#include <AstarPathfinding/AStarPathfinder.h>
+#include <GameManager.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Tools;
@@ -24,6 +26,7 @@ namespace AStar
 {
 	class AStarPath;
 	class AStarPathfinder;
+	class AStarPathfindingInfo;
 }
 
 class PlayerMovement : public Component {
@@ -33,14 +36,19 @@ class PlayerMovement : public Component {
 		glm::vec3 tempDest;
 		HexTile* tempDestTile;
 
+		AStar::AStarPathfindingInfo _info;
+
 		AStar::AStarPath* _path = nullptr;
 		Tilemap::HexagonalTilemap* _tilemap = nullptr;
+		//int currWaypoint = 0;
+		bool reachEnd = true;
+		glm::vec3 _waypoint;
+		float _heightOverSurface = 0.0f;
 
 		bool InCircle(glm::vec3 point);
 		void SetDestination(HexTile* dest);
 		void DrawCircle(int steps, float radius);
 		void DrawLine(glm::vec3 startPos, glm::vec3 endPos);
-		void OnDrawGizmos();
 			
 	public:
 		//Moving
@@ -48,7 +56,7 @@ class PlayerMovement : public Component {
 		glm::vec3 destination;
 		float speed = 0.7f;
 		int maxSteps = 5;
-		float nextWaypointDistance = 0.001f;
+		float nextWaypointDistance = 0.05f;
 		
 
 		//Circle
@@ -63,9 +71,6 @@ class PlayerMovement : public Component {
 
 		//Seeker* seeker;
 		//Path* path;
-		int currWaypoint = 0;
-		bool reachEnd = true;
-		glm::vec3 _waypoint;
 		EventHandler<GameObject*, HexTile*> OnFindPathError;
 		EventHandler<GameObject*, HexTile*> OnStartMoving;
 		EventHandler<GameObject*, HexTile*> OnFinishMoving;

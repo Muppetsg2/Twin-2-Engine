@@ -230,7 +230,7 @@ void main()
 
 	float alpha = 1.0 - exp(-dist * ABSORPTION);
 	
-	if (alpha < APLPHA_TRESHOLD) {
+	if (alpha <= APLPHA_TRESHOLD) {
 		discard;
 	}
 

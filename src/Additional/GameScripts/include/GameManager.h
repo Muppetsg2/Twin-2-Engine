@@ -62,6 +62,7 @@ public:
 
 
     virtual void Initialize() override;
+    virtual void OnEnable() override;
     virtual void Update() override;
 
     void UpdateEnemies(int colorIdx);

@@ -28,7 +28,7 @@ void Enemy::Initialize()
 void Enemy::OnEnable()
 {
     SPDLOG_INFO("ENEMY OnEneable");
-    PerformMovement();
+    //PerformMovement();
 }
 
 void Enemy::OnDestroy()

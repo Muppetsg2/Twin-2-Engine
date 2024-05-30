@@ -1,0 +1,10 @@
+material:
+  name: tiles/CyanHexTileStage2
+  shader: tile/TileBasic
+  parameters:
+    - name: color
+      type: vec4
+      value: [1.0, 0.0, 1.0, 1.0]
+    - name: texture
+      type: texture2D
+      value: res/textures/tiles/tileTakenStage2.png

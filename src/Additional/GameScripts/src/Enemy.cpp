@@ -54,6 +54,10 @@ void Enemy::PerformMovement()
     //possible.reserve((1 + _movement->maxSteps) * _movement->maxSteps / 2 * 6);
     possible.reserve((1 + _movement->maxSteps) * _movement->maxSteps * 3);
 
+    list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
+    _tiles.clear();
+    _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend());
+
     size_t size = _tiles.size();
     float maxRadius = (_movement->maxSteps + 0.25) * _tilemap->GetDistanceBetweenTiles();
 

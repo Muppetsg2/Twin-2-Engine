@@ -1,0 +1,10 @@
+material:
+  name: tiles/RedHexTileStage3
+  shader: tile/TileBasic
+  parameters:
+    - name: color
+      type: vec4
+      value: [1.0, 0.0, 0.0, 1.0]
+    - name: texture
+      type: texture2D
+      value: res/textures/tiles/tileTakenStage3.png

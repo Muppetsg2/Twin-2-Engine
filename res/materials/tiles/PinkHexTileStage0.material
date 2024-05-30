@@ -1,0 +1,10 @@
+material:
+  name: tiles/PinkHexTileStage0
+  shader: tile/TileBasic
+  parameters:
+    - name: color
+      type: vec4
+      value: [1.0, 0.41, 0.71, 1.0]
+    - name: texture
+      type: texture2D
+      value: res/textures/tiles/tileTakenStage0.png

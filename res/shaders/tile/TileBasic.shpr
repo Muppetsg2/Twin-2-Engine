@@ -1,0 +1,12 @@
+shaderprogram:
+  name: tile/TileBasic
+  shaders:
+    - ColoredTexture.vert
+    - tile/TileBasic3.frag
+  parameters:
+    - name: vec4
+      type: texture2D
+      value: [1.0, 1.0, 1.0, 1.0]
+    - name: texture
+      type: texture2D
+      value: res/textures/tiles/tileTakenStage0.png

@@ -122,7 +122,8 @@ namespace Twin2Engine
 			static bool UnregisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer);
 
 			//Przed u¿yciem tej funkcji nale¿y zapewniæ, i¿ glViewport jest ustawiony w nastêpuj¹cy sposób: glViewport(0, 0, depthTexWidth, depthTexHeight), po uruchomieñiu funkcji nale¿y przywróciæ rozmiar viewportu do rozmiaru okna gry
-			static void RenderDepthMapStatic(const GLuint& depthFBO, glm::mat4& projectionViewMatrix);
+			static void RenderDepthMapDynamic(const GLuint& depthFBO, glm::mat4& projectionViewMatrix);
+			static void RenderDepthMapStatic(const GLuint& depthFBO, const GLuint& depthREplacingTexId, const GLuint& depthReplcedTexId, glm::mat4& projectionViewMatrix);
 			static void RenderCloudDepthMap(std::unordered_map<Twin2Engine::Graphic::InstantiatingMesh*, std::vector<Twin2Engine::Core::Transform*>>& depthQueue) {
 				std::vector<glm::mat4> transformationMatrixes;
 				for (auto& pair : depthQueue) {

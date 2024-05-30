@@ -2,6 +2,7 @@
 #include <core/Transform.h>
 #include <tools/YamlConverters.h>
 #include <graphic/Window.h>
+#include <graphic/LightingController.h>
 #include <GraphicEnigine.h>
 #include <graphic/manager/ModelsManager.h>
 #include <core/MathExtensions.h>
@@ -551,7 +552,8 @@ void CameraComponent::Render()
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		//LightingSystem::LightingController::Instance()->RenderShadowMaps();
+		LightingController::Instance()->RenderDynamicShadowMaps();
+		
 
 		if (_isSsao && _mode != CameraDisplayMode::DEPTH) {
 			// SSAO MAP

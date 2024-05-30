@@ -2007,7 +2007,7 @@ void MeshRenderingManager::RenderStatic()
 	//SPDLOG_WARN("Global static draw count: {}", globalDrawCount);
 }
 
-void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat4& projectionViewMatrix)
+void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, const GLuint& depthReplacingTexId, const GLuint& depthReplcedTexId, glm::mat4& projectionViewMatrix)
 {
 	glEnable(GL_DEPTH_TEST);
 	ShaderManager::DepthShader->Use();
@@ -2015,6 +2015,7 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 
 	//glViewport(0, 0, bufferWidth, bufferHeight);
 	glBindFramebuffer(GL_FRAMEBUFFER, depthFBO);
+	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthReplacingTexId, 0);
 
 	//glBindTexture(GL_TEXTURE_2D, depthMapTex);
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -2154,6 +2155,27 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, glm::mat
 	}
 
 #pragma endregion
+
+	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthReplcedTexId, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void MeshRenderingManager::RenderDepthMapDynamic(const GLuint& depthFBO, glm::mat4& projectionViewMatrix)
+{
+	glEnable(GL_DEPTH_TEST);
+	ShaderManager::DepthShader->Use();
+	ShaderManager::DepthShader->SetMat4("lightSpaceMatrix", projectionViewMatrix);
+
+	//glViewport(0, 0, bufferWidth, bufferHeight);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthFBO);
+
+	//glBindTexture(GL_TEXTURE_2D, depthMapTex);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	unsigned int count = 0;
+	RenderedSegment currentSegment{ .begin = nullptr, .count = 0u };
+
+	std::list<RenderedSegment>::iterator renderItr;
 
 #pragma region RENDERING_DYNAMIC_DEPTH_MAP
 

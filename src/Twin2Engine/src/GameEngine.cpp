@@ -56,6 +56,7 @@ void GameEngine::Deserializers()
     ADD_COMPONENT("PlayerMovement", PlayerMovement);
     ADD_COMPONENT("Player", Player);
     ADD_COMPONENT("Enemy", Enemy);
+    ADD_COMPONENT("Cloud", Cloud);
 }
 
 void GameEngine::Update()
@@ -227,6 +228,9 @@ bool GameEngine::Init(const string& window_name, int32_t window_width, int32_t w
     spdlog::info("Initialized SoLoud.");
 
 	Deserializers();
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	return true;
 }

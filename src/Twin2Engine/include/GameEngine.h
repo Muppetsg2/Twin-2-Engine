@@ -65,6 +65,8 @@
 #include <Player.h>
 #include <Enemy.h>
 
+#include <Clouds/Cloud.h>
+
 
 namespace Twin2Engine {
 	class GameEngine {

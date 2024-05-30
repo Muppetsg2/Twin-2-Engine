@@ -92,6 +92,8 @@ Materials:
     path: roofMat
   - id: 9
     path: Water
+  - id: 10
+    path: enviroment/CloudMaterial
 Models:
   - id: 0
     path: res/models/AK47.obj
@@ -105,6 +107,8 @@ Models:
     path: "{Plane}"
   - id: 5
     path: "{Sphere}"
+  - id: 6
+    path: res/models/cloud.obj
 Prefabs:
   - id: 0
     path: res/prefabs/testPrefab.prefab
@@ -772,5 +776,89 @@ GameObjects:
       - id: 103
         enabled: true
         type: GameManager
+    children:
+      []
+  - id: 110
+    name: Cloud1
+    isStatic: false
+    isActive: true
+    transform:
+      id: 111
+      enabled: true
+      position:
+        x: 0
+        y: 7
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 112
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 3
+        materials:
+          - 10
+      - id: 113
+        enabled: true
+        type: Cloud
+        direction:
+          x: 1
+          y: 0
+          z: 0
+        velocity: 0.200000003
+        startPosition:
+          x: -7
+          y: 8
+          z: -5
+        maxDistance: 10
+    children:
+      []
+  - id: 114
+    name: Cloud2
+    isStatic: false
+    isActive: true
+    transform:
+      id: 115
+      enabled: true
+      position:
+        x: 7
+        y: 7
+        z: 0
+      scale:
+        x: 1.1
+        y: 1.1
+        z: 1.1
+      rotation:
+        x: -90
+        y: 0
+        z: 30
+    components:
+      - id: 116
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 6
+        materials:
+          - 10
+      - id: 117
+        enabled: true
+        type: Cloud
+        direction:
+          x: 1
+          y: 0
+          z: 0
+        velocity: 0.200000003
+        startPosition:
+          x: -7
+          y: 8
+          z: -5
+        maxDistance: 10
     children:
       []

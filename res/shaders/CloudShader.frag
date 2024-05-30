@@ -1,15 +1,39 @@
-#version 450 core
+#version 430 core
+//CloudShader.frag
 
-out vec4 FragColor;
-in vec2 TexCoords;
+layout (location = 0) in vec3 FragPos;
 
-uniform sampler3D noiseTexture;
+layout (location = 0) out vec4 FragColor;
+
+
+uniform float ABSORPTION		= 7.0;
+uniform float DENSITY_FAC		= 0.7;
+uniform float NUMBER_OF_STEPS	= 200;
+uniform float CLOUD_LIGHT_STEPS	= 200;	//
+uniform float CLOUD_LIGHT_MULTIPLIER = 50.0;
+uniform float CLOUD_EXPOSURE = 1.0;
+//uniform float EXTINCTION_MULT	= 4;	//
+uniform float POS_MULT			= 2.0;
+uniform float APLPHA_TRESHOLD	= 0.25;
+uniform float DENSITY_TRESHOLD	= 0.2;
+uniform vec3  NOISE_D_VEL_3D	= vec3(-0.05, 0.0, 0.0);
+
+vec3 cloudColor = vec3(1.0, 1.0, 1.0);
+const float PI = 3.14159265;
+const float DUAL_LOBE_WEIGHT = 0.7;
+const vec3 EXTINCTION_MULT = vec3(0.8, 0.8, 1.0);
+const float NOISE_D_VEL = 0.02;
+
+uniform sampler2D viewerBackDepthMap;
+uniform sampler2D noiseTexture;
+uniform sampler3D noiseTexture3d;
+uniform sampler2D lightFrontDepthMap;
+uniform float	  time;
+
 //uniform vec3 lightDir;
 //uniform vec3 cameraPos;
 //uniform float stepSize;
 //uniform float densityFactor;
-float stepSize = 0.1;
-float densityFactor = 0.7;
 
 
 //LIGHTING BEGIN
@@ -57,112 +81,163 @@ layout(std140, binding = 3) uniform LightingData {
 	int shadingType;
 };
 
+//layout (std140, binding = 1) uniform WindowData
+//{
+//    ivec2 windowSize;
+//    float nearPlane;
+//    float farPlane;
+//    float gamma;
+//};
+
 //LIGHTING END
 
 
+vec4 probeLightDepthTex(vec3 pos) {
+	vec4 projPos = directionalLights[0].lightSpaceMatrix * vec4(FragPos , 1.0);
+    vec3 projCoords = projPos.xyz / projPos.w;
+    projCoords = projCoords * 0.5 + 0.5;
 
-
-
-// Helper functions for Perlin noise
-
-vec3 permute(vec3 x) {
-    return mod(((x * 34.0) + 1.0) * x, 289.0);
+	return texture(lightFrontDepthMap, projCoords.xy);
 }
 
-float fade(float t) {
-    return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
+float density_i(vec2 pos, float offset) {
+	return texture(noiseTexture, FragPos.xy * 0.1 + offset + NOISE_D_VEL * time).r * texture(noiseTexture, FragPos.xz * 0.1 + offset + NOISE_D_VEL * time).r * texture(noiseTexture, FragPos.zy * 0.1 + offset + NOISE_D_VEL * time).r;
 }
 
-vec4 fade(vec4 t) {
-    return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
-}
-
-float grad(int hash, vec3 p) {
-    int h = hash & 15;
-    float u = h < 8 ? p.x : p.y;
-    float v = h < 4 ? p.y : (h == 12 || h == 14 ? p.x : p.z);
-    return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
-}
-
-// Perlin noise function for 3D
-float perlinNoise(vec3 p) {
-    vec3 Pi0 = floor(p); // Integer part for indexing
-    vec3 Pi1 = Pi0 + vec3(1.0); // Integer part + 1
-    Pi0 = mod(Pi0, 289.0);
-    Pi1 = mod(Pi1, 289.0);
-    vec3 Pf0 = fract(p); // Fractional part for interpolation
-    vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
-    vec3 fade_pf0 = fade(Pf0);
-
-    // Hash coordinates of the 8 cube corners
-    int ix0 = int(Pi0.x);
-    int iy0 = int(Pi0.y);
-    int iz0 = int(Pi0.z);
-    int ix1 = int(Pi1.x);
-    int iy1 = int(Pi1.y);
-    int iz1 = int(Pi1.z);
-
-    float n000 = grad(hash(ix0, iy0, iz0), Pf0);
-    float n100 = grad(hash(ix1, iy0, iz0), vec3(Pf1.x, Pf0.y, Pf0.z));
-    float n010 = grad(hash(ix0, iy1, iz0), vec3(Pf0.x, Pf1.y, Pf0.z));
-    float n110 = grad(hash(ix1, iy1, iz0), vec3(Pf1.x, Pf1.y, Pf0.z));
-    float n001 = grad(hash(ix0, iy0, iz1), vec3(Pf0.x, Pf0.y, Pf1.z));
-    float n101 = grad(hash(ix1, iy0, iz1), vec3(Pf1.x, Pf0.y, Pf1.z));
-    float n011 = grad(hash(ix0, iy1, iz1), vec3(Pf0.x, Pf1.y, Pf1.z));
-    float n111 = grad(hash(ix1, iy1, iz1), vec3(Pf1.x, Pf1.y, Pf1.z));
-
-    // Blend contributions from 8 corners of the cube
-    vec4 n_xyz = mix(mix(mix(vec4(n000), vec4(n100), fade_pf0.x),
-                         mix(vec4(n010), vec4(n110), fade_pf0.x), fade_pf0.y),
-                     mix(mix(vec4(n001), vec4(n101), fade_pf0.x),
-                         mix(vec4(n011), vec4(n111), fade_pf0.x), fade_pf0.y), fade_pf0.z);
-
-    return 2.2 * n_xyz.x; // Adjusted to [0, 1] range
-}
-
-// Example hash function for gradient lookup
-int hash(int x, int y, int z) {
-    return int(mod(float(x) + float(y) * 57.0 + float(z) * 113.0, 256.0));
+float density3d(vec3 pos) {
+	return texture(noiseTexture3d, pos * POS_MULT + NOISE_D_VEL_3D * time).r * DENSITY_FAC;
 }
 
 
+float remap(float v, float minOld, float maxOld, float minNew, float maxNew) {
+    return minNew + (v-minOld) * (maxNew - minNew) / (maxOld-minOld);
+}
 
+float HenyeyGreenstein(float g, float mu) {
+	float gg = g * g;
+	return (1.0 / (4.0 * PI))  * ((1.0 - gg) / pow(1.0 + gg - 2.0 * g * mu, 1.5));
+}
 
+float DualHenyeyGreenstein(float g, float costh) {
+	return mix(HenyeyGreenstein(-g, costh), HenyeyGreenstein(g, costh), DUAL_LOBE_WEIGHT);
+}
 
-float noise(vec3 p)
+float PhaseFunction(float g, float costh) {
+	return DualHenyeyGreenstein(g, costh);
+}
+
+vec3 MultipleOctaveScattering(float density, float mu) {
+	float attenuation = 0.2;
+	float contribution = 0.2;
+	float phaseAttenuation = 0.5;
+	
+	float a = 1.0;
+	float b = 1.0;
+	float c = 1.0;
+	float g = 0.85;
+	const float scatteringOctaves = 4.0;
+	
+	vec3 luminance = vec3(0.0);
+	
+	for (float i = 0.0; i < scatteringOctaves; ++i) {
+		float phaseFunction = PhaseFunction(0.3 * c, mu);
+		vec3 beers = vec3(exp(-density * EXTINCTION_MULT * a));
+		
+		luminance += b * phaseFunction * beers;
+		
+		a *= attenuation;
+		b *= contribution;
+		c *= (1.0 - phaseAttenuation);
+	}
+	return luminance;
+}
+
+vec3 CalculateLightEnergy(vec3 lightOrigin, vec3 rayDir) 
 {
-    return texture(noiseTexture, p).r;
+	float maxDistance = 0.05;
+	vec4 lightInPos = probeLightDepthTex(lightOrigin);
+	if (lightInPos.w != 0.0) {
+		maxDistance = distance(lightInPos.xyz, lightOrigin);
+	}
+
+	vec3 lightDirection = normalize(lightInPos.xyz - lightOrigin);
+	float mu = dot(rayDir, lightDirection);
+
+	float stepLength = maxDistance / CLOUD_LIGHT_STEPS;
+	float lightRayDensity = 0.0;
+	
+	for(float j = 0.0; j < CLOUD_LIGHT_STEPS; j++) {
+		lightRayDensity += stepLength * density3d(lightOrigin + lightDirection * stepLength * j);
+	}
+
+	vec3 beersLaw = MultipleOctaveScattering(lightRayDensity, mu);
+	vec3 powder = 1.0 - exp(-lightRayDensity * 2.0 * EXTINCTION_MULT);
+
+	return beersLaw * mix(2.0 * powder, vec3(1.0), remap(mu, -1.0, 1.0, 0.0, 1.0));
 }
 
-vec3 rayDirection(vec2 uv)
-{
-    uv = uv * 2.0 - 1.0;
-    return normalize(vec3(uv, -1.0));
-}
-
-vec4 integrateCloud(vec3 ro, vec3 rd, float stepSize, float densityFactor)
-{
-    vec4 accumulatedColor = vec4(0.0);
-    vec3 p = ro;
-
-    for (int i = 0; i < 128; i++)
-    {
-        float density = perlinNoise(p) * densityFactor;
-        vec4 sampleColor = vec4(1.0, 1.0, 1.0, density);
-        accumulatedColor = accumulatedColor + sampleColor * (1.0 - accumulatedColor.a);
-        if (accumulatedColor.a >= 1.0)
-            break;
-        p += rd * stepSize;
-    }
-
-    return accumulatedColor;
-}
 
 void main()
-{
-    vec3 ro = ViewerPosition;
-    vec3 rd = rayDirection(TexCoords);
+{	
+    vec2 viewerDepthCoord = gl_FragCoord.xy;
+	viewerDepthCoord.x = viewerDepthCoord.x / 1920.0;
+	viewerDepthCoord.y = viewerDepthCoord.y / 1055.0;
+	vec4 outPos = texture(viewerBackDepthMap, viewerDepthCoord);
+	if (outPos.w == 0.0) {
+		discard;
+	}
 
-    vec4 color = integrateCloud(ro, rd, stepSize, densityFactor);
-    FragColor = color;
+	vec3 dir = normalize(FragPos - ViewerPosition);
+	float totalDistance = distance(vec3(outPos), FragPos);
+	float dist = 0.0;
+	float step_len = totalDistance / NUMBER_OF_STEPS;
+	
+	//vec4 lightPos = probeLightDepthTex(FragPos);
+	//float lightTotalDistance = distance(vec3(lightPos), FragPos);
+
+
+	vec3 transmittance = vec3(1.0, 1.0, 1.0);
+	vec3 scattering = vec3(0.0, 0.0, 0.0);
+	vec3 sunLight = directionalLights[0].color * CLOUD_LIGHT_MULTIPLIER;
+
+
+	float density_i = 0.0;
+	vec3 samplePos = vec3(0.0, 0.0, 0.0);
+	for (float i = 0.0; i < NUMBER_OF_STEPS; ++i) {
+		samplePos = FragPos + dir * step_len * i;
+		density_i = density3d(samplePos);
+
+		if (density_i  > DENSITY_TRESHOLD) {
+			dist += step_len * density_i;
+
+			if (density_i > 0.01) {
+				vec3 luminance = AmbientLight + sunLight * CalculateLightEnergy(samplePos, dir);
+				vec3 transmit = exp(-density_i * step_len * EXTINCTION_MULT);
+				vec3 integScatt = density_i * (luminance - luminance * transmit) / density_i;
+				
+				scattering += transmittance * integScatt;
+				transmittance *= transmit;  
+				
+				if (length(transmittance) <= 0.01) {
+					transmittance = vec3(0.0);
+					break;
+				}
+			}
+		}
+		//dist += step_len * density3d(FragPos + dir * step_len * i);
+	}	
+
+
+	float alpha = 1.0 - exp(-dist * ABSORPTION);
+	
+	if (alpha < APLPHA_TRESHOLD) {
+		discard;
+	}
+
+    //FragColor = vec4(cloudColor, alpha);
+
+	vec3 colour = transmittance + scattering * CLOUD_EXPOSURE;
+	FragColor = vec4(colour, alpha);
+	//FragColor = vec4(colour, 1.0);
+	//FragColor = vec4(colour, 1.0 - transmittance);
 }

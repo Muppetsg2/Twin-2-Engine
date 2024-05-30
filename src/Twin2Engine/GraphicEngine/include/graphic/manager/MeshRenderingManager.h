@@ -123,6 +123,27 @@ namespace Twin2Engine
 
 			//Przed u¿yciem tej funkcji nale¿y zapewniæ, i¿ glViewport jest ustawiony w nastêpuj¹cy sposób: glViewport(0, 0, depthTexWidth, depthTexHeight), po uruchomieñiu funkcji nale¿y przywróciæ rozmiar viewportu do rozmiaru okna gry
 			static void RenderDepthMapStatic(const GLuint& depthFBO, glm::mat4& projectionViewMatrix);
+			static void RenderCloudDepthMap(std::unordered_map<Twin2Engine::Graphic::InstantiatingMesh*, std::vector<Twin2Engine::Core::Transform*>>& depthQueue) {
+				std::vector<glm::mat4> transformationMatrixes;
+				for (auto& pair : depthQueue) {
+					if (pair.second.size() != 0) {
+						for (auto& t : pair.second) {
+							transformationMatrixes.push_back(t->GetTransformMatrix());
+						}
+
+						glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+						glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * pair.second.size(), transformationMatrixes.data());
+						glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+						pair.first->Draw(pair.second.size());
+
+						GLenum error = glGetError();
+						if (error != GL_NO_ERROR) {
+							SPDLOG_ERROR("Error: {}", error);
+						}
+						transformationMatrixes.clear();
+					}
+				}
+			}
 		};
 	}
 }

@@ -57,6 +57,9 @@ using namespace AStar;
 // ENEMY AI
 #include <EnemyAI/EnemyAI.h>
 
+// CLOUD CONTROLLER
+#include <Clouds/CloudController.h>
+
 // YAML CONVERTERS
 #include <tools/YamlConverters.h>
 #include <Generation/YamlConverters.h>
@@ -322,6 +325,8 @@ int main(int, char**)
     };
 
     GameEngine::Start();
+
+    CloudController::DeleteInstance();
 
 #if _DEBUG
 

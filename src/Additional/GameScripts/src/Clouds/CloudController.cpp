@@ -83,9 +83,10 @@ CloudController::CloudController() {
 	std::ifstream ifs;
 	ifs.open("res/PerlinWorleyNoise3D.txt", std::ios::binary);
 	char* byteData = new char[width * height * depth * sizeof(float)];
-	ifs.read(byteData, width * height * depth * sizeof(float));
+	ifs.read(byteData, (size_t)width * height * depth * sizeof(float));
 	ifs.close();
 	noiseTexture3d = create3DNoiseTexture(reinterpret_cast<float*>(byteData), width, height, depth);
+	delete[] byteData;
 
 
 	CloudDepthShader = ShaderManager::GetShaderProgram("origin/CloudDepthShader");
@@ -170,6 +171,7 @@ CloudController::~CloudController() {
 	glDeleteTextures(1, &noiseTexture3d);
 	glDeleteTextures(1, &depthmap);
 	glDeleteFramebuffers(1, &depthmapFBO);
+	depthQueue.clear();
 }
 
 void CloudController::RegisterCloud(Cloud* cloud) {
@@ -188,6 +190,10 @@ void CloudController::UnregisterCloud(Cloud* cloud) {
 		auto& vec = depthQueue[mr->GetMesh(i)];
 		auto itr = std::find(vec.begin(), vec.end(), transform);
 		vec.erase(itr);
+
+		if (vec.size() == 0) {
+			depthQueue.erase(mr->GetMesh(i));
+		}
 	}
 }
 
@@ -202,6 +208,7 @@ CloudController* CloudController::Instance() {
 void CloudController::DeleteInstance() {
 	if (instance != nullptr) {
 		delete instance;
+		instance = nullptr;
 	}
 }
 

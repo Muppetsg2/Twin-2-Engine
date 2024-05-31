@@ -254,9 +254,32 @@ void LightingController::RenderShadowMaps() {
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 	for (auto light : dirLights) {
 		//Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->lightSpaceMatrix);
-		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMapStatic(light->shadowMapFBO, light->lightSpaceMatrix);
-		glActiveTexture(GL_TEXTURE0 + MAPS_BEGINNING + i);
+		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMapStatic(light->shadowMapFBO, light->shadowMap, light->shadowMapDynamic, light->lightSpaceMatrix);
+		//Twin2Engine::Manager::MeshRenderingManager::RenderDepthMapDynamic(light->shadowMapFBO, light->lightSpaceMatrix);
+		glActiveTexture(GL_TEXTURE0 + MAPS_BEGINNING + 2 * i);
 		glBindTexture(GL_TEXTURE_2D, light->shadowMap);
+
+		++i;
+	}
+
+	glm::ivec2 wSize = Twin2Engine::Graphic::Window::GetInstance()->GetContentSize();
+	glViewport(0, 0, wSize.x, wSize.y);
+
+	glCullFace(GL_BACK);
+}
+
+void LightingController::RenderDynamicShadowMaps() {
+	glCullFace(GL_FRONT);
+	glEnable(GL_DEPTH_TEST);
+
+	int i = 0;
+
+	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+	for (auto light : dirLights) {
+		//Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->lightSpaceMatrix);
+		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMapDynamic(light->shadowMapFBO, light->lightSpaceMatrix);
+		glActiveTexture(GL_TEXTURE0 + MAPS_BEGINNING + 2 * i + 1);
+		glBindTexture(GL_TEXTURE_2D, light->shadowMapDynamic);
 
 		++i;
 	}

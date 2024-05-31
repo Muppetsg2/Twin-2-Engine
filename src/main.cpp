@@ -372,6 +372,14 @@ int main(int, char**)
         //Editor::Common::ScriptableObjectEditorManager::End();
     };
 #endif
+    //GameObject* go = SceneManager::CreateGameObject();
+    //GameObject* gochild = SceneManager::CreateGameObject(go->GetTransform());
+    //
+    //GameObject* gochild2 = SceneManager::CreateGameObject(go->GetTransform());
+    //gochild->GetTransform()->AddChild(gochild2->GetTransform());
+    //PrefabManager::SaveAsPrefab(go, "ParenChild");
+
+
 
     GameEngine::OnInput += [&]() -> void {
         input();

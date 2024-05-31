@@ -24,6 +24,18 @@ void DirectionalLightComponent::Initialize()
 
 	glGenFramebuffers(1, &light->shadowMapFBO);
 	
+	glGenTextures(1, &light->shadowMapDynamic);
+	glActiveTexture(GL_TEXTURE0 + LightingController::MAPS_BEGINNING + 3);
+	glBindTexture(GL_TEXTURE_2D, light->shadowMapDynamic);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+		LightingController::SHADOW_WIDTH, LightingController::SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
 	glGenTextures(1, &light->shadowMap);
 	glActiveTexture(GL_TEXTURE0 + LightingController::MAPS_BEGINNING + 3);
 	glBindTexture(GL_TEXTURE_2D, light->shadowMap);
@@ -33,7 +45,7 @@ void DirectionalLightComponent::Initialize()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+	
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, light->shadowMapFBO);
@@ -86,6 +98,7 @@ void DirectionalLightComponent::OnDestroy()
 
 	LightingController::Instance()->UpdateDirLights();
 
+	glDeleteTextures(1, &light->shadowMapDynamic);
 	glDeleteTextures(1, &light->shadowMap);
 	glDeleteFramebuffers(1, &light->shadowMapFBO);
 

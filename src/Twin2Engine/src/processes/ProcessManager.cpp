@@ -130,15 +130,18 @@ void Twin2Engine::Processes::ProcessManager::DeleteInstance()
 
 Twin2Engine::Processes::ProcessManager::~ProcessManager()
 {
-	for (auto& item : synchronizedProcesses) {
-		delete item;
+	SynchronizedProcess* sp;
+	while (synchronizedProcesses.size() > 0) {
+		sp = *synchronizedProcesses.begin();
+		synchronizedProcesses.erase(sp);
+		delete sp;
 	}
 
-	synchronizedProcesses.clear();
-
-	for (auto& item : otherProcesses) {
-		delete item;
+	Process* p;
+	while (otherProcesses.size() > 0) {
+		p = *otherProcesses.begin();
+		synchronizedProcesses.erase(sp);
+		delete p;
 	}
-
-	otherProcesses.clear();
+	//otherProcesses.clear();
 }

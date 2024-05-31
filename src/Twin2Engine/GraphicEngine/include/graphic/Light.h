@@ -32,6 +32,9 @@ namespace Twin2Engine::Graphic {
 		glm::vec3 color = glm::vec3(0.0f, 0.0f, 1.0f);         // Color of the spot light
 		GLuint shadowMapFBO = 0;
 		glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
-		alignas(16) float power = 1.0f;		  // Light source power
+		float power = 1.0f;		  // Light source power
+		GLuint shadowMapDynamic = 0;
+		int padding1 = 0;
+		int padding2 = 0;
 	};
 }

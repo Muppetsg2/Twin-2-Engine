@@ -214,7 +214,7 @@ GameObjects:
         cameraMode: 0
         samples: 10
         renderRes: 0
-        gamma: 1.0000005
+        gamma: 1
         worldUp:
           x: 0
           y: 1
@@ -242,7 +242,7 @@ GameObjects:
   - id: 2
     name: imageObj
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 4
       enabled: true
@@ -290,7 +290,7 @@ GameObjects:
   - id: 3
     name: imageObj2
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 7
       enabled: true
@@ -325,7 +325,7 @@ GameObjects:
   - id: 4
     name: imageObj3
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 9
       enabled: true
@@ -360,13 +360,13 @@ GameObjects:
   - id: 5
     name: textObj
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 11
       enabled: true
       position:
-        x: 400
-        y: 0
+        x: 800
+        y: 500
         z: 0
       scale:
         x: 1

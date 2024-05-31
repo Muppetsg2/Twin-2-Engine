@@ -77,6 +77,10 @@ StructType::StructType(const STD140Offsets& offsets) : ValueType() {
 	_offsets = new STD140Offsets(offsets);
 }
 
+StructType::~StructType() {
+	delete _offsets;
+}
+
 DefineCloneBaseFunc(StructType, ValueType, PointerDeepClone(_offsets, STD140Offsets))
 
 const STD140Offsets* StructType::GetOffsets() const
@@ -92,6 +96,10 @@ ArrayType::ArrayType(const ValueType*& type, const size_t& length) : ValueType()
 	ZoneScoped;
 #endif
 	_type = type->Clone();
+}
+
+ArrayType::~ArrayType() {
+	delete _type;
 }
 
 const ValueType* ArrayType::GetType() const

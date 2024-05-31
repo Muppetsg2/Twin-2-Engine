@@ -1,31 +1,31 @@
 scriptable_object:
   __SO_RegisteredName__: HexTileTextureData
   _materialNames: 
-   - - tiles/NeutralHexTileStage0
-     - tiles/BlueHexTileStage1
-     - tiles/BlueHexTileStage2
-     - tiles/BlueHexTileStage3
-   - - tiles/NeutralHexTileStage0
-     - tiles/RedHexTileStage1
-     - tiles/RedHexTileStage2
-     - tiles/RedHexTileStage3
-   - - tiles/NeutralHexTileStage0
-     - tiles/GreenHexTileStage1
-     - tiles/GreenHexTileStage2
-     - tiles/GreenHexTileStage3
-   - - tiles/NeutralHexTileStage0
-     - tiles/PurpleHexTileStage1
-     - tiles/PurpleHexTileStage2
-     - tiles/PurpleHexTileStage3
-   - - tiles/NeutralHexTileStage0
-     - tiles/YellowHexTileStage1
-     - tiles/YellowHexTileStage2
-     - tiles/YellowHexTileStage3
-   - - tiles/NeutralHexTileStage0
-     - tiles/CyanHexTileStage1
-     - tiles/CyanHexTileStage2
-     - tiles/CyanHexTileStage3
-   - - tiles/NeutralHexTileStage0
-     - tiles/PinkHexTileStage1
-     - tiles/PinkHexTileStage2
-     - tiles/PinkHexTileStage3
+   - - tiles/normal/NeutralHexTileStage0
+     - tiles/normal/BlueHexTileStage1
+     - tiles/normal/BlueHexTileStage2
+     - tiles/normal/BlueHexTileStage3
+   - - tiles/normal/NeutralHexTileStage0
+     - tiles/normal/RedHexTileStage1
+     - tiles/normal/RedHexTileStage2
+     - tiles/normal/RedHexTileStage3
+   - - tiles/normal/NeutralHexTileStage0
+     - tiles/normal/GreenHexTileStage1
+     - tiles/normal/GreenHexTileStage2
+     - tiles/normal/GreenHexTileStage3
+   - - tiles/normal/NeutralHexTileStage0
+     - tiles/normal/PurpleHexTileStage1
+     - tiles/normal/PurpleHexTileStage2
+     - tiles/normal/PurpleHexTileStage3
+   - - tiles/normal/NeutralHexTileStage0
+     - tiles/normal/YellowHexTileStage1
+     - tiles/normal/YellowHexTileStage2
+     - tiles/normal/YellowHexTileStage3
+   - - tiles/normal/NeutralHexTileStage0
+     - tiles/normal/CyanHexTileStage1
+     - tiles/normal/CyanHexTileStage2
+     - tiles/normal/CyanHexTileStage3
+   - - tiles/normal/NeutralHexTileStage0
+     - tiles/normal/PinkHexTileStage1
+     - tiles/normal/PinkHexTileStage2
+     - tiles/normal/PinkHexTileStage3

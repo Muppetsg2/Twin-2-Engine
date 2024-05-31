@@ -120,16 +120,21 @@ void Player::Update() {
             //}
         }
 
-        if (move->reachEnd) {
-            if (isFansActive) {
-                if (CurrTile != tileBefore) {
-                    FansExit();
+        if (move != nullptr) {
+            if (move->reachEnd) {
+                if (isFansActive) {
+                    if (CurrTile != tileBefore) {
+                        FansExit();
+                    }
                 }
-            }
 
-            //if (!Input::GetMouseButtonDown(0)) {
-            //    tileBefore = CurrTile;
-            //}
+                //if (!Input::GetMouseButtonDown(0)) {
+                //    tileBefore = CurrTile;
+                //}
+            }
+        }
+        else {
+            SPDLOG_ERROR("Move was nullptr");
         }
     }
 }
@@ -214,7 +219,7 @@ void Player::FinishMove(HexTile* tile) {
     }
 
     if (tile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::RadioStation && tile->state != TileState::Occupied) {
-        GameManager::instance->StartMinigame();
+        //GameManager::instance->StartMinigame();
     }
     else {
         CurrTile->StartTakingOver(this);

@@ -30,6 +30,7 @@ void GameManager::Initialize() {
 void GameManager::OnEnable() {
     SPDLOG_INFO("Creating enenmy");
     GenerateEnemy();
+    GenerateEnemy();
 }
 
 void GameManager::Update() {
@@ -48,11 +49,11 @@ GameObject* GameManager::GeneratePlayer() {
     GameObject* player = Twin2Engine::Manager::SceneManager::CreateGameObject(prefabPlayer);
     Player* p = player->GetComponent<Player>();
 
-    //int chosen = Random::Range(0ull, freeColors.size() - 1ull);
-    int chosen = 0;
+    int chosen = Random::Range(0ull, freeColors.size() - 1ull);
+    //int chosen = 0;
     p->colorIdx = freeColors[chosen];
     freeColors.erase(freeColors.begin() + chosen);
-    p->colorIdx = chosen;
+    //p->colorIdx = chosen;
 
     p->patron = playersPatron;
 
@@ -72,11 +73,11 @@ GameObject* GameManager::GenerateEnemy() {
 
     Enemy* e = enemy->GetComponent<Enemy>();
 
-    //int chosen = Random::Range(0ull, freeColors.size() - 1ull);
-    int chosen = 1;
+    int chosen = Random::Range(0ull, freeColors.size() - 1ull);
+    //int chosen = 1;
     e->colorIdx = freeColors[chosen];
     freeColors.erase(freeColors.begin() + chosen);
-    e->colorIdx = chosen;
+    //e->colorIdx = chosen;
 
     /*float h = Random.Range(0f, 1f);
     float s = Random.Range(.7f, 1f);

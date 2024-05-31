@@ -2,6 +2,7 @@
 
 #include <tools/templates.h>
 #include <tools/stringExtension.h>
+#include <tools/macros.h>
 #if _DEBUG
 #include <tools/ValueTypes.h>
 #endif
@@ -25,10 +26,10 @@ namespace Twin2Engine::Tools {
 		STD140Variable(const std::string& name, const size_t& size) : var_name(name), array_size(size) {}
 
 		template<typename = std::enable_if_t<std::is_same_v<T, STD140Offsets>>>
-		STD140Variable(const std::string& name, const STD140Offsets& offsets) : var_name(name), struct_offsets(offsets), array_size(0) {}
+		STD140Variable(const std::string& name, const STD140Offsets offsets) : var_name(name), struct_offsets(offsets), array_size(0) {}
 
 		template<typename = std::enable_if_t<std::is_same_v<T, STD140Offsets>>>
-		STD140Variable(const std::string& name, const STD140Offsets& offsets, const size_t& size) : var_name(name), struct_offsets(offsets), array_size(size) {}
+		STD140Variable(const std::string& name, const STD140Offsets offsets, const size_t& size) : var_name(name), struct_offsets(offsets), array_size(size) {}
 	};
 
 	class STD140Offsets {
@@ -115,24 +116,26 @@ namespace Twin2Engine::Tools {
 		);
 		std::vector<size_t> _AddArray(const std::string& name, size_t arraySize, size_t baseAligement, size_t baseOffset
 #if _DEBUG
-			, const ValueType* type
+			, const ValueType* typeTemplate
 #endif
 		);
 
 	public:
 		STD140Offsets() = default;
-		STD140Offsets(STD140Offsets& std140off) = default;
-		STD140Offsets(const STD140Offsets& std140off) = default;
-		STD140Offsets(STD140Offsets&& std140off) = default;
+		STD140Offsets(STD140Offsets& std140off);
+		STD140Offsets(const STD140Offsets& std140off);
+		STD140Offsets(STD140Offsets&& std140off);
 		template<class... Args>
 		STD140Offsets(const STD140Variable<Args>&... vars) {
 			_AddMultiple(vars...);
 		}
-		virtual ~STD140Offsets() = default;
+		virtual ~STD140Offsets();
 
-		STD140Offsets& operator=(STD140Offsets& std140off) = default;
-		STD140Offsets& operator=(const STD140Offsets& std140off) = default;
-		STD140Offsets& operator=(STD140Offsets&& std140off) = default;
+		STD140Offsets& operator=(STD140Offsets& std140off);
+		STD140Offsets& operator=(const STD140Offsets& std140off);
+		STD140Offsets& operator=(STD140Offsets&& std140off);
+
+		DeclareCloneFunc(STD140Offsets)
 
 		bool Contains(const std::string& name) const;
 
@@ -445,7 +448,7 @@ namespace Twin2Engine::Tools {
 						values.push_back(std::move(_AddArray(valueName, C, 4 * R, 4 * R, rowType)[0]));
 						size_t nameHash = _hasher(valueName);
 						delete _types[nameHash];
-						_types[nameHash] = matType;
+						_types[nameHash] = matType->Clone();
 #else
 						values.push_back(std::move(_AddArray(std::move(std::vformat(_arrayElemFormat, std::make_format_args(name, i))), C, 4 * R, 4 * R)[0]));
 #endif
@@ -456,7 +459,7 @@ namespace Twin2Engine::Tools {
 						values.push_back(std::move(_AddArray(valueName, C, 4 * (R + 1), 4 * R, rowType)[0]));
 						size_t nameHash = _hasher(valueName);
 						delete _types[nameHash];
-						_types[nameHash] = matType;
+						_types[nameHash] = matType->Clone();
 #else
 						values.push_back(std::move(_AddArray(std::move(std::vformat(_arrayElemFormat, std::make_format_args(name, i))), C, 4 * (R + 1), 4 * R)[0]));
 #endif
@@ -469,7 +472,7 @@ namespace Twin2Engine::Tools {
 						values.push_back(std::move(_AddArray(valueName, C, sizeof(T) * R, sizeof(T) * R, rowType)[0]));
 						size_t nameHash = _hasher(valueName);
 						delete _types[nameHash];
-						_types[nameHash] = matType;
+						_types[nameHash] = matType->Clone();
 #else
 						values.push_back(std::move(_AddArray(std::move(std::vformat(_arrayElemFormat, std::make_format_args(name, i))), C, sizeof(T) * R, sizeof(T) * R)[0]));
 #endif
@@ -480,7 +483,7 @@ namespace Twin2Engine::Tools {
 						values.push_back(std::move(_AddArray(valueName, C, sizeof(T) * (R + 1), sizeof(T) * R, rowType)[0]));
 						size_t nameHash = _hasher(valueName);
 						delete _types[nameHash];
-						_types[nameHash] = matType;
+						_types[nameHash] = matType->Clone();
 #else
 						values.push_back(std::move(_AddArray(std::move(std::vformat(_arrayElemFormat, std::make_format_args(name, i))), C, sizeof(T) * (R + 1), sizeof(T) * R)[0]));
 #endif
@@ -526,13 +529,11 @@ namespace Twin2Engine::Tools {
 				return 0;
 			}
 
-			
+			size_t aligementOffset = std::move(_Add(name, structTemplate.GetBaseAligement(), structTemplate._currentOffset
 #if _DEBUG
-
-			size_t aligementOffset = std::move(_Add(name, structTemplate.GetBaseAligement(), structTemplate._currentOffset, new StructType(structTemplate)));
-#else
-			size_t aligementOffset = std::move(_Add(name, structTemplate.GetBaseAligement(), structTemplate._currentOffset));
+				, new StructType(structTemplate)
 #endif
+			));
 			std::string valueName;
 			size_t nameHash;
 			for (const auto& off : structTemplate._offsets) {
@@ -608,7 +609,7 @@ namespace Twin2Engine::Tools {
 				arrayElemName = std::move(std::vformat(_arrayElemFormat, std::make_format_args(name, i)));
 				values.push_back((aligementOffset = std::move(_Add(arrayElemName, structTemplate.GetBaseAligement(), structTemplate._currentOffset
 #if _DEBUG
-					, structType
+					, structType->Clone()
 #endif
 				))));
 

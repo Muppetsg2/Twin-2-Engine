@@ -60,6 +60,61 @@ bool STD140Offsets::_CheckVariable(const std::string& name) const
 	return c;
 }
 
+STD140Offsets::~STD140Offsets()
+{
+	Clear();
+}
+
+STD140Offsets::STD140Offsets(STD140Offsets& std140off)
+{
+	std140off.CloneTo(this);
+}
+
+STD140Offsets::STD140Offsets(const STD140Offsets& std140off)
+{
+	std140off.CloneTo(this);
+}
+
+STD140Offsets::STD140Offsets(STD140Offsets&& std140off)
+{
+	std140off.CloneTo(this);
+}
+
+STD140Offsets& STD140Offsets::operator=(STD140Offsets& std140off)
+{
+	std140off.CloneTo(this);
+	return *this;
+}
+
+STD140Offsets& STD140Offsets::operator=(const STD140Offsets& std140off)
+{
+	std140off.CloneTo(this);
+	return *this;
+}
+
+STD140Offsets& STD140Offsets::operator=(STD140Offsets&& std140off)
+{
+	std140off.CloneTo(this);
+	return *this;
+}
+
+#if _DEBUG
+DefineCloneFunc(Twin2Engine::Tools::STD140Offsets,
+	StandardClone(_currentOffset),
+	StandardClone(_maxAligement),
+	StandardClone(_offsets),
+	StandardClone(_names),
+	_types, _types; for (const auto& type : _types) { cloned->_types[type.first] = type.second->Clone(); }
+)
+#else
+DefineCloneFunc(Twin2Engine::Tools::STD140Offsets,
+	StandardClone(_currentOffset),
+	StandardClone(_maxAligement),
+	StandardClone(_offsets),
+	StandardClone(_names)
+)
+#endif
+
 bool STD140Offsets::Contains(const std::string& name) const
 {
 #if TRACY_PROFILER
@@ -149,7 +204,7 @@ size_t STD140Offsets::_Add(const string& name, size_t baseAligement, size_t base
 
 vector<size_t> STD140Offsets::_AddArray(const string& name, size_t arraySize, size_t baseAligement, size_t baseOffset
 #if _DEBUG
-	, const ValueType* type
+	, const ValueType* typeTemplate
 #endif	
 	)
 {
@@ -249,7 +304,7 @@ vector<size_t> STD140Offsets::_AddArray(const string& name, size_t arraySize, si
 #endif
 #endif
 #if _DEBUG
-			_types[valueNameHash] = type;
+			_types[valueNameHash] = typeTemplate->Clone();
 #endif
 #if TRACY_PROFILER
 #if _DEBUG
@@ -275,7 +330,7 @@ vector<size_t> STD140Offsets::_AddArray(const string& name, size_t arraySize, si
 		_offsets[nameHash] = arrayElemOffsets[0];
 		_names[nameHash] = name;
 #if _DEBUG
-		_types[nameHash] = new ArrayType(type, arraySize);
+		_types[nameHash] = new ArrayType(typeTemplate, arraySize);
 #endif
 #if TRACY_PROFILER
 		FrameMarkEnd(tracy_AddArraySetBeginPointer);
@@ -420,14 +475,14 @@ void STD140Offsets::Clear()
 
 	_offsets.clear();
 	_names.clear();
-
 #if _DEBUG
 	for (auto& type : _types) {
+		if (type.second == nullptr) continue;
 		delete type.second;
+		type.second = nullptr;
 	}
 	_types.clear();
 #endif
-
 #if TRACY_PROFILER
 	FrameMarkEnd(tracy_Clear);
 #endif

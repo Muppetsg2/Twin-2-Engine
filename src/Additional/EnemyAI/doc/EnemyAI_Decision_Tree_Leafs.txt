@@ -1,0 +1,25 @@
+Fighting:
+- Draw
+- Win
+- Lose
+
+Taking Over:
+- Album Ability
+- Concert Ability
+- Fans Meeting Ability
+- Move to Next Tile
+- Nothing
+
+Moving:
+- Start Taking Over
+- Fight
+- Album Ability
+- Concert Ability
+- Move to Next Tile
+
+Radio Station:
+- Fail
+- Good 1
+- Good 2
+- Good 3
+- Good 4

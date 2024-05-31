@@ -115,7 +115,7 @@ void AStarPathfinder::RemapNodes()
 		for (size_t j = i + 1ull; j < size; ++j)
 		{
 			targetPosY0 = targetPos = _registeredNodes[j]->GetTransform()->GetGlobalPosition();
-			//targetPosY0.y = 0.0f;
+			targetPosY0.y = 0.0f;
 
 			distance = glm::distance(currentPosY0, targetPosY0);
 			if (distance <= _maxMappingDistance)
@@ -186,6 +186,9 @@ void AStarPathfinder::FindingPath(size_t threadId,
 	AStarPathfindingNode* closestToBegin = FindClosestNode(beginPosition);
 	AStarPathfindingNode* closestToEnd = FindClosestNode(endPosition);
 
+	vec3 endPositionY0 = endPosition;
+	endPositionY0.y = 0.0f;
+
 	vector<vec3> path;
 	AStarNode* result = nullptr;
 	if (closestToBegin == closestToEnd)
@@ -237,6 +240,8 @@ void AStarPathfinder::FindingPath(size_t threadId,
 
 			size_t size = connected.size();
 
+			vec3 allocatedPosY0 = allocatedNode->position;
+			allocatedPosY0.y = 0.0;
 			for (size_t index = 0ull; index < size; ++index)
 			{
 				if (!usedNodes.contains(connected[index].targetNode))
@@ -249,7 +254,8 @@ void AStarPathfinder::FindingPath(size_t threadId,
 						allocatedNodes.push_back(allocatedNode);
 
 						//priorityQueue.Enqueue(allocatedNode, connected[index].targetDistance);
-						priorityQueue.Enqueue(allocatedNode, allocatedNode->costFromStart + glm::distance(allocatedNode->position, endPosition));
+						
+						priorityQueue.Enqueue(allocatedNode, allocatedNode->costFromStart + glm::distance(allocatedPosY0, endPositionY0));
 					}
 
 					usedNodes.insert(connected[index].targetNode);

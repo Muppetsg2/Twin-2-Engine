@@ -1,0 +1,7 @@
+material:
+  name: tiles/normal/CyanHexTileStage3
+  shader: origin/Textured
+  parameters:
+    - name: texture1
+      type: texture2D
+      value: res/textures/tiles/cyan3.png

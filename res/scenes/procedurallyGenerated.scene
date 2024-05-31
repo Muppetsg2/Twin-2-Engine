@@ -159,7 +159,7 @@ GameObjects:
         cameraMode: 0
         samples: 4
         renderRes: 0
-        gamma: 2.20000005
+        gamma: 1
         worldUp:
           x: 0
           y: 1
@@ -310,8 +310,8 @@ GameObjects:
       id: 11
       enabled: true
       position:
-        x: 400
-        y: 0
+        x: 800
+        y: 500
         z: 0
       scale:
         x: 1
@@ -743,8 +743,8 @@ GameObjects:
         enabled: true
         type: PlaneGenerator
         isTransparent: true
-        rows: 45
-        columns: 45
+        rows: 70
+        columns: 70
         materials:
           - 9
     children:

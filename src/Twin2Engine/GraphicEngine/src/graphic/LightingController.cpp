@@ -306,7 +306,7 @@ void LightingController::RenderDynamicShadowMaps() {
 	for (auto light : dirLights) {
 		//Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->lightSpaceMatrix);
 		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMapDynamic(light->shadowMapFBO, light->lightSpaceMatrix);
-		glActiveTexture(GL_TEXTURE0 + MAPS_BEGINNING + 2 * i + 1);
+		glActiveTexture(GL_TEXTURE0 + MAPS_BEGINNING + i + 1);
 		glBindTexture(GL_TEXTURE_2D, light->shadowMapDynamic);
 
 		++i;
@@ -314,6 +314,9 @@ void LightingController::RenderDynamicShadowMaps() {
 
 	glm::ivec2 wSize = Twin2Engine::Graphic::Window::GetInstance()->GetContentSize();
 	glViewport(0, 0, wSize.x, wSize.y);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glCullFace(GL_BACK);
 }

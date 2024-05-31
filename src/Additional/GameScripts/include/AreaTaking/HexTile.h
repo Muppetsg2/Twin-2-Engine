@@ -3,9 +3,14 @@
 #include <core/Component.h>
 #include <core/GameObject.h>
 #include <core/Time.h>
+#include <GameManager.h>
+
+#include <core/MeshRenderer.h>
+#include <graphic/Material.h>
 
 #include <Generation/MapHexTile.h>
 
+#include <AreaTaking/HexTileTexturesData.h>
 
 
 
@@ -20,7 +25,9 @@ class Playable;
 
 class HexTile : public Twin2Engine::Core::Component
 {
+	static std::vector<std::vector<Twin2Engine::Graphic::Material>> _coloredHexTileTextures;
 	Generation::MapHexTile* _mapHexTile = nullptr;
+	Twin2Engine::Core::MeshRenderer* _meshRenderer = nullptr;
 
 	void TakeOver();
 	void LoseInfluence();
@@ -28,6 +35,8 @@ class HexTile : public Twin2Engine::Core::Component
 	void UpdateBorders();
 	void CheckRoundPattern();
 public:
+	HexTileTextureData* textuesData;
+
 
 	bool isFighting = false;
 	Playable* occupyingEntity = nullptr;
@@ -48,7 +57,7 @@ public:
 	std::vector<Twin2Engine::Core::GameObject*> borders;
 	std::vector<Twin2Engine::Core::GameObject*> borderJoints;
 
-	float remoteMultiplier;
+	float remoteMultiplier = 1.0f;
 	int totalTileFans;
 
 	glm::vec3 sterowiecPos;

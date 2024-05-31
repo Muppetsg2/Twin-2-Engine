@@ -249,6 +249,8 @@ bool ScriptableObjectClass::Deserialize(const YAML::Node& node) \
 	field = node[name].as<decltype(field)>();
 #define SO_DESERIALIZE_FIELD_F_R(name, field, deserializer) \
 	field = deserializer(node[name]);
+#define SO_DESERIALIZE_FIELD_F_T_R(name, field, deserializer, type) \
+	field = deserializer(node[name].as<type>());
 //#define SO_DESERIALIZE_FIELD(field, type) \
 //	field = node[#field].as<type>();
 //#define SO_DESERIALIZE_FIELD_R(name, field, type) \

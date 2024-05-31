@@ -191,6 +191,7 @@ void PlayerMovement::Update() {
             if (_path->IsOnEnd())
             {
                 reachEnd = true;
+                SPDLOG_INFO("On end of path");
                 OnFinishMoving(GetGameObject(), destinatedTile);
             }
             transform->SetGlobalPosition(_waypoint);

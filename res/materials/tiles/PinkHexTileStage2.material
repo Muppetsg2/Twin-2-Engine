@@ -1,10 +1,7 @@
 material:
   name: tiles/PinkHexTileStage2
-  shader: tile/TileBasic
+  shader: origin/Textured
   parameters:
-    - name: color
-      type: vec4
-      value: [1.0, 0.41, 0.71, 1.0]
-    - name: texture
+    - name: texture1
       type: texture2D
-      value: res/textures/tiles/tileTakenStage2.png
+      value: res/textures/tiles/pink2d.png

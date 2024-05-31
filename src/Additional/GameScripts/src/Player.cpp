@@ -32,7 +32,7 @@ void Player::Initialize() {
     move = GetGameObject()->GetComponent<PlayerMovement>();
     move->OnFinishMoving += [this](GameObject* gameObject, HexTile* tile) { FinishMove(tile); };
     move->OnStartMoving += [this](GameObject* gameObject, HexTile* tile) { StartMove(tile); };
-    if (patron->patronBonus == PatronBonus::MoveRange) {
+    if (patron && patron->patronBonus == PatronBonus::MoveRange) {
         float r = move->radius;
         int s = move->maxSteps;
         move->radius += patron->GetBonus();
@@ -50,7 +50,7 @@ void Player::Initialize() {
 }
 
 void Player::Update() {
-    if (!GameManager::instance->gameStarted) hexIndicator->SetActive(false);
+    if (!GameManager::instance->gameStarted && hexIndicator) hexIndicator->SetActive(false);
 
     if (!GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
         UpdatePrices();
@@ -182,7 +182,7 @@ void Player::StartMove(HexTile* tile) {
         //    obj->ResetInfo();
         //}
     }
-    else {
+    else if (hexIndicator) {
         hexIndicator->SetActive(false);
     }
 
@@ -196,6 +196,8 @@ void Player::StartMove(HexTile* tile) {
 }
 
 void Player::FinishMove(HexTile* tile) {
+    SPDLOG_INFO("FInished movement");
+
     if (CurrTile != tile) {
         CurrTile->StopTakingOver(this);
         CurrTile = tile;
@@ -205,8 +207,11 @@ void Player::FinishMove(HexTile* tile) {
         return;
     }
 
-    hexIndicator->SetActive(true);
-    hexIndicator->GetTransform()->SetGlobalPosition(CurrTile->sterowiecPos);
+    if (hexIndicator)
+    {
+        hexIndicator->SetActive(true);
+        hexIndicator->GetTransform()->SetGlobalPosition(CurrTile->sterowiecPos);
+    }
 
     if (tile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::RadioStation && tile->state != TileState::Occupied) {
         GameManager::instance->StartMinigame();

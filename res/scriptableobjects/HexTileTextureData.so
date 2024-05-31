@@ -1,0 +1,7 @@
+scriptable_object:
+  __SO_RegisteredName__: HexTileTextureData
+  _materialNames: 
+   - - tiles/NeutralHexTileStage0
+     - tiles/BlueHexTileStage1
+     - tiles/BlueHexTileStage2
+     - tiles/BlueHexTileStage3

@@ -3,13 +3,17 @@
 #include <Playable.h>
 
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Graphic;
 using namespace Generation;
 using namespace glm;
 using namespace std;
 
+static std::vector<std::vector<Material>> _coloredHexTileTextures;
+
 void HexTile::Initialize()
 {
 	_mapHexTile = GetGameObject()->GetComponent<MapHexTile>();
+	_meshRenderer = GetGameObject()->GetComponent<MeshRenderer>();
 }
 
 void HexTile::OnDestroy()
@@ -18,6 +22,17 @@ void HexTile::OnDestroy()
 
 void HexTile::Update()
 {
+	if (!minigameActive && !GameManager::instance->minigameActive && _mapHexTile->type != MapHexTile::HexTileType::Mountain && !isFighting)
+	{
+		if (state == TileState::Occupied || state == TileState::RemoteOccupying)
+		{
+			TakeOver();
+		}
+		else if (state == TileState::Taken && !isAlbumActive)
+		{
+			LoseInfluence();
+		}
+	}
 }
 
 Generation::MapHexTile* HexTile::GetMapHexTile() const
@@ -30,6 +45,7 @@ YAML::Node HexTile::Serialize() const
 	YAML::Node node = Component::Serialize();
 
 	node["type"] = "HexTile";
+	node["textuesData"] = Twin2Engine::Manager::ScriptableObjectManager::GetPath(textuesData->GetId());
 
 	return node;
 }
@@ -40,6 +56,7 @@ bool HexTile::Deserialize(const YAML::Node& node)
 		return false;
 
 
+	textuesData = dynamic_cast<HexTileTextureData*>(Twin2Engine::Manager::ScriptableObjectManager::Load(node["textuesData"].as<string>()));
 	return true;
 }
 
@@ -62,6 +79,7 @@ bool HexTile::DrawInheritedFields()
 	}
 	ImGui::Text("percentage: %f", percentage);
 	ImGui::Text("currCooldown: %f", currCooldown);
+
 	return false;
 }
 
@@ -158,6 +176,24 @@ void HexTile::LoseInfluence()
 
 void HexTile::UpdateTileColor()
 {
+	//SPDLOG_INFO("Percentage: {}", percentage);
+	if (percentage < 30.0f)
+	{
+		_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][0].GetId());
+	}
+	else if (percentage < 60.0f)
+	{
+		_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][1].GetId());
+	}
+	else if (percentage < 80.0f)
+	{
+		_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][2].GetId());
+	}
+	else
+	{
+		_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][3].GetId());
+	}
+
 }
 
 void HexTile::UpdateBorders()
@@ -169,14 +205,16 @@ void HexTile::CheckRoundPattern()
 }
 
 void HexTile::StartTakingOver(Playable* entity) {
+	SPDLOG_INFO("Starting taking over");
+
 	if (state != TileState::Occupied) {
 		state = TileState::Occupied;
 		occupyingEntity = entity;
 	}
 	else if (occupyingEntity != entity && !isFighting) {
-		//entity->StartPaperRockScissors(occupyingEntity);
-		//occupyingEntity->StartPaperRockScissors(entity);
-		//isFighting = true;
+		entity->StartPaperRockScissors(occupyingEntity);
+		occupyingEntity->StartPaperRockScissors(entity);
+		isFighting = true;
 	}
 }
 

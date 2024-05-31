@@ -1,10 +1,7 @@
 material:
   name: tiles/BlueHexTileStage3
-  shader: tile/TileBasic
+  shader: origin/Textured
   parameters:
-    - name: color
-      type: vec4
-      value: [0.0, 0.0, 1.0, 1.0]
-    - name: texture
+    - name: texture1
       type: texture2D
-      value: res/textures/tiles/tileTakenStage3.png
+      value: res/textures/tiles/blue3d.png

@@ -11,6 +11,12 @@ Audio: ~
 Materials:
   - id: 0
     path: tiles/NeutralHexTileStage0
+  - id: 1
+    path: tiles/BlueHexTileStage1
+  - id: 2
+    path: tiles/BlueHexTileStage2
+  - id: 3
+    path: tiles/BlueHexTileStage3
 Models:
   - id: 0
     path: res/models/hexagon.obj
@@ -78,3 +84,4 @@ Root:
     - id: 5
       enabled: true
       type: HexTile
+      textuesData: res/scriptableobjects/HexTileTextureData.so

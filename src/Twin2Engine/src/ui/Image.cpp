@@ -17,21 +17,23 @@ using namespace std;
 void Image::Render()
 {
 	Sprite* sprite = SpriteManager::GetSprite(_spriteId);
+	
+	if (sprite != nullptr) {
+		UIImageData image{};
+		image.canvas = nullptr; // Na ten moment tylko na ekranie siê wyœwietla
+		image.mask = nullptr; // Na ten moment nie ma maski
+		image.layer = _layer;
 
-	UIImageData image{};
-	image.canvas = nullptr; // Na ten moment tylko na ekranie siê wyœwietla
-	image.mask = nullptr; // Na ten moment nie ma maski
-	image.layer = _layer;
+		image.rectTransform = UIRectData{
+			.transform = GetTransform()->GetTransformMatrix(),
+			.size = { _width, _height }
+		};
 
-	image.rectTransform = UIRectData{
-		.transform = GetTransform()->GetTransformMatrix(),
-		.size = { _width, _height }
-	};
+		image.sprite = sprite;
+		image.color = _color;
 
-	image.sprite = sprite;
-	image.color = _color;
-
-	UIRenderingManager::Render(image);
+		UIRenderingManager::Render(image);
+	}
 }
 
 YAML::Node Image::Serialize() const

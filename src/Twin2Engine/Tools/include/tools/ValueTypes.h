@@ -32,7 +32,7 @@ namespace Twin2Engine::Tools {
 	protected:
 		ValueType() = default;
 	public:
-		~ValueType() = default;
+		virtual ~ValueType() = default;
 
 		CloneFunc(ValueType);
 	};
@@ -45,7 +45,7 @@ namespace Twin2Engine::Tools {
 		ScalarType() = default;
 	public:
 		ScalarType(const VALUE_TYPE& type);
-		~ScalarType() = default;
+		virtual ~ScalarType() = default;
 
 		CloneBaseFunc(ScalarType, ValueType, _type)
 
@@ -62,7 +62,7 @@ namespace Twin2Engine::Tools {
 
 	public:
 		VecType(const VALUE_TYPE& type, const size_t& length);
-		~VecType() = default;
+		virtual ~VecType() = default;
 
 		CloneBaseFunc(VecType, ValueType, _type, _length)
 
@@ -80,7 +80,7 @@ namespace Twin2Engine::Tools {
 		MatType() = default;
 	public:
 		MatType(const VALUE_TYPE& type, const size_t& cols, const size_t& rows);
-		~MatType() = default;
+		virtual ~MatType() = default;
 
 		CloneBaseFunc(MatType, ValueType, _type, _cols, _rows)
 
@@ -99,7 +99,7 @@ namespace Twin2Engine::Tools {
 		StructType() = default;
 	public:
 		StructType(const STD140Offsets& offsets);
-		~StructType();
+		virtual ~StructType();
 
 		DeclareCloneBaseFunc(StructType);
 
@@ -115,7 +115,7 @@ namespace Twin2Engine::Tools {
 		ArrayType() = default;
 	public:
 		ArrayType(const ValueType*& type, const size_t& length);
-		~ArrayType();
+		virtual ~ArrayType();
 
 		CloneAdvancedBaseFunc(ArrayType, ValueType, _type, _type->Clone(), StandardClone(_length));
 

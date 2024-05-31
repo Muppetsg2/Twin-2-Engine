@@ -834,9 +834,9 @@ namespace Twin2Engine::Tools {
 
 	public:
 		STD140Struct() = default;
-		STD140Struct(STD140Struct& std140s) = default;
-		STD140Struct(const STD140Struct& std140s) = default;
-		STD140Struct(STD140Struct&& std140s) = default;
+		STD140Struct(STD140Struct& std140s);
+		STD140Struct(const STD140Struct& std140s);
+		STD140Struct(STD140Struct&& std140s);
 		STD140Struct(const STD140Offsets& structOffsets, const std::vector<char>& data = std::vector<char>());
 		template<class... Args>
 		STD140Struct(const STD140Variable<Args>&... vars) {
@@ -851,7 +851,7 @@ namespace Twin2Engine::Tools {
 		STD140Struct(const STD140Value<Args>&... values) {
 			_AddMultiple(values...);
 		}*/
-		virtual ~STD140Struct() = default;
+		virtual ~STD140Struct();
 
 		STD140Struct& operator=(STD140Struct& std140s) = default;
 		STD140Struct& operator=(const STD140Struct& std140s) = default;

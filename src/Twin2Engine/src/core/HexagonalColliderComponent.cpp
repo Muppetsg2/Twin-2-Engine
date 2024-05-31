@@ -6,11 +6,6 @@
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Physic;
 
-HexagonalColliderComponent::HexagonalColliderComponent() : ColliderComponent()
-{
-	collider = new GameCollider(this, new HexagonalColliderData());
-}
-
 void HexagonalColliderComponent::SetBaseLength(float v)
 {
 	((HexagonalColliderData*)collider->shapeColliderData)->BaseLength = v;
@@ -29,6 +24,8 @@ void HexagonalColliderComponent::SetYRotation(float v)
 
 void HexagonalColliderComponent::Initialize()
 {
+	if (collider == nullptr)
+		collider = new GameCollider(this, new HexagonalColliderData());
 	collider->colliderComponent = this;
 	TransformChangeAction = [this](Transform* transform) {
 		HexagonalColliderData* hexData = ((HexagonalColliderData*)collider->shapeColliderData);
@@ -72,6 +69,7 @@ void HexagonalColliderComponent::OnDestroy()
 {
 	GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
 	CollisionManager::Instance()->UnregisterCollider(collider);
+	delete collider;
 }
 
 void HexagonalColliderComponent::Update()
@@ -103,8 +101,12 @@ YAML::Node HexagonalColliderComponent::Serialize() const
 
 bool HexagonalColliderComponent::Deserialize(const YAML::Node& node)
 {
-	if (!node["baseLength"] || !node["halfHeight"] || !node["rotation"] ||
-		!ColliderComponent::Deserialize(node)) return false;
+	if (!node["baseLength"] || !node["halfHeight"] || !node["rotation"]) return false;
+
+	if (collider == nullptr)
+		collider = new GameCollider(this, new HexagonalColliderData());
+
+	if (!ColliderComponent::Deserialize(node)) return false;
 
 	((HexagonalColliderData*)collider->shapeColliderData)->BaseLength = node["baseLength"].as<float>();
 	((HexagonalColliderData*)collider->shapeColliderData)->HalfHeight = node["halfHeight"].as<float>();

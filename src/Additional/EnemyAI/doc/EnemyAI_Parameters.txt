@@ -1,0 +1,3 @@
+- noteLuck (range: 0%-100%)
+- winChance (winChance + drawChance <= 90%)
+- drawChance (winChance + drawChance <= 90%)

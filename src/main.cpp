@@ -356,7 +356,7 @@ int main(int, char**)
 #endif
 
         begin_imgui();
-        render_imgui(); // edit this function to add your own ImGui controls
+        //render_imgui(); // edit this function to add your own ImGui controls
         end_imgui(); // this call effectively renders ImGui
 
 #if TRACY_PROFILER

@@ -734,3 +734,72 @@ bool CollisionManager::Raycast(Ray& ray, RaycastHit& raycastHit)
 
 	return raycastHit.collider != nullptr;
 }
+
+void Twin2Engine::Physic::CollisionManager::OverlapSphere(glm::vec3 spherePosition, float radius, std::vector<Twin2Engine::Core::ColliderComponent*>& collidingWithSphere)
+{
+	SphereColliderData* sphereShape = new SphereColliderData();
+	sphereShape->LocalPosition = spherePosition;
+	sphereShape->Position = spherePosition;
+	sphereShape->Radius = radius;
+	Collider* collider = new GameCollider(nullptr, sphereShape);
+
+	Twin2Engine::Physic::Collision* collision;
+
+	for (auto other : DefaultLayer) {
+		collision = Twin2Engine::Physic::Collider::testCollision(collider, other, false);
+		if (collision != nullptr) {
+			collidingWithSphere.push_back(((Twin2Engine::Physic::GameCollider*)collision->otherCollider)->colliderComponent);
+			delete collision;
+		}
+	}
+
+	for (auto other : IgnoreRaycastLayer) {
+		collision = Twin2Engine::Physic::Collider::testCollision(collider, other, false);
+		if (collision != nullptr) {
+			collidingWithSphere.push_back(((Twin2Engine::Physic::GameCollider*)collision->otherCollider)->colliderComponent);
+			delete collision;
+		}
+	}
+
+	for (auto other : IgnoreCollisionLayer) {
+		collision = Twin2Engine::Physic::Collider::testCollision(collider, other, false);
+		if (collision != nullptr) {
+			collidingWithSphere.push_back(((Twin2Engine::Physic::GameCollider*)collision->otherCollider)->colliderComponent);
+			delete collision;
+		}
+	}
+
+	for (auto other : Layer1) {
+		collision = Twin2Engine::Physic::Collider::testCollision(collider, other, false);
+		if (collision != nullptr) {
+			collidingWithSphere.push_back(((Twin2Engine::Physic::GameCollider*)collision->otherCollider)->colliderComponent);
+			delete collision;
+		}
+	}
+
+	for (auto other : Layer2) {
+		collision = Twin2Engine::Physic::Collider::testCollision(collider, other, false);
+		if (collision != nullptr) {
+			collidingWithSphere.push_back(((Twin2Engine::Physic::GameCollider*)collision->otherCollider)->colliderComponent);
+			delete collision;
+		}
+	}
+
+	for (auto other : Layer3) {
+		collision = Twin2Engine::Physic::Collider::testCollision(collider, other, false);
+		if (collision != nullptr) {
+			collidingWithSphere.push_back(((Twin2Engine::Physic::GameCollider*)collision->otherCollider)->colliderComponent);
+			delete collision;
+		}
+	}
+
+	for (auto other : Layer4) {
+		collision = Twin2Engine::Physic::Collider::testCollision(collider, other, false);
+		if (collision != nullptr) {
+			collidingWithSphere.push_back(((Twin2Engine::Physic::GameCollider*)collision->otherCollider)->colliderComponent);
+			delete collision;
+		}
+	}
+
+	delete collider;
+}

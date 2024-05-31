@@ -47,6 +47,8 @@ void GameEngine::Deserializers()
     ADD_COMPONENT("PointLight", PointLightComponent);
 
     ADD_COMPONENT("SpotLight", SpotLightComponent);
+
+    ADD_COMPONENT("Cloud", Cloud);
 }
 
 void GameEngine::Update()
@@ -218,6 +220,9 @@ bool GameEngine::Init(const string& window_name, int32_t window_width, int32_t w
     spdlog::info("Initialized SoLoud.");
 
 	Deserializers();
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	return true;
 }

@@ -20,6 +20,8 @@ namespace GameScripts {
 			float DragScale = 0.01f;
 			glm::vec2 DragStartPos = glm::vec2(0.0f, 0.0f);
 			glm::vec3 CameraStartPos = glm::vec3(0.0f);
+            glm::vec2 MinimalPos = glm::vec2(-10.0f, -5.0f);
+            glm::vec2 MaximalPos = glm::vec2(10.0f, 15.0f);
 
 			/*
 			* PUSHING BORDER
@@ -69,6 +71,29 @@ namespace GameScripts {
                         BorderMove();
                     }
 				}
+
+                glm::vec3 CameraPos = CameraComponent::GetMainCamera()->GetTransform()->GetGlobalPosition();
+                bool change = false;
+                if (CameraPos.x < MinimalPos.x) {
+                    CameraPos.x = MinimalPos.x;
+                    change = true;
+                }
+                if (CameraPos.z < MinimalPos.y) {
+                    CameraPos.z = MinimalPos.y;
+                    change = true;
+                }
+                if (CameraPos.x > MaximalPos.x) {
+                    CameraPos.x = MaximalPos.x;
+                    change = true;
+                }
+                if (CameraPos.z > MaximalPos.y) {
+                    CameraPos.z = MaximalPos.y;
+                    change = true;
+                }
+
+                if (change) {
+                    CameraComponent::GetMainCamera()->GetTransform()->SetGlobalPosition(CameraPos);
+                }
 			}
 
 			virtual YAML::Node Serialize() const override {

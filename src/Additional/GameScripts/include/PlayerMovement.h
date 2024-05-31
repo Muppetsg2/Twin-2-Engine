@@ -41,7 +41,6 @@ class PlayerMovement : public Component {
 		AStar::AStarPath* _path = nullptr;
 		Tilemap::HexagonalTilemap* _tilemap = nullptr;
 		//int currWaypoint = 0;
-		bool reachEnd = true;
 		glm::vec3 _waypoint;
 		float _heightOverSurface = 0.0f;
 
@@ -53,6 +52,7 @@ class PlayerMovement : public Component {
 	public:
 		//Moving
 
+		bool reachEnd = true;
 		glm::vec3 destination;
 		float speed = 0.7f;
 		int maxSteps = 5;

@@ -59,6 +59,8 @@
 #include <processes/TimerProcess.h>
 
 
+#include <Clouds/Cloud.h>
+
 
 namespace Twin2Engine {
 	class GameEngine {

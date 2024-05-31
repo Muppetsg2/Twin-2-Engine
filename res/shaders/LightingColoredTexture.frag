@@ -72,6 +72,9 @@ struct DirectionalLight {
 	vec3 color;         // Color of the spot light
 	mat4 lightSpaceMatrix;
 	float power;		  // Light source power
+    int padding1;
+    int padding2;
+    int padding3;
 };
 
 layout (std430, binding = 2) buffer Lights {
@@ -80,7 +83,7 @@ layout (std430, binding = 2) buffer Lights {
 	uint numberOfDirLights;
     PointLight pointLights[8];
     SpotLight spotLights[8];
-    DirectionalLight directionalLights[4];
+    DirectionalLight directionalLights[2];
 };
 
 layout(std140, binding = 3) uniform LightingData {
@@ -118,21 +121,27 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
     //float bias = 0.005;
     // check whether current frag pos is in shadow
     //float shadow = (currentDepth) < closestDepth  ? 1.0 : 0.0;
-
+    
+    uint smId = shadowMapId;
+    //ffloat closestDepthStatic = texture(DirLightShadowMaps[smId], projCoords.xy).r; 
+    //ffloat closestDepthDynamic = texture(DirLightShadowMaps[smId + 1], projCoords.xy).r; 
+    //iif (closestDepthStatic > closestDepthDynamic) {
+    //     smId += 1;
+    //}}
+       
     // PCF
     float shadow = 0.0;
-    vec2 texelSize = 0.5 * 1.0 / textureSize(DirLightShadowMaps[shadowMapId], 0);
+    vec2 texelSize = 0.5 * 1.0 / textureSize(DirLightShadowMaps[smId], 0);
     float pcfDepth = 0.0;
     for(int x = -1; x <= 1; ++x)
     {
         for(int y = -1; y <= 1; ++y)
         {
-            pcfDepth = texture(DirLightShadowMaps[shadowMapId], projCoords.xy + vec2(x, y) * texelSize).r; 
+            pcfDepth = texture(DirLightShadowMaps[smId], projCoords.xy + vec2(x, y) * texelSize).r; 
             shadow += currentDepth  < pcfDepth  ? 1.0 : 0.0;        
             //shadow += (currentDepth - bias) < pcfDepth  ? 1.0 : 0.0;        
         }    
     }
-    //shadow /= 9.0;
     shadow *= 0.11;
     
     //ESM

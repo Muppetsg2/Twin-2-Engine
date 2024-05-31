@@ -77,5 +77,5 @@ target_link_libraries(${PROJECT_NAME} PUBLIC glfw
 										PhysicEngine
 										#Tilemap
 										#Generation
-										#GameScripts
+										GameScripts
 										Tools)

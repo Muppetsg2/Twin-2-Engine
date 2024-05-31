@@ -89,6 +89,7 @@ using namespace Generation::Generators;
 //GAMESCRIPTS
 #include <MovementController.h>
 #include <GameManager.h>
+#include <Playable.h>
 #include <PlayerMovement.h>
 #include <Player.h>
 #include <Enemy.h>
@@ -307,6 +308,14 @@ int main(int, char**)
         //Editor::Common::ScriptableObjectEditorManager::End();
     };
 #endif
+    //GameObject* go = SceneManager::CreateGameObject();
+    //GameObject* gochild = SceneManager::CreateGameObject(go->GetTransform());
+    //
+    //GameObject* gochild2 = SceneManager::CreateGameObject(go->GetTransform());
+    //gochild->GetTransform()->AddChild(gochild2->GetTransform());
+    //PrefabManager::SaveAsPrefab(go, "ParenChild");
+
+
 
     GameEngine::OnInput += [&]() -> void {
         input();

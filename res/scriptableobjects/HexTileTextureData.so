@@ -1,0 +1,31 @@
+scriptable_object:
+  __SO_RegisteredName__: HexTileTextureData
+  _materialNames: 
+   - - tiles/NeutralHexTileStage0
+     - tiles/BlueHexTileStage1
+     - tiles/BlueHexTileStage2
+     - tiles/BlueHexTileStage3
+   - - tiles/NeutralHexTileStage0
+     - tiles/RedHexTileStage1
+     - tiles/RedHexTileStage2
+     - tiles/RedHexTileStage3
+   - - tiles/NeutralHexTileStage0
+     - tiles/GreenHexTileStage1
+     - tiles/GreenHexTileStage2
+     - tiles/GreenHexTileStage3
+   - - tiles/NeutralHexTileStage0
+     - tiles/PurpleHexTileStage1
+     - tiles/PurpleHexTileStage2
+     - tiles/PurpleHexTileStage3
+   - - tiles/NeutralHexTileStage0
+     - tiles/YellowHexTileStage1
+     - tiles/YellowHexTileStage2
+     - tiles/YellowHexTileStage3
+   - - tiles/NeutralHexTileStage0
+     - tiles/CyanHexTileStage1
+     - tiles/CyanHexTileStage2
+     - tiles/CyanHexTileStage3
+   - - tiles/NeutralHexTileStage0
+     - tiles/PinkHexTileStage1
+     - tiles/PinkHexTileStage2
+     - tiles/PinkHexTileStage3

@@ -7,7 +7,7 @@
 
 constexpr const unsigned int MAX_POINT_LIGHTS = 8;
 constexpr const unsigned int MAX_SPOT_LIGHTS = 8;
-constexpr const unsigned int MAX_DIRECTIONAL_LIGHTS = 4;
+constexpr const unsigned int MAX_DIRECTIONAL_LIGHTS = 2;
 
 namespace Twin2Engine::Graphic {
 
@@ -106,6 +106,7 @@ namespace Twin2Engine::Graphic {
 
 			static glm::vec3 RecalculateDirLightSpaceMatrix(DirectionalLight* light); //, const glm::mat4& viewProjectionInverse
 			void RenderShadowMaps();
+			void RenderDynamicShadowMaps();
 
 			void SetAmbientLight(glm::vec3 ambientLightColor);
 			void SetShininness(float shininness);

@@ -24,9 +24,9 @@ void DirectionalLightComponent::Initialize()
 
 	glGenFramebuffers(1, &light->shadowMapFBO);
 	
-	glGenTextures(1, &light->shadowMap);
+	glGenTextures(1, &light->shadowMapDynamic);
 	glActiveTexture(GL_TEXTURE0 + LightingController::MAPS_BEGINNING + 3);
-	glBindTexture(GL_TEXTURE_2D, light->shadowMap);
+	glBindTexture(GL_TEXTURE_2D, light->shadowMapDynamic);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
 		LightingController::SHADOW_WIDTH, LightingController::SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -36,11 +36,25 @@ void DirectionalLightComponent::Initialize()
 	GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
+	glGenTextures(1, &light->shadowMap);
+	glActiveTexture(GL_TEXTURE0 + LightingController::MAPS_BEGINNING + 3);
+	glBindTexture(GL_TEXTURE_2D, light->shadowMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+		LightingController::SHADOW_WIDTH, LightingController::SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
 	glBindFramebuffer(GL_FRAMEBUFFER, light->shadowMapFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, light->shadowMap, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, light->shadowMapDynamic, 0);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void DirectionalLightComponent::Update()
@@ -86,6 +100,7 @@ void DirectionalLightComponent::OnDestroy()
 
 	LightingController::Instance()->UpdateDirLights();
 
+	glDeleteTextures(1, &light->shadowMapDynamic);
 	glDeleteTextures(1, &light->shadowMap);
 	glDeleteFramebuffers(1, &light->shadowMapFBO);
 

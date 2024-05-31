@@ -2,10 +2,12 @@
 #include <graphic/Window.h>
 
 #include <graphic/manager/MeshRenderingManager.h>
+#include <graphic/manager/ShaderManager.h>
 
 #define max max
 
 using namespace Twin2Engine::Graphic;
+using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Tools;
 
 LightingController* LightingController::instance = nullptr;
@@ -205,8 +207,12 @@ void LightingController::BindLightBuffors(Twin2Engine::Graphic::Shader* shader) 
 	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, LightsBuffer);
 	//glBindBufferBase(GL_UNIFORM_BUFFER, 3, LightingDataBuffer);
 
-	std::string str = "DirLightShadowMaps[";
 	shader->Use();
+	//shader->SetInt("DirLightShadowMaps[0]", MAPS_BEGINNING);
+	//shader->SetInt("DirLightShadowMaps[1]", MAPS_BEGINNING + 1);
+	//shader->SetInt("DirLightShadowMaps[2]", MAPS_BEGINNING + 2);
+	//shader->SetInt("DirLightShadowMaps[3]", MAPS_BEGINNING + 3);
+	std::string str = "DirLightShadowMaps[";
 	for (int i = 0; i < 4; ++i) {
 		shader->SetInt(str.append(std::to_string(i)).append("]").c_str(), MAPS_BEGINNING + i);
 	}
@@ -226,14 +232,32 @@ void LightingController::UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader*
 
 glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* light) { //const glm::mat4& viewProjectionInverse
 	/**/
+	//Twin2Engine::Core::CameraComponent* mainCam = Twin2Engine::Core::CameraComponent::GetMainCamera();
+	//
+	//float zLength = 100.0f;
+	//glm::vec3 lightNewPos = viewerPosition + mainCam->GetFrontDir() * DLShadowCastingRange - light->direction * (zLength * 0.5f);
+	//glm::mat4 viewMatrix = glm::lookAt(lightNewPos, lightNewPos + light->direction, glm::vec3(0.0f, 1.0f, 0.0f));
+	//
+	//float orthoHeight = 20.0f;
+	//float orthoWidth = 20.0f;
+	//
+	////light->lightSpaceMatrix = glm::ortho(-(maxX + lightMargin), maxX + lightMargin, -(maxY + lightMargin), maxY + lightMargin, -zLength, zLength) * viewMatrix;/**/
+	//light->lightSpaceMatrix = glm::ortho(-orthoWidth, orthoWidth, -orthoHeight, orthoHeight, -zLength, zLength) * viewMatrix;/**/
+	////light->lightSpaceMatrix = glm::ortho(-maxX * MarginScaleX + XMovement, maxX * MarginScaleX + XMovement, -(maxY * MarginScaleX), maxY * MarginScaleX, -zLength, zLength) * viewMatrix;/**/
+	//
+	//lastViewerPosition = viewerPosition;
+	//lastViewerPositionSet = true;
+	//
+	//return std::move(lightNewPos);
 	Twin2Engine::Core::CameraComponent* mainCam = Twin2Engine::Core::CameraComponent::GetMainCamera();
 
 	float zLength = 100.0f;
-	glm::vec3 lightNewPos = viewerPosition + mainCam->GetFrontDir() * DLShadowCastingRange - light->direction * (zLength * 0.5f);
+	glm::vec3 offset(-18.0f, 0.0f, 18.0f);
+	glm::vec3 lightNewPos = viewerPosition + mainCam->GetFrontDir() * DLShadowCastingRange - light->direction * (zLength * 0.5f) + offset;
 	glm::mat4 viewMatrix = glm::lookAt(lightNewPos, lightNewPos + light->direction, glm::vec3(0.0f, 1.0f, 0.0f));
 
-	float orthoHeight = 20.0f;
-	float orthoWidth = 20.0f;
+	float orthoHeight = 13.0f;
+	float orthoWidth = 13.0f;
 
 	//light->lightSpaceMatrix = glm::ortho(-(maxX + lightMargin), maxX + lightMargin, -(maxY + lightMargin), maxY + lightMargin, -zLength, zLength) * viewMatrix;/**/
 	light->lightSpaceMatrix = glm::ortho(-orthoWidth, orthoWidth, -orthoHeight, orthoHeight, -zLength, zLength) * viewMatrix;/**/
@@ -241,6 +265,9 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 
 	lastViewerPosition = viewerPosition;
 	lastViewerPositionSet = true;
+
+	ShaderManager::CloudLightDepthShader->Use();
+	ShaderManager::CloudLightDepthShader->SetMat4("projectionViewMatrix", light->lightSpaceMatrix);
 
 	return std::move(lightNewPos);
 }
@@ -254,15 +281,42 @@ void LightingController::RenderShadowMaps() {
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 	for (auto light : dirLights) {
 		//Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->lightSpaceMatrix);
-		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMapStatic(light->shadowMapFBO, light->lightSpaceMatrix);
+		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMapStatic(light->shadowMapFBO, light->shadowMap, light->shadowMapDynamic, light->lightSpaceMatrix);
+		//Twin2Engine::Manager::MeshRenderingManager::RenderDepthMapDynamic(light->shadowMapFBO, light->lightSpaceMatrix);
 		glActiveTexture(GL_TEXTURE0 + MAPS_BEGINNING + i);
 		glBindTexture(GL_TEXTURE_2D, light->shadowMap);
+
+		++i;
+	}
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glm::ivec2 wSize = Twin2Engine::Graphic::Window::GetInstance()->GetContentSize();
+	glViewport(0, 0, wSize.x, wSize.y);
+
+	glCullFace(GL_BACK);
+}
+
+void LightingController::RenderDynamicShadowMaps() {
+	glCullFace(GL_FRONT);
+	glEnable(GL_DEPTH_TEST);
+
+	int i = 0;
+
+	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+	for (auto light : dirLights) {
+		//Twin2Engine::Manager::MeshRenderingManager::RenderDepthMap(SHADOW_WIDTH, SHADOW_HEIGHT, light->shadowMapFBO, light->lightSpaceMatrix);
+		Twin2Engine::Manager::MeshRenderingManager::RenderDepthMapDynamic(light->shadowMapFBO, light->lightSpaceMatrix);
+		glActiveTexture(GL_TEXTURE0 + MAPS_BEGINNING + i + 1);
+		glBindTexture(GL_TEXTURE_2D, light->shadowMapDynamic);
 
 		++i;
 	}
 
 	glm::ivec2 wSize = Twin2Engine::Graphic::Window::GetInstance()->GetContentSize();
 	glViewport(0, 0, wSize.x, wSize.y);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glCullFace(GL_BACK);
 }

@@ -10,7 +10,49 @@ Fonts: ~
 Audio: ~
 Materials:
   - id: 0
-    path: ColoredHexTile
+    path: tiles/NeutralHexTileStage0
+  - id: 1
+    path: tiles/BlueHexTileStage1
+  - id: 2
+    path: tiles/BlueHexTileStage2
+  - id: 3
+    path: tiles/BlueHexTileStage3
+  - id: 4
+    path: tiles/RedHexTileStage1
+  - id: 5
+    path: tiles/RedHexTileStage2
+  - id: 6
+    path: tiles/RedHexTileStage3
+  - id: 7
+    path: tiles/GreenHexTileStage1
+  - id: 8
+    path: tiles/GreenHexTileStage2
+  - id: 9
+    path: tiles/GreenHexTileStage3
+  - id: 10
+    path: tiles/PurpleHexTileStage1
+  - id: 11
+    path: tiles/PurpleHexTileStage2
+  - id: 12
+    path: tiles/PurpleHexTileStage3
+  - id: 13
+    path: tiles/YellowHexTileStage1
+  - id: 14
+    path: tiles/YellowHexTileStage2
+  - id: 15
+    path: tiles/YellowHexTileStage3
+  - id: 16
+    path: tiles/CyanHexTileStage1
+  - id: 17
+    path: tiles/CyanHexTileStage2
+  - id: 18
+    path: tiles/CyanHexTileStage3
+  - id: 19
+    path: tiles/PinkHexTileStage1
+  - id: 20
+    path: tiles/PinkHexTileStage2
+  - id: 21
+    path: tiles/PinkHexTileStage3
 Models:
   - id: 0
     path: res/models/hexagon.obj
@@ -78,3 +120,4 @@ Root:
     - id: 5
       enabled: true
       type: HexTile
+      textuesData: res/scriptableobjects/HexTileTextureData.so

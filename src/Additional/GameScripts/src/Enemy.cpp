@@ -1,6 +1,6 @@
 #include <Enemy.h>
 #include <EnemyMovement.h>
-#include <string>
+
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
@@ -54,6 +54,10 @@ void Enemy::PerformMovement()
     //possible.reserve((1 + _movement->maxSteps) * _movement->maxSteps / 2 * 6);
     possible.reserve((1 + _movement->maxSteps) * _movement->maxSteps * 3);
 
+    list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
+    _tiles.clear();
+    _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend());
+
     size_t size = _tiles.size();
     float maxRadius = (_movement->maxSteps + 0.25) * _tilemap->GetDistanceBetweenTiles();
 
@@ -76,6 +80,34 @@ void Enemy::PerformMovement()
     HexTile* result = possible[Random::Range(0ull, possible.size() - 1ull)];
 
     _movement->SetDestination(result);
+}
+
+void Enemy::LostPaperRockScissors(Playable* playable)
+{
+}
+
+void Enemy::WonPaperRockScissors(Playable* playable)
+{
+}
+
+void Enemy::LostFansControl(Playable* playable)
+{
+}
+
+void Enemy::WonFansControl(Playable* playable)
+{
+}
+
+void Enemy::StartPaperRockScissors(Playable* playable)
+{
+}
+
+void Enemy::StartFansControl(Playable* playable)
+{
+}
+
+void Enemy::OnDead()
+{
 }
 
 YAML::Node Enemy::Serialize() const

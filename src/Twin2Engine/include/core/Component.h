@@ -23,9 +23,6 @@ namespace Twin2Engine::Core
 
 	protected:
 		Component();
-#if _DEBUG
-		virtual bool DrawInheritedFields();
-#endif
 	public:
 		virtual ~Component();
 
@@ -39,6 +36,9 @@ namespace Twin2Engine::Core
 		virtual bool Deserialize(const YAML::Node& node);
 		
 #if _DEBUG
+	protected:
+		virtual bool DrawInheritedFields();
+	public:
 		virtual void DrawEditor();
 #endif
 #pragma endregion

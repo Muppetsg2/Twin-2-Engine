@@ -1,6 +1,5 @@
 #pragma once 
 
-#include <Playable.h>
 #include <manager/SceneManager.h>
 
 // TILEMAP
@@ -10,8 +9,12 @@
 // CORE
 #include <core/Random.h>
 
+
+#include <Playable.h>
+
 class HexTile;
 class EnemyMovement;
+//class Playable;
 
 using namespace Twin2Engine::Core;
 
@@ -47,6 +50,18 @@ public:
 	virtual void OnDestroy() override;
 
 	void PerformMovement();
+
+	virtual void LostPaperRockScissors(Playable* playable) override;
+	virtual void WonPaperRockScissors(Playable* playable) override;
+	virtual void LostFansControl(Playable* playable) override;
+	virtual void WonFansControl(Playable* playable) override;
+	virtual void StartPaperRockScissors(Playable* playable) override;
+	virtual void StartFansControl(Playable* playable) override;
+
+protected:
+	virtual void OnDead() override;
+
+public:
 
 	virtual YAML::Node Serialize() const override;
 	virtual bool Deserialize(const YAML::Node& node) override;

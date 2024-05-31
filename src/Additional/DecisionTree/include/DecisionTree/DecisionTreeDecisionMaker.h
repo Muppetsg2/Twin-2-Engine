@@ -19,11 +19,20 @@ public:
 
 template<class _Entity, class _Type>
 inline DecisionTreeDecisionMaker<_Entity, _Type>::DecisionTreeDecisionMaker(const DecisionFunc& decision, const std::unordered_map<_Type, DecisionTreeNode<_Entity>*>& nodes)
-	: _decision(decision), _nodes(nodes) {}
+	: _decision(decision), _nodes(nodes) 
+{
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+}
 
 template<class _Entity, class _Type>
 inline void DecisionTreeDecisionMaker<_Entity, _Type>::ProcessNode(_Entity* entity)
 {
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
 	auto nodesIter = _nodes.find(_decision(entity));
 	if (nodesIter != _nodes.end()) {
 		(*nodesIter).second->ProcessNode(entity);

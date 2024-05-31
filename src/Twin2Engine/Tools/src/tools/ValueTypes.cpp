@@ -95,7 +95,7 @@ ArrayType::ArrayType(const ValueType*& type, const size_t& length) : ValueType()
 #if TRACY_PROFILER
 	ZoneScoped;
 #endif
-	_type = type->Clone();
+	_type = type;
 }
 
 ArrayType::~ArrayType() {

@@ -2015,7 +2015,7 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, const GL
 
 	//glViewport(0, 0, bufferWidth, bufferHeight);
 	glBindFramebuffer(GL_FRAMEBUFFER, depthFBO);
-	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthReplacingTexId, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthReplacingTexId, 0);
 
 	//glBindTexture(GL_TEXTURE_2D, depthMapTex);
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -2156,7 +2156,7 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, const GL
 
 #pragma endregion
 
-	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthReplcedTexId, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthReplcedTexId, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

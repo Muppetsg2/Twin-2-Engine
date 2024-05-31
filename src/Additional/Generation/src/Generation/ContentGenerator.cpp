@@ -3,6 +3,8 @@
 using namespace Generation;
 using namespace Generation::Generators;
 using namespace Tilemap;
+using namespace glm;
+using namespace Twin2Engine::Core;
 
 void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
 {
@@ -16,6 +18,23 @@ void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
         SPDLOG_INFO("Generating element");
         generator->Generate(targetTilemap);
     }
+
+    //ivec2 leftBottomPosition = targetTilemap->GetLeftBottomPosition();
+    //ivec2 rightTopPosition = targetTilemap->GetRightTopPosition();
+    //
+    //for (int x = leftBottomPosition.x; x <= rightTopPosition.x; x++)
+    //{
+    //    for (int y = leftBottomPosition.y; y <= rightTopPosition.y; y++)
+    //    {
+    //        ivec2 tilePosition(x, y);
+    //        HexagonalTile* tile = targetTilemap->GetTile(tilePosition);
+    //        GameObject* tileObject = tile->GetGameObject();
+    //        if (tileObject != nullptr)
+    //        {
+    //            tileObject->SetIsStatic(true);
+    //        }
+    //    }
+    //}
 }
 
 void ContentGenerator::Initialize()

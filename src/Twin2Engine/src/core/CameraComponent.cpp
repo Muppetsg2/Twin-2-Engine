@@ -552,7 +552,7 @@ void CameraComponent::Render()
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		LightingController::Instance()->RenderDynamicShadowMaps();
+		//LightingController::Instance()->RenderDynamicShadowMaps();
 		
 
 		if (_isSsao && _mode != CameraDisplayMode::DEPTH) {

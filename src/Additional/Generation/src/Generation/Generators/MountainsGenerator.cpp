@@ -55,6 +55,7 @@ void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
             tile->GetGameObject()->GetComponent<AStarPathfindingNode>()->passable = false;
 
             GameObject* mountain = SceneManager::CreateGameObject(prefabMountains, tile->GetGameObject()->GetTransform());
+            mountain->SetIsStatic(true);
             //GameObject* mountain = GameObject::Instantiate(prefabMountains, tile->GetGameObject()->GetTransform());
         }
 

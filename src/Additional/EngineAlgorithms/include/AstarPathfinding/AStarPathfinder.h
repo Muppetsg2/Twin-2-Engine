@@ -107,6 +107,7 @@ namespace AStar
 
 		static std::mutex _endedThreadsMutex;
 		static std::list<size_t> _endedThreads;
+		static std::unordered_map<size_t, std::tuple<AStarPath, Twin2Engine::Tools::Action<const AStarPath&>, Twin2Engine::Tools::Action<> >> _endedThreadsResults;
 
 		static float _maxMappingDistance;
 

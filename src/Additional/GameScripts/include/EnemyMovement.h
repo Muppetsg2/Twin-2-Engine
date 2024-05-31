@@ -60,7 +60,7 @@ public:
 	glm::vec3 destination;
 	float speed = 0.7f;
 	int maxSteps = 5;
-	float nextWaypointDistance = 0.001f;
+	float nextWaypointDistance = 0.05f;
 
 
 	float radius = 3.0f;

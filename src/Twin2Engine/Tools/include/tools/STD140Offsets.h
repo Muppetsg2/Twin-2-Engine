@@ -526,11 +526,13 @@ namespace Twin2Engine::Tools {
 				return 0;
 			}
 
-			size_t aligementOffset = std::move(_Add(name, structTemplate.GetBaseAligement(), structTemplate._currentOffset
+			
 #if _DEBUG
-				, new StructType(structTemplate))
+
+			size_t aligementOffset = std::move(_Add(name, structTemplate.GetBaseAligement(), structTemplate._currentOffset, new StructType(structTemplate)));
+#else
+			size_t aligementOffset = std::move(_Add(name, structTemplate.GetBaseAligement(), structTemplate._currentOffset));
 #endif
-			);
 			std::string valueName;
 			size_t nameHash;
 			for (const auto& off : structTemplate._offsets) {

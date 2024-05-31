@@ -93,6 +93,8 @@ void HexTile::DrawEditor()
 	}
 }
 
+#endif
+
 void HexTile::ResetTile()
 {
 	percentage = 0.0f;
@@ -177,21 +179,24 @@ void HexTile::LoseInfluence()
 void HexTile::UpdateTileColor()
 {
 	//SPDLOG_INFO("Percentage: {}", percentage);
-	if (percentage < 30.0f)
+	if (occupyingEntity)
 	{
-		_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][0].GetId());
-	}
-	else if (percentage < 60.0f)
-	{
-		_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][1].GetId());
-	}
-	else if (percentage < 80.0f)
-	{
-		_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][2].GetId());
-	}
-	else
-	{
-		_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][3].GetId());
+		if (percentage < 30.0f)
+		{
+			_meshRenderer->SetMaterial(0ull, textuesData->_materials[occupyingEntity->colorIdx][0].GetId());
+		}
+		else if (percentage < 60.0f)
+		{
+			_meshRenderer->SetMaterial(0ull, textuesData->_materials[occupyingEntity->colorIdx][1].GetId());
+		}
+		else if (percentage < 80.0f)
+		{
+			_meshRenderer->SetMaterial(0ull, textuesData->_materials[occupyingEntity->colorIdx][2].GetId());
+		}
+		else
+		{
+			_meshRenderer->SetMaterial(0ull, textuesData->_materials[occupyingEntity->colorIdx][3].GetId());
+		}
 	}
 
 }
@@ -240,5 +245,3 @@ void HexTile::StopTakingOver(Playable* entity)
 		}
 	}
 }
-
-#endif

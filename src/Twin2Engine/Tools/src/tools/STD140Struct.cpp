@@ -395,10 +395,12 @@ vector<size_t> STD140Struct::GetArrayOffsets(const string& name) const
 	return _dataOffsets.GetArray(name);
 }
 
+#if _DEBUG
 const ValueType* STD140Struct::GetType(const string& name) const
 {
 	return _dataOffsets.GetType(name);
 }
+#endif
 
 vector<char> STD140Struct::GetData() const
 {

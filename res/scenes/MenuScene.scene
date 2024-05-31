@@ -233,7 +233,7 @@ GameObjects:
         cameraMode: 0
         samples: 4
         renderRes: 0
-        gamma: 2.20000005
+        gamma: 1.0
         worldUp:
           x: 0
           y: 1

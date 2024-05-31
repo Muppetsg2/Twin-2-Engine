@@ -188,14 +188,17 @@ void HexTile::UpdateTileColor()
 		else if (percentage < 60.0f)
 		{
 			_meshRenderer->SetMaterial(0ull, textuesData->_materials[occupyingEntity->colorIdx][1].GetId());
+			takenEntity = occupyingEntity;
 		}
 		else if (percentage < 80.0f)
 		{
 			_meshRenderer->SetMaterial(0ull, textuesData->_materials[occupyingEntity->colorIdx][2].GetId());
+			takenEntity = occupyingEntity;
 		}
 		else
 		{
 			_meshRenderer->SetMaterial(0ull, textuesData->_materials[occupyingEntity->colorIdx][3].GetId());
+			takenEntity = occupyingEntity;
 		}
 	}
 

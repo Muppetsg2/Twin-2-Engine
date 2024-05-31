@@ -213,7 +213,7 @@
     }
 
 #define CloneFuncDefinition(className, ...)\
-    virtual className* className::Clone() const\
+    className* className::Clone() const\
     {\
         className* cloned = new className();\
         CloneTo(cloned);\

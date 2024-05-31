@@ -145,19 +145,7 @@ static ImFileDialogInfo _fileDialogSceneSaveInfo;
 
 Window* window;
 
-Material material;
-Material material2;
-Material wallMat;
-Material roofMat;
-InstantiatingModel modelMesh;
-GameObject* gameObject;
-GameObject* gameObject2;
-GameObject* gameObject3;
-GameObject* gameObject4;
-
 GameObject* Camera;
-
-GameObject* tilemapGO = nullptr;
 
 int main(int, char**)
 {

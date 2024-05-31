@@ -279,17 +279,17 @@ GameObjects:
         z: 0
     components:
       - id: 31
-        enabled: false
+        enabled: true
         type: HexagonalTilemap
         leftBottomPosition:
-          x: -8
-          y: -7
+          x: 0
+          y: 0
         rightTopPosition:
-          x: 8
-          y: 6
+          x: 0
+          y: 0
         edgeLength: 0.5
       - id: 32
-        enabled: false
+        enabled: true
         type: ContentGenerator
         mapElementGenerators:
           - res/scriptableobjects/RegionsGeneratorByKMeans.so
@@ -300,7 +300,7 @@ GameObjects:
           - res/scriptableobjects/RadioStationGeneratorSectorBased.so
           - res/scriptableobjects/HumansGenerator.so
       - id: 33
-        enabled: false
+        enabled: true
         type: MapGenerator
         prefabHexagonalTile: 9
         additionalTile: 7
@@ -312,7 +312,7 @@ GameObjects:
         maxPointsNumber: 5
         angleDeltaRange: 5
       - id: 38
-        enabled: false
+        enabled: true
         type: AStarPathfinder
         maxMappingDistance: 1
     children:

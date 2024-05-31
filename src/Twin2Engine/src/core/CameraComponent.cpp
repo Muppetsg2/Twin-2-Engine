@@ -527,6 +527,7 @@ void CameraComponent::Render()
 #endif
 
 		GraphicEngine::UpdateBeforeRendering();
+		LightingController::Instance()->RenderDynamicShadowMaps();
 
 #if TRACY_PROFILER
 		FrameMarkEnd(tracy_UpdateRenderingQueues);
@@ -552,7 +553,6 @@ void CameraComponent::Render()
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		//LightingController::Instance()->RenderDynamicShadowMaps();
 		
 
 		if (_isSsao && _mode != CameraDisplayMode::DEPTH) {

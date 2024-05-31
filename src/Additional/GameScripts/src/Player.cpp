@@ -133,6 +133,9 @@ void Player::Update() {
                 //}
             }
         }
+        else {
+            SPDLOG_ERROR("Move was nullptr");
+        }
     }
 }
 

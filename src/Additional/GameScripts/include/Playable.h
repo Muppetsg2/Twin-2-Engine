@@ -41,7 +41,7 @@ public:
 
     int colorIdx = 0;
     glm::vec4 Color;
-    float TakeOverSpeed = 5.0f;
+    float TakeOverSpeed = 10.0f;
 
     PatronData* patron;
 

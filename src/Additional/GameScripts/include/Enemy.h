@@ -28,6 +28,7 @@ public:
 	//Tymczasowe
 	bool isTakingArea = false;
 	float takingAreaCounter = 0.0f;
+	float targetPercentage = 90.0f;
 
 
 	//int colorIdx = 0;

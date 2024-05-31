@@ -187,7 +187,7 @@ GameObjects:
   - id: 2
     name: imageObj
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 4
       enabled: true
@@ -235,7 +235,7 @@ GameObjects:
   - id: 3
     name: imageObj2
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 7
       enabled: true
@@ -270,7 +270,7 @@ GameObjects:
   - id: 4
     name: imageObj3
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 9
       enabled: true
@@ -305,7 +305,7 @@ GameObjects:
   - id: 5
     name: textObj
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 11
       enabled: true

@@ -214,7 +214,7 @@ void Player::FinishMove(HexTile* tile) {
     }
 
     if (tile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::RadioStation && tile->state != TileState::Occupied) {
-        GameManager::instance->StartMinigame();
+        //GameManager::instance->StartMinigame();
     }
     else {
         CurrTile->StartTakingOver(this);

@@ -355,9 +355,9 @@ int main(int, char**)
         FrameMarkStart(tracy_RenderingImGui);
 #endif
 
-        begin_imgui();
-        render_imgui(); // edit this function to add your own ImGui controls
-        end_imgui(); // this call effectively renders ImGui
+        //begin_imgui();
+        //render_imgui(); // edit this function to add your own ImGui controls
+        //end_imgui(); // this call effectively renders ImGui
 
 #if TRACY_PROFILER
         FrameMarkEnd(tracy_RenderingImGui);

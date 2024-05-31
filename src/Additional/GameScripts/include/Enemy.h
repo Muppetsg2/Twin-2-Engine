@@ -24,6 +24,12 @@ class Enemy : public Playable {
 	std::vector<HexTile*> _tiles;
 
 public:
+
+	//Tymczasowe
+	bool isTakingArea = false;
+	float takingAreaCounter = 0.0f;
+
+
 	int colorIdx = 0;
 	float TakeOverSpeed = 1.0f;
 
@@ -48,6 +54,8 @@ public:
 	virtual void OnEnable() override;
 	virtual void Update() override;
 	virtual void OnDestroy() override;
+
+	void FinishedMovement(HexTile* hexTile);
 
 	void PerformMovement();
 

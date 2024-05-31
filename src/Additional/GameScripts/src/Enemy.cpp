@@ -17,9 +17,11 @@ void Enemy::Initialize()
 
     _movement->OnFindPathError += [&](GameObject* gameObject, HexTile* tile) {
             PerformMovement();
+            //FinishedMovement(tile);
         };
     _movement->OnFinishMoving += [&](GameObject* gameObject, HexTile* tile) {
-        PerformMovement();
+        //PerformMovement();
+        FinishedMovement(tile);
         };
 
 }
@@ -38,10 +40,25 @@ void Enemy::OnDestroy()
 
 void Enemy::Update()
 {
-
+    if (isTakingArea)
+    {
+        takingAreaCounter += Time::GetDeltaTime();
+        if (takingAreaCounter >= 20.0f)
+        {
+            takingAreaCounter = 0.0f;
+            isTakingArea = false;
+            PerformMovement();
+        }
+    }
 }
 
 
+void Enemy::FinishedMovement(HexTile* hexTile)
+{
+    isTakingArea = true;
+    hexTile->StartTakingOver(this);
+
+}
 
 void Enemy::PerformMovement()
 {

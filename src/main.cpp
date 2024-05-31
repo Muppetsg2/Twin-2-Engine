@@ -86,6 +86,7 @@ using namespace Generation::Generators;
 //GAMESCRIPTS
 #include <MovementController.h>
 #include <GameManager.h>
+#include <Playable.h>
 #include <PlayerMovement.h>
 #include <Player.h>
 #include <Enemy.h>

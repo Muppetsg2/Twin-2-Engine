@@ -1,6 +1,6 @@
 #include <Enemy.h>
 #include <EnemyMovement.h>
-#include <string>
+
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
@@ -80,6 +80,34 @@ void Enemy::PerformMovement()
     HexTile* result = possible[Random::Range(0ull, possible.size() - 1ull)];
 
     _movement->SetDestination(result);
+}
+
+void Enemy::LostPaperRockScissors(Playable* playable)
+{
+}
+
+void Enemy::WonPaperRockScissors(Playable* playable)
+{
+}
+
+void Enemy::LostFansControl(Playable* playable)
+{
+}
+
+void Enemy::WonFansControl(Playable* playable)
+{
+}
+
+void Enemy::StartPaperRockScissors(Playable* playable)
+{
+}
+
+void Enemy::StartFansControl(Playable* playable)
+{
+}
+
+void Enemy::OnDead()
+{
 }
 
 YAML::Node Enemy::Serialize() const

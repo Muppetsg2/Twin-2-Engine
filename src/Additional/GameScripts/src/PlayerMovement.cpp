@@ -73,7 +73,7 @@ void PlayerMovement::Update() {
             HexTile* hexTile = raycastHit.collider->GetGameObject()->GetComponent<HexTile>();
             MapHexTile* mapHexTile = hexTile->GetMapHexTile();
             //if (raycastHit.transform != null && raycastHit.transform.gameObject.TryGetComponent(out HexTile hexTile) && hexTile.Type != TileType.Mountain && !(hexTile.Type == TileType.RadioStation && hexTile.currCooldown > 0f) && !hexTile.IsFighting)
-            if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && hexTile->currCooldown > 0.0f) && !hexTile->IsFighting)
+            if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && hexTile->currCooldown > 0.0f) && !hexTile->isFighting)
             {
                 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 //if (!EventSystem.current.IsPointerOverGameObject())
@@ -246,7 +246,7 @@ void PlayerMovement::MoveAndSetDestination(HexTile* dest) {
     if (reachEnd && !GameManager::instance->minigameActive)
     {
         MapHexTile* mapHexTile = dest->GetMapHexTile();
-        if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && dest->currCooldown > 0.0f) && !dest->IsFighting)
+        if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && dest->currCooldown > 0.0f) && !dest->isFighting)
         {
             SetDestination(dest);
         }

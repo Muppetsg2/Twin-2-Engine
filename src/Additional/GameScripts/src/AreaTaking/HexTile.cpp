@@ -1,5 +1,7 @@
 #include <AreaTaking/HexTile.h>
 
+#include <Playable.h>
+
 using namespace Twin2Engine::Core;
 using namespace Generation;
 using namespace glm;
@@ -11,6 +13,10 @@ void HexTile::Initialize()
 }
 
 void HexTile::OnDestroy()
+{
+}
+
+void HexTile::Update()
 {
 }
 
@@ -44,7 +50,7 @@ bool HexTile::DrawInheritedFields()
 {
 	if (Component::DrawInheritedFields()) return true;
 	ImGui::BeginDisabled();
-	ImGui::Checkbox("IsFighting", &IsFighting);
+	ImGui::Checkbox("IsFighting", &isFighting);
 	ImGui::EndDisabled();
 	if (takenEntity)
 	{
@@ -66,6 +72,134 @@ void HexTile::DrawEditor()
 	if (ImGui::CollapsingHeader(name.c_str())) {
 		if (DrawInheritedFields()) return;
 		// TODO: Zrobic
+	}
+}
+
+void HexTile::ResetTile()
+{
+	percentage = 0.0f;
+	if (takenEntity) {
+		//takenEntity->RemoveTile(this);
+	}
+	occupyingEntity = nullptr;
+	takenEntity = nullptr;
+	isFighting = false;
+	state = TileState::None;
+}
+
+void HexTile::SetOutlineActive(bool active)
+{
+	//if (outline) {
+	//	outline->SetEnabled(active);
+	//}
+}
+
+void HexTile::StartMinigame()
+{
+}
+
+void HexTile::WinMinigame()
+{
+}
+
+void HexTile::BadNote()
+{
+	percentage -= badNotePercent;
+	if (percentage <= 0.0f) {
+		percentage = 0.0f;
+	}
+}
+
+void HexTile::TakeOver()
+{
+	if (!occupyingEntity) {
+		ResetTile();
+		return;
+	}
+
+	float takeOverSpeed = occupyingEntity->TakeOverSpeed;
+	if (state == TileState::RemoteOccupying) {
+		takeOverSpeed *= remoteMultiplier;
+	}
+
+	if (takenEntity != occupyingEntity) {
+		percentage -= Time::GetDeltaTime() * takeOverSpeed;
+		if (percentage <= 0.0f) {
+			percentage = 0.0f;
+			if (takenEntity) {
+				takenEntity->OwnTiles.remove(this);
+			}
+			takenEntity = occupyingEntity;
+			takenEntity->OwnTiles.push_back(this);
+			CheckRoundPattern();
+		}
+	}
+	else {
+		percentage += Time::GetDeltaTime() * takeOverSpeed;
+		if (percentage >= 100.0f) {
+			percentage = 100.0f;
+		}
+	}
+	UpdateTileColor();
+}
+
+void HexTile::LoseInfluence()
+{
+	currLoseInfluenceDelay -= Time::GetDeltaTime();
+	if (currLoseInfluenceDelay <= 0.0f && percentage > minLosePercentage) {
+		currLoseInfluenceDelay = 0.0f;
+		percentage -= Time::GetDeltaTime() * loseInfluenceSpeed;
+		if (percentage < minLosePercentage) {
+			percentage = minLosePercentage;
+		}
+		UpdateTileColor();
+	}
+}
+
+void HexTile::UpdateTileColor()
+{
+}
+
+void HexTile::UpdateBorders()
+{
+}
+
+void HexTile::CheckRoundPattern()
+{
+}
+
+void HexTile::StartTakingOver(Playable* entity) {
+	if (state != TileState::Occupied) {
+		state = TileState::Occupied;
+		occupyingEntity = entity;
+	}
+	else if (occupyingEntity != entity && !isFighting) {
+		//entity->StartPaperRockScissors(occupyingEntity);
+		//occupyingEntity->StartPaperRockScissors(entity);
+		//isFighting = true;
+	}
+}
+
+void HexTile::StartRemotelyTakingOver(Playable* entity, float multiplier)
+{
+	if (state != TileState::Occupied && state != TileState::RemoteOccupying) {
+		state = TileState::RemoteOccupying;
+		occupyingEntity = entity;
+		remoteMultiplier = multiplier;
+	}
+}
+
+void HexTile::StopTakingOver(Playable* entity)
+{
+	if ((state == TileState::Occupied || state == TileState::RemoteOccupying) && occupyingEntity == entity) {
+		occupyingEntity = nullptr;
+		if (takenEntity) {
+			state = TileState::Taken;
+			currLoseInfluenceDelay = loseInfluenceDelay;
+		}
+		else {
+			state = TileState::None;
+		}
 	}
 }
 

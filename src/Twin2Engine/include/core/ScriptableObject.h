@@ -127,6 +127,19 @@ namespace ScriptableObjectNamespace \
 	} \
 }
 
+#define SCRIPTABLE_OBJECT_SOURCE_CODE_NN(ScriptableObjectClass, RegisteredName) \
+std::string ScriptableObjectClass::_registeredName = RegisteredName; \
+Twin2Engine::Core::ScriptableObject* ScriptableObjectClass::Create() \
+{ \
+	return new ScriptableObjectClass(); \
+} \
+  \
+void ScriptableObjectClass::Register() \
+{ \
+	Twin2Engine::Core::ScriptableObject::Register(Twin2Engine::Core::ScriptableObject::hasher(RegisteredName), ScriptableObjectData { .scriptableObjectName = RegisteredName, .createSpecificScriptableObject = ScriptableObjectClass::Create }); \
+} 
+
+
 //scriptableObjects[hasher(_registeredName)] = ScriptableObjectData { .scriptableObjectName = _registeredName, .createSpecificScriptableObject = ScriptableObjectClass::Create }; \
 //template<class T>
 //struct ScriplableObjectYAMLConverter : public YAML::convert
@@ -160,6 +173,9 @@ namespace ScriptableObjectNamespace \
 //using ScriplableObjectPtrYAMLConverter_##ScriptableObjectClass = ScriplableObjectPtrYAMLConverter<ScriptableObjectClass>; \
 
 //*
+#define SERIALIZABLE_SCRIPTABLE_OBJECT_NN(ScriptableObjectClass) \
+	static Twin2Engine::Core::ScriptableObjectRegister<ScriptableObjectClass> registererInstance##ScriptableObjectClass;
+
 #define SERIALIZABLE_SCRIPTABLE_OBJECT(ScriptableObjectClass, ScriptableObjectNamespace) \
 	static Twin2Engine::Core::ScriptableObjectRegister<ScriptableObjectNamespace::ScriptableObjectClass> registererInstance##ScriptableObjectClass;
 //template<> struct YAML::convert<ScriptableObjectClass> { \

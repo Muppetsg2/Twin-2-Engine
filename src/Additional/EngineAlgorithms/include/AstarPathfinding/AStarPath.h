@@ -12,8 +12,8 @@ namespace AStar
 		AStarPath();
 		AStarPath(const std::vector<glm::vec3>& pathNodes);
 		
-		inline unsigned Current() const;
-		inline unsigned Count() const;
+		unsigned Current() const;
+		unsigned Count() const;
 
 		inline bool IsOnEnd() const;
 		inline bool IsOnBegin() const;

@@ -18,6 +18,7 @@ unordered_map<size_t, bool*> AStarPathfinder::_pathfindingThreadsSearchingPtrs;
 
 mutex AStarPathfinder::_endedThreadsMutex;
 list<size_t> AStarPathfinder::_endedThreads;
+unordered_map<size_t, tuple<AStarPath, Twin2Engine::Tools::Action<const AStarPath&>, Twin2Engine::Tools::Action<> >> AStarPathfinder::_endedThreadsResults;
 
 float AStarPathfinder::_maxMappingDistance = 0.0f;
 bool AStarPathfinder::_needsRemapping = true;
@@ -317,6 +318,7 @@ void AStarPathfinder::FindingPath(size_t threadId,
 
 	_endedThreadsMutex.lock();
 	_endedThreads.push_back(threadId);
+	//_endedThreadsResults[threadId] = tuple<AStarPath, Twin2Engine::Tools::Action<const AStarPath&>, Twin2Engine::Tools::Action<>>(AStarPath(path), success, failure);
 	_endedThreadsMutex.unlock();
 }
 
@@ -376,6 +378,16 @@ void AStarPathfinder::Update()
 		_endedThreadsMutex.lock();
 		for (size_t threadId : _endedThreads)
 		{
+			//if (get<AStarPath>(_endedThreadsResults[threadId]).Count())
+			//{
+			//	get<Twin2Engine::Tools::Action<const AStarPath&> >(_endedThreadsResults[threadId])(get<AStarPath>(_endedThreadsResults[threadId]));
+			//}
+			//else
+			//{
+			//	get<Twin2Engine::Tools::Action<> >(_endedThreadsResults[threadId])();
+			//}
+			//_endedThreadsResults.erase(threadId);
+			
 			if (_pathfindingThreads[threadId].joinable())
 				_pathfindingThreads[threadId].join();
 

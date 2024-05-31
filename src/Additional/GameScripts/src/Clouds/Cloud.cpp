@@ -94,6 +94,7 @@ bool Cloud::Deserialize(const YAML::Node& node) {
 	return true;
 }
 
+#if _DEBUG
 void Cloud::DrawEditor() {
 	string id = string(std::to_string(this->GetId()));
 	string name = string("Cloud##Component").append(id);
@@ -126,3 +127,4 @@ void Cloud::DrawEditor() {
 		CloudController::Instance()->UpdateCloudShaderUniforms();
 	}
 }
+#endif

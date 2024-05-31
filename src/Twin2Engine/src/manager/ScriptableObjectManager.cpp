@@ -273,6 +273,7 @@ void ScriptableObjectManager::SceneDeserializationEnd()
 	_deserializationContext.clear();
 }
 
+#if _DEBUG
 void ScriptableObjectManager::DrawCreator(bool* p_open) 
 {
 	if (!ImGui::Begin("Scriptable Object Creator", p_open)) {
@@ -348,6 +349,7 @@ void ScriptableObjectManager::DrawCreator(bool* p_open)
 
 	ImGui::End();
 }
+#endif
 
 vector<string> ScriptableObjectManager::GetScriptableObjectsNames()
 {

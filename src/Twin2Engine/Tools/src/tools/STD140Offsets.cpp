@@ -420,10 +420,14 @@ void STD140Offsets::Clear()
 
 	_offsets.clear();
 	_names.clear();
+
+#if _DEBUG
 	for (auto& type : _types) {
 		delete type.second;
 	}
 	_types.clear();
+#endif
+
 #if TRACY_PROFILER
 	FrameMarkEnd(tracy_Clear);
 #endif

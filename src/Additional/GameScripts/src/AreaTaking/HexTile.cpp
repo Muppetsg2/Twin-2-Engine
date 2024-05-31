@@ -93,6 +93,8 @@ void HexTile::DrawEditor()
 	}
 }
 
+#endif
+
 void HexTile::ResetTile()
 {
 	percentage = 0.0f;
@@ -243,5 +245,3 @@ void HexTile::StopTakingOver(Playable* entity)
 		}
 	}
 }
-
-#endif

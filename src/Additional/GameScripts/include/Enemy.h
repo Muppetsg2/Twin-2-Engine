@@ -30,7 +30,7 @@ public:
 	float takingAreaCounter = 0.0f;
 
 
-	int colorIdx = 0;
+	//int colorIdx = 0;
 	float TakeOverSpeed = 1.0f;
 
 	float albumTime = 1.0f;

@@ -26,7 +26,7 @@ namespace Generation {
 //class ConcertRoad : public Component {
 class GameManager : public Component {
 private:
-    std::vector<int> freeColors;
+    std::vector<int> freeColors{ 0, 1, 2, 3, 4, 5, 6 };
 public:
     static GameManager* instance;
 

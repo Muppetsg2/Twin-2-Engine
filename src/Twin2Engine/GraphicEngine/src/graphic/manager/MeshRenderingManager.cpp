@@ -2,6 +2,7 @@
 #include <graphic/manager/ShaderManager.h>
 #include <graphic/InstantiatingMesh.h>
 #include <graphic/Window.h>
+#include <graphic/LightingController.h>
 
 using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Core;
@@ -33,6 +34,8 @@ std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDe
 GLuint MeshRenderingManager::_instanceDataSSBO = 0u;
 GLuint MeshRenderingManager::_materialIndexSSBO = 0u;
 GLuint MeshRenderingManager::_materialInputUBO = 0u;
+
+MeshRenderingManager::Flags MeshRenderingManager::_flags { .IsStaticChanged = false };
 
 glm::mat4* MeshRenderingManager::_modelTransforms = nullptr;
 unsigned int* MeshRenderingManager::_materialsIndexes = nullptr;
@@ -116,6 +119,7 @@ bool MeshRenderingManager::RegisterStatic(Twin2Engine::Core::MeshRenderer* meshR
 			}
 		}
 
+		_flags.IsStaticChanged = true;
 		return true;
 	}
 
@@ -205,6 +209,7 @@ bool MeshRenderingManager::UnregisterStatic(Twin2Engine::Core::MeshRenderer* mes
 			}
 		}
 
+		_flags.IsStaticChanged = true;
 		return true;
 	}
 	else if (meshRenderer->GetModel() == nullptr && meshRenderer->GetMaterialCount() != 0)
@@ -260,6 +265,7 @@ bool MeshRenderingManager::UnregisterStatic(Twin2Engine::Core::MeshRenderer* mes
 
 		pos.clear();
 
+		_flags.IsStaticChanged = true;
 		return true;
 	}
 	else if (meshRenderer->GetModel() != nullptr && meshRenderer->GetMaterialCount() == 0)
@@ -322,6 +328,7 @@ bool MeshRenderingManager::UnregisterStatic(Twin2Engine::Core::MeshRenderer* mes
 			}
 		}
 
+		_flags.IsStaticChanged = true;
 		return true;
 	}
 	else {
@@ -376,6 +383,7 @@ bool MeshRenderingManager::UnregisterStatic(Twin2Engine::Core::MeshRenderer* mes
 
 		pos.clear();
 
+		_flags.IsStaticChanged = true;
 		return true;
 	}
 
@@ -1010,6 +1018,11 @@ void MeshRenderingManager::UpdateQueues()
 
 void MeshRenderingManager::PreRender()
 {
+	if (_flags.IsStaticChanged) {
+		Twin2Engine::Graphic::LightingController::Instance()->RenderShadowMaps();
+		_flags.IsStaticChanged = false;
+	}
+
 	size_t instanceIndex = 0;
 	size_t remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
 

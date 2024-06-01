@@ -73,7 +73,7 @@ void Enemy::PerformMovement()
     vec3 tilePosition;
 
     vector<HexTile*> possible;
-    //possible.reserve((1 + _movement->maxSteps) * _movement->maxSteps / 2 * 6);
+    //possible.reserve((1 + _movement->maxSteps) / 2 * _movement->maxSteps * 6);
     possible.reserve((1 + _movement->maxSteps) * _movement->maxSteps * 3);
 
     list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();

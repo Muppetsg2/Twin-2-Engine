@@ -610,5 +610,13 @@ GameObjects:
         enabled: true
         type: GameManager
         enemyPrefab: res/prefabs/Enemy.prefab
+        carMaterials:
+         - car/CarMaterial_Blue
+         - car/CarMaterial_Red
+         - car/CarMaterial_Green
+         - car/CarMaterial_Purple
+         - car/CarMaterial_Yellow
+         - car/CarMaterial_Cyan
+         - car/CarMaterial_Pink
     children:
       []

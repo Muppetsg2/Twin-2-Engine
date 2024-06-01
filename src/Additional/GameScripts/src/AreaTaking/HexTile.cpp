@@ -8,7 +8,12 @@ using namespace Generation;
 using namespace glm;
 using namespace std;
 
-static std::vector<std::vector<Material>> _coloredHexTileTextures;
+std::vector<std::vector<Material>> HexTile::_coloredHexTileTextures;
+
+float HexTile::_takingStage1 = 30.0f;
+float HexTile::_takingStage2 = 60.0f;
+float HexTile::_takingStage3 = 90.0f;
+
 
 void HexTile::Initialize()
 {
@@ -189,16 +194,19 @@ void HexTile::UpdateTileColor()
 		{
 			_meshRenderer->SetMaterial(0ull, textuesData->_materials[occupyingEntity->colorIdx][1].GetId());
 			takenEntity = occupyingEntity;
+			//state = TileState::Taken;
 		}
 		else if (percentage < 80.0f)
 		{
 			_meshRenderer->SetMaterial(0ull, textuesData->_materials[occupyingEntity->colorIdx][2].GetId());
 			takenEntity = occupyingEntity;
+			//state = TileState::Taken;
 		}
 		else
 		{
 			_meshRenderer->SetMaterial(0ull, textuesData->_materials[occupyingEntity->colorIdx][3].GetId());
 			takenEntity = occupyingEntity;
+			//state = TileState::Taken;
 		}
 	}
 

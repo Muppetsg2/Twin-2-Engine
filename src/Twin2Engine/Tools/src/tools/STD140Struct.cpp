@@ -308,12 +308,32 @@ STD140Struct::STD140Struct(const STD140Offsets& structOffsets, const vector<char
 	ZoneScoped;
 #endif
 
-	_dataOffsets = structOffsets;
+	_dataOffsets = STD140Offsets(structOffsets);
 	_data.reserve(_dataOffsets.GetSize());
 	_data.insert(_data.begin(), data.begin(), data.begin() + std::min(data.size(), _data.capacity()));
 	if (_data.size() < _data.capacity()) {
 		_data.resize(_data.capacity());
 	}
+}
+
+STD140Struct::STD140Struct(STD140Struct& std140s) {
+	_dataOffsets = std140s._dataOffsets;
+	_data = std140s._data;
+}
+
+STD140Struct::STD140Struct(const STD140Struct& std140s) {
+	_dataOffsets = std140s._dataOffsets;
+	_data = std140s._data;
+}
+
+STD140Struct::STD140Struct(STD140Struct&& std140s) {
+	_dataOffsets = std140s._dataOffsets;
+	_data = std140s._data;
+}
+
+STD140Struct::~STD140Struct()
+{
+	Clear();
 }
 
 void STD140Struct::Add(const string& name, const STD140Struct& value)
@@ -384,6 +404,23 @@ STD140Offsets STD140Struct::GetOffsets() const
 
 	return _dataOffsets;
 }
+
+size_t STD140Struct::GetOffset(const string& name) const
+{
+	return _dataOffsets.Get(name);
+}
+
+vector<size_t> STD140Struct::GetArrayOffsets(const string& name) const
+{
+	return _dataOffsets.GetArray(name);
+}
+
+#if _DEBUG
+const ValueType* STD140Struct::GetType(const string& name) const
+{
+	return _dataOffsets.GetType(name);
+}
+#endif
 
 vector<char> STD140Struct::GetData() const
 {

@@ -11,6 +11,7 @@
 #include <Generation/Generators/AMapElementGenerator.h>
 
 #include <Humans/HumanMovement.h>
+#include <Humans/Human.h>
 
 namespace Humans
 {

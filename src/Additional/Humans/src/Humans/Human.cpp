@@ -11,30 +11,57 @@ using namespace std;
 void Human::Initialize()
 {
     _movement = GetGameObject()->GetComponent<HumanMovement>();
+}
+
+void Human::StartWorking()
+{
+    _work = true;
     _targetCity = CitiesManager::GetClosestCity(GetTransform()->GetGlobalPosition());
     vec3 destination = _targetCity->GetTransform()->GetGlobalPosition();
     destination.y = 0.0f;
+    //SPDLOG_ERROR("{}destination: {} {} {}", GetGameObject()->Id(), destination.x, destination.y, destination.z);
     _movement->MoveTo(destination);
 }
 
-// Update is called once per frame
+void Human::StopWorking()
+{
+    _work = false;
+}
+
+#if TRACY_PROFILER
+const char* const tracy_HumanUpdate = "HumanUpdate";
+#endif
 void Human::Update()
 {
-    if (glm::distance(GetTransform()->GetGlobalPosition(), _movement->GetTargetDestination()) <= achievingDestinationAccuracity)
+#if TRACY_PROFILER
+    ZoneScoped;
+    FrameMarkStart(tracy_HumanUpdate);
+#endif
+
+    if (_work)
     {
-        vector<GameObject*> possibleTargetCities = CitiesManager::GetConnectedCities(_targetCity);
-        if (possibleTargetCities.size() > 0)
+        vec3 globalPosition = GetTransform()->GetGlobalPosition();
+        globalPosition.y = 0.0f;
+        if (glm::distance(globalPosition, _movement->GetTargetDestination()) <= achievingDestinationAccuracity)
         {
-            _targetCity = possibleTargetCities[Random::Range(0ull, possibleTargetCities.size() - 1)];
-            vec3 destination = _targetCity->GetTransform()->GetGlobalPosition();
-            destination.y = 0.0f;
-            _movement->MoveTo(destination);
-        }
-        else
-        {
-            SPDLOG_INFO("Lack of connected cities");
+            vector<GameObject*> possibleTargetCities = CitiesManager::GetConnectedCities(_targetCity);
+            if (possibleTargetCities.size() > 0)
+            {
+                _targetCity = possibleTargetCities[Random::Range(0ull, possibleTargetCities.size() - 1ull)];
+                vec3 destination = _targetCity->GetTransform()->GetGlobalPosition();
+                destination.y = 0.0f;
+                //SPDLOG_ERROR("{}destination: {} {} {}", GetGameObject()->Id(), destination.x, destination.y, destination.z);
+                _movement->MoveTo(destination);
+            }
+            else
+            {
+                //SPDLOG_INFO("Lack of connected cities");
+            }
         }
     }
+#if TRACY_PROFILER
+    FrameMarkEnd(tracy_HumanUpdate);
+#endif
 }
 
 

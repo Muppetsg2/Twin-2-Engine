@@ -1,5 +1,5 @@
 material:
-  name: textured
+  name: CityMaterial
   shader: origin/Textured
   parameters:
     - name: texture1

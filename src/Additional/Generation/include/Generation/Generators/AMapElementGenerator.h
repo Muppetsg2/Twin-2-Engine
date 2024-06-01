@@ -17,5 +17,6 @@ namespace Generation::Generators
 		AMapElementGenerator() = default;
 		virtual ~AMapElementGenerator() { }
 		virtual void Generate(Tilemap::HexagonalTilemap* tilemap) = 0;
+		virtual void Clean() { }
 	};
 }

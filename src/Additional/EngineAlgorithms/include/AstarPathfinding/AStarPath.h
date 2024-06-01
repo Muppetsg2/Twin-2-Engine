@@ -9,7 +9,11 @@ namespace AStar
 		std::vector<glm::vec3> _pathNodes;
 
 	public:
+		AStarPath();
 		AStarPath(const std::vector<glm::vec3>& pathNodes);
+		
+		unsigned Current() const;
+		unsigned Count() const;
 
 		inline bool IsOnEnd() const;
 		inline bool IsOnBegin() const;
@@ -20,6 +24,8 @@ namespace AStar
 
 		glm::vec3 Next();
 		glm::vec3 Previous();
+
+		AStarPath& operator=(const AStarPath& other);
 	};
 }
 

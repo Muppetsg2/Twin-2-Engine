@@ -13,7 +13,12 @@ vector<AStarPathfindingNode*> AStarPathfinder::_registeredNodes;
 unordered_map<AStarPathfindingNode*, vector<AStarPathfinder::AStarTargetNodeInfo>> AStarPathfinder::_nodesGraph;
 
 
-unordered_map<size_t, thread*> AStarPathfinder::_pathfindingThreads;
+unordered_map<size_t, thread> AStarPathfinder::_pathfindingThreads;
+unordered_map<size_t, bool*> AStarPathfinder::_pathfindingThreadsSearchingPtrs;
+
+mutex AStarPathfinder::_endedThreadsMutex;
+list<size_t> AStarPathfinder::_endedThreads;
+unordered_map<size_t, tuple<AStarPath, Twin2Engine::Tools::Action<const AStarPath&>, Twin2Engine::Tools::Action<> >> AStarPathfinder::_endedThreadsResults;
 
 float AStarPathfinder::_maxMappingDistance = 0.0f;
 bool AStarPathfinder::_needsRemapping = true;
@@ -26,7 +31,7 @@ void AStarPathfinder::Register(AStarPathfindingNode* node)
 
 		for (size_t index = 0ull; index < _registeredNodes.size(); ++index)
 		{
-			if (_registeredNodes[index] = node)
+			if (_registeredNodes[index] == node)
 			{
 				canBeRegistered = false;
 				break;
@@ -51,7 +56,7 @@ void AStarPathfinder::Unregister(AStarPathfindingNode* node)
 	{
 		for (size_t index = 0ull; index < _registeredNodes.size(); ++index)
 		{
-			if (_registeredNodes[index] = node)
+			if (_registeredNodes[index] == node)
 			{
 				_registeredNodes.erase(_registeredNodes.cbegin() + index);
 
@@ -63,15 +68,16 @@ void AStarPathfinder::Unregister(AStarPathfindingNode* node)
 						AStarTargetNodeInfo& targetNode = _nodesGraph[node][index];
 						vector<AStarTargetNodeInfo>& searchNodes = _nodesGraph[targetNode.targetNode];
 
-						for (size_t index = 0ull; index < searchNodes.size(); ++index)
+						for (size_t index2 = 0ull; index2 < searchNodes.size(); ++index2)
 						{
-							if (searchNodes[index].targetNode = node)
+							if (searchNodes[index2].targetNode == node)
 							{
-								searchNodes.erase(searchNodes.cbegin() + index);
+								searchNodes.erase(searchNodes.cbegin() + index2);
 							}
 						}
 					}
 
+					_nodesGraph[node].clear();
 					_nodesGraph.erase(node);
 				}
 
@@ -91,35 +97,63 @@ void AStarPathfinder::RemapNodes()
 	}
 	_nodesGraph.clear();
 
-	for (size_t i = 0ull; i < _registeredNodes.size(); ++i)
-	{
-		vec3 currentPos = _registeredNodes[i]->GetTransform()->GetGlobalPosition();
+	//SPDLOG_INFO("REMAPPING");
 
-		for (size_t j = i + 1ull; j < _registeredNodes.size(); ++j)
+	const size_t size = _registeredNodes.size();
+	vec3 currentPos;
+	vec3 currentPosY0;
+	vec3 targetPos;
+	vec3 targetPosY0;
+	float distance;
+
+	for (size_t i = 0ull; i < size; ++i)
+	{
+		currentPosY0 = currentPos = _registeredNodes[i]->GetTransform()->GetGlobalPosition();
+		currentPosY0.y = 0.0f;
+		//SPDLOG_INFO("REMAPPING Target pos: {} {} {}", currentPos.x, currentPos.y, currentPos.z);
+
+		for (size_t j = i + 1ull; j < size; ++j)
 		{
-			vec3 targetPos = _registeredNodes[j]->GetTransform()->GetGlobalPosition();
-			float distance = glm::distance(currentPos, targetPos);
-			if (distance < _maxMappingDistance)
+			targetPosY0 = targetPos = _registeredNodes[j]->GetTransform()->GetGlobalPosition();
+			targetPosY0.y = 0.0f;
+
+			distance = glm::distance(currentPosY0, targetPosY0);
+			if (distance <= _maxMappingDistance)
 			{
 				_nodesGraph[_registeredNodes[i]].emplace_back(_registeredNodes[j], targetPos, distance);
 				_nodesGraph[_registeredNodes[j]].emplace_back(_registeredNodes[i], currentPos, distance);
 			}
 		}
 	}
+
+	_needsRemapping = false;
 }
 
 AStarPathfindingNode* AStarPathfinder::FindClosestNode(vec3 position)
 {
 	size_t size = _registeredNodes.size();
+
+	if (!size) return nullptr;
+
+	position.y = 0.0f;
+
 	AStarPathfindingNode* closestNode = _registeredNodes[0ull];
-	float minDistance = glm::distance(position, closestNode->GetTransform()->GetGlobalPosition());
+	vec3 proposedPosition = closestNode->GetTransform()->GetGlobalPosition();
+	proposedPosition.y = 0.0f;
+	float minDistance = glm::distance(position, proposedPosition);
 
 	for (size_t index = 1ull; index < size; ++index)
 	{
-		float distance = glm::distance(position, _registeredNodes[index]->GetTransform()->GetGlobalPosition());
+		proposedPosition = _registeredNodes[index]->GetTransform()->GetGlobalPosition();
+		proposedPosition.y = 0.0f;
+
+		float distance = glm::distance(position, proposedPosition);
 
 		if (distance < minDistance)
+		{
 			closestNode = _registeredNodes[index];
+			minDistance = distance;
+		}
 	}
 
 	return closestNode;
@@ -131,17 +165,18 @@ struct AStarNode
 	AStarNode* previous;
 	glm::vec3 position;
 	unsigned int hierarchyDepth;
+	float costFromStart;
 
-	AStarNode(AStarPathfindingNode* current, AStarNode* previous, const glm::vec3& position, unsigned hierarchyDepth) :
-							current(current), previous(previous), position(position), hierarchyDepth(hierarchyDepth) {};
+	AStarNode(AStarPathfindingNode* current, AStarNode* previous, const glm::vec3& position, unsigned hierarchyDepth, float costFromStart) :
+							current(current), previous(previous), position(position), hierarchyDepth(hierarchyDepth), costFromStart(costFromStart) {};
 };
 
-void AStarPathfinder::FindingPath(size_t threadId, 
-								  glm::vec3 beginPosition,
-								  glm::vec3 endPosition,
-								  unsigned int maxPathNodesNumber,
-								  Twin2Engine::Tools::Action<const AStarPath&> success, 
-								  Twin2Engine::Tools::Action<> failure)
+void AStarPathfinder::FindingPath(size_t threadId,
+	glm::vec3 beginPosition,
+	glm::vec3 endPosition,
+	unsigned int maxPathNodesNumber,
+	Twin2Engine::Tools::Action<const AStarPath&> success,
+	Twin2Engine::Tools::Action<> failure)
 {
 
 	PriorityQueue<AStarNode*, float> priorityQueue([](const float& priority1, const float& priority2) -> bool {
@@ -150,95 +185,132 @@ void AStarPathfinder::FindingPath(size_t threadId,
 
 	AStarPathfindingNode* closestToBegin = FindClosestNode(beginPosition);
 	AStarPathfindingNode* closestToEnd = FindClosestNode(endPosition);
-	
-	list<vec3> nodesStack;
 
-	unordered_set<AStarPathfindingNode*> usedNodes;
+	vec3 endPositionY0 = endPosition;
+	endPositionY0.y = 0.0f;
 
+	vector<vec3> path;
 	AStarNode* result = nullptr;
-
-
-	list<AStarNode*> allocatedNodes;
-	AStarNode* allocatedNode = new AStarNode(closestToBegin, nullptr, closestToBegin->GetTransform()->GetLocalPosition(), 0);
-	allocatedNodes.push_back(allocatedNode);
-
-	priorityQueue.Enqueue(allocatedNode, 0.0f);
-
-
-	while (priorityQueue.Count())
+	if (closestToBegin == closestToEnd)
 	{
-		AStarNode* processedNode = priorityQueue.Dequeue();
+		//Ustawienie wartoœci ró¿nej od zera aby by³ ró¿ny od nullptr
+		result = (AStarNode*)1;
 
-		if (processedNode->current == closestToEnd)
+		vec3 tempPos = closestToBegin->GetTransform()->GetGlobalPosition();
+		//tempPos.y = 0.0f;
+		path.push_back(tempPos);
+
+		path.push_back(endPosition);
+	}
+	else
+	{
+		list<vec3> nodesStack;
+
+		unordered_set<AStarPathfindingNode*> usedNodes;
+
+
+
+		list<AStarNode*> allocatedNodes;
+		vec3 tempPos = closestToBegin->GetTransform()->GetGlobalPosition();
+		//tempPos.y = 0.0f; ///
+		AStarNode* allocatedNode = new AStarNode(closestToBegin, nullptr, tempPos, 0, 0.0f);
+
+		allocatedNodes.push_back(allocatedNode);
+
+		priorityQueue.Enqueue(allocatedNode, 0.0f);
+
+		usedNodes.insert(closestToBegin);
+
+		while (priorityQueue.Count())
 		{
-			result = processedNode;
-			break;
-		}
+			AStarNode* processedNode = priorityQueue.Dequeue();
 
-		auto& connected = _nodesGraph[processedNode->current];
-
-		if (maxPathNodesNumber && maxPathNodesNumber == processedNode->hierarchyDepth)
-		{
-			continue;
-		}
-
-		size_t size = connected.size();
-
-		for (size_t index = 0ull; index < size; ++index)
-		{
-			if (!usedNodes.contains(connected[index].targetNode))
+			if (processedNode->current == closestToEnd)
 			{
-				allocatedNode = new AStarNode(connected[index].targetNode, processedNode, connected[index].targetPosition, processedNode->hierarchyDepth + 1u);
-				allocatedNodes.push_back(allocatedNode);
+				result = processedNode;
+				break;
+			}
 
-				priorityQueue.Enqueue(allocatedNode, connected[index].targetDistance);
+			if (maxPathNodesNumber && maxPathNodesNumber == processedNode->hierarchyDepth)
+			{
+				continue;
+			}
 
-				usedNodes.insert(connected[index].targetNode);
+			auto& connected = _nodesGraph[processedNode->current];
+
+			size_t size = connected.size();
+
+			vec3 allocatedPosY0 = allocatedNode->position;
+			allocatedPosY0.y = 0.0;
+			for (size_t index = 0ull; index < size; ++index)
+			{
+				if (!usedNodes.contains(connected[index].targetNode))
+				{
+					if (connected[index].targetNode->passable)
+					{
+						allocatedNode = new AStarNode(connected[index].targetNode, processedNode, connected[index].targetPosition,
+							processedNode->hierarchyDepth + 1u, processedNode->costFromStart + connected[index].targetDistance);
+
+						allocatedNodes.push_back(allocatedNode);
+
+						//priorityQueue.Enqueue(allocatedNode, connected[index].targetDistance);
+						
+						priorityQueue.Enqueue(allocatedNode, allocatedNode->costFromStart + glm::distance(allocatedPosY0, endPositionY0));
+					}
+
+					usedNodes.insert(connected[index].targetNode);
+				}
 			}
 		}
-	}
 
-	// Checking if algorithm found path and processing result
-	vector<vec3> path;
-	if (result)
-	{
-		AStarNode* processedNode = result;
-		size_t targetSize = result->hierarchyDepth + 1u;
-		path.reserve(targetSize);
-
-		size_t insertedIndex = result->hierarchyDepth;
-
-		while (processedNode)
+		// Checking if algorithm found path and processing result
+		if (result)
 		{
-			path[insertedIndex] = processedNode->position;
-			--insertedIndex;
-			processedNode = processedNode->previous;
+			AStarNode* processedNode = result;
+			size_t targetSize = result->hierarchyDepth + 1u;
+			path.resize(targetSize);
+
+			size_t insertedIndex = result->hierarchyDepth;
+
+			while (processedNode)
+			{
+				//SPDLOG_ERROR("FP: {} {} {}", processedNode->position.x, processedNode->position.y, processedNode->position.z);
+				path[insertedIndex] = processedNode->position;
+				--insertedIndex;
+				processedNode = processedNode->previous;
+			}
+
+			if (glm::distance(path[result->hierarchyDepth - 1ull], endPosition) <= glm::distance(path[result->hierarchyDepth], endPosition))
+			{
+				path[result->hierarchyDepth] = endPosition;
+			}
+			else
+			{
+				//path.insert(path.end(), endPosition);
+				path.push_back(endPosition);
+			}
+
+			if (glm::distance(path[1ull], beginPosition) <= glm::distance(path[0ull], beginPosition))
+			{
+				path.erase(path.begin());
+			}
 		}
 
-		if (glm::distance(path[result->hierarchyDepth - 1ull], endPosition) <= glm::distance(path[result->hierarchyDepth], endPosition))
+		// Deallocating allocated memory
+		for (auto& node : allocatedNodes)
 		{
-			path[result->hierarchyDepth] = endPosition;
+			delete node;
 		}
-		else
-		{
-			path.insert(path.end(), endPosition);
-		}
-
-		if (glm::distance(path[1], beginPosition) <= glm::distance(path[0], beginPosition))
-		{
-			path.erase(path.begin());
-		}
-	}
-
-	// Deallocating allocated memory
-	for (auto& node : allocatedNodes)
-	{
-		delete node;
 	}
 
 	//Deleting informations about thread
-	delete _pathfindingThreads[threadId];
-	_pathfindingThreads.erase(threadId);
+	
+	//SPDLOG_ERROR("Zastanowiæ siê czy mo¿na wywo³aæ delete na thread");
+
+	(*_pathfindingThreadsSearchingPtrs[threadId]) = false;
+
+	//_pathfindingThreadsSearchingPtrs.erase(threadId);
+	//_pathfindingThreads.erase(threadId);
 
 	// Returning result
 	if (result)
@@ -249,16 +321,21 @@ void AStarPathfinder::FindingPath(size_t threadId,
 	{
 		failure();
 	}
+
+	_endedThreadsMutex.lock();
+	_endedThreads.push_back(threadId);
+	//_endedThreadsResults[threadId] = tuple<AStarPath, Twin2Engine::Tools::Action<const AStarPath&>, Twin2Engine::Tools::Action<>>(AStarPath(path), success, failure);
+	_endedThreadsMutex.unlock();
 }
 
-bool AStarPathfinder::FindPath(const glm::vec3& beginPosition,
+AStarPathfindingInfo&& AStarPathfinder::FindPath(const glm::vec3& beginPosition,
 							   const glm::vec3& endPosition,
 							   unsigned int maxPathNodesNumber,
 							   Twin2Engine::Tools::Action<const AStarPath&> success,
 							   Twin2Engine::Tools::Action<> failure)
 {
 	if (_pathfindingThreads.size() == numeric_limits<size_t>().max()) 
-		return false;
+		return AStarPathfindingInfo(0, nullptr, nullptr);
 
 	if (_needsRemapping)
 	{
@@ -266,19 +343,25 @@ bool AStarPathfinder::FindPath(const glm::vec3& beginPosition,
 	}
 
 	static size_t pathFindingThreadsIds = 0;
-	size_t threadId = pathFindingThreadsIds++;
 
-	while (_pathfindingThreads.contains(threadId)) threadId = pathFindingThreadsIds++;
+	while (_pathfindingThreads.contains(++pathFindingThreadsIds));
+	size_t threadId = pathFindingThreadsIds;
 
-	thread* pathfindingThread = new thread(FindingPath, threadId, beginPosition, endPosition, maxPathNodesNumber, success, failure);
+	bool* searching = new bool(true);
 
-	_pathfindingThreads[threadId] = pathfindingThread;
+	_pathfindingThreadsSearchingPtrs[threadId] = searching;
+
+	_pathfindingThreads[threadId] = thread(FindingPath, threadId, beginPosition, endPosition, maxPathNodesNumber, success, failure);
+
+
+	return AStarPathfindingInfo(threadId, &_pathfindingThreads[threadId], searching);
 }
 
 YAML::Node AStarPathfinder::Serialize() const
 {
 	YAML::Node node = Component::Serialize();
 
+	node["type"] = "AStarPathfinder";
 	node["maxMappingDistance"] = _maxMappingDistance;
 
 	return node;
@@ -289,17 +372,70 @@ bool AStarPathfinder::Deserialize(const YAML::Node& node)
 	if (!node["maxMappingDistance"] || !Component::Deserialize(node))
 		return false;
 
-	_maxMappingDistance = node["maxMappingDistance"].as<bool>();
+	_maxMappingDistance = node["maxMappingDistance"].as<float>();
 
 	return true;
+}
+
+void AStarPathfinder::Update()
+{
+	if (_endedThreads.size())
+	{
+		_endedThreadsMutex.lock();
+		for (size_t threadId : _endedThreads)
+		{
+			//if (get<AStarPath>(_endedThreadsResults[threadId]).Count())
+			//{
+			//	get<Twin2Engine::Tools::Action<const AStarPath&> >(_endedThreadsResults[threadId])(get<AStarPath>(_endedThreadsResults[threadId]));
+			//}
+			//else
+			//{
+			//	get<Twin2Engine::Tools::Action<> >(_endedThreadsResults[threadId])();
+			//}
+			//_endedThreadsResults.erase(threadId);
+			
+			if (_pathfindingThreads[threadId].joinable())
+				_pathfindingThreads[threadId].join();
+
+			_pathfindingThreadsSearchingPtrs.erase(threadId);
+			_pathfindingThreads.erase(threadId);
+		}
+		_endedThreads.clear();
+		_endedThreadsMutex.unlock();
+	}
+}
+
+void AStarPathfinder::OnDestroy()
+{
+	for (auto& pair : _pathfindingThreads)
+	{
+		if (pair.second.joinable())
+			pair.second.join();
+	}
+	_pathfindingThreads.clear();
+	_endedThreads.clear();
+
+	//for (auto& pair : _pathfindingThreadsSearchingPtrs)
+	//{
+	//	(*pair.second) = false;
+	//}
+	_pathfindingThreadsSearchingPtrs.clear();
+
 }
 
 #if _DEBUG
 
 bool AStarPathfinder::DrawInheritedFields()
 {
+	if (Twin2Engine::Core::Component::DrawInheritedFields()) return true;
+
 	string id = string(std::to_string(this->GetId()));
 	ImGui::InputFloat(string("MaxMappingDistance##").append(id).c_str(), &_maxMappingDistance);
+
+	if (ImGui::Button("Remap Nodes"))
+	{
+		RemapNodes();
+	}
 	return false;
 }
 
@@ -309,7 +445,6 @@ void AStarPathfinder::DrawEditor()
 	string name = string("AStarPathfinder##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str()))
 	{
-		if (Twin2Engine::Core::Component::DrawInheritedFields()) return;
 		DrawInheritedFields();
 	}
 }

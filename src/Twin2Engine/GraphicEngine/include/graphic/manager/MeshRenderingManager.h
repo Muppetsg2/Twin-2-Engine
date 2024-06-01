@@ -83,6 +83,12 @@ namespace Twin2Engine
 				size_t _pos;
 			};
 
+			struct Flags {
+				bool IsStaticChanged : 1;
+			};
+
+			static Flags _flags;
+
 			static std::unordered_map<Graphic::Shader*, std::map<Graphic::Material, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _renderQueueStatic;
 			static std::unordered_map<Graphic::Shader*, std::map<Graphic::Material, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _renderQueueStaticTransparent;
 			//static std::unordered_map<Graphic::Shader*, std::map<Graphic::Material, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _depthMapenderQueueStatic;
@@ -122,7 +128,29 @@ namespace Twin2Engine
 			static bool UnregisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer);
 
 			//Przed u¿yciem tej funkcji nale¿y zapewniæ, i¿ glViewport jest ustawiony w nastêpuj¹cy sposób: glViewport(0, 0, depthTexWidth, depthTexHeight), po uruchomieñiu funkcji nale¿y przywróciæ rozmiar viewportu do rozmiaru okna gry
-			static void RenderDepthMapStatic(const GLuint& depthFBO, glm::mat4& projectionViewMatrix);
+			static void RenderDepthMapDynamic(const GLuint& depthFBO, glm::mat4& projectionViewMatrix);
+			static void RenderDepthMapStatic(const GLuint& depthFBO, const GLuint& depthREplacingTexId, const GLuint& depthReplcedTexId, glm::mat4& projectionViewMatrix);
+			static void RenderCloudDepthMap(std::unordered_map<Twin2Engine::Graphic::InstantiatingMesh*, std::vector<Twin2Engine::Core::Transform*>>& depthQueue) {
+				std::vector<glm::mat4> transformationMatrixes;
+				for (auto& pair : depthQueue) {
+					if (pair.second.size() != 0) {
+						for (auto& t : pair.second) {
+							transformationMatrixes.push_back(t->GetTransformMatrix());
+						}
+
+						glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+						glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * pair.second.size(), transformationMatrixes.data());
+						glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+						pair.first->Draw(pair.second.size());
+
+						GLenum error = glGetError();
+						if (error != GL_NO_ERROR) {
+							SPDLOG_ERROR("Error: {}", error);
+						}
+						transformationMatrixes.clear();
+					}
+				}
+			}
 		};
 	}
 }

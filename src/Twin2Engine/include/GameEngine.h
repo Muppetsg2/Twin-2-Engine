@@ -58,12 +58,8 @@
 #include <processes/ThreadProcess.h>
 #include <processes/TimerProcess.h>
 
-//GAMESCRIPTS
-#include <MovementController.h>
-#include <GameManager.h>
-#include <PlayerMovement.h>
-#include <Player.h>
-#include <Enemy.h>
+
+#include <Clouds/Cloud.h>
 
 
 namespace Twin2Engine {

@@ -55,6 +55,46 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 7
+    path: res/textures/UI/album.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 8
+    path: res/textures/UI/concert.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 9
+    path: res/textures/UI/meeting.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 10
+    path: res/textures/UI/abilities.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 11
+    path: res/textures/UI/TimeNMoney.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites:
   - id: 0
     alias: white_box
@@ -65,6 +105,21 @@ Sprites:
   - id: 2
     alias: stone
     texture: 4
+  - id: 3
+    alias: album
+    texture: 7
+  - id: 4
+    alias: concert
+    texture: 8
+  - id: 5
+    alias: meeting
+    texture: 9
+  - id: 6
+    alias: abilities
+    texture: 10
+  - id: 7
+    alias: TimeNMoney
+    texture: 11
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
@@ -157,9 +212,9 @@ GameObjects:
         cameraFilter: 0
         cameraType: 1
         cameraMode: 0
-        samples: 4
+        samples: 10
         renderRes: 0
-        gamma: 2.20000005
+        gamma: 1
         worldUp:
           x: 0
           y: 1
@@ -187,7 +242,7 @@ GameObjects:
   - id: 2
     name: imageObj
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 4
       enabled: true
@@ -235,7 +290,7 @@ GameObjects:
   - id: 3
     name: imageObj2
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 7
       enabled: true
@@ -270,7 +325,7 @@ GameObjects:
   - id: 4
     name: imageObj3
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 9
       enabled: true
@@ -305,13 +360,13 @@ GameObjects:
   - id: 5
     name: textObj
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 11
       enabled: true
       position:
-        x: 400
-        y: 0
+        x: 800
+        y: 500
         z: 0
       scale:
         x: 1
@@ -665,7 +720,7 @@ GameObjects:
           - res/scriptableobjects/LakeGenerator.so
           - res/scriptableobjects/MountainsGenerator.so
           - res/scriptableobjects/CityGenerator.so
-          - res/scriptableobjects/RadioStationGeneratorSectorBased.s
+          - res/scriptableobjects/RadioStationGeneratorSectorBased.so
           - res/scriptableobjects/HumansGenerator.so
       - id: 33
         enabled: true
@@ -679,6 +734,10 @@ GameObjects:
         minPointsNumber: 5
         maxPointsNumber: 5
         angleDeltaRange: 5
+      - id: 38
+        enabled: true
+        type: AStarPathfinder
+        maxMappingDistance: 1
     children:
       []
   - id: 15
@@ -724,12 +783,12 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: 0
+        y: -2
         z: 0
       scale:
-        x: 16
+        x: 40
         y: 1
-        z: 16
+        z: 40
       rotation:
         x: 0
         y: 0
@@ -739,8 +798,8 @@ GameObjects:
         enabled: true
         type: PlaneGenerator
         isTransparent: true
-        rows: 16
-        columns: 16
+        rows: 70
+        columns: 70
         materials:
           - 9
     children:
@@ -768,5 +827,272 @@ GameObjects:
       - id: 103
         enabled: true
         type: GameManager
+        enemyPrefab: res/prefabs/Enemy.prefab
+    children:
+      []
+  - id: 301
+    name: album
+    isStatic: false
+    isActive: true
+    transform:
+      id: 302
+      enabled: true
+      position:
+        x: 0
+        y: -325
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 303
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 6
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 640
+        height: 200
+        layer: 0
+    children:
+      - 304
+      - 307
+      - 310
+  - id: 304
+    name: meeting
+    isStatic: false
+    isActive: true
+    transform:
+      id: 305
+      enabled: true
+      position:
+        x: 0
+        y: -10
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 306
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 5
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 1
+    children:
+      []
+  - id: 307
+    name: concert
+    isStatic: false
+    isActive: true
+    transform:
+      id: 308
+      enabled: true
+      position:
+        x: 160
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 309
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 4
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 1
+    children:
+      []
+  - id: 310
+    name: album
+    isStatic: false
+    isActive: true
+    transform:
+      id: 311
+      enabled: true
+      position:
+        x: -175
+        y: -15
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 312
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 3
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 1
+    children:
+      []
+  - id: 313
+    name: album
+    isStatic: false
+    isActive: true
+    transform:
+      id: 314
+      enabled: true
+      position:
+        x: -660
+        y: 390
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 315
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 7
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 600
+        height: 300
+        layer: 0
+    children:
+      - 316
+      - 319
+  - id: 316
+    name: Date
+    isStatic: false
+    isActive: true
+    transform:
+      id: 317
+      enabled: true
+      position:
+        x: -180
+        y: 90
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 318
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x001\x00 \x00-\x00Y\x00e\x00a\x00r\x00 \x002\x00 \x00-\x00 \x00M\x00o\x00n\x00t\x00h\x00s\x00 \x00:\x003\x000\x00 \x00D\x00a\x00y\x00s"
+        font: 0
+        size: 35
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 319
+    name: Date
+    isStatic: false
+    isActive: true
+    transform:
+      id: 320
+      enabled: true
+      position:
+        x: -180
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 321
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
     children:
       []

@@ -77,6 +77,7 @@ void RadioStationGeneratorSectorBased::Generate(Tilemap::HexagonalTilemap* tilem
                 GameObject* tile = foundOnes[randomIndex];
                 tile->GetComponent<MapHexTile>()->type = MapHexTile::HexTileType::RadioStation;
                 GameObject* instantiated = SceneManager::CreateGameObject(prefabRadioStation, tile->GetTransform());
+                instantiated->SetIsStatic(true);
                 //GameObject* instantiated = GameObject::Instantiate(prefabRadioStation, tile->GetTransform());
             }
         }

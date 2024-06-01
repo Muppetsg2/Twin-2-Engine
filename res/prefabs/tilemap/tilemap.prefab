@@ -18,7 +18,7 @@ Prefabs:
 ScriptableObjects: ~
 Root:
   name: New GameObject
-  isStatic: false
+  isStatic: true
   isActive: true
   transform:
     id: 0

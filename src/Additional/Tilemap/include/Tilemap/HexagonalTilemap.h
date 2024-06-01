@@ -48,10 +48,10 @@ namespace Tilemap
 		//void Fill(const glm::ivec2& position, Twin2Engine::Core::GameObject* gameObject);
 		void Fill(const glm::ivec2& position, Twin2Engine::Core::Prefab* prefab);
 
-		inline void SetDistanceBetweenTiles(float distanceBetweenTiles);
-		inline float GetDistanceBetweenTiles() const;
-		inline void SetEdgeLength(float edgeLength);
-		inline float GetEdgeLength() const;
+		void SetDistanceBetweenTiles(float distanceBetweenTiles);
+		float GetDistanceBetweenTiles() const;
+		void SetEdgeLength(float edgeLength);
+		float GetEdgeLength() const;
 
 		glm::vec2 ConvertToRealPosition(const glm::ivec2& position) const;
 		glm::ivec2 ConvertToTilemapPosition(const glm::vec2& position) const;

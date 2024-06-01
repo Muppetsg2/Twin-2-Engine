@@ -18,7 +18,7 @@ void MapGenerator::Initialize()
 
 void MapGenerator::OnEnable()
 {
-    //Generate();
+    Generate();
 }
 
 void MapGenerator::GenerateFloatHull(const vector<vec2>& hull)
@@ -281,6 +281,7 @@ YAML::Node MapGenerator::Serialize() const
 {
     YAML::Node node = Component::Serialize();
     node["type"] = "MapGenerator";
+    // SPRAWDZANIE CZY PREFAB JEST NULLPTR
     node["prefabHexagonalTile"] = SceneManager::GetPrefabSaveIdx(preafabHexagonalTile->GetId());
     node["additionalTile"] = SceneManager::GetPrefabSaveIdx(additionalTile->GetId());
     node["filledTile"] = SceneManager::GetPrefabSaveIdx(filledTile->GetId());
@@ -299,6 +300,7 @@ bool MapGenerator::Deserialize(const YAML::Node& node) {
         !node["minPointsNumber"] || !node["maxPointsNumber"] || !node["angleDeltaRange"] ||
         !Component::Deserialize(node)) return false;
 
+    // SPRAWDZAC CZY ISTNIEJE PREFAB
     preafabHexagonalTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["prefabHexagonalTile"].as<size_t>()));
     additionalTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["additionalTile"].as<size_t>()));
     filledTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["filledTile"].as<size_t>()));

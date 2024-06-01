@@ -7,6 +7,8 @@
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
 
+using namespace std;
+
 GameManager* GameManager::instance = nullptr;
 
 
@@ -25,6 +27,12 @@ void GameManager::Initialize() {
     }
 }
 
+void GameManager::OnEnable() {
+    SPDLOG_INFO("Creating enenmy");
+    GenerateEnemy();
+    GenerateEnemy();
+}
+
 void GameManager::Update() {
 
 }
@@ -41,6 +49,12 @@ GameObject* GameManager::GeneratePlayer() {
     GameObject* player = Twin2Engine::Manager::SceneManager::CreateGameObject(prefabPlayer);
     Player* p = player->GetComponent<Player>();
 
+    int chosen = Random::Range(0ull, freeColors.size() - 1ull);
+    //int chosen = 0;
+    p->colorIdx = freeColors[chosen];
+    freeColors.erase(freeColors.begin() + chosen);
+    //p->colorIdx = chosen;
+
     p->patron = playersPatron;
 
     entities.push_back(p);
@@ -49,15 +63,21 @@ GameObject* GameManager::GeneratePlayer() {
 }
 
 GameObject* GameManager::GenerateEnemy() {
-    if (freeColors.size() == 0)
-    {
-        return nullptr;
-    }
+    //if (freeColors.size() == 0)
+    //{
+    //    return nullptr;
+    //}
 
     GameObject* enemy = Twin2Engine::Manager::SceneManager::CreateGameObject(enemyPrefab);
     //GameObject* enemy = Instantiate(enemyPrefab, new Vector3(), Quaternion.identity, gameObject.transform);
 
     Enemy* e = enemy->GetComponent<Enemy>();
+
+    int chosen = Random::Range(0ull, freeColors.size() - 1ull);
+    //int chosen = 1;
+    e->colorIdx = freeColors[chosen];
+    freeColors.erase(freeColors.begin() + chosen);
+    //e->colorIdx = chosen;
 
     /*float h = Random.Range(0f, 1f);
     float s = Random.Range(.7f, 1f);
@@ -85,10 +105,10 @@ GameObject* GameManager::GenerateEnemy() {
     }
     e.Color = Color.HSVToRGB(h, s, v);*/
 
-    int idx = freeColors[Random::Range<int>(0, (freeColors.size() - 1))];
-    freeColors.erase(std::find(freeColors.begin(), freeColors.end(), idx));
+    //int idx = freeColors[Random::Range<int>(0, (freeColors.size() - 1))];
+    //freeColors.erase(std::find(freeColors.begin(), freeColors.end(), idx));
 
-    e->colorIdx = idx;
+    //e->colorIdx = idx;
 
     float minutes = 10.0f; // (GameTimer::Instance != nullptr ? GameTimer::Instance->TotalSeconds : 0.0f) / 60.0f;
 
@@ -141,6 +161,8 @@ YAML::Node GameManager::Serialize() const
 {
     YAML::Node node = Component::Serialize();
     node["type"] = "GameManager";
+
+    node["enemyPrefab"] = PrefabManager::GetPrefabPath(enemyPrefab);
     //node["direction"] = light->direction;
     //node["power"] = light->power;
 
@@ -152,6 +174,7 @@ bool GameManager::Deserialize(const YAML::Node& node)
     if (!Component::Deserialize(node))
         return false;
 
+    enemyPrefab = PrefabManager::LoadPrefab(node["enemyPrefab"].as<string>());
     //light->direction = node["direction"].as<glm::vec3>();
     //light->power = node["power"].as<float>();
 

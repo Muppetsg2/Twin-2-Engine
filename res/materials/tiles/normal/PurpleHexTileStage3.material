@@ -1,0 +1,7 @@
+material:
+  name: tiles/normal/PurpleHexTileStage3
+  shader: origin/Textured
+  parameters:
+    - name: texture1
+      type: texture2D
+      value: res/textures/tiles/purple3.png

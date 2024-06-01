@@ -53,7 +53,9 @@ namespace Twin2Engine::Tools {
 		STD140Offsets _dataOffsets;
 		std::vector<char> _data;
 
+#if TRACY_PROFILER
 		static const char* const tracy__GetValueData;
+#endif
 
 		template<class T> 
 		std::vector<char> _GetValueData(const T& value) const {
@@ -70,10 +72,12 @@ namespace Twin2Engine::Tools {
 
 		size_t _GetArrayElemSize(const std::vector<size_t>& offsets) const;
 
+#if TRACY_PROFILER
 		static const char* const tracy__ConvertArray;
 		static const char* const tracy__ConvertArrayValues;
 		static const char* const tracy__ConvertArrayValue;
 		static const char* const tracy__ConvertArrayFunc;
+#endif
 
 		template<class S, class C, class T, class R>
 		R _ConvertArray(const std::string& name, const T& values, size_t size, const Func<R, const std::string&, const std::vector<C>&>& arrayFunc) {
@@ -165,6 +169,7 @@ namespace Twin2Engine::Tools {
 			}
 		}*/
 
+#if TRACY_PROFILER
 		static const char* const tracy__Add;
 		static const char* const tracy__AddGetOffset;
 		static const char* const tracy__AddCheckError;
@@ -174,6 +179,7 @@ namespace Twin2Engine::Tools {
 		static const char* const tracy__AddSetValueData;
 		static const char* const tracy__AddClearTempValueData;
 		static const char* const tracy__AddUpdateSize;
+#endif
 
 		template<class T> void _Add(const std::string& name, const T& value) {
 #if TRACY_PROFILER
@@ -253,6 +259,7 @@ namespace Twin2Engine::Tools {
 #endif
 		}
 
+#if TRACY_PROFILER
 		static const char* const tracy__AddArray;
 		static const char* const tracy__AddArrayCheckSize;
 		static const char* const tracy__AddArrayGetOffsets;
@@ -265,6 +272,7 @@ namespace Twin2Engine::Tools {
 		static const char* const tracy__AddArrayClearTempValueData;
 		static const char* const tracy__AddArrayClearValuesOffsets;
 		static const char* const tracy__AddArrayUpdateSize;
+#endif
 
 		template<class T> void _AddArray(const std::string& name, const std::vector<T>& values) {
 #if TRACY_PROFILER
@@ -379,12 +387,14 @@ namespace Twin2Engine::Tools {
 #pragma endregion
 
 #pragma region SET
+#if TRACY_PROFILER
 		static const char* const tracy__Set;
 		static const char* const tracy__SetCheckVariable;
 		static const char* const tracy__SetGetOffset;
 		static const char* const tracy__SetGetValueData;
 		static const char* const tracy__SetSetValueData;
 		static const char* const tracy__SetClearTempValueData;
+#endif
 
 		template<class T> bool _Set(const std::string& name, const T& value) {
 #if TRACY_PROFILER
@@ -438,6 +448,7 @@ namespace Twin2Engine::Tools {
 			return true;
 		}
 
+#if TRACY_PROFILER
 		static const char* const tracy__SetArray;
 		static const char* const tracy__SetArrayCheckSize;
 		static const char* const tracy__SetArrayCheckVariable;
@@ -449,6 +460,7 @@ namespace Twin2Engine::Tools {
 		static const char* const tracy__SetArraySetValueData;
 		static const char* const tracy__SetArrayClearTempValueData;
 		static const char* const tracy__SetArrayClearValuesOffsets;
+#endif
 
 		template<class T> bool _SetArray(const std::string& name, const std::vector<T>& values) {
 #if TRACY_PROFILER
@@ -560,6 +572,7 @@ namespace Twin2Engine::Tools {
 #pragma endregion
 
 #pragma region GET
+#if TRACY_PROFILER
 		static const char* const tracy__Get;
 		static const char* const tracy__GetCheckVariable;
 		static const char* const tracy__GetValueOffset;
@@ -569,6 +582,7 @@ namespace Twin2Engine::Tools {
 		static const char* const tracy__GetCheckValueDataSize;
 		static const char* const tracy__GetValue;
 		static const char* const tracy__GetClearTempValueData;
+#endif
 
 		template<class T> T _Get(const std::string& name) const {
 #if TRACY_PROFILER
@@ -646,6 +660,7 @@ namespace Twin2Engine::Tools {
 			return value;
 		}
 
+#if TRACY_PROFILER
 		static const char* const tracy__GetArray;
 		static const char* const tracy__GetArrayCheckVariable;
 		static const char* const tracy__GetArrayValuesOffsets;
@@ -658,6 +673,7 @@ namespace Twin2Engine::Tools {
 		static const char* const tracy__GetArrayValue;
 		static const char* const tracy__GetArrayClearTempValueData;
 		static const char* const tracy__GetArrayClearValuesOffsets;
+#endif
 
 		template<class T> std::vector<T> _GetArray(const std::string& name) const {
 #if TRACY_PROFILER
@@ -818,9 +834,9 @@ namespace Twin2Engine::Tools {
 
 	public:
 		STD140Struct() = default;
-		STD140Struct(STD140Struct& std140s) = default;
-		STD140Struct(const STD140Struct& std140s) = default;
-		STD140Struct(STD140Struct&& std140s) = default;
+		STD140Struct(STD140Struct& std140s);
+		STD140Struct(const STD140Struct& std140s);
+		STD140Struct(STD140Struct&& std140s);
 		STD140Struct(const STD140Offsets& structOffsets, const std::vector<char>& data = std::vector<char>());
 		template<class... Args>
 		STD140Struct(const STD140Variable<Args>&... vars) {
@@ -835,7 +851,7 @@ namespace Twin2Engine::Tools {
 		STD140Struct(const STD140Value<Args>&... values) {
 			_AddMultiple(values...);
 		}*/
-		virtual ~STD140Struct() = default;
+		virtual ~STD140Struct();
 
 		STD140Struct& operator=(STD140Struct& std140s) = default;
 		STD140Struct& operator=(const STD140Struct& std140s) = default;
@@ -1397,6 +1413,11 @@ namespace Twin2Engine::Tools {
 #pragma endregion
 
 		STD140Offsets GetOffsets() const;
+		size_t GetOffset(const std::string& name) const;
+		std::vector<size_t> GetArrayOffsets(const std::string& name) const;
+#if _DEBUG
+		const ValueType* GetType(const std::string& name) const;
+#endif
 		std::vector<char> GetData() const;
 		size_t GetBaseAligement() const;
 		size_t GetSize() const;

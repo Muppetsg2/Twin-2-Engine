@@ -75,7 +75,7 @@ endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC glfw
 										GraphicEngine
 										PhysicEngine
-										Tilemap
-										Generation
+										#Tilemap
+										#Generation
 										GameScripts
 										Tools)

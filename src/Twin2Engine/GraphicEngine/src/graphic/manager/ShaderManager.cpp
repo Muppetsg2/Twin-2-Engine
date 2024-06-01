@@ -10,6 +10,7 @@ std::hash<std::string> ShaderManager::stringHash;
 std::list<ShaderManager::ShaderProgramData> ShaderManager::loadedShaders;
 
 Shader* ShaderManager::DepthShader = nullptr;
+Shader* ShaderManager::CloudLightDepthShader = nullptr;
 
 const std::unordered_map<size_t, int> ShaderManager::shaderTypeMapping
 {
@@ -214,6 +215,7 @@ inline void ShaderManager::CheckProgramLinkingSuccess(GLuint programId)
 void ShaderManager::Init()
 {
     DepthShader = GetShaderProgram("origin/DepthShader");
+    CloudLightDepthShader = GetShaderProgram("origin/CloudLightDepthShader");
 }
 
 void ShaderManager::UnloadAll()

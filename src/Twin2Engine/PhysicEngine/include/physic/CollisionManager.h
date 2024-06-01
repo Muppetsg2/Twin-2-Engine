@@ -28,5 +28,6 @@ namespace Twin2Engine::Physic {
 		void UnregisterCollider(GameCollider* collider);
 		void PerformCollisions();
 		bool Raycast(Ray& ray, RaycastHit& raycastHit);
+		void OverlapSphere(glm::vec3 spherePosition, float radius, std::vector<Twin2Engine::Core::ColliderComponent*>& collidingWithSphere);
 	};
 }

@@ -48,6 +48,15 @@ using namespace Humans;
 
 #include <Humans/HumansGenerator.h>
 
+// ASTAR PATHFINDING
+#include <AstarPathfinding/AStarPath.h>
+#include <AstarPathfinding/AStarPathfinder.h>
+
+using namespace AStar;
+
+// ENEMY AI
+#include <EnemyAI/EnemyAI.h>
+
 // YAML CONVERTERS
 #include <tools/YamlConverters.h>
 #include <Generation/YamlConverters.h>
@@ -77,6 +86,17 @@ using Tilemap::HexagonalTilemap;
 using namespace Generation;
 using namespace Generation::Generators;
 
+//GAMESCRIPTS
+#include <MovementController.h>
+#include <GameManager.h>
+#include <Playable.h>
+#include <PlayerMovement.h>
+#include <Player.h>
+#include <Enemy.h>
+#include <EnemyMovement.h>
+
+using namespace GameScripts;
+
 #pragma region CAMERA_CONTROLLING
 
 glm::vec3 cameraPos(0.f, 2.f, 5.f);
@@ -95,7 +115,6 @@ bool mouseNotUsed = true;
 
 void input();
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void update();
 
 #if _DEBUG
 void init_imgui();
@@ -127,26 +146,7 @@ static ImFileDialogInfo _fileDialogSceneSaveInfo;
 
 Window* window;
 
-Material material;
-Material material2;
-Material wallMat;
-Material roofMat;
-InstantiatingModel modelMesh;
-GameObject* gameObject;
-GameObject* gameObject2;
-GameObject* gameObject3;
-GameObject* gameObject4;
-
-GameObject* imageObj;
-GameObject* imageObj2;
-GameObject* imageObj3;
-Image* image;
-float colorSpan = 1.f;
-Text* text;
-
 GameObject* Camera;
-
-GameObject* tilemapGO = nullptr;
 
 int main(int, char**)
 {
@@ -233,7 +233,24 @@ int main(int, char**)
 
     ADD_COMPONENT("HumanMovement", HumanMovement);
 
+    ADD_COMPONENT("AStarPathfindingNode", AStarPathfindingNode);
+
+    ADD_COMPONENT("AStarPathfinder", AStarPathfinder);
+
+
 #pragma endregion
+
+
+    ADD_COMPONENT("MovementController", MovementController);
+
+    ADD_COMPONENT("GameManager", GameManager);
+    ADD_COMPONENT("PlayerMovement", PlayerMovement);
+    ADD_COMPONENT("Player", Player);
+
+    ADD_COMPONENT("HexTile", HexTile);
+
+    ADD_COMPONENT("Enemy", Enemy);
+    ADD_COMPONENT("EnemyMovement", EnemyMovement);
 
 #pragma region GAME_SCRIPTS_COMPONENTS
 
@@ -244,12 +261,13 @@ int main(int, char**)
 
     SceneManager::GetOnSceneLoaded() += [](std::string sceneName) -> void {
         Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
-        image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
-        text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
+
+        //EnemyAI* e = text->GetGameObject()->AddComponent<EnemyAI>();
     };
 
     // ADDING SCENES
     SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/MenuScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
     //SceneManager::AddScene("testScene", "res/scenes/ToonShading.scene");
@@ -258,56 +276,8 @@ int main(int, char**)
     SceneManager::Update();
 
     //SceneManager::SaveScene("res/scenes/ToonShading.scene");
-
-#pragma region SETTING_UP_GENERATION
-
-    tilemapGO = SceneManager::GetGameObjectWithId(14);
-    //HexagonalTilemap* hexagonalTilemap = tilemapGO->GetComponent<HexagonalTilemap>();
-    MapGenerator* mapGenerator = tilemapGO->GetComponent<MapGenerator>();
-    //mapGenerator->tilemap = hexagonalTilemap;
-    //float tilemapGenerating = glfwGetTime();
-    mapGenerator->Generate();
-    //spdlog::info("Tilemap generation: {}", glfwGetTime() - tilemapGenerating);
-
-    //ContentGenerator* contentGenerator = tilemapGO->GetComponent<ContentGenerator>();
-
-    //tilemapGenerating = glfwGetTime();
-    //contentGenerator->GenerateContent(hexagonalTilemap);
-    //spdlog::info("Tilemap content generation: {}", glfwGetTime() - tilemapGenerating);
-
-    //GameObject* human = new GameObject();
-    //MeshRenderer* humanMR = human->AddComponent<MeshRenderer>();
-    //human->AddComponent<Human>();
-    //human->AddComponent<HumanMovement>();
-    //PrefabManager::SaveAsPrefab(human, "res/prefabs/Human.prefab");
-
-
-#if _DEBUG
-    //Editor::Common::ScriptableObjectEditorManager::Init();
-    //Editor::Common::ScriptableObjectEditorManager::Update();
-#endif
-
-#pragma endregion
     
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
-    image = SceneManager::FindObjectByName("imageObj3")->GetComponent<Image>();
-    text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
-
-
-#pragma region GAMESCRIPTS_PREFABS
-    //GameObject* gms_go = SceneManager::CreateGameObject();
-    //GameManager* gmc = gms_go->AddComponent<GameManager>();
-    //PrefabManager::SaveAsPrefab(gms_go, "GameManager.prefab");
-    //GameObject* p_go = SceneManager::CreateGameObject();
-    //MeshRenderer* mrc = p_go->AddComponent<MeshRenderer>();
-    //Player* pc = p_go->AddComponent<Player>();
-    //PlayerMovement* pmc = p_go->AddComponent<PlayerMovement>();
-    //PrefabManager::SaveAsPrefab(p_go, "Player.prefab");
-    //GameObject* e_go = SceneManager::CreateGameObject();
-    //MeshRenderer* emrc = e_go->AddComponent<MeshRenderer>();
-    //Enemy* ec = e_go->AddComponent<Enemy>();
-    //PrefabManager::SaveAsPrefab(e_go, "Enemy.prefab");
-#pragma endregion
 
 #if _DEBUG
     GameEngine::LateRender += []() -> void {
@@ -321,9 +291,9 @@ int main(int, char**)
         FrameMarkStart(tracy_RenderingImGui);
 #endif
 
-        begin_imgui();
-        render_imgui(); // edit this function to add your own ImGui controls
-        end_imgui(); // this call effectively renders ImGui
+        //begin_imgui();
+        //render_imgui(); // edit this function to add your own ImGui controls
+        //end_imgui(); // this call effectively renders ImGui
 
 #if TRACY_PROFILER
         FrameMarkEnd(tracy_RenderingImGui);
@@ -338,13 +308,17 @@ int main(int, char**)
         //Editor::Common::ScriptableObjectEditorManager::End();
     };
 #endif
+    //GameObject* go = SceneManager::CreateGameObject();
+    //GameObject* gochild = SceneManager::CreateGameObject(go->GetTransform());
+    //
+    //GameObject* gochild2 = SceneManager::CreateGameObject(go->GetTransform());
+    //gochild->GetTransform()->AddChild(gochild2->GetTransform());
+    //PrefabManager::SaveAsPrefab(go, "ParenChild");
+
+
 
     GameEngine::OnInput += [&]() -> void {
         input();
-    };
-
-    GameEngine::EarlyUpdate += [&]() -> void {
-        update();
     };
 
     GameEngine::Start();
@@ -513,31 +487,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
     Camera->GetTransform()->SetGlobalRotation(glm::vec3(rot.x, rot.y + xoffset, rot.z));
 #endif 
-}
-
-void update()
-{
-    // Update game objects' state here
-    text = SceneManager::FindObjectByName("textObj")->GetComponent<Text>();
-    if (text != nullptr) {
-        text->SetText(L"FPS: " + std::to_wstring(1.f / Time::GetDeltaTime()));
-    }
-    colorSpan -= Time::GetDeltaTime() * 0.2f;
-    if (colorSpan <= 0.f) {
-        colorSpan = 1.f;
-    }
-    // Color
-    if (colorSpan > 0.66f) {
-        image->SetColor({ 0.f, 1.f, 0.f, 1.f });
-    }
-    else if (colorSpan > 0.33f) {
-        image->SetColor({ 1.f, 1.f, 0.f, 1.f });
-    }
-    else {
-        image->SetColor({ 1.f, 0.f, 0.f, 1.f });
-    }
-    // WIDTH
-    image->SetWidth(1000.f * colorSpan);
 }
 
 #if _DEBUG
@@ -746,7 +695,7 @@ void render_imgui()
         if (ImGui::FileDialog(&_fileDialogSceneSave, &_fileDialogSceneSaveInfo))
         {
             // Result path in: m_fileDialogInfo.resultPath
-            SceneManager::SaveScene(_fileDialogSceneOpenInfo.resultPath.string());
+            SceneManager::SaveScene(_fileDialogSceneSaveInfo.resultPath.string());
         }
 
         ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Hello World!");

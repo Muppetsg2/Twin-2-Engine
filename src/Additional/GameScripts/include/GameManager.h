@@ -6,7 +6,7 @@
 #include <core/Prefab.h>
 #include <vector>
 #include <graphic/Material.h>
-#include <Generation/MapHexTile.h>
+#include <AreaTaking/HexTile.h>
 #include <Enemy.h>
 #include <Player.h>
 //#include <pch.h>
@@ -15,22 +15,24 @@ using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;
 
 class MiniGameManager;
+class HexTile;
 class PlayerInterface;
 
 namespace Generation {
     class MapHexTile;
 }
 
+
 //class ConcertRoad : public Component {
 class GameManager : public Component {
 private:
-    std::vector<int> freeColors;
+    std::vector<int> freeColors{ 0, 1, 2, 3, 4, 5, 6 };
 public:
     static GameManager* instance;
 
     std::vector<Playable*> entities;
 
-    std::vector<Generation::MapHexTile*> Tiles;
+    std::vector<HexTile*> Tiles;
 
     Prefab* enemyPrefab = nullptr;
 
@@ -52,7 +54,7 @@ public:
     Prefab* prefabPlayer = nullptr;
     bool createPlayer = true;
 
-    Material* IndicatorMaterial;
+    Material IndicatorMaterial;
     glm::vec3 IndicatorColor;
 
     glm::vec3 colors[6];
@@ -60,6 +62,7 @@ public:
 
 
     virtual void Initialize() override;
+    virtual void OnEnable() override;
     virtual void Update() override;
 
     void UpdateEnemies(int colorIdx);

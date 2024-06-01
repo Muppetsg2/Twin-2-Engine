@@ -120,11 +120,11 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
     //float shadow = currentDepth < closestDepth  ? 1.0 : 0.0;
     
     uint smId = shadowMapId;
-    //float closestDepthStatic = texture(DirLightShadowMaps[smId], projCoords.xy).r; 
-    //float closestDepthDynamic = texture(DirLightShadowMaps[smId + 1], projCoords.xy).r; 
-    //if (closestDepthStatic > closestDepthDynamic) {
-    //    smId += 1;
-    //}
+    float closestDepthStatic = texture(DirLightShadowMaps[smId], projCoords.xy).r; 
+    float closestDepthDynamic = texture(DirLightShadowMaps[smId + 1], projCoords.xy).r; 
+    if (closestDepthStatic > closestDepthDynamic) {
+        smId += 1;
+    }
        
     // PCF
     float shadow = 0.0;

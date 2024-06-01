@@ -160,6 +160,7 @@ void GraphicEngine::PreRender()
 	ZoneScoped;
 	FrameMarkStart(tracy_PreRenderName);
 #endif
+
 	MeshRenderingManager::PreRender();
 
 #if TRACY_PROFILER

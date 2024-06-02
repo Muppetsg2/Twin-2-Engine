@@ -95,7 +95,7 @@ void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 					size_t payload_n = *(const size_t*)payload->Data;
 					Transform* t = SceneManager::GetGameObjectWithId(payload_n)->GetTransform();
 					if (objT->GetChildAt(i) != t) {
-						selected = objT->GetChildAt(i)->GetGameObject()->Id();
+						_selected = objT->GetChildAt(i)->GetGameObject()->Id();
 						t->SetParent(objT->GetChildAt(i));
 					}
 				}
@@ -507,7 +507,7 @@ void SceneManager::AddScene(const string& name, const string& path)
 		AddScene(name, scene);
 	}
 	else {
-		SPDLOG_ERROR("Scriptable Object file '{0}' not found!", path);
+		SPDLOG_ERROR("Scene file '{0}' not found!", path);
 	}
 }
 
@@ -569,6 +569,8 @@ void SceneManager::SaveScene(const string& path) {
 	ofstream file{ path };
 	file << sceneNode;
 	file.close();
+
+	SPDLOG_INFO("Scene Saved in '{0}'", path.c_str());
 }
 
 void SceneManager::UpdateCurrentScene()

@@ -202,7 +202,7 @@ Material MaterialsManager::LoadMaterial(const std::string& materialName)
 
 Material MaterialsManager::GetMaterial(size_t managerId)
 {
-	if (_loadedMaterials.find(managerId) != _loadedMaterials.end())
+	if (_loadedMaterials.contains(managerId))
 	{
 		return Material(_loadedMaterials[managerId]);
 	}

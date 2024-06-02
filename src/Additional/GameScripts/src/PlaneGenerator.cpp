@@ -155,19 +155,11 @@ void PlaneGenerator::DrawEditor()
     std::string name = std::string("Plane Generator##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str())) {
         if (Component::DrawInheritedFields()) return;
-        
-        // TODO: Zrobic to co w MeshRenderer
 
         ImGui::Text("Model: ");
         ImGui::SameLine();
         ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
         ImGui::Text(_modelName.c_str());
-        ImGui::PopFont();
-
-        ImGui::Text("Material: ");
-        ImGui::SameLine();
-        ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
-        ImGui::Text(MaterialsManager::GetMaterialName(_materials[0].GetId()).c_str());
         ImGui::PopFont();
 
         unsigned int r = _rows;
@@ -180,7 +172,7 @@ void PlaneGenerator::DrawEditor()
             SetGridValues(r, c);
         }
 
-        // TODO: Dodac opcje zmiany Material
+        MeshRenderer::DrawInheritedFields();
     }
 }
 #endif

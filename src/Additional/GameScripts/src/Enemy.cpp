@@ -136,8 +136,6 @@ YAML::Node Enemy::Serialize() const
 {
     YAML::Node node = Component::Serialize();
     node["type"] = "Enemy";
-    //node["direction"] = light->direction;
-    //node["power"] = light->power;
 
     return node;
 }
@@ -146,9 +144,6 @@ bool Enemy::Deserialize(const YAML::Node& node)
 {
     if (!Component::Deserialize(node))
         return false;
-
-    //light->direction = node["direction"].as<glm::vec3>();
-    //light->power = node["power"].as<float>();
 
     return true;
 }

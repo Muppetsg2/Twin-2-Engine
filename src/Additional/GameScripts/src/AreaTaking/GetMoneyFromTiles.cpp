@@ -32,7 +32,7 @@ void MoneyGainFromTiles::UpdateMoney(bool player) {
 
     float patronMul = 1.0f;
 
-    if (playable->patron->patronBonus == PatronBonus::MoneyGain) {
+    if (playable->patron->patronBonus == PatronBonus::MONEY_GAIN) {
         patronMul = playable->patron->GetBonus();
     }
 

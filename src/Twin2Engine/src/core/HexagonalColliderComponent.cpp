@@ -93,9 +93,18 @@ YAML::Node HexagonalColliderComponent::Serialize() const
 {
 	YAML::Node node = ColliderComponent::Serialize();
 	node["type"] = "HexagonalCollider";
-	node["baselength"] = ((HexagonalColliderData*)collider->shapeColliderData)->BaseLength;
-	node["halfheight"] = ((HexagonalColliderData*)collider->shapeColliderData)->HalfHeight;
-	node["rotation"] = ((HexagonalColliderData*)collider->shapeColliderData)->Rotation;
+
+	if (collider != nullptr) {
+		node["baselength"] = ((HexagonalColliderData*)collider->shapeColliderData)->BaseLength;
+		node["halfheight"] = ((HexagonalColliderData*)collider->shapeColliderData)->HalfHeight;
+		node["rotation"] = ((HexagonalColliderData*)collider->shapeColliderData)->Rotation;
+	}
+	else {
+		node["baselength"] = 0.f;
+		node["halfheight"] = 0.f;
+		node["rotation"] = 0.f;
+	}
+
 	return node;
 }
 

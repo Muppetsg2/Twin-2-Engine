@@ -32,7 +32,7 @@ void Player::Initialize() {
     move = GetGameObject()->GetComponent<PlayerMovement>();
     move->OnFinishMoving += [this](GameObject* gameObject, HexTile* tile) { FinishMove(tile); };
     move->OnStartMoving += [this](GameObject* gameObject, HexTile* tile) { StartMove(tile); };
-    if (patron && patron->patronBonus == PatronBonus::MoveRange) {
+    if (patron && patron->patronBonus == PatronBonus::MOVE_RANGE) {
         float r = move->radius;
         int s = move->maxSteps;
         move->radius += patron->GetBonus();
@@ -357,16 +357,10 @@ void Player::OnDead() {
     GameManager::instance->GameOver();
 }
 
-
-
-
-
 YAML::Node Player::Serialize() const
 {
     YAML::Node node = Component::Serialize();
     node["type"] = "Player";
-    //node["direction"] = light->direction;
-    //node["power"] = light->power;
 
     return node;
 }
@@ -375,9 +369,6 @@ bool Player::Deserialize(const YAML::Node& node)
 {
     if (!Component::Deserialize(node))
         return false;
-
-    //light->direction = node["direction"].as<glm::vec3>();
-    //light->power = node["power"].as<float>();
 
     return true;
 }

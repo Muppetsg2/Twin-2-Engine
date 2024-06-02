@@ -8,7 +8,7 @@ using namespace Twin2Engine::Core;
 
 void Playable::Initialize()
 {
-    if (patron->patronBonus == PatronBonus::AbilitiesCooldown) {
+    if (patron->patronBonus == PatronBonus::ABILITIES_COOLDOWN) {
         albumCooldown *= patron->GetBonus() / 100.0f;
         fansCooldown *= patron->GetBonus() / 100.0f;
     }
@@ -144,7 +144,7 @@ void Playable::FansFunc() {
     fansUsed++;
     float usedRadius = fansRadius;
 
-    if (patron->patronBonus == PatronBonus::AbilitiesRange) {
+    if (patron->patronBonus == PatronBonus::ABILITIES_RANGE) {
         usedRadius += patron->GetBonus();
     }
 

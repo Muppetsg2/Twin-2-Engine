@@ -81,8 +81,16 @@ YAML::Node CapsuleColliderComponent::Serialize() const
 {
 	YAML::Node node = ColliderComponent::Serialize();
 	node["type"] = "CapsuleCollider";
-	node["endPosition"] = ((CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition;
-	node["radius"] = ((CapsuleColliderData*)collider->shapeColliderData)->Radius;
+
+	if (collider != nullptr) {
+		node["endPosition"] = ((CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition;
+		node["radius"] = ((CapsuleColliderData*)collider->shapeColliderData)->Radius;
+	}
+	else {
+		node["endPosition"] = glm::vec3(0.f);
+		node["radius"] = 0.f;
+	}
+
 	return node;
 }
 

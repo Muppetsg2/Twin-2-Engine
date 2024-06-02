@@ -1164,7 +1164,7 @@ InstantiatingModel ModelsManager::LoadModel(const std::string& modelPath)
 
 InstantiatingModel ModelsManager::GetModel(size_t managerId) {
     InstantiatingModel model;
-    if (_loadedModels.find(managerId) != _loadedModels.end()) {
+    if (_loadedModels.contains(managerId)) {
         model = _loadedModels[managerId];
     }
     return model;
@@ -1329,6 +1329,17 @@ std::string ModelsManager::GetModelName(const std::string& modelPath)
 {
     size_t h = std::hash<std::string>{}(modelPath);
     return GetModelName(h);
+}
+
+std::map<size_t, std::string> ModelsManager::GetAllModelsNames()
+{
+    std::map<size_t, std::string> names = std::map<size_t, std::string>();
+
+    for (auto item : _modelsPaths) {
+        if (std::regex_match(item.second, std::regex("[{]\\w+[_](?:GENERATED)[_]\\d+[}]"))) continue;
+        names[item.first] = std::filesystem::path(item.second).stem().string();
+    }
+    return names;
 }
 
 YAML::Node ModelsManager::Serialize()

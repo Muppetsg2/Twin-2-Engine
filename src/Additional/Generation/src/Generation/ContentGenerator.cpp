@@ -186,7 +186,7 @@ void ContentGenerator::DrawEditor()
 
             toErase.sort();
 
-            for (size_t i = toErase.size() - 1; i > -1; --i) {
+            for (int i = toErase.size() - 1; i > -1; --i) {
                 types.erase(toErase.back());
                 toErase.pop_back();
             }
@@ -195,21 +195,21 @@ void ContentGenerator::DrawEditor()
 
             size_t choosed = 0;
 
-            if (ImGui::BeginCombo(string("##GO POP UP COMPONENTS").append(id).c_str(), choosed == 0 ? "None" : ScriptableObjectManager::GetName(choosed).c_str())) {
+            if (ImGui::BeginCombo(string("##COMPONENT POP UP GENERATORS").append(id).c_str(), choosed == 0 ? "None" : ScriptableObjectManager::GetName(choosed).c_str())) {
 
-                bool clicked = false;
+                bool click = false;
                 for (auto& item : types) {
 
                     if (ImGui::Selectable(std::string(ScriptableObjectManager::GetName(item.first)).append("##").append(id).c_str(), item.first == choosed)) {
 
-                        if (clicked) continue;
+                        if (click) continue;
 
                         choosed = item.first;
-                        clicked = true;
+                        click = true;
                     }
                 }
 
-                if (clicked) {
+                if (click) {
                     if (choosed != 0) {
                         AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(types[choosed]);
                         SPDLOG_INFO("ContentGenerator::Adding generator {0}", (unsigned int)generator);
@@ -226,6 +226,8 @@ void ContentGenerator::DrawEditor()
             if (choosed != 0) {
                 ImGui::CloseCurrentPopup();
             }
+
+            types.clear();
 
             ImGui::EndPopup();
         }

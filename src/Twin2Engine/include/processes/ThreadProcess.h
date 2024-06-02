@@ -1,6 +1,4 @@
-#ifndef _THREADPROCESS_H_
-#define _THREADPROCESS_H_
-
+#pragma once
 
 #include <processes/Process.h>
 #include <tools/EventHandler.h>
@@ -39,5 +37,3 @@ namespace Twin2Engine::Processes {
 		virtual YAML::Node Serialize() const override;
 	};
 }
-
-#endif //_THREADPROCESS_H_

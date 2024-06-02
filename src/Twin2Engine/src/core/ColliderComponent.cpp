@@ -359,14 +359,31 @@ YAML::Node ColliderComponent::Serialize() const
 	YAML::Node node = Component::Serialize();
 	node["type"] = "Collider";
 	node["colliderId"] = colliderId;
-	node["trigger"] = collider->isTrigger;
-	node["static"] = collider->isStatic;
-	node["layer"] = collider->layer;
-	node["layersFilter"] = collider->layersFilter;
-	if (collider->boundingVolume != nullptr) {
-		node["boundingVolumeRadius"] = ((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius;
+
+	if (collider != nullptr) {
+		node["trigger"] = collider->isTrigger;
+		node["static"] = collider->isStatic;
+		node["layer"] = collider->layer;
+		node["layersFilter"] = collider->layersFilter;
+		if (collider->boundingVolume != nullptr) {
+			node["boundingVolumeRadius"] = ((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius;
+		}
+
+		if (collider->shapeColliderData != nullptr) {
+			node["position"] = collider->shapeColliderData->LocalPosition;
+		}
+		else {
+			node["position"] = glm::vec3(0.f);
+		}
 	}
-	node["position"] = collider->shapeColliderData->LocalPosition;
+	else {
+		node["trigger"] = false;
+		node["static"] = false;
+		node["layer"] = Layer::DEFAULT;
+		node["layersFilter"] = DEFAULT_LAYERS_FILTER;
+		node["position"] = glm::vec3(0.f);
+	}
+
 	return node;
 }
 

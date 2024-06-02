@@ -421,7 +421,8 @@ YAML::Node HexagonalTilemap::Serialize() const
 	node["leftBottomPosition"] = _leftBottomPosition;
 	node["rightTopPosition"] = _rightTopPosition;
 	node["edgeLength"] = _edgeLength;
-	// TODO: Zrobiæ serializacjê zawartoci tilemapy w formie par pozycja, gameObject
+
+	// TODO: Zrobic serializacje zawartoci tilemapy w formie par pozycja, gameObject
 	//GameObject* processed = nullptr;
 	//
 	//YAML::Node listNode = YAML::Node(YAML::NodeType::Sequence);

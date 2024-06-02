@@ -21,6 +21,7 @@ public:
     float additionalMoveRange = 0.0f;
     float additionalAbilitiesRange = 0.0f;
     float abilitiesCooldownPercent = 50.0f;
+    float abilitiesPriceDiscount = 30.f;
 
 
     // Getters

@@ -162,9 +162,9 @@ YAML::Node GameManager::Serialize() const
     YAML::Node node = Component::Serialize();
     node["type"] = "GameManager";
 
-    node["enemyPrefab"] = PrefabManager::GetPrefabPath(enemyPrefab);
-    //node["direction"] = light->direction;
-    //node["power"] = light->power;
+    if (enemyPrefab != nullptr) {
+        node["enemyPrefab"] = SceneManager::GetPrefabSaveIdx(enemyPrefab->GetId());
+    }
 
     return node;
 }
@@ -174,9 +174,9 @@ bool GameManager::Deserialize(const YAML::Node& node)
     if (!Component::Deserialize(node))
         return false;
 
-    enemyPrefab = PrefabManager::LoadPrefab(node["enemyPrefab"].as<string>());
-    //light->direction = node["direction"].as<glm::vec3>();
-    //light->power = node["power"].as<float>();
+    if (node["enemyPrefab"]) {
+        enemyPrefab = PrefabManager::LoadPrefab(node["enemyPrefab"].as<string>());
+    }
 
     return true;
 }

@@ -289,7 +289,7 @@ void AudioComponent::DrawEditor()
 			size_t choosed = _audioId;
 			for (auto& item : audioNames) {
 
-				if (ImGui::Selectable(item.second.append("##").append(id).c_str(), item.first == _audioId)) {
+				if (ImGui::Selectable(std::string(item.second).append("##").append(id).c_str(), item.first == _audioId)) {
 
 					if (clicked) continue;
 

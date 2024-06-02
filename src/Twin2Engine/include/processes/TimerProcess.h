@@ -1,5 +1,4 @@
-#ifndef _TIMERPROCESS_H_
-#define _TIMERPROCESS_H_
+#pragma once
 
 #include <processes/Process.h>
 #include <tools/EventHandler.h>
@@ -35,6 +34,3 @@ namespace Twin2Engine::Processes {
 			virtual YAML::Node Serialize() const override;
 	};
 }
-
-
-#endif // !_TIMERPROCESS_H_

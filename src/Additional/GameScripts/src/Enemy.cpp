@@ -1,19 +1,27 @@
 #include <Enemy.h>
 #include <EnemyMovement.h>
 
-
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
 using namespace Generation;
 using namespace glm;
 using namespace std;
 
+TakingOverState Enemy::_takingOverState;
+MovingState Enemy::_movingState;
+FightingState Enemy::_fightingState;
+RadioStationState Enemy::_radioStationState;
+
+void Enemy::ChangeState(State<Enemy*>* newState) {
+    _stateMachine.ChangeState(this, newState);
+}
+
 void Enemy::Initialize()
 {
     _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
     _movement = GetGameObject()->GetComponent<EnemyMovement>();
     list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
-    _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend());
+    tiles.insert(tiles.begin(), tempList.cbegin(), tempList.cend());
 
     _movement->OnFindPathError += [&](GameObject* gameObject, HexTile* tile) {
             PerformMovement();
@@ -50,6 +58,7 @@ void Enemy::Update()
             PerformMovement();
         }
     }
+    _stateMachine.Update(this);
 }
 
 
@@ -77,23 +86,23 @@ void Enemy::PerformMovement()
     possible.reserve((1 + _movement->maxSteps) * _movement->maxSteps * 3);
 
     list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
-    _tiles.clear();
-    _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend());
+    tiles.clear();
+    tiles.insert(tiles.begin(), tempList.cbegin(), tempList.cend());
 
-    size_t size = _tiles.size();
-    float maxRadius = (_movement->maxSteps + 0.25) * _tilemap->GetDistanceBetweenTiles();
+    size_t size = tiles.size();
+    float maxRadius = GetMaxRadius();
 
     for (size_t index = 0ull; index < size; ++index)
     {
-        MapHexTile::HexTileType type = _tiles[index]->GetMapHexTile()->type;
+        MapHexTile::HexTileType type = tiles[index]->GetMapHexTile()->type;
         if (type != MapHexTile::HexTileType::Mountain && type != MapHexTile::HexTileType::None)
         {
-            tilePosition = _tiles[index]->GetTransform()->GetGlobalPosition();
+            tilePosition = tiles[index]->GetTransform()->GetGlobalPosition();
             tilePosition.y = 0.0f;
             float distance = glm::distance(globalPosition, tilePosition);
             if (distance <= maxRadius)
             {
-                possible.push_back(_tiles[index]);
+                possible.push_back(tiles[index]);
             }
         }
     }
@@ -126,6 +135,10 @@ void Enemy::StartPaperRockScissors(Playable* playable)
 
 void Enemy::StartFansControl(Playable* playable)
 {
+}
+
+float Enemy::GetMaxRadius() const {
+    return (_movement->maxSteps + 0.25) * _tilemap->GetDistanceBetweenTiles();
 }
 
 void Enemy::OnDead()

@@ -11,12 +11,12 @@ public:
 	StateMachine() = default;
 	virtual ~StateMachine() = default;
 
-	void Update(_Entity* entity);
-	void ChangeState(_Entity* entity, State<_Entity>* newState);
+	void Update(_Entity entity);
+	void ChangeState(_Entity entity, State<_Entity>* newState);
 };
 
 template<class _Entity>
-void StateMachine<_Entity>::Update(_Entity* entity) {
+void StateMachine<_Entity>::Update(_Entity entity) {
 #if TRACY_PROFILER
 	ZoneScoped;
 #endif
@@ -26,7 +26,7 @@ void StateMachine<_Entity>::Update(_Entity* entity) {
 }
 
 template<class _Entity>
-void StateMachine<_Entity>::ChangeState(_Entity* entity, State<_Entity>* newState) {
+void StateMachine<_Entity>::ChangeState(_Entity entity, State<_Entity>* newState) {
 #if TRACY_PROFILER
 	ZoneScoped;
 #endif

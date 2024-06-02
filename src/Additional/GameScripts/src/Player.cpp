@@ -1,6 +1,7 @@
 #include <Player.h>
+#include <manager/SceneManager.h>
 
-//using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Manager;
 
 
 
@@ -10,6 +11,7 @@
 void Player::Initialize() {
     InitPrices();
     CreateIndicator();
+    _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
 
     //if (hexMesh == nullptr) hexMesh = HexGenerator::GenerateHexMesh(0.4f, 0.5f, 0.0f, 0.0f);
     //
@@ -308,6 +310,10 @@ void Player::StartFansControl(Playable* playable) {
     //FansControllGameManager::Instance().StartNewGame(this, fightingPlayable);
     fightingPlayable = playable;
     GameManager::instance->minigameActive = true;
+}
+
+float Player::GetMaxRadius() const {
+    return (move->maxSteps + 0.25) * _tilemap->GetDistanceBetweenTiles();
 }
 
 void Player::WonFansControl(Playable* playable) {

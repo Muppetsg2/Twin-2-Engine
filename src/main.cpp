@@ -54,9 +54,6 @@ using namespace Humans;
 
 using namespace AStar;
 
-// ENEMY AI
-#include <EnemyAI/EnemyAI.h>
-
 // CLOUD CONTROLLER
 #include <Clouds/CloudController.h>
 

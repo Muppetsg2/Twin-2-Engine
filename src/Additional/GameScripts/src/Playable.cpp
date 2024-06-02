@@ -220,6 +220,10 @@ void Playable::CheckIfDead(Playable* playable) {
     }
 }
 
+float Playable::GetMaxRadius() const {
+    return 0.f;
+}
+
 YAML::Node Playable::Serialize() const
 {
     return YAML::Node();

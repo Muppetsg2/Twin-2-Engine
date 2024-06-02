@@ -9,7 +9,6 @@
 // CORE
 #include <core/Random.h>
 
-
 #include <Playable.h>
 
 class HexTile;

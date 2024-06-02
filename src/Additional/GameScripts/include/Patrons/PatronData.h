@@ -1,23 +1,10 @@
-#ifndef PATRON_DATA_H
-#define PATRON_DATA_H
+#pragma once
 
 #include <core/ScriptableObject.h>
 
-enum class PatronBonus {
-    MoneyGain = 0,
-    ControlMultiplier,
-    MoveRange,
-    AbilitiesRange,
-    AbilitiesCooldown
-};
+ENUM_CLASS_BASE_VALUE(PatronBonus, uint8_t, MONEY_GAIN, 0, CONTROL_MULTIPLIER, 1, MOVE_RANGE, 2, ABILITIES_RANGE, 3, ABILITIES_COOLDOWN, 4, ABILITIES_PRICE, 5);
 
-enum class PatronMusic {
-    Rock = 0,
-    Electronic,
-    Pop,
-    Jazz,
-    Disco
-};
+ENUM_CLASS_BASE_VALUE(PatronMusic, uint8_t, ROCK, 0, ELECTRONIC, 1, POP, 2, JAZZ, 3, DISCO, 4, HEAVY_METAL, 5);
 
 class PatronData : public Twin2Engine::Core::ScriptableObject
 {
@@ -53,5 +40,3 @@ public:
 };
 
 SERIALIZABLE_SCRIPTABLE_OBJECT_NN(PatronData);
-
-#endif // PATRON_DATA_H

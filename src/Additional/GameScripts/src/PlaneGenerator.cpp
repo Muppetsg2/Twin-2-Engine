@@ -156,6 +156,8 @@ void PlaneGenerator::DrawEditor()
     if (ImGui::CollapsingHeader(name.c_str())) {
         if (Component::DrawInheritedFields()) return;
         
+        // TODO: Zrobic to co w MeshRenderer
+
         ImGui::Text("Model: ");
         ImGui::SameLine();
         ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);

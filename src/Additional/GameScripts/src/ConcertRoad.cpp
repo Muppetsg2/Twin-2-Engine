@@ -193,3 +193,15 @@ void ConcertRoad::Begin() {
 void ConcertRoad::Finish() {
 
 }
+
+#if _DEBUG
+void ConcertRoad::DrawEditor() {
+    string id = string(std::to_string(this->GetId()));
+    string name = string("Concert Road##Component").append(id);
+    if (ImGui::CollapsingHeader(name.c_str())) {
+        if (Component::DrawInheritedFields()) return;
+
+        // TODO: Zrobic
+    }
+}
+#endif

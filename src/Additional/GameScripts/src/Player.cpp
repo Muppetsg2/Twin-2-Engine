@@ -391,16 +391,7 @@ void Player::DrawEditor()
 
         if (Component::DrawInheritedFields()) return;
 
-        //glm::vec3 v = light->direction;
-        //ImGui::DragFloat3(string("Direction##").append(id).c_str(), glm::value_ptr(v), .1f, -1.f, 1.f);
-        //if (v != light->direction) {
-        //    SetDirection(v);
-        //
-        //float p = light->power;
-        //ImGui::DragFloat(string("Power##").append(id).c_str(), &p);
-        //if (p != light->power) {
-        //    SetPower(p);
-        //}
+        // TODO: Zrobic
     }
 }
 #endif

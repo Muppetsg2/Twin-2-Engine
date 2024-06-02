@@ -230,12 +230,14 @@ bool Playable::Deserialize(const YAML::Node& node)
     return false;
 }
 #if _DEBUG
-bool Playable::DrawInheritedFields()
-{
-    return true;
-}
-
 void Playable::DrawEditor()
 {
+    string id = string(std::to_string(this->GetId()));
+    string name = string("Playable##Component").append(id);
+    if (ImGui::CollapsingHeader(name.c_str())) {
+        if (Component::DrawInheritedFields()) return;
+
+        // TODO: Zrobic
+    }
 }
 #endif

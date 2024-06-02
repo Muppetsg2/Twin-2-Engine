@@ -79,13 +79,13 @@ bool MoneyGainFromTiles::Deserialize(const YAML::Node& node)
 
 #if _DEBUG
 
-bool MoneyGainFromTiles::DrawInheritedFields()
-{
-    return true;
-}
-
 void MoneyGainFromTiles::DrawEditor()
 {
+    string id = string(std::to_string(this->GetId()));
+    string name = string("Get Money From Tiles##Component").append(id);
+    if (ImGui::CollapsingHeader(name.c_str())) {
+        if (Component::DrawInheritedFields()) return;
+    }
 }
 
 #endif

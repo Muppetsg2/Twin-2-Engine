@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma once
-
 // CORE
 #include <core/Component.h>
 #include <core/Transform.h>

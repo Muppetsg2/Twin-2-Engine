@@ -218,7 +218,7 @@ void Player::FinishMove(HexTile* tile) {
         hexIndicator->GetTransform()->SetGlobalPosition(CurrTile->sterowiecPos);
     }
 
-    if (tile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::RadioStation && tile->state != TileState::Occupied) {
+    if (tile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::RadioStation && tile->state != TileState::OCCUPIED) {
         //GameManager::instance->StartMinigame();
     }
     else {

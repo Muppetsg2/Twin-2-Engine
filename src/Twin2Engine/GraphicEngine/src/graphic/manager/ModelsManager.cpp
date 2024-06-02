@@ -1380,7 +1380,7 @@ void ModelsManager::DrawEditor(bool* p_open)
             std::string n = GetModelName(item.second);
             ImGui::BulletText(n.c_str());
             ImGui::SameLine(ImGui::GetContentRegionAvail().x - 30);
-            if (ImGui::Button(std::string("Remove##Models Manager").append(std::to_string(i)).c_str())) {
+            if (ImGui::RemoveButton(std::string("##Remove Models Manager").append(std::to_string(i)).c_str())) {
                 clicked.push_back(item.first);
             }
             ++i;

@@ -104,7 +104,7 @@ void HexTile::ResetTile()
 	occupyingEntity = nullptr;
 	takenEntity = nullptr;
 	isFighting = false;
-	state = TileState::None;
+	state = TileState::NONE;
 }
 
 void HexTile::SetOutlineActive(bool active)
@@ -138,7 +138,7 @@ void HexTile::TakeOver()
 	}
 
 	float takeOverSpeed = occupyingEntity->TakeOverSpeed;
-	if (state == TileState::RemoteOccupying) {
+	if (state == TileState::REMOTE_OCCUPYING) {
 		takeOverSpeed *= remoteMultiplier;
 	}
 
@@ -215,8 +215,8 @@ void HexTile::CheckRoundPattern()
 void HexTile::StartTakingOver(Playable* entity) {
 	SPDLOG_INFO("Starting taking over");
 
-	if (state != TileState::Occupied) {
-		state = TileState::Occupied;
+	if (state != TileState::OCCUPIED) {
+		state = TileState::OCCUPIED;
 		occupyingEntity = entity;
 	}
 	else if (occupyingEntity != entity && !isFighting) {
@@ -228,8 +228,8 @@ void HexTile::StartTakingOver(Playable* entity) {
 
 void HexTile::StartRemotelyTakingOver(Playable* entity, float multiplier)
 {
-	if (state != TileState::Occupied && state != TileState::RemoteOccupying) {
-		state = TileState::RemoteOccupying;
+	if (state != TileState::OCCUPIED && state != TileState::REMOTE_OCCUPYING) {
+		state = TileState::REMOTE_OCCUPYING;
 		occupyingEntity = entity;
 		remoteMultiplier = multiplier;
 	}
@@ -237,14 +237,14 @@ void HexTile::StartRemotelyTakingOver(Playable* entity, float multiplier)
 
 void HexTile::StopTakingOver(Playable* entity)
 {
-	if ((state == TileState::Occupied || state == TileState::RemoteOccupying) && occupyingEntity == entity) {
+	if ((state == TileState::OCCUPIED || state == TileState::REMOTE_OCCUPYING) && occupyingEntity == entity) {
 		occupyingEntity = nullptr;
 		if (takenEntity) {
-			state = TileState::Taken;
+			state = TileState::TAKEN;
 			currLoseInfluenceDelay = loseInfluenceDelay;
 		}
 		else {
-			state = TileState::None;
+			state = TileState::NONE;
 		}
 	}
 }

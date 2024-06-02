@@ -30,6 +30,7 @@ void GameManager::Initialize() {
 void GameManager::OnEnable() {
     SPDLOG_INFO("Creating enenmy");
     GenerateEnemy();
+    GenerateEnemy();
 }
 
 void GameManager::Update() {
@@ -48,13 +49,15 @@ GameObject* GameManager::GeneratePlayer() {
     GameObject* player = Twin2Engine::Manager::SceneManager::CreateGameObject(prefabPlayer);
     Player* p = player->GetComponent<Player>();
 
-    //int chosen = Random::Range(0ull, freeColors.size() - 1ull);
-    int chosen = 0;
+    int chosen = Random::Range(0ull, freeColors.size() - 1ull);
+    //int chosen = 0;
     p->colorIdx = freeColors[chosen];
     freeColors.erase(freeColors.begin() + chosen);
-    p->colorIdx = chosen;
+    //p->colorIdx = chosen;
 
     p->patron = playersPatron;
+
+    p->GetGameObject()->GetComponent<MeshRenderer>()->SetMaterial(0ull, _carMaterials[p->colorIdx]);
 
     entities.push_back(p);
 
@@ -72,11 +75,12 @@ GameObject* GameManager::GenerateEnemy() {
 
     Enemy* e = enemy->GetComponent<Enemy>();
 
-    //int chosen = Random::Range(0ull, freeColors.size() - 1ull);
-    int chosen = 1;
+    int chosen = Random::Range(0ull, freeColors.size() - 1ull);
+    //int chosen = 1;
     e->colorIdx = freeColors[chosen];
     freeColors.erase(freeColors.begin() + chosen);
-    e->colorIdx = chosen;
+    //e->colorIdx = chosen;
+    e->GetGameObject()->GetComponent<MeshRenderer>()->SetMaterial(0ull, _carMaterials[e->colorIdx]);
 
     /*float h = Random.Range(0f, 1f);
     float s = Random.Range(.7f, 1f);
@@ -165,17 +169,36 @@ YAML::Node GameManager::Serialize() const
     //node["direction"] = light->direction;
     //node["power"] = light->power;
 
+    vector<string> carMaterialsStrings;
+    carMaterialsStrings.reserve(_carMaterials.size());
+
+    const size_t carMaterialsSize = _carMaterials.size();
+    for (size_t index = 0ull; index < carMaterialsSize; ++index)
+    {
+        carMaterialsStrings.push_back(MaterialsManager::GetMaterialName(_carMaterials[index].GetId()));
+    }
+    node["carMaterials"] = carMaterialsStrings;
+
     return node;
 }
 
 bool GameManager::Deserialize(const YAML::Node& node)
 {
-    if (!Component::Deserialize(node))
+    if (!node["carMaterials"] || !Component::Deserialize(node))
         return false;
 
     enemyPrefab = PrefabManager::LoadPrefab(node["enemyPrefab"].as<string>());
+
+
     //light->direction = node["direction"].as<glm::vec3>();
     //light->power = node["power"].as<float>();
+    _carMaterials.resize(node["carMaterials"].size());
+    const size_t carMaterialsSize = node["carMaterials"].size();
+    for (size_t index = 0ull; index < carMaterialsSize; ++index)
+    {
+        _carMaterials[index] = MaterialsManager::GetMaterial(node["carMaterials"][index].as<string>());
+    }
+    
 
     return true;
 }

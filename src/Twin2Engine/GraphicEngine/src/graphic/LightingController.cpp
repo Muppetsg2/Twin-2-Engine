@@ -208,14 +208,14 @@ void LightingController::BindLightBuffors(Twin2Engine::Graphic::Shader* shader) 
 	//glBindBufferBase(GL_UNIFORM_BUFFER, 3, LightingDataBuffer);
 
 	shader->Use();
-	//shader->SetInt("DirLightShadowMaps[0]", MAPS_BEGINNING);
-	//shader->SetInt("DirLightShadowMaps[1]", MAPS_BEGINNING + 1);
-	//shader->SetInt("DirLightShadowMaps[2]", MAPS_BEGINNING + 2);
-	//shader->SetInt("DirLightShadowMaps[3]", MAPS_BEGINNING + 3);
-	std::string str = "DirLightShadowMaps[";
-	for (int i = 0; i < 4; ++i) {
-		shader->SetInt(str.append(std::to_string(i)).append("]").c_str(), MAPS_BEGINNING + i);
-	}
+	shader->SetInt("DirLightShadowMaps[0]", MAPS_BEGINNING);
+	shader->SetInt("DirLightShadowMaps[1]", MAPS_BEGINNING + 1);
+	shader->SetInt("DirLightShadowMaps[2]", MAPS_BEGINNING + 2);
+	shader->SetInt("DirLightShadowMaps[3]", MAPS_BEGINNING + 3);
+	//std::string str = "DirLightShadowMaps[";
+	//for (int i = 0; i < 4; ++i) {
+	//	shader->SetInt(str.append(std::to_string(i)).append("]").c_str(), MAPS_BEGINNING + i);
+	//}
 }
 /*/
 void LightingController::UpdateShadowMapsTab(Twin2Engine::GraphicEngine::Shader* shader) {
@@ -272,7 +272,7 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 	return std::move(lightNewPos);
 }
 
-void LightingController::RenderShadowMaps() {
+void LightingController::RenderShadowMaps() {//Twin2Engine::Graphic::LightingController::Instance()->RenderShadowMaps();
 	glCullFace(GL_FRONT);
 	glEnable(GL_DEPTH_TEST);
 

@@ -269,8 +269,8 @@ int main(int, char**)
     };
 
     // ADDING SCENES
-    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
-    SceneManager::AddScene("testScene", "res/scenes/MenuScene.scene");
+    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/MenuScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
     //SceneManager::AddScene("testScene", "res/scenes/ToonShading.scene");
@@ -294,9 +294,9 @@ int main(int, char**)
         FrameMarkStart(tracy_RenderingImGui);
 #endif
 
-        begin_imgui();
-        render_imgui(); // edit this function to add your own ImGui controls
-        end_imgui(); // this call effectively renders ImGui
+        //begin_imgui();
+        //render_imgui(); // edit this function to add your own ImGui controls
+        //end_imgui(); // this call effectively renders ImGui
 
 #if TRACY_PROFILER
         FrameMarkEnd(tracy_RenderingImGui);

@@ -30,7 +30,7 @@ void Enemy::Initialize()
 void Enemy::OnEnable()
 {
     SPDLOG_INFO("ENEMY OnEneable");
-    //PerformMovement();
+    PerformMovement();
 }
 
 void Enemy::OnDestroy()
@@ -43,7 +43,7 @@ void Enemy::Update()
     if (isTakingArea)
     {
         takingAreaCounter += Time::GetDeltaTime();
-        if (takingAreaCounter >= 20.0f)
+        if (CurrTile->percentage >= targetPercentage)
         {
             takingAreaCounter = 0.0f;
             isTakingArea = false;
@@ -55,9 +55,14 @@ void Enemy::Update()
 
 void Enemy::FinishedMovement(HexTile* hexTile)
 {
+    if (CurrTile && CurrTile != hexTile)
+    {
+        CurrTile->StopTakingOver(this);
+    }
+    CurrTile = hexTile;
     isTakingArea = true;
     hexTile->StartTakingOver(this);
-
+    targetPercentage = Random::Range(50.0f, 95.0f);
 }
 
 void Enemy::PerformMovement()
@@ -68,7 +73,7 @@ void Enemy::PerformMovement()
     vec3 tilePosition;
 
     vector<HexTile*> possible;
-    //possible.reserve((1 + _movement->maxSteps) * _movement->maxSteps / 2 * 6);
+    //possible.reserve((1 + _movement->maxSteps) / 2 * _movement->maxSteps * 6);
     possible.reserve((1 + _movement->maxSteps) * _movement->maxSteps * 3);
 
     list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();

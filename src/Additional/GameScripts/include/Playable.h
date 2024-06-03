@@ -4,6 +4,7 @@
 #include <core/GameObject.h>
 #include <core/Component.h>
 #include <core/Random.h>
+#include <physic/CollisionManager.h>
 
 #include <Patrons/PatronData.h>
 
@@ -32,10 +33,6 @@ public:
         float max;
     };
 
-    class AlbumHexTileTakingOverRecord {
-    public:
-        std::pair<HexTile*, float> Data;
-    };
 
     std::list<std::pair<HexTile*, float>> albumTakingOverTiles;
 
@@ -45,19 +42,21 @@ public:
 
     PatronData* patron;
 
-    float albumTime;
-    float albumCooldown;
+#pragma region AlbumAbility
+    float albumTime  = 10.0f; // parameter
+    float albumCooldown = 5.0f; // parameter
     float currAlbumTime;
     float currAlbumCooldown;
     bool isAlbumActive = false;
-    float albumRequiredMoney = 10.0f;
+    float albumRequiredMoney = 10.0f; // parameter
 
-    float albumTakingOverTimeMin = 0.0f;
-    float albumTakingOverTimeMax = 0.0f;
-    std::vector<MinMaxPair> albumsIncreasingMinMaxIntervals;
-    float takingIntoAttentionFactor = 0.5f;
+    float albumTakingOverTimeMin = 5.0f; // parameter
+    float albumTakingOverTimeMax = 7.0f; // parameter
+    std::vector<MinMaxPair> albumsIncreasingMinMaxIntervals{ {.min = 3.0f, .max = 4.0f }, {.min = 3.0f, .max = 4.0f } }; // parameter
+    float takingIntoAttentionFactor = 0.5f; // parameter // Okreœla z jakiej czêœci tile o najmniejszych wp³ywach bêdzie losowany do oddzia³ywania przez album
     std::vector<float> albumsIncreasingIntervals;
     std::vector<float> albumsIncreasingIntervalsCounter;
+#pragma endregion
 
     float fansTime;
     float fansCooldown;
@@ -88,13 +87,22 @@ public:
     //MoneyGainFromTiles* money;
 
     virtual void Initialize() override;
+    virtual void Update() override;
+
+
     void InitPrices();
     void UpdatePrices();
     void CreateIndicator();
+
+#pragma region AlbumAbility
+    void UseAlbum();
+    void EndUsingAlbum();
     HexTile* GetAlbumTile();
     void AlbumUpdate();
+    void AlbumUpdateCounters();
     void AlbumStoppingTakingOverUpdate();
-    void AlbumFunc();
+#pragma endregion
+
     void FansControlDraw();
     void FansFunc();
     void FansEndFunc();

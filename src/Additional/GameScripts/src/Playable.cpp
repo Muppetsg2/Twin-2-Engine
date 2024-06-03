@@ -5,14 +5,20 @@
 
 using namespace std;
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Physic;
 
 void Playable::Initialize()
 {
-    if (patron->patronBonus == PatronBonus::AbilitiesCooldown) {
-        albumCooldown *= patron->GetBonus() / 100.0f;
-        fansCooldown *= patron->GetBonus() / 100.0f;
-    }
+    //if (patron->patronBonus == PatronBonus::AbilitiesCooldown) {
+    //    albumCooldown *= patron->GetBonus() / 100.0f;
+    //    fansCooldown *= patron->GetBonus() / 100.0f;
+    //}
 }
+
+void Playable::Update()
+{
+}
+
 
 void Playable::InitPrices() {
     fansStartMoney = fansRequiredMoney;
@@ -35,26 +41,29 @@ void Playable::CreateIndicator() {
 
 HexTile* Playable::GetAlbumTile() {
     std::vector<HexTile*> tiles;
+    tiles.reserve(OwnTiles.size() - albumTakingOverTiles.size());
+
+    SPDLOG_INFO("OwnTiles size: {}", OwnTiles.size());
     for (auto tile : OwnTiles) {
-        if (tile->isAlbumActive && std::find_if(albumTakingOverTiles.cbegin(), albumTakingOverTiles.cend(), [tile](const std::pair<HexTile*, float>& record) { return record.first == tile; }) == albumTakingOverTiles.end()) {
+        //if (tile->isAlbumActive && std::find_if(albumTakingOverTiles.cbegin(), albumTakingOverTiles.cend(), [tile](const std::pair<HexTile*, float>& record) { return record.first == tile; }) == albumTakingOverTiles.end()) {
+        if (std::find_if(albumTakingOverTiles.cbegin(), albumTakingOverTiles.cend(), [tile](const std::pair<HexTile*, float>& record) { return record.first == tile; }) == albumTakingOverTiles.end()) {
             tiles.push_back(tile);
         }
     }
 
+    if (tiles.empty()) {
+        return nullptr;
+    }
+
     std::random_device rd;
     std::mt19937 g(rd());
-
     std::shuffle(tiles.begin(), tiles.end(), g);
 
     std::sort(tiles.begin(), tiles.end(), [](HexTile* tile1, HexTile* tile2) {
         return tile1->percentage < tile2->percentage;
         });
 
-    if (tiles.empty()) {
-        return nullptr;
-    }
-
-    int index = std::rand() % static_cast<int>(std::ceil(takingIntoAttentionFactor * tiles.size()));
+    int index = Random::Range(0ull, (size_t) std::floor(takingIntoAttentionFactor * tiles.size()));
     return tiles[index];
 }
 
@@ -62,21 +71,22 @@ void Playable::FansControlDraw()
 {
 }
 
+#pragma region AlbumAbility
 
 void Playable::AlbumUpdate() {
-    for (size_t i = 0; i < albumsIncreasingIntervalsCounter.size(); ++i) {
-        albumsIncreasingIntervalsCounter[i] += 1.0f; // Assuming this is called every second
-        if (albumsIncreasingIntervalsCounter[i] >= albumsIncreasingIntervals[i]) {
-            albumsIncreasingIntervalsCounter[i] -= albumsIncreasingIntervals[i];
-            albumsIncreasingIntervals[i] = Random::Range(albumsIncreasingMinMaxIntervals[i].min, albumsIncreasingMinMaxIntervals[i].max);
-            
-            HexTile* tile = GetAlbumTile();
-            if (tile != nullptr) {
-                albumTakingOverTiles.emplace_back(tile, Random::Range(albumTakingOverTimeMin, albumTakingOverTimeMax));
-                tile->StartRemotelyTakingOver(this);
-            }
+    if (isAlbumActive) {
+        AlbumUpdateCounters();
+        currAlbumTime -= Time::GetDeltaTime();
+        if (currAlbumTime < 0.0f) {
+            currAlbumCooldown = albumCooldown;
+            currAlbumTime = 0.0f;
+            EndUsingAlbum();
         }
     }
+    AlbumStoppingTakingOverUpdate();
+}
+
+void Playable::AlbumUpdateCounters() {
     for (size_t i = 0; i < albumsIncreasingIntervalsCounter.size(); ++i) {
         albumsIncreasingIntervalsCounter[i] += Time::GetDeltaTime();
         if (albumsIncreasingIntervalsCounter[i] >= albumsIncreasingIntervals[i]) {
@@ -86,7 +96,7 @@ void Playable::AlbumUpdate() {
             HexTile* tile = GetAlbumTile();
             if (tile) {
                 albumTakingOverTiles.emplace_back(tile, Random::Range(albumTakingOverTimeMin, albumTakingOverTimeMax));
-                tile->StartRemotelyTakingOver(this);
+                tile->StartRemotelyTakingOver(this, 10.0f);
             }
         }
     }
@@ -95,8 +105,8 @@ void Playable::AlbumUpdate() {
 void Playable::AlbumStoppingTakingOverUpdate() {
     list<pair<HexTile*, float>> toRemove;
     for (auto& record : albumTakingOverTiles) {
-        record.second += Time::GetDeltaTime();
-        if (record.second >= record.first->percentage) {
+        record.second -= Time::GetDeltaTime();
+        if (record.second <= 0.0f) {
             record.first->StopTakingOver(this);
             toRemove.push_back(record);
         }
@@ -107,14 +117,20 @@ void Playable::AlbumStoppingTakingOverUpdate() {
     }
 }
 
-void Playable::AlbumFunc() {
+void Playable::UseAlbum() {
 
     albumUsed++;
     albumsIncreasingIntervals.resize(albumsIncreasingMinMaxIntervals.size());
     albumsIncreasingIntervalsCounter.resize(albumsIncreasingMinMaxIntervals.size());
 
-    for (size_t i = 0; i < albumsIncreasingMinMaxIntervals.size(); ++i) {
-        albumsIncreasingIntervals[i] = std::rand() % static_cast<int>(albumsIncreasingMinMaxIntervals[i].max - albumsIncreasingMinMaxIntervals[i].min) + albumsIncreasingMinMaxIntervals[i].min;
+    SPDLOG_INFO("Album int size: {}", albumsIncreasingMinMaxIntervals.size());
+    for (size_t i = 0ull; i < albumsIncreasingMinMaxIntervals.size(); ++i) {
+        albumsIncreasingIntervals[i] = Random::Range(albumsIncreasingMinMaxIntervals[i].min, albumsIncreasingMinMaxIntervals[i].min);
+        HexTile* tile = GetAlbumTile();
+        if (tile) {
+            albumTakingOverTiles.emplace_back(tile, Random::Range(albumTakingOverTimeMin, albumTakingOverTimeMax));
+            tile->StartRemotelyTakingOver(this, 10.0f);
+        }
     }
 
     for (auto tile : OwnTiles) {
@@ -122,23 +138,21 @@ void Playable::AlbumFunc() {
             tile->isAlbumActive = true;
         }
     }
-
     isAlbumActive = true;
-    std::this_thread::sleep_for(std::chrono::seconds(static_cast<int>(albumTime)));
+}
 
-    while (currAlbumTime > 0.0f) {
-        std::this_thread::sleep_for(std::chrono::seconds(static_cast<int>(currAlbumTime)));
-    }
+void Playable::EndUsingAlbum() {
+
+    isAlbumActive = false;
 
     for (auto tile : OwnTiles) {
         if (tile->occupyingEntity != this) {
             tile->isAlbumActive = false;
         }
     }
-
-    isAlbumActive = false;
-    return;
 }
+
+#pragma endregion
 
 void Playable::FansFunc() {
     fansUsed++;
@@ -148,18 +162,19 @@ void Playable::FansFunc() {
         usedRadius += patron->GetBonus();
     }
 
-    //auto tempFansCollider = Physics::OverlapSphere(CurrTile->GetGameObject()->GetTransform()->GetGlobalPosition(), usedRadius);
+    vector<ColliderComponent*> colliders;
+    CollisionManager::Instance()->OverlapSphere(CurrTile->GetGameObject()->GetTransform()->GetGlobalPosition(), usedRadius, colliders);
 
-    //for (auto obj : tempFansCollider) {
-    //    if (auto tile = obj->GetComponent<HexTile>(); tile && tile != CurrTile) {
-    //        float mul = glm::distance(GetTransform()->GetGlobalPosition(), tile->GetTransform()->GetGlobalPosition());
-    //        mul = mul > 1.0f ? 1.0f - std::floor(mul) / usedRadius : 1.0f;
-    //
-    //        if (mul > 0.0f) {
-    //            tile->StartRemotlyTakingOver(this, mul);
-    //        }
-    //    }
-    //}
+    for (auto col : colliders) {
+        if (auto tile = col->GetGameObject()->GetComponent<HexTile>(); tile && tile != CurrTile) {
+            float mul = glm::distance(GetTransform()->GetGlobalPosition(), tile->GetTransform()->GetGlobalPosition());
+            mul = mul > 1.0f ? 1.0f - std::floor(mul) / usedRadius : 1.0f;
+    
+            if (mul > 0.0f) {
+                tile->StartRemotelyTakingOver(this, mul);
+            }
+        }
+    }
 
     isFansActive = true;
     std::this_thread::sleep_for(std::chrono::seconds(static_cast<int>(fansTime)));

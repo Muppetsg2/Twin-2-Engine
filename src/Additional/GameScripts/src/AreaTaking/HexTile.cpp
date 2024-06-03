@@ -155,8 +155,6 @@ void HexTile::TakeOver()
 				takenEntity->OwnTiles.remove(this);
 				takenEntity = nullptr;
 			}
-			//takenEntity = occupyingEntity;
-			//takenEntity->OwnTiles.push_back(this);
 			CheckRoundPattern();
 		}
 	}
@@ -165,13 +163,44 @@ void HexTile::TakeOver()
 		if (percentage > 100.0f) {
 			percentage = 100.0f;
 		}
-		if (percentage >= _takingStage1)
+		if (!takenEntity && percentage >= _takingStage1)
 		{
 			takenEntity = occupyingEntity;
 			takenEntity->OwnTiles.push_back(this);
 
 		}
 	}
+
+	//// Przetworzenie oddzia³ywania tych, którzy z dalszego zasiêgu oddzia³uj¹.
+	//size_t size = remotelyOccupyingEntities.size();
+	//for (size_t index = 0ull; index < size; ++index)
+	//{
+	//	float takeOverSpeed = remotelyOccupyingEntities[index]->TakeOverSpeed * remoteMultipliers[index];
+	//	if (takenEntity && takenEntity != remotelyOccupyingEntities[index]) {
+	//		percentage -= Time::GetDeltaTime() * takeOverSpeed;
+	//		if (percentage < _takingStage1) {
+	//			percentage = 0.0f;
+	//			if (takenEntity) {
+	//				takenEntity->OwnTiles.remove(this);
+	//				takenEntity = nullptr;
+	//			}
+	//			CheckRoundPattern();
+	//		}
+	//	}
+	//	else {
+	//		percentage += Time::GetDeltaTime() * takeOverSpeed;
+	//		if (percentage > 100.0f) {
+	//			percentage = 100.0f;
+	//		}
+	//		if (!takenEntity && percentage >= _takingStage1)
+	//		{
+	//			takenEntity = remotelyOccupyingEntities[index];
+	//			takenEntity->OwnTiles.push_back(this);
+	//
+	//		}
+	//	}
+	//}
+
 	UpdateTileColor();
 }
 
@@ -191,24 +220,21 @@ void HexTile::LoseInfluence()
 void HexTile::UpdateTileColor()
 {
 	//SPDLOG_INFO("Percentage: {}", percentage);
-	//if (occupyingEntity)
+	if (percentage < _takingStage1)
 	{
-		if (percentage < _takingStage1)
-		{
-			_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][0].GetId());
-		}
-		else if (percentage < _takingStage2)
-		{
-			_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][1].GetId());
-		}
-		else if (percentage < _takingStage3)
-		{
-			_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][2].GetId());
-		}
-		else
-		{
-			_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][3].GetId());
-		}
+		_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][0].GetId());
+	}
+	else if (percentage < _takingStage2)
+	{
+		_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][1].GetId());
+	}
+	else if (percentage < _takingStage3)
+	{
+		_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][2].GetId());
+	}
+	else
+	{
+		_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][3].GetId());
 	}
 
 }
@@ -237,8 +263,12 @@ void HexTile::StartTakingOver(Playable* entity) {
 
 void HexTile::StartRemotelyTakingOver(Playable* entity, float multiplier)
 {
+	SPDLOG_INFO("Starting remotely");
 	if (state != TileState::Occupied && state != TileState::RemoteOccupying) {
 		state = TileState::RemoteOccupying;
+
+		SPDLOG_INFO("In Starting remotely");
+
 		occupyingEntity = entity;
 		remoteMultiplier = multiplier;
 	}

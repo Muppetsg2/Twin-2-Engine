@@ -8,6 +8,8 @@
 
 
 void Player::Initialize() {
+    Playable::Initialize();
+
     InitPrices();
     CreateIndicator();
 
@@ -50,6 +52,13 @@ void Player::Initialize() {
 }
 
 void Player::Update() {
+    if (Input::IsKeyPressed(KEY::Z))
+    {
+        SPDLOG_INFO("Using Album");
+        UseAlbum();
+    }
+
+
     if (!GameManager::instance->gameStarted && hexIndicator) hexIndicator->SetActive(false);
 
     if (!GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
@@ -58,37 +67,32 @@ void Player::Update() {
         //GameManager::instance->playerInterface.albumText->text = "Album\n" + std::to_string(albumRequiredMoney) + "$";
         //GameManager::instance->playerInterface.fansText->text = "Fans Meeting\n" + std::to_string(fansRequiredMoney) + "$";
 
-        if (isAlbumActive) {
-            AlbumUpdate();
-            currAlbumTime -= Time::GetDeltaTime();
-            if (currAlbumTime < 0.0f) {
-                currAlbumCooldown = albumCooldown;
-                currAlbumTime = 0.0f;
-            }
-            //albumTimer->text = std::to_string(static_cast<int>(currAlbumTime)) + " s";
-        }
-        else {
-            //if (albumTimer->gameObject->activeSelf) {
-            //    currAlbumCooldown -= Time::deltaTime;
-            //    albumTimer->text = "Cooldown: " + std::to_string(static_cast<int>(currAlbumCooldown)) + " s";
-            //    if (currAlbumCooldown < 0.0f) {
-            //        currAlbumCooldown = 0.0f;
-            //        albumTimer->gameObject->SetActive(false);
-            //    }
-            //}
-            //else {
-            //    if (money.money < albumRequiredMoney) {
-            //        albumButton->interactable = false;
-            //    }
-            //    else {
-            //        albumButton->interactable = true;
-            //        if (Input::GetKey(KeyCode::Z)) {
-            //            AlbumCall();
-            //        }
-            //    }
-            //}
-        }
-        AlbumStoppingTakingOverUpdate();
+        AlbumUpdate();
+        //if (isAlbumActive) {
+        //  albumTimer->text = std::to_string(static_cast<int>(currAlbumTime)) + " s";
+        //}
+        //else
+        //{
+        //  if (albumTimer->gameObject->activeSelf) {
+        //      currAlbumCooldown -= Time::deltaTime;
+        //      albumTimer->text = "Cooldown: " + std::to_string(static_cast<int>(currAlbumCooldown)) + " s";
+        //      if (currAlbumCooldown < 0.0f) {
+        //          currAlbumCooldown = 0.0f;
+        //          albumTimer->gameObject->SetActive(false);
+        //      }
+        //  }
+        //  else {
+        //      if (money.money < albumRequiredMoney) {
+        //          albumButton->interactable = false;
+        //      }
+        //      else {
+        //          albumButton->interactable = true;
+        //          if (Input::GetKey(KeyCode::Z)) {
+        //              AlbumCall();
+        //          }
+        //      }
+        //  }
+        //}
 
         if (isFansActive) {
             currFansTime -= Time::GetDeltaTime();
@@ -144,7 +148,7 @@ void Player::AlbumCall() {
     //    currAlbumTime = albumTime;
     //    //albumTimer->gameObject.SetActive(true);
     //    //albumButton->interactable = false;
-    //    // StartCoroutine(AlbumFunc());
+    //    //UseAlbum();
     //}
     //else {
     //    std::cout << "Not having required money for album" << std::endl;

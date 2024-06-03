@@ -7,6 +7,9 @@
 #include <GameManager.h>
 #include <Patrons/PatronData.h>
 
+
+#include <core/Input.h>
+
 //using namespace Twin2Engine::Core;
 
 //class Playable;

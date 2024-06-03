@@ -54,7 +54,14 @@ YAML::Node SphereColliderComponent::Serialize() const
 {
 	YAML::Node node = ColliderComponent::Serialize();
 	node["type"] = "SphereCollider";
-	node["radius"] = ((SphereColliderData*)collider->shapeColliderData)->Radius;
+
+	if (collider != nullptr) {
+		node["radius"] = ((SphereColliderData*)collider->shapeColliderData)->Radius;
+	}
+	else {
+		node["radius"] = 0.f;
+	}
+
 	return node;
 }
 

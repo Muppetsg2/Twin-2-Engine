@@ -19,6 +19,7 @@ class Player : public Playable {
 private:
     //static Mesh* hexMesh;
     Twin2Engine::Core::GameObject* hexIndicator;
+    Tilemap::HexagonalTilemap* _tilemap = nullptr;
     //TextMeshProUGUI* albumTimer;
     //Button* albumButton;
     //TextMeshProUGUI* fansTimer;
@@ -54,6 +55,8 @@ public:
     virtual void WonFansControl(Playable* playable) override;
     virtual void StartPaperRockScissors(Playable* playable) override;
     virtual void StartFansControl(Playable* playable) override;
+
+    float GetMaxRadius() const override;
 
 protected:
     virtual void OnDead() override;

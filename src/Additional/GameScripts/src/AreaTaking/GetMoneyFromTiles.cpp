@@ -32,7 +32,7 @@ void MoneyGainFromTiles::UpdateMoney(bool player) {
 
     float patronMul = 1.0f;
 
-    if (playable->patron->patronBonus == PatronBonus::MoneyGain) {
+    if (playable->patron->patronBonus == PatronBonus::MONEY_GAIN) {
         patronMul = playable->patron->GetBonus();
     }
 
@@ -79,13 +79,13 @@ bool MoneyGainFromTiles::Deserialize(const YAML::Node& node)
 
 #if _DEBUG
 
-bool MoneyGainFromTiles::DrawInheritedFields()
-{
-    return true;
-}
-
 void MoneyGainFromTiles::DrawEditor()
 {
+    string id = string(std::to_string(this->GetId()));
+    string name = string("Get Money From Tiles##Component").append(id);
+    if (ImGui::CollapsingHeader(name.c_str())) {
+        if (Component::DrawInheritedFields()) return;
+    }
 }
 
 #endif

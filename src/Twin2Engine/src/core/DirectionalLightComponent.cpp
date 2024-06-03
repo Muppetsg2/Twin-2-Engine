@@ -129,9 +129,19 @@ YAML::Node DirectionalLightComponent::Serialize() const
 {
 	YAML::Node node = LightComponent::Serialize();
 	node["type"] = "DirectionalLight";
-	node["direction"] = light->direction;
-	node["color"] = light->color;
-	node["power"] = light->power;
+
+	if (light != nullptr) {
+		node["direction"] = light->direction;
+		node["color"] = light->color;
+		node["power"] = light->power;
+
+	}
+	else {
+		node["direction"] = glm::vec3(0.f);
+		node["color"] = glm::vec3(1.f);
+		node["power"] = 1.f;
+
+	}
 
 	return node;
 }

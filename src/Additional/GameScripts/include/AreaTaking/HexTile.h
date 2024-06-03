@@ -13,13 +13,7 @@
 #include <AreaTaking/HexTileTexturesData.h>
 
 
-
-enum class TileState {
-	None = 1,
-	Occupied = 2,
-	RemoteOccupying = 4,
-	Taken = 8
-};
+ENUM_CLASS_BASE_VALUE(TileState, uint8_t, NONE, 0, OCCUPIED, 1, REMOTE_OCCUPYING, 2, TAKEN, 4);
 
 class Playable;
 
@@ -98,9 +92,6 @@ public:
 	virtual bool Deserialize(const YAML::Node& node) override;
 
 #if _DEBUG
-protected:
-	virtual bool DrawInheritedFields() override;
-public:
 	virtual void DrawEditor() override;
 #endif
 };

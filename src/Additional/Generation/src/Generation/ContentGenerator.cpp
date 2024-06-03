@@ -3,6 +3,7 @@
 using namespace Generation;
 using namespace Generation::Generators;
 using namespace Tilemap;
+using namespace Twin2Engine::Manager;
 using namespace glm;
 using namespace Twin2Engine::Core;
 
@@ -47,8 +48,10 @@ void ContentGenerator::OnDestroy() {
     SPDLOG_INFO("Cleaning content");
     for (AMapElementGenerator* generator : mapElementGenerators)
     {
-        SPDLOG_INFO("Generating element");
-        generator->Clean();
+        if (ScriptableObjectManager::Get(generator->GetId()) != nullptr) {
+            SPDLOG_INFO("Cleaning Generator {0}", ScriptableObjectManager::GetName(generator->GetId()));
+            generator->Clean();
+        }
     }
     mapElementGenerators.clear();
 }
@@ -63,7 +66,9 @@ YAML::Node ContentGenerator::Serialize() const
     for (AMapElementGenerator* generator : mapElementGenerators)
     {
         //node["mapElementGenerators"][index++] = Twin2Engine::Manager::ScriptableObjectManager::SceneSerialize(generator->GetId());
-        node["mapElementGenerators"][index++] = Twin2Engine::Manager::ScriptableObjectManager::GetPath(generator->GetId());
+        if (ScriptableObjectManager::Get(generator->GetId()) != nullptr) {
+            node["mapElementGenerators"][index++] = ScriptableObjectManager::GetPath(generator->GetId());
+        }
     }
     return node;
 }
@@ -75,8 +80,8 @@ bool ContentGenerator::Deserialize(const YAML::Node& node)
     for (YAML::Node soSceneId : node["mapElementGenerators"])
     {
         //AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(ScriptableObjectManager::Deserialize(soSceneId.as<unsigned int>()));
-        AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(Twin2Engine::Manager::ScriptableObjectManager::Load(soSceneId.as<string>()));
-        SPDLOG_INFO("Adding generator {0}, {1}", soSceneId.as<string>(), (unsigned int)generator);
+        AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(ScriptableObjectManager::Load(soSceneId.as<string>()));
+        SPDLOG_INFO("ContentGenerator::Adding generator {0}, {1}", soSceneId.as<string>(), (unsigned int)generator);
         if (generator != nullptr)
         {
             mapElementGenerators.push_back(generator);
@@ -116,7 +121,14 @@ void ContentGenerator::DrawEditor()
 		if (node_open) {
             for (int i = 0; i < mapElementGenerators.size(); ++i) {
                 AMapElementGenerator* item = mapElementGenerators[i];
-                string n = Twin2Engine::Manager::ScriptableObjectManager::GetName(item->GetId()).append("##").append(id);
+
+                if (ScriptableObjectManager::Get(item->GetId()) == nullptr) {
+                    mapElementGenerators.erase(mapElementGenerators.begin() + i);
+                    break;
+                }
+
+                string n = ScriptableObjectManager::GetName(item->GetId()).append("##").append(id);
+
                 ImGui::Text(to_string(i + 1).append(". "s).c_str());
                 ImGui::SameLine();
                 ImGui::Selectable(n.c_str(), false, NULL, ImVec2(ImGui::GetContentRegionAvail().x - 80, 0.f));
@@ -125,8 +137,8 @@ void ContentGenerator::DrawEditor()
                 if (type == 0) v = ImGui::IsItemActive() && !ImGui::IsItemHovered();
 
                 if (type == 1) {
-                    ImGui::SameLine(ImGui::GetContentRegionAvail().x - 30);
-                    if (ImGui::Button(string("Remove##").append(id).append(std::to_string(i)).c_str())) {
+                    ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
+                    if (ImGui::RemoveButton(string("##Remove").append(id).append(std::to_string(i)).c_str())) {
                         clicked.push_back(i);
                     }
                 }
@@ -158,12 +170,78 @@ void ContentGenerator::DrawEditor()
 
         clicked.clear();
 
-        // TODO: DODAC
-        /*
-        if (ImGui::Button(string("Add Element Generator##").append(id).c_str())) {
-
+        if (ImGui::Button(string("Add Element Generator##").append(id).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
+            ImGui::OpenPopup(string("Add Element Generator PopUp##Content Generator").append(id).c_str(), ImGuiPopupFlags_NoReopen);
         }
-        */
+
+        if (ImGui::BeginPopup(string("Add Element Generator PopUp##Content Generator").append(id).c_str(), ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDocking)) {
+
+            std::map<size_t, ScriptableObject*> types = ScriptableObjectManager::GetScriptableObjectsDerivedByType<AMapElementGenerator>();
+
+            for (auto& item : mapElementGenerators) {
+                if (types.contains(item->GetId())) {
+                    types.erase(item->GetId());
+                }
+            }
+
+            std::list<size_t> toErase = std::list<size_t>();
+            for (auto ty : types) {
+                auto iter = std::find_if(mapElementGenerators.begin(), mapElementGenerators.end(), [&](AMapElementGenerator* item) -> bool {
+                    return typeid(*item) == typeid(*(ty.second));
+                });
+
+                if (iter != mapElementGenerators.end()) {
+                    toErase.push_back(ty.first);
+                }
+            }
+
+            toErase.sort();
+
+            for (int i = toErase.size() - 1; i > -1; --i) {
+                types.erase(toErase.back());
+                toErase.pop_back();
+            }
+
+            toErase.clear();
+
+            size_t choosed = 0;
+
+            if (ImGui::BeginCombo(string("##COMPONENT POP UP GENERATORS").append(id).c_str(), choosed == 0 ? "None" : ScriptableObjectManager::GetName(choosed).c_str())) {
+
+                bool click = false;
+                for (auto& item : types) {
+
+                    if (ImGui::Selectable(std::string(ScriptableObjectManager::GetName(item.first)).append("##").append(id).c_str(), item.first == choosed)) {
+
+                        if (click) continue;
+
+                        choosed = item.first;
+                        click = true;
+                    }
+                }
+
+                if (click) {
+                    if (choosed != 0) {
+                        AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(types[choosed]);
+                        SPDLOG_INFO("ContentGenerator::Adding generator {0}", (unsigned int)generator);
+                        if (generator != nullptr)
+                        {
+                            mapElementGenerators.push_back(generator);
+                        }
+                    }
+                }
+
+                ImGui::EndCombo();
+            }
+
+            if (choosed != 0) {
+                ImGui::CloseCurrentPopup();
+            }
+
+            types.clear();
+
+            ImGui::EndPopup();
+        }
     }
 }
 #endif

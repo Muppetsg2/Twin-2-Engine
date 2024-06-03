@@ -29,11 +29,11 @@ void HexTile::Update()
 {
 	if (!minigameActive && !GameManager::instance->minigameActive && _mapHexTile->type != MapHexTile::HexTileType::Mountain && !isFighting)
 	{
-		if (state == TileState::Occupied || state == TileState::RemoteOccupying)
+		if (state == TileState::OCCUPIED || state == TileState::REMOTE_OCCUPYING)
 		{
 			TakeOver();
 		}
-		else if (state == TileState::Taken && !isAlbumActive)
+		else if (state == TileState::TAKEN && !isAlbumActive)
 		{
 			LoseInfluence();
 		}
@@ -50,7 +50,13 @@ YAML::Node HexTile::Serialize() const
 	YAML::Node node = Component::Serialize();
 
 	node["type"] = "HexTile";
-	node["textuesData"] = Twin2Engine::Manager::ScriptableObjectManager::GetPath(textuesData->GetId());
+
+	if (textuesData != nullptr) {
+		node["textuesData"] = Twin2Engine::Manager::ScriptableObjectManager::GetPath(textuesData->GetId());
+	}
+	else {
+		node["textuesData"] = "";
+	}
 
 	return node;
 }
@@ -68,32 +74,26 @@ bool HexTile::Deserialize(const YAML::Node& node)
 
 #if _DEBUG
 
-bool HexTile::DrawInheritedFields()
-{
-	if (Component::DrawInheritedFields()) return true;
-	ImGui::BeginDisabled();
-	ImGui::Checkbox("IsFighting", &isFighting);
-	ImGui::EndDisabled();
-	if (takenEntity)
-	{
-		ImGui::Text("TakenEntity: %d", takenEntity->GetGameObject()->Id());
-	}
-	else
-	{
-		ImGui::Text("TakenEntity: nullptr");
-	}
-	ImGui::Text("percentage: %f", percentage);
-	ImGui::Text("currCooldown: %f", currCooldown);
-
-	return false;
-}
-
 void HexTile::DrawEditor()
 {
 	std::string id = std::string(std::to_string(this->GetId()));
 	std::string name = std::string("Hex Tile##Component").append(id);
-	if (ImGui::CollapsingHeader(name.c_str())) {
-		if (DrawInheritedFields()) return;
+	if (ImGui::CollapsingHeader(name.c_str())) {		
+		if (Component::DrawInheritedFields()) return;
+
+		ImGui::BeginDisabled();
+		ImGui::Checkbox("IsFighting", &isFighting);
+		ImGui::EndDisabled();
+
+		ImGui::TextUnformatted("TakenEntity: ");
+		ImGui::SameLine();
+		ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+		ImGui::Text("%s", takenEntity != nullptr ? takenEntity->GetGameObject()->GetName().append("/").append(std::to_string(takenEntity->GetGameObject()->Id())).c_str() : "None");
+		ImGui::PopFont();
+
+		ImGui::Text("Percentage: %f", percentage);
+		ImGui::Text("Current Cooldown: %f", currCooldown);
+
 		// TODO: Zrobic
 	}
 }
@@ -109,7 +109,7 @@ void HexTile::ResetTile()
 	occupyingEntity = nullptr;
 	takenEntity = nullptr;
 	isFighting = false;
-	state = TileState::None;
+	state = TileState::NONE;
 }
 
 void HexTile::SetOutlineActive(bool active)
@@ -143,7 +143,7 @@ void HexTile::TakeOver()
 	}
 
 	float takeOverSpeed = occupyingEntity->TakeOverSpeed;
-	if (state == TileState::RemoteOccupying) {
+	if (state == TileState::REMOTE_OCCUPYING) {
 		takeOverSpeed *= remoteMultiplier;
 	}
 
@@ -250,8 +250,8 @@ void HexTile::CheckRoundPattern()
 void HexTile::StartTakingOver(Playable* entity) {
 	SPDLOG_INFO("Starting taking over");
 
-	if (state != TileState::Occupied) {
-		state = TileState::Occupied;
+	if (state != TileState::OCCUPIED) {
+		state = TileState::OCCUPIED;
 		occupyingEntity = entity;
 	}
 	else if (occupyingEntity != entity && !isFighting) {
@@ -263,11 +263,14 @@ void HexTile::StartTakingOver(Playable* entity) {
 
 void HexTile::StartRemotelyTakingOver(Playable* entity, float multiplier)
 {
-	SPDLOG_INFO("Starting remotely {}", multiplier);
-	if (state != TileState::Occupied && state != TileState::RemoteOccupying) {
-		state = TileState::RemoteOccupying;
+	//SPDLOG_INFO("Starting remotely {}", multiplier);
+	//if (state != TileState::Occupied && state != TileState::RemoteOccupying) {
+	//	state = TileState::RemoteOccupying;
+	//
+	//	SPDLOG_INFO("In Starting remotely");
 
-		SPDLOG_INFO("In Starting remotely");
+	if (state != TileState::OCCUPIED && state != TileState::REMOTE_OCCUPYING) {
+		state = TileState::REMOTE_OCCUPYING;
 
 		occupyingEntity = entity;
 		remoteMultiplier = multiplier;
@@ -276,14 +279,14 @@ void HexTile::StartRemotelyTakingOver(Playable* entity, float multiplier)
 
 void HexTile::StopTakingOver(Playable* entity)
 {
-	if ((state == TileState::Occupied || state == TileState::RemoteOccupying) && occupyingEntity == entity) {
+	if ((state == TileState::OCCUPIED || state == TileState::REMOTE_OCCUPYING) && occupyingEntity == entity) {
 		occupyingEntity = nullptr;
 		if (takenEntity) {
-			state = TileState::Taken;
+			state = TileState::TAKEN;
 			currLoseInfluenceDelay = loseInfluenceDelay;
 		}
 		else {
-			state = TileState::None;
+			state = TileState::NONE;
 		}
 	}
 }

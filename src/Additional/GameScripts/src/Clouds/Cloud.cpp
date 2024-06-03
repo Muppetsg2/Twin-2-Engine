@@ -100,18 +100,20 @@ void Cloud::DrawEditor() {
 	string name = string("Cloud##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
-		Component::DrawInheritedFields();
+		if (Component::DrawInheritedFields()) return;
 
-		ImGui::DragFloat3(string("direction##").append(id).c_str(), glm::value_ptr(direction));
-		ImGui::DragFloat3(string("startPosition##").append(id).c_str(), glm::value_ptr(startPosition));
+		ImGui::DragFloat3(string("Direction##").append(id).c_str(), glm::value_ptr(direction));
+		ImGui::DragFloat3(string("Start Position##").append(id).c_str(), glm::value_ptr(startPosition));
 
-		ImGui::DragFloat(string("velocity##").append(id).c_str(), &velocity);
-		ImGui::DragFloat(string("maxDistance##").append(id).c_str(), &maxDistance);
+		ImGui::DragFloat(string("Velocity##").append(id).c_str(), &velocity);
+		ImGui::DragFloat(string("Max Distance##").append(id).c_str(), &maxDistance);
 
 		ImGui::NewLine();
 		ImGui::NewLine();
 
 		//CloudController* cc = CloudController::Instance();
+
+		// TODO: Kazda chmura pozyskuje te wartosci? Jesli tak to czemu kazda ma moc je zmieniac i czemu kazda je wyswietla
 
 		ImGui::DragFloat(string("ABSORPTION##").append(id).c_str(), &CloudController::ABSORPTION);
 		ImGui::DragFloat(string("DENSITY_FAC##").append(id).c_str(), &CloudController::DENSITY_FAC);

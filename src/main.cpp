@@ -56,8 +56,8 @@ using namespace Humans;
 
 using namespace AStar;
 
-// ENEMY AI
-#include <EnemyAI/EnemyAI.h>
+// CLOUD CONTROLLER
+#include <Clouds/CloudController.h>
 
 // YAML CONVERTERS
 #include <tools/YamlConverters.h>
@@ -330,6 +330,8 @@ int main(int, char**)
 
     GameEngine::Start();
 
+    CloudController::DeleteInstance();
+
 #if _DEBUG
 
 #if USE_IMGUI_CONSOLE_OUTPUT
@@ -410,16 +412,6 @@ void input()
             glfwSetCursorPosCallback(window->GetWindow(), mouse_callback);
         }
     }
-
-    /*
-    if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::R)) {
-        SceneManager::LoadScene("testScene");
-    }
-
-    if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::Q)) {
-        SceneManager::SaveScene("res/scenes/quickSavedScene.yaml");
-    }
-    */
 
 #if _DEBUG
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::L)) {
@@ -548,28 +540,12 @@ void render_imgui()
     {
         SceneManager::DrawCurrentSceneEditor();
 
-#pragma region IMGUI_LOGGING_CONSOLE
-
-#if USE_IMGUI_CONSOLE_OUTPUT
-
-#if TRACY_PROFILER
-        FrameMarkStart(tracy_ImGuiDrawingConsole);
-#endif
-
-        ImGuiSink<mutex>::Draw();
-
-#if TRACY_PROFILER
-        FrameMarkEnd(tracy_ImGuiDrawingConsole);
-#endif
-
-#endif
-        
-#pragma endregion 
-
         if (!ImGui::Begin("Twin^2 Engine", NULL, ImGuiWindowFlags_MenuBar)) {
             ImGui::End();
             return;
         }
+
+        static bool _consoleOpened = true;
 
         static bool _fontOpened = false;
         static bool _audioOpened = false;
@@ -624,9 +600,33 @@ void render_imgui()
                 ImGui::MenuItem("Models Manager##Resources", NULL, &_modelsOpened);
                 ImGui::MenuItem("Prefab Manager##Resources", NULL, &_prefabOpened);
                 ImGui::MenuItem("Scriptable Objects Manager##Resources", NULL, &_scriptableOpened);
+
                 ImGui::EndMenu();
             }
+            if (ImGui::BeginMenu("Windows##Menu"))
+            {
+                ImGui::MenuItem("Console##Resources", NULL, &_consoleOpened, USE_IMGUI_CONSOLE_OUTPUT);
+
+                ImGui::EndMenu();
+            }
+
             ImGui::EndMenuBar();
+        }
+
+        if (_consoleOpened) {
+#if USE_IMGUI_CONSOLE_OUTPUT
+
+#if TRACY_PROFILER
+            FrameMarkStart(tracy_ImGuiDrawingConsole);
+#endif
+
+            ImGuiSink<mutex>::DrawEditor(&_consoleOpened);
+
+#if TRACY_PROFILER
+            FrameMarkEnd(tracy_ImGuiDrawingConsole);
+#endif
+
+#endif
         }
 
         if (_fontOpened)
@@ -702,7 +702,9 @@ void render_imgui()
         if (ImGui::FileDialog(&_fileDialogSceneSave, &_fileDialogSceneSaveInfo))
         {
             // Result path in: m_fileDialogInfo.resultPath
-            SceneManager::SaveScene(_fileDialogSceneSaveInfo.resultPath.string());
+            std::string path = _fileDialogSceneSaveInfo.resultPath.string();
+            SceneManager::SaveScene(path);
+            SceneManager::AddScene(SceneManager::GetCurrentSceneName(), path);
         }
 
         ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Hello World!");

@@ -165,9 +165,9 @@ YAML::Node GameManager::Serialize() const
     YAML::Node node = Component::Serialize();
     node["type"] = "GameManager";
 
-    node["enemyPrefab"] = PrefabManager::GetPrefabPath(enemyPrefab);
-    //node["direction"] = light->direction;
-    //node["power"] = light->power;
+    if (enemyPrefab != nullptr) {
+        node["enemyPrefab"] = SceneManager::GetPrefabSaveIdx(enemyPrefab->GetId());
+    }
 
     vector<string> carMaterialsStrings;
     carMaterialsStrings.reserve(_carMaterials.size());
@@ -187,18 +187,16 @@ bool GameManager::Deserialize(const YAML::Node& node)
     if (!node["carMaterials"] || !Component::Deserialize(node))
         return false;
 
-    enemyPrefab = PrefabManager::LoadPrefab(node["enemyPrefab"].as<string>());
+    if (node["enemyPrefab"]) {
+        enemyPrefab = PrefabManager::LoadPrefab(node["enemyPrefab"].as<string>());
+    }
 
-
-    //light->direction = node["direction"].as<glm::vec3>();
-    //light->power = node["power"].as<float>();
     _carMaterials.resize(node["carMaterials"].size());
     const size_t carMaterialsSize = node["carMaterials"].size();
     for (size_t index = 0ull; index < carMaterialsSize; ++index)
     {
         _carMaterials[index] = MaterialsManager::GetMaterial(node["carMaterials"][index].as<string>());
     }
-    
 
     return true;
 }
@@ -207,21 +205,12 @@ bool GameManager::Deserialize(const YAML::Node& node)
 void GameManager::DrawEditor()
 {
     std::string id = std::string(std::to_string(this->GetId()));
-    std::string name = std::string("GameManager##Component").append(id);
+    std::string name = std::string("Game Manager##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str())) {
 
         if (Component::DrawInheritedFields()) return;
 
-        //glm::vec3 v = light->direction;
-        //ImGui::DragFloat3(string("Direction##").append(id).c_str(), glm::value_ptr(v), .1f, -1.f, 1.f);
-        //if (v != light->direction) {
-        //    SetDirection(v);
-        //
-        //float p = light->power;
-        //ImGui::DragFloat(string("Power##").append(id).c_str(), &p);
-        //if (p != light->power) {
-        //    SetPower(p);
-        //}
+        // TODO: Zrobic
     }
 }
 #endif

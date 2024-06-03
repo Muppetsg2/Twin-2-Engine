@@ -5,6 +5,9 @@
 #include <manager/SceneManager.h>
 #include <tools/YamlConverters.h>
 
+#include <locale>
+#include <codecvt>
+
 using namespace Twin2Engine::UI;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;
@@ -253,11 +256,124 @@ bool InputField::Deserialize(const YAML::Node& node) {
 #if _DEBUG
 void InputField::DrawEditor()
 {
-	// TODO: Zrobic
+	// TODO: Przetestowac
 	string id = string(std::to_string(this->GetId()));
 	string name = string("InputField##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 		if (Component::DrawInheritedFields()) return;
+
+		float v = _width;
+		ImGui::DragFloat(string("Width##").append(id).c_str(), &v, 0.1f, 0.f, FLT_MAX);
+		if (v != _width) {
+			SetWidth(v);
+		}
+
+		v = _height;
+		ImGui::DragFloat(string("Height##").append(id).c_str(), &v, 0.1f, 0.f, FLT_MAX);
+		if (v != _height) {
+			SetHeight(v);
+		}
+
+		ImGui::Checkbox(string("Interactable##").append(id).c_str(), &_interactable);
+
+		std::unordered_map<size_t, Component*> items = SceneManager::GetComponentsOfType<Text>();
+		size_t choosed_holder = _placeHolder == nullptr ? 0 : _placeHolder->GetId();
+		size_t choosed_text = _text == nullptr ? 0 : _text->GetId();
+
+		if (ImGui::BeginCombo(string("Placeholder##").append(id).c_str(), choosed_holder == 0 ? "None" : items[choosed_holder]->GetGameObject()->GetName().c_str())) {
+
+			bool clicked = false;
+			for (auto& item : items) {
+
+				if (item.second->GetId() == choosed_text) continue;
+
+				if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_holder)) {
+
+					if (clicked) continue;
+
+					choosed_holder = item.first;
+					clicked = true;
+				}
+			}
+
+			if (clicked) {
+				if (choosed_holder != 0) {
+					SetPlaceHolderText(static_cast<Text*>(items[choosed_holder]));
+				}
+			}
+
+			ImGui::EndCombo();
+		}
+
+		if (ImGui::BeginDragDropTarget()) {
+
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SceneHierarchyObject"))
+			{
+				size_t payload_n = *(const size_t*)payload->Data;
+				Text* t = SceneManager::GetGameObjectWithId(payload_n)->GetComponent<Text>();
+				if (t != nullptr) { 
+					if (t->GetId() != choosed_text) SetPlaceHolderText(t);
+				}
+			}
+
+			ImGui::EndDragDropTarget();
+		}
+
+		string buff = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_placeHolder->GetText());
+		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll;
+
+		ImGui::InputText(string("Placeholder Value##").append(id).c_str(), &buff, flags);
+
+		if (buff != std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_placeHolder->GetText())) {
+			SetPlaceHolder(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(buff));
+		}
+
+		if (ImGui::BeginCombo(string("Text##").append(id).c_str(), choosed_text == 0 ? "None" : items[choosed_text]->GetGameObject()->GetName().c_str())) {
+
+			bool clicked = false;
+			for (auto& item : items) {
+
+				if (item.second->GetId() == choosed_holder) continue;
+
+				if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_text)) {
+
+					if (clicked) continue;
+
+					choosed_text = item.first;
+					clicked = true;
+				}
+			}
+
+			if (clicked) {
+				if (choosed_text != 0) {
+					SetInputText(static_cast<Text*>(items[choosed_text]));
+				}
+			}
+
+			ImGui::EndCombo();
+		}
+
+		if (ImGui::BeginDragDropTarget()) {
+
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SceneHierarchyObject"))
+			{
+				size_t payload_n = *(const size_t*)payload->Data;
+				Text* t = SceneManager::GetGameObjectWithId(payload_n)->GetComponent<Text>();
+				if (t != nullptr) {
+					if (t->GetId() != choosed_holder) SetInputText(t);
+				}
+			}
+
+			ImGui::EndDragDropTarget();
+		}
+
+		buff = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_textValue);
+
+		ImGui::InputText(string("Value##").append(id).c_str(), &buff, flags);
+
+		if (buff != std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_textValue)) {
+			SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(buff));
+		}
 	}
 }
 #endif

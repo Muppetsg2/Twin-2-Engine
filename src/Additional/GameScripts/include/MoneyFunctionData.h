@@ -4,8 +4,7 @@
 
 class MoneyFunctionData : public Twin2Engine::Core::ScriptableObject
 {
-    SCRIPTABLE_OBJECT_BODY(MoneyFunctionData)
-
+    SCRIPTABLE_OBJECT_BODY(MoneyFunctionData);
 
     float Equation(float x, float start = 0.0f);
 public:
@@ -23,8 +22,12 @@ public:
 
     float GetValue(float x, float start = 0.0f);
 
-    SO_SERIALIZE()
-    SO_DESERIALIZE()
+    SO_SERIALIZE();
+    SO_DESERIALIZE();
+
+#if _DEBUG
+    virtual void DrawEditor() override;
+#endif
 };
 
 SERIALIZABLE_SCRIPTABLE_OBJECT_NN(MoneyFunctionData);

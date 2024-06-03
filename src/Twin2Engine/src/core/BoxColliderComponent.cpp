@@ -123,10 +123,19 @@ YAML::Node BoxColliderComponent::Serialize() const
 {
 	YAML::Node node = ColliderComponent::Serialize();
 	node["type"] = "BoxCollider";
-	node["width"] = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x;
-	node["height"] = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y;
-	node["length"] = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z;
-	node["rotation"] = ((BoxColliderData*)collider->shapeColliderData)->Rotation;
+
+	if (collider != nullptr) {
+		node["width"] = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x;
+		node["height"] = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y;
+		node["length"] = ((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.z;
+		node["rotation"] = ((BoxColliderData*)collider->shapeColliderData)->Rotation;
+	}
+	else {
+		node["width"] = 0.f;
+		node["height"] = 0.f;
+		node["length"] = 0.f;
+		node["rotation"] = glm::vec3(0.f);
+	}
 	return node;
 }
 

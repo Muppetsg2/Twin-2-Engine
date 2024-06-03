@@ -21,6 +21,8 @@ Twin2Engine::Processes::Process* Twin2Engine::Processes::ProcessManager::GetProc
 			return p;
 		}
 	}
+
+	return nullptr;
 }
 
 Twin2Engine::Processes::Process* Twin2Engine::Processes::ProcessManager::GetProcess(std::string name) {
@@ -36,6 +38,8 @@ Twin2Engine::Processes::Process* Twin2Engine::Processes::ProcessManager::GetProc
 			return p;
 		}
 	}
+
+	return nullptr;
 }
 
 void Twin2Engine::Processes::ProcessManager::ReloadProcesses()

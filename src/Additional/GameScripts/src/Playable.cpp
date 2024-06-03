@@ -1,3 +1,5 @@
+#include "Playable.h"
+#include "Playable.h"
 #include <Playable.h>
 
 #include <AreaTaking/HexTile.h>
@@ -9,7 +11,7 @@ using namespace Twin2Engine::Physic;
 
 void Playable::Initialize()
 {
-    //if (patron->patronBonus == PatronBonus::AbilitiesCooldown) {
+    //if (patron->patronBonus == PatronBonus::ABILITIES_COOLDOWN) {
     //    albumCooldown *= patron->GetBonus() / 100.0f;
     //    fansCooldown *= patron->GetBonus() / 100.0f;
     //}
@@ -157,9 +159,11 @@ void Playable::FansControlDraw()
 void Playable::UseFans() {
     fansUsed++;
     float usedRadius = fansRadius;
+
     currFansTime = fansTime;
     tileBefore = CurrTile;
-    //if (patron->patronBonus == PatronBonus::AbilitiesRange) {
+
+    //if (patron->patronBonus == PatronBonus::ABILITIES_RANGE) {
     //    usedRadius += patron->GetBonus();
     //}
 
@@ -245,6 +249,49 @@ void Playable::CheckIfDead(Playable* playable) {
     }
 }
 
+float Playable::GetMaxRadius() const {
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    return 0.f;
+}
+
+float Playable::GlobalAvg() const
+{
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    float res = 0.f;
+    for (auto& tile : tiles) {
+        res += tile->percentage;
+    }
+    // AllTakenTilesPercent / TakenTilesCount
+    return res / tiles.size();
+}
+
+float Playable::LocalAvg() const
+{
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    float res = 0.f;
+    size_t count = 0;
+
+    vec3 currTilePos = CurrTile->GetTransform()->GetGlobalPosition();
+    for (auto& tile : tiles) {
+        // TODO: Zrobiæ by by³o liczone dla s¹siadów a nie na odleg³oœæ ruchu
+        if (glm::distance(currTilePos, tile->GetTransform()->GetGlobalPosition()) <= this->GetMaxRadius()) {
+            res += tile->percentage;
+            ++count;
+        }
+    }
+    // AllTakenTilesNextToCurrentTilePercent / TakenTilesNextToCurrentTileCount
+    return res / count;
+}
+
 YAML::Node Playable::Serialize() const
 {
     return YAML::Node();
@@ -255,12 +302,14 @@ bool Playable::Deserialize(const YAML::Node& node)
     return false;
 }
 #if _DEBUG
-bool Playable::DrawInheritedFields()
-{
-    return true;
-}
-
 void Playable::DrawEditor()
 {
+    string id = string(std::to_string(this->GetId()));
+    string name = string("Playable##Component").append(id);
+    if (ImGui::CollapsingHeader(name.c_str())) {
+        if (Component::DrawInheritedFields()) return;
+
+        // TODO: Zrobic
+    }
 }
 #endif

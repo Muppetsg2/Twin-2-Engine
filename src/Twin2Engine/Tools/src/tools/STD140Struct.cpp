@@ -308,7 +308,7 @@ STD140Struct::STD140Struct(const STD140Offsets& structOffsets, const vector<char
 	ZoneScoped;
 #endif
 
-	_dataOffsets = STD140Offsets(structOffsets);
+	_dataOffsets = structOffsets;
 	_data.reserve(_dataOffsets.GetSize());
 	_data.insert(_data.begin(), data.begin(), data.begin() + std::min(data.size(), _data.capacity()));
 	if (_data.size() < _data.capacity()) {
@@ -317,22 +317,64 @@ STD140Struct::STD140Struct(const STD140Offsets& structOffsets, const vector<char
 }
 
 STD140Struct::STD140Struct(STD140Struct& std140s) {
-	_dataOffsets = std140s._dataOffsets;
-	_data = std140s._data;
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
+	std140s.CloneTo(this);
 }
 
 STD140Struct::STD140Struct(const STD140Struct& std140s) {
-	_dataOffsets = std140s._dataOffsets;
-	_data = std140s._data;
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
+	std140s.CloneTo(this);
 }
 
 STD140Struct::STD140Struct(STD140Struct&& std140s) {
-	_dataOffsets = std140s._dataOffsets;
-	_data = std140s._data;
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
+	std140s.CloneTo(this);
 }
+
+STD140Struct& STD140Struct::operator=(STD140Struct& std140s) {
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
+	std140s.CloneTo(this);
+	return *this;
+}
+
+STD140Struct& STD140Struct::operator=(const STD140Struct& std140s) {
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
+	std140s.CloneTo(this);
+	return *this;
+}
+
+STD140Struct& STD140Struct::operator=(STD140Struct&& std140s) {
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
+	std140s.CloneTo(this);
+	return *this;
+}
+
+CloneFuncDefinition(Twin2Engine::Tools::STD140Struct, StandardClone(_dataOffsets), StandardClone(_data))
 
 STD140Struct::~STD140Struct()
 {
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
 	Clear();
 }
 

@@ -28,6 +28,8 @@ protected:
     virtual void OnDead() = 0;
 
 public:
+    std::vector<HexTile*> tiles;
+
     struct MinMaxPair {
         float min;
         float max;
@@ -119,6 +121,8 @@ public:
 
     //virtual void OnDead() = 0;
 
+    Playable* fightingPlayable;
+
     virtual void LostPaperRockScissors(Playable* playable) = 0;
     virtual void WonPaperRockScissors(Playable* playable) = 0;
     virtual void LostFansControl(Playable* playable) = 0;
@@ -126,14 +130,16 @@ public:
     virtual void StartPaperRockScissors(Playable* playable) = 0;
     virtual void StartFansControl(Playable* playable) = 0;
 
+    virtual float GetMaxRadius() const;
+    
+    float GlobalAvg() const;
+    float LocalAvg() const;
+
 public:
     virtual YAML::Node Serialize() const override;
     virtual bool Deserialize(const YAML::Node& node) override;
 
 #if _DEBUG
-protected:
-    virtual bool DrawInheritedFields();
-public:
     virtual void DrawEditor() override;
 #endif
 };

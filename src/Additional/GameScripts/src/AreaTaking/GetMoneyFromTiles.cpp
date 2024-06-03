@@ -4,17 +4,20 @@
 
 using namespace Twin2Engine::Core;
 
-void MoneyGainFromTiles::OnEnable() {
-    playable = GetGameObject()->GetComponent<Playable>();
-}
-
 void MoneyGainFromTiles::Initialize() {
-    GameTimer::Instance()->OnDayTicked += [this](int day) {
+    playable = GetGameObject()->GetComponent<Playable>();
+    eventIdOnDayTicked = GameTimer::Instance()->OnDayTicked += [&](int day) {
+        SPDLOG_INFO("Lambda called");
         UpdateMoney(dynamic_cast<Player*>(playable) != nullptr);
         };
 }
 
 void MoneyGainFromTiles::Update() {
+    // Implement any necessary update logic if needed.
+}
+
+void MoneyGainFromTiles::OnDestroy() {
+    GameTimer::Instance()->OnDayTicked -= eventIdOnDayTicked;
     // Implement any necessary update logic if needed.
 }
 
@@ -28,19 +31,22 @@ float MoneyGainFromTiles::GainMoneyFromTile(HexTile* tile) {
 }
 
 void MoneyGainFromTiles::UpdateMoney(bool player) {
+    SPDLOG_INFO("UpdateMoney called");
     if (GameManager::instance->minigameActive) return;
+    SPDLOG_INFO("After condition called");
 
     float patronMul = 1.0f;
 
-    if (playable->patron->patronBonus == PatronBonus::MONEY_GAIN) {
-        patronMul = playable->patron->GetBonus();
-    }
+    //if (playable->patron->patronBonus == PatronBonus::MONEY_GAIN) {
+    //    patronMul = playable->patron->GetBonus();
+    //}
 
     for (auto* tile : playable->OwnTiles) {
         money += GainMoneyFromTile(tile) * patronMul;
     }
 
     if (player) {
+        SPDLOG_INFO("Money: {}", money);
         //MoneyPanelController::Instance().SetMoney(money);
     }
 }
@@ -60,6 +66,7 @@ YAML::Node MoneyGainFromTiles::Serialize() const
 {
     YAML::Node node = Component::Serialize();
 
+    node["type"] = "MoneyGainFromTiles";
     node["gainingInterval"] = gainingInterval;
     node["moneyBaseFactor"] = moneyBaseFactor;
 

@@ -114,6 +114,7 @@ InstantiatingMesh::~InstantiatingMesh()
     #ifdef MESH_FRUSTUM_CULLING
     if (sphericalBV != nullptr) {
         delete sphericalBV;
+        sphericalBV = nullptr;
     }
     #endif // MESH_FRUSTUM_CULLING
 }

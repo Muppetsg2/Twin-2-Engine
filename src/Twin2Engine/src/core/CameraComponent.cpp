@@ -1167,32 +1167,27 @@ void CameraComponent::DrawEditor()
 
 		this->SetCameraFilter(acFil);
 
-		if ((acFil & (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0) {
+		ImGui::BeginDisabled((acFil& (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) == 0);
+		ImGui::Checkbox(string("Depth Of Field 2##").append(id).c_str(), &this->_depthOfField2);
+		ImGui::EndDisabled();
 
-			bool c = this->_depthOfField2;
-			ImGui::Checkbox(string("Depth Of Field 2##").append(id).c_str(), &c);
-			if (c != this->_depthOfField2) {
-				this->_depthOfField2 = c;
+		if (this->_depthOfField2) {
+			float quadratic = this->_quadraticDepthOfField;
+			if (ImGui::InputFloat(string("Quadratic Depth Of Field##").append(id).c_str(), &quadratic)) {
+				if (this->_quadraticDepthOfField != quadratic) {
+					this->_quadraticDepthOfField = quadratic;
+				}
 			}
-
-			if (this->_depthOfField2) {
-				float quadratic = this->_quadraticDepthOfField;
-				if (ImGui::InputFloat(string("Quadratic Depth Of Field##").append(id).c_str(), &quadratic)) {
-					if (this->_quadraticDepthOfField != quadratic) {
-						this->_quadraticDepthOfField = quadratic;
-					}
+			float linear = this->_linearDepthOfField;
+			if (ImGui::InputFloat(string("Linear Depth Of Field##").append(id).c_str(), &linear)) {
+				if (this->_linearDepthOfField != linear) {
+					this->_linearDepthOfField = linear;
 				}
-				float linear = this->_linearDepthOfField;
-				if (ImGui::InputFloat(string("Linear Depth Of Field##").append(id).c_str(), &linear)) {
-					if (this->_linearDepthOfField != linear) {
-						this->_linearDepthOfField = linear;
-					}
-				}
-				float constant = this->_constantDepthOfField;
-				if (ImGui::InputFloat(string("Constant Depth Of Field##").append(id).c_str(), &constant)) {
-					if (this->_constantDepthOfField != constant) {
-						this->_constantDepthOfField = constant;
-					}
+			}
+			float constant = this->_constantDepthOfField;
+			if (ImGui::InputFloat(string("Constant Depth Of Field##").append(id).c_str(), &constant)) {
+				if (this->_constantDepthOfField != constant) {
+					this->_constantDepthOfField = constant;
 				}
 			}
 		}

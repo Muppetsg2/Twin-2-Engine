@@ -9,9 +9,4 @@ namespace Twin2Engine::Graphic
         size_t id;
         std::vector<InstantiatingMesh*> meshes;
     };
-
-    //bool operator<(const ModelData& data1, const ModelData& data2)
-    //{
-    //    return data1.modelHash < data2.modelHash;
-    //}
 }

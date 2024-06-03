@@ -10,6 +10,8 @@ namespace Twin2Engine::Physic {
 		BoundingVolume(BoxColliderData* boxColliderData);
 		BoundingVolume(CapsuleColliderData* CapsuleColliderData);
 
+		~BoundingVolume() override;
+
 		bool isOnFrustum(Graphic::Frustum & frustum);
 
 		Collision* collide(Collider* other) override;

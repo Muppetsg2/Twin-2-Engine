@@ -1,4 +1,4 @@
-#define TWIN2_VERSION "0.7"
+#define TWIN2_VERSION "1.2"
 
 #define USE_IMGUI_CONSOLE_OUTPUT true
 #define USE_WINDOWS_CONSOLE_OUTPUT false
@@ -553,12 +553,12 @@ void render_imgui()
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("File##Menu"))
             {
-                if (ImGui::MenuItem("Load Scene", "Ctrl+L")) {
+                if (ImGui::MenuItem("Load Scene", "Ctrl+L", &_openLoadSceneWindow)) {
                     //ImGui::OpenPopup("Load Scene##File_Scene_Load_Internal", ImGuiPopupFlags_NoReopen);
                     _openLoadSceneWindow = true;
                 }
 
-                if (ImGui::MenuItem("Load Scene From File", "Ctrl+Shift+L")) {
+                if (ImGui::MenuItem("Load Scene From File", "Ctrl+Shift+L", &_fileDialogSceneOpen)) {
                     _fileDialogSceneOpen = true;
                     _fileDialogSceneOpenInfo.type = ImGuiFileDialogType_OpenFile;
                     _fileDialogSceneOpenInfo.title = "Load Scene##File_Scene_Load_File";
@@ -572,7 +572,7 @@ void render_imgui()
                 if (ImGui::MenuItem("Save Scene##File", "Ctrl+S"))
                     SceneManager::SaveScene(SceneManager::GetCurrentScenePath());
 
-                if (ImGui::MenuItem("Save Scene As...##File", "Ctrl+Shift+S")) {
+                if (ImGui::MenuItem("Save Scene As...##File", "Ctrl+Shift+S", &_fileDialogSceneSave)) {
                     _fileDialogSceneSave = true;
                     _fileDialogSceneSaveInfo.type = ImGuiFileDialogType_SaveFile;
                     _fileDialogSceneSaveInfo.title = "Load Scene##File_Scene_Save";

@@ -219,7 +219,7 @@ void ScriptableObjectManager::DrawEditor(bool* p_open) {
 				openEditor = true;
 			}
 			ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
-			if (ImGui::Button(string("##Remove Scriptable Object Manager").append(std::to_string(i)).c_str())) {
+			if (ImGui::RemoveButton(string("##Remove Scriptable Object Manager").append(std::to_string(i)).c_str())) {
 				clicked.push_back(item.first);
 			}
 			++i;

@@ -4,6 +4,7 @@ using namespace Twin2Engine::Physic;
 
 Collider::~Collider() {
 	delete shapeColliderData;
+	shapeColliderData = nullptr;
 }
 
 Collision* Collider::SphereSphereCollision(Collider* sphere1, Collider* sphere2, bool separate)

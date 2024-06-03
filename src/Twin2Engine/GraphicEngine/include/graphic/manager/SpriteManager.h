@@ -23,6 +23,11 @@ namespace Twin2Engine::Manager {
 
 		static void UnloadSprite(size_t spriteId);
 		static void UnloadSprite(const std::string& spriteAlias);
+
+#if _DEBUG
+		static void DrawSpriteEditor(bool* p_open, size_t spriteToEdit = 0);
+#endif
+
 	public:
 		static Graphic::Sprite* MakeSprite(const std::string& spriteAlias, const std::string& texPath);
 		static Graphic::Sprite* MakeSprite(const std::string& spriteAlias, Graphic::Texture2D* tex);

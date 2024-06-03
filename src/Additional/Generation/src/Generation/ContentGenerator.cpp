@@ -48,8 +48,10 @@ void ContentGenerator::OnDestroy() {
     SPDLOG_INFO("Cleaning content");
     for (AMapElementGenerator* generator : mapElementGenerators)
     {
-        SPDLOG_INFO("Generating element");
-        generator->Clean();
+        if (ScriptableObjectManager::Get(generator->GetId()) != nullptr) {
+            SPDLOG_INFO("Cleaning Generator {0}", ScriptableObjectManager::GetName(generator->GetId()));
+            generator->Clean();
+        }
     }
     mapElementGenerators.clear();
 }
@@ -64,7 +66,9 @@ YAML::Node ContentGenerator::Serialize() const
     for (AMapElementGenerator* generator : mapElementGenerators)
     {
         //node["mapElementGenerators"][index++] = Twin2Engine::Manager::ScriptableObjectManager::SceneSerialize(generator->GetId());
-        node["mapElementGenerators"][index++] = ScriptableObjectManager::GetPath(generator->GetId());
+        if (ScriptableObjectManager::Get(generator->GetId()) != nullptr) {
+            node["mapElementGenerators"][index++] = ScriptableObjectManager::GetPath(generator->GetId());
+        }
     }
     return node;
 }
@@ -117,7 +121,14 @@ void ContentGenerator::DrawEditor()
 		if (node_open) {
             for (int i = 0; i < mapElementGenerators.size(); ++i) {
                 AMapElementGenerator* item = mapElementGenerators[i];
+
+                if (ScriptableObjectManager::Get(item->GetId()) == nullptr) {
+                    mapElementGenerators.erase(mapElementGenerators.begin() + i);
+                    break;
+                }
+
                 string n = ScriptableObjectManager::GetName(item->GetId()).append("##").append(id);
+
                 ImGui::Text(to_string(i + 1).append(". "s).c_str());
                 ImGui::SameLine();
                 ImGui::Selectable(n.c_str(), false, NULL, ImVec2(ImGui::GetContentRegionAvail().x - 80, 0.f));

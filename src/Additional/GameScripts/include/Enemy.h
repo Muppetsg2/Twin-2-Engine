@@ -27,6 +27,9 @@ class Enemy : public Playable {
 	float _drawChance = 33.33f;
 
 	// STATE MACHINE
+	bool _started = false;
+	float _timeToThink = .5f;
+	float _currThinkingTime = 0.f;
 	StateMachine<Enemy*> _stateMachine;
 
 	static TakingOverState _takingOverState;
@@ -76,8 +79,6 @@ public:
 	virtual void OnDestroy() override;
 
 	void FinishedMovement(HexTile* hexTile);
-
-	void PerformMovement();
 
 	virtual void LostPaperRockScissors(Playable* playable) override;
 	virtual void WonPaperRockScissors(Playable* playable) override;

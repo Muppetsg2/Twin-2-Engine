@@ -69,6 +69,8 @@ void FightingState::Draw(Enemy* enemy) {
 #endif
 
 	SPDLOG_INFO("ENEMY DRAW");
+	// TODO: Dodac analize ruchu gracza
+	// TODO: Dodac odpowiedz na ruch gracza
 }
 
 void FightingState::Win(Enemy* enemy) {
@@ -77,6 +79,8 @@ void FightingState::Win(Enemy* enemy) {
 #endif
 
 	SPDLOG_INFO("ENEMY WIN");
+	// TODO: Dodac analize ruchu gracza
+	// TODO: Dodac odpowiedz na ruch gracza
 	if (enemy->CurrTile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::RadioStation) {
 		enemy->ChangeState(&enemy->_radioStationState);
 	}
@@ -91,6 +95,8 @@ void FightingState::Lose(Enemy* enemy) {
 #endif
 
 	SPDLOG_INFO("ENEMY LOSE");
+	// TODO: Dodac analize ruchu gracza
+	// TODO: Dodac odpowiedz na ruch gracza
 	enemy->ChangeState(&enemy->_movingState);
 }
 

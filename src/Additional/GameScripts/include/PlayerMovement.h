@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <core/Component.h>
 #include <core/Transform.h>
 #include <core/GameObject.h>

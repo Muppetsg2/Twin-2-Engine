@@ -10,7 +10,7 @@ using namespace Twin2Engine::Core;
 
 void Playable::Initialize()
 {
-    if (patron->patronBonus == PatronBonus::AbilitiesCooldown) {
+    if (patron->patronBonus == PatronBonus::ABILITIES_COOLDOWN) {
         albumCooldown *= patron->GetBonus() / 100.0f;
         fansCooldown *= patron->GetBonus() / 100.0f;
     }
@@ -146,7 +146,7 @@ void Playable::FansFunc() {
     fansUsed++;
     float usedRadius = fansRadius;
 
-    if (patron->patronBonus == PatronBonus::AbilitiesRange) {
+    if (patron->patronBonus == PatronBonus::ABILITIES_RANGE) {
         usedRadius += patron->GetBonus();
     }
 
@@ -275,12 +275,14 @@ bool Playable::Deserialize(const YAML::Node& node)
     return false;
 }
 #if _DEBUG
-bool Playable::DrawInheritedFields()
-{
-    return true;
-}
-
 void Playable::DrawEditor()
 {
+    string id = string(std::to_string(this->GetId()));
+    string name = string("Playable##Component").append(id);
+    if (ImGui::CollapsingHeader(name.c_str())) {
+        if (Component::DrawInheritedFields()) return;
+
+        // TODO: Zrobic
+    }
 }
 #endif

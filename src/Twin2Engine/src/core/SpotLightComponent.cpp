@@ -92,14 +92,27 @@ YAML::Node SpotLightComponent::Serialize() const
 {
 	YAML::Node node = LightComponent::Serialize();
 	node["type"] = "SpotLight";
-	node["direction"] = light->direction;
-	node["color"] = light->color;
-	node["power"] = light->power;
-	node["innerCutOff"] = light->innerCutOff;
-	node["outerCutOff"] = light->outerCutOff;
-	node["constant"] = light->constant;
-	node["linear"] = light->linear;
-	node["quadratic"] = light->quadratic;
+
+	if (light != nullptr) {
+		node["direction"] = light->direction;
+		node["color"] = light->color;
+		node["power"] = light->power;
+		node["innerCutOff"] = light->innerCutOff;
+		node["outerCutOff"] = light->outerCutOff;
+		node["constant"] = light->constant;
+		node["linear"] = light->linear;
+		node["quadratic"] = light->quadratic;
+	}
+	else {
+		node["direction"] = glm::vec3(0.f);
+		node["color"] = glm::vec3(1.f);
+		node["power"] = 1.f;
+		node["innerCutOff"] = 0.1f;
+		node["outerCutOff"] = 0.2f;
+		node["constant"] = 1.f;
+		node["linear"] = 1.f;
+		node["quadratic"] = 1.f;
+	}
 
 	return node;
 }

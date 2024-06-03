@@ -18,7 +18,7 @@ void MapGenerator::Initialize()
 
 void MapGenerator::OnEnable()
 {
-    Generate();
+    if (tilemap != nullptr && preafabHexagonalTile != nullptr && additionalTile != nullptr && filledTile != nullptr && pointTile != nullptr) Generate();
 }
 
 void MapGenerator::GenerateFloatHull(const vector<vec2>& hull)
@@ -275,17 +275,42 @@ void MapGenerator::Generate()
     }
     
     GetGameObject()->GetComponent<ContentGenerator>()->GenerateContent(tilemap);
+
+    _generated = true;
+}
+
+void MapGenerator::Clear() {
+
+    if (_generated) {
+        Transform* tilemapTransform = tilemap->GetTransform();
+        tilemap->Clear();
+        while (tilemapTransform->GetChildCount())
+        {
+            Transform* child = tilemapTransform->GetChildAt(0);
+            tilemapTransform->RemoveChild(child);
+            SceneManager::DestroyGameObject(child->GetGameObject());
+        }
+        _generated = false;
+    }
 }
 
 YAML::Node MapGenerator::Serialize() const
 {
     YAML::Node node = Component::Serialize();
     node["type"] = "MapGenerator";
-    // SPRAWDZANIE CZY PREFAB JEST NULLPTR
-    node["prefabHexagonalTile"] = SceneManager::GetPrefabSaveIdx(preafabHexagonalTile->GetId());
-    node["additionalTile"] = SceneManager::GetPrefabSaveIdx(additionalTile->GetId());
-    node["filledTile"] = SceneManager::GetPrefabSaveIdx(filledTile->GetId());
-    node["pointTile"] = SceneManager::GetPrefabSaveIdx(pointTile->GetId());
+    
+    if (preafabHexagonalTile != nullptr) {
+        node["prefabHexagonalTile"] = SceneManager::GetPrefabSaveIdx(preafabHexagonalTile->GetId());
+    }
+    if (additionalTile != nullptr) {
+        node["additionalTile"] = SceneManager::GetPrefabSaveIdx(additionalTile->GetId());
+    }
+    if (filledTile != nullptr) {
+        node["filledTile"] = SceneManager::GetPrefabSaveIdx(filledTile->GetId());
+    }
+    if (pointTile != nullptr) {
+        node["pointTile"] = SceneManager::GetPrefabSaveIdx(pointTile->GetId());
+    }
     node["generationRadiusMin"] = generationRadiusMin;
     node["generationRadiusMax"] = generationRadiusMax;
     node["minPointsNumber"] = minPointsNumber;
@@ -295,16 +320,22 @@ YAML::Node MapGenerator::Serialize() const
 }
 
 bool MapGenerator::Deserialize(const YAML::Node& node) {
-    if (!node["prefabHexagonalTile"] || !node["additionalTile"] || !node["filledTile"] ||
-        !node["pointTile"] || !node["generationRadiusMin"] || !node["generationRadiusMax"] ||
+    if (!node["generationRadiusMin"] || !node["generationRadiusMax"] ||
         !node["minPointsNumber"] || !node["maxPointsNumber"] || !node["angleDeltaRange"] ||
         !Component::Deserialize(node)) return false;
 
-    // SPRAWDZAC CZY ISTNIEJE PREFAB
-    preafabHexagonalTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["prefabHexagonalTile"].as<size_t>()));
-    additionalTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["additionalTile"].as<size_t>()));
-    filledTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["filledTile"].as<size_t>()));
-    pointTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["pointTile"].as<size_t>()));
+    if (node["prefabHexagonalTile"]) {
+        preafabHexagonalTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["prefabHexagonalTile"].as<size_t>()));
+    }
+    if (node["additionalTile"]) {
+        additionalTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["additionalTile"].as<size_t>()));
+    }
+    if (node["filledTile"]) {
+        filledTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["filledTile"].as<size_t>()));
+    }
+    if (node["pointTile"]) {
+        pointTile = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["pointTile"].as<size_t>()));
+    }
 
     generationRadiusMin = node["generationRadiusMin"].as<float>();
     generationRadiusMax = node["generationRadiusMax"].as<float>();
@@ -441,7 +472,7 @@ void MapGenerator::DrawEditor()
             ImGui::EndCombo();
         }
 
-        if (ImGui::BeginCombo(string("pointTile##").append(id).c_str(), prefabNames[pointTileId].c_str())) {
+        if (ImGui::BeginCombo(string("Point Tile##").append(id).c_str(), prefabNames[pointTileId].c_str())) {
 
             bool clicked = false;
             size_t choosed = pointTileId;
@@ -503,21 +534,20 @@ void MapGenerator::DrawEditor()
             angleDeltaRange = v;
         }
 
+        if (ImGui::Button(string("Clear##").append(id).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0.f)))
+        {
+            Clear();
+        }
+
         if (ImGui::Button(string("Generate##").append(id).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0.f)))
         {
-            Transform* tilemapTransform = tilemap->GetTransform();
-            tilemap->Clear();
-            while (tilemapTransform->GetChildCount())
-            {
-                Transform* child = tilemapTransform->GetChildAt(0);
-                tilemapTransform->RemoveChild(child);
-                SceneManager::DestroyGameObject(child->GetGameObject());
-            }
+            Clear();
 
             float tilemapGenerating = Time::GetTime();
             Generate();
             spdlog::info("Tilemap generation: {}ms", Time::GetTime() - tilemapGenerating);
 
+            /*
             ContentGenerator* contentGenerator = this->GetGameObject()->GetComponent<ContentGenerator>();
             if (contentGenerator != nullptr) {
                 tilemapGenerating = Time::GetTime();
@@ -527,6 +557,7 @@ void MapGenerator::DrawEditor()
             else {
                 spdlog::info("Map Generator: Couldn't find Content Generator");
             }
+            */
         }
     }
 }

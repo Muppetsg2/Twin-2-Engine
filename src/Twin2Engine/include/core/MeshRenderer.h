@@ -26,6 +26,8 @@ namespace Twin2Engine::Core
 		void Unregister();
 
 		void OnModelDataDestroyed();
+
+		bool DrawInheritedFields() override;
 	private:
 
 		size_t _loadedModel = 0;
@@ -80,6 +82,7 @@ namespace Twin2Engine::Core
 		void AddMaterial(size_t materialId);
 		void SetMaterial(size_t index, Graphic::Material material);
 		void SetMaterial(size_t index, size_t materialId);
+		void RemoveMaterial(size_t index);
 #pragma endregion
 	};
 }

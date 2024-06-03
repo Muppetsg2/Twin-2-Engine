@@ -327,9 +327,9 @@ void GameObject::DrawEditor()
 		}
 	}
 
-	ImGui::SameLine();
+	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 20);
 
-	if (ImGui::Button(string("Remove##GO").append(id).c_str())) {
+	if (ImGui::RemoveButton(string("##Remove GO").append(id).c_str())) {
 		Manager::SceneManager::DestroyGameObject(this);
 		return;
 	}
@@ -360,15 +360,6 @@ void GameObject::DrawEditor()
 		}
 		cs.pop_front();
 	}
-
-	/*
-	for (Component* comp : components) {
-		if (comp != _transform) {
-			comp->DrawEditor();
-			ImGui::Separator();
-		}
-	}
-	*/
 
 	if (ImGui::Button(string("Add Component##GO").append(id).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
 		ImGui::OpenPopup(string("Add Component PopUp##GO").append(id).c_str(), ImGuiPopupFlags_NoReopen);

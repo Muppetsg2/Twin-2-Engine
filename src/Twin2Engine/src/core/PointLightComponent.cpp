@@ -72,11 +72,21 @@ YAML::Node PointLightComponent::Serialize() const
 {
 	YAML::Node node = LightComponent::Serialize();
 	node["type"] = "PointLight";
-	node["color"] = light->color;
-	node["power"] = light->power;
-	node["constant"] = light->constant;
-	node["linear"] = light->linear;
-	node["quadratic"] = light->quadratic;
+
+	if (light != nullptr) {
+		node["color"] = light->color;
+		node["power"] = light->power;
+		node["constant"] = light->constant;
+		node["linear"] = light->linear;
+		node["quadratic"] = light->quadratic;
+	}
+	else {
+		node["color"] = glm::vec3(1.f);
+		node["power"] = 1.f;
+		node["constant"] = 1.f;
+		node["linear"] = 1.f;
+		node["quadratic"] = 1.f;
+	}
 
 	return node;
 }

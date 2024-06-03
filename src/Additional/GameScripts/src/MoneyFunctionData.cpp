@@ -36,3 +36,9 @@ float MoneyFunctionData::GetValue(float x, float start)
     float y = Equation(hasXLimits ? glm::clamp(x, minX, maxX) : x, start);
     return hasYLimits ? glm::clamp(y, minY, maxY) : y;
 }
+
+#if _DEBUG
+void MoneyFunctionData::DrawEditor() {
+    // TODO: Zrobic
+}
+#endif

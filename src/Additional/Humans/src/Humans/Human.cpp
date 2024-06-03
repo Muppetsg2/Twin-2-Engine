@@ -92,6 +92,9 @@ void Human::DrawEditor()
     std::string id = std::string(std::to_string(this->GetId()));
     std::string name = std::string("Human##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str())) {
+
+        if (Component::DrawInheritedFields()) return;
+
         ImGui::InputFloat("AchievingDestinationAccuracity: ", &achievingDestinationAccuracity);
     }
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #define MAX_LOG_DRAW 250
-#define COLLAPSE 0
+#define COLLAPSE 2
 
 namespace Editor::Common
 {
@@ -197,11 +197,11 @@ namespace Editor::Common
             MessageHolder::logMessages.clear();
         }
 
-        static void Draw()
+        static void DrawEditor(bool* p_open)
         {
             ImGui::SetNextWindowSizeConstraints(ImVec2(700, 300), ImVec2(1920, 1080));
 
-            if (!ImGui::Begin("Console")) {
+            if (!ImGui::Begin("Console", p_open)) {
                 ImGui::End();
                 return;
             }
@@ -364,6 +364,11 @@ namespace Editor::Common
             //static float lastScrollPosition = 0.0;
             //static bool lastFrameOnEnd = true;
             //cout << "Scroll" << ImGui::GetScrollY() << endl;
+
+            if (ImGui::GetScrollY() < ImGui::GetScrollMaxY()) {
+                autoScroll = false;
+            }
+
             if (autoScroll)
             {
                 ImGui::SetScrollHereY(1.0f);

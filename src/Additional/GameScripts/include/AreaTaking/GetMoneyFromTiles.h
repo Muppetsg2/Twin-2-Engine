@@ -1,6 +1,4 @@
-#ifndef MONEYGAINFROMTILES_H
-#define MONEYGAINFROMTILES_H
-
+#pragma once
 #include <core/Component.h>
 
 //#include <Playable.h>
@@ -34,11 +32,7 @@ private:
     virtual bool Deserialize(const YAML::Node& node) override;
 
 #if _DEBUG
-protected:
-    virtual bool DrawInheritedFields();
 public:
     virtual void DrawEditor();
 #endif
 };
-
-#endif // MONEYGAINFROMTILES_H

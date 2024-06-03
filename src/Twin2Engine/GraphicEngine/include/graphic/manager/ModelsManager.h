@@ -85,9 +85,13 @@ namespace Twin2Engine::Manager
 
 		static std::string GetModelName(size_t id);
 		static std::string GetModelName(const std::string& modelPath);
+		static std::map<size_t, std::string> GetAllModelsNames();
 
 		static YAML::Node Serialize();
+
+#if _DEBUG
 		static void DrawEditor(bool* p_open);
+#endif
 
 		static constexpr const char* CUBE_PATH = "{Cube}";
 		static constexpr const char* PLANE_PATH = "{Plane}";

@@ -31,15 +31,12 @@ namespace Generation
 
         void GenerateRandomHull();
 
+        bool _generated = false;
+
     public:
 #pragma region COMPONENT_PARAMETERS
 
         Tilemap::HexagonalTilemap* tilemap;
-        //Tilemap::HexagonalTile* tile;
-        //Twin2Engine::Core::GameObject* preafabHexagonalTile;
-        //Twin2Engine::Core::GameObject* additionalTile;
-        //Twin2Engine::Core::GameObject* filledTile;
-        //Twin2Engine::Core::GameObject* pointTile;
         Twin2Engine::Core::Prefab* preafabHexagonalTile;
         Twin2Engine::Core::Prefab* additionalTile;
         Twin2Engine::Core::Prefab* filledTile;
@@ -56,6 +53,7 @@ namespace Generation
 
 #pragma endregion
         void Generate();
+        void Clear();
 
         virtual void Initialize() override;
         virtual void OnEnable() override;

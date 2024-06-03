@@ -230,8 +230,8 @@ void PrefabManager::DrawEditor(bool* p_open)
 		for (auto& item : _prefabsPaths) {
 			string n = GetPrefabName(item.second);
 			ImGui::BulletText(n.c_str());
-			ImGui::SameLine(ImGui::GetContentRegionAvail().x - 30);
-			if (ImGui::Button(string("Remove##Prefab Manager").append(std::to_string(i)).c_str())) {
+			ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
+			if (ImGui::RemoveButton(string("##Remove Prefab Manager").append(std::to_string(i)).c_str())) {
 				clicked.push_back(item.first);
 			}
 			// TODO: DODAC OPCJE EDIT

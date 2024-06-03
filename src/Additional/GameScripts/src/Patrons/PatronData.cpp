@@ -35,16 +35,18 @@ PatronBonus PatronData::GetPatronBonus() const {
 
 float PatronData::GetBonus() const {
     switch (patronBonus) {
-    case PatronBonus::MoneyGain:
+    case PatronBonus::MONEY_GAIN:
         return moneyMultiplier;
-    case PatronBonus::ControlMultiplier:
+    case PatronBonus::CONTROL_MULTIPLIER:
         return controlMultiplier;
-    case PatronBonus::MoveRange:
+    case PatronBonus::MOVE_RANGE:
         return additionalMoveRange;
-    case PatronBonus::AbilitiesRange:
+    case PatronBonus::ABILITIES_RANGE:
         return additionalAbilitiesRange;
-    case PatronBonus::AbilitiesCooldown:
+    case PatronBonus::ABILITIES_COOLDOWN:
         return abilitiesCooldownPercent;
+    case PatronBonus::ABILITIES_PRICE:
+        return 100.0f - abilitiesPriceDiscount;
     default:
         return 1.0f;
     }
@@ -52,16 +54,18 @@ float PatronData::GetBonus() const {
 
 std::string PatronData::GetBonusAsString() const {
     switch (patronBonus) {
-    case PatronBonus::MoneyGain:
+    case PatronBonus::MONEY_GAIN:
         return "Money Gain\nBonus: x" + std::to_string(moneyMultiplier);
-    case PatronBonus::ControlMultiplier:
+    case PatronBonus::CONTROL_MULTIPLIER:
         return "Tile Taking\nBonus: x" + std::to_string(controlMultiplier);
-    case PatronBonus::MoveRange:
+    case PatronBonus::MOVE_RANGE:
         return "Move Range\nBonus: +" + std::to_string(additionalMoveRange);
-    case PatronBonus::AbilitiesRange:
+    case PatronBonus::ABILITIES_RANGE:
         return "Abilities Range\nBonus: +" + std::to_string(additionalAbilitiesRange);
-    case PatronBonus::AbilitiesCooldown:
+    case PatronBonus::ABILITIES_COOLDOWN:
         return "Abilities Cooldown Reduce\nBonus: -" + std::to_string(static_cast<int>(abilitiesCooldownPercent)) + "%";
+    case PatronBonus::ABILITIES_PRICE:
+        return "Abilities Price Discount\nBonus: -" + std::to_string(static_cast<int>(abilitiesPriceDiscount)) + "%";
     default:
         return "";
     }

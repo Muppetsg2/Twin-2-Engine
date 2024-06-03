@@ -368,6 +368,9 @@ bool ImGui::FileDialog(bool* open, ImFileDialogInfo* dialogInfo)
 			{
 				dialogInfo->resultPath = dialogInfo->directoryPath / dialogInfo->fileName;
 
+				/*
+				* Was in library but we want to override files when saving
+				* 
 				if (!std::filesystem::exists(dialogInfo->resultPath))
 				{
 					fileNameSortOrder = ImGuiFileDialogSortOrder_None;
@@ -383,6 +386,20 @@ bool ImGui::FileDialog(bool* open, ImFileDialogInfo* dialogInfo)
 					complete = true;
 					*open = false;
 				}
+				*/
+
+				fileNameSortOrder = ImGuiFileDialogSortOrder_None;
+				sizeSortOrder = ImGuiFileDialogSortOrder_None;
+				typeSortOrder = ImGuiFileDialogSortOrder_None;
+				dateSortOrder = ImGuiFileDialogSortOrder_None;
+
+				dialogInfo->refreshInfo = false;
+				dialogInfo->currentIndex = 0;
+				dialogInfo->currentFiles.clear();
+				dialogInfo->currentDirectories.clear();
+
+				complete = true;
+				*open = false;
 			}
 		}
 	}

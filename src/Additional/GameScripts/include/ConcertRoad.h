@@ -37,4 +37,8 @@ class ConcertRoad : public Component {
         void Use();
         void Begin();
         void Finish();
+
+#if _DEBUG
+        virtual void DrawEditor() override;
+#endif
 };

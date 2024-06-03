@@ -183,6 +183,9 @@ void HumanMovement::DrawEditor()
     std::string id = std::string(std::to_string(this->GetId()));
     std::string name = std::string("Human Movement##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str())) {
+
+        if (Component::DrawInheritedFields()) return;
+
         ImGui::InputFloat("Speed: ", &_speed);
         ImGui::InputFloat("ForwardDetectionDistance: ", &_forwardDetectionDistance);
         ImGui::InputFloat("AchievingDestinationAccuracity: ", &_achievingDestinationAccuracity);

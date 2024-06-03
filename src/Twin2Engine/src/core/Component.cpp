@@ -46,8 +46,8 @@ bool Component::DrawInheritedFields()
 		SetEnable(e);
 	}
 
-	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 50);
-	if (ImGui::Button(std::string("Remove##").append(id).c_str())) {
+	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 20);
+	if (ImGui::RemoveButton(std::string("##Remove").append(id).c_str())) {
 		_gameObject->RemoveComponent(this);
 		return true;
 	}

@@ -129,11 +129,10 @@ namespace GameScripts {
 				std::string name = std::string("MovementController##").append(id);
 
 				if (ImGui::CollapsingHeader(name.c_str())) {
-					bool b = IsEnable();
-					ImGui::Checkbox(string("Enable##").append(id).c_str(), &b);
-                    SetEnable(b);
 
-                    b = DragControl;
+                    if (Component::DrawInheritedFields()) return;
+
+                    bool b = DragControl;
                     ImGui::Checkbox(string("DragControl##").append(id).c_str(), &b);
                     DragControl = b;
 

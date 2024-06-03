@@ -34,7 +34,7 @@ void Player::Initialize() {
     move = GetGameObject()->GetComponent<PlayerMovement>();
     move->OnFinishMoving += [this](GameObject* gameObject, HexTile* tile) { FinishMove(tile); };
     move->OnStartMoving += [this](GameObject* gameObject, HexTile* tile) { StartMove(tile); };
-    if (patron && patron->patronBonus == PatronBonus::MoveRange) {
+    if (patron && patron->patronBonus == PatronBonus::MOVE_RANGE) {
         float r = move->radius;
         int s = move->maxSteps;
         move->radius += patron->GetBonus();
@@ -220,7 +220,7 @@ void Player::FinishMove(HexTile* tile) {
         hexIndicator->GetTransform()->SetGlobalPosition(CurrTile->sterowiecPos);
     }
 
-    if (tile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::RadioStation && tile->state != TileState::Occupied) {
+    if (tile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::RadioStation && tile->state != TileState::OCCUPIED) {
         //GameManager::instance->StartMinigame();
     }
     else {
@@ -363,16 +363,10 @@ void Player::OnDead() {
     GameManager::instance->GameOver();
 }
 
-
-
-
-
 YAML::Node Player::Serialize() const
 {
     YAML::Node node = Component::Serialize();
     node["type"] = "Player";
-    //node["direction"] = light->direction;
-    //node["power"] = light->power;
 
     return node;
 }
@@ -381,9 +375,6 @@ bool Player::Deserialize(const YAML::Node& node)
 {
     if (!Component::Deserialize(node))
         return false;
-
-    //light->direction = node["direction"].as<glm::vec3>();
-    //light->power = node["power"].as<float>();
 
     return true;
 }
@@ -397,16 +388,7 @@ void Player::DrawEditor()
 
         if (Component::DrawInheritedFields()) return;
 
-        //glm::vec3 v = light->direction;
-        //ImGui::DragFloat3(string("Direction##").append(id).c_str(), glm::value_ptr(v), .1f, -1.f, 1.f);
-        //if (v != light->direction) {
-        //    SetDirection(v);
-        //
-        //float p = light->power;
-        //ImGui::DragFloat(string("Power##").append(id).c_str(), &p);
-        //if (p != light->power) {
-        //    SetPower(p);
-        //}
+        // TODO: Zrobic
     }
 }
 #endif

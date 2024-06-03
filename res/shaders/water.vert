@@ -106,6 +106,10 @@ float noise (vec2 p) {
     ) * .5 + .5;
 }
 
+float map(float value, float min1, float max1, float min2, float max2) {
+  return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
+}
+
 void main()  
 {
     mat4 model = transform[gl_InstanceID];
@@ -114,7 +118,7 @@ void main()
     
     vec2 uv = worldPos.xz + (materialInputs[0].waterSpeed * time);
 
-    vec3 pos = vec3(position.x, noise(scale(uv, materialInputs[0].waterScale)) * materialInputs[0].waterHeight, position.z);
+    vec3 pos = vec3(position.x, position.y + map(noise(scale(uv, materialInputs[0].waterScale)), 0.0, 1.0, -1.0, 1.0) * (materialInputs[0].waterHeight / 2.0), position.z);
 
 	gl_Position = projection * view * model * vec4(pos, 1.0);
 	vs_out.normal = mat3(transpose(inverse(model))) * normal;

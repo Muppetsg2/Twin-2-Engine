@@ -327,7 +327,7 @@ void GameObject::DrawEditor()
 		}
 	}
 
-	ImGui::SameLine();
+	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 20);
 
 	if (ImGui::RemoveButton(string("##Remove GO").append(id).c_str())) {
 		Manager::SceneManager::DestroyGameObject(this);

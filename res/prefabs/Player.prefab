@@ -57,5 +57,12 @@ Root:
     - id: 5
       enabled: true
       type: PlayerMovement
+    - id: 6
+      enabled: true
+      type: ConcertAbilityController
+      lastingTime: 10
+      moneyRequired: 10
+      cooldownTime: 5
+      takingOverSpeed: 50
   children:
     []

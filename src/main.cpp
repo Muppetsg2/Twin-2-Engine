@@ -20,6 +20,8 @@ const char* const tracy_RenderingImGui = "RenderingImGui";
 // GAME SCRIPTS
 #include <PlaneGenerator.h>
 
+#include <Abilities/ConcertAbilityController.h>
+
 // TILEMAP
 #include <Tilemap/HexagonalTilemap.h>
 #include <Tilemap/HexagonalTile.h>
@@ -253,6 +255,8 @@ int main(int, char**)
 
     ADD_COMPONENT("Enemy", Enemy);
     ADD_COMPONENT("EnemyMovement", EnemyMovement);
+
+    ADD_COMPONENT("ConcertAbilityController", ConcertAbilityController);
 
 #pragma region GAME_SCRIPTS_COMPONENTS
 

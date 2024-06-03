@@ -7,6 +7,9 @@
 #include <GameManager.h>
 #include <Patrons/PatronData.h>
 
+
+#include <core/Input.h>
+
 //using namespace Twin2Engine::Core;
 
 //class Playable;
@@ -23,10 +26,7 @@ private:
     //Button* fansButton;
     PlayerMovement* move;
     bool lost;
-    float currAlbumTime;
-    float currAlbumCooldown;
-    float currFansTime;
-    float currFansCooldown;
+
     Playable* fightingPlayable = nullptr;
     //Coroutine* fansCorountine;
 

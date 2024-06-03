@@ -1,6 +1,7 @@
 #include <Enemy/MovingState.h>
 #include <Enemy.h>
 #include <EnemyMovement.h>
+#include <Abilities/ConcertAbilityController.h>
 
 // TODO: dodaæ na wykryciu radioStation moveToRadioStation (usprawnia kierunek poruszania i daje powód)
 DecisionTree<Enemy*, bool> MovingState::_decisionTree{
@@ -55,7 +56,7 @@ DecisionTree<Enemy*, bool> MovingState::_decisionTree{
 									true,
 									new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
 										// IDZIE DO RADIO STACJI
-										Move(enemy);
+										RadioStation(enemy);
 									})
 								},
 								{
@@ -109,7 +110,7 @@ DecisionTree<Enemy*, bool> MovingState::_decisionTree{
 														{
 															false,
 															new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
-																// idzie na inne pole
+																// idzie na inne dowolne pole
 																Move(enemy);
 															})
 														}
@@ -135,12 +136,7 @@ void MovingState::StartTakingOver(Enemy* enemy)
 #endif
 
 	SPDLOG_INFO("Start Taking Over");
-	if (enemy->CurrTile->GetMapHexTile()->type == MapHexTile::HexTileType::RadioStation) {
-		enemy->ChangeState(&enemy->_radioStationState);
-	}
-	else {
-		enemy->ChangeState(&enemy->_takingOverState);
-	}
+	enemy->ChangeState(&enemy->_takingOverState);
 }
 
 void MovingState::Fight(Enemy* enemy)
@@ -150,7 +146,25 @@ void MovingState::Fight(Enemy* enemy)
 #endif
 
 	SPDLOG_INFO("Fight");
+
+	// TODO: Find tile with desired player
+	// TODO: Move to tile with desired player
+
 	enemy->ChangeState(&enemy->_fightingState);
+}
+
+void MovingState::RadioStation(Enemy* enemy)
+{
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
+	SPDLOG_INFO("Radio Station");
+
+	// TODO: Find tile with radio station
+	// TODO: Move to tile with radio station
+
+	enemy->ChangeState(&enemy->_radioStationState);
 }
 
 void MovingState::AlbumAbility(Enemy* enemy)
@@ -160,6 +174,8 @@ void MovingState::AlbumAbility(Enemy* enemy)
 #endif
 
 	SPDLOG_INFO("Album Ability");
+
+	// TODO: Use Album Ability
 }
 
 void MovingState::ConcertAbility(Enemy* enemy)
@@ -169,6 +185,8 @@ void MovingState::ConcertAbility(Enemy* enemy)
 #endif
 
 	SPDLOG_INFO("Concert Ability");
+
+	// TODO: Use Concert Ability
 }
 
 void MovingState::Move(Enemy* enemy)
@@ -178,9 +196,11 @@ void MovingState::Move(Enemy* enemy)
 #endif
 
 	SPDLOG_INFO("Move");
+	// Move to other tile
 	enemy->ChangeState(&enemy->_movingState);
 }
 
+// TODO: Zmieniæ ChooseTile
 void MovingState::ChooseTile(Enemy* enemy)
 {
 	vec3 globalPosition = enemy->GetTransform()->GetGlobalPosition();
@@ -205,7 +225,7 @@ void MovingState::ChooseTile(Enemy* enemy)
 		if (type != MapHexTile::HexTileType::Mountain && type != MapHexTile::HexTileType::None)
 		{
 			tilePosition = enemy->_tiles[index]->GetTransform()->GetGlobalPosition();
-			tilePosition.y = 0.0f;
+			tilePosition.y = .0f;
 			float distance = glm::distance(globalPosition, tilePosition);
 			if (distance <= maxRadius)
 			{

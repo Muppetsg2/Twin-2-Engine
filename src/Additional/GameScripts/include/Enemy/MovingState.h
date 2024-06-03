@@ -11,6 +11,7 @@ private:
 
 	static void StartTakingOver(Enemy* enemy);
 	static void Fight(Enemy* enemy);
+	static void RadioStation(Enemy* enemy);
 	static void AlbumAbility(Enemy* enemy);
 	static void ConcertAbility(Enemy* enemy);
 	static void Move(Enemy* enemy);

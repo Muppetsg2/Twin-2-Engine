@@ -297,6 +297,25 @@ float Playable::LocalAvg() const
     return res / neightboursCount;
 }
 
+float Playable::FansRangeAvg() const
+{
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    float res = 0.f;
+    std::vector<HexTile*> inFansRangeTiles = GetFansRangeTiles();
+    for (auto& tile : inFansRangeTiles) {
+        if (tile->takenEntity == this) {
+            res += tile->percentage;
+        }
+    }
+    size_t count = inFansRangeTiles.size();
+    inFansRangeTiles.clear();
+
+    return res / count;
+}
+
 float Playable::FightPowerScore() const {
 #if TRACY_PROFILER
     ZoneScoped;
@@ -355,6 +374,15 @@ std::vector<HexTile*> Playable::GetInMoveRangeTiles() const
 #endif
 
     return GetInRangeTiles(CurrTile, GetMaxRadius());
+}
+
+std::vector<HexTile*> Playable::GetFansRangeTiles() const
+{
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    return GetInRangeTiles(CurrTile, fansRadius);
 }
 
 std::vector<HexTile*> Playable::GetInRangeTiles(HexTile* centerTile, float range)

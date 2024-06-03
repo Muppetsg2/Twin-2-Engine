@@ -8,12 +8,10 @@ class Playable;
 
 class FightingState : public State<Enemy*> {
 private:
-	ENUM_CLASS_BASE(FightResult, uint8_t, WIN, DRAW, LOSE)
+	ENUM_CLASS_BASE(FightResult, uint8_t, WIN, DRAW, LOSE, WAIT)
 
 	static DecisionTree<Enemy*, FightResult> _decisionTree;
 
-	static float GlobalAvg(Playable* entity);
-	static float LocalAvg(Playable* entity);
 	static float SumTiles(Playable* entity);
 	static float Score(Enemy* enemy, Playable* entity);
 

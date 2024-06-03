@@ -117,6 +117,9 @@ public:
     virtual void StartFansControl(Playable* playable) = 0;
 
     virtual float GetMaxRadius() const;
+    
+    float GlobalAvg() const;
+    float LocalAvg() const;
 
 public:
     virtual YAML::Node Serialize() const override;

@@ -27,7 +27,7 @@ inline void DecisionTreeLeaf<_Entity>::ProcessNode(_Entity entity) {
 	_action(entity);
 }
 
-#define DecisionTreeLeaf(_Entity, dataName, body) \
+/*#define DecisionTreeLeaf(_Entity, dataName, body) \
 	new DecisionTreeLeaf<_Entity>([&](_Entity dataName) -> void {\
 		body\
-	})
+	})*/

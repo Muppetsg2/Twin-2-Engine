@@ -40,7 +40,7 @@ inline void DecisionTreeDecisionMaker<_Entity, _Type>::ProcessNode(_Entity entit
 	}
 }
 
-#define DecisionFunc(_Entity, _Type, valueName, body)\
+/*#define DecisionFunc(_Entity, _Type, valueName, body)\
 	[&](_Entity valueName) -> _Type {\
 		body\
 	}
@@ -60,4 +60,4 @@ inline void DecisionTreeDecisionMaker<_Entity, _Type>::ProcessNode(_Entity entit
 	new DecisionTreeDecisionMaker<_Entity, _Type>(\
 		decision,\
 		results\
-	)
+	)*/

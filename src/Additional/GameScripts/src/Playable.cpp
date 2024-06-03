@@ -1,3 +1,5 @@
+#include "Playable.h"
+#include "Playable.h"
 #include <Playable.h>
 
 #include <AreaTaking/HexTile.h>
@@ -221,7 +223,46 @@ void Playable::CheckIfDead(Playable* playable) {
 }
 
 float Playable::GetMaxRadius() const {
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
     return 0.f;
+}
+
+float Playable::GlobalAvg() const
+{
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    float res = 0.f;
+    for (auto& tile : tiles) {
+        res += tile->percentage;
+    }
+    // AllTakenTilesPercent / TakenTilesCount
+    return res / tiles.size();
+}
+
+float Playable::LocalAvg() const
+{
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    float res = 0.f;
+    size_t count = 0;
+
+    vec3 currTilePos = CurrTile->GetTransform()->GetGlobalPosition();
+    for (auto& tile : tiles) {
+        // TODO: Zrobiæ by by³o liczone dla s¹siadów a nie na odleg³oœæ ruchu
+        if (glm::distance(currTilePos, tile->GetTransform()->GetGlobalPosition()) <= this->GetMaxRadius()) {
+            res += tile->percentage;
+            ++count;
+        }
+    }
+    // AllTakenTilesNextToCurrentTilePercent / TakenTilesNextToCurrentTileCount
+    return res / count;
 }
 
 YAML::Node Playable::Serialize() const

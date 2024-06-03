@@ -1,7 +1,7 @@
 #include <Enemy/TakingOverState.h>
 #include <Enemy.h>
 
-/*DecisionTree<Enemy*, bool> TakingOverState::_decisionTree{
+DecisionTree<Enemy*, bool> TakingOverState::_decisionTree{
 	[&](Enemy* enemy) -> bool {
 		// money >= FansPrice && !FansActive && FansCooldown <= 0 && LocalAvg(Enemy) <= 30%
 		return false;
@@ -9,9 +9,9 @@
 	{
 		{
 			true,
-			DecisionTreeLeaf(Enemy*, enemy, 
+			new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
 				FansMeetingAbility(enemy);
-			)
+			})
 		},
 		{
 			false,
@@ -65,35 +65,6 @@
 			)
 		}
 	}
-};*/
-
-DecisionTree<Enemy*, bool> TakingOverState::_decisionTree{
-	DecisionFunc(Enemy*, bool,
-		enemy,
-		return false; // money >= FansPrice && !FansActive && FansCooldown <= 0 && LocalAvg(Enemy) <= 30%
-	),
-	DecisionResults(
-		true,
-		DecisionTreeLeaf(Enemy*,
-			enemy,
-			FansMeetingAbility(enemy);
-		),
-
-		false,
-		DecisionTreeDecisionMaker(Enemy*, bool,
-			DecisionFunc(Enemy*, bool,
-				enemy,
-				return false; // money >= ConcertPrice && !ConcertActive && ConcertCooldown <= 0 && FansActive
-			),
-			DecisionResults(
-				true,
-				DecisionTreeLeaf(Enemy*,
-					enemy,
-					Move(enemy);
-				)
-			)
-		)
-	)
 };
 
 void TakingOverState::AlbumAbility(Enemy* enemy)

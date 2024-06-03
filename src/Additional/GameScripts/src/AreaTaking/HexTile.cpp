@@ -263,7 +263,7 @@ void HexTile::StartTakingOver(Playable* entity) {
 
 void HexTile::StartRemotelyTakingOver(Playable* entity, float multiplier)
 {
-	SPDLOG_INFO("Starting remotely");
+	SPDLOG_INFO("Starting remotely {}", multiplier);
 	if (state != TileState::Occupied && state != TileState::RemoteOccupying) {
 		state = TileState::RemoteOccupying;
 

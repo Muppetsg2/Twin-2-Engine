@@ -57,6 +57,11 @@ void Player::Update() {
         SPDLOG_INFO("Using Album");
         UseAlbum();
     }
+    if (Input::IsKeyPressed(KEY::X))
+    {
+        SPDLOG_INFO("Using Fans");
+        UseFans();
+    }
 
 
     if (!GameManager::instance->gameStarted && hexIndicator) hexIndicator->SetActive(false);
@@ -96,9 +101,10 @@ void Player::Update() {
 
         if (isFansActive) {
             currFansTime -= Time::GetDeltaTime();
-            if (currFansTime < 0.0f) {
+            if (currFansTime <= 0.0f) {
                 currFansCooldown = fansCooldown;
-                currFansTime = 0.0f;
+                //currFansTime = 0.0f;
+                FansEnd();
             }
             //fansTimer->text = std::to_string(static_cast<int>(currFansTime)) + " s";
         }

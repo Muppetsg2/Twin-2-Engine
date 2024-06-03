@@ -25,10 +25,7 @@ private:
     //Button* fansButton;
     PlayerMovement* move;
     bool lost;
-    float currAlbumTime;
-    float currAlbumCooldown;
-    float currFansTime;
-    float currFansCooldown;
+
     Playable* fightingPlayable = nullptr;
     //Coroutine* fansCorountine;
 

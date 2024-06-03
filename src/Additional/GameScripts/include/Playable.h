@@ -58,13 +58,16 @@ public:
     std::vector<float> albumsIncreasingIntervalsCounter;
 #pragma endregion
 
-    float fansTime;
-    float fansCooldown;
-    float currFansTime;
-    float currFansCooldown;
-    float fansRadius = 1.0f;
+#pragma region FansMeetingAbility
+    float fansTime = 10.0f; // parameter
+    float fansCooldown = 10.0f; // parameter
+    float currFansTime = 0.0f;
+    float currFansCooldown = 0.0f;
+    float fansRadius = 3.0f; // parameter
     bool isFansActive = false;
-    float fansRequiredMoney = 10.0f;
+    float fansRequiredMoney = 10.0f; // parameter
+    std::list<HexTile*> tempFansCollider;
+#pragma endregion
 
     std::list<HexTile*> OwnTiles;
     HexTile* CurrTile;
@@ -103,10 +106,13 @@ public:
     void AlbumStoppingTakingOverUpdate();
 #pragma endregion
 
+#pragma region FansMeetingAbility
     void FansControlDraw();
-    void FansFunc();
-    void FansEndFunc();
+    void UseFans();
+    void FansEnd();
     void FansExit();
+#pragma endregion
+
     void RadioStationFunc(float value, float time);
     void RadioStationEndFunc(float value);
     void CheckIfDead(Playable* playable);

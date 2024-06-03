@@ -136,6 +136,10 @@ public:
     
     float GlobalAvg() const;
     float LocalAvg() const;
+    std::vector<HexTile*> GetLocalTiles() const;
+    std::vector<HexTile*> GetLocalTakenTiles() const;
+    std::vector<HexTile*> GetInMoveRangeTiles() const;
+    static std::vector<HexTile*> GetInRangeTiles(HexTile* centerTile, float range);
 
 public:
     virtual YAML::Node Serialize() const override;

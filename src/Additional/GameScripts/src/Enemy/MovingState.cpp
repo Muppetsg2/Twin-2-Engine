@@ -43,13 +43,19 @@ DecisionTree<Enemy*, bool> MovingState::_decisionTree{
 						new DecisionTreeDecisionMaker<Enemy*, bool>(
 							[&](Enemy* enemy) -> bool {
 								// LocalAvg(Enemy) >= 50% && LocalTilesTaken(Enemy) == 6 && !PlayerInMoveRange && !RadioStationInRange
-								// TODO: Local Taken Tiles
-								// TODO: Player In Move Range Analisis
-								// TODO: RadioStation In Move Range Analisis
-								size_t localTakenTiles = 0;
+								std::vector<HexTile*> inMoveRangeTiles = enemy->GetInMoveRangeTiles();
 								bool playerInMoveRange = false;
 								bool radioStationInMoveRange = false;
-								return enemy->LocalAvg() >= 50.f && localTakenTiles == 6 && !playerInMoveRange && !radioStationInMoveRange;
+								for (auto& tile : inMoveRangeTiles) {
+									if (tile->occupyingEntity != nullptr) {
+										playerInMoveRange = true;
+									}
+									if (tile->GetMapHexTile()->type == MapHexTile::HexTileType::RadioStation) {
+										radioStationInMoveRange = true;
+									}
+								}
+								inMoveRangeTiles.clear();
+								return enemy->LocalAvg() >= 50.f && enemy->GetLocalTakenTiles().size() == 6 && !playerInMoveRange && !radioStationInMoveRange;
 							},
 							{
 								{

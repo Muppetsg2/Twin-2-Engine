@@ -5,6 +5,7 @@
 
 using namespace std;
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Physic;
 
 void Playable::Initialize()
@@ -276,18 +277,120 @@ float Playable::LocalAvg() const
     ZoneScoped;
 #endif
 
-    // TODO: POLICZY� ILE JEST TILIE OBOK CURR TILE-a
-    size_t neightboursCount = 6;
+    std::vector<Tilemap::HexagonalTile*> neightbourTiles;
+    neightbourTiles.resize(6);
+    CurrTile->GetMapHexTile()->tile->GetAdjacentTiles(neightbourTiles.data());
     float res = 0.f;
-
-    vec3 currTilePos = CurrTile->GetTransform()->GetGlobalPosition();
-    for (auto& tile : OwnTiles) {
-        if (glm::distance(currTilePos, tile->GetTransform()->GetGlobalPosition()) <= _tilemap->GetDistanceBetweenTiles()) {
-            res += tile->percentage;
+    size_t neightboursCount = 0;
+    for (size_t i = 0; i < 6; ++i) {
+        if (neightbourTiles[i] != nullptr) {
+            ++neightboursCount;
+            HexTile* tile = neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>();
+            if (tile->takenEntity == this) {
+                res += tile->percentage;
+            }
         }
     }
-    // AllTakenTilesNextToCurrentTilePercent / TakenTilesNextToCurrentTileCount
+
+    neightbourTiles.clear();
+    // AllTakenTilesNextToCurrentTilePercent / TilesNextToCurrentTileCount
     return res / neightboursCount;
+}
+
+std::vector<HexTile*> Playable::GetLocalTiles() const {
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    std::vector<HexTile*> tiles;
+
+    std::vector<Tilemap::HexagonalTile*> neightbourTiles;
+    neightbourTiles.resize(6);
+    CurrTile->GetMapHexTile()->tile->GetAdjacentTiles(neightbourTiles.data());
+    for (size_t i = 0; i < 6; ++i) {
+        if (neightbourTiles[i] != nullptr) {
+            tiles.push_back(neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>());
+        }
+    }
+
+    return tiles;
+}
+
+std::vector<HexTile*> Playable::GetLocalTakenTiles() const
+{
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    std::vector<HexTile*> tiles;
+
+    std::vector<Tilemap::HexagonalTile*> neightbourTiles;
+    neightbourTiles.resize(6);
+    CurrTile->GetMapHexTile()->tile->GetAdjacentTiles(neightbourTiles.data());
+    for (size_t i = 0; i < 6; ++i) {
+        if (neightbourTiles[i] != nullptr) {
+            HexTile* tile = neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>();
+            if (tile->takenEntity == this) {
+                tiles.push_back(tile);
+            }
+        }
+    }
+
+    return tiles;
+}
+
+std::vector<HexTile*> Playable::GetInMoveRangeTiles() const
+{
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    return GetInRangeTiles(CurrTile, GetMaxRadius());
+}
+
+std::vector<HexTile*> Playable::GetInRangeTiles(HexTile* centerTile, float range)
+{
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    std::vector<HexTile*> tiles;
+    tiles.push_back(centerTile);
+
+    std::vector<Tilemap::HexagonalTile*> neightbourTiles;
+    neightbourTiles.resize(6);
+    centerTile->GetMapHexTile()->tile->GetAdjacentTiles(neightbourTiles.data());
+    for (size_t i = 0; i < 6; ++i) {
+        if (neightbourTiles[i] != nullptr) {
+            HexTile* tile = neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>();
+            float dist = glm::distance(tile->GetTransform()->GetGlobalPosition(), centerTile->GetTransform()->GetGlobalPosition());
+            if (dist < range) {
+                std::vector<HexTile*> subTiles = GetInRangeTiles(tile, range - dist);
+                tiles.reserve(tiles.size() + subTiles.size());
+                tiles.insert(tiles.end(), subTiles.begin(), subTiles.end());
+            }
+            else if (dist == range) {
+                tiles.push_back(tile);
+            }
+        }
+    }
+    neightbourTiles.clear();
+
+    std::vector<HexTile*> filteredTiles;
+    for (auto& tile : tiles) {
+        bool contains = false;
+        for (auto& filteredTile : filteredTiles) {
+            if (tile == filteredTile) {
+                contains = true;
+            }
+        }
+        if (!contains) {
+            filteredTiles.push_back(tile);
+        }
+    }
+    tiles.clear();
+
+    return filteredTiles;
 }
 
 YAML::Node Playable::Serialize() const

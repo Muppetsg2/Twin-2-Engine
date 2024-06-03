@@ -297,6 +297,15 @@ float Playable::LocalAvg() const
     return res / neightboursCount;
 }
 
+float Playable::FightPowerScore() const {
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    // clamp(GlobalAvg(entity) * 0.25 + LocalAvg(entity) * 0.75, 0, 100)
+    return std::clamp(GlobalAvg() * 0.25f + LocalAvg() * 0.75f, 0.f, 100.f);
+}
+
 std::vector<HexTile*> Playable::GetLocalTiles() const {
 #if TRACY_PROFILER
     ZoneScoped;

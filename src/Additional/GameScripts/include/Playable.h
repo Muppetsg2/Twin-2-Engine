@@ -136,6 +136,7 @@ public:
     
     float GlobalAvg() const;
     float LocalAvg() const;
+    float FightPowerScore() const;
     std::vector<HexTile*> GetLocalTiles() const;
     std::vector<HexTile*> GetLocalTakenTiles() const;
     std::vector<HexTile*> GetInMoveRangeTiles() const;

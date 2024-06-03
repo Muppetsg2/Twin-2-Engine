@@ -6,6 +6,9 @@
 #include <GameManager.h>
 #include <AreaTaking/HexTile.h>
 #include <Generation/MapHexTile.h>
+
+#include <GameTimer.h>
+
 //#include "MoneyPanelController.h"
 class Playable;
 //class HexTile;

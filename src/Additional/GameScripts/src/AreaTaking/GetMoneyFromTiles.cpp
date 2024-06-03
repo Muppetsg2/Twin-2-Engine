@@ -9,9 +9,9 @@ void MoneyGainFromTiles::OnEnable() {
 }
 
 void MoneyGainFromTiles::Initialize() {
-    //GameTimer::Instance().OnDayTicked += [this](int day) {
-    //    UpdateMoney(dynamic_cast<Player*>(playable) != nullptr);
-    //    };
+    GameTimer::Instance()->OnDayTicked += [this](int day) {
+        UpdateMoney(dynamic_cast<Player*>(playable) != nullptr);
+        };
 }
 
 void MoneyGainFromTiles::Update() {

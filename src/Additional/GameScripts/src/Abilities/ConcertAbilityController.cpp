@@ -83,21 +83,10 @@ void ConcertAbilityController::StartCooldown()
     currCooldown = cooldownTime;
 }
 
-void ConcertAbilityController::CreateCooldownCoroutine() {
-    std::this_thread::sleep_for(std::chrono::seconds(static_cast<int>(cooldownTime)));
-
-    canUse = true;
-    //coroutineCooldown = nullptr;
-    //UIControllerConcertAbility::Instance->button.interactable = true;
-}
-
 void ConcertAbilityController::StartPerformingConcert() 
 {
     canUse = false;
     playable->concertUsed++;
-    //if (coroutinePerformingConcert) {
-    //    StopCoroutine(coroutinePerformingConcert);
-    //}
 
     savedTakingOverSpeed = playable->TakeOverSpeed;
     playable->TakeOverSpeed = takingOverSpeed;
@@ -107,12 +96,15 @@ void ConcertAbilityController::StartPerformingConcert()
 
 void ConcertAbilityController::StopPerformingConcert()
 {
-    //coroutinePerformingConcert = nullptr;
     playable->TakeOverSpeed = savedTakingOverSpeed;
 
     StartCooldown();
 }
 
+float ConcertAbilityController::GetCost() const
+{
+    return moneyRequired;
+}
 
 
 YAML::Node ConcertAbilityController::Serialize() const

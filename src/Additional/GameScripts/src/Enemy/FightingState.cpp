@@ -1,6 +1,7 @@
 #include <Enemy/FightingState.h>
 #include <Enemy.h>
 
+// TODO: Get Player Choice
 DecisionTree<Enemy*, FightingState::FightResult> FightingState::_decisionTree{
 	[&](Enemy* enemy) -> FightingState::FightResult {
 		// TODO: Sprawdzenie czy gracz coœ wybra³

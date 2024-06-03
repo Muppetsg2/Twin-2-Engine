@@ -4,7 +4,10 @@
 DecisionTree<Enemy*, bool> TakingOverState::_decisionTree{
 	[&](Enemy* enemy) -> bool {
 		// money >= FansPrice && !FansActive && FansCooldown <= 0 && LocalAvg(Enemy) <= 30%
-		return false;
+		// TODO: Fans Range Tiles Avg
+		// TODO: Get Enemy money
+		float currentMoney = 0.f;
+		return currentMoney >= enemy->fansRequiredMoney && enemy->isFansActive && enemy->fansCooldown <= 0.f && enemy->LocalAvg() <= 30.f;
 	},
 	{
 		{
@@ -18,7 +21,13 @@ DecisionTree<Enemy*, bool> TakingOverState::_decisionTree{
 			new DecisionTreeDecisionMaker<Enemy*, bool>(
 				[&](Enemy* enemy) -> bool {
 					// money >= ConcertPrice && !ConcertActive && ConcertCooldown <= 0 && FansActive
-					return false;
+					// TODO: Get Current Money
+					// TODO: Concert Data
+					float currentMoney = 0.f;
+					float concertPrice = 1.f;
+					bool isConcertActive = true;
+					float concertCooldown = 1.f;
+					return currentMoney >= concertPrice && !isConcertActive && concertCooldown <= 0.f && enemy->isFansActive;
 				},
 				{
 					{
@@ -32,7 +41,10 @@ DecisionTree<Enemy*, bool> TakingOverState::_decisionTree{
 						new DecisionTreeDecisionMaker<Enemy*, bool>(
 							[&](Enemy* enemy) -> bool {
 								// money >= AlbumPrice && AlbumCooldown <= 0 && !AlbumActive && GlobalAvg(Enemy) <= 50%
-								return false;
+								// TODO: Get current Money
+								// TODO: Add Check if album is ready to buy as Playable func
+								float currMoney = 0.f;
+								return currMoney >= enemy->albumRequiredMoney && enemy->albumCooldown <= 0.f && !enemy->isAlbumActive && enemy->GlobalAvg() <= 50.f;
 							},
 							{
 								{
@@ -46,7 +58,9 @@ DecisionTree<Enemy*, bool> TakingOverState::_decisionTree{
 									new DecisionTreeDecisionMaker<Enemy*, bool>(
 										[&](Enemy* enemy) -> bool {
 											// (FansActive && LocalAvg(Enemy) >= 75%) || (!FansActive && CurrTilePercent >= 75%)
-											return true;
+											// TODO: Get if fans is Active
+											bool fansActive = false;
+											return (fansActive && enemy->LocalAvg() >= 75.f) || (!fansActive && enemy->CurrTile->percentage >= 75.f);
 										},
 										{
 											{

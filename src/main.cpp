@@ -97,6 +97,8 @@ using namespace Generation::Generators;
 
 using namespace GameScripts;
 
+#include <processes/Coroutine.h>
+
 #pragma region CAMERA_CONTROLLING
 
 glm::vec3 cameraPos(0.f, 2.f, 5.f);
@@ -279,6 +281,7 @@ int main(int, char**)
     
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
 
+
 #if _DEBUG
     GameEngine::LateRender += []() -> void {
 
@@ -291,9 +294,9 @@ int main(int, char**)
         FrameMarkStart(tracy_RenderingImGui);
 #endif
 
-        //begin_imgui();
-        //render_imgui(); // edit this function to add your own ImGui controls
-        //end_imgui(); // this call effectively renders ImGui
+        begin_imgui();
+        render_imgui(); // edit this function to add your own ImGui controls
+        end_imgui(); // this call effectively renders ImGui
 
 #if TRACY_PROFILER
         FrameMarkEnd(tracy_RenderingImGui);

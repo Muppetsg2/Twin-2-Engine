@@ -8,7 +8,12 @@ using namespace Generation;
 using namespace glm;
 using namespace std;
 
-static std::vector<std::vector<Material>> _coloredHexTileTextures;
+std::vector<std::vector<Material>> HexTile::_coloredHexTileTextures;
+
+float HexTile::_takingStage1 = 30.0f;
+float HexTile::_takingStage2 = 60.0f;
+float HexTile::_takingStage3 = 90.0f;
+
 
 void HexTile::Initialize()
 {
@@ -142,22 +147,29 @@ void HexTile::TakeOver()
 		takeOverSpeed *= remoteMultiplier;
 	}
 
-	if (takenEntity != occupyingEntity) {
+	if (takenEntity && takenEntity != occupyingEntity) {
 		percentage -= Time::GetDeltaTime() * takeOverSpeed;
-		if (percentage <= 0.0f) {
+		if (percentage < _takingStage1) {
 			percentage = 0.0f;
 			if (takenEntity) {
 				takenEntity->OwnTiles.remove(this);
+				takenEntity = nullptr;
 			}
-			takenEntity = occupyingEntity;
-			takenEntity->OwnTiles.push_back(this);
+			//takenEntity = occupyingEntity;
+			//takenEntity->OwnTiles.push_back(this);
 			CheckRoundPattern();
 		}
 	}
 	else {
 		percentage += Time::GetDeltaTime() * takeOverSpeed;
-		if (percentage >= 100.0f) {
+		if (percentage > 100.0f) {
 			percentage = 100.0f;
+		}
+		if (percentage >= _takingStage1)
+		{
+			takenEntity = occupyingEntity;
+			takenEntity->OwnTiles.push_back(this);
+
 		}
 	}
 	UpdateTileColor();
@@ -179,26 +191,23 @@ void HexTile::LoseInfluence()
 void HexTile::UpdateTileColor()
 {
 	//SPDLOG_INFO("Percentage: {}", percentage);
-	if (occupyingEntity)
+	//if (occupyingEntity)
 	{
-		if (percentage < 30.0f)
+		if (percentage < _takingStage1)
 		{
-			_meshRenderer->SetMaterial(0ull, textuesData->_materials[occupyingEntity->colorIdx][0].GetId());
+			_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][0].GetId());
 		}
-		else if (percentage < 60.0f)
+		else if (percentage < _takingStage2)
 		{
-			_meshRenderer->SetMaterial(0ull, textuesData->_materials[occupyingEntity->colorIdx][1].GetId());
-			takenEntity = occupyingEntity;
+			_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][1].GetId());
 		}
-		else if (percentage < 80.0f)
+		else if (percentage < _takingStage3)
 		{
-			_meshRenderer->SetMaterial(0ull, textuesData->_materials[occupyingEntity->colorIdx][2].GetId());
-			takenEntity = occupyingEntity;
+			_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][2].GetId());
 		}
 		else
 		{
-			_meshRenderer->SetMaterial(0ull, textuesData->_materials[occupyingEntity->colorIdx][3].GetId());
-			takenEntity = occupyingEntity;
+			_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][3].GetId());
 		}
 	}
 

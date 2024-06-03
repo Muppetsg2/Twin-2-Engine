@@ -57,6 +57,8 @@ GameObject* GameManager::GeneratePlayer() {
 
     p->patron = playersPatron;
 
+    p->GetGameObject()->GetComponent<MeshRenderer>()->SetMaterial(0ull, _carMaterials[p->colorIdx]);
+
     entities.push_back(p);
 
     return player;
@@ -78,6 +80,7 @@ GameObject* GameManager::GenerateEnemy() {
     e->colorIdx = freeColors[chosen];
     freeColors.erase(freeColors.begin() + chosen);
     //e->colorIdx = chosen;
+    e->GetGameObject()->GetComponent<MeshRenderer>()->SetMaterial(0ull, _carMaterials[e->colorIdx]);
 
     /*float h = Random.Range(0f, 1f);
     float s = Random.Range(.7f, 1f);
@@ -166,16 +169,33 @@ YAML::Node GameManager::Serialize() const
         node["enemyPrefab"] = SceneManager::GetPrefabSaveIdx(enemyPrefab->GetId());
     }
 
+    vector<string> carMaterialsStrings;
+    carMaterialsStrings.reserve(_carMaterials.size());
+
+    const size_t carMaterialsSize = _carMaterials.size();
+    for (size_t index = 0ull; index < carMaterialsSize; ++index)
+    {
+        carMaterialsStrings.push_back(MaterialsManager::GetMaterialName(_carMaterials[index].GetId()));
+    }
+    node["carMaterials"] = carMaterialsStrings;
+
     return node;
 }
 
 bool GameManager::Deserialize(const YAML::Node& node)
 {
-    if (!Component::Deserialize(node))
+    if (!node["carMaterials"] || !Component::Deserialize(node))
         return false;
 
     if (node["enemyPrefab"]) {
         enemyPrefab = PrefabManager::LoadPrefab(node["enemyPrefab"].as<string>());
+    }
+
+    _carMaterials.resize(node["carMaterials"].size());
+    const size_t carMaterialsSize = node["carMaterials"].size();
+    for (size_t index = 0ull; index < carMaterialsSize; ++index)
+    {
+        _carMaterials[index] = MaterialsManager::GetMaterial(node["carMaterials"][index].as<string>());
     }
 
     return true;

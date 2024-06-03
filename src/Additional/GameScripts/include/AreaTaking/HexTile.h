@@ -19,6 +19,10 @@ class Playable;
 
 class HexTile : public Twin2Engine::Core::Component
 {
+	static float _takingStage1;
+	static float _takingStage2;
+	static float _takingStage3;
+
 	static std::vector<std::vector<Twin2Engine::Graphic::Material>> _coloredHexTileTextures;
 	Generation::MapHexTile* _mapHexTile = nullptr;
 	Twin2Engine::Core::MeshRenderer* _meshRenderer = nullptr;

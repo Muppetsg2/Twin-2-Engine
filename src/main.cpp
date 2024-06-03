@@ -97,6 +97,8 @@ using namespace Generation::Generators;
 
 using namespace GameScripts;
 
+#include <processes/Coroutine.h>
+
 #pragma region CAMERA_CONTROLLING
 
 glm::vec3 cameraPos(0.f, 2.f, 5.f);
@@ -278,6 +280,7 @@ int main(int, char**)
     //SceneManager::SaveScene("res/scenes/ToonShading.scene");
     
     Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
+
 
 #if _DEBUG
     GameEngine::LateRender += []() -> void {

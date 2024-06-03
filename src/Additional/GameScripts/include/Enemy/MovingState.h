@@ -15,6 +15,9 @@ private:
 	static void ConcertAbility(Enemy* enemy);
 	static void Move(Enemy* enemy);
 
+	static void ChooseTile(Enemy* enemy);
+	static std::unordered_map<Enemy*, std::pair<size_t, size_t>> _eventsIds;
+
 public:
 	void Enter(Enemy* enemy) override;
 	void Update(Enemy* enemy) override;

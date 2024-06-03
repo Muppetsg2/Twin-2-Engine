@@ -16,29 +16,23 @@ void Enemy::ChangeState(State<Enemy*>* newState) {
     _stateMachine.ChangeState(this, newState);
 }
 
+void Enemy::SetMoveDestination(HexTile* tile)
+{
+    _movement->SetDestination(tile);
+}
+
 void Enemy::Initialize()
 {
-    _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
+    Playable::Initialize();
     _movement = GetGameObject()->GetComponent<EnemyMovement>();
     list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
-    tiles.insert(tiles.begin(), tempList.cbegin(), tempList.cend());
-
-    _movement->OnFindPathError += [&](GameObject* gameObject, HexTile* tile) {
-            PerformMovement();
-            //FinishedMovement(tile);
-        };
-    _movement->OnFinishMoving += [&](GameObject* gameObject, HexTile* tile) {
-        //PerformMovement();
-        FinishedMovement(tile);
-        };
-
+    _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend());
 }
 
 
 void Enemy::OnEnable()
 {
-    SPDLOG_INFO("ENEMY OnEneable");
-    PerformMovement();
+    //PerformMovement();
 }
 
 void Enemy::OnDestroy()
@@ -86,23 +80,23 @@ void Enemy::PerformMovement()
     possible.reserve((1 + _movement->maxSteps) * _movement->maxSteps * 3);
 
     list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
-    tiles.clear();
-    tiles.insert(tiles.begin(), tempList.cbegin(), tempList.cend());
+    _tiles.clear();
+    _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend());
 
-    size_t size = tiles.size();
+    size_t size = _tiles.size();
     float maxRadius = GetMaxRadius();
 
     for (size_t index = 0ull; index < size; ++index)
     {
-        MapHexTile::HexTileType type = tiles[index]->GetMapHexTile()->type;
+        MapHexTile::HexTileType type = _tiles[index]->GetMapHexTile()->type;
         if (type != MapHexTile::HexTileType::Mountain && type != MapHexTile::HexTileType::None)
         {
-            tilePosition = tiles[index]->GetTransform()->GetGlobalPosition();
+            tilePosition = _tiles[index]->GetTransform()->GetGlobalPosition();
             tilePosition.y = 0.0f;
             float distance = glm::distance(globalPosition, tilePosition);
             if (distance <= maxRadius)
             {
-                possible.push_back(tiles[index]);
+                possible.push_back(_tiles[index]);
             }
         }
     }

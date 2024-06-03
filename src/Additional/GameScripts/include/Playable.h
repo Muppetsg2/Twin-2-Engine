@@ -1,5 +1,7 @@
 #pragma once
 
+#include <manager/SceneManager.h>
+
 #include <core/Transform.h>
 #include <core/GameObject.h>
 #include <core/Component.h>
@@ -12,6 +14,8 @@
 #include <MoneyFunctionData.h>
 //using namespace Twin2Engine::Core;
 
+// TILEMAP
+#include <Tilemap/HexagonalTilemap.h>
 class HexTile;
 
 //class MoneyFunctionData {
@@ -22,13 +26,11 @@ class HexTile;
 //};
 
 class Playable : public Twin2Engine::Core::Component {
-
 protected:
+    Tilemap::HexagonalTilemap* _tilemap = nullptr;
     virtual void OnDead() = 0;
 
 public:
-    std::vector<HexTile*> tiles;
-
     struct MinMaxPair {
         float min;
         float max;
@@ -129,3 +131,5 @@ public:
     virtual void DrawEditor() override;
 #endif
 };
+
+#include <AreaTaking/HexTile.h>

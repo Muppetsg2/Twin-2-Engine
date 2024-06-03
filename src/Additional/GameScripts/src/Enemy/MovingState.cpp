@@ -1,6 +1,8 @@
 #include <Enemy/MovingState.h>
 #include <Enemy.h>
+#include <EnemyMovement.h>
 
+// TODO: dodaæ na wykryciu radioStation moveToRadioStation (usprawnia kierunek poruszania i daje powód)
 DecisionTree<Enemy*, bool> MovingState::_decisionTree{
 	[&](Enemy* enemy) -> bool {
 		// money >= albumPrice && GlobalAvg(Enemy) <= 50% && albumCooldown <= 0 && !albumActive
@@ -52,6 +54,7 @@ DecisionTree<Enemy*, bool> MovingState::_decisionTree{
 								{
 									true,
 									new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
+										// IDZIE DO RADIO STACJI
 										Move(enemy);
 									})
 								},
@@ -74,6 +77,7 @@ DecisionTree<Enemy*, bool> MovingState::_decisionTree{
 											{
 												true,
 												new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
+													// IDZIE DO WALKI
 													Fight(enemy);
 												})
 											},
@@ -81,6 +85,7 @@ DecisionTree<Enemy*, bool> MovingState::_decisionTree{
 												false,
 												new DecisionTreeDecisionMaker<Enemy*, bool>(
 													[&](Enemy* enemy) -> bool {
+														// Sprawdzenie do kogo nale¿y CurrTile
 														// ((!EnemyTile && (!PlayerTile || (PlayerTile && Percent <= 50))) || (EnemyTile && Percent <= 50)) || (RadioStation && RadioCooldown <= 0)
 														// TODO: Check if enemy tile
 														// TODO: Check if player tile
@@ -97,12 +102,14 @@ DecisionTree<Enemy*, bool> MovingState::_decisionTree{
 														{
 															true,
 															new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
+																// Zostaje na polu i je przejmuje
 																StartTakingOver(enemy);
 															})
 														},
 														{
 															false,
 															new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
+																// idzie na inne pole
 																Move(enemy);
 															})
 														}
@@ -174,7 +181,47 @@ void MovingState::Move(Enemy* enemy)
 	enemy->ChangeState(&enemy->_movingState);
 }
 
-// TODO: Choose Tile and make decision on Enter
+void MovingState::ChooseTile(Enemy* enemy)
+{
+	vec3 globalPosition = enemy->GetTransform()->GetGlobalPosition();
+	globalPosition.y = 0.0f;
+
+	vec3 tilePosition;
+
+	vector<HexTile*> possible;
+	//possible.reserve((1 + _movement->maxSteps) / 2 * _movement->maxSteps * 6);
+	possible.reserve((1 + enemy->_movement->maxSteps) * enemy->_movement->maxSteps * 3);
+
+	list<HexTile*> tempList = enemy->_tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
+	enemy->_tiles.clear();
+	enemy->_tiles.insert(enemy->_tiles.begin(), tempList.cbegin(), tempList.cend());
+
+	size_t size = enemy->_tiles.size();
+	float maxRadius = enemy->GetMaxRadius();
+
+	for (size_t index = 0ull; index < size; ++index)
+	{
+		MapHexTile::HexTileType type = enemy->_tiles[index]->GetMapHexTile()->type;
+		if (type != MapHexTile::HexTileType::Mountain && type != MapHexTile::HexTileType::None)
+		{
+			tilePosition = enemy->_tiles[index]->GetTransform()->GetGlobalPosition();
+			tilePosition.y = 0.0f;
+			float distance = glm::distance(globalPosition, tilePosition);
+			if (distance <= maxRadius)
+			{
+				possible.push_back(enemy->_tiles[index]);
+			}
+		}
+	}
+
+	SPDLOG_INFO("ENEMY Possible Size: {}", possible.size());
+	HexTile* result = possible[Random::Range(0ull, possible.size() - 1ull)];
+
+	enemy->SetMoveDestination(result);
+}
+
+std::unordered_map<Enemy*, std::pair<size_t, size_t>> MovingState::_eventsIds;
+
 void MovingState::Enter(Enemy* enemy)
 {
 #if TRACY_PROFILER
@@ -182,6 +229,16 @@ void MovingState::Enter(Enemy* enemy)
 #endif
 
 	SPDLOG_INFO("Enter Moving State");
+	
+	size_t ofpeId = (enemy->_movement->OnFindPathError += [&](GameObject* gameObject, HexTile* tile) {
+		ChooseTile(enemy);
+	});
+	size_t ofmId = (enemy->_movement->OnFinishMoving += [&](GameObject* gameObject, HexTile* tile) {
+		enemy->FinishedMovement(tile);
+		_decisionTree.ProcessNode(enemy);
+	});
+
+	_eventsIds[enemy] = { ofpeId, ofmId };
 }
 
 void MovingState::Update(Enemy* enemy)
@@ -201,4 +258,7 @@ void MovingState::Exit(Enemy* enemy)
 #endif
 
 	SPDLOG_INFO("Exit Moving State");
+	enemy->_movement->OnFindPathError -= _eventsIds[enemy].first;
+	enemy->_movement->OnFinishMoving -= _eventsIds[enemy].second;
+	_eventsIds.erase(enemy);
 }

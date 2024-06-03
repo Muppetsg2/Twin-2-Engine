@@ -1,5 +1,3 @@
-#include "Playable.h"
-#include "Playable.h"
 #include <Playable.h>
 
 #include <AreaTaking/HexTile.h>
@@ -7,9 +5,11 @@
 
 using namespace std;
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Manager;
 
 void Playable::Initialize()
 {
+    _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
     if (patron->patronBonus == PatronBonus::ABILITIES_COOLDOWN) {
         albumCooldown *= patron->GetBonus() / 100.0f;
         fansCooldown *= patron->GetBonus() / 100.0f;
@@ -237,11 +237,11 @@ float Playable::GlobalAvg() const
 #endif
 
     float res = 0.f;
-    for (auto& tile : tiles) {
+    for (auto& tile : OwnTiles) {
         res += tile->percentage;
     }
     // AllTakenTilesPercent / TakenTilesCount
-    return res / tiles.size();
+    return res / OwnTiles.size();
 }
 
 float Playable::LocalAvg() const
@@ -250,24 +250,23 @@ float Playable::LocalAvg() const
     ZoneScoped;
 #endif
 
+    // TODO: POLICZYÆ ILE JEST TILIE OBOK CURR TILE-a
+    size_t neightboursCount = 6;
     float res = 0.f;
-    size_t count = 0;
 
     vec3 currTilePos = CurrTile->GetTransform()->GetGlobalPosition();
-    for (auto& tile : tiles) {
-        // TODO: Zrobiæ by by³o liczone dla s¹siadów a nie na odleg³oœæ ruchu
-        if (glm::distance(currTilePos, tile->GetTransform()->GetGlobalPosition()) <= this->GetMaxRadius()) {
+    for (auto& tile : OwnTiles) {
+        if (glm::distance(currTilePos, tile->GetTransform()->GetGlobalPosition()) <= _tilemap->GetDistanceBetweenTiles()) {
             res += tile->percentage;
-            ++count;
         }
     }
     // AllTakenTilesNextToCurrentTilePercent / TakenTilesNextToCurrentTileCount
-    return res / count;
+    return res / neightboursCount;
 }
 
 YAML::Node Playable::Serialize() const
 {
-    return YAML::Node();
+    return Component::Serialize();
 }
 
 bool Playable::Deserialize(const YAML::Node& node)

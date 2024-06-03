@@ -1,11 +1,5 @@
 #pragma once 
 
-#include <manager/SceneManager.h>
-
-// TILEMAP
-#include <Tilemap/HexagonalTilemap.h>
-#include <AreaTaking/HexTile.h>
-
 // CORE
 #include <core/Random.h>
 
@@ -24,8 +18,8 @@ class EnemyMovement;
 using namespace Twin2Engine::Core;
 
 class Enemy : public Playable {
-	Tilemap::HexagonalTilemap* _tilemap = nullptr;
 	EnemyMovement* _movement = nullptr;
+	std::vector<HexTile*> _tiles;
 
 	// GENERATIVE PARAMETERS
 	float _noteLuck = 50.f;
@@ -46,6 +40,7 @@ class Enemy : public Playable {
 	friend class RadioStationState;
 
 	void ChangeState(State<Enemy*>* newState);
+	void SetMoveDestination(HexTile* tile);
 
 public:
 

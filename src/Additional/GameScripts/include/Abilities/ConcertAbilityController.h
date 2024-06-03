@@ -27,7 +27,6 @@ private:
 
     // Cooldown
     void StartCooldown();
-    void CreateCooldownCoroutine();
 
     // Components
     Playable* playable;
@@ -40,8 +39,8 @@ private:
     // Performing Concert
     void StartPerformingConcert();
     void StopPerformingConcert();
-    void CreatePerformingConcertCoroutine();
-    void TakeGround();
+
+    float GetCost() const;
 
     virtual YAML::Node Serialize() const override;
     virtual bool Deserialize(const YAML::Node& node) override;

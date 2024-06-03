@@ -1372,14 +1372,14 @@ void ModelsManager::DrawEditor(bool* p_open)
     std::list<size_t> clicked = std::list<size_t>();
     clicked.clear();
     if (node_open) {
-        int i = 0;
+        size_t i = 0;
         for (auto& item : _modelsPaths) {
 
             if (std::regex_match(item.second, std::regex("[{]\\w+[_](?:GENERATED)[_]\\d+[}]"))) continue;
 
             std::string n = GetModelName(item.second);
             ImGui::BulletText(n.c_str());
-            ImGui::SameLine(ImGui::GetContentRegionAvail().x - 30);
+            ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
             if (ImGui::RemoveButton(std::string("##Remove Models Manager").append(std::to_string(i)).c_str())) {
                 clicked.push_back(item.first);
             }

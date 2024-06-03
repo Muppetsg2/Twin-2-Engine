@@ -17,15 +17,16 @@ class MoneyGainFromTiles : public Twin2Engine::Core::Component {
 public:
     float gainingInterval = 1.0f;
     float moneyBaseFactor = 1.0f;
-    float money = 0;
+    float money = 0.0f;
 
     virtual void Initialize() override;
-    virtual void OnEnable() override;
     virtual void Update() override;
+    virtual void OnDestroy() override;
     bool SpendMoney(float amount);
 
 private:
     Playable* playable;
+    size_t eventIdOnDayTicked;
 
     float GetTileTypeFactor(Generation::MapHexTile::HexTileType tileType);
     float GainMoneyFromTile(HexTile* tile);

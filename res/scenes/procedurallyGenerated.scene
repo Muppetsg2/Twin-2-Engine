@@ -826,6 +826,13 @@ GameObjects:
     components:
       - id: 103
         enabled: true
+        type: GameTimer
+        secondsPerDay: 1
+        daysPerWeek: 7
+        weeksPerMonth: 4
+        monthsPerYear: 12
+      - id: 104
+        enabled: true
         type: GameManager
         enemyPrefab: res/prefabs/Enemy.prefab
         carMaterials:

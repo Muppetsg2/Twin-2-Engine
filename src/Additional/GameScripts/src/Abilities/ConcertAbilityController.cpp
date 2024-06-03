@@ -111,6 +111,7 @@ YAML::Node ConcertAbilityController::Serialize() const
 {
     YAML::Node node = Component::Serialize();
 
+    node["type"] = "ConcertAbilityController";
     node["lastingTime"] = lastingTime;
     node["cooldownTime"] = cooldownTime;
     node["moneyRequired"] = moneyRequired;

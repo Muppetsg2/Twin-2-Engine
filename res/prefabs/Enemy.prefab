@@ -124,3 +124,8 @@ Root:
       moneyRequired: 10
       cooldownTime: 5
       takingOverSpeed: 50
+    - id: 7
+      enabled: true
+      type: MoneyGainFromTiles
+      gainingInterval: 1
+      moneyBaseFactor: 1

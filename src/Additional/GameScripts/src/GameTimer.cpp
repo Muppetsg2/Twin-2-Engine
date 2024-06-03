@@ -9,9 +9,6 @@ int GameTimer::highestYearsCounter = 0;
 GameTimer* GameTimer::instance = nullptr;
 
 GameTimer* GameTimer::Instance() {
-    if (instance == nullptr) {
-        instance = new GameTimer();
-    }
     return instance;
 }
 
@@ -35,12 +32,12 @@ void GameTimer::Initialize() {
         instance = this;
     }
 
-    SetEnable(false);
+    //SetEnable(false);
 }
 
-void GameTimer::Update(float deltaTime) {
+void GameTimer::Update() {
     if (!GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
-        secondsCounter += deltaTime;
+        secondsCounter += Time::GetDeltaTime();
         if (secondsCounter >= secondsPerDay) {
             secondsCounter -= secondsPerDay;
             daysCounter++;
@@ -62,7 +59,7 @@ void GameTimer::Update(float deltaTime) {
                 
                 OnWeekTicked(weeksCounter);
             }
-            
+            SPDLOG_INFO("Callng OnDayTicked");
             OnDayTicked(daysCounter);
         }
     }
@@ -95,3 +92,61 @@ void GameTimer::SaveIfHighest() {
         highestYearsCounter = yearsCounter;
     }
 }
+
+YAML::Node GameTimer::Serialize() const
+{
+    YAML::Node node = Component::Serialize();
+    
+    node["type"] = "GameTimer";
+    node["secondsPerDay"] = secondsPerDay;
+    node["daysPerWeek"] = daysPerWeek;
+    node["weeksPerMonth"] = weeksPerMonth;
+    node["monthsPerYear"] = monthsPerYear;
+
+    return node;
+}
+
+bool GameTimer::Deserialize(const YAML::Node& node)
+{
+    if (!node["secondsPerDay"] && !node["daysPerWeek"] && !node["weeksPerMonth"] && !node["monthsPerYear"] && !Component::Deserialize(node))
+        return false;
+
+    secondsPerDay = node["secondsPerDay"].as<float>();
+    daysPerWeek = node["daysPerWeek"].as<float>();
+    weeksPerMonth = node["weeksPerMonth"].as<float>();
+    monthsPerYear = node["monthsPerYear"].as<float>();
+
+    return true;
+}
+
+#if _DEBUG
+bool GameTimer::DrawInheritedFields()
+{
+    if (Twin2Engine::Core::Component::DrawInheritedFields()) return true;
+
+    string id = string(std::to_string(this->GetId()));
+
+    ImGui::InputInt(string("SecondsPerDay##").append(id).c_str(), &secondsPerDay);
+    ImGui::InputInt(string("DaysPerWeek##").append(id).c_str(), &daysPerWeek);
+    ImGui::InputInt(string("WeeksPerMonth##").append(id).c_str(), &weeksPerMonth);
+    ImGui::InputInt(string("MonthsPerYear##").append(id).c_str(), &monthsPerYear);
+
+    ImGui::Text("secondsCounter: %d", secondsCounter);
+    ImGui::Text("daysCounter: %d", daysCounter);
+    ImGui::Text("weeksCounter: %d", weeksCounter);
+    ImGui::Text("monthsCounter: %d", monthsCounter);
+    ImGui::Text("yearsCounter: %d", yearsCounter);
+
+    return false;
+}
+
+void GameTimer::DrawEditor()
+{
+    string id = string(std::to_string(this->GetId()));
+    string name = string("GameTimer##Component").append(id);
+    if (ImGui::CollapsingHeader(name.c_str()))
+    {
+        DrawInheritedFields();
+    }
+}
+#endif

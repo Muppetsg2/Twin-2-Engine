@@ -329,7 +329,7 @@ void GameObject::DrawEditor()
 
 	ImGui::SameLine();
 
-	if (ImGui::Button(string("Remove##GO").append(id).c_str())) {
+	if (ImGui::RemoveButton(string("##Remove GO").append(id).c_str())) {
 		Manager::SceneManager::DestroyGameObject(this);
 		return;
 	}

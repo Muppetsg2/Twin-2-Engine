@@ -125,8 +125,8 @@ bool MeshRenderer::DrawInheritedFields()
 			if (type == 0) v = ImGui::IsItemActive() && !ImGui::IsItemHovered();
 
 			if (type == 1) {
-				ImGui::SameLine(ImGui::GetContentRegionAvail().x - 30);
-				if (ImGui::Button(string("Remove##").append(id).append(std::to_string(i)).c_str())) {
+				ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
+				if (ImGui::Button(string("##Remove").append(id).append(std::to_string(i)).c_str())) {
 					clicked.push_back(i);
 				}
 			}

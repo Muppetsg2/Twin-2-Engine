@@ -279,9 +279,9 @@ void MaterialsManager::DrawEditor(bool* p_open)
 		for (auto& item : _materialsPaths) {
 			std::string n = GetMaterialName(item.first);
 			ImGui::BulletText(n.c_str());
-			ImGui::SameLine(ImGui::GetContentRegionAvail().x - 30);
+			ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
 			// TODO: DODAC PRZYCISK EDIT
-			if (ImGui::Button(std::string("Remove##Materials Manager").append(std::to_string(i)).c_str())) {
+			if (ImGui::RemoveButton(std::string("##Remove Materials Manager").append(std::to_string(i)).c_str())) {
 				clicked.push_back(item.first);
 			}
 			++i;

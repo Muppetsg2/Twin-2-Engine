@@ -725,7 +725,7 @@ void MeshRenderingManager::UpdateQueues()
 
 				meshPair.second.renderedCount = 0u;
 
-				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); index++)
+				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); ++index)
 				{
 					if (meshPair.second.meshRenderers[index]->GetGameObject()->GetActive())
 					{
@@ -780,11 +780,11 @@ void MeshRenderingManager::UpdateQueues()
 				}
 
 				_depthMapQueueStatic[meshPair.first].renderedCount += meshPair.second.renderedCount;
-				//_depthMapQueueStatic[meshPair.first].rendered.insert(_depthMapQueueStatic[meshPair.first].rendered.cend(), meshPair.second.rendered.begin(), meshPair.second.rendered.end());
-				for (const auto& element : meshPair.second.rendered)
-				{
-					_depthMapQueueStatic[meshPair.first].rendered.push_back(element);
-				}
+				_depthMapQueueStatic[meshPair.first].rendered.insert(_depthMapQueueStatic[meshPair.first].rendered.cend(), meshPair.second.rendered.begin(), meshPair.second.rendered.end());
+				//for (const auto& element : meshPair.second.rendered)
+				//{
+				//	_depthMapQueueStatic[meshPair.first].rendered.push_back(element);
+				//}
 			}
 		}
 	}
@@ -814,7 +814,7 @@ void MeshRenderingManager::UpdateQueues()
 
 				meshPair.second.renderedCount = 0u;
 
-				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); index++)
+				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); ++index)
 				{
 					if (meshPair.second.meshRenderers[index]->GetGameObject()->GetActive())
 					{
@@ -894,7 +894,7 @@ void MeshRenderingManager::UpdateQueues()
 				meshPair.second.rendered.clear();
 				meshPair.second.renderedCount = 0u;
 
-				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); index++)
+				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); ++index)
 				{
 					if (meshPair.second.meshRenderers[index]->IsTransformChanged())
 					{
@@ -989,7 +989,7 @@ void MeshRenderingManager::UpdateQueues()
 				meshPair.second.rendered.clear();
 				meshPair.second.renderedCount = 0u;
 
-				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); index++)
+				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); ++index)
 				{
 					if (meshPair.second.meshRenderers[index]->IsTransformChanged())
 					{

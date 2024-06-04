@@ -21,7 +21,6 @@ const char* const tracy_RenderingImGui = "RenderingImGui";
 #include <PlaneGenerator.h>
 #include <UIScripts/MinigameManager.h>
 
-#include <Abilities/ConcertAbilityController.h>
 
 // TILEMAP
 #include <Tilemap/HexagonalTilemap.h>
@@ -97,6 +96,9 @@ using namespace Generation::Generators;
 #include <Player.h>
 #include <Enemy.h>
 #include <EnemyMovement.h>
+#include <AreaTaking/GetMoneyFromTiles.h>
+#include <GameTimer.h>
+#include <Abilities/ConcertAbilityController.h>
 
 using namespace GameScripts;
 
@@ -258,6 +260,8 @@ int main(int, char**)
     ADD_COMPONENT("EnemyMovement", EnemyMovement);
 
     ADD_COMPONENT("ConcertAbilityController", ConcertAbilityController);
+    ADD_COMPONENT("MoneyGainFromTiles", MoneyGainFromTiles);
+    ADD_COMPONENT("GameTimer", GameTimer);
 
 #pragma region GAME_SCRIPTS_COMPONENTS
 

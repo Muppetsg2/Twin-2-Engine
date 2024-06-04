@@ -157,7 +157,7 @@ void MinigameManager::PerformTurn()
 			break;
 		}
 	}
-	else if (drawchance > (enemyLuckPoint + enemy->paperRockScisorsDrawLuck)) {
+	else if (chance > (enemyLuckPoint + enemy->paperRockScisorsDrawLuck)) {
 		switch (playerChoice) {
 		case Choice::LAUNCHPAD:
 			enemyChoice = Choice::DRUM;
@@ -191,27 +191,27 @@ void MinigameManager::PerformTurn()
 		enemyChoice = playerChoice;
 		switch (playerChoice) {
 		case Choice::LAUNCHPAD:
-			enemyChoice = Choice::DRUM;
-			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
-			EnemySelectionImage->SetColor(glm::vec4(1.0f));
-			PlayerSelectionImage->SetSprite("launchpad");
-			EnemySelectionImage->SetSprite("drum");
-			break;
-
-		case Choice::GUITAR:
 			enemyChoice = Choice::LAUNCHPAD;
 			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
 			EnemySelectionImage->SetColor(glm::vec4(1.0f));
-			PlayerSelectionImage->SetSprite("guitar");
+			PlayerSelectionImage->SetSprite("launchpad");
 			EnemySelectionImage->SetSprite("launchpad");
 			break;
 
-		case Choice::DRUM:
+		case Choice::GUITAR:
 			enemyChoice = Choice::GUITAR;
+			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
+			EnemySelectionImage->SetColor(glm::vec4(1.0f));
+			PlayerSelectionImage->SetSprite("guitar");
+			EnemySelectionImage->SetSprite("guitar");
+			break;
+
+		case Choice::DRUM:
+			enemyChoice = Choice::DRUM;
 			PlayerSelectionImage->SetColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 			EnemySelectionImage->SetColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 			PlayerSelectionImage->SetSprite("drum");
-			EnemySelectionImage->SetSprite("guitar");
+			EnemySelectionImage->SetSprite("drum");
 			break;
 		}
 	}

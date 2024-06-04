@@ -1,26 +1,26 @@
 #include <Abilities/ConcertAbilityController.h>
 
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Manager;
 
 void ConcertAbilityController::Initialize() {
     playable = GetGameObject()->GetComponent<Playable>();
     money = GetGameObject()->GetComponent<MoneyGainFromTiles>();
-
-    startMoneyRequired = moneyRequired;
-
-    //UIControllerConcertAbility::Instance->OnUseAbilityClicked = std::bind(&ConcertAbilityController::Use, this);
+    usedMoneyRequired = moneyRequired;
 
     //if (playable->patron->patronBonus == PatronBonus::AbilitiesCooldown) {
     //    cooldownTime *= playable->patron->GetBonus() / 100.0f;
     //}
 }
 
+void ConcertAbilityController::OnDestroy() {
+
+}
+
 void ConcertAbilityController::Update() {
     if (!playable->OwnTiles.empty()) {
-        //moneyRequired = moneyFunction->GetValue(playable->OwnTiles.size() - 1, startMoneyRequired);
+        usedMoneyRequired = moneyFunction->GetValue(playable->OwnTiles.size() - 1, moneyRequired);
     }
-
-    //UIControllerConcertAbility::Instance->text.text = "Concert\n" + std::to_string(moneyRequired) + "$";
 
     if (currTimerTime > 0.0f) {
         currTimerTime -= Time::GetDeltaTime();
@@ -28,33 +28,13 @@ void ConcertAbilityController::Update() {
             currTimerTime = 0.0f;
             StopPerformingConcert();
         }
-
-        //if (coroutineCooldown) {
-        //    UIControllerConcertAbility::Instance->timerText.text = "Cooldown: " + std::to_string(static_cast<int>(currTimerTime)) + " s";
-        //}
-        //else {
-        //    UIControllerConcertAbility::Instance->timerText.text = std::to_string(static_cast<int>(currTimerTime)) + " s";
-        //}
-        //UIControllerConcertAbility::Instance->button.interactable = false;
-        //UIControllerConcertAbility::Instance->timerText.gameObject.SetActive(true);
     }
-    //else {
-    //    UIControllerConcertAbility::Instance->timerText.gameObject.SetActive(false);
-    //    if (money->money < moneyRequired) {
-    //        UIControllerConcertAbility::Instance->button.interactable = false;
-    //    }
-    //    else {
-    //        UIControllerConcertAbility::Instance->button.interactable = true;
-    //        if (Input::GetKey(KeyCode::X)) {
-    //            Use();
-    //        }
-    //    }
-    //}
     if (currCooldown > 0.0f)
     {
         currCooldown -= Time::GetDeltaTime();
         if (currCooldown <= 0.0f)
         {
+            currCooldown = 0.0f;
             canUse = true;
         }
     }
@@ -67,15 +47,17 @@ void ConcertAbilityController::Update() {
 
 }
 
-void ConcertAbilityController::Use() 
+bool ConcertAbilityController::Use() 
 {
-    //if (canUse && money->SpendMoney(moneyRequired)) 
+    SPDLOG_INFO("Trying use ConcertAbility");
+    if (canUse && money->SpendMoney(usedMoneyRequired))
     {
-        StartPerformingConcert();
+        SPDLOG_INFO("Using ConcertAbility");
 
-        //UIControllerConcertAbility::Instance->button.interactable = false;
-        currTimerTime = lastingTime;
+        StartPerformingConcert();
+        return true;
     }
+    return false;
 }
 
 void ConcertAbilityController::StartCooldown() 
@@ -87,11 +69,10 @@ void ConcertAbilityController::StartPerformingConcert()
 {
     canUse = false;
     playable->concertUsed++;
+    currTimerTime = lastingTime;
 
     savedTakingOverSpeed = playable->TakeOverSpeed;
     playable->TakeOverSpeed = takingOverSpeed;
-
-    //coroutinePerformingConcert = std::async(std::launch::async, &ConcertAbilityController::CreatePerformingConcertCoroutine, this);
 }
 
 void ConcertAbilityController::StopPerformingConcert()
@@ -103,18 +84,29 @@ void ConcertAbilityController::StopPerformingConcert()
 
 float ConcertAbilityController::GetCost() const
 {
-    return moneyRequired;
+    return usedMoneyRequired;
 }
 
+float ConcertAbilityController::GetAbilityRemainingTime() const
+{
+    return currTimerTime;
+}
+
+float ConcertAbilityController::GetCooldownRemainingTime() const
+{
+    return currCooldown;
+}
 
 YAML::Node ConcertAbilityController::Serialize() const
 {
     YAML::Node node = Component::Serialize();
 
+    node["type"] = "ConcertAbilityController";
     node["lastingTime"] = lastingTime;
     node["cooldownTime"] = cooldownTime;
     node["moneyRequired"] = moneyRequired;
     node["takingOverSpeed"] = takingOverSpeed;
+    node["moneyFunction"] = ScriptableObjectManager::GetPath(moneyFunction->GetId());
 
     return node;
 }
@@ -128,6 +120,7 @@ bool ConcertAbilityController::Deserialize(const YAML::Node& node)
     cooldownTime = node["cooldownTime"].as<float>();
     moneyRequired = node["moneyRequired"].as<float>();
     takingOverSpeed = node["takingOverSpeed"].as<float>();
+    moneyFunction = static_cast<MoneyFunctionData*>(ScriptableObjectManager::Load(node["moneyFunction"].as<string>()));
 
     return true;
 }

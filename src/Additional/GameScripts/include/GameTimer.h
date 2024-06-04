@@ -14,7 +14,7 @@ private:
     int daysCounter = 1;
     int weeksCounter = 1;
     int monthsCounter = 1;
-    int yearsCounter = 0;
+    int yearsCounter = 1;
 
     static int highestDaysCounter;
     static int highestWeeksCounter;
@@ -37,8 +37,8 @@ public:
 
     float GetTotalSeconds() const;
 
-    void Initialize();
-    void Update(float deltaTime);
+    virtual void Initialize() override;
+    virtual void Update() override;
     void ResetTimer();
     void StartTimer();
     void StopTimer();
@@ -50,4 +50,13 @@ public:
     Twin2Engine::Tools::EventHandler<int> OnMonthTicked;
     Twin2Engine::Tools::EventHandler<int> OnYearTicked;
 
+    virtual YAML::Node Serialize() const override;
+    virtual bool Deserialize(const YAML::Node& node) override;
+
+#if _DEBUG
+protected:
+    virtual bool DrawInheritedFields() override;
+public:
+    virtual void DrawEditor() override;
+#endif
 };

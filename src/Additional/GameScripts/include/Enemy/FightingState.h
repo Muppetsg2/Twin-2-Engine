@@ -12,7 +12,6 @@ private:
 
 	static DecisionTree<Enemy*, FightResult> _decisionTree;
 
-	static float SumTiles(Playable* entity);
 	static float Score(Enemy* enemy, Playable* entity);
 
 	static void Draw(Enemy* enemy);

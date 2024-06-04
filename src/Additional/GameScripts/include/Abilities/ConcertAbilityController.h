@@ -6,24 +6,13 @@
 #include <AreaTaking/GetMoneyFromTiles.h>
 
 class ConcertAbilityController : public Twin2Engine::Core::Component {
-public:
-
-    void Initialize();
-    void Update();
-    void Use();
-
 private:
-    // Component Parameters
-    float lastingTime = 10.0f;
-    float moneyRequired = 10.0f;
-    float cooldownTime = 5.0f;
-    float takingOverSpeed = 50.0f;
 
     MoneyFunctionData* moneyFunction;
 
     float currTimerTime = 0.0f;
     float currCooldown = 0.0f;
-    float startMoneyRequired = 0.0f;
+    float usedMoneyRequired = 0.0f;
 
     // Cooldown
     void StartCooldown();
@@ -40,7 +29,21 @@ private:
     void StartPerformingConcert();
     void StopPerformingConcert();
 
+public:
+    // Component Parameters
+    float lastingTime = 10.0f;
+    float moneyRequired = 10.0f;
+    float cooldownTime = 5.0f;
+    float takingOverSpeed = 50.0f;
+
+    void Initialize();
+    void OnDestroy();
+    void Update();
+    bool Use();
+
     float GetCost() const;
+    float GetAbilityRemainingTime() const;
+    float GetCooldownRemainingTime() const;
 
     virtual YAML::Node Serialize() const override;
     virtual bool Deserialize(const YAML::Node& node) override;

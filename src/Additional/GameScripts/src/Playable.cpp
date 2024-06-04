@@ -1,16 +1,18 @@
-#include "Playable.h"
-#include "Playable.h"
 #include <Playable.h>
 
 #include <AreaTaking/HexTile.h>
 #include <Generation/MapHexTile.h>
 
+#include <manager/ScriptableObjectManager.h>
+
 using namespace std;
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Physic;
 
 void Playable::Initialize()
 {
+    _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
     //if (patron->patronBonus == PatronBonus::ABILITIES_COOLDOWN) {
     //    albumCooldown *= patron->GetBonus() / 100.0f;
     //    fansCooldown *= patron->GetBonus() / 100.0f;
@@ -30,8 +32,8 @@ void Playable::InitPrices() {
 
 void Playable::UpdatePrices() {
     if (!OwnTiles.empty()) {
-        //fansRequiredMoney = functionData->GetValue(OwnTiles.size() - 1, fansStartMoney);
-        //albumRequiredMoney = functionData->GetValue(OwnTiles.size() - 1, albumStartMoney);
+        fansRequiredMoney = moneyFunction->GetValue(OwnTiles.size() - 1, fansStartMoney);
+        albumRequiredMoney = moneyFunction->GetValue(OwnTiles.size() - 1, albumStartMoney);
     }
 }
 
@@ -196,6 +198,24 @@ void Playable::UseFans() {
 
     isFansActive = true;
 }
+void Playable::UpdateFans()
+{
+    if (currFansTime > 0.0f) {
+        currFansTime -= Time::GetDeltaTime();
+        if (currFansTime <= 0.0f) {
+            currFansCooldown = fansCooldown;
+            currFansTime = 0.0f;
+            FansEnd();
+        }
+    }
+    else if (currFansCooldown > 0.0f)
+    {
+        currFansCooldown -= Time::GetDeltaTime();
+        if (currFansCooldown <= 0.0f) {
+            currFansCooldown = 0.0f;
+        }
+    }
+}
 
 void Playable::FansEnd() {
     SPDLOG_INFO("Ending Fans");
@@ -263,12 +283,16 @@ float Playable::GlobalAvg() const
     ZoneScoped;
 #endif
 
+    if (OwnTiles.size() == 0) {
+        return 0.f;
+    }
+
     float res = 0.f;
-    for (auto& tile : tiles) {
+    for (auto& tile : OwnTiles) {
         res += tile->percentage;
     }
     // AllTakenTilesPercent / TakenTilesCount
-    return res / tiles.size();
+    return res / OwnTiles.size();
 }
 
 float Playable::LocalAvg() const
@@ -277,28 +301,204 @@ float Playable::LocalAvg() const
     ZoneScoped;
 #endif
 
-    float res = 0.f;
-    size_t count = 0;
+    if (CurrTile == nullptr) {
+        return 0.f;
+    }
 
-    vec3 currTilePos = CurrTile->GetTransform()->GetGlobalPosition();
-    for (auto& tile : tiles) {
-        // TODO: Zrobiæ by by³o liczone dla s¹siadów a nie na odleg³oœæ ruchu
-        if (glm::distance(currTilePos, tile->GetTransform()->GetGlobalPosition()) <= this->GetMaxRadius()) {
-            res += tile->percentage;
-            ++count;
+    std::vector<Tilemap::HexagonalTile*> neightbourTiles;
+    neightbourTiles.resize(6);
+    CurrTile->GetMapHexTile()->tile->GetAdjacentTiles(neightbourTiles.data());
+    float res = 0.f;
+    size_t neightboursCount = 0;
+    for (size_t i = 0; i < 6; ++i) {
+        if (neightbourTiles[i] != nullptr) {
+            if (neightbourTiles[i]->GetGameObject() != nullptr) {
+                ++neightboursCount;
+                HexTile* tile = neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>();
+                if (tile->takenEntity == this) {
+                    res += tile->percentage;
+                }
+            }
         }
     }
-    // AllTakenTilesNextToCurrentTilePercent / TakenTilesNextToCurrentTileCount
+
+    neightbourTiles.clear();
+    // AllTakenTilesNextToCurrentTilePercent / TilesNextToCurrentTileCount
+    return res / neightboursCount;
+}
+
+float Playable::FansRangeAvg() const
+{
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    float res = 0.f;
+    std::vector<HexTile*> inFansRangeTiles = GetFansRangeTiles();
+    for (auto& tile : inFansRangeTiles) {
+        if (tile->takenEntity == this) {
+            res += tile->percentage;
+        }
+    }
+    size_t count = inFansRangeTiles.size();
+    inFansRangeTiles.clear();
+
+    if (count == 0) {
+        return 0.f;
+    }
+
     return res / count;
+}
+
+float Playable::FightPowerScore() const {
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    // clamp(GlobalAvg(entity) * 0.25 + LocalAvg(entity) * 0.75, 0, 100)
+    return std::clamp(GlobalAvg() * 0.25f + LocalAvg() * 0.75f, 0.f, 100.f);
+}
+
+std::vector<HexTile*> Playable::GetLocalTiles() const {
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    std::vector<HexTile*> tiles;
+
+    if (CurrTile == nullptr) {
+        return tiles;
+    }
+
+    std::vector<Tilemap::HexagonalTile*> neightbourTiles;
+    neightbourTiles.resize(6);
+    CurrTile->GetMapHexTile()->tile->GetAdjacentTiles(neightbourTiles.data());
+    for (size_t i = 0; i < 6; ++i) {
+        if (neightbourTiles[i] != nullptr) {
+            if (neightbourTiles[i]->GetGameObject() != nullptr) {
+                tiles.push_back(neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>());
+            }
+        }
+    }
+
+    return tiles;
+}
+
+std::vector<HexTile*> Playable::GetLocalTakenTiles() const
+{
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    std::vector<HexTile*> tiles;
+
+    if (CurrTile == nullptr) {
+        return tiles;
+    }
+
+    std::vector<Tilemap::HexagonalTile*> neightbourTiles;
+    neightbourTiles.resize(6);
+    CurrTile->GetMapHexTile()->tile->GetAdjacentTiles(neightbourTiles.data());
+    for (size_t i = 0; i < 6; ++i) {
+        if (neightbourTiles[i] != nullptr) {
+            if (neightbourTiles[i]->GetGameObject() != nullptr) {
+                HexTile* tile = neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>();
+                if (tile->takenEntity == this) {
+                    tiles.push_back(tile);
+                }
+            }
+        }
+    }
+
+    return tiles;
+}
+
+std::vector<HexTile*> Playable::GetInMoveRangeTiles() const
+{
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    return GetInRangeTiles(CurrTile, GetMaxRadius());
+}
+
+std::vector<HexTile*> Playable::GetFansRangeTiles() const
+{
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    return GetInRangeTiles(CurrTile, fansRadius);
+}
+
+std::vector<HexTile*> Playable::GetInRangeTiles(HexTile* centerTile, float range)
+{
+#if TRACY_PROFILER
+    ZoneScoped;
+#endif
+
+    if (centerTile == nullptr) {
+        return std::vector<HexTile*>();
+    }
+
+    std::vector<HexTile*> tiles;
+    tiles.push_back(centerTile);
+
+    std::vector<Tilemap::HexagonalTile*> neightbourTiles;
+    neightbourTiles.resize(6);
+    centerTile->GetMapHexTile()->tile->GetAdjacentTiles(neightbourTiles.data());
+    for (size_t i = 0; i < 6; ++i) {
+        if (neightbourTiles[i] != nullptr) {
+            if (neightbourTiles[i]->GetGameObject() != nullptr) {
+                HexTile* tile = neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>();
+                float dist = glm::distance(tile->GetTransform()->GetGlobalPosition(), centerTile->GetTransform()->GetGlobalPosition());
+                if (dist < range) {
+                    std::vector<HexTile*> subTiles = GetInRangeTiles(tile, range - dist);
+                    tiles.reserve(tiles.size() + subTiles.size());
+                    tiles.insert(tiles.end(), subTiles.begin(), subTiles.end());
+                }
+                else if (dist == range) {
+                    tiles.push_back(tile);
+                }
+            }
+        }
+    }
+    neightbourTiles.clear();
+
+    std::vector<HexTile*> filteredTiles;
+    for (auto& tile : tiles) {
+        bool contains = false;
+        for (auto& filteredTile : filteredTiles) {
+            if (tile == filteredTile) {
+                contains = true;
+            }
+        }
+        if (!contains) {
+            filteredTiles.push_back(tile);
+        }
+    }
+    tiles.clear();
+
+    return filteredTiles;
 }
 
 YAML::Node Playable::Serialize() const
 {
-    return YAML::Node();
+    YAML::Node node = Component::Serialize();
+
+    node["type"] = "Playable";
+    node["moneyFunction"] = ScriptableObjectManager::GetPath(moneyFunction->GetId());
+
+    return node;
 }
 
 bool Playable::Deserialize(const YAML::Node& node)
 {
+    if (!Component::Deserialize(node)) return false;
+
+
+    moneyFunction = static_cast<MoneyFunctionData*>(ScriptableObjectManager::Load(node["moneyFunction"].as<string>()));
+
     return false;
 }
 #if _DEBUG

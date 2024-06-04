@@ -16,29 +16,23 @@ void Enemy::ChangeState(State<Enemy*>* newState) {
     _stateMachine.ChangeState(this, newState);
 }
 
+void Enemy::SetMoveDestination(HexTile* tile)
+{
+    _movement->SetDestination(tile);
+}
+
 void Enemy::Initialize()
 {
-    _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
+    Playable::Initialize();
     _movement = GetGameObject()->GetComponent<EnemyMovement>();
     list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
-    tiles.insert(tiles.begin(), tempList.cbegin(), tempList.cend());
-
-    _movement->OnFindPathError += [&](GameObject* gameObject, HexTile* tile) {
-            PerformMovement();
-            //FinishedMovement(tile);
-        };
-    _movement->OnFinishMoving += [&](GameObject* gameObject, HexTile* tile) {
-        //PerformMovement();
-        FinishedMovement(tile);
-        };
-
+    _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend());
 }
 
 
 void Enemy::OnEnable()
 {
-    SPDLOG_INFO("ENEMY OnEneable");
-    PerformMovement();
+    //PerformMovement();
 }
 
 void Enemy::OnDestroy()
@@ -48,19 +42,18 @@ void Enemy::OnDestroy()
 
 void Enemy::Update()
 {
-    if (isTakingArea)
-    {
-        if (!CurrTile->isFighting) {
-            takingAreaCounter += Time::GetDeltaTime();
-            if (CurrTile->percentage >= targetPercentage)
-            {
-                takingAreaCounter = 0.0f;
-                isTakingArea = false;
-                PerformMovement();
-            }
+    if (GameManager::instance->gameStarted) {
+        if (!_started) {
+            ChangeState(&_movingState);
+            _started = true;
+        }
+
+        _currThinkingTime -= Time::GetDeltaTime();
+        if (_currThinkingTime <= 0.f) {
+            _stateMachine.Update(this);
+            _currThinkingTime = _timeToThink;
         }
     }
-    _stateMachine.Update(this);
 }
 
 
@@ -76,54 +69,21 @@ void Enemy::FinishedMovement(HexTile* hexTile)
     targetPercentage = Random::Range(50.0f, 95.0f);
 }
 
-void Enemy::PerformMovement()
-{
-    vec3 globalPosition = GetTransform()->GetGlobalPosition();
-    globalPosition.y = 0.0f;
-
-    vec3 tilePosition;
-
-    vector<HexTile*> possible;
-    //possible.reserve((1 + _movement->maxSteps) / 2 * _movement->maxSteps * 6);
-    possible.reserve((1 + _movement->maxSteps) * _movement->maxSteps * 3);
-
-    list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
-    tiles.clear();
-    tiles.insert(tiles.begin(), tempList.cbegin(), tempList.cend());
-
-    size_t size = tiles.size();
-    float maxRadius = GetMaxRadius();
-
-    for (size_t index = 0ull; index < size; ++index)
-    {
-        MapHexTile::HexTileType type = tiles[index]->GetMapHexTile()->type;
-        if (type != MapHexTile::HexTileType::Mountain && type != MapHexTile::HexTileType::None)
-        {
-            tilePosition = tiles[index]->GetTransform()->GetGlobalPosition();
-            tilePosition.y = 0.0f;
-            float distance = glm::distance(globalPosition, tilePosition);
-            if (distance <= maxRadius)
-            {
-                possible.push_back(tiles[index]);
-            }
-        }
-    }
-
-    SPDLOG_INFO("ENEMY Possible Size: {}", possible.size());
-    HexTile* result = possible[Random::Range(0ull, possible.size() - 1ull)];
-
-    if (CurrTile != nullptr) {
-        CurrTile->StopTakingOver(this);
-    }
-
-    _movement->SetDestination(result);
-}
-
 void Enemy::LostPaperRockScissors(Playable* playable)
 {
     CurrTile->StopTakingOver(this);
 
-    PerformMovement();
+    GameObject* tiles[6];
+    CurrTile->GetMapHexTile()->tile->GetAdjacentGameObjects(tiles);
+    for (int i = 0; i < 6; ++i) {
+        if (tiles[i] != nullptr) {
+            _movement->reachEnd = true;
+            //_movement->MoveAndSetDestination(tiles[i]->GetComponent<HexTile>());
+            SetMoveDestination(tiles[i]->GetComponent<HexTile>());
+            break;
+        }
+    }
+    //PerformMovement();
 }
 
 void Enemy::WonPaperRockScissors(Playable* playable)
@@ -177,7 +137,7 @@ void Enemy::OnDead()
 
 YAML::Node Enemy::Serialize() const
 {
-    YAML::Node node = Component::Serialize();
+    YAML::Node node = Playable::Serialize();
     node["type"] = "Enemy";
 
     return node;
@@ -185,7 +145,7 @@ YAML::Node Enemy::Serialize() const
 
 bool Enemy::Deserialize(const YAML::Node& node)
 {
-    if (!Component::Deserialize(node))
+    if (!Playable::Deserialize(node))
         return false;
 
     return true;

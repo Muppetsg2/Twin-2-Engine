@@ -1,5 +1,7 @@
 #pragma once
 
+#include <manager/SceneManager.h>
+
 #include <core/Transform.h>
 #include <core/GameObject.h>
 #include <core/Component.h>
@@ -13,6 +15,8 @@
 #include <MoneyFunctionData.h>
 //using namespace Twin2Engine::Core;
 
+// TILEMAP
+#include <Tilemap/HexagonalTilemap.h>
 class HexTile;
 
 //class MoneyFunctionData {
@@ -23,18 +27,16 @@ class HexTile;
 //};
 
 class Playable : public Twin2Engine::Core::Component {
-
 protected:
     virtual void OnDead() = 0;
 
 public:
-    std::vector<HexTile*> tiles;
-
     struct MinMaxPair {
         float min;
         float max;
     };
 
+    Tilemap::HexagonalTilemap* _tilemap = nullptr;
 
     std::list<std::pair<HexTile*, float>> albumTakingOverTiles;
 
@@ -88,7 +90,7 @@ public:
     float fansStartMoney;
     float albumStartMoney;
 
-    //MoneyFunctionData* functionData;
+    MoneyFunctionData* moneyFunction;
     //MoneyGainFromTiles* money;
 
     virtual void Initialize() override;
@@ -111,6 +113,7 @@ public:
 #pragma region FansMeetingAbility
     void FansControlDraw();
     void UseFans();
+    void UpdateFans();
     void FansEnd();
     void FansExit();
 #pragma endregion
@@ -134,6 +137,13 @@ public:
     
     float GlobalAvg() const;
     float LocalAvg() const;
+    float FansRangeAvg() const;
+    float FightPowerScore() const;
+    std::vector<HexTile*> GetLocalTiles() const;
+    std::vector<HexTile*> GetLocalTakenTiles() const;
+    std::vector<HexTile*> GetInMoveRangeTiles() const;
+    std::vector<HexTile*> GetFansRangeTiles() const;
+    static std::vector<HexTile*> GetInRangeTiles(HexTile* centerTile, float range);
 
 public:
     virtual YAML::Node Serialize() const override;
@@ -143,3 +153,5 @@ public:
     virtual void DrawEditor() override;
 #endif
 };
+
+#include <AreaTaking/HexTile.h>

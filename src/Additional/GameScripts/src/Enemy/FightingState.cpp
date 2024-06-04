@@ -52,15 +52,6 @@ DecisionTree<Enemy*, FightingState::FightResult> FightingState::_decisionTree{
 	}
 };
 
-float FightingState::SumTiles(Playable* entity) {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
-	// clamp(GlobalAvg(entity) * 0.25 + LocalAvg(entity) * 0.75, 0, 100)
-	return std::clamp(entity->GlobalAvg() * 0.25f + entity->LocalAvg() * 0.75f, 0.f, 100.f);
-}
-
 float FightingState::Score(Enemy* enemy, Playable* entity) {
 #if TRACY_PROFILER
 	ZoneScoped;
@@ -68,8 +59,8 @@ float FightingState::Score(Enemy* enemy, Playable* entity) {
 
 	std::srand(std::time(NULL));
 	float rnd = std::rand() % 101;
-	// clamp(rand(0, 100) + map(sumTiles(player) - sumTiles(enemy), -100, 100, -50, 50), 0, 100)
-	return std::clamp(rnd + (SumTiles(entity) - SumTiles(enemy)) * .5f, 0.f, 100.f);
+	// clamp(rand(0, 100) + map(fightPowerScore(player) - fightPowerScore(enemy), -100, 100, -50, 50), 0, 100)
+	return std::clamp(rnd + (entity->FightPowerScore() - enemy->FightPowerScore()) * .5f, 0.f, 100.f);
 }
 
 void FightingState::Draw(Enemy* enemy) {
@@ -78,6 +69,8 @@ void FightingState::Draw(Enemy* enemy) {
 #endif
 
 	SPDLOG_INFO("ENEMY DRAW");
+	// TODO: Dodac analize ruchu gracza
+	// TODO: Dodac odpowiedz na ruch gracza
 }
 
 void FightingState::Win(Enemy* enemy) {
@@ -86,6 +79,8 @@ void FightingState::Win(Enemy* enemy) {
 #endif
 
 	SPDLOG_INFO("ENEMY WIN");
+	// TODO: Dodac analize ruchu gracza
+	// TODO: Dodac odpowiedz na ruch gracza
 	if (enemy->CurrTile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::RadioStation) {
 		enemy->ChangeState(&enemy->_radioStationState);
 	}
@@ -100,6 +95,8 @@ void FightingState::Lose(Enemy* enemy) {
 #endif
 
 	SPDLOG_INFO("ENEMY LOSE");
+	// TODO: Dodac analize ruchu gracza
+	// TODO: Dodac odpowiedz na ruch gracza
 	enemy->ChangeState(&enemy->_movingState);
 }
 

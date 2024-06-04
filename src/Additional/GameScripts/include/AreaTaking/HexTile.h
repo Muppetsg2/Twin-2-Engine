@@ -37,7 +37,12 @@ public:
 
 
 	bool isFighting = false;
+
+
 	Playable* occupyingEntity = nullptr;
+	std::vector<Playable*> remotelyOccupyingEntities;
+	std::vector<float> remoteMultipliers;
+	float remoteMultiplier = 1.0f;
 	Playable* takenEntity = nullptr;
 	float percentage = 0.0f;
 	float currCooldown = 0.0f;
@@ -55,7 +60,6 @@ public:
 	std::vector<Twin2Engine::Core::GameObject*> borders;
 	std::vector<Twin2Engine::Core::GameObject*> borderJoints;
 
-	float remoteMultiplier = 1.0f;
 	int totalTileFans;
 
 	glm::vec3 sterowiecPos;
@@ -78,8 +82,9 @@ public:
 	void WinMinigame();
 	void BadNote();
 	void StartTakingOver(Playable* entity);
-	void StartRemotelyTakingOver(Playable* entity, float multiplier = 1.0f);
 	void StopTakingOver(Playable* entity);
+	void StartRemotelyTakingOver(Playable* entity, float multiplier = 1.0f);
+	void StopRemotelyTakingOver(Playable* entity);
 
 	Generation::MapHexTile* GetMapHexTile() const;
 

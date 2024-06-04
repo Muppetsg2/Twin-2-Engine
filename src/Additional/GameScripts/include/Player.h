@@ -55,6 +55,8 @@ private:
     Twin2Engine::Core::GameObject* concertButtonObject;
     size_t concertButtonEventHandleId;
     size_t concertButtonDestroyedEventHandleId;
+    // Money
+    Twin2Engine::UI::Text* moneyText;
 
 
 public:

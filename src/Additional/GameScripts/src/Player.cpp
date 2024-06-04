@@ -78,6 +78,8 @@ void Player::Initialize() {
             }
         };
 
+    // MONEY UI INITIALIZATION
+    moneyText = SceneManager::FindObjectByName("MoneyText")->GetComponent<Text>();
 
 
     //if (hexMesh == nullptr) hexMesh = HexGenerator::GenerateHexMesh(0.4f, 0.5f, 0.0f, 0.0f);
@@ -148,8 +150,10 @@ void Player::Update() {
         //    concertButton->SetInteractable(true);
         //}
         concertButton->SetInteractable(true);
-        concertText->SetText(std::wstring((L"Concert\n" + std::to_wstring(concertAbility->GetCost()) + L"$")));
+        concertText->SetText(std::wstring((L"Concert\n" + std::to_wstring(static_cast<int>(concertAbility->GetCost())) + L"$")));
     }
+
+    moneyText->SetText(std::wstring(L"Money: ").append(std::to_wstring(static_cast<int>(money->money))).append(L" $"));
 
     if (!GameManager::instance->gameStarted && hexIndicator) hexIndicator->SetActive(false);
 
@@ -178,7 +182,7 @@ void Player::Update() {
             //    concertButton->SetInteractable(true);
             //}
             albumButton->SetInteractable(true);
-            albumText->SetText(std::wstring((L"Album\n" + std::to_wstring(albumRequiredMoney) + L"$")));
+            albumText->SetText(std::wstring((L"Album\n" + std::to_wstring(static_cast<int>(albumRequiredMoney)) + L"$")));
         }
 
         UpdateFans();
@@ -200,7 +204,7 @@ void Player::Update() {
             //    concertButton->SetInteractable(true);
             //}
             fansMeetingButton->SetInteractable(true);
-            fansMeetingText->SetText(std::wstring((L"Fans Meeting\n" + std::to_wstring(fansRequiredMoney) + L"$")));
+            fansMeetingText->SetText(std::wstring((L"Fans Meeting\n" + std::to_wstring(static_cast<int>(fansRequiredMoney)) + L"$")));
         }
 
         if (move != nullptr) {

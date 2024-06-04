@@ -1086,7 +1086,7 @@ GameObjects:
     children:
       []
   - id: 319
-    name: Date
+    name: MoneyText
     isStatic: false
     isActive: true
     transform:

@@ -854,8 +854,8 @@ GameObjects:
       id: 302
       enabled: true
       position:
-        x: -860
-        y: -52
+        x: 0
+        y: -300
         z: 0
       scale:
         x: 1
@@ -864,7 +864,7 @@ GameObjects:
       rotation:
         x: 0
         y: 0
-        z: -90
+        z: 0
     components:
       - id: 303
         enabled: true
@@ -901,7 +901,7 @@ GameObjects:
       rotation:
         x: 0
         y: 0
-        z: 90
+        z: 0
     components:
       - id: 306
         enabled: true
@@ -942,7 +942,7 @@ GameObjects:
       rotation:
         x: 0
         y: 0
-        z: 90
+        z: 0
     components:
       - id: 309
         enabled: true
@@ -983,7 +983,7 @@ GameObjects:
       rotation:
         x: 0
         y: 0
-        z: 90
+        z: 0
     components:
       - id: 312
         enabled: true
@@ -1007,7 +1007,7 @@ GameObjects:
     children:
       - 320
   - id: 313
-    name: album
+    name: TimeAndMoney
     isStatic: false
     isActive: true
     transform:
@@ -1228,8 +1228,8 @@ GameObjects:
       id: 322
       enabled: true
       position:
-        x: 150
-        y: 0
+        x: 0
+        y: -65
         z: 0
       scale:
         x: 1
@@ -1257,7 +1257,7 @@ GameObjects:
           y: 1
           z: 1
           w: 1
-        alignX: !<LEFT> 0
+        alignX: !<CENTER> 1
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
@@ -1272,8 +1272,8 @@ GameObjects:
       id: 324
       enabled: true
       position:
-        x: 150
-        y: 0
+        x: 0
+        y: -65
         z: 0
       scale:
         x: 1
@@ -1301,7 +1301,7 @@ GameObjects:
           y: 1
           z: 1
           w: 1
-        alignX: !<LEFT> 0
+        alignX: !<CENTER> 1
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
@@ -1316,8 +1316,8 @@ GameObjects:
       id: 326
       enabled: true
       position:
-        x: 150
-        y: 0
+        x: 0
+        y: -65
         z: 0
       scale:
         x: 1
@@ -1345,7 +1345,7 @@ GameObjects:
           y: 1
           z: 1
           w: 1
-        alignX: !<LEFT> 0
+        alignX: !<CENTER> 1
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0

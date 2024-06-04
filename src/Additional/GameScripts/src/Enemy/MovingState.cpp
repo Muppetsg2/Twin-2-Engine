@@ -276,7 +276,7 @@ void MovingState::ChooseTile(Enemy* enemy)
 	for (size_t index = 0ull; index < size; ++index)
 	{
 		MapHexTile::HexTileType type = enemy->_tiles[index]->GetMapHexTile()->type;
-		if (type != MapHexTile::HexTileType::Mountain && type != MapHexTile::HexTileType::None)
+		if (type != MapHexTile::HexTileType::Mountain)
 		{
 			tilePosition = enemy->_tiles[index]->GetTransform()->GetGlobalPosition();
 			tilePosition.y = .0f;

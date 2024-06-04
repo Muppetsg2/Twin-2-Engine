@@ -3,6 +3,8 @@
 #include <AreaTaking/HexTile.h>
 #include <Generation/MapHexTile.h>
 
+#include <manager/ScriptableObjectManager.h>
+
 using namespace std;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
@@ -30,8 +32,8 @@ void Playable::InitPrices() {
 
 void Playable::UpdatePrices() {
     if (!OwnTiles.empty()) {
-        //fansRequiredMoney = functionData->GetValue(OwnTiles.size() - 1, fansStartMoney);
-        //albumRequiredMoney = functionData->GetValue(OwnTiles.size() - 1, albumStartMoney);
+        fansRequiredMoney = moneyFunction->GetValue(OwnTiles.size() - 1, fansStartMoney);
+        albumRequiredMoney = moneyFunction->GetValue(OwnTiles.size() - 1, albumStartMoney);
     }
 }
 
@@ -482,11 +484,21 @@ std::vector<HexTile*> Playable::GetInRangeTiles(HexTile* centerTile, float range
 
 YAML::Node Playable::Serialize() const
 {
-    return Component::Serialize();
+    YAML::Node node = Component::Serialize();
+
+    node["type"] = "Playable";
+    node["moneyFunction"] = ScriptableObjectManager::GetPath(moneyFunction->GetId());
+
+    return node;
 }
 
 bool Playable::Deserialize(const YAML::Node& node)
 {
+    if (!Component::Deserialize(node)) return false;
+
+
+    moneyFunction = static_cast<MoneyFunctionData*>(ScriptableObjectManager::Load(node["moneyFunction"].as<string>()));
+
     return false;
 }
 #if _DEBUG

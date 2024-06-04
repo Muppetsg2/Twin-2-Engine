@@ -7,7 +7,6 @@ using namespace Twin2Engine::Core;
 void MoneyGainFromTiles::Initialize() {
     playable = GetGameObject()->GetComponent<Playable>();
     eventIdOnDayTicked = GameTimer::Instance()->OnDayTicked += [&](int day) {
-        SPDLOG_INFO("Lambda called");
         UpdateMoney(dynamic_cast<Player*>(playable) != nullptr);
         };
 }
@@ -31,9 +30,7 @@ float MoneyGainFromTiles::GainMoneyFromTile(HexTile* tile) {
 }
 
 void MoneyGainFromTiles::UpdateMoney(bool player) {
-    SPDLOG_INFO("UpdateMoney called");
     if (GameManager::instance->minigameActive) return;
-    SPDLOG_INFO("After condition called");
 
     float patronMul = 1.0f;
 
@@ -45,10 +42,9 @@ void MoneyGainFromTiles::UpdateMoney(bool player) {
         money += GainMoneyFromTile(tile) * patronMul;
     }
 
-    if (player) {
-        SPDLOG_INFO("Money: {}", money);
-        //MoneyPanelController::Instance().SetMoney(money);
-    }
+    //if (player) {
+    //    //MoneyPanelController::Instance().SetMoney(money);
+    //}
 }
 
 bool MoneyGainFromTiles::SpendMoney(float amount) {

@@ -103,7 +103,7 @@ void Enemy::OnDead()
 
 YAML::Node Enemy::Serialize() const
 {
-    YAML::Node node = Component::Serialize();
+    YAML::Node node = Playable::Serialize();
     node["type"] = "Enemy";
 
     return node;
@@ -111,7 +111,7 @@ YAML::Node Enemy::Serialize() const
 
 bool Enemy::Deserialize(const YAML::Node& node)
 {
-    if (!Component::Deserialize(node))
+    if (!Playable::Deserialize(node))
         return false;
 
     return true;

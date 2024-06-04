@@ -19,7 +19,7 @@ void ConcertAbilityController::OnDestroy() {
 
 void ConcertAbilityController::Update() {
     if (!playable->OwnTiles.empty()) {
-        //usedMoneyRequired = moneyFunction->GetValue(playable->OwnTiles.size() - 1, moneyRequired);
+        usedMoneyRequired = moneyFunction->GetValue(playable->OwnTiles.size() - 1, moneyRequired);
     }
 
     if (currTimerTime > 0.0f) {
@@ -106,6 +106,7 @@ YAML::Node ConcertAbilityController::Serialize() const
     node["cooldownTime"] = cooldownTime;
     node["moneyRequired"] = moneyRequired;
     node["takingOverSpeed"] = takingOverSpeed;
+    node["moneyFunction"] = ScriptableObjectManager::GetPath(moneyFunction->GetId());
 
     return node;
 }
@@ -119,6 +120,7 @@ bool ConcertAbilityController::Deserialize(const YAML::Node& node)
     cooldownTime = node["cooldownTime"].as<float>();
     moneyRequired = node["moneyRequired"].as<float>();
     takingOverSpeed = node["takingOverSpeed"].as<float>();
+    moneyFunction = static_cast<MoneyFunctionData*>(ScriptableObjectManager::Load(node["moneyFunction"].as<string>()));
 
     return true;
 }

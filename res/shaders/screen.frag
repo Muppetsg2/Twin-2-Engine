@@ -28,6 +28,9 @@ uniform bool depthOfField2;
 uniform bool displayDepth;
 uniform bool displaySSAO;
 
+uniform float brightness;
+uniform float contrast;
+
 vec3 applyVignette(vec3 color) {
     vec2 position = TexCoord.xy - vec2(0.5);  
     float dist = length(position * 2);
@@ -185,5 +188,15 @@ void main() {
         res = applyNegative(res);
     }
 
-    Color = vec4(pow(res, vec3(1.0/gamma)), 1.0);
+    vec3 afterGamma = pow(res, vec3(1.0/gamma));
+
+    // saturation (lerp between grayScale and normal) i dont think we need it
+
+    // apply contrast
+    afterGamma = (afterGamma - vec3(0.5)) * max(contrast, 0.0) + vec3(0.5);
+
+    // apply brightness
+    afterGamma += vec3(brightness);
+
+    Color = vec4(afterGamma, 1.0);
 }

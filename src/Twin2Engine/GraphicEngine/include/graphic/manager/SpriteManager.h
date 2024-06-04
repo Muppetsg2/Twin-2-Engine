@@ -19,12 +19,14 @@ namespace Twin2Engine::Manager {
 		static std::map<size_t, Graphic::Sprite*> _sprites;
 
 		static std::map<size_t, std::string> _spriteAliases;
-		static std::map<size_t, SpriteData> _spriteLoadData;
 
 		static void UnloadSprite(size_t spriteId);
 		static void UnloadSprite(const std::string& spriteAlias);
 
 #if _DEBUG
+		static bool _editNext;
+
+		static void DrawSpriteCreator(bool* p_open);
 		static void DrawSpriteEditor(bool* p_open, size_t spriteToEdit = 0);
 #endif
 
@@ -35,6 +37,13 @@ namespace Twin2Engine::Manager {
 		static Graphic::Sprite* MakeSprite(const std::string& spriteAlias, const std::string& texPath, const SpriteData& data);
 		static Graphic::Sprite* MakeSprite(const std::string& spriteAlias, Graphic::Texture2D* tex, const SpriteData& data);
 		static Graphic::Sprite* MakeSprite(const std::string& spriteAlias, size_t texManagerId, const SpriteData& data);
+
+		static Graphic::Sprite* EditSprite(size_t spriteId, const std::string& texPath, const SpriteData& data, const std::string& newAlias = "");
+		static Graphic::Sprite* EditSprite(size_t spriteId, Graphic::Texture2D* tex, const SpriteData& data, const std::string& newAlias = "");
+		static Graphic::Sprite* EditSprite(size_t spriteId, size_t texManagerId, const SpriteData& data, const std::string& newAlias = "");
+		static Graphic::Sprite* EditSprite(const std::string& spriteAlias, const std::string& texPath, const SpriteData& data, const std::string& newAlias = "");
+		static Graphic::Sprite* EditSprite(const std::string& spriteAlias, Graphic::Texture2D* tex, const SpriteData& data, const std::string& newAlias = "");
+		static Graphic::Sprite* EditSprite(const std::string& spriteAlias, size_t texManagerId, const SpriteData& data, const std::string& newAlias = "");
 
 		static Graphic::Sprite* GetSprite(size_t spriteId);
 		static Graphic::Sprite* GetSprite(const std::string& spriteAlias);

@@ -4,6 +4,7 @@
 namespace Twin2Engine {
 	namespace Manager {
 		class TextureManager;
+		enum class TextureFileFormat;
 	}
 
 	namespace Graphic {
@@ -29,9 +30,9 @@ namespace Twin2Engine {
 		)
 
 		ENUM_CLASS_VALUE(TextureWrapMode,
-			CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE,
-			CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER,
 			REPEAT, GL_REPEAT,
+			CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER,
+			CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE,
 			MIRRORED_REPEAT, GL_MIRRORED_REPEAT,
 			MIRROR_CLAMP_TO_EDGE, GL_MIRROR_CLAMP_TO_EDGE
 		)
@@ -76,12 +77,17 @@ namespace Twin2Engine {
 			unsigned int GetWidth() const;
 			unsigned int GetHeight() const;
 			unsigned int GetChannelsNum() const;
+			TextureFormat GetFormat() const;
 			TextureWrapMode GetWrapModeS() const;
 			TextureWrapMode GetWrapModeT() const;
 			TextureFilterMode GetMinFilterMode() const;
 			TextureFilterMode GetMagFilterMode() const;
 
 			void Use(unsigned int samplerId = 0) const;
+
+#if _DEBUG
+			void DrawEditor();
+#endif
 
 			friend Manager::TextureManager;
 			friend Font;

@@ -1,4 +1,5 @@
 #include <graphic/Texture2D.h>
+#include <graphic/manager/TextureManager.h>
 
 using namespace Twin2Engine::Graphic;
 using namespace glm;
@@ -83,6 +84,11 @@ unsigned int Texture2D::GetChannelsNum() const
 	return _channelsNum;
 }
 
+TextureFormat Texture2D::GetFormat() const
+{
+	return _format;
+}
+
 TextureWrapMode Texture2D::GetWrapModeS() const
 {
 	return _sWrapMode;
@@ -107,4 +113,125 @@ void Texture2D::Use(unsigned int samplerId) const
 {
 	glActiveTexture(GL_TEXTURE0 + samplerId);
 	glBindTexture(GL_TEXTURE_2D, _id);
+}
+
+void Texture2D::DrawEditor()
+{
+	const std::vector<TextureWrapMode> wrapModes = {
+		TextureWrapMode::REPEAT,
+		TextureWrapMode::CLAMP_TO_BORDER,
+		TextureWrapMode::CLAMP_TO_EDGE,
+		TextureWrapMode::MIRRORED_REPEAT,
+		TextureWrapMode::MIRROR_CLAMP_TO_EDGE
+	};
+
+	const std::vector<TextureFilterMode> filterModes = {
+		TextureFilterMode::NEAREST,
+		TextureFilterMode::LINEAR,
+		TextureFilterMode::NEAREST_MIPMAP_NEAREST,
+		TextureFilterMode::LINEAR_MIPMAP_NEAREST,
+		TextureFilterMode::NEAREST_MIPMAP_LINEAR,
+		TextureFilterMode::LINEAR_MIPMAP_LINEAR
+	};
+
+	std::string id = std::to_string(_managerId);
+
+	ImGui::Text("Name: ");
+	ImGui::SameLine();
+	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+	ImGui::Text(Manager::TextureManager::GetTexture2DName(_managerId).c_str());
+	ImGui::PopFont();
+	ImGui::Text("Id: ");
+	ImGui::SameLine();
+	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+	ImGui::Text(id.c_str());
+	ImGui::PopFont();
+
+	TextureWrapMode wm = _sWrapMode;
+	bool clicked = false;
+	if (ImGui::BeginCombo(std::string("Wrap Mode S##").append(id).c_str(), to_string(wm).c_str())) {
+
+		for (auto item : wrapModes)
+		{
+			if (ImGui::Selectable(to_string(item).append("##WrapModeS").append(id).c_str(), wm == item))
+			{
+				if (clicked) {
+					continue;
+				}
+				wm = item;
+				clicked = true;
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	if (clicked) {
+		this->SetWrapModeS(wm);
+	}
+
+	wm = _tWrapMode;
+	clicked = false;
+	if (ImGui::BeginCombo(std::string("Wrap Mode T##").append(id).c_str(), to_string(wm).c_str())) {
+
+		for (auto item : wrapModes)
+		{
+			if (ImGui::Selectable(to_string(item).append("##WrapModeT").append(id).c_str(), wm == item))
+			{
+				if (clicked) {
+					continue;
+				}
+				wm = item;
+				clicked = true;
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	if (clicked) {
+		this->SetWrapModeT(wm);
+	}
+
+	TextureFilterMode fm = _minFilterMode;
+	clicked = false;
+	if (ImGui::BeginCombo(std::string("Min Filter Mode##").append(id).c_str(), to_string(fm).c_str())) {
+
+		for (auto item : filterModes)
+		{
+			if (ImGui::Selectable(to_string(item).append("##MinFilterMode").append(id).c_str(), fm == item))
+			{
+				if (clicked) {
+					continue;
+				}
+				fm = item;
+				clicked = true;
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	if (clicked) {
+		this->SetMinFilterMode(fm);
+	}
+
+	fm = _magFilterMode;
+	clicked = false;
+	if (ImGui::BeginCombo(std::string("Mag Filter Mode##").append(id).c_str(), to_string(fm).c_str())) {
+
+		for (auto item : filterModes)
+		{
+			if (ImGui::Selectable(to_string(item).append("##MagFilterMode").append(id).c_str(), fm == item))
+			{
+				if (clicked) {
+					continue;
+				}
+				fm = item;
+				clicked = true;
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	if (clicked) {
+		this->SetMagFilterMode(fm);
+	}
 }

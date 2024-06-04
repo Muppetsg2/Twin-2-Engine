@@ -1141,17 +1141,68 @@ void SceneManager::DrawCurrentSceneEditor()
 
 	ImGui::PushStyleColor(ImGuiCol_DragDropTarget, ImVec4(0.1f, 0.7f, 0.2f, 1.f));
 	ImGui::PushStyleColor(ImGuiCol_NavHighlight, ImVec4(0.1f, 0.7f, 0.2f, 1.f));
+
+	bool addPrefab = false;
+
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu(string("Create##").append(SceneManager::GetCurrentSceneName()).c_str()))
 		{
 			if (ImGui::MenuItem(string("Add GameObject##Create").append(SceneManager::GetCurrentSceneName()).c_str()))
 				CreateGameObject();
 
-			// TODO: Dodac pod menu do create ktore jest (nowy gameobject i na podstawie prefabu)
+			if (ImGui::MenuItem(string("Add Prefab GameObject##Create").append(SceneManager::GetCurrentSceneName()).c_str()))
+				addPrefab = true;
 
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();
+	}
+
+	if (addPrefab) { 
+		ImGui::OpenPopup(string("Add Prefab GameObject PopUp##Scene Manager").c_str(), ImGuiPopupFlags_NoReopen); 
+		addPrefab = false;
+	}
+
+	if (ImGui::BeginPopup(string("Add Prefab GameObject PopUp##Scene Manager").c_str(), ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDocking)) {
+
+		map<size_t, string> types = PrefabManager::GetAllPrefabsNames();
+
+		size_t choosed = 0;
+
+		if (types.size() == 0) ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "No prefab available!");
+
+		ImGui::BeginDisabled(types.size() == 0);
+		if (ImGui::BeginCombo(string("##Scene Manager POP UP Prefab GameObject").c_str(), choosed == 0 ? "None" : types[choosed].c_str())) {
+
+			bool clicked = false;
+			size_t i = 0;
+			for (auto& item : types) {
+
+				if (ImGui::Selectable(std::string(item.second).append("##Scene Manager POP UP Prefab GameObject").append(std::to_string(i)).c_str(), item.first == choosed)) {
+
+					if (clicked) continue;
+
+					choosed = item.first;
+					clicked = true;
+				}
+				++i;
+			}
+
+			if (clicked) {
+				if (choosed != 0) {
+					CreateGameObject(PrefabManager::GetPrefab(choosed));
+				}
+			}
+
+			ImGui::EndCombo();
+		}
+		ImGui::EndDisabled();
+
+		if (choosed != 0) {
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
 	}
 
 	DrawGameObjectEditor(_rootObject);

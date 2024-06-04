@@ -92,6 +92,8 @@ namespace Twin2Engine::Core {
 		float _far = 1000.f;
 		float _fov = 45.f;
 		float _gamma = 2.2f;
+		float _brightness = 0.0f;
+		float _contrast = 1.0f;
 		float _ssaoSampleRadius = 0.7f;
 		float _ssaoBias = 0.01f;
 
@@ -124,6 +126,8 @@ namespace Twin2Engine::Core {
 
 		float GetFOV() const;
 		float GetGamma() const;
+		float GetBrightness() const;
+		float GetContrast() const;
 		float GetNearPlane() const;
 		float GetFarPlane() const;
 		vec3 GetFrontDir() const;
@@ -139,6 +143,8 @@ namespace Twin2Engine::Core {
 
 		void SetFOV(float angle);
 		void SetGamma(float gamma);
+		void SetBrightness(float brightness);
+		void SetContrast(float contrast);
 		void SetFarPlane(float value);
 		void SetNearPlane(float value);
 		

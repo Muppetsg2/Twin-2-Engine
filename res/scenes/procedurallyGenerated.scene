@@ -215,6 +215,8 @@ GameObjects:
         samples: 10
         renderRes: 0
         gamma: 1
+        brightness: 0
+        contrast: 1
         worldUp:
           x: 0
           y: 1

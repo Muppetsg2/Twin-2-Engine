@@ -7,7 +7,8 @@ class Enemy;
 
 class MovingState : public State<Enemy*> {
 private:
-	static DecisionTree<Enemy*, bool> _decisionTree;
+	static DecisionTree<Enemy*, bool> _whileMovingDecisionTree;
+	static DecisionTree<Enemy*, bool> _afterMoveDecisionTree;
 
 	static void StartTakingOver(Enemy* enemy);
 	static void Fight(Enemy* enemy);

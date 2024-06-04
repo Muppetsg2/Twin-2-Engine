@@ -263,6 +263,10 @@ float Playable::GlobalAvg() const
     ZoneScoped;
 #endif
 
+    if (OwnTiles.size() == 0) {
+        return 0.f;
+    }
+
     float res = 0.f;
     for (auto& tile : OwnTiles) {
         res += tile->percentage;
@@ -277,6 +281,10 @@ float Playable::LocalAvg() const
     ZoneScoped;
 #endif
 
+    if (CurrTile == nullptr) {
+        return 0.f;
+    }
+
     std::vector<Tilemap::HexagonalTile*> neightbourTiles;
     neightbourTiles.resize(6);
     CurrTile->GetMapHexTile()->tile->GetAdjacentTiles(neightbourTiles.data());
@@ -284,10 +292,12 @@ float Playable::LocalAvg() const
     size_t neightboursCount = 0;
     for (size_t i = 0; i < 6; ++i) {
         if (neightbourTiles[i] != nullptr) {
-            ++neightboursCount;
-            HexTile* tile = neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>();
-            if (tile->takenEntity == this) {
-                res += tile->percentage;
+            if (neightbourTiles[i]->GetGameObject() != nullptr) {
+                ++neightboursCount;
+                HexTile* tile = neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>();
+                if (tile->takenEntity == this) {
+                    res += tile->percentage;
+                }
             }
         }
     }
@@ -313,6 +323,10 @@ float Playable::FansRangeAvg() const
     size_t count = inFansRangeTiles.size();
     inFansRangeTiles.clear();
 
+    if (count == 0) {
+        return 0.f;
+    }
+
     return res / count;
 }
 
@@ -332,12 +346,18 @@ std::vector<HexTile*> Playable::GetLocalTiles() const {
 
     std::vector<HexTile*> tiles;
 
+    if (CurrTile == nullptr) {
+        return tiles;
+    }
+
     std::vector<Tilemap::HexagonalTile*> neightbourTiles;
     neightbourTiles.resize(6);
     CurrTile->GetMapHexTile()->tile->GetAdjacentTiles(neightbourTiles.data());
     for (size_t i = 0; i < 6; ++i) {
         if (neightbourTiles[i] != nullptr) {
-            tiles.push_back(neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>());
+            if (neightbourTiles[i]->GetGameObject() != nullptr) {
+                tiles.push_back(neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>());
+            }
         }
     }
 
@@ -352,14 +372,20 @@ std::vector<HexTile*> Playable::GetLocalTakenTiles() const
 
     std::vector<HexTile*> tiles;
 
+    if (CurrTile == nullptr) {
+        return tiles;
+    }
+
     std::vector<Tilemap::HexagonalTile*> neightbourTiles;
     neightbourTiles.resize(6);
     CurrTile->GetMapHexTile()->tile->GetAdjacentTiles(neightbourTiles.data());
     for (size_t i = 0; i < 6; ++i) {
         if (neightbourTiles[i] != nullptr) {
-            HexTile* tile = neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>();
-            if (tile->takenEntity == this) {
-                tiles.push_back(tile);
+            if (neightbourTiles[i]->GetGameObject() != nullptr) {
+                HexTile* tile = neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>();
+                if (tile->takenEntity == this) {
+                    tiles.push_back(tile);
+                }
             }
         }
     }
@@ -391,6 +417,10 @@ std::vector<HexTile*> Playable::GetInRangeTiles(HexTile* centerTile, float range
     ZoneScoped;
 #endif
 
+    if (centerTile == nullptr) {
+        return std::vector<HexTile*>();
+    }
+
     std::vector<HexTile*> tiles;
     tiles.push_back(centerTile);
 
@@ -399,15 +429,17 @@ std::vector<HexTile*> Playable::GetInRangeTiles(HexTile* centerTile, float range
     centerTile->GetMapHexTile()->tile->GetAdjacentTiles(neightbourTiles.data());
     for (size_t i = 0; i < 6; ++i) {
         if (neightbourTiles[i] != nullptr) {
-            HexTile* tile = neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>();
-            float dist = glm::distance(tile->GetTransform()->GetGlobalPosition(), centerTile->GetTransform()->GetGlobalPosition());
-            if (dist < range) {
-                std::vector<HexTile*> subTiles = GetInRangeTiles(tile, range - dist);
-                tiles.reserve(tiles.size() + subTiles.size());
-                tiles.insert(tiles.end(), subTiles.begin(), subTiles.end());
-            }
-            else if (dist == range) {
-                tiles.push_back(tile);
+            if (neightbourTiles[i]->GetGameObject() != nullptr) {
+                HexTile* tile = neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>();
+                float dist = glm::distance(tile->GetTransform()->GetGlobalPosition(), centerTile->GetTransform()->GetGlobalPosition());
+                if (dist < range) {
+                    std::vector<HexTile*> subTiles = GetInRangeTiles(tile, range - dist);
+                    tiles.reserve(tiles.size() + subTiles.size());
+                    tiles.insert(tiles.end(), subTiles.begin(), subTiles.end());
+                }
+                else if (dist == range) {
+                    tiles.push_back(tile);
+                }
             }
         }
     }

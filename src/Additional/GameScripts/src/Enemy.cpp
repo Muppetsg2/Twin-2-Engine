@@ -44,7 +44,7 @@ void Enemy::Update()
 {
     if (GameManager::instance->gameStarted) {
         if (!_started) {
-            ChangeState(&_takingOverState);
+            ChangeState(&_movingState);
             _started = true;
         }
 

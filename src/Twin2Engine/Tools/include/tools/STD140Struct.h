@@ -1417,6 +1417,7 @@ namespace Twin2Engine::Tools {
 		std::vector<size_t> GetArrayOffsets(const std::string& name) const;
 #if _DEBUG
 		const ValueType* GetType(const std::string& name) const;
+		std::vector<std::string> GetNames() const;
 #endif
 		std::vector<char> GetData() const;
 		size_t GetBaseAligement() const;

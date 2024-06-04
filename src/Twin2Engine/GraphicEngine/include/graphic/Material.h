@@ -46,6 +46,10 @@ namespace Twin2Engine
 			Shader* GetShader() const;
 			size_t GetId() const;
 			MaterialParameters* GetMaterialParameters() const;
+
+#if _DEBUG
+			void DrawEditor();
+#endif
 		};
 
 		bool operator<(const Material& material1, const Material& material2);

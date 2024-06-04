@@ -420,6 +420,11 @@ const ValueType* STD140Struct::GetType(const string& name) const
 {
 	return _dataOffsets.GetType(name);
 }
+
+std::vector<std::string> STD140Struct::GetNames() const
+{
+	return _dataOffsets.GetNames();
+}
 #endif
 
 vector<char> STD140Struct::GetData() const

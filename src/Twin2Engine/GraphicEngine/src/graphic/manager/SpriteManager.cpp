@@ -40,6 +40,16 @@ void SpriteManager::DrawSpriteCreator(bool* p_open) {
 	static float w = 1.f;
 	static float h = 1.f;
 
+	ImGuiStyle& style = ImGui::GetStyle();
+	float alignment = 0.5f;
+
+	float size = 100 + style.FramePadding.x * 2.0f;
+	float avail = ImGui::GetContentRegionAvail().x;
+
+	float off = (avail - size) * alignment;
+	if (off > 0.0f)
+		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + off);
+
 	if (ImGui::BeginChild("Preview##SPRITE_CREATOR Sprite Manager", ImVec2(100, 100))) {
 
 		if (tex != nullptr) {
@@ -105,8 +115,8 @@ void SpriteManager::DrawSpriteCreator(bool* p_open) {
 				if (tex != nullptr) {
 					if (data.x > tex->GetWidth()) data.x = 0;
 					if (data.y > tex->GetHeight()) data.y = 0;
-					if (data.x + data.width > tex->GetWidth() || data.width == 0) data.width = tex->GetWidth() - data.x;
-					if (data.y + data.height > tex->GetHeight() || data.height == 0) data.height = tex->GetHeight() - data.y;
+					if (data.x + data.width > tex->GetWidth() || data.width == 1) data.width = tex->GetWidth() - data.x;
+					if (data.y + data.height > tex->GetHeight() || data.height == 1) data.height = tex->GetHeight() - data.y;
 				}
 				else {
 					data.x = 0;
@@ -201,6 +211,16 @@ void SpriteManager::DrawSpriteEditor(bool* p_open, size_t spriteToEdit) {
 		data.height = 1;
 	}
 
+	ImGuiStyle& style = ImGui::GetStyle();
+	float alignment = 0.5f;
+
+	float size = 100 + style.FramePadding.x * 2.0f;
+	float avail = ImGui::GetContentRegionAvail().x;
+
+	float off = (avail - size) * alignment;
+	if (off > 0.0f)
+		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + off);
+
 	if (ImGui::BeginChild("Preview##SPRITE_EDITOR Sprite Manager", ImVec2(100, 100))) {
 
 		if (tex != nullptr) {
@@ -265,8 +285,8 @@ void SpriteManager::DrawSpriteEditor(bool* p_open, size_t spriteToEdit) {
 				if (tex != nullptr) {
 					if (data.x > tex->GetWidth()) data.x = 0;
 					if (data.y > tex->GetHeight()) data.y = 0;
-					if (data.x + data.width > tex->GetWidth() || data.width == 0) data.width = tex->GetWidth() - data.x;
-					if (data.y + data.height > tex->GetHeight() || data.height == 0) data.height = tex->GetHeight() - data.y;
+					if (data.x + data.width > tex->GetWidth() || data.width == 1) data.width = tex->GetWidth() - data.x;
+					if (data.y + data.height > tex->GetHeight() || data.height == 1) data.height = tex->GetHeight() - data.y;
 				}
 				else {
 					data.x = 0;

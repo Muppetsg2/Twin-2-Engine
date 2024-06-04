@@ -679,6 +679,7 @@ namespace Twin2Engine::Tools {
 
 #if _DEBUG
 		const ValueType* GetType(const std::string& name) const;
+		std::vector<std::string> GetNames() const;
 #endif
 
 		size_t GetBaseAligement() const;

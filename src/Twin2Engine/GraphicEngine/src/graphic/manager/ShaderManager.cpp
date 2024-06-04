@@ -19,6 +19,14 @@ const std::unordered_map<size_t, int> ShaderManager::shaderTypeMapping
     { ShaderManager::stringHash("frag"), GL_FRAGMENT_SHADER }
 };
 
+bool isWhitespace(char c) {
+    return std::isspace(static_cast<unsigned char>(c));
+}
+
+bool isEmptyOrWhitespace(const std::string& str) {
+    return std::all_of(str.begin(), str.end(), isWhitespace);
+}
+
 unsigned int ShaderManager::LoadShaderProgram(const std::string& shaderName)
 {
     size_t strHash = stringHash(shaderName);
@@ -71,7 +79,7 @@ unsigned int ShaderManager::LoadShaderProgram(const std::string& shaderName)
             return 0;
         }
 
-        loadedShaders.push_back({ .shaderPathHash = strHash, .shaderProgramId = shaderProgramID, .useNumber = 1, .shader = new Shader(shaderProgramID) });
+        loadedShaders.push_back({ .shaderPathHash = strHash, .shaderName = shaderName, .shaderProgramId = shaderProgramID, .useNumber = 1, .shader = new Shader(shaderProgramID) });
     }
     else
     {
@@ -82,13 +90,6 @@ unsigned int ShaderManager::LoadShaderProgram(const std::string& shaderName)
 
 
     return shaderProgramID;
-}
-
-void ShaderManager::IncrementUseNumber(int shaderProgramID)
-{
-    std::list<ShaderProgramData>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [shaderProgramID](ShaderProgramData data) { return data.shaderProgramId == shaderProgramID; });
-
-    (*found).useNumber++;
 }
 
 void ShaderManager::UnloadShaderProgram(int shaderProgramID)
@@ -112,12 +113,11 @@ void ShaderManager::UnloadShaderProgram(int shaderProgramID)
     }
 }
 
-bool isWhitespace(char c) {
-    return std::isspace(static_cast<unsigned char>(c));
-}
+void ShaderManager::IncrementUseNumber(int shaderProgramID)
+{
+    std::list<ShaderProgramData>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [shaderProgramID](ShaderProgramData data) { return data.shaderProgramId == shaderProgramID; });
 
-bool isEmptyOrWhitespace(const std::string& str) {
-    return std::all_of(str.begin(), str.end(), isWhitespace);
+    (*found).useNumber++;
 }
 
 std::string ShaderManager::LoadShaderSource(const std::string& filePath)
@@ -212,34 +212,6 @@ inline void ShaderManager::CheckProgramLinkingSuccess(GLuint programId)
     }
 }
 
-void ShaderManager::Init()
-{
-    DepthShader = GetShaderProgram("origin/DepthShader");
-    CloudLightDepthShader = GetShaderProgram("origin/CloudLightDepthShader");
-}
-
-void ShaderManager::UnloadAll()
-{
-    for (ShaderProgramData data : loadedShaders) {
-        delete data.shader;
-    }
-    DepthShader = nullptr;
-    loadedShaders.clear();
-}
-
-
-Shader* ShaderManager::GetShaderProgram(const std::string& shaderName)
-{
-#if ENTIRE_SHADER_PROGRAM_PRECOMPILATION
-    unsigned int shaderProgramId = LoadShaderProgram(shaderName);
-#else
-    Shader* shader = LoadShaderProgramSHPR(shaderName);
-#endif
-
-    return shader;
-}
-
-
 inline Shader* ShaderManager::LoadShaderProgramSHPR(const std::string& shaderName)
 {
     size_t strHash = stringHash(shaderName);
@@ -252,7 +224,7 @@ inline Shader* ShaderManager::LoadShaderProgramSHPR(const std::string& shaderNam
 
         shader = new Shader(shaderProgram);
 
-        loadedShaders.push_back({ .shaderPathHash = strHash, .shaderProgramId = shaderProgram, .useNumber = 1, .shader = shader });
+        loadedShaders.push_back({ .shaderPathHash = strHash, .shaderName = shaderName, .shaderProgramId = shaderProgram, .useNumber = 1, .shader = shader });
     }
     else
     {
@@ -352,6 +324,45 @@ GLuint ShaderManager::CreateShaderProgramFromFile(const std::string& shaderProgr
     return shaderProgram;
 }
 
+void ShaderManager::Init()
+{
+    DepthShader = GetShaderProgram("origin/DepthShader");
+    CloudLightDepthShader = GetShaderProgram("origin/CloudLightDepthShader");
+}
+
+void ShaderManager::UnloadAll()
+{
+    for (ShaderProgramData data : loadedShaders) {
+        delete data.shader;
+    }
+    DepthShader = nullptr;
+    CloudLightDepthShader = nullptr;
+    loadedShaders.clear();
+}
+
+std::string ShaderManager::GetShaderName(const unsigned int shaderProgramId) {
+
+    std::list<ShaderProgramData>::iterator found = std::find_if(loadedShaders.begin(), loadedShaders.end(), [shaderProgramId](const ShaderProgramData data)
+        { 
+            return data.shaderProgramId == shaderProgramId; 
+        });
+
+    if (found == loadedShaders.end()) return "";
+
+    return found->shaderName;
+}
+
+Shader* ShaderManager::GetShaderProgram(const std::string& shaderName)
+{
+#if ENTIRE_SHADER_PROGRAM_PRECOMPILATION
+    unsigned int shaderProgramId = LoadShaderProgram(shaderName);
+#else
+    Shader* shader = LoadShaderProgramSHPR(shaderName);
+#endif
+
+    return shader;
+}
+
 Shader* ShaderManager::CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader)
 {
     size_t strHash = stringHash(shaderName);
@@ -376,7 +387,7 @@ Shader* ShaderManager::CreateShaderProgram(const std::string& shaderName, const 
 
         shader = new Shader(shaderProgram);
 
-        loadedShaders.push_back({ .shaderPathHash = strHash, .shaderProgramId = shaderProgram, .useNumber = 1, .shader = shader });
+        loadedShaders.push_back({ .shaderPathHash = strHash, .shaderName = shaderName, .shaderProgramId = shaderProgram, .useNumber = 1, .shader = shader });
     }
     else
     {

@@ -102,6 +102,18 @@ MaterialParameters* Material::GetMaterialParameters() const
 	return _materialData->materialParameters;
 }
 
+#if _DEBUG
+void Material::DrawEditor() {
+	ImGui::Text("Name: ");
+	ImGui::SameLine();
+	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+	ImGui::Text(Twin2Engine::Manager::ShaderManager::GetShaderName(_materialData->shader->GetProgramId()).c_str());
+	ImGui::PopFont();
+
+	_materialData->materialParameters->DrawEditor(_materialData->id);
+}
+#endif
+
 bool Twin2Engine::Graphic::operator<(const Material& material1, const Material& material2)
 {
 	return material1.GetId() < material2.GetId();

@@ -33,6 +33,17 @@ MaterialParameters::MaterialParameters(const STD140Struct& parameters, const map
 	_textures = textures;
 }
 
+#if _DEBUG
+void MaterialParameters::DrawEditor(size_t id) {
+
+	std::vector<std::string> paramsNames = _parameters.GetNames();
+	for (std::string param : paramsNames) {
+		
+		// GetType -> ChooseWhatToDraw -> Draw
+	}
+}
+#endif
+
 void MaterialParameters::SetTexture2D(const std::string& textureName, unsigned int textureId)
 {
 	size_t hashed = hasher(textureName);

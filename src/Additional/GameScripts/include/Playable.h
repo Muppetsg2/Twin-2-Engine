@@ -28,7 +28,6 @@ class HexTile;
 
 class Playable : public Twin2Engine::Core::Component {
 protected:
-    Tilemap::HexagonalTilemap* _tilemap = nullptr;
     virtual void OnDead() = 0;
 
 public:
@@ -37,6 +36,7 @@ public:
         float max;
     };
 
+    Tilemap::HexagonalTilemap* _tilemap = nullptr;
 
     std::list<std::pair<HexTile*, float>> albumTakingOverTiles;
 

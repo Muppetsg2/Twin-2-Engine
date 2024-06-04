@@ -358,14 +358,15 @@ void Player::StartPaperRockScissors(Playable* playable) {
 }
 
 void Player::WonPaperRockScissors(Playable* playable) {
-    //fightingPlayable->LostPaperRockScisors(this);
-
     GameManager::instance->minigameActive = false;
-
     CurrTile->isFighting = false;
-    if (CurrTile->takenEntity == fightingPlayable) {
+
+    playable->LostPaperRockScissors(this);
+
+    //if (CurrTile->takenEntity == playable) {
+    if (CurrTile->takenEntity != this) {
         CurrTile->ResetTile();
-        fightingPlayable->CheckIfDead(this);
+        playable->CheckIfDead(this);
 
         if (GameManager::instance->entities.size() == 1) {
             hexIndicator->SetActive(false);
@@ -378,10 +379,20 @@ void Player::WonPaperRockScissors(Playable* playable) {
 
 void Player::LostPaperRockScissors(Playable* playable) {
     GameManager::instance->minigameActive = false;
-
-    CurrTile->StopTakingOver(CurrTile->occupyingEntity);
     CurrTile->isFighting = false;
+
+    CurrTile->StopTakingOver(this);
     lost = true;
+
+    GameObject* tiles[6];
+    CurrTile->GetMapHexTile()->tile->GetAdjacentGameObjects(tiles);
+    for (int i = 0; i < 6; ++i) {
+        if (tiles[i] != nullptr) {
+            move->reachEnd = true;
+            move->MoveAndSetDestination(tiles[i]->GetComponent<HexTile>());
+            break;
+        }
+    }
 
     //HUDInfo* obj = FindObjectOfType<HUDInfo>();
     //if (obj != nullptr) {

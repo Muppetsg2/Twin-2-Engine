@@ -16,7 +16,6 @@
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Tools;
 
-class Path;
 class LineRenderer;
 class Seeker : public Component {
 };

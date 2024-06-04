@@ -10,10 +10,10 @@ class HexTileTextureData : public Twin2Engine::Core::ScriptableObject
 
    std::vector<std::vector<std::string>> _materialNames;
 
-   std::vector<std::vector<Twin2Engine::Graphic::Material>> DeserializationHelperMaterialNamesToMaterials(std::vector<std::vector<std::string>> materialNames);
+   std::vector<std::vector<Twin2Engine::Graphic::Material*>> DeserializationHelperMaterialNamesToMaterials(std::vector<std::vector<std::string>> materialNames);
 
 public:
-    std::vector<std::vector<Twin2Engine::Graphic::Material>> _materials;
+    std::vector<std::vector<Twin2Engine::Graphic::Material*>> _materials;
 
 
     SO_SERIALIZE()

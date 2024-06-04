@@ -175,7 +175,7 @@ YAML::Node GameManager::Serialize() const
     const size_t carMaterialsSize = _carMaterials.size();
     for (size_t index = 0ull; index < carMaterialsSize; ++index)
     {
-        carMaterialsStrings.push_back(MaterialsManager::GetMaterialName(_carMaterials[index].GetId()));
+        carMaterialsStrings.push_back(MaterialsManager::GetMaterialName(_carMaterials[index]->GetId()));
     }
     node["carMaterials"] = carMaterialsStrings;
 

@@ -27,7 +27,7 @@ void MeshRenderer::Register()
 	if (res) {
 		// EVENTS
 		if (OnStaticChangedId == -1) {
-			OnStaticChangedId = GetGameObject()->OnStaticChanged += [&](GameObject* g) -> void { OnGameObjectStaticChanged(g); };
+			OnStaticChangedId = GetGameObject()->OnStaticChangedEvent += [&](GameObject* g) -> void { OnGameObjectStaticChanged(g); };
 		}
 
 		if (OnTransformMatrixChangedId == -1) {
@@ -60,7 +60,7 @@ void MeshRenderer::Unregister()
 	if (res) {
 		// EVENTS
 		if (OnStaticChangedId != -1) {
-			GetGameObject()->OnStaticChanged -= OnStaticChangedId;
+			GetGameObject()->OnStaticChangedEvent -= OnStaticChangedId;
 			OnStaticChangedId = -1;
 		}
 
@@ -115,8 +115,9 @@ bool MeshRenderer::DrawInheritedFields()
 	clicked.clear();
 	if (node_open) {
 		for (int i = 0; i < _materials.size(); ++i) {
-			Material item = _materials[i];
-			string n = MaterialsManager::GetMaterialName(item.GetId()).append("##").append(id);
+			Material* item = _materials[i];
+			size_t num = _addNum[i];
+			string n = MaterialsManager::GetMaterialName(item->GetId()).append("##").append(id).append(std::to_string(num));
 			ImGui::Text(to_string(i + 1).append(". "s).c_str());
 			ImGui::SameLine();
 			ImGui::Selectable(n.c_str(), false, NULL, ImVec2(ImGui::GetContentRegionAvail().x - 80, 0.f));
@@ -126,7 +127,7 @@ bool MeshRenderer::DrawInheritedFields()
 
 			if (type == 1) {
 				ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
-				if (ImGui::Button(string("##Remove").append(id).append(std::to_string(i)).c_str())) {
+				if (ImGui::RemoveButton(string("##Remove").append(id).append(std::to_string(i)).c_str())) {
 					clicked.push_back(i);
 				}
 			}
@@ -136,8 +137,12 @@ bool MeshRenderer::DrawInheritedFields()
 				size_t i_next = i + (ImGui::GetMouseDragDelta(0).y < 0.f ? -1 : 1);
 				if (i_next >= 0 && i_next < _materials.size())
 				{
+					_addNum[i] = _addNum[i_next];
 					SetMaterial(i, _materials[i_next]);
+
+					_addNum[i_next] = num;
 					SetMaterial(i_next, item);
+
 					ImGui::ResetMouseDragDelta();
 				}
 			}
@@ -262,9 +267,32 @@ void MeshRenderer::OnTransformMatrixChanged(Transform* transform)
 
 void MeshRenderer::OnMaterialsErased()
 {
-	if (materialsErasedEventDone) return;
+	if (_materialsErasedEventDone) return;
 	Unregister();
-	materialsErasedEventDone = true;
+	_materialsErasedEventDone = true;
+}
+
+bool MeshRenderer::CheckMaterialsValidation()
+{
+	bool res = true;
+	for (size_t i = _materials.size(); i > 0; --i) {
+		if (!MaterialsManager::IsMaterialLoaded(_materials[i - 1]->GetId())) {
+			res = false;
+			_materialError = true;
+			Unregister();
+			_materials.erase(_materials.begin() + i - 1);
+
+#if _DEBUG
+			_next = _next > _addNum[i - 1] ? _addNum[i - 1] : _next;
+			_addNum.erase(_addNum.begin() + i - 1);
+#endif
+
+		}
+	}
+
+	Register();
+
+	return res;
 }
 
 void MeshRenderer::TransformUpdated()
@@ -273,6 +301,16 @@ void MeshRenderer::TransformUpdated()
 	if (!_meshesToUpdate)
 	{
 		_transformChanged = false;
+	}
+}
+
+void MeshRenderer::SetIsTransparent(bool value)
+{
+	if (_isTransparent != value) {
+		Unregister();
+		_isTransparent = value;
+		Register();
+		OnTransparentChangedEvent.Invoke(this);
 	}
 }
 
@@ -293,7 +331,15 @@ void MeshRenderer::Update()
 
 	if (_materials.size() == 0) OnMaterialsErased();
 
-	if (_materials.size() != 0 && materialsErasedEventDone) materialsErasedEventDone = false;
+	if (_materials.size() != 0) {
+
+		if (_materialsErasedEventDone) _materialsErasedEventDone = false;
+
+		if (!CheckMaterialsValidation()) {
+			if (_materialError) _materialError = false;
+			if (_materials.size() == 0) OnMaterialsErased();
+		}
+	}
 }
 
 void MeshRenderer::OnEnable()
@@ -320,6 +366,10 @@ void MeshRenderer::OnDestroy()
 	_loadedModel = 0;
 	_model = InstantiatingModel();
 	_materials.clear();
+
+#if _DEBUG
+	_addNum.clear();
+#endif
 }
 
 YAML::Node MeshRenderer::Serialize() const
@@ -329,7 +379,7 @@ YAML::Node MeshRenderer::Serialize() const
 	node["model"] = SceneManager::GetModelSaveIdx(_model.GetId());
 	node["materials"] = vector<size_t>();
 	for (const auto& mat : _materials) {
-		node["materials"].push_back(SceneManager::GetMaterialSaveIdx(mat.GetId()));
+		node["materials"].push_back(SceneManager::GetMaterialSaveIdx(mat->GetId()));
 	}
 	return node;
 }
@@ -342,8 +392,15 @@ bool MeshRenderer::Deserialize(const YAML::Node& node) {
 	_model = ModelsManager::GetModel(SceneManager::GetModel(node["model"].as<size_t>()));
 	_loadedModel = _model.GetId();
 
-	_materials = vector<Material>();
+	_materials = vector<Material*>();
 	for (const auto& mat : node["materials"]) {
+#if _DEBUG
+		_addNum.push_back(_next);
+
+		++_next;
+
+		while (std::find(_addNum.begin(), _addNum.end(), _next) != _addNum.end()) ++_next;
+#endif
 		_materials.push_back(MaterialsManager::GetMaterial(SceneManager::GetMaterial(mat.as<size_t>())));
 	}
 
@@ -439,12 +496,16 @@ void MeshRenderer::SetModel(size_t modelId)
 	SetModel(ModelsManager::GetModel(modelId));
 }
 
+bool MeshRenderer::IsMaterialError() const {
+	return _materialError;
+}
+
 size_t MeshRenderer::GetMaterialCount() const
 {
 	return _materials.size();
 }
 
-Material MeshRenderer::GetMaterial(size_t index) const
+Material* MeshRenderer::GetMaterial(size_t index) const
 {
 	if (_materials.size() == 0) return nullptr;
 
@@ -457,9 +518,18 @@ Material MeshRenderer::GetMaterial(size_t index) const
 	return _materials[index];
 }
 
-void MeshRenderer::AddMaterial(Material material)
+void MeshRenderer::AddMaterial(Material* material)
 {
+	if (material == nullptr) return;
 	Unregister();
+
+#if _DEBUG
+	_addNum.push_back(_next);
+
+	++_next;
+
+	while (std::find(_addNum.begin(), _addNum.end(), _next) != _addNum.end()) ++_next;
+#endif
 
 	_materials.push_back(material);
 
@@ -471,9 +541,9 @@ void MeshRenderer::AddMaterial(size_t materialId)
 	AddMaterial(MaterialsManager::GetMaterial(materialId));
 }
 
-void MeshRenderer::SetMaterial(size_t index, Material material)
+void MeshRenderer::SetMaterial(size_t index, Material* material)
 {
-	if (_materials[index] == material || index >= _materials.size()) return;
+	if (_materials[index] == material || index >= _materials.size() || material == nullptr) return;
 
 	Unregister();
 
@@ -493,6 +563,10 @@ void MeshRenderer::RemoveMaterial(size_t index)
 
 	Unregister();
 
+#if _DEBUG
+	_next = _addNum[index];
+	_addNum.erase(_addNum.begin() + index);
+#endif
 	_materials.erase(_materials.begin() + index);
 
 	if (_materials.size() != 0 && _loadedModel != 0) Register();

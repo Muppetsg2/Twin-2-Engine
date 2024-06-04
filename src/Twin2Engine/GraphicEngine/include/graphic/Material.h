@@ -23,23 +23,28 @@ namespace Twin2Engine
 		{
 			friend class Manager::MaterialsManager;
 
-			MaterialData* _materialData;
+			size_t _id;
+			Shader* _shader;
+			MaterialParameters* _materialParameters;
 
-			Material(MaterialData* materialData);
+			Material(MaterialData materialData);
 
 		public:
 			Material(const Material& other);
-			Material(Material&& other);
+			Material(Material&& other) noexcept;
 			Material(std::nullptr_t);
 			Material();
 
 			~Material();
 
+			/*
 			Material& operator=(const Material& other);
 			Material& operator=(Material&& other);
 			Material& operator=(std::nullptr_t);
 			bool operator==(std::nullptr_t);
 			bool operator!=(std::nullptr_t);
+			*/
+
 			bool operator==(const Material& other);
 			bool operator!=(const Material& other);
 

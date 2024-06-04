@@ -8,7 +8,7 @@ using namespace Generation;
 using namespace glm;
 using namespace std;
 
-std::vector<std::vector<Material>> HexTile::_coloredHexTileTextures;
+std::vector<std::vector<Material*>> HexTile::_coloredHexTileTextures;
 
 float HexTile::_takingStage1 = 30.0f;
 float HexTile::_takingStage2 = 60.0f;
@@ -195,19 +195,19 @@ void HexTile::UpdateTileColor()
 	{
 		if (percentage < _takingStage1)
 		{
-			_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][0].GetId());
+			_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][0]->GetId());
 		}
 		else if (percentage < _takingStage2)
 		{
-			_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][1].GetId());
+			_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][1]->GetId());
 		}
 		else if (percentage < _takingStage3)
 		{
-			_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][2].GetId());
+			_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][2]->GetId());
 		}
 		else
 		{
-			_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][3].GetId());
+			_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][3]->GetId());
 		}
 	}
 

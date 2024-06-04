@@ -65,19 +65,19 @@ Audio:
     path: res/music/acoustic-guitar.mp3
 Materials:
   - id: 0
-    path: hexagonMat
+    path: res/materials/hexagonMat.material
   - id: 1
-    path: Basic2
+    path: res/materials/Basic2.material
   - id: 2
-    path: metal
+    path: res/materials/metal.material
   - id: 3
-    path: textured
+    path: res/materials/textured.material
   - id: 4
-    path: deska
+    path: res/materials/deska.material
   - id: 5
-    path: wallMat
+    path: res/materials/wallMat.material
   - id: 6
-    path: roofMat
+    path: res/materials/roofMat.material
 Models:
   - id: 0
     path: res/models/AK47.obj

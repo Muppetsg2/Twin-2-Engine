@@ -20,7 +20,12 @@ namespace Twin2Engine::Core
 	protected:
 		CloneBaseFunc(MeshRenderer, RenderableComponent, _model, _materials)
 
-		std::vector<Graphic::Material> _materials = std::vector<Graphic::Material>();
+		std::vector<Graphic::Material*> _materials = std::vector<Graphic::Material*>();
+
+#if _DEBUG
+		size_t _next = 0;
+		std::vector<size_t> _addNum = std::vector<size_t>();
+#endif
 
 		void Register();
 		void Unregister();
@@ -37,7 +42,8 @@ namespace Twin2Engine::Core
 		bool _transformChanged = false;
 		unsigned int _meshesToUpdate = 0;
 
-		bool materialsErasedEventDone = false;
+		bool _materialsErasedEventDone = false;
+		bool _materialError = false;
 
 		// Events
 		int OnStaticChangedId = -1;
@@ -47,10 +53,13 @@ namespace Twin2Engine::Core
 		void OnGameObjectStaticChanged(GameObject* gameObject);
 		void OnTransformMatrixChanged(Transform* transform);
 		void OnMaterialsErased();
+		bool CheckMaterialsValidation();
 
 		void TransformUpdated();
 
 	public:
+
+		void SetIsTransparent(bool value) override;
 
 		virtual void Initialize() override;
 		virtual void Update() override;
@@ -76,11 +85,12 @@ namespace Twin2Engine::Core
 #pragma endregion
 
 #pragma region MATERIALS_PART
+		bool IsMaterialError() const;
 		size_t GetMaterialCount() const;
-		Graphic::Material GetMaterial(size_t index) const;
-		void AddMaterial(Graphic::Material material);
+		Graphic::Material* GetMaterial(size_t index) const;
+		void AddMaterial(Graphic::Material* material);
 		void AddMaterial(size_t materialId);
-		void SetMaterial(size_t index, Graphic::Material material);
+		void SetMaterial(size_t index, Graphic::Material* material);
 		void SetMaterial(size_t index, size_t materialId);
 		void RemoveMaterial(size_t index);
 #pragma endregion

@@ -126,7 +126,7 @@ YAML::Node PlaneGenerator::Serialize() const
     node["columns"] = _columns;
 	node["materials"] = vector<size_t>();
 	for (const auto& mat : _materials) {
-		node["materials"].push_back(SceneManager::GetMaterialSaveIdx(mat.GetId()));
+		node["materials"].push_back(SceneManager::GetMaterialSaveIdx(mat->GetId()));
 	}
     return node;
 }
@@ -140,7 +140,7 @@ bool PlaneGenerator::Deserialize(const YAML::Node& node)
 
     SetGridValues(node["rows"].as<unsigned int>(), node["columns"].as<unsigned int>());
 
-    _materials = vector<Material>();
+    _materials = vector<Material*>();
     for (const auto& mat : node["materials"]) {
         _materials.push_back(MaterialsManager::GetMaterial(SceneManager::GetMaterial(mat.as<size_t>())));
     }

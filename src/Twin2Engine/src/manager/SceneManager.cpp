@@ -266,7 +266,7 @@ void SceneManager::LoadScene() {
 #pragma endregion
 #pragma region LOADING_MATERIALS
 	unloader = [](size_t id) -> bool { MaterialsManager::UnloadMaterial(id); return true; };
-	loader = [](const string& path, size_t& id) -> bool { id = MaterialsManager::LoadMaterial(path).GetId(); return true; };
+	loader = [](const string& path, size_t& id) -> bool { id = MaterialsManager::LoadMaterial(path)->GetId(); return true; };
 	_materialsIds = LoadResources(pathGetter, idGetter, dataGetter, sceneToLoad->_materials, _materialsIds, unloader, loader);
 #pragma endregion
 #pragma region LOADING_MODELS
@@ -714,7 +714,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	_audiosIds = LoadResources(pathGetter, idGetter, dataGetter, prefab->_audios, _audiosIds, unloader, loader);
 #pragma endregion
 #pragma region LOADING_PREFAB_MATERIALS
-	loader = [](const string& path, size_t& id) -> bool { id = MaterialsManager::GetMaterial(path).GetId(); return true; };
+	loader = [](const string& path, size_t& id) -> bool { id = MaterialsManager::GetMaterial(path)->GetId(); return true; };
 	_materialsIds = LoadResources(pathGetter, idGetter, dataGetter, prefab->_materials, _materialsIds, unloader, loader);
 #pragma endregion
 #pragma region LOADING_PREFAB_MODELS

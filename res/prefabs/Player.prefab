@@ -17,7 +17,7 @@ Audio:
   []
 Materials:
   - id: 0
-    path: car/CarMaterial_Blue
+    path: res/materials/car/CarMaterial_Blue.material
 Models:
   - id: 0
     path: res/models/car.obj

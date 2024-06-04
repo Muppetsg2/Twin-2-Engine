@@ -6,6 +6,7 @@
 #include <core/Time.h>
 #include <cmath>
 #include <string>
+#include <UIScripts/MinigameManager.h>
 
 // PATH FINDING
 #include <AstarPathfinding/AStarPath.h>
@@ -21,6 +22,13 @@ using namespace AStar;
 void PlayerMovement::Initialize() {
 	//seeker = GetGameObject()->GetComponent<Seeker>();
     _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
+
+    //OnFinishMoving.AddCallback([](GameObject* playerGO, HexTile* destHexTile) {
+    //    Playable* occupyingEntity = destHexTile->occupyingEntity;
+    //    if (occupyingEntity != nullptr) {
+    //        MinigameManager::GetLastInstance()->StartMinigame(playerGO->GetComponent<Player>(), occupyingEntity);
+    //    }
+    //    });
 }
 
 void PlayerMovement::OnDestroy() {

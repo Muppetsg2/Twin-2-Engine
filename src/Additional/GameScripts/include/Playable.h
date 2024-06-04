@@ -32,10 +32,7 @@ public:
         float max;
     };
 
-    class AlbumHexTileTakingOverRecord {
-    public:
-        std::pair<HexTile*, float> Data;
-    };
+    Tilemap::HexagonalTilemap* _tilemap = nullptr;
 
     std::list<std::pair<HexTile*, float>> albumTakingOverTiles;
 

@@ -1,6 +1,7 @@
 #include <AreaTaking/HexTile.h>
 
 #include <Playable.h>
+#include <UIScripts/MinigameManager.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;
@@ -229,9 +230,13 @@ void HexTile::StartTakingOver(Playable* entity) {
 		occupyingEntity = entity;
 	}
 	else if (occupyingEntity != entity && !isFighting) {
-		entity->StartPaperRockScissors(occupyingEntity);
-		occupyingEntity->StartPaperRockScissors(entity);
-		isFighting = true;
+		//entity->StartPaperRockScissors(occupyingEntity);
+		//occupyingEntity->StartPaperRockScissors(entity);
+			GameManager::instance->minigameActive = true;
+			isFighting = true;
+			MinigameManager::GetLastInstance()->StartMinigame(entity, occupyingEntity);
+		if (occupyingEntity != nullptr) {
+		}
 	}
 }
 

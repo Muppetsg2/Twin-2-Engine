@@ -8,22 +8,28 @@ using namespace Generation;
 using namespace glm;
 using namespace std;
 
+TakingOverState Enemy::_takingOverState;
+MovingState Enemy::_movingState;
+FightingState Enemy::_fightingState;
+RadioStationState Enemy::_radioStationState;
+InitState Enemy::_initState;
+
+void Enemy::ChangeState(State<Enemy*>* newState) {
+    _stateMachine.ChangeState(this, newState);
+}
+
+void Enemy::SetMoveDestination(HexTile* tile)
+{
+    _movement->SetDestination(tile);
+}
+
 void Enemy::Initialize()
 {
     _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
     _movement = GetGameObject()->GetComponent<EnemyMovement>();
     list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
     _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend());
-
-    _movement->OnFindPathError += [&](GameObject* gameObject, HexTile* tile) {
-            PerformMovement();
-            //FinishedMovement(tile);
-        };
-    _movement->OnFinishMoving += [&](GameObject* gameObject, HexTile* tile) {
-        //PerformMovement();
-        FinishedMovement(tile);
-        };
-
+    ChangeState(&_initState);
 }
 
 
@@ -40,15 +46,10 @@ void Enemy::OnDestroy()
 
 void Enemy::Update()
 {
-    if (isTakingArea)
-    {
-        takingAreaCounter += Time::GetDeltaTime();
-        if (CurrTile->percentage >= targetPercentage)
-        {
-            takingAreaCounter = 0.0f;
-            isTakingArea = false;
-            PerformMovement();
-        }
+    _currThinkingTime -= Time::GetDeltaTime();
+    if (_currThinkingTime <= 0.f) {
+        _stateMachine.Update(this);
+        _currThinkingTime = _timeToThink;
     }
 }
 
@@ -106,10 +107,44 @@ void Enemy::PerformMovement()
 
 void Enemy::LostPaperRockScissors(Playable* playable)
 {
+    CurrTile->StopTakingOver(this);
+
+    GameObject* tiles[6];
+    CurrTile->GetMapHexTile()->tile->GetAdjacentGameObjects(tiles);
+    for (int i = 0; i < 6; ++i) {
+        if (tiles[i] != nullptr) {
+            _movement->reachEnd = true;
+            //_movement->MoveAndSetDestination(tiles[i]->GetComponent<HexTile>());
+            SetMoveDestination(tiles[i]->GetComponent<HexTile>());
+            break;
+        }
+    }
+    //PerformMovement();
 }
 
 void Enemy::WonPaperRockScissors(Playable* playable)
 {
+    //Enemy* enemy = dynamic_cast<Enemy*>(playable);
+    //if (enemy != nullptr)
+    //{
+    //    enemy->LostPaperRockScissors(this);
+    //    CurrTile->isFighting = false;
+    //}
+    CurrTile->isFighting = false;
+    playable->LostPaperRockScissors(this);
+
+    if (CurrTile->takenEntity == playable) {
+    //if (CurrTile->takenEntity != this) {
+        CurrTile->ResetTile();
+        playable->CheckIfDead(this);
+
+        //FinishedMovement(CurrTile);
+        CurrTile->StartTakingOver(this);
+
+    }
+
+    // TakeOver
+    //enemyStrategy.WonPaperRockScisors(this);
 }
 
 void Enemy::LostFansControl(Playable* playable)

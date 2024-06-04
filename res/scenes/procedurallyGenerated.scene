@@ -95,6 +95,30 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 12
+    path: res/textures/UI/drum.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 13
+    path: res/textures/UI/guitar.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 14
+    path: res/textures/UI/launchpad.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites:
   - id: 0
     alias: white_box
@@ -120,6 +144,15 @@ Sprites:
   - id: 7
     alias: TimeNMoney
     texture: 11
+  - id: 8
+    alias: drum
+    texture: 12
+  - id: 9
+    alias: guitar
+    texture: 13
+  - id: 10
+    alias: launchpad
+    texture: 14
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
@@ -840,12 +873,557 @@ GameObjects:
          - car/CarMaterial_Pink
     children:
       []
-  - id: 301
-    name: album
+  - id: 322
+    name: MinigameControllerPanel
     isStatic: false
     isActive: true
     transform:
-      id: 302
+      id: 323
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 324
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 960
+        height: 540
+        layer: 0
+      - id: 325
+        enabled: true
+        type: MinigameManager
+        MaxNumberOfTurns: 5
+        PlayerScoreId: 353
+        EnemyScoreId: 359
+        PlayerImageId: 344
+        EnemyImageId: 347
+        PlayerSelectionImageId: 362
+        EnemySelectionImageId: 365
+        RockButtonId: 333
+        PapperButtonId: 337
+        ScissorButtonId: 341
+    children:
+      - 326
+      - 330 
+      - 334
+      - 338
+      - 342
+      - 345
+      - 348
+      - 360
+      - 363
+  - id: 326
+    name: MinigameHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 327
+      enabled: true
+      position:
+        x: 0
+        y: 200
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 328
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 1
+          y: 0
+          z: 0
+          w: 1
+        width: 300
+        height: 50
+        layer: 1
+      - id: 329
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00B\x00i\x00t\x00w\x00a\x00 \x00o\x00 \x00d\x00o\x00m\x00i\x00n\x00a\x00c\x00j\x00e"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 250
+        height: 50
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 330
+    name: LaunchpadButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 331
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 332
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 10
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 128
+        height: 128
+        layer: 1
+      - id: 333
+        enabled: true
+        type: Button
+        width: 128
+        height: 128
+        interactable: true
+    children:
+      []
+  - id: 334
+    name: GuitarButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 335
+      enabled: true
+      position:
+        x: -100
+        y: -120
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 336
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 9
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 128
+        height: 128
+        layer: 1
+      - id: 337
+        enabled: true
+        type: Button
+        width: 128
+        height: 128
+        interactable: true
+    children:
+      []
+  - id: 338
+    name: DrumButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 339
+      enabled: true
+      position:
+        x: 100
+        y: -120
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 340
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 8
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 128
+        height: 128
+        layer: 1
+      - id: 341
+        enabled: true
+        type: Button
+        width: 128
+        height: 128
+        interactable: true
+    children:
+      []
+  - id: 342
+    name: PlayerMinigameImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 343
+      enabled: true
+      position:
+        x: -325
+        y: -50
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 344
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 0.5
+          y: 0.5
+          z: 0.5
+          w: 1
+        width: 175
+        height: 250
+        layer: 1
+    children:
+      []
+  - id: 345
+    name: EnemyMinigameImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 346
+      enabled: true
+      position:
+        x: 325
+        y: -50
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 347
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 0.5
+          y: 0.5
+          z: 0.5
+          w: 1
+        width: 175
+        height: 250
+        layer: 1
+    children:
+      []
+  - id: 348
+    name: MinigameScorePanel
+    isStatic: false
+    isActive: true
+    transform:
+      id: 349
+      enabled: true
+      position:
+        x: 0
+        y: 125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 350
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 0.5
+          y: 0.5
+          z: 0.5
+          w: 1
+        width: 100
+        height: 35
+        layer: 1
+    children:
+      - 351
+      - 354
+      - 357
+  - id: 351
+    name: MinigamePlayerScore
+    isStatic: false
+    isActive: true
+    transform:
+      id: 352
+      enabled: true
+      position:
+        x: -35
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 353
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x000"
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 60
+        height: 35
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<RIGHT> 2
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 354
+    name: MinigameScoreSeparator
+    isStatic: false
+    isActive: true
+    transform:
+      id: 355
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 356
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00:"
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 30
+        height: 35
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 357
+    name: MinigameEnemyScore
+    isStatic: false
+    isActive: true
+    transform:
+      id: 358
+      enabled: true
+      position:
+        x: 35
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 359
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x000"
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 60
+        height: 35
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 360
+    name: PlayerMinigameSelectionImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 361
+      enabled: true
+      position:
+        x: -175
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 362
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 0.8
+          y: 0.8
+          z: 0.8
+          w: 0.0
+        width: 72
+        height: 72
+        layer: 1
+    children:
+      []
+  - id: 363
+    name: EnemyMinigameSelectionImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 364
+      enabled: true
+      position:
+        x: 175
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 365
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 0.8
+          y: 0.8
+          z: 0.8
+          w: 0.0
+        width: 72
+        height: 72
+        layer: 1
+    children:
+      []
+  - id: 366
+    name: abilities
+    isStatic: false
+    isActive: true
+    transform:
+      id: 367
       enabled: true
       position:
         x: 0
@@ -860,7 +1438,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 303
+      - id: 368
         enabled: true
         type: Image
         isTransparent: false
@@ -874,15 +1452,15 @@ GameObjects:
         height: 200
         layer: 0
     children:
-      - 304
-      - 307
-      - 310
-  - id: 304
-    name: meeting
+      - 369
+      - 372
+      - 375
+  - id: 369
+    name: fansMeetingAbility
     isStatic: false
     isActive: true
     transform:
-      id: 305
+      id: 370
       enabled: true
       position:
         x: 0
@@ -897,7 +1475,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 306
+      - id: 371
         enabled: true
         type: Image
         isTransparent: false
@@ -910,14 +1488,20 @@ GameObjects:
         width: 100
         height: 100
         layer: 1
+      - id: 372
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
     children:
-      []
-  - id: 307
-    name: concert
+      - 386
+  - id: 372
+    name: concertAbility
     isStatic: false
     isActive: true
     transform:
-      id: 308
+      id: 373
       enabled: true
       position:
         x: 160
@@ -932,7 +1516,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 309
+      - id: 374
         enabled: true
         type: Image
         isTransparent: false
@@ -945,14 +1529,20 @@ GameObjects:
         width: 100
         height: 100
         layer: 1
+      - id: 375
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
     children:
-      []
-  - id: 310
-    name: album
+      - 387
+  - id: 375
+    name: albumAbility
     isStatic: false
     isActive: true
     transform:
-      id: 311
+      id: 376
       enabled: true
       position:
         x: -175
@@ -967,7 +1557,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 312
+      - id: 377
         enabled: true
         type: Image
         isTransparent: false
@@ -980,14 +1570,20 @@ GameObjects:
         width: 100
         height: 100
         layer: 1
+      - id: 378
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
     children:
-      []
-  - id: 313
-    name: album
+      - 385
+  - id: 378
+    name: TimeAndMoney
     isStatic: false
     isActive: true
     transform:
-      id: 314
+      id: 379
       enabled: true
       position:
         x: -660
@@ -1002,7 +1598,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 315
+      - id: 380
         enabled: true
         type: Image
         isTransparent: false
@@ -1016,14 +1612,16 @@ GameObjects:
         height: 300
         layer: 0
     children:
-      - 316
-      - 319
-  - id: 316
-    name: Date
+      - 381
+      - 388
+      - 389
+      - 384
+  - id: 381
+    name: DayText
     isStatic: false
     isActive: true
     transform:
-      id: 317
+      id: 382
       enabled: true
       position:
         x: -180
@@ -1038,11 +1636,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 318
+      - id: 383
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x001\x00 \x00-\x00Y\x00e\x00a\x00r\x00 \x002\x00 \x00-\x00 \x00M\x00o\x00n\x00t\x00h\x00s\x00 \x00:\x003\x000\x00 \x00D\x00a\x00y\x00s"
+        text: "\x00D\x00a\x00y\x00 \x001"
         font: 0
         size: 35
         autoSize: false
@@ -1062,12 +1660,100 @@ GameObjects:
         layer: 1
     children:
       []
-  - id: 319
-    name: Date
+  - id: 388
+    name: MonthText
     isStatic: false
     isActive: true
     transform:
-      id: 320
+      id: 393
+      enabled: true
+      position:
+        x: -80
+        y: 90
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 394
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00M\x00o\x00n\x00t\x00h\x00 \x001"
+        font: 0
+        size: 35
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 389
+    name: YearText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 395
+      enabled: true
+      position:
+        x: 40
+        y: 90
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 396
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00Y\x00e\x00a\x00r\x00 \x001"
+        font: 0
+        size: 35
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 384
+    name: MoneyText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 385
       enabled: true
       position:
         x: -180
@@ -1082,7 +1768,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 321
+      - id: 386
         enabled: true
         type: Text
         isTransparent: false
@@ -1100,6 +1786,138 @@ GameObjects:
           z: 1
           w: 1
         alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 385
+    name: albumAbilityText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 387
+      enabled: true
+      position:
+        x: 0
+        y: -65
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 388
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 386
+    name: fansMeetingAbilityText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 389
+      enabled: true
+      position:
+        x: 0
+        y: -65
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 390
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 387
+    name: concertAbilityText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 391
+      enabled: true
+      position:
+        x: 0
+        y: -65
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 392
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<CENTER> 1
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0

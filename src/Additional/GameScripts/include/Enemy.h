@@ -11,6 +11,14 @@
 
 #include <Playable.h>
 
+// STATES
+#include <StateMachine/StateMachine.h>
+#include <Enemy/FightingState.h>
+#include <Enemy/MovingState.h>
+#include <Enemy/RadioStationState.h>
+#include <Enemy/TakingOverState.h>
+#include <Enemy/InitState.h>
+
 class HexTile;
 class EnemyMovement;
 //class Playable;
@@ -21,6 +29,31 @@ class Enemy : public Playable {
 	Tilemap::HexagonalTilemap* _tilemap = nullptr;
 	EnemyMovement* _movement = nullptr;
 	std::vector<HexTile*> _tiles;
+
+	// GENERATIVE PARAMETERS
+	float _noteLuck = 50.f;
+	float _winChance = 33.33f;
+	float _drawChance = 33.33f;
+
+	// STATE MACHINE
+	float _timeToThink = .5f;
+	float _currThinkingTime = 0.f;
+	StateMachine<Enemy*> _stateMachine;
+
+	static TakingOverState _takingOverState;
+	static MovingState _movingState;
+	static FightingState _fightingState;
+	static RadioStationState _radioStationState;
+	static InitState _initState;
+
+	friend class TakingOverState;
+	friend class MovingState;
+	friend class FightingState;
+	friend class RadioStationState;
+	friend class InitState;
+
+	void ChangeState(State<Enemy*>* newState);
+	void SetMoveDestination(HexTile* tile);
 
 public:
 
@@ -39,8 +72,8 @@ public:
 	float fansCooldown = 1.0f;
 	float radioTime = 1.0f;
 
-	float paperRockScisorsWinLuck = 1.0f;
-	float paperRockScisorsDrawLuck = 1.0f;
+	float paperRockScisorsWinLuck  = 0.3f;
+	float paperRockScisorsDrawLuck = 0.4f;
 
 	float radioWinNoteLuck = 1.0f;
 	float albumUseLuck = 1.0f;

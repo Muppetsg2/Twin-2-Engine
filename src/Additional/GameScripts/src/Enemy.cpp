@@ -71,10 +71,44 @@ void Enemy::FinishedMovement(HexTile* hexTile)
 
 void Enemy::LostPaperRockScissors(Playable* playable)
 {
+    CurrTile->StopTakingOver(this);
+
+    GameObject* tiles[6];
+    CurrTile->GetMapHexTile()->tile->GetAdjacentGameObjects(tiles);
+    for (int i = 0; i < 6; ++i) {
+        if (tiles[i] != nullptr) {
+            _movement->reachEnd = true;
+            //_movement->MoveAndSetDestination(tiles[i]->GetComponent<HexTile>());
+            SetMoveDestination(tiles[i]->GetComponent<HexTile>());
+            break;
+        }
+    }
+    //PerformMovement();
 }
 
 void Enemy::WonPaperRockScissors(Playable* playable)
 {
+    //Enemy* enemy = dynamic_cast<Enemy*>(playable);
+    //if (enemy != nullptr)
+    //{
+    //    enemy->LostPaperRockScissors(this);
+    //    CurrTile->isFighting = false;
+    //}
+    CurrTile->isFighting = false;
+    playable->LostPaperRockScissors(this);
+
+    if (CurrTile->takenEntity == playable) {
+    //if (CurrTile->takenEntity != this) {
+        CurrTile->ResetTile();
+        playable->CheckIfDead(this);
+
+        //FinishedMovement(CurrTile);
+        CurrTile->StartTakingOver(this);
+
+    }
+
+    // TakeOver
+    //enemyStrategy.WonPaperRockScisors(this);
 }
 
 void Enemy::LostFansControl(Playable* playable)

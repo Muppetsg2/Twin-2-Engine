@@ -6,6 +6,8 @@
 #include <core/Input.h>
 #include <core/Time.h>
 
+#include <UIScripts/MinigameManager.h>
+
 // PATH FINDING
 #include <AstarPathfinding/AStarPath.h>
 #include <AstarPathfinding/AStarPathfinder.h>

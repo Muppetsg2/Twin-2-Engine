@@ -40,17 +40,34 @@ void Cloud::Update() {
 	//}
 	
 	startingScale += scaleVelocity * Time::GetDeltaTime();
-	transform->SetGlobalScale(startingScale);
+	//transform->SetGlobalScale(startingScale);
 
-	if (startingScale.x > 0.6f || startingScale.x < 0.4f) {
+	if (startingScale.x > 0.6f) {
+		startingScale.x = 0.6f;
 		scaleVelocity.x *= -1.0f;
 	}
-	if (startingScale.y > 0.6f || startingScale.y < 0.4f) {
+	else if (startingScale.x < 0.4f) {
+		startingScale.x = 0.4f;
+		scaleVelocity.x *= -1.0f;
+	}
+	if (startingScale.y > 0.6f) {
+		startingScale.y = 0.6f;
 		scaleVelocity.y *= -1.0f;
 	}
-	if (startingScale.z > 0.6f || startingScale.z < 0.4f) {
+	else if (startingScale.y < 0.4f) {
+		startingScale.y = 0.4f;
+		scaleVelocity.y *= -1.0f;
+	}
+	if (startingScale.z > 0.6f) {
+		startingScale.z = 0.6f;
 		scaleVelocity.z *= -1.0f;
 	}
+	else if (startingScale.z < 0.4f) {
+		startingScale.z = 0.4f;
+		scaleVelocity.z *= -1.0f;
+	}
+
+	transform->SetGlobalScale(startingScale);
 }
 
 void Cloud::OnEnable() {

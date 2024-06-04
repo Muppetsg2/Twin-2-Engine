@@ -19,6 +19,7 @@ const char* const tracy_RenderingImGui = "RenderingImGui";
 
 // GAME SCRIPTS
 #include <PlaneGenerator.h>
+#include <UIScripts/MinigameManager.h>
 
 
 // TILEMAP
@@ -265,6 +266,7 @@ int main(int, char**)
 #pragma region GAME_SCRIPTS_COMPONENTS
 
     ADD_COMPONENT("PlaneGenerator", PlaneGenerator);
+    ADD_COMPONENT("MinigameManager", MinigameManager);
 
 #pragma endregion
 

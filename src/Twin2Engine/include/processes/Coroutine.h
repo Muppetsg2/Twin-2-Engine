@@ -13,6 +13,7 @@ namespace Twin2Engine::Processes {
 		private:
 			std::thread t;
 			bool terminated = false;
+			bool used = false;
 			static void ThreadTask(Twin2Engine::Tools::Action<bool*> coroutineTask, bool* terminated) {
 				coroutineTask(terminated);
 			}
@@ -25,7 +26,14 @@ namespace Twin2Engine::Processes {
 			}
 
 			void Start() {
-				t = std::thread(ThreadTask, coroutineTask, &terminated);
+				if (!used) {
+					t = std::thread(ThreadTask, coroutineTask, &terminated);
+					used = true;
+				}
+				else {
+				std:thread t2 = std::thread(ThreadTask, coroutineTask, &terminated);
+					t.swap(t2);
+				}
 			}
 
 			void End() {

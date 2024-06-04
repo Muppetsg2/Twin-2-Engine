@@ -20,7 +20,6 @@ const char* const tracy_RenderingImGui = "RenderingImGui";
 // GAME SCRIPTS
 #include <PlaneGenerator.h>
 
-
 // TILEMAP
 #include <Tilemap/HexagonalTilemap.h>
 #include <Tilemap/HexagonalTile.h>
@@ -55,8 +54,8 @@ using namespace Humans;
 
 using namespace AStar;
 
-// CLOUD CONTROLLER
-#include <Clouds/CloudController.h>
+// ENEMY AI
+#include <EnemyAI/EnemyAI.h>
 
 // YAML CONVERTERS
 #include <tools/YamlConverters.h>
@@ -95,9 +94,6 @@ using namespace Generation::Generators;
 #include <Player.h>
 #include <Enemy.h>
 #include <EnemyMovement.h>
-#include <AreaTaking/GetMoneyFromTiles.h>
-#include <GameTimer.h>
-#include <Abilities/ConcertAbilityController.h>
 
 using namespace GameScripts;
 
@@ -258,10 +254,6 @@ int main(int, char**)
     ADD_COMPONENT("Enemy", Enemy);
     ADD_COMPONENT("EnemyMovement", EnemyMovement);
 
-    ADD_COMPONENT("ConcertAbilityController", ConcertAbilityController);
-    ADD_COMPONENT("MoneyGainFromTiles", MoneyGainFromTiles);
-    ADD_COMPONENT("GameTimer", GameTimer);
-
 #pragma region GAME_SCRIPTS_COMPONENTS
 
     ADD_COMPONENT("PlaneGenerator", PlaneGenerator);
@@ -333,8 +325,6 @@ int main(int, char**)
     };
 
     GameEngine::Start();
-
-    CloudController::DeleteInstance();
 
 #if _DEBUG
 

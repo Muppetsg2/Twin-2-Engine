@@ -133,7 +133,7 @@ void GraphicEngine::Render()
 	FrameMarkStart(tracy_RenderMeshesName);
 #endif
 
-	MeshRenderingManager::Render();
+	MeshRenderingManager::RenderStatic();
 
 #if TRACY_PROFILER
 	FrameMarkEnd(tracy_RenderMeshesName);

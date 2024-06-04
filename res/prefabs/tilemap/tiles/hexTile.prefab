@@ -81,7 +81,7 @@ Root:
     - id: 1
       enabled: true
       type: MapHexTile
-      hexTileType: 1
+      hexTileType: 0
     - id: 2
       enabled: true
       type: MeshRenderer

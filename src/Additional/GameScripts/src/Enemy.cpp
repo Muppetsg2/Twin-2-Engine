@@ -1,38 +1,36 @@
 #include <Enemy.h>
 #include <EnemyMovement.h>
 
+
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
 using namespace Generation;
 using namespace glm;
 using namespace std;
 
-TakingOverState Enemy::_takingOverState;
-MovingState Enemy::_movingState;
-FightingState Enemy::_fightingState;
-RadioStationState Enemy::_radioStationState;
-
-void Enemy::ChangeState(State<Enemy*>* newState) {
-    _stateMachine.ChangeState(this, newState);
-}
-
-void Enemy::SetMoveDestination(HexTile* tile)
-{
-    _movement->SetDestination(tile);
-}
-
 void Enemy::Initialize()
 {
-    Playable::Initialize();
+    _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
     _movement = GetGameObject()->GetComponent<EnemyMovement>();
     list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
     _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend());
+
+    _movement->OnFindPathError += [&](GameObject* gameObject, HexTile* tile) {
+            PerformMovement();
+            //FinishedMovement(tile);
+        };
+    _movement->OnFinishMoving += [&](GameObject* gameObject, HexTile* tile) {
+        //PerformMovement();
+        FinishedMovement(tile);
+        };
+
 }
 
 
 void Enemy::OnEnable()
 {
-    //PerformMovement();
+    SPDLOG_INFO("ENEMY OnEneable");
+    PerformMovement();
 }
 
 void Enemy::OnDestroy()
@@ -42,16 +40,14 @@ void Enemy::OnDestroy()
 
 void Enemy::Update()
 {
-    if (GameManager::instance->gameStarted) {
-        if (!_started) {
-            ChangeState(&_movingState);
-            _started = true;
-        }
-
-        _currThinkingTime -= Time::GetDeltaTime();
-        if (_currThinkingTime <= 0.f) {
-            _stateMachine.Update(this);
-            _currThinkingTime = _timeToThink;
+    if (isTakingArea)
+    {
+        takingAreaCounter += Time::GetDeltaTime();
+        if (CurrTile->percentage >= targetPercentage)
+        {
+            takingAreaCounter = 0.0f;
+            isTakingArea = false;
+            PerformMovement();
         }
     }
 }
@@ -67,6 +63,45 @@ void Enemy::FinishedMovement(HexTile* hexTile)
     isTakingArea = true;
     hexTile->StartTakingOver(this);
     targetPercentage = Random::Range(50.0f, 95.0f);
+}
+
+void Enemy::PerformMovement()
+{
+    vec3 globalPosition = GetTransform()->GetGlobalPosition();
+    globalPosition.y = 0.0f;
+
+    vec3 tilePosition;
+
+    vector<HexTile*> possible;
+    //possible.reserve((1 + _movement->maxSteps) / 2 * _movement->maxSteps * 6);
+    possible.reserve((1 + _movement->maxSteps) * _movement->maxSteps * 3);
+
+    list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
+    _tiles.clear();
+    _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend());
+
+    size_t size = _tiles.size();
+    float maxRadius = (_movement->maxSteps + 0.25) * _tilemap->GetDistanceBetweenTiles();
+
+    for (size_t index = 0ull; index < size; ++index)
+    {
+        MapHexTile::HexTileType type = _tiles[index]->GetMapHexTile()->type;
+        if (type != MapHexTile::HexTileType::Mountain && type != MapHexTile::HexTileType::None)
+        {
+            tilePosition = _tiles[index]->GetTransform()->GetGlobalPosition();
+            tilePosition.y = 0.0f;
+            float distance = glm::distance(globalPosition, tilePosition);
+            if (distance <= maxRadius)
+            {
+                possible.push_back(_tiles[index]);
+            }
+        }
+    }
+
+    SPDLOG_INFO("ENEMY Possible Size: {}", possible.size());
+    HexTile* result = possible[Random::Range(0ull, possible.size() - 1ull)];
+
+    _movement->SetDestination(result);
 }
 
 void Enemy::LostPaperRockScissors(Playable* playable)
@@ -93,17 +128,13 @@ void Enemy::StartFansControl(Playable* playable)
 {
 }
 
-float Enemy::GetMaxRadius() const {
-    return (_movement->maxSteps + 0.25) * _tilemap->GetDistanceBetweenTiles();
-}
-
 void Enemy::OnDead()
 {
 }
 
 YAML::Node Enemy::Serialize() const
 {
-    YAML::Node node = Playable::Serialize();
+    YAML::Node node = Component::Serialize();
     node["type"] = "Enemy";
 
     return node;
@@ -111,7 +142,7 @@ YAML::Node Enemy::Serialize() const
 
 bool Enemy::Deserialize(const YAML::Node& node)
 {
-    if (!Playable::Deserialize(node))
+    if (!Component::Deserialize(node))
         return false;
 
     return true;

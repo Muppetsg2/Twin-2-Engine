@@ -34,7 +34,7 @@ void EnemyMovement::OnDestroy() {
 void EnemyMovement::Update() {
     Transform* transform = GetTransform();
     glm::vec3 position = transform->GetGlobalPosition();
-    if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive)
+   if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive)
     {
 
     }

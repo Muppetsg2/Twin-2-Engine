@@ -1,49 +1,26 @@
 #pragma once 
 
+#include <manager/SceneManager.h>
+
+// TILEMAP
+#include <Tilemap/HexagonalTilemap.h>
+#include <AreaTaking/HexTile.h>
+
 // CORE
 #include <core/Random.h>
 
 #include <Playable.h>
 
-// STATES
-#include <StateMachine/StateMachine.h>
-#include <Enemy/FightingState.h>
-#include <Enemy/MovingState.h>
-#include <Enemy/RadioStationState.h>
-#include <Enemy/TakingOverState.h>
-
 class HexTile;
 class EnemyMovement;
+//class Playable;
 
 using namespace Twin2Engine::Core;
 
 class Enemy : public Playable {
+	Tilemap::HexagonalTilemap* _tilemap = nullptr;
 	EnemyMovement* _movement = nullptr;
 	std::vector<HexTile*> _tiles;
-
-	// GENERATIVE PARAMETERS
-	float _noteLuck = 50.f;
-	float _winChance = 33.33f;
-	float _drawChance = 33.33f;
-
-	// STATE MACHINE
-	bool _started = false;
-	float _timeToThink = .5f;
-	float _currThinkingTime = 0.f;
-	StateMachine<Enemy*> _stateMachine;
-
-	static TakingOverState _takingOverState;
-	static MovingState _movingState;
-	static FightingState _fightingState;
-	static RadioStationState _radioStationState;
-
-	friend class TakingOverState;
-	friend class MovingState;
-	friend class FightingState;
-	friend class RadioStationState;
-
-	void ChangeState(State<Enemy*>* newState);
-	void SetMoveDestination(HexTile* tile);
 
 public:
 
@@ -80,14 +57,14 @@ public:
 
 	void FinishedMovement(HexTile* hexTile);
 
+	void PerformMovement();
+
 	virtual void LostPaperRockScissors(Playable* playable) override;
 	virtual void WonPaperRockScissors(Playable* playable) override;
 	virtual void LostFansControl(Playable* playable) override;
 	virtual void WonFansControl(Playable* playable) override;
 	virtual void StartPaperRockScissors(Playable* playable) override;
 	virtual void StartFansControl(Playable* playable) override;
-
-	float GetMaxRadius() const override;
 
 protected:
 	virtual void OnDead() override;

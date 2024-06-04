@@ -853,11 +853,9 @@ namespace Twin2Engine::Tools {
 		}*/
 		virtual ~STD140Struct();
 
-		STD140Struct& operator=(STD140Struct& std140s);
-		STD140Struct& operator=(const STD140Struct& std140s);
-		STD140Struct& operator=(STD140Struct&& std140s);
-
-		CloneFuncDeclaration(STD140Struct)
+		STD140Struct& operator=(STD140Struct& std140s) = default;
+		STD140Struct& operator=(const STD140Struct& std140s) = default;
+		STD140Struct& operator=(STD140Struct&& std140s) = default;
 
 #pragma region ADD_SCALARS
 		template<class T>

@@ -117,30 +117,3 @@
     {\
         DO_FOR_EACH(CloneField, __VA_ARGS__)\
     }
-
-#define DecisionFunc(_Entity, _Type, valueName, body)\
-	[&](_Entity valueName) -> _Type {\
-		body\
-	}
-
-#define DecisionResult(value, node) \
-	{\
-		value,\
-		node\
-	}
-
-#define DecisionResults(...)\
-	{\
-		LIST_DO_FOR_EACH_PAIR(DecisionResult, __VA_ARGS__)\
-	}
-
-#define DecisionTreeDecisionMaker(_Entity, _Type, decision, results) \
-	new DecisionTreeDecisionMaker<_Entity, _Type>(\
-		decision,\
-		results\
-	)
-
-#define DecisionTreeLeaf(_Entity, dataName, body) \
-	new DecisionTreeLeaf<_Entity>([&](_Entity dataName) -> void {\
-		body\
-	})

@@ -101,7 +101,7 @@ GameObject* HexagonalTile::GetGameObject() const
 	return _gameObject;
 }
 
-void HexagonalTile::GetAdjacentTiles(HexagonalTile** out_AdjacentTiles) const
+inline void HexagonalTile::GetAdjacentTiles(HexagonalTile** out_AdjacentTiles) const
 {
 	const glm::ivec2* directions = (_position.y % 2) ? adjacentDirectionsOddY : adjacentDirectionsEvenY;
 

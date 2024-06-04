@@ -554,7 +554,7 @@ Collision* Collider::testCollision(Collider* collider, Collider* otherCollider, 
 			break;
 
 		case ColliderShape::HEXAGONAL:
-			collision = HexagonalSphereCollision(otherCollider, collider, separate);
+			return HexagonalSphereCollision(otherCollider, collider, separate);
 			if (collision != nullptr) {
 				t = collision->collider;
 				collision->collider = collision->otherCollider;

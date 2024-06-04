@@ -6,7 +6,6 @@
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
-using namespace Twin2Engine::UI;
 
 using namespace std;
 
@@ -17,22 +16,9 @@ void GameManager::Initialize() {
     if (instance == nullptr)
     {
         instance = this;
-        //prefabPlayer = PrefabManager::GetPrefab("res/prefabs/Player.prefab");
-        //enemyPrefab = PrefabManager::GetPrefab("res/prefabs/Enemy.prefab");
-        _dayText = SceneManager::FindObjectByName("DayText")->GetComponent<Text>();
-        _monthText = SceneManager::FindObjectByName("MonthText")->GetComponent<Text>();
-        _yearText = SceneManager::FindObjectByName("YearText")->GetComponent<Text>();
+        prefabPlayer = PrefabManager::GetPrefab("res/prefabs/Player.prefab");
+        enemyPrefab = PrefabManager::GetPrefab("res/prefabs/Enemy.prefab");
         
-        GameTimer::Instance()->OnDayTicked += [&](int day) {
-            _dayText->SetText(wstring(L"Day ").append(to_wstring(day)));
-            };
-        GameTimer::Instance()->OnMonthTicked += [&](int month) {
-            _monthText->SetText(wstring(L"Month ").append(to_wstring(month)));
-            };
-        GameTimer::Instance()->OnYearTicked += [&](int year) {
-            _yearText->SetText(wstring(L"Year ").append(to_wstring(year)));
-            };
-
         GeneratePlayer();
     }
     else
@@ -180,10 +166,7 @@ YAML::Node GameManager::Serialize() const
     node["type"] = "GameManager";
 
     if (enemyPrefab != nullptr) {
-        node["enemyPrefab"] = PrefabManager::GetPrefabPath(enemyPrefab);
-    }
-    if (prefabPlayer != nullptr) {
-        node["prefabPlayer"] = PrefabManager::GetPrefabPath(prefabPlayer);
+        node["enemyPrefab"] = SceneManager::GetPrefabSaveIdx(enemyPrefab->GetId());
     }
 
     vector<string> carMaterialsStrings;
@@ -206,9 +189,6 @@ bool GameManager::Deserialize(const YAML::Node& node)
 
     if (node["enemyPrefab"]) {
         enemyPrefab = PrefabManager::LoadPrefab(node["enemyPrefab"].as<string>());
-    }
-    if (node["prefabPlayer"]) {
-        prefabPlayer = PrefabManager::LoadPrefab(node["prefabPlayer"].as<string>());
     }
 
     _carMaterials.resize(node["carMaterials"].size());

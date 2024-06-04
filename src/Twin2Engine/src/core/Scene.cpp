@@ -93,7 +93,7 @@ void Scene::Deserialize(const YAML::Node& sceneNode)
 		}
 		else {
 			if (spriteNode["x"] || spriteNode["y"] || spriteNode["width"] || spriteNode["height"]) {
-				SPDLOG_ERROR("Nie podano wszystkich parametrow poprawnie: x, y, width, height");
+				SPDLOG_ERROR("Nie podano wszystkich parametr�w poprawnie: x, y, width, height");
 			}
 			AddSprite(spriteNode["id"].as<size_t>(), spriteNode["alias"].as<string>(), spriteNode["texture"].as<size_t>());
 		}

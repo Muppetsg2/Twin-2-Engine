@@ -4,14 +4,11 @@
 #include <core/GameObject.h>
 #include <core/Component.h>
 #include <core/Prefab.h>
+#include <vector>
 #include <graphic/Material.h>
-#include <ui/Text.h>
-
 #include <AreaTaking/HexTile.h>
 #include <Enemy.h>
 #include <Player.h>
-#include <GameTimer.h>
-
 //#include <pch.h>
 
 using namespace Twin2Engine::Core;
@@ -32,12 +29,6 @@ private:
 
     std::vector<int> freeColors{ 0, 1, 2, 3, 4, 5, 6 };
     std::vector<Twin2Engine::Graphic::Material> _carMaterials;
-
-
-
-    Twin2Engine::UI::Text* _dayText;
-    Twin2Engine::UI::Text* _monthText;
-    Twin2Engine::UI::Text* _yearText;
 
 public:
     static GameManager* instance;

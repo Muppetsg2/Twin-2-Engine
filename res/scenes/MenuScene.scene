@@ -618,12 +618,5 @@ GameObjects:
          - car/CarMaterial_Yellow
          - car/CarMaterial_Cyan
          - car/CarMaterial_Pink
-      - id: 104
-        enabled: true
-        type: GameTimer
-        secondsPerDay: 1
-        daysPerWeek: 7
-        weeksPerMonth: 4
-        monthsPerYear: 12
     children:
       []

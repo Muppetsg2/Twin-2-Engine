@@ -3,5 +3,5 @@
 template<class _Entity>
 class DecisionTreeNode {
 public:
-	virtual void ProcessNode(_Entity entity) = 0;
+	virtual void ProcessNode(_Entity* entity) = 0;
 };

@@ -62,66 +62,38 @@ bool STD140Offsets::_CheckVariable(const std::string& name) const
 
 STD140Offsets::~STD140Offsets()
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	Clear();
 }
 
 STD140Offsets::STD140Offsets(STD140Offsets& std140off)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	std140off.CloneTo(this);
 }
 
 STD140Offsets::STD140Offsets(const STD140Offsets& std140off)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	std140off.CloneTo(this);
 }
 
 STD140Offsets::STD140Offsets(STD140Offsets&& std140off)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	std140off.CloneTo(this);
 }
 
 STD140Offsets& STD140Offsets::operator=(STD140Offsets& std140off)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	std140off.CloneTo(this);
 	return *this;
 }
 
 STD140Offsets& STD140Offsets::operator=(const STD140Offsets& std140off)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	std140off.CloneTo(this);
 	return *this;
 }
 
 STD140Offsets& STD140Offsets::operator=(STD140Offsets&& std140off)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	std140off.CloneTo(this);
 	return *this;
 }

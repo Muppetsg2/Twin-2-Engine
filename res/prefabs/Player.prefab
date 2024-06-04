@@ -54,22 +54,8 @@ Root:
     - id: 4
       enabled: true
       type: Player
-      moneyFunction: res/scriptableobjects/MoneyFunctionData.so
     - id: 5
       enabled: true
       type: PlayerMovement
-    - id: 6
-      enabled: true
-      type: ConcertAbilityController
-      lastingTime: 10
-      moneyRequired: 10
-      cooldownTime: 5
-      takingOverSpeed: 50
-      moneyFunction: res/scriptableobjects/MoneyFunctionData.so
-    - id: 7
-      enabled: true
-      type: MoneyGainFromTiles
-      gainingInterval: 1
-      moneyBaseFactor: 1
   children:
     []

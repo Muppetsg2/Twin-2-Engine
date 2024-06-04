@@ -6,6 +6,8 @@
 #include <core/Input.h>
 #include <core/Time.h>
 
+#include <UIScripts/MinigameManager.h>
+
 // PATH FINDING
 #include <AstarPathfinding/AStarPath.h>
 #include <AstarPathfinding/AStarPathfinder.h>
@@ -34,7 +36,7 @@ void EnemyMovement::OnDestroy() {
 void EnemyMovement::Update() {
     Transform* transform = GetTransform();
     glm::vec3 position = transform->GetGlobalPosition();
-   if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive)
+    if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive)
     {
 
     }

@@ -50,12 +50,14 @@ void Enemy::Update()
 {
     if (isTakingArea)
     {
-        takingAreaCounter += Time::GetDeltaTime();
-        if (CurrTile->percentage >= targetPercentage)
-        {
-            takingAreaCounter = 0.0f;
-            isTakingArea = false;
-            PerformMovement();
+        if (!CurrTile->isFighting) {
+            takingAreaCounter += Time::GetDeltaTime();
+            if (CurrTile->percentage >= targetPercentage)
+            {
+                takingAreaCounter = 0.0f;
+                isTakingArea = false;
+                PerformMovement();
+            }
         }
     }
     _stateMachine.Update(this);
@@ -110,15 +112,43 @@ void Enemy::PerformMovement()
     SPDLOG_INFO("ENEMY Possible Size: {}", possible.size());
     HexTile* result = possible[Random::Range(0ull, possible.size() - 1ull)];
 
+    if (CurrTile != nullptr) {
+        CurrTile->StopTakingOver(this);
+    }
+
     _movement->SetDestination(result);
 }
 
 void Enemy::LostPaperRockScissors(Playable* playable)
 {
+    CurrTile->StopTakingOver(this);
+
+    PerformMovement();
 }
 
 void Enemy::WonPaperRockScissors(Playable* playable)
 {
+    //Enemy* enemy = dynamic_cast<Enemy*>(playable);
+    //if (enemy != nullptr)
+    //{
+    //    enemy->LostPaperRockScissors(this);
+    //    CurrTile->isFighting = false;
+    //}
+    CurrTile->isFighting = false;
+    playable->LostPaperRockScissors(this);
+
+    if (CurrTile->takenEntity == playable) {
+    //if (CurrTile->takenEntity != this) {
+        CurrTile->ResetTile();
+        playable->CheckIfDead(this);
+
+        //FinishedMovement(CurrTile);
+        CurrTile->StartTakingOver(this);
+
+    }
+
+    // TakeOver
+    //enemyStrategy.WonPaperRockScisors(this);
 }
 
 void Enemy::LostFansControl(Playable* playable)

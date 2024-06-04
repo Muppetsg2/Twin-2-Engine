@@ -64,7 +64,7 @@ public:
 	float fansCooldown = 1.0f;
 	float radioTime = 1.0f;
 
-	float paperRockScisorsWinLuck = 1.0f;
+	float paperRockScisorsWinLuck  = 1.0f;
 	float paperRockScisorsDrawLuck = 1.0f;
 
 	float radioWinNoteLuck = 1.0f;

@@ -1104,3 +1104,614 @@ GameObjects:
         layer: 1
     children:
       []
+  - id: 322
+    name: MinigameControllerPanel
+    isStatic: false
+    isActive: true
+    transform:
+      id: 323
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 324
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 960
+        height: 540
+        layer: 0
+      - id: 325
+        enabled: true
+        type: MinigameManager
+        MaxNumberOfTurns: 5
+        PlayerScoreId: 356
+        EnemyScoreId: 362
+        PlayerImageId: 347
+        EnemyImageId: 350
+        PlayerSelectionImageId: 365
+        EnemySelectionImageId: 368
+        RockButtonId: 333
+        PapperButtonId: 338
+        ScissorButtonId: 343
+    children:
+      - 326
+      - 330 
+      - 335
+      - 340
+      - 345
+      - 348
+      - 351
+      - 363
+      - 366
+  - id: 326
+    name: MinigameHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 327
+      enabled: true
+      position:
+        x: 0
+        y: 200
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 328
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 1
+          y: 0
+          z: 0
+          w: 1
+        width: 300
+        height: 50
+        layer: 1
+      - id: 329
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00B\x00i\x00t\x00w\x00a\x00 \x00o\x00 \x00d\x00o\x00m\x00i\x00n\x00a\x00c\x00j\x00e"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 250
+        height: 50
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 330
+    name: RockButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 331
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 332
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 1
+          y: 0
+          z: 0
+          w: 1
+        width: 250
+        height: 40
+        layer: 1
+      - id: 333
+        enabled: true
+        type: Button
+        width: 250
+        height: 40
+        interactable: true
+      - id: 334
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00R\x00o\x00c\x00k"
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 50
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 335
+    name: PaperButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 336
+      enabled: true
+      position:
+        x: 0
+        y: -80
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 337
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 0
+          y: 1
+          z: 0
+          w: 1
+        width: 250
+        height: 40
+        layer: 1
+      - id: 338
+        enabled: true
+        type: Button
+        width: 250
+        height: 40
+        interactable: true
+      - id: 339
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00P\x00a\x00p\x00p\x00e\x00r"
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 50
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 340
+    name: ScissorButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 341
+      enabled: true
+      position:
+        x: 0
+        y: -160
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 342
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 0
+          y: 0
+          z: 1
+          w: 1
+        width: 250
+        height: 40
+        layer: 1
+      - id: 343
+        enabled: true
+        type: Button
+        width: 250
+        height: 40
+        interactable: true
+      - id: 344
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00S\x00c\x00i\x00s\x00s\x00o\x00r"
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 50
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 345
+    name: PlayerMinigameImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 346
+      enabled: true
+      position:
+        x: -325
+        y: -50
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 347
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 0.5
+          y: 0.5
+          z: 0.5
+          w: 1
+        width: 175
+        height: 250
+        layer: 1
+    children:
+      []
+  - id: 348
+    name: PlayerEnemyImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 349
+      enabled: true
+      position:
+        x: 325
+        y: -50
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 350
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 0.5
+          y: 0.5
+          z: 0.5
+          w: 1
+        width: 175
+        height: 250
+        layer: 1
+    children:
+      []
+  - id: 351
+    name: MinigameScorePanel
+    isStatic: false
+    isActive: true
+    transform:
+      id: 352
+      enabled: true
+      position:
+        x: 0
+        y: 125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 353
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 0.5
+          y: 0.5
+          z: 0.5
+          w: 1
+        width: 100
+        height: 35
+        layer: 1
+    children:
+      - 354
+      - 357
+      - 360
+  - id: 354
+    name: MinigamePlayerScore
+    isStatic: false
+    isActive: true
+    transform:
+      id: 355
+      enabled: true
+      position:
+        x: -35
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 356
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x000"
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 60
+        height: 35
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<RIGHT> 2
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 357
+    name: MinigameScoreSeparator
+    isStatic: false
+    isActive: true
+    transform:
+      id: 358
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 359
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00:"
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 30
+        height: 35
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 360
+    name: MinigameEnemyScore
+    isStatic: false
+    isActive: true
+    transform:
+      id: 361
+      enabled: true
+      position:
+        x: 35
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 362
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x000"
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 60
+        height: 35
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 363
+    name: PlayerMinigameSelectionImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 364
+      enabled: true
+      position:
+        x: -175
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 365
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 0.5
+          y: 0.5
+          z: 0.5
+          w: 0.0
+        width: 50
+        height: 50
+        layer: 1
+    children:
+      []
+  - id: 366
+    name: EnemyMinigameSelectionImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 367
+      enabled: true
+      position:
+        x: 175
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 368
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 0.5
+          y: 0.5
+          z: 0.5
+          w: 0.0
+        width: 50
+        height: 50
+        layer: 1
+    children:
+      []

@@ -14,7 +14,7 @@ private:
     int daysCounter = 1;
     int weeksCounter = 1;
     int monthsCounter = 1;
-    int yearsCounter = 0;
+    int yearsCounter = 1;
 
     static int highestDaysCounter;
     static int highestWeeksCounter;

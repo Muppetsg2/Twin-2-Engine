@@ -27,12 +27,10 @@ void GameManager::Initialize() {
             _dayText->SetText(wstring(L"Day ").append(to_wstring(day)));
             };
         GameTimer::Instance()->OnMonthTicked += [&](int month) {
-            _dayText->SetText(wstring(L"Month ").append(to_wstring(month)));
+            _monthText->SetText(wstring(L"Month ").append(to_wstring(month)));
             };
         GameTimer::Instance()->OnYearTicked += [&](int year) {
-            _dayText->SetText(wstring(L"Year ").append(to_wstring(year)));
-            _dayText->SetText(wstring(L"Year ").append(to_wstring(year)));
-            _dayText->SetText(wstring(L"Year ").append(to_wstring(year)));
+            _yearText->SetText(wstring(L"Year ").append(to_wstring(year)));
             };
 
         GeneratePlayer();

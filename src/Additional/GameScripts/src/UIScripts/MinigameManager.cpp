@@ -49,7 +49,7 @@ void MinigameManager::SetupButtons()
 			}
 			});
 
-		playerChoice = Choice::ROCK;
+		playerChoice = Choice::LAUNCHPAD;
 		waitCoroutine->Start();
 		});
 
@@ -80,7 +80,7 @@ void MinigameManager::SetupButtons()
 			}
 			});
 
-		playerChoice = Choice::PAPER;
+		playerChoice = Choice::GUITAR;
 		waitCoroutine->Start();
 		});
 
@@ -111,7 +111,7 @@ void MinigameManager::SetupButtons()
 			}
 			});
 
-		playerChoice = Choice::SCISSOR;
+		playerChoice = Choice::DRUM;
 		waitCoroutine->Start();
 		});
 }
@@ -129,71 +129,89 @@ void MinigameManager::PerformTurn()
 	//if (percantage <= chanceForEnemyWin) {
 	if (chance <= (enemyLuckPoint + enemy->paperRockScisorsWinLuck)) {
 		switch (playerChoice) {
-		case Choice::ROCK:
-			enemyChoice = Choice::PAPER;
+		case Choice::LAUNCHPAD:
+			enemyChoice = Choice::GUITAR;
 			enemyWins += 1;
-			PlayerSelectionImage->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-			EnemySelectionImage->SetColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
+			EnemySelectionImage->SetColor(glm::vec4(1.0f));
+			PlayerSelectionImage->SetSprite("launchpad");
+			EnemySelectionImage->SetSprite("guitar");
 			break;
 
-		case Choice::PAPER:
-			enemyChoice = Choice::SCISSOR;
+		case Choice::GUITAR:
+			enemyChoice = Choice::DRUM;
 			enemyWins += 1;
-			PlayerSelectionImage->SetColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-			EnemySelectionImage->SetColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
+			EnemySelectionImage->SetColor(glm::vec4(1.0f));
+			PlayerSelectionImage->SetSprite("guitar");
+			EnemySelectionImage->SetSprite("drum");
 			break;
 
-		case Choice::SCISSOR:
-			enemyChoice = Choice::ROCK;
+		case Choice::DRUM:
+			enemyChoice = Choice::LAUNCHPAD;
 			enemyWins += 1;
-			PlayerSelectionImage->SetColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-			EnemySelectionImage->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
+			EnemySelectionImage->SetColor(glm::vec4(1.0f));
+			PlayerSelectionImage->SetSprite("drum");
+			EnemySelectionImage->SetSprite("launchpad");
 			break;
 		}
 	}
 	else if (drawchance > (enemyLuckPoint + enemy->paperRockScisorsDrawLuck)) {
 		switch (playerChoice) {
-		case Choice::ROCK:
-			enemyChoice = Choice::SCISSOR;
+		case Choice::LAUNCHPAD:
+			enemyChoice = Choice::DRUM;
 			playerWins += 1;
-			PlayerSelectionImage->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-			EnemySelectionImage->SetColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
+			EnemySelectionImage->SetColor(glm::vec4(1.0f));
+			PlayerSelectionImage->SetSprite("launchpad");
+			EnemySelectionImage->SetSprite("drum");
 			break;
 
-		case Choice::PAPER:
-			enemyChoice = Choice::ROCK;
+		case Choice::GUITAR:
+			enemyChoice = Choice::LAUNCHPAD;
 			playerWins += 1;
-			PlayerSelectionImage->SetColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-			EnemySelectionImage->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
+			EnemySelectionImage->SetColor(glm::vec4(1.0f));
+			PlayerSelectionImage->SetSprite("guitar");
+			EnemySelectionImage->SetSprite("launchpad");
 			break;
 
-		case Choice::SCISSOR:
-			enemyChoice = Choice::PAPER;
+		case Choice::DRUM:
+			enemyChoice = Choice::GUITAR;
 			playerWins += 1;
-			PlayerSelectionImage->SetColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-			EnemySelectionImage->SetColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
+			EnemySelectionImage->SetColor(glm::vec4(1.0f));
+			PlayerSelectionImage->SetSprite("drum");
+			EnemySelectionImage->SetSprite("guitar");
 			break;
 		}
 	}
 	else {
 		enemyChoice = playerChoice;
 		switch (playerChoice) {
-		case Choice::ROCK:
-			enemyChoice = Choice::SCISSOR;
-			PlayerSelectionImage->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-			EnemySelectionImage->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		case Choice::LAUNCHPAD:
+			enemyChoice = Choice::DRUM;
+			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
+			EnemySelectionImage->SetColor(glm::vec4(1.0f));
+			PlayerSelectionImage->SetSprite("launchpad");
+			EnemySelectionImage->SetSprite("drum");
 			break;
 
-		case Choice::PAPER:
-			enemyChoice = Choice::ROCK;
-			PlayerSelectionImage->SetColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-			EnemySelectionImage->SetColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+		case Choice::GUITAR:
+			enemyChoice = Choice::LAUNCHPAD;
+			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
+			EnemySelectionImage->SetColor(glm::vec4(1.0f));
+			PlayerSelectionImage->SetSprite("guitar");
+			EnemySelectionImage->SetSprite("launchpad");
 			break;
 
-		case Choice::SCISSOR:
-			enemyChoice = Choice::PAPER;
+		case Choice::DRUM:
+			enemyChoice = Choice::GUITAR;
 			PlayerSelectionImage->SetColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 			EnemySelectionImage->SetColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+			PlayerSelectionImage->SetSprite("drum");
+			EnemySelectionImage->SetSprite("guitar");
 			break;
 		}
 	}

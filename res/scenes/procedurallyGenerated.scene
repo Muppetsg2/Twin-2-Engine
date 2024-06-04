@@ -95,6 +95,30 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 12
+    path: res/textures/UI/drum.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 13
+    path: res/textures/UI/guitar.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 14
+    path: res/textures/UI/launchpad.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites:
   - id: 0
     alias: white_box
@@ -120,6 +144,15 @@ Sprites:
   - id: 7
     alias: TimeNMoney
     texture: 11
+  - id: 8
+    alias: drum
+    texture: 12
+  - id: 9
+    alias: guitar
+    texture: 13
+  - id: 10
+    alias: launchpad
+    texture: 14
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
@@ -1141,25 +1174,25 @@ GameObjects:
         enabled: true
         type: MinigameManager
         MaxNumberOfTurns: 5
-        PlayerScoreId: 356
-        EnemyScoreId: 362
-        PlayerImageId: 347
-        EnemyImageId: 350
-        PlayerSelectionImageId: 365
-        EnemySelectionImageId: 368
+        PlayerScoreId: 353
+        EnemyScoreId: 359
+        PlayerImageId: 344
+        EnemyImageId: 347
+        PlayerSelectionImageId: 362
+        EnemySelectionImageId: 365
         RockButtonId: 333
-        PapperButtonId: 338
-        ScissorButtonId: 343
+        PapperButtonId: 337
+        ScissorButtonId: 341
     children:
       - 326
       - 330 
-      - 335
-      - 340
+      - 334
+      - 338
+      - 342
       - 345
       - 348
-      - 351
+      - 360
       - 363
-      - 366
   - id: 326
     name: MinigameHeader
     isStatic: false
@@ -1218,7 +1251,7 @@ GameObjects:
     children:
       []
   - id: 330
-    name: RockButton
+    name: LaunchpadButton
     isStatic: false
     isActive: true
     transform:
@@ -1241,55 +1274,33 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 10
         color:
           x: 1
-          y: 0
-          z: 0
+          y: 1
+          z: 1
           w: 1
-        width: 250
-        height: 40
+        width: 128
+        height: 128
         layer: 1
       - id: 333
         enabled: true
         type: Button
-        width: 250
-        height: 40
+        width: 128
+        height: 128
         interactable: true
-      - id: 334
-        enabled: true
-        type: Text
-        isTransparent: false
-        text: "\x00R\x00o\x00c\x00k"
-        font: 0
-        size: 30
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 200
-        height: 50
-        color:
-          x: 0
-          y: 0
-          z: 0
-          w: 1
-        alignX: !<CENTER> 1
-        alignY: !<CENTER> 1
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 2
     children:
       []
-  - id: 335
-    name: PaperButton
+  - id: 334
+    name: GuitarButton
     isStatic: false
     isActive: true
     transform:
-      id: 336
+      id: 335
       enabled: true
       position:
-        x: 0
-        y: -80
+        x: -100
+        y: -120
         z: 0
       scale:
         x: 1
@@ -1300,121 +1311,112 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 337
+      - id: 336
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 9
         color:
-          x: 0
+          x: 1
           y: 1
-          z: 0
-          w: 1
-        width: 250
-        height: 40
-        layer: 1
-      - id: 338
-        enabled: true
-        type: Button
-        width: 250
-        height: 40
-        interactable: true
-      - id: 339
-        enabled: true
-        type: Text
-        isTransparent: false
-        text: "\x00P\x00a\x00p\x00p\x00e\x00r"
-        font: 0
-        size: 30
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 200
-        height: 50
-        color:
-          x: 0
-          y: 0
-          z: 0
-          w: 1
-        alignX: !<CENTER> 1
-        alignY: !<CENTER> 1
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 2
-    children:
-      []
-  - id: 340
-    name: ScissorButton
-    isStatic: false
-    isActive: true
-    transform:
-      id: 341
-      enabled: true
-      position:
-        x: 0
-        y: -160
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 342
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 0
-        color:
-          x: 0
-          y: 0
           z: 1
           w: 1
-        width: 250
-        height: 40
+        width: 128
+        height: 128
         layer: 1
-      - id: 343
+      - id: 337
         enabled: true
         type: Button
-        width: 250
-        height: 40
+        width: 128
+        height: 128
         interactable: true
+    children:
+      []
+  - id: 338
+    name: DrumButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 339
+      enabled: true
+      position:
+        x: 100
+        y: -120
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 340
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 8
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 128
+        height: 128
+        layer: 1
+      - id: 341
+        enabled: true
+        type: Button
+        width: 128
+        height: 128
+        interactable: true
+    children:
+      []
+  - id: 342
+    name: PlayerMinigameImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 343
+      enabled: true
+      position:
+        x: -325
+        y: -50
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
       - id: 344
         enabled: true
-        type: Text
+        type: Image
         isTransparent: false
-        text: "\x00S\x00c\x00i\x00s\x00s\x00o\x00r"
-        font: 0
-        size: 30
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 200
-        height: 50
+        sprite: 0
         color:
-          x: 0
-          y: 0
-          z: 0
+          x: 0.5
+          y: 0.5
+          z: 0.5
           w: 1
-        alignX: !<CENTER> 1
-        alignY: !<CENTER> 1
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 2
+        width: 175
+        height: 250
+        layer: 1
     children:
       []
   - id: 345
-    name: PlayerMinigameImage
+    name: EnemyMinigameImage
     isStatic: false
     isActive: true
     transform:
       id: 346
       enabled: true
       position:
-        x: -325
+        x: 325
         y: -50
         z: 0
       scale:
@@ -1442,15 +1444,15 @@ GameObjects:
     children:
       []
   - id: 348
-    name: PlayerEnemyImage
+    name: MinigameScorePanel
     isStatic: false
     isActive: true
     transform:
       id: 349
       enabled: true
       position:
-        x: 325
-        y: -50
+        x: 0
+        y: 125
         z: 0
       scale:
         x: 1
@@ -1471,54 +1473,19 @@ GameObjects:
           y: 0.5
           z: 0.5
           w: 1
-        width: 175
-        height: 250
-        layer: 1
-    children:
-      []
-  - id: 351
-    name: MinigameScorePanel
-    isStatic: false
-    isActive: true
-    transform:
-      id: 352
-      enabled: true
-      position:
-        x: 0
-        y: 125
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 353
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 0
-        color:
-          x: 0.5
-          y: 0.5
-          z: 0.5
-          w: 1
         width: 100
         height: 35
         layer: 1
     children:
+      - 351
       - 354
       - 357
-      - 360
-  - id: 354
+  - id: 351
     name: MinigamePlayerScore
     isStatic: false
     isActive: true
     transform:
-      id: 355
+      id: 352
       enabled: true
       position:
         x: -35
@@ -1533,7 +1500,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 356
+      - id: 353
         enabled: true
         type: Text
         isTransparent: false
@@ -1557,12 +1524,12 @@ GameObjects:
         layer: 2
     children:
       []
-  - id: 357
+  - id: 354
     name: MinigameScoreSeparator
     isStatic: false
     isActive: true
     transform:
-      id: 358
+      id: 355
       enabled: true
       position:
         x: 0
@@ -1577,7 +1544,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 359
+      - id: 356
         enabled: true
         type: Text
         isTransparent: false
@@ -1601,12 +1568,12 @@ GameObjects:
         layer: 2
     children:
       []
-  - id: 360
+  - id: 357
     name: MinigameEnemyScore
     isStatic: false
     isActive: true
     transform:
-      id: 361
+      id: 358
       enabled: true
       position:
         x: 35
@@ -1621,7 +1588,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 362
+      - id: 359
         enabled: true
         type: Text
         isTransparent: false
@@ -1645,15 +1612,50 @@ GameObjects:
         layer: 2
     children:
       []
-  - id: 363
+  - id: 360
     name: PlayerMinigameSelectionImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 361
+      enabled: true
+      position:
+        x: -175
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 362
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 0.8
+          y: 0.8
+          z: 0.8
+          w: 0.0
+        width: 72
+        height: 72
+        layer: 1
+    children:
+      []
+  - id: 363
+    name: EnemyMinigameSelectionImage
     isStatic: false
     isActive: true
     transform:
       id: 364
       enabled: true
       position:
-        x: -175
+        x: 175
         y: 25
         z: 0
       scale:
@@ -1671,47 +1673,12 @@ GameObjects:
         isTransparent: false
         sprite: 0
         color:
-          x: 0.5
-          y: 0.5
-          z: 0.5
+          x: 0.8
+          y: 0.8
+          z: 0.8
           w: 0.0
-        width: 50
-        height: 50
-        layer: 1
-    children:
-      []
-  - id: 366
-    name: EnemyMinigameSelectionImage
-    isStatic: false
-    isActive: true
-    transform:
-      id: 367
-      enabled: true
-      position:
-        x: 175
-        y: 25
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 368
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 0
-        color:
-          x: 0.5
-          y: 0.5
-          z: 0.5
-          w: 0.0
-        width: 50
-        height: 50
+        width: 72
+        height: 72
         layer: 1
     children:
       []

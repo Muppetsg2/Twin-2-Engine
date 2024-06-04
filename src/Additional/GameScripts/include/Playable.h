@@ -113,6 +113,7 @@ public:
 #pragma region FansMeetingAbility
     void FansControlDraw();
     void UseFans();
+    void UpdateFans();
     void FansEnd();
     void FansExit();
 #pragma endregion

@@ -111,10 +111,10 @@ bool GameTimer::Deserialize(const YAML::Node& node)
     if (!node["secondsPerDay"] && !node["daysPerWeek"] && !node["weeksPerMonth"] && !node["monthsPerYear"] && !Component::Deserialize(node))
         return false;
 
-    secondsPerDay = node["secondsPerDay"].as<float>();
-    daysPerWeek = node["daysPerWeek"].as<float>();
-    weeksPerMonth = node["weeksPerMonth"].as<float>();
-    monthsPerYear = node["monthsPerYear"].as<float>();
+    secondsPerDay = node["secondsPerDay"].as<int>();
+    daysPerWeek = node["daysPerWeek"].as<int>();
+    weeksPerMonth = node["weeksPerMonth"].as<int>();
+    monthsPerYear = node["monthsPerYear"].as<int>();
 
     return true;
 }

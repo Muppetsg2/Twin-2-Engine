@@ -88,7 +88,7 @@ public:
     float fansStartMoney;
     float albumStartMoney;
 
-    //MoneyFunctionData* functionData;
+    MoneyFunctionData* moneyFunction;
     //MoneyGainFromTiles* money;
 
     virtual void Initialize() override;

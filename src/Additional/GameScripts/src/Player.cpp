@@ -450,7 +450,7 @@ void Player::OnDead() {
 
 YAML::Node Player::Serialize() const
 {
-    YAML::Node node = Component::Serialize();
+    YAML::Node node = Playable::Serialize();
     node["type"] = "Player";
 
     return node;
@@ -458,7 +458,7 @@ YAML::Node Player::Serialize() const
 
 bool Player::Deserialize(const YAML::Node& node)
 {
-    if (!Component::Deserialize(node))
+    if (!Playable::Deserialize(node))
         return false;
 
     return true;

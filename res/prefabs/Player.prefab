@@ -54,6 +54,7 @@ Root:
     - id: 4
       enabled: true
       type: Player
+      moneyFunction: res/scriptableobjects/MoneyFunctionData.so
     - id: 5
       enabled: true
       type: PlayerMovement
@@ -64,6 +65,7 @@ Root:
       moneyRequired: 10
       cooldownTime: 5
       takingOverSpeed: 50
+      moneyFunction: res/scriptableobjects/MoneyFunctionData.so
     - id: 7
       enabled: true
       type: MoneyGainFromTiles

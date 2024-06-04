@@ -846,15 +846,15 @@ GameObjects:
     children:
       []
   - id: 301
-    name: album
+    name: abilities
     isStatic: false
     isActive: true
     transform:
       id: 302
       enabled: true
       position:
-        x: 0
-        y: -325
+        x: -860
+        y: -52
         z: 0
       scale:
         x: 1
@@ -863,7 +863,7 @@ GameObjects:
       rotation:
         x: 0
         y: 0
-        z: 0
+        z: -90
     components:
       - id: 303
         enabled: true
@@ -883,7 +883,7 @@ GameObjects:
       - 307
       - 310
   - id: 304
-    name: meeting
+    name: fansMeetingAbility
     isStatic: false
     isActive: true
     transform:
@@ -900,7 +900,7 @@ GameObjects:
       rotation:
         x: 0
         y: 0
-        z: 0
+        z: 90
     components:
       - id: 306
         enabled: true
@@ -915,10 +915,16 @@ GameObjects:
         width: 100
         height: 100
         layer: 1
+      - id: 307
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
     children:
-      []
+      - 321
   - id: 307
-    name: concert
+    name: concertAbility
     isStatic: false
     isActive: true
     transform:
@@ -935,7 +941,7 @@ GameObjects:
       rotation:
         x: 0
         y: 0
-        z: 0
+        z: 90
     components:
       - id: 309
         enabled: true
@@ -950,10 +956,16 @@ GameObjects:
         width: 100
         height: 100
         layer: 1
+      - id: 310
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
     children:
-      []
+      - 322
   - id: 310
-    name: album
+    name: albumAbility
     isStatic: false
     isActive: true
     transform:
@@ -970,7 +982,7 @@ GameObjects:
       rotation:
         x: 0
         y: 0
-        z: 0
+        z: 90
     components:
       - id: 312
         enabled: true
@@ -985,8 +997,14 @@ GameObjects:
         width: 100
         height: 100
         layer: 1
+      - id: 313
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
     children:
-      []
+      - 320
   - id: 313
     name: album
     isStatic: false
@@ -1088,6 +1106,138 @@ GameObjects:
         z: 0
     components:
       - id: 321
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 320
+    name: albumAbilityText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 322
+      enabled: true
+      position:
+        x: 150
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 323
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 321
+    name: fansMeetingAbilityText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 324
+      enabled: true
+      position:
+        x: 150
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 325
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 322
+    name: concertAbilityText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 326
+      enabled: true
+      position:
+        x: 150
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 327
         enabled: true
         type: Text
         isTransparent: false

@@ -196,6 +196,24 @@ void Playable::UseFans() {
 
     isFansActive = true;
 }
+void Playable::UpdateFans()
+{
+    if (currFansTime > 0.0f) {
+        currFansTime -= Time::GetDeltaTime();
+        if (currFansTime <= 0.0f) {
+            currFansCooldown = fansCooldown;
+            currFansTime = 0.0f;
+            FansEnd();
+        }
+    }
+    else if (currFansCooldown > 0.0f)
+    {
+        currFansCooldown -= Time::GetDeltaTime();
+        if (currFansCooldown <= 0.0f) {
+            currFansCooldown = 0.0f;
+        }
+    }
+}
 
 void Playable::FansEnd() {
     SPDLOG_INFO("Ending Fans");

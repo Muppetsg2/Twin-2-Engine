@@ -828,13 +828,14 @@ GameObjects:
         enabled: true
         type: GameTimer
         secondsPerDay: 1
-        daysPerWeek: 7
-        weeksPerMonth: 4
+        daysPerWeek: 30
+        weeksPerMonth: 1
         monthsPerYear: 12
       - id: 104
         enabled: true
         type: GameManager
         enemyPrefab: res/prefabs/Enemy.prefab
+        prefabPlayer: res/prefabs/Player.prefab
         carMaterials:
          - car/CarMaterial_Blue
          - car/CarMaterial_Red
@@ -846,15 +847,15 @@ GameObjects:
     children:
       []
   - id: 301
-    name: album
+    name: abilities
     isStatic: false
     isActive: true
     transform:
       id: 302
       enabled: true
       position:
-        x: 0
-        y: -325
+        x: -860
+        y: -52
         z: 0
       scale:
         x: 1
@@ -863,7 +864,7 @@ GameObjects:
       rotation:
         x: 0
         y: 0
-        z: 0
+        z: -90
     components:
       - id: 303
         enabled: true
@@ -883,7 +884,7 @@ GameObjects:
       - 307
       - 310
   - id: 304
-    name: meeting
+    name: fansMeetingAbility
     isStatic: false
     isActive: true
     transform:
@@ -900,7 +901,7 @@ GameObjects:
       rotation:
         x: 0
         y: 0
-        z: 0
+        z: 90
     components:
       - id: 306
         enabled: true
@@ -915,10 +916,16 @@ GameObjects:
         width: 100
         height: 100
         layer: 1
+      - id: 307
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
     children:
-      []
+      - 321
   - id: 307
-    name: concert
+    name: concertAbility
     isStatic: false
     isActive: true
     transform:
@@ -935,7 +942,7 @@ GameObjects:
       rotation:
         x: 0
         y: 0
-        z: 0
+        z: 90
     components:
       - id: 309
         enabled: true
@@ -950,10 +957,16 @@ GameObjects:
         width: 100
         height: 100
         layer: 1
+      - id: 310
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
     children:
-      []
+      - 322
   - id: 310
-    name: album
+    name: albumAbility
     isStatic: false
     isActive: true
     transform:
@@ -970,7 +983,7 @@ GameObjects:
       rotation:
         x: 0
         y: 0
-        z: 0
+        z: 90
     components:
       - id: 312
         enabled: true
@@ -985,8 +998,14 @@ GameObjects:
         width: 100
         height: 100
         layer: 1
+      - id: 313
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
     children:
-      []
+      - 320
   - id: 313
     name: album
     isStatic: false
@@ -1022,9 +1041,11 @@ GameObjects:
         layer: 0
     children:
       - 316
+      - 323
+      - 324
       - 319
   - id: 316
-    name: Date
+    name: DayText
     isStatic: false
     isActive: true
     transform:
@@ -1047,7 +1068,95 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x001\x00 \x00-\x00Y\x00e\x00a\x00r\x00 \x002\x00 \x00-\x00 \x00M\x00o\x00n\x00t\x00h\x00s\x00 \x00:\x003\x000\x00 \x00D\x00a\x00y\x00s"
+        text: "\x00D\x00a\x00y\x00 \x001"
+        font: 0
+        size: 35
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 323
+    name: MonthText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 328
+      enabled: true
+      position:
+        x: -80
+        y: 90
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 329
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00M\x00o\x00n\x00t\x00h\x00 \x001"
+        font: 0
+        size: 35
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 324
+    name: YearText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 330
+      enabled: true
+      position:
+        x: 40
+        y: 90
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 331
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00Y\x00e\x00a\x00r\x00 \x001"
         font: 0
         size: 35
         autoSize: false
@@ -1068,7 +1177,7 @@ GameObjects:
     children:
       []
   - id: 319
-    name: Date
+    name: MoneyText
     isStatic: false
     isActive: true
     transform:
@@ -1088,6 +1197,138 @@ GameObjects:
         z: 0
     components:
       - id: 321
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 320
+    name: albumAbilityText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 322
+      enabled: true
+      position:
+        x: 150
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 323
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 321
+    name: fansMeetingAbilityText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 324
+      enabled: true
+      position:
+        x: 150
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 325
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 322
+    name: concertAbilityText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 326
+      enabled: true
+      position:
+        x: 150
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 327
         enabled: true
         type: Text
         isTransparent: false

@@ -3,7 +3,7 @@
 #include <EnemyMovement.h>
 #include <Abilities/ConcertAbilityController.h>
 
-DecisionTree<Enemy*, bool> MovingState::_decisionTree{
+DecisionTree<Enemy*, bool> MovingState::_whileMovingDecisionTree{
 	[&](Enemy* enemy) -> bool {
 		// money >= albumPrice && GlobalAvg(Enemy) <= 50% && albumCooldown <= 0 && !albumActive
 		return enemy->GetGameObject()->GetComponent<MoneyGainFromTiles>()->money >= enemy->albumRequiredMoney 
@@ -22,8 +22,8 @@ DecisionTree<Enemy*, bool> MovingState::_decisionTree{
 				[&](Enemy* enemy) -> bool {
 					// money >= concertPrice && !concertActive && concertCooldown <= 0
 					// TODO: ConcertData
-					float currMoney = 0.f;
-					float concertRequiredMoney = 1.f;
+					ConcertAbilityController* c = enemy->GetGameObject()->GetComponent<ConcertAbilityController>();
+					float concertRequiredMoney = 0.f;
 					bool concertIsActive = true;
 					float concertCooldown = 1.f;
 					return enemy->GetGameObject()->GetComponent<MoneyGainFromTiles>()->money >= concertRequiredMoney
@@ -35,107 +35,109 @@ DecisionTree<Enemy*, bool> MovingState::_decisionTree{
 						new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
 							ConcertAbility(enemy);
 						})
+					}
+				}
+			)
+		}
+	}
+};
+
+DecisionTree<Enemy*, bool> MovingState::_afterMoveDecisionTree{
+	[&](Enemy* enemy) -> bool {
+		// LocalAvg(Enemy) >= 50% && LocalTilesTaken(Enemy) == 6 && !PlayerInMoveRange && !RadioStationInRange
+		std::vector<HexTile*> inMoveRangeTiles = enemy->GetInMoveRangeTiles();
+		bool playerInMoveRange = false;
+		bool radioStationInMoveRange = false;
+		for (auto& tile : inMoveRangeTiles) {
+			if (tile->occupyingEntity != nullptr && tile->occupyingEntity != enemy) {
+				playerInMoveRange = true;
+			}
+			if (tile->GetMapHexTile()->type == MapHexTile::HexTileType::RadioStation) {
+				radioStationInMoveRange = true;
+			}
+		}
+		inMoveRangeTiles.clear();
+		return enemy->LocalAvg() >= 50.f && enemy->GetLocalTakenTiles().size() == 6 && !playerInMoveRange && !radioStationInMoveRange;
+	},
+	{
+		{
+			true,
+			new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
+				// IDZIE DO RADIO STACJI
+				RadioStation(enemy);
+			})
+		},
+		{
+			false,
+			new DecisionTreeDecisionMaker<Enemy*, bool>(
+				[&](Enemy* enemy) -> bool {
+					// PlayerInMoveRange && (PlayerOnEnemyTile || PlayerTiles == 1) && EnemyIsStrongerThanPlayer
+					std::vector<HexTile*> inMoveRangeTiles = enemy->GetInMoveRangeTiles();
+					bool playerInMoveRange = false;
+					bool playerOnEnemyTile = false;
+					size_t playerTiles = 0;
+					bool enemyIsStrongerThanPlayer = false;
+					for (auto& tile : inMoveRangeTiles) {
+						if (tile->occupyingEntity != nullptr && tile->occupyingEntity != enemy) {
+							if (playerTiles > tile->occupyingEntity->OwnTiles.size() || !playerInMoveRange) {
+								playerTiles = tile->occupyingEntity->OwnTiles.size();
+							}
+							if (tile->takenEntity == enemy) {
+								playerOnEnemyTile = true;
+							}
+							playerInMoveRange = true;
+
+							if (tile->occupyingEntity->FightPowerScore() - enemy->FightPowerScore() < 0.f) {
+								enemyIsStrongerThanPlayer = true;
+							}
+						}
+					}
+					inMoveRangeTiles.clear();
+
+					return playerInMoveRange && (playerOnEnemyTile || playerTiles == 1) && enemyIsStrongerThanPlayer;
+				},
+				{
+					{
+						true,
+						new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
+							// IDZIE DO WALKI
+							Fight(enemy);
+						})
 					},
 					{
 						false,
 						new DecisionTreeDecisionMaker<Enemy*, bool>(
 							[&](Enemy* enemy) -> bool {
-								// LocalAvg(Enemy) >= 50% && LocalTilesTaken(Enemy) == 6 && !PlayerInMoveRange && !RadioStationInRange
-								std::vector<HexTile*> inMoveRangeTiles = enemy->GetInMoveRangeTiles();
-								bool playerInMoveRange = false;
-								bool radioStationInMoveRange = false;
-								for (auto& tile : inMoveRangeTiles) {
-									if (tile->occupyingEntity != nullptr && tile->occupyingEntity != enemy) {
-										playerInMoveRange = true;
-									}
-									if (tile->GetMapHexTile()->type == MapHexTile::HexTileType::RadioStation) {
-										radioStationInMoveRange = true;
-									}
+								if (enemy->CurrTile == nullptr) {
+									return true;
 								}
-								inMoveRangeTiles.clear();
-								return enemy->LocalAvg() >= 50.f && enemy->GetLocalTakenTiles().size() == 6 && !playerInMoveRange && !radioStationInMoveRange;
+
+								// Sprawdzenie do kogo nale¿y CurrTile
+								// ((!EnemyTile && (!PlayerTile || (PlayerTile && Percent <= 50))) || (EnemyTile && Percent <= 50))
+								if (enemy->CurrTile->takenEntity == enemy) {
+									return enemy->CurrTile->percentage <= 50.f;
+								}
+								else if (enemy->CurrTile->takenEntity != nullptr) {
+									return enemy->CurrTile->percentage <= 50.f;
+								}
+								else {
+									return true;
+								}
 							},
 							{
 								{
 									true,
 									new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
-										// IDZIE DO RADIO STACJI
-										RadioStation(enemy);
+										// Zostaje na polu i je przejmuje
+										StartTakingOver(enemy);
 									})
 								},
 								{
 									false,
-									new DecisionTreeDecisionMaker<Enemy*, bool>(
-										[&](Enemy* enemy) -> bool {
-											// PlayerInMoveRange && (PlayerOnEnemyTile || PlayerTiles == 1) && EnemyIsStrongerThanPlayer
-											std::vector<HexTile*> inMoveRangeTiles = enemy->GetInMoveRangeTiles();
-											bool playerInMoveRange = false;
-											bool playerOnEnemyTile = false;
-											size_t playerTiles = 0;
-											bool enemyIsStrongerThanPlayer = false;
-											for (auto& tile : inMoveRangeTiles) {
-												if (tile->occupyingEntity != nullptr && tile->occupyingEntity != enemy) {
-													if (playerTiles > tile->occupyingEntity->OwnTiles.size() || !playerInMoveRange) {
-														playerTiles = tile->occupyingEntity->OwnTiles.size();
-													}
-													if (tile->takenEntity == enemy) {
-														playerOnEnemyTile = true;
-													}
-													playerInMoveRange = true;
-
-													if (tile->occupyingEntity->FightPowerScore() - enemy->FightPowerScore() < 0.f) {
-														enemyIsStrongerThanPlayer = true;
-													}
-												}
-											}
-											inMoveRangeTiles.clear();
-
-											return playerInMoveRange && (playerOnEnemyTile || playerTiles == 1) && enemyIsStrongerThanPlayer;
-										},
-										{
-											{
-												true,
-												new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
-													// IDZIE DO WALKI
-													Fight(enemy);
-												})
-											},
-											{
-												false,
-												new DecisionTreeDecisionMaker<Enemy*, bool>(
-													[&](Enemy* enemy) -> bool {
-														// Sprawdzenie do kogo nale¿y CurrTile
-														// ((!EnemyTile && (!PlayerTile || (PlayerTile && Percent <= 50))) || (EnemyTile && Percent <= 50))
-														if (enemy->CurrTile->takenEntity == enemy) {
-															return enemy->CurrTile->percentage <= 50.f;
-														}
-														else if (enemy->CurrTile->takenEntity != nullptr) {
-															return enemy->CurrTile->percentage <= 50.f;
-														}
-														else {
-															return true;
-														}
-													},
-													{
-														{
-															true,
-															new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
-																// Zostaje na polu i je przejmuje
-																StartTakingOver(enemy);
-															})
-														},
-														{
-															false,
-															new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
-																// idzie na inne dowolne pole
-																Move(enemy);
-															})
-														}
-													}
-												)
-											}
-										}
-									)
+									new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
+										// idzie na inne dowolne pole
+										Move(enemy);
+									})
 								}
 							}
 						)
@@ -302,14 +304,17 @@ void MovingState::Enter(Enemy* enemy)
 
 	SPDLOG_INFO("Enter Moving State");
 	
-	size_t ofpeId = (enemy->_movement->OnFindPathError += [&](GameObject* gameObject, HexTile* tile) {
+	size_t ofpeId = (enemy->_movement->OnFindPathError += [enemy](GameObject* gameObject, HexTile* tile) {
 		ChooseTile(enemy);
 	});
-	size_t ofmId = (enemy->_movement->OnFinishMoving += [&](GameObject* gameObject, HexTile* tile) {
+	size_t ofmId = (enemy->_movement->OnFinishMoving += [enemy](GameObject* gameObject, HexTile* tile) {
 		enemy->FinishedMovement(tile);
+		_afterMoveDecisionTree.ProcessNode(enemy);
 	});
 
 	_eventsIds[enemy] = { ofpeId, ofmId };
+
+	ChooseTile(enemy);
 }
 
 void MovingState::Update(Enemy* enemy)
@@ -319,7 +324,7 @@ void MovingState::Update(Enemy* enemy)
 #endif
 
 	SPDLOG_INFO("Update Moving State");
-	_decisionTree.ProcessNode(enemy);
+	_whileMovingDecisionTree.ProcessNode(enemy);
 }
 
 void MovingState::Exit(Enemy* enemy)

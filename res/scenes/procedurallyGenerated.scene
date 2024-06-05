@@ -910,6 +910,9 @@ GameObjects:
         monthsPerYear: 12
       - id: 104
         enabled: true
+        type: ConcertRoad
+      - id: 105
+        enabled: true
         type: GameManager
         enemyPrefab: res/prefabs/Enemy.prefab
         prefabPlayer: res/prefabs/Player.prefab

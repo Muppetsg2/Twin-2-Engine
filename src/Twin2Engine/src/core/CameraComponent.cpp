@@ -172,17 +172,13 @@ void CameraComponent::GenerateSSAONoiseTexture()
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-static float normpdf(float x, float sigma) {
-	return 0.39894 * exp(-0.5 * x * x / (sigma * sigma)) / sigma;
-}
-
-void CameraComponent::UpdateGaussianKernel()
+void CameraComponent::GenerateBlurKernel()
 {
 	float sigma = 7.0;
-	int kSize = (_gaussianMSize - 1) / 2;
+	int kSize = (_blurMSize - 1) / 2;
 	for (int j = 0; j <= kSize; ++j)
 	{
-		_gaussianKernel[kSize + j] = _gaussianKernel[kSize - j] = normpdf(float(j), sigma);
+		_blurKernel[kSize + j] = _blurKernel[kSize - j] = normpdf(float(j), sigma);
 	}
 }
 
@@ -346,6 +342,18 @@ void CameraComponent::SetFarPlane(float value)
 void CameraComponent::SetNearPlane(float value)
 {
 	_near = value;
+}
+
+void CameraComponent::SetBlurMatrixSize(size_t mSize) {
+	if (mSize < 0) mSize = 0;
+	else if (mSize > 40) mSize = 40;
+
+	if (_blurMSize != mSize) {
+		_blurMSize = mSize;
+		if (_blurMSize != 0) {
+			GenerateBlurKernel();
+		}
+	}
 }
 
 void CameraComponent::SetCameraFilter(uint8_t filters)
@@ -512,18 +520,6 @@ void CameraComponent::SetFrustumCulling(bool value)
 void CameraComponent::SetSSAO(bool value)
 {
 	_isSsao = value;
-}
-
-void CameraComponent::SetGaussianMSize(size_t mSize) {
-	if (mSize < 0) mSize = 0;
-	else if (mSize > 40) mSize = 40;
-
-	if (_gaussianMSize != mSize) {
-		_gaussianMSize = mSize;
-		if (_gaussianMSize != 0) {
-			UpdateGaussianKernel();
-		}
-	}
 }
 
 void CameraComponent::Render()
@@ -707,8 +703,8 @@ void CameraComponent::Render()
 		_screenShader->SetInt("depthTexture", 1);
 		_screenShader->SetInt("ssaoTexture", 2);
 
-		_screenShader->SetInt("gaussianMSize", _gaussianMSize);
-		_screenShader->SetFloatArray("gaussianKernel", _gaussianKernel, 40);
+		_screenShader->SetInt("blurMSize", _blurMSize);
+		_screenShader->SetFloatArray("blurKernel", _blurKernel, 40);
 
 		_screenShader->SetBool("hasBlur", ((uint8_t)_filters & (uint8_t)CameraRenderFilter::BLUR) != 0);
 		_screenShader->SetBool("hasVignette", (_filters & (uint8_t)CameraRenderFilter::VIGNETTE) != 0);
@@ -1231,27 +1227,31 @@ void CameraComponent::DrawEditor()
 		ImGui::EndDisabled();
 
 		if (this->_depthOfField2) {
-			float quadratic = this->_quadraticDepthOfField;
-			if (ImGui::InputFloat(string("Quadratic Depth Of Field##").append(id).c_str(), &quadratic)) {
-				if (this->_quadraticDepthOfField != quadratic) {
-					this->_quadraticDepthOfField = quadratic;
+			
+			float v = this->_quadraticDepthOfField;
+			if (ImGui::InputFloat(string("Quadratic Depth Of Field##").append(id).c_str(), &v)) {
+				if (v != this->_quadraticDepthOfField) {
+					this->_quadraticDepthOfField = v;
 				}
 			}
-			float linear = this->_linearDepthOfField;
-			if (ImGui::InputFloat(string("Linear Depth Of Field##").append(id).c_str(), &linear)) {
-				if (this->_linearDepthOfField != linear) {
-					this->_linearDepthOfField = linear;
+			
+			v = this->_linearDepthOfField;
+			if (ImGui::InputFloat(string("Linear Depth Of Field##").append(id).c_str(), &v)) {
+				if (v != this->_linearDepthOfField) {
+					this->_linearDepthOfField = v;
 				}
 			}
-			float constant = this->_constantDepthOfField;
-			if (ImGui::InputFloat(string("Constant Depth Of Field##").append(id).c_str(), &constant)) {
-				if (this->_constantDepthOfField != constant) {
-					this->_constantDepthOfField = constant;
+			
+			v = this->_constantDepthOfField;
+			if (ImGui::InputFloat(string("Constant Depth Of Field##").append(id).c_str(), &v)) {
+				if (v != this->_constantDepthOfField) {
+					this->_constantDepthOfField = v;
 				}
-				int mSize = this->_gaussianMSize;
-				if (ImGui::DragInt(string("Gaussian Blure Power##").append(id).c_str(), &mSize, 1.0f, 0, 40)) {
-					SetGaussianMSize(mSize);
-				}
+			}
+
+			unsigned int mSize = this->_blurMSize;
+			if (ImGui::DragUInt(string("Gaussian Blur Power##").append(id).c_str(), &mSize, 1.0f, 0, 40)) {
+				SetBlurMatrixSize(mSize);
 			}
 		}
 

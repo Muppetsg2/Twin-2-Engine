@@ -1,11 +1,5 @@
 #pragma once 
 
-#include <manager/SceneManager.h>
-
-// TILEMAP
-#include <Tilemap/HexagonalTilemap.h>
-#include <AreaTaking/HexTile.h>
-
 // CORE
 #include <core/Random.h>
 
@@ -21,12 +15,10 @@
 
 class HexTile;
 class EnemyMovement;
-//class Playable;
 
 using namespace Twin2Engine::Core;
 
 class Enemy : public Playable {
-	Tilemap::HexagonalTilemap* _tilemap = nullptr;
 	EnemyMovement* _movement = nullptr;
 	std::vector<HexTile*> _tiles;
 
@@ -90,14 +82,14 @@ public:
 
 	void FinishedMovement(HexTile* hexTile);
 
-	void PerformMovement();
-
 	virtual void LostPaperRockScissors(Playable* playable) override;
 	virtual void WonPaperRockScissors(Playable* playable) override;
 	virtual void LostFansControl(Playable* playable) override;
 	virtual void WonFansControl(Playable* playable) override;
 	virtual void StartPaperRockScissors(Playable* playable) override;
 	virtual void StartFansControl(Playable* playable) override;
+
+	float GetMaxRadius() const override;
 
 protected:
 	virtual void OnDead() override;

@@ -142,6 +142,13 @@ bool PlaneGenerator::Deserialize(const YAML::Node& node)
 
     _materials = vector<Material*>();
     for (const auto& mat : node["materials"]) {
+#if _DEBUG
+        _addNum.push_back(_next);
+
+        ++_next;
+
+        while (std::find(_addNum.begin(), _addNum.end(), _next) != _addNum.end()) ++_next;
+#endif
         _materials.push_back(MaterialsManager::GetMaterial(SceneManager::GetMaterial(mat.as<size_t>())));
     }
 

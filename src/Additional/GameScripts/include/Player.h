@@ -7,27 +7,57 @@
 #include <GameManager.h>
 #include <Patrons/PatronData.h>
 
+
+#include <ui/Button.h>
+#include <ui/Text.h>
+
+#include <core/Input.h>
+
 //using namespace Twin2Engine::Core;
 
 //class Playable;
 class PlayerMovement;
+class ConcertAbilityController;
+class MoneyGainFromTiles;
 
 class Player : public Playable {
 private:
     //static Mesh* hexMesh;
     Twin2Engine::Core::GameObject* hexIndicator;
-    //TextMeshProUGUI* albumTimer;
-    //Button* albumButton;
-    //TextMeshProUGUI* fansTimer;
-    //Button* fansButton;
+    Tilemap::HexagonalTilemap* _tilemap = nullptr;
+    ConcertAbilityController* concertAbility;
+
+    MoneyGainFromTiles* money;
+
     PlayerMovement* move;
     bool lost;
-    float currAlbumTime;
-    float currAlbumCooldown;
-    float currFansTime;
-    float currFansCooldown;
+
     Playable* fightingPlayable = nullptr;
     //Coroutine* fansCorountine;
+
+
+    // Player UI
+    // Album
+    Twin2Engine::UI::Text* albumText;
+    Twin2Engine::UI::Button* albumButton;
+    Twin2Engine::Core::GameObject* albumButtonObject;
+    size_t albumButtonEventHandleId;
+    size_t albumButtonDestroyedEventHandleId;
+    // FansMeeting
+    Twin2Engine::UI::Text* fansMeetingText;
+    Twin2Engine::UI::Button* fansMeetingButton;
+    Twin2Engine::Core::GameObject* fansMeetingButtonObject;
+    size_t fansMeetingButtonEventHandleId;
+    size_t fansMeetingButtonDestroyedEventHandleId;
+    //Concert
+    Twin2Engine::UI::Text* concertText;
+    Twin2Engine::UI::Button* concertButton;
+    Twin2Engine::Core::GameObject* concertButtonObject;
+    size_t concertButtonEventHandleId;
+    size_t concertButtonDestroyedEventHandleId;
+    // Money
+    Twin2Engine::UI::Text* moneyText;
+
 
 public:
 
@@ -35,7 +65,8 @@ public:
     virtual void Update() override;
 
     void AlbumCall();
-    void FansCall();
+    void FansMeetingCall();
+    void ConcertCall();
     void FansControlDraw();
     void StartMove(HexTile* tile);
     void FinishMove(HexTile* tile);
@@ -54,6 +85,8 @@ public:
     virtual void WonFansControl(Playable* playable) override;
     virtual void StartPaperRockScissors(Playable* playable) override;
     virtual void StartFansControl(Playable* playable) override;
+
+    float GetMaxRadius() const override;
 
 protected:
     virtual void OnDead() override;

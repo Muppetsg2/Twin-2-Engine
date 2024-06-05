@@ -1,6 +1,11 @@
 #include <Player.h>
+#include <manager/SceneManager.h>
+#include <Abilities/ConcertAbilityController.h>
+#include <AreaTaking/GetMoneyFromTiles.h>
 
-//using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Manager;
+using namespace Twin2Engine::UI;
 
 
 
@@ -8,8 +13,74 @@
 
 
 void Player::Initialize() {
+    Playable::Initialize();
+
     InitPrices();
     CreateIndicator();
+    _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
+    concertAbility = GetGameObject()->GetComponent<ConcertAbilityController>();
+    money = GetGameObject()->GetComponent<MoneyGainFromTiles>();
+
+    // ALBUM ABILITY INTIALIZATION
+    albumButtonObject = SceneManager::FindObjectByName("albumAbility");
+    albumButton = albumButtonObject->GetComponent<Button>();
+    albumText = SceneManager::FindObjectByName("albumAbilityText")->GetComponent<Text>();
+
+    albumButtonEventHandleId = albumButton->GetOnClickEvent() += [&]() { AlbumCall(); };
+
+    albumButtonDestroyedEventHandleId = albumButtonObject->OnDestroyedEvent += [&](GameObject* gameObject) {
+        if (albumButton)
+        {
+            SPDLOG_INFO("GameObject OnDestroyed: {}", albumButtonDestroyedEventHandleId);
+            albumButtonObject->OnDestroyedEvent -= albumButtonDestroyedEventHandleId;
+            albumButtonObject = nullptr;
+            SPDLOG_INFO("buttonEventHandleId: {}", albumButtonEventHandleId);
+            albumButton->GetOnClickEvent() -= albumButtonEventHandleId;
+            albumButton = nullptr;
+        }
+        };
+
+    // FANS MEETING ABILITY INTIALIZATION
+    fansMeetingButtonObject = SceneManager::FindObjectByName("fansMeetingAbility");
+    fansMeetingButton = fansMeetingButtonObject->GetComponent<Button>();
+    fansMeetingText = SceneManager::FindObjectByName("fansMeetingAbilityText")->GetComponent<Text>();
+
+    fansMeetingButtonEventHandleId = fansMeetingButton->GetOnClickEvent() += [&]() { FansMeetingCall(); };
+
+    fansMeetingButtonDestroyedEventHandleId = fansMeetingButtonObject->OnDestroyedEvent += [&](GameObject* gameObject) {
+        if (fansMeetingButton)
+        {
+            SPDLOG_INFO("GameObject OnDestroyed: {}", fansMeetingButtonDestroyedEventHandleId);
+            fansMeetingButtonObject->OnDestroyedEvent -= fansMeetingButtonDestroyedEventHandleId;
+            fansMeetingButtonObject = nullptr;
+            SPDLOG_INFO("buttonEventHandleId: {}", fansMeetingButtonEventHandleId);
+            fansMeetingButton->GetOnClickEvent() -= fansMeetingButtonEventHandleId;
+            fansMeetingButton = nullptr;
+        }
+        };
+
+    // CONCERT ABILITY INTIALIZATION
+    concertButtonObject = SceneManager::FindObjectByName("concertAbility");
+    concertButton = concertButtonObject->GetComponent<Button>();
+    concertText = SceneManager::FindObjectByName("concertAbilityText")->GetComponent<Text>();
+
+    concertButtonEventHandleId = concertButton->GetOnClickEvent() += [&]() { ConcertCall(); };
+
+    concertButtonDestroyedEventHandleId = concertButtonObject->OnDestroyedEvent += [&](GameObject* gameObject) {
+            if (concertButton)
+            {
+                SPDLOG_INFO("GameObject OnDestroyed: {}", concertButtonDestroyedEventHandleId);
+                concertButtonObject->OnDestroyedEvent -= concertButtonDestroyedEventHandleId;
+                concertButtonObject = nullptr;
+                SPDLOG_INFO("buttonEventHandleId: {}", concertButtonEventHandleId);
+                concertButton->GetOnClickEvent() -= concertButtonEventHandleId;
+                concertButton = nullptr;
+            }
+        };
+
+    // MONEY UI INITIALIZATION
+    moneyText = SceneManager::FindObjectByName("MoneyText")->GetComponent<Text>();
+
 
     //if (hexMesh == nullptr) hexMesh = HexGenerator::GenerateHexMesh(0.4f, 0.5f, 0.0f, 0.0f);
     //
@@ -50,6 +121,40 @@ void Player::Initialize() {
 }
 
 void Player::Update() {
+    if (Input::IsKeyPressed(KEY::Z))
+    {
+        SPDLOG_INFO("Using Album");
+        UseAlbum();
+    }
+    if (Input::IsKeyPressed(KEY::X))
+    {
+        SPDLOG_INFO("Using Fans");
+        UseFans();
+    }
+
+    // CONCERT ABILITY UI MANAGEMENT
+    if (concertAbility->GetAbilityRemainingTime() > 0.0f)
+    {
+        concertText->SetText(std::wstring((L"Concert: " + std::to_wstring(static_cast<int>(concertAbility->GetAbilityRemainingTime())) + L"s")));
+    }
+    else if (concertAbility->GetCooldownRemainingTime() > 0.0f)
+    {
+        concertText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(concertAbility->GetCooldownRemainingTime())) + L"s")));
+    }
+    else
+    {
+        //if (money->money < concertAbility->GetCost()) {
+        //    concertButton->SetInteractable(false);
+        //}
+        //else {
+        //    concertButton->SetInteractable(true);
+        //}
+        concertButton->SetInteractable(true);
+        concertText->SetText(std::wstring((L"Concert\n" + std::to_wstring(static_cast<int>(concertAbility->GetCost())) + L"$")));
+    }
+
+    moneyText->SetText(std::wstring(L"Money: ").append(std::to_wstring(static_cast<int>(money->money))).append(L" $"));
+
     if (!GameManager::instance->gameStarted && hexIndicator) hexIndicator->SetActive(false);
 
     if (!GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
@@ -58,66 +163,48 @@ void Player::Update() {
         //GameManager::instance->playerInterface.albumText->text = "Album\n" + std::to_string(albumRequiredMoney) + "$";
         //GameManager::instance->playerInterface.fansText->text = "Fans Meeting\n" + std::to_string(fansRequiredMoney) + "$";
 
-        if (isAlbumActive) {
-            AlbumUpdate();
-            currAlbumTime -= Time::GetDeltaTime();
-            if (currAlbumTime < 0.0f) {
-                currAlbumCooldown = albumCooldown;
-                currAlbumTime = 0.0f;
-            }
-            //albumTimer->text = std::to_string(static_cast<int>(currAlbumTime)) + " s";
+        AlbumUpdate();
+        // CONCERT ABILITY UI MANAGEMENT
+        if (currAlbumTime > 0.0f)
+        {
+            albumText->SetText(std::wstring((L"Album: " + std::to_wstring(static_cast<int>(currAlbumTime)) + L"s")));
         }
-        else {
-            //if (albumTimer->gameObject->activeSelf) {
-            //    currAlbumCooldown -= Time::deltaTime;
-            //    albumTimer->text = "Cooldown: " + std::to_string(static_cast<int>(currAlbumCooldown)) + " s";
-            //    if (currAlbumCooldown < 0.0f) {
-            //        currAlbumCooldown = 0.0f;
-            //        albumTimer->gameObject->SetActive(false);
-            //    }
+        else if (currAlbumCooldown > 0.0f)
+        {
+            albumText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currAlbumCooldown)) + L"s")));
+        }
+        else
+        {
+            //if (money->money < concertAbility->GetCost()) {
+            //    concertButton->SetInteractable(false);
             //}
             //else {
-            //    if (money.money < albumRequiredMoney) {
-            //        albumButton->interactable = false;
-            //    }
-            //    else {
-            //        albumButton->interactable = true;
-            //        if (Input::GetKey(KeyCode::Z)) {
-            //            AlbumCall();
-            //        }
-            //    }
+            //    concertButton->SetInteractable(true);
             //}
+            albumButton->SetInteractable(true);
+            albumText->SetText(std::wstring((L"Album\n" + std::to_wstring(static_cast<int>(albumRequiredMoney)) + L"$")));
         }
-        AlbumStoppingTakingOverUpdate();
 
-        if (isFansActive) {
-            currFansTime -= Time::GetDeltaTime();
-            if (currFansTime < 0.0f) {
-                currFansCooldown = fansCooldown;
-                currFansTime = 0.0f;
-            }
-            //fansTimer->text = std::to_string(static_cast<int>(currFansTime)) + " s";
+        UpdateFans();
+        // FANS MEETINNG ABILITY UI MANAGEMENT
+        if (currFansTime > 0.0f)
+        {
+            fansMeetingText->SetText(std::wstring((L"Fans Meeting: " + std::to_wstring(static_cast<int>(currFansTime)) + L"s")));
         }
-        else {
-            //if (fansTimer->gameObject->activeSelf) {
-            //    currFansCooldown -= Time::deltaTime;
-            //    fansTimer->text = "Cooldown: " + std::to_string(static_cast<int>(currFansCooldown)) + " s";
-            //    if (currFansCooldown < 0.0f) {
-            //        currFansCooldown = 0.0f;
-            //        fansTimer->gameObject->SetActive(false);
-            //    }
+        else if (currFansCooldown > 0.0f)
+        {
+            fansMeetingText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currFansCooldown)) + L"s")));
+        }
+        else
+        {
+            //if (money->money < concertAbility->GetCost()) {
+            //    concertButton->SetInteractable(false);
             //}
             //else {
-            //    if (money.money < fansRequiredMoney) {
-            //        fansButton->interactable = false;
-            //    }
-            //    else {
-            //        fansButton->interactable = true;
-            //        if (Input::GetKey(KeyCode::C)) {
-            //            FansCall();
-            //        }
-            //    }
+            //    concertButton->SetInteractable(true);
             //}
+            fansMeetingButton->SetInteractable(true);
+            fansMeetingText->SetText(std::wstring((L"Fans Meeting\n" + std::to_wstring(static_cast<int>(fansRequiredMoney)) + L"$")));
         }
 
         if (move != nullptr) {
@@ -140,27 +227,27 @@ void Player::Update() {
 }
 
 void Player::AlbumCall() {
-    //if (money->SpendMoney(albumRequiredMoney)) {
-    //    currAlbumTime = albumTime;
-    //    //albumTimer->gameObject.SetActive(true);
-    //    //albumButton->interactable = false;
-    //    // StartCoroutine(AlbumFunc());
-    //}
-    //else {
-    //    std::cout << "Not having required money for album" << std::endl;
-    //}
+    if (currAlbumCooldown <= 0.0f && money->SpendMoney(albumRequiredMoney)) {
+        currAlbumTime = albumTime;
+        albumButton->SetInteractable(false);
+        UseAlbum();
+    }
 }
 
-void Player::FansCall() {
-    //if (money->SpendMoney(fansRequiredMoney)) {
-    //    currFansTime = fansTime;
-    //    //fansTimer->gameObject.SetActive(true);
-    //    //fansButton->interactable = false;
-    //    // fansCorountine = StartCoroutine(FansFunc());
-    //}
-    //else {
-    //    std::cout << "Not having required money for fans" << std::endl;
-    //}
+void Player::FansMeetingCall() {
+    if (currFansCooldown <= 0.0f && money->SpendMoney(fansRequiredMoney)) {
+        currFansTime = fansTime;
+        fansMeetingButton->SetInteractable(false);
+        UseFans();
+    }
+}
+
+void Player::ConcertCall() {
+
+    if (concertAbility->Use())
+    {
+        concertButton->SetInteractable(false);
+    }
 }
 
 void Player::StartMove(HexTile* tile) {
@@ -321,6 +408,10 @@ void Player::StartFansControl(Playable* playable) {
     GameManager::instance->minigameActive = true;
 }
 
+float Player::GetMaxRadius() const {
+    return (move->maxSteps + 0.25) * _tilemap->GetDistanceBetweenTiles();
+}
+
 void Player::WonFansControl(Playable* playable) {
     fightingPlayable->LostFansControl(this);
 
@@ -370,7 +461,7 @@ void Player::OnDead() {
 
 YAML::Node Player::Serialize() const
 {
-    YAML::Node node = Component::Serialize();
+    YAML::Node node = Playable::Serialize();
     node["type"] = "Player";
 
     return node;
@@ -378,7 +469,7 @@ YAML::Node Player::Serialize() const
 
 bool Player::Deserialize(const YAML::Node& node)
 {
-    if (!Component::Deserialize(node))
+    if (!Playable::Deserialize(node))
         return false;
 
     return true;

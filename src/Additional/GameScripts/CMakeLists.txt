@@ -49,6 +49,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Generation)
 target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
 target_link_libraries(${PROJECT_NAME} PRIVATE spdlog)
 target_link_libraries(${PROJECT_NAME} PRIVATE yaml-cpp)
+target_link_libraries(${PROJECT_NAME} PRIVATE StateMachine)
+target_link_libraries(${PROJECT_NAME} PRIVATE DecisionTree)
 
 if (TRACY_PROFILER)
     target_link_libraries(${PROJECT_NAME} PUBLIC TracyClient)

@@ -1,9 +1,12 @@
 #pragma once
 
+#include <manager/SceneManager.h>
+
 #include <core/Transform.h>
 #include <core/GameObject.h>
 #include <core/Component.h>
 #include <core/Random.h>
+#include <physic/CollisionManager.h>
 
 #include <Patrons/PatronData.h>
 
@@ -12,6 +15,8 @@
 #include <MoneyFunctionData.h>
 //using namespace Twin2Engine::Core;
 
+// TILEMAP
+#include <Tilemap/HexagonalTilemap.h>
 class HexTile;
 
 //class MoneyFunctionData {
@@ -22,7 +27,6 @@ class HexTile;
 //};
 
 class Playable : public Twin2Engine::Core::Component {
-
 protected:
     virtual void OnDead() = 0;
 
@@ -42,27 +46,32 @@ public:
 
     PatronData* patron;
 
-    float albumTime;
-    float albumCooldown;
+#pragma region AlbumAbility
+    float albumTime  = 10.0f; // parameter
+    float albumCooldown = 5.0f; // parameter
     float currAlbumTime;
     float currAlbumCooldown;
     bool isAlbumActive = false;
-    float albumRequiredMoney = 10.0f;
+    float albumRequiredMoney = 10.0f; // parameter
 
-    float albumTakingOverTimeMin = 0.0f;
-    float albumTakingOverTimeMax = 0.0f;
-    std::vector<MinMaxPair> albumsIncreasingMinMaxIntervals;
-    float takingIntoAttentionFactor = 0.5f;
+    float albumTakingOverTimeMin = 5.0f; // parameter
+    float albumTakingOverTimeMax = 7.0f; // parameter
+    std::vector<MinMaxPair> albumsIncreasingMinMaxIntervals{ {.min = 3.0f, .max = 4.0f }, {.min = 3.0f, .max = 4.0f } }; // parameter
+    float takingIntoAttentionFactor = 0.5f; // parameter // Okreœla z jakiej czêœci tile o najmniejszych wp³ywach bêdzie losowany do oddzia³ywania przez album
     std::vector<float> albumsIncreasingIntervals;
     std::vector<float> albumsIncreasingIntervalsCounter;
+#pragma endregion
 
-    float fansTime;
-    float fansCooldown;
-    float currFansTime;
-    float currFansCooldown;
-    float fansRadius = 1.0f;
+#pragma region FansMeetingAbility
+    float fansTime = 10.0f; // parameter
+    float fansCooldown = 10.0f; // parameter
+    float currFansTime = 0.0f;
+    float currFansCooldown = 0.0f;
+    float fansRadius = 3.0f; // parameter
     bool isFansActive = false;
-    float fansRequiredMoney = 10.0f;
+    float fansRequiredMoney = 10.0f; // parameter
+    std::list<HexTile*> tempFansCollider;
+#pragma endregion
 
     std::list<HexTile*> OwnTiles;
     HexTile* CurrTile;
@@ -81,26 +90,41 @@ public:
     float fansStartMoney;
     float albumStartMoney;
 
-    //MoneyFunctionData* functionData;
+    MoneyFunctionData* moneyFunction;
     //MoneyGainFromTiles* money;
 
     virtual void Initialize() override;
+    virtual void Update() override;
+
+
     void InitPrices();
     void UpdatePrices();
     void CreateIndicator();
+
+#pragma region AlbumAbility
+    void UseAlbum();
+    void EndUsingAlbum();
     HexTile* GetAlbumTile();
     void AlbumUpdate();
+    void AlbumUpdateCounters();
     void AlbumStoppingTakingOverUpdate();
-    void AlbumFunc();
+#pragma endregion
+
+#pragma region FansMeetingAbility
     void FansControlDraw();
-    void FansFunc();
-    void FansEndFunc();
+    void UseFans();
+    void UpdateFans();
+    void FansEnd();
     void FansExit();
+#pragma endregion
+
     void RadioStationFunc(float value, float time);
     void RadioStationEndFunc(float value);
     void CheckIfDead(Playable* playable);
 
     //virtual void OnDead() = 0;
+
+    Playable* fightingPlayable;
 
     virtual void LostPaperRockScissors(Playable* playable) = 0;
     virtual void WonPaperRockScissors(Playable* playable) = 0;
@@ -108,6 +132,18 @@ public:
     virtual void WonFansControl(Playable* playable) = 0;
     virtual void StartPaperRockScissors(Playable* playable) = 0;
     virtual void StartFansControl(Playable* playable) = 0;
+
+    virtual float GetMaxRadius() const;
+    
+    float GlobalAvg() const;
+    float LocalAvg() const;
+    float FansRangeAvg() const;
+    float FightPowerScore() const;
+    std::vector<HexTile*> GetLocalTiles() const;
+    std::vector<HexTile*> GetLocalTakenTiles() const;
+    std::vector<HexTile*> GetInMoveRangeTiles() const;
+    std::vector<HexTile*> GetFansRangeTiles() const;
+    static std::vector<HexTile*> GetInRangeTiles(HexTile* centerTile, float range);
 
 public:
     virtual YAML::Node Serialize() const override;
@@ -117,3 +153,5 @@ public:
     virtual void DrawEditor() override;
 #endif
 };
+
+#include <AreaTaking/HexTile.h>

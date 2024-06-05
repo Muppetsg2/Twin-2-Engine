@@ -44,7 +44,7 @@ bool Canvas::Deserialize(const YAML::Node& node)
 void Canvas::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
-	string name = string("Image##Component").append(id);
+	string name = string("Canvas##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
 		if (Component::DrawInheritedFields()) return;

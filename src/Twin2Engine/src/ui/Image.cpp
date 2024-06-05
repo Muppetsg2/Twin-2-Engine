@@ -52,7 +52,6 @@ bool Image::Deserialize(const YAML::Node& node)
 }
 
 #if _DEBUG
-// TODO: Add Editor for Fill
 void Image::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -243,6 +242,20 @@ void Image::SetFillType(FILL_TYPE type)
 
 void Image::SetFillSubType(uint8_t subType)
 {
+	size_t size = 0;
+	switch (_data.fill.type) {
+	case (uint8_t)FILL_TYPE::HORIZONTAL:
+		size = Manager::size<HORIZONTAL_FILL_SUBTYPE>();
+		break;
+	case (uint8_t)FILL_TYPE::VERTICAL:
+		size = Manager::size<VERTICAL_FILL_SUBTYPE>();
+		break;
+	case (uint8_t)FILL_TYPE::CIRCLE:
+		size = Manager::size<CIRCLE_FILL_SUBTYPE>();
+		break;
+	}
+	if (subType > size - 1) subType = size - 1;
+
 	if (_data.fill.subType != subType) {
 		_data.fill.subType = subType;
 	}

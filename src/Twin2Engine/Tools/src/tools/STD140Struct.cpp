@@ -3,84 +3,6 @@
 using namespace Twin2Engine::Tools;
 using namespace std;
 
-#if TRACY_PROFILER
-const char* const STD140Struct::tracy__GetValueData = "STD140Struct _GetValueData";
-
-const char* const STD140Struct::tracy__ConvertArray = "STD140Struct _ConvertArray";
-const char* const STD140Struct::tracy__ConvertArrayValues = "STD140Struct _ConvertArray Values";
-const char* const STD140Struct::tracy__ConvertArrayValue = "STD140Struct _ConvertArray Value";
-const char* const STD140Struct::tracy__ConvertArrayFunc = "STD140Struct _ConvertArray Func";
-
-const char* const STD140Struct::tracy__Add = "STD140Struct _Add";
-const char* const STD140Struct::tracy__AddGetOffset = "STD140Struct _Add Get Offset";
-const char* const STD140Struct::tracy__AddCheckError = "STD140Struct _Add Check Error";
-const char* const STD140Struct::tracy__AddReserveSize = "STD140Struct _Add Reserve Size";
-const char* const STD140Struct::tracy__AddCheckValuePadding = "STD140Struct _Add Check Value Padding";
-const char* const STD140Struct::tracy__AddGetValueData = "STD140Struct _Add Get Value Data";
-const char* const STD140Struct::tracy__AddSetValueData = "STD140Struct _Add Set Value Data";
-const char* const STD140Struct::tracy__AddClearTempValueData = "STD140Struct _Add Clear Temp Value Data";
-const char* const STD140Struct::tracy__AddUpdateSize = "STD140Struct _Add Update Size";
-
-const char* const STD140Struct::tracy__AddArray = "STD140Struct _AddArray";
-const char* const STD140Struct::tracy__AddArrayCheckSize = "STD140Struct _AddArray Check Size";
-const char* const STD140Struct::tracy__AddArrayGetOffsets = "STD140Struct _AddArray Get Offsets";
-const char* const STD140Struct::tracy__AddArrayCheckError = "STD140Struct _AddArray Check Error";
-const char* const STD140Struct::tracy__AddArrayReserveSize = "STD140Struct _AddArray Reserve Size";
-const char* const STD140Struct::tracy__AddArraySetValuesData = "STD140Struct _AddArray Set Values Data";
-const char* const STD140Struct::tracy__AddArrayCheckValuePadding = "STD140Struct _AddArray Check Value Padding";
-const char* const STD140Struct::tracy__AddArrayGetValueData = "STD140Struct _AddArray Get Value Data";
-const char* const STD140Struct::tracy__AddArraySetValueData = "STD140Struct _AddArray Set Value Data";
-const char* const STD140Struct::tracy__AddArrayClearTempValueData = "STD140Struct _AddArray Clear Temp Value Data";
-const char* const STD140Struct::tracy__AddArrayClearValuesOffsets = "STD140Struct _AddArray Clear Values Offsets";
-const char* const STD140Struct::tracy__AddArrayUpdateSize = "STD140Struct _AddArray Update Size";
-
-const char* const STD140Struct::tracy__Set = "STD140Struct _Set";
-const char* const STD140Struct::tracy__SetCheckVariable = "STD140Struct _Set Check Variable";
-const char* const STD140Struct::tracy__SetGetOffset = "STD140Struct _Set Get Offset";
-const char* const STD140Struct::tracy__SetGetValueData = "STD140Struct _Set Get Value Data";
-const char* const STD140Struct::tracy__SetSetValueData = "STD140Struct _Set Set Value Data";
-const char* const STD140Struct::tracy__SetClearTempValueData = "STD140Struct _Set Clear Temp Value Data";
-
-const char* const STD140Struct::tracy__SetArray = "STD140Struct _SetArray";
-const char* const STD140Struct::tracy__SetArrayCheckSize = "STD140Struct _SetArray Check Size";
-const char* const STD140Struct::tracy__SetArrayCheckVariable = "STD140Struct _SetArray Check Variable";
-const char* const STD140Struct::tracy__SetArrayGetValuesOffsets = "STD140Struct _SetArray Get Values Offsets";
-const char* const STD140Struct::tracy__SetArrayCheckValuesOffsets = "STD140Struct _SetArray Check Values Offsets";
-const char* const STD140Struct::tracy__SetArrayGetElemSize = "STD140Struct _SetArray Get Element Size";
-const char* const STD140Struct::tracy__SetArraySetValues = "STD140Struct _SetArray Set Values";
-const char* const STD140Struct::tracy__SetArrayGetValueData = "STD140Struct _SetArray Get Value Data";
-const char* const STD140Struct::tracy__SetArraySetValueData = "STD140Struct _SetArray Set Value Data";
-const char* const STD140Struct::tracy__SetArrayClearTempValueData = "STD140Struct _SetArray Clear Temp Value Data";
-const char* const STD140Struct::tracy__SetArrayClearValuesOffsets = "STD140Struct _SetArray Clear Values Offsets";
-
-const char* const STD140Struct::tracy__Get = "STD140Struct _Get";
-const char* const STD140Struct::tracy__GetCheckVariable = "STD140Struct _Get Check Variable";
-const char* const STD140Struct::tracy__GetValueOffset = "STD140Struct _Get Value Offset";
-const char* const STD140Struct::tracy__GetEmptyValueData = "STD140Struct _Get Empty Value Data";
-const char* const STD140Struct::tracy__GetReserveSpace = "STD140Struct _Get Reserve Space";
-const char* const STD140Struct::tracy__GetGetValueData = "STD140Struct _Get Value Data";
-const char* const STD140Struct::tracy__GetCheckValueDataSize = "STD140Struct _Get Check Value Data Size";
-const char* const STD140Struct::tracy__GetValue = "STD140Struct _Get Value";
-const char* const STD140Struct::tracy__GetClearTempValueData = "STD140Struct _Get Clear Temp Value Data";
-
-const char* const STD140Struct::tracy__GetArray = "STD140Struct _GetArray";
-const char* const STD140Struct::tracy__GetArrayCheckVariable = "STD140Struct _GetArray Check Variable";
-const char* const STD140Struct::tracy__GetArrayValuesOffsets = "STD140Struct _GetArray Values Offsets";
-const char* const STD140Struct::tracy__GetArrayCheckValuesOffsets = "STD140Struct _GetArray Check Values Offsets";
-const char* const STD140Struct::tracy__GetArrayMaxElemSize = "STD140Struct _GetArray Max Element Size";
-const char* const STD140Struct::tracy__GetArrayValuesData = "STD140Struct _GetArray Values Data";
-const char* const STD140Struct::tracy__GetArrayMaxValueSize = "STD140Struct _GetArray Max Value Size";
-const char* const STD140Struct::tracy__GetArrayValueData = "STD140Struct _GetArray Value Data";
-const char* const STD140Struct::tracy__GetArrayCheckValueDataSize = "STD140Struct _GetArray Check Value Data Size";
-const char* const STD140Struct::tracy__GetArrayValue = "STD140Struct _GetArray Value";
-const char* const STD140Struct::tracy__GetArrayClearTempValueData = "STD140Struct _GetArray Clear Temp Value Data";
-const char* const STD140Struct::tracy__GetArrayClearValuesOffsets = "STD140Struct _GetArray Clear Values Offsets";
-
-const char* const STD140Struct::tracy__GetArrayConvert = "STD140Struct _GetArrayConvert";
-const char* const STD140Struct::tracy__GetArrayConvertValues = "STD140Struct _GetArrayConvert Values";
-const char* const STD140Struct::tracy__GetArrayConvertValue = "STD140Struct _GetArrayConvert Value";
-#endif
-
 size_t STD140Struct::_GetArrayElemSize(const vector<size_t>& offsets) const
 {
 #if TRACY_PROFILER
@@ -460,11 +382,19 @@ vector<size_t> STD140Struct::GetArrayOffsets(const string& name) const
 #if _DEBUG
 const ValueType* STD140Struct::GetType(const string& name) const
 {
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
 	return _dataOffsets.GetType(name);
 }
 
 std::vector<std::string> STD140Struct::GetNames() const
 {
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
 	return _dataOffsets.GetNames();
 }
 #endif

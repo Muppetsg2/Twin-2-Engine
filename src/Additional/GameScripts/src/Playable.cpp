@@ -494,12 +494,12 @@ YAML::Node Playable::Serialize() const
 
 bool Playable::Deserialize(const YAML::Node& node)
 {
-    if (!Component::Deserialize(node)) return false;
+    if (!node["moneyFunction"] || !Component::Deserialize(node)) return false;
 
 
     moneyFunction = static_cast<MoneyFunctionData*>(ScriptableObjectManager::Load(node["moneyFunction"].as<string>()));
 
-    return false;
+    return true;
 }
 #if _DEBUG
 void Playable::DrawEditor()

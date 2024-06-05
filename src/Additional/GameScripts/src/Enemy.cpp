@@ -11,6 +11,7 @@ TakingOverState Enemy::_takingOverState;
 MovingState Enemy::_movingState;
 FightingState Enemy::_fightingState;
 RadioStationState Enemy::_radioStationState;
+InitState Enemy::_initState;
 
 void Enemy::ChangeState(State<Enemy*>* newState) {
     _stateMachine.ChangeState(this, newState);
@@ -27,6 +28,7 @@ void Enemy::Initialize()
     _movement = GetGameObject()->GetComponent<EnemyMovement>();
     list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
     _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend());
+    ChangeState(&_initState);
 }
 
 
@@ -42,17 +44,10 @@ void Enemy::OnDestroy()
 
 void Enemy::Update()
 {
-    if (GameManager::instance->gameStarted) {
-        if (!_started) {
-            ChangeState(&_movingState);
-            _started = true;
-        }
-
-        _currThinkingTime -= Time::GetDeltaTime();
-        if (_currThinkingTime <= 0.f) {
-            _stateMachine.Update(this);
-            _currThinkingTime = _timeToThink;
-        }
+    _currThinkingTime -= Time::GetDeltaTime();
+    if (_currThinkingTime <= 0.f) {
+        _stateMachine.Update(this);
+        _currThinkingTime = _timeToThink;
     }
 }
 

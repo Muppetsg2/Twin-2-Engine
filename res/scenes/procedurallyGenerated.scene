@@ -119,6 +119,38 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 15
+    path: res/textures/notes/noteDo.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 16
+    path: res/textures/notes/noteRe.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 17
+    path: res/textures/notes/noteMi.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 18
+    path: res/textures/notes/noteFa.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites:
   - id: 0
     alias: white_box
@@ -153,6 +185,18 @@ Sprites:
   - id: 10
     alias: launchpad
     texture: 14
+  - id: 11
+    alias: noteDo
+    texture: 15
+  - id: 12
+    alias: noteRe
+    texture: 16
+  - id: 13
+    alias: noteMi
+    texture: 17
+  - id: 14
+    alias: noteFa
+    texture: 18
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
@@ -1933,3 +1977,218 @@ GameObjects:
         layer: 1
     children:
       []
+  - id: 400
+    name: RadioStationPlayingManager
+    isStatic: false
+    isActive: false
+    transform:
+      id: 400
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 401
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 800
+        height: 600
+        layer: 1
+      - id: 402
+        enabled: true
+        type: RadioStationPlayingController
+        generatedNotesNumber: 4
+        notesAreaWidth: 600
+        notesAreaHeight: 200
+        correctColor: [0, 1, 0, 1]
+        wrongColor: [1, 0, 0, 1]
+        notesSpritesIds:
+         - 11
+         - 12
+         - 13
+         - 14
+        buttonDo: 405
+        buttonRe: 408
+        buttonMi: 411
+        buttonFa: 414
+    children:
+      - 401
+      - 402
+      - 403
+      - 404
+  - id: 401
+    name: buttonDo
+    isStatic: false
+    isActive: false
+    transform:
+      id: 403
+      enabled: true
+      position:
+        x: 0
+        y: -225
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 404
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 11
+        color:
+          x: 1
+          y: 0
+          z: 0
+          w: 1
+        width: 100
+        height: 100
+        layer: 3
+      - id: 405
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
+    children: []
+  - id: 402
+    name: buttonRe
+    isStatic: false
+    isActive: false
+    transform:
+      id: 406
+      enabled: true
+      position:
+        x: -100
+        y: -125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 407
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 12
+        color:
+          x: 1
+          y: 1
+          z: 0
+          w: 1
+        width: 100
+        height: 100
+        layer: 3
+      - id: 408
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
+    children: []
+  - id: 403
+    name: buttonMi
+    isStatic: false
+    isActive: false
+    transform:
+      id: 409
+      enabled: true
+      position:
+        x: 100
+        y: -125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 410
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 13
+        color:
+          x: 0
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 3
+      - id: 411
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
+    children: []
+  - id: 404
+    name: buttonFa
+    isStatic: false
+    isActive: false
+    transform:
+      id: 412
+      enabled: true
+      position:
+        x: 0
+        y: -25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 413
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 14
+        color:
+          x: 1
+          y: 0
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 3
+      - id: 414
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
+    children: []

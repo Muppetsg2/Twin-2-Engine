@@ -11,6 +11,7 @@
 #include <Enemy/MovingState.h>
 #include <Enemy/RadioStationState.h>
 #include <Enemy/TakingOverState.h>
+#include <Enemy/InitState.h>
 
 class HexTile;
 class EnemyMovement;
@@ -22,25 +23,27 @@ class Enemy : public Playable {
 	std::vector<HexTile*> _tiles;
 
 	// GENERATIVE PARAMETERS
-	float _noteLuck = 50.f;
+	float _noteLuck = 75.f;
 	float _winChance = 33.33f;
 	float _drawChance = 33.33f;
 
 	// STATE MACHINE
-	bool _started = false;
 	float _timeToThink = .5f;
 	float _currThinkingTime = 0.f;
 	StateMachine<Enemy*> _stateMachine;
 
+	// TODO: on takeover exit stop taking over
 	static TakingOverState _takingOverState;
 	static MovingState _movingState;
 	static FightingState _fightingState;
 	static RadioStationState _radioStationState;
+	static InitState _initState;
 
 	friend class TakingOverState;
 	friend class MovingState;
 	friend class FightingState;
 	friend class RadioStationState;
+	friend class InitState;
 
 	void ChangeState(State<Enemy*>* newState);
 	void SetMoveDestination(HexTile* tile);

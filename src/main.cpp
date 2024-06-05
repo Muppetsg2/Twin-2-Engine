@@ -101,6 +101,9 @@ using namespace Generation::Generators;
 #include <ConcertRoad.h>
 #include <Abilities/ConcertAbilityController.h>
 
+#include <RadioStation/RadioStation.h>
+#include <RadioStation/RadioStationPlayingController.h>
+
 using namespace GameScripts;
 
 #include <processes/Coroutine.h>
@@ -263,6 +266,10 @@ int main(int, char**)
     ADD_COMPONENT("ConcertAbilityController", ConcertAbilityController);
     ADD_COMPONENT("MoneyGainFromTiles", MoneyGainFromTiles);
     ADD_COMPONENT("GameTimer", GameTimer);
+
+
+    ADD_COMPONENT("RadioStation", RadioStation);
+    ADD_COMPONENT("RadioStationPlayingController", RadioStationPlayingController);
 
 #pragma region GAME_SCRIPTS_COMPONENTS
 

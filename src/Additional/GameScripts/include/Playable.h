@@ -101,6 +101,8 @@ public:
     void UpdatePrices();
     void CreateIndicator();
 
+    //void EndedPlayingRadioStation();
+
 #pragma region AlbumAbility
     void UseAlbum();
     void EndUsingAlbum();

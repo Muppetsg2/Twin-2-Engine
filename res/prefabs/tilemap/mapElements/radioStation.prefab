@@ -46,3 +46,9 @@ Root:
       materials:
         - 0
         - 1
+    - id: 625
+      enabled: true
+      type: RadioStation
+      cooldown: 12
+      takingOverTime: 10 
+      takingRadius: 3 

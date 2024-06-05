@@ -288,7 +288,7 @@ void Player::StartMove(HexTile* tile) {
 }
 
 void Player::FinishMove(HexTile* tile) {
-    SPDLOG_INFO("FInished movement");
+    SPDLOG_INFO("Finished movement");
 
     if (CurrTile != tile) {
         CurrTile->StopTakingOver(this);
@@ -306,6 +306,7 @@ void Player::FinishMove(HexTile* tile) {
     }
 
     if (tile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::RadioStation && tile->state != TileState::OCCUPIED) {
+        tile->GetGameObject()->GetComponentInChildren<RadioStation>()->Play(this);
         //GameManager::instance->StartMinigame();
     }
     else {

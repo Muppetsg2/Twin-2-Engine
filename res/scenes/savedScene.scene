@@ -176,6 +176,10 @@ GameObjects:
         width: 100
         height: 100
         layer: 0
+        fillEnabled: false
+        fillType: 0
+        fillSubType: 0
+        fillProgress: 1
       - id: 5
         enabled: true
         type: Image
@@ -189,6 +193,10 @@ GameObjects:
         width: 100
         height: 100
         layer: 1
+        fillEnabled: false
+        fillType: 0
+        fillSubType: 0
+        fillProgress: 1
     children:
       []
   - id: 3
@@ -224,6 +232,10 @@ GameObjects:
         width: 100
         height: 100
         layer: 0
+        fillEnabled: false
+        fillType: 0
+        fillSubType: 0
+        fillProgress: 1
     children:
       []
   - id: 4
@@ -259,6 +271,10 @@ GameObjects:
         width: 1000
         height: 100
         layer: 0
+        fillEnabled: false
+        fillType: 0
+        fillSubType: 0
+        fillProgress: 1
     children:
       []
   - id: 5

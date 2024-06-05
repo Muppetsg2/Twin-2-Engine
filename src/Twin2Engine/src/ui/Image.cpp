@@ -30,9 +30,26 @@ YAML::Node Image::Serialize() const
 	node["width"] = _data.rectTransform.size.x;
 	node["height"] = _data.rectTransform.size.y;
 	node["layer"] = _data.layer;
-	if (!_data.fill.isActive) {
 
+	// FILL
+	node["fillEnabled"] = _data.fill.isActive;
+	node["fillType"] = (uint32_t)_data.fill.type;
+	node["fillType"].SetTag(to_string(_data.fill.type));
+	Tools::Func<string, uint8_t> toString = [](uint8_t value) -> string { return to_string(value); };
+	switch (_data.fill.type) {
+	case (uint8_t)FILL_TYPE::HORIZONTAL:
+		toString = [](uint8_t value) -> string { return to_string((HORIZONTAL_FILL_SUBTYPE)value); };
+		break;
+	case (uint8_t)FILL_TYPE::VERTICAL:
+		toString = [](uint8_t value) -> string { return to_string((VERTICAL_FILL_SUBTYPE)value); };
+		break;
+	case (uint8_t)FILL_TYPE::CIRCLE:
+		toString = [](uint8_t value) -> string { return to_string((CIRCLE_FILL_SUBTYPE)value); };
+		break;
 	}
+	node["fillSubType"] = (uint32_t)_data.fill.subType;
+	node["fillSubType"].SetTag(toString(_data.fill.subType));
+	node["fillProgress"] = _data.fill.progress;
 	return node;
 }
 
@@ -40,13 +57,19 @@ YAML::Node Image::Serialize() const
 bool Image::Deserialize(const YAML::Node& node)
 {
 	if (!node["sprite"] || !node["color"] || !node["width"] || !node["height"] ||
-		!node["layer"] || !RenderableComponent::Deserialize(node)) return false;
+		!node["layer"] || !node["fillEnabled"] || !node["fillType"] || !node["fillSubType"] ||
+		!node["fillProgress"] || !RenderableComponent::Deserialize(node)) return false;
 
 	_spriteId = SceneManager::GetSprite(node["sprite"].as<size_t>());
 	_data.color = node["color"].as<glm::vec4>();
 	_data.rectTransform.size.x = node["width"].as<float>();
 	_data.rectTransform.size.y = node["height"].as<float>();
 	_data.layer = node["layer"].as<int32_t>();
+
+	_data.fill.isActive = node["fillEnabled"].as<bool>();
+	_data.fill.type = node["fillType"].as<uint32_t>();
+	_data.fill.subType = node["fillSubType"].as<uint32_t>();
+	_data.fill.progress = node["fillProgress"].as<float>();
 
 	return true;
 }

@@ -622,46 +622,48 @@ void MaterialParameters::DrawEditor(size_t id) {
 		}
 	}
 
-	ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-	bool node_open = ImGui::TreeNodeEx(string("Textures##").append(id_s).c_str(), node_flag);
+	if (_textureMappings.size() != 0) {
+		ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+		bool node_open = ImGui::TreeNodeEx(string("Textures##").append(id_s).c_str(), node_flag);
 
-	if (node_open) {
-		for (auto& map : _textureMappings) {
-			GLuint tex_id = _textures[map.second];
-			string n = std::string(_textureNames[map.first]).append("##TEXTURES MATERIAL PARAMETERS").append(id_s);
-			std::map<size_t, std::string> types = Manager::TextureManager::GetAllTexture2DNames();
+		if (node_open) {
+			for (auto& map : _textureMappings) {
+				GLuint tex_id = _textures[map.second];
+				string n = std::string(_textureNames[map.first]).append("##TEXTURES MATERIAL PARAMETERS").append(id_s);
+				std::map<size_t, std::string> types = Manager::TextureManager::GetAllTexture2DNames();
 
-			Texture2D* tex = Manager::TextureManager::FindTextureWithProgramID(tex_id);
+				Texture2D* tex = Manager::TextureManager::FindTextureWithProgramID(tex_id);
 
-			size_t choosed = tex != nullptr ? tex->GetManagerId() : 0;
+				size_t choosed = tex != nullptr ? tex->GetManagerId() : 0;
 
-			if (ImGui::BeginCombo(n.c_str(), choosed == 0 ? "None" : types[choosed].c_str())) {
+				if (ImGui::BeginCombo(n.c_str(), choosed == 0 ? "None" : types[choosed].c_str())) {
 
-				bool click = false;
-				size_t i = 0;
-				for (auto& item : types) {
+					bool click = false;
+					size_t i = 0;
+					for (auto& item : types) {
 
-					if (ImGui::Selectable(std::string(item.second).append("##").append(_textureNames[map.first]).append(id_s).append(std::to_string(i)).c_str(), item.first == choosed)) {
+						if (ImGui::Selectable(std::string(item.second).append("##").append(_textureNames[map.first]).append(id_s).append(std::to_string(i)).c_str(), item.first == choosed)) {
 
-						if (click) continue;
+							if (click) continue;
 
-						choosed = item.first;
-						click = true;
+							choosed = item.first;
+							click = true;
+						}
+
+						++i;
 					}
 
-					++i;
-				}
-
-				if (click) {
-					if (choosed != 0) {
-						_textures[map.second] = Manager::TextureManager::GetTexture2D(choosed)->GetId();
+					if (click) {
+						if (choosed != 0) {
+							_textures[map.second] = Manager::TextureManager::GetTexture2D(choosed)->GetId();
+						}
 					}
-				}
 
-				ImGui::EndCombo();
+					ImGui::EndCombo();
+				}
 			}
+			ImGui::TreePop();
 		}
-		ImGui::TreePop();
 	}
 }
 #endif

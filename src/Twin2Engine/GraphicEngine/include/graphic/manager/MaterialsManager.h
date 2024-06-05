@@ -33,7 +33,7 @@ namespace Twin2Engine::Manager
 		static Graphic::Material* LoadMaterial(const std::string& materialPath);
 
 #if _DEBUG
-		static void SaveMaterial(const std::string& materialPath, Graphic::Material* mat = nullptr);
+		static void SaveMaterial(const std::string& materialPath, Graphic::Material* mat);
 #endif
 	public:
 

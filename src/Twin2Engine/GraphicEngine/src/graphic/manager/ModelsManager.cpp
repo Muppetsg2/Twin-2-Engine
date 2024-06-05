@@ -1365,7 +1365,7 @@ void ModelsManager::DrawEditor(bool* p_open)
     if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
     {
         // Result path in: m_fileDialogInfo.resultPath
-        LoadModel(_fileDialogInfo.resultPath.string());
+        LoadModel(std::filesystem::relative(_fileDialogInfo.resultPath).string());
     }
 
     ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;

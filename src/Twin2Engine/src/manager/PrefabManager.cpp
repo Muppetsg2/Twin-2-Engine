@@ -234,7 +234,6 @@ void PrefabManager::DrawEditor(bool* p_open)
 			if (ImGui::RemoveButton(string("##Remove Prefab Manager").append(std::to_string(i)).c_str())) {
 				clicked.push_back(item.first);
 			}
-			// TODO: DODAC OPCJE EDIT
 			++i;
 		}
 		ImGui::TreePop();
@@ -263,7 +262,7 @@ void PrefabManager::DrawEditor(bool* p_open)
 	if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
 	{
 		// Result path in: m_fileDialogInfo.resultPath
-		LoadPrefab(_fileDialogInfo.resultPath.string());
+		LoadPrefab(std::filesystem::relative(_fileDialogInfo.resultPath).string());
 	}
 
 	ImGui::End();

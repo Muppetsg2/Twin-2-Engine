@@ -134,6 +134,10 @@ namespace Twin2Engine::Manager {
 		static std::string GetTexture2DName(size_t managerId);
 		static std::string GetTexture2DName(const std::string& path);
 
+#if _DEBUG
+		static std::string GetTexture2DPath(size_t managerId);
+#endif
+
 		static std::map<size_t, std::string> GetAllTexture2DNames();
 
 		static void UnloadAll();

@@ -159,6 +159,13 @@ std::string TextureManager::GetTexture2DName(const std::string& path) {
     return std::filesystem::path(path).stem().string();
 }
 
+#if _DEBUG
+std::string TextureManager::GetTexture2DPath(size_t managerId) {
+    if (!_texturesPaths.contains(managerId)) return "";
+    return _texturesPaths[managerId];
+}
+#endif
+
 std::map<size_t, std::string> TextureManager::GetAllTexture2DNames() {
     std::map<size_t, std::string> names = std::map<size_t, std::string>();
 
@@ -424,8 +431,8 @@ void TextureManager::DrawEditor(bool* p_open)
         ImGui::EndDisabled();
 
         if (ImGui::Button("Load##Texture Manager PopUp", ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
-            if (detect) LoadTexture2D(_fileDialogInfo.resultPath.string());
-            else LoadTexture2D(_fileDialogInfo.resultPath.string(), inter, form);
+            if (detect) LoadTexture2D(std::filesystem::relative(_fileDialogInfo.resultPath).string());
+            else LoadTexture2D(std::filesystem::relative(_fileDialogInfo.resultPath).string(), inter, form);
 
             ImGui::CloseCurrentPopup();
         }

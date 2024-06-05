@@ -151,7 +151,7 @@ YAML::Node RadioStationPlayingController::Serialize() const
     savingNotesSpritesIds.reserve(_notesSpritesIds.size());
     for (size_t index = 0ull; index < _notesSpritesIds.size(); ++index)
     {
-        savingNotesSpritesIds[index] = SceneManager::GetSpriteSaveIdx(_notesSpritesIds[index]);
+        savingNotesSpritesIds.push_back(SceneManager::GetSpriteSaveIdx(_notesSpritesIds[index]));
     }
     node["notesSpritesIds"] = savingNotesSpritesIds;
 

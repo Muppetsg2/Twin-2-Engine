@@ -92,6 +92,8 @@ namespace Twin2Engine::Core {
 		float _far = 1000.f;
 		float _fov = 45.f;
 		float _gamma = 2.2f;
+		float _brightness = 0.0f;
+		float _contrast = 1.0f;
 		float _ssaoSampleRadius = 0.7f;
 		float _ssaoBias = 0.01f;
 
@@ -99,6 +101,10 @@ namespace Twin2Engine::Core {
 		float _quadraticDepthOfField = 100000.f;
 		float _linearDepthOfField = 10.f;
 		float _constantDepthOfField = 0.f;
+
+		// GAUSSIAN BLURE
+		size_t _gaussianMSize = 0;
+		float _gaussianKernel[40] = {};
 
 		vec3 _front = vec3(0.f, 0.f, -1.f);
 		vec3 _right = vec3(1.f, 0.f, 0.f);
@@ -112,6 +118,7 @@ namespace Twin2Engine::Core {
 		void SetFrontDir(vec3 dir);
 		void GenerateSSAOKernel(unsigned int size = 64);
 		void GenerateSSAONoiseTexture();
+		void UpdateGaussianKernel();
 
 	public:
 		static std::vector<CameraComponent*> Cameras;
@@ -124,6 +131,8 @@ namespace Twin2Engine::Core {
 
 		float GetFOV() const;
 		float GetGamma() const;
+		float GetBrightness() const;
+		float GetContrast() const;
 		float GetNearPlane() const;
 		float GetFarPlane() const;
 		vec3 GetFrontDir() const;
@@ -139,6 +148,8 @@ namespace Twin2Engine::Core {
 
 		void SetFOV(float angle);
 		void SetGamma(float gamma);
+		void SetBrightness(float brightness);
+		void SetContrast(float contrast);
 		void SetFarPlane(float value);
 		void SetNearPlane(float value);
 		
@@ -155,6 +166,8 @@ namespace Twin2Engine::Core {
 		void SetIsMain(bool value);
 		void SetFrustumCulling(bool value);
 		void SetSSAO(bool value);
+
+		void SetGaussianMSize(size_t mSize);
 
 		void Render();
 

@@ -73,8 +73,8 @@ public:
 	//Outline* outline;
 
 	virtual void Initialize() override;
-	virtual void OnDestroy() override;
 	virtual void Update() override;
+	virtual void OnDestroy() override;
 
 	void ResetTile();
 	void SetOutlineActive(bool active);

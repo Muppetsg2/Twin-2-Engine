@@ -1,5 +1,4 @@
-#ifndef _MATERIAL_PARAMETERS_BUILDER_H_
-#define _MATERIAL_PARAMETERS_BUILDER_H_
+#pragma once
 
 #include <tools/YamlConverters.h>
 
@@ -38,5 +37,3 @@ namespace Twin2Engine::Graphic
 		void Clear();
 	};
 }
-
-#endif

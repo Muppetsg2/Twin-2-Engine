@@ -31,9 +31,7 @@ class GameManager : public Component {
 private:
 
     std::vector<int> freeColors{ 0, 1, 2, 3, 4, 5, 6 };
-    std::vector<Twin2Engine::Graphic::Material> _carMaterials;
-
-
+    std::vector<Twin2Engine::Graphic::Material*> _carMaterials;
 
     Twin2Engine::UI::Text* _dayText;
     Twin2Engine::UI::Text* _monthText;

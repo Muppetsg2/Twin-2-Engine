@@ -213,13 +213,13 @@ void ScriptableObjectManager::DrawEditor(bool* p_open) {
 		for (auto& item : _scriptableObjectsPaths) {
 			string n = GetName(item.second);
 			ImGui::BulletText(n.c_str());
-			ImGui::SameLine(ImGui::GetContentRegionAvail().x - 70);
+			ImGui::SameLine(ImGui::GetContentRegionAvail().x - 50);
 			if (ImGui::Button(string("Edit##Scriptable Object Manager").append(std::to_string(i)).c_str())) {
 				selectedToEdit = item.first;
 				openEditor = true;
 			}
 			ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
-			if (ImGui::Button(string("##Remove Scriptable Object Manager").append(std::to_string(i)).c_str())) {
+			if (ImGui::RemoveButton(string("##Remove Scriptable Object Manager").append(std::to_string(i)).c_str())) {
 				clicked.push_back(item.first);
 			}
 			++i;
@@ -239,7 +239,7 @@ void ScriptableObjectManager::DrawEditor(bool* p_open) {
 	}
 
 	if (selectedToEdit != 0) {
-		if (ImGui::Begin("Editor##Scriptable Object Manager", &openEditor)) {
+		if (ImGui::Begin("Scriptable Object Editor##Scriptable Object Manager", &openEditor)) {
 			_scriptableObjects[selectedToEdit]->DrawEditor();
 		}
 		ImGui::End();
@@ -276,7 +276,7 @@ void ScriptableObjectManager::SceneDeserializationEnd()
 #if _DEBUG
 void ScriptableObjectManager::DrawCreator(bool* p_open) 
 {
-	if (!ImGui::Begin("Scriptable Object Creator", p_open)) {
+	if (!ImGui::Begin("Scriptable Object Creator##Scriptable Object Manager", p_open)) {
 		ImGui::End();
 		return;
 	}
@@ -285,6 +285,9 @@ void ScriptableObjectManager::DrawCreator(bool* p_open)
 	string buffTemp = buff;
 	ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll;
 	vector<string> names = GetScriptableObjectsNames();
+
+	names.push_back("");
+
 	static bool error = std::find(names.begin(), names.end(), buffTemp) != names.end();
 
 	if (ImGui::InputText("Name##SO_CREATOR Scriptable Object Manager", &buffTemp, flags)) {

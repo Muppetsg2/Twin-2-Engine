@@ -452,6 +452,22 @@ const ValueType* STD140Offsets::GetType(const string& name) const
 	}
 	return value;
 }
+
+std::vector<std::string> STD140Offsets::GetNames() const
+{
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
+	std::vector<std::string> names = std::vector<std::string>();
+	names.reserve(_names.size());
+
+	for (auto name : _names) {
+		names.push_back(name.second);
+	}
+
+	return names;
+}
 #endif
 
 size_t STD140Offsets::GetBaseAligement() const

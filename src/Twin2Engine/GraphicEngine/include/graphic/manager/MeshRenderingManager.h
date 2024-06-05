@@ -78,7 +78,8 @@ namespace Twin2Engine
 				unsigned int renderedCount;
 			};
 			struct DataToUnregister {
-				Graphic::Material _mat;
+				Graphic::Shader* _sh;
+				Graphic::Material* _mat;
 				Graphic::InstantiatingMesh* _mesh;
 				size_t _pos;
 			};
@@ -89,16 +90,16 @@ namespace Twin2Engine
 
 			static Flags _flags;
 
-			static std::unordered_map<Graphic::Shader*, std::map<Graphic::Material, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _renderQueueStatic;
-			static std::unordered_map<Graphic::Shader*, std::map<Graphic::Material, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _renderQueueStaticTransparent;
+			static std::unordered_map<Graphic::Shader*, std::map<Graphic::Material*, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _renderQueueStatic;
+			static std::unordered_map<Graphic::Shader*, std::map<Graphic::Material*, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _renderQueueStaticTransparent;
 			//static std::unordered_map<Graphic::Shader*, std::map<Graphic::Material, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _depthMapenderQueueStatic;
 
 			static std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingDataDepthMap> _depthMapQueueStatic;
 			static std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingDataDepthMap> _depthQueueStatic;
 
 
-			static std::unordered_map<Graphic::Shader*, std::map<Graphic::Material, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _renderQueueDynamic;
-			static std::unordered_map<Graphic::Shader*, std::map<Graphic::Material, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _renderQueueDynamicTransparent;
+			static std::unordered_map<Graphic::Shader*, std::map<Graphic::Material*, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _renderQueueDynamic;
+			static std::unordered_map<Graphic::Shader*, std::map<Graphic::Material*, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _renderQueueDynamicTransparent;
 			//static std::unordered_map<Graphic::Shader*, std::map<Graphic::Material, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _depthMapenderQueueDynamic;
 
 			static std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingDataDepthMap> _depthMapQueueDynamic;

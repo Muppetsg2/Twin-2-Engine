@@ -18,7 +18,7 @@ SO_DESERIALIZE_FIELD_F_T_R("_materialNames", _materials, DeserializationHelperMa
 SO_DESERIALIZATION_END()
 
 
-vector<vector<Material>> HexTileTextureData::DeserializationHelperMaterialNamesToMaterials(vector<vector<string>> materialNames)
+vector<vector<Material*>> HexTileTextureData::DeserializationHelperMaterialNamesToMaterials(vector<vector<string>> materialNames)
 {
 	_materialNames = materialNames;
 
@@ -32,7 +32,7 @@ vector<vector<Material>> HexTileTextureData::DeserializationHelperMaterialNamesT
 	{
 		sizeInner = materialNames[i].size();
 
-		vector<Material> materials;
+		vector<Material*> materials;
 		materials.reserve(sizeInner);
 		_materials.push_back(materials);
 

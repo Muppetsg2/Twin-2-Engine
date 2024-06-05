@@ -780,6 +780,7 @@ YAML::Node Transform::Serialize() const
 {
 	YAML::Node node = Component::Serialize();
 	node.remove("type");
+	node.remove("enabled");
 	node["position"] = _localPosition;
 	node["scale"] = _localScale;
 	node["rotation"] = glm::degrees(_localRotation);
@@ -787,7 +788,11 @@ YAML::Node Transform::Serialize() const
 }
 
 bool Transform::Deserialize(const YAML::Node& node) {
-	if (!node["position"] || !node["scale"] || !node["rotation"] || !Component::Deserialize(node)) return false;
+	if (!node["position"] || !node["scale"] || !node["rotation"]) return false;
+
+	YAML::Node tempNode = node;
+	tempNode["enabled"] = true;
+	if (!Component::Deserialize(tempNode)) return false;
 
 	SetLocalPosition(node["position"].as<glm::vec3>());
 	SetLocalScale(node["scale"].as<glm::vec3>());

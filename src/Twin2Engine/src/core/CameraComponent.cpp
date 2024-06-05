@@ -172,6 +172,20 @@ void CameraComponent::GenerateSSAONoiseTexture()
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+static float normpdf(float x, float sigma) {
+	return 0.39894 * exp(-0.5 * x * x / (sigma * sigma)) / sigma;
+}
+
+void CameraComponent::UpdateGaussianKernel()
+{
+	float sigma = 7.0;
+	int kSize = (_gaussianMSize - 1) / 2;
+	for (int j = 0; j <= kSize; ++j)
+	{
+		_gaussianKernel[kSize + j] = _gaussianKernel[kSize - j] = normpdf(float(j), sigma);
+	}
+}
+
 CameraType CameraComponent::GetCameraType() const
 {
 	return _type;
@@ -205,6 +219,16 @@ float CameraComponent::GetFOV() const
 float CameraComponent::GetGamma() const
 {
 	return _gamma;
+}
+
+float CameraComponent::GetBrightness() const
+{
+	return _brightness;
+}
+
+float CameraComponent::GetContrast() const
+{
+	return _contrast;
 }
 
 float CameraComponent::GetNearPlane() const
@@ -302,6 +326,16 @@ void CameraComponent::SetFOV(float angle)
 void CameraComponent::SetGamma(float gamma)
 {
 	_gamma = gamma;
+}
+
+void CameraComponent::SetBrightness(float brightness)
+{
+	_brightness = brightness;
+}
+
+void CameraComponent::SetContrast(float contrast)
+{
+	_contrast = contrast;
 }
 
 void CameraComponent::SetFarPlane(float value)
@@ -478,6 +512,18 @@ void CameraComponent::SetFrustumCulling(bool value)
 void CameraComponent::SetSSAO(bool value)
 {
 	_isSsao = value;
+}
+
+void CameraComponent::SetGaussianMSize(size_t mSize) {
+	if (mSize < 0) mSize = 0;
+	else if (mSize > 40) mSize = 40;
+
+	if (_gaussianMSize != mSize) {
+		_gaussianMSize = mSize;
+		if (_gaussianMSize != 0) {
+			UpdateGaussianKernel();
+		}
+	}
 }
 
 void CameraComponent::Render()
@@ -661,12 +707,17 @@ void CameraComponent::Render()
 		_screenShader->SetInt("depthTexture", 1);
 		_screenShader->SetInt("ssaoTexture", 2);
 
+		_screenShader->SetInt("gaussianMSize", _gaussianMSize);
+		_screenShader->SetFloatArray("gaussianKernel", _gaussianKernel, 40);
+
 		_screenShader->SetBool("hasBlur", ((uint8_t)_filters & (uint8_t)CameraRenderFilter::BLUR) != 0);
 		_screenShader->SetBool("hasVignette", (_filters & (uint8_t)CameraRenderFilter::VIGNETTE) != 0);
 		_screenShader->SetBool("hasNegative", (_filters & (uint8_t)CameraRenderFilter::NEGATIVE) != 0);
 		_screenShader->SetBool("hasGrayscale", (_filters & (uint8_t)CameraRenderFilter::GRAYSCALE) != 0);
 		_screenShader->SetBool("hasOutline", (_filters & (uint8_t)CameraRenderFilter::OUTLINE) != 0);
-		_screenShader->SetBool("hasDepthOfField", (_filters & (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0);
+		_screenShader->SetBool("hasDepthOfField", (_filters& (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0);
+
+		_screenShader->SetBool("depthOfField2", _depthOfField2);
 
 		_screenShader->SetBool("displayDepth", _mode == CameraDisplayMode::DEPTH);
 		_screenShader->SetBool("displaySSAO", _mode == CameraDisplayMode::SSAO_MAP);
@@ -674,6 +725,9 @@ void CameraComponent::Render()
 		_screenShader->SetFloat("quadraticDepthOfField", _quadraticDepthOfField);
 		_screenShader->SetFloat("linearDepthOfField", _linearDepthOfField);
 		_screenShader->SetFloat("constantDepthOfField", _constantDepthOfField);
+
+		_screenShader->SetFloat("brightness", _brightness);
+		_screenShader->SetFloat("contrast", _contrast);
 
 		_screenPlane.GetMesh(0)->Draw(1);
 
@@ -994,6 +1048,8 @@ YAML::Node CameraComponent::Serialize() const
 	node["samples"] = (size_t)_samples;
 	node["renderRes"] = _renderRes;
 	node["gamma"] = _gamma;
+	node["brightness"] = _brightness;
+	node["contarst"] = _contrast;
 	node["worldUp"] = _worldUp;
 	node["isMain"] = _isMain;
 	node["isFrustum"] = _isFrustumCulling;
@@ -1004,7 +1060,8 @@ YAML::Node CameraComponent::Serialize() const
 bool CameraComponent::Deserialize(const YAML::Node& node) {
 	if (!node["fov"] || !node["nearPlane"] || !node["farPlane"] ||
 		!node["cameraFilter"] || !node["cameraType"] || !node["cameraMode"] ||
-		!node["samples"] || !node["renderRes"] || !node["gamma"] || !node["worldUp"] ||
+		!node["samples"] || !node["renderRes"] || !node["gamma"] || 
+		!node["brightness"] || !node["contrast"] || !node["worldUp"] ||
 		!node["isMain"] || !node["isFrustum"] || !node["isSSAO"] ||
 		!Component::Deserialize(node)) return false;
 
@@ -1017,6 +1074,8 @@ bool CameraComponent::Deserialize(const YAML::Node& node) {
 	_samples = (uint8_t)node["samples"].as<size_t>();
 	_renderRes = node["renderRes"].as<CameraRenderResolution>();
 	_gamma = node["gamma"].as<float>();
+	_brightness = node["brightness"].as<float>();
+	_contrast = node["contrast"].as<float>();
 	_worldUp = node["worldUp"].as<vec3>();
 	_isMain = node["isMain"].as<bool>();
 	_isFrustumCulling = node["isFrustum"].as<bool>();
@@ -1167,32 +1226,31 @@ void CameraComponent::DrawEditor()
 
 		this->SetCameraFilter(acFil);
 
-		if ((acFil & (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0) {
+		ImGui::BeginDisabled((acFil& (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) == 0);
+		ImGui::Checkbox(string("Depth Of Field 2##").append(id).c_str(), &this->_depthOfField2);
+		ImGui::EndDisabled();
 
-			bool c = this->_depthOfField2;
-			ImGui::Checkbox(string("Depth Of Field 2##").append(id).c_str(), &c);
-			if (c != this->_depthOfField2) {
-				this->_depthOfField2 = c;
+		if (this->_depthOfField2) {
+			float quadratic = this->_quadraticDepthOfField;
+			if (ImGui::InputFloat(string("Quadratic Depth Of Field##").append(id).c_str(), &quadratic)) {
+				if (this->_quadraticDepthOfField != quadratic) {
+					this->_quadraticDepthOfField = quadratic;
+				}
 			}
-
-			if (this->_depthOfField2) {
-				float quadratic = this->_quadraticDepthOfField;
-				if (ImGui::InputFloat(string("Quadratic Depth Of Field##").append(id).c_str(), &quadratic)) {
-					if (this->_quadraticDepthOfField != quadratic) {
-						this->_quadraticDepthOfField = quadratic;
-					}
+			float linear = this->_linearDepthOfField;
+			if (ImGui::InputFloat(string("Linear Depth Of Field##").append(id).c_str(), &linear)) {
+				if (this->_linearDepthOfField != linear) {
+					this->_linearDepthOfField = linear;
 				}
-				float linear = this->_linearDepthOfField;
-				if (ImGui::InputFloat(string("Linear Depth Of Field##").append(id).c_str(), &linear)) {
-					if (this->_linearDepthOfField != linear) {
-						this->_linearDepthOfField = linear;
-					}
+			}
+			float constant = this->_constantDepthOfField;
+			if (ImGui::InputFloat(string("Constant Depth Of Field##").append(id).c_str(), &constant)) {
+				if (this->_constantDepthOfField != constant) {
+					this->_constantDepthOfField = constant;
 				}
-				float constant = this->_constantDepthOfField;
-				if (ImGui::InputFloat(string("Constant Depth Of Field##").append(id).c_str(), &constant)) {
-					if (this->_constantDepthOfField != constant) {
-						this->_constantDepthOfField = constant;
-					}
+				int mSize = this->_gaussianMSize;
+				if (ImGui::DragInt(string("Gaussian Blure Power##").append(id).c_str(), &mSize, 1.0f, 0, 40)) {
+					SetGaussianMSize(mSize);
 				}
 			}
 		}
@@ -1207,8 +1265,8 @@ void CameraComponent::DrawEditor()
 		ImGui::InputFloat(string("Near Plane##").append(id).c_str(), &this->_near);
 		ImGui::InputFloat(string("Far Plane##").append(id).c_str(), &this->_far);
 		ImGui::InputFloat(string("Gamma##").append(id).c_str(), &this->_gamma);
-		// Brighteness
-		// Contrast
+		ImGui::DragFloat(string("Brightness##").append(id).c_str(), &this->_brightness, 0.1f, -1.f, 1.f);
+		ImGui::DragFloat(string("Contrast##").append(id).c_str(), &this->_contrast, 0.1f, 0.0f, FLT_MAX);
 		ImGui::Checkbox(string("SSAO##").append(id).c_str(), &this->_isSsao);
 		if (this->_isSsao) {
 			ImGui::DragFloat(string("SSAO Bias##").append(id).c_str(), &this->_ssaoBias, 0.1f);

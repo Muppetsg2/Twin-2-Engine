@@ -19,7 +19,8 @@ namespace Twin2Engine::Manager
 	private:
 		static std::hash<std::string> _stringHash;
 		static const std::unordered_map<size_t, int> _typeHandleMap;
-		static std::map<size_t, Graphic::MaterialData*> _loadedMaterials;
+		static std::map<size_t, Graphic::Material*> _loadedMaterials;
+		static std::map<size_t, std::string> _materialsPaths;
 
 #if _DEBUG
 		// For ImGui
@@ -27,15 +28,17 @@ namespace Twin2Engine::Manager
 		static ImFileDialogInfo _fileDialogInfo;
 #endif
 
-		static std::map<size_t, std::string> _materialsPaths;
-
 		static void UnloadMaterial(size_t managerId);
-		static void UnloadMaterial(const std::string& path);
-		static Graphic::Material LoadMaterial(const std::string& materialName);
+		static void UnloadMaterial(const std::string& materialPath);
+		static Graphic::Material* LoadMaterial(const std::string& materialPath);
+		static void SaveMaterial(const std::string& materialPath, Graphic::Material* mat = nullptr);
 	public:
 
-		static Graphic::Material GetMaterial(size_t managerId);
-		static Graphic::Material GetMaterial(const std::string& name);
+		static bool IsMaterialLoaded(size_t managerId);
+		static bool IsMaterialLoaded(const std::string& materialPath);
+
+		static Graphic::Material* GetMaterial(size_t managerId);
+		static Graphic::Material* GetMaterial(const std::string& materialPath);
 
 		static std::string GetMaterialName(size_t managerId);
 		static std::map<size_t, std::string> GetAllMaterialsNames();

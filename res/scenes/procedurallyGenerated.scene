@@ -205,25 +205,25 @@ Audio:
     path: res/music/acoustic-guitar.mp3
 Materials:
   - id: 0
-    path: hexagonMat
+    path: res/materials/hexagonMat.material
   - id: 1
-    path: Basic2
+    path: res/materials/Basic2.material
   - id: 2
-    path: metal
+    path: res/materials/metal.material
   - id: 3
-    path: multiTexture
+    path: res/materials/multiTexture.material
   - id: 4
-    path: textured
+    path: res/materials/textured.material
   - id: 5
-    path: deska
+    path: res/materials/deska.material
   - id: 6
-    path: wallMat
+    path: res/materials/wallMat.material
   - id: 7
-    path: FakeBRDF
+    path: res/materials/FakeBRDF.material
   - id: 8
-    path: roofMat
+    path: res/materials/roofMat.material
   - id: 9
-    path: Water
+    path: res/materials/Water.material
 Models:
   - id: 0
     path: res/models/AK47.obj
@@ -292,6 +292,8 @@ GameObjects:
         samples: 10
         renderRes: 0
         gamma: 1
+        brightness: 0
+        contrast: 1
         worldUp:
           x: 0
           y: 1
@@ -917,13 +919,13 @@ GameObjects:
         enemyPrefab: res/prefabs/Enemy.prefab
         prefabPlayer: res/prefabs/Player.prefab
         carMaterials:
-         - car/CarMaterial_Blue
-         - car/CarMaterial_Red
-         - car/CarMaterial_Green
-         - car/CarMaterial_Purple
-         - car/CarMaterial_Yellow
-         - car/CarMaterial_Cyan
-         - car/CarMaterial_Pink
+         - res/materials/car/CarMaterial_Blue.material
+         - res/materials/car/CarMaterial_Red.material
+         - res/materials/car/CarMaterial_Green.material
+         - res/materials/car/CarMaterial_Purple.material
+         - res/materials/car/CarMaterial_Yellow.material
+         - res/materials/car/CarMaterial_Cyan.material
+         - res/materials/car/CarMaterial_Pink.material
     children:
       []
   - id: 322

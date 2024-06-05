@@ -19,7 +19,7 @@ Audio:
     path: res/music/acoustic-guitar.mp3
 Materials:
   - id: 0
-    path: textured
+    path: res/materials/textured.material
 Models:
   - id: 0
     path: "{Cube}"

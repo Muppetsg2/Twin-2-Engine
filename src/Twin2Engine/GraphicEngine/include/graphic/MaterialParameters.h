@@ -74,6 +74,9 @@ namespace Twin2Engine
 				return _parameters.Get<V>(variableName);
 			}
 
+#if _DEBUG
+			void DrawEditor(size_t id);
+#endif
 
 			void SetTexture2D(const std::string& textureName, unsigned int textureId);
 			void UploadTextures2D(unsigned int programId, int& beginLocation, int& textureBinded);

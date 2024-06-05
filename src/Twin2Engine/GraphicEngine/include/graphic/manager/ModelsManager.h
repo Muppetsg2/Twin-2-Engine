@@ -22,6 +22,12 @@ namespace Twin2Engine::Manager
 
 		static GLenum binaryFormat;
 
+#if _DEBUG
+		// For ImGui
+		static bool _fileDialogOpen;
+		static ImFileDialogInfo _fileDialogInfo;
+#endif
+
 		static std::hash<std::string> _stringHash;
 		static std::map<size_t, Graphic::ModelData*> _loadedModels;
 

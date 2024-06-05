@@ -21,6 +21,11 @@ BoundingVolume::BoundingVolume(CapsuleColliderData* capsuleColliderData) {
 	isBoundingVolume = true;
 }
 
+BoundingVolume::~BoundingVolume() {
+	delete shapeColliderData;
+	shapeColliderData = nullptr;
+}
+
 static bool isOverPlane(FrustumPlane& plane, BoxColliderData* colliderData) {
 	glm::vec3 relPos = plane.point - colliderData->Position;
 	float distance = glm::dot(relPos, plane.normal);

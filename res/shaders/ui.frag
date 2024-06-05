@@ -100,7 +100,7 @@ void main()
     if (elementTexture.isActive) {
         if (element.sprite.isActive) {
             vec2 invTexSize = 1.0 / elementTexture.size;
-            vec2 uv = (fs_in.texCoord * elementTexture.size + element.sprite.offset) * invTexSize;
+            vec2 uv = (fs_in.texCoord * element.sprite.size + element.sprite.offset) * invTexSize;
             elemColor = texture(image, uv);
         }
         else {

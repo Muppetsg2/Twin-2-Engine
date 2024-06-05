@@ -191,9 +191,6 @@ void MovingState::Fight(Enemy* enemy)
 
 	// Move to tile with desired player
 	enemy->SetMoveDestination(desiredTile);
-
-	// TODO: delay change state and add check if player is still on tile
-	enemy->ChangeState(&enemy->_fightingState);
 }
 
 void MovingState::RadioStation(Enemy* enemy)
@@ -217,9 +214,6 @@ void MovingState::RadioStation(Enemy* enemy)
 
 	// Move to tile with desired radioStation
 	enemy->SetMoveDestination(desiredTile);
-
-	// TODO: delay change state
-	enemy->ChangeState(&enemy->_radioStationState);
 }
 
 void MovingState::AlbumAbility(Enemy* enemy)
@@ -305,13 +299,26 @@ void MovingState::Enter(Enemy* enemy)
 #endif
 
 	SPDLOG_INFO("Enter Moving State");
+
+	if (enemy->CurrTile != nullptr) {
+		enemy->CurrTile->StopTakingOver(enemy);
+	}
 	
 	size_t ofpeId = (enemy->_movement->OnFindPathError += [enemy](GameObject* gameObject, HexTile* tile) {
 		ChooseTile(enemy);
 	});
 	size_t ofmId = (enemy->_movement->OnFinishMoving += [enemy](GameObject* gameObject, HexTile* tile) {
-		enemy->FinishedMovement(tile);
-		_afterMoveDecisionTree.ProcessNode(enemy);
+		if (tile->occupyingEntity != nullptr) {
+			enemy->FinishedMovement(tile);
+			enemy->ChangeState(&enemy->_fightingState);
+		}
+		else if (tile->GetMapHexTile()->type == MapHexTile::HexTileType::RadioStation) {
+			enemy->ChangeState(&enemy->_radioStationState);
+		}
+		else {
+			enemy->FinishedMovement(tile);
+			_afterMoveDecisionTree.ProcessNode(enemy);
+		}
 	});
 
 	_eventsIds[enemy] = { ofpeId, ofmId };

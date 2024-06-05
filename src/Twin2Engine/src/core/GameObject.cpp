@@ -184,7 +184,7 @@ void GameObject::SetActive(bool active)
 			_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(_activeSelf);
 		}
 
-		OnActiveChanged.Invoke(this); // Wywo造wanie eventu
+		OnActiveChangedEvent.Invoke(this); // Wywo造wanie eventu
 	}
 }
 
@@ -200,7 +200,7 @@ void GameObject::SetActiveInHierarchy(bool activeInHierarchy)
 				_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(activeInHierarchy);
 			}
 		}
-		OnActiveChanged.Invoke(this); // Wywo造wanie eventu
+		OnActiveChangedEvent.Invoke(this); // Wywo造wanie eventu
 	}
 }
 
@@ -214,7 +214,7 @@ void GameObject::SetIsStatic(bool isStatic)
 	if (_isStatic != isStatic)
 	{
 		_isStatic = isStatic;
-		OnStaticChanged.Invoke(this);
+		OnStaticChangedEvent.Invoke(this);
 	}
 }
 

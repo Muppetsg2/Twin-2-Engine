@@ -10,9 +10,9 @@ Fonts: ~
 Audio: ~
 Materials:
   - id: 0
-    path: RadioTower
+    path: res/materials/RadioTower.material
   - id: 1
-    path: RadioTowerBuilding
+    path: res/materials/RadioTowerBuilding.material
 Models:
   - id: 0
     path: res/models/radioTower.obj

@@ -28,7 +28,10 @@ bool RenderableComponent::IsTransparent() const
 
 void RenderableComponent::SetIsTransparent(bool value)
 {
-	_isTransparent = value;
+	if (_isTransparent != value) {
+		_isTransparent = value;
+		OnTransparentChangedEvent.Invoke(this);
+	}
 }
 
 void RenderableComponent::Render() {}

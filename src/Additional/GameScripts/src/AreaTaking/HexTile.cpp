@@ -15,15 +15,122 @@ float HexTile::_takingStage1 = 30.0f;
 float HexTile::_takingStage2 = 60.0f;
 float HexTile::_takingStage3 = 90.0f;
 
+void HexTile::TakeOver()
+{
+	if (!occupyingEntity) {
+		ResetTile();
+		return;
+	}
+
+	float takeOverSpeed = occupyingEntity->TakeOverSpeed;
+	if (state == TileState::REMOTE_OCCUPYING) {
+		takeOverSpeed *= remoteMultiplier;
+	}
+
+	if (takenEntity && takenEntity != occupyingEntity) {
+		percentage -= Time::GetDeltaTime() * takeOverSpeed;
+		if (percentage < _takingStage1) {
+			percentage = 0.0f;
+			if (takenEntity) {
+				takenEntity->OwnTiles.remove(this);
+				takenEntity = nullptr;
+			}
+			CheckRoundPattern();
+		}
+	}
+	else {
+		percentage += Time::GetDeltaTime() * takeOverSpeed;
+		if (percentage > 100.0f) {
+			percentage = 100.0f;
+		}
+		if (!takenEntity && percentage >= _takingStage1)
+		{
+			takenEntity = occupyingEntity;
+			takenEntity->OwnTiles.push_back(this);
+
+		}
+	}
+
+	//// Przetworzenie oddzialywania tych, ktorzy z dalszego zasiegu oddzialuja.
+	//size_t size = remotelyOccupyingEntities.size();
+	//for (size_t index = 0ull; index < size; ++index)
+	//{
+	//	float takeOverSpeed = remotelyOccupyingEntities[index]->TakeOverSpeed * remoteMultipliers[index];
+	//	if (takenEntity && takenEntity != remotelyOccupyingEntities[index]) {
+	//		percentage -= Time::GetDeltaTime() * takeOverSpeed;
+	//		if (percentage < _takingStage1) {
+	//			percentage = 0.0f;
+	//			if (takenEntity) {
+	//				takenEntity->OwnTiles.remove(this);
+	//				takenEntity = nullptr;
+	//			}
+	//			CheckRoundPattern();
+	//		}
+	//	}
+	//	else {
+	//		percentage += Time::GetDeltaTime() * takeOverSpeed;
+	//		if (percentage > 100.0f) {
+	//			percentage = 100.0f;
+	//		}
+	//		if (!takenEntity && percentage >= _takingStage1)
+	//		{
+	//			takenEntity = remotelyOccupyingEntities[index];
+	//			takenEntity->OwnTiles.push_back(this);
+	//
+	//		}
+	//	}
+	//}
+
+	UpdateTileColor();
+}
+
+void HexTile::LoseInfluence()
+{
+	currLoseInfluenceDelay -= Time::GetDeltaTime();
+	if (currLoseInfluenceDelay <= 0.0f && percentage > minLosePercentage) {
+		currLoseInfluenceDelay = 0.0f;
+		percentage -= Time::GetDeltaTime() * loseInfluenceSpeed;
+		if (percentage < minLosePercentage) {
+			percentage = minLosePercentage;
+		}
+		UpdateTileColor();
+	}
+}
+
+void HexTile::UpdateTileColor()
+{
+	//SPDLOG_INFO("Percentage: {}", percentage);
+	if (percentage < _takingStage1)
+	{
+		_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][0]->GetId());
+	}
+	else if (percentage < _takingStage2)
+	{
+		_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][1]->GetId());
+	}
+	else if (percentage < _takingStage3)
+	{
+		_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][2]->GetId());
+	}
+	else
+	{
+		_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][3]->GetId());
+	}
+
+}
+
+void HexTile::UpdateBorders()
+{
+}
+
+void HexTile::CheckRoundPattern()
+{
+}
 
 void HexTile::Initialize()
 {
 	_mapHexTile = GetGameObject()->GetComponent<MapHexTile>();
 	_meshRenderer = GetGameObject()->GetComponent<MeshRenderer>();
-}
-
-void HexTile::OnDestroy()
-{
 }
 
 void HexTile::Update()
@@ -39,6 +146,97 @@ void HexTile::Update()
 			LoseInfluence();
 		}
 	}
+}
+
+void HexTile::OnDestroy()
+{
+}
+
+void HexTile::ResetTile()
+{
+	percentage = 0.0f;
+	if (takenEntity) {
+		//takenEntity->RemoveTile(this);
+	}
+	occupyingEntity = nullptr;
+	takenEntity = nullptr;
+	isFighting = false;
+	state = TileState::NONE;
+}
+
+void HexTile::SetOutlineActive(bool active)
+{
+	//if (outline) {
+	//	outline->SetEnabled(active);
+	//}
+}
+
+void HexTile::StartMinigame()
+{
+}
+
+void HexTile::WinMinigame()
+{
+}
+
+void HexTile::BadNote()
+{
+	percentage -= badNotePercent;
+	if (percentage <= 0.0f) {
+		percentage = 0.0f;
+	}
+}
+
+void HexTile::StartTakingOver(Playable* entity) {
+	SPDLOG_INFO("Starting taking over");
+
+	if (state != TileState::OCCUPIED) {
+		state = TileState::OCCUPIED;
+		occupyingEntity = entity;
+	}
+	else if (occupyingEntity != entity && !isFighting) {
+		//entity->StartPaperRockScissors(occupyingEntity);
+		//occupyingEntity->StartPaperRockScissors(entity);
+		GameManager::instance->minigameActive = true;
+		isFighting = true;
+		MinigameManager::GetLastInstance()->StartMinigame(entity, occupyingEntity);
+		if (occupyingEntity != nullptr) {
+		}
+	}
+}
+
+void HexTile::StopTakingOver(Playable* entity)
+{
+	if ((state == TileState::OCCUPIED || state == TileState::REMOTE_OCCUPYING) && occupyingEntity == entity) {
+		occupyingEntity = nullptr;
+		if (takenEntity) {
+			state = TileState::TAKEN;
+			currLoseInfluenceDelay = loseInfluenceDelay;
+		}
+		else {
+			state = TileState::NONE;
+		}
+	}
+}
+
+void HexTile::StartRemotelyTakingOver(Playable* entity, float multiplier)
+{
+	//SPDLOG_INFO("Starting remotely {}", multiplier);
+	//if (state != TileState::Occupied && state != TileState::RemoteOccupying) {
+	//	state = TileState::RemoteOccupying;
+	//
+	//	SPDLOG_INFO("In Starting remotely");
+
+	if (state != TileState::OCCUPIED && state != TileState::REMOTE_OCCUPYING) {
+		state = TileState::REMOTE_OCCUPYING;
+
+		occupyingEntity = entity;
+		remoteMultiplier = multiplier;
+	}
+}
+
+void HexTile::StopRemotelyTakingOver(Playable* entity)
+{
 }
 
 Generation::MapHexTile* HexTile::GetMapHexTile() const
@@ -100,198 +298,3 @@ void HexTile::DrawEditor()
 }
 
 #endif
-
-void HexTile::ResetTile()
-{
-	percentage = 0.0f;
-	if (takenEntity) {
-		//takenEntity->RemoveTile(this);
-	}
-	occupyingEntity = nullptr;
-	takenEntity = nullptr;
-	isFighting = false;
-	state = TileState::NONE;
-}
-
-void HexTile::SetOutlineActive(bool active)
-{
-	//if (outline) {
-	//	outline->SetEnabled(active);
-	//}
-}
-
-void HexTile::StartMinigame()
-{
-}
-
-void HexTile::WinMinigame()
-{
-}
-
-void HexTile::BadNote()
-{
-	percentage -= badNotePercent;
-	if (percentage <= 0.0f) {
-		percentage = 0.0f;
-	}
-}
-
-void HexTile::TakeOver()
-{
-	if (!occupyingEntity) {
-		ResetTile();
-		return;
-	}
-
-	float takeOverSpeed = occupyingEntity->TakeOverSpeed;
-	if (state == TileState::REMOTE_OCCUPYING) {
-		takeOverSpeed *= remoteMultiplier;
-	}
-
-	if (takenEntity && takenEntity != occupyingEntity) {
-		percentage -= Time::GetDeltaTime() * takeOverSpeed;
-		if (percentage < _takingStage1) {
-			percentage = 0.0f;
-			if (takenEntity) {
-				takenEntity->OwnTiles.remove(this);
-				takenEntity = nullptr;
-			}
-			CheckRoundPattern();
-		}
-	}
-	else {
-		percentage += Time::GetDeltaTime() * takeOverSpeed;
-		if (percentage > 100.0f) {
-			percentage = 100.0f;
-		}
-		if (!takenEntity && percentage >= _takingStage1)
-		{
-			takenEntity = occupyingEntity;
-			takenEntity->OwnTiles.push_back(this);
-
-		}
-	}
-
-	//// Przetworzenie oddzia³ywania tych, którzy z dalszego zasiêgu oddzia³uj¹.
-	//size_t size = remotelyOccupyingEntities.size();
-	//for (size_t index = 0ull; index < size; ++index)
-	//{
-	//	float takeOverSpeed = remotelyOccupyingEntities[index]->TakeOverSpeed * remoteMultipliers[index];
-	//	if (takenEntity && takenEntity != remotelyOccupyingEntities[index]) {
-	//		percentage -= Time::GetDeltaTime() * takeOverSpeed;
-	//		if (percentage < _takingStage1) {
-	//			percentage = 0.0f;
-	//			if (takenEntity) {
-	//				takenEntity->OwnTiles.remove(this);
-	//				takenEntity = nullptr;
-	//			}
-	//			CheckRoundPattern();
-	//		}
-	//	}
-	//	else {
-	//		percentage += Time::GetDeltaTime() * takeOverSpeed;
-	//		if (percentage > 100.0f) {
-	//			percentage = 100.0f;
-	//		}
-	//		if (!takenEntity && percentage >= _takingStage1)
-	//		{
-	//			takenEntity = remotelyOccupyingEntities[index];
-	//			takenEntity->OwnTiles.push_back(this);
-	//
-	//		}
-	//	}
-	//}
-
-	UpdateTileColor();
-}
-
-void HexTile::LoseInfluence()
-{
-	currLoseInfluenceDelay -= Time::GetDeltaTime();
-	if (currLoseInfluenceDelay <= 0.0f && percentage > minLosePercentage) {
-		currLoseInfluenceDelay = 0.0f;
-		percentage -= Time::GetDeltaTime() * loseInfluenceSpeed;
-		if (percentage < minLosePercentage) {
-			percentage = minLosePercentage;
-		}
-		UpdateTileColor();
-	}
-}
-
-void HexTile::UpdateTileColor()
-{
-	//SPDLOG_INFO("Percentage: {}", percentage);
-	if (percentage < _takingStage1)
-	{
-		_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][0].GetId());
-	}
-	else if (percentage < _takingStage2)
-	{
-		_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][1].GetId());
-	}
-	else if (percentage < _takingStage3)
-	{
-		_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][2].GetId());
-	}
-	else
-	{
-		_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][3].GetId());
-	}
-
-}
-
-void HexTile::UpdateBorders()
-{
-}
-
-void HexTile::CheckRoundPattern()
-{
-}
-
-void HexTile::StartTakingOver(Playable* entity) {
-	SPDLOG_INFO("Starting taking over");
-
-	if (state != TileState::OCCUPIED) {
-		state = TileState::OCCUPIED;
-		occupyingEntity = entity;
-	}
-	else if (occupyingEntity != entity && !isFighting) {
-		//entity->StartPaperRockScissors(occupyingEntity);
-		//occupyingEntity->StartPaperRockScissors(entity);
-			GameManager::instance->minigameActive = true;
-			isFighting = true;
-			MinigameManager::GetLastInstance()->StartMinigame(entity, occupyingEntity);
-		if (occupyingEntity != nullptr) {
-		}
-	}
-}
-
-void HexTile::StartRemotelyTakingOver(Playable* entity, float multiplier)
-{
-	//SPDLOG_INFO("Starting remotely {}", multiplier);
-	//if (state != TileState::Occupied && state != TileState::RemoteOccupying) {
-	//	state = TileState::RemoteOccupying;
-	//
-	//	SPDLOG_INFO("In Starting remotely");
-
-	if (state != TileState::OCCUPIED && state != TileState::REMOTE_OCCUPYING) {
-		state = TileState::REMOTE_OCCUPYING;
-
-		occupyingEntity = entity;
-		remoteMultiplier = multiplier;
-	}
-}
-
-void HexTile::StopTakingOver(Playable* entity)
-{
-	if ((state == TileState::OCCUPIED || state == TileState::REMOTE_OCCUPYING) && occupyingEntity == entity) {
-		occupyingEntity = nullptr;
-		if (takenEntity) {
-			state = TileState::TAKEN;
-			currLoseInfluenceDelay = loseInfluenceDelay;
-		}
-		else {
-			state = TileState::NONE;
-		}
-	}
-}

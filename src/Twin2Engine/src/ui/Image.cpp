@@ -82,7 +82,7 @@ void Image::DrawEditor()
 			_spriteId = 0;
 		}
 
-		if (ImGui::BeginCombo(string("Font##").append(id).c_str(), spriteNames[_spriteId].c_str())) {
+		if (ImGui::BeginCombo(string("Sprite##").append(id).c_str(), spriteNames[_spriteId].c_str())) {
 
 			bool clicked = false;
 			size_t choosed = _spriteId;

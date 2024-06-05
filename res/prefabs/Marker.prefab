@@ -15,7 +15,7 @@ Audio:
   []
 Materials:
   - id: 0
-    path: Basic2
+    path: res/materials/Basic2.material
 Models:
   - id: 0
     path: "{Sphere}"

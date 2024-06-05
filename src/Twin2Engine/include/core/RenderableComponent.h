@@ -16,8 +16,10 @@ namespace Twin2Engine::Core {
 	public:
 		virtual ~RenderableComponent();
 
+		Tools::EventHandler<RenderableComponent*> OnTransparentChangedEvent;
+
 		bool IsTransparent() const;
-		void SetIsTransparent(bool value);
+		virtual void SetIsTransparent(bool value);
 
 		virtual void Render();
 

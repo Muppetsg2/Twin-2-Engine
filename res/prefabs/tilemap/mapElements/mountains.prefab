@@ -16,9 +16,9 @@ Fonts: ~
 Audio: ~
 Materials:
   - id: 0
-    path: MountainsUnlit
+    path: res/materials/MountainsUnlit.material
   - id: 1
-    path: enviroment/CloudMaterial
+    path: res/materials/enviroment/CloudMaterial.material
 Models:
   - id: 0
     path: res/models/mount3.obj

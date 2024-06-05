@@ -16,7 +16,7 @@ namespace Twin2Engine::Manager
 	constexpr char SHADERS_ORIGIN_DIRETORY[] = "res";
 
 	/// <summary>
-	/// Shader Manager obs³uguje:
+	/// Shader Manager use:
 	/// * vertex shader
 	/// * geometry shader
 	/// * fragment shader
@@ -28,6 +28,7 @@ namespace Twin2Engine::Manager
 		struct ShaderProgramData
 		{
 			size_t shaderPathHash;
+			std::string shaderName;
 			unsigned int shaderProgramId;
 			int useNumber;
 			Graphic::Shader* shader;
@@ -69,10 +70,9 @@ namespace Twin2Engine::Manager
 		static void Init();
 		static void UnloadAll();
 
+		static std::string GetShaderName(const unsigned int shaderProgramId);
 		static Graphic::Shader* GetShaderProgram(const std::string& shaderName);
 		static Graphic::Shader* CreateShaderProgram(const std::string& shaderName, const std::string& vertexShader, const std::string& fragmentShader);
-
-		// TODO: Moze jakies okienko Imgui DrawEditor?
 
 		//void UpdateDirShadowMapsTab();
 	};

@@ -4,6 +4,11 @@
 using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 
+#if _DEBUG
+bool ModelsManager::_fileDialogOpen = false;
+ImFileDialogInfo ModelsManager::_fileDialogInfo;
+#endif
+
 std::hash<std::string> ModelsManager::_stringHash;
 std::map<size_t, ModelData*> ModelsManager::_loadedModels;
 
@@ -117,26 +122,6 @@ inline void ModelsManager::ExtractMeshAssimp(aiMesh* mesh, std::vector<Vertex>& 
         }
 
         vertices.push_back(v);
-        
-        /*
-        // Position
-        (*vertices)[i].Position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
-
-        // Texture coordinates
-        if (mesh->HasTextureCoords(0)) {
-            (*vertices)[i].TexCoords = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
-        }
-
-        // Normal
-        if (mesh->HasNormals()) {
-            (*vertices)[i].Normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
-        }
-
-        if (mesh->HasTangentsAndBitangents()) {
-            (*vertices)[i].Tangent = glm::vec3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z);
-            (*vertices)[i].Bitangent = glm::vec3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z);
-        }
-        */
     }
 
     // Reserve memory for indices
@@ -359,8 +344,6 @@ void ModelsManager::LoadCube(ModelData* modelData)
         20, 22, 21
     };
 
-    //modelData->meshes.resize(1);
-    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
     modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
@@ -380,8 +363,6 @@ void ModelsManager::LoadPlane(ModelData* modelData)
         2, 3, 1
     };
 
-    //modelData->meshes.resize(1);
-    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
     modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
@@ -556,8 +537,6 @@ void ModelsManager::LoadSphere(ModelData* modelData)
 
     trisNum.clear();
 
-    //modelData->meshes.resize(1);
-    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
     modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
@@ -662,8 +641,6 @@ void ModelsManager::LoadTorus(ModelData* modelData)
 
     trisNum.clear();
 
-    //modelData->meshes.resize(1);
-    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
     modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
@@ -747,8 +724,6 @@ void ModelsManager::LoadCone(ModelData* modelData)
 
     trisNum.clear();
 
-    //modelData->meshes.resize(1);
-    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
     modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
@@ -792,8 +767,6 @@ void ModelsManager::LoadPiramid(ModelData* modelData)
         13, 14, 15
     };
 
-    //modelData->meshes.resize(1);
-    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
     modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
@@ -829,8 +802,6 @@ void ModelsManager::LoadTetrahedron(ModelData* modelData)
         9, 10, 11
     };
 
-    //modelData->meshes.resize(1);
-    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
     modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
@@ -921,8 +892,6 @@ void ModelsManager::LoadCylinder(ModelData* modelData)
 
     GenerateCircle(vertices, indices, segments, -h / 2.f, GL_CW);
 
-    //modelData->meshes.resize(1);
-    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
     modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
@@ -1012,8 +981,6 @@ void ModelsManager::LoadHexagon(ModelData* modelData)
         31, 36, 37
     };
 
-    //modelData->meshes.resize(1);
-    //modelData->meshes[0] = new InstantiatingMesh(vertices, indices);
     modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
 }
 
@@ -1021,10 +988,7 @@ ModelData* ModelsManager::LoadModelData(const std::string& modelPath)
 {
     size_t strHash = _stringHash(modelPath);
 
-    //if (strHash == 10269728616568091294) SPDLOG_INFO("{}", modelPath);
-
-    //ModelData* modelData = nullptr;
-    if (_loadedModels.find(strHash) == _loadedModels.end())
+    if (!_loadedModels.contains(strHash))
     {
         SPDLOG_INFO("Loading model: {}!", modelPath);
 
@@ -1082,7 +1046,6 @@ ModelData* ModelsManager::LoadModelData(const std::string& modelPath)
     else
     {
         SPDLOG_INFO("Model already loaded: {}!", modelPath);
-        //modelData = _loadedModels[strHash];
     }
 
     return _loadedModels[strHash];
@@ -1211,16 +1174,18 @@ void ModelsManager::UnloadModel(const std::string& path) {
 }
 
 void ModelsManager::UnloadModel(size_t managerId) {
-    if (_loadedModels.find(managerId) != _loadedModels.end())
+    if (_loadedModels.contains(managerId))
     {
         ModelData* modelData = _loadedModels[managerId];
         for (InstantiatingMesh*& mesh : modelData->meshes)
         {
             delete mesh;
+            mesh = nullptr;
         }
 
         modelData->meshes.clear();
         delete modelData;
+        modelData = nullptr;
         _loadedModels.erase(managerId);
         _modelsPaths.erase(managerId);
     }
@@ -1282,17 +1247,9 @@ InstantiatingModel ModelsManager::CreateModel(const std::string& modelName, std:
 {
     size_t strHash = _stringHash(modelName);
 
-    //ModelData* modelData = nullptr;
     if (!_loadedModels.contains(strHash))
     {
         SPDLOG_INFO("Creating model: {}!", modelName);
-
-        /*
-        modelData = new ModelData{
-            .id = strHash,
-            .meshes { new InstantiatingMesh(vertices, indices) }
-        };
-        */
 
         _loadedModels.emplace(strHash, new ModelData {
             .id = strHash,
@@ -1302,13 +1259,10 @@ InstantiatingModel ModelsManager::CreateModel(const std::string& modelName, std:
 
         vertices.clear();
         indices.clear();
-
-        //_loadedModels[strHash] = modelData;
     }
     else
     {
         SPDLOG_INFO("Model already exist: {}!", modelName);
-        //modelData = _loadedModels[strHash];
     }
 
     return _loadedModels[strHash];
@@ -1327,8 +1281,7 @@ std::string ModelsManager::GetModelName(size_t id)
 
 std::string ModelsManager::GetModelName(const std::string& modelPath)
 {
-    size_t h = std::hash<std::string>{}(modelPath);
-    return GetModelName(h);
+    return GetModelName(_stringHash(modelPath));
 }
 
 std::map<size_t, std::string> ModelsManager::GetAllModelsNames()
@@ -1361,9 +1314,58 @@ YAML::Node ModelsManager::Serialize()
 #if _DEBUG
 void ModelsManager::DrawEditor(bool* p_open)
 {
-    if (!ImGui::Begin("Models Manager", p_open)) {
+    if (!ImGui::Begin("Models Manager", p_open, ImGuiWindowFlags_MenuBar)) {
         ImGui::End();
         return;
+    }
+
+    if (ImGui::BeginMenuBar()) {
+        if (ImGui::BeginMenu("Load##Models Manager Load Menu"))
+        {
+            if (ImGui::MenuItem("Load From File##Models Manager Menu Load", NULL, &_fileDialogOpen)) {
+                _fileDialogOpen = true;
+                _fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
+                _fileDialogInfo.title = "Open File##Models Manager";
+                _fileDialogInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\models");
+            }
+
+            std::vector<std::string> avilPredModels = {
+                CUBE_PATH,
+                PLANE_PATH,
+                SPHERE_PATH,
+                TORUS_PATH,
+                CONE_PATH,
+                PIRAMID_PATH,
+                TETRAHEDRON_PATH,
+                CYLINDER_PATH,
+                HEXAGON_PATH
+            };
+
+            for (int i = avilPredModels.size() - 1; i > -1; --i)
+                if (IsModelLoaded(avilPredModels[i]))
+                    avilPredModels.erase(avilPredModels.begin() + i);
+
+            if (ImGui::BeginMenu("Load Defined Object##Models Manager Menu Load", avilPredModels.size() != 0)) {
+                
+                for (auto& item : avilPredModels) {
+                    if (ImGui::MenuItem(item.c_str())) {
+                        LoadModel(item);
+                    }
+                }
+
+                ImGui::EndMenu();
+            }
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMenuBar();
+    }
+
+    if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
+    {
+        // Result path in: m_fileDialogInfo.resultPath
+        LoadModel(_fileDialogInfo.resultPath.string());
     }
 
     ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
@@ -1400,22 +1402,6 @@ void ModelsManager::DrawEditor(bool* p_open)
     }
 
     clicked.clear();
-
-    // TODO: Dodac przycisk load z mozliwoscia wybrania trybu zaczytania
-    /*
-    if (ImGui::Button("Load Model##Models Manager", ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
-        _fileDialogOpen = true;
-        _fileDialogInfo.type = ImGuiFileDialogType_OpenFile;
-        _fileDialogInfo.title = "Open File##Models Manager";
-        _fileDialogInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\models");
-    }
-
-    if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
-    {
-        // Result path in: m_fileDialogInfo.resultPath
-        LoadModel(_fileDialogInfo.resultPath.string());
-    }
-    */
 
     ImGui::End();
 }

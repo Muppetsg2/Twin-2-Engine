@@ -10,9 +10,9 @@ Fonts: ~
 Audio: ~
 Materials:
   - id: 0
-    path: ColoredHexTile
+    path: res/materials/ColoredHexTile.material
   - id: 1
-    path: RedHexTile
+    path: res/materials/RedHexTile.material
 Models:
   - id: 0
     path: res/models/hexagon.obj

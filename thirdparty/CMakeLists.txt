@@ -75,7 +75,7 @@ set_target_properties(glad
 
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
 
-    CPMAddPackage("gh:ocornut/imgui@1.90.6-docking")
+    CPMAddPackage("gh:ocornut/imgui@1.90.7-docking")
 
     set(imgui_SOURCE_DIR ${imgui_SOURCE_DIR} CACHE INTERNAL "")
     add_library(imgui STATIC ${imgui_SOURCE_DIR}/imgui.cpp

@@ -686,7 +686,9 @@ void CameraComponent::Render()
 		_screenShader->SetBool("hasNegative", (_filters & (uint8_t)CameraRenderFilter::NEGATIVE) != 0);
 		_screenShader->SetBool("hasGrayscale", (_filters & (uint8_t)CameraRenderFilter::GRAYSCALE) != 0);
 		_screenShader->SetBool("hasOutline", (_filters & (uint8_t)CameraRenderFilter::OUTLINE) != 0);
-		_screenShader->SetBool("hasDepthOfField", (_filters & (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0);
+		_screenShader->SetBool("hasDepthOfField", (_filters& (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0);
+
+		_screenShader->SetBool("depthOfField2", _depthOfField2);
 
 		_screenShader->SetBool("displayDepth", _mode == CameraDisplayMode::DEPTH);
 		_screenShader->SetBool("displaySSAO", _mode == CameraDisplayMode::SSAO_MAP);
@@ -694,6 +696,7 @@ void CameraComponent::Render()
 		_screenShader->SetFloat("quadraticDepthOfField", _quadraticDepthOfField);
 		_screenShader->SetFloat("linearDepthOfField", _linearDepthOfField);
 		_screenShader->SetFloat("constantDepthOfField", _constantDepthOfField);
+
 		_screenShader->SetFloat("brightness", _brightness);
 		_screenShader->SetFloat("contrast", _contrast);
 

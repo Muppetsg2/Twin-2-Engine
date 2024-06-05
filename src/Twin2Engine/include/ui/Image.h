@@ -4,9 +4,14 @@
 #include <graphic/Sprite.h>
 
 namespace Twin2Engine::UI {
+	class Canvas;
+
 	class Image : public Core::RenderableComponent {
 	private:
 		size_t _spriteId = 0;
+		size_t _onTransformChangeId = 0;
+		size_t _onCanvasDestroyId = 0;
+		Canvas* _canvas = nullptr;
 		Manager::UIImageData _data = { 
 			nullptr /* canvas */,	
 			nullptr /* mask */, 
@@ -25,7 +30,9 @@ namespace Twin2Engine::UI {
 		};
 
 	public:
+		virtual void Initialize() override;
 		virtual void Render() override;
+		virtual void OnDestroy() override;
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
 		
@@ -43,6 +50,7 @@ namespace Twin2Engine::UI {
 		void SetFillType(Manager::FILL_TYPE type);
 		void SetFillSubType(uint8_t subType);
 		void SetFillProgress(float progress);
+		void SetCanvas(Canvas* canvas);
 
 		Graphic::Sprite* GetSprite() const;
 		glm::vec4 GetColor() const;
@@ -53,5 +61,6 @@ namespace Twin2Engine::UI {
 		Manager::FILL_TYPE GetFillType() const;
 		uint8_t GetFillSubType() const;
 		float GetFillProgress() const;
+		Canvas* GetCanvas() const;
 	};
 }

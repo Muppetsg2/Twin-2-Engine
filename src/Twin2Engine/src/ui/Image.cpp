@@ -4,6 +4,7 @@
 #include <manager/SceneManager.h>
 #include <graphic/manager/SpriteManager.h>
 #include <core/CameraComponent.h>
+#include <ui/Canvas.h>
 
 using namespace Twin2Engine;
 using namespace UI;
@@ -13,11 +14,25 @@ using namespace Manager;
 using namespace glm;
 using namespace std;
 
+void Image::Initialize()
+{
+	_onTransformChangeId = (GetTransform()->OnEventTransformChanged += [&](Transform* t) -> void { _data.rectTransform.transform = t->GetTransformMatrix(); });
+}
+
 void Image::Render()
 {
-	_data.rectTransform.transform = GetTransform()->GetTransformMatrix();
 	_data.sprite = SpriteManager::GetSprite(_spriteId);
+	if (_canvas != nullptr) {
+		if (_canvas->IsEnable()) _data.canvas = &_canvas->_data;
+	}
 	UIRenderingManager::Render(_data);
+	_data.canvas = nullptr;
+}
+
+void Image::OnDestroy()
+{
+	SetCanvas(nullptr);
+	GetTransform()->OnEventTransformChanged -= _onTransformChangeId;
 }
 
 // TODO: Serialize Fill
@@ -50,10 +65,15 @@ YAML::Node Image::Serialize() const
 	node["fillSubType"] = (uint32_t)_data.fill.subType;
 	node["fillSubType"].SetTag(toString(_data.fill.subType));
 	node["fillProgress"] = _data.fill.progress;
+
+	// CANVAS
+	if (_canvas != nullptr) {
+		node["canvas"] = _canvas->GetId();
+	}
+
 	return node;
 }
 
-// TODO: Deserialize Fill
 bool Image::Deserialize(const YAML::Node& node)
 {
 	if (!node["sprite"] || !node["color"] || !node["width"] || !node["height"] ||
@@ -71,6 +91,10 @@ bool Image::Deserialize(const YAML::Node& node)
 	_data.fill.subType = node["fillSubType"].as<uint32_t>();
 	_data.fill.progress = node["fillProgress"].as<float>();
 
+	if (node["canvas"]) {
+		SetCanvas(static_cast<Canvas*>(SceneManager::GetComponentWithId(node["canvas"].as<size_t>())));
+	}
+
 	return true;
 }
 
@@ -84,7 +108,7 @@ void Image::DrawEditor()
 		if (Component::DrawInheritedFields()) return;
 
 		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll;
-		ImGui::InputInt(string("Layer##").append(id).c_str(), &_data.layer, flags);
+		ImGui::InputInt(string("Layer##").append(id).c_str(), &_data.layer, 1, 100, flags);
 
 		std::map<size_t, string> spriteNames = SpriteManager::GetAllSpritesNames();
 
@@ -114,6 +138,46 @@ void Image::DrawEditor()
 			}
 
 			ImGui::EndCombo();
+		}
+
+		std::unordered_map<size_t, Component*> items = SceneManager::GetComponentsOfType<Canvas>();
+		size_t choosed_canvas = _canvas == nullptr ? 0 : _canvas->GetId();
+
+		if (ImGui::BeginCombo(string("Canvas##").append(id).c_str(), choosed_canvas == 0 ? "None" : items[choosed_canvas]->GetGameObject()->GetName().c_str())) {
+
+			bool clicked = false;
+			for (auto& item : items) {
+
+				if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_canvas)) {
+
+					if (clicked) continue;
+
+					choosed_canvas = item.first;
+					clicked = true;
+				}
+			}
+
+			if (clicked) {
+				if (choosed_canvas != 0) {
+					SetCanvas(static_cast<Canvas*>(items[choosed_canvas]));
+				}
+			}
+
+			ImGui::EndCombo();
+		}
+
+		if (ImGui::BeginDragDropTarget()) {
+
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SceneHierarchyObject"))
+			{
+				size_t payload_n = *(const size_t*)payload->Data;
+				Canvas* c = SceneManager::GetGameObjectWithId(payload_n)->GetComponent<Canvas>();
+				if (c != nullptr) {
+					SetCanvas(c);
+				}
+			}
+
+			ImGui::EndDragDropTarget();
 		}
 
 		float v = _data.rectTransform.size.x;
@@ -294,6 +358,20 @@ void Image::SetFillProgress(float progress)
 	}
 }
 
+void Image::SetCanvas(Canvas* canvas)
+{
+	if (_canvas != canvas) {
+		if (_canvas != nullptr) {
+			_canvas->GetOnCanvasDestroy() -= _onCanvasDestroyId;
+		}
+
+		_canvas = canvas;
+		if (_canvas != nullptr) {
+			_onCanvasDestroyId = (_canvas->GetOnCanvasDestroy() += [&](Canvas* canv) -> void { SetCanvas(nullptr); });
+		}
+	}
+}
+
 Sprite* Image::GetSprite() const
 {
 	return SpriteManager::GetSprite(_spriteId);
@@ -337,4 +415,9 @@ uint8_t Image::GetFillSubType() const
 float Image::GetFillProgress() const
 {
 	return _data.fill.progress * 100.f;
+}
+
+Canvas* Image::GetCanvas() const
+{
+	return _canvas;
 }

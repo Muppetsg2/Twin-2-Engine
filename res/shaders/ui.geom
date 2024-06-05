@@ -122,7 +122,7 @@ void main() {
 	vec2 elemPos = (pointPos + vec2(-0.5, -0.5)) * element.rect.size;
 	gs_out.canvasPos = vec2(element.rect.transform * vec4(elemPos, 1.0, 1.0));
 	gs_out.worldPos = canvasTransform * vec4(2.0 * invCanvasSize * gs_out.canvasPos, 0.0, 1.0);
-	if (canvasIsInWorldSpace) {
+	if (canvasIsInWorldSpace && canvasIsActive) {
 		gs_out.screenPos = vec2(projection * view * gs_out.worldPos);
 		gl_Position = projection * view * gs_out.worldPos;
 	}
@@ -137,7 +137,7 @@ void main() {
 	elemPos = (pointPos + vec2(0.5, -0.5)) * element.rect.size;
 	gs_out.canvasPos = vec2(element.rect.transform * vec4(elemPos, 0.0, 1.0));
 	gs_out.worldPos = canvasTransform * vec4(2.0 * invCanvasSize * gs_out.canvasPos, 0.0, 1.0);
-	if (canvasIsInWorldSpace) {
+	if (canvasIsInWorldSpace && canvasIsActive) {
 		gs_out.screenPos = vec2(projection * view * gs_out.worldPos);
 		gl_Position = projection * view * gs_out.worldPos;
 	}
@@ -153,7 +153,7 @@ void main() {
 	elemPos = (pointPos + vec2(-0.5, 0.5)) * element.rect.size;
 	gs_out.canvasPos = vec2(element.rect.transform * vec4(elemPos, 0.0, 1.0));
 	gs_out.worldPos = canvasTransform * vec4(2.0 * invCanvasSize * gs_out.canvasPos, 0.0, 1.0);
-	if (canvasIsInWorldSpace) {
+	if (canvasIsInWorldSpace && canvasIsActive) {
 		gs_out.screenPos = vec2(projection * view * gs_out.worldPos);
 		gl_Position = projection * view * gs_out.worldPos;
 	}
@@ -169,7 +169,7 @@ void main() {
 	elemPos = (pointPos + vec2(0.5, 0.5)) * element.rect.size;
 	gs_out.canvasPos = vec2(element.rect.transform * vec4(elemPos, 0.0, 1.0));
 	gs_out.worldPos = canvasTransform * vec4(2.0 * invCanvasSize * gs_out.canvasPos, 0.0, 1.0);
-	if (canvasIsInWorldSpace) {
+	if (canvasIsInWorldSpace && canvasIsActive) {
 		gs_out.screenPos = vec2(projection * view * gs_out.worldPos);
 		gl_Position = projection * view * gs_out.worldPos;
 	}

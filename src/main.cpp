@@ -294,11 +294,11 @@ int main(int, char**)
     };
 
     // ADDING SCENES
-    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
     //SceneManager::AddScene("testScene", "res/scenes/MenuScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
-    //SceneManager::AddScene("testScene", "res/scenes/ToonShading.scene");
+    SceneManager::AddScene("testScene", "res/scenes/ToonShading.scene");
 
     SceneManager::LoadScene("testScene");
     SceneManager::Update();

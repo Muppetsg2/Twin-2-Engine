@@ -102,6 +102,10 @@ namespace Twin2Engine::Core {
 		float _linearDepthOfField = 10.f;
 		float _constantDepthOfField = 0.f;
 
+		// GAUSSIAN BLURE
+		size_t _gaussianMSize = 0;
+		float _gaussianKernel[40] = {};
+
 		vec3 _front = vec3(0.f, 0.f, -1.f);
 		vec3 _right = vec3(1.f, 0.f, 0.f);
 		vec3 _up = vec3(0.f, 1.f, 0.f);
@@ -114,6 +118,7 @@ namespace Twin2Engine::Core {
 		void SetFrontDir(vec3 dir);
 		void GenerateSSAOKernel(unsigned int size = 64);
 		void GenerateSSAONoiseTexture();
+		void UpdateGaussianKernel();
 
 	public:
 		static std::vector<CameraComponent*> Cameras;
@@ -161,6 +166,8 @@ namespace Twin2Engine::Core {
 		void SetIsMain(bool value);
 		void SetFrustumCulling(bool value);
 		void SetSSAO(bool value);
+
+		void SetGaussianMSize(size_t mSize);
 
 		void Render();
 

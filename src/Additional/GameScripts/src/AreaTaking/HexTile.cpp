@@ -1,6 +1,7 @@
 #include <AreaTaking/HexTile.h>
 
 #include <Playable.h>
+#include <ConcertRoad.h>
 #include <UIScripts/MinigameManager.h>
 
 using namespace Twin2Engine::Core;
@@ -133,6 +134,11 @@ void HexTile::Initialize()
 	_meshRenderer = GetGameObject()->GetComponent<MeshRenderer>();
 }
 
+void HexTile::OnDestroy()
+{
+	ConcertRoad::instance->RoadMapPoints.erase(this);
+}
+
 void HexTile::Update()
 {
 	if (!minigameActive && !GameManager::instance->minigameActive && _mapHexTile->type != MapHexTile::HexTileType::Mountain && !isFighting)
@@ -146,10 +152,6 @@ void HexTile::Update()
 			LoseInfluence();
 		}
 	}
-}
-
-void HexTile::OnDestroy()
-{
 }
 
 void HexTile::ResetTile()

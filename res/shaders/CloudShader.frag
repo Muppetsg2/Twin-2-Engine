@@ -201,18 +201,45 @@ void main()
 	vec3 sunLight = directionalLights[0].color * CLOUD_LIGHT_MULTIPLIER;
 
 
+	//float density_i = 0.0;
+	//vec3 samplePos = vec3(0.0, 0.0, 0.0);
+	//for (float i = 0.0; i < NUMBER_OF_STEPS; ++i) {
+	//	samplePos = FragPos + dir * step_len * i;
+	//	density_i = density3d(samplePos);
+	//
+	//	if (density_i  > DENSITY_TRESHOLD) {
+	//		dist += step_len * density_i;
+	//
+	//		if (density_i > 0.01) {
+	//			vec3 luminance = AmbientLight + sunLight * CalculateLightEnergy(samplePos, dir);
+	//			vec3 transmit = exp(-density_i * step_len * EXTINCTION_MULT);
+	//			vec3 integScatt = density_i * (luminance - luminance * transmit) / density_i;
+	//			
+	//			scattering += transmittance * integScatt;
+	//			transmittance *= transmit;  
+	//			
+	//			if (length(transmittance) <= 0.01) {
+	//				transmittance = vec3(0.0);
+	//				break;
+	//			}
+	//		}
+	//	}
+	//	//dist += step_len * density3d(FragPos + dir * step_len * i);
+	//}	
+	float S_LEN = 0.1;
+	float NoS = totalDistance / S_LEN;
 	float density_i = 0.0;
 	vec3 samplePos = vec3(0.0, 0.0, 0.0);
-	for (float i = 0.0; i < NUMBER_OF_STEPS; ++i) {
-		samplePos = FragPos + dir * step_len * i;
+	for (float i = 0.0; i < NoS; ++i) {
+		samplePos = FragPos + dir * S_LEN * i;
 		density_i = density3d(samplePos);
-
+	
 		if (density_i  > DENSITY_TRESHOLD) {
-			dist += step_len * density_i;
-
+			dist += S_LEN * density_i;
+	
 			if (density_i > 0.01) {
 				vec3 luminance = AmbientLight + sunLight * CalculateLightEnergy(samplePos, dir);
-				vec3 transmit = exp(-density_i * step_len * EXTINCTION_MULT);
+				vec3 transmit = exp(-density_i * S_LEN * EXTINCTION_MULT);
 				vec3 integScatt = density_i * (luminance - luminance * transmit) / density_i;
 				
 				scattering += transmittance * integScatt;

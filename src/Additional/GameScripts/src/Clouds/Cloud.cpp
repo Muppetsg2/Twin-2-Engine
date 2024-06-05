@@ -9,9 +9,9 @@ using namespace Twin2Engine::Core;
 
 void Cloud::Initialize() {
 	glm::vec3 positionOffset;
-	positionOffset.x = Random::Range<float>(-0.4f, 0.4f);
+	positionOffset.x = Random::Range<float>(-0.4f, 0.4f) + 0.2;
 	positionOffset.y = Random::Range<float>(-0.1f, 0.2f);
-	positionOffset.z = Random::Range<float>(-0.4f, 0.4f);
+	positionOffset.z = Random::Range<float>(-0.4f, 0.4f) - 0.2;
 
 	GetTransform()->Translate(positionOffset);
 

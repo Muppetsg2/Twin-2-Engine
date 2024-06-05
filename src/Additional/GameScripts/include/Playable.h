@@ -132,7 +132,7 @@ public:
     virtual void WonPaperRockScissors(Playable* playable) = 0;
     virtual void LostFansControl(Playable* playable) = 0;
     virtual void WonFansControl(Playable* playable) = 0;
-    virtual void StartPaperRockScissors(Playable* playable) = 0;
+    //virtual void StartPaperRockScissors(Playable* playable) = 0;
     virtual void StartFansControl(Playable* playable) = 0;
 
     virtual float GetMaxRadius() const;

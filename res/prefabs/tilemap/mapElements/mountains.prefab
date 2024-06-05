@@ -79,13 +79,6 @@ GameObjects:
     components:
       - id: 623
         enabled: true
-        type: MeshRenderer
-        isTransparent: true
-        model: 1
-        materials:
-          - 1
-      - id: 624
-        enabled: true
         type: Cloud
         direction:
           x: 1
@@ -106,5 +99,12 @@ GameObjects:
           z: -0.01
         maxDistance: 18
         travelledDistance: 0
+      - id: 624
+        enabled: true
+        type: MeshRenderer
+        isTransparent: true
+        model: 1
+        materials:
+          - 1
     children:
       []

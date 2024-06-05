@@ -97,7 +97,7 @@ vec3 getColor(vec2 coord) {
     return res;
 }
 
-vec3 applyBlur() {
+vec3 applyBlurFast() {
     vec2 direction = normalize(vec2(1.0));
     vec2 resolution = displayDepth ? textureSize(depthTexture, 0) : textureSize(screenTexture, 0);
     vec2 uv = TexCoord;
@@ -119,12 +119,46 @@ vec3 applyBlur() {
     return color;
 }
 
+uniform int gaussianMSize;
+uniform float gaussianKernel[40];
+
+vec3 applyBlurGaussian() {
+    if (gaussianMSize != 0) {
+        //declare stuff
+        vec3 result = vec3(0.0);
+        const int kSize = (gaussianMSize - 1) / 2;
+        vec2 tex_offset = displayDepth ? 1.0 / textureSize(depthTexture, 0) : 1.0 / textureSize(screenTexture, 0);
+
+        float Z = 0.0;
+
+        //get the normalization factor (as the gaussian has been clamped)
+        for (int j = 0; j < gaussianMSize; ++j)
+        {
+            Z += gaussianKernel[j];
+        }
+
+        //read out the texels
+        for (int i =- kSize; i <= kSize; ++i)
+        {
+            for (int j =- kSize; j <= kSize; ++j)
+            {
+                vec3 c = getColor(TexCoord.xy + vec2(tex_offset.x * i, tex_offset.y * j));
+                result += gaussianKernel[kSize + j] * gaussianKernel[kSize + i] * c;
+            }
+        }
+        return result / (Z * Z);
+    }
+    else {
+        return getColor(TexCoord.xy);
+    }
+}
+
 vec3 applyDepthOfField(vec3 currentOutput) {
     float currentDepth = getDepthValue(TexCoord).r;
     float centerDepth = getDepthValue(vec2(0.5, 0.5)).r;
 
     //vec3 blurred = vec3(0.0, 0.0, 0.0);
-    vec3 blurred = applyBlur();
+    vec3 blurred = applyBlurGaussian();
     
     vec2 resolution = textureSize(screenTexture, 0);
 
@@ -145,7 +179,7 @@ uniform float constantDepthOfField;
 vec3 applyDepthOfField2(vec3 color) {
 
     vec3 focusColor = color;
-    vec3 outOfFocusColor = applyBlur();
+    vec3 outOfFocusColor = applyBlurGaussian();
 
     float focusDist = texture(depthTexture, vec2(0.5)).r;
 
@@ -163,7 +197,7 @@ void main() {
     vec3 res = getColor(TexCoord);
 
     if (hasBlur) {
-        res = applyBlur();
+        res = applyBlurFast();
     }
 
     if (hasDepthOfField)

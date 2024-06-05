@@ -55,13 +55,13 @@ class CloudControllerSyncProc : public SynchronizedProcess {
 CloudController* CloudController::instance = nullptr;
 const int CloudController::CLOUD_DEPTH_MAP_ID = 20;
 
-float CloudController::ABSORPTION		= 10.0;
-float CloudController::DENSITY_FAC		= 8.0;
+float CloudController::ABSORPTION		= 15.0;
+float CloudController::DENSITY_FAC		= 4.0;
 float CloudController::NUMBER_OF_STEPS	= 10;
 float CloudController::CLOUD_LIGHT_STEPS = 10;
-float CloudController::CLOUD_LIGHT_MULTIPLIER = 0.01;
+float CloudController::CLOUD_LIGHT_MULTIPLIER = 5;
 float CloudController::CLOUD_EXPOSURE	= 0.5;
-float CloudController::POS_MULT			= 0.6;
+float CloudController::POS_MULT			= 0.7;
 float CloudController::APLPHA_TRESHOLD	= 0.0;
 float CloudController::DENSITY_TRESHOLD = 0.0;
 glm::vec3 CloudController::NOISE_D_VEL_3D = vec3(-0.05, -0.04, 0.02);
@@ -178,7 +178,10 @@ void CloudController::RegisterCloud(Cloud* cloud) {
 	Transform* transform = cloud->GetTransform();// ->GetTransformMatrix();
 	MeshRenderer* mr = cloud->GetGameObject()->GetComponent<MeshRenderer>();
 	for (int i = mr->GetMeshCount() - 1; i >= 0; --i) {
-		depthQueue[mr->GetMesh(i)].push_back(transform);
+		auto itr = std::find(depthQueue[mr->GetMesh(i)].begin(), depthQueue[mr->GetMesh(i)].end(), transform);
+		if (itr == depthQueue[mr->GetMesh(i)].end()) {
+			depthQueue[mr->GetMesh(i)].push_back(transform);
+		}
 	}
 }
 
@@ -187,11 +190,15 @@ void CloudController::UnregisterCloud(Cloud* cloud) {
 	MeshRenderer* mr = cloud->GetGameObject()->GetComponent<MeshRenderer>();
 
 	for (int i = mr->GetMeshCount() - 1; i >= 0; --i) {
-		auto& vec = depthQueue[mr->GetMesh(i)];
-		auto itr = std::find(vec.begin(), vec.end(), transform);
-		vec.erase(itr);
+		//auto& vec = depthQueue[mr->GetMesh(i)];
+		//auto itr = std::find(vec.begin(), vec.end(), transform);
+		//vec.erase(itr);
 
-		if (vec.size() == 0) {
+		auto itr = std::find(depthQueue[mr->GetMesh(i)].begin(), depthQueue[mr->GetMesh(i)].end(), transform);
+
+		depthQueue[mr->GetMesh(i)].erase(itr);
+
+		if (depthQueue[mr->GetMesh(i)].size() == 0) {
 			depthQueue.erase(mr->GetMesh(i));
 		}
 	}

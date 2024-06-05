@@ -35,7 +35,7 @@ Root:
       z: 1
     rotation:
       x: 0
-      y: 0
+      y: -165
       z: 0
   components:
     - id: 624

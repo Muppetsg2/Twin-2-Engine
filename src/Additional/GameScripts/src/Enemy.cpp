@@ -114,9 +114,9 @@ void Enemy::WonFansControl(Playable* playable)
 {
 }
 
-void Enemy::StartPaperRockScissors(Playable* playable)
-{
-}
+//void Enemy::StartPaperRockScissors(Playable* playable)
+//{
+//}
 
 void Enemy::StartFansControl(Playable* playable)
 {

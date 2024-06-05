@@ -30,6 +30,7 @@ namespace Twin2Engine
             void SetInt(const std::string& name, int value) const;
             void SetUInt(const std::string& name, unsigned int value) const;
             void SetFloat(const std::string& name, float value) const;
+            void SetFloatArray(const std::string& name, float* values, size_t size) const;
             void SetVec2(const std::string& name, const glm::vec2& value) const;
             void SetVec3(const std::string& name, const glm::vec3& value) const;
             void SetVec4(const std::string& name, const glm::vec4& value) const;

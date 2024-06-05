@@ -172,7 +172,7 @@ void HexTile::TakeOver()
 		}
 	}
 
-	//// Przetworzenie oddzia³ywania tych, którzy z dalszego zasiêgu oddzia³uj¹.
+	//// Przetworzenie oddziaï¿½ywania tych, ktï¿½rzy z dalszego zasiï¿½gu oddziaï¿½ujï¿½.
 	//size_t size = remotelyOccupyingEntities.size();
 	//for (size_t index = 0ull; index < size; ++index)
 	//{

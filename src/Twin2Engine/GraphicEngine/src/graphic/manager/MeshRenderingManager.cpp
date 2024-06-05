@@ -1012,8 +1012,19 @@ bool MeshRenderingManager::UnregisterDynamic(Twin2Engine::Core::MeshRenderer* me
 	return false;
 }
 
+#if TRACY_PROFILER
+const char* const tracey_UpdateStatic = "UpdatingingStaticMeshes";
+const char* const tracey_UpdateDynamic = "UpdatingDynamicMeshes";
+const char* const tracey_UpdateStaticTransparent = "UpdatingStaticTransparentMeshes";
+const char* const tracey_UpdateDynamicTransparent = "UpdatingDynamicTransparentMeshes";
+#endif
+
 void MeshRenderingManager::UpdateQueues()
 {
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
 	Frustum frustum = CameraComponent::GetCurrentCameraFrustum();
 	RenderedSegment renderedSegment { .begin = nullptr, .count = 0 };
 
@@ -1025,6 +1036,10 @@ void MeshRenderingManager::UpdateQueues()
 	{
 		meshPair.second.rendered.clear();
 	}
+
+#if TRACY_PROFILER
+	FrameMarkStart(tracey_UpdateStatic);
+#endif
 
 #pragma region UPDATE_FOR_STATIC
 
@@ -1041,7 +1056,7 @@ void MeshRenderingManager::UpdateQueues()
 
 				meshPair.second.renderedCount = 0u;
 
-				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); index++)
+				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); ++index)
 				{
 					if (meshPair.second.meshRenderers[index]->GetGameObject()->GetActive())
 					{
@@ -1096,16 +1111,24 @@ void MeshRenderingManager::UpdateQueues()
 				}
 
 				_depthMapQueueStatic[meshPair.first].renderedCount += meshPair.second.renderedCount;
-				//_depthMapQueueStatic[meshPair.first].rendered.insert(_depthMapQueueStatic[meshPair.first].rendered.cend(), meshPair.second.rendered.begin(), meshPair.second.rendered.end());
-				for (const auto& element : meshPair.second.rendered)
-				{
-					_depthMapQueueStatic[meshPair.first].rendered.push_back(element);
-				}
+				_depthMapQueueStatic[meshPair.first].rendered.insert(_depthMapQueueStatic[meshPair.first].rendered.cend(), meshPair.second.rendered.begin(), meshPair.second.rendered.end());
+				//for (const auto& element : meshPair.second.rendered)
+				//{
+				//	_depthMapQueueStatic[meshPair.first].rendered.push_back(element);
+				//}
 			}
 		}
 	}
 	_depthQueueStatic = _depthMapQueueStatic;
 #pragma endregion
+
+#if TRACY_PROFILER
+	FrameMarkEnd(tracey_UpdateStatic);
+#endif
+
+#if TRACY_PROFILER
+	FrameMarkStart(tracey_UpdateDynamic);
+#endif
 
 #pragma region UPDATE_FOR_STATIC_TRANSPARENT
 
@@ -1122,7 +1145,7 @@ void MeshRenderingManager::UpdateQueues()
 
 				meshPair.second.renderedCount = 0u;
 
-				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); index++)
+				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); ++index)
 				{
 					if (meshPair.second.meshRenderers[index]->GetGameObject()->GetActive())
 					{
@@ -1180,6 +1203,14 @@ void MeshRenderingManager::UpdateQueues()
 	}
 #pragma endregion
 
+#if TRACY_PROFILER
+	FrameMarkEnd(tracey_UpdateDynamic);
+#endif
+
+#if TRACY_PROFILER
+	FrameMarkStart(tracey_UpdateStaticTransparent);
+#endif
+
 #pragma region UPDATE_FOR_DYNAMIC
 
 	for (auto& shaderPair : _renderQueueDynamic)
@@ -1194,7 +1225,7 @@ void MeshRenderingManager::UpdateQueues()
 				meshPair.second.rendered.clear();
 				meshPair.second.renderedCount = 0u;
 
-				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); index++)
+				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); ++index)
 				{
 					if (meshPair.second.meshRenderers[index]->IsTransformChanged())
 					{
@@ -1267,6 +1298,14 @@ void MeshRenderingManager::UpdateQueues()
 	_depthQueueDynamic = _depthMapQueueDynamic;
 #pragma endregion
 
+#if TRACY_PROFILER
+	FrameMarkEnd(tracey_UpdateStaticTransparent);
+#endif
+
+#if TRACY_PROFILER
+	FrameMarkStart(tracey_UpdateDynamicTransparent);
+#endif
+
 #pragma region UPDATE_FOR_DYNAMIC_TRANSPARENT
 
 	for (auto& shaderPair : _renderQueueDynamicTransparent)
@@ -1281,7 +1320,7 @@ void MeshRenderingManager::UpdateQueues()
 				meshPair.second.rendered.clear();
 				meshPair.second.renderedCount = 0u;
 
-				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); index++)
+				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); ++index)
 				{
 					if (meshPair.second.meshRenderers[index]->IsTransformChanged())
 					{
@@ -1345,10 +1384,23 @@ void MeshRenderingManager::UpdateQueues()
 		}
 	}
 #pragma endregion
+
+#if TRACY_PROFILER
+	FrameMarkEnd(tracey_UpdateDynamicTransparent);
+#endif
 }
+
+#if TRACY_PROFILER
+const char* const tracey_PrerenderStatic = "PrerenderStaticMeshes";
+const char* const tracey_PrerenderDynamic = "PrerenderDynamicMeshes";
+#endif
 
 void MeshRenderingManager::PreRender()
 {
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
 	if (_flags.IsStaticChanged) {
 		Twin2Engine::Graphic::LightingController::Instance()->RenderShadowMaps();
 		_flags.IsStaticChanged = false;
@@ -1361,6 +1413,10 @@ void MeshRenderingManager::PreRender()
 	RenderedSegment currentSegment{ .begin = nullptr, .count = 0u };
 
 	std::list<RenderedSegment>::iterator renderItr;
+
+#if TRACY_PROFILER
+	FrameMarkStart(tracey_PrerenderStatic);
+#endif
 
 #pragma region RENDERING_STATIC_DEPTH_MAP
 
@@ -1488,6 +1544,14 @@ void MeshRenderingManager::PreRender()
 
 #pragma endregion
 
+#if TRACY_PROFILER
+	FrameMarkEnd(tracey_PrerenderStatic);
+#endif
+
+#if TRACY_PROFILER
+	FrameMarkStart(tracey_PrerenderDynamic);
+#endif
+
 #pragma region RENDERING_DYNAMIC_DEPTH_MAP
 
 	for (auto& meshPair : _depthMapQueueDynamic)
@@ -1613,10 +1677,25 @@ void MeshRenderingManager::PreRender()
 	}
 
 #pragma endregion
+
+#if TRACY_PROFILER
+	FrameMarkEnd(tracey_PrerenderDynamic);
+#endif
 }
 
-void MeshRenderingManager::RenderStatic()
+#if TRACY_PROFILER
+const char* const tracey_RenderStatic = "RenderingStaticMeshes";
+const char* const tracey_RenderDynamic = "RenderingDynamicMeshes";
+const char* const tracey_RenderStaticTransparent = "RenderingStaticTransparentMeshes";
+const char* const tracey_RenderDynamicTransparent = "RenderingDynamicTransparentMeshes";
+#endif
+
+void MeshRenderingManager::Render()
 {
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
 	unsigned int globalDrawCount = 0;
 
 	RenderedSegment currentSegment{ .begin = nullptr, .count = 0u };
@@ -1630,6 +1709,10 @@ void MeshRenderingManager::RenderStatic()
 	//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, _materialsIndexes);
+#endif
+
+#if TRACY_PROFILER
+	FrameMarkStart(tracey_RenderStatic);
 #endif
 
 #pragma region RENDERING_STATIC_OBJECTS
@@ -1811,6 +1894,14 @@ void MeshRenderingManager::RenderStatic()
 
 #pragma endregion
 
+#if TRACY_PROFILER
+	FrameMarkEnd(tracey_RenderStatic);
+#endif
+
+#if TRACY_PROFILER
+	FrameMarkStart(tracey_RenderDynamic);
+#endif
+
 #pragma region RENDERING_DYNAMIC_OBJECTS
 
 	for (auto& shaderPair : _renderQueueDynamic)
@@ -1989,6 +2080,14 @@ void MeshRenderingManager::RenderStatic()
 	}
 
 #pragma endregion
+
+#if TRACY_PROFILER
+	FrameMarkEnd(tracey_RenderDynamic);
+#endif
+
+#if TRACY_PROFILER
+	FrameMarkStart(tracey_RenderDynamicTransparent);
+#endif
 
 #pragma region RENDERING_STATIC_OBJECTS_TRANSPARENT
 
@@ -2169,6 +2268,14 @@ void MeshRenderingManager::RenderStatic()
 
 #pragma endregion
 
+#if TRACY_PROFILER
+	FrameMarkEnd(tracey_RenderDynamicTransparent);
+#endif
+
+#if TRACY_PROFILER
+	FrameMarkStart(tracey_RenderDynamicTransparent);
+#endif
+
 #pragma region RENDERING_DYNAMIC_OBJECTS_TRANSPARENT
 
 	for (auto& shaderPair : _renderQueueDynamicTransparent)
@@ -2347,6 +2454,10 @@ void MeshRenderingManager::RenderStatic()
 	}
 
 #pragma endregion
+
+#if TRACY_PROFILER
+	FrameMarkEnd(tracey_RenderDynamicTransparent);
+#endif
 
 	//SPDLOG_WARN("Global static draw count: {}", globalDrawCount);
 }

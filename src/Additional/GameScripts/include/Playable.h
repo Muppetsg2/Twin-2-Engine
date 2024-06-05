@@ -28,6 +28,7 @@ class HexTile;
 
 class Playable : public Twin2Engine::Core::Component {
 protected:
+    Tilemap::HexagonalTilemap* _tilemap = nullptr;
     virtual void OnDead() = 0;
 
 public:
@@ -57,7 +58,7 @@ public:
     float albumTakingOverTimeMin = 5.0f; // parameter
     float albumTakingOverTimeMax = 7.0f; // parameter
     std::vector<MinMaxPair> albumsIncreasingMinMaxIntervals{ {.min = 3.0f, .max = 4.0f }, {.min = 3.0f, .max = 4.0f } }; // parameter
-    float takingIntoAttentionFactor = 0.5f; // parameter // Okreœla z jakiej czêœci tile o najmniejszych wp³ywach bêdzie losowany do oddzia³ywania przez album
+    float takingIntoAttentionFactor = 0.5f; // parameter // Okreï¿½la z jakiej czï¿½ci tile o najmniejszych wpï¿½ywach bï¿½dzie losowany do oddziaï¿½ywania przez album
     std::vector<float> albumsIncreasingIntervals;
     std::vector<float> albumsIncreasingIntervalsCounter;
 #pragma endregion

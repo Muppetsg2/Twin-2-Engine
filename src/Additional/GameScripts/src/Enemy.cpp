@@ -44,10 +44,17 @@ void Enemy::OnDestroy()
 
 void Enemy::Update()
 {
-    _currThinkingTime -= Time::GetDeltaTime();
-    if (_currThinkingTime <= 0.f) {
-        _stateMachine.Update(this);
-        _currThinkingTime = _timeToThink;
+    if (GameManager::instance->gameStarted) {
+        if (!_started) {
+            ChangeState(&_movingState);
+            _started = true;
+        }
+
+        _currThinkingTime -= Time::GetDeltaTime();
+        if (_currThinkingTime <= 0.f) {
+            _stateMachine.Update(this);
+            _currThinkingTime = _timeToThink;
+        }
     }
 }
 

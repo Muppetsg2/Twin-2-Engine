@@ -1,0 +1,9 @@
+scriptable_object:
+  __SO_RegisteredName__: MoneyFunctionData
+  flatness: 10
+  hasXLimits: false
+  minX: 0
+  maxX: 100
+  hasYLimits: false
+  minY: -10
+  maxY: 10

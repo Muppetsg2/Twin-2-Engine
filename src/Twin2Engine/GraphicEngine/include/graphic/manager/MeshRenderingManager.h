@@ -116,7 +116,7 @@ namespace Twin2Engine
 			static void UpdateQueues();
 
 			static void PreRender();
-			static void RenderStatic();
+			static void Render();
 
 		public:
 			static void Init();

@@ -39,6 +39,12 @@ private:
     Twin2Engine::UI::Text* _monthText;
     Twin2Engine::UI::Text* _yearText;
 
+
+
+    Twin2Engine::UI::Text* _dayText;
+    Twin2Engine::UI::Text* _monthText;
+    Twin2Engine::UI::Text* _yearText;
+
 public:
     static GameManager* instance;
 

@@ -76,10 +76,10 @@ void Scene::Deserialize(const YAML::Node& sceneNode)
 		}
 		else {
 			if (texNode["fileFormat"] && !texNode["engineFormat"]) {
-				SPDLOG_ERROR("Przy podanym parametrze 'fileFormat' brakuje parametru 'engineFormat'");
+				SPDLOG_ERROR("The 'engineFormat' parameter is missing for the given 'fileFormat' parameter");
 			}
 			else if (!texNode["fileFormat"] && texNode["engineFormat"]) {
-				SPDLOG_ERROR("Przy podanym parametrze 'fileFormat' brakuje parametru 'engineFormat'");
+				SPDLOG_ERROR("The 'engineFormat' parameter is missing for the given 'fileFormat' parameter");
 			}
 			AddTexture2D(id, path, data);
 		}
@@ -93,7 +93,7 @@ void Scene::Deserialize(const YAML::Node& sceneNode)
 		}
 		else {
 			if (spriteNode["x"] || spriteNode["y"] || spriteNode["width"] || spriteNode["height"]) {
-				SPDLOG_ERROR("Nie podano wszystkich parametr�w poprawnie: x, y, width, height");
+				SPDLOG_ERROR("Not all parameters were entered correctly: x, y, width, height");
 			}
 			AddSprite(spriteNode["id"].as<size_t>(), spriteNode["alias"].as<string>(), spriteNode["texture"].as<size_t>());
 		}

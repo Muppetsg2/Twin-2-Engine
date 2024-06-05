@@ -81,6 +81,7 @@ void PlayerMovement::Update() {
             HexTile* hexTile = raycastHit.collider->GetGameObject()->GetComponent<HexTile>();
             MapHexTile* mapHexTile = hexTile->GetMapHexTile();
             //if (raycastHit.transform != null && raycastHit.transform.gameObject.TryGetComponent(out HexTile hexTile) && hexTile.Type != TileType.Mountain && !(hexTile.Type == TileType.RadioStation && hexTile.currCooldown > 0f) && !hexTile.IsFighting)
+            SPDLOG_INFO("Player destination HexTileType: {}", hexTile->isFighting);
             if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && hexTile->currCooldown > 0.0f) && !hexTile->isFighting)
             {
                 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

@@ -192,6 +192,7 @@ void MovingState::Fight(Enemy* enemy)
 	// Move to tile with desired player
 	enemy->SetMoveDestination(desiredTile);
 
+	// TODO: delay change state and add check if player is still on tile
 	enemy->ChangeState(&enemy->_fightingState);
 }
 
@@ -217,6 +218,7 @@ void MovingState::RadioStation(Enemy* enemy)
 	// Move to tile with desired radioStation
 	enemy->SetMoveDestination(desiredTile);
 
+	// TODO: delay change state
 	enemy->ChangeState(&enemy->_radioStationState);
 }
 

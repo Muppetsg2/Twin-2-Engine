@@ -36,6 +36,32 @@ struct Texture {
 	bool isActive;
 };
 
+// FILL TYPES
+const uint HORIZONTAL_FILL = 0;
+const uint VERTICAL_FILL = 1;
+const uint CIRCLE_FILL = 2;
+
+// HORIZONTAL FILL SUBTYPES
+const uint LEFT_FILL = 0;
+const uint CENTER_FILL = 1;
+const uint RIGHT_FILL = 2;
+
+// VERTICAL FILL SUBTYPES
+const uint TOP_FILL = 0;
+const uint MIDDLE_FILL = 1;
+const uint BOTTOM_FILL = 2;
+
+// CIRCLE FILL SUBTYPES
+const uint CW_FILL = 0;
+const uint CCW_FILL = 1;
+
+struct FillData {
+    uint type;
+    uint subType;
+    float progress;
+    bool isActive;
+};
+
 layout (std140, binding = 4) uniform CanvasData {
     RectTransform canvasRect;
 	bool canvasIsInWorldSpace;
@@ -45,6 +71,7 @@ layout (std140, binding = 4) uniform CanvasData {
 layout (std140, binding = 5) uniform MaskData {
     RectTransform maskRect;
     Sprite maskSprite;
+	FillData maskFill;
 	uvec2 maskTextureSize;
     bool maskIsActive;
 };
@@ -52,6 +79,7 @@ layout (std140, binding = 5) uniform MaskData {
 struct UIElement {
     RectTransform rect;
     Sprite sprite;
+	FillData fill;
     vec4 color;
     bool isText;
 };
@@ -68,6 +96,7 @@ in VS_OUT {
 
 out GS_OUT {
 	flat uint instanceID;
+	vec2 pointPos;
 	vec2 texCoord;
 	vec2 screenPos;
 	vec2 canvasPos;
@@ -88,6 +117,7 @@ void main() {
 	}
 
 	UIElement element = uiElements[gs_in[0].instanceID];
+	gs_out.pointPos = vec2(element.rect.transform * vec4(pointPos, 1.0, 1.0));
 
 	vec2 elemPos = (pointPos + vec2(-0.5, -0.5)) * element.rect.size;
 	gs_out.canvasPos = vec2(element.rect.transform * vec4(elemPos, 1.0, 1.0));

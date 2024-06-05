@@ -26,9 +26,17 @@ STD140Offsets UIRenderingManager::TextureOffsets{
 	STD140Variable<bool>("isActive")
 };
 
+STD140Offsets UIRenderingManager::FillDataOffsets{
+	STD140Variable<uint>("type"),
+	STD140Variable<uint>("subType"),
+	STD140Variable<float>("progress"),
+	STD140Variable<bool>("isActive")
+};
+
 STD140Offsets UIRenderingManager::UIElementOffsets{
 	STD140Variable<STD140Offsets>("rect", UIRenderingManager::RectTransformOffsets),
 	STD140Variable<STD140Offsets>("sprite", UIRenderingManager::SpriteOffsets),
+	STD140Variable<STD140Offsets>("fill", UIRenderingManager::FillDataOffsets),
 	STD140Variable<vec4>("color"),
 	STD140Variable<bool>("isText")
 };
@@ -43,6 +51,7 @@ STD140Struct UIRenderingManager::CanvasStruct{
 STD140Struct UIRenderingManager::MaskStruct{
 	STD140Variable<STD140Offsets>("maskRect", UIRenderingManager::RectTransformOffsets),
 	STD140Variable<STD140Offsets>("maskSprite", UIRenderingManager::SpriteOffsets),
+	STD140Variable<STD140Offsets>("maskFill", UIRenderingManager::FillDataOffsets),
 	STD140Variable<uvec2>("maskTexureSize"),
 	STD140Variable<bool>("maskIsActive")
 };
@@ -215,6 +224,13 @@ void UIRenderingManager::Render()
 							maskData->maskSprite->Use(1);
 						}
 						MaskStruct.Set("maskSprite.isActive", maskData->maskSprite != nullptr);
+
+						if (maskData->fill.isActive) {
+							MaskStruct.Set("maskFill.type", (uint)maskData->fill.type);
+							MaskStruct.Set("maskFill.subType", (uint)maskData->fill.subType);
+							MaskStruct.Set("maskFill.progress", maskData->fill.progress);
+						}
+						MaskStruct.Set("maskFill.isActive", maskData->fill.isActive);
 					}
 					MaskStruct.Set("maskIsActive", maskData != nullptr);
 					glBufferSubData(GL_UNIFORM_BUFFER, 0, MaskStruct.GetSize(), MaskStruct.GetData().data());
@@ -249,8 +265,16 @@ void UIRenderingManager::Render()
 							FrameMarkStart(tracy_RenderUIElementMaskCheck);
 #endif
 
-							// ADD MASK CHECKING
+							// MASK CHECK
 							if (maskData != nullptr) {
+								// MASK FILL CHECK
+								if (maskData->fill.isActive) {
+									if (maskData->fill.progress == 0.f) {
+										renderQueue.pop();
+										continue;
+									}
+								}
+
 								vec4 planePoint1 = vec4(-uiElem.rectTransform.size.x * .5f, uiElem.rectTransform.size.y * .5f, 0.f, 1.f);
 								vec4 planePoint2 = vec4(uiElem.rectTransform.size.x * .5f, uiElem.rectTransform.size.y * .5f, 0.f, 1.f);
 								vec4 planePoint3 = vec4(uiElem.rectTransform.size.x * .5f, -uiElem.rectTransform.size.y * .5f, 0.f, 1.f);
@@ -279,7 +303,17 @@ void UIRenderingManager::Render()
 
 #if TRACY_PROFILER
 							FrameMarkEnd(tracy_RenderUIElementMaskCheck);
+#endif
 
+							// UI ELEM FILL CHECK
+							if (uiElem.fill.isActive) {
+								if (uiElem.fill.progress == 0.f) {
+									renderQueue.pop();
+									continue;
+								}
+							}
+
+#if TRACY_PROFILER
 							FrameMarkStart(tracy_RenderUIElementDataName);
 #endif
 
@@ -297,6 +331,13 @@ void UIRenderingManager::Render()
 								}
 								UIElementsBufferStruct.Set(move(concat(elemName, ".sprite.isActive")), uiElem.sprite != nullptr);
 							}
+
+							if (uiElem.fill.isActive) {
+								UIElementsBufferStruct.Set(move(concat(elemName, ".fill.type")), (uint)uiElem.fill.type);
+								UIElementsBufferStruct.Set(move(concat(elemName, ".fill.subType")), (uint)uiElem.fill.subType);
+								UIElementsBufferStruct.Set(move(concat(elemName, ".fill.progress")), uiElem.fill.progress);
+							}
+							UIElementsBufferStruct.Set(move(concat(elemName, ".fill.isActive")), uiElem.fill.isActive);
 #if TRACY_PROFILER
 							FrameMarkEnd(tracy_RenderUIElementDataName);
 #endif
@@ -315,6 +356,7 @@ void UIRenderingManager::Render()
 						}
 
 						if (i != 0) {
+							//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, UIElementsBufferStruct.GetOffset(vformat(_uiBufforElemFormat, make_format_args(i))), UIElementsBufferStruct.GetData().data());
 							glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, UIElementsBufferStruct.GetSize(), UIElementsBufferStruct.GetData().data());
 							glDrawArraysInstanced(GL_POINTS, 0, 1, i);
 						}
@@ -360,6 +402,7 @@ void UIRenderingManager::Render(UITextData text)
 
 	_renderQueue[text.canvas][text.layer][text.mask][text.charTexture].push(UIElementQueueData{
 		.rectTransform = text.rectTransform,
+		.fill = { 0, 0, 0.f, false },
 		.sprite = nullptr,
 		.color = text.color,
 		.isText = true
@@ -370,8 +413,12 @@ void UIRenderingManager::Render(UIImageData image)
 {
 	if (image.color.a == 0.f) return;
 
-	_renderQueue[image.canvas][image.layer][image.mask][image.sprite->GetTexture()].push(UIElementQueueData{
+	Texture2D* texture = nullptr;
+	if (image.sprite != nullptr) texture = image.sprite->GetTexture();
+
+	_renderQueue[image.canvas][image.layer][image.mask][texture].push(UIElementQueueData{
 		.rectTransform = image.rectTransform,
+		.fill = image.fill,
 		.sprite = image.sprite,
 		.color = image.color,
 		.isText = false

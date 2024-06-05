@@ -32,7 +32,7 @@ class RadioStationPlayingController : public Twin2Engine::Core::Component
     int _correctCounter = 0;
 
     float _notesAreaWidth = 600.0f;
-    float _notesAreaHeight = 300.0f;
+    float _notesAreaHeight = 200.0f;
 
     RadioStation* _radioStation = nullptr;
     Playable* _playable = nullptr;
@@ -58,7 +58,6 @@ public:
 
 
     void Play(RadioStation* radioStation, Playable* playable);
-
 
 
     virtual YAML::Node Serialize() const override;

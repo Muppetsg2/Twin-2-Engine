@@ -1,4 +1,5 @@
 #include <RadioStation/RadioStation.h>
+#include <RadioStation/RadioStationPlayingController.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
@@ -41,7 +42,7 @@ void RadioStation::Play(Playable* playable)
 {
     if (_cooldownTimer <= 0.0f && _takingOverTimer <= 0.0f)
     {
-
+        RadioStationPlayingController::Instance()->Play(this, playable);
     }
 }
 
@@ -52,7 +53,7 @@ float RadioStation::GetRemainingCooldownTime() const
 
 void RadioStation::StartTakingOver(Playable* playable, float score)
 {
-    float usedRadius = score;
+    float usedRadius = score * takingRadius;
 
     _takingOverTimer = _takingOverTime;
     _takenPlayable = playable;
@@ -100,6 +101,7 @@ YAML::Node RadioStation::Serialize() const
     node["type"] = "RadioStation";
     node["cooldown"] = _cooldown;
     node["takingOverTime"] = _takingOverTime;
+    node["takingRadius"] = takingRadius;
 
 	return YAML::Node();
 }
@@ -110,6 +112,7 @@ bool RadioStation::Deserialize(const YAML::Node& node)
 
     _cooldown = node["cooldown"].as<float>();
     _takingOverTime = node["takingOverTime"].as<float>();
+    takingRadius = node["takingRadius"].as<float>();
 
 	return true;
 }
@@ -122,6 +125,7 @@ bool RadioStation::DrawInheritedFields()
 
     ImGui::InputFloat("TakingOver Time: ", &_takingOverTime);
     ImGui::InputFloat("Cooldown: ", &_cooldown);
+    ImGui::InputFloat("TakingRadius: ", &takingRadius);
 
 	return false;
 }

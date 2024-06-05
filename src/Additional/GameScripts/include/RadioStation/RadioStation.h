@@ -28,6 +28,8 @@ class RadioStation : public Twin2Engine::Core::Component
     void StartTakingOver(Playable* playable, float score);
 
 public:
+    float takingRadius = 3.0f;
+
     virtual void Initialize() override;
     virtual void Update() override;
 

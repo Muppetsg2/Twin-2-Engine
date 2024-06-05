@@ -12,15 +12,19 @@ RadioStationPlayingController* RadioStationPlayingController::instance = nullptr
 
 void RadioStationPlayingController::Initialize()
 {
+    if (!instance)
+    {
+        instance = this;
+    }
     //_buttonDo = dynamic_cast<Button*>(SceneManager::FindObjectByName("ButtonPlayingDo"));
     //_buttonRe = dynamic_cast<Button*>(SceneManager::FindObjectByName("ButtonPlayingRe"));
     //_buttonMi = dynamic_cast<Button*>(SceneManager::FindObjectByName("ButtonPlayingMi"));
     //_buttonFa = dynamic_cast<Button*>(SceneManager::FindObjectByName("ButtonPlayingFa"));
 
-    _buttonDoHandleId = _buttonDo->GetOnClickEvent() += [&]() -> void { PlayNote(NoteType::Do); };
-    _buttonReHandleId = _buttonRe->GetOnClickEvent() += [&]() -> void { PlayNote(NoteType::Re); };
-    _buttonMiHandleId = _buttonMi->GetOnClickEvent() += [&]() -> void { PlayNote(NoteType::Mi); };
-    _buttonFaHandleId = _buttonFa->GetOnClickEvent() += [&]() -> void { PlayNote(NoteType::Fa); };
+    _buttonDoHandleId = _buttonDo->GetOnClickEvent().AddCallback([&]() { PlayNote(NoteType::Do); });
+    _buttonReHandleId = _buttonRe->GetOnClickEvent().AddCallback([&]() { PlayNote(NoteType::Re); });
+    _buttonMiHandleId = _buttonMi->GetOnClickEvent().AddCallback([&]() { PlayNote(NoteType::Mi); });
+    _buttonFaHandleId = _buttonFa->GetOnClickEvent().AddCallback([&]() { PlayNote(NoteType::Fa); });
 }
 
 void RadioStationPlayingController::OnDestroy()
@@ -38,8 +42,13 @@ void RadioStationPlayingController::Play(RadioStation* radioStation, Playable* p
     {
         _radioStation = radioStation;
         _playable = playable;
+        _currentNote = 0;
         GenerateNotes();
         GetGameObject()->SetActive(true);
+        _buttonDo->GetGameObject()->SetActive(true);
+        _buttonRe->GetGameObject()->SetActive(true);
+        _buttonMi->GetGameObject()->SetActive(true);
+        _buttonFa->GetGameObject()->SetActive(true);
     }
     // Gdy wywo³uje Enemy
     else
@@ -60,7 +69,7 @@ void RadioStationPlayingController::GenerateNotes()
     float widthStep = _notesAreaWidth / (notesToGenerate - 1);
     float heightStep = _notesAreaHeight / 3.0f;
 
-    vec3 beginOffset(-0.5f * _notesAreaWidth, -0.5f * _notesAreaHeight, 0.0f);
+    vec3 beginOffset(-0.5f * _notesAreaWidth, 0.0f, 0.0f);
 
     _generatedNotes.reserve(notesToGenerate);
     _notesGameObjects.reserve(notesToGenerate);
@@ -76,8 +85,10 @@ void RadioStationPlayingController::GenerateNotes()
         generated = SceneManager::CreateGameObject(GetTransform());
         image = generated->AddComponent<Image>();
 
-        generated->GetTransform()->SetLocalPosition(beginOffset + vec3(index * widthStep, (unsigned)note * heightStep, 0.0f));
+        generated->GetTransform()->SetLocalPosition(beginOffset + vec3(index * widthStep, ((unsigned)note) * heightStep, 0.0f));
         image->SetSprite(_notesSpritesIds[static_cast<size_t>(note)]);
+        image->SetLayer(3);
+
 
         _generatedNotes.push_back(note);
         _notesGameObjects.push_back(generated);
@@ -89,8 +100,9 @@ void RadioStationPlayingController::PlayNote(NoteType note)
 {
     if (note == _generatedNotes[_currentNote])
     {
+        GameManager::instance->minigameActive = true;
         _notesImages[_currentNote]->SetColor(_correctColor);
-        _correctCounter++;
+        ++_correctCounter;
     }
     else
     {
@@ -115,6 +127,12 @@ void RadioStationPlayingController::PlayNote(NoteType note)
         _radioStation->StartTakingOver(_playable, _correctCounter / (float)size);
 
         GetGameObject()->SetActive(false);
+        _buttonDo->GetGameObject()->SetActive(false);
+        _buttonRe->GetGameObject()->SetActive(false);
+        _buttonMi->GetGameObject()->SetActive(false);
+        _buttonFa->GetGameObject()->SetActive(false);
+
+        GameManager::instance->minigameActive = false;
     }
 }
 
@@ -124,9 +142,18 @@ YAML::Node RadioStationPlayingController::Serialize() const
 
     node["type"] = "RadioStationPlayingController";
     node["generatedNotesNumber"] = _generatedNotesNumber;
+    node["notesAreaWidth"] = _notesAreaWidth;
+    node["notesAreaHeight"] = _notesAreaHeight;
     node["correctColor"] = _correctColor;
     node["wrongColor"] = _wrongColor;
-    node["notesSpritesIds"] = _notesSpritesIds;
+
+    vector<size_t> savingNotesSpritesIds;
+    savingNotesSpritesIds.reserve(_notesSpritesIds.size());
+    for (size_t index = 0ull; index < _notesSpritesIds.size(); ++index)
+    {
+        savingNotesSpritesIds[index] = SceneManager::GetSpriteSaveIdx(_notesSpritesIds[index]);
+    }
+    node["notesSpritesIds"] = savingNotesSpritesIds;
 
     node["buttonDo"] = _buttonDo->GetId();
     node["buttonRe"] = _buttonRe->GetId();
@@ -141,15 +168,21 @@ bool RadioStationPlayingController::Deserialize(const YAML::Node& node)
     if (!Component::Deserialize(node)) return false;
 
     _generatedNotesNumber = node["generatedNotesNumber"].as<int>();
+    _notesAreaWidth = node["notesAreaWidth"].as<float>();
+    _notesAreaHeight = node["notesAreaHeight"].as<float>();
     _correctColor = node["correctColor"].as<vec4>();
     _wrongColor = node["wrongColor"].as<vec4>();
+
     _notesSpritesIds = node["notesSpritesIds"].as<vector<size_t>>();
+    for (size_t index = 0ull; index < _notesSpritesIds.size(); ++index)
+    {
+        _notesSpritesIds[index] = SceneManager::GetSprite(_notesSpritesIds[index]);
+    }
 
-
-    _buttonDo = dynamic_cast<Button*>(SceneManager::GetGameObjectWithId(node["buttonDo"].as<size_t>()));
-    _buttonRe = dynamic_cast<Button*>(SceneManager::GetGameObjectWithId(node["buttonRe"].as<size_t>()));
-    _buttonMi = dynamic_cast<Button*>(SceneManager::GetGameObjectWithId(node["buttonMi"].as<size_t>()));
-    _buttonFa = dynamic_cast<Button*>(SceneManager::GetGameObjectWithId(node["buttonFa"].as<size_t>()));
+    _buttonDo = (Button*) SceneManager::GetComponentWithId(node["buttonDo"].as<size_t>());
+    _buttonRe = (Button*) SceneManager::GetComponentWithId(node["buttonRe"].as<size_t>());
+    _buttonMi = (Button*) SceneManager::GetComponentWithId(node["buttonMi"].as<size_t>());
+    _buttonFa = (Button*) SceneManager::GetComponentWithId(node["buttonFa"].as<size_t>());
 
     return true;
 }
@@ -161,6 +194,11 @@ bool RadioStationPlayingController::DrawInheritedFields()
     if (Component::DrawInheritedFields()) return true;
 
     ImGui::InputInt("GeneratedNotesNumber", &_generatedNotesNumber);
+    ImGui::InputFloat("NotesAreaWidth", &_notesAreaWidth);
+    ImGui::InputFloat("NotesAreaHeight", &_notesAreaHeight);
+
+    ImGui::ColorEdit4("CorrectColor", (float*)&_correctColor);
+    ImGui::ColorEdit4("WrongColor", (float*)&_wrongColor);
 
     // TODO: Zrobiæ okreœlanie correct color, wrong color, notesSprites oraz okreœlanie buttonów
 

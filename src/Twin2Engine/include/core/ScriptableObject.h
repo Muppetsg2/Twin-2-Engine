@@ -78,6 +78,7 @@ namespace Twin2Engine::Core
 #if _DEBUG
 		virtual void DrawEditor() { }
 #endif
+		virtual void Clear() { }
 
 		static ScriptableObject* Create();
 		static void Init();

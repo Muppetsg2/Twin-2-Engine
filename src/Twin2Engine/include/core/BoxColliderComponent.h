@@ -12,7 +12,6 @@ namespace Twin2Engine::Core {
 		size_t TransformChangeActionId = 0;
 
 	public:
-		BoxColliderComponent();
 		//Along X
 		void SetWidth(float v);
 		//Along Z

@@ -6,11 +6,6 @@
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Physic;
 
-BoxColliderComponent::BoxColliderComponent() : ColliderComponent()
-{
-	collider = new GameCollider(this, new BoxColliderData());
-}
-
 void BoxColliderComponent::SetWidth(float v)
 {
 	((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x = v;
@@ -141,8 +136,12 @@ YAML::Node BoxColliderComponent::Serialize() const
 
 bool BoxColliderComponent::Deserialize(const YAML::Node& node)
 {
-	if (!node["width"] || !node["length"] || !node["height"] || !node["rotation"] ||
-		!ColliderComponent::Deserialize(node)) return false;
+	if (!node["width"] || !node["length"] || !node["height"] || !node["rotation"]) return false;
+
+	if (collider == nullptr)
+		collider = new GameCollider(this, new BoxColliderData());
+		
+	if (!ColliderComponent::Deserialize(node)) return false;
 
 	((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.x = node["width"].as<float>();
 	((BoxColliderData*)collider->shapeColliderData)->HalfDimensions.y = node["height"].as<float>();

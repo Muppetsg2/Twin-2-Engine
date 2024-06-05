@@ -15,7 +15,6 @@ class HexTileTextureData : public Twin2Engine::Core::ScriptableObject
 public:
     std::vector<std::vector<Twin2Engine::Graphic::Material*>> _materials;
 
-
     SO_SERIALIZE()
     SO_DESERIALIZE()
 
@@ -23,20 +22,19 @@ public:
 
     virtual void DrawEditor() override
     {
-        //string id = to_string(GetId());
-        //
-        //ImGui::Text("Name: ");
-        //ImGui::SameLine();
-        //ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
-        //ImGui::Text(Twin2Engine::Manager::ScriptableObjectManager::GetName(GetId()).c_str());
-        //ImGui::PopFont();
-        //
-        //
-        //
-        //ScriptableObject::DrawInheritedFields();
+        // Nothing Here
     }
 
 #endif
+
+    virtual void Clear() override {
+        for (size_t i = 0; i < _materials.size(); ++i) {
+            _materials[i].clear();
+            _materialNames[i].clear();
+        }
+        _materials.clear();
+        _materialNames.clear();
+    }
 };
 
 SERIALIZABLE_SCRIPTABLE_OBJECT_NN(HexTileTextureData);

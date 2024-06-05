@@ -32,7 +32,9 @@ namespace Twin2Engine::Core
 
 		void OnModelDataDestroyed();
 
+#if _DEBUG
 		bool DrawInheritedFields() override;
+#endif
 	private:
 
 		size_t _loadedModel = 0;

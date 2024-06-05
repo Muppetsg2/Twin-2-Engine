@@ -6,11 +6,6 @@
 using namespace Twin2Engine::Physic;
 using namespace Twin2Engine::Core;
 
-CapsuleColliderComponent::CapsuleColliderComponent() : ColliderComponent()
-{
-	collider = new GameCollider(this, new CapsuleColliderData());
-}
-
 void CapsuleColliderComponent::SetEndPosition(float x, float y, float z)
 {
 	((CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition.x = x;
@@ -96,7 +91,12 @@ YAML::Node CapsuleColliderComponent::Serialize() const
 
 bool CapsuleColliderComponent::Deserialize(const YAML::Node& node)
 {
-	if (!node["endPosition"] || !node["radius"] || !ColliderComponent::Deserialize(node)) return false;
+	if (!node["endPosition"] || !node["radius"]) return false;
+
+	if (collider == nullptr)
+		collider = new GameCollider(this, new CapsuleColliderData());
+
+	if (!ColliderComponent::Deserialize(node)) return false;
 
 	((CapsuleColliderData*)collider->shapeColliderData)->EndPosition = node["endPosition"].as<glm::vec3>();
 	((CapsuleColliderData*)collider->shapeColliderData)->Radius = node["radius"].as<float>();

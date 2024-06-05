@@ -390,19 +390,24 @@ YAML::Node ColliderComponent::Serialize() const
 bool ColliderComponent::Deserialize(const YAML::Node& node)
 {
 	if (!node["colliderId"] || !node["trigger"] || !node["static"] || !node["layer"] || 
-		!node["layersFilter"] ||
-		!node["position"] || !Component::Deserialize(node)) return false;
+		!node["layersFilter"] || !node["position"] || !Component::Deserialize(node)) return false;
 
 	colliderId = node["colliderId"].as<size_t>();
+
+	if (collider == nullptr)
+		collider = new GameCollider(this, new SphereColliderData());
+
 	collider->isTrigger = node["trigger"].as<bool>();
 	collider->isStatic = node["static"].as<bool>();
 	collider->layer = node["layer"].as<Layer>();
 	collider->layersFilter = node["layersFilter"].as<LayerCollisionFilter>();
 	if (node["boundingVolumeRadius"]) {
-		boundingVolume = new BoundingVolume(new SphereColliderData());
+		SphereColliderData* data = new SphereColliderData();
+		data->Radius = node["boundingVolumeRadius"].as<float>();
+		boundingVolume = new BoundingVolume(data);
 		collider->boundingVolume = boundingVolume;
-		((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius = node["boundingVolumeRadius"].as<float>();
 		EnableBoundingVolume(false);
+		data = nullptr;
 	}
 	collider->shapeColliderData->LocalPosition = node["position"].as<glm::vec3>();
 

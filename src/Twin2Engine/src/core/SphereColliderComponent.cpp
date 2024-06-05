@@ -8,11 +8,6 @@
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Physic;
 
-SphereColliderComponent::SphereColliderComponent() : ColliderComponent()
-{
-	collider = new GameCollider(this, new SphereColliderData());
-}
-
 void SphereColliderComponent::SetRadius(float radius)
 {
 	((SphereColliderData*)collider->shapeColliderData)->Radius = radius;
@@ -67,7 +62,12 @@ YAML::Node SphereColliderComponent::Serialize() const
 
 bool SphereColliderComponent::Deserialize(const YAML::Node& node)
 {
-	if (!node["radius"] || !ColliderComponent::Deserialize(node)) return false;
+	if (!node["radius"]) return false;
+
+	if (collider == nullptr)
+		collider = new GameCollider(this, new SphereColliderData());
+		
+	if (!ColliderComponent::Deserialize(node)) return false;
 
 	((SphereColliderData*)collider->shapeColliderData)->Radius = node["radius"].as<float>();
 

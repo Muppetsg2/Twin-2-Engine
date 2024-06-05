@@ -35,6 +35,7 @@ GameCollider::GameCollider(Twin2Engine::Core::ColliderComponent* colliderCompone
 GameCollider::~GameCollider() {
 	LastFrameCollisions.clear();
 	colliderComponent = nullptr;
+	delete boundingVolume;
 	boundingVolume = nullptr;
 }
 

@@ -1,6 +1,8 @@
 #include <Enemy/RadioStationState.h>
 #include <Enemy.h>
 
+#include <RadioStation/RadioStation.h>
+
 // TODO: Send Radio Station Data
 DecisionTree<std::pair<Enemy*, uint32_t>, bool> RadioStationState::_decisionTree{
 	[&](std::pair<Enemy*, uint32_t> data) -> bool {
@@ -34,6 +36,7 @@ void RadioStationState::Score(Enemy* enemy, uint32_t score)
 	SPDLOG_INFO("Radio Station Score {0}", score);
 
 	// TODO: Use Radio Station Ability
+	enemy->CurrTile->GetGameObject()->GetComponentInChildren<RadioStation>()->StartTakingOver(enemy, score / 4.0f);
 
 	enemy->ChangeState(&enemy->_takingOverState);
 }

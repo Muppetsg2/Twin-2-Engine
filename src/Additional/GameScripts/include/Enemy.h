@@ -23,7 +23,7 @@ class Enemy : public Playable {
 	std::vector<HexTile*> _tiles;
 
 	// GENERATIVE PARAMETERS
-	float _noteLuck = 50.f;
+	float _noteLuck = 75.f;
 	float _winChance = 33.33f;
 	float _drawChance = 33.33f;
 
@@ -32,6 +32,7 @@ class Enemy : public Playable {
 	float _currThinkingTime = 0.f;
 	StateMachine<Enemy*> _stateMachine;
 
+	// TODO: on takeover exit stop taking over
 	static TakingOverState _takingOverState;
 	static MovingState _movingState;
 	static FightingState _fightingState;

@@ -172,6 +172,19 @@ void CameraComponent::GenerateSSAONoiseTexture()
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+static float normpdf(float x, float sigma) {
+	return 0.39894 * exp(-0.5 * x * x / (sigma * sigma)) / sigma;
+}
+
+void CameraComponent::UpdateGaussianKernel()
+{
+	float sigma = 7.0;
+	for (int j = 0; j <= _gaussianKSize; ++j)
+	{
+		_gaussianKernel[_gaussianKSize + j] = _gaussianKernel[_gaussianKSize - j] = normpdf(float(j), sigma);
+	}
+}
+
 CameraType CameraComponent::GetCameraType() const
 {
 	return _type;
@@ -480,6 +493,19 @@ void CameraComponent::SetSSAO(bool value)
 	_isSsao = value;
 }
 
+void CameraComponent::SetGaussianMSize(size_t mSize) {
+	if (_gaussianMSize != mSize) {
+		_gaussianMSize = mSize;
+		if (_gaussianMSize != 0) {
+			_gaussianKSize = (_gaussianMSize - 1) / 2;
+			UpdateGaussianKernel();
+		}
+		else {
+			_gaussianKSize = 0;
+		}
+	}
+}
+
 void CameraComponent::Render()
 {
 #if TRACY_PROFILER
@@ -660,6 +686,10 @@ void CameraComponent::Render()
 		_screenShader->SetInt("screenTexture", 0);
 		_screenShader->SetInt("depthTexture", 1);
 		_screenShader->SetInt("ssaoTexture", 2);
+
+		_screenShader->SetInt("gaussianMSize", _gaussianMSize);
+		_screenShader->SetInt("gaussianKSize", _gaussianKSize);
+		_screenShader->SetFloatArray("gaussianKernel", _gaussianKernel, 40);
 
 		_screenShader->SetBool("hasBlur", ((uint8_t)_filters & (uint8_t)CameraRenderFilter::BLUR) != 0);
 		_screenShader->SetBool("hasVignette", (_filters & (uint8_t)CameraRenderFilter::VIGNETTE) != 0);
@@ -1193,6 +1223,10 @@ void CameraComponent::DrawEditor()
 					if (this->_constantDepthOfField != constant) {
 						this->_constantDepthOfField = constant;
 					}
+				}
+				int mSize = this->_gaussianMSize;
+				if (ImGui::DragInt(string("Gaussian Blure Power##").append(id).c_str(), &mSize, 1.0f, 0, 1000)) {
+					SetGaussianMSize(mSize);
 				}
 			}
 		}

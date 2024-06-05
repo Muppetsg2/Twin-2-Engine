@@ -25,6 +25,32 @@ struct Texture {
     bool isActive;
 };
 
+// FILL TYPES
+const uint HORIZONTAL_FILL = 0;
+const uint VERTICAL_FILL = 1;
+const uint CIRCLE_FILL = 2;
+
+// HORIZONTAL FILL SUBTYPES
+const uint LEFT_FILL = 0;
+const uint CENTER_FILL = 1;
+const uint RIGHT_FILL = 2;
+
+// VERTICAL FILL SUBTYPES
+const uint TOP_FILL = 0;
+const uint MIDDLE_FILL = 1;
+const uint BOTTOM_FILL = 2;
+
+// CIRCLE FILL SUBTYPES
+const uint CW_FILL = 0;
+const uint CCW_FILL = 1;
+
+struct FillData {
+    uint type;
+    uint subType;
+    float progress;
+    bool isActive;
+};
+
 layout (std140, binding = 4) uniform CanvasData {
     RectTransform canvasRect;
 	bool canvasIsInWorldSpace;
@@ -34,6 +60,7 @@ layout (std140, binding = 4) uniform CanvasData {
 layout (std140, binding = 5) uniform MaskData {
     RectTransform maskRect;
     Sprite maskSprite;
+    FillData maskFill;
     uvec2 maskTextureSize;
     bool maskIsActive;
 };
@@ -41,6 +68,7 @@ layout (std140, binding = 5) uniform MaskData {
 struct UIElement {
     RectTransform rect;
     Sprite sprite;
+    FillData fill;
     vec4 color;
     bool isText;
 };
@@ -53,6 +81,7 @@ layout (std140, binding = 3) buffer UIElementsBuffer {
 
 in GS_OUT {
     flat uint instanceID;
+    vec2 pointPos;
 	vec2 texCoord;
 	vec2 screenPos;
 	vec2 canvasPos;
@@ -63,6 +92,56 @@ uniform sampler2D image;
 uniform sampler2D maskImage;
 
 out vec4 Color;
+
+bool OutOfFill(vec2 pos, vec2 center, vec2 size, FillData fill) {
+    if (fill.isActive) {
+        float p = 0.0;
+        if (fill.type == HORIZONTAL_FILL) {
+            if (fill.subType == LEFT_FILL) {
+                p = (0.99 / size.x) * (pos.x - center.x) + 0.495;
+            }
+            else if (fill.subType == CENTER_FILL) {
+                p = (1.98 / size.x) * abs(pos.x - center.x);
+            }
+            else if (fill.subType == RIGHT_FILL) {
+                p = (-0.99 / size.x) * (pos.x - center.x) + 0.495;
+            }
+        }
+        else if (fill.type == VERTICAL_FILL) {
+            if (fill.subType == TOP_FILL) {
+                p = (-0.99 / size.y) * (pos.y - center.y) + 0.495;
+            }
+            else if (fill.subType == MIDDLE_FILL) {
+                p = (1.98 / size.y) * abs(pos.y - center.y);
+            }
+            else if (fill.subType == BOTTOM_FILL) {
+                p = (0.99 / size.y) * (pos.y - center.y) + 0.495;
+            }
+        }
+        else if (fill.type == CIRCLE_FILL) {
+            const vec2 diff = pos - center;
+            const float r = sqrt(pow(diff.x, 2) + pow(diff.y, 2));
+            if (r == 0) return false;
+
+            const float invR = 1.0 / r;
+            const float alphaX = degrees(asin(diff.x * invR));
+            const float alphaY = degrees(acos(diff.y * invR));
+
+            float alpha = 0.0;
+            if (alphaX >= 0.0) alpha = alphaY;
+            else if (alphaX < 0.0) alpha = 360.0 - alphaY;
+
+            if (fill.subType == CW_FILL) {
+                p = 0.00275 * alpha;
+            }
+            else if (fill.subType == CCW_FILL) {
+                p = 0.00275 * (360.0 - alpha);
+            }
+        }
+        return p >= fill.progress;
+    }
+    return false;
+}
 
 void main() 
 {
@@ -75,6 +154,10 @@ void main()
         // Is Frag In Mask
         vec2 inMaskPos = vec2(inverse(maskRect.transform) * vec4(fs_in.canvasPos, 0.0, 1.0));
         if (inMaskPos.x > maskRect.size.x * 0.5 || inMaskPos.x < -maskRect.size.x * 0.5 || inMaskPos.y > maskRect.size.y * 0.5 || inMaskPos.y < -maskRect.size.y * 0.5)
+            discard;
+
+        // Is Frag Out Of Mask Fill
+        if (OutOfFill(inMaskPos, vec2(0.0, 0.0), maskRect.size, maskFill))
             discard;
     
         if (maskSprite.isActive) {
@@ -92,7 +175,12 @@ void main()
 
     UIElement element = uiElements[fs_in.instanceID];
 
+    // Check if even visible
     if (element.color.a == 0.0)
+        discard;
+
+    // Is Frag Out Of Image Fill
+    if (OutOfFill(fs_in.canvasPos, fs_in.pointPos, element.rect.size, element.fill))
         discard;
 
     vec4 gammaColor = vec4(pow(element.color.rgb, vec3(gamma)), element.color.a);

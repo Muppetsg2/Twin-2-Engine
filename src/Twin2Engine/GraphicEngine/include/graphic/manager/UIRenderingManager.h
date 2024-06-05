@@ -21,8 +21,21 @@ namespace Twin2Engine
 			bool worldSpaceCanvas = false;
 		};
 
+		ENUM_CLASS_BASE(FILL_TYPE, uint8_t, HORIZONTAL, VERTICAL, CIRCLE);
+		ENUM_CLASS_BASE(HORIZONTAL_FILL_SUBTYPE, uint8_t, LEFT, CENTER, RIGHT);
+		ENUM_CLASS_BASE(VERTICAL_FILL_SUBTYPE, uint8_t, TOP, MIDDLE, BOTTOM);
+		ENUM_CLASS_BASE(CIRCLE_FILL_SUBTYPE, uint8_t, CW, CCW);
+
+		struct FillData {
+			uint8_t type;
+			uint8_t subType;
+			float progress;
+			bool isActive;
+		};
+
 		struct MaskData {
 			UIRectData rectTransform;
+			FillData fill;
 			Graphic::Sprite* maskSprite = nullptr;
 		};
 
@@ -36,6 +49,7 @@ namespace Twin2Engine
 		};
 
 		struct UIImageData : public UIElementData {
+			FillData fill;
 			Graphic::Sprite* sprite = nullptr;
 		};
 
@@ -50,6 +64,7 @@ namespace Twin2Engine
 
 			struct UIElementQueueData {
 				UIRectData rectTransform;
+				FillData fill;
 				Graphic::Sprite* sprite = nullptr;
 				glm::vec4 color = glm::vec4(0.f);
 				bool isText = false;
@@ -59,6 +74,7 @@ namespace Twin2Engine
 			static Tools::STD140Offsets RectTransformOffsets;
 			static Tools::STD140Offsets SpriteOffsets;
 			static Tools::STD140Offsets TextureOffsets;
+			static Tools::STD140Offsets FillDataOffsets;
 			static Tools::STD140Offsets UIElementOffsets;
 
 			// STD140 STRUCTS

@@ -25,7 +25,6 @@ class RadioStation : public Twin2Engine::Core::Component
     float _cooldown = 0.0f;
     float _cooldownTimer = 0.0f;
 
-    void StartTakingOver(Playable* playable, float score);
 
 public:
     float takingRadius = 3.0f;
@@ -35,6 +34,7 @@ public:
 
 
     void Play(Playable* playable);
+    void StartTakingOver(Playable* playable, float score);
 
     float GetRemainingCooldownTime() const;
 

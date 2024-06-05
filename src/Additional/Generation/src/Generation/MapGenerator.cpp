@@ -2,6 +2,7 @@
 #include <core/Time.h>
 #include <Generation/ContentGenerator.h>
 #include <core/HexagonalColliderComponent.h>
+#include <ConcertRoad.h>
 
 using namespace Generation;
 using namespace Tilemap;
@@ -18,7 +19,10 @@ void MapGenerator::Initialize()
 
 void MapGenerator::OnEnable()
 {
-    if (tilemap != nullptr && preafabHexagonalTile != nullptr && additionalTile != nullptr && filledTile != nullptr && pointTile != nullptr) Generate();
+    if (tilemap != nullptr && preafabHexagonalTile != nullptr && additionalTile != nullptr && filledTile != nullptr && pointTile != nullptr) 
+    {
+        Generate();
+    }
 }
 
 void MapGenerator::GenerateFloatHull(const vector<vec2>& hull)

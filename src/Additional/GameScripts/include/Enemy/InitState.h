@@ -4,12 +4,13 @@
 #include <DecisionTree/DecisionTree.h>
 
 class Enemy;
+class HexTile;
 
 class InitState : public State<Enemy*> {
 private:
 	static DecisionTree<Enemy*, bool> _decisionTree;
 
-	static void ChooseTile(Enemy* enemy);
+	static HexTile* ChooseTile(Enemy* enemy);
 	static void Begin(Enemy* enemy);
 public:
 	void Enter(Enemy* enemy) override;

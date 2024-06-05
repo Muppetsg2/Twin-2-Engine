@@ -47,6 +47,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE spdlog)
 target_link_libraries(${PROJECT_NAME} PRIVATE EngineAlgorithms)
 target_link_libraries(${PROJECT_NAME} PRIVATE yaml-cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE GameScripts)
+target_link_libraries(${PROJECT_NAME} PRIVATE StateMachine)
+target_link_libraries(${PROJECT_NAME} PRIVATE DecisionTree)
 
 if (TRACY_PROFILER)
     target_link_libraries(${PROJECT_NAME} PUBLIC TracyClient)

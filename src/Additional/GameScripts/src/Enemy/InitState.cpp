@@ -15,7 +15,7 @@ DecisionTree<Enemy*, bool> InitState::_decisionTree{
 	}
 };
 
-void InitState::ChooseTile(Enemy* enemy) {
+HexTile* InitState::ChooseTile(Enemy* enemy) {
 #if TRACY_PROFILER
 	ZoneScoped;
 #endif
@@ -25,12 +25,14 @@ void InitState::ChooseTile(Enemy* enemy) {
 	std::srand(std::time(NULL));
 	size_t idx = std::rand() % enemy->_tiles.size();
 	HexTile* tile = enemy->_tiles[idx];
-	while (tile->occupyingEntity != nullptr) {
+	while (tile->occupyingEntity != nullptr || tile->GetMapHexTile()->type != MapHexTile::HexTileType::RadioStation) {
 		idx = std::rand() % enemy->_tiles.size();
 		tile = enemy->_tiles[idx];
 	}
 	enemy->GetTransform()->SetGlobalPosition(tile->GetTransform()->GetGlobalPosition() + glm::vec3(0.0f, 0.1f, 0.0f));
 	enemy->FinishedMovement(tile);
+
+	return tile;
 }
 
 void InitState::Begin(Enemy* enemy) {
@@ -40,9 +42,14 @@ void InitState::Begin(Enemy* enemy) {
 
 	SPDLOG_INFO("Init State Begin");
 	
-	ChooseTile(enemy);
+	HexTile* tile = ChooseTile(enemy);
 	enemy->GetGameObject()->GetComponent<MeshRenderer>()->SetEnable(true);
-	enemy->ChangeState(&enemy->_takingOverState);
+	if (tile->GetMapHexTile()->type == MapHexTile::HexTileType::RadioStation) {
+		enemy->ChangeState(&enemy->_radioStationState);
+	}
+	else {
+		enemy->ChangeState(&enemy->_takingOverState);
+	}
 }
 
 void InitState::Enter(Enemy* enemy) {

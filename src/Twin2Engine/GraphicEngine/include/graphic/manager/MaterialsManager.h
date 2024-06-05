@@ -31,7 +31,10 @@ namespace Twin2Engine::Manager
 		static void UnloadMaterial(size_t managerId);
 		static void UnloadMaterial(const std::string& materialPath);
 		static Graphic::Material* LoadMaterial(const std::string& materialPath);
+
+#if _DEBUG
 		static void SaveMaterial(const std::string& materialPath, Graphic::Material* mat = nullptr);
+#endif
 	public:
 
 		static bool IsMaterialLoaded(size_t managerId);

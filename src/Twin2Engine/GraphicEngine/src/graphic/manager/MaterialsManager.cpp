@@ -187,10 +187,15 @@ Material* MaterialsManager::LoadMaterial(const std::string& materialPath)
 		.shader = Manager::ShaderManager::GetShaderProgram(shader),
 		.materialParameters = materialParametersBuilder.Build()
 	};
-	materialParametersBuilder.Clear();
 
 	_loadedMaterials[hash] = new Material(materialData);
 	_materialsPaths[hash] = materialPath;
+
+#if _DEBUG
+	_loadedMaterials[hash]->_materialParameters->_textureNames = materialParametersBuilder.GetParametersNames();
+#endif
+
+	materialParametersBuilder.Clear();
 
 	LightingController::Instance()->BindLightBuffors(materialData.shader);
 	materialData.shader->Use();
@@ -200,6 +205,7 @@ Material* MaterialsManager::LoadMaterial(const std::string& materialPath)
 	return _loadedMaterials[hash];
 }
 
+#if _DEBUG
 void MaterialsManager::SaveMaterial(const std::string& materialPath, Material* mat)
 {
 	YAML::Node fileNode;
@@ -337,6 +343,7 @@ void MaterialsManager::SaveMaterial(const std::string& materialPath, Material* m
 	return _loadedMaterials[materialNameHash];
 	*/
 }
+#endif
 
 bool MaterialsManager::IsMaterialLoaded(size_t managerId) {
 	return _loadedMaterials.contains(managerId);

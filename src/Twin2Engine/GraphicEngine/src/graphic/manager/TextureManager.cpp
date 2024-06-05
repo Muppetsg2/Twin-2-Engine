@@ -39,6 +39,16 @@ bool TextureManager::IsTextureLoaded(const std::string& path) {
     return _loadedTextures.contains(_hasher(path));
 }
 
+Texture2D* TextureManager::FindTextureWithProgramID(GLuint programId) {
+    auto iter = std::find_if(_loadedTextures.begin(), _loadedTextures.end(), [&](std::pair<size_t, Texture2D*> tex) -> bool {
+        return tex.second->GetId() == programId;
+    });
+
+    if (iter == _loadedTextures.end()) return nullptr;
+
+    return iter->second;
+}
+
 Texture2D* TextureManager::GetTexture2D(size_t managerId)
 {
     if (_loadedTextures.contains(managerId)) {

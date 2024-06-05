@@ -23,6 +23,10 @@ namespace Twin2Engine
 
 			Tools::STD140Struct _parameters;
 
+#if _DEBUG
+			std::map<size_t, std::string> _textureNames;
+#endif
+
 			std::map<size_t, char> _textureMappings;
 			std::vector<GLuint> _textures;
 
@@ -75,6 +79,7 @@ namespace Twin2Engine
 			}
 
 #if _DEBUG
+
 			void DrawEditor(size_t id);
 #endif
 

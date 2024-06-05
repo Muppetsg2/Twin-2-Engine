@@ -179,9 +179,10 @@ static float normpdf(float x, float sigma) {
 void CameraComponent::UpdateGaussianKernel()
 {
 	float sigma = 7.0;
-	for (int j = 0; j <= _gaussianKSize; ++j)
+	int kSize = (_gaussianMSize - 1) / 2;
+	for (int j = 0; j <= kSize; ++j)
 	{
-		_gaussianKernel[_gaussianKSize + j] = _gaussianKernel[_gaussianKSize - j] = normpdf(float(j), sigma);
+		_gaussianKernel[kSize + j] = _gaussianKernel[kSize - j] = normpdf(float(j), sigma);
 	}
 }
 
@@ -494,14 +495,13 @@ void CameraComponent::SetSSAO(bool value)
 }
 
 void CameraComponent::SetGaussianMSize(size_t mSize) {
+	if (mSize < 0) mSize = 0;
+	else if (mSize > 40) mSize = 40;
+
 	if (_gaussianMSize != mSize) {
 		_gaussianMSize = mSize;
 		if (_gaussianMSize != 0) {
-			_gaussianKSize = (_gaussianMSize - 1) / 2;
 			UpdateGaussianKernel();
-		}
-		else {
-			_gaussianKSize = 0;
 		}
 	}
 }
@@ -688,7 +688,6 @@ void CameraComponent::Render()
 		_screenShader->SetInt("ssaoTexture", 2);
 
 		_screenShader->SetInt("gaussianMSize", _gaussianMSize);
-		_screenShader->SetInt("gaussianKSize", _gaussianKSize);
 		_screenShader->SetFloatArray("gaussianKernel", _gaussianKernel, 40);
 
 		_screenShader->SetBool("hasBlur", ((uint8_t)_filters & (uint8_t)CameraRenderFilter::BLUR) != 0);
@@ -696,7 +695,9 @@ void CameraComponent::Render()
 		_screenShader->SetBool("hasNegative", (_filters & (uint8_t)CameraRenderFilter::NEGATIVE) != 0);
 		_screenShader->SetBool("hasGrayscale", (_filters & (uint8_t)CameraRenderFilter::GRAYSCALE) != 0);
 		_screenShader->SetBool("hasOutline", (_filters & (uint8_t)CameraRenderFilter::OUTLINE) != 0);
-		_screenShader->SetBool("hasDepthOfField", (_filters & (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0);
+		_screenShader->SetBool("hasDepthOfField", (_filters& (uint8_t)CameraRenderFilter::DEPTH_OF_FIELD) != 0);
+
+		_screenShader->SetBool("depthOfField2", this->_depthOfField2);
 
 		_screenShader->SetBool("displayDepth", _mode == CameraDisplayMode::DEPTH);
 		_screenShader->SetBool("displaySSAO", _mode == CameraDisplayMode::SSAO_MAP);
@@ -1225,7 +1226,7 @@ void CameraComponent::DrawEditor()
 					}
 				}
 				int mSize = this->_gaussianMSize;
-				if (ImGui::DragInt(string("Gaussian Blure Power##").append(id).c_str(), &mSize, 1.0f, 0, 1000)) {
+				if (ImGui::DragInt(string("Gaussian Blure Power##").append(id).c_str(), &mSize, 1.0f, 0, 40)) {
 					SetGaussianMSize(mSize);
 				}
 			}

@@ -102,8 +102,7 @@ namespace Twin2Engine::Core {
 
 		// GAUSSIAN BLURE
 		size_t _gaussianMSize = 0;
-		size_t _gaussianKSize = 0;
-		float _gaussianKernel[1000] = {};
+		float _gaussianKernel[40] = {};
 
 		vec3 _front = vec3(0.f, 0.f, -1.f);
 		vec3 _right = vec3(1.f, 0.f, 0.f);

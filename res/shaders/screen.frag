@@ -117,33 +117,37 @@ vec3 applyBlurFast() {
 }
 
 uniform int gaussianMSize;
-uniform int gaussianKSize;
 uniform float gaussianKernel[40];
 
 vec3 applyBlurGaussian() {
-    //declare stuff
-    vec3 result = vec3(0.0);
-    vec2 tex_offset = displayDepth ? 1.0 / textureSize(depthTexture, 0) : 1.0 / textureSize(screenTexture, 0);
+    if (gaussianMSize != 0) {
+        //declare stuff
+        vec3 result = vec3(0.0);
+        const int kSize = (gaussianMSize - 1) / 2;
+        vec2 tex_offset = displayDepth ? 1.0 / textureSize(depthTexture, 0) : 1.0 / textureSize(screenTexture, 0);
 
-    float Z = 0.0;
+        float Z = 0.0;
 
-    //get the normalization factor (as the gaussian has been clamped)
-    for (int j = 0; j < gaussianMSize; ++j)
-    {
-        Z += gaussianKernel[j];
-    }
-
-    //read out the texels
-    for (int i =- gaussianKSize; i <= gaussianKSize; ++i)
-    {
-        for (int j =- gaussianKSize; j <= gaussianKSize; ++j)
+        //get the normalization factor (as the gaussian has been clamped)
+        for (int j = 0; j < gaussianMSize; ++j)
         {
-            vec3 c = getColor(TexCoord.xy + vec2(tex_offset.x * i, tex_offset.y * j));
-            result += gaussianKernel[gaussianKSize + j] * gaussianKernel[gaussianKSize + i] * c;
+            Z += gaussianKernel[j];
         }
+
+        //read out the texels
+        for (int i =- kSize; i <= kSize; ++i)
+        {
+            for (int j =- kSize; j <= kSize; ++j)
+            {
+                vec3 c = getColor(TexCoord.xy + vec2(tex_offset.x * i, tex_offset.y * j));
+                result += gaussianKernel[kSize + j] * gaussianKernel[kSize + i] * c;
+            }
+        }
+        return result / (Z * Z);
     }
-    
-    return result / (Z * Z);
+    else {
+        return getColor(TexCoord.xy);
+    }
 }
 
 vec3 applyDepthOfField(vec3 currentOutput) {
@@ -151,7 +155,7 @@ vec3 applyDepthOfField(vec3 currentOutput) {
     float centerDepth = getDepthValue(vec2(0.5, 0.5)).r;
 
     //vec3 blurred = vec3(0.0, 0.0, 0.0);
-    vec3 blurred = applyBlurFast();
+    vec3 blurred = applyBlurGaussian();
     
     vec2 resolution = textureSize(screenTexture, 0);
 

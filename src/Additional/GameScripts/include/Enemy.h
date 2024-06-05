@@ -11,6 +11,7 @@
 #include <Enemy/MovingState.h>
 #include <Enemy/RadioStationState.h>
 #include <Enemy/TakingOverState.h>
+#include <Enemy/InitState.h>
 
 class HexTile;
 class EnemyMovement;
@@ -27,7 +28,6 @@ class Enemy : public Playable {
 	float _drawChance = 33.33f;
 
 	// STATE MACHINE
-	bool _started = false;
 	float _timeToThink = .5f;
 	float _currThinkingTime = 0.f;
 	StateMachine<Enemy*> _stateMachine;
@@ -36,11 +36,13 @@ class Enemy : public Playable {
 	static MovingState _movingState;
 	static FightingState _fightingState;
 	static RadioStationState _radioStationState;
+	static InitState _initState;
 
 	friend class TakingOverState;
 	friend class MovingState;
 	friend class FightingState;
 	friend class RadioStationState;
+	friend class InitState;
 
 	void ChangeState(State<Enemy*>* newState);
 	void SetMoveDestination(HexTile* tile);

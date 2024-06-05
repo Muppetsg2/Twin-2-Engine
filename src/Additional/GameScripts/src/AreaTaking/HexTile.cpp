@@ -1,6 +1,7 @@
 #include <AreaTaking/HexTile.h>
 
 #include <Playable.h>
+#include <ConcertRoad.h>
 #include <UIScripts/MinigameManager.h>
 
 using namespace Twin2Engine::Core;
@@ -24,6 +25,7 @@ void HexTile::Initialize()
 
 void HexTile::OnDestroy()
 {
+	ConcertRoad::instance->RoadMapPoints.erase(this);
 }
 
 void HexTile::Update()

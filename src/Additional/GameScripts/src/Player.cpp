@@ -334,29 +334,29 @@ void Player::MinigameEnd() {
     //CurrTile->currCooldown = CurrTile->radioStationCooldown;
 }
 
-void Player::StartPaperRockScissors(Playable* playable) {
-    GameObject* adjacentTiles[6];
-    CurrTile->GetMapHexTile()->tile->GetAdjacentGameObjects(adjacentTiles);// HexMetrics::GetNeighboringGameObjects(CurrTile->tilemap, CurrTile->tilemapPosition);
-    int PlayerField = 0;
-    int EnemyField = 0;
-
-    HexTile* t;
-    for (auto& tile : adjacentTiles) {
-        if (tile == nullptr) continue;
-        t = tile->GetComponent<HexTile>();
-
-        if (t->takenEntity == playable) {
-            EnemyField += 1;
-        }
-        else if (t->takenEntity == this) {
-            PlayerField += 1;
-        }
-    }
-
-    fightingPlayable = playable;
-    GameManager::instance->minigameActive = true;
-    //RockPaperScisorsManager::Instance().StartNewGame(this, fightingPlayable, PlayerField, EnemyField);
-}
+//void Player::StartPaperRockScissors(Playable* playable) {
+//    GameObject* adjacentTiles[6];
+//    CurrTile->GetMapHexTile()->tile->GetAdjacentGameObjects(adjacentTiles);// HexMetrics::GetNeighboringGameObjects(CurrTile->tilemap, CurrTile->tilemapPosition);
+//    int PlayerField = 0;
+//    int EnemyField = 0;
+//
+//    HexTile* t;
+//    for (auto& tile : adjacentTiles) {
+//        if (tile == nullptr) continue;
+//        t = tile->GetComponent<HexTile>();
+//
+//        if (t->takenEntity == playable) {
+//            EnemyField += 1;
+//        }
+//        else if (t->takenEntity == this) {
+//            PlayerField += 1;
+//        }
+//    }
+//
+//    fightingPlayable = playable;
+//    GameManager::instance->minigameActive = true;
+//    //RockPaperScisorsManager::Instance().StartNewGame(this, fightingPlayable, PlayerField, EnemyField);
+//}
 
 void Player::WonPaperRockScissors(Playable* playable) {
     GameManager::instance->minigameActive = false;

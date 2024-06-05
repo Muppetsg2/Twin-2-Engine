@@ -28,8 +28,8 @@ class MinigameManager : public Component {
 
 		Coroutine* waitCoroutine;
 
-		int playerFieldsNumber = 3;
-		int enemyFieldsNumber = 3;
+		int playerFieldsNumber = 0;
+		int enemyFieldsNumber = 0;
 		void SetupButtons();
 		void PerformTurn();
 

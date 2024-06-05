@@ -297,6 +297,8 @@ void MinigameManager::FinishMinigame(Playable* winner, Playable* looser)
 	winner->WonPaperRockScissors(looser);
 	//looser->LostPaperRockScissors(winner);
 	MinigamePlain->SetActive(false);
+	playerFieldsNumber = 0;
+	enemyFieldsNumber = 0;
 	playerWins = 0;
 	enemyWins = 0;
 	PlayerScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes('0'));

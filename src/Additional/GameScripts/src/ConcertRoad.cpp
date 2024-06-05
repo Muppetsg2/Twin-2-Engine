@@ -24,6 +24,8 @@ void ConcertRoad::Initialize() {
 }
 
 void ConcertRoad::Update() {
+    entityPoints.clear();
+    entityMultiplier.clear();
 
     while (entityPoints.size() < GameManager::instance->entities.size())
     {
@@ -35,21 +37,21 @@ void ConcertRoad::Update() {
         entityMultiplier.push_back(1.0f);
     }
 
-    while (entityPoints.size() > GameManager::instance->entities.size())
-    {
-        entityPoints.erase(entityPoints.begin()); //RemoveAt(0);
-    }
-
-    while (entityMultiplier.size() > GameManager::instance->entities.size())
-    {
-        entityMultiplier.erase(entityMultiplier.begin());
-    }
-
-    for (int i = 0; i < GameManager::instance->entities.size(); ++i)
-    {
-        entityPoints[i] = 0;
-        entityMultiplier[i] = 1.0f;
-    }
+    //while (entityPoints.size() > GameManager::instance->entities.size())
+    //{
+    //    entityPoints.erase(entityPoints.begin()); //RemoveAt(0);
+    //}
+    //
+    //while (entityMultiplier.size() > GameManager::instance->entities.size())
+    //{
+    //    entityMultiplier.erase(entityMultiplier.begin());
+    //}
+    //
+    //for (int i = 0; i < GameManager::instance->entities.size(); ++i)
+    //{
+    //    entityPoints[i] = 0;
+    //    entityMultiplier[i] = 1.0f;
+    //}
 
     //int LevelOfQuality = 255;
 

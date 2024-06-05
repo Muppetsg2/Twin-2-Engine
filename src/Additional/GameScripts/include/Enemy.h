@@ -87,7 +87,7 @@ public:
 	virtual void WonPaperRockScissors(Playable* playable) override;
 	virtual void LostFansControl(Playable* playable) override;
 	virtual void WonFansControl(Playable* playable) override;
-	virtual void StartPaperRockScissors(Playable* playable) override;
+	//virtual void StartPaperRockScissors(Playable* playable) override;
 	virtual void StartFansControl(Playable* playable) override;
 
 	float GetMaxRadius() const override;

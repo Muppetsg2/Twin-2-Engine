@@ -4,7 +4,6 @@
 namespace Twin2Engine {
 	namespace Manager {
 		class TextureManager;
-		enum class TextureFileFormat;
 	}
 
 	namespace Graphic {

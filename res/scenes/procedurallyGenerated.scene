@@ -912,17 +912,20 @@ GameObjects:
         monthsPerYear: 12
       - id: 104
         enabled: true
+        type: ConcertRoad
+      - id: 105
+        enabled: true
         type: GameManager
         enemyPrefab: res/prefabs/Enemy.prefab
         prefabPlayer: res/prefabs/Player.prefab
         carMaterials:
-         - car/CarMaterial_Blue
-         - car/CarMaterial_Red
-         - car/CarMaterial_Green
-         - car/CarMaterial_Purple
-         - car/CarMaterial_Yellow
-         - car/CarMaterial_Cyan
-         - car/CarMaterial_Pink
+         - res/materials/car/CarMaterial_Blue.material
+         - res/materials/car/CarMaterial_Red.material
+         - res/materials/car/CarMaterial_Green.material
+         - res/materials/car/CarMaterial_Purple.material
+         - res/materials/car/CarMaterial_Yellow.material
+         - res/materials/car/CarMaterial_Cyan.material
+         - res/materials/car/CarMaterial_Pink.material
     children:
       []
   - id: 322
@@ -1693,94 +1696,6 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00D\x00a\x00y\x00 \x001"
-        font: 0
-        size: 35
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 200
-        height: 70
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        alignX: !<LEFT> 0
-        alignY: !<BOTTOM> 0
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 1
-    children:
-      []
-  - id: 323
-    name: MonthText
-    isStatic: false
-    isActive: true
-    transform:
-      id: 328
-      enabled: true
-      position:
-        x: -80
-        y: 90
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 329
-        enabled: true
-        type: Text
-        isTransparent: false
-        text: "\x00M\x00o\x00n\x00t\x00h\x00 \x001"
-        font: 0
-        size: 35
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 200
-        height: 70
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        alignX: !<LEFT> 0
-        alignY: !<BOTTOM> 0
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 1
-    children:
-      []
-  - id: 324
-    name: YearText
-    isStatic: false
-    isActive: true
-    transform:
-      id: 330
-      enabled: true
-      position:
-        x: 40
-        y: 90
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 331
-        enabled: true
-        type: Text
-        isTransparent: false
-        text: "\x00Y\x00e\x00a\x00r\x00 \x001"
         font: 0
         size: 35
         autoSize: false

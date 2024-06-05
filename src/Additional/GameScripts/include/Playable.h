@@ -57,7 +57,7 @@ public:
     float albumTakingOverTimeMin = 5.0f; // parameter
     float albumTakingOverTimeMax = 7.0f; // parameter
     std::vector<MinMaxPair> albumsIncreasingMinMaxIntervals{ {.min = 3.0f, .max = 4.0f }, {.min = 3.0f, .max = 4.0f } }; // parameter
-    float takingIntoAttentionFactor = 0.5f; // parameter // Okre�la z jakiej cz�ci tile o najmniejszych wp�ywach b�dzie losowany do oddzia�ywania przez album
+    float takingIntoAttentionFactor = 0.5f; // parameter // Okresla z jakiej czesci tile o najmniejszych wplywach bedzie losowany do oddzialywania przez album
     std::vector<float> albumsIncreasingIntervals;
     std::vector<float> albumsIncreasingIntervalsCounter;
 #pragma endregion

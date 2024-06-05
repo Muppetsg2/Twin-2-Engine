@@ -15,127 +15,6 @@ float HexTile::_takingStage1 = 30.0f;
 float HexTile::_takingStage2 = 60.0f;
 float HexTile::_takingStage3 = 90.0f;
 
-
-void HexTile::Initialize()
-{
-	_mapHexTile = GetGameObject()->GetComponent<MapHexTile>();
-	_meshRenderer = GetGameObject()->GetComponent<MeshRenderer>();
-}
-
-void HexTile::OnDestroy()
-{
-}
-
-void HexTile::Update()
-{
-	if (!minigameActive && !GameManager::instance->minigameActive && _mapHexTile->type != MapHexTile::HexTileType::Mountain && !isFighting)
-	{
-		if (state == TileState::OCCUPIED || state == TileState::REMOTE_OCCUPYING)
-		{
-			TakeOver();
-		}
-		else if (state == TileState::TAKEN && !isAlbumActive)
-		{
-			LoseInfluence();
-		}
-	}
-}
-
-Generation::MapHexTile* HexTile::GetMapHexTile() const
-{
-	return _mapHexTile;
-}
-
-YAML::Node HexTile::Serialize() const
-{
-	YAML::Node node = Component::Serialize();
-
-	node["type"] = "HexTile";
-
-	if (textuesData != nullptr) {
-		node["textuesData"] = Twin2Engine::Manager::ScriptableObjectManager::GetPath(textuesData->GetId());
-	}
-	else {
-		node["textuesData"] = "";
-	}
-
-	return node;
-}
-
-bool HexTile::Deserialize(const YAML::Node& node)
-{
-	if (!Component::Deserialize(node))
-		return false;
-
-
-	textuesData = dynamic_cast<HexTileTextureData*>(Twin2Engine::Manager::ScriptableObjectManager::Load(node["textuesData"].as<string>()));
-	return true;
-}
-
-
-#if _DEBUG
-
-void HexTile::DrawEditor()
-{
-	std::string id = std::string(std::to_string(this->GetId()));
-	std::string name = std::string("Hex Tile##Component").append(id);
-	if (ImGui::CollapsingHeader(name.c_str())) {		
-		if (Component::DrawInheritedFields()) return;
-
-		ImGui::BeginDisabled();
-		ImGui::Checkbox("IsFighting", &isFighting);
-		ImGui::EndDisabled();
-
-		ImGui::TextUnformatted("TakenEntity: ");
-		ImGui::SameLine();
-		ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
-		ImGui::Text("%s", takenEntity != nullptr ? takenEntity->GetGameObject()->GetName().append("/").append(std::to_string(takenEntity->GetGameObject()->Id())).c_str() : "None");
-		ImGui::PopFont();
-
-		ImGui::Text("Percentage: %f", percentage);
-		ImGui::Text("Current Cooldown: %f", currCooldown);
-
-		// TODO: Zrobic
-	}
-}
-
-#endif
-
-void HexTile::ResetTile()
-{
-	percentage = 0.0f;
-	if (takenEntity) {
-		//takenEntity->RemoveTile(this);
-	}
-	occupyingEntity = nullptr;
-	takenEntity = nullptr;
-	isFighting = false;
-	state = TileState::NONE;
-}
-
-void HexTile::SetOutlineActive(bool active)
-{
-	//if (outline) {
-	//	outline->SetEnabled(active);
-	//}
-}
-
-void HexTile::StartMinigame()
-{
-}
-
-void HexTile::WinMinigame()
-{
-}
-
-void HexTile::BadNote()
-{
-	percentage -= badNotePercent;
-	if (percentage <= 0.0f) {
-		percentage = 0.0f;
-	}
-}
-
 void HexTile::TakeOver()
 {
 	if (!occupyingEntity) {
@@ -172,7 +51,7 @@ void HexTile::TakeOver()
 		}
 	}
 
-	//// Przetworzenie oddzia�ywania tych, kt�rzy z dalszego zasi�gu oddzia�uj�.
+	//// Przetworzenie oddzialywania tych, ktorzy z dalszego zasiegu oddzialuja.
 	//size_t size = remotelyOccupyingEntities.size();
 	//for (size_t index = 0ull; index < size; ++index)
 	//{
@@ -248,6 +127,66 @@ void HexTile::CheckRoundPattern()
 {
 }
 
+void HexTile::Initialize()
+{
+	_mapHexTile = GetGameObject()->GetComponent<MapHexTile>();
+	_meshRenderer = GetGameObject()->GetComponent<MeshRenderer>();
+}
+
+void HexTile::Update()
+{
+	if (!minigameActive && !GameManager::instance->minigameActive && _mapHexTile->type != MapHexTile::HexTileType::Mountain && !isFighting)
+	{
+		if (state == TileState::OCCUPIED || state == TileState::REMOTE_OCCUPYING)
+		{
+			TakeOver();
+		}
+		else if (state == TileState::TAKEN && !isAlbumActive)
+		{
+			LoseInfluence();
+		}
+	}
+}
+
+void HexTile::OnDestroy()
+{
+}
+
+void HexTile::ResetTile()
+{
+	percentage = 0.0f;
+	if (takenEntity) {
+		//takenEntity->RemoveTile(this);
+	}
+	occupyingEntity = nullptr;
+	takenEntity = nullptr;
+	isFighting = false;
+	state = TileState::NONE;
+}
+
+void HexTile::SetOutlineActive(bool active)
+{
+	//if (outline) {
+	//	outline->SetEnabled(active);
+	//}
+}
+
+void HexTile::StartMinigame()
+{
+}
+
+void HexTile::WinMinigame()
+{
+}
+
+void HexTile::BadNote()
+{
+	percentage -= badNotePercent;
+	if (percentage <= 0.0f) {
+		percentage = 0.0f;
+	}
+}
+
 void HexTile::StartTakingOver(Playable* entity) {
 	SPDLOG_INFO("Starting taking over");
 
@@ -258,10 +197,24 @@ void HexTile::StartTakingOver(Playable* entity) {
 	else if (occupyingEntity != entity && !isFighting) {
 		//entity->StartPaperRockScissors(occupyingEntity);
 		//occupyingEntity->StartPaperRockScissors(entity);
-			GameManager::instance->minigameActive = true;
-			isFighting = true;
-			MinigameManager::GetLastInstance()->StartMinigame(entity, occupyingEntity);
+		GameManager::instance->minigameActive = true;
+		isFighting = true;
+		MinigameManager::GetLastInstance()->StartMinigame(entity, occupyingEntity);
 		if (occupyingEntity != nullptr) {
+		}
+	}
+}
+
+void HexTile::StopTakingOver(Playable* entity)
+{
+	if ((state == TileState::OCCUPIED || state == TileState::REMOTE_OCCUPYING) && occupyingEntity == entity) {
+		occupyingEntity = nullptr;
+		if (takenEntity) {
+			state = TileState::TAKEN;
+			currLoseInfluenceDelay = loseInfluenceDelay;
+		}
+		else {
+			state = TileState::NONE;
 		}
 	}
 }
@@ -282,16 +235,66 @@ void HexTile::StartRemotelyTakingOver(Playable* entity, float multiplier)
 	}
 }
 
-void HexTile::StopTakingOver(Playable* entity)
+void HexTile::StopRemotelyTakingOver(Playable* entity)
 {
-	if ((state == TileState::OCCUPIED || state == TileState::REMOTE_OCCUPYING) && occupyingEntity == entity) {
-		occupyingEntity = nullptr;
-		if (takenEntity) {
-			state = TileState::TAKEN;
-			currLoseInfluenceDelay = loseInfluenceDelay;
-		}
-		else {
-			state = TileState::NONE;
-		}
+}
+
+Generation::MapHexTile* HexTile::GetMapHexTile() const
+{
+	return _mapHexTile;
+}
+
+YAML::Node HexTile::Serialize() const
+{
+	YAML::Node node = Component::Serialize();
+
+	node["type"] = "HexTile";
+
+	if (textuesData != nullptr) {
+		node["textuesData"] = Twin2Engine::Manager::ScriptableObjectManager::GetPath(textuesData->GetId());
+	}
+	else {
+		node["textuesData"] = "";
+	}
+
+	return node;
+}
+
+bool HexTile::Deserialize(const YAML::Node& node)
+{
+	if (!Component::Deserialize(node))
+		return false;
+
+
+	textuesData = dynamic_cast<HexTileTextureData*>(Twin2Engine::Manager::ScriptableObjectManager::Load(node["textuesData"].as<string>()));
+	return true;
+}
+
+
+#if _DEBUG
+
+void HexTile::DrawEditor()
+{
+	std::string id = std::string(std::to_string(this->GetId()));
+	std::string name = std::string("Hex Tile##Component").append(id);
+	if (ImGui::CollapsingHeader(name.c_str())) {		
+		if (Component::DrawInheritedFields()) return;
+
+		ImGui::BeginDisabled();
+		ImGui::Checkbox("IsFighting", &isFighting);
+		ImGui::EndDisabled();
+
+		ImGui::TextUnformatted("TakenEntity: ");
+		ImGui::SameLine();
+		ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+		ImGui::Text("%s", takenEntity != nullptr ? takenEntity->GetGameObject()->GetName().append("/").append(std::to_string(takenEntity->GetGameObject()->Id())).c_str() : "None");
+		ImGui::PopFont();
+
+		ImGui::Text("Percentage: %f", percentage);
+		ImGui::Text("Current Cooldown: %f", currCooldown);
+
+		// TODO: Zrobic
 	}
 }
+
+#endif

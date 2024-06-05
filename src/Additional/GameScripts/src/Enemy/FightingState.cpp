@@ -5,6 +5,9 @@
 DecisionTree<Enemy*, FightingState::FightResult> FightingState::_decisionTree{
 	[&](Enemy* enemy) -> FightingState::FightResult {
 
+		// TODO: Na razie nie ma fighting system
+		return FightResult::LOSE;
+
 		// TODO: Sprawdzenie czy gracz cos wybral
 		return FightResult::WAIT;
 

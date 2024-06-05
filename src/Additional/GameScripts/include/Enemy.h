@@ -28,7 +28,6 @@ class Enemy : public Playable {
 	float _drawChance = 33.33f;
 
 	// STATE MACHINE
-	bool _started = false;
 	float _timeToThink = .5f;
 	float _currThinkingTime = 0.f;
 	StateMachine<Enemy*> _stateMachine;

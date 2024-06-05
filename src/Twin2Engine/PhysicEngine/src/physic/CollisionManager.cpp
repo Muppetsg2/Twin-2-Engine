@@ -117,14 +117,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.DEFAULT == CollisionMode::ACTIVE) {
 			for (auto other : DefaultLayer) {
 				if (other->layersFilter.IGNORE_COLLISION >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.DEFAULT == CollisionMode::NEUTRAL) {
 			for (auto other : DefaultLayer) {
 				if (other->layersFilter.IGNORE_COLLISION == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -132,14 +132,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.IGNORE_RAYCAST == CollisionMode::ACTIVE) {
 			for (auto other : IgnoreRaycastLayer) {
 				if (other->layersFilter.IGNORE_RAYCAST >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.IGNORE_RAYCAST == CollisionMode::NEUTRAL) {
 			for (auto other : IgnoreRaycastLayer) {
 				if (other->layersFilter.IGNORE_RAYCAST == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -147,14 +147,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_1 == CollisionMode::ACTIVE) {
 			for (auto other : Layer1) {
 				if (other->layersFilter.LAYER_1 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_1 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer1) {
 				if (other->layersFilter.LAYER_1 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -162,14 +162,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_2 == CollisionMode::ACTIVE) {
 			for (auto other : Layer2) {
 				if (other->layersFilter.LAYER_2 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_2 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer2) {
 				if (other->layersFilter.LAYER_2 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -177,14 +177,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_3 == CollisionMode::ACTIVE) {
 			for (auto other : Layer3) {
 				if (other->layersFilter.LAYER_3 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_3 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer3) {
 				if (other->layersFilter.LAYER_3 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -192,14 +192,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_4 == CollisionMode::ACTIVE) {
 			for (auto other : Layer4) {
 				if (other->layersFilter.LAYER_4 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_4 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer4) {
 				if (other->layersFilter.LAYER_4 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -213,7 +213,7 @@ void CollisionManager::PerformCollisions() {
 			++Current;
 			while (Current != DefaultLayer.end()) {
 				if ((*Current)->layersFilter.DEFAULT >= CollisionMode::NEUTRAL) {
-					collider->collide((*Current));
+					delete collider->collide((*Current));
 				}
 
 				++Current;
@@ -225,7 +225,7 @@ void CollisionManager::PerformCollisions() {
 			++Current;
 			while (Current != DefaultLayer.end()) {
 				if ((*Current)->layersFilter.DEFAULT == CollisionMode::ACTIVE) {
-					collider->collide((*Current));
+					delete collider->collide((*Current));
 				}
 
 				++Current;
@@ -237,14 +237,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.IGNORE_RAYCAST == CollisionMode::ACTIVE) {
 			for (auto other : IgnoreRaycastLayer) {
 				if (other->layersFilter.IGNORE_RAYCAST >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.IGNORE_RAYCAST == CollisionMode::NEUTRAL) {
 			for (auto other : IgnoreRaycastLayer) {
 				if (other->layersFilter.IGNORE_RAYCAST == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -252,14 +252,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_1 == CollisionMode::ACTIVE) {
 			for (auto other : Layer1) {
 				if (other->layersFilter.LAYER_1 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_1 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer1) {
 				if (other->layersFilter.LAYER_1 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -267,14 +267,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_2 == CollisionMode::ACTIVE) {
 			for (auto other : Layer2) {
 				if (other->layersFilter.LAYER_2 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_2 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer2) {
 				if (other->layersFilter.LAYER_2 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -282,14 +282,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_3 == CollisionMode::ACTIVE) {
 			for (auto other : Layer3) {
 				if (other->layersFilter.LAYER_3 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_3 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer3) {
 				if (other->layersFilter.LAYER_3 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -297,14 +297,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_4 == CollisionMode::ACTIVE) {
 			for (auto other : Layer4) {
 				if (other->layersFilter.LAYER_4 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_4 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer4) {
 				if (other->layersFilter.LAYER_4 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -317,7 +317,7 @@ void CollisionManager::PerformCollisions() {
 			++Current;
 			while (Current != IgnoreRaycastLayer.end()) {
 				if ((*Current)->layersFilter.IGNORE_RAYCAST >= CollisionMode::NEUTRAL) {
-					collider->collide((*Current));
+					delete collider->collide((*Current));
 				}
 
 				++Current;
@@ -329,7 +329,7 @@ void CollisionManager::PerformCollisions() {
 			++Current;
 			while (Current != IgnoreRaycastLayer.end()) {
 				if ((*Current)->layersFilter.IGNORE_RAYCAST == CollisionMode::ACTIVE) {
-					collider->collide((*Current));
+					delete collider->collide((*Current));
 				}
 
 				++Current;
@@ -340,14 +340,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_1 == CollisionMode::ACTIVE) {
 			for (auto other : Layer1) {
 				if (other->layersFilter.LAYER_1 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_1 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer1) {
 				if (other->layersFilter.LAYER_1 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -355,14 +355,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_2 == CollisionMode::ACTIVE) {
 			for (auto other : Layer2) {
 				if (other->layersFilter.LAYER_2 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_2 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer2) {
 				if (other->layersFilter.LAYER_2 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -370,14 +370,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_3 == CollisionMode::ACTIVE) {
 			for (auto other : Layer3) {
 				if (other->layersFilter.LAYER_3 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_3 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer3) {
 				if (other->layersFilter.LAYER_3 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -385,14 +385,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_4 == CollisionMode::ACTIVE) {
 			for (auto other : Layer4) {
 				if (other->layersFilter.LAYER_4 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_4 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer4) {
 				if (other->layersFilter.LAYER_4 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -405,7 +405,7 @@ void CollisionManager::PerformCollisions() {
 			++Current;
 			while (Current != Layer1.end()) {
 				if ((*Current)->layersFilter.LAYER_1 >= CollisionMode::NEUTRAL) {
-					collider->collide((*Current));
+					delete collider->collide((*Current));
 				}
 
 				++Current;
@@ -417,7 +417,7 @@ void CollisionManager::PerformCollisions() {
 			++Current;
 			while (Current != Layer1.end()) {
 				if ((*Current)->layersFilter.LAYER_1 == CollisionMode::ACTIVE) {
-					collider->collide((*Current));
+					delete collider->collide((*Current));
 				}
 
 				++Current;
@@ -428,14 +428,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_2 == CollisionMode::ACTIVE) {
 			for (auto other : Layer2) {
 				if (other->layersFilter.LAYER_2 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_2 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer2) {
 				if (other->layersFilter.LAYER_2 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -443,14 +443,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_3 == CollisionMode::ACTIVE) {
 			for (auto other : Layer3) {
 				if (other->layersFilter.LAYER_3 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_3 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer3) {
 				if (other->layersFilter.LAYER_3 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -458,14 +458,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_4 == CollisionMode::ACTIVE) {
 			for (auto other : Layer4) {
 				if (other->layersFilter.LAYER_4 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_4 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer4) {
 				if (other->layersFilter.LAYER_4 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -478,7 +478,7 @@ void CollisionManager::PerformCollisions() {
 			++Current;
 			while (Current != Layer2.end()) {
 				if ((*Current)->layersFilter.LAYER_2 >= CollisionMode::NEUTRAL) {
-					collider->collide((*Current));
+					delete collider->collide((*Current));
 				}
 
 				++Current;
@@ -490,7 +490,7 @@ void CollisionManager::PerformCollisions() {
 			++Current;
 			while (Current != Layer2.end()) {
 				if ((*Current)->layersFilter.LAYER_2 == CollisionMode::ACTIVE) {
-					collider->collide((*Current));
+					delete collider->collide((*Current));
 				}
 
 				++Current;
@@ -501,14 +501,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_3 == CollisionMode::ACTIVE) {
 			for (auto other : Layer3) {
 				if (other->layersFilter.LAYER_3 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_3 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer3) {
 				if (other->layersFilter.LAYER_3 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -516,14 +516,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_4 == CollisionMode::ACTIVE) {
 			for (auto other : Layer4) {
 				if (other->layersFilter.LAYER_4 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_4 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer4) {
 				if (other->layersFilter.LAYER_4 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -536,7 +536,7 @@ void CollisionManager::PerformCollisions() {
 			++Current;
 			while (Current != Layer3.end()) {
 				if ((*Current)->layersFilter.LAYER_3 >= CollisionMode::NEUTRAL) {
-					collider->collide((*Current));
+					delete collider->collide((*Current));
 				}
 
 				++Current;
@@ -548,7 +548,7 @@ void CollisionManager::PerformCollisions() {
 			++Current;
 			while (Current != Layer3.end()) {
 				if ((*Current)->layersFilter.LAYER_3 == CollisionMode::ACTIVE) {
-					collider->collide((*Current));
+					delete collider->collide((*Current));
 				}
 
 				++Current;
@@ -559,14 +559,14 @@ void CollisionManager::PerformCollisions() {
 		if (collider->layersFilter.LAYER_4 == CollisionMode::ACTIVE) {
 			for (auto other : Layer4) {
 				if (other->layersFilter.LAYER_4 >= CollisionMode::NEUTRAL) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
 		else if (collider->layersFilter.LAYER_4 == CollisionMode::NEUTRAL) {
 			for (auto other : Layer4) {
 				if (other->layersFilter.LAYER_4 == CollisionMode::ACTIVE) {
-					collider->collide(other);
+					delete collider->collide(other);
 				}
 			}
 		}
@@ -579,7 +579,7 @@ void CollisionManager::PerformCollisions() {
 			++Current;
 			while (Current != Layer4.end()) {
 				if ((*Current)->layersFilter.LAYER_4 >= CollisionMode::NEUTRAL) {
-					collider->collide((*Current));
+					delete collider->collide((*Current));
 				}
 
 				++Current;
@@ -591,7 +591,7 @@ void CollisionManager::PerformCollisions() {
 			++Current;
 			while (Current != Layer4.end()) {
 				if ((*Current)->layersFilter.LAYER_4 == CollisionMode::ACTIVE) {
-					collider->collide((*Current));
+					delete collider->collide((*Current));
 				}
 
 				++Current;

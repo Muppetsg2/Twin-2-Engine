@@ -33,7 +33,6 @@ private:
     PlayerMovement* move;
     bool lost;
 
-    Playable* fightingPlayable = nullptr;
     //Coroutine* fansCorountine;
 
 
@@ -61,6 +60,7 @@ private:
 
 
 public:
+    Playable* fightingPlayable = nullptr;
 
     virtual void Initialize() override;
     virtual void Update() override;

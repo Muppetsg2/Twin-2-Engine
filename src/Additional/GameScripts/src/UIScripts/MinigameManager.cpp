@@ -123,7 +123,7 @@ void MinigameManager::PerformTurn()
 	//float percantage = Random::Range(0.0f, 100.0f);
 	float chance = Random::Range(0.0f, 1.0f);
 	float drawchance = Random::Range(0.0f, 1.0f);
-	float enemyLuckPoint = .1f * (enemyFieldsNumber - playerFieldsNumber); // 1.0f;//
+	float enemyLuckPoint = .1f * (enemyFieldsNumber - playerFieldsNumber) - 1.0f; // 1.0f;//
 
 	//else if (percantage >= (100.0f - chanceForEnemyLost)) {
 	//if (percantage <= chanceForEnemyWin) {
@@ -258,8 +258,9 @@ void MinigameManager::StartMinigame(Playable* chalanging, Playable* chalanged)
 				}
 			}
 		}
-
 		enemy = (Enemy*)chalanging;
+
+		player->fightingPlayable = enemy;
 
 		MinigamePlain->SetActive(true);
 		return;
@@ -267,8 +268,8 @@ void MinigameManager::StartMinigame(Playable* chalanging, Playable* chalanged)
 
 
 
-	int p1FieldsNumber = 0;
-	int p2FieldsNumber = 0;
+	int p1FieldsNumber = 3;
+	int p2FieldsNumber = 3;
 	for (int i = 0; i < 6; ++i) {
 		if (hexTilesGOs[i] != nullptr) {
 			owner = hexTilesGOs[i]->GetComponent<HexTile>()->takenEntity;

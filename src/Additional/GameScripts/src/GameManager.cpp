@@ -45,6 +45,9 @@ void GameManager::OnEnable() {
     SPDLOG_INFO("Creating enenmy");
     GenerateEnemy();
     GenerateEnemy();
+    GenerateEnemy();
+    GenerateEnemy();
+    GenerateEnemy();
 }
 
 void GameManager::Update() {

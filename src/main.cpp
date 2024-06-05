@@ -98,7 +98,11 @@ using namespace Generation::Generators;
 #include <EnemyMovement.h>
 #include <AreaTaking/GetMoneyFromTiles.h>
 #include <GameTimer.h>
+#include <ConcertRoad.h>
 #include <Abilities/ConcertAbilityController.h>
+
+#include <RadioStation/RadioStation.h>
+#include <RadioStation/RadioStationPlayingController.h>
 
 using namespace GameScripts;
 
@@ -263,10 +267,15 @@ int main(int, char**)
     ADD_COMPONENT("MoneyGainFromTiles", MoneyGainFromTiles);
     ADD_COMPONENT("GameTimer", GameTimer);
 
+
+    ADD_COMPONENT("RadioStation", RadioStation);
+    ADD_COMPONENT("RadioStationPlayingController", RadioStationPlayingController);
+
 #pragma region GAME_SCRIPTS_COMPONENTS
 
     ADD_COMPONENT("PlaneGenerator", PlaneGenerator);
     ADD_COMPONENT("MinigameManager", MinigameManager);
+    ADD_COMPONENT("ConcertRoad", ConcertRoad);
 
 #pragma endregion
 

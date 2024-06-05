@@ -13,7 +13,7 @@ using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Processes;
 using namespace Twin2Engine::UI;
 
-MinigameManager* MinigameManager::lastInstance;
+MinigameManager* MinigameManager::lastInstance = nullptr;
 
 MinigameManager* MinigameManager::GetLastInstance()
 {

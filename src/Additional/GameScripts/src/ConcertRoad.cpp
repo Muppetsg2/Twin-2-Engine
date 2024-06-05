@@ -2,7 +2,11 @@
 #include <GameManager.h>
 #include <core/Random.h>
 #include <manager/SceneManager.h>
+#include <manager/PrefabManager.h>
 #include <algorithm>
+
+
+using namespace Twin2Engine::Manager;
 
 
 ConcertRoad* ConcertRoad::instance = nullptr;
@@ -144,35 +148,61 @@ void ConcertRoad::Begin() {
     entityPoints.clear();
     entityMultiplier.clear();
 
-    for (HexTile* t : Twin2Engine::Manager::SceneManager::FindObjectByName("MapGenerator")->GetComponentsInChildren<HexTile>())
+    //{
+    //    // FindObjectByName("MapGenerator")->GetComponentsInChildren<HexTile>();
+    //    HexTile* tile;
+    //    auto tiles = Twin2Engine::Manager::SceneManager::GetComponentsOfType<HexTile>();
+    //    for (auto& t : tiles)
+    //    {
+    //        tile = (HexTile*)t.second;
+    //        MapHexTile* mapHexTile = tile->GetMapHexTile();
+    //        if (mapHexTile->type == Generation::MapHexTile::HexTileType::PointOfInterest)
+    //        {
+    //            if (tile->percentage == 0.0f || ConsiderInfluenced)
+    //            {
+    //                RoadMapPoints.insert(tile);
+    //            }
+    //        }
+    //    }
+    //}
+    for (auto& tile : Twin2Engine::Manager::SceneManager::FindObjectByName("MapGenerator")->GetComponentsInChildren<HexTile>())
     {
-        MapHexTile* mapHexTile = t->GetMapHexTile();
+        MapHexTile* mapHexTile = tile->GetMapHexTile();
         if (mapHexTile->type == Generation::MapHexTile::HexTileType::PointOfInterest)
         {
-            if (t->percentage == 0.0f || ConsiderInfluenced)
+            if (tile->percentage == 0.0f || ConsiderInfluenced)
             {
-                RoadMapPoints.insert(t);
+                RoadMapPoints.insert(tile);
             }
         }
     }
+    
 
     //Usuwanie na losowej pozycji w RoadMapPoints dopóki nie pozostanie zadana iloœæ
-    std::vector<int> indexes;
-    for (int i = RoadMapPoints.size() - 1; i > NumberOfPoints; --i) {
-        indexes.push_back(Random::Range<int>(0, i));
-    }
-    std::sort(indexes.begin(), indexes.end());
-
-    auto endItr = RoadMapPoints.end();
-    --endItr;
+    // 
+    auto itr = RoadMapPoints.begin();
     while (RoadMapPoints.size() > NumberOfPoints)
     {
-        for (int i = RoadMapPoints.size() - indexes.back(); i > 0; --i) {
-            --endItr;
-        }
-        indexes.pop_back();
-        RoadMapPoints.erase(endItr);
+        itr = RoadMapPoints.begin();
+        std::advance(itr, Random::Range<int>(0, RoadMapPoints.size() - 1));
+        RoadMapPoints.erase(itr);
     }
+    //std::vector<int> indexes;
+    //for (int i = RoadMapPoints.size() - 1; i > NumberOfPoints; --i) {
+    //    indexes.push_back(Random::Range<int>(0, i));
+    //}
+    //std::sort(indexes.begin(), indexes.end());
+    //
+    //auto endItr = RoadMapPoints.end();
+    //--endItr;
+    //while (RoadMapPoints.size() > NumberOfPoints)
+    //{
+    //    for (int i = RoadMapPoints.size() - indexes.back(); i > 0; --i) {
+    //        --endItr;
+    //    }
+    //    indexes.pop_back();
+    //    RoadMapPoints.erase(endItr);
+    //}
     ///
 
 
@@ -194,10 +224,29 @@ void ConcertRoad::Finish() {
 
 }
 
+YAML::Node ConcertRoad::Serialize() const
+{
+    YAML::Node node = Component::Serialize();
+    node["type"] = "ConcertRoad";
+
+    return node;
+}
+
+bool ConcertRoad::Deserialize(const YAML::Node& node)
+{
+    if (!Component::Deserialize(node))
+        return false;
+
+    Marker = PrefabManager::GetPrefab("res/prefabs/Marker.prefab");
+
+
+    return true;
+}
+
 #if _DEBUG
 void ConcertRoad::DrawEditor() {
     string id = string(std::to_string(this->GetId()));
-    string name = string("Concert Road##Component").append(id);
+    string name = string("ConcertRoad##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str())) {
         if (Component::DrawInheritedFields()) return;
 

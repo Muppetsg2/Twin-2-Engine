@@ -1,4 +1,5 @@
 #include <Generation/ContentGenerator.h>
+#include <ConcertRoad.h>
 
 using namespace Generation;
 using namespace Generation::Generators;
@@ -36,6 +37,8 @@ void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
             }
         }
     }
+
+    ConcertRoad::instance->Use();
 }
 
 void ContentGenerator::Initialize()

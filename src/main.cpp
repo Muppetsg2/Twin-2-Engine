@@ -98,6 +98,7 @@ using namespace Generation::Generators;
 #include <EnemyMovement.h>
 #include <AreaTaking/GetMoneyFromTiles.h>
 #include <GameTimer.h>
+#include <ConcertRoad.h>
 #include <Abilities/ConcertAbilityController.h>
 
 using namespace GameScripts;
@@ -267,6 +268,7 @@ int main(int, char**)
 
     ADD_COMPONENT("PlaneGenerator", PlaneGenerator);
     ADD_COMPONENT("MinigameManager", MinigameManager);
+    ADD_COMPONENT("ConcertRoad", ConcertRoad);
 
 #pragma endregion
 

@@ -10,7 +10,6 @@ namespace Twin2Engine::Core {
 		size_t PositionChangeActionId = 0;
 		bool dirtyFlag = false;
 	public:
-		SphereColliderComponent();
 		void SetRadius(float radius);
 
 		void Initialize() override;

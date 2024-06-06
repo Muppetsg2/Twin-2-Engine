@@ -1,3 +1,4 @@
+/*
 #include <physic/EnviromentalBoundingVolume.h>
 
 using namespace Twin2Engine::Physic;
@@ -13,3 +14,4 @@ EnviromentalBoundingVolume::EnviromentalBoundingVolume(BoxColliderData* boxColli
 EnviromentalBoundingVolume::EnviromentalBoundingVolume(CapsuleColliderData* capsuleColliderData) : BoundingVolume(capsuleColliderData) {
 
 }
+*/

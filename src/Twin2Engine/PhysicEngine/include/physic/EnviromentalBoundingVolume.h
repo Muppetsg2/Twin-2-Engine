@@ -1,6 +1,6 @@
-#ifndef _ENVIROMENTALBOUNDINGVOLUME_H_
-#define _ENVIROMENTALBOUNDINGVOLUME_H_
+#pragma once
 
+/*
 #include <physic/BoundingVolume.h>
 
 
@@ -14,5 +14,4 @@ namespace Twin2Engine::Physic {
 		EnviromentalBoundingVolume(CapsuleColliderData* capsuleColliderData);
 	};
 }
-
-#endif // !_ENVIROMENTALBOUNDINGVOLUME_H_
+*/

@@ -286,8 +286,8 @@ void Image::SetFillSubType(uint8_t subType)
 
 void Image::SetFillProgress(float progress)
 {
-	if (progress > 100.f) progress == 100.f;
-	else if (progress < 0.f) progress == 0.f;
+	if (progress > 100.f) progress = 100.f;
+	else if (progress < 0.f) progress = 0.f;
 
 	if (_data.fill.progress != progress * 0.01f) {
 		_data.fill.progress = progress * 0.01f;

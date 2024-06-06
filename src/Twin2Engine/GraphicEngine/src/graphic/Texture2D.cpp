@@ -115,6 +115,7 @@ void Texture2D::Use(unsigned int samplerId) const
 	glBindTexture(GL_TEXTURE_2D, _id);
 }
 
+#if _DEBUG
 void Texture2D::DrawEditor()
 {
 	const std::vector<TextureWrapMode> wrapModes = {
@@ -235,3 +236,4 @@ void Texture2D::DrawEditor()
 		this->SetMagFilterMode(fm);
 	}
 }
+#endif

@@ -737,11 +737,10 @@ bool CollisionManager::Raycast(Ray& ray, RaycastHit& raycastHit)
 
 void Twin2Engine::Physic::CollisionManager::OverlapSphere(glm::vec3 spherePosition, float radius, std::vector<Twin2Engine::Core::ColliderComponent*>& collidingWithSphere)
 {
-	SphereColliderData* sphereShape = new SphereColliderData();
-	sphereShape->LocalPosition = spherePosition;
-	sphereShape->Position = spherePosition;
-	sphereShape->Radius = radius;
-	Collider* collider = new GameCollider(nullptr, sphereShape);
+	Collider* collider = new GameCollider(nullptr, ColliderShape::SPHERE);
+	collider->shapeColliderData->LocalPosition = spherePosition;
+	collider->shapeColliderData->Position = spherePosition;
+	((SphereColliderData*)collider->shapeColliderData)->Radius = radius;
 
 	Twin2Engine::Physic::Collision* collision;
 

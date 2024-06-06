@@ -740,7 +740,7 @@ GameObjects:
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
-        layer: 0
+        layer: 1
     children:
       []
   - id: 15
@@ -801,7 +801,7 @@ GameObjects:
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Truncate> 2
-        layer: 0
+        layer: 1
       - id: 40
         enabled: true
         type: Text
@@ -823,7 +823,7 @@ GameObjects:
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Ellipsis> 3
-        layer: 0
+        layer: 1
       - id: 41
         enabled: true
         type: InputField

@@ -83,7 +83,16 @@ namespace Twin2Engine
 			static Tools::STD140Struct UIElementsBufferStruct;
 
 			// Canvas -> Layer -> Mask -> Texture -> queue
-			static std::unordered_map<CanvasData*, std::map<int32_t, std::unordered_map<MaskData*, std::unordered_map<Graphic::Texture2D*, std::queue<UIElementQueueData>>>>> _renderQueue;
+			static std::unordered_map<CanvasData*,
+					std::map<int32_t,
+					std::unordered_map<MaskData*,
+					std::unordered_map<Graphic::Texture2D*,
+					std::queue<UIElementQueueData>>>>> _worldSpaceRenderQueue;
+			static std::unordered_map<CanvasData*,
+				std::map<int32_t,
+				std::unordered_map<MaskData*,
+				std::unordered_map<Graphic::Texture2D*,
+				std::queue<UIElementQueueData>>>>> _screenSpaceRenderQueue;
 			
 			// SHADER
 			static Graphic::Shader* _uiShader;
@@ -105,11 +114,17 @@ namespace Twin2Engine
 			static void Init();
 			static void UnloadAll();
 
+			static void RenderWorldSpace();
+			static void RenderScreenSpace();
+			static void RenderUI(std::unordered_map<CanvasData*,
+									std::map<int32_t,
+									std::unordered_map<MaskData*,
+									std::unordered_map<Graphic::Texture2D*,
+									std::queue<UIElementQueueData>>>>>& renderQueue);
+
 			// TODO: Lepsze zarz¹dzanie Canvasem - przekazywanie id UBO z danymi canvasu
-			// TODO: Podzia³ renderingu ze wzglêdu na worldSpace i screenSpace Canvas (najpierw render worldSpacu póŸniej screenSpacu)
-			// TODO: Sprawdziæ dlaczego transform nie wp³ywa na zmianê po³o¿enia canvasu jak i Image-u
 			// TODO: Poprawiæ zale¿noœæ wielkoœci canvasu do wielkoœci ekranu w screenSpace
-			static void Render();
+			// TODO: Poprawiæ znaczenie wielkoœci canvasu w worldSpace (ma nie wp³ywaæ na wielkoœæ image-u a jedynie na definiowanie jego pozycji)
 		public:
 			static void Render(UITextData textData);
 			static void Render(UIImageData imageData);

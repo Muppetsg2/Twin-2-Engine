@@ -35,7 +35,6 @@ GameObject::GameObject(size_t id) {
 	_name = "New GameObject";
 
 	_transform = new Transform();
-	//_transform->Init(this);
 
 	//components = list<Component*>();
 	components = std::list<Component*>();
@@ -389,7 +388,6 @@ void GameObject::DrawEditor()
 				if (choosed != 0) {
 					Component* comp = ComponentsMap::CreateComponent(types[choosed]);
 					this->AddComponent(comp);
-					comp->Init(this);
 				}
 			}
 
@@ -408,8 +406,13 @@ void GameObject::DrawEditor()
 void GameObject::AddComponent(Component* comp)
 {
 	components.push_back(comp);
-	//comp->Init(this);
-	//comp->Initialize();
+	comp->Init(this);
+	comp->Initialize();
+}
+
+void GameObject::AddComponentNoInit(Component* comp)
+{
+	components.push_back(comp);
 }
 
 void GameObject::RemoveComponent(Component* component)

@@ -102,6 +102,7 @@ namespace Twin2Engine::Core
 
 	private:
 		void AddComponent(Component* comp);
+		void AddComponentNoInit(Component* comp);
 	public:
 
 		template<class T>
@@ -151,10 +152,7 @@ T* Twin2Engine::Core::GameObject::AddComponent()
 	static_assert(std::is_base_of<Component, T>::value);
 	T* component = new T();
 
-	component->Init(this);
-	component->Initialize();
-
-	components.push_back(component);
+	AddComponent(component);
 
 	return component;
 }

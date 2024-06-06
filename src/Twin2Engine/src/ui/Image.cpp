@@ -16,7 +16,8 @@ using namespace std;
 
 void Image::Initialize()
 {
-	_onTransformChangeId = (GetTransform()->OnEventTransformChanged += [&](Transform* t) -> void { _data.rectTransform.transform = t->GetTransformMatrix(); });
+	_onTransformChangeId = (GetTransform()->OnEventTransformChanged += [&](Transform* t) -> void { 
+		_data.rectTransform.transform = t->GetTransformMatrix(); });
 }
 
 void Image::Render()
@@ -141,15 +142,17 @@ void Image::DrawEditor()
 		}
 
 		std::unordered_map<size_t, Component*> items = SceneManager::GetComponentsOfType<Canvas>();
+		items.insert({ 0,  nullptr });
 		size_t choosed_canvas = _canvas == nullptr ? 0 : _canvas->GetId();
 
 		if (ImGui::BeginCombo(string("Canvas##").append(id).c_str(), choosed_canvas == 0 ? "None" : items[choosed_canvas]->GetGameObject()->GetName().c_str())) {
 
 			bool clicked = false;
+			size_t i = 0;
 			for (auto& item : items) {
 
-				if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_canvas)) {
-
+				if (ImGui::Selectable(std::string(item.first == 0 ? "None" : item.second->GetGameObject()->GetName().c_str()).append("##").append(id).append(std::to_string(i)).c_str(), item.first == choosed_canvas)) {
+					++i;
 					if (clicked) continue;
 
 					choosed_canvas = item.first;
@@ -158,9 +161,7 @@ void Image::DrawEditor()
 			}
 
 			if (clicked) {
-				if (choosed_canvas != 0) {
-					SetCanvas(static_cast<Canvas*>(items[choosed_canvas]));
-				}
+				SetCanvas(static_cast<Canvas*>(items[choosed_canvas]));
 			}
 
 			ImGui::EndCombo();

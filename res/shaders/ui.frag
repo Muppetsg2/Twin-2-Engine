@@ -204,5 +204,10 @@ void main()
         Color = vec4(1.0, 1.0, 1.0, elemColor.r) * gammaColor;
     }
 
-    Color = vec4(pow(Color.rgb, vec3(1.0 / gamma)), Color.a * maskPower);
+    if (!canvasIsInWorldSpace && canvasIsActive) {
+        Color = vec4(pow(Color.rgb, vec3(1.0 / gamma)), Color.a * maskPower);
+    }
+    else {
+        Color = vec4(Color.rgb, Color.a * maskPower);
+    }
 }

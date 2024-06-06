@@ -1444,7 +1444,7 @@ GameObjects:
       - 360
       - 363
       - 302
-      - 303
+      - 315
   - id: 326
     name: MinigameHeader
     isStatic: false
@@ -2050,7 +2050,7 @@ GameObjects:
         fillProgress: 1
     children:
       []
-  - id: 303
+  - id: 315
     name: LostMinigamePanel
     isStatic: false
     isActive: false

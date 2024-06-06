@@ -105,6 +105,9 @@ namespace Twin2Engine
 			static void Init();
 			static void UnloadAll();
 
+			// TODO: Lepsze zarz¹dzanie Canvasem - przekazywanie id UBO z danymi canvasu
+			// TODO: Podzia³ renderingu ze wzglêdu na worldSpace i screenSpace Canvas (najpierw render worldSpacu póŸniej screenSpacu)
+			// TODO: Sprawdziæ dlaczego transform nie wp³ywa na zmianê po³o¿enia canvasu jak i Image-u
 			static void Render();
 		public:
 			static void Render(UITextData textData);

@@ -83,7 +83,6 @@ in GS_OUT {
     flat uint instanceID;
     vec2 pointPos;
 	vec2 texCoord;
-	vec2 screenPos;
 	vec2 canvasPos;
 	vec4 worldPos;
 } fs_in;
@@ -143,11 +142,13 @@ bool OutOfFill(vec2 pos, vec2 center, vec2 size, FillData fill) {
     return false;
 }
 
-void main() 
+void main()
 {
-    // Is Frag In Screen
-    if (fs_in.screenPos.x > 1.0 || fs_in.screenPos.x < -1.0 || fs_in.screenPos.y > 1.0 || fs_in.screenPos.y < -1.0)
-        discard;
+    if (!canvasIsInWorldSpace && canvasIsActive) {
+        // Is Frag In Screen
+        if (fs_in.worldPos.x > 1.0 || fs_in.worldPos.x < -1.0 || fs_in.worldPos.y > 1.0 || fs_in.worldPos.y < -1.0)
+            discard;
+    }
 
     float maskPower = 1.0;
     if (maskIsActive) {

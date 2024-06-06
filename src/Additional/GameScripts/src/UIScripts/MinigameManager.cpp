@@ -42,7 +42,7 @@ void MinigameManager::SetupButtons()
 			EnemySelectionImage->SetColor(glm::vec4(0.0));
 
 			if (playerWins > (MaxNumberOfTurns / 2)) {
-				audioComp->SetAudio(WinSound);
+				audioComp->SetAudio("res/music/Minigame/Win.mp3");
 				audioComp->Play();
 				WinPanel->SetActive(true);
 				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -50,7 +50,7 @@ void MinigameManager::SetupButtons()
 				WinPanel->SetActive(false);
 			}
 			else if (enemyWins > (MaxNumberOfTurns / 2)) {
-				audioComp->SetAudio(DefeatSound);
+				audioComp->SetAudio("res/music/Minigame/Defeat.mp3");
 				audioComp->Play();
 				LostPanel->SetActive(true);
 				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -60,7 +60,7 @@ void MinigameManager::SetupButtons()
 			});
 
 		playerChoice = Choice::LAUNCHPAD;
-		audioComp->SetAudio(LaunchpadSound);
+		audioComp->SetAudio("res/music/Minigame/Launchpad.mp3");
 		audioComp->Play();
 
 		waitCoroutine->Start();
@@ -86,7 +86,7 @@ void MinigameManager::SetupButtons()
 			EnemySelectionImage->SetColor(glm::vec4(0.0));
 
 			if (playerWins > (MaxNumberOfTurns / 2)) {
-				audioComp->SetAudio(WinSound);
+				audioComp->SetAudio("res/music/Minigame/Win.mp3");
 				audioComp->Play();
 				WinPanel->SetActive(true);
 				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -94,7 +94,7 @@ void MinigameManager::SetupButtons()
 				WinPanel->SetActive(false);
 			}
 			else if (enemyWins > (MaxNumberOfTurns / 2)) {
-				audioComp->SetAudio(DefeatSound);
+				audioComp->SetAudio("res/music/Minigame/Defeat.mp3");
 				audioComp->Play();
 				LostPanel->SetActive(true);
 				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -104,7 +104,7 @@ void MinigameManager::SetupButtons()
 			});
 
 		playerChoice = Choice::GUITAR;
-		audioComp->SetAudio(GuitarSound);
+		audioComp->SetAudio("res/music/Minigame/Guitar.mp3");
 		audioComp->Play();
 		waitCoroutine->Start();
 		});
@@ -114,7 +114,6 @@ void MinigameManager::SetupButtons()
 			delete waitCoroutine;
 		}
 		waitCoroutine = new Coroutine([this](bool* finish) {
-			AudioManager::PlayAudio(WinSound);
 			LaunchpadButton->SetInteractable(false);
 			GuitarButton->SetInteractable(false);
 			DrumButton->SetInteractable(false);
@@ -130,7 +129,7 @@ void MinigameManager::SetupButtons()
 			EnemySelectionImage->SetColor(glm::vec4(0.0));
 
 			if (playerWins > (MaxNumberOfTurns / 2)) {
-				audioComp->SetAudio(WinSound);
+				audioComp->SetAudio("res/music/Minigame/Win.mp3");
 				audioComp->Play();
 				WinPanel->SetActive(true);
 				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -138,7 +137,7 @@ void MinigameManager::SetupButtons()
 				WinPanel->SetActive(false);
 			}
 			else if (enemyWins > (MaxNumberOfTurns / 2)) {
-				audioComp->SetAudio(DefeatSound);
+				audioComp->SetAudio("res/music/Minigame/Defeat.mp3");
 				audioComp->Play();
 				LostPanel->SetActive(true);
 				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -148,7 +147,7 @@ void MinigameManager::SetupButtons()
 			});
 
 		playerChoice = Choice::DRUM;
-		audioComp->SetAudio(DrumSound);
+		audioComp->SetAudio("res/music/Minigame/Drum.mp3");
 		audioComp->Play();
 		waitCoroutine->Start();
 		});

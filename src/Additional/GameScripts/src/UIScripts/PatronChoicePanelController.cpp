@@ -13,18 +13,20 @@ void PatronChoicePanelController::Initialize()
     //size_t size = _patrons.size();
     size_t size = _patronsButtons.size();
 
-    wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
+    //wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
+    wstring_convert<codecvt_utf8<wchar_t>> converter;
 
     for (size_t index = 0ull; index < size; ++index)
     {
-        //_patronsButtons[index]->GetTransform()->GetChildAt(1ull)->GetGameObject()->GetComponent<Text>()
-        //                      ->SetText(converter.from_bytes(_patrons[index]->GetPatronName()));
-        //
-        //
-        //string description;
-        //description.append(_patrons[index]->GetPatronDescription()).append("\n").append(_patrons[index]->GetBonusAsString());
-        //_patronsButtons[index]->GetTransform()->GetChildAt(2ull)->GetGameObject()->GetComponent<Text>()
-        //                      ->SetText(converter.from_bytes(description));
+        _patronsButtons[index]->GetTransform()->GetChildAt(1ull)->GetGameObject()->GetComponent<Text>()
+                              ->SetText(converter.from_bytes(_patrons[index]->GetPatronName()));
+        
+        
+        string description;
+        description.append(_patrons[index]->GetPatronDescription()).append("\n").append(_patrons[index]->GetBonusAsString());
+
+        _patronsButtons[index]->GetTransform()->GetChildAt(2ull)->GetGameObject()->GetComponent<Text>()
+                              ->SetText(converter.from_bytes(description));
         
         _patronsButtons[index]->GetOnClickEvent().AddCallback([this, index]() -> void {
             SPDLOG_INFO("Index chosen: {}", index);

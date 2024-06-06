@@ -41,9 +41,9 @@ void CitiesManager::RemoveAllCities() {
 void CitiesManager::MapCitiesConnections(bool byRegions) {
     citiesGraph.clear();
 
-    for (const auto& city : cities) {
-        citiesGraph[city] = {};
-    }
+    //for (const auto& city : cities) {
+    //    citiesGraph[city] = {};
+    //}
 
     for (size_t i = 0; i < cities.size(); ++i) {
         auto adjacentSectors = cities[i]->GetTransform()->GetParent()->GetParent()->GetGameObject()->GetComponent<MapSector>()->GetAdjacentSectors();

@@ -151,6 +151,14 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 19
+    path: res/textures/UI/graph.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites:
   - id: 0
     alias: white_box
@@ -197,12 +205,25 @@ Sprites:
   - id: 14
     alias: noteFa
     texture: 18
+  - id: 15
+    alias: strengthGraph
+    texture: 19
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
 Audio:
   - id: 0
     path: res/music/acoustic-guitar.mp3
+  - id: 1
+    path: res/music/Minigame/Win.mp3
+  - id: 2
+    path: res/music/Minigame/Defeat.mp3
+  - id: 3
+    path: res/music/Minigame/Guitar.mp3
+  - id: 4
+    path: res/music/Minigame/Drum.mp3
+  - id: 5
+    path: res/music/Minigame/Launchpad.mp3
 Materials:
   - id: 0
     path: res/materials/hexagonMat.material
@@ -984,26 +1005,34 @@ GameObjects:
       - id: 325
         enabled: true
         type: MinigameManager
-        MaxNumberOfTurns: 5
+        MaxNumberOfTurns: 1
         PlayerScoreId: 353
         EnemyScoreId: 359
         PlayerImageId: 344
         EnemyImageId: 347
         PlayerSelectionImageId: 362
         EnemySelectionImageId: 365
-        RockButtonId: 333
-        PapperButtonId: 337
-        ScissorButtonId: 341
+        LaunchpadButtonId: 333
+        GuitarButtonId: 337
+        DrumButtonId: 341
+        WonPanelId: 302
+        LostPanelId: 303
+      - id: 308
+        enabled: true
+        type: Audio
+        audio: 1
+        loop: false
+        volume: 1
     children:
       - 326
-      - 330 
-      - 334
-      - 338
+      - 301
       - 342
       - 345
       - 348
       - 360
       - 363
+      - 302
+      - 303
   - id: 326
     name: MinigameHeader
     isStatic: false
@@ -1065,6 +1094,47 @@ GameObjects:
         layer: 2
     children:
       []
+  - id: 301
+    name: StrengthGraph
+    isStatic: false
+    isActive: true
+    transform:
+      id: 302
+      enabled: true
+      position:
+        x: 0
+        y: -60
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 303
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 15
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 160
+        height: 160
+        layer: 1
+        fillEnabled: false
+        fillType: 0
+        fillSubType: 0
+        fillProgress: 1
+    children:
+      - 330
+      - 334
+      - 338
   - id: 330
     name: LaunchpadButton
     isStatic: false
@@ -1074,7 +1144,7 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: 0
+        y: 150
         z: 0
       scale:
         x: 1
@@ -1118,8 +1188,8 @@ GameObjects:
       id: 335
       enabled: true
       position:
-        x: -100
-        y: -120
+        x: -130
+        y: -75
         z: 0
       scale:
         x: 1
@@ -1163,8 +1233,8 @@ GameObjects:
       id: 339
       enabled: true
       position:
-        x: 100
-        y: -120
+        x: 120
+        y: -75
         z: 0
       scale:
         x: 1
@@ -1281,7 +1351,7 @@ GameObjects:
   - id: 348
     name: MinigameScorePanel
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 349
       enabled: true
@@ -1523,6 +1593,84 @@ GameObjects:
         width: 72
         height: 72
         layer: 1
+        fillEnabled: false
+        fillType: 0
+        fillSubType: 0
+        fillProgress: 1
+    children:
+      []
+  - id: 302
+    name: WonMinigamePanel
+    isStatic: false
+    isActive: false
+    transform:
+      id: 304
+      enabled: true
+      position:
+        x: 0
+        y: 50
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 305
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 0
+          y: 1
+          z: 0
+          w: 1
+        width: 300
+        height: 200
+        layer: 3
+        fillEnabled: false
+        fillType: 0
+        fillSubType: 0
+        fillProgress: 1
+    children:
+      []
+  - id: 303
+    name: LostMinigamePanel
+    isStatic: false
+    isActive: false
+    transform:
+      id: 306
+      enabled: true
+      position:
+        x: 0
+        y: 50
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 307
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 1
+          y: 0
+          z: 0
+          w: 1
+        width: 300
+        height: 200
+        layer: 3
         fillEnabled: false
         fillType: 0
         fillSubType: 0

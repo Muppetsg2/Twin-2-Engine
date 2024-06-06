@@ -18,14 +18,14 @@ public:
 	}
 };
 
-std::unordered_map<Shader*, std::map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueStatic = std::unordered_map<Shader*, std::map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
-std::unordered_map<Shader*, std::map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueStaticTransparent = std::unordered_map<Shader*, std::map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
+std::unordered_map<Shader*, std::unordered_map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueStatic = std::unordered_map<Shader*, std::unordered_map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
+std::unordered_map<Shader*, std::unordered_map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueStaticTransparent = std::unordered_map<Shader*, std::unordered_map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
 
 std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthMapQueueStatic = std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
 std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthQueueStatic = std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
 
-std::unordered_map<Shader*, std::map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueDynamic = std::unordered_map<Shader*, std::map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
-std::unordered_map<Shader*, std::map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueDynamicTransparent = std::unordered_map<Shader*, std::map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
+std::unordered_map<Shader*, std::unordered_map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueDynamic = std::unordered_map<Shader*, std::unordered_map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
+std::unordered_map<Shader*, std::unordered_map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueDynamicTransparent = std::unordered_map<Shader*, std::unordered_map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
 
 std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthMapQueueDynamic = std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
 std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthQueueDynamic = std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
@@ -1056,7 +1056,8 @@ void MeshRenderingManager::UpdateQueues()
 
 				meshPair.second.renderedCount = 0u;
 
-				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); ++index)
+				size_t loopedSize = meshPair.second.meshRenderers.size();
+				for (size_t index = 0ull; index < loopedSize; ++index)
 				{
 					if (meshPair.second.meshRenderers[index]->GetGameObject()->GetActive())
 					{
@@ -1145,7 +1146,8 @@ void MeshRenderingManager::UpdateQueues()
 
 				meshPair.second.renderedCount = 0u;
 
-				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); ++index)
+				size_t loopedSize = meshPair.second.meshRenderers.size();
+				for (size_t index = 0ull; index < loopedSize; ++index)
 				{
 					if (meshPair.second.meshRenderers[index]->GetGameObject()->GetActive())
 					{
@@ -1225,7 +1227,8 @@ void MeshRenderingManager::UpdateQueues()
 				meshPair.second.rendered.clear();
 				meshPair.second.renderedCount = 0u;
 
-				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); ++index)
+				size_t loopedSize = meshPair.second.meshRenderers.size();
+				for (size_t index = 0ull; index < loopedSize; ++index)
 				{
 					if (meshPair.second.meshRenderers[index]->IsTransformChanged())
 					{
@@ -1320,7 +1323,8 @@ void MeshRenderingManager::UpdateQueues()
 				meshPair.second.rendered.clear();
 				meshPair.second.renderedCount = 0u;
 
-				for (size_t index = 0ull; index < meshPair.second.meshRenderers.size(); ++index)
+				size_t loopedSize = meshPair.second.meshRenderers.size();
+				for (size_t index = 0ull; index < loopedSize; ++index)
 				{
 					if (meshPair.second.meshRenderers[index]->IsTransformChanged())
 					{

@@ -74,18 +74,18 @@ void Enemy::FinishedMovement(HexTile* hexTile)
 void Enemy::LostPaperRockScissors(Playable* playable)
 {
     CurrTile->StopTakingOver(this);
+    ChangeState(&_movingState);
 
-    GameObject* tiles[6];
-    CurrTile->GetMapHexTile()->tile->GetAdjacentGameObjects(tiles);
-    for (int i = 0; i < 6; ++i) {
-        if (tiles[i] != nullptr) {
-            _movement->reachEnd = true;
-            //_movement->MoveAndSetDestination(tiles[i]->GetComponent<HexTile>());
-            SetMoveDestination(tiles[i]->GetComponent<HexTile>());
-            break;
-        }
-    }
-    //PerformMovement();
+    //GameObject* tiles[6];
+    //CurrTile->GetMapHexTile()->tile->GetAdjacentGameObjects(tiles);
+    //for (int i = 0; i < 6; ++i) {
+    //    if (tiles[i] != nullptr) {
+    //        _movement->reachEnd = true;
+    //        //_movement->MoveAndSetDestination(tiles[i]->GetComponent<HexTile>());
+    //        SetMoveDestination(tiles[i]->GetComponent<HexTile>());
+    //        break;
+    //    }
+    //}
 }
 
 void Enemy::WonPaperRockScissors(Playable* playable)
@@ -97,17 +97,25 @@ void Enemy::WonPaperRockScissors(Playable* playable)
     //    CurrTile->isFighting = false;
     //}
     CurrTile->isFighting = false;
+    GameManager::instance->minigameActive = false;
+    //bool startTakingOver = CurrTile->occupyingEntity == playable;
     playable->LostPaperRockScissors(this);
+
 
     if (CurrTile->takenEntity == playable) {
     //if (CurrTile->takenEntity != this) {
         CurrTile->ResetTile();
-        playable->CheckIfDead(this);
 
         //FinishedMovement(CurrTile);
-        CurrTile->StartTakingOver(this);
-
     }
+
+    playable->CheckIfDead(this);
+    CurrTile->StartTakingOver(this);
+    ChangeState(&_takingOverState);
+
+    //if (startTakingOver) {
+    //    CurrTile->StartTakingOver(this);
+    //}
 
     // TakeOver
     //enemyStrategy.WonPaperRockScisors(this);

@@ -139,7 +139,7 @@ namespace Editor::Common
             if (!saved) {
                 MessageHolder::logMessages.emplace_back(ImGuiLogMessage(message, msg.level, msg.source, 1));
             }
-#elif COLLAPSE == 2:
+#elif COLLAPSE == 2
             bool saved = false;
             size_t size = MessageHolder::logMessages.size();
             if (size > 1) {

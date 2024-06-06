@@ -139,7 +139,7 @@ GameObject* GameManager::GenerateEnemy() {
 
     e->TakeOverSpeed = Random::Range(15.0f, 25.0f) + minutes * 2.0f;
 
-    e->patron = patrons[Random::Range<int>(0, 5)];
+    //e->patron = patrons[Random::Range<int>(0, 5)];
 
     e->albumTime = Random::Range(6.0f, 10.0f) + minutes * 2.0f;
     e->albumCooldown = Random::Range(5.0f, 10.0f) - minutes * 2.0f;

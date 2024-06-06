@@ -2832,7 +2832,7 @@ GameObjects:
           w: 1
         width: 150
         height: 150
-        layer: 5
+        layer: 6
         fillEnabled: false
         fillType: 0
         fillSubType: 0
@@ -2879,7 +2879,7 @@ GameObjects:
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
-        layer: 5
+        layer: 6
     children:
       []
   - id: 297
@@ -2922,7 +2922,7 @@ GameObjects:
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
-        layer: 5
+        layer: 6
     children:
       []
   - id: 305
@@ -3002,7 +3002,7 @@ GameObjects:
           w: 1
         width: 150
         height: 150
-        layer: 5
+        layer: 6
         fillEnabled: false
         fillType: 0
         fillSubType: 0
@@ -3049,7 +3049,7 @@ GameObjects:
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
-        layer: 5
+        layer: 6
     children:
       []
   - id: 308
@@ -3092,7 +3092,7 @@ GameObjects:
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
-        layer: 5
+        layer: 6
     children:
       []
   - id: 309
@@ -3172,7 +3172,7 @@ GameObjects:
           w: 1
         width: 150
         height: 150
-        layer: 5
+        layer: 6
         fillEnabled: false
         fillType: 0
         fillSubType: 0
@@ -3219,7 +3219,7 @@ GameObjects:
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
-        layer: 5
+        layer: 6
     children:
       []
   - id: 312
@@ -3262,6 +3262,6 @@ GameObjects:
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
-        layer: 5
+        layer: 6
     children:
       []

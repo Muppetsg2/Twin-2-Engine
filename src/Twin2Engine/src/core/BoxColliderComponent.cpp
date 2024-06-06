@@ -53,7 +53,10 @@ void BoxColliderComponent::SetRotation(const glm::vec3& rot)
 
 void BoxColliderComponent::Initialize()
 {
-	collider->colliderComponent = this;
+	if (collider == nullptr) {
+		collider = new GameCollider(this, ColliderShape::BOX);
+	}
+
 	TransformChangeAction = [this](Transform* transform) {
 		BoxColliderData* boxData = ((BoxColliderData*)collider->shapeColliderData);
 		glm::quat q = transform->GetGlobalRotationQuat()
@@ -68,9 +71,11 @@ void BoxColliderComponent::Initialize()
 
 		collider->shapeColliderData->Position = transform->GetTransformMatrix() * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f);
 
-		if (boundingVolume != nullptr) {
-			boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
+		/*
+		if (collider->hasBounding) {
+			collider->boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
 		}
+		*/
 	};
 
 	TransformChangeAction(GetTransform());
@@ -138,8 +143,9 @@ bool BoxColliderComponent::Deserialize(const YAML::Node& node)
 {
 	if (!node["width"] || !node["length"] || !node["height"] || !node["rotation"]) return false;
 
-	if (collider == nullptr)
-		collider = new GameCollider(this, new BoxColliderData());
+	if (collider == nullptr) {
+		collider = new GameCollider(this, ColliderShape::BOX);
+	}
 		
 	if (!ColliderComponent::Deserialize(node)) return false;
 

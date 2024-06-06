@@ -23,13 +23,13 @@ vector<vector<Material*>> HexTileTextureData::DeserializationHelperMaterialNames
 	_materialNames = std::move(materialNames);
 	_materials.clear();
 
-	for (size_t i = 0; i < materialNames.size(); ++i)
+	for (size_t i = 0; i < _materialNames.size(); ++i)
 	{
 		vector<Material*> materials;
 
-		for (size_t j = 0; j < materialNames[i].size(); ++j)
+		for (size_t j = 0; j < _materialNames[i].size(); ++j)
 		{
-			materials.push_back(MaterialsManager::GetMaterial(materialNames[i][j]));
+			materials.push_back(MaterialsManager::GetMaterial(_materialNames[i][j]));
 		}
 
 		_materials.push_back(std::move(materials));

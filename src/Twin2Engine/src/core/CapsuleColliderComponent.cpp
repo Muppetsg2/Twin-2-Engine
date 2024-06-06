@@ -26,17 +26,21 @@ void CapsuleColliderComponent::SetRadius(float radius)
 
 void CapsuleColliderComponent::Initialize()
 {
-	collider->colliderComponent = this;
+	if (collider == nullptr) {
+		collider = new GameCollider(this, ColliderShape::CAPSULE);
+	}
+
 	TransformChangeAction = [this](Transform* transform) {
 		glm::mat4 TransformMatrix = transform->GetTransformMatrix();
 		CapsuleColliderData* capsuleData = (CapsuleColliderData*)collider->shapeColliderData;
 		capsuleData->EndPosition = TransformMatrix * glm::vec4(capsuleData->EndLocalPosition, 1.0f);
-		//collider->shapeColliderData->Position = collider->shapeColliderData->LocalPosition + GetGameObject()->GetTransform()->GetGlobalPosition();
 		capsuleData->Position = TransformMatrix * glm::vec4(capsuleData->LocalPosition, 1.0f);
 
-		if (boundingVolume != nullptr) {
-			boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
+		/*
+		if (collider->hasBounding) {
+			collider->boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
 		}
+		*/
 	};
 
 	TransformChangeAction(GetTransform());
@@ -93,8 +97,9 @@ bool CapsuleColliderComponent::Deserialize(const YAML::Node& node)
 {
 	if (!node["endPosition"] || !node["radius"]) return false;
 
-	if (collider == nullptr)
-		collider = new GameCollider(this, new CapsuleColliderData());
+	if (collider == nullptr) {
+		collider = new GameCollider(this, ColliderShape::CAPSULE);
+	}
 
 	if (!ColliderComponent::Deserialize(node)) return false;
 

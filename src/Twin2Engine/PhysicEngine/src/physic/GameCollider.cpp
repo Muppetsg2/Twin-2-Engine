@@ -8,6 +8,34 @@ using namespace Twin2Engine::Physic;
 
 //LastFrameCollisions
 
+GameCollider::GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, ColliderShape shapeData)
+	: colliderComponent(colliderComponent) {
+	colliderShape = shapeData;
+
+	switch (shapeData) {
+	case ColliderShape::BOX:
+		shapeColliderData = new BoxColliderData();
+		break;
+	case ColliderShape::SPHERE:
+		shapeColliderData = new SphereColliderData();
+		break;
+	case ColliderShape::CAPSULE:
+		shapeColliderData = new CapsuleColliderData();
+		break;
+	case ColliderShape::HEXAGONAL:
+		shapeColliderData = new HexagonalColliderData();
+		break;
+	default:
+		shapeColliderData = new SphereColliderData();
+		break;
+	}
+
+	/*
+	boundingVolume = new BoundingVolume(BoundingShape::SPHERE);
+	*/
+}
+
+/*
 GameCollider::GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, SphereColliderData* sphereColliderData)
 	: colliderComponent(colliderComponent) {
 	colliderShape = ColliderShape::SPHERE;
@@ -31,17 +59,31 @@ GameCollider::GameCollider(Twin2Engine::Core::ColliderComponent* colliderCompone
 	colliderShape = ColliderShape::HEXAGONAL;
 	shapeColliderData = hexagonalColliderData;
 }
+*/
 
 GameCollider::~GameCollider() {
 	LastFrameCollisions.clear();
 	colliderComponent = nullptr;
-	delete boundingVolume;
-	boundingVolume = nullptr;
+	//delete boundingVolume;
+	//boundingVolume = nullptr;
 }
 
+/*
+void GameCollider::EnableBounding() {
+	if (!hasBounding)
+		hasBounding = true;
+}
+
+void GameCollider::DisableBounding() {
+	if (hasBounding)
+		hasBounding = false;
+}
+*/
+
+/*
 Collision* GameCollider::testBoundingVolume(BoundingVolume* other) const {
 	if (other != nullptr) {
-		if (boundingVolume != nullptr) {
+		if (hasBounding) {
 			return testCollision(this->boundingVolume, other, false);
 		}
 		else {
@@ -54,45 +96,33 @@ Collision* GameCollider::testBoundingVolume(BoundingVolume* other) const {
 }
 
 Collision* GameCollider::testBoundingVolume(GameCollider* other) const {
-	if (boundingVolume != nullptr && other->boundingVolume != nullptr) {
+	if (hasBounding && other->hasBounding) {
 		return testCollision(boundingVolume, other->boundingVolume, false);
 	}
-	else if (boundingVolume == nullptr && other->boundingVolume != nullptr) {
+	else if (!hasBounding && other->hasBounding) {
 		return testCollision((Collider*)this, other->boundingVolume, false);
 	}
-	else if (boundingVolume != nullptr) {
-		return testCollision(boundingVolume, other, false);
+	else if (hasBounding && !other->hasBounding) {
+		return testCollision(boundingVolume, (Collider*)other, false);
 	}
 	else {
-		return new Collision;
+		return nullptr;
 	}
 }
+*/
 
 Collision* GameCollider::testColliders(GameCollider* collider) const {
-	return testCollision((Collider*)this, collider, !(isTrigger || collider->isTrigger));
+	return testCollision((Collider*)this, (Collider*)collider, !(isTrigger || collider->isTrigger));
 }
 
 Collision* GameCollider::collide(Collider* other) {
+	/*
 	if (other->isBoundingVolume) {
 		return testBoundingVolume((BoundingVolume*)other);
 	}
-	else if (enabled && ((GameCollider*)other)->enabled) {
+	else*/ if (enabled && ((GameCollider*)other)->enabled) {
 
-#ifdef USE_BOUNDING_VOLUMES
-		Collision* collision = nullptr;// testBoundingVolume(((GameCollider*)other)->boundingVolume);
-
-		if (boundingVolume == nullptr && ((GameCollider*)other)->boundingVolume == nullptr) {
-			collision = testColliders((GameCollider*)other);
-		}
-		else {
-			if (testBoundingVolume((GameCollider*)other) != nullptr) {
-				collision = testColliders((GameCollider*)other);
-			}
-		}
-
-#else
 		Collision* collision = testColliders((GameCollider*)other);
-#endif // USE_BOUNDING_VOLUMES
 
 		if (collision != nullptr) {
 			if (!LastFrameCollisions.contains((GameCollider*)other)) {

@@ -32,7 +32,7 @@ void GameTimer::Initialize() {
         instance = this;
     }
 
-    //SetEnable(false);
+    SetEnable(false);
 }
 
 void GameTimer::Update() {

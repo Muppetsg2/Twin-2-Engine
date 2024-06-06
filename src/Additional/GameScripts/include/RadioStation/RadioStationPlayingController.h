@@ -6,6 +6,7 @@
 
 #include <core/Component.h>
 #include <core/Time.h>
+#include <core/Input.h>
 
 #include <graphic/Texture2D.h>
 
@@ -53,7 +54,12 @@ class RadioStationPlayingController : public Twin2Engine::Core::Component
 public:
     static RadioStationPlayingController* Instance();
 
+    //Twin2Engine::Tools::EventHandler<Playable*, RadioStation*> OnEventPlayableStartsPlaying;
+    Twin2Engine::Tools::EventHandler<Player*, RadioStation*> OnEventPlayerStartedPlaying;
+    Twin2Engine::Tools::EventHandler<Player*, RadioStation*> OnEventPlayerFinishedPlaying;
+
     virtual void Initialize() override;
+    virtual void Update() override;
     virtual void OnDestroy() override;
 
 

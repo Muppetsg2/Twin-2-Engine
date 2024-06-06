@@ -7,10 +7,6 @@ void ConcertAbilityController::Initialize() {
     playable = GetGameObject()->GetComponent<Playable>();
     money = GetGameObject()->GetComponent<MoneyGainFromTiles>();
     usedMoneyRequired = moneyRequired;
-
-    //if (playable->patron->patronBonus == PatronBonus::AbilitiesCooldown) {
-    //    cooldownTime *= playable->patron->GetBonus() / 100.0f;
-    //}
 }
 
 void ConcertAbilityController::OnDestroy() {
@@ -50,7 +46,7 @@ void ConcertAbilityController::Update() {
 bool ConcertAbilityController::Use() 
 {
     SPDLOG_INFO("Trying use ConcertAbility");
-    if (canUse && money->SpendMoney(usedMoneyRequired))
+    if (canUse && money->SpendMoney(GetCost()))
     {
         SPDLOG_INFO("Using ConcertAbility");
 
@@ -63,6 +59,9 @@ bool ConcertAbilityController::Use()
 void ConcertAbilityController::StartCooldown() 
 {
     currCooldown = cooldownTime;
+    if (playable->patron->GetPatronBonus() == PatronBonus::ABILITIES_COOLDOWN) {
+        currCooldown *= playable->patron->GetBonus() / 100.0f;
+    }
 }
 
 void ConcertAbilityController::StartPerformingConcert() 
@@ -84,6 +83,9 @@ void ConcertAbilityController::StopPerformingConcert()
 
 float ConcertAbilityController::GetCost() const
 {
+    if (playable->patron->GetPatronBonus() == PatronBonus::ABILITIES_PRICE) {
+        return usedMoneyRequired * (1.0f - playable->patron->GetBonus() / 100.0f);
+    }
     return usedMoneyRequired;
 }
 

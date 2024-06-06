@@ -1,3 +1,4 @@
+#include "GameManager.h"
 #include <GameManager.h>
 #include <manager/SceneManager.h>
 #include <manager/PrefabManager.h>
@@ -33,7 +34,8 @@ void GameManager::Initialize() {
             _yearText->SetText(wstring(L"Year ").append(to_wstring(year)));
             };
 
-        GeneratePlayer();
+        _freePatronsData = _patronsData;
+        //GeneratePlayer();
     }
     else
     {
@@ -43,8 +45,9 @@ void GameManager::Initialize() {
 
 void GameManager::OnEnable() {
     SPDLOG_INFO("Creating enenmy");
-    GenerateEnemy();
-    GenerateEnemy();
+
+    //GenerateEnemy();
+    //GenerateEnemy();
 }
 
 void GameManager::Update() {
@@ -71,6 +74,8 @@ GameObject* GameManager::GeneratePlayer() {
 
     p->patron = playersPatron;
 
+    _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), playersPatron));
+
     p->GetGameObject()->GetComponent<MeshRenderer>()->SetMaterial(0ull, _carMaterials[p->colorIdx]);
 
     entities.push_back(p);
@@ -96,6 +101,9 @@ GameObject* GameManager::GenerateEnemy() {
     //e->colorIdx = chosen;
     e->GetGameObject()->GetComponent<MeshRenderer>()->SetMaterial(0ull, _carMaterials[e->colorIdx]);
 
+    unsigned chosenPatron = Random::Range<unsigned>(0u, _freePatronsData.size() - 1ull);
+    e->patron = _freePatronsData[chosenPatron];
+    _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), e->patron));
     /*float h = Random.Range(0f, 1f);
     float s = Random.Range(.7f, 1f);
     float v = 1f;
@@ -131,7 +139,7 @@ GameObject* GameManager::GenerateEnemy() {
 
     e->TakeOverSpeed = Random::Range(15.0f, 25.0f) + minutes * 2.0f;
 
-    e->patron = patrons[Random::Range<int>(0, 5)];
+    //e->patron = patrons[Random::Range<int>(0, 5)];
 
     e->albumTime = Random::Range(6.0f, 10.0f) + minutes * 2.0f;
     e->albumCooldown = Random::Range(5.0f, 10.0f) - minutes * 2.0f;
@@ -174,6 +182,18 @@ void GameManager::GameOver() {
     //UIGameOverPanelController::Instance->OpenPanel();
 }
 
+void GameManager::StartGame()
+{
+    GeneratePlayer();
+
+    for (unsigned i = 0u; i < _enemiesNumber; ++i)
+    {
+        GenerateEnemy();
+    }
+
+    GameTimer::Instance()->StartTimer();
+}
+
 YAML::Node GameManager::Serialize() const
 {
     YAML::Node node = Component::Serialize();
@@ -211,11 +231,18 @@ bool GameManager::Deserialize(const YAML::Node& node)
         prefabPlayer = PrefabManager::LoadPrefab(node["prefabPlayer"].as<string>());
     }
 
-    _carMaterials.resize(node["carMaterials"].size());
-    const size_t carMaterialsSize = node["carMaterials"].size();
-    for (size_t index = 0ull; index < carMaterialsSize; ++index)
+    size_t size = node["carMaterials"].size();
+    _carMaterials.resize(size);
+    for (size_t index = 0ull; index < size; ++index)
     {
         _carMaterials[index] = MaterialsManager::GetMaterial(node["carMaterials"][index].as<string>());
+    }
+
+    size = node["patronsData"].size();
+    _patronsData.resize(size);
+    for (size_t index = 0ull; index < size; ++index)
+    {
+        _patronsData[index] = (PatronData*)ScriptableObjectManager::Load(node["patronsData"][index].as<string>());
     }
 
     return true;

@@ -103,7 +103,7 @@ void Player::Initialize() {
     move = GetGameObject()->GetComponent<PlayerMovement>();
     move->OnFinishMoving += [this](GameObject* gameObject, HexTile* tile) { FinishMove(tile); };
     move->OnStartMoving += [this](GameObject* gameObject, HexTile* tile) { StartMove(tile); };
-    if (patron && patron->patronBonus == PatronBonus::MOVE_RANGE) {
+    if (patron && patron->GetPatronBonus() == PatronBonus::MOVE_RANGE) {
         float r = move->radius;
         int s = move->maxSteps;
         move->radius += patron->GetBonus();
@@ -307,6 +307,7 @@ void Player::FinishMove(HexTile* tile) {
 
     if (tile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::RadioStation && tile->state != TileState::OCCUPIED) {
         tile->GetGameObject()->GetComponentInChildren<RadioStation>()->Play(this);
+        CurrTile->StartTakingOver(this);
         //GameManager::instance->StartMinigame();
     }
     else {

@@ -137,7 +137,7 @@ void RadioStation::DrawEditor()
 
     if (ImGui::CollapsingHeader(name.c_str())) {
 
-        if (Component::DrawInheritedFields()) return;
+        if (DrawInheritedFields()) return;
 
         // TODO: Zrobic
     }

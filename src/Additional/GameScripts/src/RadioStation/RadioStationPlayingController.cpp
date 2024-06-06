@@ -27,6 +27,26 @@ void RadioStationPlayingController::Initialize()
     _buttonFaHandleId = _buttonFa->GetOnClickEvent().AddCallback([&]() { PlayNote(NoteType::Fa); });
 }
 
+void RadioStationPlayingController::Update()
+{
+    if (Input::IsKeyPressed(KEY::S))
+    {
+        PlayNote(NoteType::Do);
+    }
+    if (Input::IsKeyPressed(KEY::A))
+    {
+        PlayNote(NoteType::Re);
+    }
+    if (Input::IsKeyPressed(KEY::D))
+    {
+        PlayNote(NoteType::Mi);
+    }
+    if (Input::IsKeyPressed(KEY::W))
+    {
+        PlayNote(NoteType::Fa);
+    }
+}
+
 void RadioStationPlayingController::OnDestroy()
 {
     _buttonDo->GetOnClickEvent() -= _buttonDoHandleId;
@@ -43,6 +63,11 @@ void RadioStationPlayingController::Play(RadioStation* radioStation, Playable* p
         _radioStation = radioStation;
         _playable = playable;
         _currentNote = 0;
+
+        // CallingEvents
+        //OnEventPlayableStartsPlaying(playable, radioStation);
+        OnEventPlayerStartedPlaying((Player*) playable, radioStation);
+
         GenerateNotes();
         GetGameObject()->SetActive(true);
         _buttonDo->GetGameObject()->SetActive(true);
@@ -54,6 +79,10 @@ void RadioStationPlayingController::Play(RadioStation* radioStation, Playable* p
     else
     {
         // TODO: Okreœlanie wyniku dla enemy
+        
+        // CallingEvents
+        //OnEventPlayableStartsPlaying(playable, radioStation);
+
         radioStation->StartTakingOver(playable, Random::Range(0, 4) / 4.0f);
     }
 }
@@ -133,6 +162,8 @@ void RadioStationPlayingController::PlayNote(NoteType note)
         _buttonFa->GetGameObject()->SetActive(false);
 
         GameManager::instance->minigameActive = false;
+
+        OnEventPlayerFinishedPlaying((Player*)_playable, _radioStation);
     }
 }
 
@@ -151,7 +182,7 @@ YAML::Node RadioStationPlayingController::Serialize() const
     savingNotesSpritesIds.reserve(_notesSpritesIds.size());
     for (size_t index = 0ull; index < _notesSpritesIds.size(); ++index)
     {
-        savingNotesSpritesIds[index] = SceneManager::GetSpriteSaveIdx(_notesSpritesIds[index]);
+        savingNotesSpritesIds.push_back(SceneManager::GetSpriteSaveIdx(_notesSpritesIds[index]));
     }
     node["notesSpritesIds"] = savingNotesSpritesIds;
 
@@ -212,7 +243,7 @@ void RadioStationPlayingController::DrawEditor()
 
     if (ImGui::CollapsingHeader(name.c_str())) {
 
-        if (Component::DrawInheritedFields()) return;
+        if (DrawInheritedFields()) return;
 
         // TODO: Zrobic
     }

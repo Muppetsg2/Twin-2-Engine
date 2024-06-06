@@ -104,6 +104,8 @@ using namespace Generation::Generators;
 #include <RadioStation/RadioStation.h>
 #include <RadioStation/RadioStationPlayingController.h>
 
+#include <UIScripts/PatronChoicePanelController.h>
+
 using namespace GameScripts;
 
 #include <processes/Coroutine.h>
@@ -271,6 +273,9 @@ int main(int, char**)
     ADD_COMPONENT("RadioStation", RadioStation);
     ADD_COMPONENT("RadioStationPlayingController", RadioStationPlayingController);
 
+
+    ADD_COMPONENT("PatronChoicePanelController", PatronChoicePanelController);
+
 #pragma region GAME_SCRIPTS_COMPONENTS
 
     ADD_COMPONENT("PlaneGenerator", PlaneGenerator);
@@ -287,6 +292,8 @@ int main(int, char**)
     };
 
     // ADDING SCENES
+    //SceneManager::AddScene("testScene", "res/scenes/BlankScene.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/PatronChoice.scene");
     SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
     //SceneManager::AddScene("testScene", "res/scenes/MenuScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");

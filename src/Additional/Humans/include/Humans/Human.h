@@ -12,22 +12,23 @@
 namespace Humans
 {
 	class Human : public Twin2Engine::Core::Component
-	{
+    {
+
+        size_t finishedMovingEventHandlerId;
 
         float achievingDestinationAccuracity = 0.2f;
 
-
         HumanMovement* _movement;
+
         bool _work = false;
 
         Twin2Engine::Core::GameObject* _targetCity = nullptr;
 
+        void FinishedMoving(HumanMovement* movement);
     public:
-        // Start is called before the first frame update
-        void Initialize();
+        virtual void Initialize() override;
+        virtual void OnDestroy() override;
 
-        // Update is called once per frame
-        void Update();
 
         void StartWorking();
         void StopWorking();

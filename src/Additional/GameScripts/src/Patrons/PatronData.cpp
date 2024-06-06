@@ -8,15 +8,29 @@ using namespace std;
 SCRIPTABLE_OBJECT_SOURCE_CODE_NN(PatronData, "PatronData")
 
 SO_SERIALIZATION_BEGIN(PatronData, ScriptableObject)
-//SO_SERIALIZE_FIELD_F(prefabCity, PrefabManager::GetPrefabPath)
-//SO_SERIALIZE_FIELD(byRegions)
-//SO_SERIALIZE_FIELD(density)
+SO_SERIALIZE_FIELD(patronName)
+SO_SERIALIZE_FIELD_F(patronMusic, (uint16_t))
+SO_SERIALIZE_FIELD(patronDescription)
+SO_SERIALIZE_FIELD_F(patronBonus, (uint16_t))
+SO_SERIALIZE_FIELD(moneyMultiplier)
+SO_SERIALIZE_FIELD(controlMultiplier)
+SO_SERIALIZE_FIELD(additionalMoveRange)
+SO_SERIALIZE_FIELD(additionalAbilitiesRange)
+SO_SERIALIZE_FIELD(abilitiesCooldownPercent)
+SO_SERIALIZE_FIELD(abilitiesPriceDiscount)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(PatronData, ScriptableObject)
-//SO_DESERIALIZE_FIELD_F_T(prefabCity, PrefabManager::LoadPrefab, string)
-//SO_DESERIALIZE_FIELD(byRegions)
-//SO_DESERIALIZE_FIELD(density)
+SO_DESERIALIZE_FIELD(patronName)
+SO_DESERIALIZE_FIELD_F_T(patronMusic, (PatronMusic), uint16_t)
+SO_DESERIALIZE_FIELD(patronDescription)
+SO_DESERIALIZE_FIELD_F_T(patronBonus, (PatronBonus), uint16_t)
+SO_DESERIALIZE_FIELD(moneyMultiplier)
+SO_DESERIALIZE_FIELD(controlMultiplier)
+SO_DESERIALIZE_FIELD(additionalMoveRange)
+SO_DESERIALIZE_FIELD(additionalAbilitiesRange)
+SO_DESERIALIZE_FIELD(abilitiesCooldownPercent)
+SO_DESERIALIZE_FIELD(abilitiesPriceDiscount)
 SO_DESERIALIZATION_END()
 
 
@@ -69,6 +83,36 @@ std::string PatronData::GetBonusAsString() const {
     default:
         return "";
     }
+}
+
+float PatronData::GetMoneyMultiplier() const
+{
+    return moneyMultiplier;
+}
+
+float PatronData::GetControlMultiplier() const
+{
+    return controlMultiplier;
+}
+
+float PatronData::GetAdditionalMoveRange() const
+{
+    return additionalMoveRange;
+}
+
+float PatronData::GetAdditionalAbilitiesRange() const
+{
+    return additionalAbilitiesRange;
+}
+
+float PatronData::GetAbilitiesCooldownPercent() const
+{
+    return abilitiesCooldownPercent;
+}
+
+float PatronData::GetAbilitiesPriceDiscount() const
+{
+    return abilitiesPriceDiscount;
 }
 
 // Setters

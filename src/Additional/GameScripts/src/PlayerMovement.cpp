@@ -205,7 +205,7 @@ bool PlayerMovement::InCircle(glm::vec3 point) {
 }
 
 void PlayerMovement::SetDestination(HexTile* dest) {
-    glm::vec3 destPos = dest->GetTransform()->GetGlobalPosition() + glm::vec3(0.0f, 0.5f, 0.0f);
+    glm::vec3 destPos = dest->GetTransform()->GetGlobalPosition() + glm::vec3(0.0f, _heightOverSurface, 0.0f);
     if (!GameManager::instance->gameStarted)
     {
         GetTransform()->SetGlobalPosition(destPos);
@@ -213,6 +213,10 @@ void PlayerMovement::SetDestination(HexTile* dest) {
         destination = destPos;
         GameManager::instance->gameStarted = true;
         OnStartMoving.Invoke(GetGameObject(), dest);
+        //Player* player = GetGameObject()->GetComponent<Player>();
+        //player->CurrTile = dest;
+        //dest->StartTakingOver(player);
+        OnFinishMoving(GetGameObject(), dest);
     }
     else if (InCircle(destPos))
     {

@@ -1,0 +1,73 @@
+Textures: ~
+Sprites: ~
+Fonts:
+  - id: 0
+    path: res/fonts/Caveat-Regular.ttf
+Audio:
+  - id: 0
+    path: res/music/acoustic-guitar.mp3
+Materials: ~
+Models: 
+  - id: 0
+    path: "{Plane}"
+Prefabs: ~
+ScriptableObjects: ~
+GameObjects:
+  - id: 1
+    name: Camera
+    isStatic: false
+    isActive: true
+    transform:
+      id: 0
+      enabled: true
+      position:
+        x: 0
+        y: 14.5
+        z: 11
+      scale:
+        x: 0
+        y: 0
+        z: 0
+      rotation:
+        x: -55.5
+        y: -88.6
+        z: 0
+    components:
+      - id: 1
+        enabled: true
+        type: Camera
+        fov: 45
+        nearPlane: 0.100000001
+        farPlane: 1000
+        cameraFilter: 0
+        cameraType: 1
+        cameraMode: 0
+        samples: 10
+        renderRes: 0
+        gamma: 1
+        brightness: 0
+        contrast: 1
+        worldUp:
+          x: 0
+          y: 1
+          z: 0
+        isMain: true
+        isFrustum: true
+        isSSAO: true
+      - id: 2
+        enabled: true
+        type: Audio
+        audio: 0
+        loop: true
+        volume: 1
+      - id: 3
+        enabled: true
+        type: MovementController
+        DragControl: true
+        DragScale: 0.01
+        WsadControl: true
+        WsadVelocity: 4.5
+        BorderControl: false
+        BorderVelocity: 3.0
+    children:
+      []

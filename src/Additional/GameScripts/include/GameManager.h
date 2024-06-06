@@ -33,10 +33,14 @@ private:
     std::vector<int> freeColors{ 0, 1, 2, 3, 4, 5, 6 };
     std::vector<Twin2Engine::Graphic::Material*> _carMaterials;
 
+    std::vector<PatronData*> _patronsData;
+    std::vector<PatronData*> _freePatronsData;
+
     Twin2Engine::UI::Text* _dayText;
     Twin2Engine::UI::Text* _monthText;
     Twin2Engine::UI::Text* _yearText;
 
+    unsigned int _enemiesNumber = 2u;
 public:
     static GameManager* instance;
 
@@ -83,6 +87,8 @@ public:
     void StartMinigame();
     void EndMinigame();
     void GameOver();
+
+    void StartGame();
 
     virtual YAML::Node Serialize() const override;
     virtual bool Deserialize(const YAML::Node& node) override;

@@ -34,17 +34,13 @@ void MoneyGainFromTiles::UpdateMoney(bool player) {
 
     float patronMul = 1.0f;
 
-    //if (playable->patron->patronBonus == PatronBonus::MONEY_GAIN) {
-    //    patronMul = playable->patron->GetBonus();
-    //}
+    if (playable->patron && playable->patron->GetPatronBonus() == PatronBonus::MONEY_GAIN) {
+        patronMul = playable->patron->GetBonus();
+    }
 
     for (auto* tile : playable->OwnTiles) {
         money += GainMoneyFromTile(tile) * patronMul;
     }
-
-    //if (player) {
-    //    //MoneyPanelController::Instance().SetMoney(money);
-    //}
 }
 
 bool MoneyGainFromTiles::SpendMoney(float amount) {
@@ -53,7 +49,6 @@ bool MoneyGainFromTiles::SpendMoney(float amount) {
         return true;
     }
 
-    //MoneyPanelController::Instance().SetMoney(money);
     return false;
 }
 

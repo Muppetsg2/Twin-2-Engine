@@ -25,7 +25,8 @@ HexTile* InitState::ChooseTile(Enemy* enemy) {
 	std::srand(std::time(NULL));
 	size_t idx = std::rand() % enemy->_tiles.size();
 	HexTile* tile = enemy->_tiles[idx];
-	while (tile->occupyingEntity != nullptr || tile->GetMapHexTile()->type != MapHexTile::HexTileType::RadioStation) {
+	//while (tile->occupyingEntity != nullptr || tile->GetMapHexTile()->type != MapHexTile::HexTileType::RadioStation) {
+	while (tile->occupyingEntity != nullptr || tile->GetMapHexTile()->type == MapHexTile::HexTileType::Mountain) {
 		idx = std::rand() % enemy->_tiles.size();
 		tile = enemy->_tiles[idx];
 	}

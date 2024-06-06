@@ -19,6 +19,7 @@ using namespace Tools;
 using namespace glm;
 using namespace std;
 
+// TODO: Jest jakiœ b³¹d przy d³ugim paru linijkowym tekscie (OVERFLOW, CENTER, BOTTOM)
 void Text::UpdateTextMesh()
 {
 	Font* font = FontManager::GetFont(_fontId);

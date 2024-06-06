@@ -466,7 +466,9 @@ void input()
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::R)) {
         // Reload Scene
-        SceneManager::LoadScene(SceneManager::GetCurrentSceneName());
+        std::string name = SceneManager::GetCurrentSceneName();
+        SceneManager::UnloadCurrent();
+        SceneManager::LoadScene(name);
     }
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::S)) {
@@ -620,7 +622,9 @@ void render_imgui()
                 }
 
                 if (ImGui::MenuItem("Reload Scene", "Ctrl+R")) {
-                    SceneManager::LoadScene(SceneManager::GetCurrentSceneName());
+                    std::string name = SceneManager::GetCurrentSceneName();
+                    SceneManager::UnloadCurrent();
+                    SceneManager::LoadScene(name);
                 }
 
                 if (ImGui::MenuItem("Save Scene##File", "Ctrl+S"))
@@ -730,6 +734,7 @@ void render_imgui()
                     }
 
                     if (clicked) {
+                        SceneManager::UnloadCurrent();
                         SceneManager::LoadScene(choosed);
                     }
 
@@ -750,6 +755,7 @@ void render_imgui()
             std::string path = std::filesystem::relative(_fileDialogSceneOpenInfo.resultPath).string();
             std::string name = std::filesystem::path(path).stem().string();
             SceneManager::AddScene(name, path);
+            SceneManager::UnloadCurrent();
             SceneManager::LoadScene(name);
         }
 
@@ -760,6 +766,7 @@ void render_imgui()
             std::string name = std::filesystem::path(path).stem().string();
             SceneManager::SaveScene(path);
             SceneManager::AddScene(name, path);
+            SceneManager::UnloadCurrent();
             SceneManager::LoadScene(name);
         }
 
@@ -776,123 +783,6 @@ void render_imgui()
         window->DrawEditor();
 
         ImGui::Separator();
-
-        //Editor::Common::ScriptableObjectEditorManager::Draw();
-
-        /*
-
-#pragma region IMGUI_LIGHTING_SETUP
-        if (ImGui::CollapsingHeader("Lighting Setup")) {
-            static uint32_t shadingType = 0;
-            if (ImGui::BeginCombo("Shading Type", "Lambert + Blinn-Phong Shading")) {
-                if (ImGui::Selectable("Lambert + Blinn-Phong Shading", shadingType == 0)) {
-                    shadingType = 0;
-                    LightingController::Instance()->SetShadingType(0);
-                }
-                if (ImGui::Selectable("Toon/Cel Shading", shadingType == 1)) {
-                    shadingType = 1;
-                    LightingController::Instance()->SetShadingType(1);
-                }
-                if (ImGui::Selectable("Gooch Shading", shadingType == 2)) {
-                    shadingType = 2;
-                    LightingController::Instance()->SetShadingType(2);
-                }
-                ImGui::EndCombo();
-            }
-            // DEFAULT MATERIAL SETTINGS
-            Material* defaultMat = MaterialsManager::GetMaterial("Default");
-
-            static bool hasDiffuseTexture = defaultMat->GetMaterialParameters()->Get<bool>("has_diffuse_texture");
-            if (ImGui::Checkbox("Has Diffuse Texture", &hasDiffuseTexture)) {
-                if (hasDiffuseTexture != defaultMat->GetMaterialParameters()->Get<bool>("has_diffuse_texture")) {
-                    defaultMat->GetMaterialParameters()->Set("has_diffuse_texture", hasDiffuseTexture);
-                }
-            }
-
-            static bool hasSpecularTexture = defaultMat->GetMaterialParameters()->Get<bool>("has_specular_texture");
-            if (ImGui::Checkbox("Has Specular Texture", &hasSpecularTexture)) {
-                if (hasSpecularTexture != defaultMat->GetMaterialParameters()->Get<bool>("has_specular_texture")) {
-                    defaultMat->GetMaterialParameters()->Set("has_specular_texture", hasSpecularTexture);
-                }
-            }
-
-            static vec3 color = defaultMat->GetMaterialParameters()->Get<vec3>("color");
-            if (ImGui::ColorEdit3("Color", (float*)&color)) {
-                if (color != defaultMat->GetMaterialParameters()->Get<vec3>("color")) {
-                    defaultMat->GetMaterialParameters()->Set("color", color);
-                }
-            }
-
-            static float shininess = defaultMat->GetMaterialParameters()->Get<float>("shininess");
-            if (ImGui::InputFloat("Shininess", &shininess)) {
-                if (shininess != defaultMat->GetMaterialParameters()->Get<float>("shininess")) {
-                    defaultMat->GetMaterialParameters()->Set("shininess", shininess);
-                }
-            }
-
-            // TOON SHADING VARIABLES
-            if (shadingType == 1) {
-                static uint32_t diffuseToonBorders = defaultMat->GetMaterialParameters()->Get<uint32_t>("diffuse_toon_borders");
-                if (ImGui::InputInt("Diffuse Borders", (int*)&diffuseToonBorders)) {
-                    if (diffuseToonBorders != defaultMat->GetMaterialParameters()->Get<uint32_t>("diffuse_toon_borders")) {
-                        defaultMat->GetMaterialParameters()->Set("diffuse_toon_borders", diffuseToonBorders);
-                    }
-                }
-
-                static uint32_t specularToonBorders = defaultMat->GetMaterialParameters()->Get<uint32_t>("specular_toon_borders");
-                if (ImGui::InputInt("Specular Borders", (int*)&specularToonBorders)) {
-                    if (specularToonBorders != defaultMat->GetMaterialParameters()->Get<uint32_t>("specular_toon_borders")) {
-                        defaultMat->GetMaterialParameters()->Set("specular_toon_borders", specularToonBorders);
-                    }
-                }
-
-                static vec2 highlightTranslate = defaultMat->GetMaterialParameters()->Get<vec2>("highlight_translate");
-                if (ImGui::InputFloat2("Highlight Translate", (float*)&highlightTranslate)) {
-                    if (highlightTranslate != defaultMat->GetMaterialParameters()->Get<vec2>("highlight_translate")) {
-                        defaultMat->GetMaterialParameters()->Set("highlight_translate", highlightTranslate);
-                    }
-                }
-
-                static vec2 highlightRotation = defaultMat->GetMaterialParameters()->Get<vec2>("highlight_rotation");
-                if (ImGui::InputFloat2("Highlight Rotation", (float*)&highlightRotation)) {
-                    if (highlightRotation != defaultMat->GetMaterialParameters()->Get<vec2>("highlight_rotation")) {
-                        defaultMat->GetMaterialParameters()->Set("highlight_rotation", highlightRotation);
-                    }
-                }
-
-                static vec2 highlightScale = defaultMat->GetMaterialParameters()->Get<vec2>("highlight_scale");
-                if (ImGui::InputFloat2("Highlight Scale", (float*)&highlightScale)) {
-                    if (highlightScale != defaultMat->GetMaterialParameters()->Get<vec2>("highlight_scale")) {
-                        defaultMat->GetMaterialParameters()->Set("highlight_scale", highlightScale);
-                    }
-                }
-
-                static vec2 highlightSplit = defaultMat->GetMaterialParameters()->Get<vec2>("highlight_split");
-                if (ImGui::InputFloat2("Highlight Split", (float*)&highlightSplit)) {
-                    if (highlightSplit != defaultMat->GetMaterialParameters()->Get<vec2>("highlight_split")) {
-                        defaultMat->GetMaterialParameters()->Set("highlight_split", highlightSplit);
-                    }
-                }
-
-                static int highlightSquareN = defaultMat->GetMaterialParameters()->Get<int>("highlight_square_n");
-                if (ImGui::InputInt("Highlight Square N", &highlightSquareN)) {
-                    if (highlightSquareN != defaultMat->GetMaterialParameters()->Get<int>("highlight_square_n")) {
-                        defaultMat->GetMaterialParameters()->Set("highlight_square_n", highlightSquareN);
-                    }
-                }
-
-                static float highlightSquareX = defaultMat->GetMaterialParameters()->Get<float>("highlight_square_x");
-                if (ImGui::InputFloat("Highlight Square X", &highlightSquareX)) {
-                    if (highlightSquareX != defaultMat->GetMaterialParameters()->Get<float>("highlight_square_x")) {
-                        defaultMat->GetMaterialParameters()->Set("highlight_square_x", highlightSquareX);
-                    }
-                }
-            }
-        }
-#pragma endregion
-
-        ImGui::Separator();
-        */
 
 #pragma region MATERIAL_CREATOR
 

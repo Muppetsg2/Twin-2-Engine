@@ -94,7 +94,7 @@ InstantiatingMesh::InstantiatingMesh(std::vector<Vertex>& vertices, std::vector<
         }
 
         //SPDLOG_INFO("BV has been created! R: {}", radius);
-        sphericalBV = new Physic::BoundingVolume(new Physic::SphereColliderData);
+        sphericalBV = new Physic::BoundingVolume(Physic::BoundingShape::SPHERE);
         ((Physic::SphereColliderData*)sphericalBV->shapeColliderData)->LocalPosition = center;
         ((Physic::SphereColliderData*)sphericalBV->shapeColliderData)->Radius = radius;
     }

@@ -63,6 +63,8 @@ void ScriptableObjectManager::Unload(size_t id)
 		return;
 	}
 
+	_scriptableObjects[id]->Clear();
+
 	delete _scriptableObjects[id];
 
 	_scriptableObjects.erase(id);
@@ -115,6 +117,7 @@ void ScriptableObjectManager::UnloadAll()
 {
 	for (auto& pair : _scriptableObjects)
 	{
+		pair.second->Clear();
 		delete pair.second;
 	}
 	_scriptableObjects.clear();

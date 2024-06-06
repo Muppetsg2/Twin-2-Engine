@@ -211,6 +211,7 @@ bool ColliderComponent::DrawInheritedFields()
 	ImGui::Checkbox(string("Trigger##").append(id).c_str(), &collider->isTrigger);
 	ImGui::Checkbox(string("Static##").append(id).c_str(), &collider->isStatic);
 
+	/*
 	bool v = collider->boundingVolume != nullptr;
 	ImGui::Checkbox(string("Bounding Volume##").append(id).c_str(), &v);
 	if (v != (collider->boundingVolume != nullptr)) {
@@ -220,6 +221,7 @@ bool ColliderComponent::DrawInheritedFields()
 	if (v) {
 		ImGui::DragFloat(string("Bounding Volume Radius##").append(id).c_str(), &((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius, 0.1f, 0.f, FLT_MAX);
 	}
+	*/
 
 	return false;
 }
@@ -264,27 +266,23 @@ void ColliderComponent::SetLayersFilter(LayerCollisionFilter& layersFilter)
 
 void ColliderComponent::Initialize()
 {
-	if (boundingVolume == nullptr) {
-		boundingVolume = new BoundingVolume(new SphereColliderData());
+	if (collider == nullptr) {
+		collider = new GameCollider(this, ColliderShape::SPHERE);
 	}
-	collider->colliderComponent = this;
+
 	_onCollisionEnterId = collider->OnCollisionEnter += [](Collision* collision) -> void { OnCollisionEnter(collision); };
 }
 
 void ColliderComponent::Update()
 {
 	if (dirtyFlag) {
-		//auto Pos = GetTransform()->GetGlobalPosition();
-		//SPDLOG_INFO("{}.  Pos: \t\t{}\t{}\t{}", colliderId, Pos.x, Pos.y, Pos.z);
-		//SPDLOG_INFO("{}.  ColPos: \t{}\t{}\t{}\t\t\t\tLocPos: \t{}\t{}\t{}", colliderId, collider->shapeColliderData->Position.x, collider->shapeColliderData->Position.y, collider->shapeColliderData->Position.z, collider->shapeColliderData->LocalPosition.x, collider->shapeColliderData->LocalPosition.y, collider->shapeColliderData->LocalPosition.z);
-		//auto TM = GetTransform()->GetTransformMatrix();
-		//auto v4 = GetTransform()->GetTransformMatrix() * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f);
 		collider->shapeColliderData->Position = glm::vec3(GetTransform()->GetTransformMatrix() * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f));
-		//SPDLOG_INFO("{}.  NewPos: \t{}\t{}\t{}\t\t\t\tLocPos: \t{}\t{}\t{}", colliderId, collider->shapeColliderData->Position.x, collider->shapeColliderData->Position.y, collider->shapeColliderData->Position.z, collider->shapeColliderData->LocalPosition.x, collider->shapeColliderData->LocalPosition.y, collider->shapeColliderData->LocalPosition.z);
 
-		if (boundingVolume != nullptr) {
-			boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
+		/*
+		if (collider->hasBounding) {
+			collider->boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
 		}
+		*/
 
 		dirtyFlag = false;
 	}
@@ -305,24 +303,31 @@ void ColliderComponent::OnDestroy()
 	collider->OnCollisionEnter -= _onCollisionEnterId;
 	delete collider;
 	collider = nullptr;
+	/*
 	delete boundingVolume;
 	boundingVolume = nullptr;
+	*/
 }
 
+/*
 void ColliderComponent::EnableBoundingVolume(bool v)
 {
-	if (v) {
-		collider->boundingVolume = boundingVolume;
-	}
-	else {
-		collider->boundingVolume = nullptr;
+	if (v != collider->hasBounding) {
+		if (v) {
+			collider->EnableBounding();
+			collider->boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
+		}
+		else {
+			collider->DisableBounding();
+		}
 	}
 }
 
 void ColliderComponent::SetBoundingVolumeRadius(float radius)
 {
-	((SphereColliderData*)(boundingVolume->shapeColliderData))->Radius = radius;
+	((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius = radius;
 }
+*/
 
 void ColliderComponent::SetLocalPosition(float x, float y, float z)
 {
@@ -365,9 +370,11 @@ YAML::Node ColliderComponent::Serialize() const
 		node["static"] = collider->isStatic;
 		node["layer"] = collider->layer;
 		node["layersFilter"] = collider->layersFilter;
+		/*
 		if (collider->boundingVolume != nullptr) {
 			node["boundingVolumeRadius"] = ((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius;
 		}
+		*/
 
 		if (collider->shapeColliderData != nullptr) {
 			node["position"] = collider->shapeColliderData->LocalPosition;
@@ -390,20 +397,27 @@ YAML::Node ColliderComponent::Serialize() const
 bool ColliderComponent::Deserialize(const YAML::Node& node)
 {
 	if (!node["colliderId"] || !node["trigger"] || !node["static"] || !node["layer"] || 
-		!node["layersFilter"] ||
-		!node["position"] || !Component::Deserialize(node)) return false;
+		!node["layersFilter"] || !node["position"] || !Component::Deserialize(node)) return false;
 
 	colliderId = node["colliderId"].as<size_t>();
+
+	if (collider == nullptr) {
+		collider = new GameCollider(this, ColliderShape::SPHERE);
+	}
+
 	collider->isTrigger = node["trigger"].as<bool>();
 	collider->isStatic = node["static"].as<bool>();
 	collider->layer = node["layer"].as<Layer>();
 	collider->layersFilter = node["layersFilter"].as<LayerCollisionFilter>();
+	/*
 	if (node["boundingVolumeRadius"]) {
-		boundingVolume = new BoundingVolume(new SphereColliderData());
-		collider->boundingVolume = boundingVolume;
-		((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius = node["boundingVolumeRadius"].as<float>();
+		((SphereColliderData*)collider->boundingVolume->shapeColliderData)->Radius = node["boundingVolumeRadius"].as<float>();
+		EnableBoundingVolume(true);
+	}
+	else {
 		EnableBoundingVolume(false);
 	}
+	*/
 	collider->shapeColliderData->LocalPosition = node["position"].as<glm::vec3>();
 
 	return true;

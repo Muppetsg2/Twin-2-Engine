@@ -1,5 +1,4 @@
-#ifndef _GAMECOLLIDER_H_
-#define _GAMECOLLIDER_H_
+#pragma once
 
 #include <physic/Collider.h>
 #include <physic/BoundingVolume.h>
@@ -25,6 +24,7 @@ namespace Twin2Engine::Physic {
 		bool enabled = false;
 		bool isTrigger = false;
 		bool isStatic = false;
+		//bool hasBounding = false;
 
 		Tools::EventHandler<Collision*> OnTriggerEnter;
 		Tools::EventHandler<GameCollider*> OnTriggerExit;
@@ -33,17 +33,25 @@ namespace Twin2Engine::Physic {
 
 		Layer layer = Layer::DEFAULT;
 		LayerCollisionFilter& layersFilter = GLOBAL_LAYERS_FILTERS[int(layer)];
-		BoundingVolume* boundingVolume = nullptr;
+		//BoundingVolume* boundingVolume = nullptr;
 		Twin2Engine::Core::ColliderComponent* colliderComponent = nullptr;
 
+		GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, ColliderShape shapeData);
+		/*
 		GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, SphereColliderData* sphereColliderData);
 		GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, BoxColliderData* boxColliderData);
 		GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, CapsuleColliderData* CapsuleColliderData);
 		GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, HexagonalColliderData* hexagonalColliderData);
+		*/
 		virtual ~GameCollider();
 
-		Collision* testBoundingVolume(BoundingVolume* other) const;// = 0;
-		Collision* testBoundingVolume(GameCollider* other) const;// = 0;
+		/*
+		void EnableBounding();
+		void DisableBounding();
+		*/
+
+		//Collision* testBoundingVolume(BoundingVolume* other) const;// = 0;
+		//Collision* testBoundingVolume(GameCollider* other) const;// = 0;
 		Collision* testColliders(GameCollider* collider) const;// = 0;
 
 		Collision* collide(Collider* other) override;
@@ -51,5 +59,3 @@ namespace Twin2Engine::Physic {
 		bool rayCollision(Ray& ray, RaycastHit& raycastHit);
 	};
 }
-
-#endif // !_GAMECOLLIDER_H_

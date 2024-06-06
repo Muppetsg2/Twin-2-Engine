@@ -88,6 +88,7 @@ void MeshRenderer::OnModelDataDestroyed()
 	_model = InstantiatingModel();
 }
 
+#if _DEBUG
 bool MeshRenderer::DrawInheritedFields()
 {
 	std::string id = std::string(std::to_string(this->GetId()));
@@ -210,6 +211,7 @@ bool MeshRenderer::DrawInheritedFields()
 
 	return false;
 }
+#endif
 
 void MeshRenderer::OnGameObjectStaticChanged(GameObject* gameObject)
 {

@@ -3,6 +3,33 @@
 using namespace Twin2Engine::Physic;
 using namespace Twin2Engine::Graphic;
 
+BoundingVolume::BoundingVolume(BoundingShape boundingData) {
+
+	isBoundingVolume = true;
+	switch (boundingData) {
+	case BoundingShape::BOX: {
+		colliderShape = ColliderShape::BOX;
+		shapeColliderData = new BoxColliderData();
+		break;
+	}
+	case BoundingShape::SPHERE: {
+		colliderShape = ColliderShape::SPHERE;
+		shapeColliderData = new SphereColliderData();
+		break;
+	}
+	case BoundingShape::CAPSULE: {
+		colliderShape = ColliderShape::CAPSULE;
+		shapeColliderData = new CapsuleColliderData();
+		break;
+	}
+	default:
+		colliderShape = ColliderShape::SPHERE;
+		shapeColliderData = new SphereColliderData();
+		break;
+	}
+}
+
+/*
 BoundingVolume::BoundingVolume(SphereColliderData* sphereColliderData) {
 	colliderShape = ColliderShape::SPHERE;
 	shapeColliderData = sphereColliderData;
@@ -20,6 +47,7 @@ BoundingVolume::BoundingVolume(CapsuleColliderData* capsuleColliderData) {
 	shapeColliderData = capsuleColliderData;
 	isBoundingVolume = true;
 }
+*/
 
 BoundingVolume::~BoundingVolume() {
 	delete shapeColliderData;

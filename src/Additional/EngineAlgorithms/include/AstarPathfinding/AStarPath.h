@@ -1,5 +1,4 @@
-#ifndef _ASTAR_PATH_H_
-#define	_ASTAR_PATH_H_
+#pragma once
 
 namespace AStar
 {
@@ -28,6 +27,3 @@ namespace AStar
 		AStarPath& operator=(const AStarPath& other);
 	};
 }
-
-
-#endif // !_ASTAR_PATH_H_

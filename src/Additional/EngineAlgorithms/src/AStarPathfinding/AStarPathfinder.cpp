@@ -328,7 +328,7 @@ void AStarPathfinder::FindingPath(size_t threadId,
 	_endedThreadsMutex.unlock();
 }
 
-AStarPathfindingInfo&& AStarPathfinder::FindPath(const glm::vec3& beginPosition,
+AStarPathfindingInfo AStarPathfinder::FindPath(const glm::vec3& beginPosition,
 							   const glm::vec3& endPosition,
 							   unsigned int maxPathNodesNumber,
 							   Twin2Engine::Tools::Action<const AStarPath&> success,

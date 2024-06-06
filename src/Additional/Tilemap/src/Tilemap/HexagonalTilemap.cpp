@@ -332,7 +332,7 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::Prefa
 
 			//for (const auto& dir : directions)
 			//for (const auto& dir : directions)
-			for (int i = 0; i < 6; i++)
+			for (int i = 0; i < 6; ++i)
 			{
 				glm::ivec2 neighborPos = currentPos + directions[i];
 

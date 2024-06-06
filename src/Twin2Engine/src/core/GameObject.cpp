@@ -126,7 +126,7 @@ void GameObject::CloneTo(GameObject* cloned) const
 		cloned->components.push_back(clonedComponent);
 	}
 
-	for (int index = 0; index < _transform->GetChildCount(); index++)
+	for (int index = 0; index < _transform->GetChildCount(); ++index)
 	{
 		//cloned->_transform->AddChild(Instantiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform)->GetTransform());
 		Instantiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform);
@@ -179,7 +179,7 @@ void GameObject::SetActive(bool active)
 		_activeSelf = active;
 
 		//SetActiveInHierarchy(active);
-		for (int index = 0; index < _transform->GetChildCount(); index++)
+		for (int index = 0; index < _transform->GetChildCount(); ++index)
 		{
 			_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(_activeSelf);
 		}
@@ -195,7 +195,7 @@ void GameObject::SetActiveInHierarchy(bool activeInHierarchy)
 		_activeInHierarchy = activeInHierarchy; //zmiana stanu
 		if (_activeSelf) // sprawdzenie w�asnego stanu, je�li ustawiony na false to znaczy, �e ten stan dyktuje warunki aktywno�ci wszystkich podrz�dnych obiekt�w
 		{
-			for (int index = 0; index < _transform->GetChildCount(); index++)
+			for (int index = 0; index < _transform->GetChildCount(); ++index)
 			{
 				_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(activeInHierarchy);
 			}

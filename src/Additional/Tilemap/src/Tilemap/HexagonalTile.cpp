@@ -105,7 +105,7 @@ void HexagonalTile::GetAdjacentTiles(HexagonalTile** out_AdjacentTiles) const
 {
 	const glm::ivec2* directions = (_position.y % 2) ? adjacentDirectionsOddY : adjacentDirectionsEvenY;
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 6; ++i)
 	{
 		out_AdjacentTiles[i] = _tilemap->GetTile(_position + directions[i]);
 	}
@@ -115,7 +115,7 @@ void HexagonalTile::GetAdjacentGameObjects(GameObject** out_adjacentGameObjects)
 {
 	const glm::ivec2* directions = (_position.y % 2) ? adjacentDirectionsOddY : adjacentDirectionsEvenY;
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 6; ++i)
 	{
 		HexagonalTile* tile = _tilemap->GetTile(_position + directions[i]);
 

@@ -58,9 +58,9 @@ void RadioStation::StartTakingOver(Playable* playable, float score)
     _takingOverTimer = _takingOverTime;
     _takenPlayable = playable;
 
-    //if (patron->patronBonus == PatronBonus::ABILITIES_RANGE) {
-    //    usedRadius += patron->GetBonus();
-    //}
+    if (playable->patron->GetPatronBonus() == PatronBonus::ABILITIES_RANGE) {
+        usedRadius += playable->patron->GetBonus();
+    }
 
     vector<ColliderComponent*> colliders;
     CollisionManager::Instance()->OverlapSphere(GetGameObject()->GetTransform()->GetGlobalPosition(), usedRadius, colliders);

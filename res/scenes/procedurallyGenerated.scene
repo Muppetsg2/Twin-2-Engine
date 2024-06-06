@@ -2736,6 +2736,10 @@ GameObjects:
         width: 1920
         height: 1080
         layer: 4
+        fillEnabled: false
+        fillType: 0
+        fillSubType: 0
+        fillProgress: 1
       - id: 1354
         enabled: true
         type: PatronChoicePanelController
@@ -2783,6 +2787,10 @@ GameObjects:
         width: 200
         height: 300
         layer: 5
+        fillEnabled: false
+        fillType: 0
+        fillSubType: 0
+        fillProgress: 1
       - id: 1357
         enabled: true
         type: Button
@@ -2825,6 +2833,10 @@ GameObjects:
         width: 150
         height: 150
         layer: 5
+        fillEnabled: false
+        fillType: 0
+        fillSubType: 0
+        fillProgress: 1
     children:
       []
   - id: 304
@@ -2945,6 +2957,10 @@ GameObjects:
         width: 200
         height: 300
         layer: 5
+        fillEnabled: false
+        fillType: 0
+        fillSubType: 0
+        fillProgress: 1
       - id: 1378
         enabled: true
         type: Button
@@ -2987,6 +3003,10 @@ GameObjects:
         width: 150
         height: 150
         layer: 5
+        fillEnabled: false
+        fillType: 0
+        fillSubType: 0
+        fillProgress: 1
     children:
       []
   - id: 307
@@ -3107,6 +3127,10 @@ GameObjects:
         width: 200
         height: 300
         layer: 5
+        fillEnabled: false
+        fillType: 0
+        fillSubType: 0
+        fillProgress: 1
       - id: 1387
         enabled: true
         type: Button
@@ -3149,6 +3173,10 @@ GameObjects:
         width: 150
         height: 150
         layer: 5
+        fillEnabled: false
+        fillType: 0
+        fillSubType: 0
+        fillProgress: 1
     children:
       []
   - id: 311

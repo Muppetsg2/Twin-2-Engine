@@ -13,7 +13,7 @@ using namespace Twin2Engine::Physic;
 void Playable::Initialize()
 {
     _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
-    //if (patron->patronBonus == PatronBonus::ABILITIES_COOLDOWN) {
+    //if (patron->GetPatronBonus() == PatronBonus::ABILITIES_COOLDOWN) {
     //    albumCooldown *= patron->GetBonus() / 100.0f;
     //    fansCooldown *= patron->GetBonus() / 100.0f;
     //}
@@ -34,6 +34,11 @@ void Playable::UpdatePrices() {
     if (!OwnTiles.empty()) {
         fansRequiredMoney = moneyFunction->GetValue(OwnTiles.size() - 1, fansStartMoney);
         albumRequiredMoney = moneyFunction->GetValue(OwnTiles.size() - 1, albumStartMoney);
+
+        if (patron->GetPatronBonus() == PatronBonus::ABILITIES_PRICE) {
+            albumRequiredMoney *= (1.0f - patron->GetBonus() / 100.0f);
+            albumRequiredMoney *= (1.0f - patron->GetBonus() / 100.0f);
+        }
     }
 }
 
@@ -77,7 +82,10 @@ void Playable::AlbumUpdate() {
         currAlbumTime -= Time::GetDeltaTime();
         if (currAlbumTime < 0.0f) {
             currAlbumCooldown = albumCooldown;
-            //currAlbumTime = 0.0f;
+            if (patron->GetPatronBonus() == PatronBonus::ABILITIES_COOLDOWN) {
+                currAlbumCooldown *= patron->GetBonus() / 100.0f;
+            }
+            currAlbumTime = 0.0f;
             EndUsingAlbum();
         }
     }
@@ -165,9 +173,9 @@ void Playable::UseFans() {
     currFansTime = fansTime;
     tileBefore = CurrTile;
 
-    //if (patron->patronBonus == PatronBonus::ABILITIES_RANGE) {
-    //    usedRadius += patron->GetBonus();
-    //}
+    if (patron->GetPatronBonus() == PatronBonus::ABILITIES_RANGE) {
+        usedRadius += patron->GetBonus();
+    }
 
     vector<ColliderComponent*> colliders;
     CollisionManager::Instance()->OverlapSphere(CurrTile->GetGameObject()->GetTransform()->GetGlobalPosition(), usedRadius, colliders);
@@ -204,6 +212,9 @@ void Playable::UpdateFans()
         currFansTime -= Time::GetDeltaTime();
         if (currFansTime <= 0.0f) {
             currFansCooldown = fansCooldown;
+            if (patron->GetPatronBonus() == PatronBonus::ABILITIES_COOLDOWN) {
+                currFansCooldown *= patron->GetBonus() / 100.0f;
+            }
             currFansTime = 0.0f;
             FansEnd();
         }

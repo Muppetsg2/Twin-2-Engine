@@ -44,6 +44,7 @@ void Enemy::OnDestroy()
 
 void Enemy::Update()
 {
+    UpdatePrices();
     if (_nextState != nullptr) {
         State<Enemy*>* oldState = _nextState;
         _stateMachine.ChangeState(this, _nextState);

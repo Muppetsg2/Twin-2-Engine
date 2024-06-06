@@ -11,29 +11,48 @@ using namespace UI;
 using namespace Core;
 using namespace Graphic;
 using namespace Manager;
+using namespace Tools;
 using namespace glm;
 using namespace std;
+
+void Image::SetCanvas(Canvas* canvas)
+{
+	if (_canvas != canvas) {
+		if (_canvas != nullptr) {
+			_canvas->GetOnCanvasDestroy() -= _onCanvasDestroyId;
+			_data.canvas = nullptr;
+		}
+
+		_canvas = canvas;
+		if (_canvas != nullptr) {
+			_onCanvasDestroyId = (_canvas->GetOnCanvasDestroy() += [&](Canvas* canv) -> void { SetCanvas(nullptr); });
+			_data.canvas = &_canvas->_data;
+		}
+	}
+}
 
 void Image::Initialize()
 {
 	_onTransformChangeId = (GetTransform()->OnEventTransformChanged += [&](Transform* t) -> void { 
-		_data.rectTransform.transform = t->GetTransformMatrix(); });
+		_data.rectTransform.transform = t->GetTransformMatrix(); 
+	});
+	_onParentInHierarchiChangeId = (GetTransform()->OnEventInHierarchyParentChanged += [&](Transform* t) -> void {
+		SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
+	});
+	SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
 }
 
 void Image::Render()
 {
 	_data.sprite = SpriteManager::GetSprite(_spriteId);
-	if (_canvas != nullptr) {
-		if (_canvas->IsEnable()) _data.canvas = &_canvas->_data;
-	}
 	UIRenderingManager::Render(_data);
-	_data.canvas = nullptr;
 }
 
 void Image::OnDestroy()
 {
 	SetCanvas(nullptr);
 	GetTransform()->OnEventTransformChanged -= _onTransformChangeId;
+	GetTransform()->OnEventInHierarchyParentChanged -= _onParentInHierarchiChangeId;
 }
 
 // TODO: Serialize Fill
@@ -67,11 +86,6 @@ YAML::Node Image::Serialize() const
 	node["fillSubType"].SetTag(toString(_data.fill.subType));
 	node["fillProgress"] = _data.fill.progress;
 
-	// CANVAS
-	if (_canvas != nullptr) {
-		node["canvas"] = _canvas->GetId();
-	}
-
 	return node;
 }
 
@@ -91,10 +105,6 @@ bool Image::Deserialize(const YAML::Node& node)
 	_data.fill.type = node["fillType"].as<uint32_t>();
 	_data.fill.subType = node["fillSubType"].as<uint32_t>();
 	_data.fill.progress = node["fillProgress"].as<float>();
-
-	if (node["canvas"]) {
-		SetCanvas(static_cast<Canvas*>(SceneManager::GetComponentWithId(node["canvas"].as<size_t>())));
-	}
 
 	return true;
 }
@@ -136,32 +146,6 @@ void Image::DrawEditor()
 
 			if (clicked) {
 				SetSprite(choosed);
-			}
-
-			ImGui::EndCombo();
-		}
-
-		std::unordered_map<size_t, Component*> items = SceneManager::GetComponentsOfType<Canvas>();
-		items.insert({ 0,  nullptr });
-		size_t choosed_canvas = _canvas == nullptr ? 0 : _canvas->GetId();
-
-		if (ImGui::BeginCombo(string("Canvas##").append(id).c_str(), choosed_canvas == 0 ? "None" : items[choosed_canvas]->GetGameObject()->GetName().c_str())) {
-
-			bool clicked = false;
-			size_t i = 0;
-			for (auto& item : items) {
-
-				if (ImGui::Selectable(std::string(item.first == 0 ? "None" : item.second->GetGameObject()->GetName().c_str()).append("##").append(id).append(std::to_string(i)).c_str(), item.first == choosed_canvas)) {
-					++i;
-					if (clicked) continue;
-
-					choosed_canvas = item.first;
-					clicked = true;
-				}
-			}
-
-			if (clicked) {
-				SetCanvas(static_cast<Canvas*>(items[choosed_canvas]));
 			}
 
 			ImGui::EndCombo();
@@ -359,20 +343,6 @@ void Image::SetFillProgress(float progress)
 	}
 }
 
-void Image::SetCanvas(Canvas* canvas)
-{
-	if (_canvas != canvas) {
-		if (_canvas != nullptr) {
-			_canvas->GetOnCanvasDestroy() -= _onCanvasDestroyId;
-		}
-
-		_canvas = canvas;
-		if (_canvas != nullptr) {
-			_onCanvasDestroyId = (_canvas->GetOnCanvasDestroy() += [&](Canvas* canv) -> void { SetCanvas(nullptr); });
-		}
-	}
-}
-
 Sprite* Image::GetSprite() const
 {
 	return SpriteManager::GetSprite(_spriteId);
@@ -416,9 +386,4 @@ uint8_t Image::GetFillSubType() const
 float Image::GetFillProgress() const
 {
 	return _data.fill.progress * 100.f;
-}
-
-Canvas* Image::GetCanvas() const
-{
-	return _canvas;
 }

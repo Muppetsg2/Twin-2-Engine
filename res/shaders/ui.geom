@@ -105,6 +105,7 @@ out GS_OUT {
 void main() {
 	const vec2 pointPos = vec2(gl_in[0].gl_Position);
 	mat4 canvasTransform;
+	mat4 invCanvasTransform;
 	vec2 invCanvasSize;
 	if (canvasIsActive) {
 		canvasTransform = canvasRect.transform;
@@ -114,12 +115,13 @@ void main() {
 		canvasTransform = mat4(1.0);
 		invCanvasSize = 1.0 / windowSize;
 	}
+	invCanvasTransform = inverse(canvasTransform);
 
 	UIElement element = uiElements[gs_in[0].instanceID];
 	gs_out.pointPos = vec2(element.rect.transform * vec4(pointPos, 0.0, 1.0));
 
 	vec2 elemPos = (pointPos + vec2(-0.5, -0.5)) * element.rect.size;
-	gs_out.canvasPos = vec2(element.rect.transform * vec4(elemPos, 0.0, 1.0));
+	gs_out.canvasPos = vec2(invCanvasTransform * element.rect.transform * vec4(elemPos, 0.0, 1.0));
 	if (canvasIsInWorldSpace && canvasIsActive) {
 		gs_out.worldPos = canvasTransform * vec4(gs_out.canvasPos, 0.0, 1.0);
 		gl_Position = projection * view * gs_out.worldPos;
@@ -133,7 +135,7 @@ void main() {
 	EmitVertex();
 
 	elemPos = (pointPos + vec2(0.5, -0.5)) * element.rect.size;
-	gs_out.canvasPos = vec2(element.rect.transform * vec4(elemPos, 0.0, 1.0));
+	gs_out.canvasPos = vec2(invCanvasTransform * element.rect.transform * vec4(elemPos, 0.0, 1.0));
 	if (canvasIsInWorldSpace && canvasIsActive) {
 		gs_out.worldPos = canvasTransform * vec4(gs_out.canvasPos, 0.0, 1.0);
 		gl_Position = projection * view * gs_out.worldPos;
@@ -147,7 +149,7 @@ void main() {
 	EmitVertex();
 
 	elemPos = (pointPos + vec2(-0.5, 0.5)) * element.rect.size;
-	gs_out.canvasPos = vec2(element.rect.transform * vec4(elemPos, 0.0, 1.0));
+	gs_out.canvasPos = vec2(invCanvasTransform * element.rect.transform * vec4(elemPos, 0.0, 1.0));
 	if (canvasIsInWorldSpace && canvasIsActive) {
 		gs_out.worldPos = canvasTransform * vec4(gs_out.canvasPos, 0.0, 1.0);
 		gl_Position = projection * view * gs_out.worldPos;
@@ -161,7 +163,7 @@ void main() {
 	EmitVertex();
 
 	elemPos = (pointPos + vec2(0.5, 0.5)) * element.rect.size;
-	gs_out.canvasPos = vec2(element.rect.transform * vec4(elemPos, 0.0, 1.0));
+	gs_out.canvasPos = vec2(invCanvasTransform * element.rect.transform * vec4(elemPos, 0.0, 1.0));
 	if (canvasIsInWorldSpace && canvasIsActive) {
 		gs_out.worldPos = canvasTransform * vec4(gs_out.canvasPos, 0.0, 1.0);
 		gl_Position = projection * view * gs_out.worldPos;

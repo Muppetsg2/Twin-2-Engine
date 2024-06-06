@@ -144,7 +144,7 @@ bool OutOfFill(vec2 pos, vec2 center, vec2 size, FillData fill) {
 
 void main()
 {
-    if (!canvasIsInWorldSpace && canvasIsActive) {
+    if (!canvasIsInWorldSpace || !canvasIsActive) {
         // Is Frag In Screen
         if (fs_in.worldPos.x > 1.0 || fs_in.worldPos.x < -1.0 || fs_in.worldPos.y > 1.0 || fs_in.worldPos.y < -1.0)
             discard;
@@ -204,7 +204,7 @@ void main()
         Color = vec4(1.0, 1.0, 1.0, elemColor.r) * gammaColor;
     }
 
-    if (!canvasIsInWorldSpace && canvasIsActive) {
+    if (!canvasIsInWorldSpace || !canvasIsActive) {
         Color = vec4(pow(Color.rgb, vec3(1.0 / gamma)), Color.a * maskPower);
     }
     else {

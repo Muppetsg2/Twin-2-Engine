@@ -123,6 +123,12 @@ namespace Twin2Engine::Core
 		template<class T>
 		list<typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type>
 			GetComponentsInParent();
+		template<class T>
+		typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
+			GetComponentInParents();
+		template<class T>
+		list<typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type>
+			GetComponentsInParents();
 
 		void RemoveComponent(Component* component);
 		template<class T, std::enable_if<std::is_base_of<Component, T>::value, bool>::type = true>
@@ -215,10 +221,6 @@ Twin2Engine::Core::GameObject::GetComponentsInChildren()
 	list<T*> comps;
 	for (size_t i = 0; i < _transform->GetChildCount(); ++i) {
 		GameObject* obj = _transform->GetChildAt(i)->GetGameObject();
-		//auto listOfComponents = obj->GetComponents<T>();
-		//comps.insert(comps.cend(), listOfComponents.begin(), listOfComponents.end());
-		//listOfComponents = obj->GetComponentsInChildren<T>();
-		//comps.insert(comps.cend(), listOfComponents.begin(), listOfComponents.end());
 		comps.merge(obj->GetComponents<T>());
 		comps.merge(obj->GetComponentsInChildren<T>());
 	}
@@ -239,6 +241,30 @@ list<typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type>
 Twin2Engine::Core::GameObject::GetComponentsInParent()
 {
 	Transform* parent = _transform->GetParent();
-	if (parent == nullptr) return nullptr;
+	if (parent == nullptr) return list<T*>();
 	return parent->GetGameObject()->GetComponents<T>();
+}
+
+template<class T>
+typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type
+Twin2Engine::Core::GameObject::GetComponentInParents()
+{
+	Transform* parent = _transform->GetParent();
+	if (parent == nullptr) return nullptr;
+	T* comp = parent->GetGameObject()->GetComponent<T>();
+	if (comp == nullptr) return parent->GetGameObject()->GetComponentInParents<T>();
+	return comp;
+}
+
+template<class T>
+list<typename std::enable_if<std::is_base_of<Component, T>::value, T*>::type>
+Twin2Engine::Core::GameObject::GetComponentsInParents()
+{
+	Transform* parent = _transform->GetParent();
+	if (parent == nullptr) return list<T*>();
+
+	list<T*> comps;
+	comps.merge(parent->GetGameObject()->GetComponents<T>());
+	comps.merge(parent->GetGameObject()->GetComponentsInParents<T>());
+	return comps;
 }

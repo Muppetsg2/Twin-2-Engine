@@ -6,10 +6,12 @@
 namespace Twin2Engine::UI {
 	class Canvas;
 
+	// TODO: Canvas wybierany przez przeszukanie parentów
 	class Image : public Core::RenderableComponent {
 	private:
 		size_t _spriteId = 0;
 		size_t _onTransformChangeId = 0;
+		size_t _onParentInHierarchiChangeId = 0;
 		size_t _onCanvasDestroyId = 0;
 		Canvas* _canvas = nullptr;
 		Manager::UIImageData _data = { 
@@ -28,6 +30,8 @@ namespace Twin2Engine::UI {
 			} /* fill */,
 			nullptr /* sprite */
 		};
+
+		void SetCanvas(Canvas* canvas);
 
 	public:
 		virtual void Initialize() override;
@@ -50,7 +54,6 @@ namespace Twin2Engine::UI {
 		void SetFillType(Manager::FILL_TYPE type);
 		void SetFillSubType(uint8_t subType);
 		void SetFillProgress(float progress);
-		void SetCanvas(Canvas* canvas);
 
 		Graphic::Sprite* GetSprite() const;
 		glm::vec4 GetColor() const;
@@ -61,6 +64,5 @@ namespace Twin2Engine::UI {
 		Manager::FILL_TYPE GetFillType() const;
 		uint8_t GetFillSubType() const;
 		float GetFillProgress() const;
-		Canvas* GetCanvas() const;
 	};
 }

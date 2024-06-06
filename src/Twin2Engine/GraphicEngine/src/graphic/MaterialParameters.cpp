@@ -1,5 +1,10 @@
 #include <graphic/MaterialParameters.h>
 
+#if _DEBUG
+#include <graphic/manager/TextureManager.h>
+#include <regex>
+#endif
+
 #include <spdlog/spdlog.h>
 
 using namespace Twin2Engine::Graphic;
@@ -34,11 +39,264 @@ MaterialParameters::MaterialParameters(const STD140Struct& parameters, const map
 }
 
 #if _DEBUG
+YAML::Node MaterialParameters::Serialize() const {
+	YAML::Node node;
+	std::vector<YAML::Node> params = std::vector<YAML::Node>();
+	std::vector<std::string> paramsNames = _parameters.GetNames();
+
+	for (std::string param : paramsNames) {
+		
+		YAML::Node p;
+		p["name"] = param;
+
+		const Tools::ValueType* v = _parameters.GetType(param);
+
+		if (dynamic_cast<const ScalarType*>(v) != nullptr) {
+			const ScalarType* t = dynamic_cast<const ScalarType*>(v);
+
+			switch (t->GetType())
+			{
+				case VALUE_TYPE::BOOL:
+				{
+					p["type"] = "bool";
+					p["value"] = Get<bool>(param);
+					break;
+				}
+				case VALUE_TYPE::INT:
+				{
+					p["type"] = "int";
+					p["value"] = Get<int>(param);
+					break;
+				}
+				case VALUE_TYPE::UINT:
+				{
+					p["type"] = "uint";
+					p["value"] = Get<unsigned int>(param);
+					break;
+				}
+				case VALUE_TYPE::FLOAT:
+				{
+					p["type"] = "float";
+					p["value"] = Get<float>(param);
+					break;
+				}
+				case VALUE_TYPE::DOUBLE:
+				{
+					p["type"] = "double";
+					p["value"] = Get<double>(param);
+					break;
+				}
+				case VALUE_TYPE::OTHER:
+				default:
+				{
+					break;
+				}
+			}
+		}
+		else if (dynamic_cast<const VecType*>(v) != nullptr) {
+			const VecType* t = dynamic_cast<const VecType*>(v);
+
+			switch (t->GetLength()) {
+				case 1:
+				{
+					switch (t->GetType())
+					{
+						case VALUE_TYPE::BOOL:
+						{
+							p["type"] = "bvec1";
+							p["value"] = Get<glm::vec<1, bool>>(param);
+							break;
+						}
+						case VALUE_TYPE::INT:
+						{
+							p["type"] = "ivec1";
+							p["value"] = Get<glm::vec<1, int>>(param);
+							break;
+						}
+						case VALUE_TYPE::UINT:
+						{
+							p["type"] = "uvec1";
+							p["value"] = Get<glm::vec<1, unsigned int>>(param);
+							break;
+						}
+						case VALUE_TYPE::FLOAT:
+						{
+							p["type"] = "vec1";
+							p["value"] = Get<glm::vec<1, float>>(param);
+							break;
+						}
+						case VALUE_TYPE::DOUBLE:
+						{
+							p["type"] = "dvec1";
+							p["value"] = Get<glm::vec<1, double>>(param);
+							break;
+						}
+						case VALUE_TYPE::OTHER:
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				case 2:
+				{
+					switch (t->GetType())
+					{
+						case VALUE_TYPE::BOOL:
+						{
+							p["type"] = "bvec2";
+							p["value"] = Get<glm::vec<2, bool>>(param);
+							break;
+						}
+						case VALUE_TYPE::INT:
+						{
+							p["type"] = "ivec2";
+							p["value"] = Get<glm::vec<2, int>>(param);
+							break;
+						}
+						case VALUE_TYPE::UINT:
+						{
+							p["type"] = "uvec2";
+							p["value"] = Get<glm::vec<2, unsigned int>>(param);
+							break;
+						}
+						case VALUE_TYPE::FLOAT:
+						{
+							p["type"] = "vec2";
+							p["value"] = Get<glm::vec<2, float>>(param);
+							break;
+						}
+						case VALUE_TYPE::DOUBLE:
+						{
+							p["type"] = "dvec2";
+							p["value"] = Get<glm::vec<2, double>>(param);
+							break;
+						}
+						case VALUE_TYPE::OTHER:
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				case 3:
+				{
+					switch (t->GetType())
+					{
+						case VALUE_TYPE::BOOL:
+						{
+							p["type"] = "bvec3";
+							p["value"] = Get<glm::vec<3, bool>>(param);
+							break;
+						}
+						case VALUE_TYPE::INT:
+						{
+							p["type"] = "ivec3";
+							p["value"] = Get<glm::vec<3, int>>(param);
+							break;
+						}
+						case VALUE_TYPE::UINT:
+						{
+							p["type"] = "uvec3";
+							p["value"] = Get<glm::vec<3, unsigned int>>(param);
+							break;
+						}
+						case VALUE_TYPE::FLOAT:
+						{
+							p["type"] = "vec3";
+							p["value"] = Get<glm::vec<3, float>>(param);
+							break;
+						}
+						case VALUE_TYPE::DOUBLE:
+						{
+							p["type"] = "dvec3";
+							p["value"] = Get<glm::vec<3, double>>(param);
+							break;
+						}
+						case VALUE_TYPE::OTHER:
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				case 4:
+				{
+					switch (t->GetType())
+					{
+						case VALUE_TYPE::BOOL:
+						{
+							p["type"] = "bvec4";
+							p["value"] = Get<glm::vec<4, bool>>(param);
+							break;
+						}
+						case VALUE_TYPE::INT:
+						{
+							p["type"] = "ivec4";
+							p["value"] = Get<glm::vec<4, int>>(param);
+							break;
+						}
+						case VALUE_TYPE::UINT:
+						{
+							p["type"] = "uvec4";
+							p["value"] = Get<glm::vec<4, unsigned int>>(param);
+							break;
+						}
+						case VALUE_TYPE::FLOAT:
+						{
+							p["type"] = "vec4";
+							p["value"] = Get<glm::vec<4, float>>(param);
+							break;
+						}
+						case VALUE_TYPE::DOUBLE:
+						{
+							p["type"] = "dvec4";
+							p["value"] = Get<glm::vec<4, double>>(param);
+							break;
+						}
+						case VALUE_TYPE::OTHER:
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+		}
+
+		if (p["type"] && p["value"]) params.push_back(p);
+	}
+
+	for (std::pair<size_t, char> map : _textureMappings) {
+		YAML::Node p;
+		p["name"] = _textureNames.at(map.first);
+		p["type"] = "texture2D";
+
+		Texture2D* tex = Manager::TextureManager::FindTextureWithProgramID(_textures[map.second]);
+
+		if (tex != nullptr) {
+			p["value"] = Manager::TextureManager::GetTexture2DPath(tex->GetManagerId());
+		}
+
+		if (p["value"]) params.push_back(p);
+	}
+
+	node["parameters"] = params;
+
+	return node;
+}
+
 void MaterialParameters::DrawEditor(size_t id) {
 
 	std::string id_s = std::to_string(id);
-
-	// TODO: Dodac Textury
 
 	std::vector<std::string> paramsNames = _parameters.GetNames();
 	for (std::string param : paramsNames) {
@@ -261,7 +519,12 @@ void MaterialParameters::DrawEditor(size_t id) {
 						{
 							glm::vec3 b = Get<glm::vec<3, float>>(param);
 
-							ImGui::DragFloat3(std::string(param).append("##MaterialParameters").append(id_s).c_str(), glm::value_ptr(b));
+							if (std::regex_search(param, std::regex("(?:[cC][oO][lL][oO][rR])|(?:[cC][oO][lL][oO][uU][rR])"))) {
+								ImGui::ColorEdit3(std::string(param).append("##MaterialParameters").append(id_s).c_str(), glm::value_ptr(b));
+							}
+							else {
+								ImGui::DragFloat3(std::string(param).append("##MaterialParameters").append(id_s).c_str(), glm::value_ptr(b));
+							}
 
 							if (b != Get<glm::vec<3, float>>(param)) Set(param, b);
 							break;
@@ -324,7 +587,12 @@ void MaterialParameters::DrawEditor(size_t id) {
 						{
 							glm::vec4 b = Get<glm::vec<4, float>>(param);
 
-							ImGui::DragFloat4(std::string(param).append("##MaterialParameters").append(id_s).c_str(), glm::value_ptr(b));
+							if (std::regex_search(param, std::regex("(?:[cC][oO][lL][oO][rR])|(?:[cC][oO][lL][oO][uU][rR])"))) {
+								ImGui::ColorEdit4(std::string(param).append("##MaterialParameters").append(id_s).c_str(), glm::value_ptr(b));
+							}
+							else {
+								ImGui::DragFloat4(std::string(param).append("##MaterialParameters").append(id_s).c_str(), glm::value_ptr(b));
+							}
 
 							if (b != Get<glm::vec<4, float>>(param)) Set(param, b);
 							break;
@@ -351,6 +619,50 @@ void MaterialParameters::DrawEditor(size_t id) {
 					break;
 				}
 			}
+		}
+	}
+
+	if (_textureMappings.size() != 0) {
+		ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+		bool node_open = ImGui::TreeNodeEx(string("Textures##").append(id_s).c_str(), node_flag);
+
+		if (node_open) {
+			for (auto& map : _textureMappings) {
+				GLuint tex_id = _textures[map.second];
+				string n = std::string(_textureNames[map.first]).append("##TEXTURES MATERIAL PARAMETERS").append(id_s);
+				std::map<size_t, std::string> types = Manager::TextureManager::GetAllTexture2DNames();
+
+				Texture2D* tex = Manager::TextureManager::FindTextureWithProgramID(tex_id);
+
+				size_t choosed = tex != nullptr ? tex->GetManagerId() : 0;
+
+				if (ImGui::BeginCombo(n.c_str(), choosed == 0 ? "None" : types[choosed].c_str())) {
+
+					bool click = false;
+					size_t i = 0;
+					for (auto& item : types) {
+
+						if (ImGui::Selectable(std::string(item.second).append("##").append(_textureNames[map.first]).append(id_s).append(std::to_string(i)).c_str(), item.first == choosed)) {
+
+							if (click) continue;
+
+							choosed = item.first;
+							click = true;
+						}
+
+						++i;
+					}
+
+					if (click) {
+						if (choosed != 0) {
+							_textures[map.second] = Manager::TextureManager::GetTexture2D(choosed)->GetId();
+						}
+					}
+
+					ImGui::EndCombo();
+				}
+			}
+			ImGui::TreePop();
 		}
 	}
 }

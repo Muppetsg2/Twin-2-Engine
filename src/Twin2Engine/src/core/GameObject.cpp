@@ -80,7 +80,7 @@ GameObject::~GameObject()
 	}
 
 	components.clear();
-	_freedIds.push_back(_id);
+	FreeId(_id);
 }
 
 GameObject* GameObject::Instantiate(GameObject* gameObject)

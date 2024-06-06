@@ -14,7 +14,7 @@ RadioStationState Enemy::_radioStationState;
 InitState Enemy::_initState;
 
 void Enemy::ChangeState(State<Enemy*>* newState) {
-    _stateMachine.ChangeState(this, newState);
+    _nextState = newState;
 }
 
 void Enemy::SetMoveDestination(HexTile* tile)
@@ -44,6 +44,14 @@ void Enemy::OnDestroy()
 
 void Enemy::Update()
 {
+    if (_nextState != nullptr) {
+        State<Enemy*>* oldState = _nextState;
+        _stateMachine.ChangeState(this, _nextState);
+        if (oldState == _nextState) {
+            _nextState = nullptr;
+        }
+    }
+
     _currThinkingTime -= Time::GetDeltaTime();
     if (_currThinkingTime <= 0.f) {
         _stateMachine.Update(this);
@@ -59,9 +67,7 @@ void Enemy::FinishedMovement(HexTile* hexTile)
         CurrTile->StopTakingOver(this);
     }
     CurrTile = hexTile;
-    isTakingArea = true;
     hexTile->StartTakingOver(this);
-    targetPercentage = Random::Range(50.0f, 95.0f);
 }
 
 void Enemy::LostPaperRockScissors(Playable* playable)

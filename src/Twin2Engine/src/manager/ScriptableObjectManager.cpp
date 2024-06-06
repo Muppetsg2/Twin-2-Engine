@@ -261,7 +261,7 @@ void ScriptableObjectManager::DrawEditor(bool* p_open) {
 	if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
 	{
 		// Result path in: m_fileDialogInfo.resultPath
-		Load(_fileDialogInfo.resultPath.string());
+		Load(std::filesystem::relative(_fileDialogInfo.resultPath).string());
 	}
 
 	ImGui::End();
@@ -335,7 +335,7 @@ void ScriptableObjectManager::DrawCreator(bool* p_open)
 	static bool saveErr = false;
 
 	if (ImGui::Button("Create##SO_CREATOR Scriptable Object Manager", ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
-		std::string path = filesystem::current_path().string().append("/res/scriptableobjects/").append(buff).append(".so");
+		std::string path = std::string("/res/scriptableobjects/").append(buff).append(".so");
 		bool res = ScriptableObjectManager::CreateScriptableObject(path, selectedSO);
 
 		if (res) {

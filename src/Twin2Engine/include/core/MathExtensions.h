@@ -20,3 +20,7 @@ static float lerpf(float a, float b, float f)
 {
     return a + f * (b - a);
 }
+
+static float normpdf(float x, float sigma) {
+    return 0.39894 * exp(-0.5 * x * x / (sigma * sigma)) / sigma;
+}

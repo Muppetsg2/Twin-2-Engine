@@ -31,8 +31,9 @@ class Enemy : public Playable {
 	float _timeToThink = .5f;
 	float _currThinkingTime = 0.f;
 	StateMachine<Enemy*> _stateMachine;
+	State<Enemy*>* _nextState = nullptr;
 
-	// TODO: on takeover exit stop taking over
+public:
 	static TakingOverState _takingOverState;
 	static MovingState _movingState;
 	static FightingState _fightingState;
@@ -47,14 +48,6 @@ class Enemy : public Playable {
 
 	void ChangeState(State<Enemy*>* newState);
 	void SetMoveDestination(HexTile* tile);
-
-public:
-
-	//Tymczasowe
-	bool isTakingArea = false;
-	float takingAreaCounter = 0.0f;
-	float targetPercentage = 90.0f;
-
 
 	//int colorIdx = 0;
 	float TakeOverSpeed = 1.0f;

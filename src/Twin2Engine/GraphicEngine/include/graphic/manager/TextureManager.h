@@ -124,6 +124,8 @@ namespace Twin2Engine::Manager {
 		static bool IsTextureLoaded(size_t managerId);
 		static bool IsTextureLoaded(const std::string& path);
 
+		static Graphic::Texture2D* FindTextureWithProgramID(GLuint programId);
+
 		static Graphic::Texture2D* GetTexture2D(size_t managerId);
 		static Graphic::Texture2D* GetTexture2D(const std::string& path);
 		static Graphic::Texture2D* LoadTexture2D(const std::string& path, const TextureData& data = TextureData());
@@ -131,6 +133,10 @@ namespace Twin2Engine::Manager {
 
 		static std::string GetTexture2DName(size_t managerId);
 		static std::string GetTexture2DName(const std::string& path);
+
+#if _DEBUG
+		static std::string GetTexture2DPath(size_t managerId);
+#endif
 
 		static std::map<size_t, std::string> GetAllTexture2DNames();
 

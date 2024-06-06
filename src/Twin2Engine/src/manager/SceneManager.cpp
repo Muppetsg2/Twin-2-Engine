@@ -433,7 +433,6 @@ void SceneManager::LoadScene() {
 	_currentSceneName = _sceneToLoadName;
 	_currentSceneId = _sceneToLoadId;
 
-
 	_onSceneLoaded(_sceneToLoadName);
 }
 
@@ -1085,6 +1084,7 @@ void SceneManager::UnloadCurrent()
 	_gameObjectsById.clear();
 	_componentsById.clear();
 	DestroyObject(_rootObject);
+	_rootObject = nullptr;
 
 	Action<map<size_t, size_t>&, const Action<size_t>&> unloader = [](map<size_t, size_t>& ids, const Action<size_t>& unload) -> void {
 		for (auto& id : ids) {

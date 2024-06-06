@@ -53,102 +53,50 @@ namespace Twin2Engine::Tools {
 		STD140Offsets _dataOffsets;
 		std::vector<char> _data;
 
-#if TRACY_PROFILER
-		static const char* const tracy__GetValueData;
-#endif
-
 		template<class T> 
 		std::vector<char> _GetValueData(const T& value) const {
 #if TRACY_PROFILER
 			ZoneScoped;
-			FrameMarkStart(tracy__GetValueData);
 #endif
 			const char* valueDataPtr = reinterpret_cast<const char*>(&value);
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__GetValueData);
-#endif
 			return std::vector<char>(valueDataPtr, valueDataPtr + sizeof(T));
 		}
 
 		size_t _GetArrayElemSize(const std::vector<size_t>& offsets) const;
 
-#if TRACY_PROFILER
-		static const char* const tracy__ConvertArray;
-		static const char* const tracy__ConvertArrayValues;
-		static const char* const tracy__ConvertArrayValue;
-		static const char* const tracy__ConvertArrayFunc;
-#endif
-
 		template<class S, class C, class T, class R>
 		R _ConvertArray(const std::string& name, const T& values, size_t size, const Func<R, const std::string&, const std::vector<C>&>& arrayFunc) {
 #if TRACY_PROFILER
 			ZoneScoped;
-			FrameMarkStart(tracy__ConvertArray);
 #endif
 
 			if constexpr (std::is_same_v<T, std::vector<S>> && std::is_same_v<S, C>) {
 				if constexpr (std::is_void_v<R>) {
-#if TRACY_PROFILER
-					FrameMarkStart(tracy__ConvertArrayFunc);
-#endif
 					arrayFunc(name, values);
-#if TRACY_PROFILER
-					FrameMarkEnd(tracy__ConvertArrayFunc);
-#endif
 				}
 				else {
-#if TRACY_PROFILER
-					FrameMarkEnd(tracy__ConvertArray);
-#endif
 					return arrayFunc(name, values);
 				}
 			}
 			else {
-#if TRACY_PROFILER
-				FrameMarkStart(tracy__ConvertArrayValues);
-#endif
 				std::vector<C> convertedValues;
 				convertedValues.reserve(size);
 				for (size_t i = 0; i < size; ++i) {
-#if TRACY_PROFILER
-					FrameMarkStart(tracy__ConvertArrayValue);
-#endif
 					if constexpr (std::is_same_v<S, C>) {
 						convertedValues.insert(convertedValues.end(), values[i]);
 					}
 					else {
 						convertedValues.insert(convertedValues.end(), (C)values[i]);
 					}
-#if TRACY_PROFILER
-					FrameMarkEnd(tracy__ConvertArrayValue);
-#endif
 				}
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__ConvertArrayValues);
-#endif
 
 				if constexpr (std::is_void_v<R>) {
-#if TRACY_PROFILER
-					FrameMarkStart(tracy__ConvertArrayFunc);
-#endif
 					arrayFunc(name, std::move(convertedValues));
-#if TRACY_PROFILER
-					FrameMarkEnd(tracy__ConvertArrayFunc);
-#endif
 				}
 				else {
-#if TRACY_PROFILER
-					FrameMarkEnd(tracy__ConvertArray);
-#endif
 					return arrayFunc(name, std::move(convertedValues));
 				}
 			}
-
-#if TRACY_PROFILER
-			if constexpr (std::is_void_v<R>) {
-				FrameMarkEnd(tracy__ConvertArray);
-			}
-#endif
 		}
 
 		// TODO: SPRAWDZIÆ KA¯DY MAT (TYLKO MAT4 SPRAWDZONY)
@@ -169,215 +117,90 @@ namespace Twin2Engine::Tools {
 			}
 		}*/
 
-#if TRACY_PROFILER
-		static const char* const tracy__Add;
-		static const char* const tracy__AddGetOffset;
-		static const char* const tracy__AddCheckError;
-		static const char* const tracy__AddReserveSize;
-		static const char* const tracy__AddCheckValuePadding;
-		static const char* const tracy__AddGetValueData;
-		static const char* const tracy__AddSetValueData;
-		static const char* const tracy__AddClearTempValueData;
-		static const char* const tracy__AddUpdateSize;
-#endif
-
 		template<class T> void _Add(const std::string& name, const T& value) {
 #if TRACY_PROFILER
 			ZoneScoped;
-			FrameMarkStart(tracy__Add);
 #endif
 
 			// ADD TO OFFSETS
-#if TRACY_PROFILER
-			FrameMarkStart(tracy__AddGetOffset);
-#endif
 			size_t valueOffset = std::move(_dataOffsets.Add<T>(name));
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__AddGetOffset);
 
 			// CHECK ERROR
-			FrameMarkStart(tracy__AddCheckError);
-#endif
 			if (valueOffset == 0 && _data.size() != 0) {
 				SPDLOG_ERROR("Variable '{0}' already added to structure", name);
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__AddCheckError);
-				FrameMarkEnd(tracy__Add);
-#endif
 				return;
 			}
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__AddCheckError);
 
 			// RESERVE SIZE
-			FrameMarkStart(tracy__AddReserveSize);
-#endif
 			_data.reserve(_dataOffsets.GetSize());
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__AddReserveSize);
 
 			// CHECK VALUE PADDING
-			FrameMarkStart(tracy__AddCheckValuePadding);
-#endif
 			if (_data.size() < valueOffset) {
 				_data.resize(valueOffset);
 			}
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__AddCheckValuePadding);
 
 			// GET VALUE DATA
-			FrameMarkStart(tracy__AddGetValueData);
-#endif
 			std::vector<char> valueData = std::move(_GetValueData(value));
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__AddGetValueData);
 
 			// SET VALUE DATA
-			FrameMarkStart(tracy__AddSetValueData);
-#endif
 			_data.insert(_data.begin() + valueOffset, valueData.begin(), valueData.end());
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__AddSetValueData);
 
 			// CLEAR TEMP VALUE DATA
-			FrameMarkStart(tracy__AddClearTempValueData);
-#endif
 			valueData.clear();
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__AddClearTempValueData);
 
 			// UPDATE SIZE
-			FrameMarkStart(tracy__AddUpdateSize);
-#endif
 			if (_data.size() < _data.capacity()) {
 				_data.resize(_data.capacity());
 			}
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__AddUpdateSize);
-
-			FrameMarkEnd(tracy__Add);
-#endif
 		}
-
-#if TRACY_PROFILER
-		static const char* const tracy__AddArray;
-		static const char* const tracy__AddArrayCheckSize;
-		static const char* const tracy__AddArrayGetOffsets;
-		static const char* const tracy__AddArrayCheckError;
-		static const char* const tracy__AddArrayReserveSize;
-		static const char* const tracy__AddArraySetValuesData;
-		static const char* const tracy__AddArrayCheckValuePadding;
-		static const char* const tracy__AddArrayGetValueData;
-		static const char* const tracy__AddArraySetValueData;
-		static const char* const tracy__AddArrayClearTempValueData;
-		static const char* const tracy__AddArrayClearValuesOffsets;
-		static const char* const tracy__AddArrayUpdateSize;
-#endif
 
 		template<class T> void _AddArray(const std::string& name, const std::vector<T>& values) {
 #if TRACY_PROFILER
 			ZoneScoped;
-			FrameMarkStart(tracy__AddArray);
+#endif
 
 			// CHECK SIZE
-			FrameMarkStart(tracy__AddArrayCheckSize);
-#endif
 			if (values.size() == 0) {
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__AddArrayCheckSize);
-				FrameMarkEnd(tracy__AddArray);
-#endif
 				return;
 			}
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__AddArrayCheckSize);
 
 			// GET OFFSETS
-			FrameMarkStart(tracy__AddArrayGetOffsets);
-#endif
 			std::vector<size_t> valuesOffsets = std::move(_dataOffsets.Add<T>(name, values.size()));
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__AddArrayGetOffsets);
 
 			// CHECK ERROR
-			FrameMarkStart(tracy__AddArrayCheckError);
-#endif
 			if (valuesOffsets.size() == 0) {
 				SPDLOG_ERROR("Variable '{0}' already added to structure", name);
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__AddArrayCheckError);
-				FrameMarkEnd(tracy__AddArray);
-#endif
 				return;
 			}
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__AddArrayCheckError);
 
 			// RESERVE SIZE
-			FrameMarkStart(tracy__AddArrayReserveSize);
-#endif
 			_data.reserve(_dataOffsets.GetSize());
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__AddArrayReserveSize);
 
 			// SET VALUES DATA
-			FrameMarkStart(tracy__AddArraySetValuesData);
-#endif
 			std::vector<char> valueData;
 			for (size_t i = 0; i < valuesOffsets.size() && i < values.size(); ++i) {
 				// CHECK VALUE PADDING
-#if TRACY_PROFILER
-				FrameMarkStart(tracy__AddArrayCheckValuePadding);
-#endif
 				if (_data.size() < valuesOffsets[i]) {
 					_data.resize(valuesOffsets[i]);
 				}
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__AddArrayCheckValuePadding);
 
 				// GET VALUE DATA
-				FrameMarkStart(tracy__AddArrayGetValueData);
-#endif
 				valueData = std::move(_GetValueData(values[i]));
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__AddArrayGetValueData);
 
 				// SET VALUE DATA
-				FrameMarkStart(tracy__AddArraySetValueData);
-#endif
 				_data.insert(_data.begin() + valuesOffsets[i], valueData.begin(), valueData.end());
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__AddArraySetValueData);
 
 				// CLEAR VALUE TEMP DATA
-				FrameMarkStart(tracy__AddArrayClearTempValueData);
-#endif
 				valueData.clear();
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__AddArrayClearTempValueData);
-#endif
 			}
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__AddArraySetValuesData);
 
 			// CLEAR VALUES OFFSETS
-			FrameMarkStart(tracy__AddArrayClearValuesOffsets);
-#endif
 			valuesOffsets.clear();
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__AddArrayClearValuesOffsets);
 
 			// UPDATE SIZE
-			FrameMarkStart(tracy__AddArrayUpdateSize);
-#endif
 			if (_data.size() < _data.capacity()) {
 				_data.resize(_data.capacity());
 			}
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__AddArrayUpdateSize);
-
-			FrameMarkEnd(tracy__AddArray);
-#endif
 		}
 
 		void _AddStruct(const std::string& name, const STD140Struct& value);
@@ -387,181 +210,78 @@ namespace Twin2Engine::Tools {
 #pragma endregion
 
 #pragma region SET
-#if TRACY_PROFILER
-		static const char* const tracy__Set;
-		static const char* const tracy__SetCheckVariable;
-		static const char* const tracy__SetGetOffset;
-		static const char* const tracy__SetGetValueData;
-		static const char* const tracy__SetSetValueData;
-		static const char* const tracy__SetClearTempValueData;
-#endif
 
 		template<class T> bool _Set(const std::string& name, const T& value) {
 #if TRACY_PROFILER
 			ZoneScoped;
-			FrameMarkStart(tracy__Set);
+#endif
 
 			// CHECK VARIABLE
-			FrameMarkStart(tracy__SetCheckVariable);
-#endif
 			if (!_dataOffsets.Contains(name)) {
 				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__SetCheckVariable);
-				FrameMarkEnd(tracy__Set);
-#endif
 				return false;
 			}
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__SetCheckVariable);
 
 			// GET VALUE OFFSET
-			FrameMarkStart(tracy__SetGetOffset);
-#endif
 			size_t valueOffset = std::move(_dataOffsets.Get(name));
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__SetGetOffset);
 
 			// GET VALUE DATA
-			FrameMarkStart(tracy__SetGetValueData);
-#endif
 			std::vector<char> valueData = std::move(_GetValueData(value));
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__SetGetValueData);
 
 			// SET VALUE DATA
-			FrameMarkStart(tracy__SetSetValueData);
-#endif
 			memcpy(_data.data() + valueOffset, valueData.data(), glm::min(valueData.size(), _data.size() - valueOffset));
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__SetSetValueData);
 
 			// CLEAR TEMP VALUE DATA
-			FrameMarkStart(tracy__SetClearTempValueData);
-#endif
 			valueData.clear();
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__SetClearTempValueData);
 
-			FrameMarkEnd(tracy__Set);
-#endif
 			return true;
 		}
-
-#if TRACY_PROFILER
-		static const char* const tracy__SetArray;
-		static const char* const tracy__SetArrayCheckSize;
-		static const char* const tracy__SetArrayCheckVariable;
-		static const char* const tracy__SetArrayGetValuesOffsets;
-		static const char* const tracy__SetArrayCheckValuesOffsets;
-		static const char* const tracy__SetArrayGetElemSize;
-		static const char* const tracy__SetArraySetValues;
-		static const char* const tracy__SetArrayGetValueData;
-		static const char* const tracy__SetArraySetValueData;
-		static const char* const tracy__SetArrayClearTempValueData;
-		static const char* const tracy__SetArrayClearValuesOffsets;
-#endif
 
 		template<class T> bool _SetArray(const std::string& name, const std::vector<T>& values) {
 #if TRACY_PROFILER
 			ZoneScoped;
-			FrameMarkStart(tracy__SetArray);
+#endif
 
 			// CHECK SIZE
-			FrameMarkStart(tracy__SetArrayCheckSize);
-#endif
 			if (values.size() == 0) {
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__SetArrayCheckSize);
-				FrameMarkEnd(tracy__SetArray);
-#endif
 				return false;
 			}
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__SetArrayCheckSize);
 
 			// CHECK VARIABLE
-			FrameMarkStart(tracy__SetArrayCheckVariable);
-#endif
 			if (!_dataOffsets.Contains(name)) {
 				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__SetArrayCheckVariable);
-				FrameMarkEnd(tracy__SetArray);
-#endif
 				return false;
 			}
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__SetArrayCheckVariable);
 
 			// GET VALUES OFFSETS
-			FrameMarkStart(tracy__SetArrayGetValuesOffsets);
-#endif
 			std::vector<size_t> valuesOffsets = std::move(_dataOffsets.GetArray(name));
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__SetArrayGetValuesOffsets);
 
 			// CHECK ARRAY ELEMENTS OFFSETS
-			FrameMarkStart(tracy__SetArrayCheckValuesOffsets);
-#endif
 			if (valuesOffsets.size() == 0) {
 				SPDLOG_ERROR("Value '{0}' was not declared as any array", name);
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__SetArrayCheckValuesOffsets);
-				FrameMarkEnd(tracy__SetArray);
-#endif
 				return false;
 			}
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__SetArrayCheckValuesOffsets);
 
 			// GET ARRAY ELEM DATA MAX SIZE
-			FrameMarkStart(tracy__SetArrayGetElemSize);
-#endif
 			size_t arrayElemDataSize = _GetArrayElemSize(valuesOffsets);
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__SetArrayGetElemSize);
 
 			// SET VALUES DATA
-			FrameMarkStart(tracy__SetArraySetValues);
-#endif
 			std::vector<char> valueData;
 			for (size_t i = 0; i < valuesOffsets.size() && i < values.size(); ++i) {
 				// GET VALUE DATA
-#if TRACY_PROFILER
-				FrameMarkStart(tracy__SetArrayGetValueData);
-#endif
 				valueData = std::move(_GetValueData(values[i]));
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__SetArrayGetValueData);
 
 				// SET VALUE DATA
-				FrameMarkStart(tracy__SetArraySetValueData);
-#endif
+
 				memcpy(_data.data(), valueData.data(), glm::min(glm::min(valueData.size(), arrayElemDataSize), _data.size() - valuesOffsets[i]));
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__SetArraySetValueData);
 
 				// CLEAR TEMP VALUE DATA
-				FrameMarkStart(tracy__SetArrayClearTempValueData);
-#endif
 				valueData.clear();
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__SetArrayClearTempValueData);
-#endif
 			}
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__SetArraySetValues);
 
 			// CLEAR VALUES OFFSETS
-			FrameMarkStart(tracy__SetArrayClearValuesOffsets);
-#endif
 			valuesOffsets.clear();
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__SetArrayClearValuesOffsets);
 
-			FrameMarkEnd(tracy__SetArray);
-#endif
 			return true;
 		}
 
@@ -572,216 +292,96 @@ namespace Twin2Engine::Tools {
 #pragma endregion
 
 #pragma region GET
-#if TRACY_PROFILER
-		static const char* const tracy__Get;
-		static const char* const tracy__GetCheckVariable;
-		static const char* const tracy__GetValueOffset;
-		static const char* const tracy__GetEmptyValueData;
-		static const char* const tracy__GetReserveSpace;
-		static const char* const tracy__GetGetValueData;
-		static const char* const tracy__GetCheckValueDataSize;
-		static const char* const tracy__GetValue;
-		static const char* const tracy__GetClearTempValueData;
-#endif
 
 		template<class T> T _Get(const std::string& name) const {
 #if TRACY_PROFILER
 			ZoneScoped;
-			FrameMarkStart(tracy__Get);
+#endif
 
 			// CHECK VARIABLE
-			FrameMarkStart(tracy__GetCheckVariable);
-#endif
 			if (!_dataOffsets.Contains(name)) {
 				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__GetCheckVariable);
-				FrameMarkEnd(tracy__Get);
-#endif
 				return T();
 			}
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__GetCheckVariable);
 
 			// GET VALUE OFFSET
-			FrameMarkStart(tracy__GetValueOffset);
-#endif
 			size_t valueOffset = _dataOffsets.Get(name);
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__GetValueOffset);
 
 			// MAKE EMPTY VALUE DATA
-			FrameMarkStart(tracy__GetEmptyValueData);
-#endif
 			std::vector<char> valueData;
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__GetEmptyValueData);
 
 			// RESERVE SPACE
-			FrameMarkStart(tracy__GetReserveSpace);
-#endif
 			valueData.reserve(sizeof(T));
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__GetReserveSpace);
 
 			// GET VALUE DATA
-			FrameMarkStart(tracy__GetGetValueData);
-#endif
 			valueData.insert(valueData.begin(), _data.begin() + valueOffset, _data.begin() + valueOffset + glm::min(valueData.capacity(), _data.size() - valueOffset));
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__GetGetValueData);
 
 			// CHECK VALUE DATA SIZE
-			FrameMarkStart(tracy__GetCheckValueDataSize);
-#endif
 			if (valueData.size() < valueData.capacity()) {
 				valueData.resize(valueData.capacity());
 			}
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__GetCheckValueDataSize);
 
 			// GET VALUE
-			FrameMarkStart(tracy__GetValue);
-#endif
 			T value = *reinterpret_cast<T*>(valueData.data());
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__GetValue);
 
 			// CLEAR TEMP VALUE DATA
-			FrameMarkStart(tracy__GetClearTempValueData);
-#endif
 			valueData.clear();
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__GetClearTempValueData);
 
 			// RETURN VALUE
-			FrameMarkEnd(tracy__Get);
-#endif
 			return value;
 		}
-
-#if TRACY_PROFILER
-		static const char* const tracy__GetArray;
-		static const char* const tracy__GetArrayCheckVariable;
-		static const char* const tracy__GetArrayValuesOffsets;
-		static const char* const tracy__GetArrayCheckValuesOffsets;
-		static const char* const tracy__GetArrayMaxElemSize;
-		static const char* const tracy__GetArrayValuesData;
-		static const char* const tracy__GetArrayMaxValueSize;
-		static const char* const tracy__GetArrayValueData;
-		static const char* const tracy__GetArrayCheckValueDataSize;
-		static const char* const tracy__GetArrayValue;
-		static const char* const tracy__GetArrayClearTempValueData;
-		static const char* const tracy__GetArrayClearValuesOffsets;
-#endif
 
 		template<class T> std::vector<T> _GetArray(const std::string& name) const {
 #if TRACY_PROFILER
 			ZoneScoped;
-			FrameMarkStart(tracy__GetArray);
+#endif
 
 			// CHECK VARIABLE
-			FrameMarkStart(tracy__GetArrayCheckVariable);
-#endif
 			if (!_dataOffsets.Contains(name)) {
 				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__GetArrayCheckVariable);
-				FrameMarkEnd(tracy__GetArray);
-#endif
 				return std::vector<T>();
 			}
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__GetArrayCheckVariable);
 
 			// GET VALUES OFFSETS
-			FrameMarkStart(tracy__GetArrayValuesOffsets);
-#endif
 			std::vector<size_t> valuesOffsets = std::move(_dataOffsets.GetArray(name));
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__GetArrayValuesOffsets);
 
 			// CHECK ARRAY ELEMENTS OFFSETS
-			FrameMarkStart(tracy__GetArrayCheckValuesOffsets);
-#endif
 			if (valuesOffsets.size() == 0) {
 				SPDLOG_ERROR("Value '{0}' was not declared as any array", name);
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__GetArrayCheckValuesOffsets);
-				FrameMarkEnd(tracy__GetArray);
-#endif
 				return std::vector<T>();
 			}
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__GetArrayCheckValuesOffsets);
 
 			// GET ARRAY ELEM DATA MAX SIZE
-			FrameMarkStart(tracy__GetArrayMaxElemSize);
-#endif
 			size_t arrayElemDataSize = glm::min(_GetArrayElemSize(valuesOffsets), sizeof(T));
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__GetArrayMaxElemSize);
 
 			// GET VALUES DATA
-			FrameMarkStart(tracy__GetArrayValuesData);
-#endif
 			std::vector<T> values;
 			std::vector<char> valueData;
 			valueData.resize(sizeof(T));
 			size_t maxSize;
 			for (size_t i = 0; i < valuesOffsets.size(); ++i) {
 				// GET MAX VALUE SIZE
-#if TRACY_PROFILER
-				FrameMarkStart(tracy__GetArrayMaxValueSize);
-#endif
 				maxSize = glm::min(arrayElemDataSize, _data.size() - valuesOffsets[i]);
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__GetArrayMaxValueSize);
 
 				// GET VALUE DATA
-				FrameMarkStart(tracy__GetArrayValueData);
-#endif
 				memcpy(valueData.data(), _data.data() + valuesOffsets[i], maxSize);
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__GetArrayValueData);
 
 				// CHECK VALUE DATA SIZE
-				FrameMarkStart(tracy__GetArrayCheckValueDataSize);
-#endif
 				if (maxSize < sizeof(T)) {
 					memset(valueData.data() + maxSize, 0, sizeof(T) - maxSize);
 				}
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__GetArrayCheckValueDataSize);
 
 				// GET VALUE
-				FrameMarkStart(tracy__GetArrayValue);
-#endif
 				values.push_back(*reinterpret_cast<T*>(valueData.data()));
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__GetArrayValue);
-#endif
 			}
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__GetArrayValuesData);
 
 			// CLEAR TEMP VALUE DATA
-			FrameMarkStart(tracy__GetArrayClearTempValueData);
-#endif
 			valueData.clear();
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__GetArrayClearTempValueData);
 
 			// CLEAR VALUES OFFSETS
-			FrameMarkStart(tracy__GetArrayClearValuesOffsets);
-#endif
 			valuesOffsets.clear();
-#if TRACY_PROFILER
-			FrameMarkEnd(tracy__GetArrayClearValuesOffsets);
-			
+
 			// RETURN VALUES
-			FrameMarkEnd(tracy__GetArray);
-#endif
 			return values;
 		}
 
@@ -789,44 +389,21 @@ namespace Twin2Engine::Tools {
 
 		std::vector<STD140Struct> _GetStructArray(const std::string& name, const STD140Offsets& structOffsets) const;
 
-		static const char* const tracy__GetArrayConvert;
-		static const char* const tracy__GetArrayConvertValues;
-		static const char* const tracy__GetArrayConvertValue;
-
 		template<class S, class C>
 		std::vector<C> _GetArray(const std::string& name, const Func<std::vector<S>, const std::string&>& getArrayFunc) {
 #if TRACY_PROFILER
 			ZoneScoped;
-			FrameMarkStart(tracy__GetArrayConvert);
 #endif
 
 			if (std::is_same_v<S, C>) {
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__GetArrayConvert);
-#endif
 				return getArrayFunc(name);
 			}
 			else {
 				std::vector<S> values = getArrayFunc(name);
-
-#if TRACY_PROFILER
-				FrameMarkStart(tracy__GetArrayConvertValues);
-#endif
 				std::vector<C> convertedValues;
 				for (auto& val : values) {
-#if TRACY_PROFILER
-					FrameMarkStart(tracy__GetArrayConvertValue);
-#endif
 					convertedValues.push_back((C)val);
-#if TRACY_PROFILER
-					FrameMarkEnd(tracy__GetArrayConvertValue);
-#endif
 				}
-#if TRACY_PROFILER
-				FrameMarkEnd(tracy__GetArrayConvertValues);
-
-				FrameMarkEnd(tracy__GetArrayConvert);
-#endif
 				return convertedValues;
 			}
 		}

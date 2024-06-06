@@ -16,39 +16,71 @@ ImFileDialogInfo MaterialsManager::_fileDialogInfo;
 
 std::map<size_t, std::string> MaterialsManager::_materialsPaths;
 
-#define TYPE_MAP_INT_HANDLE			0
-#define TYPE_MAP_UINT_HANDLE		1
-#define TYPE_MAP_FLOAT_HANDLE		2
-#define TYPE_MAP_DOUBLE_HANDLE		3
-#define TYPE_MAP_BOOL_HANDLE		4
+#define TYPE_MAP_BOOL_HANDLE		0
+#define TYPE_MAP_INT_HANDLE			1
+#define TYPE_MAP_UINT_HANDLE		2
+#define TYPE_MAP_FLOAT_HANDLE		3
+#define TYPE_MAP_DOUBLE_HANDLE		4
 #define TYPE_MAP_TEXTURE2D_HANDLE	5
-#define TYPE_MAP_VEC2_HANDLE		6
-#define TYPE_MAP_VEC3_HANDLE		7
-#define TYPE_MAP_VEC4_HANDLE		8
-#define TYPE_MAP_IVEC2_HANDLE		9
-#define TYPE_MAP_IVEC3_HANDLE		10
-#define TYPE_MAP_IVEC4_HANDLE		11
-#define TYPE_MAP_MAT2_HANDLE		12
-#define TYPE_MAP_MAT3_HANDLE		13
-#define TYPE_MAP_MAT4_HANDLE		14
+#define TYPE_MAP_BVEC1_HANDLE		6
+#define TYPE_MAP_BVEC2_HANDLE		7
+#define TYPE_MAP_BVEC3_HANDLE		8
+#define TYPE_MAP_BVEC4_HANDLE		9
+#define TYPE_MAP_IVEC1_HANDLE		10
+#define TYPE_MAP_IVEC2_HANDLE		11
+#define TYPE_MAP_IVEC3_HANDLE		12
+#define TYPE_MAP_IVEC4_HANDLE		13
+#define TYPE_MAP_UVEC1_HANDLE		14
+#define TYPE_MAP_UVEC2_HANDLE		15
+#define TYPE_MAP_UVEC3_HANDLE		16
+#define TYPE_MAP_UVEC4_HANDLE		17
+#define TYPE_MAP_VEC1_HANDLE		18
+#define TYPE_MAP_VEC2_HANDLE		19
+#define TYPE_MAP_VEC3_HANDLE		20
+#define TYPE_MAP_VEC4_HANDLE		21
+#define TYPE_MAP_DVEC1_HANDLE		22
+#define TYPE_MAP_DVEC2_HANDLE		23
+#define TYPE_MAP_DVEC3_HANDLE		24
+#define TYPE_MAP_DVEC4_HANDLE		25
+/*
+#define TYPE_MAP_MAT2_HANDLE		26
+#define TYPE_MAP_MAT3_HANDLE		27
+#define TYPE_MAP_MAT4_HANDLE		28
+*/
 
 const std::unordered_map<size_t, int> MaterialsManager::_typeHandleMap
 {
+	{ MaterialsManager::_stringHash("bool"),			TYPE_MAP_BOOL_HANDLE		},
 	{ MaterialsManager::_stringHash("int"),				TYPE_MAP_INT_HANDLE			},
 	{ MaterialsManager::_stringHash("uint"),			TYPE_MAP_UINT_HANDLE		},
 	{ MaterialsManager::_stringHash("float"),			TYPE_MAP_FLOAT_HANDLE		},
 	{ MaterialsManager::_stringHash("double"),			TYPE_MAP_DOUBLE_HANDLE		},
-	{ MaterialsManager::_stringHash("bool"),			TYPE_MAP_BOOL_HANDLE		},
 	{ MaterialsManager::_stringHash("texture2D"),		TYPE_MAP_TEXTURE2D_HANDLE	},
-	{ MaterialsManager::_stringHash("vec2"),			TYPE_MAP_VEC2_HANDLE		},
-	{ MaterialsManager::_stringHash("vec3"),			TYPE_MAP_VEC3_HANDLE		},
-	{ MaterialsManager::_stringHash("vec4"),			TYPE_MAP_VEC4_HANDLE		},
+	{ MaterialsManager::_stringHash("bvec1"),			TYPE_MAP_BVEC1_HANDLE		},
+	{ MaterialsManager::_stringHash("bvec2"),			TYPE_MAP_BVEC2_HANDLE		},
+	{ MaterialsManager::_stringHash("bvec3"),			TYPE_MAP_BVEC3_HANDLE		},
+	{ MaterialsManager::_stringHash("bvec4"),			TYPE_MAP_BVEC4_HANDLE		},
+	{ MaterialsManager::_stringHash("ivec1"),			TYPE_MAP_IVEC1_HANDLE		},
 	{ MaterialsManager::_stringHash("ivec2"),			TYPE_MAP_IVEC2_HANDLE		},
 	{ MaterialsManager::_stringHash("ivec3"),			TYPE_MAP_IVEC3_HANDLE		},
 	{ MaterialsManager::_stringHash("ivec4"),			TYPE_MAP_IVEC4_HANDLE		},
+	{ MaterialsManager::_stringHash("uvec1"),			TYPE_MAP_UVEC1_HANDLE		},
+	{ MaterialsManager::_stringHash("uvec2"),			TYPE_MAP_UVEC2_HANDLE		},
+	{ MaterialsManager::_stringHash("uvec3"),			TYPE_MAP_UVEC3_HANDLE		},
+	{ MaterialsManager::_stringHash("uvec4"),			TYPE_MAP_UVEC4_HANDLE		},
+	{ MaterialsManager::_stringHash("vec1"),			TYPE_MAP_VEC1_HANDLE		},
+	{ MaterialsManager::_stringHash("vec2"),			TYPE_MAP_VEC2_HANDLE		},
+	{ MaterialsManager::_stringHash("vec3"),			TYPE_MAP_VEC3_HANDLE		},
+	{ MaterialsManager::_stringHash("vec4"),			TYPE_MAP_VEC4_HANDLE		},
+	{ MaterialsManager::_stringHash("dvec1"),			TYPE_MAP_DVEC1_HANDLE		},
+	{ MaterialsManager::_stringHash("dvec2"),			TYPE_MAP_DVEC2_HANDLE		},
+	{ MaterialsManager::_stringHash("dvec3"),			TYPE_MAP_DVEC3_HANDLE		},
+	{ MaterialsManager::_stringHash("dvec4"),			TYPE_MAP_DVEC4_HANDLE		}
+	/*
 	{ MaterialsManager::_stringHash("mat2"),			TYPE_MAP_MAT2_HANDLE		},
 	{ MaterialsManager::_stringHash("mat3"),			TYPE_MAP_MAT3_HANDLE		},
 	{ MaterialsManager::_stringHash("mat4"),			TYPE_MAP_MAT4_HANDLE		}
+	*/
 };
 
 void MaterialsManager::UnloadMaterial(size_t managerId) {
@@ -110,10 +142,14 @@ Material* MaterialsManager::LoadMaterial(const std::string& materialPath)
 			SPDLOG_ERROR("Incorrect parameter type of loaded material. Parameter name: {}", parameterName);
 			break;
 		}
-		SPDLOG_INFO("LoadSHPR");
+		SPDLOG_INFO("LoadSHPR {}", materialPath);
 
 		switch (_typeHandleMap.at(parameterTypeHash))
 		{
+		case TYPE_MAP_BOOL_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<bool>());
+			break;
+
 		case TYPE_MAP_INT_HANDLE:
 			materialParametersBuilder.Add(parameterName, parameterValue.as<int>());
 			break;
@@ -130,30 +166,34 @@ Material* MaterialsManager::LoadMaterial(const std::string& materialPath)
 			materialParametersBuilder.Add(parameterName, parameterValue.as<double>());
 			break;
 
-		case TYPE_MAP_BOOL_HANDLE:
-			materialParametersBuilder.Add(parameterName, parameterValue.as<bool>());
-			break;
-
 		case TYPE_MAP_TEXTURE2D_HANDLE:
 		{
 			std::string texturePath = parameterValue.as<std::string>();
 			Texture2D* texture = Manager::TextureManager::LoadTexture2D(texturePath);
 			materialParametersBuilder.AddTexture2D(parameterName, texture->GetId());
+			break;
 		}
-		break;
+		
+		case TYPE_MAP_BVEC1_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<bvec1>());
+			break;
 
-		case TYPE_MAP_VEC2_HANDLE:
-			materialParametersBuilder.Add(parameterName, parameterValue.as<vec2>());
+		case TYPE_MAP_BVEC2_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<bvec2>());
 			break;
-		
-		case TYPE_MAP_VEC3_HANDLE:
-			materialParametersBuilder.Add(parameterName, parameterValue.as<vec3>());
+
+		case TYPE_MAP_BVEC3_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<bvec3>());
 			break;
-		
-		case TYPE_MAP_VEC4_HANDLE:
-			materialParametersBuilder.Add(parameterName, parameterValue.as<vec4>());
+
+		case TYPE_MAP_BVEC4_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<bvec4>());
 			break;
-		
+
+		case TYPE_MAP_IVEC1_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<ivec1>());
+			break;
+
 		case TYPE_MAP_IVEC2_HANDLE:
 			materialParametersBuilder.Add(parameterName, parameterValue.as<ivec2>());
 			break;
@@ -165,18 +205,68 @@ Material* MaterialsManager::LoadMaterial(const std::string& materialPath)
 		case TYPE_MAP_IVEC4_HANDLE:
 			materialParametersBuilder.Add(parameterName, parameterValue.as<ivec4>());
 			break;
+
+		case TYPE_MAP_UVEC1_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<uvec1>());
+			break;
+
+		case TYPE_MAP_UVEC2_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<uvec2>());
+			break;
+
+		case TYPE_MAP_UVEC3_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<uvec3>());
+			break;
+
+		case TYPE_MAP_UVEC4_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<uvec4>());
+			break;
+
+		case TYPE_MAP_VEC1_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<vec1>());
+			break;
+
+		case TYPE_MAP_VEC2_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<vec2>());
+			break;
+
+		case TYPE_MAP_VEC3_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<vec3>());
+			break;
+
+		case TYPE_MAP_VEC4_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<vec4>());
+			break;
+
+		case TYPE_MAP_DVEC1_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<dvec1>());
+			break;
+
+		case TYPE_MAP_DVEC2_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<dvec2>());
+			break;
+
+		case TYPE_MAP_DVEC3_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<dvec3>());
+			break;
+
+		case TYPE_MAP_DVEC4_HANDLE:
+			materialParametersBuilder.Add(parameterName, parameterValue.as<dvec4>());
+			break;
 		
-		//case TYPE_MAP_MAT2_HANDLE:
-		//	materialParameters->Add(parameterName, parameterValue.as<glm::mat2>());
-		//	break;
-		//
-		//case TYPE_MAP_MAT3_HANDLE:
-		//	materialParameters->Add(parameterName, parameterValue.as<glm::mat3>());
-		//	break;
-		//
-		//case TYPE_MAP_MAT4_HANDLE:
-		//	materialParameters->Add(parameterName, parameterValue.as<glm::mat4>());
-		//	break;
+		/*
+		case TYPE_MAP_MAT2_HANDLE:
+			materialParameters->Add(parameterName, parameterValue.as<glm::mat2>());
+			break;
+		
+		case TYPE_MAP_MAT3_HANDLE:
+			materialParameters->Add(parameterName, parameterValue.as<glm::mat3>());
+			break;
+		
+		case TYPE_MAP_MAT4_HANDLE:
+			materialParameters->Add(parameterName, parameterValue.as<glm::mat4>());
+			break;
+		*/
 		}
 	}
 
@@ -187,10 +277,15 @@ Material* MaterialsManager::LoadMaterial(const std::string& materialPath)
 		.shader = Manager::ShaderManager::GetShaderProgram(shader),
 		.materialParameters = materialParametersBuilder.Build()
 	};
-	materialParametersBuilder.Clear();
 
 	_loadedMaterials[hash] = new Material(materialData);
 	_materialsPaths[hash] = materialPath;
+
+#if _DEBUG
+	_loadedMaterials[hash]->_materialParameters->_textureNames = materialParametersBuilder.GetParametersNames();
+#endif
+
+	materialParametersBuilder.Clear();
 
 	LightingController::Instance()->BindLightBuffors(materialData.shader);
 	materialData.shader->Use();
@@ -200,143 +295,40 @@ Material* MaterialsManager::LoadMaterial(const std::string& materialPath)
 	return _loadedMaterials[hash];
 }
 
+#if _DEBUG
 void MaterialsManager::SaveMaterial(const std::string& materialPath, Material* mat)
 {
-	YAML::Node fileNode;
-
-	// TODO: Zrobic zapis
-
-	/*
-	try {
-		std::ifstream fin(materialPath);
-		if (!fin) {
-			SPDLOG_ERROR("Unable to open material file for reading. File path: {}", materialPath);
-
-			return nullptr;
-		}
-
-		fileNode = YAML::Load(fin);
-		fin.close();
-	}
-	catch (const YAML::Exception& e) {
-		SPDLOG_ERROR("Exception occured during reading file: {}. YAML Exception: {}", materialPath, e.what());
-		return nullptr;
+	if (!std::filesystem::exists(std::filesystem::path(materialPath).parent_path())) {
+		SPDLOG_ERROR("Couldn't save Material. Folder {} doesn't exists!", std::filesystem::path(materialPath).parent_path().string().c_str());
+		return;
 	}
 
-	size_t materialNameHash = _stringHash(materialName);
-	SPDLOG_INFO("Loading material {}: {}!", materialNameHash, materialName);
-
-	const YAML::Node& materialNode = fileNode["material"];
-
-
-	std::string name = materialNode["name"].as<std::string>();
-	std::string shader = materialNode["shader"].as<std::string>();
-
-	//MaterialParameters* materialParameters = new MaterialParameters();
-	MaterialParametersBuilder materialParametersBuilder;
-
-	for (const auto& parameterNode : materialNode["parameters"]) {
-		std::string parameterName = parameterNode["name"].as<std::string>();
-		std::string parameterType = parameterNode["type"].as<std::string>();
-
-		const YAML::Node& parameterValue = parameterNode["value"];
-
-		size_t parameterTypeHash = _stringHash(parameterType);
-
-		if (!_typeHandleMap.contains(parameterTypeHash))
-		{
-			SPDLOG_ERROR("Incorrect parameter type of loaded material. Parameter name: {}", parameterName);
-			break;
-		}
-		SPDLOG_INFO("LoadSHPR");
-
-		switch (_typeHandleMap.at(parameterTypeHash))
-		{
-		case TYPE_MAP_INT_HANDLE:
-			materialParametersBuilder.Add(parameterName, parameterValue.as<int>());
-			break;
-
-		case TYPE_MAP_UINT_HANDLE:
-			materialParametersBuilder.Add(parameterName, parameterValue.as<unsigned int>());
-			break;
-
-		case TYPE_MAP_FLOAT_HANDLE:
-			materialParametersBuilder.Add(parameterName, parameterValue.as<float>());
-			break;
-
-		case TYPE_MAP_DOUBLE_HANDLE:
-			materialParametersBuilder.Add(parameterName, parameterValue.as<double>());
-			break;
-
-		case TYPE_MAP_BOOL_HANDLE:
-			materialParametersBuilder.Add(parameterName, parameterValue.as<bool>());
-			break;
-
-		case TYPE_MAP_TEXTURE2D_HANDLE:
-		{
-			std::string texturePath = parameterValue.as<std::string>();
-			Texture2D* texture = Manager::TextureManager::LoadTexture2D(texturePath);
-			materialParametersBuilder.AddTexture2D(parameterName, texture->GetId());
-		}
-		break;
-
-		case TYPE_MAP_VEC2_HANDLE:
-			materialParametersBuilder.Add(parameterName, parameterValue.as<vec2>());
-			break;
-
-		case TYPE_MAP_VEC3_HANDLE:
-			materialParametersBuilder.Add(parameterName, parameterValue.as<vec3>());
-			break;
-
-		case TYPE_MAP_VEC4_HANDLE:
-			materialParametersBuilder.Add(parameterName, parameterValue.as<vec4>());
-			break;
-
-		case TYPE_MAP_IVEC2_HANDLE:
-			materialParametersBuilder.Add(parameterName, parameterValue.as<ivec2>());
-			break;
-
-		case TYPE_MAP_IVEC3_HANDLE:
-			materialParametersBuilder.Add(parameterName, parameterValue.as<ivec3>());
-			break;
-
-		case TYPE_MAP_IVEC4_HANDLE:
-			materialParametersBuilder.Add(parameterName, parameterValue.as<ivec4>());
-			break;
-
-			//case TYPE_MAP_MAT2_HANDLE:
-			//	materialParameters->Add(parameterName, parameterValue.as<glm::mat2>());
-			//	break;
-			//
-			//case TYPE_MAP_MAT3_HANDLE:
-			//	materialParameters->Add(parameterName, parameterValue.as<glm::mat3>());
-			//	break;
-			//
-			//case TYPE_MAP_MAT4_HANDLE:
-			//	materialParameters->Add(parameterName, parameterValue.as<glm::mat4>());
-			//	break;
-		}
+	if (mat == nullptr) {
+		SPDLOG_ERROR("Couldn't save Material. Material was nullptr!");
+		return;
 	}
 
-	MaterialData materialData
-	{
-		.id = materialNameHash,
-		.shader = Manager::ShaderManager::GetShaderProgram(shader),
-		.materialParameters = materialParametersBuilder.Build()
-	};
-	materialParametersBuilder.Clear();
+	// Write YAML file with material parameters
+	YAML::Node materialNode;
+	materialNode["name"] = std::filesystem::path(materialPath).stem().string();
+	materialNode["shader"] = ShaderManager::GetShaderName(mat->GetShader()->GetProgramId());
+	materialNode["parameters"] = mat->_materialParameters->Serialize()["parameters"];
 
-	_loadedMaterials[materialNameHash] = new Material(materialData);
-	_materialsPaths[materialNameHash] = materialName;
+	YAML::Node rootNode;
+	rootNode["material"] = materialNode;
+	
+	// Write YAML file
+	std::ofstream yamlFile(materialPath);
+	if (!yamlFile.is_open()) {
+		SPDLOG_ERROR("Failed to create material file. Path: {}", materialPath);
+		return;
+	}
+	yamlFile << rootNode;
+	yamlFile.close();
 
-	LightingController::Instance()->BindLightBuffors(materialData.shader);
-	materialData.shader->Use();
-	materialData.shader->SetInt("occlusionMap", 31);
-	materialData.shader->SetInt("depthMap", 26);
-
-	return _loadedMaterials[materialNameHash];
-	*/
+	SPDLOG_INFO("Material '{}' file saved successfully. Path {}", std::filesystem::path(materialPath).stem().string(), materialPath);
 }
+#endif
 
 bool MaterialsManager::IsMaterialLoaded(size_t managerId) {
 	return _loadedMaterials.contains(managerId);
@@ -477,7 +469,7 @@ void MaterialsManager::DrawEditor(bool* p_open)
 	if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
 	{
 		// Result path in: m_fileDialogInfo.resultPath
-		LoadMaterial(_fileDialogInfo.resultPath.stem().string());
+		LoadMaterial(std::filesystem::relative(_fileDialogInfo.resultPath).string());
 	}
 
 	ImGui::End();

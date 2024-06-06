@@ -18,6 +18,9 @@ void MaterialParametersBuilder::AddTexture2D(const std::string& textureName, uns
 	}
 	else
 	{
+#if _DEBUG
+		_textureNames[hashed] = textureName;
+#endif
 		_textureMappings[hashed] = _textures.size();
 		_textures.push_back(textureId);
 	}
@@ -28,9 +31,19 @@ MaterialParameters* MaterialParametersBuilder::Build()
 	return new MaterialParameters(_parameters, _textureMappings, _textures);
 }
 
+#if _DEBUG
+std::map<size_t, std::string> MaterialParametersBuilder::GetParametersNames() {
+	return _textureNames;
+}
+#endif
+
 void MaterialParametersBuilder::Clear()
 {
 	_parameters.Clear();
 	_textureMappings.clear();
 	_textures.clear();
+
+#if _DEBUG
+	_textureNames.clear();
+#endif
 }

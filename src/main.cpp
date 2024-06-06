@@ -284,9 +284,16 @@ int main(int, char**)
 
 #pragma endregion
 
-
     SceneManager::GetOnSceneLoaded() += [](std::string sceneName) -> void {
-        Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
+        CameraComponent* cam = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>();
+
+        if (cam == nullptr) {
+            std::tuple<GameObject*, CameraComponent*> i = SceneManager::CreateGameObject<CameraComponent>();
+            cam = std::get<1>(i);
+            std::get<0>(i)->SetName("Camera");
+        }
+
+        Camera = cam->GetGameObject();
 
         //EnemyAI* e = text->GetGameObject()->AddComponent<EnemyAI>();
     };
@@ -436,6 +443,13 @@ void input()
     }
 
 #if _DEBUG
+    if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::N)) {
+        // New Scene
+        SceneManager::UnloadCurrent();
+        SceneManager::AddScene("New Scene", new Scene());
+        SceneManager::LoadScene("New Scene");
+    }
+
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::L)) {
         // Load Scene
         //ImGui::OpenPopup("Load Scene##File_Scene_Load_Internal", ImGuiPopupFlags_NoReopen);
@@ -457,7 +471,13 @@ void input()
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::S)) {
         // Save Scene
-        SceneManager::SaveScene(SceneManager::GetCurrentScenePath());
+        if (SceneManager::GetCurrentScenePath() != "") SceneManager::SaveScene(SceneManager::GetCurrentScenePath());
+        else {
+            _fileDialogSceneSave = true;
+            _fileDialogSceneSaveInfo.type = ImGuiFileDialogType_SaveFile;
+            _fileDialogSceneSaveInfo.title = "Load Scene##File_Scene_Save";
+            _fileDialogSceneSaveInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\scenes");
+        }
     }
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyDown(KEY::LEFT_SHIFT) && Input::IsKeyPressed(KEY::S)) {
@@ -581,6 +601,12 @@ void render_imgui()
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("File##Menu"))
             {
+                if (ImGui::MenuItem("New Scene", "Ctrl+N")) {
+                    SceneManager::UnloadCurrent();
+                    SceneManager::AddScene("New Scene", new Scene());
+                    SceneManager::LoadScene("New Scene");
+                }
+
                 if (ImGui::MenuItem("Load Scene", "Ctrl+L", &_openLoadSceneWindow)) {
                     //ImGui::OpenPopup("Load Scene##File_Scene_Load_Internal", ImGuiPopupFlags_NoReopen);
                     _openLoadSceneWindow = true;
@@ -598,7 +624,13 @@ void render_imgui()
                 }
 
                 if (ImGui::MenuItem("Save Scene##File", "Ctrl+S"))
-                    SceneManager::SaveScene(SceneManager::GetCurrentScenePath());
+                    if (SceneManager::GetCurrentScenePath() != "") SceneManager::SaveScene(SceneManager::GetCurrentScenePath());
+                    else {
+                        _fileDialogSceneSave = true;
+                        _fileDialogSceneSaveInfo.type = ImGuiFileDialogType_SaveFile;
+                        _fileDialogSceneSaveInfo.title = "Load Scene##File_Scene_Save";
+                        _fileDialogSceneSaveInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\scenes");
+                    }
 
                 if (ImGui::MenuItem("Save Scene As...##File", "Ctrl+Shift+S", &_fileDialogSceneSave)) {
                     _fileDialogSceneSave = true;
@@ -715,7 +747,7 @@ void render_imgui()
         if (ImGui::FileDialog(&_fileDialogSceneOpen, &_fileDialogSceneOpenInfo))
         {
             // Result path in: m_fileDialogInfo.resultPath
-            std::string path = _fileDialogSceneOpenInfo.resultPath.string();
+            std::string path = std::filesystem::relative(_fileDialogSceneOpenInfo.resultPath).string();
             std::string name = std::filesystem::path(path).stem().string();
             SceneManager::AddScene(name, path);
             SceneManager::LoadScene(name);
@@ -724,9 +756,11 @@ void render_imgui()
         if (ImGui::FileDialog(&_fileDialogSceneSave, &_fileDialogSceneSaveInfo))
         {
             // Result path in: m_fileDialogInfo.resultPath
-            std::string path = _fileDialogSceneSaveInfo.resultPath.string();
+            std::string path = std::filesystem::relative(_fileDialogSceneSaveInfo.resultPath).string();
+            std::string name = std::filesystem::path(path).stem().string();
             SceneManager::SaveScene(path);
-            SceneManager::AddScene(SceneManager::GetCurrentSceneName(), path);
+            SceneManager::AddScene(name, path);
+            SceneManager::LoadScene(name);
         }
 
         ImGui::TextColored(ImVec4(0.f, 1.f, 1.f, 1.f), "Hello World!");

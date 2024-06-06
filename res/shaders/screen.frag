@@ -23,13 +23,21 @@ uniform bool hasGrayscale;
 uniform bool hasOutline;
 uniform bool hasDepthOfField;
 
-uniform bool depthOfField2;
-
 uniform bool displayDepth;
 uniform bool displaySSAO;
 
 uniform float brightness;
 uniform float contrast;
+
+// Gaussian Blur
+uniform int blurMSize;
+uniform float blurKernel[40];
+
+// Depth Of Field 2
+uniform bool depthOfField2;
+uniform float quadraticDepthOfField;
+uniform float linearDepthOfField;
+uniform float constantDepthOfField;
 
 vec3 applyVignette(vec3 color) {
     vec2 position = TexCoord.xy - vec2(0.5);  
@@ -119,22 +127,19 @@ vec3 applyBlurFast() {
     return color;
 }
 
-uniform int gaussianMSize;
-uniform float gaussianKernel[40];
-
 vec3 applyBlurGaussian() {
-    if (gaussianMSize != 0) {
+    if (blurMSize != 0) {
         //declare stuff
         vec3 result = vec3(0.0);
-        const int kSize = (gaussianMSize - 1) / 2;
+        const int kSize = (blurMSize - 1) / 2;
         vec2 tex_offset = displayDepth ? 1.0 / textureSize(depthTexture, 0) : 1.0 / textureSize(screenTexture, 0);
 
         float Z = 0.0;
 
         //get the normalization factor (as the gaussian has been clamped)
-        for (int j = 0; j < gaussianMSize; ++j)
+        for (int j = 0; j < blurMSize; ++j)
         {
-            Z += gaussianKernel[j];
+            Z += blurKernel[j];
         }
 
         //read out the texels
@@ -143,7 +148,7 @@ vec3 applyBlurGaussian() {
             for (int j =- kSize; j <= kSize; ++j)
             {
                 vec3 c = getColor(TexCoord.xy + vec2(tex_offset.x * i, tex_offset.y * j));
-                result += gaussianKernel[kSize + j] * gaussianKernel[kSize + i] * c;
+                result += blurKernel[kSize + j] * blurKernel[kSize + i] * c;
             }
         }
         return result / (Z * Z);
@@ -171,10 +176,6 @@ vec3 applyDepthOfField(vec3 currentOutput) {
     //return distance * blurred + (1.0 - distance) * currentOutput;
     return distance * blurred + (1.0 - distance) * currentOutput;
 }
-
-uniform float quadraticDepthOfField;
-uniform float linearDepthOfField;
-uniform float constantDepthOfField;
 
 vec3 applyDepthOfField2(vec3 color) {
 

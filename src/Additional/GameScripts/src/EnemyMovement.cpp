@@ -38,7 +38,30 @@ void EnemyMovement::Update() {
     glm::vec3 position = transform->GetGlobalPosition();
     if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive)
     {
+        if (!reachEnd) {
+            position = transform->GetGlobalPosition();
 
+            float dist = glm::distance(position, _waypoint);
+
+            Tilemap::HexagonalTile* tile = _tilemap->GetTile(_tilemap->ConvertToTilemapPosition(vec2(_waypoint.x, _waypoint.z)));
+
+            if (dist <= nextWaypointDistance) {
+                if (_path->IsOnEnd())
+                {
+                    reachEnd = true;
+                    OnFinishMoving(GetGameObject(), destinatedTile);
+                }
+                //transform->SetGlobalPosition(_waypoint + vec3(0.0f, 0.5f, 0.0f)); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
+                transform->SetGlobalPosition(_waypoint); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
+                _waypoint = _path->Next();
+                _waypoint.y += _heightOverSurface;
+            }
+            else {
+                //transform->SetGlobalPosition(glm::vec3(glm::mix(position, tempWaypointPos, 0.5f)) + vec3(0.0f, 0.5f, 0.0f));
+                float walk_dist = Time::GetDeltaTime() * speed;
+                transform->Translate(glm::normalize(_waypoint - position) * walk_dist);
+            }
+        }
     }
     else
     {
@@ -46,30 +69,6 @@ void EnemyMovement::Update() {
         //circleRenderer->positionCount = 0;
     }
 
-    if (!reachEnd) {
-        position = transform->GetGlobalPosition();
-
-        float dist = glm::distance(position, _waypoint);
-
-        Tilemap::HexagonalTile* tile = _tilemap->GetTile(_tilemap->ConvertToTilemapPosition(vec2(_waypoint.x, _waypoint.z)));
-
-        if (dist <= nextWaypointDistance) {
-            if (_path->IsOnEnd())
-            {
-                reachEnd = true;
-                OnFinishMoving(GetGameObject(), destinatedTile);
-            }
-            //transform->SetGlobalPosition(_waypoint + vec3(0.0f, 0.5f, 0.0f)); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
-            transform->SetGlobalPosition(_waypoint); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
-            _waypoint = _path->Next();
-            _waypoint.y += _heightOverSurface;
-        }
-        else {
-            //transform->SetGlobalPosition(glm::vec3(glm::mix(position, tempWaypointPos, 0.5f)) + vec3(0.0f, 0.5f, 0.0f));
-            float walk_dist = Time::GetDeltaTime() * speed;
-            transform->Translate(glm::normalize(_waypoint - position) * walk_dist);
-        }
-    }
 }
 
 

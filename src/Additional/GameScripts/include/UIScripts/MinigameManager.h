@@ -10,6 +10,9 @@
 #include <Enemy.h>
 #include <processes/Coroutine.h>
 
+#include <manager/AudioManager.h>
+#include <core/AudioComponent.h>
+
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Processes;
 using namespace Twin2Engine::UI;
@@ -28,8 +31,15 @@ class MinigameManager : public Component {
 
 		Coroutine* waitCoroutine;
 
+		SoLoud::handle WinSound = 0;
+		SoLoud::handle DefeatSound = 0;
+		SoLoud::handle GuitarSound = 0;
+		SoLoud::handle DrumSound = 0;
+		SoLoud::handle LaunchpadSound = 0;
+
 		int playerFieldsNumber = 0;
 		int enemyFieldsNumber = 0;
+		AudioComponent* audioComp = nullptr;
 		void SetupButtons();
 		void PerformTurn();
 
@@ -38,14 +48,16 @@ class MinigameManager : public Component {
 		Text* PlayerScore = nullptr;
 		Text* EnemyScore = nullptr;
 		GameObject* MinigamePlain = nullptr;
+		GameObject* WinPanel = nullptr;
+		GameObject* LostPanel = nullptr;
 		Image* PlayerImage = nullptr;
 		Image* EnemyImage = nullptr;
 		Image* PlayerSelectionImage = nullptr;
 		Image* EnemySelectionImage = nullptr;
 
-		Button* RockButton = nullptr;
-		Button* PapperButton = nullptr;
-		Button* ScissorButton = nullptr;
+		Button* LaunchpadButton = nullptr;
+		Button* GuitarButton = nullptr;
+		Button* DrumButton = nullptr;
 
 		int MaxNumberOfTurns = 5;
 

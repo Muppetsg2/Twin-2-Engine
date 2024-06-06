@@ -35,7 +35,10 @@ void RadioStationState::Score(Enemy* enemy, uint32_t score)
 
 	SPDLOG_INFO("Radio Station Score {0}", score);
 
-	enemy->CurrTile->GetGameObject()->GetComponentInChildren<RadioStation>()->StartTakingOver(enemy, score / 4.0f);
+	if (enemy->CurrTile->GetGameObject()->GetComponentInChildren<RadioStation>())
+	{
+		enemy->CurrTile->GetGameObject()->GetComponentInChildren<RadioStation>()->StartTakingOver(enemy, score / 4.0f);
+	}
 
 	enemy->ChangeState(&enemy->_takingOverState);
 }

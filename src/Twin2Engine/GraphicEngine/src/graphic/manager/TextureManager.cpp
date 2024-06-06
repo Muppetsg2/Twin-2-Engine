@@ -39,6 +39,16 @@ bool TextureManager::IsTextureLoaded(const std::string& path) {
     return _loadedTextures.contains(_hasher(path));
 }
 
+Texture2D* TextureManager::FindTextureWithProgramID(GLuint programId) {
+    auto iter = std::find_if(_loadedTextures.begin(), _loadedTextures.end(), [&](std::pair<size_t, Texture2D*> tex) -> bool {
+        return tex.second->GetId() == programId;
+    });
+
+    if (iter == _loadedTextures.end()) return nullptr;
+
+    return iter->second;
+}
+
 Texture2D* TextureManager::GetTexture2D(size_t managerId)
 {
     if (_loadedTextures.contains(managerId)) {
@@ -148,6 +158,13 @@ std::string TextureManager::GetTexture2DName(const std::string& path) {
     if (!_texturesPaths.contains(_hasher(path))) return "";
     return std::filesystem::path(path).stem().string();
 }
+
+#if _DEBUG
+std::string TextureManager::GetTexture2DPath(size_t managerId) {
+    if (!_texturesPaths.contains(managerId)) return "";
+    return _texturesPaths[managerId];
+}
+#endif
 
 std::map<size_t, std::string> TextureManager::GetAllTexture2DNames() {
     std::map<size_t, std::string> names = std::map<size_t, std::string>();
@@ -414,8 +431,8 @@ void TextureManager::DrawEditor(bool* p_open)
         ImGui::EndDisabled();
 
         if (ImGui::Button("Load##Texture Manager PopUp", ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
-            if (detect) LoadTexture2D(_fileDialogInfo.resultPath.string());
-            else LoadTexture2D(_fileDialogInfo.resultPath.string(), inter, form);
+            if (detect) LoadTexture2D(std::filesystem::relative(_fileDialogInfo.resultPath).string());
+            else LoadTexture2D(std::filesystem::relative(_fileDialogInfo.resultPath).string(), inter, form);
 
             ImGui::CloseCurrentPopup();
         }

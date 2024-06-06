@@ -429,6 +429,7 @@ bool MinigameManager::Deserialize(const YAML::Node& node)
 	return true;
 }
 
+#if _DEBUG
 void MinigameManager::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -440,3 +441,4 @@ void MinigameManager::DrawEditor()
 		//ImGui::DragFloat(string("ABSORPTION##").append(id).c_str(), &CloudController::ABSORPTION);
 	}
 }
+#endif

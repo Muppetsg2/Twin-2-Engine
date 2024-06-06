@@ -1,10 +1,10 @@
+#if _DEBUG
 #include <Editor/Common/MaterialCreator.h>
 
 using namespace std;
 
 void Editor::Common::CreateMaterial(const string& shaderName, const string& materialName)
 {
-    //std::string parameterFilePath = "C:\\Users\\matga\\Desktop\\Mateusz\\Studia\\Semestr_VI\\PSGK\\Engine\\Twin-2-Engine\\tools\\shader_compiler\\bin\\ShadersOrigin/CompiledShaders/" + shaderName + "_parameters.shpa";
     std::string parameterFilePath = "res/shaders/" + shaderName + ".shpr";
 
     // Read default parameters from the parameter file
@@ -41,3 +41,4 @@ void Editor::Common::CreateMaterial(const string& shaderName, const string& mate
 
     std::cout << "Material file created successfully." << std::endl;
 }
+#endif

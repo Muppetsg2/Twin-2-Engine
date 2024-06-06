@@ -24,11 +24,12 @@ void HexagonalColliderComponent::SetYRotation(float v)
 
 void HexagonalColliderComponent::Initialize()
 {
-	if (collider == nullptr)
-		collider = new GameCollider(this, new HexagonalColliderData());
-	collider->colliderComponent = this;
+	if (collider == nullptr) {
+		collider = new GameCollider(this, ColliderShape::HEXAGONAL);
+	}
+
 	TransformChangeAction = [this](Transform* transform) {
-		HexagonalColliderData* hexData = ((HexagonalColliderData*)collider->shapeColliderData);
+		HexagonalColliderData* hexData = (HexagonalColliderData*)collider->shapeColliderData;
 		glm::quat q = transform->GetGlobalRotationQuat() * glm::angleAxis(hexData->Rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 		hexData->u = q * glm::vec3(-0.5f, 0.0f, -0.866f);
 		hexData->v = q * glm::vec3(0.5f, 0.0f, -0.866f);
@@ -44,9 +45,11 @@ void HexagonalColliderComponent::Initialize()
 		collider->shapeColliderData->Position = glm::vec3(transform->GetTransformMatrix() * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f));
 		//SPDLOG_INFO("{}.  NewPos: \t{}\t{}\t{}\t\t\t\tLocPos: \t{}\t{}\t{}", colliderId, collider->shapeColliderData->Position.x, collider->shapeColliderData->Position.y, collider->shapeColliderData->Position.z, collider->shapeColliderData->LocalPosition.x, collider->shapeColliderData->LocalPosition.y, collider->shapeColliderData->LocalPosition.z);
 
-		if (boundingVolume != nullptr) {
-			boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
+		/*
+		if (collider->hasBounding) {
+			collider->boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
 		}
+		*/
 	};
 
 	//TransformChangeAction(GetTransform());
@@ -112,8 +115,9 @@ bool HexagonalColliderComponent::Deserialize(const YAML::Node& node)
 {
 	if (!node["baseLength"] || !node["halfHeight"] || !node["rotation"]) return false;
 
-	if (collider == nullptr)
-		collider = new GameCollider(this, new HexagonalColliderData());
+	if (collider == nullptr) {
+		collider = new GameCollider(this, ColliderShape::HEXAGONAL);
+	}
 
 	if (!ColliderComponent::Deserialize(node)) return false;
 

@@ -1,5 +1,4 @@
-#ifndef _ASTAR_PATHFINDER_H_
-#define _ASTAR_PATHFINDER_H_
+#pragma once
 
 #include <core/Component.h>
 #include <core/GameObject.h>
@@ -125,7 +124,7 @@ namespace AStar
 	public:
 		static void RemapNodes();
 
-		static AStarPathfindingInfo&& FindPath(const glm::vec3& beginPosition, const glm::vec3& endPosition, unsigned int maxPathNodesNumber,
+		static AStarPathfindingInfo FindPath(const glm::vec3& beginPosition, const glm::vec3& endPosition, unsigned int maxPathNodesNumber,
 								Twin2Engine::Tools::Action<const AStarPath&> success, Twin2Engine::Tools::Action<> failure);
 
 		virtual YAML::Node Serialize() const override;
@@ -142,5 +141,3 @@ namespace AStar
 #endif
 	};
 }
-
-#endif // !_ASTAR_PATHFINDER_H_

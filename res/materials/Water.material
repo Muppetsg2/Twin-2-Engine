@@ -44,5 +44,3 @@ material:
     - name: waterSpeed
       type: float
       value: 2
-
-      # -1.8 na y

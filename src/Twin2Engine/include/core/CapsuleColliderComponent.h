@@ -10,7 +10,6 @@ namespace Twin2Engine::Core {
 		Tools::Action<Transform*> TransformChangeAction;
 		size_t TransformChangeActionId = 0;
 	public:
-		CapsuleColliderComponent();
 		void SetEndPosition(float x, float y, float z);
 		void SetEndPosition(const glm::vec3& pos);
 		void SetRadius(float radius);

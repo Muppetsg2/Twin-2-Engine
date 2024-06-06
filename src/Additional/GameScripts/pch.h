@@ -21,6 +21,8 @@
 #include <string>
 #include <utility>
 
+#include <locale>
+#include <codecvt>
 // TILEMAP
 //#include <Tilemap/HexagonalTile.h>
 //#include <Tilemap/HexagonalTilemap.h>

@@ -23,6 +23,10 @@ namespace Twin2Engine
 
 			Tools::STD140Struct _parameters;
 
+#if _DEBUG
+			std::map<size_t, std::string> _textureNames;
+#endif
+
 			std::map<size_t, char> _textureMappings;
 			std::vector<GLuint> _textures;
 
@@ -62,7 +66,7 @@ namespace Twin2Engine
 
 			template<class T>
 			typename std::enable_if_t<Tools::is_type_in_v<T, bool, int, uint32_t, float, double>, T>
-			Get(const std::string& variableName) {
+			Get(const std::string& variableName) const {
 				return _parameters.Get<T>(variableName);
 			}
 
@@ -70,11 +74,12 @@ namespace Twin2Engine
 			typename std::enable_if_t<std::is_same_v<V, glm::vec<L, T>>
 									&& Tools::is_type_in_v<T, bool, int, uint32_t, float, double>
 									&& Tools::is_num_in_range_v<L, 1, 4>, V>
-			Get(const std::string& variableName) {
+			Get(const std::string& variableName) const {
 				return _parameters.Get<V>(variableName);
 			}
 
 #if _DEBUG
+			YAML::Node Serialize() const;
 			void DrawEditor(size_t id);
 #endif
 

@@ -8,11 +8,6 @@
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Physic;
 
-SphereColliderComponent::SphereColliderComponent() : ColliderComponent()
-{
-	collider = new GameCollider(this, new SphereColliderData());
-}
-
 void SphereColliderComponent::SetRadius(float radius)
 {
 	((SphereColliderData*)collider->shapeColliderData)->Radius = radius;
@@ -20,13 +15,18 @@ void SphereColliderComponent::SetRadius(float radius)
 
 void SphereColliderComponent::Initialize()
 {
-	collider->colliderComponent = this;
+	if (collider == nullptr) {
+		collider = new GameCollider(this, ColliderShape::SPHERE);
+	}
+
 	PositionChangeAction = [this](Transform* transform) {
 		collider->shapeColliderData->Position = transform->GetTransformMatrix() * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f);
 
-		if (boundingVolume != nullptr) {
-			boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
+		/*
+		if (collider->hasBounding) {
+			collider->boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
 		}
+		*/
 	};
 
 	PositionChangeAction(GetTransform());
@@ -67,7 +67,13 @@ YAML::Node SphereColliderComponent::Serialize() const
 
 bool SphereColliderComponent::Deserialize(const YAML::Node& node)
 {
-	if (!node["radius"] || !ColliderComponent::Deserialize(node)) return false;
+	if (!node["radius"]) return false;
+
+	if (collider == nullptr) {
+		collider = new GameCollider(this, ColliderShape::SPHERE);
+	}
+		
+	if (!ColliderComponent::Deserialize(node)) return false;
 
 	((SphereColliderData*)collider->shapeColliderData)->Radius = node["radius"].as<float>();
 

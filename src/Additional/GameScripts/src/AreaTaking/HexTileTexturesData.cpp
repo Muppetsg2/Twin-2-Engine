@@ -20,26 +20,19 @@ SO_DESERIALIZATION_END()
 
 vector<vector<Material*>> HexTileTextureData::DeserializationHelperMaterialNamesToMaterials(vector<vector<string>> materialNames)
 {
-	_materialNames = materialNames;
+	_materialNames = std::move(materialNames);
+	_materials.clear();
 
-
-	size_t sizeOuter = materialNames.size();
-	size_t sizeInner = 0ull;
-
-	_materials.reserve(sizeOuter);
-
-	for (size_t i = 0ull; i < sizeOuter; ++i)
+	for (size_t i = 0; i < _materialNames.size(); ++i)
 	{
-		sizeInner = materialNames[i].size();
-
 		vector<Material*> materials;
-		materials.reserve(sizeInner);
-		_materials.push_back(materials);
 
-		for (size_t j = 0ull; j < sizeInner; ++j)
+		for (size_t j = 0; j < _materialNames[i].size(); ++j)
 		{
-			_materials[i].push_back(MaterialsManager::GetMaterial(materialNames[i][j]));
+			materials.push_back(MaterialsManager::GetMaterial(_materialNames[i][j]));
 		}
+
+		_materials.push_back(std::move(materials));
 	}
 
 	return _materials;

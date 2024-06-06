@@ -13,6 +13,10 @@ namespace Twin2Engine::Graphic
 		std::map<size_t, char> _textureMappings;
 		std::vector<GLuint> _textures;
 
+#if _DEBUG
+		std::map<size_t, std::string> _textureNames;
+#endif
+
 		static std::hash<std::string> hasher;
 	public:
 
@@ -33,6 +37,10 @@ namespace Twin2Engine::Graphic
 		void AddTexture2D(const std::string& textureName, unsigned int textureId);
 
 		MaterialParameters* Build();
+
+#if _DEBUG
+		std::map<size_t, std::string> GetParametersNames();
+#endif
 
 		void Clear();
 	};

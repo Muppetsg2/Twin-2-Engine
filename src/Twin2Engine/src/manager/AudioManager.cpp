@@ -497,7 +497,7 @@ void AudioManager::DrawEditor(bool* p_open)
     if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
     {
         // Result path in: m_fileDialogInfo.resultPath
-        LoadAudio(_fileDialogInfo.resultPath.string());
+        LoadAudio(std::filesystem::relative(_fileDialogInfo.resultPath).string());
     }
 
     ImGui::End();

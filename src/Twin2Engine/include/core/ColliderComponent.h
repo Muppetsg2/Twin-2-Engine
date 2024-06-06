@@ -12,7 +12,6 @@ namespace Twin2Engine::Physic {
 }
 
 namespace Twin2Engine::Core {
-	//class GameCollider;
 	class ColliderComponent;
 
 	class ColliderComponent : public Component {
@@ -22,7 +21,7 @@ namespace Twin2Engine::Core {
 
 		static void OnCollisionEnter(Physic::Collision* collision);
 	protected:
-		Physic::BoundingVolume* boundingVolume = nullptr;
+		//Physic::BoundingVolume* boundingVolume = nullptr;
 
 #if _DEBUG
 		bool DrawInheritedFields() override;
@@ -45,8 +44,10 @@ namespace Twin2Engine::Core {
 		virtual void OnDisable() override;
 		virtual void OnDestroy() override;
 
+		/*
 		void EnableBoundingVolume(bool v);
 		void SetBoundingVolumeRadius(float radius);
+		*/
 		void SetLocalPosition(float x, float y, float z);
 
 		Tools::EventHandler<Physic::Collision*>& GetOnTriggerEnterEvent() const;

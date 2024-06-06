@@ -1,5 +1,9 @@
 #include <graphic/manager/TextureManager.h>
 
+#if _DEBUG
+#include <regex>
+#endif
+
 using namespace Twin2Engine;
 using namespace Graphic;
 using namespace Manager;
@@ -431,8 +435,15 @@ void TextureManager::DrawEditor(bool* p_open)
         ImGui::EndDisabled();
 
         if (ImGui::Button("Load##Texture Manager PopUp", ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
-            if (detect) LoadTexture2D(std::filesystem::relative(_fileDialogInfo.resultPath).string());
-            else LoadTexture2D(std::filesystem::relative(_fileDialogInfo.resultPath).string(), inter, form);
+
+            string path = std::filesystem::relative(_fileDialogInfo.resultPath).string();
+
+            if (std::regex_search(path, std::regex("(?:[/\\\\]res[/\\\\])"))) {
+                path = path.substr(path.find("res"));
+            }
+
+            if (detect) LoadTexture2D(path);
+            else LoadTexture2D(path, inter, form);
 
             ImGui::CloseCurrentPopup();
         }

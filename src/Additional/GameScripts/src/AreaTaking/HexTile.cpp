@@ -10,8 +10,6 @@ using namespace Generation;
 using namespace glm;
 using namespace std;
 
-std::vector<std::vector<Material>> HexTile::_coloredHexTileTextures;
-
 float HexTile::_takingStage1 = 30.0f;
 float HexTile::_takingStage2 = 60.0f;
 float HexTile::_takingStage3 = 90.0f;
@@ -100,22 +98,27 @@ void HexTile::LoseInfluence()
 
 void HexTile::UpdateTileColor()
 {
+	TILE_COLOR col = takenEntity != nullptr ? (TILE_COLOR)(uint8_t)(takenEntity->colorIdx == 0 ? 0 : powf(2.f, (float)(takenEntity->colorIdx - 1))) : TILE_COLOR::BLUE;
 	//SPDLOG_INFO("Percentage: {}", percentage);
 	if (percentage < _takingStage1)
 	{
-		_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][0]->GetId());
+		//_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][0]->GetId());
+		_meshRenderer->SetMaterial(0, textuesData->GetMaterial(col, 0));
 	}
 	else if (percentage < _takingStage2)
 	{
-		_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][1]->GetId());
+		//_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][1]->GetId());
+		_meshRenderer->SetMaterial(0, textuesData->GetMaterial(col, 1));
 	}
 	else if (percentage < _takingStage3)
 	{
-		_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][2]->GetId());
+		//_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][2]->GetId());
+		_meshRenderer->SetMaterial(0, textuesData->GetMaterial(col, 2));
 	}
 	else
 	{
-		_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][3]->GetId());
+		//_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][3]->GetId());
+		_meshRenderer->SetMaterial(0, textuesData->GetMaterial(col, 3));
 	}
 
 }
@@ -137,6 +140,7 @@ void HexTile::Initialize()
 void HexTile::OnDestroy()
 {
 	ConcertRoad::instance->RoadMapPoints.erase(this);
+	textuesData = nullptr;
 }
 
 void HexTile::Update()

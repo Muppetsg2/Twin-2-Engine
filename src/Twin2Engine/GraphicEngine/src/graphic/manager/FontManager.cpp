@@ -1,6 +1,10 @@
 #include <graphic/manager/FontManager.h>
 #include <spdlog/spdlog.h>
 
+#if _DEBUG
+#include <regex>
+#endif
+
 using namespace Twin2Engine;
 using namespace Graphic;
 using namespace Manager;
@@ -162,7 +166,15 @@ void FontManager::DrawEditor(bool* p_open) {
     if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
     {
         // Result path in: m_fileDialogInfo.resultPath
-        LoadFont(std::filesystem::relative(_fileDialogInfo.resultPath).string());
+        string path = std::filesystem::relative(_fileDialogInfo.resultPath).string();
+
+        if (std::regex_search(path, std::regex("(?:[/\\\\]res[/\\\\])"))) {
+
+            LoadFont(path.substr(path.find("res")));
+        }
+        else {
+            LoadFont(path);
+        }
     }
 
     ImGui::End();

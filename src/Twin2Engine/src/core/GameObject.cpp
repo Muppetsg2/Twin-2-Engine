@@ -190,10 +190,10 @@ void GameObject::SetActive(bool active)
 
 void GameObject::SetActiveInHierarchy(bool activeInHierarchy)
 {
-	if (_activeInHierarchy != activeInHierarchy) // warunek sprawdzaj�cy czy to ustawienie zmieni stan (musi zmienia� inaczej nie ma sensu dzia��� dalej)
+	if (_activeInHierarchy != activeInHierarchy) // warunek sprawdzajacy czy to ustawienie zmieni stan (musi zmieniac inaczej nie ma sensu dzialac dalej)
 	{
 		_activeInHierarchy = activeInHierarchy; //zmiana stanu
-		if (_activeSelf) // sprawdzenie w�asnego stanu, je�li ustawiony na false to znaczy, �e ten stan dyktuje warunki aktywno�ci wszystkich podrz�dnych obiekt�w
+		if (_activeSelf) // sprawdzenie wlasnego stanu, jezeli ustawiony na false to znaczy, ze ten stan dyktuje warunki aktywnosci wszystkich podrzednych obiektow
 		{
 			for (int index = 0; index < _transform->GetChildCount(); index++)
 			{

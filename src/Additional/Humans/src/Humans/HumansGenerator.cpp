@@ -31,7 +31,7 @@ void HumansGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
     for (auto& city : cities)
     {
         vec3 position = city->GetTransform()->GetGlobalPosition();
-        SPDLOG_INFO("City pos: {} {} {}", position.x, position.y, position.z);
+        //SPDLOG_INFO("City pos: {} {} {}", position.x, position.y, position.z);
     }
 
     GameObject* humanContainer = SceneManager::CreateGameObject();

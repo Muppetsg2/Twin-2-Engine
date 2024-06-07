@@ -48,7 +48,10 @@ public:
 
 #pragma region AlbumAbility
     float albumTime  = 10.0f; // parameter
+private:
     float albumCooldown = 5.0f; // parameter
+public:
+    float usedAlbumCooldown = 5.0f; // parameter
     float currAlbumTime;
     float currAlbumCooldown;
     bool isAlbumActive = false;
@@ -64,7 +67,10 @@ public:
 
 #pragma region FansMeetingAbility
     float fansTime = 10.0f; // parameter
+private:
     float fansCooldown = 10.0f; // parameter
+public:
+    float usedFansCooldown = 10.0f; // parameter
     float currFansTime = 0.0f;
     float currFansCooldown = 0.0f;
     float fansRadius = 3.0f; // parameter
@@ -92,6 +98,21 @@ public:
 
     MoneyFunctionData* moneyFunction;
     //MoneyGainFromTiles* money;
+
+#pragma region EVENTS
+    // ALBUM EVENTS
+    Twin2Engine::Tools::EventHandler<Playable*> OnEventAlbumStarted;
+    Twin2Engine::Tools::EventHandler<Playable*> OnEventAlbumFinished;
+    Twin2Engine::Tools::EventHandler<Playable*> OnEventAlbumCooldownStarted;
+    Twin2Engine::Tools::EventHandler<Playable*> OnEventAlbumCooldownFinished;
+
+    // FANS MEETING EVENTS
+    Twin2Engine::Tools::EventHandler<Playable*> OnEventFansMeetingStarted;
+    Twin2Engine::Tools::EventHandler<Playable*> OnEventFansMeetingFinished;
+    Twin2Engine::Tools::EventHandler<Playable*> OnEventFansMeetingCooldownStarted;
+    Twin2Engine::Tools::EventHandler<Playable*> OnEventFansMeetingCooldownFinished;
+
+#pragma endregion
 
     virtual void Initialize() override;
     virtual void Update() override;
@@ -137,6 +158,8 @@ public:
 
     virtual float GetMaxRadius() const;
     
+    void SetPatron(PatronData* patronData);
+
     float GlobalAvg() const;
     float LocalAvg() const;
     float FansRangeAvg() const;

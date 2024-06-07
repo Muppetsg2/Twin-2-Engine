@@ -26,6 +26,8 @@ void Player::Initialize() {
     albumButton = albumButtonObject->GetComponent<Button>();
     albumText = SceneManager::FindObjectByName("albumAbilityText")->GetComponent<Text>();
 
+    albumCircleImage = SceneManager::FindObjectByName("albumCircle")->GetComponent<Image>();
+
     albumButtonEventHandleId = albumButton->GetOnClickEvent() += [&]() { AlbumCall(); };
 
     albumButtonDestroyedEventHandleId = albumButtonObject->OnDestroyedEvent += [&](GameObject* gameObject) {
@@ -40,10 +42,24 @@ void Player::Initialize() {
         }
         };
 
+    OnEventAlbumStarted.AddCallback([&](Playable* playable) -> void {
+            albumCircleImage->SetColor(_abilityActiveColor);
+            albumCircleImage->GetGameObject()->SetActive(true);
+        });
+    OnEventAlbumCooldownStarted.AddCallback([&](Playable* playable) -> void {
+            albumCircleImage->SetColor(_abilityCooldownColor);
+        });
+    OnEventAlbumCooldownFinished.AddCallback([&](Playable* playable) -> void {
+            albumCircleImage->GetGameObject()->SetActive(false);
+        });
+    albumCircleImage->GetGameObject()->SetActive(false);
+
     // FANS MEETING ABILITY INTIALIZATION
     fansMeetingButtonObject = SceneManager::FindObjectByName("fansMeetingAbility");
     fansMeetingButton = fansMeetingButtonObject->GetComponent<Button>();
     fansMeetingText = SceneManager::FindObjectByName("fansMeetingAbilityText")->GetComponent<Text>();
+
+    fansMeetingCircleImage = SceneManager::FindObjectByName("fansMeetingCircle")->GetComponent<Image>();
 
     fansMeetingButtonEventHandleId = fansMeetingButton->GetOnClickEvent() += [&]() { FansMeetingCall(); };
 
@@ -59,10 +75,25 @@ void Player::Initialize() {
         }
         };
 
+
+    OnEventFansMeetingStarted.AddCallback([&](Playable* playable) -> void {
+        fansMeetingCircleImage->SetColor(_abilityActiveColor);
+        fansMeetingCircleImage->GetGameObject()->SetActive(true);
+        });
+    OnEventFansMeetingCooldownStarted.AddCallback([&](Playable* playable) -> void {
+        fansMeetingCircleImage->SetColor(_abilityCooldownColor);
+        });
+    OnEventFansMeetingCooldownFinished.AddCallback([&](Playable* playable) -> void {
+        fansMeetingCircleImage->GetGameObject()->SetActive(false);
+        });
+    fansMeetingCircleImage->GetGameObject()->SetActive(false);
+
     // CONCERT ABILITY INTIALIZATION
     concertButtonObject = SceneManager::FindObjectByName("concertAbility");
     concertButton = concertButtonObject->GetComponent<Button>();
     concertText = SceneManager::FindObjectByName("concertAbilityText")->GetComponent<Text>();
+
+    concertCircleImage = SceneManager::FindObjectByName("concertCircle")->GetComponent<Image>();
 
     concertButtonEventHandleId = concertButton->GetOnClickEvent() += [&]() { ConcertCall(); };
 
@@ -77,6 +108,19 @@ void Player::Initialize() {
                 concertButton = nullptr;
             }
         };
+
+
+    concertAbility->OnEventAbilityStarted.AddCallback([&](Playable* playable) -> void {
+        concertCircleImage->SetColor(_abilityActiveColor);
+        concertCircleImage->GetGameObject()->SetActive(true);
+        });
+    concertAbility->OnEventAbilityCooldownStarted.AddCallback([&](Playable* playable) -> void {
+        concertCircleImage->SetColor(_abilityCooldownColor);
+        });
+    concertAbility->OnEventAbilityCooldownFinished.AddCallback([&](Playable* playable) -> void {
+        concertCircleImage->GetGameObject()->SetActive(false);
+        });
+    concertCircleImage->GetGameObject()->SetActive(false);
 
     // MONEY UI INITIALIZATION
     moneyText = SceneManager::FindObjectByName("MoneyText")->GetComponent<Text>();
@@ -135,10 +179,12 @@ void Player::Update() {
     // CONCERT ABILITY UI MANAGEMENT
     if (concertAbility->GetAbilityRemainingTime() > 0.0f)
     {
+        concertCircleImage->SetFillProgress(100.0f - concertAbility->GetAbilityRemainingTime() / concertAbility->lastingTime * 100.0f);
         concertText->SetText(std::wstring((L"Concert: " + std::to_wstring(static_cast<int>(concertAbility->GetAbilityRemainingTime())) + L"s")));
     }
     else if (concertAbility->GetCooldownRemainingTime() > 0.0f)
     {
+        concertCircleImage->SetFillProgress(concertAbility->GetCooldownRemainingTime() / concertAbility->GetCooldown() * 100.0f);
         concertText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(concertAbility->GetCooldownRemainingTime())) + L"s")));
     }
     else
@@ -167,10 +213,12 @@ void Player::Update() {
         // CONCERT ABILITY UI MANAGEMENT
         if (currAlbumTime > 0.0f)
         {
+            albumCircleImage->SetFillProgress(100.0f - currAlbumTime / albumTime * 100.0f);
             albumText->SetText(std::wstring((L"Album: " + std::to_wstring(static_cast<int>(currAlbumTime)) + L"s")));
         }
         else if (currAlbumCooldown > 0.0f)
         {
+            albumCircleImage->SetFillProgress(currAlbumCooldown / usedAlbumCooldown * 100.0f);
             albumText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currAlbumCooldown)) + L"s")));
         }
         else
@@ -189,10 +237,12 @@ void Player::Update() {
         // FANS MEETINNG ABILITY UI MANAGEMENT
         if (currFansTime > 0.0f)
         {
+            fansMeetingCircleImage->SetFillProgress(100.0f - currFansTime / fansTime * 100.0f);
             fansMeetingText->SetText(std::wstring((L"Fans Meeting: " + std::to_wstring(static_cast<int>(currFansTime)) + L"s")));
         }
         else if (currFansCooldown > 0.0f)
         {
+            fansMeetingCircleImage->SetFillProgress(currFansCooldown / usedFansCooldown * 100.0f);
             fansMeetingText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currFansCooldown)) + L"s")));
         }
         else
@@ -472,6 +522,12 @@ YAML::Node Player::Serialize() const
 {
     YAML::Node node = Playable::Serialize();
     node["type"] = "Player";
+    node["abilityActiveColor"] = _abilityActiveColor;
+    node["abilityCooldownColor"] = _abilityCooldownColor;
+
+    //node["albumCircleImage"] = albumCircleImage->GetId();
+    //node["fansMeetingCircleImage"] = fansMeetingCircleImage->GetId();
+    //node["concertCircleImage"] = concertCircleImage->GetId();
 
     return node;
 }
@@ -480,6 +536,12 @@ bool Player::Deserialize(const YAML::Node& node)
 {
     if (!Playable::Deserialize(node))
         return false;
+
+    _abilityActiveColor = node["abilityActiveColor"].as<vec4>();
+    _abilityCooldownColor = node["abilityCooldownColor"].as<vec4>();
+    //albumCircleImage = (Image*)SceneManager::GetComponentWithId(node["albumCircleImage"].as<size_t>());
+    //fansMeetingCircleImage = (Image*)SceneManager::GetComponentWithId(node["fansMeetingCircleImage"].as<size_t>());
+    //concertCircleImage = (Image*)SceneManager::GetComponentWithId(node["concertCircleImage"].as<size_t>());
 
     return true;
 }
@@ -493,6 +555,8 @@ void Player::DrawEditor()
 
         if (Component::DrawInheritedFields()) return;
 
+        ImGui::ColorEdit4("AbilityActiveColor", (float*)(&_abilityActiveColor));
+        ImGui::ColorEdit4("AbilityCooldownColor", (float*)(&_abilityCooldownColor));
         // TODO: Zrobic
     }
 }

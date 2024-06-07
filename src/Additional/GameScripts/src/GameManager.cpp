@@ -98,7 +98,8 @@ GameObject* GameManager::GeneratePlayer() {
     freeColors.erase(freeColors.begin() + chosen);
     //p->colorIdx = chosen;
 
-    p->patron = playersPatron;
+    //p->patron = playersPatron;
+    p->SetPatron(playersPatron);
 
     _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), playersPatron));
 
@@ -128,7 +129,8 @@ GameObject* GameManager::GenerateEnemy() {
     e->GetGameObject()->GetComponent<MeshRenderer>()->SetMaterial(0ull, _carMaterials[e->colorIdx]);
 
     unsigned chosenPatron = Random::Range<unsigned>(0u, _freePatronsData.size() - 1ull);
-    e->patron = _freePatronsData[chosenPatron];
+    //e->patron = _freePatronsData[chosenPatron];
+    e->SetPatron(_freePatronsData[chosenPatron]);
     _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), e->patron));
     /*float h = Random.Range(0f, 1f);
     float s = Random.Range(.7f, 1f);

@@ -9,6 +9,7 @@
 #include <tools/EventHandler.h>
 #include <locale>
 #include <codecvt>
+#include <ui/Canvas.h>
 
 using namespace Twin2Engine;
 using namespace UI;
@@ -18,6 +19,20 @@ using namespace Manager;
 using namespace Tools;
 using namespace glm;
 using namespace std;
+
+void Text::SetCanvas(Canvas* canvas)
+{
+	if (_canvas != canvas) {
+		if (_canvas != nullptr) {
+			_canvas->GetOnCanvasDestroy() -= _onCanvasDestroyId;
+		}
+
+		_canvas = canvas;
+		if (_canvas != nullptr) {
+			_onCanvasDestroyId = (_canvas->GetOnCanvasDestroy() += [&](Canvas* canv) -> void { SetCanvas(nullptr); });
+		}
+	}
+}
 
 // TODO: Jest jakiœ b³¹d przy d³ugim paru linijkowym tekscie (OVERFLOW, CENTER, BOTTOM)
 void Text::UpdateTextMesh()
@@ -293,6 +308,14 @@ void Text::UpdateTextMesh()
 	_textDirty = false;
 }
 
+void Text::Initialize()
+{
+	_onParentInHierarchiChangeId = (GetTransform()->OnEventInHierarchyParentChanged += [&](Transform* t) -> void {
+		SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
+		});
+	SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
+}
+
 void Text::Update()
 {
 	if (_textDirty) {
@@ -303,8 +326,13 @@ void Text::Update()
 void Text::Render()
 {
 	UITextData text{};
-	text.canvas = nullptr; // Na razie tylko na ekranie
-	text.layer = 0; // Domyœlny layer
+	if (_canvas == nullptr) {
+		text.canvas = nullptr; // Na razie tylko na ekranie
+	}
+	else {
+		text.canvas = &_canvas->_data;
+	}
+	text.layer = _layer;
 	text.color = _color;
 
 	mat4 model = GetTransform()->GetTransformMatrix();
@@ -332,6 +360,12 @@ void Text::Render()
 
 		UIRenderingManager::Render(text);
 	}
+}
+
+void Text::OnDestroy()
+{
+	SetCanvas(nullptr);
+	GetTransform()->OnEventInHierarchyParentChanged -= _onParentInHierarchiChangeId;
 }
 
 YAML::Node Text::Serialize() const

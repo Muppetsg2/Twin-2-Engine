@@ -6,11 +6,9 @@
 namespace Twin2Engine::UI {
 	class Image;
 	class Text;
+	class Button;
+	class InputField;
 
-	// TODO: add Canvas To Text
-	// TODO: add Canvas To Image
-	// TODO: add Canvas To Button
-	// TODO: add Canvas To InputField
 	class Canvas : public Core::Component {
 	private:
 		size_t _onTransformChangeId;
@@ -24,6 +22,9 @@ namespace Twin2Engine::UI {
 		Tools::EventHandler<Canvas*> _OnCanvasDestory;
 
 		friend class Image;
+		friend class Text;
+		friend class Button;
+		friend class InputField;
 
 	public:
 		void Initialize() override;

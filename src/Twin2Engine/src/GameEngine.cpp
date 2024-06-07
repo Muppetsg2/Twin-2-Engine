@@ -32,8 +32,6 @@ void GameEngine::Deserializers()
 
     ADD_COMPONENT("InputField", InputField);
 
-    ADD_COMPONENT("Mask", Mask);
-
     ADD_COMPONENT("Canvas", Canvas);
 
     ADD_COMPONENT("MeshRenderer", MeshRenderer);

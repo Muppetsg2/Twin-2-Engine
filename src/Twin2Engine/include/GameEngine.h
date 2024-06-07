@@ -26,7 +26,6 @@
 #include <ui/Text.h>
 #include <ui/Button.h>
 #include <ui/InputField.h>
-#include <ui/Mask.h>
 #include <ui/Canvas.h>
 #include <core/MeshRenderer.h>
 #include <core/AudioComponent.h>

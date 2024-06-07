@@ -109,11 +109,17 @@ void main() {
 	vec2 invCanvasSize;
 	if (canvasIsActive) {
 		canvasTransform = canvasRect.transform;
-		invCanvasSize = 1.0 / canvasRect.size;
+		if (canvasRect.size != vec2(0.0, 0.0))
+			invCanvasSize = 1.0 / canvasRect.size;
+		else
+			invCanvasSize = vec2(0.0, 0.0);
 	}
 	else {
 		canvasTransform = mat4(1.0);
-		invCanvasSize = 1.0 / windowSize;
+		if (windowSize != vec2(0.0, 0.0))
+			invCanvasSize = 1.0 / windowSize;
+		else
+			invCanvasSize = vec2(0.0, 0.0);
 	}
 	invCanvasTransform = inverse(canvasTransform);
 

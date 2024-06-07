@@ -6,7 +6,6 @@
 namespace Twin2Engine::UI {
 	class Canvas;
 
-	// TODO: Canvas wybierany przez przeszukanie parentów
 	class Image : public Core::RenderableComponent {
 	private:
 		size_t _spriteId = 0;

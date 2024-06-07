@@ -30,13 +30,13 @@ class Playable : public Twin2Engine::Core::Component {
 protected:
     virtual void OnDead() = 0;
 
+    Tilemap::HexagonalTilemap* _tilemap = nullptr;
+
 public:
     struct MinMaxPair {
         float min;
         float max;
     };
-
-    Tilemap::HexagonalTilemap* _tilemap = nullptr;
 
     std::list<std::pair<HexTile*, float>> albumTakingOverTiles;
 
@@ -146,6 +146,8 @@ public:
     std::vector<HexTile*> GetInMoveRangeTiles() const;
     std::vector<HexTile*> GetFansRangeTiles() const;
     static std::vector<HexTile*> GetInRangeTiles(HexTile* centerTile, float range);
+
+    virtual void SetTileMap(Tilemap::HexagonalTilemap* map);
 
 public:
     virtual YAML::Node Serialize() const override;

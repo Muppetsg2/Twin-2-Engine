@@ -83,6 +83,8 @@ public:
 
 	float GetMaxRadius() const override;
 
+	virtual void SetTileMap(Tilemap::HexagonalTilemap* map) override;
+
 protected:
 	virtual void OnDead() override;
 

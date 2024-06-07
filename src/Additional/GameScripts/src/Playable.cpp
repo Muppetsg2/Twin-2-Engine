@@ -12,7 +12,10 @@ using namespace Twin2Engine::Physic;
 
 void Playable::Initialize()
 {
-    _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
+    GameObject* obj = SceneManager::FindObjectByType<Tilemap::HexagonalTilemap>();
+    if (obj != nullptr) {
+        SetTileMap(obj->GetComponent<Tilemap::HexagonalTilemap>());
+    }
     //if (patron->GetPatronBonus() == PatronBonus::ABILITIES_COOLDOWN) {
     //    albumCooldown *= patron->GetBonus() / 100.0f;
     //    fansCooldown *= patron->GetBonus() / 100.0f;
@@ -491,6 +494,11 @@ std::vector<HexTile*> Playable::GetInRangeTiles(HexTile* centerTile, float range
     tiles.clear();
 
     return filteredTiles;
+}
+
+void Playable::SetTileMap(Tilemap::HexagonalTilemap* map)
+{
+    _tilemap = map;
 }
 
 YAML::Node Playable::Serialize() const

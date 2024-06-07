@@ -25,7 +25,6 @@ class Player : public Playable {
 private:
     //static Mesh* hexMesh;
     Twin2Engine::Core::GameObject* hexIndicator;
-    Tilemap::HexagonalTilemap* _tilemap = nullptr;
     ConcertAbilityController* concertAbility;
 
     MoneyGainFromTiles* money;

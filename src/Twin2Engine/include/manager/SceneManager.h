@@ -84,6 +84,17 @@ namespace Twin2Engine::Manager {
 		static Core::GameObject* GetRootObject();
 		static Core::GameObject* FindObjectByName(const std::string& name);
 
+		template<class T>
+		static typename std::enable_if_t<is_base_of_v<Core::Component, T>, Core::GameObject*> FindObjectByType() {
+			for (auto& i : _componentsById) {
+				if (dynamic_cast<T*>(i.second) != nullptr) {
+					return i.second->GetGameObject();
+				}
+			}
+
+			return nullptr;
+		}
+
 		static Core::GameObject* GetGameObjectWithId(size_t id);
 		static Core::Component* GetComponentWithId(size_t id);
 		template<class T> static T* GetComponentWithId(size_t id) {

@@ -1,0 +1,58 @@
+Textures: ~
+Sprites: ~
+Fonts:
+  - id: 0
+    path: res/fonts/Caveat-Regular.ttf
+Audio: ~
+Materials: ~
+Models:
+  - id: 0
+    path: "{Plane}"
+Prefabs: ~
+ScriptableObjects: ~
+GameObjects:
+  - id: 1
+    name: Camera
+    isStatic: false
+    isActive: true
+    transform:
+      id: 1
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 2
+        enabled: true
+        type: Camera
+        fov: 45
+        nearPlane: 0.100000001
+        farPlane: 1000
+        cameraFilter: 0
+        cameraType: 1
+        cameraMode: 0
+        samples: 4
+        renderRes: 0
+        gamma: 2.20000005
+        brightness: 0
+        contrast: 1
+        worldUp:
+          x: 0
+          y: 1
+          z: 0
+        isMain: true
+        isFrustum: true
+        isSSAO: true
+        ssaoSampleRadius: 0.7
+        ssaoBias: 0.01
+        blurMSize: 5
+    children:
+      []

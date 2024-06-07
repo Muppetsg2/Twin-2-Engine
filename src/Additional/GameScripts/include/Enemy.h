@@ -74,8 +74,6 @@ public:
 	virtual void Update() override;
 	virtual void OnDestroy() override;
 
-	void FinishedMovement(HexTile* hexTile);
-
 	virtual void LostPaperRockScissors(Playable* playable) override;
 	virtual void WonPaperRockScissors(Playable* playable) override;
 	virtual void LostFansControl(Playable* playable) override;

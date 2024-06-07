@@ -60,17 +60,6 @@ void Enemy::Update()
     }
 }
 
-
-void Enemy::FinishedMovement(HexTile* hexTile)
-{
-    if (CurrTile && CurrTile != hexTile)
-    {
-        CurrTile->StopTakingOver(this);
-    }
-    CurrTile = hexTile;
-    hexTile->StartTakingOver(this);
-}
-
 void Enemy::LostPaperRockScissors(Playable* playable)
 {
     CurrTile->StopTakingOver(this);

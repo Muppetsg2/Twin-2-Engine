@@ -308,15 +308,20 @@ void MovingState::Enter(Enemy* enemy)
 		ChooseTile(enemy);
 	});
 	size_t ofmId = (enemy->_movement->OnFinishMoving += [enemy](GameObject* gameObject, HexTile* tile) {
+		if (enemy->CurrTile && enemy->CurrTile != tile)
+		{
+			enemy->CurrTile->StopTakingOver(enemy);
+		}
+		enemy->CurrTile = tile;
+		tile->StartTakingOver(enemy);
+
 		if (tile->occupyingEntity != nullptr) {
-			enemy->FinishedMovement(tile);
 			enemy->ChangeState(&enemy->_fightingState);
 		}
 		else if (tile->GetMapHexTile()->type == MapHexTile::HexTileType::RadioStation) {
 			enemy->ChangeState(&enemy->_radioStationState);
 		}
 		else {
-			enemy->FinishedMovement(tile);
 			_afterMoveDecisionTree.ProcessNode(enemy);
 		}
 	});

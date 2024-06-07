@@ -730,6 +730,9 @@ GameObjects:
         isMain: true
         isFrustum: true
         isSSAO: true
+        ssaoSampleRadius: 0.7
+        ssaoBias: 0.01
+        blurMSize: 5
       - id: 2
         enabled: true
         type: Audio

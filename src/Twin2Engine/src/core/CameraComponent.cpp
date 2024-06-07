@@ -1045,11 +1045,14 @@ YAML::Node CameraComponent::Serialize() const
 	node["renderRes"] = _renderRes;
 	node["gamma"] = _gamma;
 	node["brightness"] = _brightness;
-	node["contarst"] = _contrast;
+	node["contrast"] = _contrast;
 	node["worldUp"] = _worldUp;
 	node["isMain"] = _isMain;
 	node["isFrustum"] = _isFrustumCulling;
 	node["isSSAO"] = _isSsao;
+	node["ssaoSampleRadius"] = _ssaoSampleRadius;
+	node["ssaoBias"] = _ssaoBias;
+	node["blurMSize"] = _blurMSize;
 	return node;
 }
 
@@ -1058,7 +1061,8 @@ bool CameraComponent::Deserialize(const YAML::Node& node) {
 		!node["cameraFilter"] || !node["cameraType"] || !node["cameraMode"] ||
 		!node["samples"] || !node["renderRes"] || !node["gamma"] || 
 		!node["brightness"] || !node["contrast"] || !node["worldUp"] ||
-		!node["isMain"] || !node["isFrustum"] || !node["isSSAO"] ||
+		!node["isMain"] || !node["isFrustum"] || !node["isSSAO"] || 
+		!node["ssaoSampleRadius"] || !node["ssaoBias"] || !node["blurMSize"] ||
 		!Component::Deserialize(node)) return false;
 
 	_fov = node["fov"].as<float>();
@@ -1076,6 +1080,9 @@ bool CameraComponent::Deserialize(const YAML::Node& node) {
 	_isMain = node["isMain"].as<bool>();
 	_isFrustumCulling = node["isFrustum"].as<bool>();
 	_isSsao = node["isSSAO"].as<bool>();
+	_ssaoSampleRadius = node["ssaoSampleRadius"].as<float>();
+	_ssaoBias = node["ssaoBias"].as<float>();
+	SetBlurMatrixSize(node["blurMSize"].as<size_t>());
 
 	return true;
 }

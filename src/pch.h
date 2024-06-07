@@ -22,8 +22,11 @@
 
 #if _DEBUG
 	#define IMGUI_IMPL_OPENGL_LOADER_GLAD
+	#include <imgui_impl/IconsFontAwesome6.h>
+	#include <imgui_impl/IconsFontAwesome6Brands.h>
 	#include <imgui_impl/imgui_user.h>
 	#include <imgui_impl/imgui_filedialog.h>
+	#include <imgui_impl/imgui_combofilter.h>
 	#include <imgui.h>
 	#include <imgui_impl/imgui_stdlib.h>
 	#include <imgui_impl/imgui_impl_glfw.h>

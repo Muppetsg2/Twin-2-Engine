@@ -301,7 +301,8 @@ int main(int, char**)
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/BlankScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/PatronChoice.scene");
-    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    SceneManager::AddScene("testScene", "res/scenes/Making Game UI.scene");
     //SceneManager::AddScene("testScene", "res/scenes/MenuScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
@@ -383,19 +384,6 @@ void input()
 
     CameraComponent* c = CameraComponent::GetMainCamera();
 
-    //if (Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT)) {
-    //    static int i = 1;
-    //    RaycastHit raycast;
-    //    Ray ray = c->GetScreenPointRay(Input::GetCursorPos());
-    //    CollisionManager::Instance()->Raycast(ray, raycast);
-    //    if (raycast.collider != nullptr) {
-    //        SPDLOG_INFO("[Click {}].\t {}. collider:\ncolpos: \t{}\t{}\t{} \nintpos: \t{}\t{}\t{}", i++, raycast.collider->colliderId, raycast.collider->collider->shapeColliderData->Position.x, raycast.collider->collider->shapeColliderData->Position.y, raycast.collider->collider->shapeColliderData->Position.z, raycast.position.x, raycast.position.y, raycast.position.z);
-    //    }
-    //    else {
-    //        SPDLOG_INFO("Collision not happened!");
-    //    }
-    //}
-
 
 #if _DEBUG
     if (Input::IsKeyDown(KEY::W) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
@@ -415,13 +403,6 @@ void input()
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetRight() * cameraSpeed * Time::GetDeltaTime());
     }
 #endif
-
-    //if (LightingController::IsInstantiated() && moved) {
-    //    //glm::vec3 cp = c->GetTransform()->GetGlobalPosition();
-    //    //LightingController::Instance()->SetViewerPosition(cp);
-    //    LightingController::Instance()->UpdateOnTransformChange();
-    //}
-
 
     if (Input::IsKeyPressed(KEY::LEFT_ALT))
     {
@@ -561,8 +542,23 @@ void init_imgui()
     //io.Fonts->AddFontDefault();
     ImFont* font = io.Fonts->AddFontFromFileTTF("./res/fonts/Editor/NotoSans-Regular.ttf", 18.f, nullptr, ImGui::GetGlyphRangesPolish());
     IM_ASSERT(font != NULL);
+
+    // ICONS
+    ImFontConfig config;
+    config.MergeMode = true;
+    config.GlyphMinAdvanceX = 13.0f; // Use if you want to make the icon monospaced
+    static const ImWchar icon_ranges_brand[] = { ICON_MIN_FAB, ICON_MAX_FAB, 0 };
+    static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+    font = io.Fonts->AddFontFromFileTTF("./res/fonts/Editor/" FONT_ICON_FILE_NAME_FAB, 13.0f, &config, icon_ranges_brand);
+    IM_ASSERT(font != NULL);
+    font = io.Fonts->AddFontFromFileTTF("./res/fonts/Editor/" FONT_ICON_FILE_NAME_FAR, 13.0f, &config, icon_ranges);
+    IM_ASSERT(font != NULL);
+    font = io.Fonts->AddFontFromFileTTF("./res/fonts/Editor/" FONT_ICON_FILE_NAME_FAS, 13.0f, &config, icon_ranges);
+    IM_ASSERT(font != NULL);
+
     font = io.Fonts->AddFontFromFileTTF("./res/fonts/Editor/NotoSans-Bold.ttf", 18.f, nullptr, ImGui::GetGlyphRangesPolish());
     IM_ASSERT(font != NULL);
+
     io.Fonts->Build();
 }
 

@@ -4,9 +4,15 @@
 #include <graphic/Sprite.h>
 
 namespace Twin2Engine::UI {
+	class Canvas;
+
 	class Image : public Core::RenderableComponent {
 	private:
 		size_t _spriteId = 0;
+		size_t _onTransformChangeId = 0;
+		size_t _onParentInHierarchiChangeId = 0;
+		size_t _onCanvasDestroyId = 0;
+		Canvas* _canvas = nullptr;
 		Manager::UIImageData _data = { 
 			nullptr /* canvas */,	
 			nullptr /* mask */, 
@@ -24,8 +30,12 @@ namespace Twin2Engine::UI {
 			nullptr /* sprite */
 		};
 
+		void SetCanvas(Canvas* canvas);
+
 	public:
+		virtual void Initialize() override;
 		virtual void Render() override;
+		virtual void OnDestroy() override;
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
 		

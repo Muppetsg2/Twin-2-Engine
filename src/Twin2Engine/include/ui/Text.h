@@ -16,6 +16,7 @@ namespace Twin2Engine::UI {
 	};
 
 	class InputField;
+	class Canvas;
 
 	class Text : public Core::RenderableComponent {
 	private:
@@ -49,12 +50,21 @@ namespace Twin2Engine::UI {
 		std::vector<TextCharacter> _textCharCache;
 		std::vector<TextCharacter> _displayTextCharCache;
 
+		size_t _onParentInHierarchiChangeId = 0;
+		size_t _onCanvasDestroyId = 0;
+		Canvas* _canvas = nullptr;
+
 		friend class InputField;
+
+		void SetCanvas(Canvas* canvas);
 	public:
+		// TODO: Repair Text Mesh
 		void UpdateTextMesh();
 
+		void Initialize() override;
 		void Update() override;
 		void Render() override;
+		void OnDestroy() override;
 		YAML::Node Serialize() const override;
 		bool Deserialize(const YAML::Node& node) override;
 		

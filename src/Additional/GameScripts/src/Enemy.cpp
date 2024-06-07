@@ -19,6 +19,10 @@ void Enemy::ChangeState(State<Enemy*>* newState) {
 
 void Enemy::SetMoveDestination(HexTile* tile)
 {
+    if (CurrTile && CurrTile != tile)
+    {
+        CurrTile->StopTakingOver(this);
+    }
     _movement->SetDestination(tile);
 }
 

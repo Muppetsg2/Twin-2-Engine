@@ -33,8 +33,8 @@ namespace Tilemap
 		HexagonalTile(HexagonalTilemap* tilemap, const glm::ivec2& position);
 		~HexagonalTile();
 
-		inline HexagonalTilemap* GetTilemap() const;
-		inline glm::ivec2 GetPosition() const;
+		HexagonalTilemap* GetTilemap() const;
+		glm::ivec2 GetPosition() const;
 
 		Twin2Engine::Core::GameObject* GetGameObject() const;
 		void SetGameObject(Twin2Engine::Core::GameObject* gameObject);

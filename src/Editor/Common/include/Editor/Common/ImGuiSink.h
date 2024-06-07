@@ -1,6 +1,6 @@
 #pragma once
 
-#define MAX_LOG_DRAW 250
+#define MAX_LOG_DRAW 500
 #define COLLAPSE 2
 
 namespace Editor::Common
@@ -144,8 +144,6 @@ namespace Editor::Common
             size_t size = MessageHolder::logMessages.size();
             if (size > 1) {
                 std::string m1 = message.substr(26);
-
-                MessageHolder::logMessages.begin();
 
                 auto item = std::find_if(MessageHolder::logMessages.begin(), MessageHolder::logMessages.end(), [&](ImGuiLogMessage& mess) -> bool {
                     std::string m2 = mess.messageContent.substr(26);
@@ -325,6 +323,10 @@ namespace Editor::Common
                 ImGui::Separator();
                 ImGui::TextColored(messages[i - 1].color, "%s", messages[i - 1].content.c_str());
 
+                float height = ImGui::CalcTextSize(messages[i - 1].content.c_str()).y - ImGui::GetTextLineHeight();
+
+                y += height / 2.f;
+
                 if (messages[i - 1].count > 1) {
                     draw_list->AddRectFilled(ImVec2(x, y), ImVec2(x + maxTextWidth, y + ImGui::GetTextLineHeight()), ImColor(ImVec4(0.5f, 0.5f, 0.5f, 1.0f)), 10.0f);
                     std::string text = messages[i - 1].count > 999 ? std::string("999+") : std::to_string(messages[i - 1].count);
@@ -334,7 +336,7 @@ namespace Editor::Common
                     draw_list->AddText(ImVec2(x + (maxTextWidth - width) / 2.f, y), ImColor(ImVec4(1.0f, 1.0f, 1.0f, 1.0f)), text.c_str());
                 }
 
-                y += ImGui::GetTextLineHeight() + 4 + 4;
+                y += height / 2.f + ImGui::GetTextLineHeight() + 4 + 4;
             }
             ImGui::Separator();
 #elif COLLAPSE == 2
@@ -347,6 +349,10 @@ namespace Editor::Common
                 ImGui::Separator();
                 ImGui::TextColored(messages[i - 1].color, "%s", messages[i - 1].content.c_str());
 
+                float height = ImGui::CalcTextSize(messages[i - 1].content.c_str()).y - ImGui::GetTextLineHeight();
+
+                y += height / 2.f;
+
                 draw_list->AddRectFilled(ImVec2(x, y), ImVec2(x + maxTextWidth, y + ImGui::GetTextLineHeight()), ImColor(ImVec4(0.5f, 0.5f, 0.5f, 1.0f)), 10.0f);
                 std::string text = messages[i - 1].count > 999 ? std::string("999+") : std::to_string(messages[i - 1].count);
 
@@ -354,7 +360,7 @@ namespace Editor::Common
 
                 draw_list->AddText(ImVec2(x + (maxTextWidth - width) / 2.f, y), ImColor(ImVec4(1.0f, 1.0f, 1.0f, 1.0f)), text.c_str());
 
-                y += ImGui::GetTextLineHeight() + 4 + 4;
+                y += height / 2.f + ImGui::GetTextLineHeight() + 4 + 4;
             }
             ImGui::Separator();
 #endif

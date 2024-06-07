@@ -29,98 +29,20 @@ GameCollider::GameCollider(Twin2Engine::Core::ColliderComponent* colliderCompone
 		shapeColliderData = new SphereColliderData();
 		break;
 	}
-
-	/*
-	boundingVolume = new BoundingVolume(BoundingShape::SPHERE);
-	*/
 }
-
-/*
-GameCollider::GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, SphereColliderData* sphereColliderData)
-	: colliderComponent(colliderComponent) {
-	colliderShape = ColliderShape::SPHERE;
-	shapeColliderData = sphereColliderData;
-}
-
-GameCollider::GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, BoxColliderData* boxColliderData)
-	: colliderComponent(colliderComponent) {
-	colliderShape = ColliderShape::BOX;
-	shapeColliderData = boxColliderData;
-}
-
-GameCollider::GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, CapsuleColliderData* capsuleColliderData)
-	: colliderComponent(colliderComponent) {
-	colliderShape = ColliderShape::CAPSULE;
-	shapeColliderData = capsuleColliderData;
-}
-
-GameCollider::GameCollider(Twin2Engine::Core::ColliderComponent* colliderComponent, HexagonalColliderData* hexagonalColliderData)
-	: colliderComponent(colliderComponent) {
-	colliderShape = ColliderShape::HEXAGONAL;
-	shapeColliderData = hexagonalColliderData;
-}
-*/
 
 GameCollider::~GameCollider() {
 	LastFrameCollisions.clear();
 	colliderComponent = nullptr;
-	//delete boundingVolume;
-	//boundingVolume = nullptr;
 }
-
-/*
-void GameCollider::EnableBounding() {
-	if (!hasBounding)
-		hasBounding = true;
-}
-
-void GameCollider::DisableBounding() {
-	if (hasBounding)
-		hasBounding = false;
-}
-*/
-
-/*
-Collision* GameCollider::testBoundingVolume(BoundingVolume* other) const {
-	if (other != nullptr) {
-		if (hasBounding) {
-			return testCollision(this->boundingVolume, other, false);
-		}
-		else {
-			return testCollision((Collider*)this, other, false);
-		}
-	}
-	else {
-		return nullptr;
-	}
-}
-
-Collision* GameCollider::testBoundingVolume(GameCollider* other) const {
-	if (hasBounding && other->hasBounding) {
-		return testCollision(boundingVolume, other->boundingVolume, false);
-	}
-	else if (!hasBounding && other->hasBounding) {
-		return testCollision((Collider*)this, other->boundingVolume, false);
-	}
-	else if (hasBounding && !other->hasBounding) {
-		return testCollision(boundingVolume, (Collider*)other, false);
-	}
-	else {
-		return nullptr;
-	}
-}
-*/
 
 Collision* GameCollider::testColliders(GameCollider* collider) const {
 	return testCollision((Collider*)this, (Collider*)collider, !(isTrigger || collider->isTrigger));
 }
 
 Collision* GameCollider::collide(Collider* other) {
-	/*
-	if (other->isBoundingVolume) {
-		return testBoundingVolume((BoundingVolume*)other);
-	}
-	else*/ if (enabled && ((GameCollider*)other)->enabled) {
+
+	if (enabled && ((GameCollider*)other)->enabled) {
 
 		Collision* collision = testColliders((GameCollider*)other);
 
@@ -131,7 +53,7 @@ Collision* GameCollider::collide(Collider* other) {
 
 				if (isTrigger) {
 					//Execute OnTriggerEnter
-					SPDLOG_INFO("{} - OnTriggerEnter", colliderComponent->colliderId);
+					//SPDLOG_INFO("{} - OnTriggerEnter", colliderComponent->colliderId);
 					Collision* col = new Collision();
 					col->collider = (GameCollider*)collision->collider;
 					col->otherCollider = (GameCollider*)collision->otherCollider;
@@ -148,8 +70,7 @@ Collision* GameCollider::collide(Collider* other) {
 					if (isStatic) {
 						if (((GameCollider*)other)->isStatic) {
 							//separacja obu gameobjektów
-							SPDLOG_INFO("{} - separacja obu gameobjektów ({}, {}, {})", colliderComponent->colliderId, collision->separation.x,
-								collision->separation.y, collision->separation.z);
+							//SPDLOG_INFO("{} - separacja obu gameobjektów ({}, {}, {})", colliderComponent->colliderId, collision->separation.x, collision->separation.y, collision->separation.z);
 							colliderComponent->GetTransform()->SetGlobalPosition(
 								colliderComponent->GetTransform()->GetGlobalPosition() + collision->separation);
 							((GameCollider*)other)->colliderComponent->GetTransform()->SetGlobalPosition(
@@ -157,9 +78,7 @@ Collision* GameCollider::collide(Collider* other) {
 						}
 						else {
 							//separacje drugiego gameobjekta
-							SPDLOG_INFO("{} - separacje drugiego gameobjekta ({}, {}, {})", colliderComponent->colliderId, collision->separation.x,
-								collision->separation.y, collision->separation.z);
-							//std::cout << colliderComponent->colliderId << " - separacje drugiego gameobjekta\n";
+							//SPDLOG_INFO("{} - separacje drugiego gameobjekta ({}, {}, {})", colliderComponent->colliderId, collision->separation.x, collision->separation.y, collision->separation.z);
 							((GameCollider*)other)->colliderComponent->GetTransform()->SetGlobalPosition(
 								((GameCollider*)other)->colliderComponent->GetTransform()->GetGlobalPosition() - collision->separation);
 						}
@@ -167,17 +86,13 @@ Collision* GameCollider::collide(Collider* other) {
 					else {
 						if (((GameCollider*)other)->isStatic) {
 							//separacja tego game objekta
-							SPDLOG_INFO("{} - separacja tego game objekta ({}, {}, {})", colliderComponent->colliderId, collision->separation.x,
-								collision->separation.y, collision->separation.z);
-							//std::cout << colliderComponent->colliderId << " - separacja tego game objekta\n";
+							//SPDLOG_INFO("{} - separacja tego game objekta ({}, {}, {})", colliderComponent->colliderId, collision->separation.x, collision->separation.y, collision->separation.z);
 							colliderComponent->GetTransform()->SetGlobalPosition(
 								colliderComponent->GetTransform()->GetGlobalPosition() + collision->separation);
 						}
 						else {
 							//separacja obu gameobjektów
-							SPDLOG_INFO("{} - separacja obu gameobjektów \t({} {})\t ({}, {}, {})", colliderComponent->colliderId, Twin2Engine::Physic::to_string(colliderShape), Twin2Engine::Physic::to_string(other->colliderShape), collision->separation.x,
-								collision->separation.y, collision->separation.z);
-							//std::cout << colliderComponent->colliderId << " - separacja obu gameobjektów\n";
+							//SPDLOG_INFO("{} - separacja obu gameobjektów \t({} {})\t ({}, {}, {})", colliderComponent->colliderId, Twin2Engine::Physic::to_string(colliderShape), Twin2Engine::Physic::to_string(other->colliderShape), collision->separation.x, collision->separation.y, collision->separation.z);
 							colliderComponent->GetTransform()->SetGlobalPosition(
 								colliderComponent->GetTransform()->GetGlobalPosition() + collision->separation);
 							((GameCollider*)other)->colliderComponent->GetTransform()->SetGlobalPosition(
@@ -186,7 +101,7 @@ Collision* GameCollider::collide(Collider* other) {
 					}/**/
 
 					//Execute OnCollisionEnter
-					SPDLOG_INFO("{} - OnCollisionEnter", colliderComponent->colliderId);
+					//SPDLOG_INFO("{} - OnCollisionEnter", colliderComponent->colliderId);
 					Collision* col = new Collision();
 					col->collider = (GameCollider*)collision->collider;
 					col->otherCollider = (GameCollider*)collision->otherCollider;
@@ -209,13 +124,13 @@ Collision* GameCollider::collide(Collider* other) {
 
 				if (isTrigger) {
 					//Execute OnTriggerExit
-					SPDLOG_INFO("{} - OnTriggerExit", colliderComponent->colliderId);
+					//SPDLOG_INFO("{} - OnTriggerExit", colliderComponent->colliderId);
 					OnTriggerExit.Invoke((GameCollider*)other);
 					((GameCollider*)other)->OnTriggerExit.Invoke(this);
 				}
 				else {
 					//Execute OnCollisionExit
-					SPDLOG_INFO("{} - OnCollisionExit", colliderComponent->colliderId);
+					//SPDLOG_INFO("{} - OnCollisionExit", colliderComponent->colliderId);
 					OnCollisionExit.Invoke((GameCollider*)other);
 					((GameCollider*)other)->OnCollisionExit.Invoke(this);
 				}

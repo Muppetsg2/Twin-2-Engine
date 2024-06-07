@@ -192,9 +192,9 @@ void GameEngine::End()
     AudioManager::UnloadAll();
     CollisionManager::UnloadAll();
     Input::FreeAllWindows();
+    ScriptableObjectManager::UnloadAll();
 
     GraphicEngine::End();
-    ScriptableObjectManager::UnloadAll();
     ProcessManager::DeleteInstance();
 }
 

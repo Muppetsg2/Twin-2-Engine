@@ -42,6 +42,7 @@ namespace Humans
 
     public:
         //HumanMovement() : Twin2Engine::Core::Component() { }
+        Twin2Engine::Tools::EventHandler<HumanMovement*> OnEventFinishedMovement;
 
         virtual void Initialize() override;
         virtual void OnDestroy() override;

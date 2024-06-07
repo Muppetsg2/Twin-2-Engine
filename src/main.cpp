@@ -477,7 +477,7 @@ void input()
         else {
             _fileDialogSceneSave = true;
             _fileDialogSceneSaveInfo.type = ImGuiFileDialogType_SaveFile;
-            _fileDialogSceneSaveInfo.title = "Load Scene##File_Scene_Save";
+            _fileDialogSceneSaveInfo.title = "Save Scene##File_Scene_Save";
             _fileDialogSceneSaveInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\scenes");
         }
     }
@@ -486,7 +486,7 @@ void input()
         // Save Scene As...
         _fileDialogSceneSave = true;
         _fileDialogSceneSaveInfo.type = ImGuiFileDialogType_SaveFile;
-        _fileDialogSceneSaveInfo.title = "Load Scene##File_Scene_Save";
+        _fileDialogSceneSaveInfo.title = "Save Scene##File_Scene_Save";
         _fileDialogSceneSaveInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\scenes");
     }
 #endif
@@ -632,14 +632,14 @@ void render_imgui()
                     else {
                         _fileDialogSceneSave = true;
                         _fileDialogSceneSaveInfo.type = ImGuiFileDialogType_SaveFile;
-                        _fileDialogSceneSaveInfo.title = "Load Scene##File_Scene_Save";
+                        _fileDialogSceneSaveInfo.title = "Save Scene##File_Scene_Save";
                         _fileDialogSceneSaveInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\scenes");
                     }
 
                 if (ImGui::MenuItem("Save Scene As...##File", "Ctrl+Shift+S", &_fileDialogSceneSave)) {
                     _fileDialogSceneSave = true;
                     _fileDialogSceneSaveInfo.type = ImGuiFileDialogType_SaveFile;
-                    _fileDialogSceneSaveInfo.title = "Load Scene##File_Scene_Save";
+                    _fileDialogSceneSaveInfo.title = "Save Scene##File_Scene_Save";
                     _fileDialogSceneSaveInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\scenes");
                 }
 
@@ -765,8 +765,8 @@ void render_imgui()
             std::string path = std::filesystem::relative(_fileDialogSceneSaveInfo.resultPath).string();
             std::string name = std::filesystem::path(path).stem().string();
             SceneManager::SaveScene(path);
-            SceneManager::AddScene(name, path);
             SceneManager::UnloadCurrent();
+            SceneManager::AddScene(name, path);
             SceneManager::LoadScene(name);
         }
 

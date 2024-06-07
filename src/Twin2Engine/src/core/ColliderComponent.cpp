@@ -35,15 +35,6 @@ void ColliderComponent::OnCollisionEnter(Collision* collision)
 		other->colliderComponent->GetTransform()->SetGlobalPosition(
 			other->colliderComponent->GetTransform()->GetGlobalPosition() - collision->separation);
 	}
-	/*else {
-		//separacja obu gameobjektow
-		SPDLOG_INFO("{} - separacja obu gameobjektow ({}, {}, {})", collider->colliderId, collision->separation.x,
-			collision->separation.y, collision->separation.z);
-		collider->colliderComponent->GetTransform()->SetGlobalPosition(
-			collider->colliderComponent->GetTransform()->GetGlobalPosition() + collision->separation);
-		other->colliderComponent->GetTransform()->SetGlobalPosition(
-			other->colliderComponent->GetTransform()->GetGlobalPosition() - collision->separation);
-	}*/
 }
 
 #if _DEBUG
@@ -211,21 +202,14 @@ bool ColliderComponent::DrawInheritedFields()
 	ImGui::Checkbox(string("Trigger##").append(id).c_str(), &collider->isTrigger);
 	ImGui::Checkbox(string("Static##").append(id).c_str(), &collider->isStatic);
 
-	/*
-	bool v = collider->boundingVolume != nullptr;
-	ImGui::Checkbox(string("Bounding Volume##").append(id).c_str(), &v);
-	if (v != (collider->boundingVolume != nullptr)) {
-		EnableBoundingVolume(v);
-	}
-
-	if (v) {
-		ImGui::DragFloat(string("Bounding Volume Radius##").append(id).c_str(), &((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius, 0.1f, 0.f, FLT_MAX);
-	}
-	*/
-
 	return false;
 }
 #endif
+
+void ColliderComponent::UnDirty() {
+	collider->shapeColliderData->Position = glm::vec3(GetTransform()->GetTransformMatrix() * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f));
+	dirtyFlag = false;
+}
 
 void ColliderComponent::SetTrigger(bool v)
 {
@@ -276,58 +260,29 @@ void ColliderComponent::Initialize()
 void ColliderComponent::Update()
 {
 	if (dirtyFlag) {
-		collider->shapeColliderData->Position = glm::vec3(GetTransform()->GetTransformMatrix() * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f));
-
-		/*
-		if (collider->hasBounding) {
-			collider->boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
-		}
-		*/
-
-		dirtyFlag = false;
+		UnDirty();
 	}
 }
 
 void ColliderComponent::OnEnable()
 {
 	collider->enabled = true;
+	CollisionManager::Instance()->RegisterCollider(collider);
 }
 
 void ColliderComponent::OnDisable()
 {
 	collider->enabled = false;
+	CollisionManager::Instance()->UnregisterCollider(collider);
 }
 
 void ColliderComponent::OnDestroy()
 {
+	CollisionManager::Instance()->UnregisterCollider(collider);
 	collider->OnCollisionEnter -= _onCollisionEnterId;
 	delete collider;
 	collider = nullptr;
-	/*
-	delete boundingVolume;
-	boundingVolume = nullptr;
-	*/
 }
-
-/*
-void ColliderComponent::EnableBoundingVolume(bool v)
-{
-	if (v != collider->hasBounding) {
-		if (v) {
-			collider->EnableBounding();
-			collider->boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
-		}
-		else {
-			collider->DisableBounding();
-		}
-	}
-}
-
-void ColliderComponent::SetBoundingVolumeRadius(float radius)
-{
-	((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius = radius;
-}
-*/
 
 void ColliderComponent::SetLocalPosition(float x, float y, float z)
 {
@@ -370,11 +325,6 @@ YAML::Node ColliderComponent::Serialize() const
 		node["static"] = collider->isStatic;
 		node["layer"] = collider->layer;
 		node["layersFilter"] = collider->layersFilter;
-		/*
-		if (collider->boundingVolume != nullptr) {
-			node["boundingVolumeRadius"] = ((SphereColliderData*)(collider->boundingVolume->shapeColliderData))->Radius;
-		}
-		*/
 
 		if (collider->shapeColliderData != nullptr) {
 			node["position"] = collider->shapeColliderData->LocalPosition;
@@ -409,15 +359,6 @@ bool ColliderComponent::Deserialize(const YAML::Node& node)
 	collider->isStatic = node["static"].as<bool>();
 	collider->layer = node["layer"].as<Layer>();
 	collider->layersFilter = node["layersFilter"].as<LayerCollisionFilter>();
-	/*
-	if (node["boundingVolumeRadius"]) {
-		((SphereColliderData*)collider->boundingVolume->shapeColliderData)->Radius = node["boundingVolumeRadius"].as<float>();
-		EnableBoundingVolume(true);
-	}
-	else {
-		EnableBoundingVolume(false);
-	}
-	*/
 	collider->shapeColliderData->LocalPosition = node["position"].as<glm::vec3>();
 
 	return true;

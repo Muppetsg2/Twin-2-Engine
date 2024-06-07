@@ -2,6 +2,10 @@
 #include <filesystem>
 #include <graphic/LightingController.h>
 
+#if _DEBUG
+#include <regex>
+#endif
+
 using namespace Twin2Engine::Graphic;
 using namespace Twin2Engine::Manager;
 using namespace glm;
@@ -121,7 +125,6 @@ Material* MaterialsManager::LoadMaterial(const std::string& materialPath)
 	//SPDLOG_INFO("Loading material {}: {}!", materialNameHash, materialName);
 
 	const YAML::Node& materialNode = fileNode["material"];
-
 
 	std::string name = materialNode["name"].as<std::string>();
 	std::string shader = materialNode["shader"].as<std::string>();
@@ -358,6 +361,22 @@ Material* MaterialsManager::GetMaterial(const std::string& materialPath)
 	return LoadMaterial(materialPath);
 }
 
+std::string MaterialsManager::GetMaterialPath(size_t managerId) {
+	if (!_materialsPaths.contains(managerId)) return "";
+
+	return _materialsPaths[managerId];
+}
+
+std::string MaterialsManager::GetMaterialPath(Graphic::Material* material) {
+	auto iter = std::find_if(_loadedMaterials.begin(), _loadedMaterials.end(), [material](std::pair<size_t, Material*> item) -> bool {
+		return item.second == material;
+	});
+
+	if (iter == _loadedMaterials.end()) return "";
+
+	return _materialsPaths[iter->first];
+}
+
 std::string MaterialsManager::GetMaterialName(size_t managerId) {
 	if (!_materialsPaths.contains(managerId)) return "";
 	std::string p = _materialsPaths[managerId];
@@ -469,7 +488,15 @@ void MaterialsManager::DrawEditor(bool* p_open)
 	if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
 	{
 		// Result path in: m_fileDialogInfo.resultPath
-		LoadMaterial(std::filesystem::relative(_fileDialogInfo.resultPath).string());
+		std::string path = std::filesystem::relative(_fileDialogInfo.resultPath).string();
+
+		if (std::regex_search(path, std::regex("(?:[/\\\\]res[/\\\\])"))) {
+
+			LoadMaterial(path.substr(path.find("res")));
+		}
+		else {
+			LoadMaterial(path);
+		}
 	}
 
 	ImGui::End();

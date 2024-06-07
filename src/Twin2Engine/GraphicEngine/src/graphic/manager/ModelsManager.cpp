@@ -1365,7 +1365,15 @@ void ModelsManager::DrawEditor(bool* p_open)
     if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
     {
         // Result path in: m_fileDialogInfo.resultPath
-        LoadModel(std::filesystem::relative(_fileDialogInfo.resultPath).string());
+        std::string path = std::filesystem::relative(_fileDialogInfo.resultPath).string();
+
+        if (std::regex_search(path, std::regex("(?:[/\\\\]res[/\\\\])"))) {
+
+            LoadModel(path.substr(path.find("res")));
+        }
+        else {
+            LoadModel(path);
+        }
     }
 
     ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;

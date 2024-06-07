@@ -43,6 +43,9 @@ namespace Twin2Engine::Manager
 		static Graphic::Material* GetMaterial(size_t managerId);
 		static Graphic::Material* GetMaterial(const std::string& materialPath);
 
+		static std::string GetMaterialPath(size_t managerId);
+		static std::string GetMaterialPath(Graphic::Material* material);
+
 		static std::string GetMaterialName(size_t managerId);
 		static std::map<size_t, std::string> GetAllMaterialsNames();
 

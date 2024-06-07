@@ -41,9 +41,9 @@ void CitiesManager::RemoveAllCities() {
 void CitiesManager::MapCitiesConnections(bool byRegions) {
     citiesGraph.clear();
 
-    for (const auto& city : cities) {
-        citiesGraph[city] = {};
-    }
+    //for (const auto& city : cities) {
+    //    citiesGraph[city] = {};
+    //}
 
     for (size_t i = 0; i < cities.size(); ++i) {
         auto adjacentSectors = cities[i]->GetTransform()->GetParent()->GetParent()->GetGameObject()->GetComponent<MapSector>()->GetAdjacentSectors();
@@ -74,10 +74,13 @@ GameObject* CitiesManager::GetClosestCity(const glm::vec3& position) {
     GameObject* closestCity = nullptr;
     float minDistance = std::numeric_limits<float>::max();
 
-    for (const auto& city : cities) {
-        float distance = glm::distance(position, city->GetTransform()->GetGlobalPosition());
+    size_t size = cities.size();
+    float distance = 0.0f;
+    for (size_t index = 0ull; index < size; ++index)
+    {
+        distance = glm::distance(position, cities[index]->GetTransform()->GetGlobalPosition());
         if (distance < minDistance) {
-            closestCity = city;
+            closestCity = cities[index];
             minDistance = distance;
         }
     }

@@ -347,9 +347,9 @@ void InputField::DrawEditor()
 		}
 
 		string buff = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_placeHolder->GetText());
-		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll;
+		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll;
 
-		ImGui::InputText(string("Placeholder Value##").append(id).c_str(), &buff, flags);
+		ImGui::InputTextMultiline(string("Placeholder Value##").append(id).c_str(), &buff, ImVec2(0, 100), flags);
 
 		if (buff != std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_placeHolder->GetText())) {
 			SetPlaceHolder(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(buff));
@@ -396,7 +396,7 @@ void InputField::DrawEditor()
 
 		buff = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_textValue);
 
-		ImGui::InputText(string("Value##").append(id).c_str(), &buff, flags);
+		ImGui::InputTextMultiline(string("Value##").append(id).c_str(), &buff, ImVec2(0, 100), flags);
 
 		if (buff != std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_textValue)) {
 			SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(buff));

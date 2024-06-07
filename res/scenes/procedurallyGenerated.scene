@@ -2661,6 +2661,7 @@ GameObjects:
         generatedNotesNumber: 4
         notesAreaWidth: 600
         notesAreaHeight: 200
+        timeLimit: 5
         resultShowingTime: 2
         correctColor: [0, 1, 0, 1]
         wrongColor: [1, 0, 0, 1]
@@ -2680,11 +2681,13 @@ GameObjects:
         buttonMi: 411
         buttonFa: 414
         resultImage: 399
+        remainingTimeTextTimer: 397
     children:
       - 401
       - 402
       - 403
       - 404
+      - 398
   - id: 399
     name: ResultImage
     isStatic: false
@@ -2722,6 +2725,49 @@ GameObjects:
         fillType: 0
         fillSubType: 0
         fillProgress: 1
+    children: []
+  - id: 398
+    name: RemainingTimeTimer
+    isStatic: false
+    isActive: false
+    transform:
+      id: 396
+      enabled: true
+      position:
+        x: 0
+        y: -100
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 397
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x000"
+        font: 0
+        size: 100
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 150
+        height: 100
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 6
     children: []
   - id: 401
     name: buttonDo

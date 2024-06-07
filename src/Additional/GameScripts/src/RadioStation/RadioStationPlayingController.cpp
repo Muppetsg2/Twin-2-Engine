@@ -47,7 +47,16 @@ void RadioStationPlayingController::Update()
         PlayNote(NoteType::Fa);
     }
 
-    if (_resultShowingTimer > 0.0f)
+    if (_timeLimitTimer > 0.0f)
+    {
+        _timeLimitTimer -= Time::GetDeltaTime();
+        _remainingTimeTextTimer->SetText(to_wstring(static_cast<unsigned>(glm::round(_timeLimitTimer))));
+        if (_timeLimitTimer <= 0.0f)
+        {
+            EndPlaying();
+        }
+    }
+    else if (_resultShowingTimer > 0.0f)
     {
         _resultShowingTimer -= Time::GetDeltaTime();
         if (_resultShowingTimer <= 0.0f)
@@ -92,6 +101,8 @@ void RadioStationPlayingController::Play(RadioStation* radioStation, Playable* p
         _buttonRe->GetGameObject()->SetActive(true);
         _buttonMi->GetGameObject()->SetActive(true);
         _buttonFa->GetGameObject()->SetActive(true);
+        _remainingTimeTextTimer->GetGameObject()->SetActive(true);
+        _timeLimitTimer = _timeLimit;
     }
     // Gdy wywo³uje Enemy
     else
@@ -160,28 +171,37 @@ void RadioStationPlayingController::PlayNote(NoteType note)
 
     if (_currentNote == _generatedNotes.size())
     {
-        // Czyszczenie obiektów nut
-        _generatedNotes.clear();
-
-        size_t size = _notesGameObjects.size();
-        for (size_t index = 0ull; index < size; ++index)
-        {
-            SceneManager::DestroyGameObject(_notesGameObjects[index]);
-        }
-        _notesGameObjects.clear();
-        _notesImages.clear();
-
-        
-        _windowImage->SetEnable(false);
-        _buttonDo->GetGameObject()->SetActive(false);
-        _buttonRe->GetGameObject()->SetActive(false);
-        _buttonMi->GetGameObject()->SetActive(false);
-        _buttonFa->GetGameObject()->SetActive(false);
-
-        _lastScore = _correctCounter / (float)size;
-
-        ShowResult();
+        EndPlaying();
     }
+}
+
+void RadioStationPlayingController::EndPlaying()
+{
+    //Zerowanie timera aby w updatcie siê wy³¹czy³
+    _timeLimitTimer = 0.0f;
+
+    // Czyszczenie obiektów nut
+    _generatedNotes.clear();
+
+    size_t size = _notesGameObjects.size();
+    for (size_t index = 0ull; index < size; ++index)
+    {
+        SceneManager::DestroyGameObject(_notesGameObjects[index]);
+    }
+    _notesGameObjects.clear();
+    _notesImages.clear();
+
+
+    _windowImage->SetEnable(false);
+    _buttonDo->GetGameObject()->SetActive(false);
+    _buttonRe->GetGameObject()->SetActive(false);
+    _buttonMi->GetGameObject()->SetActive(false);
+    _buttonFa->GetGameObject()->SetActive(false);
+    _remainingTimeTextTimer->GetGameObject()->SetActive(false);
+
+    _lastScore = _correctCounter / (float)size;
+
+    ShowResult();
 }
 
 void RadioStationPlayingController::ShowResult()
@@ -208,6 +228,7 @@ YAML::Node RadioStationPlayingController::Serialize() const
     node["generatedNotesNumber"] = _generatedNotesNumber;
     node["notesAreaWidth"] = _notesAreaWidth;
     node["notesAreaHeight"] = _notesAreaHeight;
+    node["timeLimit"] = _timeLimit;
     node["resultShowingTime"] = _resultShowingTime;
     node["correctColor"] = _correctColor;
     node["wrongColor"] = _wrongColor;
@@ -233,6 +254,7 @@ YAML::Node RadioStationPlayingController::Serialize() const
     node["buttonMi"] = _buttonMi->GetId();
     node["buttonFa"] = _buttonFa->GetId();
     node["resultImage"] = _resultImage->GetId();
+    node["remainingTimeTextTimer"] = _remainingTimeTextTimer->GetId();
 
     return YAML::Node();
 }
@@ -244,6 +266,7 @@ bool RadioStationPlayingController::Deserialize(const YAML::Node& node)
     _generatedNotesNumber = node["generatedNotesNumber"].as<int>();
     _notesAreaWidth = node["notesAreaWidth"].as<float>();
     _notesAreaHeight = node["notesAreaHeight"].as<float>();
+    _timeLimit = node["timeLimit"].as<float>();
     _resultShowingTime = node["resultShowingTime"].as<float>();
     _correctColor = node["correctColor"].as<vec4>();
     _wrongColor = node["wrongColor"].as<vec4>();
@@ -266,6 +289,7 @@ bool RadioStationPlayingController::Deserialize(const YAML::Node& node)
     _buttonMi = (Button*) SceneManager::GetComponentWithId(node["buttonMi"].as<size_t>());
     _buttonFa = (Button*) SceneManager::GetComponentWithId(node["buttonFa"].as<size_t>());
     _resultImage = (Image*) SceneManager::GetComponentWithId(node["resultImage"].as<size_t>());
+    _remainingTimeTextTimer = (Text*) SceneManager::GetComponentWithId(node["remainingTimeTextTimer"].as<size_t>());
 
     return true;
 }

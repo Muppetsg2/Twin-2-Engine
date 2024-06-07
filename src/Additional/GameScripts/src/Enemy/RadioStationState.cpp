@@ -1,9 +1,7 @@
 #include <Enemy/RadioStationState.h>
 #include <Enemy.h>
-
 #include <RadioStation/RadioStation.h>
 
-// TODO: Send Radio Station Data
 DecisionTree<std::pair<Enemy*, uint32_t>, bool> RadioStationState::_decisionTree{
 	[&](std::pair<Enemy*, uint32_t> data) -> bool {
 		std::srand(std::time(NULL));

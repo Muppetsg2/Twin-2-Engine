@@ -55,6 +55,8 @@ namespace Generation
         void Generate();
         void Clear();
 
+        bool IsMapGenerated();
+
         virtual void Initialize() override;
         virtual void OnEnable() override;
 

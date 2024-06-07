@@ -36,6 +36,15 @@ void GameManager::Initialize() {
 
         _freePatronsData = _patronsData;
         //GeneratePlayer();
+
+        if (_mapGenerator == nullptr) {
+            GameObject* mg = SceneManager::FindObjectByType<Generation::MapGenerator>();
+
+            if (mg != nullptr)
+                _mapGenerator = mg->GetComponent<Generation::MapGenerator>();
+            if (!mg->GetComponent<Generation::MapGenerator>()->IsMapGenerated())
+                mg->GetComponent<Generation::MapGenerator>()->Generate();
+        }
     }
     else
     {
@@ -54,6 +63,21 @@ void GameManager::OnEnable() {
 
 void GameManager::Update() {
 
+    if (_mapGenerator == nullptr) {
+        GameObject* mg = SceneManager::FindObjectByType<Generation::MapGenerator>();
+
+        if (mg != nullptr) {
+            _mapGenerator = mg->GetComponent<Generation::MapGenerator>();
+            if (!mg->GetComponent<Generation::MapGenerator>()->IsMapGenerated())
+            {
+                mg->GetComponent<Generation::MapGenerator>()->Generate();
+            }
+
+            for (auto e : entities) {
+                e->SetTileMap(_mapGenerator->tilemap);
+            }
+        }
+    }
 }
 
 void GameManager::UpdateEnemies(int colorIdx) {

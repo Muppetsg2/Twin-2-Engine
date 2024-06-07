@@ -247,7 +247,7 @@ void ScriptableObjectManager::DrawEditor(bool* p_open) {
 		}
 	}
 
-	if (selectedToEdit != 0) {
+	if (selectedToEdit != 0 && _scriptableObjects.contains(selectedToEdit)) {
 		if (ImGui::Begin("Scriptable Object Editor##Scriptable Object Manager", &openEditor)) {
 			_scriptableObjects[selectedToEdit]->DrawEditor();
 		}
@@ -256,6 +256,9 @@ void ScriptableObjectManager::DrawEditor(bool* p_open) {
 		if (!openEditor) {
 			selectedToEdit = 0;
 		}
+	}
+	else if (selectedToEdit != 0 && !_scriptableObjects.contains(selectedToEdit)) {
+		selectedToEdit = 0;
 	}
 
 	clicked.clear();

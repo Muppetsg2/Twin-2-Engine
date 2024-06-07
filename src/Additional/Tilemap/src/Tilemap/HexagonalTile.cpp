@@ -68,7 +68,7 @@ void HexagonalTile::SetTilemap(HexagonalTilemap* tilemap)
 {
 	_tilemap = tilemap;
 }
-inline HexagonalTilemap* HexagonalTile::GetTilemap() const
+HexagonalTilemap* HexagonalTile::GetTilemap() const
 {
 	return _tilemap;
 }
@@ -77,7 +77,7 @@ void HexagonalTile::SetPosition(const glm::ivec2& position)
 {
 	_position = position;
 }
-inline glm::ivec2 HexagonalTile::GetPosition() const
+glm::ivec2 HexagonalTile::GetPosition() const
 {
 	return _position;
 }

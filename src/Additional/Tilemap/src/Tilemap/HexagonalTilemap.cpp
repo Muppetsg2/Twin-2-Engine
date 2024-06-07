@@ -448,7 +448,7 @@ YAML::Node HexagonalTilemap::Serialize() const
 }
 
 bool HexagonalTilemap::Deserialize(const YAML::Node& node) {
-	if (!node["leftBottomPosition"] || !node["rightTopPosition"] ||
+	if (!node["leftBottomPosition"] || !node["rightTopPosition"] || !node["edgeLength"] ||
 		!Component::Deserialize(node)) return false;
 
 	_leftBottomPosition = node["leftBottomPosition"].as<glm::ivec2>();

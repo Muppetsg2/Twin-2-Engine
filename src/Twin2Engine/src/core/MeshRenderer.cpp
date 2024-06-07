@@ -417,7 +417,13 @@ void MeshRenderer::DrawEditor()
 
 	if (ImGui::CollapsingHeader(name.c_str())) {
 		if (Component::DrawInheritedFields()) return;
-		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
+
+		bool v = _isTransparent;
+		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &v);
+
+		if (v != _isTransparent) {
+			SetIsTransparent(v);
+		}
 
 		std::map<size_t, string> modelNames = ModelsManager::GetAllModelsNames();
 

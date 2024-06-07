@@ -11,6 +11,7 @@ private:
 
 public:
 	DecisionTreeLeaf(const LeafAction& action);
+	virtual ~DecisionTreeLeaf() = default;
 
 	void ProcessNode(_Entity entity) override;
 };

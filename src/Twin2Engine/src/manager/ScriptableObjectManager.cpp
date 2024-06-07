@@ -1,6 +1,10 @@
 #include <manager/ScriptableObjectManager.h>
 #include <core/ScriptableObject.h>
 
+#if _DEBUG
+#include <regex>
+#endif
+
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
 
@@ -42,7 +46,9 @@ ScriptableObject* ScriptableObjectManager::Load(const std::string& path)
 		_scriptableObjects[pathHash] = scriptableObject;
 		_scriptableObjectsPaths[pathHash] = path;
 
-		return scriptableObject;
+		scriptableObject = nullptr;
+
+		return _scriptableObjects[pathHash];
 	}
 	else
 	{
@@ -264,7 +270,15 @@ void ScriptableObjectManager::DrawEditor(bool* p_open) {
 	if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
 	{
 		// Result path in: m_fileDialogInfo.resultPath
-		Load(std::filesystem::relative(_fileDialogInfo.resultPath).string());
+		string path = std::filesystem::relative(_fileDialogInfo.resultPath).string();
+
+		if (std::regex_search(path, std::regex("(?:[/\\\\]res[/\\\\])"))) {
+
+			Load(path.substr(path.find("res")));
+		}
+		else {
+			Load(path);
+		}
 	}
 
 	ImGui::End();

@@ -4,15 +4,18 @@
 
 namespace Twin2Engine::Core {
 	class SphereColliderComponent : public ColliderComponent {
-		//protected:
 	private:
-		Tools::Action<Transform*> PositionChangeAction;
-		size_t PositionChangeActionId = 0;
-		bool dirtyFlag = false;
+		Tools::Action<Transform*> TransformChangeAction;
+		size_t TransformChangeActionId = 0;
+
+	protected:
+		virtual void UnDirty() override;
+
 	public:
 		void SetRadius(float radius);
 
 		void Initialize() override;
+		void Update() override;
 		void OnEnable() override;
 		void OnDisable() override;
 		void OnDestroy() override;

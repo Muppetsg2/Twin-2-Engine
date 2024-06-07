@@ -1,7 +1,7 @@
-#include "GameManager.h"
 #include <GameManager.h>
 #include <manager/SceneManager.h>
 #include <manager/PrefabManager.h>
+#include <graphic/manager/MaterialsManager.h>
 #include <core/Random.h>
 #include <string>
 

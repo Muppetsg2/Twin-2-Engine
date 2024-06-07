@@ -2,10 +2,26 @@
 #include <core/GameObject.h>
 #include <core/Input.h>
 #include <tools/YamlConverters.h>
+#include <ui/Canvas.h>
+#include <graphic/Window.h>
 
 using namespace Twin2Engine::UI;
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Tools;
+
+void Button::SetCanvas(Canvas* canvas)
+{
+	if (_canvas != canvas) {
+		if (_canvas != nullptr) {
+			_canvas->GetOnCanvasDestroy() -= _onCanvasDestroyId;
+		}
+
+		_canvas = canvas;
+		if (_canvas != nullptr) {
+			_onCanvasDestroyId = (_canvas->GetOnCanvasDestroy() += [&](Canvas* canv) -> void { SetCanvas(nullptr); });
+		}
+	}
+}
 
 void Button::SetWidth(float width) {
 	_width = width;
@@ -35,20 +51,52 @@ MethodEventHandler& Button::GetOnClickEvent() {
 	return _onClickEvent;
 }
 
+void Button::Initialize()
+{
+	_onParentInHierarchiChangeId = (GetTransform()->OnEventInHierarchyParentChanged += [&](Transform* t) -> void {
+		SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
+	});
+	SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
+}
+
+// TODO: Add Button to Canvas (least prority)
 void Button::Update()
 {
 	if (!_interactable) return;
 
+	if (_canvas != nullptr) {
+		if (_canvas->_data.worldSpaceCanvas) {
+			SPDLOG_WARN("Button not working in world Space");
+			return;
+		}
+	}
+
 	if (Input::IsMouseButtonPressed(MOUSE_BUTTON::LEFT)) {
 		Transform* t = GetTransform();
+
+		/*glm::mat4 canvT = glm::mat4(1.f);
+		glm::vec2 canvS = Graphic::Window::GetInstance()->GetContentSize();
+		if (_canvas != nullptr) {
+			canvT = _canvas->GetTransform()->GetTransformMatrix();
+			canvS = _canvas->_data.rectTransform.size;
+		}
+		glm::mat4 invCanvT = glm::inverse(canvT);*/
+
 		glm::mat4 inv = glm::inverse(t->GetTransformMatrix());
 		glm::vec4 mPos = glm::vec4(Input::GetCursorPos(), 0.f, 1.f);
+		//glm::vec3 btnLocalMPos = canvT * inv * glm::vec4(glm::vec2(invCanvT * mPos) * .5f * canvS, 0.f, 1.f);
 		glm::vec3 btnLocalMPos = inv * mPos;
-		if (btnLocalMPos.x >= -_width / 2.f && btnLocalMPos.x <= _width / 2.f && btnLocalMPos.y >= -_height / 2.f && btnLocalMPos.y <= _height / 2.f) {
+		if (btnLocalMPos.x >= -_width * .5f && btnLocalMPos.x <= _width * .5f && btnLocalMPos.y >= -_height * .5f && btnLocalMPos.y <= _height * .5f) {
 
 			_onClickEvent.Invoke();
 		}
 	}
+}
+
+void Button::OnDestroy()
+{
+	SetCanvas(nullptr);
+	GetTransform()->OnEventInHierarchyParentChanged -= _onParentInHierarchiChangeId;
 }
 
 YAML::Node Button::Serialize() const

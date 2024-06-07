@@ -32,6 +32,8 @@ void GameEngine::Deserializers()
 
     ADD_COMPONENT("InputField", InputField);
 
+    ADD_COMPONENT("Canvas", Canvas);
+
     ADD_COMPONENT("MeshRenderer", MeshRenderer);
 
     ADD_COMPONENT("HexagonalCollider", HexagonalColliderComponent);
@@ -190,9 +192,9 @@ void GameEngine::End()
     AudioManager::UnloadAll();
     CollisionManager::UnloadAll();
     Input::FreeAllWindows();
+    ScriptableObjectManager::UnloadAll();
 
     GraphicEngine::End();
-    ScriptableObjectManager::UnloadAll();
     ProcessManager::DeleteInstance();
 }
 

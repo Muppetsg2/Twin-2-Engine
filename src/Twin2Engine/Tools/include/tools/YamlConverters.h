@@ -81,13 +81,15 @@ namespace YAML {
 			rhs = L"";
 			std::string value = node.as<std::string>();
 
-			size_t i = 0;
-			// 0 0 0
-			for (i = 0; i < value.size() - 1; i += 2) {
-				rhs += ((wchar_t)value[i] << 8) | (wchar_t)value[i + 1];
-			}
-			if (i == value.size() - 1) {
-				rhs += ((wchar_t)value[i] << 8);
+			if (value.size() > 0) {
+				size_t i = 0;
+				// 0 0 0
+				for (i = 0; i < value.size() - 1; i += 2) {
+					rhs += ((wchar_t)value[i] << 8) | (wchar_t)value[i + 1];
+				}
+				if (i == value.size() - 1) {
+					rhs += ((wchar_t)value[i] << 8);
+				}
 			}
 
 			return true;

@@ -14,6 +14,7 @@ private:
 
 public:
 	DecisionTreeDecisionMaker(const DecisionFunc& decision, const std::unordered_map<_Type, DecisionTreeNode<_Entity>*>& nodes);
+	virtual ~DecisionTreeDecisionMaker();
 
 	void ProcessNode(_Entity entity) override;
 };
@@ -25,6 +26,17 @@ inline DecisionTreeDecisionMaker<_Entity, _Type>::DecisionTreeDecisionMaker(cons
 #if TRACY_PROFILER
 	ZoneScoped;
 #endif
+}
+
+template<class _Entity, class _Type>
+inline DecisionTreeDecisionMaker<_Entity, _Type>::~DecisionTreeDecisionMaker() {
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+	for (auto& node : _nodes) {
+		delete node.second;
+	}
+	_nodes.clear();
 }
 
 template<class _Entity, class _Type>

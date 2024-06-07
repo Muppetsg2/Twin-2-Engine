@@ -36,62 +36,48 @@ void HumanMovement::Update()
     ZoneScoped;
     FrameMarkStart(tracy_HumanMovementUpdate);
 #endif
-    glm::vec3 globalPosition = GetTransform()->GetGlobalPosition();
-
-    globalPosition.y = 0.0f;
 
     if (_foundPath)
     {
+        glm::vec3 globalPosition = GetTransform()->GetGlobalPosition();
+        globalPosition.y = 0.0f;
+
         if (glm::distance(globalPosition, _currentDestination) <= _achievingDestinationAccuracity)
         {
             if (_path.IsOnEnd())
             {
                 _findingPath = false;
                 _foundPath = false;
+                OnEventFinishedMovement.Invoke(this);
             }
             _currentDestination = _path.Next();
             _currentDestination.y = 0.0f;
         }
+
+        glm::vec3 direction = _currentDestination - globalPosition;
+
+        if (glm::dot(direction, direction))
+        {
+            direction = normalize(direction);
+            globalPosition += direction * _speed * Time::GetDeltaTime();
+
+            Tilemap::HexagonalTile* tile = _tilemap->GetTile(
+                _tilemap->ConvertToTilemapPosition(
+                    vec2(globalPosition.x, globalPosition.z) + vec2(direction.x, direction.z) * _forwardDetectionDistance));
+
+            if (tile && tile->GetGameObject())
+            {
+                GameObject* tileGO = tile->GetGameObject();
+                Transform* tileT = tileGO->GetTransform();
+                globalPosition.y = tileT->GetGlobalPosition().y;
+            }
+            GetTransform()->SetGlobalPosition(globalPosition);
+        }
     }
 
-    //SPDLOG_WARN("Current destination: {} {} {}", _currentDestination.x, _currentDestination.y, _currentDestination.z);
-
-    //vec3 processedDestination = _currentDestination;
-    //processedDestination.y = 0;
-    glm::vec3 direction = _currentDestination - globalPosition;
-
-    //if (!isnan(direction.x))
-    //    SPDLOG_INFO("Not IsNan1:");
-
-    if (glm::dot(direction, direction))
-    {
-        //SPDLOG_INFO("Chack IsNan1:");
-        direction = normalize(direction);
-    }
-
-    GetTransform()->Translate(direction * _speed * Time::GetDeltaTime());
-
-    globalPosition = GetTransform()->GetGlobalPosition();
 
 
-    //if (!isnan(globalPosition.x))
-    //    SPDLOG_INFO("Not IsNan3:");
 
-    Tilemap::HexagonalTile* tile = _tilemap->GetTile(
-        _tilemap->ConvertToTilemapPosition(
-            vec2(globalPosition.x, globalPosition.z) + vec2(direction.x, direction.z) * _forwardDetectionDistance));
-
-    //if (!isnan(globalPosition.x))
-    //    SPDLOG_INFO("Not IsNan4:");
-
-    if (tile && tile->GetGameObject())
-    {
-        GameObject* tileGO = tile->GetGameObject();
-        Transform* tileT = tileGO->GetTransform();
-        globalPosition.y = tileT->GetGlobalPosition().y;
-        GetTransform()->SetGlobalPosition(globalPosition);
-        //GetTransform()->SetGlobalPosition(vec3(globalPosition.x, tile->GetGameObject()->GetTransform()->GetGlobalPosition().y, globalPosition.z));
-    }
 
 #if TRACY_PROFILER
     FrameMarkEnd(tracy_HumanMovementUpdate);
@@ -110,7 +96,7 @@ void HumanMovement::PathFindingSuccess(const AStarPath& path)
         _foundPath = true;
 
 
-        //SPDLOG_INFO("PATH_FINDING success");
+        SPDLOG_INFO("PATH_FINDING success");
         //SPDLOG_ERROR("{}Current destination: {} {} {}", GetGameObject()->Id(), _currentDestination.x, _currentDestination.y, _currentDestination.z);
     }
 }
@@ -142,7 +128,7 @@ void HumanMovement::MoveTo(glm::vec3 destination)
     //globalPosition.y = 0.0f;
 
     _pathfindingInfo = AStarPathfinder::FindPath(globalPosition, destination, 0,
-        [&](const AStarPath& path) { this->PathFindingSuccess(path); }, [&]() { PathFindingFailure(); });
+        [&](const AStarPath& path) { PathFindingSuccess(path); }, [&]() { PathFindingFailure(); });
 
     _findingPath = _pathfindingInfo.IsSearching();
 }

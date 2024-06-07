@@ -4,20 +4,55 @@
 #include <manager/SceneManager.h>
 #include <graphic/manager/SpriteManager.h>
 #include <core/CameraComponent.h>
+#include <ui/Canvas.h>
 
 using namespace Twin2Engine;
 using namespace UI;
 using namespace Core;
 using namespace Graphic;
 using namespace Manager;
+using namespace Tools;
 using namespace glm;
 using namespace std;
 
+void Image::SetCanvas(Canvas* canvas)
+{
+	if (_canvas != canvas) {
+		if (_canvas != nullptr) {
+			_canvas->GetOnCanvasDestroy() -= _onCanvasDestroyId;
+			_data.canvas = nullptr;
+		}
+
+		_canvas = canvas;
+		if (_canvas != nullptr) {
+			_onCanvasDestroyId = (_canvas->GetOnCanvasDestroy() += [&](Canvas* canv) -> void { SetCanvas(nullptr); });
+			_data.canvas = &_canvas->_data;
+		}
+	}
+}
+
+void Image::Initialize()
+{
+	_onTransformChangeId = (GetTransform()->OnEventTransformChanged += [&](Transform* t) -> void { 
+		_data.rectTransform.transform = t->GetTransformMatrix(); 
+	});
+	_onParentInHierarchiChangeId = (GetTransform()->OnEventInHierarchyParentChanged += [&](Transform* t) -> void {
+		SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
+	});
+	SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
+}
+
 void Image::Render()
 {
-	_data.rectTransform.transform = GetTransform()->GetTransformMatrix();
 	_data.sprite = SpriteManager::GetSprite(_spriteId);
 	UIRenderingManager::Render(_data);
+}
+
+void Image::OnDestroy()
+{
+	SetCanvas(nullptr);
+	GetTransform()->OnEventTransformChanged -= _onTransformChangeId;
+	GetTransform()->OnEventInHierarchyParentChanged -= _onParentInHierarchiChangeId;
 }
 
 // TODO: Serialize Fill
@@ -50,10 +85,10 @@ YAML::Node Image::Serialize() const
 	node["fillSubType"] = (uint32_t)_data.fill.subType;
 	node["fillSubType"].SetTag(toString(_data.fill.subType));
 	node["fillProgress"] = _data.fill.progress;
+
 	return node;
 }
 
-// TODO: Deserialize Fill
 bool Image::Deserialize(const YAML::Node& node)
 {
 	if (!node["sprite"] || !node["color"] || !node["width"] || !node["height"] ||
@@ -84,7 +119,7 @@ void Image::DrawEditor()
 		if (Component::DrawInheritedFields()) return;
 
 		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll;
-		ImGui::InputInt(string("Layer##").append(id).c_str(), &_data.layer, flags);
+		ImGui::InputInt(string("Layer##").append(id).c_str(), &_data.layer, 1, 100, flags);
 
 		std::map<size_t, string> spriteNames = SpriteManager::GetAllSpritesNames();
 
@@ -114,6 +149,20 @@ void Image::DrawEditor()
 			}
 
 			ImGui::EndCombo();
+		}
+
+		if (ImGui::BeginDragDropTarget()) {
+
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SceneHierarchyObject"))
+			{
+				size_t payload_n = *(const size_t*)payload->Data;
+				Canvas* c = SceneManager::GetGameObjectWithId(payload_n)->GetComponent<Canvas>();
+				if (c != nullptr) {
+					SetCanvas(c);
+				}
+			}
+
+			ImGui::EndDragDropTarget();
 		}
 
 		float v = _data.rectTransform.size.x;

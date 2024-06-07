@@ -6,6 +6,14 @@
 using namespace Twin2Engine::Physic;
 using namespace Twin2Engine::Core;
 
+void CapsuleColliderComponent::UnDirty()
+{
+	ColliderComponent::UnDirty();
+	((CapsuleColliderData*)collider->shapeColliderData)->EndPosition = GetTransform()->GetTransformMatrix() * glm::vec4(((CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition, 1.0f);
+
+	dirtyFlag = false;
+}
+
 void CapsuleColliderComponent::SetEndPosition(float x, float y, float z)
 {
 	((CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition.x = x;
@@ -14,7 +22,7 @@ void CapsuleColliderComponent::SetEndPosition(float x, float y, float z)
 	dirtyFlag = true;
 }
 
-void Twin2Engine::Core::CapsuleColliderComponent::SetEndPosition(const glm::vec3& pos)
+void CapsuleColliderComponent::SetEndPosition(const glm::vec3& pos)
 {
 	SetEndPosition(pos.x, pos.y, pos.z);
 }
@@ -35,45 +43,38 @@ void CapsuleColliderComponent::Initialize()
 		CapsuleColliderData* capsuleData = (CapsuleColliderData*)collider->shapeColliderData;
 		capsuleData->EndPosition = TransformMatrix * glm::vec4(capsuleData->EndLocalPosition, 1.0f);
 		capsuleData->Position = TransformMatrix * glm::vec4(capsuleData->LocalPosition, 1.0f);
-
-		/*
-		if (collider->hasBounding) {
-			collider->boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
-		}
-		*/
 	};
+
+	ColliderComponent::Initialize();
 
 	TransformChangeAction(GetTransform());
 }
 
+void CapsuleColliderComponent::Update()
+{
+	if (dirtyFlag) {
+		UnDirty();
+	}
+
+	ColliderComponent::Update();
+}
+
 void CapsuleColliderComponent::OnEnable()
 {
+	ColliderComponent::OnEnable();
 	TransformChangeActionId = GetTransform()->OnEventTransformChanged += TransformChangeAction;
-	CollisionManager::Instance()->RegisterCollider(collider);
 }
 
 void CapsuleColliderComponent::OnDisable()
 {
+	ColliderComponent::OnDisable();
 	GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
-	CollisionManager::Instance()->UnregisterCollider(collider);
 }
 
 void CapsuleColliderComponent::OnDestroy()
 {
+	ColliderComponent::OnDestroy();
 	GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
-	CollisionManager::Instance()->UnregisterCollider(collider);
-}
-
-void CapsuleColliderComponent::Update()
-{
-	ColliderComponent::Update();
-
-	if (dirtyFlag) {
-		((CapsuleColliderData*)collider->shapeColliderData)->EndPosition = GetTransform()->GetTransformMatrix()
-			* glm::vec4(((CapsuleColliderData*)collider->shapeColliderData)->EndLocalPosition, 1.0f);
-
-		dirtyFlag = false;
-	}
 }
 
 YAML::Node CapsuleColliderComponent::Serialize() const

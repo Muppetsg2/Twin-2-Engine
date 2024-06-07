@@ -25,6 +25,12 @@ class RadioStationPlayingController : public Twin2Engine::Core::Component
     
     std::vector<size_t> _notesSpritesIds;
 
+    std::vector<size_t> _resultsImagesIds; //////
+    std::vector<float> _resultsThresholds;///////////
+
+    Twin2Engine::UI::Image* _windowImage;
+    Twin2Engine::UI::Image* _resultImage;
+
     glm::vec4 _correctColor;
     glm::vec4 _wrongColor;
 
@@ -34,6 +40,9 @@ class RadioStationPlayingController : public Twin2Engine::Core::Component
 
     float _notesAreaWidth = 600.0f;
     float _notesAreaHeight = 200.0f;
+    float _resultShowingTime = 5.0f;///////
+    float _resultShowingTimer = 0.0f;
+    float _lastScore = 0.0f;
 
     RadioStation* _radioStation = nullptr;
     Playable* _playable = nullptr;
@@ -50,6 +59,7 @@ class RadioStationPlayingController : public Twin2Engine::Core::Component
 
     void GenerateNotes();
     void PlayNote(NoteType note);
+    void ShowResult();
 
 public:
     static RadioStationPlayingController* Instance();

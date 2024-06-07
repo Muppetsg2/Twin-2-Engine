@@ -3,9 +3,12 @@
 #include <Playable.h>
 #include <ConcertRoad.h>
 #include <UIScripts/MinigameManager.h>
+#include <tools/macros.h>
+#include <manager/SceneManager.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;
+using namespace Twin2Engine::Manager;
 using namespace Generation;
 using namespace glm;
 using namespace std;
@@ -125,6 +128,7 @@ void HexTile::UpdateTileColor()
 
 void HexTile::UpdateBorders()
 {
+
 }
 
 void HexTile::CheckRoundPattern()
@@ -139,12 +143,15 @@ void HexTile::Initialize()
 
 void HexTile::OnDestroy()
 {
-	ConcertRoad::instance->RoadMapPoints.erase(this);
+	if (ConcertRoad::instance != nullptr)
+		ConcertRoad::instance->RoadMapPoints.erase(this);
 	textuesData = nullptr;
 }
 
 void HexTile::Update()
 {
+	if (GameManager::instance == nullptr) return;
+
 	if (!minigameActive && !GameManager::instance->minigameActive && _mapHexTile->type != MapHexTile::HexTileType::Mountain && !isFighting)
 	{
 		if (state == TileState::OCCUPIED || state == TileState::REMOTE_OCCUPYING)
@@ -296,6 +303,55 @@ void HexTile::DrawEditor()
 
 		ImGui::Text("Percentage: %f", percentage);
 		ImGui::Text("Current Cooldown: %f", currCooldown);
+
+
+		std::vector<GameObject*> gameObjects = SceneManager::GetAllGameObjects();
+		gameObjects.insert(gameObjects.begin(), nullptr);
+
+#define GAMEOBJECTS_LIST(var)\
+		if (ImGui::BeginCombo(concat(#var, "##", id).c_str(), var == nullptr ? "None" : var->GetName().c_str())) {\
+			size_t i = 0; bool clicked = false; GameObject* choosed = var;\
+			for (auto& item : gameObjects) {\
+				if (item != nullptr) if (item->Id() == 0) continue;\
+				\
+				if (ImGui::Selectable((item == nullptr ? string("None") : item->GetName()).append("##").append(id).append(to_string(i)).c_str(), item == var)) {\
+					++i;\
+					if (clicked) continue;\
+					\
+					choosed = item;\
+					clicked = true;\
+				}\
+			}\
+			\
+			if (clicked) {\
+				var = choosed;\
+				UpdateBorders();\
+			}\
+			\
+			ImGui::EndCombo();\
+		}
+
+		GAMEOBJECTS_LIST(TopRightBorder);
+		GAMEOBJECTS_LIST(MiddleRightBorder);
+		GAMEOBJECTS_LIST(BottomRightBorder);
+		GAMEOBJECTS_LIST(BottomLeftBorder);
+		GAMEOBJECTS_LIST(MiddleLeftBorder);
+		GAMEOBJECTS_LIST(TopLeftBorder);
+
+		ImGui::Separator();
+
+		GAMEOBJECTS_LIST(TopRightLeftBorderJoint);
+		GAMEOBJECTS_LIST(TopRightRightBorderJoint);
+		GAMEOBJECTS_LIST(MiddleRightLeftBorderJoint);
+		GAMEOBJECTS_LIST(MiddleRightRightBorderJoint);
+		GAMEOBJECTS_LIST(BottomRightLeftBorderJoint);
+		GAMEOBJECTS_LIST(BottomRightRightBorderJoint);
+		GAMEOBJECTS_LIST(BottomLeftLeftBorderJoint);
+		GAMEOBJECTS_LIST(BottomLeftRightBorderJoint);
+		GAMEOBJECTS_LIST(MiddleLeftLeftBorderJoint);
+		GAMEOBJECTS_LIST(MiddleLeftRightBorderJoint);
+		GAMEOBJECTS_LIST(TopLeftLeftBorderJoint);
+		GAMEOBJECTS_LIST(TopLeftRightBorderJoint);
 
 		// TODO: Zrobic
 	}

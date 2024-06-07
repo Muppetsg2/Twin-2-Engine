@@ -70,6 +70,8 @@ void RadioStation::StartTakingOver(Playable* playable, float score)
 
     HexTile* currentTile = GetTransform()->GetParent()->GetGameObject()->GetComponent<HexTile>();
 
+    currentTile->StartTakingOver(playable);
+
     for (auto col : colliders) {
         if (col)
         {

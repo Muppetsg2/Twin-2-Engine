@@ -169,6 +169,13 @@ void PlaneGenerator::DrawEditor()
         ImGui::Text(_modelName.c_str());
         ImGui::PopFont();
 
+        bool v = _isTransparent;
+        ImGui::Checkbox(string("Transparent##").append(id).c_str(), &v);
+
+        if (v != _isTransparent) {
+            SetIsTransparent(v);
+        }
+
         unsigned int r = _rows;
         ImGui::DragUInt(string("Rows##").append(id).c_str(), &r, 1.f, 2, UINT_MAX);
 

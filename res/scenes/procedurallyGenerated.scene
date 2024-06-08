@@ -493,6 +493,12 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 76
+    path: res/textures/Circle.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites:
   - id: 0
     alias: white_box
@@ -520,15 +526,15 @@ Sprites:
     texture: 12
     x: 0
     y: 0
-    width: 150
-    height: 150
+    width: 256
+    height: 256
   - id: 4
     alias: concert
     texture: 19
     x: 0
     y: 0
-    width: 150
-    height: 150
+    width: 256
+    height: 256
   - id: 5
     alias: meeting
     texture: 54
@@ -616,6 +622,9 @@ Sprites:
   - id: 17
     alias: strengthGraph
     texture: 75
+  - id: 18
+    alias: circle
+    texture: 76
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
@@ -2178,6 +2187,7 @@ GameObjects:
         interactable: true
     children:
       - 386
+      - 451
   - id: 372
     name: concertAbility
     isStatic: false
@@ -2223,6 +2233,7 @@ GameObjects:
         interactable: true
     children:
       - 387
+      - 450
   - id: 375
     name: albumAbility
     isStatic: false
@@ -2268,6 +2279,7 @@ GameObjects:
         interactable: true
     children:
       - 385
+      - 452
   - id: 378
     name: TimeAndMoney
     isStatic: false
@@ -2618,6 +2630,117 @@ GameObjects:
         layer: 1
     children:
       []
+  - id: 450
+    name: concertCircle
+    isStatic: false
+    isActive: false
+    transform:
+      id: 450
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 451
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 18
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 1
+        fillEnabled: true
+        fillType: 2
+        fillSubType: 0
+        fillProgress: 1
+  - id: 451
+    name: fansMeetingCircle
+    isStatic: false
+    isActive: false
+    transform:
+      id: 452
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 453
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 18
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 1
+        fillEnabled: true
+        fillType: 2
+        fillSubType: 0
+        fillProgress: 1
+  - id: 452
+    name: albumCircle
+    isStatic: false
+    isActive: false
+    transform:
+      id: 454
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 455
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 18
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 1
+        fillEnabled: true
+        fillType: 2
+        fillSubType: 0
+        fillProgress: 1
   - id: 400
     name: RadioStationPlayingManager
     isStatic: false

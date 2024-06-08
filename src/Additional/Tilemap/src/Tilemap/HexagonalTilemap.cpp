@@ -245,13 +245,13 @@ glm::ivec2 HexagonalTilemap::GetPositionInDirection(const glm::ivec2& position, 
 {
 	if (direction < 6)
 	{
-		if (position.y % 2)
+		if (position.x % 2)
 		{
-			return position + HexagonalTile::adjacentDirectionsOddY[direction];
+			return position + HexagonalTile::adjacentDirectionsOddX[direction];
 		}
 		else
 		{
-			return position + HexagonalTile::adjacentDirectionsEvenY[direction];
+			return position + HexagonalTile::adjacentDirectionsEvenX[direction];
 		}
 	}
 	return position;
@@ -282,29 +282,6 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::Prefa
 	toFillTilesQueue.push(position);
 	//visited.insert(position);
 
-	// Define the neighboring directions for hexagonal tiles
-
-	const glm::ivec2 adjacentDirectionsEvenY[6] = {
-		glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 0),
-		glm::ivec2(0, -1), glm::ivec2(-1, -1), glm::ivec2(-1, 0)
-	};
-
-	const glm::ivec2 adjacentDirectionsOddY[6] = {
-		glm::ivec2(0, 1), glm::ivec2(1, 1), glm::ivec2(1, 0),
-		glm::ivec2(1, -1), glm::ivec2(0, -1), glm::ivec2(-1, 0)
-	};
-
-	//const glm::ivec2 adjacentDirectionsEvenY[6] = {
-	//	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
-	//	glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
-	//};
-	//
-	//const glm::ivec2 adjacentDirectionsOddY[6] = {
-	//	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
-	//	glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
-	//};
-
-
 	glm::ivec2 currentPos;
 	HexagonalTile* currentTile = nullptr;
 	Twin2Engine::Core::GameObject* instantiatedGameObject = nullptr;
@@ -318,8 +295,6 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::Prefa
 
 		if (currentTile && !currentTile->GetGameObject())
 		{
-			// Kopiowanie gameobjectu
-			//instantiatedGameObject = Twin2Engine::Core::GameObject::Instantiate(prefab, this->GetGameObject()->GetTransform());
 			instantiatedGameObject = Twin2Engine::Manager::SceneManager::CreateGameObject(prefab, this->GetGameObject()->GetTransform());
 
 			currentTile->SetGameObject(instantiatedGameObject);
@@ -328,11 +303,10 @@ void HexagonalTilemap::Fill(const glm::ivec2& position, Twin2Engine::Core::Prefa
 			instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3(currentPos.x * _edgeLength * 1.5f, 0.0f, (currentPos.y + (abs(currentPos.x) % 2) * 0.5f) * _distanceBetweenTiles));
 			//instantiatedGameObject->GetTransform()->SetLocalPosition(glm::vec3((currentPos.x + (abs(currentPos.y) % 2) * 0.5f) * _edgeLength * 4.0f, 0.0f, currentPos.y * 0.5f * _distanceBetweenTiles));
 
-			const glm::ivec2* directions = (currentPos.y % 2) ? adjacentDirectionsOddY : adjacentDirectionsEvenY;
+			//const glm::ivec2* directions = (currentPos.y % 2) ? adjacentDirectionsOddY : adjacentDirectionsEvenY;
+			const glm::ivec2* directions = (currentPos.x % 2) ? HexagonalTile::adjacentDirectionsOddX : HexagonalTile::adjacentDirectionsEvenX;
 
-			//for (const auto& dir : directions)
-			//for (const auto& dir : directions)
-			for (int i = 0; i < 6; i++)
+			for (int i = 0; i < 6; ++i)
 			{
 				glm::ivec2 neighborPos = currentPos + directions[i];
 

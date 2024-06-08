@@ -103,7 +103,7 @@ std::vector<MapSector*> MapSector::GetAdjacentSectors() const
 		GameObject* tileAdjacentGameObjects[6];
 		tile->tile->GetAdjacentGameObjects(tileAdjacentGameObjects);
 
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 6; ++i)
 		{
 			if (tileAdjacentGameObjects[i] != nullptr)
 			{
@@ -127,7 +127,7 @@ bool MapSector::HasAdjacentSector(MapSector* otherSector) const
 		GameObject* tileAdjacentGameObjects[6];
 		tile->tile->GetAdjacentGameObjects(tileAdjacentGameObjects);
 
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 6; ++i)
 		{
 			if (tileAdjacentGameObjects[i] != nullptr)
 			{
@@ -151,7 +151,7 @@ bool MapSector::IsInternalSector() const
 		GameObject* tileAdjacentGameObjects[6];
 		tile->tile->GetAdjacentGameObjects(tileAdjacentGameObjects);
 
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 6; ++i)
 		{
 			if (tileAdjacentGameObjects[i] == nullptr)
 			{

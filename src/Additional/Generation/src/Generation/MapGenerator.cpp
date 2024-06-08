@@ -31,13 +31,13 @@ void MapGenerator::GenerateFloatHull(const vector<vec2>& hull)
 {
     vector<ivec2> hullInt(hull.size());
 
-    for (int i = 0; i < hull.size(); i++)
+    for (int i = 0; i < hull.size(); ++i)
     {
         //hullInt[i] = ivec2(hull[i].x + 0.5f, hull[i].y + 0.5f);
         hullInt[i] = tilemap->ConvertToTilemapPosition(hull[i]);
     }
 
-    for (int i = 0; i < (hullInt.size() - 1); i++)
+    for (int i = 0; i < (hullInt.size() - 1); ++i)
     {
         ConnectTiles(hullInt[i], hullInt[i + 1]);
     }
@@ -258,9 +258,9 @@ void MapGenerator::Generate()
     ivec2 rightTopPosition = tilemap->GetRightTopPosition();
     
     int i = 1000;
-    for (int x = leftBottomPosition.x; x <= rightTopPosition.x; x++)
+    for (int x = leftBottomPosition.x; x <= rightTopPosition.x; ++x)
     {
-        for (int y = leftBottomPosition.y; y <= rightTopPosition.y; y++)
+        for (int y = leftBottomPosition.y; y <= rightTopPosition.y; ++y)
         {
             ivec2 tilePosition(x, y);
             HexagonalTile* tile = tilemap->GetTile(tilePosition);

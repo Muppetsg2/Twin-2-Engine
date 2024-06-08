@@ -107,7 +107,7 @@ std::vector<MapRegion*> MapRegion::GetAdjacentRegions() const
 	{
 		vector<MapSector*> adjacentSectors = sector->GetAdjacentSectors();
 
-		for (int i = 0; i < adjacentSectors.size(); i++)
+		for (int i = 0; i < adjacentSectors.size(); ++i)
 		{
 			if (adjacentSectors[i]->region != this)
 			{
@@ -125,7 +125,7 @@ bool MapRegion::HasAdjacentRegion(MapRegion* otherRegion) const
 	{
 		vector<MapSector*> adjacentSectors = sector->GetAdjacentSectors();
 
-		for (int i = 0; i < adjacentSectors.size(); i++)
+		for (int i = 0; i < adjacentSectors.size(); ++i)
 		{
 			if (adjacentSectors[i]->region != otherRegion)
 			{

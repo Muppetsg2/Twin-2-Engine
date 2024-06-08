@@ -73,25 +73,25 @@ Audio:
     path: res/music/acoustic-guitar.mp3
 Materials:
   - id: 0
-    path: hexagonMat
+    path: res/materials/hexagonMat.material
   - id: 1
-    path: Basic2
+    path: res/materials/Basic2.material
   - id: 2
-    path: metal
+    path: res/materials/metal.material
   - id: 3
-    path: multiTexture
+    path: res/materials/multiTexture.material
   - id: 4
-    path: textured
+    path: res/materials/textured.material
   - id: 5
-    path: deska
+    path: res/materials/deska.material
   - id: 6
-    path: wallMat
+    path: res/materials/wallMat.material
   - id: 7
-    path: roofMat
+    path: res/materials/roofMat.material
   - id: 8
-    path: multiTexture
+    path: res/materials/multiTexture.material
   - id: 9
-    path: FakeBRDF
+    path: res/materials/FakeBRDF.material
 Models:
   - id: 0
     path: res/models/AK47.obj
@@ -332,7 +332,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "Time: 0.002933"
+        text: "\x00T\x00i\x00m\x00e\x00:\x00 \x000\x00.\x000\x000\x002\x009\x003\x003"
         color:
           x: 1
           y: 1

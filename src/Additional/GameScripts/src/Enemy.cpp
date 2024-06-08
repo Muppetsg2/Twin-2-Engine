@@ -19,6 +19,10 @@ void Enemy::ChangeState(State<Enemy*>* newState) {
 
 void Enemy::SetMoveDestination(HexTile* tile)
 {
+    if (CurrTile && CurrTile != tile)
+    {
+        CurrTile->StopTakingOver(this);
+    }
     _movement->SetDestination(tile);
 }
 
@@ -26,8 +30,14 @@ void Enemy::Initialize()
 {
     Playable::Initialize();
     _movement = GetGameObject()->GetComponent<EnemyMovement>();
-    list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
-    _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend());
+
+    /*
+    if (_tilemap != nullptr) { 
+        list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
+        _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend()); 
+    }
+    */
+
     ChangeState(&_initState);
 }
 
@@ -58,17 +68,6 @@ void Enemy::Update()
         _stateMachine.Update(this);
         _currThinkingTime = _timeToThink;
     }
-}
-
-
-void Enemy::FinishedMovement(HexTile* hexTile)
-{
-    if (CurrTile && CurrTile != hexTile)
-    {
-        CurrTile->StopTakingOver(this);
-    }
-    CurrTile = hexTile;
-    hexTile->StartTakingOver(this);
 }
 
 void Enemy::LostPaperRockScissors(Playable* playable)
@@ -139,6 +138,15 @@ void Enemy::StartFansControl(Playable* playable)
 
 float Enemy::GetMaxRadius() const {
     return (_movement->maxSteps + 0.25) * _tilemap->GetDistanceBetweenTiles();
+}
+
+void Enemy::SetTileMap(Tilemap::HexagonalTilemap* map)
+{
+    _tilemap = map;
+    if (_tilemap != nullptr) {
+        list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
+        _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend());
+    }
 }
 
 void Enemy::OnDead()

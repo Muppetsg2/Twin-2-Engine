@@ -32,6 +32,7 @@ void ConcertAbilityController::Update() {
         {
             currCooldown = 0.0f;
             canUse = true;
+            OnEventAbilityCooldownFinished.Invoke(playable);
         }
     }
 
@@ -51,6 +52,7 @@ bool ConcertAbilityController::Use()
         SPDLOG_INFO("Using ConcertAbility");
 
         StartPerformingConcert();
+        OnEventAbilityStarted.Invoke(playable);
         return true;
     }
     return false;
@@ -62,6 +64,7 @@ void ConcertAbilityController::StartCooldown()
     if (playable->patron->GetPatronBonus() == PatronBonus::ABILITIES_COOLDOWN) {
         currCooldown *= playable->patron->GetBonus() / 100.0f;
     }
+    OnEventAbilityCooldownStarted.Invoke(playable);
 }
 
 void ConcertAbilityController::StartPerformingConcert() 
@@ -77,6 +80,8 @@ void ConcertAbilityController::StartPerformingConcert()
 void ConcertAbilityController::StopPerformingConcert()
 {
     playable->TakeOverSpeed = savedTakingOverSpeed;
+
+    OnEventAbilityFinished.Invoke(playable);
 
     StartCooldown();
 }
@@ -97,6 +102,15 @@ float ConcertAbilityController::GetAbilityRemainingTime() const
 float ConcertAbilityController::GetCooldownRemainingTime() const
 {
     return currCooldown;
+}
+
+float ConcertAbilityController::GetCooldown() const
+{
+    float tempCooldown = cooldownTime;
+    if (playable->patron->GetPatronBonus() == PatronBonus::ABILITIES_COOLDOWN) {
+        tempCooldown *= playable->patron->GetBonus() / 100.0f;
+    }
+    return tempCooldown;
 }
 
 YAML::Node ConcertAbilityController::Serialize() const

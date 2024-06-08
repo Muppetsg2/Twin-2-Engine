@@ -8,6 +8,12 @@
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Physic;
 
+void SphereColliderComponent::UnDirty()
+{
+	ColliderComponent::UnDirty();
+	dirtyFlag = false;
+}
+
 void SphereColliderComponent::SetRadius(float radius)
 {
 	((SphereColliderData*)collider->shapeColliderData)->Radius = radius;
@@ -19,35 +25,40 @@ void SphereColliderComponent::Initialize()
 		collider = new GameCollider(this, ColliderShape::SPHERE);
 	}
 
-	PositionChangeAction = [this](Transform* transform) {
+	TransformChangeAction = [this](Transform* transform) {
 		collider->shapeColliderData->Position = transform->GetTransformMatrix() * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f);
-
-		/*
-		if (collider->hasBounding) {
-			collider->boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
-		}
-		*/
 	};
 
-	PositionChangeAction(GetTransform());
+	ColliderComponent::Initialize();
+
+	TransformChangeAction(GetTransform());
+}
+
+void SphereColliderComponent::Update()
+{
+	if (dirtyFlag) {
+		UnDirty();
+	}
+
+	ColliderComponent::Update();
 }
 
 void SphereColliderComponent::OnEnable()
 {
-	PositionChangeActionId = GetTransform()->OnEventPositionChanged += PositionChangeAction;
-	CollisionManager::Instance()->RegisterCollider(collider);
+	ColliderComponent::OnEnable();
+	TransformChangeActionId = GetTransform()->OnEventTransformChanged += TransformChangeAction;
 }
 
 void SphereColliderComponent::OnDisable()
 {
-	GetTransform()->OnEventPositionChanged -= PositionChangeActionId;
-	CollisionManager::Instance()->UnregisterCollider(collider);
+	ColliderComponent::OnDisable();
+	GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
 }
 
 void SphereColliderComponent::OnDestroy()
 {
-	GetTransform()->OnEventPositionChanged -= PositionChangeActionId;
-	CollisionManager::Instance()->UnregisterCollider(collider);
+	ColliderComponent::OnDestroy();
+	GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
 }
 
 YAML::Node SphereColliderComponent::Serialize() const

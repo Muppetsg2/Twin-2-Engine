@@ -4,7 +4,7 @@
 #include <graphic/manager/UIRenderingManager.h>
 #include <manager/SceneManager.h>
 #include <tools/YamlConverters.h>
-
+#include <ui/Canvas.h>
 #include <locale>
 #include <codecvt>
 
@@ -26,6 +26,20 @@ void InputField::OnTextInput(unsigned int character)
 	_textDirty = true;
 }
 
+void InputField::SetCanvas(Canvas* canvas)
+{
+	if (_canvas != canvas) {
+		if (_canvas != nullptr) {
+			_canvas->GetOnCanvasDestroy() -= _onCanvasDestroyId;
+		}
+
+		_canvas = canvas;
+		if (_canvas != nullptr) {
+			_onCanvasDestroyId = (_canvas->GetOnCanvasDestroy() += [&](Canvas* canv) -> void { SetCanvas(nullptr); });
+		}
+	}
+}
+
 void InputField::Initialize()
 {
 	_onTextInputID = Input::GetOnTextInput() += [&](unsigned int character) -> void {
@@ -33,12 +47,22 @@ void InputField::Initialize()
 		OnTextInput(character);
 	};
 	_isTransparent = true;
+
+	_onParentInHierarchiChangeId = (GetTransform()->OnEventInHierarchyParentChanged += [&](Transform* t) -> void {
+		SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
+	});
+	SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
 }
 
 void InputField::Update()
 {
 	// Check where clicked
 	if (!_interactable || _placeHolder == nullptr || _text == nullptr) return;
+
+	if (_canvas != nullptr) {
+		SPDLOG_WARN("Input Field can't be in canvas");
+		return;
+	}
 
 	if (Input::IsMouseButtonPressed(MOUSE_BUTTON::LEFT)) {
 		Transform* t = GetTransform();
@@ -147,6 +171,7 @@ void InputField::Update()
 	}
 }
 
+// TODO: add Canvas
 void InputField::Render()
 {
 	// Render Cursor
@@ -196,6 +221,8 @@ void InputField::Render()
 void InputField::OnDestroy()
 {
 	Input::GetOnTextInput() -= _onTextInputID;
+	SetCanvas(nullptr);
+	GetTransform()->OnEventInHierarchyParentChanged -= _onParentInHierarchiChangeId;
 }
 
 YAML::Node InputField::Serialize() const
@@ -320,9 +347,9 @@ void InputField::DrawEditor()
 		}
 
 		string buff = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_placeHolder->GetText());
-		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll;
+		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll;
 
-		ImGui::InputText(string("Placeholder Value##").append(id).c_str(), &buff, flags);
+		ImGui::InputTextMultiline(string("Placeholder Value##").append(id).c_str(), &buff, ImVec2(0, 100), flags);
 
 		if (buff != std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_placeHolder->GetText())) {
 			SetPlaceHolder(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(buff));
@@ -369,7 +396,7 @@ void InputField::DrawEditor()
 
 		buff = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_textValue);
 
-		ImGui::InputText(string("Value##").append(id).c_str(), &buff, flags);
+		ImGui::InputTextMultiline(string("Value##").append(id).c_str(), &buff, ImVec2(0, 100), flags);
 
 		if (buff != std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(_textValue)) {
 			SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(buff));

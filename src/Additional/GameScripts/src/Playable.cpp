@@ -12,7 +12,10 @@ using namespace Twin2Engine::Physic;
 
 void Playable::Initialize()
 {
-    _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
+    GameObject* obj = SceneManager::FindObjectByType<Tilemap::HexagonalTilemap>();
+    if (obj != nullptr) {
+        SetTileMap(obj->GetComponent<Tilemap::HexagonalTilemap>());
+    }
     //if (patron->GetPatronBonus() == PatronBonus::ABILITIES_COOLDOWN) {
     //    albumCooldown *= patron->GetBonus() / 100.0f;
     //    fansCooldown *= patron->GetBonus() / 100.0f;
@@ -77,18 +80,32 @@ HexTile* Playable::GetAlbumTile() {
 }
 
 void Playable::AlbumUpdate() {
-    if (isAlbumActive) {
+    //if (isAlbumActive) 
+    //{
         AlbumUpdateCounters();
-        currAlbumTime -= Time::GetDeltaTime();
-        if (currAlbumTime < 0.0f) {
-            currAlbumCooldown = albumCooldown;
-            if (patron->GetPatronBonus() == PatronBonus::ABILITIES_COOLDOWN) {
-                currAlbumCooldown *= patron->GetBonus() / 100.0f;
+        if (currAlbumTime > 0.0f)
+        {
+            currAlbumTime -= Time::GetDeltaTime();
+            if (currAlbumTime <= 0.0f) {
+                currAlbumTime = 0.0f;
+                EndUsingAlbum();
+
+                OnEventAlbumFinished(this);
+                currAlbumCooldown = usedAlbumCooldown;
+                OnEventAlbumCooldownStarted(this);
             }
-            currAlbumTime = 0.0f;
-            EndUsingAlbum();
         }
-    }
+        else if (currAlbumCooldown > 0.0f)
+        {
+            currAlbumCooldown -= Time::GetDeltaTime();
+            if (currAlbumCooldown <= 0.0f)
+            {
+                currAlbumCooldown = 0.0f;
+                isAlbumActive = false;
+                OnEventAlbumCooldownFinished(this);
+            }
+        }
+    //}
     AlbumStoppingTakingOverUpdate();
 }
 
@@ -145,6 +162,8 @@ void Playable::UseAlbum() {
         }
     }
     isAlbumActive = true;
+
+    OnEventAlbumStarted(this);
 }
 
 void Playable::EndUsingAlbum() {
@@ -205,18 +224,19 @@ void Playable::UseFans() {
     }
 
     isFansActive = true;
+
+    OnEventFansMeetingStarted(this);
 }
 void Playable::UpdateFans()
 {
     if (currFansTime > 0.0f) {
         currFansTime -= Time::GetDeltaTime();
         if (currFansTime <= 0.0f) {
-            currFansCooldown = fansCooldown;
-            if (patron->GetPatronBonus() == PatronBonus::ABILITIES_COOLDOWN) {
-                currFansCooldown *= patron->GetBonus() / 100.0f;
-            }
             currFansTime = 0.0f;
+            OnEventFansMeetingFinished(this);
+            currFansCooldown = usedFansCooldown;
             FansEnd();
+            OnEventFansMeetingCooldownStarted(this);
         }
     }
     else if (currFansCooldown > 0.0f)
@@ -224,6 +244,8 @@ void Playable::UpdateFans()
         currFansCooldown -= Time::GetDeltaTime();
         if (currFansCooldown <= 0.0f) {
             currFansCooldown = 0.0f;
+            isFansActive = false;
+            OnEventFansMeetingCooldownFinished(this);
         }
     }
 }
@@ -271,6 +293,19 @@ void Playable::RadioStationEndFunc(float value) {
     //        tile->StopTakingOver(this);
     //    }
     //}
+}
+
+void Playable::SetPatron(PatronData* patronData)
+{
+    patron = patronData;
+
+    usedAlbumCooldown = albumCooldown;
+    usedFansCooldown = fansCooldown;
+
+    if (patron->GetPatronBonus() == PatronBonus::ABILITIES_COOLDOWN) {
+        usedAlbumCooldown *= patron->GetBonus() / 100.0f;
+        usedFansCooldown *= patron->GetBonus() / 100.0f;
+    }
 }
 
 void Playable::CheckIfDead(Playable* playable) {
@@ -491,6 +526,11 @@ std::vector<HexTile*> Playable::GetInRangeTiles(HexTile* centerTile, float range
     tiles.clear();
 
     return filteredTiles;
+}
+
+void Playable::SetTileMap(Tilemap::HexagonalTilemap* map)
+{
+    _tilemap = map;
 }
 
 YAML::Node Playable::Serialize() const

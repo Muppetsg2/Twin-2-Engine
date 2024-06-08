@@ -4,12 +4,12 @@
 
 namespace Twin2Engine::Core {
 	class BoxColliderComponent : public ColliderComponent {
-		//protected:
 	private:
-		bool dirtyFlag = false;
-
 		Tools::Action<Transform*> TransformChangeAction;
 		size_t TransformChangeActionId = 0;
+
+	protected:
+		virtual void UnDirty() override;
 
 	public:
 		//Along X
@@ -26,10 +26,10 @@ namespace Twin2Engine::Core {
 		void SetRotation(const glm::vec3& rot);
 
 		void Initialize() override;
+		void Update() override;
 		void OnEnable() override;
 		void OnDisable() override;
 		void OnDestroy() override;
-		void Update() override;
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;

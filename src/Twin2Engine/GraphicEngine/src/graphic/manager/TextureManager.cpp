@@ -1,5 +1,9 @@
 #include <graphic/manager/TextureManager.h>
 
+#if _DEBUG
+#include <regex>
+#endif
+
 using namespace Twin2Engine;
 using namespace Graphic;
 using namespace Manager;
@@ -230,13 +234,13 @@ void TextureManager::DrawEditor(bool* p_open)
         for (auto& item : _texturesPaths) {
             string n = GetTexture2DName(item.second);
             ImGui::BulletText(n.c_str());
-            ImGui::SameLine(ImGui::GetContentRegionAvail().x - 50);
-            if (ImGui::Button(string("Edit##Texture Manager").append(std::to_string(i)).c_str())) {
+            ImGui::SameLine(ImGui::GetContentRegionAvail().x - 35);
+            if (ImGui::Button(string(ICON_FA_PENCIL "##Edit Texture Manager").append(std::to_string(i)).c_str())) {
                 selectedToEdit = item.first;
                 openEditor = true;
             }
             ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
-            if (ImGui::RemoveButton(string("##Remove Texture Manager").append(std::to_string(i)).c_str())) {
+            if (ImGui::Button(string(ICON_FA_TRASH_CAN "##Remove Texture Manager").append(std::to_string(i)).c_str())) {
                 clicked.push_back(item.first);
             }
             ++i;
@@ -431,8 +435,15 @@ void TextureManager::DrawEditor(bool* p_open)
         ImGui::EndDisabled();
 
         if (ImGui::Button("Load##Texture Manager PopUp", ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
-            if (detect) LoadTexture2D(std::filesystem::relative(_fileDialogInfo.resultPath).string());
-            else LoadTexture2D(std::filesystem::relative(_fileDialogInfo.resultPath).string(), inter, form);
+
+            string path = std::filesystem::relative(_fileDialogInfo.resultPath).string();
+
+            if (std::regex_search(path, std::regex("(?:[/\\\\]res[/\\\\])"))) {
+                path = path.substr(path.find("res"));
+            }
+
+            if (detect) LoadTexture2D(path);
+            else LoadTexture2D(path, inter, form);
 
             ImGui::CloseCurrentPopup();
         }

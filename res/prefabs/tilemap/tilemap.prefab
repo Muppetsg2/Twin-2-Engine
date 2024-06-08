@@ -3,9 +3,7 @@ Sprites: ~
 Fonts: ~
 Audio: ~
 Materials: ~
-Models:
-  - id: 0
-    path: "{Plane}"
+Models: ~
 Prefabs:
   - id: 0
     path: res/prefabs/tilemap/tiles/blueHexTile.prefab
@@ -17,7 +15,7 @@ Prefabs:
     path: res/prefabs/tilemap/tiles/greenHexTile.prefab
 ScriptableObjects: ~
 Root:
-  name: New GameObject
+  name: Map Generator
   isStatic: true
   isActive: true
   transform:
@@ -45,19 +43,31 @@ Root:
       rightTopPosition:
         x: 0
         y: 0
+      edgeLength: 0.5
     - id: 2
       enabled: true
       type: MapGenerator
-      prefabHexagonalTile: 2
+      prefabHexagonalTile: 0
       additionalTile: 1
-      filledTile: 0
+      filledTile: 2
       pointTile: 3
-      generationRadiusMin: 7
-      generationRadiusMax: 7
+      generationRadiusMin: 5
+      generationRadiusMax: 5
       minPointsNumber: 5
       maxPointsNumber: 5
       angleDeltaRange: 5
     - id: 3
       enabled: true
       type: ContentGenerator
-      mapElementGenerators: ~
+      mapElementGenerators:
+        - res/scriptableobjects/RegionsGeneratorByKMeans.so
+        - res/scriptableobjects/SectorGeneratorForRegionsByKMeans.so
+        - res/scriptableobjects/LakeGenerator.so
+        - res/scriptableobjects/MountainsGenerator.so
+        - res/scriptableobjects/CityGenerator.so
+        - res/scriptableobjects/RadioStationGeneratorSectorBased.so
+        - res/scriptableobjects/HumansGenerator.so
+    - id: 4
+      enabled: true
+      type: AStarPathfinder
+      maxMappingDistance: 1

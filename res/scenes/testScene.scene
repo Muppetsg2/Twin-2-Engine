@@ -41,19 +41,19 @@ Audio:
       path: res/music/acoustic-guitar.mp3
 Materials:
     - id: 0
-      path: Basic2
+      path: res/materials/Basic2.material
     - id: 1
-      path: textured
+      path: res/materials/textured.material
     - id: 2
-      path: wallMat
+      path: res/materials/wallMat.material
     - id: 3
-      path: roofMat
+      path: res/materials/roofMat.material
     - id: 4
-      path: deska
+      path: res/materials/deska.material
     - id: 5
-      path: metal
+      path: res/materials/metal.material
     - id: 6
-      path: hexagonMat
+      path: res/materials/hexagonMat.material
 Models:
     - id: 0
       path: "{Cube}"
@@ -271,7 +271,7 @@ GameObjects:
                 enabled: true
                 type: Text
                 isTransparent: false
-                text: "Time: 0.0000"
+                text: "\x00T\x00i\x00m\x00e\x00:\x00 \x000\x00.\x000\x000\x000\x000"
                 color:
                     x: 1.0
                     y: 1.0

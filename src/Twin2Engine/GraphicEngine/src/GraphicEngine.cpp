@@ -91,7 +91,7 @@ void GraphicEngine::Init(const std::string& window_name, int32_t window_width, i
 
 	// Depth Test
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
+	glDepthFunc(GL_LESS);
 
 	// Face Culling
 	glEnable(GL_CULL_FACE);
@@ -133,7 +133,15 @@ void GraphicEngine::Render()
 	FrameMarkStart(tracy_RenderMeshesName);
 #endif
 
+	glEnable(GL_CULL_FACE);
+	glDepthFunc(GL_LESS);
+
 	MeshRenderingManager::Render();
+
+	glDisable(GL_CULL_FACE);
+	glDepthFunc(GL_LEQUAL);
+
+	UIRenderingManager::RenderWorldSpace();
 
 #if TRACY_PROFILER
 	FrameMarkEnd(tracy_RenderMeshesName);
@@ -147,7 +155,10 @@ void GraphicEngine::RenderGUI()
 	FrameMarkStart(tracy_RenderUIName);
 #endif
 
-	UIRenderingManager::Render();
+	glDisable(GL_CULL_FACE);
+	glDepthFunc(GL_LEQUAL);
+
+	UIRenderingManager::RenderScreenSpace();
 
 #if TRACY_PROFILER
 	FrameMarkEnd(tracy_RenderUIName);
@@ -160,6 +171,9 @@ void GraphicEngine::PreRender()
 	ZoneScoped;
 	FrameMarkStart(tracy_PreRenderName);
 #endif
+
+	glEnable(GL_CULL_FACE);
+	glDepthFunc(GL_LESS);
 
 	MeshRenderingManager::PreRender();
 

@@ -1365,7 +1365,15 @@ void ModelsManager::DrawEditor(bool* p_open)
     if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
     {
         // Result path in: m_fileDialogInfo.resultPath
-        LoadModel(std::filesystem::relative(_fileDialogInfo.resultPath).string());
+        std::string path = std::filesystem::relative(_fileDialogInfo.resultPath).string();
+
+        if (std::regex_search(path, std::regex("(?:[/\\\\]res[/\\\\])"))) {
+
+            LoadModel(path.substr(path.find("res")));
+        }
+        else {
+            LoadModel(path);
+        }
     }
 
     ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
@@ -1382,7 +1390,7 @@ void ModelsManager::DrawEditor(bool* p_open)
             std::string n = GetModelName(item.second);
             ImGui::BulletText(n.c_str());
             ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
-            if (ImGui::RemoveButton(std::string("##Remove Models Manager").append(std::to_string(i)).c_str())) {
+            if (ImGui::Button(std::string(ICON_FA_TRASH_CAN "##Remove Models Manager").append(std::to_string(i)).c_str())) {
                 clicked.push_back(item.first);
             }
             ++i;

@@ -47,7 +47,7 @@ bool Component::DrawInheritedFields()
 	}
 
 	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 20);
-	if (ImGui::RemoveButton(std::string("##Remove").append(id).c_str())) {
+	if (ImGui::Button(std::string(ICON_FA_TRASH_CAN "##Remove").append(id).c_str())) {
 		_gameObject->RemoveComponent(this);
 		return true;
 	}
@@ -136,9 +136,6 @@ void Component::Init(GameObject* obj)
 	_id = GetFreeId();
 	SceneManager::AddComponentWithId(this);
 	_gameObject = obj;
-	//_enabled = true;
-	//Initialize();
-	//OnEnable();
 }
 
 void Component::Init(GameObject* obj, size_t id)
@@ -156,7 +153,4 @@ void Component::Init(GameObject* obj, size_t id)
 		_currentFreeId = _id + 1;
 	}
 	_gameObject = obj;
-	//_enabled = true;
-	//Initialize();
-	//OnEnable();
 }

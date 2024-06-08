@@ -6,6 +6,8 @@
 #include <ui/Image.h>
 
 namespace Twin2Engine::UI {
+	class Canvas;
+
 	class InputField : public Core::RenderableComponent {
 	private:
 		bool _interactable = true;
@@ -32,6 +34,12 @@ namespace Twin2Engine::UI {
 		bool _insertCursorMode = false;
 
 		Manager::MaskData _inputMask;
+
+		size_t _onParentInHierarchiChangeId = 0;
+		size_t _onCanvasDestroyId = 0;
+		Canvas* _canvas = nullptr;
+
+		void SetCanvas(Canvas* canvas);
 	public:
 		virtual void Initialize() override;
 		virtual void Update() override;

@@ -1,10 +1,27 @@
 #include <core/BoxColliderComponent.h>
-#include "core/GameObject.h"
+#include <core/GameObject.h>
 #include <physic/CollisionManager.h>
 #include <tools/YamlConverters.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Physic;
+
+void BoxColliderComponent::UnDirty()
+{
+	ColliderComponent::UnDirty();
+	BoxColliderData* boxData = ((BoxColliderData*)collider->shapeColliderData);
+	glm::quat q = GetTransform()->GetGlobalRotationQuat()
+		* glm::angleAxis(boxData->Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
+		* glm::angleAxis(boxData->Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f))
+		* glm::angleAxis(boxData->Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+	boxData->XAxis = q * glm::vec3(1.0f, 0.0f, 0.0f);
+	boxData->YAxis = q * glm::vec3(0.0f, 1.0f, 0.0f);
+	boxData->ZAxis = q * glm::vec3(0.0f, 0.0f, 1.0f);
+
+	boxData->HalfDimensions = GetTransform()->GetGlobalScale() * boxData->LocalHalfDimensions;
+
+	dirtyFlag = false;
+}
 
 void BoxColliderComponent::SetWidth(float v)
 {
@@ -70,53 +87,38 @@ void BoxColliderComponent::Initialize()
 		boxData->HalfDimensions = transform->GetGlobalScale() * boxData->LocalHalfDimensions;
 
 		collider->shapeColliderData->Position = transform->GetTransformMatrix() * glm::vec4(collider->shapeColliderData->LocalPosition, 1.0f);
-
-		/*
-		if (collider->hasBounding) {
-			collider->boundingVolume->shapeColliderData->Position = collider->shapeColliderData->Position;
-		}
-		*/
 	};
+
+	ColliderComponent::Initialize();
 
 	TransformChangeAction(GetTransform());
 }
 
+void BoxColliderComponent::Update()
+{
+	if (dirtyFlag) {
+		UnDirty();
+	}
+
+	ColliderComponent::Update();
+}
+
 void BoxColliderComponent::OnEnable()
 {
+	ColliderComponent::OnEnable();
 	TransformChangeActionId = GetTransform()->OnEventTransformChanged += TransformChangeAction;
-	CollisionManager::Instance()->RegisterCollider(collider);
 }
 
 void BoxColliderComponent::OnDisable()
 {
+	ColliderComponent::OnDisable();
 	GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
-	CollisionManager::Instance()->UnregisterCollider(collider);
 }
 
 void BoxColliderComponent::OnDestroy()
 {
+	ColliderComponent::OnDestroy();
 	GetTransform()->OnEventTransformChanged -= TransformChangeActionId;
-	CollisionManager::Instance()->UnregisterCollider(collider);
-}
-
-void BoxColliderComponent::Update()
-{
-	ColliderComponent::Update();
-
-	if (dirtyFlag) {
-		BoxColliderData* boxData = ((BoxColliderData*)collider->shapeColliderData);
-		glm::quat q = GetTransform()->GetGlobalRotationQuat()
-			* glm::angleAxis(boxData->Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
-			* glm::angleAxis(boxData->Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f))
-			* glm::angleAxis(boxData->Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-		boxData->XAxis = q * glm::vec3(1.0f, 0.0f, 0.0f);
-		boxData->YAxis = q * glm::vec3(0.0f, 1.0f, 0.0f);
-		boxData->ZAxis = q * glm::vec3(0.0f, 0.0f, 1.0f);
-
-		boxData->HalfDimensions = GetTransform()->GetGlobalScale() * boxData->LocalHalfDimensions;
-
-		dirtyFlag = false;
-	}
 }
 
 YAML::Node BoxColliderComponent::Serialize() const

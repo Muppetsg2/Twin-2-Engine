@@ -141,13 +141,14 @@ AStarPathfindingNode* AStarPathfinder::FindClosestNode(vec3 position)
 	vec3 proposedPosition = closestNode->GetTransform()->GetGlobalPosition();
 	proposedPosition.y = 0.0f;
 	float minDistance = glm::distance(position, proposedPosition);
+	float distance = 0.0f;
 
 	for (size_t index = 1ull; index < size; ++index)
 	{
 		proposedPosition = _registeredNodes[index]->GetTransform()->GetGlobalPosition();
 		proposedPosition.y = 0.0f;
 
-		float distance = glm::distance(position, proposedPosition);
+		distance = glm::distance(position, proposedPosition);
 
 		if (distance < minDistance)
 		{
@@ -221,6 +222,8 @@ void AStarPathfinder::FindingPath(size_t threadId,
 
 		usedNodes.insert(closestToBegin);
 
+		vec3 allocatedPosY0;
+
 		while (priorityQueue.Count())
 		{
 			AStarNode* processedNode = priorityQueue.Dequeue();
@@ -240,8 +243,9 @@ void AStarPathfinder::FindingPath(size_t threadId,
 
 			size_t size = connected.size();
 
-			vec3 allocatedPosY0 = allocatedNode->position;
-			allocatedPosY0.y = 0.0;
+			//vec3 allocatedPosY0 = allocatedNode->position;
+			//allocatedPosY0.y = 0.0;
+
 			for (size_t index = 0ull; index < size; ++index)
 			{
 				if (!usedNodes.contains(connected[index].targetNode))
@@ -253,6 +257,8 @@ void AStarPathfinder::FindingPath(size_t threadId,
 
 						allocatedNodes.push_back(allocatedNode);
 
+						allocatedPosY0 = allocatedNode->position;
+						allocatedPosY0.y = 0.0;
 						//priorityQueue.Enqueue(allocatedNode, connected[index].targetDistance);
 						
 						priorityQueue.Enqueue(allocatedNode, allocatedNode->costFromStart + glm::distance(allocatedPosY0, endPositionY0));

@@ -79,35 +79,35 @@ Audio:
     path: res/music/acoustic-guitar.mp3
 Materials:
   - id: 0
-    path: hexagonMat
+    path: res/materials/hexagonMat.material
   - id: 1
-    path: Basic2
+    path: res/materials/Basic2.material
   - id: 2
-    path: GreenHexTile
+    path: res/materials/GreenHexTile.material
   - id: 3
-    path: ColoredHexTile
+    path: res/materials/ColoredHexTile.material
   - id: 4
-    path: metal
+    path: res/materials/metal.material
   - id: 5
-    path: multiTexture
+    path: res/materials/multiTexture.material
   - id: 6
-    path: textured
+    path: res/materials/textured.material
   - id: 7
-    path: deska
+    path: res/materials/deska.material
   - id: 8
-    path: CityMaterial
+    path: res/materials/CityMaterial.material
   - id: 9
-    path: BlueHexTile
+    path: res/materials/BlueHexTile.material
   - id: 10
-    path: wallMat
+    path: res/materials/wallMat.material
   - id: 11
-    path: MountainsUnlit
+    path: res/materials/MountainsUnlit.material
   - id: 12
-    path: FakeBRDF
+    path: res/materials/FakeBRDF.material
   - id: 13
-    path: RedHexTile
+    path: res/materials/RedHexTile.material
   - id: 14
-    path: roofMat
+    path: res/materials/roofMat.material
 Models:
   - id: 0
     path: res/models/AK47.obj

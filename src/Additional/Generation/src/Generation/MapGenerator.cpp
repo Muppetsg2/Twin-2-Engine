@@ -19,10 +19,12 @@ void MapGenerator::Initialize()
 
 void MapGenerator::OnEnable()
 {
+    /*
     if (tilemap != nullptr && preafabHexagonalTile != nullptr && additionalTile != nullptr && filledTile != nullptr && pointTile != nullptr) 
     {
         Generate();
     }
+    */
 }
 
 void MapGenerator::GenerateFloatHull(const vector<vec2>& hull)
@@ -228,6 +230,8 @@ void MapGenerator::GenerateRandomHull()
 
 void MapGenerator::Generate()
 {
+    if (tilemap == nullptr || preafabHexagonalTile == nullptr || additionalTile == nullptr || filledTile == nullptr || pointTile == nullptr || _generated) return;
+
     //if (!debugMode)
     //{
     //    additionalTile = tile;
@@ -296,6 +300,11 @@ void MapGenerator::Clear() {
         }
         _generated = false;
     }
+}
+
+bool MapGenerator::IsMapGenerated()
+{
+    return _generated;
 }
 
 YAML::Node MapGenerator::Serialize() const

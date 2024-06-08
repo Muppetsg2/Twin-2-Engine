@@ -2,6 +2,10 @@
 #include <spdlog/spdlog.h>
 #include <filesystem>
 
+#if _DEBUG
+#include <regex>
+#endif
+
 using namespace Twin2Engine::Manager;
 
 Soloud AudioManager::_soloud = Soloud();
@@ -466,7 +470,7 @@ void AudioManager::DrawEditor(bool* p_open)
             string n = GetAudioName(item.second);
             ImGui::BulletText(n.c_str());
             ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
-            if (ImGui::RemoveButton(string("##Remove Audio Manager").append(std::to_string(i)).c_str())) {
+            if (ImGui::Button(string(ICON_FA_TRASH_CAN "##Remove Audio Manager").append(std::to_string(i)).c_str())) {
                 clicked.push_back(item.first);
             }
             ++i;
@@ -497,7 +501,15 @@ void AudioManager::DrawEditor(bool* p_open)
     if (ImGui::FileDialog(&_fileDialogOpen, &_fileDialogInfo))
     {
         // Result path in: m_fileDialogInfo.resultPath
-        LoadAudio(std::filesystem::relative(_fileDialogInfo.resultPath).string());
+        string path = std::filesystem::relative(_fileDialogInfo.resultPath).string();
+
+        if (std::regex_search(path, std::regex("(?:[/\\\\]res[/\\\\])"))) {
+
+            LoadAudio(path.substr(path.find("res")));
+        }
+        else {
+            LoadAudio(path);
+        }
     }
 
     ImGui::End();

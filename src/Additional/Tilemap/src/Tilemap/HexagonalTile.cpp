@@ -3,25 +3,25 @@
 using namespace Tilemap;
 using namespace Twin2Engine::Core;
 
-const glm::ivec2 HexagonalTile::adjacentDirectionsEvenY[6] = {
-	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 0),
-	glm::ivec2(0, -1), glm::ivec2(-1, -1), glm::ivec2(-1, 0)
-};
-
-const glm::ivec2 HexagonalTile::adjacentDirectionsOddY[6] = {
-	glm::ivec2(0, 1), glm::ivec2(1, 1), glm::ivec2(1, 0),
-	glm::ivec2(1, -1), glm::ivec2(0, -1), glm::ivec2(-1, 0)
-};
-
-//const glm::ivec2 HexagonalTile::adjacentDirectionsEvenX[6] = {
-//	glm::ivec2(-1, 0), glm::ivec2(0, 1), glm::ivec2(1, 0),
-//	glm::ivec2(1, -1), glm::ivec2(0, -1), glm::ivec2(-1, -1)
+//const glm::ivec2 HexagonalTile::adjacentDirectionsEvenY[6] = {
+//	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 0),
+//	glm::ivec2(0, -1), glm::ivec2(-1, -1), glm::ivec2(-1, 0)
 //};
 //
-//const glm::ivec2 HexagonalTile::adjacentDirectionsOddX[6] = {
-//	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
-//	glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
+//const glm::ivec2 HexagonalTile::adjacentDirectionsOddY[6] = {
+//	glm::ivec2(0, 1), glm::ivec2(1, 1), glm::ivec2(1, 0),
+//	glm::ivec2(1, -1), glm::ivec2(0, -1), glm::ivec2(-1, 0)
 //};
+
+const glm::ivec2 HexagonalTile::adjacentDirectionsEvenX[6] = {
+	glm::ivec2(-1, 0), glm::ivec2(0, 1), glm::ivec2(1, 0),
+	glm::ivec2(1, -1), glm::ivec2(0, -1), glm::ivec2(-1, -1)
+};
+
+const glm::ivec2 HexagonalTile::adjacentDirectionsOddX[6] = {
+	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
+	glm::ivec2(1, 0), glm::ivec2(0, -1), glm::ivec2(-1, 0)
+};
 
 //const glm::ivec2 HexagonalTile::adjacentDirectionsEvenY[6] = {
 //	glm::ivec2(-1, 1), glm::ivec2(0, 1), glm::ivec2(1, 1),
@@ -68,7 +68,7 @@ void HexagonalTile::SetTilemap(HexagonalTilemap* tilemap)
 {
 	_tilemap = tilemap;
 }
-inline HexagonalTilemap* HexagonalTile::GetTilemap() const
+HexagonalTilemap* HexagonalTile::GetTilemap() const
 {
 	return _tilemap;
 }
@@ -77,7 +77,7 @@ void HexagonalTile::SetPosition(const glm::ivec2& position)
 {
 	_position = position;
 }
-inline glm::ivec2 HexagonalTile::GetPosition() const
+glm::ivec2 HexagonalTile::GetPosition() const
 {
 	return _position;
 }
@@ -103,7 +103,8 @@ GameObject* HexagonalTile::GetGameObject() const
 
 void HexagonalTile::GetAdjacentTiles(HexagonalTile** out_AdjacentTiles) const
 {
-	const glm::ivec2* directions = (_position.y % 2) ? adjacentDirectionsOddY : adjacentDirectionsEvenY;
+	//const glm::ivec2* directions = (_position.y % 2) ? adjacentDirectionsOddY : adjacentDirectionsEvenY;
+	const glm::ivec2* directions = (_position.x % 2) ? adjacentDirectionsOddX : adjacentDirectionsEvenX;
 
 	for (int i = 0; i < 6; ++i)
 	{
@@ -113,7 +114,8 @@ void HexagonalTile::GetAdjacentTiles(HexagonalTile** out_AdjacentTiles) const
 
 void HexagonalTile::GetAdjacentGameObjects(GameObject** out_adjacentGameObjects) const
 {
-	const glm::ivec2* directions = (_position.y % 2) ? adjacentDirectionsOddY : adjacentDirectionsEvenY;
+	//const glm::ivec2* directions = (_position.y % 2) ? adjacentDirectionsOddY : adjacentDirectionsEvenY;
+	const glm::ivec2* directions = (_position.x % 2) ? adjacentDirectionsOddX : adjacentDirectionsEvenX;
 
 	for (int i = 0; i < 6; ++i)
 	{

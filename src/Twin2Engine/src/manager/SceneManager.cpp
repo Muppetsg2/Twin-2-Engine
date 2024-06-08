@@ -315,11 +315,12 @@ void SceneManager::LoadScene() {
 	// GAME OBJECTS
 
 	// CREATE NEW OBJECTS WITH TRANSFORMS
-	map<size_t, GameObject*> objectByComponentId;
-
 	_rootObject = new GameObject(0);
 	_rootObject->SetName("##ROOT##");
 	_gameObjectsById[0] = _rootObject;
+	_componentsById[0] = _rootObject->GetTransform();
+	_rootObject->GetTransform()->Init(_rootObject, 0);
+
 	for (const YAML::Node& gameObjectNode : sceneToLoad->_gameObjects) {
 		size_t id = gameObjectNode["id"].as<size_t>();
 		if (id == 0) {
@@ -332,7 +333,7 @@ void SceneManager::LoadScene() {
 
 		size_t transformId = gameObjectNode["transform"]["id"].as<size_t>();
 		_componentsById[transformId] = obj->GetTransform();
-		objectByComponentId[transformId] = obj;
+		obj->GetTransform()->Init(obj, transformId);
 	}
 
 	// LOAD GAMEOBJECTS AND TRASFORMS VALUES
@@ -382,7 +383,6 @@ void SceneManager::LoadScene() {
 			// Create Component of type
 			size_t id = componentNode["id"].as<size_t>();
 			_componentsById[id] = ComponentsMap::CreateComponent(type);
-			objectByComponentId[id] = obj;
 		}
 	}
 
@@ -405,26 +405,25 @@ void SceneManager::LoadScene() {
 			}
 
 			// Add Component to object
-			obj->AddComponent(comp);
+			obj->AddComponentNoInit(comp);
+			comp->Init(obj, compId);
 		}
 	}
 
 	// INIT COMPONENTS
 	for (const auto& compPair : _componentsById) {
-		compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
-	}
-	for (const auto& compPair : _componentsById) {
 		compPair.second->Initialize();
-		//compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
-		//compPair.second->Initialize();
 	}
-	static_cast<Component*>(_rootObject->GetTransform())->Init(_rootObject);
 #pragma endregion
 
+	// ENABLE COMPONENTS
 	for (const auto& compPair : _componentsById) {
 		if (compPair.second->_enabled)
 		{
 			compPair.second->OnEnable();
+		}
+		else {
+			compPair.second->OnDisable();
 		}
 	}
 
@@ -748,7 +747,6 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	// GAME OBJECTS
 
 	// CREATE NEW OBJECTS WITH TRANSFORMS
-	map<size_t, GameObject*> objectByComponentId;
 	map<size_t, pair<GameObject*, size_t>> idTakenObjects;
 	map<size_t, Component*> prefabComponentsById;
 	map<size_t, pair<Component*, size_t>> idTakenComponents;
@@ -777,7 +775,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 
 	size_t rootTransformId = prefab->_rootObject["transform"]["id"].as<size_t>();
 	CheckComponentTakenID(prefabRoot->GetTransform(), rootTransformId);
-	objectByComponentId[rootTransformId] = prefabRoot;
+	prefabRoot->GetTransform()->Init(prefabRoot, rootTransformId);
 
 	for (const YAML::Node& gameObjectNode : prefab->_gameObjects) {
 		size_t id = gameObjectNode["id"].as<size_t>();
@@ -791,7 +789,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 
 		size_t transformId = gameObjectNode["transform"]["id"].as<size_t>();
 		CheckComponentTakenID(obj->GetTransform(), transformId);
-		objectByComponentId[transformId] = obj;
+		obj->GetTransform()->Init(obj, transformId);
 	}
 
 	// LOAD ROOT OBJECT AND TRANSFORM VALUES
@@ -857,7 +855,6 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 
 			size_t id = componentNode["id"].as<size_t>();
 			CheckComponentTakenID(comp, id);
-			objectByComponentId[id] = obj;
 		}
 	}
 
@@ -880,7 +877,8 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 			}
 
 			// Add Component To GameObject
-			obj->AddComponent(comp);
+			obj->AddComponentNoInit(comp);
+			comp->Init(obj, compId);
 		}
 	}
 
@@ -904,18 +902,10 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 
 		prefabComponentsById[newId] = _componentsById[newId];
 		prefabComponentsById.erase(oldId);
-
-		objectByComponentId[newId] = objectByComponentId[oldId];
-		objectByComponentId.erase(oldId);
 	}
 
 	// INIT COMPONENTS
 	for (const auto& compPair : prefabComponentsById) {
-		compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
-		//compPair.second->Initialize();
-	}
-	for (const auto& compPair : prefabComponentsById) {
-		//compPair.second->Init(objectByComponentId[compPair.first], compPair.first);
 		compPair.second->Initialize();
 	}
 #pragma endregion
@@ -924,6 +914,9 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		if (compPair.second->_enabled)
 		{
 			compPair.second->OnEnable();
+		}
+		else {
+			compPair.second->OnDisable();
 		}
 	}
 

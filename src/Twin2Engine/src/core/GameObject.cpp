@@ -35,7 +35,6 @@ GameObject::GameObject(size_t id) {
 	_name = "New GameObject";
 
 	_transform = new Transform();
-	//_transform->Init(this);
 
 	//components = list<Component*>();
 	components = std::list<Component*>();
@@ -190,10 +189,10 @@ void GameObject::SetActive(bool active)
 
 void GameObject::SetActiveInHierarchy(bool activeInHierarchy)
 {
-	if (_activeInHierarchy != activeInHierarchy) // warunek sprawdzaj�cy czy to ustawienie zmieni stan (musi zmienia� inaczej nie ma sensu dzia��� dalej)
+	if (_activeInHierarchy != activeInHierarchy) // warunek sprawdzajacy czy to ustawienie zmieni stan (musi zmieniac inaczej nie ma sensu dzialac dalej)
 	{
 		_activeInHierarchy = activeInHierarchy; //zmiana stanu
-		if (_activeSelf) // sprawdzenie w�asnego stanu, je�li ustawiony na false to znaczy, �e ten stan dyktuje warunki aktywno�ci wszystkich podrz�dnych obiekt�w
+		if (_activeSelf) // sprawdzenie wlasnego stanu, jezeli ustawiony na false to znaczy, ze ten stan dyktuje warunki aktywnosci wszystkich podrzednych obiektow
 		{
 			for (int index = 0; index < _transform->GetChildCount(); ++index)
 			{
@@ -329,7 +328,7 @@ void GameObject::DrawEditor()
 
 	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 20);
 
-	if (ImGui::RemoveButton(string("##Remove GO").append(id).c_str())) {
+	if (ImGui::Button(string(ICON_FA_TRASH_CAN "##Remove GO").append(id).c_str())) {
 		Manager::SceneManager::DestroyGameObject(this);
 		return;
 	}
@@ -369,8 +368,32 @@ void GameObject::DrawEditor()
 
 		map<size_t, string> types = ComponentsMap::GetComponentsTypes();
 
-		size_t choosed = 0;
+		vector<string> names = vector<string>();
+		names.resize(types.size());
 
+		std::transform(types.begin(), types.end(), names.begin(), [](std::pair<size_t, string> const& i) -> string {
+			return i.second;
+		});
+
+		types.clear();
+
+		std::sort(names.begin(), names.end(), [&](string const& left, string const& right) -> bool {
+			return left.compare(right) < 0;
+		});
+
+		int choosed = -1;
+		bool clicked = false;
+
+		if (ImGui::ComboWithFilter(string("##GO POP UP COMPONENTS").append(id).c_str(), &choosed, names, 20)) {
+			if (choosed != -1) {
+				Component* comp = ComponentsMap::CreateComponent(names[choosed]);
+				this->AddComponent(comp);
+			}
+
+			clicked = true;
+		}
+
+		/*
 		if (ImGui::BeginCombo(string("##GO POP UP COMPONENTS").append(id).c_str(), choosed == 0 ? "None" : types[choosed].c_str())) {
 
 			bool clicked = false;
@@ -389,14 +412,14 @@ void GameObject::DrawEditor()
 				if (choosed != 0) {
 					Component* comp = ComponentsMap::CreateComponent(types[choosed]);
 					this->AddComponent(comp);
-					comp->Init(this);
 				}
 			}
 
 			ImGui::EndCombo();
 		}
+		*/
 
-		if (choosed != 0) {
+		if (choosed != -1) {
 			ImGui::CloseCurrentPopup();
 		}
 
@@ -408,8 +431,13 @@ void GameObject::DrawEditor()
 void GameObject::AddComponent(Component* comp)
 {
 	components.push_back(comp);
-	//comp->Init(this);
-	//comp->Initialize();
+	comp->Init(this);
+	comp->Initialize();
+}
+
+void GameObject::AddComponentNoInit(Component* comp)
+{
+	components.push_back(comp);
 }
 
 void GameObject::RemoveComponent(Component* component)

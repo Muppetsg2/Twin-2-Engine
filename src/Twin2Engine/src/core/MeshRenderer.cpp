@@ -128,7 +128,7 @@ bool MeshRenderer::DrawInheritedFields()
 
 			if (type == 1) {
 				ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
-				if (ImGui::RemoveButton(string("##Remove").append(id).append(std::to_string(i)).c_str())) {
+				if (ImGui::Button(string(ICON_FA_TRASH_CAN "##Remove").append(id).append(std::to_string(i)).c_str())) {
 					clicked.push_back(i);
 				}
 			}
@@ -417,7 +417,13 @@ void MeshRenderer::DrawEditor()
 
 	if (ImGui::CollapsingHeader(name.c_str())) {
 		if (Component::DrawInheritedFields()) return;
-		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
+
+		bool v = _isTransparent;
+		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &v);
+
+		if (v != _isTransparent) {
+			SetIsTransparent(v);
+		}
 
 		std::map<size_t, string> modelNames = ModelsManager::GetAllModelsNames();
 

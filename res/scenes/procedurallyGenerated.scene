@@ -526,15 +526,15 @@ Sprites:
     texture: 12
     x: 0
     y: 0
-    width: 150
-    height: 150
+    width: 256
+    height: 256
   - id: 4
     alias: concert
     texture: 19
     x: 0
     y: 0
-    width: 150
-    height: 150
+    width: 256
+    height: 256
   - id: 5
     alias: meeting
     texture: 54

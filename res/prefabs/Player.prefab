@@ -73,5 +73,11 @@ Root:
       type: MoneyGainFromTiles
       gainingInterval: 1
       moneyBaseFactor: 1
+    - id: 8
+      enabled: true
+      type: Audio
+      audio: 0
+      loop: false
+      volume: 1
   children:
     []

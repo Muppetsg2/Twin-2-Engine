@@ -278,6 +278,11 @@ void MinigameManager::StartMinigame(Playable* chalanging, Playable* chalanged)
 
 		enemy = (Enemy*)chalanged;
 
+		player->fightingPlayable = enemy;
+
+		PlayerImage->SetSprite(colors[player->colorIdx]);
+		EnemyImage->SetSprite(colors[enemy->colorIdx]);
+
 		MinigamePlain->SetActive(true);
 		return;
 	}
@@ -296,6 +301,9 @@ void MinigameManager::StartMinigame(Playable* chalanging, Playable* chalanged)
 			}
 		}
 		enemy = (Enemy*)chalanging;
+
+		PlayerImage->SetSprite(colors[player->colorIdx]);
+		EnemyImage->SetSprite(colors[enemy->colorIdx]);
 
 		player->fightingPlayable = enemy;
 

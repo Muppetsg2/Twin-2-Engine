@@ -499,6 +499,78 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 77
+    path: res/textures/UI/pure_background.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 78
+    path: res/textures/UI/title.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 79
+    path: res/textures/UI/vs2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 80
+    path: res/textures/UI/you_won.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 81
+    path: res/textures/UI/you_lost.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 82
+    path: res/textures/UI/player_colour/blueB.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 83
+    path: res/textures/UI/player_colour/cyanB.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 84
+    path: res/textures/UI/player_colour/greenB.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 85
+    path: res/textures/UI/player_colour/pinkB.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 86
+    path: res/textures/UI/player_colour/purpleB.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 87
+    path: res/textures/UI/player_colour/redB.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 88
+    path: res/textures/UI/player_colour/yellowB.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites:
   - id: 0
     alias: white_box
@@ -625,6 +697,42 @@ Sprites:
   - id: 18
     alias: circle
     texture: 76
+  - id: 19
+    alias: pure_background
+    texture: 77
+  - id: 20
+    alias: title
+    texture: 78
+  - id: 21
+    alias: vs
+    texture: 79
+  - id: 22
+    alias: you_won
+    texture: 80
+  - id: 23
+    alias: you_lost
+    texture: 81
+  - id: 24
+    alias: blueB
+    texture: 82
+  - id: 25
+    alias: cyanB
+    texture: 83
+  - id: 26
+    alias: greenB
+    texture: 84
+  - id: 27
+    alias: pinkB
+    texture: 85
+  - id: 28
+    alias: purpleB
+    texture: 86
+  - id: 29
+    alias: redB
+    texture: 87
+  - id: 30
+    alias: yellowB
+    texture: 88
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
@@ -1413,13 +1521,13 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 19
         color:
           x: 1
           y: 1
           z: 1
           w: 1
-        width: 960
+        width: 640
         height: 540
         layer: 0
         fillEnabled: false
@@ -1457,6 +1565,7 @@ GameObjects:
       - 363
       - 302
       - 315
+      - 318
   - id: 326
     name: MinigameHeader
     isStatic: false
@@ -1481,41 +1590,19 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 20
         color:
           x: 1
           y: 0
           z: 0
           w: 1
-        width: 300
+        width: 320
         height: 50
-        layer: 1
+        layer: 2
         fillEnabled: false
         fillType: 0
         fillSubType: 0
         fillProgress: 1
-      - id: 329
-        enabled: true
-        type: Text
-        isTransparent: false
-        text: "\x00B\x00i\x00t\x00w\x00a\x00 \x00o\x00 \x00d\x00o\x00m\x00i\x00n\x00a\x00c\x00j\x00e"
-        font: 0
-        size: 40
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 250
-        height: 50
-        color:
-          x: 0
-          y: 0
-          z: 0
-          w: 1
-        alignX: !<CENTER> 1
-        alignY: !<CENTER> 1
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 2
     children:
       []
   - id: 301
@@ -1527,7 +1614,7 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: -60
+        y: -70
         z: 0
       scale:
         x: 1
@@ -1548,9 +1635,9 @@ GameObjects:
           y: 1
           z: 1
           w: 1
-        width: 160
-        height: 160
-        layer: 1
+        width: 96
+        height: 96
+        layer: 2
         fillEnabled: false
         fillType: 0
         fillSubType: 0
@@ -1568,7 +1655,7 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: 150
+        y: -120
         z: 0
       scale:
         x: 1
@@ -1591,7 +1678,7 @@ GameObjects:
           w: 1
         width: 128
         height: 128
-        layer: 1
+        layer: 2
         fillEnabled: false
         fillType: 0
         fillSubType: 0
@@ -1612,8 +1699,8 @@ GameObjects:
       id: 335
       enabled: true
       position:
-        x: -130
-        y: -75
+        x: -180
+        y: -120
         z: 0
       scale:
         x: 1
@@ -1636,7 +1723,7 @@ GameObjects:
           w: 1
         width: 128
         height: 128
-        layer: 1
+        layer: 2
         fillEnabled: false
         fillType: 0
         fillSubType: 0
@@ -1657,8 +1744,8 @@ GameObjects:
       id: 339
       enabled: true
       position:
-        x: 120
-        y: -75
+        x: 180
+        y: -120
         z: 0
       scale:
         x: 1
@@ -1681,7 +1768,7 @@ GameObjects:
           w: 1
         width: 128
         height: 128
-        layer: 1
+        layer: 2
         fillEnabled: false
         fillType: 0
         fillSubType: 0
@@ -1702,8 +1789,8 @@ GameObjects:
       id: 343
       enabled: true
       position:
-        x: -325
-        y: -50
+        x: -180
+        y: 0
         z: 0
       scale:
         x: 1
@@ -1720,12 +1807,12 @@ GameObjects:
         isTransparent: false
         sprite: 0
         color:
-          x: 0.5
-          y: 0.5
-          z: 0.5
+          x: 1
+          y: 1
+          z: 1
           w: 1
-        width: 175
-        height: 250
+        width: 280
+        height: 540
         layer: 1
         fillEnabled: false
         fillType: 0
@@ -1741,8 +1828,8 @@ GameObjects:
       id: 346
       enabled: true
       position:
-        x: 325
-        y: -50
+        x: 180
+        y: 0
         z: 0
       scale:
         x: 1
@@ -1751,7 +1838,7 @@ GameObjects:
       rotation:
         x: 0
         y: 0
-        z: 0
+        z: 180
     components:
       - id: 347
         enabled: true
@@ -1759,12 +1846,12 @@ GameObjects:
         isTransparent: false
         sprite: 0
         color:
-          x: 0.5
-          y: 0.5
-          z: 0.5
+          x: 1
+          y: 1
+          z: 1
           w: 1
-        width: 175
-        height: 250
+        width: 280
+        height: 540
         layer: 1
         fillEnabled: false
         fillType: 0
@@ -1971,13 +2058,13 @@ GameObjects:
         isTransparent: false
         sprite: 0
         color:
-          x: 0.8
-          y: 0.8
-          z: 0.8
+          x: 1
+          y: 1
+          z: 1
           w: 0.0
-        width: 72
-        height: 72
-        layer: 1
+        width: 160
+        height: 160
+        layer: 2
         fillEnabled: false
         fillType: 0
         fillSubType: 0
@@ -2010,13 +2097,52 @@ GameObjects:
         isTransparent: false
         sprite: 0
         color:
-          x: 0.8
-          y: 0.8
-          z: 0.8
+          x: 1
+          y: 1
+          z: 1
           w: 0.0
-        width: 72
-        height: 72
-        layer: 1
+        width: 160
+        height: 160
+        layer: 2
+        fillEnabled: false
+        fillType: 0
+        fillSubType: 0
+        fillProgress: 1
+    children:
+      []
+  - id: 318
+    name: Versus
+    isStatic: false
+    isActive: true
+    transform:
+      id: 319
+      enabled: true
+      position:
+        x: 0
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 320
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 21
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 128
+        height: 128
+        layer: 2
         fillEnabled: false
         fillType: 0
         fillSubType: 0
@@ -2032,7 +2158,7 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: 50
+        y: 0
         z: 0
       scale:
         x: 1
@@ -2047,14 +2173,14 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 22
         color:
-          x: 0
+          x: 1
           y: 1
-          z: 0
+          z: 1
           w: 1
-        width: 300
-        height: 200
+        width: 640
+        height: 540
         layer: 3
         fillEnabled: false
         fillType: 0
@@ -2071,7 +2197,7 @@ GameObjects:
       enabled: true
       position:
         x: 0
-        y: 50
+        y: 0
         z: 0
       scale:
         x: 1
@@ -2086,14 +2212,14 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 23
         color:
           x: 1
-          y: 0
-          z: 0
+          y: 1
+          z: 1
           w: 1
-        width: 300
-        height: 200
+        width: 640
+        height: 540
         layer: 3
         fillEnabled: false
         fillType: 0

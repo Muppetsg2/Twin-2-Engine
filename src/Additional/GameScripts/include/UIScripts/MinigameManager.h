@@ -43,6 +43,8 @@ class MinigameManager : public Component {
 		void SetupButtons();
 		void PerformTurn();
 
+		std::string colors[7] = { "blueB", "cyanB", "greenB", "pinkB", "purpleB", "redB", "yellowB" };
+
 
 	public:
 		Text* PlayerScore = nullptr;

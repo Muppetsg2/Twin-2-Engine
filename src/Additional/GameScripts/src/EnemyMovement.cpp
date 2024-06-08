@@ -51,10 +51,22 @@ void EnemyMovement::Update() {
                     reachEnd = true;
                     OnFinishMoving(GetGameObject(), destinatedTile);
                 }
-                //transform->SetGlobalPosition(_waypoint + vec3(0.0f, 0.5f, 0.0f)); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
-                transform->SetGlobalPosition(_waypoint); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
-                _waypoint = _path->Next();
-                _waypoint.y += _heightOverSurface;
+                else
+                {
+                    //transform->SetGlobalPosition(_waypoint + vec3(0.0f, 0.5f, 0.0f)); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
+                    transform->SetGlobalPosition(_waypoint); // = Vector3.MoveTowards(position, waypoint, Time::GetDeltaTime() * speed);
+                    _waypoint = _path->Next();
+                    _waypoint.y += _heightOverSurface;
+
+                    vec3 direction = _waypoint - position;
+                    direction.y = 0.0f;
+                    float angle = glm::degrees(glm::acos(direction.x / glm::length(direction)));
+                    if (direction.z > 0.0f)
+                    {
+                        angle = -angle;
+                    }
+                    GetTransform()->SetGlobalRotation(glm::vec3(0.0f, angle + 90, 0.0f));
+                }
             }
             else {
                 //transform->SetGlobalPosition(glm::vec3(glm::mix(position, tempWaypointPos, 0.5f)) + vec3(0.0f, 0.5f, 0.0f));
@@ -80,7 +92,7 @@ void EnemyMovement::OnPathComplete(const AStarPath& p) {
     }
 
     _path = new AStarPath(p);
-
+    
     destination = tempDest;
     destinatedTile = tempDestTile;
     _waypoint = _path->Next();

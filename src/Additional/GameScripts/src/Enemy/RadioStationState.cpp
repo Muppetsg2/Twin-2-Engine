@@ -1,9 +1,7 @@
 #include <Enemy/RadioStationState.h>
 #include <Enemy.h>
-
 #include <RadioStation/RadioStation.h>
 
-// TODO: Send Radio Station Data
 DecisionTree<std::pair<Enemy*, uint32_t>, bool> RadioStationState::_decisionTree{
 	[&](std::pair<Enemy*, uint32_t> data) -> bool {
 		std::srand(std::time(NULL));
@@ -35,9 +33,17 @@ void RadioStationState::Score(Enemy* enemy, uint32_t score)
 
 	SPDLOG_INFO("Radio Station Score {0}", score);
 
-	if (enemy->CurrTile->GetGameObject()->GetComponentInChildren<RadioStation>())
+	if (enemy->CurrTile->GetGameObject() == nullptr) {
+		SPDLOG_ERROR("Curr Tile Game Object is null");
+	}
+
+	RadioStation* station = enemy->CurrTile->GetGameObject()->GetComponentInChildren<RadioStation>();
+	if (station != nullptr)
 	{
-		enemy->CurrTile->GetGameObject()->GetComponentInChildren<RadioStation>()->StartTakingOver(enemy, score / 4.0f);
+		station->StartTakingOver(enemy, score / 4.0f);
+	}
+	else {
+		SPDLOG_ERROR("Radio Station is NULL");
 	}
 
 	enemy->ChangeState(&enemy->_takingOverState);

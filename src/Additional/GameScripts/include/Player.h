@@ -10,6 +10,7 @@
 
 
 #include <ui/Button.h>
+#include <ui/Image.h>
 #include <ui/Text.h>
 
 #include <core/Input.h>
@@ -25,7 +26,6 @@ class Player : public Playable {
 private:
     //static Mesh* hexMesh;
     Twin2Engine::Core::GameObject* hexIndicator;
-    Tilemap::HexagonalTilemap* _tilemap = nullptr;
     ConcertAbilityController* concertAbility;
 
     MoneyGainFromTiles* money;
@@ -41,23 +41,29 @@ private:
     Twin2Engine::UI::Text* albumText;
     Twin2Engine::UI::Button* albumButton;
     Twin2Engine::Core::GameObject* albumButtonObject;
+    Twin2Engine::UI::Image* albumCircleImage;
     size_t albumButtonEventHandleId;
     size_t albumButtonDestroyedEventHandleId;
     // FansMeeting
     Twin2Engine::UI::Text* fansMeetingText;
     Twin2Engine::UI::Button* fansMeetingButton;
     Twin2Engine::Core::GameObject* fansMeetingButtonObject;
+    Twin2Engine::UI::Image* fansMeetingCircleImage;
     size_t fansMeetingButtonEventHandleId;
     size_t fansMeetingButtonDestroyedEventHandleId;
     //Concert
     Twin2Engine::UI::Text* concertText;
     Twin2Engine::UI::Button* concertButton;
     Twin2Engine::Core::GameObject* concertButtonObject;
+    Twin2Engine::UI::Image* concertCircleImage;
     size_t concertButtonEventHandleId;
     size_t concertButtonDestroyedEventHandleId;
     // Money
     Twin2Engine::UI::Text* moneyText;
 
+
+    glm::vec4 _abilityCooldownColor;
+    glm::vec4 _abilityActiveColor;
 
 public:
     Playable* fightingPlayable = nullptr;

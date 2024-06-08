@@ -7,6 +7,8 @@
 #include <graphic/Material.h>
 #include <ui/Text.h>
 
+#include <Generation/MapGenerator.h>
+
 #include <AreaTaking/HexTile.h>
 #include <Enemy.h>
 #include <Player.h>
@@ -41,12 +43,14 @@ private:
     Twin2Engine::UI::Text* _yearText;
 
     unsigned int _enemiesNumber = 2u;
+    Generation::MapGenerator* _mapGenerator;
 public:
     static GameManager* instance;
 
     std::vector<Playable*> entities;
 
     std::vector<HexTile*> Tiles;
+
 
     Prefab* enemyPrefab = nullptr;
 

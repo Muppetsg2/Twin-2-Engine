@@ -24,9 +24,9 @@ void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
     ivec2 leftBottomPosition = targetTilemap->GetLeftBottomPosition();
     ivec2 rightTopPosition = targetTilemap->GetRightTopPosition();
     
-    for (int x = leftBottomPosition.x; x <= rightTopPosition.x; x++)
+    for (int x = leftBottomPosition.x; x <= rightTopPosition.x; ++x)
     {
-        for (int y = leftBottomPosition.y; y <= rightTopPosition.y; y++)
+        for (int y = leftBottomPosition.y; y <= rightTopPosition.y; ++y)
         {
             ivec2 tilePosition(x, y);
             HexagonalTile* tile = targetTilemap->GetTile(tilePosition);
@@ -141,7 +141,7 @@ void ContentGenerator::DrawEditor()
 
                 if (type == 1) {
                     ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
-                    if (ImGui::RemoveButton(string("##Remove").append(id).append(std::to_string(i)).c_str())) {
+                    if (ImGui::Button(string(ICON_FA_TRASH_CAN "##Remove").append(id).append(std::to_string(i)).c_str())) {
                         clicked.push_back(i);
                     }
                 }

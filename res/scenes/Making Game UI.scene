@@ -1,0 +1,122 @@
+Textures: ~
+Sprites: ~
+Fonts:
+  - id: 0
+    path: res/fonts/Caveat-Regular.ttf
+Audio: ~
+Materials:
+  - id: 0
+    path: res\materials\Water.material
+Models:
+  - id: 0
+    path: "{Plane}"
+Prefabs: ~
+ScriptableObjects: ~
+GameObjects:
+  - id: 1
+    name: Camera
+    isStatic: false
+    isActive: true
+    transform:
+      id: 1
+      position:
+        x: -0.995237112
+        y: 1.78691292
+        z: 0.0674270168
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: -58.6000175
+        y: 0.499997079
+        z: -1.33407223e-08
+    components:
+      - id: 2
+        enabled: true
+        type: Camera
+        fov: 45
+        nearPlane: 0.100000001
+        farPlane: 1000
+        cameraFilter: 0
+        cameraType: 1
+        cameraMode: 0
+        samples: 4
+        renderRes: 0
+        gamma: 2.20000005
+        brightness: 0
+        contrast: 1
+        worldUp:
+          x: 0
+          y: 1
+          z: 0
+        isMain: true
+        isFrustum: true
+        isSSAO: true
+        ssaoSampleRadius: 0.699999988
+        ssaoBias: 0.00999999978
+        blurMSize: 5
+    children:
+      []
+  - id: 2
+    name: Water
+    isStatic: false
+    isActive: true
+    transform:
+      id: 3
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 4
+        enabled: true
+        type: PlaneGenerator
+        isTransparent: true
+        rows: 10
+        columns: 10
+        materials:
+          - 0
+    children:
+      []
+  - id: 3
+    name: DirectionalLight
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5
+      position:
+        x: -7.58020973
+        y: 32.928978
+        z: 18.0909309
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 6
+        enabled: true
+        type: DirectionalLight
+        direction:
+          x: 0
+          y: -1
+          z: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+        power: 2
+    children:
+      []

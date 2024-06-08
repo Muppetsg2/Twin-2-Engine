@@ -36,6 +36,15 @@ void GameManager::Initialize() {
 
         _freePatronsData = _patronsData;
         //GeneratePlayer();
+
+        if (_mapGenerator == nullptr) {
+            GameObject* mg = SceneManager::FindObjectByType<Generation::MapGenerator>();
+
+            if (mg != nullptr)
+                _mapGenerator = mg->GetComponent<Generation::MapGenerator>();
+            if (!mg->GetComponent<Generation::MapGenerator>()->IsMapGenerated())
+                mg->GetComponent<Generation::MapGenerator>()->Generate();
+        }
     }
     else
     {
@@ -54,6 +63,21 @@ void GameManager::OnEnable() {
 
 void GameManager::Update() {
 
+    if (_mapGenerator == nullptr) {
+        GameObject* mg = SceneManager::FindObjectByType<Generation::MapGenerator>();
+
+        if (mg != nullptr) {
+            _mapGenerator = mg->GetComponent<Generation::MapGenerator>();
+            if (!mg->GetComponent<Generation::MapGenerator>()->IsMapGenerated())
+            {
+                mg->GetComponent<Generation::MapGenerator>()->Generate();
+            }
+
+            for (auto e : entities) {
+                e->SetTileMap(_mapGenerator->tilemap);
+            }
+        }
+    }
 }
 
 void GameManager::UpdateEnemies(int colorIdx) {
@@ -74,7 +98,8 @@ GameObject* GameManager::GeneratePlayer() {
     freeColors.erase(freeColors.begin() + chosen);
     //p->colorIdx = chosen;
 
-    p->patron = playersPatron;
+    //p->patron = playersPatron;
+    p->SetPatron(playersPatron);
 
     _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), playersPatron));
 
@@ -104,7 +129,8 @@ GameObject* GameManager::GenerateEnemy() {
     e->GetGameObject()->GetComponent<MeshRenderer>()->SetMaterial(0ull, _carMaterials[e->colorIdx]);
 
     unsigned chosenPatron = Random::Range<unsigned>(0u, _freePatronsData.size() - 1ull);
-    e->patron = _freePatronsData[chosenPatron];
+    //e->patron = _freePatronsData[chosenPatron];
+    e->SetPatron(_freePatronsData[chosenPatron]);
     _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), e->patron));
     /*float h = Random.Range(0f, 1f);
     float s = Random.Range(.7f, 1f);

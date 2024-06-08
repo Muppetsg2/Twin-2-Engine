@@ -222,13 +222,13 @@ void ScriptableObjectManager::DrawEditor(bool* p_open) {
 		for (auto& item : _scriptableObjectsPaths) {
 			string n = GetName(item.second);
 			ImGui::BulletText(n.c_str());
-			ImGui::SameLine(ImGui::GetContentRegionAvail().x - 50);
-			if (ImGui::Button(string("Edit##Scriptable Object Manager").append(std::to_string(i)).c_str())) {
+			ImGui::SameLine(ImGui::GetContentRegionAvail().x - 35);
+			if (ImGui::Button(string(ICON_FA_PENCIL "##Edit Scriptable Object Manager").append(std::to_string(i)).c_str())) {
 				selectedToEdit = item.first;
 				openEditor = true;
 			}
 			ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
-			if (ImGui::RemoveButton(string("##Remove Scriptable Object Manager").append(std::to_string(i)).c_str())) {
+			if (ImGui::Button(string(ICON_FA_TRASH_CAN "##Remove Scriptable Object Manager").append(std::to_string(i)).c_str())) {
 				clicked.push_back(item.first);
 			}
 			++i;
@@ -247,7 +247,7 @@ void ScriptableObjectManager::DrawEditor(bool* p_open) {
 		}
 	}
 
-	if (selectedToEdit != 0) {
+	if (selectedToEdit != 0 && _scriptableObjects.contains(selectedToEdit)) {
 		if (ImGui::Begin("Scriptable Object Editor##Scriptable Object Manager", &openEditor)) {
 			_scriptableObjects[selectedToEdit]->DrawEditor();
 		}
@@ -256,6 +256,9 @@ void ScriptableObjectManager::DrawEditor(bool* p_open) {
 		if (!openEditor) {
 			selectedToEdit = 0;
 		}
+	}
+	else if (selectedToEdit != 0 && !_scriptableObjects.contains(selectedToEdit)) {
+		selectedToEdit = 0;
 	}
 
 	clicked.clear();

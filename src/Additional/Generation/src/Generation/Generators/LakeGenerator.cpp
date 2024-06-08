@@ -43,9 +43,9 @@ void LakeGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
     std::vector<MapRegion*> waterRegions;
     waterRegions.reserve(usedNumberOfLakes);
 
-    for (int i = 0; i < usedNumberOfLakes; i++)
+    for (int i = 0; i < usedNumberOfLakes; ++i)
     {
-        for (int regionIndex = 0; regionIndex < regions.size(); regionIndex++)
+        for (int regionIndex = 0; regionIndex < regions.size(); ++regionIndex)
         {
             hasNeighbour = false;
             for (MapRegion* region : waterRegions)

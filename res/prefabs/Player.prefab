@@ -55,6 +55,8 @@ Root:
       enabled: true
       type: Player
       moneyFunction: res/scriptableobjects/MoneyFunctionData.so
+      abilityActiveColor: [0, 1, 0, 1]
+      abilityCooldownColor: [1, 0, 0, 1]
     - id: 5
       enabled: true
       type: PlayerMovement

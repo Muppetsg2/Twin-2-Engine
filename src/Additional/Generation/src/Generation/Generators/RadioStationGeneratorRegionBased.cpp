@@ -40,10 +40,10 @@ void RadioStationGeneratorRegionBased::Generate(Tilemap::HexagonalTilemap* tilem
     std::vector<MapRegion*> regionWithStation(regionCountWithStation);
     int instantiatedCounter = 0;
 
-    for (int i = 0; i < regions.size() && instantiatedCounter < regionCountWithStation; i++)
+    for (int i = 0; i < regions.size() && instantiatedCounter < regionCountWithStation; ++i)
     {
         bool guard = true;
-        for (int j = 0; j < instantiatedCounter; j++)
+        for (int j = 0; j < instantiatedCounter; ++j)
         {
             if (regionWithStation[j]->HasAdjacentRegion(regions[i]))
             {

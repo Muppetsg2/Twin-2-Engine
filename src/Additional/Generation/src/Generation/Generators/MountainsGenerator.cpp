@@ -39,7 +39,7 @@ void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
         }
     }
 
-    for (int i = 0; i < mountainsNumber; i++)
+    for (int i = 0; i < mountainsNumber; ++i)
     {
         size_t index = Random::Range(0ull, sectors.size() - 1);
         MapSector* sector = sectors[index];

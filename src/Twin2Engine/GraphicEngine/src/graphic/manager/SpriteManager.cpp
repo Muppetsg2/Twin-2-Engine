@@ -501,14 +501,14 @@ void SpriteManager::DrawEditor(bool* p_open)
 		for (auto& item : _spriteAliases) {
 			string n = item.second;
 			ImGui::BulletText(n.c_str());
-			ImGui::SameLine(ImGui::GetContentRegionAvail().x - 50);
-			if (ImGui::Button(string("Edit##Sprite Manager").append(std::to_string(i)).c_str())) {
+			ImGui::SameLine(ImGui::GetContentRegionAvail().x - 35);
+			if (ImGui::Button(string(ICON_FA_PENCIL "##Edit Sprite Manager").append(std::to_string(i)).c_str())) {
 				selectedToEdit = item.first;
 				openEditor = true;
 				_editNext = true;
 			}
 			ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
-			if (ImGui::RemoveButton(string("##Remove Sprite Manager").append(std::to_string(i)).c_str())) {
+			if (ImGui::Button(string(ICON_FA_TRASH_CAN "##Remove Sprite Manager").append(std::to_string(i)).c_str())) {
 				clicked.push_back(item.first);
 			}
 			++i;

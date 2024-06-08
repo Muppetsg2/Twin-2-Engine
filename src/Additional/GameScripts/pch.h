@@ -2,6 +2,7 @@
 
 // GLM
 #include <glm/glm.hpp>
+#include <glm/trigonometric.hpp>
 
 
 // YAML

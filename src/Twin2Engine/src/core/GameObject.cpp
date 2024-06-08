@@ -125,7 +125,7 @@ void GameObject::CloneTo(GameObject* cloned) const
 		cloned->components.push_back(clonedComponent);
 	}
 
-	for (int index = 0; index < _transform->GetChildCount(); index++)
+	for (int index = 0; index < _transform->GetChildCount(); ++index)
 	{
 		//cloned->_transform->AddChild(Instantiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform)->GetTransform());
 		Instantiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform);
@@ -178,7 +178,7 @@ void GameObject::SetActive(bool active)
 		_activeSelf = active;
 
 		//SetActiveInHierarchy(active);
-		for (int index = 0; index < _transform->GetChildCount(); index++)
+		for (int index = 0; index < _transform->GetChildCount(); ++index)
 		{
 			_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(_activeSelf);
 		}
@@ -194,7 +194,7 @@ void GameObject::SetActiveInHierarchy(bool activeInHierarchy)
 		_activeInHierarchy = activeInHierarchy; //zmiana stanu
 		if (_activeSelf) // sprawdzenie wlasnego stanu, jezeli ustawiony na false to znaczy, ze ten stan dyktuje warunki aktywnosci wszystkich podrzednych obiektow
 		{
-			for (int index = 0; index < _transform->GetChildCount(); index++)
+			for (int index = 0; index < _transform->GetChildCount(); ++index)
 			{
 				_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(activeInHierarchy);
 			}
@@ -328,7 +328,7 @@ void GameObject::DrawEditor()
 
 	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 20);
 
-	if (ImGui::RemoveButton(string("##Remove GO").append(id).c_str())) {
+	if (ImGui::Button(string(ICON_FA_TRASH_CAN "##Remove GO").append(id).c_str())) {
 		Manager::SceneManager::DestroyGameObject(this);
 		return;
 	}
@@ -368,8 +368,32 @@ void GameObject::DrawEditor()
 
 		map<size_t, string> types = ComponentsMap::GetComponentsTypes();
 
-		size_t choosed = 0;
+		vector<string> names = vector<string>();
+		names.resize(types.size());
 
+		std::transform(types.begin(), types.end(), names.begin(), [](std::pair<size_t, string> const& i) -> string {
+			return i.second;
+		});
+
+		types.clear();
+
+		std::sort(names.begin(), names.end(), [&](string const& left, string const& right) -> bool {
+			return left.compare(right) < 0;
+		});
+
+		int choosed = -1;
+		bool clicked = false;
+
+		if (ImGui::ComboWithFilter(string("##GO POP UP COMPONENTS").append(id).c_str(), &choosed, names, 20)) {
+			if (choosed != -1) {
+				Component* comp = ComponentsMap::CreateComponent(names[choosed]);
+				this->AddComponent(comp);
+			}
+
+			clicked = true;
+		}
+
+		/*
 		if (ImGui::BeginCombo(string("##GO POP UP COMPONENTS").append(id).c_str(), choosed == 0 ? "None" : types[choosed].c_str())) {
 
 			bool clicked = false;
@@ -393,8 +417,9 @@ void GameObject::DrawEditor()
 
 			ImGui::EndCombo();
 		}
+		*/
 
-		if (choosed != 0) {
+		if (choosed != -1) {
 			ImGui::CloseCurrentPopup();
 		}
 

@@ -34,7 +34,6 @@ void Text::SetCanvas(Canvas* canvas)
 	}
 }
 
-// TODO: Jest jakiœ b³¹d przy d³ugim paru linijkowym tekscie (OVERFLOW, CENTER, BOTTOM)
 void Text::UpdateTextMesh()
 {
 	Font* font = FontManager::GetFont(_fontId);
@@ -106,13 +105,14 @@ void Text::UpdateTextMesh()
 			Func<bool> autoSizeCheck = [&]() -> bool {
 				return !goodSize && _autoSize && lineWidth > _width && _size >= _minSize && _size <= _maxSize;
 			};
-			for (size_t i = 0; i < _text.size(); ++i) {
+			for (size_t i = 0, newLineCount = 0; i < _text.size(); ++i) {
 				if (_text[i] == '\n') {
 					if (autoSizeCheck()) {
 						goodSize = false;
 						break;
 					}
-					newLine(i);
+					++newLineCount;
+					newLine(i - newLineCount);
 					continue;
 				}
 

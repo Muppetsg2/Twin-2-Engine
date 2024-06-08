@@ -24,9 +24,9 @@ void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
     ivec2 leftBottomPosition = targetTilemap->GetLeftBottomPosition();
     ivec2 rightTopPosition = targetTilemap->GetRightTopPosition();
     
-    for (int x = leftBottomPosition.x; x <= rightTopPosition.x; x++)
+    for (int x = leftBottomPosition.x; x <= rightTopPosition.x; ++x)
     {
-        for (int y = leftBottomPosition.y; y <= rightTopPosition.y; y++)
+        for (int y = leftBottomPosition.y; y <= rightTopPosition.y; ++y)
         {
             ivec2 tilePosition(x, y);
             HexagonalTile* tile = targetTilemap->GetTile(tilePosition);

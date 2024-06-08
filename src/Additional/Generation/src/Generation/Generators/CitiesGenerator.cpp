@@ -56,7 +56,8 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
         }
         VectorShuffler::Shuffle(regions);
 
-        for (int i = 0; i < static_cast<int>(density * regions.size()); ++i)
+        size_t size = static_cast<int>(density * regions.size());
+        for (size_t i = 0ull; i < size; ++i)
         {
             std::vector<GameObject*> foundOnes;
             for (MapSector* sector : regions[i]->GetSectors())
@@ -74,20 +75,21 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
             if (!foundOnes.empty())
             {
                 vec3 avgPosition;
-                for (GameObject* foundOne : foundOnes)
+                size_t foundOnesSize = foundOnes.size();
+                for (size_t i = 0ull; i < foundOnesSize; ++i)
                 {
-                    avgPosition += foundOne->GetTransform()->GetGlobalPosition();
+                    avgPosition += foundOnes[i]->GetTransform()->GetGlobalPosition();
                 }
                 avgPosition /= foundOnes.size();
 
                 GameObject* found = foundOnes[0];
                 float distance = glm::distance(found->GetTransform()->GetGlobalPosition(), avgPosition);
-                for (GameObject* foundOne : foundOnes)
+                for (size_t i = 1ull; i < foundOnesSize; ++i)
                 {
                     float currentDistance = glm::distance(found->GetTransform()->GetGlobalPosition(), avgPosition);
                     if (currentDistance < distance)
                     {
-                        found = foundOne;
+                        found = foundOnes[i];
                         distance = currentDistance;
                     }
                 }
@@ -111,7 +113,8 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
         }
         VectorShuffler::Shuffle(sectors);
 
-        for (int i = 0; i < static_cast<int>(density * sectors.size()); i++)
+        size_t size = static_cast<int>(density * sectors.size());
+        for (size_t i = 0ull; i < size; ++i)
         {
             std::vector<GameObject*> foundOnes;
             for (MapHexTile* tile : sectors[i]->GetTiles())
@@ -126,20 +129,21 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
             if (!foundOnes.empty())
             {
                 vec3 avgPosition;
-                for (GameObject* foundOne : foundOnes)
+                size_t foundOnesSize = foundOnes.size();
+                for (size_t i = 0ull; i < foundOnesSize; ++i)
                 {
-                    avgPosition += foundOne->GetTransform()->GetGlobalPosition();
+                    avgPosition += foundOnes[i]->GetTransform()->GetGlobalPosition();
                 }
-                avgPosition /= foundOnes.size();
+                avgPosition /= foundOnesSize;
 
                 GameObject* found = foundOnes[0];
                 float distance = glm::distance(found->GetTransform()->GetGlobalPosition(), avgPosition);
-                for (GameObject* foundOne : foundOnes)
+                for (size_t i = 1ull; i < foundOnesSize; ++i)
                 {
                     float currentDistance = glm::distance(found->GetTransform()->GetGlobalPosition(), avgPosition);
                     if (currentDistance < distance)
                     {
-                        found = foundOne;
+                        found = foundOnes[i];
                         distance = currentDistance;
                     }
                 }

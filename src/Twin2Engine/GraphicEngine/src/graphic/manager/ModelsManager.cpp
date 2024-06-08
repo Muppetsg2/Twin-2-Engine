@@ -66,7 +66,7 @@ inline void ModelsManager::ProcessNodeAssimp(aiNode* node, const aiScene* scene,
     std::vector<Vertex> vertices = std::vector<Vertex>();
     std::vector<unsigned int> indices = std::vector<unsigned int>();
 
-    for (unsigned int i = 0; i < node->mNumMeshes; i++)
+    for (unsigned int i = 0; i < node->mNumMeshes; ++i)
     {
         ExtractMeshAssimp(scene->mMeshes[node->mMeshes[i]], vertices, indices);
         modelData->meshes.emplace_back(new InstantiatingMesh(vertices, indices));
@@ -76,7 +76,7 @@ inline void ModelsManager::ProcessNodeAssimp(aiNode* node, const aiScene* scene,
     }
 
     // then do the same for each of its children
-    for (unsigned int i = 0; i < node->mNumChildren; i++)
+    for (unsigned int i = 0; i < node->mNumChildren; ++i)
     {
         ProcessNodeAssimp(node->mChildren[i], scene, modelData);
     }
@@ -129,11 +129,11 @@ inline void ModelsManager::ExtractMeshAssimp(aiMesh* mesh, std::vector<Vertex>& 
 
     size = mesh->mNumFaces;
     // Extract index data
-    for (unsigned int i = 0; i < size; i++)
+    for (unsigned int i = 0; i < size; ++i)
     {
         aiFace face = mesh->mFaces[i];
         unsigned int size2 = face.mNumIndices;
-        for (unsigned int j = 0; j < size2; j++)
+        for (unsigned int j = 0; j < size2; ++j)
             indices.push_back(face.mIndices[j]);
     }
 }
@@ -583,10 +583,10 @@ void ModelsManager::LoadTorus(ModelData* modelData)
     }
 
     /* inner ring */
-    for (i = 0, nextrow = segments + 1; i < cs_segments; i++)
+    for (i = 0, nextrow = segments + 1; i < cs_segments; ++i)
     {
         // outer ring
-        for (j = 0; j < segments; j++)
+        for (j = 0; j < segments; ++j)
         {
             int first = i * nextrow + j;
             int second = i * nextrow + j + 1;

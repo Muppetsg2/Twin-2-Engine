@@ -171,7 +171,7 @@ void Transform::CallInHierarchyParentChanged()
 	{
 		_callingEvents.inHierarchyParentChanged = true;
 
-		for (int index = 0; index < _children.size(); index++)
+		for (int index = 0; index < _children.size(); ++index)
 		{
 			_children[index]->CallInHierarchyParentChanged();
 		}

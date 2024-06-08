@@ -22,8 +22,10 @@ namespace Tilemap
 		int _onGameoObjectDestroyedEventId = -1;
 
 
-		static const glm::ivec2 adjacentDirectionsEvenY[6];
-		static const glm::ivec2 adjacentDirectionsOddY[6];
+		//static const glm::ivec2 adjacentDirectionsEvenY[6];
+		//static const glm::ivec2 adjacentDirectionsOddY[6];
+		static const glm::ivec2 adjacentDirectionsEvenX[6];
+		static const glm::ivec2 adjacentDirectionsOddX[6];
 
 		void SetTilemap(HexagonalTilemap* tilemap);
 		void SetPosition(const glm::ivec2& position);

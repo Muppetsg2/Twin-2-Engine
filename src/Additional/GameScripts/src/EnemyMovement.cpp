@@ -80,7 +80,7 @@ void EnemyMovement::OnPathComplete(const AStarPath& p) {
     }
 
     _path = new AStarPath(p);
-
+    
     destination = tempDest;
     destinatedTile = tempDestTile;
     _waypoint = _path->Next();

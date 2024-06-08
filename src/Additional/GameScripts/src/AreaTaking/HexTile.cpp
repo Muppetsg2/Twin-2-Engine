@@ -36,8 +36,29 @@ void HexTile::TakeOver()
 			if (takenEntity) {
 				takenEntity->OwnTiles.remove(this);
 				takenEntity = nullptr;
+				for(auto& t : takenEntity->OwnTiles)
+				{
+					t->UpdateBorders();
+				}
 			}
 			CheckRoundPattern();
+
+			for(auto& t : takenEntity->OwnTiles)
+			{
+				t->UpdateBorders();
+
+				// Update Neightbours
+				vector<GameObject*> neightbours;
+				neightbours.resize(6);
+				_mapHexTile->tile->GetAdjacentGameObjects(neightbours.data());
+				for(auto& nt : neightbours)
+				{
+					if (nt == nullptr) continue;
+					HexTile* ntTile = nt->GetComponent<HexTile>();
+					if (ntTile->takenEntity == takenEntity) continue;
+					ntTile->UpdateBorders();
+				}
+			}
 		}
 	}
 	else {
@@ -128,7 +149,72 @@ void HexTile::UpdateTileColor()
 
 void HexTile::UpdateBorders()
 {
+	/*borders[0] = TopLeftBorder;
+	borders[1] = TopRightBorder;
+	borders[2] = MiddleRightBorder;
+	borders[3] = BottomRightBorder;
+	borders[4] = BottomLeftBorder;
+	borders[5] = MiddleLeftBorder;
 
+	borderJoints[0] = TopLeftLeftBorderJoint;
+	borderJoints[1] = TopLeftRightBorderJoint;
+	borderJoints[2] = TopRightLeftBorderJoint;
+	borderJoints[3] = TopRightRightBorderJoint;
+	borderJoints[4] = MiddleRightLeftBorderJoint;
+	borderJoints[5] = MiddleRightRightBorderJoint;
+	borderJoints[6] = BottomRightLeftBorderJoint;
+	borderJoints[7] = BottomRightRightBorderJoint;
+	borderJoints[8] = BottomLeftLeftBorderJoint;
+	borderJoints[9] = BottomLeftRightBorderJoint;
+	borderJoints[10] = MiddleLeftLeftBorderJoint;
+	borderJoints[11] = MiddleLeftRightBorderJoint;*/
+
+	for (size_t i = 0; i < 6; ++i)
+	{
+		borders[i]->SetActive(false);
+		borderJoints[i * 2]->SetActive(false);
+		borderJoints[(i * 2) + 1]->SetActive(false);
+	}
+
+	if (takenEntity != nullptr)
+	{
+		//Color borderCol = takenEntity.Color;
+		//Color.RGBToHSV(borderCol, out float h, out float s, out float v);
+		//v *= .5f;
+		//borderCol = Color.HSVToRGB(h, s, v);
+
+		vector<GameObject*> neightbours;
+		neightbours.resize(6);
+		_mapHexTile->tile->GetAdjacentGameObjects(neightbours.data());
+		for (size_t i = 0; i < 6; ++i)
+		{
+			GameObject* neightbour = neightbours[i];
+			if (neightbour != nullptr)
+			{
+				HexTile* t = neightbour->GetComponent<HexTile>();
+				if (t->takenEntity != takenEntity)
+				{
+					borders[i]->SetActive(true);
+					//borders[i]->GetComponent<MeshRenderer>().material.color = borderCol;
+				}
+				else
+				{
+					int left = i * 2 - 1;
+					if (left < 0) left = 12 + left;
+					borderJoints[left]->SetActive(true);
+					borderJoints[(i * 2 + 2) % 12]->SetActive(true);
+
+					//borderJoints[left].GetComponent<MeshRenderer>().material.color = borderCol;
+					//borderJoints[(i * 2 + 2) % 12].GetComponent<MeshRenderer>().material.color = borderCol;
+				}
+			}
+			else
+			{
+				borders[i]->SetActive(true);
+				//borders[i].GetComponent<MeshRenderer>().material.color = borderCol;
+			}
+		}
+	}
 }
 
 void HexTile::CheckRoundPattern()
@@ -139,6 +225,8 @@ void HexTile::Initialize()
 {
 	_mapHexTile = GetGameObject()->GetComponent<MapHexTile>();
 	_meshRenderer = GetGameObject()->GetComponent<MeshRenderer>();
+
+	UpdateBorders();
 }
 
 void HexTile::OnDestroy()
@@ -168,6 +256,7 @@ void HexTile::Update()
 void HexTile::ResetTile()
 {
 	percentage = 0.0f;
+	_meshRenderer->SetMaterial(0, textuesData->GetMaterial(TILE_COLOR::RED, 0));
 	if (takenEntity) {
 		//takenEntity->RemoveTile(this);
 	}
@@ -268,6 +357,14 @@ YAML::Node HexTile::Serialize() const
 		node["textuesData"] = "";
 	}
 
+	for (auto& obj : borders) {
+		node["borders"].push_back(obj->Id());
+	}
+
+	for (auto& obj : borderJoints) {
+		node["borderJoints"].push_back(obj->Id());
+	}
+
 	return node;
 }
 
@@ -278,6 +375,23 @@ bool HexTile::Deserialize(const YAML::Node& node)
 
 
 	textuesData = dynamic_cast<HexTileTextureData*>(Twin2Engine::Manager::ScriptableObjectManager::Load(node["textuesData"].as<string>()));
+
+	if (node["borders"]) {
+		borders.clear();
+		borders.reserve(node["borders"].size());
+		for (auto& b : node["borders"]) {
+			borders.push_back(SceneManager::GetGameObjectWithId(b.as<size_t>()));
+		}
+	}
+
+	if (node["borderJoints"]) {
+		borderJoints.clear();
+		borderJoints.reserve(node["borderJoints"].size());
+		for (auto& bj : node["borderJoints"]) {
+			borderJoints.push_back(SceneManager::GetGameObjectWithId(bj.as<size_t>()));
+		}
+	}
+
 	return true;
 }
 
@@ -305,7 +419,7 @@ void HexTile::DrawEditor()
 		ImGui::Text("Current Cooldown: %f", currCooldown);
 
 
-		std::vector<GameObject*> gameObjects = SceneManager::GetAllGameObjects();
+		/* std::vector<GameObject*> gameObjects = SceneManager::GetAllGameObjects();
 		gameObjects.insert(gameObjects.begin(), nullptr);
 
 #define GAMEOBJECTS_LIST(var)\
@@ -351,7 +465,7 @@ void HexTile::DrawEditor()
 		GAMEOBJECTS_LIST(MiddleLeftLeftBorderJoint);
 		GAMEOBJECTS_LIST(MiddleLeftRightBorderJoint);
 		GAMEOBJECTS_LIST(TopLeftLeftBorderJoint);
-		GAMEOBJECTS_LIST(TopLeftRightBorderJoint);
+		GAMEOBJECTS_LIST(TopLeftRightBorderJoint);*/
 
 		// TODO: Zrobic
 	}

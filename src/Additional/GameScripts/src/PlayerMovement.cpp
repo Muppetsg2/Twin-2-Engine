@@ -137,9 +137,22 @@ void PlayerMovement::Update() {
                 SPDLOG_INFO("On end of path");
                 OnFinishMoving(GetGameObject(), destinatedTile);
             }
-            transform->SetGlobalPosition(_waypoint);
-            _waypoint = _path->Next();
-            _waypoint.y += _heightOverSurface;
+            else
+            {
+                position = _waypoint;
+                transform->SetGlobalPosition(position);
+                _waypoint = _path->Next();
+                _waypoint.y += _heightOverSurface;
+
+                vec3 direction = _waypoint - position;
+                direction.y = 0.0f;
+                float angle = glm::degrees(glm::acos(direction.x / glm::length(direction)));
+                if (direction.z > 0.0f)
+                {
+                    angle = -angle;
+                }
+                GetTransform()->SetGlobalRotation(glm::vec3(0.0f, angle + 90, 0.0f));
+            }
         }
         else {
             //transform->SetGlobalPosition(glm::vec3(glm::mix(position, tempWaypointPos, 0.5f)) + vec3(0.0f, 0.5f, 0.0f));

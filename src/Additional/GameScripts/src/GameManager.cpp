@@ -26,13 +26,13 @@ void GameManager::Initialize() {
         
         GameTimer::Instance()->OnDayTicked += [&](int day) {
             _dayText->SetText(wstring(L"Day ").append(to_wstring(day)));
-            };
+        };
         GameTimer::Instance()->OnMonthTicked += [&](int month) {
             _monthText->SetText(wstring(L"Month ").append(to_wstring(month)));
-            };
+        };
         GameTimer::Instance()->OnYearTicked += [&](int year) {
             _yearText->SetText(wstring(L"Year ").append(to_wstring(year)));
-            };
+        };
 
         _freePatronsData = _patronsData;
         //GeneratePlayer();
@@ -40,10 +40,19 @@ void GameManager::Initialize() {
         if (_mapGenerator == nullptr) {
             GameObject* mg = SceneManager::FindObjectByType<Generation::MapGenerator>();
 
-            if (mg != nullptr)
+            if (mg != nullptr) {
                 _mapGenerator = mg->GetComponent<Generation::MapGenerator>();
-            if (!mg->GetComponent<Generation::MapGenerator>()->IsMapGenerated())
-                mg->GetComponent<Generation::MapGenerator>()->Generate();
+
+                _mapGenerationEventId = (_mapGenerator->OnMapGenerationEvent += [&](Generation::MapGenerator* generator) -> void {
+                    list<HexTile*> temp = _mapGenerator->GetGameObject()->GetComponentsInChildren<HexTile>();
+                    Tiles.clear();
+                    Tiles.insert(Tiles.begin(), temp.begin(), temp.end());
+                });
+
+                if (!mg->GetComponent<Generation::MapGenerator>()->IsMapGenerated()) {
+                    mg->GetComponent<Generation::MapGenerator>()->Generate();
+                }
+            }
         }
     }
     else
@@ -53,7 +62,7 @@ void GameManager::Initialize() {
 }
 
 void GameManager::OnEnable() {
-    SPDLOG_INFO("Creating enenmy");
+    //SPDLOG_INFO("Creating enemy");
     //GenerateEnemy();
     //GenerateEnemy();
     //GenerateEnemy();
@@ -77,6 +86,14 @@ void GameManager::Update() {
                 e->SetTileMap(_mapGenerator->tilemap);
             }
         }
+    }
+}
+
+void GameManager::OnDestroy()
+{
+    if (_mapGenerationEventId != -1 && _mapGenerator != nullptr) {
+        _mapGenerator->OnMapGenerationEvent -= _mapGenerationEventId;
+        _mapGenerationEventId = -1;
     }
 }
 

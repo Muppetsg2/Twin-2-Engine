@@ -424,25 +424,25 @@ Root:
       type: HexTile
       textuesData: res/scriptableobjects/HexTileTextureData.so
       borders:
+        - 6
+        - 7
         - 8
         - 3
         - 4
         - 5
-        - 6
-        - 7
       borderJoints:
-        - 19
-        - 20
-        - 9
-        - 10
-        - 11
-        - 12
-        - 13
-        - 14
-        - 15
         - 16
-        - 17
+        - 15
         - 18
+        - 17
+        - 20
+        - 19
+        - 10
+        - 9
+        - 12
+        - 11
+        - 14
+        - 13
 GameObjects:
   - id: 3
     name: TopRightBorder

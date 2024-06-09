@@ -13,15 +13,6 @@ FightingState Enemy::_fightingState;
 RadioStationState Enemy::_radioStationState;
 InitState Enemy::_initState;
 
-void Enemy::UpdateTiles(MapGenerator* gen)
-{
-    _tiles.clear();
-    if (gen != nullptr) {
-        list<HexTile*> tempList = gen->GetGameObject()->GetComponentsInChildren<HexTile>();
-        _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend());
-    }
-}
-
 void Enemy::ChangeState(State<Enemy*>* newState) {
     _nextState = newState;
 }
@@ -40,10 +31,6 @@ void Enemy::Initialize()
     Playable::Initialize();
     _movement = GetGameObject()->GetComponent<EnemyMovement>();
 
-    if (_tilemap != nullptr) {
-        _onMapGenerationEventId = (_tilemap->GetGameObject()->GetComponent<MapGenerator>()->OnMapGenerationEvent += [&](MapGenerator* gen) -> void { UpdateTiles(gen); });
-    }
-
     ChangeState(&_initState);
 }
 
@@ -51,18 +38,6 @@ void Enemy::Initialize()
 void Enemy::OnEnable()
 {
     //PerformMovement();
-}
-
-void Enemy::OnDestroy()
-{
-    if (_onMapGenerationEventId != -1) {
-        if (_tilemap != nullptr) {
-            if (_tilemap->GetGameObject() != nullptr) {
-                _tilemap->GetGameObject()->GetComponent<MapGenerator>()->OnMapGenerationEvent -= _onMapGenerationEventId;
-                _onMapGenerationEventId = -1;
-            }
-        }
-    }
 }
 
 void Enemy::Update()
@@ -87,17 +62,6 @@ void Enemy::LostPaperRockScissors(Playable* playable)
 {
     CurrTile->StopTakingOver(this);
     ChangeState(&_movingState);
-
-    //GameObject* tiles[6];
-    //CurrTile->GetMapHexTile()->tile->GetAdjacentGameObjects(tiles);
-    //for (int i = 0; i < 6; ++i) {
-    //    if (tiles[i] != nullptr) {
-    //        _movement->reachEnd = true;
-    //        //_movement->MoveAndSetDestination(tiles[i]->GetComponent<HexTile>());
-    //        SetMoveDestination(tiles[i]->GetComponent<HexTile>());
-    //        break;
-    //    }
-    //}
 }
 
 void Enemy::WonPaperRockScissors(Playable* playable)
@@ -155,21 +119,7 @@ float Enemy::GetMaxRadius() const {
 
 void Enemy::SetTileMap(Tilemap::HexagonalTilemap* map)
 {
-    if (_tilemap != map) {
-        if (_onMapGenerationEventId != -1) {
-            _tilemap->GetGameObject()->GetComponent<MapGenerator>()->OnMapGenerationEvent -= _onMapGenerationEventId;
-            _onMapGenerationEventId = -1;
-        }
-
-        _tilemap = map;
-        _tiles.clear();
-        if (_tilemap != nullptr) {
-            _onMapGenerationEventId = (_tilemap->GetGameObject()->GetComponent<MapGenerator>()->OnMapGenerationEvent += [&](MapGenerator* gen) -> void { UpdateTiles(gen); });
-
-            list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
-            _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend());
-        }
-    }
+    _tilemap = map;
 }
 
 void Enemy::OnDead()

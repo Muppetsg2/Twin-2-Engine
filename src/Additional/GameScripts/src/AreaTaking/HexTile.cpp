@@ -13,52 +13,28 @@ using namespace Generation;
 using namespace glm;
 using namespace std;
 
-float HexTile::_takingStage1 = 30.0f;
-float HexTile::_takingStage2 = 60.0f;
-float HexTile::_takingStage3 = 90.0f;
+float HexTile::_takingStage1 = 33.3f;
+float HexTile::_takingStage2 = 66.6f;
+float HexTile::_takingStage3 = 100.0f;
 
 void HexTile::TakeOver()
 {
-	if (!occupyingEntity) {
+	// IF ERROR ONLY (IS OCCUPIED BUT NO OCCUPING ENTITY)
+	if (occupyingEntity == nullptr) {
 		ResetTile();
 		return;
 	}
+
 
 	float takeOverSpeed = occupyingEntity->TakeOverSpeed;
 	if (state == TileState::REMOTE_OCCUPYING) {
 		takeOverSpeed *= remoteMultiplier;
 	}
 
-	if (takenEntity && takenEntity != occupyingEntity) {
+	if (takenEntity != nullptr && takenEntity != occupyingEntity) {
 		percentage -= Time::GetDeltaTime() * takeOverSpeed;
-		if (percentage < _takingStage1) {
-			percentage = 0.0f;
-			if (takenEntity) {
-				takenEntity->OwnTiles.remove(this);
-				takenEntity = nullptr;
-				for(auto& t : takenEntity->OwnTiles)
-				{
-					t->UpdateBorders();
-				}
-			}
-			CheckRoundPattern();
-
-			for(auto& t : takenEntity->OwnTiles)
-			{
-				t->UpdateBorders();
-
-				// Update Neightbours
-				vector<GameObject*> neightbours;
-				neightbours.resize(6);
-				_mapHexTile->tile->GetAdjacentGameObjects(neightbours.data());
-				for(auto& nt : neightbours)
-				{
-					if (nt == nullptr) continue;
-					HexTile* ntTile = nt->GetComponent<HexTile>();
-					if (ntTile->takenEntity == takenEntity) continue;
-					ntTile->UpdateBorders();
-				}
-			}
+		if (percentage < 0.0f) {
+			ResetTile();
 		}
 	}
 	else {
@@ -66,11 +42,29 @@ void HexTile::TakeOver()
 		if (percentage > 100.0f) {
 			percentage = 100.0f;
 		}
-		if (!takenEntity && percentage >= _takingStage1)
+		if (takenEntity == nullptr && percentage >= _takingStage1)
 		{
 			takenEntity = occupyingEntity;
 			takenEntity->OwnTiles.push_back(this);
 
+			CheckRoundPattern();
+
+			for (auto& t : takenEntity->OwnTiles)
+			{
+				t->UpdateBorders();
+
+				// Update Neightbours
+				vector<GameObject*> neightbours;
+				neightbours.resize(6);
+				_mapHexTile->tile->GetAdjacentGameObjects(neightbours.data());
+				for (auto& nt : neightbours)
+				{
+					if (nt == nullptr) continue;
+					HexTile* ntTile = nt->GetComponent<HexTile>();
+					if (ntTile->takenEntity == takenEntity) continue;
+					ntTile->UpdateBorders();
+				}
+			}
 		}
 	}
 
@@ -236,7 +230,7 @@ void HexTile::OnDestroy()
 	textuesData = nullptr;
 }
 
-//TODO: Fixed HexTile Clicking
+//TODO: Fix HexTile Clicking
 
 void HexTile::Update()
 {
@@ -259,13 +253,18 @@ void HexTile::ResetTile()
 {
 	percentage = 0.0f;
 	_meshRenderer->SetMaterial(0, textuesData->GetMaterial(TILE_COLOR::RED, 0));
-	if (takenEntity) {
-		//takenEntity->RemoveTile(this);
+	if (takenEntity != nullptr) {
+		takenEntity->OwnTiles.remove(this);
+		for (auto& t : takenEntity->OwnTiles)
+		{
+			t->UpdateBorders();
+		}
 	}
 	occupyingEntity = nullptr;
 	takenEntity = nullptr;
 	isFighting = false;
 	state = TileState::NONE;
+	UpdateBorders();
 }
 
 void HexTile::SetOutlineActive(bool active)

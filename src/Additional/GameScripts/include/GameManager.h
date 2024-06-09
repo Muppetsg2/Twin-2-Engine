@@ -43,6 +43,7 @@ private:
     Twin2Engine::UI::Text* _yearText;
 
     unsigned int _enemiesNumber = 2u;
+    int _mapGenerationEventId = -1;
     Generation::MapGenerator* _mapGenerator;
 public:
     static GameManager* instance;
@@ -82,6 +83,7 @@ public:
     virtual void Initialize() override;
     virtual void OnEnable() override;
     virtual void Update() override;
+    virtual void OnDestroy() override;
 
     void UpdateEnemies(int colorIdx);
     void UpdateTiles();

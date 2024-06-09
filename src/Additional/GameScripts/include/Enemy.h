@@ -20,10 +20,6 @@ using namespace Twin2Engine::Core;
 
 class Enemy : public Playable {
 	EnemyMovement* _movement = nullptr;
-	// TODO: Update On Map Generate (FIX IT!!!!!)
-	int _onMapGenerationEventId = -1;
-	void UpdateTiles(Generation::MapGenerator * gen);
-	std::vector<HexTile*> _tiles;
 
 	// GENERATIVE PARAMETERS
 	float _noteLuck = 75.f;
@@ -75,7 +71,6 @@ public:
 	virtual void Initialize() override;
 	virtual void OnEnable() override;
 	virtual void Update() override;
-	virtual void OnDestroy() override;
 
 	virtual void LostPaperRockScissors(Playable* playable) override;
 	virtual void WonPaperRockScissors(Playable* playable) override;

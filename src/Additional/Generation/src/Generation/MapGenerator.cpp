@@ -284,6 +284,8 @@ void MapGenerator::Generate()
     
     GetGameObject()->GetComponent<ContentGenerator>()->GenerateContent(tilemap);
 
+    OnMapGenerationEvent.Invoke(this);
+
     _generated = true;
 }
 

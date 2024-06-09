@@ -44,9 +44,7 @@ void GameManager::Initialize() {
                 _mapGenerator = mg->GetComponent<Generation::MapGenerator>();
 
                 _mapGenerationEventId = (_mapGenerator->OnMapGenerationEvent += [&](Generation::MapGenerator* generator) -> void {
-                    list<HexTile*> temp = _mapGenerator->GetGameObject()->GetComponentsInChildren<HexTile>();
-                    Tiles.clear();
-                    Tiles.insert(Tiles.begin(), temp.begin(), temp.end());
+                    UpdateTiles();
 
                     for (auto e : entities) {
                         e->SetTileMap(_mapGenerator->tilemap);
@@ -100,8 +98,11 @@ void GameManager::OnDestroy()
 void GameManager::UpdateEnemies(int colorIdx) {
 }
 
-void GameManager::UpdateTiles() {
-
+void GameManager::UpdateTiles() 
+{
+    list<HexTile*> temp = _mapGenerator->GetGameObject()->GetComponentsInChildren<HexTile>();
+    Tiles.clear();
+    Tiles.insert(Tiles.begin(), temp.begin(), temp.end());
 }
 
 
@@ -234,6 +235,10 @@ void GameManager::StartGame()
     for (unsigned i = 0u; i < _enemiesNumber; ++i)
     {
         GenerateEnemy();
+    }
+
+    for (auto e : entities) {
+        e->SetTileMap(_mapGenerator->tilemap);
     }
 
     GameTimer::Instance()->StartTimer();

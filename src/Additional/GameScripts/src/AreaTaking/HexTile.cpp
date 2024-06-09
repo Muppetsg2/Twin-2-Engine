@@ -248,8 +248,7 @@ void HexTile::OnDestroy()
 	textuesData = nullptr;
 }
 
-//TODO: Fix HexTile Clicking
-
+// TODO: Map Generator Not Generating Good (Diffrent States Rendering and Collider)
 void HexTile::Update()
 {
 	if (GameManager::instance == nullptr) return;

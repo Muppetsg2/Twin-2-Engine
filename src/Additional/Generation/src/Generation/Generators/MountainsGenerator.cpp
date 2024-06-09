@@ -26,8 +26,6 @@ SO_DESERIALIZE_FIELD(mountainsNumber)
 SO_DESERIALIZE_FIELD(mountainsHeight)
 SO_DESERIALIZATION_END()
 
-
-
 void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
 {
     vector<MapSector*> sectors;
@@ -61,4 +59,8 @@ void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
 
         sectors.erase(sectors.begin() + index);
     }
+}
+
+void MountainsGenerator::Clear() {
+
 }

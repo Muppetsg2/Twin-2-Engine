@@ -155,6 +155,8 @@ void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 
 GameObject* SceneManager::FindObjectBy(GameObject* obj, const Func<bool, const GameObject*>& predicate)
 {
+	if (obj == nullptr) return nullptr;
+
 	vector<GameObject*> children;
 	Transform* objT = obj->GetTransform();
 	for (size_t i = 0; i < objT->GetChildCount(); ++i) {

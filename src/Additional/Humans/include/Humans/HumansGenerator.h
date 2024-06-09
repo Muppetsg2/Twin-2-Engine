@@ -25,7 +25,9 @@ namespace Humans
 
 	public:
 
-		virtual void Generate(Tilemap::HexagonalTilemap* tilemap);
+		virtual void Generate(Tilemap::HexagonalTilemap* tilemap) override;
+
+		virtual void Clear() override;
 
 		SO_SERIALIZE();
 		SO_DESERIALIZE();

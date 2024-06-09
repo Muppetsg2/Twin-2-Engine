@@ -19,6 +19,7 @@ namespace Generation::Generators
 
         bool destroyWaterTile = true;
         virtual void Generate(Tilemap::HexagonalTilemap* tilemap) override;
+        virtual void Clear() override;
 
         SO_SERIALIZE()
         SO_DESERIALIZE()

@@ -298,6 +298,9 @@ void MapGenerator::Clear() {
             tilemapTransform->RemoveChild(child);
             SceneManager::DestroyGameObject(child->GetGameObject());
         }
+
+        GetGameObject()->GetComponent<ContentGenerator>()->ClearContent();
+
         _generated = false;
     }
 }

@@ -19,6 +19,7 @@ namespace Generation::Generators
 		float densityFactorPerSector = 1.0f;
 
 		virtual void Generate(Tilemap::HexagonalTilemap* tilemap) override;
+		virtual void Clear() override;
 
 		SO_SERIALIZE()
 		SO_DESERIALIZE()

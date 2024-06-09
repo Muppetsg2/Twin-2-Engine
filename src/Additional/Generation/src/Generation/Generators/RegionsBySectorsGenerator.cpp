@@ -195,3 +195,7 @@ void RegionsBySectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
         }
     }
 }
+
+void RegionsBySectorsGenerator::Clear() {
+
+}

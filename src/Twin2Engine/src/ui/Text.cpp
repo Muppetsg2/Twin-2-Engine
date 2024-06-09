@@ -34,7 +34,6 @@ void Text::SetCanvas(Canvas* canvas)
 	}
 }
 
-// TODO: Fix Last Char before Enter
 void Text::UpdateTextMesh()
 {
 	Font* font = FontManager::GetFont(_fontId);
@@ -75,13 +74,13 @@ void Text::UpdateTextMesh()
 				}
 
 				if (_alignX == TextAlignX::CENTER) {
-					for (size_t idx = lineStartIdx; idx < i; ++idx) {
+					for (size_t idx = lineStartIdx; idx <= i; ++idx) {
 						_displayTextCharCache[idx].position.x += (_width - lineWidth) * .5f - linePadding;
 						_displayTextCharCache[idx].cursorPos.x += (_width - lineWidth) * .5f - linePadding;
 					}
 				}
 				else if (_alignX == TextAlignX::RIGHT) {
-					for (size_t idx = lineStartIdx; idx < i; ++idx) {
+					for (size_t idx = lineStartIdx; idx <= i; ++idx) {
 						_displayTextCharCache[idx].position.x += _width - lineWidth - linePadding * 2;
 						_displayTextCharCache[idx].cursorPos.x += _width - lineWidth - linePadding * 2;
 					}
@@ -101,7 +100,7 @@ void Text::UpdateTextMesh()
 					spaceCharIdx = 0;
 				}
 
-				lineStartIdx = i;
+				lineStartIdx = i + 1;
 			};
 			Func<bool> autoSizeCheck = [&]() -> bool {
 				return !goodSize && _autoSize && lineWidth > _width && _size >= _minSize && _size <= _maxSize;

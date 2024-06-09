@@ -11,12 +11,12 @@ using namespace std;
 void Human::Initialize()
 {
     _movement = GetGameObject()->GetComponent<HumanMovement>();
-    finishedMovingEventHandlerId = _movement->OnEventFinishedMovement.AddCallback([&](HumanMovement* movement) -> void { FinishedMoving(movement); });
+    finishedMovingEventHandlerId = _movement->OnEventFinishedMovement += [&](HumanMovement* movement) -> void { FinishedMoving(movement); };
 }
 
 void Human::OnDestroy()
 {
-    _movement->OnEventFinishedMovement.RemoveCallback(finishedMovingEventHandlerId);
+    _movement->OnEventFinishedMovement -= finishedMovingEventHandlerId;
 }
 
 void Human::StartWorking()

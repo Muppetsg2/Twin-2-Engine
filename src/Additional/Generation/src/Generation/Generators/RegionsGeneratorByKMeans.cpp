@@ -29,11 +29,6 @@ SO_DESERIALIZE_FIELD(upperHeightRange)
 SO_DESERIALIZE_FIELD(heightRangeFacor)
 SO_DESERIALIZATION_END()
 
-
-
-
-//template class ObjectsKMeans<GameObject*>;
-
 void RegionsGeneratorByKMeans::Generate(Tilemap::HexagonalTilemap* tilemap)
 {
     ivec2 leftBottomPosition = tilemap->GetLeftBottomPosition();
@@ -84,4 +79,8 @@ void RegionsGeneratorByKMeans::Generate(Tilemap::HexagonalTilemap* tilemap)
             }
         }
     }
+}
+
+void RegionsGeneratorByKMeans::Clear() {
+
 }

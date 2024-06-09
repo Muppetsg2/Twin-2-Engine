@@ -41,6 +41,18 @@ void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
     ConcertRoad::instance->Use();
 }
 
+void ContentGenerator::ClearContent() 
+{
+    SPDLOG_INFO("Cleaning content");
+    for (AMapElementGenerator* generator : mapElementGenerators)
+    {
+        if (ScriptableObjectManager::Get(generator->GetId()) != nullptr) {
+            SPDLOG_INFO("Cleaning Generator {0}", ScriptableObjectManager::GetName(generator->GetId()));
+            generator->Clear();
+        }
+    }
+}
+
 void ContentGenerator::Initialize()
 {
     //_tilemap = GetGameObject()->GetComponent<Tilemap::HexagonalTilemap>();
@@ -48,14 +60,7 @@ void ContentGenerator::Initialize()
 
 void ContentGenerator::OnDestroy() {
 
-    SPDLOG_INFO("Cleaning content");
-    for (AMapElementGenerator* generator : mapElementGenerators)
-    {
-        if (ScriptableObjectManager::Get(generator->GetId()) != nullptr) {
-            SPDLOG_INFO("Cleaning Generator {0}", ScriptableObjectManager::GetName(generator->GetId()));
-            generator->Clean();
-        }
-    }
+    ClearContent();
     mapElementGenerators.clear();
 }
 

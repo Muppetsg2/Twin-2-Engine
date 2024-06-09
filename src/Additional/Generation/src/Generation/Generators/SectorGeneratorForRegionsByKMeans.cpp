@@ -28,8 +28,6 @@ SO_DESERIALIZE_FIELD(upperHeightRange)
 SO_DESERIALIZE_FIELD(heightRangeFacor)
 SO_DESERIALIZATION_END()
 
-
-
 //template class ObjectsKMeans<MapHexTile*>;
 
 void SectorGeneratorForRegionsByKMeans::Generate(HexagonalTilemap* tilemap) 
@@ -72,4 +70,8 @@ void SectorGeneratorForRegionsByKMeans::Generate(HexagonalTilemap* tilemap)
             }
         }
     }
+}
+
+void SectorGeneratorForRegionsByKMeans::Clear() {
+
 }

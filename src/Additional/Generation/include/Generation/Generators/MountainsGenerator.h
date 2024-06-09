@@ -23,6 +23,7 @@ namespace Generation::Generators
         float mountainsHeight = 0.2f;
 
         virtual void Generate(Tilemap::HexagonalTilemap* tilemap) override;
+        virtual void Clear() override;
 
         SO_SERIALIZE()
         SO_DESERIALIZE()

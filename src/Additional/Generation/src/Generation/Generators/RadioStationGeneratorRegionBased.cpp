@@ -82,3 +82,7 @@ void RadioStationGeneratorRegionBased::Generate(Tilemap::HexagonalTilemap* tilem
         }
     }
 }
+
+void RadioStationGeneratorRegionBased::Clear() {
+
+}

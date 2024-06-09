@@ -73,7 +73,7 @@ Prefab* PrefabManager::LoadPrefab(const string& path)
 Prefab* PrefabManager::GetPrefab(size_t id)
 {
 	if (!_prefabs.contains(id)) {
-		SPDLOG_ERROR("Prefab of ID '{0}' not found", id);
+		SPDLOG_ERROR("Prefab of ID '{0}', Path: '{1}' not found", id, _prefabsPaths[id]);
 		return nullptr;
 	}
 	return _prefabs[id];

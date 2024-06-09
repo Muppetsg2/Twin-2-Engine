@@ -236,6 +236,8 @@ void HexTile::OnDestroy()
 	textuesData = nullptr;
 }
 
+//TODO: Fixed HexTile Clicking
+
 void HexTile::Update()
 {
 	if (GameManager::instance == nullptr) return;

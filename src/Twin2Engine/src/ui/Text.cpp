@@ -34,6 +34,7 @@ void Text::SetCanvas(Canvas* canvas)
 	}
 }
 
+// TODO: Fix Last Char before Enter
 void Text::UpdateTextMesh()
 {
 	Font* font = FontManager::GetFont(_fontId);

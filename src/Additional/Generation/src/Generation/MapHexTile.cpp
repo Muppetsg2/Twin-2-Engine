@@ -74,6 +74,16 @@ void MapHexTile::DrawEditor()
         ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
         ImGui::Text(to_string(type).c_str());
         ImGui::PopFont();
+
+        //if (ImGui::Button("CheckAdjacent"))
+        //{
+        //    GameObject* objects[6];
+        //    tile->GetAdjacentGameObjects(objects);
+        //    for (size_t index = 0ull; index < 6; ++index)
+        //    {
+        //        Twin2Engine::Manager::SceneManager::DestroyGameObject(objects[index]);
+        //    }
+        //}
     }
 }
 #endif

@@ -7,7 +7,7 @@ using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
 
 size_t Twin2Engine::Core::GameObject::_currentFreeId = 1;
-list<size_t> Twin2Engine::Core::GameObject::_freedIds;
+vector<size_t> Twin2Engine::Core::GameObject::_freedIds;
 std::unordered_set<std::string_view> Twin2Engine::Core::GameObject::AllTags;
 
 GameObject::GameObject(size_t id) {
@@ -16,16 +16,17 @@ GameObject::GameObject(size_t id) {
 	_id = id;
 	if (_currentFreeId <= id) {
 		for (; _currentFreeId < id; ++_currentFreeId) _freedIds.push_back(_currentFreeId);
-		_freedIds.sort();
+		sort(_freedIds.begin(), _freedIds.end());
 		_currentFreeId = id + 1;
 	}
 	else {
 		if (_freedIds.size() > 0) {
-			/*auto found = find_if(_freedIds.begin(), _freedIds.end(), [&](size_t fId) -> bool { return fId == _id; });
-			if (found != _freedIds.end()) {
-				_freedIds.erase(found);
-			}*/
-			_freedIds.remove(_id);
+			for (size_t i = 0; i < _freedIds.size(); ++i) {
+				if (_freedIds[i] == _id) {
+					_freedIds.erase(_freedIds.begin() + i);
+					break;
+				}
+			}
 		}
 	}
 
@@ -142,7 +143,10 @@ size_t GameObject::GetFreeId()
 	size_t id;
 	if (_freedIds.size() > 0) {
 		id = _freedIds.front();
-		_freedIds.pop_front();
+		for (size_t i = 0; i < _freedIds.size() - 1; ++i) {
+			_freedIds[i] = _freedIds[i + 1];
+		}
+		_freedIds.resize(_freedIds.size() - 1);
 	}
 	else {
 		id = _currentFreeId++;
@@ -168,7 +172,7 @@ void GameObject::FreeId(size_t id)
 	}
 	else {
 		_freedIds.push_back(id);
-		_freedIds.sort();
+		sort(_freedIds.begin(), _freedIds.end());
 	}
 }
 

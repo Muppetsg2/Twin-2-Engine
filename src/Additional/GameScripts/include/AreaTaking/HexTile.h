@@ -50,11 +50,11 @@ public:
 	float alphaTransparencyObject;
 	TileState state;
 
-	float minLosePercentage;
-	float loseInfluenceSpeed;
-	float loseInfluenceDelay;
-	float currLoseInfluenceDelay;
-
+	//float minLosePercentage;
+	float loseInfluenceSpeed = 1.0f;
+	//float loseInfluenceDelay;
+	//float currLoseInfluenceDelay;
+	
 	// Borders
 	std::vector<Twin2Engine::Core::GameObject*> borders;
 	std::vector<Twin2Engine::Core::GameObject*> borderJoints;

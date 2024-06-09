@@ -34,7 +34,6 @@ void HexTile::TakeOver()
 				takenEntity->OwnTiles.remove(this);
 				takenEntity = nullptr;
 			}
-			CheckRoundPattern();
 		}
 	}
 	else {
@@ -50,49 +49,28 @@ void HexTile::TakeOver()
 		}
 	}
 
-	//// Przetworzenie oddzialywania tych, ktorzy z dalszego zasiegu oddzialuja.
-	//size_t size = remotelyOccupyingEntities.size();
-	//for (size_t index = 0ull; index < size; ++index)
-	//{
-	//	float takeOverSpeed = remotelyOccupyingEntities[index]->TakeOverSpeed * remoteMultipliers[index];
-	//	if (takenEntity && takenEntity != remotelyOccupyingEntities[index]) {
-	//		percentage -= Time::GetDeltaTime() * takeOverSpeed;
-	//		if (percentage < _takingStage1) {
-	//			percentage = 0.0f;
-	//			if (takenEntity) {
-	//				takenEntity->OwnTiles.remove(this);
-	//				takenEntity = nullptr;
-	//			}
-	//			CheckRoundPattern();
-	//		}
-	//	}
-	//	else {
-	//		percentage += Time::GetDeltaTime() * takeOverSpeed;
-	//		if (percentage > 100.0f) {
-	//			percentage = 100.0f;
-	//		}
-	//		if (!takenEntity && percentage >= _takingStage1)
-	//		{
-	//			takenEntity = remotelyOccupyingEntities[index];
-	//			takenEntity->OwnTiles.push_back(this);
-	//
-	//		}
-	//	}
-	//}
-
 	UpdateTileColor();
 }
 
 void HexTile::LoseInfluence()
 {
-	currLoseInfluenceDelay -= Time::GetDeltaTime();
-	if (currLoseInfluenceDelay <= 0.0f && percentage > minLosePercentage) {
-		currLoseInfluenceDelay = 0.0f;
-		percentage -= Time::GetDeltaTime() * loseInfluenceSpeed;
-		if (percentage < minLosePercentage) {
-			percentage = minLosePercentage;
+	//currLoseInfluenceDelay -= Time::GetDeltaTime();
+	//if (currLoseInfluenceDelay <= 0.0f && percentage > minLosePercentage) {
+	//	currLoseInfluenceDelay = 0.0f;
+	//	percentage -= Time::GetDeltaTime() * loseInfluenceSpeed;
+	//	if (percentage < minLosePercentage) {
+	//		percentage = minLosePercentage;
+	//	}
+	//	UpdateTileColor();
+	//}
+
+	percentage -= Time::GetDeltaTime();
+	if (percentage < _takingStage1) {
+		percentage = 0.0f;
+		if (takenEntity) {
+			takenEntity->OwnTiles.remove(this);
+			takenEntity = nullptr;
 		}
-		UpdateTileColor();
 	}
 }
 
@@ -127,8 +105,132 @@ void HexTile::UpdateBorders()
 {
 }
 
+
 void HexTile::CheckRoundPattern()
 {
+	SPDLOG_INFO("Checking Round pattern");
+	//GameObject[] neightbours = HexMetrics.GetNeighboringGameObjects(tilemap, this.tilemapPosition);
+	GameObject* adjacentGameObjects[6];
+	//GameObject* adjacentGameObjects2[6];
+	HexTile* adjacentHexTile = nullptr;
+	//HexTile* adjacentHexTile2 = nullptr;
+	//bool isRounded = true;
+
+	_mapHexTile->tile->GetAdjacentGameObjects(adjacentGameObjects);
+	
+	Playable* processedTaken = nullptr;
+
+	for (size_t index = 0ull; index < 6ull; ++index)
+	{
+		if (!adjacentGameObjects[index]) continue;
+
+		adjacentHexTile = adjacentGameObjects[index]->GetComponent<HexTile>();
+		//if (item == gameObject || !item.TryGetComponent(out HexTile hx)) continue;
+
+		if (adjacentHexTile->_mapHexTile->type == Generation::MapHexTile::HexTileType::Water
+			|| adjacentHexTile->_mapHexTile->type == Generation::MapHexTile::HexTileType::Mountain) continue;
+
+		if (adjacentHexTile->takenEntity == takenEntity || !adjacentHexTile->takenEntity || takenEntity == adjacentHexTile->occupyingEntity)
+		{
+			//isRounded = false;
+			processedTaken = nullptr;
+			break;
+		}
+
+		if (!processedTaken)
+		{
+			processedTaken = adjacentHexTile->takenEntity;
+		}
+		else if (processedTaken != adjacentHexTile->takenEntity)
+		{
+			//isRounded = false;
+			processedTaken = nullptr;
+			break;
+		}
+
+	}
+	//if (isRounded)
+	if (processedTaken)
+	{
+		SPDLOG_INFO("Is Rounded");
+		//Playable* temp = takenEntity;
+		ResetTile();
+
+		SPDLOG_WARN("Nie sprawdzanie w CheckRounding Pattern occupying is Dead");
+		//takenEntity->CheckIfDead(occupyingEntity);
+	
+		if (takenEntity)
+		{
+			takenEntity->OwnTiles.remove(this);
+		}
+	
+		takenEntity = processedTaken;
+		state = TileState::TAKEN;
+		takenEntity->OwnTiles.push_back(this);
+		percentage = 100.0f;
+		UpdateTileColor();
+		UpdateBorders();
+	}
+	//for (size_t index = 0ull; index < 6ull; ++index)
+	//{
+	//	if (!adjacentGameObjects[index]) continue;
+	//
+	//	adjacentHexTile = adjacentGameObjects[index]->GetComponent<HexTile>();
+	//	//if (item == gameObject || !item.TryGetComponent(out HexTile hx)) continue;
+	//
+	//	if (adjacentHexTile->_mapHexTile->type == Generation::MapHexTile::HexTileType::Water 
+	//		|| adjacentHexTile->_mapHexTile->type == Generation::MapHexTile::HexTileType::Mountain) continue;
+	//
+	//	if (adjacentHexTile->takenEntity == occupyingEntity || adjacentHexTile->occupyingEntity != nullptr) continue;
+	//
+	//
+	//	//if (adjacentHexTile->takenEntity != occupyingEntity)
+	//	//{
+	//	//	isRounded = false;
+	//	//	break;
+	//	//}
+	//
+	//	adjacentHexTile->_mapHexTile->tile->GetAdjacentGameObjects(adjacentGameObjects2);
+	//	isRounded = true;
+	//	for (size_t index2 = 0ull; index2 < 6ull; ++index2)
+	//	{
+	//		if (!adjacentGameObjects2[index2]) continue;
+	//	
+	//		adjacentHexTile2 = adjacentGameObjects2[index2]->GetComponent<HexTile>();
+	//		//if (item == gameObject || !item.TryGetComponent(out HexTile hx)) continue;
+	//	
+	//		if (adjacentHexTile2->_mapHexTile->type == Generation::MapHexTile::HexTileType::Water
+	//			|| adjacentHexTile2->_mapHexTile->type == Generation::MapHexTile::HexTileType::Mountain) continue;
+	//	
+	//		if (adjacentHexTile2->takenEntity != occupyingEntity)
+	//		{
+	//			isRounded = false;
+	//			break;
+	//		}
+	//	}
+	//
+	//	SPDLOG_INFO("Before Is Rounded");
+	//	if (isRounded)
+	//	{
+	//		SPDLOG_INFO("Is Rounded");
+	//
+	//		Playable* temp = adjacentHexTile->takenEntity;
+	//		adjacentHexTile->ResetTile();
+	//		temp->CheckIfDead(takenEntity);
+	//	
+	//		if (adjacentHexTile->takenEntity)
+	//		{
+	//			adjacentHexTile->takenEntity->OwnTiles.remove(this);
+	//		}
+	//	
+	//		adjacentHexTile->takenEntity = takenEntity;
+	//		adjacentHexTile->state = TileState::TAKEN;
+	//		adjacentHexTile->takenEntity->OwnTiles.push_back(this);
+	//		adjacentHexTile->percentage = 100.0f;
+	//		adjacentHexTile->UpdateTileColor();
+	//		adjacentHexTile->UpdateBorders();
+	//	}
+	//}
 }
 
 void HexTile::Initialize()
@@ -155,6 +257,9 @@ void HexTile::Update()
 		{
 			LoseInfluence();
 		}
+
+		CheckRoundPattern();
+
 	}
 }
 
@@ -215,7 +320,7 @@ void HexTile::StopTakingOver(Playable* entity)
 		occupyingEntity = nullptr;
 		if (takenEntity) {
 			state = TileState::TAKEN;
-			currLoseInfluenceDelay = loseInfluenceDelay;
+			//currLoseInfluenceDelay = loseInfluenceDelay;
 		}
 		else {
 			state = TileState::NONE;
@@ -254,6 +359,8 @@ YAML::Node HexTile::Serialize() const
 
 	node["type"] = "HexTile";
 
+	node["loseInfluenceSpeed"] = loseInfluenceSpeed;
+
 	if (textuesData != nullptr) {
 		node["textuesData"] = Twin2Engine::Manager::ScriptableObjectManager::GetPath(textuesData->GetId());
 	}
@@ -269,7 +376,7 @@ bool HexTile::Deserialize(const YAML::Node& node)
 	if (!Component::Deserialize(node))
 		return false;
 
-
+	loseInfluenceSpeed = node["loseInfluenceSpeed"].as<float>();
 	textuesData = dynamic_cast<HexTileTextureData*>(Twin2Engine::Manager::ScriptableObjectManager::Load(node["textuesData"].as<string>()));
 	return true;
 }
@@ -293,9 +400,16 @@ void HexTile::DrawEditor()
 		ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
 		ImGui::Text("%s", takenEntity != nullptr ? takenEntity->GetGameObject()->GetName().append("/").append(std::to_string(takenEntity->GetGameObject()->Id())).c_str() : "None");
 		ImGui::PopFont();
+		ImGui::TextUnformatted("OccupyingEntity: ");
+		ImGui::SameLine();
+		ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+		ImGui::Text("%s", occupyingEntity != nullptr ? occupyingEntity->GetGameObject()->GetName().append("/").append(std::to_string(occupyingEntity->GetGameObject()->Id())).c_str() : "None");
+		ImGui::PopFont();
 
 		ImGui::Text("Percentage: %f", percentage);
 		ImGui::Text("Current Cooldown: %f", currCooldown);
+
+		ImGui::InputFloat("LoseInfluenceSpeed", &loseInfluenceSpeed);
 
 		// TODO: Zrobic
 	}

@@ -34,6 +34,7 @@ void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
             if (tileObject != nullptr)
             {
                 tileObject->SetIsStatic(true);
+                tileObject->GetComponent<HexTile>()->InitializeAdjacentTiles();
             }
         }
     }

@@ -26,6 +26,8 @@ class HexTile : public Twin2Engine::Core::Component
 	Generation::MapHexTile* _mapHexTile = nullptr;
 	Twin2Engine::Core::MeshRenderer* _meshRenderer = nullptr;
 
+	std::vector<HexTile*> _adjacentTiles;
+
 	void TakeOver();
 	void LoseInfluence();
 	void UpdateTileColor();
@@ -74,6 +76,7 @@ public:
 	virtual void Initialize() override;
 	virtual void Update() override;
 	virtual void OnDestroy() override;
+	void InitializeAdjacentTiles();
 
 	void ResetTile();
 	void SetOutlineActive(bool active);

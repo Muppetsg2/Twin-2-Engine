@@ -230,6 +230,7 @@ YAML::Node ConcertRoad::Serialize() const
 {
     YAML::Node node = Component::Serialize();
     node["type"] = "ConcertRoad";
+    node["marker"] = SceneManager::GetPrefabSaveIdx(Marker->GetId());
 
     return node;
 }
@@ -239,7 +240,7 @@ bool ConcertRoad::Deserialize(const YAML::Node& node)
     if (!Component::Deserialize(node))
         return false;
 
-    Marker = PrefabManager::GetPrefab("res/prefabs/Marker.prefab");
+    Marker = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["marker"].as<size_t>()));
 
 
     return true;

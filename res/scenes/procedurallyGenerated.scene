@@ -696,6 +696,8 @@ Prefabs:
     path: res/prefabs/tilemap/mapRegion.prefab
   - id: 9
     path: res/prefabs/tilemap/mapElements/mountains.prefab
+  - id: 10
+    path: res/prefabs/Marker.prefab
 ScriptableObjects: ~
 GameObjects:
   - id: 1
@@ -1370,6 +1372,7 @@ GameObjects:
       - id: 104
         enabled: true
         type: ConcertRoad
+        marker: 10
       - id: 105
         enabled: true
         type: GameManager

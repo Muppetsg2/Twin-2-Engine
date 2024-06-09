@@ -19,8 +19,6 @@ void HumanMovement::OnDestroy()
 {
     _notDestroyed = false;
 
-    Component::OnDestroy();
-
     _findingPath = false;
     _foundPath = false;
 
@@ -96,7 +94,7 @@ void HumanMovement::PathFindingSuccess(const AStarPath& path)
         _foundPath = true;
 
 
-        SPDLOG_INFO("PATH_FINDING success");
+        //SPDLOG_INFO("PATH_FINDING success");
         //SPDLOG_ERROR("{}Current destination: {} {} {}", GetGameObject()->Id(), _currentDestination.x, _currentDestination.y, _currentDestination.z);
     }
 }

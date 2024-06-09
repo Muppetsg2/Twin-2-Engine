@@ -88,13 +88,13 @@ YAML::Node HexagonalColliderComponent::Serialize() const
 	node["type"] = "HexagonalCollider";
 
 	if (collider != nullptr) {
-		node["baselength"] = ((HexagonalColliderData*)collider->shapeColliderData)->BaseLength;
-		node["halfheight"] = ((HexagonalColliderData*)collider->shapeColliderData)->HalfHeight;
+		node["baseLength"] = ((HexagonalColliderData*)collider->shapeColliderData)->BaseLength;
+		node["halfHeight"] = ((HexagonalColliderData*)collider->shapeColliderData)->HalfHeight;
 		node["rotation"] = ((HexagonalColliderData*)collider->shapeColliderData)->Rotation;
 	}
 	else {
-		node["baselength"] = 0.f;
-		node["halfheight"] = 0.f;
+		node["baseLength"] = 0.f;
+		node["halfHeight"] = 0.f;
 		node["rotation"] = 0.f;
 	}
 

@@ -1,8 +1,10 @@
 #include <core/GameObject.h>
 #include <core/ComponentsMap.h>
 #include <manager/SceneManager.h>
+#include <manager/PrefabManager.h>
 
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Manager;
 
 size_t Twin2Engine::Core::GameObject::_currentFreeId = 1;
 list<size_t> Twin2Engine::Core::GameObject::_freedIds;
@@ -326,11 +328,28 @@ void GameObject::DrawEditor()
 		}
 	}
 
+	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 50);
+
+	if (ImGui::Button(string(ICON_FA_DOWNLOAD "##Save To Prefab GO").append(id).c_str())) {
+		_saveGameObjectAsPrefab = true;
+		_fileDialogPrefabSaveInfo.type = ImGuiFileDialogType_SaveFile;
+		_fileDialogPrefabSaveInfo.title = string("Save Prefab##File_Prefab_Save").append(id);
+		_fileDialogPrefabSaveInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\prefabs");
+	}
+
 	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 20);
 
 	if (ImGui::Button(string(ICON_FA_TRASH_CAN "##Remove GO").append(id).c_str())) {
 		Manager::SceneManager::DestroyGameObject(this);
 		return;
+	}
+
+	if (ImGui::FileDialog(&_saveGameObjectAsPrefab, &_fileDialogPrefabSaveInfo))
+	{
+		// Result path in: m_fileDialogInfo.resultPath
+		std::string path = std::filesystem::relative(_fileDialogPrefabSaveInfo.resultPath).string();
+		std::string name = std::filesystem::path(path).stem().string();
+		PrefabManager::SaveAsPrefab(this, path);
 	}
 
 	ImGui::Text("Id: %d", _id);

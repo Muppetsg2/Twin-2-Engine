@@ -92,6 +92,8 @@ namespace Twin2Engine::Core
 		bool Deserialize(const YAML::Node& node);
 		
 #if _DEBUG
+		ImFileDialogInfo _fileDialogPrefabSaveInfo;
+		bool _saveGameObjectAsPrefab = false;
 		void DrawEditor();
 #endif
 

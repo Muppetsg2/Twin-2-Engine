@@ -20,7 +20,9 @@ using namespace Twin2Engine::Core;
 
 class Enemy : public Playable {
 	EnemyMovement* _movement = nullptr;
-	// TODO: Update On Map Generate
+	// TODO: Update On Map Generate (FIX IT!!!!!)
+	int _onMapGenerationEventId = -1;
+	void UpdateTiles(Generation::MapGenerator * gen);
 	std::vector<HexTile*> _tiles;
 
 	// GENERATIVE PARAMETERS

@@ -703,7 +703,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 0
+      id: 1
       enabled: true
       position:
         x: 0
@@ -718,7 +718,7 @@ GameObjects:
         y: -88.6
         z: 0
     components:
-      - id: 1
+      - id: 2
         enabled: true
         type: Camera
         fov: 45
@@ -742,13 +742,13 @@ GameObjects:
         ssaoSampleRadius: 0.7
         ssaoBias: 0.01
         blurMSize: 5
-      - id: 2
+      - id: 3
         enabled: true
         type: Audio
         audio: 0
         loop: true
         volume: 1
-      - id: 3
+      - id: 4
         enabled: true
         type: MovementController
         DragControl: true
@@ -764,7 +764,7 @@ GameObjects:
     isStatic: false
     isActive: false
     transform:
-      id: 4
+      id: 5
       enabled: true
       position:
         x: -900
@@ -779,7 +779,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 5
+      - id: 6
         enabled: true
         type: Image
         isTransparent: false
@@ -796,7 +796,7 @@ GameObjects:
         fillType: 0
         fillSubType: 0
         fillProgress: 1
-      - id: 6
+      - id: 7
         enabled: true
         type: Image
         isTransparent: false
@@ -820,7 +820,7 @@ GameObjects:
     isStatic: false
     isActive: false
     transform:
-      id: 7
+      id: 8
       enabled: true
       position:
         x: 900
@@ -835,7 +835,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 8
+      - id: 9
         enabled: true
         type: Image
         isTransparent: false
@@ -859,7 +859,7 @@ GameObjects:
     isStatic: false
     isActive: false
     transform:
-      id: 9
+      id: 10
       enabled: true
       position:
         x: 0
@@ -874,7 +874,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 10
+      - id: 11
         enabled: true
         type: Image
         isTransparent: false
@@ -898,7 +898,7 @@ GameObjects:
     isStatic: false
     isActive: false
     transform:
-      id: 11
+      id: 12
       enabled: true
       position:
         x: 800
@@ -913,7 +913,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 12
+      - id: 13
         enabled: true
         type: Text
         isTransparent: false
@@ -942,7 +942,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 13
+      id: 14
       enabled: true
       position:
         x: 2
@@ -957,7 +957,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 14
+      - id: 15
         enabled: true
         type: MeshRenderer
         isTransparent: false
@@ -971,7 +971,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 15
+      id: 16
       enabled: true
       position:
         x: 2
@@ -986,7 +986,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 16
+      - id: 17
         enabled: true
         type: MeshRenderer
         isTransparent: false
@@ -1000,7 +1000,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 17
+      id: 18
       enabled: true
       position:
         x: 0
@@ -1015,7 +1015,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 18
+      - id: 19
         enabled: true
         type: MeshRenderer
         isTransparent: false
@@ -1030,7 +1030,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 19
+      id: 20
       enabled: true
       position:
         x: 0
@@ -1045,7 +1045,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 20
+      - id: 21
         enabled: true
         type: MeshRenderer
         isTransparent: false
@@ -1060,7 +1060,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 21
+      id: 22
       enabled: true
       position:
         x: 0
@@ -1075,7 +1075,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 22
+      - id: 23
         enabled: true
         type: SphereCollider
         colliderId: 1
@@ -1097,7 +1097,7 @@ GameObjects:
           y: 0
           z: 0
         radius: 20
-      - id: 23
+      - id: 24
         enabled: true
         type: BoxCollider
         colliderId: 2
@@ -1125,7 +1125,7 @@ GameObjects:
           x: 0
           y: 0
           z: 0
-      - id: 24
+      - id: 25
         enabled: true
         type: CapsuleCollider
         colliderId: 3
@@ -1151,7 +1151,7 @@ GameObjects:
           y: 1
           z: 0
         radius: 20
-      - id: 25
+      - id: 26
         enabled: true
         type: Button
         width: 100
@@ -1164,7 +1164,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 26
+      id: 27
       enabled: true
       position:
         x: 2
@@ -1179,7 +1179,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 27
+      - id: 28
         enabled: true
         type: MeshRenderer
         isTransparent: false
@@ -1193,7 +1193,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 28
+      id: 29
       enabled: true
       position:
         x: 2
@@ -1208,7 +1208,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 29
+      - id: 30
         enabled: true
         type: MeshRenderer
         isTransparent: false
@@ -1222,7 +1222,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 30
+      id: 31
       enabled: true
       position:
         x: 0
@@ -1237,7 +1237,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 31
+      - id: 32
         enabled: true
         type: HexagonalTilemap
         leftBottomPosition:
@@ -1247,7 +1247,7 @@ GameObjects:
           x: 0
           y: 0
         edgeLength: 0.5
-      - id: 32
+      - id: 33
         enabled: true
         type: ContentGenerator
         mapElementGenerators:
@@ -1258,7 +1258,7 @@ GameObjects:
           - res/scriptableobjects/CityGenerator.so
           - res/scriptableobjects/RadioStationGeneratorSectorBased.so
           - res/scriptableobjects/HumansGenerator.so
-      - id: 33
+      - id: 34
         enabled: true
         type: MapGenerator
         prefabHexagonalTile: 6
@@ -1270,7 +1270,7 @@ GameObjects:
         minPointsNumber: 5
         maxPointsNumber: 5
         angleDeltaRange: 5
-      - id: 38
+      - id: 35
         enabled: true
         type: AStarPathfinder
         maxMappingDistance: 1
@@ -1281,7 +1281,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 34
+      id: 36
       enabled: true
       position:
         x: 11.419817
@@ -1296,7 +1296,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 35
+      - id: 37
         enabled: true
         type: DirectionalLight
         direction:
@@ -1315,7 +1315,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 36
+      id: 38
       enabled: true
       position:
         x: 0
@@ -1330,7 +1330,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 37
+      - id: 39
         enabled: true
         type: PlaneGenerator
         isTransparent: true

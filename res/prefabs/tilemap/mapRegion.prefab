@@ -29,7 +29,7 @@ Root:
   isStatic: false
   isActive: true
   transform:
-    id: 617
+    id: 0
     enabled: true
     position:
       x: 0
@@ -44,7 +44,7 @@ Root:
       y: 0
       z: 0
   components:
-    - id: 618
+    - id: 1
       enabled: true
       type: MapRegion
       regionType: 0

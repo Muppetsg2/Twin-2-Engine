@@ -64,7 +64,7 @@ YAML::Node PatronChoicePanelController::Serialize() const
     }
     node["patronsButtons"] = buttonsIds;
 
-
+    // TODO: node
     return YAML::Node();
 }
 

@@ -96,7 +96,7 @@ Root:
   isStatic: false
   isActive: true
   transform:
-    id: 25
+    id: 0
     enabled: true
     position:
       x: 0
@@ -113,12 +113,12 @@ Root:
   components:
     []
 GameObjects:
-  - id: 12
+  - id: 1
     name: testPrefabChild1
     isStatic: false
     isActive: true
     transform:
-      id: 26
+      id: 1
       enabled: true
       position:
         x: 0

@@ -29,7 +29,7 @@ Root:
   isStatic: false
   isActive: true
   transform:
-    id: 2
+    id: 0
     enabled: true
     position:
       x: 0
@@ -44,23 +44,23 @@ Root:
       y: 0
       z: 0
   components:
-    - id: 3
+    - id: 1
       enabled: true
       type: MeshRenderer
       isTransparent: false
       model: 0
       materials:
         - 0
-    - id: 4
+    - id: 2
       enabled: true
       type: Player
       moneyFunction: res/scriptableobjects/MoneyFunctionData.so
       abilityActiveColor: [0, 1, 0, 1]
       abilityCooldownColor: [1, 0, 0, 1]
-    - id: 5
+    - id: 3
       enabled: true
       type: PlayerMovement
-    - id: 6
+    - id: 4
       enabled: true
       type: ConcertAbilityController
       lastingTime: 10
@@ -68,7 +68,7 @@ Root:
       cooldownTime: 5
       takingOverSpeed: 50
       moneyFunction: res/scriptableobjects/MoneyFunctionData.so
-    - id: 7
+    - id: 5
       enabled: true
       type: MoneyGainFromTiles
       gainingInterval: 1

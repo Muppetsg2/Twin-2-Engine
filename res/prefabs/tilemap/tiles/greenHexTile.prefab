@@ -25,11 +25,11 @@ Models:
 Prefabs: ~
 ScriptableObjects: ~
 Root:
-  name: New GameObject
+  name: GreenHexTile
   isStatic: false
   isActive: true
   transform:
-    id: 12
+    id: 0
     enabled: true
     position:
       x: 5
@@ -44,18 +44,18 @@ Root:
       y: 90
       z: 0
   components:
-    - id: 13
+    - id: 1
       enabled: true
       type: MapHexTile
       hexTileType: 0
-    - id: 14
+    - id: 2
       enabled: true
       type: MeshRenderer
       isTransparent: false
       model: 0
       materials:
         - 0
-    - id: 15
+    - id: 3
       enabled: true
       type: HexagonalCollider
       colliderId: 0

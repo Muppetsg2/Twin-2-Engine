@@ -105,7 +105,6 @@ Root:
         - 2
         - 2
         - 2
-      boundingVolumeRadius: 0.5
       position:
         x: 0
         y: -0.5

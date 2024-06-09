@@ -47,6 +47,10 @@ void GameManager::Initialize() {
                     list<HexTile*> temp = _mapGenerator->GetGameObject()->GetComponentsInChildren<HexTile>();
                     Tiles.clear();
                     Tiles.insert(Tiles.begin(), temp.begin(), temp.end());
+
+                    for (auto e : entities) {
+                        e->SetTileMap(_mapGenerator->tilemap);
+                    }
                 });
 
                 if (!mg->GetComponent<Generation::MapGenerator>()->IsMapGenerated()) {
@@ -80,10 +84,6 @@ void GameManager::Update() {
             if (!mg->GetComponent<Generation::MapGenerator>()->IsMapGenerated())
             {
                 mg->GetComponent<Generation::MapGenerator>()->Generate();
-            }
-
-            for (auto e : entities) {
-                e->SetTileMap(_mapGenerator->tilemap);
             }
         }
     }

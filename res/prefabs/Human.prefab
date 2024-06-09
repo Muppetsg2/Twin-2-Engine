@@ -116,7 +116,7 @@ Root:
   isStatic: false
   isActive: true
   transform:
-    id: 1270
+    id: 0
     enabled: true
     position:
       x: 0
@@ -131,18 +131,18 @@ Root:
       y: 0
       z: 0
   components:
-    - id: 1271
+    - id: 1
       enabled: true
       type: MeshRenderer
       isTransparent: false
       model: 0
       materials:
         - 0
-    - id: 1272
+    - id: 2
       enabled: true
       type: Human
       achievingDestinationAccuracity: 0.300000003
-    - id: 1273
+    - id: 3
       enabled: true
       type: HumanMovement
       speed: 1

@@ -14,16 +14,19 @@ GameObject::GameObject(size_t id) {
 	
 	// Setting IDs
 	_id = id;
-	if (_freedIds.size() > 0) {
-		auto found = find_if(_freedIds.begin(), _freedIds.end(), [&](size_t fId) -> bool { return fId == _id; });
-		if (found != _freedIds.end()) {
-			_freedIds.erase(found);
-		}
-	}
 	if (_currentFreeId <= id) {
 		for (; _currentFreeId < id; ++_currentFreeId) _freedIds.push_back(_currentFreeId);
 		_freedIds.sort();
 		_currentFreeId = id + 1;
+	}
+	else {
+		if (_freedIds.size() > 0) {
+			/*auto found = find_if(_freedIds.begin(), _freedIds.end(), [&](size_t fId) -> bool { return fId == _id; });
+			if (found != _freedIds.end()) {
+				_freedIds.erase(found);
+			}*/
+			_freedIds.remove(_id);
+		}
 	}
 
 	// Setting activation
@@ -149,8 +152,24 @@ size_t GameObject::GetFreeId()
 
 void GameObject::FreeId(size_t id)
 {
-	_freedIds.push_back(id);
-	_freedIds.sort();
+	if (_currentFreeId == id + 1) {
+		--_currentFreeId;
+
+		if (_freedIds.size() > 0) {
+			while (_currentFreeId == _freedIds.back() + 1) {
+				_freedIds.pop_back();
+				--_currentFreeId;
+
+				if (_freedIds.size() == 0) {
+					break;
+				}
+			}
+		}
+	}
+	else {
+		_freedIds.push_back(id);
+		_freedIds.sort();
+	}
 }
 
 size_t GameObject::Id() const

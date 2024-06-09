@@ -49,7 +49,7 @@ Root:
   isStatic: false
   isActive: true
   transform:
-    id: 621
+    id: 0
     enabled: true
     position:
       x: 0
@@ -64,7 +64,7 @@ Root:
       y: 0
       z: 0
   components:
-    - id: 622
+    - id: 1
       enabled: true
       type: MeshRenderer
       isTransparent: false

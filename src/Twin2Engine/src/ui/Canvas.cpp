@@ -54,6 +54,11 @@ void Canvas::DrawEditor()
 			SetSize(s);
 		}
 
+		int32_t l = _data.layer;
+		ImGui::InputInt(string("Layer##").append(id).c_str(), &l);
+
+		if (l != _data.layer) SetLayer(l);
+
 		bool ws = _data.worldSpaceCanvas;
 		if (ImGui::Checkbox(string("World Space##").append(id).c_str(), &ws)) {
 			SetInWorldSpace(ws);
@@ -76,6 +81,13 @@ void Canvas::SetSize(const vec2& size)
 	}
 }
 
+void Canvas::SetLayer(int32_t layer)
+{
+	if (_data.layer != layer) {
+		_data.layer = layer;
+	}
+}
+
 bool Canvas::IsInWorldSpace() const
 {
 	return _data.worldSpaceCanvas;
@@ -84,6 +96,11 @@ bool Canvas::IsInWorldSpace() const
 vec2 Canvas::GetSize() const
 {
 	return _data.rectTransform.size;
+}
+
+int32_t Canvas::GetLayer() const
+{
+	return _data.layer;
 }
 
 EventHandler<Canvas*>& Canvas::GetOnCanvasDestroy()

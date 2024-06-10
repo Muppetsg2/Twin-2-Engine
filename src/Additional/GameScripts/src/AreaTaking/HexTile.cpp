@@ -24,7 +24,10 @@ void HexTile::TakeOver()
 		ResetTile();
 		return;
 	}
-
+	// FIRST TILE
+	else if (takenEntity == nullptr && occupyingEntity->OwnTiles.size() == 0) {
+		percentage = _takingStage1;
+	}
 
 	float takeOverSpeed = occupyingEntity->TakeOverSpeed;
 	if (state == TileState::REMOTE_OCCUPYING) {
@@ -166,11 +169,6 @@ void HexTile::UpdateBorders()
 
 	if (takenEntity != nullptr)
 	{
-		//Color borderCol = takenEntity.Color;
-		//Color.RGBToHSV(borderCol, out float h, out float s, out float v);
-		//v *= .5f;
-		//borderCol = Color.HSVToRGB(h, s, v);
-
 		vector<GameObject*> neightbours;
 		neightbours.resize(6);
 		_mapHexTile->tile->GetAdjacentGameObjects(neightbours.data());
@@ -183,7 +181,6 @@ void HexTile::UpdateBorders()
 				if (t->takenEntity != takenEntity)
 				{
 					borders[i]->SetActive(true);
-					//borders[i]->GetComponent<MeshRenderer>().material.color = borderCol;
 				}
 				else
 				{
@@ -191,15 +188,11 @@ void HexTile::UpdateBorders()
 					if (left < 0) left = 12 + left;
 					borderJoints[left]->SetActive(true);
 					borderJoints[(i * 2 + 2) % 12]->SetActive(true);
-
-					//borderJoints[left].GetComponent<MeshRenderer>().material.color = borderCol;
-					//borderJoints[(i * 2 + 2) % 12].GetComponent<MeshRenderer>().material.color = borderCol;
 				}
 			}
 			else
 			{
 				borders[i]->SetActive(true);
-				//borders[i].GetComponent<MeshRenderer>().material.color = borderCol;
 			}
 		}
 	}
@@ -244,6 +237,7 @@ void HexTile::CheckRoundPattern()
 		takenEntity->OwnTiles.push_back(this);
 		percentage = 100.0f;
 		UpdateTileColor();
+		UpdateBorderColor();
 		UpdateBorders();
 	}
 }
@@ -262,7 +256,7 @@ void HexTile::OnDestroy()
 		ConcertRoad::instance->RoadMapPoints.erase(this);
 	else 
 		SPDLOG_WARN("Concert Road Instance was nullptr!");
-	//textuesData = nullptr;
+	texturesData = nullptr;
 }
 
 void HexTile::Update()

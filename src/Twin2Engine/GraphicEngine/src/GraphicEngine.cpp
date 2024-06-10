@@ -124,6 +124,7 @@ void GraphicEngine::End()
 void GraphicEngine::UpdateBeforeRendering()
 {
 	MeshRenderingManager::UpdateQueues();
+	MeshRenderingManager::UpdateTransparentQueues();
 }
 
 void GraphicEngine::Render()
@@ -137,6 +138,8 @@ void GraphicEngine::Render()
 	glDepthFunc(GL_LESS);
 
 	MeshRenderingManager::Render();
+	MeshRenderingManager::RenderTransparent
+();
 
 	glDisable(GL_CULL_FACE);
 	glDepthFunc(GL_LEQUAL);

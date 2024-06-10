@@ -72,6 +72,26 @@ namespace Twin2Engine
 				std::list<RenderedSegment> rendered;
 				unsigned int renderedCount;
 			};
+			struct MeshRenderingTransparentData
+			{
+				std::vector<glm::mat4> modelTransforms;
+				std::vector<Twin2Engine::Core::MeshRenderer*> meshRenderers;
+			};
+			struct MeshRenderingTransparentDataPair
+			{
+				glm::mat4* modelTransformPtr;
+				Graphic::Material* materialPtr;
+				Graphic::InstantiatingMesh* meshPtr;
+			};
+			struct MeshRenderingTransparentDataPriority
+			{
+				int transparencyPriority;
+				float distance;
+			};
+			static std::vector<MeshRenderingTransparentDataPair> _transparentQueueData;
+			static std::vector<size_t> _transparentQueueOrder;
+			static std::vector<MeshRenderingTransparentDataPriority> _transparentQueueOrderingPriorities;
+
 			struct MeshRenderingDataDepthMap
 			{
 				std::list<RenderedSegment> rendered;
@@ -114,9 +134,11 @@ namespace Twin2Engine
 			static unsigned int* _materialsIndexes;
 
 			static void UpdateQueues();
+			static void UpdateTransparentQueues();
 
 			static void PreRender();
 			static void Render();
+			static void RenderTransparent();
 
 		public:
 			static void Init();

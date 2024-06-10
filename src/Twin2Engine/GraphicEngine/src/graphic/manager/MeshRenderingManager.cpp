@@ -30,6 +30,10 @@ std::unordered_map<Shader*, std::unordered_map<Material*, std::unordered_map<Ins
 std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthMapQueueDynamic = std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
 std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap> MeshRenderingManager::_depthQueueDynamic = std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDepthMap>();
 
+// TRANSPARENT
+std::vector<MeshRenderingManager::MeshRenderingTransparentDataPair> MeshRenderingManager::_transparentQueueData;
+std::vector<size_t> MeshRenderingManager::_transparentQueueOrder;
+std::vector<float> MeshRenderingManager::_transparentQueueOrderingPriorities;
 
 GLuint MeshRenderingManager::_instanceDataSSBO = 0u;
 GLuint MeshRenderingManager::_materialIndexSSBO = 0u;
@@ -1131,88 +1135,6 @@ void MeshRenderingManager::UpdateQueues()
 	FrameMarkStart(tracey_UpdateDynamic);
 #endif
 
-#pragma region UPDATE_FOR_STATIC_TRANSPARENT
-
-	for (auto& shaderPair : _renderQueueStaticTransparent)
-	{
-		for (auto& materialPair : shaderPair.second)
-		{
-			for (auto& meshPair : materialPair.second)
-			{
-				renderedSegment.begin = meshPair.second.modelTransforms.data();
-				renderedSegment.count = 0u;
-
-				meshPair.second.rendered.clear();
-
-				meshPair.second.renderedCount = 0u;
-
-				size_t loopedSize = meshPair.second.meshRenderers.size();
-				for (size_t index = 0ull; index < loopedSize; ++index)
-				{
-					if (meshPair.second.meshRenderers[index]->GetGameObject()->GetActive())
-					{
-						if (CameraComponent::GetMainCamera()->IsFrustumCullingOn())
-						{
-							if (meshPair.first->IsOnFrustum(frustum, meshPair.second.modelTransforms[index]))
-							{
-								renderedSegment.count++;
-							}
-							else
-							{
-								if (renderedSegment.count)
-								{
-									meshPair.second.rendered.push_back(renderedSegment);
-									meshPair.second.renderedCount += renderedSegment.count;
-
-									renderedSegment.begin += renderedSegment.count + 1;
-									renderedSegment.count = 0u;
-								}
-								else
-								{
-									renderedSegment.begin++;
-								}
-							}
-						}
-						else
-						{
-							renderedSegment.count++;
-						}
-					}
-					else
-					{
-						if (renderedSegment.count)
-						{
-							meshPair.second.rendered.push_back(renderedSegment);
-							meshPair.second.renderedCount += renderedSegment.count;
-
-							renderedSegment.begin += renderedSegment.count + 1;
-							renderedSegment.count = 0u;
-						}
-						else
-						{
-							renderedSegment.begin++;
-						}
-					}
-				}
-				if (renderedSegment.count)
-				{
-					meshPair.second.rendered.push_back(renderedSegment);
-					meshPair.second.renderedCount += renderedSegment.count;
-					renderedSegment.count = 0u;
-				}
-			}
-		}
-	}
-#pragma endregion
-
-#if TRACY_PROFILER
-	FrameMarkEnd(tracey_UpdateDynamic);
-#endif
-
-#if TRACY_PROFILER
-	FrameMarkStart(tracey_UpdateStaticTransparent);
-#endif
-
 #pragma region UPDATE_FOR_DYNAMIC
 
 	for (auto& shaderPair : _renderQueueDynamic)
@@ -1302,8 +1224,78 @@ void MeshRenderingManager::UpdateQueues()
 #pragma endregion
 
 #if TRACY_PROFILER
+	FrameMarkEnd(tracey_UpdateDynamic);
+#endif
+}
+
+
+void MeshRenderingManager::UpdateTransparentQueues()
+{
+#if TRACY_PROFILER
+	ZoneScoped;
+#endif
+
+	Frustum frustum = CameraComponent::GetCurrentCameraFrustum();
+	vec3 cameraPosition = CameraComponent::GetMainCamera()->GetTransform()->GetGlobalPosition();
+	size_t loopedSize = 0ull;
+	size_t index = 0ull;
+	size_t queueSize = _transparentQueueOrderingPriorities.size();
+	size_t queueIndex = 0ull;
+
+	_transparentQueueData.clear();
+	_transparentQueueOrderingPriorities.clear();
+
+	if (!queueSize)
+	{
+		queueSize = 10ull;
+	}
+
+	_transparentQueueData.reserve(queueSize);
+	_transparentQueueOrderingPriorities.reserve(queueSize);
+
+#if TRACY_PROFILER
+	FrameMarkStart(tracey_UpdateStaticTransparent);
+#endif
+
+#pragma region UPDATE_FOR_STATIC_TRANSPARENT
+
+	for (auto& shaderPair : _renderQueueStaticTransparent)
+	{
+		for (auto& materialPair : shaderPair.second)
+		{
+			for (auto& meshPair : materialPair.second)
+			{
+				loopedSize = meshPair.second.meshRenderers.size();
+				for (index = 0ull; index < loopedSize; ++index)
+				{
+					if (meshPair.second.meshRenderers[index]->GetGameObject()->GetActive())
+					{
+						if (CameraComponent::GetMainCamera()->IsFrustumCullingOn())
+						{
+							if (meshPair.first->IsOnFrustum(frustum, meshPair.second.modelTransforms[index]))
+							{
+								_transparentQueueData.emplace_back(&meshPair.second.modelTransforms[index], materialPair.first);
+								_transparentQueueOrderingPriorities.push_back(
+									glm::distance(cameraPosition, meshPair.second.meshRenderers[index]->GetTransform()->GetGlobalPosition()));
+							}
+						}
+						else
+						{
+							_transparentQueueData.emplace_back(&meshPair.second.modelTransforms[index], materialPair.first);
+							_transparentQueueOrderingPriorities.push_back(
+								glm::distance(cameraPosition, meshPair.second.meshRenderers[index]->GetTransform()->GetGlobalPosition()));
+						}
+					}
+				}
+			}
+		}
+	}
+#pragma endregion
+
+#if TRACY_PROFILER
 	FrameMarkEnd(tracey_UpdateStaticTransparent);
 #endif
+
 
 #if TRACY_PROFILER
 	FrameMarkStart(tracey_UpdateDynamicTransparent);
@@ -1317,13 +1309,7 @@ void MeshRenderingManager::UpdateQueues()
 		{
 			for (auto& meshPair : materialPair.second)
 			{
-				renderedSegment.begin = meshPair.second.modelTransforms.data();
-				renderedSegment.count = 0u;
-
-				meshPair.second.rendered.clear();
-				meshPair.second.renderedCount = 0u;
-
-				size_t loopedSize = meshPair.second.meshRenderers.size();
+				loopedSize = meshPair.second.meshRenderers.size();
 				for (size_t index = 0ull; index < loopedSize; ++index)
 				{
 					if (meshPair.second.meshRenderers[index]->IsTransformChanged())
@@ -1339,50 +1325,18 @@ void MeshRenderingManager::UpdateQueues()
 						{
 							if (meshPair.first->IsOnFrustum(frustum, meshPair.second.modelTransforms[index]))
 							{
-								renderedSegment.count++;
-							}
-							else
-							{
-								if (renderedSegment.count)
-								{
-									meshPair.second.rendered.push_back(renderedSegment);
-									meshPair.second.renderedCount += renderedSegment.count;
-
-									renderedSegment.begin += renderedSegment.count + 1;
-									renderedSegment.count = 0u;
-								}
-								else
-								{
-									renderedSegment.begin++;
-								}
+								_transparentQueueData.emplace_back(&meshPair.second.modelTransforms[index], materialPair.first);
+								_transparentQueueOrderingPriorities.push_back(
+									glm::distance(cameraPosition, meshPair.second.meshRenderers[index]->GetTransform()->GetGlobalPosition()));
 							}
 						}
 						else
 						{
-							renderedSegment.count++;
+							_transparentQueueData.emplace_back(&meshPair.second.modelTransforms[index], materialPair.first);
+							_transparentQueueOrderingPriorities.push_back(
+								glm::distance(cameraPosition, meshPair.second.meshRenderers[index]->GetTransform()->GetGlobalPosition()));
 						}
 					}
-					else
-					{
-						if (renderedSegment.count)
-						{
-							meshPair.second.rendered.push_back(renderedSegment);
-							meshPair.second.renderedCount += renderedSegment.count;
-
-							renderedSegment.begin += renderedSegment.count + 1;
-							renderedSegment.count = 0u;
-						}
-						else
-						{
-							renderedSegment.begin++;
-						}
-					}
-				}
-				if (renderedSegment.count)
-				{
-					meshPair.second.rendered.push_back(renderedSegment);
-					meshPair.second.renderedCount += renderedSegment.count;
-					renderedSegment.count = 0u;
 				}
 			}
 		}
@@ -1392,6 +1346,22 @@ void MeshRenderingManager::UpdateQueues()
 #if TRACY_PROFILER
 	FrameMarkEnd(tracey_UpdateDynamicTransparent);
 #endif
+
+	_transparentQueueData.shrink_to_fit();
+	_transparentQueueOrderingPriorities.shrink_to_fit();
+
+	queueSize = _transparentQueueOrderingPriorities.size();
+
+	_transparentQueueOrder.clear();
+	_transparentQueueOrder.reserve(queueSize);
+
+	for (size_t i = 0; i < queueSize; ++i) {
+		_transparentQueueOrder.push_back(i);
+	}
+
+	std::stable_sort(_transparentQueueOrder.begin(), _transparentQueueOrder.end(), [](size_t a, size_t b) {
+		return _transparentQueueOrderingPriorities[a] > _transparentQueueOrderingPriorities[b];
+		});
 }
 
 #if TRACY_PROFILER
@@ -1692,6 +1662,7 @@ const char* const tracey_RenderStatic = "RenderingStaticMeshes";
 const char* const tracey_RenderDynamic = "RenderingDynamicMeshes";
 const char* const tracey_RenderStaticTransparent = "RenderingStaticTransparentMeshes";
 const char* const tracey_RenderDynamicTransparent = "RenderingDynamicTransparentMeshes";
+const char* const tracey_RenderTransparent = "RenderingTransparentMeshes";
 #endif
 
 void MeshRenderingManager::Render()
@@ -2089,8 +2060,29 @@ void MeshRenderingManager::Render()
 	FrameMarkEnd(tracey_RenderDynamic);
 #endif
 
+
+	//SPDLOG_WARN("Global static draw count: {}", globalDrawCount);
+}
+
+void MeshRenderingManager::RenderTransparent()
+{
 #if TRACY_PROFILER
-	FrameMarkStart(tracey_RenderDynamicTransparent);
+	ZoneScoped;
+#endif
+
+#if TRACY_PROFILER
+	FrameMarkStart(tracey_RenderTransparent);
+#endif
+
+	size_t loopSize = _transparentQueueOrder.size();
+
+#if TRACY_PROFILER
+	FrameMarkEnd(tracey_RenderTransparent);
+#endif
+
+	/*
+#if TRACY_PROFILER
+	FrameMarkStart(tracey_RenderStaticTransparent);
 #endif
 
 #pragma region RENDERING_STATIC_OBJECTS_TRANSPARENT
@@ -2266,14 +2258,14 @@ void MeshRenderingManager::Render()
 						SPDLOG_ERROR("Error: {}", error);
 					}
 			}
-		}
+}
 	}
 	}
 
 #pragma endregion
 
 #if TRACY_PROFILER
-	FrameMarkEnd(tracey_RenderDynamicTransparent);
+	FrameMarkEnd(tracey_RenderStaticTransparent);
 #endif
 
 #if TRACY_PROFILER
@@ -2380,8 +2372,8 @@ void MeshRenderingManager::Render()
 								remaining -= currentSegment.count;
 
 								currentSegment.count = 0u;
-							}
 						}
+					}
 
 #if USE_NAMED_BUFFER_SUBDATA
 						//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
@@ -2402,7 +2394,7 @@ void MeshRenderingManager::Render()
 
 						instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
 						count -= MAX_INSTANCE_NUMBER_PER_DRAW;
-					}
+				}
 
 
 					instanceIndex = 0ull;
@@ -2452,7 +2444,7 @@ void MeshRenderingManager::Render()
 					if (error != GL_NO_ERROR) {
 						SPDLOG_ERROR("Error: {}", error);
 					}
-				}
+			}
 			}
 		}
 	}
@@ -2462,8 +2454,7 @@ void MeshRenderingManager::Render()
 #if TRACY_PROFILER
 	FrameMarkEnd(tracey_RenderDynamicTransparent);
 #endif
-
-	//SPDLOG_WARN("Global static draw count: {}", globalDrawCount);
+	*/
 }
 
 void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, const GLuint& depthReplacingTexId, const GLuint& depthReplcedTexId, glm::mat4& projectionViewMatrix)

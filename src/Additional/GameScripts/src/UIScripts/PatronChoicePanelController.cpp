@@ -65,27 +65,23 @@ YAML::Node PatronChoicePanelController::Serialize() const
     node["patronsButtons"] = buttonsIds;
 
 
-    return YAML::Node();
+    return node;
 }
 
 bool PatronChoicePanelController::Deserialize(const YAML::Node& node)
 {
     if (!Component::Deserialize(node)) return false;
 
-    vector<string> patronDataPaths = node["patrons"].as<vector<string>>();
-    size_t size = patronDataPaths.size();
-    _patrons.reserve(size);
-    for (size_t index = 0ull; index < size; ++index)
+    _patrons.reserve(node["patrons"].size());
+    for (size_t index = 0ull; index < node["patrons"].size(); ++index)
     {
-        _patrons.push_back((PatronData*)ScriptableObjectManager::Get(patronDataPaths[index]));
+        _patrons.push_back((PatronData*)ScriptableObjectManager::Get(node["patrons"][index].as<string>()));
     }
     
-    vector<size_t> buttonsIds = node["patronsButtons"].as<vector<size_t>>();
-    size = buttonsIds.size();
-    _patronsButtons.reserve(size);
-    for (size_t index = 0ull; index < size; ++index)
+    _patronsButtons.reserve(node["patronsButtons"].size());
+    for (size_t index = 0ull; index < node["patronsButtons"].size(); ++index)
     {
-        _patronsButtons.push_back((Button*) SceneManager::GetComponentWithId(buttonsIds[index]));
+        _patronsButtons.push_back((Button*)SceneManager::GetComponentWithId(node["patronsButtons"][index].as<size_t>()));
     }
 
     return true;

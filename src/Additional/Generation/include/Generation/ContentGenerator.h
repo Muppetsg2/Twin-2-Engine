@@ -12,6 +12,7 @@ namespace Generation
     public:
         std::vector<Generators::AMapElementGenerator*> mapElementGenerators;
         void GenerateContent(Tilemap::HexagonalTilemap* targetTilemap);
+        void ClearContent();
 
         virtual void Initialize() override;
         virtual void OnDestroy() override;

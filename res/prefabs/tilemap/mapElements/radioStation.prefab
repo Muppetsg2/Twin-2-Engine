@@ -23,7 +23,7 @@ Root:
   isStatic: false
   isActive: true
   transform:
-    id: 623
+    id: 0
     enabled: true
     position:
       x: 0
@@ -38,7 +38,7 @@ Root:
       y: -165
       z: 0
   components:
-    - id: 624
+    - id: 1
       enabled: true
       type: MeshRenderer
       isTransparent: false
@@ -46,9 +46,9 @@ Root:
       materials:
         - 0
         - 1
-    - id: 625
+    - id: 2
       enabled: true
       type: RadioStation
       cooldown: 12
-      takingOverTime: 10 
-      takingRadius: 3 
+      takingOverTime: 10
+      takingRadius: 3

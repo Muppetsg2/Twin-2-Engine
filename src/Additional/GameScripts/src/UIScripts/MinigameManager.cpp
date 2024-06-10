@@ -35,8 +35,8 @@ void MinigameManager::SetupButtons()
 			LaunchpadButton->SetInteractable(true);
 			GuitarButton->SetInteractable(true);
 			DrumButton->SetInteractable(true);
-			PlayerScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes('0' + playerWins));
-			EnemyScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes('0' + enemyWins));
+			//PlayerScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes('0' + playerWins));
+			//EnemyScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes('0' + enemyWins));
 
 			PlayerSelectionImage->SetColor(glm::vec4(0.0));
 			EnemySelectionImage->SetColor(glm::vec4(0.0));
@@ -44,10 +44,10 @@ void MinigameManager::SetupButtons()
 			if (playerWins > (MaxNumberOfTurns / 2)) {
 				audioComp->SetAudio("res/music/Minigame/Win.mp3");
 				audioComp->Play();
-				WinPanel->SetActive(true);
+				WonPanel->SetActive(true);
 				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 				FinishMinigame(player, enemy);
-				WinPanel->SetActive(false);
+				WonPanel->SetActive(false);
 			}
 			else if (enemyWins > (MaxNumberOfTurns / 2)) {
 				audioComp->SetAudio("res/music/Minigame/Defeat.mp3");
@@ -79,8 +79,8 @@ void MinigameManager::SetupButtons()
 			LaunchpadButton->SetInteractable(true);
 			GuitarButton->SetInteractable(true);
 			DrumButton->SetInteractable(true);
-			PlayerScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes('0' + playerWins));
-			EnemyScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes('0' + enemyWins));
+			//PlayerScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes('0' + playerWins));
+			//EnemyScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes('0' + enemyWins));
 
 			PlayerSelectionImage->SetColor(glm::vec4(0.0));
 			EnemySelectionImage->SetColor(glm::vec4(0.0));
@@ -88,10 +88,10 @@ void MinigameManager::SetupButtons()
 			if (playerWins > (MaxNumberOfTurns / 2)) {
 				audioComp->SetAudio("res/music/Minigame/Win.mp3");
 				audioComp->Play();
-				WinPanel->SetActive(true);
+				WonPanel->SetActive(true);
 				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 				FinishMinigame(player, enemy);
-				WinPanel->SetActive(false);
+				WonPanel->SetActive(false);
 			}
 			else if (enemyWins > (MaxNumberOfTurns / 2)) {
 				audioComp->SetAudio("res/music/Minigame/Defeat.mp3");
@@ -122,8 +122,8 @@ void MinigameManager::SetupButtons()
 			LaunchpadButton->SetInteractable(true);
 			GuitarButton->SetInteractable(true);
 			DrumButton->SetInteractable(true);
-			PlayerScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes('0' + playerWins));
-			EnemyScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes('0' + enemyWins));
+			//PlayerScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes('0' + playerWins));
+			//EnemyScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes('0' + enemyWins));
 
 			PlayerSelectionImage->SetColor(glm::vec4(0.0));
 			EnemySelectionImage->SetColor(glm::vec4(0.0));
@@ -131,10 +131,10 @@ void MinigameManager::SetupButtons()
 			if (playerWins > (MaxNumberOfTurns / 2)) {
 				audioComp->SetAudio("res/music/Minigame/Win.mp3");
 				audioComp->Play();
-				WinPanel->SetActive(true);
+				WonPanel->SetActive(true);
 				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 				FinishMinigame(player, enemy);
-				WinPanel->SetActive(false);
+				WonPanel->SetActive(false);
 			}
 			else if (enemyWins > (MaxNumberOfTurns / 2)) {
 				audioComp->SetAudio("res/music/Minigame/Defeat.mp3");
@@ -171,8 +171,8 @@ void MinigameManager::PerformTurn()
 			enemyWins += 1;
 			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
 			EnemySelectionImage->SetColor(glm::vec4(1.0f));
-			PlayerSelectionImage->SetSprite("launchpad");
-			EnemySelectionImage->SetSprite("guitar");
+			PlayerSelectionImage->SetSprite("Launchpad");
+			EnemySelectionImage->SetSprite("Guitar");
 			break;
 
 		case Choice::GUITAR:
@@ -180,8 +180,8 @@ void MinigameManager::PerformTurn()
 			enemyWins += 1;
 			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
 			EnemySelectionImage->SetColor(glm::vec4(1.0f));
-			PlayerSelectionImage->SetSprite("guitar");
-			EnemySelectionImage->SetSprite("drum");
+			PlayerSelectionImage->SetSprite("Guitar");
+			EnemySelectionImage->SetSprite("Drum");
 			break;
 
 		case Choice::DRUM:
@@ -189,8 +189,8 @@ void MinigameManager::PerformTurn()
 			enemyWins += 1;
 			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
 			EnemySelectionImage->SetColor(glm::vec4(1.0f));
-			PlayerSelectionImage->SetSprite("drum");
-			EnemySelectionImage->SetSprite("launchpad");
+			PlayerSelectionImage->SetSprite("Drum");
+			EnemySelectionImage->SetSprite("Launchpad");
 			break;
 		}
 	}
@@ -201,8 +201,8 @@ void MinigameManager::PerformTurn()
 			playerWins += 1;
 			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
 			EnemySelectionImage->SetColor(glm::vec4(1.0f));
-			PlayerSelectionImage->SetSprite("launchpad");
-			EnemySelectionImage->SetSprite("drum");
+			PlayerSelectionImage->SetSprite("Launchpad");
+			EnemySelectionImage->SetSprite("Drum");
 			break;
 
 		case Choice::GUITAR:
@@ -210,8 +210,8 @@ void MinigameManager::PerformTurn()
 			playerWins += 1;
 			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
 			EnemySelectionImage->SetColor(glm::vec4(1.0f));
-			PlayerSelectionImage->SetSprite("guitar");
-			EnemySelectionImage->SetSprite("launchpad");
+			PlayerSelectionImage->SetSprite("Guitar");
+			EnemySelectionImage->SetSprite("Launchpad");
 			break;
 
 		case Choice::DRUM:
@@ -219,8 +219,8 @@ void MinigameManager::PerformTurn()
 			playerWins += 1;
 			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
 			EnemySelectionImage->SetColor(glm::vec4(1.0f));
-			PlayerSelectionImage->SetSprite("drum");
-			EnemySelectionImage->SetSprite("guitar");
+			PlayerSelectionImage->SetSprite("Drum");
+			EnemySelectionImage->SetSprite("Guitar");
 			break;
 		}
 	}
@@ -231,24 +231,24 @@ void MinigameManager::PerformTurn()
 			enemyChoice = Choice::LAUNCHPAD;
 			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
 			EnemySelectionImage->SetColor(glm::vec4(1.0f));
-			PlayerSelectionImage->SetSprite("launchpad");
-			EnemySelectionImage->SetSprite("launchpad");
+			PlayerSelectionImage->SetSprite("Launchpad");
+			EnemySelectionImage->SetSprite("Launchpad");
 			break;
 
 		case Choice::GUITAR:
 			enemyChoice = Choice::GUITAR;
 			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
 			EnemySelectionImage->SetColor(glm::vec4(1.0f));
-			PlayerSelectionImage->SetSprite("guitar");
-			EnemySelectionImage->SetSprite("guitar");
+			PlayerSelectionImage->SetSprite("Guitar");
+			EnemySelectionImage->SetSprite("Guitar");
 			break;
 
 		case Choice::DRUM:
 			enemyChoice = Choice::DRUM;
 			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
 			EnemySelectionImage->SetColor(glm::vec4(1.0f));
-			PlayerSelectionImage->SetSprite("drum");
-			EnemySelectionImage->SetSprite("drum");
+			PlayerSelectionImage->SetSprite("Drum");
+			EnemySelectionImage->SetSprite("Drum");
 			break;
 		}
 	}
@@ -388,47 +388,52 @@ YAML::Node MinigameManager::Serialize() const
 	YAML::Node node = Component::Serialize();
 	node["type"] = "MinigameManager";
 	node["MaxNumberOfTurns"] = MaxNumberOfTurns;
-	node["PlayerScoreId"] = 0;
-	node["EnemyScoreId"] = 0;
-	node["PlayerImageId"] = 0;
-	node["PlayerSelectionImageId"] = 0;
-	node["EnemyImageId"] = 0;
-	node["EnemySelectionImageId"] = 0;
-	node["RockButtonId"] = 0;
-	node["PapperButtonId"] = 0;
-	node["WonPanelId"] = 0;
-	node["LostPanelId"] = 0;
+	node["PlayerScoreId"] = PlayerScore->GetId();
+	node["EnemyScoreId"] = EnemyScore->GetId();
+	node["PlayerImageId"] = PlayerImage->GetId();
+	node["PlayerSelectionImageId"] = PlayerSelectionImage->GetId();
+	node["EnemyImageId"] = EnemyImage->GetId();
+	node["EnemySelectionImageId"] = EnemySelectionImage->GetId();
+	node["LaunchpadButtonId"] = LaunchpadButton->GetId();
+	node["GuitarButtonId"] = GuitarButton->GetId();
+	node["DrumButtonId"] = DrumButton->GetId();
+	node["WonPanelId"] = WonPanel->Id();
+	node["LostPanelId"] = LostPanel->Id();
 
 	return node;
 }
 
 bool MinigameManager::Deserialize(const YAML::Node& node)
 {
-	if (!Component::Deserialize(node))
+	if (!node["MaxNumberOfTurns"] || !node["PlayerScoreId"] || !node["EnemyScoreId"] || 
+		!node["PlayerImageId"] || !node["PlayerSelectionImageId"] || !node["EnemyImageId"] ||
+		!node["EnemySelectionImageId"] || !node["LaunchpadButtonId"] || !node["GuitarButtonId"] ||
+		!node["DrumButtonId"] || !node["WonPanelId"] || !node["LostPanelId"] ||
+		!Component::Deserialize(node))
 		return false;
 
-	MaxNumberOfTurns = node["MaxNumberOfTurns"].as<int>();
-	size_t id = node["PlayerScoreId"].as<int>();
+	MaxNumberOfTurns = node["MaxNumberOfTurns"].as<size_t>();
+	size_t id = node["PlayerScoreId"].as<size_t>();
 	PlayerScore = (Text*)SceneManager::GetComponentWithId(id);
-	id = node["EnemyScoreId"].as<int>();
+	id = node["EnemyScoreId"].as<size_t>();
 	EnemyScore = (Text*)SceneManager::GetComponentWithId(id);
-	id = node["PlayerImageId"].as<int>();
+	id = node["PlayerImageId"].as<size_t>();
 	PlayerImage = (Image*)SceneManager::GetComponentWithId(id);
-	id = node["EnemyImageId"].as<int>();
-	EnemyImage = (Image*)SceneManager::GetComponentWithId(id);
-	id = node["PlayerSelectionImageId"].as<int>();
+	id = node["PlayerSelectionImageId"].as<size_t>();
 	PlayerSelectionImage = (Image*)SceneManager::GetComponentWithId(id);
-	id = node["EnemySelectionImageId"].as<int>();
+	id = node["EnemyImageId"].as<size_t>();
+	EnemyImage = (Image*)SceneManager::GetComponentWithId(id);
+	id = node["EnemySelectionImageId"].as<size_t>();
 	EnemySelectionImage = (Image*)SceneManager::GetComponentWithId(id);
-	id = node["LaunchpadButtonId"].as<int>();
+	id = node["LaunchpadButtonId"].as<size_t>();
 	LaunchpadButton = (Button*)SceneManager::GetComponentWithId(id);
-	id = node["GuitarButtonId"].as<int>();
+	id = node["GuitarButtonId"].as<size_t>();
 	GuitarButton = (Button*)SceneManager::GetComponentWithId(id);
-	id = node["DrumButtonId"].as<int>();
+	id = node["DrumButtonId"].as<size_t>();
 	DrumButton = (Button*)SceneManager::GetComponentWithId(id);
-	id = node["WonPanelId"].as<int>();
-	WinPanel = SceneManager::GetGameObjectWithId(id);
-	id = node["LostPanelId"].as<int>();
+	id = node["WonPanelId"].as<size_t>();
+	WonPanel = SceneManager::GetGameObjectWithId(id);
+	id = node["LostPanelId"].as<size_t>();
 	LostPanel = SceneManager::GetGameObjectWithId(id);
 
 	SetupButtons();

@@ -155,6 +155,8 @@ void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 
 GameObject* SceneManager::FindObjectBy(GameObject* obj, const Func<bool, const GameObject*>& predicate)
 {
+	if (obj == nullptr) return nullptr;
+
 	vector<GameObject*> children;
 	Transform* objT = obj->GetTransform();
 	for (size_t i = 0; i < objT->GetChildCount(); ++i) {
@@ -1074,10 +1076,21 @@ void SceneManager::UnloadCurrent()
 {
 	_currentSceneId = 0;
 	_currentSceneName = "";
+	//for (auto& pair : _gameObjectsById)
+	//{
+	//	pair.second->OnDestroyedEvent(pair.second);
+	//}
 	_gameObjectsById.clear();
+	//for (auto& pair : _componentsById)
+	//{
+	//	pair.second->OnDestroy();
+	//}
 	_componentsById.clear();
 	DestroyObject(_rootObject);
 	_rootObject = nullptr;
+
+	while (_objectsToDestroy.size())
+		_objectsToDestroy.pop();
 
 	Action<map<size_t, size_t>&, const Action<size_t>&> unloader = [](map<size_t, size_t>& ids, const Action<size_t>& unload) -> void {
 		for (auto& id : ids) {

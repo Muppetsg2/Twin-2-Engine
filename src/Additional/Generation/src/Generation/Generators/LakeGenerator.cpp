@@ -91,3 +91,7 @@ void LakeGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
         }
     }
 }
+
+void LakeGenerator::Clear() {
+
+}

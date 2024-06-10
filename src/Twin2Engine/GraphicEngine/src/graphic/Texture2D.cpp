@@ -147,6 +147,11 @@ void Texture2D::DrawEditor()
 	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
 	ImGui::Text(id.c_str());
 	ImGui::PopFont();
+	ImGui::Text("Path: ");
+	ImGui::SameLine();
+	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+	ImGui::Text(Manager::TextureManager::GetTexture2DPath(_managerId).c_str());
+	ImGui::PopFont();
 
 	TextureWrapMode wm = _sWrapMode;
 	bool clicked = false;

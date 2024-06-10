@@ -34,11 +34,24 @@ void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
             if (tileObject != nullptr)
             {
                 tileObject->SetIsStatic(true);
+                tileObject->GetComponent<HexTile>()->InitializeAdjacentTiles();
             }
         }
     }
 
     ConcertRoad::instance->Use();
+}
+
+void ContentGenerator::ClearContent() 
+{
+    SPDLOG_INFO("Cleaning content");
+    for (AMapElementGenerator* generator : mapElementGenerators)
+    {
+        if (ScriptableObjectManager::Get(generator->GetId()) != nullptr) {
+            SPDLOG_INFO("Cleaning Generator {0}", ScriptableObjectManager::GetName(generator->GetId()));
+            generator->Clear();
+        }
+    }
 }
 
 void ContentGenerator::Initialize()
@@ -48,14 +61,7 @@ void ContentGenerator::Initialize()
 
 void ContentGenerator::OnDestroy() {
 
-    SPDLOG_INFO("Cleaning content");
-    for (AMapElementGenerator* generator : mapElementGenerators)
-    {
-        if (ScriptableObjectManager::Get(generator->GetId()) != nullptr) {
-            SPDLOG_INFO("Cleaning Generator {0}", ScriptableObjectManager::GetName(generator->GetId()));
-            generator->Clean();
-        }
-    }
+    ClearContent();
     mapElementGenerators.clear();
 }
 

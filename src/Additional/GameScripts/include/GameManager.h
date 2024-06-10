@@ -33,11 +33,17 @@ namespace Generation {
 class GameManager : public Component {
 private:
 
-    std::vector<int> freeColors{ 0, 1, 2, 3, 4, 5, 6 };
+    static size_t _colorsNum;
+
+    std::vector<int> _freeColors{ 0, 1, 2, 3, 4, 5, 6 };
     std::vector<Twin2Engine::Graphic::Material*> _carMaterials;
 
     std::vector<PatronData*> _patronsData;
     std::vector<PatronData*> _freePatronsData;
+
+    size_t _dayEventHandleId;
+    size_t _monthEventHandleId;
+    size_t _yearEventHandleId;
 
     Twin2Engine::UI::Text* _dayText;
     Twin2Engine::UI::Text* _monthText;
@@ -83,6 +89,7 @@ public:
 
 
     virtual void Initialize() override;
+    virtual void OnDestroy() override;
     virtual void OnEnable() override;
     virtual void Update() override;
 

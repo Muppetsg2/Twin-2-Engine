@@ -46,3 +46,11 @@ void HumansGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
         human->GetComponent<Human>()->StartWorking();
     }
 }
+
+void HumansGenerator::Clear() {
+    GameObject* obj = SceneManager::FindObjectByName("HumansContainer");
+
+    if (obj != nullptr) {
+        SceneManager::DestroyGameObject(obj);
+    }
+}

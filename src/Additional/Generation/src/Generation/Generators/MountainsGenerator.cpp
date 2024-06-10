@@ -26,8 +26,6 @@ SO_DESERIALIZE_FIELD(mountainsNumber)
 SO_DESERIALIZE_FIELD(mountainsHeight)
 SO_DESERIALIZATION_END()
 
-
-
 void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
 {
     vector<MapSector*> sectors;
@@ -52,7 +50,8 @@ void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
             //SPDLOG_WARN("Dodaæ warstwy w GameObjectach");
             //tile->layer = LayerMask::NameToLayer("Mountain");
             tile->type = MapHexTile::HexTileType::Mountain;
-            tile->GetGameObject()->GetComponent<AStarPathfindingNode>()->passable = false;
+            if (tile->GetGameObject()->GetComponent<AStarPathfindingNode>() != nullptr)
+                tile->GetGameObject()->GetComponent<AStarPathfindingNode>()->passable = false;
 
             GameObject* mountain = SceneManager::CreateGameObject(prefabMountains, tile->GetGameObject()->GetTransform());
             mountain->SetIsStatic(true);
@@ -61,4 +60,8 @@ void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
 
         sectors.erase(sectors.begin() + index);
     }
+}
+
+void MountainsGenerator::Clear() {
+
 }

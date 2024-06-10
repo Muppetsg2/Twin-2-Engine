@@ -1,33 +1,21 @@
-Textures:
-  - id: 0
-    path: res/textures/white.png
-    fileFormat: !<SRGB> 35904
-    engineFormat: !<RGB> 6407
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-Sprites:
-  []
-Fonts:
-  []
-Audio:
-  []
+Textures: ~
+Sprites: ~
+Fonts: ~
+Audio: ~
 Materials:
   - id: 0
     path: res/materials/Basic2.material
 Models:
   - id: 0
     path: "{Sphere}"
-Prefabs:
-  []
+Prefabs: ~
 ScriptableObjects: ~
 Root:
   name: Marker
   isStatic: false
   isActive: true
   transform:
-    id: 1300
+    id: 0
     enabled: true
     position:
       x: 0
@@ -42,7 +30,7 @@ Root:
       y: 0
       z: 0
   components:
-    - id: 1301
+    - id: 1
       enabled: true
       type: MeshRenderer
       isTransparent: false

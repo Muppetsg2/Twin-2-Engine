@@ -27,6 +27,7 @@ namespace Generation::Generators
         float heightRangeFacor = 1.0f;
 
         void Generate(Tilemap::HexagonalTilemap* tilemap) override;
+        void Clear() override;
 
         SO_SERIALIZE()
         SO_DESERIALIZE()

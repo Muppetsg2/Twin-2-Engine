@@ -138,6 +138,16 @@ void ConcertRoad::Update() {
     //    .ToString();
 }
 
+void ConcertRoad::OnDestroy()
+{
+    Finish();
+    RoadMapPoints.clear();
+    entityPoints.clear();
+    entityMultiplier.clear();
+    instance = nullptr;
+    //delete instance;
+}
+
 void ConcertRoad::Use() {
     //NumberOfPoints = std::min(NumberOfPoints, CitiesManager::Instance->GetAllCities().size());
     Begin();

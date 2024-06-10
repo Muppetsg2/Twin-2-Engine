@@ -578,7 +578,13 @@ void render_imgui()
 
     if (Input::GetCursorState() == CURSOR_STATE::NORMAL)
     {
-        SceneManager::DrawCurrentSceneEditor();
+        if (SceneManager::GetCurrentSceneName() != "") {
+            SceneManager::DrawCurrentSceneEditor();
+        }
+        else 
+        {
+            SPDLOG_ERROR("CurrentScene is not defined!");
+        }
 
         if (!ImGui::Begin("Twin^2 Engine", NULL, ImGuiWindowFlags_MenuBar)) {
             ImGui::End();

@@ -34,6 +34,7 @@ class ConcertRoad : public Component {
 
         virtual void Initialize() override;
         virtual void Update() override;
+        virtual void OnDestroy() override;
         void Use();
         void Begin();
         void Finish();

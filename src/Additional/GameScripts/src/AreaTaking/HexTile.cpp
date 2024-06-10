@@ -156,7 +156,10 @@ void HexTile::Initialize()
 
 void HexTile::OnDestroy()
 {
-	ConcertRoad::instance->RoadMapPoints.erase(this);
+	if (ConcertRoad::instance != nullptr)
+		ConcertRoad::instance->RoadMapPoints.erase(this);
+	else 
+		SPDLOG_WARN("Concert Road Instance was nullptr!");
 	textuesData = nullptr;
 }
 

@@ -1080,6 +1080,9 @@ void SceneManager::UnloadCurrent()
 	_componentsById.clear();
 	DestroyObject(_rootObject);
 	_rootObject = nullptr;
+	while (_objectsToDestroy.size() > 0) {
+		_objectsToDestroy.pop();
+	}
 
 	Action<map<size_t, size_t>&, const Action<size_t>&> unloader = [](map<size_t, size_t>& ids, const Action<size_t>& unload) -> void {
 		for (auto& id : ids) {

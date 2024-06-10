@@ -33,7 +33,7 @@ std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingDataDe
 // TRANSPARENT
 std::vector<MeshRenderingManager::MeshRenderingTransparentDataPair> MeshRenderingManager::_transparentQueueData;
 std::vector<size_t> MeshRenderingManager::_transparentQueueOrder;
-std::vector<float> MeshRenderingManager::_transparentQueueOrderingPriorities;
+std::vector<MeshRenderingManager::MeshRenderingTransparentDataPriority> MeshRenderingManager::_transparentQueueOrderingPriorities;
 
 GLuint MeshRenderingManager::_instanceDataSSBO = 0u;
 GLuint MeshRenderingManager::_materialIndexSSBO = 0u;
@@ -1021,6 +1021,7 @@ const char* const tracey_UpdateStatic = "UpdatingingStaticMeshes";
 const char* const tracey_UpdateDynamic = "UpdatingDynamicMeshes";
 const char* const tracey_UpdateStaticTransparent = "UpdatingStaticTransparentMeshes";
 const char* const tracey_UpdateDynamicTransparent = "UpdatingDynamicTransparentMeshes";
+const char* const tracey_UpdateTransparentSorting = "UpdateTransparentSorting";
 #endif
 
 void MeshRenderingManager::UpdateQueues()
@@ -1274,15 +1275,17 @@ void MeshRenderingManager::UpdateTransparentQueues()
 						{
 							if (meshPair.first->IsOnFrustum(frustum, meshPair.second.modelTransforms[index]))
 							{
-								_transparentQueueData.emplace_back(&meshPair.second.modelTransforms[index], materialPair.first);
-								_transparentQueueOrderingPriorities.push_back(
+								_transparentQueueData.emplace_back(&meshPair.second.modelTransforms[index], materialPair.first, meshPair.first);
+								_transparentQueueOrderingPriorities.emplace_back(
+									meshPair.second.meshRenderers[index]->_transparencyPriority,
 									glm::distance(cameraPosition, meshPair.second.meshRenderers[index]->GetTransform()->GetGlobalPosition()));
 							}
 						}
 						else
 						{
-							_transparentQueueData.emplace_back(&meshPair.second.modelTransforms[index], materialPair.first);
-							_transparentQueueOrderingPriorities.push_back(
+							_transparentQueueData.emplace_back(&meshPair.second.modelTransforms[index], materialPair.first, meshPair.first);
+							_transparentQueueOrderingPriorities.emplace_back(
+								meshPair.second.meshRenderers[index]->_transparencyPriority,
 								glm::distance(cameraPosition, meshPair.second.meshRenderers[index]->GetTransform()->GetGlobalPosition()));
 						}
 					}
@@ -1325,15 +1328,17 @@ void MeshRenderingManager::UpdateTransparentQueues()
 						{
 							if (meshPair.first->IsOnFrustum(frustum, meshPair.second.modelTransforms[index]))
 							{
-								_transparentQueueData.emplace_back(&meshPair.second.modelTransforms[index], materialPair.first);
-								_transparentQueueOrderingPriorities.push_back(
+								_transparentQueueData.emplace_back(&meshPair.second.modelTransforms[index], materialPair.first, meshPair.first);
+								_transparentQueueOrderingPriorities.emplace_back(
+									meshPair.second.meshRenderers[index]->_transparencyPriority,
 									glm::distance(cameraPosition, meshPair.second.meshRenderers[index]->GetTransform()->GetGlobalPosition()));
 							}
 						}
 						else
 						{
-							_transparentQueueData.emplace_back(&meshPair.second.modelTransforms[index], materialPair.first);
-							_transparentQueueOrderingPriorities.push_back(
+							_transparentQueueData.emplace_back(&meshPair.second.modelTransforms[index], materialPair.first, meshPair.first);
+							_transparentQueueOrderingPriorities.emplace_back(
+								meshPair.second.meshRenderers[index]->_transparencyPriority,
 								glm::distance(cameraPosition, meshPair.second.meshRenderers[index]->GetTransform()->GetGlobalPosition()));
 						}
 					}
@@ -1345,6 +1350,10 @@ void MeshRenderingManager::UpdateTransparentQueues()
 
 #if TRACY_PROFILER
 	FrameMarkEnd(tracey_UpdateDynamicTransparent);
+#endif
+
+#if TRACY_PROFILER
+	FrameMarkStart(tracey_UpdateTransparentSorting);
 #endif
 
 	_transparentQueueData.shrink_to_fit();
@@ -1359,9 +1368,21 @@ void MeshRenderingManager::UpdateTransparentQueues()
 		_transparentQueueOrder.push_back(i);
 	}
 
-	std::stable_sort(_transparentQueueOrder.begin(), _transparentQueueOrder.end(), [](size_t a, size_t b) {
-		return _transparentQueueOrderingPriorities[a] > _transparentQueueOrderingPriorities[b];
+	std::sort(_transparentQueueOrder.begin(), _transparentQueueOrder.end(), [](size_t a, size_t b) 
+		{
+			if (_transparentQueueOrderingPriorities[a].transparencyPriority != _transparentQueueOrderingPriorities[b].transparencyPriority)
+				return _transparentQueueOrderingPriorities[a].transparencyPriority < _transparentQueueOrderingPriorities[b].transparencyPriority;
+			
+			return _transparentQueueOrderingPriorities[a].distance > _transparentQueueOrderingPriorities[b].distance;
 		});
+
+	_transparentQueueOrderingPriorities.clear();
+
+	queueSize = _transparentQueueOrder.size();
+
+#if TRACY_PROFILER
+	FrameMarkEnd(tracey_UpdateTransparentSorting);
+#endif
 }
 
 #if TRACY_PROFILER
@@ -2076,29 +2097,54 @@ void MeshRenderingManager::RenderTransparent()
 
 	size_t loopSize = _transparentQueueOrder.size();
 
-#if TRACY_PROFILER
-	FrameMarkEnd(tracey_RenderTransparent);
-#endif
+	Shader* usedShader = nullptr;
+	Material* usedMaterial = nullptr;
+	InstantiatingMesh* usedMesh = nullptr;
+	size_t usedIndex = 0ull;
+	size_t count = 0ull;
+	RenderedSegment currentSegment{ .begin = nullptr, .count = 0u };
 
-	/*
-#if TRACY_PROFILER
-	FrameMarkStart(tracey_RenderStaticTransparent);
-#endif
-
-#pragma region RENDERING_STATIC_OBJECTS_TRANSPARENT
-
-	for (auto& shaderPair : _renderQueueStaticTransparent)
+	for (size_t index = 0ull; index < loopSize; ++index)
 	{
-		// Activating Shader Program
-		shaderPair.first->Use();
+		usedIndex = _transparentQueueOrder[index];
 
-		for (auto& materialPair : shaderPair.second)
+		if (usedMesh != _transparentQueueData[usedIndex].meshPtr)
 		{
+			if (count)
+			{
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+				glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * count, _modelTransforms);
+
+				usedMesh->Draw(count);
+				count = 0ull;
+			}
+
+			usedMesh = _transparentQueueData[usedIndex].meshPtr;
+		}
+
+		if (usedMaterial != _transparentQueueData[usedIndex].materialPtr)
+		{
+			if (count)
+			{
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+				glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * count, _modelTransforms);
+
+				usedMesh->Draw(count);
+				count = 0ull;
+			}
+
+			usedMaterial = _transparentQueueData[usedIndex].materialPtr;
+
+			if (usedShader != usedMaterial->GetShader())
+			{
+				usedShader = usedMaterial->GetShader();
+				usedShader->Use();
+			}
 
 #if MATERIAL_INPUT_SINGLE_UBO
 			size_t size = 0;
 			//const auto& data = materialPair.first.GetMaterialParameters()->GetData();
-			const auto& materialParameters = materialPair.first.GetMaterialParameters();
+			const auto& materialParameters = usedMaterial->GetMaterialParameters();
 #if USE_NAMED_BUFFER_SUBDATA
 			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
 			//glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
@@ -2110,351 +2156,42 @@ void MeshRenderingManager::RenderTransparent()
 			glBufferSubData(GL_UNIFORM_BUFFER, size, materialParameters->GetSize(), materialParameters->GetData());
 #endif
 #elif MATERIAL_INPUT_MANY_INPUT
-			glBindBufferBase(GL_UNIFORM_BUFFER, BINDING_POINT_MATERIAL_INPUT, materialPair.first->GetMaterialParameters()->GetDataUBO());
+			glBindBufferBase(GL_UNIFORM_BUFFER, BINDING_POINT_MATERIAL_INPUT, usedMaterial->GetMaterialParameters()->GetDataUBO());
 #endif
 
 			// ASSIGNING TEXTURES
 			int beginLocation = 0;
 			int textureBind = 0;
-			materialPair.first->GetMaterialParameters()->UploadTextures2D(shaderPair.first->GetProgramId(), beginLocation, textureBind);
+			usedMaterial->GetMaterialParameters()->UploadTextures2D(usedMaterial->GetShader()->GetProgramId(), beginLocation, textureBind);
+		}
 
-			unsigned int count = 0;
+		_modelTransforms[count] = *_transparentQueueData[usedIndex].modelTransformPtr;
+		++count;
 
-			for (auto& meshPair : materialPair.second)
-			{
-				if (meshPair.second.renderedCount)
-				{
-					count = meshPair.second.renderedCount;
-					globalDrawCount += count;
-
-					meshPair.second.renderedCount = 0u;
-
-					size_t instanceIndex = 0;
-					size_t remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
-
-					currentSegment.begin = nullptr;
-					currentSegment.count = 0u;
-
-					renderItr = meshPair.second.rendered.begin();
-
-					while (count > MAX_INSTANCE_NUMBER_PER_DRAW)
-					{
-						instanceIndex = 0ull;
-						remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
-
-						if (currentSegment.count)
-						{
-							if (currentSegment.count > MAX_INSTANCE_NUMBER_PER_DRAW)
-							{
-								std::memcpy(_modelTransforms, currentSegment.begin, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
-								currentSegment.begin += MAX_INSTANCE_NUMBER_PER_DRAW;
-								currentSegment.count -= MAX_INSTANCE_NUMBER_PER_DRAW;
-
-								instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
-								remaining -= MAX_INSTANCE_NUMBER_PER_DRAW;
-							}
-							else
-							{
-								std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
-
-								instanceIndex += currentSegment.count;
-								remaining -= currentSegment.count;
-							}
-						}
-						while (remaining > 0)
-						{
-							currentSegment = *renderItr;
-							renderItr++;
-							//currentSegment = meshPair.second.rendered.front();
-							//meshPair.second.rendered.pop_front();
-
-							if (currentSegment.count > remaining)
-							{
-								std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, remaining * sizeof(glm::mat4));
-								currentSegment.begin += remaining;
-								currentSegment.count -= remaining;
-
-								instanceIndex += remaining;
-								remaining = 0ull;
-							}
-							else
-							{
-								std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
-
-								instanceIndex += currentSegment.count;
-								remaining -= currentSegment.count;
-
-								currentSegment.count = 0u;
-						}
-					}
-
-#if USE_NAMED_BUFFER_SUBDATA
-						//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-						glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, transforms);
-						//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-						//glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, indexes);
-#else
-						//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-						glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
-						glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, _modelTransforms);
-
-						//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-						//glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
-						//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, _materialsIndexes);
-#endif
-
-						meshPair.first->Draw(MAX_INSTANCE_NUMBER_PER_DRAW);
-
-						instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
-						count -= MAX_INSTANCE_NUMBER_PER_DRAW;
-				}
-
-
-					instanceIndex = 0ull;
-					remaining = count;
-
-					if (currentSegment.count)
-					{
-						std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
-
-						instanceIndex += currentSegment.count;
-						remaining -= currentSegment.count;
-					}
-					while (remaining > 0)
-					{
-						currentSegment = *renderItr;
-						renderItr++;
-						//currentSegment = meshPair.second.rendered.front();
-						//meshPair.second.rendered.pop_front();
-
-						std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
-
-						instanceIndex += currentSegment.count;
-						remaining -= currentSegment.count;
-					}
-
-#if USE_NAMED_BUFFER_SUBDATA
-					//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-					glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * count, transforms);
-
-					//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-					//glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * count, indexes);
-#else
-					//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-					glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
-					glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * count, _modelTransforms);
-
-					//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-					//glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
-					//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * count, _materialsIndexes);
-
-					glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-#endif
-
-					meshPair.first->Draw(count);
-
-					GLenum error = glGetError();
-					if (error != GL_NO_ERROR) {
-						SPDLOG_ERROR("Error: {}", error);
-					}
-			}
-}
-	}
-	}
-
-#pragma endregion
-
-#if TRACY_PROFILER
-	FrameMarkEnd(tracey_RenderStaticTransparent);
-#endif
-
-#if TRACY_PROFILER
-	FrameMarkStart(tracey_RenderDynamicTransparent);
-#endif
-
-#pragma region RENDERING_DYNAMIC_OBJECTS_TRANSPARENT
-
-	for (auto& shaderPair : _renderQueueDynamicTransparent)
-	{
-		// Activating Shader Program
-		shaderPair.first->Use();
-
-		for (auto& materialPair : shaderPair.second)
+		if (count == MAX_INSTANCE_NUMBER_PER_DRAW)
 		{
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+			glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, _modelTransforms);
 
-#if MATERIAL_INPUT_SINGLE_UBO
-			size_t size = 0;
-			//const auto& data = materialPair.first.GetMaterialParameters()->GetData();
-			const auto& materialParameters = materialPair.first.GetMaterialParameters();
-#if USE_NAMED_BUFFER_SUBDATA
-			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
-			//glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
-			glNamedBufferSubData(_materialInputUBO, size, materialParameters->GetSize(), materialParameters->GetData());
-#else
-			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
-			glBindBuffer(GL_UNIFORM_BUFFER, _materialInputUBO);
-			//glBufferSubData(GL_UNIFORM_BUFFER, size, data.size(), data.data());
-			glBufferSubData(GL_UNIFORM_BUFFER, size, materialParameters->GetSize(), materialParameters->GetData());
-#endif
-#elif MATERIAL_INPUT_MANY_INPUT
-			glBindBufferBase(GL_UNIFORM_BUFFER, BINDING_POINT_MATERIAL_INPUT, materialPair.first->GetMaterialParameters()->GetDataUBO());
-#endif
-
-			// ASSIGNING TEXTURES
-			int beginLocation = 0;
-			int textureBind = 0;
-			materialPair.first->GetMaterialParameters()->UploadTextures2D(shaderPair.first->GetProgramId(), beginLocation, textureBind);
-
-			unsigned int count = 0;
-
-			for (auto& meshPair : materialPair.second)
-			{
-				if (meshPair.second.renderedCount)
-				{
-					count = meshPair.second.renderedCount;
-					globalDrawCount += count;
-
-					meshPair.second.renderedCount = 0u;
-
-					size_t instanceIndex = 0;
-					size_t remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
-
-					currentSegment.begin = nullptr;
-					currentSegment.count = 0u;
-
-					renderItr = meshPair.second.rendered.begin();
-
-					while (count > MAX_INSTANCE_NUMBER_PER_DRAW)
-					{
-						instanceIndex = 0ull;
-						remaining = MAX_INSTANCE_NUMBER_PER_DRAW;
-
-						if (currentSegment.count)
-						{
-							if (currentSegment.count > MAX_INSTANCE_NUMBER_PER_DRAW)
-							{
-								std::memcpy(_modelTransforms, currentSegment.begin, MAX_INSTANCE_NUMBER_PER_DRAW * sizeof(glm::mat4));
-								currentSegment.begin += MAX_INSTANCE_NUMBER_PER_DRAW;
-								currentSegment.count -= MAX_INSTANCE_NUMBER_PER_DRAW;
-
-								instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
-								remaining -= MAX_INSTANCE_NUMBER_PER_DRAW;
-							}
-							else
-							{
-								std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
-
-								instanceIndex += currentSegment.count;
-								remaining -= currentSegment.count;
-							}
-						}
-						while (remaining > 0)
-						{
-							currentSegment = *renderItr;
-							renderItr++;
-							//currentSegment = meshPair.second.rendered.front();
-							//meshPair.second.rendered.pop_front();
-
-							if (currentSegment.count > remaining)
-							{
-								std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, remaining * sizeof(glm::mat4));
-								currentSegment.begin += remaining;
-								currentSegment.count -= remaining;
-
-								instanceIndex += remaining;
-								remaining = 0ull;
-							}
-							else
-							{
-								std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
-
-								instanceIndex += currentSegment.count;
-								remaining -= currentSegment.count;
-
-								currentSegment.count = 0u;
-						}
-					}
-
-#if USE_NAMED_BUFFER_SUBDATA
-						//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-						glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, transforms);
-						//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-						//glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, indexes);
-#else
-						//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-						glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
-						glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * MAX_INSTANCE_NUMBER_PER_DRAW, _modelTransforms);
-
-						//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-						//glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
-						//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, _materialsIndexes);
-#endif
-
-						meshPair.first->Draw(MAX_INSTANCE_NUMBER_PER_DRAW);
-
-						instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
-						count -= MAX_INSTANCE_NUMBER_PER_DRAW;
-				}
-
-
-					instanceIndex = 0ull;
-					remaining = count;
-
-					if (currentSegment.count)
-					{
-						std::memcpy(_modelTransforms, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
-
-						instanceIndex += currentSegment.count;
-						remaining -= currentSegment.count;
-					}
-					while (remaining > 0)
-					{
-						currentSegment = *renderItr;
-						renderItr++;
-						//currentSegment = meshPair.second.rendered.front();
-						//meshPair.second.rendered.pop_front();
-
-						std::memcpy(_modelTransforms + instanceIndex, currentSegment.begin, currentSegment.count * sizeof(glm::mat4));
-
-						instanceIndex += currentSegment.count;
-						remaining -= currentSegment.count;
-					}
-
-#if USE_NAMED_BUFFER_SUBDATA
-					//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-					glNamedBufferSubData(_instanceDataSSBO, 0, sizeof(glm::mat4) * count, transforms);
-
-					//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-					//glNamedBufferSubData(_materialIndexSSBO, 0, sizeof(unsigned int) * count, indexes);
-#else
-					//ASSIGNING SSBO ASSOCIATED WITH TRANSFORM MATRIX
-					glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
-					glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * count, _modelTransforms);
-
-					//ASSIGNING SSBO ASSOCIATED WITH MATERIAL INDEX
-					//glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
-					//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * count, _materialsIndexes);
-
-					glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-#endif
-
-					meshPair.first->Draw(count);
-
-					GLenum error = glGetError();
-					if (error != GL_NO_ERROR) {
-						SPDLOG_ERROR("Error: {}", error);
-					}
-			}
-			}
+			usedMesh->Draw(MAX_INSTANCE_NUMBER_PER_DRAW);
+			count = 0ull;
 		}
 	}
 
-#pragma endregion
+	if (count)
+	{
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, _instanceDataSSBO);
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::mat4) * count, _modelTransforms);
+
+		usedMesh->Draw(count);
+		count = 0ull;
+	}
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
 #if TRACY_PROFILER
-	FrameMarkEnd(tracey_RenderDynamicTransparent);
+	FrameMarkEnd(tracey_RenderTransparent);
 #endif
-	*/
 }
 
 void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, const GLuint& depthReplacingTexId, const GLuint& depthReplcedTexId, glm::mat4& projectionViewMatrix)

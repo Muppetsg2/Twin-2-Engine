@@ -81,10 +81,16 @@ namespace Twin2Engine
 			{
 				glm::mat4* modelTransformPtr;
 				Graphic::Material* materialPtr;
+				Graphic::InstantiatingMesh* meshPtr;
+			};
+			struct MeshRenderingTransparentDataPriority
+			{
+				int transparencyPriority;
+				float distance;
 			};
 			static std::vector<MeshRenderingTransparentDataPair> _transparentQueueData;
 			static std::vector<size_t> _transparentQueueOrder;
-			static std::vector<float> _transparentQueueOrderingPriorities;
+			static std::vector<MeshRenderingTransparentDataPriority> _transparentQueueOrderingPriorities;
 
 			struct MeshRenderingDataDepthMap
 			{

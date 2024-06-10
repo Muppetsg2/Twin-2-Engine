@@ -916,6 +916,7 @@ GameObjects:
         columns: 80
         materials:
           - 9
+        transparencyPriority: 0
     children:
       []
   - id: 5

@@ -65,6 +65,8 @@ void HexTile::TakeOver()
 					ntTile->UpdateBorders();
 				}
 			}
+
+			UpdateBorderColor();
 		}
 	}
 
@@ -95,29 +97,42 @@ void HexTile::LoseInfluence()
 
 void HexTile::UpdateTileColor()
 {
-	TILE_COLOR col = takenEntity != nullptr ? (TILE_COLOR)(uint8_t)(takenEntity->colorIdx == 0 ? 0 : powf(2.f, (float)(takenEntity->colorIdx - 1))) : TILE_COLOR::BLUE;
+	TILE_COLOR col = takenEntity != nullptr ? (TILE_COLOR)(uint8_t)(takenEntity->colorIdx == 0 ? 1 : powf(2.f, (float)(takenEntity->colorIdx))) : TILE_COLOR::NEUTRAL;
 	//SPDLOG_INFO("Percentage: {}", percentage);
 	if (percentage < _takingStage1)
 	{
-		//_meshRenderer->SetMaterial(0ull, textuesData->_materials[0][0]->GetId());
-		_meshRenderer->SetMaterial(0, textuesData->GetMaterial(col, 0));
+		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 0));
 	}
 	else if (percentage < _takingStage2)
 	{
-		//_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][1]->GetId());
-		_meshRenderer->SetMaterial(0, textuesData->GetMaterial(col, 1));
+		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 1));
 	}
 	else if (percentage < _takingStage3)
 	{
-		//_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][2]->GetId());
-		_meshRenderer->SetMaterial(0, textuesData->GetMaterial(col, 2));
+		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 2));
 	}
 	else
 	{
-		//_meshRenderer->SetMaterial(0ull, textuesData->_materials[takenEntity->colorIdx][3]->GetId());
-		_meshRenderer->SetMaterial(0, textuesData->GetMaterial(col, 3));
+		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 3));
+	}
+}
+
+void HexTile::UpdateBorderColor()
+{
+	TILE_COLOR col = takenEntity != nullptr ? (TILE_COLOR)(uint8_t)(takenEntity->colorIdx == 0 ? 1 : powf(2.f, (float)(takenEntity->colorIdx))) : TILE_COLOR::NEUTRAL;
+	for (auto& b : borders) {
+		MeshRenderer* mr = b->GetComponent<MeshRenderer>();
+		if (mr != nullptr) {
+			mr->SetMaterial(0, texturesData->GetBorderMaterial(col));
+		}
 	}
 
+	for (auto& bj : borderJoints) {
+		MeshRenderer* mr = bj->GetComponent<MeshRenderer>();
+		if (mr != nullptr) {
+			mr->SetMaterial(0, texturesData->GetBorderMaterial(col));
+		}
+	}
 }
 
 void HexTile::UpdateBorders()
@@ -297,7 +312,6 @@ void HexTile::InitializeAdjacentTiles()
 void HexTile::ResetTile()
 {
 	percentage = 0.0f;
-	_meshRenderer->SetMaterial(0, textuesData->GetMaterial(TILE_COLOR::RED, 0));
 	if (takenEntity != nullptr) {
 		takenEntity->OwnTiles.remove(this);
 		for (auto& t : takenEntity->OwnTiles)
@@ -309,6 +323,8 @@ void HexTile::ResetTile()
 	takenEntity = nullptr;
 	isFighting = false;
 	state = TileState::NONE;
+	UpdateTileColor();
+	UpdateBorderColor();
 	UpdateBorders();
 }
 
@@ -398,8 +414,8 @@ YAML::Node HexTile::Serialize() const
 
 	node["loseInfluenceSpeed"] = loseInfluenceSpeed;
 
-	if (textuesData != nullptr) {
-		node["textuesData"] = Twin2Engine::Manager::ScriptableObjectManager::GetPath(textuesData->GetId());
+	if (texturesData != nullptr) {
+		node["textuesData"] = Twin2Engine::Manager::ScriptableObjectManager::GetPath(texturesData->GetId());
 	}
 	else {
 		node["textuesData"] = "";
@@ -422,7 +438,7 @@ bool HexTile::Deserialize(const YAML::Node& node)
 		return false;
 
 	loseInfluenceSpeed = node["loseInfluenceSpeed"].as<float>();
-	textuesData = dynamic_cast<HexTileTextureData*>(Twin2Engine::Manager::ScriptableObjectManager::Load(node["textuesData"].as<string>()));
+	texturesData = dynamic_cast<HexTileTextureData*>(Twin2Engine::Manager::ScriptableObjectManager::Load(node["textuesData"].as<string>()));
 
 	if (node["borders"]) {
 		borders.clear();

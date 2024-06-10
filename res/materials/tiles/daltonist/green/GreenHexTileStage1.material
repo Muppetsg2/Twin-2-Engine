@@ -1,0 +1,7 @@
+material:
+  name: tiles/daltonist/green/GreenHexTileStage1
+  shader: origin/Textured
+  parameters:
+    - name: texture1
+      type: texture2D
+      value: res/textures/tiles/green1d.png

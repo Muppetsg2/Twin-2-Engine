@@ -1,7 +1,0 @@
-material:
-  name: tiles/RedHexTileStage1
-  shader: origin/Textured
-  parameters:
-    - name: texture1
-      type: texture2D
-      value: res/textures/tiles/red1d.png

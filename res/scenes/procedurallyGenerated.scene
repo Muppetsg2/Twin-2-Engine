@@ -817,7 +817,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 6
+      - id: 5
         enabled: true
         type: HexagonalTilemap
         leftBottomPosition:

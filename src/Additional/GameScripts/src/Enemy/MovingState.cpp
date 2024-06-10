@@ -287,9 +287,11 @@ void MovingState::ChooseTile(Enemy* enemy)
 	}
 
 	SPDLOG_INFO("ENEMY Possible Size: {}", possible.size());
-	HexTile* result = possible[Random::Range(0ull, possible.size() - 1ull)];
+	if (possible.size() != 0) {
+		HexTile* result = possible[Random::Range(0ull, possible.size() - 1ull)];
 
-	enemy->SetMoveDestination(result);
+		enemy->SetMoveDestination(result);
+	}
 }
 
 std::unordered_map<Enemy*, std::pair<size_t, size_t>> MovingState::_eventsIds;

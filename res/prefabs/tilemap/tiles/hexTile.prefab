@@ -94,7 +94,7 @@ Root:
       enabled: true
       type: HexagonalCollider
       colliderId: 0
-      trigger: false
+      trigger: true
       static: false
       layer: 0
       layersFilter:

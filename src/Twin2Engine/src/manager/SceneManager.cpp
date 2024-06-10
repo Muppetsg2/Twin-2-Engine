@@ -441,7 +441,7 @@ queue<GameObject*> SceneManager::_objectsToDestroy;
 
 void SceneManager::DestroyObject(GameObject* obj) {
 	Transform* trans = obj->GetTransform();
-	//trans->SetParent(nullptr);
+	trans->SetParent(nullptr);
 	while (trans->GetChildCount() > 0) {
 		Transform* child = trans->GetChildAt(0);
 		trans->RemoveChild(child);

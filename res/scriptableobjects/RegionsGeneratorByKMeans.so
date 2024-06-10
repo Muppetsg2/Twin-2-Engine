@@ -4,5 +4,5 @@ scriptable_object:
   regionsCount: 10
   isDiscritizedHeight: true
   lowerHeightRange: 0
-  upperHeightRange: 3
-  heightRangeFacor: 0.25
+  upperHeightRange: 2
+  heightRangeFacor: 0.2

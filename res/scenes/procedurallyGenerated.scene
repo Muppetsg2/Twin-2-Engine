@@ -708,10 +708,12 @@ Models:
   - id: 3
     path: res/models/hexagon.obj
   - id: 4
-    path: "{Plane}"
+    path: res/models/car.obj
   - id: 5
-    path: res/models/city.obj
+    path: "{Plane}"
   - id: 6
+    path: res/models/city.obj
+  - id: 7
     path: "{Sphere}"
 Prefabs:
   - id: 0
@@ -895,7 +897,7 @@ GameObjects:
       id: 11
       position:
         x: 0
-        y: 0
+        y: -0.350
         z: 0
       scale:
         x: 50
@@ -968,7 +970,7 @@ GameObjects:
   - id: 6
     name: MinigameControllerPanel
     isStatic: false
-    isActive: false
+    isActive: true
     transform:
       id: 17
       position:
@@ -1769,7 +1771,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
+        text: "\x00F\x00a\x00n\x00s\x00 \x00M\x00e\x00e\x00t\x00i\x00n\x00g\x00\n\x001\x000\x00$"
         font: 0
         size: 40
         autoSize: false
@@ -1895,7 +1897,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
+        text: "\x00C\x00o\x00n\x00c\x00e\x00r\x00t\x00\n\x001\x000\x00$"
         font: 0
         size: 40
         autoSize: false
@@ -2021,7 +2023,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
+        text: "\x00A\x00l\x00b\x00u\x00m\x00\n\x001\x000\x00$"
         font: 0
         size: 40
         autoSize: false
@@ -2143,7 +2145,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00D\x00a\x00y\x00 \x001"
+        text: "\x00D\x00a\x00y\x00 \x009"
         font: 0
         size: 35
         autoSize: false
@@ -2186,7 +2188,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00M\x00o\x00n\x00t\x00h\x00 \x001"
+        text: "\x00M\x00o\x00n\x00t\x00h\x00 \x002"
         font: 0
         size: 35
         autoSize: false
@@ -2272,7 +2274,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
+        text: "\x00M\x00o\x00n\x00e\x00y\x00:\x00 \x000\x00 \x00$"
         font: 0
         size: 40
         autoSize: false
@@ -2348,9 +2350,9 @@ GameObjects:
           w: 1
         notesSpritesIds:
           - 15
+          - 13
+          - 14
           - 16
-          - 17
-          - 17
         resultsSpritesIds:
           - 1235027098140171207
           - 1235027098140171207

@@ -40,6 +40,10 @@ private:
     std::vector<PatronData*> _patronsData;
     std::vector<PatronData*> _freePatronsData;
 
+    size_t _dayEventHandleId;
+    size_t _monthEventHandleId;
+    size_t _yearEventHandleId;
+
     Twin2Engine::UI::Text* _dayText;
     Twin2Engine::UI::Text* _monthText;
     Twin2Engine::UI::Text* _yearText;
@@ -82,6 +86,7 @@ public:
 
 
     virtual void Initialize() override;
+    virtual void OnDestroy() override;
     virtual void OnEnable() override;
     virtual void Update() override;
 

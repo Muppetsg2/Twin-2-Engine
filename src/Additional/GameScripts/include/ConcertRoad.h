@@ -38,6 +38,7 @@ class ConcertRoad : public Component {
         void Use();
         void Begin();
         void Finish();
+        void OnDestroy() override;
 
         virtual YAML::Node Serialize() const override;
         virtual bool Deserialize(const YAML::Node& node) override;

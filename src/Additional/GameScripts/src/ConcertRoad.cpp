@@ -144,8 +144,10 @@ void ConcertRoad::OnDestroy()
     RoadMapPoints.clear();
     entityPoints.clear();
     entityMultiplier.clear();
-    instance = nullptr;
-    //delete instance;
+    if (instance == this)
+    {
+        instance = nullptr;
+    }
 }
 
 void ConcertRoad::Use() {
@@ -190,7 +192,7 @@ void ConcertRoad::Begin() {
     }
     
 
-    //Usuwanie na losowej pozycji w RoadMapPoints dopóki nie pozostanie zadana iloœæ
+    //Usuwanie na losowej pozycji w RoadMapPoints dopï¿½ki nie pozostanie zadana iloï¿½ï¿½
     // 
     auto itr = RoadMapPoints.begin();
     while (RoadMapPoints.size() > NumberOfPoints)

@@ -449,7 +449,9 @@ void input()
         // Reload Scene
         std::string name = SceneManager::GetCurrentSceneName();
         SceneManager::UnloadCurrent();
+        //SceneManager::Update();
         SceneManager::LoadScene(name);
+        SceneManager::Update();
     }
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::S)) {

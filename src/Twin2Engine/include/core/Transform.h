@@ -144,6 +144,7 @@ namespace Twin2Engine::Core {
 		inline bool GetDirtyFlagGlobalRotationQuat2Euler() const;
 
 		virtual void Update() override;
+		virtual void OnDestroy() override;
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;
 

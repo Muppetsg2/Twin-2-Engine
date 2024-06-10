@@ -5,4 +5,4 @@ scriptable_object:
   isDiscritizedHeight: true
   lowerHeightRange: 0
   upperHeightRange: 2
-  heightRangeFacor: 0.125
+  heightRangeFacor: 0.1

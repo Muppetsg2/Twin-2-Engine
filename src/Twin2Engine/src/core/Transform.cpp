@@ -735,7 +735,10 @@ void Transform::RecalculateTransformMatrix()
 	}
 }
 
-
+void Transform::OnDestroy()
+{
+	_children.clear();
+}
 
 void Transform::Update()
 {

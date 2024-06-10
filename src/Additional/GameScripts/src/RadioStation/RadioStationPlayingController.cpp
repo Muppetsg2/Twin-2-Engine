@@ -75,6 +75,11 @@ void RadioStationPlayingController::Update()
 
 void RadioStationPlayingController::OnDestroy()
 {
+    if (instance == this)
+    {
+        instance = nullptr;
+    }
+
     _buttonDo->GetOnClickEvent() -= _buttonDoHandleId;
     _buttonRe->GetOnClickEvent() -= _buttonReHandleId;
     _buttonMi->GetOnClickEvent() -= _buttonMiHandleId;

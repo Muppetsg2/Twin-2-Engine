@@ -278,14 +278,24 @@ YAML::Node PlayerMovement::Serialize() const
 {
     YAML::Node node = Component::Serialize();
     node["type"] = "PlayerMovement";
+    node["speed"] = speed;
+    node["maxSteps"] = maxSteps;
+    node["nextWaypointDistance"] = nextWaypointDistance;
+    node["heightOverSurface"] = _heightOverSurface;
 
     return node;
 }
 
 bool PlayerMovement::Deserialize(const YAML::Node& node)
 {
-    if (!Component::Deserialize(node)) 
+    if (!node["speed"] || !node["maxSteps"] || !node["nextWaypointDistance"] ||
+        !node["heightOverSurface"] || !Component::Deserialize(node))
         return false;
+
+    speed = node["speed"].as<float>();
+    maxSteps = node["maxSteps"].as<size_t>();
+    nextWaypointDistance = node["nextWaypointDistance"].as<float>();
+    _heightOverSurface = node["heightOverSurface"].as<float>();
 
     return true;
 }

@@ -12,6 +12,7 @@ using namespace Twin2Engine::UI;
 using namespace std;
 
 GameManager* GameManager::instance = nullptr;
+size_t GameManager::_colorsNum = 7;
 
 
 void GameManager::Initialize() {
@@ -40,10 +41,16 @@ void GameManager::Initialize() {
         if (_mapGenerator == nullptr) {
             GameObject* mg = SceneManager::FindObjectByType<Generation::MapGenerator>();
 
-            if (mg != nullptr)
+            if (mg != nullptr) {
                 _mapGenerator = mg->GetComponent<Generation::MapGenerator>();
-            if (!mg->GetComponent<Generation::MapGenerator>()->IsMapGenerated())
-                mg->GetComponent<Generation::MapGenerator>()->Generate();
+
+                if (!_mapGenerator->IsMapGenerated())
+                    _mapGenerator->Generate();
+            }
+        }
+
+        while (_carMaterials.size() < _colorsNum) {
+            _carMaterials.push_back(nullptr);
         }
     }
     else
@@ -103,10 +110,10 @@ GameObject* GameManager::GeneratePlayer() {
     GameObject* player = Twin2Engine::Manager::SceneManager::CreateGameObject(prefabPlayer);
     Player* p = player->GetComponent<Player>();
 
-    int chosen = Random::Range(0ull, freeColors.size() - 1ull);
+    int chosen = Random::Range(0ull, _freeColors.size() - 1ull);
     //int chosen = 0;
-    p->colorIdx = freeColors[chosen];
-    freeColors.erase(freeColors.begin() + chosen);
+    p->colorIdx = _freeColors[chosen];
+    _freeColors.erase(_freeColors.begin() + chosen);
     //p->colorIdx = chosen;
 
     //p->patron = playersPatron;
@@ -132,10 +139,10 @@ GameObject* GameManager::GenerateEnemy() {
 
     Enemy* e = enemy->GetComponent<Enemy>();
 
-    int chosen = Random::Range(0ull, freeColors.size() - 1ull);
+    int chosen = Random::Range(0ull, _freeColors.size() - 1ull);
     //int chosen = 1;
-    e->colorIdx = freeColors[chosen];
-    freeColors.erase(freeColors.begin() + chosen);
+    e->colorIdx = _freeColors[chosen];
+    _freeColors.erase(_freeColors.begin() + chosen);
     //e->colorIdx = chosen;
     e->GetGameObject()->GetComponent<MeshRenderer>()->SetMaterial(0ull, _carMaterials[e->colorIdx]);
 
@@ -239,49 +246,131 @@ YAML::Node GameManager::Serialize() const
     node["type"] = "GameManager";
 
     if (enemyPrefab != nullptr) {
-        node["enemyPrefab"] = PrefabManager::GetPrefabPath(enemyPrefab);
+        node["enemyPrefab"] = SceneManager::GetPrefabSaveIdx(enemyPrefab->GetId());
     }
     if (prefabPlayer != nullptr) {
-        node["prefabPlayer"] = PrefabManager::GetPrefabPath(prefabPlayer);
+        node["prefabPlayer"] = SceneManager::GetPrefabSaveIdx(prefabPlayer->GetId());
     }
 
-    vector<string> carMaterialsStrings;
-    carMaterialsStrings.reserve(_carMaterials.size());
-
-    const size_t carMaterialsSize = _carMaterials.size();
-    for (size_t index = 0ull; index < carMaterialsSize; ++index)
+    node["carMaterials"] = vector<size_t>();
+    for (size_t index = 0ull; index < _carMaterials.size(); ++index)
     {
-        carMaterialsStrings.push_back(MaterialsManager::GetMaterialName(_carMaterials[index]->GetId()));
+        node["carMaterials"].push_back(SceneManager::GetMaterialSaveIdx(_carMaterials[index]->GetId()));
     }
-    node["carMaterials"] = carMaterialsStrings;
+
+    node["patronsData"] = vector<string>();
+    for (size_t index = 0ull; index < _patronsData.size(); ++index)
+    {
+        node["patronsData"].push_back(ScriptableObjectManager::GetPath(_patronsData[index]->GetId()));
+    }
 
     return node;
 }
 
 bool GameManager::Deserialize(const YAML::Node& node)
 {
-    if (!node["carMaterials"] || !Component::Deserialize(node))
+    if (!node["carMaterials"] || !node["enemyPrefab"] || !node["prefabPlayer"] || !node["patronsData"] || !Component::Deserialize(node))
         return false;
 
+    size_t size = node["carMaterials"].size();
+
+    if (size == 0) return false;
+
     if (node["enemyPrefab"]) {
-        enemyPrefab = PrefabManager::LoadPrefab(node["enemyPrefab"].as<string>());
+        enemyPrefab = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["enemyPrefab"].as<size_t>()));
     }
     if (node["prefabPlayer"]) {
-        prefabPlayer = PrefabManager::LoadPrefab(node["prefabPlayer"].as<string>());
+        prefabPlayer = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["prefabPlayer"].as<size_t>()));
     }
 
-    size_t size = node["carMaterials"].size();
-    _carMaterials.resize(size);
-    for (size_t index = 0ull; index < size; ++index)
-    {
-        _carMaterials[index] = MaterialsManager::GetMaterial(node["carMaterials"][index].as<string>());
+    if (_carMaterials.size() == 0) {
+
+        if (size == _colorsNum) {
+            _carMaterials.reserve(size);
+            for (size_t index = 0ull; index < size; ++index)
+            {
+                _carMaterials.push_back(MaterialsManager::GetMaterial(SceneManager::GetMaterial(node["carMaterials"][index].as<size_t>())));
+            }
+        }
+        else if (size < _colorsNum && size > 0ull) {
+            _carMaterials.reserve(_colorsNum);
+            for (size_t index = 0ull; index < size; ++index)
+            {
+                _carMaterials.push_back(MaterialsManager::GetMaterial(SceneManager::GetMaterial(node["carMaterials"][index].as<size_t>())));
+            }
+
+            for (size_t index = 0ull; index < _colorsNum - size; ++index) {
+                _carMaterials.push_back(MaterialsManager::GetMaterial(SceneManager::GetMaterial(node["carMaterials"][size - 1].as<size_t>())));
+            }
+        }
+    }
+    else if (_carMaterials.size() == _colorsNum) {
+
+        if (size == _colorsNum) {
+            for (size_t index = 0ull; index < size; ++index)
+            {
+                _carMaterials[index] = MaterialsManager::GetMaterial(SceneManager::GetMaterial(node["carMaterials"][index].as<size_t>()));
+            }
+        }
+        else if (size < _colorsNum && size > 0ull) {
+            for (size_t index = 0ull; index < size; ++index)
+            {
+                _carMaterials[index] = MaterialsManager::GetMaterial(SceneManager::GetMaterial(node["carMaterials"][index].as<size_t>()));
+            }
+
+            for (size_t index = size; index < _colorsNum; ++index) {
+                _carMaterials[index] = MaterialsManager::GetMaterial(SceneManager::GetMaterial(node["carMaterials"][size - 1].as<size_t>()));
+            }
+        }
+    }
+    else if (_carMaterials.size() < _colorsNum && _carMaterials.size() > 0ull) {
+
+        if (size == _colorsNum) {
+            for (size_t index = 0ull; index < _carMaterials.size(); ++index)
+            {
+                _carMaterials[index] = MaterialsManager::GetMaterial(SceneManager::GetMaterial(node["carMaterials"][index].as<size_t>()));
+            }
+
+            for (size_t index = _carMaterials.size(); index < size; ++index)
+            {
+                _carMaterials.push_back(MaterialsManager::GetMaterial(SceneManager::GetMaterial(node["carMaterials"][index].as<size_t>())));
+            }
+        }
+        else if (size < _colorsNum && size > 0ull) {
+
+            size_t min = _carMaterials.size() < size ? _carMaterials.size() : size;
+
+            for (size_t index = 0ull; index < min; ++index)
+            {
+                _carMaterials[index] = MaterialsManager::GetMaterial(SceneManager::GetMaterial(node["carMaterials"][index].as<size_t>()));
+            }
+
+            if (size > _carMaterials.size()) {
+                for (size_t index = _carMaterials.size(); index < size; ++index)
+                {
+                    _carMaterials.push_back(MaterialsManager::GetMaterial(SceneManager::GetMaterial(node["carMaterials"][index].as<size_t>())));
+                }
+            }
+            else if (_carMaterials.size() > size) {
+                for (size_t index = size; index < _carMaterials.size(); ++index)
+                {
+                    _carMaterials[index] = MaterialsManager::GetMaterial(SceneManager::GetMaterial(node["carMaterials"][size - 1].as<size_t>()));
+                }
+            }
+
+            size_t toAdd = _colorsNum - (size > _carMaterials.size() ? size : _carMaterials.size());
+
+            for (size_t index = 0ull; index < toAdd; ++index) {
+                _carMaterials.push_back(MaterialsManager::GetMaterial(SceneManager::GetMaterial(node["carMaterials"][size - 1].as<size_t>())));
+            }
+        }
     }
 
     size = node["patronsData"].size();
-    _patronsData.resize(size);
+    _patronsData.reserve(size);
     for (size_t index = 0ull; index < size; ++index)
     {
-        _patronsData[index] = (PatronData*)ScriptableObjectManager::Load(node["patronsData"][index].as<string>());
+        _patronsData.push_back((PatronData*)ScriptableObjectManager::Load(node["patronsData"][index].as<string>()));
     }
 
     return true;
@@ -296,7 +385,134 @@ void GameManager::DrawEditor()
 
         if (Component::DrawInheritedFields()) return;
 
-        // TODO: Zrobic
+        // TODO: ZROBIC
+        /*
+        Twin2Engine::UI::Text* _dayText;
+        Twin2Engine::UI::Text* _monthText;
+        Twin2Engine::UI::Text* _yearText;
+        */
+
+        std::map<size_t, string> prefabNames = Twin2Engine::Manager::PrefabManager::GetAllPrefabsNames();
+
+        prefabNames.insert(std::pair(0, "None"));
+
+        if (enemyPrefab != nullptr) {
+            if (!prefabNames.contains(enemyPrefab->GetId())) {
+                enemyPrefab = nullptr;
+            }
+        }
+
+        size_t prefabId = enemyPrefab != nullptr ? enemyPrefab->GetId() : 0;
+
+        if (ImGui::BeginCombo(string("Enemy Prefab##SO").append(id).c_str(), prefabNames[prefabId].c_str())) {
+
+            bool clicked = false;
+            size_t choosed = prefabId;
+            for (auto& item : prefabNames) {
+
+                if (ImGui::Selectable(string(item.second).append("##").append(id).c_str(), item.first == prefabId)) {
+
+                    if (clicked) continue;
+
+                    choosed = item.first;
+                    clicked = true;
+                }
+            }
+
+            if (clicked) {
+                if (choosed != 0) {
+                    enemyPrefab = Twin2Engine::Manager::PrefabManager::GetPrefab(choosed);
+                }
+                else {
+                    enemyPrefab = nullptr;
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+
+        if (prefabPlayer != nullptr) {
+            if (!prefabNames.contains(prefabPlayer->GetId())) {
+                prefabPlayer = nullptr;
+            }
+        }
+
+        prefabId = prefabPlayer != nullptr ? prefabPlayer->GetId() : 0;
+
+        if (ImGui::BeginCombo(string("Player Prefab##SO").append(id).c_str(), prefabNames[prefabId].c_str())) {
+
+            bool clicked = false;
+            size_t choosed = prefabId;
+            for (auto& item : prefabNames) {
+
+                if (ImGui::Selectable(string(item.second).append("##").append(id).c_str(), item.first == prefabId)) {
+
+                    if (clicked) continue;
+
+                    choosed = item.first;
+                    clicked = true;
+                }
+            }
+
+            if (clicked) {
+                if (choosed != 0) {
+                    prefabPlayer = Twin2Engine::Manager::PrefabManager::GetPrefab(choosed);
+                }
+                else {
+                    prefabPlayer = nullptr;
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+
+        ImGui::Text("Enemies Number: ");
+        ImGui::SameLine();
+        ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
+        ImGui::Text(std::to_string(_enemiesNumber).c_str());
+        ImGui::PopFont();
+
+        map<size_t, string> mat_temp = MaterialsManager::GetAllMaterialsNames();
+
+        vector<std::pair<size_t, string>> mats = vector<std::pair<size_t, string>>(mat_temp.begin(), mat_temp.end());
+
+        vector<string> names = vector<string>();
+        vector<size_t> ids = vector<size_t>();
+        names.resize(mats.size());
+        ids.resize(mats.size());
+
+        std::sort(mats.begin(), mats.end(), [&](std::pair<size_t, string> const& left, std::pair<size_t, string> const& right) -> bool {
+            return left.second.compare(right.second) < 0;
+        });
+
+        std::transform(mats.begin(), mats.end(), names.begin(), [](std::pair<size_t, string> const& i) -> string {
+            return i.second;
+        });
+
+        std::transform(mats.begin(), mats.end(), ids.begin(), [](std::pair<size_t, string> const& i) -> size_t {
+            return i.first;
+        });
+
+        mats.clear();
+
+        ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+        bool node_open = ImGui::TreeNodeEx(string("Car Materials##").append(id).c_str(), node_flag);
+
+        if (node_open) {
+            for (size_t i = 0; i < _carMaterials.size(); ++i) {
+                Material* item = _carMaterials[i];
+                int choosed = -1;
+
+                if (item != nullptr) choosed = std::find(ids.begin(), ids.end(), item->GetId()) - ids.begin();
+
+                if (ImGui::ComboWithFilter(string("##Car Materials").append(id).append(std::to_string(i)).c_str(), &choosed, names, 20)) {
+                    if (choosed != -1) {
+                        _carMaterials[i] = MaterialsManager::GetMaterial(ids[choosed]);
+                    }
+                }
+            }
+            ImGui::TreePop();
+        }
     }
 }
 #endif

@@ -12,18 +12,30 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 2
-    path: res/textures/tiles/pink1d.png
+    path: res/textures/tiles/white2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 3
-    path: res/textures/tiles/pink1.png
+    path: res/textures/tiles/pink1d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 4
+    path: res/textures/patrons/Jutrzenka.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 5
+    path: res/textures/tiles/pink1.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 6
     path: res/textures/notes/noteDo.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -31,7 +43,13 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 5
+  - id: 7
+    path: res/textures/patrons/Perun.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 8
     path: res/textures/UI/abilities.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -39,13 +57,13 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 6
+  - id: 9
     path: res/textures/tiles/red2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 7
+  - id: 10
     path: res/textures/notes/noteMi.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -53,31 +71,31 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 8
+  - id: 11
     path: res/textures/tiles/green2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 9
+  - id: 12
     path: res/textures/tiles/blue3d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 10
+  - id: 13
     path: res/textures/tiles/red1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 11
+  - id: 14
     path: res/textures/carTextures/red.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 12
+  - id: 15
     path: res/textures/UI/album.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -85,33 +103,25 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 13
-    path: res/textures/tiles/hexEdgeTexture.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 14
-    path: res/textures/white.png
-    fileFormat: !<SRGB> 35904
-    engineFormat: !<RGB> 6407
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 15
-    path: res/textures/tiles/pink2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
   - id: 16
-    path: res/textures/radioTowerBuildingTexture.png
+    path: res/textures/white.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 17
+    path: res/textures/tiles/pink2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 18
+    path: res/textures/radioTowerBuildingTexture.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 19
     path: res/textures/notes/noteRe.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -119,13 +129,13 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 18
+  - id: 20
     path: res/textures/tiles/blue3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 19
+  - id: 21
     path: res/textures/UI/concert.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -133,81 +143,73 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 20
+  - id: 22
     path: res/textures/tiles/cyan2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 21
+  - id: 23
     path: res/textures/tiles/red2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 22
+  - id: 24
     path: res/textures/tiles/purple2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 23
-    path: res\textures\patrons\Perun.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 24
+  - id: 25
     path: res/textures/tiles/cyan3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 25
-    path: res/textures/tiles/pink2d.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
   - id: 26
-    path: res/textures/tiles/blue2d.png
+    path: res/textures/UI/graph.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 27
-    path: res/textures/tiles/pink3d.png
+    path: res/textures/tiles/pink2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 28
-    path: res/textures/tiles/purple1.png
+    path: res/textures/tiles/blue2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 29
-    path: res/textures/carTextures/green.png
+    path: res/textures/tiles/pink3d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 30
-    path: res/textures/fakeBRDF.png
-    fileFormat: !<SRGBA> 35906
-    engineFormat: !<RGBA> 6408
+    path: res/textures/tiles/purple1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 31
-    path: res/textures/tiles/purple1d.png
+    path: res/textures/carTextures/green.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 32
+    path: res/textures/tiles/purple1d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 33
     path: res/textures/UI/guitar.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -215,108 +217,98 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 33
+  - id: 34
     path: res/textures/tiles/yellow2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 34
-    path: res/textures/tiles/green3d.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
   - id: 35
-    path: res/textures/tiles/cyan3d.png
+    path: res/textures/Circle.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 36
-    path: res/textures/tiles/purple3d.png
+    path: res/textures/tiles/green3d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 37
-    path: res/textures/tiles/green2d.png
+    path: res/textures/tiles/cyan3d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 38
-    path: res/textures/tiles/pink3.png
+    path: res/textures/tiles/purple3d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 39
-    path: res/textures/tiles/yellow2d.png
+    path: res/textures/tiles/green2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 40
-    path: res/textures/tiles/yellow3d.png
+    path: res/textures/tiles/pink3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 41
-    path: res/textures/tiles/red3d.png
+    path: res/textures/tiles/yellow2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 42
-    path: res/textures/mountainTex2.png
+    path: res/textures/tiles/yellow3d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 43
-    path: res/textures/tiles/purple3.png
+    path: res/textures/tiles/red3d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 44
-    path: res/textures/tiles/purple2d.png
+    path: res/textures/mountainTex2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 45
-    path: res/textures/carTextures/cyan.png
+    path: res/textures/tiles/purple3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 46
-    path: res/textures/cityTextureColour.png
+    path: res/textures/tiles/purple2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 47
-    path: res/textures/grass.png
-    fileFormat: !<SRGBA> 35906
-    engineFormat: !<RGBA> 6408
+    path: res/textures/carTextures/cyan.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 48
-    path: res/textures/tiles/cyan2d.png
+    path: res/textures/cityTextureColour.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 49
-    path: res/textures/brickWall.jpg
-    fileFormat: !<SRGB> 35904
-    engineFormat: !<RGB> 6407
+    path: res/textures/tiles/cyan2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
@@ -414,32 +406,24 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 64
-    path: res/textures/stone.jpg
-    fileFormat: !<SRGB> 35904
-    engineFormat: !<RGB> 6407
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 65
     path: res/textures/tiles/green3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 66
+  - id: 65
     path: res/textures/carTextures/pink.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 67
+  - id: 66
     path: res/textures/radioTowerTexture.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 68
+  - id: 67
     path: res/textures/notes/noteFa.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -447,255 +431,315 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 69
-    path: res/textures/woodenRoof2.png
-    fileFormat: !<SRGBA> 35906
-    engineFormat: !<RGBA> 6408
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 70
+  - id: 68
     path: res/textures/tiles/cyan1d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 71
+  - id: 69
     path: res/textures/tiles/red1d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 72
+  - id: 70
     path: res/textures/carTextures/purple.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 73
-    path: res/textures/hexEdgeTexture.png
-    fileFormat: !<SRGBA> 35906
-    engineFormat: !<RGBA> 6408
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 74
-    path: res\textures\patrons\Jutrzenka.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 75
-    path: res/textures/UI/graph.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 76
-    path: res/textures/Circle.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
 Sprites:
   - id: 0
-    alias: white_box
-    texture: 14
-    x: 0
-    y: 0
-    width: 100
-    height: 100
-  - id: 1
-    alias: grass
-    texture: 47
-    x: 0
-    y: 0
-    width: 512
-    height: 512
-  - id: 2
-    alias: stone
-    texture: 64
-    x: 0
-    y: 0
-    width: 236
-    height: 236
-  - id: 3
-    alias: album
-    texture: 12
-    x: 0
-    y: 0
-    width: 256
-    height: 256
-  - id: 4
-    alias: concert
-    texture: 19
-    x: 0
-    y: 0
-    width: 256
-    height: 256
-  - id: 5
-    alias: meeting
-    texture: 54
-    x: 0
-    y: 0
-    width: 150
-    height: 150
-  - id: 6
-    alias: abilities
-    texture: 5
-    x: 0
-    y: 0
-    width: 800
-    height: 250
-  - id: 7
-    alias: TimeNMoney
-    texture: 56
-    x: 0
-    y: 0
-    width: 600
-    height: 300
-  - id: 8
-    alias: drum
-    texture: 59
-    x: 0
-    y: 0
-    width: 256
-    height: 256
-  - id: 9
-    alias: guitar
-    texture: 32
-    x: 0
-    y: 0
-    width: 256
-    height: 256
-  - id: 10
-    alias: launchpad
+    alias: Launchpad
     texture: 55
     x: 0
     y: 0
     width: 256
     height: 256
-  - id: 11
-    alias: noteDo
-    texture: 4
+  - id: 1
+    alias: Circle
+    texture: 35
     x: 0
     y: 0
-    width: 40
-    height: 40
-  - id: 12
-    alias: noteRe
-    texture: 17
+    width: 100
+    height: 100
+  - id: 2
+    alias: StrengthGraph
+    texture: 26
     x: 0
     y: 0
-    width: 40
-    height: 40
-  - id: 13
-    alias: noteMi
+    width: 256
+    height: 256
+  - id: 3
+    alias: Drum
+    texture: 59
+    x: 0
+    y: 0
+    width: 256
+    height: 256
+  - id: 4
+    alias: Guitar
+    texture: 33
+    x: 0
+    y: 0
+    width: 256
+    height: 256
+  - id: 5
+    alias: PerunImage
     texture: 7
+    x: 63
+    y: 0
+    width: 300
+    height: 300
+  - id: 6
+    alias: Meeting
+    texture: 54
+    x: 0
+    y: 0
+    width: 150
+    height: 150
+  - id: 7
+    alias: Concert
+    texture: 21
+    x: 0
+    y: 0
+    width: 256
+    height: 256
+  - id: 8
+    alias: Abilities
+    texture: 8
+    x: 0
+    y: 0
+    width: 800
+    height: 250
+  - id: 9
+    alias: TimeNMoney
+    texture: 56
+    x: 0
+    y: 0
+    width: 256
+    height: 256
+  - id: 10
+    alias: Album
+    texture: 15
+    x: 0
+    y: 0
+    width: 256
+    height: 256
+  - id: 11
+    alias: White_Box
+    texture: 16
+    x: 0
+    y: 0
+    width: 100
+    height: 100
+  - id: 12
+    alias: JutrzenkaImage
+    texture: 4
+    x: 200
+    y: 35
+    width: 300
+    height: 300
+  - id: 13
+    alias: NoteRe
+    texture: 19
     x: 0
     y: 0
     width: 40
     height: 40
   - id: 14
-    alias: noteFa
-    texture: 68
+    alias: NoteMi
+    texture: 10
     x: 0
     y: 0
     width: 40
     height: 40
   - id: 15
-    alias: PerunImage
-    texture: 23
-    x: 63
+    alias: NoteDo
+    texture: 6
+    x: 0
     y: 0
-    width: 300
-    height: 300
+    width: 40
+    height: 40
   - id: 16
-    alias: JutrzenkaImage
-    texture: 74
-    x: 200
-    y: 35
-    width: 300
-    height: 300
-  - id: 17
-    alias: strengthGraph
-    texture: 75
-  - id: 18
-    alias: circle
-    texture: 76
+    alias: NoteFa
+    texture: 67
+    x: 0
+    y: 0
+    width: 40
+    height: 40
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
 Audio:
   - id: 0
-    path: res/music/acoustic-guitar.mp3
-  - id: 1
-    path: res/music/Minigame/Win.mp3
-  - id: 2
-    path: res/music/Minigame/Defeat.mp3
-  - id: 3
-    path: res/music/Minigame/Guitar.mp3
-  - id: 4
     path: res/music/Minigame/Drum.mp3
-  - id: 5
+  - id: 1
+    path: res/music/Minigame/Guitar.mp3
+  - id: 2
+    path: res/music/Minigame/Win.mp3
+  - id: 3
     path: res/music/Minigame/Launchpad.mp3
+  - id: 4
+    path: res/music/Minigame/Defeat.mp3
 Materials:
   - id: 0
-    path: res/materials/hexagonMat.material
+    path: res/materials/car/CarMaterial_Blue.material
   - id: 1
-    path: res/materials/Basic2.material
+    path: res/materials/tiles/normal/PurpleHexTileStage3.material
   - id: 2
-    path: res/materials/metal.material
+    path: res/materials/tiles/GreenHexTileStage1.material
   - id: 3
-    path: res/materials/multiTexture.material
+    path: res/materials/tiles/GreenHexTileStage3.material
   - id: 4
-    path: res/materials/textured.material
+    path: res/materials/tiles/normal/YellowHexTileStage3.material
   - id: 5
-    path: res/materials/deska.material
+    path: res/materials/tiles/PurpleHexTileStage3.material
   - id: 6
-    path: res/materials/wallMat.material
+    path: res/materials/tiles/normal/RedHexTileStage2.material
   - id: 7
-    path: res/materials/FakeBRDF.material
+    path: res/materials/enviroment/CloudMaterial.material
   - id: 8
-    path: res/materials/roofMat.material
+    path: res/materials/tiles/RedHexTileStage2.material
   - id: 9
     path: res/materials/Water.material
+  - id: 10
+    path: res/materials/tiles/RedHexTileStage3.material
+  - id: 11
+    path: res/materials/tiles/normal/BlueHexTileStage1.material
+  - id: 12
+    path: res/materials/tiles/PurpleHexTileStage2.material
+  - id: 13
+    path: res/materials/Basic2.material
+  - id: 14
+    path: res/materials/tiles/normal/BlueHexTileStage3.material
+  - id: 15
+    path: res/materials/tiles/normal/RedHexTileStage1.material
+  - id: 16
+    path: res/materials/MountainsUnlit.material
+  - id: 17
+    path: res/materials/tiles/normal/BlueHexTileStage2.material
+  - id: 18
+    path: res/materials/tiles/normal/YellowHexTileStage1.material
+  - id: 19
+    path: res/materials/tiles/normal/YellowHexTileStage2.material
+  - id: 20
+    path: res/materials/tiles/normal/GreenHexTileStage1.material
+  - id: 21
+    path: res/materials/RadioTowerBuilding.material
+  - id: 22
+    path: res/materials/tiles/normal/PinkHexTileStage3.material
+  - id: 23
+    path: res/materials/tiles/YellowHexTileStage3.material
+  - id: 24
+    path: res/materials/tiles/normal/GreenHexTileStage2.material
+  - id: 25
+    path: res/materials/tiles/normal/CyanHexTileStage3.material
+  - id: 26
+    path: res/materials/tiles/BlueHexTileStage3.material
+  - id: 27
+    path: res/materials/car/CarMaterial_Purple.material
+  - id: 28
+    path: res/materials/tiles/PurpleHexTileStage1.material
+  - id: 29
+    path: res/materials/tiles/PinkHexTileStage3.material
+  - id: 30
+    path: res/materials/tiles/normal/PurpleHexTileStage2.material
+  - id: 31
+    path: res/materials/tiles/PinkHexTileStage2.material
+  - id: 32
+    path: res/materials/car/CarMaterial_Red.material
+  - id: 33
+    path: res/materials/tiles/normal/CyanHexTileStage2.material
+  - id: 34
+    path: res/materials/tiles/normal/RedHexTileStage3.material
+  - id: 35
+    path: res/materials/tiles/YellowHexTileStage1.material
+  - id: 36
+    path: res/materials/tiles/normal/CyanHexTileStage1.material
+  - id: 37
+    path: res/materials/tiles/CyanHexTileStage2.material
+  - id: 38
+    path: res/materials/tiles/normal/GreenHexTileStage3.material
+  - id: 39
+    path: res/materials/tiles/normal/PinkHexTileStage1.material
+  - id: 40
+    path: res/materials/tiles/CyanHexTileStage1.material
+  - id: 41
+    path: res/materials/tiles/GreenHexTileStage2.material
+  - id: 42
+    path: res/materials/car/CarMaterial_Yellow.material
+  - id: 43
+    path: res/materials/tiles/PinkHexTileStage1.material
+  - id: 44
+    path: res/materials/tiles/normal/PinkHexTileStage2.material
+  - id: 45
+    path: res/materials/tiles/YellowHexTileStage2.material
+  - id: 46
+    path: res/materials/car/CarMaterial_Green.material
+  - id: 47
+    path: res/materials/tiles/BlueHexTileStage1.material
+  - id: 48
+    path: res/materials/car/CarMaterial_Pink.material
+  - id: 49
+    path: res/materials/tiles/RedHexTileStage1.material
+  - id: 50
+    path: res/materials/tiles/BlueHexTileStage2.material
+  - id: 51
+    path: res/materials/RadioTower.material
+  - id: 52
+    path: res/materials/tiles/NeutralHexTileStage0.material
+  - id: 53
+    path: res/materials/tiles/normal/PurpleHexTileStage1.material
+  - id: 54
+    path: res/materials/tiles/CyanHexTileStage3.material
+  - id: 55
+    path: res/materials/CityMaterial.material
+  - id: 56
+    path: res/materials/car/CarMaterial_Cyan.material
 Models:
   - id: 0
-    path: res/models/AK47.obj
+    path: res/models/radioTower.obj
   - id: 1
-    path: res/models/hexagon.obj
+    path: res/models/mount3.obj
   - id: 2
-    path: res/models/castle.obj
+    path: res/models/cloud.obj
   - id: 3
-    path: "{Cube}"
+    path: res/models/hexagon.obj
   - id: 4
     path: "{Plane}"
   - id: 5
+    path: res/models/city.obj
+  - id: 6
     path: "{Sphere}"
 Prefabs:
   - id: 0
-    path: res/prefabs/testPrefab.prefab
+    path: res/prefabs/tilemap/mapElements/mountain.prefab
   - id: 1
-    path: res/prefabs/tilemap/mapElements/city.prefab
+    path: res/prefabs/Marker.prefab
   - id: 2
-    path: res/prefabs/tilemap/mapElements/radioStation.prefab
+    path: res/prefabs/tilemap/mapElements/city.prefab
   - id: 3
-    path: res/prefabs/tilemap/tiles/blueHexTile.prefab
+    path: res/prefabs/Enemy.prefab
   - id: 4
-    path: res/prefabs/tilemap/tiles/redHexTile.prefab
+    path: res/prefabs/tilemap/mapElements/radioStation.prefab
   - id: 5
-    path: res/prefabs/tilemap/mapSector.prefab
+    path: res/prefabs/tilemap/tiles/blueHexTile.prefab
   - id: 6
-    path: res/prefabs/tilemap/tiles/hexTile.prefab
+    path: res/prefabs/Human.prefab
   - id: 7
-    path: res/prefabs/tilemap/tiles/greenHexTile.prefab
+    path: res/prefabs/Player.prefab
   - id: 8
-    path: res/prefabs/tilemap/mapRegion.prefab
+    path: res/prefabs/tilemap/tiles/redHexTile.prefab
   - id: 9
-    path: res/prefabs/tilemap/mapElements/mountains.prefab
+    path: res/prefabs/tilemap/mapSector.prefab
+  - id: 10
+    path: res/prefabs/tilemap/tiles/hexTile.prefab
+  - id: 11
+    path: res/prefabs/tilemap/tiles/greenHexTile.prefab
+  - id: 12
+    path: res/prefabs/tilemap/mapRegion.prefab
 ScriptableObjects: ~
 GameObjects:
   - id: 1
@@ -703,8 +747,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 0
-      enabled: true
+      id: 1
       position:
         x: 0
         y: 14.5
@@ -715,10 +758,10 @@ GameObjects:
         z: 0
       rotation:
         x: -55.5
-        y: -88.6
+        y: -88.5999985
         z: 0
     components:
-      - id: 1
+      - id: 2
         enabled: true
         type: Camera
         fov: 45
@@ -739,36 +782,29 @@ GameObjects:
         isMain: true
         isFrustum: true
         isSSAO: true
-        ssaoSampleRadius: 0.7
-        ssaoBias: 0.01
+        ssaoSampleRadius: 0.699999988
+        ssaoBias: 0.00999999978
         blurMSize: 5
-      - id: 2
-        enabled: true
-        type: Audio
-        audio: 0
-        loop: true
-        volume: 1
       - id: 3
         enabled: true
         type: MovementController
         DragControl: true
-        DragScale: 0.01
+        DragScale: 0.00999999978
         WsadControl: true
         WsadVelocity: 4.5
         BorderControl: false
-        BorderVelocity: 3.0
+        BorderVelocity: 3
     children:
       []
   - id: 2
-    name: imageObj
+    name: MapGenerator
     isStatic: false
-    isActive: false
+    isActive: true
     transform:
       id: 4
-      enabled: true
       position:
-        x: -900
-        y: 500
+        x: 0
+        y: 0
         z: 0
       scale:
         x: 1
@@ -781,464 +817,6 @@ GameObjects:
     components:
       - id: 5
         enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 2
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 100
-        height: 100
-        layer: 0
-        fillEnabled: false
-        fillType: 0
-        fillSubType: 0
-        fillProgress: 1
-      - id: 6
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 1
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 100
-        height: 100
-        layer: 1
-        fillEnabled: false
-        fillType: 0
-        fillSubType: 0
-        fillProgress: 1
-    children:
-      []
-  - id: 3
-    name: imageObj2
-    isStatic: false
-    isActive: false
-    transform:
-      id: 7
-      enabled: true
-      position:
-        x: 900
-        y: 500
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 8
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 1
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 100
-        height: 100
-        layer: 0
-        fillEnabled: false
-        fillType: 0
-        fillSubType: 0
-        fillProgress: 1
-    children:
-      []
-  - id: 4
-    name: imageObj3
-    isStatic: false
-    isActive: false
-    transform:
-      id: 9
-      enabled: true
-      position:
-        x: 0
-        y: -500
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 10
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 0
-        color:
-          x: 0
-          y: 1
-          z: 0
-          w: 1
-        width: 769.506531
-        height: 100
-        layer: 0
-        fillEnabled: false
-        fillType: 0
-        fillSubType: 0
-        fillProgress: 1
-    children:
-      []
-  - id: 5
-    name: textObj
-    isStatic: false
-    isActive: false
-    transform:
-      id: 11
-      enabled: true
-      position:
-        x: 800
-        y: 500
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 12
-        enabled: true
-        type: Text
-        isTransparent: false
-        text: "\x00T\x00i\x00m\x00e\x00:\x00 \x000\x00.\x000\x000\x002\x009\x003\x003"
-        font: 0
-        size: 48
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 200
-        height: 70
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        alignX: !<LEFT> 0
-        alignY: !<BOTTOM> 0
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 0
-    children:
-      []
-  - id: 6
-    name: gameObject
-    isStatic: false
-    isActive: true
-    transform:
-      id: 13
-      enabled: true
-      position:
-        x: 2
-        y: 25
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 14
-        enabled: true
-        type: MeshRenderer
-        isTransparent: false
-        model: 3
-        materials:
-          - 1
-    children:
-      []
-  - id: 7
-    name: gameObject2
-    isStatic: false
-    isActive: true
-    transform:
-      id: 15
-      enabled: true
-      position:
-        x: 2
-        y: 23
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 16
-        enabled: true
-        type: MeshRenderer
-        isTransparent: false
-        model: 3
-        materials:
-          - 4
-    children:
-      []
-  - id: 8
-    name: gameObject3
-    isStatic: false
-    isActive: true
-    transform:
-      id: 17
-      enabled: true
-      position:
-        x: 0
-        y: 23
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 18
-        enabled: true
-        type: MeshRenderer
-        isTransparent: false
-        model: 2
-        materials:
-          - 6
-          - 8
-    children:
-      []
-  - id: 9
-    name: gameObject4
-    isStatic: false
-    isActive: true
-    transform:
-      id: 19
-      enabled: true
-      position:
-        x: 0
-        y: 20
-        z: 10
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 1.45756971e-07
-        y: 0
-        z: 0
-    components:
-      - id: 20
-        enabled: true
-        type: MeshRenderer
-        isTransparent: false
-        model: 0
-        materials:
-          - 5
-          - 2
-    children:
-      []
-  - id: 10
-    name: testGameObject
-    isStatic: false
-    isActive: true
-    transform:
-      id: 21
-      enabled: true
-      position:
-        x: 0
-        y: 20
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 22
-        enabled: true
-        type: SphereCollider
-        colliderId: 1
-        trigger: false
-        static: false
-        layer: 1
-        layersFilter:
-          - 2
-          - 2
-          - 1
-          - 0
-          - 2
-          - 2
-          - 2
-          - 2
-        boundingVolumeRadius: 2
-        position:
-          x: 0
-          y: 0
-          z: 0
-        radius: 20
-      - id: 23
-        enabled: true
-        type: BoxCollider
-        colliderId: 2
-        trigger: false
-        static: false
-        layer: 1
-        layersFilter:
-          - 2
-          - 2
-          - 1
-          - 0
-          - 2
-          - 2
-          - 2
-          - 2
-        boundingVolumeRadius: 2
-        position:
-          x: 0
-          y: 0
-          z: 0
-        width: 1
-        height: 1
-        length: 1
-        rotation:
-          x: 0
-          y: 0
-          z: 0
-      - id: 24
-        enabled: true
-        type: CapsuleCollider
-        colliderId: 3
-        trigger: false
-        static: false
-        layer: 1
-        layersFilter:
-          - 2
-          - 2
-          - 1
-          - 0
-          - 2
-          - 2
-          - 2
-          - 2
-        boundingVolumeRadius: 2
-        position:
-          x: 0
-          y: 0
-          z: 0
-        endPosition:
-          x: 0
-          y: 1
-          z: 0
-        radius: 20
-      - id: 25
-        enabled: true
-        type: Button
-        width: 100
-        height: 10
-        interactable: false
-    children:
-      []
-  - id: 12
-    name: New GameObject
-    isStatic: false
-    isActive: true
-    transform:
-      id: 26
-      enabled: true
-      position:
-        x: 2
-        y: 24
-        z: -2
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 27
-        enabled: true
-        type: MeshRenderer
-        isTransparent: false
-        model: 1
-        materials:
-          - 3
-    children:
-      []
-  - id: 13
-    name: BRDF
-    isStatic: false
-    isActive: true
-    transform:
-      id: 28
-      enabled: true
-      position:
-        x: 2
-        y: 20
-        z: -2
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 29
-        enabled: true
-        type: MeshRenderer
-        isTransparent: false
-        model: 5
-        materials:
-          - 7
-    children:
-      []
-  - id: 14
-    name: MapGenerator
-    isStatic: false
-    isActive: true
-    transform:
-      id: 30
-      enabled: true
-      position:
-        x: 0
-        y: 0
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 31
-        enabled: true
         type: HexagonalTilemap
         leftBottomPosition:
           x: 0
@@ -1247,7 +825,7 @@ GameObjects:
           x: 0
           y: 0
         edgeLength: 0.5
-      - id: 32
+      - id: 6
         enabled: true
         type: ContentGenerator
         mapElementGenerators:
@@ -1258,35 +836,34 @@ GameObjects:
           - res/scriptableobjects/CityGenerator.so
           - res/scriptableobjects/RadioStationGeneratorSectorBased.so
           - res/scriptableobjects/HumansGenerator.so
-      - id: 33
+      - id: 7
         enabled: true
         type: MapGenerator
-        prefabHexagonalTile: 6
-        additionalTile: 4
-        filledTile: 3
-        pointTile: 7
+        prefabHexagonalTile: 10
+        additionalTile: 8
+        filledTile: 5
+        pointTile: 11
         generationRadiusMin: 5
         generationRadiusMax: 5
         minPointsNumber: 5
         maxPointsNumber: 5
         angleDeltaRange: 5
-      - id: 38
+      - id: 8
         enabled: true
         type: AStarPathfinder
         maxMappingDistance: 1
     children:
       []
-  - id: 15
-    name: DirectionalLigth
+  - id: 3
+    name: Directional Ligth
     isStatic: false
     isActive: true
     transform:
-      id: 34
-      enabled: true
+      id: 9
       position:
-        x: 11.419817
-        y: 11.4163637
-        z: -9.99999905
+        x: 15.6097107
+        y: 16.8504906
+        z: -9.99126816
       scale:
         x: 1
         y: 1
@@ -1296,7 +873,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 35
+      - id: 10
         enabled: true
         type: DirectionalLight
         direction:
@@ -1310,43 +887,41 @@ GameObjects:
         power: 1
     children:
       []
-  - id: 16
+  - id: 4
     name: Plane
     isStatic: false
     isActive: true
     transform:
-      id: 36
-      enabled: true
+      id: 11
       position:
         x: 0
-        y: -2
+        y: 0
         z: 0
       scale:
-        x: 40
+        x: 50
         y: 1
-        z: 40
+        z: 50
       rotation:
         x: 0
         y: 0
         z: 0
     components:
-      - id: 37
+      - id: 12
         enabled: true
         type: PlaneGenerator
         isTransparent: true
-        rows: 70
-        columns: 70
+        rows: 80
+        columns: 80
         materials:
           - 9
     children:
       []
-  - id: 101
+  - id: 5
     name: GameManager
     isStatic: false
     isActive: true
     transform:
-      id: 102
-      enabled: true
+      id: 13
       position:
         x: 0
         y: 0
@@ -1360,42 +935,42 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 103
-        enabled: true
+      - id: 14
+        enabled: false
         type: GameTimer
         secondsPerDay: 1
         daysPerWeek: 30
         weeksPerMonth: 1
         monthsPerYear: 12
-      - id: 104
+      - id: 15
         enabled: true
         type: ConcertRoad
-      - id: 105
+        marker: 1
+      - id: 16
         enabled: true
         type: GameManager
-        enemyPrefab: res/prefabs/Enemy.prefab
-        prefabPlayer: res/prefabs/Player.prefab
+        enemyPrefab: 3
+        prefabPlayer: 7
         carMaterials:
-         - res/materials/car/CarMaterial_Blue.material
-         - res/materials/car/CarMaterial_Red.material
-         - res/materials/car/CarMaterial_Green.material
-         - res/materials/car/CarMaterial_Purple.material
-         - res/materials/car/CarMaterial_Yellow.material
-         - res/materials/car/CarMaterial_Cyan.material
-         - res/materials/car/CarMaterial_Pink.material
+          - 0
+          - 32
+          - 46
+          - 27
+          - 42
+          - 56
+          - 48
         patronsData:
-         - res/scriptableobjects/patrons/Perun.so
-         - res/scriptableobjects/patrons/Jutrzenka.so
-         - res/scriptableobjects/patrons/Zuarasiz.so
+          - res/scriptableobjects/patrons/Perun.so
+          - res/scriptableobjects/patrons/Jutrzenka.so
+          - res/scriptableobjects/patrons/Zuarasiz.so
     children:
       []
-  - id: 322
+  - id: 6
     name: MinigameControllerPanel
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
-      id: 323
-      enabled: true
+      id: 17
       position:
         x: 0
         y: 0
@@ -1409,11 +984,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 324
+      - id: 18
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 11
         color:
           x: 1
           y: 1
@@ -1423,47 +998,46 @@ GameObjects:
         height: 540
         layer: 0
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
-      - id: 325
+      - id: 19
         enabled: true
         type: MinigameManager
         MaxNumberOfTurns: 1
-        PlayerScoreId: 353
-        EnemyScoreId: 359
-        PlayerImageId: 344
-        EnemyImageId: 347
-        PlayerSelectionImageId: 362
-        EnemySelectionImageId: 365
-        LaunchpadButtonId: 333
-        GuitarButtonId: 337
-        DrumButtonId: 341
-        WonPanelId: 302
-        LostPanelId: 303
-      - id: 308
+        PlayerScoreId: 42
+        EnemyScoreId: 46
+        PlayerImageId: 36
+        PlayerSelectionImageId: 48
+        EnemyImageId: 38
+        EnemySelectionImageId: 50
+        LaunchpadButtonId: 28
+        GuitarButtonId: 31
+        DrumButtonId: 34
+        WonPanelId: 20
+        LostPanelId: 21
+      - id: 20
         enabled: true
         type: Audio
-        audio: 1
+        audio: 2
         loop: false
         volume: 1
     children:
-      - 326
-      - 301
-      - 342
-      - 345
-      - 348
-      - 360
-      - 363
-      - 302
-      - 315
-  - id: 326
+      - 7
+      - 8
+      - 12
+      - 13
+      - 14
+      - 18
+      - 19
+      - 20
+      - 21
+  - id: 7
     name: MinigameHeader
     isStatic: false
     isActive: true
     transform:
-      id: 327
-      enabled: true
+      id: 21
       position:
         x: 0
         y: 200
@@ -1477,11 +1051,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 328
+      - id: 22
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 11
         color:
           x: 1
           y: 0
@@ -1491,10 +1065,10 @@ GameObjects:
         height: 50
         layer: 1
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
-      - id: 329
+      - id: 23
         enabled: true
         type: Text
         isTransparent: false
@@ -1518,13 +1092,12 @@ GameObjects:
         layer: 2
     children:
       []
-  - id: 301
+  - id: 8
     name: StrengthGraph
     isStatic: false
     isActive: true
     transform:
-      id: 302
-      enabled: true
+      id: 24
       position:
         x: 0
         y: -60
@@ -1538,11 +1111,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 303
+      - id: 25
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 17
+        sprite: 2
         color:
           x: 1
           y: 1
@@ -1552,20 +1125,19 @@ GameObjects:
         height: 160
         layer: 1
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
     children:
-      - 330
-      - 334
-      - 338
-  - id: 330
+      - 9
+      - 10
+      - 11
+  - id: 9
     name: LaunchpadButton
     isStatic: false
     isActive: true
     transform:
-      id: 331
-      enabled: true
+      id: 26
       position:
         x: 0
         y: 150
@@ -1579,11 +1151,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 332
+      - id: 27
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 10
+        sprite: 0
         color:
           x: 1
           y: 1
@@ -1593,10 +1165,10 @@ GameObjects:
         height: 128
         layer: 1
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
-      - id: 333
+      - id: 28
         enabled: true
         type: Button
         width: 128
@@ -1604,13 +1176,12 @@ GameObjects:
         interactable: true
     children:
       []
-  - id: 334
+  - id: 10
     name: GuitarButton
     isStatic: false
     isActive: true
     transform:
-      id: 335
-      enabled: true
+      id: 29
       position:
         x: -130
         y: -75
@@ -1624,11 +1195,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 336
+      - id: 30
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 9
+        sprite: 4
         color:
           x: 1
           y: 1
@@ -1638,10 +1209,10 @@ GameObjects:
         height: 128
         layer: 1
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
-      - id: 337
+      - id: 31
         enabled: true
         type: Button
         width: 128
@@ -1649,13 +1220,12 @@ GameObjects:
         interactable: true
     children:
       []
-  - id: 338
+  - id: 11
     name: DrumButton
     isStatic: false
     isActive: true
     transform:
-      id: 339
-      enabled: true
+      id: 32
       position:
         x: 120
         y: -75
@@ -1669,11 +1239,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 340
+      - id: 33
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 8
+        sprite: 3
         color:
           x: 1
           y: 1
@@ -1683,10 +1253,10 @@ GameObjects:
         height: 128
         layer: 1
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
-      - id: 341
+      - id: 34
         enabled: true
         type: Button
         width: 128
@@ -1694,13 +1264,12 @@ GameObjects:
         interactable: true
     children:
       []
-  - id: 342
+  - id: 12
     name: PlayerMinigameImage
     isStatic: false
     isActive: true
     transform:
-      id: 343
-      enabled: true
+      id: 35
       position:
         x: -325
         y: -50
@@ -1714,11 +1283,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 344
+      - id: 36
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 11
         color:
           x: 0.5
           y: 0.5
@@ -1728,18 +1297,17 @@ GameObjects:
         height: 250
         layer: 1
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
     children:
       []
-  - id: 345
+  - id: 13
     name: EnemyMinigameImage
     isStatic: false
     isActive: true
     transform:
-      id: 346
-      enabled: true
+      id: 37
       position:
         x: 325
         y: -50
@@ -1753,11 +1321,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 347
+      - id: 38
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 11
         color:
           x: 0.5
           y: 0.5
@@ -1767,18 +1335,17 @@ GameObjects:
         height: 250
         layer: 1
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
     children:
       []
-  - id: 348
+  - id: 14
     name: MinigameScorePanel
     isStatic: false
     isActive: false
     transform:
-      id: 349
-      enabled: true
+      id: 39
       position:
         x: 0
         y: 125
@@ -1792,11 +1359,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 350
+      - id: 40
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 11
         color:
           x: 0.5
           y: 0.5
@@ -1806,20 +1373,19 @@ GameObjects:
         height: 35
         layer: 1
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
     children:
-      - 351
-      - 354
-      - 357
-  - id: 351
+      - 15
+      - 16
+      - 17
+  - id: 15
     name: MinigamePlayerScore
     isStatic: false
     isActive: true
     transform:
-      id: 352
-      enabled: true
+      id: 41
       position:
         x: -35
         y: 0
@@ -1833,7 +1399,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 353
+      - id: 42
         enabled: true
         type: Text
         isTransparent: false
@@ -1857,13 +1423,12 @@ GameObjects:
         layer: 2
     children:
       []
-  - id: 354
+  - id: 16
     name: MinigameScoreSeparator
     isStatic: false
     isActive: true
     transform:
-      id: 355
-      enabled: true
+      id: 43
       position:
         x: 0
         y: 0
@@ -1877,7 +1442,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 356
+      - id: 44
         enabled: true
         type: Text
         isTransparent: false
@@ -1901,13 +1466,12 @@ GameObjects:
         layer: 2
     children:
       []
-  - id: 357
+  - id: 17
     name: MinigameEnemyScore
     isStatic: false
     isActive: true
     transform:
-      id: 358
-      enabled: true
+      id: 45
       position:
         x: 35
         y: 0
@@ -1921,7 +1485,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 359
+      - id: 46
         enabled: true
         type: Text
         isTransparent: false
@@ -1945,13 +1509,12 @@ GameObjects:
         layer: 2
     children:
       []
-  - id: 360
+  - id: 18
     name: PlayerMinigameSelectionImage
     isStatic: false
     isActive: true
     transform:
-      id: 361
-      enabled: true
+      id: 47
       position:
         x: -175
         y: 25
@@ -1965,32 +1528,31 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 362
+      - id: 48
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 11
         color:
-          x: 0.8
-          y: 0.8
-          z: 0.8
-          w: 0.0
+          x: 0.800000012
+          y: 0.800000012
+          z: 0.800000012
+          w: 0
         width: 72
         height: 72
         layer: 1
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
     children:
       []
-  - id: 363
+  - id: 19
     name: EnemyMinigameSelectionImage
     isStatic: false
     isActive: true
     transform:
-      id: 364
-      enabled: true
+      id: 49
       position:
         x: 175
         y: 25
@@ -2004,32 +1566,31 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 365
+      - id: 50
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 11
         color:
-          x: 0.8
-          y: 0.8
-          z: 0.8
-          w: 0.0
+          x: 0.800000012
+          y: 0.800000012
+          z: 0.800000012
+          w: 0
         width: 72
         height: 72
         layer: 1
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
     children:
       []
-  - id: 302
+  - id: 20
     name: WonMinigamePanel
     isStatic: false
     isActive: false
     transform:
-      id: 304
-      enabled: true
+      id: 51
       position:
         x: 0
         y: 50
@@ -2043,11 +1604,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 305
+      - id: 52
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 11
         color:
           x: 0
           y: 1
@@ -2057,18 +1618,17 @@ GameObjects:
         height: 200
         layer: 3
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
     children:
       []
-  - id: 315
+  - id: 21
     name: LostMinigamePanel
     isStatic: false
     isActive: false
     transform:
-      id: 306
-      enabled: true
+      id: 53
       position:
         x: 0
         y: 50
@@ -2082,11 +1642,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 307
+      - id: 54
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 11
         color:
           x: 1
           y: 0
@@ -2096,18 +1656,17 @@ GameObjects:
         height: 200
         layer: 3
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
     children:
       []
-  - id: 366
-    name: abilities
+  - id: 22
+    name: Abilities
     isStatic: false
     isActive: true
     transform:
-      id: 367
-      enabled: true
+      id: 55
       position:
         x: 0
         y: -300
@@ -2121,11 +1680,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 368
+      - id: 56
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 6
+        sprite: 8
         color:
           x: 1
           y: 1
@@ -2135,20 +1694,19 @@ GameObjects:
         height: 200
         layer: 0
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
     children:
-      - 369
-      - 372
-      - 375
-  - id: 369
+      - 23
+      - 26
+      - 29
+  - id: 23
     name: fansMeetingAbility
     isStatic: false
     isActive: true
     transform:
-      id: 370
-      enabled: true
+      id: 57
       position:
         x: 0
         y: -10
@@ -2162,11 +1720,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 371
+      - id: 58
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 5
+        sprite: 6
         color:
           x: 1
           y: 1
@@ -2176,25 +1734,105 @@ GameObjects:
         height: 100
         layer: 1
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
-      - id: 372
+      - id: 59
         enabled: true
         type: Button
         width: 100
         height: 100
         interactable: true
     children:
-      - 386
-      - 451
-  - id: 372
+      - 24
+      - 25
+  - id: 24
+    name: fansMeetingAbilityText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 60
+      position:
+        x: 0
+        y: -65
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 61
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 25
+    name: fansMeetingCircle
+    isStatic: false
+    isActive: false
+    transform:
+      id: 62
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 63
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 1
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 1
+        fillEnabled: true
+        fillType: !<2> 2
+        fillSubType: !<CW> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 26
     name: concertAbility
     isStatic: false
     isActive: true
     transform:
-      id: 373
-      enabled: true
+      id: 64
       position:
         x: 160
         y: 0
@@ -2208,11 +1846,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 374
+      - id: 65
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 4
+        sprite: 7
         color:
           x: 1
           y: 1
@@ -2222,25 +1860,105 @@ GameObjects:
         height: 100
         layer: 1
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
-      - id: 375
+      - id: 66
         enabled: true
         type: Button
         width: 100
         height: 100
         interactable: true
     children:
-      - 387
-      - 450
-  - id: 375
+      - 27
+      - 28
+  - id: 27
+    name: concertAbilityText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 67
+      position:
+        x: 0
+        y: -65
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 68
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 28
+    name: concertCircle
+    isStatic: false
+    isActive: false
+    transform:
+      id: 69
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 70
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 1
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 1
+        fillEnabled: true
+        fillType: !<2> 2
+        fillSubType: !<CW> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 29
     name: albumAbility
     isStatic: false
     isActive: true
     transform:
-      id: 376
-      enabled: true
+      id: 71
       position:
         x: -175
         y: -15
@@ -2254,11 +1972,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 377
+      - id: 72
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 3
+        sprite: 10
         color:
           x: 1
           y: 1
@@ -2268,25 +1986,105 @@ GameObjects:
         height: 100
         layer: 1
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
-      - id: 378
+      - id: 73
         enabled: true
         type: Button
         width: 100
         height: 100
         interactable: true
     children:
-      - 385
-      - 452
-  - id: 378
+      - 30
+      - 31
+  - id: 30
+    name: albumAbilityText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 74
+      position:
+        x: 0
+        y: -65
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 75
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 70
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 31
+    name: albumCircle
+    isStatic: false
+    isActive: false
+    transform:
+      id: 76
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 77
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 1
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 1
+        fillEnabled: true
+        fillType: !<2> 2
+        fillSubType: !<CW> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 32
     name: TimeAndMoney
     isStatic: false
     isActive: true
     transform:
-      id: 379
-      enabled: true
+      id: 78
       position:
         x: -660
         y: 390
@@ -2300,11 +2098,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 380
+      - id: 79
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 7
+        sprite: 9
         color:
           x: 1
           y: 1
@@ -2314,21 +2112,20 @@ GameObjects:
         height: 300
         layer: 0
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
     children:
-      - 381
-      - 388
-      - 389
-      - 384
-  - id: 381
+      - 33
+      - 34
+      - 35
+      - 36
+  - id: 33
     name: DayText
     isStatic: false
     isActive: true
     transform:
-      id: 382
-      enabled: true
+      id: 80
       position:
         x: -180
         y: 90
@@ -2342,7 +2139,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 383
+      - id: 81
         enabled: true
         type: Text
         isTransparent: false
@@ -2366,13 +2163,12 @@ GameObjects:
         layer: 1
     children:
       []
-  - id: 388
+  - id: 34
     name: MonthText
     isStatic: false
     isActive: true
     transform:
-      id: 393
-      enabled: true
+      id: 82
       position:
         x: -80
         y: 90
@@ -2386,7 +2182,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 394
+      - id: 83
         enabled: true
         type: Text
         isTransparent: false
@@ -2410,13 +2206,12 @@ GameObjects:
         layer: 1
     children:
       []
-  - id: 389
+  - id: 35
     name: YearText
     isStatic: false
     isActive: true
     transform:
-      id: 395
-      enabled: true
+      id: 84
       position:
         x: 40
         y: 90
@@ -2430,7 +2225,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 396
+      - id: 85
         enabled: true
         type: Text
         isTransparent: false
@@ -2454,13 +2249,12 @@ GameObjects:
         layer: 1
     children:
       []
-  - id: 384
+  - id: 36
     name: MoneyText
     isStatic: false
     isActive: true
     transform:
-      id: 385
-      enabled: true
+      id: 86
       position:
         x: -180
         y: 0
@@ -2474,7 +2268,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 386
+      - id: 87
         enabled: true
         type: Text
         isTransparent: false
@@ -2498,256 +2292,12 @@ GameObjects:
         layer: 1
     children:
       []
-  - id: 385
-    name: albumAbilityText
-    isStatic: false
-    isActive: true
-    transform:
-      id: 387
-      enabled: true
-      position:
-        x: 0
-        y: -65
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 388
-        enabled: true
-        type: Text
-        isTransparent: false
-        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
-        font: 0
-        size: 40
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 200
-        height: 70
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        alignX: !<CENTER> 1
-        alignY: !<BOTTOM> 0
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 1
-    children:
-      []
-  - id: 386
-    name: fansMeetingAbilityText
-    isStatic: false
-    isActive: true
-    transform:
-      id: 389
-      enabled: true
-      position:
-        x: 0
-        y: -65
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 390
-        enabled: true
-        type: Text
-        isTransparent: false
-        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
-        font: 0
-        size: 40
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 200
-        height: 70
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        alignX: !<CENTER> 1
-        alignY: !<BOTTOM> 0
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 1
-    children:
-      []
-  - id: 387
-    name: concertAbilityText
-    isStatic: false
-    isActive: true
-    transform:
-      id: 391
-      enabled: true
-      position:
-        x: 0
-        y: -65
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 392
-        enabled: true
-        type: Text
-        isTransparent: false
-        text: "\x00$\x00 \x003\x00 \x001\x000\x000"
-        font: 0
-        size: 40
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 200
-        height: 70
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        alignX: !<CENTER> 1
-        alignY: !<BOTTOM> 0
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 1
-    children:
-      []
-  - id: 450
-    name: concertCircle
-    isStatic: false
-    isActive: false
-    transform:
-      id: 450
-      enabled: true
-      position:
-        x: 0
-        y: 0
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 451
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 18
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 100
-        height: 100
-        layer: 1
-        fillEnabled: true
-        fillType: 2
-        fillSubType: 0
-        fillProgress: 1
-  - id: 451
-    name: fansMeetingCircle
-    isStatic: false
-    isActive: false
-    transform:
-      id: 452
-      enabled: true
-      position:
-        x: 0
-        y: 0
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 453
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 18
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 100
-        height: 100
-        layer: 1
-        fillEnabled: true
-        fillType: 2
-        fillSubType: 0
-        fillProgress: 1
-  - id: 452
-    name: albumCircle
-    isStatic: false
-    isActive: false
-    transform:
-      id: 454
-      enabled: true
-      position:
-        x: 0
-        y: 0
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 455
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 18
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 100
-        height: 100
-        layer: 1
-        fillEnabled: true
-        fillType: 2
-        fillSubType: 0
-        fillProgress: 1
-  - id: 400
+  - id: 37
     name: RadioStationPlayingManager
     isStatic: false
     isActive: false
     transform:
-      id: 400
-      enabled: true
+      id: 88
       position:
         x: 0
         y: 0
@@ -2761,11 +2311,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 401
+      - id: 89
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 11
         color:
           x: 1
           y: 1
@@ -2775,10 +2325,10 @@ GameObjects:
         height: 600
         layer: 1
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
-      - id: 402
+      - id: 90
         enabled: true
         type: RadioStationPlayingController
         generatedNotesNumber: 4
@@ -2786,41 +2336,48 @@ GameObjects:
         notesAreaHeight: 200
         timeLimit: 5
         resultShowingTime: 2
-        correctColor: [0, 1, 0, 1]
-        wrongColor: [1, 0, 0, 1]
+        correctColor:
+          x: 0
+          y: 1
+          z: 0
+          w: 1
+        wrongColor:
+          x: 1
+          y: 0
+          z: 0
+          w: 1
         notesSpritesIds:
-         - 11
-         - 12
-         - 13
-         - 14
-        resultsImagesIds:
-         - 15
-         - 16
+          - 15
+          - 16
+          - 17
+          - 17
+        resultsSpritesIds:
+          - 1235027098140171207
+          - 1235027098140171207
         resultsThresholds:
-         - 0.5
-         - 1
-        buttonDo: 405
-        buttonRe: 408
-        buttonMi: 411
-        buttonFa: 414
-        resultImage: 399
-        remainingTimeTextTimer: 397
+          - 0.5
+          - 1
+        buttonDo: 93
+        buttonRe: 96
+        buttonMi: 99
+        buttonFa: 102
+        resultImage: 106
+        remainingTimeTextTimer: 104
     children:
-      - 401
-      - 402
-      - 403
-      - 404
-      - 398
-  - id: 399
-    name: ResultImage
+      - 38
+      - 39
+      - 40
+      - 41
+      - 42
+  - id: 38
+    name: buttonDo
     isStatic: false
     isActive: false
     transform:
-      id: 398
-      enabled: true
+      id: 91
       position:
         x: 0
-        y: 0
+        y: -225
         z: 0
       scale:
         x: 1
@@ -2831,11 +2388,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 399
+      - id: 92
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 15
         color:
           x: 1
           y: 0
@@ -2845,17 +2402,155 @@ GameObjects:
         height: 100
         layer: 3
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
-    children: []
-  - id: 398
+      - id: 93
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
+    children:
+      []
+  - id: 39
+    name: buttonRe
+    isStatic: false
+    isActive: false
+    transform:
+      id: 94
+      position:
+        x: -100
+        y: -125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 95
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 13
+        color:
+          x: 1
+          y: 1
+          z: 0
+          w: 1
+        width: 100
+        height: 100
+        layer: 3
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 96
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
+    children:
+      []
+  - id: 40
+    name: buttonMi
+    isStatic: false
+    isActive: false
+    transform:
+      id: 97
+      position:
+        x: 100
+        y: -125
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 98
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 14
+        color:
+          x: 0
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 3
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 99
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
+    children:
+      []
+  - id: 41
+    name: buttonFa
+    isStatic: false
+    isActive: false
+    transform:
+      id: 100
+      position:
+        x: 0
+        y: -25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 101
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 16
+        color:
+          x: 1
+          y: 0
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 3
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 102
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
+    children:
+      []
+  - id: 42
     name: RemainingTimeTimer
     isStatic: false
     isActive: false
     transform:
-      id: 396
-      enabled: true
+      id: 103
       position:
         x: 0
         y: -100
@@ -2869,7 +2564,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 397
+      - id: 104
         enabled: true
         type: Text
         isTransparent: false
@@ -2891,17 +2586,17 @@ GameObjects:
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 6
-    children: []
-  - id: 401
-    name: buttonDo
+    children:
+      []
+  - id: 43
+    name: ResultImage
     isStatic: false
     isActive: false
     transform:
-      id: 403
-      enabled: true
+      id: 105
       position:
         x: 0
-        y: -225
+        y: 0
         z: 0
       scale:
         x: 1
@@ -2912,7 +2607,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 404
+      - id: 106
         enabled: true
         type: Image
         isTransparent: false
@@ -2926,154 +2621,17 @@ GameObjects:
         height: 100
         layer: 3
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
-      - id: 405
-        enabled: true
-        type: Button
-        width: 100
-        height: 100
-        interactable: true
-    children: []
-  - id: 402
-    name: buttonRe
-    isStatic: false
-    isActive: false
-    transform:
-      id: 406
-      enabled: true
-      position:
-        x: -100
-        y: -125
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 407
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 12
-        color:
-          x: 1
-          y: 1
-          z: 0
-          w: 1
-        width: 100
-        height: 100
-        layer: 3
-        fillEnabled: false
-        fillType: 0
-        fillSubType: 0
-        fillProgress: 1
-      - id: 408
-        enabled: true
-        type: Button
-        width: 100
-        height: 100
-        interactable: true
-    children: []
-  - id: 403
-    name: buttonMi
-    isStatic: false
-    isActive: false
-    transform:
-      id: 409
-      enabled: true
-      position:
-        x: 100
-        y: -125
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 410
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 13
-        color:
-          x: 0
-          y: 1
-          z: 1
-          w: 1
-        width: 100
-        height: 100
-        layer: 3
-        fillEnabled: false
-        fillType: 0
-        fillSubType: 0
-        fillProgress: 1
-      - id: 411
-        enabled: true
-        type: Button
-        width: 100
-        height: 100
-        interactable: true
-    children: []
-  - id: 404
-    name: buttonFa
-    isStatic: false
-    isActive: false
-    transform:
-      id: 412
-      enabled: true
-      position:
-        x: 0
-        y: -25
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 413
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 14
-        color:
-          x: 1
-          y: 0
-          z: 1
-          w: 1
-        width: 100
-        height: 100
-        layer: 3
-        fillEnabled: false
-        fillType: 0
-        fillSubType: 0
-        fillProgress: 1
-      - id: 414
-        enabled: true
-        type: Button
-        width: 100
-        height: 100
-        interactable: true
-    children: []
-  - id: 294
+    children:
+      []
+  - id: 44
     name: PatronChoicePanel
     isStatic: false
     isActive: true
     transform:
-      id: 1352
+      id: 107
       position:
         x: 0
         y: 0
@@ -3087,11 +2645,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 1353
+      - id: 108
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 0
+        sprite: 11
         color:
           x: 0.0772200823
           y: 0.0772200823
@@ -3101,30 +2659,30 @@ GameObjects:
         height: 1080
         layer: 4
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
-      - id: 1354
+      - id: 109
         enabled: true
         type: PatronChoicePanelController
         patrons:
-         - res/scriptableobjects/patrons/Perun.so
-         - res/scriptableobjects/patrons/Jutrzenka.so
-         - res/scriptableobjects/patrons/Zuarasiz.so
+          - res/scriptableobjects/patrons/Perun.so
+          - res/scriptableobjects/patrons/Jutrzenka.so
+          - res/scriptableobjects/patrons/Zuarasiz.so
         patronsButtons:
-         - 1357
-         - 1378
-         - 1387
+          - 112
+          - 121
+          - 130
     children:
-      - 295
-      - 305
-      - 309
-  - id: 295
+      - 45
+      - 49
+      - 53
+  - id: 45
     name: Patron_1
     isStatic: false
     isActive: true
     transform:
-      id: 1355
+      id: 110
       position:
         x: -488
         y: 252
@@ -3138,11 +2696,11 @@ GameObjects:
         y: 1
         z: 0
     components:
-      - id: 1356
+      - id: 111
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 11
         color:
           x: 1
           y: 1
@@ -3152,25 +2710,25 @@ GameObjects:
         height: 300
         layer: 5
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
-      - id: 1357
+      - id: 112
         enabled: true
         type: Button
         width: 200
         height: 300
         interactable: true
     children:
-     - 303
-     - 304
-     - 297
-  - id: 303
+      - 46
+      - 47
+      - 48
+  - id: 46
     name: PatronImage
     isStatic: false
     isActive: true
     transform:
-      id: 1372
+      id: 113
       position:
         x: 0
         y: 50
@@ -3184,11 +2742,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 1373
+      - id: 114
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 15
+        sprite: 5
         color:
           x: 1
           y: 1
@@ -3198,17 +2756,17 @@ GameObjects:
         height: 150
         layer: 6
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
     children:
       []
-  - id: 304
+  - id: 47
     name: PatronDescription
     isStatic: false
     isActive: true
     transform:
-      id: 1374
+      id: 115
       position:
         x: -20
         y: -70
@@ -3222,11 +2780,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 1375
+      - id: 116
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00P\x00e\x00r\x00u\x00n\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n"
+        text: "\x00P\x00e\x00r\x00u\x00n\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00M\x00o\x00v\x00e\x00 \x00R\x00a\x00n\x00g\x00e\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00+\x001\x00.\x000\x000\x000\x000\x000\x000"
         font: 0
         size: 20
         autoSize: false
@@ -3246,12 +2804,12 @@ GameObjects:
         layer: 6
     children:
       []
-  - id: 297
+  - id: 48
     name: PatronName
     isStatic: false
     isActive: true
     transform:
-      id: 1344
+      id: 117
       position:
         x: 0
         y: -45
@@ -3265,7 +2823,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 1345
+      - id: 118
         enabled: true
         type: Text
         isTransparent: false
@@ -3289,12 +2847,12 @@ GameObjects:
         layer: 6
     children:
       []
-  - id: 305
+  - id: 49
     name: Patron_2
     isStatic: false
     isActive: true
     transform:
-      id: 1376
+      id: 119
       position:
         x: -100
         y: 252
@@ -3308,11 +2866,11 @@ GameObjects:
         y: 1
         z: 0
     components:
-      - id: 1377
+      - id: 120
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 11
         color:
           x: 1
           y: 1
@@ -3322,25 +2880,25 @@ GameObjects:
         height: 300
         layer: 5
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
-      - id: 1378
+      - id: 121
         enabled: true
         type: Button
         width: 200
         height: 300
         interactable: true
     children:
-      - 306
-      - 307
-      - 308
-  - id: 306
+      - 50
+      - 51
+      - 52
+  - id: 50
     name: PatronImage
     isStatic: false
     isActive: true
     transform:
-      id: 1379
+      id: 122
       position:
         x: 0
         y: 50
@@ -3354,11 +2912,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 1380
+      - id: 123
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 16
+        sprite: 12
         color:
           x: 1
           y: 1
@@ -3368,17 +2926,17 @@ GameObjects:
         height: 150
         layer: 6
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
     children:
       []
-  - id: 307
+  - id: 51
     name: PatronDescription
     isStatic: false
     isActive: true
     transform:
-      id: 1381
+      id: 124
       position:
         x: -20
         y: -70
@@ -3392,11 +2950,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 1382
+      - id: 125
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00P\x00e\x00r\x00u\x00n\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n"
+        text: "\x00J\x00u\x00r\x00z\x00e\x00n\x00k\x00a\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00A\x00b\x00i\x00l\x00i\x00t\x00i\x00e\x00s\x00 \x00R\x00a\x00n\x00g\x00e\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00+\x001\x00.\x000\x000\x000\x000\x000\x000"
         font: 0
         size: 20
         autoSize: false
@@ -3416,12 +2974,12 @@ GameObjects:
         layer: 6
     children:
       []
-  - id: 308
+  - id: 52
     name: PatronName
     isStatic: false
     isActive: true
     transform:
-      id: 1383
+      id: 126
       position:
         x: 0
         y: -45
@@ -3435,11 +2993,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 1384
+      - id: 127
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00P\x00e\x00r\x00u\x00n"
+        text: "\x00J\x00u\x00r\x00z\x00e\x00n\x00k\x00a"
         font: 0
         size: 30
         autoSize: false
@@ -3459,12 +3017,12 @@ GameObjects:
         layer: 6
     children:
       []
-  - id: 309
+  - id: 53
     name: Patron_3
     isStatic: false
     isActive: true
     transform:
-      id: 1385
+      id: 128
       position:
         x: 200
         y: 252
@@ -3478,11 +3036,11 @@ GameObjects:
         y: 1
         z: 0
     components:
-      - id: 1386
+      - id: 129
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 0
+        sprite: 11
         color:
           x: 1
           y: 1
@@ -3492,25 +3050,25 @@ GameObjects:
         height: 300
         layer: 5
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
-      - id: 1387
+      - id: 130
         enabled: true
         type: Button
         width: 200
         height: 300
         interactable: true
     children:
-      - 310
-      - 311
-      - 312
-  - id: 310
+      - 54
+      - 55
+      - 56
+  - id: 54
     name: PatronImage
     isStatic: false
     isActive: true
     transform:
-      id: 1388
+      id: 131
       position:
         x: 0
         y: 50
@@ -3524,11 +3082,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 1389
+      - id: 132
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 15
+        sprite: 5
         color:
           x: 1
           y: 1
@@ -3538,17 +3096,17 @@ GameObjects:
         height: 150
         layer: 6
         fillEnabled: false
-        fillType: 0
-        fillSubType: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
         fillProgress: 1
     children:
       []
-  - id: 311
+  - id: 55
     name: PatronDescription
     isStatic: false
     isActive: true
     transform:
-      id: 1390
+      id: 133
       position:
         x: -20
         y: -70
@@ -3562,11 +3120,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 1391
+      - id: 134
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00P\x00e\x00r\x00u\x00n\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n"
+        text: "\x00Z\x00u\x00a\x00r\x00a\x00s\x00i\x00z\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00M\x00o\x00n\x00e\x00y\x00 \x00G\x00a\x00i\x00n\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00x\x001\x00.\x001\x000\x000\x000\x000\x000"
         font: 0
         size: 20
         autoSize: false
@@ -3586,12 +3144,12 @@ GameObjects:
         layer: 6
     children:
       []
-  - id: 312
+  - id: 56
     name: PatronName
     isStatic: false
     isActive: true
     transform:
-      id: 1392
+      id: 135
       position:
         x: 0
         y: -45
@@ -3605,11 +3163,11 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 1393
+      - id: 136
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00P\x00e\x00r\x00u\x00n"
+        text: "\x00Z\x00u\x00a\x00r\x00a\x00s\x00i\x00z"
         font: 0
         size: 30
         autoSize: false

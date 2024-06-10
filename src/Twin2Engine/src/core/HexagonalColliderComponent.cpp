@@ -10,7 +10,7 @@ void HexagonalColliderComponent::UnDirty()
 {
 	ColliderComponent::UnDirty();
 	HexagonalColliderData* hexData = ((HexagonalColliderData*)collider->shapeColliderData);
-	glm::quat q = GetTransform()->GetGlobalRotationQuat() * glm::angleAxis(hexData->Rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::quat q = GetTransform()->GetGlobalRotationQuat() * glm::angleAxis(glm::radians(hexData->Rotation), glm::vec3(0.0f, 1.0f, 0.0f));
 	hexData->u = q * glm::vec3(-0.5f, 0.0f, -0.866f);
 	hexData->v = q * glm::vec3(0.5f, 0.0f, -0.866f);
 	hexData->w = q * glm::vec3(1.0f, 0.0f, 0.0f);
@@ -28,6 +28,7 @@ void HexagonalColliderComponent::SetHalfHeight(float v)
 	((HexagonalColliderData*)collider->shapeColliderData)->HalfHeight = v;
 }
 
+// EuralAngles
 void HexagonalColliderComponent::SetYRotation(float v)
 {
 	((HexagonalColliderData*)collider->shapeColliderData)->Rotation = v;
@@ -42,7 +43,7 @@ void HexagonalColliderComponent::Initialize()
 
 	TransformChangeAction = [this](Transform* transform) {
 		HexagonalColliderData* hexData = (HexagonalColliderData*)collider->shapeColliderData;
-		glm::quat q = transform->GetGlobalRotationQuat() * glm::angleAxis(hexData->Rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::quat q = transform->GetGlobalRotationQuat() * glm::angleAxis(glm::radians(hexData->Rotation), glm::vec3(0.0f, 1.0f, 0.0f));
 		hexData->u = q * glm::vec3(-0.5f, 0.0f, -0.866f);
 		hexData->v = q * glm::vec3(0.5f, 0.0f, -0.866f);
 		hexData->w = q * glm::vec3(1.0f, 0.0f, 0.0f);
@@ -140,7 +141,7 @@ void HexagonalColliderComponent::DrawEditor()
 		}
 
 		v = ((HexagonalColliderData*)collider->shapeColliderData)->Rotation;
-		ImGui::DragFloat(string("Rotation Y##").append(id).c_str(), &v, 0.1f);
+		ImGui::DragFloat(string("Rotation Y##").append(id).c_str(), &v, 0.1f, -180.f, 180.f);
 
 		if (v != ((HexagonalColliderData*)collider->shapeColliderData)->Rotation) {
 			SetYRotation(v);

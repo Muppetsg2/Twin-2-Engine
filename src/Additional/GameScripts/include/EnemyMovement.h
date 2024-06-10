@@ -57,12 +57,12 @@ public:
 
 	glm::vec3 destination;
 	float speed = 0.7f;
-	int maxSteps = 5;
+	size_t maxSteps = 5;
 	float nextWaypointDistance = 0.05f;
 
 
 	float radius = 3.0f;
-	int steps = 20;
+	size_t steps = 20;
 
 
 	Twin2Engine::Tools::EventHandler<Twin2Engine::Core::GameObject*, HexTile*> OnFindPathError;

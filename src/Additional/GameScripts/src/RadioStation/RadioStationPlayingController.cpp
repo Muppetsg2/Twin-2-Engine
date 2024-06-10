@@ -251,7 +251,7 @@ YAML::Node RadioStationPlayingController::Serialize() const
     {
         savingNotesSpritesIds[index] = SceneManager::GetSpriteSaveIdx(_resultsImagesIds[index]);
     }
-    node["resultsImagesIds"] = _resultsImagesIds;
+    node["resultsSpritesIds"] = _resultsImagesIds;
     node["resultsThresholds"] = _resultsThresholds;
 
     node["buttonDo"] = _buttonDo->GetId();
@@ -261,7 +261,7 @@ YAML::Node RadioStationPlayingController::Serialize() const
     node["resultImage"] = _resultImage->GetId();
     node["remainingTimeTextTimer"] = _remainingTimeTextTimer->GetId();
 
-    return YAML::Node();
+    return node;
 }
 
 bool RadioStationPlayingController::Deserialize(const YAML::Node& node)
@@ -282,7 +282,7 @@ bool RadioStationPlayingController::Deserialize(const YAML::Node& node)
         _notesSpritesIds[index] = SceneManager::GetSprite(_notesSpritesIds[index]);
     }
 
-    _resultsImagesIds = node["resultsImagesIds"].as<vector<size_t>>();
+    _resultsImagesIds = node["resultsSpritesIds"].as<vector<size_t>>();
     for (size_t index = 0ull; index < _resultsImagesIds.size(); ++index)
     {
         _resultsImagesIds[index] = SceneManager::GetSprite(_resultsImagesIds[index]);

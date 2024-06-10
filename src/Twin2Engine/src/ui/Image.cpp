@@ -56,6 +56,7 @@ void Image::OnDestroy()
 }
 
 // TODO: Serialize Fill
+// TODO: If Sprite not set
 YAML::Node Image::Serialize() const
 {
 	YAML::Node node = RenderableComponent::Serialize();

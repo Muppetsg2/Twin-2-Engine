@@ -50,7 +50,8 @@ void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
             //SPDLOG_WARN("Dodaæ warstwy w GameObjectach");
             //tile->layer = LayerMask::NameToLayer("Mountain");
             tile->type = MapHexTile::HexTileType::Mountain;
-            tile->GetGameObject()->GetComponent<AStarPathfindingNode>()->passable = false;
+            if (tile->GetGameObject()->GetComponent<AStarPathfindingNode>() != nullptr)
+                tile->GetGameObject()->GetComponent<AStarPathfindingNode>()->passable = false;
 
             GameObject* mountain = SceneManager::CreateGameObject(prefabMountains, tile->GetGameObject()->GetTransform());
             mountain->SetIsStatic(true);

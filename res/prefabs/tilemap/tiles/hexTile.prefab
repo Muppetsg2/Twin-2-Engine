@@ -120,4 +120,5 @@ Root:
     - id: 5
       enabled: true
       type: HexTile
+      loseInfluenceSpeed: 0.5
       textuesData: res/scriptableobjects/HexTileTextureData.so

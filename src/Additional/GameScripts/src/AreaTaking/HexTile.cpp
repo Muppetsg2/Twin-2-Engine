@@ -102,21 +102,21 @@ void HexTile::UpdateTileColor()
 {
 	TILE_COLOR col = takenEntity != nullptr ? (TILE_COLOR)(uint8_t)(takenEntity->colorIdx == 0 ? 1 : powf(2.f, (float)(takenEntity->colorIdx))) : TILE_COLOR::NEUTRAL;
 	//SPDLOG_INFO("Percentage: {}", percentage);
-	if (percentage < _takingStage1)
+	if (percentage >= _takingStage3)
 	{
-		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 0));
+		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 3));
 	}
-	else if (percentage < _takingStage2)
-	{
-		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 1));
-	}
-	else if (percentage < _takingStage3)
+	else if (percentage >= _takingStage2)
 	{
 		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 2));
 	}
-	else
+	else if (percentage >= _takingStage1)
 	{
-		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 3));
+		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 1));
+	}
+	else if (percentage == 0.f)
+	{
+		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 0));
 	}
 }
 
@@ -160,12 +160,13 @@ void HexTile::UpdateBorders()
 	borderJoints[10] = MiddleLeftLeftBorderJoint;
 	borderJoints[11] = MiddleLeftRightBorderJoint;*/
 
-	for (size_t i = 0; i < 6; ++i)
+
+	/*for (size_t i = 0; i < 6; ++i)
 	{
 		borders[i]->SetActive(false);
 		borderJoints[i * 2]->SetActive(false);
 		borderJoints[(i * 2) + 1]->SetActive(false);
-	}
+	}*/
 
 	if (takenEntity != nullptr)
 	{
@@ -175,26 +176,45 @@ void HexTile::UpdateBorders()
 		for (size_t i = 0; i < 6; ++i)
 		{
 			GameObject* neightbour = neightbours[i];
+			int left = i * 2 - 1;
+			if (left < 0) left = 12 + left;
+			int right = (i * 2 + 2) % 12;
 			if (neightbour != nullptr)
 			{
 				HexTile* t = neightbour->GetComponent<HexTile>();
 				if (t->takenEntity != takenEntity)
 				{
-					borders[i]->SetActive(true);
+					if (borderJoints[left]->GetActive())
+						borderJoints[left]->SetActive(false);
+					if (borderJoints[right]->GetActive())
+						borderJoints[right]->SetActive(false);
+
+					if (!borders[i]->GetActive())
+						borders[i]->SetActive(true);
 				}
 				else
 				{
-					int left = i * 2 - 1;
-					if (left < 0) left = 12 + left;
-					borderJoints[left]->SetActive(true);
-					borderJoints[(i * 2 + 2) % 12]->SetActive(true);
+					if (!borderJoints[left]->GetActive())
+						borderJoints[left]->SetActive(true);
+					if (!borderJoints[right]->GetActive())
+						borderJoints[right]->SetActive(true);
+
+					if (borders[i]->GetActive())
+						borders[i]->SetActive(false);
 				}
 			}
 			else
 			{
-				borders[i]->SetActive(true);
+				if (borderJoints[left]->GetActive())
+					borderJoints[left]->SetActive(false);
+				if (borderJoints[right]->GetActive())
+					borderJoints[right]->SetActive(false);
+
+				if (!borders[i]->GetActive())
+					borders[i]->SetActive(true);
 			}
 		}
+		neightbours.clear();
 	}
 }
 
@@ -247,7 +267,15 @@ void HexTile::Initialize()
 	_mapHexTile = GetGameObject()->GetComponent<MapHexTile>();
 	_meshRenderer = GetGameObject()->GetComponent<MeshRenderer>();
 
-	UpdateBorders();
+	for (size_t i = 0; i < 6; ++i)
+	{
+		if (borders[i]->GetActive())
+			borders[i]->SetActive(false);
+		if (borderJoints[i * 2]->GetActive())
+			borderJoints[i * 2]->SetActive(false);
+		if (borderJoints[(i * 2) + 1]->GetActive())
+			borderJoints[(i * 2) + 1]->SetActive(false);
+	}
 }
 
 void HexTile::OnDestroy()

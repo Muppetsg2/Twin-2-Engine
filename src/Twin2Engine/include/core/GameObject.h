@@ -31,7 +31,7 @@ namespace Twin2Engine::Core
 	private:
 
 		static size_t _currentFreeId;
-		static std::list<size_t> _freedIds;
+		static std::vector<size_t> _freedIds;
 		static size_t GetFreeId();
 		static void FreeId(size_t id);
 		
@@ -92,6 +92,8 @@ namespace Twin2Engine::Core
 		bool Deserialize(const YAML::Node& node);
 		
 #if _DEBUG
+		ImFileDialogInfo _fileDialogPrefabSaveInfo;
+		bool _saveGameObjectAsPrefab = false;
 		void DrawEditor();
 #endif
 

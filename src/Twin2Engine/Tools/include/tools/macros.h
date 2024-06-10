@@ -250,3 +250,9 @@
 #define DefineCloneBaseFunc(className, baseClassName, ...) CloneBaseFuncDefinition(className, baseClassName, __VA_ARGS__)
 
 #pragma endregion
+
+#pragma region OTHER
+
+#define VAR_TO_STRING(var) #var
+
+#pragma endregion

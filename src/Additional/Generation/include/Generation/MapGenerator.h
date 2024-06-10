@@ -14,6 +14,8 @@
 
 #include <Generation/ContentGenerator.h>
 
+#include <tools/EventHandler.h>
+
 #define HEX_DIRECTION_CONNECTING true
 #define GRADIENT_CONNECTING false
 
@@ -50,6 +52,8 @@ namespace Generation
         int minPointsNumber = 5;
         int maxPointsNumber = 5;
         float angleDeltaRange = 5.0f;
+
+        Twin2Engine::Tools::EventHandler<MapGenerator*> OnMapGenerationEvent;
 
 #pragma endregion
         void Generate();

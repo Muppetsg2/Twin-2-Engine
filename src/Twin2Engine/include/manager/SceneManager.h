@@ -130,6 +130,7 @@ namespace Twin2Engine::Manager {
 		static std::string GetCurrentScenePath();
 
 		static std::vector<std::string> GetAllLoadedScenesNames();
+		static std::vector<Core::GameObject*> GetAllGameObjects();
 
 		static size_t GetTexture2D(size_t loadIdx);
 		static size_t GetSprite(size_t loadIdx);

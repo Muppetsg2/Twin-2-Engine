@@ -30,6 +30,10 @@ void MeshRenderer::Register()
 			OnStaticChangedId = GetGameObject()->OnStaticChangedEvent += [&](GameObject* g) -> void { OnGameObjectStaticChanged(g); };
 		}
 
+		if (OnActiveChangedId == -1) {
+			OnActiveChangedId = GetGameObject()->OnActiveChangedEvent += [&](GameObject* g) -> void { OnGameObjectActiveChanged(g); };
+		}
+
 		if (OnTransformMatrixChangedId == -1) {
 			OnTransformMatrixChangedId = GetTransform()->OnEventTransformChanged += [&](Transform* t) -> void { OnTransformMatrixChanged(t); };
 		}
@@ -62,6 +66,11 @@ void MeshRenderer::Unregister()
 		if (OnStaticChangedId != -1) {
 			GetGameObject()->OnStaticChangedEvent -= OnStaticChangedId;
 			OnStaticChangedId = -1;
+		}
+
+		if (OnActiveChangedId != -1) {
+			GetGameObject()->OnActiveChangedEvent -= OnActiveChangedId;
+			OnActiveChangedId = -1;
 		}
 
 		if (OnTransformMatrixChangedId != -1) {
@@ -244,6 +253,37 @@ void MeshRenderer::OnGameObjectStaticChanged(GameObject* gameObject)
 
 		res = MeshRenderingManager::RegisterDynamic(this);
 		_registered = res;
+	}
+}
+
+void MeshRenderer::OnGameObjectActiveChanged(GameObject* gameObject)
+{
+	bool res = true;
+	if (gameObject->GetIsStatic())
+	{
+		if (gameObject->GetActive() && !_registered)
+		{
+			res = MeshRenderingManager::RegisterStatic(this);
+			_registered = res;
+		}
+		else if (!gameObject->GetActive() && _registered)
+		{
+			res = MeshRenderingManager::UnregisterStatic(this);
+			_registered = !res;
+		}
+	}
+	else
+	{
+		if (gameObject->GetActive() && !_registered)
+		{
+			res = MeshRenderingManager::RegisterDynamic(this);
+			_registered = res;
+		}
+		else if (!gameObject->GetActive() && _registered)
+		{
+			res = MeshRenderingManager::UnregisterDynamic(this);
+			_registered = !res;
+		}
 	}
 }
 

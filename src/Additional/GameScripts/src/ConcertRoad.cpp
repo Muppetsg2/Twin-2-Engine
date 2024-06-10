@@ -5,14 +5,12 @@
 #include <manager/PrefabManager.h>
 #include <algorithm>
 
-
 using namespace Twin2Engine::Manager;
 
+ConcertRoad *ConcertRoad::instance = nullptr;
 
-ConcertRoad* ConcertRoad::instance = nullptr;
-
-
-void ConcertRoad::Initialize() {
+void ConcertRoad::Initialize()
+{
     if (instance == nullptr)
     {
         instance = this;
@@ -23,7 +21,8 @@ void ConcertRoad::Initialize() {
     }
 }
 
-void ConcertRoad::Update() {
+void ConcertRoad::Update()
+{
     entityPoints.clear();
     entityMultiplier.clear();
 
@@ -37,33 +36,33 @@ void ConcertRoad::Update() {
         entityMultiplier.push_back(1.0f);
     }
 
-    //while (entityPoints.size() > GameManager::instance->entities.size())
+    // while (entityPoints.size() > GameManager::instance->entities.size())
     //{
-    //    entityPoints.erase(entityPoints.begin()); //RemoveAt(0);
-    //}
+    //     entityPoints.erase(entityPoints.begin()); //RemoveAt(0);
+    // }
     //
-    //while (entityMultiplier.size() > GameManager::instance->entities.size())
+    // while (entityMultiplier.size() > GameManager::instance->entities.size())
     //{
-    //    entityMultiplier.erase(entityMultiplier.begin());
-    //}
+    //     entityMultiplier.erase(entityMultiplier.begin());
+    // }
     //
-    //for (int i = 0; i < GameManager::instance->entities.size(); ++i)
+    // for (int i = 0; i < GameManager::instance->entities.size(); ++i)
     //{
-    //    entityPoints[i] = 0;
-    //    entityMultiplier[i] = 1.0f;
-    //}
+    //     entityPoints[i] = 0;
+    //     entityMultiplier[i] = 1.0f;
+    // }
 
-    //int LevelOfQuality = 255;
+    // int LevelOfQuality = 255;
 
-    for(auto tile : RoadMapPoints)
+    for (auto tile : RoadMapPoints)
     {
         if (tile->takenEntity != nullptr)
         {
             auto posItr = std::find(GameManager::instance->entities.begin(), GameManager::instance->entities.end(), tile->takenEntity);
             int pos = std::distance(GameManager::instance->entities.begin(), posItr);
             entityPoints[pos] += 1;
-            //entityPoints[GameManager::instance->entities.IndexOf(tile->takenEntity)] += 1;
-        
+            // entityPoints[GameManager::instance->entities.IndexOf(tile->takenEntity)] += 1;
+
             for (int i = 3; i >= 0; --i)
             {
                 if (tile->percentage >= mulPercentage[i])
@@ -125,17 +124,17 @@ void ConcertRoad::Update() {
     }
     */
 
-    //textField.text = "";
-    //textField.text = new StringBuilder()
-    //    .Append("Points: ")
-    //    //.Append(entityPoints[GameManager.instance.entities.FindIndex(0, (x) => { return x.GetType().Equals(typeof(Player)); })])
-    //    .Append($"{((RoadMapPoints.Count > 0) ? (entityPoints[GameManager.instance.entities.FindIndex(0, (x) => { return x.GetType().Equals(typeof(Player)); })]) : (0)):N0}")
-    //    .Append("/")
-    //    .Append(RoadMapPoints.Count)
-    //    .Append("\n")
-    //    .Append("Multiplier: x")
-    //    .Append($"{((RoadMapPoints.Count > 0) ? (entityMultiplier[GameManager.instance.entities.FindIndex(0, (x) => { return x.GetType().Equals(typeof(Player)); })]):(0)):N1}")
-    //    .ToString();
+    // textField.text = "";
+    // textField.text = new StringBuilder()
+    //     .Append("Points: ")
+    //     //.Append(entityPoints[GameManager.instance.entities.FindIndex(0, (x) => { return x.GetType().Equals(typeof(Player)); })])
+    //     .Append($"{((RoadMapPoints.Count > 0) ? (entityPoints[GameManager.instance.entities.FindIndex(0, (x) => { return x.GetType().Equals(typeof(Player)); })]) : (0)):N0}")
+    //     .Append("/")
+    //     .Append(RoadMapPoints.Count)
+    //     .Append("\n")
+    //     .Append("Multiplier: x")
+    //     .Append($"{((RoadMapPoints.Count > 0) ? (entityMultiplier[GameManager.instance.entities.FindIndex(0, (x) => { return x.GetType().Equals(typeof(Player)); })]):(0)):N1}")
+    //     .ToString();
 }
 
 void ConcertRoad::OnDestroy() {
@@ -150,8 +149,9 @@ void ConcertRoad::Use() {
     Begin();
 }
 
-void ConcertRoad::Begin() {
-    //std::vector<Generation::MapHexTile*> tiles();// (Twin2Engine::Manager::SceneManager::FindObjectByName("MapGenerator")->GetComponentsInChildren<MapHexTile>().);
+void ConcertRoad::Begin()
+{
+    // std::vector<Generation::MapHexTile*> tiles();// (Twin2Engine::Manager::SceneManager::FindObjectByName("MapGenerator")->GetComponentsInChildren<MapHexTile>().);
 
     RoadMapPoints.clear();
     entityPoints.clear();
@@ -174,9 +174,9 @@ void ConcertRoad::Begin() {
     //        }
     //    }
     //}
-    for (auto& tile : Twin2Engine::Manager::SceneManager::FindObjectByName("MapGenerator")->GetComponentsInChildren<HexTile>())
+    for (auto &tile : Twin2Engine::Manager::SceneManager::FindObjectByName("MapGenerator")->GetComponentsInChildren<HexTile>())
     {
-        MapHexTile* mapHexTile = tile->GetMapHexTile();
+        MapHexTile *mapHexTile = tile->GetMapHexTile();
         if (mapHexTile->type == Generation::MapHexTile::HexTileType::PointOfInterest)
         {
             if (tile->percentage == 0.0f || ConsiderInfluenced)
@@ -185,10 +185,9 @@ void ConcertRoad::Begin() {
             }
         }
     }
-    
 
-    //Usuwanie na losowej pozycji w RoadMapPoints dopóki nie pozostanie zadana iloœæ
-    // 
+    // Usuwanie na losowej pozycji w RoadMapPoints dopï¿½ki nie pozostanie zadana iloï¿½ï¿½
+    //
     auto itr = RoadMapPoints.begin();
     while (RoadMapPoints.size() > NumberOfPoints)
     {
@@ -196,41 +195,40 @@ void ConcertRoad::Begin() {
         std::advance(itr, Random::Range<int>(0, RoadMapPoints.size() - 1));
         RoadMapPoints.erase(itr);
     }
-    //std::vector<int> indexes;
-    //for (int i = RoadMapPoints.size() - 1; i > NumberOfPoints; --i) {
-    //    indexes.push_back(Random::Range<int>(0, i));
-    //}
-    //std::sort(indexes.begin(), indexes.end());
+    // std::vector<int> indexes;
+    // for (int i = RoadMapPoints.size() - 1; i > NumberOfPoints; --i) {
+    //     indexes.push_back(Random::Range<int>(0, i));
+    // }
+    // std::sort(indexes.begin(), indexes.end());
     //
-    //auto endItr = RoadMapPoints.end();
+    // auto endItr = RoadMapPoints.end();
     //--endItr;
-    //while (RoadMapPoints.size() > NumberOfPoints)
+    // while (RoadMapPoints.size() > NumberOfPoints)
     //{
-    //    for (int i = RoadMapPoints.size() - indexes.back(); i > 0; --i) {
-    //        --endItr;
-    //    }
-    //    indexes.pop_back();
-    //    RoadMapPoints.erase(endItr);
-    //}
+    //     for (int i = RoadMapPoints.size() - indexes.back(); i > 0; --i) {
+    //         --endItr;
+    //     }
+    //     indexes.pop_back();
+    //     RoadMapPoints.erase(endItr);
+    // }
     ///
 
-
-    for (HexTile* t : RoadMapPoints)
+    for (HexTile *t : RoadMapPoints)
     {
-        GameObject* m = Twin2Engine::Manager::SceneManager::CreateGameObject(Marker, t->GetTransform());
-        
+        GameObject *m = Twin2Engine::Manager::SceneManager::CreateGameObject(Marker, t->GetTransform());
+
         m->GetTransform()->SetLocalPosition(glm::vec3(0.0f, height, 0.0f));
     }
 
-    //textField.text = new StringBuilder()
-    //    .Append("Points: 0/")
-    //    .Append(RoadMapPoints.Count)
-    //    .Append("\n")
-    //    .Append("Multiplier: x1.0")
-    //    .ToString();
+    // textField.text = new StringBuilder()
+    //     .Append("Points: 0/")
+    //     .Append(RoadMapPoints.Count)
+    //     .Append("\n")
+    //     .Append("Multiplier: x1.0")
+    //     .ToString();
 }
-void ConcertRoad::Finish() {
-
+void ConcertRoad::Finish()
+{
 }
 
 YAML::Node ConcertRoad::Serialize() const
@@ -242,7 +240,7 @@ YAML::Node ConcertRoad::Serialize() const
     return node;
 }
 
-bool ConcertRoad::Deserialize(const YAML::Node& node)
+bool ConcertRoad::Deserialize(const YAML::Node &node)
 {
     if (!node["marker"] || !Component::Deserialize(node))
         return false;
@@ -253,11 +251,14 @@ bool ConcertRoad::Deserialize(const YAML::Node& node)
 }
 
 #if _DEBUG
-void ConcertRoad::DrawEditor() {
+void ConcertRoad::DrawEditor()
+{
     string id = string(std::to_string(this->GetId()));
     string name = string("ConcertRoad##Component").append(id);
-    if (ImGui::CollapsingHeader(name.c_str())) {
-        if (Component::DrawInheritedFields()) return;
+    if (ImGui::CollapsingHeader(name.c_str()))
+    {
+        if (Component::DrawInheritedFields())
+            return;
 
         // TODO: Zrobic
     }

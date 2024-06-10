@@ -959,6 +959,16 @@ vector<string> SceneManager::GetAllLoadedScenesNames() {
 	return names;
 }
 
+vector<GameObject*> SceneManager::GetAllGameObjects()
+{
+	vector<GameObject*> gameObjects;
+	gameObjects.reserve(_gameObjectsById.size());
+	for (auto& gameObjectPair : _gameObjectsById) {
+		gameObjects.push_back(gameObjectPair.second);
+	}
+	return gameObjects;
+}
+
 size_t SceneManager::GetTexture2D(size_t loadIdx)
 {
 	return _texturesIds[loadIdx];

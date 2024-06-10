@@ -453,7 +453,6 @@ void input()
         // Reload Scene
         std::string name = SceneManager::GetCurrentSceneName();
         SceneManager::UnloadCurrent();
-        //SceneManager::Update();
         SceneManager::LoadScene(name);
         SceneManager::Update();
     }

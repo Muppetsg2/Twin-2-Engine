@@ -77,9 +77,12 @@ void GameManager::OnDestroy() {
     {
         instance = nullptr;
 
-        //GameTimer::Instance()->OnDayTicked -= _dayEventHandleId;
-        //GameTimer::Instance()->OnMonthTicked -= _monthEventHandleId;
-        //GameTimer::Instance()->OnYearTicked -= _yearEventHandleId;
+        if (GameTimer::Instance())
+        {
+            GameTimer::Instance()->OnDayTicked -= _dayEventHandleId;
+            GameTimer::Instance()->OnMonthTicked -= _monthEventHandleId;
+            GameTimer::Instance()->OnYearTicked -= _yearEventHandleId;
+        }
     }
 
     if (_mapGenerationEventId != -1 && _mapGenerator != nullptr)

@@ -452,6 +452,7 @@ void GameObject::AddComponent(Component* comp)
 	components.push_back(comp);
 	comp->Init(this);
 	comp->Initialize();
+	comp->OnEnable();
 }
 
 void GameObject::AddComponentNoInit(Component* comp)

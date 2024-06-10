@@ -1,6 +1,6 @@
 Textures:
   - id: 0
-    path: res\textures\UI\shape_hexagon.png
+    path: res\textures\UI\meeting.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
     sWrapMode: !<MIRRORED_REPEAT> 33648
@@ -8,7 +8,7 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 1
-    path: res\textures\UI\concert.png
+    path: res\textures\UI\shape_hexagon.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
     sWrapMode: !<MIRRORED_REPEAT> 33648
@@ -16,18 +16,26 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 2
-    path: res\textures\UI\abilities.png
+    path: res\textures\UI\concert.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 3
-    path: res\textures\UI\pause.png
+    path: res\textures\UI\abilities.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 4
+    path: res\textures\UI\pause.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 5
     path: res\textures\UI\album.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -38,35 +46,42 @@ Textures:
 Sprites:
   - id: 0
     alias: Pause
-    texture: 3
+    texture: 4
     x: 0
     y: 0
     width: 75
     height: 75
   - id: 1
+    alias: Fans
+    texture: 0
+    x: 0
+    y: 0
+    width: 150
+    height: 150
+  - id: 2
     alias: Concert
+    texture: 2
+    x: 0
+    y: 0
+    width: 256
+    height: 256
+  - id: 3
+    alias: Abilities
+    texture: 3
+    x: 0
+    y: 0
+    width: 800
+    height: 225
+  - id: 4
+    alias: Hexagon
     texture: 1
     x: 0
     y: 0
     width: 256
     height: 256
-  - id: 2
-    alias: Abilities
-    texture: 2
-    x: 0
-    y: 0
-    width: 800
-    height: 225
-  - id: 3
-    alias: Hexagon
-    texture: 0
-    x: 0
-    y: 0
-    width: 256
-    height: 256
-  - id: 4
+  - id: 5
     alias: Album
-    texture: 4
+    texture: 5
     x: 0
     y: 0
     width: 256
@@ -165,9 +180,9 @@ GameObjects:
     transform:
       id: 5
       position:
-        x: -13.8365374
-        y: -17.7723885
-        z: 13.4161263
+        x: -13.8055649
+        y: -17.7563515
+        z: 13.417532
       scale:
         x: 1
         y: 1
@@ -243,7 +258,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 2
+        sprite: 3
         color:
           x: 0.683397651
           y: 0.683397651
@@ -261,6 +276,7 @@ GameObjects:
       - 9
       - 11
       - 12
+      - 13
   - id: 8
     name: AlbumBg
     isStatic: false
@@ -284,7 +300,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 3
+        sprite: 4
         color:
           x: 0
           y: 1
@@ -297,6 +313,12 @@ GameObjects:
         fillType: !<2> 2
         fillSubType: !<CW> 0
         fillProgress: 0.424419999
+      - id: 27
+        enabled: true
+        type: Button
+        width: 150
+        height: 150
+        interactable: true
     children:
       - 7
   - id: 7
@@ -322,7 +344,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 4
+        sprite: 5
         color:
           x: 1
           y: 1
@@ -360,7 +382,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 3
+        sprite: 4
         color:
           x: 0
           y: 1
@@ -373,6 +395,12 @@ GameObjects:
         fillType: !<2> 2
         fillSubType: !<CW> 0
         fillProgress: 0.604649961
+      - id: 24
+        enabled: true
+        type: Button
+        width: 150
+        height: 150
+        interactable: true
     children:
       - 10
   - id: 10
@@ -398,7 +426,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 1
+        sprite: 2
         color:
           x: 1
           y: 1
@@ -497,6 +525,88 @@ GameObjects:
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 1
+    children:
+      []
+  - id: 13
+    name: FansBg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 28
+      position:
+        x: 0
+        y: -21
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 29
+        enabled: true
+        type: Image
+        isTransparent: true
+        sprite: 4
+        color:
+          x: 0
+          y: 1
+          z: 0.611764729
+          w: 0.392156869
+        width: 150
+        height: 150
+        layer: 0
+        fillEnabled: true
+        fillType: !<2> 2
+        fillSubType: !<CW> 0
+        fillProgress: 1
+      - id: 30
+        enabled: true
+        type: Button
+        width: 150
+        height: 150
+        interactable: true
+    children:
+      - 14
+  - id: 14
+    name: Fans
+    isStatic: false
+    isActive: true
+    transform:
+      id: 31
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 32
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 1
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 1
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
     children:
       []
   - id: 6

@@ -708,12 +708,14 @@ Models:
   - id: 3
     path: res/models/hexagon.obj
   - id: 4
-    path: res/models/car.obj
+    path: "{Cube}"
   - id: 5
-    path: "{Plane}"
+    path: res/models/car.obj
   - id: 6
-    path: res/models/city.obj
+    path: "{Plane}"
   - id: 7
+    path: res/models/city.obj
+  - id: 8
     path: "{Sphere}"
 Prefabs:
   - id: 0
@@ -2354,8 +2356,8 @@ GameObjects:
           - 14
           - 16
         resultsSpritesIds:
-          - 1235027098140171207
-          - 1235027098140171207
+          - 0
+          - 0
         resultsThresholds:
           - 0.5
           - 1

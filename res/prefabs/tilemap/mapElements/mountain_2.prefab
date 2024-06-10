@@ -1,0 +1,98 @@
+Textures: ~
+Sprites: ~
+Fonts: ~
+Audio: ~
+Materials:
+  - id: 0
+    path: res/materials/MountainsUnlit.material
+  - id: 1
+    path: res/materials/enviroment/CloudMaterial.material
+Models:
+  - id: 0
+    path: res/models/mount3.obj
+  - id: 1
+    path: res/models/cloud.obj
+Prefabs: ~
+ScriptableObjects: ~
+Root:
+  name: Mountain
+  isStatic: false
+  isActive: true
+  transform:
+    id: 0
+    enabled: true
+    position:
+      x: 0
+      y: 0
+      z: 0
+    scale:
+      x: 1
+      y: 1
+      z: 1
+    rotation:
+      x: 0
+      y: 60
+      z: 0
+  components:
+    - id: 1
+      enabled: true
+      type: MeshRenderer
+      isTransparent: false
+      model: 0
+      materials:
+        - 0
+  children:
+    - 1
+    
+GameObjects:
+  - id: 1
+    name: Cloud
+    isStatic: false
+    isActive: true
+    transform:
+      id: 2
+      enabled: true
+      position:
+        x: 0.1
+        y: 0.5
+        z: 0.2
+      scale:
+        x: 0.3
+        y: 0.3
+        z: 0.3
+      rotation:
+        x: -90
+        y: 0
+        z: 30
+    components:
+      - id: 3
+        enabled: true
+        type: Cloud
+        direction:
+          x: 1
+          y: 0
+          z: 0
+        velocity: 0.0
+        startPosition:
+          x: -7
+          y: 4
+          z: 7
+        startingScale:
+          x: 0.5
+          y: 0.5
+          z: 0.5
+        scaleVelocity:
+          x: 0.01
+          y: -0.01
+          z: -0.01
+        maxDistance: 18
+        travelledDistance: 0
+      - id: 4
+        enabled: true
+        type: MeshRenderer
+        isTransparent: true
+        model: 1
+        materials:
+          - 1
+    children:
+      []

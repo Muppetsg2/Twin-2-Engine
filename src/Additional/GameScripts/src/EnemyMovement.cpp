@@ -151,14 +151,24 @@ YAML::Node EnemyMovement::Serialize() const
 {
     YAML::Node node = Component::Serialize();
     node["type"] = "EnemyMovement";
+    node["speed"] = speed;
+    node["maxSteps"] = maxSteps;
+    node["nextWaypointDistance"] = nextWaypointDistance;
+    node["heightOverSurface"] = _heightOverSurface;
 
     return node;
 }
 
 bool EnemyMovement::Deserialize(const YAML::Node& node)
 {
-    if (!Component::Deserialize(node))
+    if (!node["speed"] || !node["maxSteps"] || !node["nextWaypointDistance"] || 
+        !node["heightOverSurface"] || !Component::Deserialize(node))
         return false;
+
+    speed = node["speed"].as<float>();
+    maxSteps = node["maxSteps"].as<size_t>();
+    nextWaypointDistance = node["nextWaypointDistance"].as<float>();
+    _heightOverSurface = node["heightOverSurface"].as<float>();
 
     return true;
 }

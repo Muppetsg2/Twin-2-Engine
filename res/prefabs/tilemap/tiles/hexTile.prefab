@@ -1,6 +1,6 @@
 Textures:
   - id: 0
-    path: res/textures/hexEdgeTexture.png
+    path: res/textures/tiles/white2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
@@ -59,7 +59,7 @@ Models:
 Prefabs: ~
 ScriptableObjects: ~
 Root:
-  name: MapHexTile
+  name: HexTile
   isStatic: false
   isActive: true
   transform:
@@ -81,7 +81,7 @@ Root:
     - id: 1
       enabled: true
       type: MapHexTile
-      hexTileType: 1
+      hexTileType: 0
     - id: 2
       enabled: true
       type: MeshRenderer
@@ -112,7 +112,7 @@ Root:
         z: 0
       baseLength: 0.5
       halfHeight: 0.5
-      rotation: -1.57050002
+      rotation: -90
     - id: 4
       enabled: true
       type: AStarPathfindingNode

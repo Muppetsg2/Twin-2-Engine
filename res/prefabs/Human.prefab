@@ -1,122 +1,21 @@
-Textures:
-  - id: 0
-    path: res/textures/white.png
-    fileFormat: !<SRGB> 35904
-    engineFormat: !<RGB> 6407
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 1
-    path: res/textures/fakeBRDF.png
-    fileFormat: !<SRGBA> 35906
-    engineFormat: !<RGBA> 6408
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 2
-    path: res/textures/mountainTex2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 3
-    path: res/textures/cityTextureColour.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 4
-    path: res/textures/grass.png
-    fileFormat: !<SRGBA> 35906
-    engineFormat: !<RGBA> 6408
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 5
-    path: res/textures/brickWall.jpg
-    fileFormat: !<SRGB> 35904
-    engineFormat: !<RGB> 6407
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 6
-    path: res/textures/stone.jpg
-    fileFormat: !<SRGB> 35904
-    engineFormat: !<RGB> 6407
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 7
-    path: res/textures/woodenRoof2.png
-    fileFormat: !<SRGBA> 35906
-    engineFormat: !<RGBA> 6408
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 8
-    path: res/textures/hexEdgeTexture.png
-    fileFormat: !<SRGBA> 35906
-    engineFormat: !<RGBA> 6408
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-Sprites:
-  - id: 0
-    alias: white_box
-    texture: 0
-  - id: 1
-    alias: grass
-    texture: 4
-  - id: 2
-    alias: stone
-    texture: 6
-Fonts:
-  - id: 0
-    path: res/fonts/Caveat-Regular.ttf
-Audio:
-  - id: 0
-    path: res/music/acoustic-guitar.mp3
+Textures: ~
+Sprites: ~
+Fonts: ~
+Audio: ~
 Materials:
   - id: 0
     path: res/materials/Basic2.material
 Models:
   - id: 0
     path: "{Sphere}"
-Prefabs:
-  - id: 0
-    path: res/prefabs/testPrefab.prefab
-  - id: 1
-    path: res/prefabs/tilemap/mapElements/city.prefab
-  - id: 2
-    path: res/prefabs/tilemap/mapElements/radioStation.prefab
-  - id: 3
-    path: res/prefabs/tilemap/tiles/blueHexTile.prefab
-  - id: 4
-    path: res/prefabs/tilemap/tiles/redHexTile.prefab
-  - id: 5
-    path: res/prefabs/tilemap/mapSector.prefab
-  - id: 6
-    path: res/prefabs/tilemap/tiles/hexTile.prefab
-  - id: 7
-    path: res/prefabs/tilemap/tiles/greenHexTile.prefab
-  - id: 8
-    path: res/prefabs/tilemap/mapRegion.prefab
-  - id: 9
-    path: res/prefabs/tilemap/mapElements/mountains.prefab
+Prefabs: ~
 ScriptableObjects: ~
 Root:
   name: Human
   isStatic: false
   isActive: true
   transform:
-    id: 1270
+    id: 0
     enabled: true
     position:
       x: 0
@@ -131,18 +30,18 @@ Root:
       y: 0
       z: 0
   components:
-    - id: 1271
+    - id: 1
       enabled: true
       type: MeshRenderer
       isTransparent: false
       model: 0
       materials:
         - 0
-    - id: 1272
+    - id: 2
       enabled: true
       type: Human
       achievingDestinationAccuracity: 0.300000003
-    - id: 1273
+    - id: 3
       enabled: true
       type: HumanMovement
       speed: 1

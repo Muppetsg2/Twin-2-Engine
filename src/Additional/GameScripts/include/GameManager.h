@@ -32,7 +32,9 @@ namespace Generation {
 class GameManager : public Component {
 private:
 
-    std::vector<int> freeColors{ 0, 1, 2, 3, 4, 5, 6 };
+    static size_t _colorsNum;
+
+    std::vector<int> _freeColors{ 0, 1, 2, 3, 4, 5, 6 };
     std::vector<Twin2Engine::Graphic::Material*> _carMaterials;
 
     std::vector<PatronData*> _patronsData;

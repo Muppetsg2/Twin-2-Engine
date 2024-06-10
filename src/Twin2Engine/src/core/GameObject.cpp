@@ -51,7 +51,10 @@ size_t GameObject::GetFreeId()
 	size_t id;
 	if (_freedIds.size() > 0) {
 		id = _freedIds.front();
-		_freedIds.pop_front();
+		for (size_t i = 0; i < _freedIds.size() - 1; ++i) {
+			_freedIds[i] = _freedIds[i + 1];
+		}
+		_freedIds.resize(_freedIds.size() - 1);
 	}
 	else {
 		id = _currentFreeId++;
@@ -62,7 +65,7 @@ size_t GameObject::GetFreeId()
 void GameObject::FreeId(size_t id)
 {
 	_freedIds.push_back(id);
-	_freedIds.sort();
+	sort(_freedIds.begin(), _freedIds.end());
 }
 
 void GameObject::SetActiveInHierarchy(bool activeInHierarchy)

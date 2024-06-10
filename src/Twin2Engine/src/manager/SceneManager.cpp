@@ -1076,15 +1076,7 @@ void SceneManager::UnloadCurrent()
 {
 	_currentSceneId = 0;
 	_currentSceneName = "";
-	//for (auto& pair : _gameObjectsById)
-	//{
-	//	pair.second->OnDestroyedEvent(pair.second);
-	//}
 	_gameObjectsById.clear();
-	//for (auto& pair : _componentsById)
-	//{
-	//	pair.second->OnDestroy();
-	//}
 	_componentsById.clear();
 	DestroyObject(_rootObject);
 	_rootObject = nullptr;

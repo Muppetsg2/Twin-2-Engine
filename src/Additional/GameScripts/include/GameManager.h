@@ -90,7 +90,6 @@ public:
     virtual void OnDestroy() override;
     virtual void OnEnable() override;
     virtual void Update() override;
-    virtual void OnDestroy() override;
 
     void UpdateEnemies(int colorIdx);
     void UpdateTiles();

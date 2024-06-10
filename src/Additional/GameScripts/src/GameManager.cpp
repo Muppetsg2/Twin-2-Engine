@@ -81,6 +81,12 @@ void GameManager::OnDestroy() {
         //GameTimer::Instance()->OnMonthTicked -= _monthEventHandleId;
         //GameTimer::Instance()->OnYearTicked -= _yearEventHandleId;
     }
+
+    if (_mapGenerationEventId != -1 && _mapGenerator != nullptr)
+    {
+        _mapGenerator->OnMapGenerationEvent -= _mapGenerationEventId;
+        _mapGenerationEventId = -1;
+    }
 }
 
 void GameManager::OnEnable() {
@@ -107,15 +113,6 @@ void GameManager::Update()
                 mg->GetComponent<Generation::MapGenerator>()->Generate();
             }
         }
-    }
-}
-
-void GameManager::OnDestroy()
-{
-    if (_mapGenerationEventId != -1 && _mapGenerator != nullptr)
-    {
-        _mapGenerator->OnMapGenerationEvent -= _mapGenerationEventId;
-        _mapGenerationEventId = -1;
     }
 }
 

@@ -10,49 +10,65 @@ Fonts: ~
 Audio: ~
 Materials:
   - id: 0
-    path: res/materials/tiles/NeutralHexTileStage0.material
+    path: res/materials/tiles/normal/neutral/NeutralHexTile.material
   - id: 1
-    path: res/materials/tiles/BlueHexTileStage1.material
+    path: res/materials/tiles/normal/blue/BlueHexTileStage1.material
   - id: 2
-    path: res/materials/tiles/BlueHexTileStage2.material
+    path: res/materials/tiles/normal/blue/BlueHexTileStage2.material
   - id: 3
-    path: res/materials/tiles/BlueHexTileStage3.material
+    path: res/materials/tiles/normal/blue/BlueHexTileStage3.material
   - id: 4
-    path: res/materials/tiles/RedHexTileStage1.material
+    path: res/materials/tiles/normal/red/RedHexTileStage1.material
   - id: 5
-    path: res/materials/tiles/RedHexTileStage2.material
+    path: res/materials/tiles/normal/red/RedHexTileStage2.material
   - id: 6
-    path: res/materials/tiles/RedHexTileStage3.material
+    path: res/materials/tiles/normal/red/RedHexTileStage3.material
   - id: 7
-    path: res/materials/tiles/GreenHexTileStage1.material
+    path: res/materials/tiles/normal/green/GreenHexTileStage1.material
   - id: 8
-    path: res/materials/tiles/GreenHexTileStage2.material
+    path: res/materials/tiles/normal/green/GreenHexTileStage2.material
   - id: 9
-    path: res/materials/tiles/GreenHexTileStage3.material
+    path: res/materials/tiles/normal/green/GreenHexTileStage3.material
   - id: 10
-    path: res/materials/tiles/PurpleHexTileStage1.material
+    path: res/materials/tiles/normal/purple/PurpleHexTileStage1.material
   - id: 11
-    path: res/materials/tiles/PurpleHexTileStage2.material
+    path: res/materials/tiles/normal/purple/PurpleHexTileStage2.material
   - id: 12
-    path: res/materials/tiles/PurpleHexTileStage3.material
+    path: res/materials/tiles/normal/purple/PurpleHexTileStage3.material
   - id: 13
-    path: res/materials/tiles/YellowHexTileStage1.material
+    path: res/materials/tiles/normal/yellow/YellowHexTileStage1.material
   - id: 14
-    path: res/materials/tiles/YellowHexTileStage2.material
+    path: res/materials/tiles/normal/yellow/YellowHexTileStage2.material
   - id: 15
-    path: res/materials/tiles/YellowHexTileStage3.material
+    path: res/materials/tiles/normal/yellow/YellowHexTileStage3.material
   - id: 16
-    path: res/materials/tiles/CyanHexTileStage1.material
+    path: res/materials/tiles/normal/cyan/CyanHexTileStage1.material
   - id: 17
-    path: res/materials/tiles/CyanHexTileStage2.material
+    path: res/materials/tiles/normal/cyan/CyanHexTileStage2.material
   - id: 18
-    path: res/materials/tiles/CyanHexTileStage3.material
+    path: res/materials/tiles/normal/cyan/CyanHexTileStage3.material
   - id: 19
-    path: res/materials/tiles/PinkHexTileStage1.material
+    path: res/materials/tiles/normal/pink/PinkHexTileStage1.material
   - id: 20
-    path: res/materials/tiles/PinkHexTileStage2.material
+    path: res/materials/tiles/normal/pink/PinkHexTileStage2.material
   - id: 21
-    path: res/materials/tiles/PinkHexTileStage3.material
+    path: res/materials/tiles/normal/pink/PinkHexTileStage3.material
+  - id: 22
+    path: res/materials/tiles/borders/neutral/NeutralHexTileBorder.material
+  - id: 23
+    path: res/materials/tiles/borders/blue/BlueHexTileBorder.material
+  - id: 24
+    path: res/materials/tiles/borders/red/RedHexTileBorder.material
+  - id: 25
+    path: res/materials/tiles/borders/green/GreenHexTileBorder.material
+  - id: 26
+    path: res/materials/tiles/borders/cyan/CyanHexTileBorder.material
+  - id: 27
+    path: res/materials/tiles/borders/purple/PurpleHexTileBorder.material
+  - id: 28
+    path: res/materials/tiles/borders/yellow/YellowHexTileBorder.material
+  - id: 29
+    path: res/materials/tiles/borders/pink/PinkHexTileBorder.material
 Models:
   - id: 0
     path: res/models/hexagon.obj
@@ -168,7 +184,7 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       - 7
       - 8
@@ -197,7 +213,7 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       []
   - id: 8
@@ -225,7 +241,7 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       []
   - id: 2
@@ -253,7 +269,7 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       - 9
       - 10
@@ -282,7 +298,7 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       []
   - id: 10
@@ -310,7 +326,7 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       []
   - id: 3
@@ -338,7 +354,7 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       - 11
       - 12
@@ -367,7 +383,7 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       []
   - id: 12
@@ -395,7 +411,7 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       []
   - id: 4
@@ -423,7 +439,7 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       - 13
       - 14
@@ -452,7 +468,7 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       []
   - id: 14
@@ -480,7 +496,7 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       []
   - id: 5
@@ -508,7 +524,7 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       - 15
       - 16
@@ -537,7 +553,7 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       []
   - id: 16
@@ -565,7 +581,7 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       []
   - id: 6
@@ -593,7 +609,7 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       - 17
       - 18
@@ -622,7 +638,7 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       []
   - id: 18
@@ -650,6 +666,6 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 0
+          - 22
     children:
       []

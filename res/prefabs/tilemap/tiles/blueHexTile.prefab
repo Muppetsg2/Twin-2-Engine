@@ -10,7 +10,7 @@ Fonts: ~
 Audio: ~
 Materials:
   - id: 0
-    path: res/materials/tiles/BlueHexTileStage0.material
+    path: res/materials/BlueHexTile.material
 Models:
   - id: 0
     path: res/models/hexagon.obj

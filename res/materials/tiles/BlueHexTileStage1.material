@@ -1,7 +1,0 @@
-material:
-  name: tiles/BlueHexTileStage1
-  shader: origin/Textured
-  parameters:
-    - name: texture1
-      type: texture2D
-      value: res/textures/tiles/blue1d.png

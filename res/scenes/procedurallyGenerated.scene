@@ -758,7 +758,7 @@ GameObjects:
         z: 0
       rotation:
         x: -55.5
-        y: -88.6
+        y: -88.5999985
         z: 0
     components:
       - id: 2
@@ -861,9 +861,9 @@ GameObjects:
     transform:
       id: 9
       position:
-        x: 15.1479797
-        y: 16.3720474
-        z: -9.26328659
+        x: 15.6097107
+        y: 16.8504906
+        z: -9.99126816
       scale:
         x: 1
         y: 1
@@ -949,8 +949,8 @@ GameObjects:
       - id: 16
         enabled: true
         type: GameManager
-        enemyPrefab: 4
-        prefabPlayer: 8
+        enemyPrefab: 3
+        prefabPlayer: 7
         carMaterials:
           - 0
           - 32
@@ -988,7 +988,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 13
+        sprite: 11
         color:
           x: 1
           y: 1

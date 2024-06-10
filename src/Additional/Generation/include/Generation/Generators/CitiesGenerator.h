@@ -56,7 +56,7 @@ namespace Generation::Generators
                 size_t choosed = prefabId;
                 for (auto& item : prefabNames) {
 
-                    if (ImGui::Selectable(item.second.append("##").append(id).c_str(), item.first == prefabId)) {
+                    if (ImGui::Selectable(string(item.second).append("##").append(id).c_str(), item.first == prefabId)) {
 
                         if (clicked) continue;
 

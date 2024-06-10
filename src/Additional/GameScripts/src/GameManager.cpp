@@ -381,6 +381,80 @@ void GameManager::DrawEditor()
         Twin2Engine::UI::Text* _yearText;
         */
 
+        std::map<size_t, string> prefabNames = Twin2Engine::Manager::PrefabManager::GetAllPrefabsNames();
+
+        prefabNames.insert(std::pair(0, "None"));
+
+        if (enemyPrefab != nullptr) {
+            if (!prefabNames.contains(enemyPrefab->GetId())) {
+                enemyPrefab = nullptr;
+            }
+        }
+
+        size_t prefabId = enemyPrefab != nullptr ? enemyPrefab->GetId() : 0;
+
+        if (ImGui::BeginCombo(string("Enemy Prefab##SO").append(id).c_str(), prefabNames[prefabId].c_str())) {
+
+            bool clicked = false;
+            size_t choosed = prefabId;
+            for (auto& item : prefabNames) {
+
+                if (ImGui::Selectable(string(item.second).append("##").append(id).c_str(), item.first == prefabId)) {
+
+                    if (clicked) continue;
+
+                    choosed = item.first;
+                    clicked = true;
+                }
+            }
+
+            if (clicked) {
+                if (choosed != 0) {
+                    enemyPrefab = Twin2Engine::Manager::PrefabManager::GetPrefab(choosed);
+                }
+                else {
+                    enemyPrefab = nullptr;
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+
+        if (prefabPlayer != nullptr) {
+            if (!prefabNames.contains(prefabPlayer->GetId())) {
+                prefabPlayer = nullptr;
+            }
+        }
+
+        prefabId = prefabPlayer != nullptr ? prefabPlayer->GetId() : 0;
+
+        if (ImGui::BeginCombo(string("Player Prefab##SO").append(id).c_str(), prefabNames[prefabId].c_str())) {
+
+            bool clicked = false;
+            size_t choosed = prefabId;
+            for (auto& item : prefabNames) {
+
+                if (ImGui::Selectable(string(item.second).append("##").append(id).c_str(), item.first == prefabId)) {
+
+                    if (clicked) continue;
+
+                    choosed = item.first;
+                    clicked = true;
+                }
+            }
+
+            if (clicked) {
+                if (choosed != 0) {
+                    prefabPlayer = Twin2Engine::Manager::PrefabManager::GetPrefab(choosed);
+                }
+                else {
+                    prefabPlayer = nullptr;
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+
         ImGui::Text("Enemies Number: ");
         ImGui::SameLine();
         ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);

@@ -534,7 +534,7 @@ YAML::Node Player::Serialize() const
 
 bool Player::Deserialize(const YAML::Node& node)
 {
-    if (!Playable::Deserialize(node))
+    if (!node["abilityActiveColor"] || !node["abilityCooldownColor"] || !Playable::Deserialize(node))
         return false;
 
     _abilityActiveColor = node["abilityActiveColor"].as<vec4>();

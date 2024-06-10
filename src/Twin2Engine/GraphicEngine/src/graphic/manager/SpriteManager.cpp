@@ -246,21 +246,21 @@ void SpriteManager::DrawSpriteEditor(bool* p_open, size_t spriteToEdit) {
 
 	for (auto item : GetAllSpritesNames()) if (item.second != _spriteAliases[spriteToEdit]) names.push_back(item.second);
 
-	static bool error = std::find(names.begin(), names.end(), buffTemp) != names.end();
+	static bool error_name = std::find(names.begin(), names.end(), buffTemp) != names.end();
 
 	if (ImGui::InputText("Name##SPRITE_EDITOR Sprite Manager", &buffTemp, flags)) {
 		if (buffTemp != buff) {
 			if (buffTemp.size() == 0 || std::find(names.begin(), names.end(), buffTemp) != names.end()) {
-				error = true;
+				error_name = true;
 			}
 			else {
-				error = false;
+				error_name = false;
 			}
 			buff = buffTemp;
 		}
 	}
 
-	if (error) ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Incorect Name or Name already exist!");
+	if (error_name) ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Incorect Name or Name already exist!");
 
 	map<size_t, string> textures = TextureManager::GetAllTexture2DNames();
 
@@ -318,7 +318,7 @@ void SpriteManager::DrawSpriteEditor(bool* p_open, size_t spriteToEdit) {
 	ImGui::DragUInt("Height##SPRITE_EDITOR Sprite Manager", &data.height, 1.f, 1, tex != nullptr ? tex->GetHeight() - data.y : 1);
 	ImGui::EndDisabled();
 
-	ImGui::BeginDisabled(error || selectedTexture == 0 || data.width == 0 || data.height == 0);
+	ImGui::BeginDisabled(error_name || selectedTexture == 0 || data.width == 0 || data.height == 0);
 	if (ImGui::Button("Save##SPRITE_EDITOR Sprite Manager", ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
 		EditSprite(spriteToEdit, selectedTexture, data, buff == _spriteAliases[spriteToEdit] ? "" : buff);
 		*p_open = false;

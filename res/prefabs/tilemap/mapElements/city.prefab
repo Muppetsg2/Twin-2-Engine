@@ -5,42 +5,14 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 1
-    path: res/textures/stone.jpg
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 2
-    path: res/textures/hexEdgeTexture.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
 Sprites: ~
 Fonts: ~
 Audio: ~
 Materials:
   - id: 0
-    path: res/materials/GreenHexTile.material
-  - id: 1
-    path: res/materials/ColoredHexTile.material
-  - id: 2
     path: res/materials/CityMaterial.material
-  - id: 3
-    path: res/materials/BlueHexTile.material
-  - id: 4
-    path: res/materials/MountainsUnlit.material
-  - id: 5
-    path: res/materials/RedHexTile.material
 Models:
   - id: 0
-    path: res/models/mountain.obj
-  - id: 1
-    path: res/models/hexagon.obj
-  - id: 2
-    path: "{Plane}"
-  - id: 3
     path: res/models/city.obj
 Prefabs: ~
 ScriptableObjects: ~
@@ -68,6 +40,6 @@ Root:
       enabled: true
       type: MeshRenderer
       isTransparent: false
-      model: 3
+      model: 0
       materials:
-        - 2
+        - 0

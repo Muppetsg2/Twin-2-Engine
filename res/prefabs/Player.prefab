@@ -7,22 +7,16 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-Sprites:
-  - id: 0
-    alias: white_box
-    texture: 0
-Fonts:
-  []
-Audio:
-  []
+Sprites: ~
+Fonts: ~
+Audio: ~
 Materials:
   - id: 0
     path: res/materials/car/CarMaterial_Blue.material
 Models:
   - id: 0
     path: res/models/car.obj
-Prefabs:
-  []
+Prefabs: ~
 ScriptableObjects: ~
 Root:
   name: Player
@@ -55,11 +49,23 @@ Root:
       enabled: true
       type: Player
       moneyFunction: res/scriptableobjects/MoneyFunctionData.so
-      abilityActiveColor: [0, 1, 0, 1]
-      abilityCooldownColor: [1, 0, 0, 1]
+      abilityActiveColor:
+        x: 0
+        y: 1
+        z: 0
+        w: 1
+      abilityCooldownColor:
+        x: 1
+        y: 0
+        z: 0
+        w: 1
     - id: 3
       enabled: true
       type: PlayerMovement
+      speed: 1.0
+      maxSteps: 5
+      nextWaypointDistance: 0.05
+      heightOverSurface: 0
     - id: 4
       enabled: true
       type: ConcertAbilityController

@@ -48,7 +48,7 @@ class MinigameManager : public Component {
 		Text* PlayerScore = nullptr;
 		Text* EnemyScore = nullptr;
 		GameObject* MinigamePlain = nullptr;
-		GameObject* WinPanel = nullptr;
+		GameObject* WonPanel = nullptr;
 		GameObject* LostPanel = nullptr;
 		Image* PlayerImage = nullptr;
 		Image* EnemyImage = nullptr;
@@ -59,7 +59,7 @@ class MinigameManager : public Component {
 		Button* GuitarButton = nullptr;
 		Button* DrumButton = nullptr;
 
-		int MaxNumberOfTurns = 5;
+		size_t MaxNumberOfTurns = 5;
 
 
 		static MinigameManager* GetLastInstance();

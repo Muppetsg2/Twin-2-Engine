@@ -50,5 +50,5 @@ Root:
       enabled: true
       type: RadioStation
       cooldown: 12
-      takingOverTime: 10 
-      takingRadius: 3 
+      takingOverTime: 10
+      takingRadius: 3

@@ -192,120 +192,122 @@ void AStarPathfinder::FindingPath(size_t threadId,
 
 	vector<vec3> path;
 	AStarNode* result = nullptr;
-	if (closestToBegin == closestToEnd)
-	{
-		//Ustawienie wartoœci ró¿nej od zera aby by³ ró¿ny od nullptr
-		result = (AStarNode*)1;
-
-		vec3 tempPos = closestToBegin->GetTransform()->GetGlobalPosition();
-		//tempPos.y = 0.0f;
-		path.push_back(tempPos);
-
-		path.push_back(endPosition);
-	}
-	else
-	{
-		list<vec3> nodesStack;
-
-		unordered_set<AStarPathfindingNode*> usedNodes;
-
-
-
-		list<AStarNode*> allocatedNodes;
-		vec3 tempPos = closestToBegin->GetTransform()->GetGlobalPosition();
-		//tempPos.y = 0.0f; ///
-		AStarNode* allocatedNode = new AStarNode(closestToBegin, nullptr, tempPos, 0, 0.0f);
-
-		allocatedNodes.push_back(allocatedNode);
-
-		priorityQueue.Enqueue(allocatedNode, 0.0f);
-
-		usedNodes.insert(closestToBegin);
-
-		vec3 allocatedPosY0;
-
-		while (priorityQueue.Count())
+	if (closestToBegin != nullptr && closestToEnd != nullptr) {
+		if (closestToBegin == closestToEnd)
 		{
-			AStarNode* processedNode = priorityQueue.Dequeue();
+			//Ustawienie wartoœci ró¿nej od zera aby by³ ró¿ny od nullptr
+			result = (AStarNode*)1;
 
-			if (processedNode->current == closestToEnd)
+			vec3 tempPos = closestToBegin->GetTransform()->GetGlobalPosition();
+			//tempPos.y = 0.0f;
+			path.push_back(tempPos);
+
+			path.push_back(endPosition);
+		}
+		else
+		{
+			list<vec3> nodesStack;
+
+			unordered_set<AStarPathfindingNode*> usedNodes;
+
+
+
+			list<AStarNode*> allocatedNodes;
+			vec3 tempPos = closestToBegin->GetTransform()->GetGlobalPosition();
+			//tempPos.y = 0.0f; ///
+			AStarNode* allocatedNode = new AStarNode(closestToBegin, nullptr, tempPos, 0, 0.0f);
+
+			allocatedNodes.push_back(allocatedNode);
+
+			priorityQueue.Enqueue(allocatedNode, 0.0f);
+
+			usedNodes.insert(closestToBegin);
+
+			vec3 allocatedPosY0;
+
+			while (priorityQueue.Count())
 			{
-				result = processedNode;
-				break;
-			}
+				AStarNode* processedNode = priorityQueue.Dequeue();
 
-			if (maxPathNodesNumber && maxPathNodesNumber == processedNode->hierarchyDepth)
-			{
-				continue;
-			}
-
-			auto& connected = _nodesGraph[processedNode->current];
-
-			size_t size = connected.size();
-
-			//vec3 allocatedPosY0 = allocatedNode->position;
-			//allocatedPosY0.y = 0.0;
-
-			for (size_t index = 0ull; index < size; ++index)
-			{
-				if (!usedNodes.contains(connected[index].targetNode))
+				if (processedNode->current == closestToEnd)
 				{
-					if (connected[index].targetNode->passable)
+					result = processedNode;
+					break;
+				}
+
+				if (maxPathNodesNumber && maxPathNodesNumber == processedNode->hierarchyDepth)
+				{
+					continue;
+				}
+
+				auto& connected = _nodesGraph[processedNode->current];
+
+				size_t size = connected.size();
+
+				//vec3 allocatedPosY0 = allocatedNode->position;
+				//allocatedPosY0.y = 0.0;
+
+				for (size_t index = 0ull; index < size; ++index)
+				{
+					if (!usedNodes.contains(connected[index].targetNode))
 					{
-						allocatedNode = new AStarNode(connected[index].targetNode, processedNode, connected[index].targetPosition,
-							processedNode->hierarchyDepth + 1u, processedNode->costFromStart + connected[index].targetDistance);
+						if (connected[index].targetNode->passable)
+						{
+							allocatedNode = new AStarNode(connected[index].targetNode, processedNode, connected[index].targetPosition,
+								processedNode->hierarchyDepth + 1u, processedNode->costFromStart + connected[index].targetDistance);
 
-						allocatedNodes.push_back(allocatedNode);
+							allocatedNodes.push_back(allocatedNode);
 
-						allocatedPosY0 = allocatedNode->position;
-						allocatedPosY0.y = 0.0;
-						//priorityQueue.Enqueue(allocatedNode, connected[index].targetDistance);
-						
-						priorityQueue.Enqueue(allocatedNode, allocatedNode->costFromStart + glm::distance(allocatedPosY0, endPositionY0));
+							allocatedPosY0 = allocatedNode->position;
+							allocatedPosY0.y = 0.0;
+							//priorityQueue.Enqueue(allocatedNode, connected[index].targetDistance);
+
+							priorityQueue.Enqueue(allocatedNode, allocatedNode->costFromStart + glm::distance(allocatedPosY0, endPositionY0));
+						}
+
+						usedNodes.insert(connected[index].targetNode);
 					}
-
-					usedNodes.insert(connected[index].targetNode);
 				}
 			}
-		}
 
-		// Checking if algorithm found path and processing result
-		if (result)
-		{
-			AStarNode* processedNode = result;
-			size_t targetSize = result->hierarchyDepth + 1u;
-			path.resize(targetSize);
-
-			size_t insertedIndex = result->hierarchyDepth;
-
-			while (processedNode)
+			// Checking if algorithm found path and processing result
+			if (result)
 			{
-				//SPDLOG_ERROR("FP: {} {} {}", processedNode->position.x, processedNode->position.y, processedNode->position.z);
-				path[insertedIndex] = processedNode->position;
-				--insertedIndex;
-				processedNode = processedNode->previous;
+				AStarNode* processedNode = result;
+				size_t targetSize = result->hierarchyDepth + 1u;
+				path.resize(targetSize);
+
+				size_t insertedIndex = result->hierarchyDepth;
+
+				while (processedNode)
+				{
+					//SPDLOG_ERROR("FP: {} {} {}", processedNode->position.x, processedNode->position.y, processedNode->position.z);
+					path[insertedIndex] = processedNode->position;
+					--insertedIndex;
+					processedNode = processedNode->previous;
+				}
+
+				if (glm::distance(path[result->hierarchyDepth - 1ull], endPosition) <= glm::distance(path[result->hierarchyDepth], endPosition))
+				{
+					path[result->hierarchyDepth] = endPosition;
+				}
+				else
+				{
+					//path.insert(path.end(), endPosition);
+					path.push_back(endPosition);
+				}
+
+				if (glm::distance(path[1ull], beginPosition) <= glm::distance(path[0ull], beginPosition))
+				{
+					path.erase(path.begin());
+				}
 			}
 
-			if (glm::distance(path[result->hierarchyDepth - 1ull], endPosition) <= glm::distance(path[result->hierarchyDepth], endPosition))
+			// Deallocating allocated memory
+			for (auto& node : allocatedNodes)
 			{
-				path[result->hierarchyDepth] = endPosition;
+				delete node;
 			}
-			else
-			{
-				//path.insert(path.end(), endPosition);
-				path.push_back(endPosition);
-			}
-
-			if (glm::distance(path[1ull], beginPosition) <= glm::distance(path[0ull], beginPosition))
-			{
-				path.erase(path.begin());
-			}
-		}
-
-		// Deallocating allocated memory
-		for (auto& node : allocatedNodes)
-		{
-			delete node;
 		}
 	}
 

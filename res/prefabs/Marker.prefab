@@ -1,26 +1,14 @@
-Textures:
-  - id: 0
-    path: res/textures/white.png
-    fileFormat: !<SRGB> 35904
-    engineFormat: !<RGB> 6407
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-Sprites:
-  []
-Fonts:
-  []
-Audio:
-  []
+Textures: ~
+Sprites: ~
+Fonts: ~
+Audio: ~
 Materials:
   - id: 0
     path: res/materials/Basic2.material
 Models:
   - id: 0
     path: "{Sphere}"
-Prefabs:
-  []
+Prefabs: ~
 ScriptableObjects: ~
 Root:
   name: Marker

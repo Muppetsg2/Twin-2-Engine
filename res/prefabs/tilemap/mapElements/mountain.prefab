@@ -1,16 +1,4 @@
-Textures:
-  - id: 0
-    path: res/textures/stone.jpg
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 1
-    path: res/textures/hexEdgeTexture.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
+Textures: ~
 Sprites: ~
 Fonts: ~
 Audio: ~

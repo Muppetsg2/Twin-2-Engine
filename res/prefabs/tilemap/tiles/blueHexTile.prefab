@@ -1,6 +1,6 @@
 Textures:
   - id: 0
-    path: res/textures/hexEdgeTexture.png
+    path: res/textures/tiles/white2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
@@ -10,16 +10,10 @@ Fonts: ~
 Audio: ~
 Materials:
   - id: 0
-    path: res/materials/ColoredHexTile.material
-  - id: 1
-    path: res/materials/BlueHexTile.material
-  - id: 2
-    path: res/materials/RedHexTile.material
+    path: res/materials/tiles/BlueHexTileStage0.material
 Models:
   - id: 0
     path: res/models/hexagon.obj
-  - id: 1
-    path: "{Plane}"
 Prefabs: ~
 ScriptableObjects: ~
 Root:
@@ -30,8 +24,8 @@ Root:
     id: 0
     enabled: true
     position:
-      x: 4
-      y: 5
+      x: 0
+      y: 0
       z: 0
     scale:
       x: 1
@@ -39,7 +33,7 @@ Root:
       z: 1
     rotation:
       x: 0
-      y: 1.57079637
+      y: 90
       z: 0
   components:
     - id: 1
@@ -52,7 +46,7 @@ Root:
       isTransparent: false
       model: 0
       materials:
-        - 1
+        - 0
     - id: 3
       enabled: true
       type: HexagonalCollider
@@ -76,4 +70,4 @@ Root:
         z: 0
       baseLength: 0.5
       halfHeight: 0.5
-      rotation: -1.57050002
+      rotation: -90

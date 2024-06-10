@@ -897,7 +897,7 @@ GameObjects:
       id: 11
       position:
         x: 0
-        y: -0.350
+        y: -0.349999994
         z: 0
       scale:
         x: 50
@@ -970,7 +970,7 @@ GameObjects:
   - id: 6
     name: MinigameControllerPanel
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 17
       position:
@@ -2354,8 +2354,8 @@ GameObjects:
           - 14
           - 16
         resultsSpritesIds:
-          - 0
-          - 0
+          - 1235027098140171207
+          - 1235027098140171207
         resultsThresholds:
           - 0.5
           - 1

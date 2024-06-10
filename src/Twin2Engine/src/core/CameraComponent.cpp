@@ -1272,8 +1272,8 @@ void CameraComponent::DrawEditor()
 		ImGui::InputFloat(string("Near Plane##").append(id).c_str(), &this->_near);
 		ImGui::InputFloat(string("Far Plane##").append(id).c_str(), &this->_far);
 		ImGui::InputFloat(string("Gamma##").append(id).c_str(), &this->_gamma);
-		ImGui::DragFloat(string("Brightness##").append(id).c_str(), &this->_brightness, 0.1f, -1.f, 1.f);
-		ImGui::DragFloat(string("Contrast##").append(id).c_str(), &this->_contrast, 0.1f, 0.0f, FLT_MAX);
+		ImGui::DragFloat(string("Brightness##").append(id).c_str(), &this->_brightness, 0.01f, -1.f, 1.f);
+		ImGui::DragFloat(string("Contrast##").append(id).c_str(), &this->_contrast, 0.01f, 0.0f, FLT_MAX);
 		ImGui::Checkbox(string("SSAO##").append(id).c_str(), &this->_isSsao);
 		if (this->_isSsao) {
 			ImGui::DragFloat(string("SSAO Bias##").append(id).c_str(), &this->_ssaoBias, 0.1f);

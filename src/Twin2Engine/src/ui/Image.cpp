@@ -61,7 +61,10 @@ YAML::Node Image::Serialize() const
 {
 	YAML::Node node = RenderableComponent::Serialize();
 	node["type"] = "Image";
-	node["sprite"] = SceneManager::GetSpriteSaveIdx(_spriteId);
+
+	if (SpriteManager::GetSprite(_spriteId) != nullptr) {
+		node["sprite"] = SceneManager::GetSpriteSaveIdx(_spriteId);
+	}
 	node["color"] = _data.color;
 	node["width"] = _data.rectTransform.size.x;
 	node["height"] = _data.rectTransform.size.y;
@@ -92,11 +95,16 @@ YAML::Node Image::Serialize() const
 
 bool Image::Deserialize(const YAML::Node& node)
 {
-	if (!node["sprite"] || !node["color"] || !node["width"] || !node["height"] ||
+	if (!node["color"] || !node["width"] || !node["height"] ||
 		!node["layer"] || !node["fillEnabled"] || !node["fillType"] || !node["fillSubType"] ||
 		!node["fillProgress"] || !RenderableComponent::Deserialize(node)) return false;
 
-	_spriteId = SceneManager::GetSprite(node["sprite"].as<size_t>());
+	if (node["sprite"]) {
+		_spriteId = SceneManager::GetSprite(node["sprite"].as<size_t>());
+	}
+	else {
+		_spriteId = 0;
+	}
 	_data.color = node["color"].as<glm::vec4>();
 	_data.rectTransform.size.x = node["width"].as<float>();
 	_data.rectTransform.size.y = node["height"].as<float>();

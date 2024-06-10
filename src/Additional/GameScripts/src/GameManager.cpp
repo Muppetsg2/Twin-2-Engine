@@ -478,6 +478,8 @@ void GameManager::DrawEditor()
 
         vector<std::pair<size_t, string>> mats = vector<std::pair<size_t, string>>(mat_temp.begin(), mat_temp.end());
 
+        mat_temp.clear();
+
         vector<string> names = vector<string>();
         vector<size_t> ids = vector<size_t>();
         names.resize(mats.size());
@@ -488,7 +490,7 @@ void GameManager::DrawEditor()
         });
 
         std::transform(mats.begin(), mats.end(), names.begin(), [](std::pair<size_t, string> const& i) -> string {
-            return i.second;
+            return i.second + "##" + std::to_string(i.first);
         });
 
         std::transform(mats.begin(), mats.end(), ids.begin(), [](std::pair<size_t, string> const& i) -> size_t {
@@ -507,7 +509,7 @@ void GameManager::DrawEditor()
 
                 if (item != nullptr) choosed = std::find(ids.begin(), ids.end(), item->GetId()) - ids.begin();
 
-                if (ImGui::ComboWithFilter(string("##Car Materials").append(id).append(std::to_string(i)).c_str(), &choosed, names, 20)) {
+                if (ImGui::ComboWithFilter(string("##Car Materials").append(id).append(std::to_string(i)).c_str(), &choosed, names, 10)) {
                     if (choosed != -1) {
                         _carMaterials[i] = MaterialsManager::GetMaterial(ids[choosed]);
                     }
@@ -515,6 +517,9 @@ void GameManager::DrawEditor()
             }
             ImGui::TreePop();
         }
+
+        names.clear();
+        ids.clear();
     }
 }
 #endif

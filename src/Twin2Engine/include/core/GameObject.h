@@ -52,6 +52,7 @@ namespace Twin2Engine::Core
 		//Layer
 		//Tag
 		void SetActiveInHierarchy(bool activeInHierarchy);
+		void UpdateActiveInChildren();
 
 		GameObject(size_t id);
 	public:

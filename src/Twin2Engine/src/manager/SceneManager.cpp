@@ -372,6 +372,12 @@ void SceneManager::LoadScene() {
 		}
 	}
 
+	// UPDATE ACTIVE FLAG
+	for (auto& item : _gameObjectsById) {
+		if (!item.second->GetActiveSelf())
+			item.second->UpdateActiveInChildren();
+	}
+
 	// CREATE AND ADD COMPONENTS TO OBJECTS
 	for (const auto& compPair : componentsNodes) {
 		GameObject* obj = _gameObjectsById[compPair.first];

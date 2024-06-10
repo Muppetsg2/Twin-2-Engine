@@ -14,8 +14,6 @@
 #include <Player.h>
 #include <GameTimer.h>
 
-//#include <pch.h>
-
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;
 
@@ -27,8 +25,6 @@ namespace Generation {
     class MapHexTile;
 }
 
-
-//class ConcertRoad : public Component {
 class GameManager : public Component {
 private:
 

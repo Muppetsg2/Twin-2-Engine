@@ -8,6 +8,85 @@ size_t Twin2Engine::Core::GameObject::_currentFreeId = 1;
 list<size_t> Twin2Engine::Core::GameObject::_freedIds;
 std::unordered_set<std::string_view> Twin2Engine::Core::GameObject::AllTags;
 
+GameObject* GameObject::Clone() const
+{
+	GameObject* cloned = new GameObject();
+
+	CloneTo(cloned);
+
+	return cloned;
+}
+
+void GameObject::CloneTo(GameObject* cloned) const
+{
+	cloned->_activeSelf = _activeSelf;
+	cloned->_isStatic = _isStatic;
+	cloned->_name = _name;
+
+	cloned->_transform->SetLocalPosition(_transform->GetLocalPosition());
+	cloned->_transform->SetLocalRotation(_transform->GetLocalRotation());
+	cloned->_transform->SetLocalScale(_transform->GetLocalScale());
+
+	// Pomijanie Transforma z listy komponentów
+	auto component = std::next(components.begin());
+
+	for (; component != components.end(); ++component)
+	{
+		Component* clonedComponent = (*component)->Clone();
+		clonedComponent->Init(cloned);
+		cloned->components.push_back(clonedComponent);
+	}
+
+	for (int index = 0; index < _transform->GetChildCount(); ++index)
+	{
+		//cloned->_transform->AddChild(Instantiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform)->GetTransform());
+		Instantiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform);
+	}
+}
+
+size_t GameObject::GetFreeId()
+{
+	size_t id;
+	if (_freedIds.size() > 0) {
+		id = _freedIds.front();
+		_freedIds.pop_front();
+	}
+	else {
+		id = _currentFreeId++;
+	}
+	return id;
+}
+
+void GameObject::FreeId(size_t id)
+{
+	_freedIds.push_back(id);
+	_freedIds.sort();
+}
+
+void GameObject::SetActiveInHierarchy(bool activeInHierarchy)
+{
+	if (_activeInHierarchy != activeInHierarchy) // warunek sprawdzajacy czy to ustawienie zmieni stan (musi zmieniac inaczej nie ma sensu dzialac dalej)
+	{
+		_activeInHierarchy = activeInHierarchy; //zmiana stanu
+		if (_activeSelf) // sprawdzenie wlasnego stanu, jezeli ustawiony na false to znaczy, ze ten stan dyktuje warunki aktywnosci wszystkich podrzednych obiektow
+		{
+			for (int index = 0; index < _transform->GetChildCount(); ++index)
+			{
+				_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(activeInHierarchy);
+			}
+		}
+		OnActiveChangedEvent.Invoke(this); // Wywo³ywanie eventu
+	}
+}
+
+void GameObject::UpdateActiveInChildren()
+{
+	for (int index = 0; index < _transform->GetChildCount(); ++index)
+	{
+		_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(_activeSelf);
+	}
+}
+
 GameObject::GameObject(size_t id) {
 	
 	// Setting IDs
@@ -82,75 +161,6 @@ GameObject::~GameObject()
 	FreeId(_id);
 }
 
-GameObject* GameObject::Instantiate(GameObject* gameObject)
-{
-	return gameObject->Clone();
-}
-
-GameObject* GameObject::Instantiate(GameObject* gameObject, Transform* parent)
-{
-	GameObject* cloned = gameObject->Clone();
-
-	cloned->GetTransform()->SetParent(parent);
-
-	return cloned;
-}
-
-GameObject* GameObject::Clone() const
-{
-	GameObject* cloned = new GameObject();
-
-	CloneTo(cloned);
-
-	return cloned;
-}
-
-void GameObject::CloneTo(GameObject* cloned) const
-{
-	cloned->_activeSelf = _activeSelf;
-	cloned->_isStatic = _isStatic;
-	cloned->_name = _name;
-
-	cloned->_transform->SetLocalPosition(_transform->GetLocalPosition());
-	cloned->_transform->SetLocalRotation(_transform->GetLocalRotation());
-	cloned->_transform->SetLocalScale(_transform->GetLocalScale());
-
-	// Pomijanie Transforma z listy komponentów
-	auto component = std::next(components.begin());
-
-	for (; component != components.end(); ++component) 
-	{
-		Component* clonedComponent = (*component)->Clone();
-		clonedComponent->Init(cloned);
-		cloned->components.push_back(clonedComponent);
-	}
-
-	for (int index = 0; index < _transform->GetChildCount(); ++index)
-	{
-		//cloned->_transform->AddChild(Instantiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform)->GetTransform());
-		Instantiate(_transform->GetChildAt(index)->GetGameObject(), cloned->_transform);
-	}
-}
-
-size_t GameObject::GetFreeId()
-{
-	size_t id;
-	if (_freedIds.size() > 0) {
-		id = _freedIds.front();
-		_freedIds.pop_front();
-	}
-	else {
-		id = _currentFreeId++;
-	}
-	return id;
-}
-
-void GameObject::FreeId(size_t id)
-{
-	_freedIds.push_back(id);
-	_freedIds.sort();
-}
-
 size_t GameObject::Id() const
 {
 	return _id;
@@ -183,22 +193,6 @@ void GameObject::SetActive(bool active)
 			_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(_activeSelf);
 		}
 
-		OnActiveChangedEvent.Invoke(this); // Wywo³ywanie eventu
-	}
-}
-
-void GameObject::SetActiveInHierarchy(bool activeInHierarchy)
-{
-	if (_activeInHierarchy != activeInHierarchy) // warunek sprawdzajacy czy to ustawienie zmieni stan (musi zmieniac inaczej nie ma sensu dzialac dalej)
-	{
-		_activeInHierarchy = activeInHierarchy; //zmiana stanu
-		if (_activeSelf) // sprawdzenie wlasnego stanu, jezeli ustawiony na false to znaczy, ze ten stan dyktuje warunki aktywnosci wszystkich podrzednych obiektow
-		{
-			for (int index = 0; index < _transform->GetChildCount(); ++index)
-			{
-				_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(activeInHierarchy);
-			}
-		}
 		OnActiveChangedEvent.Invoke(this); // Wywo³ywanie eventu
 	}
 }
@@ -251,7 +245,6 @@ void GameObject::UpdateComponents()
 	}
 }
 
-
 void GameObject::AddTag(std::string_view tagName) {
 	auto tagItr = AllTags.find(tagName);
 	if (tagItr == AllTags.end()) {
@@ -279,7 +272,6 @@ bool GameObject::HasTag(std::string_view tagName) {
 	}
 }
 
-
 YAML::Node GameObject::Serialize() const
 {
 	YAML::Node node;
@@ -305,7 +297,8 @@ bool GameObject::Deserialize(const YAML::Node& node) {
 
 	_name = node["name"].as<string>();
 	_isStatic = node["isStatic"].as<bool>();
-	_activeSelf = node["isActive"].as<bool>();
+	
+	SetActive(node["isActive"].as<bool>());
 
 	return true;
 }
@@ -450,4 +443,18 @@ void GameObject::RemoveComponent(Component* component)
 		delete component;
 	}
 	//std::remove_if(components.begin(), components.end(), [component](Component* comp) { return comp == component; });
+}
+
+GameObject* GameObject::Instantiate(GameObject* gameObject)
+{
+	return gameObject->Clone();
+}
+
+GameObject* GameObject::Instantiate(GameObject* gameObject, Transform* parent)
+{
+	GameObject* cloned = gameObject->Clone();
+
+	cloned->GetTransform()->SetParent(parent);
+
+	return cloned;
 }

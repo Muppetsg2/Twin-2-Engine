@@ -46,7 +46,7 @@ public:
     void SaveIfHighest();
 
     // Event handlers
-    Twin2Engine::Tools::EventHandler<int> OnDayTicked = Twin2Engine::Tools::EventHandler<int>();
+    Twin2Engine::Tools::EventHandler<int> OnDayTicked;
     Twin2Engine::Tools::EventHandler<int> OnWeekTicked;
     Twin2Engine::Tools::EventHandler<int> OnMonthTicked;
     Twin2Engine::Tools::EventHandler<int> OnYearTicked;

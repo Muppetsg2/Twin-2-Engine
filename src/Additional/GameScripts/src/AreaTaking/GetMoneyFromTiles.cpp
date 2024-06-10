@@ -16,7 +16,8 @@ void MoneyGainFromTiles::Update() {
 }
 
 void MoneyGainFromTiles::OnDestroy() {
-    //GameTimer::Instance()->OnDayTicked -= eventIdOnDayTicked;
+    if (GameTimer::Instance() != nullptr)
+        GameTimer::Instance()->OnDayTicked -= eventIdOnDayTicked;
     // Implement any necessary update logic if needed.
 }
 

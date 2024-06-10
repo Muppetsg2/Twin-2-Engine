@@ -63,10 +63,12 @@ void GameManager::OnDestroy() {
     if (this == instance)
     {
         instance = nullptr;
+    }
 
-        //GameTimer::Instance()->OnDayTicked -= _dayEventHandleId;
-        //GameTimer::Instance()->OnMonthTicked -= _monthEventHandleId;
-        //GameTimer::Instance()->OnYearTicked -= _yearEventHandleId;
+    if (GameTimer::Instance() != nullptr) {
+        GameTimer::Instance()->OnDayTicked -= _dayEventHandleId;
+        GameTimer::Instance()->OnMonthTicked -= _monthEventHandleId;
+        GameTimer::Instance()->OnYearTicked -= _yearEventHandleId;
     }
 }
 

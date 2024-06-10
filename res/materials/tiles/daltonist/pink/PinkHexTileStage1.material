@@ -1,0 +1,7 @@
+material:
+  name: tiles/daltonist/pink/PinkHexTileStage1
+  shader: origin/Textured
+  parameters:
+    - name: texture1
+      type: texture2D
+      value: res/textures/tiles/pink1d.png

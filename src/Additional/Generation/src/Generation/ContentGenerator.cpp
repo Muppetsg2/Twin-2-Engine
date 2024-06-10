@@ -90,7 +90,7 @@ bool ContentGenerator::Deserialize(const YAML::Node& node)
     {
         //AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(ScriptableObjectManager::Deserialize(soSceneId.as<unsigned int>()));
         AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(ScriptableObjectManager::Load(soSceneId.as<string>()));
-        SPDLOG_INFO("ContentGenerator::Adding generator {0}, {1}", soSceneId.as<string>(), (unsigned int)generator);
+        SPDLOG_INFO("ContentGenerator::Adding generator {0}, {1}", soSceneId.as<string>(), (unsigned long long)(void**)generator);
         if (generator != nullptr)
         {
             mapElementGenerators.push_back(generator);
@@ -232,7 +232,7 @@ void ContentGenerator::DrawEditor()
                 if (click) {
                     if (choosed != 0) {
                         AMapElementGenerator* generator = dynamic_cast<AMapElementGenerator*>(types[choosed]);
-                        SPDLOG_INFO("ContentGenerator::Adding generator {0}", (unsigned int)generator);
+                        SPDLOG_INFO("ContentGenerator::Adding generator {0}", (size_t)(void**)generator);
                         if (generator != nullptr)
                         {
                             mapElementGenerators.push_back(generator);

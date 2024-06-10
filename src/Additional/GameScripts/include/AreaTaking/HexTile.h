@@ -12,6 +12,9 @@
 
 #include <AreaTaking/HexTileTexturesData.h>
 
+// TODO: First Tile to be Captured need to have Stage1 Percentage
+// TODO: Fix Taking Tile
+// TODO: Fix Borders
 
 ENUM_CLASS_BASE_VALUE(TileState, uint8_t, NONE, 0, OCCUPIED, 1, REMOTE_OCCUPYING, 2, TAKEN, 4);
 
@@ -31,10 +34,11 @@ class HexTile : public Twin2Engine::Core::Component
 	void TakeOver();
 	void LoseInfluence();
 	void UpdateTileColor();
+	void UpdateBorderColor();
 	void UpdateBorders();
 	void CheckRoundPattern();
 public:
-	HexTileTextureData* textuesData;
+	HexTileTextureData* texturesData;
 
 
 	bool isFighting = false;
@@ -59,7 +63,27 @@ public:
 	
 	// Borders
 	std::vector<Twin2Engine::Core::GameObject*> borders;
+	/*Twin2Engine::Core::GameObject* TopRightBorder;
+	Twin2Engine::Core::GameObject* MiddleRightBorder;
+	Twin2Engine::Core::GameObject* BottomRightBorder;
+	Twin2Engine::Core::GameObject* BottomLeftBorder;
+	Twin2Engine::Core::GameObject* MiddleLeftBorder;
+	Twin2Engine::Core::GameObject* TopLeftBorder;*/
+
+	// Borders Joints
 	std::vector<Twin2Engine::Core::GameObject*> borderJoints;
+	/*Twin2Engine::Core::GameObject* TopRightLeftBorderJoint;
+	Twin2Engine::Core::GameObject* TopRightRightBorderJoint;
+	Twin2Engine::Core::GameObject* MiddleRightLeftBorderJoint;
+	Twin2Engine::Core::GameObject* MiddleRightRightBorderJoint;
+	Twin2Engine::Core::GameObject* BottomRightLeftBorderJoint;
+	Twin2Engine::Core::GameObject* BottomRightRightBorderJoint;
+	Twin2Engine::Core::GameObject* BottomLeftLeftBorderJoint;
+	Twin2Engine::Core::GameObject* BottomLeftRightBorderJoint;
+	Twin2Engine::Core::GameObject* MiddleLeftLeftBorderJoint;
+	Twin2Engine::Core::GameObject* MiddleLeftRightBorderJoint;
+	Twin2Engine::Core::GameObject* TopLeftLeftBorderJoint;
+	Twin2Engine::Core::GameObject* TopLeftRightBorderJoint;*/
 
 	int totalTileFans;
 

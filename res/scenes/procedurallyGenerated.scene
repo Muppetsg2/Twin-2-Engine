@@ -521,6 +521,48 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 89
+    path: res/textures/UI/player_colour/blueT.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 90
+    path: res/textures/UI/player_colour/cyanT.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 91
+    path: res/textures/UI/player_colour/greenT.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 92
+    path: res/textures/UI/player_colour/pinkT.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 93
+    path: res/textures/UI/player_colour/purpleT.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 94
+    path: res/textures/UI/player_colour/redT.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 95
+    path: res/textures/UI/player_colour/yellowT.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites:
   - id: 0
     alias: Launchpad
@@ -677,6 +719,27 @@ Sprites:
   - id: 30
     alias: yellowB
     texture: 88
+  - id: 31
+    alias: blueT
+    texture: 89
+  - id: 32
+    alias: cyanT
+    texture: 90
+  - id: 33
+    alias: greenT
+    texture: 91
+  - id: 34
+    alias: pinkT
+    texture: 92
+  - id: 35
+    alias: purpleT
+    texture: 93
+  - id: 36
+    alias: redT
+    texture: 94
+  - id: 37
+    alias: yellowT
+    texture: 95
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
@@ -695,113 +758,113 @@ Materials:
   - id: 0
     path: res/materials/car/CarMaterial_Blue.material
   - id: 1
-    path: res/materials/tiles/normal/PurpleHexTileStage3.material
+    path: res/materials/tiles/normal/purple/PurpleHexTileStage3.material
   - id: 2
-    path: res/materials/tiles/GreenHexTileStage1.material
+    path: res/materials/tiles/daltonist/green/GreenHexTileStage1.material
   - id: 3
-    path: res/materials/tiles/GreenHexTileStage3.material
+    path: res/materials/tiles/daltonist/green/GreenHexTileStage3.material
   - id: 4
-    path: res/materials/tiles/normal/YellowHexTileStage3.material
+    path: res/materials/tiles/normal/yellow/YellowHexTileStage3.material
   - id: 5
-    path: res/materials/tiles/PurpleHexTileStage3.material
+    path: res/materials/tiles/daltonist/purple/PurpleHexTileStage3.material
   - id: 6
-    path: res/materials/tiles/normal/RedHexTileStage2.material
+    path: res/materials/tiles/normal/red/RedHexTileStage2.material
   - id: 7
     path: res/materials/enviroment/CloudMaterial.material
   - id: 8
-    path: res/materials/tiles/RedHexTileStage2.material
+    path: res/materials/tiles/daltonist/red/RedHexTileStage2.material
   - id: 9
     path: res/materials/Water.material
   - id: 10
-    path: res/materials/tiles/RedHexTileStage3.material
+    path: res/materials/tiles/daltonist/red/RedHexTileStage3.material
   - id: 11
-    path: res/materials/tiles/normal/BlueHexTileStage1.material
+    path: res/materials/tiles/normal/blue/BlueHexTileStage1.material
   - id: 12
-    path: res/materials/tiles/PurpleHexTileStage2.material
+    path: res/materials/tiles/daltonist/purple/PurpleHexTileStage2.material
   - id: 13
     path: res/materials/Basic2.material
   - id: 14
-    path: res/materials/tiles/normal/BlueHexTileStage3.material
+    path: res/materials/tiles/normal/blue/BlueHexTileStage3.material
   - id: 15
-    path: res/materials/tiles/normal/RedHexTileStage1.material
+    path: res/materials/tiles/normal/red/RedHexTileStage1.material
   - id: 16
     path: res/materials/MountainsUnlit.material
   - id: 17
-    path: res/materials/tiles/normal/BlueHexTileStage2.material
+    path: res/materials/tiles/normal/blue/BlueHexTileStage2.material
   - id: 18
-    path: res/materials/tiles/normal/YellowHexTileStage1.material
+    path: res/materials/tiles/normal/yellow/YellowHexTileStage1.material
   - id: 19
-    path: res/materials/tiles/normal/YellowHexTileStage2.material
+    path: res/materials/tiles/normal/yellow/YellowHexTileStage2.material
   - id: 20
-    path: res/materials/tiles/normal/GreenHexTileStage1.material
+    path: res/materials/tiles/normal/green/GreenHexTileStage1.material
   - id: 21
     path: res/materials/RadioTowerBuilding.material
   - id: 22
-    path: res/materials/tiles/normal/PinkHexTileStage3.material
+    path: res/materials/tiles/normal/pink/PinkHexTileStage3.material
   - id: 23
-    path: res/materials/tiles/YellowHexTileStage3.material
+    path: res/materials/tiles/daltonist/yellow/YellowHexTileStage3.material
   - id: 24
-    path: res/materials/tiles/normal/GreenHexTileStage2.material
+    path: res/materials/tiles/normal/green/GreenHexTileStage2.material
   - id: 25
-    path: res/materials/tiles/normal/CyanHexTileStage3.material
+    path: res/materials/tiles/normal/cyan/CyanHexTileStage3.material
   - id: 26
-    path: res/materials/tiles/BlueHexTileStage3.material
+    path: res/materials/tiles/daltonist/blue/BlueHexTileStage3.material
   - id: 27
     path: res/materials/car/CarMaterial_Purple.material
   - id: 28
-    path: res/materials/tiles/PurpleHexTileStage1.material
+    path: res/materials/tiles/daltonist/purple/PurpleHexTileStage1.material
   - id: 29
-    path: res/materials/tiles/PinkHexTileStage3.material
+    path: res/materials/tiles/daltonist/pink/PinkHexTileStage3.material
   - id: 30
-    path: res/materials/tiles/normal/PurpleHexTileStage2.material
+    path: res/materials/tiles/normal/purple/PurpleHexTileStage2.material
   - id: 31
-    path: res/materials/tiles/PinkHexTileStage2.material
+    path: res/materials/tiles/daltonist/pink/PinkHexTileStage2.material
   - id: 32
     path: res/materials/car/CarMaterial_Red.material
   - id: 33
-    path: res/materials/tiles/normal/CyanHexTileStage2.material
+    path: res/materials/tiles/normal/cyan/CyanHexTileStage2.material
   - id: 34
-    path: res/materials/tiles/normal/RedHexTileStage3.material
+    path: res/materials/tiles/normal/red/RedHexTileStage3.material
   - id: 35
-    path: res/materials/tiles/YellowHexTileStage1.material
+    path: res/materials/tiles/daltonist/yellow/YellowHexTileStage1.material
   - id: 36
-    path: res/materials/tiles/normal/CyanHexTileStage1.material
+    path: res/materials/tiles/normal/cyan/CyanHexTileStage1.material
   - id: 37
-    path: res/materials/tiles/CyanHexTileStage2.material
+    path: res/materials/tiles/daltonist/cyan/CyanHexTileStage2.material
   - id: 38
-    path: res/materials/tiles/normal/GreenHexTileStage3.material
+    path: res/materials/tiles/normal/green/GreenHexTileStage3.material
   - id: 39
-    path: res/materials/tiles/normal/PinkHexTileStage1.material
+    path: res/materials/tiles/normal/pink/PinkHexTileStage1.material
   - id: 40
-    path: res/materials/tiles/CyanHexTileStage1.material
+    path: res/materials/tiles/daltonist/cyan/CyanHexTileStage1.material
   - id: 41
-    path: res/materials/tiles/GreenHexTileStage2.material
+    path: res/materials/tiles/daltonist/green/GreenHexTileStage2.material
   - id: 42
     path: res/materials/car/CarMaterial_Yellow.material
   - id: 43
-    path: res/materials/tiles/PinkHexTileStage1.material
+    path: res/materials/tiles/daltonist/pink/PinkHexTileStage1.material
   - id: 44
-    path: res/materials/tiles/normal/PinkHexTileStage2.material
+    path: res/materials/tiles/normal/pink/PinkHexTileStage2.material
   - id: 45
-    path: res/materials/tiles/YellowHexTileStage2.material
+    path: res/materials/tiles/daltonist/yellow/YellowHexTileStage2.material
   - id: 46
     path: res/materials/car/CarMaterial_Green.material
   - id: 47
-    path: res/materials/tiles/BlueHexTileStage1.material
+    path: res/materials/tiles/daltonist/blue/BlueHexTileStage1.material
   - id: 48
     path: res/materials/car/CarMaterial_Pink.material
   - id: 49
-    path: res/materials/tiles/RedHexTileStage1.material
+    path: res/materials/tiles/daltonist/red/RedHexTileStage1.material
   - id: 50
-    path: res/materials/tiles/BlueHexTileStage2.material
+    path: res/materials/tiles/daltonist/blue/BlueHexTileStage2.material
   - id: 51
     path: res/materials/RadioTower.material
   - id: 52
-    path: res/materials/tiles/NeutralHexTileStage0.material
+    path: res/materials/tiles/daltonist/neutral/NeutralHexTile.material
   - id: 53
-    path: res/materials/tiles/normal/PurpleHexTileStage1.material
+    path: res/materials/tiles/normal/purple/PurpleHexTileStage1.material
   - id: 54
-    path: res/materials/tiles/CyanHexTileStage3.material
+    path: res/materials/tiles/daltonist/cyan/CyanHexTileStage3.material
   - id: 55
     path: res/materials/CityMaterial.material
   - id: 56
@@ -816,12 +879,14 @@ Models:
   - id: 3
     path: res/models/hexagon.obj
   - id: 4
-    path: res/models/car.obj
+    path: "{Cube}"
   - id: 5
-    path: "{Plane}"
+    path: res/models/car.obj
   - id: 6
-    path: res/models/city.obj
+    path: "{Plane}"
   - id: 7
+    path: res/models/city.obj
+  - id: 8
     path: "{Sphere}"
 Prefabs:
   - id: 0
@@ -1005,7 +1070,7 @@ GameObjects:
       id: 11
       position:
         x: 0
-        y: -0.350
+        y: -0.349999994
         z: 0
       scale:
         x: 50
@@ -1078,7 +1143,7 @@ GameObjects:
   - id: 6
     name: MinigameControllerPanel
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 17
       position:
@@ -1118,8 +1183,10 @@ GameObjects:
         PlayerScoreId: 42
         EnemyScoreId: 46
         PlayerImageId: 36
+        PlayerFrontImageId: 138
         PlayerSelectionImageId: 48
         EnemyImageId: 38
+        EnemyFrontImageId: 140
         EnemySelectionImageId: 50
         LaunchpadButtonId: 28
         GuitarButtonId: 31
@@ -1143,6 +1210,8 @@ GameObjects:
       - 20
       - 21
       - 318
+      - 57
+      - 58
   - id: 7
     name: MinigameHeader
     isStatic: false
@@ -1169,8 +1238,8 @@ GameObjects:
         sprite: 20
         color:
           x: 1
-          y: 0
-          z: 0
+          y: 1
+          z: 1
           w: 1
         width: 320
         height: 50
@@ -2480,8 +2549,8 @@ GameObjects:
           - 14
           - 16
         resultsSpritesIds:
-          - 1235027098140171207
-          - 1235027098140171207
+          - 0
+          - 0
         resultsThresholds:
           - 0.5
           - 1
@@ -3313,5 +3382,81 @@ GameObjects:
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 6
+    children:
+      []
+  - id: 57
+    name: PlayerFrontMinigameImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 137
+      position:
+        x: -160
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 138
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 11
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 300
+        height: 540
+        layer: 3
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 58
+    name: EnemyFrontMinigameImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 139
+      position:
+        x: 160
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 180
+    components:
+      - id: 140
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 11
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 300
+        height: 540
+        layer: 3
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
     children:
       []

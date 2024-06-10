@@ -1,0 +1,7 @@
+material:
+  name: tiles/daltonist/cyan/CyanHexTileStage2
+  shader: origin/Textured
+  parameters:
+    - name: texture1
+      type: texture2D
+      value: res/textures/tiles/cyan2d.png

@@ -280,8 +280,10 @@ void MinigameManager::StartMinigame(Playable* chalanging, Playable* chalanged)
 
 		player->fightingPlayable = enemy;
 
-		PlayerImage->SetSprite(colors[player->colorIdx]);
-		EnemyImage->SetSprite(colors[enemy->colorIdx]);
+		PlayerImage->SetSprite(colors[player->colorIdx] + "B");
+		EnemyImage->SetSprite(colors[enemy->colorIdx] + "B");
+		PlayerFrontImage->SetSprite(colors[player->colorIdx] + "T");
+		EnemyFrontImage->SetSprite(colors[enemy->colorIdx] + "T");
 
 		MinigamePlain->SetActive(true);
 		return;
@@ -302,8 +304,10 @@ void MinigameManager::StartMinigame(Playable* chalanging, Playable* chalanged)
 		}
 		enemy = (Enemy*)chalanging;
 
-		PlayerImage->SetSprite(colors[player->colorIdx]);
-		EnemyImage->SetSprite(colors[enemy->colorIdx]);
+		PlayerImage->SetSprite(colors[player->colorIdx] + "B");
+		EnemyImage->SetSprite(colors[enemy->colorIdx] + "B");
+		PlayerFrontImage->SetSprite(colors[player->colorIdx] + "T");
+		EnemyFrontImage->SetSprite(colors[enemy->colorIdx] + "T");
 
 		player->fightingPlayable = enemy;
 
@@ -391,8 +395,10 @@ YAML::Node MinigameManager::Serialize() const
 	node["PlayerScoreId"] = PlayerScore->GetId();
 	node["EnemyScoreId"] = EnemyScore->GetId();
 	node["PlayerImageId"] = PlayerImage->GetId();
+	node["PlayerFrontImageId"] = PlayerFrontImage->GetId();
 	node["PlayerSelectionImageId"] = PlayerSelectionImage->GetId();
 	node["EnemyImageId"] = EnemyImage->GetId();
+	node["EnemyFrontImageId"] = EnemyFrontImage->GetId();
 	node["EnemySelectionImageId"] = EnemySelectionImage->GetId();
 	node["LaunchpadButtonId"] = LaunchpadButton->GetId();
 	node["GuitarButtonId"] = GuitarButton->GetId();
@@ -419,10 +425,14 @@ bool MinigameManager::Deserialize(const YAML::Node& node)
 	EnemyScore = (Text*)SceneManager::GetComponentWithId(id);
 	id = node["PlayerImageId"].as<size_t>();
 	PlayerImage = (Image*)SceneManager::GetComponentWithId(id);
+	id = node["PlayerFrontImageId"].as<size_t>();
+	PlayerFrontImage = (Image*)SceneManager::GetComponentWithId(id);
 	id = node["PlayerSelectionImageId"].as<size_t>();
 	PlayerSelectionImage = (Image*)SceneManager::GetComponentWithId(id);
 	id = node["EnemyImageId"].as<size_t>();
 	EnemyImage = (Image*)SceneManager::GetComponentWithId(id);
+	id = node["EnemyFrontImageId"].as<size_t>();
+	EnemyFrontImage = (Image*)SceneManager::GetComponentWithId(id);
 	id = node["EnemySelectionImageId"].as<size_t>();
 	EnemySelectionImage = (Image*)SceneManager::GetComponentWithId(id);
 	id = node["LaunchpadButtonId"].as<size_t>();

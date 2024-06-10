@@ -372,6 +372,12 @@ void SceneManager::LoadScene() {
 		}
 	}
 
+	// UPDATE ACTIVE FLAG
+	for (auto& item : _gameObjectsById) {
+		if (!item.second->GetActiveSelf())
+			item.second->UpdateActiveInChildren();
+	}
+
 	// CREATE AND ADD COMPONENTS TO OBJECTS
 	for (const auto& compPair : componentsNodes) {
 		GameObject* obj = _gameObjectsById[compPair.first];
@@ -959,6 +965,16 @@ vector<string> SceneManager::GetAllLoadedScenesNames() {
 	return names;
 }
 
+vector<GameObject*> SceneManager::GetAllGameObjects()
+{
+	vector<GameObject*> gameObjects;
+	gameObjects.reserve(_gameObjectsById.size());
+	for (auto& gameObjectPair : _gameObjectsById) {
+		gameObjects.push_back(gameObjectPair.second);
+	}
+	return gameObjects;
+}
+
 size_t SceneManager::GetTexture2D(size_t loadIdx)
 {
 	return _texturesIds[loadIdx];
@@ -1076,21 +1092,13 @@ void SceneManager::UnloadCurrent()
 {
 	_currentSceneId = 0;
 	_currentSceneName = "";
-	//for (auto& pair : _gameObjectsById)
-	//{
-	//	pair.second->OnDestroyedEvent(pair.second);
-	//}
 	_gameObjectsById.clear();
-	//for (auto& pair : _componentsById)
-	//{
-	//	pair.second->OnDestroy();
-	//}
 	_componentsById.clear();
 	DestroyObject(_rootObject);
 	_rootObject = nullptr;
-
-	while (_objectsToDestroy.size())
+	while (_objectsToDestroy.size() > 0) {
 		_objectsToDestroy.pop();
+	}
 
 	Action<map<size_t, size_t>&, const Action<size_t>&> unloader = [](map<size_t, size_t>& ids, const Action<size_t>& unload) -> void {
 		for (auto& id : ids) {

@@ -9,8 +9,15 @@
 
 #endif
 
+extern "C" {
+    _declspec(dllexport) DWORD NvOptimusEnablement = 1;
+    _declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
+
+#if TRACY_PROFILER
 const char* const tracy_ImGuiDrawingConsole = "ImGuiDrawingConsole";
 const char* const tracy_RenderingImGui = "RenderingImGui";
+#endif
 
 #define EDITOR_LOGGER
 //#define RELEASE_LOGGER
@@ -141,7 +148,7 @@ void end_imgui();
 constexpr const char* WINDOW_NAME = "Twin^2 Engine";
 constexpr int32_t WINDOW_WIDTH  = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
-constexpr bool WINDOW_FULLSCREEN = false;
+constexpr bool WINDOW_FULLSCREEN = true;
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
 constexpr int32_t GL_VERSION_MAJOR = 4;
@@ -294,19 +301,19 @@ int main(int, char**)
         }
 
         Camera = cam->GetGameObject();
-
-        //EnemyAI* e = text->GetGameObject()->AddComponent<EnemyAI>();
     };
 
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/BlankScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/PatronChoice.scene");
     SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/SceneToEditPrefabs.scene");
     //SceneManager::AddScene("testScene", "res/scenes/Making Game UI.scene");
     //SceneManager::AddScene("testScene", "res/scenes/MenuScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
     //SceneManager::AddScene("testScene", "res/scenes/ToonShading.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/HexTileEditScene.scene");
 
     SceneManager::LoadScene("testScene");
     SceneManager::Update();
@@ -449,14 +456,19 @@ void input()
         // Reload Scene
         std::string name = SceneManager::GetCurrentSceneName();
         SceneManager::UnloadCurrent();
-        //SceneManager::Update();
         SceneManager::LoadScene(name);
-        SceneManager::Update();
     }
 
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::S)) {
         // Save Scene
-        if (SceneManager::GetCurrentScenePath() != "") SceneManager::SaveScene(SceneManager::GetCurrentScenePath());
+        if (SceneManager::GetCurrentScenePath() != "") {
+            std::string name = SceneManager::GetCurrentSceneName();
+            std::string path = SceneManager::GetCurrentScenePath();
+            SceneManager::SaveScene(path);
+            SceneManager::UnloadCurrent();
+            SceneManager::AddScene(name, path);
+            SceneManager::LoadScene(name);
+        }
         else {
             _fileDialogSceneSave = true;
             _fileDialogSceneSaveInfo.type = ImGuiFileDialogType_SaveFile;
@@ -580,7 +592,13 @@ void render_imgui()
 
     if (Input::GetCursorState() == CURSOR_STATE::NORMAL)
     {
-        SceneManager::DrawCurrentSceneEditor();
+        if (SceneManager::GetCurrentSceneName() != "") {
+            SceneManager::DrawCurrentSceneEditor();
+        }
+        else 
+        {
+            SPDLOG_ERROR("CurrentScene is not defined!");
+        }
 
         if (!ImGui::Begin("Twin^2 Engine", NULL, ImGuiWindowFlags_MenuBar)) {
             ImGui::End();
@@ -626,7 +644,14 @@ void render_imgui()
                 }
 
                 if (ImGui::MenuItem("Save Scene##File", "Ctrl+S"))
-                    if (SceneManager::GetCurrentScenePath() != "") SceneManager::SaveScene(SceneManager::GetCurrentScenePath());
+                    if (SceneManager::GetCurrentScenePath() != "") {
+                        std::string name = SceneManager::GetCurrentSceneName();
+                        std::string path = SceneManager::GetCurrentScenePath();
+                        SceneManager::SaveScene(path);
+                        SceneManager::UnloadCurrent();
+                        SceneManager::AddScene(name, path);
+                        SceneManager::LoadScene(name);
+                    }
                     else {
                         _fileDialogSceneSave = true;
                         _fileDialogSceneSaveInfo.type = ImGuiFileDialogType_SaveFile;

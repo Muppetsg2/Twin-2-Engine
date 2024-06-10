@@ -23,12 +23,11 @@ HexTile* InitState::ChooseTile(Enemy* enemy) {
 	SPDLOG_INFO("Init State Choose Tile");
 
 	std::srand(std::time(NULL));
-	size_t idx = std::rand() % enemy->_tiles.size();
-	HexTile* tile = enemy->_tiles[idx];
-	//while (tile->occupyingEntity != nullptr || tile->GetMapHexTile()->type != MapHexTile::HexTileType::RadioStation) {
+	size_t idx = std::rand() % GameManager::instance->Tiles.size();
+	HexTile* tile = GameManager::instance->Tiles[idx];
 	while (tile->occupyingEntity != nullptr || tile->GetMapHexTile()->type == MapHexTile::HexTileType::Mountain) {
-		idx = std::rand() % enemy->_tiles.size();
-		tile = enemy->_tiles[idx];
+		idx = std::rand() % GameManager::instance->Tiles.size();
+		tile = GameManager::instance->Tiles[idx];
 	}
 	enemy->GetTransform()->SetGlobalPosition(tile->GetTransform()->GetGlobalPosition() + glm::vec3(0.0f, 0.1f, 0.0f));
 

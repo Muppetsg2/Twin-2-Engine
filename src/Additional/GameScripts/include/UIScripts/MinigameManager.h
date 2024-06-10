@@ -43,7 +43,7 @@ class MinigameManager : public Component {
 		void SetupButtons();
 		void PerformTurn();
 
-		std::string colors[7] = { "blueB", "cyanB", "greenB", "pinkB", "purpleB", "redB", "yellowB" };
+		std::string colors[7] = { "blue", "red", "green", "purple", "yellow", "cyan", "pink" };
 
 
 	public:
@@ -53,7 +53,9 @@ class MinigameManager : public Component {
 		GameObject* WonPanel = nullptr;
 		GameObject* LostPanel = nullptr;
 		Image* PlayerImage = nullptr;
+		Image* PlayerFrontImage = nullptr;
 		Image* EnemyImage = nullptr;
+		Image* EnemyFrontImage = nullptr;
 		Image* PlayerSelectionImage = nullptr;
 		Image* EnemySelectionImage = nullptr;
 

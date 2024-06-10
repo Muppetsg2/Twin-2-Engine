@@ -49,10 +49,12 @@ namespace Twin2Engine::Core
 
 		// Events
 		int OnStaticChangedId = -1;
+		int OnActiveChangedId = -1;
 		int OnEventInHierarchyParentChangedId = -1;
 		int OnTransformMatrixChangedId = -1;
 
 		void OnGameObjectStaticChanged(GameObject* gameObject);
+		void OnGameObjectActiveChanged(GameObject* gameObject);
 		void OnTransformMatrixChanged(Transform* transform);
 		void OnMaterialsErased();
 		bool CheckMaterialsValidation();

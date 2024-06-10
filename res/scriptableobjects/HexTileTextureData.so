@@ -1,31 +1,39 @@
 scriptable_object:
   __SO_RegisteredName__: HexTileTextureData
-  neutralMaterialName: res/materials/tiles/normal/NeutralHexTileStage0.material
+  neutralMaterialName: res/materials/tiles/normal/neutral/NeutralHexTile.material
+  neutralBorderMaterialName: res/materials/tiles/borders/neutral/NeutralHexTileBorder.material
   blueMaterialsNames:
-  - res/materials/tiles/normal/BlueHexTileStage1.material
-  - res/materials/tiles/normal/BlueHexTileStage2.material
-  - res/materials/tiles/normal/BlueHexTileStage3.material
+  - res/materials/tiles/normal/blue/BlueHexTileStage1.material
+  - res/materials/tiles/normal/blue/BlueHexTileStage2.material
+  - res/materials/tiles/normal/blue/BlueHexTileStage3.material
+  blueBorderMaterialName: res/materials/tiles/borders/blue/BlueHexTileBorder.material
   redMaterialsNames:
-  - res/materials/tiles/normal/RedHexTileStage1.material
-  - res/materials/tiles/normal/RedHexTileStage2.material
-  - res/materials/tiles/normal/RedHexTileStage3.material
+  - res/materials/tiles/normal/red/RedHexTileStage1.material
+  - res/materials/tiles/normal/red/RedHexTileStage2.material
+  - res/materials/tiles/normal/red/RedHexTileStage3.material
+  redBorderMaterialName: res/materials/tiles/borders/red/RedHexTileBorder.material
   greenMaterialsNames:
-  - res/materials/tiles/normal/GreenHexTileStage1.material
-  - res/materials/tiles/normal/GreenHexTileStage2.material
-  - res/materials/tiles/normal/GreenHexTileStage3.material
+  - res/materials/tiles/normal/green/GreenHexTileStage1.material
+  - res/materials/tiles/normal/green/GreenHexTileStage2.material
+  - res/materials/tiles/normal/green/GreenHexTileStage3.material
+  greenBorderMaterialName: res/materials/tiles/borders/green/GreenHexTileBorder.material
   purpleMaterialsNames:
-  - res/materials/tiles/normal/PurpleHexTileStage1.material
-  - res/materials/tiles/normal/PurpleHexTileStage2.material
-  - res/materials/tiles/normal/PurpleHexTileStage3.material
+  - res/materials/tiles/normal/purple/PurpleHexTileStage1.material
+  - res/materials/tiles/normal/purple/PurpleHexTileStage2.material
+  - res/materials/tiles/normal/purple/PurpleHexTileStage3.material
+  purpleBorderMaterialName: res/materials/tiles/borders/purple/PurpleHexTileBorder.material
   yellowMaterialsNames:
-  - res/materials/tiles/normal/YellowHexTileStage1.material
-  - res/materials/tiles/normal/YellowHexTileStage2.material
-  - res/materials/tiles/normal/YellowHexTileStage3.material
+  - res/materials/tiles/normal/yellow/YellowHexTileStage1.material
+  - res/materials/tiles/normal/yellow/YellowHexTileStage2.material
+  - res/materials/tiles/normal/yellow/YellowHexTileStage3.material
+  yellowBorderMaterialName: res/materials/tiles/borders/yellow/YellowHexTileBorder.material
   cyanMaterialsNames:
-  - res/materials/tiles/normal/CyanHexTileStage1.material
-  - res/materials/tiles/normal/CyanHexTileStage2.material
-  - res/materials/tiles/normal/CyanHexTileStage3.material
+  - res/materials/tiles/normal/cyan/CyanHexTileStage1.material
+  - res/materials/tiles/normal/cyan/CyanHexTileStage2.material
+  - res/materials/tiles/normal/cyan/CyanHexTileStage3.material
+  cyanBorderMaterialName: res/materials/tiles/borders/cyan/CyanHexTileBorder.material
   pinkMaterialsNames:
-  - res/materials/tiles/normal/PinkHexTileStage1.material
-  - res/materials/tiles/normal/PinkHexTileStage2.material
-  - res/materials/tiles/normal/PinkHexTileStage3.material
+  - res/materials/tiles/normal/pink/PinkHexTileStage1.material
+  - res/materials/tiles/normal/pink/PinkHexTileStage2.material
+  - res/materials/tiles/normal/pink/PinkHexTileStage3.material
+  pinkBorderMaterialName: res/materials/tiles/borders/pink/PinkHexTileBorder.material

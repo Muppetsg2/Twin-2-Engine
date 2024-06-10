@@ -1,7 +1,0 @@
-material:
-  name: tiles/YellowHexTileStage2
-  shader: origin/Textured
-  parameters:
-    - name: texture1
-      type: texture2D
-      value: res/textures/tiles/yellow2d.png

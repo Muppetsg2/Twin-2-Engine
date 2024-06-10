@@ -90,10 +90,63 @@ void SpriteManager::DrawSpriteCreator(bool* p_open) {
 		}
 	}
 
+	names.clear();
+
 	if (error) ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Incorect Name or Name already exist!");
 
 	map<size_t, string> textures = TextureManager::GetAllTexture2DNames();
 
+	vector<std::pair<size_t, string>> texs = vector<std::pair<size_t, string>>(textures.begin(), textures.end());
+
+	textures.clear();
+
+	vector<string> texNames = vector<string>();
+	vector<size_t> ids = vector<size_t>();
+	texNames.resize(texs.size());
+	ids.resize(texs.size());
+
+	std::sort(texs.begin(), texs.end(), [&](std::pair<size_t, string> const& left, std::pair<size_t, string> const& right) -> bool {
+		return left.second.compare(right.second) < 0;
+		});
+
+	std::transform(texs.begin(), texs.end(), texNames.begin(), [](std::pair<size_t, string> const& i) -> string {
+		return i.second + "##SPRITE_CREATOR Sprite Manager" + std::to_string(i.first);
+		});
+
+	std::transform(texs.begin(), texs.end(), ids.begin(), [](std::pair<size_t, string> const& i) -> size_t {
+		return i.first;
+		});
+
+	texs.clear();
+
+	static size_t selectedTexture = 0;
+
+	int choosed = -1;
+	if (selectedTexture != 0) choosed = std::find(ids.begin(), ids.end(), selectedTexture) - ids.begin();
+
+	if (ImGui::ComboWithFilter(string("Texture##SPRITE_CREATOR Sprite Manager").c_str(), &choosed, texNames, 10)) {
+		if (choosed != -1) {
+			tex = TextureManager::GetTexture2D(ids[choosed]);
+			selectedTexture = ids[choosed];
+
+			if (tex != nullptr) {
+				if (data.x > tex->GetWidth()) data.x = 0;
+				if (data.y > tex->GetHeight()) data.y = 0;
+				if (data.x + data.width > tex->GetWidth() || data.width == 1) data.width = tex->GetWidth() - data.x;
+				if (data.y + data.height > tex->GetHeight() || data.height == 1) data.height = tex->GetHeight() - data.y;
+			}
+			else {
+				data.x = 0;
+				data.y = 0;
+				data.width = 1;
+				data.height = 1;
+			}
+		}
+	}
+
+	texNames.clear();
+	ids.clear();
+	/*
 	static size_t selectedTexture = 0;
 	bool clicked = false;
 
@@ -129,6 +182,7 @@ void SpriteManager::DrawSpriteCreator(bool* p_open) {
 		}
 		ImGui::EndCombo();
 	}
+	*/
 
 	ImGui::BeginDisabled(selectedTexture == 0 || tex == nullptr);
 	ImGui::DragUInt("X##SPRITE_CREATOR Sprite Manager", &data.x, 1.f, 0, tex != nullptr ? tex->GetWidth() - 1 : 0);
@@ -260,10 +314,63 @@ void SpriteManager::DrawSpriteEditor(bool* p_open, size_t spriteToEdit) {
 		}
 	}
 
+	names.clear();
+
 	if (error_name) ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Incorect Name or Name already exist!");
 
 	map<size_t, string> textures = TextureManager::GetAllTexture2DNames();
 
+	vector<std::pair<size_t, string>> texs = vector<std::pair<size_t, string>>(textures.begin(), textures.end());
+
+	textures.clear();
+
+	vector<string> texNames = vector<string>();
+	vector<size_t> ids = vector<size_t>();
+	texNames.resize(texs.size());
+	ids.resize(texs.size());
+
+	std::sort(texs.begin(), texs.end(), [&](std::pair<size_t, string> const& left, std::pair<size_t, string> const& right) -> bool {
+		return left.second.compare(right.second) < 0;
+		});
+
+	std::transform(texs.begin(), texs.end(), texNames.begin(), [](std::pair<size_t, string> const& i) -> string {
+		return i.second + "##SPRITE_EDITOR Sprite Manager" + std::to_string(i.first);
+		});
+
+	std::transform(texs.begin(), texs.end(), ids.begin(), [](std::pair<size_t, string> const& i) -> size_t {
+		return i.first;
+		});
+
+	texs.clear();
+
+	int choosed = -1;
+
+	if (selectedTexture != 0) choosed = std::find(ids.begin(), ids.end(), selectedTexture) - ids.begin();
+
+	if (ImGui::ComboWithFilter(string("Texture##SPRITE_EDITOR Sprite Manager").c_str(), &choosed, texNames, 10)) {
+		if (choosed != -1) {
+			tex = TextureManager::GetTexture2D(ids[choosed]);
+			selectedTexture = ids[choosed];
+
+			if (tex != nullptr) {
+				if (data.x > tex->GetWidth()) data.x = 0;
+				if (data.y > tex->GetHeight()) data.y = 0;
+				if (data.x + data.width > tex->GetWidth() || data.width == 1) data.width = tex->GetWidth() - data.x;
+				if (data.y + data.height > tex->GetHeight() || data.height == 1) data.height = tex->GetHeight() - data.y;
+			}
+			else {
+				data.x = 0;
+				data.y = 0;
+				data.width = 1;
+				data.height = 1;
+			}
+		}
+	}
+
+	texNames.clear();
+	ids.clear();
+
+	/*
 	bool clicked = false;
 
 	if (ImGui::BeginCombo(string("Texture##SPRITE_EDITOR Sprite Manager").c_str(), selectedTexture == 0 ? "None" : textures[selectedTexture].c_str())) {
@@ -299,6 +406,7 @@ void SpriteManager::DrawSpriteEditor(bool* p_open, size_t spriteToEdit) {
 		}
 		ImGui::EndCombo();
 	}
+	*/
 
 	ImGui::BeginDisabled(selectedTexture == 0 || tex == nullptr);
 	ImGui::DragUInt("X##SPRITE_EDITOR Sprite Manager", &data.x, 1.f, 0, tex != nullptr ? tex->GetWidth() - 1 : 0);

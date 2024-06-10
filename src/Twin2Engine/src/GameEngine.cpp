@@ -76,7 +76,10 @@ void GameEngine::Render()
 {
     EarlyRender();
     SceneManager::RenderCurrentScene();
-    CameraComponent::GetMainCamera()->Render();
+    if (CameraComponent::GetMainCamera() != nullptr)
+        CameraComponent::GetMainCamera()->Render();
+    else
+        SPDLOG_ERROR("Main Camera is nullptr!");
     LateRender();
 }
 

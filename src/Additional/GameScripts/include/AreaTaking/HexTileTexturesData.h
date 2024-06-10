@@ -3,7 +3,7 @@
 #include <core/ScriptableObject.h>
 #include <graphic/Material.h>
 
-ENUM_CLASS_BASE_VALUE(TILE_COLOR, uint8_t, BLUE, 0, RED, 1, GREEN, 2, PURPLE, 4, YELLOW, 8, CYAN, 16, PINK, 32);
+ENUM_CLASS_BASE_VALUE(TILE_COLOR, uint8_t, NEUTRAL, 0, BLUE, 1, RED, 2, GREEN, 4, PURPLE, 8, YELLOW, 16, CYAN, 32, PINK, 64);
 
 class HexTileTextureData : public Twin2Engine::Core::ScriptableObject
 {
@@ -19,6 +19,7 @@ private:
     //std::vector<std::vector<Twin2Engine::Graphic::Material*>> _materials;
 
     Twin2Engine::Graphic::Material* _neutralMaterial;
+    Twin2Engine::Graphic::Material* _neutralBorderMaterial;
     //std::string _neutralMaterialName;
 
     /*
@@ -32,12 +33,19 @@ private:
     */
 
     std::vector<Twin2Engine::Graphic::Material*> _blueMaterials;
+    Twin2Engine::Graphic::Material* _blueBorderMaterial;
     std::vector<Twin2Engine::Graphic::Material*> _redMaterials;
+    Twin2Engine::Graphic::Material* _redBorderMaterial;
     std::vector<Twin2Engine::Graphic::Material*> _greenMaterials;
+    Twin2Engine::Graphic::Material* _greenBorderMaterial;
     std::vector<Twin2Engine::Graphic::Material*> _purpleMaterials;
+    Twin2Engine::Graphic::Material* _purpleBorderMaterial;
     std::vector<Twin2Engine::Graphic::Material*> _yellowMaterials;
+    Twin2Engine::Graphic::Material* _yellowBorderMaterial;
     std::vector<Twin2Engine::Graphic::Material*> _cyanMaterials;
+    Twin2Engine::Graphic::Material* _cyanBorderMaterial;
     std::vector<Twin2Engine::Graphic::Material*> _pinkMaterials;
+    Twin2Engine::Graphic::Material* _pinkBorderMaterial;
 
 public:
 
@@ -66,13 +74,21 @@ public:
         */
 
         _neutralMaterial = nullptr;
+        _neutralBorderMaterial = nullptr;
         _blueMaterials.clear();
+        _blueBorderMaterial = nullptr;
         _redMaterials.clear();
+        _redBorderMaterial = nullptr;
         _greenMaterials.clear();
+        _greenBorderMaterial = nullptr;
         _purpleMaterials.clear();
+        _purpleBorderMaterial = nullptr;
         _yellowMaterials.clear();
+        _yellowBorderMaterial = nullptr;
         _cyanMaterials.clear();
+        _cyanBorderMaterial = nullptr;
         _pinkMaterials.clear();
+        _pinkBorderMaterial = nullptr;
 
         /*
         for (size_t i = 0; i < _materials.size(); ++i)
@@ -87,6 +103,7 @@ public:
     }
 
     Twin2Engine::Graphic::Material* GetMaterial(TILE_COLOR color, size_t stage);
+    Twin2Engine::Graphic::Material* GetBorderMaterial(TILE_COLOR color);
 };
 
 SERIALIZABLE_SCRIPTABLE_OBJECT_NN(HexTileTextureData);

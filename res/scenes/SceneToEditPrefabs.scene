@@ -1,0 +1,185 @@
+Textures:
+  - id: 0
+    path: res/textures/mountainTex2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+Sprites: ~
+Fonts:
+  - id: 0
+    path: res/fonts/Caveat-Regular.ttf
+Audio: ~
+Materials:
+  - id: 0
+    path: res/materials/enviroment/CloudMaterial.material
+  - id: 1
+    path: res/materials/MountainsUnlit.material
+Models:
+  - id: 0
+    path: res/models/mount3.obj
+  - id: 1
+    path: res/models/cloud.obj
+  - id: 2
+    path: "{Plane}"
+Prefabs:
+  - id: 0
+    path: res\prefabs\tilemap\mapElements\mountain_2.prefab
+ScriptableObjects: ~
+GameObjects:
+  - id: 1
+    name: Camera
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5469
+      position:
+        x: -4.31985807
+        y: 1.75413668
+        z: 0.0226189308
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: -19.5000019
+        y: 0.799999952
+        z: 1.33415128e-08
+    components:
+      - id: 5470
+        enabled: true
+        type: Camera
+        fov: 45
+        nearPlane: 0.100000001
+        farPlane: 1000
+        cameraFilter: 0
+        cameraType: 1
+        cameraMode: 0
+        samples: 4
+        renderRes: 0
+        gamma: 2.20000005
+        brightness: 0
+        contrast: 1
+        worldUp:
+          x: 0
+          y: 1
+          z: 0
+        isMain: true
+        isFrustum: true
+        isSSAO: true
+        ssaoSampleRadius: 0.699999988
+        ssaoBias: 0.00999999978
+        blurMSize: 0
+    children:
+      []
+  - id: 2
+    name: Mountain
+    isStatic: false
+    isActive: true
+    transform:
+      id: 4921
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 60.0000038
+        z: 0
+    components:
+      - id: 1
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 0
+        materials:
+          - 1
+    children:
+      - 3
+  - id: 3
+    name: Cloud
+    isStatic: false
+    isActive: true
+    transform:
+      id: 2
+      position:
+        x: 0.182924122
+        y: 0.425505638
+        z: -0.000360786915
+      scale:
+        x: 0.436835736
+        y: 0.47691375
+        z: 0.578777909
+      rotation:
+        x: -90
+        y: 0
+        z: 30.0000019
+    components:
+      - id: 3
+        enabled: true
+        type: Cloud
+        direction:
+          x: 1
+          y: 0
+          z: 0
+        velocity: 0
+        startPosition:
+          x: -7
+          y: 4
+          z: 7
+        startingScale:
+          x: 0.436835736
+          y: 0.47691375
+          z: 0.578777909
+        scaleVelocity:
+          x: 0.0279951841
+          y: -0.0260232911
+          z: 0.0372773483
+        maxDistance: 18
+        travelledDistance: 0
+      - id: 4
+        enabled: true
+        type: MeshRenderer
+        isTransparent: true
+        model: 1
+        materials:
+          - 0
+    children:
+      []
+  - id: 4
+    name: Directional Light
+    isStatic: false
+    isActive: true
+    transform:
+      id: 4922
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 4923
+        enabled: true
+        type: DirectionalLight
+        direction:
+          x: -0.699999988
+          y: 0.600000024
+          z: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+        power: 1
+    children:
+      []

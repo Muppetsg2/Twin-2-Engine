@@ -31,13 +31,6 @@ void Enemy::Initialize()
     Playable::Initialize();
     _movement = GetGameObject()->GetComponent<EnemyMovement>();
 
-    /*
-    if (_tilemap != nullptr) { 
-        list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
-        _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend()); 
-    }
-    */
-
     ChangeState(&_initState);
 }
 
@@ -45,11 +38,6 @@ void Enemy::Initialize()
 void Enemy::OnEnable()
 {
     //PerformMovement();
-}
-
-void Enemy::OnDestroy()
-{
-
 }
 
 void Enemy::Update()
@@ -74,17 +62,6 @@ void Enemy::LostPaperRockScissors(Playable* playable)
 {
     CurrTile->StopTakingOver(this);
     ChangeState(&_movingState);
-
-    //GameObject* tiles[6];
-    //CurrTile->GetMapHexTile()->tile->GetAdjacentGameObjects(tiles);
-    //for (int i = 0; i < 6; ++i) {
-    //    if (tiles[i] != nullptr) {
-    //        _movement->reachEnd = true;
-    //        //_movement->MoveAndSetDestination(tiles[i]->GetComponent<HexTile>());
-    //        SetMoveDestination(tiles[i]->GetComponent<HexTile>());
-    //        break;
-    //    }
-    //}
 }
 
 void Enemy::WonPaperRockScissors(Playable* playable)
@@ -143,10 +120,6 @@ float Enemy::GetMaxRadius() const {
 void Enemy::SetTileMap(Tilemap::HexagonalTilemap* map)
 {
     _tilemap = map;
-    if (_tilemap != nullptr) {
-        list<HexTile*> tempList = _tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
-        _tiles.insert(_tiles.begin(), tempList.cbegin(), tempList.cend());
-    }
 }
 
 void Enemy::OnDead()

@@ -11,7 +11,7 @@ using namespace std;
 void Human::Initialize()
 {
     _movement = GetGameObject()->GetComponent<HumanMovement>();
-    finishedMovingEventHandlerId = _movement->OnEventFinishedMovement += [&](HumanMovement* movement) -> void { FinishedMoving(movement); };
+    finishedMovingEventHandlerId = (_movement->OnEventFinishedMovement += [&](HumanMovement* movement) -> void { FinishedMoving(movement); });
 }
 
 void Human::OnDestroy()

@@ -59,7 +59,27 @@ public:
 	
 	// Borders
 	std::vector<Twin2Engine::Core::GameObject*> borders;
+	/*Twin2Engine::Core::GameObject* TopRightBorder;
+	Twin2Engine::Core::GameObject* MiddleRightBorder;
+	Twin2Engine::Core::GameObject* BottomRightBorder;
+	Twin2Engine::Core::GameObject* BottomLeftBorder;
+	Twin2Engine::Core::GameObject* MiddleLeftBorder;
+	Twin2Engine::Core::GameObject* TopLeftBorder;*/
+
+	// Borders Joints
 	std::vector<Twin2Engine::Core::GameObject*> borderJoints;
+	/*Twin2Engine::Core::GameObject* TopRightLeftBorderJoint;
+	Twin2Engine::Core::GameObject* TopRightRightBorderJoint;
+	Twin2Engine::Core::GameObject* MiddleRightLeftBorderJoint;
+	Twin2Engine::Core::GameObject* MiddleRightRightBorderJoint;
+	Twin2Engine::Core::GameObject* BottomRightLeftBorderJoint;
+	Twin2Engine::Core::GameObject* BottomRightRightBorderJoint;
+	Twin2Engine::Core::GameObject* BottomLeftLeftBorderJoint;
+	Twin2Engine::Core::GameObject* BottomLeftRightBorderJoint;
+	Twin2Engine::Core::GameObject* MiddleLeftLeftBorderJoint;
+	Twin2Engine::Core::GameObject* MiddleLeftRightBorderJoint;
+	Twin2Engine::Core::GameObject* TopLeftLeftBorderJoint;
+	Twin2Engine::Core::GameObject* TopLeftRightBorderJoint;*/
 
 	int totalTileFans;
 

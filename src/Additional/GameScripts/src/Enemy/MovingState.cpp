@@ -248,7 +248,7 @@ void MovingState::Move(Enemy* enemy)
 	enemy->ChangeState(&enemy->_movingState);
 }
 
-// TODO: Zmieniæ ChooseTile
+// TODO: Zmieniæ ChooseTile (Dodaæ ochronê przed 0 mo¿liwoœciami)
 void MovingState::ChooseTile(Enemy* enemy)
 {
 	vec3 globalPosition = enemy->GetTransform()->GetGlobalPosition();
@@ -257,28 +257,23 @@ void MovingState::ChooseTile(Enemy* enemy)
 	vec3 tilePosition;
 
 	vector<HexTile*> possible;
-	//possible.reserve((1 + _movement->maxSteps) / 2 * _movement->maxSteps * 6);
 	possible.reserve((1 + enemy->_movement->maxSteps) * enemy->_movement->maxSteps * 3);
 
-	list<HexTile*> tempList = enemy->_tilemap->GetGameObject()->GetComponentsInChildren<HexTile>();
-	enemy->_tiles.clear();
-	enemy->_tiles.insert(enemy->_tiles.begin(), tempList.cbegin(), tempList.cend());
-
-	size_t size = enemy->_tiles.size();
+	size_t size = GameManager::instance->Tiles.size();
 	float maxRadius = enemy->GetMaxRadius();
 
 	for (size_t index = 0ull; index < size; ++index)
 	{
-		MapHexTile::HexTileType type = enemy->_tiles[index]->GetMapHexTile()->type;
-		if (type != MapHexTile::HexTileType::Mountain && type != MapHexTile::HexTileType::None && enemy->_tiles[index] != enemy->CurrTile)
+		MapHexTile::HexTileType type = GameManager::instance->Tiles[index]->GetMapHexTile()->type;
+		if (type != MapHexTile::HexTileType::Mountain && type != MapHexTile::HexTileType::None && GameManager::instance->Tiles[index] != enemy->CurrTile)
 		{
-			tilePosition = enemy->_tiles[index]->GetTransform()->GetGlobalPosition();
+			tilePosition = GameManager::instance->Tiles[index]->GetTransform()->GetGlobalPosition();
 			tilePosition.y = .0f;
 			float distance = glm::distance(globalPosition, tilePosition);
 			
 			float dist = INFINITE;
 			for (auto& takenTile : enemy->OwnTiles) {
-				float tempDist = glm::distance((glm::vec2)enemy->_tiles[index]->GetMapHexTile()->tile->GetPosition(), (glm::vec2)takenTile->GetMapHexTile()->tile->GetPosition());
+				float tempDist = glm::distance((glm::vec2)GameManager::instance->Tiles[index]->GetMapHexTile()->tile->GetPosition(), (glm::vec2)takenTile->GetMapHexTile()->tile->GetPosition());
 				if (tempDist < dist) {
 					dist = tempDist;
 				}
@@ -286,15 +281,17 @@ void MovingState::ChooseTile(Enemy* enemy)
 			
 			if (distance <= maxRadius && dist <= enemy->_tilemap->GetDistanceBetweenTiles() * 2.f)
 			{
-				possible.push_back(enemy->_tiles[index]);
+				possible.push_back(GameManager::instance->Tiles[index]);
 			}
 		}
 	}
 
 	SPDLOG_INFO("ENEMY Possible Size: {}", possible.size());
-	HexTile* result = possible[Random::Range(0ull, possible.size() - 1ull)];
+	if (possible.size() != 0) {
+		HexTile* result = possible[Random::Range(0ull, possible.size() - 1ull)];
 
-	enemy->SetMoveDestination(result);
+		enemy->SetMoveDestination(result);
+	}
 }
 
 std::unordered_map<Enemy*, std::pair<size_t, size_t>> MovingState::_eventsIds;

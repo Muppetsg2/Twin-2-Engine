@@ -32,6 +32,7 @@ private:
 	static void ConcertAbility(Enemy* enemy);
 	static void Move(Enemy* enemy);
 
+	// TODO: ChooseTile Possible tiles possible size 0 error
 	static void ChooseTile(Enemy* enemy);
 	static std::unordered_map<Enemy*, std::pair<size_t, size_t>> _eventsIds;
 

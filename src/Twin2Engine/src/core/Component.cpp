@@ -7,14 +7,17 @@ using namespace Twin2Engine::Manager;
 using namespace std;
 
 size_t Component::_currentFreeId = 0;
-list<size_t> Component::_freedIds;
+vector<size_t> Component::_freedIds;
 
 size_t Component::GetFreeId()
 {
 	size_t id;
 	if (_freedIds.size() > 0) {
 		id = _freedIds.front();
-		_freedIds.pop_front();
+		for (size_t i = 0; i < _freedIds.size() - 1; ++i) {
+			_freedIds[i] = _freedIds[i + 1];
+		}
+		_freedIds.resize(_freedIds.size() - 1);
 	}
 	else {
 		id = _currentFreeId++;
@@ -24,8 +27,24 @@ size_t Component::GetFreeId()
 
 void Component::FreeId(size_t id)
 {
-	_freedIds.push_back(id);
-	_freedIds.sort();
+	if (_currentFreeId == id + 1) {
+		--_currentFreeId;
+
+		if (_freedIds.size() > 0) {
+			while (_currentFreeId == _freedIds.back() + 1) {
+				_freedIds.pop_back();
+				--_currentFreeId;
+
+				if (_freedIds.size() == 0) {
+					break;
+				}
+			}
+		}
+	}
+	else {
+		_freedIds.push_back(id);
+		sort(_freedIds.begin(), _freedIds.end());
+	}
 }
 
 Component::Component()
@@ -141,16 +160,21 @@ void Component::Init(GameObject* obj)
 void Component::Init(GameObject* obj, size_t id)
 {
 	_id = id;
-	if (_freedIds.size() > 0) {
-		auto found = find_if(_freedIds.begin(), _freedIds.end(), [&](size_t fId) -> bool { return fId == _id; });
-		if (found != _freedIds.end()) {
-			_freedIds.erase(found);
+	if (_currentFreeId <= id) {
+		for (; _currentFreeId < id; ++_currentFreeId) _freedIds.push_back(_currentFreeId);
+		sort(_freedIds.begin(), _freedIds.end());
+		_currentFreeId = id + 1;
+	}
+	else {
+		if (_freedIds.size() > 0) {
+			for (size_t i = 0; i < _freedIds.size(); ++i) {
+				if (_freedIds[i] == _id) {
+					_freedIds.erase(_freedIds.begin() + i);
+					break;
+				}
+			}
 		}
 	}
-	if (_currentFreeId <= _id) {
-		for (; _currentFreeId < _id; ++_currentFreeId) _freedIds.push_back(_currentFreeId);
-		_freedIds.sort();
-		_currentFreeId = _id + 1;
-	}
+
 	_gameObject = obj;
 }

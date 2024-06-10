@@ -1,11 +1,13 @@
 #include <core/GameObject.h>
 #include <core/ComponentsMap.h>
 #include <manager/SceneManager.h>
+#include <manager/PrefabManager.h>
 
 using namespace Twin2Engine::Core;
+using namespace Twin2Engine::Manager;
 
 size_t Twin2Engine::Core::GameObject::_currentFreeId = 1;
-list<size_t> Twin2Engine::Core::GameObject::_freedIds;
+vector<size_t> Twin2Engine::Core::GameObject::_freedIds;
 std::unordered_set<std::string_view> Twin2Engine::Core::GameObject::AllTags;
 
 GameObject* GameObject::Clone() const
@@ -27,7 +29,7 @@ void GameObject::CloneTo(GameObject* cloned) const
 	cloned->_transform->SetLocalRotation(_transform->GetLocalRotation());
 	cloned->_transform->SetLocalScale(_transform->GetLocalScale());
 
-	// Pomijanie Transforma z listy komponentów
+	// Pomijanie Transforma z listy komponentï¿½w
 	auto component = std::next(components.begin());
 
 	for (; component != components.end(); ++component)
@@ -75,7 +77,7 @@ void GameObject::SetActiveInHierarchy(bool activeInHierarchy)
 				_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(activeInHierarchy);
 			}
 		}
-		OnActiveChangedEvent.Invoke(this); // Wywo³ywanie eventu
+		OnActiveChangedEvent.Invoke(this); // Wywoï¿½ywanie eventu
 	}
 }
 
@@ -91,16 +93,20 @@ GameObject::GameObject(size_t id) {
 	
 	// Setting IDs
 	_id = id;
-	if (_freedIds.size() > 0) {
-		auto found = find_if(_freedIds.begin(), _freedIds.end(), [&](size_t fId) -> bool { return fId == _id; });
-		if (found != _freedIds.end()) {
-			_freedIds.erase(found);
-		}
-	}
 	if (_currentFreeId <= id) {
 		for (; _currentFreeId < id; ++_currentFreeId) _freedIds.push_back(_currentFreeId);
-		_freedIds.sort();
+		sort(_freedIds.begin(), _freedIds.end());
 		_currentFreeId = id + 1;
+	}
+	else {
+		if (_freedIds.size() > 0) {
+			for (size_t i = 0; i < _freedIds.size(); ++i) {
+				if (_freedIds[i] == _id) {
+					_freedIds.erase(_freedIds.begin() + i);
+					break;
+				}
+			}
+		}
 	}
 
 	// Setting activation
@@ -193,7 +199,7 @@ void GameObject::SetActive(bool active)
 			_transform->GetChildAt(index)->GetGameObject()->SetActiveInHierarchy(_activeSelf);
 		}
 
-		OnActiveChangedEvent.Invoke(this); // Wywo³ywanie eventu
+		OnActiveChangedEvent.Invoke(this); // Wywoï¿½ywanie eventu
 	}
 }
 
@@ -319,11 +325,28 @@ void GameObject::DrawEditor()
 		}
 	}
 
+	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 50);
+
+	if (ImGui::Button(string(ICON_FA_DOWNLOAD "##Save To Prefab GO").append(id).c_str())) {
+		_saveGameObjectAsPrefab = true;
+		_fileDialogPrefabSaveInfo.type = ImGuiFileDialogType_SaveFile;
+		_fileDialogPrefabSaveInfo.title = string("Save Prefab##File_Prefab_Save").append(id);
+		_fileDialogPrefabSaveInfo.directoryPath = std::filesystem::path(std::filesystem::current_path().string() + "\\res\\prefabs");
+	}
+
 	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 20);
 
 	if (ImGui::Button(string(ICON_FA_TRASH_CAN "##Remove GO").append(id).c_str())) {
 		Manager::SceneManager::DestroyGameObject(this);
 		return;
+	}
+
+	if (ImGui::FileDialog(&_saveGameObjectAsPrefab, &_fileDialogPrefabSaveInfo))
+	{
+		// Result path in: m_fileDialogInfo.resultPath
+		std::string path = std::filesystem::relative(_fileDialogPrefabSaveInfo.resultPath).string();
+		std::string name = std::filesystem::path(path).stem().string();
+		PrefabManager::SaveAsPrefab(this, path);
 	}
 
 	ImGui::Text("Id: %d", _id);

@@ -1,5 +1,7 @@
 #include <GameEngine.h>
 
+#include <ParticleSystemsController.h>
+
 using namespace Twin2Engine;
 using namespace Twin2Engine::Tools;
 using namespace Twin2Engine::Manager;
@@ -186,6 +188,8 @@ void GameEngine::End()
 {
     // Cleanup
     EarlyEnd();
+
+    ParticleSystemsController::DeleteInstance();
 
     PrefabManager::UnloadAll();
     SceneManager::UnloadAll();

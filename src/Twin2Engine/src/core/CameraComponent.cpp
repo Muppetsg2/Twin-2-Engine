@@ -7,6 +7,7 @@
 #include <graphic/manager/ModelsManager.h>
 #include <core/MathExtensions.h>
 #include <core/Time.h>
+#include <ParticleSystemsController.h>
 
 #if TRACY_PROFILER
 const char* const tracy_RenderDepthBuffer = "RenderDepthBuffer";
@@ -672,6 +673,9 @@ void CameraComponent::Render()
 			BindDepthTexture(26);
 
 			GraphicEngine::Render();
+
+			ParticleSystemsController::Instance()->Update();
+			ParticleSystemsController::Instance()->Render();
 
 #if TRACY_PROFILER
 			FrameMarkEnd(tracy_RenderScreenTexture);

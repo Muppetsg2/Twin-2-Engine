@@ -50,6 +50,10 @@ void GameManager::Initialize() {
     {
         Twin2Engine::Manager::SceneManager::DestroyGameObject(this->GetGameObject());
     }
+
+    //particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/particle.png", 10, 1.0f, 0.5f, 2.0f, 1.8f, 0.2f, 0.2f);
+    //particleGenerator->startPosition = glm::vec4(0.0f, 4.0f, 0.0f, 1.0f);
+    //particleGenerator->active = true;
 }
 
 void GameManager::OnEnable() {

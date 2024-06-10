@@ -1086,10 +1086,21 @@ void SceneManager::UnloadCurrent()
 {
 	_currentSceneId = 0;
 	_currentSceneName = "";
+	//for (auto& pair : _gameObjectsById)
+	//{
+	//	pair.second->OnDestroyedEvent(pair.second);
+	//}
 	_gameObjectsById.clear();
+	//for (auto& pair : _componentsById)
+	//{
+	//	pair.second->OnDestroy();
+	//}
 	_componentsById.clear();
 	DestroyObject(_rootObject);
 	_rootObject = nullptr;
+
+	while (_objectsToDestroy.size())
+		_objectsToDestroy.pop();
 
 	Action<map<size_t, size_t>&, const Action<size_t>&> unloader = [](map<size_t, size_t>& ids, const Action<size_t>& unload) -> void {
 		for (auto& id : ids) {

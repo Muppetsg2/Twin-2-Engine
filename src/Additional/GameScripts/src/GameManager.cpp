@@ -24,17 +24,14 @@ void GameManager::Initialize()
         _dayText = SceneManager::FindObjectByName("DayText")->GetComponent<Text>();
         _monthText = SceneManager::FindObjectByName("MonthText")->GetComponent<Text>();
         _yearText = SceneManager::FindObjectByName("YearText")->GetComponent<Text>();
-
-        GameTimer::Instance()->OnDayTicked += [&](int day)
-        {
+        
+        _dayEventHandleId = GameTimer::Instance()->OnDayTicked += [&](int day) {
             _dayText->SetText(wstring(L"Day ").append(to_wstring(day)));
-        };
-        GameTimer::Instance()->OnMonthTicked += [&](int month)
-        {
+            };
+        _monthEventHandleId = GameTimer::Instance()->OnMonthTicked += [&](int month) {
             _monthText->SetText(wstring(L"Month ").append(to_wstring(month)));
-        };
-        GameTimer::Instance()->OnYearTicked += [&](int year)
-        {
+            };
+        _yearEventHandleId = GameTimer::Instance()->OnYearTicked += [&](int year) {
             _yearText->SetText(wstring(L"Year ").append(to_wstring(year)));
         };
 
@@ -75,14 +72,24 @@ void GameManager::Initialize()
     }
 }
 
-void GameManager::OnEnable()
-{
-    // SPDLOG_INFO("Creating enemy");
-    // GenerateEnemy();
-    // GenerateEnemy();
-    // GenerateEnemy();
-    // GenerateEnemy();
-    // GenerateEnemy();
+void GameManager::OnDestroy() {
+    if (this == instance)
+    {
+        instance = nullptr;
+
+        //GameTimer::Instance()->OnDayTicked -= _dayEventHandleId;
+        //GameTimer::Instance()->OnMonthTicked -= _monthEventHandleId;
+        //GameTimer::Instance()->OnYearTicked -= _yearEventHandleId;
+    }
+}
+
+void GameManager::OnEnable() {
+    SPDLOG_INFO("Creating enenmy");
+    //GenerateEnemy();
+    //GenerateEnemy();
+    //GenerateEnemy();
+    //GenerateEnemy();
+    //GenerateEnemy();
 }
 
 void GameManager::Update()

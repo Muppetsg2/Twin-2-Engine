@@ -32,7 +32,24 @@ void GameTimer::Initialize() {
         instance = this;
     }
 
+    //OnDayTicked.RemoveAllCallbacks();
+    //OnWeekTicked.RemoveAllCallbacks();
+    //OnMonthTicked.RemoveAllCallbacks();
+    //OnYearTicked.RemoveAllCallbacks();
+
     SetEnable(false);
+}
+
+void GameTimer::OnDestroy() {
+    if (this == instance)
+    {
+        instance = nullptr;
+    }
+
+    //OnDayTicked.RemoveAllCallbacks();
+    //OnWeekTicked.RemoveAllCallbacks();
+    //OnMonthTicked.RemoveAllCallbacks();
+    //OnYearTicked.RemoveAllCallbacks();
 }
 
 void GameTimer::Update() {

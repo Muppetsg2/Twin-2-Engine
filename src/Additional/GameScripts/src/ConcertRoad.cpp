@@ -137,9 +137,15 @@ void ConcertRoad::Update()
     //     .ToString();
 }
 
-void ConcertRoad::Use()
-{
-    // NumberOfPoints = std::min(NumberOfPoints, CitiesManager::Instance->GetAllCities().size());
+void ConcertRoad::OnDestroy() {
+    if (instance == this)
+    {
+        instance = nullptr;
+    }
+}
+
+void ConcertRoad::Use() {
+    //NumberOfPoints = std::min(NumberOfPoints, CitiesManager::Instance->GetAllCities().size());
     Begin();
 }
 

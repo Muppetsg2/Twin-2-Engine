@@ -273,15 +273,18 @@ void Player::Update() {
             fansMeetingText->SetText(std::wstring((L"Fans Meeting\n" + std::to_wstring(static_cast<int>(fansRequiredMoney)) + L"$")));
         }
 
-        if (isHoveringButton && !isShowingAffectedTiles)
+        if (GameManager::instance->gameStarted)
         {
-            ShowAffectedTiles();
+            if (isHoveringButton && !isShowingAffectedTiles)
+            {
+                ShowAffectedTiles();
+            }
+            else if (!isHoveringButton && isShowingAffectedTiles)
+            {
+                HideAffectedTiles();
+            }
+            isHoveringButton = false;
         }
-        else if (!isHoveringButton && isShowingAffectedTiles)
-        {
-            HideAffectedTiles();
-        }
-        isHoveringButton = false;
 
         if (move != nullptr) {
             if (move->reachEnd) {

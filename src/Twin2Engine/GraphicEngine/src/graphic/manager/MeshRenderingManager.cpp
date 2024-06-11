@@ -2091,8 +2091,8 @@ void MeshRenderingManager::RenderTransparent()
 	ZoneScoped;
 #endif
 
-	glDepthFunc(GL_LEQUAL);
-	glEnable(GL_BLEND);
+	//glDepthFunc(GL_LEQUAL);
+	//glEnable(GL_BLEND);
 
 #if TRACY_PROFILER
 	FrameMarkStart(tracey_RenderTransparent);
@@ -2105,7 +2105,7 @@ void MeshRenderingManager::RenderTransparent()
 	InstantiatingMesh* usedMesh = nullptr;
 	size_t usedIndex = 0ull;
 	size_t count = 0ull;
-	RenderedSegment currentSegment{ .begin = nullptr, .count = 0u };
+	//RenderedSegment currentSegment{ .begin = nullptr, .count = 0u };
 
 	for (size_t index = 0ull; index < loopSize; ++index)
 	{
@@ -2192,7 +2192,7 @@ void MeshRenderingManager::RenderTransparent()
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-	glDepthFunc(GL_LESS);
+	//glDepthFunc(GL_LESS);
 
 #if TRACY_PROFILER
 	FrameMarkEnd(tracey_RenderTransparent);

@@ -148,7 +148,7 @@ void end_imgui();
 constexpr const char* WINDOW_NAME = "Twin^2 Engine";
 constexpr int32_t WINDOW_WIDTH  = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
-constexpr bool WINDOW_FULLSCREEN = true;
+constexpr bool WINDOW_FULLSCREEN = false;
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
 constexpr int32_t GL_VERSION_MAJOR = 4;
@@ -306,8 +306,8 @@ int main(int, char**)
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/BlankScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/PatronChoice.scene");
-    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
-    SceneManager::AddScene("testScene", "res/scenes/SceneToEditPrefabs.scene");
+    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/SceneToEditPrefabs.scene");
     //SceneManager::AddScene("testScene", "res/scenes/Making Game UI.scene");
     //SceneManager::AddScene("testScene", "res/scenes/MenuScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");

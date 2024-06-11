@@ -28,6 +28,8 @@ namespace Twin2Engine::Core {
 		void UnLoop();
 		void SetPlayPosition(SoLoud::time seconds);
 		void SetVolume(float value);
+		size_t GetAudio();
+		string GetAudioName();
 		SoLoud::time GetAudioLength();
 		SoLoud::time GetPlayPosition();
 		SoLoud::time GetPlayTime();

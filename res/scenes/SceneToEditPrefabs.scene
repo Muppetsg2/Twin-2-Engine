@@ -36,17 +36,17 @@ GameObjects:
     transform:
       id: 5469
       position:
-        x: -0.410154879
-        y: 1.57232106
-        z: -0.185129702
+        x: -2.0310638
+        y: 3.59140563
+        z: -0.609839678
       scale:
         x: 1
         y: 1
         z: 1
       rotation:
-        x: -68.7000122
-        y: 23.1002579
-        z: 9.28196584e-07
+        x: -58.6001625
+        y: 15.500288
+        z: 4.42999124e-07
     components:
       - id: 5470
         enabled: true
@@ -100,6 +100,7 @@ GameObjects:
         model: 0
         materials:
           - 1
+        transparencyPriority: 0
     children:
       - 3
       - 5
@@ -130,6 +131,7 @@ GameObjects:
         model: 1
         materials:
           - 1
+        transparencyPriority: 0
     children:
       []
   - id: 5
@@ -158,6 +160,7 @@ GameObjects:
         model: 1
         materials:
           - 1
+        transparencyPriority: 0
     children:
       []
   - id: 6
@@ -186,6 +189,7 @@ GameObjects:
         model: 1
         materials:
           - 1
+        transparencyPriority: 0
     children:
       []
   - id: 4
@@ -195,9 +199,9 @@ GameObjects:
     transform:
       id: 4922
       position:
-        x: -61.3825798
-        y: 31.3535233
-        z: 20.9186668
+        x: -57.958847
+        y: 32.9289551
+        z: 20.7847137
       scale:
         x: 1
         y: 1

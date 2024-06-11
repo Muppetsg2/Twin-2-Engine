@@ -102,21 +102,43 @@ void HexTile::UpdateTileColor()
 {
 	TILE_COLOR col = takenEntity != nullptr ? (TILE_COLOR)(uint8_t)(takenEntity->colorIdx == 0 ? 1 : powf(2.f, (float)(takenEntity->colorIdx))) : TILE_COLOR::NEUTRAL;
 	//SPDLOG_INFO("Percentage: {}", percentage);
-	if (percentage < _takingStage1)
+	if (takenEntity == occupyingEntity)
 	{
-		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 0));
-	}
-	else if (percentage < _takingStage2)
-	{
-		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 1));
-	}
-	else if (percentage < _takingStage3)
-	{
-		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 2));
+		if (percentage < _takingStage1)
+		{
+			_meshRenderer->SetMaterial(0ull, texturesData->GetMaterial(col, 0ull));
+		}
+		else if (percentage < _takingStage2)
+		{
+			_meshRenderer->SetMaterial(0ull, texturesData->GetMaterial(col, 1ull));
+		}
+		else if (percentage < _takingStage3)
+		{
+			_meshRenderer->SetMaterial(0ull, texturesData->GetMaterial(col, 2ull));
+		}
+		else
+		{
+			_meshRenderer->SetMaterial(0ull, texturesData->GetMaterial(col, 3ull));
+		}
 	}
 	else
 	{
-		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 3));
+		if (percentage < _takingStage1)
+		{
+			_meshRenderer->SetMaterial(0ull, texturesData->GetRetreatingMaterial(col, 0ull));
+		}
+		else if (percentage < _takingStage2)
+		{
+			_meshRenderer->SetMaterial(0ull, texturesData->GetRetreatingMaterial(col, 2ull));
+		}
+		else if (percentage < _takingStage3)
+		{
+			_meshRenderer->SetMaterial(0ull, texturesData->GetRetreatingMaterial(col, 1ull));
+		}
+		else
+		{
+			_meshRenderer->SetMaterial(0ull, texturesData->GetMaterial(col, 3ull));
+		}
 	}
 }
 

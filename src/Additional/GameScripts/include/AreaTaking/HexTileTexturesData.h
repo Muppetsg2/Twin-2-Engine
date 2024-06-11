@@ -33,18 +33,31 @@ private:
     */
 
     std::vector<Twin2Engine::Graphic::Material*> _blueMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _blueRetreatingMaterials;
     Twin2Engine::Graphic::Material* _blueBorderMaterial;
+
     std::vector<Twin2Engine::Graphic::Material*> _redMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _redRetreatingMaterials;
     Twin2Engine::Graphic::Material* _redBorderMaterial;
+
     std::vector<Twin2Engine::Graphic::Material*> _greenMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _greenRetreatingMaterials;
     Twin2Engine::Graphic::Material* _greenBorderMaterial;
+
     std::vector<Twin2Engine::Graphic::Material*> _purpleMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _purpleRetreatingMaterials;
     Twin2Engine::Graphic::Material* _purpleBorderMaterial;
+
     std::vector<Twin2Engine::Graphic::Material*> _yellowMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _yellowRetreatingMaterials;
     Twin2Engine::Graphic::Material* _yellowBorderMaterial;
+
     std::vector<Twin2Engine::Graphic::Material*> _cyanMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _cyanRetreatingMaterials;
     Twin2Engine::Graphic::Material* _cyanBorderMaterial;
+
     std::vector<Twin2Engine::Graphic::Material*> _pinkMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _pinkRetreatingMaterials;
     Twin2Engine::Graphic::Material* _pinkBorderMaterial;
 
 public:
@@ -61,48 +74,10 @@ public:
 
 #endif
 
-    virtual void Clear() override {
-
-        /*
-        _blueMaterialsNames.clear();
-        _redMaterialsNames.clear();
-        _greenMaterialsNames.clear();
-        _purpleMaterialsNames.clear();
-        _yellowMaterialsNames.clear();
-        _cyanMaterialsNames.clear();
-        _pinkMaterialsNames.clear();
-        */
-
-        _neutralMaterial = nullptr;
-        _neutralBorderMaterial = nullptr;
-        _blueMaterials.clear();
-        _blueBorderMaterial = nullptr;
-        _redMaterials.clear();
-        _redBorderMaterial = nullptr;
-        _greenMaterials.clear();
-        _greenBorderMaterial = nullptr;
-        _purpleMaterials.clear();
-        _purpleBorderMaterial = nullptr;
-        _yellowMaterials.clear();
-        _yellowBorderMaterial = nullptr;
-        _cyanMaterials.clear();
-        _cyanBorderMaterial = nullptr;
-        _pinkMaterials.clear();
-        _pinkBorderMaterial = nullptr;
-
-        /*
-        for (size_t i = 0; i < _materials.size(); ++i)
-        {
-            _materials[i].clear();
-            _materialNames[i].clear();
-        }
-
-        _materials.clear();
-        _materialNames.clear();
-        */
-    }
+    virtual void Clear() override;
 
     Twin2Engine::Graphic::Material* GetMaterial(TILE_COLOR color, size_t stage);
+    Twin2Engine::Graphic::Material* GetRetreatingMaterial(TILE_COLOR color, size_t stage);
     Twin2Engine::Graphic::Material* GetBorderMaterial(TILE_COLOR color);
 };
 

@@ -176,30 +176,11 @@ void HexTile::UpdateBorders()
 		for (size_t i = 0; i < 6; ++i)
 		{
 			GameObject* neightbour = neightbours[i];
+			int left = i * 2 - 1;
+			if (left < 0) left = 12 + left;
+			int right = (i * 2 + 2) % 12;
 			if (neightbour != nullptr)
 			{
-				glm::vec2 dir = neightbour->GetComponent<MapHexTile>()->tile->GetPosition() - _mapHexTile->tile->GetPosition();
-				// FIXING COORDINATE SYSTEM (THANKS FOR PAIN)
-				dir.y *= glm::sin(glm::radians(60.f));
-				dir.x *= glm::cos(glm::radians(60.f));
-
-				// Calculating Angle
-				dir = glm::normalize(dir);
-				float alphaX = glm::degrees(glm::asin(dir.x));
-				float alphaY = glm::degrees(glm::acos(dir.y));
-
-				float alpha = 0;
-				if (alphaX >= 0.f) alpha = alphaY;
-				else alpha = 360.f - alphaY;
-
-
-				int b = alpha / 60.f;
-
-
-				int left = b * 2 - 1;
-				if (left < 0) left = 12 + left;
-				int right = (b * 2 + 2) % 12;
-
 				HexTile* t = neightbour->GetComponent<HexTile>();
 				if (t->takenEntity != takenEntity)
 				{
@@ -208,8 +189,8 @@ void HexTile::UpdateBorders()
 					if (borderJoints[right]->GetActive())
 						borderJoints[right]->SetActive(false);
 
-					if (!borders[b]->GetActive())
-						borders[b]->SetActive(true);
+					if (!borders[i]->GetActive())
+						borders[i]->SetActive(true);
 				}
 				else
 				{
@@ -218,19 +199,19 @@ void HexTile::UpdateBorders()
 					if (!borderJoints[right]->GetActive())
 						borderJoints[right]->SetActive(true);
 
-					if (borders[b]->GetActive())
-						borders[b]->SetActive(false);
+					if (borders[i]->GetActive())
+						borders[i]->SetActive(false);
 				}
 			}
 			else
 			{
-				/*if (borderJoints[left]->GetActive())
+				if (borderJoints[left]->GetActive())
 					borderJoints[left]->SetActive(false);
 				if (borderJoints[right]->GetActive())
 					borderJoints[right]->SetActive(false);
 
-				if (!borders[b]->GetActive())
-					borders[b]->SetActive(true);*/
+				if (!borders[i]->GetActive())
+					borders[i]->SetActive(true);
 			}
 		}
 		neightbours.clear();

@@ -102,7 +102,7 @@ void HexTile::UpdateTileColor()
 {
 	TILE_COLOR col = takenEntity != nullptr ? (TILE_COLOR)(uint8_t)(takenEntity->colorIdx == 0 ? 1 : powf(2.f, (float)(takenEntity->colorIdx))) : TILE_COLOR::NEUTRAL;
 	//SPDLOG_INFO("Percentage: {}", percentage);
-	if (takenEntity == occupyingEntity)
+	if (!occupyingEntity || takenEntity == occupyingEntity)
 	{
 		if (percentage < _takingStage1)
 		{

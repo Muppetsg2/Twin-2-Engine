@@ -69,11 +69,15 @@ Materials:
     path: res/materials/tiles/borders/yellow/YellowHexTileBorder.material
   - id: 29
     path: res/materials/tiles/borders/pink/PinkHexTileBorder.material
+  - id: 30
+    path: res/materials/tiles/BlueAffectedHexTile.material
 Models:
   - id: 0
     path: res/models/hexagon.obj
   - id: 1
     path: "{Cube}"
+  - id: 2
+    path: res/models/hexagonalPlane.obj
 Prefabs: []
 ScriptableObjects: ~
 Root:
@@ -159,6 +163,35 @@ Root:
         - 12
         - 11
 GameObjects:
+  - id: 19
+    name: AffectedMark
+    isStatic: false
+    isActive: false
+    transform:
+      id: 42
+      position:
+        x: 0
+        y: 0.05
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 43
+        enabled: true
+        type: MeshRenderer
+        isTransparent: true
+        transparencyPriority: 1
+        model: 2
+        materials:
+          - 30
+    children:
+      []
   - id: 1
     name: TopRightBorder
     isStatic: false

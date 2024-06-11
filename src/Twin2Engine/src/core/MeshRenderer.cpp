@@ -507,9 +507,6 @@ void MeshRenderer::DrawEditor()
 			ImGui::EndCombo();
 		}
 
-		if (_isTransparent)
-			ImGui::InputInt("TransparencyPriority", &_transparencyPriority);
-
 		DrawInheritedFields();
 	}
 }

@@ -2091,6 +2091,9 @@ void MeshRenderingManager::RenderTransparent()
 	ZoneScoped;
 #endif
 
+	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_BLEND);
+
 #if TRACY_PROFILER
 	FrameMarkStart(tracey_RenderTransparent);
 #endif
@@ -2188,6 +2191,8 @@ void MeshRenderingManager::RenderTransparent()
 	}
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+	glDepthFunc(GL_LESS);
 
 #if TRACY_PROFILER
 	FrameMarkEnd(tracey_RenderTransparent);

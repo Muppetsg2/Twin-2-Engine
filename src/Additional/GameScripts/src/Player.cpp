@@ -5,6 +5,7 @@
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
+using namespace Twin2Engine::Physic;
 using namespace Twin2Engine::UI;
 
 
@@ -68,6 +69,7 @@ void Player::Initialize() {
     fansMeetingCircleImage = SceneManager::FindObjectByName("fansMeetingCircle")->GetComponent<Image>();
 
     fansMeetingButtonEventHandleId = fansMeetingButton->GetOnClickEvent() += [&]() { FansMeetingCall(); };
+    fansMeetingButtonHeveringEventHandleId = fansMeetingButton->GetOnHoverEvent() += [&]() { isHoveringButton = true; };
 
     fansMeetingButtonDestroyedEventHandleId = fansMeetingButtonObject->OnDestroyedEvent += [&](GameObject* gameObject) {
         if (fansMeetingButton)
@@ -271,6 +273,16 @@ void Player::Update() {
             fansMeetingText->SetText(std::wstring((L"Fans Meeting\n" + std::to_wstring(static_cast<int>(fansRequiredMoney)) + L"$")));
         }
 
+        if (isHoveringButton && !isShowingAffectedTiles)
+        {
+            ShowAffectedTiles();
+        }
+        else if (!isHoveringButton && isShowingAffectedTiles)
+        {
+            HideAffectedTiles();
+        }
+        isHoveringButton = false;
+
         if (move != nullptr) {
             if (move->reachEnd) {
                 if (isFansActive) {
@@ -312,6 +324,61 @@ void Player::ConcertCall() {
     {
         concertButton->SetInteractable(false);
     }
+}
+
+
+void Player::ShowAffectedTiles() {
+
+    float usedRadius = fansRadius;
+    isShowingAffectedTiles = true;
+
+    if (patron->GetPatronBonus() == PatronBonus::ABILITIES_RANGE) {
+        usedRadius += patron->GetBonus();
+    }
+
+    vector<ColliderComponent*> colliders;
+    ColliderComponent* col;
+    CollisionManager::Instance()->OverlapSphere(CurrTile->GetGameObject()->GetTransform()->GetGlobalPosition(), usedRadius, colliders);
+
+    vec3 usedGlobalPosition = GetTransform()->GetGlobalPosition();
+    usedGlobalPosition.y = 0.0f;
+
+    size_t size = colliders.size();
+    for (size_t index = 0ull; index < size; ++index)
+    {
+        col = colliders[index];
+        if (col)
+        {
+            HexTile* tile = col->GetGameObject()->GetComponent<HexTile>();
+
+            if (tile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::Water
+                || tile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::Mountain) continue;
+
+            //if (tile && tile != CurrTile) {
+
+            vec3 tileUsedGlobalPosition = tile->GetTransform()->GetGlobalPosition();
+            tileUsedGlobalPosition.y = 0.0f;
+
+            float mul = glm::distance(usedGlobalPosition, tileUsedGlobalPosition);
+            mul = mul > 1.0f ? 1.0f - std::floor(mul) / usedRadius : 1.0f;
+
+            if (mul > 0.0f) {
+                tile->EnableAffected();
+                affectedTiles.push_back(tile);
+            }
+            //}
+        }
+    }
+}
+
+void Player::HideAffectedTiles() {
+    for (auto itr = affectedTiles.begin(); itr != affectedTiles.end(); ++itr)
+    {
+        (*itr)->DisableAffected();
+    }
+    affectedTiles.clear();
+
+    isShowingAffectedTiles = false;
 }
 
 void Player::StartMove(HexTile* tile) {
@@ -572,6 +639,10 @@ void Player::DrawEditor()
         ImGui::ColorEdit4("AbilityActiveColor", (float*)(&_abilityActiveColor));
         ImGui::ColorEdit4("AbilityCooldownColor", (float*)(&_abilityCooldownColor));
         // TODO: Zrobic
+        if (ImGui::Button("Show Affected"))
+            ShowAffectedTiles();
+        if (ImGui::Button("Hide Affected"))
+            HideAffectedTiles();
     }
 }
 #endif

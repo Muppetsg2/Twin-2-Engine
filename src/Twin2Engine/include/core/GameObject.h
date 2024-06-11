@@ -49,6 +49,12 @@ namespace Twin2Engine::Core
 
 		bool _isStatic;
 
+#if _DEBUG
+		// For ImGui
+		ImFileDialogInfo _fileDialogPrefabSaveInfo;
+		bool _saveGameObjectAsPrefab = false;
+#endif
+
 		//Layer
 		//Tag
 		void SetActiveInHierarchy(bool activeInHierarchy);
@@ -93,8 +99,6 @@ namespace Twin2Engine::Core
 		bool Deserialize(const YAML::Node& node);
 		
 #if _DEBUG
-		ImFileDialogInfo _fileDialogPrefabSaveInfo;
-		bool _saveGameObjectAsPrefab = false;
 		void DrawEditor();
 #endif
 

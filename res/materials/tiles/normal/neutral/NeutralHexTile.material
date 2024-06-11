@@ -4,4 +4,4 @@ material:
   parameters:
     - name: texture1
       type: texture2D
-      value: res/textures/tiles/hexEdgeTexture.png
+      value: res/textures/tiles/white2.png

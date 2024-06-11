@@ -1073,9 +1073,9 @@ GameObjects:
         y: -0.349999994
         z: 0
       scale:
-        x: 50
+        x: 55
         y: 1
-        z: 50
+        z: 55
       rotation:
         x: 0
         y: 0
@@ -1085,8 +1085,8 @@ GameObjects:
         enabled: true
         type: PlaneGenerator
         isTransparent: true
-        rows: 80
-        columns: 80
+        rows: 82
+        columns: 82
         materials:
           - 9
     children:

@@ -80,7 +80,18 @@ GameObjects:
         isTransparent: false
         model: 1
         materials:
-          - 1
+          - 0
+      - id: 7
+        enabled: true
+        type: Cloud
+        startingScale:
+          x: 0.5
+          y: 0.5
+          z: 0.5
+        scaleVelocity:
+          x: 0.01
+          y: -0.01
+          z: -0.01
     children:
       []
   - id: 5
@@ -88,7 +99,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 7
+      id: 8
       position:
         x: -0.119999997
         y: 0.699999988
@@ -102,13 +113,24 @@ GameObjects:
         y: 40
         z: 0
     components:
-      - id: 8
+      - id: 9
         enabled: true
         type: MeshRenderer
         isTransparent: false
         model: 1
         materials:
-          - 1
+          - 0
+      - id: 10
+        enabled: true
+        type: Cloud
+        startingScale:
+          x: 0.5
+          y: 0.5
+          z: 0.5
+        scaleVelocity:
+          x: 0.01
+          y: -0.01
+          z: -0.01
     children:
       []
   - id: 6
@@ -116,7 +138,7 @@ GameObjects:
     isStatic: false
     isActive: true
     transform:
-      id: 9
+      id: 11
       position:
         x: 0
         y: 0.699999988
@@ -130,12 +152,23 @@ GameObjects:
         y: 90
         z: 0
     components:
-      - id: 10
+      - id: 12
         enabled: true
         type: MeshRenderer
         isTransparent: false
         model: 1
         materials:
-          - 1
+          - 0
+      - id: 13
+        enabled: true
+        type: Cloud
+        startingScale:
+          x: 0.5
+          y: 0.5
+          z: 0.5
+        scaleVelocity:
+          x: 0.01
+          y: -0.01
+          z: -0.01
     children:
       []

@@ -890,7 +890,7 @@ Models:
     path: "{Sphere}"
 Prefabs:
   - id: 0
-    path: res/prefabs/tilemap/mapElements/mountain.prefab
+    path: res/prefabs/tilemap/mapElements/mountain_3.prefab
   - id: 1
     path: res/prefabs/Marker.prefab
   - id: 2

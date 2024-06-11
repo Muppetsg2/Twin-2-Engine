@@ -8,62 +8,42 @@
 using namespace Twin2Engine::Core;
 
 void Cloud::Initialize() {
-	glm::vec3 positionOffset;
-	positionOffset.x = Random::Range<float>(-0.4f, 0.4f) + 0.2;
-	positionOffset.y = Random::Range<float>(-0.1f, 0.2f);
-	positionOffset.z = Random::Range<float>(-0.4f, 0.4f) - 0.2;
+	startingScale.x = Random::Range<float>(0.08f, 1.2f);
+	startingScale.y = Random::Range<float>(0.08f, 1.2f);
+	startingScale.z = Random::Range<float>(0.08f, 1.2f);
 
-	GetTransform()->Translate(positionOffset);
-
-	startingScale.x = Random::Range<float>(0.1f, 0.4f);
-	startingScale.y = Random::Range<float>(0.1f, 0.4f);
-	startingScale.z = Random::Range<float>(0.1f, 0.4f);
-
-	scaleVelocity.x = Random::Range<float>(-0.05f, 0.05f);
-	scaleVelocity.y = Random::Range<float>(-0.05f, 0.05f);
-	scaleVelocity.z = Random::Range<float>(-0.05f, 0.05f);
-
-	glm::vec3 rotation(-90.0f, 0.0f, -0.0f);
-	rotation.z = Random::Range<float>(-30.0f, 30.0f);
+	scaleVelocity.x = Random::Range<float>(-0.005f, 0.005f);
+	scaleVelocity.y = Random::Range<float>(-0.005f, 0.005f);
+	scaleVelocity.z = Random::Range<float>(-0.005f, 0.005f);
 }
 
 void Cloud::Update() {
 	Transform* transform = GetTransform();
-
-	//travelledDistance += velocity * Time::GetDeltaTime();
-	//transform->SetGlobalPosition(startPosition + direction * travelledDistance);
-	////transform->Translate(direction * velocity * Time::GetDeltaTime());
-	//
-	//if (travelledDistance > maxDistance) {
-	//	transform->SetGlobalPosition(startPosition);
-	//	travelledDistance = 0.0;
-	//}
-	
+		
 	startingScale += scaleVelocity * Time::GetDeltaTime();
-	//transform->SetGlobalScale(startingScale);
 
-	if (startingScale.x > 0.4f) {
-		startingScale.x = 0.4f;
+	if (startingScale.x > 0.12f) {
+		startingScale.x = 0.12f;
 		scaleVelocity.x *= -1.0f;
 	}
-	else if (startingScale.x < 0.1f) {
-		startingScale.x = 0.1f;
+	else if (startingScale.x < 0.08f) {
+		startingScale.x = 0.08f;
 		scaleVelocity.x *= -1.0f;
 	}
-	if (startingScale.y > 0.4f) {
-		startingScale.y = 0.4f;
+	if (startingScale.y > 0.12f) {
+		startingScale.y = 0.12f;
 		scaleVelocity.y *= -1.0f;
 	}
-	else if (startingScale.y < 0.1f) {
-		startingScale.y = 0.1f;
+	else if (startingScale.y < 0.08f) {
+		startingScale.y = 0.08f;
 		scaleVelocity.y *= -1.0f;
 	}
-	if (startingScale.z > 0.4f) {
-		startingScale.z = 0.4f;
+	if (startingScale.z > 0.12f) {
+		startingScale.z = 0.12f;
 		scaleVelocity.z *= -1.0f;
 	}
-	else if (startingScale.z < 0.1f) {
-		startingScale.z = 0.1f;
+	else if (startingScale.z < 0.08f) {
+		startingScale.z = 0.08f;
 		scaleVelocity.z *= -1.0f;
 	}
 
@@ -86,13 +66,8 @@ void Cloud::OnDestroy() {
 YAML::Node Cloud::Serialize() const {
 	YAML::Node node = Component::Serialize();
 	node["type"] = "Cloud";
-	node["direction"] = direction;
-	node["velocity"] = velocity;
-	node["startPosition"] = startPosition;
 	node["startingScale"] = startingScale;
 	node["scaleVelocity"] = scaleVelocity;
-	node["maxDistance"] = maxDistance;
-	node["travelledDistance"] = travelledDistance;
 	return node;
 }
 
@@ -100,13 +75,8 @@ bool Cloud::Deserialize(const YAML::Node& node) {
 	if (!Component::Deserialize(node)) 
 		return false;
 
-	direction = node["direction"].as<glm::vec3>();
-	velocity = node["velocity"].as<float>();
-	startPosition = node["startPosition"].as<glm::vec3>();
 	startingScale = node["startingScale"].as<glm::vec3>();
 	scaleVelocity = node["scaleVelocity"].as<glm::vec3>();
-	maxDistance = node["maxDistance"].as<float>();
-	travelledDistance = node["travelledDistance"].as<float>();
 
 	return true;
 }
@@ -118,19 +88,6 @@ void Cloud::DrawEditor() {
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
 		if (Component::DrawInheritedFields()) return;
-
-		ImGui::DragFloat3(string("Direction##").append(id).c_str(), glm::value_ptr(direction));
-		ImGui::DragFloat3(string("Start Position##").append(id).c_str(), glm::value_ptr(startPosition));
-
-		ImGui::DragFloat(string("Velocity##").append(id).c_str(), &velocity);
-		ImGui::DragFloat(string("Max Distance##").append(id).c_str(), &maxDistance);
-
-		ImGui::NewLine();
-		ImGui::NewLine();
-
-		//CloudController* cc = CloudController::Instance();
-
-		// TODO: Kazda chmura pozyskuje te wartosci? Jesli tak to czemu kazda ma moc je zmieniac i czemu kazda je wyswietla
 
 		ImGui::DragFloat(string("ABSORPTION##").append(id).c_str(), &CloudController::ABSORPTION);
 		ImGui::DragFloat(string("DENSITY_FAC##").append(id).c_str(), &CloudController::DENSITY_FAC);

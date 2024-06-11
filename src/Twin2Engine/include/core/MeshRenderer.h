@@ -47,6 +47,8 @@ namespace Twin2Engine::Core
 		bool _materialsErasedEventDone = false;
 		bool _materialError = false;
 
+		int _transparencyPriority = 0;
+
 		// Events
 		int OnStaticChangedId = -1;
 		int OnActiveChangedId = -1;

@@ -59,6 +59,7 @@ namespace Twin2Engine::UI {
 		void SetCanvas(Canvas* canvas);
 	public:
 		// TODO: Repair Text Mesh
+		// TODO: Text Wrapping
 		void UpdateTextMesh();
 
 		void Initialize() override;

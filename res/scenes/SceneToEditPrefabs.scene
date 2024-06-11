@@ -19,8 +19,10 @@ Models:
   - id: 0
     path: res/models/mount3.obj
   - id: 1
-    path: res/models/cloud.obj
+    path: res\models\cloud_1.obj
   - id: 2
+    path: res/models/cloud.obj
+  - id: 3
     path: "{Plane}"
 Prefabs:
   - id: 0
@@ -34,17 +36,17 @@ GameObjects:
     transform:
       id: 5469
       position:
-        x: -4.31985807
-        y: 1.75413668
-        z: 0.0226189308
+        x: -0.410154879
+        y: 1.57232106
+        z: -0.185129702
       scale:
         x: 1
         y: 1
         z: 1
       rotation:
-        x: -19.5000019
-        y: 0.799999952
-        z: 1.33415128e-08
+        x: -68.7000122
+        y: 23.1002579
+        z: 9.28196584e-07
     components:
       - id: 5470
         enabled: true
@@ -100,54 +102,90 @@ GameObjects:
           - 1
     children:
       - 3
+      - 5
+      - 6
   - id: 3
-    name: Cloud
+    name: Cloud_1
     isStatic: false
     isActive: true
     transform:
-      id: 2
+      id: 5
       position:
-        x: 0.182924122
-        y: 0.425505638
-        z: -0.000360786915
+        x: 0.280000001
+        y: 0.699999988
+        z: 0
       scale:
-        x: 0.436835736
-        y: 0.47691375
-        z: 0.578777909
+        x: 0.100000001
+        y: 0.100000001
+        z: 0.100000001
       rotation:
-        x: -90
-        y: 0
-        z: 30.0000019
+        x: 0
+        y: -15.000001
+        z: 0
     components:
-      - id: 3
-        enabled: true
-        type: Cloud
-        direction:
-          x: 1
-          y: 0
-          z: 0
-        velocity: 0
-        startPosition:
-          x: -7
-          y: 4
-          z: 7
-        startingScale:
-          x: 0.436835736
-          y: 0.47691375
-          z: 0.578777909
-        scaleVelocity:
-          x: 0.0279951841
-          y: -0.0260232911
-          z: 0.0372773483
-        maxDistance: 18
-        travelledDistance: 0
-      - id: 4
+      - id: 6
         enabled: true
         type: MeshRenderer
-        isTransparent: true
+        isTransparent: false
         model: 1
         materials:
-          - 0
+          - 1
+    children:
+      []
+  - id: 5
+    name: Cloud_2
+    isStatic: false
+    isActive: true
+    transform:
+      id: 7
+      position:
+        x: -0.119999997
+        y: 0.699999988
+        z: 0.150000006
+      scale:
+        x: 0.100000001
+        y: 0.100000001
+        z: 0.100000001
+      rotation:
+        x: 0
+        y: 40
+        z: 0
+    components:
+      - id: 8
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 1
+        materials:
+          - 1
+    children:
+      []
+  - id: 6
+    name: Cloud_3
+    isStatic: false
+    isActive: true
+    transform:
+      id: 9
+      position:
+        x: 0
+        y: 0.699999988
+        z: -0.280000001
+      scale:
+        x: 0.100000001
+        y: 0.100000001
+        z: 0.100000001
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 10
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 1
+        materials:
+          - 1
     children:
       []
   - id: 4
@@ -157,9 +195,9 @@ GameObjects:
     transform:
       id: 4922
       position:
-        x: 0
-        y: 0
-        z: 0
+        x: -61.3825798
+        y: 31.3535233
+        z: 20.9186668
       scale:
         x: 1
         y: 1
@@ -173,8 +211,8 @@ GameObjects:
         enabled: true
         type: DirectionalLight
         direction:
-          x: -0.699999988
-          y: 0.600000024
+          x: 1
+          y: -1
           z: 0
         color:
           x: 1

@@ -4,6 +4,8 @@
 #include <tools/YamlConverters.h>
 #include <ui/Canvas.h>
 #include <graphic/Window.h>
+#include <core/Time.h>
+#include <ui/Image.h>
 
 using namespace Twin2Engine::UI;
 using namespace Twin2Engine::Core;
@@ -21,6 +23,36 @@ void Button::SetCanvas(Canvas* canvas)
 			_onCanvasDestroyId = (_canvas->GetOnCanvasDestroy() += [&](Canvas* canv) -> void { SetCanvas(nullptr); });
 		}
 	}
+}
+
+// TODO: FINISH
+void Button::OnHoverPresetEvents(bool isHover)
+{
+	static float time = 0.f;
+
+	if (isHover && time < 1.f) time += Time::GetDeltaTime() * _timeFactor;
+	else if (isHover && time > 1.f) time = 1.f;
+	else if (!isHover && time > 0.f) time -= Time::GetDeltaTime() * _timeFactor;
+	else if (!isHover && time < 0.f) time = 0.f;
+
+	glm::vec3 locScale = GetTransform()->GetLocalScale();
+	if (_onHoverScaleStart != _onHoverScaleEnd) {
+		if (!(time == 0.f && locScale == _onHoverScaleStart) && !(time == 1.f && locScale == _onHoverScaleEnd)) {
+			GetTransform()->SetLocalScale(glm::mix(_onHoverScaleStart, _onHoverScaleEnd, time));
+		}
+	}
+
+	if (GetGameObject()->GetComponent<Image>() != nullptr) {
+
+		glm::vec4 _onHoverColor = glm::vec4(0.f); // Requires Image Component in same GameObject
+	}
+}
+
+// TODO: FINISH
+void Button::OnClickPresetEvents()
+{
+	bool _playAudioOnClick = false; // Requires Audio Component in same GameObject
+	size_t _onClickAudioId = 0;
 }
 
 void Button::SetWidth(float width) {
@@ -51,6 +83,11 @@ MethodEventHandler& Button::GetOnClickEvent() {
 	return _onClickEvent;
 }
 
+MethodEventHandler& Button::GetOnHoverEvent()
+{
+	return _onHoverEvent;
+}
+
 void Button::Initialize()
 {
 	_onParentInHierarchiChangeId = (GetTransform()->OnEventInHierarchyParentChanged += [&](Transform* t) -> void {
@@ -71,25 +108,34 @@ void Button::Update()
 		}
 	}
 
-	if (Input::IsMouseButtonPressed(MOUSE_BUTTON::LEFT)) {
-		Transform* t = GetTransform();
+	bool hover = false;
+	Transform* t = GetTransform();
+	glm::mat4 inv = glm::inverse(t->GetTransformMatrix());
+	glm::vec4 mPos = glm::vec4(Input::GetCursorPos(), 0.f, 1.f);
+	//glm::vec3 btnLocalMPos = canvT * inv * glm::vec4(glm::vec2(invCanvT * mPos) * .5f * canvS, 0.f, 1.f);
+	glm::vec3 btnLocalMPos = inv * mPos;
 
-		/*glm::mat4 canvT = glm::mat4(1.f);
-		glm::vec2 canvS = Graphic::Window::GetInstance()->GetContentSize();
-		if (_canvas != nullptr) {
-			canvT = _canvas->GetTransform()->GetTransformMatrix();
-			canvS = _canvas->_data.rectTransform.size;
-		}
-		glm::mat4 invCanvT = glm::inverse(canvT);*/
+	if (btnLocalMPos.x >= -_width * .5f && btnLocalMPos.x <= _width * .5f && btnLocalMPos.y >= -_height * .5f && btnLocalMPos.y <= _height * .5f) {
 
-		glm::mat4 inv = glm::inverse(t->GetTransformMatrix());
-		glm::vec4 mPos = glm::vec4(Input::GetCursorPos(), 0.f, 1.f);
-		//glm::vec3 btnLocalMPos = canvT * inv * glm::vec4(glm::vec2(invCanvT * mPos) * .5f * canvS, 0.f, 1.f);
-		glm::vec3 btnLocalMPos = inv * mPos;
-		if (btnLocalMPos.x >= -_width * .5f && btnLocalMPos.x <= _width * .5f && btnLocalMPos.y >= -_height * .5f && btnLocalMPos.y <= _height * .5f) {
+		_onHoverEvent.Invoke();
+		hover = true;
+		OnHoverPresetEvents(hover);
 
+		if (Input::IsMouseButtonPressed(MOUSE_BUTTON::LEFT)) {
+
+			/*glm::mat4 canvT = glm::mat4(1.f);
+			glm::vec2 canvS = Graphic::Window::GetInstance()->GetContentSize();
+			if (_canvas != nullptr) {
+				canvT = _canvas->GetTransform()->GetTransformMatrix();
+				canvS = _canvas->_data.rectTransform.size;
+			}
+			glm::mat4 invCanvT = glm::inverse(canvT);*/
 			_onClickEvent.Invoke();
 		}
+	}
+
+	if (!hover) {
+		OnHoverPresetEvents(hover);
 	}
 }
 

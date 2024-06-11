@@ -13,9 +13,9 @@ using namespace Generation;
 using namespace glm;
 using namespace std;
 
-float HexTile::_takingStage1 = 33.3f;
-float HexTile::_takingStage2 = 66.6f;
-float HexTile::_takingStage3 = 100.0f;
+float HexTile::_takingStage1 = 0.f;
+float HexTile::_takingStage2 = 50.f;
+float HexTile::_takingStage3 = 90.0f;
 
 void HexTile::TakeOver()
 {
@@ -24,17 +24,13 @@ void HexTile::TakeOver()
 		ResetTile();
 		return;
 	}
-	// FIRST TILE
-	else if (takenEntity == nullptr && occupyingEntity->OwnTiles.size() == 0) {
-		percentage = _takingStage1;
-	}
 
 	float takeOverSpeed = occupyingEntity->TakeOverSpeed;
 	if (state == TileState::REMOTE_OCCUPYING) {
 		takeOverSpeed *= remoteMultiplier;
 	}
 
-	if (takenEntity != nullptr && takenEntity != occupyingEntity) {
+	if (ownerEntity != nullptr && ownerEntity != occupyingEntity) {
 		percentage -= Time::GetDeltaTime() * takeOverSpeed;
 		if (percentage < 0.0f) {
 			ResetTile();
@@ -45,7 +41,7 @@ void HexTile::TakeOver()
 		if (percentage > 100.0f) {
 			percentage = 100.0f;
 		}
-		if (takenEntity == nullptr && percentage >= _takingStage1)
+		if (takenEntity == nullptr && percentage > _takingStage1)
 		{
 			takenEntity = occupyingEntity;
 			takenEntity->OwnTiles.push_back(this);
@@ -91,30 +87,62 @@ void HexTile::LoseInfluence()
 	percentage -= Time::GetDeltaTime();
 	if (percentage < _takingStage1) {
 		percentage = 0.0f;
-		if (takenEntity) {
+		if (takenEntity != nullptr) {
 			takenEntity->OwnTiles.remove(this);
+
+			for (auto& t : takenEntity->OwnTiles)
+			{
+				t->UpdateBorders();
+
+				// Update Neightbours
+				vector<GameObject*> neightbours;
+				neightbours.resize(6);
+				_mapHexTile->tile->GetAdjacentGameObjects(neightbours.data());
+				for (auto& nt : neightbours)
+				{
+					if (nt == nullptr) continue;
+					HexTile* ntTile = nt->GetComponent<HexTile>();
+					if (ntTile->takenEntity == takenEntity) continue;
+					ntTile->UpdateBorders();
+				}
+			}
+
 			takenEntity = nullptr;
+
+			for (size_t i = 0; i < 6; ++i)
+			{
+				if (borders[i]->GetActive())
+					borders[i]->SetActive(false);
+				if (borderJoints[i * 2]->GetActive())
+					borderJoints[i * 2]->SetActive(false);
+				if (borderJoints[(i * 2) + 1]->GetActive())
+					borderJoints[(i * 2) + 1]->SetActive(false);
+			}
+
+			UpdateBorderColor();
 		}
 	}
+
+	UpdateTileColor();
 }
 
 void HexTile::UpdateTileColor()
 {
 	TILE_COLOR col = takenEntity != nullptr ? (TILE_COLOR)(uint8_t)(takenEntity->colorIdx == 0 ? 1 : powf(2.f, (float)(takenEntity->colorIdx))) : TILE_COLOR::NEUTRAL;
 	//SPDLOG_INFO("Percentage: {}", percentage);
-	if (percentage >= _takingStage3)
+	if (percentage > _takingStage3)
 	{
 		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 3));
 	}
-	else if (percentage >= _takingStage2)
+	else if (percentage > _takingStage2)
 	{
 		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 2));
 	}
-	else if (percentage >= _takingStage1)
+	else if (percentage > _takingStage1)
 	{
 		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 1));
 	}
-	else if (percentage == 0.f)
+	else
 	{
 		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 0));
 	}
@@ -182,6 +210,7 @@ void HexTile::UpdateBorders()
 			if (neightbour != nullptr)
 			{
 				HexTile* t = neightbour->GetComponent<HexTile>();
+
 				if (t->takenEntity != takenEntity)
 				{
 					if (borderJoints[left]->GetActive())
@@ -334,9 +363,9 @@ void HexTile::InitializeAdjacentTiles()
 void HexTile::ResetTile()
 {
 	percentage = 0.0f;
-	if (takenEntity != nullptr) {
-		takenEntity->OwnTiles.remove(this);
-		for (auto& t : takenEntity->OwnTiles)
+	if (ownerEntity != nullptr) {
+		ownerEntity->OwnTiles.remove(this);
+		for (auto& t : ownerEntity->OwnTiles)
 		{
 			t->UpdateBorders();
 		}
@@ -390,8 +419,6 @@ void HexTile::StartTakingOver(Playable* entity) {
 		occupyingEntity = entity;
 	}
 	else if (occupyingEntity != entity && !isFighting) {
-		//entity->StartPaperRockScissors(occupyingEntity);
-		//occupyingEntity->StartPaperRockScissors(entity);
 		GameManager::instance->minigameActive = true;
 		isFighting = true;
 		MinigameManager::GetLastInstance()->StartMinigame(entity, occupyingEntity);
@@ -402,9 +429,8 @@ void HexTile::StopTakingOver(Playable* entity)
 {
 	if ((state == TileState::OCCUPIED || state == TileState::REMOTE_OCCUPYING) && occupyingEntity == entity) {
 		occupyingEntity = nullptr;
-		if (takenEntity) {
+		if (takenEntity != nullptr) {
 			state = TileState::TAKEN;
-			//currLoseInfluenceDelay = loseInfluenceDelay;
 		}
 		else {
 			state = TileState::NONE;
@@ -414,12 +440,6 @@ void HexTile::StopTakingOver(Playable* entity)
 
 void HexTile::StartRemotelyTakingOver(Playable* entity, float multiplier)
 {
-	//SPDLOG_INFO("Starting remotely {}", multiplier);
-	//if (state != TileState::Occupied && state != TileState::RemoteOccupying) {
-	//	state = TileState::RemoteOccupying;
-	//
-	//	SPDLOG_INFO("In Starting remotely");
-
 	if (state != TileState::OCCUPIED && state != TileState::REMOTE_OCCUPYING) {
 		state = TileState::REMOTE_OCCUPYING;
 

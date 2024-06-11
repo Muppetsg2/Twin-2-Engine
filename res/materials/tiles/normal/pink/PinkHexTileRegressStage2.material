@@ -1,0 +1,7 @@
+material:
+  name: tiles/normal/PinkHexTileRegressStage2
+  shader: origin/Textured
+  parameters:
+    - name: texture1
+      type: texture2D
+      value: res/textures/tiles/tile_regress/pink2_2.png

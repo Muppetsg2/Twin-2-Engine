@@ -1,0 +1,7 @@
+material:
+  name: tiles/normal/BlueHexTileRegressStage2
+  shader: origin/Textured
+  parameters:
+    - name: texture1
+      type: texture2D
+      value: res/textures/tiles/tile_regress/blue2_2.png

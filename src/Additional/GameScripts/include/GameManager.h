@@ -14,6 +14,9 @@
 #include <Player.h>
 #include <GameTimer.h>
 
+#include <ParticleSystemsController.h>
+//#include <pch.h>
+
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;
 
@@ -47,6 +50,8 @@ private:
     unsigned int _enemiesNumber = 2u;
     int _mapGenerationEventId = -1;
     Generation::MapGenerator* _mapGenerator;
+    
+    ParticleGenerator* particleGenerator;
 public:
     static GameManager* instance;
 

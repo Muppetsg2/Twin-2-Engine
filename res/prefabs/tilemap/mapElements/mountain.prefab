@@ -94,5 +94,6 @@ GameObjects:
         model: 1
         materials:
           - 1
+        transparencyPriority: 1
     children:
       []

@@ -119,8 +119,8 @@ namespace Twin2Engine::Manager {
 #endif
 
 		static void UnloadTexture2D(size_t managerID);
-		static void UnloadTexture2D(const std::string& path);
 	public:
+		static void UnloadTexture2D(const std::string& path);
 		static bool IsTextureLoaded(size_t managerId);
 		static bool IsTextureLoaded(const std::string& path);
 

@@ -15,13 +15,13 @@ void Cloud::Initialize() {
 
 	GetTransform()->Translate(positionOffset);
 
-	startingScale.x = Random::Range<float>(0.25f, 0.4f);
-	startingScale.y = Random::Range<float>(0.25f, 0.4f);
-	startingScale.z = Random::Range<float>(0.25f, 0.4f);
+	startingScale.x = Random::Range<float>(0.1f, 0.4f);
+	startingScale.y = Random::Range<float>(0.1f, 0.4f);
+	startingScale.z = Random::Range<float>(0.1f, 0.4f);
 
-	scaleVelocity.x = Random::Range<float>(-0.1f, 0.1f);
-	scaleVelocity.y = Random::Range<float>(-0.1f, 0.1f);
-	scaleVelocity.z = Random::Range<float>(-0.1f, 0.1f);
+	scaleVelocity.x = Random::Range<float>(-0.05f, 0.05f);
+	scaleVelocity.y = Random::Range<float>(-0.05f, 0.05f);
+	scaleVelocity.z = Random::Range<float>(-0.05f, 0.05f);
 
 	glm::vec3 rotation(-90.0f, 0.0f, -0.0f);
 	rotation.z = Random::Range<float>(-30.0f, 30.0f);
@@ -42,28 +42,28 @@ void Cloud::Update() {
 	startingScale += scaleVelocity * Time::GetDeltaTime();
 	//transform->SetGlobalScale(startingScale);
 
-	if (startingScale.x > 0.6f) {
-		startingScale.x = 0.6f;
-		scaleVelocity.x *= -1.0f;
-	}
-	else if (startingScale.x < 0.4f) {
+	if (startingScale.x > 0.4f) {
 		startingScale.x = 0.4f;
 		scaleVelocity.x *= -1.0f;
 	}
-	if (startingScale.y > 0.6f) {
-		startingScale.y = 0.6f;
-		scaleVelocity.y *= -1.0f;
+	else if (startingScale.x < 0.1f) {
+		startingScale.x = 0.1f;
+		scaleVelocity.x *= -1.0f;
 	}
-	else if (startingScale.y < 0.4f) {
+	if (startingScale.y > 0.4f) {
 		startingScale.y = 0.4f;
 		scaleVelocity.y *= -1.0f;
 	}
-	if (startingScale.z > 0.6f) {
-		startingScale.z = 0.6f;
+	else if (startingScale.y < 0.1f) {
+		startingScale.y = 0.1f;
+		scaleVelocity.y *= -1.0f;
+	}
+	if (startingScale.z > 0.4f) {
+		startingScale.z = 0.4f;
 		scaleVelocity.z *= -1.0f;
 	}
-	else if (startingScale.z < 0.4f) {
-		startingScale.z = 0.4f;
+	else if (startingScale.z < 0.1f) {
+		startingScale.z = 0.1f;
 		scaleVelocity.z *= -1.0f;
 	}
 

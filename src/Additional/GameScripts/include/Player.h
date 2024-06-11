@@ -14,6 +14,7 @@
 #include <ui/Text.h>
 
 #include <core/Input.h>
+#include <core/AudioComponent.h>
 
 //using namespace Twin2Engine::Core;
 
@@ -32,6 +33,8 @@ private:
 
     PlayerMovement* move;
     bool lost;
+
+    AudioComponent* audioComponent = nullptr;
 
     //Coroutine* fansCorountine;
 

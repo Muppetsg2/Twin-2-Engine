@@ -140,7 +140,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId)
             if (pcfDepth > pcfDepthD) {
                 pcfDepth = pcfDepthD;
             }
-            shadow += currentDepth < pcfDepth  ? 1.0 : 0.0;        
+            shadow += (currentDepth - 0.0002) < pcfDepth  ? 1.0 : 0.0;        
             //shadow += (currentDepth - bias) < pcfDepth  ? 1.0 : 0.0;        
         }    
     }

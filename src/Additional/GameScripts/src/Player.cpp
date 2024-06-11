@@ -15,6 +15,8 @@ using namespace Twin2Engine::UI;
 void Player::Initialize() {
     Playable::Initialize();
 
+    audioComponent = GetGameObject()->GetComponent<AudioComponent>();
+
     InitPrices();
     CreateIndicator();
     _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
@@ -43,6 +45,8 @@ void Player::Initialize() {
         };
 
     OnEventAlbumStarted.AddCallback([&](Playable* playable) -> void {
+            audioComponent->SetAudio("res/music/Abilities/AbilitiesUse.mp3");
+            audioComponent->Play();
             albumCircleImage->SetColor(_abilityActiveColor);
             albumCircleImage->GetGameObject()->SetActive(true);
         });
@@ -50,6 +54,8 @@ void Player::Initialize() {
             albumCircleImage->SetColor(_abilityCooldownColor);
         });
     OnEventAlbumCooldownFinished.AddCallback([&](Playable* playable) -> void {
+            audioComponent->SetAudio("res/music/Abilities/CooldownEnd.mp3");
+            audioComponent->Play();
             albumCircleImage->GetGameObject()->SetActive(false);
         });
     albumCircleImage->GetGameObject()->SetActive(false);
@@ -77,6 +83,8 @@ void Player::Initialize() {
 
 
     OnEventFansMeetingStarted.AddCallback([&](Playable* playable) -> void {
+        audioComponent->SetAudio("res/music/Abilities/AbilitiesUse.mp3");
+        audioComponent->Play();
         fansMeetingCircleImage->SetColor(_abilityActiveColor);
         fansMeetingCircleImage->GetGameObject()->SetActive(true);
         });
@@ -84,6 +92,8 @@ void Player::Initialize() {
         fansMeetingCircleImage->SetColor(_abilityCooldownColor);
         });
     OnEventFansMeetingCooldownFinished.AddCallback([&](Playable* playable) -> void {
+        audioComponent->SetAudio("res/music/Abilities/CooldownEnd.mp3");
+        audioComponent->Play();
         fansMeetingCircleImage->GetGameObject()->SetActive(false);
         });
     fansMeetingCircleImage->GetGameObject()->SetActive(false);
@@ -111,6 +121,8 @@ void Player::Initialize() {
 
 
     concertAbility->OnEventAbilityStarted.AddCallback([&](Playable* playable) -> void {
+        audioComponent->SetAudio("res/music/Abilities/AbilitiesUse.mp3");
+        audioComponent->Play();
         concertCircleImage->SetColor(_abilityActiveColor);
         concertCircleImage->GetGameObject()->SetActive(true);
         });
@@ -118,6 +130,8 @@ void Player::Initialize() {
         concertCircleImage->SetColor(_abilityCooldownColor);
         });
     concertAbility->OnEventAbilityCooldownFinished.AddCallback([&](Playable* playable) -> void {
+        audioComponent->SetAudio("res/music/Abilities/CooldownEnd.mp3");
+        audioComponent->Play();
         concertCircleImage->GetGameObject()->SetActive(false);
         });
     concertCircleImage->GetGameObject()->SetActive(false);

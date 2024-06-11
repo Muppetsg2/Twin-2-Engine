@@ -145,6 +145,16 @@ void AudioComponent::SetVolume(float value)
 	}
 }
 
+size_t AudioComponent::GetAudio()
+{
+	return _audioId;
+}
+
+string AudioComponent::GetAudioName()
+{
+	return _audioName;
+}
+
 SoLoud::time AudioComponent::GetAudioLength()
 {
 	if (_loaded) {
@@ -311,7 +321,6 @@ void AudioComponent::DrawEditor()
 
 			ImGui::EndCombo();
 		}
-
 
 		if (this->_loaded) {
 

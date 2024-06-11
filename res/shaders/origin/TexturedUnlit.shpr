@@ -1,5 +1,5 @@
 shaderprogram:
-  name: origin/Textured
+  name: origin/TexturedUnlit
   shaders:
     - textured.vert
     - textured.frag

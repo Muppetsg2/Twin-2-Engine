@@ -62,6 +62,7 @@ namespace Twin2Engine::Manager {
 		static SoLoud::time GetPlayPosition(handle h);
 		static bool IsPaused(handle h);
 		static bool IsHandleValid(handle h);
+		static bool IsAudioValid(size_t id);
 		static bool IsLooping(handle h);
 
 		static void FadeVolume(handle h, float to, SoLoud::time seconds);

@@ -359,6 +359,17 @@ void HexTile::WinMinigame()
 {
 }
 
+
+void HexTile::EnableAffected()
+{
+	GetTransform()->GetChildAt(0ull)->GetGameObject()->SetActive(true);
+}
+
+void HexTile::DisableAffected()
+{
+	GetTransform()->GetChildAt(0ull)->GetGameObject()->SetActive(false);
+}
+
 void HexTile::BadNote()
 {
 	percentage -= badNotePercent;

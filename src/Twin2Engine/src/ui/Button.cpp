@@ -5,6 +5,7 @@
 #include <ui/Canvas.h>
 #include <graphic/Window.h>
 #include <core/Time.h>
+#include <ui/Image.h>
 
 using namespace Twin2Engine::UI;
 using namespace Twin2Engine::Core;
@@ -41,11 +42,10 @@ void Button::OnHoverPresetEvents(bool isHover)
 		}
 	}
 
-	if (_onHoverTranslate != glm::vec3(0.f)) {
+	if (GetGameObject()->GetComponent<Image>() != nullptr) {
 
+		glm::vec4 _onHoverColor = glm::vec4(0.f); // Requires Image Component in same GameObject
 	}
-
-	glm::vec4 _onHoverColor = glm::vec4(0.f); // Requires Image Component in same GameObject
 }
 
 // TODO: FINISH
@@ -108,6 +108,7 @@ void Button::Update()
 		}
 	}
 
+	bool hover = false;
 	Transform* t = GetTransform();
 	glm::mat4 inv = glm::inverse(t->GetTransformMatrix());
 	glm::vec4 mPos = glm::vec4(Input::GetCursorPos(), 0.f, 1.f);
@@ -117,7 +118,8 @@ void Button::Update()
 	if (btnLocalMPos.x >= -_width * .5f && btnLocalMPos.x <= _width * .5f && btnLocalMPos.y >= -_height * .5f && btnLocalMPos.y <= _height * .5f) {
 
 		_onHoverEvent.Invoke();
-		OnHoverPresetEvents();
+		hover = true;
+		OnHoverPresetEvents(hover);
 
 		if (Input::IsMouseButtonPressed(MOUSE_BUTTON::LEFT)) {
 
@@ -130,6 +132,10 @@ void Button::Update()
 			glm::mat4 invCanvT = glm::inverse(canvT);*/
 			_onClickEvent.Invoke();
 		}
+	}
+
+	if (!hover) {
+		OnHoverPresetEvents(hover);
 	}
 }
 

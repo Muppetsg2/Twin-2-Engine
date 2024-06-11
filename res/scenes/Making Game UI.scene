@@ -309,7 +309,7 @@ GameObjects:
   - id: 15
     name: ChoosePatronCanvas
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 33
       position:
@@ -863,13 +863,13 @@ GameObjects:
         isTransparent: true
         sprite: 5
         color:
-          x: 0
-          y: 1
-          z: 0.611764669
-          w: 0.392156869
+          x: 1
+          y: 0
+          z: 1
+          w: 0.274509817
         width: 150
         height: 150
-        layer: 0
+        layer: 2
         fillEnabled: true
         fillType: !<2> 2
         fillSubType: !<CW> 0
@@ -991,8 +991,8 @@ GameObjects:
         color:
           x: 0
           y: 1
-          z: 0.611764729
-          w: 0.392156869
+          z: 1
+          w: 0.274509817
         width: 150
         height: 150
         layer: 0
@@ -1203,8 +1203,8 @@ GameObjects:
         color:
           x: 0
           y: 1
-          z: 0.611764729
-          w: 0.392156869
+          z: 1
+          w: 0.274509817
         width: 150
         height: 150
         layer: 0

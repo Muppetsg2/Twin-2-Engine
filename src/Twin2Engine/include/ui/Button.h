@@ -19,7 +19,6 @@ namespace Twin2Engine::UI {
 		float _timeFactor = 0.1f;
 		glm::vec3 _onHoverScaleStart = glm::vec3(1.f);
 		glm::vec3 _onHoverScaleEnd = glm::vec3(1.f);
-		glm::vec3 _onHoverTranslate = glm::vec3(0.f);
 		glm::vec4 _onHoverColorStart = glm::vec4(glm::vec3(0.f), 1.f); // Requires Image Component in same GameObject
 		glm::vec4 _onHoverColorEnd = glm::vec4(glm::vec3(0.f), 1.f); // Requires Image Component in same GameObject
 

@@ -452,6 +452,8 @@ bool MeshRenderer::Deserialize(const YAML::Node& node) {
 
 	if (node["transparencyPriority"])
 		_transparencyPriority = node["transparencyPriority"].as<int>();
+	else
+		_transparencyPriority = 0;
 
 	return true;
 }

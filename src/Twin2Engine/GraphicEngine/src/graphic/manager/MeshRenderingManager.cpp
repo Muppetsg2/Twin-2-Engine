@@ -1829,7 +1829,7 @@ void MeshRenderingManager::Render()
 						//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * MAX_INSTANCE_NUMBER_PER_DRAW, _materialsIndexes);
 #endif
 
-						meshPair.first->Draw(MAX_INSTANCE_NUMBER_PER_DRAW);
+						//meshPair.first->Draw(MAX_INSTANCE_NUMBER_PER_DRAW);
 
 						instanceIndex += MAX_INSTANCE_NUMBER_PER_DRAW;
 						count -= MAX_INSTANCE_NUMBER_PER_DRAW;
@@ -2061,10 +2061,16 @@ void MeshRenderingManager::Render()
 					//glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
 					//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * count, _materialsIndexes);
 
-					glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 #endif
 
+
+
 					meshPair.first->Draw(count);
+
+
+#if !USE_NAMED_BUFFER_SUBDATA
+					glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+#endif
 
 					GLenum error = glGetError();
 					if (error != GL_NO_ERROR) {

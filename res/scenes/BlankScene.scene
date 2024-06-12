@@ -60,6 +60,7 @@ GameObjects:
         audio: 0
         loop: true
         volume: 1
+        playOnStart: false
       - id: 3
         enabled: true
         type: MovementController

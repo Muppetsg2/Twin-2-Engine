@@ -7,6 +7,7 @@
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
+using namespace Twin2Engine::Physic;
 using namespace Twin2Engine::UI;
 
 using namespace std;
@@ -125,6 +126,26 @@ void GameManager::Update()
             }
         }
     }
+
+
+    if (gameStartUp && Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT))
+    {
+        Ray ray = CameraComponent::GetMainCamera()->GetScreenPointRay(Input::GetCursorPos());// Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit raycastHit;
+
+        if (CollisionManager::Instance()->Raycast(ray, raycastHit))
+        {
+            HexTile* hexTile = raycastHit.collider->GetGameObject()->GetComponent<HexTile>();
+            MapHexTile* mapHexTile = hexTile->GetMapHexTile();
+            
+            if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && hexTile->currCooldown > 0.0f) && !hexTile->isFighting)
+            {
+                _player->StartPlayer(hexTile);
+                gameStartUp = false;
+            }
+            
+        }
+    }
 }
 
 void GameManager::UpdateEnemies(int colorIdx)
@@ -142,7 +163,7 @@ GameObject *GameManager::GeneratePlayer()
 {
     GameObject *player = Twin2Engine::Manager::SceneManager::CreateGameObject(prefabPlayer);
     Player *p = player->GetComponent<Player>();
-
+    _player = p;
     int chosen = Random::Range(0ull, _freeColors.size() - 1ull);
     // int chosen = 0;
     p->colorIdx = _freeColors[chosen];
@@ -279,6 +300,7 @@ void GameManager::StartGame()
     }
 
     GameTimer::Instance()->StartTimer();
+    gameStartUp = true;
 }
 
 YAML::Node GameManager::Serialize() const

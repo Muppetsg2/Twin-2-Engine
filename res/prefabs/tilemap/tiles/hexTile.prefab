@@ -150,18 +150,18 @@ Root:
         - 2
         - 3
       borderJoints:
-        - 14
         - 13
-        - 16
+        - 14
         - 15
-        - 18
+        - 16
         - 17
-        - 8
+        - 18
         - 7
-        - 10
+        - 8
         - 9
-        - 12
+        - 10
         - 11
+        - 12
 GameObjects:
   - id: 19
     name: AffectedMark

@@ -1,3 +1,4 @@
+#include "Player.h"
 #include <Player.h>
 #include <manager/SceneManager.h>
 #include <Abilities/ConcertAbilityController.h>
@@ -305,6 +306,11 @@ void Player::Update() {
     }
 }
 
+void Player::StartPlayer(HexTile* startUpTile)
+{
+    move->StartUp(startUpTile);
+}
+
 void Player::AlbumCall() {
     if (currAlbumCooldown <= 0.0f && money->SpendMoney(albumRequiredMoney)) {
         currAlbumTime = albumTime;
@@ -392,25 +398,25 @@ void Player::StartMove(HexTile* tile) {
 
     GameManager::instance->changeTile = true;
 
-    if (!GameManager::instance->gameStarted) {
-        GameManager::instance->gameStarted = true;
-        hexIndicator->SetActive(true);
-        hexIndicator->GetTransform()->SetGlobalPosition(CurrTile->sterowiecPos);
-
-        //if (islandsWon == 0) {
-        //    GameTimer::Instance().ResetTimer();
-        //}
-        //
-        //GameTimer::Instance().StartTimer();
-
-        //HUDInfo* obj = FindObjectOfType<HUDInfo>();
-        //if (obj != nullptr) {
-        //    obj->ResetInfo();
-        //}
-    }
-    else if (hexIndicator) {
-        hexIndicator->SetActive(false);
-    }
+    //if (!GameManager::instance->gameStarted) {
+    //    GameManager::instance->gameStarted = true;
+    //    hexIndicator->SetActive(true);
+    //    hexIndicator->GetTransform()->SetGlobalPosition(CurrTile->sterowiecPos);
+    //
+    //    //if (islandsWon == 0) {
+    //    //    GameTimer::Instance().ResetTimer();
+    //    //}
+    //    //
+    //    //GameTimer::Instance().StartTimer();
+    //
+    //    //HUDInfo* obj = FindObjectOfType<HUDInfo>();
+    //    //if (obj != nullptr) {
+    //    //    obj->ResetInfo();
+    //    //}
+    //}
+    //else if (hexIndicator) {
+    //    hexIndicator->SetActive(false);
+    //}
 
     if (lost) {
         //HUDInfo* obj = FindObjectOfType<HUDInfo>();
@@ -501,16 +507,8 @@ void Player::WonPaperRockScissors(Playable* playable) {
 
     playable->LostPaperRockScissors(this);
 
-    if (CurrTile->takenEntity == playable) {
-    //if (CurrTile->takenEntity != this) {
+    if (CurrTile->ownerEntity == playable) {
         CurrTile->ResetTile();
-
-        //if (GameManager::instance->entities.size() == 1) {
-        //    //hexIndicator->SetActive(false);
-        //}
-        //else {
-        //    FinishMove(CurrTile);
-        //}
     }
 
     playable->CheckIfDead(this);
@@ -561,7 +559,7 @@ void Player::WonFansControl(Playable* playable) {
     GameManager::instance->minigameActive = false;
 
     CurrTile->isFighting = false;
-    if (CurrTile->takenEntity == dynamic_cast<Playable*>(fightingPlayable)) {
+    if (CurrTile->ownerEntity == dynamic_cast<Playable*>(fightingPlayable)) {
         CurrTile->ResetTile();
         fightingPlayable->CheckIfDead(this);
 
@@ -593,7 +591,7 @@ void Player::LostFansControl(Playable* playable) {
 void Player::FansControlDraw() {
     //fightingPlayable->WonPaperRockScisors(this);
     GameManager::instance->minigameActive = false;
-    if (CurrTile->occupyingEntity == this && CurrTile->takenEntity == this) {
+    if (CurrTile->occupyingEntity == this && CurrTile->ownerEntity == this) {
         CurrTile->ResetTile();
     }
 }

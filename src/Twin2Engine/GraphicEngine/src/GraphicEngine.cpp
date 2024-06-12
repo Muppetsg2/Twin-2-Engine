@@ -80,10 +80,10 @@ void GraphicEngine::Init(const std::string& window_name, int32_t window_width, i
 	// Debugging
 	glEnable(GL_DEBUG_OUTPUT);
 	glDebugMessageCallback(ErrorMessageCallback, 0);
+#endif
 
 	const GLubyte* renderer = glGetString(GL_RENDERER);
 	spdlog::info("Graphic Card: {0}", (char*)renderer);
-#endif
 
 	// Blending
 	glEnable(GL_BLEND);

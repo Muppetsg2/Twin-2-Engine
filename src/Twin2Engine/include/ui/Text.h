@@ -56,7 +56,6 @@ namespace Twin2Engine::UI {
 
 		friend class InputField;
 
-		void SetCanvas(Canvas* canvas);
 	public:
 		// TODO: Repair Text Mesh
 		// TODO: Text Wrapping
@@ -72,6 +71,8 @@ namespace Twin2Engine::UI {
 #if _DEBUG
 		virtual void DrawEditor() override;
 #endif
+
+		void SetCanvas(Canvas* canvas);
 
 		void SetColor(const glm::vec4& color);
 		void SetText(const std::wstring& text);

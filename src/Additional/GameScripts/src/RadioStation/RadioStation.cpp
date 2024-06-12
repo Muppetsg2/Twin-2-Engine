@@ -1,15 +1,21 @@
 #include <RadioStation/RadioStation.h>
 #include <RadioStation/RadioStationPlayingController.h>
 
+#include <UI/Canvas.h>
+
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Physic;
+using namespace Twin2Engine::UI;
 
 using namespace glm;
 using namespace std;
 
 void RadioStation::Initialize()
 {
+    Canvas* canvas = GetGameObject()->GetComponentInChildren<Canvas>();
+    _cooldownTimerText = GetGameObject()->GetComponentInChildren<Text>();
+    _cooldownTimerText->SetCanvas(canvas);
 }
 
 void RadioStation::Update()
@@ -28,12 +34,14 @@ void RadioStation::Update()
             _takingOverTimer = 0.0f;
         }
     }
-    else if (_cooldownTimer > 0.0f)
+    if (_cooldownTimer > 0.0f)
     {
         _cooldownTimer -= Time::GetDeltaTime();
+        _cooldownTimerText->SetText(to_wstring((int) glm::round(_cooldownTimer)));
         if (_cooldownTimer <= 0.0f)
         {
             _cooldownTimer = 0.0f;
+            _cooldownTimerText->GetGameObject()->SetActive(false);
         }
     }
 }
@@ -56,6 +64,8 @@ void RadioStation::StartTakingOver(Playable* playable, float score)
     float usedRadius = score * takingRadius;
 
     _takingOverTimer = _takingOverTime;
+    _cooldownTimer = _cooldown;
+    _cooldownTimerText->GetGameObject()->SetActive(true);
     _takenPlayable = playable;
 
     if (playable->patron->GetPatronBonus() == PatronBonus::ABILITIES_RANGE) {

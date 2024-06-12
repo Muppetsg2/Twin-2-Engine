@@ -77,6 +77,7 @@ class PlayerMovement : public Component {
 		virtual void Initialize() override;
 		virtual void Update() override;
 		virtual void OnDestroy() override;
+		void StartUp(HexTile* startUpTile);
 
 		void OnPathComplete(const AStar::AStarPath& p);
 		void OnPathFailure();

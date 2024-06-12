@@ -5,6 +5,7 @@
 #include <cmath>
 #include <core/MathExtensions.h>
 #include <tools/templates.h>
+#include <tools/YamlConverters.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
@@ -42,7 +43,7 @@ void AudioComponent::Play()
 		}
 	}
 	else {
-		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
+		SPDLOG_WARN("AudioComponent::Audio Was Not Loaded!");
 	}
 }
 
@@ -59,7 +60,7 @@ void AudioComponent::Pause()
 		}
 	}
 	else {
-		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
+		SPDLOG_WARN("AudioComponent::Audio Was Not Loaded!");
 	}
 }
 
@@ -75,7 +76,7 @@ void AudioComponent::Stop()
 		}
 	}
 	else {
-		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
+		SPDLOG_WARN("AudioComponent::Audio Was Not Loaded!");
 	}
 }
 
@@ -91,7 +92,7 @@ void AudioComponent::Loop()
 		return;
 	}
 	else {
-		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
+		SPDLOG_WARN("AudioComponent::Audio Was Not Loaded!");
 		_loop = true;
 	}
 }
@@ -108,7 +109,7 @@ void AudioComponent::UnLoop()
 		return;
 	}
 	else {
-		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
+		SPDLOG_WARN("AudioComponent::Audio Was Not Loaded!");
 		_loop = false;
 	}
 }
@@ -124,7 +125,7 @@ void AudioComponent::SetPlayPosition(SoLoud::time seconds)
 		return;
 	}
 	else {
-		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
+		SPDLOG_WARN("AudioComponent::Audio Was Not Loaded!");
 	}
 }
 
@@ -140,8 +141,15 @@ void AudioComponent::SetVolume(float value)
 		return;
 	}
 	else {
-		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
+		SPDLOG_WARN("AudioComponent::Audio Was Not Loaded!");
 		_volume = value;
+	}
+}
+
+void AudioComponent::SetPlayOnStart(bool value)
+{
+	if (_playOnStart != value) {
+		_playOnStart = value;
 	}
 }
 
@@ -161,7 +169,7 @@ SoLoud::time AudioComponent::GetAudioLength()
 		return AudioManager::GetAudioTime(_audioId);
 	}
 	else {
-		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
+		SPDLOG_WARN("AudioComponent::Audio Was Not Loaded!");
 		return SoLoud::time();
 	}
 }
@@ -169,7 +177,7 @@ SoLoud::time AudioComponent::GetAudioLength()
 SoLoud::time AudioComponent::GetPlayPosition()
 {
 	if (!_loaded) {
-		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
+		SPDLOG_WARN("AudioComponent::Audio Was Not Loaded!");
 		return SoLoud::time();
 	}
 
@@ -183,7 +191,7 @@ SoLoud::time AudioComponent::GetPlayPosition()
 SoLoud::time AudioComponent::GetPlayTime()
 {
 	if (!_loaded) {
-		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
+		SPDLOG_WARN("AudioComponent::Audio Was Not Loaded!");
 		return SoLoud::time();
 	}
 
@@ -197,7 +205,7 @@ SoLoud::time AudioComponent::GetPlayTime()
 float AudioComponent::GetVolume()
 {
 	if (!_loaded) {
-		spdlog::warn("AudioComponent::Audio Was Not Loaded!");
+		SPDLOG_WARN("AudioComponent::Audio Was Not Loaded!");
 		return _volume;
 	}
 
@@ -212,7 +220,7 @@ float AudioComponent::GetVolume()
 bool AudioComponent::IsPaused()
 {
 	if (!_loaded) {
-		spdlog::error("AudioComponent::Audio Was Not Loaded!");
+		SPDLOG_ERROR("AudioComponent::Audio Was Not Loaded!");
 		return false;
 	}
 
@@ -226,7 +234,7 @@ bool AudioComponent::IsPaused()
 bool AudioComponent::IsLooping()
 {
 	if (!_loaded) {
-		spdlog::error("AudioComponent::Audio Was Not Loaded!");
+		SPDLOG_ERROR("AudioComponent::Audio Was Not Loaded!");
 		return _loop;
 	}
 
@@ -236,6 +244,18 @@ bool AudioComponent::IsLooping()
 	}
 
 	return AudioManager::IsLooping(_audioHandle);
+}
+
+bool AudioComponent::IsPlayOnStartSet()
+{
+	return _playOnStart;
+}
+
+void AudioComponent::Initialize()
+{
+	if (_playOnStart) {
+		Play();
+	}
 }
 
 void AudioComponent::OnDisable()
@@ -259,16 +279,18 @@ YAML::Node AudioComponent::Serialize() const
 	node["audio"] = SceneManager::GetAudioSaveIdx(_audioId);
 	node["loop"] = _loop;
 	node["volume"] = _volume;
+	node["playOnStart"] = _playOnStart;
 	return node;
 }
 
 bool AudioComponent::Deserialize(const YAML::Node& node)
 {
-	if (!node["audio"] || !node["loop"] || !node["volume"] ||
+	if (!node["audio"] || !node["loop"] || !node["volume"] || !node["playOnStart"] ||
 		!Component::Deserialize(node)) return false;
 
 	_loop = node["loop"].as<bool>();
 	_volume = node["volume"].as<float>();
+	_playOnStart = node["playOnStart"].as<bool>();
 
 	SetAudio(SceneManager::GetAudio(node["audio"].as<size_t>()));
 
@@ -361,10 +383,10 @@ void AudioComponent::DrawEditor()
 			this->SetVolume(vol);
 		}
 
-		bool loop = this->_loop;
+		bool v = this->_loop;
 
-		if (ImGui::Checkbox(string("Loop##").append(id).c_str(), &loop)) {
-			if (loop) {
+		if (ImGui::Checkbox(string("Loop##").append(id).c_str(), &v)) {
+			if (v) {
 				if (!this->_loop) {
 					this->Loop();
 				}
@@ -374,6 +396,14 @@ void AudioComponent::DrawEditor()
 					this->UnLoop();
 				}
 			}
+		}
+
+		v = this->_playOnStart;
+
+		ImGui::Checkbox(string("Play On Start##").append(id).c_str(), &v);
+
+		if (v != this->_playOnStart) {
+			this->_playOnStart = v;
 		}
 	}
 }

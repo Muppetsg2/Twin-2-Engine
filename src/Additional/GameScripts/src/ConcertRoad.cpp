@@ -56,9 +56,9 @@ void ConcertRoad::Update()
 
     for (auto tile : RoadMapPoints)
     {
-        if (tile->takenEntity != nullptr)
+        if (tile->ownerEntity != nullptr)
         {
-            auto posItr = std::find(GameManager::instance->entities.begin(), GameManager::instance->entities.end(), tile->takenEntity);
+            auto posItr = std::find(GameManager::instance->entities.begin(), GameManager::instance->entities.end(), tile->ownerEntity);
             int pos = std::distance(GameManager::instance->entities.begin(), posItr);
             entityPoints[pos] += 1;
             // entityPoints[GameManager::instance->entities.IndexOf(tile->takenEntity)] += 1;

@@ -336,6 +336,8 @@ void HexTile::OnDestroy()
 	else 
 		SPDLOG_WARN("Concert Road Instance was nullptr!");
 	texturesData = nullptr;
+
+	delete paricleGeneartor;
 }
 
 void HexTile::Update()
@@ -380,6 +382,9 @@ void HexTile::InitializeAdjacentTiles()
 	}
 
 	_adjacentTiles.shrink_to_fit();
+
+	//paricleGeneartor->startPosition = glm::vec4(GetTransform()->GetGlobalPosition(), 1.0f);
+	//paricleGeneartor->active = true;
 }
 
 void HexTile::ResetTile()

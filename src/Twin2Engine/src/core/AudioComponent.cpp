@@ -5,6 +5,7 @@
 #include <cmath>
 #include <core/MathExtensions.h>
 #include <tools/templates.h>
+#include <tools/YamlConverters.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;

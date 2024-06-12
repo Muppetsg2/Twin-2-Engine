@@ -192,7 +192,6 @@ void GameEngine::End()
     // Cleanup
     EarlyEnd();
 
-    ParticleSystemsController::DeleteInstance();
 
     PrefabManager::UnloadAll();
     SceneManager::UnloadAll();
@@ -202,6 +201,8 @@ void GameEngine::End()
     ScriptableObjectManager::UnloadAll();
 
     GraphicEngine::End();
+
+    ParticleSystemsController::DeleteInstance();
     ProcessManager::DeleteInstance();
 }
 

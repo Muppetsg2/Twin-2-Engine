@@ -70,7 +70,7 @@ void HexTile::UpdateTileColor()
 {
 	TILE_COLOR col = ownerEntity != nullptr ? (TILE_COLOR)(uint8_t)(ownerEntity->colorIdx == 0 ? 1 : powf(2.f, (float)(ownerEntity->colorIdx))) : TILE_COLOR::NEUTRAL;
 	//SPDLOG_INFO("Percentage: {}", percentage);
-	if (!occupyingEntity || takenEntity == occupyingEntity)
+	if (!occupyingEntity || ownerEntity == occupyingEntity)
 	{
 		if (percentage > _takingStage3)
 		{
@@ -88,6 +88,7 @@ void HexTile::UpdateTileColor()
 		{
 			_meshRenderer->SetMaterial(0ull, texturesData->GetMaterial(col, 0ull));
 		}
+	}
 	else 
 	{
 		if (percentage < _takingStage1)

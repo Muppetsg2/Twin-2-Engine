@@ -266,7 +266,7 @@ void MinigameManager::StartMinigame(Playable* chalanging, Playable* chalanged)
 	if (player != nullptr) {
 		for (int i = 0; i < 6; ++i) {
 			if (hexTilesGOs[i] != nullptr) {
-				owner = hexTilesGOs[i]->GetComponent<HexTile>()->takenEntity;
+				owner = hexTilesGOs[i]->GetComponent<HexTile>()->ownerEntity;
 				if (chalanging == owner) {
 					playerFieldsNumber += 1;
 				}
@@ -293,7 +293,7 @@ void MinigameManager::StartMinigame(Playable* chalanging, Playable* chalanged)
 	if (player != nullptr) {
 		for (int i = 0; i < 6; ++i) {
 			if (hexTilesGOs[i] != nullptr) {
-				owner = hexTilesGOs[i]->GetComponent<HexTile>()->takenEntity;
+				owner = hexTilesGOs[i]->GetComponent<HexTile>()->ownerEntity;
 				if (chalanging == owner) {
 					enemyFieldsNumber += 1;
 				}
@@ -321,7 +321,7 @@ void MinigameManager::StartMinigame(Playable* chalanging, Playable* chalanged)
 	int p2FieldsNumber = 3;
 	for (int i = 0; i < 6; ++i) {
 		if (hexTilesGOs[i] != nullptr) {
-			owner = hexTilesGOs[i]->GetComponent<HexTile>()->takenEntity;
+			owner = hexTilesGOs[i]->GetComponent<HexTile>()->ownerEntity;
 			if (chalanging == owner) {
 				p1FieldsNumber += 1;
 			}

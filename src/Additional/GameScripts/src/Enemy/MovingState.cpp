@@ -100,10 +100,10 @@ DecisionTree<MovingState::AfterMoveDecisionData&, bool> MovingState::_afterMoveD
 							[&](AfterMoveDecisionData& data) -> bool {
 								// Sprawdzenie do kogo nale¿y CurrTile
 								// (!EnemyTile && (!PlayerTile || (PlayerTile && Percent <= 50)) || (EnemyTile && Percent <= 50)
-								if (data.enemy->CurrTile->takenEntity == data.enemy) {
+								if (data.enemy->CurrTile->ownerEntity == data.enemy) {
 									return data.enemy->CurrTile->percentage <= 50.f;
 								}
-								else if (data.enemy->CurrTile->takenEntity != nullptr) {
+								else if (data.enemy->CurrTile->ownerEntity != nullptr) {
 									return data.enemy->CurrTile->percentage <= 50.f;
 								}
 								else {
@@ -151,20 +151,20 @@ void MovingState::DoAfterMoveDecisionTree(Enemy* enemy) {
 		if (tile->occupyingEntity != nullptr && tile->occupyingEntity != enemy) {
 			if (data.playerTile == nullptr) {
 				data.playerTile = tile;
-				data.playerOnEnemyTile = tile->takenEntity == enemy;
+				data.playerOnEnemyTile = tile->ownerEntity == enemy;
 			}
 			else {
 				float score = tile->occupyingEntity->FightPowerScore() - data.playerTile->occupyingEntity->FightPowerScore();
 				if (score > 0.f) {
 					data.enemyIsStrongerThanPlayer = true;
 					data.playerTile = tile;
-					data.playerOnEnemyTile = tile->takenEntity == enemy;
+					data.playerOnEnemyTile = tile->ownerEntity == enemy;
 				}
 				else if (score == 0.f) {
-					if (tile->takenEntity == enemy || data.playerTile->occupyingEntity->OwnTiles.size() > tile->occupyingEntity->OwnTiles.size()) {
+					if (tile->ownerEntity == enemy || data.playerTile->occupyingEntity->OwnTiles.size() > tile->occupyingEntity->OwnTiles.size()) {
 						data.enemyIsStrongerThanPlayer = true;
 						data.playerTile = tile;
-						data.playerOnEnemyTile = tile->takenEntity == enemy;
+						data.playerOnEnemyTile = tile->ownerEntity == enemy;
 					}
 				}
 			}

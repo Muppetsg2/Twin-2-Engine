@@ -54,7 +54,7 @@ public:
 	std::vector<Playable*> remotelyOccupyingEntities;
 	std::vector<float> remoteMultipliers;
 	float remoteMultiplier = 1.0f;
-	Playable* takenEntity = nullptr;
+	Playable* ownerEntity = nullptr;
 	float percentage = 0.0f;
 	float currCooldown = 0.0f;
 
@@ -109,6 +109,7 @@ public:
 	void InitializeAdjacentTiles();
 
 	void ResetTile();
+	void SetOwnerEntity(Playable* newOwnerEntity);
 	void SetOutlineActive(bool active);
 	void StartMinigame();
 	void WinMinigame();

@@ -76,14 +76,6 @@ GameObjects:
     components:
       - id: 6
         enabled: true
-        type: MeshRenderer
-        isTransparent: true
-        transparencyPriority: 2
-        model: 1
-        materials:
-          - 0
-      - id: 7
-        enabled: true
         type: Cloud
         startingScale:
           x: 0.5
@@ -93,6 +85,13 @@ GameObjects:
           x: 0.01
           y: -0.01
           z: -0.01
+      - id: 7
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 1
+        materials:
+          - 0
     children:
       []
   - id: 5
@@ -116,14 +115,6 @@ GameObjects:
     components:
       - id: 9
         enabled: true
-        type: MeshRenderer
-        isTransparent: true
-        transparencyPriority: 2
-        model: 1
-        materials:
-          - 0
-      - id: 10
-        enabled: true
         type: Cloud
         startingScale:
           x: 0.5
@@ -133,6 +124,13 @@ GameObjects:
           x: 0.01
           y: -0.01
           z: -0.01
+      - id: 10
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 1
+        materials:
+          - 0
     children:
       []
   - id: 6
@@ -156,14 +154,6 @@ GameObjects:
     components:
       - id: 12
         enabled: true
-        type: MeshRenderer
-        isTransparent: true
-        transparencyPriority: 2
-        model: 1
-        materials:
-          - 0
-      - id: 13
-        enabled: true
         type: Cloud
         startingScale:
           x: 0.5
@@ -173,5 +163,12 @@ GameObjects:
           x: 0.01
           y: -0.01
           z: -0.01
+      - id: 13
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 1
+        materials:
+          - 0
     children:
       []

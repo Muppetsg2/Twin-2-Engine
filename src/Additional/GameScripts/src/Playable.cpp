@@ -361,7 +361,7 @@ float Playable::LocalAvg() const
             if (neightbourTiles[i]->GetGameObject() != nullptr) {
                 ++neightboursCount;
                 HexTile* tile = neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>();
-                if (tile->takenEntity == this) {
+                if (tile->ownerEntity == this) {
                     res += tile->percentage;
                 }
             }
@@ -382,7 +382,7 @@ float Playable::FansRangeAvg() const
     float res = 0.f;
     std::vector<HexTile*> inFansRangeTiles = GetFansRangeTiles();
     for (auto& tile : inFansRangeTiles) {
-        if (tile->takenEntity == this) {
+        if (tile->ownerEntity == this) {
             res += tile->percentage;
         }
     }
@@ -449,7 +449,7 @@ std::vector<HexTile*> Playable::GetLocalTakenTiles() const
         if (neightbourTiles[i] != nullptr) {
             if (neightbourTiles[i]->GetGameObject() != nullptr) {
                 HexTile* tile = neightbourTiles[i]->GetGameObject()->GetComponent<HexTile>();
-                if (tile->takenEntity == this) {
+                if (tile->ownerEntity == this) {
                     tiles.push_back(tile);
                 }
             }

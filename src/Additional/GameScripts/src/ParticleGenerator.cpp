@@ -7,19 +7,30 @@
 
 using namespace Twin2Engine::Core;
 
-ParticleGenerator::ParticleGenerator(std::string shaderName, std::string textureName, unsigned int amount, float height, float distance, float time, float maxLife, float particleW, float particleH)
-    : amount(amount), maxLife(maxLife)
+ParticleGenerator::ParticleGenerator(const std::string& shaderName, const std::string& textureName, unsigned int amount, float height, float distance, float time, float maxLife, float particleW, float particleH, float generationRadius)
+    : amount(amount), maxLife(maxLife), generationRadius(generationRadius)
 {
     shader = ShaderManager::GetShaderProgram(shaderName);
     if (TextureManager::IsTextureLoaded(textureName)) {
-        texture = TextureManager::GetTexture2D(textureName);
+        textureId = TextureManager::GetTexture2D(textureName)->GetId();
     }
     else {
-        texture = TextureManager::LoadTexture2D(textureName);
+        textureId = TextureManager::LoadTexture2D(textureName)->GetId();
     }
     ParticleSystemsController::Instance()->particlesGenerators.insert(this);
 
+    init(height, distance, time, particleW, particleH);
+}
 
+ParticleGenerator::ParticleGenerator(const std::string& shaderName, GLuint& textureId, unsigned int amount, float height, float distance, float time, float maxLife, float particleW, float particleH, float generationRadius)
+    : textureId(textureId), amount(amount), maxLife(maxLife), generationRadius(generationRadius)
+{
+    shader = ShaderManager::GetShaderProgram(shaderName);
+
+    init(height, distance, time, particleW, particleH);
+}
+
+void ParticleGenerator::init(float height, float distance, float time, float particleW, float particleH) {
     // set up mesh and attribute properties
     float yValue = 0.5 * glm::sin(0.7853f) * particleH;
     float zValue = 0.5 * glm::cos(0.7853f) * particleH;
@@ -27,7 +38,7 @@ ParticleGenerator::ParticleGenerator(std::string shaderName, std::string texture
        -0.5f * particleW, -yValue,  zValue, 1.0f, 0.0f, 0.0f,
         0.5f * particleW, -yValue,  zValue, 1.0f, 1.0f, 0.0f,
        -0.5f * particleW,  yValue, -zValue, 1.0f, 0.0f, 1.0f,
-                                    
+
        -0.5f * particleW,  yValue, -zValue, 1.0f, 0.0f, 1.0f,
         0.5f * particleW, -yValue,  zValue, 1.0f, 1.0f, 0.0f,
         0.5f * particleW,  yValue, -zValue, 1.0f, 1.0f, 1.0f
@@ -54,6 +65,11 @@ ParticleGenerator::ParticleGenerator(std::string shaderName, std::string texture
     glm::vec2 vel(0.0f);
     float minVVel = verticalVel - 0.1f * verticalVel;
     float maxVVel = verticalVel + 0.1f * verticalVel;
+
+    glm::vec4 randOffset(0.0f);
+    float randAngle = 0.0f;
+    float randRadius = 0.0f;
+
     for (unsigned int i = 0; i < this->amount; ++i) {
         vel.x = Random::Range<float>(-1.0f, 1.0f);
         vel.y = Random::Range<float>(-1.0f, 1.0f);
@@ -66,7 +82,16 @@ ParticleGenerator::ParticleGenerator(std::string shaderName, std::string texture
         particle->Velocity.z = vel.y;
         particle->Life = Random::Range<float>(0, maxLife);
         particles.push_back(particle);
-        particlesPos.push_back(startPosition);
+
+        if (generationRadius > 0.01) {
+            randAngle = Random::Range<float>(0.0f, 6.2831f);
+            randRadius = Random::Range<float>(0.0f, generationRadius);
+            randOffset.x = randRadius * glm::cos(randAngle) + particle->Velocity.x * particle->Life;
+            randOffset.z = randRadius * glm::sin(randAngle) + particle->Velocity.z * particle->Life;
+        }
+        randOffset.y = particle->Velocity.z * particle->Life + 0.5f * g * particle->Life * particle->Life;
+
+        particlesPos.push_back(startPosition + randOffset);
     }
 
     shader->Use();
@@ -98,17 +123,30 @@ void ParticleGenerator::Update()
 {
     Particle* p;
     float dt = Time::GetDeltaTime();
+    glm::vec4 randOffset(0.0f);
+    float randAngle = 0.0f;
+    float randRadius = 0.0f;
 
     for (unsigned int i = 0; i < amount; ++i)
     {
         p = particles[i];
         p->Life += dt; // reduce life
-        particlesPos[i].x = startPosition.x + p->Velocity.x * p->Life;
+        particlesPos[i].x += p->Velocity.x * dt;
         particlesPos[i].y = startPosition.y + p->Velocity.y * p->Life + 0.5f * g * p->Life * p->Life;
-        particlesPos[i].z = startPosition.z + p->Velocity.z * p->Life;
+        particlesPos[i].z += p->Velocity.z * dt;
         if (p->Life > maxLife)
         {
-            particlesPos[i] = startPosition;
+            if (generationRadius > 0.01) {
+                randAngle = Random::Range<float>(0.0f, 6.2831f);
+                randRadius = Random::Range<float>(0.0f, generationRadius);
+                randOffset.x = randRadius * glm::cos(randAngle);
+                randOffset.z = randRadius * glm::sin(randAngle);
+                particlesPos[i] = startPosition + randOffset;
+            }
+            else {
+                particlesPos[i] = startPosition;
+            }
+
             p->Life = 0.0f;
         }
     }
@@ -125,7 +163,7 @@ void ParticleGenerator::Draw()
     shader->Use();
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture->GetId());
+    glBindTexture(GL_TEXTURE_2D, textureId);
     //glActiveTexture(GL_TEXTURE0 + textureBinded);
     //glBindTexture(GL_TEXTURE_2D, _textures[i]);
 

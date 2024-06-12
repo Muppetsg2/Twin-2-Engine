@@ -101,6 +101,7 @@ public:
 	void InitializeAdjacentTiles();
 
 	void ResetTile();
+	void SetOwnerEntity(Playable* newOwnerEntity);
 	void SetOutlineActive(bool active);
 	void StartMinigame();
 	void WinMinigame();

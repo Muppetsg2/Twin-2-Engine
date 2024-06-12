@@ -1,3 +1,4 @@
+#include "HexTile.h"
 #include <AreaTaking/HexTile.h>
 
 #include <Playable.h>
@@ -32,8 +33,9 @@ void HexTile::TakeOver()
 
 	if (ownerEntity != nullptr && ownerEntity != occupyingEntity) {
 		percentage -= Time::GetDeltaTime() * takeOverSpeed;
-		if (percentage < 0.0f) {
-			ResetTile();
+		if (percentage <= 0.f) {
+			percentage = 0.f;
+			SetOwnerEntity(nullptr);
 		}
 	}
 	else {
@@ -41,14 +43,13 @@ void HexTile::TakeOver()
 		if (percentage > 100.0f) {
 			percentage = 100.0f;
 		}
-		if (takenEntity == nullptr && percentage > _takingStage1)
+		if (ownerEntity == nullptr && percentage > _takingStage1)
 		{
-			takenEntity = occupyingEntity;
-			takenEntity->OwnTiles.push_back(this);
+			SetOwnerEntity(occupyingEntity);
 
 			CheckRoundPattern();
 
-			for (auto& t : takenEntity->OwnTiles)
+			/*for (auto& t : takenEntity->OwnTiles)
 			{
 				t->UpdateBorders();
 
@@ -63,9 +64,7 @@ void HexTile::TakeOver()
 					if (ntTile->takenEntity == takenEntity) continue;
 					ntTile->UpdateBorders();
 				}
-			}
-
-			UpdateBorderColor();
+			}*/
 		}
 	}
 
@@ -220,6 +219,8 @@ void HexTile::UpdateBorders()
 
 					if (!borders[i]->GetActive())
 						borders[i]->SetActive(true);
+
+					// UPDATE NEIGHTBOUR BORDER
 				}
 				else
 				{
@@ -230,6 +231,8 @@ void HexTile::UpdateBorders()
 
 					if (borders[i]->GetActive())
 						borders[i]->SetActive(false);
+
+					// UPDATE NEIGHTBOUR BORDER
 				}
 			}
 			else
@@ -363,15 +366,8 @@ void HexTile::InitializeAdjacentTiles()
 void HexTile::ResetTile()
 {
 	percentage = 0.0f;
-	if (ownerEntity != nullptr) {
-		ownerEntity->OwnTiles.remove(this);
-		for (auto& t : ownerEntity->OwnTiles)
-		{
-			t->UpdateBorders();
-		}
-	}
+	SetOwnerEntity(nullptr);
 	occupyingEntity = nullptr;
-	takenEntity = nullptr;
 	isFighting = false;
 	state = TileState::NONE;
 	UpdateTileColor();
@@ -385,6 +381,30 @@ void HexTile::ResetTile()
 			borderJoints[i * 2]->SetActive(false);
 		if (borderJoints[(i * 2) + 1]->GetActive())
 			borderJoints[(i * 2) + 1]->SetActive(false);
+	}
+}
+
+void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
+{
+	if (ownerEntity != newOwnerEntity) {
+		if (ownerEntity != nullptr) {
+			ownerEntity->OwnTiles.remove(this);
+			for (auto& t : ownerEntity->OwnTiles)
+			{
+				t->UpdateBorders();
+			}
+		}
+		ownerEntity = newOwnerEntity;
+		if (ownerEntity != nullptr) {
+			ownerEntity->OwnTiles.push_back(this);
+			for (auto& t : ownerEntity->OwnTiles)
+			{
+				t->UpdateBorders();
+			}
+		}
+
+		UpdateBorderColor();
+		UpdateTileColor();
 	}
 }
 

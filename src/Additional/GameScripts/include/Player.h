@@ -45,25 +45,28 @@ private:
     Twin2Engine::UI::Button* albumButton;
     Twin2Engine::Core::GameObject* albumButtonObject;
     Twin2Engine::UI::Image* albumCircleImage;
-    size_t albumButtonEventHandleId;
-    size_t albumButtonDestroyedEventHandleId;
+    int albumButtonEventHandleId = -1;
+    int albumButtonDestroyedEventHandleId = -1;
+
     // FansMeeting
     Twin2Engine::UI::Text* fansMeetingText;
     Twin2Engine::UI::Button* fansMeetingButton;
     Twin2Engine::Core::GameObject* fansMeetingButtonObject;
     Twin2Engine::UI::Image* fansMeetingCircleImage;
-    size_t fansMeetingButtonEventHandleId;
-    size_t fansMeetingButtonHeveringEventHandleId;
-    size_t fansMeetingButtonDestroyedEventHandleId;
+    int fansMeetingButtonEventHandleId = -1;
+    int fansMeetingButtonHoveringEventHandleId = -1;
+    int fansMeetingButtonDestroyedEventHandleId = -1;
     bool isHoveringButton = false;
     bool isShowingAffectedTiles = false;
+
     //Concert
     Twin2Engine::UI::Text* concertText;
     Twin2Engine::UI::Button* concertButton;
     Twin2Engine::Core::GameObject* concertButtonObject;
     Twin2Engine::UI::Image* concertCircleImage;
-    size_t concertButtonEventHandleId;
-    size_t concertButtonDestroyedEventHandleId;
+    int concertButtonEventHandleId = -1;
+    int concertButtonDestroyedEventHandleId = -1;
+
     // Money
     Twin2Engine::UI::Text* moneyText;
 
@@ -80,12 +83,12 @@ public:
 
     virtual void Initialize() override;
     virtual void Update() override;
+    virtual void OnDestroy() override;
     void StartPlayer(HexTile* startUpTile);
 
     void AlbumCall();
     void FansMeetingCall();
     void ConcertCall();
-    void FansControlDraw();
     void StartMove(HexTile* tile);
     void FinishMove(HexTile* tile);
     void MinigameEnd();
@@ -93,16 +96,10 @@ public:
     //void StartPaperRockScisors(Playable* playable);
     //void WonPaperRockScisors(Playable* playable);
     //void LostPaperRockScisors(Playable* playable);
-    //void WonFansControl(Playable* playable);
-    //void StartFansControl(Playable* playable);
-    //void LostFansControl(Playable* playable);
 
     virtual void LostPaperRockScissors(Playable* playable) override;
     virtual void WonPaperRockScissors(Playable* playable) override;
-    virtual void LostFansControl(Playable* playable) override;
-    virtual void WonFansControl(Playable* playable) override;
     //virtual void StartPaperRockScissors(Playable* playable) override;
-    virtual void StartFansControl(Playable* playable) override;
 
     float GetMaxRadius() const override;
 

@@ -59,6 +59,9 @@ bool Component::DrawInheritedFields()
 {
 	string id = string(std::to_string(this->GetId()));
 	bool e = _enabled;
+
+	ImGui::Text("Id: %s", id.c_str());
+
 	ImGui::Checkbox(string("Enable##").append(id).c_str(), &e);
 
 	if (e != _enabled) {

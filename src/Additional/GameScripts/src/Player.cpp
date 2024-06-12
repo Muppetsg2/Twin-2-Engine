@@ -44,22 +44,25 @@ void Player::Initialize() {
             albumButton->GetOnClickEvent() -= albumButtonEventHandleId;
             albumButton = nullptr;
         }
-        };
+    };
 
-    OnEventAlbumStarted.AddCallback([&](Playable* playable) -> void {
+    OnEventAlbumStarted += [&](Playable* playable) -> void {
             audioComponent->SetAudio("res/music/Abilities/AbilitiesUse.mp3");
             audioComponent->Play();
             albumCircleImage->SetColor(_abilityActiveColor);
             albumCircleImage->GetGameObject()->SetActive(true);
-        });
-    OnEventAlbumCooldownStarted.AddCallback([&](Playable* playable) -> void {
+    };
+
+    OnEventAlbumCooldownStarted += [&](Playable* playable) -> void {
             albumCircleImage->SetColor(_abilityCooldownColor);
-        });
-    OnEventAlbumCooldownFinished.AddCallback([&](Playable* playable) -> void {
+    };
+
+    OnEventAlbumCooldownFinished += [&](Playable* playable) -> void {
             audioComponent->SetAudio("res/music/Abilities/CooldownEnd.mp3");
             audioComponent->Play();
             albumCircleImage->GetGameObject()->SetActive(false);
-        });
+    };
+
     albumCircleImage->GetGameObject()->SetActive(false);
 
     // FANS MEETING ABILITY INTIALIZATION
@@ -70,7 +73,7 @@ void Player::Initialize() {
     fansMeetingCircleImage = SceneManager::FindObjectByName("fansMeetingCircle")->GetComponent<Image>();
 
     fansMeetingButtonEventHandleId = fansMeetingButton->GetOnClickEvent() += [&]() { FansMeetingCall(); };
-    fansMeetingButtonHeveringEventHandleId = fansMeetingButton->GetOnHoverEvent() += [&]() { isHoveringButton = true; };
+    fansMeetingButtonHoveringEventHandleId = fansMeetingButton->GetOnHoverEvent() += [&]() { isHoveringButton = true; };
 
     fansMeetingButtonDestroyedEventHandleId = fansMeetingButtonObject->OnDestroyedEvent += [&](GameObject* gameObject) {
         if (fansMeetingButton)
@@ -80,25 +83,28 @@ void Player::Initialize() {
             fansMeetingButtonObject = nullptr;
             SPDLOG_INFO("buttonEventHandleId: {}", fansMeetingButtonEventHandleId);
             fansMeetingButton->GetOnClickEvent() -= fansMeetingButtonEventHandleId;
+            fansMeetingButton->GetOnHoverEvent() -= fansMeetingButtonHoveringEventHandleId;
             fansMeetingButton = nullptr;
         }
-        };
+    };
 
-
-    OnEventFansMeetingStarted.AddCallback([&](Playable* playable) -> void {
+    OnEventFansMeetingStarted += [&](Playable* playable) -> void {
         audioComponent->SetAudio("res/music/Abilities/AbilitiesUse.mp3");
         audioComponent->Play();
         fansMeetingCircleImage->SetColor(_abilityActiveColor);
         fansMeetingCircleImage->GetGameObject()->SetActive(true);
-        });
-    OnEventFansMeetingCooldownStarted.AddCallback([&](Playable* playable) -> void {
+    };
+    
+    OnEventFansMeetingCooldownStarted += [&](Playable* playable) -> void {
         fansMeetingCircleImage->SetColor(_abilityCooldownColor);
-        });
-    OnEventFansMeetingCooldownFinished.AddCallback([&](Playable* playable) -> void {
+    };
+    
+    OnEventFansMeetingCooldownFinished += [&](Playable* playable) -> void {
         audioComponent->SetAudio("res/music/Abilities/CooldownEnd.mp3");
         audioComponent->Play();
         fansMeetingCircleImage->GetGameObject()->SetActive(false);
-        });
+    };
+
     fansMeetingCircleImage->GetGameObject()->SetActive(false);
 
     // CONCERT ABILITY INTIALIZATION
@@ -120,23 +126,26 @@ void Player::Initialize() {
                 concertButton->GetOnClickEvent() -= concertButtonEventHandleId;
                 concertButton = nullptr;
             }
-        };
+    };
 
 
-    concertAbility->OnEventAbilityStarted.AddCallback([&](Playable* playable) -> void {
+    concertAbility->OnEventAbilityStarted += [&](Playable* playable) -> void {
         audioComponent->SetAudio("res/music/Abilities/AbilitiesUse.mp3");
         audioComponent->Play();
         concertCircleImage->SetColor(_abilityActiveColor);
         concertCircleImage->GetGameObject()->SetActive(true);
-        });
-    concertAbility->OnEventAbilityCooldownStarted.AddCallback([&](Playable* playable) -> void {
+    };
+
+    concertAbility->OnEventAbilityCooldownStarted += [&](Playable* playable) -> void {
         concertCircleImage->SetColor(_abilityCooldownColor);
-        });
-    concertAbility->OnEventAbilityCooldownFinished.AddCallback([&](Playable* playable) -> void {
+    };
+
+    concertAbility->OnEventAbilityCooldownFinished += [&](Playable* playable) -> void {
         audioComponent->SetAudio("res/music/Abilities/CooldownEnd.mp3");
         audioComponent->Play();
         concertCircleImage->GetGameObject()->SetActive(false);
-        });
+    };
+
     concertCircleImage->GetGameObject()->SetActive(false);
 
     // MONEY UI INITIALIZATION
@@ -306,6 +315,49 @@ void Player::Update() {
     }
 }
 
+void Player::OnDestroy()
+{
+    Playable::OnDestroy();
+
+    // FANS EVENTS
+    if (fansMeetingButton != nullptr) {
+        if (fansMeetingButtonEventHandleId != -1) {
+            fansMeetingButton->GetOnClickEvent() -= fansMeetingButtonEventHandleId;
+            fansMeetingButtonEventHandleId = -1;
+        }
+
+        if (fansMeetingButtonHoveringEventHandleId != -1) {
+            fansMeetingButton->GetOnHoverEvent() -= fansMeetingButtonHoveringEventHandleId;
+            fansMeetingButtonHoveringEventHandleId = -1;
+        }
+    }
+
+    if (fansMeetingButtonDestroyedEventHandleId != -1 && fansMeetingButtonObject != nullptr) {
+        fansMeetingButtonObject->OnDestroyedEvent -= fansMeetingButtonDestroyedEventHandleId;
+        fansMeetingButtonDestroyedEventHandleId = -1;
+    }
+
+    if (concertButtonEventHandleId != -1 && concertButton != nullptr) {
+        concertButton->GetOnClickEvent() -= concertButtonEventHandleId;
+        concertButtonEventHandleId = -1;
+    }
+
+    if (concertButtonDestroyedEventHandleId != -1 && concertButtonObject != nullptr) {
+        concertButtonObject->OnDestroyedEvent -= concertButtonDestroyedEventHandleId;
+        concertButtonDestroyedEventHandleId = -1;
+    }
+
+    if (albumButtonEventHandleId != -1 && albumButton != nullptr) {
+        albumButton->GetOnClickEvent() -= albumButtonEventHandleId;
+        albumButtonEventHandleId = -1;
+    }
+
+    if (albumButtonDestroyedEventHandleId != -1 && albumButtonObject != nullptr) {
+        albumButtonObject->OnDestroyedEvent -= albumButtonDestroyedEventHandleId;
+        albumButtonDestroyedEventHandleId = -1;
+    }
+}
+
 void Player::StartPlayer(HexTile* startUpTile)
 {
     move->StartUp(startUpTile);
@@ -334,7 +386,6 @@ void Player::ConcertCall() {
         concertButton->SetInteractable(false);
     }
 }
-
 
 void Player::ShowAffectedTiles() {
 
@@ -543,57 +594,8 @@ void Player::LostPaperRockScissors(Playable* playable) {
     //fightingPlayable->WonPaperRockScisors(this);
 }
 
-void Player::StartFansControl(Playable* playable) {
-    //FansControllGameManager::Instance().StartNewGame(this, fightingPlayable);
-    fightingPlayable = playable;
-    GameManager::instance->minigameActive = true;
-}
-
 float Player::GetMaxRadius() const {
     return (move->maxSteps + 0.25) * _tilemap->GetDistanceBetweenTiles();
-}
-
-void Player::WonFansControl(Playable* playable) {
-    fightingPlayable->LostFansControl(this);
-
-    GameManager::instance->minigameActive = false;
-
-    CurrTile->isFighting = false;
-    if (CurrTile->ownerEntity == dynamic_cast<Playable*>(fightingPlayable)) {
-        CurrTile->ResetTile();
-        fightingPlayable->CheckIfDead(this);
-
-        if (GameManager::instance->entities.size() == 1) {
-            hexIndicator->SetActive(false);
-        }
-        else {
-            FinishMove(CurrTile);
-        }
-    }
-}
-
-void Player::LostFansControl(Playable* playable) {
-    GameManager::instance->minigameActive = false;
-
-    CurrTile->StopTakingOver(CurrTile->occupyingEntity);
-    CurrTile->isFighting = false;
-    lost = true;
-
-    //HUDInfo* obj = FindObjectOfType<HUDInfo>();
-    //if (obj != nullptr) {
-    //    obj->SetInfo("You lost. Move to another field.");
-    //}
-
-    fightingPlayable->WonFansControl(this);
-}
-
-
-void Player::FansControlDraw() {
-    //fightingPlayable->WonPaperRockScisors(this);
-    GameManager::instance->minigameActive = false;
-    if (CurrTile->occupyingEntity == this && CurrTile->ownerEntity == this) {
-        CurrTile->ResetTile();
-    }
 }
 
 void Player::OnDead() {

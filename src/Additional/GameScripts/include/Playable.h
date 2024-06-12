@@ -116,7 +116,7 @@ public:
 
     virtual void Initialize() override;
     virtual void Update() override;
-
+    virtual void OnDestroy() override;
 
     void InitPrices();
     void UpdatePrices();
@@ -151,10 +151,7 @@ public:
 
     virtual void LostPaperRockScissors(Playable* playable) = 0;
     virtual void WonPaperRockScissors(Playable* playable) = 0;
-    virtual void LostFansControl(Playable* playable) = 0;
-    virtual void WonFansControl(Playable* playable) = 0;
     //virtual void StartPaperRockScissors(Playable* playable) = 0;
-    virtual void StartFansControl(Playable* playable) = 0;
 
     virtual float GetMaxRadius() const;
     

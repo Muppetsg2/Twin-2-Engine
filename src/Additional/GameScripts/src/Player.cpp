@@ -1,3 +1,4 @@
+#include "Player.h"
 #include <Player.h>
 #include <manager/SceneManager.h>
 #include <Abilities/ConcertAbilityController.h>
@@ -305,6 +306,11 @@ void Player::Update() {
     }
 }
 
+void Player::StartPlayer(HexTile* startUpTile)
+{
+    move->StartUp(startUpTile);
+}
+
 void Player::AlbumCall() {
     if (currAlbumCooldown <= 0.0f && money->SpendMoney(albumRequiredMoney)) {
         currAlbumTime = albumTime;
@@ -392,25 +398,25 @@ void Player::StartMove(HexTile* tile) {
 
     GameManager::instance->changeTile = true;
 
-    if (!GameManager::instance->gameStarted) {
-        GameManager::instance->gameStarted = true;
-        hexIndicator->SetActive(true);
-        hexIndicator->GetTransform()->SetGlobalPosition(CurrTile->sterowiecPos);
-
-        //if (islandsWon == 0) {
-        //    GameTimer::Instance().ResetTimer();
-        //}
-        //
-        //GameTimer::Instance().StartTimer();
-
-        //HUDInfo* obj = FindObjectOfType<HUDInfo>();
-        //if (obj != nullptr) {
-        //    obj->ResetInfo();
-        //}
-    }
-    else if (hexIndicator) {
-        hexIndicator->SetActive(false);
-    }
+    //if (!GameManager::instance->gameStarted) {
+    //    GameManager::instance->gameStarted = true;
+    //    hexIndicator->SetActive(true);
+    //    hexIndicator->GetTransform()->SetGlobalPosition(CurrTile->sterowiecPos);
+    //
+    //    //if (islandsWon == 0) {
+    //    //    GameTimer::Instance().ResetTimer();
+    //    //}
+    //    //
+    //    //GameTimer::Instance().StartTimer();
+    //
+    //    //HUDInfo* obj = FindObjectOfType<HUDInfo>();
+    //    //if (obj != nullptr) {
+    //    //    obj->ResetInfo();
+    //    //}
+    //}
+    //else if (hexIndicator) {
+    //    hexIndicator->SetActive(false);
+    //}
 
     if (lost) {
         //HUDInfo* obj = FindObjectOfType<HUDInfo>();

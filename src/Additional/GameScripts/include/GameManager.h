@@ -23,6 +23,7 @@ using namespace Twin2Engine::Graphic;
 class MiniGameManager;
 class HexTile;
 class PlayerInterface;
+class Player;
 
 namespace Generation {
     class MapHexTile;
@@ -52,6 +53,7 @@ private:
     Generation::MapGenerator* _mapGenerator;
     
     ParticleGenerator* particleGenerator;
+    Player* _player;
 public:
     static GameManager* instance;
 
@@ -72,6 +74,7 @@ public:
     PlayerInterface* playerInterface;
     PatronData* playersPatron;
 
+    bool gameStartUp = false;
     bool gameStarted = false;
     bool gameOver = false;
 

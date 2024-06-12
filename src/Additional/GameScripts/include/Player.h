@@ -80,6 +80,7 @@ public:
 
     virtual void Initialize() override;
     virtual void Update() override;
+    void StartPlayer(HexTile* startUpTile);
 
     void AlbumCall();
     void FansMeetingCall();

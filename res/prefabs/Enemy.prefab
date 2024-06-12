@@ -62,7 +62,7 @@ Root:
       lastingTime: 10
       moneyRequired: 10
       cooldownTime: 5
-      takingOverSpeed: 50
+      additionalTakingOverSpeed: 30
       moneyFunction: res/scriptableobjects/MoneyFunctionData.so
     - id: 5
       enabled: true

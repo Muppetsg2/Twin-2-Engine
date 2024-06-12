@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Player.h"
 #include <Player.h>
 #include <manager/SceneManager.h>
 #include <Abilities/ConcertAbilityController.h>
@@ -70,7 +71,7 @@ void Player::Initialize() {
     fansMeetingCircleImage = SceneManager::FindObjectByName("fansMeetingCircle")->GetComponent<Image>();
 
     fansMeetingButtonEventHandleId = fansMeetingButton->GetOnClickEvent() += [&]() { FansMeetingCall(); };
-    fansMeetingButtonHeveringEventHandleId = fansMeetingButton->GetOnHoverEvent() += [&]() { isHoveringButton = true; };
+    fansMeetingButtonHoveringEventHandleId = fansMeetingButton->GetOnHoverEvent() += [&]() { isHoveringFansMeetingButton = true; };
 
     fansMeetingButtonDestroyedEventHandleId = fansMeetingButtonObject->OnDestroyedEvent += [&](GameObject* gameObject) {
         if (fansMeetingButton)
@@ -109,6 +110,7 @@ void Player::Initialize() {
     concertCircleImage = SceneManager::FindObjectByName("concertCircle")->GetComponent<Image>();
 
     concertButtonEventHandleId = concertButton->GetOnClickEvent() += [&]() { ConcertCall(); };
+    concertButtonHoveringEventHandleId = concertButton->GetOnHoverEvent() += [&]() { isHoveringConcertButton = true; };
 
     concertButtonDestroyedEventHandleId = concertButtonObject->OnDestroyedEvent += [&](GameObject* gameObject) {
             if (concertButton)
@@ -122,12 +124,14 @@ void Player::Initialize() {
             }
         };
 
-
     concertAbility->OnEventAbilityStarted.AddCallback([&](Playable* playable) -> void {
         audioComponent->SetAudio("res/music/Abilities/AbilitiesUse.mp3");
         audioComponent->Play();
         concertCircleImage->SetColor(_abilityActiveColor);
         concertCircleImage->GetGameObject()->SetActive(true);
+        });
+    concertAbility->OnEventAbilityFinished.AddCallback([&](Playable* playable) -> void {
+        PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(concertAbility->GetAdditionalTakingOverSpeed());
         });
     concertAbility->OnEventAbilityCooldownStarted.AddCallback([&](Playable* playable) -> void {
         concertCircleImage->SetColor(_abilityCooldownColor);
@@ -179,6 +183,12 @@ void Player::Initialize() {
     //RockPaperScisorsManager::Instance().OnPlayerLoseEvent += [this]() { LostPaperRockScisors(nullptr); };
     //FansControllGameManager::Instance().OnPlayerWinEvent += [this]() { WonFansControl(nullptr); };
     //FansControllGameManager::Instance().OnPlayerLoseEvent += [this]() { LostFansControl(nullptr); };
+}
+
+void Player::OnDestroy()
+{
+    if (PopularityGainingBonusBarController::Instance())
+        PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(TakeOverSpeed);
 }
 
 void Player::Update() {
@@ -273,18 +283,35 @@ void Player::Update() {
             fansMeetingButton->SetInteractable(true);
             fansMeetingText->SetText(std::wstring((L"Fans Meeting\n" + std::to_wstring(static_cast<int>(fansRequiredMoney)) + L"$")));
         }
-
+        
+        // FANS MEETING INTERFACE ELEMENT
         if (GameManager::instance->gameStarted)
         {
-            if (isHoveringButton && !isShowingAffectedTiles)
+            if (isHoveringFansMeetingButton && !isShowingFansMeetingAffectedTiles)
             {
                 ShowAffectedTiles();
             }
-            else if (!isHoveringButton && isShowingAffectedTiles)
+            else if (!isHoveringFansMeetingButton && isShowingFansMeetingAffectedTiles)
             {
                 HideAffectedTiles();
             }
-            isHoveringButton = false;
+            isHoveringFansMeetingButton = false;
+        }
+
+        // CONCERT INTERFACE ELEMENT
+        if (GameManager::instance->gameStarted && !concertAbility->IsUsed() && !concertAbility->IsOnCooldown())
+        {
+            if (isHoveringConcertButton && !isShowingConcertPossible)
+            {
+                PopularityGainingBonusBarController::Instance()->AddPossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
+                isShowingConcertPossible = true;
+            }
+            else if (!isHoveringConcertButton && isShowingConcertPossible)
+            {
+                PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
+                isShowingConcertPossible = false;
+            }
+            isHoveringConcertButton = false;
         }
 
         if (move != nullptr) {
@@ -309,6 +336,8 @@ void Player::Update() {
 void Player::StartPlayer(HexTile* startUpTile)
 {
     move->StartUp(startUpTile);
+
+    PopularityGainingBonusBarController::Instance()->AddCurrentBonus(TakeOverSpeed);
 }
 
 void Player::AlbumCall() {
@@ -332,6 +361,10 @@ void Player::ConcertCall() {
     if (concertAbility->Use())
     {
         concertButton->SetInteractable(false);
+        PopularityGainingBonusBarController::Instance()->AddCurrentBonus(concertAbility->GetAdditionalTakingOverSpeed());
+        PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
+        isShowingConcertPossible = false;
+        isHoveringConcertButton = false;
     }
 }
 
@@ -339,7 +372,7 @@ void Player::ConcertCall() {
 void Player::ShowAffectedTiles() {
 
     float usedRadius = fansRadius;
-    isShowingAffectedTiles = true;
+    isShowingFansMeetingAffectedTiles = true;
 
     if (patron->GetPatronBonus() == PatronBonus::ABILITIES_RANGE) {
         usedRadius += patron->GetBonus();
@@ -387,7 +420,7 @@ void Player::HideAffectedTiles() {
     }
     affectedTiles.clear();
 
-    isShowingAffectedTiles = false;
+    isShowingFansMeetingAffectedTiles = false;
 }
 
 void Player::StartMove(HexTile* tile) {

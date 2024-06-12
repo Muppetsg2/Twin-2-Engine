@@ -40,7 +40,7 @@ public:
     // Component Parameters
     float lastingTime = 10.0f;
     float moneyRequired = 10.0f;
-    float takingOverSpeed = 50.0f;
+    float additionalTakingOverSpeed = 50.0f;
 
     void Initialize();
     void OnDestroy();
@@ -51,6 +51,9 @@ public:
     float GetAbilityRemainingTime() const;
     float GetCooldownRemainingTime() const;
     float GetCooldown() const;
+    float GetAdditionalTakingOverSpeed() const;
+    bool IsUsed() const;
+    bool IsOnCooldown() const;
 
     virtual YAML::Node Serialize() const override;
     virtual bool Deserialize(const YAML::Node& node) override;

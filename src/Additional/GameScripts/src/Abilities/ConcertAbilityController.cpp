@@ -73,8 +73,8 @@ void ConcertAbilityController::StartPerformingConcert()
     playable->concertUsed++;
     currTimerTime = lastingTime;
 
-    savedTakingOverSpeed = playable->TakeOverSpeed;
-    playable->TakeOverSpeed = takingOverSpeed;
+    //savedTakingOverSpeed = playable->TakeOverSpeed;
+    playable->TakeOverSpeed += additionalTakingOverSpeed;
 }
 
 void ConcertAbilityController::StopPerformingConcert()
@@ -113,6 +113,21 @@ float ConcertAbilityController::GetCooldown() const
     return tempCooldown;
 }
 
+float ConcertAbilityController::GetAdditionalTakingOverSpeed() const
+{
+    return additionalTakingOverSpeed;
+}
+
+bool ConcertAbilityController::IsUsed() const
+{
+    return currTimerTime > 0.0f;
+}
+
+bool ConcertAbilityController::IsOnCooldown() const
+{
+    return currCooldown > 0.0f;
+}
+
 YAML::Node ConcertAbilityController::Serialize() const
 {
     YAML::Node node = Component::Serialize();
@@ -121,7 +136,7 @@ YAML::Node ConcertAbilityController::Serialize() const
     node["lastingTime"] = lastingTime;
     node["cooldownTime"] = cooldownTime;
     node["moneyRequired"] = moneyRequired;
-    node["takingOverSpeed"] = takingOverSpeed;
+    node["additionalTakingOverSpeed"] = additionalTakingOverSpeed;
     node["moneyFunction"] = ScriptableObjectManager::GetPath(moneyFunction->GetId());
 
     return node;
@@ -129,13 +144,13 @@ YAML::Node ConcertAbilityController::Serialize() const
 
 bool ConcertAbilityController::Deserialize(const YAML::Node& node)
 {
-    if (!node["lastingTime"] && !node["cooldownTime"] && !node["moneyRequired"] && !node["takingOverSpeed"] && !Component::Deserialize(node))
+    if (!node["lastingTime"] && !node["cooldownTime"] && !node["moneyRequired"] && !node["additionalTakingOverSpeed"] && !Component::Deserialize(node))
         return false;
 
     lastingTime = node["lastingTime"].as<float>();
     cooldownTime = node["cooldownTime"].as<float>();
     moneyRequired = node["moneyRequired"].as<float>();
-    takingOverSpeed = node["takingOverSpeed"].as<float>();
+    additionalTakingOverSpeed = node["additionalTakingOverSpeed"].as<float>();
     moneyFunction = static_cast<MoneyFunctionData*>(ScriptableObjectManager::Load(node["moneyFunction"].as<string>()));
 
     return true;
@@ -151,7 +166,7 @@ bool ConcertAbilityController::DrawInheritedFields()
     ImGui::InputFloat(string("LastingTime##").append(id).c_str(), &lastingTime);
     ImGui::InputFloat(string("CooldownTime##").append(id).c_str(), &cooldownTime);
     ImGui::InputFloat(string("MoneyRequired##").append(id).c_str(), &moneyRequired);
-    ImGui::InputFloat(string("TakingOverSpeed##").append(id).c_str(), &takingOverSpeed);
+    ImGui::InputFloat(string("AdditionalTakingOverSpeed##").append(id).c_str(), &additionalTakingOverSpeed);
 
     return false;
 }

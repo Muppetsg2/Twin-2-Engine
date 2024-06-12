@@ -13,6 +13,7 @@ namespace Twin2Engine::Core {
 		size_t _audioId = 0;
 		handle _audioHandle = 0;
 
+		bool _playOnStart = false;
 		bool _loaded = false;
 		bool _loop = false;
 		float _volume = 1.0f;
@@ -28,6 +29,7 @@ namespace Twin2Engine::Core {
 		void UnLoop();
 		void SetPlayPosition(SoLoud::time seconds);
 		void SetVolume(float value);
+		void SetPlayOnStart(bool value);
 		size_t GetAudio();
 		string GetAudioName();
 		SoLoud::time GetAudioLength();
@@ -36,7 +38,9 @@ namespace Twin2Engine::Core {
 		float GetVolume();
 		bool IsPaused();
 		bool IsLooping();
+		bool IsPlayOnStartSet();
 
+		void Initialize() override;
 		void OnDisable() override;
 		void OnDestroy() override;
 		virtual YAML::Node Serialize() const override;

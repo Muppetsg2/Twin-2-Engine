@@ -12,6 +12,10 @@
 
 #include <AreaTaking/HexTileTexturesData.h>
 
+#include <ParticleGenerator.h>
+
+// TODO: First Tile to be Captured need to have Stage1 Percentage
+// TODO: Fix Taking Tile
 // TODO: Fix Borders
 
 ENUM_CLASS_BASE_VALUE(TileState, uint8_t, NONE, 0, OCCUPIED, 1, REMOTE_OCCUPYING, 2, TAKEN, 4);
@@ -29,6 +33,8 @@ class HexTile : public Twin2Engine::Core::Component
 
 	std::vector<HexTile*> _adjacentTiles;
 
+	
+	ParticleGenerator* paricleGeneartor;
 	//Twin2Engine::Core::GameObject* affected;
 
 	void TakeOver();

@@ -1200,6 +1200,7 @@ GameObjects:
         audio: 2
         loop: false
         volume: 1
+        playOnStart: false
     children:
       - 7
       - 8

@@ -269,6 +269,8 @@ void HexTile::Initialize()
 	_mapHexTile = GetGameObject()->GetComponent<MapHexTile>();
 	_meshRenderer = GetGameObject()->GetComponent<MeshRenderer>();
 
+	//paricleGeneartor = new ParticleGenerator("ParticleShader", "res/textures/particle.png", 5, 1.0f, 0.1f, 2.0f, 4.0f, 0.1f, 0.1f);
+
 	UpdateBorders();
 }
 
@@ -279,6 +281,8 @@ void HexTile::OnDestroy()
 	else 
 		SPDLOG_WARN("Concert Road Instance was nullptr!");
 	texturesData = nullptr;
+
+	delete paricleGeneartor;
 }
 
 void HexTile::Update()
@@ -323,6 +327,9 @@ void HexTile::InitializeAdjacentTiles()
 	}
 
 	_adjacentTiles.shrink_to_fit();
+
+	//paricleGeneartor->startPosition = glm::vec4(GetTransform()->GetGlobalPosition(), 1.0f);
+	//paricleGeneartor->active = true;
 }
 
 void HexTile::ResetTile()

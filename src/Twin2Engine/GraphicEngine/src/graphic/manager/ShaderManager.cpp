@@ -385,6 +385,8 @@ Shader* ShaderManager::CreateShaderProgram(const std::string& shaderName, const 
         glDeleteShader(vertexId);
         glDeleteShader(fragmentId);
 
+        SPDLOG_INFO("{} Created!", shaderName);
+
         shader = new Shader(shaderProgram);
 
         loadedShaders.push_back({ .shaderPathHash = strHash, .shaderName = shaderName, .shaderProgramId = shaderProgram, .useNumber = 1, .shader = shader });

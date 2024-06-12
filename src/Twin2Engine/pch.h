@@ -58,6 +58,7 @@
 #include <memory>
 #include <random>
 #include <type_traits>
+#include <stack>
 
 // YAML
 #include <yaml-cpp/yaml.h>

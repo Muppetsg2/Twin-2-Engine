@@ -163,35 +163,6 @@ Root:
         - 11
         - 12
 GameObjects:
-  - id: 19
-    name: AffectedMark
-    isStatic: false
-    isActive: false
-    transform:
-      id: 42
-      position:
-        x: 0
-        y: 0.05
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 43
-        enabled: true
-        type: MeshRenderer
-        isTransparent: true
-        transparencyPriority: 1
-        model: 2
-        materials:
-          - 30
-    children:
-      []
   - id: 1
     name: TopRightBorder
     isStatic: false
@@ -700,5 +671,34 @@ GameObjects:
         model: 1
         materials:
           - 22
+    children:
+      []
+  - id: 19
+    name: AffectedMark
+    isStatic: false
+    isActive: false
+    transform:
+      id: 42
+      position:
+        x: 0
+        y: 0.05
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 43
+        enabled: true
+        type: MeshRenderer
+        isTransparent: true
+        transparencyPriority: 1
+        model: 2
+        materials:
+          - 30
     children:
       []

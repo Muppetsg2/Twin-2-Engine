@@ -733,6 +733,8 @@ void CameraComponent::Render()
 
 		GraphicEngine::RenderGUI();
 		glBindTexture(GL_TEXTURE_2D, 0);
+
+		glEnable(GL_DEPTH_TEST);
 		
 #if TRACY_PROFILER
 		FrameMarkEnd(tracy_OnScreenFramebuffer);

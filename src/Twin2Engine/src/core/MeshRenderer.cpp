@@ -335,7 +335,7 @@ bool MeshRenderer::CheckMaterialsValidation()
 		}
 	}
 
-	Register();
+	if (_loadedModel != 0) Register();
 
 	return res;
 }

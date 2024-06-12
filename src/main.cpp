@@ -403,7 +403,7 @@ int main(int, char**)
 
     //SceneManager::SaveScene("res/scenes/ToonShading.scene");
     
-    Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
+    //Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
 
 
 #if _DEBUG
@@ -473,7 +473,6 @@ void input()
     }
 
     CameraComponent* c = CameraComponent::GetMainCamera();
-
 
 #if _DEBUG
     if (Input::IsKeyDown(KEY::W) && Input::GetCursorState() == CURSOR_STATE::DISABLED)

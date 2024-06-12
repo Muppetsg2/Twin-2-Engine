@@ -2,9 +2,13 @@ Textures: ~
 Sprites: ~
 Fonts: ~
 Audio: ~
-Materials: ~
+Materials:
+  - id: 0
+    path: res/materials/Basic2.material
 Models:
   - id: 0
+    path: "{Cube}"
+  - id: 1
     path: "{Plane}"
 Prefabs:
   - id: 0
@@ -22,9 +26,9 @@ GameObjects:
         y: 0
         z: 0
       scale:
-        x: 1
-        y: 1
-        z: 1
+        x: 0
+        y: 0
+        z: 0
       rotation:
         x: 0
         y: 0

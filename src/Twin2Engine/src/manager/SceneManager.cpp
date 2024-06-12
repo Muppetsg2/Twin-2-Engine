@@ -588,6 +588,10 @@ void SceneManager::UpdateCurrentScene()
 void SceneManager::RenderCurrentScene()
 {
 	for (auto& comp : RenderableComponent::_components) {
+		if (comp->_gameObject == nullptr) {
+			SPDLOG_ERROR("XD?");
+		}
+
 		if (comp->IsEnable() && comp->GetGameObject()->GetActive()) 
 			comp->Render();
 	}

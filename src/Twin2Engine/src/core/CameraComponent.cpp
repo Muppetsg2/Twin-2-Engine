@@ -1001,6 +1001,7 @@ void CameraComponent::OnDestroy()
 	_transformEventId = 0;
 	_windowEventId = 0;
 
+	// TODO: CAN MAKE ERROR IF CAMERA IS IN MIDDLE
 	Cameras.erase(Cameras.begin() + this->_camId);
 
 	if (Cameras.size() == 0) {

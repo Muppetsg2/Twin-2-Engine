@@ -1125,6 +1125,15 @@ InstantiatingModel ModelsManager::LoadModel(const std::string& modelPath)
     return InstantiatingModel(LoadModelData(modelPath));
 }
 
+InstantiatingModel ModelsManager::GetModel(const std::string& modelPath)
+{
+    InstantiatingModel model = GetModel(_stringHash(modelPath));
+    if (model == nullptr) {
+        model = LoadModel(modelPath);
+    }
+    return model;
+}
+
 InstantiatingModel ModelsManager::GetModel(size_t managerId) {
     InstantiatingModel model;
     if (_loadedModels.contains(managerId)) {
@@ -1134,39 +1143,39 @@ InstantiatingModel ModelsManager::GetModel(size_t managerId) {
 }
 
 InstantiatingModel ModelsManager::GetCube() {
-    return GetModel(_stringHash(CUBE_PATH));
+    return GetModel(CUBE_PATH);
 }
 
 InstantiatingModel ModelsManager::GetPlane() {
-    return GetModel(_stringHash(PLANE_PATH));
+    return GetModel(PLANE_PATH);
 }
 
 InstantiatingModel ModelsManager::GetSphere() {
-    return GetModel(_stringHash(SPHERE_PATH));
+    return GetModel(SPHERE_PATH);
 }
 
 InstantiatingModel ModelsManager::GetTorus() {
-    return GetModel(_stringHash(TORUS_PATH));
+    return GetModel(TORUS_PATH);
 }
 
 InstantiatingModel ModelsManager::GetCone() {
-    return GetModel(_stringHash(CONE_PATH));
+    return GetModel(CONE_PATH);
 }
 
 InstantiatingModel ModelsManager::GetPiramid() {
-    return GetModel(_stringHash(PIRAMID_PATH));
+    return GetModel(PIRAMID_PATH);
 }
 
 InstantiatingModel ModelsManager::GetTetrahedron() {
-    return GetModel(_stringHash(TETRAHEDRON_PATH));
+    return GetModel(TETRAHEDRON_PATH);
 }
 
 InstantiatingModel ModelsManager::GetCylinder() {
-    return GetModel(_stringHash(CYLINDER_PATH));
+    return GetModel(CYLINDER_PATH);
 }
 
 InstantiatingModel ModelsManager::GetHexagon() {
-    return GetModel(_stringHash(HEXAGON_PATH));
+    return GetModel(HEXAGON_PATH);
 }
 
 void ModelsManager::UnloadModel(const std::string& path) {

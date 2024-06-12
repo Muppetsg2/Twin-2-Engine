@@ -108,6 +108,9 @@ bool MeshRenderer::DrawInheritedFields()
 	// 1 - remove
 	static int type = 0;
 
+	if (_isTransparent)
+		ImGui::InputInt("TransparencyPriority", &_transparencyPriority);
+
 	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
 	ImGui::Text("Materials:");
 	ImGui::PopFont();
@@ -423,6 +426,7 @@ YAML::Node MeshRenderer::Serialize() const
 	for (const auto& mat : _materials) {
 		node["materials"].push_back(SceneManager::GetMaterialSaveIdx(mat->GetId()));
 	}
+	node["transparencyPriority"] = _transparencyPriority;
 	return node;
 }
 
@@ -445,6 +449,9 @@ bool MeshRenderer::Deserialize(const YAML::Node& node) {
 #endif
 		_materials.push_back(MaterialsManager::GetMaterial(SceneManager::GetMaterial(mat.as<size_t>())));
 	}
+
+	if (node["transparencyPriority"])
+		_transparencyPriority = node["transparencyPriority"].as<int>();
 
 	return true;
 }

@@ -14,6 +14,7 @@
 #include <ui/Text.h>
 
 #include <core/Input.h>
+#include <core/AudioComponent.h>
 
 //using namespace Twin2Engine::Core;
 
@@ -33,6 +34,8 @@ private:
     PlayerMovement* move;
     bool lost;
 
+    AudioComponent* audioComponent = nullptr;
+
     //Coroutine* fansCorountine;
 
 
@@ -50,7 +53,10 @@ private:
     Twin2Engine::Core::GameObject* fansMeetingButtonObject;
     Twin2Engine::UI::Image* fansMeetingCircleImage;
     size_t fansMeetingButtonEventHandleId;
+    size_t fansMeetingButtonHeveringEventHandleId;
     size_t fansMeetingButtonDestroyedEventHandleId;
+    bool isHoveringButton = false;
+    bool isShowingAffectedTiles = false;
     //Concert
     Twin2Engine::UI::Text* concertText;
     Twin2Engine::UI::Button* concertButton;
@@ -65,11 +71,16 @@ private:
     glm::vec4 _abilityCooldownColor;
     glm::vec4 _abilityActiveColor;
 
+    std::list<HexTile*> affectedTiles;
+    void ShowAffectedTiles();
+    void HideAffectedTiles();
+
 public:
     Playable* fightingPlayable = nullptr;
 
     virtual void Initialize() override;
     virtual void Update() override;
+    void StartPlayer(HexTile* startUpTile);
 
     void AlbumCall();
     void FansMeetingCall();

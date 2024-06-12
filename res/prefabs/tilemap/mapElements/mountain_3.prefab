@@ -1,0 +1,177 @@
+Textures:
+  - id: 0
+    path: res/textures/mountainTex2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+Sprites: ~
+Fonts:
+  - id: 0
+    path: res/fonts/Caveat-Regular.ttf
+Audio: ~
+Materials:
+  - id: 0
+    path: res/materials/enviroment/CloudMaterial.material
+  - id: 1
+    path: res/materials/MountainsUnlit.material
+Models:
+  - id: 0
+    path: res/models/mount3.obj
+  - id: 1
+    path: res\models\cloud_1.obj
+  - id: 2
+    path: res/models/cloud.obj
+  - id: 3
+    path: "{Plane}"
+Prefabs:
+  - id: 0
+    path: res\prefabs\tilemap\mapElements\mountain_2.prefab
+ScriptableObjects: ~
+Root:
+  name: Mountain
+  isStatic: false
+  isActive: true
+  transform:
+    id: 4921
+    position:
+      x: 0
+      y: 0
+      z: 0
+    scale:
+      x: 1
+      y: 1
+      z: 1
+    rotation:
+      x: 0
+      y: 60.0000038
+      z: 0
+  components:
+    - id: 1
+      enabled: true
+      type: MeshRenderer
+      isTransparent: false
+      model: 0
+      materials:
+        - 1
+GameObjects:
+  - id: 3
+    name: Cloud_1
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5
+      position:
+        x: 0.280000001
+        y: 0.699999988
+        z: 0
+      scale:
+        x: 0.100000001
+        y: 0.100000001
+        z: 0.100000001
+      rotation:
+        x: 0
+        y: -15.000001
+        z: 0
+    components:
+      - id: 6
+        enabled: true
+        type: MeshRenderer
+        isTransparent: true
+        transparencyPriority: 2
+        model: 1
+        materials:
+          - 0
+      - id: 7
+        enabled: true
+        type: Cloud
+        startingScale:
+          x: 0.5
+          y: 0.5
+          z: 0.5
+        scaleVelocity:
+          x: 0.01
+          y: -0.01
+          z: -0.01
+    children:
+      []
+  - id: 5
+    name: Cloud_2
+    isStatic: false
+    isActive: true
+    transform:
+      id: 8
+      position:
+        x: -0.119999997
+        y: 0.699999988
+        z: 0.150000006
+      scale:
+        x: 0.100000001
+        y: 0.100000001
+        z: 0.100000001
+      rotation:
+        x: 0
+        y: 40
+        z: 0
+    components:
+      - id: 9
+        enabled: true
+        type: MeshRenderer
+        isTransparent: true
+        transparencyPriority: 2
+        model: 1
+        materials:
+          - 0
+      - id: 10
+        enabled: true
+        type: Cloud
+        startingScale:
+          x: 0.5
+          y: 0.5
+          z: 0.5
+        scaleVelocity:
+          x: 0.01
+          y: -0.01
+          z: -0.01
+    children:
+      []
+  - id: 6
+    name: Cloud_3
+    isStatic: false
+    isActive: true
+    transform:
+      id: 11
+      position:
+        x: 0
+        y: 0.699999988
+        z: -0.280000001
+      scale:
+        x: 0.100000001
+        y: 0.100000001
+        z: 0.100000001
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 12
+        enabled: true
+        type: MeshRenderer
+        isTransparent: true
+        transparencyPriority: 2
+        model: 1
+        materials:
+          - 0
+      - id: 13
+        enabled: true
+        type: Cloud
+        startingScale:
+          x: 0.5
+          y: 0.5
+          z: 0.5
+        scaleVelocity:
+          x: 0.01
+          y: -0.01
+          z: -0.01
+    children:
+      []

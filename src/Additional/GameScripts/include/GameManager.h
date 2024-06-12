@@ -14,12 +14,16 @@
 #include <Player.h>
 #include <GameTimer.h>
 
+#include <ParticleSystemsController.h>
+//#include <pch.h>
+
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;
 
 class MiniGameManager;
 class HexTile;
 class PlayerInterface;
+class Player;
 
 namespace Generation {
     class MapHexTile;
@@ -47,6 +51,9 @@ private:
     unsigned int _enemiesNumber = 2u;
     int _mapGenerationEventId = -1;
     Generation::MapGenerator* _mapGenerator;
+    
+    ParticleGenerator* particleGenerator;
+    Player* _player;
 public:
     static GameManager* instance;
 
@@ -67,6 +74,7 @@ public:
     PlayerInterface* playerInterface;
     PatronData* playersPatron;
 
+    bool gameStartUp = false;
     bool gameStarted = false;
     bool gameOver = false;
 

@@ -3,6 +3,8 @@
 #define USE_IMGUI_CONSOLE_OUTPUT true
 #define USE_WINDOWS_CONSOLE_OUTPUT false
 
+#define DISPLAY_SPLASH_SCREEN true
+
 #if USE_IMGUI_CONSOLE_OUTPUT || !USE_WINDOWS_CONSOLE_OUTPUT || !_DEBUG
 
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -19,9 +21,11 @@ const char* const tracy_ImGuiDrawingConsole = "ImGuiDrawingConsole";
 const char* const tracy_RenderingImGui = "RenderingImGui";
 #endif
 
-#define EDITOR_LOGGER
-//#define RELEASE_LOGGER
-
+#if _DEBUG
+    #define EDITOR_LOGGER
+#else
+    #define RELEASE_LOGGER
+#endif
 #include <GameEngine.h>
 
 // GAME SCRIPTS
@@ -119,7 +123,7 @@ using namespace GameScripts;
 
 #pragma region CAMERA_CONTROLLING
 
-glm::vec3 cameraPos(0.f, 2.f, 5.f);
+//glm::vec3 cameraPos(0.f, 2.f, 5.f);
 
 double lastX = 0.0f;
 double lastY = 0.0f;
@@ -149,6 +153,10 @@ constexpr const char* WINDOW_NAME = "Twin^2 Engine";
 constexpr int32_t WINDOW_WIDTH  = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
 constexpr bool WINDOW_FULLSCREEN = false;
+
+#if DISPLAY_SPLASH_SCREEN
+constexpr const char* SPLASH_SCREEN_TEXTURE = "res/textures/splashScreen.png";
+#endif
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
 constexpr int32_t GL_VERSION_MAJOR = 4;
@@ -220,16 +228,85 @@ int main(int, char**)
     spdlog::info("Initialized ImGui.");
 #endif
 
-    SoLoud::result res = AudioManager::Init();
-    if (res != 0) {
-        spdlog::error(AudioManager::GetErrorString(res));
-        return EXIT_FAILURE;
-    }
-    spdlog::info("Initialized SoLoud.");
-
 #pragma endregion
 
     window = Window::GetInstance();
+
+#if DISPLAY_SPLASH_SCREEN
+
+    GLuint splashVao = 0;
+    GLuint splashVbo = 0;
+    GLuint splashEbo = 0;
+
+    float plane[8] = {
+        -1.f, 1.f,  //0.f, 0.f,
+        1.f, 1.f,   //1.f, 0.f,
+        -1.f, -1.f, //0.f, 1.f,
+        1.f, -1.f   //, 1.f, 1.f
+    };
+
+    GLuint tris[6] = {
+        2, 1, 0,
+        2, 3, 1
+    };
+
+    glGenVertexArrays(1, &splashVao);
+    glGenBuffers(1, &splashVbo);
+    glGenBuffers(1, &splashEbo);
+
+    glBindVertexArray(splashVao);
+    glBindBuffer(GL_ARRAY_BUFFER, splashVbo);
+
+    glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), plane, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, splashEbo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), tris, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    GLuint splashScreenId;
+    glGenTextures(1, &splashScreenId);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, splashScreenId);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int width, height, channelsNr;
+    unsigned char* imgData = stbi_load(SPLASH_SCREEN_TEXTURE, &width, &height, &channelsNr, 0);
+    if (!imgData) {
+        SPDLOG_ERROR("Failed to load SplashScreen Texture: {}", SPLASH_SCREEN_TEXTURE);
+        stbi_image_free(imgData);
+    }
+
+    glTexImage2D(GL_TEXTURE_2D, 0, (unsigned int)TextureFileFormat::SRGB, width, height, 0, (unsigned int)TextureFormat::RGB, GL_UNSIGNED_BYTE, imgData);
+    stbi_image_free(imgData);
+
+    SPDLOG_INFO("Splash Screen Loaded!");
+
+    Shader* splashShader = ShaderManager::CreateShaderProgram("SplashScreenShader", "shaders/splash.vert", "shaders/splash.frag");
+
+    glDisable(GL_DEPTH_TEST);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, splashScreenId);
+    splashShader->Use();
+    splashShader->SetInt("splashTexture", 0);
+    glBindVertexArray(splashVao);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, &tris);
+
+    window->Update();
+
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glEnable(GL_DEPTH_TEST);
+#endif
 
 #pragma region TILEMAP_DESERIALIZER
 
@@ -314,9 +391,15 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
     //SceneManager::AddScene("testScene", "res/scenes/ToonShading.scene");
     //SceneManager::AddScene("testScene", "res/scenes/HexTileEditScene.scene");
-
     SceneManager::LoadScene("testScene");
     SceneManager::Update();
+
+#if DISPLAY_SPLASH_SCREEN
+    glDeleteTextures(1, &splashScreenId);
+    glDeleteBuffers(1, &splashEbo);
+    glDeleteBuffers(1, &splashVbo);
+    glDeleteVertexArrays(1, &splashVao);
+#endif
 
     //SceneManager::SaveScene("res/scenes/ToonShading.scene");
     

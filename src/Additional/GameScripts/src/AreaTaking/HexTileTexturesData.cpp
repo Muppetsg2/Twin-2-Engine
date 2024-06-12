@@ -8,6 +8,47 @@ using namespace std;
 
 SCRIPTABLE_OBJECT_SOURCE_CODE_NN(HexTileTextureData, "HexTileTextureData")
 
+void HexTileTextureData::Clear() {
+
+	/*
+	_blueMaterialsNames.clear();
+	_redMaterialsNames.clear();
+	_greenMaterialsNames.clear();
+	_purpleMaterialsNames.clear();
+	_yellowMaterialsNames.clear();
+	_cyanMaterialsNames.clear();
+	_pinkMaterialsNames.clear();
+	*/
+
+	_neutralMaterial = nullptr;
+	_neutralBorderMaterial = nullptr;
+	_blueMaterials.clear();
+	_blueBorderMaterial = nullptr;
+	_redMaterials.clear();
+	_redBorderMaterial = nullptr;
+	_greenMaterials.clear();
+	_greenBorderMaterial = nullptr;
+	_purpleMaterials.clear();
+	_purpleBorderMaterial = nullptr;
+	_yellowMaterials.clear();
+	_yellowBorderMaterial = nullptr;
+	_cyanMaterials.clear();
+	_cyanBorderMaterial = nullptr;
+	_pinkMaterials.clear();
+	_pinkBorderMaterial = nullptr;
+
+	/*
+	for (size_t i = 0; i < _materials.size(); ++i)
+	{
+		_materials[i].clear();
+		_materialNames[i].clear();
+	}
+
+	_materials.clear();
+	_materialNames.clear();
+	*/
+}
+
 void HexTileTextureData::Serialize(YAML::Node& node) const
 {
 	ScriptableObject::Serialize(node);
@@ -20,8 +61,16 @@ void HexTileTextureData::Serialize(YAML::Node& node) const
 	for (const auto& mat : _blueMaterials) {
 		node["blueMaterialsNames"].push_back(MaterialsManager::GetMaterialPath(mat));
 	}
+	node["blueRetreatingMaterialsNames"] = vector<string>();
+	for (const auto& mat : _blueRetreatingMaterials) {
+		node["blueRetreatingMaterialsNames"].push_back(MaterialsManager::GetMaterialPath(mat));
+	}
 	node["blueBorderMaterialName"] = MaterialsManager::GetMaterialPath(_blueBorderMaterial);
 
+	node["redRetreatingMaterialsNames"] = vector<string>();
+	for (const auto& mat : _redRetreatingMaterials) {
+		node["redRetreatingMaterialsNames"].push_back(MaterialsManager::GetMaterialPath(mat));
+	}
 	node["redMaterialsNames"] = vector<string>();
 	for (const auto& mat : _redMaterials) {
 		node["redMaterialsNames"].push_back(MaterialsManager::GetMaterialPath(mat));
@@ -32,11 +81,19 @@ void HexTileTextureData::Serialize(YAML::Node& node) const
 	for (const auto& mat : _greenMaterials) {
 		node["greenMaterialsNames"].push_back(MaterialsManager::GetMaterialPath(mat));
 	}
+	node["greenRetreatingMaterialsNames"] = vector<string>();
+	for (const auto& mat : _greenRetreatingMaterials) {
+		node["greenRetreatingMaterialsNames"].push_back(MaterialsManager::GetMaterialPath(mat));
+	}
 	node["greenBorderMaterialName"] = MaterialsManager::GetMaterialPath(_greenBorderMaterial);
 
 	node["purpleMaterialsNames"] = vector<string>();
 	for (const auto& mat : _purpleMaterials) {
 		node["purpleMaterialsNames"].push_back(MaterialsManager::GetMaterialPath(mat));
+	}
+	node["purpleRetreatingMaterialsNames"] = vector<string>();
+	for (const auto& mat : _purpleRetreatingMaterials) {
+		node["purpleRetreatingMaterialsNames"].push_back(MaterialsManager::GetMaterialPath(mat));
 	}
 	node["purpleBorderMaterialName"] = MaterialsManager::GetMaterialPath(_purpleBorderMaterial);
 
@@ -44,11 +101,19 @@ void HexTileTextureData::Serialize(YAML::Node& node) const
 	for (const auto& mat : _yellowMaterials) {
 		node["yellowMaterialsNames"].push_back(MaterialsManager::GetMaterialPath(mat));
 	}
+	node["yellowRetreatingMaterialsNames"] = vector<string>();
+	for (const auto& mat : _yellowRetreatingMaterials) {
+		node["yellowRetreatingMaterialsNames"].push_back(MaterialsManager::GetMaterialPath(mat));
+	}
 	node["yellowBorderMaterialName"] = MaterialsManager::GetMaterialPath(_yellowBorderMaterial);
 
 	node["cyanMaterialsNames"] = vector<string>();
 	for (const auto& mat : _cyanMaterials) {
 		node["cyanMaterialsNames"].push_back(MaterialsManager::GetMaterialPath(mat));
+	}
+	node["cyanRetreatingMaterialsNames"] = vector<string>();
+	for (const auto& mat : _cyanRetreatingMaterials) {
+		node["cyanRetreatingMaterialsNames"].push_back(MaterialsManager::GetMaterialPath(mat));
 	}
 	node["cyanBorderMaterialName"] = MaterialsManager::GetMaterialPath(_cyanBorderMaterial);
 
@@ -56,17 +121,21 @@ void HexTileTextureData::Serialize(YAML::Node& node) const
 	for (const auto& mat : _pinkMaterials) {
 		node["pinkMaterialsNames"].push_back(MaterialsManager::GetMaterialPath(mat));
 	}
+	node["pinkRetreatingMaterialsNames"] = vector<string>();
+	for (const auto& mat : _pinkRetreatingMaterials) {
+		node["pinkRetreatingMaterialsNames"].push_back(MaterialsManager::GetMaterialPath(mat));
+	}
 	node["pinkBorderMaterialName"] = MaterialsManager::GetMaterialPath(_pinkBorderMaterial);
 }
 
 bool HexTileTextureData::Deserialize(const YAML::Node& node)
 {
-	if (!node["neutralMaterialName"] || !node["neutralBorderMaterialName"] || !node["blueMaterialsNames"] || 
-		!node["blueBorderMaterialName"] || !node["redMaterialsNames"] || !node["redBorderMaterialName"] || 
-		!node["greenMaterialsNames"] || !node["greenBorderMaterialName"] || !node["purpleMaterialsNames"] ||
-		!node["purpleBorderMaterialName"] || !node["yellowMaterialsNames"] || !node["yellowBorderMaterialName"] ||
-		!node["cyanMaterialsNames"] || !node["cyanBorderMaterialName"] || !node["pinkMaterialsNames"] || 
-		!node["pinkBorderMaterialName"] || !ScriptableObject::Deserialize(node)) return false;
+	if (!node["neutralMaterialName"] || !node["neutralBorderMaterialName"] || !node["blueMaterialsNames"] || !node["blueRetreatingMaterialsNames"] ||
+		!node["blueBorderMaterialName"] || !node["redMaterialsNames"] || !node["redRetreatingMaterialsNames"] || !node["redBorderMaterialName"] ||
+		!node["greenMaterialsNames"] || !node["greenRetreatingMaterialsNames"] || !node["greenBorderMaterialName"] || !node["purpleMaterialsNames"] ||
+		!node["purpleRetreatingMaterialsNames"] || !node["purpleBorderMaterialName"] || !node["yellowMaterialsNames"] || !node["yellowRetreatingMaterialsNames"] || 
+		!node["yellowBorderMaterialName"] || !node["cyanMaterialsNames"] || !node["cyanRetreatingMaterialsNames"] || !node["cyanBorderMaterialName"] || 
+		!node["pinkRetreatingMaterialsNames"] || !node["pinkMaterialsNames"] || !node["pinkBorderMaterialName"] || !ScriptableObject::Deserialize(node)) return false;
 
 	_neutralMaterial = MaterialsManager::GetMaterial(node["neutralMaterialName"].as<string>());
 	_neutralBorderMaterial = MaterialsManager::GetMaterial(node["neutralBorderMaterialName"].as<string>());
@@ -121,6 +190,51 @@ bool HexTileTextureData::Deserialize(const YAML::Node& node)
 		s = mat.as<string>();
 		_pinkMaterials.emplace_back(MaterialsManager::GetMaterial(s));
 	}
+	
+	// Retrieving RetreatingMaterials
+
+	_blueRetreatingMaterials = std::vector<Twin2Engine::Graphic::Material*>();
+	_redRetreatingMaterials = std::vector<Twin2Engine::Graphic::Material*>();
+	_greenRetreatingMaterials = std::vector<Twin2Engine::Graphic::Material*>();
+	_purpleRetreatingMaterials = std::vector<Twin2Engine::Graphic::Material*>();
+	_yellowRetreatingMaterials = std::vector<Twin2Engine::Graphic::Material*>();
+	_cyanRetreatingMaterials = std::vector<Twin2Engine::Graphic::Material*>();
+	_pinkRetreatingMaterials = std::vector<Twin2Engine::Graphic::Material*>();
+
+	for (const auto& mat : node["blueRetreatingMaterialsNames"]) {
+		s = mat.as<string>();
+		_blueRetreatingMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+	}
+
+	for (const auto& mat : node["redRetreatingMaterialsNames"]) {
+		s = mat.as<string>();
+		_redRetreatingMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+	}
+
+	for (const auto& mat : node["greenRetreatingMaterialsNames"]) {
+		s = mat.as<string>();
+		_greenRetreatingMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+	}
+
+	for (const auto& mat : node["purpleRetreatingMaterialsNames"]) {
+		s = mat.as<string>();
+		_purpleRetreatingMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+	}
+
+	for (const auto& mat : node["yellowRetreatingMaterialsNames"]) {
+		s = mat.as<string>();
+		_yellowRetreatingMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+	}
+
+	for (const auto& mat : node["cyanRetreatingMaterialsNames"]) {
+		s = mat.as<string>();
+		_cyanRetreatingMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+	}
+
+	for (const auto& mat : node["pinkRetreatingMaterialsNames"]) {
+		s = mat.as<string>();
+		_pinkRetreatingMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+	}
 
 	return true;
 }
@@ -161,6 +275,46 @@ Material* HexTileTextureData::GetMaterial(TILE_COLOR color, size_t stage)
 		default: {
 			return nullptr;
 		}
+	}
+	return nullptr;
+}
+
+Material* HexTileTextureData::GetRetreatingMaterial(TILE_COLOR color, size_t stage)
+{
+	if (stage == 0 || color == TILE_COLOR::NEUTRAL) return _neutralMaterial;
+
+	switch (color) {
+	case TILE_COLOR::BLUE: {
+		if (stage - 1 >= _blueRetreatingMaterials.size()) return nullptr;
+		return _blueRetreatingMaterials[stage - 1];
+	}
+	case TILE_COLOR::RED: {
+		if (stage - 1 >= _redRetreatingMaterials.size()) return nullptr;
+		return _redRetreatingMaterials[stage - 1];
+	}
+	case TILE_COLOR::GREEN: {
+		if (stage - 1 >= _greenRetreatingMaterials.size()) return nullptr;
+		return _greenRetreatingMaterials[stage - 1];
+	}
+	case TILE_COLOR::PURPLE: {
+		if (stage - 1 >= _purpleRetreatingMaterials.size()) return nullptr;
+		return _purpleRetreatingMaterials[stage - 1];
+	}
+	case TILE_COLOR::YELLOW: {
+		if (stage - 1 >= _yellowRetreatingMaterials.size()) return nullptr;
+		return _yellowRetreatingMaterials[stage - 1];
+	}
+	case TILE_COLOR::CYAN: {
+		if (stage - 1 >= _cyanRetreatingMaterials.size()) return nullptr;
+		return _cyanRetreatingMaterials[stage - 1];
+	}
+	case TILE_COLOR::PINK: {
+		if (stage - 1 >= _pinkRetreatingMaterials.size()) return nullptr;
+		return _pinkRetreatingMaterials[stage - 1];
+	}
+	default: {
+		return nullptr;
+	}
 	}
 	return nullptr;
 }

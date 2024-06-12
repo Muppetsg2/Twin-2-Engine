@@ -80,10 +80,10 @@ void GraphicEngine::Init(const std::string& window_name, int32_t window_width, i
 	// Debugging
 	glEnable(GL_DEBUG_OUTPUT);
 	glDebugMessageCallback(ErrorMessageCallback, 0);
+#endif
 
 	const GLubyte* renderer = glGetString(GL_RENDERER);
 	spdlog::info("Graphic Card: {0}", (char*)renderer);
-#endif
 
 	// Blending
 	glEnable(GL_BLEND);
@@ -124,6 +124,7 @@ void GraphicEngine::End()
 void GraphicEngine::UpdateBeforeRendering()
 {
 	MeshRenderingManager::UpdateQueues();
+	MeshRenderingManager::UpdateTransparentQueues();
 }
 
 void GraphicEngine::Render()
@@ -137,6 +138,8 @@ void GraphicEngine::Render()
 	glDepthFunc(GL_LESS);
 
 	MeshRenderingManager::Render();
+	MeshRenderingManager::RenderTransparent
+();
 
 	glDisable(GL_CULL_FACE);
 	glDepthFunc(GL_LEQUAL);

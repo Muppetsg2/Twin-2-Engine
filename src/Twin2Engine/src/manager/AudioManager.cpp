@@ -354,6 +354,11 @@ bool AudioManager::IsHandleValid(handle h)
     return _soloud.isValidVoiceHandle(h);
 }
 
+bool AudioManager::IsAudioValid(size_t id)
+{
+    return _loadedAudio.contains(id);
+}
+
 SoLoud::time AudioManager::GetPlayTime(handle h)
 {
     if (!_init) {

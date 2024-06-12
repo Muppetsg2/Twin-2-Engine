@@ -595,8 +595,6 @@ void Text::DrawEditor()
 		ImGui::InputInt(string("Layer##").append(id).c_str(), &l);
 
 		if (l != _layer) SetLayer(l);
-
-		ImGui::Checkbox(string("Transparent##").append(id).c_str(), &_isTransparent);
 	}
 }
 #endif

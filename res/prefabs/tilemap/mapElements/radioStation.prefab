@@ -6,7 +6,9 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
 Sprites: ~
-Fonts: ~
+Fonts: 
+  - id: 0
+    path: res/fonts/Caveat-Regular.ttf
 Audio: ~
 Materials:
   - id: 0
@@ -52,3 +54,79 @@ Root:
       cooldown: 12
       takingOverTime: 10
       takingRadius: 3
+  children:
+   - 1
+GameObjects:
+  - id: 1
+    name: CooldownTimer
+    isStatic: false
+    isActive: true
+    transform:
+      id: 3
+      enabled: true
+      position:
+        x: 0
+        y: 1
+        z: 0
+      scale:
+        x: 0.025
+        y: 0.025
+        z: 0.025
+      rotation:
+        x: 0
+        y: 75
+        z: 0
+    components:
+      - id: 4
+        enabled: true
+        type: Canvas
+        size: 
+          x: 100
+          y: 100
+        worldSpace: true
+    children:
+      - 2
+  - id: 2
+    name: CooldownTimerText
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5
+      enabled: true
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 6
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x000"
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 60
+        height: 35
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []

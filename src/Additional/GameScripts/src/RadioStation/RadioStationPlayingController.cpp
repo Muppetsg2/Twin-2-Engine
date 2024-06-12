@@ -161,6 +161,10 @@ void RadioStationPlayingController::GenerateNotes()
 
 void RadioStationPlayingController::PlayNote(NoteType note)
 {
+    // Warunek sprawdzaj¹cy czy nie dosz³o do zagrania po zakoñczeniu gry
+    if (!_generatedNotes.size())
+        return;
+
     if (note == _generatedNotes[_currentNote])
     {
         GameManager::instance->minigameActive = true;

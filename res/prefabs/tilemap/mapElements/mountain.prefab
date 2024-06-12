@@ -68,15 +68,6 @@ GameObjects:
       - id: 3
         enabled: true
         type: Cloud
-        direction:
-          x: 1
-          y: 0
-          z: 0
-        velocity: 0.0
-        startPosition:
-          x: -7
-          y: 4
-          z: 7
         startingScale:
           x: 0.5
           y: 0.5
@@ -85,8 +76,6 @@ GameObjects:
           x: 0.01
           y: -0.01
           z: -0.01
-        maxDistance: 18
-        travelledDistance: 0
       - id: 4
         enabled: true
         type: MeshRenderer
@@ -94,5 +83,6 @@ GameObjects:
         model: 1
         materials:
           - 1
+        transparencyPriority: 2
     children:
       []

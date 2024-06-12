@@ -1,0 +1,6 @@
+shaderprogram:
+  name: origin/ParticleShader
+  shaders:
+    - ParticleShader.vert
+    - ParticleShader.frag
+  parameters:

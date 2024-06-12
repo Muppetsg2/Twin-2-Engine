@@ -17,7 +17,8 @@ namespace Twin2Engine::UI {
 				glm::mat4(1.f),
 				glm::vec2(100.f, 100.f)
 			},
-			false
+			false,
+			0
 		};
 		Tools::EventHandler<Canvas*> _OnCanvasDestory;
 
@@ -39,9 +40,11 @@ namespace Twin2Engine::UI {
 
 		void SetInWorldSpace(bool worldSpace);
 		void SetSize(const glm::vec2& size);
+		void SetLayer(int32_t layer);
 
 		bool IsInWorldSpace() const;
 		glm::vec2 GetSize() const;
+		int32_t GetLayer() const;
 		Tools::EventHandler<Canvas*>& GetOnCanvasDestroy();
 	};
 }

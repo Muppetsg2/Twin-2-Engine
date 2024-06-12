@@ -1,6 +1,6 @@
 Textures:
   - id: 0
-    path: res\textures\UI\meeting.png
+    path: res\textures\patrons\Jutrzenka.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
     sWrapMode: !<MIRRORED_REPEAT> 33648
@@ -8,7 +8,7 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 1
-    path: res\textures\UI\shape_hexagon.png
+    path: res\textures\UI\meeting.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
     sWrapMode: !<MIRRORED_REPEAT> 33648
@@ -16,7 +16,7 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 2
-    path: res\textures\UI\concert.png
+    path: res\textures\UI\shape_hexagon.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
     sWrapMode: !<MIRRORED_REPEAT> 33648
@@ -24,18 +24,32 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 3
-    path: res\textures\UI\abilities.png
+    path: res\textures\UI\concert.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 4
-    path: res\textures\UI\pause.png
+    path: res\textures\white.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 5
+    path: res\textures\UI\abilities.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 6
+    path: res\textures\UI\pause.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 7
     path: res\textures\UI\album.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -46,46 +60,60 @@ Textures:
 Sprites:
   - id: 0
     alias: Pause
-    texture: 4
+    texture: 6
     x: 0
     y: 0
     width: 75
     height: 75
   - id: 1
-    alias: Fans
+    alias: Jutrzenka
     texture: 0
+    x: 157
+    y: 17
+    width: 400
+    height: 400
+  - id: 2
+    alias: Fans
+    texture: 1
     x: 0
     y: 0
     width: 150
     height: 150
-  - id: 2
+  - id: 3
     alias: Concert
+    texture: 3
+    x: 0
+    y: 0
+    width: 256
+    height: 256
+  - id: 4
+    alias: Abilities
+    texture: 5
+    x: 0
+    y: 0
+    width: 800
+    height: 225
+  - id: 5
+    alias: Hexagon
     texture: 2
     x: 0
     y: 0
     width: 256
     height: 256
-  - id: 3
-    alias: Abilities
-    texture: 3
-    x: 0
-    y: 0
-    width: 800
-    height: 225
-  - id: 4
-    alias: Hexagon
-    texture: 1
-    x: 0
-    y: 0
-    width: 256
-    height: 256
-  - id: 5
+  - id: 6
     alias: Album
-    texture: 5
+    texture: 7
     x: 0
     y: 0
     width: 256
     height: 256
+  - id: 7
+    alias: White_Box
+    texture: 4
+    x: 0
+    y: 0
+    width: 100
+    height: 100
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
@@ -207,7 +235,7 @@ GameObjects:
     children:
       []
   - id: 4
-    name: Canvas
+    name: GUICanvas
     isStatic: false
     isActive: true
     transform:
@@ -233,8 +261,541 @@ GameObjects:
           y: 1080
         worldSpace: false
     children:
-      - 5
       - 6
+  - id: 6
+    name: PauseButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 11
+      position:
+        x: -900
+        y: 490
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 12
+        enabled: true
+        type: Button
+        width: 75
+        height: 75
+        interactable: true
+      - id: 13
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 75
+        height: 75
+        layer: 2
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 15
+    name: ChoosePatronCanvas
+    isStatic: false
+    isActive: false
+    transform:
+      id: 33
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 34
+        enabled: true
+        type: Canvas
+        size:
+          x: 1920
+          y: 1080
+        worldSpace: false
+    children:
+      - 17
+      - 18
+      - 22
+      - 23
+      - 24
+      - 25
+      - 26
+  - id: 17
+    name: Background
+    isStatic: false
+    isActive: true
+    transform:
+      id: 37
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 38
+        enabled: true
+        type: Image
+        isTransparent: true
+        sprite: 7
+        color:
+          x: 0.196078435
+          y: 0.196078435
+          z: 0.196078435
+          w: 0.639215708
+        width: 1920
+        height: 1080
+        layer: 1
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 18
+    name: Jutrzenka_Patron_1
+    isStatic: false
+    isActive: true
+    transform:
+      id: 39
+      position:
+        x: -690
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 46
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 7
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 200
+        height: 300
+        layer: 2
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 49
+        enabled: true
+        type: Button
+        width: 200
+        height: 300
+        interactable: true
+    children:
+      - 27
+      - 28
+      - 29
+  - id: 27
+    name: Image
+    isStatic: false
+    isActive: true
+    transform:
+      id: 63
+      position:
+        x: 0
+        y: 67
+        z: 0
+      scale:
+        x: 1.20000005
+        y: 1.20000005
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 64
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 1
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 3
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 28
+    name: Name
+    isStatic: false
+    isActive: true
+    transform:
+      id: 65
+      position:
+        x: 0
+        y: -12
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 66
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00J\x00u\x00t\x00r\x00z\x00e\x00n\x00k\x00a"
+        font: 0
+        size: 32
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 100
+        height: 50
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 3
+    children:
+      []
+  - id: 29
+    name: Description
+    isStatic: false
+    isActive: true
+    transform:
+      id: 67
+      position:
+        x: 0
+        y: -52
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 68
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00B\x00o\x00n\x00u\x00s\x00:\x00\n\x00M\x00o\x00n\x00e\x00y\x00 \x00G\x00a\x00i\x00n\x00 \x00x\x002"
+        font: 0
+        size: 36
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 200
+        height: 150
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: true
+        overflow: !<Overflow> 0
+        layer: 3
+    children:
+      []
+  - id: 22
+    name: Perun_Patron_2
+    isStatic: false
+    isActive: true
+    transform:
+      id: 47
+      position:
+        x: -414
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 48
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 7
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 200
+        height: 300
+        layer: 2
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 50
+        enabled: true
+        type: Button
+        width: 200
+        height: 300
+        interactable: true
+    children:
+      []
+  - id: 23
+    name: _Patron_3
+    isStatic: false
+    isActive: true
+    transform:
+      id: 51
+      position:
+        x: -138
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 55
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 7
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 200
+        height: 300
+        layer: 2
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 56
+        enabled: true
+        type: Button
+        width: 200
+        height: 300
+        interactable: true
+    children:
+      []
+  - id: 24
+    name: _Patron_4
+    isStatic: false
+    isActive: true
+    transform:
+      id: 52
+      position:
+        x: 138
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 57
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 7
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 200
+        height: 300
+        layer: 2
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 58
+        enabled: true
+        type: Button
+        width: 200
+        height: 300
+        interactable: true
+    children:
+      []
+  - id: 25
+    name: _Patron_5
+    isStatic: false
+    isActive: true
+    transform:
+      id: 53
+      position:
+        x: 414
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 59
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 7
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 200
+        height: 300
+        layer: 2
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 60
+        enabled: true
+        type: Button
+        width: 200
+        height: 300
+        interactable: true
+    children:
+      []
+  - id: 26
+    name: _Patron_6
+    isStatic: false
+    isActive: true
+    transform:
+      id: 54
+      position:
+        x: 690
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 61
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 7
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 200
+        height: 300
+        layer: 2
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 62
+        enabled: true
+        type: Button
+        width: 200
+        height: 300
+        interactable: true
+    children:
+      []
+  - id: 16
+    name: GameCanvas
+    isStatic: false
+    isActive: true
+    transform:
+      id: 35
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 36
+        enabled: true
+        type: Canvas
+        size:
+          x: 1920
+          y: 1080
+        worldSpace: false
+    children:
+      - 5
   - id: 5
     name: Abilities
     isStatic: false
@@ -258,7 +819,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 3
+        sprite: 4
         color:
           x: 0.683397651
           y: 0.683397651
@@ -300,19 +861,19 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 4
+        sprite: 5
         color:
-          x: 0
-          y: 1
-          z: 0.611764669
-          w: 0.392156869
+          x: 1
+          y: 0
+          z: 1
+          w: 0.274509817
         width: 150
         height: 150
-        layer: 0
+        layer: 2
         fillEnabled: true
         fillType: !<2> 2
         fillSubType: !<CW> 0
-        fillProgress: 0.424419999
+        fillProgress: 1
       - id: 27
         enabled: true
         type: Button
@@ -321,6 +882,7 @@ GameObjects:
         interactable: true
     children:
       - 7
+      - 19
   - id: 7
     name: Album
     isStatic: false
@@ -343,8 +905,8 @@ GameObjects:
       - id: 15
         enabled: true
         type: Image
-        isTransparent: false
-        sprite: 5
+        isTransparent: true
+        sprite: 6
         color:
           x: 1
           y: 1
@@ -357,6 +919,49 @@ GameObjects:
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
         fillProgress: 1
+    children:
+      []
+  - id: 19
+    name: AlbumCost
+    isStatic: false
+    isActive: true
+    transform:
+      id: 40
+      position:
+        x: 0
+        y: -54
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 41
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x003\x001\x000\x00$"
+        font: 0
+        size: 40
+        autoSize: true
+        minSize: 10
+        maxSize: 40
+        width: 100
+        height: 50
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
     children:
       []
   - id: 9
@@ -382,12 +987,12 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 4
+        sprite: 5
         color:
           x: 0
           y: 1
-          z: 0.611764729
-          w: 0.392156869
+          z: 1
+          w: 0.274509817
         width: 150
         height: 150
         layer: 0
@@ -403,6 +1008,7 @@ GameObjects:
         interactable: true
     children:
       - 10
+      - 20
   - id: 10
     name: Concert
     isStatic: false
@@ -426,7 +1032,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 2
+        sprite: 3
         color:
           x: 1
           y: 1
@@ -439,6 +1045,49 @@ GameObjects:
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
         fillProgress: 1
+    children:
+      []
+  - id: 20
+    name: ConcertCost
+    isStatic: false
+    isActive: true
+    transform:
+      id: 42
+      position:
+        x: 0
+        y: -54
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 43
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x003\x001\x000\x00$"
+        font: 0
+        size: 40
+        autoSize: true
+        minSize: 10
+        maxSize: 40
+        width: 150
+        height: 50
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
     children:
       []
   - id: 11
@@ -481,7 +1130,7 @@ GameObjects:
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
-        layer: 1
+        layer: 0
     children:
       []
   - id: 12
@@ -524,7 +1173,7 @@ GameObjects:
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
-        layer: 1
+        layer: 0
     children:
       []
   - id: 13
@@ -550,12 +1199,12 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 4
+        sprite: 5
         color:
           x: 0
           y: 1
-          z: 0.611764729
-          w: 0.392156869
+          z: 1
+          w: 0.274509817
         width: 150
         height: 150
         layer: 0
@@ -571,6 +1220,7 @@ GameObjects:
         interactable: true
     children:
       - 14
+      - 21
   - id: 14
     name: Fans
     isStatic: false
@@ -594,7 +1244,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 1
+        sprite: 2
         color:
           x: 1
           y: 1
@@ -609,15 +1259,15 @@ GameObjects:
         fillProgress: 1
     children:
       []
-  - id: 6
-    name: PauseButton
+  - id: 21
+    name: FansCost
     isStatic: false
     isActive: true
     transform:
-      id: 11
+      id: 44
       position:
-        x: -904
-        y: 494
+        x: 0
+        y: -54
         z: 0
       scale:
         x: 1
@@ -628,28 +1278,27 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 12
+      - id: 45
         enabled: true
-        type: Button
-        width: 75
-        height: 75
-        interactable: true
-      - id: 13
-        enabled: true
-        type: Image
+        type: Text
         isTransparent: false
-        sprite: 0
+        text: "\x003\x001\x000\x00$"
+        font: 0
+        size: 40
+        autoSize: true
+        minSize: 10
+        maxSize: 40
+        width: 150
+        height: 50
         color:
-          x: 1
-          y: 1
-          z: 1
+          x: 0
+          y: 0
+          z: 0
           w: 1
-        width: 75
-        height: 75
-        layer: -1
-        fillEnabled: false
-        fillType: !<0> 0
-        fillSubType: !<LEFT> 0
-        fillProgress: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
     children:
       []

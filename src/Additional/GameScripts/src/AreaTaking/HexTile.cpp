@@ -70,21 +70,42 @@ void HexTile::UpdateTileColor()
 {
 	TILE_COLOR col = ownerEntity != nullptr ? (TILE_COLOR)(uint8_t)(ownerEntity->colorIdx == 0 ? 1 : powf(2.f, (float)(ownerEntity->colorIdx))) : TILE_COLOR::NEUTRAL;
 	//SPDLOG_INFO("Percentage: {}", percentage);
-	if (percentage > _takingStage3)
+	if (!occupyingEntity || takenEntity == occupyingEntity)
 	{
-		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 3));
-	}
-	else if (percentage > _takingStage2)
+		if (percentage > _takingStage3)
+		{
+			_meshRenderer->SetMaterial(0ull, texturesData->GetMaterial(col, 3ull));
+		}
+		else if (percentage > _takingStage2)
+		{
+			_meshRenderer->SetMaterial(0ull, texturesData->GetMaterial(col, 2ull));
+		}
+		else if (percentage > _takingStage1)
+		{
+			_meshRenderer->SetMaterial(0ull, texturesData->GetMaterial(col, 1ull));
+		}
+		else
+		{
+			_meshRenderer->SetMaterial(0ull, texturesData->GetMaterial(col, 0ull));
+		}
+	else 
 	{
-		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 2));
-	}
-	else if (percentage > _takingStage1)
-	{
-		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 1));
-	}
-	else
-	{
-		_meshRenderer->SetMaterial(0, texturesData->GetMaterial(col, 0));
+		if (percentage < _takingStage1)
+		{
+			_meshRenderer->SetMaterial(0ull, texturesData->GetRetreatingMaterial(col, 0ull));
+		}
+		else if (percentage < _takingStage2)
+		{
+			_meshRenderer->SetMaterial(0ull, texturesData->GetRetreatingMaterial(col, 1ull));
+		}
+		else if (percentage < _takingStage3)
+		{
+			_meshRenderer->SetMaterial(0ull, texturesData->GetRetreatingMaterial(col, 2ull));
+		}
+		else
+		{
+			_meshRenderer->SetMaterial(0ull, texturesData->GetMaterial(col, 3ull));
+		}
 	}
 }
 
@@ -409,6 +430,17 @@ void HexTile::StartMinigame()
 
 void HexTile::WinMinigame()
 {
+}
+
+
+void HexTile::EnableAffected()
+{
+	GetTransform()->GetChildAt(0ull)->GetGameObject()->SetActive(true);
+}
+
+void HexTile::DisableAffected()
+{
+	GetTransform()->GetChildAt(0ull)->GetGameObject()->SetActive(false);
 }
 
 void HexTile::BadNote()

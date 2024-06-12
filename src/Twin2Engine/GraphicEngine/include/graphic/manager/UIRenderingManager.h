@@ -19,6 +19,7 @@ namespace Twin2Engine
 		struct CanvasData {
 			UIRectData rectTransform;
 			bool worldSpaceCanvas = false;
+			int32_t layer = 0;
 		};
 
 		ENUM_CLASS_BASE(FILL_TYPE, uint8_t, HORIZONTAL, VERTICAL, CIRCLE);
@@ -82,17 +83,19 @@ namespace Twin2Engine
 			static Tools::STD140Struct MaskStruct;
 			static Tools::STD140Struct UIElementsBufferStruct;
 
-			// Canvas -> Layer -> Mask -> Texture -> queue
-			static std::unordered_map<CanvasData*,
+			// Canvas Layer -> Canvas -> Layer -> Mask -> Texture -> queue
+			static std::map<int32_t, 
+					std::unordered_map<CanvasData*,
 					std::map<int32_t,
 					std::unordered_map<MaskData*,
 					std::unordered_map<Graphic::Texture2D*,
-					std::queue<UIElementQueueData>>>>> _worldSpaceRenderQueue;
-			static std::unordered_map<CanvasData*,
+					std::queue<UIElementQueueData>>>>>> _worldSpaceRenderQueue;
+			static std::map<int32_t, 
+				std::unordered_map<CanvasData*,
 				std::map<int32_t,
 				std::unordered_map<MaskData*,
 				std::unordered_map<Graphic::Texture2D*,
-				std::queue<UIElementQueueData>>>>> _screenSpaceRenderQueue;
+				std::queue<UIElementQueueData>>>>>> _screenSpaceRenderQueue;
 			
 			// SHADER
 			static Graphic::Shader* _uiShader;
@@ -116,11 +119,12 @@ namespace Twin2Engine
 
 			static void RenderWorldSpace();
 			static void RenderScreenSpace();
-			static void RenderUI(std::unordered_map<CanvasData*,
+			static void RenderUI(std::map<int32_t,
+									std::unordered_map<CanvasData*,
 									std::map<int32_t,
 									std::unordered_map<MaskData*,
 									std::unordered_map<Graphic::Texture2D*,
-									std::queue<UIElementQueueData>>>>>& renderQueue);
+									std::queue<UIElementQueueData>>>>>>& renderQueue);
 
 			// TODO: Lepsze zarz¹dzanie Canvasem - przekazywanie id UBO z danymi canvasu
 			// TODO: Poprawiæ zale¿noœæ wielkoœci canvasu do wielkoœci ekranu w screenSpace

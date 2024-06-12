@@ -1,5 +1,5 @@
 scriptable_object:
   __SO_RegisteredName__: MountainsGenerator
-  prefabMountains: res/prefabs/tilemap/mapElements/mountain.prefab
+  prefabMountains: res/prefabs/tilemap/mapElements/mountain_3.prefab
   mountainsNumber: 3
   mountainsHeight: 0.2

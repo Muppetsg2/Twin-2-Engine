@@ -29,6 +29,8 @@ class HexTile : public Twin2Engine::Core::Component
 
 	std::vector<HexTile*> _adjacentTiles;
 
+	//Twin2Engine::Core::GameObject* affected;
+
 	void TakeOver();
 	void LoseInfluence();
 	void UpdateTileColor();
@@ -112,6 +114,9 @@ public:
 	void StopRemotelyTakingOver(Playable* entity);
 
 	Generation::MapHexTile* GetMapHexTile() const;
+
+	void EnableAffected();
+	void DisableAffected();
 
 	virtual YAML::Node Serialize() const override;
 	virtual bool Deserialize(const YAML::Node& node) override;

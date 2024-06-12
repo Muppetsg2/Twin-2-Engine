@@ -18,6 +18,7 @@ class RadioStation : public Twin2Engine::Core::Component
     std::list<HexTile*> _takenTiles;
     
     Playable* _takenPlayable;
+    Twin2Engine::UI::Text* _cooldownTimerText;
 
     float _takingOverTime = 0.0f;
     float _takingOverTimer = 0.0f;

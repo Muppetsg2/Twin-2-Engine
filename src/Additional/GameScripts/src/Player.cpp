@@ -1,3 +1,4 @@
+#include "Player.h"
 #include <Player.h>
 #include <manager/SceneManager.h>
 #include <Abilities/ConcertAbilityController.h>
@@ -5,6 +6,7 @@
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
+using namespace Twin2Engine::Physic;
 using namespace Twin2Engine::UI;
 
 
@@ -14,6 +16,8 @@ using namespace Twin2Engine::UI;
 
 void Player::Initialize() {
     Playable::Initialize();
+
+    audioComponent = GetGameObject()->GetComponent<AudioComponent>();
 
     InitPrices();
     CreateIndicator();
@@ -43,6 +47,8 @@ void Player::Initialize() {
         };
 
     OnEventAlbumStarted.AddCallback([&](Playable* playable) -> void {
+            audioComponent->SetAudio("res/music/Abilities/AbilitiesUse.mp3");
+            audioComponent->Play();
             albumCircleImage->SetColor(_abilityActiveColor);
             albumCircleImage->GetGameObject()->SetActive(true);
         });
@@ -50,6 +56,8 @@ void Player::Initialize() {
             albumCircleImage->SetColor(_abilityCooldownColor);
         });
     OnEventAlbumCooldownFinished.AddCallback([&](Playable* playable) -> void {
+            audioComponent->SetAudio("res/music/Abilities/CooldownEnd.mp3");
+            audioComponent->Play();
             albumCircleImage->GetGameObject()->SetActive(false);
         });
     albumCircleImage->GetGameObject()->SetActive(false);
@@ -62,6 +70,7 @@ void Player::Initialize() {
     fansMeetingCircleImage = SceneManager::FindObjectByName("fansMeetingCircle")->GetComponent<Image>();
 
     fansMeetingButtonEventHandleId = fansMeetingButton->GetOnClickEvent() += [&]() { FansMeetingCall(); };
+    fansMeetingButtonHeveringEventHandleId = fansMeetingButton->GetOnHoverEvent() += [&]() { isHoveringButton = true; };
 
     fansMeetingButtonDestroyedEventHandleId = fansMeetingButtonObject->OnDestroyedEvent += [&](GameObject* gameObject) {
         if (fansMeetingButton)
@@ -77,6 +86,8 @@ void Player::Initialize() {
 
 
     OnEventFansMeetingStarted.AddCallback([&](Playable* playable) -> void {
+        audioComponent->SetAudio("res/music/Abilities/AbilitiesUse.mp3");
+        audioComponent->Play();
         fansMeetingCircleImage->SetColor(_abilityActiveColor);
         fansMeetingCircleImage->GetGameObject()->SetActive(true);
         });
@@ -84,6 +95,8 @@ void Player::Initialize() {
         fansMeetingCircleImage->SetColor(_abilityCooldownColor);
         });
     OnEventFansMeetingCooldownFinished.AddCallback([&](Playable* playable) -> void {
+        audioComponent->SetAudio("res/music/Abilities/CooldownEnd.mp3");
+        audioComponent->Play();
         fansMeetingCircleImage->GetGameObject()->SetActive(false);
         });
     fansMeetingCircleImage->GetGameObject()->SetActive(false);
@@ -111,6 +124,8 @@ void Player::Initialize() {
 
 
     concertAbility->OnEventAbilityStarted.AddCallback([&](Playable* playable) -> void {
+        audioComponent->SetAudio("res/music/Abilities/AbilitiesUse.mp3");
+        audioComponent->Play();
         concertCircleImage->SetColor(_abilityActiveColor);
         concertCircleImage->GetGameObject()->SetActive(true);
         });
@@ -118,6 +133,8 @@ void Player::Initialize() {
         concertCircleImage->SetColor(_abilityCooldownColor);
         });
     concertAbility->OnEventAbilityCooldownFinished.AddCallback([&](Playable* playable) -> void {
+        audioComponent->SetAudio("res/music/Abilities/CooldownEnd.mp3");
+        audioComponent->Play();
         concertCircleImage->GetGameObject()->SetActive(false);
         });
     concertCircleImage->GetGameObject()->SetActive(false);
@@ -257,6 +274,19 @@ void Player::Update() {
             fansMeetingText->SetText(std::wstring((L"Fans Meeting\n" + std::to_wstring(static_cast<int>(fansRequiredMoney)) + L"$")));
         }
 
+        if (GameManager::instance->gameStarted)
+        {
+            if (isHoveringButton && !isShowingAffectedTiles)
+            {
+                ShowAffectedTiles();
+            }
+            else if (!isHoveringButton && isShowingAffectedTiles)
+            {
+                HideAffectedTiles();
+            }
+            isHoveringButton = false;
+        }
+
         if (move != nullptr) {
             if (move->reachEnd) {
                 if (isFansActive) {
@@ -274,6 +304,11 @@ void Player::Update() {
             SPDLOG_ERROR("Move was nullptr");
         }
     }
+}
+
+void Player::StartPlayer(HexTile* startUpTile)
+{
+    move->StartUp(startUpTile);
 }
 
 void Player::AlbumCall() {
@@ -300,6 +335,61 @@ void Player::ConcertCall() {
     }
 }
 
+
+void Player::ShowAffectedTiles() {
+
+    float usedRadius = fansRadius;
+    isShowingAffectedTiles = true;
+
+    if (patron->GetPatronBonus() == PatronBonus::ABILITIES_RANGE) {
+        usedRadius += patron->GetBonus();
+    }
+
+    vector<ColliderComponent*> colliders;
+    ColliderComponent* col;
+    CollisionManager::Instance()->OverlapSphere(CurrTile->GetGameObject()->GetTransform()->GetGlobalPosition(), usedRadius, colliders);
+
+    vec3 usedGlobalPosition = GetTransform()->GetGlobalPosition();
+    usedGlobalPosition.y = 0.0f;
+
+    size_t size = colliders.size();
+    for (size_t index = 0ull; index < size; ++index)
+    {
+        col = colliders[index];
+        if (col)
+        {
+            HexTile* tile = col->GetGameObject()->GetComponent<HexTile>();
+
+            if (tile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::Water
+                || tile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::Mountain) continue;
+
+            //if (tile && tile != CurrTile) {
+
+            vec3 tileUsedGlobalPosition = tile->GetTransform()->GetGlobalPosition();
+            tileUsedGlobalPosition.y = 0.0f;
+
+            float mul = glm::distance(usedGlobalPosition, tileUsedGlobalPosition);
+            mul = mul > 1.0f ? 1.0f - std::floor(mul) / usedRadius : 1.0f;
+
+            if (mul > 0.0f) {
+                tile->EnableAffected();
+                affectedTiles.push_back(tile);
+            }
+            //}
+        }
+    }
+}
+
+void Player::HideAffectedTiles() {
+    for (auto itr = affectedTiles.begin(); itr != affectedTiles.end(); ++itr)
+    {
+        (*itr)->DisableAffected();
+    }
+    affectedTiles.clear();
+
+    isShowingAffectedTiles = false;
+}
+
 void Player::StartMove(HexTile* tile) {
     if (CurrTile != nullptr) {
         CurrTile->StopTakingOver(this);
@@ -308,25 +398,25 @@ void Player::StartMove(HexTile* tile) {
 
     GameManager::instance->changeTile = true;
 
-    if (!GameManager::instance->gameStarted) {
-        GameManager::instance->gameStarted = true;
-        hexIndicator->SetActive(true);
-        hexIndicator->GetTransform()->SetGlobalPosition(CurrTile->sterowiecPos);
-
-        //if (islandsWon == 0) {
-        //    GameTimer::Instance().ResetTimer();
-        //}
-        //
-        //GameTimer::Instance().StartTimer();
-
-        //HUDInfo* obj = FindObjectOfType<HUDInfo>();
-        //if (obj != nullptr) {
-        //    obj->ResetInfo();
-        //}
-    }
-    else if (hexIndicator) {
-        hexIndicator->SetActive(false);
-    }
+    //if (!GameManager::instance->gameStarted) {
+    //    GameManager::instance->gameStarted = true;
+    //    hexIndicator->SetActive(true);
+    //    hexIndicator->GetTransform()->SetGlobalPosition(CurrTile->sterowiecPos);
+    //
+    //    //if (islandsWon == 0) {
+    //    //    GameTimer::Instance().ResetTimer();
+    //    //}
+    //    //
+    //    //GameTimer::Instance().StartTimer();
+    //
+    //    //HUDInfo* obj = FindObjectOfType<HUDInfo>();
+    //    //if (obj != nullptr) {
+    //    //    obj->ResetInfo();
+    //    //}
+    //}
+    //else if (hexIndicator) {
+    //    hexIndicator->SetActive(false);
+    //}
 
     if (lost) {
         //HUDInfo* obj = FindObjectOfType<HUDInfo>();
@@ -550,6 +640,10 @@ void Player::DrawEditor()
         ImGui::ColorEdit4("AbilityActiveColor", (float*)(&_abilityActiveColor));
         ImGui::ColorEdit4("AbilityCooldownColor", (float*)(&_abilityCooldownColor));
         // TODO: Zrobic
+        if (ImGui::Button("Show Affected"))
+            ShowAffectedTiles();
+        if (ImGui::Button("Hide Affected"))
+            HideAffectedTiles();
     }
 }
 #endif

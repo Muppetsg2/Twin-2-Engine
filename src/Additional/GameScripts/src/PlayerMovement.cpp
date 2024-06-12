@@ -1,3 +1,4 @@
+#include "PlayerMovement.h"
 #include <PlayerMovement.h>
 #include <physic/CollisionManager.h>
 #include <physic/Ray.h>
@@ -73,7 +74,7 @@ void PlayerMovement::Update() {
         //circleRenderer->positionCount = 0;
     }
 
-    if (Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT) && reachEnd && !GameManager::instance->minigameActive)
+    if (GameManager::instance->gameStarted && Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT) && reachEnd && !GameManager::instance->minigameActive)
     {
         if (CollisionManager::Instance()->Raycast(ray, raycastHit))
         {
@@ -210,7 +211,19 @@ void PlayerMovement::MoveAndSetDestination(HexTile* dest) {
     }
 }
 
-
+void PlayerMovement::StartUp(HexTile* startUpTile)
+{
+    vec3 startUpPosition = startUpTile->GetTransform()->GetGlobalPosition();
+    GetTransform()->SetGlobalPosition(startUpPosition);
+    //destinatedTile = dest;
+    //destination = destPos;
+    GameManager::instance->gameStarted = true;
+    OnStartMoving.Invoke(GetGameObject(), startUpTile);
+    //Player* player = GetGameObject()->GetComponent<Player>();
+    //player->CurrTile = dest;
+    //dest->StartTakingOver(player);
+    OnFinishMoving(GetGameObject(), startUpTile);
+}
 
 bool PlayerMovement::InCircle(glm::vec3 point) {
     glm::vec3 position = GetTransform()->GetGlobalPosition();
@@ -219,19 +232,8 @@ bool PlayerMovement::InCircle(glm::vec3 point) {
 
 void PlayerMovement::SetDestination(HexTile* dest) {
     glm::vec3 destPos = dest->GetTransform()->GetGlobalPosition() + glm::vec3(0.0f, _heightOverSurface, 0.0f);
-    if (!GameManager::instance->gameStarted)
-    {
-        GetTransform()->SetGlobalPosition(destPos);
-        destinatedTile = dest;
-        destination = destPos;
-        GameManager::instance->gameStarted = true;
-        OnStartMoving.Invoke(GetGameObject(), dest);
-        //Player* player = GetGameObject()->GetComponent<Player>();
-        //player->CurrTile = dest;
-        //dest->StartTakingOver(player);
-        OnFinishMoving(GetGameObject(), dest);
-    }
-    else if (InCircle(destPos))
+    
+    if (InCircle(destPos))
     {
         if (!_path || _path->IsOnEnd())
         {

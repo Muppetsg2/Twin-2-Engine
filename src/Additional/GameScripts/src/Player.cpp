@@ -417,16 +417,8 @@ void Player::WonPaperRockScissors(Playable* playable) {
 
     playable->LostPaperRockScissors(this);
 
-    if (CurrTile->takenEntity == playable) {
-    //if (CurrTile->takenEntity != this) {
+    if (CurrTile->ownerEntity == playable) {
         CurrTile->ResetTile();
-
-        //if (GameManager::instance->entities.size() == 1) {
-        //    //hexIndicator->SetActive(false);
-        //}
-        //else {
-        //    FinishMove(CurrTile);
-        //}
     }
 
     playable->CheckIfDead(this);
@@ -477,7 +469,7 @@ void Player::WonFansControl(Playable* playable) {
     GameManager::instance->minigameActive = false;
 
     CurrTile->isFighting = false;
-    if (CurrTile->takenEntity == dynamic_cast<Playable*>(fightingPlayable)) {
+    if (CurrTile->ownerEntity == dynamic_cast<Playable*>(fightingPlayable)) {
         CurrTile->ResetTile();
         fightingPlayable->CheckIfDead(this);
 
@@ -509,7 +501,7 @@ void Player::LostFansControl(Playable* playable) {
 void Player::FansControlDraw() {
     //fightingPlayable->WonPaperRockScisors(this);
     GameManager::instance->minigameActive = false;
-    if (CurrTile->occupyingEntity == this && CurrTile->takenEntity == this) {
+    if (CurrTile->occupyingEntity == this && CurrTile->ownerEntity == this) {
         CurrTile->ResetTile();
     }
 }

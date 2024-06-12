@@ -78,11 +78,8 @@ void Enemy::WonPaperRockScissors(Playable* playable)
     playable->LostPaperRockScissors(this);
 
 
-    if (CurrTile->takenEntity == playable) {
-    //if (CurrTile->takenEntity != this) {
+    if (CurrTile->ownerEntity == playable) {
         CurrTile->ResetTile();
-
-        //FinishedMovement(CurrTile);
     }
 
     playable->CheckIfDead(this);

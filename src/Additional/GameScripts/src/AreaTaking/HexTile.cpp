@@ -1,4 +1,3 @@
-#include "HexTile.h"
 #include <AreaTaking/HexTile.h>
 
 #include <Playable.h>
@@ -48,23 +47,6 @@ void HexTile::TakeOver()
 			SetOwnerEntity(occupyingEntity);
 
 			CheckRoundPattern();
-
-			/*for (auto& t : takenEntity->OwnTiles)
-			{
-				t->UpdateBorders();
-
-				// Update Neightbours
-				vector<GameObject*> neightbours;
-				neightbours.resize(6);
-				_mapHexTile->tile->GetAdjacentGameObjects(neightbours.data());
-				for (auto& nt : neightbours)
-				{
-					if (nt == nullptr) continue;
-					HexTile* ntTile = nt->GetComponent<HexTile>();
-					if (ntTile->takenEntity == takenEntity) continue;
-					ntTile->UpdateBorders();
-				}
-			}*/
 		}
 	}
 
@@ -73,52 +55,11 @@ void HexTile::TakeOver()
 
 void HexTile::LoseInfluence()
 {
-	//currLoseInfluenceDelay -= Time::GetDeltaTime();
-	//if (currLoseInfluenceDelay <= 0.0f && percentage > minLosePercentage) {
-	//	currLoseInfluenceDelay = 0.0f;
-	//	percentage -= Time::GetDeltaTime() * loseInfluenceSpeed;
-	//	if (percentage < minLosePercentage) {
-	//		percentage = minLosePercentage;
-	//	}
-	//	UpdateTileColor();
-	//}
-
 	percentage -= Time::GetDeltaTime();
 	if (percentage < _takingStage1) {
 		percentage = 0.0f;
-		if (takenEntity != nullptr) {
-			takenEntity->OwnTiles.remove(this);
-
-			for (auto& t : takenEntity->OwnTiles)
-			{
-				t->UpdateBorders();
-
-				// Update Neightbours
-				vector<GameObject*> neightbours;
-				neightbours.resize(6);
-				_mapHexTile->tile->GetAdjacentGameObjects(neightbours.data());
-				for (auto& nt : neightbours)
-				{
-					if (nt == nullptr) continue;
-					HexTile* ntTile = nt->GetComponent<HexTile>();
-					if (ntTile->takenEntity == takenEntity) continue;
-					ntTile->UpdateBorders();
-				}
-			}
-
-			takenEntity = nullptr;
-
-			for (size_t i = 0; i < 6; ++i)
-			{
-				if (borders[i]->GetActive())
-					borders[i]->SetActive(false);
-				if (borderJoints[i * 2]->GetActive())
-					borderJoints[i * 2]->SetActive(false);
-				if (borderJoints[(i * 2) + 1]->GetActive())
-					borderJoints[(i * 2) + 1]->SetActive(false);
-			}
-
-			UpdateBorderColor();
+		if (ownerEntity != nullptr) {
+			ResetTile();
 		}
 	}
 
@@ -127,7 +68,7 @@ void HexTile::LoseInfluence()
 
 void HexTile::UpdateTileColor()
 {
-	TILE_COLOR col = takenEntity != nullptr ? (TILE_COLOR)(uint8_t)(takenEntity->colorIdx == 0 ? 1 : powf(2.f, (float)(takenEntity->colorIdx))) : TILE_COLOR::NEUTRAL;
+	TILE_COLOR col = ownerEntity != nullptr ? (TILE_COLOR)(uint8_t)(ownerEntity->colorIdx == 0 ? 1 : powf(2.f, (float)(ownerEntity->colorIdx))) : TILE_COLOR::NEUTRAL;
 	//SPDLOG_INFO("Percentage: {}", percentage);
 	if (percentage > _takingStage3)
 	{
@@ -149,7 +90,7 @@ void HexTile::UpdateTileColor()
 
 void HexTile::UpdateBorderColor()
 {
-	TILE_COLOR col = takenEntity != nullptr ? (TILE_COLOR)(uint8_t)(takenEntity->colorIdx == 0 ? 1 : powf(2.f, (float)(takenEntity->colorIdx))) : TILE_COLOR::NEUTRAL;
+	TILE_COLOR col = ownerEntity != nullptr ? (TILE_COLOR)(uint8_t)(ownerEntity->colorIdx == 0 ? 1 : powf(2.f, (float)(ownerEntity->colorIdx))) : TILE_COLOR::NEUTRAL;
 	for (auto& b : borders) {
 		MeshRenderer* mr = b->GetComponent<MeshRenderer>();
 		if (mr != nullptr) {
@@ -195,23 +136,28 @@ void HexTile::UpdateBorders()
 		borderJoints[(i * 2) + 1]->SetActive(false);
 	}*/
 
-	if (takenEntity != nullptr)
+	vector<GameObject*> neightbours;
+	neightbours.resize(6);
+	_mapHexTile->tile->GetAdjacentGameObjects(neightbours.data());
+	for (size_t i = 0; i < 6; ++i)
 	{
-		vector<GameObject*> neightbours;
-		neightbours.resize(6);
-		_mapHexTile->tile->GetAdjacentGameObjects(neightbours.data());
-		for (size_t i = 0; i < 6; ++i)
-		{
-			GameObject* neightbour = neightbours[i];
-			int left = i * 2 - 1;
-			if (left < 0) left = 12 + left;
-			int right = (i * 2 + 2) % 12;
-			if (neightbour != nullptr)
-			{
-				HexTile* t = neightbour->GetComponent<HexTile>();
+		GameObject* neightbour = neightbours[i];
+		int left = (i * 2 + 11) % 12; // -1
+		int right = (i * 2 + 2) % 12;
 
-				if (t->takenEntity != takenEntity)
-				{
+		int ni = (i + 3) % 6;
+		int nLeft = (ni * 2 + 11) % 12;
+		int nRight = (ni * 2 + 2) % 12;
+		if (neightbour != nullptr)
+		{
+			HexTile* nt = neightbour->GetComponent<HexTile>();
+
+			// JESLI DO INNYCH GRACZY NA LEZA
+			if (nt->ownerEntity != ownerEntity)
+			{
+				// UPDATE THIS BORDER
+				// JESLI NIE BIALY
+				if (ownerEntity != nullptr) {
 					if (borderJoints[left]->GetActive())
 						borderJoints[left]->SetActive(false);
 					if (borderJoints[right]->GetActive())
@@ -219,37 +165,96 @@ void HexTile::UpdateBorders()
 
 					if (!borders[i]->GetActive())
 						borders[i]->SetActive(true);
-
-					// UPDATE NEIGHTBOUR BORDER
 				}
-				else
-				{
-					if (!borderJoints[left]->GetActive())
-						borderJoints[left]->SetActive(true);
-					if (!borderJoints[right]->GetActive())
-						borderJoints[right]->SetActive(true);
+				// JESLI BIALY
+				else {
+					if (borderJoints[left]->GetActive())
+						borderJoints[left]->SetActive(false);
+					if (borderJoints[right]->GetActive())
+						borderJoints[right]->SetActive(false);
 
 					if (borders[i]->GetActive())
 						borders[i]->SetActive(false);
+				}
 
-					// UPDATE NEIGHTBOUR BORDER
+				// UPDATE NEIGHTBOUR BORDER
+				// JESLI NIE BIALY
+				if (nt->ownerEntity != nullptr) {
+					if (nt->borderJoints[nLeft]->GetActive())
+						nt->borderJoints[nLeft]->SetActive(false);
+					if (nt->borderJoints[nRight]->GetActive())
+						nt->borderJoints[nRight]->SetActive(false);
+
+					if (!nt->borders[ni]->GetActive())
+						nt->borders[ni]->SetActive(true);
+				}
+				// JESLI BIALY
+				else {
+					if (nt->borderJoints[nLeft]->GetActive())
+						nt->borderJoints[nLeft]->SetActive(false);
+					if (nt->borderJoints[nRight]->GetActive())
+						nt->borderJoints[nRight]->SetActive(false);
+
+					if (nt->borders[ni]->GetActive())
+						nt->borders[ni]->SetActive(false);
 				}
 			}
-			else
+			// JESLI DO TEGO SAMEGO GRACZA NALEZA
+			else if (ownerEntity != nullptr)
 			{
+				// UPDATE THIS BORDER
+				if (!borderJoints[left]->GetActive())
+					borderJoints[left]->SetActive(true);
+				if (!borderJoints[right]->GetActive())
+					borderJoints[right]->SetActive(true);
+
+				if (borders[i]->GetActive())
+					borders[i]->SetActive(false);
+
+				// UPDATE NEIGHTBOUR BORDER
+				if (!nt->borderJoints[nLeft]->GetActive())
+					nt->borderJoints[nLeft]->SetActive(true);
+				if (!nt->borderJoints[nRight]->GetActive())
+					nt->borderJoints[nRight]->SetActive(true);
+
+				if (nt->borders[ni]->GetActive())
+					nt->borders[ni]->SetActive(false);
+			}
+			// JESLI OBA BIALE
+			else {
+				// UPDATE THIS BORDER
 				if (borderJoints[left]->GetActive())
 					borderJoints[left]->SetActive(false);
 				if (borderJoints[right]->GetActive())
 					borderJoints[right]->SetActive(false);
 
-				if (!borders[i]->GetActive())
-					borders[i]->SetActive(true);
+				if (borders[i]->GetActive())
+					borders[i]->SetActive(false);
+
+				// UPDATE NEIGHTBOUR BORDER
+				if (nt->borderJoints[nLeft]->GetActive())
+					nt->borderJoints[nLeft]->SetActive(false);
+				if (nt->borderJoints[nRight]->GetActive())
+					nt->borderJoints[nRight]->SetActive(false);
+
+				if (nt->borders[ni]->GetActive())
+					nt->borders[ni]->SetActive(false);
 			}
 		}
-		neightbours.clear();
-	}
-}
+		else
+		{
+			// UPDATE THIS BORDER
+			if (borderJoints[left]->GetActive())
+				borderJoints[left]->SetActive(false);
+			if (borderJoints[right]->GetActive())
+				borderJoints[right]->SetActive(false);
 
+			if (!borders[i]->GetActive())
+				borders[i]->SetActive(true);
+		}
+	}
+	neightbours.clear();
+}
 
 void HexTile::CheckRoundPattern()
 {
@@ -260,7 +265,7 @@ void HexTile::CheckRoundPattern()
 	{
 		adjacentHexTile = _adjacentTiles[index];
 
-		if (adjacentHexTile->takenEntity == takenEntity || !adjacentHexTile->takenEntity || takenEntity == adjacentHexTile->occupyingEntity)
+		if (adjacentHexTile->ownerEntity == ownerEntity || !adjacentHexTile->ownerEntity || ownerEntity == adjacentHexTile->occupyingEntity)
 		{
 			processedTaken = nullptr;
 			break;
@@ -268,9 +273,9 @@ void HexTile::CheckRoundPattern()
 
 		if (!processedTaken)
 		{
-			processedTaken = adjacentHexTile->takenEntity;
+			processedTaken = adjacentHexTile->ownerEntity;
 		}
-		else if (processedTaken != adjacentHexTile->takenEntity)
+		else if (processedTaken != adjacentHexTile->ownerEntity)
 		{
 			processedTaken = nullptr;
 			break;
@@ -279,18 +284,10 @@ void HexTile::CheckRoundPattern()
 
 	if (processedTaken)
 	{
-		if (takenEntity)
-		{
-			takenEntity->OwnTiles.remove(this);
-		}
-	
-		takenEntity = processedTaken;
+		SetOwnerEntity(processedTaken);
 		state = TileState::TAKEN;
-		takenEntity->OwnTiles.push_back(this);
 		percentage = 100.0f;
 		UpdateTileColor();
-		UpdateBorderColor();
-		UpdateBorders();
 	}
 }
 
@@ -372,16 +369,7 @@ void HexTile::ResetTile()
 	state = TileState::NONE;
 	UpdateTileColor();
 	UpdateBorderColor();
-	
-	for (size_t i = 0; i < 6; ++i)
-	{
-		if (borders[i]->GetActive())
-			borders[i]->SetActive(false);
-		if (borderJoints[i * 2]->GetActive())
-			borderJoints[i * 2]->SetActive(false);
-		if (borderJoints[(i * 2) + 1]->GetActive())
-			borderJoints[(i * 2) + 1]->SetActive(false);
-	}
+	UpdateBorders();
 }
 
 void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
@@ -449,7 +437,7 @@ void HexTile::StopTakingOver(Playable* entity)
 {
 	if ((state == TileState::OCCUPIED || state == TileState::REMOTE_OCCUPYING) && occupyingEntity == entity) {
 		occupyingEntity = nullptr;
-		if (takenEntity != nullptr) {
+		if (ownerEntity != nullptr) {
 			state = TileState::TAKEN;
 		}
 		else {
@@ -544,10 +532,10 @@ void HexTile::DrawEditor()
 		ImGui::Checkbox("IsFighting", &isFighting);
 		ImGui::EndDisabled();
 
-		ImGui::TextUnformatted("TakenEntity: ");
+		ImGui::TextUnformatted("OwnerEntity: ");
 		ImGui::SameLine();
 		ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
-		ImGui::Text("%s", takenEntity != nullptr ? takenEntity->GetGameObject()->GetName().append("/").append(std::to_string(takenEntity->GetGameObject()->Id())).c_str() : "None");
+		ImGui::Text("%s", ownerEntity != nullptr ? ownerEntity->GetGameObject()->GetName().append("/").append(std::to_string(ownerEntity->GetGameObject()->Id())).c_str() : "None");
 		ImGui::PopFont();
 		ImGui::TextUnformatted("OccupyingEntity: ");
 		ImGui::SameLine();

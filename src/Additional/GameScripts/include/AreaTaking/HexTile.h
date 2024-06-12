@@ -118,6 +118,7 @@ public:
 	void StopTakingOver(Playable* entity);
 	void StartRemotelyTakingOver(Playable* entity, float multiplier = 1.0f);
 	void StopRemotelyTakingOver(Playable* entity);
+	int GetStage() const;
 
 	Generation::MapHexTile* GetMapHexTile() const;
 

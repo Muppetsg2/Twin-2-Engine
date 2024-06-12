@@ -42,6 +42,7 @@ void PopularityGainingBonusBarController::SetCurrentBonus(float bonus)
 	_currentBonusCurrentLength = _currentBonus / _maxBonus * _maxLength;
 	_currentBonusBar->SetWidth(_currentBonusCurrentLength);
 	_currentBonusBar->GetTransform()->SetLocalPosition(vec3((_currentBonusCurrentLength - _maxLength) * 0.5f, 0.0f, 0.0f));
+	_possibleBonusBar->GetTransform()->SetLocalPosition(vec3((_possibleBonusCurrentLength - _maxLength) * 0.5f + _currentBonusCurrentLength, 0.0f, 0.0f));
 }
 
 void PopularityGainingBonusBarController::AddCurrentBonus(float additionalCurrentBonus)
@@ -51,6 +52,7 @@ void PopularityGainingBonusBarController::AddCurrentBonus(float additionalCurren
 	_currentBonusCurrentLength = _currentBonus / _maxBonus * _maxLength;
 	_currentBonusBar->SetWidth(_currentBonusCurrentLength);
 	_currentBonusBar->GetTransform()->SetLocalPosition(vec3((_currentBonusCurrentLength - _maxLength) * 0.5f, 0.0f, 0.0f));
+	_possibleBonusBar->GetTransform()->SetLocalPosition(vec3((_possibleBonusCurrentLength - _maxLength) * 0.5f + _currentBonusCurrentLength, 0.0f, 0.0f));
 }
 
 void PopularityGainingBonusBarController::RemoveCurrentBonus(float removedCurrentBonus)
@@ -60,6 +62,7 @@ void PopularityGainingBonusBarController::RemoveCurrentBonus(float removedCurren
 	_currentBonusCurrentLength = _currentBonus / _maxBonus * _maxLength;
 	_currentBonusBar->SetWidth(_currentBonusCurrentLength);
 	_currentBonusBar->GetTransform()->SetLocalPosition(vec3((_currentBonusCurrentLength - _maxLength) * 0.5f, 0.0f, 0.0f));
+	_possibleBonusBar->GetTransform()->SetLocalPosition(vec3((_possibleBonusCurrentLength - _maxLength) * 0.5f + _currentBonusCurrentLength, 0.0f, 0.0f));
 }
 
 

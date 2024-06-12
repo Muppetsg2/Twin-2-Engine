@@ -668,7 +668,7 @@ void Player::DrawEditor()
     std::string name = std::string("Player##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str())) {
 
-        if (Component::DrawInheritedFields()) return;
+        if (Playable::DrawInheritedFields()) return;
 
         ImGui::ColorEdit4("AbilityActiveColor", (float*)(&_abilityActiveColor));
         ImGui::ColorEdit4("AbilityCooldownColor", (float*)(&_abilityCooldownColor));

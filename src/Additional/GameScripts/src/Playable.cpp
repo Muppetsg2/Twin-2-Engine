@@ -553,12 +553,21 @@ bool Playable::Deserialize(const YAML::Node& node)
     return true;
 }
 #if _DEBUG
+bool Playable::DrawInheritedFields()
+{
+    if (Component::DrawInheritedFields()) return true;
+
+    ImGui::Text("TakingOverSpeed: %f", TakeOverSpeed);
+
+    return false;
+}
+
 void Playable::DrawEditor()
 {
     string id = string(std::to_string(this->GetId()));
     string name = string("Playable##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str())) {
-        if (Component::DrawInheritedFields()) return;
+        if (Playable::DrawInheritedFields()) return;
 
         // TODO: Zrobic
     }

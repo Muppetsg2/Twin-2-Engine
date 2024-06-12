@@ -79,7 +79,7 @@ void ConcertAbilityController::StartPerformingConcert()
 
 void ConcertAbilityController::StopPerformingConcert()
 {
-    playable->TakeOverSpeed = savedTakingOverSpeed;
+    playable->TakeOverSpeed -= additionalTakingOverSpeed;
 
     OnEventAbilityFinished.Invoke(playable);
 

@@ -23,7 +23,7 @@ private:
 
     // Script Fields
     bool canUse = true;
-    float savedTakingOverSpeed = 0.0f;
+    //float savedTakingOverSpeed = 0.0f;
     float cooldownTime = 5.0f;
 
     // Performing Concert

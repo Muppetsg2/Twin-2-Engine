@@ -1,3 +1,4 @@
+#include "GameManager.h"
 #include <GameManager.h>
 #include <manager/SceneManager.h>
 #include <manager/PrefabManager.h>
@@ -301,6 +302,11 @@ void GameManager::StartGame()
 
     GameTimer::Instance()->StartTimer();
     gameStartUp = true;
+}
+
+Player* GameManager::GetPlayer() const
+{
+    return _player;
 }
 
 YAML::Node GameManager::Serialize() const

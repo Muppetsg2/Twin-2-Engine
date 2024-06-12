@@ -13,23 +13,39 @@
 using namespace Twin2Engine::Core;
 
 class ConcertRoad : public Component {
+        Prefab* _marker = nullptr;
+        std::vector<Playable*> _playables;
+
+        float maxMultiplier = 2.0f;
+        float minMultiplier = 1.0f;
+        float maxBonus = 20.0f;
+        float minBonus = 5.0f;
+        glm::vec4 bonusesPerStage = glm::vec4(0.0f, 5.0f, 12.0f, 20.0f);
+        float height = 1.0f;
+
 	public:
         static ConcertRoad* instance;
-        std::unordered_set<HexTile*> RoadMapPoints;
-        Prefab* Marker = nullptr;
+
+        struct ConcertRoadPoint
+        {
+            HexTile* hexTile;
+            Playable* owningPlayable;
+            float addedBonus;
+            float possibleBonus; // wa¿ne tylko z punktu widzenia Playera
+        };
+
+        std::vector<ConcertRoadPoint> RoadMapPoints;
+        //std::vector<HexTile*> RoadMapPoints;
         int NumberOfPoints = 3;
 
         bool ConsiderInfluenced = false;
 
         //TextMeshProUGUI textField;
 
-        std::vector<int> entityPoints;
-        std::vector<float> entityMultiplier;
 
-        float maxMultiplier = 2.0f;
-        float minMultiplier = 1.0f;
-        glm::vec4 mulPercentage = glm::vec4(0.0f, 30.0f, 60.0f, 90.0f);
-        float height = 1.0f;
+        //std::vector<int> entityPoints;
+        //std::vector<float> entityMultiplier;
+
 
 
         virtual void Initialize() override;

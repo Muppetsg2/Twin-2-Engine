@@ -35,6 +35,11 @@ class PlayerMovement : public Component {
 
 		HexTile* _pointedTile = nullptr;
 		HexTile* _checkedTile = nullptr;
+
+		AStar::AStarPath* _showedPath = nullptr;
+		std::vector<HexTile*> _showedPathTiles = std::vector<HexTile*>();
+
+
 		HexTile* destinatedTile = nullptr;
 
 		Twin2Engine::Core::GameObject* _playerDestinationMarker = nullptr;

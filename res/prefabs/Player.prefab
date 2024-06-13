@@ -69,7 +69,7 @@ Root:
       nextWaypointDistance: 0.05
       heightOverSurface: 0
       prefabPlayerDestinationMarker: 0
-      destinationMarkerHeightOverSurface: 0.5
+      destinationMarkerHeightOverSurface: 0.2
     - id: 4
       enabled: true
       type: ConcertAbilityController

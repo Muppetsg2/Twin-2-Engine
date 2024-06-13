@@ -394,6 +394,7 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
     //SceneManager::AddScene("testScene", "res/scenes/ToonShading.scene");
     //SceneManager::AddScene("testScene", "res/scenes/HexTileEditScene.scene");
+    //SceneManager::AddScene("testScene", new Scene());
     SceneManager::LoadScene("testScene");
     SceneManager::Update();
 

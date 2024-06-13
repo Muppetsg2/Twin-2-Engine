@@ -190,12 +190,6 @@ void Player::Initialize() {
     //FansControllGameManager::Instance().OnPlayerLoseEvent += [this]() { LostFansControl(nullptr); };
 }
 
-void Player::OnDestroy()
-{
-    if (PopularityGainingBonusBarController::Instance())
-        PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(TakeOverSpeed);
-}
-
 void Player::Update() {
     if (Input::IsKeyPressed(KEY::Z))
     {
@@ -375,6 +369,9 @@ void Player::OnDestroy()
 {
     Playable::OnDestroy();
 
+    if (PopularityGainingBonusBarController::Instance())
+        PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(TakeOverSpeed);
+
     // FANS EVENTS
     if (fansMeetingButton != nullptr) {
         if (fansMeetingButtonEventHandleId != -1) {
@@ -393,9 +390,16 @@ void Player::OnDestroy()
         fansMeetingButtonDestroyedEventHandleId = -1;
     }
 
-    if (concertButtonEventHandleId != -1 && concertButton != nullptr) {
-        concertButton->GetOnClickEvent() -= concertButtonEventHandleId;
-        concertButtonEventHandleId = -1;
+    if (concertButton != nullptr) {
+        if (concertButtonEventHandleId != -1) {
+            concertButton->GetOnClickEvent() -= concertButtonEventHandleId;
+            concertButtonEventHandleId = -1;
+        }
+
+        if (concertButtonHoveringEventHandleId != -1) {
+            concertButton->GetOnHoverEvent() -= concertButtonHoveringEventHandleId;
+            concertButtonHoveringEventHandleId = -1;
+        }
     }
 
     if (concertButtonDestroyedEventHandleId != -1 && concertButtonObject != nullptr) {
@@ -403,9 +407,17 @@ void Player::OnDestroy()
         concertButtonDestroyedEventHandleId = -1;
     }
 
-    if (albumButtonEventHandleId != -1 && albumButton != nullptr) {
-        albumButton->GetOnClickEvent() -= albumButtonEventHandleId;
-        albumButtonEventHandleId = -1;
+    if (albumButton != nullptr) {
+        if (albumButtonEventHandleId != -1) {
+            albumButton->GetOnClickEvent() -= albumButtonEventHandleId;
+            albumButtonEventHandleId = -1;
+        }
+
+
+        if (albumButtonHoveringEventHandleId != -1) {
+            albumButton->GetOnHoverEvent() -= albumButtonHoveringEventHandleId;
+            albumButtonHoveringEventHandleId = -1;
+        }
     }
 
     if (albumButtonDestroyedEventHandleId != -1 && albumButtonObject != nullptr) {

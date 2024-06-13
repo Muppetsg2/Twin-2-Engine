@@ -421,13 +421,14 @@ void SceneManager::LoadScene() {
 	}
 
 	// INIT COMPONENTS
-	for (const auto& compPair : _componentsById) {
+	auto componentsById_copy(_componentsById);
+	for (const auto& compPair : componentsById_copy) {
 		compPair.second->Initialize();
 	}
 #pragma endregion
 
 	// ENABLE COMPONENTS
-	for (const auto& compPair : _componentsById) {
+	for (const auto& compPair : componentsById_copy) {
 		if (compPair.second->_enabled)
 		{
 			compPair.second->OnEnable();

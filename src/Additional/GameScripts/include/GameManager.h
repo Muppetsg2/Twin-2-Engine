@@ -52,7 +52,7 @@ private:
     int _mapGenerationEventId = -1;
     Generation::MapGenerator* _mapGenerator;
     
-    ParticleGenerator* particleGenerator;
+    //ParticleGenerator* particleGenerator;
     Player* _player;
 public:
     static GameManager* instance;

@@ -34,7 +34,6 @@ class HexTile : public Twin2Engine::Core::Component
 	std::vector<HexTile*> _adjacentTiles;
 
 	
-	ParticleGenerator* paricleGeneartor;
 	//Twin2Engine::Core::GameObject* affected;
 
 	void TakeOver();
@@ -45,6 +44,7 @@ class HexTile : public Twin2Engine::Core::Component
 	void CheckRoundPattern();
 public:
 	HexTileTextureData* texturesData;
+	ParticleGenerator* particleGenerator;
 
 
 	bool isFighting = false;

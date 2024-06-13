@@ -32,10 +32,9 @@ void HexTile::TakeOver()
 
 	if (ownerEntity != nullptr && ownerEntity != occupyingEntity) {
 		percentage -= Time::GetDeltaTime() * takeOverSpeed;
-		if (percentage <= 0.f) {
+		if (percentage <= _takingStage1) {
 			percentage = 0.f;
 			SetOwnerEntity(nullptr); 
-			DisableAlbumAffected();
 		}
 	}
 	else {
@@ -347,6 +346,8 @@ void HexTile::Initialize()
 		if (borderJoints[(i * 2) + 1]->GetActive())
 			borderJoints[(i * 2) + 1]->SetActive(false);
 	}
+
+	particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/ArrowParticle.png", 7, 0.75f, 0.0f, 4.0f, 2.0f, 0.12f, 0.15f, 0.4f);
 }
 
 void HexTile::OnDestroy()
@@ -364,7 +365,9 @@ void HexTile::OnDestroy()
 		SPDLOG_WARN("Concert Road Instance was nullptr!");
 	texturesData = nullptr;
 
-	delete paricleGeneartor;
+	if (particleGenerator != nullptr) {
+		delete particleGenerator;
+	}
 }
 
 void HexTile::Update()
@@ -410,8 +413,12 @@ void HexTile::InitializeAdjacentTiles()
 
 	_adjacentTiles.shrink_to_fit();
 
-	//paricleGeneartor->startPosition = glm::vec4(GetTransform()->GetGlobalPosition(), 1.0f);
-	//paricleGeneartor->active = true;
+	particleGenerator->SetStartPosition(GetTransform()->GetGlobalPosition());
+	//particleGenerator->active = true;
+	
+	//GetGameObject()->OnActiveChangedEvent.AddCallback([&](GameObject* go) {
+	//		particleGenerator->active = go->GetActive();
+	//	});
 }
 
 void HexTile::ResetTile()
@@ -436,6 +443,7 @@ void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 				t->UpdateBorders();
 			}
 		}
+		DisableAlbumAffected();
 		ownerEntity = newOwnerEntity;
 		if (ownerEntity != nullptr) {
 			ownerEntity->OwnTiles.push_back(this);
@@ -478,12 +486,12 @@ void HexTile::DisableAffected()
 
 void HexTile::EnableAlbumAffected()
 {
-	// TODO: Tu ma byæ w³¹czenie particle systemu.
+	particleGenerator->active = true;
 }
 
 void HexTile::DisableAlbumAffected()
 {
-	// TODO: Tu ma byæ wy³¹czenie particle systemu.
+	particleGenerator->active = false;
 }
 
 void HexTile::BadNote()

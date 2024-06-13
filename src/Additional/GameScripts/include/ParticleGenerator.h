@@ -32,12 +32,17 @@ class ParticleGenerator
 public:
     glm::vec4 startPosition = glm::vec4(0.0f, 2.0f, 0.0f, 1.0f);
     float maxLife = 3.0f;
+    float generationRadius = 3.0f;
+    GLuint textureId;
+    Shader* shader;
     bool active = false;
 
     // constructor
-    ParticleGenerator(std::string shaderName, std::string textureName, unsigned int amount, float height, float distance, float time, float maxLife, float particleW, float particleH);
+    ParticleGenerator(const std::string& shaderName, const std::string& textureName, unsigned int amount, float height, float distance, float time, float maxLife, float particleW, float particleH, float generationRadius);
+    ParticleGenerator(const std::string& shaderName, GLuint& textureId, unsigned int amount, float height, float distance, float time, float maxLife, float particleW, float particleH, float generationRadius);
     ~ParticleGenerator();
     // update all particles
+    void SetStartPosition(glm::vec3 newPosition);
     void Update();
     // render all particles
     void Draw();
@@ -46,15 +51,14 @@ private:
     std::vector<Particle*> particles;
     std::vector<glm::vec4> particlesPos;
     unsigned int amount;
-    Shader* shader;
-    Texture2D* texture;
     unsigned int VAO;
     unsigned int VBO;
-    unsigned int ParcticleSSBO;
 
     float horizontalVel = 0.5f;
     float g = 0.5f;
     float verticalVel = 0.5f;
+
+    void init(float height, float distance, float time, float particleW, float particleH);
 };
 
 #endif

@@ -314,7 +314,7 @@ void MovingState::Enter(Enemy* enemy)
 	size_t ofmId = (enemy->_movement->OnFinishMoving += [enemy](GameObject* gameObject, HexTile* tile) {
 		enemy->CurrTile = tile;
 
-		if (tile->occupyingEntity != nullptr && tile->occupyingEntity != enemy) {
+		if (tile->occupyingEntity != nullptr && tile->occupyingEntity != enemy && tile->state == TileState::OCCUPIED) {
 			tile->StartTakingOver(enemy);
 			enemy->ChangeState(&enemy->_fightingState);
 		}

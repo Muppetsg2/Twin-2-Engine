@@ -90,7 +90,6 @@ public:
     Playable* fightingPlayable = nullptr;
 
     virtual void Initialize() override;
-    virtual void OnDestroy() override;
     virtual void Update() override;
     virtual void OnDestroy() override;
     void StartPlayer(HexTile* startUpTile);

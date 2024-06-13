@@ -580,19 +580,15 @@ void Player::WonPaperRockScissors(Playable* playable) {
     GameManager::instance->minigameActive = false;
     CurrTile->isFighting = false;
 
-    //bool finishMovement = CurrTile->occupyingEntity == playable;
-
     playable->LostPaperRockScissors(this);
 
     if (CurrTile->ownerEntity == playable) {
         CurrTile->ResetTile();
     }
 
-    playable->CheckIfDead(this);
+    //playable->CheckIfDead(this);
 
     FinishMove(CurrTile);
-    //if (finishMovement) {
-    //}
     fightingPlayable = nullptr;
     minigameChoice = MinigameRPS_Choice::NONE;
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #define MAX_LOG_DRAW 500
-#define COLLAPSE 0
+#define COLLAPSE 2
 
 namespace Editor::Common
 {

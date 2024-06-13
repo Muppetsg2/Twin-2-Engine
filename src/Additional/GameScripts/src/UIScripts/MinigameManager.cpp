@@ -155,107 +155,6 @@ void MinigameManager::SetupButtons()
 		});
 }
 
-//void MinigameManager::PerformTurn()
-//{
-//	////float chanceForEnemyWin = 66.0f * (float)enemyFieldsNumber / (float)(enemyFieldsNumber + playerFieldsNumber);
-	////float chanceForEnemyLost = 66.0f * (float)playerFieldsNumber / (float)(enemyFieldsNumber + playerFieldsNumber);
-	////float percantage = Random::Range(0.0f, 100.0f);
-	//float chance = Random::Range(0.0f, 1.0f);
-	//float drawchance = Random::Range(0.0f, 1.0f);
-	//float enemyLuckPoint = .1f * (enemyFieldsNumber - playerFieldsNumber) - 1.0f; // 1.0f;//
-	//
-	////else if (percantage >= (100.0f - chanceForEnemyLost)) {
-	////if (percantage <= chanceForEnemyWin) {
-	//if (chance <= (enemyLuckPoint + enemy->paperRockScisorsWinLuck)) {
-	//	switch (player->minigameChoice) {
-	//	case MinigameRPS_Choice::LAUNCHPAD:
-	//		enemy->minigameChoice = MinigameRPS_Choice::GUITAR;
-	//		enemyWins += 1;
-	//		PlayerSelectionImage->SetColor(glm::vec4(1.0f));
-	//		EnemySelectionImage->SetColor(glm::vec4(1.0f));
-	//		PlayerSelectionImage->SetSprite("Launchpad");
-	//		EnemySelectionImage->SetSprite("Guitar");
-	//		break;
-	//
-	//	case MinigameRPS_Choice::GUITAR:
-	//		enemy->minigameChoice = MinigameRPS_Choice::DRUM;
-	//		enemyWins += 1;
-	//		PlayerSelectionImage->SetColor(glm::vec4(1.0f));
-	//		EnemySelectionImage->SetColor(glm::vec4(1.0f));
-	//		PlayerSelectionImage->SetSprite("Guitar");
-	//		EnemySelectionImage->SetSprite("Drum");
-	//		break;
-	//
-	//	case MinigameRPS_Choice::DRUM:
-	//		enemy->minigameChoice = MinigameRPS_Choice::LAUNCHPAD;
-	//		enemyWins += 1;
-	//		PlayerSelectionImage->SetColor(glm::vec4(1.0f));
-	//		EnemySelectionImage->SetColor(glm::vec4(1.0f));
-	//		PlayerSelectionImage->SetSprite("Drum");
-	//		EnemySelectionImage->SetSprite("Launchpad");
-	//		break;
-	//	}
-	//}
-	//else if (chance > (enemyLuckPoint + enemy->paperRockScisorsDrawLuck)) {
-	//	switch (player->minigameChoice) {
-	//	case MinigameRPS_Choice::LAUNCHPAD:
-	//		enemy->minigameChoice = MinigameRPS_Choice::DRUM;
-	//		playerWins += 1;
-	//		PlayerSelectionImage->SetColor(glm::vec4(1.0f));
-	//		EnemySelectionImage->SetColor(glm::vec4(1.0f));
-	//		PlayerSelectionImage->SetSprite("Launchpad");
-	//		EnemySelectionImage->SetSprite("Drum");
-	//		break;
-	//
-	//	case MinigameRPS_Choice::GUITAR:
-	//		enemy->minigameChoice = MinigameRPS_Choice::LAUNCHPAD;
-	//		playerWins += 1;
-	//		PlayerSelectionImage->SetColor(glm::vec4(1.0f));
-	//		EnemySelectionImage->SetColor(glm::vec4(1.0f));
-	//		PlayerSelectionImage->SetSprite("Guitar");
-	//		EnemySelectionImage->SetSprite("Launchpad");
-	//		break;
-	//
-	//	case MinigameRPS_Choice::DRUM:
-	//		enemy->minigameChoice = MinigameRPS_Choice::GUITAR;
-	//		playerWins += 1;
-	//		PlayerSelectionImage->SetColor(glm::vec4(1.0f));
-	//		EnemySelectionImage->SetColor(glm::vec4(1.0f));
-	//		PlayerSelectionImage->SetSprite("Drum");
-	//		EnemySelectionImage->SetSprite("Guitar");
-	//		break;
-	//	}
-	//}
-	//else {
-	//	switch (player->minigameChoice) {
-	//	case MinigameRPS_Choice::LAUNCHPAD:
-	//		enemy->minigameChoice = MinigameRPS_Choice::LAUNCHPAD;
-	//		PlayerSelectionImage->SetColor(glm::vec4(1.0f));
-	//		EnemySelectionImage->SetColor(glm::vec4(1.0f));
-	//		PlayerSelectionImage->SetSprite("Launchpad");
-	//		EnemySelectionImage->SetSprite("Launchpad");
-	//		break;
-	//
-	//	case MinigameRPS_Choice::GUITAR:
-	//		enemy->minigameChoice = MinigameRPS_Choice::GUITAR;
-	//		PlayerSelectionImage->SetColor(glm::vec4(1.0f));
-	//		EnemySelectionImage->SetColor(glm::vec4(1.0f));
-	//		PlayerSelectionImage->SetSprite("Guitar");
-	//		EnemySelectionImage->SetSprite("Guitar");
-	//		break;
-	//
-	//	case MinigameRPS_Choice::DRUM:
-	//		enemy->minigameChoice = MinigameRPS_Choice::DRUM;
-	//		PlayerSelectionImage->SetColor(glm::vec4(1.0f));
-	//		EnemySelectionImage->SetColor(glm::vec4(1.0f));
-	//		PlayerSelectionImage->SetSprite("Drum");
-	//		EnemySelectionImage->SetSprite("Drum");
-	//		break;
-	//	}
-	//}
-//
-//}
-
 void MinigameManager::StartMinigame(Playable* chalanging, Playable* chalanged)
 {
 	chalanging->fightingPlayable = chalanged;
@@ -324,33 +223,7 @@ void MinigameManager::StartMinigame(Playable* chalanging, Playable* chalanged)
 	}
 
 
-
-	//int p1FieldsNumber = 3;
-	//int p2FieldsNumber = 3;
-	//for (int i = 0; i < 6; ++i) {
-	//	if (hexTilesGOs[i] != nullptr) {
-	//		owner = hexTilesGOs[i]->GetComponent<HexTile>()->ownerEntity;
-	//		if (chalanging == owner) {
-	//			p1FieldsNumber += 1;
-	//		}
-	//		else if (chalanged == owner) {
-	//			p2FieldsNumber += 1;
-	//		}
-	//	}
-	//}
-	//
-	//int totalNumber = p1FieldsNumber + p2FieldsNumber;
-	//if (Random::Range(0.0f, (float)totalNumber) <= (float)p1FieldsNumber) {
-	//	chalanging->WonPaperRockScissors(chalanged);
-	//	//chalanged->LostPaperRockScissors(chalanging);
-	//}
-	//else {
-	//	//chalanging->LostPaperRockScissors(chalanged);
-	//	chalanged->WonPaperRockScissors(chalanging);
-	//}
 	SPDLOG_INFO("Enemy has attacked Enemy!");
-	//Enemy* e = (Enemy*)chalanging;
-	//e->ChangeState(&Enemy::_fightingState);
 	Enemy* e = (Enemy*)chalanged;
 	e->ChangeState(&Enemy::_fightingState);
 	chalanging->minigameChoice = static_cast<MinigameRPS_Choice>(Random::Range<int>(1, 4));

@@ -27,14 +27,26 @@ namespace AStar
 	class AStarPathfindingInfo;
 }
 
+class Player;
+
 class PlayerMovement : public Component {
 	private:
+		Player* _player;
+
+		HexTile* _checkedTile = nullptr;
+
+		AStar::AStarPath* _showedPath = nullptr;
+		std::vector<HexTile*> _showedPathTiles = std::vector<HexTile*>();
+
+
 		HexTile* destinatedTile = nullptr;
 
-		glm::vec3 tempDest;
+
 		HexTile* tempDestTile;
+		glm::vec3 tempDest;
 
 		AStar::AStarPathfindingInfo _info;
+		AStar::AStarPathfindingInfo _checkingInfo;
 
 		AStar::AStarPath* _path = nullptr;
 		Tilemap::HexagonalTilemap* _tilemap = nullptr;
@@ -44,10 +56,16 @@ class PlayerMovement : public Component {
 
 		bool InCircle(glm::vec3 point);
 		void SetDestination(HexTile* dest);
+		void CheckDestination(HexTile* dest);
+		void OnCheckPathComplete(const AStar::AStarPath& p);
+		void OnCheckPathFailure();
 		void DrawCircle(int steps, float radius);
 		void DrawLine(glm::vec3 startPos, glm::vec3 endPos);
 			
 	public:
+		Twin2Engine::Core::GameObject* _playerDestinationMarker = nullptr;
+		HexTile* _pointedTile = nullptr;
+		float _destinationMarkerHeightOverSurface = 0.5f;
 		//Moving
 
 		bool reachEnd = true;

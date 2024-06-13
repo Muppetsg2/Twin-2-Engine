@@ -89,7 +89,6 @@ void Enemy::WonPaperRockScissors(Playable* playable)
     //if (startTakingOver) {
     //    CurrTile->StartTakingOver(this);
     //}
-
     // TakeOver
     //enemyStrategy.WonPaperRockScisors(this);
 }
@@ -134,7 +133,7 @@ void Enemy::DrawEditor()
     std::string name = std::string("Enemy##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str())) {
 
-        if (Component::DrawInheritedFields()) return;
+        if (Playable::DrawInheritedFields()) return;
 
         // TODO: Zrobic
     }

@@ -1,4 +1,3 @@
-#include "Player.h"
 #include <Player.h>
 #include <manager/SceneManager.h>
 #include <Abilities/ConcertAbilityController.h>
@@ -8,11 +7,6 @@ using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Physic;
 using namespace Twin2Engine::UI;
-
-
-
-
-
 
 void Player::Initialize() {
     Playable::Initialize();
@@ -33,6 +27,7 @@ void Player::Initialize() {
     albumCircleImage = SceneManager::FindObjectByName("albumCircle")->GetComponent<Image>();
 
     albumButtonEventHandleId = albumButton->GetOnClickEvent() += [&]() { AlbumCall(); };
+    albumButtonHoveringEventHandleId = albumButton->GetOnHoverEvent() += [&]() { isHoveringAlbumButton = true; };
 
     albumButtonDestroyedEventHandleId = albumButtonObject->OnDestroyedEvent += [&](GameObject* gameObject) {
         if (albumButton)
@@ -73,7 +68,7 @@ void Player::Initialize() {
     fansMeetingCircleImage = SceneManager::FindObjectByName("fansMeetingCircle")->GetComponent<Image>();
 
     fansMeetingButtonEventHandleId = fansMeetingButton->GetOnClickEvent() += [&]() { FansMeetingCall(); };
-    fansMeetingButtonHoveringEventHandleId = fansMeetingButton->GetOnHoverEvent() += [&]() { isHoveringButton = true; };
+    fansMeetingButtonHoveringEventHandleId = fansMeetingButton->GetOnHoverEvent() += [&]() { isHoveringFansMeetingButton = true; };
 
     fansMeetingButtonDestroyedEventHandleId = fansMeetingButtonObject->OnDestroyedEvent += [&](GameObject* gameObject) {
         if (fansMeetingButton)
@@ -115,6 +110,7 @@ void Player::Initialize() {
     concertCircleImage = SceneManager::FindObjectByName("concertCircle")->GetComponent<Image>();
 
     concertButtonEventHandleId = concertButton->GetOnClickEvent() += [&]() { ConcertCall(); };
+    concertButtonHoveringEventHandleId = concertButton->GetOnHoverEvent() += [&]() { isHoveringConcertButton = true; };
 
     concertButtonDestroyedEventHandleId = concertButtonObject->OnDestroyedEvent += [&](GameObject* gameObject) {
             if (concertButton)
@@ -136,6 +132,10 @@ void Player::Initialize() {
         concertCircleImage->GetGameObject()->SetActive(true);
     };
 
+    concertAbility->OnEventAbilityFinished += [&](Playable* playable) -> void {
+        PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(concertAbility->GetAdditionalTakingOverSpeed());
+    };
+    
     concertAbility->OnEventAbilityCooldownStarted += [&](Playable* playable) -> void {
         concertCircleImage->SetColor(_abilityCooldownColor);
     };
@@ -190,28 +190,41 @@ void Player::Initialize() {
     //FansControllGameManager::Instance().OnPlayerLoseEvent += [this]() { LostFansControl(nullptr); };
 }
 
+void Player::OnDestroy()
+{
+    if (PopularityGainingBonusBarController::Instance())
+        PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(TakeOverSpeed);
+}
+
 void Player::Update() {
     if (Input::IsKeyPressed(KEY::Z))
     {
         SPDLOG_INFO("Using Album");
-        UseAlbum();
+        AlbumCall();
     }
     if (Input::IsKeyPressed(KEY::X))
     {
         SPDLOG_INFO("Using Fans");
-        UseFans();
+        FansMeetingCall();
+    }
+    if (Input::IsKeyPressed(KEY::C))
+    {
+        SPDLOG_INFO("Using Concert");
+        ConcertCall();
     }
 
     // CONCERT ABILITY UI MANAGEMENT
-    if (concertAbility->GetAbilityRemainingTime() > 0.0f)
+    if (concertAbility->IsUsed())
     {
         concertCircleImage->SetFillProgress(100.0f - concertAbility->GetAbilityRemainingTime() / concertAbility->lastingTime * 100.0f);
-        concertText->SetText(std::wstring((L"Concert: " + std::to_wstring(static_cast<int>(concertAbility->GetAbilityRemainingTime())) + L"s")));
+        //concertText->SetText(std::wstring((L"Concert: " + std::to_wstring(static_cast<int>(concertAbility->GetAbilityRemainingTime())) + L"s")));
+        concertText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(concertAbility->GetAbilityRemainingTime())))));
     }
-    else if (concertAbility->GetCooldownRemainingTime() > 0.0f)
+    else if (concertAbility->IsOnCooldown())
     {
         concertCircleImage->SetFillProgress(concertAbility->GetCooldownRemainingTime() / concertAbility->GetCooldown() * 100.0f);
-        concertText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(concertAbility->GetCooldownRemainingTime())) + L"s")));
+        //concertText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(concertAbility->GetCooldownRemainingTime())) + L"s")));
+        concertText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(concertAbility->GetCooldownRemainingTime())))));
     }
     else
     {
@@ -240,12 +253,14 @@ void Player::Update() {
         if (currAlbumTime > 0.0f)
         {
             albumCircleImage->SetFillProgress(100.0f - currAlbumTime / albumTime * 100.0f);
-            albumText->SetText(std::wstring((L"Album: " + std::to_wstring(static_cast<int>(currAlbumTime)) + L"s")));
+            //albumText->SetText(std::wstring((L"Album: " + std::to_wstring(static_cast<int>(currAlbumTime)) + L"s")));
+            albumText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currAlbumTime)))));
         }
         else if (currAlbumCooldown > 0.0f)
         {
             albumCircleImage->SetFillProgress(currAlbumCooldown / usedAlbumCooldown * 100.0f);
-            albumText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currAlbumCooldown)) + L"s")));
+            //albumText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currAlbumCooldown)) + L"s")));
+            albumText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currAlbumCooldown)))));
         }
         else
         {
@@ -264,12 +279,14 @@ void Player::Update() {
         if (currFansTime > 0.0f)
         {
             fansMeetingCircleImage->SetFillProgress(100.0f - currFansTime / fansTime * 100.0f);
-            fansMeetingText->SetText(std::wstring((L"Fans Meeting: " + std::to_wstring(static_cast<int>(currFansTime)) + L"s")));
+            //fansMeetingText->SetText(std::wstring((L"Fans Meeting: " + std::to_wstring(static_cast<int>(currFansTime)) + L"s")));
+            fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currFansTime)))));
         }
         else if (currFansCooldown > 0.0f)
         {
             fansMeetingCircleImage->SetFillProgress(currFansCooldown / usedFansCooldown * 100.0f);
-            fansMeetingText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currFansCooldown)) + L"s")));
+            //fansMeetingText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currFansCooldown)) + L"s")));
+            fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currFansCooldown)))));
         }
         else
         {
@@ -282,18 +299,57 @@ void Player::Update() {
             fansMeetingButton->SetInteractable(true);
             fansMeetingText->SetText(std::wstring((L"Fans Meeting\n" + std::to_wstring(static_cast<int>(fansRequiredMoney)) + L"$")));
         }
-
+        
         if (GameManager::instance->gameStarted)
         {
-            if (isHoveringButton && !isShowingAffectedTiles)
+            // FANS MEETING INTERFACE ELEMENT
+            if (isHoveringFansMeetingButton && !isShowingFansMeetingAffectedTiles)
             {
                 ShowAffectedTiles();
             }
-            else if (!isHoveringButton && isShowingAffectedTiles)
+            else if (!isHoveringFansMeetingButton && isShowingFansMeetingAffectedTiles)
             {
                 HideAffectedTiles();
             }
-            isHoveringButton = false;
+            isHoveringFansMeetingButton = false;
+
+            // CONCERT INTERFACE ELEMENT
+            if (!concertAbility->IsUsed() && !concertAbility->IsOnCooldown())
+            {
+                if (isHoveringConcertButton && !isShowingConcertPossible)
+                {
+                    PopularityGainingBonusBarController::Instance()->AddPossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
+                    isShowingConcertPossible = true;
+                }
+                else if (!isHoveringConcertButton && isShowingConcertPossible)
+                {
+                    PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
+                    isShowingConcertPossible = false;
+                }
+                isHoveringConcertButton = false;
+            }
+
+            // ALBUM INTERFACE ELEMENT
+            if (currAlbumTime <= 0.0f && currAlbumCooldown <= 0.0f)
+            {
+                if (isHoveringAlbumButton && !isShowingAlbumPossible)
+                {
+                    for (HexTile* tile : OwnTiles)
+                    {
+                        tile->EnableAlbumAffected();
+                    }
+                    isShowingAlbumPossible = true;
+                }
+                else if (!isHoveringAlbumButton && isShowingAlbumPossible)
+                {
+                    for (HexTile* tile : OwnTiles)
+                    {
+                        tile->DisableAlbumAffected();
+                    }
+                    isShowingAlbumPossible = false;
+                }
+                isHoveringAlbumButton = false;
+            }
         }
 
         if (move != nullptr) {
@@ -361,6 +417,8 @@ void Player::OnDestroy()
 void Player::StartPlayer(HexTile* startUpTile)
 {
     move->StartUp(startUpTile);
+
+    PopularityGainingBonusBarController::Instance()->AddCurrentBonus(TakeOverSpeed);
 }
 
 void Player::AlbumCall() {
@@ -368,6 +426,10 @@ void Player::AlbumCall() {
         currAlbumTime = albumTime;
         albumButton->SetInteractable(false);
         UseAlbum();
+    }
+    else {
+        audioComponent->SetAudio("res/music/Abilities/NotEnoughtRes.mp3");
+        audioComponent->Play();
     }
 }
 
@@ -377,6 +439,10 @@ void Player::FansMeetingCall() {
         fansMeetingButton->SetInteractable(false);
         UseFans();
     }
+    else {
+        audioComponent->SetAudio("res/music/Abilities/NotEnoughtRes.mp3");
+        audioComponent->Play();
+    }
 }
 
 void Player::ConcertCall() {
@@ -384,13 +450,21 @@ void Player::ConcertCall() {
     if (concertAbility->Use())
     {
         concertButton->SetInteractable(false);
+        PopularityGainingBonusBarController::Instance()->AddCurrentBonus(concertAbility->GetAdditionalTakingOverSpeed());
+        PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
+        isShowingConcertPossible = false;
+        isHoveringConcertButton = false;
+    }
+    else {
+        audioComponent->SetAudio("res/music/Abilities/NotEnoughtRes.mp3");
+        audioComponent->Play();
     }
 }
 
 void Player::ShowAffectedTiles() {
 
     float usedRadius = fansRadius;
-    isShowingAffectedTiles = true;
+    isShowingFansMeetingAffectedTiles = true;
 
     if (patron->GetPatronBonus() == PatronBonus::ABILITIES_RANGE) {
         usedRadius += patron->GetBonus();
@@ -438,7 +512,7 @@ void Player::HideAffectedTiles() {
     }
     affectedTiles.clear();
 
-    isShowingAffectedTiles = false;
+    isShowingFansMeetingAffectedTiles = false;
 }
 
 void Player::StartMove(HexTile* tile) {
@@ -637,7 +711,7 @@ void Player::DrawEditor()
     std::string name = std::string("Player##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str())) {
 
-        if (Component::DrawInheritedFields()) return;
+        if (Playable::DrawInheritedFields()) return;
 
         ImGui::ColorEdit4("AbilityActiveColor", (float*)(&_abilityActiveColor));
         ImGui::ColorEdit4("AbilityCooldownColor", (float*)(&_abilityCooldownColor));

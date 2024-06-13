@@ -32,9 +32,9 @@ void HexTile::TakeOver()
 
 	if (ownerEntity != nullptr && ownerEntity != occupyingEntity) {
 		percentage -= Time::GetDeltaTime() * takeOverSpeed;
-		if (percentage <= 0.f) {
+		if (percentage <= _takingStage1) {
 			percentage = 0.f;
-			SetOwnerEntity(nullptr);
+			SetOwnerEntity(nullptr); 
 		}
 	}
 	else {
@@ -108,6 +108,22 @@ void HexTile::UpdateTileColor()
 			_meshRenderer->SetMaterial(0ull, texturesData->GetMaterial(col, 3ull));
 		}
 	}
+}
+int HexTile::GetStage() const
+{
+	if (percentage < _takingStage1)
+	{
+		return 0;
+	}
+	else if (percentage < _takingStage2)
+	{
+		return 1;
+	}
+	else if (percentage < _takingStage3)
+	{
+		return 2;
+	}
+	return 3;
 }
 
 void HexTile::UpdateBorderColor()
@@ -287,7 +303,10 @@ void HexTile::CheckRoundPattern()
 	{
 		adjacentHexTile = _adjacentTiles[index];
 
-		if (adjacentHexTile->ownerEntity == ownerEntity || !adjacentHexTile->ownerEntity || ownerEntity == adjacentHexTile->occupyingEntity)
+		if (adjacentHexTile->ownerEntity == ownerEntity 
+			|| (occupyingEntity && adjacentHexTile->ownerEntity != occupyingEntity) 
+			|| !adjacentHexTile->ownerEntity 
+			|| ownerEntity == adjacentHexTile->occupyingEntity)
 		{
 			processedTaken = nullptr;
 			break;
@@ -308,7 +327,10 @@ void HexTile::CheckRoundPattern()
 	{
 		SetOwnerEntity(processedTaken);
 		state = TileState::TAKEN;
-		percentage = 100.0f;
+		if (percentage < _takingStage1)
+			percentage = 0.5f * (_takingStage1 + _takingStage2);
+		//percentage = 100.0f;
+		DisableAlbumAffected();
 		UpdateTileColor();
 	}
 }
@@ -327,17 +349,28 @@ void HexTile::Initialize()
 		if (borderJoints[(i * 2) + 1]->GetActive())
 			borderJoints[(i * 2) + 1]->SetActive(false);
 	}
+
+	particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/ArrowParticle.png", 7, 0.75f, 0.0f, 4.0f, 2.0f, 0.12f, 0.15f, 0.4f);
 }
 
 void HexTile::OnDestroy()
 {
 	if (ConcertRoad::instance != nullptr)
-		ConcertRoad::instance->RoadMapPoints.erase(this);
+	{
+		auto found = std::find_if(ConcertRoad::instance->RoadMapPoints.begin(),
+								  ConcertRoad::instance->RoadMapPoints.end(),
+								  [&](const ConcertRoad::ConcertRoadPoint& point) -> bool { return point.hexTile == this; });
+
+		if (found != ConcertRoad::instance->RoadMapPoints.end())
+			ConcertRoad::instance->RoadMapPoints.erase(found);
+	}
 	else 
 		SPDLOG_WARN("Concert Road Instance was nullptr!");
 	texturesData = nullptr;
 
-	delete paricleGeneartor;
+	if (particleGenerator != nullptr) {
+		delete particleGenerator;
+	}
 }
 
 void HexTile::Update()
@@ -383,8 +416,12 @@ void HexTile::InitializeAdjacentTiles()
 
 	_adjacentTiles.shrink_to_fit();
 
-	//paricleGeneartor->startPosition = glm::vec4(GetTransform()->GetGlobalPosition(), 1.0f);
-	//paricleGeneartor->active = true;
+	particleGenerator->SetStartPosition(GetTransform()->GetGlobalPosition());
+	//particleGenerator->active = true;
+	
+	//GetGameObject()->OnActiveChangedEvent.AddCallback([&](GameObject* go) {
+	//		particleGenerator->active = go->GetActive();
+	//	});
 }
 
 void HexTile::ResetTile()
@@ -409,6 +446,7 @@ void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 				t->UpdateBorders();
 			}
 		}
+		DisableAlbumAffected();
 		ownerEntity = newOwnerEntity;
 		if (ownerEntity != nullptr) {
 			ownerEntity->OwnTiles.push_back(this);
@@ -416,6 +454,8 @@ void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 			{
 				t->UpdateBorders();
 			}
+
+			particleGenerator->active = ownerEntity->OwnTiles.front()->particleGenerator->active;
 		}
 
 		UpdateBorderColor();
@@ -447,6 +487,16 @@ void HexTile::EnableAffected()
 void HexTile::DisableAffected()
 {
 	GetTransform()->GetChildAt(0ull)->GetGameObject()->SetActive(false);
+}
+
+void HexTile::EnableAlbumAffected()
+{
+	particleGenerator->active = true;
+}
+
+void HexTile::DisableAlbumAffected()
+{
+	particleGenerator->active = false;
 }
 
 void HexTile::BadNote()

@@ -3488,3 +3488,136 @@ GameObjects:
         worldSpace: false
     children:
       []
+  - id: 59
+    name: PopularityGainingBonusBar
+    isStatic: false
+    isActive: true
+    transform:
+      id: 141
+      position:
+        x: 0
+        y: 468
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 142
+        enabled: true
+        type: Image
+        isTransparent: false
+        color:
+          x: 0.196911216
+          y: 0.196911216
+          z: 0.196911216
+          w: 1
+        width: 400
+        height: 50
+        layer: 0
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 143
+        enabled: true
+        type: Image
+        isTransparent: false
+        color:
+          x: 0.35135138
+          y: 0.35135138
+          z: 0.35135138
+          w: 1
+        width: 380
+        height: 30
+        layer: 0
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 144
+        enabled: true
+        type: PopularityGainingBonusBarController
+        maxBonus: 100
+        maxLength: 380
+    children:
+      - 60
+      - 61
+  - id: 60
+    name: CurrentBonusBar
+    isStatic: false
+    isActive: true
+    transform:
+      id: 145
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 146
+        enabled: true
+        type: Image
+        isTransparent: false
+        color:
+          x: 1
+          y: 0
+          z: 0
+          w: 1
+        width: 0
+        height: 30
+        layer: 0
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 61
+    name: PossibleBonusBar
+    isStatic: false
+    isActive: true
+    transform:
+      id: 147
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 148
+        enabled: true
+        type: Image
+        isTransparent: true
+        color:
+          x: 1
+          y: 0
+          z: 0
+          w: 0.431372553
+        width: 0
+        height: 30
+        layer: 0
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []

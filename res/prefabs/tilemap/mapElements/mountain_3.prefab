@@ -88,7 +88,7 @@ GameObjects:
       - id: 7
         enabled: true
         type: MeshRenderer
-        isTransparent: false
+        isTransparent: true
         model: 1
         materials:
           - 0
@@ -127,7 +127,7 @@ GameObjects:
       - id: 10
         enabled: true
         type: MeshRenderer
-        isTransparent: false
+        isTransparent: true
         model: 1
         materials:
           - 0
@@ -166,7 +166,7 @@ GameObjects:
       - id: 13
         enabled: true
         type: MeshRenderer
-        isTransparent: false
+        isTransparent: true
         model: 1
         materials:
           - 0

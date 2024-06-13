@@ -1,3 +1,4 @@
+#include "GameManager.h"
 #include <GameManager.h>
 #include <manager/SceneManager.h>
 #include <manager/PrefabManager.h>
@@ -72,12 +73,13 @@ void GameManager::Initialize()
         Twin2Engine::Manager::SceneManager::DestroyGameObject(this->GetGameObject());
     }
 
-    particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/particle.png", 10, 0.0f, 0.5f, 2.0f, 1.8f, 0.1f, 0.1f);
-    particleGenerator->startPosition = glm::vec4(0.0f, 4.0f, 0.0f, 1.0f);
-    particleGenerator->active = true;
+    //particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/particle.png", 10, 1.0f, 0.0f, 3.0f, 1.5f, 0.1f, 0.1f, 0.5f);
+    //particleGenerator->startPosition = glm::vec4(0.0f, 4.0f, 0.0f, 1.0f);
+    //particleGenerator->active = true;
 }
 
 void GameManager::OnDestroy() {
+    //delete particleGenerator;
     if (this == instance)
     {
         instance = nullptr;
@@ -128,22 +130,67 @@ void GameManager::Update()
     }
 
 
-    if (gameStartUp && Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT))
+    //if (gameStartUp && Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT))
+    if (gameStartUp)
     {
         Ray ray = CameraComponent::GetMainCamera()->GetScreenPointRay(Input::GetCursorPos());// Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit raycastHit;
 
+        //if (CollisionManager::Instance()->Raycast(ray, raycastHit))
+        //{
+        //    HexTile* hexTile = raycastHit.collider->GetGameObject()->GetComponent<HexTile>();
+        //    MapHexTile* mapHexTile = hexTile->GetMapHexTile();
+        //    
+        //    if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && hexTile->currCooldown > 0.0f) && !hexTile->isFighting)
+        //    {
+        //        _player->StartPlayer(hexTile);
+        //        gameStartUp = false;
+        //    }
+        //    
+        //}
         if (CollisionManager::Instance()->Raycast(ray, raycastHit))
         {
+            SPDLOG_INFO("COL_ID: {}", raycastHit.collider->colliderId);
             HexTile* hexTile = raycastHit.collider->GetGameObject()->GetComponent<HexTile>();
-            MapHexTile* mapHexTile = hexTile->GetMapHexTile();
-            
-            if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && hexTile->currCooldown > 0.0f) && !hexTile->isFighting)
+
+            if (hexTile != _player->CurrTile && hexTile != _player->move->_pointedTile)
             {
-                _player->StartPlayer(hexTile);
-                gameStartUp = false;
+                if (hexTile)
+                {
+                    MapHexTile* mapHexTile = hexTile->GetMapHexTile();
+
+                    if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && hexTile->currCooldown > 0.0f) && !hexTile->isFighting)
+                    {
+                        _player->move->_pointedTile = hexTile;
+                        _player->move->_playerDestinationMarker->GetTransform()->SetGlobalPosition(
+                            _player->move->_pointedTile->GetTransform()->GetGlobalPosition() + vec3(0.0f, _player->move->_destinationMarkerHeightOverSurface, 0.0f));
+                        _player->move->_playerDestinationMarker->SetActive(true);
+                    }
+                    else
+                    {
+                        _player->move->_pointedTile = nullptr;
+                        _player->move->_playerDestinationMarker->SetActive(false);
+                    }
+                }
+                else
+                {
+                    _player->move->_pointedTile = nullptr;
+                    _player->move->_playerDestinationMarker->SetActive(false);
+                }
             }
-            
+
+            if (_player->move->_pointedTile && Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT))
+            {
+                _player->StartPlayer(_player->move->_pointedTile);
+                gameStartUp = false;
+                _player->move->_pointedTile = nullptr;
+                _player->move->_playerDestinationMarker->SetActive(false);
+            }
+        }
+        else
+        {
+            _player->move->_pointedTile = nullptr;
+            _player->move->_playerDestinationMarker->SetActive(false);
         }
     }
 }
@@ -176,6 +223,10 @@ GameObject *GameManager::GeneratePlayer()
     _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), playersPatron));
 
     p->GetGameObject()->GetComponent<MeshRenderer>()->SetMaterial(0ull, _carMaterials[p->colorIdx]);
+
+    _player->move->_playerDestinationMarker->GetComponent<MeshRenderer>()->AddMaterial(
+            _player->GetGameObject()->GetComponent<MeshRenderer>()->GetMaterial(0ull));
+
 
     entities.push_back(p);
 
@@ -301,6 +352,11 @@ void GameManager::StartGame()
 
     GameTimer::Instance()->StartTimer();
     gameStartUp = true;
+}
+
+Player* GameManager::GetPlayer() const
+{
+    return _player;
 }
 
 YAML::Node GameManager::Serialize() const

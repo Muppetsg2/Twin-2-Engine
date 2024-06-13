@@ -33,8 +33,8 @@ void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
             GameObject* tileObject = tile->GetGameObject();
             if (tileObject != nullptr)
             {
-                tileObject->SetIsStatic(true);
                 tileObject->GetComponent<HexTile>()->InitializeAdjacentTiles();
+                tileObject->SetIsStatic(true);
             }
         }
     }

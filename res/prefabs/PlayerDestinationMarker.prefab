@@ -1,0 +1,47 @@
+Textures:
+  - id: 0
+    path: res/textures/carTextures/blue.png
+    fileFormat: !<SRGB> 35904
+    engineFormat: !<RGB> 6407
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+Sprites: ~
+Fonts: ~
+Audio: ~
+Materials: ~
+Models:
+  - id: 0
+    path: res/models/car.obj
+Prefabs: ~
+ScriptableObjects: ~
+Root:
+  name: Player
+  isStatic: false
+  isActive: false
+  transform:
+    id: 0
+    enabled: true
+    position:
+      x: 0
+      y: 0
+      z: 0
+    scale:
+      x: 0.125
+      y: 0.125
+      z: 0.125
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+  components:
+    - id: 1
+      enabled: true
+      type: MeshRenderer
+      isTransparent: true
+      transparencyPriority: 1
+      model: 0
+      materials: []
+  children:
+    []

@@ -144,7 +144,7 @@ bool MeshRenderingManager::UnregisterStatic(Twin2Engine::Core::MeshRenderer* mes
 
 				auto& meshRenderingData = _renderQueueStaticTransparent[material->GetShader()][material][mesh];
 
-				size_t pos = 0;
+				size_t pos = meshRenderingData.meshRenderers.size();
 				for (size_t z = 0; z < meshRenderingData.meshRenderers.size(); ++z)
 				{
 					if (meshRenderingData.meshRenderers[z] == meshRenderer)
@@ -154,11 +154,18 @@ bool MeshRenderingManager::UnregisterStatic(Twin2Engine::Core::MeshRenderer* mes
 					}
 				}
 
-				if (meshRenderingData.meshRenderers.size() != 0) {
-					meshRenderingData.meshRenderers.erase(meshRenderingData.meshRenderers.cbegin() + pos);
+				if (meshRenderingData.meshRenderers.size() > pos) {
+					if ((meshRenderingData.meshRenderers.size() - 1ull) == pos)
+						meshRenderingData.meshRenderers.pop_back();
+					else
+						meshRenderingData.meshRenderers.erase(meshRenderingData.meshRenderers.cbegin() + pos);
+
 				}
-				if (meshRenderingData.modelTransforms.size() != 0) {
-					meshRenderingData.modelTransforms.erase(meshRenderingData.modelTransforms.cbegin() + pos);
+				if (meshRenderingData.modelTransforms.size() > pos) {
+					if ((meshRenderingData.modelTransforms.size() - 1ull) == pos)
+						meshRenderingData.modelTransforms.pop_back();
+					else
+						meshRenderingData.modelTransforms.erase(meshRenderingData.modelTransforms.cbegin() + pos);
 				}
 
 				if (meshRenderingData.meshRenderers.size() == 0) {
@@ -182,7 +189,7 @@ bool MeshRenderingManager::UnregisterStatic(Twin2Engine::Core::MeshRenderer* mes
 
 				auto& meshRenderingData = _renderQueueStatic[material->GetShader()][material][mesh];
 
-				size_t pos = 0;
+				size_t pos = meshRenderingData.meshRenderers.size();
 				for (size_t z = 0; z < meshRenderingData.meshRenderers.size(); ++z)
 				{
 					if (meshRenderingData.meshRenderers[z] == meshRenderer)
@@ -192,10 +199,10 @@ bool MeshRenderingManager::UnregisterStatic(Twin2Engine::Core::MeshRenderer* mes
 					}
 				}
 
-				if (meshRenderingData.meshRenderers.size() != 0) {
+				if (meshRenderingData.meshRenderers.size() > pos) {
 					meshRenderingData.meshRenderers.erase(meshRenderingData.meshRenderers.cbegin() + pos);
 				}
-				if (meshRenderingData.modelTransforms.size() != 0) {
+				if (meshRenderingData.modelTransforms.size() > pos) {
 					meshRenderingData.modelTransforms.erase(meshRenderingData.modelTransforms.cbegin() + pos);
 				}
 
@@ -595,7 +602,7 @@ bool MeshRenderingManager::RegisterDynamic(Twin2Engine::Core::MeshRenderer* mesh
 
 bool MeshRenderingManager::UnregisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer)
 {
-	if (meshRenderer->GetModel() != nullptr && meshRenderer->GetModel().GetMeshCount() != 0 && meshRenderer->GetMaterialCount() != 0 && !meshRenderer->IsMaterialError())
+	if (meshRenderer->GetModel() != nullptr && meshRenderer->GetModel().GetMeshCount() != 0 && meshRenderer->GetMaterialCount() != 0) // && !meshRenderer->IsMaterialError()
 	{
 		// MAMY WSZYSTKIE DANE WIEC PRZECHODZIMY PO KAZDYM MESHU I GO WYREJESTROWUJEMY
 		InstantiatingMesh* mesh;
@@ -607,8 +614,9 @@ bool MeshRenderingManager::UnregisterDynamic(Twin2Engine::Core::MeshRenderer* me
 
 				auto& meshRenderingData = _renderQueueDynamicTransparent[material->GetShader()][material][mesh];
 
-				size_t pos = 0;
-				for (size_t z = 0; z < meshRenderingData.meshRenderers.size(); ++z)
+				size_t pos = meshRenderingData.meshRenderers.size();
+				size_t size = meshRenderingData.meshRenderers.size();
+				for (size_t z = 0; z < size; ++z)
 				{
 					if (meshRenderingData.meshRenderers[z] == meshRenderer)
 					{
@@ -617,12 +625,25 @@ bool MeshRenderingManager::UnregisterDynamic(Twin2Engine::Core::MeshRenderer* me
 					}
 				}
 
-				if (meshRenderingData.meshRenderers.size() != 0) {
-					meshRenderingData.meshRenderers.erase(meshRenderingData.meshRenderers.cbegin() + pos);
+				if (meshRenderingData.meshRenderers.size() > pos) {
+					if ((meshRenderingData.meshRenderers.size() - 1ull) == pos)
+						meshRenderingData.meshRenderers.pop_back();
+					else
+						meshRenderingData.meshRenderers.erase(meshRenderingData.meshRenderers.cbegin() + pos);
+
 				}
-				if (meshRenderingData.modelTransforms.size() != 0) {
-					meshRenderingData.modelTransforms.erase(meshRenderingData.modelTransforms.cbegin() + pos);
+				if (meshRenderingData.modelTransforms.size() > pos) {
+					if ((meshRenderingData.modelTransforms.size() - 1ull) == pos)
+						meshRenderingData.modelTransforms.pop_back();
+					else
+						meshRenderingData.modelTransforms.erase(meshRenderingData.modelTransforms.cbegin() + pos);
 				}
+				//if (meshRenderingData.meshRenderers.size() > pos) {
+				//	meshRenderingData.meshRenderers.erase(meshRenderingData.meshRenderers.begin() + pos);
+				//}
+				//if (meshRenderingData.modelTransforms.size() > pos) {
+				//	meshRenderingData.modelTransforms.erase(meshRenderingData.modelTransforms.begin() + pos);
+				//}
 
 				if (meshRenderingData.meshRenderers.size() == 0) {
 					_renderQueueDynamicTransparent[material->GetShader()][material].erase(mesh);
@@ -645,7 +666,7 @@ bool MeshRenderingManager::UnregisterDynamic(Twin2Engine::Core::MeshRenderer* me
 
 				auto& meshRenderingData = _renderQueueDynamic[material->GetShader()][material][mesh];
 
-				size_t pos = 0;
+				size_t pos = meshRenderingData.meshRenderers.size();
 				for (size_t z = 0; z < meshRenderingData.meshRenderers.size(); ++z)
 				{
 					if (meshRenderingData.meshRenderers[z] == meshRenderer)
@@ -655,10 +676,10 @@ bool MeshRenderingManager::UnregisterDynamic(Twin2Engine::Core::MeshRenderer* me
 					}
 				}
 
-				if (meshRenderingData.meshRenderers.size() != 0) {
+				if (meshRenderingData.meshRenderers.size() > pos) {
 					meshRenderingData.meshRenderers.erase(meshRenderingData.meshRenderers.cbegin() + pos);
 				}
-				if (meshRenderingData.modelTransforms.size() != 0) {
+				if (meshRenderingData.modelTransforms.size() > pos) {
 					meshRenderingData.modelTransforms.erase(meshRenderingData.modelTransforms.cbegin() + pos);
 				}
 
@@ -1396,6 +1417,8 @@ void MeshRenderingManager::PreRender()
 	ZoneScoped;
 #endif
 
+	glDisable(GL_BLEND);
+
 	if (_flags.IsStaticChanged) {
 		Twin2Engine::Graphic::LightingController::Instance()->RenderShadowMaps();
 		_flags.IsStaticChanged = false;
@@ -1676,6 +1699,8 @@ void MeshRenderingManager::PreRender()
 #if TRACY_PROFILER
 	FrameMarkEnd(tracey_PrerenderDynamic);
 #endif
+
+	glEnable(GL_BLEND);
 }
 
 #if TRACY_PROFILER
@@ -1691,6 +1716,8 @@ void MeshRenderingManager::Render()
 #if TRACY_PROFILER
 	ZoneScoped;
 #endif
+
+	glDisable(GL_BLEND);
 
 	unsigned int globalDrawCount = 0;
 
@@ -2081,7 +2108,7 @@ void MeshRenderingManager::Render()
 	FrameMarkEnd(tracey_RenderDynamic);
 #endif
 
-
+	glEnable(GL_BLEND);
 	//SPDLOG_WARN("Global static draw count: {}", globalDrawCount);
 }
 
@@ -2202,6 +2229,7 @@ void MeshRenderingManager::RenderTransparent()
 void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, const GLuint& depthReplacingTexId, const GLuint& depthReplcedTexId, glm::mat4& projectionViewMatrix)
 {
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
 	ShaderManager::DepthShader->Use();
 	ShaderManager::DepthShader->SetMat4("lightSpaceMatrix", projectionViewMatrix);
 
@@ -2348,6 +2376,7 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, const GL
 
 #pragma endregion
 
+	glDisable(GL_BLEND);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthReplcedTexId, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -2364,6 +2393,7 @@ void MeshRenderingManager::RenderDepthMapDynamic(const GLuint& depthFBO, glm::ma
 	//glBindTexture(GL_TEXTURE_2D, depthMapTex);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
+	glEnable(GL_BLEND);
 	unsigned int count = 0;
 	RenderedSegment currentSegment{ .begin = nullptr, .count = 0u };
 
@@ -2500,5 +2530,6 @@ void MeshRenderingManager::RenderDepthMapDynamic(const GLuint& depthFBO, glm::ma
 
 #pragma endregion
 
+	glDisable(GL_BLEND);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

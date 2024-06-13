@@ -8,6 +8,7 @@
 #include <Patrons/PatronData.h>
 #include <RadioStation/RadioStation.h>
 
+#include <UIScripts/PopularityGainingBonusBarController.h>
 
 #include <ui/Button.h>
 #include <ui/Image.h>
@@ -31,7 +32,6 @@ private:
 
     MoneyGainFromTiles* money;
 
-    PlayerMovement* move;
     bool lost;
 
     AudioComponent* audioComponent = nullptr;
@@ -47,6 +47,9 @@ private:
     Twin2Engine::UI::Image* albumCircleImage;
     int albumButtonEventHandleId = -1;
     int albumButtonDestroyedEventHandleId = -1;
+    int albumButtonHoveringEventHandleId = -1;
+    bool isHoveringAlbumButton = false;
+    bool isShowingAlbumPossible = false;
 
     // FansMeeting
     Twin2Engine::UI::Text* fansMeetingText;
@@ -56,8 +59,8 @@ private:
     int fansMeetingButtonEventHandleId = -1;
     int fansMeetingButtonHoveringEventHandleId = -1;
     int fansMeetingButtonDestroyedEventHandleId = -1;
-    bool isHoveringButton = false;
-    bool isShowingAffectedTiles = false;
+    bool isHoveringFansMeetingButton = false;
+    bool isShowingFansMeetingAffectedTiles = false;
 
     //Concert
     Twin2Engine::UI::Text* concertText;
@@ -66,6 +69,9 @@ private:
     Twin2Engine::UI::Image* concertCircleImage;
     int concertButtonEventHandleId = -1;
     int concertButtonDestroyedEventHandleId = -1;
+    int concertButtonHoveringEventHandleId = -1;
+    bool isHoveringConcertButton = false;
+    bool isShowingConcertPossible = false;
 
     // Money
     Twin2Engine::UI::Text* moneyText;
@@ -74,14 +80,17 @@ private:
     glm::vec4 _abilityCooldownColor;
     glm::vec4 _abilityActiveColor;
 
+    // FANS MEETING
     std::list<HexTile*> affectedTiles;
     void ShowAffectedTiles();
     void HideAffectedTiles();
 
 public:
+    PlayerMovement* move;
     Playable* fightingPlayable = nullptr;
 
     virtual void Initialize() override;
+    virtual void OnDestroy() override;
     virtual void Update() override;
     virtual void OnDestroy() override;
     void StartPlayer(HexTile* startUpTile);

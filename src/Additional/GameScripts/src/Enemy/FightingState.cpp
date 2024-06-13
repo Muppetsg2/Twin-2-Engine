@@ -120,6 +120,9 @@ void FightingState::Update(Enemy* enemy)
 #endif
 
 	SPDLOG_INFO("Fighting State Update");
+
+
+
 	_decisionTree.ProcessNode(enemy);
 }
 

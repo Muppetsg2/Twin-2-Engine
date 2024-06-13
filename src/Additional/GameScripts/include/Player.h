@@ -8,6 +8,7 @@
 #include <Patrons/PatronData.h>
 #include <RadioStation/RadioStation.h>
 
+#include <UIScripts/PopularityGainingBonusBarController.h>
 
 #include <ui/Button.h>
 #include <ui/Image.h>
@@ -47,16 +48,19 @@ private:
     Twin2Engine::UI::Image* albumCircleImage;
     size_t albumButtonEventHandleId;
     size_t albumButtonDestroyedEventHandleId;
+    size_t albumButtonHoveringEventHandleId;
+    bool isHoveringAlbumButton = false;
+    bool isShowingAlbumPossible = false;
     // FansMeeting
     Twin2Engine::UI::Text* fansMeetingText;
     Twin2Engine::UI::Button* fansMeetingButton;
     Twin2Engine::Core::GameObject* fansMeetingButtonObject;
     Twin2Engine::UI::Image* fansMeetingCircleImage;
     size_t fansMeetingButtonEventHandleId;
-    size_t fansMeetingButtonHeveringEventHandleId;
+    size_t fansMeetingButtonHoveringEventHandleId;
     size_t fansMeetingButtonDestroyedEventHandleId;
-    bool isHoveringButton = false;
-    bool isShowingAffectedTiles = false;
+    bool isHoveringFansMeetingButton = false;
+    bool isShowingFansMeetingAffectedTiles = false;
     //Concert
     Twin2Engine::UI::Text* concertText;
     Twin2Engine::UI::Button* concertButton;
@@ -64,6 +68,9 @@ private:
     Twin2Engine::UI::Image* concertCircleImage;
     size_t concertButtonEventHandleId;
     size_t concertButtonDestroyedEventHandleId;
+    size_t concertButtonHoveringEventHandleId;
+    bool isHoveringConcertButton = false;
+    bool isShowingConcertPossible = false;
     // Money
     Twin2Engine::UI::Text* moneyText;
 
@@ -71,6 +78,7 @@ private:
     glm::vec4 _abilityCooldownColor;
     glm::vec4 _abilityActiveColor;
 
+    // FANS MEETING
     std::list<HexTile*> affectedTiles;
     void ShowAffectedTiles();
     void HideAffectedTiles();
@@ -79,6 +87,7 @@ public:
     Playable* fightingPlayable = nullptr;
 
     virtual void Initialize() override;
+    virtual void OnDestroy() override;
     virtual void Update() override;
     void StartPlayer(HexTile* startUpTile);
 

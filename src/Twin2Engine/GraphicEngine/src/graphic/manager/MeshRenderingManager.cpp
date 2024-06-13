@@ -1396,6 +1396,8 @@ void MeshRenderingManager::PreRender()
 	ZoneScoped;
 #endif
 
+	glDisable(GL_BLEND);
+
 	if (_flags.IsStaticChanged) {
 		Twin2Engine::Graphic::LightingController::Instance()->RenderShadowMaps();
 		_flags.IsStaticChanged = false;
@@ -1676,6 +1678,8 @@ void MeshRenderingManager::PreRender()
 #if TRACY_PROFILER
 	FrameMarkEnd(tracey_PrerenderDynamic);
 #endif
+
+	glEnable(GL_BLEND);
 }
 
 #if TRACY_PROFILER
@@ -1691,6 +1695,8 @@ void MeshRenderingManager::Render()
 #if TRACY_PROFILER
 	ZoneScoped;
 #endif
+
+	glDisable(GL_BLEND);
 
 	unsigned int globalDrawCount = 0;
 
@@ -2081,7 +2087,7 @@ void MeshRenderingManager::Render()
 	FrameMarkEnd(tracey_RenderDynamic);
 #endif
 
-
+	glEnable(GL_BLEND);
 	//SPDLOG_WARN("Global static draw count: {}", globalDrawCount);
 }
 
@@ -2202,6 +2208,7 @@ void MeshRenderingManager::RenderTransparent()
 void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, const GLuint& depthReplacingTexId, const GLuint& depthReplcedTexId, glm::mat4& projectionViewMatrix)
 {
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
 	ShaderManager::DepthShader->Use();
 	ShaderManager::DepthShader->SetMat4("lightSpaceMatrix", projectionViewMatrix);
 
@@ -2348,6 +2355,7 @@ void MeshRenderingManager::RenderDepthMapStatic(const GLuint& depthFBO, const GL
 
 #pragma endregion
 
+	glDisable(GL_BLEND);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthReplcedTexId, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -2364,6 +2372,7 @@ void MeshRenderingManager::RenderDepthMapDynamic(const GLuint& depthFBO, glm::ma
 	//glBindTexture(GL_TEXTURE_2D, depthMapTex);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
+	glEnable(GL_BLEND);
 	unsigned int count = 0;
 	RenderedSegment currentSegment{ .begin = nullptr, .count = 0u };
 
@@ -2500,5 +2509,6 @@ void MeshRenderingManager::RenderDepthMapDynamic(const GLuint& depthFBO, glm::ma
 
 #pragma endregion
 
+	glDisable(GL_BLEND);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

@@ -23,7 +23,7 @@ bool AudioManager::_init = false;
 void AudioManager::UnloadAudio(size_t id)
 {
     if (_loadedAudio.count(id) == 0) {
-        spdlog::error("AudioManager::Audio not found");
+        SPDLOG_ERROR("AudioManager::Audio not found");
         return;
     }
 
@@ -60,7 +60,7 @@ size_t AudioManager::LoadAudio(string path)
     if (_loadedAudio.size() == 0 && !_init) {
         SoLoud::result res = _soloud.init();
         if (res != 0) {
-            spdlog::error(_soloud.getErrorString(res));
+            SPDLOG_ERROR(_soloud.getErrorString(res));
             return 0;
         }
         else {
@@ -77,7 +77,7 @@ size_t AudioManager::LoadAudio(string path)
         Wav* sample = new Wav();
         result res = sample->load(path.c_str());
         if (res != 0) {
-            spdlog::error(_soloud.getErrorString(res));
+            SPDLOG_ERROR(_soloud.getErrorString(res));
             return 0;
         }
 
@@ -96,7 +96,7 @@ size_t AudioManager::LoadAudio(string path)
 handle AudioManager::GetAudioHandle(string path)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return 0;
     }
 
@@ -107,12 +107,12 @@ handle AudioManager::GetAudioHandle(string path)
 handle AudioManager::GetAudioHandle(size_t id)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return 0;
     }
 
     if (_loadedAudio.count(id) == 0) {
-        spdlog::error("AudioManager::Audio not found");
+        SPDLOG_ERROR("AudioManager::Audio not found");
         return 0;
     }
 
@@ -122,7 +122,7 @@ handle AudioManager::GetAudioHandle(size_t id)
 handle AudioManager::PlayAudioInstance(string path)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return 0;
     }
 
@@ -133,12 +133,12 @@ handle AudioManager::PlayAudioInstance(string path)
 handle AudioManager::PlayAudioInstance(size_t id)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return 0;
     }
 
     if (_loadedAudio.count(id) == 0) {
-        spdlog::error("AudioManager::Audio not found");
+        SPDLOG_ERROR("AudioManager::Audio not found");
         return 0;
     }
 
@@ -153,7 +153,7 @@ void AudioManager::PlayAudio(handle h)
 void AudioManager::PauseAudio(handle h)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return;
     }
 
@@ -161,14 +161,14 @@ void AudioManager::PauseAudio(handle h)
         _soloud.setPause(h, true);
     }
     else {
-        spdlog::error("AudioManager::Handle Not Valid");
+        SPDLOG_ERROR("AudioManager::Handle Not Valid");
     }
 }
 
 void AudioManager::ResumeAudio(handle h)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return;
     }
 
@@ -176,14 +176,14 @@ void AudioManager::ResumeAudio(handle h)
         _soloud.setPause(h, false);
     }
     else {
-        spdlog::error("AudioManager::Handle Not Valid");
+        SPDLOG_ERROR("AudioManager::Handle Not Valid");
     }
 }
 
 void AudioManager::StopAudio(handle h)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return;
     }
 
@@ -191,7 +191,7 @@ void AudioManager::StopAudio(handle h)
         _soloud.stop(h);
     }
     else {
-        spdlog::error("AudioManager::Handle Not Valid");
+        SPDLOG_ERROR("AudioManager::Handle Not Valid");
     }
 }
 
@@ -203,12 +203,12 @@ void AudioManager::StopWav(string path)
 void AudioManager::StopWav(size_t id)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return;
     }
 
     if (_loadedAudio.count(id) == 0) {
-        spdlog::error("AudioManager::Audio not found");
+        SPDLOG_ERROR("AudioManager::Audio not found");
         return;
     }
 
@@ -223,7 +223,7 @@ void AudioManager::StopAll()
 void AudioManager::SetPositionAudio(handle h, SoLoud::time seconds)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return;
     }
 
@@ -231,14 +231,14 @@ void AudioManager::SetPositionAudio(handle h, SoLoud::time seconds)
         _soloud.seek(h, seconds);
     }
     else {
-        spdlog::error("AudioManager::Handle Not Valid");
+        SPDLOG_ERROR("AudioManager::Handle Not Valid");
     }
 }
 
 void AudioManager::SetVolume(handle h, float value)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return;
     }
 
@@ -246,14 +246,14 @@ void AudioManager::SetVolume(handle h, float value)
         _soloud.setVolume(h, value);
     }
     else {
-        spdlog::error("AudioManager::Handle Not Valid");
+        SPDLOG_ERROR("AudioManager::Handle Not Valid");
     }
 }
 
 void AudioManager::SetLooping(handle h, bool loop)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return;
     }
 
@@ -261,7 +261,7 @@ void AudioManager::SetLooping(handle h, bool loop)
         _soloud.setLooping(h, loop);
     }
     else {
-        spdlog::error("AudioManager::Handle Not Valid");
+        SPDLOG_ERROR("AudioManager::Handle Not Valid");
     }
 }
 
@@ -274,7 +274,7 @@ string AudioManager::GetAudioName(string path)
 string AudioManager::GetAudioName(size_t id)
 {
     if (_loadedAudio.count(id) == 0) {
-        spdlog::error("AudioManager::Audio not found");
+        SPDLOG_ERROR("AudioManager::Audio not found");
         return "";
     }
 
@@ -285,12 +285,12 @@ string AudioManager::GetAudioName(size_t id)
 float AudioManager::GetVolume(handle h)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return 0.f;
     }
 
     if (!IsHandleValid(h)) {
-        spdlog::error("AudioManager::Handle Not Valid");
+        SPDLOG_ERROR("AudioManager::Handle Not Valid");
         return 0.f;
     }
 
@@ -300,14 +300,14 @@ float AudioManager::GetVolume(handle h)
 SoLoud::time AudioManager::GetAudioTime(string path)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return SoLoud::time();
     }
 
     size_t h = hash<string>{}(path);
 
     if (_loadedAudio.count(h) == 0) {
-        spdlog::error("AudioManager::Audio not found");
+        SPDLOG_ERROR("AudioManager::Audio not found");
         return SoLoud::time();
     }
 
@@ -317,12 +317,12 @@ SoLoud::time AudioManager::GetAudioTime(string path)
 SoLoud::time AudioManager::GetAudioTime(size_t id)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return SoLoud::time();
     }
 
     if (_loadedAudio.count(id) == 0) {
-        spdlog::error("AudioManager::Audio not found");
+        SPDLOG_ERROR("AudioManager::Audio not found");
         return SoLoud::time();
     }
 
@@ -332,12 +332,12 @@ SoLoud::time AudioManager::GetAudioTime(size_t id)
 bool AudioManager::IsPaused(handle h)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return false;
     }
 
     if (!IsHandleValid(h)) {
-        spdlog::error("AudioManager::Handle Not Valid");
+        SPDLOG_ERROR("AudioManager::Handle Not Valid");
         return false;
     }
 
@@ -347,7 +347,7 @@ bool AudioManager::IsPaused(handle h)
 bool AudioManager::IsHandleValid(handle h)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return false;
     }
 
@@ -362,12 +362,12 @@ bool AudioManager::IsAudioValid(size_t id)
 SoLoud::time AudioManager::GetPlayTime(handle h)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return SoLoud::time();
     }
 
     if (!IsHandleValid(h)) {
-        spdlog::error("AudioManager::Handle Not Valid");
+        SPDLOG_ERROR("AudioManager::Handle Not Valid");
         return SoLoud::time();
     }
 
@@ -377,12 +377,12 @@ SoLoud::time AudioManager::GetPlayTime(handle h)
 SoLoud::time AudioManager::GetPlayPosition(handle h)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return SoLoud::time();
     }
 
     if (!IsHandleValid(h)) {
-        spdlog::error("AudioManager::Handle Not Valid");
+        SPDLOG_ERROR("AudioManager::Handle Not Valid");
         return SoLoud::time();
     }
 
@@ -392,12 +392,12 @@ SoLoud::time AudioManager::GetPlayPosition(handle h)
 bool AudioManager::IsLooping(handle h)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return false;
     }
 
     if (!IsHandleValid(h)) {
-        spdlog::error("AudioManager::Handle Not Valid");
+        SPDLOG_ERROR("AudioManager::Handle Not Valid");
         return false;
     }
 
@@ -407,7 +407,7 @@ bool AudioManager::IsLooping(handle h)
 void AudioManager::FadeVolume(handle h, float to, SoLoud::time seconds)
 {
     if (!_init) {
-        spdlog::error("AudioManager::SoLoud engine not initialized");
+        SPDLOG_ERROR("AudioManager::SoLoud engine not initialized");
         return;
     }
 
@@ -415,7 +415,7 @@ void AudioManager::FadeVolume(handle h, float to, SoLoud::time seconds)
         _soloud.fadeVolume(h, to, seconds);
     }
     else {
-        spdlog::error("AudioManager::Handle Not Valid");
+        SPDLOG_ERROR("AudioManager::Handle Not Valid");
     }
 }
 

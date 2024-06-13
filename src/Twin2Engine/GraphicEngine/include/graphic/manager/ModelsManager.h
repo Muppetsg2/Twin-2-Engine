@@ -61,6 +61,7 @@ namespace Twin2Engine::Manager
 		static bool IsModelLoaded(size_t managerId);
 
 		static Graphic::InstantiatingModel LoadModel(const std::string& modelPath);
+		static Graphic::InstantiatingModel GetModel(const std::string& modelPath);
 		static Graphic::InstantiatingModel GetModel(size_t managerId);
 		static Graphic::InstantiatingModel GetCube();
 		static Graphic::InstantiatingModel GetPlane();

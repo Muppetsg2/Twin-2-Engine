@@ -146,7 +146,7 @@ void Enemy::DrawEditor()
     std::string name = std::string("Enemy##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str())) {
 
-        if (Component::DrawInheritedFields()) return;
+        if (Playable::DrawInheritedFields()) return;
 
         // TODO: Zrobic
     }

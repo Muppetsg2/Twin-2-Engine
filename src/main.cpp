@@ -116,6 +116,7 @@ using namespace Generation::Generators;
 #include <RadioStation/RadioStationPlayingController.h>
 
 #include <UIScripts/PatronChoicePanelController.h>
+#include <UIScripts/PopularityGainingBonusBarController.h>
 
 using namespace GameScripts;
 
@@ -365,6 +366,7 @@ int main(int, char**)
     ADD_COMPONENT("PlaneGenerator", PlaneGenerator);
     ADD_COMPONENT("MinigameManager", MinigameManager);
     ADD_COMPONENT("ConcertRoad", ConcertRoad);
+    ADD_COMPONENT("PopularityGainingBonusBarController", PopularityGainingBonusBarController);
 
 #pragma endregion
 

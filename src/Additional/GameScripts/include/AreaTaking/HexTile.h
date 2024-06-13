@@ -118,11 +118,14 @@ public:
 	void StopTakingOver(Playable* entity);
 	void StartRemotelyTakingOver(Playable* entity, float multiplier = 1.0f);
 	void StopRemotelyTakingOver(Playable* entity);
+	int GetStage() const;
 
 	Generation::MapHexTile* GetMapHexTile() const;
 
 	void EnableAffected();
 	void DisableAffected();
+	void EnableAlbumAffected();
+	void DisableAlbumAffected();
 
 	virtual YAML::Node Serialize() const override;
 	virtual bool Deserialize(const YAML::Node& node) override;

@@ -334,8 +334,9 @@ void SceneManager::LoadScene() {
 		_gameObjectsById[id] = obj;
 
 		size_t transformId = gameObjectNode["transform"]["id"].as<size_t>();
-		_componentsById[transformId] = obj->GetTransform();
-		obj->GetTransform()->Init(obj, transformId);
+		Component* comp = obj->GetTransform();
+		_componentsById[transformId] = comp;
+		comp->Init(obj, transformId);
 	}
 
 	// LOAD GAMEOBJECTS AND TRASFORMS VALUES
@@ -390,7 +391,12 @@ void SceneManager::LoadScene() {
 
 			// Create Component of type
 			size_t id = componentNode["id"].as<size_t>();
-			_componentsById[id] = ComponentsMap::CreateComponent(type);
+			Component* comp = ComponentsMap::CreateComponent(type);
+			_componentsById[id] = comp;
+
+			// Add Component to object
+			obj->AddComponentNoInit(comp);
+			comp->Init(obj, id);
 		}
 	}
 
@@ -411,10 +417,6 @@ void SceneManager::LoadScene() {
 			if (!comp->Deserialize(componentNode)) {
 				SPDLOG_ERROR("Scene '{0}' '{1}' Component {2} of GameObject {3} data is corupted", _sceneToLoadName, type, compId, compPair.first);
 			}
-
-			// Add Component to object
-			obj->AddComponentNoInit(comp);
-			comp->Init(obj, compId);
 		}
 	}
 
@@ -589,6 +591,11 @@ void SceneManager::UpdateCurrentScene()
 void SceneManager::RenderCurrentScene()
 {
 	for (auto& comp : RenderableComponent::_components) {
+		if (comp->_gameObject == nullptr) {
+			SPDLOG_ERROR("XD?");
+			continue;
+		}
+
 		if (comp->IsEnable() && comp->GetGameObject()->GetActive()) 
 			comp->Render();
 	}
@@ -756,14 +763,14 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	// GAME OBJECTS
 
 	// CREATE NEW OBJECTS WITH TRANSFORMS
-	map<size_t, pair<GameObject*, size_t>> idTakenObjects;
-	map<size_t, Component*> prefabComponentsById;
-	map<size_t, pair<Component*, size_t>> idTakenComponents;
+	stack<tuple<GameObject*, size_t, size_t>> idTakenObjects; // obj, from, to
+	map<size_t, Component*> prefabComponentsById; // all New Created components
+	stack<tuple<Component*, size_t, size_t>> idTakenComponents; // comp, from, to
 
 	Action<GameObject*, size_t> CheckTakenID = [&](GameObject* objToReplace, size_t idToTake) -> void {
 		if (_gameObjectsById.find(idToTake) != _gameObjectsById.end()) {
 			size_t newId = GameObject::GetFreeId();
-			idTakenObjects[idToTake] = pair(_gameObjectsById[idToTake], newId);
+			idTakenObjects.push({ _gameObjectsById[idToTake], idToTake, newId });
 			_gameObjectsById[newId] = _gameObjectsById[idToTake];
 		}
 		_gameObjectsById[idToTake] = objToReplace;
@@ -772,7 +779,7 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 	Action<Component*, size_t> CheckComponentTakenID = [&](Component* componentToReplace, size_t idToTake) -> void {
 		if (_componentsById.find(idToTake) != _componentsById.end()) {
 			size_t newId = Component::GetFreeId();
-			idTakenComponents[idToTake] = pair(_componentsById[idToTake], newId);
+			idTakenComponents.push({ _componentsById[idToTake], idToTake, newId });
 			_componentsById[newId] = _componentsById[idToTake];
 		}
 		_componentsById[idToTake] = componentToReplace;
@@ -797,8 +804,9 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		CheckTakenID(obj, id);
 
 		size_t transformId = gameObjectNode["transform"]["id"].as<size_t>();
-		CheckComponentTakenID(obj->GetTransform(), transformId);
-		obj->GetTransform()->Init(obj, transformId);
+		Component* comp = obj->GetTransform();
+		CheckComponentTakenID(comp, transformId);
+		comp->Init(obj, transformId);
 	}
 
 	// LOAD ROOT OBJECT AND TRANSFORM VALUES
@@ -849,6 +857,12 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		}
 	}
 
+	// UPDATE ACTIVE FLAG
+	for (auto& item : _gameObjectsById) {
+		if (!item.second->GetActiveSelf())
+			item.second->UpdateActiveInChildren();
+	}
+
 	// CREATE AND ADD COMPONENTS TO OBJECTS
 	for (const auto& compPair : componentsNodes) {
 		GameObject* obj = _gameObjectsById[compPair.first];
@@ -860,10 +874,13 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 			}
 
 			// Create Component of type
-			Component* comp = ComponentsMap::CreateComponent(type);
-
 			size_t id = componentNode["id"].as<size_t>();
+			Component* comp = ComponentsMap::CreateComponent(type);
 			CheckComponentTakenID(comp, id);
+
+			// Add Component To GameObject
+			obj->AddComponentNoInit(comp);
+			comp->Init(obj, id);
 		}
 	}
 
@@ -884,33 +901,33 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 			if (!comp->Deserialize(componentNode)) {
 				SPDLOG_ERROR("Prefab '{0}' Component {1} of GameObject {2} data is corupted", PrefabManager::GetPrefabPath(prefab), compId, compPair.first);
 			}
-
-			// Add Component To GameObject
-			obj->AddComponentNoInit(comp);
-			comp->Init(obj, compId);
 		}
 	}
 
 	// RETURN IDS TO ORIGINAL OBJECTS AND COMPONENTS
-	for (const auto& takenIdPair : idTakenObjects) {
-		size_t oldId = takenIdPair.first;
-		size_t newId = takenIdPair.second.second;
+	while (idTakenObjects.size() > 0) {
+		tuple<GameObject*, size_t, size_t> takenIdTuple = idTakenObjects.top();
+
+		size_t oldId = get<1>(takenIdTuple);
+		size_t newId = get<2>(takenIdTuple);
 
 		_gameObjectsById[newId] = _gameObjectsById[oldId];
 		_gameObjectsById[newId]->_id = newId;
-		_gameObjectsById[oldId] = takenIdPair.second.first;
-	}
+		_gameObjectsById[oldId] = get<0>(takenIdTuple);
 
-	for (const auto& takenIdPair : idTakenComponents) {
-		size_t oldId = takenIdPair.first;
-		size_t newId = takenIdPair.second.second;
+		idTakenObjects.pop();
+	}
+	while (idTakenComponents.size() > 0) {
+		tuple<Component*, size_t, size_t> takenIdTuple = idTakenComponents.top();
+
+		size_t oldId = get<1>(takenIdTuple);
+		size_t newId = get<2>(takenIdTuple);
 
 		_componentsById[newId] = _componentsById[oldId];
 		_componentsById[newId]->_id = newId;
-		_componentsById[oldId] = takenIdPair.second.first;
+		_componentsById[oldId] = get<0>(takenIdTuple);
 
-		prefabComponentsById[newId] = _componentsById[newId];
-		prefabComponentsById.erase(oldId);
+		idTakenComponents.pop();
 	}
 
 	// INIT COMPONENTS

@@ -34,7 +34,8 @@ void HexTile::TakeOver()
 		percentage -= Time::GetDeltaTime() * takeOverSpeed;
 		if (percentage <= 0.f) {
 			percentage = 0.f;
-			SetOwnerEntity(nullptr);
+			SetOwnerEntity(nullptr); 
+			DisableAlbumAffected();
 		}
 	}
 	else {
@@ -108,6 +109,22 @@ void HexTile::UpdateTileColor()
 			_meshRenderer->SetMaterial(0ull, texturesData->GetMaterial(col, 3ull));
 		}
 	}
+}
+int HexTile::GetStage() const
+{
+	if (percentage < _takingStage1)
+	{
+		return 0;
+	}
+	else if (percentage < _takingStage2)
+	{
+		return 1;
+	}
+	else if (percentage < _takingStage3)
+	{
+		return 2;
+	}
+	return 3;
 }
 
 void HexTile::UpdateBorderColor()
@@ -308,7 +325,10 @@ void HexTile::CheckRoundPattern()
 	{
 		SetOwnerEntity(processedTaken);
 		state = TileState::TAKEN;
-		percentage = 100.0f;
+		if (percentage < _takingStage1)
+			percentage = 0.5f * (_takingStage1 + _takingStage2);
+		//percentage = 100.0f;
+		DisableAlbumAffected();
 		UpdateTileColor();
 	}
 }
@@ -334,7 +354,14 @@ void HexTile::Initialize()
 void HexTile::OnDestroy()
 {
 	if (ConcertRoad::instance != nullptr)
-		ConcertRoad::instance->RoadMapPoints.erase(this);
+	{
+		auto found = std::find_if(ConcertRoad::instance->RoadMapPoints.begin(),
+								  ConcertRoad::instance->RoadMapPoints.end(),
+								  [&](const ConcertRoad::ConcertRoadPoint& point) -> bool { return point.hexTile == this; });
+
+		if (found != ConcertRoad::instance->RoadMapPoints.end())
+			ConcertRoad::instance->RoadMapPoints.erase(found);
+	}
 	else 
 		SPDLOG_WARN("Concert Road Instance was nullptr!");
 	texturesData = nullptr;
@@ -455,6 +482,16 @@ void HexTile::EnableAffected()
 void HexTile::DisableAffected()
 {
 	GetTransform()->GetChildAt(0ull)->GetGameObject()->SetActive(false);
+}
+
+void HexTile::EnableAlbumAffected()
+{
+	// TODO: Tu ma byæ w³¹czenie particle systemu.
+}
+
+void HexTile::DisableAlbumAffected()
+{
+	// TODO: Tu ma byæ wy³¹czenie particle systemu.
 }
 
 void HexTile::BadNote()

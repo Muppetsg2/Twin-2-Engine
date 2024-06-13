@@ -105,6 +105,7 @@ public:
     void GameOver();
 
     void StartGame();
+    Player* GetPlayer() const;
 
     virtual YAML::Node Serialize() const override;
     virtual bool Deserialize(const YAML::Node& node) override;

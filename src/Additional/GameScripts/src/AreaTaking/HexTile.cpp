@@ -514,7 +514,7 @@ void HexTile::StartTakingOver(Playable* entity) {
 		state = TileState::OCCUPIED;
 		occupyingEntity = entity;
 	}
-	else if (occupyingEntity != entity && !isFighting) {
+	else if (occupyingEntity != entity && !isFighting && entity != nullptr) {
 		GameManager::instance->minigameActive = true;
 		isFighting = true;
 		MinigameManager::GetLastInstance()->StartMinigame(entity, occupyingEntity);

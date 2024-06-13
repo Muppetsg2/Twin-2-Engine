@@ -1,27 +1,63 @@
 #include <Enemy/FightingState.h>
 #include <Enemy.h>
 
+#include <UIScripts/MinigameManager.h>
+
 // TODO: Get Player Choice
 DecisionTree<Enemy*, FightingState::FightResult> FightingState::_decisionTree{
 	[&](Enemy* enemy) -> FightingState::FightResult {
 
-		// TODO: Na razie nie ma fighting system
-		return FightResult::LOSE;
+		//// TODO: Na razie nie ma fighting system
+		//return FightResult::LOSE;
 
-		// TODO: Sprawdzenie czy gracz cos wybral
-		return FightResult::WAIT;
+		// Sprawdzenie czy gracz cos wybral
+		if (enemy->fightingPlayable->minigameChoice == MinigameRPS_Choice::NONE) {
+			return FightResult::WAIT;
+		}
+
+		Player* player = dynamic_cast<Player*>(enemy->fightingPlayable);
 
 		float score = Score(enemy, enemy->fightingPlayable);
 		if (0 <= score && score <= enemy->_winChance) {
 			// 0 <= score <= winChance
+			if (player != nullptr) {
+				MinigameManager::GetLastInstance()->PlayerLost();
+			}
+			else {
+				Lose((Enemy*)enemy->fightingPlayable);
+				enemy->WonPaperRockScissors(enemy->fightingPlayable);
+			}
 			return FightResult::WIN;
 		}
 		else if (enemy->_winChance < score && score <= enemy->_winChance + enemy->_drawChance) {
 			// winChance < score <= winChance + drawChance
-			return FightResult::DRAW;
+			if (player != nullptr) { // rozpatrywanie remisu z graczem
+				MinigameManager::GetLastInstance()->PlayerDrawed();
+				return FightResult::DRAW;
+			}
+			else { // ropatrywanie remisu z innym enemy
+				if (score <= (enemy->_winChance + 0.5f * enemy->_drawChance)) {
+					Lose((Enemy*)enemy->fightingPlayable);
+					enemy->WonPaperRockScissors(enemy->fightingPlayable);
+					return FightResult::WIN;
+				}
+				else {
+					Win((Enemy*)enemy->fightingPlayable);
+					enemy->fightingPlayable->WonPaperRockScissors(enemy);
+					return FightResult::LOSE;
+				}
+			}
 		}
 		else {
 			// winChance + drawChance < score <= 100
+			if (player != nullptr) { 
+				MinigameManager::GetLastInstance()->PlayerWon();
+			}
+			else {
+				Win((Enemy*)enemy->fightingPlayable);
+				enemy->fightingPlayable->WonPaperRockScissors(enemy);
+			}
+
 			return FightResult::LOSE;
 		}
 	},
@@ -85,6 +121,7 @@ void FightingState::Win(Enemy* enemy) {
 	SPDLOG_INFO("ENEMY WIN");
 	// TODO: Dodac analize ruchu gracza
 	// TODO: Dodac odpowiedz na ruch gracza
+
 	if (enemy->CurrTile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::RadioStation) {
 		enemy->ChangeState(&enemy->_radioStationState);
 	}
@@ -120,8 +157,6 @@ void FightingState::Update(Enemy* enemy)
 #endif
 
 	SPDLOG_INFO("Fighting State Update");
-
-
 
 	_decisionTree.ProcessNode(enemy);
 }

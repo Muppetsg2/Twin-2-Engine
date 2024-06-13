@@ -640,19 +640,17 @@ void Player::WonPaperRockScissors(Playable* playable) {
     GameManager::instance->minigameActive = false;
     CurrTile->isFighting = false;
 
-    bool finishMovement = CurrTile->occupyingEntity == playable;
-
     playable->LostPaperRockScissors(this);
 
     if (CurrTile->ownerEntity == playable) {
         CurrTile->ResetTile();
     }
 
-    playable->CheckIfDead(this);
+    //playable->CheckIfDead(this);
 
-    if (finishMovement) {
-        FinishMove(CurrTile);
-    }
+    FinishMove(CurrTile);
+    fightingPlayable = nullptr;
+    minigameChoice = MinigameRPS_Choice::NONE;
 }
 
 void Player::LostPaperRockScissors(Playable* playable) {
@@ -660,7 +658,7 @@ void Player::LostPaperRockScissors(Playable* playable) {
     CurrTile->isFighting = false;
 
     CurrTile->StopTakingOver(this);
-    lost = true;
+    //lost = true;
 
     GameObject* tiles[6];
     CurrTile->GetMapHexTile()->tile->GetAdjacentGameObjects(tiles);
@@ -671,13 +669,8 @@ void Player::LostPaperRockScissors(Playable* playable) {
             break;
         }
     }
-
-    //HUDInfo* obj = FindObjectOfType<HUDInfo>();
-    //if (obj != nullptr) {
-    //    obj->SetInfo("You lost. Move to another field.");
-    //}
-    //
-    //fightingPlayable->WonPaperRockScisors(this);
+    fightingPlayable = nullptr;
+    minigameChoice = MinigameRPS_Choice::NONE;
 }
 
 float Player::GetMaxRadius() const {

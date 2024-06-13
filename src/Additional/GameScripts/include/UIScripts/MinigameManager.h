@@ -40,7 +40,7 @@ class MinigameManager : public Component {
 		int enemyFieldsNumber = 0;
 		AudioComponent* audioComp = nullptr;
 		void SetupButtons();
-		void PerformTurn();
+		//void PerformTurn();
 
 		std::string colors[7] = { "blue", "red", "green", "purple", "yellow", "cyan", "pink" };
 
@@ -68,6 +68,9 @@ class MinigameManager : public Component {
 		static MinigameManager* GetLastInstance();
 
 		void StartMinigame(Playable* chalanging, Playable* chalanged);
+		void PlayerWon();
+		void PlayerDrawed();
+		void PlayerLost();
 		void FinishMinigame(Playable* winner, Playable* looser);
 
 		virtual void Initialize() override;

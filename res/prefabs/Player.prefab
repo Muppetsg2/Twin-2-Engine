@@ -13,10 +13,12 @@ Audio: ~
 Materials:
   - id: 0
     path: res/materials/car/CarMaterial_Blue.material
-Models:
+Models: 
   - id: 0
     path: res/models/car.obj
-Prefabs: ~
+Prefabs: 
+  - id: 0
+    path: res/prefabs/PlayerDestinationMarker.prefab
 ScriptableObjects: ~
 Root:
   name: Player
@@ -66,6 +68,8 @@ Root:
       maxSteps: 5
       nextWaypointDistance: 0.05
       heightOverSurface: 0
+      prefabPlayerDestinationMarker: 0
+      destinationMarkerHeightOverSurface: 0.5
     - id: 4
       enabled: true
       type: ConcertAbilityController
@@ -85,5 +89,6 @@ Root:
       audio: 0
       loop: false
       volume: 1
+      playOnStart: false
   children:
     []

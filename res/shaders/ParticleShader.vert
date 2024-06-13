@@ -22,5 +22,5 @@ void main()
 
     texCoords = aTexCoords;
 
-    gl_Position = projection * view * (particlePos[instanceId] + aPos);
+    gl_Position = projection * view * vec4((particlePos[instanceId] + aPos).xyz, 1.0);
 }

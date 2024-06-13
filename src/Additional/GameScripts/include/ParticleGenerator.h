@@ -38,10 +38,11 @@ public:
     bool active = false;
 
     // constructor
-    ParticleGenerator(const std::string& shaderName, const std::string& textureName, unsigned int amount, float height, float distance, float time, float maxLife, float particleW, float particleH, float generationRadius = 0.0f);
-    ParticleGenerator(const std::string& shaderName, GLuint& textureId, unsigned int amount, float height, float distance, float time, float maxLife, float particleW, float particleH, float generationRadius = 0.0f);
+    ParticleGenerator(const std::string& shaderName, const std::string& textureName, unsigned int amount, float height, float distance, float time, float maxLife, float particleW, float particleH, float generationRadius);
+    ParticleGenerator(const std::string& shaderName, GLuint& textureId, unsigned int amount, float height, float distance, float time, float maxLife, float particleW, float particleH, float generationRadius);
     ~ParticleGenerator();
     // update all particles
+    void SetStartPosition(glm::vec3 newPosition);
     void Update();
     // render all particles
     void Draw();
@@ -52,7 +53,6 @@ private:
     unsigned int amount;
     unsigned int VAO;
     unsigned int VBO;
-    unsigned int ParcticleSSBO;
 
     float horizontalVel = 0.5f;
     float g = 0.5f;

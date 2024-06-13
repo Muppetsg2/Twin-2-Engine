@@ -72,13 +72,13 @@ void GameManager::Initialize()
         Twin2Engine::Manager::SceneManager::DestroyGameObject(this->GetGameObject());
     }
 
-    particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/particle.png", 10, 1.0f, 0.0f, 3.0f, 1.5f, 0.1f, 0.1f, 0.5f);
-    particleGenerator->startPosition = glm::vec4(0.0f, 4.0f, 0.0f, 1.0f);
-    particleGenerator->active = true;
+    //particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/particle.png", 10, 1.0f, 0.0f, 3.0f, 1.5f, 0.1f, 0.1f, 0.5f);
+    //particleGenerator->startPosition = glm::vec4(0.0f, 4.0f, 0.0f, 1.0f);
+    //particleGenerator->active = true;
 }
 
 void GameManager::OnDestroy() {
-    delete particleGenerator;
+    //delete particleGenerator;
     if (this == instance)
     {
         instance = nullptr;

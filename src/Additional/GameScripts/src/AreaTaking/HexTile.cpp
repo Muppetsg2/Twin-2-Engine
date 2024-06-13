@@ -327,6 +327,8 @@ void HexTile::Initialize()
 		if (borderJoints[(i * 2) + 1]->GetActive())
 			borderJoints[(i * 2) + 1]->SetActive(false);
 	}
+
+	particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/particle.png", 5, 1.5f, 0.0f, 4.0f, 2.0f, 0.1f, 0.1f, 0.5f);
 }
 
 void HexTile::OnDestroy()
@@ -336,6 +338,10 @@ void HexTile::OnDestroy()
 	else 
 		SPDLOG_WARN("Concert Road Instance was nullptr!");
 	texturesData = nullptr;
+
+	if (particleGenerator != nullptr) {
+		delete particleGenerator;
+	}
 }
 
 void HexTile::Update()
@@ -380,6 +386,13 @@ void HexTile::InitializeAdjacentTiles()
 	}
 
 	_adjacentTiles.shrink_to_fit();
+
+	particleGenerator->SetStartPosition(GetTransform()->GetGlobalPosition());
+	//particleGenerator->active = true;
+	
+	//GetGameObject()->OnActiveChangedEvent.AddCallback([&](GameObject* go) {
+	//		particleGenerator->active = go->GetActive();
+	//	});
 }
 
 void HexTile::ResetTile()

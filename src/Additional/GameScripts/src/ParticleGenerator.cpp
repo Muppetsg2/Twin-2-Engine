@@ -17,7 +17,6 @@ ParticleGenerator::ParticleGenerator(const std::string& shaderName, const std::s
     else {
         textureId = TextureManager::LoadTexture2D(textureName)->GetId();
     }
-    ParticleSystemsController::Instance()->particlesGenerators.insert(this);
 
     init(height, distance, time, particleW, particleH);
 }
@@ -31,6 +30,7 @@ ParticleGenerator::ParticleGenerator(const std::string& shaderName, GLuint& text
 }
 
 void ParticleGenerator::init(float height, float distance, float time, float particleW, float particleH) {
+    ParticleSystemsController::Instance()->particlesGenerators.insert(this);
     // set up mesh and attribute properties
     float yValue = 0.5 * glm::sin(0.7853f) * particleH;
     float zValue = 0.5 * glm::cos(0.7853f) * particleH;
@@ -89,21 +89,13 @@ void ParticleGenerator::init(float height, float distance, float time, float par
             randOffset.x = randRadius * glm::cos(randAngle) + particle->Velocity.x * particle->Life;
             randOffset.z = randRadius * glm::sin(randAngle) + particle->Velocity.z * particle->Life;
         }
-        randOffset.y = particle->Velocity.z * particle->Life + 0.5f * g * particle->Life * particle->Life;
+        randOffset.y = particle->Velocity.y * particle->Life + 0.5f * g * particle->Life * particle->Life;
 
         particlesPos.push_back(startPosition + randOffset);
     }
 
     shader->Use();
     shader->SetInt("particleTexture", 0);
-
-    glGenBuffers(1, &ParcticleSSBO);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, ParcticleSSBO);
-    glBufferData(GL_SHADER_STORAGE_BUFFER, amount * sizeof(glm::vec4), NULL, GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, ParcticleSSBO);
-
-    glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, amount * sizeof(glm::vec4), particlesPos.data());
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
 ParticleGenerator::~ParticleGenerator()
@@ -117,6 +109,29 @@ ParticleGenerator::~ParticleGenerator()
     }
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
+}
+
+void ParticleGenerator::SetStartPosition(glm::vec3 newPosition)
+{
+    float yDiff = newPosition.y - startPosition.y;
+    startPosition = glm::vec4(newPosition, 1.0f);
+    glm::vec4 randOffset(0.0f);
+    float randAngle = 0.0f;
+    float randRadius = 0.0f;
+
+    for (unsigned int i = 0; i < this->amount; ++i) {
+        if (generationRadius > 0.01) {
+            randAngle = Random::Range<float>(0.0f, 6.2831f);
+            randRadius = Random::Range<float>(0.0f, generationRadius);
+            particlesPos[i].x = startPosition.x + randRadius * glm::cos(randAngle);
+            particlesPos[i].z = startPosition.z + randRadius * glm::sin(randAngle);
+        }
+        else {
+            particlesPos[i].x = startPosition.x;
+            particlesPos[i].z = startPosition.z;
+        }
+        particlesPos[i].y += yDiff;
+    }
 }
 
 void ParticleGenerator::Update()
@@ -151,14 +166,16 @@ void ParticleGenerator::Update()
         }
     }
 
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, ParcticleSSBO);
-    glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, amount * sizeof(glm::vec4), particlesPos.data());
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+    //SPDLOG_INFO("PS y: {}", particlesPos[0].y);
 }
 
 // render all particles
 void ParticleGenerator::Draw()
 {
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, ParticleSystemsController::Instance()->ParcticleSSBO);
+    glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, amount * sizeof(glm::vec4), particlesPos.data());
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     shader->Use();
 

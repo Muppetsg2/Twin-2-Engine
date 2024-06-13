@@ -256,6 +256,7 @@ GameObjects:
       - id: 8
         enabled: true
         type: Canvas
+		layer: 0
         size:
           x: 1920
           y: 1080
@@ -328,6 +329,7 @@ GameObjects:
       - id: 34
         enabled: true
         type: Canvas
+		layer: 0
         size:
           x: 1920
           y: 1080
@@ -790,6 +792,7 @@ GameObjects:
       - id: 36
         enabled: true
         type: Canvas
+		layer: 0
         size:
           x: 1920
           y: 1080

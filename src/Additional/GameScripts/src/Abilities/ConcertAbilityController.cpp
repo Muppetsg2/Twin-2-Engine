@@ -162,7 +162,7 @@ void ConcertAbilityController::DrawEditor()
     string name = string("ConcertAbilityController##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str()))
     {
-        DrawInheritedFields();
+        if (DrawInheritedFields()) return;
     }
 }
 #endif

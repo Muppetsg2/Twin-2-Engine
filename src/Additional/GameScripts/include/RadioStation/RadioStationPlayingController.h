@@ -13,6 +13,8 @@
 #include <ui/Button.h>
 #include <ui/Image.h>
 
+// TODO: Poprawic RadioStationPlayingController
+
 class RadioStationPlayingController : public Twin2Engine::Core::Component
 {
     ENUM_CLASS(NoteType, Do, Re, Mi, Fa)

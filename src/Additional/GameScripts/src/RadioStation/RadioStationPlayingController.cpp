@@ -318,6 +318,30 @@ bool RadioStationPlayingController::DrawInheritedFields()
     ImGui::ColorEdit4("WrongColor", (float*)&_wrongColor);
 
     // TODO: Zrobiæ okreœlanie notesSprites oraz okreœlanie buttonów
+    /*
+    _timeLimit = node["timeLimit"].as<float>();
+    _correctColor = node["correctColor"].as<vec4>();
+    _wrongColor = node["wrongColor"].as<vec4>();
+
+    _notesSpritesIds = node["notesSpritesIds"].as<vector<size_t>>();
+    for (size_t index = 0ull; index < _notesSpritesIds.size(); ++index)
+    {
+        _notesSpritesIds[index] = SceneManager::GetSprite(_notesSpritesIds[index]);
+    }
+
+    _resultsImagesIds = node["resultsSpritesIds"].as<vector<size_t>>();
+    for (size_t index = 0ull; index < _resultsImagesIds.size(); ++index)
+    {
+        _resultsImagesIds[index] = SceneManager::GetSprite(_resultsImagesIds[index]);
+    }
+    _resultsThresholds = node["resultsThresholds"].as<vector<float>>();
+    _buttonDo = (Button*)SceneManager::GetComponentWithId(node["buttonDo"].as<size_t>());
+    _buttonRe = (Button*)SceneManager::GetComponentWithId(node["buttonRe"].as<size_t>());
+    _buttonMi = (Button*)SceneManager::GetComponentWithId(node["buttonMi"].as<size_t>());
+    _buttonFa = (Button*)SceneManager::GetComponentWithId(node["buttonFa"].as<size_t>());
+    _resultImage = (Image*)SceneManager::GetComponentWithId(node["resultImage"].as<size_t>());
+    _remainingTimeTextTimer = (Text*)SceneManager::GetComponentWithId(node["remainingTimeTextTimer"].as<size_t>());
+    */
 
     return false;
 }

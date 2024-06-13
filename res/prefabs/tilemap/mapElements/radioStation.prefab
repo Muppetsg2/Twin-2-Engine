@@ -80,6 +80,7 @@ GameObjects:
       - id: 4
         enabled: true
         type: Canvas
+        layer: 0
         size: 
           x: 100
           y: 100

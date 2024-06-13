@@ -25,6 +25,7 @@ YAML::Node Canvas::Serialize() const
 {
 	YAML::Node node = Component::Serialize();
 	node["type"] = "Canvas";
+	node["layer"] = _data.layer;
 	node["size"] = _data.rectTransform.size;
 	node["worldSpace"] = _data.worldSpaceCanvas;
 	return node;
@@ -32,8 +33,9 @@ YAML::Node Canvas::Serialize() const
 
 bool Canvas::Deserialize(const YAML::Node& node)
 {
-	if (!node["size"] || !node["worldSpace"] || !Component::Deserialize(node)) return false;
+	if (!node["size"] || !node["worldSpace"] || !node["layer"] || !Component::Deserialize(node)) return false;
 
+	_data.layer = node["layer"].as<int32_t>();
 	_data.rectTransform.size = node["size"].as<vec2>();
 	_data.worldSpaceCanvas = node["worldSpace"].as<bool>();
 

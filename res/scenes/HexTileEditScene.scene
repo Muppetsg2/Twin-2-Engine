@@ -19,6 +19,10 @@ GameObjects:
       id: 1
       position:
         x: 0
+        y: 3
+        z: -0.435000002
+      scale:
+        x: 0
         y: 0
         z: 0
       scale:
@@ -26,9 +30,9 @@ GameObjects:
         y: 1
         z: 1
       rotation:
-        x: 0
-        y: 0
-        z: 0
+        x: 91.0000076
+        y: 29.3996105
+        z: -3.91991216e-06
     components:
       - id: 2
         enabled: true
@@ -54,5 +58,653 @@ GameObjects:
         ssaoSampleRadius: 0.699999988
         ssaoBias: 0.00999999978
         blurMSize: 0
+    children:
+      []
+  - id: 3
+    name: HexTile
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 7
+        enabled: true
+        type: MapHexTile
+        hexTileType: 0
+      - id: 9
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 1
+        materials:
+          - 30
+        transparencyPriority: 0
+      - id: 11
+        enabled: true
+        type: HexagonalCollider
+        colliderId: 0
+        trigger: true
+        static: false
+        layer: 0
+        layersFilter:
+          - 2
+          - 2
+          - 1
+          - 0
+          - 2
+          - 2
+          - 2
+          - 2
+        position:
+          x: 0
+          y: -0.5
+          z: 0
+        baseLength: 0.5
+        halfHeight: 0.5
+        rotation: -90
+      - id: 13
+        enabled: true
+        type: AStarPathfindingNode
+        passable: true
+      - id: 15
+        enabled: true
+        type: HexTile
+        loseInfluenceSpeed: 0.5
+        textuesData: res/scriptableobjects/HexTileTextureData.so
+        borders:
+          - 13
+          - 16
+          - 19
+          - 4
+          - 5
+          - 6
+        borderJoints:
+          - 14
+          - 15
+          - 17
+          - 18
+          - 20
+          - 21
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+    children:
+      - 4
+      - 5
+      - 6
+      - 13
+      - 16
+      - 19
+      - 22
+  - id: 4
+    name: TopRightBorder
+    isStatic: false
+    isActive: false
+    transform:
+      id: 6
+      position:
+        x: 0.204999998
+        y: 0.0500000007
+        z: 0.319999993
+      scale:
+        x: 0.100000001
+        y: 0.100000001
+        z: 0.460000008
+      rotation:
+        x: 0
+        y: -60.0000038
+        z: 0
+    components:
+      - id: 17
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      - 7
+      - 8
+  - id: 7
+    name: TopRightLeftBorderJoint
+    isStatic: false
+    isActive: false
+    transform:
+      id: 8
+      position:
+        x: 0
+        y: 0
+        z: 0.550000012
+      scale:
+        x: 1
+        y: 1
+        z: 0.150000006
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 23
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      []
+  - id: 8
+    name: TopRightRightBorderJoint
+    isStatic: false
+    isActive: false
+    transform:
+      id: 10
+      position:
+        x: 0
+        y: 0
+        z: -0.550000012
+      scale:
+        x: 1
+        y: 1
+        z: 0.150000006
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 27
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      []
+  - id: 5
+    name: MiddleRightBorder
+    isStatic: false
+    isActive: true
+    transform:
+      id: 12
+      position:
+        x: 0.395000011
+        y: 0.0399999991
+        z: 0
+      scale:
+        x: 0.0799999982
+        y: 0.0799999982
+        z: 0.479999989
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 19
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      - 9
+      - 10
+  - id: 9
+    name: MiddleRightLeftBorderJoint
+    isStatic: false
+    isActive: false
+    transform:
+      id: 14
+      position:
+        x: 0
+        y: 0
+        z: 0.550000012
+      scale:
+        x: 1
+        y: 1
+        z: 0.150000006
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 29
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      []
+  - id: 10
+    name: MiddleRightRightBorderJoint
+    isStatic: false
+    isActive: false
+    transform:
+      id: 16
+      position:
+        x: 0
+        y: 0
+        z: -0.550000012
+      scale:
+        x: 1
+        y: 1
+        z: 0.150000006
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 33
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      []
+  - id: 6
+    name: BottomRightBorder
+    isStatic: false
+    isActive: false
+    transform:
+      id: 18
+      position:
+        x: 0.204999998
+        y: 0.0500000007
+        z: -0.319999993
+      scale:
+        x: 0.100000001
+        y: 0.100000001
+        z: 0.460000008
+      rotation:
+        x: 0
+        y: 60.0000038
+        z: 0
+    components:
+      - id: 21
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      - 11
+      - 12
+  - id: 11
+    name: BottomRightLeftBorderJoint
+    isStatic: false
+    isActive: false
+    transform:
+      id: 20
+      position:
+        x: 0
+        y: 0
+        z: 0.550000012
+      scale:
+        x: 1
+        y: 1
+        z: 0.150000006
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 35
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      []
+  - id: 12
+    name: BottomRightRightBorderJoint
+    isStatic: false
+    isActive: false
+    transform:
+      id: 22
+      position:
+        x: 0
+        y: 0
+        z: -0.550000012
+      scale:
+        x: 1
+        y: 1
+        z: 0.150000006
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 39
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      []
+  - id: 13
+    name: BottomLeftBorder
+    isStatic: false
+    isActive: false
+    transform:
+      id: 24
+      position:
+        x: -0.204999998
+        y: 0.0500000007
+        z: -0.319999993
+      scale:
+        x: 0.100000001
+        y: 0.100000001
+        z: 0.460000008
+      rotation:
+        x: 0
+        y: -60.0000038
+        z: 0
+    components:
+      - id: 25
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      - 14
+      - 15
+  - id: 14
+    name: BottomLeftLeftBorderJoint
+    isStatic: false
+    isActive: false
+    transform:
+      id: 26
+      position:
+        x: 0
+        y: 0
+        z: 0.550000012
+      scale:
+        x: 1
+        y: 1
+        z: 0.150000006
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 41
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      []
+  - id: 15
+    name: BottomLeftRightBorderJoint
+    isStatic: false
+    isActive: false
+    transform:
+      id: 28
+      position:
+        x: 0
+        y: 0
+        z: -0.550000012
+      scale:
+        x: 1
+        y: 1
+        z: 0.150000006
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 43
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      []
+  - id: 16
+    name: MiddleLeftBorder
+    isStatic: false
+    isActive: false
+    transform:
+      id: 30
+      position:
+        x: -0.379999995
+        y: 0.0500000007
+        z: 0
+      scale:
+        x: 0.100000001
+        y: 0.100000001
+        z: 0.460000008
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 31
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      - 17
+      - 18
+  - id: 17
+    name: MiddleLeftLeftBorderJoint
+    isStatic: false
+    isActive: false
+    transform:
+      id: 32
+      position:
+        x: 0
+        y: 0
+        z: 0.550000012
+      scale:
+        x: 1
+        y: 1
+        z: 0.150000006
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 44
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      []
+  - id: 18
+    name: MiddleLeftRightBorderJoint
+    isStatic: false
+    isActive: false
+    transform:
+      id: 34
+      position:
+        x: 0
+        y: 0
+        z: -0.550000012
+      scale:
+        x: 1
+        y: 1
+        z: 0.150000006
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 45
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      []
+  - id: 19
+    name: TopLeftBorder
+    isStatic: false
+    isActive: false
+    transform:
+      id: 36
+      position:
+        x: -0.204999998
+        y: 0.0500000007
+        z: 0.319999993
+      scale:
+        x: 0.100000001
+        y: 0.100000001
+        z: 0.460000008
+      rotation:
+        x: 0
+        y: 60.0000038
+        z: 0
+    components:
+      - id: 37
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      - 20
+      - 21
+  - id: 20
+    name: TopLeftLeftBorderJoint
+    isStatic: false
+    isActive: false
+    transform:
+      id: 38
+      position:
+        x: 0
+        y: 0
+        z: 0.550000012
+      scale:
+        x: 1
+        y: 1
+        z: 0.150000006
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 46
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      []
+  - id: 21
+    name: TopLeftRightBorderJoint
+    isStatic: false
+    isActive: false
+    transform:
+      id: 40
+      position:
+        x: 0
+        y: 0
+        z: -0.550000012
+      scale:
+        x: 1
+        y: 1
+        z: 0.150000006
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 47
+        enabled: true
+        type: MeshRenderer
+        isTransparent: false
+        model: 2
+        materials:
+          - 27
+        transparencyPriority: 0
+    children:
+      []
+  - id: 22
+    name: AffectedMark
+    isStatic: false
+    isActive: false
+    transform:
+      id: 42
+      position:
+        x: 0
+        y: 0.0500000007
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 48
+        enabled: true
+        type: MeshRenderer
+        isTransparent: true
+        model: 0
+        materials:
+          - 34
+        transparencyPriority: 1
     children:
       []

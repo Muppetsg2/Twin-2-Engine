@@ -1,5 +1,3 @@
-#include "Player.h"
-#include "Player.h"
 #include <Player.h>
 #include <manager/SceneManager.h>
 #include <Abilities/ConcertAbilityController.h>
@@ -34,6 +32,7 @@ void Player::Initialize() {
     albumCircleImage = SceneManager::FindObjectByName("albumCircle")->GetComponent<Image>();
 
     albumButtonEventHandleId = albumButton->GetOnClickEvent() += [&]() { AlbumCall(); };
+    albumButtonHoveringEventHandleId = albumButton->GetOnHoverEvent() += [&]() { isHoveringAlbumButton = true; };
 
     albumButtonDestroyedEventHandleId = albumButtonObject->OnDestroyedEvent += [&](GameObject* gameObject) {
         if (albumButton)
@@ -204,15 +203,17 @@ void Player::Update() {
     }
 
     // CONCERT ABILITY UI MANAGEMENT
-    if (concertAbility->GetAbilityRemainingTime() > 0.0f)
+    if (concertAbility->IsUsed())
     {
         concertCircleImage->SetFillProgress(100.0f - concertAbility->GetAbilityRemainingTime() / concertAbility->lastingTime * 100.0f);
-        concertText->SetText(std::wstring((L"Concert: " + std::to_wstring(static_cast<int>(concertAbility->GetAbilityRemainingTime())) + L"s")));
+        //concertText->SetText(std::wstring((L"Concert: " + std::to_wstring(static_cast<int>(concertAbility->GetAbilityRemainingTime())) + L"s")));
+        concertText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(concertAbility->GetAbilityRemainingTime())))));
     }
-    else if (concertAbility->GetCooldownRemainingTime() > 0.0f)
+    else if (concertAbility->IsOnCooldown())
     {
         concertCircleImage->SetFillProgress(concertAbility->GetCooldownRemainingTime() / concertAbility->GetCooldown() * 100.0f);
-        concertText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(concertAbility->GetCooldownRemainingTime())) + L"s")));
+        //concertText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(concertAbility->GetCooldownRemainingTime())) + L"s")));
+        concertText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(concertAbility->GetCooldownRemainingTime())))));
     }
     else
     {
@@ -241,12 +242,14 @@ void Player::Update() {
         if (currAlbumTime > 0.0f)
         {
             albumCircleImage->SetFillProgress(100.0f - currAlbumTime / albumTime * 100.0f);
-            albumText->SetText(std::wstring((L"Album: " + std::to_wstring(static_cast<int>(currAlbumTime)) + L"s")));
+            //albumText->SetText(std::wstring((L"Album: " + std::to_wstring(static_cast<int>(currAlbumTime)) + L"s")));
+            albumText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currAlbumTime)))));
         }
         else if (currAlbumCooldown > 0.0f)
         {
             albumCircleImage->SetFillProgress(currAlbumCooldown / usedAlbumCooldown * 100.0f);
-            albumText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currAlbumCooldown)) + L"s")));
+            //albumText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currAlbumCooldown)) + L"s")));
+            albumText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currAlbumCooldown)))));
         }
         else
         {
@@ -265,12 +268,14 @@ void Player::Update() {
         if (currFansTime > 0.0f)
         {
             fansMeetingCircleImage->SetFillProgress(100.0f - currFansTime / fansTime * 100.0f);
-            fansMeetingText->SetText(std::wstring((L"Fans Meeting: " + std::to_wstring(static_cast<int>(currFansTime)) + L"s")));
+            //fansMeetingText->SetText(std::wstring((L"Fans Meeting: " + std::to_wstring(static_cast<int>(currFansTime)) + L"s")));
+            fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currFansTime)))));
         }
         else if (currFansCooldown > 0.0f)
         {
             fansMeetingCircleImage->SetFillProgress(currFansCooldown / usedFansCooldown * 100.0f);
-            fansMeetingText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currFansCooldown)) + L"s")));
+            //fansMeetingText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currFansCooldown)) + L"s")));
+            fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currFansCooldown)))));
         }
         else
         {
@@ -284,9 +289,9 @@ void Player::Update() {
             fansMeetingText->SetText(std::wstring((L"Fans Meeting\n" + std::to_wstring(static_cast<int>(fansRequiredMoney)) + L"$")));
         }
         
-        // FANS MEETING INTERFACE ELEMENT
         if (GameManager::instance->gameStarted)
         {
+            // FANS MEETING INTERFACE ELEMENT
             if (isHoveringFansMeetingButton && !isShowingFansMeetingAffectedTiles)
             {
                 ShowAffectedTiles();
@@ -296,22 +301,44 @@ void Player::Update() {
                 HideAffectedTiles();
             }
             isHoveringFansMeetingButton = false;
-        }
 
-        // CONCERT INTERFACE ELEMENT
-        if (GameManager::instance->gameStarted && !concertAbility->IsUsed() && !concertAbility->IsOnCooldown())
-        {
-            if (isHoveringConcertButton && !isShowingConcertPossible)
+            // CONCERT INTERFACE ELEMENT
+            if (!concertAbility->IsUsed() && !concertAbility->IsOnCooldown())
             {
-                PopularityGainingBonusBarController::Instance()->AddPossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
-                isShowingConcertPossible = true;
+                if (isHoveringConcertButton && !isShowingConcertPossible)
+                {
+                    PopularityGainingBonusBarController::Instance()->AddPossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
+                    isShowingConcertPossible = true;
+                }
+                else if (!isHoveringConcertButton && isShowingConcertPossible)
+                {
+                    PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
+                    isShowingConcertPossible = false;
+                }
+                isHoveringConcertButton = false;
             }
-            else if (!isHoveringConcertButton && isShowingConcertPossible)
+
+            // ALBUM INTERFACE ELEMENT
+            if (currAlbumTime <= 0.0f && currAlbumCooldown <= 0.0f)
             {
-                PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
-                isShowingConcertPossible = false;
+                if (isHoveringAlbumButton && !isShowingAlbumPossible)
+                {
+                    for (HexTile* tile : OwnTiles)
+                    {
+                        tile->EnableAlbumAffected();
+                    }
+                    isShowingAlbumPossible = true;
+                }
+                else if (!isHoveringAlbumButton && isShowingAlbumPossible)
+                {
+                    for (HexTile* tile : OwnTiles)
+                    {
+                        tile->DisableAlbumAffected();
+                    }
+                    isShowingAlbumPossible = false;
+                }
+                isHoveringAlbumButton = false;
             }
-            isHoveringConcertButton = false;
         }
 
         if (move != nullptr) {

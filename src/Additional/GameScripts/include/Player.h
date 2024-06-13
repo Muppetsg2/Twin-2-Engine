@@ -48,6 +48,9 @@ private:
     Twin2Engine::UI::Image* albumCircleImage;
     size_t albumButtonEventHandleId;
     size_t albumButtonDestroyedEventHandleId;
+    size_t albumButtonHoveringEventHandleId;
+    bool isHoveringAlbumButton = false;
+    bool isShowingAlbumPossible = false;
     // FansMeeting
     Twin2Engine::UI::Text* fansMeetingText;
     Twin2Engine::UI::Button* fansMeetingButton;
@@ -75,6 +78,7 @@ private:
     glm::vec4 _abilityCooldownColor;
     glm::vec4 _abilityActiveColor;
 
+    // FANS MEETING
     std::list<HexTile*> affectedTiles;
     void ShowAffectedTiles();
     void HideAffectedTiles();

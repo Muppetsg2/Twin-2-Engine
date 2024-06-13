@@ -34,7 +34,8 @@ void HexTile::TakeOver()
 		percentage -= Time::GetDeltaTime() * takeOverSpeed;
 		if (percentage <= 0.f) {
 			percentage = 0.f;
-			SetOwnerEntity(nullptr);
+			SetOwnerEntity(nullptr); 
+			DisableAlbumAffected();
 		}
 	}
 	else {
@@ -327,6 +328,7 @@ void HexTile::CheckRoundPattern()
 		if (percentage < _takingStage1)
 			percentage = 0.5f * (_takingStage1 + _takingStage2);
 		//percentage = 100.0f;
+		DisableAlbumAffected();
 		UpdateTileColor();
 	}
 }
@@ -472,6 +474,16 @@ void HexTile::EnableAffected()
 void HexTile::DisableAffected()
 {
 	GetTransform()->GetChildAt(0ull)->GetGameObject()->SetActive(false);
+}
+
+void HexTile::EnableAlbumAffected()
+{
+	// TODO: Tu ma byæ w³¹czenie particle systemu.
+}
+
+void HexTile::DisableAlbumAffected()
+{
+	// TODO: Tu ma byæ wy³¹czenie particle systemu.
 }
 
 void HexTile::BadNote()

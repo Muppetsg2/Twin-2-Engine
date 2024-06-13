@@ -451,6 +451,8 @@ void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 			{
 				t->UpdateBorders();
 			}
+
+			particleGenerator->active = ownerEntity->OwnTiles.front()->particleGenerator->active;
 		}
 
 		UpdateBorderColor();

@@ -33,13 +33,14 @@ class PlayerMovement : public Component {
 	private:
 		Player* _player;
 
-		HexTile* _pointedTile = nullptr;
 		HexTile* _checkedTile = nullptr;
+
+		AStar::AStarPath* _showedPath = nullptr;
+		std::vector<HexTile*> _showedPathTiles = std::vector<HexTile*>();
+
+
 		HexTile* destinatedTile = nullptr;
 
-		Twin2Engine::Core::GameObject* _playerDestinationMarker = nullptr;
-		//Twin2Engine::Core::Prefab* _prefabPlayerDestinationMarker = nullptr;
-		float _destinationMarkerHeightOverSurface = 0.5f;
 
 		HexTile* tempDestTile;
 		glm::vec3 tempDest;
@@ -62,6 +63,9 @@ class PlayerMovement : public Component {
 		void DrawLine(glm::vec3 startPos, glm::vec3 endPos);
 			
 	public:
+		Twin2Engine::Core::GameObject* _playerDestinationMarker = nullptr;
+		HexTile* _pointedTile = nullptr;
+		float _destinationMarkerHeightOverSurface = 0.5f;
 		//Moving
 
 		bool reachEnd = true;

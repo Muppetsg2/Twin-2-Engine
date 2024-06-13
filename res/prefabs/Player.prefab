@@ -65,7 +65,7 @@ Root:
       enabled: true
       type: PlayerMovement
       speed: 1.0
-      maxSteps: 5
+      maxSteps: 3
       nextWaypointDistance: 0.05
       heightOverSurface: 0
       prefabPlayerDestinationMarker: 0

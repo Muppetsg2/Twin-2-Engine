@@ -168,7 +168,7 @@ void PlayerMovement::Update() {
             SPDLOG_INFO("COL_ID: {}", raycastHit.collider->colliderId);
             HexTile* hexTile = raycastHit.collider->GetGameObject()->GetComponent<HexTile>();
             
-            if (hexTile != _pointedTile)
+            if (hexTile != _player->CurrTile && hexTile != _pointedTile)
             {
                 if (hexTile)
                 {
@@ -186,12 +186,30 @@ void PlayerMovement::Update() {
                     {
                         _pointedTile = nullptr;
                         _playerDestinationMarker->SetActive(false);
+                        if (_showedPathTiles.size())
+                        {
+                            size_t showedPathTilesSize = _showedPathTiles.size();
+                            for (size_t index = 0ull; index < showedPathTilesSize; ++index)
+                            {
+                                _showedPathTiles[index]->DisableAffected();
+                            }
+                            _showedPathTiles.clear();
+                        }
                     }
                 }
                 else
                 {
                     _pointedTile = nullptr;
                     _playerDestinationMarker->SetActive(false);
+                    if (_showedPathTiles.size())
+                    {
+                        size_t showedPathTilesSize = _showedPathTiles.size();
+                        for (size_t index = 0ull; index < showedPathTilesSize; ++index)
+                        {
+                            _showedPathTiles[index]->DisableAffected();
+                        }
+                        _showedPathTiles.clear();
+                    }
                 }
             }
 
@@ -199,12 +217,30 @@ void PlayerMovement::Update() {
             {
                 SetDestination(_pointedTile);
                 _playerDestinationMarker->SetActive(false);
+                if (_showedPathTiles.size())
+                {
+                    size_t showedPathTilesSize = _showedPathTiles.size();
+                    for (size_t index = 0ull; index < showedPathTilesSize; ++index)
+                    {
+                        _showedPathTiles[index]->DisableAffected();
+                    }
+                    _showedPathTiles.clear();
+                }
             }
         }
         else
         {
             _pointedTile = nullptr;
             _playerDestinationMarker->SetActive(false);
+            if (_showedPathTiles.size())
+            {
+                size_t showedPathTilesSize = _showedPathTiles.size();
+                for (size_t index = 0ull; index < showedPathTilesSize; ++index)
+                {
+                    _showedPathTiles[index]->DisableAffected();
+                }
+                _showedPathTiles.clear();
+            }
         }
     }
 }   
@@ -259,9 +295,6 @@ void PlayerMovement::MoveAndSetDestination(HexTile* dest) {
 
 void PlayerMovement::StartUp(HexTile* startUpTile)
 {
-    _playerDestinationMarker->GetComponent<MeshRenderer>()->AddMaterial(
-                                _player->GetGameObject()->GetComponent<MeshRenderer>()->GetMaterial(0ull));
-
     vec3 startUpPosition = startUpTile->GetTransform()->GetGlobalPosition();
     GetTransform()->SetGlobalPosition(startUpPosition);
     //destinatedTile = dest;
@@ -319,12 +352,54 @@ void PlayerMovement::OnCheckPathComplete(const AStar::AStarPath& p)
     _playerDestinationMarker->GetTransform()->SetGlobalPosition(
         _pointedTile->GetTransform()->GetGlobalPosition() + vec3(0.0f, _destinationMarkerHeightOverSurface, 0.0f));
     _playerDestinationMarker->SetActive(true);
+
+    _showedPath = new AStar::AStarPath(p);
+    vec3 pathPoint;
+    if (_showedPathTiles.size())
+    {
+        size_t showedPathTilesSize = _showedPathTiles.size();
+        for (size_t index = 0ull; index < showedPathTilesSize; ++index)
+        {
+            _showedPathTiles[index]->DisableAffected();
+        }
+    }
+    _showedPathTiles.clear();
+    //_showedPathTiles.reserve(_showedPath->Count());
+    size_t size = _showedPathTiles.size();
+    //while (!p.IsOnEnd())
+    //{
+    //    pathPoint = _showedPath->Next();
+    //    GameObject* tileObj = _tilemap->GetTile(_tilemap->ConvertToTilemapPosition(vec2(pathPoint.x, pathPoint.z)))->GetGameObject();
+    //    if (tileObj)
+    //    {
+    //        HexTile* hexTile = tileObj->GetComponent<HexTile>();
+    //        //if (hexTile)
+    //        //{
+    //        //    hexTile->EnableAffected();
+    //        //    size_t size = _showedPathTiles.size();
+    //        //    _showedPathTiles.push_back(hexTile);
+    //        //}
+    //    }
+    //}
+    delete _showedPath;
+    _showedPath = nullptr;
+    //_showedPathTiles.shrink_to_fit();
 }
 
 void PlayerMovement::OnCheckPathFailure()
 {
     _pointedTile = nullptr;
     _playerDestinationMarker->SetActive(false);
+
+    if (_showedPathTiles.size())
+    {
+        size_t showedPathTilesSize = _showedPathTiles.size();
+        for (size_t index = 0ull; index < showedPathTilesSize; ++index)
+        {
+            _showedPathTiles[index]->DisableAffected();
+        }
+        _showedPathTiles.clear();
+    }
 }
 
 void PlayerMovement::DrawCircle(int steps, float radius) {

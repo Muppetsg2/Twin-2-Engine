@@ -74,6 +74,8 @@ public:
     PlayerInterface* playerInterface;
     PatronData* playersPatron;
 
+    //HexTile* _pointedTile = nullptr;
+
     bool gameStartUp = false;
     bool gameStarted = false;
     bool gameOver = false;

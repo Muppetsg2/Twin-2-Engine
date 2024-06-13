@@ -32,7 +32,6 @@ private:
 
     MoneyGainFromTiles* money;
 
-    PlayerMovement* move;
     bool lost;
 
     AudioComponent* audioComponent = nullptr;
@@ -84,6 +83,7 @@ private:
     void HideAffectedTiles();
 
 public:
+    PlayerMovement* move;
     Playable* fightingPlayable = nullptr;
 
     virtual void Initialize() override;

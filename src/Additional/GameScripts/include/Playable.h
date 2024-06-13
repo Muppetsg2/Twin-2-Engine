@@ -26,6 +26,8 @@ class HexTile;
 //    }
 //};
 
+enum MinigameRPS_Choice { NONE = 0, LAUNCHPAD = 1, GUITAR = 2, DRUM = 3 };
+
 class Playable : public Twin2Engine::Core::Component {
 protected:
     virtual void OnDead() = 0;
@@ -147,6 +149,8 @@ public:
 
     //virtual void OnDead() = 0;
 
+    //Zmianiæ nazwê na fightedPlayable
+    MinigameRPS_Choice minigameChoice = MinigameRPS_Choice::NONE;
     Playable* fightingPlayable;
 
     virtual void LostPaperRockScissors(Playable* playable) = 0;

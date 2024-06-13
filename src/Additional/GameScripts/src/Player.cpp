@@ -194,12 +194,17 @@ void Player::Update() {
     if (Input::IsKeyPressed(KEY::Z))
     {
         SPDLOG_INFO("Using Album");
-        UseAlbum();
+        AlbumCall();
     }
     if (Input::IsKeyPressed(KEY::X))
     {
         SPDLOG_INFO("Using Fans");
-        UseFans();
+        FansMeetingCall();
+    }
+    if (Input::IsKeyPressed(KEY::C))
+    {
+        SPDLOG_INFO("Using Concert");
+        ConcertCall();
     }
 
     // CONCERT ABILITY UI MANAGEMENT
@@ -373,6 +378,10 @@ void Player::AlbumCall() {
         albumButton->SetInteractable(false);
         UseAlbum();
     }
+    else {
+        audioComponent->SetAudio("res/music/Abilities/NotEnoughtRes.mp3");
+        audioComponent->Play();
+    }
 }
 
 void Player::FansMeetingCall() {
@@ -380,6 +389,10 @@ void Player::FansMeetingCall() {
         currFansTime = fansTime;
         fansMeetingButton->SetInteractable(false);
         UseFans();
+    }
+    else {
+        audioComponent->SetAudio("res/music/Abilities/NotEnoughtRes.mp3");
+        audioComponent->Play();
     }
 }
 
@@ -392,6 +405,10 @@ void Player::ConcertCall() {
         PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
         isShowingConcertPossible = false;
         isHoveringConcertButton = false;
+    }
+    else {
+        audioComponent->SetAudio("res/music/Abilities/NotEnoughtRes.mp3");
+        audioComponent->Play();
     }
 }
 

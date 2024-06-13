@@ -20,9 +20,8 @@ using namespace Twin2Engine::UI;
 class MinigameManager : public Component {
 	private:
 		static MinigameManager* lastInstance;
-		enum Choice {NONE = 0, LAUNCHPAD = 1, GUITAR = 2, DRUM = 3};
-		Choice playerChoice = Choice::NONE;
-		Choice enemyChoice = Choice::NONE;
+		//MinigameRPS_Choice playerChoice = MinigameRPS_Choice::NONE;
+		//MinigameRPS_Choice enemyChoice = MinigameRPS_Choice::NONE;
 		int playerWins = 0;
 		int enemyWins = 0;
 

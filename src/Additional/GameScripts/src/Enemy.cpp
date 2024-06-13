@@ -89,7 +89,6 @@ void Enemy::WonPaperRockScissors(Playable* playable)
     //if (startTakingOver) {
     //    CurrTile->StartTakingOver(this);
     //}
-
     // TakeOver
     //enemyStrategy.WonPaperRockScisors(this);
 }

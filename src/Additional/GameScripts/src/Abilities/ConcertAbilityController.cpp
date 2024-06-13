@@ -35,13 +35,6 @@ void ConcertAbilityController::Update() {
             OnEventAbilityCooldownFinished.Invoke(playable);
         }
     }
-
-    if (Input::IsKeyPressed(KEY::C))
-    {
-        SPDLOG_INFO("Using Concert");
-        Use();
-    }
-
 }
 
 bool ConcertAbilityController::Use() 

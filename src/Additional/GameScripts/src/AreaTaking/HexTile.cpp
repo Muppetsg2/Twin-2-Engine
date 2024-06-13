@@ -303,7 +303,10 @@ void HexTile::CheckRoundPattern()
 	{
 		adjacentHexTile = _adjacentTiles[index];
 
-		if (adjacentHexTile->ownerEntity == ownerEntity || !adjacentHexTile->ownerEntity || ownerEntity == adjacentHexTile->occupyingEntity)
+		if (adjacentHexTile->ownerEntity == ownerEntity 
+			|| (occupyingEntity && adjacentHexTile->ownerEntity != occupyingEntity) 
+			|| !adjacentHexTile->ownerEntity 
+			|| ownerEntity == adjacentHexTile->occupyingEntity)
 		{
 			processedTaken = nullptr;
 			break;

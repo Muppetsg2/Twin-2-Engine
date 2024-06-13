@@ -295,9 +295,6 @@ void PlayerMovement::MoveAndSetDestination(HexTile* dest) {
 
 void PlayerMovement::StartUp(HexTile* startUpTile)
 {
-    _playerDestinationMarker->GetComponent<MeshRenderer>()->AddMaterial(
-                                _player->GetGameObject()->GetComponent<MeshRenderer>()->GetMaterial(0ull));
-
     vec3 startUpPosition = startUpTile->GetTransform()->GetGlobalPosition();
     GetTransform()->SetGlobalPosition(startUpPosition);
     //destinatedTile = dest;

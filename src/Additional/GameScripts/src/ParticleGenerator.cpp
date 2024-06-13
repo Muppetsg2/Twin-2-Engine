@@ -35,25 +35,25 @@ void ParticleGenerator::init(float height, float distance, float time, float par
     float yValue = 0.5 * glm::sin(0.7853f) * particleH;
     float zValue = 0.5 * glm::cos(0.7853f) * particleH;
     float particle_quad[] = {
-       -0.5f * particleW, -yValue,  zValue, 1.0f, 0.0f, 0.0f,
-        0.5f * particleW, -yValue,  zValue, 1.0f, 1.0f, 0.0f,
-       -0.5f * particleW,  yValue, -zValue, 1.0f, 0.0f, 1.0f,
+       -0.5f * particleW, -yValue,  zValue, 0.0f, 1.0f,
+        0.5f * particleW, -yValue,  zValue, 1.0f, 1.0f,
+       -0.5f * particleW,  yValue, -zValue, 0.0f, 0.0f,
 
-       -0.5f * particleW,  yValue, -zValue, 1.0f, 0.0f, 1.0f,
-        0.5f * particleW, -yValue,  zValue, 1.0f, 1.0f, 0.0f,
-        0.5f * particleW,  yValue, -zValue, 1.0f, 1.0f, 1.0f
+       -0.5f * particleW,  yValue, -zValue, 0.0f, 0.0f,
+        0.5f * particleW, -yValue,  zValue, 1.0f, 1.0f,
+        0.5f * particleW,  yValue, -zValue, 1.0f, 0.0f
     };
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glBindVertexArray(VAO);
     // fill mesh buffer
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(float), particle_quad, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 30 * sizeof(float), particle_quad, GL_STATIC_DRAW);
     // set mesh attributes
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(4 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glBindVertexArray(0);
 
     g = -2 * height / (0.25 * time * time);

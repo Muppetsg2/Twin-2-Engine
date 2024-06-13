@@ -1,7 +1,7 @@
 #include <ParticleSystemsController.h>
 
 ParticleSystemsController* ParticleSystemsController::instance = nullptr;
-const int ParticleSystemsController::MAX_NUMBER_OF_PARTICLE = 10;
+const int ParticleSystemsController::MAX_NUMBER_OF_PARTICLE = 7;
 
 ParticleSystemsController* ParticleSystemsController::Instance()
 {

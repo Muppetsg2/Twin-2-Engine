@@ -58,6 +58,7 @@ const uint CCW_FILL = 1;
 struct FillData {
     uint type;
     uint subType;
+	float offset;
     float progress;
 	float rotation;
     bool isActive;

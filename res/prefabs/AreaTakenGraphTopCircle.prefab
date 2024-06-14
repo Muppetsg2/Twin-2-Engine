@@ -775,8 +775,8 @@ Sprites:
     texture: 45
     x: 0
     y: 0
-    width: 256
-    height: 256
+    width: 346
+    height: 400
   - id: 15
     alias: redT
     texture: 15
@@ -1150,32 +1150,28 @@ Prefabs:
   - id: 4
     path: res/prefabs/tilemap/mapElements/radioStation.prefab
   - id: 5
-    path: res\prefabs\AreaTakenGraph
-  - id: 6
     path: res/prefabs/tilemap/tiles/blueHexTile.prefab
-  - id: 7
+  - id: 6
     path: res/prefabs/tilemap/mapElements/mountain_3.prefab
-  - id: 8
+  - id: 7
     path: res/prefabs/Human.prefab
-  - id: 9
+  - id: 8
     path: res/prefabs/Player.prefab
-  - id: 10
+  - id: 9
     path: res/prefabs/tilemap/tiles/redHexTile.prefab
-  - id: 11
+  - id: 10
     path: res/prefabs/PlayerDestinationMarker.prefab
-  - id: 12
+  - id: 11
     path: res/prefabs/tilemap/mapSector.prefab
-  - id: 13
+  - id: 12
     path: res/prefabs/tilemap/tiles/hexTile.prefab
-  - id: 14
+  - id: 13
     path: res/prefabs/tilemap/tiles/greenHexTile.prefab
-  - id: 15
-    path: res\prefabs\AreaTakenGraphCircle.prefab
-  - id: 16
+  - id: 14
     path: res/prefabs/tilemap/mapRegion.prefab
 ScriptableObjects: ~
 Root:
-  name: BasicCircle
+  name: GraphTopCircle
   isStatic: false
   isActive: true
   transform:
@@ -1205,8 +1201,9 @@ Root:
         w: 1
       width: 200
       height: 200
-      layer: 3
+      layer: 2
       fillEnabled: true
-      fillType: !<2> 2
+      fillType: !<CIRCLE> 2
       fillSubType: !<CW> 0
+      fillOffset: 0.494539976
       fillProgress: 1

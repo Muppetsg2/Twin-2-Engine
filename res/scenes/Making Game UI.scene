@@ -303,6 +303,7 @@ GameObjects:
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -375,6 +376,7 @@ GameObjects:
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -413,6 +415,7 @@ GameObjects:
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 49
         enabled: true
@@ -459,6 +462,7 @@ GameObjects:
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -583,6 +587,7 @@ GameObjects:
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 50
         enabled: true
@@ -627,6 +632,7 @@ GameObjects:
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 56
         enabled: true
@@ -671,6 +677,7 @@ GameObjects:
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 58
         enabled: true
@@ -715,6 +722,7 @@ GameObjects:
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 60
         enabled: true
@@ -759,6 +767,7 @@ GameObjects:
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 62
         enabled: true
@@ -831,6 +840,7 @@ GameObjects:
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       - 8
@@ -873,6 +883,7 @@ GameObjects:
         fillEnabled: true
         fillType: !<2> 2
         fillSubType: !<CW> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 27
         enabled: true
@@ -918,6 +929,7 @@ GameObjects:
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -999,6 +1011,7 @@ GameObjects:
         fillEnabled: true
         fillType: !<2> 2
         fillSubType: !<CW> 0
+        fillOffset: 0
         fillProgress: 0.604649961
       - id: 24
         enabled: true
@@ -1044,6 +1057,7 @@ GameObjects:
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -1211,6 +1225,7 @@ GameObjects:
         fillEnabled: true
         fillType: !<2> 2
         fillSubType: !<CW> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 30
         enabled: true
@@ -1256,6 +1271,7 @@ GameObjects:
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []

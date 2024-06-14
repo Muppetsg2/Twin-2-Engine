@@ -78,7 +78,7 @@ YAML::Node Image::Serialize() const
 	// FILL
 	node["fillEnabled"] = _data.fill.isActive;
 	node["fillType"] = (uint32_t)_data.fill.type;
-	node["fillType"].SetTag(to_string(_data.fill.type));
+	node["fillType"].SetTag(to_string((FILL_TYPE)_data.fill.type));
 	Tools::Func<string, uint8_t> toString = [](uint8_t value) -> string { return to_string(value); };
 	switch (_data.fill.type) {
 	case (uint8_t)FILL_TYPE::HORIZONTAL:
@@ -93,6 +93,7 @@ YAML::Node Image::Serialize() const
 	}
 	node["fillSubType"] = (uint32_t)_data.fill.subType;
 	node["fillSubType"].SetTag(toString(_data.fill.subType));
+	node["fillOffset"] = _data.fill.offset;
 	node["fillProgress"] = _data.fill.progress;
 
 	return node;
@@ -118,6 +119,7 @@ bool Image::Deserialize(const YAML::Node& node)
 	_data.fill.isActive = node["fillEnabled"].as<bool>();
 	_data.fill.type = node["fillType"].as<uint32_t>();
 	_data.fill.subType = node["fillSubType"].as<uint32_t>();
+	_data.fill.offset = node["fillOffset"].as<float>();
 	_data.fill.progress = node["fillProgress"].as<float>();
 
 	return true;
@@ -264,8 +266,13 @@ void Image::DrawEditor()
 				SetFillSubType(sft);
 			}
 
+			v = _data.fill.offset * 100.f;
+			if (ImGui::SliderFloat(string("Fill Offset##").append(id).c_str(), &v, 0.f, 100.f)) {
+				SetFillOffset(v);
+			}
+
 			v = _data.fill.progress * 100.f;
-			if (ImGui::SliderFloat(string("Fill Progress##").append(id).c_str(), &v, 0.f, 100.f)) {
+			if (ImGui::SliderFloat(string("Fill Progress##").append(id).c_str(), &v, _data.fill.offset * 100.f, 100.f)) {
 				SetFillProgress(v);
 			}
 		}
@@ -347,10 +354,24 @@ void Image::SetFillSubType(uint8_t subType)
 	}
 }
 
+void Image::SetFillOffset(float offset)
+{
+	if (offset > 100.f) offset = 100.f;
+	else if (offset < 0.f) offset = 0.f;
+
+	if (_data.fill.offset != offset * 0.01f) {
+		_data.fill.offset = offset * 0.01f;
+
+		if (_data.fill.progress < _data.fill.offset) {
+			SetFillProgress(_data.fill.offset);
+		}
+	}
+}
+
 void Image::SetFillProgress(float progress)
 {
 	if (progress > 100.f) progress = 100.f;
-	else if (progress < 0.f) progress = 0.f;
+	else if (progress < _data.fill.offset * 100.f) progress = _data.fill.offset * 100.f;
 
 	if (_data.fill.progress != progress * 0.01f) {
 		_data.fill.progress = progress * 0.01f;
@@ -395,6 +416,11 @@ FILL_TYPE Image::GetFillType() const
 uint8_t Image::GetFillSubType() const
 {
 	return _data.fill.subType;
+}
+
+float Image::GetFillOffset() const
+{
+	return _data.fill.offset * 100.f;
 }
 
 float Image::GetFillProgress() const

@@ -47,6 +47,7 @@ const uint CCW_FILL = 1;
 struct FillData {
     uint type;
     uint subType;
+    float offset;
     float progress;
     float rotation;
     bool isActive;
@@ -152,7 +153,7 @@ bool OutOfFill(vec2 pos, vec2 center, vec2 size, FillData fill) {
                 p = 0.00275 * (360.0 - alpha);
             }
         }
-        return p >= fill.progress;
+        return p >= fill.progress || p < fill.offset;
     }
     return false;
 }

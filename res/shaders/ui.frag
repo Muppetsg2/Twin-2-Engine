@@ -131,17 +131,19 @@ bool OutOfFill(vec2 pos, vec2 center, vec2 size, FillData fill) {
             if (alphaX >= 0.0) alpha = alphaY;
             else if (alphaX < 0.0) alpha = 360.0 - alphaY;
 
-            while (fill.rotation >= 360.0)
-                fill.rotation -= 360.0;
-            while (fill.rotation <= -360.0)
-                fill.rotation += 360.0;
+            float rotation = -fill.rotation;
 
-            if (fill.rotation < 0.0 && alpha >= 360.0 + fill.rotation)
-                alpha -= 360.0 + fill.rotation;
-            else if (fill.rotation > 0.0 && alpha < fill.rotation)
-                alpha += 360.0 - fill.rotation;
+            while (rotation >= 360.0)
+                rotation -= 360.0;
+            while (rotation <= -360.0)
+                rotation += 360.0;
+
+            if (rotation < 0.0 && alpha >= 360.0 + rotation)
+                alpha -= 360.0 + rotation;
+            else if (rotation > 0.0 && alpha < rotation)
+                alpha += 360.0 - rotation;
             else
-                alpha -= fill.rotation;
+                alpha -= rotation;
 
             if (fill.subType == CW_FILL) {
                 p = 0.00275 * alpha;

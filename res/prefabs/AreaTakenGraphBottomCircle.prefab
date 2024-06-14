@@ -1150,9 +1150,9 @@ Prefabs:
   - id: 4
     path: res/prefabs/tilemap/mapElements/radioStation.prefab
   - id: 5
-    path: res/prefabs/tilemap/tiles/blueHexTile.prefab
+    path: res\prefabs\AreaTakenGraph
   - id: 6
-    path: res\prefabs\AreaTakenGraphBottomCircle.prefab
+    path: res/prefabs/tilemap/tiles/blueHexTile.prefab
   - id: 7
     path: res/prefabs/tilemap/mapElements/mountain_3.prefab
   - id: 8
@@ -1175,289 +1175,38 @@ Prefabs:
     path: res/prefabs/tilemap/mapRegion.prefab
 ScriptableObjects: ~
 Root:
-  name: AreaTakenGraph
+  name: BasicCircle
   isStatic: false
   isActive: true
   transform:
-    id: 5603
+    id: 5526
     position:
-      x: -735
-      y: 95
+      x: 0
+      y: -25
       z: 0
     scale:
       x: 1
-      y: 0.600000024
+      y: 1
       z: 1
     rotation:
       x: 0
       y: 0
       z: 0
   components:
-    []
-GameObjects:
-  - id: 63
-    name: BasicCircle
-    isStatic: false
-    isActive: true
-    transform:
-      id: 5604
-      position:
-        x: 0
-        y: 0
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 5605
-        enabled: true
-        type: Image
-        isTransparent: true
-        sprite: 14
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 200
-        height: 200
-        layer: 3
-        fillEnabled: true
-        fillType: !<2> 2
-        fillSubType: !<CW> 0
-        fillProgress: 1
-    children:
-      []
-  - id: 64
-    name: BasicCircle
-    isStatic: false
-    isActive: true
-    transform:
-      id: 5606
-      position:
-        x: 0
-        y: 0
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 5607
-        enabled: true
-        type: Image
-        isTransparent: true
-        sprite: 14
-        color:
-          x: 1
-          y: 0
-          z: 0
-          w: 1
-        width: 200
-        height: 200
-        layer: 4
-        fillEnabled: true
-        fillType: !<2> 2
-        fillSubType: !<CW> 0
-        fillProgress: 0.494799972
-    children:
-      []
-  - id: 65
-    name: BasicCircle
-    isStatic: false
-    isActive: true
-    transform:
-      id: 5608
-      position:
-        x: 0
-        y: 0
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 5609
-        enabled: true
-        type: Image
-        isTransparent: true
-        sprite: 14
-        color:
-          x: 0.211550176
-          y: 1
-          z: 0.0501930714
-          w: 1
-        width: 200
-        height: 200
-        layer: 5
-        fillEnabled: true
-        fillType: !<2> 2
-        fillSubType: !<CW> 0
-        fillProgress: 0.328639984
-    children:
-      []
-  - id: 66
-    name: BasicCircle
-    isStatic: false
-    isActive: true
-    transform:
-      id: 5610
-      position:
-        x: 0
-        y: 0
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 5611
-        enabled: true
-        type: Image
-        isTransparent: true
-        sprite: 14
-        color:
-          x: 0
-          y: 0.0154440403
-          z: 1
-          w: 1
-        width: 200
-        height: 200
-        layer: 6
-        fillEnabled: true
-        fillType: !<2> 2
-        fillSubType: !<CW> 0
-        fillProgress: 0.133929998
-    children:
-      []
-  - id: 67
-    name: BasicCircle
-    isStatic: false
-    isActive: true
-    transform:
-      id: 5526
-      position:
-        x: 0
-        y: -25
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 5527
-        enabled: true
-        type: Image
-        isTransparent: true
-        sprite: 14
-        color:
-          x: 0.718146682
-          y: 0.718146682
-          z: 0.718146682
-          w: 1
-        width: 200
-        height: 200
-        layer: 0
-        fillEnabled: true
-        fillType: !<0> 0
-        fillSubType: !<RIGHT> 2
-        fillProgress: 1
-    children:
-      []
-  - id: 68
-    name: BasicCircle
-    isStatic: false
-    isActive: true
-    transform:
-      id: 5528
-      position:
-        x: 0
-        y: -25
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 5529
-        enabled: true
-        type: Image
-        isTransparent: true
-        sprite: 14
-        color:
-          x: 0.729729772
-          y: 0
-          z: 0
-          w: 1
-        width: 200
-        height: 200
-        layer: 1
-        fillEnabled: true
-        fillType: !<0> 0
-        fillSubType: !<RIGHT> 2
-        fillProgress: 0.49455002
-    children:
-      []
-  - id: 69
-    name: BasicCircle
-    isStatic: false
-    isActive: true
-    transform:
-      id: 5530
-      position:
-        x: 0
-        y: -25
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 5531
-        enabled: true
-        type: Image
-        isTransparent: true
-        sprite: 14
-        color:
-          x: 0
-          y: 0.756756783
-          z: 0.0818114951
-          w: 1
-        width: 200
-        height: 200
-        layer: 2
-        fillEnabled: true
-        fillType: !<0> 0
-        fillSubType: !<RIGHT> 2
-        fillProgress: 0.16726999
-    children:
-      []
+    - id: 5527
+      enabled: true
+      type: Image
+      isTransparent: true
+      sprite: 14
+      color:
+        x: 0.718146682
+        y: 0.718146682
+        z: 0.718146682
+        w: 1
+      width: 200
+      height: 200
+      layer: 0
+      fillEnabled: true
+      fillType: !<0> 0
+      fillSubType: !<RIGHT> 2
+      fillProgress: 1

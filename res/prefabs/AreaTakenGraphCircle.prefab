@@ -1150,26 +1150,28 @@ Prefabs:
   - id: 4
     path: res/prefabs/tilemap/mapElements/radioStation.prefab
   - id: 5
-    path: res/prefabs/tilemap/tiles/blueHexTile.prefab
+    path: res\prefabs\AreaTakenGraph
   - id: 6
-    path: res/prefabs/tilemap/mapElements/mountain_3.prefab
+    path: res/prefabs/tilemap/tiles/blueHexTile.prefab
   - id: 7
-    path: res/prefabs/Human.prefab
+    path: res/prefabs/tilemap/mapElements/mountain_3.prefab
   - id: 8
-    path: res/prefabs/Player.prefab
+    path: res/prefabs/Human.prefab
   - id: 9
-    path: res/prefabs/tilemap/tiles/redHexTile.prefab
+    path: res/prefabs/Player.prefab
   - id: 10
-    path: res/prefabs/PlayerDestinationMarker.prefab
+    path: res/prefabs/tilemap/tiles/redHexTile.prefab
   - id: 11
-    path: res/prefabs/tilemap/mapSector.prefab
+    path: res/prefabs/PlayerDestinationMarker.prefab
   - id: 12
-    path: res/prefabs/tilemap/tiles/hexTile.prefab
+    path: res/prefabs/tilemap/mapSector.prefab
   - id: 13
-    path: res/prefabs/tilemap/tiles/greenHexTile.prefab
+    path: res/prefabs/tilemap/tiles/hexTile.prefab
   - id: 14
-    path: res\prefabs\AreaTakenGraphCircle.prefab
+    path: res/prefabs/tilemap/tiles/greenHexTile.prefab
   - id: 15
+    path: res\prefabs\AreaTakenGraphCircle.prefab
+  - id: 16
     path: res/prefabs/tilemap/mapRegion.prefab
 ScriptableObjects: ~
 Root:
@@ -1203,7 +1205,7 @@ Root:
         w: 1
       width: 200
       height: 200
-      layer: 2
+      layer: 3
       fillEnabled: true
       fillType: !<2> 2
       fillSubType: !<CW> 0

@@ -18,6 +18,8 @@ public:
 	}
 };
 
+unordered_map<MeshRenderer*, vector<MeshRenderingManager::RegisteredData>> MeshRenderingManager::_registeredRenderers;
+
 std::unordered_map<Shader*, std::unordered_map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueStatic = std::unordered_map<Shader*, std::unordered_map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
 std::unordered_map<Shader*, std::unordered_map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingManager::MeshRenderingData>>> MeshRenderingManager::_renderQueueStaticTransparent = std::unordered_map<Shader*, std::unordered_map<Material*, std::unordered_map<InstantiatingMesh*, MeshRenderingData>>>();
 
@@ -95,6 +97,148 @@ void MeshRenderingManager::UnloadAll()
 	_depthQueueDynamic.clear();
 }
 
+bool MeshRenderingManager::Register(Twin2Engine::Core::MeshRenderer* meshRenderer)
+{
+	if (!_registeredRenderers.contains(meshRenderer) 
+		&& meshRenderer->GetModel() != nullptr 
+		&& meshRenderer->GetMeshCount() != 0ull 
+		&& meshRenderer->GetMaterialCount() != 0ull)
+	{
+		_registeredRenderers[meshRenderer].reserve(meshRenderer->GetMeshCount());
+
+		InstantiatingMesh* mesh;
+		if (meshRenderer->GetGameObject()->GetIsStatic())
+		{
+			if (meshRenderer->IsTransparent())
+			{
+				for (size_t i = 0; i < meshRenderer->GetMeshCount(); ++i) {
+					mesh = meshRenderer->GetMesh(i);
+					Material* material = meshRenderer->GetMaterial(i);
+
+					auto& queueElement = _renderQueueStaticTransparent[material->GetShader()][material][mesh];
+					queueElement.meshRenderers.push_back(meshRenderer);
+					queueElement.modelTransforms.push_back(meshRenderer->GetTransform()->GetTransformMatrix());
+
+					_registeredRenderers[meshRenderer].emplace_back(&_renderQueueStaticTransparent, material, mesh);
+				}
+			}
+			else
+			{
+				for (size_t i = 0; i < meshRenderer->GetMeshCount(); ++i) {
+					mesh = meshRenderer->GetMesh(i);
+					Material* material = meshRenderer->GetMaterial(i);
+
+					auto& queueElement = _renderQueueStatic[material->GetShader()][material][mesh];
+					queueElement.meshRenderers.push_back(meshRenderer);
+					queueElement.modelTransforms.push_back(meshRenderer->GetTransform()->GetTransformMatrix());
+
+					_registeredRenderers[meshRenderer].emplace_back(&_renderQueueStatic, material, mesh);
+				}
+				_flags.IsStaticChanged = true;
+			}
+		}
+		else
+		{
+			if (meshRenderer->IsTransparent())
+			{
+				//SPDLOG_DEBUG("Dodanie transparent");
+				for (size_t i = 0; i < meshRenderer->GetMeshCount(); ++i) {
+					mesh = meshRenderer->GetMesh(i);
+					Material* material = meshRenderer->GetMaterial(i);
+
+					auto& queueElement = _renderQueueDynamicTransparent[material->GetShader()][material][mesh];
+					queueElement.meshRenderers.push_back(meshRenderer);
+					queueElement.modelTransforms.push_back(meshRenderer->GetTransform()->GetTransformMatrix());
+
+					_registeredRenderers[meshRenderer].emplace_back(&_renderQueueDynamicTransparent, material, mesh);
+				}
+			}
+			else
+			{
+				for (size_t i = 0; i < meshRenderer->GetMeshCount(); ++i) {
+					mesh = meshRenderer->GetMesh(i);
+					Material* material = meshRenderer->GetMaterial(i);
+
+					auto& queueElement = _renderQueueDynamic[material->GetShader()][material][mesh];
+					queueElement.meshRenderers.push_back(meshRenderer);
+					queueElement.modelTransforms.push_back(meshRenderer->GetTransform()->GetTransformMatrix());
+
+					_registeredRenderers[meshRenderer].emplace_back(&_renderQueueDynamic, material, mesh);
+				}
+			}
+		}
+		return true;
+	}
+
+	return false;
+}
+
+bool MeshRenderingManager::Unregister(Twin2Engine::Core::MeshRenderer* meshRenderer)
+{
+	if (_registeredRenderers.contains(meshRenderer))
+	{
+		vector<RegisteredData>& registerQueues = _registeredRenderers[meshRenderer];
+		Material* material = nullptr;
+		InstantiatingMesh* mesh = nullptr;
+
+		size_t size = registerQueues.size();
+		for (size_t index = 0ull; index < size; ++size)
+		{
+			//auto& meshRenderingData = _renderQueueStaticTransparent[material->GetShader()][material][mesh];
+			material = registerQueues[index].material;
+			mesh = registerQueues[index].mesh;
+			auto& renderingQueue = *(registerQueues[index].renderingQueue);
+			auto& meshRenderingData = renderingQueue[material->GetShader()][material][mesh];
+
+			size_t pos = meshRenderingData.meshRenderers.size();
+			size_t size = pos;
+			for (size_t z = 0; z < size; ++z)
+			{
+				if (meshRenderingData.meshRenderers[z] == meshRenderer)
+				{
+					pos = z;
+					break;
+				}
+			}
+
+			if (meshRenderingData.meshRenderers.size() > pos) {
+				//if ((meshRenderingData.meshRenderers.size() - 1ull) == pos)
+				//	meshRenderingData.meshRenderers.pop_back();
+				//else
+					meshRenderingData.meshRenderers.erase(meshRenderingData.meshRenderers.cbegin() + pos);
+			}
+
+			if (meshRenderingData.modelTransforms.size() > pos) {
+				//if ((meshRenderingData.modelTransforms.size() - 1ull) == pos)
+				//	meshRenderingData.modelTransforms.pop_back();
+				//else
+					meshRenderingData.modelTransforms.erase(meshRenderingData.modelTransforms.cbegin() + pos);
+			}
+
+			if (meshRenderingData.meshRenderers.size() == 0) {
+				renderingQueue[material->GetShader()][material].erase(mesh);
+
+				if (renderingQueue[material->GetShader()][material].size() == 0) {
+					renderingQueue[material->GetShader()].erase(material);
+
+					if (renderingQueue[material->GetShader()].size() == 0) {
+						renderingQueue.erase(material->GetShader());
+					}
+				}
+			}
+
+		}
+		if (registerQueues[0ull].renderingQueue == &_renderQueueStatic)
+		{
+			_flags.IsStaticChanged = true;
+		}
+		_registeredRenderers.erase(meshRenderer);
+		return true;
+	}
+	return false;
+}
+
+//*
 bool MeshRenderingManager::RegisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer)
 {
 	if (meshRenderer->GetModel() != nullptr && meshRenderer->GetMaterialCount() != 0)
@@ -602,7 +746,7 @@ bool MeshRenderingManager::RegisterDynamic(Twin2Engine::Core::MeshRenderer* mesh
 
 bool MeshRenderingManager::UnregisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer)
 {
-	if (meshRenderer->GetModel() != nullptr && meshRenderer->GetModel().GetMeshCount() != 0 && meshRenderer->GetMaterialCount() != 0) // && !meshRenderer->IsMaterialError()
+	if (meshRenderer->GetModel() != nullptr && meshRenderer->GetModel().GetMeshCount() != 0 && meshRenderer->GetMaterialCount() != 0 && !meshRenderer->IsMaterialError())
 	{
 		// MAMY WSZYSTKIE DANE WIEC PRZECHODZIMY PO KAZDYM MESHU I GO WYREJESTROWUJEMY
 		InstantiatingMesh* mesh;
@@ -1036,6 +1180,7 @@ bool MeshRenderingManager::UnregisterDynamic(Twin2Engine::Core::MeshRenderer* me
 
 	return false;
 }
+/**/
 
 #if TRACY_PROFILER
 const char* const tracey_UpdateStatic = "UpdatingingStaticMeshes";
@@ -1737,6 +1882,7 @@ void MeshRenderingManager::Render()
 #if TRACY_PROFILER
 	FrameMarkStart(tracey_RenderStatic);
 #endif
+	//glBindBufferBase(GL_UNIFORM_BUFFER, BINDING_POINT_MATERIAL_INPUT, _materialInputUBO);
 
 #pragma region RENDERING_STATIC_OBJECTS
 
@@ -1751,7 +1897,7 @@ void MeshRenderingManager::Render()
 #if MATERIAL_INPUT_SINGLE_UBO
 			size_t size = 0;
 			//const auto& data = materialPair.first.GetMaterialParameters()->GetData();
-			const auto& materialParameters = materialPair.first.GetMaterialParameters();
+			const auto& materialParameters = materialPair.first->GetMaterialParameters();
 #if USE_NAMED_BUFFER_SUBDATA
 			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
 			//glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());
@@ -1938,7 +2084,7 @@ void MeshRenderingManager::Render()
 #if MATERIAL_INPUT_SINGLE_UBO
 			size_t size = 0;
 			//const auto& data = materialPair.first.GetMaterialParameters()->GetData();
-			const auto& materialParameters = materialPair.first.GetMaterialParameters();
+			const auto& materialParameters = materialPair.first->GetMaterialParameters();
 #if USE_NAMED_BUFFER_SUBDATA
 			//ASSIGNING UBO ASSOCIATED WITH MATERIAL INPUT
 			//glNamedBufferSubData(_materialInputUBO, size, data.size(), data.data());

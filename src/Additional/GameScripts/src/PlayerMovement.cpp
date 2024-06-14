@@ -1,4 +1,3 @@
-#include "PlayerMovement.h"
 #include <PlayerMovement.h>
 #include <physic/CollisionManager.h>
 #include <physic/Ray.h>
@@ -24,6 +23,7 @@ void PlayerMovement::Initialize() {
 	//seeker = GetGameObject()->GetComponent<Seeker>();
     _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
 
+    _player = GetGameObject()->GetComponent<Player>();
     //OnFinishMoving.AddCallback([](GameObject* playerGO, HexTile* destHexTile) {
     //    Playable* occupyingEntity = destHexTile->occupyingEntity;
     //    if (occupyingEntity != nullptr) {
@@ -48,81 +48,81 @@ void PlayerMovement::Update() {
     Transform* transform = GetTransform();
     glm::vec3 position = transform->GetGlobalPosition();
 
-    if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive)
-    {
-        DrawCircle(steps, radius);
+    //if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive)
+    //{
+    //    DrawCircle(steps, radius);
+    //
+    //    if (CollisionManager::Instance()->Raycast(ray, raycastHit))
+    //    {
+    //        if (InCircle(raycastHit.position))
+    //        {
+    //            DrawLine(position, glm::vec3(raycastHit.position.x, position.y, raycastHit.position.z));
+    //        }
+    //        else
+    //        {
+    //            //lineRenderer->positionCount = 0;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        //lineRenderer->positionCount = 0;
+    //    }
+    //}
+    //else
+    //{
+    //    //lineRenderer->positionCount = 0;
+    //    //circleRenderer->positionCount = 0;
+    //}
 
-        if (CollisionManager::Instance()->Raycast(ray, raycastHit))
-        {
-            if (InCircle(raycastHit.position))
-            {
-                DrawLine(position, glm::vec3(raycastHit.position.x, position.y, raycastHit.position.z));
-            }
-            else
-            {
-                //lineRenderer->positionCount = 0;
-            }
-        }
-        else
-        {
-            //lineRenderer->positionCount = 0;
-        }
-    }
-    else
-    {
-        //lineRenderer->positionCount = 0;
-        //circleRenderer->positionCount = 0;
-    }
-
-    if (GameManager::instance->gameStarted && Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT) && reachEnd && !GameManager::instance->minigameActive)
-    {
-        if (CollisionManager::Instance()->Raycast(ray, raycastHit))
-        {
-            SPDLOG_INFO("COL_ID: {}", raycastHit.collider->colliderId);
-            HexTile* hexTile = raycastHit.collider->GetGameObject()->GetComponent<HexTile>();
-            MapHexTile* mapHexTile = hexTile->GetMapHexTile();
-            //if (raycastHit.transform != null && raycastHit.transform.gameObject.TryGetComponent(out HexTile hexTile) && hexTile.Type != TileType.Mountain && !(hexTile.Type == TileType.RadioStation && hexTile.currCooldown > 0f) && !hexTile.IsFighting)
-            SPDLOG_INFO("Player destination HexTileType: {}", hexTile->isFighting);
-            if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && hexTile->currCooldown > 0.0f) && !hexTile->isFighting)
-            {
-                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                //if (!EventSystem.current.IsPointerOverGameObject())
-                {
-                    /*
-                    if (!GameManager.instance.gameStarted)
-                    {
-                        transform.position = hexTile.sterowiecPos;
-                        OnStartMoving?.Invoke(gameObject, hexTile);
-                        destinatedTile = hexTile;
-                    }
-                    else if (InCircle(raycastHit.transform.position))
-                    {
-                        if (seeker.IsDone())
-                        {
-                            tempDest = raycastHit.transform.position;
-                            tempDest.y = hexTile.sterowiecPos.y;
-                            seeker.StartPath(transform.position, tempDest, OnPathComplete);
-                            tempDestTile = hexTile;
-                        }
-                    }
-                    */
-
-                    SetDestination(hexTile);
-                    position = transform->GetGlobalPosition();
-                }
-            }
-            //else if (GameManager::instance->gameStarted && raycastHit.transform != null && raycastHit.transform.gameObject.TryGetComponent(out HexTile t2))
-            else if (GameManager::instance->gameStarted)
-            {
-                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                //HUDInfo obj = FindObjectOfType<HUDInfo>();
-                //if (obj != null)
-                //{
-                //    obj.SetInfo("You cannot enter this field.", 1.5f);
-                //}
-            }
-        }
-    }
+    //if (GameManager::instance->gameStarted && Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT) && reachEnd && !GameManager::instance->minigameActive)
+    //{
+    //    if (CollisionManager::Instance()->Raycast(ray, raycastHit))
+    //    {
+    //        SPDLOG_INFO("COL_ID: {}", raycastHit.collider->colliderId);
+    //        HexTile* hexTile = raycastHit.collider->GetGameObject()->GetComponent<HexTile>();
+    //        MapHexTile* mapHexTile = hexTile->GetMapHexTile();
+    //        //if (raycastHit.transform != null && raycastHit.transform.gameObject.TryGetComponent(out HexTile hexTile) && hexTile.Type != TileType.Mountain && !(hexTile.Type == TileType.RadioStation && hexTile.currCooldown > 0f) && !hexTile.IsFighting)
+    //        SPDLOG_INFO("Player destination HexTileType: {}", hexTile->isFighting);
+    //        if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && hexTile->currCooldown > 0.0f) && !hexTile->isFighting)
+    //        {
+    //            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //            //if (!EventSystem.current.IsPointerOverGameObject())
+    //            {
+    //                /*
+    //                if (!GameManager.instance.gameStarted)
+    //                {
+    //                    transform.position = hexTile.sterowiecPos;
+    //                    OnStartMoving?.Invoke(gameObject, hexTile);
+    //                    destinatedTile = hexTile;
+    //                }
+    //                else if (InCircle(raycastHit.transform.position))
+    //                {
+    //                    if (seeker.IsDone())
+    //                    {
+    //                        tempDest = raycastHit.transform.position;
+    //                        tempDest.y = hexTile.sterowiecPos.y;
+    //                        seeker.StartPath(transform.position, tempDest, OnPathComplete);
+    //                        tempDestTile = hexTile;
+    //                    }
+    //                }
+    //                */
+    //
+    //                SetDestination(hexTile);
+    //                position = transform->GetGlobalPosition();
+    //            }
+    //        }
+    //        //else if (GameManager::instance->gameStarted && raycastHit.transform != null && raycastHit.transform.gameObject.TryGetComponent(out HexTile t2))
+    //        else if (GameManager::instance->gameStarted)
+    //        {
+    //            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //            //HUDInfo obj = FindObjectOfType<HUDInfo>();
+    //            //if (obj != null)
+    //            //{
+    //            //    obj.SetInfo("You cannot enter this field.", 1.5f);
+    //            //}
+    //        }
+    //    }
+    //}
 
     if (!reachEnd) {
         position = transform->GetGlobalPosition();
@@ -159,6 +159,88 @@ void PlayerMovement::Update() {
             //transform->SetGlobalPosition(glm::vec3(glm::mix(position, tempWaypointPos, 0.5f)) + vec3(0.0f, 0.5f, 0.0f));
             float walk_dist = Time::GetDeltaTime() * speed;
             transform->Translate(glm::normalize(_waypoint - position) * walk_dist);
+        }
+    }
+    else if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive)
+    {
+        if (CollisionManager::Instance()->Raycast(ray, raycastHit))
+        {
+            SPDLOG_INFO("COL_ID: {}", raycastHit.collider->colliderId);
+            HexTile* hexTile = raycastHit.collider->GetGameObject()->GetComponent<HexTile>();
+            
+            if (hexTile != _player->CurrTile && hexTile != _pointedTile)
+            {
+                if (hexTile)
+                {
+                    MapHexTile* mapHexTile = hexTile->GetMapHexTile();
+
+                    if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && hexTile->currCooldown > 0.0f) && !hexTile->isFighting)
+                    {
+                        CheckDestination(hexTile);
+                        //_pointedTile = hexTile;
+                        //_playerDestinationMarker->GetTransform()->SetGlobalPosition(
+                        //                _pointedTile->GetTransform()->GetGlobalPosition() + vec3(0.0f, _destinationMarkerHeightOverSurface, 0.0f));
+                        //_playerDestinationMarker->SetActive(true);
+                    }
+                    else
+                    {
+                        _pointedTile = nullptr;
+                        _playerDestinationMarker->SetActive(false);
+                        if (_showedPathTiles.size())
+                        {
+                            size_t showedPathTilesSize = _showedPathTiles.size();
+                            for (size_t index = 0ull; index < showedPathTilesSize; ++index)
+                            {
+                                _showedPathTiles[index]->DisableAffected();
+                            }
+                            _showedPathTiles.clear();
+                        }
+                    }
+                }
+                else
+                {
+                    _pointedTile = nullptr;
+                    _playerDestinationMarker->SetActive(false);
+                    if (_showedPathTiles.size())
+                    {
+                        size_t showedPathTilesSize = _showedPathTiles.size();
+                        for (size_t index = 0ull; index < showedPathTilesSize; ++index)
+                        {
+                            _showedPathTiles[index]->DisableAffected();
+                        }
+                        _showedPathTiles.clear();
+                    }
+                }
+            }
+
+            if (_pointedTile && Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT))
+            {
+                SetDestination(_pointedTile);
+                _playerDestinationMarker->SetActive(false);
+                if (_showedPathTiles.size())
+                {
+                    size_t showedPathTilesSize = _showedPathTiles.size();
+                    for (size_t index = 0ull; index < showedPathTilesSize; ++index)
+                    {
+                        _showedPathTiles[index]->DisableAffected();
+                    }
+                    _showedPathTiles.clear();
+                }
+            }
+        }
+        else
+        {
+            _pointedTile = nullptr;
+            _playerDestinationMarker->SetActive(false);
+            if (_showedPathTiles.size())
+            {
+                size_t showedPathTilesSize = _showedPathTiles.size();
+                for (size_t index = 0ull; index < showedPathTilesSize; ++index)
+                {
+                    _showedPathTiles[index]->DisableAffected();
+                }
+                _showedPathTiles.clear();
+            }
         }
     }
 }   
@@ -233,23 +315,90 @@ bool PlayerMovement::InCircle(glm::vec3 point) {
 void PlayerMovement::SetDestination(HexTile* dest) {
     glm::vec3 destPos = dest->GetTransform()->GetGlobalPosition() + glm::vec3(0.0f, _heightOverSurface, 0.0f);
     
-    if (InCircle(destPos))
+    //if (InCircle(destPos))
+    //{
+    if (!_path || _path->IsOnEnd())
     {
-        if (!_path || _path->IsOnEnd())
+        tempDestTile = dest;
+
+        //if (_info)
+        //{
+        //    delete _info;
+        //}
+        //
+        //_info = new AStarPathfindingInfo(AStarPathfinder::FindPath(GetTransform()->GetGlobalPosition(), dest->GetTransform()->GetGlobalPosition(), maxSteps,
+        //    [&](const AStarPath& path) { OnPathComplete(path); }, [&]() { OnPathFailure(); }));
+        _info = AStarPathfinder::FindPath(GetTransform()->GetGlobalPosition(), dest->GetTransform()->GetGlobalPosition(), maxSteps,
+                [&](const AStarPath& path) { OnPathComplete(path); }, [&]() { OnPathFailure(); });
+
+    }
+    //}
+}
+
+void PlayerMovement::CheckDestination(HexTile* dest)
+{
+    //SPDLOG_INFO("CheckingDestination");
+    if (!_checkingInfo.IsSearching())
+    {
+        _checkedTile = dest;
+        _checkingInfo = AStarPathfinder::FindPath(GetTransform()->GetGlobalPosition(), dest->GetTransform()->GetGlobalPosition(), maxSteps,
+            [&](const AStarPath& path) { OnCheckPathComplete(path); }, [&]() { OnCheckPathFailure(); });
+    }
+}
+
+void PlayerMovement::OnCheckPathComplete(const AStar::AStarPath& p)
+{
+    _pointedTile = _checkedTile;
+    _playerDestinationMarker->GetTransform()->SetGlobalPosition(
+        _pointedTile->GetTransform()->GetGlobalPosition() + vec3(0.0f, _destinationMarkerHeightOverSurface, 0.0f));
+    _playerDestinationMarker->SetActive(true);
+
+    _showedPath = new AStar::AStarPath(p);
+    vec3 pathPoint;
+    if (_showedPathTiles.size())
+    {
+        size_t showedPathTilesSize = _showedPathTiles.size();
+        for (size_t index = 0ull; index < showedPathTilesSize; ++index)
         {
-            tempDestTile = dest;
-
-            //if (_info)
-            //{
-            //    delete _info;
-            //}
-            //
-            //_info = new AStarPathfindingInfo(AStarPathfinder::FindPath(GetTransform()->GetGlobalPosition(), dest->GetTransform()->GetGlobalPosition(), maxSteps,
-            //    [&](const AStarPath& path) { OnPathComplete(path); }, [&]() { OnPathFailure(); }));
-            _info = AStarPathfinder::FindPath(GetTransform()->GetGlobalPosition(), dest->GetTransform()->GetGlobalPosition(), maxSteps,
-                    [&](const AStarPath& path) { OnPathComplete(path); }, [&]() { OnPathFailure(); });
-
+            _showedPathTiles[index]->DisableAffected();
         }
+    }
+    _showedPathTiles.clear();
+    //_showedPathTiles.reserve(_showedPath->Count());
+    size_t size = _showedPathTiles.size();
+    //while (!p.IsOnEnd())
+    //{
+    //    pathPoint = _showedPath->Next();
+    //    GameObject* tileObj = _tilemap->GetTile(_tilemap->ConvertToTilemapPosition(vec2(pathPoint.x, pathPoint.z)))->GetGameObject();
+    //    if (tileObj)
+    //    {
+    //        HexTile* hexTile = tileObj->GetComponent<HexTile>();
+    //        //if (hexTile)
+    //        //{
+    //        //    hexTile->EnableAffected();
+    //        //    size_t size = _showedPathTiles.size();
+    //        //    _showedPathTiles.push_back(hexTile);
+    //        //}
+    //    }
+    //}
+    delete _showedPath;
+    _showedPath = nullptr;
+    //_showedPathTiles.shrink_to_fit();
+}
+
+void PlayerMovement::OnCheckPathFailure()
+{
+    _pointedTile = nullptr;
+    _playerDestinationMarker->SetActive(false);
+
+    if (_showedPathTiles.size())
+    {
+        size_t showedPathTilesSize = _showedPathTiles.size();
+        for (size_t index = 0ull; index < showedPathTilesSize; ++index)
+        {
+            _showedPathTiles[index]->DisableAffected();
+        }
+        _showedPathTiles.clear();
     }
 }
 
@@ -285,6 +434,12 @@ YAML::Node PlayerMovement::Serialize() const
     node["nextWaypointDistance"] = nextWaypointDistance;
     node["heightOverSurface"] = _heightOverSurface;
 
+    //if (_prefabPlayerDestinationMarker != nullptr)
+    //{
+    //    node["prefabPlayerDestinationMarker"] = SceneManager::GetPrefabSaveIdx(_prefabPlayerDestinationMarker->GetId());
+    //}
+    node["destinationMarkerHeightOverSurface"] = _destinationMarkerHeightOverSurface;
+
     return node;
 }
 
@@ -298,6 +453,16 @@ bool PlayerMovement::Deserialize(const YAML::Node& node)
     maxSteps = node["maxSteps"].as<size_t>();
     nextWaypointDistance = node["nextWaypointDistance"].as<float>();
     _heightOverSurface = node["heightOverSurface"].as<float>();
+
+    if (node["prefabPlayerDestinationMarker"])
+    {
+        //_prefabPlayerDestinationMarker = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["prefabPlayerDestinationMarker"].as<size_t>()));
+        _playerDestinationMarker = SceneManager::CreateGameObject(
+            PrefabManager::GetPrefab(SceneManager::GetPrefab(node["prefabPlayerDestinationMarker"].as<size_t>())));
+
+        //_playerDestinationMarker = destinationMarker->GetTransform();
+    }
+    _destinationMarkerHeightOverSurface = node["destinationMarkerHeightOverSurface"].as<float>();
 
     return true;
 }

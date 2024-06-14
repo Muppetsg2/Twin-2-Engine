@@ -950,7 +950,7 @@ GameObjects:
       id: 66
       position:
         x: 0
-        y: 0.0500000007
+        y: 0.05
         z: 0
       scale:
         x: 1

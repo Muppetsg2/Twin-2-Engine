@@ -20,9 +20,8 @@ using namespace Twin2Engine::UI;
 class MinigameManager : public Component {
 	private:
 		static MinigameManager* lastInstance;
-		enum Choice {NONE = 0, LAUNCHPAD = 1, GUITAR = 2, DRUM = 3};
-		Choice playerChoice = Choice::NONE;
-		Choice enemyChoice = Choice::NONE;
+		//MinigameRPS_Choice playerChoice = MinigameRPS_Choice::NONE;
+		//MinigameRPS_Choice enemyChoice = MinigameRPS_Choice::NONE;
 		int playerWins = 0;
 		int enemyWins = 0;
 
@@ -41,7 +40,7 @@ class MinigameManager : public Component {
 		int enemyFieldsNumber = 0;
 		AudioComponent* audioComp = nullptr;
 		void SetupButtons();
-		void PerformTurn();
+		//void PerformTurn();
 
 		std::string colors[7] = { "blue", "red", "green", "purple", "yellow", "cyan", "pink" };
 
@@ -69,6 +68,9 @@ class MinigameManager : public Component {
 		static MinigameManager* GetLastInstance();
 
 		void StartMinigame(Playable* chalanging, Playable* chalanged);
+		void PlayerWon();
+		void PlayerDrawed();
+		void PlayerLost();
 		void FinishMinigame(Playable* winner, Playable* looser);
 
 		virtual void Initialize() override;

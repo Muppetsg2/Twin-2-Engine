@@ -13,10 +13,12 @@ Audio: ~
 Materials:
   - id: 0
     path: res/materials/car/CarMaterial_Blue.material
-Models:
+Models: 
   - id: 0
     path: res/models/car.obj
-Prefabs: ~
+Prefabs: 
+  - id: 0
+    path: res/prefabs/PlayerDestinationMarker.prefab
 ScriptableObjects: ~
 Root:
   name: Player
@@ -63,16 +65,18 @@ Root:
       enabled: true
       type: PlayerMovement
       speed: 1.0
-      maxSteps: 5
+      maxSteps: 3
       nextWaypointDistance: 0.05
       heightOverSurface: 0
+      prefabPlayerDestinationMarker: 0
+      destinationMarkerHeightOverSurface: 0.2
     - id: 4
       enabled: true
       type: ConcertAbilityController
       lastingTime: 10
       moneyRequired: 10
       cooldownTime: 5
-      takingOverSpeed: 50
+      additionalTakingOverSpeed: 30
       moneyFunction: res/scriptableobjects/MoneyFunctionData.so
     - id: 5
       enabled: true
@@ -85,5 +89,6 @@ Root:
       audio: 0
       loop: false
       volume: 1
+      playOnStart: false
   children:
     []

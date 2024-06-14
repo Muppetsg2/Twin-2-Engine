@@ -34,7 +34,6 @@ class HexTile : public Twin2Engine::Core::Component
 	std::vector<HexTile*> _adjacentTiles;
 
 	
-	ParticleGenerator* paricleGeneartor;
 	//Twin2Engine::Core::GameObject* affected;
 
 	void TakeOver();
@@ -45,6 +44,7 @@ class HexTile : public Twin2Engine::Core::Component
 	void CheckRoundPattern();
 public:
 	HexTileTextureData* texturesData;
+	ParticleGenerator* particleGenerator;
 
 
 	bool isFighting = false;
@@ -118,11 +118,14 @@ public:
 	void StopTakingOver(Playable* entity);
 	void StartRemotelyTakingOver(Playable* entity, float multiplier = 1.0f);
 	void StopRemotelyTakingOver(Playable* entity);
+	int GetStage() const;
 
 	Generation::MapHexTile* GetMapHexTile() const;
 
 	void EnableAffected();
 	void DisableAffected();
+	void EnableAlbumAffected();
+	void DisableAlbumAffected();
 
 	virtual YAML::Node Serialize() const override;
 	virtual bool Deserialize(const YAML::Node& node) override;

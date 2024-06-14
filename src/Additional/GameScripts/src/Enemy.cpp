@@ -14,6 +14,9 @@ RadioStationState Enemy::_radioStationState;
 InitState Enemy::_initState;
 
 void Enemy::ChangeState(State<Enemy*>* newState) {
+    if (newState == (&_fightingState)) {
+        SPDLOG_INFO("Enemy wants to fight!");
+    }
     _nextState = newState;
 }
 
@@ -60,8 +63,9 @@ void Enemy::Update()
 
 void Enemy::LostPaperRockScissors(Playable* playable)
 {
+    fightingPlayable = nullptr;
+    minigameChoice = MinigameRPS_Choice::NONE;
     CurrTile->StopTakingOver(this);
-    ChangeState(&_movingState);
 }
 
 void Enemy::WonPaperRockScissors(Playable* playable)
@@ -74,24 +78,18 @@ void Enemy::WonPaperRockScissors(Playable* playable)
     //}
     CurrTile->isFighting = false;
     GameManager::instance->minigameActive = false;
-    //bool startTakingOver = CurrTile->occupyingEntity == playable;
-    playable->LostPaperRockScissors(this);
 
+    fightingPlayable = nullptr;
+    minigameChoice = MinigameRPS_Choice::NONE;
+
+    playable->LostPaperRockScissors(this);
 
     if (CurrTile->ownerEntity == playable) {
         CurrTile->ResetTile();
     }
 
-    playable->CheckIfDead(this);
+    //playable->CheckIfDead(this);
     CurrTile->StartTakingOver(this);
-    ChangeState(&_takingOverState);
-
-    //if (startTakingOver) {
-    //    CurrTile->StartTakingOver(this);
-    //}
-
-    // TakeOver
-    //enemyStrategy.WonPaperRockScisors(this);
 }
 
 void Enemy::LostFansControl(Playable* playable)
@@ -146,7 +144,7 @@ void Enemy::DrawEditor()
     std::string name = std::string("Enemy##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str())) {
 
-        if (Component::DrawInheritedFields()) return;
+        if (Playable::DrawInheritedFields()) return;
 
         // TODO: Zrobic
     }

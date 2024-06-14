@@ -157,6 +157,7 @@ namespace Twin2Engine
 				std::vector<glm::mat4> transformationMatrixes;
 				for (auto& pair : depthQueue) {
 					if (pair.second.size() != 0) {
+						transformationMatrixes.reserve(pair.second.size());
 						for (auto& t : pair.second) {
 							transformationMatrixes.push_back(t->GetTransformMatrix());
 						}

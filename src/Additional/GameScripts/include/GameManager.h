@@ -52,7 +52,7 @@ private:
     int _mapGenerationEventId = -1;
     Generation::MapGenerator* _mapGenerator;
     
-    ParticleGenerator* particleGenerator;
+    //ParticleGenerator* particleGenerator;
     Player* _player;
 public:
     static GameManager* instance;
@@ -73,6 +73,8 @@ public:
 
     PlayerInterface* playerInterface;
     PatronData* playersPatron;
+
+    //HexTile* _pointedTile = nullptr;
 
     bool gameStartUp = false;
     bool gameStarted = false;
@@ -105,6 +107,7 @@ public:
     void GameOver();
 
     void StartGame();
+    Player* GetPlayer() const;
 
     virtual YAML::Node Serialize() const override;
     virtual bool Deserialize(const YAML::Node& node) override;

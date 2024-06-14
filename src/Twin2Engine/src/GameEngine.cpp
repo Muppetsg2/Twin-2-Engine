@@ -192,7 +192,6 @@ void GameEngine::End()
     // Cleanup
     EarlyEnd();
 
-
     PrefabManager::UnloadAll();
     SceneManager::UnloadAll();
     AudioManager::UnloadAll();

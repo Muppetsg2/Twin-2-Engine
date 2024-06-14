@@ -50,14 +50,12 @@ public:
     Twin2Engine::Tools::EventHandler<int> OnWeekTicked;
     Twin2Engine::Tools::EventHandler<int> OnMonthTicked;
     Twin2Engine::Tools::EventHandler<int> OnYearTicked;
+    Twin2Engine::Tools::EventHandler<int, int, int> OnDateTicked;
 
     virtual YAML::Node Serialize() const override;
     virtual bool Deserialize(const YAML::Node& node) override;
 
 #if _DEBUG
-protected:
-    virtual bool DrawInheritedFields() override;
-public:
     virtual void DrawEditor() override;
 #endif
 };

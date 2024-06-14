@@ -13,7 +13,7 @@
 #include <ui/Button.h>
 #include <ui/Image.h>
 
-// TODO: Poprawic RadioStationPlayingController
+// TODO: Repair
 
 class RadioStationPlayingController : public Twin2Engine::Core::Component
 {

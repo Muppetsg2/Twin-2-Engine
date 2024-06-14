@@ -331,11 +331,21 @@ bool MeshRenderer::CheckMaterialsValidation()
 			_next = _next > _addNum[i - 1] ? _addNum[i - 1] : _next;
 			_addNum.erase(_addNum.begin() + i - 1);
 #endif
+		}
+		else if (_materials[i - 1]->GetShader() == nullptr) {
+			res = false;
+			_materialError = true;
+			Unregister();
+			_materials.erase(_materials.begin() + i - 1);
 
+#if _DEBUG
+			_next = _next > _addNum[i - 1] ? _addNum[i - 1] : _next;
+			_addNum.erase(_addNum.begin() + i - 1);
+#endif
 		}
 	}
 
-	if (_loadedModel != 0) Register();
+	if (_materials.size() != 0 && _loadedModel != 0) Register();
 
 	return res;
 }
@@ -577,7 +587,7 @@ Material* MeshRenderer::GetMaterial(size_t index) const
 
 void MeshRenderer::AddMaterial(Material* material)
 {
-	if (material == nullptr) return;
+	if (material == nullptr || material->GetShader() == nullptr) return;
 	Unregister();
 
 #if _DEBUG
@@ -600,13 +610,13 @@ void MeshRenderer::AddMaterial(size_t materialId)
 
 void MeshRenderer::SetMaterial(size_t index, Material* material)
 {
-	if (_materials[index] == material || index >= _materials.size() || material == nullptr) return;
+	if (_materials[index] == material || index >= _materials.size() || material == nullptr || material->GetShader() == nullptr) return;
 
 	Unregister();
 
 	_materials[index] = material;
 
-	if (_loadedModel != 0) Register();
+	if (_materials.size() != 0 && _loadedModel != 0) Register();
 }
 
 void MeshRenderer::SetMaterial(size_t index, size_t materialId)

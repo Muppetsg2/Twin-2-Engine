@@ -22,137 +22,143 @@ MinigameManager* MinigameManager::GetLastInstance()
 
 void MinigameManager::SetupButtons()
 {
-	LaunchpadButton->GetOnClickEvent().AddCallback([this]() {
-		if (waitCoroutine != nullptr) {
-			delete waitCoroutine;
-		}
-		waitCoroutine = new Coroutine([this](bool* finish) {
-			player->minigameChoice = MinigameRPS_Choice::NONE;
-			enemy->minigameChoice = MinigameRPS_Choice::NONE;
-			std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-			LaunchpadButton->SetInteractable(true);
-			GuitarButton->SetInteractable(true);
-			DrumButton->SetInteractable(true);
-
-			PlayerSelectionImage->SetColor(glm::vec4(0.0));
-			EnemySelectionImage->SetColor(glm::vec4(0.0));
-
-			if (playerWins > (MaxNumberOfTurns / 2)) {
-				audioComp->SetAudio("res/music/Minigame/Win.mp3");
-				audioComp->Play();
-				WonPanel->SetActive(true);
-				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-				FinishMinigame(player, enemy);
-				WonPanel->SetActive(false);
+	if (LaunchpadButton != nullptr) {
+		LaunchpadButton->GetOnClickEvent().AddCallback([this]() {
+			if (waitCoroutine != nullptr) {
+				delete waitCoroutine;
 			}
-			else if (enemyWins > (MaxNumberOfTurns / 2)) {
-				audioComp->SetAudio("res/music/Minigame/Defeat.mp3");
-				audioComp->Play();
-				LostPanel->SetActive(true);
-				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-				FinishMinigame(enemy, player);
-				LostPanel->SetActive(false);
-			}
+			waitCoroutine = new Coroutine([this](bool* finish) {
+				player->minigameChoice = MinigameRPS_Choice::NONE;
+				enemy->minigameChoice = MinigameRPS_Choice::NONE;
+				std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+				LaunchpadButton->SetInteractable(true);
+				GuitarButton->SetInteractable(true);
+				DrumButton->SetInteractable(true);
+
+				PlayerSelectionImage->SetColor(glm::vec4(0.0));
+				EnemySelectionImage->SetColor(glm::vec4(0.0));
+
+				if (playerWins > (MaxNumberOfTurns / 2)) {
+					audioComp->SetAudio("res/music/Minigame/Win.mp3");
+					audioComp->Play();
+					WonPanel->SetActive(true);
+					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+					FinishMinigame(player, enemy);
+					WonPanel->SetActive(false);
+				}
+				else if (enemyWins > (MaxNumberOfTurns / 2)) {
+					audioComp->SetAudio("res/music/Minigame/Defeat.mp3");
+					audioComp->Play();
+					LostPanel->SetActive(true);
+					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+					FinishMinigame(enemy, player);
+					LostPanel->SetActive(false);
+				}
 			});
 
-		player->minigameChoice = MinigameRPS_Choice::LAUNCHPAD;
-		PlayerSelectionImage->SetColor(glm::vec4(1.0f));
-		PlayerSelectionImage->SetSprite("Launchpad");
-		audioComp->SetAudio("res/music/Minigame/Launchpad.mp3");
-		audioComp->Play();
+			player->minigameChoice = MinigameRPS_Choice::LAUNCHPAD;
+			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
+			PlayerSelectionImage->SetSprite("Launchpad");
+			audioComp->SetAudio("res/music/Minigame/Launchpad.mp3");
+			audioComp->Play();
 
-		LaunchpadButton->SetInteractable(false);
-		GuitarButton->SetInteractable(false);
-		DrumButton->SetInteractable(false);
+			LaunchpadButton->SetInteractable(false);
+			GuitarButton->SetInteractable(false);
+			DrumButton->SetInteractable(false);
 		});
+	}
 
-	GuitarButton->GetOnClickEvent().AddCallback([this]() {
-		if (waitCoroutine != nullptr) {
-			delete waitCoroutine;
-		}
-		waitCoroutine = new Coroutine([this](bool* finish) {
-			player->minigameChoice = MinigameRPS_Choice::NONE;
-			enemy->minigameChoice = MinigameRPS_Choice::NONE;
-			std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-			LaunchpadButton->SetInteractable(true);
-			GuitarButton->SetInteractable(true);
-			DrumButton->SetInteractable(true);
-
-			PlayerSelectionImage->SetColor(glm::vec4(0.0));
-			EnemySelectionImage->SetColor(glm::vec4(0.0));
-
-			if (playerWins > (MaxNumberOfTurns / 2)) {
-				audioComp->SetAudio("res/music/Minigame/Win.mp3");
-				audioComp->Play();
-				WonPanel->SetActive(true);
-				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-				FinishMinigame(player, enemy);
-				WonPanel->SetActive(false);
+	if (GuitarButton != nullptr) {
+		GuitarButton->GetOnClickEvent().AddCallback([this]() {
+			if (waitCoroutine != nullptr) {
+				delete waitCoroutine;
 			}
-			else if (enemyWins > (MaxNumberOfTurns / 2)) {
-				audioComp->SetAudio("res/music/Minigame/Defeat.mp3");
-				audioComp->Play();
-				LostPanel->SetActive(true);
-				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-				FinishMinigame(enemy, player);
-				LostPanel->SetActive(false);
-			}
+			waitCoroutine = new Coroutine([this](bool* finish) {
+				player->minigameChoice = MinigameRPS_Choice::NONE;
+				enemy->minigameChoice = MinigameRPS_Choice::NONE;
+				std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+				LaunchpadButton->SetInteractable(true);
+				GuitarButton->SetInteractable(true);
+				DrumButton->SetInteractable(true);
+
+				PlayerSelectionImage->SetColor(glm::vec4(0.0));
+				EnemySelectionImage->SetColor(glm::vec4(0.0));
+
+				if (playerWins > (MaxNumberOfTurns / 2)) {
+					audioComp->SetAudio("res/music/Minigame/Win.mp3");
+					audioComp->Play();
+					WonPanel->SetActive(true);
+					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+					FinishMinigame(player, enemy);
+					WonPanel->SetActive(false);
+				}
+				else if (enemyWins > (MaxNumberOfTurns / 2)) {
+					audioComp->SetAudio("res/music/Minigame/Defeat.mp3");
+					audioComp->Play();
+					LostPanel->SetActive(true);
+					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+					FinishMinigame(enemy, player);
+					LostPanel->SetActive(false);
+				}
 			});
 
-		player->minigameChoice = MinigameRPS_Choice::GUITAR;
-		PlayerSelectionImage->SetColor(glm::vec4(1.0f));
-		PlayerSelectionImage->SetSprite("Guitar");
-		audioComp->SetAudio("res/music/Minigame/Guitar.mp3");
-		audioComp->Play();
+			player->minigameChoice = MinigameRPS_Choice::GUITAR;
+			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
+			PlayerSelectionImage->SetSprite("Guitar");
+			audioComp->SetAudio("res/music/Minigame/Guitar.mp3");
+			audioComp->Play();
 
-		LaunchpadButton->SetInteractable(false);
-		GuitarButton->SetInteractable(false);
-		DrumButton->SetInteractable(false);
+			LaunchpadButton->SetInteractable(false);
+			GuitarButton->SetInteractable(false);
+			DrumButton->SetInteractable(false);
 		});
+	}
 
-	DrumButton->GetOnClickEvent().AddCallback([this]() {
-		if (waitCoroutine != nullptr) {
-			delete waitCoroutine;
-		}
-		waitCoroutine = new Coroutine([this](bool* finish) {
-			player->minigameChoice = MinigameRPS_Choice::NONE;
-			enemy->minigameChoice = MinigameRPS_Choice::NONE;
-			std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-			LaunchpadButton->SetInteractable(true);
-			GuitarButton->SetInteractable(true);
-			DrumButton->SetInteractable(true);
-
-			PlayerSelectionImage->SetColor(glm::vec4(0.0));
-			EnemySelectionImage->SetColor(glm::vec4(0.0));
-
-			if (playerWins > (MaxNumberOfTurns / 2)) {
-				audioComp->SetAudio("res/music/Minigame/Win.mp3");
-				audioComp->Play();
-				WonPanel->SetActive(true);
-				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-				FinishMinigame(player, enemy);
-				WonPanel->SetActive(false);
+	if (DrumButton != nullptr) {
+		DrumButton->GetOnClickEvent().AddCallback([this]() {
+			if (waitCoroutine != nullptr) {
+				delete waitCoroutine;
 			}
-			else if (enemyWins > (MaxNumberOfTurns / 2)) {
-				audioComp->SetAudio("res/music/Minigame/Defeat.mp3");
-				audioComp->Play();
-				LostPanel->SetActive(true);
-				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-				FinishMinigame(enemy, player);
-				LostPanel->SetActive(false);
-			}
+			waitCoroutine = new Coroutine([this](bool* finish) {
+				player->minigameChoice = MinigameRPS_Choice::NONE;
+				enemy->minigameChoice = MinigameRPS_Choice::NONE;
+				std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+				LaunchpadButton->SetInteractable(true);
+				GuitarButton->SetInteractable(true);
+				DrumButton->SetInteractable(true);
+
+				PlayerSelectionImage->SetColor(glm::vec4(0.0));
+				EnemySelectionImage->SetColor(glm::vec4(0.0));
+
+				if (playerWins > (MaxNumberOfTurns / 2)) {
+					audioComp->SetAudio("res/music/Minigame/Win.mp3");
+					audioComp->Play();
+					WonPanel->SetActive(true);
+					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+					FinishMinigame(player, enemy);
+					WonPanel->SetActive(false);
+				}
+				else if (enemyWins > (MaxNumberOfTurns / 2)) {
+					audioComp->SetAudio("res/music/Minigame/Defeat.mp3");
+					audioComp->Play();
+					LostPanel->SetActive(true);
+					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+					FinishMinigame(enemy, player);
+					LostPanel->SetActive(false);
+				}
 			});
 
-		player->minigameChoice = MinigameRPS_Choice::DRUM;
-		PlayerSelectionImage->SetColor(glm::vec4(1.0f));
-		PlayerSelectionImage->SetSprite("Drum");
-		audioComp->SetAudio("res/music/Minigame/Drum.mp3");
-		audioComp->Play();
+			player->minigameChoice = MinigameRPS_Choice::DRUM;
+			PlayerSelectionImage->SetColor(glm::vec4(1.0f));
+			PlayerSelectionImage->SetSprite("Drum");
+			audioComp->SetAudio("res/music/Minigame/Drum.mp3");
+			audioComp->Play();
 
-		LaunchpadButton->SetInteractable(false);
-		GuitarButton->SetInteractable(false);
-		DrumButton->SetInteractable(false);
+			LaunchpadButton->SetInteractable(false);
+			GuitarButton->SetInteractable(false);
+			DrumButton->SetInteractable(false);
 		});
+	}
 }
 
 void MinigameManager::StartMinigame(Playable* chalanging, Playable* chalanged)
@@ -351,19 +357,19 @@ YAML::Node MinigameManager::Serialize() const
 	YAML::Node node = Component::Serialize();
 	node["type"] = "MinigameManager";
 	node["MaxNumberOfTurns"] = MaxNumberOfTurns;
-	node["PlayerScoreId"] = PlayerScore->GetId();
-	node["EnemyScoreId"] = EnemyScore->GetId();
-	node["PlayerImageId"] = PlayerImage->GetId();
-	node["PlayerFrontImageId"] = PlayerFrontImage->GetId();
-	node["PlayerSelectionImageId"] = PlayerSelectionImage->GetId();
-	node["EnemyImageId"] = EnemyImage->GetId();
-	node["EnemyFrontImageId"] = EnemyFrontImage->GetId();
-	node["EnemySelectionImageId"] = EnemySelectionImage->GetId();
-	node["LaunchpadButtonId"] = LaunchpadButton->GetId();
-	node["GuitarButtonId"] = GuitarButton->GetId();
-	node["DrumButtonId"] = DrumButton->GetId();
-	node["WonPanelId"] = WonPanel->Id();
-	node["LostPanelId"] = LostPanel->Id();
+	node["PlayerScoreId"] = PlayerScore == nullptr ? 0 : PlayerScore->GetId();
+	node["EnemyScoreId"] = EnemyScore == nullptr ? 0 : EnemyScore->GetId();
+	node["PlayerImageId"] = PlayerImage == nullptr ? 0 : PlayerImage->GetId();
+	node["PlayerFrontImageId"] = PlayerFrontImage == nullptr ? 0 : PlayerFrontImage->GetId();
+	node["PlayerSelectionImageId"] = PlayerSelectionImage == nullptr ? 0 : PlayerSelectionImage->GetId();
+	node["EnemyImageId"] = EnemyImage == nullptr ? 0 : EnemyImage->GetId();
+	node["EnemyFrontImageId"] = EnemyFrontImage == nullptr ? 0 : EnemyFrontImage->GetId();
+	node["EnemySelectionImageId"] = EnemySelectionImage == nullptr ? 0 : EnemySelectionImage->GetId();
+	node["LaunchpadButtonId"] = LaunchpadButton == nullptr ? 0 : LaunchpadButton->GetId();
+	node["GuitarButtonId"] = GuitarButton == nullptr ? 0 : GuitarButton->GetId();
+	node["DrumButtonId"] = DrumButton == nullptr ? 0 : DrumButton->GetId();
+	node["WonPanelId"] = WonPanel == nullptr ? 0 : WonPanel->Id();
+	node["LostPanelId"] = LostPanel == nullptr ? 0 : LostPanel->Id();
 
 	return node;
 }
@@ -379,31 +385,31 @@ bool MinigameManager::Deserialize(const YAML::Node& node)
 
 	MaxNumberOfTurns = node["MaxNumberOfTurns"].as<size_t>();
 	size_t id = node["PlayerScoreId"].as<size_t>();
-	PlayerScore = (Text*)SceneManager::GetComponentWithId(id);
+	PlayerScore = id == 0 ? nullptr : (Text*)SceneManager::GetComponentWithId(id);
 	id = node["EnemyScoreId"].as<size_t>();
-	EnemyScore = (Text*)SceneManager::GetComponentWithId(id);
+	EnemyScore = id == 0 ? nullptr : (Text*)SceneManager::GetComponentWithId(id);
 	id = node["PlayerImageId"].as<size_t>();
-	PlayerImage = (Image*)SceneManager::GetComponentWithId(id);
+	PlayerImage = id == 0 ? nullptr : (Image*)SceneManager::GetComponentWithId(id);
 	id = node["PlayerFrontImageId"].as<size_t>();
-	PlayerFrontImage = (Image*)SceneManager::GetComponentWithId(id);
+	PlayerFrontImage = id == 0 ? nullptr : (Image*)SceneManager::GetComponentWithId(id);
 	id = node["PlayerSelectionImageId"].as<size_t>();
-	PlayerSelectionImage = (Image*)SceneManager::GetComponentWithId(id);
+	PlayerSelectionImage = id == 0 ? nullptr : (Image*)SceneManager::GetComponentWithId(id);
 	id = node["EnemyImageId"].as<size_t>();
-	EnemyImage = (Image*)SceneManager::GetComponentWithId(id);
+	EnemyImage = id == 0 ? nullptr : (Image*)SceneManager::GetComponentWithId(id);
 	id = node["EnemyFrontImageId"].as<size_t>();
-	EnemyFrontImage = (Image*)SceneManager::GetComponentWithId(id);
+	EnemyFrontImage = id == 0 ? nullptr : (Image*)SceneManager::GetComponentWithId(id);
 	id = node["EnemySelectionImageId"].as<size_t>();
-	EnemySelectionImage = (Image*)SceneManager::GetComponentWithId(id);
+	EnemySelectionImage = id == 0 ? nullptr : (Image*)SceneManager::GetComponentWithId(id);
 	id = node["LaunchpadButtonId"].as<size_t>();
-	LaunchpadButton = (Button*)SceneManager::GetComponentWithId(id);
+	LaunchpadButton = id == 0 ? nullptr : (Button*)SceneManager::GetComponentWithId(id);
 	id = node["GuitarButtonId"].as<size_t>();
-	GuitarButton = (Button*)SceneManager::GetComponentWithId(id);
+	GuitarButton = id == 0 ? nullptr : (Button*)SceneManager::GetComponentWithId(id);
 	id = node["DrumButtonId"].as<size_t>();
-	DrumButton = (Button*)SceneManager::GetComponentWithId(id);
+	DrumButton = id == 0 ? nullptr : (Button*)SceneManager::GetComponentWithId(id);
 	id = node["WonPanelId"].as<size_t>();
-	WonPanel = SceneManager::GetGameObjectWithId(id);
+	WonPanel = id == 0 ? nullptr : SceneManager::GetGameObjectWithId(id);
 	id = node["LostPanelId"].as<size_t>();
-	LostPanel = SceneManager::GetGameObjectWithId(id);
+	LostPanel = id == 0 ? nullptr : SceneManager::GetGameObjectWithId(id);
 
 	SetupButtons();
 
@@ -725,6 +731,7 @@ void MinigameManager::DrawEditor()
 		items.clear();
 
 		std::vector<GameObject*> objs = SceneManager::GetAllGameObjects();
+		objs.erase(objs.begin());
 
 		int choosed_obj = MinigamePlain == nullptr ? -1 : std::find(objs.begin(), objs.end(), MinigamePlain) - objs.begin();
 

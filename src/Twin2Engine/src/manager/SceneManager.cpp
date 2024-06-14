@@ -455,17 +455,15 @@ void SceneManager::DestroyObject(GameObject* obj) {
 		Transform* child = trans->GetChildAt(0);
 		trans->RemoveChild(child);
 
-		GameObject* childObj = child->GetGameObject();
-		if (_gameObjectsById.size() > 0) _gameObjectsById.erase(childObj->Id());
-
-		for (auto& comp : childObj->GetComponents<Component>()) {
-			if (_componentsById.size() > 0) {
-				_componentsById.erase(comp->GetId());
-			}
-		}
-
-		DestroyObject(childObj);
+		DestroyObject(child->GetGameObject());
 	}
+
+	if (_gameObjectsById.size() > 0) _gameObjectsById.erase(obj->Id());
+
+	for (auto& comp : obj->GetComponents<Component>()) {
+		if (_componentsById.size() > 0) _componentsById.erase(comp->GetId());
+	}
+
 	delete obj;
 }
 

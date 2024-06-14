@@ -5,6 +5,8 @@ add_subdirectory(Twin2Engine)
 
 set(CMAKE_AUTORCC ON)
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/icon.ico ${CMAKE_CURRENT_BINARY_DIR}/icon.ico COPYONLY)
+
 add_executable(${PROJECT_NAME} main.cpp icon.rc)
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)

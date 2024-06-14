@@ -21,21 +21,24 @@ void GameManager::Initialize()
     if (instance == nullptr)
     {
         instance = this;
-        // prefabPlayer = PrefabManager::GetPrefab("res/prefabs/Player.prefab");
-        // enemyPrefab = PrefabManager::GetPrefab("res/prefabs/Enemy.prefab");
-        _dayText = SceneManager::FindObjectByName("DayText")->GetComponent<Text>();
-        _monthText = SceneManager::FindObjectByName("MonthText")->GetComponent<Text>();
-        _yearText = SceneManager::FindObjectByName("YearText")->GetComponent<Text>();
-        
-        _dayEventHandleId = GameTimer::Instance()->OnDayTicked += [&](int day) {
-            _dayText->SetText(wstring(L"Day ").append(to_wstring(day)));
+        GameObject* temp = SceneManager::FindObjectByName("DateText");
+
+        int startMonth = 1;
+        int startYear = 2020;
+        int startDay = 1;
+
+        if (temp != nullptr) {
+            _dateText = temp->GetComponent<Text>();
+            _dateEventHandleId = GameTimer::Instance()->OnDateTicked += [&](int day, int month, int year) {
+                _dateText->SetText(
+                    to_wstring(startYear + year - 1)
+                    .append(L".")
+                    .append(startMonth + month - 1 < 10 ? L"0" + to_wstring(startMonth + month - 1) : to_wstring(startMonth + month - 1))
+                    .append(L".")
+                    .append(startDay + day - 1 < 10 ? L"0" + to_wstring(startDay + day - 1) : to_wstring(startDay + day - 1))
+                );
             };
-        _monthEventHandleId = GameTimer::Instance()->OnMonthTicked += [&](int month) {
-            _monthText->SetText(wstring(L"Month ").append(to_wstring(month)));
-            };
-        _yearEventHandleId = GameTimer::Instance()->OnYearTicked += [&](int year) {
-            _yearText->SetText(wstring(L"Year ").append(to_wstring(year)));
-        };
+        }
 
         _freePatronsData = _patronsData;
         // GeneratePlayer();
@@ -86,14 +89,27 @@ void GameManager::OnDestroy() {
     }
 
     if (GameTimer::Instance() != nullptr) {
-        GameTimer::Instance()->OnDayTicked -= _dayEventHandleId;
-        _dayEventHandleId = -1;
+        if (_dateEventHandleId != -1) {
+            GameTimer::Instance()->OnDateTicked -= _dateEventHandleId;
+            _dateEventHandleId = -1;
+        }
 
-        GameTimer::Instance()->OnMonthTicked -= _monthEventHandleId;
-        _monthEventHandleId = -1;
+        /*
+        if (_dayEventHandleId != -1) {
+            GameTimer::Instance()->OnDayTicked -= _dayEventHandleId;
+            _dayEventHandleId = -1;
+        }
 
-        GameTimer::Instance()->OnYearTicked -= _yearEventHandleId;
-        _yearEventHandleId = -1;
+        if (_monthEventHandleId != -1) {
+            GameTimer::Instance()->OnMonthTicked -= _monthEventHandleId;
+            _monthEventHandleId = -1;
+        }
+
+        if (_yearEventHandleId != -1) {
+            GameTimer::Instance()->OnYearTicked -= _yearEventHandleId;
+            _yearEventHandleId = -1;
+        }
+        */
     }
 
     if (_mapGenerationEventId != -1 && _mapGenerator != nullptr)
@@ -206,10 +222,10 @@ void GameManager::UpdateTiles()
     Tiles.insert(Tiles.begin(), temp.begin(), temp.end());
 }
 
-GameObject *GameManager::GeneratePlayer()
+GameObject* GameManager::GeneratePlayer()
 {
-    GameObject *player = Twin2Engine::Manager::SceneManager::CreateGameObject(prefabPlayer);
-    Player *p = player->GetComponent<Player>();
+    GameObject* player = Twin2Engine::Manager::SceneManager::CreateGameObject(prefabPlayer);
+    Player* p = player->GetComponent<Player>();
     _player = p;
     int chosen = Random::Range(0ull, _freeColors.size() - 1ull);
     // int chosen = 0;
@@ -233,17 +249,17 @@ GameObject *GameManager::GeneratePlayer()
     return player;
 }
 
-GameObject *GameManager::GenerateEnemy()
+GameObject* GameManager::GenerateEnemy()
 {
     // if (freeColors.size() == 0)
     //{
     //     return nullptr;
     // }
 
-    GameObject *enemy = Twin2Engine::Manager::SceneManager::CreateGameObject(enemyPrefab);
+    GameObject* enemy = Twin2Engine::Manager::SceneManager::CreateGameObject(enemyPrefab);
     // GameObject* enemy = Instantiate(enemyPrefab, new Vector3(), Quaternion.identity, gameObject.transform);
 
-    Enemy *e = enemy->GetComponent<Enemy>();
+    Enemy* e = enemy->GetComponent<Enemy>();
 
     int chosen = Random::Range(0ull, _freeColors.size() - 1ull);
     // int chosen = 1;

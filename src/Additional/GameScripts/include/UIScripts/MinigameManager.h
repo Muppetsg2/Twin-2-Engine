@@ -17,6 +17,7 @@ using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Processes;
 using namespace Twin2Engine::UI;
 
+// TODO: Repair
 class MinigameManager : public Component {
 	private:
 		static MinigameManager* lastInstance;

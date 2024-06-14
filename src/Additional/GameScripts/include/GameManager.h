@@ -40,13 +40,15 @@ private:
     std::vector<PatronData*> _patronsData;
     std::vector<PatronData*> _freePatronsData;
 
-    size_t _dayEventHandleId;
-    size_t _monthEventHandleId;
-    size_t _yearEventHandleId;
+    int _dateEventHandleId = -1;
+    //size_t _dayEventHandleId;
+    //size_t _monthEventHandleId;
+    //size_t _yearEventHandleId;
 
-    Twin2Engine::UI::Text* _dayText;
-    Twin2Engine::UI::Text* _monthText;
-    Twin2Engine::UI::Text* _yearText;
+    Twin2Engine::UI::Text* _dateText;
+    //Twin2Engine::UI::Text* _dayText;
+    //Twin2Engine::UI::Text* _monthText;
+    //Twin2Engine::UI::Text* _yearText;
 
     unsigned int _enemiesNumber = 2u;
     int _mapGenerationEventId = -1;

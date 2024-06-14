@@ -78,6 +78,7 @@ void GameTimer::Update() {
             }
             SPDLOG_INFO("Callng OnDayTicked");
             OnDayTicked(daysCounter);
+            OnDateTicked(daysCounter, monthsCounter, yearsCounter);
         }
     }
 }
@@ -137,33 +138,26 @@ bool GameTimer::Deserialize(const YAML::Node& node)
 }
 
 #if _DEBUG
-bool GameTimer::DrawInheritedFields()
-{
-    if (Twin2Engine::Core::Component::DrawInheritedFields()) return true;
-
-    string id = string(std::to_string(this->GetId()));
-
-    ImGui::InputInt(string("SecondsPerDay##").append(id).c_str(), &secondsPerDay);
-    ImGui::InputInt(string("DaysPerWeek##").append(id).c_str(), &daysPerWeek);
-    ImGui::InputInt(string("WeeksPerMonth##").append(id).c_str(), &weeksPerMonth);
-    ImGui::InputInt(string("MonthsPerYear##").append(id).c_str(), &monthsPerYear);
-
-    ImGui::Text("secondsCounter: %d", secondsCounter);
-    ImGui::Text("daysCounter: %d", daysCounter);
-    ImGui::Text("weeksCounter: %d", weeksCounter);
-    ImGui::Text("monthsCounter: %d", monthsCounter);
-    ImGui::Text("yearsCounter: %d", yearsCounter);
-
-    return false;
-}
-
 void GameTimer::DrawEditor()
 {
     string id = string(std::to_string(this->GetId()));
     string name = string("GameTimer##Component").append(id);
     if (ImGui::CollapsingHeader(name.c_str()))
     {
-        DrawInheritedFields();
+        if (Twin2Engine::Core::Component::DrawInheritedFields()) return;
+
+        string id = string(std::to_string(this->GetId()));
+
+        ImGui::InputInt(string("SecondsPerDay##").append(id).c_str(), &secondsPerDay);
+        ImGui::InputInt(string("DaysPerWeek##").append(id).c_str(), &daysPerWeek);
+        ImGui::InputInt(string("WeeksPerMonth##").append(id).c_str(), &weeksPerMonth);
+        ImGui::InputInt(string("MonthsPerYear##").append(id).c_str(), &monthsPerYear);
+
+        ImGui::Text("secondsCounter: %d", secondsCounter);
+        ImGui::Text("daysCounter: %d", daysCounter);
+        ImGui::Text("weeksCounter: %d", weeksCounter);
+        ImGui::Text("monthsCounter: %d", monthsCounter);
+        ImGui::Text("yearsCounter: %d", yearsCounter);
     }
 }
 #endif

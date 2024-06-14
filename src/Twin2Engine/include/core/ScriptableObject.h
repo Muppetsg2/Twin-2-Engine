@@ -70,6 +70,10 @@ namespace Twin2Engine::Core
 #endif
 
 	public:
+		virtual ~ScriptableObject() {
+			Clear();
+		}
+
 		size_t GetId() const;
 
 		virtual void Serialize(YAML::Node& node) const;

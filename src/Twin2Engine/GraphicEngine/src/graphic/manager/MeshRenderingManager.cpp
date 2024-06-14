@@ -2061,16 +2061,10 @@ void MeshRenderingManager::Render()
 					//glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialIndexSSBO);
 					//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(unsigned int) * count, _materialsIndexes);
 
-#endif
-
-
-
-					meshPair.first->Draw(count);
-
-
-#if !USE_NAMED_BUFFER_SUBDATA
 					glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 #endif
+
+					meshPair.first->Draw(count);
 
 					GLenum error = glGetError();
 					if (error != GL_NO_ERROR) {

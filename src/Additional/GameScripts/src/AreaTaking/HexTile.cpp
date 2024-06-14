@@ -281,14 +281,28 @@ void HexTile::UpdateBorders()
 		}
 		else
 		{
-			// UPDATE THIS BORDER
-			if (borderJoints[left]->GetActive())
-				borderJoints[left]->SetActive(false);
-			if (borderJoints[right]->GetActive())
-				borderJoints[right]->SetActive(false);
+			// JESLI KOLOROWY TILE
+			if (ownerEntity != nullptr) {
+				// UPDATE THIS BORDER
+				if (borderJoints[left]->GetActive())
+					borderJoints[left]->SetActive(false);
+				if (borderJoints[right]->GetActive())
+					borderJoints[right]->SetActive(false);
 
-			if (!borders[i]->GetActive())
-				borders[i]->SetActive(true);
+				if (!borders[i]->GetActive())
+					borders[i]->SetActive(true);
+			}
+			// JESLI BIALY TILE
+			else {
+				// UPDATE THIS BORDER
+				if (borderJoints[left]->GetActive())
+					borderJoints[left]->SetActive(false);
+				if (borderJoints[right]->GetActive())
+					borderJoints[right]->SetActive(false);
+
+				if (borders[i]->GetActive())
+					borders[i]->SetActive(false);
+			}
 		}
 	}
 	neightbours.clear();

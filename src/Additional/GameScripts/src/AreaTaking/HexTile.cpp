@@ -196,87 +196,55 @@ void HexTile::UpdateBorders()
 				// UPDATE THIS BORDER
 				// JESLI NIE BIALY
 				if (ownerEntity != nullptr) {
-					if (borderJoints[left]->GetActive())
-						borderJoints[left]->SetActive(false);
-					if (borderJoints[right]->GetActive())
-						borderJoints[right]->SetActive(false);
-
-					if (!borders[i]->GetActive())
-						borders[i]->SetActive(true);
+					borderJoints[left]->SetActive(false);
+					borderJoints[right]->SetActive(false);
+					borders[i]->SetActive(true);
 				}
 				// JESLI BIALY
 				else {
-					if (borderJoints[left]->GetActive())
-						borderJoints[left]->SetActive(false);
-					if (borderJoints[right]->GetActive())
-						borderJoints[right]->SetActive(false);
-
-					if (borders[i]->GetActive())
-						borders[i]->SetActive(false);
+					borderJoints[left]->SetActive(false);
+					borderJoints[right]->SetActive(false);
+					borders[i]->SetActive(false);
 				}
 
 				// UPDATE NEIGHTBOUR BORDER
 				// JESLI NIE BIALY
 				if (nt->ownerEntity != nullptr) {
-					if (nt->borderJoints[nLeft]->GetActive())
-						nt->borderJoints[nLeft]->SetActive(false);
-					if (nt->borderJoints[nRight]->GetActive())
-						nt->borderJoints[nRight]->SetActive(false);
-
-					if (!nt->borders[ni]->GetActive())
-						nt->borders[ni]->SetActive(true);
+					nt->borderJoints[nLeft]->SetActive(false);
+					nt->borderJoints[nRight]->SetActive(false);
+					nt->borders[ni]->SetActive(true);
 				}
 				// JESLI BIALY
 				else {
-					if (nt->borderJoints[nLeft]->GetActive())
-						nt->borderJoints[nLeft]->SetActive(false);
-					if (nt->borderJoints[nRight]->GetActive())
-						nt->borderJoints[nRight]->SetActive(false);
-
-					if (nt->borders[ni]->GetActive())
-						nt->borders[ni]->SetActive(false);
+					nt->borderJoints[nLeft]->SetActive(false);
+					nt->borderJoints[nRight]->SetActive(false);
+					nt->borders[ni]->SetActive(false);
 				}
 			}
 			// JESLI DO TEGO SAMEGO GRACZA NALEZA
 			else if (ownerEntity != nullptr)
 			{
 				// UPDATE THIS BORDER
-				if (!borderJoints[left]->GetActive())
-					borderJoints[left]->SetActive(true);
-				if (!borderJoints[right]->GetActive())
-					borderJoints[right]->SetActive(true);
-
-				if (borders[i]->GetActive())
-					borders[i]->SetActive(false);
+				borderJoints[left]->SetActive(true);
+				borderJoints[right]->SetActive(true);
+				borders[i]->SetActive(false);
 
 				// UPDATE NEIGHTBOUR BORDER
-				if (!nt->borderJoints[nLeft]->GetActive())
-					nt->borderJoints[nLeft]->SetActive(true);
-				if (!nt->borderJoints[nRight]->GetActive())
-					nt->borderJoints[nRight]->SetActive(true);
-
-				if (nt->borders[ni]->GetActive())
-					nt->borders[ni]->SetActive(false);
+				nt->borderJoints[nLeft]->SetActive(true);
+				nt->borderJoints[nRight]->SetActive(true);
+				nt->borders[ni]->SetActive(false);
 			}
 			// JESLI OBA BIALE
 			else {
 				// UPDATE THIS BORDER
-				if (borderJoints[left]->GetActive())
-					borderJoints[left]->SetActive(false);
-				if (borderJoints[right]->GetActive())
-					borderJoints[right]->SetActive(false);
-
-				if (borders[i]->GetActive())
-					borders[i]->SetActive(false);
+				borderJoints[left]->SetActive(false);
+				borderJoints[right]->SetActive(false);
+				borders[i]->SetActive(false);
 
 				// UPDATE NEIGHTBOUR BORDER
-				if (nt->borderJoints[nLeft]->GetActive())
-					nt->borderJoints[nLeft]->SetActive(false);
-				if (nt->borderJoints[nRight]->GetActive())
-					nt->borderJoints[nRight]->SetActive(false);
-
-				if (nt->borders[ni]->GetActive())
-					nt->borders[ni]->SetActive(false);
+				nt->borderJoints[nLeft]->SetActive(false);
+				nt->borderJoints[nRight]->SetActive(false);
+				nt->borders[ni]->SetActive(false);
 			}
 		}
 		else
@@ -284,24 +252,16 @@ void HexTile::UpdateBorders()
 			// JESLI KOLOROWY TILE
 			if (ownerEntity != nullptr) {
 				// UPDATE THIS BORDER
-				if (borderJoints[left]->GetActive())
-					borderJoints[left]->SetActive(false);
-				if (borderJoints[right]->GetActive())
-					borderJoints[right]->SetActive(false);
-
-				if (!borders[i]->GetActive())
-					borders[i]->SetActive(true);
+				borderJoints[left]->SetActive(false);
+				borderJoints[right]->SetActive(false);
+				borders[i]->SetActive(true);
 			}
 			// JESLI BIALY TILE
 			else {
 				// UPDATE THIS BORDER
-				if (borderJoints[left]->GetActive())
-					borderJoints[left]->SetActive(false);
-				if (borderJoints[right]->GetActive())
-					borderJoints[right]->SetActive(false);
-
-				if (borders[i]->GetActive())
-					borders[i]->SetActive(false);
+				borderJoints[left]->SetActive(false);
+				borderJoints[right]->SetActive(false);
+				borders[i]->SetActive(false);
 			}
 		}
 	}
@@ -356,12 +316,9 @@ void HexTile::Initialize()
 
 	for (size_t i = 0; i < 6; ++i)
 	{
-		if (borders[i]->GetActive())
-			borders[i]->SetActive(false);
-		if (borderJoints[i * 2]->GetActive())
-			borderJoints[i * 2]->SetActive(false);
-		if (borderJoints[(i * 2) + 1]->GetActive())
-			borderJoints[(i * 2) + 1]->SetActive(false);
+		borderJoints[i * 2]->SetActive(false);
+		borderJoints[(i * 2) + 1]->SetActive(false);
+		borders[i]->SetActive(false);
 	}
 
 	particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/ArrowParticle.png", 7, 0.75f, 0.0f, 4.0f, 2.0f, 0.12f, 0.15f, 0.4f);
@@ -491,7 +448,6 @@ void HexTile::StartMinigame()
 void HexTile::WinMinigame()
 {
 }
-
 
 void HexTile::EnableAffected()
 {

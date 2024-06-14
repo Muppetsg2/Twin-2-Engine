@@ -33,11 +33,16 @@ void Image::SetCanvas(Canvas* canvas)
 
 void Image::Initialize()
 {
-	_onTransformChangeId = (GetTransform()->OnEventTransformChanged += [&](Transform* t) -> void { 
+	Transform* tr = GetTransform();
+	_onTransformChangeId = (tr->OnEventTransformChanged += [&](Transform* t) -> void { 
 		_data.rectTransform.transform = t->GetTransformMatrix(); 
 	});
-	_onParentInHierarchiChangeId = (GetTransform()->OnEventInHierarchyParentChanged += [&](Transform* t) -> void {
+	_onRotationChangeId = (tr->OnEventRotationChanged += [&](Transform* t) -> void {
+		_data.fill.rotation = t->GetGlobalRotation().z;
+	});
+	_onParentInHierarchiChangeId = (tr->OnEventInHierarchyParentChanged += [&](Transform* t) -> void {
 		SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
+		_data.rectTransform.transform = t->GetTransformMatrix();
 	});
 	SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
 }
@@ -51,12 +56,12 @@ void Image::Render()
 void Image::OnDestroy()
 {
 	SetCanvas(nullptr);
-	GetTransform()->OnEventTransformChanged -= _onTransformChangeId;
-	GetTransform()->OnEventInHierarchyParentChanged -= _onParentInHierarchiChangeId;
+	Transform* tr = GetTransform();
+	tr->OnEventTransformChanged -= _onTransformChangeId;
+	tr->OnEventRotationChanged -= _onRotationChangeId;
+	tr->OnEventInHierarchyParentChanged -= _onParentInHierarchiChangeId;
 }
 
-// TODO: Serialize Fill
-// TODO: If Sprite not set
 YAML::Node Image::Serialize() const
 {
 	YAML::Node node = RenderableComponent::Serialize();

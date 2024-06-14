@@ -57,7 +57,6 @@ namespace Twin2Engine::UI {
 		friend class InputField;
 
 	public:
-		// TODO: Repair Text Mesh
 		// TODO: Text Wrapping
 		void UpdateTextMesh();
 

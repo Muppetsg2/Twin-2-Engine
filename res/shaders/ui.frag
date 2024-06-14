@@ -48,6 +48,7 @@ struct FillData {
     uint type;
     uint subType;
     float progress;
+    float rotation;
     bool isActive;
 };
 
@@ -129,6 +130,18 @@ bool OutOfFill(vec2 pos, vec2 center, vec2 size, FillData fill) {
             float alpha = 0.0;
             if (alphaX >= 0.0) alpha = alphaY;
             else if (alphaX < 0.0) alpha = 360.0 - alphaY;
+
+            while (fill.rotation >= 360.0)
+                fill.rotation -= 360.0;
+            while (fill.rotation <= -360.0)
+                fill.rotation += 360.0;
+
+            if (fill.rotation < 0.0 && alpha >= 360.0 + fill.rotation)
+                alpha -= 360.0 + fill.rotation;
+            else if (fill.rotation > 0.0 && alpha < fill.rotation)
+                alpha += 360.0 - fill.rotation;
+            else
+                alpha -= fill.rotation;
 
             if (fill.subType == CW_FILL) {
                 p = 0.00275 * alpha;

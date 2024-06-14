@@ -59,6 +59,7 @@ struct FillData {
     uint type;
     uint subType;
     float progress;
+	float rotation;
     bool isActive;
 };
 

@@ -31,6 +31,7 @@ namespace Twin2Engine
 			uint8_t type;
 			uint8_t subType;
 			float progress;
+			float rotation;
 			bool isActive;
 		};
 

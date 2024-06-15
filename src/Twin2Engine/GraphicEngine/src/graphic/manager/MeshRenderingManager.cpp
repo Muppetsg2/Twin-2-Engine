@@ -201,14 +201,16 @@ bool MeshRenderingManager::Unregister(Twin2Engine::Core::MeshRenderer* meshRende
 				}
 			}
 
-			if (meshRenderingData.meshRenderers.size() > pos) {
+			//if (meshRenderingData.meshRenderers.size() > pos) 
+			{
 				//if ((meshRenderingData.meshRenderers.size() - 1ull) == pos)
 				//	meshRenderingData.meshRenderers.pop_back();
 				//else
 					meshRenderingData.meshRenderers.erase(meshRenderingData.meshRenderers.cbegin() + pos);
 			}
 
-			if (meshRenderingData.modelTransforms.size() > pos) {
+			//if (meshRenderingData.modelTransforms.size() > pos) 
+			{
 				//if ((meshRenderingData.modelTransforms.size() - 1ull) == pos)
 				//	meshRenderingData.modelTransforms.pop_back();
 				//else

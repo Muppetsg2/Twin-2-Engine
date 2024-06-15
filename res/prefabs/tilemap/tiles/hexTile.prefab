@@ -437,7 +437,7 @@ GameObjects:
         enabled: true
         type: MeshRenderer
         isTransparent: true
-        model: 3
+        model: 0
         materials:
           - 34
         transparencyPriority: 1

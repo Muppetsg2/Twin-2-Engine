@@ -172,8 +172,7 @@ struct AStarNode
 							current(current), previous(previous), position(position), hierarchyDepth(hierarchyDepth), costFromStart(costFromStart) {};
 };
 
-void AStarPathfinder::FindingPath(
-	size_t threadId,
+void AStarPathfinder::FindingPath(size_t threadId,
 	glm::vec3 beginPosition,
 	glm::vec3 endPosition,
 	unsigned int maxPathNodesNumber,
@@ -337,168 +336,6 @@ void AStarPathfinder::FindingPath(
 	_endedThreadsMutex.unlock();
 }
 
-void AStarPathfinder::FindingNodePath(
-	size_t threadId,
-	glm::vec3 beginPosition,
-	glm::vec3 endPosition,
-	unsigned int maxPathNodesNumber,
-	Twin2Engine::Tools::Action<const AStarNodePath&> success,
-	Twin2Engine::Tools::Action<> failure)
-{
-
-	PriorityQueue<AStarNode*, float> priorityQueue([](const float& priority1, const float& priority2) -> bool {
-		return priority1 < priority2;
-		});
-
-	AStarPathfindingNode* closestToBegin = FindClosestNode(beginPosition);
-	AStarPathfindingNode* closestToEnd = FindClosestNode(endPosition);
-
-	vec3 endPositionY0 = endPosition;
-	endPositionY0.y = 0.0f;
-
-	vector<AStarPathfindingNode*> path;
-	AStarNode* result = nullptr;
-	if (closestToBegin != nullptr && closestToEnd != nullptr) {
-		if (closestToBegin == closestToEnd)
-		{
-			//Ustawienie wartoœci ró¿nej od zera aby by³ ró¿ny od nullptr
-			result = (AStarNode*)1;
-
-			path.push_back(closestToBegin);
-		}
-		else
-		{
-			//list<vec3> nodesStack;
-			list<AStarPathfindingNode*> nodesStack;
-
-			unordered_set<AStarPathfindingNode*> usedNodes;
-
-
-
-			list<AStarNode*> allocatedNodes;
-			vec3 tempPos = closestToBegin->GetTransform()->GetGlobalPosition();
-			//tempPos.y = 0.0f; ///
-			AStarNode* allocatedNode = new AStarNode(closestToBegin, nullptr, tempPos, 0, 0.0f);
-
-			allocatedNodes.push_back(allocatedNode);
-
-			priorityQueue.Enqueue(allocatedNode, 0.0f);
-
-			usedNodes.insert(closestToBegin);
-
-			vec3 allocatedPosY0;
-
-			while (priorityQueue.Count())
-			{
-				AStarNode* processedNode = priorityQueue.Dequeue();
-
-				if (processedNode->current == closestToEnd)
-				{
-					result = processedNode;
-					break;
-				}
-
-				if (maxPathNodesNumber && maxPathNodesNumber == processedNode->hierarchyDepth)
-				{
-					continue;
-				}
-
-				auto& connected = _nodesGraph[processedNode->current];
-
-				size_t size = connected.size();
-
-				//vec3 allocatedPosY0 = allocatedNode->position;
-				//allocatedPosY0.y = 0.0;
-
-				for (size_t index = 0ull; index < size; ++index)
-				{
-					if (!usedNodes.contains(connected[index].targetNode))
-					{
-						if (connected[index].targetNode->passable)
-						{
-							allocatedNode = new AStarNode(connected[index].targetNode, processedNode, connected[index].targetPosition,
-								processedNode->hierarchyDepth + 1u, processedNode->costFromStart + connected[index].targetDistance);
-
-							allocatedNodes.push_back(allocatedNode);
-
-							allocatedPosY0 = allocatedNode->position;
-							allocatedPosY0.y = 0.0;
-							//priorityQueue.Enqueue(allocatedNode, connected[index].targetDistance);
-
-							priorityQueue.Enqueue(allocatedNode, allocatedNode->costFromStart + glm::distance(allocatedPosY0, endPositionY0));
-						}
-
-						usedNodes.insert(connected[index].targetNode);
-					}
-				}
-			}
-
-			// Checking if algorithm found path and processing result
-			if (result)
-			{
-				AStarNode* processedNode = result;
-				size_t targetSize = result->hierarchyDepth + 1u;
-				path.resize(targetSize);
-
-				size_t insertedIndex = result->hierarchyDepth;
-
-				while (processedNode)
-				{
-					//SPDLOG_ERROR("FP: {} {} {}", processedNode->position.x, processedNode->position.y, processedNode->position.z);
-					path[insertedIndex] = processedNode->current;
-					--insertedIndex;
-					processedNode = processedNode->previous;
-				}
-
-				//if (glm::distance(path[result->hierarchyDepth - 1ull], endPosition) <= glm::distance(path[result->hierarchyDepth], endPosition))
-				//{
-				//	path[result->hierarchyDepth] = endPosition;
-				//}
-				//else
-				//{
-				//	//path.insert(path.end(), endPosition);
-				//	path.push_back(endPosition);
-				//}
-				//
-				//if (glm::distance(path[1ull], beginPosition) <= glm::distance(path[0ull], beginPosition))
-				//{
-				//	path.erase(path.begin());
-				//}
-			}
-
-			// Deallocating allocated memory
-			for (auto& node : allocatedNodes)
-			{
-				delete node;
-			}
-		}
-	}
-
-	//Deleting informations about thread
-
-	//SPDLOG_ERROR("Zastanowiæ siê czy mo¿na wywo³aæ delete na thread");
-
-	(*_pathfindingThreadsSearchingPtrs[threadId]) = false;
-
-	//_pathfindingThreadsSearchingPtrs.erase(threadId);
-	//_pathfindingThreads.erase(threadId);
-
-	// Returning result
-	if (result)
-	{
-		success(AStarNodePath(path));
-	}
-	else
-	{
-		failure();
-	}
-
-	_endedThreadsMutex.lock();
-	_endedThreads.push_back(threadId);
-	//_endedThreadsResults[threadId] = tuple<AStarPath, Twin2Engine::Tools::Action<const AStarPath&>, Twin2Engine::Tools::Action<>>(AStarPath(path), success, failure);
-	_endedThreadsMutex.unlock();
-}
-
 AStarPathfindingInfo AStarPathfinder::FindPath(const glm::vec3& beginPosition,
 							   const glm::vec3& endPosition,
 							   unsigned int maxPathNodesNumber,
@@ -527,36 +364,6 @@ AStarPathfindingInfo AStarPathfinder::FindPath(const glm::vec3& beginPosition,
 
 	return AStarPathfindingInfo(threadId, &_pathfindingThreads[threadId], searching);
 }
-
-AStarPathfindingInfo AStarPathfinder::FindNodePath(const glm::vec3& beginPosition,
-	const glm::vec3& endPosition,
-	unsigned int maxPathNodesNumber,
-	Twin2Engine::Tools::Action<const AStarNodePath&> success,
-	Twin2Engine::Tools::Action<> failure)
-{
-	if (_pathfindingThreads.size() == numeric_limits<size_t>().max())
-		return AStarPathfindingInfo(0, nullptr, nullptr);
-
-	if (_needsRemapping)
-	{
-		RemapNodes();
-	}
-
-	static size_t pathFindingThreadsIds = 0;
-
-	while (_pathfindingThreads.contains(++pathFindingThreadsIds));
-	size_t threadId = pathFindingThreadsIds;
-
-	bool* searching = new bool(true);
-
-	_pathfindingThreadsSearchingPtrs[threadId] = searching;
-
-	_pathfindingThreads[threadId] = thread(FindingNodePath, threadId, beginPosition, endPosition, maxPathNodesNumber, success, failure);
-
-
-	return AStarPathfindingInfo(threadId, &_pathfindingThreads[threadId], searching);
-}
-
 
 YAML::Node AStarPathfinder::Serialize() const
 {

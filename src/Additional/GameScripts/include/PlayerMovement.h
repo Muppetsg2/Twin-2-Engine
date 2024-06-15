@@ -35,7 +35,11 @@ class PlayerMovement : public Component {
 
 		HexTile* _checkedTile = nullptr;
 
-		AStar::AStarPath* _showedPath = nullptr;
+		std::mutex _mutexCheckingPath;
+		bool _showedPathEnabled;
+		bool _showedPathDisabled;
+
+		AStar::AStarNodePath* _showedPath = nullptr;
 		std::vector<HexTile*> _showedPathTiles = std::vector<HexTile*>();
 
 
@@ -57,7 +61,7 @@ class PlayerMovement : public Component {
 		bool InCircle(glm::vec3 point);
 		void SetDestination(HexTile* dest);
 		void CheckDestination(HexTile* dest);
-		void OnCheckPathComplete(const AStar::AStarPath& p);
+		void OnCheckPathComplete(const AStar::AStarNodePath& p);
 		void OnCheckPathFailure();
 		void DrawCircle(int steps, float radius);
 		void DrawLine(glm::vec3 startPos, glm::vec3 endPos);

@@ -8,6 +8,7 @@
 
 #include <AstarPathfinding/AStarPathfindingNode.h>
 #include <AstarPathfinding/AStarPath.h>
+#include <AstarPathfinding/AStarNodePath.h>
 
 #include <Twin2DataStructures/PriorityQueue.h>
 
@@ -20,6 +21,7 @@ namespace AStar
 	// - od³o¿enie zmian w strukturze do momentu zakoñczenia w¹tkó wyszukuj¹cych
 	class AStarPathfindingNode;
 	class AStarPathfinder;
+	class AStarNodePath;
 
 	class AStarPathfindingInfo
 	{
@@ -121,11 +123,15 @@ namespace AStar
 		//static void RemoveThread(std::thread* pathfindingThread);
 		static void FindingPath(size_t threadId, glm::vec3 beginPosition, glm::vec3 endPosition, unsigned int maxPathNodesNumber,
 			Twin2Engine::Tools::Action<const AStarPath&> success, Twin2Engine::Tools::Action<> failure);
+		static void FindingNodePath(size_t threadId, glm::vec3 beginPosition, glm::vec3 endPosition, unsigned int maxPathNodesNumber,
+			Twin2Engine::Tools::Action<const AStarNodePath&> success, Twin2Engine::Tools::Action<> failure);
 	public:
 		static void RemapNodes();
 
 		static AStarPathfindingInfo FindPath(const glm::vec3& beginPosition, const glm::vec3& endPosition, unsigned int maxPathNodesNumber,
 								Twin2Engine::Tools::Action<const AStarPath&> success, Twin2Engine::Tools::Action<> failure);
+		static AStarPathfindingInfo FindNodePath(const glm::vec3& beginPosition, const glm::vec3& endPosition, unsigned int maxPathNodesNumber,
+								Twin2Engine::Tools::Action<const AStarNodePath&> success, Twin2Engine::Tools::Action<> failure);
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;

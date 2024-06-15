@@ -110,6 +110,15 @@ namespace Twin2Engine
 
 			static Flags _flags;
 
+			struct RegisteredData
+			{
+				std::unordered_map<Graphic::Shader*, std::unordered_map<Graphic::Material*, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>* renderingQueue;
+				Graphic::Material* material;
+				Graphic::InstantiatingMesh* mesh;
+			};
+
+			static std::unordered_map<Twin2Engine::Core::MeshRenderer*, std::vector<RegisteredData>> _registeredRenderers;
+
 			static std::unordered_map<Graphic::Shader*, std::unordered_map<Graphic::Material*, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _renderQueueStatic;
 			static std::unordered_map<Graphic::Shader*, std::unordered_map<Graphic::Material*, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _renderQueueStaticTransparent;
 			//static std::unordered_map<Graphic::Shader*, std::map<Graphic::Material, std::unordered_map<Graphic::InstantiatingMesh*, MeshRenderingData>>>  _depthMapenderQueueStatic;
@@ -144,9 +153,12 @@ namespace Twin2Engine
 			static void Init();
 			static void UnloadAll();
 
+			static bool Register(Twin2Engine::Core::MeshRenderer* meshRenderer);
+			static bool Unregister(Twin2Engine::Core::MeshRenderer* meshRenderer);
+
 			static bool RegisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer);
 			static bool UnregisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer);
-
+			
 			static bool RegisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer);
 			static bool UnregisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer);
 

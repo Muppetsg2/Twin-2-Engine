@@ -238,7 +238,7 @@ bool MeshRenderingManager::Unregister(Twin2Engine::Core::MeshRenderer* meshRende
 	return false;
 }
 
-//*
+/*
 bool MeshRenderingManager::RegisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer)
 {
 	if (meshRenderer->GetModel() != nullptr && meshRenderer->GetMaterialCount() != 0)

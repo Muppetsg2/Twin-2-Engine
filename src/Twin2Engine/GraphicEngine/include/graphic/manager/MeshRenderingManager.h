@@ -156,11 +156,11 @@ namespace Twin2Engine
 			static bool Register(Twin2Engine::Core::MeshRenderer* meshRenderer);
 			static bool Unregister(Twin2Engine::Core::MeshRenderer* meshRenderer);
 
-			static bool RegisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer);
-			static bool UnregisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer);
-			
-			static bool RegisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer);
-			static bool UnregisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer);
+			//static bool RegisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer);
+			//static bool UnregisterStatic(Twin2Engine::Core::MeshRenderer* meshRenderer);
+			//
+			//static bool RegisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer);
+			//static bool UnregisterDynamic(Twin2Engine::Core::MeshRenderer* meshRenderer);
 
 			//Przed u¿yciem tej funkcji nale¿y zapewniæ, i¿ glViewport jest ustawiony w nastêpuj¹cy sposób: glViewport(0, 0, depthTexWidth, depthTexHeight), po uruchomieñiu funkcji nale¿y przywróciæ rozmiar viewportu do rozmiaru okna gry
 			static void RenderDepthMapDynamic(const GLuint& depthFBO, glm::mat4& projectionViewMatrix);

@@ -17,68 +17,70 @@ using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Processes;
 using namespace Twin2Engine::UI;
 
-// TODO: Repair
 class MinigameManager : public Component {
 	private:
-		static MinigameManager* lastInstance;
-		//MinigameRPS_Choice playerChoice = MinigameRPS_Choice::NONE;
-		//MinigameRPS_Choice enemyChoice = MinigameRPS_Choice::NONE;
-		int playerWins = 0;
-		int enemyWins = 0;
+		static MinigameManager* _instance;
 
-		Player* player = nullptr;
-		Enemy* enemy = nullptr;
+		int _playerWins = 0;
+		int _enemyWins = 0;
 
-		Coroutine* waitCoroutine;
+		Player* _player = nullptr;
+		Enemy* _enemy = nullptr;
 
-		SoLoud::handle WinSound = 0;
-		SoLoud::handle DefeatSound = 0;
-		SoLoud::handle GuitarSound = 0;
-		SoLoud::handle DrumSound = 0;
-		SoLoud::handle LaunchpadSound = 0;
+		Coroutine* _waitCoroutine;
 
-		int playerFieldsNumber = 0;
-		int enemyFieldsNumber = 0;
-		AudioComponent* audioComp = nullptr;
+		size_t _winSound = 0;
+		size_t _defeatSound = 0;
+		size_t _launchpadSound = 0;
+		size_t _guitarSound = 0;
+		size_t _drumSound = 0;
+
+		int _playerFieldsNumber = 0;
+		int _enemyFieldsNumber = 0;
+		AudioComponent* _audioComp = nullptr;
 		void SetupButtons();
-		//void PerformTurn();
 
-		std::string colors[7] = { "blue", "red", "green", "purple", "yellow", "cyan", "pink" };
+		std::string _colors[7] = { "Blue", "Red", "Green", "Purple", "Yellow", "Cyan", "Pink" };
 
+		Text* _playerScore = nullptr;
+		Text* _enemyScore = nullptr;
 
+		GameObject* _minigameCanvas = nullptr;
+		GameObject* _wonPanel = nullptr;
+		GameObject* _lostPanel = nullptr;
+
+		GameObject* _arrowLD = nullptr;
+		GameObject* _arrowDG = nullptr;
+		GameObject* _arrowGL = nullptr;
+
+		Image* _playerImage = nullptr;
+		Image* _enemyImage = nullptr;
+
+		Button* _launchpadButton = nullptr;
+		Button* _guitarButton = nullptr;
+		Button* _drumButton = nullptr;
+
+		int _launchpadEvent = -1;
+		int _guitarEvent = -1;
+		int _drumEvent = -1;
+
+		size_t _minNumberOfWins = 2;
 	public:
-		Text* PlayerScore = nullptr;
-		Text* EnemyScore = nullptr;
-		GameObject* MinigamePlain = nullptr;
-		GameObject* WonPanel = nullptr;
-		GameObject* LostPanel = nullptr;
-		Image* PlayerImage = nullptr;
-		Image* PlayerFrontImage = nullptr;
-		Image* EnemyImage = nullptr;
-		Image* EnemyFrontImage = nullptr;
-		Image* PlayerSelectionImage = nullptr;
-		Image* EnemySelectionImage = nullptr;
+		static MinigameManager* GetInstance();
 
-		Button* LaunchpadButton = nullptr;
-		Button* GuitarButton = nullptr;
-		Button* DrumButton = nullptr;
-
-		size_t MaxNumberOfTurns = 5;
-
-
-		static MinigameManager* GetLastInstance();
+		void LaunchpadButtonOnClick();
+		void GuitarButtonOnClick();
+		void DrumButtonOnClick();
 
 		void StartMinigame(Playable* chalanging, Playable* chalanged);
+		void FinishMinigame(Playable* winner, Playable* looser);
+
 		void PlayerWon();
 		void PlayerDrawed();
 		void PlayerLost();
-		void FinishMinigame(Playable* winner, Playable* looser);
 
 		virtual void Initialize() override;
 		virtual void OnDestroy() override;
-		virtual void Update() override;
-
-		virtual void OnEnable() override;
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;

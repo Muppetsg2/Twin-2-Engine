@@ -3,6 +3,7 @@
 
 #include <UIScripts/MinigameManager.h>
 
+// TODO: A co jesli gramy wiecej niz 1 runde??
 // TODO: Get Player Choice
 DecisionTree<Enemy*, FightingState::FightResult> FightingState::_decisionTree{
 	[&](Enemy* enemy) -> FightingState::FightResult {
@@ -21,7 +22,7 @@ DecisionTree<Enemy*, FightingState::FightResult> FightingState::_decisionTree{
 		if (0 <= score && score <= enemy->_winChance) {
 			// 0 <= score <= winChance
 			if (player != nullptr) {
-				MinigameManager::GetLastInstance()->PlayerLost();
+				MinigameManager::GetInstance()->PlayerLost();
 			}
 			else {
 				Lose((Enemy*)enemy->fightingPlayable);
@@ -32,7 +33,7 @@ DecisionTree<Enemy*, FightingState::FightResult> FightingState::_decisionTree{
 		else if (enemy->_winChance < score && score <= enemy->_winChance + enemy->_drawChance) {
 			// winChance < score <= winChance + drawChance
 			if (player != nullptr) { // rozpatrywanie remisu z graczem
-				MinigameManager::GetLastInstance()->PlayerDrawed();
+				MinigameManager::GetInstance()->PlayerDrawed();
 				return FightResult::DRAW;
 			}
 			else { // ropatrywanie remisu z innym enemy
@@ -51,7 +52,7 @@ DecisionTree<Enemy*, FightingState::FightResult> FightingState::_decisionTree{
 		else {
 			// winChance + drawChance < score <= 100
 			if (player != nullptr) { 
-				MinigameManager::GetLastInstance()->PlayerWon();
+				MinigameManager::GetInstance()->PlayerWon();
 			}
 			else {
 				Win((Enemy*)enemy->fightingPlayable);

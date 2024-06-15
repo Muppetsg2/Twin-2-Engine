@@ -23,9 +23,9 @@ void GameManager::Initialize()
         instance = this;
         GameObject* temp = SceneManager::FindObjectByName("DateText");
 
-        int startMonth = 1;
-        int startYear = 2020;
-        int startDay = 1;
+        static constexpr int startMonth = 1;
+        static constexpr int startYear = 2020;
+        static constexpr int startDay = 1;
 
         if (temp != nullptr) {
             _dateText = temp->GetComponent<Text>();
@@ -33,11 +33,19 @@ void GameManager::Initialize()
                 _dateText->SetText(
                     to_wstring(startYear + year - 1)
                     .append(L".")
-                    .append(startMonth + month - 1 < 10 ? L"0" + to_wstring(startMonth + month - 1) : to_wstring(startMonth + month - 1))
+                    .append(startMonth + month - 1 < 10 ? L"0" + std::to_wstring(startMonth + month - 1) : to_wstring(startMonth + month - 1))
                     .append(L".")
                     .append(startDay + day - 1 < 10 ? L"0" + to_wstring(startDay + day - 1) : to_wstring(startDay + day - 1))
                 );
             };
+
+            _dateText->SetText(
+                to_wstring(startYear)
+                .append(L".")
+                .append(startMonth < 10 ? L"0" + std::to_wstring(startMonth) : to_wstring(startMonth))
+                .append(L".")
+                .append(startDay < 10 ? L"0" + to_wstring(startDay) : to_wstring(startDay))
+            );
         }
 
         _freePatronsData = _patronsData;

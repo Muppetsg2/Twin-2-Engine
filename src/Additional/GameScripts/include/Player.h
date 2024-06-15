@@ -77,8 +77,8 @@ private:
     Twin2Engine::UI::Text* moneyText;
 
 
-    glm::vec4 _abilityCooldownColor;
-    glm::vec4 _abilityActiveColor;
+    glm::vec4 _abilityCooldownColor = glm::vec4(1.f, 0.f, 1.f, 0.275f);
+    glm::vec4 _abilityActiveColor = glm::vec4(0.f, 1.f, 1.f, 0.275f);
 
     // FANS MEETING
     std::list<HexTile*> affectedTiles;

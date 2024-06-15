@@ -953,9 +953,9 @@ GameObjects:
     transform:
       id: 1
       position:
-        x: -2.18960953
+        x: 0
         y: 14.5
-        z: 10.3795815
+        z: 11
       scale:
         x: 0
         y: 0
@@ -1756,7 +1756,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x002\x000\x002\x000\x00.\x000\x001\x00.\x002\x000"
+        text: "\x002\x000\x002\x000\x00.\x000\x001\x00.\x000\x001"
         font: 1
         size: 30
         autoSize: true
@@ -2121,7 +2121,7 @@ GameObjects:
   - id: 47
     name: PatronChoicePanel
     isStatic: false
-    isActive: false
+    isActive: true
     transform:
       id: 111
       position:
@@ -2192,7 +2192,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 18
+        sprite: 29
         color:
           x: 1
           y: 1
@@ -2240,7 +2240,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 15
+        sprite: 10
         color:
           x: 1
           y: 1
@@ -2364,7 +2364,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 18
+        sprite: 29
         color:
           x: 1
           y: 1
@@ -2412,7 +2412,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 13
+        sprite: 32
         color:
           x: 1
           y: 1
@@ -2536,7 +2536,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 18
+        sprite: 29
         color:
           x: 1
           y: 1
@@ -2584,7 +2584,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 15
+        sprite: 10
         color:
           x: 1
           y: 1
@@ -2688,7 +2688,7 @@ GameObjects:
   - id: 61
     name: PaperRockScissorCanvas
     isStatic: false
-    isActive: false
+    isActive: true
     transform:
       id: 143
       position:
@@ -2712,41 +2712,41 @@ GameObjects:
           x: 1920
           y: 1080
         worldSpace: false
-      - id: 16238
+      - id: 159
         enabled: true
         type: Audio
         audio: 2
         loop: false
         volume: 1
         playOnStart: false
-      - id: 16239
+      - id: 160
         enabled: true
         type: MinigameManager
-        MaxNumberOfTurns: 1
-        PlayerScoreId: 16241
-        EnemyScoreId: 16243
+        MinNumberOfWins: 2
+        PlayerScoreId: 156
+        EnemyScoreId: 158
         PlayerImageId: 35
-        PlayerFrontImageId: 142
-        PlayerSelectionImageId: 47
         EnemyImageId: 37
-        EnemyFrontImageId: 82
-        EnemySelectionImageId: 49
         LaunchpadButtonId: 27
         GuitarButtonId: 30
         DrumButtonId: 33
         WonPanelId: 20
         LostPanelId: 21
+        ArrowLDGameObject: 14
+        ArrowDGGameObject: 15
+        ArrowGLGameObject: 16
+        WinSound: 2
+        DefeatSound: 4
+        LaunchpadSound: 3
+        GuitarSound: 1
+        DrumSound: 0
     children:
       - 65
       - 7
-      - 60
       - 20
       - 21
-      - 34
       - 12
       - 13
-      - 18
-      - 19
       - 9
       - 10
       - 11
@@ -2754,6 +2754,8 @@ GameObjects:
       - 14
       - 15
       - 16
+      - 17
+      - 22
   - id: 65
     name: Background
     isStatic: false
@@ -2824,44 +2826,6 @@ GameObjects:
         width: 320
         height: 50
         layer: 1
-        fillEnabled: false
-        fillType: !<0> 0
-        fillSubType: !<LEFT> 0
-        fillProgress: 1
-    children:
-      []
-  - id: 60
-    name: PlayerFrontMinigameImage
-    isStatic: false
-    isActive: false
-    transform:
-      id: 141
-      position:
-        x: -160
-        y: 0
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 142
-        enabled: true
-        type: Image
-        isTransparent: true
-        sprite: 5
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 300
-        height: 540
-        layer: 3
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
@@ -2944,44 +2908,6 @@ GameObjects:
         fillProgress: 1
     children:
       []
-  - id: 34
-    name: EnemyFrontMinigameImage
-    isStatic: false
-    isActive: false
-    transform:
-      id: 81
-      position:
-        x: 160
-        y: 0
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 180
-    components:
-      - id: 82
-        enabled: true
-        type: Image
-        isTransparent: true
-        sprite: 0
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 300
-        height: 540
-        layer: 3
-        fillEnabled: false
-        fillType: !<0> 0
-        fillSubType: !<LEFT> 0
-        fillProgress: 1
-    children:
-      []
   - id: 12
     name: PlayerMinigameImage
     isStatic: false
@@ -3052,82 +2978,6 @@ GameObjects:
         width: 280
         height: 540
         layer: 1
-        fillEnabled: false
-        fillType: !<0> 0
-        fillSubType: !<LEFT> 0
-        fillProgress: 1
-    children:
-      []
-  - id: 18
-    name: PlayerMinigameSelectionImage
-    isStatic: false
-    isActive: false
-    transform:
-      id: 46
-      position:
-        x: -175
-        y: 25
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 47
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 8
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 0
-        width: 160
-        height: 160
-        layer: 2
-        fillEnabled: false
-        fillType: !<0> 0
-        fillSubType: !<LEFT> 0
-        fillProgress: 1
-    children:
-      []
-  - id: 19
-    name: EnemyMinigameSelectionImage
-    isStatic: false
-    isActive: false
-    transform:
-      id: 48
-      position:
-        x: 175
-        y: 25
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 49
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 6
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 0
-        width: 160
-        height: 160
-        layer: 2
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
@@ -3383,7 +3233,7 @@ GameObjects:
     children:
       []
   - id: 14
-    name: GraphArrowUpRight
+    name: GraphArrowLD
     isStatic: false
     isActive: true
     transform:
@@ -3421,7 +3271,7 @@ GameObjects:
     children:
       []
   - id: 15
-    name: GraphArrowDown
+    name: GraphArrowDG
     isStatic: false
     isActive: true
     transform:
@@ -3459,7 +3309,7 @@ GameObjects:
     children:
       []
   - id: 16
-    name: GraphArrowUpLeft
+    name: GraphArrowGL
     isStatic: false
     isActive: true
     transform:
@@ -3494,6 +3344,92 @@ GameObjects:
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
         fillProgress: 1
+    children:
+      []
+  - id: 17
+    name: PlayerScore
+    isStatic: false
+    isActive: true
+    transform:
+      id: 155
+      position:
+        x: -270
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 156
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x002"
+        font: 1
+        size: 70
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 150
+        height: 150
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 22
+    name: EnemyScore
+    isStatic: false
+    isActive: true
+    transform:
+      id: 157
+      position:
+        x: 270
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 158
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x000"
+        font: 1
+        size: 70
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 150
+        height: 150
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
     children:
       []
   - id: 62
@@ -3631,91 +3567,5 @@ GameObjects:
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
         fillProgress: 1
-    children:
-      []
-  - id: 17
-    name: scoretemp1
-    isStatic: false
-    isActive: false
-    transform:
-      id: 16240
-      position:
-        x: 0
-        y: 0
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 16241
-        enabled: true
-        type: Text
-        isTransparent: false
-        text: ""
-        font: 2
-        size: 0
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 0
-        height: 0
-        color:
-          x: 0
-          y: 0
-          z: 0
-          w: 1
-        alignX: !<LEFT> 0
-        alignY: !<BOTTOM> 0
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 0
-    children:
-      []
-  - id: 22
-    name: scoretemp2
-    isStatic: false
-    isActive: false
-    transform:
-      id: 16242
-      position:
-        x: 0
-        y: 0
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 16243
-        enabled: true
-        type: Text
-        isTransparent: false
-        text: ""
-        font: 2
-        size: 0
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 0
-        height: 0
-        color:
-          x: 0
-          y: 0
-          z: 0
-          w: 1
-        alignX: !<LEFT> 0
-        alignY: !<BOTTOM> 0
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 0
     children:
       []

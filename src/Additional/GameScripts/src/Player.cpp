@@ -20,11 +20,11 @@ void Player::Initialize() {
     money = GetGameObject()->GetComponent<MoneyGainFromTiles>();
 
     // ALBUM ABILITY INTIALIZATION
-    albumButtonObject = SceneManager::FindObjectByName("albumAbility");
+    albumButtonObject = SceneManager::FindObjectByName("AlbumBg");
     albumButton = albumButtonObject->GetComponent<Button>();
-    albumText = SceneManager::FindObjectByName("albumAbilityText")->GetComponent<Text>();
+    albumText = SceneManager::FindObjectByName("AlbumCost")->GetComponent<Text>();
 
-    albumCircleImage = SceneManager::FindObjectByName("albumCircle")->GetComponent<Image>();
+    albumCircleImage = SceneManager::FindObjectByName("AlbumBg")->GetComponent<Image>();
 
     albumButtonEventHandleId = albumButton->GetOnClickEvent() += [&]() { AlbumCall(); };
     albumButtonHoveringEventHandleId = albumButton->GetOnHoverEvent() += [&]() { isHoveringAlbumButton = true; };
@@ -44,28 +44,31 @@ void Player::Initialize() {
     OnEventAlbumStarted += [&](Playable* playable) -> void {
             audioComponent->SetAudio("res/music/Abilities/AbilitiesUse.mp3");
             audioComponent->Play();
+            albumCircleImage->SetLayer(0);
             albumCircleImage->SetColor(_abilityActiveColor);
-            albumCircleImage->GetGameObject()->SetActive(true);
+            //albumCircleImage->GetGameObject()->SetActive(true);
     };
 
     OnEventAlbumCooldownStarted += [&](Playable* playable) -> void {
             albumCircleImage->SetColor(_abilityCooldownColor);
+            albumCircleImage->SetLayer(2);
     };
 
     OnEventAlbumCooldownFinished += [&](Playable* playable) -> void {
             audioComponent->SetAudio("res/music/Abilities/CooldownEnd.mp3");
             audioComponent->Play();
-            albumCircleImage->GetGameObject()->SetActive(false);
+            albumCircleImage->SetFillProgress(0.f);
+            //albumCircleImage->GetGameObject()->SetActive(false);
     };
 
-    albumCircleImage->GetGameObject()->SetActive(false);
+    //albumCircleImage->GetGameObject()->SetActive(false);
 
     // FANS MEETING ABILITY INTIALIZATION
-    fansMeetingButtonObject = SceneManager::FindObjectByName("fansMeetingAbility");
+    fansMeetingButtonObject = SceneManager::FindObjectByName("FansBg");
     fansMeetingButton = fansMeetingButtonObject->GetComponent<Button>();
-    fansMeetingText = SceneManager::FindObjectByName("fansMeetingAbilityText")->GetComponent<Text>();
+    fansMeetingText = SceneManager::FindObjectByName("FansCost")->GetComponent<Text>();
 
-    fansMeetingCircleImage = SceneManager::FindObjectByName("fansMeetingCircle")->GetComponent<Image>();
+    fansMeetingCircleImage = SceneManager::FindObjectByName("FansBg")->GetComponent<Image>();
 
     fansMeetingButtonEventHandleId = fansMeetingButton->GetOnClickEvent() += [&]() { FansMeetingCall(); };
     fansMeetingButtonHoveringEventHandleId = fansMeetingButton->GetOnHoverEvent() += [&]() { isHoveringFansMeetingButton = true; };
@@ -86,28 +89,31 @@ void Player::Initialize() {
     OnEventFansMeetingStarted += [&](Playable* playable) -> void {
         audioComponent->SetAudio("res/music/Abilities/AbilitiesUse.mp3");
         audioComponent->Play();
+        fansMeetingCircleImage->SetLayer(0);
         fansMeetingCircleImage->SetColor(_abilityActiveColor);
-        fansMeetingCircleImage->GetGameObject()->SetActive(true);
+        //fansMeetingCircleImage->GetGameObject()->SetActive(true);
     };
     
     OnEventFansMeetingCooldownStarted += [&](Playable* playable) -> void {
         fansMeetingCircleImage->SetColor(_abilityCooldownColor);
+        fansMeetingCircleImage->SetLayer(2);
     };
     
     OnEventFansMeetingCooldownFinished += [&](Playable* playable) -> void {
         audioComponent->SetAudio("res/music/Abilities/CooldownEnd.mp3");
         audioComponent->Play();
-        fansMeetingCircleImage->GetGameObject()->SetActive(false);
+        fansMeetingCircleImage->SetFillProgress(0.f);
+        //fansMeetingCircleImage->GetGameObject()->SetActive(false);
     };
 
-    fansMeetingCircleImage->GetGameObject()->SetActive(false);
+    //fansMeetingCircleImage->GetGameObject()->SetActive(false);
 
     // CONCERT ABILITY INTIALIZATION
-    concertButtonObject = SceneManager::FindObjectByName("concertAbility");
+    concertButtonObject = SceneManager::FindObjectByName("ConcertBg");
     concertButton = concertButtonObject->GetComponent<Button>();
-    concertText = SceneManager::FindObjectByName("concertAbilityText")->GetComponent<Text>();
+    concertText = SceneManager::FindObjectByName("ConcertCost")->GetComponent<Text>();
 
-    concertCircleImage = SceneManager::FindObjectByName("concertCircle")->GetComponent<Image>();
+    concertCircleImage = SceneManager::FindObjectByName("ConcertBg")->GetComponent<Image>();
 
     concertButtonEventHandleId = concertButton->GetOnClickEvent() += [&]() { ConcertCall(); };
     concertButtonHoveringEventHandleId = concertButton->GetOnHoverEvent() += [&]() { isHoveringConcertButton = true; };
@@ -128,8 +134,9 @@ void Player::Initialize() {
     concertAbility->OnEventAbilityStarted += [&](Playable* playable) -> void {
         audioComponent->SetAudio("res/music/Abilities/AbilitiesUse.mp3");
         audioComponent->Play();
+        concertCircleImage->SetLayer(0);
         concertCircleImage->SetColor(_abilityActiveColor);
-        concertCircleImage->GetGameObject()->SetActive(true);
+        //concertCircleImage->GetGameObject()->SetActive(true);
     };
 
     concertAbility->OnEventAbilityFinished += [&](Playable* playable) -> void {
@@ -138,18 +145,21 @@ void Player::Initialize() {
     
     concertAbility->OnEventAbilityCooldownStarted += [&](Playable* playable) -> void {
         concertCircleImage->SetColor(_abilityCooldownColor);
+        concertCircleImage->SetLayer(2);
     };
 
     concertAbility->OnEventAbilityCooldownFinished += [&](Playable* playable) -> void {
         audioComponent->SetAudio("res/music/Abilities/CooldownEnd.mp3");
         audioComponent->Play();
-        concertCircleImage->GetGameObject()->SetActive(false);
+        concertCircleImage->SetFillProgress(0.f);
+        //concertCircleImage->GetGameObject()->SetActive(false);
     };
 
-    concertCircleImage->GetGameObject()->SetActive(false);
+    //concertCircleImage->GetGameObject()->SetActive(false);
 
     // MONEY UI INITIALIZATION
     moneyText = SceneManager::FindObjectByName("MoneyText")->GetComponent<Text>();
+    moneyText->SetText(std::wstring(L"Money: ").append(std::to_wstring(static_cast<int>(money->money))).append(L"$"));
 
 
     //if (hexMesh == nullptr) hexMesh = HexGenerator::GenerateHexMesh(0.4f, 0.5f, 0.0f, 0.0f);
@@ -212,13 +222,13 @@ void Player::Update() {
     {
         concertCircleImage->SetFillProgress(100.0f - concertAbility->GetAbilityRemainingTime() / concertAbility->lastingTime * 100.0f);
         //concertText->SetText(std::wstring((L"Concert: " + std::to_wstring(static_cast<int>(concertAbility->GetAbilityRemainingTime())) + L"s")));
-        concertText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(concertAbility->GetAbilityRemainingTime())))));
+        //concertText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(concertAbility->GetAbilityRemainingTime())))));
     }
     else if (concertAbility->IsOnCooldown())
     {
         concertCircleImage->SetFillProgress(concertAbility->GetCooldownRemainingTime() / concertAbility->GetCooldown() * 100.0f);
         //concertText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(concertAbility->GetCooldownRemainingTime())) + L"s")));
-        concertText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(concertAbility->GetCooldownRemainingTime())))));
+        //concertText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(concertAbility->GetCooldownRemainingTime())))));
     }
     else
     {
@@ -229,10 +239,10 @@ void Player::Update() {
         //    concertButton->SetInteractable(true);
         //}
         concertButton->SetInteractable(true);
-        concertText->SetText(std::wstring((L"Concert\n" + std::to_wstring(static_cast<int>(concertAbility->GetCost())) + L"$")));
+        concertText->SetText(std::wstring(std::to_wstring(static_cast<int>(concertAbility->GetCost())).append(L"$")));
     }
 
-    moneyText->SetText(std::wstring(L"Money: ").append(std::to_wstring(static_cast<int>(money->money))).append(L" $"));
+    moneyText->SetText(std::wstring(L"Money: ").append(std::to_wstring(static_cast<int>(money->money))).append(L"$"));
 
     if (!GameManager::instance->gameStarted && hexIndicator) hexIndicator->SetActive(false);
 
@@ -248,13 +258,13 @@ void Player::Update() {
         {
             albumCircleImage->SetFillProgress(100.0f - currAlbumTime / albumTime * 100.0f);
             //albumText->SetText(std::wstring((L"Album: " + std::to_wstring(static_cast<int>(currAlbumTime)) + L"s")));
-            albumText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currAlbumTime)))));
+            //albumText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currAlbumTime)))));
         }
         else if (currAlbumCooldown > 0.0f)
         {
             albumCircleImage->SetFillProgress(currAlbumCooldown / usedAlbumCooldown * 100.0f);
             //albumText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currAlbumCooldown)) + L"s")));
-            albumText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currAlbumCooldown)))));
+            //albumText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currAlbumCooldown)))));
         }
         else
         {
@@ -265,7 +275,7 @@ void Player::Update() {
             //    concertButton->SetInteractable(true);
             //}
             albumButton->SetInteractable(true);
-            albumText->SetText(std::wstring((L"Album\n" + std::to_wstring(static_cast<int>(albumRequiredMoney)) + L"$")));
+            albumText->SetText(std::wstring(std::to_wstring(static_cast<int>(albumRequiredMoney)).append(L"$")));
         }
 
         UpdateFans();
@@ -274,13 +284,13 @@ void Player::Update() {
         {
             fansMeetingCircleImage->SetFillProgress(100.0f - currFansTime / fansTime * 100.0f);
             //fansMeetingText->SetText(std::wstring((L"Fans Meeting: " + std::to_wstring(static_cast<int>(currFansTime)) + L"s")));
-            fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currFansTime)))));
+            //fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currFansTime)))));
         }
         else if (currFansCooldown > 0.0f)
         {
             fansMeetingCircleImage->SetFillProgress(currFansCooldown / usedFansCooldown * 100.0f);
             //fansMeetingText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currFansCooldown)) + L"s")));
-            fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currFansCooldown)))));
+            //fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currFansCooldown)))));
         }
         else
         {
@@ -291,7 +301,7 @@ void Player::Update() {
             //    concertButton->SetInteractable(true);
             //}
             fansMeetingButton->SetInteractable(true);
-            fansMeetingText->SetText(std::wstring((L"Fans Meeting\n" + std::to_wstring(static_cast<int>(fansRequiredMoney)) + L"$")));
+            fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(fansRequiredMoney)).append(L"$")));
         }
         
         if (GameManager::instance->gameStarted)

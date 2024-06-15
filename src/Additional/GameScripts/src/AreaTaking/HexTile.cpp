@@ -527,6 +527,19 @@ void HexTile::StartTakingOver(Playable* entity) {
 	if (state != TileState::OCCUPIED) {
 		state = TileState::OCCUPIED;
 		occupyingEntity = entity;
+
+		if (_mapHexTile->type == MapHexTile::HexTileType::PointOfInterest)
+		{
+			Transform* transform = GetTransform();
+			if (transform->GetChildCount() == 9ull)
+			{
+				transform->GetChildAt(transform->GetChildCount() - 2ull)->GetGameObject()->GetComponent<MeshRenderer>()->SetIsTransparent(true);
+			}
+			else
+			{
+				transform->GetChildAt(transform->GetChildCount() - 1ull)->GetGameObject()->GetComponent<MeshRenderer>()->SetIsTransparent(true);
+			}
+		}
 	}
 	else if (occupyingEntity != entity && !isFighting && entity != nullptr) {
 		GameManager::instance->minigameActive = true;
@@ -544,6 +557,20 @@ void HexTile::StopTakingOver(Playable* entity)
 		}
 		else {
 			state = TileState::NONE;
+		}
+
+
+		if (_mapHexTile->type == MapHexTile::HexTileType::PointOfInterest)
+		{
+			Transform* transform = GetTransform();
+			if (transform->GetChildCount() == 9ull)
+			{
+				transform->GetChildAt(transform->GetChildCount() - 2ull)->GetGameObject()->GetComponent<MeshRenderer>()->SetIsTransparent(false);
+			}
+			else
+			{
+				transform->GetChildAt(transform->GetChildCount() - 1ull)->GetGameObject()->GetComponent<MeshRenderer>()->SetIsTransparent(false);
+			}
 		}
 	}
 }

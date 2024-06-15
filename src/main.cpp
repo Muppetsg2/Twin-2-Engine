@@ -117,6 +117,7 @@ using namespace Generation::Generators;
 
 #include <UIScripts/PatronChoicePanelController.h>
 #include <UIScripts/PopularityGainingBonusBarController.h>
+#include <UIScripts/AreaTakenGraph.h>
 
 using namespace GameScripts;
 
@@ -367,6 +368,7 @@ int main(int, char**)
     ADD_COMPONENT("MinigameManager", MinigameManager);
     ADD_COMPONENT("ConcertRoad", ConcertRoad);
     ADD_COMPONENT("PopularityGainingBonusBarController", PopularityGainingBonusBarController);
+    ADD_COMPONENT("AreaTakenGraph", AreaTakenGraph);
 
 #pragma endregion
 

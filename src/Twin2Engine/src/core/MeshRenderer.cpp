@@ -229,40 +229,40 @@ bool MeshRenderer::DrawInheritedFields()
 
 void MeshRenderer::OnGameObjectStaticChanged(GameObject* gameObject)
 {
-	//MeshRenderingManager::Unregister(this);
-	//MeshRenderingManager::Register(this);
-	if (gameObject->GetIsStatic())
-	{
-		bool res = true;
-		if (_registered)
-		{
-			res = MeshRenderingManager::UnregisterDynamic(this);
-		}
-	
-		if (!res) {
-			res = MeshRenderingManager::UnregisterStatic(this);
-		}
-	
-		//res = MeshRenderingManager::RegisterStatic(this);
-		res = MeshRenderingManager::Register(this);
-		_registered = res;
-	}
-	else
-	{
-		bool res = true;
-		if (_registered)
-		{
-			res = MeshRenderingManager::UnregisterStatic(this);
-		}
-	
-		if (!res) {
-			res = MeshRenderingManager::UnregisterDynamic(this);
-		}
-	
-		//res = MeshRenderingManager::RegisterDynamic(this);
-		res = MeshRenderingManager::Register(this);
-		_registered = res;
-	}
+	MeshRenderingManager::Unregister(this);
+	MeshRenderingManager::Register(this);
+	//if (gameObject->GetIsStatic())
+	//{
+	//	bool res = true;
+	//	if (_registered)
+	//	{
+	//		res = MeshRenderingManager::UnregisterDynamic(this);
+	//	}
+	//
+	//	if (!res) {
+	//		res = MeshRenderingManager::UnregisterStatic(this);
+	//	}
+	//
+	//	//res = MeshRenderingManager::RegisterStatic(this);
+	//	res = MeshRenderingManager::Register(this);
+	//	_registered = res;
+	//}
+	//else
+	//{
+	//	bool res = true;
+	//	if (_registered)
+	//	{
+	//		res = MeshRenderingManager::UnregisterStatic(this);
+	//	}
+	//
+	//	if (!res) {
+	//		res = MeshRenderingManager::UnregisterDynamic(this);
+	//	}
+	//
+	//	//res = MeshRenderingManager::RegisterDynamic(this);
+	//	res = MeshRenderingManager::Register(this);
+	//	_registered = res;
+	//}
 }
 
 void MeshRenderer::OnGameObjectActiveChanged(GameObject* gameObject)

@@ -182,7 +182,7 @@ bool MeshRenderingManager::Unregister(Twin2Engine::Core::MeshRenderer* meshRende
 		InstantiatingMesh* mesh = nullptr;
 
 		size_t size = registerQueues.size();
-		for (size_t index = 0ull; index < size; ++size)
+		for (size_t index = 0ull; index < size; ++index)
 		{
 			//auto& meshRenderingData = _renderQueueStaticTransparent[material->GetShader()][material][mesh];
 			material = registerQueues[index].material;
@@ -192,7 +192,7 @@ bool MeshRenderingManager::Unregister(Twin2Engine::Core::MeshRenderer* meshRende
 
 			size_t pos = meshRenderingData.meshRenderers.size();
 			size_t size = pos;
-			for (size_t z = 0; z < size; ++z)
+			for (size_t z = 0ull; z < size; ++z)
 			{
 				if (meshRenderingData.meshRenderers[z] == meshRenderer)
 				{

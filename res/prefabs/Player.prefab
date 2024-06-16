@@ -19,6 +19,8 @@ Models:
 Prefabs: 
   - id: 0
     path: res/prefabs/PlayerDestinationMarker.prefab
+  - id: 1
+    path: res/prefabs/Star.prefab
 ScriptableObjects: ~
 Root:
   name: Player
@@ -51,6 +53,7 @@ Root:
       enabled: true
       type: Player
       moneyFunction: res/scriptableobjects/MoneyFunctionData.so
+      starPrefab: 1
       abilityActiveColor:
         x: 0
         y: 1
@@ -83,12 +86,10 @@ Root:
       type: MoneyGainFromTiles
       gainingInterval: 1
       moneyBaseFactor: 1
-    - id: 8
+    - id: 6
       enabled: true
       type: Audio
       audio: 0
       loop: false
       volume: 1
       playOnStart: false
-  children:
-    []

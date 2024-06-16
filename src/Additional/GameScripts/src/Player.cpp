@@ -182,6 +182,11 @@ void Player::Initialize() {
     //RockPaperScisorsManager::Instance().OnPlayerLoseEvent += [this]() { LostPaperRockScisors(nullptr); };
     //FansControllGameManager::Instance().OnPlayerWinEvent += [this]() { WonFansControl(nullptr); };
     //FansControllGameManager::Instance().OnPlayerLoseEvent += [this]() { LostFansControl(nullptr); };
+    if (_starPrefab != nullptr) {
+        GameObject* m = Twin2Engine::Manager::SceneManager::CreateGameObject(_starPrefab, GetTransform());
+        m->GetTransform()->SetLocalPosition(glm::vec3(0.0f, 4.0, 0.0f));
+        m->GetTransform()->SetLocalScale(glm::vec3(8.0f, 8.0, 8.0f));
+    }
 }
 
 void Player::OnDestroy()
@@ -701,6 +706,9 @@ YAML::Node Player::Serialize() const
     node["type"] = "Player";
     node["abilityActiveColor"] = _abilityActiveColor;
     node["abilityCooldownColor"] = _abilityCooldownColor;
+    if (_starPrefab != nullptr) {
+        node["starPrefab"] = _starPrefab->GetId();
+    }
 
     //node["albumCircleImage"] = albumCircleImage->GetId();
     //node["fansMeetingCircleImage"] = fansMeetingCircleImage->GetId();
@@ -716,6 +724,10 @@ bool Player::Deserialize(const YAML::Node& node)
 
     _abilityActiveColor = node["abilityActiveColor"].as<vec4>();
     _abilityCooldownColor = node["abilityCooldownColor"].as<vec4>();
+
+    if (node["starPrefab"]) {
+        _starPrefab = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["starPrefab"].as<size_t>()));
+    }
     //albumCircleImage = (Image*)SceneManager::GetComponentWithId(node["albumCircleImage"].as<size_t>());
     //fansMeetingCircleImage = (Image*)SceneManager::GetComponentWithId(node["fansMeetingCircleImage"].as<size_t>());
     //concertCircleImage = (Image*)SceneManager::GetComponentWithId(node["concertCircleImage"].as<size_t>());

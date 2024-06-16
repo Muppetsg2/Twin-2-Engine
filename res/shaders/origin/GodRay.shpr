@@ -1,0 +1,6 @@
+shaderprogram:
+  name: origin/GodRay
+  shaders:
+    - GodRay.vert
+    - GodRay.frag
+  parameters:

@@ -869,6 +869,8 @@ Materials:
     path: res/materials/CityMaterial.material
   - id: 56
     path: res/materials/car/CarMaterial_Cyan.material
+  - id: 57
+    path: res/materials/YellowBasic.material
 Models:
   - id: 0
     path: res/models/radioTower.obj
@@ -888,6 +890,8 @@ Models:
     path: res/models/city.obj
   - id: 8
     path: "{Sphere}"
+  - id: 9
+    path: res/models/Star.obj
 Prefabs:
   - id: 0
     path: res/prefabs/tilemap/mapElements/mountain_3.prefab
@@ -1052,9 +1056,9 @@ GameObjects:
         enabled: true
         type: DirectionalLight
         direction:
-          x: -0.666660011
+          x: 0.666660011
           y: -0.666660011
-          z: 0.333330005
+          z: -0.333330005
         color:
           x: 1
           y: 1

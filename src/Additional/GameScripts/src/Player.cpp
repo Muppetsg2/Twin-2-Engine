@@ -203,6 +203,10 @@ void Player::Initialize() {
         m->GetTransform()->SetLocalPosition(glm::vec3(0.0f, 4.0, 0.0f));
         m->GetTransform()->SetLocalScale(glm::vec3(8.0f, 8.0, 8.0f));
     }
+
+    albumButton->SetInteractable(true);
+    fansMeetingButton->SetInteractable(true);
+    concertButton->SetInteractable(true);
 }
 
 void Player::Update() {

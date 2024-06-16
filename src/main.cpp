@@ -390,7 +390,6 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/BlankScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/PatronChoice.scene");
     SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
-    //SceneManager::AddScene("testScene", new Scene());
     //SceneManager::AddScene("testScene", "res/scenes/SceneToEditPrefabs.scene");
     //SceneManager::AddScene("testScene", "res/scenes/Making Game UI.scene");
     //SceneManager::AddScene("testScene", "res/scenes/MenuScene.scene");

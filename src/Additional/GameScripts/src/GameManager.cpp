@@ -28,13 +28,13 @@ void GameManager::Initialize()
         _yearText = SceneManager::FindObjectByName("YearText")->GetComponent<Text>();
         
         _dayEventHandleId = GameTimer::Instance()->OnDayTicked += [&](int day) {
-            _dayText->SetText(wstring(L"Day ").append(to_wstring(day)));
+            _dayText->SetText(wstring(L"Days ").append(to_wstring(day)));
             };
         _monthEventHandleId = GameTimer::Instance()->OnMonthTicked += [&](int month) {
-            _monthText->SetText(wstring(L"Month ").append(to_wstring(month)));
+            _monthText->SetText(wstring(L"Months ").append(to_wstring(month)));
             };
         _yearEventHandleId = GameTimer::Instance()->OnYearTicked += [&](int year) {
-            _yearText->SetText(wstring(L"Year ").append(to_wstring(year)));
+            _yearText->SetText(wstring(L"Years ").append(to_wstring(year)));
         };
 
         _freePatronsData = _patronsData;
@@ -227,7 +227,9 @@ GameObject *GameManager::GeneratePlayer()
 
     _player->move->_playerDestinationMarker->GetComponent<MeshRenderer>()->AddMaterial(
             _player->GetGameObject()->GetComponent<MeshRenderer>()->GetMaterial(0ull));
-
+    
+    //_player->move->_playerWrongDestinationMarker->GetComponent<MeshRenderer>()->AddMaterial(
+    //        _player->GetGameObject()->GetComponent<MeshRenderer>()->GetMaterial(0ull));
 
     entities.push_back(p);
 

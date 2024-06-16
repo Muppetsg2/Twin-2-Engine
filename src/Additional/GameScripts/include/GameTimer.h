@@ -11,10 +11,10 @@ private:
     int monthsPerYear = 12;
 
     float secondsCounter = 0;
-    int daysCounter = 1;
-    int weeksCounter = 1;
-    int monthsCounter = 1;
-    int yearsCounter = 1;
+    int daysCounter = 0;
+    int weeksCounter = 0;
+    int monthsCounter = 0;
+    int yearsCounter = 0;
 
     static int highestDaysCounter;
     static int highestWeeksCounter;

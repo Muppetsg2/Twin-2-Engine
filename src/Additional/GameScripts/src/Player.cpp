@@ -397,6 +397,7 @@ void Player::AlbumCall() {
     if (currAlbumTime <= 0.0f && currAlbumCooldown <= 0.0f && money->SpendMoney(albumRequiredMoney)) {
         currAlbumTime = albumTime;
         albumButton->SetInteractable(false);
+        albumButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
         UseAlbum();
     }
     else {
@@ -409,6 +410,7 @@ void Player::FansMeetingCall() {
     if (currFansTime <= 0.0f && currFansCooldown <= 0.0f && money->SpendMoney(fansRequiredMoney)) {
         currFansTime = fansTime;
         fansMeetingButton->SetInteractable(false);
+        fansMeetingButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
         UseFans();
     }
     else {
@@ -422,6 +424,7 @@ void Player::ConcertCall() {
     if (concertAbility->Use())
     {
         concertButton->SetInteractable(false);
+        concertButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
         PopularityGainingBonusBarController::Instance()->AddCurrentBonus(concertAbility->GetAdditionalTakingOverSpeed());
         PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
         isShowingConcertPossible = false;

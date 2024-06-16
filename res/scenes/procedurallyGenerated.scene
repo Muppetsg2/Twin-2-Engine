@@ -2346,7 +2346,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00D\x00a\x00y\x00 \x009"
+        text: "\x00D\x00a\x00y\x00s"
         font: 0
         size: 35
         autoSize: false
@@ -2389,7 +2389,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00M\x00o\x00n\x00t\x00h\x00 \x002"
+        text: "\x00M\x00o\x00n\x00t\x00h\x00s"
         font: 0
         size: 35
         autoSize: false
@@ -2432,7 +2432,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00Y\x00e\x00a\x00r\x00 \x001"
+        text: "\x00Y\x00e\x00a\x00r\x00s"
         font: 0
         size: 35
         autoSize: false

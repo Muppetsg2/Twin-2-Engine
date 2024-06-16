@@ -338,17 +338,16 @@ void MeshRenderer::OnMaterialsErased()
 bool MeshRenderer::CheckMaterialsValidation()
 {
 	bool res = true;
-	for (size_t i = _materials.size(); i > 0; ) {
-		--i;
-		if (!MaterialsManager::IsMaterialLoaded(_materials[i]->GetId())) {
+	for (size_t i = _materials.size(); i > 0; --i) {
+		if (!MaterialsManager::IsMaterialLoaded(_materials[i - 1]->GetId())) {
 			res = false;
 			_materialError = true;
 			Unregister();
 			_materials.erase(_materials.begin() + i);
 
 #if _DEBUG
-			_next = _next > _addNum[i] ? _addNum[i] : _next;
-			_addNum.erase(_addNum.begin() + i);
+			_next = _next > _addNum[i - 1] ? _addNum[i - 1] : _next;
+			_addNum.erase(_addNum.begin() + i - 1);
 #endif
 		}
 		else if (_materials[i - 1]->GetShader() == nullptr) {

@@ -8,19 +8,23 @@ class AreaTakenGraph : public Twin2Engine::Core::Component {
 private:
 	using GameObject = Twin2Engine::Core::GameObject;
 
-	size_t _topHexagonPrefabId;
-	size_t _edgePrefabId;
-	size_t _bottomHexagonPrefabId;
+	size_t _topHexagonPrefabId = 0;
+	size_t _edgePrefabId = 0;
+	size_t _bottomHexagonPrefabId = 0;
 
 	std::vector<GameObject*> _topHexagons;
 	std::vector<GameObject*> _edges;
 	GameObject* _bottomHexagon = nullptr;
+
+	// TODO: add to draw editor
+	uint32_t _layer = 0;
 
 	void UpdateTopHexagon();
 	void UpdateEdge();
 	void UpdateBottomHexagon();
 
 	bool PrefabDropDown(const char* label, size_t* prefabId, const std::string& objId);
+	glm::vec4 GetColor(const TILE_COLOR& color);
 
 public:
 

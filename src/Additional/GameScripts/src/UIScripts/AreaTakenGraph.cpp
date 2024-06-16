@@ -30,34 +30,8 @@ void AreaTakenGraph::UpdateTopHexagon()
 		img->SetFillOffset(offset);
 		img->SetFillProgress(offset + progress);
 
-		TILE_COLOR col = (TILE_COLOR)(uint8_t)(entity->colorIdx == 0 ? 1 : powf(2.f, (float)(entity->colorIdx)));
-		switch (col) {
-		case TILE_COLOR::BLUE:
-			img->SetColor(glm::vec4(0.31f, 0.361f, 0.886f, 1.f));
-			break;
-		case TILE_COLOR::CYAN:
-			img->SetColor(glm::vec4(0.31f, 0.867f, 0.886f, 1.f));
-			break;
-		case TILE_COLOR::GREEN:
-			img->SetColor(glm::vec4(0.31f, 0.886f, 0.396f, 1.f));
-			break;
-		case TILE_COLOR::PINK:
-			img->SetColor(glm::vec4(0.894f, 0.31f, 0.686f, 1.f));
-			break;
-		case TILE_COLOR::PURPLE:
-			img->SetColor(glm::vec4(0.769f, 0.31f, 0.89f,1.f));
-			break;
-		case TILE_COLOR::RED:
-			img->SetColor(glm::vec4(0.886f, 0.406f, 0.31f, 1.f));
-			break;
-		case TILE_COLOR::YELLOW:
-			img->SetColor(glm::vec4(0.875f, 0.886f, 0.31f, 1.f));
-			break;
-		case TILE_COLOR::NEUTRAL:
-		default:
-			img->SetColor(glm::vec4(1.f));
-			break;
-		}
+		img->SetColor(GetColor((TILE_COLOR)(uint8_t)(entity->colorIdx == 0 ? 1 : powf(2.f, (float)(entity->colorIdx)))));
+		img->SetLayer(_layer + 2);
 
 		offset += progress;
 		++idx;
@@ -68,7 +42,8 @@ void AreaTakenGraph::UpdateTopHexagon()
 		Image* img = _topHexagons[idx]->GetComponent<Image>();
 		img->SetFillOffset(offset);
 		img->SetFillProgress(100.f);
-		img->SetColor(glm::vec4(1.f));
+		img->SetColor(GetColor(TILE_COLOR::NEUTRAL));
+		img->SetLayer(_layer + 2);
 	}
 	else {
 		_topHexagons[idx]->SetActive(false);
@@ -77,7 +52,59 @@ void AreaTakenGraph::UpdateTopHexagon()
 
 void AreaTakenGraph::UpdateEdge()
 {
+	Prefab* edgePrefab = PrefabManager::GetPrefab(_edgePrefabId);
+	if (edgePrefab == nullptr) return;
 
+	std::vector<Playable*> entities = GameManager::instance->entities;
+
+	if (entities.size() != _edges.size()) {
+		while (_edges.size() < entities.size() + 1) {
+			_edges.push_back(SceneManager::CreateGameObject(edgePrefab, GetTransform()));
+		}
+
+		while (_edges.size() > entities.size() + 1) {
+			SceneManager::DestroyGameObject(_edges[_edges.size() - 1]);
+			_edges.erase(_edges.end() - 1);
+		}
+	}
+
+	std::vector<HexTile*> tiles = GameManager::instance->Tiles;
+	static const float lowProgress = 100.f / 3.f;
+	static const float highProgress = 200.f / 3.f;
+	
+	float offset = 0.f;
+	size_t idx = 0;
+	for (auto& entity : entities) {
+		float progress = ((float)entity->OwnTiles.size() / tiles.size()) * 100.f;
+
+		if (offset + progress > lowProgress && offset < highProgress) {
+			_edges[idx]->SetActive(true);
+			Image* img = _edges[idx]->GetComponent<Image>();
+			img->SetFillOffset(glm::clamp(offset * 3.f - 100.f, 0.f, 100.f));
+			img->SetFillProgress(glm::clamp((offset + progress) * 3.f - 100.f, 0.f, 100.f));
+
+			img->SetColor(GetColor((TILE_COLOR)(uint8_t)(entity->colorIdx == 0 ? 1 : powf(2.f, (float)(entity->colorIdx)))) * 0.75f);
+			img->SetLayer(_layer + 1);
+		}
+		else {
+			_edges[idx]->SetActive(false);
+		}
+
+		offset += progress;
+		++idx;
+	}
+
+	if (offset < highProgress) {
+		_edges[idx]->SetActive(true);
+		Image* img = _edges[idx]->GetComponent<Image>();
+		img->SetFillOffset(glm::clamp(offset * 3.f - 100.f, 0.f, 100.f));
+		img->SetFillProgress(100.f);
+		img->SetColor(GetColor(TILE_COLOR::NEUTRAL) * 0.75f);
+		img->SetLayer(_layer + 1);
+	}
+	else {
+		_edges[idx]->SetActive(false);
+	}
 }
 
 void AreaTakenGraph::UpdateBottomHexagon()
@@ -123,6 +150,29 @@ bool AreaTakenGraph::PrefabDropDown(const char* label, size_t* prefabId, const s
 	return false;
 }
 
+glm::vec4 AreaTakenGraph::GetColor(const TILE_COLOR& color)
+{
+	switch (color) {
+	case TILE_COLOR::BLUE:
+		return glm::vec4(0.31f, 0.361f, 0.886f, 1.f);
+	case TILE_COLOR::CYAN:
+		return glm::vec4(0.31f, 0.867f, 0.886f, 1.f);
+	case TILE_COLOR::GREEN:
+		return glm::vec4(0.31f, 0.886f, 0.396f, 1.f);
+	case TILE_COLOR::PINK:
+		return glm::vec4(0.894f, 0.31f, 0.686f, 1.f);
+	case TILE_COLOR::PURPLE:
+		return glm::vec4(0.769f, 0.31f, 0.89f, 1.f);
+	case TILE_COLOR::RED:
+		return glm::vec4(0.886f, 0.406f, 0.31f, 1.f);
+	case TILE_COLOR::YELLOW:
+		return glm::vec4(0.875f, 0.886f, 0.31f, 1.f);
+	case TILE_COLOR::NEUTRAL:
+	default:
+		return glm::vec4(1.f);
+	}
+}
+
 void AreaTakenGraph::Update()
 {
 	if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
@@ -143,6 +193,7 @@ YAML::Node AreaTakenGraph::Serialize() const
 {
 	YAML::Node node = Component::Serialize();
 	node["type"] = "AreaTakenGraph";
+	node["layer"] = _layer;
 	node["topCirclePrefab"] = SceneManager::GetPrefabSaveIdx(_topHexagonPrefabId);
 	node["edgePrefab"] = SceneManager::GetPrefabSaveIdx(_edgePrefabId);
 	node["bottomCirclePrefab"] = SceneManager::GetPrefabSaveIdx(_bottomHexagonPrefabId);
@@ -155,17 +206,25 @@ bool AreaTakenGraph::Deserialize(const YAML::Node& node)
 
 	isGood = isGood && !Component::Deserialize(node);
 
-	if (isGood = isGood && node["topCirclePrefab"]) {
+	if (node["layer"]) {
+		_layer = node["layer"].as<uint32_t>();
+	}
+	isGood = isGood && node["layer"];
+
+	if (node["topCirclePrefab"]) {
 		_topHexagonPrefabId = SceneManager::GetPrefab(node["topCirclePrefab"].as<size_t>());
 	}
+	isGood = isGood && node["topCirclePrefab"];
 
-	if (isGood = isGood && node["edgePrefab"]) {
+	if (node["edgePrefab"]) {
 		_edgePrefabId = SceneManager::GetPrefab(node["edgePrefab"].as<size_t>());
 	}
+	isGood = isGood && node["edgePrefab"];
 
-	if (isGood = isGood && node["bottomCirclePrefab"]) {
+	if (node["bottomCirclePrefab"]) {
 		_bottomHexagonPrefabId = SceneManager::GetPrefab(node["bottomCirclePrefab"].as<size_t>());
 	}
+	isGood = isGood && node["bottomCirclePrefab"];
 
 	return isGood;
 }

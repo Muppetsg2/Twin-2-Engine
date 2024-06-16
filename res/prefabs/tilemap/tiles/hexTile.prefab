@@ -422,7 +422,7 @@ GameObjects:
       id: 66
       position:
         x: 0
-        y: 0.05
+        y: 0.025
         z: 0
       scale:
         x: 1

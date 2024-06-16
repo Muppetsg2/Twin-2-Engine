@@ -61,20 +61,12 @@ void PopularityGainingBonusBarController::AddPossibleBonus(float additionalPossi
 {
 	_possibleBonus += additionalPossibleBonus;
 	_possibleBonusBar->SetFillProgress(100.0f * (_currentBonus + _possibleBonus) / _maxBonus);
-
-	//_possibleBonusCurrentLength = _possibleBonus / _maxBonus * _maxLength;
-	//_possibleBonusBar->SetWidth(_possibleBonusCurrentLength);
-	//_possibleBonusBar->GetTransform()->SetLocalPosition(vec3((_possibleBonusCurrentLength - _maxLength) * 0.5f + _currentBonusCurrentLength, 0.0f, 0.0f));
 }
 
 void PopularityGainingBonusBarController::RemovePossibleBonus(float removedPossibleBonus)
 {
 	_possibleBonus -= removedPossibleBonus;
 	_possibleBonusBar->SetFillProgress(100.0f * (_currentBonus + _possibleBonus) / _maxBonus);
-
-	//_possibleBonusCurrentLength = _possibleBonus / _maxBonus * _maxLength;
-	//_possibleBonusBar->SetWidth(_possibleBonusCurrentLength);
-	//_possibleBonusBar->GetTransform()->SetLocalPosition(vec3((_possibleBonusCurrentLength - _maxLength) * 0.5f + _currentBonusCurrentLength, 0.0f, 0.0f));
 }
 
 YAML::Node PopularityGainingBonusBarController::Serialize() const

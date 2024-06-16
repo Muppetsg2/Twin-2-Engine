@@ -3469,8 +3469,8 @@ GameObjects:
     transform:
       id: 141
       position:
-        x: 0
-        y: 468
+        x: 580
+        y: -330
         z: 0
       scale:
         x: 1
@@ -3490,7 +3490,7 @@ GameObjects:
           y: 0.196911216
           z: 0.196911216
           w: 1
-        width: 400
+        width: 300
         height: 50
         layer: 0
         fillEnabled: false
@@ -3506,7 +3506,7 @@ GameObjects:
           y: 0.35135138
           z: 0.35135138
           w: 1
-        width: 380
+        width: 280
         height: 30
         layer: 0
         fillEnabled: false
@@ -3517,7 +3517,7 @@ GameObjects:
         enabled: true
         type: PopularityGainingBonusBarController
         maxBonus: 100
-        maxLength: 380
+        maxLength: 280
     children:
       - 60
       - 61
@@ -3549,13 +3549,13 @@ GameObjects:
           y: 0
           z: 0
           w: 1
-        width: 380
+        width: 280
         height: 30
         layer: 0
         fillEnabled: true
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
-        fillProgress: 1
+        fillProgress: 0
     children:
       []
   - id: 61
@@ -3586,12 +3586,12 @@ GameObjects:
           y: 0
           z: 0
           w: 0.431372553
-        width: 380
+        width: 280
         height: 30
         layer: 0
         fillEnabled: true
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
-        fillProgress: 1
+        fillProgress: 0
     children:
       []

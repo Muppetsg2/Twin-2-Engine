@@ -1332,7 +1332,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x003\x001\x000\x00$"
+        text: ""
         font: 1
         size: 30
         autoSize: true
@@ -1484,7 +1484,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x003\x001\x000\x00$"
+        text: ""
         font: 1
         size: 30
         autoSize: true
@@ -1636,7 +1636,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x003\x001\x000\x00$"
+        text: ""
         font: 1
         size: 30
         autoSize: true
@@ -2760,6 +2760,8 @@ GameObjects:
       - 16
       - 17
       - 22
+      - 6
+      - 18
   - id: 65
     name: Background
     isStatic: false
@@ -3358,7 +3360,7 @@ GameObjects:
       id: 155
       position:
         x: -270
-        y: 0
+        y: -45
         z: 0
       scale:
         x: 1
@@ -3373,7 +3375,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x002"
+        text: "\x002\x00/\x002"
         font: 1
         size: 70
         autoSize: false
@@ -3401,7 +3403,7 @@ GameObjects:
       id: 157
       position:
         x: 270
-        y: 0
+        y: -45
         z: 0
       scale:
         x: 1
@@ -3416,7 +3418,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x000"
+        text: "\x000\x00/\x002"
         font: 1
         size: 70
         autoSize: false
@@ -3431,6 +3433,92 @@ GameObjects:
           w: 1
         alignX: !<CENTER> 1
         alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 6
+    name: PlayerText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5450
+      position:
+        x: -270
+        y: 35
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5451
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00Y\x00o\x00u"
+        font: 1
+        size: 40
+        autoSize: true
+        minSize: 10
+        maxSize: 40
+        width: 150
+        height: 50
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 18
+    name: EnemyText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5452
+      position:
+        x: 270
+        y: 35
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5453
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00E\x00n\x00e\x00m\x00y"
+        font: 1
+        size: 40
+        autoSize: true
+        minSize: 10
+        maxSize: 40
+        width: 150
+        height: 50
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 2

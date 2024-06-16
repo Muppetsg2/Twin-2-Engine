@@ -252,12 +252,13 @@ glm::vec3 LightingController::RecalculateDirLightSpaceMatrix(DirectionalLight* l
 	Twin2Engine::Core::CameraComponent* mainCam = Twin2Engine::Core::CameraComponent::GetMainCamera();
 
 	float zLength = 100.0f;
-	glm::vec3 offset(-18.0f, 0.0f, 18.0f);
+	//::vec3 offset(-18.0f, 0.0f, 18.0f);
+	glm::vec3 offset(12.0f, 5.0f, 5.0f);
 	glm::vec3 lightNewPos = viewerPosition + mainCam->GetFrontDir() * DLShadowCastingRange - light->direction * (zLength * 0.5f) + offset;
 	glm::mat4 viewMatrix = glm::lookAt(lightNewPos, lightNewPos + light->direction, glm::vec3(0.0f, 1.0f, 0.0f));
 
-	float orthoHeight = 13.0f;
-	float orthoWidth = 13.0f;
+	float orthoHeight = 8.0f;
+	float orthoWidth = 8.0f;
 
 	//light->lightSpaceMatrix = glm::ortho(-(maxX + lightMargin), maxX + lightMargin, -(maxY + lightMargin), maxY + lightMargin, -zLength, zLength) * viewMatrix;/**/
 	light->lightSpaceMatrix = glm::ortho(-orthoWidth, orthoWidth, -orthoHeight, orthoHeight, -zLength, zLength) * viewMatrix;/**/

@@ -198,6 +198,11 @@ void Player::Initialize() {
     //RockPaperScisorsManager::Instance().OnPlayerLoseEvent += [this]() { LostPaperRockScisors(nullptr); };
     //FansControllGameManager::Instance().OnPlayerWinEvent += [this]() { WonFansControl(nullptr); };
     //FansControllGameManager::Instance().OnPlayerLoseEvent += [this]() { LostFansControl(nullptr); };
+    if (_starPrefab != nullptr) {
+        GameObject* m = Twin2Engine::Manager::SceneManager::CreateGameObject(_starPrefab, GetTransform());
+        m->GetTransform()->SetLocalPosition(glm::vec3(0.0f, 4.0, 0.0f));
+        m->GetTransform()->SetLocalScale(glm::vec3(8.0f, 8.0, 8.0f));
+    }
 }
 
 void Player::Update() {
@@ -324,11 +329,19 @@ void Player::Update() {
                 {
                     PopularityGainingBonusBarController::Instance()->AddPossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
                     isShowingConcertPossible = true;
+
+                    concertButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
+                    audioComponent->SetAudio("res/music/Abilities/UI/OnHoverClick.mp3");
+                    audioComponent->Play();
                 }
                 else if (!isHoveringConcertButton && isShowingConcertPossible)
                 {
                     PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
                     isShowingConcertPossible = false;
+
+                    concertButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
+                    audioComponent->SetAudio("res/music/Abilities/UI/OffHoverClick.mp3");
+                    audioComponent->Play();
                 }
                 isHoveringConcertButton = false;
             }
@@ -343,6 +356,10 @@ void Player::Update() {
                         tile->EnableAlbumAffected();
                     }
                     isShowingAlbumPossible = true;
+
+                    albumButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
+                    audioComponent->SetAudio("res/music/Abilities/UI/OnHoverClick.mp3");
+                    audioComponent->Play();
                 }
                 else if (!isHoveringAlbumButton && isShowingAlbumPossible)
                 {
@@ -351,6 +368,10 @@ void Player::Update() {
                         tile->DisableAlbumAffected();
                     }
                     isShowingAlbumPossible = false;
+
+                    albumButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
+                    audioComponent->SetAudio("res/music/Abilities/UI/OffHoverClick.mp3");
+                    audioComponent->Play();
                 }
                 isHoveringAlbumButton = false;
             }
@@ -444,9 +465,10 @@ void Player::StartPlayer(HexTile* startUpTile)
 }
 
 void Player::AlbumCall() {
-    if (currAlbumCooldown <= 0.0f && money->SpendMoney(albumRequiredMoney)) {
+    if (currAlbumTime <= 0.0f && currAlbumCooldown <= 0.0f && money->SpendMoney(albumRequiredMoney)) {
         currAlbumTime = albumTime;
         albumButton->SetInteractable(false);
+        albumButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
         UseAlbum();
     }
     else {
@@ -456,9 +478,10 @@ void Player::AlbumCall() {
 }
 
 void Player::FansMeetingCall() {
-    if (currFansCooldown <= 0.0f && money->SpendMoney(fansRequiredMoney)) {
+    if (currFansTime <= 0.0f && currFansCooldown <= 0.0f && money->SpendMoney(fansRequiredMoney)) {
         currFansTime = fansTime;
         fansMeetingButton->SetInteractable(false);
+        fansMeetingButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
         UseFans();
     }
     else {
@@ -472,6 +495,7 @@ void Player::ConcertCall() {
     if (concertAbility->Use())
     {
         concertButton->SetInteractable(false);
+        concertButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
         PopularityGainingBonusBarController::Instance()->AddCurrentBonus(concertAbility->GetAdditionalTakingOverSpeed());
         PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
         isShowingConcertPossible = false;
@@ -525,6 +549,11 @@ void Player::ShowAffectedTiles() {
             //}
         }
     }
+
+    fansMeetingButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
+    // AUDIO
+    audioComponent->SetAudio("res/music/Abilities/UI/OnHoverClick.mp3");
+    audioComponent->Play();
 }
 
 void Player::HideAffectedTiles() {
@@ -535,6 +564,10 @@ void Player::HideAffectedTiles() {
     affectedTiles.clear();
 
     isShowingFansMeetingAffectedTiles = false;
+
+    fansMeetingButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
+    audioComponent->SetAudio("res/music/Abilities/UI/OffHoverClick.mp3");
+    audioComponent->Play();
 }
 
 void Player::StartMove(HexTile* tile) {
@@ -697,6 +730,9 @@ YAML::Node Player::Serialize() const
     node["type"] = "Player";
     node["abilityActiveColor"] = _abilityActiveColor;
     node["abilityCooldownColor"] = _abilityCooldownColor;
+    if (_starPrefab != nullptr) {
+        node["starPrefab"] = _starPrefab->GetId();
+    }
 
     //node["albumCircleImage"] = albumCircleImage->GetId();
     //node["fansMeetingCircleImage"] = fansMeetingCircleImage->GetId();
@@ -712,6 +748,10 @@ bool Player::Deserialize(const YAML::Node& node)
 
     _abilityActiveColor = node["abilityActiveColor"].as<vec4>();
     _abilityCooldownColor = node["abilityCooldownColor"].as<vec4>();
+
+    if (node["starPrefab"]) {
+        _starPrefab = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["starPrefab"].as<size_t>()));
+    }
     //albumCircleImage = (Image*)SceneManager::GetComponentWithId(node["albumCircleImage"].as<size_t>());
     //fansMeetingCircleImage = (Image*)SceneManager::GetComponentWithId(node["fansMeetingCircleImage"].as<size_t>());
     //concertCircleImage = (Image*)SceneManager::GetComponentWithId(node["concertCircleImage"].as<size_t>());

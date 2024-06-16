@@ -1,0 +1,7 @@
+material:
+  name: tiles/Wrong
+  shader: origin/TexturedUnlit
+  parameters:
+    - name: texture1
+      type: texture2D
+      value: res/textures/Wrong.png

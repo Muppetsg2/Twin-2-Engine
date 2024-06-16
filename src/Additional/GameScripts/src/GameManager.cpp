@@ -87,6 +87,7 @@ void GameManager::Initialize()
     //particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/particle.png", 10, 1.0f, 0.0f, 3.0f, 1.5f, 0.1f, 0.1f, 0.5f);
     //particleGenerator->startPosition = glm::vec4(0.0f, 4.0f, 0.0f, 1.0f);
     //particleGenerator->active = true;
+
 }
 
 void GameManager::OnDestroy() {
@@ -250,7 +251,9 @@ GameObject* GameManager::GeneratePlayer()
 
     _player->move->_playerDestinationMarker->GetComponent<MeshRenderer>()->AddMaterial(
             _player->GetGameObject()->GetComponent<MeshRenderer>()->GetMaterial(0ull));
-
+    
+    //_player->move->_playerWrongDestinationMarker->GetComponent<MeshRenderer>()->AddMaterial(
+    //        _player->GetGameObject()->GetComponent<MeshRenderer>()->GetMaterial(0ull));
 
     entities.push_back(p);
 

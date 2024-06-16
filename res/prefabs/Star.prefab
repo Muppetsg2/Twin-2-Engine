@@ -4,14 +4,14 @@ Fonts: ~
 Audio: ~
 Materials:
   - id: 0
-    path: res/materials/Basic2.material
+    path: res/materials/YellowBasic.material
 Models:
   - id: 0
-    path: "{Sphere}"
+    path: res/models/star.obj
 Prefabs: ~
 ScriptableObjects: ~
 Root:
-  name: Marker
+  name: Star
   isStatic: false
   isActive: true
   transform:
@@ -19,12 +19,12 @@ Root:
     enabled: true
     position:
       x: 0
-      y: 0
+      y: 0.4
       z: 0
     scale:
-      x: 0.2
-      y: 0.2
-      z: 0.2
+      x: 1
+      y: 1
+      z: 1
     rotation:
       x: 0
       y: 0
@@ -37,4 +37,6 @@ Root:
       model: 0
       materials:
         - 0
-  children: []
+    - id: 2
+      enabled: true
+      type: StarComponent

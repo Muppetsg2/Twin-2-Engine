@@ -38,50 +38,35 @@ void PopularityGainingBonusBarController::OnDestroy()
 void PopularityGainingBonusBarController::SetCurrentBonus(float bonus)
 {
 	_currentBonus = bonus;
-
-	_currentBonusCurrentLength = _currentBonus / _maxBonus * _maxLength;
-	_currentBonusBar->SetWidth(_currentBonusCurrentLength);
-	_currentBonusBar->GetTransform()->SetLocalPosition(vec3((_currentBonusCurrentLength - _maxLength) * 0.5f, 0.0f, 0.0f));
-	_possibleBonusBar->GetTransform()->SetLocalPosition(vec3((_possibleBonusCurrentLength - _maxLength) * 0.5f + _currentBonusCurrentLength, 0.0f, 0.0f));
+	_currentBonusBar->SetFillProgress(100.0f * _currentBonus / _maxBonus);
+	_possibleBonusBar->SetFillProgress(100.0f * (_currentBonus + _possibleBonus) / _maxBonus);
 }
 
 void PopularityGainingBonusBarController::AddCurrentBonus(float additionalCurrentBonus)
 {
 	_currentBonus += additionalCurrentBonus;
-
-	_currentBonusCurrentLength = _currentBonus / _maxBonus * _maxLength;
-	_currentBonusBar->SetWidth(_currentBonusCurrentLength);
-	_currentBonusBar->GetTransform()->SetLocalPosition(vec3((_currentBonusCurrentLength - _maxLength) * 0.5f, 0.0f, 0.0f));
-	_possibleBonusBar->GetTransform()->SetLocalPosition(vec3((_possibleBonusCurrentLength - _maxLength) * 0.5f + _currentBonusCurrentLength, 0.0f, 0.0f));
+	_currentBonusBar->SetFillProgress(100.0f * _currentBonus / _maxBonus);
+	_possibleBonusBar->SetFillProgress(100.0f * (_currentBonus + _possibleBonus) / _maxBonus);
 }
 
 void PopularityGainingBonusBarController::RemoveCurrentBonus(float removedCurrentBonus)
 {
 	_currentBonus -= removedCurrentBonus;
-
-	_currentBonusCurrentLength = _currentBonus / _maxBonus * _maxLength;
-	_currentBonusBar->SetWidth(_currentBonusCurrentLength);
-	_currentBonusBar->GetTransform()->SetLocalPosition(vec3((_currentBonusCurrentLength - _maxLength) * 0.5f, 0.0f, 0.0f));
-	_possibleBonusBar->GetTransform()->SetLocalPosition(vec3((_possibleBonusCurrentLength - _maxLength) * 0.5f + _currentBonusCurrentLength, 0.0f, 0.0f));
+	_currentBonusBar->SetFillProgress(100.0f * _currentBonus / _maxBonus);
+	_possibleBonusBar->SetFillProgress(100.0f * (_currentBonus + _possibleBonus) / _maxBonus);
 }
 
 
 void PopularityGainingBonusBarController::AddPossibleBonus(float additionalPossibleBonus)
 {
 	_possibleBonus += additionalPossibleBonus;
-
-	_possibleBonusCurrentLength = _possibleBonus / _maxBonus * _maxLength;
-	_possibleBonusBar->SetWidth(_possibleBonusCurrentLength);
-	_possibleBonusBar->GetTransform()->SetLocalPosition(vec3((_possibleBonusCurrentLength - _maxLength) * 0.5f + _currentBonusCurrentLength, 0.0f, 0.0f));
+	_possibleBonusBar->SetFillProgress(100.0f * (_currentBonus + _possibleBonus) / _maxBonus);
 }
 
 void PopularityGainingBonusBarController::RemovePossibleBonus(float removedPossibleBonus)
 {
 	_possibleBonus -= removedPossibleBonus;
-
-	_possibleBonusCurrentLength = _possibleBonus / _maxBonus * _maxLength;
-	_possibleBonusBar->SetWidth(_possibleBonusCurrentLength);
-	_possibleBonusBar->GetTransform()->SetLocalPosition(vec3((_possibleBonusCurrentLength - _maxLength) * 0.5f + _currentBonusCurrentLength, 0.0f, 0.0f));
+	_possibleBonusBar->SetFillProgress(100.0f * (_currentBonus + _possibleBonus) / _maxBonus);
 }
 
 YAML::Node PopularityGainingBonusBarController::Serialize() const
@@ -112,23 +97,25 @@ bool PopularityGainingBonusBarController::DrawInheritedFields()
     if (Component::DrawInheritedFields()) return true;
 
     bool changed = ImGui::InputFloat("MaxBonus", &_maxBonus);
-	changed = ImGui::InputFloat("MaxLength", &_maxLength);
+	//changed = ImGui::InputFloat("MaxLength", &_maxLength);
 
 	if (changed)
 	{
-		_currentBonusCurrentLength = _currentBonus / _maxBonus * _maxLength;
-		_currentBonusBar->SetWidth(_currentBonusCurrentLength);
-		_currentBonusBar->GetTransform()->SetLocalPosition(vec3((_currentBonusCurrentLength - _maxLength) * 0.5f, 0.0f, 0.0f));
-		_possibleBonusCurrentLength = _possibleBonus / _maxBonus * _maxLength;
-		_possibleBonusBar->SetWidth(_possibleBonusCurrentLength);
-		_possibleBonusBar->GetTransform()->SetLocalPosition(vec3((_possibleBonusCurrentLength - _maxLength) * 0.5f + _currentBonusCurrentLength, 0.0f, 0.0f));
+		_currentBonusBar->SetFillProgress(_currentBonus / _maxBonus);
+		_possibleBonusBar->SetFillProgress((_currentBonus + _possibleBonus) / _maxBonus);
+		//_currentBonusCurrentLength = _currentBonus / _maxBonus * _maxLength;
+		//_currentBonusBar->SetWidth(_currentBonusCurrentLength);
+		//_currentBonusBar->GetTransform()->SetLocalPosition(vec3((_currentBonusCurrentLength - _maxLength) * 0.5f, 0.0f, 0.0f));
+		//_possibleBonusCurrentLength = _possibleBonus / _maxBonus * _maxLength;
+		//_possibleBonusBar->SetWidth(_possibleBonusCurrentLength);
+		//_possibleBonusBar->GetTransform()->SetLocalPosition(vec3((_possibleBonusCurrentLength - _maxLength) * 0.5f + _currentBonusCurrentLength, 0.0f, 0.0f));
 
 	}
 
 	ImGui::Text("CurrentBonus: %f", _currentBonus);
-	ImGui::Text("CurrentBonusCurrentLength: %f", _currentBonusCurrentLength);
+	//ImGui::Text("CurrentBonusCurrentLength: %f", _currentBonusCurrentLength);
 	ImGui::Text("PossibleBonus: %f", _possibleBonus);
-	ImGui::Text("PossibleBonusCurrentLength: %f", _possibleBonusCurrentLength);
+	//ImGui::Text("PossibleBonusCurrentLength: %f", _possibleBonusCurrentLength);
 
     return false;
 }

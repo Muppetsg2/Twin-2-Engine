@@ -4,14 +4,14 @@ Fonts: ~
 Audio: ~
 Materials:
   - id: 0
-    path: res/materials/Basic2.material
+    path: res/materials/GodRay.material
 Models:
   - id: 0
-    path: "{Sphere}"
+    path: res/models/GodRay.obj
 Prefabs: ~
 ScriptableObjects: ~
 Root:
-  name: Marker
+  name: GodRay
   isStatic: false
   isActive: true
   transform:
@@ -19,12 +19,12 @@ Root:
     enabled: true
     position:
       x: 0
-      y: 0
+      y: 0.4
       z: 0
     scale:
-      x: 0.2
-      y: 0.2
-      z: 0.2
+      x: 1
+      y: 5
+      z: 1
     rotation:
       x: 0
       y: 0
@@ -33,8 +33,10 @@ Root:
     - id: 1
       enabled: true
       type: MeshRenderer
-      isTransparent: false
+      isTransparent: true
       model: 0
       materials:
         - 0
-  children: []
+    - id: 2
+      enabled: true
+      type: GodRayComponent

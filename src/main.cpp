@@ -110,6 +110,8 @@ using namespace Generation::Generators;
 #include <AreaTaking/GetMoneyFromTiles.h>
 #include <GameTimer.h>
 #include <ConcertRoad.h>
+#include <GodRayComponent.h>
+#include <StarComponent.h>
 #include <Abilities/ConcertAbilityController.h>
 
 #include <RadioStation/RadioStation.h>
@@ -367,6 +369,8 @@ int main(int, char**)
     ADD_COMPONENT("MinigameManager", MinigameManager);
     ADD_COMPONENT("ConcertRoad", ConcertRoad);
     ADD_COMPONENT("PopularityGainingBonusBarController", PopularityGainingBonusBarController);
+    ADD_COMPONENT("GodRayComponent", GodRayComponent);
+    ADD_COMPONENT("StarComponent", StarComponent);
 
 #pragma endregion
 
@@ -386,7 +390,6 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/BlankScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/PatronChoice.scene");
     SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
-    //SceneManager::AddScene("testScene", new Scene());
     //SceneManager::AddScene("testScene", "res/scenes/SceneToEditPrefabs.scene");
     //SceneManager::AddScene("testScene", "res/scenes/Making Game UI.scene");
     //SceneManager::AddScene("testScene", "res/scenes/MenuScene.scene");

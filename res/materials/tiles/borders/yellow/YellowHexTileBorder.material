@@ -4,7 +4,7 @@ material:
   parameters:
     - name: color1
       type: vec4
-      value: [0.875, 0.886, 0.31, 1.0]
+      value: [0.671, 0.68, 0.238, 1.0]
     - name: color2
       type: vec4
-      value: [0.875, 0.886, 0.31, 1.0]
+      value: [0.671, 0.68, 0.238, 1.0]

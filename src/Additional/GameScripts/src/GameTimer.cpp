@@ -84,9 +84,9 @@ void GameTimer::Update() {
 }
 
 void GameTimer::ResetTimer() {
-    daysCounter = 1;
-    weeksCounter = 1;
-    monthsCounter = 1;
+    daysCounter = 0;
+    weeksCounter = 0;
+    monthsCounter = 0;
     yearsCounter = 0;
 }
 

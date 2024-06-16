@@ -15,14 +15,15 @@ void MeshRenderer::Register()
 
 	bool res = false;
 
-	if (GetGameObject()->GetIsStatic())
-	{
-		res = MeshRenderingManager::RegisterStatic(this);
-	}
-	else
-	{
-		res = MeshRenderingManager::RegisterDynamic(this);
-	}
+	res = MeshRenderingManager::Register(this);
+	//if (GetGameObject()->GetIsStatic())
+	//{
+	//	res = MeshRenderingManager::RegisterStatic(this);
+	//}
+	//else
+	//{
+	//	res = MeshRenderingManager::RegisterDynamic(this);
+	//}
 
 	if (res) {
 		// EVENTS
@@ -52,14 +53,15 @@ void MeshRenderer::Unregister()
 
 	bool res = false;
 
-	if (GetGameObject()->GetIsStatic())
-	{
-		res = MeshRenderingManager::UnregisterStatic(this);
-	}
-	else
-	{
-		res = MeshRenderingManager::UnregisterDynamic(this);
-	}
+	res = MeshRenderingManager::Unregister(this);
+	//if (GetGameObject()->GetIsStatic())
+	//{
+	//	res = MeshRenderingManager::UnregisterStatic(this);
+	//}
+	//else
+	//{
+	//	res = MeshRenderingManager::UnregisterDynamic(this);
+	//}
 
 	if (res) {
 		// EVENTS
@@ -227,67 +229,83 @@ bool MeshRenderer::DrawInheritedFields()
 
 void MeshRenderer::OnGameObjectStaticChanged(GameObject* gameObject)
 {
-	if (gameObject->GetIsStatic())
-	{
-		bool res = true;
-		if (_registered)
-		{
-			res = MeshRenderingManager::UnregisterDynamic(this);
-		}
-
-		if (!res) {
-			res = MeshRenderingManager::UnregisterStatic(this);
-		}
-
-		res = MeshRenderingManager::RegisterStatic(this);
-		_registered = res;
-	}
-	else
-	{
-		bool res = true;
-		if (_registered)
-		{
-			res = MeshRenderingManager::UnregisterStatic(this);
-		}
-
-		if (!res) {
-			res = MeshRenderingManager::UnregisterDynamic(this);
-		}
-
-		res = MeshRenderingManager::RegisterDynamic(this);
-		_registered = res;
-	}
+	MeshRenderingManager::Unregister(this);
+	MeshRenderingManager::Register(this);
+	//if (gameObject->GetIsStatic())
+	//{
+	//	bool res = true;
+	//	if (_registered)
+	//	{
+	//		res = MeshRenderingManager::UnregisterDynamic(this);
+	//	}
+	//
+	//	if (!res) {
+	//		res = MeshRenderingManager::UnregisterStatic(this);
+	//	}
+	//
+	//	//res = MeshRenderingManager::RegisterStatic(this);
+	//	res = MeshRenderingManager::Register(this);
+	//	_registered = res;
+	//}
+	//else
+	//{
+	//	bool res = true;
+	//	if (_registered)
+	//	{
+	//		res = MeshRenderingManager::UnregisterStatic(this);
+	//	}
+	//
+	//	if (!res) {
+	//		res = MeshRenderingManager::UnregisterDynamic(this);
+	//	}
+	//
+	//	//res = MeshRenderingManager::RegisterDynamic(this);
+	//	res = MeshRenderingManager::Register(this);
+	//	_registered = res;
+	//}
 }
 
 void MeshRenderer::OnGameObjectActiveChanged(GameObject* gameObject)
 {
 	bool res = true;
-	if (gameObject->GetIsStatic())
+	if (gameObject->GetActive() && !_registered)
 	{
-		if (gameObject->GetActive() && !_registered)
-		{
-			res = MeshRenderingManager::RegisterStatic(this);
-			_registered = res;
-		}
-		else if (!gameObject->GetActive() && _registered)
-		{
-			res = MeshRenderingManager::UnregisterStatic(this);
-			_registered = !res;
-		}
+		//res = MeshRenderingManager::Register(this);
+		//_registered = res;
+		Register();
 	}
-	else
+	else if (!gameObject->GetActive() && _registered)
 	{
-		if (gameObject->GetActive() && !_registered)
-		{
-			res = MeshRenderingManager::RegisterDynamic(this);
-			_registered = res;
-		}
-		else if (!gameObject->GetActive() && _registered)
-		{
-			res = MeshRenderingManager::UnregisterDynamic(this);
-			_registered = !res;
-		}
+		//res = MeshRenderingManager::Unregister(this);
+		//_registered = !res;
+		Unregister();
 	}
+	//if (gameObject->GetIsStatic())
+	//{
+	//	if (gameObject->GetActive() && !_registered)
+	//	{
+	//		res = MeshRenderingManager::RegisterStatic(this);
+	//		_registered = res;
+	//	}
+	//	else if (!gameObject->GetActive() && _registered)
+	//	{
+	//		res = MeshRenderingManager::UnregisterStatic(this);
+	//		_registered = !res;
+	//	}
+	//}
+	//else
+	//{
+	//	if (gameObject->GetActive() && !_registered)
+	//	{
+	//		res = MeshRenderingManager::RegisterDynamic(this);
+	//		_registered = res;
+	//	}
+	//	else if (!gameObject->GetActive() && _registered)
+	//	{
+	//		res = MeshRenderingManager::UnregisterDynamic(this);
+	//		_registered = !res;
+	//	}
+	//}
 }
 
 void MeshRenderer::OnTransformMatrixChanged(Transform* transform)
@@ -320,16 +338,17 @@ void MeshRenderer::OnMaterialsErased()
 bool MeshRenderer::CheckMaterialsValidation()
 {
 	bool res = true;
-	for (size_t i = _materials.size(); i > 0; --i) {
-		if (!MaterialsManager::IsMaterialLoaded(_materials[i - 1]->GetId())) {
+	for (size_t i = _materials.size(); i > 0; ) {
+		--i;
+		if (!MaterialsManager::IsMaterialLoaded(_materials[i]->GetId())) {
 			res = false;
 			_materialError = true;
 			Unregister();
-			_materials.erase(_materials.begin() + i - 1);
+			_materials.erase(_materials.begin() + i);
 
 #if _DEBUG
-			_next = _next > _addNum[i - 1] ? _addNum[i - 1] : _next;
-			_addNum.erase(_addNum.begin() + i - 1);
+			_next = _next > _addNum[i] ? _addNum[i] : _next;
+			_addNum.erase(_addNum.begin() + i);
 #endif
 		}
 		else if (_materials[i - 1]->GetShader() == nullptr) {
@@ -588,7 +607,12 @@ Material* MeshRenderer::GetMaterial(size_t index) const
 void MeshRenderer::AddMaterial(Material* material)
 {
 	if (material == nullptr || material->GetShader() == nullptr) return;
-	Unregister();
+
+	//Jezli materialow jest mniej niz meshy to wtedy nowy material rzeczywiscie bedzie mial wplyw na renderowanie w przeciwnym wypadku bedzie po prostu nadmiarowy
+	bool needToReregister = _materials.size() < _model.GetMeshCount();
+
+	if (needToReregister)
+		Unregister();
 
 #if _DEBUG
 	_addNum.push_back(_next);
@@ -600,7 +624,7 @@ void MeshRenderer::AddMaterial(Material* material)
 
 	_materials.push_back(material);
 
-	if (_materials.size() != 0 && _loadedModel != 0) Register();
+	if (needToReregister && _materials.size() != 0 && _loadedModel != 0) Register();
 }
 
 void MeshRenderer::AddMaterial(size_t materialId)
@@ -612,7 +636,7 @@ void MeshRenderer::SetMaterial(size_t index, Material* material)
 {
 	if (_materials[index] == material || index >= _materials.size() || material == nullptr || material->GetShader() == nullptr) return;
 
-	Unregister();
+	if (_loadedModel != 0) Unregister();
 
 	_materials[index] = material;
 
@@ -628,7 +652,11 @@ void MeshRenderer::RemoveMaterial(size_t index)
 {
 	if (index >= _materials.size()) return;
 
-	Unregister();
+	//Je�li materia��w jest wi�cej ni� meshy to wtedy usuwany materia� rzeczywi�cie b�dzie mia� wp�yw na renderowanie w przeciwnym wypadku b�dzie po prostu brak nadmiarowego
+	bool needToReregister = _materials.size() <= _model.GetMeshCount();
+
+	if (needToReregister)
+		Unregister();
 
 #if _DEBUG
 	_next = _addNum[index];
@@ -636,5 +664,5 @@ void MeshRenderer::RemoveMaterial(size_t index)
 #endif
 	_materials.erase(_materials.begin() + index);
 
-	if (_materials.size() != 0 && _loadedModel != 0) Register();
+	if (needToReregister && _materials.size() != 0 && _loadedModel != 0) Register();
 }

@@ -31,7 +31,7 @@ private:
     ConcertAbilityController* concertAbility;
 
     MoneyGainFromTiles* money;
-
+    Prefab* _starPrefab = nullptr;
     bool lost;
 
     AudioComponent* audioComponent = nullptr;

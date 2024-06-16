@@ -79,6 +79,10 @@ class MinigameManager : public Component {
 		void PlayerDrawed();
 		void PlayerLost();
 
+		size_t GetMinNumberOfWins();
+		size_t GetNumberOfWinsPlayer();
+		size_t GetNumberOfWinsEnemy();
+
 		virtual void Initialize() override;
 		virtual void OnDestroy() override;
 

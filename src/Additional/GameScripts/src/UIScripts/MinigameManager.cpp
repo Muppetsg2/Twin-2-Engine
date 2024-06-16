@@ -251,6 +251,9 @@ void MinigameManager::StartMinigame(Playable* chalanging, Playable* chalanged)
 		_playerImage->SetSprite(std::string("MiniGame_").append(_colors[_player->colorIdx]).append("_Back"));
 		_enemyImage->SetSprite(std::string("MiniGame_").append(_colors[_enemy->colorIdx]).append("_Back"));
 
+		_playerWins = 0;
+		_enemyWins = 0;
+
 		if (_playerScore != nullptr) _playerScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::to_string(0)));
 		if (_enemyScore != nullptr) _enemyScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::to_string(0)));
 
@@ -278,6 +281,9 @@ void MinigameManager::StartMinigame(Playable* chalanging, Playable* chalanged)
 
 		_playerImage->SetSprite(std::string("MiniGame_").append(_colors[_player->colorIdx]).append("_Back"));
 		_enemyImage->SetSprite(std::string("MiniGame_").append(_colors[_enemy->colorIdx]).append("_Back"));
+
+		_playerWins = 0;
+		_enemyWins = 0;
 
 		if (_playerScore != nullptr) _playerScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::to_string(0)));
 		if (_enemyScore != nullptr) _enemyScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::to_string(0)));
@@ -460,11 +466,28 @@ void MinigameManager::PlayerLost() {
 		}
 	}
 
+	if (lose != nullptr) lose->SetColor(glm::vec4(glm::vec3(0.3f), 1.f));
+
 	_enemyWins += 1;
 
 	if (_enemyScore != nullptr) _enemyScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::to_string(_enemyWins)));
 
 	_waitCoroutine->Start();
+}
+
+size_t MinigameManager::GetMinNumberOfWins()
+{
+	return _minNumberOfWins;
+}
+
+size_t MinigameManager::GetNumberOfWinsPlayer()
+{
+	return _playerWins;
+}
+
+size_t MinigameManager::GetNumberOfWinsEnemy()
+{
+	return _enemyWins;
 }
 
 void MinigameManager::Initialize()

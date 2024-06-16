@@ -31,9 +31,9 @@ void GameManager::Initialize()
             _dateText = temp->GetComponent<Text>();
             _dateEventHandleId = GameTimer::Instance()->OnDateTicked += [&](int day, int month, int year) {
                 _dateText->SetText(
-                    to_wstring(startYear + year - 1)
+                    to_wstring(startYear + year)
                     .append(L".")
-                    .append(startMonth + month - 1 < 10 ? L"0" + std::to_wstring(startMonth + month - 1) : to_wstring(startMonth + month - 1))
+                    .append(startMonth + month < 10 ? L"0" + std::to_wstring(startMonth + month) : to_wstring(startMonth + month))
                     .append(L".")
                     .append(startDay + day - 1 < 10 ? L"0" + to_wstring(startDay + day - 1) : to_wstring(startDay + day - 1))
                 );

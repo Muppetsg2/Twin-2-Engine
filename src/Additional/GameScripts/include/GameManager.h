@@ -93,7 +93,6 @@ public:
     glm::vec3 colors[6];
     PatronData* patrons[6];
 
-
     virtual void Initialize() override;
     virtual void OnDestroy() override;
     virtual void OnEnable() override;

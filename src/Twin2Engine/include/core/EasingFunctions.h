@@ -212,189 +212,191 @@ static float getEaseFuncValue(EaseFunction func, EaseFunctionType type, float x)
 {
     switch (func)
     {
-    case EaseFunction::LINE:
-    {
-        return x;
+        case EaseFunction::LINE:
+        {
+            return x;
+        }
+        case EaseFunction::SINE:
+        {
+            switch (type)
+            {
+                case EaseFunctionType::IN_F:
+                {
+                    return easeInSine(x);
+                }
+                case EaseFunctionType::OUT_F:
+                {
+                    return easeOutSine(x);
+                }
+                case EaseFunctionType::IN_OUT_F:
+                {
+                    return easeInOutSine(x);
+                }
+            }
+        }
+        case EaseFunction::CUBIC:
+        {
+            switch (type)
+            {
+                case EaseFunctionType::IN_F:
+                {
+                    return easeInCubic(x);
+                }
+                case EaseFunctionType::OUT_F:
+                {
+                    return easeOutCubic(x);
+                }
+                case EaseFunctionType::IN_OUT_F:
+                {
+                    return easeInOutCubic(x);
+                }
+            }
+        }
+        case EaseFunction::QUINT:
+        {
+            switch (type)
+            {
+                case EaseFunctionType::IN_F:
+                {
+                    return easeInQuint(x);
+                }
+                case EaseFunctionType::OUT_F:
+                {
+                    return easeOutQuint(x);
+                }
+                case EaseFunctionType::IN_OUT_F:
+                {
+                    return easeInOutQuint(x);
+                }
+            }
+        }
+        case EaseFunction::CIRC:
+        {
+            switch (type)
+            {
+                case EaseFunctionType::IN_F:
+                {
+                    return easeInCirc(x);
+                }
+                case EaseFunctionType::OUT_F:
+                {
+                    return easeOutCirc(x);
+                }
+                case EaseFunctionType::IN_OUT_F:
+                {
+                    return easeInOutCirc(x);
+                }
+            }
+        }
+        case EaseFunction::ELASTIC:
+        {
+            switch (type)
+            {
+                case EaseFunctionType::IN_F:
+                {
+                    return easeInElastic(x);
+                }
+                case EaseFunctionType::OUT_F:
+                {
+                    return easeOutElastic(x);
+                }
+                case EaseFunctionType::IN_OUT_F:
+                {
+                    return easeInOutElastic(x);
+                }
+            }
+        }
+        case EaseFunction::QUAD:
+        {
+            switch (type)
+            {
+                case EaseFunctionType::IN_F:
+                {
+                    return easeInQuad(x);
+                }
+                case EaseFunctionType::OUT_F:
+                {
+                    return easeOutQuad(x);
+                }
+                case EaseFunctionType::IN_OUT_F:
+                {
+                    return easeInOutQuad(x);
+                }
+            }
+        }
+        case EaseFunction::QUART:
+        {
+            switch (type)
+            {
+                case EaseFunctionType::IN_F:
+                {
+                    return easeInQuart(x);
+                }
+                case EaseFunctionType::OUT_F:
+                {
+                    return easeOutQuart(x);
+                }
+                case EaseFunctionType::IN_OUT_F:
+                {
+                    return easeInOutQuart(x);
+                }
+            }
+        }
+        case EaseFunction::EXPO:
+        {
+            switch (type)
+            {
+                case EaseFunctionType::IN_F:
+                {
+                    return easeInExpo(x);
+                }
+                case EaseFunctionType::OUT_F:
+                {
+                    return easeOutExpo(x);
+                }
+                case EaseFunctionType::IN_OUT_F:
+                {
+                    return easeInOutExpo(x);
+                }
+            }
+        }
+        case EaseFunction::BACK:
+        {
+            switch (type)
+            {
+                case EaseFunctionType::IN_F:
+                {
+                    return easeInBack(x);
+                }
+                case EaseFunctionType::OUT_F:
+                {
+                    return easeOutBack(x);
+                }
+                case EaseFunctionType::IN_OUT_F:
+                {
+                    return easeInOutBack(x);
+                }
+            }
+        }
+        case EaseFunction::BOUNCE:
+        {
+            switch (type)
+            {
+                case EaseFunctionType::IN_F:
+                {
+                    return easeInBounce(x);
+                }
+                case EaseFunctionType::OUT_F:
+                {
+                    return easeOutBounce(x);
+                }
+                case EaseFunctionType::IN_OUT_F:
+                {
+                    return easeInOutBounce(x);
+                }
+            }
+        }
     }
-    case EaseFunction::SINE:
-    {
-        switch (type)
-        {
-        case EaseFunctionType::IN_F:
-        {
-            return easeInSine(x);
-        }
-        case EaseFunctionType::OUT_F:
-        {
-            return easeOutSine(x);
-        }
-        case EaseFunctionType::IN_OUT_F:
-        {
-            return easeInOutSine(x);
-        }
-        }
-    }
-    case EaseFunction::CUBIC:
-    {
-        switch (type)
-        {
-        case EaseFunctionType::IN_F:
-        {
-            return easeInCubic(x);
-        }
-        case EaseFunctionType::OUT_F:
-        {
-            return easeOutCubic(x);
-        }
-        case EaseFunctionType::IN_OUT_F:
-        {
-            return easeInOutCubic(x);
-        }
-        }
-    }
-    case EaseFunction::QUINT:
-    {
-        switch (type)
-        {
-        case EaseFunctionType::IN_F:
-        {
-            return easeInQuint(x);
-        }
-        case EaseFunctionType::OUT_F:
-        {
-            return easeOutQuint(x);
-        }
-        case EaseFunctionType::IN_OUT_F:
-        {
-            return easeInOutQuint(x);
-        }
-        }
-    }
-    case EaseFunction::CIRC:
-    {
-        switch (type)
-        {
-        case EaseFunctionType::IN_F:
-        {
-            return easeInCirc(x);
-        }
-        case EaseFunctionType::OUT_F:
-        {
-            return easeOutCirc(x);
-        }
-        case EaseFunctionType::IN_OUT_F:
-        {
-            return easeInOutCirc(x);
-        }
-        }
-    }
-    case EaseFunction::ELASTIC:
-    {
-        switch (type)
-        {
-        case EaseFunctionType::IN_F:
-        {
-            return easeInElastic(x);
-        }
-        case EaseFunctionType::OUT_F:
-        {
-            return easeOutElastic(x);
-        }
-        case EaseFunctionType::IN_OUT_F:
-        {
-            return easeInOutElastic(x);
-        }
-        }
-    }
-    case EaseFunction::QUAD:
-    {
-        switch (type)
-        {
-        case EaseFunctionType::IN_F:
-        {
-            return easeInQuad(x);
-        }
-        case EaseFunctionType::OUT_F:
-        {
-            return easeOutQuad(x);
-        }
-        case EaseFunctionType::IN_OUT_F:
-        {
-            return easeInOutQuad(x);
-        }
-        }
-    }
-    case EaseFunction::QUART:
-    {
-        switch (type)
-        {
-        case EaseFunctionType::IN_F:
-        {
-            return easeInQuart(x);
-        }
-        case EaseFunctionType::OUT_F:
-        {
-            return easeOutQuart(x);
-        }
-        case EaseFunctionType::IN_OUT_F:
-        {
-            return easeInOutQuart(x);
-        }
-        }
-    }
-    case EaseFunction::EXPO:
-    {
-        switch (type)
-        {
-        case EaseFunctionType::IN_F:
-        {
-            return easeInExpo(x);
-        }
-        case EaseFunctionType::OUT_F:
-        {
-            return easeOutExpo(x);
-        }
-        case EaseFunctionType::IN_OUT_F:
-        {
-            return easeInOutExpo(x);
-        }
-        }
-    }
-    case EaseFunction::BACK:
-    {
-        switch (type)
-        {
-        case EaseFunctionType::IN_F:
-        {
-            return easeInBack(x);
-        }
-        case EaseFunctionType::OUT_F:
-        {
-            return easeOutBack(x);
-        }
-        case EaseFunctionType::IN_OUT_F:
-        {
-            return easeInOutBack(x);
-        }
-        }
-    }
-    case EaseFunction::BOUNCE:
-    {
-        switch (type)
-        {
-        case EaseFunctionType::IN_F:
-        {
-            return easeInBounce(x);
-        }
-        case EaseFunctionType::OUT_F:
-        {
-            return easeOutBounce(x);
-        }
-        case EaseFunctionType::IN_OUT_F:
-        {
-            return easeInOutBounce(x);
-        }
-        }
-    }
-    }
+
+    return x;
 }

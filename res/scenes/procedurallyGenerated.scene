@@ -784,6 +784,16 @@ Audio:
     path: res/music/Minigame/Launchpad.mp3
   - id: 4
     path: res/music/Minigame/Defeat.mp3
+  - id: 5
+    path: res/music/Rock/Classic_Rock_Anthem_For_The_Ages.mp3
+  - id: 6
+    path: res/music/Pop/Summer_Beats_Carnival.mp3
+  - id: 7
+    path: res/music/Pop/Twilight_Whispers_Embrace.mp3
+  - id: 8
+    path: res/music/Electric/Thunder_Echoes_Loudly.mp3
+  - id: 9
+    path: res/music/Metal/Whispers_In_Silent_Steel.mp3
 Materials:
   - id: 0
     path: res/materials/tiles/normal/yellow/YellowHexTileStage3.material
@@ -848,7 +858,7 @@ Materials:
   - id: 30
     path: res/materials/tiles/borders/cyan/CyanHexTileBorder.material
   - id: 31
-    path: res/materials/car/CarMaterial_Purple.material
+    path: res/materials/car/CarMaterial_Pink.material
   - id: 32
     path: res/materials/tiles/normal/cyan/CyanHexTileStage1.material
   - id: 33
@@ -868,13 +878,13 @@ Materials:
   - id: 40
     path: res/materials/tiles/borders/purple/PurpleHexTileBorder.material
   - id: 41
-    path: res/materials/car/CarMaterial_Yellow.material
+    path: res/materials/car/CarMaterial_Green.material
   - id: 42
     path: res/materials/tiles/normal/yellow/YellowHexTileRegressStage2.material
   - id: 43
     path: res/materials/tiles/BlueAffectedHexTile.material
   - id: 44
-    path: res/materials/car/CarMaterial_Green.material
+    path: res/materials/car/CarMaterial_Purple.material
   - id: 45
     path: res/materials/tiles/normal/purple/PurpleHexTileRegressStage1.material
   - id: 46
@@ -884,7 +894,7 @@ Materials:
   - id: 48
     path: res/materials/tiles/normal/pink/PinkHexTileStage1.material
   - id: 49
-    path: res/materials/car/CarMaterial_Pink.material
+    path: res/materials/car/CarMaterial_Yellow.material
   - id: 50
     path: res/materials/tiles/borders/pink/PinkHexTileBorder.material
   - id: 51
@@ -1178,6 +1188,17 @@ GameObjects:
           - res/scriptableobjects/patrons/Perun.so
           - res/scriptableobjects/patrons/Jutrzenka.so
           - res/scriptableobjects/patrons/Zuarasiz.so
+        RockBackgroundMusics:
+         - 5
+        ElectricBackgroundMusics:
+         - 8
+        PopBackgroundMusics:
+         - 6
+         - 7
+        HeavyMetalBackgroundMusics:
+         - 9
+        JazzBackgroundMusics: []
+        DiscoBackgroundMusics: []
       - id: 162
         enabled: true
         type: Audio
@@ -1185,8 +1206,6 @@ GameObjects:
         loop: true
         volume: 1
         playOnStart: false
-
-
     children:
       []
   - id: 23

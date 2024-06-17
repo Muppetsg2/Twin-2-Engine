@@ -63,6 +63,7 @@ void RadioStationPlayingController::Update()
         {
             _resultShowingTimer = 0.0f;
 
+            GameManager::instance->minigameActive = false;
             _radioStation->StartTakingOver(_playable, _lastScore);
             GameManager::instance->minigameActive = false;
             _resultImage->GetGameObject()->SetActive(false);
@@ -95,6 +96,7 @@ void RadioStationPlayingController::Play(RadioStation* radioStation, Playable* p
         _playable = playable;
         _currentNote = 0;
 
+        GameManager::instance->minigameActive = true;
         // CallingEvents
         //OnEventPlayableStartsPlaying(playable, radioStation);
         OnEventPlayerStartedPlaying((Player*) playable, radioStation);

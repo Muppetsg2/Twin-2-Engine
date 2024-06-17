@@ -21,7 +21,7 @@ class ConcertRoad : public Component {
         float maxBonus = 20.0f;
         float minBonus = 5.0f;
         glm::vec4 bonusesPerStage = glm::vec4(0.0f, 5.0f, 12.0f, 20.0f);
-        float height = 1.0f;
+        float height = 0.0f;
 
 	public:
         static ConcertRoad* instance;

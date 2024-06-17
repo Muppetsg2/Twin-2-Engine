@@ -140,6 +140,11 @@ bool PlaneGenerator::Deserialize(const YAML::Node& node)
 
     SetGridValues(node["rows"].as<unsigned int>(), node["columns"].as<unsigned int>());
 
+    if (node["transparencyPriority"])
+        _transparencyPriority = node["transparencyPriority"].as<int>();
+    else
+        _transparencyPriority = 0;
+
     _materials = vector<Material*>();
     for (const auto& mat : node["materials"]) {
 #if _DEBUG

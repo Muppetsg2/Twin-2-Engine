@@ -11,12 +11,12 @@ using namespace Twin2Engine::Graphic;
 
 class GodRayComponent : public Component {
 	private:
-		float heigth				= 2.6f;
-		float heigthLowerTreshhold	= 0.3f;
-		float heigthHigherTreshhold	= 2.3f;
+		float heigth				= 10.6f;
+		float heigthLowerTreshhold	= 0.0f;
+		float heigthHigherTreshhold	= 10.6f;
 		glm::vec3 ray_color			= glm::vec3(1.0f, 0.99f, 0.0f);
 
-		float POS_MULT				= 0.6f;
+		float POS_MULT				= 0.1f;
 		glm::vec3 NOISE_D_VEL_3D	= glm::vec3(0.0f, 0.1f, 0.1f);;
 		float time					= 0.0f;
 		Shader* godRayShader = nullptr;

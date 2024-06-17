@@ -529,6 +529,18 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 96
+    path: res/textures/UI/popup_base.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 97
+    path: res/textures/UI/RMB.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites:
   - id: 0
     alias: MiniGame_Blue_Top
@@ -768,6 +780,12 @@ Sprites:
     y: 0
     width: 727
     height: 726
+  - id: 38
+    alias: popup_base
+    texture: 96
+  - id: 39
+    alias: RMB
+    texture: 97
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
@@ -784,16 +802,6 @@ Audio:
     path: res/music/Minigame/Launchpad.mp3
   - id: 4
     path: res/music/Minigame/Defeat.mp3
-  - id: 5
-    path: res/music/Rock/Classic_Rock_Anthem_For_The_Ages.mp3
-  - id: 6
-    path: res/music/Pop/Summer_Beats_Carnival.mp3
-  - id: 7
-    path: res/music/Pop/Twilight_Whispers_Embrace.mp3
-  - id: 8
-    path: res/music/Electric/Thunder_Echoes_Loudly.mp3
-  - id: 9
-    path: res/music/Metal/Whispers_In_Silent_Steel.mp3
 Materials:
   - id: 0
     path: res/materials/tiles/normal/yellow/YellowHexTileStage3.material
@@ -858,7 +866,7 @@ Materials:
   - id: 30
     path: res/materials/tiles/borders/cyan/CyanHexTileBorder.material
   - id: 31
-    path: res/materials/car/CarMaterial_Pink.material
+    path: res/materials/car/CarMaterial_Purple.material
   - id: 32
     path: res/materials/tiles/normal/cyan/CyanHexTileStage1.material
   - id: 33
@@ -878,13 +886,13 @@ Materials:
   - id: 40
     path: res/materials/tiles/borders/purple/PurpleHexTileBorder.material
   - id: 41
-    path: res/materials/car/CarMaterial_Green.material
+    path: res/materials/car/CarMaterial_Yellow.material
   - id: 42
     path: res/materials/tiles/normal/yellow/YellowHexTileRegressStage2.material
   - id: 43
     path: res/materials/tiles/BlueAffectedHexTile.material
   - id: 44
-    path: res/materials/car/CarMaterial_Purple.material
+    path: res/materials/car/CarMaterial_Green.material
   - id: 45
     path: res/materials/tiles/normal/purple/PurpleHexTileRegressStage1.material
   - id: 46
@@ -894,7 +902,7 @@ Materials:
   - id: 48
     path: res/materials/tiles/normal/pink/PinkHexTileStage1.material
   - id: 49
-    path: res/materials/car/CarMaterial_Yellow.material
+    path: res/materials/car/CarMaterial_Pink.material
   - id: 50
     path: res/materials/tiles/borders/pink/PinkHexTileBorder.material
   - id: 51
@@ -1135,7 +1143,6 @@ GameObjects:
         enabled: true
         type: PlaneGenerator
         isTransparent: true
-        transparencyPriority: -1
         rows: 82
         columns: 82
         materials:
@@ -1189,24 +1196,15 @@ GameObjects:
           - res/scriptableobjects/patrons/Perun.so
           - res/scriptableobjects/patrons/Jutrzenka.so
           - res/scriptableobjects/patrons/Zuarasiz.so
-        RockBackgroundMusics:
-         - 5
-        ElectricBackgroundMusics:
-         - 8
-        PopBackgroundMusics:
-         - 6
-         - 7
-        HeavyMetalBackgroundMusics:
-         - 9
-        JazzBackgroundMusics: []
-        DiscoBackgroundMusics: []
       - id: 162
         enabled: true
         type: Audio
         audio: 0
         loop: true
-        volume: 0.5
+        volume: 1
         playOnStart: false
+
+
     children:
       []
   - id: 23
@@ -1302,7 +1300,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 165
+      - id: 154
         enabled: true
         type: Image
         isTransparent: false
@@ -1344,14 +1342,14 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 29
+        sprite: 18
         color:
           x: 1
           y: 1
           z: 1
           w: 1
-        width: 120
-        height: 120
+        width: 150
+        height: 150
         layer: 0
         fillEnabled: true
         fillType: !<2> 2
@@ -1491,7 +1489,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 164
+      - id: 156
         enabled: true
         type: Image
         isTransparent: false
@@ -1533,14 +1531,14 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 29
+        sprite: 18
         color:
           x: 1
           y: 1
           z: 1
           w: 1
-        width: 120
-        height: 120
+        width: 150
+        height: 150
         layer: 0
         fillEnabled: true
         fillType: !<2> 2
@@ -1680,7 +1678,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 161
+      - id: 158
         enabled: true
         type: Image
         isTransparent: false
@@ -1722,14 +1720,14 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 29
+        sprite: 18
         color:
           x: 1
           y: 1
           z: 1
           w: 1
-        width: 120
-        height: 120
+        width: 150
+        height: 150
         layer: 0
         fillEnabled: true
         fillType: !<2> 2
@@ -2941,14 +2939,13 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 24
         color:
           x: 1
           y: 1
           z: 1
           w: 1
-        width: 750
-        height: 540
+        width: 100
+        height: 100
         layer: 0
         fillEnabled: false
         fillType: !<0> 0
@@ -3531,24 +3528,24 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x002\x00/\x002"
-        font: 1
-        size: 70
+        text: ""
+        font: 2
+        size: 0
         autoSize: false
         minSize: 0
         maxSize: 0
-        width: 150
-        height: 150
+        width: 0
+        height: 0
         color:
           x: 0
           y: 0
           z: 0
           w: 1
-        alignX: !<CENTER> 1
-        alignY: !<CENTER> 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
-        layer: 2
+        layer: 0
     children:
       []
   - id: 22
@@ -3574,24 +3571,24 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x000\x00/\x002"
-        font: 1
-        size: 70
+        text: ""
+        font: 2
+        size: 0
         autoSize: false
         minSize: 0
         maxSize: 0
-        width: 150
-        height: 150
+        width: 0
+        height: 0
         color:
           x: 0
           y: 0
           z: 0
           w: 1
-        alignX: !<CENTER> 1
-        alignY: !<CENTER> 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
-        layer: 2
+        layer: 0
     children:
       []
   - id: 6
@@ -3815,5 +3812,2093 @@ GameObjects:
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
         fillProgress: 0.209999993
+    children:
+      []
+  - id: 68
+    name: FansMeetingButtonFrame
+    isStatic: false
+    isActive: true
+    transform:
+      id: 153
+      position:
+        x: 0
+        y: -21
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 165
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 33
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 130
+        height: 140
+        layer: -1
+        fillEnabled: false
+        fillType: !<2> 2
+        fillSubType: !<CW> 0
+        fillProgress: 1
+    children:
+     - 25
+  - id: 66
+    name: ConcertButtonFrame
+    isStatic: false
+    isActive: true
+    transform:
+      id: 155
+      position:
+        x: 265
+        y: -21
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 164
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 33
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 130
+        height: 140
+        layer: -1
+        fillEnabled: false
+        fillType: !<2> 2
+        fillSubType: !<CW> 0
+        fillProgress: 1
+    children:
+     - 28
+  - id: 67
+    name: AlbumButtonFrame
+    isStatic: false
+    isActive: true
+    transform:
+      id: 157
+      position:
+        x: -265
+        y: -21
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 161
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 33
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 130
+        height: 140
+        layer: -1
+        fillEnabled: false
+        fillType: !<2> 2
+        fillSubType: !<CW> 0
+        fillProgress: 1
+    children:
+     - 31
+  - id: 127
+    name: FristStepTutorial
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5847
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5851
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 38
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 800
+        height: 225
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5928
+        enabled: true
+        type: Image
+        isTransparent: false
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.7
+        width: 1920
+        height: 1080
+        layer: 6
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5927
+        enabled: true
+        type: TutorialSeries
+        tutorialsIds:
+          - 130
+          - 131
+          - 132
+          - 133
+    children:
+      - 128
+      - 129
+      - 130
+      - 131
+      - 132
+      - 133
+      - 164
+  - id: 164
+    name: FirstStepTutorialRMB
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5935
+      position:
+        x: 378
+        y: 87
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5936
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 39
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 23
+        height: 32
+        layer: 8
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 128
+    name: FristStepTutorialHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5848
+      position:
+        x: -195
+        y: 71
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5852
+        enabled: true
+        type: Text
+        isTransparent: true
+        text: "\x00Z\x00O\x00R\x00Y\x00A"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0.886274517
+          y: 0.823529422
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 129
+    name: FristStepTutorialImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5849
+      position:
+        x: -295
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5853
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 12
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 170
+        height: 190
+        layer: 8
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 130
+    name: FristStepTutorialMsg1
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5850
+      position:
+        x: 94
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5854
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00T\x00h\x00i\x00s\x00 \x00i\x00s\x00 \x00y\x00o\x00u\x00 \x00i\x00n\x00 \x00a\x00 \x00b\x00i\x00g\x00 \x00b\x00i\x00g\x00 \x00w\x00o\x00r\x00l\x00d\x00.\x00 \x00S\x00o\x00 \x00f\x00u\x00l\x00l\x00 \x00o\x00f\x00 \x00p\x00o\x00s\x00s\x00i\x00b\x00i\x00l\x00i\x00t\x00i\x00e\x00s\x00 \x00b\x00u\x00t\x00 \x00a\x00l\x00s\x00o\x00 \x00r\x00i\x00v\x00a\x00l\x00s\x00 \x00t\x00h\x00a\x00t\x00 \x00w\x00a\x00n\x00t\x00 \x00t\x00h\x00e\x00 \x00s\x00a\x00m\x00e\x00 \x00t\x00h\x00i\x00n\x00g\x00 \x00a\x00s\x00 \x00y\x00o\x00u\x00.\x00 \x00\n\x00F\x00a\x00m\x00e\x00.\x00 \x00F\x00a\x00n\x00s\x00.\x00 \x00R\x00E\x00C\x00O\x00G\x00N\x00I\x00T\x00I\x00O\x00N\x00."
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 573.900024
+        height: 150.199997
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: true
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 131
+    name: FristStepTutorialMsg2
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5855
+      position:
+        x: 94
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5856
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00B\x00u\x00t\x00 \x00f\x00e\x00a\x00r\x00 \x00n\x00o\x00t\x00,\x00 \x00y\x00o\x00u\x00n\x00g\x00 \x00o\x00n\x00e\x00s\x00,\x00 \x00I\x00'\x00m\x00 \x00r\x00i\x00g\x00h\x00t\x00 \x00h\x00e\x00r\x00e\x00 \x00t\x00o\x00 \x00g\x00u\x00i\x00d\x00e\x00 \x00y\x00o\x00u\x00 \x00\n\x00t\x00h\x00r\x00o\x00u\x00g\x00h\x00 \x00t\x00h\x00e\x00 \x00h\x00i\x00g\x00h\x00-\x00s\x00t\x00a\x00k\x00e\x00s\x00 \x00h\x00u\x00s\x00t\x00l\x00e\x00 \x00o\x00f\x00 \x00f\x00a\x00m\x00e\x00 \x00a\x00n\x00d\x00 \x00f\x00o\x00r\x00t\x00u\x00n\x00e\x00.\x00 \x00\n\x00L\x00e\x00t\x00'\x00s\x00 \x00k\x00i\x00c\x00k\x00 \x00o\x00f\x00f\x00 \x00t\x00h\x00i\x00s\x00 \x00a\x00d\x00v\x00e\x00n\x00t\x00u\x00r\x00e\x00 \x00t\x00o\x00g\x00e\x00t\x00h\x00e\x00r\x00,\x00 \x00c\x00r\x00a\x00f\x00t\x00i\x00n\x00g\x00 \x00t\x00u\x00n\x00e\x00s\x00 \x00\n\x00t\x00h\x00a\x00t\x00'\x00l\x00l\x00 \x00r\x00e\x00s\x00o\x00n\x00a\x00t\x00e\x00 \x00f\x00a\x00r\x00 \x00a\x00n\x00d\x00 \x00w\x00i\x00d\x00e\x00."
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 573.900024
+        height: 150.199997
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 132
+    name: FristStepTutorialMsg3
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5857
+      position:
+        x: 94
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5858
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00S\x00t\x00e\x00p\x00 \x00o\x00n\x00e\x00 \x00o\x00n\x00 \x00y\x00o\x00u\x00r\x00 \x00p\x00a\x00t\x00h\x00 \x00t\x00o\x00 \x00f\x00a\x00m\x00e\x00:\x00 \x00e\x00s\x00t\x00a\x00b\x00l\x00i\x00s\x00h\x00i\x00n\x00g\x00 \x00y\x00o\x00u\x00r\x00 \x00\n\x00p\x00r\x00e\x00s\x00e\x00n\x00c\x00e\x00.\x00 \x00T\x00h\x00e\x00 \x00w\x00o\x00r\x00l\x00d\x00 \x00i\x00s\x00 \x00y\x00o\x00u\x00r\x00 \x00s\x00t\x00a\x00g\x00e\x00,\x00 \x00b\x00u\x00t\x00 \x00y\x00o\x00u\x00 \x00m\x00u\x00s\x00t\x00 \x00c\x00l\x00a\x00i\x00m\x00 \x00i\x00t\x00 \x00\n\x00f\x00i\x00r\x00s\x00t\x00.\x00 \x00C\x00o\x00n\x00t\x00r\x00o\x00l\x00 \x00t\x00e\x00r\x00r\x00i\x00t\x00o\x00r\x00y\x00,\x00 \x00g\x00a\x00t\x00h\x00e\x00r\x00 \x00f\x00a\x00n\x00s\x00,\x00 \x00a\x00n\x00d\x00 \x00l\x00e\x00t\x00 \x00y\x00o\x00u\x00r\x00 \x00v\x00o\x00i\x00c\x00e\x00 \x00\n\x00r\x00e\x00s\x00o\x00n\x00a\x00t\x00e\x00 \x00a\x00c\x00r\x00o\x00s\x00s\x00 \x00t\x00h\x00e\x00 \x00l\x00a\x00n\x00d\x00."
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 573.900024
+        height: 150.199997
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 133
+    name: FristStepTutorialMsg4
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5859
+      position:
+        x: 94
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5860
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00J\x00u\x00s\x00t\x00 \x00r\x00e\x00m\x00e\x00m\x00b\x00e\x00r\x00,\x00 \x00s\x00t\x00a\x00y\x00i\x00n\x00g\x00 \x00s\x00t\x00i\x00l\x00l\x00 \x00i\x00s\x00 \x00t\x00h\x00e\x00 \x00f\x00a\x00s\x00t\x00e\x00s\x00t\x00 \x00w\x00a\x00y\x00 \x00t\x00o\x00 \x00b\x00e\x00 \x00\n\x00f\x00o\x00r\x00g\x00o\x00t\x00t\x00e\x00n\x00.\x00 \x00K\x00e\x00e\x00p\x00 \x00m\x00o\x00v\x00i\x00n\x00g\x00,\x00 \x00a\x00n\x00d\x00 \x00k\x00e\x00e\x00p\x00 \x00p\x00e\x00r\x00f\x00o\x00r\x00m\x00i\x00n\x00g\x00,\x00 \x00b\x00e\x00c\x00a\x00u\x00s\x00e\x00 \x00\n\x00e\x00v\x00e\x00n\x00 \x00t\x00h\x00e\x00 \x00b\x00i\x00g\x00g\x00e\x00s\x00t\x00 \x00s\x00t\x00a\x00r\x00s\x00 \x00c\x00a\x00n\x00 \x00l\x00o\x00s\x00e\x00 \x00t\x00h\x00e\x00i\x00r\x00 \x00s\x00h\x00i\x00n\x00e\x00 \x00i\x00f\x00 \x00t\x00h\x00e\x00y\x00 \x00\n\x00i\x00g\x00n\x00o\x00r\x00e\x00 \x00t\x00h\x00e\x00i\x00r\x00 \x00f\x00a\x00n\x00s\x00."
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 573.900024
+        height: 150.199997
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 134
+    name: IntroductionTutorial
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5861
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5862
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 38
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 800
+        height: 225
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5929
+        enabled: true
+        type: Image
+        isTransparent: false
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.7
+        width: 1920
+        height: 1080
+        layer: 6
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5926
+        enabled: true
+        type: TutorialSeries
+        tutorialsIds:
+          - 137
+          - 138
+          - 144
+    children:
+      - 135
+      - 136
+      - 137
+      - 138
+      - 165
+  - id: 165
+    name: IntroductionTutorialRMB
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5937
+      position:
+        x: 378
+        y: 87
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5938
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 39
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 23
+        height: 32
+        layer: 8
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 135
+    name: IntroductionTutorialHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5863
+      position:
+        x: -195
+        y: 71
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5864
+        enabled: true
+        type: Text
+        isTransparent: true
+        text: "\x00Z\x00O\x00R\x00Y\x00A"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0.886274517
+          y: 0.823529422
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 136
+    name: IntroductionTutorialImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5865
+      position:
+        x: -295
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5866
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 12
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 170
+        height: 190
+        layer: 8
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 137
+    name: IntroductionTutorialMsg1
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5867
+      position:
+        x: 94
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5868
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00O\x00h\x00,\x00 \x00y\x00o\x00u\x00'\x00v\x00e\x00 \x00f\x00i\x00n\x00a\x00l\x00l\x00y\x00 \x00d\x00e\x00c\x00i\x00d\x00e\x00d\x00 \x00t\x00o\x00 \x00f\x00o\x00l\x00l\x00o\x00w\x00 \x00y\x00o\x00u\x00r\x00 \x00d\x00r\x00e\x00a\x00m\x00s\x00.\x00 \x00I\x00'\x00v\x00e\x00 \x00b\x00e\x00e\x00n\x00 \x00\n\x00l\x00i\x00s\x00t\x00e\x00n\x00i\x00n\x00g\x00 \x00t\x00o\x00 \x00y\x00o\x00u\x00r\x00 \x00m\x00u\x00s\x00i\x00c\x00 \x00f\x00o\x00r\x00 \x00q\x00u\x00i\x00t\x00e\x00 \x00s\x00o\x00m\x00e\x00 \x00t\x00i\x00m\x00e\x00.\x00 \x00I\x00'\x00m\x00 \x00h\x00a\x00p\x00p\x00y\x00 \x00\n\x00t\x00h\x00a\x00t\x00 \x00y\x00o\x00u\x00 \x00w\x00a\x00n\x00t\x00 \x00t\x00o\x00 \x00s\x00h\x00a\x00r\x00e\x00 \x00y\x00o\x00u\x00r\x00 \x00s\x00o\x00n\x00g\x00s\x00 \x00w\x00i\x00t\x00h\x00 \x00t\x00h\x00e\x00 \x00w\x00o\x00r\x00l\x00d\x00."
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 573.900024
+        height: 150.199997
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: true
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 138
+    name: IntroductionTutorialMsg2
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5869
+      position:
+        x: 94
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5870
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00A\x00h\x00,\x00 \x00I\x00'\x00m\x00 \x00s\x00o\x00r\x00r\x00y\x00,\x00 \x00I\x00 \x00f\x00o\x00r\x00g\x00o\x00t\x00 \x00t\x00o\x00 \x00i\x00n\x00t\x00r\x00o\x00d\x00u\x00c\x00e\x00 \x00m\x00y\x00s\x00e\x00l\x00f\x00.\x00 \x00M\x00y\x00 \x00n\x00a\x00m\x00e\x00 \x00i\x00s\x00 \x00\n\x00Z\x00o\x00r\x00z\x00a\x00,\x00 \x00b\x00u\x00t\x00 \x00y\x00o\x00u\x00 \x00c\x00a\x00n\x00 \x00c\x00a\x00l\x00l\x00 \x00m\x00e\x00 \x00Z\x00o\x00r\x00y\x00a\x00/\x00D\x00a\x00w\x00n\x00.\x00 \x00I\x00'\x00m\x00 \x00o\x00n\x00e\x00 \x00o\x00f\x00 \x00\n\x00t\x00h\x00e\x00 \x00o\x00l\x00d\x00 \x00g\x00o\x00d\x00s\x00 \x00a\x00n\x00d\x00 \x00I\x00 \x00w\x00a\x00n\x00t\x00 \x00t\x00o\x00 \x00h\x00e\x00l\x00p\x00 \x00y\x00o\x00u\x00 \x00i\x00n\x00 \x00y\x00o\x00u\x00r\x00 \x00j\x00o\x00u\x00r\x00n\x00e\x00y\x00."
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 573.900024
+        height: 150.199997
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 139
+    name: RadioStationTutorial
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5871
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5872
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 38
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 800
+        height: 225
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5930
+        enabled: true
+        type: Image
+        isTransparent: false
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.7
+        width: 1920
+        height: 1080
+        layer: 6
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5925
+        enabled: true
+        type: TutorialSeries
+        tutorialsIds:
+          - 142
+          - 143
+    children:
+      - 140
+      - 141
+      - 142
+      - 143
+      - 166
+  - id: 166
+    name: RadioStationTutorialRMB
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5939
+      position:
+        x: 378
+        y: 87
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5940
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 39
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 23
+        height: 32
+        layer: 8
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 140
+    name: RadioStationTutorialHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5873
+      position:
+        x: -195
+        y: 71
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5874
+        enabled: true
+        type: Text
+        isTransparent: true
+        text: "\x00Z\x00O\x00R\x00Y\x00A"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0.886274517
+          y: 0.823529422
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 141
+    name: RadioStationTutorialImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5875
+      position:
+        x: -295
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5876
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 12
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 170
+        height: 190
+        layer: 8
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 142
+    name: RadioStationTutorialMsg1
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5877
+      position:
+        x: 94
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5878
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00O\x00h\x00,\x00 \x00a\x00n\x00d\x00 \x00d\x00o\x00n \x19\x00t\x00 \x00f\x00o\x00r\x00g\x00e\x00t\x00 \x00a\x00b\x00o\x00u\x00t\x00 \x00t\x00h\x00e\x00 \x00r\x00a\x00d\x00i\x00o\x00 \x00t\x00o\x00w\x00e\x00r\x00s\x00 \x00s\x00c\x00a\x00t\x00t\x00e\x00r\x00e\x00d\x00 \x00\n\x00a\x00c\x00r\x00o\x00s\x00s\x00 \x00t\x00h\x00e\x00 \x00m\x00a\x00p\x00.\x00 \x00T\x00h\x00e\x00s\x00e\x00 \x00a\x00r\x00e\x00 \x00y\x00o\x00u\x00r\x00 \x00h\x00o\x00t\x00s\x00p\x00o\x00t\x00s\x00 \x00t\x00o\x00 \x00a\x00m\x00p\x00l\x00i\x00f\x00y\x00 \x00y\x00o\x00u\x00r\x00 \x00\n\x00r\x00e\x00a\x00c\x00h\x00.\x00 \x00S\x00t\x00e\x00p\x00 \x00u\x00p\x00 \x00t\x00o\x00 \x00t\x00h\x00e\x00 \x00c\x00h\x00a\x00l\x00l\x00e\x00n\x00g\x00e\x00 \x00w\x00i\x00t\x00h\x00 \x00a\x00 \x00g\x00r\x00e\x00a\x00t\x00 \x00l\x00i\x00v\x00e\x00 \x00\n\x00p\x00e\x00r\x00f\x00o\x00r\x00m\x00a\x00n\x00c\x00e\x00 \x00a\x00t\x00 \x00e\x00a\x00c\x00h\x00 \x00t\x00o\x00w\x00e\x00r \x14\x00t\x00h\x00e\x00 \x00b\x00e\x00t\x00t\x00e\x00r\x00 \x00y\x00o\x00u\x00r\x00 \x00s\x00c\x00o\x00r\x00e\x00,\x00 \x00\n"
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 573.900024
+        height: 150.199997
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: true
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 143
+    name: RadioStationTutorialMsg2
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5879
+      position:
+        x: 94
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5880
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00t\x00h\x00e\x00 \x00m\x00o\x00r\x00e\x00 \x00f\x00a\x00n\x00s \x19\x00 \x00h\x00e\x00a\x00r\x00t\x00s\x00 \x00y\x00o\x00u\x00 \x00i\x00n\x00s\x00t\x00a\x00n\x00t\x00l\x00y\x00 \x00d\x00o\x00m\x00i\x00n\x00a\x00t\x00e\x00.\x00 \x00T\x00h\x00i\x00n\x00k\x00 \x00o\x00f\x00 \x00\n\x00i\x00t\x00 \x00a\x00s\x00 \x00y\x00o\x00u\x00r\x00 \x00c\x00h\x00a\x00n\x00c\x00e\x00 \x00t\x00o\x00 \x00b\x00r\x00o\x00a\x00d\x00c\x00a\x00s\x00t\x00 \x00y\x00o\x00u\x00r\x00 \x00t\x00a\x00l\x00e\x00n\x00t\x00 \x00f\x00a\x00r\x00 \x00a\x00n\x00d\x00 \x00w\x00i\x00d\x00e\x00,\x00 \x00\n\x00t\x00u\x00r\x00n\x00i\x00n\x00g\x00 \x00t\x00h\x00e\x00 \x00d\x00i\x00a\x00l\x00-\x00u\x00p\x00 \x00o\x00n\x00 \x00y\x00o\x00u\x00r\x00 \x00c\x00o\x00n\x00q\x00u\x00e\x00s\x00t\x00."
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 573.900024
+        height: 150.199997
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 144
+    name: ChoosingPatronTutorial
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5881
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5882
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 38
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 800
+        height: 225
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5931
+        enabled: true
+        type: Image
+        isTransparent: false
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.7
+        width: 1920
+        height: 1080
+        layer: 6
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5924
+        enabled: true
+        type: TutorialSeries
+        tutorialsIds:
+          - 147
+          - 148
+          - 149
+    children:
+      - 145
+      - 146
+      - 147
+      - 148
+      - 149
+      - 167
+  - id: 167
+    name: ChoosingTutorialRMB
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5941
+      position:
+        x: 378
+        y: 87
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5942
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 39
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 23
+        height: 32
+        layer: 8
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 145
+    name: ChoosingPatronTutorialHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5883
+      position:
+        x: -195
+        y: 71
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5884
+        enabled: true
+        type: Text
+        isTransparent: true
+        text: "\x00Z\x00O\x00R\x00Y\x00A"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0.886274517
+          y: 0.823529422
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 146
+    name: ChoosingPatronTutorialImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5885
+      position:
+        x: -295
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5886
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 12
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 170
+        height: 190
+        layer: 8
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 147
+    name: ChoosingPatronTutorialMsg1
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5887
+      position:
+        x: 94
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5888
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00N\x00o\x00w\x00,\x00 \x00m\x00y\x00 \x00p\x00r\x00o\x00t\x00e\x00g\x00e\x00,\x00 \x00t\x00h\x00e\x00 \x00t\x00i\x00m\x00e\x00 \x00h\x00a\x00s\x00 \x00c\x00o\x00m\x00e\x00 \x00t\x00o\x00 \x00c\x00h\x00o\x00o\x00s\x00e\x00 \x00y\x00o\x00u\x00r\x00 \x00d\x00i\x00v\x00i\x00n\x00e\x00 \x00\n\x00b\x00e\x00n\x00e\x00f\x00a\x00c\x00t\x00o\x00r\x00.\x00 \x00T\x00h\x00r\x00e\x00e\x00 \x00g\x00o\x00d\x00s\x00 \x00s\x00t\x00a\x00n\x00d\x00 \x00b\x00e\x00f\x00o\x00r\x00e\x00 \x00y\x00o\x00u\x00,\x00 \x00e\x00a\x00c\x00h\x00 \x00o\x00f\x00f\x00e\x00r\x00i\x00n\x00g\x00 \x00\n\x00t\x00h\x00e\x00i\x00r\x00 \x00b\x00l\x00e\x00s\x00s\x00i\x00n\x00g\x00 \x00t\x00o\x00 \x00a\x00i\x00d\x00 \x00y\x00o\x00u\x00 \x00o\x00n\x00 \x00y\x00o\x00u\x00r\x00 \x00j\x00o\x00u\x00r\x00n\x00e\x00y\x00.\x00 \x00T\x00o\x00o\x00k\x00 \x00m\x00e\x00 \x00s\x00o\x00m\x00e\x00 \x00\n\x00t\x00i\x00m\x00e\x00 \x00t\x00o\x00 \x00c\x00o\x00n\x00v\x00i\x00n\x00c\x00e\x00 \x00t\x00h\x00e\x00m\x00,\x00 \x00b\x00u\x00t\x00 \x00h\x00e\x00r\x00e\x00 \x00t\x00h\x00e\x00y\x00 \x00a\x00r\x00e\x00 \x00j\x00u\x00s\x00t\x00 \x00f\x00o\x00r\x00 \x00y\x00o\x00u\x00."
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 573.900024
+        height: 150.199997
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 148
+    name: ChoosingPatronTutorialMsg2
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5889
+      position:
+        x: 94
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5890
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00W\x00i\x00l\x00l\x00 \x00y\x00o\x00u\x00 \x00s\x00e\x00e\x00k\x00 \x00t\x00h\x00e\x00 \x00w\x00i\x00s\x00d\x00o\x00m\x00 \x00o\x00f\x00 \x00W\x00e\x00l\x00e\x00s\x00,\x00 \x00t\x00h\x00e\x00 \x00g\x00u\x00i\x00d\x00a\x00n\x00c\x00e\x00 \x00o\x00f\x00 \x00\n\x00D\x00o\x00l\x00a\x00 \x00-\x00 \x00L\x00a\x00d\x00y\x00 \x00o\x00f\x00 \x00F\x00a\x00t\x00e\x00,\x00 \x00o\x00r\x00 \x00t\x00h\x00e\x00 \x00s\x00t\x00r\x00e\x00n\x00g\x00t\x00h\x00 \x00o\x00f\x00 \x00P\x00e\x00r\x00u\x00n\x00?\x00 \x00C\x00h\x00o\x00o\x00s\x00e\x00 \x00\n\x00w\x00i\x00s\x00e\x00l\x00y\x00,\x00 \x00f\x00o\x00r\x00 \x00y\x00o\x00u\x00r\x00 \x00p\x00a\x00t\x00r\x00o\x00n\x00 \x00s\x00h\x00a\x00l\x00l\x00 \x00s\x00h\x00a\x00p\x00e\x00 \x00t\x00h\x00e\x00 \x00v\x00e\x00r\x00y\x00 \x00e\x00s\x00s\x00e\x00n\x00c\x00e\x00 \x00o\x00f\x00 \x00\n\x00y\x00o\x00u\x00r\x00 \x00d\x00e\x00s\x00t\x00i\x00n\x00y\x00."
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 573.900024
+        height: 150.199997
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 149
+    name: ChoosingPatronTutorialMsg3
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5891
+      position:
+        x: 94
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5892
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00T\x00h\x00e\x00 \x00s\x00t\x00a\x00g\x00e\x00 \x00i\x00s\x00 \x00s\x00e\x00t\x00,\x00 \x00a\x00n\x00d\x00 \x00t\x00h\x00e\x00 \x00a\x00u\x00d\x00i\x00e\x00n\x00c\x00e\x00 \x00a\x00w\x00a\x00i\x00t\x00s\x00.\x00 \x00E\x00m\x00b\x00r\x00a\x00c\x00e\x00 \x00y\x00o\x00u\x00r\x00 \x00\n\x00f\x00a\x00t\x00e\x00,\x00 \x00a\x00n\x00d\x00 \x00l\x00e\x00t\x00 \x00t\x00h\x00e\x00 \x00e\x00c\x00h\x00o\x00e\x00s\x00 \x00o\x00f\x00 \x00f\x00a\x00m\x00e\x00 \x00g\x00u\x00i\x00d\x00e\x00 \x00y\x00o\x00u\x00 \x00t\x00o\x00 \x00g\x00r\x00e\x00a\x00t\x00n\x00e\x00s\x00s\x00."
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 573.900024
+        height: 150.199997
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 150
+    name: MeetingTutorial
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5893
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5894
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 38
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 800
+        height: 225
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5932
+        enabled: true
+        type: Image
+        isTransparent: false
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.7
+        width: 1920
+        height: 1080
+        layer: 6
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5923
+        enabled: true
+        type: TutorialSeries
+        tutorialsIds:
+          - 153
+          - 154
+    children:
+      - 151
+      - 152
+      - 153
+      - 154
+      - 168
+  - id: 168
+    name: MeetingTutorialRMB
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5943
+      position:
+        x: 378
+        y: 87
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5944
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 39
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 23
+        height: 32
+        layer: 8
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 151
+    name: MeetingTutorialHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5895
+      position:
+        x: -195
+        y: 71
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5896
+        enabled: true
+        type: Text
+        isTransparent: true
+        text: "\x00Z\x00O\x00R\x00Y\x00A"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0.886274517
+          y: 0.823529422
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 152
+    name: MeetingTutorialImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5897
+      position:
+        x: -295
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5898
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 12
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 170
+        height: 190
+        layer: 8
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 153
+    name: MeetingTutorialMsg1
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5899
+      position:
+        x: 94
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5900
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00A\x00s\x00 \x00y\x00o\x00u\x00r\x00 \x00l\x00e\x00g\x00e\x00n\x00d\x00 \x00s\x00p\x00r\x00e\x00a\x00d\x00s\x00,\x00 \x00s\x00o\x00 \x00t\x00o\x00o\x00 \x00w\x00i\x00l\x00l\x00 \x00y\x00o\x00u\x00r\x00 \x00f\x00o\x00l\x00l\x00o\x00w\x00e\x00r\x00s\x00.\x00 \x00W\x00i\x00t\x00h\x00 \x00\n\x00t\x00h\x00e\x00 \x00F\x00a\x00n\x00s\x00 \x00M\x00e\x00e\x00t\x00i\x00n\x00g\x00,\x00 \x00y\x00o\x00u\x00 \x00c\x00a\x00n\x00 \x00d\x00r\x00a\x00w\x00 \x00y\x00o\x00u\x00r\x00 \x00f\x00a\x00n\x00s\x00 \x00c\x00l\x00o\x00s\x00e\x00,\x00 \x00\n\x00c\x00l\x00a\x00i\x00m\x00i\x00n\x00g\x00 \x00t\x00e\x00r\x00r\x00i\x00t\x00o\x00r\x00y\x00 \x00i\x00n\x00 \x00y\x00o\x00u\x00r\x00 \x00n\x00a\x00m\x00e\x00 \x00a\x00n\x00d\x00 \x00s\x00o\x00l\x00i\x00d\x00i\x00f\x00y\x00i\x00n\x00g\x00 \x00y\x00o\x00u\x00r\x00 \x00f\x00a\x00m\x00e\x00 \x00\n\x00o\x00v\x00e\x00r\x00 \x00o\x00t\x00h\x00e\x00r\x00s\x00.\x00 \x00F\x00a\x00n\x00b\x00a\x00s\x00e\x00 \x00s\x00o\x00m\x00e\x00t\x00i\x00m\x00e\x00s\x00 \x00c\x00a\x00n\x00 \x00p\x00e\x00r\x00f\x00o\x00r\x00m\x00 \x00m\x00i\x00r\x00a\x00c\x00l\x00e\x00s\x00."
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 573.900024
+        height: 150.199997
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 154
+    name: MeetingTutorialMsg2
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5901
+      position:
+        x: 94
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5902
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00Y\x00e\x00t\x00,\x00 \x00r\x00e\x00m\x00e\x00m\x00b\x00e\x00r\x00 \x00t\x00h\x00e\x00 \x00n\x00a\x00t\x00u\x00r\x00e\x00 \x00o\x00f\x00 \x00i\x00n\x00f\x00l\x00u\x00e\x00n\x00c\x00e\x00.\x00 \x00I\x00t\x00 \x00i\x00s\x00 \x00f\x00l\x00e\x00e\x00t\x00i\x00n\x00g\x00,\x00 \x00\n\x00t\x00r\x00a\x00n\x00s\x00i\x00e\x00n\x00t\x00.\x00 \x00I\x00f\x00 \x00y\x00o\x00u\x00 \x00m\x00o\x00v\x00e\x00 \x00f\x00r\x00o\x00m\x00 \x00t\x00h\x00a\x00t\x00 \x00s\x00p\x00o\x00t\x00 \x00t\x00h\x00e\x00 \x00f\x00a\x00n\x00s\x00 \x00w\x00i\x00l\x00l\x00 \x00l\x00o\x00s\x00e\x00 \x00\n\x00t\x00h\x00e\x00 \x00a\x00n\x00c\x00h\x00o\x00r\x00 \x00h\x00o\x00l\x00d\x00i\x00n\x00g\x00 \x00t\x00h\x00e\x00m\x00 \x00t\x00h\x00e\x00r\x00e\x00,\x00 \x00t\x00h\x00e\x00y \x19\x00l\x00l\x00 \x00b\x00e\x00 \x00r\x00e\x00a\x00d\x00y\x00 \x00t\x00o\x00 \x00c\x00o\x00m\x00e\x00 \x00\n\x00b\x00a\x00c\x00k\x00 \x00t\x00o\x00 \x00t\x00h\x00e\x00i\x00r\x00 \x00h\x00o\x00m\x00e\x00s\x00."
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 573.900024
+        height: 150.199997
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 155
+    name: AlbumTutorial
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5903
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5904
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 38
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 800
+        height: 225
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5933
+        enabled: true
+        type: Image
+        isTransparent: false
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.7
+        width: 1920
+        height: 1080
+        layer: 6
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5922
+        enabled: true
+        type: TutorialSeries
+        tutorialsIds:
+          - 158
+          - 159
+    children:
+      - 156
+      - 157
+      - 158
+      - 159
+      - 169
+  - id: 169
+    name: AlbumTutorialRMB
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5945
+      position:
+        x: 378
+        y: 87
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5946
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 39
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 23
+        height: 32
+        layer: 8
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 156
+    name: AlbumTutorialHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5905
+      position:
+        x: -195
+        y: 71
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5906
+        enabled: true
+        type: Text
+        isTransparent: true
+        text: "\x00Z\x00O\x00R\x00Y\x00A"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0.886274517
+          y: 0.823529422
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 157
+    name: AlbumTutorialImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5907
+      position:
+        x: -295
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5908
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 12
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 170
+        height: 190
+        layer: 8
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 158
+    name: AlbumTutorialMsg1
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5909
+      position:
+        x: 88
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5910
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00B\x00e\x00f\x00o\x00r\x00e\x00 \x00w\x00e\x00 \x00t\x00r\x00u\x00l\x00y\x00 \x00s\x00t\x00a\x00r\x00t\x00 \x00s\x00p\x00r\x00e\x00a\x00d\x00i\x00n\x00g\x00 \x00y\x00o\x00u\x00r\x00 \x00m\x00u\x00s\x00i\x00c\x00 \x00u\x00n\x00d\x00e\x00r\x00s\x00t\x00a\x00n\x00d\x00 \x00\n\x00o\x00n\x00e\x00 \x00t\x00h\x00i\x00n\x00g\x00.\x00 \x00B\x00e\x00 \x00w\x00i\x00s\x00e\x00 \x00w\x00i\x00t\x00h\x00 \x00y\x00o\x00u\x00r\x00 \x00r\x00e\x00s\x00o\x00u\x00r\x00c\x00e\x00s\x00.\x00 \x00F\x00a\x00m\x00e\x00 \x00c\x00a\x00r\x00r\x00i\x00e\x00s\x00 \x00a\x00 \x00c\x00o\x00s\x00t\x00,\x00 \x00\n\x00(\x00a\x00n\x00d\x00 \x00n\x00o\x00t\x00 \x00j\x00u\x00s\x00t\x00 \x00m\x00e\x00t\x00a\x00p\x00h\x00o\x00r\x00i\x00c\x00a\x00l\x00,\x00 \x00m\x00i\x00n\x00d\x00 \x00y\x00o\x00u\x00)\x00,\x00 \x00a\x00n\x00d\x00 \x00a\x00s\x00 \x00y\x00o\x00u\x00r\x00 \x00i\x00n\x00f\x00l\x00u\x00e\x00n\x00c\x00e\x00 \x00\n\x00b\x00r\x00o\x00a\x00d\x00e\x00n\x00s\x00,\x00 \x00s\x00o\x00 \x00t\x00o\x00o\x00 \x00w\x00i\x00l\x00l\x00 \x00t\x00h\x00e\x00 \x00e\x00x\x00p\x00e\x00n\x00s\x00e\x00 \x00o\x00f\x00 \x00y\x00o\x00u\x00r\x00 \x00p\x00e\x00r\x00f\x00o\x00r\x00m\x00a\x00n\x00c\x00e\x00s\x00."
+        font: 0
+        size: 29
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 573.900024
+        height: 150.199997
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 159
+    name: AlbumTutorialMsg2
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5911
+      position:
+        x: 96
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5912
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00S\x00p\x00e\x00n\x00d\x00 \x00j\x00u\x00d\x00i\x00c\x00i\x00o\x00u\x00s\x00l\x00y\x00,\x00 \x00l\x00e\x00s\x00t\x00 \x00y\x00o\x00u\x00r\x00 \x00p\x00a\x00t\x00h\x00 \x00t\x00o\x00 \x00s\x00t\x00a\x00r\x00d\x00o\x00m\x00 \x00l\x00e\x00a\x00d\x00s\x00 \x00t\x00o\x00 \x00\n\x00f\x00i\x00n\x00a\x00n\x00c\x00i\x00a\x00l\x00 \x00r\x00u\x00i\x00n\x00.\x00 \x00L\x00e\x00t \x19\x00s\x00 \x00s\x00h\x00o\x00w\x00c\x00a\x00s\x00e\x00 \x00m\x00o\x00r\x00e\x00 \x00o\x00f\x00 \x00y\x00o\x00u\x00r\x00 \x00m\x00u\x00s\x00i\x00c\x00 \x00t\x00o\x00 \x00t\x00h\x00e\x00 \x00\n\x00m\x00a\x00s\x00s\x00e\x00s\x00.\x00 \x00G\x00o\x00 \x00a\x00h\x00e\x00a\x00d\x00 \x00a\x00n\x00d\x00 \x00p\x00u\x00b\x00l\x00i\x00s\x00h\x00 \x00y\x00o\x00u\x00r\x00 \x00f\x00i\x00r\x00s\x00t\x00 \x00a\x00l\x00b\x00u\x00m\x00.\x00 \x00E\x00v\x00e\x00n\x00 \x00t\x00h\x00o\x00s\x00e\x00 \x00\n\x00f\x00r\x00o\x00m\x00 \x00a\x00f\x00a\x00r\x00 \x00m\x00a\x00y\x00 \x00b\x00e\x00 \x00t\x00o\x00u\x00c\x00h\x00e\x00d\x00 \x00b\x00y\x00 \x00t\x00h\x00e\x00 \x00s\x00o\x00u\x00n\x00d\x00s\x00 \x00I\x00'\x00v\x00e\x00 \x00c\x00o\x00m\x00e\x00 \x00t\x00o\x00 \x00a\x00d\x00o\x00r\x00e\x00."
+        font: 0
+        size: 29
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 573.900024
+        height: 150.199997
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 160
+    name: ConcertTutorial
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5913
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5914
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 38
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 800
+        height: 225
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5934
+        enabled: true
+        type: Image
+        isTransparent: false
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.7
+        width: 1920
+        height: 1080
+        layer: 6
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5921
+        enabled: true
+        type: TutorialSeries
+        tutorialsIds:
+          - 163
+    children:
+      - 161
+      - 162
+      - 163
+      - 170
+  - id: 161
+    name: ConcertTutorialHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5915
+      position:
+        x: -195
+        y: 71
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5916
+        enabled: true
+        type: Text
+        isTransparent: true
+        text: "\x00Z\x00O\x00R\x00Y\x00A"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0.886274517
+          y: 0.823529422
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 162
+    name: ConcertTutorialImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5917
+      position:
+        x: -295
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5918
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 12
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 170
+        height: 190
+        layer: 8
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 163
+    name: ConcertTutorialMsg1
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5919
+      position:
+        x: 88
+        y: 25
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5920
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00T\x00h\x00e\x00 \x00s\x00t\x00a\x00g\x00e\x00 \x00i\x00s\x00 \x00s\x00e\x00t\x00,\x00 \x00a\x00n\x00d\x00 \x00t\x00h\x00e\x00 \x00a\x00u\x00d\x00i\x00e\x00n\x00c\x00e\x00 \x00a\x00w\x00a\x00i\x00t\x00s\x00 \x00y\x00o\x00u\x00r\x00 \x00c\x00a\x00l\x00l\x00.\x00 \x00\n\x00C\x00o\x00n\x00d\x00u\x00c\x00t\x00 \x00a\x00 \x00C\x00o\x00n\x00c\x00e\x00r\x00t\x00 \x00t\x00o\x00 \x00c\x00a\x00p\x00t\x00i\x00v\x00a\x00t\x00e\x00 \x00h\x00e\x00a\x00r\x00t\x00s\x00 \x00a\x00n\x00d\x00 \x00d\x00r\x00a\x00w\x00 \x00a\x00 \x00m\x00u\x00c\x00h\x00 \x00\n\x00l\x00a\x00r\x00g\x00e\x00r\x00 \x00f\x00o\x00l\x00l\x00o\x00w\x00i\x00n\x00g\x00.\x00 \x00P\x00e\x00o\x00p\x00l\x00e\x00 \x00a\x00l\x00l\x00 \x00a\x00r\x00o\x00u\x00n\x00d\x00 \x00w\x00i\x00l\x00l\x00 \x00g\x00a\x00t\x00h\x00e\x00r\x00 \x00j\x00u\x00s\x00t\x00 \x00t\x00o\x00 \x00s\x00e\x00e\x00 \x00\n\x00y\x00o\x00u\x00."
+        font: 0
+        size: 29
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 573.900024
+        height: 150.199997
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 8
+    children:
+      []
+  - id: 170
+    name: ConcertTutorialRMB
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5947
+      position:
+        x: 378
+        y: 87
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5948
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 39
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 23
+        height: 32
+        layer: 8
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
     children:
       []

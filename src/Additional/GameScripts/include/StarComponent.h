@@ -32,7 +32,7 @@ public:
 		}
 
 		if (animateRotation) {
-			transform->SetLocalRotation(glm::vec3(0.0f, (rotationMaxAngle * glm::sin(time * rotationVel)), 0.0f));
+			transform->SetGlobalRotation(glm::vec3(0.0f, (rotationMaxAngle * glm::sin(time * rotationVel)), 0.0f));
 		}
 
 		if (animateScale) {

@@ -95,6 +95,14 @@ void Player::Initialize() {
         _albumCircleImage->SetColor(_abilityActiveColor);
     };
 
+    OnEventAlbumFinished += [&](Playable* playable) -> void {
+        for (HexTile* tile : OwnTiles)
+        {
+            tile->DisableAlbumAffected();
+        }
+        isShowingAlbumPossible = false;
+    };
+
     OnEventAlbumCooldownStarted += [&](Playable* playable) -> void {
         _albumCircleImage->SetColor(_abilityCooldownColor);
         _albumCircleImage->SetLayer(2);

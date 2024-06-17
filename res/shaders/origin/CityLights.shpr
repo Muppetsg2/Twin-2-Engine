@@ -1,0 +1,6 @@
+shaderprogram:
+  name: origin/CityLights
+  shaders:
+    - CityLights.vert
+    - CityLights.frag
+  parameters:

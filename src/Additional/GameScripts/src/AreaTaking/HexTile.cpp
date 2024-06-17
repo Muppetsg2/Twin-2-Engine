@@ -46,7 +46,7 @@ void HexTile::TakeOver()
 		{
 			SetOwnerEntity(occupyingEntity);
 
-			CheckRoundPattern();
+			//CheckRoundPattern();
 		}
 	}
 
@@ -311,6 +311,11 @@ void HexTile::UpdateBorders()
 
 void HexTile::CheckRoundPattern()
 {
+	if (occupyingEntity)
+	{
+		return;
+	}
+
 	HexTile* adjacentHexTile = nullptr;
 	Playable* processedTaken = nullptr;
 
@@ -318,10 +323,9 @@ void HexTile::CheckRoundPattern()
 	{
 		adjacentHexTile = _adjacentTiles[index];
 
-		if (adjacentHexTile->ownerEntity == ownerEntity 
-			|| (occupyingEntity && adjacentHexTile->ownerEntity != occupyingEntity) 
-			|| !adjacentHexTile->ownerEntity 
-			|| ownerEntity == adjacentHexTile->occupyingEntity)
+		if (!adjacentHexTile->ownerEntity
+			|| adjacentHexTile->ownerEntity == ownerEntity
+			|| (adjacentHexTile->occupyingEntity && ownerEntity == adjacentHexTile->occupyingEntity))
 		{
 			processedTaken = nullptr;
 			break;
@@ -342,10 +346,10 @@ void HexTile::CheckRoundPattern()
 	{
 		SetOwnerEntity(processedTaken);
 		state = TileState::TAKEN;
-		if (percentage < _takingStage1)
+		if (percentage <= _takingStage1)
 			percentage = 0.5f * (_takingStage1 + _takingStage2);
 		//percentage = 100.0f;
-		DisableAlbumAffected();
+		//DisableAlbumAffected();
 		UpdateTileColor();
 	}
 }
@@ -365,7 +369,7 @@ void HexTile::Initialize()
 			borderJoints[(i * 2) + 1]->SetActive(false);
 	}
 
-	particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/ArrowParticle.png", 7, 0.75f, 0.0f, 4.0f, 2.0f, 0.12f, 0.15f, 0.4f);
+	particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/ArrowParticle.png", 3, 0.5f, 0.0f, 6.0f, 2.0f, 0.16f, 0.2f, 0.3f);
 }
 
 void HexTile::OnDestroy()

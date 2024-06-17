@@ -53,7 +53,7 @@ void Button::OnHoverPresetEvents(bool isHover)
 			_objectToDisplay->GetTransform()->SetGlobalPosition(glm::vec3(pos, 0.f));
 		}
 
-		_objectToDisplay->SetActive(true);
+		_objectToDisplay->SetActive(isHover);
 	}
 }
 

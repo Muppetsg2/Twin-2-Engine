@@ -158,7 +158,7 @@ constexpr int32_t WINDOW_HEIGHT = 1080;
 constexpr bool WINDOW_FULLSCREEN = false;
 
 #if DISPLAY_SPLASH_SCREEN
-constexpr const char* SPLASH_SCREEN_TEXTURE = "res/textures/splashScreen.png";
+constexpr const char* SPLASH_SCREEN_TEXTURE = "res/textures/splashScreen2.png";
 #endif
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine

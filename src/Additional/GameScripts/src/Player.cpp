@@ -20,6 +20,7 @@ void Player::Initialize() {
     money = GetGameObject()->GetComponent<MoneyGainFromTiles>();
 
     // ALBUM ABILITY INTIALIZATION
+    albumButtonFrameImage = SceneManager::FindObjectByName("AlbumButtonFrame")->GetComponent<Image>();
     albumButtonObject = SceneManager::FindObjectByName("AlbumBg");
     albumButton = albumButtonObject->GetComponent<Button>();
     albumText = SceneManager::FindObjectByName("AlbumCost")->GetComponent<Text>();
@@ -64,6 +65,7 @@ void Player::Initialize() {
     //albumCircleImage->GetGameObject()->SetActive(false);
 
     // FANS MEETING ABILITY INTIALIZATION
+    fansMeetingButtonFrameImage = SceneManager::FindObjectByName("FansMeetingButtonFrame")->GetComponent<Image>();
     fansMeetingButtonObject = SceneManager::FindObjectByName("FansBg");
     fansMeetingButton = fansMeetingButtonObject->GetComponent<Button>();
     fansMeetingText = SceneManager::FindObjectByName("FansCost")->GetComponent<Text>();
@@ -109,6 +111,7 @@ void Player::Initialize() {
     //fansMeetingCircleImage->GetGameObject()->SetActive(false);
 
     // CONCERT ABILITY INTIALIZATION
+    concertButtonFrameImage = SceneManager::FindObjectByName("ConcertButtonFrame")->GetComponent<Image>();
     concertButtonObject = SceneManager::FindObjectByName("ConcertBg");
     concertButton = concertButtonObject->GetComponent<Button>();
     concertText = SceneManager::FindObjectByName("ConcertCost")->GetComponent<Text>();
@@ -315,10 +318,12 @@ void Player::Update() {
             if (isHoveringFansMeetingButton && !isShowingFansMeetingAffectedTiles)
             {
                 ShowAffectedTiles();
+                fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep2);
             }
             else if (!isHoveringFansMeetingButton && isShowingFansMeetingAffectedTiles)
             {
                 HideAffectedTiles();
+                fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
             }
             isHoveringFansMeetingButton = false;
 
@@ -333,6 +338,7 @@ void Player::Update() {
                     concertButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
                     audioComponent->SetAudio("res/music/Abilities/UI/OnHoverClick.mp3");
                     audioComponent->Play();
+                    concertButtonFrameImage->SetSprite(_spriteButtonStep2);
                 }
                 else if (!isHoveringConcertButton && isShowingConcertPossible)
                 {
@@ -342,6 +348,7 @@ void Player::Update() {
                     concertButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
                     audioComponent->SetAudio("res/music/Abilities/UI/OffHoverClick.mp3");
                     audioComponent->Play();
+                    concertButtonFrameImage->SetSprite(_spriteButtonStep1);
                 }
                 isHoveringConcertButton = false;
             }
@@ -360,6 +367,7 @@ void Player::Update() {
                     albumButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
                     audioComponent->SetAudio("res/music/Abilities/UI/OnHoverClick.mp3");
                     audioComponent->Play();
+                    albumButtonFrameImage->SetSprite(_spriteButtonStep2);
                 }
                 else if (!isHoveringAlbumButton && isShowingAlbumPossible)
                 {
@@ -372,6 +380,7 @@ void Player::Update() {
                     albumButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
                     audioComponent->SetAudio("res/music/Abilities/UI/OffHoverClick.mp3");
                     audioComponent->Play();
+                    albumButtonFrameImage->SetSprite(_spriteButtonStep1);
                 }
                 isHoveringAlbumButton = false;
             }
@@ -734,6 +743,9 @@ YAML::Node Player::Serialize() const
         node["starPrefab"] = _starPrefab->GetId();
     }
 
+    node["spriteButtonStep1"] = SceneManager::GetSpriteSaveIdx(_spriteButtonStep1);
+    node["spriteButtonStep2"] = SceneManager::GetSpriteSaveIdx(_spriteButtonStep2);
+
     //node["albumCircleImage"] = albumCircleImage->GetId();
     //node["fansMeetingCircleImage"] = fansMeetingCircleImage->GetId();
     //node["concertCircleImage"] = concertCircleImage->GetId();
@@ -752,6 +764,9 @@ bool Player::Deserialize(const YAML::Node& node)
     if (node["starPrefab"]) {
         _starPrefab = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["starPrefab"].as<size_t>()));
     }
+    _spriteButtonStep1 = SceneManager::GetSprite(node["spriteButtonStep1"].as<size_t>());
+    _spriteButtonStep2 = SceneManager::GetSprite(node["spriteButtonStep2"].as<size_t>());
+
     //albumCircleImage = (Image*)SceneManager::GetComponentWithId(node["albumCircleImage"].as<size_t>());
     //fansMeetingCircleImage = (Image*)SceneManager::GetComponentWithId(node["fansMeetingCircleImage"].as<size_t>());
     //concertCircleImage = (Image*)SceneManager::GetComponentWithId(node["concertCircleImage"].as<size_t>());

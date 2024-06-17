@@ -36,6 +36,8 @@ private:
 
     AudioComponent* audioComponent = nullptr;
 
+    size_t _spriteButtonStep1;
+    size_t _spriteButtonStep2;
     //Coroutine* fansCorountine;
 
 
@@ -44,6 +46,7 @@ private:
     Twin2Engine::UI::Text* albumText;
     Twin2Engine::UI::Button* albumButton;
     Twin2Engine::Core::GameObject* albumButtonObject;
+    Twin2Engine::UI::Image* albumButtonFrameImage;
     Twin2Engine::UI::Image* albumCircleImage;
     int albumButtonEventHandleId = -1;
     int albumButtonDestroyedEventHandleId = -1;
@@ -55,6 +58,7 @@ private:
     Twin2Engine::UI::Text* fansMeetingText;
     Twin2Engine::UI::Button* fansMeetingButton;
     Twin2Engine::Core::GameObject* fansMeetingButtonObject;
+    Twin2Engine::UI::Image* fansMeetingButtonFrameImage;
     Twin2Engine::UI::Image* fansMeetingCircleImage;
     int fansMeetingButtonEventHandleId = -1;
     int fansMeetingButtonHoveringEventHandleId = -1;
@@ -66,7 +70,8 @@ private:
     Twin2Engine::UI::Text* concertText;
     Twin2Engine::UI::Button* concertButton;
     Twin2Engine::Core::GameObject* concertButtonObject;
-    Twin2Engine::UI::Image* concertCircleImage;
+    Twin2Engine::UI::Image* concertButtonFrameImage;
+    Twin2Engine::UI::Image* concertCircleImage; 
     int concertButtonEventHandleId = -1;
     int concertButtonDestroyedEventHandleId = -1;
     int concertButtonHoveringEventHandleId = -1;

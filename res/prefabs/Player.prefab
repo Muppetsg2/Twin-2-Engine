@@ -7,7 +7,33 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-Sprites: ~
+  - id: 1
+    path: res/textures/UI/ButtonFrame.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 2
+    path: res/textures/UI/ButtonFrame_2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+Sprites: 
+  - id: 0
+    alias: ButtonFrame1
+    texture: 1
+    x: 0
+    y: 0
+    width: 144
+    height: 144
+  - id: 1
+    alias: ButtonFrame2
+    texture: 2
+    x: 0
+    y: 0
+    width: 144
+    height: 144
 Fonts: ~
 Audio: ~
 Materials:
@@ -64,6 +90,8 @@ Root:
         y: 0
         z: 1
         w: 0.275
+      spriteButtonStep1: 0
+      spriteButtonStep2: 1
     - id: 3
       enabled: true
       type: PlayerMovement

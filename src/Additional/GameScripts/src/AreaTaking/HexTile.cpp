@@ -464,6 +464,7 @@ void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 		ownerEntity = newOwnerEntity;
 		if (ownerEntity != nullptr) {
 			ownerEntity->OwnTiles.push_back(this);
+
 			for (auto& t : ownerEntity->OwnTiles)
 			{
 				t->UpdateBorders();

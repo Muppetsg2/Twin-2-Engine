@@ -523,6 +523,12 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 84
+    path: res/textures/UI/ButtonFrame.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites:
   - id: 0
     alias: MiniGame_Blue_Top
@@ -755,6 +761,13 @@ Sprites:
     y: 0
     width: 727
     height: 726
+  - id: 33
+    alias: ButtonFrame
+    texture: 84
+    x: 0
+    y: 0
+    width: 144
+    height: 153
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
@@ -1204,7 +1217,7 @@ GameObjects:
       id: 58
       position:
         x: 0
-        y: -440
+        y: -415
         z: 0
       scale:
         x: 1
@@ -1225,18 +1238,21 @@ GameObjects:
           y: 1
           z: 1
           w: 1
-        width: 763.700012
-        height: 200
-        layer: -1
+        width: 750
+        height: 250
+        layer: -2
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
         fillProgress: 1
     children:
-      - 25
-      - 28
-      - 31
+      - 68
+      - 26
+      - 66
+      - 29
+      - 67
       - 39
+      - 32
       - 38
   - id: 25
     name: FansBg
@@ -1246,7 +1262,7 @@ GameObjects:
       id: 60
       position:
         x: 0
-        y: -21
+        y: 0
         z: 0
       scale:
         x: 1
@@ -1289,8 +1305,8 @@ GameObjects:
           y: 1
           z: 1
         scaleEnd:
-          x: 1.10000002
-          y: 1.10000002
+          x: 1.1
+          y: 1.1
           z: 1
         colorFunc: 0
         colorFuncType: 0
@@ -1307,7 +1323,6 @@ GameObjects:
         displayObjectOnHover: false
         playAudioOnClick: false
     children:
-      - 26
       - 27
   - id: 26
     name: FansCost
@@ -1317,7 +1332,7 @@ GameObjects:
       id: 63
       position:
         x: 0
-        y: -54
+        y: -105
         z: 0
       scale:
         x: 1
@@ -1381,8 +1396,8 @@ GameObjects:
           y: 1
           z: 1
           w: 1
-        width: 256
-        height: 256
+        width: 200
+        height: 200
         layer: 1
         fillEnabled: false
         fillType: !<2> 2
@@ -1397,8 +1412,8 @@ GameObjects:
     transform:
       id: 67
       position:
-        x: 265
-        y: -21
+        x: 0
+        y: 0
         z: 0
       scale:
         x: 1
@@ -1441,8 +1456,8 @@ GameObjects:
           y: 1
           z: 1
         scaleEnd:
-          x: 1.10000002
-          y: 1.10000002
+          x: 1.1
+          y: 1.1
           z: 1
         colorFunc: 0
         colorFuncType: 0
@@ -1459,7 +1474,6 @@ GameObjects:
         displayObjectOnHover: false
         playAudioOnClick: false
     children:
-      - 29
       - 30
   - id: 29
     name: ConcertCost
@@ -1468,8 +1482,8 @@ GameObjects:
     transform:
       id: 70
       position:
-        x: 0
-        y: -54
+        x: 265
+        y: -105
         z: 0
       scale:
         x: 1
@@ -1533,8 +1547,8 @@ GameObjects:
           y: 1
           z: 1
           w: 1
-        width: 256
-        height: 256
+        width: 200
+        height: 200
         layer: 1
         fillEnabled: false
         fillType: !<2> 2
@@ -1549,8 +1563,8 @@ GameObjects:
     transform:
       id: 74
       position:
-        x: -265
-        y: -21
+        x: 0
+        y: 0
         z: 0
       scale:
         x: 1
@@ -1581,9 +1595,9 @@ GameObjects:
       - id: 76
         enabled: true
         type: Button
-        width: 150
-        height: 150
-        interactable: false
+        width: 130
+        height: 140
+        interactable: true
         onHoverPresetEvents: true
         animTimeFactor: 4
         scaleFunc: 9
@@ -1593,8 +1607,8 @@ GameObjects:
           y: 1
           z: 1
         scaleEnd:
-          x: 1.10000002
-          y: 1.10000002
+          x: 1.1
+          y: 1.1
           z: 1
         colorFunc: 0
         colorFuncType: 0
@@ -1611,7 +1625,6 @@ GameObjects:
         displayObjectOnHover: false
         playAudioOnClick: false
     children:
-      - 32
       - 33
   - id: 32
     name: AlbumCost
@@ -1620,8 +1633,8 @@ GameObjects:
     transform:
       id: 77
       position:
-        x: 0
-        y: -54
+        x: -265
+        y: -105
         z: 0
       scale:
         x: 1
@@ -1685,8 +1698,8 @@ GameObjects:
           y: 1
           z: 1
           w: 1
-        width: 256
-        height: 256
+        width: 200
+        height: 200
         layer: 1
         fillEnabled: false
         fillType: !<2> 2
@@ -1702,7 +1715,7 @@ GameObjects:
       id: 90
       position:
         x: -217
-        y: 70
+        y: 92.5
         z: 0
       scale:
         x: 1
@@ -1745,7 +1758,7 @@ GameObjects:
       id: 88
       position:
         x: 216
-        y: 70
+        y: 92.5
         z: 0
       scale:
         x: 1
@@ -3531,8 +3544,8 @@ GameObjects:
     transform:
       id: 145
       position:
-        x: 0
-        y: 468
+        x: 580
+        y: -330
         z: 0
       scale:
         x: 1
@@ -3553,7 +3566,7 @@ GameObjects:
           y: 0.196911216
           z: 0.196911216
           w: 1
-        width: 400
+        width: 300
         height: 50
         layer: 0
         fillEnabled: false
@@ -3570,7 +3583,7 @@ GameObjects:
           y: 0.35135138
           z: 0.35135138
           w: 1
-        width: 380
+        width: 280
         height: 30
         layer: 0
         fillEnabled: false
@@ -3581,7 +3594,7 @@ GameObjects:
         enabled: true
         type: PopularityGainingBonusBarController
         maxBonus: 100
-        maxLength: 380
+        maxLength: 280
     children:
       - 63
       - 64
@@ -3630,7 +3643,7 @@ GameObjects:
     transform:
       id: 151
       position:
-        x: -150.100006
+        x: 0
         y: 0
         z: 0
       scale:
@@ -3652,7 +3665,7 @@ GameObjects:
           y: 0
           z: 0
           w: 0.431372553
-        width: 79.7999954
+        width: 280
         height: 30
         layer: 0
         fillEnabled: true
@@ -3661,3 +3674,117 @@ GameObjects:
         fillProgress: 0.209999993
     children:
       []
+  - id: 68
+    name: FansMeetingButtonFrame
+    isStatic: false
+    isActive: true
+    transform:
+      id: 153
+      position:
+        x: 0
+        y: -21
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 154
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 33
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 130
+        height: 140
+        layer: -1
+        fillEnabled: false
+        fillType: !<2> 2
+        fillSubType: !<CW> 0
+        fillProgress: 1
+    children:
+     - 25
+  - id: 66
+    name: ConcertButtonFrame
+    isStatic: false
+    isActive: true
+    transform:
+      id: 155
+      position:
+        x: 265
+        y: -21
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 156
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 33
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 130
+        height: 140
+        layer: -1
+        fillEnabled: false
+        fillType: !<2> 2
+        fillSubType: !<CW> 0
+        fillProgress: 1
+    children:
+     - 28
+  - id: 67
+    name: AlbumButtonFrame
+    isStatic: false
+    isActive: true
+    transform:
+      id: 157
+      position:
+        x: -265
+        y: -21
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 158
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 33
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 130
+        height: 140
+        layer: -1
+        fillEnabled: false
+        fillType: !<2> 2
+        fillSubType: !<CW> 0
+        fillProgress: 1
+    children:
+     - 31

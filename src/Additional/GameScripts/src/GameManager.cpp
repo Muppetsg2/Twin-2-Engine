@@ -564,7 +564,7 @@ bool GameManager::Deserialize(const YAML::Node &node)
         }
     }
 
-    //vector<size_t> _rockBackgroundMusics = node["RockBackgroundMusics"].as<vector<size_t>>();
+    //_rockBackgroundMusics = node["RockBackgroundMusics"].as<vector<size_t>>();
     //for (size_t index = 0ull; index < _rockBackgroundMusics.size(); ++index)
     //{
     //    _rockBackgroundMusics[index] = SceneManager::GetAudio(_rockBackgroundMusics[index]);

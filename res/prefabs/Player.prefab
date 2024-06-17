@@ -35,7 +35,9 @@ Sprites:
     width: 144
     height: 153
 Fonts: ~
-Audio: ~
+Audio: 
+  - id: 0
+    path: res/music/engineSound.mp3
 Materials:
   - id: 0
     path: res/materials/car/CarMaterial_Blue.material
@@ -101,6 +103,7 @@ Root:
       heightOverSurface: 0
       prefabPlayerDestinationMarker: 0
       destinationMarkerHeightOverSurface: 0.2
+      engineSound: res/music/engineSound.mp3
     - id: 4
       enabled: true
       type: ConcertAbilityController
@@ -119,5 +122,12 @@ Root:
       type: Audio
       audio: 0
       loop: false
+      volume: 1
+      playOnStart: false
+    - id: 7
+      enabled: true
+      type: Audio
+      audio: 0
+      loop: true
       volume: 1
       playOnStart: false

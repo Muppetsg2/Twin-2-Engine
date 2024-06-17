@@ -262,26 +262,38 @@ GameObject* GameManager::GeneratePlayer()
     switch (p->patron->GetPatronMusic())
     {
     case PatronMusic::ROCK:
+        _audioComponent->SetAudio(_rockBackgroundMusics[0ull]);
+        _audioComponent->Play();
 
         break;
 
     case PatronMusic::ELECTRONIC:
+        _audioComponent->SetAudio(_electricBackgroundMusics[0ull]);
+        _audioComponent->Play();
 
         break;
 
     case PatronMusic::POP:
+        _audioComponent->SetAudio(_popBackgroundMusics[0ull]);
+        _audioComponent->Play();
 
         break;
 
     case PatronMusic::HEAVY_METAL:
+        _audioComponent->SetAudio(_heavyMetalBackgroundMusics[0ull]);
+        _audioComponent->Play();
 
         break;
 
     case PatronMusic::JAZZ:
+        _audioComponent->SetAudio(_jazzBackgroundMusics[0ull]);
+        _audioComponent->Play();
 
         break;
 
     case PatronMusic::DISCO:
+        _audioComponent->SetAudio(_discoBackgroundMusics[0ull]);
+        _audioComponent->Play();
 
         break;
 
@@ -445,6 +457,50 @@ YAML::Node GameManager::Serialize() const
         node["patronsData"].push_back(ScriptableObjectManager::GetPath(_patronsData[index]->GetId()));
     }
 
+
+    node["RockBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _rockBackgroundMusics.size(); ++index)
+    {
+        node["RockBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_rockBackgroundMusics[index]));
+    }
+
+    node["ElectricBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _electricBackgroundMusics.size(); ++index)
+    {
+        node["ElectricBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_electricBackgroundMusics[index]));
+    }
+
+    node["PopBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _popBackgroundMusics.size(); ++index)
+    {
+        node["PopBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_popBackgroundMusics[index]));
+    }
+
+    node["HeavyMetalBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _heavyMetalBackgroundMusics.size(); ++index)
+    {
+        node["HeavyMetalBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_heavyMetalBackgroundMusics[index]));
+    }
+
+    node["JazzBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _jazzBackgroundMusics.size(); ++index)
+    {
+        node["JazzBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_jazzBackgroundMusics[index]));
+    }
+
+    node["DiscoBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _discoBackgroundMusics.size(); ++index)
+    {
+        node["DiscoBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_discoBackgroundMusics[index]));
+    }
+
+    //node["RockBackgroundMusics"] = _rockBackgroundMusics;
+    //node["ElectricBackgroundMusics"] = _electricBackgroundMusics;
+    //node["PopBackgroundMusics"] = _popBackgroundMusics;
+    //node["HeavyMetalBackgroundMusics"] = _heavyMetalBackgroundMusics;
+    //node["JazzBackgroundMusics"] = _jazzBackgroundMusics;
+    //node["DiscoBackgroundMusics"] = _discoBackgroundMusics;
+
     return node;
 }
 
@@ -564,11 +620,36 @@ bool GameManager::Deserialize(const YAML::Node &node)
         }
     }
 
-    //vector<size_t> _rockBackgroundMusics = node["RockBackgroundMusics"].as<vector<size_t>>();
-    //for (size_t index = 0ull; index < _rockBackgroundMusics.size(); ++index)
-    //{
-    //    _rockBackgroundMusics[index] = SceneManager::GetAudio(_rockBackgroundMusics[index]);
-    //}
+    _rockBackgroundMusics = node["RockBackgroundMusics"].as<vector<size_t>>();
+    for (size_t index = 0ull; index < _rockBackgroundMusics.size(); ++index)
+    {
+        _rockBackgroundMusics[index] = SceneManager::GetAudio(_rockBackgroundMusics[index]);
+    }
+    _electricBackgroundMusics = node["ElectricBackgroundMusics"].as<vector<size_t>>();
+    for (size_t index = 0ull; index < _electricBackgroundMusics.size(); ++index)
+    {
+        _electricBackgroundMusics[index] = SceneManager::GetAudio(_electricBackgroundMusics[index]);
+    }
+    _popBackgroundMusics = node["PopBackgroundMusics"].as<vector<size_t>>();
+    for (size_t index = 0ull; index < _popBackgroundMusics.size(); ++index)
+    {
+        _popBackgroundMusics[index] = SceneManager::GetAudio(_popBackgroundMusics[index]);
+    }
+    _heavyMetalBackgroundMusics = node["HeavyMetalBackgroundMusics"].as<vector<size_t>>();
+    for (size_t index = 0ull; index < _heavyMetalBackgroundMusics.size(); ++index)
+    {
+        _heavyMetalBackgroundMusics[index] = SceneManager::GetAudio(_heavyMetalBackgroundMusics[index]);
+    }
+    _jazzBackgroundMusics = node["JazzBackgroundMusics"].as<vector<size_t>>();
+    for (size_t index = 0ull; index < _jazzBackgroundMusics.size(); ++index)
+    {
+        _jazzBackgroundMusics[index] = SceneManager::GetAudio(_jazzBackgroundMusics[index]);
+    }
+    _discoBackgroundMusics = node["DiscoBackgroundMusics"].as<vector<size_t>>();
+    for (size_t index = 0ull; index < _discoBackgroundMusics.size(); ++index)
+    {
+        _discoBackgroundMusics[index] = SceneManager::GetAudio(_discoBackgroundMusics[index]);
+    }
 
     size = node["patronsData"].size();
     _patronsData.reserve(size);

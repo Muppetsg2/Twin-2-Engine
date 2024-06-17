@@ -1,7 +1,7 @@
 #pragma once
 
 #define MAX_LOG_DRAW 500
-#define COLLAPSE 0
+#define COLLAPSE 2
 
 namespace Editor::Common
 {
@@ -112,8 +112,10 @@ namespace Editor::Common
 
             static const char* const tracy_GettingLogsName = "ImGui::Getting Loggs";
 
+#if TRACY_PROFILER
             ZoneScoped;
             FrameMarkStart(tracy_GettingLogsName);
+#endif
 
             // Convert log message to string
             spdlog::memory_buf_t formatted;
@@ -178,7 +180,9 @@ namespace Editor::Common
             //    MessageHolder::logFile.flush();
             //}
 
+#if TRACY_PROFILER
             FrameMarkEnd(tracy_GettingLogsName);
+#endif
         }
 
         void flush_() override {}

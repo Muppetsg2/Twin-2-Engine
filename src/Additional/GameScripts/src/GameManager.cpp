@@ -78,6 +78,8 @@ void GameManager::Initialize()
         {
             _carMaterials.push_back(nullptr);
         }
+
+        _audioComponent = GetGameObject()->GetComponent<AudioComponent>();
     }
     else
     {
@@ -250,12 +252,43 @@ GameObject* GameManager::GeneratePlayer()
     p->GetGameObject()->GetComponent<MeshRenderer>()->SetMaterial(0ull, _carMaterials[p->colorIdx]);
 
     _player->move->_playerDestinationMarker->GetComponent<MeshRenderer>()->AddMaterial(
-            _player->GetGameObject()->GetComponent<MeshRenderer>()->GetMaterial(0ull));
-    
+        _player->GetGameObject()->GetComponent<MeshRenderer>()->GetMaterial(0ull));
+
     //_player->move->_playerWrongDestinationMarker->GetComponent<MeshRenderer>()->AddMaterial(
     //        _player->GetGameObject()->GetComponent<MeshRenderer>()->GetMaterial(0ull));
 
     entities.push_back(p);
+
+    switch (p->patron->GetPatronMusic())
+    {
+    case PatronMusic::ROCK:
+
+        break;
+
+    case PatronMusic::ELECTRONIC:
+
+        break;
+
+    case PatronMusic::POP:
+
+        break;
+
+    case PatronMusic::HEAVY_METAL:
+
+        break;
+
+    case PatronMusic::JAZZ:
+
+        break;
+
+    case PatronMusic::DISCO:
+
+        break;
+
+    default:
+
+        break;
+    }
 
     return player;
 }
@@ -530,6 +563,12 @@ bool GameManager::Deserialize(const YAML::Node &node)
             }
         }
     }
+
+    //vector<size_t> _rockBackgroundMusics = node["RockBackgroundMusics"].as<vector<size_t>>();
+    //for (size_t index = 0ull; index < _rockBackgroundMusics.size(); ++index)
+    //{
+    //    _rockBackgroundMusics[index] = SceneManager::GetAudio(_rockBackgroundMusics[index]);
+    //}
 
     size = node["patronsData"].size();
     _patronsData.reserve(size);

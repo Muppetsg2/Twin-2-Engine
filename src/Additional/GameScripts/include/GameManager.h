@@ -1,5 +1,6 @@
 #pragma once
 
+#include <core/AudioComponent.h>
 #include <core/Transform.h>
 #include <core/GameObject.h>
 #include <core/Component.h>
@@ -33,6 +34,8 @@ class GameManager : public Component {
 private:
 
     static size_t _colorsNum;
+
+    Twin2Engine::Core::AudioComponent* _audioComponent;
 
     std::vector<int> _freeColors{ 0, 1, 2, 3, 4, 5, 6 };
     std::vector<Twin2Engine::Graphic::Material*> _carMaterials;

@@ -27,6 +27,7 @@ public:
     // Getters
     std::string GetPatronName() const;
     std::string GetPatronDescription() const;
+    PatronMusic GetPatronMusic() const;
     PatronBonus GetPatronBonus() const;
     float GetBonus() const;
     std::string GetBonusAsString() const;

@@ -1007,7 +1007,7 @@ GameObjects:
         ssaoBias: 0.00999999978
         blurMSize: 5
       - id: 3
-        enabled: false
+        enabled: true
         type: MovementController
         DragControl: true
         DragScale: 0.00999999978
@@ -1178,6 +1178,15 @@ GameObjects:
           - res/scriptableobjects/patrons/Perun.so
           - res/scriptableobjects/patrons/Jutrzenka.so
           - res/scriptableobjects/patrons/Zuarasiz.so
+      - id: 162
+        enabled: true
+        type: Audio
+        audio: 0
+        loop: true
+        volume: 1
+        playOnStart: false
+
+
     children:
       []
   - id: 23
@@ -2705,7 +2714,7 @@ GameObjects:
   - id: 61
     name: PaperRockScissorCanvas
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 143
       position:
@@ -2729,7 +2738,7 @@ GameObjects:
           x: 1920
           y: 1080
         worldSpace: false
-      - id: 159
+      - id: 163
         enabled: true
         type: Audio
         audio: 2
@@ -3693,7 +3702,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 154
+      - id: 165
         enabled: true
         type: Image
         isTransparent: false
@@ -3731,7 +3740,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 156
+      - id: 164
         enabled: true
         type: Image
         isTransparent: false
@@ -3769,7 +3778,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 158
+      - id: 161
         enabled: true
         type: Image
         isTransparent: false

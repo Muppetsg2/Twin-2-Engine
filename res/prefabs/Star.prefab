@@ -33,7 +33,7 @@ Root:
     - id: 1
       enabled: true
       type: MeshRenderer
-      isTransparent: false
+      isTransparent: true
       model: 0
       materials:
         - 0

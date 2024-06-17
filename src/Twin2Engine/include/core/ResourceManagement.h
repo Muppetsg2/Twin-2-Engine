@@ -102,8 +102,8 @@ namespace Twin2Engine::Core {
 					freeIds.push_back(i);
 				}
 				else {
-					if (i > maxId) {
-						maxId = i;
+					if (i + 1 > maxId) {
+						maxId = i + 1;
 					}
 				}
 			}
@@ -114,8 +114,11 @@ namespace Twin2Engine::Core {
 						finalIds.erase(finalIds.begin());
 					}
 					else {
-						finalIds[++maxId] = currId.second;
+						finalIds[maxId++] = currId.second;
 					}
+				}
+				else {
+					finalIds[maxId++] = currId.second;
 				}
 			}
 		}

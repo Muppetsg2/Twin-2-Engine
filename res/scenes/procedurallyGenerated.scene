@@ -767,7 +767,7 @@ Sprites:
     x: 0
     y: 0
     width: 144
-    height: 144
+    height: 153
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
@@ -824,87 +824,87 @@ Materials:
   - id: 18
     path: res/materials/tiles/borders/yellow/YellowHexTileBorder.material
   - id: 19
-    path: res/materials/tiles/normal/purple/PurpleHexTileRegressStage2.material
-  - id: 20
-    path: res/materials/tiles/normal/pink/PinkHexTileStage3.material
-  - id: 21
-    path: res/materials/RadioTowerBuilding.material
-  - id: 22
-    path: res/materials/tiles/normal/purple/PurpleHexTileStage3.material
-  - id: 23
-    path: res/materials/tiles/normal/purple/PurpleHexTileStage2.material
-  - id: 24
-    path: res/materials/tiles/normal/red/RedHexTileStage2.material
-  - id: 25
-    path: res/materials/tiles/normal/yellow/YellowHexTileStage2.material
-  - id: 26
-    path: res/materials/tiles/normal/cyan/CyanHexTileRegressStage2.material
-  - id: 27
-    path: res/materials/tiles/normal/yellow/YellowHexTileStage1.material
-  - id: 28
-    path: res/materials/tiles/normal/red/RedHexTileRegressStage2.material
-  - id: 29
-    path: res/materials/tiles/borders/cyan/CyanHexTileBorder.material
-  - id: 30
-    path: res/materials/car/CarMaterial_Purple.material
-  - id: 31
-    path: res/materials/tiles/normal/cyan/CyanHexTileStage1.material
-  - id: 32
-    path: res/materials/tiles/normal/green/GreenHexTileStage1.material
-  - id: 33
-    path: res/materials/tiles/borders/neutral/NeutralHexTileBorder.material
-  - id: 34
-    path: res/materials/car/CarMaterial_Red.material
-  - id: 35
-    path: res/materials/tiles/normal/blue/BlueHexTileStage1.material
-  - id: 36
-    path: res/materials/tiles/borders/red/RedHexTileBorder.material
-  - id: 37
-    path: res/materials/tiles/normal/neutral/NeutralHexTile.material
-  - id: 38
-    path: res/materials/tiles/normal/green/GreenHexTileStage2.material
-  - id: 39
-    path: res/materials/tiles/borders/purple/PurpleHexTileBorder.material
-  - id: 40
-    path: res/materials/car/CarMaterial_Yellow.material
-  - id: 41
-    path: res/materials/tiles/normal/yellow/YellowHexTileRegressStage2.material
-  - id: 42
-    path: res/materials/tiles/BlueAffectedHexTile.material
-  - id: 43
-    path: res/materials/car/CarMaterial_Green.material
-  - id: 44
-    path: res/materials/tiles/normal/purple/PurpleHexTileRegressStage1.material
-  - id: 45
-    path: res/materials/tiles/normal/cyan/CyanHexTileStage3.material
-  - id: 46
-    path: res/materials/tiles/normal/blue/BlueHexTileRegressStage2.material
-  - id: 47
-    path: res/materials/tiles/normal/pink/PinkHexTileStage1.material
-  - id: 48
-    path: res/materials/car/CarMaterial_Pink.material
-  - id: 49
-    path: res/materials/tiles/borders/pink/PinkHexTileBorder.material
-  - id: 50
-    path: res/materials/RadioTower.material
-  - id: 51
-    path: res/materials/tiles/normal/blue/BlueHexTileStage2.material
-  - id: 52
-    path: res/materials/tiles/normal/blue/BlueHexTileRegressStage1.material
-  - id: 53
-    path: res/materials/tiles/normal/purple/PurpleHexTileStage1.material
-  - id: 54
-    path: res/materials/CityMaterial.material
-  - id: 55
-    path: res/materials/tiles/normal/red/RedHexTileStage3.material
-  - id: 56
-    path: res/materials/tiles/normal/cyan/CyanHexTileRegressStage1.material
-  - id: 57
-    path: res/materials/car/CarMaterial_Cyan.material
-  - id: 58
-    path: res/materials/tiles/normal/pink/PinkHexTileStage2.material
-  - id: 59
     path: res/materials/YellowBasic.material
+  - id: 20
+    path: res/materials/tiles/normal/purple/PurpleHexTileRegressStage2.material
+  - id: 21
+    path: res/materials/tiles/normal/pink/PinkHexTileStage3.material
+  - id: 22
+    path: res/materials/RadioTowerBuilding.material
+  - id: 23
+    path: res/materials/tiles/normal/purple/PurpleHexTileStage3.material
+  - id: 24
+    path: res/materials/tiles/normal/purple/PurpleHexTileStage2.material
+  - id: 25
+    path: res/materials/tiles/normal/red/RedHexTileStage2.material
+  - id: 26
+    path: res/materials/tiles/normal/yellow/YellowHexTileStage2.material
+  - id: 27
+    path: res/materials/tiles/normal/cyan/CyanHexTileRegressStage2.material
+  - id: 28
+    path: res/materials/tiles/normal/yellow/YellowHexTileStage1.material
+  - id: 29
+    path: res/materials/tiles/normal/red/RedHexTileRegressStage2.material
+  - id: 30
+    path: res/materials/tiles/borders/cyan/CyanHexTileBorder.material
+  - id: 31
+    path: res/materials/car/CarMaterial_Purple.material
+  - id: 32
+    path: res/materials/tiles/normal/cyan/CyanHexTileStage1.material
+  - id: 33
+    path: res/materials/tiles/normal/green/GreenHexTileStage1.material
+  - id: 34
+    path: res/materials/tiles/borders/neutral/NeutralHexTileBorder.material
+  - id: 35
+    path: res/materials/car/CarMaterial_Red.material
+  - id: 36
+    path: res/materials/tiles/normal/blue/BlueHexTileStage1.material
+  - id: 37
+    path: res/materials/tiles/borders/red/RedHexTileBorder.material
+  - id: 38
+    path: res/materials/tiles/normal/neutral/NeutralHexTile.material
+  - id: 39
+    path: res/materials/tiles/normal/green/GreenHexTileStage2.material
+  - id: 40
+    path: res/materials/tiles/borders/purple/PurpleHexTileBorder.material
+  - id: 41
+    path: res/materials/car/CarMaterial_Yellow.material
+  - id: 42
+    path: res/materials/tiles/normal/yellow/YellowHexTileRegressStage2.material
+  - id: 43
+    path: res/materials/tiles/BlueAffectedHexTile.material
+  - id: 44
+    path: res/materials/car/CarMaterial_Green.material
+  - id: 45
+    path: res/materials/tiles/normal/purple/PurpleHexTileRegressStage1.material
+  - id: 46
+    path: res/materials/tiles/normal/cyan/CyanHexTileStage3.material
+  - id: 47
+    path: res/materials/tiles/normal/blue/BlueHexTileRegressStage2.material
+  - id: 48
+    path: res/materials/tiles/normal/pink/PinkHexTileStage1.material
+  - id: 49
+    path: res/materials/car/CarMaterial_Pink.material
+  - id: 50
+    path: res/materials/tiles/borders/pink/PinkHexTileBorder.material
+  - id: 51
+    path: res/materials/RadioTower.material
+  - id: 52
+    path: res/materials/tiles/normal/blue/BlueHexTileStage2.material
+  - id: 53
+    path: res/materials/tiles/normal/blue/BlueHexTileRegressStage1.material
+  - id: 54
+    path: res/materials/tiles/normal/purple/PurpleHexTileStage1.material
+  - id: 55
+    path: res/materials/CityMaterial.material
+  - id: 56
+    path: res/materials/tiles/normal/red/RedHexTileStage3.material
+  - id: 57
+    path: res/materials/tiles/normal/cyan/CyanHexTileRegressStage1.material
+  - id: 58
+    path: res/materials/car/CarMaterial_Cyan.material
+  - id: 59
+    path: res/materials/tiles/normal/pink/PinkHexTileStage2.material
 Models:
   - id: 0
     path: res/models/radioTower.obj
@@ -913,23 +913,23 @@ Models:
   - id: 2
     path: res/models/hexagonalPlane.obj
   - id: 3
-    path: res\models\cloud_1.obj
-  - id: 4
-    path: res/models/cloud.obj
-  - id: 5
-    path: res/models/hexagon.obj
-  - id: 6
-    path: "{Cube}"
-  - id: 7
-    path: res/models/car.obj
-  - id: 8
-    path: "{Plane}"
-  - id: 9
-    path: res/models/city.obj
-  - id: 10
-    path: "{Sphere}"
-  - id: 9
     path: res/models/Star.obj
+  - id: 4
+    path: res\models\cloud_1.obj
+  - id: 5
+    path: res/models/cloud.obj
+  - id: 6
+    path: res/models/hexagon.obj
+  - id: 7
+    path: "{Cube}"
+  - id: 8
+    path: res/models/car.obj
+  - id: 9
+    path: "{Plane}"
+  - id: 10
+    path: res/models/city.obj
+  - id: 11
+    path: "{Sphere}"
 Prefabs:
   - id: 0
     path: res/prefabs/Marker.prefab
@@ -1076,9 +1076,9 @@ GameObjects:
     transform:
       id: 9
       position:
-        x: 15.6097107
-        y: 16.8504906
-        z: -9.99126816
+        x: -21.0562897
+        y: 21.8504906
+        z: 10.341733
       scale:
         x: 1
         y: 1
@@ -1168,12 +1168,12 @@ GameObjects:
         prefabPlayer: 8
         carMaterials:
           - 3
-          - 34
-          - 40
-          - 43
-          - 48
-          - 57
-          - 30
+          - 35
+          - 41
+          - 44
+          - 49
+          - 58
+          - 31
         patronsData:
           - res/scriptableobjects/patrons/Perun.so
           - res/scriptableobjects/patrons/Jutrzenka.so
@@ -1293,9 +1293,9 @@ GameObjects:
       - id: 62
         enabled: true
         type: Button
-        width: 130
-        height: 140
-        interactable: true
+        width: 150
+        height: 150
+        interactable: false
         onHoverPresetEvents: true
         animTimeFactor: 4
         scaleFunc: 9
@@ -1347,7 +1347,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x003\x001\x000\x00$"
+        text: ""
         font: 1
         size: 30
         autoSize: true
@@ -1396,8 +1396,8 @@ GameObjects:
           y: 1
           z: 1
           w: 1
-        width: 256
-        height: 256
+        width: 200
+        height: 200
         layer: 1
         fillEnabled: false
         fillType: !<2> 2
@@ -1444,9 +1444,9 @@ GameObjects:
       - id: 69
         enabled: true
         type: Button
-        width: 130
-        height: 140
-        interactable: true
+        width: 150
+        height: 150
+        interactable: false
         onHoverPresetEvents: true
         animTimeFactor: 4
         scaleFunc: 9
@@ -1498,7 +1498,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x003\x001\x000\x00$"
+        text: ""
         font: 1
         size: 30
         autoSize: true
@@ -1547,8 +1547,8 @@ GameObjects:
           y: 1
           z: 1
           w: 1
-        width: 256
-        height: 256
+        width: 200
+        height: 200
         layer: 1
         fillEnabled: false
         fillType: !<2> 2
@@ -1649,7 +1649,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x003\x001\x000\x00$"
+        text: ""
         font: 1
         size: 30
         autoSize: true
@@ -1698,8 +1698,8 @@ GameObjects:
           y: 1
           z: 1
           w: 1
-        width: 256
-        height: 256
+        width: 200
+        height: 200
         layer: 1
         fillEnabled: false
         fillType: !<2> 2
@@ -1730,7 +1730,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00M\x00o\x00n\x00e\x00y\x00:\x00 \x003\x001\x000\x00$"
+        text: "\x00M\x00o\x00n\x00e\x00y\x00:\x00 \x000\x00$"
         font: 1
         size: 30
         autoSize: true
@@ -2724,7 +2724,7 @@ GameObjects:
       - id: 144
         enabled: true
         type: Canvas
-        layer: 0
+        layer: 1
         size:
           x: 1920
           y: 1080
@@ -2773,6 +2773,8 @@ GameObjects:
       - 16
       - 17
       - 22
+      - 6
+      - 18
   - id: 65
     name: Background
     isStatic: false
@@ -3371,7 +3373,7 @@ GameObjects:
       id: 155
       position:
         x: -270
-        y: 0
+        y: -45
         z: 0
       scale:
         x: 1
@@ -3386,7 +3388,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x002"
+        text: "\x002\x00/\x002"
         font: 1
         size: 70
         autoSize: false
@@ -3414,7 +3416,7 @@ GameObjects:
       id: 157
       position:
         x: 270
-        y: 0
+        y: -45
         z: 0
       scale:
         x: 1
@@ -3429,7 +3431,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x000"
+        text: "\x000\x00/\x002"
         font: 1
         size: 70
         autoSize: false
@@ -3444,6 +3446,92 @@ GameObjects:
           w: 1
         alignX: !<CENTER> 1
         alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 6
+    name: PlayerText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5450
+      position:
+        x: -270
+        y: 35
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5451
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00Y\x00o\x00u"
+        font: 1
+        size: 40
+        autoSize: true
+        minSize: 10
+        maxSize: 40
+        width: 150
+        height: 50
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 18
+    name: EnemyText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5452
+      position:
+        x: 270
+        y: 35
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5453
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00E\x00n\x00e\x00m\x00y"
+        font: 1
+        size: 40
+        autoSize: true
+        minSize: 10
+        maxSize: 40
+        width: 150
+        height: 50
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 2
@@ -3583,7 +3671,7 @@ GameObjects:
         fillEnabled: true
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
-        fillProgress: 0
+        fillProgress: 0.209999993
     children:
       []
   - id: 68

@@ -254,8 +254,8 @@ void MinigameManager::StartMinigame(Playable* chalanging, Playable* chalanged)
 		_playerWins = 0;
 		_enemyWins = 0;
 
-		if (_playerScore != nullptr) _playerScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::to_string(0)));
-		if (_enemyScore != nullptr) _enemyScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::to_string(0)));
+		if (_playerScore != nullptr) _playerScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::string("0/").append(std::to_string(_minNumberOfWins))));
+		if (_enemyScore != nullptr) _enemyScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::string("0/").append(std::to_string(_minNumberOfWins))));
 
 		_minigameCanvas->SetActive(true);
 		return;
@@ -285,8 +285,8 @@ void MinigameManager::StartMinigame(Playable* chalanging, Playable* chalanged)
 		_playerWins = 0;
 		_enemyWins = 0;
 
-		if (_playerScore != nullptr) _playerScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::to_string(0)));
-		if (_enemyScore != nullptr) _enemyScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::to_string(0)));
+		if (_playerScore != nullptr) _playerScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::string("0/").append(std::to_string(_minNumberOfWins))));
+		if (_enemyScore != nullptr) _enemyScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::string("0/").append(std::to_string(_minNumberOfWins))));
 
 		_minigameCanvas->SetActive(true);
 		return;
@@ -308,8 +308,8 @@ void MinigameManager::FinishMinigame(Playable* winner, Playable* looser)
 	_playerWins = 0;
 	_enemyWins = 0;
 
-	if (_playerScore != nullptr) _playerScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes('0'));
-	if (_enemyScore != nullptr) _enemyScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes('0'));
+	if (_playerScore != nullptr) _playerScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::string("0/").append(std::to_string(_minNumberOfWins))));
+	if (_enemyScore != nullptr) _enemyScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::string("0/").append(std::to_string(_minNumberOfWins))));
 }
 
 void MinigameManager::PlayerWon() {
@@ -363,7 +363,7 @@ void MinigameManager::PlayerWon() {
 
 	_playerWins += 1;
 
-	if (_playerScore != nullptr) _playerScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::to_string(_playerWins)));
+	if (_playerScore != nullptr) _playerScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::to_string(_playerWins).append("/").append(std::to_string(_minNumberOfWins))));
 
 	_waitCoroutine->Start();
 }
@@ -470,7 +470,7 @@ void MinigameManager::PlayerLost() {
 
 	_enemyWins += 1;
 
-	if (_enemyScore != nullptr) _enemyScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::to_string(_enemyWins)));
+	if (_enemyScore != nullptr) _enemyScore->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::to_string(_enemyWins).append("/").append(std::to_string(_minNumberOfWins))));
 
 	_waitCoroutine->Start();
 }

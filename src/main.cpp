@@ -235,6 +235,8 @@ int main(int, char**)
 
     window = Window::GetInstance();
 
+    window->SetIcon("icon.png");
+
 #if DISPLAY_SPLASH_SCREEN
 
     GLuint splashVao = 0;

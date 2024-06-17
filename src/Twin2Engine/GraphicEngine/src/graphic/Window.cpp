@@ -206,6 +206,21 @@ int Window::GetRefreshRate() const
 	return _refreshRate;
 }
 
+void Window::SetIcon(const std::string& path)
+{
+	GLFWimage images[1];
+	images[0].pixels = stbi_load(path.c_str(), &images[0].width, &images[0].height, NULL, 4); //rgba channels
+
+	if (!images[0].pixels) {
+		spdlog::error("Failed to load Icon: {}", path);
+		stbi_image_free(images[0].pixels);
+		return;
+	}
+
+	glfwSetWindowIcon(_window, 1, images);
+	stbi_image_free(images[0].pixels);
+}
+
 void Window::SetTitle(const string& title)
 {
 	if (IsFullscreen()) {

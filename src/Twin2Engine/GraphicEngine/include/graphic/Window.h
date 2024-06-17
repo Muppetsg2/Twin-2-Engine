@@ -48,6 +48,7 @@ namespace Twin2Engine::Graphic {
 		bool IsMousePassThrough() const;
 #pragma endregion
 #pragma region GLOBAL_SETTERS
+		void SetIcon(const std::string& path);
 		void SetTitle(const std::string& title);
 		void SetWindowSize(const glm::ivec2& size);
 		void SetFullscreen(GLFWmonitor* monitor, const glm::ivec2& size, int refreshRate = 60);

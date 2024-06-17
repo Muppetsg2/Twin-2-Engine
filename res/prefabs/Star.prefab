@@ -40,3 +40,12 @@ Root:
     - id: 2
       enabled: true
       type: StarComponent
+      animatePosition: true
+      startY: 0.45
+      posChangeScale: 0.05
+      timeScale: 3
+      animateRotation: true
+      rotationVel: 1.7
+      rotationMaxAngle: 180
+      animateScale: true
+      scale: 8

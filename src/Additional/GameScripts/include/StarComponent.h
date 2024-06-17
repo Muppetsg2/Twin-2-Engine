@@ -9,9 +9,9 @@ class StarComponent : public Component {
 public:
 	Transform* transform = nullptr;
 	bool animatePosition = true;
-	float startY = 0.45;
-	float posChangeScale = 0.05;
-	float timeScale = 0.6;
+	float startY = 0.45f;
+	float posChangeScale = 0.05f;
+	float timeScale = 0.6f;
 	bool animateRotation = true;
 	float rotationVel = 0.3f;
 	float rotationMaxAngle = 30.0f;
@@ -43,12 +43,34 @@ public:
 	virtual YAML::Node Serialize() const override {
 		YAML::Node node = Component::Serialize();
 		node["type"] = "StarComponent";
+		node["animatePosition"] = animatePosition;
+		node["startY"] = startY;
+		node["posChangeScale"] = posChangeScale;
+		node["timeScale"] = timeScale;
+		node["animateRotation"] = animateRotation;
+		node["rotationVel"] = rotationVel;
+		node["rotationMaxAngle"] = rotationMaxAngle;
+		node["animateScale"] = animateScale;
+		node["scale"] = scale;
 		return node;
 	}
 
 	virtual bool Deserialize(const YAML::Node& node) override {
-		if (!Component::Deserialize(node))
+		if (!node["animatePosition"] || !node["startY"] || !node["posChangeScale"] ||
+			!node["timeScale"] || !node["animateRotation"] || !node["rotationVel"] ||
+			!node["rotationMaxAngle"] || !node["animateScale"] || !node["scale"] ||
+			!Component::Deserialize(node))
 			return false;
+
+		animatePosition = node["animatePosition"].as<bool>();
+		startY = node["startY"].as<float>();
+		posChangeScale = node["posChangeScale"].as<float>();
+		timeScale = node["timeScale"].as<float>();
+		animateRotation = node["animateRotation"].as<bool>();
+		rotationVel = node["rotationVel"].as<float>();
+		rotationMaxAngle = node["rotationMaxAngle"].as<float>();
+		animateScale = node["animateScale"].as<bool>();
+		scale = node["scale"].as<float>();
 
 		return true;
 	}

@@ -100,7 +100,7 @@ void Player::Initialize() {
         {
             tile->DisableAlbumAffected();
         }
-        isShowingAlbumPossible = false;
+        _isShowingAlbumPossible = false;
     };
 
     OnEventAlbumCooldownStarted += [&](Playable* playable) -> void {

@@ -457,12 +457,49 @@ YAML::Node GameManager::Serialize() const
         node["patronsData"].push_back(ScriptableObjectManager::GetPath(_patronsData[index]->GetId()));
     }
 
-    node["RockBackgroundMusics"] = _rockBackgroundMusics;
-    node["ElectricBackgroundMusics"] = _electricBackgroundMusics;
-    node["PopBackgroundMusics"] = _popBackgroundMusics;
-    node["HeavyMetalBackgroundMusics"] = _heavyMetalBackgroundMusics;
-    node["JazzBackgroundMusics"] = _jazzBackgroundMusics;
-    node["DiscoBackgroundMusics"] = _discoBackgroundMusics;
+
+    node["RockBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _rockBackgroundMusics.size(); ++index)
+    {
+        node["RockBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_rockBackgroundMusics[index]));
+    }
+
+    node["ElectricBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _electricBackgroundMusics.size(); ++index)
+    {
+        node["ElectricBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_electricBackgroundMusics[index]));
+    }
+
+    node["PopBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _popBackgroundMusics.size(); ++index)
+    {
+        node["PopBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_popBackgroundMusics[index]));
+    }
+
+    node["HeavyMetalBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _heavyMetalBackgroundMusics.size(); ++index)
+    {
+        node["HeavyMetalBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_heavyMetalBackgroundMusics[index]));
+    }
+
+    node["JazzBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _jazzBackgroundMusics.size(); ++index)
+    {
+        node["JazzBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_jazzBackgroundMusics[index]));
+    }
+
+    node["DiscoBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _discoBackgroundMusics.size(); ++index)
+    {
+        node["DiscoBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_discoBackgroundMusics[index]));
+    }
+
+    //node["RockBackgroundMusics"] = _rockBackgroundMusics;
+    //node["ElectricBackgroundMusics"] = _electricBackgroundMusics;
+    //node["PopBackgroundMusics"] = _popBackgroundMusics;
+    //node["HeavyMetalBackgroundMusics"] = _heavyMetalBackgroundMusics;
+    //node["JazzBackgroundMusics"] = _jazzBackgroundMusics;
+    //node["DiscoBackgroundMusics"] = _discoBackgroundMusics;
 
     return node;
 }

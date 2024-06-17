@@ -35,7 +35,17 @@ Sprites:
     width: 144
     height: 153
 Fonts: ~
-Audio: ~
+Audio:
+  - id: 0
+    path: res/music/Abilities/UI/OnHoverClick.mp3
+  - id: 1
+    path: res/music/Abilities/UI/OffHoverClick.mp3
+  - id: 2
+    path: res/music/Abilities/AbilitiesUse.mp3
+  - id: 3
+    path: res/music/Abilities/CooldownEnd.mp3
+  - id: 4
+    path: res/music/Abilities/NotEnoughtRes.mp3
 Materials:
   - id: 0
     path: res/materials/car/CarMaterial_Blue.material
@@ -92,6 +102,11 @@ Root:
         w: 0.275
       spriteButtonStep1: 0
       spriteButtonStep2: 1
+      onHoverClickAudio: 0
+      offHoverClickAudio: 1
+      abilitiesUseAudio: 2
+      cooldownEndAudio: 3
+      notEnoughResAudio: 4
     - id: 3
       enabled: true
       type: PlayerMovement

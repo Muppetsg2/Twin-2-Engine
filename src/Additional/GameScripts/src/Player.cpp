@@ -322,11 +322,16 @@ void Player::Update() {
             if (isHoveringFansMeetingButton && !isShowingFansMeetingAffectedTiles)
             {
                 ShowAffectedTiles();
+
+                fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
                 fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep2);
             }
             else if (!isHoveringFansMeetingButton && isShowingFansMeetingAffectedTiles)
             {
                 HideAffectedTiles();
+
+                //fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
+                fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
                 fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
             }
             isHoveringFansMeetingButton = false;
@@ -342,6 +347,8 @@ void Player::Update() {
                     concertButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
                     audioComponent->SetAudio("res/music/Abilities/UI/OnHoverClick.mp3");
                     audioComponent->Play();
+
+                    concertButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
                     concertButtonFrameImage->SetSprite(_spriteButtonStep2);
                 }
                 else if (!isHoveringConcertButton && isShowingConcertPossible)
@@ -352,6 +359,9 @@ void Player::Update() {
                     concertButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
                     audioComponent->SetAudio("res/music/Abilities/UI/OffHoverClick.mp3");
                     audioComponent->Play();
+
+                    //concertButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
+                    concertButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
                     concertButtonFrameImage->SetSprite(_spriteButtonStep1);
                 }
                 isHoveringConcertButton = false;
@@ -371,6 +381,8 @@ void Player::Update() {
                     albumButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
                     audioComponent->SetAudio("res/music/Abilities/UI/OnHoverClick.mp3");
                     audioComponent->Play();
+
+                    albumButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
                     albumButtonFrameImage->SetSprite(_spriteButtonStep2);
                 }
                 else if (!isHoveringAlbumButton && isShowingAlbumPossible)
@@ -384,6 +396,9 @@ void Player::Update() {
                     albumButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
                     audioComponent->SetAudio("res/music/Abilities/UI/OffHoverClick.mp3");
                     audioComponent->Play();
+
+                    //albumButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
+                    albumButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
                     albumButtonFrameImage->SetSprite(_spriteButtonStep1);
                 }
                 isHoveringAlbumButton = false;
@@ -483,6 +498,10 @@ void Player::AlbumCall() {
         albumButton->SetInteractable(false);
         albumButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
         UseAlbum();
+
+        //albumButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
+        albumButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+        albumButtonFrameImage->SetSprite(_spriteButtonStep1);
     }
     else {
         audioComponent->SetAudio("res/music/Abilities/NotEnoughtRes.mp3");
@@ -496,6 +515,10 @@ void Player::FansMeetingCall() {
         fansMeetingButton->SetInteractable(false);
         fansMeetingButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
         UseFans();
+
+        //fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
+        fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+        fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
     }
     else {
         audioComponent->SetAudio("res/music/Abilities/NotEnoughtRes.mp3");
@@ -513,6 +536,10 @@ void Player::ConcertCall() {
         PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
         isShowingConcertPossible = false;
         isHoveringConcertButton = false;
+
+        //concertButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
+        concertButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+        concertButtonFrameImage->SetSprite(_spriteButtonStep1);
     }
     else {
         audioComponent->SetAudio("res/music/Abilities/NotEnoughtRes.mp3");

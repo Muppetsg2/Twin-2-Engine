@@ -40,6 +40,7 @@ private:
     size_t _spriteButtonStep2;
     //Coroutine* fansCorountine;
 
+    float _buttonDeltaYMovement = 10;
 
     // Player UI
     // Album

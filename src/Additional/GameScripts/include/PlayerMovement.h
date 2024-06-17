@@ -68,6 +68,7 @@ class PlayerMovement : public Component {
 			
 	public:
 		Twin2Engine::Core::GameObject* _playerDestinationMarker = nullptr;
+		Twin2Engine::Core::GameObject* _playerWrongDestinationMarker = nullptr;
 		HexTile* _pointedTile = nullptr;
 		float _destinationMarkerHeightOverSurface = 0.5f;
 		//Moving

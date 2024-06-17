@@ -3,7 +3,11 @@ configure_file(GameConfig.yaml.in GameConfig.yaml)
 # ---- Dependency ----
 add_subdirectory(Twin2Engine)
 
-add_executable(${PROJECT_NAME} main.cpp)
+set(CMAKE_AUTORCC ON)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/icon.png ${CMAKE_CURRENT_BINARY_DIR}/icon.png COPYONLY)
+
+add_executable(${PROJECT_NAME} main.cpp icon.rc)
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)
 

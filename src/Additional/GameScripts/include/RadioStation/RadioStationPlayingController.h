@@ -13,6 +13,8 @@
 #include <ui/Button.h>
 #include <ui/Image.h>
 
+// TODO: Repair
+
 class RadioStationPlayingController : public Twin2Engine::Core::Component
 {
     ENUM_CLASS(NoteType, Do, Re, Mi, Fa)
@@ -85,9 +87,6 @@ public:
     virtual bool Deserialize(const YAML::Node& node) override;
 
 #if _DEBUG
-protected:
-    virtual bool DrawInheritedFields() override;
-public:
     virtual void DrawEditor() override;
 #endif
 };

@@ -392,8 +392,10 @@ YAML::Node HexagonalTilemap::Serialize() const
 {
 	YAML::Node node = Component::Serialize();
 	node["type"] = "HexagonalTilemap";
+	/*
 	node["leftBottomPosition"] = _leftBottomPosition;
 	node["rightTopPosition"] = _rightTopPosition;
+	*/
 	node["edgeLength"] = _edgeLength;
 
 	// TODO: Zrobic serializacje zawartoci tilemapy w formie par pozycja, gameObject
@@ -422,14 +424,20 @@ YAML::Node HexagonalTilemap::Serialize() const
 }
 
 bool HexagonalTilemap::Deserialize(const YAML::Node& node) {
-	if (!node["leftBottomPosition"] || !node["rightTopPosition"] || !node["edgeLength"] ||
+	if (/*
+		!node["leftBottomPosition"] || !node["rightTopPosition"] || 
+		*/
+		!node["edgeLength"] ||
 		!Component::Deserialize(node)) return false;
 
+	/*
 	_leftBottomPosition = node["leftBottomPosition"].as<glm::ivec2>();
 	_rightTopPosition = node["rightTopPosition"].as<glm::ivec2>();
+	*/
 	_edgeLength = node["edgeLength"].as<float>();
 	_distanceBetweenTiles = _edgeLength * SQRT_3;
 
+	/*
 	if (_leftBottomPosition.x > _rightTopPosition.x)
 	{
 		int temp = _leftBottomPosition.x;
@@ -445,6 +453,7 @@ bool HexagonalTilemap::Deserialize(const YAML::Node& node) {
 
 	_width = _rightTopPosition.x - _leftBottomPosition.x + 1;
 	_height = _rightTopPosition.y - _leftBottomPosition.y + 1;
+	*/
 
 
 	_tilemap = new HexagonalTile * *[_width];
@@ -461,7 +470,7 @@ bool HexagonalTilemap::Deserialize(const YAML::Node& node) {
 		}
 	}
 
-	// TODO: Zrobiæ deserializacjê zawartoci tilemapy w formie par pozycja, gameObject
+	// TODO: Zrobic deserializacjê zawartoci tilemapy w formie par pozycja, gameObject
 	//glm::ivec2 position;
 	//size_t id;
 	//for (const YAML::Node& seqNode : node["tilemapGameObjects"])
@@ -473,7 +482,7 @@ bool HexagonalTilemap::Deserialize(const YAML::Node& node) {
 	//}
 
 
-	//Resize(node["leftBottomPosition"].as<glm::ivec2>(), node["rightTopPosition"].as<glm::ivec2>()); Raczej do usuniêcia
+	//Resize(node["leftBottomPosition"].as<glm::ivec2>(), node["rightTopPosition"].as<glm::ivec2>()); Raczej do usuniecia
 
 	return true;
 }

@@ -305,23 +305,6 @@ bool RadioStationPlayingController::Deserialize(const YAML::Node& node)
 
 #if _DEBUG
 
-bool RadioStationPlayingController::DrawInheritedFields()
-{
-    if (Component::DrawInheritedFields()) return true;
-
-    ImGui::InputInt("GeneratedNotesNumber", &_generatedNotesNumber);
-    ImGui::InputFloat("NotesAreaWidth", &_notesAreaWidth);
-    ImGui::InputFloat("NotesAreaHeight", &_notesAreaHeight);
-    ImGui::InputFloat("ResultShowingTime", &_resultShowingTime);
-
-    ImGui::ColorEdit4("CorrectColor", (float*)&_correctColor);
-    ImGui::ColorEdit4("WrongColor", (float*)&_wrongColor);
-
-    // TODO: Zrobiæ okreœlanie notesSprites oraz okreœlanie buttonów
-
-    return false;
-}
-
 void RadioStationPlayingController::DrawEditor()
 {
     string id = string(std::to_string(this->GetId()));
@@ -329,9 +312,196 @@ void RadioStationPlayingController::DrawEditor()
 
     if (ImGui::CollapsingHeader(name.c_str())) {
 
-        if (DrawInheritedFields()) return;
+        if (Component::DrawInheritedFields()) return;
 
-        // TODO: Zrobic
+        ImGui::InputInt(string("GeneratedNotesNumber##").append(id).c_str(), &_generatedNotesNumber);
+        ImGui::InputFloat(string("NotesAreaWidth##").append(id).c_str(), &_notesAreaWidth);
+        ImGui::InputFloat(string("NotesAreaHeight##").append(id).c_str(), &_notesAreaHeight);
+        ImGui::InputFloat(string("ResultShowingTime##").append(id).c_str(), &_resultShowingTime);
+
+        ImGui::ColorEdit4(string("CorrectColor##").append(id).c_str(), glm::value_ptr(_correctColor));
+        ImGui::ColorEdit4(string("WrongColor##").append(id).c_str(), glm::value_ptr(_wrongColor));
+
+        ImGui::DragFloat(string("TimeLimit##").append(id).c_str(), &_timeLimit, 1.f, 0.f, FLT_MAX);        
+
+        unordered_map<size_t, Component*> items = SceneManager::GetComponentsOfType<Text>();
+        size_t choosed_1 = _remainingTimeTextTimer == nullptr ? 0 : _remainingTimeTextTimer->GetId();
+
+        if (ImGui::BeginCombo(string("RemainingTimeTextTimer##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
+
+            bool clicked = false;
+            for (auto& item : items) {
+
+                if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_1)) {
+
+                    if (clicked) continue;
+
+                    choosed_1 = item.first;
+                    clicked = true;
+                }
+            }
+
+            if (clicked) {
+                if (choosed_1 != 0) {
+                    _remainingTimeTextTimer = static_cast<Text*>(items[choosed_1]);
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+
+        items.clear();
+
+        items = SceneManager::GetComponentsOfType<Image>();
+        choosed_1 = _resultImage == nullptr ? 0 : _resultImage->GetId();
+
+        if (ImGui::BeginCombo(string("ResultImage##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
+
+            bool clicked = false;
+            for (auto& item : items) {
+
+                if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_1)) {
+
+                    if (clicked) continue;
+
+                    choosed_1 = item.first;
+                    clicked = true;
+                }
+            }
+
+            if (clicked) {
+                if (choosed_1 != 0) {
+                    _resultImage = static_cast<Image*>(items[choosed_1]);
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+
+        items.clear();
+        items = SceneManager::GetComponentsOfType<Button>();
+        choosed_1 = _buttonDo == nullptr ? 0 : _buttonDo->GetId();
+        size_t choosed_2 = _buttonRe == nullptr ? 0 : _buttonRe->GetId();
+        size_t choosed_3 = _buttonMi == nullptr ? 0 : _buttonMi->GetId();
+        size_t choosed_4 = _buttonFa == nullptr ? 0 : _buttonFa->GetId();
+
+        if (ImGui::BeginCombo(string("ButtonDo##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
+
+            bool clicked = false;
+            for (auto& item : items) {
+
+                if (item.second->GetId() == choosed_2 || item.second->GetId() == choosed_3 || item.second->GetId() == choosed_4) continue;
+
+                if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_1)) {
+
+                    if (clicked) continue;
+
+                    choosed_1 = item.first;
+                    clicked = true;
+                }
+            }
+
+            if (clicked) {
+                if (choosed_1 != 0) {
+                    _buttonDo = static_cast<Button*>(items[choosed_1]);
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+
+        if (ImGui::BeginCombo(string("ButtonRe##").append(id).c_str(), choosed_2 == 0 ? "None" : items[choosed_2]->GetGameObject()->GetName().c_str())) {
+
+            bool clicked = false;
+            for (auto& item : items) {
+
+                if (item.second->GetId() == choosed_1 || item.second->GetId() == choosed_3 || item.second->GetId() == choosed_4) continue;
+
+                if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_2)) {
+
+                    if (clicked) continue;
+
+                    choosed_2 = item.first;
+                    clicked = true;
+                }
+            }
+
+            if (clicked) {
+                if (choosed_2 != 0) {
+                    _buttonRe = static_cast<Button*>(items[choosed_2]);
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+
+        if (ImGui::BeginCombo(string("ButtonMi##").append(id).c_str(), choosed_3 == 0 ? "None" : items[choosed_3]->GetGameObject()->GetName().c_str())) {
+
+            bool clicked = false;
+            for (auto& item : items) {
+
+                if (item.second->GetId() == choosed_1 || item.second->GetId() == choosed_2 || item.second->GetId() == choosed_4) continue;
+
+                if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_3)) {
+
+                    if (clicked) continue;
+
+                    choosed_3 = item.first;
+                    clicked = true;
+                }
+            }
+
+            if (clicked) {
+                if (choosed_3 != 0) {
+                    _buttonMi = static_cast<Button*>(items[choosed_3]);
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+
+        if (ImGui::BeginCombo(string("ButtonFa##").append(id).c_str(), choosed_4 == 0 ? "None" : items[choosed_4]->GetGameObject()->GetName().c_str())) {
+
+            bool clicked = false;
+            for (auto& item : items) {
+
+                if (item.second->GetId() == choosed_1 || item.second->GetId() == choosed_2 || item.second->GetId() == choosed_3) continue;
+
+                if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_4)) {
+
+                    if (clicked) continue;
+
+                    choosed_4 = item.first;
+                    clicked = true;
+                }
+            }
+
+            if (clicked) {
+                if (choosed_4 != 0) {
+                    _buttonFa = static_cast<Button*>(items[choosed_4]);
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+
+        items.clear();
+
+        // TODO: Zrobiæ okreœlanie notesSprites oraz okreœlanie buttonów
+        /*
+        _notesSpritesIds = node["notesSpritesIds"].as<vector<size_t>>();
+        for (size_t index = 0ull; index < _notesSpritesIds.size(); ++index)
+        {
+            _notesSpritesIds[index] = SceneManager::GetSprite(_notesSpritesIds[index]);
+        }
+
+        _resultsImagesIds = node["resultsSpritesIds"].as<vector<size_t>>();
+        for (size_t index = 0ull; index < _resultsImagesIds.size(); ++index)
+        {
+            _resultsImagesIds[index] = SceneManager::GetSprite(_resultsImagesIds[index]);
+        }
+        _resultsThresholds = node["resultsThresholds"].as<vector<float>>();
+        */
     }
 }
 

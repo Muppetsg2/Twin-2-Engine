@@ -1,0 +1,4 @@
+material:
+  name: CityLights
+  shader: origin/CityLights
+  parameters:

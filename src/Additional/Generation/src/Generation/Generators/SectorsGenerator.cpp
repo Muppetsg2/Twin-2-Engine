@@ -198,7 +198,7 @@ void SectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
         //smallRegions.RemoveAt(0);
         sectors.remove(toDestroy);
     
-        SPDLOG_ERROR("Stworzyæ Destroy oraz DestroyImmediate dla GameObject");
+        SPDLOG_ERROR("Stworzyc Destroy oraz DestroyImmediate dla GameObject");
         toDestroy->GetTransform()->SetParent(nullptr);
         SceneManager::DestroyGameObject(toDestroy->GetGameObject());
         //DestroyImmediate(toDestroy.gameObject);

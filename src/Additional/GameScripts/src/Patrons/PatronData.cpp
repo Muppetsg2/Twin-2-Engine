@@ -43,6 +43,11 @@ std::string PatronData::GetPatronDescription() const {
     return patronDescription;
 }
 
+PatronMusic PatronData::GetPatronMusic() const
+{
+    return patronMusic;
+}
+
 PatronBonus PatronData::GetPatronBonus() const {
     return patronBonus;
 }

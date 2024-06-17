@@ -2,7 +2,6 @@
 
 #define USE_IMGUI_CONSOLE_OUTPUT true
 #define USE_WINDOWS_CONSOLE_OUTPUT false
-
 #define DISPLAY_SPLASH_SCREEN true
 
 #if USE_IMGUI_CONSOLE_OUTPUT || !USE_WINDOWS_CONSOLE_OUTPUT || !_DEBUG
@@ -113,6 +112,7 @@ using namespace Generation::Generators;
 #include <GodRayComponent.h>
 #include <StarComponent.h>
 #include <TutorialSeries.h>
+#include <CityLightsComponent.h>
 #include <Abilities/ConcertAbilityController.h>
 
 #include <RadioStation/RadioStation.h>
@@ -159,7 +159,7 @@ constexpr int32_t WINDOW_HEIGHT = 1080;
 constexpr bool WINDOW_FULLSCREEN = false;
 
 #if DISPLAY_SPLASH_SCREEN
-constexpr const char* SPLASH_SCREEN_TEXTURE = "res/textures/splashScreen.png";
+constexpr const char* SPLASH_SCREEN_TEXTURE = "res/textures/splashScreen2.png";
 #endif
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
@@ -235,6 +235,8 @@ int main(int, char**)
 #pragma endregion
 
     window = Window::GetInstance();
+
+    window->SetIcon("icon.png");
 
 #if DISPLAY_SPLASH_SCREEN
 
@@ -373,6 +375,7 @@ int main(int, char**)
     ADD_COMPONENT("GodRayComponent", GodRayComponent);
     ADD_COMPONENT("StarComponent", StarComponent);
     ADD_COMPONENT("TutorialSeries", TutorialSeries);
+    ADD_COMPONENT("CityLightsComponent", CityLightsComponent);
 
 #pragma endregion
 
@@ -391,8 +394,8 @@ int main(int, char**)
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/BlankScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/PatronChoice.scene");
-    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
-    SceneManager::AddScene("testScene", "res/scenes/tutorialScene.scene");
+    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/tutorialSceneWork2.scene");
     //SceneManager::AddScene("testScene", "res/scenes/SceneToEditPrefabs.scene");
     //SceneManager::AddScene("testScene", "res/scenes/Making Game UI.scene");
     //SceneManager::AddScene("testScene", "res/scenes/MenuScene.scene");
@@ -413,7 +416,7 @@ int main(int, char**)
 
     //SceneManager::SaveScene("res/scenes/ToonShading.scene");
     
-    Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
+    //Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
 
 
 #if _DEBUG
@@ -483,7 +486,6 @@ void input()
     }
 
     CameraComponent* c = CameraComponent::GetMainCamera();
-
 
 #if _DEBUG
     if (Input::IsKeyDown(KEY::W) && Input::GetCursorState() == CURSOR_STATE::DISABLED)

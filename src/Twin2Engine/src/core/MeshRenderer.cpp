@@ -338,23 +338,32 @@ void MeshRenderer::OnMaterialsErased()
 bool MeshRenderer::CheckMaterialsValidation()
 {
 	bool res = true;
-	for (size_t i = _materials.size(); i > 0; ) {
-		--i;
-		if (!MaterialsManager::IsMaterialLoaded(_materials[i]->GetId())) {
+	for (size_t i = _materials.size(); i > 0; --i) {
+		if (!MaterialsManager::IsMaterialLoaded(_materials[i - 1]->GetId())) {
 			res = false;
 			_materialError = true;
 			Unregister();
 			_materials.erase(_materials.begin() + i);
 
 #if _DEBUG
-			_next = _next > _addNum[i] ? _addNum[i] : _next;
-			_addNum.erase(_addNum.begin() + i);
+			_next = _next > _addNum[i - 1] ? _addNum[i - 1] : _next;
+			_addNum.erase(_addNum.begin() + i - 1);
 #endif
+		}
+		else if (_materials[i - 1]->GetShader() == nullptr) {
+			res = false;
+			_materialError = true;
+			Unregister();
+			_materials.erase(_materials.begin() + i - 1);
 
+#if _DEBUG
+			_next = _next > _addNum[i - 1] ? _addNum[i - 1] : _next;
+			_addNum.erase(_addNum.begin() + i - 1);
+#endif
 		}
 	}
 
-	Register();
+	if (_materials.size() != 0 && _loadedModel != 0) Register();
 
 	return res;
 }
@@ -596,9 +605,9 @@ Material* MeshRenderer::GetMaterial(size_t index) const
 
 void MeshRenderer::AddMaterial(Material* material)
 {
-	if (material == nullptr) return;
+	if (material == nullptr || material->GetShader() == nullptr) return;
 
-	//Jeœli materia³ów jest mniej ni¿ meshy to wtedy nowy materia³ rzeczywiœcie bêdzie mia³ wp³yw na renderowanie w przeciwnym wypadku bêdzie po prostu nadmiarowy
+	//Jezli materialow jest mniej niz meshy to wtedy nowy material rzeczywiscie bedzie mial wplyw na renderowanie w przeciwnym wypadku bedzie po prostu nadmiarowy
 	bool needToReregister = _materials.size() < _model.GetMeshCount();
 
 	if (needToReregister)
@@ -624,13 +633,13 @@ void MeshRenderer::AddMaterial(size_t materialId)
 
 void MeshRenderer::SetMaterial(size_t index, Material* material)
 {
-	if (_materials[index] == material || index >= _materials.size() || material == nullptr) return;
+	if (_materials[index] == material || index >= _materials.size() || material == nullptr || material->GetShader() == nullptr) return;
 
 	if (_loadedModel != 0) Unregister();
 
 	_materials[index] = material;
 
-	if (_loadedModel != 0) Register();
+	if (_materials.size() != 0 && _loadedModel != 0) Register();
 }
 
 void MeshRenderer::SetMaterial(size_t index, size_t materialId)
@@ -642,7 +651,7 @@ void MeshRenderer::RemoveMaterial(size_t index)
 {
 	if (index >= _materials.size()) return;
 
-	//Jeœli materia³ów jest wiêcej ni¿ meshy to wtedy usuwany materia³ rzeczywiœcie bêdzie mia³ wp³yw na renderowanie w przeciwnym wypadku bêdzie po prostu brak nadmiarowego
+	//Jeï¿½li materiaï¿½ï¿½w jest wiï¿½cej niï¿½ meshy to wtedy usuwany materiaï¿½ rzeczywiï¿½cie bï¿½dzie miaï¿½ wpï¿½yw na renderowanie w przeciwnym wypadku bï¿½dzie po prostu brak nadmiarowego
 	bool needToReregister = _materials.size() <= _model.GetMeshCount();
 
 	if (needToReregister)

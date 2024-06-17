@@ -26,6 +26,20 @@ void Playable::Update()
 {
 }
 
+void Playable::OnDestroy()
+{
+    // ALBUM EVENTS
+    OnEventAlbumStarted.RemoveAllCallbacks();
+    OnEventAlbumFinished.RemoveAllCallbacks();
+    OnEventAlbumCooldownStarted.RemoveAllCallbacks();
+    OnEventAlbumCooldownFinished.RemoveAllCallbacks();
+
+    // FANS MEETING EVENTS
+    OnEventFansMeetingStarted.RemoveAllCallbacks();
+    OnEventFansMeetingFinished.RemoveAllCallbacks();
+    OnEventFansMeetingCooldownStarted.RemoveAllCallbacks();
+    OnEventFansMeetingCooldownFinished.RemoveAllCallbacks();
+}
 
 void Playable::InitPrices() {
     fansStartMoney = fansRequiredMoney;

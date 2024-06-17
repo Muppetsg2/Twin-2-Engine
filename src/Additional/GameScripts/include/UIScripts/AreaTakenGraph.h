@@ -16,8 +16,9 @@ private:
 	std::vector<GameObject*> _edges;
 	GameObject* _bottomHexagon = nullptr;
 
-	// TODO: add to draw editor
 	uint32_t _layer = 0;
+
+	float _takenPercentage = 0.f;
 
 	void UpdateTopHexagon();
 	void UpdateEdge();
@@ -38,10 +39,12 @@ public:
 	void DrawEditor() override;
 #endif
 
+	void SetLayer(int32_t layer);
 	void SetTopHexagonPrefabId(size_t prefabId);
 	void SetEdgePrefabId(size_t prefabId);
 	void SetBottomHexagonPrefabId(size_t prefabId);
 
+	int32_t GetLayer() const;
 	size_t GetTopHexagonPrefabId() const;
 	size_t GetEdgePrefabId() const;
 	size_t GetBottomHexagonPrefabId() const;

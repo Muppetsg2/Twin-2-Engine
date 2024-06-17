@@ -7,9 +7,9 @@ void AreaTakenGraph::UpdateTopHexagon()
 	Prefab* topHexagonPrefab = PrefabManager::GetPrefab(_topHexagonPrefabId);
 	if (topHexagonPrefab == nullptr) return;
 
-	std::vector<Playable*> entities = GameManager::instance->entities;
+	/*std::vector<Playable*> entities = GameManager::instance->entities;
 
-	if (entities.size() != _topHexagons.size()) {
+	if (entities.size() + 1 != _topHexagons.size()) {
 		while (_topHexagons.size() < entities.size() + 1) {
 			_topHexagons.push_back(SceneManager::CreateGameObject(topHexagonPrefab, GetTransform()));
 		}
@@ -35,9 +35,27 @@ void AreaTakenGraph::UpdateTopHexagon()
 
 		offset += progress;
 		++idx;
+	}*/
+
+	if (2 != _topHexagons.size()) {
+		while (_topHexagons.size() < 2) {
+			_topHexagons.push_back(SceneManager::CreateGameObject(topHexagonPrefab, GetTransform()));
+		}
+
+		while (_topHexagons.size() > 2) {
+			SceneManager::DestroyGameObject(_topHexagons[_topHexagons.size() - 1]);
+			_topHexagons.erase(_topHexagons.end() - 1);
+		}
 	}
 
-	if (offset < 100.f) {
+	Image* img = _topHexagons[0]->GetComponent<Image>();
+	img->SetFillOffset(0.f);
+	img->SetFillProgress(_takenPercentage);
+
+	img->SetColor(GetColor(TILE_COLOR::RED));
+	img->SetLayer(_layer + 2);
+
+	/*if (offset < 100.f) {
 		_topHexagons[idx]->SetActive(true);
 		Image* img = _topHexagons[idx]->GetComponent<Image>();
 		img->SetFillOffset(offset);
@@ -47,6 +65,18 @@ void AreaTakenGraph::UpdateTopHexagon()
 	}
 	else {
 		_topHexagons[idx]->SetActive(false);
+	}*/
+
+	if (_takenPercentage < 100.f) {
+		_topHexagons[1]->SetActive(true);
+		Image* img = _topHexagons[1]->GetComponent<Image>();
+		img->SetFillOffset(_takenPercentage);
+		img->SetFillProgress(100.f);
+		img->SetColor(GetColor(TILE_COLOR::NEUTRAL));
+		img->SetLayer(_layer + 2);
+	}
+	else {
+		_topHexagons[1]->SetActive(false);
 	}
 }
 
@@ -55,9 +85,9 @@ void AreaTakenGraph::UpdateEdge()
 	Prefab* edgePrefab = PrefabManager::GetPrefab(_edgePrefabId);
 	if (edgePrefab == nullptr) return;
 
-	std::vector<Playable*> entities = GameManager::instance->entities;
+	/*std::vector<Playable*> entities = GameManager::instance->entities;
 
-	if (entities.size() != _edges.size()) {
+	if (entities.size() + 1 != _edges.size()) {
 		while (_edges.size() < entities.size() + 1) {
 			_edges.push_back(SceneManager::CreateGameObject(edgePrefab, GetTransform()));
 		}
@@ -69,22 +99,73 @@ void AreaTakenGraph::UpdateEdge()
 	}
 
 	std::vector<HexTile*> tiles = GameManager::instance->Tiles;
-	static const float lowProgress = 100.f / 3.f;
-	static const float highProgress = 200.f / 3.f;
+	static const float lowAlpha = 120.f;
+	static const float highAlpha = 240.f;
+	static const float halfAlpha = (lowAlpha + highAlpha) * 0.5f;
 	
 	float offset = 0.f;
+	float alpha0 = 0.f;
 	size_t idx = 0;
 	for (auto& entity : entities) {
-		float progress = ((float)entity->OwnTiles.size() / tiles.size()) * 100.f;
+		alpha0 = 3.6f * offset;
 
-		if (offset + progress > lowProgress && offset < highProgress) {
+		float progress = ((float)entity->OwnTiles.size() / tiles.size()) * 100.f;
+		float alpha = 3.6f * progress;
+
+		if (alpha0 + alpha > lowAlpha && alpha0 < highAlpha) {
 			_edges[idx]->SetActive(true);
 			Image* img = _edges[idx]->GetComponent<Image>();
-			img->SetFillOffset(glm::clamp(offset * 3.f - 100.f, 0.f, 100.f));
-			img->SetFillProgress(glm::clamp((offset + progress) * 3.f - 100.f, 0.f, 100.f));
-
 			img->SetColor(GetColor((TILE_COLOR)(uint8_t)(entity->colorIdx == 0 ? 1 : powf(2.f, (float)(entity->colorIdx)))) * 0.75f);
 			img->SetLayer(_layer + 1);
+
+			// FIRST TRIANGLE
+			if (alpha0 < halfAlpha) {
+				// HEXAGON EDGE START POS
+				static const glm::vec2 v2s = { glm::sqrt(3) * 0.5f, -0.5f };
+				// HEXAGON EDGE VECTOR
+				static const glm::vec2 v2 = { -glm::sqrt(3) * 0.5f, -0.5f };
+
+				// EDGE PERCENT
+				float t;
+				// CIRCLE RADIUS VECTOR
+				glm::vec2 v1;
+				// EDGE MOVE VECTOR
+				glm::vec2 v2m;
+				// FINAL PERCENT
+				float percent;
+
+				if (alpha0 > lowAlpha) {
+					float clampAlpha0 = glm::clamp(alpha0, lowAlpha, halfAlpha);
+
+					v1 = { glm::sin(glm::radians(clampAlpha0)), glm::cos(glm::radians(clampAlpha0)) };
+					t = v2s.x / (v1.x - v2.x);
+
+					v2m = v2 * t;
+
+					percent = glm::length(v2m);
+
+					img->SetFillOffset(percent * 50.f);
+				}
+				else {
+					img->SetFillOffset(0.f);
+				}
+
+				float clampAlpha = glm::clamp(alpha0 + alpha, lowAlpha, halfAlpha);
+
+				v1 = { glm::sin(glm::radians(clampAlpha)), glm::cos(glm::radians(clampAlpha)) };
+				t = v2s.x / (v1.x - v2.x);
+
+				v2m = v2 * t;
+
+				percent = glm::length(v2m);
+
+				img->SetFillProgress(percent * 50.f);
+			}
+
+			// SECOND TRIANGLE
+			if (alpha0 + alpha > halfAlpha) {
+
+			}
 		}
 		else {
 			_edges[idx]->SetActive(false);
@@ -92,12 +173,112 @@ void AreaTakenGraph::UpdateEdge()
 
 		offset += progress;
 		++idx;
+	}*/
+
+	if (2 != _edges.size()) {
+		while (_edges.size() < 2) {
+			_edges.push_back(SceneManager::CreateGameObject(edgePrefab, GetTransform()));
+		}
+
+		while (_edges.size() > 2) {
+			SceneManager::DestroyGameObject(_edges[_edges.size() - 1]);
+			_edges.erase(_edges.end() - 1);
+		}
 	}
 
-	if (offset < highProgress) {
+	static const float lowAlpha = 120.f;
+	static const float highAlpha = 240.f;
+	static const float halfAlpha = (lowAlpha + highAlpha) * 0.5f;
+
+	float alpha0 = 0.f;
+	float alpha = 3.6f * _takenPercentage;
+
+	if (alpha0 + alpha > lowAlpha && alpha0 < highAlpha) {
+		_edges[0]->SetActive(true);
+		Image* img = _edges[0]->GetComponent<Image>();
+		img->SetColor(GetColor(TILE_COLOR::RED) * 0.75f);
+		img->SetLayer(_layer + 1);
+		//img->SetFillOffset(glm::clamp(alpha0 * 5.f / 6.f - 100.f, 0.f, 100.f));
+		//img->SetFillProgress(glm::clamp((alpha0 + alpha) * 5.f / 6.f - 100.f, 0.f, 100.f));
+		//img->SetFillOffset(glm::clamp((0.f /* offset */ * 1000.f - 3230.f) / 353.f, 0.f, 100.f));
+		//img->SetFillProgress(glm::clamp(((0.f /* offset */ + _takenPercentage) * 1000.f - 3230.f) / 353.f, 0.f, 100.f));
+		/*img->SetFillOffset(glm::clamp(-0.0139f * alpha0 * alpha0 + 5.f * alpha0 - 400.f, 0.f, 100.f));
+		img->SetFillProgress(glm::clamp(-0.0139f * (alpha0 + alpha) * (alpha0 + alpha) + 5.f * (alpha0 + alpha) - 400.f, 0.f, 100.f));*/
+		// GOOD
+		//img->SetFillOffset(glm::clamp(0.0016f * 0.f * 0.f + 2.7022f * 0.f - 88.995f, 0.f, 100.f));
+		//img->SetFillProgress(glm::clamp(0.0016f * (0.f + _takenPercentage) * (0.f + _takenPercentage) + 2.7022f * (0.f + _takenPercentage) - 88.995f, 0.f, 100.f));
+		
+		// GOOD
+		/*img->SetFillOffset(glm::clamp(2.8302f * 0.f - 91.509f, 0.f, 100.f));
+		img->SetFillProgress(glm::clamp(2.8302f * (0.f + _takenPercentage) - 91.509f, 0.f, 100.f));*/
+		
+		// FIRST TRIANGLE
+		if (alpha0 < halfAlpha) {
+			// HEXAGON EDGE LINEAR EQUATION
+			static const float edgeA = 0.5f;
+			static const float edgeB = -glm::sqrt(3.f) * 0.5f;
+			static const float edgeC = -glm::sqrt(3.f) * 0.5f;
+			// HEXAGON EDGE BEGIN POS
+			static const glm::vec2 v2s = { -edgeC, -edgeA };
+
+			// RADIUS VECTOR
+			glm::vec2 v1;
+			// MOVE VALUE
+			float t;
+			// EDGE MOVE VECTOR
+			glm::vec2 v2m;
+			// FINAL PERCENT
+			float percent;
+
+			if (alpha0 > lowAlpha) {
+				float clampAlpha0 = glm::clamp(alpha0, lowAlpha, halfAlpha);
+
+				v1 = { glm::sin(glm::radians(clampAlpha0)), glm::cos(glm::radians(clampAlpha0)) };
+
+				t = glm::sqrt(3.f) / (v1.x - glm::sqrt(3.f) * v1.y);
+
+				v2m = v1 * t - v2s;
+
+				percent = glm::length(v2m);
+
+				img->SetFillOffset(percent * 50.f);
+			}
+			else {
+				img->SetFillOffset(0.f);
+			}
+
+			float clampAlpha = glm::clamp(alpha0 + alpha, lowAlpha, halfAlpha);
+
+			// TODO: Uwzglêdniæ w równaniu lini boku inny promieñ Y
+			v1 = { glm::sin(glm::radians(clampAlpha)), glm::cos(glm::radians(clampAlpha)) };
+
+			t = glm::sqrt(3.f) / (v1.x - glm::sqrt(3.f) * v1.y);
+
+			v2m = v1 * t - v2s;
+
+			percent = glm::length(v2m);
+
+			float y = 1.f - (GetTransform()->GetGlobalScale().y / 1.143f);
+			float x = y * glm::tan(glm::radians(180.f - clampAlpha));
+			float z = (2.f * glm::sqrt(3.f) * x) / 3.f;
+
+			img->SetFillProgress(percent * 50.f);
+		}
+
+		// SECOND TRIANGLE
+		if (alpha0 + alpha > halfAlpha) {
+
+		}
+	}
+	else {
+		_edges[0]->SetActive(false);
+	}
+
+	/*alpha0 = 3.6f * offset;
+	if (alpha0 < highAlpha) {
 		_edges[idx]->SetActive(true);
 		Image* img = _edges[idx]->GetComponent<Image>();
-		img->SetFillOffset(glm::clamp(offset * 3.f - 100.f, 0.f, 100.f));
+		//img->SetFillOffset(glm::clamp(alpha0 * fiveOverSix - 100.f, 0.f, 100.f));
 		img->SetFillProgress(100.f);
 		img->SetColor(GetColor(TILE_COLOR::NEUTRAL) * 0.75f);
 		img->SetLayer(_layer + 1);
@@ -105,6 +286,22 @@ void AreaTakenGraph::UpdateEdge()
 	else {
 		_edges[idx]->SetActive(false);
 	}
+	_edges[idx]->SetActive(false);*/
+
+	alpha0 = 3.6f * _takenPercentage;
+	if (alpha0 < highAlpha) {
+		_edges[1]->SetActive(true);
+		Image* img = _edges[1]->GetComponent<Image>();
+		//img->SetFillOffset(glm::clamp(alpha0 * 5.f / 6.f - 100.f, 0.f, 100.f));
+		//img->SetFillOffset(glm::clamp((_takenPercentage * 1000.f - 3230.f) / 353.f, 0.f, 100.f));
+		img->SetFillProgress(100.f);
+		img->SetColor(GetColor(TILE_COLOR::NEUTRAL) * 0.75f);
+		img->SetLayer(_layer + 1);
+	}
+	else {
+		_edges[1]->SetActive(false);
+	}
+	_edges[1]->SetActive(false);
 }
 
 void AreaTakenGraph::UpdateBottomHexagon()
@@ -176,10 +373,13 @@ glm::vec4 AreaTakenGraph::GetColor(const TILE_COLOR& color)
 void AreaTakenGraph::Update()
 {
 	if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
-		UpdateTopHexagon();
+		/*UpdateTopHexagon();
 		UpdateEdge();
-		UpdateBottomHexagon();
+		UpdateBottomHexagon();*/
 	}
+	UpdateTopHexagon();
+	UpdateEdge();
+	UpdateBottomHexagon();
 }
 
 void AreaTakenGraph::OnDestroy()
@@ -237,6 +437,11 @@ void AreaTakenGraph::DrawEditor() {
 	{
 		DrawInheritedFields();
 
+		int32_t layer = _layer;
+		if (ImGui::InputInt(string("Layer##").append(id).c_str(), &layer)) {
+			SetLayer(layer);
+		}
+
 		size_t prefabId = _topHexagonPrefabId;
 		if (PrefabDropDown(string("Top Hexagon Prefab##").append(id).c_str(), &prefabId, id)) {
 			SetTopHexagonPrefabId(prefabId);
@@ -251,9 +456,18 @@ void AreaTakenGraph::DrawEditor() {
 		if (PrefabDropDown(string("Bottom Hexagon Prefab##").append(id).c_str(), &prefabId, id)) {
 			SetBottomHexagonPrefabId(prefabId);
 		}
+
+		ImGui::DragFloat(string("Taken Percentage##").append(id).c_str(), &_takenPercentage);
 	}
 }
 #endif
+
+void AreaTakenGraph::SetLayer(int32_t layer)
+{
+	if (_layer != layer) {
+		_layer = layer;
+	}
+}
 
 void AreaTakenGraph::SetTopHexagonPrefabId(size_t prefabId)
 {
@@ -274,6 +488,11 @@ void AreaTakenGraph::SetBottomHexagonPrefabId(size_t prefabId)
 	if (_bottomHexagonPrefabId != prefabId) {
 		_bottomHexagonPrefabId = prefabId;
 	}
+}
+
+int32_t AreaTakenGraph::GetLayer() const
+{
+	return _layer;
 }
 
 size_t AreaTakenGraph::GetTopHexagonPrefabId() const

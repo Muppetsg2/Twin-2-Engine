@@ -99,24 +99,24 @@ bool OutOfFill(vec2 pos, vec2 center, vec2 size, FillData fill) {
         float p = 0.0;
         if (fill.type == HORIZONTAL_FILL) {
             if (fill.subType == LEFT_FILL) {
-                p = (0.99 / size.x) * (pos.x - center.x) + 0.495;
+                p = (1.0 / size.x) * (pos.x - center.x) + 0.5;
             }
             else if (fill.subType == CENTER_FILL) {
-                p = (1.98 / size.x) * abs(pos.x - center.x);
+                p = (2.0 / size.x) * abs(pos.x - center.x);
             }
             else if (fill.subType == RIGHT_FILL) {
-                p = (-0.99 / size.x) * (pos.x - center.x) + 0.495;
+                p = (-1.0 / size.x) * (pos.x - center.x) + 0.5;
             }
         }
         else if (fill.type == VERTICAL_FILL) {
             if (fill.subType == TOP_FILL) {
-                p = (-0.99 / size.y) * (pos.y - center.y) + 0.495;
+                p = (-1.0 / size.y) * (pos.y - center.y) + 0.5;
             }
             else if (fill.subType == MIDDLE_FILL) {
-                p = (1.98 / size.y) * abs(pos.y - center.y);
+                p = (2.0 / size.y) * abs(pos.y - center.y);
             }
             else if (fill.subType == BOTTOM_FILL) {
-                p = (0.99 / size.y) * (pos.y - center.y) + 0.495;
+                p = (1.0 / size.y) * (pos.y - center.y) + 0.5;
             }
         }
         else if (fill.type == CIRCLE_FILL) {
@@ -147,10 +147,12 @@ bool OutOfFill(vec2 pos, vec2 center, vec2 size, FillData fill) {
                 alpha -= rotation;
 
             if (fill.subType == CW_FILL) {
-                p = 0.00275 * alpha;
+                // (100 / 360) * (alpha / 100)
+                p = 0.00277 * alpha;
             }
             else if (fill.subType == CCW_FILL) {
-                p = 0.00275 * (360.0 - alpha);
+                // (100 / 360) * ((360 - alpha) / 100)
+                p = 0.00277 * (360.0 - alpha);
             }
         }
         return p >= fill.progress || p < fill.offset;

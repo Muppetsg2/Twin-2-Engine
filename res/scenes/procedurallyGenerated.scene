@@ -1135,6 +1135,7 @@ GameObjects:
         enabled: true
         type: PlaneGenerator
         isTransparent: true
+        transparencyPriority: -1
         rows: 82
         columns: 82
         materials:

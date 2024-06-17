@@ -112,6 +112,7 @@ using namespace Generation::Generators;
 #include <ConcertRoad.h>
 #include <GodRayComponent.h>
 #include <StarComponent.h>
+#include <TutorialSeries.h>
 #include <Abilities/ConcertAbilityController.h>
 
 #include <RadioStation/RadioStation.h>
@@ -371,6 +372,7 @@ int main(int, char**)
     ADD_COMPONENT("PopularityGainingBonusBarController", PopularityGainingBonusBarController);
     ADD_COMPONENT("GodRayComponent", GodRayComponent);
     ADD_COMPONENT("StarComponent", StarComponent);
+    ADD_COMPONENT("TutorialSeries", TutorialSeries);
 
 #pragma endregion
 
@@ -389,7 +391,8 @@ int main(int, char**)
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/BlankScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/PatronChoice.scene");
-    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    SceneManager::AddScene("testScene", "res/scenes/tutorialScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/SceneToEditPrefabs.scene");
     //SceneManager::AddScene("testScene", "res/scenes/Making Game UI.scene");
     //SceneManager::AddScene("testScene", "res/scenes/MenuScene.scene");

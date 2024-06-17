@@ -151,12 +151,21 @@ void PatronChoicePanelController::DrawEditor()
                 ImGui::EndCombo();
             }
             ImGui::PopItemWidth();
+
+            /*
+            if (ImGui::Button(string(ICON_FA_TRASH_CAN "##Remove Patron").append(std::to_string(i)).c_str())) {
+                clicked.push_back(item.first);
+            }
+            */
         }
 
         btns.clear();
         datas.clear();
 
-        // TODO: AddButton
+        if (ImGui::Button(string("New Patron##").append(id).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
+            _patronsButtons.push_back(nullptr);
+            _patrons.push_back(nullptr);
+        }
     }
 }
 

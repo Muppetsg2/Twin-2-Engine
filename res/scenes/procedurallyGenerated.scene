@@ -1204,7 +1204,7 @@ GameObjects:
         type: Audio
         audio: 0
         loop: true
-        volume: 1
+        volume: 0.5
         playOnStart: false
     children:
       []

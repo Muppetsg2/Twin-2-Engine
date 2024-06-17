@@ -47,7 +47,7 @@ Audio:
   - id: 4
     path: res/music/Abilities/NotEnoughtRes.mp3
   - id: 5
-    path: res/music/engineSound.mp3
+    path: res/music/mixkit-fast-car-drive-by-1538.mp3
 Materials:
   - id: 0
     path: res/materials/car/CarMaterial_Blue.material
@@ -143,6 +143,6 @@ Root:
       enabled: true
       type: Audio
       audio: 0
-      loop: true
-      volume: 1
+      loop: false
+      volume: 0.385
       playOnStart: false

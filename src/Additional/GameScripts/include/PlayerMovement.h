@@ -35,7 +35,7 @@ class PlayerMovement : public Component {
 
 		HexTile* _checkedTile = nullptr;
 		Twin2Engine::Core::AudioComponent* _audioComponent = nullptr;
-		std::string _engineSound;
+		size_t _engineSound = 0;
 
 
 		std::mutex _mutexCheckingPath;

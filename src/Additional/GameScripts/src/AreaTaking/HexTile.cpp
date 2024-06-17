@@ -46,7 +46,7 @@ void HexTile::TakeOver()
 		{
 			SetOwnerEntity(occupyingEntity);
 
-			CheckRoundPattern();
+			//CheckRoundPattern();
 		}
 	}
 
@@ -311,6 +311,11 @@ void HexTile::UpdateBorders()
 
 void HexTile::CheckRoundPattern()
 {
+	if (occupyingEntity)
+	{
+		return;
+	}
+
 	HexTile* adjacentHexTile = nullptr;
 	Playable* processedTaken = nullptr;
 
@@ -318,10 +323,9 @@ void HexTile::CheckRoundPattern()
 	{
 		adjacentHexTile = _adjacentTiles[index];
 
-		if (adjacentHexTile->ownerEntity == ownerEntity 
-			|| (occupyingEntity && adjacentHexTile->ownerEntity != occupyingEntity) 
-			|| !adjacentHexTile->ownerEntity 
-			|| ownerEntity == adjacentHexTile->occupyingEntity)
+		if (!adjacentHexTile->ownerEntity
+			|| adjacentHexTile->ownerEntity == ownerEntity
+			|| (adjacentHexTile->occupyingEntity && ownerEntity == adjacentHexTile->occupyingEntity))
 		{
 			processedTaken = nullptr;
 			break;
@@ -342,7 +346,7 @@ void HexTile::CheckRoundPattern()
 	{
 		SetOwnerEntity(processedTaken);
 		state = TileState::TAKEN;
-		if (percentage < _takingStage1)
+		if (percentage <= _takingStage1)
 			percentage = 0.5f * (_takingStage1 + _takingStage2);
 		//percentage = 100.0f;
 		DisableAlbumAffected();

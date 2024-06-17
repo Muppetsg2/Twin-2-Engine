@@ -42,8 +42,8 @@ private:
     std::vector<size_t> _electricBackgroundMusics;
     std::vector<size_t> _popBackgroundMusics;
     std::vector<size_t> _heavyMetalBackgroundMusics;
-    std::vector<size_t> _jazzMetalBackgroundMusics;
-    std::vector<size_t> _discoMetalBackgroundMusics;
+    std::vector<size_t> _jazzBackgroundMusics;
+    std::vector<size_t> _discoBackgroundMusics;
 
 
     std::vector<int> _freeColors{ 0, 1, 2, 3, 4, 5, 6 };

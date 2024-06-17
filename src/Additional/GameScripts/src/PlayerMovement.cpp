@@ -22,6 +22,7 @@ using namespace AStar;
 void PlayerMovement::Initialize() {
 	//seeker = GetGameObject()->GetComponent<Seeker>();
     _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
+    _audioComponent = *(++(GetGameObject()->GetComponents<AudioComponent>().begin()));
 
     _player = GetGameObject()->GetComponent<Player>();
     //OnFinishMoving.AddCallback([](GameObject* playerGO, HexTile* destHexTile) {
@@ -60,6 +61,8 @@ void PlayerMovement::Update() {
             {
                 reachEnd = true;
                 SPDLOG_INFO("On end of path");
+
+                _audioComponent->Stop();
                 OnFinishMoving(GetGameObject(), destinatedTile);
             }
             else
@@ -259,6 +262,8 @@ void PlayerMovement::OnPathComplete(const AStarPath& p) {
 
     OnStartMoving.Invoke(GetGameObject(), destinatedTile);
 
+    _audioComponent->SetAudio(_engineSound);
+    _audioComponent->Play();
 
     tempDestTile = nullptr;
 }
@@ -396,6 +401,8 @@ YAML::Node PlayerMovement::Serialize() const
     //}
     node["destinationMarkerHeightOverSurface"] = _destinationMarkerHeightOverSurface;
 
+    node["engineSound"] = _engineSound;
+
     return node;
 }
 
@@ -420,6 +427,8 @@ bool PlayerMovement::Deserialize(const YAML::Node& node)
         //_playerDestinationMarker = destinationMarker->GetTransform();
     }
     _destinationMarkerHeightOverSurface = node["destinationMarkerHeightOverSurface"].as<float>();
+
+    _engineSound = node["engineSound"].as<string>();
 
     return true;
 }

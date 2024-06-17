@@ -68,7 +68,8 @@ void HexTile::LoseInfluence()
 
 void HexTile::UpdateTileColor()
 {
-	TILE_COLOR col = ownerEntity != nullptr ? (TILE_COLOR)(uint8_t)(ownerEntity->colorIdx == 0 ? 1 : powf(2.f, (float)(ownerEntity->colorIdx))) : TILE_COLOR::NEUTRAL;
+	//TILE_COLOR col = ownerEntity != nullptr ? (TILE_COLOR)(uint8_t)(ownerEntity->colorIdx == 0 ? 1 : powf(2.f, (float)(ownerEntity->colorIdx))) : TILE_COLOR::NEUTRAL;
+	TILE_COLOR col = ownerEntity != nullptr ? (TILE_COLOR)(uint8_t)(1 << ownerEntity->colorIdx) : TILE_COLOR::NEUTRAL;
 	//SPDLOG_INFO("Percentage: {}", percentage);
 	if (!occupyingEntity || ownerEntity == occupyingEntity)
 	{

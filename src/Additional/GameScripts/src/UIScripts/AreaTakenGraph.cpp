@@ -187,8 +187,8 @@ void AreaTakenGraph::UpdateEdge()
 	}
 
 	const float R2 = GetTransform()->GetGlobalScale().y / 1.143f;
-	const glm::vec2 edgeStartPoint = glm::normalize(glm::vec2{ glm::sqrt(3) * 0.5f, -R2 * 0.5f });
-	const glm::vec2 edgeMiddlePoint = glm::normalize(glm::vec2{ 0, -R2 });
+	const glm::vec2 edgeStartPoint = { glm::sqrt(3) * 0.5f, -R2 * 0.5f };
+	const glm::vec2 edgeMiddlePoint = { 0.f, -R2 };
 	const glm::vec2 edgeVector = edgeMiddlePoint - edgeStartPoint;
 	const glm::vec2 topVector = { 0, 1.f };
 
@@ -223,27 +223,24 @@ void AreaTakenGraph::UpdateEdge()
 		
 		// FIRST TRIANGLE
 		if (alpha0 < edgeHalfAlpha) {
-			// RADIUS VECTOR
-			glm::vec2 v1;
-			// MOVE VALUE
-			float t;
-			// EDGE MOVE VECTOR
-			glm::vec2 v2m;
-			// FINAL PERCENT
-			float percent;
+			Func<float, float> CalcPercent = [&](float alpha) -> float {
+				// RADIUS VECTOR
+				glm::vec2 v1 = { glm::sin(glm::radians(alpha)), glm::cos(glm::radians(alpha)) };
+
+				// MOVE VALUE
+				float t = -edgeC / (edgeA * v1.x + edgeB * v1.y);
+
+				// EDGE MOVE VECTOR
+				glm::vec2 v2m = v1 * t;
+
+				// FINAL PERCENT
+				return glm::abs(v2m.x - edgeStartPoint.x) / glm::abs(edgeVector.x);
+			};
 
 			if (alpha0 > edgeStartAlpha) {
 				float clampAlpha0 = glm::clamp(alpha0, edgeStartAlpha, edgeHalfAlpha);
 
-				v1 = { glm::sin(glm::radians(clampAlpha0)), glm::cos(glm::radians(clampAlpha0)) };
-
-				t = -edgeC / (edgeA * v1.x + edgeB * v1.y);
-
-				v2m = v1 * t - edgeStartPoint;
-
-				percent = glm::length(v2m) / glm::length(edgeVector);
-
-				img->SetFillOffset(percent * 50.f);
+				img->SetFillOffset(CalcPercent(clampAlpha0) * 50.f);
 			}
 			else {
 				img->SetFillOffset(0.f);
@@ -251,15 +248,7 @@ void AreaTakenGraph::UpdateEdge()
 
 			float clampAlpha = glm::clamp(alpha0 + alpha, edgeStartAlpha, edgeHalfAlpha);
 
-			v1 = { glm::sin(glm::radians(clampAlpha)), glm::cos(glm::radians(clampAlpha)) };
-
-			t = -edgeC / (edgeA * v1.x + edgeB * v1.y);
-
-			v2m = v1 * t - edgeStartPoint;
-
-			percent = glm::length(v2m) * glm::length(edgeVector);
-
-			img->SetFillProgress(percent * 50.f);
+			img->SetFillProgress(CalcPercent(clampAlpha) * 50.f);
 		}
 
 		// SECOND TRIANGLE

@@ -324,19 +324,25 @@ void Player::Update() {
             fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(fansRequiredMoney)).append(L"$")));
         }
         
-        if (GameManager::instance->gameStarted)
+        //if (GameManager::instance->gameStarted)
         {
             // FANS MEETING INTERFACE ELEMENT
             if (isHoveringFansMeetingButton && !isShowingFansMeetingAffectedTiles)
             {
-                ShowAffectedTiles();
+                if (GameManager::instance->gameStarted)
+                {
+                    ShowAffectedTiles();
+                }
 
                 fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
                 fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep2);
             }
             else if (!isHoveringFansMeetingButton && isShowingFansMeetingAffectedTiles)
             {
-                HideAffectedTiles();
+                if (GameManager::instance->gameStarted)
+                {
+                    HideAffectedTiles();
+                }
 
                 //fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
                 fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
@@ -349,8 +355,11 @@ void Player::Update() {
             {
                 if (isHoveringConcertButton && !isShowingConcertPossible)
                 {
-                    PopularityGainingBonusBarController::Instance()->AddPossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
-                    isShowingConcertPossible = true;
+                    if (GameManager::instance->gameStarted)
+                    {
+                        PopularityGainingBonusBarController::Instance()->AddPossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
+                        isShowingConcertPossible = true;
+                    }
 
                     concertButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
                     audioComponent->SetAudio("res/music/Abilities/UI/OnHoverClick.mp3");
@@ -361,8 +370,11 @@ void Player::Update() {
                 }
                 else if (!isHoveringConcertButton && isShowingConcertPossible)
                 {
-                    PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
-                    isShowingConcertPossible = false;
+                    if (GameManager::instance->gameStarted)
+                    {
+                        PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(concertAbility->GetAdditionalTakingOverSpeed());
+                        isShowingConcertPossible = false;
+                    }
 
                     concertButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
                     audioComponent->SetAudio("res/music/Abilities/UI/OffHoverClick.mp3");
@@ -380,11 +392,14 @@ void Player::Update() {
             {
                 if (isHoveringAlbumButton && !isShowingAlbumPossible)
                 {
-                    for (HexTile* tile : OwnTiles)
+                    if (GameManager::instance->gameStarted)
                     {
-                        tile->EnableAlbumAffected();
+                        for (HexTile* tile : OwnTiles)
+                        {
+                            tile->EnableAlbumAffected();
+                        }
+                        isShowingAlbumPossible = true;
                     }
-                    isShowingAlbumPossible = true;
 
                     albumButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
                     audioComponent->SetAudio("res/music/Abilities/UI/OnHoverClick.mp3");
@@ -395,11 +410,14 @@ void Player::Update() {
                 }
                 else if (!isHoveringAlbumButton && isShowingAlbumPossible)
                 {
-                    for (HexTile* tile : OwnTiles)
+                    if (GameManager::instance->gameStarted)
                     {
-                        tile->DisableAlbumAffected();
+                        for (HexTile* tile : OwnTiles)
+                        {
+                            tile->DisableAlbumAffected();
+                        }
+                        isShowingAlbumPossible = false;
                     }
-                    isShowingAlbumPossible = false;
 
                     albumButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
                     audioComponent->SetAudio("res/music/Abilities/UI/OffHoverClick.mp3");

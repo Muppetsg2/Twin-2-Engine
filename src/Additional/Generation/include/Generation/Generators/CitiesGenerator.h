@@ -8,6 +8,8 @@
 
 #include <core/Random.h>
 
+#include <AreaTaking/City.h>
+
 namespace Generation::Generators
 {
 	class CitiesGenerator : public AMapElementGenerator

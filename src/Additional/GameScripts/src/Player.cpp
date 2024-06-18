@@ -180,38 +180,6 @@ void Player::Initialize() {
     }
 }
 void Player::Update() {
-    if (Input::IsKeyPressed(KEY::Z))
-    {
-        SPDLOG_INFO("Using Album");
-        AlbumCall();
-    }
-    if (Input::IsKeyPressed(KEY::X))
-    {
-        SPDLOG_INFO("Using Fans");
-        FansMeetingCall();
-    }
-    if (Input::IsKeyPressed(KEY::C))
-    {
-        SPDLOG_INFO("Using Concert");
-        ConcertCall();
-    }
-
-    // CONCERT ABILITY UI MANAGEMENT
-    if (_concertAbility->IsUsed())
-    {
-        _concertCircleImage->SetFillProgress(100.0f - _concertAbility->GetAbilityRemainingTime() / _concertAbility->lastingTime * 100.0f);
-        //concertText->SetText(std::wstring((L"Concert: " + std::to_wstring(static_cast<int>(concertAbility->GetAbilityRemainingTime())) + L"s")));
-        //concertText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(concertAbility->GetAbilityRemainingTime())))));
-    }
-    else if (_concertAbility->IsOnCooldown())
-    {
-        _concertCircleImage->SetFillProgress(_concertAbility->GetCooldownRemainingTime() / _concertAbility->GetCooldown() * 100.0f);
-    }
-    else
-    {
-        _concertButton->SetInteractable(true);
-        _concertText->SetText(std::wstring(std::to_wstring(static_cast<int>(_concertAbility->GetCost())).append(L"$")));
-    }
 
     _moneyText->SetText(std::wstring(L"Money: ").append(std::to_wstring(static_cast<int>(_money->money))).append(L"$"));
 
@@ -262,31 +230,51 @@ void Player::Update() {
     if (!GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
         UpdatePrices();
 
-        //GameManager::instance->playerInterface.albumText->text = "Album\n" + std::to_string(albumRequiredMoney) + "$";
-        //GameManager::instance->playerInterface.fansText->text = "Fans Meeting\n" + std::to_string(fansRequiredMoney) + "$";
+
+        if (Input::IsKeyPressed(KEY::Z))
+        {
+            SPDLOG_INFO("Using Album");
+            AlbumCall();
+        }
+        if (Input::IsKeyPressed(KEY::X))
+        {
+            SPDLOG_INFO("Using Fans");
+            FansMeetingCall();
+        }
+        if (Input::IsKeyPressed(KEY::C))
+        {
+            SPDLOG_INFO("Using Concert");
+            ConcertCall();
+        }
+
+        // CONCERT ABILITY UI MANAGEMENT
+        if (_concertAbility->IsUsed())
+        {
+            _concertCircleImage->SetFillProgress(100.0f - _concertAbility->GetAbilityRemainingTime() / _concertAbility->lastingTime * 100.0f);
+        }
+        else if (_concertAbility->IsOnCooldown())
+        {
+            _concertCircleImage->SetFillProgress(_concertAbility->GetCooldownRemainingTime() / _concertAbility->GetCooldown() * 100.0f);
+        }
+        else
+        {
+            _concertButton->SetInteractable(true);
+            _concertText->SetText(std::wstring(std::to_wstring(static_cast<int>(_concertAbility->GetCost())).append(L"$")));
+        }
+
 
         AlbumUpdate();
         // CONCERT ABILITY UI MANAGEMENT
         if (currAlbumTime > 0.0f)
         {
             _albumCircleImage->SetFillProgress(100.0f - currAlbumTime / albumTime * 100.0f);
-            //albumText->SetText(std::wstring((L"Album: " + std::to_wstring(static_cast<int>(currAlbumTime)) + L"s")));
-            //albumText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currAlbumTime)))));
         }
         else if (currAlbumCooldown > 0.0f)
         {
             _albumCircleImage->SetFillProgress(currAlbumCooldown / usedAlbumCooldown * 100.0f);
-            //albumText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currAlbumCooldown)) + L"s")));
-            //albumText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currAlbumCooldown)))));
         }
         else
         {
-            //if (money->money < concertAbility->GetCost()) {
-            //    concertButton->SetInteractable(false);
-            //}
-            //else {
-            //    concertButton->SetInteractable(true);
-            //}
             _albumButton->SetInteractable(true);
             _albumText->SetText(std::wstring(std::to_wstring(static_cast<int>(albumRequiredMoney)).append(L"$")));
         }
@@ -296,23 +284,13 @@ void Player::Update() {
         if (currFansTime > 0.0f)
         {
             _fansMeetingCircleImage->SetFillProgress(100.0f - currFansTime / fansTime * 100.0f);
-            //fansMeetingText->SetText(std::wstring((L"Fans Meeting: " + std::to_wstring(static_cast<int>(currFansTime)) + L"s")));
-            //fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currFansTime)))));
         }
         else if (currFansCooldown > 0.0f)
         {
             _fansMeetingCircleImage->SetFillProgress(currFansCooldown / usedFansCooldown * 100.0f);
-            //fansMeetingText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currFansCooldown)) + L"s")));
-            //fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currFansCooldown)))));
         }
         else
         {
-            //if (money->money < concertAbility->GetCost()) {
-            //    concertButton->SetInteractable(false);
-            //}
-            //else {
-            //    concertButton->SetInteractable(true);
-            //}
             _fansMeetingButton->SetInteractable(true);
             _fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(fansRequiredMoney)).append(L"$")));
         }

@@ -107,6 +107,7 @@ using namespace Generation::Generators;
 #include <Enemy.h>
 #include <EnemyMovement.h>
 #include <AreaTaking/GetMoneyFromTiles.h>
+#include <AreaTaking/City.h>
 #include <GameTimer.h>
 #include <ConcertRoad.h>
 #include <GodRayComponent.h>
@@ -376,6 +377,7 @@ int main(int, char**)
     ADD_COMPONENT("StarComponent", StarComponent);
     ADD_COMPONENT("TutorialSeries", TutorialSeries);
     ADD_COMPONENT("CityLightsComponent", CityLightsComponent);
+    ADD_COMPONENT("City", City);
 
 #pragma endregion
 

@@ -5,7 +5,20 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-Sprites: ~
+  - id: 1
+    path: res/textures/pictograms/PopularityGainingSpeedPictogram.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+Sprites: 
+  - id: 0
+    alias: PopularityGainingSpeedPictogram
+    texture: 1
+    x: 0
+    y: 0
+    width: 64
+    height: 64
 Fonts: ~
 Audio: ~
 Materials:
@@ -29,11 +42,11 @@ Root:
       z: 0
     scale:
       x: 0.6
-      y: 0.9
+      y: 0.6
       z: 0.6
     rotation:
       x: 0
-      y: 0
+      y: 150
       z: 0
   components:
     - id: 1
@@ -43,3 +56,76 @@ Root:
       model: 0
       materials:
         - 0
+    - id: 2
+      enabled: true
+      type: City
+GameObjects:
+  - id: 1
+    name: CooldownTimer
+    isStatic: false
+    isActive: false
+    transform:
+      id: 3
+      enabled: true
+      position:
+        x: 0
+        y: 1
+        z: 0
+      scale:
+        x: 0.02
+        y: 0.02
+        z: 0.02
+      rotation:
+        x: 0
+        y: 120
+        z: 0
+    components:
+      - id: 4
+        enabled: true
+        type: Canvas
+        layer: 0
+        size: 
+          x: 100
+          y: 100
+        worldSpace: true
+    children:
+      - 2
+  - id: 2
+    name: Pictogram
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5
+      enabled: true
+      position:
+        x: 0
+        y: 1
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 6
+        enabled: true
+        type: Image
+        isTransparent: true
+        sprite: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 64
+        height: 64
+        layer: 0
+        fillEnabled: false
+        fillType: !<2> 2
+        fillSubType: !<CW> 0
+        fillProgress: 0
+    children:
+     []

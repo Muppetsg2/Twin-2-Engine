@@ -30,6 +30,13 @@ void HexTile::TakeOver()
 		takeOverSpeed *= remoteMultiplier;
 	}
 
+	float multiplayer = 1.0f;
+	for (size_t index = 0ull; index < _affectingCities.size(); ++index)
+	{
+		multiplayer *= _affectingCities[index]->CalculateTakingOverSpeedMultiplier(this);
+	}
+	takeOverSpeed *= multiplayer;
+
 	if (ownerEntity != nullptr && ownerEntity != occupyingEntity) {
 		percentage -= Time::GetDeltaTime() * takeOverSpeed;
 		if (percentage <= _takingStage1) {
@@ -55,7 +62,14 @@ void HexTile::TakeOver()
 
 void HexTile::LoseInfluence()
 {
-	percentage -= Time::GetDeltaTime();
+	float multiplayer = 1.0f;
+	for (size_t index = 0ull; index < _affectingCities.size(); ++index)
+	{
+		multiplayer *= _affectingCities[index]->CalculateLooseInterestMultiplier(this);
+	}
+
+	percentage -= multiplayer * Time::GetDeltaTime();
+
 	if (percentage < _takingStage1) {
 		percentage = 0.0f;
 		if (ownerEntity != nullptr) {
@@ -517,6 +531,23 @@ void HexTile::EnableAlbumAffected()
 void HexTile::DisableAlbumAffected()
 {
 	particleGenerator->active = false;
+}
+
+void HexTile::AddAffectingCity(City* city)
+{
+	_affectingCities.push_back(city);
+}
+
+void HexTile::RemoveAffectingCity(City* city)
+{
+	for (size_t index = 0ull; index < _affectingCities.size(); ++index)
+	{
+		if (_affectingCities[index] == city)
+		{
+			_affectingCities.erase(_affectingCities.begin() + index);
+			break;
+		}
+	}
 }
 
 void HexTile::BadNote()

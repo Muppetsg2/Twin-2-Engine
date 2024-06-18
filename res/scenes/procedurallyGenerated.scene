@@ -529,6 +529,12 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 85
+    path: res/textures/pictograms/PopularityGainingSpeedPictogram.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites:
   - id: 0
     alias: MiniGame_Blue_Top
@@ -768,6 +774,13 @@ Sprites:
     y: 0
     width: 727
     height: 726
+  - id: 34
+    alias: PopularityGainingSpeedPictogram
+    texture: 85
+    x: 0
+    y: 0
+    width: 64
+    height: 64
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
@@ -1064,7 +1077,6 @@ GameObjects:
           - res/scriptableobjects/MountainsGenerator.so
           - res/scriptableobjects/CityGenerator.so
           - res/scriptableobjects/RadioStationGeneratorSectorBased.so
-          - res/scriptableobjects/HumansGenerator.so
       - id: 7
         enabled: true
         type: MapGenerator
@@ -1435,7 +1447,7 @@ GameObjects:
         fillSubType: !<CW> 0
         fillProgress: 1
     children:
-      []
+     []
   - id: 26
     name: FansCost
     isStatic: false
@@ -1624,7 +1636,7 @@ GameObjects:
         fillSubType: !<CW> 0
         fillProgress: 1
     children:
-      []
+      - 84
   - id: 29
     name: ConcertCost
     isStatic: false
@@ -4820,7 +4832,7 @@ GameObjects:
       id: 5469
       position:
         x: 0
-        y: 321
+        y: 300
         z: 0
       scale:
         x: 1
@@ -4853,5 +4865,81 @@ GameObjects:
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 2
+    children:
+      []
+  - id: 84
+    name: PopularityGainingPictogram
+    isStatic: false
+    isActive: true
+    transform:
+      id: 167
+      position:
+        x: 80
+        y: 80
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 168
+        enabled: true
+        type: Image
+        isTransparent: true
+        sprite: 34
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 64
+        height: 64
+        layer: 0
+        fillEnabled: false
+        fillType: !<2> 2
+        fillSubType: !<CW> 0
+        fillProgress: 0
+    children:
+      []
+  - id: 85
+    name: PopularityGainingPictogram
+    isStatic: false
+    isActive: true
+    transform:
+      id: 169
+      position:
+        x: 400
+        y: -371
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 170
+        enabled: true
+        type: Image
+        isTransparent: true
+        sprite: 34
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 64
+        height: 64
+        layer: 0
+        fillEnabled: false
+        fillType: !<2> 2
+        fillSubType: !<CW> 0
+        fillProgress: 0
     children:
       []

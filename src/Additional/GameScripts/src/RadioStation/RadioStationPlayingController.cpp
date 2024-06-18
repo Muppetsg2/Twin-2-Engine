@@ -7,175 +7,168 @@ using namespace Twin2Engine::UI;
 using namespace glm;
 using namespace std;
 
-RadioStationPlayingController* RadioStationPlayingController::instance = nullptr;
+RadioStationPlayingController* RadioStationPlayingController::_instance = nullptr;
 
 
 void RadioStationPlayingController::Initialize()
 {
-    if (!instance)
+    if (!_instance)
     {
-        instance = this;
+        _instance = this;
     }
-    //_buttonDo = dynamic_cast<Button*>(SceneManager::FindObjectByName("ButtonPlayingDo"));
-    //_buttonRe = dynamic_cast<Button*>(SceneManager::FindObjectByName("ButtonPlayingRe"));
-    //_buttonMi = dynamic_cast<Button*>(SceneManager::FindObjectByName("ButtonPlayingMi"));
-    //_buttonFa = dynamic_cast<Button*>(SceneManager::FindObjectByName("ButtonPlayingFa"));
-    _windowImage = GetGameObject()->GetComponent<Image>();
 
-    _buttonDoHandleId = _buttonDo->GetOnClickEvent().AddCallback([&]() { PlayNote(NoteType::Do); });
-    _buttonReHandleId = _buttonRe->GetOnClickEvent().AddCallback([&]() { PlayNote(NoteType::Re); });
-    _buttonMiHandleId = _buttonMi->GetOnClickEvent().AddCallback([&]() { PlayNote(NoteType::Mi); });
-    _buttonFaHandleId = _buttonFa->GetOnClickEvent().AddCallback([&]() { PlayNote(NoteType::Fa); });
+    _buttonUpHandleId = _buttonUp->GetOnClickEvent().AddCallback([&]() { PlayNote(NoteType::UP); });
+    _buttonRightHandleId = _buttonRight->GetOnClickEvent().AddCallback([&]() { PlayNote(NoteType::RIGHT); });
+    _buttonDownHandleId = _buttonDown->GetOnClickEvent().AddCallback([&]() { PlayNote(NoteType::DOWN); });
+    _buttonLeftHandleId = _buttonLeft->GetOnClickEvent().AddCallback([&]() { PlayNote(NoteType::LEFT); });
 }
 
 void RadioStationPlayingController::Update()
 {
-    if (Input::IsKeyPressed(KEY::S))
+    if (_gameStarted) 
     {
-        PlayNote(NoteType::Do);
-    }
-    if (Input::IsKeyPressed(KEY::A))
-    {
-        PlayNote(NoteType::Re);
-    }
-    if (Input::IsKeyPressed(KEY::D))
-    {
-        PlayNote(NoteType::Mi);
-    }
-    if (Input::IsKeyPressed(KEY::W))
-    {
-        PlayNote(NoteType::Fa);
-    }
-
-    if (_timeLimitTimer > 0.0f)
-    {
-        _timeLimitTimer -= Time::GetDeltaTime();
-        _remainingTimeTextTimer->SetText(to_wstring(static_cast<unsigned>(glm::round(_timeLimitTimer))));
-        if (_timeLimitTimer <= 0.0f)
+        if (Input::IsKeyPressed(KEY::W))
         {
-            EndPlaying();
+            PlayNote(NoteType::UP);
+        }
+        if (Input::IsKeyPressed(KEY::D))
+        {
+            PlayNote(NoteType::RIGHT);
+        }
+        if (Input::IsKeyPressed(KEY::S))
+        {
+            PlayNote(NoteType::DOWN);
+        }
+        if (Input::IsKeyPressed(KEY::A))
+        {
+            PlayNote(NoteType::LEFT);
+        }
+
+        if (_timeLimitCounter > 0.0f)
+        {
+            _timeLimitCounter -= Time::GetDeltaTime();
+            _remainingTimeText->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::vformat(
+                "{:.2f}", 
+                std::make_format_args(_timeLimitCounter)
+            )));
+
+            if (_timeLimitCounter <= 0.0f)
+            {
+                EndPlaying();
+            }
         }
     }
-    else if (_resultShowingTimer > 0.0f)
-    {
-        _resultShowingTimer -= Time::GetDeltaTime();
-        if (_resultShowingTimer <= 0.0f)
+    else {
+        if (_resultShowingCounter > 0.0f)
         {
-            _resultShowingTimer = 0.0f;
+            _resultShowingCounter -= Time::GetDeltaTime();
+            if (_resultShowingCounter <= 0.0f)
+            {
+                _resultShowingCounter = 0.0f;
 
-            GameManager::instance->minigameActive = false;
-            _radioStation->StartTakingOver(_playable, _lastScore);
-            GameManager::instance->minigameActive = false;
-            _resultImage->GetGameObject()->SetActive(false);
-            GetGameObject()->SetActive(false);
+                _radioStation->StartTakingOver(_playable, _score);
+                _resultText->SetActive(false);
+                GetGameObject()->SetActive(false);
 
-            OnEventPlayerFinishedPlaying((Player*)_playable, _radioStation);
+                OnEventPlayerFinishedPlaying((Player*)_playable, _radioStation);
+            }
         }
     }
 }
 
 void RadioStationPlayingController::OnDestroy()
 {
-    if (instance == this)
+    if (_instance == this)
     {
-        instance = nullptr;
+        _instance = nullptr;
     }
 
-    _buttonDo->GetOnClickEvent() -= _buttonDoHandleId;
-    _buttonRe->GetOnClickEvent() -= _buttonReHandleId;
-    _buttonMi->GetOnClickEvent() -= _buttonMiHandleId;
-    _buttonFa->GetOnClickEvent() -= _buttonFaHandleId;
+    _buttonUp->GetOnClickEvent() -= _buttonUpHandleId;
+    _buttonRight->GetOnClickEvent() -= _buttonRightHandleId;
+    _buttonDown->GetOnClickEvent() -= _buttonDownHandleId;
+    _buttonLeft->GetOnClickEvent() -= _buttonLeftHandleId;
 }
 
 void RadioStationPlayingController::Play(RadioStation* radioStation, Playable* playable)
 {
-    // Gdy wywo³uje Player
-    if (dynamic_cast<Player*>(playable)) 
+    // Player
+    if (dynamic_cast<Player*>(playable) != nullptr)
     {
         _radioStation = radioStation;
         _playable = playable;
         _currentNote = 0;
+        _gameStarted = true;
 
         GameManager::instance->minigameActive = true;
-        // CallingEvents
-        //OnEventPlayableStartsPlaying(playable, radioStation);
-        OnEventPlayerStartedPlaying((Player*) playable, radioStation);
+        OnEventPlayerStartedPlaying((Player*)playable, radioStation);
 
         GenerateNotes();
         GetGameObject()->SetActive(true);
-        _windowImage->SetEnable(true);
-        _buttonDo->GetGameObject()->SetActive(true);
-        _buttonRe->GetGameObject()->SetActive(true);
-        _buttonMi->GetGameObject()->SetActive(true);
-        _buttonFa->GetGameObject()->SetActive(true);
-        _remainingTimeTextTimer->GetGameObject()->SetActive(true);
-        _timeLimitTimer = _timeLimit;
-    }
-    // Gdy wywo³uje Enemy
-    else
-    {
-        // TODO: Okreœlanie wyniku dla enemy
-        
-        // CallingEvents
-        //OnEventPlayableStartsPlaying(playable, radioStation);
-
-        radioStation->StartTakingOver(playable, Random::Range(0, 4) / 4.0f);
+        _buttonUp->SetInteractable(true);
+        _buttonRight->SetInteractable(true);
+        _buttonDown->SetInteractable(true);
+        _buttonLeft->SetInteractable(true);
+        _timeLimitCounter = _timeLimit;
+        _remainingTimeText->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::vformat(
+            "{:.2f}",
+            std::make_format_args(_timeLimitCounter)
+        )));
     }
 }
 
 RadioStationPlayingController* RadioStationPlayingController::Instance()
 {
-    return instance;
+    return _instance;
 }
 
 void RadioStationPlayingController::GenerateNotes()
 {
-    size_t notesToGenerate = _generatedNotesNumber;
-    float widthStep = _notesAreaWidth / (notesToGenerate - 1);
+    if (_notesArea != nullptr) {
+        _notesAreaWidth = _notesArea->GetWidth();
+        _notesAreaHeight = _notesArea->GetHeight();
+    }
+
+    float widthStep = _notesAreaWidth / (_generatedNotesNumber - 1);
     float heightStep = _notesAreaHeight / 3.0f;
 
-    vec3 beginOffset(-0.5f * _notesAreaWidth, 0.0f, 0.0f);
+    vec3 beginOffset(-0.5f * _notesAreaWidth, glm::vec2(0.0f));
 
-    _generatedNotes.reserve(notesToGenerate);
-    _notesGameObjects.reserve(notesToGenerate);
-    _notesImages.reserve(notesToGenerate);
+    _generatedNotes.reserve(_generatedNotesNumber);
+    //_notesGameObjects.reserve(_generatedNotesNumber);
+    _notesImages.reserve(_generatedNotesNumber);
 
     NoteType note;
-    GameObject* generated = nullptr;
-    Image* image = nullptr;
+    std::tuple<GameObject*, Image*> generated;
 
-    for (size_t index = 0ull; index < notesToGenerate; ++index)
+    for (size_t index = 0ull; index < _generatedNotesNumber; ++index)
     {
-        note = (NoteType)Random::Range(static_cast<unsigned>(NoteType::Do), static_cast<unsigned>(NoteType::Fa));
-        generated = SceneManager::CreateGameObject(GetTransform());
-        image = generated->AddComponent<Image>();
+        note = (NoteType)Random::Range(static_cast<unsigned>(NoteType::UP), static_cast<unsigned>(NoteType::LEFT));
+        generated = SceneManager::CreateGameObject<Image>(_notesArea == nullptr ? GetTransform() : _notesArea->GetTransform());
 
-        generated->GetTransform()->SetLocalPosition(beginOffset + vec3(index * widthStep, ((unsigned)note) * heightStep, 0.0f));
-        image->SetSprite(_notesSpritesIds[static_cast<size_t>(note)]);
-        image->SetLayer(3);
+        std::get<0>(generated)->GetTransform()->SetLocalPosition(beginOffset + vec3(index * widthStep, glm::vec2(0.0f)));
+        std::get<1>(generated)->SetSprite(_notesSpritesIds[static_cast<size_t>(note)]);
+        //std::get<1>(generated)->SetLayer(1);
 
 
         _generatedNotes.push_back(note);
-        _notesGameObjects.push_back(generated);
-        _notesImages.push_back(image);
+        //_notesGameObjects.push_back(generated);
+        _notesImages.push_back(std::get<1>(generated));
     }
 }
 
 void RadioStationPlayingController::PlayNote(NoteType note)
 {
     // Warunek sprawdzaj¹cy czy nie dosz³o do zagrania po zakoñczeniu gry
-    if (!_generatedNotes.size())
-        return;
+    if (!_generatedNotes.size() || !_gameStarted) return;
 
     if (note == _generatedNotes[_currentNote])
     {
-        GameManager::instance->minigameActive = true;
-        _notesImages[_currentNote]->SetColor(_correctColor);
+        _notesImages[_currentNote]->SetColor(_correctNoteColor);
         ++_correctCounter;
     }
     else
     {
-        _notesImages[_currentNote]->SetColor(_wrongColor);
+        _notesImages[_currentNote]->SetColor(_wrongNoteColor);
     }
 
     ++_currentNote;
@@ -188,47 +181,50 @@ void RadioStationPlayingController::PlayNote(NoteType note)
 
 void RadioStationPlayingController::EndPlaying()
 {
-    //Zerowanie timera aby w updatcie siê wy³¹czy³
-    _timeLimitTimer = 0.0f;
+    // Making Timer Zero for Update
+    _timeLimitCounter = 0.0f;
+    _gameStarted = false;
 
-    // Czyszczenie obiektów nut
+    // Notes Clearing
     _generatedNotes.clear();
 
-    size_t size = _notesGameObjects.size();
-    for (size_t index = 0ull; index < size; ++index)
+    size_t size = _notesImages.size();
+    for (size_t index = 0; index < size; ++index)
     {
-        SceneManager::DestroyGameObject(_notesGameObjects[index]);
+        SceneManager::DestroyGameObject(_notesImages[index]->GetGameObject());
     }
-    _notesGameObjects.clear();
     _notesImages.clear();
 
+    GetGameObject()->SetActive(false);
+    _buttonUp->GetGameObject()->SetActive(false);
+    _buttonRight->GetGameObject()->SetActive(false);
+    _buttonDown->GetGameObject()->SetActive(false);
+    _buttonLeft->GetGameObject()->SetActive(false);
 
-    _windowImage->SetEnable(false);
-    _buttonDo->GetGameObject()->SetActive(false);
-    _buttonRe->GetGameObject()->SetActive(false);
-    _buttonMi->GetGameObject()->SetActive(false);
-    _buttonFa->GetGameObject()->SetActive(false);
-    _remainingTimeTextTimer->GetGameObject()->SetActive(false);
+    _score = (float)_correctCounter / (float)size;
 
-    _lastScore = _correctCounter / (float)size;
+    GameManager::instance->minigameActive = false;
 
     ShowResult();
 }
 
 void RadioStationPlayingController::ShowResult()
 {
-    size_t size = _resultsThresholds.size();
-    for (size_t index = 0ull; index < size; ++index)
-    {
-        if (_lastScore < _resultsThresholds[index])
-        {
-            _resultImage->SetSprite(_resultsImagesIds[index]);
-            break;
-        }
-    }
+    _resultShowingCounter = _resultShowingTime;
+    _resultText->SetActive(true);
 
-    _resultShowingTimer = _resultShowingTime;
-    _resultImage->GetGameObject()->SetActive(true);
+    if (_resultText->GetComponent<Text>() != nullptr)
+        _resultText->GetComponent<Text>()->SetText(
+            std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes
+            (
+                std::to_string(_correctCounter)
+                .append("/")
+                .append
+                (
+                    std::to_string(_generatedNotesNumber)
+                )
+            )
+        );
 }
 
 YAML::Node RadioStationPlayingController::Serialize() const
@@ -241,31 +237,23 @@ YAML::Node RadioStationPlayingController::Serialize() const
     node["notesAreaHeight"] = _notesAreaHeight;
     node["timeLimit"] = _timeLimit;
     node["resultShowingTime"] = _resultShowingTime;
-    node["correctColor"] = _correctColor;
-    node["wrongColor"] = _wrongColor;
+    node["correctNoteColor"] = _correctNoteColor;
+    node["wrongNoteColor"] = _wrongNoteColor;
 
-    vector<size_t> savingNotesSpritesIds;
-    savingNotesSpritesIds.reserve(_notesSpritesIds.size());
-    for (size_t index = 0ull; index < _notesSpritesIds.size(); ++index)
+    node["notesSpritesIds"] = vector<size_t>();
+    for (size_t index = 0; index < _notesSpritesIds.size(); ++index)
     {
-        savingNotesSpritesIds.push_back(SceneManager::GetSpriteSaveIdx(_notesSpritesIds[index]));
+        node["notesSpritesIds"].push_back(SceneManager::GetSpriteSaveIdx(_notesSpritesIds[index]));
     }
-    node["notesSpritesIds"] = savingNotesSpritesIds;
 
-    savingNotesSpritesIds.resize(_resultsImagesIds.size());
-    for (size_t index = 0ull; index < _resultsImagesIds.size(); ++index)
-    {
-        savingNotesSpritesIds[index] = SceneManager::GetSpriteSaveIdx(_resultsImagesIds[index]);
-    }
-    node["resultsSpritesIds"] = _resultsImagesIds;
-    node["resultsThresholds"] = _resultsThresholds;
+    node["resultObjectId"] = _resultText == nullptr ? 0 : _resultText->Id();
+    node["remainingTimeTextTimer"] = _remainingTimeText == nullptr ? 0 : _remainingTimeText->GetId();
+    node["notesAreaImageId"] = _notesArea == nullptr ? 0 : _notesArea->GetId();
 
-    node["buttonDo"] = _buttonDo->GetId();
-    node["buttonRe"] = _buttonRe->GetId();
-    node["buttonMi"] = _buttonMi->GetId();
-    node["buttonFa"] = _buttonFa->GetId();
-    node["resultImage"] = _resultImage->GetId();
-    node["remainingTimeTextTimer"] = _remainingTimeTextTimer->GetId();
+    node["buttonUp"] = _buttonUp->GetId();
+    node["buttonRight"] = _buttonRight->GetId();
+    node["buttonDown"] = _buttonDown->GetId();
+    node["buttonLeft"] = _buttonLeft->GetId();
 
     return node;
 }
@@ -279,21 +267,23 @@ bool RadioStationPlayingController::Deserialize(const YAML::Node& node)
     _notesAreaHeight = node["notesAreaHeight"].as<float>();
     _timeLimit = node["timeLimit"].as<float>();
     _resultShowingTime = node["resultShowingTime"].as<float>();
-    _correctColor = node["correctColor"].as<vec4>();
-    _wrongColor = node["wrongColor"].as<vec4>();
+    _correctNoteColor = node["correctNoteColor"].as<vec4>();
+    _wrongNoteColor = node["wrongNoteColor"].as<vec4>();
 
-    _notesSpritesIds = node["notesSpritesIds"].as<vector<size_t>>();
-    for (size_t index = 0ull; index < _notesSpritesIds.size(); ++index)
+    _notesSpritesIds = std::vector<size_t>();
+    for (size_t index = 0; index < node["notesSpritesIds"].size(); ++index)
     {
-        _notesSpritesIds[index] = SceneManager::GetSprite(_notesSpritesIds[index]);
+        _notesSpritesIds.push_back(SceneManager::GetSprite(node["notesSpritesIds"][index].as<size_t>()));
     }
 
-    _resultsImagesIds = node["resultsSpritesIds"].as<vector<size_t>>();
-    for (size_t index = 0ull; index < _resultsImagesIds.size(); ++index)
-    {
-        _resultsImagesIds[index] = SceneManager::GetSprite(_resultsImagesIds[index]);
-    }
-    _resultsThresholds = node["resultsThresholds"].as<vector<float>>();
+    node["resultObjectId"] = _resultText == nullptr ? 0 : _resultText->Id();
+    node["remainingTimeTextTimer"] = _remainingTimeText == nullptr ? 0 : _remainingTimeText->GetId();
+    node["notesAreaImageId"] = _notesArea == nullptr ? 0 : _notesArea->GetId();
+
+    node["buttonUp"] = _buttonUp->GetId();
+    node["buttonRight"] = _buttonRight->GetId();
+    node["buttonDown"] = _buttonDown->GetId();
+    node["buttonLeft"] = _buttonLeft->GetId();
 
     _buttonDo = (Button*) SceneManager::GetComponentWithId(node["buttonDo"].as<size_t>());
     _buttonRe = (Button*) SceneManager::GetComponentWithId(node["buttonRe"].as<size_t>());

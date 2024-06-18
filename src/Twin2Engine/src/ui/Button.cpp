@@ -48,7 +48,7 @@ void Button::OnHoverPresetEvents(bool isHover)
 
 	if (_displayObjectOnHover && _objectToDisplay != nullptr) 
 	{
-		if (_objectSnapToMouse) {
+		if (_objectSnapToMouse && isHover) {
 			glm::vec2 pos = Input::GetCursorPos() + _objectOffset;
 			_objectToDisplay->GetTransform()->SetGlobalPosition(glm::vec3(pos, 0.f));
 		}

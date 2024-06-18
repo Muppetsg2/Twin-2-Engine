@@ -2167,12 +2167,12 @@ GameObjects:
         notesAreaHeight: 200
         timeLimit: 5
         resultShowingTime: 2
-        correctColor:
+        correctNoteColor:
           x: 0
           y: 1
           z: 0
           w: 1
-        wrongColor:
+        wrongNoteColor:
           x: 1
           y: 0
           z: 0

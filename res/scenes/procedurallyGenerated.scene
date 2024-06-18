@@ -1021,7 +1021,7 @@ GameObjects:
         ssaoBias: 0.00999999978
         blurMSize: 5
       - id: 3
-        enabled: false
+        enabled: true
         type: MovementController
         DragControl: true
         DragScale: 0.00999999978
@@ -1139,6 +1139,7 @@ GameObjects:
         enabled: true
         type: PlaneGenerator
         isTransparent: true
+        transparencyPriority: -1
         rows: 82
         columns: 82
         materials:
@@ -1350,7 +1351,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 29
+        sprite: 30
         color:
           x: 1
           y: 1
@@ -1539,7 +1540,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 29
+        sprite: 30
         color:
           x: 1
           y: 1
@@ -1728,7 +1729,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 29
+        sprite: 30
         color:
           x: 1
           y: 1
@@ -1848,6 +1849,49 @@ GameObjects:
           x: 0.105882354
           y: 0.0823529437
           z: 0.176470593
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+     - 83
+  - id: 83
+    name: NegativeMoneyText
+    isStatic: false
+    isActive: false
+    transform:
+      id: 90
+      position:
+        x: 150
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 166
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00-"
+        font: 1
+        size: 30
+        autoSize: true
+        minSize: 10
+        maxSize: 30
+        width: 300
+        height: 50
+        color:
+          x: 1
+          y: 0
+          z: 0
           w: 1
         alignX: !<LEFT> 0
         alignY: !<BOTTOM> 0

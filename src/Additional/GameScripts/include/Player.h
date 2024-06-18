@@ -87,6 +87,12 @@ private:
 
     // Money
     Twin2Engine::UI::Text* _moneyText;
+    Twin2Engine::UI::Text* _negativeMoneyText;
+
+    glm::vec4 _enoughMoneyColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+    glm::vec4 _notEnoughMoneyColor = glm::vec4(0.5f, 0.0f, 0.0f, 1.0f);
+    float _negativeMoneyTextXOffset = 150.0f;
+    float _negativeMoneyTextLetterWidth = 25.0f;
 
 
     glm::vec4 _abilityCooldownColor = glm::vec4(1.f, 0.f, 1.f, 0.275f);

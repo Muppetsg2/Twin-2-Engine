@@ -160,6 +160,9 @@ void Player::Initialize() {
     _moneyText = SceneManager::FindObjectByName("MoneyText")->GetComponent<Text>();
     _moneyText->SetText(std::wstring(L"Money: ").append(std::to_wstring(static_cast<int>(_money->money))).append(L"$"));
 
+    _negativeMoneyText = SceneManager::FindObjectByName("NegativeMoneyText")->GetComponent<Text>();
+
+
     move = GetGameObject()->GetComponent<PlayerMovement>();
     move->OnFinishMoving += [this](GameObject* gameObject, HexTile* tile) { FinishMove(tile); };
     move->OnStartMoving += [this](GameObject* gameObject, HexTile* tile) { StartMove(tile); };
@@ -176,92 +179,167 @@ void Player::Initialize() {
         m->GetTransform()->SetLocalScale(glm::vec3(8.0f, 8.0, 8.0f));
     }
 }
-
 void Player::Update() {
+    if (Input::IsKeyPressed(KEY::Z))
+    {
+        SPDLOG_INFO("Using Album");
+        AlbumCall();
+    }
+    if (Input::IsKeyPressed(KEY::X))
+    {
+        SPDLOG_INFO("Using Fans");
+        FansMeetingCall();
+    }
+    if (Input::IsKeyPressed(KEY::C))
+    {
+        SPDLOG_INFO("Using Concert");
+        ConcertCall();
+    }
+
+    // CONCERT ABILITY UI MANAGEMENT
+    if (_concertAbility->IsUsed())
+    {
+        _concertCircleImage->SetFillProgress(100.0f - _concertAbility->GetAbilityRemainingTime() / _concertAbility->lastingTime * 100.0f);
+        //concertText->SetText(std::wstring((L"Concert: " + std::to_wstring(static_cast<int>(concertAbility->GetAbilityRemainingTime())) + L"s")));
+        //concertText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(concertAbility->GetAbilityRemainingTime())))));
+    }
+    else if (_concertAbility->IsOnCooldown())
+    {
+        _concertCircleImage->SetFillProgress(_concertAbility->GetCooldownRemainingTime() / _concertAbility->GetCooldown() * 100.0f);
+    }
+    else
+    {
+        _concertButton->SetInteractable(true);
+        _concertText->SetText(std::wstring(std::to_wstring(static_cast<int>(_concertAbility->GetCost())).append(L"$")));
+    }
+
+    _moneyText->SetText(std::wstring(L"Money: ").append(std::to_wstring(static_cast<int>(_money->money))).append(L"$"));
+
+    if (_negativeMoneyText->GetGameObject()->GetActive())
+    {
+        int value = _money->money;
+        int count = 0;
+
+        do {
+            ++count;
+            value /= 10;
+        } while (value);
+        _negativeMoneyText->GetTransform()->SetLocalPosition(vec3(_negativeMoneyTextXOffset + count * _negativeMoneyTextLetterWidth, 0.0f, 0.0f));
+
+        value = _money->money;
+        if (_isHoveringFansMeetingButton)
+        {
+            value -= fansRequiredMoney;
+            
+        }
+        else if (_isHoveringConcertButton)
+        {
+            value -= _concertAbility->GetCost();
+        }
+        else if (_isHoveringAlbumButton)
+        {
+            value -= albumRequiredMoney;
+        }
+        else
+        {
+            _negativeMoneyText->GetGameObject()->SetActive(false);
+        }
+
+        if (value >= 0)
+        {
+            _negativeMoneyText->SetColor(_enoughMoneyColor);
+        }
+        else
+        {
+            _negativeMoneyText->SetColor(_notEnoughMoneyColor);
+        }
+        _negativeMoneyText->SetText(std::to_wstring(value).append(L"$"));
+
+    }
 
     if (!GameManager::instance->gameStarted && _hexIndicator) _hexIndicator->SetActive(false);
 
     if (!GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
-
         UpdatePrices();
 
-        _moneyText->SetText(std::wstring(L"Money: ").append(std::to_wstring(static_cast<int>(_money->money))).append(L"$"));
+        //GameManager::instance->playerInterface.albumText->text = "Album\n" + std::to_string(albumRequiredMoney) + "$";
+        //GameManager::instance->playerInterface.fansText->text = "Fans Meeting\n" + std::to_string(fansRequiredMoney) + "$";
 
-        if (GameManager::instance->gameStarted) {
-
-            if (Input::IsKeyPressed(KEY::Z))
-            {
-                SPDLOG_INFO("Using Album");
-                AlbumCall();
-            }
-            if (Input::IsKeyPressed(KEY::X))
-            {
-                SPDLOG_INFO("Using Fans");
-                FansMeetingCall();
-            }
-            if (Input::IsKeyPressed(KEY::C))
-            {
-                SPDLOG_INFO("Using Concert");
-                ConcertCall();
-            }
-
-            // CONCERT ABILITY UI MANAGEMENT
-            _concertText->SetText(std::wstring(std::to_wstring(static_cast<int>(_concertAbility->GetCost())).append(L"$")));
-
-            if (_concertAbility->IsUsed())
-            {
-                _concertButton->SetInteractable(false);
-                _concertCircleImage->SetFillProgress(100.0f - _concertAbility->GetAbilityRemainingTime() / _concertAbility->lastingTime * 100.0f);
-            }
-            else if (_concertAbility->IsOnCooldown())
-            {
-                _concertButton->SetInteractable(false);
-                _concertCircleImage->SetFillProgress(_concertAbility->GetCooldownRemainingTime() / _concertAbility->GetCooldown() * 100.0f);
-            }
-            else
-            {
-                if (_money->money >= _concertAbility->GetCost()) {
-                    _concertButton->SetInteractable(true);
-                }
-            }
-
-            // CONCERT ABILITY UI MANAGEMENT
+        AlbumUpdate();
+        // CONCERT ABILITY UI MANAGEMENT
+        if (currAlbumTime > 0.0f)
+        {
+            _albumCircleImage->SetFillProgress(100.0f - currAlbumTime / albumTime * 100.0f);
+            //albumText->SetText(std::wstring((L"Album: " + std::to_wstring(static_cast<int>(currAlbumTime)) + L"s")));
+            //albumText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currAlbumTime)))));
+        }
+        else if (currAlbumCooldown > 0.0f)
+        {
+            _albumCircleImage->SetFillProgress(currAlbumCooldown / usedAlbumCooldown * 100.0f);
+            //albumText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currAlbumCooldown)) + L"s")));
+            //albumText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currAlbumCooldown)))));
+        }
+        else
+        {
+            //if (money->money < concertAbility->GetCost()) {
+            //    concertButton->SetInteractable(false);
+            //}
+            //else {
+            //    concertButton->SetInteractable(true);
+            //}
+            _albumButton->SetInteractable(true);
             _albumText->SetText(std::wstring(std::to_wstring(static_cast<int>(albumRequiredMoney)).append(L"$")));
+        }
 
-            AlbumUpdate();
-            if (currAlbumTime > 0.0f)
-            {
-                _albumCircleImage->SetFillProgress(100.0f - currAlbumTime / albumTime * 100.0f);
-            }
-            else if (currAlbumCooldown > 0.0f)
-            {
-                _albumCircleImage->SetFillProgress(currAlbumCooldown / usedAlbumCooldown * 100.0f);
-            }
-            else
-            {
-                if (_money->money >= albumRequiredMoney) {
-                    _albumButton->SetInteractable(true);
-                }
-            }
-
-            // FANS MEETINNG ABILITY UI MANAGEMENT
+        UpdateFans();
+        // FANS MEETINNG ABILITY UI MANAGEMENT
+        if (currFansTime > 0.0f)
+        {
+            _fansMeetingCircleImage->SetFillProgress(100.0f - currFansTime / fansTime * 100.0f);
+            //fansMeetingText->SetText(std::wstring((L"Fans Meeting: " + std::to_wstring(static_cast<int>(currFansTime)) + L"s")));
+            //fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currFansTime)))));
+        }
+        else if (currFansCooldown > 0.0f)
+        {
+            _fansMeetingCircleImage->SetFillProgress(currFansCooldown / usedFansCooldown * 100.0f);
+            //fansMeetingText->SetText(std::wstring((L"Cooldown: " + std::to_wstring(static_cast<int>(currFansCooldown)) + L"s")));
+            //fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(glm::round(currFansCooldown)))));
+        }
+        else
+        {
+            //if (money->money < concertAbility->GetCost()) {
+            //    concertButton->SetInteractable(false);
+            //}
+            //else {
+            //    concertButton->SetInteractable(true);
+            //}
+            _fansMeetingButton->SetInteractable(true);
             _fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(fansRequiredMoney)).append(L"$")));
+        }
 
-            UpdateFans();
-            if (currFansTime > 0.0f)
+        if (GameManager::instance->gameStarted)
+        {
+            // FANS MEETING INTERFACE ELEMENT
+            if (_isHoveringFansMeetingButton && !_isShowingFansMeetingAffectedTiles)
             {
-                _fansMeetingCircleImage->SetFillProgress(100.0f - currFansTime / fansTime * 100.0f);
+                ShowAffectedTiles();
+
+                _fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
+                _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep2);
+
+                _negativeMoneyText->GetGameObject()->SetActive(true);
             }
-            else if (currFansCooldown > 0.0f)
+            else if (!_isHoveringFansMeetingButton && _isShowingFansMeetingAffectedTiles)
             {
-                _fansMeetingCircleImage->SetFillProgress(currFansCooldown / usedFansCooldown * 100.0f);
+                HideAffectedTiles();
+
+                //fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
+                _fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+                _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
+
+                //_negativeMoneyText->GetGameObject()->SetActive(false);
             }
-            else
-            {
-                if (_money->money >= fansRequiredMoney) {
-                    _fansMeetingButton->SetInteractable(true);
-                }
-            }
+            _isHoveringFansMeetingButton = false;
 
             // CONCERT INTERFACE ELEMENT
             if (!_concertAbility->IsUsed() && !_concertAbility->IsOnCooldown())
@@ -272,11 +350,13 @@ void Player::Update() {
                     _isShowingConcertPossible = true;
 
                     _concertButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
-                    _audioComponent->SetAudio(_onHoverClickAudio);
+                    _audioComponent->SetAudio("res/music/Abilities/UI/OnHoverClick.mp3");
                     _audioComponent->Play();
 
                     _concertButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
                     _concertButtonFrameImage->SetSprite(_spriteButtonStep2);
+
+                    _negativeMoneyText->GetGameObject()->SetActive(true);
                 }
                 else if (!_isHoveringConcertButton && _isShowingConcertPossible)
                 {
@@ -284,11 +364,13 @@ void Player::Update() {
                     _isShowingConcertPossible = false;
 
                     _concertButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
-                    _audioComponent->SetAudio(_offHoverClickAudio);
+                    _audioComponent->SetAudio("res/music/Abilities/UI/OffHoverClick.mp3");
                     _audioComponent->Play();
 
                     _concertButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
                     _concertButtonFrameImage->SetSprite(_spriteButtonStep1);
+
+                    //_negativeMoneyText->GetGameObject()->SetActive(false);
                 }
                 _isHoveringConcertButton = false;
             }
@@ -305,11 +387,13 @@ void Player::Update() {
                     _isShowingAlbumPossible = true;
 
                     _albumButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
-                    _audioComponent->SetAudio(_onHoverClickAudio);
+                    _audioComponent->SetAudio("res/music/Abilities/UI/OnHoverClick.mp3");
                     _audioComponent->Play();
 
                     _albumButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
                     _albumButtonFrameImage->SetSprite(_spriteButtonStep2);
+
+                    _negativeMoneyText->GetGameObject()->SetActive(true);
                 }
                 else if (!_isHoveringAlbumButton && _isShowingAlbumPossible)
                 {
@@ -320,50 +404,18 @@ void Player::Update() {
                     _isShowingAlbumPossible = false;
 
                     _albumButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
-                    _audioComponent->SetAudio(_offHoverClickAudio);
+                    _audioComponent->SetAudio("res/music/Abilities/UI/OffHoverClick.mp3");
                     _audioComponent->Play();
 
+                    //albumButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
                     _albumButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
                     _albumButtonFrameImage->SetSprite(_spriteButtonStep1);
+
+                    //_negativeMoneyText->GetGameObject()->SetActive(false);
                 }
                 _isHoveringAlbumButton = false;
             }
-
-            // FANS MEETING INTERFACE ELEMENT
-            if (_isHoveringFansMeetingButton && !_isShowingFansMeetingAffectedTiles)
-            {
-                ShowAffectedTiles();
-
-                _fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
-                _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep2);
-            }
-            else if (!_isHoveringFansMeetingButton && _isShowingFansMeetingAffectedTiles)
-            {
-                HideAffectedTiles();
-
-                _fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
-                _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
-            }
-            _isHoveringFansMeetingButton = false;
         }
-
-        /*
-        if (move != nullptr) {
-            if (move->reachEnd) {
-                if (isFansActive) {
-                    if (CurrTile != tileBefore) {
-                        FansExit();
-                    }
-                }
-                //if (!Input::GetMouseButtonDown(0)) {
-                //    tileBefore = CurrTile;
-                //}
-            }
-        }
-        else {
-            SPDLOG_ERROR("Move was nullptr");
-        }
-        */
     }
 }
 
@@ -673,6 +725,10 @@ YAML::Node Player::Serialize() const
     node["type"] = "Player";
     node["abilityActiveColor"] = _abilityActiveColor;
     node["abilityCooldownColor"] = _abilityCooldownColor;
+    node["enoughMoneyColor"] = _enoughMoneyColor;
+    node["notEnoughMoneyColor"] = _notEnoughMoneyColor;
+    node["negativeMoneyTextXOffset"] = _negativeMoneyTextXOffset;
+    node["negativeMoneyTextLetterWidth"] = _negativeMoneyTextLetterWidth;
     if (_starPrefab != nullptr) {
         node["starPrefab"] = _starPrefab->GetId();
     }
@@ -697,6 +753,10 @@ bool Player::Deserialize(const YAML::Node& node)
 
     _abilityActiveColor = node["abilityActiveColor"].as<vec4>();
     _abilityCooldownColor = node["abilityCooldownColor"].as<vec4>();
+    _enoughMoneyColor = node["enoughMoneyColor"].as<vec4>();
+    _notEnoughMoneyColor = node["notEnoughMoneyColor"].as<vec4>();
+    _negativeMoneyTextXOffset = node["negativeMoneyTextXOffset"].as<float>();
+    _negativeMoneyTextLetterWidth = node["negativeMoneyTextLetterWidth"].as<float>();
 
     if (node["starPrefab"]) {
         _starPrefab = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["starPrefab"].as<size_t>()));
@@ -724,6 +784,11 @@ void Player::DrawEditor()
 
         ImGui::ColorEdit4("AbilityActiveColor", (float*)(&_abilityActiveColor));
         ImGui::ColorEdit4("AbilityCooldownColor", (float*)(&_abilityCooldownColor));
+        ImGui::ColorEdit4("EnoughMoneyColor", (float*)(&_enoughMoneyColor));
+        ImGui::ColorEdit4("NotEnoughMoneyColor", (float*)(&_notEnoughMoneyColor));
+        ImGui::InputFloat("NegativeMoneyTextXOffset", &_negativeMoneyTextXOffset);
+        ImGui::InputFloat("NegativeMoneyTextLetterWidth", &_negativeMoneyTextLetterWidth);
+
         // TODO: Zrobic
         if (ImGui::Button("Show Affected"))
             ShowAffectedTiles();

@@ -98,6 +98,7 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
                 instantiated->SetIsStatic(true);
                 //GameObject* instantiated = GameObject::Instantiate(prefabCity, found->GetTransform());
                 CitiesManager::AddCity(instantiated);
+                instantiated->GetComponent<City>()->StartAffectingTiles(found->GetComponent<HexTile>());
             }
         }
     }

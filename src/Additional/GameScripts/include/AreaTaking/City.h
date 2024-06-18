@@ -19,6 +19,7 @@ class City : public Twin2Engine::Core::Component
 
 	size_t _cityPictogramSpriteId;
 	size_t _concertRoadCityPictogramSpriteId;
+	size_t _radius = 1ull;
 
 	std::vector<HexTile*> _affectedTiles;
 

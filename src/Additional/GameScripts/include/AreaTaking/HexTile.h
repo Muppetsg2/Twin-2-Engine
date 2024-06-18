@@ -37,7 +37,8 @@ class HexTile : public Twin2Engine::Core::Component
 
 	std::vector<City*> _affectingCities;
 	
-	//Twin2Engine::Core::GameObject* affected;
+	size_t _textureCityStar = 0;
+	size_t _textureCityBlackStar = 0;
 
 	void TakeOver();
 	void LoseInfluence();
@@ -47,7 +48,8 @@ class HexTile : public Twin2Engine::Core::Component
 	void CheckRoundPattern();
 public:
 	HexTileTextureData* texturesData;
-	ParticleGenerator* particleGenerator;
+	ParticleGenerator* particleGenerator = nullptr;
+	ParticleGenerator* pgCity = nullptr;
 
 
 	bool isFighting = false;

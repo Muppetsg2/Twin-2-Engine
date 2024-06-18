@@ -68,6 +68,7 @@ Root:
       type: City
       cityPictogramSpriteId: 0
       concertRoadCityPictogramSpriteId: 1
+      radius: 1
 GameObjects:
   - id: 1
     name: CityWorldCanva

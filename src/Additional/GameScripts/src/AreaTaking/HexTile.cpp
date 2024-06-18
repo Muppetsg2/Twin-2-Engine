@@ -35,6 +35,29 @@ void HexTile::TakeOver()
 	{
 		multiplayer *= _affectingCities[index]->CalculateTakingOverSpeedMultiplier(this);
 	}
+
+	if (ownerEntity)
+	{
+		if (multiplayer > 1.0f)
+		{
+			pgCity->textureId = _textureCityStar;
+			pgCity->active = true;
+		}
+		else if (multiplayer < 1.0f)
+		{
+			pgCity->textureId = _textureCityBlackStar;
+			pgCity->active = true;
+		}
+		else
+		{
+			pgCity->active = false;
+		}
+	}
+	else
+	{
+		pgCity->active = false;
+	}
+
 	takeOverSpeed *= multiplayer;
 
 	if (ownerEntity != nullptr && ownerEntity != occupyingEntity) {
@@ -66,6 +89,28 @@ void HexTile::LoseInfluence()
 	for (size_t index = 0ull; index < _affectingCities.size(); ++index)
 	{
 		multiplayer *= _affectingCities[index]->CalculateLooseInterestMultiplier(this);
+	}
+
+	if (ownerEntity)
+	{
+		if (multiplayer < 1.0f)
+		{
+			pgCity->textureId = _textureCityStar;
+			pgCity->active = true;
+		}
+		else if (multiplayer > 1.0f)
+		{
+			pgCity->textureId = _textureCityBlackStar;
+			pgCity->active = true;
+		}
+		else
+		{
+			pgCity->active = false;
+		}
+	}
+	else
+	{
+		pgCity->active = false;
 	}
 
 	percentage -= multiplayer * Time::GetDeltaTime();
@@ -386,6 +431,7 @@ void HexTile::Initialize()
 	}
 
 	particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/ArrowParticle.png", 3, 0.5f, 0.0f, 6.0f, 2.0f, 0.16f, 0.2f, 0.3f);
+	pgCity = new ParticleGenerator("origin/ParticleShader", "res/textures/particles/starParticle.png", 5, 0.4f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
 }
 
 void HexTile::OnDestroy()
@@ -403,8 +449,13 @@ void HexTile::OnDestroy()
 		SPDLOG_WARN("Concert Road Instance was nullptr!");
 	texturesData = nullptr;
 
-	if (particleGenerator != nullptr) {
+	if (particleGenerator) {
 		delete particleGenerator;
+		particleGenerator = nullptr;
+	}
+	if (pgCity) {
+		delete pgCity;
+		pgCity = nullptr;
 	}
 }
 
@@ -452,6 +503,7 @@ void HexTile::InitializeAdjacentTiles()
 	_adjacentTiles.shrink_to_fit();
 
 	particleGenerator->SetStartPosition(GetTransform()->GetGlobalPosition());
+	pgCity->SetStartPosition(GetTransform()->GetGlobalPosition());
 	//particleGenerator->active = true;
 	
 	//GetGameObject()->OnActiveChangedEvent.AddCallback([&](GameObject* go) {
@@ -656,6 +708,11 @@ YAML::Node HexTile::Serialize() const
 		node["borderJoints"].push_back(obj->Id());
 	}
 
+	//node["_textureCityStar"] = SceneManager::GetTexture2DSaveIdx(_textureCityStar);
+	//node["_textureCityBlackStar"] = SceneManager::GetTexture2DSaveIdx(_textureCityBlackStar);
+	node["_textureCityStar"] = TextureManager::GetTexture2DPath(_textureCityStar);
+	node["_textureCityBlackStar"] = TextureManager::GetTexture2DPath(_textureCityBlackStar);
+
 	return node;
 }
 
@@ -682,6 +739,11 @@ bool HexTile::Deserialize(const YAML::Node& node)
 			borderJoints.push_back(SceneManager::GetGameObjectWithId(bj.as<size_t>()));
 		}
 	}
+
+	//_textureCityStar = SceneManager::GetTexture2D(node["textureCityStar"].as<size_t>());
+	//_textureCityBlackStar = SceneManager::GetTexture2D(node["textureCityBlackStar"].as<size_t>());
+	_textureCityStar = TextureManager::LoadTexture2D(node["textureCityStar"].as<string>())->GetId();
+	_textureCityBlackStar = TextureManager::LoadTexture2D(node["textureCityBlackStar"].as<string>())->GetId();
 
 	return true;
 }

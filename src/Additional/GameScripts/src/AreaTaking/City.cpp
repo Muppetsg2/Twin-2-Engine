@@ -44,11 +44,17 @@ void City::SetConcertRoadCity(bool isConcertRoadCity)
 
 		if (_isConcertRoadCity)
 		{
+			for (size_t index = 0ull; index < _affectedTiles.size(); ++index)
+			{
+				_affectedTiles[index]->RemoveAffectingCity(this);
+			}
+			_affectedTiles.clear();
 			_imagePictogram->GetTransform()->GetParent()->GetGameObject()->SetActive(true);
 			_imagePictogram->SetSprite(_concertRoadCityPictogramSpriteId);
 		}
 		else
 		{
+			StartAffectingTiles(_occupiedHexTile);
 			_imagePictogram->GetTransform()->GetParent()->GetGameObject()->SetActive(false);
 			_imagePictogram->SetSprite(_cityPictogramSpriteId);
 		}
@@ -98,7 +104,6 @@ void City::StartAffectingTiles(HexTile* hexTile)
 
 	HexagonalTile* adjacentTiles[6];
 
-	size_t _radius = 1ull;
 
 	for (size_t index = 0ull; index < _radius; ++index)
 	{
@@ -123,8 +128,11 @@ void City::StartAffectingTiles(HexTile* hexTile)
 		processedTiles.clear();
 		processedTiles.insert(tempAffectedTiles.begin(), tempAffectedTiles.end());
 		affectedTiles.insert(tempAffectedTiles.begin(), tempAffectedTiles.end());
+		SPDLOG_INFO("CITY temp: {}", tempAffectedTiles.size());
 		tempAffectedTiles.clear();
 	}
+
+	processedTiles.clear();
 
 	_affectedTiles.clear();
 	_affectedTiles.reserve(affectedTiles.size());
@@ -148,6 +156,7 @@ YAML::Node City::Serialize() const
 	node["type"] = "City";
 	node["cityPictogramSpriteId"] = SceneManager::GetSpriteSaveIdx(_cityPictogramSpriteId);
 	node["concertRoadCityPictogramSpriteId"] = SceneManager::GetSpriteSaveIdx(_concertRoadCityPictogramSpriteId);
+	node["radius"] = _radius;
 
 	return node;
 }
@@ -158,6 +167,7 @@ bool City::Deserialize(const YAML::Node& node)
 
 	_cityPictogramSpriteId = SceneManager::GetSprite(node["cityPictogramSpriteId"].as<size_t>());
 	_concertRoadCityPictogramSpriteId = SceneManager::GetSprite(node["concertRoadCityPictogramSpriteId"].as<size_t>());
+	_radius = node["radius"].as<size_t>();
 
 	return true;
 }
@@ -172,6 +182,9 @@ void City::DrawEditor()
 	if (ImGui::CollapsingHeader(name.c_str())) {
 		if (Component::DrawInheritedFields()) return;
 
+		int radius = _radius;
+		ImGui::InputInt("Radius", &radius);
+		_radius = radius;
 	}
 }
 

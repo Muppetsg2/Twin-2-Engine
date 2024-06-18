@@ -3,7 +3,7 @@
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Physic;
-//using namespace Twin2Engine::UI;
+using namespace Twin2Engine::UI;
 
 using namespace Tilemap;
 
@@ -14,7 +14,7 @@ using namespace glm;
 
 void City::Initialize()
 {
-
+	_imagePictogram = GetGameObject()->GetComponentInChildren<Image>();
 }
 
 void City::Update()
@@ -24,7 +24,35 @@ void City::Update()
 
 void City::OnDestroy()
 {
+	for (size_t index = 0ull; index < _affectedTiles.size(); ++index)
+	{
+		//_affectedTiles[index]->RemoveAffectingCity(this);
+	}
+	_affectedTiles.clear();
+}
 
+bool City::IsConcertRoadCity() const
+{
+	return _isConcertRoadCity;
+}
+
+void City::SetConcertRoadCity(bool isConcertRoadCity)
+{
+	if (isConcertRoadCity != _isConcertRoadCity)
+	{
+		_isConcertRoadCity = isConcertRoadCity;
+
+		if (_isConcertRoadCity)
+		{
+			_imagePictogram->GetTransform()->GetParent()->GetGameObject()->SetActive(true);
+			_imagePictogram->SetSprite(_concertRoadCityPictogramSpriteId);
+		}
+		else
+		{
+			_imagePictogram->GetTransform()->GetParent()->GetGameObject()->SetActive(false);
+			_imagePictogram->SetSprite(_cityPictogramSpriteId);
+		}
+	}
 }
 
 float City::CalculateLooseInterestMultiplier(HexTile* hexTile)
@@ -60,10 +88,12 @@ float City::CalculateTakingOverSpeedMultiplier(HexTile* hexTile)
 void City::StartAffectingTiles(HexTile* hexTile)
 {
 	_occupiedHexTile = hexTile;
+
 	unordered_set<HexagonalTile*> affectedTiles;
 	unordered_set<HexagonalTile*> tempAffectedTiles;
 	unordered_set<HexagonalTile*> processedTiles;
 
+	affectedTiles.insert(_occupiedHexTile->GetMapHexTile()->tile);
 	processedTiles.insert(_occupiedHexTile->GetMapHexTile()->tile);
 
 	HexagonalTile* adjacentTiles[6];
@@ -96,9 +126,15 @@ void City::StartAffectingTiles(HexTile* hexTile)
 		tempAffectedTiles.clear();
 	}
 
+	_affectedTiles.clear();
+	_affectedTiles.reserve(affectedTiles.size());
+
+	HexTile* tileHexTile = nullptr;
 	for (HexagonalTile* tile : affectedTiles)
 	{
-		tile->GetGameObject()->GetComponent<HexTile>()->AddAffectingCity(this);
+		tileHexTile = tile->GetGameObject()->GetComponent<HexTile>();
+		tileHexTile->AddAffectingCity(this);
+		_affectedTiles.push_back(tileHexTile);
 	}
 
 	affectedTiles.clear();
@@ -110,6 +146,8 @@ YAML::Node City::Serialize() const
 	YAML::Node node = Component::Serialize();
 
 	node["type"] = "City";
+	node["cityPictogramSpriteId"] = SceneManager::GetSpriteSaveIdx(_cityPictogramSpriteId);
+	node["concertRoadCityPictogramSpriteId"] = SceneManager::GetSpriteSaveIdx(_concertRoadCityPictogramSpriteId);
 
 	return node;
 }
@@ -118,6 +156,8 @@ bool City::Deserialize(const YAML::Node& node)
 {
 	if (!Component::Deserialize(node)) return false;
 
+	_cityPictogramSpriteId = SceneManager::GetSprite(node["cityPictogramSpriteId"].as<size_t>());
+	_concertRoadCityPictogramSpriteId = SceneManager::GetSprite(node["concertRoadCityPictogramSpriteId"].as<size_t>());
 
 	return true;
 }

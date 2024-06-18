@@ -19,6 +19,13 @@ Sprites:
     y: 0
     width: 64
     height: 64
+  - id: 1
+    alias: CityPictogram
+    texture: 1
+    x: 0
+    y: 0
+    width: 64
+    height: 64
 Fonts: ~
 Audio: ~
 Materials:
@@ -59,9 +66,11 @@ Root:
     - id: 2
       enabled: true
       type: City
+      cityPictogramSpriteId: 0
+      concertRoadCityPictogramSpriteId: 1
 GameObjects:
   - id: 1
-    name: CooldownTimer
+    name: CityWorldCanva
     isStatic: false
     isActive: false
     transform:

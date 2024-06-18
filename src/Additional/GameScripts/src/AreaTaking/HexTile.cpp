@@ -370,6 +370,8 @@ void HexTile::CheckRoundPattern()
 
 void HexTile::Initialize()
 {
+	_affectingCities.clear();
+
 	_mapHexTile = GetGameObject()->GetComponent<MapHexTile>();
 	_meshRenderer = GetGameObject()->GetComponent<MeshRenderer>();
 

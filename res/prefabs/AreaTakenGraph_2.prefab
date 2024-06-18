@@ -1201,6 +1201,6 @@ Root:
       enabled: true
       type: AreaTakenGraph
       layer: 0
-      topCirclePrefab: 18
+      topHexagonPrefab: 18
       edgePrefab: 10
-      bottomCirclePrefab: 7
+      topValueHexagonPrefab: 7

@@ -319,7 +319,7 @@ void AreaTakenGraph::UpdateEdge()
 	}
 }
 
-void AreaTakenGraph::UpdateBottomHexagon()
+void AreaTakenGraph::UpdateTopValueHexagon()
 {
 	
 }
@@ -394,14 +394,14 @@ void AreaTakenGraph::Update()
 	}
 	UpdateTopHexagon();
 	UpdateEdge();
-	UpdateBottomHexagon();
+	UpdateTopValueHexagon();
 }
 
 void AreaTakenGraph::OnDestroy()
 {
 	_topHexagons.clear();
 	_edges.clear();
-	_bottomHexagon = nullptr;
+	_topValueHexagon = nullptr;
 }
 
 YAML::Node AreaTakenGraph::Serialize() const
@@ -409,9 +409,9 @@ YAML::Node AreaTakenGraph::Serialize() const
 	YAML::Node node = Component::Serialize();
 	node["type"] = "AreaTakenGraph";
 	node["layer"] = _layer;
-	node["topCirclePrefab"] = SceneManager::GetPrefabSaveIdx(_topHexagonPrefabId);
+	node["topHexagonPrefab"] = SceneManager::GetPrefabSaveIdx(_topHexagonPrefabId);
 	node["edgePrefab"] = SceneManager::GetPrefabSaveIdx(_edgePrefabId);
-	node["bottomCirclePrefab"] = SceneManager::GetPrefabSaveIdx(_bottomHexagonPrefabId);
+	node["topValueHexagonPrefab"] = SceneManager::GetPrefabSaveIdx(_topValueHexagonPrefabId);
 	return node;
 }
 
@@ -426,20 +426,20 @@ bool AreaTakenGraph::Deserialize(const YAML::Node& node)
 	}
 	isGood = isGood && node["layer"];
 
-	if (node["topCirclePrefab"]) {
-		_topHexagonPrefabId = SceneManager::GetPrefab(node["topCirclePrefab"].as<size_t>());
+	if (node["topHexagonPrefab"]) {
+		_topHexagonPrefabId = SceneManager::GetPrefab(node["topHexagonPrefab"].as<size_t>());
 	}
-	isGood = isGood && node["topCirclePrefab"];
+	isGood = isGood && node["topHexagonPrefab"];
 
 	if (node["edgePrefab"]) {
 		_edgePrefabId = SceneManager::GetPrefab(node["edgePrefab"].as<size_t>());
 	}
 	isGood = isGood && node["edgePrefab"];
 
-	if (node["bottomCirclePrefab"]) {
-		_bottomHexagonPrefabId = SceneManager::GetPrefab(node["bottomCirclePrefab"].as<size_t>());
+	if (node["topValueHexagonPrefab"]) {
+		_topValueHexagonPrefabId = SceneManager::GetPrefab(node["topValueHexagonPrefab"].as<size_t>());
 	}
-	isGood = isGood && node["bottomCirclePrefab"];
+	isGood = isGood && node["topValueHexagonPrefab"];
 
 	return isGood;
 }
@@ -467,9 +467,9 @@ void AreaTakenGraph::DrawEditor() {
 			SetEdgePrefabId(prefabId);
 		}
 
-		prefabId = _bottomHexagonPrefabId;
-		if (PrefabDropDown(string("Bottom Hexagon Prefab##").append(id).c_str(), &prefabId, id)) {
-			SetBottomHexagonPrefabId(prefabId);
+		prefabId = _topValueHexagonPrefabId;
+		if (PrefabDropDown(string("Top Value Hexagon Prefab##").append(id).c_str(), &prefabId, id)) {
+			SetTopValueHexagonPrefabId(prefabId);
 		}
 
 		ImGui::DragFloat(string("Taken Percentage##").append(id).c_str(), &_takenPercentage);
@@ -498,10 +498,10 @@ void AreaTakenGraph::SetEdgePrefabId(size_t prefabId)
 	}
 }
 
-void AreaTakenGraph::SetBottomHexagonPrefabId(size_t prefabId)
+void AreaTakenGraph::SetTopValueHexagonPrefabId(size_t prefabId)
 {
-	if (_bottomHexagonPrefabId != prefabId) {
-		_bottomHexagonPrefabId = prefabId;
+	if (_topValueHexagonPrefabId != prefabId) {
+		_topValueHexagonPrefabId = prefabId;
 	}
 }
 
@@ -520,9 +520,9 @@ size_t AreaTakenGraph::GetEdgePrefabId() const
 	return _edgePrefabId;
 }
 
-size_t AreaTakenGraph::GetBottomHexagonPrefabId() const
+size_t AreaTakenGraph::GetTopValueHexagonPrefabId() const
 {
-	return _bottomHexagonPrefabId;
+	return _topValueHexagonPrefabId;
 }
 
 std::vector<GameObject*> AreaTakenGraph::GetTopHexagons() const
@@ -535,7 +535,7 @@ std::vector<GameObject*> AreaTakenGraph::GetEdge() const
 	return _edges;
 }
 
-GameObject* AreaTakenGraph::GetBottomHexagon() const
+GameObject* AreaTakenGraph::GetTopValueHexagon() const
 {
-	return _bottomHexagon;
+	return _topValueHexagon;
 }

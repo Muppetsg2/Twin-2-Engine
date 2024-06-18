@@ -1,4 +1,9 @@
 #include <RadioStation/RadioStationPlayingController.h>
+#include <ui/Button.h>
+#include <ui/Image.h>
+#include <core/Time.h>
+#include <core/Input.h>
+#include <Player.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
@@ -17,10 +22,17 @@ void RadioStationPlayingController::Initialize()
         _instance = this;
     }
 
-    _buttonUpHandleId = _buttonUp->GetOnClickEvent().AddCallback([&]() { PlayNote(NoteType::UP); });
-    _buttonRightHandleId = _buttonRight->GetOnClickEvent().AddCallback([&]() { PlayNote(NoteType::RIGHT); });
-    _buttonDownHandleId = _buttonDown->GetOnClickEvent().AddCallback([&]() { PlayNote(NoteType::DOWN); });
-    _buttonLeftHandleId = _buttonLeft->GetOnClickEvent().AddCallback([&]() { PlayNote(NoteType::LEFT); });
+    while (_notesSpritesIds.size() < size<NoteType>()) {
+        _notesSpritesIds.push_back(SceneManager::GetSprite(0));
+    }
+
+    if (_buttonUpHandleId == -1 && _buttonUp != nullptr) _buttonUpHandleId = _buttonUp->GetOnClickEvent() += [&]() -> void { PlayNote(NoteType::UP); };
+    if (_buttonRightHandleId == -1 && _buttonRight != nullptr) _buttonRightHandleId = _buttonRight->GetOnClickEvent() += [&]() -> void { PlayNote(NoteType::RIGHT); };
+    if (_buttonDownHandleId == -1 && _buttonDown != nullptr) _buttonDownHandleId = _buttonDown->GetOnClickEvent() += [&]() -> void { PlayNote(NoteType::DOWN); };
+    if (_buttonLeftHandleId == -1 && _buttonLeft != nullptr) _buttonLeftHandleId = _buttonLeft->GetOnClickEvent() += [&]() -> void { PlayNote(NoteType::LEFT); };
+
+    GetGameObject()->SetActive(false);
+    if (_resultText != nullptr) _resultText->SetActive(false);
 }
 
 void RadioStationPlayingController::Update()
@@ -47,10 +59,20 @@ void RadioStationPlayingController::Update()
         if (_timeLimitCounter > 0.0f)
         {
             _timeLimitCounter -= Time::GetDeltaTime();
-            _remainingTimeText->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::vformat(
-                "{:.2f}", 
-                std::make_format_args(_timeLimitCounter)
-            )));
+
+            _timeLimitCounter = _timeLimitCounter < 0.f ? 0.f : _timeLimitCounter;
+
+            if (_remainingTimeText != nullptr) {
+
+                _remainingTimeText->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::vformat(
+                    "{:.2f}s",
+                    std::make_format_args(_timeLimitCounter)
+                )));
+
+                if (_timeLimitCounter <= _timeChangeColorPercent / 100.f * _timeLimit) {
+                    _remainingTimeText->SetColor(glm::vec4(1.f, glm::vec2(0.141176477f), 1.f));
+                }
+            }
 
             if (_timeLimitCounter <= 0.0f)
             {
@@ -67,7 +89,7 @@ void RadioStationPlayingController::Update()
                 _resultShowingCounter = 0.0f;
 
                 _radioStation->StartTakingOver(_playable, _score);
-                _resultText->SetActive(false);
+                if (_resultText != nullptr) _resultText->SetActive(false);
                 GetGameObject()->SetActive(false);
 
                 OnEventPlayerFinishedPlaying((Player*)_playable, _radioStation);
@@ -83,10 +105,22 @@ void RadioStationPlayingController::OnDestroy()
         _instance = nullptr;
     }
 
-    _buttonUp->GetOnClickEvent() -= _buttonUpHandleId;
-    _buttonRight->GetOnClickEvent() -= _buttonRightHandleId;
-    _buttonDown->GetOnClickEvent() -= _buttonDownHandleId;
-    _buttonLeft->GetOnClickEvent() -= _buttonLeftHandleId;
+    if (_buttonUpHandleId != -1) {
+        _buttonUp->GetOnClickEvent() -= _buttonUpHandleId;
+        _buttonUpHandleId = -1;
+    }
+    if (_buttonRightHandleId != -1) {
+        _buttonRight->GetOnClickEvent() -= _buttonRightHandleId;
+        _buttonRightHandleId = -1;
+    }
+    if (_buttonDownHandleId != -1) {
+        _buttonDown->GetOnClickEvent() -= _buttonDownHandleId;
+        _buttonDownHandleId = -1;
+    }
+    if (_buttonLeftHandleId != -1) {
+        _buttonLeft->GetOnClickEvent() -= _buttonLeftHandleId;
+        _buttonLeftHandleId = -1;
+    }
 }
 
 void RadioStationPlayingController::Play(RadioStation* radioStation, Playable* playable)
@@ -98,6 +132,8 @@ void RadioStationPlayingController::Play(RadioStation* radioStation, Playable* p
         _playable = playable;
         _currentNote = 0;
         _gameStarted = true;
+        _correctCounter = 0;
+        _score = 0.f;
 
         GameManager::instance->minigameActive = true;
         OnEventPlayerStartedPlaying((Player*)playable, radioStation);
@@ -109,10 +145,15 @@ void RadioStationPlayingController::Play(RadioStation* radioStation, Playable* p
         _buttonDown->SetInteractable(true);
         _buttonLeft->SetInteractable(true);
         _timeLimitCounter = _timeLimit;
-        _remainingTimeText->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::vformat(
-            "{:.2f}",
-            std::make_format_args(_timeLimitCounter)
-        )));
+
+        if (_remainingTimeText != nullptr) {
+            _remainingTimeText->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::vformat(
+                "{:.2f}s",
+                std::make_format_args(_timeLimitCounter)
+            )));
+
+            _remainingTimeText->SetColor(glm::vec4(1.f));
+        }
     }
 }
 
@@ -142,16 +183,14 @@ void RadioStationPlayingController::GenerateNotes()
 
     for (size_t index = 0ull; index < _generatedNotesNumber; ++index)
     {
-        note = (NoteType)Random::Range(static_cast<unsigned>(NoteType::UP), static_cast<unsigned>(NoteType::LEFT));
+        note = (NoteType)Random::Range(static_cast<unsigned int>(NoteType::UP), static_cast<unsigned int>(NoteType::LEFT));
         generated = SceneManager::CreateGameObject<Image>(_notesArea == nullptr ? GetTransform() : _notesArea->GetTransform());
 
         std::get<0>(generated)->GetTransform()->SetLocalPosition(beginOffset + vec3(index * widthStep, glm::vec2(0.0f)));
         std::get<1>(generated)->SetSprite(_notesSpritesIds[static_cast<size_t>(note)]);
-        //std::get<1>(generated)->SetLayer(1);
-
+        std::get<1>(generated)->SetLayer(1);
 
         _generatedNotes.push_back(note);
-        //_notesGameObjects.push_back(generated);
         _notesImages.push_back(std::get<1>(generated));
     }
 }
@@ -195,11 +234,10 @@ void RadioStationPlayingController::EndPlaying()
     }
     _notesImages.clear();
 
-    GetGameObject()->SetActive(false);
-    _buttonUp->GetGameObject()->SetActive(false);
-    _buttonRight->GetGameObject()->SetActive(false);
-    _buttonDown->GetGameObject()->SetActive(false);
-    _buttonLeft->GetGameObject()->SetActive(false);
+    _buttonUp->SetInteractable(false);
+    _buttonRight->SetInteractable(false);
+    _buttonDown->SetInteractable(false);
+    _buttonLeft->SetInteractable(false);
 
     _score = (float)_correctCounter / (float)size;
 
@@ -211,20 +249,26 @@ void RadioStationPlayingController::EndPlaying()
 void RadioStationPlayingController::ShowResult()
 {
     _resultShowingCounter = _resultShowingTime;
-    _resultText->SetActive(true);
+    if (_resultText != nullptr) {
+        _resultText->SetActive(true);
 
-    if (_resultText->GetComponent<Text>() != nullptr)
-        _resultText->GetComponent<Text>()->SetText(
-            std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes
-            (
-                std::to_string(_correctCounter)
-                .append("/")
-                .append
+        Text* t = _resultText->GetComponent<Text>();
+        if (t != nullptr) {
+            t->SetText(
+                std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes
                 (
-                    std::to_string(_generatedNotesNumber)
+                    std::to_string(_correctCounter)
+                    .append("/")
+                    .append
+                    (
+                        std::to_string(_generatedNotesNumber)
+                    )
                 )
-            )
-        );
+            );
+
+            t->SetColor(_correctCounter == 0 ? _wrongNoteColor : _correctNoteColor);
+        }
+    }
 }
 
 YAML::Node RadioStationPlayingController::Serialize() const
@@ -237,6 +281,7 @@ YAML::Node RadioStationPlayingController::Serialize() const
     node["notesAreaHeight"] = _notesAreaHeight;
     node["timeLimit"] = _timeLimit;
     node["resultShowingTime"] = _resultShowingTime;
+    node["timeChangeColorPercent"] = _timeChangeColorPercent;
     node["correctNoteColor"] = _correctNoteColor;
     node["wrongNoteColor"] = _wrongNoteColor;
 
@@ -246,8 +291,8 @@ YAML::Node RadioStationPlayingController::Serialize() const
         node["notesSpritesIds"].push_back(SceneManager::GetSpriteSaveIdx(_notesSpritesIds[index]));
     }
 
-    node["resultObjectId"] = _resultText == nullptr ? 0 : _resultText->Id();
-    node["remainingTimeTextTimer"] = _remainingTimeText == nullptr ? 0 : _remainingTimeText->GetId();
+    node["resultTextObjectId"] = _resultText == nullptr ? 0 : _resultText->Id();
+    node["remainingTimeTextId"] = _remainingTimeText == nullptr ? 0 : _remainingTimeText->GetId();
     node["notesAreaImageId"] = _notesArea == nullptr ? 0 : _notesArea->GetId();
 
     node["buttonUp"] = _buttonUp->GetId();
@@ -260,13 +305,19 @@ YAML::Node RadioStationPlayingController::Serialize() const
 
 bool RadioStationPlayingController::Deserialize(const YAML::Node& node)
 {
-    if (!Component::Deserialize(node)) return false;
+    if (!node["generatedNotesNumber"] || !node["notesAreaWidth"] || !node["notesAreaHeight"] || 
+        !node["timeLimit"] || !node["resultShowingTime"] || !node["correctNoteColor"] ||
+        !node["wrongNoteColor"] || !node["notesSpritesIds"] || !node["resultTextObjectId"] || 
+        !node["remainingTimeTextId"] || !node["notesAreaImageId"] || !node["timeChangeColorPercent"] ||
+        !node["buttonUp"] || !node["buttonRight"] || !node["buttonDown"] || !node["buttonLeft"] ||
+        !Component::Deserialize(node)) return false;
 
     _generatedNotesNumber = node["generatedNotesNumber"].as<int>();
     _notesAreaWidth = node["notesAreaWidth"].as<float>();
     _notesAreaHeight = node["notesAreaHeight"].as<float>();
     _timeLimit = node["timeLimit"].as<float>();
     _resultShowingTime = node["resultShowingTime"].as<float>();
+    _timeChangeColorPercent = node["timeChangeColorPercent"].as<float>();
     _correctNoteColor = node["correctNoteColor"].as<vec4>();
     _wrongNoteColor = node["wrongNoteColor"].as<vec4>();
 
@@ -276,21 +327,26 @@ bool RadioStationPlayingController::Deserialize(const YAML::Node& node)
         _notesSpritesIds.push_back(SceneManager::GetSprite(node["notesSpritesIds"][index].as<size_t>()));
     }
 
-    node["resultObjectId"] = _resultText == nullptr ? 0 : _resultText->Id();
-    node["remainingTimeTextTimer"] = _remainingTimeText == nullptr ? 0 : _remainingTimeText->GetId();
-    node["notesAreaImageId"] = _notesArea == nullptr ? 0 : _notesArea->GetId();
+    while (_notesSpritesIds.size() < size<NoteType>()) {
+        if (node["notesSpritesIds"].size() != 0) {
+            _notesSpritesIds.push_back(SceneManager::GetSprite(node["notesSpritesIds"][node["notesSpritesIds"].size() - 1].as<size_t>()));
+        }
+        else {
+            _notesSpritesIds.push_back(SceneManager::GetSprite(0));
+        }
+    }
 
-    node["buttonUp"] = _buttonUp->GetId();
-    node["buttonRight"] = _buttonRight->GetId();
-    node["buttonDown"] = _buttonDown->GetId();
-    node["buttonLeft"] = _buttonLeft->GetId();
+    size_t id = node["resultTextObjectId"].as<size_t>();
+    _resultText = id == 0 ? nullptr : SceneManager::GetGameObjectWithId(id);
+    id = node["remainingTimeTextId"].as<size_t>();
+    _remainingTimeText = id == 0 ? nullptr : (Text*)SceneManager::GetComponentWithId(id);
+    id = node["notesAreaImageId"].as<size_t>();
+    _notesArea = id == 0 ? nullptr : (Image*)SceneManager::GetComponentWithId(id);
 
-    _buttonDo = (Button*) SceneManager::GetComponentWithId(node["buttonDo"].as<size_t>());
-    _buttonRe = (Button*) SceneManager::GetComponentWithId(node["buttonRe"].as<size_t>());
-    _buttonMi = (Button*) SceneManager::GetComponentWithId(node["buttonMi"].as<size_t>());
-    _buttonFa = (Button*) SceneManager::GetComponentWithId(node["buttonFa"].as<size_t>());
-    _resultImage = (Image*) SceneManager::GetComponentWithId(node["resultImage"].as<size_t>());
-    _remainingTimeTextTimer = (Text*) SceneManager::GetComponentWithId(node["remainingTimeTextTimer"].as<size_t>());
+    _buttonUp = (Button*)SceneManager::GetComponentWithId(node["buttonUp"].as<size_t>());
+    _buttonRight = (Button*)SceneManager::GetComponentWithId(node["buttonRight"].as<size_t>());
+    _buttonDown = (Button*)SceneManager::GetComponentWithId(node["buttonDown"].as<size_t>());
+    _buttonLeft = (Button*)SceneManager::GetComponentWithId(node["buttonLeft"].as<size_t>());
 
     return true;
 }
@@ -307,47 +363,19 @@ void RadioStationPlayingController::DrawEditor()
         if (Component::DrawInheritedFields()) return;
 
         ImGui::InputInt(string("GeneratedNotesNumber##").append(id).c_str(), &_generatedNotesNumber);
-        ImGui::InputFloat(string("NotesAreaWidth##").append(id).c_str(), &_notesAreaWidth);
-        ImGui::InputFloat(string("NotesAreaHeight##").append(id).c_str(), &_notesAreaHeight);
         ImGui::InputFloat(string("ResultShowingTime##").append(id).c_str(), &_resultShowingTime);
 
-        ImGui::ColorEdit4(string("CorrectColor##").append(id).c_str(), glm::value_ptr(_correctColor));
-        ImGui::ColorEdit4(string("WrongColor##").append(id).c_str(), glm::value_ptr(_wrongColor));
+        ImGui::DragFloat(string("TimeChangeColorPercent##").append(id).c_str(), &_timeChangeColorPercent, 0.1f, 0.0f, 100.f);
+
+        ImGui::ColorEdit4(string("CorrectColor##").append(id).c_str(), glm::value_ptr(_correctNoteColor));
+        ImGui::ColorEdit4(string("WrongColor##").append(id).c_str(), glm::value_ptr(_wrongNoteColor));
 
         ImGui::DragFloat(string("TimeLimit##").append(id).c_str(), &_timeLimit, 1.f, 0.f, FLT_MAX);        
 
         unordered_map<size_t, Component*> items = SceneManager::GetComponentsOfType<Text>();
-        size_t choosed_1 = _remainingTimeTextTimer == nullptr ? 0 : _remainingTimeTextTimer->GetId();
+        size_t choosed_1 = _remainingTimeText == nullptr ? 0 : _remainingTimeText->GetId();
 
-        if (ImGui::BeginCombo(string("RemainingTimeTextTimer##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
-
-            bool clicked = false;
-            for (auto& item : items) {
-
-                if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_1)) {
-
-                    if (clicked) continue;
-
-                    choosed_1 = item.first;
-                    clicked = true;
-                }
-            }
-
-            if (clicked) {
-                if (choosed_1 != 0) {
-                    _remainingTimeTextTimer = static_cast<Text*>(items[choosed_1]);
-                }
-            }
-
-            ImGui::EndCombo();
-        }
-
-        items.clear();
-
-        items = SceneManager::GetComponentsOfType<Image>();
-        choosed_1 = _resultImage == nullptr ? 0 : _resultImage->GetId();
-
-        if (ImGui::BeginCombo(string("ResultImage##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
+        if (ImGui::BeginCombo(string("RemainingTimeText##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
 
             bool clicked = false;
             for (auto& item : items) {
@@ -363,7 +391,7 @@ void RadioStationPlayingController::DrawEditor()
 
             if (clicked) {
                 if (choosed_1 != 0) {
-                    _resultImage = static_cast<Image*>(items[choosed_1]);
+                    _remainingTimeText = static_cast<Text*>(items[choosed_1]);
                 }
             }
 
@@ -372,12 +400,12 @@ void RadioStationPlayingController::DrawEditor()
 
         items.clear();
         items = SceneManager::GetComponentsOfType<Button>();
-        choosed_1 = _buttonDo == nullptr ? 0 : _buttonDo->GetId();
-        size_t choosed_2 = _buttonRe == nullptr ? 0 : _buttonRe->GetId();
-        size_t choosed_3 = _buttonMi == nullptr ? 0 : _buttonMi->GetId();
-        size_t choosed_4 = _buttonFa == nullptr ? 0 : _buttonFa->GetId();
+        choosed_1 = _buttonUp == nullptr ? 0 : _buttonUp->GetId();
+        size_t choosed_2 = _buttonRight == nullptr ? 0 : _buttonRight->GetId();
+        size_t choosed_3 = _buttonDown == nullptr ? 0 : _buttonDown->GetId();
+        size_t choosed_4 = _buttonLeft == nullptr ? 0 : _buttonLeft->GetId();
 
-        if (ImGui::BeginCombo(string("ButtonDo##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
+        if (ImGui::BeginCombo(string("ButtonUp##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
 
             bool clicked = false;
             for (auto& item : items) {
@@ -395,14 +423,26 @@ void RadioStationPlayingController::DrawEditor()
 
             if (clicked) {
                 if (choosed_1 != 0) {
-                    _buttonDo = static_cast<Button*>(items[choosed_1]);
+
+                    if (_buttonUp != nullptr) {
+                        if (_buttonUpHandleId != -1) {
+                            _buttonUp -= _buttonUpHandleId;
+                            _buttonUpHandleId = -1;
+                        }
+                    }
+
+                    _buttonUp = static_cast<Button*>(items[choosed_1]);
+
+                    if (_buttonUp != nullptr) {
+                        if (_buttonUpHandleId == -1) _buttonUpHandleId = _buttonUp->GetOnClickEvent() += [&]() -> void { PlayNote(NoteType::UP); };
+                    }
                 }
             }
 
             ImGui::EndCombo();
         }
 
-        if (ImGui::BeginCombo(string("ButtonRe##").append(id).c_str(), choosed_2 == 0 ? "None" : items[choosed_2]->GetGameObject()->GetName().c_str())) {
+        if (ImGui::BeginCombo(string("ButtonRight##").append(id).c_str(), choosed_2 == 0 ? "None" : items[choosed_2]->GetGameObject()->GetName().c_str())) {
 
             bool clicked = false;
             for (auto& item : items) {
@@ -420,14 +460,26 @@ void RadioStationPlayingController::DrawEditor()
 
             if (clicked) {
                 if (choosed_2 != 0) {
-                    _buttonRe = static_cast<Button*>(items[choosed_2]);
+
+                    if (_buttonRight != nullptr) {
+                        if (_buttonRightHandleId != -1) {
+                            _buttonRight -= _buttonRightHandleId;
+                            _buttonRightHandleId = -1;
+                        }
+                    }
+
+                    _buttonRight = static_cast<Button*>(items[choosed_2]);
+
+                    if (_buttonRight != nullptr) {
+                        if (_buttonRightHandleId == -1) _buttonRightHandleId = _buttonRight->GetOnClickEvent() += [&]() -> void { PlayNote(NoteType::RIGHT); };
+                    }
                 }
             }
 
             ImGui::EndCombo();
         }
 
-        if (ImGui::BeginCombo(string("ButtonMi##").append(id).c_str(), choosed_3 == 0 ? "None" : items[choosed_3]->GetGameObject()->GetName().c_str())) {
+        if (ImGui::BeginCombo(string("ButtonDown##").append(id).c_str(), choosed_3 == 0 ? "None" : items[choosed_3]->GetGameObject()->GetName().c_str())) {
 
             bool clicked = false;
             for (auto& item : items) {
@@ -445,14 +497,26 @@ void RadioStationPlayingController::DrawEditor()
 
             if (clicked) {
                 if (choosed_3 != 0) {
-                    _buttonMi = static_cast<Button*>(items[choosed_3]);
+
+                    if (_buttonDown != nullptr) {
+                        if (_buttonDownHandleId != -1) {
+                            _buttonDown -= _buttonDownHandleId;
+                            _buttonDownHandleId = -1;
+                        }
+                    }
+
+                    _buttonDown = static_cast<Button*>(items[choosed_3]);
+
+                    if (_buttonDown != nullptr) {
+                        if (_buttonDownHandleId == -1) _buttonDownHandleId = _buttonDown->GetOnClickEvent() += [&]() -> void { PlayNote(NoteType::DOWN); };
+                    }
                 }
             }
 
             ImGui::EndCombo();
         }
 
-        if (ImGui::BeginCombo(string("ButtonFa##").append(id).c_str(), choosed_4 == 0 ? "None" : items[choosed_4]->GetGameObject()->GetName().c_str())) {
+        if (ImGui::BeginCombo(string("ButtonLeft##").append(id).c_str(), choosed_4 == 0 ? "None" : items[choosed_4]->GetGameObject()->GetName().c_str())) {
 
             bool clicked = false;
             for (auto& item : items) {
@@ -470,7 +534,19 @@ void RadioStationPlayingController::DrawEditor()
 
             if (clicked) {
                 if (choosed_4 != 0) {
-                    _buttonFa = static_cast<Button*>(items[choosed_4]);
+
+                    if (_buttonLeft != nullptr) {
+                        if (_buttonLeftHandleId != -1) {
+                            _buttonLeft -= _buttonLeftHandleId;
+                            _buttonLeftHandleId = -1;
+                        }
+                    }
+
+                    _buttonLeft = static_cast<Button*>(items[choosed_4]);
+
+                    if (_buttonLeft != nullptr) {
+                        if (_buttonLeftHandleId == -1) _buttonLeftHandleId = _buttonLeft->GetOnClickEvent() += [&]() -> void { PlayNote(NoteType::LEFT); };
+                    }
                 }
             }
 
@@ -479,21 +555,107 @@ void RadioStationPlayingController::DrawEditor()
 
         items.clear();
 
-        // TODO: Zrobiæ okreœlanie notesSprites oraz okreœlanie buttonów
-        /*
-        _notesSpritesIds = node["notesSpritesIds"].as<vector<size_t>>();
-        for (size_t index = 0ull; index < _notesSpritesIds.size(); ++index)
-        {
-            _notesSpritesIds[index] = SceneManager::GetSprite(_notesSpritesIds[index]);
+        std::vector<GameObject*> objs = SceneManager::GetAllGameObjects();
+        objs.erase(objs.begin());
+        objs.insert(objs.begin(), nullptr);
+        choosed_1 = std::find(objs.begin(), objs.end(), _resultText) - objs.begin();
+
+        if (ImGui::BeginCombo(string("ResultTextObject##").append(id).c_str(), choosed_1 == 0 ? "None" : objs[choosed_1]->GetName().c_str())) {
+
+            bool clicked = false;
+            for (size_t i = 0; i < objs.size(); ++i) {
+
+                if (ImGui::Selectable(std::string(i == 0 ? "None" : objs[i]->GetName().c_str()).append("##").append(id).append(std::to_string(i)).c_str(), i == choosed_1)) {
+
+                    if (clicked) continue;
+
+                    choosed_1 = i;
+                    clicked = true;
+                }
+            }
+
+            if (clicked) {
+                _resultText = objs[choosed_1];
+            }
+
+            ImGui::EndCombo();
         }
 
-        _resultsImagesIds = node["resultsSpritesIds"].as<vector<size_t>>();
-        for (size_t index = 0ull; index < _resultsImagesIds.size(); ++index)
-        {
-            _resultsImagesIds[index] = SceneManager::GetSprite(_resultsImagesIds[index]);
+        objs.clear();
+
+        items = SceneManager::GetComponentsOfType<Image>();
+        choosed_1 = _notesArea == nullptr ? 0 : _notesArea->GetId();
+
+        if (ImGui::BeginCombo(string("NotesArea##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
+
+            bool clicked = false;
+            for (auto& item : items) {
+
+                if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_1)) {
+
+                    if (clicked) continue;
+
+                    choosed_1 = item.first;
+                    clicked = true;
+                }
+            }
+
+            if (clicked) {
+                if (choosed_1 != 0) {
+                    _notesArea = static_cast<Image*>(items[choosed_1]);
+                }
+            }
+
+            ImGui::EndCombo();
         }
-        _resultsThresholds = node["resultsThresholds"].as<vector<float>>();
-        */
+
+        items.clear();
+
+        ImGui::BeginDisabled(_notesArea != nullptr);
+        {
+            ImGui::InputFloat(string("NotesAreaWidth##").append(id).c_str(), &_notesAreaWidth);
+            ImGui::InputFloat(string("NotesAreaHeight##").append(id).c_str(), &_notesAreaHeight);
+        }
+        ImGui::EndDisabled();
+
+        std::map<size_t, string> spriteNames = SpriteManager::GetAllSpritesNames();
+
+        vector<string> names = vector<string>();
+        names.resize(spriteNames.size());
+
+        std::transform(spriteNames.begin(), spriteNames.end(), names.begin(), [](std::pair<size_t, string> const& i) -> string {
+            return i.second;
+            });
+
+        spriteNames.clear();
+
+        std::sort(names.begin(), names.end(), [&](string const& left, string const& right) -> bool {
+            return left.compare(right) < 0;
+            });
+
+        names.insert(names.begin(), "None##Nothing");
+
+        for (size_t i = 0; i < _notesSpritesIds.size(); ++i)
+        {
+            std::string n = SpriteManager::GetSpriteName(_notesSpritesIds[i]);
+
+            if (n == "") {
+                _notesSpritesIds[i] = 0;
+            }
+
+            size_t choosed = _notesSpritesIds[i] == 0 ? 0 : std::find(names.begin(), names.end(), n) - names.begin();
+
+            if (ImGui::ComboWithFilter(string("Note ").append(to_string((NoteType)(uint8_t)i)).append("##").append(id).c_str(), &choosed, names, 20)) {
+                if (choosed != 0) {
+                    _notesSpritesIds[i] = SpriteManager::GetSpriteId(names[choosed]);
+                }
+                else {
+                    _notesSpritesIds[i] = 0;
+                }
+            }
+        }
+        
+        names.clear();
     }
 }
 

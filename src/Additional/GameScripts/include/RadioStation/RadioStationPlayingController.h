@@ -1,36 +1,22 @@
 #pragma once
 
 #include <RadioStation/RadioStation.h>
-#include <Playable.h>
-#include <Player.h>
-
 #include <core/Component.h>
-#include <core/Time.h>
-#include <core/Input.h>
-
-#include <graphic/Texture2D.h>
-
-#include <ui/Button.h>
-#include <ui/Image.h>
-
-// TODO: Repair
+#include <Playable.h>
 
 class RadioStationPlayingController : public Twin2Engine::Core::Component
 {
 private:
     // Notes Data
-    ENUM_CLASS(NoteType, UP, RIGHT, DOWN, LEFT)
+    ENUM_CLASS_BASE(NoteType, uint8_t, UP, RIGHT, DOWN, LEFT)
     std::vector<size_t> _notesSpritesIds;
 
     static RadioStationPlayingController* _instance;
     bool _gameStarted = false;
 
-    //std::vector<size_t> _resultsImagesIds;
-    //std::vector<float> _resultsThresholds;
-
-    Image* _notesArea;
-    GameObject* _resultText;
-    Text* _remainingTimeText;
+    Twin2Engine::UI::Image* _notesArea = nullptr;
+    Twin2Engine::Core::GameObject* _resultText = nullptr;
+    Twin2Engine::UI::Text* _remainingTimeText = nullptr;
 
     // Notes
     size_t _currentNote = 0;
@@ -39,13 +25,11 @@ private:
     int _correctCounter = 0;
     float _score = 0.0f;
 
-
     // Generation
     float _notesAreaWidth = 100.0f;
     float _notesAreaHeight = 100.0f;
     int _generatedNotesNumber = 4;
     std::vector<NoteType> _generatedNotes;
-    //std::vector<Twin2Engine::Core::GameObject*> _notesGameObjects;
     std::vector<Twin2Engine::UI::Image*> _notesImages;
 
     // Time
@@ -53,6 +37,7 @@ private:
     float _timeLimitCounter = 0.0f;
     float _resultShowingTime = 5.0f;
     float _resultShowingCounter = 0.0f;
+    float _timeChangeColorPercent = 20.f;
 
     // Reference To Start Objects
     RadioStation* _radioStation = nullptr;

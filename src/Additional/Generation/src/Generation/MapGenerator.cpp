@@ -27,6 +27,11 @@ void MapGenerator::OnEnable()
     */
 }
 
+void MapGenerator::OnDestroy()
+{
+    OnMapGenerationEvent.RemoveAllCallbacks();
+}
+
 void MapGenerator::GenerateFloatHull(const vector<vec2>& hull)
 {
     vector<ivec2> hullInt(hull.size());

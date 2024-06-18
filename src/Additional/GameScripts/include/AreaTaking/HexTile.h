@@ -50,6 +50,7 @@ public:
 	HexTileTextureData* texturesData;
 	ParticleGenerator* particleGenerator = nullptr;
 	ParticleGenerator* pgCity = nullptr;
+	ParticleGenerator* pgCityNegative = nullptr;
 
 
 	bool isFighting = false;

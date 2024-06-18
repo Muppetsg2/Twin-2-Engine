@@ -21,7 +21,7 @@ ParticleGenerator::ParticleGenerator(const std::string& shaderName, const std::s
     init(height, distance, time, particleW, particleH);
 }
 
-ParticleGenerator::ParticleGenerator(const std::string& shaderName, GLuint& textureId, unsigned int amount, float height, float distance, float time, float maxLife, float particleW, float particleH, float generationRadius)
+ParticleGenerator::ParticleGenerator(const std::string& shaderName, const GLuint& textureId, unsigned int amount, float height, float distance, float time, float maxLife, float particleW, float particleH, float generationRadius)
     : textureId(textureId), amount(amount), maxLife(maxLife), generationRadius(generationRadius)
 {
     shader = ShaderManager::GetShaderProgram(shaderName);

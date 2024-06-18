@@ -40,22 +40,26 @@ void HexTile::TakeOver()
 	{
 		if (multiplayer > 1.0f)
 		{
-			pgCity->textureId = _textureCityStar;
+			//pgCity->textureId = _textureCityStar;
 			pgCity->active = true;
+			pgCityNegative->active = false;
 		}
 		else if (multiplayer < 1.0f)
 		{
-			pgCity->textureId = _textureCityBlackStar;
-			pgCity->active = true;
+			//pgCity->textureId = _textureCityBlackStar;
+			pgCity->active = false;
+			pgCityNegative->active = true;
 		}
 		else
 		{
 			pgCity->active = false;
+			pgCityNegative->active = false;
 		}
 	}
 	else
 	{
 		pgCity->active = false;
+		pgCityNegative->active = false;
 	}
 
 	takeOverSpeed *= multiplayer;
@@ -91,26 +95,29 @@ void HexTile::LoseInfluence()
 		multiplayer *= _affectingCities[index]->CalculateLooseInterestMultiplier(this);
 	}
 
+
 	if (ownerEntity)
 	{
 		if (multiplayer < 1.0f)
 		{
-			pgCity->textureId = _textureCityStar;
 			pgCity->active = true;
+			pgCityNegative->active = false;
 		}
 		else if (multiplayer > 1.0f)
 		{
-			pgCity->textureId = _textureCityBlackStar;
-			pgCity->active = true;
+			pgCity->active = false;
+			pgCityNegative->active = true;
 		}
 		else
 		{
 			pgCity->active = false;
+			pgCityNegative->active = false;
 		}
 	}
 	else
 	{
 		pgCity->active = false;
+		pgCityNegative->active = false;
 	}
 
 	percentage -= multiplayer * Time::GetDeltaTime();
@@ -431,7 +438,8 @@ void HexTile::Initialize()
 	}
 
 	particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/ArrowParticle.png", 3, 0.5f, 0.0f, 6.0f, 2.0f, 0.16f, 0.2f, 0.3f);
-	pgCity = new ParticleGenerator("origin/ParticleShader", "res/textures/particles/starParticle.png", 5, 0.4f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
+	pgCity = new ParticleGenerator("origin/ParticleShader", _textureCityStar, 5, 0.4f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
+	pgCityNegative = new ParticleGenerator("origin/ParticleShader", _textureCityBlackStar, 5, -0.3f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
 }
 
 void HexTile::OnDestroy()
@@ -456,6 +464,10 @@ void HexTile::OnDestroy()
 	if (pgCity) {
 		delete pgCity;
 		pgCity = nullptr;
+	}
+	if (pgCityNegative) {
+		delete pgCityNegative;
+		pgCityNegative = nullptr;
 	}
 }
 
@@ -504,6 +516,7 @@ void HexTile::InitializeAdjacentTiles()
 
 	particleGenerator->SetStartPosition(GetTransform()->GetGlobalPosition());
 	pgCity->SetStartPosition(GetTransform()->GetGlobalPosition());
+	pgCityNegative->SetStartPosition(GetTransform()->GetGlobalPosition() + vec3(0.0f, 0.3f, 0.0f));
 	//particleGenerator->active = true;
 	
 	//GetGameObject()->OnActiveChangedEvent.AddCallback([&](GameObject* go) {
@@ -533,6 +546,8 @@ void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 				t->UpdateBorders();
 			}
 		}
+		pgCity->active = false;
+		pgCityNegative->active = false;
 		DisableAlbumAffected();
 		ownerEntity = newOwnerEntity;
 		if (ownerEntity != nullptr) {

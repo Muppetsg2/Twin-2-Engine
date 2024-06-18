@@ -39,7 +39,7 @@ public:
 
     // constructor
     ParticleGenerator(const std::string& shaderName, const std::string& textureName, unsigned int amount, float height, float distance, float time, float maxLife, float particleW, float particleH, float generationRadius);
-    ParticleGenerator(const std::string& shaderName, GLuint& textureId, unsigned int amount, float height, float distance, float time, float maxLife, float particleW, float particleH, float generationRadius);
+    ParticleGenerator(const std::string& shaderName, const GLuint& textureId, unsigned int amount, float height, float distance, float time, float maxLife, float particleW, float particleH, float generationRadius);
     ~ParticleGenerator();
     // update all particles
     void SetStartPosition(glm::vec3 newPosition);

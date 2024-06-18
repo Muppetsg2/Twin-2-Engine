@@ -4,6 +4,10 @@
 #include <core/Component.h>
 #include <ui/Image.h>
 
+// TODO: wyczyœciæ prefaby
+// TODO: Œci¹gn¹æ zmiany z main-a
+// TODO: Podpiêcie pod gameplay
+
 class AreaTakenGraph : public Twin2Engine::Core::Component {
 private:
 	using GameObject = Twin2Engine::Core::GameObject;

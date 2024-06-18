@@ -321,7 +321,31 @@ void AreaTakenGraph::UpdateEdge()
 
 void AreaTakenGraph::UpdateTopValueHexagon()
 {
+	Prefab* topValuePrefab = PrefabManager::GetPrefab(_topValueHexagonPrefabId);
+	if (topValuePrefab == nullptr) return;
+
+	if (_topValueHexagon == nullptr) {
+		_topValueHexagon = SceneManager::CreateGameObject(topValuePrefab, GetTransform());
+	}
 	
+	if (_topHexagons.size() <= 1) {
+		_topValueHexagon->SetActive(false);
+		return;
+	}
+
+	Image* img = _topHexagons[0]->GetComponent<Image>();
+	for (size_t i = 1; i < _topHexagons.size() - 1; ++i) {
+		Image* temp = _topHexagons[i]->GetComponent<Image>();
+		if (temp->GetFillProgress() - temp->GetFillOffset() > img->GetFillProgress() - img->GetFillOffset()) {
+			img = temp;
+		}
+	}
+
+	Image* topImg = _topValueHexagon->GetComponent<Image>();
+	topImg->SetLayer(_layer + 2);
+	topImg->SetColor({ glm::vec3(0.f), 1.f });
+	topImg->SetFillOffset(img->GetFillOffset());
+	topImg->SetFillProgress(img->GetFillProgress());
 }
 
 bool AreaTakenGraph::PrefabDropDown(const char* label, size_t* prefabId, const std::string& objId)

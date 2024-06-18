@@ -66,7 +66,7 @@ void GameEngine::Update()
         updateShadowLightingMap = false;
     }
 
-    CollisionManager::Instance()->PerformCollisions();
+    //CollisionManager::Instance()->PerformCollisions();
     SceneManager::UpdateCurrentScene();
     Twin2Engine::Processes::ProcessManager::Instance()->UpdateSynchronizedProcess();
     LateUpdate();

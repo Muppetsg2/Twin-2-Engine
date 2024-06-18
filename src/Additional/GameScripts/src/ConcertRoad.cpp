@@ -156,6 +156,7 @@ void ConcertRoad::Begin()
         GameObject *m = Twin2Engine::Manager::SceneManager::CreateGameObject(_marker, t.hexTile->GetTransform());
 
         m->GetTransform()->SetLocalPosition(glm::vec3(0.0f, height, 0.0f));
+        t.hexTile->GetGameObject()->GetComponentInChildren<City>()->SetConcertRoadCity(true);
     }
 }
 void ConcertRoad::Finish()

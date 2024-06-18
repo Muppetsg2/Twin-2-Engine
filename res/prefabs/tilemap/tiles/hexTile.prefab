@@ -221,6 +221,18 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 37
+    path: res/textures/particles/starParticle.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 38
+    path: res/textures/particles/blackStarParticle.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites: ~
 Fonts: ~
 Audio: ~
@@ -393,6 +405,8 @@ Root:
       type: HexTile
       loseInfluenceSpeed: 0.5
       textuesData: res/scriptableobjects/HexTileTextureData.so
+      textureCityStar: res/textures/particles/starParticle.png
+      textureCityBlackStar: res/textures/particles/blackStarParticle.png
       borders:
         - 32
         - 35

@@ -1068,7 +1068,7 @@ GameObjects:
         ssaoBias: 0.00999999978
         blurMSize: 5
       - id: 3
-        enabled: false
+        enabled: true
         type: MovementController
         DragControl: true
         DragScale: 0.00999999978
@@ -2173,7 +2173,7 @@ GameObjects:
   - id: 61
     name: PaperRockScissorCanvas
     isStatic: false
-    isActive: false
+    isActive: true
     transform:
       id: 143
       position:

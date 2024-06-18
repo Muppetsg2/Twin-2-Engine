@@ -19,6 +19,7 @@ SO_SERIALIZE_FIELD(densityFactorPerSector)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(RadioStationGeneratorSectorBased, AMapElementGenerator)
+SO_DESERIALIZE_FIELD_R("prefabRadioStation", prefabPath)
 SO_DESERIALIZE_FIELD_F_T(prefabRadioStation, PrefabManager::LoadPrefab, string)
 SO_DESERIALIZE_FIELD(densityFactorPerSector)
 SO_DESERIALIZATION_END()
@@ -76,7 +77,23 @@ void RadioStationGeneratorSectorBased::Generate(Tilemap::HexagonalTilemap* tilem
                 size_t randomIndex = Random::Range(0ull, foundOnes.size() - 1);
                 GameObject* tile = foundOnes[randomIndex];
                 tile->GetComponent<MapHexTile>()->type = MapHexTile::HexTileType::RadioStation;
-                GameObject* instantiated = SceneManager::CreateGameObject(prefabRadioStation, tile->GetTransform());
+
+                GameObject* instantiated = nullptr;
+                if (PrefabManager::GetPrefab(prefabRadioStation->GetId()) != nullptr) {
+                    instantiated = SceneManager::CreateGameObject(prefabRadioStation, tile->GetTransform());
+                }
+                else {
+
+                    if (prefabPath != "") {
+                        prefabRadioStation = PrefabManager::LoadPrefab(prefabPath);
+                        instantiated = SceneManager::CreateGameObject(prefabRadioStation, tile->GetTransform());
+                    }
+                    else {
+                        instantiated = SceneManager::CreateGameObject(tile->GetTransform());
+                    }
+                }
+
+                //GameObject* instantiated = SceneManager::CreateGameObject(prefabRadioStation, tile->GetTransform());
                 instantiated->SetIsStatic(true);
                 //GameObject* instantiated = GameObject::Instantiate(prefabRadioStation, tile->GetTransform());
             }

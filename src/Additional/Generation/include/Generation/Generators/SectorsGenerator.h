@@ -17,7 +17,7 @@ namespace Generation::Generators
 		MapSector* CreateSector(Tilemap::HexagonalTilemap* tilemap, glm::ivec2 position);
 
 	public:
-		//Twin2Engine::Core::GameObject* prefabSector = nullptr;
+		std::string prefabPath = "";
 		Twin2Engine::Core::Prefab* prefabSector = nullptr;
 		int minTilesPerSector = 7;
 		int maxTilesPerSector = 7;
@@ -40,6 +40,49 @@ namespace Generation::Generators
 			ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
 			ImGui::Text(Twin2Engine::Manager::ScriptableObjectManager::GetName(GetId()).c_str());
 			ImGui::PopFont();
+
+			std::map<size_t, string> prefabNames = Twin2Engine::Manager::PrefabManager::GetAllPrefabsNames();
+
+			prefabNames.insert(std::pair(0, "None"));
+
+			if (prefabSector != nullptr) {
+				if (!prefabNames.contains(prefabSector->GetId())) {
+					prefabSector = nullptr;
+				}
+			}
+
+			size_t prefabId = prefabSector != nullptr ? prefabSector->GetId() : 0;
+
+			if (ImGui::BeginCombo(string("prefabSector##SO").append(id).c_str(), prefabNames[prefabId].c_str())) {
+
+				bool clicked = false;
+				size_t choosed = prefabId;
+				for (auto& item : prefabNames) {
+
+					if (ImGui::Selectable(item.second.append("##").append(id).c_str(), item.first == prefabId)) {
+
+						if (clicked) continue;
+
+						choosed = item.first;
+						clicked = true;
+					}
+				}
+
+				if (clicked) {
+					if (choosed != 0) {
+						prefabSector = Twin2Engine::Manager::PrefabManager::GetPrefab(choosed);
+						prefabPath = Twin2Engine::Manager::PrefabManager::GetPrefabPath(prefabSector);
+					}
+					else {
+						prefabSector = nullptr;
+						prefabPath = "";
+					}
+				}
+
+				ImGui::EndCombo();
+			}
+
+			prefabNames.clear();
 
 			ImGui::InputInt(string("minTilesPerSector##SO").append(id).c_str(), &minTilesPerSector);
 			ImGui::InputInt(string("maxTilesPerSector##SO").append(id).c_str(), &maxTilesPerSector);

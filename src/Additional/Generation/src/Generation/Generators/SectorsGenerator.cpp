@@ -21,6 +21,7 @@ SO_SERIALIZE_FIELD(accuracyFactor)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(SectorsGenerator, AMapElementGenerator)
+SO_DESERIALIZE_FIELD_R("prefabSector", prefabPath)
 SO_DESERIALIZE_FIELD_F_T(prefabSector, PrefabManager::LoadPrefab, string)
 SO_DESERIALIZE_FIELD(minTilesPerSector)
 SO_DESERIALIZE_FIELD(maxTilesPerSector)
@@ -121,9 +122,25 @@ MapSector* SectorsGenerator::CreateSector(Tilemap::HexagonalTilemap* tilemap, gl
         }
     }
 
-    GameObject* sectorGO = SceneManager::CreateGameObject(prefabSector, tilemap->GetTransform());
+    //GameObject* sectorGO = SceneManager::CreateGameObject(prefabSector, tilemap->GetTransform());
+
+    MapSector* sector = nullptr;
+    if (PrefabManager::GetPrefab(prefabSector->GetId()) != nullptr) {
+        sector = SceneManager::CreateGameObject(prefabSector, tilemap->GetTransform())->GetComponent<MapSector>();
+    }
+    else {
+
+        if (prefabPath != "") {
+            prefabSector = PrefabManager::LoadPrefab(prefabPath);
+            sector = SceneManager::CreateGameObject(prefabSector, tilemap->GetTransform())->GetComponent<MapSector>();
+        }
+        else {
+            sector = std::get<1>(SceneManager::CreateGameObject<MapSector>(tilemap->GetTransform()));
+        }
+    }
+
     //GameObject* sectorGO = GameObject::Instantiate(prefabSector, tilemap->GetTransform());
-    MapSector* sector = sectorGO->GetComponent<MapSector>();
+    //MapSector* sector = sectorGO->GetComponent<MapSector>();
 
     sector->tilemap = tilemap;
     sector->GetTransform()->SetParent(tilemap->GetTransform());

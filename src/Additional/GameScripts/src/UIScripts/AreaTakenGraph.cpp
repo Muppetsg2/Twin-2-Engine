@@ -186,14 +186,23 @@ void AreaTakenGraph::UpdateEdge()
 		}
 	}
 
-	static const float lowAlpha = 120.f;
-	static const float highAlpha = 240.f;
-	static const float halfAlpha = (lowAlpha + highAlpha) * 0.5f;
+	const float R2 = GetTransform()->GetGlobalScale().y / 1.143f;
+	const glm::vec2 edgeStartPoint = glm::normalize(glm::vec2{ glm::sqrt(3) * 0.5f, -R2 * 0.5f });
+	const glm::vec2 edgeMiddlePoint = glm::normalize(glm::vec2{ 0, -R2 });
+	const glm::vec2 edgeVector = edgeMiddlePoint - edgeStartPoint;
+	const glm::vec2 topVector = { 0, 1.f };
+
+	const float edgeA = edgeMiddlePoint.y - edgeStartPoint.y;
+	const float edgeB = edgeStartPoint.x - edgeMiddlePoint.x;
+	const float edgeC = -edgeStartPoint.x * edgeA - edgeStartPoint.y * edgeB;
+
+	const float edgeStartAlpha = glm::degrees(glm::acos(topVector.x * edgeStartPoint.x + topVector.y * edgeStartPoint.y));
+	const float edgeHalfAlpha = 180.f;
 
 	float alpha0 = 0.f;
 	float alpha = 3.6f * _takenPercentage;
 
-	if (alpha0 + alpha > lowAlpha && alpha0 < highAlpha) {
+	if (alpha0 + alpha > edgeStartAlpha && alpha0 < 240.f) {
 		_edges[0]->SetActive(true);
 		Image* img = _edges[0]->GetComponent<Image>();
 		img->SetColor(GetColor(TILE_COLOR::RED) * 0.75f);
@@ -213,14 +222,7 @@ void AreaTakenGraph::UpdateEdge()
 		img->SetFillProgress(glm::clamp(2.8302f * (0.f + _takenPercentage) - 91.509f, 0.f, 100.f));*/
 		
 		// FIRST TRIANGLE
-		if (alpha0 < halfAlpha) {
-			// HEXAGON EDGE LINEAR EQUATION
-			static const float edgeA = 0.5f;
-			static const float edgeB = -glm::sqrt(3.f) * 0.5f;
-			static const float edgeC = -glm::sqrt(3.f) * 0.5f;
-			// HEXAGON EDGE BEGIN POS
-			static const glm::vec2 v2s = { -edgeC, -edgeA };
-
+		if (alpha0 < edgeHalfAlpha) {
 			// RADIUS VECTOR
 			glm::vec2 v1;
 			// MOVE VALUE
@@ -230,16 +232,16 @@ void AreaTakenGraph::UpdateEdge()
 			// FINAL PERCENT
 			float percent;
 
-			if (alpha0 > lowAlpha) {
-				float clampAlpha0 = glm::clamp(alpha0, lowAlpha, halfAlpha);
+			if (alpha0 > edgeStartAlpha) {
+				float clampAlpha0 = glm::clamp(alpha0, edgeStartAlpha, edgeHalfAlpha);
 
 				v1 = { glm::sin(glm::radians(clampAlpha0)), glm::cos(glm::radians(clampAlpha0)) };
 
-				t = glm::sqrt(3.f) / (v1.x - glm::sqrt(3.f) * v1.y);
+				t = -edgeC / (edgeA * v1.x + edgeB * v1.y);
 
-				v2m = v1 * t - v2s;
+				v2m = v1 * t - edgeStartPoint;
 
-				percent = glm::length(v2m);
+				percent = glm::length(v2m) / glm::length(edgeVector);
 
 				img->SetFillOffset(percent * 50.f);
 			}
@@ -247,26 +249,21 @@ void AreaTakenGraph::UpdateEdge()
 				img->SetFillOffset(0.f);
 			}
 
-			float clampAlpha = glm::clamp(alpha0 + alpha, lowAlpha, halfAlpha);
+			float clampAlpha = glm::clamp(alpha0 + alpha, edgeStartAlpha, edgeHalfAlpha);
 
-			// TODO: Uwzglêdniæ w równaniu lini boku inny promieñ Y
 			v1 = { glm::sin(glm::radians(clampAlpha)), glm::cos(glm::radians(clampAlpha)) };
 
-			t = glm::sqrt(3.f) / (v1.x - glm::sqrt(3.f) * v1.y);
+			t = -edgeC / (edgeA * v1.x + edgeB * v1.y);
 
-			v2m = v1 * t - v2s;
+			v2m = v1 * t - edgeStartPoint;
 
-			percent = glm::length(v2m);
-
-			float y = 1.f - (GetTransform()->GetGlobalScale().y / 1.143f);
-			float x = y * glm::tan(glm::radians(180.f - clampAlpha));
-			float z = (2.f * glm::sqrt(3.f) * x) / 3.f;
+			percent = glm::length(v2m) * glm::length(edgeVector);
 
 			img->SetFillProgress(percent * 50.f);
 		}
 
 		// SECOND TRIANGLE
-		if (alpha0 + alpha > halfAlpha) {
+		if (alpha0 + alpha > edgeHalfAlpha) {
 
 		}
 	}
@@ -289,7 +286,7 @@ void AreaTakenGraph::UpdateEdge()
 	_edges[idx]->SetActive(false);*/
 
 	alpha0 = 3.6f * _takenPercentage;
-	if (alpha0 < highAlpha) {
+	if (alpha0 < 240.f) {
 		_edges[1]->SetActive(true);
 		Image* img = _edges[1]->GetComponent<Image>();
 		//img->SetFillOffset(glm::clamp(alpha0 * 5.f / 6.f - 100.f, 0.f, 100.f));

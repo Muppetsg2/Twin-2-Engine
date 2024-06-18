@@ -22,7 +22,7 @@ using namespace AStar;
 void PlayerMovement::Initialize() {
 	//seeker = GetGameObject()->GetComponent<Seeker>();
     _tilemap = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Tilemap::HexagonalTilemap>();
-    _audioComponent = *(++(GetGameObject()->GetComponents<AudioComponent>().begin()));
+    _audioComponent = GetGameObject()->GetComponents<AudioComponent>().back();
 
     _player = GetGameObject()->GetComponent<Player>();
     //OnFinishMoving.AddCallback([](GameObject* playerGO, HexTile* destHexTile) {
@@ -401,7 +401,7 @@ YAML::Node PlayerMovement::Serialize() const
     //}
     node["destinationMarkerHeightOverSurface"] = _destinationMarkerHeightOverSurface;
 
-    node["engineSound"] = _engineSound;
+    node["engineSound"] = SceneManager::GetAudioSaveIdx(_engineSound);
 
     return node;
 }
@@ -409,7 +409,7 @@ YAML::Node PlayerMovement::Serialize() const
 bool PlayerMovement::Deserialize(const YAML::Node& node)
 {
     if (!node["speed"] || !node["maxSteps"] || !node["nextWaypointDistance"] ||
-        !node["heightOverSurface"] || !Component::Deserialize(node))
+        !node["heightOverSurface"] || !node["engineSound"] || !Component::Deserialize(node))
         return false;
 
     speed = node["speed"].as<float>();
@@ -428,7 +428,8 @@ bool PlayerMovement::Deserialize(const YAML::Node& node)
     }
     _destinationMarkerHeightOverSurface = node["destinationMarkerHeightOverSurface"].as<float>();
 
-    _engineSound = node["engineSound"].as<string>();
+    // TODO: Nie zaczytaly sie sprite audio prefabs
+    _engineSound = SceneManager::GetAudio(node["engineSound"].as<size_t>());
 
     return true;
 }

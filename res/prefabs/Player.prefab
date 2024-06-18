@@ -35,9 +35,19 @@ Sprites:
     width: 144
     height: 153
 Fonts: ~
-Audio: 
+Audio:
   - id: 0
-    path: res/music/engineSound.mp3
+    path: res/music/Abilities/UI/OnHoverClick.mp3
+  - id: 1
+    path: res/music/Abilities/UI/OffHoverClick.mp3
+  - id: 2
+    path: res/music/Abilities/AbilitiesUse.mp3
+  - id: 3
+    path: res/music/Abilities/CooldownEnd.mp3
+  - id: 4
+    path: res/music/Abilities/NotEnoughtRes.mp3
+  - id: 5
+    path: res/music/mixkit-fast-car-drive-by-1538.mp3
 Materials:
   - id: 0
     path: res/materials/car/CarMaterial_Blue.material
@@ -92,8 +102,25 @@ Root:
         y: 0
         z: 1
         w: 0.5
+      enoughMoneyColor:
+        x: 1
+        y: 0
+        z: 0
+        w: 1
+      notEnoughMoneyColor:
+        x: 0.5
+        y: 0
+        z: 0
+        w: 1
+      negativeMoneyTextXOffset: 140
+      negativeMoneyTextLetterWidth: 15
       spriteButtonStep1: 0
       spriteButtonStep2: 1
+      onHoverClickAudio: 0
+      offHoverClickAudio: 1
+      abilitiesUseAudio: 2
+      cooldownEndAudio: 3
+      notEnoughResAudio: 4
     - id: 3
       enabled: true
       type: PlayerMovement
@@ -103,7 +130,7 @@ Root:
       heightOverSurface: 0
       prefabPlayerDestinationMarker: 0
       destinationMarkerHeightOverSurface: 0.2
-      engineSound: res/music/engineSound.mp3
+      engineSound: 5
     - id: 4
       enabled: true
       type: ConcertAbilityController
@@ -128,6 +155,6 @@ Root:
       enabled: true
       type: Audio
       audio: 0
-      loop: true
-      volume: 1
+      loop: false
+      volume: 0.385
       playOnStart: false

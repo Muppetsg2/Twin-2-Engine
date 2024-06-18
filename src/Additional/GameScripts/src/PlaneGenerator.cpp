@@ -128,6 +128,7 @@ YAML::Node PlaneGenerator::Serialize() const
 	for (const auto& mat : _materials) {
 		node["materials"].push_back(SceneManager::GetMaterialSaveIdx(mat->GetId()));
 	}
+    node["transparencyPriority"] = _transparencyPriority;
     return node;
 }
 

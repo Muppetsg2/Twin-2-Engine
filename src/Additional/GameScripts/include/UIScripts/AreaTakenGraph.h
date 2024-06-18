@@ -25,7 +25,7 @@ private:
 	void UpdateBottomHexagon();
 
 	bool PrefabDropDown(const char* label, size_t* prefabId, const std::string& objId);
-	glm::vec4 GetColor(const TILE_COLOR& color);
+	glm::vec3 GetColor(const TILE_COLOR& color);
 
 public:
 

@@ -114,6 +114,7 @@ using namespace Generation::Generators;
 #include <StarComponent.h>
 #include <TutorialSeries.h>
 #include <CityLightsComponent.h>
+#include <MenuParticles.h>
 #include <Abilities/ConcertAbilityController.h>
 
 #include <RadioStation/RadioStation.h>
@@ -378,6 +379,7 @@ int main(int, char**)
     ADD_COMPONENT("TutorialSeries", TutorialSeries);
     ADD_COMPONENT("CityLightsComponent", CityLightsComponent);
     ADD_COMPONENT("City", City);
+    ADD_COMPONENT("MenuParticles", MenuParticles);
 
 #pragma endregion
 
@@ -396,7 +398,8 @@ int main(int, char**)
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/BlankScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/PatronChoice.scene");
-    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    SceneManager::AddScene("testScene", "res/scenes/MenuScene2.scene");
     //SceneManager::AddScene("testScene", "res/scenes/tutorialSceneWork2.scene");
     //SceneManager::AddScene("testScene", "res/scenes/SceneToEditPrefabs.scene");
     //SceneManager::AddScene("testScene", "res/scenes/Making Game UI.scene");

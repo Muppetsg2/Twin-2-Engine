@@ -95,7 +95,21 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
                     }
                 }
                 found->GetComponent<MapHexTile>()->type = MapHexTile::HexTileType::PointOfInterest;
-                GameObject* instantiated = SceneManager::CreateGameObject(prefabCity, found->GetTransform());
+                //GameObject* instantiated = SceneManager::CreateGameObject(prefabCity, found->GetTransform());
+                GameObject* instantiated = nullptr;
+                if (PrefabManager::GetPrefab(prefabCity->GetId()) != nullptr) {
+                    instantiated = SceneManager::CreateGameObject(prefabCity, found->GetTransform());
+                }
+                else {
+
+                    if (prefabPath != "") {
+                        prefabCity = PrefabManager::LoadPrefab(prefabPath);
+                        instantiated = SceneManager::CreateGameObject(prefabCity, found->GetTransform());
+                    }
+                    else {
+                        instantiated = std::get<0>(SceneManager::CreateGameObject<City>(found->GetTransform()));
+                    }
+                }
                 instantiated->SetIsStatic(true);
                 //GameObject* instantiated = GameObject::Instantiate(prefabCity, found->GetTransform());
                 CitiesManager::AddCity(instantiated);

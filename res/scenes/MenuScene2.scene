@@ -1,0 +1,190 @@
+Textures:
+  - id: 0
+    path: res/textures/particleDefault.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 1
+    path: res\textures\title_screen.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+Sprites:
+  - id: 0
+    alias: Title_Screen
+    texture: 1
+    x: 0
+    y: 0
+    width: 1920
+    height: 1080
+Fonts: ~
+Audio:
+  - id: 0
+    path: res\music\Electric\Thunder_Echoes_Loudly.mp3
+Materials: ~
+Models:
+  - id: 0
+    path: "{Plane}"
+Prefabs: ~
+ScriptableObjects: ~
+GameObjects:
+  - id: 1
+    name: Camera
+    isStatic: false
+    isActive: true
+    transform:
+      id: 1
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 2
+        enabled: true
+        type: Camera
+        fov: 45
+        nearPlane: 0.100000001
+        farPlane: 1000
+        cameraFilter: 0
+        cameraType: 1
+        cameraMode: 0
+        samples: 4
+        renderRes: 0
+        gamma: 2.20000005
+        brightness: 0
+        contrast: 1
+        worldUp:
+          x: 0
+          y: 1
+          z: 0
+        isMain: true
+        isFrustum: true
+        isSSAO: true
+        ssaoSampleRadius: 0.699999988
+        ssaoBias: 0.00999999978
+        blurMSize: 0
+      - id: 7
+        enabled: true
+        type: Audio
+        audio: 0
+        loop: true
+        volume: 1
+        playOnStart: true
+    children:
+      []
+  - id: 2
+    name: Canvas
+    isStatic: false
+    isActive: true
+    transform:
+      id: 3
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 4
+        enabled: true
+        type: Canvas
+        layer: 0
+        size:
+          x: 1920
+          y: 1080
+        worldSpace: false
+    children:
+      - 3
+  - id: 3
+    name: Background
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 6
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 1920
+        height: 1080
+        layer: 0
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 4
+    name: MenuParticles
+    isStatic: false
+    isActive: true
+    transform:
+      id: 8
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 9
+        enabled: true
+        type: MenuParticles
+        amount: 40
+        height: 10
+        particleWidth: 1
+        particleHeight: 1
+        radius: 10
+        startColor:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        endColor:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+    children:
+      []

@@ -31,6 +31,8 @@ class ParticleGenerator
 {
 public:
     glm::vec4 startPosition = glm::vec4(0.0f, 2.0f, 0.0f, 1.0f);
+    glm::vec4 startColor = glm::vec4(1.0f);
+    glm::vec4 endColor = glm::vec4(1.0f);
     float maxLife = 3.0f;
     float generationRadius = 3.0f;
     GLuint textureId;
@@ -43,6 +45,8 @@ public:
     ~ParticleGenerator();
     // update all particles
     void SetStartPosition(glm::vec3 newPosition);
+    void SetStartColor(glm::vec4 newColor);
+    void SetEndColor(glm::vec4 newColor);
     void Update();
     // render all particles
     void Draw();

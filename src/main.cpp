@@ -421,8 +421,8 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/HexTileEditScene.scene");
     //SceneManager::AddScene("testScene", new Scene());
     //SceneManager::LoadScene("Menu");
-    //SceneManager::LoadScene("Game");
-    SceneManager::LoadScene("GameWithTutorial");
+    SceneManager::LoadScene("Game");
+    //SceneManager::LoadScene("GameWithTutorial");
     SceneManager::Update();
 
 #if DISPLAY_SPLASH_SCREEN

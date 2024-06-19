@@ -11,7 +11,7 @@ using namespace std;
 
 void GIFPlayer::Initialize()
 {
-	ifstream gifFile("res/gifs/Alice-Idle-260x560_2.gif", ios_base::binary);
+	ifstream gifFile("res/gifs/att.QEmP-YFpfnZI_apU1h_MMPzUXKN7tVSR_vtk0rljkp8.gif", ios_base::binary);
 	if (!gifFile.is_open()) {
 		SPDLOG_ERROR("GIF Loading from file Error");
 		gifFile.close();

@@ -2,6 +2,7 @@
 
 #include <graphic/manager/ShaderManager.h>
 #include <graphic/manager/FontManager.h>
+#include <graphic/manager/GIFManager.h>
 #include <graphic/manager/MaterialsManager.h>
 #include <graphic/manager/ModelsManager.h>
 #include <graphic/manager/SpriteManager.h>

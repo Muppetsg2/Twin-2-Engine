@@ -27,6 +27,7 @@
 #include <ui/Button.h>
 #include <ui/InputField.h>
 #include <ui/Canvas.h>
+#include <ui/GIFPlayer.h>
 #include <core/MeshRenderer.h>
 #include <core/AudioComponent.h>
 #include <core/CameraComponent.h>

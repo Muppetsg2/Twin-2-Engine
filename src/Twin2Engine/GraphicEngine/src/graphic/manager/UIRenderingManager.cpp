@@ -488,3 +488,16 @@ void UIRenderingManager::Render(UIImageData image)
 	}
 	_screenSpaceRenderQueue[0][image.canvas][image.layer][image.mask][texture].push(elem);
 }
+
+void UIRenderingManager::Render(UIRectData rectTransform, Texture2D* texture)
+{
+	UIElementQueueData elem = UIElementQueueData{
+		.rectTransform = rectTransform,
+		.fill = { 0, 0, 0.f, 0.f, 0.f, false },
+		.sprite = nullptr,
+		.color = glm::vec4(1.f),
+		.isText = false
+	};
+
+	_screenSpaceRenderQueue[0][nullptr][0][nullptr][texture].push(elem);
+}

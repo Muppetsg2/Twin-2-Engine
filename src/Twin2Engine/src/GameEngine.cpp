@@ -36,6 +36,8 @@ void GameEngine::Deserializers()
 
     ADD_COMPONENT("Canvas", Canvas);
 
+    ADD_COMPONENT("GIFPlayer", GIFPlayer);
+
     ADD_COMPONENT("MeshRenderer", MeshRenderer);
 
     ADD_COMPONENT("HexagonalCollider", HexagonalColliderComponent);

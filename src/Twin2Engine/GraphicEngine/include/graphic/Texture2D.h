@@ -2,6 +2,10 @@
 #include <tools/macros.h>
 
 namespace Twin2Engine {
+	namespace UI {
+		class GIFPlayer;
+	}
+
 	namespace Manager {
 		class TextureManager;
 	}
@@ -90,6 +94,7 @@ namespace Twin2Engine {
 
 			friend Manager::TextureManager;
 			friend Font;
+			friend UI::GIFPlayer;
 		};
 	}
 }

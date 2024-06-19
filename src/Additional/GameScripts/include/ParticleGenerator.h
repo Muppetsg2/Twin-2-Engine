@@ -1,5 +1,4 @@
-#ifndef PARTICLE_GENERATOR_H
-#define PARTICLE_GENERATOR_H
+#pragma once
 #include <vector>
 
 #include <glad/glad.h>
@@ -64,5 +63,3 @@ private:
 
     void init(float height, float distance, float time, float particleW, float particleH);
 };
-
-#endif

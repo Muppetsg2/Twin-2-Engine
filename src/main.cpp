@@ -115,7 +115,6 @@ using namespace Generation::Generators;
 #include <TutorialSeries.h>
 #include <CityLightsComponent.h>
 #include <MenuParticles.h>
-#include <MenuManager.h>
 #include <Abilities/ConcertAbilityController.h>
 
 #include <RadioStation/RadioStation.h>
@@ -124,6 +123,8 @@ using namespace Generation::Generators;
 #include <UIScripts/PatronChoicePanelController.h>
 #include <UIScripts/PopularityGainingBonusBarController.h>
 #include <UIScripts/AreaTakenGraph.h>
+#include <UIScripts/MenuManager.h>
+#include <UIScripts/PauseManager.h>
 
 using namespace GameScripts;
 
@@ -157,7 +158,7 @@ void end_imgui();
 
 #pragma endregion
 
-constexpr const char* WINDOW_NAME = "Twin^2 Engine";
+constexpr const char* WINDOW_NAME = "Echoes Of Fame";
 constexpr int32_t WINDOW_WIDTH  = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
 constexpr bool WINDOW_FULLSCREEN = false;
@@ -384,6 +385,7 @@ int main(int, char**)
     ADD_COMPONENT("City", City);
     ADD_COMPONENT("MenuParticles", MenuParticles);
     ADD_COMPONENT("MenuManager", MenuManager);
+    ADD_COMPONENT("PauseManager", PauseManager);
 
 #pragma endregion
 
@@ -414,8 +416,8 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/ToonShading.scene");
     //SceneManager::AddScene("testScene", "res/scenes/HexTileEditScene.scene");
     //SceneManager::AddScene("testScene", new Scene());
-    //SceneManager::LoadScene("Game");
-    SceneManager::LoadScene("Menu");
+    SceneManager::LoadScene("Game");
+    //SceneManager::LoadScene("Menu");
     SceneManager::Update();
 
 #if DISPLAY_SPLASH_SCREEN
@@ -696,14 +698,16 @@ void render_imgui()
     ZoneScoped;
 #endif
 
-    static bool imguiRenderToggleFlag = true;
+    //static bool imguiRenderToggleFlag = true;
 
+    /*
     if (Input::IsKeyPressed(KEY::L))
     {
         imguiRenderToggleFlag = !imguiRenderToggleFlag;
     }
+    */
 
-    if (Input::GetCursorState() == CURSOR_STATE::NORMAL && imguiRenderToggleFlag)
+    if (Input::GetCursorState() == CURSOR_STATE::NORMAL /* && imguiRenderToggleFlag*/)
     {
         if (SceneManager::GetCurrentSceneName() != "") {
             SceneManager::DrawCurrentSceneEditor();

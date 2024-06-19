@@ -26,18 +26,17 @@ private:
 	int _exitButtonEvent = -1;
 
 	void Start() {
-		SceneManager::UnloadCurrent();
 		SceneManager::LoadScene("Game");
 	}
 
 	void Credits() {
-		_menuCanvas->SetActive(false);
-		_creditsCanvas->SetActive(true);
+		if (_menuCanvas != nullptr) _menuCanvas->SetActive(false);
+		if (_creditsCanvas != nullptr) _creditsCanvas->SetActive(true);
 	}
 
 	void CreditsBack() {
-		_creditsCanvas->SetActive(false);
-		_menuCanvas->SetActive(true);
+		if (_creditsCanvas != nullptr) _creditsCanvas->SetActive(false);
+		if (_menuCanvas != nullptr) _menuCanvas->SetActive(true);
 	}
 
 	void Exit() {

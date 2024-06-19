@@ -1,3 +1,4 @@
+#pragma once
 
 // CORE
 #include <core/Component.h>
@@ -16,11 +17,17 @@ class PatronChoicePanelController : public Twin2Engine::Core::Component
     std::vector<PatronData*> _patrons;
     std::vector<Twin2Engine::UI::Button*> _patronsButtons;
 
+    bool choosed = false;
+
     void Choose(PatronData* patron);
 
 public:
-    virtual void Initialize() override;
+    void StartChoose();
+    void StopChoose();
 
+    bool IsChoosed();
+
+    virtual void Initialize() override;
 
     virtual YAML::Node Serialize() const override;
     virtual bool Deserialize(const YAML::Node& node) override;

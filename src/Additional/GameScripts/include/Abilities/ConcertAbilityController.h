@@ -8,6 +8,7 @@
 class ConcertAbilityController : public Twin2Engine::Core::Component {
 private:
 
+    GameObject* _cityLights = nullptr;
     MoneyFunctionData* moneyFunction;
 
     float currTimerTime = 0.0f;

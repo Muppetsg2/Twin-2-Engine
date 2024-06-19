@@ -4,6 +4,7 @@
 using namespace Twin2Engine::Core;
 
 float Time::_updateDeltaTime = 0.f;
+float Time::_timeMultiplier = 1.0f;
 
 void Time::Update()
 {
@@ -12,7 +13,7 @@ void Time::Update()
 
 	t1 = t2;
 	t2 = glfwGetTime();
-	_updateDeltaTime = t2 - t1;
+	_updateDeltaTime = (t2 - t1) * _timeMultiplier;
 }
 
 float Twin2Engine::Core::Time::GetTime()

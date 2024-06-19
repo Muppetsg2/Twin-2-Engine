@@ -4,8 +4,11 @@
 #include <manager/SceneManager.h>
 #include <vector>
 #include <tools/YamlConverters.h>
+#include <core/Time.h>
+#include <GameManager.h>
 
 using namespace Twin2Engine::Manager;
+using namespace Twin2Engine::Core;
 
 
 class TutorialSeries : public Component {
@@ -20,11 +23,15 @@ class TutorialSeries : public Component {
 		}
 
 		virtual void Update() override {
+			Time::_timeMultiplier = 0.0f;
+			//GameManager::instance->gameStartUp = false;
 			if (Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::RIGHT)) {
 				if (!block) {
 					if (tutorials.size() > 0) {
 						tutorials[displayIndex++]->SetActive(false);
 						if (displayIndex == tutorials.size()) {
+							Time::_timeMultiplier = 1.0f;
+							//GameManager::instance->gameStartUp = true;
 							tutorials[0]->SetActive(true);
 							displayIndex = 0;
 							GetGameObject()->SetActive(false);
@@ -36,11 +43,15 @@ class TutorialSeries : public Component {
 								TutorialSeries* t = tutorials[displayIndex]->GetComponent<TutorialSeries>();
 								if (t != nullptr) {
 									t->block = true;
+									Time::_timeMultiplier = 1.0f;
+									//GameManager::instance->gameStartUp = true;
 									tutorials[0]->SetActive(true);
 									displayIndex = 0;
 									GetGameObject()->SetActive(false);
 								}
 								else if (closeOnLast) {
+									Time::_timeMultiplier = 1.0f;
+									//GameManager::instance->gameStartUp = true;
 									tutorials[0]->SetActive(true);
 									displayIndex = 0;
 									GetGameObject()->SetActive(false);
@@ -49,6 +60,8 @@ class TutorialSeries : public Component {
 						}
 					}
 					else {
+						Time::_timeMultiplier = 1.0f;
+						//GameManager::instance->gameStartUp = true;
 						GetGameObject()->SetActive(false);
 						//if (displayIndex == 1) {
 						//	displayIndex = 0;

@@ -462,6 +462,11 @@ void Player::StartPlayer(HexTile* startUpTile)
 {
     move->StartUp(startUpTile);
 
+    GameObject* MovingAroundTut = SceneManager::FindObjectByName("MovingAroundTut");
+    if (MovingAroundTut != nullptr) {
+        MovingAroundTut->SetActive(true);
+    }
+
     PopularityGainingBonusBarController::Instance()->AddCurrentBonus(TakeOverSpeed);
 }
 

@@ -2,7 +2,7 @@
 
 using namespace Twin2Engine::UI;
 
-#define AREA_TAKEN_GRAPH_TEST false;
+#define AREA_TAKEN_GRAPH_TEST false
 
 void AreaTakenGraph::UpdateTopHexagon()
 {
@@ -10,6 +10,7 @@ void AreaTakenGraph::UpdateTopHexagon()
 	if (topHexagonPrefab == nullptr) return;
 
 #if !AREA_TAKEN_GRAPH_TEST
+
 	const std::vector<Playable*>& entities = GameManager::instance->entities;
 
 	if (entities.size() + 1 != _topHexagons.size()) {
@@ -53,6 +54,7 @@ void AreaTakenGraph::UpdateTopHexagon()
 	}
 
 #else
+
 	if (2 != _topHexagons.size()) {
 		while (_topHexagons.size() < 2) {
 			_topHexagons.push_back(SceneManager::CreateGameObject(topHexagonPrefab, GetTransform()));
@@ -139,6 +141,7 @@ void AreaTakenGraph::UpdateEdge()
 	const float edgeEndAlpha = 360.f - glm::degrees(glm::acos(topVector.x * edgeEndPoint.x + topVector.y * edgeEndPoint.y));
 
 #if !AREA_TAKEN_GRAPH_TEST
+
 	const std::vector<Playable*>& entities = GameManager::instance->entities;
 
 	if (entities.size() + 1 != _edges.size()) {
@@ -415,6 +418,7 @@ glm::vec3 AreaTakenGraph::GetColor(const TILE_COLOR& color)
 void AreaTakenGraph::Update()
 {
 #if !AREA_TAKEN_GRAPH_TEST
+
 	if (GameManager::instance != nullptr) {
 		if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
 			UpdateTopHexagon();
@@ -423,6 +427,7 @@ void AreaTakenGraph::Update()
 		}
 	}
 #else
+
 	UpdateTopHexagon();
 	UpdateEdge();
 	UpdateTopValueHexagon();
@@ -505,7 +510,9 @@ void AreaTakenGraph::DrawEditor() {
 		}
 
 #if AREA_TAKEN_GRAPH_TEST
+
 		ImGui::DragFloat(string("Taken Percentage##").append(id).c_str(), &_takenPercentage);
+
 #endif
 	}
 }

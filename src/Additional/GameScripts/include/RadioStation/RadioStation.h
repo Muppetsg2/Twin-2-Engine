@@ -44,9 +44,6 @@ public:
     virtual bool Deserialize(const YAML::Node& node) override;
 
 #if _DEBUG
-protected:
-    virtual bool DrawInheritedFields() override;
-public:
     virtual void DrawEditor() override;
 #endif
 };

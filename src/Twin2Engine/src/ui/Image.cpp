@@ -139,6 +139,41 @@ void Image::DrawEditor()
 
 		std::map<size_t, string> spriteNames = SpriteManager::GetAllSpritesNames();
 
+		vector<string> names = vector<string>();
+		names.resize(spriteNames.size());
+
+		std::transform(spriteNames.begin(), spriteNames.end(), names.begin(), [](std::pair<size_t, string> const& i) -> string {
+			return i.second;
+		});
+
+		spriteNames.clear();
+
+		std::sort(names.begin(), names.end(), [&](string const& left, string const& right) -> bool {
+			return left.compare(right) < 0;
+		});
+
+		names.insert(names.begin(), "None##Nothing");
+
+		std::string n = SpriteManager::GetSpriteName(_spriteId);
+
+		if (n == "") {
+			_spriteId = 0;
+		}
+
+		size_t choosed = _spriteId == 0 ? 0 : std::find(names.begin(), names.end(), n) - names.begin();
+
+		if (ImGui::ComboWithFilter(string("Sprite##").append(id).c_str(), &choosed, names, 20)) {
+			if (choosed != 0) {
+				SetSprite(names[choosed]);
+			}
+			else {
+				SetSprite(0);
+			}
+		}
+
+		names.clear();
+
+		/*
 		spriteNames.insert(std::pair(0, "None"));
 
 		if (!spriteNames.contains(_spriteId)) {
@@ -166,20 +201,7 @@ void Image::DrawEditor()
 
 			ImGui::EndCombo();
 		}
-
-		if (ImGui::BeginDragDropTarget()) {
-
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SceneHierarchyObject"))
-			{
-				size_t payload_n = *(const size_t*)payload->Data;
-				Canvas* c = SceneManager::GetGameObjectWithId(payload_n)->GetComponent<Canvas>();
-				if (c != nullptr) {
-					SetCanvas(c);
-				}
-			}
-
-			ImGui::EndDragDropTarget();
-		}
+		*/
 
 		float v = _data.rectTransform.size.x;
 		if (ImGui::DragFloat(string("Width##").append(id).c_str(), &v, 0.1f, 0.f, FLT_MAX)) {

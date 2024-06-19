@@ -7,13 +7,23 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 1
+    path: res/textures/Wrong.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites: ~
 Fonts: ~
 Audio: ~
-Materials: ~
+Materials: 
+  - id: 0
+    path: res/materials/tiles/Wrong.material
 Models:
   - id: 0
     path: res/models/car.obj
+  - id: 1
+    path: res/models/hexagonalPlane.obj
 Prefabs: ~
 ScriptableObjects: ~
 Root:
@@ -44,4 +54,34 @@ Root:
       model: 0
       materials: []
   children:
-    []
+    - 1
+GameObjects:
+  - id: 1
+    name: WrongMark
+    isStatic: false
+    isActive: false
+    transform:
+      id: 2
+      position:
+        x: 0
+        y: -1
+        z: 0
+      scale:
+        x: 8
+        y: 8
+        z: 8
+      rotation:
+        x: 0
+        y: 90
+        z: 0
+    components:
+      - id: 3
+        enabled: true
+        type: MeshRenderer
+        isTransparent: true
+        model: 1
+        materials:
+          - 0
+        transparencyPriority: 1
+    children:
+      []

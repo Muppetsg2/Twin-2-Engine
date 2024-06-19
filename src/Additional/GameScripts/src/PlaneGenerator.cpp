@@ -128,6 +128,7 @@ YAML::Node PlaneGenerator::Serialize() const
 	for (const auto& mat : _materials) {
 		node["materials"].push_back(SceneManager::GetMaterialSaveIdx(mat->GetId()));
 	}
+    node["transparencyPriority"] = _transparencyPriority;
     return node;
 }
 
@@ -139,6 +140,11 @@ bool PlaneGenerator::Deserialize(const YAML::Node& node)
         !RenderableComponent::Deserialize(node)) return false;
 
     SetGridValues(node["rows"].as<unsigned int>(), node["columns"].as<unsigned int>());
+
+    if (node["transparencyPriority"])
+        _transparencyPriority = node["transparencyPriority"].as<int>();
+    else
+        _transparencyPriority = 0;
 
     _materials = vector<Material*>();
     for (const auto& mat : node["materials"]) {

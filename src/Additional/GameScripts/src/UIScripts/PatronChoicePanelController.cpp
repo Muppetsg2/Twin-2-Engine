@@ -66,33 +66,25 @@ YAML::Node PatronChoicePanelController::Serialize() const
 
 bool PatronChoicePanelController::Deserialize(const YAML::Node &node)
 {
-    if (!Component::Deserialize(node))
+    if (!node["patrons"] || !node["patronsButtons"] || !Component::Deserialize(node))
         return false;
 
     _patrons.reserve(node["patrons"].size());
     for (size_t index = 0ull; index < node["patrons"].size(); ++index)
     {
-        _patrons.push_back((PatronData *)ScriptableObjectManager::Get(node["patrons"][index].as<string>()));
+        _patrons.push_back((PatronData*)ScriptableObjectManager::Get(node["patrons"][index].as<string>()));
     }
 
     _patronsButtons.reserve(node["patronsButtons"].size());
     for (size_t index = 0ull; index < node["patronsButtons"].size(); ++index)
     {
-        _patronsButtons.push_back((Button *)SceneManager::GetComponentWithId(node["patronsButtons"][index].as<size_t>()));
+        _patronsButtons.push_back((Button*)SceneManager::GetComponentWithId(node["patronsButtons"][index].as<size_t>()));
     }
 
     return true;
 }
 
 #if _DEBUG
-
-bool PatronChoicePanelController::DrawInheritedFields()
-{
-    if (Component::DrawInheritedFields())
-        return true;
-
-    return false;
-}
 
 void PatronChoicePanelController::DrawEditor()
 {
@@ -101,11 +93,79 @@ void PatronChoicePanelController::DrawEditor()
 
     if (ImGui::CollapsingHeader(name.c_str()))
     {
+        if (Component::DrawInheritedFields()) return;
 
-        if (DrawInheritedFields())
-            return;
+        unordered_map<size_t, Component*> btns = SceneManager::GetComponentsOfType<Button>();
+        std::map<size_t, ScriptableObject*> datas = ScriptableObjectManager::GetScriptableObjectsDerivedByType<PatronData>();
 
-        // TODO: Zrobic
+        for (size_t i = 0; i < _patronsButtons.size(); ++i) {
+            size_t choosed_btn = _patronsButtons[i] == nullptr ? 0 : _patronsButtons[i]->GetId();
+            size_t choosed_data = _patrons[i] == nullptr ? 0 : _patrons[i]->GetId();
+
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.4f);
+            if (ImGui::BeginCombo(string("##Button_Patron").append(id).append(std::to_string(i)).c_str(), choosed_btn == 0 ? "None" : btns[choosed_btn]->GetGameObject()->GetName().c_str())) {
+
+                bool clicked = false;
+                for (auto& item : btns) {
+
+                    if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).append(std::to_string(item.first)).c_str(), item.first == choosed_btn)) {
+
+                        if (clicked) continue;
+
+                        choosed_btn = item.first;
+                        clicked = true;
+                    }
+                }
+
+                if (clicked) {
+                    if (choosed_btn != 0) {
+                        _patronsButtons[i] = static_cast<Button*>(btns[choosed_btn]);
+                    }
+                }
+
+                ImGui::EndCombo();
+            }
+
+            ImGui::SameLine();
+
+            if (ImGui::BeginCombo(string("Patron_").append(std::to_string(i)).append("##Data_Patron").append(id).append(std::to_string(i)).c_str(), choosed_data == 0 ? "None" : ScriptableObjectManager::GetName(datas[choosed_data]->GetId()).c_str())) {
+
+                bool clicked = false;
+                for (auto& item : datas) {
+
+                    if (ImGui::Selectable(ScriptableObjectManager::GetName(item.second->GetId()).append("##").append(id).append(std::to_string(item.first)).c_str(), item.first == choosed_data)) {
+
+                        if (clicked) continue;
+
+                        choosed_data = item.first;
+                        clicked = true;
+                    }
+                }
+
+                if (clicked) {
+                    if (choosed_data != 0) {
+                        _patrons[i] = static_cast<PatronData*>(datas[choosed_data]);
+                    }
+                }
+
+                ImGui::EndCombo();
+            }
+            ImGui::PopItemWidth();
+
+            /*
+            if (ImGui::Button(string(ICON_FA_TRASH_CAN "##Remove Patron").append(std::to_string(i)).c_str())) {
+                clicked.push_back(item.first);
+            }
+            */
+        }
+
+        btns.clear();
+        datas.clear();
+
+        if (ImGui::Button(string("New Patron##").append(id).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
+            _patronsButtons.push_back(nullptr);
+            _patrons.push_back(nullptr);
+        }
     }
 }
 

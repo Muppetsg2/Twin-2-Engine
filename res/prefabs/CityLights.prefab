@@ -1,0 +1,43 @@
+Textures: ~
+Sprites: ~
+Fonts: ~
+Audio: ~
+Materials:
+  - id: 0
+    path: res/materials/CityLights.material
+Models:
+  - id: 0
+    path: res/models/citylights.obj
+Prefabs: ~
+ScriptableObjects: ~
+Root:
+  name: Marker
+  isStatic: false
+  isActive: true
+  transform:
+    id: 0
+    enabled: true
+    position:
+      x: 0
+      y: 0
+      z: 0
+    scale:
+      x: 0.9
+      y: 0.8
+      z: 0.9
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+  components:
+    - id: 1
+      enabled: true
+      type: MeshRenderer
+      isTransparent: true
+      model: 0
+      materials:
+        - 0
+    - id: 2
+      enabled: true
+      type: CityLightsComponent
+  children: []

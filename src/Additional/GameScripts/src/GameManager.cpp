@@ -21,21 +21,32 @@ void GameManager::Initialize()
     if (instance == nullptr)
     {
         instance = this;
-        // prefabPlayer = PrefabManager::GetPrefab("res/prefabs/Player.prefab");
-        // enemyPrefab = PrefabManager::GetPrefab("res/prefabs/Enemy.prefab");
-        _dayText = SceneManager::FindObjectByName("DayText")->GetComponent<Text>();
-        _monthText = SceneManager::FindObjectByName("MonthText")->GetComponent<Text>();
-        _yearText = SceneManager::FindObjectByName("YearText")->GetComponent<Text>();
-        
-        _dayEventHandleId = GameTimer::Instance()->OnDayTicked += [&](int day) {
-            _dayText->SetText(wstring(L"Day ").append(to_wstring(day)));
+        GameObject* temp = SceneManager::FindObjectByName("DateText");
+
+        static constexpr int startMonth = 1;
+        static constexpr int startYear = 2020;
+        static constexpr int startDay = 1;
+
+        if (temp != nullptr) {
+            _dateText = temp->GetComponent<Text>();
+            _dateEventHandleId = GameTimer::Instance()->OnDateTicked += [&](int day, int month, int year) {
+                _dateText->SetText(
+                    to_wstring(startYear + year)
+                    .append(L".")
+                    .append(startMonth + month < 10 ? L"0" + std::to_wstring(startMonth + month) : to_wstring(startMonth + month))
+                    .append(L".")
+                    .append(startDay + day - 1 < 10 ? L"0" + to_wstring(startDay + day - 1) : to_wstring(startDay + day - 1))
+                );
             };
-        _monthEventHandleId = GameTimer::Instance()->OnMonthTicked += [&](int month) {
-            _monthText->SetText(wstring(L"Month ").append(to_wstring(month)));
-            };
-        _yearEventHandleId = GameTimer::Instance()->OnYearTicked += [&](int year) {
-            _yearText->SetText(wstring(L"Year ").append(to_wstring(year)));
-        };
+
+            _dateText->SetText(
+                to_wstring(startYear)
+                .append(L".")
+                .append(startMonth < 10 ? L"0" + std::to_wstring(startMonth) : to_wstring(startMonth))
+                .append(L".")
+                .append(startDay < 10 ? L"0" + to_wstring(startDay) : to_wstring(startDay))
+            );
+        }
 
         _freePatronsData = _patronsData;
         // GeneratePlayer();
@@ -67,6 +78,8 @@ void GameManager::Initialize()
         {
             _carMaterials.push_back(nullptr);
         }
+
+        _audioComponent = GetGameObject()->GetComponent<AudioComponent>();
     }
     else
     {
@@ -76,6 +89,7 @@ void GameManager::Initialize()
     //particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/particle.png", 10, 1.0f, 0.0f, 3.0f, 1.5f, 0.1f, 0.1f, 0.5f);
     //particleGenerator->startPosition = glm::vec4(0.0f, 4.0f, 0.0f, 1.0f);
     //particleGenerator->active = true;
+
 }
 
 void GameManager::OnDestroy() {
@@ -86,14 +100,27 @@ void GameManager::OnDestroy() {
     }
 
     if (GameTimer::Instance() != nullptr) {
-        GameTimer::Instance()->OnDayTicked -= _dayEventHandleId;
-        _dayEventHandleId = -1;
+        if (_dateEventHandleId != -1) {
+            GameTimer::Instance()->OnDateTicked -= _dateEventHandleId;
+            _dateEventHandleId = -1;
+        }
 
-        GameTimer::Instance()->OnMonthTicked -= _monthEventHandleId;
-        _monthEventHandleId = -1;
+        /*
+        if (_dayEventHandleId != -1) {
+            GameTimer::Instance()->OnDayTicked -= _dayEventHandleId;
+            _dayEventHandleId = -1;
+        }
 
-        GameTimer::Instance()->OnYearTicked -= _yearEventHandleId;
-        _yearEventHandleId = -1;
+        if (_monthEventHandleId != -1) {
+            GameTimer::Instance()->OnMonthTicked -= _monthEventHandleId;
+            _monthEventHandleId = -1;
+        }
+
+        if (_yearEventHandleId != -1) {
+            GameTimer::Instance()->OnYearTicked -= _yearEventHandleId;
+            _yearEventHandleId = -1;
+        }
+        */
     }
 
     if (_mapGenerationEventId != -1 && _mapGenerator != nullptr)
@@ -206,17 +233,17 @@ void GameManager::UpdateTiles()
     Tiles.insert(Tiles.begin(), temp.begin(), temp.end());
 }
 
-GameObject *GameManager::GeneratePlayer()
+GameObject* GameManager::GeneratePlayer()
 {
-    GameObject *player = Twin2Engine::Manager::SceneManager::CreateGameObject(prefabPlayer);
-    Player *p = player->GetComponent<Player>();
+    GameObject* player = Twin2Engine::Manager::SceneManager::CreateGameObject(prefabPlayer);
+    Player* p = player->GetComponent<Player>();
     _player = p;
     int chosen = Random::Range(0ull, _freeColors.size() - 1ull);
     // int chosen = 0;
     p->colorIdx = _freeColors[chosen];
     _freeColors.erase(_freeColors.begin() + chosen);
     // p->colorIdx = chosen;
-
+    p->GetTransform()->SetGlobalPosition(vec3(0.0f, -5.0f, 0.0f));
     // p->patron = playersPatron;
     p->SetPatron(playersPatron);
 
@@ -225,25 +252,70 @@ GameObject *GameManager::GeneratePlayer()
     p->GetGameObject()->GetComponent<MeshRenderer>()->SetMaterial(0ull, _carMaterials[p->colorIdx]);
 
     _player->move->_playerDestinationMarker->GetComponent<MeshRenderer>()->AddMaterial(
-            _player->GetGameObject()->GetComponent<MeshRenderer>()->GetMaterial(0ull));
+        _player->GetGameObject()->GetComponent<MeshRenderer>()->GetMaterial(0ull));
 
+    //_player->move->_playerWrongDestinationMarker->GetComponent<MeshRenderer>()->AddMaterial(
+    //        _player->GetGameObject()->GetComponent<MeshRenderer>()->GetMaterial(0ull));
 
     entities.push_back(p);
+
+    switch (p->patron->GetPatronMusic())
+    {
+    case PatronMusic::ROCK:
+        _audioComponent->SetAudio(_rockBackgroundMusics[0ull]);
+        _audioComponent->Play();
+
+        break;
+
+    case PatronMusic::ELECTRONIC:
+        _audioComponent->SetAudio(_electricBackgroundMusics[0ull]);
+        _audioComponent->Play();
+
+        break;
+
+    case PatronMusic::POP:
+        _audioComponent->SetAudio(_popBackgroundMusics[0ull]);
+        _audioComponent->Play();
+
+        break;
+
+    case PatronMusic::HEAVY_METAL:
+        _audioComponent->SetAudio(_heavyMetalBackgroundMusics[0ull]);
+        _audioComponent->Play();
+
+        break;
+
+    case PatronMusic::JAZZ:
+        _audioComponent->SetAudio(_jazzBackgroundMusics[0ull]);
+        _audioComponent->Play();
+
+        break;
+
+    case PatronMusic::DISCO:
+        _audioComponent->SetAudio(_discoBackgroundMusics[0ull]);
+        _audioComponent->Play();
+
+        break;
+
+    default:
+
+        break;
+    }
 
     return player;
 }
 
-GameObject *GameManager::GenerateEnemy()
+GameObject* GameManager::GenerateEnemy()
 {
     // if (freeColors.size() == 0)
     //{
     //     return nullptr;
     // }
 
-    GameObject *enemy = Twin2Engine::Manager::SceneManager::CreateGameObject(enemyPrefab);
+    GameObject* enemy = Twin2Engine::Manager::SceneManager::CreateGameObject(enemyPrefab);
     // GameObject* enemy = Instantiate(enemyPrefab, new Vector3(), Quaternion.identity, gameObject.transform);
 
-    Enemy *e = enemy->GetComponent<Enemy>();
+    Enemy* e = enemy->GetComponent<Enemy>();
 
     int chosen = Random::Range(0ull, _freeColors.size() - 1ull);
     // int chosen = 1;
@@ -251,6 +323,8 @@ GameObject *GameManager::GenerateEnemy()
     _freeColors.erase(_freeColors.begin() + chosen);
     // e->colorIdx = chosen;
     e->GetGameObject()->GetComponent<MeshRenderer>()->SetMaterial(0ull, _carMaterials[e->colorIdx]);
+
+    e->GetTransform()->SetGlobalPosition(vec3(0.0f, -5.0f, 0.0f));
 
     unsigned chosenPatron = Random::Range<unsigned>(0u, _freePatronsData.size() - 1ull);
     // e->patron = _freePatronsData[chosenPatron];
@@ -385,6 +459,50 @@ YAML::Node GameManager::Serialize() const
         node["patronsData"].push_back(ScriptableObjectManager::GetPath(_patronsData[index]->GetId()));
     }
 
+
+    node["RockBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _rockBackgroundMusics.size(); ++index)
+    {
+        node["RockBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_rockBackgroundMusics[index]));
+    }
+
+    node["ElectricBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _electricBackgroundMusics.size(); ++index)
+    {
+        node["ElectricBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_electricBackgroundMusics[index]));
+    }
+
+    node["PopBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _popBackgroundMusics.size(); ++index)
+    {
+        node["PopBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_popBackgroundMusics[index]));
+    }
+
+    node["HeavyMetalBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _heavyMetalBackgroundMusics.size(); ++index)
+    {
+        node["HeavyMetalBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_heavyMetalBackgroundMusics[index]));
+    }
+
+    node["JazzBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _jazzBackgroundMusics.size(); ++index)
+    {
+        node["JazzBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_jazzBackgroundMusics[index]));
+    }
+
+    node["DiscoBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _discoBackgroundMusics.size(); ++index)
+    {
+        node["DiscoBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_discoBackgroundMusics[index]));
+    }
+
+    //node["RockBackgroundMusics"] = _rockBackgroundMusics;
+    //node["ElectricBackgroundMusics"] = _electricBackgroundMusics;
+    //node["PopBackgroundMusics"] = _popBackgroundMusics;
+    //node["HeavyMetalBackgroundMusics"] = _heavyMetalBackgroundMusics;
+    //node["JazzBackgroundMusics"] = _jazzBackgroundMusics;
+    //node["DiscoBackgroundMusics"] = _discoBackgroundMusics;
+
     return node;
 }
 
@@ -502,6 +620,37 @@ bool GameManager::Deserialize(const YAML::Node &node)
                 _carMaterials.push_back(MaterialsManager::GetMaterial(SceneManager::GetMaterial(node["carMaterials"][size - 1].as<size_t>())));
             }
         }
+    }
+
+    _rockBackgroundMusics = node["RockBackgroundMusics"].as<vector<size_t>>();
+    for (size_t index = 0ull; index < _rockBackgroundMusics.size(); ++index)
+    {
+        _rockBackgroundMusics[index] = SceneManager::GetAudio(_rockBackgroundMusics[index]);
+    }
+    _electricBackgroundMusics = node["ElectricBackgroundMusics"].as<vector<size_t>>();
+    for (size_t index = 0ull; index < _electricBackgroundMusics.size(); ++index)
+    {
+        _electricBackgroundMusics[index] = SceneManager::GetAudio(_electricBackgroundMusics[index]);
+    }
+    _popBackgroundMusics = node["PopBackgroundMusics"].as<vector<size_t>>();
+    for (size_t index = 0ull; index < _popBackgroundMusics.size(); ++index)
+    {
+        _popBackgroundMusics[index] = SceneManager::GetAudio(_popBackgroundMusics[index]);
+    }
+    _heavyMetalBackgroundMusics = node["HeavyMetalBackgroundMusics"].as<vector<size_t>>();
+    for (size_t index = 0ull; index < _heavyMetalBackgroundMusics.size(); ++index)
+    {
+        _heavyMetalBackgroundMusics[index] = SceneManager::GetAudio(_heavyMetalBackgroundMusics[index]);
+    }
+    _jazzBackgroundMusics = node["JazzBackgroundMusics"].as<vector<size_t>>();
+    for (size_t index = 0ull; index < _jazzBackgroundMusics.size(); ++index)
+    {
+        _jazzBackgroundMusics[index] = SceneManager::GetAudio(_jazzBackgroundMusics[index]);
+    }
+    _discoBackgroundMusics = node["DiscoBackgroundMusics"].as<vector<size_t>>();
+    for (size_t index = 0ull; index < _discoBackgroundMusics.size(); ++index)
+    {
+        _discoBackgroundMusics[index] = SceneManager::GetAudio(_discoBackgroundMusics[index]);
     }
 
     size = node["patronsData"].size();

@@ -63,6 +63,7 @@ namespace Generation
 
         virtual void Initialize() override;
         virtual void OnEnable() override;
+        virtual void OnDestroy() override;
 
         virtual YAML::Node Serialize() const override;
         virtual bool Deserialize(const YAML::Node& node) override;

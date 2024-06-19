@@ -27,58 +27,79 @@ class MoneyGainFromTiles;
 class Player : public Playable {
 private:
     //static Mesh* hexMesh;
-    Twin2Engine::Core::GameObject* hexIndicator;
-    ConcertAbilityController* concertAbility;
+    Twin2Engine::Core::GameObject* _hexIndicator;
+    ConcertAbilityController* _concertAbility;
 
-    MoneyGainFromTiles* money;
+    MoneyGainFromTiles* _money;
+    Prefab* _starPrefab = nullptr;
+    bool _lost;
 
-    bool lost;
+    // AUDIO
+    AudioComponent* _audioComponent = nullptr;
+    size_t _onHoverClickAudio = 0;
+    size_t _offHoverClickAudio = 0;
+    size_t _abilitiesUseAudio = 0;
+    size_t _cooldownEndAudio = 0;
+    size_t _notEnoughResAudio = 0;
 
-    AudioComponent* audioComponent = nullptr;
-
+    size_t _spriteButtonStep1;
+    size_t _spriteButtonStep2;
     //Coroutine* fansCorountine;
 
+    float _buttonDeltaYMovement = 10;
 
     // Player UI
     // Album
-    Twin2Engine::UI::Text* albumText;
-    Twin2Engine::UI::Button* albumButton;
-    Twin2Engine::Core::GameObject* albumButtonObject;
-    Twin2Engine::UI::Image* albumCircleImage;
-    size_t albumButtonEventHandleId;
-    size_t albumButtonDestroyedEventHandleId;
-    size_t albumButtonHoveringEventHandleId;
-    bool isHoveringAlbumButton = false;
-    bool isShowingAlbumPossible = false;
+    Twin2Engine::UI::Text* _albumText;
+    Twin2Engine::UI::Button* _albumButton;
+    Twin2Engine::Core::GameObject* _albumButtonObject;
+    Twin2Engine::UI::Image* _albumButtonFrameImage;
+    Twin2Engine::UI::Image* _albumCircleImage;
+    int _albumButtonEventHandleId = -1;
+    int _albumButtonDestroyedEventHandleId = -1;
+    int _albumButtonHoveringEventHandleId = -1;
+    bool _isHoveringAlbumButton = false;
+    bool _isShowingAlbumPossible = false;
+
     // FansMeeting
-    Twin2Engine::UI::Text* fansMeetingText;
-    Twin2Engine::UI::Button* fansMeetingButton;
-    Twin2Engine::Core::GameObject* fansMeetingButtonObject;
-    Twin2Engine::UI::Image* fansMeetingCircleImage;
-    size_t fansMeetingButtonEventHandleId;
-    size_t fansMeetingButtonHoveringEventHandleId;
-    size_t fansMeetingButtonDestroyedEventHandleId;
-    bool isHoveringFansMeetingButton = false;
-    bool isShowingFansMeetingAffectedTiles = false;
+    Twin2Engine::UI::Text* _fansMeetingText;
+    Twin2Engine::UI::Button* _fansMeetingButton;
+    Twin2Engine::Core::GameObject* _fansMeetingButtonObject;
+    Twin2Engine::UI::Image* _fansMeetingButtonFrameImage;
+    Twin2Engine::UI::Image* _fansMeetingCircleImage;
+    int _fansMeetingButtonEventHandleId = -1;
+    int _fansMeetingButtonHoveringEventHandleId = -1;
+    int _fansMeetingButtonDestroyedEventHandleId = -1;
+    bool _isHoveringFansMeetingButton = false;
+    bool _isShowingFansMeetingAffectedTiles = false;
+
     //Concert
-    Twin2Engine::UI::Text* concertText;
-    Twin2Engine::UI::Button* concertButton;
-    Twin2Engine::Core::GameObject* concertButtonObject;
-    Twin2Engine::UI::Image* concertCircleImage;
-    size_t concertButtonEventHandleId;
-    size_t concertButtonDestroyedEventHandleId;
-    size_t concertButtonHoveringEventHandleId;
-    bool isHoveringConcertButton = false;
-    bool isShowingConcertPossible = false;
+    Twin2Engine::UI::Text* _concertText;
+    Twin2Engine::UI::Button* _concertButton;
+    Twin2Engine::Core::GameObject* _concertButtonObject;
+    Twin2Engine::UI::Image* _concertButtonFrameImage;
+    Twin2Engine::UI::Image* _concertCircleImage; 
+    int _concertButtonEventHandleId = -1;
+    int _concertButtonDestroyedEventHandleId = -1;
+    int _concertButtonHoveringEventHandleId = -1;
+    bool _isHoveringConcertButton = false;
+    bool _isShowingConcertPossible = false;
+
     // Money
-    Twin2Engine::UI::Text* moneyText;
+    Twin2Engine::UI::Text* _moneyText;
+    Twin2Engine::UI::Text* _negativeMoneyText;
+
+    glm::vec4 _enoughMoneyColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+    glm::vec4 _notEnoughMoneyColor = glm::vec4(0.5f, 0.0f, 0.0f, 1.0f);
+    float _negativeMoneyTextXOffset = 150.0f;
+    float _negativeMoneyTextLetterWidth = 25.0f;
 
 
-    glm::vec4 _abilityCooldownColor;
-    glm::vec4 _abilityActiveColor;
+    glm::vec4 _abilityCooldownColor = glm::vec4(1.f, 0.f, 1.f, 0.275f);
+    glm::vec4 _abilityActiveColor = glm::vec4(0.f, 1.f, 1.f, 0.275f);
 
     // FANS MEETING
-    std::list<HexTile*> affectedTiles;
+    std::list<HexTile*> _affectedTiles;
     void ShowAffectedTiles();
     void HideAffectedTiles();
 
@@ -87,31 +108,21 @@ public:
     Playable* fightingPlayable = nullptr;
 
     virtual void Initialize() override;
-    virtual void OnDestroy() override;
     virtual void Update() override;
+    virtual void OnDestroy() override;
     void StartPlayer(HexTile* startUpTile);
 
     void AlbumCall();
     void FansMeetingCall();
     void ConcertCall();
-    void FansControlDraw();
     void StartMove(HexTile* tile);
     void FinishMove(HexTile* tile);
     void MinigameEnd();
     //void MinigameEnd(void* sender);
-    //void StartPaperRockScisors(Playable* playable);
-    //void WonPaperRockScisors(Playable* playable);
-    //void LostPaperRockScisors(Playable* playable);
-    //void WonFansControl(Playable* playable);
-    //void StartFansControl(Playable* playable);
-    //void LostFansControl(Playable* playable);
 
-    virtual void LostPaperRockScissors(Playable* playable) override;
-    virtual void WonPaperRockScissors(Playable* playable) override;
-    virtual void LostFansControl(Playable* playable) override;
-    virtual void WonFansControl(Playable* playable) override;
     //virtual void StartPaperRockScissors(Playable* playable) override;
-    virtual void StartFansControl(Playable* playable) override;
+    virtual void WonPaperRockScissors(Playable* playable) override;
+    virtual void LostPaperRockScissors(Playable* playable) override;
 
     float GetMaxRadius() const override;
 

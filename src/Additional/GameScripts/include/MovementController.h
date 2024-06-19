@@ -42,12 +42,10 @@ namespace GameScripts {
 			float BorderVelocity = 0.5f;
 			glm::vec2 BorderDir = glm::vec2(0.0f, 0.0f);
 
-			MovementController() : Component() {
-                SPDLOG_INFO("MovementController");
-            }
-
 			virtual void Update() override {
-				if (DragControl)
+                if (GameManager::instance->minigameActive) return;
+                
+                if (DragControl)
 				{
 					CheckDragInput();
 					if (Draging)

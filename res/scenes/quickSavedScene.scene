@@ -195,6 +195,7 @@ GameObjects:
         audio: 0
         loop: true
         volume: 1
+        playOnStart: false
     children:
       []
   - id: 2

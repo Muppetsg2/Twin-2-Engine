@@ -2,7 +2,6 @@
 
 #define USE_IMGUI_CONSOLE_OUTPUT true
 #define USE_WINDOWS_CONSOLE_OUTPUT false
-
 #define DISPLAY_SPLASH_SCREEN true
 
 #if USE_IMGUI_CONSOLE_OUTPUT || !USE_WINDOWS_CONSOLE_OUTPUT || !_DEBUG
@@ -108,8 +107,13 @@ using namespace Generation::Generators;
 #include <Enemy.h>
 #include <EnemyMovement.h>
 #include <AreaTaking/GetMoneyFromTiles.h>
+#include <AreaTaking/City.h>
 #include <GameTimer.h>
 #include <ConcertRoad.h>
+#include <GodRayComponent.h>
+#include <StarComponent.h>
+#include <TutorialSeries.h>
+#include <CityLightsComponent.h>
 #include <Abilities/ConcertAbilityController.h>
 
 #include <RadioStation/RadioStation.h>
@@ -154,10 +158,10 @@ void end_imgui();
 constexpr const char* WINDOW_NAME = "Twin^2 Engine";
 constexpr int32_t WINDOW_WIDTH  = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
-constexpr bool WINDOW_FULLSCREEN = false;
+constexpr bool WINDOW_FULLSCREEN = true;
 
 #if DISPLAY_SPLASH_SCREEN
-constexpr const char* SPLASH_SCREEN_TEXTURE = "res/textures/splashScreen.png";
+constexpr const char* SPLASH_SCREEN_TEXTURE = "res/textures/splashScreen2.png";
 #endif
 
 // Change these to lower GL version like 4.5 if GL 4.6 can't be initialized on your machine
@@ -233,6 +237,8 @@ int main(int, char**)
 #pragma endregion
 
     window = Window::GetInstance();
+
+    window->SetIcon("icon.png");
 
 #if DISPLAY_SPLASH_SCREEN
 
@@ -369,6 +375,11 @@ int main(int, char**)
     ADD_COMPONENT("ConcertRoad", ConcertRoad);
     ADD_COMPONENT("PopularityGainingBonusBarController", PopularityGainingBonusBarController);
     ADD_COMPONENT("AreaTakenGraph", AreaTakenGraph);
+    ADD_COMPONENT("GodRayComponent", GodRayComponent);
+    ADD_COMPONENT("StarComponent", StarComponent);
+    ADD_COMPONENT("TutorialSeries", TutorialSeries);
+    ADD_COMPONENT("CityLightsComponent", CityLightsComponent);
+    ADD_COMPONENT("City", City);
 
 #pragma endregion
 
@@ -387,7 +398,8 @@ int main(int, char**)
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/BlankScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/PatronChoice.scene");
-    //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/tutorialSceneWork2.scene");
     //SceneManager::AddScene("testScene", "res/scenes/SceneToEditPrefabs.scene");
     //SceneManager::AddScene("testScene", "res/scenes/Making Game UI.scene");
     //SceneManager::AddScene("testScene", "res/scenes/MenuScene.scene");
@@ -395,7 +407,7 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
     //SceneManager::AddScene("testScene", "res/scenes/ToonShading.scene");
     //SceneManager::AddScene("testScene", "res/scenes/HexTileEditScene.scene");
-    SceneManager::AddScene("testScene", new Scene());
+    //SceneManager::AddScene("testScene", new Scene());
     SceneManager::LoadScene("testScene");
     SceneManager::Update();
 
@@ -408,7 +420,7 @@ int main(int, char**)
 
     //SceneManager::SaveScene("res/scenes/ToonShading.scene");
     
-    Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
+    //Camera = SceneManager::GetRootObject()->GetComponentInChildren<CameraComponent>()->GetGameObject();
 
 
 #if _DEBUG
@@ -478,7 +490,6 @@ void input()
     }
 
     CameraComponent* c = CameraComponent::GetMainCamera();
-
 
 #if _DEBUG
     if (Input::IsKeyDown(KEY::W) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
@@ -678,7 +689,14 @@ void render_imgui()
     ZoneScoped;
 #endif
 
-    if (Input::GetCursorState() == CURSOR_STATE::NORMAL)
+    static bool imguiRenderToggleFlag = true;
+
+    if (Input::IsKeyPressed(KEY::L))
+    {
+        imguiRenderToggleFlag = !imguiRenderToggleFlag;
+    }
+
+    if (Input::GetCursorState() == CURSOR_STATE::NORMAL && imguiRenderToggleFlag)
     {
         if (SceneManager::GetCurrentSceneName() != "") {
             SceneManager::DrawCurrentSceneEditor();

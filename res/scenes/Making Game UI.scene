@@ -202,7 +202,7 @@ GameObjects:
     children:
       []
   - id: 3
-    name: DirectionalLight
+    name: Directional Light
     isStatic: false
     isActive: true
     transform:
@@ -256,6 +256,7 @@ GameObjects:
       - id: 8
         enabled: true
         type: Canvas
+		layer: 0
         size:
           x: 1920
           y: 1080
@@ -329,6 +330,7 @@ GameObjects:
       - id: 34
         enabled: true
         type: Canvas
+		layer: 0
         size:
           x: 1920
           y: 1080
@@ -799,6 +801,7 @@ GameObjects:
       - id: 36
         enabled: true
         type: Canvas
+		layer: 0
         size:
           x: 1920
           y: 1080
@@ -830,9 +833,9 @@ GameObjects:
         isTransparent: false
         sprite: 4
         color:
-          x: 0.683397651
-          y: 0.683397651
-          z: 0.683397651
+          x: 1
+          y: 1
+          z: 1
           w: 1
         width: 763.700012
         height: 200

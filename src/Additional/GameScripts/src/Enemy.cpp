@@ -92,21 +92,9 @@ void Enemy::WonPaperRockScissors(Playable* playable)
     CurrTile->StartTakingOver(this);
 }
 
-void Enemy::LostFansControl(Playable* playable)
-{
-}
-
-void Enemy::WonFansControl(Playable* playable)
-{
-}
-
 //void Enemy::StartPaperRockScissors(Playable* playable)
 //{
 //}
-
-void Enemy::StartFansControl(Playable* playable)
-{
-}
 
 float Enemy::GetMaxRadius() const {
     return (_movement->maxSteps + 0.25) * _tilemap->GetDistanceBetweenTiles();

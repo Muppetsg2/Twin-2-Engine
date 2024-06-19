@@ -1,0 +1,51 @@
+Textures: ~
+Sprites: ~
+Fonts: ~
+Audio: ~
+Materials:
+  - id: 0
+    path: res/materials/YellowBasic.material
+Models:
+  - id: 0
+    path: res/models/star.obj
+Prefabs: ~
+ScriptableObjects: ~
+Root:
+  name: Star
+  isStatic: false
+  isActive: true
+  transform:
+    id: 0
+    enabled: true
+    position:
+      x: 0
+      y: 0.4
+      z: 0
+    scale:
+      x: 1
+      y: 1
+      z: 1
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+  components:
+    - id: 1
+      enabled: true
+      type: MeshRenderer
+      isTransparent: true
+      model: 0
+      materials:
+        - 0
+    - id: 2
+      enabled: true
+      type: StarComponent
+      animatePosition: true
+      startY: 0.45
+      posChangeScale: 0.05
+      timeScale: 3
+      animateRotation: true
+      rotationVel: 1.7
+      rotationMaxAngle: 180
+      animateScale: true
+      scale: 8

@@ -16,7 +16,7 @@ namespace Generation::Generators
         SCRIPTABLE_OBJECT_BODY(MountainsGenerator)
 
     public:
-        //Twin2Engine::Core::GameObject* prefabMountains;
+        std::string prefabPath = "";
         Twin2Engine::Core::Prefab* prefabMountains;
         int mountainsNumber = 0;
 
@@ -70,14 +70,18 @@ namespace Generation::Generators
                 if (clicked) {
                     if (choosed != 0) {
                         prefabMountains = Twin2Engine::Manager::PrefabManager::GetPrefab(choosed);
+                        prefabPath = Twin2Engine::Manager::PrefabManager::GetPrefabPath(prefabMountains);
                     }
                     else {
                         prefabMountains = nullptr;
+                        prefabPath = "";
                     }
                 }
 
                 ImGui::EndCombo();
             }
+
+            prefabNames.clear();
 
             ImGui::InputInt(string("mountainsNumber##SO").append(id).c_str(), &mountainsNumber);
             ImGui::InputFloat(string("mountainsHeight##SO").append(id).c_str(), &mountainsHeight);

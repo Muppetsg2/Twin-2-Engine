@@ -2,8 +2,10 @@
 
 #include <core/Component.h>
 #include <tools/EventHandler.h>
+#include <core/EasingFunctions.h>
 
 namespace Twin2Engine::UI {
+
 	class Canvas;
 
 	class Button : public Core::Component {
@@ -15,12 +17,21 @@ namespace Twin2Engine::UI {
 		Tools::MethodEventHandler _onHoverEvent = Tools::MethodEventHandler();
 
 		// Preset Events
+		float _animTime = 0.f;
 		bool _useOnHoverPresetEvents = false;
-		float _timeFactor = 0.1f;
+		float _animTimeFactor = 0.1f;
+		EaseFunction _onHoverScaleFunc = EaseFunction::LINE;
+		EaseFunctionType _onHoverScaleFuncType = EaseFunctionType::IN_F;
 		glm::vec3 _onHoverScaleStart = glm::vec3(1.f);
 		glm::vec3 _onHoverScaleEnd = glm::vec3(1.f);
+		EaseFunction _onHoverColorFunc = EaseFunction::LINE;
+		EaseFunctionType _onHoverColorFuncType = EaseFunctionType::IN_F;
 		glm::vec4 _onHoverColorStart = glm::vec4(1.f); // Requires Image Component in same GameObject
 		glm::vec4 _onHoverColorEnd = glm::vec4(1.f); // Requires Image Component in same GameObject
+		bool _displayObjectOnHover = false;
+		bool _objectSnapToMouse = false;
+		glm::vec2 _objectOffset = glm::vec2(0.f); // Only works when _objectSnapToMouse == true and _displayObjectOnHover == true
+		Core::GameObject* _objectToDisplay = nullptr;
 
 		bool _playAudioOnClick = false; // Requires Audio Component in same GameObject
 		size_t _onClickAudioId = 0; // Requires Audio Component in same GameObject
@@ -50,12 +61,30 @@ namespace Twin2Engine::UI {
 		void DisableOnHoverPresetEvents();
 		float GetTimeFactor();
 		void SetTimeFactor(float factor);
+		EaseFunction GetOnHoverScaleFunc();
+		void SetOnHoverScaleFunc(EaseFunction func);
+		EaseFunctionType GetOnHoverScaleFuncType();
+		void SetOnHoverScaleFuncType(EaseFunctionType funcType);
 		std::pair<glm::vec3, glm::vec3> GetOnHoverScale();
 		void SetOnHoverScale(std::pair<glm::vec3, glm::vec3> values);
 		void SetOnHoverScale(glm::vec3 start, glm::vec3 end);
+		EaseFunction GetOnHoverColorFunc();
+		void SetOnHoverColorFunc(EaseFunction func);
+		EaseFunctionType GetOnHoverColorFuncType();
+		void SetOnHoverColorFuncType(EaseFunctionType funcType);
 		std::pair<glm::vec4, glm::vec4> GetOnHoverColor();
 		void SetOnHoverColor(std::pair<glm::vec4, glm::vec4> values);
 		void SetOnHoverColor(glm::vec4 start, glm::vec4 end);
+
+		void EnableOnHoverDisplayObject();
+		void DisableOnHoverDisplayObject();
+		void SnapObjectToMouseOnHover(bool value);
+		glm::vec2 GetOnHoverObjectOffset();
+		void SetOnHoverObjectOffset(glm::vec2 value); // Only works when _objectPosUseMouse == true and _displayObjectOnHover == true
+		void SetOnHoverObjectOffset(float x, float y); // Only works when _objectPosUseMouse == true and _displayObjectOnHover == true
+		Core::GameObject* GetOnHoverDisplayObject();
+		void SetOnHoverDisplayObject(Core::GameObject* obj);
+		void SetOnHoverDisplayObject(size_t objId);
 
 		void EnableOnClickAudio();
 		void DisableOnClickAudio();

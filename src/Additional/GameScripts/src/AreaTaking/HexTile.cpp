@@ -403,8 +403,8 @@ void HexTile::Initialize()
 	}
 
 	particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/ArrowParticle.png", 3, 0.5f, 0.0f, 6.0f, 2.0f, 0.16f, 0.2f, 0.3f);
-	pgCity = new ParticleGenerator("origin/ParticleShader", _textureCityStar, 5, 0.4f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
-	pgCityNegative = new ParticleGenerator("origin/ParticleShader", _textureCityBlackStar, 5, -0.3f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
+	pgCity = new ParticleGenerator("origin/ParticleShader", TextureManager::GetTexture2D(_textureCityStar)->GetId(), 5, 0.4f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
+	pgCityNegative = new ParticleGenerator("origin/ParticleShader", TextureManager::GetTexture2D(_textureCityBlackStar)->GetId(), 5, -0.3f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
 }
 
 void HexTile::OnDestroy()

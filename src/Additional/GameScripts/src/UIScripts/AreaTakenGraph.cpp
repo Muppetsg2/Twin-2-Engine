@@ -349,6 +349,7 @@ void AreaTakenGraph::UpdateTopValueHexagon()
 	topImg->SetFillProgress(img->GetFillProgress());
 }
 
+#if _DEBUG
 bool AreaTakenGraph::PrefabDropDown(const char* label, size_t* prefabId, const std::string& objId)
 {
 	std::map<size_t, string> prefabNames = PrefabManager::GetAllPrefabsNames();
@@ -386,6 +387,7 @@ bool AreaTakenGraph::PrefabDropDown(const char* label, size_t* prefabId, const s
 
 	return false;
 }
+#endif
 
 glm::vec3 AreaTakenGraph::GetColor(const TILE_COLOR& color)
 {

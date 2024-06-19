@@ -24,7 +24,10 @@ private:
 	void UpdateEdge();
 	void UpdateTopValueHexagon();
 
+#if _DEBUG
 	bool PrefabDropDown(const char* label, size_t* prefabId, const std::string& objId);
+#endif
+
 	glm::vec3 GetColor(const TILE_COLOR& color);
 
 public:

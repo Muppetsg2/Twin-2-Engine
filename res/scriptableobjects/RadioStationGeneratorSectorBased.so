@@ -1,4 +1,4 @@
 scriptable_object:
   __SO_RegisteredName__: RadioStationGeneratorSectorBased
   prefabRadioStation: res/prefabs/tilemap/mapElements/radioStation.prefab
-  densityFactorPerSector: 0.2
+  densityFactorPerSector: 0.119999997

@@ -1,5 +1,5 @@
 scriptable_object:
   __SO_RegisteredName__: CitiesGenerator
   prefabCity: res/prefabs/tilemap/mapElements/city.prefab
-  byRegions: true
-  density: 1
+  byRegions: false
+  density: 0.388999999

@@ -593,7 +593,7 @@ Sprites:
     texture: 78
     x: 0
     y: 0
-    width: 640
+    width: 750
     height: 540
   - id: 5
     alias: MiniGame_Purple_Back
@@ -649,7 +649,7 @@ Sprites:
     texture: 54
     x: 0
     y: 0
-    width: 640
+    width: 750
     height: 540
   - id: 13
     alias: ArrowDown
@@ -2466,7 +2466,7 @@ GameObjects:
           y: 1
           z: 1
           w: 1
-        width: 640
+        width: 750
         height: 540
         layer: 3
         fillEnabled: false
@@ -2504,7 +2504,7 @@ GameObjects:
           y: 1
           z: 1
           w: 1
-        width: 640
+        width: 750
         height: 540
         layer: 3
         fillEnabled: false

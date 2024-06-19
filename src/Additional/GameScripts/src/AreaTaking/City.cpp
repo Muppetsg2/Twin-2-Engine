@@ -49,7 +49,7 @@ void City::SetConcertRoadCity(bool isConcertRoadCity)
 				_affectedTiles[index]->RemoveAffectingCity(this);
 			}
 			_affectedTiles.clear();
-			_imagePictogram->GetTransform()->GetParent()->GetGameObject()->SetActive(true);
+			//_imagePictogram->GetTransform()->GetParent()->GetGameObject()->SetActive(true);
 			_imagePictogram->SetSprite(_concertRoadCityPictogramSpriteId);
 		}
 		else

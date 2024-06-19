@@ -16,6 +16,8 @@ void PatronChoicePanelController::Initialize()
     // wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
     wstring_convert<codecvt_utf8<wchar_t>> converter;
 
+    FirstStepTutorial = SceneManager::FindObjectByName("FristStepTutorial");
+
     for (size_t index = 0ull; index < size; ++index)
     {
         _patronsButtons[index]->GetTransform()->GetChildAt(2ull)->GetGameObject()->GetComponent<Text>()->SetText(converter.from_bytes(_patrons[index]->GetPatronName()));
@@ -28,7 +30,11 @@ void PatronChoicePanelController::Initialize()
         _patronsButtons[index]->GetOnClickEvent().AddCallback([this, index]() -> void
                                                               {
             SPDLOG_INFO("Index chosen: {}", index);
-            Choose(_patrons[index]); });
+            Choose(_patrons[index]);
+            if (FirstStepTutorial != nullptr) {
+                FirstStepTutorial->SetActive(true);
+            }
+            });
     }
 }
 

@@ -16,6 +16,8 @@ class PatronChoicePanelController : public Twin2Engine::Core::Component
     std::vector<PatronData*> _patrons;
     std::vector<Twin2Engine::UI::Button*> _patronsButtons;
 
+    GameObject* FirstStepTutorial = nullptr;
+
     void Choose(PatronData* patron);
 
 public:

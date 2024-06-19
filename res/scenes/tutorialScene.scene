@@ -541,6 +541,94 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 98
+    path: res/textures/tutorials/StartSelectionTut.png
+    fileFormat: !<RGBA> 6408
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 99
+    path: res/textures/tutorials/TakingOverTut.png
+    fileFormat: !<RGBA> 6408
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 100
+    path: res/textures/tutorials/ReachTut.png
+    fileFormat: !<RGBA> 6408
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 101
+    path: res/textures/tutorials/EarningMoneyTut.png
+    fileFormat: !<RGBA> 6408
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 102
+    path: res/textures/tutorials/RadioStationTut.png
+    fileFormat: !<RGBA> 6408
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 103
+    path: res/textures/tutorials/ConcertRoadTut.png
+    fileFormat: !<RGBA> 6408
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 104
+    path: res/textures/tutorials/AlbumTut.png
+    fileFormat: !<RGBA> 6408
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 105
+    path: res/textures/tutorials/FansMeetingTut.png
+    fileFormat: !<RGBA> 6408
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 106
+    path: res/textures/tutorials/ConcertTut.png
+    fileFormat: !<RGBA> 6408
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 107
+    path: res/textures/UI/pure_background_with_border.png
+    fileFormat: !<RGBA> 6408
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 108
+    path: res/textures/UI/ZoryaPrototype2.png
+    fileFormat: !<RGBA> 6408
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites:
   - id: 0
     alias: MiniGame_Blue_Top
@@ -786,6 +874,39 @@ Sprites:
   - id: 39
     alias: RMB
     texture: 97
+  - id: 40
+    alias: StartSelectionTut
+    texture: 98
+  - id: 41
+    alias: TakingOverTut
+    texture: 99
+  - id: 42
+    alias: ReachTut
+    texture: 100
+  - id: 43
+    alias: EarningMoneyTut
+    texture: 101
+  - id: 44
+    alias: RadioStationTut
+    texture: 102
+  - id: 45
+    alias: ConcertRoadTut
+    texture: 103
+  - id: 46
+    alias: AlbumTut
+    texture: 104
+  - id: 47
+    alias: FansMeetingTut
+    texture: 105
+  - id: 48
+    alias: ConcertTut
+    texture: 106
+  - id: 49
+    alias: pure_background_with_border
+    texture: 107
+  - id: 50
+    alias: ZoryaPrototype
+    texture: 108
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
@@ -802,6 +923,16 @@ Audio:
     path: res/music/Minigame/Launchpad.mp3
   - id: 4
     path: res/music/Minigame/Defeat.mp3
+  - id: 5
+    path: res/music/Rock/Classic_Rock_Anthem_For_The_Ages.mp3
+  - id: 6
+    path: res/music/Pop/Summer_Beats_Carnival.mp3
+  - id: 7
+    path: res/music/Pop/Twilight_Whispers_Embrace.mp3
+  - id: 8
+    path: res/music/Electric/Thunder_Echoes_Loudly.mp3
+  - id: 9
+    path: res/music/Metal/Whispers_In_Silent_Steel.mp3
 Materials:
   - id: 0
     path: res/materials/tiles/normal/yellow/YellowHexTileStage3.material
@@ -866,7 +997,7 @@ Materials:
   - id: 30
     path: res/materials/tiles/borders/cyan/CyanHexTileBorder.material
   - id: 31
-    path: res/materials/car/CarMaterial_Purple.material
+    path: res/materials/car/CarMaterial_Pink.material
   - id: 32
     path: res/materials/tiles/normal/cyan/CyanHexTileStage1.material
   - id: 33
@@ -886,13 +1017,13 @@ Materials:
   - id: 40
     path: res/materials/tiles/borders/purple/PurpleHexTileBorder.material
   - id: 41
-    path: res/materials/car/CarMaterial_Yellow.material
+    path: res/materials/car/CarMaterial_Green.material
   - id: 42
     path: res/materials/tiles/normal/yellow/YellowHexTileRegressStage2.material
   - id: 43
     path: res/materials/tiles/BlueAffectedHexTile.material
   - id: 44
-    path: res/materials/car/CarMaterial_Green.material
+    path: res/materials/car/CarMaterial_Purple.material
   - id: 45
     path: res/materials/tiles/normal/purple/PurpleHexTileRegressStage1.material
   - id: 46
@@ -902,7 +1033,7 @@ Materials:
   - id: 48
     path: res/materials/tiles/normal/pink/PinkHexTileStage1.material
   - id: 49
-    path: res/materials/car/CarMaterial_Pink.material
+    path: res/materials/car/CarMaterial_Yellow.material
   - id: 50
     path: res/materials/tiles/borders/pink/PinkHexTileBorder.material
   - id: 51
@@ -979,6 +1110,8 @@ Prefabs:
     path: res/prefabs/tilemap/tiles/greenHexTile.prefab
   - id: 14
     path: res/prefabs/tilemap/mapRegion.prefab
+  - id: 15
+    path: res/prefabs/SlideTut.prefab
 ScriptableObjects: ~
 GameObjects:
   - id: 1
@@ -1143,6 +1276,7 @@ GameObjects:
         enabled: true
         type: PlaneGenerator
         isTransparent: true
+        transparencyPriority: -1
         rows: 82
         columns: 82
         materials:
@@ -1196,15 +1330,24 @@ GameObjects:
           - res/scriptableobjects/patrons/Perun.so
           - res/scriptableobjects/patrons/Jutrzenka.so
           - res/scriptableobjects/patrons/Zuarasiz.so
+        RockBackgroundMusics:
+         - 5
+        ElectricBackgroundMusics:
+         - 8
+        PopBackgroundMusics:
+         - 6
+         - 7
+        HeavyMetalBackgroundMusics:
+         - 9
+        JazzBackgroundMusics: []
+        DiscoBackgroundMusics: []
       - id: 162
         enabled: true
         type: Audio
         audio: 0
         loop: true
-        volume: 1
+        volume: 0.5
         playOnStart: false
-
-
     children:
       []
   - id: 23
@@ -1300,7 +1443,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 154
+      - id: 165
         enabled: true
         type: Image
         isTransparent: false
@@ -1342,14 +1485,14 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 18
+        sprite: 29
         color:
           x: 1
           y: 1
           z: 1
           w: 1
-        width: 150
-        height: 150
+        width: 120
+        height: 120
         layer: 0
         fillEnabled: true
         fillType: !<2> 2
@@ -1489,7 +1632,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 156
+      - id: 164
         enabled: true
         type: Image
         isTransparent: false
@@ -1531,14 +1674,14 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 18
+        sprite: 29
         color:
           x: 1
           y: 1
           z: 1
           w: 1
-        width: 150
-        height: 150
+        width: 120
+        height: 120
         layer: 0
         fillEnabled: true
         fillType: !<2> 2
@@ -1678,7 +1821,7 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 158
+      - id: 161
         enabled: true
         type: Image
         isTransparent: false
@@ -1720,14 +1863,14 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 18
+        sprite: 29
         color:
           x: 1
           y: 1
           z: 1
           w: 1
-        width: 150
-        height: 150
+        width: 120
+        height: 120
         layer: 0
         fillEnabled: true
         fillType: !<2> 2
@@ -2279,7 +2422,7 @@ GameObjects:
   - id: 47
     name: PatronChoicePanel
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 111
       position:
@@ -2939,13 +3082,14 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
+        sprite: 24
         color:
           x: 1
           y: 1
           z: 1
           w: 1
-        width: 100
-        height: 100
+        width: 750
+        height: 540
         layer: 0
         fillEnabled: false
         fillType: !<0> 0
@@ -3528,24 +3672,24 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: ""
-        font: 2
-        size: 0
+        text: "\x002\x00/\x002"
+        font: 1
+        size: 70
         autoSize: false
         minSize: 0
         maxSize: 0
-        width: 0
-        height: 0
+        width: 150
+        height: 150
         color:
           x: 0
           y: 0
           z: 0
           w: 1
-        alignX: !<LEFT> 0
-        alignY: !<BOTTOM> 0
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
         textWrapping: false
         overflow: !<Overflow> 0
-        layer: 0
+        layer: 2
     children:
       []
   - id: 22
@@ -3571,24 +3715,24 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: ""
-        font: 2
-        size: 0
+        text: "\x000\x00/\x002"
+        font: 1
+        size: 70
         autoSize: false
         minSize: 0
         maxSize: 0
-        width: 0
-        height: 0
+        width: 150
+        height: 150
         color:
           x: 0
           y: 0
           z: 0
           w: 1
-        alignX: !<LEFT> 0
-        alignY: !<BOTTOM> 0
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
         textWrapping: false
         overflow: !<Overflow> 0
-        layer: 0
+        layer: 2
     children:
       []
   - id: 6
@@ -3814,15 +3958,15 @@ GameObjects:
         fillProgress: 0.209999993
     children:
       []
-  - id: 68
-    name: FansMeetingButtonFrame
+  - id: 467
+    name: TutorialsCanvas
     isStatic: false
     isActive: true
     transform:
-      id: 153
+      id: 4989
       position:
         x: 0
-        y: -21
+        y: 0
         z: 0
       scale:
         x: 1
@@ -3833,101 +3977,31 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 165
+      - id: 4990
         enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 33
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 130
-        height: 140
-        layer: -1
-        fillEnabled: false
-        fillType: !<2> 2
-        fillSubType: !<CW> 0
-        fillProgress: 1
+        type: Canvas
+        layer: 3
+        size:
+          x: 1920
+          y: 1080
+        worldSpace: false
     children:
-     - 25
-  - id: 66
-    name: ConcertButtonFrame
-    isStatic: false
-    isActive: true
-    transform:
-      id: 155
-      position:
-        x: 265
-        y: -21
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 164
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 33
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 130
-        height: 140
-        layer: -1
-        fillEnabled: false
-        fillType: !<2> 2
-        fillSubType: !<CW> 0
-        fillProgress: 1
-    children:
-     - 28
-  - id: 67
-    name: AlbumButtonFrame
-    isStatic: false
-    isActive: true
-    transform:
-      id: 157
-      position:
-        x: -265
-        y: -21
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 161
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 33
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 130
-        height: 140
-        layer: -1
-        fillEnabled: false
-        fillType: !<2> 2
-        fillSubType: !<CW> 0
-        fillProgress: 1
-    children:
-     - 31
+      - 134
+      - 144
+      - 127
+      - 139
+      - 155
+      - 150
+      - 160
+      - 907
+      - 727
+      - 872
+      - 882
+      - 662
+      - 877
+      - 647
+      - 652
+      - 657
   - id: 127
     name: FristStepTutorial
     isStatic: false
@@ -3988,6 +4062,7 @@ GameObjects:
           - 131
           - 132
           - 133
+          - 907
     children:
       - 128
       - 129
@@ -4100,7 +4175,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 12
+        sprite: 50
         color:
           x: 1
           y: 1
@@ -4456,7 +4531,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 12
+        sprite: 50
         color:
           x: 1
           y: 1
@@ -4615,6 +4690,7 @@ GameObjects:
         tutorialsIds:
           - 142
           - 143
+          - 882
     children:
       - 140
       - 141
@@ -4725,7 +4801,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 12
+        sprite: 50
         color:
           x: 1
           y: 1
@@ -4881,10 +4957,12 @@ GameObjects:
       - id: 5924
         enabled: true
         type: TutorialSeries
+        closeOnLast: true
         tutorialsIds:
           - 147
           - 148
           - 149
+          - 47
     children:
       - 145
       - 146
@@ -4996,7 +5074,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 12
+        sprite: 50
         color:
           x: 1
           y: 1
@@ -5198,6 +5276,7 @@ GameObjects:
         tutorialsIds:
           - 153
           - 154
+          - 652
     children:
       - 151
       - 152
@@ -5308,7 +5387,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 12
+        sprite: 50
         color:
           x: 1
           y: 1
@@ -5467,6 +5546,7 @@ GameObjects:
         tutorialsIds:
           - 158
           - 159
+          - 647
     children:
       - 156
       - 157
@@ -5577,7 +5657,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 12
+        sprite: 50
         color:
           x: 1
           y: 1
@@ -5735,6 +5815,7 @@ GameObjects:
         type: TutorialSeries
         tutorialsIds:
           - 163
+          - 657
     children:
       - 161
       - 162
@@ -5806,7 +5887,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 12
+        sprite: 50
         color:
           x: 1
           y: 1
@@ -5896,6 +5977,2024 @@ GameObjects:
         width: 23
         height: 32
         layer: 8
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 907
+    name: IntroductionTut
+    isStatic: false
+    isActive: false
+    transform:
+      id: 6234
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 6235
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 49
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 600
+        height: 540
+        layer: 6
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 6236
+        enabled: true
+        type: Image
+        isTransparent: true
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.701960802
+        width: 1920
+        height: 1080
+        layer: 5
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5391
+        enabled: true
+        type: TutorialSeries
+        tutorialsIds:
+          - 907
+    children:
+      - 908
+      - 909
+      - 910
+      - 911
+  - id: 908
+    name: IntroductionTutImg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 6237
+      position:
+        x: 0
+        y: -93
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 6238
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 40
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 560
+        height: 315
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 909
+    name: IntroductionTutHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 6240
+      position:
+        x: 0
+        y: 227
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 6241
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00S\x00t\x00a\x00r\x00t\x00 \x00p\x00o\x00i\x00n\x00t\x00 \x00c\x00h\x00o\x00i\x00c\x00e"
+        font: 1
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 600
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 910
+    name: IntroductionTutMsg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 6242
+      position:
+        x: 0
+        y: 175
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 6243
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00S\x00e\x00l\x00e\x00c\x00t\x00 \x00t\x00i\x00l\x00e\x00,\x00 \x00w\x00h\x00i\x00c\x00h\x00 \x00b\x00e\x00c\x00o\x00m\x00 \x00s\x00t\x00a\x00r\x00t\x00i\x00n\x00g\x00 \x00p\x00l\x00a\x00c\x00e\x00 \x00o\x00f\x00 \x00y\x00o\x00u\x00r\x00 \x00\n\x00j\x00o\x00u\x00r\x00n\x00e\x00y\x00."
+        font: 0
+        size: 33
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 520
+        height: 200
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 911
+    name: IntroductionTutRMB
+    isStatic: false
+    isActive: true
+    transform:
+      id: 6245
+      position:
+        x: 275
+        y: 237
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 6246
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 39
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 23
+        height: 32
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 727
+    name: MovingAroundTut
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5380
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5385
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 49
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 600
+        height: 540
+        layer: 6
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5386
+        enabled: true
+        type: Image
+        isTransparent: true
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.701960802
+        width: 1920
+        height: 1080
+        layer: 5
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5392
+        enabled: true
+        type: TutorialSeries
+        tutorialsIds:
+          - 727
+          - 872
+    children:
+      - 728
+      - 729
+      - 730
+      - 731
+  - id: 728
+    name: MovingAroundTutImg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5381
+      position:
+        x: 0
+        y: -93
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5387
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 42
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 560
+        height: 315
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 729
+    name: MovingAroundTutHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5382
+      position:
+        x: 0
+        y: 227
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5388
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00M\x00o\x00v\x00i\x00n\x00g\x00 \x00a\x00r\x00o\x00u\x00n\x00d"
+        font: 1
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 600
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 730
+    name: MovingAroundTutMsg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5383
+      position:
+        x: 0
+        y: 175
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5389
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00Y\x00o\x00u\x00 \x00c\x00a\x00n\x00 \x00m\x00o\x00v\x00e\x00 \x00a\x00r\x00o\x00u\x00n\x00d\x00 \x00b\x00y\x00 \x00t\x00a\x00p\x00i\x00n\x00g\x00 \x00n\x00e\x00i\x00g\x00h\x00b\x00o\x00u\x00r\x00i\x00n\x00g\x00 \x00\n\x00t\x00i\x00l\x00e\x00s\x00.\x00 \x00I\x00n\x00 \x00o\x00n\x00e\x00 \x00m\x00o\x00v\x00e\x00 \x00y\x00o\x00u\x00 \x00a\x00r\x00e\x00 \x00a\x00b\x00l\x00e\x00 \x00t\x00o\x00 \x00r\x00e\x00a\x00c\x00h\x00 \x00p\x00l\x00a\x00c\x00e\x00s\x00 \x00\n\x00i\x00n\x00 \x00r\x00a\x00d\x00i\x00u\x00s\x00 \x00o\x00f\x00 \x003\x00 \x00t\x00i\x00l\x00e\x00s\x00."
+        font: 0
+        size: 33
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 520
+        height: 200
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 731
+    name: MovingAroundTutRMB
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5384
+      position:
+        x: 275
+        y: 237
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5390
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 39
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 23
+        height: 32
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 872
+    name: TakingOverTut
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5416
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5421
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 49
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 600
+        height: 540
+        layer: 6
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5422
+        enabled: true
+        type: Image
+        isTransparent: true
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.701960802
+        width: 1920
+        height: 1080
+        layer: 5
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5423
+        enabled: true
+        type: TutorialSeries
+        tutorialsIds:
+          - 872
+          - 877
+    children:
+      - 873
+      - 874
+      - 875
+      - 876
+  - id: 873
+    name: TakingOverTutImg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5417
+      position:
+        x: 0
+        y: -93
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5424
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 41
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 560
+        height: 315
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 874
+    name: TakingOverTutHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5418
+      position:
+        x: 0
+        y: 227
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5425
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00T\x00a\x00k\x00i\x00n\x00g\x00 \x00O\x00v\x00e\x00r\x00 \x00T\x00i\x00l\x00e\x00s\x00\n"
+        font: 1
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 600
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 875
+    name: TakingOverTutMsg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5419
+      position:
+        x: 0
+        y: 175
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5426
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00W\x00i\x00t\x00h\x00 \x00t\x00i\x00m\x00e\x00,\x00 \x00w\x00h\x00i\x00l\x00e\x00 \x00s\x00t\x00a\x00y\x00i\x00n\x00g\x00 \x00o\x00n\x00 \x00t\x00i\x00l\x00e\x00 \x00y\x00o\x00u\x00 \x00i\x00n\x00c\x00r\x00e\x00a\x00s\x00e\x00 \x00\n\x00y\x00o\x00u\x00r\x00 \x00o\x00w\x00n\x00 \x00i\x00n\x00f\x00l\x00u\x00e\x00n\x00c\x00e\x00 \x00t\x00h\x00e\x00r\x00e\x00.\x00 \x00H\x00o\x00w\x00e\x00v\x00e\x00r\x00 \x00l\x00a\x00c\x00k\x00 \x00o\x00f\x00 \x00y\x00o\x00u\x00r\x00 \x00\n\x00p\x00r\x00e\x00s\x00e\x00n\x00c\x00e\x00 \x00i\x00s\x00 \x00c\x00o\x00u\x00s\x00i\x00n\x00g\x00 \x00d\x00e\x00c\x00r\x00e\x00s\x00i\x00n\x00g\x00 \x00y\x00o\x00u\x00r\x00 \x00p\x00o\x00p\x00u\x00l\x00a\x00r\x00i\x00t\x00y\x00."
+        font: 0
+        size: 33
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 520
+        height: 200
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 876
+    name: TakingOverTutRMB
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5420
+      position:
+        x: 275
+        y: 237
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5427
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 39
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 23
+        height: 32
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 877
+    name: EarningMoneyTut
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5428
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5433
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 49
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 600
+        height: 540
+        layer: 6
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5434
+        enabled: true
+        type: Image
+        isTransparent: true
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.701960802
+        width: 1920
+        height: 1080
+        layer: 5
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5435
+        enabled: true
+        type: TutorialSeries
+        tutorialsIds:
+          - 877
+    children:
+      - 878
+      - 879
+      - 880
+      - 881
+  - id: 878
+    name: EarningMoneyTutImg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5429
+      position:
+        x: 0
+        y: -93
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5436
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 43
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 560
+        height: 315
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 879
+    name: EarningMoneyTutHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5430
+      position:
+        x: 0
+        y: 227
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5437
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00E\x00a\x00r\x00n\x00i\x00n\x00g\x00 \x00M\x00o\x00n\x00e\x00y"
+        font: 1
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 600
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 880
+    name: EarningMoneyTutMsg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5431
+      position:
+        x: 0
+        y: 175
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5438
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00B\x00y\x00 \x00g\x00a\x00i\x00n\x00i\x00n\x00g\x00 \x00p\x00o\x00p\x00u\x00l\x00a\x00r\x00i\x00t\x00y\x00 \x00i\x00n\x00 \x00p\x00l\x00a\x00c\x00e\x00s\x00 \x00a\x00r\x00o\x00u\x00n\x00d\x00 \x00m\x00a\x00p\x00 \x00\n\x00y\x00o\x00u\x00 \x00c\x00a\x00n\x00 \x00e\x00a\x00r\x00n\x00 \x00p\x00a\x00s\x00s\x00i\x00v\x00e\x00 \x00i\x00n\x00c\x00o\x00m\x00e\x00.\x00 \x00T\x00h\x00e\x00s\x00e\x00 \x00m\x00o\x00n\x00e\x00y\x00 \x00c\x00a\x00n\x00 \x00\n\x00b\x00e\x00 \x00s\x00p\x00e\x00n\x00t\x00 \x00o\x00n\x00 \x00u\x00s\x00a\x00g\x00e\x00 \x00o\x00f\x00 \x00y\x00o\x00u\x00r\x00 \x00s\x00p\x00e\x00c\x00i\x00a\x00l\x00 \x00a\x00b\x00i\x00l\x00i\x00t\x00i\x00e\x00s\x00."
+        font: 0
+        size: 33
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 520
+        height: 200
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 881
+    name: EarningMoneyTutRMB
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5432
+      position:
+        x: 275
+        y: 237
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5439
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 39
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 23
+        height: 32
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 882
+    name: RadioStationTut
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5440
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5445
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 49
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 600
+        height: 540
+        layer: 6
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5446
+        enabled: true
+        type: Image
+        isTransparent: true
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.701960802
+        width: 1920
+        height: 1080
+        layer: 5
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5447
+        enabled: true
+        type: TutorialSeries
+        tutorialsIds:
+          - 882
+    children:
+      - 883
+      - 884
+      - 885
+      - 886
+  - id: 883
+    name: RadioStationTutImg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5441
+      position:
+        x: 0
+        y: -93
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5448
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 44
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 560
+        height: 315
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 884
+    name: RadioStationHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5442
+      position:
+        x: 0
+        y: 227
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5449
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00R\x00a\x00d\x00i\x00o\x00 \x00S\x00t\x00a\x00t\x00i\x00o\x00n"
+        font: 1
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 600
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 885
+    name: RadioStationTutMsg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5443
+      position:
+        x: 0
+        y: 175
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5454
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00D\x00e\x00p\x00e\x00n\x00d\x00i\x00n\x00g\x00 \x00o\x00n\x00 \x00d\x00e\x00g\x00r\x00e\x00e\x00 \x00o\x00f\x00 \x00s\x00u\x00c\x00c\x00e\x00s\x00s\x00 \x00i\x00n\x00 \x00p\x00e\x00r\x00f\x00o\x00r\x00m\x00i\x00n\x00g\x00 \x00\n\x00a\x00c\x00t\x00i\x00v\x00i\x00t\x00y\x00 \x00i\x00n\x00 \x00r\x00a\x00d\x00i\x00o\x00 \x00s\x00t\x00a\x00t\x00i\x00o\x00n\x00 \x00y\x00o\x00u\x00 \x00c\x00a\x00n\x00 \x00i\x00n\x00c\x00r\x00e\x00s\x00e\x00 \x00y\x00o\x00u\x00r\x00\n\x00p\x00o\x00p\x00u\x00l\x00a\x00r\x00i\x00t\x00y\x00 \x00t\x00o\x00 \x00s\x00o\x00m\x00e\x00 \x00d\x00e\x00g\x00r\x00e\x00e\x00,\x00 \x00i\x00n\x00 \x00a\x00 \x00c\x00e\x00r\x00t\x00a\x00i\x00n\x00 \x00r\x00a\x00n\x00g\x00e\x00.\x00\n"
+        font: 0
+        size: 33
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 520
+        height: 200
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 886
+    name: RadioStationTutRMB
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5444
+      position:
+        x: 275
+        y: 237
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5455
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 39
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 23
+        height: 32
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 647
+    name: AlbumTut
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5404
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5409
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 49
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 600
+        height: 540
+        layer: 6
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5410
+        enabled: true
+        type: Image
+        isTransparent: true
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.701960802
+        width: 1920
+        height: 1080
+        layer: 5
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5411
+        enabled: true
+        type: TutorialSeries
+        tutorialsIds:
+          - 647
+    children:
+      - 648
+      - 649
+      - 650
+      - 651
+  - id: 648
+    name: AlbumTutImg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5405
+      position:
+        x: 0
+        y: -93
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5412
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 46
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 560
+        height: 315
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 649
+    name: AlbumTutHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5406
+      position:
+        x: 0
+        y: 227
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5413
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00A\x00b\x00i\x00l\x00i\x00t\x00y\x00:\x00 \x00a\x00l\x00b\x00u\x00m"
+        font: 1
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 600
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 650
+    name: AlbumTutMsg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5407
+      position:
+        x: 0
+        y: 175
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5414
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00T\x00h\x00i\x00s\x00 \x00a\x00b\x00i\x00l\x00i\x00t\x00y\x00 \x00l\x00e\x00t\x00 \x00y\x00o\x00u\x00 \x00t\x00o\x00 \x00t\x00e\x00m\x00p\x00o\x00r\x00a\x00r\x00y\x00 \x00g\x00e\x00t\x00 \x00r\x00i\x00d\x00 \x00o\x00f\x00 \x00\n\x00e\x00f\x00e\x00c\x00t\x00 \x00o\x00f\x00 \x00d\x00e\x00c\x00r\x00e\x00s\x00i\x00n\x00g\x00 \x00y\x00o\x00u\x00r\x00 \x00p\x00o\x00p\x00u\x00l\x00a\x00r\x00i\x00t\x00y\x00 \x00i\x00n\x00 \x00a\x00r\x00e\x00a\x00s\x00 \x00\n\x00w\x00h\x00e\x00r\x00e\x00 \x00y\x00o\x00u\x00 \x00a\x00r\x00e\x00 \x00n\x00o\x00t\x00 \x00p\x00r\x00e\x00s\x00e\x00n\x00t\x00."
+        font: 0
+        size: 33
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 520
+        height: 200
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 651
+    name: AlbumTutRMB
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5408
+      position:
+        x: 275
+        y: 237
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5415
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 39
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 23
+        height: 32
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 652
+    name: MeetingTut
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5456
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5461
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 49
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 600
+        height: 540
+        layer: 6
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5462
+        enabled: true
+        type: Image
+        isTransparent: true
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.701960802
+        width: 1920
+        height: 1080
+        layer: 5
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5463
+        enabled: true
+        type: TutorialSeries
+        tutorialsIds:
+          - 652
+    children:
+      - 653
+      - 654
+      - 655
+      - 656
+  - id: 653
+    name: MeetingTutImg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5457
+      position:
+        x: 0
+        y: -93
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5464
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 47
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 560
+        height: 315
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 654
+    name: MeetingTutHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5458
+      position:
+        x: 0
+        y: 227
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5465
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00A\x00B\x00I\x00L\x00I\x00T\x00Y\x00:\x00 \x00F\x00a\x00n\x00s\x00 \x00m\x00e\x00e\x00t\x00i\x00n\x00g"
+        font: 1
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 600
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 655
+    name: MeetingTutMsg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5459
+      position:
+        x: 0
+        y: 175
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5466
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00T\x00h\x00i\x00s\x00 \x00a\x00b\x00i\x00l\x00i\x00t\x00y\x00 \x00l\x00e\x00t\x00 \x00y\x00o\x00u\x00 \x00o\x00r\x00g\x00i\x00n\x00i\x00z\x00e\x00 \x00m\x00e\x00e\x00t\x00i\x00n\x00g\x00 \x00w\x00i\x00t\x00h\x00 \x00y\x00o\x00u\x00r\x00 \x00\n\x00f\x00o\x00l\x00l\x00o\x00w\x00e\x00r\x00s\x00 \x00t\x00h\x00a\x00t\x00 \x00i\x00n\x00c\x00r\x00e\x00s\x00e\x00 \x00y\x00o\x00u\x00r\x00 \x00p\x00o\x00p\x00u\x00l\x00a\x00r\x00i\x00t\x00y\x00 \x00i\x00n\x00 \x00n\x00e\x00i\x00g\x00h\x00-\x00\n\x00b\x00o\x00u\x00r\x00i\x00n\x00g\x00 \x00p\x00l\x00a\x00c\x00e\x00s\x00."
+        font: 0
+        size: 33
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 520
+        height: 200
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 656
+    name: MeetingTutRMB
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5460
+      position:
+        x: 275
+        y: 237
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5467
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 39
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 23
+        height: 32
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 657
+    name: ConcertTut
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5468
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5473
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 49
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 600
+        height: 540
+        layer: 6
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5474
+        enabled: true
+        type: Image
+        isTransparent: true
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.701960802
+        width: 1920
+        height: 1080
+        layer: 5
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5475
+        enabled: true
+        type: TutorialSeries
+        tutorialsIds:
+          - 657
+    children:
+      - 658
+      - 659
+      - 660
+      - 661
+  - id: 658
+    name: ConcertTutImg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5469
+      position:
+        x: 0
+        y: -93
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5476
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 48
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 560
+        height: 315
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 659
+    name: ConcertTutHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5470
+      position:
+        x: 0
+        y: 227
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5477
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00A\x00B\x00I\x00L\x00I\x00T\x00Y\x00:\x00 \x00C\x00o\x00n\x00c\x00e\x00r\x00t"
+        font: 1
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 600
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 660
+    name: ConcertTutMsg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5471
+      position:
+        x: 0
+        y: 175
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5478
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00T\x00h\x00i\x00s\x00 \x00a\x00b\x00i\x00l\x00i\x00t\x00y\x00 \x00t\x00e\x00m\x00p\x00o\x00r\x00a\x00r\x00y\x00 \x00i\x00n\x00c\x00r\x00e\x00s\x00e\x00 \x00s\x00p\x00e\x00e\x00d\x00 \x00o\x00f\x00 \x00g\x00a\x00i\x00n\x00i\x00n\x00g\x00\n\x00p\x00o\x00p\x00u\x00l\x00a\x00r\x00i\x00t\x00y\x00."
+        font: 0
+        size: 33
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 520
+        height: 200
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 661
+    name: ConcertTutRMB
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5472
+      position:
+        x: 275
+        y: 237
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5479
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 39
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 23
+        height: 32
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 662
+    name: ConcertRoadTut
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5480
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5485
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 49
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 600
+        height: 540
+        layer: 6
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5486
+        enabled: true
+        type: Image
+        isTransparent: true
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.701960802
+        width: 1920
+        height: 1080
+        layer: 5
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5487
+        enabled: true
+        type: TutorialSeries
+        tutorialsIds:
+          - 662
+    children:
+      - 663
+      - 664
+      - 665
+      - 666
+  - id: 663
+    name: ConcertRoadTutImg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5481
+      position:
+        x: 0
+        y: -93
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5488
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 45
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 560
+        height: 315
+        layer: 7
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 664
+    name: ConcertRoadTutHeader
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5482
+      position:
+        x: 0
+        y: 227
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5489
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00C\x00o\x00n\x00c\x00e\x00r\x00t\x00 \x00r\x00o\x00a\x00d"
+        font: 1
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 600
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 665
+    name: ConcertRoadTutMsg
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5483
+      position:
+        x: 0
+        y: 175
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5490
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00C\x00o\x00n\x00t\x00r\x00o\x00l\x00i\x00n\x00g\x00 \x00c\x00i\x00t\x00i\x00e\x00s\x00 \x00w\x00i\x00t\x00h\x00 \x00y\x00o\x00u\x00r\x00 \x00p\x00o\x00p\x00u\x00l\x00a\x00r\x00i\x00t\x00y\x00 \x00t\x00h\x00a\x00t\x00 \x00\n\x00a\x00r\x00e\x00 \x00p\x00a\x00r\x00t\x00 \x00o\x00f\x00 \x00\"\x00C\x00o\x00n\x00c\x00e\x00r\x00t\x00 \x00R\x00o\x00a\x00d\x00\"\x00 \x00i\x00n\x00c\x00r\x00e\x00s\x00e\x00 \x00y\x00o\x00u\x00r\x00 \x00s\x00p\x00e\x00e\x00d\x00\n\x00o\x00f\x00 \x00g\x00a\x00i\x00n\x00i\x00n\x00g\x00 \x00p\x00o\x00p\x00l\x00a\x00r\x00i\x00t\x00y\x00 \x00i\x00n\x00 \x00v\x00i\x00s\x00i\x00t\x00e\x00d\x00 \x00p\x00l\x00a\x00c\x00e\x00s\x00."
+        font: 0
+        size: 33
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 520
+        height: 200
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 7
+    children:
+      []
+  - id: 666
+    name: ConcertRoadTutRMB
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5484
+      position:
+        x: 275
+        y: 237
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5491
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 39
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 23
+        height: 32
+        layer: 7
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0

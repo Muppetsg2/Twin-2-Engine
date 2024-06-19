@@ -411,10 +411,12 @@ glm::vec3 AreaTakenGraph::GetColor(const TILE_COLOR& color)
 
 void AreaTakenGraph::Update()
 {
-	if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
-		/*UpdateTopHexagon();
-		UpdateEdge();
-		UpdateBottomHexagon();*/
+	if (GameManager::instance != nullptr) {
+		if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
+			/*UpdateTopHexagon();
+			UpdateEdge();
+			UpdateBottomHexagon();*/
+		}
 	}
 	UpdateTopHexagon();
 	UpdateEdge();

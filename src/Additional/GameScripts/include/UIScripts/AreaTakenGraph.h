@@ -4,7 +4,6 @@
 #include <core/Component.h>
 #include <ui/Image.h>
 
-// TODO: wyczyœciæ prefaby
 // TODO: Œci¹gn¹æ zmiany z main-a
 // TODO: Podpiêcie pod gameplay
 

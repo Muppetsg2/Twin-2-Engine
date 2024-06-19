@@ -30,6 +30,40 @@ void HexTile::TakeOver()
 		takeOverSpeed *= remoteMultiplier;
 	}
 
+	float multiplayer = 1.0f;
+	for (size_t index = 0ull; index < _affectingCities.size(); ++index)
+	{
+		multiplayer *= _affectingCities[index]->CalculateTakingOverSpeedMultiplier(this);
+	}
+
+	if (ownerEntity)
+	{
+		if (multiplayer > 1.0f)
+		{
+			//pgCity->textureId = _textureCityStar;
+			pgCity->active = true;
+			pgCityNegative->active = false;
+		}
+		else if (multiplayer < 1.0f)
+		{
+			//pgCity->textureId = _textureCityBlackStar;
+			pgCity->active = false;
+			pgCityNegative->active = true;
+		}
+		else
+		{
+			pgCity->active = false;
+			pgCityNegative->active = false;
+		}
+	}
+	else
+	{
+		pgCity->active = false;
+		pgCityNegative->active = false;
+	}
+
+	takeOverSpeed *= multiplayer;
+
 	if (ownerEntity != nullptr && ownerEntity != occupyingEntity) {
 		percentage -= Time::GetDeltaTime() * takeOverSpeed;
 		if (percentage <= _takingStage1) {
@@ -55,7 +89,39 @@ void HexTile::TakeOver()
 
 void HexTile::LoseInfluence()
 {
-	percentage -= Time::GetDeltaTime();
+	float multiplayer = 1.0f;
+	for (size_t index = 0ull; index < _affectingCities.size(); ++index)
+	{
+		multiplayer *= _affectingCities[index]->CalculateLooseInterestMultiplier(this);
+	}
+
+
+	if (ownerEntity)
+	{
+		if (multiplayer < 1.0f)
+		{
+			pgCity->active = true;
+			pgCityNegative->active = false;
+		}
+		else if (multiplayer > 1.0f)
+		{
+			pgCity->active = false;
+			pgCityNegative->active = true;
+		}
+		else
+		{
+			pgCity->active = false;
+			pgCityNegative->active = false;
+		}
+	}
+	else
+	{
+		pgCity->active = false;
+		pgCityNegative->active = false;
+	}
+
+	percentage -= multiplayer * Time::GetDeltaTime();
+
 	if (percentage < _takingStage1) {
 		percentage = 0.0f;
 		if (ownerEntity != nullptr) {
@@ -356,6 +422,8 @@ void HexTile::CheckRoundPattern()
 
 void HexTile::Initialize()
 {
+	_affectingCities.clear();
+
 	_mapHexTile = GetGameObject()->GetComponent<MapHexTile>();
 	_meshRenderer = GetGameObject()->GetComponent<MeshRenderer>();
 
@@ -370,6 +438,8 @@ void HexTile::Initialize()
 	}
 
 	particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/ArrowParticle.png", 3, 0.5f, 0.0f, 6.0f, 2.0f, 0.16f, 0.2f, 0.3f);
+	pgCity = new ParticleGenerator("origin/ParticleShader", _textureCityStar, 5, 0.4f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
+	pgCityNegative = new ParticleGenerator("origin/ParticleShader", _textureCityBlackStar, 5, -0.3f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
 }
 
 void HexTile::OnDestroy()
@@ -387,8 +457,17 @@ void HexTile::OnDestroy()
 		SPDLOG_WARN("Concert Road Instance was nullptr!");
 	texturesData = nullptr;
 
-	if (particleGenerator != nullptr) {
+	if (particleGenerator) {
 		delete particleGenerator;
+		particleGenerator = nullptr;
+	}
+	if (pgCity) {
+		delete pgCity;
+		pgCity = nullptr;
+	}
+	if (pgCityNegative) {
+		delete pgCityNegative;
+		pgCityNegative = nullptr;
 	}
 }
 
@@ -436,6 +515,8 @@ void HexTile::InitializeAdjacentTiles()
 	_adjacentTiles.shrink_to_fit();
 
 	particleGenerator->SetStartPosition(GetTransform()->GetGlobalPosition());
+	pgCity->SetStartPosition(GetTransform()->GetGlobalPosition());
+	pgCityNegative->SetStartPosition(GetTransform()->GetGlobalPosition() + vec3(0.0f, 0.3f, 0.0f));
 	//particleGenerator->active = true;
 	
 	//GetGameObject()->OnActiveChangedEvent.AddCallback([&](GameObject* go) {
@@ -465,6 +546,8 @@ void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 				t->UpdateBorders();
 			}
 		}
+		pgCity->active = false;
+		pgCityNegative->active = false;
 		DisableAlbumAffected();
 		ownerEntity = newOwnerEntity;
 		if (ownerEntity != nullptr) {
@@ -517,6 +600,23 @@ void HexTile::EnableAlbumAffected()
 void HexTile::DisableAlbumAffected()
 {
 	particleGenerator->active = false;
+}
+
+void HexTile::AddAffectingCity(City* city)
+{
+	_affectingCities.push_back(city);
+}
+
+void HexTile::RemoveAffectingCity(City* city)
+{
+	for (size_t index = 0ull; index < _affectingCities.size(); ++index)
+	{
+		if (_affectingCities[index] == city)
+		{
+			_affectingCities.erase(_affectingCities.begin() + index);
+			break;
+		}
+	}
 }
 
 void HexTile::BadNote()
@@ -623,6 +723,11 @@ YAML::Node HexTile::Serialize() const
 		node["borderJoints"].push_back(obj->Id());
 	}
 
+	//node["_textureCityStar"] = SceneManager::GetTexture2DSaveIdx(_textureCityStar);
+	//node["_textureCityBlackStar"] = SceneManager::GetTexture2DSaveIdx(_textureCityBlackStar);
+	node["_textureCityStar"] = TextureManager::GetTexture2DPath(_textureCityStar);
+	node["_textureCityBlackStar"] = TextureManager::GetTexture2DPath(_textureCityBlackStar);
+
 	return node;
 }
 
@@ -649,6 +754,11 @@ bool HexTile::Deserialize(const YAML::Node& node)
 			borderJoints.push_back(SceneManager::GetGameObjectWithId(bj.as<size_t>()));
 		}
 	}
+
+	//_textureCityStar = SceneManager::GetTexture2D(node["textureCityStar"].as<size_t>());
+	//_textureCityBlackStar = SceneManager::GetTexture2D(node["textureCityBlackStar"].as<size_t>());
+	_textureCityStar = TextureManager::LoadTexture2D(node["textureCityStar"].as<string>())->GetId();
+	_textureCityBlackStar = TextureManager::LoadTexture2D(node["textureCityBlackStar"].as<string>())->GetId();
 
 	return true;
 }

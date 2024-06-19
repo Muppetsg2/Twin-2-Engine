@@ -20,6 +20,7 @@ SO_SERIALIZATION_BEGIN(CitiesGenerator, AMapElementGenerator)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(CitiesGenerator, AMapElementGenerator)
+    SO_DESERIALIZE_FIELD_R("prefabCity", prefabPath)
     SO_DESERIALIZE_FIELD_F_T(prefabCity, PrefabManager::LoadPrefab, string)
     SO_DESERIALIZE_FIELD(byRegions)
     SO_DESERIALIZE_FIELD(density)
@@ -98,6 +99,7 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
                 instantiated->SetIsStatic(true);
                 //GameObject* instantiated = GameObject::Instantiate(prefabCity, found->GetTransform());
                 CitiesManager::AddCity(instantiated);
+                instantiated->GetComponent<City>()->StartAffectingTiles(found->GetComponent<HexTile>());
             }
         }
     }
@@ -148,10 +150,27 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
                     }
                 }
                 found->GetComponent<MapHexTile>()->type = MapHexTile::HexTileType::PointOfInterest;
-                GameObject* instantiated = SceneManager::CreateGameObject(prefabCity, found->GetTransform());
+
+                GameObject* instantiated = nullptr;
+                if (PrefabManager::GetPrefab(prefabCity->GetId()) != nullptr) {
+                    instantiated = SceneManager::CreateGameObject(prefabCity, found->GetTransform());
+                }
+                else {
+
+                    if (prefabPath != "") {
+                        prefabCity = PrefabManager::LoadPrefab(prefabPath);
+                        instantiated = SceneManager::CreateGameObject(prefabCity, found->GetTransform());
+                    }
+                    else {
+                        instantiated = SceneManager::CreateGameObject(found->GetTransform());
+                    }
+                }
+
+                //GameObject* instantiated = SceneManager::CreateGameObject(prefabCity, found->GetTransform());
+
                 instantiated->SetIsStatic(true);
-                //GameObject* instantiated = GameObject::Instantiate(prefabCity, found->GetTransform());
                 CitiesManager::AddCity(instantiated);
+                instantiated->GetComponent<City>()->StartAffectingTiles(found->GetComponent<HexTile>());
             }
         }
     }

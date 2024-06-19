@@ -21,6 +21,7 @@ SO_SERIALIZE_FIELD(mountainsHeight)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(MountainsGenerator, AMapElementGenerator)
+SO_DESERIALIZE_FIELD_R("prefabMountains", prefabPath)
 SO_DESERIALIZE_FIELD_F_T(prefabMountains, PrefabManager::LoadPrefab, string)
 SO_DESERIALIZE_FIELD(mountainsNumber)
 SO_DESERIALIZE_FIELD(mountainsHeight)
@@ -53,9 +54,23 @@ void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
             if (tile->GetGameObject()->GetComponent<AStarPathfindingNode>() != nullptr)
                 tile->GetGameObject()->GetComponent<AStarPathfindingNode>()->passable = false;
 
-            GameObject* mountain = SceneManager::CreateGameObject(prefabMountains, tile->GetGameObject()->GetTransform());
+
+            GameObject* mountain = nullptr;
+            if (PrefabManager::GetPrefab(prefabMountains->GetId()) != nullptr) {
+                mountain = SceneManager::CreateGameObject(prefabMountains, tile->GetGameObject()->GetTransform());
+            }
+            else {
+                if (prefabPath != "") {
+                    prefabMountains = PrefabManager::LoadPrefab(prefabPath);
+                    mountain = SceneManager::CreateGameObject(prefabMountains, tile->GetGameObject()->GetTransform());
+                }
+                else {
+                    mountain = SceneManager::CreateGameObject(tile->GetGameObject()->GetTransform());
+                }
+            }
+
+            //GameObject* mountain = SceneManager::CreateGameObject(prefabMountains, tile->GetGameObject()->GetTransform());
             mountain->SetIsStatic(true);
-            //GameObject* mountain = GameObject::Instantiate(prefabMountains, tile->GetGameObject()->GetTransform());
         }
 
         sectors.erase(sectors.begin() + index);

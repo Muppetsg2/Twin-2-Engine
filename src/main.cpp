@@ -107,6 +107,7 @@ using namespace Generation::Generators;
 #include <Enemy.h>
 #include <EnemyMovement.h>
 #include <AreaTaking/GetMoneyFromTiles.h>
+#include <AreaTaking/City.h>
 #include <GameTimer.h>
 #include <ConcertRoad.h>
 #include <GodRayComponent.h>
@@ -156,7 +157,7 @@ void end_imgui();
 constexpr const char* WINDOW_NAME = "Twin^2 Engine";
 constexpr int32_t WINDOW_WIDTH  = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
-constexpr bool WINDOW_FULLSCREEN = false;
+constexpr bool WINDOW_FULLSCREEN = true;
 
 #if DISPLAY_SPLASH_SCREEN
 constexpr const char* SPLASH_SCREEN_TEXTURE = "res/textures/splashScreen2.png";
@@ -376,6 +377,7 @@ int main(int, char**)
     ADD_COMPONENT("StarComponent", StarComponent);
     ADD_COMPONENT("TutorialSeries", TutorialSeries);
     ADD_COMPONENT("CityLightsComponent", CityLightsComponent);
+    ADD_COMPONENT("City", City);
 
 #pragma endregion
 
@@ -685,7 +687,14 @@ void render_imgui()
     ZoneScoped;
 #endif
 
-    if (Input::GetCursorState() == CURSOR_STATE::NORMAL)
+    static bool imguiRenderToggleFlag = true;
+
+    if (Input::IsKeyPressed(KEY::L))
+    {
+        imguiRenderToggleFlag = !imguiRenderToggleFlag;
+    }
+
+    if (Input::GetCursorState() == CURSOR_STATE::NORMAL && imguiRenderToggleFlag)
     {
         if (SceneManager::GetCurrentSceneName() != "") {
             SceneManager::DrawCurrentSceneEditor();

@@ -8,6 +8,8 @@
 
 #include <core/Random.h>
 
+#include <AreaTaking/City.h>
+
 namespace Generation::Generators
 {
 	class CitiesGenerator : public AMapElementGenerator
@@ -15,7 +17,7 @@ namespace Generation::Generators
 		SCRIPTABLE_OBJECT_BODY(CitiesGenerator)
 
 	public:
-		//Twin2Engine::Core::GameObject* prefabCity;
+        std::string prefabPath = "";
 		Twin2Engine::Core::Prefab* prefabCity = nullptr;
 
 		bool byRegions = true;
@@ -68,14 +70,18 @@ namespace Generation::Generators
                 if (clicked) {
                     if (choosed != 0) {
                         prefabCity = Twin2Engine::Manager::PrefabManager::GetPrefab(choosed);
+                        prefabPath = Twin2Engine::Manager::PrefabManager::GetPrefabPath(prefabCity);
                     }
                     else {
                         prefabCity = nullptr;
+                        prefabPath = "";
                     }
                 }
 
                 ImGui::EndCombo();
             }
+
+            prefabNames.clear();
 
 			ImGui::Checkbox(string("byRegions##SO").append(id).c_str(), &byRegions);
 			ImGui::SliderFloat(string("Density##SO").append(id).c_str(), &density, 0.0f, 1.0f);

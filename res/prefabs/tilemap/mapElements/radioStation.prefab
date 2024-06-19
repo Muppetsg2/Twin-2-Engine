@@ -5,7 +5,20 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-Sprites: ~
+  - id: 1
+    path: res\textures\white_circle.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+Sprites: 
+  - id: 0
+    alias: White_Circle
+    texture: 1
+    x: 0
+    y: 0
+    width: 100
+    height: 100
 Fonts: 
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
@@ -69,9 +82,9 @@ GameObjects:
         y: 1
         z: 0
       scale:
-        x: 0.025
-        y: 0.025
-        z: 0.025
+        x: 0.02
+        y: 0.02
+        z: 0.02
       rotation:
         x: 0
         y: 75
@@ -129,5 +142,22 @@ GameObjects:
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 2
+      - id: 7
+        enabled: true
+        type: Image
+        isTransparent: true
+        sprite: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 0.5
+        width: 25
+        height: 25
+        layer: 0
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
     children:
       []

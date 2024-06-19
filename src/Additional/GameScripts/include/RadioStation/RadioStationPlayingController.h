@@ -1,67 +1,59 @@
 #pragma once
 
 #include <RadioStation/RadioStation.h>
-#include <Playable.h>
-#include <Player.h>
-
 #include <core/Component.h>
-#include <core/Time.h>
-#include <core/Input.h>
-
-#include <graphic/Texture2D.h>
-
-#include <ui/Button.h>
-#include <ui/Image.h>
-
-// TODO: Repair
+#include <Playable.h>
 
 class RadioStationPlayingController : public Twin2Engine::Core::Component
 {
-    ENUM_CLASS(NoteType, Do, Re, Mi, Fa)
-
-    static RadioStationPlayingController* instance;
-
-    std::vector<NoteType> _generatedNotes;
-    std::vector<Twin2Engine::Core::GameObject*> _notesGameObjects;
-    std::vector<Twin2Engine::UI::Image*> _notesImages;
-    
+private:
+    // Notes Data
+    ENUM_CLASS_BASE(NoteType, uint8_t, UP, RIGHT, DOWN, LEFT)
     std::vector<size_t> _notesSpritesIds;
 
-    std::vector<size_t> _resultsImagesIds;
-    std::vector<float> _resultsThresholds;
+    static RadioStationPlayingController* _instance;
+    bool _gameStarted = false;
 
-    Twin2Engine::UI::Image* _windowImage;
-    Twin2Engine::UI::Image* _resultImage;
-    Twin2Engine::UI::Text* _remainingTimeTextTimer;
+    Twin2Engine::UI::Image* _notesArea = nullptr;
+    Twin2Engine::Core::GameObject* _resultText = nullptr;
+    Twin2Engine::UI::Text* _remainingTimeText = nullptr;
 
-    glm::vec4 _correctColor;
-    glm::vec4 _wrongColor;
-
-    size_t _currentNote = 0ull;
-    int _generatedNotesNumber = 4;
+    // Notes
+    size_t _currentNote = 0;
+    glm::vec4 _correctNoteColor = glm::vec4(1.f);
+    glm::vec4 _wrongNoteColor = glm::vec4(glm::vec3(0.f), 1.f);
     int _correctCounter = 0;
+    float _score = 0.0f;
 
-    float _notesAreaWidth = 600.0f;
-    float _notesAreaHeight = 200.0f;
-    float _resultShowingTime = 5.0f;
-    float _resultShowingTimer = 0.0f;
-    float _lastScore = 0.0f;
+    // Generation
+    float _notesAreaWidth = 100.0f;
+    float _notesAreaHeight = 100.0f;
+    int _generatedNotesNumber = 4;
+    std::vector<NoteType> _generatedNotes;
+    std::vector<Twin2Engine::UI::Image*> _notesImages;
 
+    // Time
     float _timeLimit = 5.0f;
-    float _timeLimitTimer = 0.0f;
+    float _timeLimitCounter = 0.0f;
+    float _resultShowingTime = 5.0f;
+    float _resultShowingCounter = 0.0f;
+    float _timeChangeColorPercent = 20.f;
 
+    // Reference To Start Objects
     RadioStation* _radioStation = nullptr;
     Playable* _playable = nullptr;
 
-    Twin2Engine::UI::Button* _buttonDo;
-    Twin2Engine::UI::Button* _buttonRe;
-    Twin2Engine::UI::Button* _buttonMi;
-    Twin2Engine::UI::Button* _buttonFa;
+    // Buttons
+    Twin2Engine::UI::Button* _buttonUp;
+    Twin2Engine::UI::Button* _buttonRight;
+    Twin2Engine::UI::Button* _buttonDown;
+    Twin2Engine::UI::Button* _buttonLeft;
 
-    size_t _buttonDoHandleId = 0ull;
-    size_t _buttonReHandleId = 0ull;
-    size_t _buttonMiHandleId = 0ull;
-    size_t _buttonFaHandleId = 0ull;
+    // Buttons Events
+    int _buttonUpHandleId = -1;
+    int _buttonRightHandleId = -1;
+    int _buttonDownHandleId = -1;
+    int _buttonLeftHandleId = -1;
 
     void GenerateNotes();
     void PlayNote(NoteType note);
@@ -71,7 +63,6 @@ class RadioStationPlayingController : public Twin2Engine::Core::Component
 public:
     static RadioStationPlayingController* Instance();
 
-    //Twin2Engine::Tools::EventHandler<Playable*, RadioStation*> OnEventPlayableStartsPlaying;
     Twin2Engine::Tools::EventHandler<Player*, RadioStation*> OnEventPlayerStartedPlaying;
     Twin2Engine::Tools::EventHandler<Player*, RadioStation*> OnEventPlayerFinishedPlaying;
 
@@ -79,9 +70,7 @@ public:
     virtual void Update() override;
     virtual void OnDestroy() override;
 
-
     void Play(RadioStation* radioStation, Playable* playable);
-
 
     virtual YAML::Node Serialize() const override;
     virtual bool Deserialize(const YAML::Node& node) override;

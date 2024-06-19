@@ -16,7 +16,7 @@ namespace Generation::Generators
         SCRIPTABLE_OBJECT_BODY(RegionsBySectorsGenerator)
 
     public:
-        //Twin2Engine::Core::GameObject* regionPrefab = nullptr;
+        std::string prefabPath = "";
         Twin2Engine::Core::Prefab* regionPrefab = nullptr;
         bool mergeByNumberTilesPerRegion = false;
         int minTilesPerRegion = 10;
@@ -47,6 +47,49 @@ namespace Generation::Generators
             ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
             ImGui::Text(Twin2Engine::Manager::ScriptableObjectManager::GetName(GetId()).c_str());
             ImGui::PopFont();
+
+            std::map<size_t, string> prefabNames = Twin2Engine::Manager::PrefabManager::GetAllPrefabsNames();
+
+            prefabNames.insert(std::pair(0, "None"));
+
+            if (regionPrefab != nullptr) {
+                if (!prefabNames.contains(regionPrefab->GetId())) {
+                    regionPrefab = nullptr;
+                }
+            }
+
+            size_t prefabId = regionPrefab != nullptr ? regionPrefab->GetId() : 0;
+
+            if (ImGui::BeginCombo(string("regionPrefab##SO").append(id).c_str(), prefabNames[prefabId].c_str())) {
+
+                bool clicked = false;
+                size_t choosed = prefabId;
+                for (auto& item : prefabNames) {
+
+                    if (ImGui::Selectable(item.second.append("##").append(id).c_str(), item.first == prefabId)) {
+
+                        if (clicked) continue;
+
+                        choosed = item.first;
+                        clicked = true;
+                    }
+                }
+
+                if (clicked) {
+                    if (choosed != 0) {
+                        regionPrefab = Twin2Engine::Manager::PrefabManager::GetPrefab(choosed);
+                        prefabPath = Twin2Engine::Manager::PrefabManager::GetPrefabPath(regionPrefab);
+                    }
+                    else {
+                        regionPrefab = nullptr;
+                        prefabPath = "";
+                    }
+                }
+
+                ImGui::EndCombo();
+            }
+
+            prefabNames.clear();
 
             ImGui::Checkbox(string("mergeByNumberTilesPerRegion##SO").append(id).c_str(), &mergeByNumberTilesPerRegion);
             ImGui::InputInt(string("minTilesPerRegion##SO").append(id).c_str(), &minTilesPerRegion);

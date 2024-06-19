@@ -21,6 +21,7 @@ SO_SERIALIZE_FIELD(heightRangeFacor)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(RegionsGeneratorByKMeans, AMapElementGenerator)
+SO_DESERIALIZE_FIELD_R("regionPrefab", prefabPath)
 SO_DESERIALIZE_FIELD_F_T(regionPrefab, PrefabManager::LoadPrefab, string)
 SO_DESERIALIZE_FIELD(regionsCount)
 SO_DESERIALIZE_FIELD(isDiscritizedHeight)
@@ -59,8 +60,20 @@ void RegionsGeneratorByKMeans::Generate(Tilemap::HexagonalTilemap* tilemap)
     {
         if (!cluster.empty())
         {
-            MapRegion* region = SceneManager::CreateGameObject(regionPrefab, tilemap->GetTransform())->GetComponent<MapRegion>();
-            //MapRegion* region = GameObject::Instantiate(regionPrefab, tilemap->GetTransform())->GetComponent<MapRegion>();
+            MapRegion* region = nullptr;
+            if (PrefabManager::GetPrefab(regionPrefab->GetId()) != nullptr) {
+                region = SceneManager::CreateGameObject(regionPrefab, tilemap->GetTransform())->GetComponent<MapRegion>();
+            }
+            else {
+                if (prefabPath != "") {
+                    regionPrefab = PrefabManager::LoadPrefab(prefabPath);
+                    region = SceneManager::CreateGameObject(regionPrefab, tilemap->GetTransform())->GetComponent<MapRegion>();
+                }
+                else {
+                    region = std::get<1>(SceneManager::CreateGameObject<MapRegion>(tilemap->GetTransform()));
+                }
+            }
+
             region->tilemap = tilemap;
 
             for (GameObject* gameObject : cluster)

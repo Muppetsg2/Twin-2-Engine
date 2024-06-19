@@ -14,7 +14,7 @@ namespace Generation::Generators
 		SCRIPTABLE_OBJECT_BODY(RadioStationGeneratorRegionBased)
 
     public:
-        //Twin2Engine::Core::GameObject* prefabRadioStation;
+        std::string prefabPath = "";
         Twin2Engine::Core::Prefab* prefabRadioStation;
         float densityFactorPerRegion = 1.0f;
 
@@ -65,9 +65,11 @@ namespace Generation::Generators
                 if (clicked) {
                     if (choosed != 0) {
                         prefabRadioStation = Twin2Engine::Manager::PrefabManager::GetPrefab(choosed);
+                        prefabPath = Twin2Engine::Manager::PrefabManager::GetPrefabPath(prefabRadioStation);
                     }
                     else {
                         prefabRadioStation = nullptr;
+                        prefabPath = "";
                     }
                 }
 

@@ -145,7 +145,7 @@ void Image::DrawEditor()
 			return left.compare(right) < 0;
 		});
 
-		names.insert(names.begin(), "None");
+		names.insert(names.begin(), "None##Nothing");
 
 		std::string n = SpriteManager::GetSpriteName(_spriteId);
 

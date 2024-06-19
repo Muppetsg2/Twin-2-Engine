@@ -16,7 +16,7 @@ namespace Generation::Generators
         SCRIPTABLE_OBJECT_BODY(RegionsGeneratorByKMeans)
 
     public:
-        //Twin2Engine::Core::GameObject* regionPrefab;
+        std::string prefabPath = "";
         Twin2Engine::Core::Prefab* regionPrefab;
         int regionsCount = 3; // Number of regions/clusters
 
@@ -72,14 +72,18 @@ namespace Generation::Generators
                 if (clicked) {
                     if (choosed != 0) {
                         regionPrefab = Twin2Engine::Manager::PrefabManager::GetPrefab(choosed);
+                        prefabPath = Twin2Engine::Manager::PrefabManager::GetPrefabPath(regionPrefab);
                     }
                     else {
                         regionPrefab = nullptr;
+                        prefabPath = "";
                     }
                 }
 
                 ImGui::EndCombo();
             }
+
+            prefabNames.clear();
 
             ImGui::InputInt(string("regionsCount##SO").append(id).c_str(), &regionsCount);
             ImGui::Checkbox(string("isDiscritizedHeight##SO").append(id).c_str(), &isDiscritizedHeight);

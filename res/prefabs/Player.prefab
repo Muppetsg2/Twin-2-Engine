@@ -102,6 +102,18 @@ Root:
         y: 0
         z: 1
         w: 0.5
+      enoughMoneyColor:
+        x: 1
+        y: 0
+        z: 0
+        w: 1
+      notEnoughMoneyColor:
+        x: 0.5
+        y: 0
+        z: 0
+        w: 1
+      negativeMoneyTextXOffset: 140
+      negativeMoneyTextLetterWidth: 15
       spriteButtonStep1: 0
       spriteButtonStep2: 1
       onHoverClickAudio: 0

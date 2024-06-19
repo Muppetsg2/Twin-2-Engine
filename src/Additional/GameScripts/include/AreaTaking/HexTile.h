@@ -11,6 +11,7 @@
 #include <Generation/MapHexTile.h>
 
 #include <AreaTaking/HexTileTexturesData.h>
+#include <AreaTaking/City.h>
 
 #include <ParticleGenerator.h>
 
@@ -21,6 +22,7 @@
 ENUM_CLASS_BASE_VALUE(TileState, uint8_t, NONE, 0, OCCUPIED, 1, REMOTE_OCCUPYING, 2, TAKEN, 4);
 
 class Playable;
+class City;
 
 class HexTile : public Twin2Engine::Core::Component
 {
@@ -33,8 +35,10 @@ class HexTile : public Twin2Engine::Core::Component
 
 	std::vector<HexTile*> _adjacentTiles;
 
+	std::vector<City*> _affectingCities;
 	
-	//Twin2Engine::Core::GameObject* affected;
+	size_t _textureCityStar = 0;
+	size_t _textureCityBlackStar = 0;
 
 	void TakeOver();
 	void LoseInfluence();
@@ -44,7 +48,9 @@ class HexTile : public Twin2Engine::Core::Component
 	void CheckRoundPattern();
 public:
 	HexTileTextureData* texturesData;
-	ParticleGenerator* particleGenerator;
+	ParticleGenerator* particleGenerator = nullptr;
+	ParticleGenerator* pgCity = nullptr;
+	ParticleGenerator* pgCityNegative = nullptr;
 
 
 	bool isFighting = false;
@@ -126,6 +132,9 @@ public:
 	void DisableAffected();
 	void EnableAlbumAffected();
 	void DisableAlbumAffected();
+
+	void AddAffectingCity(City* city);
+	void RemoveAffectingCity(City* city);
 
 	virtual YAML::Node Serialize() const override;
 	virtual bool Deserialize(const YAML::Node& node) override;

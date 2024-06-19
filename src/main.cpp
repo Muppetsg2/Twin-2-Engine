@@ -412,8 +412,8 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/ToonShading.scene");
     //SceneManager::AddScene("testScene", "res/scenes/HexTileEditScene.scene");
     //SceneManager::AddScene("testScene", new Scene());
-    SceneManager::LoadScene("Game");
-    //SceneManager::LoadScene("Menu");
+    //SceneManager::LoadScene("Game");
+    SceneManager::LoadScene("Menu");
     SceneManager::Update();
 
 #if DISPLAY_SPLASH_SCREEN

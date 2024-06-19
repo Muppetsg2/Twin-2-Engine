@@ -1025,34 +1025,44 @@ Models:
     path: "{Sphere}"
 Prefabs:
   - id: 0
-    path: res/prefabs/tilemap/mapElements/city.prefab
+    path: ""
   - id: 1
-    path: res/prefabs/Enemy.prefab
+    path: ""
   - id: 2
-    path: res\prefabs\tilemap\mapElements\mountain_2.prefab
+    path: res/prefabs/tilemap/mapElements/city.prefab
   - id: 3
-    path: res/prefabs/tilemap/mapElements/radioStation.prefab
+    path: res/prefabs/Enemy.prefab
   - id: 4
-    path: res/prefabs/tilemap/tiles/blueHexTile.prefab
+    path: ""
   - id: 5
-    path: res/prefabs/tilemap/mapElements/mountain_3.prefab
+    path: res\prefabs\tilemap\mapElements\mountain_2.prefab
   - id: 6
-    path: res/prefabs/Human.prefab
+    path: res/prefabs/tilemap/mapElements/radioStation.prefab
   - id: 7
-    path: res/prefabs/Player.prefab
+    path: res/prefabs/tilemap/tiles/blueHexTile.prefab
   - id: 8
-    path: res/prefabs/tilemap/mapElements/mountain_2.prefab
+    path: res/prefabs/tilemap/mapElements/mountain_3.prefab
   - id: 9
-    path: res/prefabs/tilemap/tiles/redHexTile.prefab
+    path: res/prefabs/Human.prefab
   - id: 10
-    path: res/prefabs/tilemap/mapSector.prefab
+    path: res/prefabs/Player.prefab
   - id: 11
-    path: res/prefabs/tilemap/tiles/hexTile.prefab
+    path: res/prefabs/tilemap/mapElements/mountain_2.prefab
   - id: 12
-    path: res/prefabs/tilemap/tiles/greenHexTile.prefab
+    path: res/prefabs/tilemap/tiles/redHexTile.prefab
   - id: 13
-    path: res/prefabs/tilemap/mapRegion.prefab
+    path: res/prefabs/tilemap/mapSector.prefab
   - id: 14
+    path: res/prefabs/tilemap/tiles/hexTile.prefab
+  - id: 15
+    path: res/prefabs/tilemap/tiles/greenHexTile.prefab
+  - id: 16
+    path: ""
+  - id: 17
+    path: ""
+  - id: 18
+    path: res/prefabs/tilemap/mapRegion.prefab
+  - id: 19
     path: res/prefabs/CityLights.prefab
 ScriptableObjects: ~
 GameObjects:
@@ -1146,10 +1156,10 @@ GameObjects:
       - id: 7
         enabled: true
         type: MapGenerator
-        prefabHexagonalTile: 11
-        additionalTile: 9
-        filledTile: 4
-        pointTile: 12
+        prefabHexagonalTile: 14
+        additionalTile: 12
+        filledTile: 7
+        pointTile: 15
         generationRadiusMin: 5
         generationRadiusMax: 5
         minPointsNumber: 5
@@ -1253,12 +1263,12 @@ GameObjects:
       - id: 15
         enabled: true
         type: ConcertRoad
-        marker: 14
+        marker: 19
       - id: 16
         enabled: true
         type: GameManager
-        enemyPrefab: 1
-        prefabPlayer: 7
+        enemyPrefab: 3
+        prefabPlayer: 10
         carMaterials:
           - 3
           - 36
@@ -1726,7 +1736,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 15
         color:
           x: 1
           y: 1
@@ -2263,7 +2273,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 15
         color:
           x: 1
           y: 1
@@ -4815,7 +4825,31 @@ GameObjects:
         width: 256
         height: 256
         interactable: true
-        onHoverPresetEvents: false
+        onHoverPresetEvents: true
+        animTimeFactor: 2
+        scaleFunc: 9
+        scaleFuncType: 2
+        scaleStart:
+          x: 0.5
+          y: 0.5
+          z: 1
+        scaleEnd:
+          x: 0.519999981
+          y: 0.519999981
+          z: 1
+        colorFunc: 0
+        colorFuncType: 0
+        colorStart:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        colorEnd:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        displayObjectOnHover: false
         playAudioOnClick: false
     children:
       - 86
@@ -4904,7 +4938,31 @@ GameObjects:
         width: 256
         height: 256
         interactable: true
-        onHoverPresetEvents: false
+        onHoverPresetEvents: true
+        animTimeFactor: 2
+        scaleFunc: 9
+        scaleFuncType: 2
+        scaleStart:
+          x: 0.5
+          y: 0.5
+          z: 1
+        scaleEnd:
+          x: 0.519999981
+          y: 0.519999981
+          z: 1
+        colorFunc: 0
+        colorFuncType: 0
+        colorStart:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        colorEnd:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        displayObjectOnHover: false
         playAudioOnClick: false
     children:
       - 88
@@ -4993,7 +5051,31 @@ GameObjects:
         width: 256
         height: 256
         interactable: true
-        onHoverPresetEvents: false
+        onHoverPresetEvents: true
+        animTimeFactor: 2
+        scaleFunc: 9
+        scaleFuncType: 2
+        scaleStart:
+          x: 0.5
+          y: 0.5
+          z: 1
+        scaleEnd:
+          x: 0.519999981
+          y: 0.519999981
+          z: 1
+        colorFunc: 0
+        colorFuncType: 0
+        colorStart:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        colorEnd:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        displayObjectOnHover: false
         playAudioOnClick: false
     children:
       - 89
@@ -5082,7 +5164,31 @@ GameObjects:
         width: 256
         height: 256
         interactable: true
-        onHoverPresetEvents: false
+        onHoverPresetEvents: true
+        animTimeFactor: 2
+        scaleFunc: 9
+        scaleFuncType: 2
+        scaleStart:
+          x: 0.5
+          y: 0.5
+          z: 1
+        scaleEnd:
+          x: 0.519999981
+          y: 0.519999981
+          z: 1
+        colorFunc: 0
+        colorFuncType: 0
+        colorStart:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        colorEnd:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        displayObjectOnHover: false
         playAudioOnClick: false
     children:
       - 87

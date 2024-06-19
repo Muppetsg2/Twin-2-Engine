@@ -115,6 +115,7 @@ using namespace Generation::Generators;
 #include <TutorialSeries.h>
 #include <CityLightsComponent.h>
 #include <MenuParticles.h>
+#include <MenuManager.h>
 #include <Abilities/ConcertAbilityController.h>
 
 #include <RadioStation/RadioStation.h>
@@ -380,6 +381,7 @@ int main(int, char**)
     ADD_COMPONENT("CityLightsComponent", CityLightsComponent);
     ADD_COMPONENT("City", City);
     ADD_COMPONENT("MenuParticles", MenuParticles);
+    ADD_COMPONENT("MenuManager", MenuManager);
 
 #pragma endregion
 
@@ -399,7 +401,8 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/BlankScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/PatronChoice.scene");
     //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
-    SceneManager::AddScene("testScene", "res/scenes/MenuScene2.scene");
+    SceneManager::AddScene("Menu", "res/scenes/MenuScene2.scene");
+    SceneManager::AddScene("Game", "res/scenes/procedurallyGenerated.scene");
     //SceneManager::AddScene("testScene", "res/scenes/tutorialSceneWork2.scene");
     //SceneManager::AddScene("testScene", "res/scenes/SceneToEditPrefabs.scene");
     //SceneManager::AddScene("testScene", "res/scenes/Making Game UI.scene");
@@ -409,7 +412,8 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/ToonShading.scene");
     //SceneManager::AddScene("testScene", "res/scenes/HexTileEditScene.scene");
     //SceneManager::AddScene("testScene", new Scene());
-    SceneManager::LoadScene("testScene");
+    //SceneManager::LoadScene("Game");
+    SceneManager::LoadScene("Menu");
     SceneManager::Update();
 
 #if DISPLAY_SPLASH_SCREEN

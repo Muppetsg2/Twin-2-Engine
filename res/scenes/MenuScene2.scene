@@ -6,6 +6,18 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 1
+    path: res\textures\UI\new_game.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 2
+    path: res\textures\UI\quit.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 3
     path: res\textures\title_screen.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
@@ -14,11 +26,25 @@ Textures:
 Sprites:
   - id: 0
     alias: Title_Screen
-    texture: 1
+    texture: 3
     x: 0
     y: 0
     width: 1920
     height: 1080
+  - id: 1
+    alias: NewGame
+    texture: 1
+    x: 0
+    y: 0
+    width: 200
+    height: 75
+  - id: 2
+    alias: Quit
+    texture: 2
+    x: 0
+    y: 0
+    width: 200
+    height: 75
 Fonts: ~
 Audio:
   - id: 0
@@ -109,8 +135,15 @@ GameObjects:
           x: 1920
           y: 1080
         worldSpace: false
+      - id: 16
+        enabled: true
+        type: MenuManager
+        startButtonId: 12
+        exitButtonId: 15
     children:
       - 3
+      - 5
+      - 6
   - id: 3
     name: Background
     isStatic: false
@@ -149,10 +182,150 @@ GameObjects:
         fillProgress: 1
     children:
       []
+  - id: 5
+    name: NewGameButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 10
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 11
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 1
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 200
+        height: 75
+        layer: 1
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 12
+        enabled: true
+        type: Button
+        width: 200
+        height: 75
+        interactable: true
+        onHoverPresetEvents: true
+        animTimeFactor: 2
+        scaleFunc: 9
+        scaleFuncType: 2
+        scaleStart:
+          x: 1
+          y: 1
+          z: 1
+        scaleEnd:
+          x: 1.10000002
+          y: 1.10000002
+          z: 1
+        colorFunc: 0
+        colorFuncType: 0
+        colorStart:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        colorEnd:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        displayObjectOnHover: false
+        playAudioOnClick: false
+    children:
+      []
+  - id: 6
+    name: QuitButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 13
+      position:
+        x: 0
+        y: -100
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 14
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 2
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 200
+        height: 75
+        layer: 1
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 15
+        enabled: true
+        type: Button
+        width: 200
+        height: 75
+        interactable: true
+        onHoverPresetEvents: true
+        animTimeFactor: 2
+        scaleFunc: 9
+        scaleFuncType: 2
+        scaleStart:
+          x: 1
+          y: 1
+          z: 1
+        scaleEnd:
+          x: 1.10000002
+          y: 1.10000002
+          z: 1
+        colorFunc: 0
+        colorFuncType: 0
+        colorStart:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        colorEnd:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        displayObjectOnHover: false
+        playAudioOnClick: false
+    children:
+      []
   - id: 4
     name: MenuParticles
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 8
       position:
@@ -169,7 +342,7 @@ GameObjects:
         z: 0
     components:
       - id: 9
-        enabled: true
+        enabled: false
         type: MenuParticles
         amount: 40
         height: 10

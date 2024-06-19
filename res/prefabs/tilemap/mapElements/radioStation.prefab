@@ -158,6 +158,7 @@ GameObjects:
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []

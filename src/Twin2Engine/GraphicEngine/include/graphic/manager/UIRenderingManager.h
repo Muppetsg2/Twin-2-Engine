@@ -30,7 +30,9 @@ namespace Twin2Engine
 		struct FillData {
 			uint8_t type;
 			uint8_t subType;
+			float offset;
 			float progress;
+			float rotation;
 			bool isActive;
 		};
 

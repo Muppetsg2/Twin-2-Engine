@@ -180,6 +180,7 @@ GameObjects:
         fillEnabled: false
         fillType: 0
         fillSubType: 0
+        fillOffset: 0
         fillProgress: 1
       - id: 5
         enabled: true
@@ -197,6 +198,7 @@ GameObjects:
         fillEnabled: false
         fillType: 0
         fillSubType: 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -236,6 +238,7 @@ GameObjects:
         fillEnabled: false
         fillType: 0
         fillSubType: 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -275,6 +278,7 @@ GameObjects:
         fillEnabled: false
         fillType: 0
         fillSubType: 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []

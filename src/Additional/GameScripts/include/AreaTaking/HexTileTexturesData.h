@@ -76,6 +76,8 @@ public:
 
     virtual void Clear() override;
 
+    virtual ~HexTileTextureData() = default;
+
     Twin2Engine::Graphic::Material* GetMaterial(TILE_COLOR color, size_t stage);
     Twin2Engine::Graphic::Material* GetRetreatingMaterial(TILE_COLOR color, size_t stage);
     Twin2Engine::Graphic::Material* GetBorderMaterial(TILE_COLOR color);

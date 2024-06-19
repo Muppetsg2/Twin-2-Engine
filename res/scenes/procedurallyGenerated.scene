@@ -371,6 +371,12 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 59
+    path: res\textures\UI\shape_hexagon_border.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
   - id: 60
     path: res\textures\white.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
@@ -692,167 +698,181 @@ Sprites:
     width: 200
     height: 540
   - id: 17
+    alias: HexTileShape
+    texture: 40
+    x: 0
+    y: 0
+    width: 346
+    height: 400
+  - id: 18
+    alias: HexTileShapeBorder
+    texture: 59
+    x: 0
+    y: 0
+    width: 348
+    height: 400
+  - id: 19
     alias: ButtonFrame
     texture: 9
     x: 0
     y: 0
     width: 144
     height: 153
-  - id: 18
+  - id: 20
     alias: MiniGame_Yellow_Top
     texture: 28
     x: 0
     y: 0
     width: 200
     height: 540
-  - id: 19
+  - id: 21
     alias: MiniGame_Title
     texture: 39
     x: 0
     y: 0
     width: 640
     height: 100
-  - id: 20
+  - id: 22
     alias: ArrowRight
     texture: 72
     x: 768
     y: 0
     width: 256
     height: 256
-  - id: 21
+  - id: 23
     alias: MiniGame_Cyan_Top
     texture: 45
     x: 0
     y: 0
     width: 200
     height: 540
-  - id: 22
+  - id: 24
     alias: HexagonSprite
     texture: 41
     x: 0
     y: 0
     width: 256
     height: 256
-  - id: 23
+  - id: 25
     alias: MiniGame_Pink_Top
     texture: 23
     x: 0
     y: 0
     width: 200
     height: 540
-  - id: 24
+  - id: 26
     alias: GraphArrow
     texture: 81
     x: 0
     y: 0
     width: 72
     height: 100
-  - id: 25
+  - id: 27
     alias: Concert
     texture: 31
     x: 0
     y: 0
     width: 256
     height: 256
-  - id: 26
+  - id: 28
     alias: Abilities
     texture: 13
     x: 0
     y: 0
     width: 800
     height: 225
-  - id: 27
+  - id: 29
     alias: MiniGame_Cyan_Back
     texture: 74
     x: 0
     y: 0
     width: 310
     height: 540
-  - id: 28
+  - id: 30
     alias: MiniGame_Background
     texture: 57
     x: 0
     y: 0
     width: 640
     height: 540
-  - id: 29
+  - id: 31
     alias: MiniGame_Yellow_Back
     texture: 15
     x: 0
     y: 0
     width: 310
     height: 540
-  - id: 30
+  - id: 32
     alias: MiniGame_Green_Top
     texture: 17
     x: 0
     y: 0
     width: 200
     height: 540
-  - id: 31
+  - id: 33
     alias: MiniGame_Blue_Back
     texture: 42
     x: 0
     y: 0
     width: 310
     height: 540
-  - id: 32
+  - id: 34
     alias: MiniGame_Green_Back
     texture: 67
     x: 0
     y: 0
     width: 310
     height: 540
-  - id: 33
+  - id: 35
     alias: Album
     texture: 87
     x: 0
     y: 0
     width: 256
     height: 256
-  - id: 34
+  - id: 36
     alias: PopularityGainingSpeedPictogram
     texture: 25
     x: 0
     y: 0
     width: 64
     height: 64
-  - id: 35
+  - id: 37
     alias: White_Circle
     texture: 50
     x: 0
     y: 0
     width: 100
     height: 100
-  - id: 36
+  - id: 38
     alias: White_Box
     texture: 60
     x: 0
     y: 0
     width: 100
     height: 100
-  - id: 37
+  - id: 39
     alias: MiniGame_StrengthGraph
     texture: 38
     x: 0
     y: 0
     width: 256
     height: 256
-  - id: 38
+  - id: 40
     alias: MiniGame_Pink_Back
     texture: 46
     x: 0
     y: 0
     width: 310
     height: 540
-  - id: 39
+  - id: 41
     alias: JutrzenkaImage
     texture: 5
     x: 0
     y: 0
     width: 727
     height: 726
-  - id: 40
+  - id: 42
     alias: ArrowUp
     texture: 72
     x: 0
@@ -1037,34 +1057,46 @@ Models:
     path: "{Sphere}"
 Prefabs:
   - id: 0
-    path: res/prefabs/tilemap/mapElements/city.prefab
+    path: ""
   - id: 1
-    path: res/prefabs/Enemy.prefab
+    path: ""
   - id: 2
-    path: res\prefabs\tilemap\mapElements\mountain_2.prefab
+    path: res\prefabs\AreaTakenGraphTopHexagon.prefab
   - id: 3
-    path: res/prefabs/tilemap/mapElements/radioStation.prefab
+    path: res/prefabs/tilemap/mapElements/city.prefab
   - id: 4
-    path: res/prefabs/tilemap/tiles/blueHexTile.prefab
+    path: res/prefabs/Enemy.prefab
   - id: 5
-    path: res/prefabs/tilemap/mapElements/mountain_3.prefab
+    path: res\prefabs\tilemap\mapElements\mountain_2.prefab
   - id: 6
-    path: res/prefabs/Human.prefab
+    path: res/prefabs/tilemap/mapElements/radioStation.prefab
   - id: 7
-    path: res/prefabs/Player.prefab
+    path: res\prefabs\AreaTakenGraph_2.prefab
   - id: 8
-    path: res/prefabs/tilemap/mapElements/mountain_2.prefab
+    path: res/prefabs/tilemap/tiles/blueHexTile.prefab
   - id: 9
-    path: res/prefabs/tilemap/tiles/redHexTile.prefab
+    path: res/prefabs/tilemap/mapElements/mountain_3.prefab
   - id: 10
-    path: res/prefabs/tilemap/mapSector.prefab
+    path: res/prefabs/Human.prefab
   - id: 11
-    path: res/prefabs/tilemap/tiles/hexTile.prefab
+    path: res\prefabs\AreaTakenGraphEdge.prefab
   - id: 12
-    path: res/prefabs/tilemap/tiles/greenHexTile.prefab
+    path: res/prefabs/Player.prefab
   - id: 13
-    path: res/prefabs/tilemap/mapRegion.prefab
+    path: res/prefabs/tilemap/mapElements/mountain_2.prefab
   - id: 14
+    path: res/prefabs/tilemap/tiles/redHexTile.prefab
+  - id: 15
+    path: res\prefabs\AreaTakenGraphBorderHexagon.prefab
+  - id: 16
+    path: res/prefabs/tilemap/mapSector.prefab
+  - id: 17
+    path: res/prefabs/tilemap/tiles/hexTile.prefab
+  - id: 18
+    path: res/prefabs/tilemap/tiles/greenHexTile.prefab
+  - id: 19
+    path: res/prefabs/tilemap/mapRegion.prefab
+  - id: 20
     path: res/prefabs/CityLights.prefab
 ScriptableObjects: ~
 GameObjects:
@@ -1158,10 +1190,10 @@ GameObjects:
       - id: 7
         enabled: true
         type: MapGenerator
-        prefabHexagonalTile: 11
-        additionalTile: 9
-        filledTile: 4
-        pointTile: 12
+        prefabHexagonalTile: 17
+        additionalTile: 14
+        filledTile: 8
+        pointTile: 18
         generationRadiusMin: 5
         generationRadiusMax: 5
         minPointsNumber: 5
@@ -1265,12 +1297,12 @@ GameObjects:
       - id: 15
         enabled: true
         type: ConcertRoad
-        marker: 14
+        marker: 20
       - id: 16
         enabled: true
         type: GameManager
-        enemyPrefab: 1
-        prefabPlayer: 7
+        enemyPrefab: 4
+        prefabPlayer: 12
         carMaterials:
           - 3
           - 36
@@ -1358,7 +1390,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 26
+        sprite: 28
         color:
           x: 1
           y: 1
@@ -1368,8 +1400,9 @@ GameObjects:
         height: 250
         layer: -2
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       - 68
@@ -1403,7 +1436,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 17
+        sprite: 19
         color:
           x: 1
           y: 1
@@ -1413,8 +1446,9 @@ GameObjects:
         height: 140
         layer: -1
         fillEnabled: false
-        fillType: !<2> 2
+        fillType: !<CIRCLE> 2
         fillSubType: !<CW> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       - 25
@@ -1441,7 +1475,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 1
@@ -1451,8 +1485,9 @@ GameObjects:
         height: 120
         layer: 0
         fillEnabled: true
-        fillType: !<2> 2
+        fillType: !<CIRCLE> 2
         fillSubType: !<CW> 0
+        fillOffset: 0
         fillProgress: 0
       - id: 62
         enabled: true
@@ -1521,8 +1556,9 @@ GameObjects:
         height: 200
         layer: 1
         fillEnabled: false
-        fillType: !<2> 2
+        fillType: !<CIRCLE> 2
         fillSubType: !<CW> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -1592,7 +1628,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 17
+        sprite: 19
         color:
           x: 1
           y: 1
@@ -1602,8 +1638,9 @@ GameObjects:
         height: 140
         layer: -1
         fillEnabled: false
-        fillType: !<2> 2
+        fillType: !<CIRCLE> 2
         fillSubType: !<CW> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       - 28
@@ -1630,7 +1667,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 1
@@ -1640,8 +1677,9 @@ GameObjects:
         height: 120
         layer: 0
         fillEnabled: true
-        fillType: !<2> 2
+        fillType: !<CIRCLE> 2
         fillSubType: !<CW> 0
+        fillOffset: 0
         fillProgress: 0
       - id: 69
         enabled: true
@@ -1700,7 +1738,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 25
+        sprite: 27
         color:
           x: 1
           y: 1
@@ -1710,8 +1748,9 @@ GameObjects:
         height: 200
         layer: 1
         fillEnabled: false
-        fillType: !<2> 2
+        fillType: !<CIRCLE> 2
         fillSubType: !<CW> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       - 90
@@ -1748,8 +1787,9 @@ GameObjects:
         height: 64
         layer: 0
         fillEnabled: false
-        fillType: !<2> 2
+        fillType: !<CIRCLE> 2
         fillSubType: !<CW> 0
+        fillOffset: 0
         fillProgress: 0
     children:
       []
@@ -1819,7 +1859,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 17
+        sprite: 19
         color:
           x: 1
           y: 1
@@ -1829,8 +1869,9 @@ GameObjects:
         height: 140
         layer: -1
         fillEnabled: false
-        fillType: !<2> 2
+        fillType: !<CIRCLE> 2
         fillSubType: !<CW> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       - 31
@@ -1857,7 +1898,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 1
@@ -1867,8 +1908,9 @@ GameObjects:
         height: 120
         layer: 0
         fillEnabled: true
-        fillType: !<2> 2
+        fillType: !<CIRCLE> 2
         fillSubType: !<CW> 0
+        fillOffset: 0
         fillProgress: 0
       - id: 76
         enabled: true
@@ -1927,7 +1969,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 33
+        sprite: 35
         color:
           x: 1
           y: 1
@@ -1937,8 +1979,9 @@ GameObjects:
         height: 200
         layer: 1
         fillEnabled: false
-        fillType: !<2> 2
+        fillType: !<CIRCLE> 2
         fillSubType: !<CW> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -2137,7 +2180,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 36
+        sprite: 38
         color:
           x: 0.196911216
           y: 0.196911216
@@ -2147,14 +2190,15 @@ GameObjects:
         height: 50
         layer: 0
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 147
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 36
+        sprite: 38
         color:
           x: 0.35135138
           y: 0.35135138
@@ -2164,8 +2208,9 @@ GameObjects:
         height: 30
         layer: 0
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 148
         enabled: true
@@ -2199,7 +2244,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 0
@@ -2209,8 +2254,9 @@ GameObjects:
         height: 30
         layer: 0
         fillEnabled: true
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 0
     children:
       []
@@ -2237,7 +2283,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 0
@@ -2247,8 +2293,9 @@ GameObjects:
         height: 30
         layer: 0
         fillEnabled: true
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 0.209999993
     children:
       []
@@ -2285,8 +2332,9 @@ GameObjects:
         height: 64
         layer: 0
         fillEnabled: false
-        fillType: !<2> 2
+        fillType: !<CIRCLE> 2
         fillSubType: !<CW> 0
+        fillOffset: 0
         fillProgress: 0
     children:
       []
@@ -2386,7 +2434,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 28
+        sprite: 30
         color:
           x: 1
           y: 1
@@ -2396,8 +2444,9 @@ GameObjects:
         height: 540
         layer: 0
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -2424,7 +2473,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 19
+        sprite: 21
         color:
           x: 1
           y: 1
@@ -2434,8 +2483,9 @@ GameObjects:
         height: 50
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -2472,8 +2522,9 @@ GameObjects:
         height: 134
         layer: 3
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -2510,8 +2561,9 @@ GameObjects:
         height: 134
         layer: 3
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -2548,8 +2600,9 @@ GameObjects:
         height: 540
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -2576,7 +2629,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 31
+        sprite: 33
         color:
           x: 1
           y: 1
@@ -2586,8 +2639,9 @@ GameObjects:
         height: 540
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -2624,8 +2678,9 @@ GameObjects:
         height: 256
         layer: 2
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 27
         enabled: true
@@ -2694,8 +2749,9 @@ GameObjects:
         height: 256
         layer: 2
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 30
         enabled: true
@@ -2764,8 +2820,9 @@ GameObjects:
         height: 256
         layer: 2
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 33
         enabled: true
@@ -2824,7 +2881,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 37
+        sprite: 39
         color:
           x: 1
           y: 1
@@ -2834,8 +2891,9 @@ GameObjects:
         height: 256
         layer: 2
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -2862,7 +2920,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 24
+        sprite: 26
         color:
           x: 1
           y: 1
@@ -2872,8 +2930,9 @@ GameObjects:
         height: 100
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -2900,7 +2959,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 24
+        sprite: 26
         color:
           x: 1
           y: 1
@@ -2910,8 +2969,9 @@ GameObjects:
         height: 100
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -2938,7 +2998,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 24
+        sprite: 26
         color:
           x: 1
           y: 1
@@ -2948,8 +3008,9 @@ GameObjects:
         height: 100
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -3201,7 +3262,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 0
           y: 0
@@ -3211,8 +3272,9 @@ GameObjects:
         height: 1080
         layer: -1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -3239,7 +3301,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 1
@@ -3249,8 +3311,9 @@ GameObjects:
         height: 300
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 116
         enabled: true
@@ -3324,8 +3387,9 @@ GameObjects:
         height: 150
         layer: 2
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -3438,7 +3502,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 36
+        sprite: 38
         color:
           x: 0.0734632313
           y: 0
@@ -3448,8 +3512,9 @@ GameObjects:
         height: 300
         layer: 0
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -3476,7 +3541,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 1
@@ -3486,8 +3551,9 @@ GameObjects:
         height: 300
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 125
         enabled: true
@@ -3551,7 +3617,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 39
+        sprite: 41
         color:
           x: 1
           y: 1
@@ -3561,8 +3627,9 @@ GameObjects:
         height: 150
         layer: 2
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -3684,8 +3751,9 @@ GameObjects:
         height: 300
         layer: 0
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -3712,7 +3780,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 1
@@ -3722,8 +3790,9 @@ GameObjects:
         height: 300
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 134
         enabled: true
@@ -3797,8 +3866,9 @@ GameObjects:
         height: 150
         layer: 2
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -3911,7 +3981,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 36
+        sprite: 38
         color:
           x: 0.576470613
           y: 0
@@ -3921,8 +3991,9 @@ GameObjects:
         height: 300
         layer: 0
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -3949,7 +4020,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 1
@@ -3959,8 +4030,9 @@ GameObjects:
         height: 300
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 5518
         enabled: true
@@ -4034,8 +4106,9 @@ GameObjects:
         height: 150
         layer: 2
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -4148,7 +4221,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 36
+        sprite: 38
         color:
           x: 0.0745098069
           y: 0
@@ -4158,8 +4231,9 @@ GameObjects:
         height: 300
         layer: 0
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -4186,7 +4260,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 1
@@ -4196,8 +4270,9 @@ GameObjects:
         height: 300
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 5517
         enabled: true
@@ -4261,7 +4336,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 39
+        sprite: 41
         color:
           x: 1
           y: 1
@@ -4271,8 +4346,9 @@ GameObjects:
         height: 150
         layer: 2
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -4385,7 +4461,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 36
+        sprite: 38
         color:
           x: 0.486274511
           y: 0
@@ -4395,8 +4471,9 @@ GameObjects:
         height: 300
         layer: 0
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -4423,7 +4500,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 1
@@ -4433,8 +4510,9 @@ GameObjects:
         height: 300
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 5516
         enabled: true
@@ -4508,8 +4586,9 @@ GameObjects:
         height: 150
         layer: 2
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -4622,7 +4701,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 36
+        sprite: 38
         color:
           x: 0.576470613
           y: 0
@@ -4632,8 +4711,9 @@ GameObjects:
         height: 300
         layer: 0
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -4727,8 +4807,8 @@ GameObjects:
           z: 0.141176477
           w: 1
         notesSpritesIds:
-          - 40
-          - 20
+          - 42
+          - 22
           - 13
           - 1
         resultTextObjectId: 85
@@ -4770,7 +4850,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 0
           y: 0
@@ -4780,8 +4860,9 @@ GameObjects:
         height: 1080
         layer: 0
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -4808,7 +4889,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 40
+        sprite: 42
         color:
           x: 1
           y: 1
@@ -4818,8 +4899,9 @@ GameObjects:
         height: 256
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 5393
         enabled: true
@@ -4921,7 +5003,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 20
+        sprite: 22
         color:
           x: 1
           y: 1
@@ -4931,8 +5013,9 @@ GameObjects:
         height: 256
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 5395
         enabled: true
@@ -5044,8 +5127,9 @@ GameObjects:
         height: 256
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 5397
         enabled: true
@@ -5157,8 +5241,9 @@ GameObjects:
         height: 256
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 5399
         enabled: true
@@ -5303,7 +5388,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 1
@@ -5313,8 +5398,9 @@ GameObjects:
         height: 200
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -5363,7 +5449,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 36
+        sprite: 38
         color:
           x: 0.030888021
           y: 0.030888021
@@ -5373,8 +5459,37 @@ GameObjects:
         height: 140
         layer: 2
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
+    children:
+      []
+  - id: 952
+    name: AreaTakenGraph
+    isStatic: false
+    isActive: true
+    transform:
+      id: 10147
+      position:
+        x: -700
+        y: 40
+        z: 0
+      scale:
+        x: 1
+        y: 0.600000024
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 10148
+        enabled: true
+        type: AreaTakenGraph
+        layer: 0
+        topHexagonPrefab: 2
+        edgePrefab: 11
+        topValueHexagonPrefab: 15
     children:
       []

@@ -10,6 +10,7 @@ namespace Twin2Engine::UI {
 	private:
 		size_t _spriteId = 0;
 		size_t _onTransformChangeId = 0;
+		size_t _onRotationChangeId = 0;
 		size_t _onParentInHierarchiChangeId = 0;
 		size_t _onCanvasDestroyId = 0;
 		Canvas* _canvas = nullptr;
@@ -25,7 +26,10 @@ namespace Twin2Engine::UI {
 			{
 				(uint8_t)Manager::FILL_TYPE::HORIZONTAL, /* type */
 				(uint8_t)Manager::HORIZONTAL_FILL_SUBTYPE::LEFT, /* subType */
-				1.f /* progress */
+				0.f, /* offset */
+				1.f, /* progress */
+				0.f, /* rotation */
+				false /* isActive */
 			} /* fill */,
 			nullptr /* sprite */
 		};
@@ -52,6 +56,7 @@ namespace Twin2Engine::UI {
 		void EnableFill(bool enable);
 		void SetFillType(Manager::FILL_TYPE type);
 		void SetFillSubType(uint8_t subType);
+		void SetFillOffset(float offset);
 		void SetFillProgress(float progress);
 
 		Graphic::Sprite* GetSprite() const;
@@ -62,6 +67,7 @@ namespace Twin2Engine::UI {
 		bool IsFillEnable() const;
 		Manager::FILL_TYPE GetFillType() const;
 		uint8_t GetFillSubType() const;
+		float GetFillOffset() const;
 		float GetFillProgress() const;
 	};
 }

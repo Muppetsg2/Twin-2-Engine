@@ -123,6 +123,7 @@ using namespace Generation::Generators;
 
 #include <UIScripts/PatronChoicePanelController.h>
 #include <UIScripts/PopularityGainingBonusBarController.h>
+#include <UIScripts/AreaTakenGraph.h>
 
 using namespace GameScripts;
 
@@ -159,7 +160,7 @@ void end_imgui();
 constexpr const char* WINDOW_NAME = "Twin^2 Engine";
 constexpr int32_t WINDOW_WIDTH  = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
-constexpr bool WINDOW_FULLSCREEN = true;
+constexpr bool WINDOW_FULLSCREEN = false;
 
 #if DISPLAY_SPLASH_SCREEN
 constexpr const char* SPLASH_SCREEN_TEXTURE = "res/textures/splashScreen2.png";
@@ -375,6 +376,7 @@ int main(int, char**)
     ADD_COMPONENT("MinigameManager", MinigameManager);
     ADD_COMPONENT("ConcertRoad", ConcertRoad);
     ADD_COMPONENT("PopularityGainingBonusBarController", PopularityGainingBonusBarController);
+    ADD_COMPONENT("AreaTakenGraph", AreaTakenGraph);
     ADD_COMPONENT("GodRayComponent", GodRayComponent);
     ADD_COMPONENT("StarComponent", StarComponent);
     ADD_COMPONENT("TutorialSeries", TutorialSeries);

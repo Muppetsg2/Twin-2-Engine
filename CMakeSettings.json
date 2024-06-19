@@ -18,7 +18,7 @@
         },
         {
           "name": "TRACY_PROFILER",
-          "value": "False",
+          "value": "True",
           "type": "BOOL"
         }
       ]
@@ -110,7 +110,7 @@
         },
         {
           "name": "TRACY_PROFILER",
-          "value": "True",
+          "value": "False",
           "type": "BOOL"
         }
       ]

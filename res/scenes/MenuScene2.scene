@@ -6,19 +6,37 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 1
-    path: res\textures\UI\new_game.png
+    path: res\textures\UI\credits.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 2
-    path: res\textures\UI\quit.png
+    path: res\textures\UI\new_game.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 3
+    path: res\textures\UI\arrows.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 4
+    path: res\textures\UI\quit.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 5
     path: res\textures\title_screen.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 6
+    path: res\textures\credits_screen.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
@@ -26,26 +44,49 @@ Textures:
 Sprites:
   - id: 0
     alias: Title_Screen
-    texture: 3
+    texture: 5
     x: 0
     y: 0
     width: 1920
     height: 1080
   - id: 1
-    alias: NewGame
-    texture: 1
+    alias: CreditsScreen
+    texture: 6
     x: 0
     y: 0
-    width: 200
-    height: 75
+    width: 1920
+    height: 1080
   - id: 2
-    alias: Quit
+    alias: NewGame
     texture: 2
     x: 0
     y: 0
     width: 200
     height: 75
-Fonts: ~
+  - id: 3
+    alias: Quit
+    texture: 4
+    x: 0
+    y: 0
+    width: 200
+    height: 75
+  - id: 4
+    alias: BackArrow
+    texture: 3
+    x: 512
+    y: 0
+    width: 256
+    height: 256
+  - id: 5
+    alias: CreditsButton
+    texture: 1
+    x: 0
+    y: 0
+    width: 200
+    height: 75
+Fonts:
+  - id: 0
+    path: res\fonts\Metal-Lord.otf
 Audio:
   - id: 0
     path: res\music\Electric\Thunder_Echoes_Loudly.mp3
@@ -139,11 +180,16 @@ GameObjects:
         enabled: true
         type: MenuManager
         startButtonId: 12
+        creditsButtonId: 32
+        creditsBackButtonId: 23
         exitButtonId: 15
+        menuCanvas: 2
+        creditsCanvas: 7
     children:
       - 3
       - 5
       - 6
+      - 13
   - id: 3
     name: Background
     isStatic: false
@@ -177,8 +223,9 @@ GameObjects:
         height: 1080
         layer: 0
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []
@@ -205,7 +252,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 1
+        sprite: 2
         color:
           x: 1
           y: 1
@@ -215,8 +262,9 @@ GameObjects:
         height: 75
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 12
         enabled: true
@@ -260,7 +308,7 @@ GameObjects:
       id: 13
       position:
         x: 0
-        y: -100
+        y: -200
         z: 0
       scale:
         x: 1
@@ -275,7 +323,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 2
+        sprite: 3
         color:
           x: 1
           y: 1
@@ -285,10 +333,82 @@ GameObjects:
         height: 75
         layer: 1
         fillEnabled: false
-        fillType: !<0> 0
+        fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
       - id: 15
+        enabled: true
+        type: Button
+        width: 200
+        height: 75
+        interactable: true
+        onHoverPresetEvents: true
+        animTimeFactor: 2
+        scaleFunc: 9
+        scaleFuncType: 2
+        scaleStart:
+          x: 1
+          y: 1
+          z: 1
+        scaleEnd:
+          x: 1.10000002
+          y: 1.10000002
+          z: 1
+        colorFunc: 0
+        colorFuncType: 0
+        colorStart:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        colorEnd:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        displayObjectOnHover: false
+        playAudioOnClick: false
+    children:
+      []
+  - id: 13
+    name: CreditsButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 30
+      position:
+        x: 0
+        y: -100
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 31
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 5
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 200
+        height: 75
+        layer: 1
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 32
         enabled: true
         type: Button
         width: 200
@@ -359,5 +479,321 @@ GameObjects:
           y: 1
           z: 1
           w: 1
+    children:
+      []
+  - id: 7
+    name: CreditCanvas
+    isStatic: false
+    isActive: false
+    transform:
+      id: 17
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 18
+        enabled: true
+        type: Canvas
+        layer: 0
+        size:
+          x: 1920
+          y: 1080
+        worldSpace: false
+    children:
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 14
+  - id: 8
+    name: Background
+    isStatic: false
+    isActive: true
+    transform:
+      id: 19
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 20
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 1
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 1920
+        height: 1080
+        layer: 0
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+    children:
+      []
+  - id: 9
+    name: BackButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 21
+      position:
+        x: -830
+        y: 420
+        z: 0
+      scale:
+        x: 0.419999987
+        y: 0.419999987
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 22
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 4
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 256
+        height: 256
+        layer: 1
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 23
+        enabled: true
+        type: Button
+        width: 256
+        height: 256
+        interactable: true
+        onHoverPresetEvents: true
+        animTimeFactor: 2
+        scaleFunc: 9
+        scaleFuncType: 2
+        scaleStart:
+          x: 0.400000006
+          y: 0.400000006
+          z: 1
+        scaleEnd:
+          x: 0.419999987
+          y: 0.419999987
+          z: 1
+        colorFunc: 0
+        colorFuncType: 0
+        colorStart:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        colorEnd:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        displayObjectOnHover: false
+        playAudioOnClick: false
+    children:
+      []
+  - id: 10
+    name: TeamText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 24
+      position:
+        x: 0
+        y: 240
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 25
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00M\x00e\x00m\x00b\x00e\x00r\x00s\x00:\x00\n\x00M\x00a\x00r\x00c\x00e\x00l\x00i\x00 \x00A\x00n\x00t\x00o\x00s\x00i\x00k\x00\n\x00P\x00a\x00t\x00r\x00y\x00k\x00 \x00A\x00n\x00t\x00o\x00s\x00i\x00k\x00\n\x01A\x00u\x00k\x00a\x00s\x00z\x00 \x00G\x00a\x00p\x00i\x01D\x00s\x00k\x00i\x00\n\x00M\x00a\x00t\x00e\x00u\x00s\x00z\x00 \x00G\x00a\x00p\x00i\x01D\x00s\x00k\x00i\x00\n\x00M\x00a\x00j\x00a\x00 \x00O\x00c\x00h\x00m\x00a\x01D\x00s\x00k\x00a\x00\n\x00\n\x00P\x00r\x00o\x00g\x00r\x00a\x00m\x00m\x00e\x00r\x00s\x00:\x00\n\x00M\x00a\x00r\x00c\x00e\x00l\x00i\x00 \x00A\x00n\x00t\x00o\x00s\x00i\x00k\x00\n\x00P\x00a\x00t\x00r\x00y\x00k\x00 \x00A\x00n\x00t\x00o\x00s\x00i\x00k\x00\n\x01A\x00u\x00k\x00a\x00s\x00z\x00 \x00G\x00a\x00p\x00i\x01D\x00s\x00k\x00i\x00\n\x00M\x00a\x00t\x00e\x00u\x00s\x00z\x00 \x00G\x00a\x00p\x00i\x01D\x00s\x00k\x00i"
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 500
+        height: 500
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 11
+    name: LibrariesText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 26
+      position:
+        x: 340
+        y: 385
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 27
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00L\x00i\x00b\x00r\x00a\x00r\x00i\x00e\x00s\x00:\x00\n\x00O\x00p\x00e\x00n\x00G\x00L\x00\n\x00S\x00o\x00L\x00o\x00u\x00d\x00\n\x00g\x00l\x00m\x00\n\x00g\x00l\x00a\x00d\x00\n\x00g\x00l\x00f\x00w\x00\n\x00s\x00t\x00b\x00_\x00i\x00m\x00a\x00g\x00e\x00\n\x00f\x00r\x00e\x00e\x00t\x00y\x00p\x00e\x00\n\x00a\x00s\x00s\x00i\x00m\x00p\x00\n\x00y\x00a\x00m\x00l\x00-\x00c\x00p\x00p\x00\n\x00s\x00p\x00d\x00l\x00o\x00g"
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 500
+        height: 500
+        color:
+          x: 0.482352942
+          y: 1
+          z: 0.933333337
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 12
+    name: AssetsText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 28
+      position:
+        x: -340
+        y: 385
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 29
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00M\x00u\x00s\x00i\x00c\x00:\x00\n\x00s\x00t\x00o\x00c\x00k\x00t\x00u\x00n\x00e\x00.\x00c\x00o\x00m\x00\n\x00m\x00i\x00x\x00k\x00i\x00t\x00.\x00c\x00o\x00\n\x00\n\x00F\x00o\x00n\x00t\x00s\x00:\x00\n\x00M\x00e\x00t\x00a\x00l\x00-\x00L\x00o\x00r\x00d\x00\n\x00\n\x00G\x00r\x00a\x00p\x00h\x00i\x00c\x00s\x00:\x00\n\x00M\x00i\x00c\x00r\x00o\x00s\x00o\x00f\x00t\x00 \x00C\x00o\x00p\x00i\x00l\x00o\x00t\x00\n\x00M\x00a\x00j\x00a\x00 \x00O\x00c\x00h\x00m\x00a\x01D\x00s\x00k\x00a\x00\n\x00\n\x00M\x00o\x00d\x00e\x00l\x00s\x00:\x00\n\x00M\x00a\x00j\x00a\x00 \x00O\x00c\x00h\x00m\x00a\x01D\x00s\x00k\x00a\x00\n\x00M\x00a\x00t\x00e\x00u\x00s\x00z\x00 \x00G\x00a\x00p\x00i\x01D\x00s\x00k\x00i"
+        font: 0
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 500
+        height: 500
+        color:
+          x: 0.482625484
+          y: 1
+          z: 0.934079647
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 14
+    name: TeamName
+    isStatic: false
+    isActive: true
+    transform:
+      id: 33
+      position:
+        x: 0
+        y: 370
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 34
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00T\x00e\x00a\x00m\x00:\x00 \x00T\x00w\x00i\x00n\x00^\x002"
+        font: 0
+        size: 60
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 500
+        height: 100
+        color:
+          x: 0.262548268
+          y: 1
+          z: 0.71811676
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
     children:
       []

@@ -113,6 +113,7 @@ using namespace Generation::Generators;
 #include <GodRayComponent.h>
 #include <StarComponent.h>
 #include <TutorialSeries.h>
+#include <TutorialsController.h>
 #include <CityLightsComponent.h>
 #include <MenuParticles.h>
 #include <Abilities/ConcertAbilityController.h>
@@ -386,6 +387,7 @@ int main(int, char**)
     ADD_COMPONENT("MenuParticles", MenuParticles);
     ADD_COMPONENT("MenuManager", MenuManager);
     ADD_COMPONENT("PauseManager", PauseManager);
+    ADD_COMPONENT("TutorialsController", TutorialsController);
 
 #pragma endregion
 

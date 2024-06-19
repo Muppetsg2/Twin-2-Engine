@@ -3431,7 +3431,7 @@ GameObjects:
   - id: 19
     name: PatronChoiceCanvas
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 5505
       position:
@@ -6114,6 +6114,7 @@ GameObjects:
       - 647
       - 652
       - 657
+      - 667
   - id: 127
     name: FristStepTutorial
     isStatic: false
@@ -8866,8 +8867,10 @@ GameObjects:
       - id: 7435
         enabled: true
         type: TutorialSeries
+        closeOnLast: true
         tutorialsIds:
           - 877
+          - 667
     children:
       - 878
       - 879
@@ -10177,5 +10180,29 @@ GameObjects:
         fillSubType: !<LEFT> 0
         fillOffset: 0
         fillProgress: 1
+    children:
+      []
+  - id: 667
+    name: TutorialsController
+    isStatic: false
+    isActive: false
+    transform:
+      id: 7492
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 7493
+        enabled: true
+        type: TutorialsController
     children:
       []

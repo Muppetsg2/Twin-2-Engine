@@ -6,8 +6,13 @@
 #include <tools/YamlConverters.h>
 #include <core/Time.h>
 #include <GameManager.h>
+#include <Player.h>
 
 #include <ConcertRoad.h>
+
+
+using namespace Twin2Engine::Manager;
+using namespace Twin2Engine::Core;
 
 class TutorialsController : public Component {
 	public:
@@ -25,7 +30,7 @@ class TutorialsController : public Component {
 		virtual void Update() override {
 			if (!ConcertRoadTutUsed) {
 				glm::vec3 distance(0.0f);
-				glm::vec3 playerPos = GameManager
+				//glm::vec3 playerPos = GameManager::instance->GetPlayer()->GetT;
 			}
 		}
 

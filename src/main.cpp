@@ -408,6 +408,7 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
     SceneManager::AddScene("Menu", "res/scenes/MenuScene2.scene");
     SceneManager::AddScene("Game", "res/scenes/procedurallyGenerated.scene");
+    SceneManager::AddScene("GameWithTutorial", "res/scenes/tutorialScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/tutorialSceneWork2.scene");
     //SceneManager::AddScene("testScene", "res/scenes/SceneToEditPrefabs.scene");
     //SceneManager::AddScene("testScene", "res/scenes/Making Game UI.scene");
@@ -417,8 +418,9 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/ToonShading.scene");
     //SceneManager::AddScene("testScene", "res/scenes/HexTileEditScene.scene");
     //SceneManager::AddScene("testScene", new Scene());
-    SceneManager::LoadScene("Game");
     //SceneManager::LoadScene("Menu");
+    //SceneManager::LoadScene("Game");
+    SceneManager::LoadScene("GameWithTutorial");
     SceneManager::Update();
 
 #if DISPLAY_SPLASH_SCREEN

@@ -1,5 +1,4 @@
-#ifndef _PARTICLESYSTEMSCONTROLLER_H_
-#define _PARTICLESYSTEMSCONTROLLER_H_
+#pragma once
 
 #include <ParticleGenerator.h>
 #include <unordered_set>
@@ -41,5 +40,3 @@ public:
 	void Update();
 	void Render();
 };
-
-#endif // !_PARTICLESYSTEMSCONTROLLER_H_

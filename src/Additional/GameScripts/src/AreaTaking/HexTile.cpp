@@ -263,87 +263,55 @@ void HexTile::UpdateBorders()
 				// UPDATE THIS BORDER
 				// JESLI NIE BIALY
 				if (ownerEntity != nullptr) {
-					if (borderJoints[left]->GetActive())
-						borderJoints[left]->SetActive(false);
-					if (borderJoints[right]->GetActive())
-						borderJoints[right]->SetActive(false);
-
-					if (!borders[i]->GetActive())
-						borders[i]->SetActive(true);
+					borderJoints[left]->SetActive(false);
+					borderJoints[right]->SetActive(false);
+					borders[i]->SetActive(true);
 				}
 				// JESLI BIALY
 				else {
-					if (borderJoints[left]->GetActive())
-						borderJoints[left]->SetActive(false);
-					if (borderJoints[right]->GetActive())
-						borderJoints[right]->SetActive(false);
-
-					if (borders[i]->GetActive())
-						borders[i]->SetActive(false);
+					borderJoints[left]->SetActive(false);
+					borderJoints[right]->SetActive(false);
+					borders[i]->SetActive(false);
 				}
 
 				// UPDATE NEIGHTBOUR BORDER
 				// JESLI NIE BIALY
 				if (nt->ownerEntity != nullptr) {
-					if (nt->borderJoints[nLeft]->GetActive())
-						nt->borderJoints[nLeft]->SetActive(false);
-					if (nt->borderJoints[nRight]->GetActive())
-						nt->borderJoints[nRight]->SetActive(false);
-
-					if (!nt->borders[ni]->GetActive())
-						nt->borders[ni]->SetActive(true);
+					nt->borderJoints[nLeft]->SetActive(false);
+					nt->borderJoints[nRight]->SetActive(false);
+					nt->borders[ni]->SetActive(true);
 				}
 				// JESLI BIALY
 				else {
-					if (nt->borderJoints[nLeft]->GetActive())
-						nt->borderJoints[nLeft]->SetActive(false);
-					if (nt->borderJoints[nRight]->GetActive())
-						nt->borderJoints[nRight]->SetActive(false);
-
-					if (nt->borders[ni]->GetActive())
-						nt->borders[ni]->SetActive(false);
+					nt->borderJoints[nLeft]->SetActive(false);
+					nt->borderJoints[nRight]->SetActive(false);
+					nt->borders[ni]->SetActive(false);
 				}
 			}
 			// JESLI DO TEGO SAMEGO GRACZA NALEZA
 			else if (ownerEntity != nullptr)
 			{
 				// UPDATE THIS BORDER
-				if (!borderJoints[left]->GetActive())
-					borderJoints[left]->SetActive(true);
-				if (!borderJoints[right]->GetActive())
-					borderJoints[right]->SetActive(true);
-
-				if (borders[i]->GetActive())
-					borders[i]->SetActive(false);
+				borderJoints[left]->SetActive(true);
+				borderJoints[right]->SetActive(true);
+				borders[i]->SetActive(false);
 
 				// UPDATE NEIGHTBOUR BORDER
-				if (!nt->borderJoints[nLeft]->GetActive())
-					nt->borderJoints[nLeft]->SetActive(true);
-				if (!nt->borderJoints[nRight]->GetActive())
-					nt->borderJoints[nRight]->SetActive(true);
-
-				if (nt->borders[ni]->GetActive())
-					nt->borders[ni]->SetActive(false);
+				nt->borderJoints[nLeft]->SetActive(true);
+				nt->borderJoints[nRight]->SetActive(true);
+				nt->borders[ni]->SetActive(false);
 			}
 			// JESLI OBA BIALE
 			else {
 				// UPDATE THIS BORDER
-				if (borderJoints[left]->GetActive())
-					borderJoints[left]->SetActive(false);
-				if (borderJoints[right]->GetActive())
-					borderJoints[right]->SetActive(false);
-
-				if (borders[i]->GetActive())
-					borders[i]->SetActive(false);
+				borderJoints[left]->SetActive(false);
+				borderJoints[right]->SetActive(false);
+				borders[i]->SetActive(false);
 
 				// UPDATE NEIGHTBOUR BORDER
-				if (nt->borderJoints[nLeft]->GetActive())
-					nt->borderJoints[nLeft]->SetActive(false);
-				if (nt->borderJoints[nRight]->GetActive())
-					nt->borderJoints[nRight]->SetActive(false);
-
-				if (nt->borders[ni]->GetActive())
-					nt->borders[ni]->SetActive(false);
+				nt->borderJoints[nLeft]->SetActive(false);
+				nt->borderJoints[nRight]->SetActive(false);
+				nt->borders[ni]->SetActive(false);
 			}
 		}
 		else
@@ -351,24 +319,16 @@ void HexTile::UpdateBorders()
 			// JESLI KOLOROWY TILE
 			if (ownerEntity != nullptr) {
 				// UPDATE THIS BORDER
-				if (borderJoints[left]->GetActive())
-					borderJoints[left]->SetActive(false);
-				if (borderJoints[right]->GetActive())
-					borderJoints[right]->SetActive(false);
-
-				if (!borders[i]->GetActive())
-					borders[i]->SetActive(true);
+				borderJoints[left]->SetActive(false);
+				borderJoints[right]->SetActive(false);
+				borders[i]->SetActive(true);
 			}
 			// JESLI BIALY TILE
 			else {
 				// UPDATE THIS BORDER
-				if (borderJoints[left]->GetActive())
-					borderJoints[left]->SetActive(false);
-				if (borderJoints[right]->GetActive())
-					borderJoints[right]->SetActive(false);
-
-				if (borders[i]->GetActive())
-					borders[i]->SetActive(false);
+				borderJoints[left]->SetActive(false);
+				borderJoints[right]->SetActive(false);
+				borders[i]->SetActive(false);
 			}
 		}
 	}
@@ -420,6 +380,14 @@ void HexTile::CheckRoundPattern()
 	}
 }
 
+void HexTile::CheckNeigbhboursRoundPattern()
+{
+	for (size_t index = 0ull; index < _adjacentTiles.size(); ++index)
+	{
+		_adjacentTiles[index]->CheckRoundPattern();
+	}
+}
+
 void HexTile::Initialize()
 {
 	_affectingCities.clear();
@@ -429,17 +397,14 @@ void HexTile::Initialize()
 
 	for (size_t i = 0; i < 6; ++i)
 	{
-		if (borders[i]->GetActive())
-			borders[i]->SetActive(false);
-		if (borderJoints[i * 2]->GetActive())
-			borderJoints[i * 2]->SetActive(false);
-		if (borderJoints[(i * 2) + 1]->GetActive())
-			borderJoints[(i * 2) + 1]->SetActive(false);
+		borderJoints[i * 2]->SetActive(false);
+		borderJoints[(i * 2) + 1]->SetActive(false);
+		borders[i]->SetActive(false);
 	}
 
 	particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/ArrowParticle.png", 3, 0.5f, 0.0f, 6.0f, 2.0f, 0.16f, 0.2f, 0.3f);
-	pgCity = new ParticleGenerator("origin/ParticleShader", _textureCityStar, 5, 0.4f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
-	pgCityNegative = new ParticleGenerator("origin/ParticleShader", _textureCityBlackStar, 5, -0.3f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
+	pgCity = new ParticleGenerator("origin/ParticleShader", TextureManager::GetTexture2D(_textureCityStar)->GetId(), 5, 0.4f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
+	pgCityNegative = new ParticleGenerator("origin/ParticleShader", TextureManager::GetTexture2D(_textureCityBlackStar)->GetId(), 5, -0.3f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
 }
 
 void HexTile::OnDestroy()
@@ -486,7 +451,7 @@ void HexTile::Update()
 			LoseInfluence();
 		}
 
-		CheckRoundPattern();
+		//CheckRoundPattern();
 
 	}
 }
@@ -558,6 +523,8 @@ void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 				t->UpdateBorders();
 			}
 
+			CheckNeigbhboursRoundPattern();
+
 			particleGenerator->active = ownerEntity->OwnTiles.front()->particleGenerator->active;
 		}
 
@@ -580,7 +547,6 @@ void HexTile::StartMinigame()
 void HexTile::WinMinigame()
 {
 }
-
 
 void HexTile::EnableAffected()
 {
@@ -723,10 +689,10 @@ YAML::Node HexTile::Serialize() const
 		node["borderJoints"].push_back(obj->Id());
 	}
 
-	//node["_textureCityStar"] = SceneManager::GetTexture2DSaveIdx(_textureCityStar);
-	//node["_textureCityBlackStar"] = SceneManager::GetTexture2DSaveIdx(_textureCityBlackStar);
-	node["_textureCityStar"] = TextureManager::GetTexture2DPath(_textureCityStar);
-	node["_textureCityBlackStar"] = TextureManager::GetTexture2DPath(_textureCityBlackStar);
+	node["_textureCityStar"] = SceneManager::GetTexture2DSaveIdx(_textureCityStar);
+	node["_textureCityBlackStar"] = SceneManager::GetTexture2DSaveIdx(_textureCityBlackStar);
+	//node["_textureCityStar"] = TextureManager::GetTexture2DPath(_textureCityStar);
+	//node["_textureCityBlackStar"] = TextureManager::GetTexture2DPath(_textureCityBlackStar);
 
 	return node;
 }
@@ -755,10 +721,10 @@ bool HexTile::Deserialize(const YAML::Node& node)
 		}
 	}
 
-	//_textureCityStar = SceneManager::GetTexture2D(node["textureCityStar"].as<size_t>());
-	//_textureCityBlackStar = SceneManager::GetTexture2D(node["textureCityBlackStar"].as<size_t>());
-	_textureCityStar = TextureManager::LoadTexture2D(node["textureCityStar"].as<string>())->GetId();
-	_textureCityBlackStar = TextureManager::LoadTexture2D(node["textureCityBlackStar"].as<string>())->GetId();
+	_textureCityStar = SceneManager::GetTexture2D(node["textureCityStar"].as<size_t>());
+	_textureCityBlackStar = SceneManager::GetTexture2D(node["textureCityBlackStar"].as<size_t>());
+	//_textureCityStar = TextureManager::LoadTexture2D(node["textureCityStar"].as<string>())->GetId();
+	//_textureCityBlackStar = TextureManager::LoadTexture2D(node["textureCityBlackStar"].as<string>())->GetId();
 
 	return true;
 }

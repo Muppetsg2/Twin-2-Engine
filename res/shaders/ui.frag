@@ -47,7 +47,9 @@ const uint CCW_FILL = 1;
 struct FillData {
     uint type;
     uint subType;
+    float offset;
     float progress;
+    float rotation;
     bool isActive;
 };
 
@@ -97,24 +99,24 @@ bool OutOfFill(vec2 pos, vec2 center, vec2 size, FillData fill) {
         float p = 0.0;
         if (fill.type == HORIZONTAL_FILL) {
             if (fill.subType == LEFT_FILL) {
-                p = (0.99 / size.x) * (pos.x - center.x) + 0.495;
+                p = (1.0 / size.x) * (pos.x - center.x) + 0.5;
             }
             else if (fill.subType == CENTER_FILL) {
-                p = (1.98 / size.x) * abs(pos.x - center.x);
+                p = (2.0 / size.x) * abs(pos.x - center.x);
             }
             else if (fill.subType == RIGHT_FILL) {
-                p = (-0.99 / size.x) * (pos.x - center.x) + 0.495;
+                p = (-1.0 / size.x) * (pos.x - center.x) + 0.5;
             }
         }
         else if (fill.type == VERTICAL_FILL) {
             if (fill.subType == TOP_FILL) {
-                p = (-0.99 / size.y) * (pos.y - center.y) + 0.495;
+                p = (-1.0 / size.y) * (pos.y - center.y) + 0.5;
             }
             else if (fill.subType == MIDDLE_FILL) {
-                p = (1.98 / size.y) * abs(pos.y - center.y);
+                p = (2.0 / size.y) * abs(pos.y - center.y);
             }
             else if (fill.subType == BOTTOM_FILL) {
-                p = (0.99 / size.y) * (pos.y - center.y) + 0.495;
+                p = (1.0 / size.y) * (pos.y - center.y) + 0.5;
             }
         }
         else if (fill.type == CIRCLE_FILL) {
@@ -130,14 +132,30 @@ bool OutOfFill(vec2 pos, vec2 center, vec2 size, FillData fill) {
             if (alphaX >= 0.0) alpha = alphaY;
             else if (alphaX < 0.0) alpha = 360.0 - alphaY;
 
+            float rotation = -fill.rotation;
+
+            while (rotation >= 360.0)
+                rotation -= 360.0;
+            while (rotation <= -360.0)
+                rotation += 360.0;
+
+            if (rotation < 0.0 && alpha >= 360.0 + rotation)
+                alpha -= 360.0 + rotation;
+            else if (rotation > 0.0 && alpha < rotation)
+                alpha += 360.0 - rotation;
+            else
+                alpha -= rotation;
+
             if (fill.subType == CW_FILL) {
-                p = 0.00275 * alpha;
+                // (100 / 360) * (alpha / 100)
+                p = 0.00277 * alpha;
             }
             else if (fill.subType == CCW_FILL) {
-                p = 0.00275 * (360.0 - alpha);
+                // (100 / 360) * ((360 - alpha) / 100)
+                p = 0.00277 * (360.0 - alpha);
             }
         }
-        return p >= fill.progress;
+        return p >= fill.progress || p < fill.offset;
     }
     return false;
 }

@@ -133,17 +133,6 @@ bool RadioStation::Deserialize(const YAML::Node& node)
 
 #if _DEBUG
 
-bool RadioStation::DrawInheritedFields()
-{
-    if (Component::DrawInheritedFields()) return true;
-
-    ImGui::InputFloat("TakingOver Time: ", &_takingOverTime);
-    ImGui::InputFloat("Cooldown: ", &_cooldown);
-    ImGui::InputFloat("TakingRadius: ", &takingRadius);
-
-	return false;
-}
-
 void RadioStation::DrawEditor()
 {
     string id = string(std::to_string(this->GetId()));
@@ -151,7 +140,11 @@ void RadioStation::DrawEditor()
 
     if (ImGui::CollapsingHeader(name.c_str())) {
 
-        if (DrawInheritedFields()) return;
+        if (Component::DrawInheritedFields()) return;
+
+        ImGui::InputFloat("TakingOver Time: ", &_takingOverTime);
+        ImGui::InputFloat("Cooldown: ", &_cooldown);
+        ImGui::InputFloat("TakingRadius: ", &takingRadius);
 
         // TODO: Zrobic
     }

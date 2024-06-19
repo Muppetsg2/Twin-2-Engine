@@ -1,0 +1,73 @@
+Textures:
+  - id: 0
+    path: res\textures\UI\shape_hexagon.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 1
+    path: res\textures\UI\shape_hexagon_border.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+Sprites:
+  - id: 0
+    alias: HexTileShape
+    texture: 0
+    x: 0
+    y: 0
+    width: 346
+    height: 400
+  - id: 1
+    alias: HexTileShapeBorder
+    texture: 1
+    x: 0
+    y: 0
+    width: 348
+    height: 400
+Fonts: ~
+Audio: ~
+Materials: ~
+Models:
+  - id: 0
+    path: "{Plane}"
+Prefabs: ~
+ScriptableObjects: ~
+Root:
+  name: GraphBorderHexagon
+  isStatic: false
+  isActive: true
+  transform:
+    id: 5746
+    position:
+      x: 0
+      y: 0
+      z: 0
+    scale:
+      x: 1
+      y: 1
+      z: 1
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+  components:
+    - id: 5747
+      enabled: true
+      type: Image
+      isTransparent: true
+      sprite: 1
+      color:
+        x: 0
+        y: 0.75686276
+        z: 0.0823529437
+        w: 1
+      width: 200
+      height: 200
+      layer: 0
+      fillEnabled: true
+      fillType: !<CIRCLE> 2
+      fillSubType: !<CW> 0
+      fillOffset: 0.13454999
+      fillProgress: 0.330149978

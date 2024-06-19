@@ -66,7 +66,7 @@ Root:
       type: RadioStation
       cooldown: 12
       takingOverTime: 10
-      takingRadius: 3
+      takingRadius: 2
   children:
    - 1
 GameObjects:
@@ -158,6 +158,7 @@ GameObjects:
         fillEnabled: false
         fillType: !<0> 0
         fillSubType: !<LEFT> 0
+        fillOffset: 0
         fillProgress: 1
     children:
       []

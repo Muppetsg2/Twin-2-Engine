@@ -147,45 +147,44 @@ bool HexTileTextureData::Deserialize(const YAML::Node& node)
 	_cyanBorderMaterial = MaterialsManager::GetMaterial(node["cyanBorderMaterialName"].as<string>());
 	_pinkBorderMaterial = MaterialsManager::GetMaterial(node["pinkBorderMaterialName"].as<string>());
 
-	_blueMaterials = std::vector<Twin2Engine::Graphic::Material*>();
-	_redMaterials = std::vector<Twin2Engine::Graphic::Material*>();
-	_greenMaterials = std::vector<Twin2Engine::Graphic::Material*>();
-	_purpleMaterials = std::vector<Twin2Engine::Graphic::Material*>();
-	_yellowMaterials = std::vector<Twin2Engine::Graphic::Material*>();
-	_cyanMaterials = std::vector<Twin2Engine::Graphic::Material*>();
-	_pinkMaterials = std::vector<Twin2Engine::Graphic::Material*>();
-
 	string s;
+	_blueMaterials.reserve(node["blueMaterialsNames"].size());
 	for (const auto& mat : node["blueMaterialsNames"]) {
 		s = mat.as<string>();
-		_blueMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+		_blueMaterials.push_back(MaterialsManager::GetMaterial(s));
 	}
 
+	_redMaterials.reserve(node["redMaterialsNames"].size());
 	for (const auto& mat : node["redMaterialsNames"]) {
 		s = mat.as<string>();
-		_redMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+		_redMaterials.push_back(MaterialsManager::GetMaterial(s));
 	}
 
+	_greenMaterials.reserve(node["greenMaterialsNames"].size());
 	for (const auto& mat : node["greenMaterialsNames"]) {
 		s = mat.as<string>();
-		_greenMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+		_greenMaterials.push_back(MaterialsManager::GetMaterial(s));
 	}
 
+	_purpleMaterials.reserve(node["purpleMaterialsNames"].size());
 	for (const auto& mat : node["purpleMaterialsNames"]) {
 		s = mat.as<string>();
-		_purpleMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+		_purpleMaterials.push_back(MaterialsManager::GetMaterial(s));
 	}
 
+	_yellowMaterials.reserve(node["yellowMaterialsNames"].size());
 	for (const auto& mat : node["yellowMaterialsNames"]) {
 		s = mat.as<string>();
-		_yellowMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+		_yellowMaterials.push_back(MaterialsManager::GetMaterial(s));
 	}
 
+	_cyanMaterials.reserve(node["cyanMaterialsNames"].size());
 	for (const auto& mat : node["cyanMaterialsNames"]) {
 		s = mat.as<string>();
-		_cyanMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+		_cyanMaterials.push_back(MaterialsManager::GetMaterial(s));
 	}
 
+	_pinkMaterials.reserve(node["pinkMaterialsNames"].size());
 	for (const auto& mat : node["pinkMaterialsNames"]) {
 		s = mat.as<string>();
 		_pinkMaterials.emplace_back(MaterialsManager::GetMaterial(s));
@@ -193,47 +192,46 @@ bool HexTileTextureData::Deserialize(const YAML::Node& node)
 	
 	// Retrieving RetreatingMaterials
 
-	_blueRetreatingMaterials = std::vector<Twin2Engine::Graphic::Material*>();
-	_redRetreatingMaterials = std::vector<Twin2Engine::Graphic::Material*>();
-	_greenRetreatingMaterials = std::vector<Twin2Engine::Graphic::Material*>();
-	_purpleRetreatingMaterials = std::vector<Twin2Engine::Graphic::Material*>();
-	_yellowRetreatingMaterials = std::vector<Twin2Engine::Graphic::Material*>();
-	_cyanRetreatingMaterials = std::vector<Twin2Engine::Graphic::Material*>();
-	_pinkRetreatingMaterials = std::vector<Twin2Engine::Graphic::Material*>();
-
+	_blueRetreatingMaterials.reserve(node["blueRetreatingMaterialsNames"].size());
 	for (const auto& mat : node["blueRetreatingMaterialsNames"]) {
 		s = mat.as<string>();
-		_blueRetreatingMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+		_blueRetreatingMaterials.push_back(MaterialsManager::GetMaterial(s));
 	}
 
+	_redRetreatingMaterials.reserve(node["redRetreatingMaterialsNames"].size());
 	for (const auto& mat : node["redRetreatingMaterialsNames"]) {
 		s = mat.as<string>();
-		_redRetreatingMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+		_redRetreatingMaterials.push_back(MaterialsManager::GetMaterial(s));
 	}
 
+	_greenRetreatingMaterials.reserve(node["greenRetreatingMaterialsNames"].size());
 	for (const auto& mat : node["greenRetreatingMaterialsNames"]) {
 		s = mat.as<string>();
-		_greenRetreatingMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+		_greenRetreatingMaterials.push_back(MaterialsManager::GetMaterial(s));
 	}
 
+	_purpleRetreatingMaterials.reserve(node["purpleRetreatingMaterialsNames"].size());
 	for (const auto& mat : node["purpleRetreatingMaterialsNames"]) {
 		s = mat.as<string>();
-		_purpleRetreatingMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+		_purpleRetreatingMaterials.push_back(MaterialsManager::GetMaterial(s));
 	}
 
+	_yellowRetreatingMaterials.reserve(node["yellowRetreatingMaterialsNames"].size());
 	for (const auto& mat : node["yellowRetreatingMaterialsNames"]) {
 		s = mat.as<string>();
-		_yellowRetreatingMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+		_yellowRetreatingMaterials.push_back(MaterialsManager::GetMaterial(s));
 	}
 
+	_cyanRetreatingMaterials.reserve(node["cyanRetreatingMaterialsNames"].size());
 	for (const auto& mat : node["cyanRetreatingMaterialsNames"]) {
 		s = mat.as<string>();
-		_cyanRetreatingMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+		_cyanRetreatingMaterials.push_back(MaterialsManager::GetMaterial(s));
 	}
 
+	_pinkRetreatingMaterials.reserve(node["pinkRetreatingMaterialsNames"].size());
 	for (const auto& mat : node["pinkRetreatingMaterialsNames"]) {
 		s = mat.as<string>();
-		_pinkRetreatingMaterials.emplace_back(MaterialsManager::GetMaterial(s));
+		_pinkRetreatingMaterials.push_back(MaterialsManager::GetMaterial(s));
 	}
 
 	return true;

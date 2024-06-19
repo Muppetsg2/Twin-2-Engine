@@ -7,9 +7,38 @@ using namespace Twin2Engine::UI;
 using namespace glm;
 using namespace std;
 
+void PatronChoicePanelController::Choose(PatronData* patron)
+{
+    GameManager::instance->playersPatron = patron;
+    GetGameObject()->SetActive(false);
+    choosed = true;
+    GameManager::instance->StartGame();
+}
+
+void PatronChoicePanelController::StartChoose()
+{
+    for (size_t index = 0ull; index < _patronsButtons.size(); ++index)
+    {
+        _patronsButtons[index]->SetInteractable(true);
+    }
+}
+
+void PatronChoicePanelController::StopChoose()
+{
+    for (size_t index = 0ull; index < _patronsButtons.size(); ++index)
+    {
+        _patronsButtons[index]->SetInteractable(false);
+    }
+}
+
+bool PatronChoicePanelController::IsChoosed()
+{
+    return choosed;
+}
+
 void PatronChoicePanelController::Initialize()
 {
-
+    choosed = false;
     // size_t size = _patrons.size();
     size_t size = _patronsButtons.size();
 
@@ -36,13 +65,6 @@ void PatronChoicePanelController::Initialize()
             }
             });
     }
-}
-
-void PatronChoicePanelController::Choose(PatronData *patron)
-{
-    GameManager::instance->playersPatron = patron;
-    GetGameObject()->SetActive(false);
-    GameManager::instance->StartGame();
 }
 
 YAML::Node PatronChoicePanelController::Serialize() const

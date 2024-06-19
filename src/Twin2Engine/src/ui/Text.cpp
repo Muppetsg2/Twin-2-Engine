@@ -312,7 +312,7 @@ void Text::Initialize()
 {
 	_onParentInHierarchiChangeId = (GetTransform()->OnEventInHierarchyParentChanged += [&](Transform* t) -> void {
 		SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
-		});
+	});
 	SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
 }
 

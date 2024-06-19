@@ -29,7 +29,9 @@ STD140Offsets UIRenderingManager::TextureOffsets{
 STD140Offsets UIRenderingManager::FillDataOffsets{
 	STD140Variable<uint>("type"),
 	STD140Variable<uint>("subType"),
+	STD140Variable<float>("offset"),
 	STD140Variable<float>("progress"),
+	STD140Variable<float>("rotation"),
 	STD140Variable<bool>("isActive")
 };
 
@@ -259,7 +261,9 @@ void UIRenderingManager::RenderUI(map<int32_t, unordered_map<CanvasData*, map<in
 						if (maskData->fill.isActive) {
 							MaskStruct.Set("maskFill.type", (uint)maskData->fill.type);
 							MaskStruct.Set("maskFill.subType", (uint)maskData->fill.subType);
+							MaskStruct.Set("maskFill.offset", maskData->fill.offset);
 							MaskStruct.Set("maskFill.progress", maskData->fill.progress);
+							MaskStruct.Set("maskFill.rotation", maskData->fill.rotation);
 						}
 						MaskStruct.Set("maskFill.isActive", maskData->fill.isActive);
 					}
@@ -300,7 +304,7 @@ void UIRenderingManager::RenderUI(map<int32_t, unordered_map<CanvasData*, map<in
 							if (maskData != nullptr) {
 								// MASK FILL CHECK
 								if (maskData->fill.isActive) {
-									if (maskData->fill.progress == 0.f) {
+									if (maskData->fill.progress - maskData->fill.offset == 0.f) {
 										renderQueue.pop();
 										continue;
 									}
@@ -338,7 +342,7 @@ void UIRenderingManager::RenderUI(map<int32_t, unordered_map<CanvasData*, map<in
 
 							// UI ELEM FILL CHECK
 							if (uiElem.fill.isActive) {
-								if (uiElem.fill.progress == 0.f) {
+								if (uiElem.fill.progress - uiElem.fill.offset == 0.f) {
 									renderQueue.pop();
 									continue;
 								}
@@ -366,7 +370,9 @@ void UIRenderingManager::RenderUI(map<int32_t, unordered_map<CanvasData*, map<in
 							if (uiElem.fill.isActive) {
 								UIElementsBufferStruct.Set(move(concat(elemName, ".fill.type")), (uint)uiElem.fill.type);
 								UIElementsBufferStruct.Set(move(concat(elemName, ".fill.subType")), (uint)uiElem.fill.subType);
+								UIElementsBufferStruct.Set(move(concat(elemName, ".fill.offset")), uiElem.fill.offset);
 								UIElementsBufferStruct.Set(move(concat(elemName, ".fill.progress")), uiElem.fill.progress);
+								UIElementsBufferStruct.Set(move(concat(elemName, ".fill.rotation")), uiElem.fill.rotation);
 							}
 							UIElementsBufferStruct.Set(move(concat(elemName, ".fill.isActive")), uiElem.fill.isActive);
 #if TRACY_PROFILER
@@ -387,8 +393,11 @@ void UIRenderingManager::RenderUI(map<int32_t, unordered_map<CanvasData*, map<in
 						}
 
 						if (i != 0) {
-							//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, UIElementsBufferStruct.GetOffset(vformat(_uiBufforElemFormat, make_format_args(i))), UIElementsBufferStruct.GetData().data());
-							glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, UIElementsBufferStruct.GetSize(), UIElementsBufferStruct.GetData().data());
+							string lastElemName = vformat(_uiBufforElemFormat, make_format_args(i));
+							glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, UIElementsBufferStruct.GetOffset(lastElemName), UIElementsBufferStruct.GetData().data());
+							size_t textureOffset = UIElementsBufferStruct.GetOffset("elementTexture");
+							glBufferSubData(GL_SHADER_STORAGE_BUFFER, textureOffset, TextureOffsets.GetSize(), UIElementsBufferStruct.GetData().data() + textureOffset);
+							//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, UIElementsBufferStruct.GetSize(), UIElementsBufferStruct.GetData().data());
 							glDrawArraysInstanced(GL_POINTS, 0, 1, i);
 						}
 
@@ -435,7 +444,7 @@ void UIRenderingManager::Render(UITextData text)
 
 	UIElementQueueData elem = UIElementQueueData{
 		.rectTransform = text.rectTransform,
-		.fill = { 0, 0, 0.f, false },
+		.fill = { 0, 0, 0.f, 0.f, 0.f, false },
 		.sprite = nullptr,
 		.color = text.color,
 		.isText = true

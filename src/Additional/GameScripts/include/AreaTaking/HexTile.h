@@ -46,6 +46,7 @@ class HexTile : public Twin2Engine::Core::Component
 	void UpdateBorderColor();
 	void UpdateBorders();
 	void CheckRoundPattern();
+	void CheckNeigbhboursRoundPattern();
 public:
 	HexTileTextureData* texturesData;
 	ParticleGenerator* particleGenerator = nullptr;

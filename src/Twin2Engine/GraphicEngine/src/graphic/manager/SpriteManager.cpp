@@ -539,6 +539,14 @@ Sprite* SpriteManager::GetSprite(const string& spriteAlias)
     return GetSprite(_hasher(spriteAlias));
 }
 
+size_t SpriteManager::GetSpriteId(const std::string& spriteAlias)
+{
+	size_t id = _hasher(spriteAlias);
+
+	if (!_spriteAliases.contains(id)) return 0;
+	return id;
+}
+
 std::string SpriteManager::GetSpriteName(size_t spriteId)
 {
 	if (!_spriteAliases.contains(spriteId)) return "";

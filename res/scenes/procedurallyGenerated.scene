@@ -150,36 +150,42 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 24
-    path: res/textures/tiles/pink2.png
+    path: res/textures/pictograms/PopularityGainingSpeedPictogram.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 25
-    path: res/textures/radioTowerBuildingTexture.png
+    path: res/textures/tiles/pink2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 26
-    path: res/textures/UI/player_colour/yellowT.png
+    path: res/textures/radioTowerBuildingTexture.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 27
-    path: res/textures/tiles/blue3.png
+    path: res/textures/UI/player_colour/yellowT.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 28
-    path: res/textures/particle.png
+    path: res/textures/tiles/blue3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 29
+    path: res/textures/particle.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 30
     path: res/textures/UI/concert.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -187,55 +193,61 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 30
+  - id: 31
     path: res/textures/tiles/cyan2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 31
+  - id: 32
     path: res/textures/tiles/red2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 32
+  - id: 33
     path: res/textures/tiles/purple2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 33
+  - id: 34
     path: res/textures/tiles/cyan3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 34
+  - id: 35
     path: res/textures/tiles/tile_regress/cyan1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 35
-    path: res/textures/UI/graph.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
   - id: 36
-    path: res\textures\UI\title2.png
+    path: res/textures/particles/starParticle.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 37
-    path: res/textures/tiles/tile_regress/blue2_2.png
+    path: res/textures/UI/graph.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 38
+    path: res\textures\UI\title2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 39
+    path: res/textures/tiles/tile_regress/blue2_2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 40
     path: res\textures\UI\shape_hexagon.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -243,37 +255,37 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 39
+  - id: 41
     path: res/textures/UI/player_colour/blueB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 40
+  - id: 42
     path: res/textures/tiles/purple1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 41
+  - id: 43
     path: res/textures/carTextures/green.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 42
+  - id: 44
     path: res/textures/UI/player_colour/cyanT.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 43
+  - id: 45
     path: res/textures/UI/player_colour/pinkB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 44
+  - id: 46
     path: res/textures/UI/guitar.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -281,97 +293,103 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 45
+  - id: 47
     path: res/textures/tiles/yellow2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 46
+  - id: 48
     path: res/textures/tiles/tile_regress/red2_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 47
-    path: res/textures/tiles/pink3.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 48
-    path: res/textures/ArrowParticle.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
   - id: 49
-    path: res/textures/mountainTex2.png
+    path: res\textures\white_circle.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 50
-    path: res/textures/tiles/tile_regress/purple2_2.png
+    path: res/textures/tiles/pink3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 51
-    path: res/textures/UI/vs2.png
+    path: res/textures/ArrowParticle.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 52
-    path: res/textures/tiles/purple3.png
+    path: res/textures/mountainTex2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 53
-    path: res/textures/UI/pure_background.png
+    path: res/textures/tiles/tile_regress/purple2_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 54
-    path: res/textures/carTextures/cyan.png
+    path: res/textures/UI/vs2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 55
-    path: res/textures/cityTextureColour.png
+    path: res/textures/tiles/purple3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 56
-    path: res\textures\white.png
+    path: res/textures/UI/pure_background.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 57
-    path: res/textures/tiles/tile_regress/green2_2.png
+    path: res/textures/carTextures/cyan.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 58
-    path: res/textures/tiles/cyan1.png
+    path: res/textures/cityTextureColour.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 59
-    path: res/textures/tiles/red3.png
+    path: res\textures\white.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 60
+    path: res/textures/tiles/tile_regress/green2_2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 61
+    path: res/textures/tiles/cyan1.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 62
+    path: res/textures/tiles/red3.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 63
     path: res/textures/UI/meeting.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -379,13 +397,13 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 61
+  - id: 64
     path: res/textures/UI/player_colour/redB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 62
+  - id: 65
     path: res/textures/UI/launchpad.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -393,43 +411,55 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 63
+  - id: 66
     path: res/textures/UI/player_colour/greenB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 64
+  - id: 67
     path: res/textures/tiles/tile_regress/pink1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 65
+  - id: 68
     path: res/textures/UI/you_lost.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 66
+  - id: 69
+    path: res/textures/particles/blackStarParticle.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 70
     path: res/textures/tiles/blue1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 67
+  - id: 71
+    path: res\textures\UI\arrows.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 72
     path: res/textures/tiles/yellow1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 68
+  - id: 73
     path: res/textures/UI/player_colour/cyanB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 69
+  - id: 74
     path: res/textures/UI/drum.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -437,73 +467,73 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 70
+  - id: 75
     path: res/textures/carTextures/blue.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 71
+  - id: 76
     path: res/textures/tiles/tile_regress/pink2_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 72
+  - id: 77
     path: res/textures/tiles/yellow3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 73
+  - id: 78
     path: res/textures/UI/you_won.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 74
+  - id: 79
     path: res/textures/carTextures/yellow.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 75
+  - id: 80
     path: res\textures\UI\graphArrow.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 76
+  - id: 81
     path: res/textures/tiles/green3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 77
+  - id: 82
     path: res/textures/carTextures/pink.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 78
+  - id: 83
     path: res/textures/tiles/tile_regress/yellow1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 79
+  - id: 84
     path: res/textures/radioTowerTexture.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 80
+  - id: 85
     path: res\textures\UI\pause.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 81
+  - id: 86
     path: res\textures\UI\album.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -511,26 +541,20 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 82
+  - id: 87
     path: res/textures/carTextures/purple.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 83
+  - id: 88
     path: res/textures/tiles/tile_regress/purple1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 84
+  - id: 89
     path: res/textures/UI/player_colour/purpleT.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 85
-    path: res/textures/pictograms/PopularityGainingSpeedPictogram.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
@@ -544,243 +568,285 @@ Sprites:
     width: 200
     height: 540
   - id: 1
+    alias: ArrowLeft
+    texture: 71
+    x: 512
+    y: 0
+    width: 256
+    height: 256
+  - id: 2
     alias: Pause
-    texture: 80
+    texture: 85
     x: 0
     y: 0
     width: 75
     height: 75
-  - id: 2
+  - id: 3
     alias: MiniGame_Red_Back
-    texture: 61
+    texture: 64
     x: 0
     y: 0
     width: 310
     height: 540
-  - id: 3
+  - id: 4
     alias: MiniGame_You_Won
-    texture: 73
+    texture: 78
     x: 0
     y: 0
     width: 750
     height: 540
-  - id: 4
+  - id: 5
     alias: MiniGame_Purple_Back
     texture: 15
     x: 0
     y: 0
     width: 310
     height: 540
-  - id: 5
+  - id: 6
     alias: MiniGame_Red_Top
     texture: 13
     x: 0
     y: 0
     width: 200
     height: 540
-  - id: 6
+  - id: 7
     alias: Launchpad
-    texture: 62
+    texture: 65
     x: 0
     y: 0
     width: 256
     height: 256
-  - id: 7
+  - id: 8
     alias: Fans
-    texture: 60
+    texture: 63
     x: 0
     y: 0
     width: 150
     height: 150
-  - id: 8
-    alias: Drum
-    texture: 69
-    x: 0
-    y: 0
-    width: 256
-    height: 256
   - id: 9
-    alias: Guitar
-    texture: 44
+    alias: Drum
+    texture: 74
     x: 0
     y: 0
     width: 256
     height: 256
   - id: 10
+    alias: Guitar
+    texture: 46
+    x: 0
+    y: 0
+    width: 256
+    height: 256
+  - id: 11
     alias: PerunImage
     texture: 11
     x: 0
     y: 0
     width: 664
     height: 742
-  - id: 11
-    alias: MiniGame_VS
-    texture: 51
-    x: 0
-    y: 0
-    width: 640
-    height: 540
   - id: 12
-    alias: MiniGame_You_Lost
-    texture: 65
+    alias: MiniGame_VS
+    texture: 54
     x: 0
     y: 0
     width: 750
     height: 540
   - id: 13
+    alias: ArrowDown
+    texture: 71
+    x: 256
+    y: 0
+    width: 256
+    height: 256
+  - id: 14
+    alias: MiniGame_You_Lost
+    texture: 68
+    x: 0
+    y: 0
+    width: 640
+    height: 540
+  - id: 15
+    alias: CityPictogram
+    texture: 24
+    x: 0
+    y: 0
+    width: 64
+    height: 64
+  - id: 16
     alias: MiniGame_Purple_Top
-    texture: 84
+    texture: 89
     x: 0
     y: 0
     width: 200
     height: 540
-  - id: 14
+  - id: 17
     alias: ButtonFrame
     texture: 8
     x: 0
     y: 0
     width: 144
     height: 153
-  - id: 15
+  - id: 18
     alias: MiniGame_Yellow_Top
-    texture: 26
+    texture: 27
     x: 0
     y: 0
     width: 200
     height: 540
-  - id: 16
+  - id: 19
     alias: MiniGame_Title
-    texture: 36
+    texture: 38
     x: 0
     y: 0
     width: 640
     height: 100
-  - id: 17
+  - id: 20
+    alias: ArrowRight
+    texture: 71
+    x: 768
+    y: 0
+    width: 256
+    height: 256
+  - id: 21
     alias: MiniGame_Cyan_Top
-    texture: 42
+    texture: 44
     x: 0
     y: 0
     width: 200
     height: 540
-  - id: 18
+  - id: 22
     alias: HexagonSprite
-    texture: 38
+    texture: 40
     x: 0
     y: 0
     width: 256
     height: 256
-  - id: 19
+  - id: 23
     alias: MiniGame_Pink_Top
     texture: 22
     x: 0
     y: 0
     width: 200
     height: 540
-  - id: 20
+  - id: 24
     alias: GraphArrow
-    texture: 75
+    texture: 80
     x: 0
     y: 0
     width: 72
     height: 100
-  - id: 21
+  - id: 25
     alias: Concert
-    texture: 29
+    texture: 30
     x: 0
     y: 0
     width: 256
     height: 256
-  - id: 22
+  - id: 26
     alias: Abilities
     texture: 12
     x: 0
     y: 0
     width: 800
     height: 225
-  - id: 23
+  - id: 27
     alias: MiniGame_Cyan_Back
-    texture: 68
+    texture: 73
     x: 0
     y: 0
     width: 310
     height: 540
-  - id: 24
+  - id: 28
     alias: MiniGame_Background
-    texture: 53
+    texture: 56
     x: 0
     y: 0
     width: 640
     height: 540
-  - id: 25
+  - id: 29
     alias: MiniGame_Yellow_Back
     texture: 14
     x: 0
     y: 0
     width: 310
     height: 540
-  - id: 26
+  - id: 30
     alias: MiniGame_Green_Top
     texture: 16
     x: 0
     y: 0
     width: 200
     height: 540
-  - id: 27
-    alias: MiniGame_Blue_Back
-    texture: 39
-    x: 0
-    y: 0
-    width: 310
-    height: 540
-  - id: 28
-    alias: MiniGame_Green_Back
-    texture: 63
-    x: 0
-    y: 0
-    width: 310
-    height: 540
-  - id: 29
-    alias: Album
-    texture: 81
-    x: 0
-    y: 0
-    width: 256
-    height: 256
-  - id: 30
-    alias: White_Box
-    texture: 56
-    x: 0
-    y: 0
-    width: 100
-    height: 100
   - id: 31
-    alias: MiniGame_StrengthGraph
-    texture: 35
+    alias: MiniGame_Blue_Back
+    texture: 41
     x: 0
     y: 0
-    width: 256
-    height: 256
+    width: 310
+    height: 540
   - id: 32
-    alias: MiniGame_Pink_Back
-    texture: 43
+    alias: MiniGame_Green_Back
+    texture: 66
     x: 0
     y: 0
     width: 310
     height: 540
   - id: 33
+    alias: Album
+    texture: 86
+    x: 0
+    y: 0
+    width: 256
+    height: 256
+  - id: 34
+    alias: PopularityGainingSpeedPictogram
+    texture: 24
+    x: 0
+    y: 0
+    width: 64
+    height: 64
+  - id: 35
+    alias: White_Circle
+    texture: 49
+    x: 0
+    y: 0
+    width: 100
+    height: 100
+  - id: 36
+    alias: White_Box
+    texture: 59
+    x: 0
+    y: 0
+    width: 100
+    height: 100
+  - id: 37
+    alias: MiniGame_StrengthGraph
+    texture: 37
+    x: 0
+    y: 0
+    width: 256
+    height: 256
+  - id: 38
+    alias: MiniGame_Pink_Back
+    texture: 45
+    x: 0
+    y: 0
+    width: 310
+    height: 540
+  - id: 39
     alias: JutrzenkaImage
     texture: 5
     x: 0
     y: 0
     width: 727
     height: 726
-  - id: 34
-    alias: PopularityGainingSpeedPictogram
-    texture: 85
+  - id: 40
+    alias: ArrowUp
+    texture: 71
     x: 0
     y: 0
-    width: 64
-    height: 64
+    width: 256
+    height: 256
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
@@ -1151,11 +1217,11 @@ GameObjects:
         enabled: true
         type: PlaneGenerator
         isTransparent: true
-        transparencyPriority: -1
         rows: 82
         columns: 82
         materials:
           - 9
+        transparencyPriority: -1
     children:
       []
   - id: 5
@@ -1280,7 +1346,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 22
+        sprite: 26
         color:
           x: 1
           y: 1
@@ -1325,7 +1391,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 14
+        sprite: 17
         color:
           x: 1
           y: 1
@@ -1363,7 +1429,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 30
+        sprite: 36
         color:
           x: 1
           y: 1
@@ -1433,7 +1499,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 7
+        sprite: 8
         color:
           x: 1
           y: 1
@@ -1447,7 +1513,7 @@ GameObjects:
         fillSubType: !<CW> 0
         fillProgress: 1
     children:
-     []
+      []
   - id: 26
     name: FansCost
     isStatic: false
@@ -1514,7 +1580,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 14
+        sprite: 17
         color:
           x: 1
           y: 1
@@ -1552,7 +1618,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 30
+        sprite: 36
         color:
           x: 1
           y: 1
@@ -1622,7 +1688,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 21
+        sprite: 25
         color:
           x: 1
           y: 1
@@ -1636,7 +1702,45 @@ GameObjects:
         fillSubType: !<CW> 0
         fillProgress: 1
     children:
-      - 84
+      - 90
+  - id: 90
+    name: PopularityGainingPictogram
+    isStatic: false
+    isActive: true
+    transform:
+      id: 167
+      position:
+        x: 80
+        y: 80
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 168
+        enabled: true
+        type: Image
+        isTransparent: true
+        sprite: 36
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 64
+        height: 64
+        layer: 0
+        fillEnabled: false
+        fillType: !<2> 2
+        fillSubType: !<CW> 0
+        fillProgress: 0
+    children:
+      []
   - id: 29
     name: ConcertCost
     isStatic: false
@@ -1703,7 +1807,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 14
+        sprite: 17
         color:
           x: 1
           y: 1
@@ -1741,7 +1845,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 30
+        sprite: 36
         color:
           x: 1
           y: 1
@@ -1811,7 +1915,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 29
+        sprite: 33
         color:
           x: 1
           y: 1
@@ -1868,7 +1972,7 @@ GameObjects:
         overflow: !<Overflow> 0
         layer: 1
     children:
-     - 83
+      - 83
   - id: 83
     name: NegativeMoneyText
     isStatic: false
@@ -2021,7 +2125,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 30
+        sprite: 36
         color:
           x: 0.196911216
           y: 0.196911216
@@ -2038,7 +2142,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 30
+        sprite: 36
         color:
           x: 0.35135138
           y: 0.35135138
@@ -2059,6 +2163,7 @@ GameObjects:
     children:
       - 63
       - 64
+      - 91
   - id: 63
     name: CurrentBonusBar
     isStatic: false
@@ -2082,7 +2187,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 30
+        sprite: 36
         color:
           x: 1
           y: 0
@@ -2120,7 +2225,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 30
+        sprite: 36
         color:
           x: 1
           y: 0
@@ -2135,14 +2240,14 @@ GameObjects:
         fillProgress: 0.209999993
     children:
       []
-  - id: 40
-    name: RadioStationPlayingManager
+  - id: 91
+    name: PopularityGainingPictogram
     isStatic: false
-    isActive: false
+    isActive: true
     transform:
-      id: 92
+      id: 169
       position:
-        x: 0
+        x: -180
         y: 0
         z: 0
       scale:
@@ -2154,333 +2259,29 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 93
+      - id: 170
         enabled: true
         type: Image
-        isTransparent: false
-        sprite: 19
+        isTransparent: true
+        sprite: 36
         color:
           x: 1
           y: 1
           z: 1
           w: 1
-        width: 800
-        height: 600
-        layer: 1
+        width: 64
+        height: 64
+        layer: 0
         fillEnabled: false
-        fillType: !<0> 0
-        fillSubType: !<LEFT> 0
-        fillProgress: 1
-      - id: 94
-        enabled: true
-        type: RadioStationPlayingController
-        generatedNotesNumber: 4
-        notesAreaWidth: 600
-        notesAreaHeight: 200
-        timeLimit: 5
-        resultShowingTime: 2
-        correctColor:
-          x: 0
-          y: 1
-          z: 0
-          w: 1
-        wrongColor:
-          x: 1
-          y: 0
-          z: 0
-          w: 1
-        notesSpritesIds:
-          - 18
-          - 8
-          - 31
-          - 11
-        resultsSpritesIds:
-          - 296908453414783681
-          - 296908453414783681
-        resultsThresholds:
-          - 0.5
-          - 1
-        buttonDo: 97
-        buttonRe: 100
-        buttonMi: 103
-        buttonFa: 106
-        resultImage: 110
-        remainingTimeTextTimer: 108
-    children:
-      - 41
-      - 42
-      - 43
-      - 44
-      - 45
-  - id: 41
-    name: buttonDo
-    isStatic: false
-    isActive: false
-    transform:
-      id: 95
-      position:
-        x: 0
-        y: -225
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 96
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 18
-        color:
-          x: 1
-          y: 0
-          z: 0
-          w: 1
-        width: 100
-        height: 100
-        layer: 3
-        fillEnabled: false
-        fillType: !<0> 0
-        fillSubType: !<LEFT> 0
-        fillProgress: 1
-      - id: 97
-        enabled: true
-        type: Button
-        width: 100
-        height: 100
-        interactable: true
-        onHoverPresetEvents: false
-        playAudioOnClick: false
-    children:
-      []
-  - id: 42
-    name: buttonRe
-    isStatic: false
-    isActive: false
-    transform:
-      id: 98
-      position:
-        x: -100
-        y: -125
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 99
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 8
-        color:
-          x: 1
-          y: 1
-          z: 0
-          w: 1
-        width: 100
-        height: 100
-        layer: 3
-        fillEnabled: false
-        fillType: !<0> 0
-        fillSubType: !<LEFT> 0
-        fillProgress: 1
-      - id: 100
-        enabled: true
-        type: Button
-        width: 100
-        height: 100
-        interactable: true
-        onHoverPresetEvents: false
-        playAudioOnClick: false
-    children:
-      []
-  - id: 43
-    name: buttonMi
-    isStatic: false
-    isActive: false
-    transform:
-      id: 101
-      position:
-        x: 100
-        y: -125
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 102
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 31
-        color:
-          x: 0
-          y: 1
-          z: 1
-          w: 1
-        width: 100
-        height: 100
-        layer: 3
-        fillEnabled: false
-        fillType: !<0> 0
-        fillSubType: !<LEFT> 0
-        fillProgress: 1
-      - id: 103
-        enabled: true
-        type: Button
-        width: 100
-        height: 100
-        interactable: true
-        onHoverPresetEvents: false
-        playAudioOnClick: false
-    children:
-      []
-  - id: 44
-    name: buttonFa
-    isStatic: false
-    isActive: false
-    transform:
-      id: 104
-      position:
-        x: 0
-        y: -25
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 105
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 11
-        color:
-          x: 1
-          y: 0
-          z: 1
-          w: 1
-        width: 100
-        height: 100
-        layer: 3
-        fillEnabled: false
-        fillType: !<0> 0
-        fillSubType: !<LEFT> 0
-        fillProgress: 1
-      - id: 106
-        enabled: true
-        type: Button
-        width: 100
-        height: 100
-        interactable: true
-        onHoverPresetEvents: false
-        playAudioOnClick: false
-    children:
-      []
-  - id: 45
-    name: RemainingTimeTimer
-    isStatic: false
-    isActive: false
-    transform:
-      id: 107
-      position:
-        x: 0
-        y: -100
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 108
-        enabled: true
-        type: Text
-        isTransparent: false
-        text: "\x000"
-        font: 1
-        size: 100
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 150
-        height: 100
-        color:
-          x: 0
-          y: 0
-          z: 0
-          w: 1
-        alignX: !<CENTER> 1
-        alignY: !<BOTTOM> 0
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 6
-    children:
-      []
-  - id: 46
-    name: ResultImage
-    isStatic: false
-    isActive: false
-    transform:
-      id: 109
-      position:
-        x: 0
-        y: 0
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 110
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 30
-        color:
-          x: 1
-          y: 0
-          z: 0
-          w: 1
-        width: 100
-        height: 100
-        layer: 3
-        fillEnabled: false
-        fillType: !<0> 0
-        fillSubType: !<LEFT> 0
-        fillProgress: 1
+        fillType: !<2> 2
+        fillSubType: !<CW> 0
+        fillProgress: 0
     children:
       []
   - id: 61
     name: PaperRockScissorCanvas
     isStatic: false
-    isActive: false
+    isActive: true
     transform:
       id: 143
       position:
@@ -2573,7 +2374,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 24
+        sprite: 28
         color:
           x: 1
           y: 1
@@ -2611,7 +2412,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 16
+        sprite: 19
         color:
           x: 1
           y: 1
@@ -2649,7 +2450,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 3
+        sprite: 4
         color:
           x: 1
           y: 1
@@ -2687,7 +2488,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 12
+        sprite: 14
         color:
           x: 1
           y: 1
@@ -2725,7 +2526,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 2
+        sprite: 3
         color:
           x: 1
           y: 1
@@ -2763,7 +2564,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 27
+        sprite: 31
         color:
           x: 1
           y: 1
@@ -2801,7 +2602,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 6
+        sprite: 7
         color:
           x: 1
           y: 1
@@ -2871,7 +2672,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 9
+        sprite: 10
         color:
           x: 1
           y: 1
@@ -2941,7 +2742,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 8
+        sprite: 9
         color:
           x: 1
           y: 1
@@ -3011,7 +2812,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 31
+        sprite: 37
         color:
           x: 1
           y: 1
@@ -3049,7 +2850,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 20
+        sprite: 24
         color:
           x: 1
           y: 1
@@ -3087,7 +2888,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 20
+        sprite: 24
         color:
           x: 1
           y: 1
@@ -3125,7 +2926,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 20
+        sprite: 24
         color:
           x: 1
           y: 1
@@ -3388,7 +3189,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 30
+        sprite: 36
         color:
           x: 0
           y: 0
@@ -3426,7 +3227,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 30
+        sprite: 36
         color:
           x: 1
           y: 1
@@ -3501,7 +3302,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 10
+        sprite: 11
         color:
           x: 1
           y: 1
@@ -3625,7 +3426,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 30
+        sprite: 36
         color:
           x: 0.0734632313
           y: 0
@@ -3663,7 +3464,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 30
+        sprite: 36
         color:
           x: 1
           y: 1
@@ -3738,7 +3539,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 33
+        sprite: 39
         color:
           x: 1
           y: 1
@@ -3899,7 +3700,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 30
+        sprite: 36
         color:
           x: 1
           y: 1
@@ -3974,7 +3775,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 10
+        sprite: 11
         color:
           x: 1
           y: 1
@@ -4098,7 +3899,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 30
+        sprite: 36
         color:
           x: 0.576470613
           y: 0
@@ -4136,7 +3937,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 30
+        sprite: 36
         color:
           x: 1
           y: 1
@@ -4211,7 +4012,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 10
+        sprite: 11
         color:
           x: 1
           y: 1
@@ -4335,7 +4136,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 30
+        sprite: 36
         color:
           x: 0.0745098069
           y: 0
@@ -4372,8 +4173,8 @@ GameObjects:
       - id: 5514
         enabled: true
         type: Image
-        isTransparent: false
-        sprite: 30
+        isTransparent: true
+        sprite: 36
         color:
           x: 1
           y: 1
@@ -4448,7 +4249,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 33
+        sprite: 39
         color:
           x: 1
           y: 1
@@ -4572,7 +4373,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 30
+        sprite: 36
         color:
           x: 0.486274511
           y: 0
@@ -4610,7 +4411,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 30
+        sprite: 36
         color:
           x: 1
           y: 1
@@ -4685,7 +4486,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 10
+        sprite: 11
         color:
           x: 1
           y: 1
@@ -4809,7 +4610,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 30
+        sprite: 36
         color:
           x: 0.576470613
           y: 0
@@ -4868,14 +4669,14 @@ GameObjects:
     children:
       []
   - id: 84
-    name: PopularityGainingPictogram
+    name: RadioStationCanvas
     isStatic: false
     isActive: true
     transform:
-      id: 167
+      id: 5383
       position:
-        x: 80
-        y: 80
+        x: 0
+        y: 0
         z: 0
       scale:
         x: 1
@@ -4886,34 +4687,538 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 168
+      - id: 5384
+        enabled: true
+        type: Canvas
+        layer: 1
+        size:
+          x: 1920
+          y: 1080
+        worldSpace: false
+      - id: 5385
+        enabled: true
+        type: RadioStationPlayingController
+        generatedNotesNumber: 4
+        notesAreaWidth: 100
+        notesAreaHeight: 100
+        timeLimit: 5
+        resultShowingTime: 1.5
+        timeChangeColorPercent: 25
+        correctNoteColor:
+          x: 0
+          y: 1
+          z: 0.34117648
+          w: 1
+        wrongNoteColor:
+          x: 1
+          y: 0.141176477
+          z: 0.141176477
+          w: 1
+        notesSpritesIds:
+          - 40
+          - 20
+          - 13
+          - 1
+        resultTextObjectId: 85
+        remainingTimeTextId: 5401
+        notesAreaImageId: 5403
+        buttonUp: 5393
+        buttonRight: 5395
+        buttonDown: 5397
+        buttonLeft: 5399
+    children:
+      - 40
+      - 41
+      - 42
+      - 43
+      - 44
+      - 45
+      - 46
+      - 85
+  - id: 40
+    name: Background
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5386
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5387
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 34
+        sprite: 36
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.564705908
+        width: 1920
+        height: 1080
+        layer: 0
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+    children:
+      []
+  - id: 41
+    name: ButtonUp
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5388
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 0.5
+        y: 0.5
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5392
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 40
         color:
           x: 1
           y: 1
           z: 1
           w: 1
-        width: 64
-        height: 64
-        layer: 0
+        width: 256
+        height: 256
+        layer: 1
         fillEnabled: false
-        fillType: !<2> 2
-        fillSubType: !<CW> 0
-        fillProgress: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5393
+        enabled: true
+        type: Button
+        width: 256
+        height: 256
+        interactable: true
+        onHoverPresetEvents: false
+        playAudioOnClick: false
+    children:
+      - 86
+  - id: 86
+    name: ButtonUpShortcut
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5625
+      position:
+        x: 0
+        y: -145
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5626
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00W"
+        font: 1
+        size: 120
+        autoSize: true
+        minSize: 10
+        maxSize: 120
+        width: 256
+        height: 50
+        color:
+          x: 0.852253318
+          y: 1
+          z: 0.277992249
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 42
+    name: ButtonRight
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5389
+      position:
+        x: 125
+        y: -125
+        z: 0
+      scale:
+        x: 0.5
+        y: 0.5
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5394
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 20
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 256
+        height: 256
+        layer: 1
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5395
+        enabled: true
+        type: Button
+        width: 256
+        height: 256
+        interactable: true
+        onHoverPresetEvents: false
+        playAudioOnClick: false
+    children:
+      - 88
+  - id: 88
+    name: ButtonRightShortcut
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5628
+      position:
+        x: -145
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5631
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00D"
+        font: 1
+        size: 120
+        autoSize: true
+        minSize: 10
+        maxSize: 120
+        width: 256
+        height: 50
+        color:
+          x: 0.204633176
+          y: 1
+          z: 0.438022494
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 43
+    name: ButtonDown
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5390
+      position:
+        x: 0
+        y: -250
+        z: 0
+      scale:
+        x: 0.5
+        y: 0.5
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5396
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 13
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 256
+        height: 256
+        layer: 1
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5397
+        enabled: true
+        type: Button
+        width: 256
+        height: 256
+        interactable: true
+        onHoverPresetEvents: false
+        playAudioOnClick: false
+    children:
+      - 89
+  - id: 89
+    name: ButtonDownShortcut
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5629
+      position:
+        x: 0
+        y: 145
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5630
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00S"
+        font: 1
+        size: 120
+        autoSize: true
+        minSize: 10
+        maxSize: 120
+        width: 256
+        height: 50
+        color:
+          x: 0.709679186
+          y: 0.208494186
+          z: 1
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 44
+    name: ButtonLeft
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5391
+      position:
+        x: -125
+        y: -125
+        z: 0
+      scale:
+        x: 0.5
+        y: 0.5
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5398
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 1
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 256
+        height: 256
+        layer: 1
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
+      - id: 5399
+        enabled: true
+        type: Button
+        width: 256
+        height: 256
+        interactable: true
+        onHoverPresetEvents: false
+        playAudioOnClick: false
+    children:
+      - 87
+  - id: 87
+    name: ButtonLeftShortcut
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5627
+      position:
+        x: 145
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5632
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00A"
+        font: 1
+        size: 120
+        autoSize: true
+        minSize: 10
+        maxSize: 120
+        width: 256
+        height: 50
+        color:
+          x: 0.239382267
+          y: 0.674020946
+          z: 1
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
+    children:
+      []
+  - id: 45
+    name: RemainingTimeText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5400
+      position:
+        x: 0
+        y: 375
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5401
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x000\x00.\x000\x000\x00s"
+        font: 1
+        size: 50
+        autoSize: true
+        minSize: 10
+        maxSize: 50
+        width: 256
+        height: 128
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 46
+    name: NotesArea
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5402
+      position:
+        x: 0
+        y: 205
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5403
+        enabled: true
+        type: Image
+        isTransparent: true
+        sprite: 36
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 0
+        width: 620
+        height: 200
+        layer: 1
+        fillEnabled: false
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
     children:
       []
   - id: 85
-    name: PopularityGainingPictogram
+    name: ResultTextObject
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
-      id: 169
+      id: 5404
       position:
-        x: 400
-        y: -371
+        x: 0
+        y: 205
         z: 0
       scale:
         x: 1
@@ -4924,22 +5229,44 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 170
+      - id: 5405
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x004\x00/\x004"
+        font: 1
+        size: 150
+        autoSize: true
+        minSize: 10
+        maxSize: 150
+        width: 620
+        height: 128
+        color:
+          x: 0
+          y: 1
+          z: 0.34117648
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 3
+      - id: 5406
         enabled: true
         type: Image
-        isTransparent: true
-        sprite: 34
+        isTransparent: false
+        sprite: 36
         color:
-          x: 1
-          y: 1
-          z: 1
+          x: 0.030888021
+          y: 0.030888021
+          z: 0.030888021
           w: 1
-        width: 64
-        height: 64
-        layer: 0
+        width: 270
+        height: 140
+        layer: 2
         fillEnabled: false
-        fillType: !<2> 2
-        fillSubType: !<CW> 0
-        fillProgress: 0
+        fillType: !<0> 0
+        fillSubType: !<LEFT> 0
+        fillProgress: 1
     children:
       []

@@ -20,6 +20,7 @@ SO_SERIALIZE_FIELD(heightRangeFacor)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(SectorGeneratorForRegionsByKMeans, AMapElementGenerator)
+SO_DESERIALIZE_FIELD_R("sectorPrefab", prefabPath)
 SO_DESERIALIZE_FIELD_F_T(sectorPrefab, PrefabManager::LoadPrefab, string)
 SO_DESERIALIZE_FIELD(sectorsCount)
 SO_DESERIALIZE_FIELD(isDiscritizedHeight)
@@ -47,8 +48,21 @@ void SectorGeneratorForRegionsByKMeans::Generate(HexagonalTilemap* tilemap)
         {
             if (!cluster.empty()) 
             {
-                MapSector* sector = SceneManager::CreateGameObject(sectorPrefab, tilemap->GetTransform())->GetComponent<MapSector>();
-                //MapSector* sector = GameObject::Instantiate(sectorPrefab, tilemap->GetTransform())->GetComponent<MapSector>();
+                MapSector* sector = nullptr;
+                if (PrefabManager::GetPrefab(sectorPrefab->GetId()) != nullptr) {
+                    sector = SceneManager::CreateGameObject(sectorPrefab, tilemap->GetTransform())->GetComponent<MapSector>();
+                }
+                else {
+
+                    if (prefabPath != "") {
+                        sectorPrefab = PrefabManager::LoadPrefab(prefabPath);
+                        sector = SceneManager::CreateGameObject(sectorPrefab, tilemap->GetTransform())->GetComponent<MapSector>();
+                    }
+                    else {
+                        sector = std::get<1>(SceneManager::CreateGameObject<MapSector>(tilemap->GetTransform()));
+                    }
+                }
+
                 sector->tilemap = tilemap;
                 sector->region = region;
 

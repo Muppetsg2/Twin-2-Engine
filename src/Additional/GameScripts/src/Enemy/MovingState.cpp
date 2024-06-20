@@ -248,7 +248,6 @@ void MovingState::Move(Enemy* enemy)
 	enemy->ChangeState(&enemy->_movingState);
 }
 
-// TODO: Zmieniæ ChooseTile (Dodaæ ochronê przed 0 mo¿liwoœciami)
 void MovingState::ChooseTile(Enemy* enemy)
 {
 	vec3 globalPosition = enemy->GetTransform()->GetGlobalPosition();
@@ -256,8 +255,8 @@ void MovingState::ChooseTile(Enemy* enemy)
 
 	vec3 tilePosition;
 
-	vector<HexTile*> possible;
-	possible.reserve((1 + enemy->_movement->maxSteps) * enemy->_movement->maxSteps * 3);
+	// priority (distance from own tiles)
+	map<float, vector<HexTile*>> possible;
 
 	size_t size = GameManager::instance->Tiles.size();
 	float maxRadius = enemy->GetMaxRadius();
@@ -279,18 +278,24 @@ void MovingState::ChooseTile(Enemy* enemy)
 				}
 			}
 			
-			if (distance <= maxRadius && dist <= enemy->_tilemap->GetDistanceBetweenTiles() * 2.f)
+			if (distance <= maxRadius)
 			{
-				possible.push_back(GameManager::instance->Tiles[index]);
+				if (!possible.contains(dist)) possible[dist] = vector<HexTile*>();
+				possible[dist].push_back(GameManager::instance->Tiles[index]);
 			}
 		}
 	}
 
 	SPDLOG_INFO("ENEMY Possible Size: {}", possible.size());
 	if (possible.size() != 0) {
-		HexTile* result = possible[Random::Range(0ull, possible.size() - 1ull)];
+		for (auto& possiblePair : possible) {
+			HexTile* result = possiblePair.second[Random::Range(0ull, possiblePair.second.size() - 1ull)];
 
-		enemy->SetMoveDestination(result);
+			enemy->SetMoveDestination(result);
+		}
+	}
+	else {
+		StartTakingOver(enemy);
 	}
 }
 

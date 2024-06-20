@@ -42,11 +42,11 @@ uniform float constantDepthOfField;
 vec3 applyVignette(vec3 color) {
     vec2 position = TexCoord.xy - vec2(0.5);  
     float dist = length(position * 2);
-    vec3 tintColor = vec3(0.0, 0.0, 0.0);
+    vec3 tintColor = vec3(0.3, 0.3, 0.3);
     //float dist = length(position * vec2(windowSize.x / windowSize.y, 1.0));
 
-    float radius = 0.7;
-    float softness = 0.5;
+    float radius = 0.1;
+    float softness = 0.6;
     float vignette = 1.0 - smoothstep(radius, radius + softness, dist);
 
     vec3 displayColor = color * vignette;

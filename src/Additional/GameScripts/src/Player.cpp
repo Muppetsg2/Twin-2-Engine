@@ -477,6 +477,12 @@ void Player::AlbumCall() {
         _albumButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
         UseAlbum();
 
+        for (HexTile* tile : OwnTiles)
+        {
+            tile->EnableAlbumAffected();
+        }
+        _isShowingAlbumPossible = true;
+
         _albumButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
         _albumButtonFrameImage->SetSprite(_spriteButtonStep1);
     }

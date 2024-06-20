@@ -39,7 +39,7 @@ float GIF::GetDelay(size_t frameIdx) const
 	return _delays[frameIdx];
 }
 
-const Texture2D* const GIF::GetFrameTexture(size_t frameIdx) const
+Texture2D* GIF::GetFrameTexture(size_t frameIdx) const
 {
 	if (_frames.size() == 0 || _textures.size() == 0) return nullptr;
 

@@ -489,15 +489,26 @@ void UIRenderingManager::Render(UIImageData image)
 	_screenSpaceRenderQueue[0][image.canvas][image.layer][image.mask][texture].push(elem);
 }
 
-void UIRenderingManager::Render(UIRectData rectTransform, Texture2D* texture)
+void UIRenderingManager::Render(UIElementData data, FillData fill, Texture2D* texture)
 {
+	if (data.color.a == 0.f) return;
+
 	UIElementQueueData elem = UIElementQueueData{
-		.rectTransform = rectTransform,
-		.fill = { 0, 0, 0.f, 0.f, 0.f, false },
+		.rectTransform = data.rectTransform,
+		.fill = fill,
 		.sprite = nullptr,
-		.color = glm::vec4(1.f),
+		.color = data.color,
 		.isText = false
 	};
 
-	_screenSpaceRenderQueue[0][nullptr][0][nullptr][texture].push(elem);
+	if (data.canvas != nullptr) {
+		if (data.canvas->worldSpaceCanvas) {
+			_worldSpaceRenderQueue[data.canvas->layer][data.canvas][data.layer][data.mask][texture].push(elem);
+			return;
+		}
+
+		_screenSpaceRenderQueue[data.canvas->layer][data.canvas][data.layer][data.mask][texture].push(elem);
+		return;
+	}
+	_screenSpaceRenderQueue[0][data.canvas][data.layer][data.mask][texture].push(elem);
 }

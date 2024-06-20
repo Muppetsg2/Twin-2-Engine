@@ -26,7 +26,7 @@ namespace Twin2Engine {
 			size_t GetManagerId() const;
 			glm::uvec2 GetSize() const;
 			float GetDelay(size_t frameIdx) const;
-			const Texture2D* const GetFrameTexture(size_t frameIdx) const;
+			Texture2D* GetFrameTexture(size_t frameIdx) const;
 			size_t GetFramesCount() const;
 		};
 	}

@@ -18,6 +18,7 @@ namespace Twin2Engine::Manager {
 		static std::map<size_t, size_t> _texturesIds;
 		static std::map<size_t, size_t> _spritesIds;
 		static std::map<size_t, size_t> _fontsIds;
+		static std::map<size_t, size_t> _gifsIds;
 		static std::map<size_t, size_t> _audiosIds;
 		static std::map<size_t, size_t> _materialsIds;
 		static std::map<size_t, size_t> _modelsIds;
@@ -135,6 +136,7 @@ namespace Twin2Engine::Manager {
 		static size_t GetTexture2D(size_t loadIdx);
 		static size_t GetSprite(size_t loadIdx);
 		static size_t GetFont(size_t loadIdx);
+		static size_t GetGIF(size_t loadIdx);
 		static size_t GetAudio(size_t loadIdx);
 		static size_t GetMaterial(size_t loadIdx);
 		static size_t GetModel(size_t loadIdx);
@@ -143,6 +145,7 @@ namespace Twin2Engine::Manager {
 		static size_t GetTexture2DSaveIdx(size_t texId);
 		static size_t GetSpriteSaveIdx(size_t spriteId);
 		static size_t GetFontSaveIdx(size_t fontId);
+		static size_t GetGIFSaveIdx(size_t gifId);
 		static size_t GetAudioSaveIdx(size_t audioId);
 		static size_t GetMaterialSaveIdx(size_t materialId);
 		static size_t GetModelSaveIdx(size_t modelId);

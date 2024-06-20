@@ -16,7 +16,6 @@
 #include <GameTimer.h>
 
 #include <ParticleSystemsController.h>
-//#include <pch.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;
@@ -25,6 +24,7 @@ class MiniGameManager;
 class HexTile;
 class PlayerInterface;
 class Player;
+class Enemy;
 
 namespace Generation {
     class MapHexTile;

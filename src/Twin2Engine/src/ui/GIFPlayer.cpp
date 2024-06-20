@@ -43,6 +43,17 @@ void GIFPlayer::Initialize()
 		_data.rectTransform.transform = t->GetTransformMatrix();
 	});
 	SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
+
+	if (_autoPlay && !_paused) {
+		Play();
+	}
+}
+
+void GIFPlayer::OnEnable()
+{
+	if (_autoPlay && !_paused) {
+		Play();
+	}
 }
 
 void GIFPlayer::Update()
@@ -103,6 +114,9 @@ void GIFPlayer::SetGIF(size_t gifId)
 	if (_gifId != gifId) {
 		_gifId = gifId;
 		Stop();
+		if (_autoPlay) {
+			Play();
+		}
 	}
 }
 
@@ -175,6 +189,13 @@ void GIFPlayer::Loop(bool loop)
 	}
 }
 
+void GIFPlayer::AutoPlay(bool autoPlay)
+{
+	if (_autoPlay != autoPlay) {
+		_autoPlay = autoPlay;
+	}
+}
+
 bool GIFPlayer::IsPlaying() const
 {
 	return _playing && !_paused;
@@ -193,6 +214,11 @@ bool GIFPlayer::IsPaused() const
 bool GIFPlayer::IsLooped() const
 {
 	return _looped;
+}
+
+bool GIFPlayer::HasAutoPlay() const
+{
+	return _autoPlay;
 }
 
 YAML::Node GIFPlayer::Serialize() const
@@ -228,6 +254,9 @@ YAML::Node GIFPlayer::Serialize() const
 	node["fillSubType"].SetTag(toString(_fillData.subType));
 	node["fillOffset"] = _fillData.offset;
 	node["fillProgress"] = _fillData.progress;
+
+	node["loop"] = _looped;
+	node["autoPlay"] = _autoPlay;
 
 	return node;
 }
@@ -281,6 +310,14 @@ bool GIFPlayer::Deserialize(const YAML::Node& node)
 	if (node["fillProgress"])
 		_fillData.progress = node["fillProgress"].as<float>();
 	goodData = goodData && node["fillProgress"];
+
+	if (node["loop"])
+		_looped = node["loop"].as<bool>();
+	goodData = goodData && node["loop"];
+
+	if (node["autoPlaye"])
+		_autoPlay = node["autoPlay"].as<bool>();
+	goodData = goodData && node["autoPlay"];
 
 	return goodData;
 }
@@ -369,6 +406,11 @@ void GIFPlayer::DrawEditor()
 		bool b = _looped;
 		if (ImGui::Checkbox(string("Loop##").append(id).c_str(), &b)) {
 			Loop(b);
+		}
+
+		b = _autoPlay;
+		if (ImGui::Checkbox(string("Auto Play##").append(id).c_str(), &b)) {
+			AutoPlay(b);
 		}
 
 		/*

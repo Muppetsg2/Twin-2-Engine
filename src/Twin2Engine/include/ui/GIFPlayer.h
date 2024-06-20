@@ -28,6 +28,7 @@ namespace Twin2Engine::UI {
 		bool _playing = false;
 		bool _paused = false;
 		bool _looped = true;
+		bool _autoPlay = true;
 
 		float _currTime = 0.f;
 		size_t _imgIdx = 0;
@@ -40,6 +41,7 @@ namespace Twin2Engine::UI {
 		void SetCanvas(Canvas* canvas);
 	public:
 		virtual void Initialize();
+		virtual void OnEnable();
 		virtual void Update();
 		virtual void Render();
 		virtual void OnDestroy();
@@ -60,11 +62,13 @@ namespace Twin2Engine::UI {
 		void Stop();
 		void Pause();
 		void Loop(bool loop = true);
+		void AutoPlay(bool autoPlay = true);
 
 		bool IsPlaying() const;
 		bool IsStopped() const;
 		bool IsPaused() const;
 		bool IsLooped() const;
+		bool HasAutoPlay() const;
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;

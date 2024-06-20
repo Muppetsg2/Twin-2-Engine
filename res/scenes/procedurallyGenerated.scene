@@ -669,7 +669,7 @@ Sprites:
     texture: 69
     x: 0
     y: 0
-    width: 640
+    width: 750
     height: 540
   - id: 15
     alias: CityPictogram
@@ -1049,7 +1049,7 @@ Prefabs:
   - id: 1
     path: ""
   - id: 2
-    path: res\prefabs\AreaTakenGraphTopHexagon.prefab
+    path: res/prefabs/AreaTakenGraphTopHexagon.prefab
   - id: 3
     path: res/prefabs/tilemap/mapElements/city.prefab
   - id: 4
@@ -1765,7 +1765,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 38
+        sprite: 36
         color:
           x: 1
           y: 1
@@ -2310,7 +2310,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 38
+        sprite: 36
         color:
           x: 1
           y: 1

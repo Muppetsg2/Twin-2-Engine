@@ -325,8 +325,22 @@ void Playable::SetPatron(PatronData* patronData)
 void Playable::CheckIfDead(Playable* playable) {
     if (OwnTiles.empty()) {
         ++playable->enemiesKilled;
+        isDead = true;
         OnDead();
     }
+}
+
+void Playable::RemoveOwnTile(HexTile* tileToRemove, Playable* taker)
+{
+    if (!OwnTiles.empty()) {
+        OwnTiles.remove(tileToRemove);
+        CheckIfDead(taker);
+    }
+}
+
+void Playable::AddOwnTile(HexTile* tileToAdd)
+{
+    OwnTiles.push_back(tileToAdd);
 }
 
 float Playable::GetMaxRadius() const {

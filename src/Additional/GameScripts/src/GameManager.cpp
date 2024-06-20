@@ -415,6 +415,31 @@ void GameManager::GameOver()
     // UIGameOverPanelController::Instance->OpenPanel();
 }
 
+void GameManager::EnemyDied(Enemy* enemy)
+{
+    size_t i = 0;
+    for (auto& entity : entities) {
+        if (entity == enemy) {
+            entities.erase(entities.begin() + i);
+            break;
+        }
+        ++i;
+    }
+
+    // ONLY PLAYER
+    if (entities.size() == 1) {
+        RestartMap();
+    }
+}
+
+void GameManager::RestartMap()
+{
+    // TODO: KEEP PLAYER WITH 50% of $
+    // TODO: GENERATE NEW MAP
+    // TODO: ADD ONE MORE ENEMY
+    SPDLOG_INFO("RESTART MAP");
+}
+
 void GameManager::StartGame()
 {
     GeneratePlayer();

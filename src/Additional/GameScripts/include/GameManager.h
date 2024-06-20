@@ -120,6 +120,8 @@ public:
     void StartMinigame();
     void EndMinigame();
     void GameOver();
+    void EnemyDied(Enemy* enemy);
+    void RestartMap();
 
     void StartGame();
     Player* GetPlayer() const;

@@ -176,6 +176,7 @@ void HexTile::UpdateTileColor()
 		}
 	}
 }
+
 int HexTile::GetStage() const
 {
 	if (percentage < _takingStage1)
@@ -505,7 +506,7 @@ void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 {
 	if (ownerEntity != newOwnerEntity) {
 		if (ownerEntity != nullptr) {
-			ownerEntity->OwnTiles.remove(this);
+			ownerEntity->RemoveOwnTile(this, newOwnerEntity);
 			for (auto& t : ownerEntity->OwnTiles)
 			{
 				t->UpdateBorders();
@@ -516,7 +517,7 @@ void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 		DisableAlbumAffected();
 		ownerEntity = newOwnerEntity;
 		if (ownerEntity != nullptr) {
-			ownerEntity->OwnTiles.push_back(this);
+			ownerEntity->AddOwnTile(this);
 
 			for (auto& t : ownerEntity->OwnTiles)
 			{

@@ -126,6 +126,9 @@ void PatronChoicePanelController::DrawEditor()
         unordered_map<size_t, Component*> btns = SceneManager::GetComponentsOfType<Button>();
         std::map<size_t, ScriptableObject*> datas = ScriptableObjectManager::GetScriptableObjectsDerivedByType<PatronData>();
 
+        std::list<size_t> clicked = std::list<size_t>();
+        clicked.clear();
+
         for (size_t i = 0; i < _patronsButtons.size(); ++i) {
             size_t choosed_btn = _patronsButtons[i] == nullptr ? 0 : _patronsButtons[i]->GetId();
             size_t choosed_data = _patrons[i] == nullptr ? 0 : _patrons[i]->GetId();
@@ -180,12 +183,25 @@ void PatronChoicePanelController::DrawEditor()
             }
             ImGui::PopItemWidth();
 
-            /*
-            if (ImGui::Button(string(ICON_FA_TRASH_CAN "##Remove Patron").append(std::to_string(i)).c_str())) {
-                clicked.push_back(item.first);
+            ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
+            if (ImGui::Button(string(ICON_FA_TRASH_CAN "##Remove").append(id).append(std::to_string(i)).c_str())) {
+                clicked.push_back(i);
             }
-            */
         }
+
+        if (clicked.size() > 0) {
+            clicked.sort();
+
+            for (int i = clicked.size() - 1; i > -1; --i)
+            {
+                _patrons.erase(_patrons.begin() + clicked.back());
+                _patronsButtons.erase(_patronsButtons.begin() + clicked.back());
+
+                clicked.pop_back();
+            }
+        }
+
+        clicked.clear();
 
         btns.clear();
         datas.clear();

@@ -162,7 +162,7 @@ void end_imgui();
 constexpr const char* WINDOW_NAME = "Echoes Of Fame";
 constexpr int32_t WINDOW_WIDTH  = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
-constexpr bool WINDOW_FULLSCREEN = true;
+constexpr bool WINDOW_FULLSCREEN = false;
 
 #if DISPLAY_SPLASH_SCREEN
 constexpr const char* SPLASH_SCREEN_TEXTURE = "res/textures/splashScreen2.png";
@@ -420,8 +420,8 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/ToonShading.scene");
     //SceneManager::AddScene("testScene", "res/scenes/HexTileEditScene.scene");
     //SceneManager::AddScene("testScene", new Scene());
-    //SceneManager::LoadScene("Menu");
-    SceneManager::LoadScene("Game");
+    SceneManager::LoadScene("Menu");
+    //SceneManager::LoadScene("Game");
     //SceneManager::LoadScene("GameWithTutorial");
     SceneManager::Update();
 

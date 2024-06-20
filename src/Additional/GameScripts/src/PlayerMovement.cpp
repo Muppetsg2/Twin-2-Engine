@@ -162,19 +162,37 @@ void PlayerMovement::Update() {
             SPDLOG_INFO("COL_ID: {}", raycastHit.collider->colliderId);
             HexTile* hexTile = raycastHit.collider->GetGameObject()->GetComponent<HexTile>();
 
-            if (hexTile != _player->CurrTile && hexTile != _pointedTile)
+            if (hexTile != _player->CurrTile)
             {
-                if (hexTile)
+                if (hexTile != _pointedTile)
                 {
-                    MapHexTile* mapHexTile = hexTile->GetMapHexTile();
-
-                    if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && hexTile->currCooldown > 0.0f) && !hexTile->isFighting)
+                    if (hexTile)
                     {
-                        CheckDestination(hexTile);
-                        //_pointedTile = hexTile;
-                        //_playerDestinationMarker->GetTransform()->SetGlobalPosition(
-                        //                _pointedTile->GetTransform()->GetGlobalPosition() + vec3(0.0f, _destinationMarkerHeightOverSurface, 0.0f));
-                        //_playerDestinationMarker->SetActive(true);
+                        MapHexTile* mapHexTile = hexTile->GetMapHexTile();
+
+                        if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && hexTile->currCooldown > 0.0f) && !hexTile->isFighting)
+                        {
+                            CheckDestination(hexTile);
+                            //_pointedTile = hexTile;
+                            //_playerDestinationMarker->GetTransform()->SetGlobalPosition(
+                            //                _pointedTile->GetTransform()->GetGlobalPosition() + vec3(0.0f, _destinationMarkerHeightOverSurface, 0.0f));
+                            //_playerDestinationMarker->SetActive(true);
+                        }
+                        else
+                        {
+                            _pointedTile = nullptr;
+                            _playerDestinationMarker->SetActive(false);
+                            _playerWrongDestinationMarker->SetActive(false);
+                            if (_showedPathTiles.size())
+                            {
+                                size_t showedPathTilesSize = _showedPathTiles.size();
+                                for (size_t index = 0ull; index < showedPathTilesSize; ++index)
+                                {
+                                    _showedPathTiles[index]->DisableAffected();
+                                }
+                                _showedPathTiles.clear();
+                            }
+                        }
                     }
                     else
                     {
@@ -192,20 +210,20 @@ void PlayerMovement::Update() {
                         }
                     }
                 }
-                else
+            }
+            else
+            {
+                _pointedTile = nullptr;
+                _playerDestinationMarker->SetActive(false);
+                _playerWrongDestinationMarker->SetActive(false);
+                if (_showedPathTiles.size())
                 {
-                    _pointedTile = nullptr;
-                    _playerDestinationMarker->SetActive(false);
-                    _playerWrongDestinationMarker->SetActive(false);
-                    if (_showedPathTiles.size())
+                    size_t showedPathTilesSize = _showedPathTiles.size();
+                    for (size_t index = 0ull; index < showedPathTilesSize; ++index)
                     {
-                        size_t showedPathTilesSize = _showedPathTiles.size();
-                        for (size_t index = 0ull; index < showedPathTilesSize; ++index)
-                        {
-                            _showedPathTiles[index]->DisableAffected();
-                        }
-                        _showedPathTiles.clear();
+                        _showedPathTiles[index]->DisableAffected();
                     }
+                    _showedPathTiles.clear();
                 }
             }
 

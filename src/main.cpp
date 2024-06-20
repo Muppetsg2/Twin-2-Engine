@@ -113,7 +113,9 @@ using namespace Generation::Generators;
 #include <GodRayComponent.h>
 #include <StarComponent.h>
 #include <TutorialSeries.h>
+#include <TutorialsController.h>
 #include <CityLightsComponent.h>
+#include <MenuParticles.h>
 #include <Abilities/ConcertAbilityController.h>
 
 #include <RadioStation/RadioStation.h>
@@ -122,6 +124,8 @@ using namespace Generation::Generators;
 #include <UIScripts/PatronChoicePanelController.h>
 #include <UIScripts/PopularityGainingBonusBarController.h>
 #include <UIScripts/AreaTakenGraph.h>
+#include <UIScripts/MenuManager.h>
+#include <UIScripts/PauseManager.h>
 
 using namespace GameScripts;
 
@@ -155,7 +159,7 @@ void end_imgui();
 
 #pragma endregion
 
-constexpr const char* WINDOW_NAME = "Twin^2 Engine";
+constexpr const char* WINDOW_NAME = "Echoes Of Fame";
 constexpr int32_t WINDOW_WIDTH  = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
 constexpr bool WINDOW_FULLSCREEN = false;
@@ -380,6 +384,10 @@ int main(int, char**)
     ADD_COMPONENT("TutorialSeries", TutorialSeries);
     ADD_COMPONENT("CityLightsComponent", CityLightsComponent);
     ADD_COMPONENT("City", City);
+    ADD_COMPONENT("MenuParticles", MenuParticles);
+    ADD_COMPONENT("MenuManager", MenuManager);
+    ADD_COMPONENT("PauseManager", PauseManager);
+    ADD_COMPONENT("TutorialsController", TutorialsController);
 
 #pragma endregion
 
@@ -398,7 +406,11 @@ int main(int, char**)
     // ADDING SCENES
     //SceneManager::AddScene("testScene", "res/scenes/BlankScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/PatronChoice.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/tutorialScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/procedurallyGenerated.scene");
+    SceneManager::AddScene("Menu", "res/scenes/MenuScene2.scene");
+    SceneManager::AddScene("Game", "res/scenes/procedurallyGenerated.scene");
+    SceneManager::AddScene("GameWithTutorial", "res/scenes/tutorialScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/tutorialSceneWork2.scene");
     //SceneManager::AddScene("testScene", "res/scenes/SceneToEditPrefabs.scene");
     //SceneManager::AddScene("testScene", "res/scenes/Making Game UI.scene");
@@ -407,8 +419,10 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene_Copy.scene");
     //SceneManager::AddScene("testScene", "res/scenes/ToonShading.scene");
     //SceneManager::AddScene("testScene", "res/scenes/HexTileEditScene.scene");
-    SceneManager::AddScene("testScene", new Scene());
-    SceneManager::LoadScene("testScene");
+    //SceneManager::AddScene("testScene", new Scene());
+    SceneManager::LoadScene("Menu");
+    //SceneManager::LoadScene("Game");
+    //SceneManager::LoadScene("GameWithTutorial");
     SceneManager::Update();
 
 #if DISPLAY_SPLASH_SCREEN
@@ -689,14 +703,16 @@ void render_imgui()
     ZoneScoped;
 #endif
 
-    static bool imguiRenderToggleFlag = true;
+    //static bool imguiRenderToggleFlag = true;
 
+    /*
     if (Input::IsKeyPressed(KEY::L))
     {
         imguiRenderToggleFlag = !imguiRenderToggleFlag;
     }
+    */
 
-    if (Input::GetCursorState() == CURSOR_STATE::NORMAL && imguiRenderToggleFlag)
+    if (Input::GetCursorState() == CURSOR_STATE::NORMAL /* && imguiRenderToggleFlag*/)
     {
         if (SceneManager::GetCurrentSceneName() != "") {
             SceneManager::DrawCurrentSceneEditor();

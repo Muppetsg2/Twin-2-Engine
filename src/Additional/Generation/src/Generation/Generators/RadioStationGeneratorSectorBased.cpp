@@ -28,6 +28,11 @@ SO_DESERIALIZATION_END()
 
 void RadioStationGeneratorSectorBased::Generate(Tilemap::HexagonalTilemap* tilemap)
 {
+    if (!prefabRadioStation)
+    {
+        prefabRadioStation = PrefabManager::LoadPrefab(prefabPath);
+    }
+
     vector<MapSector*> sectors;
     hash<std::string> hasher = hash<std::string>();
     for (MapSector* region : tilemap->GetGameObject()->GetComponentsInChildren<MapSector>())
@@ -102,5 +107,5 @@ void RadioStationGeneratorSectorBased::Generate(Tilemap::HexagonalTilemap* tilem
 }
 
 void RadioStationGeneratorSectorBased::Clear() {
-
+    prefabRadioStation = nullptr;
 }

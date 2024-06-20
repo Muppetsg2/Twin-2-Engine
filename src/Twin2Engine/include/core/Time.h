@@ -6,6 +6,7 @@ namespace Twin2Engine::Core {
 		static float _updateDeltaTime;
 
 	public:
+		static float _timeMultiplier;
 		static void Update();
 		static float GetTime();
 		static float GetDeltaTime();

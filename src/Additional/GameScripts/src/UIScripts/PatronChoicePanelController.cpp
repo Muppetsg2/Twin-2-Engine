@@ -7,14 +7,45 @@ using namespace Twin2Engine::UI;
 using namespace glm;
 using namespace std;
 
+void PatronChoicePanelController::Choose(PatronData* patron)
+{
+    GameManager::instance->playersPatron = patron;
+    GetGameObject()->SetActive(false);
+    choosed = true;
+    GameManager::instance->StartGame();
+}
+
+void PatronChoicePanelController::StartChoose()
+{
+    for (size_t index = 0ull; index < _patronsButtons.size(); ++index)
+    {
+        _patronsButtons[index]->SetInteractable(true);
+    }
+}
+
+void PatronChoicePanelController::StopChoose()
+{
+    for (size_t index = 0ull; index < _patronsButtons.size(); ++index)
+    {
+        _patronsButtons[index]->SetInteractable(false);
+    }
+}
+
+bool PatronChoicePanelController::IsChoosed()
+{
+    return choosed;
+}
+
 void PatronChoicePanelController::Initialize()
 {
-
+    choosed = false;
     // size_t size = _patrons.size();
     size_t size = _patronsButtons.size();
 
     // wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
     wstring_convert<codecvt_utf8<wchar_t>> converter;
+
+    FirstStepTutorial = SceneManager::FindObjectByName("FristStepTutorial");
 
     for (size_t index = 0ull; index < size; ++index)
     {
@@ -28,15 +59,12 @@ void PatronChoicePanelController::Initialize()
         _patronsButtons[index]->GetOnClickEvent().AddCallback([this, index]() -> void
                                                               {
             SPDLOG_INFO("Index chosen: {}", index);
-            Choose(_patrons[index]); });
+            Choose(_patrons[index]);
+            if (FirstStepTutorial != nullptr) {
+                FirstStepTutorial->SetActive(true);
+            }
+            });
     }
-}
-
-void PatronChoicePanelController::Choose(PatronData *patron)
-{
-    GameManager::instance->playersPatron = patron;
-    GetGameObject()->SetActive(false);
-    GameManager::instance->StartGame();
 }
 
 YAML::Node PatronChoicePanelController::Serialize() const
@@ -98,6 +126,9 @@ void PatronChoicePanelController::DrawEditor()
         unordered_map<size_t, Component*> btns = SceneManager::GetComponentsOfType<Button>();
         std::map<size_t, ScriptableObject*> datas = ScriptableObjectManager::GetScriptableObjectsDerivedByType<PatronData>();
 
+        std::list<size_t> clicked = std::list<size_t>();
+        clicked.clear();
+
         for (size_t i = 0; i < _patronsButtons.size(); ++i) {
             size_t choosed_btn = _patronsButtons[i] == nullptr ? 0 : _patronsButtons[i]->GetId();
             size_t choosed_data = _patrons[i] == nullptr ? 0 : _patrons[i]->GetId();
@@ -152,12 +183,25 @@ void PatronChoicePanelController::DrawEditor()
             }
             ImGui::PopItemWidth();
 
-            /*
-            if (ImGui::Button(string(ICON_FA_TRASH_CAN "##Remove Patron").append(std::to_string(i)).c_str())) {
-                clicked.push_back(item.first);
+            ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
+            if (ImGui::Button(string(ICON_FA_TRASH_CAN "##Remove").append(id).append(std::to_string(i)).c_str())) {
+                clicked.push_back(i);
             }
-            */
         }
+
+        if (clicked.size() > 0) {
+            clicked.sort();
+
+            for (int i = clicked.size() - 1; i > -1; --i)
+            {
+                _patrons.erase(_patrons.begin() + clicked.back());
+                _patronsButtons.erase(_patronsButtons.begin() + clicked.back());
+
+                clicked.pop_back();
+            }
+        }
+
+        clicked.clear();
 
         btns.clear();
         datas.clear();

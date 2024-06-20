@@ -1,0 +1,501 @@
+#pragma once
+
+#include <core/Component.h>
+#include <core/Random.h>
+
+#include <string>
+
+#include <UI/Button.h>
+
+using namespace Twin2Engine::Core;
+using namespace Twin2Engine::UI;
+
+class MenuManager : public Component {
+private:
+
+	Twin2Engine::Core::GameObject* _menuCanvas;
+	Twin2Engine::Core::GameObject* _creditsCanvas;
+
+	Twin2Engine::UI::Button* _start = nullptr;
+	Twin2Engine::UI::Button* _credits = nullptr;
+	Twin2Engine::UI::Button* _creditsBack = nullptr;
+	Twin2Engine::UI::Button* _exit = nullptr;
+
+	Twin2Engine::Core::AudioComponent* _audio = nullptr;
+	std::vector<size_t> _audios;
+
+	int _startButtonEvent = -1;
+	int _creditsButtonEvent = -1;
+	int _creditsBackButtonEvent = -1;
+	int _exitButtonEvent = -1;
+
+	bool _loadScene = false;
+	float _loadSceneCounter = 0.f;
+	float _loadSceneTime = 2.f;
+
+	void Start() {
+		_loadScene = true;
+		_loadSceneCounter = _loadSceneTime;
+		//SceneManager::LoadScene("Game");
+
+		if (_start != nullptr) _start->SetInteractable(false);
+		if (_credits != nullptr) _credits->SetInteractable(false);
+		if (_exit != nullptr) _exit->SetInteractable(false);
+	}
+
+	void Credits() {
+		if (_menuCanvas != nullptr) _menuCanvas->SetActive(false);
+		if (_creditsCanvas != nullptr) _creditsCanvas->SetActive(true);
+	}
+
+	void CreditsBack() {
+		if (_creditsCanvas != nullptr) _creditsCanvas->SetActive(false);
+		if (_menuCanvas != nullptr) _menuCanvas->SetActive(true);
+	}
+
+	void Exit() {
+		Window::GetInstance()->Close();
+	}
+
+	void InitializeButtons() {
+		if (_startButtonEvent == -1 && _start != nullptr) _startButtonEvent = _start->GetOnClickEvent() += [&]() -> void { Start(); };
+		if (_creditsButtonEvent == -1 && _credits != nullptr) _creditsButtonEvent = _credits->GetOnClickEvent() += [&]() -> void { Credits(); };
+		if (_creditsBackButtonEvent == -1 && _creditsBack != nullptr) _creditsBackButtonEvent = _creditsBack->GetOnClickEvent() += [&]() -> void { CreditsBack(); };
+		if (_exitButtonEvent == -1 && _exit != nullptr) _exitButtonEvent = _exit->GetOnClickEvent() += [&]() -> void { Exit(); };
+	}
+
+public:
+	virtual void Initialize() override {
+		InitializeButtons();
+
+		if (_menuCanvas != nullptr) _menuCanvas->SetActive(true);
+		if (_creditsCanvas != nullptr) _creditsCanvas->SetActive(false);
+
+		if (_audio != nullptr && _audios.size() != 0) {
+			_audio->Stop();
+			_audio->SetAudio(_audios[Twin2Engine::Core::Random::Range(0ull, _audios.size() - 1)]);
+			_audio->Play();
+		}
+
+		_loadScene = false;
+	}
+
+	virtual void Update() override {
+		
+		if (_loadScene) {
+			_loadSceneCounter -= Time::GetDeltaTime();
+
+			if (_audio != nullptr) _audio->SetVolume(_loadSceneCounter / _loadSceneTime);
+
+			if (_loadSceneCounter <= 0.f) {
+				SceneManager::LoadScene("Game");
+			}
+		}
+	}
+
+	virtual void OnDestroy() override {
+		if (_start != nullptr && _startButtonEvent != -1) {
+			_start->GetOnClickEvent() -= _startButtonEvent;
+			_startButtonEvent = -1;
+		}
+
+		if (_credits != nullptr && _creditsButtonEvent != -1) {
+			_credits->GetOnClickEvent() -= _creditsButtonEvent;
+			_creditsButtonEvent = -1;
+		}
+
+		if (_creditsBack != nullptr && _creditsBackButtonEvent != -1) {
+			_creditsBack->GetOnClickEvent() -= _creditsBackButtonEvent;
+			_creditsBackButtonEvent = -1;
+		}
+
+		if (_exit != nullptr && _exitButtonEvent != -1) {
+			_exit->GetOnClickEvent() -= _exitButtonEvent;
+			_exitButtonEvent = -1;
+		}
+	}
+
+	virtual YAML::Node Serialize() const override {
+		YAML::Node node = Component::Serialize();
+		node["type"] = "MenuManager";
+		node["loadSceneTime"] = _loadSceneTime;
+		node["startButtonId"] = _start != nullptr ? _start->GetId() : 0;
+		node["creditsButtonId"] = _credits != nullptr ? _credits->GetId() : 0;
+		node["creditsBackButtonId"] = _creditsBack != nullptr ? _creditsBack->GetId() : 0;
+		node["exitButtonId"] = _exit != nullptr ? _exit->GetId() : 0;
+
+		node["menuCanvas"] = _menuCanvas != nullptr ? _menuCanvas->Id() : 0;
+		node["creditsCanvas"] = _creditsCanvas != nullptr ? _creditsCanvas->Id() : 0;
+
+		node["audioId"] = _audio != nullptr ? _audio->GetId() : 0;
+		node["audios"] = std::vector<size_t>();
+
+		for (auto a : _audios) {
+			node["audios"].push_back(Twin2Engine::Manager::SceneManager::GetAudioSaveIdx(a));
+		}
+
+		return node;
+	}
+
+	virtual bool Deserialize(const YAML::Node& node) override {
+		if (!node["loadSceneTime"] || !node["startButtonId"] || !node["creditsButtonId"] || !node["creditsBackButtonId"] || !node["exitButtonId"] ||
+			!node["menuCanvas"] || !node["creditsCanvas"] || !node["audioId"] || !node["audios"] || !Component::Deserialize(node))
+			return false;
+
+		_loadSceneTime = node["loadSceneTime"].as<float>();
+
+		size_t id = node["startButtonId"].as<size_t>();
+		_start = id != 0 ? (Button*)SceneManager::GetComponentWithId(id) : nullptr;
+
+		id = node["creditsButtonId"].as<size_t>();
+		_credits = id != 0 ? (Button*)SceneManager::GetComponentWithId(id) : nullptr;
+
+		id = node["creditsBackButtonId"].as<size_t>();
+		_creditsBack = id != 0 ? (Button*)SceneManager::GetComponentWithId(id) : nullptr;
+
+		id = node["exitButtonId"].as<size_t>();
+		_exit = id != 0 ? (Button*)SceneManager::GetComponentWithId(id) : nullptr;
+
+		id = node["menuCanvas"].as<size_t>();
+		_menuCanvas = id != 0 ? SceneManager::GetGameObjectWithId(id) : nullptr;
+
+		id = node["creditsCanvas"].as<size_t>();
+		_creditsCanvas = id != 0 ? SceneManager::GetGameObjectWithId(id) : nullptr;
+
+		id = node["audioId"].as<size_t>();
+		_audio = id != 0 ? (AudioComponent*)SceneManager::GetComponentWithId(id) : nullptr;
+
+		_audios = std::vector<size_t>();
+		_audios.reserve(node["audios"].size());
+		for (size_t i = 0; i < node["audios"].size(); ++i) {
+			_audios.push_back(SceneManager::GetAudio(node["audios"][i].as<size_t>()));
+		}
+
+		return true;
+	}
+
+#if _DEBUG
+	virtual void DrawEditor() override {
+		std::string id = std::string(std::to_string(this->GetId()));
+		std::string name = std::string("MenuManager##Component").append(id);
+		if (ImGui::CollapsingHeader(name.c_str())) {
+
+			if (Component::DrawInheritedFields()) return;
+
+			unordered_map<size_t, Component*> items = SceneManager::GetComponentsOfType<Button>();
+			size_t choosed_1 = _start == nullptr ? 0 : _start->GetId();
+
+			if (ImGui::BeginCombo(string("StartButton##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
+
+				bool clicked = false;
+				for (auto& item : items) {
+
+					if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_1)) {
+
+						if (clicked) continue;
+
+						choosed_1 = item.first;
+						clicked = true;
+					}
+				}
+
+				if (clicked) {
+					if (choosed_1 != 0) {
+
+						if (_start != nullptr) {
+							if (_startButtonEvent != -1) {
+								_start->GetOnClickEvent() -= _startButtonEvent;
+								_startButtonEvent = -1;
+							}
+						}
+
+						_start = static_cast<Button*>(items[choosed_1]);
+
+						if (_start != nullptr) {
+							InitializeButtons();
+						}
+					}
+				}
+
+				ImGui::EndCombo();
+			}
+
+			choosed_1 = _credits == nullptr ? 0 : _credits->GetId();
+
+			if (ImGui::BeginCombo(string("CreditsButton##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
+
+				bool clicked = false;
+				for (auto& item : items) {
+
+					if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_1)) {
+
+						if (clicked) continue;
+
+						choosed_1 = item.first;
+						clicked = true;
+					}
+				}
+
+				if (clicked) {
+					if (choosed_1 != 0) {
+
+						if (_credits != nullptr) {
+							if (_creditsButtonEvent != -1) {
+								_credits->GetOnClickEvent() -= _creditsButtonEvent;
+								_creditsButtonEvent = -1;
+							}
+						}
+
+						_credits = static_cast<Button*>(items[choosed_1]);
+
+						if (_credits != nullptr) {
+							InitializeButtons();
+						}
+					}
+				}
+
+				ImGui::EndCombo();
+			}
+
+			choosed_1 = _creditsBack == nullptr ? 0 : _creditsBack->GetId();
+
+			if (ImGui::BeginCombo(string("CreditsBackButton##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
+
+				bool clicked = false;
+				for (auto& item : items) {
+
+					if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_1)) {
+
+						if (clicked) continue;
+
+						choosed_1 = item.first;
+						clicked = true;
+					}
+				}
+
+				if (clicked) {
+					if (choosed_1 != 0) {
+
+						if (_creditsBack != nullptr) {
+							if (_creditsBackButtonEvent != -1) {
+								_creditsBack->GetOnClickEvent() -= _creditsBackButtonEvent;
+								_creditsBackButtonEvent = -1;
+							}
+						}
+
+						_creditsBack = static_cast<Button*>(items[choosed_1]);
+
+						if (_creditsBack != nullptr) {
+							InitializeButtons();
+						}
+					}
+				}
+
+				ImGui::EndCombo();
+			}
+
+			choosed_1 = _exit == nullptr ? 0 : _exit->GetId();
+
+			if (ImGui::BeginCombo(string("ExitButton##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
+
+				bool clicked = false;
+				for (auto& item : items) {
+
+					if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_1)) {
+
+						if (clicked) continue;
+
+						choosed_1 = item.first;
+						clicked = true;
+					}
+				}
+
+				if (clicked) {
+					if (choosed_1 != 0) {
+
+						if (_exit != nullptr) {
+							if (_exitButtonEvent != -1) {
+								_exit->GetOnClickEvent() -= _exitButtonEvent;
+								_exitButtonEvent = -1;
+							}
+						}
+
+						_exit = static_cast<Button*>(items[choosed_1]);
+
+						if (_exit != nullptr) {
+							InitializeButtons();
+						}
+					}
+				}
+
+				ImGui::EndCombo();
+			}
+
+			items.clear();
+
+			std::vector<GameObject*> objs = SceneManager::GetAllGameObjects();
+			objs.erase(objs.begin());
+			objs.insert(objs.begin(), nullptr);
+			choosed_1 = std::find(objs.begin(), objs.end(), _menuCanvas) - objs.begin();
+
+			if (ImGui::BeginCombo(string("MenuCanvas##").append(id).c_str(), choosed_1 == 0 ? "None" : objs[choosed_1]->GetName().c_str())) {
+
+				bool clicked = false;
+				for (size_t i = 0; i < objs.size(); ++i) {
+
+					if (ImGui::Selectable(std::string(i == 0 ? "None" : objs[i]->GetName().c_str()).append("##").append(id).append(std::to_string(i)).c_str(), i == choosed_1)) {
+
+						if (clicked) continue;
+
+						choosed_1 = i;
+						clicked = true;
+					}
+				}
+
+				if (clicked) {
+					_menuCanvas = objs[choosed_1];
+				}
+
+				ImGui::EndCombo();
+			}
+
+			choosed_1 = std::find(objs.begin(), objs.end(), _creditsCanvas) - objs.begin();
+
+			if (ImGui::BeginCombo(string("CreditsCanvas##").append(id).c_str(), choosed_1 == 0 ? "None" : objs[choosed_1]->GetName().c_str())) {
+
+				bool clicked = false;
+				for (size_t i = 0; i < objs.size(); ++i) {
+
+					if (ImGui::Selectable(std::string(i == 0 ? "None" : objs[i]->GetName().c_str()).append("##").append(id).append(std::to_string(i)).c_str(), i == choosed_1)) {
+
+						if (clicked) continue;
+
+						choosed_1 = i;
+						clicked = true;
+					}
+				}
+
+				if (clicked) {
+					_creditsCanvas = objs[choosed_1];
+				}
+
+				ImGui::EndCombo();
+			}
+
+			objs.clear();
+
+			items = SceneManager::GetComponentsOfType<AudioComponent>();
+			choosed_1 = _audio == nullptr ? 0 : _audio->GetId();
+
+			if (ImGui::BeginCombo(string("AudioPlayer##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
+
+				bool clicked = false;
+				for (auto& item : items) {
+
+					if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_1)) {
+
+						if (clicked) continue;
+
+						choosed_1 = item.first;
+						clicked = true;
+					}
+				}
+
+				if (clicked) {
+					if (choosed_1 != 0) {
+						_audio = static_cast<AudioComponent*>(items[choosed_1]);
+					}
+				}
+
+				ImGui::EndCombo();
+			}
+
+			items.clear();
+
+			ImGuiTreeNodeFlags node_flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+			std::list<size_t> clicked = std::list<size_t>();
+			clicked.clear();
+
+			if (ImGui::TreeNodeEx(string("Audios##").append(id).c_str(), node_flag)) {
+				size_t i = 0;
+				for (auto a : _audios) {
+					string n = AudioManager::GetAudioName(a).append("##").append(id).append(std::to_string(i));
+					ImGui::Selectable(n.c_str(), false, NULL, ImVec2(ImGui::GetContentRegionAvail().x - 80, 0.f));
+
+					ImGui::SameLine(ImGui::GetContentRegionAvail().x - 10);
+					if (ImGui::Button(string(ICON_FA_TRASH_CAN "##Remove").append(id).append(std::to_string(i)).c_str())) {
+						clicked.push_back(i);
+					}
+					++i;
+				}
+				ImGui::TreePop();
+			}
+
+			if (clicked.size() > 0) {
+				clicked.sort();
+
+				for (int i = clicked.size() - 1; i > -1; --i)
+				{
+					_audios.erase(_audios.begin() + clicked.back());
+
+					clicked.pop_back();
+				}
+			}
+
+			clicked.clear();
+
+			if (ImGui::Button(string("Add Audio##").append(id).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0.f))) {
+				ImGui::OpenPopup(string("Add Audio PopUp##Menu Manager").append(id).c_str(), ImGuiPopupFlags_NoReopen);
+			}
+
+			if (ImGui::BeginPopup(string("Add Audio PopUp##Menu Manager").append(id).c_str(), ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDocking)) {
+
+				std::map<size_t, std::string> types = AudioManager::GetAllAudiosNames();
+
+				std::vector<std::pair<size_t, std::string>> audioNames = std::vector<std::pair<size_t, std::string>>(types.begin(), types.end());
+
+				types.clear();
+
+				std::sort(audioNames.begin(), audioNames.end(), [&](std::pair<size_t, std::string> const& left, std::pair<size_t, std::string> const& right) -> bool {
+					return left.second.compare(right.second) < 0;
+				});
+
+				std::vector<string> names = vector<string>();
+				std::vector<size_t> ids = vector<size_t>();
+				names.resize(audioNames.size());
+				ids.resize(audioNames.size());
+
+				std::transform(audioNames.begin(), audioNames.end(), names.begin(), [](std::pair<size_t, string> const& i) -> string {
+					return i.second;
+				});
+
+				std::transform(audioNames.begin(), audioNames.end(), ids.begin(), [](std::pair<size_t, string> const& i) -> size_t {
+					return i.first;
+				});
+
+				audioNames.clear();
+
+				names.insert(names.begin(), "None##Nothing");
+				ids.insert(ids.begin(), 0);
+
+				size_t choosed = 0;
+
+				if (ImGui::ComboWithFilter(string("##Audio").append(id).c_str(), &choosed, names, 20)) {
+					if (choosed != 0) {
+						_audios.push_back(ids[choosed]);
+					}
+				}
+
+				names.clear();
+				ids.clear();
+
+				if (choosed != 0) {
+					ImGui::CloseCurrentPopup();
+				}
+
+				ImGui::EndPopup();
+			}
+		}
+	}
+#endif
+};

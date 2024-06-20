@@ -426,7 +426,7 @@ void RadioStationPlayingController::DrawEditor()
 
                     if (_buttonUp != nullptr) {
                         if (_buttonUpHandleId != -1) {
-                            _buttonUp -= _buttonUpHandleId;
+                            _buttonUp->GetOnClickEvent() -= _buttonUpHandleId;
                             _buttonUpHandleId = -1;
                         }
                     }
@@ -463,7 +463,7 @@ void RadioStationPlayingController::DrawEditor()
 
                     if (_buttonRight != nullptr) {
                         if (_buttonRightHandleId != -1) {
-                            _buttonRight -= _buttonRightHandleId;
+                            _buttonRight->GetOnClickEvent() -= _buttonRightHandleId;
                             _buttonRightHandleId = -1;
                         }
                     }
@@ -500,7 +500,7 @@ void RadioStationPlayingController::DrawEditor()
 
                     if (_buttonDown != nullptr) {
                         if (_buttonDownHandleId != -1) {
-                            _buttonDown -= _buttonDownHandleId;
+                            _buttonDown->GetOnClickEvent() -= _buttonDownHandleId;
                             _buttonDownHandleId = -1;
                         }
                     }
@@ -537,7 +537,7 @@ void RadioStationPlayingController::DrawEditor()
 
                     if (_buttonLeft != nullptr) {
                         if (_buttonLeftHandleId != -1) {
-                            _buttonLeft -= _buttonLeftHandleId;
+                            _buttonLeft->GetOnClickEvent() -= _buttonLeftHandleId;
                             _buttonLeftHandleId = -1;
                         }
                     }

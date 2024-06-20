@@ -49,6 +49,9 @@ Root:
       enabled: true
       type: Enemy
       moneyFunction: res/scriptableobjects/MoneyFunctionData.so
+      fansRadius: 2
+      fansStartMoney: 12
+      albumStartMoney: 8
     - id: 3
       enabled: true
       type: EnemyMovement

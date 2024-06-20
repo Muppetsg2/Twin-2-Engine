@@ -343,7 +343,7 @@ bool MeshRenderer::CheckMaterialsValidation()
 			res = false;
 			_materialError = true;
 			Unregister();
-			_materials.erase(_materials.begin() + i);
+			_materials.erase(_materials.begin() + i - 1);
 
 #if _DEBUG
 			_next = _next > _addNum[i - 1] ? _addNum[i - 1] : _next;

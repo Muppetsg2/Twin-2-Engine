@@ -53,7 +53,7 @@ void GameTimer::OnDestroy() {
 }
 
 void GameTimer::Update() {
-    if (!GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
+    if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
         secondsCounter += Time::GetDeltaTime();
         if (secondsCounter >= secondsPerDay) {
             secondsCounter -= secondsPerDay;

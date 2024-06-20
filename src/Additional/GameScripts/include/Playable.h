@@ -95,8 +95,8 @@ public:
     uint32_t enemiesKilled = 0;
     uint32_t islandsWon = 0;
 
-    float fansStartMoney;
-    float albumStartMoney;
+    float fansStartMoney = 12.f;
+    float albumStartMoney = 8.f;
 
     MoneyFunctionData* moneyFunction;
     //MoneyGainFromTiles* money;

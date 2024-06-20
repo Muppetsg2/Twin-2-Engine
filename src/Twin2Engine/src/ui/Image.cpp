@@ -103,7 +103,7 @@ bool Image::Deserialize(const YAML::Node& node)
 {
 	if (!node["color"] || !node["width"] || !node["height"] ||
 		!node["layer"] || !node["fillEnabled"] || !node["fillType"] || !node["fillSubType"] ||
-		!node["fillProgress"] || !RenderableComponent::Deserialize(node)) return false;
+		!node["fillOffset"] || !node["fillProgress"] || !RenderableComponent::Deserialize(node)) return false;
 
 	if (node["sprite"]) {
 		_spriteId = SceneManager::GetSprite(node["sprite"].as<size_t>());

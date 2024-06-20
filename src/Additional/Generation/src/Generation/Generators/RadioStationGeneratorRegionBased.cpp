@@ -26,6 +26,11 @@ SO_DESERIALIZATION_END()
 
 void RadioStationGeneratorRegionBased::Generate(Tilemap::HexagonalTilemap* tilemap)
 {
+    if (!prefabRadioStation)
+    {
+        prefabRadioStation = PrefabManager::LoadPrefab(prefabPath);
+    }
+
     std::vector<MapRegion*> regions;
     for (MapRegion* region : tilemap->GetGameObject()->GetComponentsInChildren<MapRegion>())
     {
@@ -101,5 +106,5 @@ void RadioStationGeneratorRegionBased::Generate(Tilemap::HexagonalTilemap* tilem
 }
 
 void RadioStationGeneratorRegionBased::Clear() {
-
+    prefabRadioStation = nullptr;
 }

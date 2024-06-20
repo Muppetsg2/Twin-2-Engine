@@ -162,7 +162,6 @@ void Player::Initialize() {
 
     _negativeMoneyText = SceneManager::FindObjectByName("NegativeMoneyText")->GetComponent<Text>();
 
-
     move = GetGameObject()->GetComponent<PlayerMovement>();
     move->OnFinishMoving += [this](GameObject* gameObject, HexTile* tile) { FinishMove(tile); };
     move->OnStartMoving += [this](GameObject* gameObject, HexTile* tile) { StartMove(tile); };
@@ -181,6 +180,10 @@ void Player::Initialize() {
 }
 void Player::Update() {
 
+    if (!GameManager::instance->gameStarted && _hexIndicator) _hexIndicator->SetActive(false);
+
+    if (!GameManager::instance->gameStarted) return;
+
     _moneyText->SetText(std::wstring(L"Money: ").append(std::to_wstring(static_cast<int>(_money->money))).append(L"$"));
 
     if (_negativeMoneyText->GetGameObject()->GetActive())
@@ -198,7 +201,7 @@ void Player::Update() {
         if (_isHoveringFansMeetingButton)
         {
             value -= fansRequiredMoney;
-            
+
         }
         else if (_isHoveringConcertButton)
         {
@@ -225,11 +228,8 @@ void Player::Update() {
 
     }
 
-    if (!GameManager::instance->gameStarted && _hexIndicator) _hexIndicator->SetActive(false);
-
     if (!GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
         UpdatePrices();
-
 
         if (Input::IsKeyPressed(KEY::Z))
         {
@@ -248,6 +248,7 @@ void Player::Update() {
         }
 
         // CONCERT ABILITY UI MANAGEMENT
+        _concertText->SetText(std::wstring(std::to_wstring(static_cast<int>(_concertAbility->GetCost())).append(L"$")));
         if (_concertAbility->IsUsed())
         {
             _concertCircleImage->SetFillProgress(100.0f - _concertAbility->GetAbilityRemainingTime() / _concertAbility->lastingTime * 100.0f);
@@ -259,12 +260,12 @@ void Player::Update() {
         else
         {
             _concertButton->SetInteractable(true);
-            _concertText->SetText(std::wstring(std::to_wstring(static_cast<int>(_concertAbility->GetCost())).append(L"$")));
         }
 
 
-        AlbumUpdate();
         // CONCERT ABILITY UI MANAGEMENT
+        AlbumUpdate();
+        _albumText->SetText(std::wstring(std::to_wstring(static_cast<int>(albumRequiredMoney)).append(L"$")));
         if (currAlbumTime > 0.0f)
         {
             _albumCircleImage->SetFillProgress(100.0f - currAlbumTime / albumTime * 100.0f);
@@ -276,11 +277,11 @@ void Player::Update() {
         else
         {
             _albumButton->SetInteractable(true);
-            _albumText->SetText(std::wstring(std::to_wstring(static_cast<int>(albumRequiredMoney)).append(L"$")));
         }
 
-        UpdateFans();
         // FANS MEETINNG ABILITY UI MANAGEMENT
+        UpdateFans();
+        _fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(fansRequiredMoney)).append(L"$")));
         if (currFansTime > 0.0f)
         {
             _fansMeetingCircleImage->SetFillProgress(100.0f - currFansTime / fansTime * 100.0f);
@@ -292,7 +293,6 @@ void Player::Update() {
         else
         {
             _fansMeetingButton->SetInteractable(true);
-            _fansMeetingText->SetText(std::wstring(std::to_wstring(static_cast<int>(fansRequiredMoney)).append(L"$")));
         }
 
         if (GameManager::instance->gameStarted)
@@ -328,7 +328,7 @@ void Player::Update() {
                     _isShowingConcertPossible = true;
 
                     _concertButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
-                    _audioComponent->SetAudio("res/music/Abilities/UI/OnHoverClick.mp3");
+                    _audioComponent->SetAudio(_onHoverClickAudio);
                     _audioComponent->Play();
 
                     _concertButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
@@ -342,7 +342,7 @@ void Player::Update() {
                     _isShowingConcertPossible = false;
 
                     _concertButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
-                    _audioComponent->SetAudio("res/music/Abilities/UI/OffHoverClick.mp3");
+                    _audioComponent->SetAudio(_offHoverClickAudio);
                     _audioComponent->Play();
 
                     _concertButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
@@ -365,7 +365,7 @@ void Player::Update() {
                     _isShowingAlbumPossible = true;
 
                     _albumButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
-                    _audioComponent->SetAudio("res/music/Abilities/UI/OnHoverClick.mp3");
+                    _audioComponent->SetAudio(_onHoverClickAudio);
                     _audioComponent->Play();
 
                     _albumButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
@@ -382,7 +382,7 @@ void Player::Update() {
                     _isShowingAlbumPossible = false;
 
                     _albumButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
-                    _audioComponent->SetAudio("res/music/Abilities/UI/OffHoverClick.mp3");
+                    _audioComponent->SetAudio(_offHoverClickAudio);
                     _audioComponent->Play();
 
                     //albumButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
@@ -462,6 +462,11 @@ void Player::StartPlayer(HexTile* startUpTile)
 {
     move->StartUp(startUpTile);
 
+    GameObject* MovingAroundTut = SceneManager::FindObjectByName("MovingAroundTut");
+    if (MovingAroundTut != nullptr) {
+        MovingAroundTut->SetActive(true);
+    }
+
     PopularityGainingBonusBarController::Instance()->AddCurrentBonus(TakeOverSpeed);
 }
 
@@ -471,6 +476,12 @@ void Player::AlbumCall() {
         _albumButton->SetInteractable(false);
         _albumButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
         UseAlbum();
+
+        for (HexTile* tile : OwnTiles)
+        {
+            tile->EnableAlbumAffected();
+        }
+        _isShowingAlbumPossible = true;
 
         _albumButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
         _albumButtonFrameImage->SetSprite(_spriteButtonStep1);
@@ -588,6 +599,8 @@ void Player::StartMove(HexTile* tile) {
 
     if (isFansActive) {
         if (CurrTile != tileBefore) {
+            _fansMeetingCircleImage->SetColor(_abilityCooldownColor);
+            _fansMeetingCircleImage->SetLayer(2);
             FansExit();
         }
     }

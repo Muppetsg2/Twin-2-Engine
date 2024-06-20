@@ -57,6 +57,8 @@ private:
     //size_t _monthEventHandleId;
     //size_t _yearEventHandleId;
 
+    Twin2Engine::Core::GameObject* _textChooseStartingPosition;
+
     Twin2Engine::UI::Text* _dateText;
     //Twin2Engine::UI::Text* _dayText;
     //Twin2Engine::UI::Text* _monthText;

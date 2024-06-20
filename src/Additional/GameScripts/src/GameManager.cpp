@@ -80,6 +80,8 @@ void GameManager::Initialize()
         }
 
         _audioComponent = GetGameObject()->GetComponent<AudioComponent>();
+
+        _textChooseStartingPosition = SceneManager::FindObjectByName("ChooseStartingPosition");
     }
     else
     {
@@ -208,6 +210,7 @@ void GameManager::Update()
 
             if (_player->move->_pointedTile && Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT))
             {
+                _textChooseStartingPosition->SetActive(false);
                 _player->StartPlayer(_player->move->_pointedTile);
                 gameStartUp = false;
                 _player->move->_pointedTile = nullptr;
@@ -235,6 +238,8 @@ void GameManager::UpdateTiles()
 
 GameObject* GameManager::GeneratePlayer()
 {
+    _textChooseStartingPosition->SetActive(true);
+
     GameObject* player = Twin2Engine::Manager::SceneManager::CreateGameObject(prefabPlayer);
     Player* p = player->GetComponent<Player>();
     _player = p;

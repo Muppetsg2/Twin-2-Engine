@@ -187,6 +187,7 @@ GameObjects:
       - id: 16
         enabled: true
         type: MenuManager
+        loadSceneTime: 1
         startButtonId: 12
         creditsButtonId: 32
         creditsBackButtonId: 23

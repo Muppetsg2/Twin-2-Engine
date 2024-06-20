@@ -37,6 +37,10 @@ private:
 		_loadScene = true;
 		_loadSceneCounter = _loadSceneTime;
 		//SceneManager::LoadScene("Game");
+
+		if (_start != nullptr) _start->SetInteractable(false);
+		if (_credits != nullptr) _credits->SetInteractable(false);
+		if (_exit != nullptr) _exit->SetInteractable(false);
 	}
 
 	void Credits() {
@@ -114,6 +118,7 @@ public:
 	virtual YAML::Node Serialize() const override {
 		YAML::Node node = Component::Serialize();
 		node["type"] = "MenuManager";
+		node["loadSceneTime"] = _loadSceneTime;
 		node["startButtonId"] = _start != nullptr ? _start->GetId() : 0;
 		node["creditsButtonId"] = _credits != nullptr ? _credits->GetId() : 0;
 		node["creditsBackButtonId"] = _creditsBack != nullptr ? _creditsBack->GetId() : 0;
@@ -133,9 +138,11 @@ public:
 	}
 
 	virtual bool Deserialize(const YAML::Node& node) override {
-		if (!node["startButtonId"] || !node["creditsButtonId"] || !node["creditsBackButtonId"] || !node["exitButtonId"] || 
+		if (!node["loadSceneTime"] || !node["startButtonId"] || !node["creditsButtonId"] || !node["creditsBackButtonId"] || !node["exitButtonId"] ||
 			!node["menuCanvas"] || !node["creditsCanvas"] || !node["audioId"] || !node["audios"] || !Component::Deserialize(node))
 			return false;
+
+		_loadSceneTime = node["loadSceneTime"].as<float>();
 
 		size_t id = node["startButtonId"].as<size_t>();
 		_start = id != 0 ? (Button*)SceneManager::GetComponentWithId(id) : nullptr;

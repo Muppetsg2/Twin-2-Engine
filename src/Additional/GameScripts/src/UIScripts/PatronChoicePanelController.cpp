@@ -7,14 +7,45 @@ using namespace Twin2Engine::UI;
 using namespace glm;
 using namespace std;
 
+void PatronChoicePanelController::Choose(PatronData* patron)
+{
+    GameManager::instance->playersPatron = patron;
+    GetGameObject()->SetActive(false);
+    choosed = true;
+    GameManager::instance->StartGame();
+}
+
+void PatronChoicePanelController::StartChoose()
+{
+    for (size_t index = 0ull; index < _patronsButtons.size(); ++index)
+    {
+        _patronsButtons[index]->SetInteractable(true);
+    }
+}
+
+void PatronChoicePanelController::StopChoose()
+{
+    for (size_t index = 0ull; index < _patronsButtons.size(); ++index)
+    {
+        _patronsButtons[index]->SetInteractable(false);
+    }
+}
+
+bool PatronChoicePanelController::IsChoosed()
+{
+    return choosed;
+}
+
 void PatronChoicePanelController::Initialize()
 {
-
+    choosed = false;
     // size_t size = _patrons.size();
     size_t size = _patronsButtons.size();
 
     // wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
     wstring_convert<codecvt_utf8<wchar_t>> converter;
+
+    FirstStepTutorial = SceneManager::FindObjectByName("FristStepTutorial");
 
     for (size_t index = 0ull; index < size; ++index)
     {
@@ -28,15 +59,12 @@ void PatronChoicePanelController::Initialize()
         _patronsButtons[index]->GetOnClickEvent().AddCallback([this, index]() -> void
                                                               {
             SPDLOG_INFO("Index chosen: {}", index);
-            Choose(_patrons[index]); });
+            Choose(_patrons[index]);
+            if (FirstStepTutorial != nullptr) {
+                FirstStepTutorial->SetActive(true);
+            }
+            });
     }
-}
-
-void PatronChoicePanelController::Choose(PatronData *patron)
-{
-    GameManager::instance->playersPatron = patron;
-    GetGameObject()->SetActive(false);
-    GameManager::instance->StartGame();
 }
 
 YAML::Node PatronChoicePanelController::Serialize() const

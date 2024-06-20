@@ -380,6 +380,14 @@ void HexTile::CheckRoundPattern()
 	}
 }
 
+void HexTile::CheckNeigbhboursRoundPattern()
+{
+	for (size_t index = 0ull; index < _adjacentTiles.size(); ++index)
+	{
+		_adjacentTiles[index]->CheckRoundPattern();
+	}
+}
+
 void HexTile::Initialize()
 {
 	_affectingCities.clear();
@@ -395,8 +403,8 @@ void HexTile::Initialize()
 	}
 
 	particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/ArrowParticle.png", 3, 0.5f, 0.0f, 6.0f, 2.0f, 0.16f, 0.2f, 0.3f);
-	pgCity = new ParticleGenerator("origin/ParticleShader", _textureCityStar, 5, 0.4f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
-	pgCityNegative = new ParticleGenerator("origin/ParticleShader", _textureCityBlackStar, 5, -0.3f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
+	pgCity = new ParticleGenerator("origin/ParticleShader", TextureManager::GetTexture2D(_textureCityStar)->GetId(), 5, 0.4f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
+	pgCityNegative = new ParticleGenerator("origin/ParticleShader", TextureManager::GetTexture2D(_textureCityBlackStar)->GetId(), 5, -0.3f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
 }
 
 void HexTile::OnDestroy()
@@ -443,7 +451,7 @@ void HexTile::Update()
 			LoseInfluence();
 		}
 
-		CheckRoundPattern();
+		//CheckRoundPattern();
 
 	}
 }
@@ -514,6 +522,8 @@ void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 			{
 				t->UpdateBorders();
 			}
+
+			CheckNeigbhboursRoundPattern();
 
 			particleGenerator->active = ownerEntity->OwnTiles.front()->particleGenerator->active;
 		}
@@ -679,10 +689,10 @@ YAML::Node HexTile::Serialize() const
 		node["borderJoints"].push_back(obj->Id());
 	}
 
-	//node["_textureCityStar"] = SceneManager::GetTexture2DSaveIdx(_textureCityStar);
-	//node["_textureCityBlackStar"] = SceneManager::GetTexture2DSaveIdx(_textureCityBlackStar);
-	node["_textureCityStar"] = TextureManager::GetTexture2DPath(_textureCityStar);
-	node["_textureCityBlackStar"] = TextureManager::GetTexture2DPath(_textureCityBlackStar);
+	node["_textureCityStar"] = SceneManager::GetTexture2DSaveIdx(_textureCityStar);
+	node["_textureCityBlackStar"] = SceneManager::GetTexture2DSaveIdx(_textureCityBlackStar);
+	//node["_textureCityStar"] = TextureManager::GetTexture2DPath(_textureCityStar);
+	//node["_textureCityBlackStar"] = TextureManager::GetTexture2DPath(_textureCityBlackStar);
 
 	return node;
 }
@@ -711,10 +721,10 @@ bool HexTile::Deserialize(const YAML::Node& node)
 		}
 	}
 
-	//_textureCityStar = SceneManager::GetTexture2D(node["textureCityStar"].as<size_t>());
-	//_textureCityBlackStar = SceneManager::GetTexture2D(node["textureCityBlackStar"].as<size_t>());
-	_textureCityStar = TextureManager::LoadTexture2D(node["textureCityStar"].as<string>())->GetId();
-	_textureCityBlackStar = TextureManager::LoadTexture2D(node["textureCityBlackStar"].as<string>())->GetId();
+	_textureCityStar = SceneManager::GetTexture2D(node["textureCityStar"].as<size_t>());
+	_textureCityBlackStar = SceneManager::GetTexture2D(node["textureCityBlackStar"].as<size_t>());
+	//_textureCityStar = TextureManager::LoadTexture2D(node["textureCityStar"].as<string>())->GetId();
+	//_textureCityBlackStar = TextureManager::LoadTexture2D(node["textureCityBlackStar"].as<string>())->GetId();
 
 	return true;
 }

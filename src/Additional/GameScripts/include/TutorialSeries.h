@@ -3,40 +3,77 @@
 #include <core/GameObject.h>
 #include <manager/SceneManager.h>
 #include <vector>
+#include <tools/YamlConverters.h>
+#include <core/Time.h>
+#include <GameManager.h>
 
 using namespace Twin2Engine::Manager;
+using namespace Twin2Engine::Core;
 
 
 class TutorialSeries : public Component {
 	public:
 		int displayIndex = 0;
 		std::vector<GameObject*> tutorials;
+		bool block = false;
+		bool closeOnLast = false;
 
 		virtual void Initialize() override {
 
 		}
 
 		virtual void Update() override {
+			Time::_timeMultiplier = 0.0f;
+			//GameManager::instance->gameStartUp = false;
 			if (Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::RIGHT)) {
-				if (tutorials.size() > 0) {
-					tutorials[displayIndex++]->SetActive(false);
-					if (displayIndex == tutorials.size()) {
-						tutorials[0]->SetActive(true);
-						displayIndex = 0;
-						GetGameObject()->SetActive(false);
-					}
-					else {
-						tutorials[displayIndex]->SetActive(true);
+				if (!block) {
+					if (tutorials.size() > 0) {
+						tutorials[displayIndex++]->SetActive(false);
+						if (displayIndex == tutorials.size()) {
+							Time::_timeMultiplier = 1.0f;
+							//GameManager::instance->gameStartUp = true;
+							tutorials[0]->SetActive(true);
+							displayIndex = 0;
+							GetGameObject()->SetActive(false);
+						}
+						else {
+							tutorials[displayIndex]->SetActive(true);
 
-						if (displayIndex == (tutorials.size() - 1)) {
-							TutorialSeries* t = tutorials[displayIndex]->GetComponent<TutorialSeries>();
-							if (t != nullptr) {
-								tutorials[0]->SetActive(true);
-								displayIndex = 0;
-								GetGameObject()->SetActive(false);
+							if (displayIndex == (tutorials.size() - 1)) {
+								TutorialSeries* t = tutorials[displayIndex]->GetComponent<TutorialSeries>();
+								if (t != nullptr) {
+									t->block = true;
+									Time::_timeMultiplier = 1.0f;
+									//GameManager::instance->gameStartUp = true;
+									tutorials[0]->SetActive(true);
+									displayIndex = 0;
+									GetGameObject()->SetActive(false);
+								}
+								else if (closeOnLast) {
+									Time::_timeMultiplier = 1.0f;
+									//GameManager::instance->gameStartUp = true;
+									tutorials[0]->SetActive(true);
+									displayIndex = 0;
+									GetGameObject()->SetActive(false);
+								}
 							}
 						}
 					}
+					else {
+						Time::_timeMultiplier = 1.0f;
+						//GameManager::instance->gameStartUp = true;
+						GetGameObject()->SetActive(false);
+						//if (displayIndex == 1) {
+						//	displayIndex = 0;
+						//	GetGameObject()->SetActive(false);
+						//}
+						//else {
+						//	displayIndex = 1;
+						//}
+					}
+				}
+				else {
+					block = false;
 				}
 			}
 		}
@@ -46,6 +83,7 @@ class TutorialSeries : public Component {
 			node["type"] = "TutorialSeries";
 
 			node["tutorialsIds"] = std::vector<size_t>();
+			node["closeOnLast"] = closeOnLast;
 			for (size_t i = 0; i < tutorials.size(); ++i) {
 				node["tutorialsIds"].push_back(tutorials[i]->Id());
 			}
@@ -60,6 +98,10 @@ class TutorialSeries : public Component {
 			std::vector<size_t> tutorialsIds = node["tutorialsIds"].as<std::vector<size_t>>();
 			for (size_t i = 0; i < tutorialsIds.size(); ++i) {
 				tutorials.push_back(SceneManager::GetGameObjectWithId(tutorialsIds[i]));
+			}
+
+			if (node["closeOnLast"]) {
+				closeOnLast = node["closeOnLast"].as<bool>();
 			}
 
 			return true;

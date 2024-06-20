@@ -42,8 +42,8 @@ void Playable::OnDestroy()
 }
 
 void Playable::InitPrices() {
-    fansStartMoney = fansRequiredMoney;
-    albumStartMoney = albumRequiredMoney;
+    fansRequiredMoney = fansStartMoney;
+    albumRequiredMoney = albumStartMoney;
     //money = GetGameObject()->GetComponent<MoneyGainFromTiles>();
 }
 
@@ -53,7 +53,7 @@ void Playable::UpdatePrices() {
         albumRequiredMoney = moneyFunction->GetValue(OwnTiles.size() - 1, albumStartMoney);
 
         if (patron->GetPatronBonus() == PatronBonus::ABILITIES_PRICE) {
-            albumRequiredMoney *= (1.0f - patron->GetBonus() / 100.0f);
+            fansRequiredMoney *= (1.0f - patron->GetBonus() / 100.0f);
             albumRequiredMoney *= (1.0f - patron->GetBonus() / 100.0f);
         }
     }
@@ -553,16 +553,22 @@ YAML::Node Playable::Serialize() const
 
     node["type"] = "Playable";
     node["moneyFunction"] = ScriptableObjectManager::GetPath(moneyFunction->GetId());
+    node["fansRadius"] = fansRadius;
+    node["fansStartMoney"] = fansStartMoney;
+    node["albumStartMoney"] = albumStartMoney;
 
     return node;
 }
 
 bool Playable::Deserialize(const YAML::Node& node)
 {
-    if (!node["moneyFunction"] || !Component::Deserialize(node)) return false;
-
+    if (!node["moneyFunction"] || !node["fansRadius"] || !node["fansStartMoney"] || !node["albumStartMoney"] ||\
+        !Component::Deserialize(node)) return false;
 
     moneyFunction = static_cast<MoneyFunctionData*>(ScriptableObjectManager::Load(node["moneyFunction"].as<string>()));
+    fansRadius = node["fansRadius"].as<float>();
+    fansStartMoney = node["fansStartMoney"].as<float>();
+    albumStartMoney = node["albumStartMoney"].as<float>();
 
     return true;
 }

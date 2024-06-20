@@ -96,6 +96,10 @@ void ParticleGenerator::init(float height, float distance, float time, float par
 
     shader->Use();
     shader->SetInt("particleTexture", 0);
+    shader->SetVec3("particleEmmiterPos", startPosition);
+    shader->SetFloat("maxHeight", height);
+    shader->SetVec4("startColor", startColor);
+    shader->SetVec4("endColor", endColor);
 }
 
 ParticleGenerator::~ParticleGenerator()
@@ -132,6 +136,23 @@ void ParticleGenerator::SetStartPosition(glm::vec3 newPosition)
         }
         particlesPos[i].y += yDiff;
     }
+
+    shader->Use();
+    shader->SetVec3("particleEmmiterPos", startPosition);
+}
+
+void ParticleGenerator::SetStartColor(glm::vec4 newColor)
+{
+    startColor = newColor;
+    shader->Use();
+    shader->SetVec4("startColor", startColor);
+}
+
+void ParticleGenerator::SetEndColor(glm::vec4 newColor)
+{
+    endColor = newColor;
+    shader->Use();
+    shader->SetVec4("endColor", endColor);
 }
 
 void ParticleGenerator::Update()

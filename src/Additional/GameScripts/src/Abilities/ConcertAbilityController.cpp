@@ -66,6 +66,7 @@ void ConcertAbilityController::StartPerformingConcert()
     playable->concertUsed++;
     currTimerTime = lastingTime;
 
+    _cityLights->SetActive(true);
     //savedTakingOverSpeed = playable->TakeOverSpeed;
     playable->TakeOverSpeed += additionalTakingOverSpeed;
 }
@@ -74,7 +75,8 @@ void ConcertAbilityController::StopPerformingConcert()
 {
     playable->TakeOverSpeed -= additionalTakingOverSpeed;
 
-    OnEventAbilityFinished.Invoke(playable);
+    OnEventAbilityFinished.Invoke(playable); 
+    _cityLights->SetActive(false);
 
     StartCooldown();
 }
@@ -145,6 +147,11 @@ bool ConcertAbilityController::Deserialize(const YAML::Node& node)
     moneyRequired = node["moneyRequired"].as<float>();
     additionalTakingOverSpeed = node["additionalTakingOverSpeed"].as<float>();
     moneyFunction = static_cast<MoneyFunctionData*>(ScriptableObjectManager::Load(node["moneyFunction"].as<string>()));
+
+    _cityLights = Twin2Engine::Manager::SceneManager::CreateGameObject(PrefabManager::GetPrefab("res/prefabs/CityLights.prefab"), GetTransform());
+    _cityLights->SetActive(false);
+    _cityLights->GetTransform()->SetLocalScale(glm::vec3(4.0f));
+    _cityLights->GetTransform()->SetLocalPosition(glm::vec3(0.0f));
 
     return true;
 }

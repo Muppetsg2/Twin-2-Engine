@@ -405,8 +405,8 @@ Root:
       type: HexTile
       loseInfluenceSpeed: 0.5
       textuesData: res/scriptableobjects/HexTileTextureData.so
-      textureCityStar: res/textures/particles/starParticle.png
-      textureCityBlackStar: res/textures/particles/blackStarParticle.png
+      textureCityStar: 37
+      textureCityBlackStar: 38
       borders:
         - 32
         - 35

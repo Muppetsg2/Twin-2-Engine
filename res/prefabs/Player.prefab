@@ -91,6 +91,9 @@ Root:
       enabled: true
       type: Player
       moneyFunction: res/scriptableobjects/MoneyFunctionData.so
+      fansRadius: 2
+      fansStartMoney: 12
+      albumStartMoney: 8
       starPrefab: 1
       abilityActiveColor:
         x: 0

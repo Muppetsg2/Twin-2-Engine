@@ -915,6 +915,7 @@ Sprites:
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
+GIFS: ~
 Audio:
   - id: 0
     path: res/music/Minigame/Drum.mp3

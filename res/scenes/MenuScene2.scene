@@ -87,6 +87,7 @@ Sprites:
 Fonts:
   - id: 0
     path: res\fonts\Metal-Lord.otf
+GIFS: ~
 Audio:
   - id: 0
     path: res\music\Pop\Twilight_Whispers_Embrace.mp3

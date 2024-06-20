@@ -27,6 +27,7 @@ Sprites:
     width: 64
     height: 64
 Fonts: ~
+GIFS: ~
 Audio: ~
 Materials:
   - id: 0

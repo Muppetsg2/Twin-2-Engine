@@ -456,7 +456,7 @@ bool AreaTakenGraph::Deserialize(const YAML::Node& node)
 {
 	bool isGood = true;
 
-	isGood = isGood && !Component::Deserialize(node);
+	isGood = isGood && Component::Deserialize(node);
 
 	if (node["layer"]) {
 		_layer = node["layer"].as<uint32_t>();

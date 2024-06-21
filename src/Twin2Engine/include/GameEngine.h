@@ -63,6 +63,9 @@
 
 #include <Clouds/Cloud.h>
 
+// PLAYER PREFS
+#include <core/PlayerPrefs.h>
+
 
 namespace Twin2Engine {
 	class GameEngine {

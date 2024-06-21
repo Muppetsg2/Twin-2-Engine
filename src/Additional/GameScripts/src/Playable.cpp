@@ -323,7 +323,7 @@ void Playable::SetPatron(PatronData* patronData)
 }
 
 void Playable::CheckIfDead(Playable* playable) {
-    if (OwnTiles.empty()) {
+    if (OwnTiles.empty() && playable != nullptr) {
         ++playable->enemiesKilled;
         isDead = true;
         OnDead();

@@ -112,6 +112,8 @@ public:
 	void InitializeAdjacentTiles();
 
 	void ResetTile();
+	// TODO: HOT FIX KTORY NIE POWINIEN TAK WYGLADAC
+	void ResetTile(Playable* n);
 	void SetOwnerEntity(Playable* newOwnerEntity);
 	void SetOutlineActive(bool active);
 	void StartMinigame();

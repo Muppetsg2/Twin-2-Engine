@@ -21,7 +21,7 @@ Sprites:
     height: 100
 Fonts: 
   - id: 0
-    path: res/fonts/Caveat-Regular.ttf
+    path: res/fonts/Metal-Lord.otf
 GIFS: ~
 Audio: ~
 Materials:

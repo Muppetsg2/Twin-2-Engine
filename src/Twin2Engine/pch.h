@@ -59,6 +59,7 @@
 #include <random>
 #include <type_traits>
 #include <stack>
+#include <iostream>
 
 // YAML
 #include <yaml-cpp/yaml.h>

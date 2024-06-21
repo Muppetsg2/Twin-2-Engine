@@ -160,7 +160,7 @@ void PlayerMovement::Update() {
 
         if (CollisionManager::Instance()->Raycast(ray, raycastHit))
         {
-            SPDLOG_INFO("COL_ID: {}", raycastHit.collider->colliderId);
+            //SPDLOG_INFO("COL_ID: {}", raycastHit.collider->colliderId);
             HexTile* hexTile = raycastHit.collider->GetGameObject()->GetComponent<HexTile>();
 
             if (hexTile != _player->CurrTile)

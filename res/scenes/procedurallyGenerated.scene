@@ -907,8 +907,6 @@ Sprites:
     height: 256
 Fonts:
   - id: 0
-    path: res/fonts/Caveat-Regular.ttf
-  - id: 1
     path: res/fonts/Metal-Lord.otf
 GIFS: ~
 Audio:
@@ -1433,7 +1431,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00C\x00h\x00o\x00o\x00s\x00e\x00 \x00S\x00t\x00a\x00r\x00t\x00i\x00n\x00g\x00 \x00P\x00o\x00s\x00i\x00t\x00i\x00o\x00n"
-        font: 1
+        font: 0
         size: 30
         autoSize: false
         minSize: 0
@@ -1669,7 +1667,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: ""
-        font: 1
+        font: 0
         size: 30
         autoSize: true
         minSize: 10
@@ -1900,7 +1898,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: ""
-        font: 1
+        font: 0
         size: 30
         autoSize: true
         minSize: 10
@@ -2092,7 +2090,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00M\x00o\x00n\x00e\x00y\x00:\x00 \x000\x00$"
-        font: 1
+        font: 0
         size: 30
         autoSize: true
         minSize: 10
@@ -2135,7 +2133,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00-"
-        font: 1
+        font: 0
         size: 30
         autoSize: true
         minSize: 10
@@ -2178,7 +2176,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: ""
-        font: 1
+        font: 0
         size: 30
         autoSize: true
         minSize: 10
@@ -2221,7 +2219,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x002\x000\x002\x000\x00.\x000\x001\x00.\x000\x001"
-        font: 1
+        font: 0
         size: 30
         autoSize: true
         minSize: 10
@@ -3149,7 +3147,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x002\x00/\x002"
-        font: 1
+        font: 0
         size: 70
         autoSize: false
         minSize: 0
@@ -3192,7 +3190,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x000\x00/\x002"
-        font: 1
+        font: 0
         size: 70
         autoSize: false
         minSize: 0
@@ -3235,7 +3233,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00Y\x00o\x00u"
-        font: 1
+        font: 0
         size: 40
         autoSize: true
         minSize: 10
@@ -3278,7 +3276,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00E\x00n\x00e\x00m\x00y"
-        font: 1
+        font: 0
         size: 40
         autoSize: true
         minSize: 10
@@ -3528,7 +3526,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00P\x00e\x00r\x00u\x00n\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00M\x00o\x00v\x00e\x00 \x00R\x00a\x00n\x00g\x00e\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00+\x001\x00.\x000\x000\x000\x000\x000\x000"
-        font: 1
+        font: 0
         size: 16
         autoSize: true
         minSize: 5
@@ -3571,7 +3569,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00P\x00e\x00r\x00u\x00n"
-        font: 1
+        font: 0
         size: 30
         autoSize: true
         minSize: 10
@@ -3768,7 +3766,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00J\x00u\x00r\x00z\x00e\x00n\x00k\x00a\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00A\x00b\x00i\x00l\x00i\x00t\x00i\x00e\x00s\x00 \x00R\x00a\x00n\x00g\x00e\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00+\x001\x00.\x000\x000\x000\x000\x000\x000"
-        font: 1
+        font: 0
         size: 14
         autoSize: true
         minSize: 5
@@ -3811,7 +3809,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00J\x00u\x00r\x00z\x00e\x00n\x00k\x00a"
-        font: 1
+        font: 0
         size: 30
         autoSize: true
         minSize: 10
@@ -4007,7 +4005,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00Z\x00u\x00a\x00r\x00a\x00s\x00i\x00z\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00M\x00o\x00n\x00e\x00y\x00 \x00G\x00a\x00i\x00n\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00x\x001\x00.\x001\x000\x000\x000\x000\x000"
-        font: 1
+        font: 0
         size: 13
         autoSize: true
         minSize: 5
@@ -4050,7 +4048,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00Z\x00u\x00a\x00r\x00a\x00s\x00i\x00z"
-        font: 1
+        font: 0
         size: 30
         autoSize: true
         minSize: 10
@@ -4247,7 +4245,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00P\x00e\x00r\x00u\x00n\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00M\x00o\x00v\x00e\x00 \x00R\x00a\x00n\x00g\x00e\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00+\x001\x00.\x000\x000\x000\x000\x000\x000"
-        font: 1
+        font: 0
         size: 16
         autoSize: true
         minSize: 5
@@ -4290,7 +4288,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00P\x00e\x00r\x00u\x00n"
-        font: 1
+        font: 0
         size: 30
         autoSize: true
         minSize: 10
@@ -4487,7 +4485,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00J\x00u\x00r\x00z\x00e\x00n\x00k\x00a\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00A\x00b\x00i\x00l\x00i\x00t\x00i\x00e\x00s\x00 \x00R\x00a\x00n\x00g\x00e\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00+\x001\x00.\x000\x000\x000\x000\x000\x000"
-        font: 1
+        font: 0
         size: 14
         autoSize: true
         minSize: 5
@@ -4530,7 +4528,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00J\x00u\x00r\x00z\x00e\x00n\x00k\x00a"
-        font: 1
+        font: 0
         size: 30
         autoSize: true
         minSize: 10
@@ -4727,7 +4725,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00Z\x00u\x00a\x00r\x00a\x00s\x00i\x00z\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00M\x00o\x00n\x00e\x00y\x00 \x00G\x00a\x00i\x00n\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00x\x001\x00.\x001\x000\x000\x000\x000\x000"
-        font: 1
+        font: 0
         size: 13
         autoSize: true
         minSize: 5
@@ -4770,7 +4768,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00Z\x00u\x00a\x00r\x00a\x00s\x00i\x00z"
-        font: 1
+        font: 0
         size: 30
         autoSize: true
         minSize: 10
@@ -4852,7 +4850,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00C\x00h\x00o\x00o\x00s\x00e\x00 \x00Y\x00o\x00u\x00r\x00 \x00P\x00a\x00t\x00r\x00o\x00n\x00!"
-        font: 1
+        font: 0
         size: 80
         autoSize: true
         minSize: 10
@@ -5072,7 +5070,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00W"
-        font: 1
+        font: 0
         size: 120
         autoSize: true
         minSize: 10
@@ -5186,7 +5184,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00D"
-        font: 1
+        font: 0
         size: 120
         autoSize: true
         minSize: 10
@@ -5300,7 +5298,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00S"
-        font: 1
+        font: 0
         size: 120
         autoSize: true
         minSize: 10
@@ -5414,7 +5412,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00A"
-        font: 1
+        font: 0
         size: 120
         autoSize: true
         minSize: 10
@@ -5457,7 +5455,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x000\x00.\x000\x000\x00s"
-        font: 1
+        font: 0
         size: 50
         autoSize: true
         minSize: 10
@@ -5539,7 +5537,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x004\x00/\x004"
-        font: 1
+        font: 0
         size: 150
         autoSize: true
         minSize: 10
@@ -5920,7 +5918,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00P\x00A\x00U\x00S\x00E"
-        font: 1
+        font: 0
         size: 120
         autoSize: true
         minSize: 10

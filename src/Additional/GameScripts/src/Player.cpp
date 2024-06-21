@@ -635,6 +635,23 @@ void Player::FinishMove(HexTile* tile) {
 
 void Player::MinigameEnd() {}
 
+void Player::ResetOnNewMap() {
+    move->_info.WaitForFinding();
+
+
+
+    _money->money *= 0.3;
+    if (CurrTile != nullptr) {
+        CurrTile->StopTakingOver(this);
+        CurrTile = nullptr;
+        //move->_pointedTile = nullptr;
+    }
+
+    OwnTiles.clear();
+
+    GetTransform()->SetGlobalPosition(glm::vec3(0.0, -2.0f, 0.0f));
+}
+
 //void Player::StartPaperRockScissors(Playable* playable) {
 //    GameObject* adjacentTiles[6];
 //    CurrTile->GetMapHexTile()->tile->GetAdjacentGameObjects(adjacentTiles);// HexMetrics::GetNeighboringGameObjects(CurrTile->tilemap, CurrTile->tilemapPosition);

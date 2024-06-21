@@ -43,6 +43,15 @@ void Enemy::OnEnable()
     //PerformMovement();
 }
 
+
+//void Enemy::OnDestroy()
+//{
+//    Playable::OnDestroy();
+//    if (patron != nullptr) {
+//        GameManager::instance->FreePatron(patron);
+//    }
+//}
+
 void Enemy::Update()
 {
     UpdatePrices();

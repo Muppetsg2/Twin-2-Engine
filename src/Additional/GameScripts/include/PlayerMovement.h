@@ -30,6 +30,7 @@ namespace AStar
 class Player;
 
 class PlayerMovement : public Component {
+	friend class Player;
 	private:
 		Player* _player;
 

@@ -1337,6 +1337,9 @@ GameObjects:
           - res/scriptableobjects/patrons/Perun.so
           - res/scriptableobjects/patrons/Jutrzenka.so
           - res/scriptableobjects/patrons/Zuarasiz.so
+          - res/scriptableobjects/patrons/Perun.so
+          - res/scriptableobjects/patrons/Jutrzenka.so
+          - res/scriptableobjects/patrons/Zuarasiz.so
         RockBackgroundMusics:
           - 2
         ElectricBackgroundMusics:

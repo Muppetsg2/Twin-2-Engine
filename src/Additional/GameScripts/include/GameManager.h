@@ -32,7 +32,8 @@ namespace Generation {
 
 class GameManager : public Component {
 private:
-
+    bool startPhase2 = false;
+    bool startPhase3 = false;
     static size_t _colorsNum;
 
     Twin2Engine::Core::AudioComponent* _audioComponent;
@@ -119,7 +120,12 @@ public:
     void EndMinigame();
     void GameOver();
 
+    void FreePatron(PatronData* patron);
+
     void StartGame();
+    void RestartMapPhase1();
+    void RestartMapPhase2();
+    void RestartMapPhase3();
     Player* GetPlayer() const;
 
     virtual YAML::Node Serialize() const override;

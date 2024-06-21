@@ -220,6 +220,16 @@ void GameManager::Update()
             _player->move->_playerDestinationMarker->SetActive(false);
         }
     }
+
+    if (Input::IsKeyPressed(KEY::U)) {
+        RestartMapPhase1();
+    }
+    if (startPhase2) {
+        RestartMapPhase2();
+    }
+    if (startPhase3) {
+        RestartMapPhase3();
+    }
 }
 
 void GameManager::UpdateEnemies(int colorIdx)
@@ -410,6 +420,10 @@ void GameManager::GameOver()
     // UIGameOverPanelController::Instance->OpenPanel();
 }
 
+void GameManager::FreePatron(PatronData* patron) {
+    _freePatronsData.push_back(patron);
+}
+
 void GameManager::StartGame()
 {
     GeneratePlayer();
@@ -426,6 +440,69 @@ void GameManager::StartGame()
 
     GameTimer::Instance()->StartTimer();
     gameStartUp = true;
+}
+
+void GameManager::RestartMapPhase1() {
+    gameStarted = false;
+    _player->ResetOnNewMap();
+
+    auto enemies = SceneManager::GetComponentsOfType<Enemy>();
+    int key = 0;
+    GameObject* go = nullptr;
+    while (enemies.size() > 0) {
+        key = enemies.begin()->first;
+        go = enemies.begin()->second->GetGameObject();
+        enemies.erase(key);
+        auto itr = find(entities.begin(), entities.end(), go->GetComponent<Enemy>());
+        if (itr != entities.end()) {
+            entities.erase(itr);
+            SceneManager::DestroyGameObject(go);
+        }
+    }
+
+    _freePatronsData.clear();
+    for (auto& p : _patronsData) {
+        _freePatronsData.push_back(p);
+    }
+    _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), _player->patron));
+    // HexagonalTilemap* tileMap = mapGeneratorGO->GetComponent<HexagonalTilemap>();
+    //Generation::MapGenerator* mapGenerator = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Generation::MapGenerator>();
+    startPhase2 = true;
+    //mapGenerator->Clear();
+}
+
+void GameManager::RestartMapPhase2() {
+    _mapGenerator->Clear();
+
+    startPhase2 = false;
+    startPhase3 = true;
+}
+
+void GameManager::RestartMapPhase3() {
+    _mapGenerator->Clear();
+    _mapGenerator->Generate();
+
+
+    _enemiesNumber += 1;
+    if (_enemiesNumber > 5) {
+        _enemiesNumber = 5;
+    }
+
+    //for (unsigned i = 0u; i < _enemiesNumber; ++i)
+    //{
+    //    GenerateEnemy();
+    //}
+
+    //for (auto e : entities)
+    //{
+    //    e->SetTileMap(_mapGenerator->tilemap);
+    //}
+
+    GameTimer::Instance()->ResetTimer();
+    GameTimer::Instance()->StartTimer();
+    gameStartUp = true;
+    gameStarted = true;
+    startPhase3 = false;
 }
 
 Player* GameManager::GetPlayer() const

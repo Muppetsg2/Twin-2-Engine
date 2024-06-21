@@ -39,8 +39,10 @@ void MoneyGainFromTiles::UpdateMoney(bool player) {
         patronMul = playable->patron->GetBonus();
     }
 
-    for (auto* tile : playable->OwnTiles) {
-        money += GainMoneyFromTile(tile) * patronMul;
+    if (playable->OwnTiles.size() > 0) {
+        for (auto* tile : playable->OwnTiles) {
+            money += GainMoneyFromTile(tile) * patronMul;
+        }
     }
 }
 

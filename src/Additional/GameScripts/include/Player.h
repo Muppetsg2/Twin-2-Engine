@@ -118,6 +118,7 @@ public:
     void StartMove(HexTile* tile);
     void FinishMove(HexTile* tile);
     void MinigameEnd();
+    void ResetOnNewMap();
     //void MinigameEnd(void* sender);
 
     //virtual void StartPaperRockScissors(Playable* playable) override;

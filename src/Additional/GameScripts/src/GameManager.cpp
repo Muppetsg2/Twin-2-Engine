@@ -421,7 +421,7 @@ void GameManager::EndMinigame()
 
 void GameManager::GameOver()
 {
-    // GameTimer::Instance->SaveIfHighest();
+    GameTimer::Instance()->SaveIfHighest();
     // gameOverUI.SetActive(true);
     // UIGameOverPanelController::Instance->OpenPanel();
 }

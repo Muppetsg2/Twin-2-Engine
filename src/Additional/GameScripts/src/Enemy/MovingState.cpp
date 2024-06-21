@@ -288,11 +288,9 @@ void MovingState::ChooseTile(Enemy* enemy)
 
 	SPDLOG_INFO("ENEMY Possible Size: {}", possible.size());
 	if (possible.size() != 0) {
-		for (auto& possiblePair : possible) {
-			HexTile* result = possiblePair.second[Random::Range(0ull, possiblePair.second.size() - 1ull)];
-
-			enemy->SetMoveDestination(result);
-		}
+		auto& possiblePair = *possible.begin();
+		HexTile* result = possiblePair.second[Random::Range(0ull, possiblePair.second.size() - 1ull)];
+		enemy->SetMoveDestination(result);
 	}
 	else {
 		StartTakingOver(enemy);

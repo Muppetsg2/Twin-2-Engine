@@ -1395,64 +1395,6 @@ GameObjects:
       - 62
       - 952
       - 876
-  - id: 876
-    name: ChooseStartingPosition
-    isStatic: false
-    isActive: false
-    transform:
-      id: 5764
-      position:
-        x: 0
-        y: 443
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 5765
-        enabled: true
-        type: Image
-        isTransparent: false
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 400
-        height: 70
-        layer: 0
-        fillEnabled: false
-        fillType: !<HORIZONTAL> 0
-        fillSubType: !<LEFT> 0
-        fillOffset: 0
-        fillProgress: 1
-      - id: 5766
-        enabled: true
-        type: Text
-        isTransparent: false
-        text: "\x00C\x00h\x00o\x00o\x00s\x00e\x00 \x00S\x00t\x00a\x00r\x00t\x00i\x00n\x00g\x00 \x00P\x00o\x00s\x00i\x00t\x00i\x00o\x00n"
-        font: 1
-        size: 30
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 0
-        height: 0
-        color:
-          x: 0
-          y: 0
-          z: 0
-          w: 1
-        alignX: !<CENTER> 1
-        alignY: !<BOTTOM> 0
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 1
   - id: 24
     name: Abilities
     isStatic: false
@@ -2450,6 +2392,66 @@ GameObjects:
         topHexagonPrefab: 0
         edgePrefab: 9
         topValueHexagonPrefab: 13
+    children:
+      []
+  - id: 876
+    name: ChooseStartingPosition
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5764
+      position:
+        x: 0
+        y: 443
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5765
+        enabled: true
+        type: Image
+        isTransparent: false
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 400
+        height: 70
+        layer: 0
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 5766
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00C\x00h\x00o\x00o\x00s\x00e\x00 \x00S\x00t\x00a\x00r\x00t\x00i\x00n\x00g\x00 \x00P\x00o\x00s\x00i\x00t\x00i\x00o\x00n"
+        font: 1
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
     children:
       []
   - id: 61
@@ -4925,6 +4927,7 @@ GameObjects:
           - 22
           - 13
           - 1
+        playTextObjectId: 98
         resultTextObjectId: 85
         remainingTimeTextId: 5401
         notesAreaImageId: 5403
@@ -4941,6 +4944,7 @@ GameObjects:
       - 45
       - 46
       - 85
+      - 98
   - id: 40
     name: Background
     isStatic: false
@@ -5577,6 +5581,49 @@ GameObjects:
         fillSubType: !<LEFT> 0
         fillOffset: 0
         fillProgress: 1
+    children:
+      []
+  - id: 98
+    name: PlayText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5479
+      position:
+        x: 0
+        y: 205
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5480
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00C\x00l\x00i\x00c\x00k\x00 \x00[\x00L\x00M\x00B\x00]\x00 \x00T\x00o\x00 \x00S\x00t\x00a\x00r\x00t"
+        font: 1
+        size: 100
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 500
+        height: 100
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
     children:
       []
   - id: 552

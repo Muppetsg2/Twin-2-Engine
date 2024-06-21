@@ -37,7 +37,7 @@ void RadioStationPlayingController::Initialize()
 
 void RadioStationPlayingController::Update()
 {
-    if (_gameStarted) 
+    if (_gameStarted && _playClicked) 
     {
         if (Input::IsKeyPressed(KEY::W))
         {
@@ -78,6 +78,12 @@ void RadioStationPlayingController::Update()
             {
                 EndPlaying();
             }
+        }
+    }
+    else if (_gameStarted && !_playClicked) {
+        if (Input::IsMouseButtonPressed(MOUSE_BUTTON::LEFT))
+        {
+            PlayClicked();
         }
     }
     else {
@@ -132,18 +138,21 @@ void RadioStationPlayingController::Play(RadioStation* radioStation, Playable* p
         _playable = playable;
         _currentNote = 0;
         _gameStarted = true;
+        _playClicked = false;
         _correctCounter = 0;
         _score = 0.f;
 
         GameManager::instance->minigameActive = true;
         OnEventPlayerStartedPlaying((Player*)playable, radioStation);
 
-        GenerateNotes();
         GetGameObject()->SetActive(true);
+        _playText->SetActive(true);
+        /*
         _buttonUp->SetInteractable(true);
         _buttonRight->SetInteractable(true);
         _buttonDown->SetInteractable(true);
         _buttonLeft->SetInteractable(true);
+        */
         _timeLimitCounter = _timeLimit;
 
         if (_remainingTimeText != nullptr) {
@@ -155,6 +164,17 @@ void RadioStationPlayingController::Play(RadioStation* radioStation, Playable* p
             _remainingTimeText->SetColor(glm::vec4(1.f));
         }
     }
+}
+
+void RadioStationPlayingController::PlayClicked()
+{
+    GenerateNotes();
+    _buttonUp->SetInteractable(true);
+    _buttonRight->SetInteractable(true);
+    _buttonDown->SetInteractable(true);
+    _buttonLeft->SetInteractable(true);
+    _playClicked = true;
+    _playText->SetActive(false);
 }
 
 RadioStationPlayingController* RadioStationPlayingController::Instance()
@@ -198,7 +218,7 @@ void RadioStationPlayingController::GenerateNotes()
 void RadioStationPlayingController::PlayNote(NoteType note)
 {
     // Warunek sprawdzaj¹cy czy nie dosz³o do zagrania po zakoñczeniu gry
-    if (!_generatedNotes.size() || !_gameStarted) return;
+    if (!_generatedNotes.size() || !_gameStarted || !_playClicked) return;
 
     if (note == _generatedNotes[_currentNote])
     {
@@ -223,6 +243,7 @@ void RadioStationPlayingController::EndPlaying()
     // Making Timer Zero for Update
     _timeLimitCounter = 0.0f;
     _gameStarted = false;
+    _playClicked = false;
 
     // Notes Clearing
     _generatedNotes.clear();
@@ -234,6 +255,7 @@ void RadioStationPlayingController::EndPlaying()
     }
     _notesImages.clear();
 
+    _playText->SetActive(false);
     _buttonUp->SetInteractable(false);
     _buttonRight->SetInteractable(false);
     _buttonDown->SetInteractable(false);
@@ -291,6 +313,7 @@ YAML::Node RadioStationPlayingController::Serialize() const
         node["notesSpritesIds"].push_back(SceneManager::GetSpriteSaveIdx(_notesSpritesIds[index]));
     }
 
+    node["playTextObjectId"] = _playText == nullptr ? 0 : _playText->Id();
     node["resultTextObjectId"] = _resultText == nullptr ? 0 : _resultText->Id();
     node["remainingTimeTextId"] = _remainingTimeText == nullptr ? 0 : _remainingTimeText->GetId();
     node["notesAreaImageId"] = _notesArea == nullptr ? 0 : _notesArea->GetId();
@@ -307,7 +330,7 @@ bool RadioStationPlayingController::Deserialize(const YAML::Node& node)
 {
     if (!node["generatedNotesNumber"] || !node["notesAreaWidth"] || !node["notesAreaHeight"] || 
         !node["timeLimit"] || !node["resultShowingTime"] || !node["correctNoteColor"] ||
-        !node["wrongNoteColor"] || !node["notesSpritesIds"] || !node["resultTextObjectId"] || 
+        !node["wrongNoteColor"] || !node["notesSpritesIds"] || !node["playTextObjectId"] || !node["resultTextObjectId"] ||
         !node["remainingTimeTextId"] || !node["notesAreaImageId"] || !node["timeChangeColorPercent"] ||
         !node["buttonUp"] || !node["buttonRight"] || !node["buttonDown"] || !node["buttonLeft"] ||
         !Component::Deserialize(node)) return false;
@@ -336,7 +359,9 @@ bool RadioStationPlayingController::Deserialize(const YAML::Node& node)
         }
     }
 
-    size_t id = node["resultTextObjectId"].as<size_t>();
+    size_t id = node["playTextObjectId"].as<size_t>();
+    _playText = id == 0 ? nullptr : SceneManager::GetGameObjectWithId(id);
+    id = node["resultTextObjectId"].as<size_t>();
     _resultText = id == 0 ? nullptr : SceneManager::GetGameObjectWithId(id);
     id = node["remainingTimeTextId"].as<size_t>();
     _remainingTimeText = id == 0 ? nullptr : (Text*)SceneManager::GetComponentWithId(id);
@@ -558,6 +583,29 @@ void RadioStationPlayingController::DrawEditor()
         std::vector<GameObject*> objs = SceneManager::GetAllGameObjects();
         objs.erase(objs.begin());
         objs.insert(objs.begin(), nullptr);
+        choosed_1 = std::find(objs.begin(), objs.end(), _playText) - objs.begin();
+
+        if (ImGui::BeginCombo(string("PlayTextObject##").append(id).c_str(), choosed_1 == 0 ? "None" : objs[choosed_1]->GetName().c_str())) {
+
+            bool clicked = false;
+            for (size_t i = 0; i < objs.size(); ++i) {
+
+                if (ImGui::Selectable(std::string(i == 0 ? "None" : objs[i]->GetName().c_str()).append("##").append(id).append(std::to_string(i)).c_str(), i == choosed_1)) {
+
+                    if (clicked) continue;
+
+                    choosed_1 = i;
+                    clicked = true;
+                }
+            }
+
+            if (clicked) {
+                _playText = objs[choosed_1];
+            }
+
+            ImGui::EndCombo();
+        }
+
         choosed_1 = std::find(objs.begin(), objs.end(), _resultText) - objs.begin();
 
         if (ImGui::BeginCombo(string("ResultTextObject##").append(id).c_str(), choosed_1 == 0 ? "None" : objs[choosed_1]->GetName().c_str())) {

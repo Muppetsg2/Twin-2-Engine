@@ -907,6 +907,8 @@ Sprites:
     height: 256
 Fonts:
   - id: 0
+    path: res/fonts/Caveat-Regular.ttf
+  - id: 1
     path: res/fonts/Metal-Lord.otf
 GIFS: ~
 Audio:
@@ -1390,64 +1392,6 @@ GameObjects:
       - 62
       - 952
       - 876
-  - id: 876
-    name: ChooseStartingPosition
-    isStatic: false
-    isActive: false
-    transform:
-      id: 5764
-      position:
-        x: 0
-        y: 443
-        z: 0
-      scale:
-        x: 1
-        y: 1
-        z: 1
-      rotation:
-        x: 0
-        y: 0
-        z: 0
-    components:
-      - id: 5765
-        enabled: true
-        type: Image
-        isTransparent: false
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 400
-        height: 70
-        layer: 0
-        fillEnabled: false
-        fillType: !<HORIZONTAL> 0
-        fillSubType: !<LEFT> 0
-        fillOffset: 0
-        fillProgress: 1
-      - id: 5766
-        enabled: true
-        type: Text
-        isTransparent: false
-        text: "\x00C\x00h\x00o\x00o\x00s\x00e\x00 \x00S\x00t\x00a\x00r\x00t\x00i\x00n\x00g\x00 \x00P\x00o\x00s\x00i\x00t\x00i\x00o\x00n"
-        font: 0
-        size: 30
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 0
-        height: 0
-        color:
-          x: 0
-          y: 0
-          z: 0
-          w: 1
-        alignX: !<CENTER> 1
-        alignY: !<BOTTOM> 0
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 1
   - id: 24
     name: Abilities
     isStatic: false
@@ -1667,7 +1611,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: ""
-        font: 0
+        font: 1
         size: 30
         autoSize: true
         minSize: 10
@@ -1898,7 +1842,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: ""
-        font: 0
+        font: 1
         size: 30
         autoSize: true
         minSize: 10
@@ -2090,7 +2034,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00M\x00o\x00n\x00e\x00y\x00:\x00 \x000\x00$"
-        font: 0
+        font: 1
         size: 30
         autoSize: true
         minSize: 10
@@ -2133,7 +2077,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00-"
-        font: 0
+        font: 1
         size: 30
         autoSize: true
         minSize: 10
@@ -2176,7 +2120,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: ""
-        font: 0
+        font: 1
         size: 30
         autoSize: true
         minSize: 10
@@ -2219,7 +2163,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x002\x000\x002\x000\x00.\x000\x001\x00.\x000\x001"
-        font: 0
+        font: 1
         size: 30
         autoSize: true
         minSize: 10
@@ -2445,6 +2389,66 @@ GameObjects:
         topHexagonPrefab: 0
         edgePrefab: 9
         topValueHexagonPrefab: 13
+    children:
+      []
+  - id: 876
+    name: ChooseStartingPosition
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5764
+      position:
+        x: 0
+        y: 443
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5765
+        enabled: true
+        type: Image
+        isTransparent: false
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 400
+        height: 70
+        layer: 0
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 5766
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00C\x00h\x00o\x00o\x00s\x00e\x00 \x00S\x00t\x00a\x00r\x00t\x00i\x00n\x00g\x00 \x00P\x00o\x00s\x00i\x00t\x00i\x00o\x00n"
+        font: 1
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
     children:
       []
   - id: 61
@@ -3147,7 +3151,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x002\x00/\x002"
-        font: 0
+        font: 1
         size: 70
         autoSize: false
         minSize: 0
@@ -3190,7 +3194,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x000\x00/\x002"
-        font: 0
+        font: 1
         size: 70
         autoSize: false
         minSize: 0
@@ -3233,7 +3237,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00Y\x00o\x00u"
-        font: 0
+        font: 1
         size: 40
         autoSize: true
         minSize: 10
@@ -3276,7 +3280,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00E\x00n\x00e\x00m\x00y"
-        font: 0
+        font: 1
         size: 40
         autoSize: true
         minSize: 10
@@ -3526,7 +3530,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00P\x00e\x00r\x00u\x00n\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00M\x00o\x00v\x00e\x00 \x00R\x00a\x00n\x00g\x00e\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00+\x001\x00.\x000\x000\x000\x000\x000\x000"
-        font: 0
+        font: 1
         size: 16
         autoSize: true
         minSize: 5
@@ -3569,7 +3573,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00P\x00e\x00r\x00u\x00n"
-        font: 0
+        font: 1
         size: 30
         autoSize: true
         minSize: 10
@@ -3766,7 +3770,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00J\x00u\x00r\x00z\x00e\x00n\x00k\x00a\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00A\x00b\x00i\x00l\x00i\x00t\x00i\x00e\x00s\x00 \x00R\x00a\x00n\x00g\x00e\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00+\x001\x00.\x000\x000\x000\x000\x000\x000"
-        font: 0
+        font: 1
         size: 14
         autoSize: true
         minSize: 5
@@ -3809,7 +3813,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00J\x00u\x00r\x00z\x00e\x00n\x00k\x00a"
-        font: 0
+        font: 1
         size: 30
         autoSize: true
         minSize: 10
@@ -4005,7 +4009,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00Z\x00u\x00a\x00r\x00a\x00s\x00i\x00z\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00M\x00o\x00n\x00e\x00y\x00 \x00G\x00a\x00i\x00n\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00x\x001\x00.\x001\x000\x000\x000\x000\x000"
-        font: 0
+        font: 1
         size: 13
         autoSize: true
         minSize: 5
@@ -4048,7 +4052,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00Z\x00u\x00a\x00r\x00a\x00s\x00i\x00z"
-        font: 0
+        font: 1
         size: 30
         autoSize: true
         minSize: 10
@@ -4245,7 +4249,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00P\x00e\x00r\x00u\x00n\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00M\x00o\x00v\x00e\x00 \x00R\x00a\x00n\x00g\x00e\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00+\x001\x00.\x000\x000\x000\x000\x000\x000"
-        font: 0
+        font: 1
         size: 16
         autoSize: true
         minSize: 5
@@ -4288,7 +4292,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00P\x00e\x00r\x00u\x00n"
-        font: 0
+        font: 1
         size: 30
         autoSize: true
         minSize: 10
@@ -4485,7 +4489,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00J\x00u\x00r\x00z\x00e\x00n\x00k\x00a\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00A\x00b\x00i\x00l\x00i\x00t\x00i\x00e\x00s\x00 \x00R\x00a\x00n\x00g\x00e\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00+\x001\x00.\x000\x000\x000\x000\x000\x000"
-        font: 0
+        font: 1
         size: 14
         autoSize: true
         minSize: 5
@@ -4528,7 +4532,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00J\x00u\x00r\x00z\x00e\x00n\x00k\x00a"
-        font: 0
+        font: 1
         size: 30
         autoSize: true
         minSize: 10
@@ -4725,7 +4729,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00Z\x00u\x00a\x00r\x00a\x00s\x00i\x00z\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00M\x00o\x00n\x00e\x00y\x00 \x00G\x00a\x00i\x00n\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00x\x001\x00.\x001\x000\x000\x000\x000\x000"
-        font: 0
+        font: 1
         size: 13
         autoSize: true
         minSize: 5
@@ -4768,7 +4772,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00Z\x00u\x00a\x00r\x00a\x00s\x00i\x00z"
-        font: 0
+        font: 1
         size: 30
         autoSize: true
         minSize: 10
@@ -4850,7 +4854,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00C\x00h\x00o\x00o\x00s\x00e\x00 \x00Y\x00o\x00u\x00r\x00 \x00P\x00a\x00t\x00r\x00o\x00n\x00!"
-        font: 0
+        font: 1
         size: 80
         autoSize: true
         minSize: 10
@@ -4920,6 +4924,7 @@ GameObjects:
           - 22
           - 13
           - 1
+        playTextObjectId: 98
         resultTextObjectId: 85
         remainingTimeTextId: 5401
         notesAreaImageId: 5403
@@ -4936,6 +4941,7 @@ GameObjects:
       - 45
       - 46
       - 85
+      - 98
   - id: 40
     name: Background
     isStatic: false
@@ -5070,7 +5076,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00W"
-        font: 0
+        font: 1
         size: 120
         autoSize: true
         minSize: 10
@@ -5184,7 +5190,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00D"
-        font: 0
+        font: 1
         size: 120
         autoSize: true
         minSize: 10
@@ -5298,7 +5304,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00S"
-        font: 0
+        font: 1
         size: 120
         autoSize: true
         minSize: 10
@@ -5412,7 +5418,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00A"
-        font: 0
+        font: 1
         size: 120
         autoSize: true
         minSize: 10
@@ -5455,7 +5461,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x000\x00.\x000\x000\x00s"
-        font: 0
+        font: 1
         size: 50
         autoSize: true
         minSize: 10
@@ -5537,7 +5543,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x004\x00/\x004"
-        font: 0
+        font: 1
         size: 150
         autoSize: true
         minSize: 10
@@ -5572,6 +5578,49 @@ GameObjects:
         fillSubType: !<LEFT> 0
         fillOffset: 0
         fillProgress: 1
+    children:
+      []
+  - id: 98
+    name: PlayText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5479
+      position:
+        x: 0
+        y: 205
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5480
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00C\x00l\x00i\x00c\x00k\x00 \x00[\x00L\x00M\x00B\x00]\x00 \x00T\x00o\x00 \x00S\x00t\x00a\x00r\x00t"
+        font: 1
+        size: 100
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 500
+        height: 100
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
     children:
       []
   - id: 552
@@ -5918,7 +5967,7 @@ GameObjects:
         type: Text
         isTransparent: false
         text: "\x00P\x00A\x00U\x00S\x00E"
-        font: 0
+        font: 1
         size: 120
         autoSize: true
         minSize: 10

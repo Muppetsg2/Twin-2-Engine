@@ -704,7 +704,10 @@ bool HexTile::Deserialize(const YAML::Node& node)
 		return false;
 
 	loseInfluenceSpeed = node["loseInfluenceSpeed"].as<float>();
-	texturesData = dynamic_cast<HexTileTextureData*>(Twin2Engine::Manager::ScriptableObjectManager::Load(node["textuesData"].as<string>()));
+
+	string _texturesDataPath = node["textuesData"].as<string>();
+	texturesData = dynamic_cast<HexTileTextureData*>(Twin2Engine::Manager::ScriptableObjectManager::Load(_texturesDataPath));
+	//Twin2Engine::Manager::ScriptableObjectManager::Unload(_texturesDataPath);
 
 	if (node["borders"]) {
 		borders.clear();

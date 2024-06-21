@@ -25,6 +25,7 @@ class MiniGameManager;
 class HexTile;
 class PlayerInterface;
 class Player;
+class Enemy;
 
 namespace Generation {
     class MapHexTile;

@@ -99,6 +99,7 @@ void GameManager::OnDestroy() {
     if (this == instance)
     {
         instance = nullptr;
+        Twin2Engine::Manager::ScriptableObjectManager::Unload("res/scriptableobjects/HexTileTextureData.so");
     }
 
     if (GameTimer::Instance() != nullptr) {

@@ -317,19 +317,25 @@ void MovingState::Enter(Enemy* enemy)
 		ChooseTile(enemy);
 	});
 	size_t ofmId = (enemy->_movement->OnFinishMoving += [enemy](GameObject* gameObject, HexTile* tile) {
-		enemy->CurrTile = tile;
-
-		if (tile->occupyingEntity != nullptr && tile->occupyingEntity != enemy && tile->state == TileState::OCCUPIED) {
-			tile->StartTakingOver(enemy);
-			enemy->ChangeState(&enemy->_fightingState);
-		}
-		else if (tile->GetMapHexTile()->type == MapHexTile::HexTileType::RadioStation) {
-			tile->StartTakingOver(enemy);
-			enemy->ChangeState(&enemy->_radioStationState);
+		if (tile == nullptr) {
+			SPDLOG_ERROR("TILE WAS NULLPTR. WHY????!!!!");
+			ChooseTile(enemy);
 		}
 		else {
-			tile->StartTakingOver(enemy);
-			DoAfterMoveDecisionTree(enemy);
+			enemy->CurrTile = tile;
+
+			if (tile->occupyingEntity != nullptr && tile->occupyingEntity != enemy && tile->state == TileState::OCCUPIED) {
+				tile->StartTakingOver(enemy);
+				enemy->ChangeState(&enemy->_fightingState);
+			}
+			else if (tile->GetMapHexTile()->type == MapHexTile::HexTileType::RadioStation) {
+				tile->StartTakingOver(enemy);
+				enemy->ChangeState(&enemy->_radioStationState);
+			}
+			else {
+				tile->StartTakingOver(enemy);
+				DoAfterMoveDecisionTree(enemy);
+			}
 		}
 	});
 

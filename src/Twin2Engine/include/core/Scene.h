@@ -19,6 +19,7 @@ namespace Twin2Engine::Core {
 		std::map<std::string, std::pair<Graphic::TextureFormat, Manager::TextureFileFormat>> _texturesFormats;
 		std::map<size_t, std::tuple<std::string, size_t, bool, Manager::SpriteData>> _sprites;
 		std::map<size_t, std::string> _fonts;
+		std::map<size_t, std::string> _gifs;
 		std::map<size_t, std::string> _audios;
 		std::map<size_t, std::string> _materials;
 		std::map<size_t, std::string> _models;
@@ -36,6 +37,7 @@ namespace Twin2Engine::Core {
 		void AddSprite(size_t id, const std::string& name, size_t textureId);
 		void AddSprite(size_t id, const std::string& name, size_t textureId, const Manager::SpriteData& data);
 		void AddFont(size_t id, const std::string& path);
+		void AddGIF(size_t id, const std::string& path);
 		void AddAudio(size_t id, const std::string& path);
 		void AddModel(size_t id, const std::string& path);
 		void AddMaterial(size_t id, const std::string& path);

@@ -134,6 +134,7 @@ namespace Twin2Engine
 		public:
 			static void Render(UITextData textData);
 			static void Render(UIImageData imageData);
+			static void Render(UIElementData data, FillData fill, Graphic::Texture2D* texture);
 
 			friend class Graphic::GraphicEngine;
 		};

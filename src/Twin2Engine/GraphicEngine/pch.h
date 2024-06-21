@@ -13,6 +13,9 @@
 #include <list>
 #include <set>
 #include <queue>
+#if _DEBUG
+#include <regex>
+#endif
 
 // GLAD
 #include <glad/glad.h>

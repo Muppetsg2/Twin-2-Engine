@@ -116,6 +116,7 @@ void Enemy::SetTileMap(Tilemap::HexagonalTilemap* map)
 
 void Enemy::OnDead()
 {
+    GameManager::instance->EnemyDied(this);
 }
 
 YAML::Node Enemy::Serialize() const

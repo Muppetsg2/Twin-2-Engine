@@ -733,6 +733,7 @@ void render_imgui()
         static bool _audioOpened = false;
         static bool _materialsOpened = false;
         static bool _texturesOpened = false;
+        static bool _gifsOpened = false;
         static bool _spriteOpened = false;
         static bool _modelsOpened = false;
         static bool _prefabOpened = false;
@@ -799,6 +800,7 @@ void render_imgui()
                 ImGui::MenuItem("Audio Manager##Resources", NULL, &_audioOpened);
                 ImGui::MenuItem("Materials Manager##Resources", NULL, &_materialsOpened);
                 ImGui::MenuItem("Textures Manager##Resources", NULL, &_texturesOpened);
+                ImGui::MenuItem("GIF Manager##Resources", NULL, &_gifsOpened);
                 ImGui::MenuItem("Sprite Manager##Resources", NULL, &_spriteOpened);
                 ImGui::MenuItem("Models Manager##Resources", NULL, &_modelsOpened);
                 ImGui::MenuItem("Prefab Manager##Resources", NULL, &_prefabOpened);
@@ -843,6 +845,9 @@ void render_imgui()
 
         if (_texturesOpened)
             TextureManager::DrawEditor(&_texturesOpened);
+
+        if (_gifsOpened)
+            GIFManager::DrawEditor(&_gifsOpened);
 
         if (_spriteOpened)
             SpriteManager::DrawEditor(&_spriteOpened);

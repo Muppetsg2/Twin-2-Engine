@@ -36,6 +36,11 @@ void Scene::AddFont(size_t id, const string& path)
 	_fonts[id] = path;
 }
 
+void Scene::AddGIF(size_t id, const string& path)
+{
+	_gifs[id] = path;
+}
+
 void Scene::AddAudio(size_t id, const string& path)
 {
 	_audios[id] = path;
@@ -102,6 +107,11 @@ void Scene::Deserialize(const YAML::Node& sceneNode)
 #pragma region LOAD_FONTS_FROM_SCENE_FILE
 	for (const YAML::Node& fontNode : sceneNode["Fonts"]) {
 		AddFont(fontNode["id"].as<size_t>(), fontNode["path"].as<string>());
+	}
+#pragma endregion
+#pragma region LOAD_GIFS_FROM_SCENE_FILE
+	for (const YAML::Node& gifNode : sceneNode["GIFS"]) {
+		AddGIF(gifNode["id"].as<size_t>(), gifNode["path"].as<string>());
 	}
 #pragma endregion
 #pragma region LOAD_AUDIO_FROM_SCENE_FILE

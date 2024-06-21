@@ -114,6 +114,7 @@ void GraphicEngine::End()
 	SpriteManager::UnloadAll();
 	TextureManager::UnloadAll();
 	FontManager::UnloadAll();
+	GIFManager::UnloadAll();
 	LightingController::UnloadAll();
 	ModelsManager::UnloadAll();
 	Window::FreeAll();

@@ -35,6 +35,7 @@ Sprites:
     width: 144
     height: 153
 Fonts: ~
+GIFS: ~
 Audio:
   - id: 0
     path: res/music/Abilities/UI/OnHoverClick.mp3

@@ -8,6 +8,7 @@ namespace Twin2Engine::UI {
 	class Text;
 	class Button;
 	class InputField;
+	class GIFPlayer;
 
 	class Canvas : public Core::Component {
 	private:
@@ -26,6 +27,7 @@ namespace Twin2Engine::UI {
 		friend class Text;
 		friend class Button;
 		friend class InputField;
+		friend class GIFPlayer;
 
 	public:
 		void Initialize() override;

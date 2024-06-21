@@ -61,19 +61,29 @@ void RegionsGeneratorByKMeans::Generate(Tilemap::HexagonalTilemap* tilemap)
         if (!cluster.empty())
         {
             MapRegion* region = nullptr;
-            if (PrefabManager::GetPrefab(regionPrefab->GetId()) != nullptr) {
-                region = SceneManager::CreateGameObject(regionPrefab, tilemap->GetTransform())->GetComponent<MapRegion>();
+            int value = 0;
+            if (regionPrefab && PrefabManager::GetPrefab(regionPrefab->GetId()) != nullptr) {
+                GameObject* obj = nullptr;
+                obj = SceneManager::CreateGameObject(regionPrefab, tilemap->GetTransform());
+                region = obj->GetComponent<MapRegion>();
+                value = 1;
+                //region = SceneManager::CreateGameObject(regionPrefab, tilemap->GetTransform())->GetComponent<MapRegion>();
             }
             else {
                 if (prefabPath != "") {
                     regionPrefab = PrefabManager::LoadPrefab(prefabPath);
-                    region = SceneManager::CreateGameObject(regionPrefab, tilemap->GetTransform())->GetComponent<MapRegion>();
+                    GameObject* obj = nullptr;
+                    obj = SceneManager::CreateGameObject(regionPrefab, tilemap->GetTransform());
+                    region = obj->GetComponent<MapRegion>();
+                    value = 2;
+                    //region = SceneManager::CreateGameObject(regionPrefab, tilemap->GetTransform())->GetComponent<MapRegion>();
                 }
                 else {
                     region = std::get<1>(SceneManager::CreateGameObject<MapRegion>(tilemap->GetTransform()));
+                    value = 3;
                 }
             }
-
+            value;
             region->tilemap = tilemap;
 
             for (GameObject* gameObject : cluster)
@@ -95,5 +105,5 @@ void RegionsGeneratorByKMeans::Generate(Tilemap::HexagonalTilemap* tilemap)
 }
 
 void RegionsGeneratorByKMeans::Clear() {
-
+    regionPrefab = nullptr;
 }

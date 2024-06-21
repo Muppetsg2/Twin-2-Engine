@@ -29,6 +29,11 @@ SO_DESERIALIZATION_END()
 
 void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
 {
+    if (!prefabMountains)
+    {
+        prefabMountains = PrefabManager::LoadPrefab(prefabPath);
+    }
+
     vector<MapSector*> sectors;
     for (MapSector* sector : tilemap->GetGameObject()->GetComponentsInChildren<MapSector>())
     {
@@ -78,5 +83,5 @@ void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
 }
 
 void MountainsGenerator::Clear() {
-
+    prefabMountains = nullptr;
 }

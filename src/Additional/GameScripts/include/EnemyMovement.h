@@ -35,6 +35,8 @@ private:
 	friend class Enemy;
 	HexTile* destinatedTile = nullptr;
 
+	std::mutex _mutexPath;
+
 	glm::vec3 tempDest;
 	HexTile* tempDestTile;
 

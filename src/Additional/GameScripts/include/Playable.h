@@ -84,6 +84,7 @@ public:
     std::list<HexTile*> OwnTiles;
     HexTile* CurrTile;
     HexTile* tileBefore;
+    bool isDead = false;
 
     float radioTime = 2.0f;
 
@@ -146,6 +147,8 @@ public:
     void RadioStationFunc(float value, float time);
     void RadioStationEndFunc(float value);
     void CheckIfDead(Playable* playable);
+    void RemoveOwnTile(HexTile* tileToRemove, Playable* taker);
+    void AddOwnTile(HexTile* tileToAdd);
 
     //virtual void OnDead() = 0;
 

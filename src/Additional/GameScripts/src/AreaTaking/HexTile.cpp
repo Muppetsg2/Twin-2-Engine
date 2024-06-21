@@ -123,10 +123,10 @@ void HexTile::LoseInfluence()
 	percentage -= multiplayer * Time::GetDeltaTime();
 
 	if (percentage < _takingStage1) {
-		percentage = 0.0f;
-		if (ownerEntity != nullptr) {
-			ResetTile();
-		}
+		percentage = _takingStage1;
+		//if (ownerEntity != nullptr) {
+		//	ResetTile();
+		//}
 	}
 
 	UpdateTileColor();
@@ -139,15 +139,15 @@ void HexTile::UpdateTileColor()
 	//SPDLOG_INFO("Percentage: {}", percentage);
 	if (!occupyingEntity || ownerEntity == occupyingEntity)
 	{
-		if (percentage > _takingStage3)
+		if (percentage >= _takingStage3)
 		{
 			_meshRenderer->SetMaterial(0ull, texturesData->GetMaterial(col, 3ull));
 		}
-		else if (percentage > _takingStage2)
+		else if (percentage >= _takingStage2)
 		{
 			_meshRenderer->SetMaterial(0ull, texturesData->GetMaterial(col, 2ull));
 		}
-		else if (percentage > _takingStage1)
+		else if (percentage >= _takingStage1)
 		{
 			_meshRenderer->SetMaterial(0ull, texturesData->GetMaterial(col, 1ull));
 		}
@@ -176,6 +176,7 @@ void HexTile::UpdateTileColor()
 		}
 	}
 }
+
 int HexTile::GetStage() const
 {
 	if (percentage < _takingStage1)
@@ -403,7 +404,7 @@ void HexTile::Initialize()
 	}
 
 	particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/ArrowParticle.png", 3, 0.5f, 0.0f, 6.0f, 2.0f, 0.16f, 0.2f, 0.3f);
-	pgCity = new ParticleGenerator("origin/ParticleShader", TextureManager::GetTexture2D(_textureCityStar)->GetId(), 5, 0.4f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
+	pgCity = new ParticleGenerator("origin/ParticleShader", TextureManager::GetTexture2D(_textureCityStar)->GetId(), 5, 0.3f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
 	pgCityNegative = new ParticleGenerator("origin/ParticleShader", TextureManager::GetTexture2D(_textureCityBlackStar)->GetId(), 5, -0.3f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
 }
 
@@ -505,7 +506,7 @@ void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 {
 	if (ownerEntity != newOwnerEntity) {
 		if (ownerEntity != nullptr) {
-			ownerEntity->OwnTiles.remove(this);
+			ownerEntity->RemoveOwnTile(this, newOwnerEntity);
 			for (auto& t : ownerEntity->OwnTiles)
 			{
 				t->UpdateBorders();
@@ -516,7 +517,7 @@ void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 		DisableAlbumAffected();
 		ownerEntity = newOwnerEntity;
 		if (ownerEntity != nullptr) {
-			ownerEntity->OwnTiles.push_back(this);
+			ownerEntity->AddOwnTile(this);
 
 			for (auto& t : ownerEntity->OwnTiles)
 			{
@@ -703,7 +704,10 @@ bool HexTile::Deserialize(const YAML::Node& node)
 		return false;
 
 	loseInfluenceSpeed = node["loseInfluenceSpeed"].as<float>();
-	texturesData = dynamic_cast<HexTileTextureData*>(Twin2Engine::Manager::ScriptableObjectManager::Load(node["textuesData"].as<string>()));
+
+	string _texturesDataPath = node["textuesData"].as<string>();
+	texturesData = dynamic_cast<HexTileTextureData*>(Twin2Engine::Manager::ScriptableObjectManager::Load(_texturesDataPath));
+	//Twin2Engine::Manager::ScriptableObjectManager::Unload(_texturesDataPath);
 
 	if (node["borders"]) {
 		borders.clear();

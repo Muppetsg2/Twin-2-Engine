@@ -117,7 +117,8 @@ void PlayerMovement::Update() {
             _showedPathTiles.reserve(_showedPath->Count());
             size_t size = _showedPath->Count();
             //SPDLOG_INFO("Path Count: {}", _showedPath->Count());
-            
+
+            //pathPoint = _showedPath->Next();
             for (size_t pathIndex = 0ull; pathIndex < size; ++pathIndex)
             {
                 pathPoint = _showedPath->Next();

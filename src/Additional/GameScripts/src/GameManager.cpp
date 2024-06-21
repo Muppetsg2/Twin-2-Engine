@@ -80,6 +80,8 @@ void GameManager::Initialize()
         }
 
         _audioComponent = GetGameObject()->GetComponent<AudioComponent>();
+
+        _textChooseStartingPosition = SceneManager::FindObjectByName("ChooseStartingPosition");
     }
     else
     {
@@ -97,6 +99,7 @@ void GameManager::OnDestroy() {
     if (this == instance)
     {
         instance = nullptr;
+        Twin2Engine::Manager::ScriptableObjectManager::Unload("res/scriptableobjects/HexTileTextureData.so");
     }
 
     if (GameTimer::Instance() != nullptr) {
@@ -208,6 +211,7 @@ void GameManager::Update()
 
             if (_player->move->_pointedTile && Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT))
             {
+                _textChooseStartingPosition->SetActive(false);
                 _player->StartPlayer(_player->move->_pointedTile);
                 gameStartUp = false;
                 _player->move->_pointedTile = nullptr;
@@ -221,14 +225,14 @@ void GameManager::Update()
         }
     }
 
-    if (Input::IsKeyPressed(KEY::U)) {
-        RestartMapPhase1();
+    if (startPhase3) {
+        RestartMapPhase3();
     }
     if (startPhase2) {
         RestartMapPhase2();
     }
-    if (startPhase3) {
-        RestartMapPhase3();
+    if (Input::IsKeyPressed(KEY::U)) {
+        RestartMapPhase1();
     }
 }
 
@@ -245,6 +249,8 @@ void GameManager::UpdateTiles()
 
 GameObject* GameManager::GeneratePlayer()
 {
+    _textChooseStartingPosition->SetActive(true);
+
     GameObject* player = Twin2Engine::Manager::SceneManager::CreateGameObject(prefabPlayer);
     Player* p = player->GetComponent<Player>();
     _player = p;
@@ -420,8 +426,29 @@ void GameManager::GameOver()
     // UIGameOverPanelController::Instance->OpenPanel();
 }
 
-void GameManager::FreePatron(PatronData* patron) {
-    _freePatronsData.push_back(patron);
+void GameManager::EnemyDied(Enemy* enemy)
+{
+    size_t i = 0;
+    for (auto& entity : entities) {
+        if (entity == enemy) {
+            entities.erase(entities.begin() + i);
+            break;
+        }
+        ++i;
+    }
+
+    // ONLY PLAYER
+    if (entities.size() == 1) {
+        RestartMap();
+    }
+}
+
+void GameManager::RestartMap()
+{
+    // TODO: KEEP PLAYER WITH 50% of $
+    // TODO: GENERATE NEW MAP
+    // TODO: ADD ONE MORE ENEMY
+    RestartMapPhase1();
 }
 
 void GameManager::StartGame()
@@ -487,22 +514,25 @@ void GameManager::RestartMapPhase3() {
     if (_enemiesNumber > 5) {
         _enemiesNumber = 5;
     }
+    _freeColors = { 0, 1, 2, 3, 4, 5, 6 };
+    _freeColors.erase(find(_freeColors.begin(), _freeColors.end(), _player->colorIdx));
 
-    //for (unsigned i = 0u; i < _enemiesNumber; ++i)
-    //{
-    //    GenerateEnemy();
-    //}
+    for (unsigned i = 0u; i < _enemiesNumber; ++i)
+    {
+        GenerateEnemy();
+    }
 
-    //for (auto e : entities)
-    //{
-    //    e->SetTileMap(_mapGenerator->tilemap);
-    //}
+    for (auto e : entities)
+    {
+        e->SetTileMap(_mapGenerator->tilemap);
+    }
 
     GameTimer::Instance()->ResetTimer();
     GameTimer::Instance()->StartTimer();
     gameStartUp = true;
-    gameStarted = true;
+    gameStarted = false;
     startPhase3 = false;
+    _textChooseStartingPosition->SetActive(true);
 }
 
 Player* GameManager::GetPlayer() const

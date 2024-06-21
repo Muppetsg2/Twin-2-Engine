@@ -4,6 +4,7 @@
 namespace Twin2Engine {
 	namespace Manager {
 		class TextureManager;
+		class GIFManager;
 	}
 
 	namespace Graphic {
@@ -89,6 +90,7 @@ namespace Twin2Engine {
 #endif
 
 			friend Manager::TextureManager;
+			friend Manager::GIFManager;
 			friend Font;
 		};
 	}

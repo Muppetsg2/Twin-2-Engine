@@ -49,8 +49,10 @@ void SectorGeneratorForRegionsByKMeans::Generate(HexagonalTilemap* tilemap)
             if (!cluster.empty()) 
             {
                 MapSector* sector = nullptr;
-                if (PrefabManager::GetPrefab(sectorPrefab->GetId()) != nullptr) {
-                    sector = SceneManager::CreateGameObject(sectorPrefab, tilemap->GetTransform())->GetComponent<MapSector>();
+                if (sectorPrefab && PrefabManager::GetPrefab(sectorPrefab->GetId()) != nullptr) {
+                    GameObject* obj = nullptr;
+                    obj = SceneManager::CreateGameObject(sectorPrefab, tilemap->GetTransform());
+                    sector = obj->GetComponent<MapSector>();
                 }
                 else {
 
@@ -87,5 +89,5 @@ void SectorGeneratorForRegionsByKMeans::Generate(HexagonalTilemap* tilemap)
 }
 
 void SectorGeneratorForRegionsByKMeans::Clear() {
-
+    sectorPrefab = nullptr;
 }

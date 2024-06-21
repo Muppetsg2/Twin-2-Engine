@@ -45,6 +45,11 @@ SO_DESERIALIZATION_END()
 
 void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
 {
+    if (!prefabCity)
+    {
+        prefabCity = PrefabManager::LoadPrefab(prefabPath);
+    }
+
     if (byRegions)
     {
         std::vector<MapRegion*> regions;
@@ -192,5 +197,6 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
 
 void CitiesGenerator::Clear()
 {
+    prefabCity = nullptr;
     CitiesManager::RemoveAllCities();
 }

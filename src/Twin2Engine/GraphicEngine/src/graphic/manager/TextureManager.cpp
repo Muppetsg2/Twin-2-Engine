@@ -1,9 +1,5 @@
 #include <graphic/manager/TextureManager.h>
 
-#if _DEBUG
-#include <regex>
-#endif
-
 using namespace Twin2Engine;
 using namespace Graphic;
 using namespace Manager;

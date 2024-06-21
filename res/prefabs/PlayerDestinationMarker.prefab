@@ -15,6 +15,7 @@ Textures:
     magFilterMode: !<LINEAR> 9729
 Sprites: ~
 Fonts: ~
+GIFS: ~
 Audio: ~
 Materials: 
   - id: 0

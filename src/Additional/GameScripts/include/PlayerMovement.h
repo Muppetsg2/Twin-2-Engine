@@ -44,7 +44,6 @@ class PlayerMovement : public Component {
 		bool _showedPathDisabled;
 
 		AStar::AStarNodePath* _showedPath = nullptr;
-		std::vector<HexTile*> _showedPathTiles = std::vector<HexTile*>();
 
 
 		HexTile* destinatedTile = nullptr;
@@ -71,6 +70,7 @@ class PlayerMovement : public Component {
 		void DrawLine(glm::vec3 startPos, glm::vec3 endPos);
 			
 	public:
+		std::vector<HexTile*> _showedPathTiles = std::vector<HexTile*>();
 		Twin2Engine::Core::GameObject* _playerDestinationMarker = nullptr;
 		Twin2Engine::Core::GameObject* _playerWrongDestinationMarker = nullptr;
 		HexTile* _pointedTile = nullptr;

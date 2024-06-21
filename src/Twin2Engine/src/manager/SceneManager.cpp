@@ -3,11 +3,14 @@
 #include <core/ComponentsMap.h>
 #include <graphic/manager/MaterialsManager.h>
 #include <graphic/manager/ModelsManager.h>
+#include <graphic/manager/GIFManager.h>
 #include <manager/PrefabManager.h>
 #include <tools/EventHandler.h>
 #include <manager/ScriptableObjectManager.h>
 #include <core/ResourceManagement.h>
 #include <regex>
+
+#include <graphic/manager/MeshRenderingManager.h>
 
 using namespace Twin2Engine::Manager;
 using namespace std;
@@ -25,6 +28,7 @@ map<size_t, Component*> SceneManager::_componentsById;
 map<size_t, size_t> SceneManager::_texturesIds;
 map<size_t, size_t> SceneManager::_spritesIds;
 map<size_t, size_t> SceneManager::_fontsIds;
+map<size_t, size_t> SceneManager::_gifsIds;
 map<size_t, size_t> SceneManager::_audiosIds;
 map<size_t, size_t> SceneManager::_materialsIds;
 map<size_t, size_t> SceneManager::_modelsIds;
@@ -255,6 +259,19 @@ void SceneManager::LoadScene() {
 		return false;
 		};
 	_fontsIds = LoadResources(pathGetter, idGetter, dataGetter, sceneToLoad->_fonts, _fontsIds, unloader, loader);
+#pragma endregion
+#pragma region LOADING_GIFS
+	unloader = [](size_t id) -> bool { GIFManager::Unload(id); return true; };
+	loader = [](const string& path, size_t& id) -> bool {
+		GIF* temp = GIFManager::Load(path);
+		if (temp != nullptr) {
+			id = temp->GetManagerId();
+			return true;
+		}
+		SPDLOG_ERROR("Couldn't load gif '{0}'", path);
+		return false;
+	};
+	_gifsIds = LoadResources(pathGetter, idGetter, dataGetter, sceneToLoad->_gifs, _gifsIds, unloader, loader);
 #pragma endregion
 #pragma region LOADING_AUDIO
 	unloader = [](size_t id) -> bool { AudioManager::UnloadAudio(id); return true; };
@@ -547,6 +564,9 @@ void SceneManager::SaveScene(const string& path) {
 #pragma region SAVING_FONTS
 	sceneNode["Fonts"] = FontManager::Serialize();
 #pragma endregion
+#pragma region SAVING_GIFS
+	sceneNode["GIFS"] = GIFManager::Serialize();
+#pragma endregion
 #pragma region SAVING_AUDIOS
 	sceneNode["Audio"] = AudioManager::Serialize();
 #pragma endregion
@@ -589,11 +609,6 @@ void SceneManager::UpdateCurrentScene()
 void SceneManager::RenderCurrentScene()
 {
 	for (auto& comp : RenderableComponent::_components) {
-		if (comp->_gameObject == nullptr) {
-			SPDLOG_ERROR("XD?");
-			continue;
-		}
-
 		if (comp->IsEnable() && comp->GetGameObject()->GetActive()) 
 			comp->Render();
 	}
@@ -715,6 +730,18 @@ GameObject* SceneManager::CreateGameObject(Prefab* prefab, Transform* parent)
 		return false;
 	};
 	_fontsIds = LoadResources(pathGetter, idGetter, dataGetter, prefab->_fonts, _fontsIds, unloader, loader);
+#pragma endregion
+#pragma region LOADING_PREFAB_GIFS
+	loader = [](const string& path, size_t& id) -> bool {
+		GIF* temp = GIFManager::Load(path);
+		if (temp != nullptr) {
+			id = temp->GetManagerId();
+			return true;
+		}
+		SPDLOG_ERROR("Couldn't load gif '{0}'", path);
+		return false;
+	};
+	_gifsIds = LoadResources(pathGetter, idGetter, dataGetter, prefab->_gifs, _gifsIds, unloader, loader);
 #pragma endregion
 #pragma region LOADING_PREFAB_AUDIO
 	loader = [](const string& path, size_t& id) -> bool {
@@ -1006,6 +1033,11 @@ size_t SceneManager::GetFont(size_t loadIdx)
 	return _fontsIds[loadIdx];
 }
 
+size_t SceneManager::GetGIF(size_t loadIdx)
+{
+	return _gifsIds[loadIdx];
+}
+
 size_t SceneManager::GetAudio(size_t loadIdx)
 {
 	return _audiosIds[loadIdx];
@@ -1056,6 +1088,17 @@ size_t SceneManager::GetFontSaveIdx(size_t fontId)
 		++idx;
 	}
 	SPDLOG_WARN("Font '{0}' Not Found", fontId);
+	return idx;
+}
+
+size_t SceneManager::GetGIFSaveIdx(size_t gifId)
+{
+	size_t idx = 0;
+	for (const auto& gifPair : GIFManager::_paths) {
+		if (gifPair.first == gifId) return idx;
+		++idx;
+	}
+	SPDLOG_WARN("GIF '{0}' Not Found", gifId);
 	return idx;
 }
 
@@ -1126,10 +1169,13 @@ void SceneManager::UnloadCurrent()
 	unloader(_texturesIds, [](size_t id) -> void { TextureManager::UnloadTexture2D(id); });
 	unloader(_spritesIds, [](size_t id) -> void { SpriteManager::UnloadSprite(id); });
 	unloader(_fontsIds, [](size_t id) -> void { FontManager::UnloadFont(id); });
+	unloader(_gifsIds, [](size_t id) -> void { GIFManager::Unload(id); });
 	unloader(_audiosIds, [](size_t id) -> void { AudioManager::UnloadAudio(id); });
 	unloader(_materialsIds, [](size_t id) -> void { MaterialsManager::UnloadMaterial(id); });
+	//Twin2Engine::Manager::ShaderManager::UnloadAll();
 	unloader(_modelsIds, [](size_t id) -> void { ModelsManager::UnloadModel(id); });
 	unloader(_prefabsIds, [](size_t id) -> void { PrefabManager::UnloadPrefab(id); });
+	//Twin2Engine::Manager::MeshRenderingManager::UnloadAll();
 }
 
 void SceneManager::UnloadScene(const std::string& name)

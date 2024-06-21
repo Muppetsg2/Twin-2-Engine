@@ -16,7 +16,6 @@
 #include <GameTimer.h>
 
 #include <ParticleSystemsController.h>
-//#include <pch.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Graphic;
@@ -25,6 +24,7 @@ class MiniGameManager;
 class HexTile;
 class PlayerInterface;
 class Player;
+class Enemy;
 
 namespace Generation {
     class MapHexTile;
@@ -57,6 +57,8 @@ private:
     //size_t _dayEventHandleId;
     //size_t _monthEventHandleId;
     //size_t _yearEventHandleId;
+
+    Twin2Engine::Core::GameObject* _textChooseStartingPosition;
 
     Twin2Engine::UI::Text* _dateText;
     //Twin2Engine::UI::Text* _dayText;
@@ -119,6 +121,8 @@ public:
     void StartMinigame();
     void EndMinigame();
     void GameOver();
+    void EnemyDied(Enemy* enemy);
+    void RestartMap();
 
     void FreePatron(PatronData* patron);
 

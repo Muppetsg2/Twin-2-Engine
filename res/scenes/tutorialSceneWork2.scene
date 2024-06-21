@@ -799,6 +799,7 @@ Fonts:
     path: res/fonts/Caveat-Regular.ttf
   - id: 1
     path: res/fonts/Metal-Lord.otf
+GIFS: ~
 Audio:
   - id: 0
     path: res/music/Minigame/Drum.mp3

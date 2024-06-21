@@ -910,6 +910,7 @@ Fonts:
     path: res/fonts/Caveat-Regular.ttf
   - id: 1
     path: res/fonts/Metal-Lord.otf
+GIFS: ~
 Audio:
   - id: 0
     path: res/music/Pop/Summer_Beats_Carnival.mp3
@@ -1393,6 +1394,65 @@ GameObjects:
       - 24
       - 62
       - 952
+      - 876
+  - id: 876
+    name: ChooseStartingPosition
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5764
+      position:
+        x: 0
+        y: 443
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5765
+        enabled: true
+        type: Image
+        isTransparent: false
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 400
+        height: 70
+        layer: 0
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 5766
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00C\x00h\x00o\x00o\x00s\x00e\x00 \x00S\x00t\x00a\x00r\x00t\x00i\x00n\x00g\x00 \x00P\x00o\x00s\x00i\x00t\x00i\x00o\x00n"
+        font: 1
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
   - id: 24
     name: Abilities
     isStatic: false

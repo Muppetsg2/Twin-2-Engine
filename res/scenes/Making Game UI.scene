@@ -117,6 +117,7 @@ Sprites:
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
+GIFS: ~
 Audio: ~
 Materials:
   - id: 0

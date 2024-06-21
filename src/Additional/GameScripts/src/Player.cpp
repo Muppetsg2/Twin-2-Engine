@@ -477,6 +477,12 @@ void Player::AlbumCall() {
         _albumButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
         UseAlbum();
 
+        for (HexTile* tile : OwnTiles)
+        {
+            tile->EnableAlbumAffected();
+        }
+        _isShowingAlbumPossible = true;
+
         _albumButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
         _albumButtonFrameImage->SetSprite(_spriteButtonStep1);
     }
@@ -638,9 +644,17 @@ void Player::MinigameEnd() {}
 void Player::ResetOnNewMap() {
     move->_info.WaitForFinding();
 
+    if (move->_showedPathTiles.size())
+    {
+        size_t showedPathTilesSize = move->_showedPathTiles.size();
+        for (size_t index = 0ull; index < showedPathTilesSize; ++index)
+        {
+            move->_showedPathTiles[index]->DisableAffected();
+        }
+        move->_showedPathTiles.clear();
+    }
 
-
-    _money->money *= 0.3;
+    _money->money *= 0.5;
     if (CurrTile != nullptr) {
         CurrTile->StopTakingOver(this);
         CurrTile = nullptr;

@@ -1,4 +1,4 @@
-#include <AreaTaking/HexTileTexturesData.h>
+#include <AreaTaking/HexTileTextureData.h>
 #include <graphic/manager/MaterialsManager.h>
 
 using namespace Twin2Engine::Core;

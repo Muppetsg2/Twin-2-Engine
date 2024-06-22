@@ -10,6 +10,8 @@
 
 #include <AreaTaking/HexTile.h>
 
+#include <AreaTaking/CityTextureData.h>
+
 class HexTile;
 
 class City : public Twin2Engine::Core::Component
@@ -25,6 +27,9 @@ class City : public Twin2Engine::Core::Component
 
 	bool _isConcertRoadCity = false;
 
+	CityTextureData* _texturesData;
+	TILE_COLOR _color = TILE_COLOR::NEUTRAL;
+
 public:
 
 	float CalculateLooseInterestMultiplier(HexTile* hexTile);
@@ -38,6 +43,9 @@ public:
 
 	bool IsConcertRoadCity() const;
 	void SetConcertRoadCity(bool isConcertRoadCity);
+
+	TILE_COLOR GetColor();
+	void SetColor(TILE_COLOR color);
 
 	virtual YAML::Node Serialize() const override;
 	virtual bool Deserialize(const YAML::Node& node) override;

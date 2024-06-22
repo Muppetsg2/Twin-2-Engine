@@ -11,12 +11,10 @@ namespace Generation
 	class MapHexTile : public Twin2Engine::Core::Component
 	{
 	protected:
-		CloneBaseFunc(MapHexTile, Twin2Engine::Core::Component,
-			type
-		)
+		CloneBaseFunc(MapHexTile, Twin2Engine::Core::Component, type)
 	public:
 
-		ENUM_CLASS(HexTileType, None, Empty, PointOfInterest, Water, Mountain, RadioStation)
+		ENUM_CLASS_BASE(HexTileType, uint8_t, None, Empty, PointOfInterest, Water, Mountain, RadioStation)
 
 	public:
 		Tilemap::HexagonalTilemap* tilemap = nullptr;
@@ -38,7 +36,6 @@ namespace Generation
 		//
 		//inline void SetSector(MapSector* sector);
 		//inline MapSector* GetSector() const;
-
 
 		virtual YAML::Node Serialize() const override;
 		virtual bool Deserialize(const YAML::Node& node) override;

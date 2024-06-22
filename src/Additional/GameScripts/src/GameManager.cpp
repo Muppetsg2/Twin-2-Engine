@@ -231,7 +231,7 @@ void GameManager::Update()
     if (startPhase2) {
         RestartMapPhase2();
     }
-    if (Input::IsKeyPressed(KEY::U)) {
+    if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::U)) {
         RestartMapPhase1();
     }
 }
@@ -792,6 +792,8 @@ void GameManager::DrawEditor()
         Twin2Engine::UI::Text* _monthText;
         Twin2Engine::UI::Text* _yearText;
         */
+
+        ImGui::TextColored(ImVec4(0.5f, 1.f, 1.f, 1.f), "If You Want To Reload Game. Press CTRL+U");
 
         std::map<size_t, string> prefabNames = Twin2Engine::Manager::PrefabManager::GetAllPrefabsNames();
 

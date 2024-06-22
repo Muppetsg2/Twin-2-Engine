@@ -328,8 +328,6 @@ void Playable::CheckIfDead(Playable* playable) {
         if (playable)
             ++playable->enemiesKilled;
 
-        SPDLOG_WARN("Enemy die");
-
         isDead = true;
         OnDead();
     }

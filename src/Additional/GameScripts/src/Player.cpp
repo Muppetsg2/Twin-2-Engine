@@ -646,6 +646,27 @@ void Player::ResetOnNewMap() {
 
     GetTransform()->SetGlobalPosition(vec3(0.0f, -5.0f, 0.0f));
 
+    // Clearing after abilities
+    currAlbumTime = 0.0f;
+    currAlbumCooldown = 0.0f;
+    currFansTime = 0.0f;
+    currFansCooldown = 0.0f;
+
+
+    HideAffectedTiles();
+    _fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+    _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
+    _isHoveringFansMeetingButton = false;
+
+    PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
+    _isShowingConcertPossible = false;
+
+    _concertButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
+
+    _concertButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+    _concertButtonFrameImage->SetSprite(_spriteButtonStep1);
+
+
     if (move->_showedPathTiles.size())
     {
         size_t showedPathTilesSize = move->_showedPathTiles.size();
@@ -668,11 +689,6 @@ void Player::ResetOnNewMap() {
     _affectedTiles.clear();
 
 
-    // Clearing after abilities
-    currAlbumTime = 0.0f;
-    currAlbumCooldown = 0.0f;
-    currFansTime = 0.0f;
-    currFansCooldown = 0.0f;
 
     albumTakingOverTiles.clear();
 

@@ -503,6 +503,19 @@ void HexTile::ResetTile()
 	UpdateBorders();
 }
 
+// TODO: HOT FIX KTORY NIE POWINIEN TAK WYGLADAC
+void HexTile::ResetTile(Playable* n)
+{
+	percentage = 0.0f;
+	SetOwnerEntity(n);
+	occupyingEntity = n;
+	isFighting = false;
+	state = TileState::NONE;
+	UpdateTileColor();
+	UpdateBorderColor();
+	UpdateBorders();
+}
+
 void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 {
 	if (ownerEntity != newOwnerEntity) {

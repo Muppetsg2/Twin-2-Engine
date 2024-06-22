@@ -99,7 +99,7 @@ void EnemyMovement::OnPathComplete(const AStarPath& p) {
     destination = tempDest;
     destinatedTile = tempDestTile;
     _waypoint = _path->Next();
-    _waypoint.y += 0.5f;
+    //_waypoint.y += 0.5f;
 
     reachEnd = false;
 

@@ -71,6 +71,10 @@ public:
 	Twin2Engine::Tools::EventHandler<Twin2Engine::Core::GameObject*, HexTile*> OnStartMoving;
 	Twin2Engine::Tools::EventHandler<Twin2Engine::Core::GameObject*, HexTile*> OnFinishMoving;
 
+	HexTile* _startMovingAgument = nullptr;
+	//HexTile* _finishMovingAgument = nullptr;
+	//HexTile* _startMovingAgument = nullptr;
+
 
 	virtual void Initialize() override;
 	virtual void Update() override;

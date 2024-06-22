@@ -644,6 +644,8 @@ void Player::MinigameEnd() {}
 void Player::ResetOnNewMap() {
     move->_info.WaitForFinding();
 
+    GetTransform()->SetGlobalPosition(vec3(0.0f, -5.0f, 0.0f));
+
     if (move->_showedPathTiles.size())
     {
         size_t showedPathTilesSize = move->_showedPathTiles.size();
@@ -660,8 +662,24 @@ void Player::ResetOnNewMap() {
         CurrTile = nullptr;
         //move->_pointedTile = nullptr;
     }
+    tileBefore = nullptr;
 
     OwnTiles.clear();
+    _affectedTiles.clear();
+
+
+    // Clearing after abilities
+    currAlbumTime = 0.0f;
+    currAlbumCooldown = 0.0f;
+    currFansTime = 0.0f;
+    currFansCooldown = 0.0f;
+
+    albumTakingOverTiles.clear();
+
+    for (size_t index = 0ull; index < albumsIncreasingIntervalsCounter.size(); ++index)
+    {
+        albumsIncreasingIntervalsCounter[index] = 0.0f;
+    }
 
     GetTransform()->SetGlobalPosition(glm::vec3(0.0, -2.0f, 0.0f));
 }

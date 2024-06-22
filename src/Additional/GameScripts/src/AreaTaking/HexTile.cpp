@@ -68,7 +68,8 @@ void HexTile::TakeOver()
 		percentage -= Time::GetDeltaTime() * takeOverSpeed;
 		if (percentage <= _takingStage1) {
 			percentage = 0.f;
-			SetOwnerEntity(nullptr); 
+			//SetOwnerEntity(nullptr); 
+			SetOwnerEntity(occupyingEntity);
 		}
 	}
 	else {

@@ -78,8 +78,8 @@ void GraphicEngine::Init(const std::string& window_name, int32_t window_width, i
 
 #if _DEBUG
 	// Debugging
-	glEnable(GL_DEBUG_OUTPUT);
-	glDebugMessageCallback(ErrorMessageCallback, 0);
+	//glEnable(GL_DEBUG_OUTPUT);
+	//glDebugMessageCallback(ErrorMessageCallback, 0);
 #endif
 
 	const GLubyte* renderer = glGetString(GL_RENDERER);

@@ -12,7 +12,8 @@ namespace Twin2Engine::UI {
 
 	class Canvas : public Core::Component {
 	private:
-		size_t _onTransformChangeId;
+		size_t _onTransformChangeId = 0;
+		size_t _onParentInHierarchiChangeId = 0;
 		Manager::CanvasData _data{
 			{
 				glm::mat4(1.f),

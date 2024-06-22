@@ -4,8 +4,8 @@
 #include <graphic/manager/UIRenderingManager.h>
 #include <graphic/manager/GIFManager.h>
 #include <ui/Canvas.h>
+#include <ui/Mask.h>
 
-// TODO: GIFPlayer Editor
 namespace Twin2Engine::UI {
 	class GIFPlayer : public Core::RenderableComponent {
 	private:
@@ -37,8 +37,13 @@ namespace Twin2Engine::UI {
 		size_t _onRotationChangeId = 0;
 		size_t _onParentInHierarchiChangeId = 0;
 		size_t _onCanvasDestroyId = 0;
+		size_t _onMaskDestroyId = 0;
 		Canvas* _canvas = nullptr;
+		Mask* _mask = nullptr;
+
 		void SetCanvas(Canvas* canvas);
+		void SetMask(Mask* mask);
+	
 	public:
 		virtual void Initialize();
 		virtual void OnEnable();

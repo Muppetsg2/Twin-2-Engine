@@ -1,101 +1,50 @@
-#include <ui/Image.h>
-#include <core/Transform.h>
-#include <tools/YamlConverters.h>
-#include <manager/SceneManager.h>
-#include <graphic/manager/SpriteManager.h>
-#include <core/CameraComponent.h>
-#include <ui/Canvas.h>
 #include <ui/Mask.h>
+#include <core/Transform.h>
+#include <graphic/manager/SpriteManager.h>
+#include <manager/SceneManager.h>
 
-using namespace Twin2Engine;
-using namespace UI;
-using namespace Core;
-using namespace Graphic;
-using namespace Manager;
-using namespace Tools;
-using namespace glm;
+using namespace Twin2Engine::Core;
+using namespace Twin2Engine::UI;
+using namespace Twin2Engine::Manager;
+using namespace Twin2Engine::Graphic;
+using namespace Twin2Engine::Tools;
+using namespace YAML;
 using namespace std;
 
-void Image::SetCanvas(Canvas* canvas)
-{
-	if (_canvas != canvas) {
-		if (_canvas != nullptr) {
-			_canvas->GetOnCanvasDestroy() -= _onCanvasDestroyId;
-			_data.canvas = nullptr;
-		}
-
-		_canvas = canvas;
-		if (_canvas != nullptr) {
-			_onCanvasDestroyId = (_canvas->GetOnCanvasDestroy() += [&](Canvas* canv) -> void { SetCanvas(nullptr); });
-			_data.canvas = &_canvas->_data;
-		}
-	}
-}
-
-void Image::SetMask(Mask* mask)
-{
-	if (_mask != mask) {
-		if (_mask != nullptr) {
-			_mask->GetOnMaskDestroy() -= _onMaskDestroyId;
-			_data.mask = nullptr;
-		}
-
-		_mask = mask;
-		if (_mask != nullptr) {
-			_onMaskDestroyId = (_mask->GetOnMaskDestroy() += [&](Mask* mask) -> void { SetMask(nullptr); });
-			_data.mask = &_mask->_data;
-		}
-	}
-}
-
-void Image::Initialize()
+void Mask::Initialize()
 {
 	Transform* tr = GetTransform();
-	_onTransformChangeId = (tr->OnEventTransformChanged += [&](Transform* t) -> void { 
-		_data.rectTransform.transform = t->GetTransformMatrix(); 
+	_data.rectTransform.transform = tr->GetTransformMatrix();
+	_onTransformChangeId = (tr->OnEventTransformChanged += [&](Transform* t) -> void {
+		_data.rectTransform.transform = t->GetTransformMatrix();
 	});
 	_onRotationChangeId = (tr->OnEventRotationChanged += [&](Transform* t) -> void {
 		_data.fill.rotation = t->GetGlobalRotation().z;
 	});
 	_onParentInHierarchiChangeId = (tr->OnEventInHierarchyParentChanged += [&](Transform* t) -> void {
-		GameObject* obj = GetGameObject();
-		SetCanvas(obj->GetComponentInParents<Canvas>());
-		SetMask(obj->GetComponentInParents<Mask>());
 		_data.rectTransform.transform = t->GetTransformMatrix();
 	});
-	GameObject* obj = GetGameObject();
-	SetCanvas(obj->GetComponentInParents<Canvas>());
-	SetMask(obj->GetComponentInParents<Mask>());
 }
 
-void Image::Render()
+void Mask::OnDestroy()
 {
-	_data.sprite = SpriteManager::GetSprite(_spriteId);
-	UIRenderingManager::Render(_data);
-}
-
-void Image::OnDestroy()
-{
-	SetCanvas(nullptr);
-	SetMask(nullptr);
 	Transform* tr = GetTransform();
 	tr->OnEventTransformChanged -= _onTransformChangeId;
 	tr->OnEventRotationChanged -= _onRotationChangeId;
 	tr->OnEventInHierarchyParentChanged -= _onParentInHierarchiChangeId;
+	_OnMaskDestory(this);
 }
 
-YAML::Node Image::Serialize() const
+Node Mask::Serialize() const
 {
-	YAML::Node node = RenderableComponent::Serialize();
-	node["type"] = "Image";
+	YAML::Node node = Component::Serialize();
+	node["type"] = "Mask";
 
 	if (SpriteManager::GetSprite(_spriteId) != nullptr) {
 		node["sprite"] = SceneManager::GetSpriteSaveIdx(_spriteId);
 	}
-	node["color"] = _data.color;
 	node["width"] = _data.rectTransform.size.x;
 	node["height"] = _data.rectTransform.size.y;
-	node["layer"] = _data.layer;
 
 	// FILL
 	node["fillEnabled"] = _data.fill.isActive;
@@ -121,11 +70,9 @@ YAML::Node Image::Serialize() const
 	return node;
 }
 
-bool Image::Deserialize(const YAML::Node& node)
+bool Mask::Deserialize(const Node& node)
 {
-	if (!node["color"] || !node["width"] || !node["height"] ||
-		!node["layer"] || !node["fillEnabled"] || !node["fillType"] || !node["fillSubType"] ||
-		!node["fillOffset"] || !node["fillProgress"] || !RenderableComponent::Deserialize(node)) return false;
+	bool goodData = Component::Deserialize(node);
 
 	if (node["sprite"]) {
 		_spriteId = SceneManager::GetSprite(node["sprite"].as<size_t>());
@@ -133,31 +80,34 @@ bool Image::Deserialize(const YAML::Node& node)
 	else {
 		_spriteId = 0;
 	}
-	_data.color = node["color"].as<glm::vec4>();
-	_data.rectTransform.size.x = node["width"].as<float>();
-	_data.rectTransform.size.y = node["height"].as<float>();
-	_data.layer = node["layer"].as<int32_t>();
 
-	_data.fill.isActive = node["fillEnabled"].as<bool>();
-	_data.fill.type = node["fillType"].as<uint32_t>();
-	_data.fill.subType = node["fillSubType"].as<uint32_t>();
-	_data.fill.offset = node["fillOffset"].as<float>();
-	_data.fill.progress = node["fillProgress"].as<float>();
+	if (node["width"]) _data.rectTransform.size.x = node["width"].as<float>();
+	goodData = goodData && node["width"];
+	if (node["height"]) _data.rectTransform.size.y = node["height"].as<float>();
+	goodData = goodData && node["height"];
 
-	return true;
+	if (node["fillEnabled"]) _data.fill.isActive = node["fillEnabled"].as<bool>();
+	goodData = goodData && node["fillEnabled"];
+	if (node["fillType"]) _data.fill.type = node["fillType"].as<uint32_t>();
+	goodData = goodData && node["fillType"];
+	if (node["fillSubType"]) _data.fill.subType = node["fillSubType"].as<uint32_t>();
+	goodData = goodData && node["fillSubType"];
+	if (node["fillOffset"])	_data.fill.offset = node["fillOffset"].as<float>();
+	goodData = goodData && node["fillOffset"];
+	if (node["fillProgress"]) _data.fill.progress = node["fillProgress"].as<float>();
+	goodData = goodData && node["fillProgress"];
+
+	return goodData;
 }
 
 #if _DEBUG
-void Image::DrawEditor()
+void Mask::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
-	string name = string("Image##Component").append(id);
+	string name = string("Mask##Component").append(id);
 	if (ImGui::CollapsingHeader(name.c_str())) {
 
 		if (Component::DrawInheritedFields()) return;
-
-		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll;
-		ImGui::InputInt(string("Layer##").append(id).c_str(), &_data.layer, 1, 100, flags);
 
 		std::map<size_t, string> spriteNames = SpriteManager::GetAllSpritesNames();
 
@@ -166,13 +116,13 @@ void Image::DrawEditor()
 
 		std::transform(spriteNames.begin(), spriteNames.end(), names.begin(), [](std::pair<size_t, string> const& i) -> string {
 			return i.second;
-		});
+			});
 
 		spriteNames.clear();
 
 		std::sort(names.begin(), names.end(), [&](string const& left, string const& right) -> bool {
 			return left.compare(right) < 0;
-		});
+			});
 
 		names.insert(names.begin(), "None##Nothing");
 
@@ -203,11 +153,6 @@ void Image::DrawEditor()
 		v = _data.rectTransform.size.y;
 		if (ImGui::DragFloat(string("Height##").append(id).c_str(), &v, 0.1f, 0.f, FLT_MAX)) {
 			SetHeight(v);
-		}
-
-		glm::vec4 c = _data.color;
-		if (ImGui::ColorEdit4(string("Color##").append(id).c_str(), glm::value_ptr(c))) {
-			SetColor(c);
 		}
 
 		bool b = _data.fill.isActive;
@@ -294,60 +239,45 @@ void Image::DrawEditor()
 }
 #endif
 
-void Image::SetSprite(const std::string& spriteAlias) {
+void Mask::SetSprite(const string& spriteAlias)
+{
 	_spriteId = hash<string>()(spriteAlias);
 }
 
-void Image::SetSprite(size_t spriteId)
+void Mask::SetSprite(size_t spriteId)
 {
 	_spriteId = spriteId;
 }
 
-void Image::SetColor(const vec4& color)
-{
-	if (_data.color != color) {
-		if (color.a != 1.f)
-			_isTransparent = true;
-		_data.color = color;
-	}
-}
-
-void Image::SetWidth(float width)
+void Mask::SetWidth(float width)
 {
 	if (_data.rectTransform.size.x != width) {
 		_data.rectTransform.size.x = width;
 	}
 }
 
-void Image::SetHeight(float height)
+void Mask::SetHeight(float height)
 {
 	if (_data.rectTransform.size.y != height) {
 		_data.rectTransform.size.y = height;
 	}
 }
 
-void Image::SetLayer(int32_t layer)
-{
-	if (_data.layer != layer) {
-		_data.layer = layer;
-	}
-}
-
-void Image::EnableFill(bool enable)
+void Mask::EnableFill(bool enable)
 {
 	if (_data.fill.isActive != enable) {
 		_data.fill.isActive = enable;
 	}
 }
 
-void Image::SetFillType(FILL_TYPE type)
+void Mask::SetFillType(FILL_TYPE type)
 {
 	if (_data.fill.type != (uint8_t)type) {
 		_data.fill.type = (uint8_t)type;
 	}
 }
 
-void Image::SetFillSubType(uint8_t subType)
+void Mask::SetFillSubType(uint8_t subType)
 {
 	size_t size = 0;
 	switch (_data.fill.type) {
@@ -368,7 +298,7 @@ void Image::SetFillSubType(uint8_t subType)
 	}
 }
 
-void Image::SetFillOffset(float offset)
+void Mask::SetFillOffset(float offset)
 {
 	if (offset > 100.f) offset = 100.f;
 	else if (offset < 0.f) offset = 0.f;
@@ -382,7 +312,7 @@ void Image::SetFillOffset(float offset)
 	}
 }
 
-void Image::SetFillProgress(float progress)
+void Mask::SetFillProgress(float progress)
 {
 	if (progress > 100.f) progress = 100.f;
 	else if (progress < _data.fill.offset * 100.f) progress = _data.fill.offset * 100.f;
@@ -392,52 +322,47 @@ void Image::SetFillProgress(float progress)
 	}
 }
 
-Sprite* Image::GetSprite() const
+Sprite* Mask::GetSprite() const
 {
 	return SpriteManager::GetSprite(_spriteId);
 }
 
-vec4 Image::GetColor() const
-{
-	return _data.color;
-}
-
-float Image::GetWidth() const
+float Mask::GetWidth() const
 {
 	return _data.rectTransform.size.x;
 }
 
-float Image::GetHeight() const
+float Mask::GetHeight() const
 {
 	return _data.rectTransform.size.y;
 }
 
-int32_t Image::GetLayer() const
-{
-	return _data.layer;
-}
-
-bool Image::IsFillEnable() const
+bool Mask::IsFillEnable() const
 {
 	return _data.fill.isActive;
 }
 
-FILL_TYPE Image::GetFillType() const
+FILL_TYPE Mask::GetFillType() const
 {
 	return (FILL_TYPE)_data.fill.type;
 }
 
-uint8_t Image::GetFillSubType() const
+uint8_t Mask::GetFillSubType() const
 {
 	return _data.fill.subType;
 }
 
-float Image::GetFillOffset() const
+float Mask::GetFillOffset() const
 {
 	return _data.fill.offset * 100.f;
 }
 
-float Image::GetFillProgress() const
+float Mask::GetFillProgress() const
 {
 	return _data.fill.progress * 100.f;
+}
+
+Twin2Engine::Tools::EventHandler<Mask*>& Mask::GetOnMaskDestroy()
+{
+	return _OnMaskDestory;
 }

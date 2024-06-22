@@ -31,7 +31,21 @@ GIFS: ~
 Audio: ~
 Materials:
   - id: 0
-    path: res/materials/CityMaterial.material
+    path: res/materials/city/CityMaterial_Neutral.material
+  - id: 1
+    path: res/materials/city/CityMaterial_Blue.material
+  - id: 2
+    path: res/materials/city/CityMaterial_Cyan.material
+  - id: 3
+    path: res/materials/city/CityMaterial_Green.material
+  - id: 4
+    path: res/materials/city/CityMaterial_Yellow.material
+  - id: 5
+    path: res/materials/city/CityMaterial_Red.material
+  - id: 6
+    path: res/materials/city/CityMaterial_Pink.material
+  - id: 7
+    path: res/materials/city/CityMaterial_Purple.material
 Models:
   - id: 0
     path: res/models/city.obj
@@ -70,9 +84,10 @@ Root:
       cityPictogramSpriteId: 0
       concertRoadCityPictogramSpriteId: 1
       radius: 1
+      textuesData: res/scriptableobjects/CityTextureData.so
 GameObjects:
   - id: 1
-    name: CityWorldCanva
+    name: CityWorldCanvas
     isStatic: false
     isActive: false
     transform:

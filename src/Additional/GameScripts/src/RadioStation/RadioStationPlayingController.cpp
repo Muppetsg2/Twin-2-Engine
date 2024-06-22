@@ -14,6 +14,123 @@ using namespace std;
 
 RadioStationPlayingController* RadioStationPlayingController::_instance = nullptr;
 
+void RadioStationPlayingController::GenerateNotes()
+{
+    if (_notesArea != nullptr) {
+        _notesAreaWidth = _notesArea->GetWidth();
+        _notesAreaHeight = _notesArea->GetHeight();
+    }
+
+    float widthStep = _notesAreaWidth / (_generatedNotesNumber - 1);
+    float heightStep = _notesAreaHeight / 3.0f;
+
+    vec3 beginOffset(-0.5f * _notesAreaWidth, glm::vec2(0.0f));
+
+    _generatedNotes.reserve(_generatedNotesNumber);
+    _notesImages.reserve(_generatedNotesNumber);
+
+    NoteType note;
+    std::tuple<GameObject*, Image*> generated;
+
+    for (size_t index = 0ull; index < _generatedNotesNumber; ++index)
+    {
+        note = (NoteType)Random::Range(static_cast<unsigned int>(NoteType::UP), static_cast<unsigned int>(NoteType::LEFT));
+        generated = SceneManager::CreateGameObject<Image>(_notesArea == nullptr ? GetTransform() : _notesArea->GetTransform());
+
+        std::get<0>(generated)->GetTransform()->SetLocalPosition(beginOffset + vec3(index * widthStep, glm::vec2(0.0f)));
+        std::get<1>(generated)->SetSprite(_notesSpritesIds[static_cast<size_t>(note)]);
+        std::get<1>(generated)->SetLayer(1);
+
+        _generatedNotes.push_back(note);
+        _notesImages.push_back(std::get<1>(generated));
+    }
+}
+
+void RadioStationPlayingController::PlayNote(NoteType note)
+{
+    // Warunek sprawdzaj¹cy czy nie dosz³o do zagrania po zakoñczeniu gry
+    if (!_generatedNotes.size() || !_gameStarted || !_playClicked) return;
+
+    if (note == _generatedNotes[_currentNote])
+    {
+        _notesImages[_currentNote]->SetColor(_correctNoteColor);
+        ++_correctCounter;
+    }
+    else
+    {
+        _notesImages[_currentNote]->SetColor(_wrongNoteColor);
+    }
+
+    ++_currentNote;
+
+    if (_currentNote == _generatedNotes.size())
+    {
+        EndPlaying();
+    }
+}
+
+void RadioStationPlayingController::ShowResult()
+{
+    _resultShowingCounter = _resultShowingTime;
+    if (_resultText != nullptr) {
+        _resultText->SetActive(true);
+
+        Text* t = _resultText->GetComponent<Text>();
+        if (t != nullptr) {
+            t->SetText(
+                std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes
+                (
+                    std::to_string(_correctCounter)
+                    .append("/")
+                    .append
+                    (
+                        std::to_string(_generatedNotesNumber)
+                    )
+                )
+            );
+
+            t->SetColor(_correctCounter == 0 ? _wrongNoteColor : _correctNoteColor);
+        }
+    }
+}
+
+void RadioStationPlayingController::HideResult()
+{
+    _gameStarted = false;
+    _playClicked = false;
+
+    // Notes Clearing
+    _generatedNotes.clear();
+
+    for (size_t index = 0; index < _notesImages.size(); ++index)
+    {
+        SceneManager::DestroyGameObject(_notesImages[index]->GetGameObject());
+    }
+    _notesImages.clear();
+
+    GameManager::instance->minigameActive = false;
+}
+
+void RadioStationPlayingController::EndPlaying()
+{
+    // Making Timer Zero for Update
+    _timeLimitCounter = 0.0f;
+
+    _playText->SetActive(false);
+    _buttonUp->SetInteractable(false);
+    _buttonRight->SetInteractable(false);
+    _buttonDown->SetInteractable(false);
+    _buttonLeft->SetInteractable(false);
+
+    _score = (float)_correctCounter / (float)_notesImages.size();
+
+    ShowResult();
+}
+
+RadioStationPlayingController* RadioStationPlayingController::Instance()
+{
+    return _instance;
+}
 
 void RadioStationPlayingController::Initialize()
 {
@@ -180,124 +297,6 @@ void RadioStationPlayingController::PlayClicked()
     GenerateNotes();
     _playClicked = true;
     _playText->SetActive(false);
-}
-
-RadioStationPlayingController* RadioStationPlayingController::Instance()
-{
-    return _instance;
-}
-
-void RadioStationPlayingController::GenerateNotes()
-{
-    if (_notesArea != nullptr) {
-        _notesAreaWidth = _notesArea->GetWidth();
-        _notesAreaHeight = _notesArea->GetHeight();
-    }
-
-    float widthStep = _notesAreaWidth / (_generatedNotesNumber - 1);
-    float heightStep = _notesAreaHeight / 3.0f;
-
-    vec3 beginOffset(-0.5f * _notesAreaWidth, glm::vec2(0.0f));
-
-    _generatedNotes.reserve(_generatedNotesNumber);
-    _notesImages.reserve(_generatedNotesNumber);
-
-    NoteType note;
-    std::tuple<GameObject*, Image*> generated;
-
-    for (size_t index = 0ull; index < _generatedNotesNumber; ++index)
-    {
-        note = (NoteType)Random::Range(static_cast<unsigned int>(NoteType::UP), static_cast<unsigned int>(NoteType::LEFT));
-        generated = SceneManager::CreateGameObject<Image>(_notesArea == nullptr ? GetTransform() : _notesArea->GetTransform());
-
-        std::get<0>(generated)->GetTransform()->SetLocalPosition(beginOffset + vec3(index * widthStep, glm::vec2(0.0f)));
-        std::get<1>(generated)->SetSprite(_notesSpritesIds[static_cast<size_t>(note)]);
-        std::get<1>(generated)->SetLayer(1);
-
-        _generatedNotes.push_back(note);
-        _notesImages.push_back(std::get<1>(generated));
-    }
-}
-
-void RadioStationPlayingController::PlayNote(NoteType note)
-{
-    // Warunek sprawdzaj¹cy czy nie dosz³o do zagrania po zakoñczeniu gry
-    if (!_generatedNotes.size() || !_gameStarted || !_playClicked) return;
-
-    if (note == _generatedNotes[_currentNote])
-    {
-        _notesImages[_currentNote]->SetColor(_correctNoteColor);
-        ++_correctCounter;
-    }
-    else
-    {
-        _notesImages[_currentNote]->SetColor(_wrongNoteColor);
-    }
-
-    ++_currentNote;
-
-    if (_currentNote == _generatedNotes.size())
-    {
-        EndPlaying();
-    }
-}
-
-void RadioStationPlayingController::EndPlaying()
-{
-    // Making Timer Zero for Update
-    _timeLimitCounter = 0.0f;
-
-    _playText->SetActive(false);
-    _buttonUp->SetInteractable(false);
-    _buttonRight->SetInteractable(false);
-    _buttonDown->SetInteractable(false);
-    _buttonLeft->SetInteractable(false);
-
-    _score = (float)_correctCounter / (float)_notesImages.size();
-
-    ShowResult();
-}
-
-void RadioStationPlayingController::ShowResult()
-{
-    _resultShowingCounter = _resultShowingTime;
-    if (_resultText != nullptr) {
-        _resultText->SetActive(true);
-
-        Text* t = _resultText->GetComponent<Text>();
-        if (t != nullptr) {
-            t->SetText(
-                std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes
-                (
-                    std::to_string(_correctCounter)
-                    .append("/")
-                    .append
-                    (
-                        std::to_string(_generatedNotesNumber)
-                    )
-                )
-            );
-
-            t->SetColor(_correctCounter == 0 ? _wrongNoteColor : _correctNoteColor);
-        }
-    }
-}
-
-void RadioStationPlayingController::HideResult()
-{
-    _gameStarted = false;
-    _playClicked = false;
-
-    // Notes Clearing
-    _generatedNotes.clear();
-
-    for (size_t index = 0; index < _notesImages.size(); ++index)
-    {
-        SceneManager::DestroyGameObject(_notesImages[index]->GetGameObject());
-    }
-    _notesImages.clear();
-
-    GameManager::instance->minigameActive = false;
 }
 
 YAML::Node RadioStationPlayingController::Serialize() const

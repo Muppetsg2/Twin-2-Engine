@@ -1,0 +1,10 @@
+scriptable_object:
+  __SO_RegisteredName__: CityTextureData
+  neutralMaterialName: res/materials/city/CityMaterial_Neutral.material
+  blueMaterialName: res/materials/city/CityMaterial_Blue.material
+  cyanMaterialName: res/materials/city/CityMaterial_Cyan.material
+  greenMaterialName: res/materials/city/CityMaterial_Green.material
+  yellowMaterialName: res/materials/city/CityMaterial_Yellow.material
+  redMaterialName: res/materials/city/CityMaterial_Red.material
+  pinkMaterialName: res/materials/city/CityMaterial_Pink.material
+  purpleMaterialName: res/materials/city/CityMaterial_Purple.material

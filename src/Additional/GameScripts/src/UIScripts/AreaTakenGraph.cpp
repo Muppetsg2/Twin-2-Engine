@@ -2,7 +2,7 @@
 
 using namespace Twin2Engine::UI;
 
-#define AREA_TAKEN_GRAPH_TEST false
+#define AREA_TAKEN_GRAPH_TEST true
 
 void AreaTakenGraph::UpdateTopHexagon()
 {

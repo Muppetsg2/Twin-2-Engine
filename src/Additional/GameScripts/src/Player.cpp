@@ -164,8 +164,10 @@ void Player::Initialize() {
     _negativeMoneyText->GetGameObject()->SetActive(false);
 
     move = GetGameObject()->GetComponent<PlayerMovement>();
-    move->OnFinishMoving += [this](GameObject* gameObject, HexTile* tile) { FinishMove(tile); };
-    move->OnStartMoving += [this](GameObject* gameObject, HexTile* tile) { StartMove(tile); };
+    //move->OnFinishMoving += [this](GameObject* gameObject, HexTile* tile) { FinishMove(tile); };
+    move->OnFinishMoving += [this](GameObject* gameObject, HexTile* tile) { _finishMove = tile; };
+    //move->OnStartMoving += [this](GameObject* gameObject, HexTile* tile) { StartMove(tile); };
+    move->OnStartMoving += [this](GameObject* gameObject, HexTile* tile) { _startMove = tile; };
     if (patron && patron->GetPatronBonus() == PatronBonus::MOVE_RANGE) {
         float r = move->radius;
         int s = move->maxSteps;
@@ -184,6 +186,25 @@ void Player::Update() {
     if (!GameManager::instance->gameStarted && _hexIndicator) _hexIndicator->SetActive(false);
 
     if (!GameManager::instance->gameStarted) return;
+
+    if (_startMove)
+    {
+        StartMove(_startMove);
+        _startMove = nullptr;
+    }
+    if (_finishMove)
+    {
+        FinishMove(_finishMove);
+    }
+
+    if (_endFans)
+    {
+        _endFans = false;
+
+        _fansMeetingCircleImage->SetColor(_abilityCooldownColor);
+        _fansMeetingCircleImage->SetLayer(2);
+        FansExit();
+    }
 
     if (!GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
 
@@ -602,9 +623,7 @@ void Player::StartMove(HexTile* tile) {
 
     if (isFansActive) {
         if (CurrTile != tileBefore) {
-            _fansMeetingCircleImage->SetColor(_abilityCooldownColor);
-            _fansMeetingCircleImage->SetLayer(2);
-            FansExit();
+            _endFans = true;
         }
     }
 

@@ -48,6 +48,9 @@ private:
 
     float _buttonDeltaYMovement = 10;
 
+    HexTile* _startMove = nullptr;
+    HexTile* _finishMove = nullptr;
+
     // Player UI
     // Album
     Twin2Engine::UI::Text* _albumText;
@@ -72,6 +75,8 @@ private:
     int _fansMeetingButtonDestroyedEventHandleId = -1;
     bool _isHoveringFansMeetingButton = false;
     bool _isShowingFansMeetingAffectedTiles = false;
+
+    bool _endFans = false;
 
     //Concert
     Twin2Engine::UI::Text* _concertText;

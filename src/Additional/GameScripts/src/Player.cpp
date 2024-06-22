@@ -643,6 +643,20 @@ void Player::MinigameEnd() {}
 
 void Player::ResetOnNewMap() {
     move->_info.WaitForFinding();
+    move->_checkingInfo.WaitForFinding();
+
+    move->_showedPathEnabled = false;
+    move->_showedPathDisabled = false;
+
+    move->_checkedTile = nullptr;
+
+    if (move->_path)
+    {
+        delete move->_path;
+        move->_path = nullptr;
+    }
+
+    move->reachEnd = true;
 
     GetTransform()->SetGlobalPosition(vec3(0.0f, -5.0f, 0.0f));
 

@@ -15,11 +15,16 @@ private:
 
 	Twin2Engine::Core::GameObject* _menuCanvas;
 	Twin2Engine::Core::GameObject* _creditsCanvas;
+	Twin2Engine::Core::GameObject* _highscoreCanvas;
 
 	Twin2Engine::UI::Button* _start = nullptr;
 	Twin2Engine::UI::Button* _credits = nullptr;
 	Twin2Engine::UI::Button* _creditsBack = nullptr;
+	Twin2Engine::UI::Button* _highscore = nullptr;
+	Twin2Engine::UI::Button* _highscoreBack = nullptr;
 	Twin2Engine::UI::Button* _exit = nullptr;
+
+	Twin2Engine::UI::Text* _highscoreText = nullptr;
 
 	Twin2Engine::Core::AudioComponent* _audio = nullptr;
 	std::vector<size_t> _audios;
@@ -27,6 +32,8 @@ private:
 	int _startButtonEvent = -1;
 	int _creditsButtonEvent = -1;
 	int _creditsBackButtonEvent = -1;
+	int _highscoreButtonEvent = -1;
+	int _highscoreBackButtonEvent = -1;
 	int _exitButtonEvent = -1;
 
 	bool _loadScene = false;
@@ -40,6 +47,7 @@ private:
 
 		if (_start != nullptr) _start->SetInteractable(false);
 		if (_credits != nullptr) _credits->SetInteractable(false);
+		if (_highscore != nullptr) _highscore->SetInteractable(false);
 		if (_exit != nullptr) _exit->SetInteractable(false);
 	}
 
@@ -53,6 +61,28 @@ private:
 		if (_menuCanvas != nullptr) _menuCanvas->SetActive(true);
 	}
 
+	void Highscore() {
+		if (_menuCanvas != nullptr) _menuCanvas->SetActive(false);
+		if (_highscoreCanvas != nullptr) _highscoreCanvas->SetActive(true);
+
+		if (_highscoreText != nullptr) {
+			int days = PlayerPrefs::GetValue<int>("HighestDay");
+			int weeks = PlayerPrefs::GetValue<int>("HighestWeek");
+			int months = PlayerPrefs::GetValue<int>("HighestMonth");
+			int years = PlayerPrefs::GetValue<int>("HighestYear");
+			_highscoreText->SetText(
+				wstring(L"Years: ").append(to_wstring(years))
+				.append(L"\nMonths: ").append(to_wstring(months))
+				.append(L"\nWeeks: ").append(to_wstring(weeks))
+				.append(L"\nDays: ").append(to_wstring(days)));
+		}
+	}
+
+	void HighscoreBack() {
+		if (_highscoreCanvas != nullptr) _highscoreCanvas->SetActive(false);
+		if (_menuCanvas != nullptr) _menuCanvas->SetActive(true);
+	}
+
 	void Exit() {
 		Window::GetInstance()->Close();
 	}
@@ -61,6 +91,8 @@ private:
 		if (_startButtonEvent == -1 && _start != nullptr) _startButtonEvent = _start->GetOnClickEvent() += [&]() -> void { Start(); };
 		if (_creditsButtonEvent == -1 && _credits != nullptr) _creditsButtonEvent = _credits->GetOnClickEvent() += [&]() -> void { Credits(); };
 		if (_creditsBackButtonEvent == -1 && _creditsBack != nullptr) _creditsBackButtonEvent = _creditsBack->GetOnClickEvent() += [&]() -> void { CreditsBack(); };
+		if (_highscoreButtonEvent == -1 && _highscore != nullptr) _highscoreButtonEvent = _highscore->GetOnClickEvent() += [&]() -> void { Highscore(); };
+		if (_highscoreBackButtonEvent == -1 && _highscoreBack != nullptr) _highscoreBackButtonEvent = _highscoreBack->GetOnClickEvent() += [&]() -> void { HighscoreBack(); };
 		if (_exitButtonEvent == -1 && _exit != nullptr) _exitButtonEvent = _exit->GetOnClickEvent() += [&]() -> void { Exit(); };
 	}
 
@@ -70,6 +102,7 @@ public:
 
 		if (_menuCanvas != nullptr) _menuCanvas->SetActive(true);
 		if (_creditsCanvas != nullptr) _creditsCanvas->SetActive(false);
+		if (_highscoreCanvas != nullptr) _highscoreCanvas->SetActive(false);
 
 		if (_audio != nullptr && _audios.size() != 0) {
 			_audio->Stop();
@@ -109,6 +142,16 @@ public:
 			_creditsBackButtonEvent = -1;
 		}
 
+		if (_highscore != nullptr && _highscoreButtonEvent != -1) {
+			_highscore->GetOnClickEvent() -= _highscoreButtonEvent;
+			_highscoreButtonEvent = -1;
+		}
+
+		if (_highscoreBack != nullptr && _highscoreBackButtonEvent != -1) {
+			_highscoreBack->GetOnClickEvent() -= _highscoreBackButtonEvent;
+			_highscoreBackButtonEvent = -1;
+		}
+
 		if (_exit != nullptr && _exitButtonEvent != -1) {
 			_exit->GetOnClickEvent() -= _exitButtonEvent;
 			_exitButtonEvent = -1;
@@ -122,10 +165,15 @@ public:
 		node["startButtonId"] = _start != nullptr ? _start->GetId() : 0;
 		node["creditsButtonId"] = _credits != nullptr ? _credits->GetId() : 0;
 		node["creditsBackButtonId"] = _creditsBack != nullptr ? _creditsBack->GetId() : 0;
+		node["highscoreButtonId"] = _highscore != nullptr ? _highscore->GetId() : 0;
+		node["highscoreBackButtonId"] = _highscoreBack != nullptr ? _highscoreBack->GetId() : 0;
 		node["exitButtonId"] = _exit != nullptr ? _exit->GetId() : 0;
 
 		node["menuCanvas"] = _menuCanvas != nullptr ? _menuCanvas->Id() : 0;
 		node["creditsCanvas"] = _creditsCanvas != nullptr ? _creditsCanvas->Id() : 0;
+		node["highscoreCanvas"] = _highscoreCanvas != nullptr ? _highscoreCanvas->Id() : 0;
+
+		node["highscoreText"] = _highscoreText != nullptr ? _highscoreText->GetId() : 0;
 
 		node["audioId"] = _audio != nullptr ? _audio->GetId() : 0;
 		node["audios"] = std::vector<size_t>();
@@ -138,8 +186,11 @@ public:
 	}
 
 	virtual bool Deserialize(const YAML::Node& node) override {
-		if (!node["loadSceneTime"] || !node["startButtonId"] || !node["creditsButtonId"] || !node["creditsBackButtonId"] || !node["exitButtonId"] ||
-			!node["menuCanvas"] || !node["creditsCanvas"] || !node["audioId"] || !node["audios"] || !Component::Deserialize(node))
+		if (!node["loadSceneTime"] || !node["startButtonId"] || !node["creditsButtonId"] || !node["creditsBackButtonId"] || 
+			!node["highscoreButtonId"] || !node["highscoreBackButtonId"] || !node["exitButtonId"] ||
+			!node["menuCanvas"] || !node["creditsCanvas"] || !node["highscoreCanvas"] || 
+			!node["highscoreText"] ||
+			!node["audioId"] || !node["audios"] || !Component::Deserialize(node))
 			return false;
 
 		_loadSceneTime = node["loadSceneTime"].as<float>();
@@ -153,6 +204,12 @@ public:
 		id = node["creditsBackButtonId"].as<size_t>();
 		_creditsBack = id != 0 ? (Button*)SceneManager::GetComponentWithId(id) : nullptr;
 
+		id = node["highscoreButtonId"].as<size_t>();
+		_highscore = id != 0 ? (Button*)SceneManager::GetComponentWithId(id) : nullptr;
+
+		id = node["highscoreBackButtonId"].as<size_t>();
+		_highscoreBack = id != 0 ? (Button*)SceneManager::GetComponentWithId(id) : nullptr;
+
 		id = node["exitButtonId"].as<size_t>();
 		_exit = id != 0 ? (Button*)SceneManager::GetComponentWithId(id) : nullptr;
 
@@ -161,6 +218,12 @@ public:
 
 		id = node["creditsCanvas"].as<size_t>();
 		_creditsCanvas = id != 0 ? SceneManager::GetGameObjectWithId(id) : nullptr;
+
+		id = node["highscoreCanvas"].as<size_t>();
+		_highscoreCanvas = id != 0 ? SceneManager::GetGameObjectWithId(id) : nullptr;
+
+		id = node["highscoreText"].as<size_t>();
+		_highscoreText = id != 0 ? (Text*)SceneManager::GetComponentWithId(id) : nullptr;
 
 		id = node["audioId"].as<size_t>();
 		_audio = id != 0 ? (AudioComponent*)SceneManager::GetComponentWithId(id) : nullptr;
@@ -294,6 +357,80 @@ public:
 				ImGui::EndCombo();
 			}
 
+			choosed_1 = _highscore == nullptr ? 0 : _highscore->GetId();
+
+			if (ImGui::BeginCombo(string("HighscoreButton##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
+
+				bool clicked = false;
+				for (auto& item : items) {
+
+					if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_1)) {
+
+						if (clicked) continue;
+
+						choosed_1 = item.first;
+						clicked = true;
+					}
+				}
+
+				if (clicked) {
+					if (choosed_1 != 0) {
+
+						if (_highscore != nullptr) {
+							if (_highscoreButtonEvent != -1) {
+								_highscore->GetOnClickEvent() -= _highscoreButtonEvent;
+								_highscoreButtonEvent = -1;
+							}
+						}
+
+						_highscore = static_cast<Button*>(items[choosed_1]);
+
+						if (_highscore != nullptr) {
+							InitializeButtons();
+						}
+					}
+				}
+
+				ImGui::EndCombo();
+			}
+
+			choosed_1 = _highscoreBack == nullptr ? 0 : _highscoreBack->GetId();
+
+			if (ImGui::BeginCombo(string("HighscoreBackButton##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
+
+				bool clicked = false;
+				for (auto& item : items) {
+
+					if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_1)) {
+
+						if (clicked) continue;
+
+						choosed_1 = item.first;
+						clicked = true;
+					}
+				}
+
+				if (clicked) {
+					if (choosed_1 != 0) {
+
+						if (_highscoreBack != nullptr) {
+							if (_highscoreBackButtonEvent != -1) {
+								_highscoreBack->GetOnClickEvent() -= _highscoreBackButtonEvent;
+								_highscoreBackButtonEvent = -1;
+							}
+						}
+
+						_highscoreBack = static_cast<Button*>(items[choosed_1]);
+
+						if (_highscoreBack != nullptr) {
+							InitializeButtons();
+						}
+					}
+				}
+
+				ImGui::EndCombo();
+			}
+
 			choosed_1 = _exit == nullptr ? 0 : _exit->GetId();
 
 			if (ImGui::BeginCombo(string("ExitButton##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
@@ -382,7 +519,57 @@ public:
 				ImGui::EndCombo();
 			}
 
+			choosed_1 = std::find(objs.begin(), objs.end(), _highscoreCanvas) - objs.begin();
+
+			if (ImGui::BeginCombo(string("HighscoreCanvas##").append(id).c_str(), choosed_1 == 0 ? "None" : objs[choosed_1]->GetName().c_str())) {
+
+				bool clicked = false;
+				for (size_t i = 0; i < objs.size(); ++i) {
+
+					if (ImGui::Selectable(std::string(i == 0 ? "None" : objs[i]->GetName().c_str()).append("##").append(id).append(std::to_string(i)).c_str(), i == choosed_1)) {
+
+						if (clicked) continue;
+
+						choosed_1 = i;
+						clicked = true;
+					}
+				}
+
+				if (clicked) {
+					_highscoreCanvas = objs[choosed_1];
+				}
+
+				ImGui::EndCombo();
+			}
+
 			objs.clear();
+
+			items = SceneManager::GetComponentsOfType<Text>();
+			choosed_1 = _highscoreText == nullptr ? 0 : _highscoreText->GetId();
+
+			if (ImGui::BeginCombo(string("HighscoreText##").append(id).c_str(), choosed_1 == 0 ? "None" : items[choosed_1]->GetGameObject()->GetName().c_str())) {
+
+				bool clicked = false;
+				for (auto& item : items) {
+
+					if (ImGui::Selectable(std::string(item.second->GetGameObject()->GetName().c_str()).append("##").append(id).c_str(), item.first == choosed_1)) {
+
+						if (clicked) continue;
+
+						choosed_1 = item.first;
+						clicked = true;
+					}
+				}
+
+				if (clicked) {
+					if (choosed_1 != 0) {
+						_highscoreText = static_cast<Text*>(items[choosed_1]);
+					}
+				}
+
+				ImGui::EndCombo();
+			}
+
 
 			items = SceneManager::GetComponentsOfType<AudioComponent>();
 			choosed_1 = _audio == nullptr ? 0 : _audio->GetId();

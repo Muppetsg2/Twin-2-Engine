@@ -45,7 +45,7 @@ DecisionTree<Enemy*, bool> MovingState::_whileMovingDecisionTree{
 DecisionTree<MovingState::AfterMoveDecisionData&, bool> MovingState::_afterMoveDecisionTree{
 	[&](AfterMoveDecisionData& data) -> bool {
 		// RadioStationInMoveRange && distFromTaken <= 2 * tilesDist
-		if (data.RadioStationTile != nullptr) {
+		if (data.RadioStationTile != nullptr && data.RadioStationTile->radioStationCooldown <= 0.f) {
 			float dist = INFINITE;
 			for (auto& takenTile : data.enemy->OwnTiles) {
 				float tempDist = glm::distance((glm::vec2)data.RadioStationTile->GetMapHexTile()->tile->GetPosition(), (glm::vec2)takenTile->GetMapHexTile()->tile->GetPosition());
@@ -327,8 +327,13 @@ void MovingState::Enter(Enemy* enemy)
 				enemy->ChangeState(&enemy->_fightingState);
 			}
 			else if (tile->GetMapHexTile()->type == MapHexTile::HexTileType::RadioStation) {
-				tile->StartTakingOver(enemy);
-				enemy->ChangeState(&enemy->_radioStationState);
+				if (tile->radioStationCooldown <= 0.f) {
+					tile->StartTakingOver(enemy);
+					enemy->ChangeState(&enemy->_radioStationState);
+				}
+				else {
+					ChooseTile(enemy);
+				}
 			}
 			else {
 				tile->StartTakingOver(enemy);

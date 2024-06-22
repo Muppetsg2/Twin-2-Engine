@@ -152,7 +152,7 @@ GameObjects:
       - id: 7
         enabled: true
         type: Audio
-        audio: 2
+        audio: 4
         loop: true
         volume: 1
         playOnStart: false
@@ -192,9 +192,13 @@ GameObjects:
         startButtonId: 12
         creditsButtonId: 32
         creditsBackButtonId: 23
+        highscoreButtonId: 45
+        highscoreBackButtonId: 50
         exitButtonId: 15
         menuCanvas: 2
         creditsCanvas: 7
+        highscoreCanvas: 15
+        highscoreText: 42
         audioId: 7
         audios:
           - 2
@@ -207,6 +211,7 @@ GameObjects:
       - 5
       - 6
       - 13
+      - 19
   - id: 3
     name: Background
     isStatic: false
@@ -254,7 +259,7 @@ GameObjects:
       id: 10
       position:
         x: 0
-        y: 0
+        y: 55
         z: 0
       scale:
         x: 1
@@ -325,7 +330,7 @@ GameObjects:
       id: 13
       position:
         x: 0
-        y: -200
+        y: -245
         z: 0
       scale:
         x: 1
@@ -396,7 +401,7 @@ GameObjects:
       id: 30
       position:
         x: 0
-        y: -100
+        y: -45
         z: 0
       scale:
         x: 1
@@ -457,6 +462,98 @@ GameObjects:
           w: 1
         displayObjectOnHover: false
         playAudioOnClick: false
+    children:
+      []
+  - id: 19
+    name: HighscoreButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 43
+      position:
+        x: 0
+        y: -145
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 44
+        enabled: true
+        type: Image
+        isTransparent: false
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 200
+        height: 75
+        layer: 1
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 45
+        enabled: true
+        type: Button
+        width: 200
+        height: 75
+        interactable: true
+        onHoverPresetEvents: true
+        animTimeFactor: 2
+        scaleFunc: 9
+        scaleFuncType: 2
+        scaleStart:
+          x: 1
+          y: 1
+          z: 1
+        scaleEnd:
+          x: 1.10000002
+          y: 1.10000002
+          z: 1
+        colorFunc: 0
+        colorFuncType: 0
+        colorStart:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        colorEnd:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        displayObjectOnHover: false
+        playAudioOnClick: false
+      - id: 47
+        enabled: true
+        type: Text
+        isTransparent: true
+        text: "\x00H\x00I\x00G\x00H\x00S\x00C\x00O\x00R\x00E"
+        font: 0
+        size: 35
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 0.607843161
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
     children:
       []
   - id: 4
@@ -812,5 +909,233 @@ GameObjects:
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 1
+    children:
+      []
+  - id: 15
+    name: HighscoreCanvas
+    isStatic: false
+    isActive: false
+    transform:
+      id: 35
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 36
+        enabled: true
+        type: Canvas
+        layer: 0
+        size:
+          x: 1920
+          y: 1080
+        worldSpace: false
+    children:
+      - 16
+      - 17
+      - 18
+      - 20
+  - id: 16
+    name: Background
+    isStatic: false
+    isActive: true
+    transform:
+      id: 37
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 38
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 1
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 1920
+        height: 1080
+        layer: 0
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+    children:
+      []
+  - id: 17
+    name: HigscoreText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 39
+      position:
+        x: 0
+        y: 400
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 40
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00H\x00I\x00G\x00H\x00S\x00C\x00O\x00R\x00E"
+        font: 0
+        size: 90
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 18
+    name: HighscoreValueText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 41
+      position:
+        x: 0
+        y: 222
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 42
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00Y\x00e\x00a\x00r\x00s\x00:\x00 \x004\x00\n\x00M\x00o\x00n\x00t\x00h\x00s\x00:\x00 \x003\x00\n\x00W\x00e\x00e\x00k\x00s\x00:\x00 \x002\x00\n\x00D\x00a\x00y\x00s\x00:\x00 \x001"
+        font: 0
+        size: 50
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0.529628396
+          y: 1
+          z: 0.463320434
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 20
+    name: HighscoreBackButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 48
+      position:
+        x: -830
+        y: 420
+        z: 0
+      scale:
+        x: 0.399889737
+        y: 0.399889737
+        z: 0.99999994
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 49
+        enabled: true
+        type: Image
+        isTransparent: true
+        sprite: 4
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 256
+        height: 256
+        layer: 1
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 50
+        enabled: true
+        type: Button
+        width: 256
+        height: 256
+        interactable: true
+        onHoverPresetEvents: true
+        animTimeFactor: 0.100000001
+        scaleFunc: 9
+        scaleFuncType: 2
+        scaleStart:
+          x: 0.400000006
+          y: 0.400000006
+          z: 1
+        scaleEnd:
+          x: 0.419999987
+          y: 0.419999987
+          z: 1
+        colorFunc: 0
+        colorFuncType: 0
+        colorStart:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        colorEnd:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        displayObjectOnHover: false
+        playAudioOnClick: false
     children:
       []

@@ -1,4 +1,5 @@
 #include <Abilities/ConcertAbilityController.h>
+#include <ConcertRoad.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
@@ -68,16 +69,17 @@ void ConcertAbilityController::StartPerformingConcert()
 
     _cityLights->SetActive(true);
     //savedTakingOverSpeed = playable->TakeOverSpeed;
-    playable->TakeOverSpeed += additionalTakingOverSpeed;
+    //playable->TakeOverSpeed += additionalTakingOverSpeed;
+    ConcertRoad::instance->Use();
 }
 
 void ConcertAbilityController::StopPerformingConcert()
 {
-    playable->TakeOverSpeed -= additionalTakingOverSpeed;
+    //playable->TakeOverSpeed -= additionalTakingOverSpeed;
 
     OnEventAbilityFinished.Invoke(playable); 
     _cityLights->SetActive(false);
-
+    ConcertRoad::instance->Finish();
     StartCooldown();
 }
 

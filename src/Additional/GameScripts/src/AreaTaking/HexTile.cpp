@@ -413,9 +413,10 @@ void HexTile::OnDestroy()
 {
 	if (ConcertRoad::instance != nullptr)
 	{
-		auto found = std::find_if(ConcertRoad::instance->RoadMapPoints.begin(),
-								  ConcertRoad::instance->RoadMapPoints.end(),
-								  [&](const ConcertRoad::ConcertRoadPoint& point) -> bool { return point.hexTile == this; });
+		//auto found = std::find_if(ConcertRoad::instance->RoadMapPoints.begin(),
+		//						  ConcertRoad::instance->RoadMapPoints.end(),
+		//						  [&](const ConcertRoad::ConcertRoadPoint& point) -> bool { return point.hexTile == this; });
+		auto found = std::find(ConcertRoad::instance->RoadMapPoints.begin(), ConcertRoad::instance->RoadMapPoints.end(), this);
 
 		if (found != ConcertRoad::instance->RoadMapPoints.end())
 			ConcertRoad::instance->RoadMapPoints.erase(found);

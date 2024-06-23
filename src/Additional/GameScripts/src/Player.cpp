@@ -50,9 +50,9 @@ void Player::Initialize() {
         _concertCircleImage->SetColor(_abilityActiveColor);
     };
 
-    _concertAbility->OnEventAbilityFinished += [&](Playable* playable) -> void {
-        PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(_concertAbility->GetAdditionalTakingOverSpeed());
-    };
+    //_concertAbility->OnEventAbilityFinished += [&](Playable* playable) -> void {
+    //    PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(_concertAbility->GetAdditionalTakingOverSpeed());
+    //};
 
     _concertAbility->OnEventAbilityCooldownStarted += [&](Playable* playable) -> void {
         _concertCircleImage->SetColor(_abilityCooldownColor);
@@ -322,9 +322,9 @@ void Player::Update() {
             // CONCERT INTERFACE ELEMENT
             if (!_concertAbility->IsUsed() && !_concertAbility->IsOnCooldown())
             {
-                if (_isHoveringConcertButton && !_isShowingConcertPossible)
+                if (_isHoveringConcertButton && !_isShowingConcertPossible) // if (_isHoveringConcertButton) // 
                 {
-                    PopularityGainingBonusBarController::Instance()->AddPossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
+                    //PopularityGainingBonusBarController::Instance()->AddPossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
                     _isShowingConcertPossible = true;
 
                     _concertButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
@@ -336,11 +336,11 @@ void Player::Update() {
 
                     _negativeMoneyText->GetGameObject()->SetActive(true);
                 }
-                else if (!_isHoveringConcertButton && _isShowingConcertPossible)
+                else if (!_isHoveringConcertButton && _isShowingConcertPossible) // else if (!_isHoveringConcertButton) // 
                 {
-                    PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
+                    //PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
                     _isShowingConcertPossible = false;
-
+                    
                     _concertButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
                     _audioComponent->SetAudio(_offHoverClickAudio);
                     _audioComponent->Play();
@@ -514,8 +514,8 @@ void Player::ConcertCall() {
     {
         _concertButton->SetInteractable(false);
         _concertButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
-        PopularityGainingBonusBarController::Instance()->AddCurrentBonus(_concertAbility->GetAdditionalTakingOverSpeed());
-        PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
+        //PopularityGainingBonusBarController::Instance()->AddCurrentBonus(_concertAbility->GetAdditionalTakingOverSpeed());
+        //PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
         _isShowingConcertPossible = false;
         _isHoveringConcertButton = false;
 

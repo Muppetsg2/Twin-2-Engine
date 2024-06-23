@@ -69,7 +69,7 @@ class TutorialsController : public Component {
 
 			if (!ConcertRoadTutUsed && (!RadioStationTutorial->GetActive()) && (!AlbumTutorial->GetActive())) {
 				for (auto& rmp : ConcertRoad::instance->RoadMapPoints) {
-					distance = rmp.hexTile->GetTransform()->GetGlobalPosition() - playerPos;
+					distance = rmp->GetTransform()->GetGlobalPosition() - playerPos;
 					if (glm::dot(distance, distance) <= sqrDistanceToTrigerTut) {
 						ConcertRoadTutorial->SetActive(true);
 						ConcertRoadTutUsed = true;

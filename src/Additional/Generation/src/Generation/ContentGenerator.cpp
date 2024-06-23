@@ -39,7 +39,7 @@ void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
         }
     }
 
-    ConcertRoad::instance->Use();
+    //ConcertRoad::instance->Use();
 }
 
 void ContentGenerator::ClearContent() 

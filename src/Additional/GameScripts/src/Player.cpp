@@ -191,6 +191,15 @@ void Player::Update() {
     {
         StartMove(_startMove);
         _startMove = nullptr;
+
+        if (_endFans)
+        {
+            _endFans = false;
+
+            _fansMeetingCircleImage->SetColor(_abilityCooldownColor);
+            _fansMeetingCircleImage->SetLayer(2);
+            FansExit();
+        }
     }
     if (_finishMove)
     {
@@ -198,14 +207,6 @@ void Player::Update() {
         _finishMove = nullptr;
     }
 
-    if (_endFans)
-    {
-        _endFans = false;
-
-        _fansMeetingCircleImage->SetColor(_abilityCooldownColor);
-        _fansMeetingCircleImage->SetLayer(2);
-        FansExit();
-    }
 
     if (!GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
 

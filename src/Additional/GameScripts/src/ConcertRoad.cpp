@@ -106,7 +106,7 @@ void ConcertRoad::Update()
     //    }
     //}
 
-    if (GameManager::instance->GetPlayer()) {
+    if (GameManager::instance->GetPlayer() != nullptr && !isPerforming) {
         if (GameManager::instance->GetPlayer()->TakeOverSpeed > 30.0f) {
             PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(bonusDecreseCoef * Time::GetDeltaTime());
             GameManager::instance->GetPlayer()->TakeOverSpeed -= bonusDecreseCoef * Time::GetDeltaTime();

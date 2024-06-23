@@ -15,6 +15,12 @@ using namespace glm;
 void City::Initialize()
 {
 	_imagePictogram = GetGameObject()->GetComponentInChildren<Image>();
+
+	MeshRenderer* mesh = GetGameObject()->GetComponent<MeshRenderer>();
+
+	if (mesh != nullptr && _texturesData != nullptr) {
+		mesh->SetMaterial(0, _texturesData->GetMaterial(_color));
+	}
 }
 
 void City::Update()
@@ -58,6 +64,19 @@ void City::SetConcertRoadCity(bool isConcertRoadCity)
 			_imagePictogram->GetTransform()->GetParent()->GetGameObject()->SetActive(false);
 			_imagePictogram->SetSprite(_cityPictogramSpriteId);
 		}
+	}
+}
+
+TILE_COLOR City::GetColor()
+{
+	return _color;
+}
+
+void City::SetColor(TILE_COLOR color)
+{
+	if (_color != color) {
+		_color = color;
+		if (_texturesData != nullptr) GetGameObject()->GetComponent<MeshRenderer>()->SetMaterial(0, _texturesData->GetMaterial(_color));
 	}
 }
 
@@ -157,6 +176,12 @@ YAML::Node City::Serialize() const
 	node["cityPictogramSpriteId"] = SceneManager::GetSpriteSaveIdx(_cityPictogramSpriteId);
 	node["concertRoadCityPictogramSpriteId"] = SceneManager::GetSpriteSaveIdx(_concertRoadCityPictogramSpriteId);
 	node["radius"] = _radius;
+	if (_texturesData != nullptr) {
+		node["textuesData"] = Twin2Engine::Manager::ScriptableObjectManager::GetPath(_texturesData->GetId());
+	}
+	else {
+		node["textuesData"] = "";
+	}
 
 	return node;
 }
@@ -168,6 +193,9 @@ bool City::Deserialize(const YAML::Node& node)
 	_cityPictogramSpriteId = SceneManager::GetSprite(node["cityPictogramSpriteId"].as<size_t>());
 	_concertRoadCityPictogramSpriteId = SceneManager::GetSprite(node["concertRoadCityPictogramSpriteId"].as<size_t>());
 	_radius = node["radius"].as<size_t>();
+
+	string _texturesDataPath = node["textuesData"].as<string>();
+	_texturesData = dynamic_cast<CityTextureData*>(Twin2Engine::Manager::ScriptableObjectManager::Load(_texturesDataPath));
 
 	return true;
 }

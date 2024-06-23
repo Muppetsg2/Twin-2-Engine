@@ -324,7 +324,10 @@ void Playable::SetPatron(PatronData* patronData)
 
 void Playable::CheckIfDead(Playable* playable) {
     if (OwnTiles.empty()) {
-        ++playable->enemiesKilled;
+
+        if (playable)
+            ++playable->enemiesKilled;
+
         isDead = true;
         OnDead();
     }
@@ -332,7 +335,9 @@ void Playable::CheckIfDead(Playable* playable) {
 
 void Playable::RemoveOwnTile(HexTile* tileToRemove, Playable* taker)
 {
+    SPDLOG_WARN("RemoveOwnTile1");
     if (!OwnTiles.empty()) {
+        SPDLOG_WARN("RemoveOwnTile2");
         OwnTiles.remove(tileToRemove);
         CheckIfDead(taker);
     }

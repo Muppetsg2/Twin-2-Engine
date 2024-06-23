@@ -60,6 +60,7 @@ private:
     void GenerateNotes();
     void PlayNote(NoteType note);
     void ShowResult();
+    void HideResult();
     void EndPlaying();
 
 public:

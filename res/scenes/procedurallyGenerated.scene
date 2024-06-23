@@ -693,8 +693,8 @@ Sprites:
     texture: 91
     x: 0
     y: 0
-    width: 750
-    height: 540
+    width: 640
+    height: 134
   - id: 15
     alias: CityPictogram
     texture: 26
@@ -2627,6 +2627,45 @@ GameObjects:
       - id: 51
         enabled: true
         type: Image
+        isTransparent: true
+        sprite: 40
+        color:
+          x: 0.34117648
+          y: 0.34117648
+          z: 0.34117648
+          w: 0.784313738
+        width: 750
+        height: 540
+        layer: 3
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+    children:
+      - 100
+  - id: 100
+    name: YouWonText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5134
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5135
+        enabled: true
+        type: Image
         isTransparent: false
         sprite: 4
         color:
@@ -2636,7 +2675,7 @@ GameObjects:
           w: 1
         width: 640
         height: 134
-        layer: 3
+        layer: 4
         fillEnabled: false
         fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
@@ -2666,6 +2705,45 @@ GameObjects:
       - id: 53
         enabled: true
         type: Image
+        isTransparent: true
+        sprite: 40
+        color:
+          x: 0.34117648
+          y: 0.34117648
+          z: 0.34117648
+          w: 0.784313738
+        width: 750
+        height: 540
+        layer: 3
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+    children:
+      - 99
+  - id: 99
+    name: YouLostText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5132
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5133
+        enabled: true
+        type: Image
         isTransparent: false
         sprite: 14
         color:
@@ -2675,7 +2753,7 @@ GameObjects:
           w: 1
         width: 640
         height: 134
-        layer: 3
+        layer: 4
         fillEnabled: false
         fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0

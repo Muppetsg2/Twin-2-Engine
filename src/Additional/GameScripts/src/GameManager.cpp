@@ -231,7 +231,7 @@ void GameManager::Update()
     if (startPhase2) {
         RestartMapPhase2();
     }
-    if (Input::IsKeyPressed(KEY::U)) {
+    if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::U)) {
         RestartMapPhase1();
     }
 }
@@ -249,8 +249,6 @@ void GameManager::UpdateTiles()
 
 GameObject* GameManager::GeneratePlayer()
 {
-    _textChooseStartingPosition->SetActive(true);
-
     GameObject* player = Twin2Engine::Manager::SceneManager::CreateGameObject(prefabPlayer);
     Player* p = player->GetComponent<Player>();
     _player = p;
@@ -437,6 +435,8 @@ void GameManager::EnemyDied(Enemy* enemy)
         ++i;
     }
 
+    SceneManager::DestroyGameObject(enemy->GetGameObject());
+
     // ONLY PLAYER
     if (entities.size() == 1) {
         RestartMap();
@@ -454,6 +454,8 @@ void GameManager::RestartMap()
 void GameManager::StartGame()
 {
     GeneratePlayer();
+
+    _textChooseStartingPosition->SetActive(true);
 
     for (unsigned i = 0u; i < _enemiesNumber; ++i)
     {
@@ -473,19 +475,20 @@ void GameManager::RestartMapPhase1() {
     gameStarted = false;
     _player->ResetOnNewMap();
 
-    auto enemies = SceneManager::GetComponentsOfType<Enemy>();
     int key = 0;
     GameObject* go = nullptr;
-    while (enemies.size() > 0) {
-        key = enemies.begin()->first;
-        go = enemies.begin()->second->GetGameObject();
-        enemies.erase(key);
-        auto itr = find(entities.begin(), entities.end(), go->GetComponent<Enemy>());
-        if (itr != entities.end()) {
-            entities.erase(itr);
-            SceneManager::DestroyGameObject(go);
-        }
-    }
+
+    //for (size_t index = 0ull; index < entities.size(); ++index)
+    //{
+    //    if (entities[index] != _player)
+    //    {
+    //        entities[index]->CurrTile = nullptr;
+    //        SceneManager::DestroyGameObject(entities[index]->GetGameObject());
+    //    }
+    //}
+    //entities.clear();
+    //entities.push_back(_player);
+
 
     _freePatronsData.clear();
     for (auto& p : _patronsData) {
@@ -509,11 +512,10 @@ void GameManager::RestartMapPhase3() {
     _mapGenerator->Clear();
     _mapGenerator->Generate();
 
-
-    _enemiesNumber += 1;
-    if (_enemiesNumber > 5) {
-        _enemiesNumber = 5;
+    if (_enemiesNumber < 5) {
+        ++_enemiesNumber;
     }
+
     _freeColors = { 0, 1, 2, 3, 4, 5, 6 };
     _freeColors.erase(find(_freeColors.begin(), _freeColors.end(), _player->colorIdx));
 
@@ -530,6 +532,9 @@ void GameManager::RestartMapPhase3() {
     GameTimer::Instance()->ResetTimer();
     GameTimer::Instance()->StartTimer();
     gameStartUp = true;
+
+    
+
     gameStarted = false;
     startPhase3 = false;
     _textChooseStartingPosition->SetActive(true);
@@ -787,6 +792,8 @@ void GameManager::DrawEditor()
         Twin2Engine::UI::Text* _monthText;
         Twin2Engine::UI::Text* _yearText;
         */
+
+        ImGui::TextColored(ImVec4(0.5f, 1.f, 1.f, 1.f), "If You Want To Reload Game. Press CTRL+U");
 
         std::map<size_t, string> prefabNames = Twin2Engine::Manager::PrefabManager::GetAllPrefabsNames();
 

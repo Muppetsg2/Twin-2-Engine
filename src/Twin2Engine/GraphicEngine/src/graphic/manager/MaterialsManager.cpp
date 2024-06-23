@@ -284,11 +284,6 @@ Material* MaterialsManager::LoadMaterial(const std::string& materialPath)
 		.materialParameters = materialParametersBuilder.Build()
 	};
 
-	if ((Shader*)(0x0000000100000001) == materialData.shader)
-	{
-		materialData;
-	}
-
 	_loadedMaterials[hash] = new Material(materialData);
 	_materialsPaths[hash] = materialPath;
 

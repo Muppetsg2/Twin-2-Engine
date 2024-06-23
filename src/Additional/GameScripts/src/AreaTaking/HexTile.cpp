@@ -68,7 +68,8 @@ void HexTile::TakeOver()
 		percentage -= Time::GetDeltaTime() * takeOverSpeed;
 		if (percentage <= _takingStage1) {
 			percentage = 0.f;
-			SetOwnerEntity(nullptr); 
+			//SetOwnerEntity(nullptr); 
+			SetOwnerEntity(occupyingEntity);
 		}
 	}
 	else {
@@ -196,7 +197,7 @@ int HexTile::GetStage() const
 
 void HexTile::UpdateBorderColor()
 {
-	TILE_COLOR col = ownerEntity != nullptr ? (TILE_COLOR)(uint8_t)(ownerEntity->colorIdx == 0 ? 1 : powf(2.f, (float)(ownerEntity->colorIdx))) : TILE_COLOR::NEUTRAL;
+	TILE_COLOR col = ownerEntity != nullptr ? (TILE_COLOR)(uint8_t)(1 << ownerEntity->colorIdx) : TILE_COLOR::NEUTRAL;
 	for (auto& b : borders) {
 		MeshRenderer* mr = b->GetComponent<MeshRenderer>();
 		if (mr != nullptr) {
@@ -503,6 +504,18 @@ void HexTile::ResetTile()
 	UpdateBorders();
 }
 
+void HexTile::ResetTile(Playable* n)
+{
+	percentage = 0.0f;
+	SetOwnerEntity(n);
+	occupyingEntity = n;
+	isFighting = false;
+	state = TileState::NONE;
+	UpdateTileColor();
+	UpdateBorderColor();
+	UpdateBorders();
+}
+
 void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 {
 	if (ownerEntity != newOwnerEntity) {
@@ -532,6 +545,12 @@ void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 
 		UpdateBorderColor();
 		UpdateTileColor();
+
+		if (_mapHexTile->type == Generation::MapHexTile::HexTileType::PointOfInterest) {
+
+			TILE_COLOR col = ownerEntity != nullptr ? (TILE_COLOR)(uint8_t)(1 << ownerEntity->colorIdx) : TILE_COLOR::NEUTRAL;
+			GetGameObject()->GetComponentInChildren<City>()->SetColor(col);
+		}
 	}
 }
 

@@ -195,6 +195,7 @@ void Player::Update() {
     if (_finishMove)
     {
         FinishMove(_finishMove);
+        _finishMove = nullptr;
     }
 
     if (_endFans)

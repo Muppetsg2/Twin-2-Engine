@@ -40,6 +40,7 @@ void EnemyMovement::Update() {
     if (_startMovingAgument)
     {
         OnStartMoving.Invoke(GetGameObject(), _startMovingAgument);
+        _startMovingAgument = nullptr;
     }
 
     Transform* transform = GetTransform();

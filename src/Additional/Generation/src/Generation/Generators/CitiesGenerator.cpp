@@ -279,9 +279,9 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
             }
         }
 
-        size_t toRemoveNumber = regions.size() - static_cast<int>(density * regions.size());
+        size_t toRemoveNumber = regions.size() - static_cast<int>(density * regions.size() + 0.5f);
 
-        while (toRemoveNumber)
+        while (toRemoveNumber > 0ull)
         {
             float shortest = std::numeric_limits<float>::max();
             float longest = -1.0f;
@@ -432,9 +432,9 @@ void CitiesGenerator::Generate(HexagonalTilemap* tilemap)
             }
         }
 
-        size_t toRemoveNumber = sectors.size() - static_cast<int>(density * sectors.size());
+        size_t toRemoveNumber = sectors.size() - static_cast<int>(density * sectors.size() + 0.5f);
 
-        while (toRemoveNumber)
+        while (toRemoveNumber > 0ull)
         {
             float shortest = std::numeric_limits<float>::max();
             float longest = -1.0f;

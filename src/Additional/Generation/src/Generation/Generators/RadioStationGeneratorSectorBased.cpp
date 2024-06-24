@@ -162,6 +162,7 @@ void RadioStationGeneratorSectorBased::Generate(Tilemap::HexagonalTilemap* tilem
         }
     }
 
+    size = tiles.size();
     for (size_t outIndex = 0ull; outIndex < size; ++outIndex)
     {
         vec3 outPosition = tiles[outIndex]->GetTransform()->GetGlobalPosition();

@@ -211,10 +211,13 @@ GameObjects:
         creditsBackButtonId: 23
         highscoreButtonId: 45
         highscoreBackButtonId: 50
+        settingsButtonId: 0
+        settingsBackButtonId: 0
         exitButtonId: 15
         menuCanvas: 2
         creditsCanvas: 7
         highscoreCanvas: 15
+        settingsCanvas: 0
         highscoreText: 42
         audioId: 7
         audios:

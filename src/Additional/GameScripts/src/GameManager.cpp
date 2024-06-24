@@ -479,7 +479,6 @@ void GameManager::RestartMapPhase1() {
     int key = 0;
     GameObject* go = nullptr;
 
-    AreaTakenGraph::Instance()->Reset();
 
     //for (size_t index = 0ull; index < entities.size(); ++index)
     //{
@@ -505,6 +504,8 @@ void GameManager::RestartMapPhase1() {
 }
 
 void GameManager::RestartMapPhase2() {
+    AreaTakenGraph::Instance()->Reset();
+
     _mapGenerator->Clear();
 
     startPhase2 = false;

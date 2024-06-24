@@ -596,7 +596,7 @@ Material* MeshRenderer::GetMaterial(size_t index) const
 
 	if (index >= _materials.size())
 	{
-		SPDLOG_WARN("MESH_RENDERER::Trying to acces material out of bounds.");
+		//SPDLOG_WARN("MESH_RENDERER::Trying to acces material out of bounds.");
 		return _materials[_materials.size() - 1];
 	}
 

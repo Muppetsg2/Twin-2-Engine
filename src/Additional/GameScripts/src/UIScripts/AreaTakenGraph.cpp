@@ -771,12 +771,33 @@ GameObject* AreaTakenGraph::GetTopValueHexagon() const
 
 void AreaTakenGraph::Reset()
 {
-	//while (_topHexagons.size() > 1ull) {
-	//	SceneManager::DestroyGameObject(_topHexagons[_topHexagons.size() - 1]);
-	//	_topHexagons.erase(_topHexagons.end() - 1);
-	//}
+	while (_topHexagons.size() > 1ull) 
+	{
+		SceneManager::DestroyGameObject(_topHexagons[0ull]);
+		_topHexagons.erase(_topHexagons.begin());
+	}
+	//
+	//_topHexagons[0ull]->SetActive(true);
+	//Image* img = _topHexagons[0ull]->GetComponent<Image>();
+	//img->SetFillOffset(0.0f);
+	//img->SetFillProgress(100.f);
+	//img->SetColor({ GetColor(TILE_COLOR::NEUTRAL), 1.f });
+	//img->SetLayer(_layer + 1);
+	//
+	while (_edges.size() > 1ull)
+	{
+		SceneManager::DestroyGameObject(_edges[0ull]);
+		_edges.erase(_edges.begin());
+	}
 
-	_topHexagons.clear();
-	_edges.clear();
+	//img = _edges[0ull]->GetComponentInChildren<Image>();
+	//img->SetFillOffset(0.f);
+	//img->SetFillProgress(100.f);
+	//img->SetColor({ GetColor(TILE_COLOR::NEUTRAL) * 0.75f, 1.f });
+	//img->SetLayer(_layer);
+	//_topHexagons.clear();
+	//_edges.clear();
 	UpdateTopHexagon();
+	UpdateEdge();
+	UpdateTopValueHexagon();
 }

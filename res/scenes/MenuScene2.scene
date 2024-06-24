@@ -578,11 +578,11 @@ GameObjects:
       - id: 9
         enabled: false
         type: MenuParticles
-        amount: 40
-        height: 10
-        particleWidth: 1
-        particleHeight: 1
-        radius: 10
+        amount: 20
+        height: 800
+        particleWidth: 40
+        particleHeight: 40
+        radius: 800
         startColor:
           x: 1
           y: 1

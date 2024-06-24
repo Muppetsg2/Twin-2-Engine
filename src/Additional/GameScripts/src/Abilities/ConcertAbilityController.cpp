@@ -14,6 +14,14 @@ void ConcertAbilityController::OnDestroy() {
 
 }
 
+void ConcertAbilityController::Reset() {
+    currCooldown = 0.0f;
+    canUse = true;
+    OnEventAbilityCooldownFinished.Invoke(playable);
+    currTimerTime = 0.0f;
+    StopPerformingConcert();
+}
+
 void ConcertAbilityController::Update() {
     if (!playable->OwnTiles.empty()) {
         usedMoneyRequired = moneyFunction->GetValue(playable->OwnTiles.size() - 1, moneyRequired);

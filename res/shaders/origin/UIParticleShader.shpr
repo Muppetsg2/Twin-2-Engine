@@ -1,0 +1,6 @@
+shaderprogram:
+  name: origin/UIParticleShader
+  shaders:
+    - UIParticleShader.vert
+    - ParticleShader.frag
+  parameters:

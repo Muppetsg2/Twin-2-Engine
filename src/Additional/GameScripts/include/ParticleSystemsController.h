@@ -1,10 +1,12 @@
 #pragma once
 
 #include <ParticleGenerator.h>
+#include <UIParticleGenerator.h>
 #include <unordered_set>
 
 class ParticleSystemsController {
 	friend ParticleGenerator;
+	friend UIParticleGenerator;
 private:
 	static ParticleSystemsController* instance;
 	static const int MAX_NUMBER_OF_PARTICLE;
@@ -34,9 +36,13 @@ public:
 	}
 
 	std::unordered_set<ParticleGenerator*> particlesGenerators;
+	std::unordered_set<UIParticleGenerator*> UIParticlesGeneratorsFront;
+	std::unordered_set<UIParticleGenerator*> UIParticlesGeneratorsBack;
 	static ParticleSystemsController* Instance();
 	static void DeleteInstance();
 	
 	void Update();
 	void Render();
+	void RenderUIFront();
+	void RenderUIBack();
 };

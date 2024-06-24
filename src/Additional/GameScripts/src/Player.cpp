@@ -668,6 +668,8 @@ void Player::ResetOnNewMap() {
     move->_info.WaitForFinding();
     move->_checkingInfo.WaitForFinding();
 
+    _concertAbility->Reset();
+
     move->_showedPathEnabled = false;
     move->_showedPathDisabled = false;
 

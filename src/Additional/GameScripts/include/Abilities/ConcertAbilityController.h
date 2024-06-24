@@ -55,6 +55,7 @@ public:
     float GetAdditionalTakingOverSpeed() const;
     bool IsUsed() const;
     bool IsOnCooldown() const;
+    void Reset();
 
     virtual YAML::Node Serialize() const override;
     virtual bool Deserialize(const YAML::Node& node) override;

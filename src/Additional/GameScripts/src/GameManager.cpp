@@ -300,8 +300,8 @@ GameObject* GameManager::GeneratePlayer()
 
         break;
 
-    case PatronMusic::JAZZ:
-        _audioComponent->SetAudio(_jazzBackgroundMusics[0ull]);
+    case PatronMusic::CLASSIC:
+        _audioComponent->SetAudio(_classicBackgroundMusics[0ull]);
         _audioComponent->Play();
 
         break;
@@ -597,10 +597,10 @@ YAML::Node GameManager::Serialize() const
         node["HeavyMetalBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_heavyMetalBackgroundMusics[index]));
     }
 
-    node["JazzBackgroundMusics"] = vector<size_t>();
-    for (size_t index = 0ull; index < _jazzBackgroundMusics.size(); ++index)
+    node["ClassicBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _classicBackgroundMusics.size(); ++index)
     {
-        node["JazzBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_jazzBackgroundMusics[index]));
+        node["ClassicBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_classicBackgroundMusics[index]));
     }
 
     node["DiscoBackgroundMusics"] = vector<size_t>();
@@ -621,7 +621,10 @@ YAML::Node GameManager::Serialize() const
 
 bool GameManager::Deserialize(const YAML::Node &node)
 {
-    if (!node["carMaterials"] || !node["enemyPrefab"] || !node["prefabPlayer"] || !node["patronsData"] || !Component::Deserialize(node))
+    if (!node["enemyPrefab"] || !node["prefabPlayer"] || !node["carMaterials"] || !node["patronsData"] || 
+        !node["RockBackgroundMusics"] || !node["ElectricBackgroundMusics"] || !node["PopBackgroundMusics"] || 
+        !node["HeavyMetalBackgroundMusics"] || !node["ClassicBackgroundMusics"] || !node["DiscoBackgroundMusics"] || 
+        !Component::Deserialize(node))
         return false;
 
     size_t size = node["carMaterials"].size();
@@ -755,10 +758,10 @@ bool GameManager::Deserialize(const YAML::Node &node)
     {
         _heavyMetalBackgroundMusics[index] = SceneManager::GetAudio(_heavyMetalBackgroundMusics[index]);
     }
-    _jazzBackgroundMusics = node["JazzBackgroundMusics"].as<vector<size_t>>();
-    for (size_t index = 0ull; index < _jazzBackgroundMusics.size(); ++index)
+    _classicBackgroundMusics = node["ClassicBackgroundMusics"].as<vector<size_t>>();
+    for (size_t index = 0ull; index < _classicBackgroundMusics.size(); ++index)
     {
-        _jazzBackgroundMusics[index] = SceneManager::GetAudio(_jazzBackgroundMusics[index]);
+        _classicBackgroundMusics[index] = SceneManager::GetAudio(_classicBackgroundMusics[index]);
     }
     _discoBackgroundMusics = node["DiscoBackgroundMusics"].as<vector<size_t>>();
     for (size_t index = 0ull; index < _discoBackgroundMusics.size(); ++index)

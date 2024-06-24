@@ -980,6 +980,10 @@ Audio:
     path: res/music/Minigame/Defeat.mp3
   - id: 9
     path: res/music/Pop/Twilight_Whispers_Embrace.mp3
+  - id: 10
+    path: res\music\Classic\Empires_Collide_On_Streets.mp3
+  - id: 11
+    path: res\music\Classic\Urban_Strings_Symphony.mp3
 Materials:
   - id: 0
     path: res/materials/tiles/normal/yellow/YellowHexTileStage3.material
@@ -1418,8 +1422,9 @@ GameObjects:
           - 9
         HeavyMetalBackgroundMusics:
           - 1
-        JazzBackgroundMusics:
-          []
+        ClassicBackgroundMusics:
+          - 10
+          - 11
         DiscoBackgroundMusics:
           []
       - id: 162

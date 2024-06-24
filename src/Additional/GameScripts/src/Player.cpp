@@ -183,6 +183,26 @@ void Player::Initialize() {
 }
 void Player::Update() {
 
+    if (_loosingFightPlayable)
+    {
+        GameManager::instance->minigameActive = false;
+        CurrTile->isFighting = false;
+
+        _loosingFightPlayable->LostPaperRockScissors(this);
+
+        if (CurrTile->ownerEntity == _loosingFightPlayable) {
+            CurrTile->ResetTile();
+        }
+
+        //_loosingFightPlayable->CheckIfDead(this);
+
+        FinishMove(CurrTile);
+        fightingPlayable = nullptr;
+        minigameChoice = MinigameRPS_Choice::NONE;
+
+        _loosingFightPlayable = nullptr;
+    }
+
     if (!GameManager::instance->gameStarted && _hexIndicator) _hexIndicator->SetActive(false);
 
     if (!GameManager::instance->gameStarted) return;
@@ -685,17 +705,36 @@ void Player::ResetOnNewMap() {
     GetTransform()->SetGlobalPosition(vec3(0.0f, -5.0f, 0.0f));
 
     // Clearing after abilities
+
+    // Album
     currAlbumTime = 0.0f;
     currAlbumCooldown = 0.0f;
     currFansTime = 0.0f;
     currFansCooldown = 0.0f;
 
+    isAlbumActive = false;
 
+    albumTakingOverTiles.clear();
+
+    for (size_t index = 0ull; index < albumsIncreasingIntervalsCounter.size(); ++index)
+    {
+        albumsIncreasingIntervalsCounter[index] = 0.0f;
+    }
+    _albumCircleImage->SetFillProgress(00.f);
+
+    // Fans meeting
     HideAffectedTiles();
     _fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
     _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
     _isHoveringFansMeetingButton = false;
 
+    isFansActive = false;
+
+    tempFansCollider.clear();
+    _fansMeetingCircleImage->SetFillProgress(00.f);
+
+
+    // Concert
     PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
     _isShowingConcertPossible = false;
 
@@ -704,6 +743,7 @@ void Player::ResetOnNewMap() {
     _concertButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
     _concertButtonFrameImage->SetSprite(_spriteButtonStep1);
 
+    _concertCircleImage->SetFillProgress(0.0f);
 
     if (move->_showedPathTiles.size())
     {
@@ -725,15 +765,6 @@ void Player::ResetOnNewMap() {
 
     OwnTiles.clear();
     _affectedTiles.clear();
-
-
-
-    albumTakingOverTiles.clear();
-
-    for (size_t index = 0ull; index < albumsIncreasingIntervalsCounter.size(); ++index)
-    {
-        albumsIncreasingIntervalsCounter[index] = 0.0f;
-    }
 
     GetTransform()->SetGlobalPosition(glm::vec3(0.0, -2.0f, 0.0f));
 }
@@ -763,20 +794,7 @@ void Player::ResetOnNewMap() {
 //}
 
 void Player::WonPaperRockScissors(Playable* playable) {
-    GameManager::instance->minigameActive = false;
-    CurrTile->isFighting = false;
-
-    playable->LostPaperRockScissors(this);
-
-    if (CurrTile->ownerEntity == playable) {
-        CurrTile->ResetTile();
-    }
-
-    //playable->CheckIfDead(this);
-
-    FinishMove(CurrTile);
-    fightingPlayable = nullptr;
-    minigameChoice = MinigameRPS_Choice::NONE;
+    _loosingFightPlayable = playable;
 }
 
 void Player::LostPaperRockScissors(Playable* playable) {

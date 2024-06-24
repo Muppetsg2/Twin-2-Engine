@@ -195,6 +195,7 @@ void GameManager::Update()
                         _player->move->_playerDestinationMarker->GetTransform()->SetGlobalPosition(
                             _player->move->_pointedTile->GetTransform()->GetGlobalPosition() + vec3(0.0f, _player->move->_destinationMarkerHeightOverSurface, 0.0f));
                         _player->move->_playerDestinationMarker->SetActive(true);
+                        _player->move->_playerWrongDestinationMarker->SetActive(false);
                     }
                     else
                     {

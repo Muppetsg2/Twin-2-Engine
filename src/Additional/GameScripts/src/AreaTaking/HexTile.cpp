@@ -36,7 +36,8 @@ void HexTile::TakeOver()
 		multiplayer *= _affectingCities[index]->CalculateTakingOverSpeedMultiplier(this);
 	}
 
-	if (ownerEntity)
+	//if (ownerEntity)
+	if (ownerEntity && ownerEntity == (Playable*)GameManager::instance->GetPlayer())
 	{
 		if (multiplayer > 1.0f)
 		{
@@ -67,7 +68,7 @@ void HexTile::TakeOver()
 	if (ownerEntity != nullptr && ownerEntity != occupyingEntity) {
 		percentage -= Time::GetDeltaTime() * takeOverSpeed;
 		if (percentage <= _takingStage1) {
-			percentage = 0.f;
+			percentage = _takingStage1;
 			//SetOwnerEntity(nullptr); 
 			SetOwnerEntity(occupyingEntity);
 		}
@@ -97,7 +98,7 @@ void HexTile::LoseInfluence()
 	}
 
 
-	if (ownerEntity)
+	if (ownerEntity && ownerEntity == (Playable*)GameManager::instance->GetPlayer())
 	{
 		if (multiplayer < 1.0f)
 		{
@@ -405,8 +406,8 @@ void HexTile::Initialize()
 	}
 
 	particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/ArrowParticle.png", 3, 0.5f, 0.0f, 6.0f, 2.0f, 0.16f, 0.2f, 0.3f);
-	pgCity = new ParticleGenerator("origin/ParticleShader", TextureManager::GetTexture2D(_textureCityStar)->GetId(), 5, 0.3f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
-	pgCityNegative = new ParticleGenerator("origin/ParticleShader", TextureManager::GetTexture2D(_textureCityBlackStar)->GetId(), 5, -0.3f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
+	pgCity = new ParticleGenerator("origin/ParticleShader", TextureManager::GetTexture2D(_textureCityStar)->GetId(), 3, 0.3f, 0.0f, 6.0f, 2.0f, 0.2f, 0.2f, 0.3f);
+	pgCityNegative = new ParticleGenerator("origin/ParticleShader", TextureManager::GetTexture2D(_textureCityBlackStar)->GetId(), 3, -0.3f, 0.0f, 6.0f, 2.0f, 0.2f, 0.2f, 0.3f);
 }
 
 void HexTile::OnDestroy()

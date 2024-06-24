@@ -51,6 +51,9 @@ private:
     HexTile* _startMove = nullptr;
     HexTile* _finishMove = nullptr;
 
+
+    Playable* _loosingFightPlayable = nullptr;
+
     // Player UI
     // Album
     Twin2Engine::UI::Text* _albumText;

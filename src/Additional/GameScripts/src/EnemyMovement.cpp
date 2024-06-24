@@ -101,7 +101,6 @@ void EnemyMovement::OnPathComplete(const AStarPath& p) {
     }
 
     _path = new AStarPath(p);
-    _mutexPath.unlock();
     
     destination = tempDest;
     destinatedTile = tempDestTile;
@@ -114,6 +113,8 @@ void EnemyMovement::OnPathComplete(const AStarPath& p) {
     //OnStartMoving.Invoke(GetGameObject(), destinatedTile);
 
     tempDestTile = nullptr;
+
+    _mutexPath.unlock();
 }
 
 void EnemyMovement::OnPathFailure() {

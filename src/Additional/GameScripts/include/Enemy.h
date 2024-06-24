@@ -32,6 +32,8 @@ class Enemy : public Playable {
 	StateMachine<Enemy*> _stateMachine;
 	State<Enemy*>* _nextState = nullptr;
 
+	Playable* _loosingFightPlayable = nullptr;
+
 public:
 	static TakingOverState _takingOverState;
 	static MovingState _movingState;

@@ -171,7 +171,11 @@ void PlayerMovement::Update() {
                     {
                         MapHexTile* mapHexTile = hexTile->GetMapHexTile();
 
-                        if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && hexTile->currCooldown > 0.0f) && !hexTile->isFighting)
+                        if (
+                            mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain 
+                            && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation 
+                                && hexTile->currCooldown > 0.0f) 
+                            && !hexTile->isFighting)
                         {
                             CheckDestination(hexTile);
                             //_pointedTile = hexTile;

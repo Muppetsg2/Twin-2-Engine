@@ -36,6 +36,13 @@ void EnemyMovement::OnDestroy() {
 }
 
 void EnemyMovement::Update() {
+
+    if (_startMovingAgument)
+    {
+        OnStartMoving.Invoke(GetGameObject(), _startMovingAgument);
+        _startMovingAgument = nullptr;
+    }
+
     Transform* transform = GetTransform();
     glm::vec3 position = transform->GetGlobalPosition();
     if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive)
@@ -103,7 +110,8 @@ void EnemyMovement::OnPathComplete(const AStarPath& p) {
 
     reachEnd = false;
 
-    OnStartMoving.Invoke(GetGameObject(), destinatedTile);
+    _startMovingAgument = destinatedTile;
+    //OnStartMoving.Invoke(GetGameObject(), destinatedTile);
 
     tempDestTile = nullptr;
 }

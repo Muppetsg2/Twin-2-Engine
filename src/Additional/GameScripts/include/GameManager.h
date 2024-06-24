@@ -43,7 +43,7 @@ private:
     std::vector<size_t> _electricBackgroundMusics;
     std::vector<size_t> _popBackgroundMusics;
     std::vector<size_t> _heavyMetalBackgroundMusics;
-    std::vector<size_t> _jazzBackgroundMusics;
+    std::vector<size_t> _classicBackgroundMusics;
     std::vector<size_t> _discoBackgroundMusics;
 
 

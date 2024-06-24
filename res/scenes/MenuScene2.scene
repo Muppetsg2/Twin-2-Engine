@@ -24,18 +24,24 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 4
-    path: res\textures\UI\quit.png
+    path: res\textures\UI\settings.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 5
-    path: res\textures\title_screen.png
+    path: res\textures\UI\quit.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 6
+    path: res\textures\title_screen.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 7
     path: res\textures\credits_screen.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
@@ -44,14 +50,14 @@ Textures:
 Sprites:
   - id: 0
     alias: Title_Screen
-    texture: 5
+    texture: 6
     x: 0
     y: 0
     width: 1920
     height: 1080
   - id: 1
     alias: CreditsScreen
-    texture: 6
+    texture: 7
     x: 0
     y: 0
     width: 1920
@@ -65,7 +71,7 @@ Sprites:
     height: 75
   - id: 3
     alias: Quit
-    texture: 4
+    texture: 5
     x: 0
     y: 0
     width: 200
@@ -84,6 +90,13 @@ Sprites:
     y: 0
     width: 200
     height: 75
+  - id: 6
+    alias: SettingsButton
+    texture: 4
+    x: 0
+    y: 0
+    width: 200
+    height: 75
 Fonts:
   - id: 0
     path: res\fonts\Metal-Lord.otf
@@ -92,13 +105,17 @@ Audio:
   - id: 0
     path: res\music\Pop\Twilight_Whispers_Embrace.mp3
   - id: 1
-    path: res\music\Metal\Whispers_In_Silent_Steel.mp3
-  - id: 2
-    path: res\music\Electric\Thunder_Echoes_Loudly.mp3
-  - id: 3
     path: res\music\Pop\Summer_Beats_Carnival.mp3
+  - id: 2
+    path: res\music\Metal\Whispers_In_Silent_Steel.mp3
+  - id: 3
+    path: res\music\Electric\Thunder_Echoes_Loudly.mp3
   - id: 4
     path: res\music\Rock\Classic_Rock_Anthem_For_The_Ages.mp3
+  - id: 5
+    path: res\music\Classic\Empires_Collide_On_Streets.mp3
+  - id: 6
+    path: res\music\Classic\Urban_Strings_Symphony.mp3
 Materials: ~
 Models:
   - id: 0
@@ -152,7 +169,7 @@ GameObjects:
       - id: 7
         enabled: true
         type: Audio
-        audio: 3
+        audio: 1
         loop: true
         volume: 1
         playOnStart: false
@@ -194,24 +211,30 @@ GameObjects:
         creditsBackButtonId: 23
         highscoreButtonId: 45
         highscoreBackButtonId: 50
+        settingsButtonId: 0
+        settingsBackButtonId: 0
         exitButtonId: 15
         menuCanvas: 2
         creditsCanvas: 7
         highscoreCanvas: 15
+        settingsCanvas: 0
         highscoreText: 42
         audioId: 7
         audios:
-          - 2
-          - 1
           - 0
+          - 1
+          - 2
           - 3
           - 4
+          - 5
+          - 6
     children:
       - 3
       - 5
       - 6
       - 13
       - 19
+      - 21
   - id: 3
     name: Background
     isStatic: false
@@ -330,7 +353,7 @@ GameObjects:
       id: 13
       position:
         x: 0
-        y: -245
+        y: -345
         z: 0
       scale:
         x: 1
@@ -401,7 +424,7 @@ GameObjects:
       id: 30
       position:
         x: 0
-        y: -45
+        y: -145
         z: 0
       scale:
         x: 1
@@ -472,7 +495,7 @@ GameObjects:
       id: 43
       position:
         x: 0
-        y: -145
+        y: -245
         z: 0
       scale:
         x: 1
@@ -554,6 +577,77 @@ GameObjects:
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 2
+    children:
+      []
+  - id: 21
+    name: SettingsButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 46
+      position:
+        x: 0
+        y: -45
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 51
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 6
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 200
+        height: 75
+        layer: 1
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 52
+        enabled: true
+        type: Button
+        width: 200
+        height: 75
+        interactable: true
+        onHoverPresetEvents: true
+        animTimeFactor: 2
+        scaleFunc: 9
+        scaleFuncType: 2
+        scaleStart:
+          x: 1
+          y: 1
+          z: 1
+        scaleEnd:
+          x: 1.10000002
+          y: 1.10000002
+          z: 1
+        colorFunc: 0
+        colorFuncType: 0
+        colorStart:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        colorEnd:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        displayObjectOnHover: false
+        playAudioOnClick: false
     children:
       []
   - id: 4
@@ -679,8 +773,8 @@ GameObjects:
         y: 420
         z: 0
       scale:
-        x: 0.418794066
-        y: 0.418794066
+        x: 0.419999987
+        y: 0.419999987
         z: 1
       rotation:
         x: 0
@@ -848,7 +942,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00M\x00u\x00s\x00i\x00c\x00:\x00\n\x00s\x00t\x00o\x00c\x00k\x00t\x00u\x00n\x00e\x00.\x00c\x00o\x00m\x00\n\x00m\x00i\x00x\x00k\x00i\x00t\x00.\x00c\x00o\x00\n\x00\n\x00F\x00o\x00n\x00t\x00s\x00:\x00\n\x00M\x00e\x00t\x00a\x00l\x00-\x00L\x00o\x00r\x00d\x00\n\x00\n\x00G\x00r\x00a\x00p\x00h\x00i\x00c\x00s\x00:\x00\n\x00M\x00a\x00j\x00a\x00 \x00O\x00c\x00h\x00m\x00a\x01D\x00s\x00k\x00a\x00\n\x00M\x00i\x00c\x00r\x00o\x00s\x00o\x00f\x00t\x00 \x00C\x00o\x00p\x00i\x00l\x00o\x00t\x00\n\x00\n\x00M\x00o\x00d\x00e\x00l\x00s\x00:\x00\n\x00M\x00a\x00j\x00a\x00 \x00O\x00c\x00h\x00m\x00a\x01D\x00s\x00k\x00a\x00\n\x00M\x00a\x00t\x00e\x00u\x00s\x00z\x00 \x00G\x00a\x00p\x00i\x01D\x00s\x00k\x00i"
+        text: "\x00M\x00u\x00s\x00i\x00c\x00:\x00\n\x00s\x00t\x00o\x00c\x00k\x00t\x00u\x00n\x00e\x00.\x00c\x00o\x00m\x00\n\x00m\x00i\x00x\x00k\x00i\x00t\x00.\x00c\x00o\x00\n\x00p\x00i\x00x\x00a\x00b\x00a\x00y\x00.\x00c\x00o\x00m\x00\n\x00\n\x00F\x00o\x00n\x00t\x00s\x00:\x00\n\x00M\x00e\x00t\x00a\x00l\x00-\x00L\x00o\x00r\x00d\x00\n\x00\n\x00G\x00r\x00a\x00p\x00h\x00i\x00c\x00s\x00:\x00\n\x00M\x00a\x00j\x00a\x00 \x00O\x00c\x00h\x00m\x00a\x01D\x00s\x00k\x00a\x00\n\x00M\x00i\x00c\x00r\x00o\x00s\x00o\x00f\x00t\x00 \x00C\x00o\x00p\x00i\x00l\x00o\x00t\x00\n\x00\n\x00M\x00o\x00d\x00e\x00l\x00s\x00:\x00\n\x00M\x00a\x00j\x00a\x00 \x00O\x00c\x00h\x00m\x00a\x01D\x00s\x00k\x00a\x00\n\x00M\x00a\x00t\x00e\x00u\x00s\x00z\x00 \x00G\x00a\x00p\x00i\x01D\x00s\x00k\x00i"
         font: 0
         size: 30
         autoSize: false
@@ -1048,7 +1142,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00Y\x00e\x00a\x00r\x00s\x00:\x00 \x004\x00\n\x00M\x00o\x00n\x00t\x00h\x00s\x00:\x00 \x003\x00\n\x00W\x00e\x00e\x00k\x00s\x00:\x00 \x002\x00\n\x00D\x00a\x00y\x00s\x00:\x00 \x001"
+        text: "\x00Y\x00e\x00a\x00r\x00s\x00:\x00 \x000\x00\n\x00M\x00o\x00n\x00t\x00h\x00s\x00:\x00 \x000\x00\n\x00W\x00e\x00e\x00k\x00s\x00:\x00 \x000\x00\n\x00D\x00a\x00y\x00s\x00:\x00 \x000"
         font: 0
         size: 50
         autoSize: false
@@ -1079,9 +1173,9 @@ GameObjects:
         y: 420
         z: 0
       scale:
-        x: 0.399889737
-        y: 0.399889737
-        z: 0.99999994
+        x: 0.419999987
+        y: 0.419999987
+        z: 1
       rotation:
         x: 0
         y: 0
@@ -1112,7 +1206,7 @@ GameObjects:
         height: 256
         interactable: true
         onHoverPresetEvents: true
-        animTimeFactor: 0.100000001
+        animTimeFactor: 2
         scaleFunc: 9
         scaleFuncType: 2
         scaleStart:

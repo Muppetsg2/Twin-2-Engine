@@ -54,6 +54,32 @@ void Enemy::OnEnable()
 
 void Enemy::Update()
 {
+    if (_loosingFightPlayable)
+    {
+        //Enemy* enemy = dynamic_cast<Enemy*>(playable);
+        //if (enemy != nullptr)
+        //{
+        //    enemy->LostPaperRockScissors(this);
+        //    CurrTile->isFighting = false;
+        //}
+        CurrTile->isFighting = false;
+        GameManager::instance->minigameActive = false;
+
+        fightingPlayable = nullptr;
+        minigameChoice = MinigameRPS_Choice::NONE;
+
+        _loosingFightPlayable->LostPaperRockScissors(this);
+
+        if (CurrTile->ownerEntity == _loosingFightPlayable) {
+            CurrTile->ResetTile();
+        }
+
+        //playable->CheckIfDead(this);
+        CurrTile->StartTakingOver(this);
+
+        _loosingFightPlayable = nullptr;
+    }
+
     UpdatePrices();
     if (_nextState != nullptr) {
         State<Enemy*>* oldState = _nextState;
@@ -79,26 +105,7 @@ void Enemy::LostPaperRockScissors(Playable* playable)
 
 void Enemy::WonPaperRockScissors(Playable* playable)
 {
-    //Enemy* enemy = dynamic_cast<Enemy*>(playable);
-    //if (enemy != nullptr)
-    //{
-    //    enemy->LostPaperRockScissors(this);
-    //    CurrTile->isFighting = false;
-    //}
-    CurrTile->isFighting = false;
-    GameManager::instance->minigameActive = false;
-
-    fightingPlayable = nullptr;
-    minigameChoice = MinigameRPS_Choice::NONE;
-
-    playable->LostPaperRockScissors(this);
-
-    if (CurrTile->ownerEntity == playable) {
-        CurrTile->ResetTile();
-    }
-
-    //playable->CheckIfDead(this);
-    CurrTile->StartTakingOver(this);
+    _loosingFightPlayable = playable;
 }
 
 //void Enemy::StartPaperRockScissors(Playable* playable)

@@ -40,6 +40,7 @@ void EnemyMovement::Update() {
     if (_startMovingAgument)
     {
         OnStartMoving.Invoke(GetGameObject(), _startMovingAgument);
+        _startMovingAgument = nullptr;
     }
 
     Transform* transform = GetTransform();
@@ -100,7 +101,6 @@ void EnemyMovement::OnPathComplete(const AStarPath& p) {
     }
 
     _path = new AStarPath(p);
-    _mutexPath.unlock();
     
     destination = tempDest;
     destinatedTile = tempDestTile;
@@ -113,6 +113,8 @@ void EnemyMovement::OnPathComplete(const AStarPath& p) {
     //OnStartMoving.Invoke(GetGameObject(), destinatedTile);
 
     tempDestTile = nullptr;
+
+    _mutexPath.unlock();
 }
 
 void EnemyMovement::OnPathFailure() {

@@ -92,21 +92,24 @@ void AreaTakenGraph::UpdateEdge()
 	Prefab* edgePrefab = PrefabManager::GetPrefab(_edgePrefabId);
 	if (edgePrefab == nullptr) return;
 
+	const float R1 = GetTransform()->GetGlobalScale().x;
 	const float R2 = GetTransform()->GetGlobalScale().y / 1.143f;
-	const glm::vec2 edgeStartPoint = { glm::sqrt(3.f) * 0.5f, -R2 * 0.5f };
+	const glm::vec2 edgeStartPoint = { R1 * glm::sqrt(3.f) * 0.5f, -R2 * 0.5f };
 	const glm::vec2 edgeMiddlePoint = { 0.f, -R2 };
-	const glm::vec2 edgeEndPoint = { -glm::sqrt(3.f) * 0.5f, -R2 * 0.5f };
+	const glm::vec2 edgeEndPoint = { -R1 * glm::sqrt(3.f) * 0.5f, -R2 * 0.5f };
 	const glm::vec2 rightEdgeVector = edgeMiddlePoint - edgeStartPoint;
 	const glm::vec2 leftEdgeVector = edgeEndPoint - edgeMiddlePoint;
-	const glm::vec2 topVector = { 0, 1.f };
+	const glm::vec2 topVector = { 0.f, 1.f };
+	const glm::vec2 downVector = { 0.f, -1.f };
 
 	const float rightEdgeA = edgeMiddlePoint.y - edgeStartPoint.y;
 	const float rightEdgeB = edgeStartPoint.x - edgeMiddlePoint.x;
 	const float rightEdgeC = -edgeStartPoint.x * rightEdgeA - edgeStartPoint.y * rightEdgeB;
 
 	Func<float, float> CalcRightPercent = [&](float alpha) -> float {
+		const float R = glm::max(R1, R2);
 		// RADIUS VECTOR
-		glm::vec2 v1 = { glm::sin(glm::radians(alpha)), glm::cos(glm::radians(alpha)) };
+		glm::vec2 v1 = { glm::sin(glm::radians(alpha)) * R, glm::cos(glm::radians(alpha)) * R };
 
 		// MOVE VALUE
 		float t = -rightEdgeC / (rightEdgeA * v1.x + rightEdgeB * v1.y);
@@ -116,15 +119,17 @@ void AreaTakenGraph::UpdateEdge()
 
 		// FINAL PERCENT
 		return glm::abs(v2m.x - edgeStartPoint.x) / glm::abs(rightEdgeVector.x);
-		};
+	};
 
 	const float leftEdgeA = edgeEndPoint.y - edgeMiddlePoint.y;
 	const float leftEdgeB = edgeMiddlePoint.x - edgeEndPoint.x;
 	const float leftEdgeC = -edgeEndPoint.x * leftEdgeA - edgeEndPoint.y * leftEdgeB;
 
 	Func<float, float> CalcLeftPercent = [&](float alpha) -> float {
+		const float R = glm::max(R1, R2);
+
 		// RADIUS VECTOR
-		glm::vec2 v1 = { glm::sin(glm::radians(alpha)), glm::cos(glm::radians(alpha)) };
+		glm::vec2 v1 = { glm::sin(glm::radians(alpha)) * R, glm::cos(glm::radians(alpha)) * R };
 
 		// MOVE VALUE
 		float t = -leftEdgeC / (leftEdgeA * v1.x + leftEdgeB * v1.y);
@@ -134,11 +139,29 @@ void AreaTakenGraph::UpdateEdge()
 
 		// FINAL PERCENT
 		return glm::abs(v2m.x - edgeMiddlePoint.x) / glm::abs(leftEdgeVector.x);
-		};
+	};
 
-	const float edgeStartAlpha = glm::degrees(glm::acos(topVector.x * edgeStartPoint.x + topVector.y * edgeStartPoint.y));
+	Func<float, float, glm::vec2> CalcMaskPercent = [&](float alpha, glm::vec2 O2) -> float {
+		const float R = glm::max(R1, R2);
+
+		// RADIUS VECTOR
+		glm::vec2 v1 = { glm::sin(glm::radians(alpha)) * R, glm::cos(glm::radians(alpha)) * R };
+
+		// MOVE VALUE
+		float t = -leftEdgeC / (leftEdgeA * v1.x + leftEdgeB * v1.y);
+
+		// EDGE MOVE VECTOR
+		glm::vec2 v2m = v1 * t;
+
+		// Alpha maski
+		float alphaM = 180.f + glm::degrees(glm::acos(glm::dot((v2m - O2), downVector) / (glm::length(v2m - O2) * glm::length(downVector))));
+
+		return (alphaM / 360.f) * 100.f;
+	};
+
+	const float edgeStartAlpha = glm::degrees(glm::acos(glm::dot(topVector, edgeStartPoint) / (glm::length(topVector) * glm::length(edgeStartPoint))));
 	const float edgeHalfAlpha = 180.f;
-	const float edgeEndAlpha = 360.f - glm::degrees(glm::acos(topVector.x * edgeEndPoint.x + topVector.y * edgeEndPoint.y));
+	const float edgeEndAlpha = 360.f - glm::degrees(glm::acos(glm::dot(topVector, edgeEndPoint) / (glm::length(topVector) * glm::length(edgeEndPoint))));
 
 #if !AREA_TAKEN_GRAPH_TEST
 
@@ -168,7 +191,8 @@ void AreaTakenGraph::UpdateEdge()
 
 		if (alpha0 + alpha > edgeStartAlpha && alpha0 < edgeEndAlpha) {
 			_edges[idx]->SetActive(true);
-			Image* img = _edges[idx]->GetComponent<Image>();
+			Image* img = _edges[idx]->GetComponentInChildren<Image>();
+			Mask* mask = _edges[idx]->GetComponent<Mask>();
 			img->SetColor({ GetColor((TILE_COLOR)(uint8_t)(entity->colorIdx == 0 ? 1 : powf(2.f, (float)(entity->colorIdx)))) * 0.75f, 1.f });
 			img->SetLayer(_layer);
 
@@ -186,6 +210,7 @@ void AreaTakenGraph::UpdateEdge()
 				float clampAlpha = glm::clamp(alpha0 + alpha, edgeStartAlpha, edgeHalfAlpha);
 
 				img->SetFillProgress(CalcRightPercent(clampAlpha) * 50.f);
+				mask->SetFillProgress(50.f);
 			}
 			// SECOND TRIANGLE
 			else {
@@ -198,6 +223,11 @@ void AreaTakenGraph::UpdateEdge()
 				float clampAlpha = glm::clamp(alpha0 + alpha, edgeHalfAlpha, edgeEndAlpha);
 
 				img->SetFillProgress(CalcLeftPercent(clampAlpha) * 50.f + 50.f);
+
+				// MASK PROGRESS
+				glm::vec2 O2 = mask->GetTransform()->GetLocalPosition();
+				O2.y = -(O2.y / 200.f) * R2;
+				mask->SetFillProgress(CalcMaskPercent(clampAlpha, O2));
 			}
 		}
 		else {
@@ -211,7 +241,7 @@ void AreaTakenGraph::UpdateEdge()
 	alpha0 = 3.6f * offset;
 	if (alpha0 < edgeEndAlpha) {
 		_edges[idx]->SetActive(true);
-		Image* img = _edges[idx]->GetComponent<Image>();
+		Image* img = _edges[idx]->GetComponentInChildren<Image>();
 		
 		if (alpha0 < edgeHalfAlpha) {
 			if (alpha0 > edgeStartAlpha) {
@@ -255,7 +285,8 @@ void AreaTakenGraph::UpdateEdge()
 
 	if (alpha0 + alpha > edgeStartAlpha && alpha0 < edgeEndAlpha) {
 		_edges[0]->SetActive(true);
-		Image* img = _edges[0]->GetComponent<Image>();
+		Image* img = _edges[0]->GetComponentInChildren<Image>();
+		Mask* mask = _edges[0]->GetComponent<Mask>();
 		img->SetColor({ GetColor(TILE_COLOR::RED) * 0.75f, 1.f });
 		img->SetLayer(_layer);
 
@@ -273,6 +304,7 @@ void AreaTakenGraph::UpdateEdge()
 			float clampAlpha = glm::clamp(alpha0 + alpha, edgeStartAlpha, edgeHalfAlpha);
 
 			img->SetFillProgress(CalcRightPercent(clampAlpha) * 50.f);
+			mask->SetFillProgress(50.f);
 		}
 		// SECOND TRIANGLE
 		else {
@@ -285,6 +317,11 @@ void AreaTakenGraph::UpdateEdge()
 			float clampAlpha = glm::clamp(alpha0 + alpha, edgeHalfAlpha, edgeEndAlpha);
 
 			img->SetFillProgress(CalcLeftPercent(clampAlpha) * 50.f + 50.f);
+
+			// MASK PROGRESS
+			glm::vec2 O2 = mask->GetTransform()->GetLocalPosition();
+			O2.y = -(O2.y / 200.f) * R2;
+			mask->SetFillProgress(CalcMaskPercent(clampAlpha, O2));
 		}
 	}
 	else {
@@ -294,7 +331,7 @@ void AreaTakenGraph::UpdateEdge()
 	alpha0 = 3.6f * _takenPercentage;
 	if (alpha0 < edgeEndAlpha) {
 		_edges[1]->SetActive(true);
-		Image* img = _edges[1]->GetComponent<Image>();
+		Image* img = _edges[1]->GetComponentInChildren<Image>();
 
 		if (alpha0 < edgeHalfAlpha) {
 			if (alpha0 > edgeStartAlpha) {
@@ -336,20 +373,123 @@ void AreaTakenGraph::UpdateTopValueHexagon()
 		_topValueHexagon->SetActive(false);
 		return;
 	}
+	else {
+		_topValueHexagon->SetActive(true);
+	}
 
-	Image* img = _topHexagons[0]->GetComponent<Image>();
+	static Image* img = nullptr;
+	static Image* edgeImg = nullptr;
+	static Mask* edgeMask = nullptr;
+
+	if (img != nullptr) {
+		img->SetWidth(200.f);
+		img->SetHeight(200.f);
+		img->SetLayer(_layer + 1);
+		img = nullptr;
+	}
+
+	if (edgeImg != nullptr) {
+		edgeImg->SetWidth(200.f);
+		edgeImg->SetHeight(200.f);
+		edgeImg->SetLayer(_layer);
+		edgeImg = nullptr;
+	}
+
+	if (edgeMask != nullptr) {
+		edgeMask->SetWidth(200.f);
+		edgeMask->SetHeight(200.f);
+		edgeMask = nullptr;
+	}
+
+	img = _topHexagons[0]->GetComponent<Image>();
+	edgeImg = _edges[0]->GetComponentInChildren<Image>();
+	edgeMask = _edges[0]->GetComponent<Mask>();
+
 	for (size_t i = 1; i < _topHexagons.size() - 1; ++i) {
 		Image* temp = _topHexagons[i]->GetComponent<Image>();
 		if (temp->GetFillProgress() - temp->GetFillOffset() > img->GetFillProgress() - img->GetFillOffset()) {
 			img = temp;
+			edgeImg = _edges[i]->GetComponentInChildren<Image>();
+			edgeMask = _edges[i]->GetComponent<Mask>();
 		}
 	}
 
 	Image* topImg = _topValueHexagon->GetComponent<Image>();
-	topImg->SetLayer(_layer + 2);
-	topImg->SetColor({ glm::vec3(0.f), 1.f });
+	topImg->SetLayer(_layer - 1);
+	topImg->SetColor(glm::vec4(glm::vec3(img->GetColor()) * 0.75f, 1.f));
 	topImg->SetFillOffset(img->GetFillOffset());
 	topImg->SetFillProgress(img->GetFillProgress());
+	topImg->SetWidth(220.f);
+	topImg->SetHeight(220.f);
+
+	img->SetWidth(220.f);
+	img->SetHeight(220.f);
+	img->SetLayer(_layer + 2);
+	edgeImg->SetWidth(220.f);
+	edgeImg->SetHeight(220.f);
+	edgeImg->SetLayer(_layer + 1);
+	edgeMask->SetWidth(220.f);
+	edgeMask->SetHeight(220.f);
+
+	// TOP EDGE
+	Prefab* topEdgePrefab = PrefabManager::GetPrefab(_topEdgePrefabId);
+	if (topEdgePrefab == nullptr) return;
+
+	if (_topEdge == nullptr) {
+		_topEdge = SceneManager::CreateGameObject(topEdgePrefab, GetTransform());
+		_topEdge->GetTransform()->SetLocalPosition(glm::vec3(0.f));
+	}
+
+	if (_topHexagons.size() <= 1) {
+		_topEdge->SetActive(false);
+		return;
+	}
+	else {
+		_topEdge->SetActive(true);
+	}
+
+	Image* topEdgeImg = _topEdge->GetComponentInChildren<Image>();
+	topEdgeImg->SetColor(glm::vec4(glm::vec3(img->GetColor()) * 0.75f, 1.f));
+
+	const float R1 = GetTransform()->GetGlobalScale().x;
+	const float R2 = GetTransform()->GetGlobalScale().y / 1.143f;
+	const glm::vec2 edgeMiddlePoint = { 0.f, R2 };
+	const glm::vec2 edgeEndPoint = { R1 * glm::sqrt(3.f) * 0.5f, R2 * 0.5f };
+	const glm::vec2 rightEdgeVector = edgeEndPoint - edgeMiddlePoint;
+	const glm::vec2 topVector = { 0.f, 1.f };
+
+	const float rightEdgeA = edgeEndPoint.y - edgeMiddlePoint.y;
+	const float rightEdgeB = edgeMiddlePoint.x - edgeEndPoint.x;
+	const float rightEdgeC = -edgeEndPoint.x * rightEdgeA - edgeEndPoint.y * rightEdgeB;
+
+	Func<float, float> CalcLeftPercent = [&](float alpha) -> float {
+		const float R = glm::max(R1, R2);
+
+		// RADIUS VECTOR
+		glm::vec2 v1 = { glm::sin(glm::radians(alpha)) * R, glm::cos(glm::radians(alpha)) * R };
+
+		// MOVE VALUE
+		float t = -rightEdgeC / (rightEdgeA * v1.x + rightEdgeB * v1.y);
+
+		// EDGE MOVE VECTOR
+		glm::vec2 v2m = v1 * t;
+
+		// FINAL PERCENT
+		return glm::abs(v2m.x - edgeMiddlePoint.x) / glm::abs(rightEdgeVector.x);
+	};
+
+	const float edgeHalfAlpha = 0.f;
+	const float edgeEndAlpha = glm::degrees(glm::acos(glm::dot(topVector, edgeEndPoint) / (glm::length(topVector) * glm::length(edgeEndPoint))));
+
+	float alpha0 = 3.6f * img->GetFillOffset();
+	topEdgeImg->SetFillOffset(CalcLeftPercent(alpha0) * 50.f + 50.f);
+	float alpha = 3.6f * img->GetFillProgress();
+	if (alpha <= edgeEndAlpha) {
+		topEdgeImg->SetFillProgress(CalcLeftPercent(alpha) * 50.f + 50.f);
+	}
+	else {
+		topEdgeImg->SetFillProgress(CalcLeftPercent(edgeEndAlpha) * 50.f + 50.f);
+	}
 }
 
 #if _DEBUG
@@ -438,6 +578,7 @@ void AreaTakenGraph::OnDestroy()
 {
 	_topHexagons.clear();
 	_edges.clear();
+	_topEdge = nullptr;
 	_topValueHexagon = nullptr;
 }
 
@@ -448,6 +589,7 @@ YAML::Node AreaTakenGraph::Serialize() const
 	node["layer"] = _layer;
 	node["topHexagonPrefab"] = SceneManager::GetPrefabSaveIdx(_topHexagonPrefabId);
 	node["edgePrefab"] = SceneManager::GetPrefabSaveIdx(_edgePrefabId);
+	node["topEdgePrefab"] = SceneManager::GetPrefabSaveIdx(_topEdgePrefabId);
 	node["topValueHexagonPrefab"] = SceneManager::GetPrefabSaveIdx(_topValueHexagonPrefabId);
 	return node;
 }
@@ -472,6 +614,11 @@ bool AreaTakenGraph::Deserialize(const YAML::Node& node)
 		_edgePrefabId = SceneManager::GetPrefab(node["edgePrefab"].as<size_t>());
 	}
 	isGood = isGood && node["edgePrefab"];
+
+	if (node["topEdgePrefab"]) {
+		_topEdgePrefabId = SceneManager::GetPrefab(node["topEdgePrefab"].as<size_t>());
+	}
+	isGood = isGood && node["topEdgePrefab"];
 
 	if (node["topValueHexagonPrefab"]) {
 		_topValueHexagonPrefabId = SceneManager::GetPrefab(node["topValueHexagonPrefab"].as<size_t>());
@@ -502,6 +649,11 @@ void AreaTakenGraph::DrawEditor() {
 		prefabId = _edgePrefabId;
 		if (PrefabDropDown(string("Edge Prefab##").append(id).c_str(), &prefabId, id)) {
 			SetEdgePrefabId(prefabId);
+		}
+
+		prefabId = _topEdgePrefabId;
+		if (PrefabDropDown(string("Top Edge Prefab##").append(id).c_str(), &prefabId, id)) {
+			SetTopEdgePrefabId(prefabId);
 		}
 
 		prefabId = _topValueHexagonPrefabId;
@@ -539,6 +691,13 @@ void AreaTakenGraph::SetEdgePrefabId(size_t prefabId)
 	}
 }
 
+void AreaTakenGraph::SetTopEdgePrefabId(size_t prefabId)
+{
+	if (_topEdgePrefabId != prefabId) {
+		_topEdgePrefabId = prefabId;
+	}
+}
+
 void AreaTakenGraph::SetTopValueHexagonPrefabId(size_t prefabId)
 {
 	if (_topValueHexagonPrefabId != prefabId) {
@@ -561,6 +720,11 @@ size_t AreaTakenGraph::GetEdgePrefabId() const
 	return _edgePrefabId;
 }
 
+size_t AreaTakenGraph::GetTopEdgePrefabId() const
+{
+	return _topEdgePrefabId;
+}
+
 size_t AreaTakenGraph::GetTopValueHexagonPrefabId() const
 {
 	return _topValueHexagonPrefabId;
@@ -574,6 +738,11 @@ std::vector<GameObject*> AreaTakenGraph::GetTopHexagons() const
 std::vector<GameObject*> AreaTakenGraph::GetEdge() const
 {
 	return _edges;
+}
+
+GameObject* AreaTakenGraph::GetTopEdge() const
+{
+	return _topEdge;
 }
 
 GameObject* AreaTakenGraph::GetTopValueHexagon() const

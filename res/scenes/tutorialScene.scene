@@ -180,24 +180,36 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 29
-    path: res/textures/UI/player_colour/yellowT.png
+    path: res/textures/cityTextures/yellow.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 30
-    path: res/textures/tiles/blue3.png
+    path: res/textures/UI/player_colour/yellowT.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 31
-    path: res/textures/particle.png
+    path: res/textures/tiles/blue3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 32
+    path: res/textures/particle.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 33
+    path: res/textures/cityTextures/blue.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 34
     path: res/textures/UI/concert.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -205,61 +217,61 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 33
+  - id: 35
     path: res/textures/tiles/cyan2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 34
+  - id: 36
     path: res/textures/tiles/red2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 35
+  - id: 37
     path: res/textures/tiles/purple2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 36
+  - id: 38
     path: res/textures/tiles/cyan3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 37
+  - id: 39
     path: res/textures/tiles/tile_regress/cyan1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 38
+  - id: 40
     path: res/textures/particles/starParticle.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 39
+  - id: 41
     path: res/textures/UI/graph.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 40
+  - id: 42
     path: res\textures\UI\title2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 41
+  - id: 43
     path: res/textures/tiles/tile_regress/blue2_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 42
+  - id: 44
     path: res\textures\UI\shape_hexagon.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -267,37 +279,37 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 43
+  - id: 45
     path: res/textures/UI/player_colour/blueB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 44
+  - id: 46
     path: res/textures/tiles/purple1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 45
+  - id: 47
     path: res/textures/carTextures/green.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 46
+  - id: 48
     path: res/textures/UI/player_colour/cyanT.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 47
+  - id: 49
     path: res/textures/UI/player_colour/pinkB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 48
+  - id: 50
     path: res/textures/UI/guitar.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -305,109 +317,127 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 49
+  - id: 51
     path: res/textures/tiles/yellow2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 50
+  - id: 52
     path: res/textures/tiles/tile_regress/red2_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 51
+  - id: 53
     path: res\textures\white_circle.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 52
+  - id: 54
     path: res/textures/tiles/pink3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 53
-    path: res/textures/ArrowParticle.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 54
-    path: res/textures/mountainTex2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
   - id: 55
-    path: res/textures/tiles/tile_regress/purple2_2.png
+    path: res/textures/cityTextures/purple.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 56
-    path: res/textures/UI/vs2.png
+    path: res/textures/ArrowParticle.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 57
-    path: res/textures/tiles/purple3.png
+    path: res/textures/mountainTex2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 58
-    path: res/textures/UI/pure_background.png
+    path: res/textures/tiles/tile_regress/purple2_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 59
-    path: res/textures/carTextures/cyan.png
+    path: res/textures/cityTextures/neutral.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 60
-    path: res/textures/cityTextureColour.png
+    path: res/textures/UI/vs2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 61
-    path: res\textures\UI\shape_hexagon_border.png
+    path: res/textures/tiles/purple3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 62
-    path: res\textures\white.png
+    path: res/textures/UI/pure_background.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 63
-    path: res/textures/tiles/tile_regress/green2_2.png
+    path: res/textures/carTextures/cyan.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 64
-    path: res/textures/tiles/cyan1.png
+    path: res/textures/cityTextureColour.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 65
-    path: res/textures/tiles/red3.png
+    path: res\textures\UI\shape_hexagon_border.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 66
+    path: res/textures/cityTextures/green.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 67
+    path: res\textures\white.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 68
+    path: res/textures/tiles/tile_regress/green2_2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 69
+    path: res/textures/tiles/cyan1.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 70
+    path: res/textures/tiles/red3.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 71
     path: res/textures/UI/meeting.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -415,13 +445,13 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 67
+  - id: 72
     path: res/textures/UI/player_colour/redB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 68
+  - id: 73
     path: res/textures/UI/launchpad.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -429,55 +459,55 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 69
+  - id: 74
     path: res/textures/UI/player_colour/greenB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 70
+  - id: 75
     path: res/textures/tiles/tile_regress/pink1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 71
+  - id: 76
     path: res/textures/UI/you_lost.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 72
+  - id: 77
     path: res/textures/particles/blackStarParticle.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 73
+  - id: 78
     path: res/textures/tiles/blue1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 74
+  - id: 79
     path: res\textures\UI\arrows.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 75
+  - id: 80
     path: res/textures/tiles/yellow1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 76
+  - id: 81
     path: res/textures/UI/player_colour/cyanB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 77
+  - id: 82
     path: res/textures/UI/drum.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -485,79 +515,91 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 78
+  - id: 83
     path: res/textures/carTextures/blue.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 79
+  - id: 84
     path: res/textures/tiles/tile_regress/pink2_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 80
+  - id: 85
     path: res/textures/tiles/yellow3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 81
+  - id: 86
     path: res/textures/UI/you_won.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 82
+  - id: 87
     path: res\textures\UI\menu.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 83
-    path: res/textures/carTextures/yellow.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 84
-    path: res\textures\UI\graphArrow.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 85
-    path: res/textures/tiles/green3.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 86
-    path: res/textures/carTextures/pink.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 87
-    path: res/textures/tiles/tile_regress/yellow1_2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
   - id: 88
-    path: res/textures/radioTowerTexture.png
+    path: res/textures/cityTextures/pink.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 89
-    path: res\textures\UI\pause.png
+    path: res/textures/carTextures/yellow.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 90
+    path: res\textures\UI\graphArrow.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 91
+    path: res/textures/tiles/green3.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 92
+    path: res/textures/carTextures/pink.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 93
+    path: res/textures/tiles/tile_regress/yellow1_2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 94
+    path: res/textures/radioTowerTexture.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 95
+    path: res\textures\UI\pause.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 96
+    path: res/textures/cityTextures/red.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 97
     path: res\textures\UI\album.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -565,43 +607,49 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 91
+  - id: 98
     path: res\textures\UI\you_lost_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 92
+  - id: 99
     path: res/textures/carTextures/purple.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 93
+  - id: 100
     path: res/textures/tiles/tile_regress/purple1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 94
+  - id: 101
     path: res/textures/UI/player_colour/purpleT.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 95
+  - id: 102
+    path: res/textures/cityTextures/cyan.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 111
     path: res/textures/UI/popup_base.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 97
+  - id: 112
     path: res/textures/UI/RMB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 98
+  - id: 113
     path: res/textures/tutorials/StartSelectionTut.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
@@ -609,7 +657,7 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 99
+  - id: 114
     path: res/textures/tutorials/TakingOverTut.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
@@ -617,7 +665,7 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 100
+  - id: 115
     path: res/textures/tutorials/ReachTut.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
@@ -625,7 +673,7 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 101
+  - id: 116
     path: res/textures/tutorials/EarningMoneyTut.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
@@ -633,7 +681,7 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 102
+  - id: 117
     path: res/textures/tutorials/RadioStationTut.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
@@ -641,7 +689,7 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 103
+  - id: 118
     path: res/textures/tutorials/ConcertRoadTut.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
@@ -649,7 +697,7 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 104
+  - id: 119
     path: res/textures/tutorials/AlbumTut.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
@@ -657,7 +705,7 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 105
+  - id: 120
     path: res/textures/tutorials/FansMeetingTut.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
@@ -665,7 +713,7 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 106
+  - id: 121
     path: res/textures/tutorials/ConcertTut.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
@@ -673,7 +721,7 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 107
+  - id: 122
     path: res/textures/UI/pure_background_with_border.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
@@ -681,7 +729,7 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 108
+  - id: 123
     path: res/textures/UI/ZoryaPrototype2.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
@@ -699,21 +747,21 @@ Sprites:
     height: 540
   - id: 1
     alias: ArrowLeft
-    texture: 74
+    texture: 79
     x: 512
     y: 0
     width: 256
     height: 256
   - id: 2
     alias: Pause
-    texture: 89
+    texture: 95
     x: 0
     y: 0
     width: 75
     height: 75
   - id: 3
     alias: MiniGame_Red_Back
-    texture: 67
+    texture: 72
     x: 0
     y: 0
     width: 310
@@ -741,28 +789,28 @@ Sprites:
     height: 540
   - id: 7
     alias: Launchpad
-    texture: 68
+    texture: 73
     x: 0
     y: 0
     width: 256
     height: 256
   - id: 8
     alias: Fans
-    texture: 66
+    texture: 71
     x: 0
     y: 0
     width: 150
     height: 150
   - id: 9
     alias: Drum
-    texture: 77
+    texture: 82
     x: 0
     y: 0
     width: 256
     height: 256
   - id: 10
     alias: Guitar
-    texture: 48
+    texture: 50
     x: 0
     y: 0
     width: 256
@@ -776,21 +824,21 @@ Sprites:
     height: 742
   - id: 12
     alias: MiniGame_VS
-    texture: 56
+    texture: 60
     x: 0
     y: 0
     width: 750
     height: 540
   - id: 13
     alias: ArrowDown
-    texture: 74
+    texture: 79
     x: 256
     y: 0
     width: 256
     height: 256
   - id: 14
     alias: MiniGame_You_Lost
-    texture: 91
+    texture: 98
     x: 0
     y: 0
     width: 640
@@ -804,21 +852,21 @@ Sprites:
     height: 64
   - id: 16
     alias: MiniGame_Purple_Top
-    texture: 94
+    texture: 101
     x: 0
     y: 0
     width: 200
     height: 540
   - id: 17
     alias: HexTileShape
-    texture: 42
+    texture: 44
     x: 0
     y: 0
     width: 346
     height: 400
   - id: 18
     alias: HexTileShapeBorder
-    texture: 61
+    texture: 65
     x: 0
     y: 0
     width: 348
@@ -832,42 +880,42 @@ Sprites:
     height: 153
   - id: 20
     alias: MiniGame_Yellow_Top
-    texture: 29
+    texture: 30
     x: 0
     y: 0
     width: 200
     height: 540
   - id: 21
     alias: MiniGame_Title
-    texture: 40
+    texture: 42
     x: 0
     y: 0
     width: 640
     height: 100
   - id: 22
     alias: ArrowRight
-    texture: 74
+    texture: 79
     x: 768
     y: 0
     width: 256
     height: 256
   - id: 23
     alias: MenuButton
-    texture: 82
+    texture: 87
     x: 0
     y: 0
     width: 200
     height: 75
   - id: 24
     alias: MiniGame_Cyan_Top
-    texture: 46
+    texture: 48
     x: 0
     y: 0
     width: 200
     height: 540
   - id: 25
     alias: HexagonSprite
-    texture: 42
+    texture: 44
     x: 0
     y: 0
     width: 256
@@ -881,14 +929,14 @@ Sprites:
     height: 540
   - id: 27
     alias: GraphArrow
-    texture: 84
+    texture: 90
     x: 0
     y: 0
     width: 72
     height: 100
   - id: 28
     alias: Concert
-    texture: 32
+    texture: 34
     x: 0
     y: 0
     width: 256
@@ -902,14 +950,14 @@ Sprites:
     height: 225
   - id: 30
     alias: MiniGame_Cyan_Back
-    texture: 76
+    texture: 81
     x: 0
     y: 0
     width: 310
     height: 540
   - id: 31
     alias: MiniGame_Background
-    texture: 58
+    texture: 62
     x: 0
     y: 0
     width: 640
@@ -937,21 +985,21 @@ Sprites:
     height: 75
   - id: 35
     alias: MiniGame_Blue_Back
-    texture: 43
+    texture: 45
     x: 0
     y: 0
     width: 310
     height: 540
   - id: 36
     alias: MiniGame_Green_Back
-    texture: 69
+    texture: 74
     x: 0
     y: 0
     width: 310
     height: 540
   - id: 37
     alias: Album
-    texture: 90
+    texture: 97
     x: 0
     y: 0
     width: 256
@@ -965,28 +1013,28 @@ Sprites:
     height: 64
   - id: 39
     alias: White_Circle
-    texture: 51
+    texture: 53
     x: 0
     y: 0
     width: 100
     height: 100
   - id: 40
     alias: White_Box
-    texture: 62
+    texture: 67
     x: 0
     y: 0
     width: 100
     height: 100
   - id: 41
     alias: MiniGame_StrengthGraph
-    texture: 39
+    texture: 41
     x: 0
     y: 0
     width: 256
     height: 256
   - id: 42
     alias: MiniGame_Pink_Back
-    texture: 47
+    texture: 49
     x: 0
     y: 0
     width: 310
@@ -1000,98 +1048,98 @@ Sprites:
     height: 726
   - id: 44
     alias: ArrowUp
-    texture: 74
+    texture: 79
     x: 0
     y: 0
     width: 256
     height: 256
   - id: 61
     alias: TakingOverTut
-    texture: 99
+    texture: 114
     x: 0
     y: 0
     width: 560
     height: 315
   - id: 62
     alias: ReachTut
-    texture: 100
+    texture: 115
     x: 0
     y: 0
     width: 560
     height: 315
   - id: 63
     alias: EarningMoneyTut
-    texture: 101
+    texture: 116
     x: 0
     y: 0
     width: 560
     height: 315
   - id: 64
     alias: RadioStationTut
-    texture: 102
+    texture: 117
     x: 0
     y: 0
     width: 560
     height: 315
   - id: 65
     alias: ConcertRoadTut
-    texture: 103
+    texture: 118
     x: 0
     y: 0
     width: 560
     height: 315
   - id: 66
     alias: AlbumTut
-    texture: 104
+    texture: 119
     x: 0
     y: 0
     width: 560
     height: 315
   - id: 67
     alias: FansMeetingTut
-    texture: 105
+    texture: 120
     x: 0
     y: 0
     width: 560
     height: 315
   - id: 68
     alias: ConcertTut
-    texture: 106
+    texture: 121
     x: 0
     y: 0
     width: 560
     height: 315
   - id: 69
     alias: pure_background_with_border
-    texture: 107
+    texture: 122
     x: 0
     y: 0
     width: 640
     height: 540
   - id: 70
     alias: ZoryaPrototype
-    texture: 108
+    texture: 123
     x: 0
     y: 0
     width: 340
     height: 380
   - id: 71
     alias: popup_base
-    texture: 95
+    texture: 111
     x: 0
     y: 0
     width: 800
     height: 225
   - id: 72
     alias: RMB
-    texture: 97
+    texture: 112
     x: 0
     y: 0
     width: 23
     height: 32
   - id: 73
     alias: StartSelectionTut
-    texture: 98
+    texture: 113
     x: 0
     y: 0
     width: 560
@@ -1123,6 +1171,10 @@ Audio:
     path: res/music/Minigame/Defeat.mp3
   - id: 9
     path: res/music/Pop/Twilight_Whispers_Embrace.mp3
+  - id: 10
+    path: res\music\Classic\Empires_Collide_On_Streets.mp3
+  - id: 11
+    path: res\music\Classic\Urban_Strings_Symphony.mp3
 Materials:
   - id: 0
     path: res/materials/tiles/normal/yellow/YellowHexTileStage3.material
@@ -1135,116 +1187,132 @@ Materials:
   - id: 4
     path: res/materials/tiles/normal/red/RedHexTileRegressStage1.material
   - id: 5
-    path: res/materials/tiles/normal/pink/PinkHexTileRegressStage2.material
+    path: res/materials/city/CityMaterial_Blue.material
   - id: 6
-    path: res/materials/tiles/normal/green/GreenHexTileStage3.material
+    path: res/materials/tiles/normal/pink/PinkHexTileRegressStage2.material
   - id: 7
-    path: res/materials/tiles/normal/green/GreenHexTileRegressStage2.material
+    path: res/materials/tiles/normal/green/GreenHexTileStage3.material
   - id: 8
-    path: res/materials/enviroment/CloudMaterial.material
+    path: res/materials/city/CityMaterial_Neutral.material
   - id: 9
-    path: res/materials/Water.material
+    path: res/materials/tiles/normal/green/GreenHexTileRegressStage2.material
   - id: 10
-    path: res/materials/tiles/normal/blue/BlueHexTileStage3.material
+    path: res/materials/enviroment/CloudMaterial.material
   - id: 11
-    path: res/materials/tiles/normal/pink/PinkHexTileRegressStage1.material
+    path: res/materials/Water.material
   - id: 12
-    path: res/materials/Basic2.material
+    path: res/materials/tiles/normal/blue/BlueHexTileStage3.material
   - id: 13
-    path: res/materials/tiles/borders/blue/BlueHexTileBorder.material
+    path: res/materials/tiles/normal/pink/PinkHexTileRegressStage1.material
   - id: 14
-    path: res/materials/MountainsUnlit.material
+    path: res/materials/Basic2.material
   - id: 15
-    path: res/materials/tiles/normal/yellow/YellowHexTileRegressStage1.material
+    path: res/materials/tiles/borders/blue/BlueHexTileBorder.material
   - id: 16
-    path: res/materials/CityLights.material
+    path: res/materials/MountainsUnlit.material
   - id: 17
-    path: res/materials/tiles/borders/green/GreenHexTileBorder.material
+    path: res/materials/tiles/normal/yellow/YellowHexTileRegressStage1.material
   - id: 18
-    path: res/materials/tiles/normal/red/RedHexTileStage1.material
+    path: res/materials/CityLights.material
   - id: 19
-    path: res/materials/tiles/borders/yellow/YellowHexTileBorder.material
+    path: res/materials/city/CityMaterial_Purple.material
   - id: 20
-    path: res/materials/YellowBasic.material
+    path: res/materials/city/CityMaterial_Cyan.material
   - id: 21
-    path: res/materials/tiles/normal/purple/PurpleHexTileRegressStage2.material
+    path: res/materials/tiles/borders/green/GreenHexTileBorder.material
   - id: 22
-    path: res/materials/tiles/normal/pink/PinkHexTileStage3.material
+    path: res/materials/tiles/normal/red/RedHexTileStage1.material
   - id: 23
-    path: res/materials/RadioTowerBuilding.material
+    path: res/materials/tiles/borders/yellow/YellowHexTileBorder.material
   - id: 24
-    path: res/materials/tiles/normal/purple/PurpleHexTileStage3.material
+    path: res/materials/YellowBasic.material
   - id: 25
-    path: res/materials/tiles/normal/purple/PurpleHexTileStage2.material
+    path: res/materials/tiles/normal/purple/PurpleHexTileRegressStage2.material
   - id: 26
-    path: res/materials/tiles/normal/red/RedHexTileStage2.material
+    path: res/materials/tiles/normal/pink/PinkHexTileStage3.material
   - id: 27
-    path: res/materials/tiles/normal/yellow/YellowHexTileStage2.material
+    path: res/materials/RadioTowerBuilding.material
   - id: 28
-    path: res/materials/tiles/normal/cyan/CyanHexTileRegressStage2.material
+    path: res/materials/tiles/normal/purple/PurpleHexTileStage3.material
   - id: 29
-    path: res/materials/tiles/normal/yellow/YellowHexTileStage1.material
+    path: res/materials/tiles/normal/purple/PurpleHexTileStage2.material
   - id: 30
-    path: res/materials/tiles/normal/red/RedHexTileRegressStage2.material
+    path: res/materials/tiles/normal/red/RedHexTileStage2.material
   - id: 31
-    path: res/materials/tiles/borders/cyan/CyanHexTileBorder.material
+    path: res/materials/tiles/normal/yellow/YellowHexTileStage2.material
   - id: 32
-    path: res/materials/car/CarMaterial_Purple.material
+    path: res/materials/tiles/normal/cyan/CyanHexTileRegressStage2.material
   - id: 33
-    path: res/materials/tiles/normal/cyan/CyanHexTileStage1.material
+    path: res/materials/tiles/normal/yellow/YellowHexTileStage1.material
   - id: 34
-    path: res/materials/tiles/normal/green/GreenHexTileStage1.material
+    path: res/materials/city/CityMaterial_Yellow.material
   - id: 35
-    path: res/materials/tiles/borders/neutral/NeutralHexTileBorder.material
+    path: res/materials/tiles/normal/red/RedHexTileRegressStage2.material
   - id: 36
-    path: res/materials/car/CarMaterial_Red.material
+    path: res/materials/tiles/borders/cyan/CyanHexTileBorder.material
   - id: 37
-    path: res/materials/tiles/normal/blue/BlueHexTileStage1.material
+    path: res/materials/car/CarMaterial_Purple.material
   - id: 38
-    path: res/materials/tiles/borders/red/RedHexTileBorder.material
+    path: res/materials/tiles/normal/cyan/CyanHexTileStage1.material
   - id: 39
-    path: res/materials/tiles/normal/neutral/NeutralHexTile.material
+    path: res/materials/city/CityMaterial_Green.material
   - id: 40
-    path: res/materials/tiles/normal/green/GreenHexTileStage2.material
+    path: res/materials/tiles/normal/green/GreenHexTileStage1.material
   - id: 41
-    path: res/materials/tiles/borders/purple/PurpleHexTileBorder.material
+    path: res/materials/tiles/borders/neutral/NeutralHexTileBorder.material
   - id: 42
-    path: res/materials/car/CarMaterial_Yellow.material
+    path: res/materials/car/CarMaterial_Red.material
   - id: 43
-    path: res/materials/tiles/normal/yellow/YellowHexTileRegressStage2.material
+    path: res/materials/tiles/normal/blue/BlueHexTileStage1.material
   - id: 44
-    path: res/materials/tiles/BlueAffectedHexTile.material
+    path: res/materials/tiles/borders/red/RedHexTileBorder.material
   - id: 45
-    path: res/materials/car/CarMaterial_Green.material
+    path: res/materials/city/CityMaterial_Red.material
   - id: 46
-    path: res/materials/tiles/normal/purple/PurpleHexTileRegressStage1.material
+    path: res/materials/tiles/normal/neutral/NeutralHexTile.material
   - id: 47
-    path: res/materials/tiles/normal/cyan/CyanHexTileStage3.material
+    path: res/materials/tiles/normal/green/GreenHexTileStage2.material
   - id: 48
-    path: res/materials/tiles/normal/blue/BlueHexTileRegressStage2.material
+    path: res/materials/tiles/borders/purple/PurpleHexTileBorder.material
   - id: 49
-    path: res/materials/tiles/normal/pink/PinkHexTileStage1.material
+    path: res/materials/car/CarMaterial_Yellow.material
   - id: 50
-    path: res/materials/car/CarMaterial_Pink.material
+    path: res/materials/tiles/normal/yellow/YellowHexTileRegressStage2.material
   - id: 51
-    path: res/materials/tiles/borders/pink/PinkHexTileBorder.material
+    path: res/materials/tiles/BlueAffectedHexTile.material
   - id: 52
-    path: res/materials/RadioTower.material
+    path: res/materials/car/CarMaterial_Green.material
   - id: 53
-    path: res/materials/tiles/normal/blue/BlueHexTileStage2.material
+    path: res/materials/tiles/normal/purple/PurpleHexTileRegressStage1.material
   - id: 54
-    path: res/materials/tiles/normal/blue/BlueHexTileRegressStage1.material
+    path: res/materials/tiles/normal/cyan/CyanHexTileStage3.material
   - id: 55
-    path: res/materials/tiles/normal/purple/PurpleHexTileStage1.material
+    path: res/materials/tiles/normal/blue/BlueHexTileRegressStage2.material
   - id: 56
-    path: res/materials/CityMaterial.material
+    path: res/materials/tiles/normal/pink/PinkHexTileStage1.material
   - id: 57
-    path: res/materials/tiles/normal/red/RedHexTileStage3.material
+    path: res/materials/car/CarMaterial_Pink.material
   - id: 58
-    path: res/materials/tiles/normal/cyan/CyanHexTileRegressStage1.material
+    path: res/materials/tiles/borders/pink/PinkHexTileBorder.material
   - id: 59
-    path: res/materials/car/CarMaterial_Cyan.material
+    path: res/materials/RadioTower.material
   - id: 60
+    path: res/materials/tiles/normal/blue/BlueHexTileStage2.material
+  - id: 61
+    path: res/materials/tiles/normal/blue/BlueHexTileRegressStage1.material
+  - id: 62
+    path: res/materials/tiles/normal/purple/PurpleHexTileStage1.material
+  - id: 63
+    path: res/materials/CityMaterial.material
+  - id: 64
+    path: res/materials/tiles/normal/red/RedHexTileStage3.material
+  - id: 65
+    path: res/materials/city/CityMaterial_Pink.material
+  - id: 66
+    path: res/materials/tiles/normal/cyan/CyanHexTileRegressStage1.material
+  - id: 67
+    path: res/materials/car/CarMaterial_Cyan.material
+  - id: 68
     path: res/materials/tiles/normal/pink/PinkHexTileStage2.material
 Models:
   - id: 0
@@ -1295,22 +1363,26 @@ Prefabs:
   - id: 9
     path: res\prefabs\AreaTakenGraphEdge.prefab
   - id: 10
-    path: res/prefabs/Player.prefab
+    path: res\prefabs\AreaTakenGraphBottomHexagon.prefab
   - id: 11
-    path: res/prefabs/tilemap/mapElements/mountain_2.prefab
+    path: res/prefabs/Player.prefab
   - id: 12
-    path: res/prefabs/tilemap/tiles/redHexTile.prefab
+    path: res/prefabs/tilemap/mapElements/mountain_2.prefab
   - id: 13
-    path: res\prefabs\AreaTakenGraphBorderHexagon.prefab
+    path: res/prefabs/tilemap/tiles/redHexTile.prefab
   - id: 14
-    path: res/prefabs/tilemap/mapSector.prefab
+    path: res\prefabs\AreaTakenGraphBorderHexagon.prefab
   - id: 15
-    path: res/prefabs/tilemap/tiles/hexTile.prefab
+    path: res/prefabs/tilemap/mapSector.prefab
   - id: 16
-    path: res/prefabs/tilemap/tiles/greenHexTile.prefab
+    path: res/prefabs/tilemap/tiles/hexTile.prefab
   - id: 17
-    path: res/prefabs/tilemap/mapRegion.prefab
+    path: res/prefabs/tilemap/tiles/greenHexTile.prefab
   - id: 18
+    path: res/prefabs/tilemap/mapRegion.prefab
+  - id: 19
+    path: res\prefabs\AreaTakenGraphTopEdge.prefab
+  - id: 20
     path: res/prefabs/CityLights.prefab
 ScriptableObjects: ~
 GameObjects:
@@ -1404,10 +1476,10 @@ GameObjects:
       - id: 7
         enabled: true
         type: MapGenerator
-        prefabHexagonalTile: 15
-        additionalTile: 12
+        prefabHexagonalTile: 16
+        additionalTile: 13
         filledTile: 6
-        pointTile: 16
+        pointTile: 17
         generationRadiusMin: 5
         generationRadiusMax: 5
         minPointsNumber: 5
@@ -1478,7 +1550,7 @@ GameObjects:
         rows: 82
         columns: 82
         materials:
-          - 9
+          - 11
         transparencyPriority: -1
     children:
       []
@@ -1511,21 +1583,24 @@ GameObjects:
       - id: 15
         enabled: true
         type: ConcertRoad
-        marker: 18
+        marker: 20
       - id: 16
         enabled: true
         type: GameManager
         enemyPrefab: 2
-        prefabPlayer: 10
+        prefabPlayer: 11
         carMaterials:
           - 3
-          - 36
-          - 45
-          - 32
           - 42
-          - 59
-          - 50
+          - 52
+          - 37
+          - 49
+          - 67
+          - 57
         patronsData:
+          - res/scriptableobjects/patrons/Perun.so
+          - res/scriptableobjects/patrons/Jutrzenka.so
+          - res/scriptableobjects/patrons/Zuarasiz.so
           - res/scriptableobjects/patrons/Perun.so
           - res/scriptableobjects/patrons/Jutrzenka.so
           - res/scriptableobjects/patrons/Zuarasiz.so
@@ -1538,8 +1613,9 @@ GameObjects:
           - 9
         HeavyMetalBackgroundMusics:
           - 1
-        JazzBackgroundMusics:
-          []
+        ClassicBackgroundMusics:
+          - 10
+          - 11
         DiscoBackgroundMusics:
           []
       - id: 162
@@ -1581,7 +1657,8 @@ GameObjects:
     children:
       - 24
       - 62
-      - 952
+      - 876
+      - 602
   - id: 24
     name: Abilities
     isStatic: false
@@ -2553,12 +2630,72 @@ GameObjects:
         fillProgress: 0
     children:
       []
-  - id: 952
+  - id: 876
+    name: ChooseStartingPosition
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5764
+      position:
+        x: 0
+        y: 443
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5765
+        enabled: true
+        type: Image
+        isTransparent: false
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 400
+        height: 70
+        layer: 0
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 5766
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00C\x00h\x00o\x00o\x00s\x00e\x00 \x00S\x00t\x00a\x00r\x00t\x00i\x00n\x00g\x00 \x00P\x00o\x00s\x00i\x00t\x00i\x00o\x00n"
+        font: 1
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 602
     name: AreaTakenGraph
     isStatic: false
     isActive: true
     transform:
-      id: 10147
+      id: 5750
       position:
         x: -700
         y: 40
@@ -2572,13 +2709,14 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 10148
+      - id: 5751
         enabled: true
         type: AreaTakenGraph
         layer: 0
         topHexagonPrefab: 0
         edgePrefab: 9
-        topValueHexagonPrefab: 13
+        topEdgePrefab: 19
+        topValueHexagonPrefab: 10
     children:
       []
   - id: 61
@@ -2754,6 +2892,45 @@ GameObjects:
       - id: 51
         enabled: true
         type: Image
+        isTransparent: true
+        sprite: 40
+        color:
+          x: 0.34117648
+          y: 0.34117648
+          z: 0.34117648
+          w: 0.784313738
+        width: 750
+        height: 540
+        layer: 3
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+    children:
+      - 100
+  - id: 100
+    name: YouWonText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5134
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5135
+        enabled: true
+        type: Image
         isTransparent: false
         sprite: 4
         color:
@@ -2763,7 +2940,7 @@ GameObjects:
           w: 1
         width: 640
         height: 134
-        layer: 3
+        layer: 4
         fillEnabled: false
         fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
@@ -2793,6 +2970,45 @@ GameObjects:
       - id: 53
         enabled: true
         type: Image
+        isTransparent: true
+        sprite: 40
+        color:
+          x: 0.34117648
+          y: 0.34117648
+          z: 0.34117648
+          w: 0.784313738
+        width: 750
+        height: 540
+        layer: 3
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+    children:
+      - 99
+  - id: 99
+    name: YouLostText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5132
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5133
+        enabled: true
+        type: Image
         isTransparent: false
         sprite: 14
         color:
@@ -2802,7 +3018,7 @@ GameObjects:
           w: 1
         width: 640
         height: 134
-        layer: 3
+        layer: 4
         fillEnabled: false
         fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
@@ -5054,6 +5270,7 @@ GameObjects:
           - 22
           - 13
           - 1
+        playTextObjectId: 98
         resultTextObjectId: 85
         remainingTimeTextId: 5401
         notesAreaImageId: 5403
@@ -5070,6 +5287,7 @@ GameObjects:
       - 45
       - 46
       - 85
+      - 98
   - id: 40
     name: Background
     isStatic: false
@@ -5706,6 +5924,49 @@ GameObjects:
         fillSubType: !<LEFT> 0
         fillOffset: 0
         fillProgress: 1
+    children:
+      []
+  - id: 98
+    name: PlayText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5479
+      position:
+        x: 0
+        y: 205
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5480
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00C\x00l\x00i\x00c\x00k\x00 \x00[\x00L\x00M\x00B\x00]\x00 \x00T\x00o\x00 \x00S\x00t\x00a\x00r\x00t"
+        font: 1
+        size: 100
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 500
+        height: 100
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 2
     children:
       []
   - id: 552
@@ -8646,7 +8907,7 @@ GameObjects:
       - 873
       - 874
       - 875
-      - 876
+      - 1076
   - id: 873
     name: TakingOverTutImg
     isStatic: false
@@ -8772,7 +9033,7 @@ GameObjects:
         layer: 7
     children:
       []
-  - id: 876
+  - id: 1076
     name: TakingOverTutRMB
     isStatic: false
     isActive: true

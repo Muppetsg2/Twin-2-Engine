@@ -232,19 +232,27 @@ void PlayerMovement::Update() {
                 }
             }
 
-            if (_pointedTile && Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT))
+            if (Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT))
             {
-                SetDestination(_pointedTile);
-                _playerDestinationMarker->SetActive(false);
-                _playerWrongDestinationMarker->SetActive(false);
-                if (_showedPathTiles.size())
+                if (_pointedTile)
                 {
-                    size_t showedPathTilesSize = _showedPathTiles.size();
-                    for (size_t index = 0ull; index < showedPathTilesSize; ++index)
+                    SetDestination(_pointedTile);
+                    _playerDestinationMarker->SetActive(false);
+                    _playerWrongDestinationMarker->SetActive(false);
+                    if (_showedPathTiles.size())
                     {
-                        _showedPathTiles[index]->DisableAffected();
+                        size_t showedPathTilesSize = _showedPathTiles.size();
+                        for (size_t index = 0ull; index < showedPathTilesSize; ++index)
+                        {
+                            _showedPathTiles[index]->DisableAffected();
+                        }
+                        _showedPathTiles.clear();
                     }
-                    _showedPathTiles.clear();
+                }
+                else if (_playerWrongDestinationMarker->GetActive())
+                {
+                    _audioComponent->SetAudio(_soundWrongDestination);
+                    _audioComponent->Play();
                 }
             }
         }
@@ -268,6 +276,7 @@ void PlayerMovement::Update() {
 
 
 void PlayerMovement::OnPathComplete(const AStarPath& p) {
+    _mutexPath.lock();
 
     if (_path) {
         delete _path;
@@ -289,11 +298,15 @@ void PlayerMovement::OnPathComplete(const AStarPath& p) {
     _audioComponent->Play();
 
     tempDestTile = nullptr;
+
+    _mutexPath.unlock();
 }
 
 void PlayerMovement::OnPathFailure() {
+    _mutexPath.lock();
     EndMoveAction();
     OnFindPathError(GetGameObject(), tempDestTile);
+    _mutexPath.unlock();
 }
 
 void PlayerMovement::EndMoveAction() {
@@ -453,6 +466,7 @@ bool PlayerMovement::Deserialize(const YAML::Node& node)
 
     // TODO: Nie zaczytaly sie sprite audio prefabs
     _engineSound = SceneManager::GetAudio(node["engineSound"].as<size_t>());
+    _soundWrongDestination = SceneManager::GetAudio(node["wrongDestinationSound"].as<size_t>());
 
     return true;
 }

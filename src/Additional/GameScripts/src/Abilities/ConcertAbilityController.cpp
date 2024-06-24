@@ -27,21 +27,23 @@ void ConcertAbilityController::Update() {
         usedMoneyRequired = moneyFunction->GetValue(playable->OwnTiles.size() - 1, moneyRequired);
     }
 
-    if (currTimerTime > 0.0f) {
-        currTimerTime -= Time::GetDeltaTime();
-        if (currTimerTime < 0.0f) {
-            currTimerTime = 0.0f;
-            StopPerformingConcert();
+    if (!GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
+        if (currTimerTime > 0.0f) {
+            currTimerTime -= Time::GetDeltaTime();
+            if (currTimerTime < 0.0f) {
+                currTimerTime = 0.0f;
+                StopPerformingConcert();
+            }
         }
-    }
-    if (currCooldown > 0.0f)
-    {
-        currCooldown -= Time::GetDeltaTime();
-        if (currCooldown <= 0.0f)
+        if (currCooldown > 0.0f)
         {
-            currCooldown = 0.0f;
-            canUse = true;
-            OnEventAbilityCooldownFinished.Invoke(playable);
+            currCooldown -= Time::GetDeltaTime();
+            if (currCooldown <= 0.0f)
+            {
+                currCooldown = 0.0f;
+                canUse = true;
+                OnEventAbilityCooldownFinished.Invoke(playable);
+            }
         }
     }
 }

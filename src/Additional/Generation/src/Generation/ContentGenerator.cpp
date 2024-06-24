@@ -23,10 +23,10 @@ void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
         {
             _reset = false;
             SPDLOG_INFO("Map Invalid generating again!");
-            MapGenerator* mapGenerator = GetGameObject()->GetComponent<MapGenerator>();
-            mapGenerator->Clear();
-            mapGenerator->Generate();
-            return;
+            //MapGenerator* mapGenerator = GetGameObject()->GetComponent<MapGenerator>();
+            //mapGenerator->Clear();
+            //mapGenerator->Generate();
+            //return;
         }
     }
     

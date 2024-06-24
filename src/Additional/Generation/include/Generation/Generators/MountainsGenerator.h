@@ -17,8 +17,9 @@ namespace Generation::Generators
 
     public:
         std::string prefabPath = "";
-        Twin2Engine::Core::Prefab* prefabMountains;
+        Twin2Engine::Core::Prefab* prefabMountains = nullptr;
         int mountainsNumber = 0;
+        bool separate = true;
 
         float mountainsHeight = 0.2f;
 

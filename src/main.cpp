@@ -57,6 +57,7 @@ using namespace Humans;
 #include <Generation/Generators/SectorsGenerator.h>
 #include <Generation/Generators/RegionsGeneratorByKMeans.h>
 #include <Generation/Generators/SectorGeneratorForRegionsByKMeans.h>
+#include <Generation/Generators/MapValidator.h>
 
 #include <Humans/HumansGenerator.h>
 

@@ -1278,6 +1278,7 @@ GameObjects:
           - res/scriptableobjects/MountainsGenerator.so
           - res/scriptableobjects/CityGenerator.so
           - res/scriptableobjects/RadioStationGeneratorSectorBased.so
+          - res/scriptableobjects/MapValidator.so
       - id: 7
         enabled: true
         type: MapGenerator

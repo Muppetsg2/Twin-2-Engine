@@ -9,10 +9,13 @@ namespace Generation
 	class ContentGenerator : public Twin2Engine::Core::Component
 	{
         //Tilemap::HexagonalTilemap* _tilemap = nullptr;
+        bool _reset = false;
+
     public:
         std::vector<Generators::AMapElementGenerator*> mapElementGenerators;
         void GenerateContent(Tilemap::HexagonalTilemap* targetTilemap);
         void ClearContent();
+        void Reset();
 
         virtual void Initialize() override;
         virtual void OnDestroy() override;

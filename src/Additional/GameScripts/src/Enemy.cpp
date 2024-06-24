@@ -123,6 +123,13 @@ void Enemy::SetTileMap(Tilemap::HexagonalTilemap* map)
 
 void Enemy::OnDead()
 {
+    if (CurrTile)
+    {
+        if (CurrTile->occupyingEntity == this)
+        {
+            CurrTile->occupyingEntity = nullptr;
+        }
+    }
     GameManager::instance->EnemyDied(this);
 }
 

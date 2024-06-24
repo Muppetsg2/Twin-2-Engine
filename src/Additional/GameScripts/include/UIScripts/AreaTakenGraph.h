@@ -9,6 +9,8 @@ class AreaTakenGraph : public Twin2Engine::Core::Component {
 private:
 	using GameObject = Twin2Engine::Core::GameObject;
 
+	static AreaTakenGraph* _instance;
+
 	size_t _topHexagonPrefabId = 0;
 	size_t _edgePrefabId = 0;
 	size_t _topEdgePrefabId = 0;
@@ -33,8 +35,11 @@ private:
 
 	glm::vec3 GetColor(const TILE_COLOR& color);
 
-public:
 
+public:
+	static AreaTakenGraph* Instance();
+
+	virtual void Initialize() override;
 	void Update() override;
 	void OnDestroy() override;
 
@@ -60,4 +65,6 @@ public:
 	std::vector<GameObject*> GetEdge() const;
 	GameObject* GetTopEdge() const;
 	GameObject* GetTopValueHexagon() const;
+
+	void Reset();
 };

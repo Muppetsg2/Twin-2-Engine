@@ -4,6 +4,21 @@ using namespace Twin2Engine::UI;
 
 #define AREA_TAKEN_GRAPH_TEST false
 
+AreaTakenGraph* AreaTakenGraph::_instance = nullptr;
+
+AreaTakenGraph* AreaTakenGraph::Instance()
+{
+	return _instance;
+}
+
+void AreaTakenGraph::Initialize()
+{
+	if (!_instance)
+	{
+		_instance = this;
+	}
+}
+
 void AreaTakenGraph::UpdateTopHexagon()
 {
 	Prefab* topHexagonPrefab = PrefabManager::GetPrefab(_topHexagonPrefabId);
@@ -580,6 +595,10 @@ void AreaTakenGraph::OnDestroy()
 	_edges.clear();
 	_topEdge = nullptr;
 	_topValueHexagon = nullptr;
+	if (this == _instance)
+	{
+		_instance = nullptr;
+	}
 }
 
 YAML::Node AreaTakenGraph::Serialize() const
@@ -748,4 +767,16 @@ GameObject* AreaTakenGraph::GetTopEdge() const
 GameObject* AreaTakenGraph::GetTopValueHexagon() const
 {
 	return _topValueHexagon;
+}
+
+void AreaTakenGraph::Reset()
+{
+	//while (_topHexagons.size() > 1ull) {
+	//	SceneManager::DestroyGameObject(_topHexagons[_topHexagons.size() - 1]);
+	//	_topHexagons.erase(_topHexagons.end() - 1);
+	//}
+
+	_topHexagons.clear();
+	_edges.clear();
+	UpdateTopHexagon();
 }

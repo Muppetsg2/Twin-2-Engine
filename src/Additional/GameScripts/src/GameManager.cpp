@@ -1,10 +1,10 @@
-#include "GameManager.h"
 #include <GameManager.h>
 #include <manager/SceneManager.h>
 #include <manager/PrefabManager.h>
 #include <graphic/manager/MaterialsManager.h>
 #include <core/Random.h>
-#include <string>
+
+#include <UIScripts/AreaTakenGraph.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
@@ -478,6 +478,8 @@ void GameManager::RestartMapPhase1() {
 
     int key = 0;
     GameObject* go = nullptr;
+
+    AreaTakenGraph::Instance()->Reset();
 
     //for (size_t index = 0ull; index < entities.size(); ++index)
     //{

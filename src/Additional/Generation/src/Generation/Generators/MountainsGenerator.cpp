@@ -34,7 +34,7 @@ void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
         prefabMountains = PrefabManager::LoadPrefab(prefabPath);
     }
 
-    vector<MapSector*> sectors;
+    list<MapSector*> sectors;
     for (MapSector* sector : tilemap->GetGameObject()->GetComponentsInChildren<MapSector>())
     {
         if (sector->type == MapSector::SectorType::Normal)
@@ -43,43 +43,96 @@ void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
         }
     }
 
-    for (int i = 0; i < mountainsNumber; ++i)
+    // Usuwanie z listy sektorów tych które mog¹ potencjalnie prowadziæ do wygenerowanie niezgodnie z zasadami.
+    list<MapSector*> sectorsToNotUse;
+    //for (size_t index = 0ull; index < sectors.size(); ++index)
+    for (MapSector* sector : sectors)
+    {
+        //std::vector<MapSector*> adjacentSectors = sectors[index]->GetAdjacentSectors();
+        std::vector<MapSector*> adjacentSectors = sector->GetAdjacentSectors();
+        if (adjacentSectors.size() == 1ull)
+        {
+            sectorsToNotUse.push_back(adjacentSectors[0ull]);
+        }
+    }
+
+    for (MapSector* sector : sectorsToNotUse)
+    {
+        //sectors.erase(std::find_if(sectors.begin(), sectors.end(), sector));
+        sectors.remove(sector);
+    }
+
+    list<MapSector*> discardedSectors;
+
+    int placedMountainsNumber = 0;
+    for (; sectors.size() && placedMountainsNumber < mountainsNumber; )
     {
         size_t index = Random::Range(0ull, sectors.size() - 1);
-        MapSector* sector = sectors[index];
 
-        sector->type = MapSector::SectorType::Mountain;
-        sector->GetTransform()->Translate(glm::vec3(0.0f, mountainsHeight, 0.0f));
+        list<MapSector*>::iterator itr = sectors.begin();
+        std::advance(itr, index);
 
-        for (MapHexTile* tile : sector->GetTiles())
+        //MapSector* sector = sectors[index];
+        MapSector* sector = *itr;
+
+        vector<MapSector*> adjacentSectors = sector->GetAdjacentSectors();
+        bool canPlaceMountain = true;
+        for (size_t index2 = 0ull; index2 < adjacentSectors.size(); ++index2)
         {
-            //SPDLOG_WARN("Dodaæ warstwy w GameObjectach");
-            //tile->layer = LayerMask::NameToLayer("Mountain");
-            tile->type = MapHexTile::HexTileType::Mountain;
-            if (tile->GetGameObject()->GetComponent<AStarPathfindingNode>() != nullptr)
-                tile->GetGameObject()->GetComponent<AStarPathfindingNode>()->passable = false;
-
-
-            GameObject* mountain = nullptr;
-            if (PrefabManager::GetPrefab(prefabMountains->GetId()) != nullptr) {
-                mountain = SceneManager::CreateGameObject(prefabMountains, tile->GetGameObject()->GetTransform());
+            if (adjacentSectors[index2]->type == MapSector::SectorType::Mountain)
+            {
+                canPlaceMountain = false;
+                break;
             }
-            else {
-                if (prefabPath != "") {
-                    prefabMountains = PrefabManager::LoadPrefab(prefabPath);
+        }
+
+        if (canPlaceMountain)
+        {
+            sector->type = MapSector::SectorType::Mountain;
+            sector->GetTransform()->Translate(glm::vec3(0.0f, mountainsHeight, 0.0f));
+
+            for (MapHexTile* tile : sector->GetTiles())
+            {
+                //SPDLOG_WARN("Dodaæ warstwy w GameObjectach");
+                //tile->layer = LayerMask::NameToLayer("Mountain");
+                tile->type = MapHexTile::HexTileType::Mountain;
+                if (tile->GetGameObject()->GetComponent<AStarPathfindingNode>() != nullptr)
+                    tile->GetGameObject()->GetComponent<AStarPathfindingNode>()->passable = false;
+
+
+                GameObject* mountain = nullptr;
+                if (PrefabManager::GetPrefab(prefabMountains->GetId()) != nullptr) {
                     mountain = SceneManager::CreateGameObject(prefabMountains, tile->GetGameObject()->GetTransform());
                 }
                 else {
-                    mountain = SceneManager::CreateGameObject(tile->GetGameObject()->GetTransform());
+                    if (prefabPath != "") {
+                        prefabMountains = PrefabManager::LoadPrefab(prefabPath);
+                        mountain = SceneManager::CreateGameObject(prefabMountains, tile->GetGameObject()->GetTransform());
+                    }
+                    else {
+                        mountain = SceneManager::CreateGameObject(tile->GetGameObject()->GetTransform());
+                    }
                 }
-            }
 
-            //GameObject* mountain = SceneManager::CreateGameObject(prefabMountains, tile->GetGameObject()->GetTransform());
-            mountain->SetIsStatic(true);
+                //GameObject* mountain = SceneManager::CreateGameObject(prefabMountains, tile->GetGameObject()->GetTransform());
+                mountain->SetIsStatic(true);
+            }
+            ++placedMountainsNumber;
+        }
+        else
+        {
+            discardedSectors.push_back(*itr);
         }
 
-        sectors.erase(sectors.begin() + index);
+        sectors.erase(itr);
+        
+        //sectors.erase(sectors.begin() + index);
     }
+
+    //while (placedMountainsNumber < mountainsNumber)
+    //{
+    //
+    //}
 }
 
 void MountainsGenerator::Clear() {

@@ -1239,7 +1239,7 @@ GameObjects:
         ssaoBias: 0.00999999978
         blurMSize: 5
       - id: 3
-        enabled: false
+        enabled: true
         type: MovementController
         DragControl: true
         DragScale: 0.00999999978
@@ -1282,6 +1282,7 @@ GameObjects:
           - res/scriptableobjects/MountainsGenerator.so
           - res/scriptableobjects/CityGenerator.so
           - res/scriptableobjects/RadioStationGeneratorSectorBased.so
+          - res/scriptableobjects/MapValidator.so
       - id: 7
         enabled: true
         type: MapGenerator

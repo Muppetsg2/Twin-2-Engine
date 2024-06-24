@@ -51,6 +51,7 @@ void Image::SetMask(Mask* mask)
 void Image::Initialize()
 {
 	Transform* tr = GetTransform();
+	_data.rectTransform.transform = tr->GetTransformMatrix();
 	_onTransformChangeId = (tr->OnEventTransformChanged += [&](Transform* t) -> void { 
 		_data.rectTransform.transform = t->GetTransformMatrix(); 
 	});

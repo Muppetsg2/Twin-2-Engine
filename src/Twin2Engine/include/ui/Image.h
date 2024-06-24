@@ -3,6 +3,8 @@
 #include <core/RenderableComponent.h>
 #include <graphic/Sprite.h>
 
+// TODO: Fix Image
+// TODO: Fix UI
 namespace Twin2Engine::UI {
 	class Canvas;
 	class Mask;

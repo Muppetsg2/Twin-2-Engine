@@ -4,6 +4,7 @@
 #include <graphic/manager/UIRenderingManager.h>
 #include <tools/EventHandler.h>
 
+// TODO: Fix Mask
 namespace Twin2Engine::UI {
 	class Image;
 	class GIFPlayer;
@@ -23,7 +24,7 @@ namespace Twin2Engine::UI {
 				(uint8_t)Manager::FILL_TYPE::HORIZONTAL,
 				(uint8_t)Manager::HORIZONTAL_FILL_SUBTYPE::LEFT,
 				0.f,
-				100.f,
+				1.f,
 				0.f,
 				false,
 			},

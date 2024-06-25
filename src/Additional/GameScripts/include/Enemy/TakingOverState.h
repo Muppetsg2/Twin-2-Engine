@@ -10,7 +10,6 @@ private:
 	static DecisionTree<Enemy*, bool> _decisionTree;
 
 	static void AlbumAbility(Enemy* enemy);
-	static void ConcertAbility(Enemy* enemy);
 	static void FansMeetingAbility(Enemy* enemy);
 	static void Move(Enemy* enemy);
 

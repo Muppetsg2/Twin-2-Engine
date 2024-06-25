@@ -25,6 +25,7 @@ class ConcertAbilityController;
 class MoneyGainFromTiles;
 
 class Player : public Playable {
+    friend class GameManager;
 private:
     //static Mesh* hexMesh;
     Twin2Engine::Core::GameObject* _hexIndicator;

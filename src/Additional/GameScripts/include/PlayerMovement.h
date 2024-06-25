@@ -31,6 +31,7 @@ class Player;
 
 class PlayerMovement : public Component {
 	friend class Player;
+	friend class GameManager;
 	private:
 		Player* _player;
 

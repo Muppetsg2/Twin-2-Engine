@@ -212,11 +212,25 @@ void GameManager::Update()
 
             if (_player->move->_pointedTile && Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT))
             {
-                _textChooseStartingPosition->SetActive(false);
-                _player->StartPlayer(_player->move->_pointedTile);
-                gameStartUp = false;
-                _player->move->_pointedTile = nullptr;
-                _player->move->_playerDestinationMarker->SetActive(false);
+                if (_player->move->_pointedTile->GetMapHexTile()->type == MapHexTile::HexTileType::PointOfInterest)
+                {
+                    _textChooseStartingPosition->SetActive(false);
+
+                    for (GameObject* goTile : _shadowedTiles)
+                    {
+                        SceneManager::DestroyGameObject(goTile);
+                    }
+
+                    _player->StartPlayer(_player->move->_pointedTile);
+                    gameStartUp = false;
+                    _player->move->_pointedTile = nullptr;
+                    _player->move->_playerDestinationMarker->SetActive(false);
+                }
+                else
+                {
+                    _player->_audioComponent->SetAudio(_player->move->_soundWrongDestination);
+                    _player->_audioComponent->Play();
+                }
             }
         }
         else
@@ -476,6 +490,17 @@ void GameManager::StartGame()
 
     _textChooseStartingPosition->SetActive(true);
 
+    Prefab* prefabShadowingHexPlane = PrefabManager::GetPrefab(_prefabPathShadowingPlane);
+    list<MapHexTile*> tiles = _mapGenerator->GetGameObject()->GetComponentsInChildren<MapHexTile>();
+    for (MapHexTile* tile : tiles)
+    {
+        if (tile->type != MapHexTile::HexTileType::Mountain && tile->type != MapHexTile::HexTileType::PointOfInterest)
+        {
+            GameObject* instanced = SceneManager::CreateGameObject(prefabShadowingHexPlane, tile->GetTransform());
+            _shadowedTiles.push_back(instanced);
+        }
+    }
+
     for (unsigned i = 0u; i < _enemiesNumber; ++i)
     {
         GenerateEnemy();
@@ -560,6 +585,17 @@ void GameManager::RestartMapPhase3() {
     gameStarted = false;
     startPhase3 = false;
     _textChooseStartingPosition->SetActive(true);
+
+    Prefab* prefabShadowingHexPlane = PrefabManager::GetPrefab(_prefabPathShadowingPlane);
+    list<MapHexTile*> tiles = _mapGenerator->GetGameObject()->GetComponentsInChildren<MapHexTile>();
+    for (MapHexTile* tile : tiles)
+    {
+        if (tile->type != MapHexTile::HexTileType::Mountain && tile->type != MapHexTile::HexTileType::PointOfInterest)
+        {
+            GameObject* instanced = SceneManager::CreateGameObject(prefabShadowingHexPlane, tile->GetTransform());
+            _shadowedTiles.push_back(instanced);
+        }
+    }
 }
 
 Player* GameManager::GetPlayer() const

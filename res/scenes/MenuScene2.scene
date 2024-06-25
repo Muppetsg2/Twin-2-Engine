@@ -6,55 +6,69 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 1
-    path: res\textures\UI\credits.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 2
-    path: res\textures\UI\new_game.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 3
-    path: res\textures\UI\arrows.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 4
-    path: res\textures\UI\settings.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 5
-    path: res\textures\UI\quit.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 6
-    path: res\textures\title_screen.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 7
-    path: res\textures\credits_screen.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 8
     path: res\textures\UI\highscore.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 9
+  - id: 2
+    path: res\textures\UI\Checkmark.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 3
+    path: res\textures\UI\credits.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 4
+    path: res\textures\UI\new_game.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 5
     path: res\textures\UI\tutorial.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 6
+    path: res\textures\UI\ButtonFrame.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 7
+    path: res\textures\UI\arrows.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 8
+    path: res\textures\UI\settings.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 9
+    path: res\textures\UI\quit.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 10
+    path: res\textures\title_screen.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 11
+    path: res\textures\credits_screen.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
@@ -62,63 +76,77 @@ Textures:
 Sprites:
   - id: 0
     alias: Title_Screen
-    texture: 6
+    texture: 10
     x: 0
     y: 0
     width: 1920
     height: 1080
   - id: 1
-    alias: CreditsScreen
-    texture: 7
-    x: 0
-    y: 0
-    width: 1920
-    height: 1080
-  - id: 2
-    alias: NewGame
-    texture: 2
-    x: 0
-    y: 0
-    width: 200
-    height: 75
-  - id: 3
-    alias: Quit
-    texture: 5
-    x: 0
-    y: 0
-    width: 200
-    height: 75
-  - id: 4
-    alias: BackArrow
-    texture: 3
-    x: 512
-    y: 0
-    width: 256
-    height: 256
-  - id: 5
-    alias: CreditsButton
+    alias: HighscoreButton
     texture: 1
     x: 0
     y: 0
     width: 200
     height: 75
-  - id: 6
-    alias: SettingsButton
+  - id: 2
+    alias: CreditsScreen
+    texture: 11
+    x: 0
+    y: 0
+    width: 1920
+    height: 1080
+  - id: 3
+    alias: NewGame
     texture: 4
     x: 0
     y: 0
     width: 200
     height: 75
-  - id: 7
-    alias: HighscoreButton
-    texture: 8
+  - id: 4
+    alias: Quit
+    texture: 9
     x: 0
     y: 0
     width: 200
     height: 75
+  - id: 5
+    alias: TutorialButton
+    texture: 5
+    x: 0
+    y: 0
+    width: 200
+    height: 75
+  - id: 6
+    alias: CheckBoxBg
+    texture: 6
+    x: 0
+    y: 0
+    width: 144
+    height: 153
+  - id: 7
+    alias: BackArrow
+    texture: 7
+    x: 512
+    y: 0
+    width: 256
+    height: 256
   - id: 8
-    alias: TutorailButton
-    texture: 9
+    alias: Checkmark
+    texture: 2
+    x: 0
+    y: 0
+    width: 256
+    height: 256
+  - id: 9
+    alias: CreditsButton
+    texture: 3
+    x: 0
+    y: 0
+    width: 200
+    height: 75
+  - id: 10
+    alias: SettingsButton
+    texture: 8
     x: 0
     y: 0
     width: 200
@@ -131,17 +159,17 @@ Audio:
   - id: 0
     path: res\music\Pop\Twilight_Whispers_Embrace.mp3
   - id: 1
-    path: res\music\Pop\Summer_Beats_Carnival.mp3
-  - id: 2
     path: res\music\Metal\Whispers_In_Silent_Steel.mp3
-  - id: 3
+  - id: 2
     path: res\music\Electric\Thunder_Echoes_Loudly.mp3
+  - id: 3
+    path: res\music\Pop\Summer_Beats_Carnival.mp3
   - id: 4
     path: res\music\Rock\Classic_Rock_Anthem_For_The_Ages.mp3
   - id: 5
-    path: res\music\Classic\Empires_Collide_On_Streets.mp3
-  - id: 6
     path: res\music\Classic\Urban_Strings_Symphony.mp3
+  - id: 6
+    path: res\music\Classic\Empires_Collide_On_Streets.mp3
 Materials: ~
 Models:
   - id: 0
@@ -237,23 +265,23 @@ GameObjects:
         creditsBackButtonId: 23
         highscoreButtonId: 45
         highscoreBackButtonId: 50
-        settingsButtonId: 0
-        settingsBackButtonId: 0
+        settingsButtonId: 52
+        settingsBackButtonId: 58
         exitButtonId: 15
         menuCanvas: 2
         creditsCanvas: 7
         highscoreCanvas: 15
-        settingsCanvas: 0
+        settingsCanvas: 22
         highscoreText: 42
         audioId: 7
         audios:
           - 0
+          - 3
           - 1
           - 2
-          - 3
           - 4
-          - 5
           - 6
+          - 5
     children:
       - 3
       - 5
@@ -323,7 +351,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 2
+        sprite: 3
         color:
           x: 1
           y: 1
@@ -394,7 +422,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 3
+        sprite: 4
         color:
           x: 1
           y: 1
@@ -465,7 +493,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 5
+        sprite: 9
         color:
           x: 1
           y: 1
@@ -536,7 +564,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 7
+        sprite: 1
         color:
           x: 1
           y: 1
@@ -607,7 +635,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 6
+        sprite: 10
         color:
           x: 1
           y: 1
@@ -658,7 +686,7 @@ GameObjects:
   - id: 4
     name: MenuParticles
     isStatic: false
-    isActive: false
+    isActive: true
     transform:
       id: 8
       position:
@@ -675,10 +703,10 @@ GameObjects:
         z: 0
     components:
       - id: 9
-        enabled: false
+        enabled: true
         type: MenuParticles
         amount: 20
-        height: 800
+        height: 400
         particleWidth: 40
         particleHeight: 40
         radius: 800
@@ -688,8 +716,8 @@ GameObjects:
           z: 1
           w: 1
         endColor:
-          x: 1
-          y: 1
+          x: 0
+          y: 0.918919086
           z: 1
           w: 1
     children:
@@ -751,7 +779,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 1
+        sprite: 2
         color:
           x: 1
           y: 1
@@ -778,8 +806,8 @@ GameObjects:
         y: 420
         z: 0
       scale:
-        x: 0.419999987
-        y: 0.419999987
+        x: 0.400000006
+        y: 0.400000006
         z: 1
       rotation:
         x: 0
@@ -790,7 +818,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 4
+        sprite: 7
         color:
           x: 1
           y: 1
@@ -1065,7 +1093,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 1
+        sprite: 2
         color:
           x: 1
           y: 1
@@ -1178,8 +1206,8 @@ GameObjects:
         y: 420
         z: 0
       scale:
-        x: 0.419999987
-        y: 0.419999987
+        x: 0.410102159
+        y: 0.410102159
         z: 1
       rotation:
         x: 0
@@ -1190,7 +1218,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 4
+        sprite: 7
         color:
           x: 1
           y: 1
@@ -1236,5 +1264,371 @@ GameObjects:
           w: 1
         displayObjectOnHover: false
         playAudioOnClick: false
+    children:
+      []
+  - id: 22
+    name: SettingsCanvas
+    isStatic: false
+    isActive: false
+    transform:
+      id: 47
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 53
+        enabled: true
+        type: Canvas
+        layer: 0
+        size:
+          x: 1920
+          y: 1080
+        worldSpace: false
+      - id: 62
+        enabled: true
+        type: SettingsManager
+        daltonistButtonId: 70
+        checkImageId: 66
+    children:
+      - 23
+      - 24
+      - 25
+      - 26
+  - id: 23
+    name: Background
+    isStatic: false
+    isActive: true
+    transform:
+      id: 54
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 55
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 2
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 1920
+        height: 1080
+        layer: 0
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+    children:
+      []
+  - id: 24
+    name: SettingsBackButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 56
+      position:
+        x: -830
+        y: 420
+        z: 0
+      scale:
+        x: 0.410860866
+        y: 0.410860866
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 57
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 7
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 256
+        height: 256
+        layer: 1
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 58
+        enabled: true
+        type: Button
+        width: 256
+        height: 256
+        interactable: true
+        onHoverPresetEvents: true
+        animTimeFactor: 2
+        scaleFunc: 9
+        scaleFuncType: 2
+        scaleStart:
+          x: 0.400000006
+          y: 0.400000006
+          z: 1
+        scaleEnd:
+          x: 0.419999987
+          y: 0.419999987
+          z: 1
+        colorFunc: 0
+        colorFuncType: 0
+        colorStart:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        colorEnd:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        displayObjectOnHover: false
+        playAudioOnClick: false
+    children:
+      []
+  - id: 25
+    name: SettingsText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 59
+      position:
+        x: 0
+        y: 400
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 60
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00S\x00E\x00T\x00T\x00I\x00N\x00G\x00S"
+        font: 0
+        size: 90
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 26
+    name: CheckBox
+    isStatic: false
+    isActive: true
+    transform:
+      id: 61
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      []
+    children:
+      - 27
+      - 29
+  - id: 27
+    name: ImageBG
+    isStatic: false
+    isActive: true
+    transform:
+      id: 64
+      position:
+        x: -125
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 67
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 6
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 1
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 70
+        enabled: true
+        type: Button
+        width: 100
+        height: 100
+        interactable: true
+        onHoverPresetEvents: true
+        animTimeFactor: 4
+        scaleFunc: 0
+        scaleFuncType: 0
+        scaleStart:
+          x: 1
+          y: 1
+          z: 1
+        scaleEnd:
+          x: 1
+          y: 1
+          z: 1
+        colorFunc: 0
+        colorFuncType: 2
+        colorStart:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        colorEnd:
+          x: 0.699999988
+          y: 0.699999988
+          z: 0.699999988
+          w: 1
+        displayObjectOnHover: false
+        playAudioOnClick: false
+    children:
+      - 28
+  - id: 28
+    name: Check
+    isStatic: false
+    isActive: false
+    transform:
+      id: 65
+      position:
+        x: 0
+        y: -6
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 66
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 8
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 75
+        height: 75
+        layer: 2
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+    children:
+      []
+  - id: 29
+    name: Label
+    isStatic: false
+    isActive: true
+    transform:
+      id: 68
+      position:
+        x: -25
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 69
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00T\x00e\x00x\x00t\x00u\x00r\x00e\x00 \x00C\x00o\x00d\x00i\x00n\x00g"
+        font: 0
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
     children:
       []

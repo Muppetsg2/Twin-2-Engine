@@ -17,6 +17,15 @@ class PatronData : public Twin2Engine::Core::ScriptableObject
     std::string patronDescription;
     PatronBonus patronBonus;
 
+    std::string soundDown;
+    std::string soundLeft;
+    std::string soundRight;
+    std::string soundUp;
+    std::string soundDownFalse;
+    std::string soundLeftFalse;
+    std::string soundRightFalse;
+    std::string soundUpFalse;
+
     TILE_COLOR color;
     float moneyMultiplier = 1.0f;
     float controlMultiplier = 1.0f;
@@ -36,6 +45,15 @@ public:
     std::string GetBonusAsString() const;
 
     TILE_COLOR GetColor() const;
+
+    std::string GetSoundDown() const;
+    std::string GetSoundLeft() const;
+    std::string GetSoundRight() const;
+    std::string GetSoundUp() const;
+    std::string GetSoundDownFalse() const;
+    std::string GetSoundLeftFalse() const;
+    std::string GetSoundRightFalse() const;
+    std::string GetSoundUpFalse() const;
 
     float GetMoneyMultiplier() const;
     float GetControlMultiplier() const;

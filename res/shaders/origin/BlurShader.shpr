@@ -1,0 +1,6 @@
+shaderprogram:
+  name: origin/BlurShader
+  shaders:
+    - screen.vert
+    - blur_shader.frag
+  parameters:

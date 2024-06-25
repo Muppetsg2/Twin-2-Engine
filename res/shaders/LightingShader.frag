@@ -132,12 +132,12 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId) {
     {
         for(int y = -1; y <= 1; ++y)
         {
-            pcfDepth =  texture(DirLightShadowMaps[shadowMapId], projCoords.xy + vec2(x, y) * texelSize).r; 
-            pcfDepthD = texture(DirLightShadowMaps[shadowMapId + 1], projCoords.xy + vec2(x, y) * texelSize).r; 
+            pcfDepth =  texture(DirLightShadowMaps[shadowMapId], projCoords.xy + vec2(x, y) * texelSize).r;
+            pcfDepthD = texture(DirLightShadowMaps[shadowMapId + 1], projCoords.xy + vec2(x, y) * texelSize).r;
             if (pcfDepth > pcfDepthD) {
                 pcfDepth = pcfDepthD;
             }
-            shadow += (currentDepth - 0.0002) < pcfDepth  ? 1.0 : 0.0;  
+            shadow += (currentDepth - 0.0002) < pcfDepth  ? 1.0 : 0.0;
             //shadow += (currentDepth - bias) < pcfDepth  ? 1.0 : 0.0;        
         }    
     }

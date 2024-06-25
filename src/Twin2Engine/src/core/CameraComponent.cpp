@@ -832,10 +832,6 @@ void CameraComponent::Initialize()
 
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		_screenPlaneVAO;
-		_screenPlaneVBO;
-		_screenPlaneEBO;
-
 		glGenVertexArrays(1, &_screenPlaneVAO);
 		glGenBuffers(1, &_screenPlaneVBO);
 		glGenBuffers(1, &_screenPlaneEBO);

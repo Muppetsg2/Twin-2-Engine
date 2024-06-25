@@ -33,31 +33,45 @@ private:
     */
 
     std::vector<Twin2Engine::Graphic::Material*> _blueMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _blueMaterialsD;
     std::vector<Twin2Engine::Graphic::Material*> _blueRetreatingMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _blueRetreatingMaterialsD;
     Twin2Engine::Graphic::Material* _blueBorderMaterial;
 
     std::vector<Twin2Engine::Graphic::Material*> _redMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _redMaterialsD;
     std::vector<Twin2Engine::Graphic::Material*> _redRetreatingMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _redRetreatingMaterialsD;
     Twin2Engine::Graphic::Material* _redBorderMaterial;
 
     std::vector<Twin2Engine::Graphic::Material*> _greenMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _greenMaterialsD;
     std::vector<Twin2Engine::Graphic::Material*> _greenRetreatingMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _greenRetreatingMaterialsD;
     Twin2Engine::Graphic::Material* _greenBorderMaterial;
 
     std::vector<Twin2Engine::Graphic::Material*> _purpleMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _purpleMaterialsD;
     std::vector<Twin2Engine::Graphic::Material*> _purpleRetreatingMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _purpleRetreatingMaterialsD;
     Twin2Engine::Graphic::Material* _purpleBorderMaterial;
 
     std::vector<Twin2Engine::Graphic::Material*> _yellowMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _yellowMaterialsD;
     std::vector<Twin2Engine::Graphic::Material*> _yellowRetreatingMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _yellowRetreatingMaterialsD;
     Twin2Engine::Graphic::Material* _yellowBorderMaterial;
 
     std::vector<Twin2Engine::Graphic::Material*> _cyanMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _cyanMaterialsD;
     std::vector<Twin2Engine::Graphic::Material*> _cyanRetreatingMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _cyanRetreatingMaterialsD;
     Twin2Engine::Graphic::Material* _cyanBorderMaterial;
 
     std::vector<Twin2Engine::Graphic::Material*> _pinkMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _pinkMaterialsD;
     std::vector<Twin2Engine::Graphic::Material*> _pinkRetreatingMaterials;
+    std::vector<Twin2Engine::Graphic::Material*> _pinkRetreatingMaterialsD;
     Twin2Engine::Graphic::Material* _pinkBorderMaterial;
 
 public:

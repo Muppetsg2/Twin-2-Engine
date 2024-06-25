@@ -141,9 +141,9 @@ Root:
     - id: 4
       enabled: true
       type: ConcertAbilityController
-      lastingTime: 10
+      lastingTime: 45
       moneyRequired: 10
-      cooldownTime: 5
+      cooldownTime: 30
       additionalTakingOverSpeed: 30
       moneyFunction: res/scriptableobjects/MoneyFunctionData.so
     - id: 5

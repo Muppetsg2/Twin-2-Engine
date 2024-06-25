@@ -12,6 +12,7 @@ SO_SERIALIZE_FIELD(patronName)
 SO_SERIALIZE_FIELD_F(patronMusic, (uint16_t))
 SO_SERIALIZE_FIELD(patronDescription)
 SO_SERIALIZE_FIELD_F(patronBonus, (uint16_t))
+SO_SERIALIZE_FIELD_F(color, (uint8_t))
 SO_SERIALIZE_FIELD(moneyMultiplier)
 SO_SERIALIZE_FIELD(controlMultiplier)
 SO_SERIALIZE_FIELD(additionalMoveRange)
@@ -25,6 +26,7 @@ SO_DESERIALIZE_FIELD(patronName)
 SO_DESERIALIZE_FIELD_F_T(patronMusic, (PatronMusic), uint16_t)
 SO_DESERIALIZE_FIELD(patronDescription)
 SO_DESERIALIZE_FIELD_F_T(patronBonus, (PatronBonus), uint16_t)
+SO_DESERIALIZE_FIELD_F_T(color, (TILE_COLOR), uint8_t)
 SO_DESERIALIZE_FIELD(moneyMultiplier)
 SO_DESERIALIZE_FIELD(controlMultiplier)
 SO_DESERIALIZE_FIELD(additionalMoveRange)
@@ -88,6 +90,11 @@ std::string PatronData::GetBonusAsString() const {
     default:
         return "";
     }
+}
+
+TILE_COLOR PatronData::GetColor() const
+{
+    return color;
 }
 
 float PatronData::GetMoneyMultiplier() const

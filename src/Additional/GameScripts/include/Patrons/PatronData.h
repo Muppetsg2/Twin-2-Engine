@@ -2,6 +2,8 @@
 
 #include <core/ScriptableObject.h>
 
+#include <AreaTaking/HexTileTextureData.h>
+
 ENUM_CLASS_BASE_VALUE(PatronBonus, uint8_t, MONEY_GAIN, 0, CONTROL_MULTIPLIER, 1, MOVE_RANGE, 2, ABILITIES_RANGE, 3, ABILITIES_COOLDOWN, 4, ABILITIES_PRICE, 5);
 
 ENUM_CLASS_BASE_VALUE(PatronMusic, uint8_t, ROCK, 0, ELECTRONIC, 1, POP, 2, CLASSIC, 3, DISCO, 4, HEAVY_METAL, 5);
@@ -15,6 +17,7 @@ class PatronData : public Twin2Engine::Core::ScriptableObject
     std::string patronDescription;
     PatronBonus patronBonus;
 
+    TILE_COLOR color;
     float moneyMultiplier = 1.0f;
     float controlMultiplier = 1.0f;
     float additionalMoveRange = 0.0f;
@@ -31,6 +34,8 @@ public:
     PatronBonus GetPatronBonus() const;
     float GetBonus() const;
     std::string GetBonusAsString() const;
+
+    TILE_COLOR GetColor() const;
 
     float GetMoneyMultiplier() const;
     float GetControlMultiplier() const;

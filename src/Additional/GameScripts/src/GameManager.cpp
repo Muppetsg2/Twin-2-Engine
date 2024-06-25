@@ -253,14 +253,20 @@ GameObject* GameManager::GeneratePlayer()
     GameObject* player = Twin2Engine::Manager::SceneManager::CreateGameObject(prefabPlayer);
     Player* p = player->GetComponent<Player>();
     _player = p;
-    int chosen = Random::Range(0ull, _freeColors.size() - 1ull);
+
+    p->GetTransform()->SetGlobalPosition(vec3(0.0f, -5.0f, 0.0f));
+    // p->patron = playersPatron;
+    p->SetPatron(playersPatron);
+
+    int chosenColor = 0;
+    uint8_t color = (uint8_t) playersPatron->GetColor();
+    while (color /= 2) chosenColor++;
+
+    int chosen = chosenColor;// Random::Range(0ull, _freeColors.size() - 1ull);
     // int chosen = 0;
     p->colorIdx = _freeColors[chosen];
     _freeColors.erase(_freeColors.begin() + chosen);
     // p->colorIdx = chosen;
-    p->GetTransform()->SetGlobalPosition(vec3(0.0f, -5.0f, 0.0f));
-    // p->patron = playersPatron;
-    p->SetPatron(playersPatron);
 
     _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), playersPatron));
 
@@ -332,19 +338,31 @@ GameObject* GameManager::GenerateEnemy()
 
     Enemy* e = enemy->GetComponent<Enemy>();
 
-    int chosen = Random::Range(0ull, _freeColors.size() - 1ull);
+    unsigned chosenPatron = Random::Range<unsigned>(0u, _freePatronsData.size() - 1ull);
+    // e->patron = _freePatronsData[chosenPatron];
+    e->SetPatron(_freePatronsData[chosenPatron]);
+    _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), e->patron));
+
+    int chosenColor = 0;
+    uint8_t color = (uint8_t)e->patron->GetColor();
+    while (color /= 2) chosenColor++;
+
+    int chosen = chosenColor; // Random::Range(0ull, _freeColors.size() - 1ull);
     // int chosen = 1;
-    e->colorIdx = _freeColors[chosen];
-    _freeColors.erase(_freeColors.begin() + chosen);
+    //e->colorIdx = _freeColors[chosen];
+    e->colorIdx = chosenColor;
+    for (size_t index = 0ull; index < _freeColors.size(); ++index)
+    {
+        if (_freeColors[index] == chosenColor)
+        {
+            _freeColors.erase(_freeColors.begin() + index);
+        }
+    }
     // e->colorIdx = chosen;
     e->GetGameObject()->GetComponent<MeshRenderer>()->SetMaterial(0ull, _carMaterials[e->colorIdx]);
 
     e->GetTransform()->SetGlobalPosition(vec3(0.0f, -5.0f, 0.0f));
 
-    unsigned chosenPatron = Random::Range<unsigned>(0u, _freePatronsData.size() - 1ull);
-    // e->patron = _freePatronsData[chosenPatron];
-    e->SetPatron(_freePatronsData[chosenPatron]);
-    _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), e->patron));
     /*float h = Random.Range(0f, 1f);
     float s = Random.Range(.7f, 1f);
     float v = 1f;

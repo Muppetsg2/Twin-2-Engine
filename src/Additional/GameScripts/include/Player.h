@@ -59,6 +59,7 @@ private:
     Twin2Engine::UI::Text* _albumText;
     Twin2Engine::UI::Button* _albumButton;
     Twin2Engine::Core::GameObject* _albumButtonObject;
+    Twin2Engine::Core::Transform* _albumKey;
     Twin2Engine::UI::Image* _albumButtonFrameImage;
     Twin2Engine::UI::Image* _albumCircleImage;
     int _albumButtonEventHandleId = -1;
@@ -71,6 +72,7 @@ private:
     Twin2Engine::UI::Text* _fansMeetingText;
     Twin2Engine::UI::Button* _fansMeetingButton;
     Twin2Engine::Core::GameObject* _fansMeetingButtonObject;
+    Twin2Engine::Core::Transform* _fansMeetingKey;
     Twin2Engine::UI::Image* _fansMeetingButtonFrameImage;
     Twin2Engine::UI::Image* _fansMeetingCircleImage;
     int _fansMeetingButtonEventHandleId = -1;
@@ -81,10 +83,13 @@ private:
 
     bool _endFans = false;
 
+    glm::vec3 _keyPosition = glm::vec3(-45.0f, 45.0f, 0.0f);
+
     //Concert
     Twin2Engine::UI::Text* _concertText;
     Twin2Engine::UI::Button* _concertButton;
     Twin2Engine::Core::GameObject* _concertButtonObject;
+    Twin2Engine::Core::Transform* _concertKey;
     Twin2Engine::UI::Image* _concertButtonFrameImage;
     Twin2Engine::UI::Image* _concertCircleImage; 
     int _concertButtonEventHandleId = -1;

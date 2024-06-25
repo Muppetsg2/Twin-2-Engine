@@ -1,11 +1,11 @@
 scriptable_object:
   __SO_RegisteredName__: PatronData
-  patronName: "Perun"
-  patronMusic: 1
-  patronDescription: "Perun Description"
-  patronBonus: 2
-  color: 1
-  moneyMultiplier: 1
+  patronName: "Patron5"
+  patronMusic: 0
+  patronDescription: "Patron5 Description"
+  patronBonus: 0
+  color: 16
+  moneyMultiplier: 1.1
   controlMultiplier: 1
   additionalMoveRange: 1
   additionalAbilitiesRange: 0

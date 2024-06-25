@@ -1601,9 +1601,9 @@ GameObjects:
           - res/scriptableobjects/patrons/Perun.so
           - res/scriptableobjects/patrons/Jutrzenka.so
           - res/scriptableobjects/patrons/Zuarasiz.so
-          - res/scriptableobjects/patrons/Perun.so
-          - res/scriptableobjects/patrons/Jutrzenka.so
-          - res/scriptableobjects/patrons/Zuarasiz.so
+          - res/scriptableobjects/patrons/Patron4.so
+          - res/scriptableobjects/patrons/Patron5.so
+          - res/scriptableobjects/patrons/Patron6.so
         RockBackgroundMusics:
           - 2
         ElectricBackgroundMusics:
@@ -1744,6 +1744,7 @@ GameObjects:
         fillProgress: 1
     children:
       - 25
+      - 102
   - id: 25
     name: FansBg
     isStatic: false
@@ -1936,6 +1937,7 @@ GameObjects:
         fillProgress: 1
     children:
       - 28
+      - 103
   - id: 28
     name: ConcertBg
     isStatic: false
@@ -2167,6 +2169,7 @@ GameObjects:
         fillProgress: 1
     children:
       - 31
+      - 101
   - id: 31
     name: AlbumBg
     isStatic: false
@@ -3679,9 +3682,9 @@ GameObjects:
           - res/scriptableobjects/patrons/Perun.so
           - res/scriptableobjects/patrons/Jutrzenka.so
           - res/scriptableobjects/patrons/Zuarasiz.so
-          - res/scriptableobjects/patrons/Perun.so
-          - res/scriptableobjects/patrons/Jutrzenka.so
-          - res/scriptableobjects/patrons/Zuarasiz.so
+          - res/scriptableobjects/patrons/Patron4.so
+          - res/scriptableobjects/patrons/Patron5.so
+          - res/scriptableobjects/patrons/Patron6.so
         patronsButtons:
           - 116
           - 125
@@ -10468,3 +10471,180 @@ GameObjects:
         type: TutorialsController
     children:
       []
+  - id: 101
+    name: KeyAlbum
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5064
+      position:
+        x: -45
+        y: 45
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5065
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 53
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 20
+        height: 20
+        layer: 0
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 5066
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00Z"
+        font: 0
+        size: 20
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+  - id: 102
+    name: KeyFansMeeting
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5067
+      position:
+        x: -45
+        y: 45
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5068
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 53
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 20
+        height: 20
+        layer: 0
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 5069
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00X"
+        font: 0
+        size: 20
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+  - id: 103
+    name: KeyConcert
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5070
+      position:
+        x: -45
+        y: 45
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5071
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 53
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 20
+        height: 20
+        layer: 0
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 5072
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00C"
+        font: 0
+        size: 20
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1

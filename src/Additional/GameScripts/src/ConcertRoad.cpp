@@ -4,6 +4,7 @@
 #include <manager/SceneManager.h>
 #include <manager/PrefabManager.h>
 #include <algorithm>
+#include <CityLightsComponent.h>
 
 using namespace Twin2Engine::Manager;
 using namespace Twin2Engine::Processes;
@@ -162,6 +163,41 @@ void ConcertRoad::Begin()
         t->GetGameObject()->GetComponentInChildren<City>()->SetConcertRoadCity(true);
     }
 
+    if (concertRoadMarkers.size() > 0) {
+        glm::vec3 lightColor(0.0f);
+        switch (GameManager::instance->GetPlayer()->colorIdx) // { "Blue", "Red", "Green", "Purple", "Yellow", "Cyan", "Pink" };
+        {
+            case 0:
+                lightColor = glm::vec3(0.0f, 0.0f, 1.0f);
+                break;
+
+            case 1:
+                lightColor = glm::vec3(1.0f, 0.0f, 0.0f);
+                break;
+
+            case 2:
+                lightColor = glm::vec3(0.0f, 1.0f, 0.0f);
+                break;
+
+            case 3:
+                lightColor = glm::vec3(1.0f, 0.0f, 1.0f);
+                break;
+
+            case 4:
+                lightColor = glm::vec3(1.0f, 1.0f, 0.0f);
+                break;
+
+            case 5:
+                lightColor = glm::vec3(0.0f, 1.0f, 1.0f);
+                break;
+
+            case 6:
+                lightColor = glm::vec3(1.0f, 0.75f, 0.8f);
+                break;
+        }
+        concertRoadMarkers[0]->GetComponent<CityLightsComponent>()->cityLightsShader->SetVec3("light_color", lightColor);
+    }
+
     isPerforming = true;
 }
 
@@ -178,6 +214,11 @@ void ConcertRoad::Finish()
             stage = point->GetStage();
             point->ownerEntity->TakeOverSpeed += bonusesPerStage[stage];
             PopularityGainingBonusBarController::Instance()->AddCurrentBonus(bonusesPerStage[stage]);
+            City* city = point->GetGameObject()->GetComponent<City>();
+            if (city) {
+                city->SetConcertRoadCity(false);
+            }
+                
 
             if (point->ownerEntity->TakeOverSpeed > 100.0f) {
                 point->ownerEntity->TakeOverSpeed = 100.0f;
@@ -188,7 +229,6 @@ void ConcertRoad::Finish()
     GameObject* go = nullptr;
     while (concertRoadMarkers.size() > 0) {
         go = *(--concertRoadMarkers.end());
-        go->GetTransform()->GetParent()->GetGameObject()->GetComponentInChildren<City>()->SetConcertRoadCity(false);
         concertRoadMarkers.pop_back();
         SceneManager::DestroyGameObject(go);
     }

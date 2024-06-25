@@ -870,6 +870,8 @@ void CameraComponent::Initialize()
 
 		TransformChangeEventId = GetTransform()->OnEventTransformChanged += [](Transform* transform) {
 			LightingController::Instance()->UpdateOnTransformChange();
+			glm::vec3 pos = transform->GetGlobalPosition();
+			LightingController::Instance()->SetViewerPosition(pos);
 		};
 	}
 

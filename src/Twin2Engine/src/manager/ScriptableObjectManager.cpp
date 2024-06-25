@@ -41,7 +41,9 @@ ScriptableObject* ScriptableObjectManager::Load(const std::string& path)
 		ScriptableObject* scriptableObject = ScriptableObject::scriptableObjects[hashedSORegisteredName].createSpecificScriptableObject();
 		scriptableObject->_id = pathHash;
 
-		scriptableObject->Deserialize(soNode);
+		bool res = scriptableObject->Deserialize(soNode);
+
+		if (!res) SPDLOG_ERROR("Scriptable Object Data Corrupted {}", soNode["__SO_RegisteredName__"].as<string>());
 
 		_scriptableObjects[pathHash] = scriptableObject;
 		_scriptableObjectsPaths[pathHash] = path;

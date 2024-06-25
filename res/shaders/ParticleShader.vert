@@ -17,7 +17,8 @@ layout (std430, binding = 5) buffer ParticlePositions {
 out VS_OUT {
     flat uint instanceID;
     vec2 texCoords;
-    vec3 pos;
+    flat vec3 pos;
+    flat bool ui;
 } vs_out;
 
 void main()
@@ -26,7 +27,9 @@ void main()
 
     vs_out.instanceID = instanceId;
     vs_out.texCoords = aTexCoords;
-    vs_out.pos = vec3(particlePos[instanceId] + vec4(aPos, 0.0));
+    vs_out.pos = vec3(particlePos[instanceId]);
+
+    vs_out.ui = false;
 
     gl_Position = projection * view * (particlePos[instanceId] + vec4(aPos, 0.0));
 }

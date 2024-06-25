@@ -127,6 +127,7 @@ using namespace Generation::Generators;
 #include <UIScripts/AreaTakenGraph.h>
 #include <UIScripts/MenuManager.h>
 #include <UIScripts/PauseManager.h>
+#include <UIScripts/SettingsManager.h>
 
 using namespace GameScripts;
 
@@ -388,6 +389,7 @@ int main(int, char**)
     ADD_COMPONENT("MenuParticles", MenuParticles);
     ADD_COMPONENT("MenuManager", MenuManager);
     ADD_COMPONENT("PauseManager", PauseManager);
+    ADD_COMPONENT("SettingsManager", SettingsManager);
     ADD_COMPONENT("TutorialsController", TutorialsController);
 
 #pragma endregion

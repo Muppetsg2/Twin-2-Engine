@@ -556,13 +556,13 @@ void Button::DrawEditor()
 				}
 
 				glm::vec4 c = _onHoverColorStart;
-				ImGui::DragFloat3(string("Start Color##").append(id).c_str(), glm::value_ptr(c), 0.1f); 
+				ImGui::ColorEdit3(string("Start Color##").append(id).c_str(), glm::value_ptr(c), 0.1f); 
 				ImGui::SameLine();
 				ImGui::HelpMarker("You need to add Image Component if you want this preset to work");
 				if (c != _onHoverColorStart) _onHoverColorStart = c;
 
 				c = _onHoverColorEnd;
-				ImGui::DragFloat3(string("End Color##").append(id).c_str(), glm::value_ptr(c), 0.1f);
+				ImGui::ColorEdit3(string("End Color##").append(id).c_str(), glm::value_ptr(c), 0.1f);
 				ImGui::SameLine();
 				ImGui::HelpMarker("You need to add Image Component if you want this preset to work");
 				if (c != _onHoverColorEnd) _onHoverColorEnd = c;

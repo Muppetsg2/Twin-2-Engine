@@ -2,8 +2,7 @@
 in VS_OUT {
     flat uint instanceID;
     vec2 texCoords;
-    flat vec3 pos;
-    flat bool ui;
+    vec3 pos;
 } fs_in;
 
 out vec4 FragColor;
@@ -27,10 +26,5 @@ void main()
         discard;
     }
 
-    if (fs_in.ui) {
-        FragColor = color * mix(startColor, endColor, map(fs_in.pos.y, 0.0, maxHeight, 0.0, 1.0));
-    }
-    else {
-        FragColor = color * mix(startColor, endColor, map(fs_in.pos.y, particleEmmiterPos.y, particleEmmiterPos.y + maxHeight, 0.0, 1.0));   
-    }
+    FragColor = color * mix(startColor, endColor, map(fs_in.pos.y, particleEmmiterPos.y, particleEmmiterPos.y + maxHeight, 0.0, 1.0));
 }

@@ -9,8 +9,7 @@ layout (std430, binding = 5) buffer ParticlePositions {
 out VS_OUT {
     flat uint instanceID;
     vec2 texCoords;
-    flat vec3 pos;
-    flat bool ui;
+    vec3 pos;
 } vs_out;
 
 void main()
@@ -19,8 +18,7 @@ void main()
 
     vs_out.instanceID = instanceId;
     vs_out.texCoords = aTexCoords;
-    vs_out.pos = vec3(particlePos[instanceId], 0.0);
-    vs_out.ui = true;
+    vs_out.pos = vec3(particlePos[instanceId] + aPos, 0.0);
 
     gl_Position = vec4(particlePos[instanceId] + aPos, 0.0, 1.0);
 }

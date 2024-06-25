@@ -5,14 +5,14 @@ scriptable_object:
   patronDescription: "Perun Description"
   patronBonus: 2
   color: 1
-  soundDown: "res/music/RadioStation/Violin/violin_D4_1_mezzo-forte_arco-normal.mp3"
-  soundLeft: "res/music/RadioStation/Violin/violin_E4_1_mezzo-forte_arco-normal.mp3"
-  soundRight: "res/music/RadioStation/Violin/violin_F4_1_mezzo-forte_arco-normal.mp3"
-  soundUp: "res/music/RadioStation/Violin/violin_G4_1_mezzo-forte_arco-normal.mp3"
-  soundDownFalse: "res/music/RadioStation/Violin/violin-false-sounds.mp3"
-  soundLeftFalse: "res/music/RadioStation/Violin/violin-false-sounds.mp3"
-  soundRightFalse: "res/music/RadioStation/Violin/violin-false-sounds.mp3"
-  soundUpFalse: "res/music/RadioStation/Violin/violin-false-sounds.mp3"
+  soundDown: "res/music/RadioStation/Electric/electric_guitar1.mp3"
+  soundLeft: "res/music/RadioStation/Electric/electric_guitar2.mp3"
+  soundRight: "res/music/RadioStation/Electric/electric_guitar3.mp3"
+  soundUp: "res/music/RadioStation/Electric/electric_guitar4.mp3"
+  soundDownFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
+  soundLeftFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
+  soundRightFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
+  soundUpFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
   moneyMultiplier: 1
   controlMultiplier: 1
   additionalMoveRange: 1

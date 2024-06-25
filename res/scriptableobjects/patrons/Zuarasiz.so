@@ -5,6 +5,14 @@ scriptable_object:
   patronDescription: "Zuarasiz Description"
   patronBonus: 0
   color: 2
+  soundDown: "res/music/RadioStation/Violin/violin_D4_1_mezzo-forte_arco-normal.mp3"
+  soundLeft: "res/music/RadioStation/Violin/violin_E4_1_mezzo-forte_arco-normal.mp3"
+  soundRight: "res/music/RadioStation/Violin/violin_F4_1_mezzo-forte_arco-normal.mp3"
+  soundUp: "res/music/RadioStation/Violin/violin_G4_1_mezzo-forte_arco-normal.mp3"
+  soundDownFalse: "res/music/RadioStation/Violin/violin-false-sounds.mp3"
+  soundLeftFalse: "res/music/RadioStation/Violin/violin-false-sounds.mp3"
+  soundRightFalse: "res/music/RadioStation/Violin/violin-false-sounds.mp3"
+  soundUpFalse: "res/music/RadioStation/Violin/violin-false-sounds.mp3"
   moneyMultiplier: 1.1
   controlMultiplier: 1
   additionalMoveRange: 1

@@ -27,6 +27,18 @@ private:
     int _correctCounter = 0;
     float _score = 0.0f;
 
+    Twin2Engine::Core::AudioComponent* _audioComponent = nullptr;
+
+    // Notes Sounds
+    size_t _soundDown = 0;
+    size_t _soundLeft = 0;
+    size_t _soundRight = 0;
+    size_t _soundUp = 0;
+    size_t _soundDownFalse = 0;
+    size_t _soundLeftFalse = 0;
+    size_t _soundRightFalse = 0;
+    size_t _soundUpFalse = 0;
+
     // Generation
     float _notesAreaWidth = 100.0f;
     float _notesAreaHeight = 100.0f;

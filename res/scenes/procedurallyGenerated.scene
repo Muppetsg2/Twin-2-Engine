@@ -5091,6 +5091,13 @@ GameObjects:
         buttonRight: 5395
         buttonDown: 5397
         buttonLeft: 5399
+      - id: 5407
+        enabled: true
+        type: Audio
+        audio: 0
+        loop: false
+        volume: 1
+        playOnStart: false
     children:
       - 40
       - 41

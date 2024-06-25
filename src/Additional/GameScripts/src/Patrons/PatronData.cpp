@@ -13,6 +13,14 @@ SO_SERIALIZE_FIELD_F(patronMusic, (uint16_t))
 SO_SERIALIZE_FIELD(patronDescription)
 SO_SERIALIZE_FIELD_F(patronBonus, (uint16_t))
 SO_SERIALIZE_FIELD_F(color, (uint8_t))
+SO_SERIALIZE_FIELD(soundDown)
+SO_SERIALIZE_FIELD(soundLeft)
+SO_SERIALIZE_FIELD(soundRight)
+SO_SERIALIZE_FIELD(soundUp)
+SO_SERIALIZE_FIELD(soundDownFalse)
+SO_SERIALIZE_FIELD(soundLeftFalse)
+SO_SERIALIZE_FIELD(soundRightFalse)
+SO_SERIALIZE_FIELD(soundUpFalse)
 SO_SERIALIZE_FIELD(moneyMultiplier)
 SO_SERIALIZE_FIELD(controlMultiplier)
 SO_SERIALIZE_FIELD(additionalMoveRange)
@@ -27,6 +35,14 @@ SO_DESERIALIZE_FIELD_F_T(patronMusic, (PatronMusic), uint16_t)
 SO_DESERIALIZE_FIELD(patronDescription)
 SO_DESERIALIZE_FIELD_F_T(patronBonus, (PatronBonus), uint16_t)
 SO_DESERIALIZE_FIELD_F_T(color, (TILE_COLOR), uint8_t)
+SO_DESERIALIZE_FIELD(soundDown)
+SO_DESERIALIZE_FIELD(soundLeft)
+SO_DESERIALIZE_FIELD(soundRight)
+SO_DESERIALIZE_FIELD(soundUp)
+SO_DESERIALIZE_FIELD(soundDownFalse)
+SO_DESERIALIZE_FIELD(soundLeftFalse)
+SO_DESERIALIZE_FIELD(soundRightFalse)
+SO_DESERIALIZE_FIELD(soundUpFalse)
 SO_DESERIALIZE_FIELD(moneyMultiplier)
 SO_DESERIALIZE_FIELD(controlMultiplier)
 SO_DESERIALIZE_FIELD(additionalMoveRange)
@@ -95,6 +111,46 @@ std::string PatronData::GetBonusAsString() const {
 TILE_COLOR PatronData::GetColor() const
 {
     return color;
+}
+
+std::string PatronData::GetSoundDown() const
+{
+    return soundDown;
+}
+
+std::string PatronData::GetSoundLeft() const
+{
+    return soundLeft;
+}
+
+std::string PatronData::GetSoundRight() const
+{
+    return soundRight;
+}
+
+std::string PatronData::GetSoundUp() const
+{
+    return soundUp;
+}
+
+std::string PatronData::GetSoundDownFalse() const
+{
+    return soundDownFalse;
+}
+
+std::string PatronData::GetSoundLeftFalse() const
+{
+    return soundLeftFalse;
+}
+
+std::string PatronData::GetSoundRightFalse() const
+{
+    return soundRightFalse;
+}
+
+std::string PatronData::GetSoundUpFalse() const
+{
+    return soundUpFalse;
 }
 
 float PatronData::GetMoneyMultiplier() const

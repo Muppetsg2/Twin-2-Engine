@@ -141,7 +141,7 @@ Root:
     - id: 4
       enabled: true
       type: ConcertAbilityController
-      lastingTime: 600
+      lastingTime: 45
       moneyRequired: 10
       cooldownTime: 30
       additionalTakingOverSpeed: 30

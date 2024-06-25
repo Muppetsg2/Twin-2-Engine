@@ -1,0 +1,6 @@
+shaderprogram:
+  name: origin/DistanceFieldDepthShader
+  shaders:
+    - depth_shader_distance_field.vert
+    - depth_shader.frag
+  parameters:

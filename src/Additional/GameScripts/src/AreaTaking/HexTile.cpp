@@ -582,11 +582,13 @@ void HexTile::DisableAffected()
 
 void HexTile::EnableAlbumAffected()
 {
+	SPDLOG_INFO("Enabling PG");
 	particleGenerator->active = true;
 }
 
 void HexTile::DisableAlbumAffected()
 {
+	SPDLOG_INFO("Disabling PG");
 	particleGenerator->active = false;
 }
 

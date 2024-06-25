@@ -297,6 +297,7 @@ Material* MaterialsManager::LoadMaterial(const std::string& materialPath)
 	materialData.shader->Use();
 	materialData.shader->SetInt("occlusionMap", 31);
 	materialData.shader->SetInt("depthMap", 26);
+	materialData.shader->SetInt("distanceFieldMap", 25);
 	
 	return _loadedMaterials[hash];
 }

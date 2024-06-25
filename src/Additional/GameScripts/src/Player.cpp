@@ -22,6 +22,7 @@ void Player::Initialize() {
     // CONCERT ABILITY INTIALIZATION
     _concertButtonFrameImage = SceneManager::FindObjectByName("ConcertButtonFrame")->GetComponent<Image>();
     _concertButtonObject = SceneManager::FindObjectByName("ConcertBg");
+    _concertKey = SceneManager::FindObjectByName("KeyConcert")->GetTransform();
     _concertButton = _concertButtonObject->GetComponent<Button>();
     _concertText = SceneManager::FindObjectByName("ConcertCost")->GetComponent<Text>();
 
@@ -68,6 +69,7 @@ void Player::Initialize() {
     // ALBUM ABILITY INTIALIZATION
     _albumButtonFrameImage = SceneManager::FindObjectByName("AlbumButtonFrame")->GetComponent<Image>();
     _albumButtonObject = SceneManager::FindObjectByName("AlbumBg");
+    _albumKey = SceneManager::FindObjectByName("KeyAlbum")->GetTransform();
     _albumButton = _albumButtonObject->GetComponent<Button>();
     _albumText = SceneManager::FindObjectByName("AlbumCost")->GetComponent<Text>();
 
@@ -117,6 +119,7 @@ void Player::Initialize() {
     // FANS MEETING ABILITY INTIALIZATION
     _fansMeetingButtonFrameImage = SceneManager::FindObjectByName("FansMeetingButtonFrame")->GetComponent<Image>();
     _fansMeetingButtonObject = SceneManager::FindObjectByName("FansBg");
+    _fansMeetingKey = SceneManager::FindObjectByName("KeyFansMeeting")->GetTransform();
     _fansMeetingButton = _fansMeetingButtonObject->GetComponent<Button>();
     _fansMeetingText = SceneManager::FindObjectByName("FansCost")->GetComponent<Text>();
 
@@ -348,6 +351,7 @@ void Player::Update() {
             ShowAffectedTiles();
 
             _fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
+            _fansMeetingKey->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
             _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep2);
 
             _negativeMoneyText->GetGameObject()->SetActive(true);
@@ -358,6 +362,7 @@ void Player::Update() {
 
             //fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
             _fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+            _fansMeetingKey->SetLocalPosition(_keyPosition);
             _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
 
             //_negativeMoneyText->GetGameObject()->SetActive(false);
@@ -377,6 +382,8 @@ void Player::Update() {
                 _audioComponent->Play();
 
                 _concertButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
+                _concertKey->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
+
                 _concertButtonFrameImage->SetSprite(_spriteButtonStep2);
 
                 _negativeMoneyText->GetGameObject()->SetActive(true);
@@ -391,6 +398,7 @@ void Player::Update() {
                 _audioComponent->Play();
 
                 _concertButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+                _concertKey->SetLocalPosition(_keyPosition);
                 _concertButtonFrameImage->SetSprite(_spriteButtonStep1);
 
                 //_negativeMoneyText->GetGameObject()->SetActive(false);
@@ -414,6 +422,8 @@ void Player::Update() {
                 _audioComponent->Play();
 
                 _albumButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
+                _albumKey->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
+
                 _albumButtonFrameImage->SetSprite(_spriteButtonStep2);
 
                 _negativeMoneyText->GetGameObject()->SetActive(true);
@@ -427,11 +437,14 @@ void Player::Update() {
                 _isShowingAlbumPossible = false;
 
                 _albumButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
+                _albumKey->SetLocalPosition(_keyPosition);
+
                 _audioComponent->SetAudio(_offHoverClickAudio);
                 _audioComponent->Play();
 
                 //albumButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
                 _albumButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+                _albumKey->SetLocalPosition(_keyPosition);
                 _albumButtonFrameImage->SetSprite(_spriteButtonStep1);
 
                 //_negativeMoneyText->GetGameObject()->SetActive(false);
@@ -529,6 +542,7 @@ void Player::AlbumCall() {
         _isShowingAlbumPossible = true;
 
         _albumButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+        _albumKey->SetLocalPosition(_keyPosition);
         _albumButtonFrameImage->SetSprite(_spriteButtonStep1);
     }
     else {
@@ -546,6 +560,7 @@ void Player::FansMeetingCall() {
         UseFans();
 
         _fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+        _fansMeetingKey->SetLocalPosition(_keyPosition);
         _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
     }
     else {
@@ -566,6 +581,8 @@ void Player::ConcertCall() {
         _isHoveringConcertButton = false;
 
         _concertButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+        _concertButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+        _concertKey->SetLocalPosition(_keyPosition);
         _concertButtonFrameImage->SetSprite(_spriteButtonStep1);
     }
     else {
@@ -727,6 +744,7 @@ void Player::ResetOnNewMap() {
     // Fans meeting
     HideAffectedTiles();
     _fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+    _fansMeetingKey->SetLocalPosition(_keyPosition);
     _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
     _isHoveringFansMeetingButton = false;
 
@@ -743,6 +761,7 @@ void Player::ResetOnNewMap() {
     _concertButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
 
     _concertButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+    _concertKey->SetLocalPosition(_keyPosition);
     _concertButtonFrameImage->SetSprite(_spriteButtonStep1);
 
     _concertCircleImage->SetFillProgress(0.0f);
@@ -808,15 +827,57 @@ void Player::LostPaperRockScissors(Playable* playable) {
 
     GameObject* tiles[6];
     CurrTile->GetMapHexTile()->tile->GetAdjacentGameObjects(tiles);
+    list<size_t> possibleTilesPlayer;
+    list<size_t> possibleTilesNeutral;
+    list<size_t> possibleTilesEnemy;
+
     for (int i = 0; i < 6; ++i) {
         if (tiles[i] != nullptr) {
-            move->reachEnd = true;
-            move->MoveAndSetDestination(tiles[i]->GetComponent<HexTile>());
-            break;
+            HexTile* hexTile = tiles[i]->GetComponent<HexTile>();
+            if (hexTile)
+            {
+                if (hexTile->ownerEntity == this)
+                {
+                    possibleTilesPlayer.push_back(i);
+                }
+                else if (hexTile->ownerEntity == nullptr)
+                {
+                    possibleTilesNeutral.push_back(i);
+                }
+                else
+                {
+                    possibleTilesEnemy.push_back(i);
+                }
+            }
+            //move->reachEnd = true;
+            //move->MoveAndSetDestination(tiles[i]->GetComponent<HexTile>());
+            //break;
         }
     }
     fightingPlayable = nullptr;
     minigameChoice = MinigameRPS_Choice::NONE;
+
+    if (possibleTilesPlayer.size())
+    {
+        size_t drawn = Random::Range(0ull, possibleTilesPlayer.size() - 1ull);
+        auto itr = possibleTilesPlayer.begin();
+        std::advance(itr, drawn);
+        move->MoveAndSetDestination(tiles[(*itr)]->GetComponent<HexTile>());
+    }
+    else if (possibleTilesNeutral.size())
+    {
+        size_t drawn = Random::Range(0ull, possibleTilesNeutral.size() - 1ull);
+        auto itr = possibleTilesNeutral.begin();
+        std::advance(itr, drawn);
+        move->MoveAndSetDestination(tiles[(*itr)]->GetComponent<HexTile>());
+    }
+    else if (possibleTilesEnemy.size())
+    {
+        size_t drawn = Random::Range(0ull, possibleTilesEnemy.size() - 1ull);
+        auto itr = possibleTilesEnemy.begin();
+        std::advance(itr, drawn);
+        move->MoveAndSetDestination(tiles[(*itr)]->GetComponent<HexTile>());
+    }
 }
 
 float Player::GetMaxRadius() const {

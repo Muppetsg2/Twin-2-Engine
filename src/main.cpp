@@ -127,6 +127,7 @@ using namespace Generation::Generators;
 #include <UIScripts/AreaTakenGraph.h>
 #include <UIScripts/MenuManager.h>
 #include <UIScripts/PauseManager.h>
+#include <UIScripts/SettingsManager.h>
 
 using namespace GameScripts;
 
@@ -388,6 +389,7 @@ int main(int, char**)
     ADD_COMPONENT("MenuParticles", MenuParticles);
     ADD_COMPONENT("MenuManager", MenuManager);
     ADD_COMPONENT("PauseManager", PauseManager);
+    ADD_COMPONENT("SettingsManager", SettingsManager);
     ADD_COMPONENT("TutorialsController", TutorialsController);
 
 #pragma endregion
@@ -414,6 +416,7 @@ int main(int, char**)
     SceneManager::AddScene("GameWithTutorial", "res/scenes/tutorialScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/tutorialSceneWork2.scene");
     //SceneManager::AddScene("testScene", "res/scenes/SceneToEditPrefabs.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/WaterTest.scene");
     //SceneManager::AddScene("testScene", "res/scenes/Making Game UI.scene");
     //SceneManager::AddScene("testScene", "res/scenes/MenuScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");

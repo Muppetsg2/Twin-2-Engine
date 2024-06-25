@@ -23,16 +23,17 @@ private:
 	static DecisionTree<Enemy*, bool> _whileMovingDecisionTree;
 	static DecisionTree<AfterMoveDecisionData&, bool> _afterMoveDecisionTree;
 
+	static std::unordered_map<Enemy*, bool> _afterMove;
+
 	static void DoAfterMoveDecisionTree(Enemy* enemy);
 
 	static void StartTakingOver(Enemy* enemy);
-	static void Fight(Enemy* enemy, HexTile* playerTile);
-	static void RadioStation(Enemy* enemy, HexTile* radioStationTile);
+	static void MoveToFight(Enemy* enemy, HexTile* playerTile);
+	static void MoveToRadioStation(Enemy* enemy, HexTile* radioStationTile);
 	static void AlbumAbility(Enemy* enemy);
 	static void ConcertAbility(Enemy* enemy);
 	static void Move(Enemy* enemy);
 
-	// TODO: ChooseTile Possible tiles possible size 0 error
 	static void ChooseTile(Enemy* enemy);
 	static std::unordered_map<Enemy*, std::pair<size_t, size_t>> _eventsIds;
 

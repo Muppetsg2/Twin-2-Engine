@@ -32,6 +32,9 @@ class Enemy : public Playable {
 	StateMachine<Enemy*> _stateMachine;
 	State<Enemy*>* _nextState = nullptr;
 
+	// MEMORY
+	std::vector<HexTile*> _lastVisitedTiles = { nullptr, nullptr };
+
 	Playable* _loosingFightPlayable = nullptr;
 
 public:
@@ -49,6 +52,7 @@ public:
 
 	void ChangeState(State<Enemy*>* newState);
 	void SetMoveDestination(HexTile* tile);
+	void SetCurrTile(HexTile* tile);
 
 	//int colorIdx = 0;
 	float TakeOverSpeed = 1.0f;

@@ -132,12 +132,12 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 N, uint shadowMapId) {
     {
         for(int y = -1; y <= 1; ++y)
         {
-            pcfDepth =  texture(DirLightShadowMaps[shadowMapId], projCoords.xy + vec2(x, y) * texelSize).r; 
-            pcfDepthD = texture(DirLightShadowMaps[shadowMapId + 1], projCoords.xy + vec2(x, y) * texelSize).r; 
+            pcfDepth =  texture(DirLightShadowMaps[shadowMapId], projCoords.xy + vec2(x, y) * texelSize).r;
+            pcfDepthD = texture(DirLightShadowMaps[shadowMapId + 1], projCoords.xy + vec2(x, y) * texelSize).r;
             if (pcfDepth > pcfDepthD) {
                 pcfDepth = pcfDepthD;
             }
-            shadow += (currentDepth - 0.0002) < pcfDepth  ? 1.0 : 0.0;  
+            shadow += (currentDepth - 0.0002) < pcfDepth  ? 1.0 : 0.0;
             //shadow += (currentDepth - bias) < pcfDepth  ? 1.0 : 0.0;        
         }    
     }
@@ -244,6 +244,6 @@ void main() {
     vec2 textureLookupPos = NDCSpaceFragPos * 0.5 + 0.5;
     float visibility_factor = isSSAO ? texture(occlusionMap, textureLookupPos).r : 1.0;
 
-    FragColor *= vec4(LightColor + AmbientLight * visibility_factor, 1.0);
-	FragColor = vec4(pow(FragColor.rgb, vec3(gamma)), 1.0);
+    FragColor *= vec4(LightColor + AmbientLight * visibility_factor, FragColor.a);
+	FragColor = vec4(pow(FragColor.rgb, vec3(gamma)), FragColor.a);
 }

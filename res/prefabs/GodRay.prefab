@@ -35,6 +35,7 @@ Root:
       enabled: true
       type: MeshRenderer
       isTransparent: true
+      transparencyPriority: 2
       model: 0
       materials:
         - 0

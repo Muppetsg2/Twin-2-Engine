@@ -4,6 +4,21 @@ using namespace Twin2Engine::UI;
 
 #define AREA_TAKEN_GRAPH_TEST false
 
+AreaTakenGraph* AreaTakenGraph::_instance = nullptr;
+
+AreaTakenGraph* AreaTakenGraph::Instance()
+{
+	return _instance;
+}
+
+void AreaTakenGraph::Initialize()
+{
+	if (!_instance)
+	{
+		_instance = this;
+	}
+}
+
 void AreaTakenGraph::UpdateTopHexagon()
 {
 	Prefab* topHexagonPrefab = PrefabManager::GetPrefab(_topHexagonPrefabId);
@@ -35,7 +50,7 @@ void AreaTakenGraph::UpdateTopHexagon()
 		img->SetFillProgress(offset + progress);
 
 		img->SetColor({ GetColor((TILE_COLOR)(uint8_t)(entity->colorIdx == 0 ? 1 : powf(2.f, (float)(entity->colorIdx)))), 1.f });
-		img->SetLayer(_layer + 1);
+		img->SetLayer(_layer + 3);
 
 		offset += progress;
 		++idx;
@@ -47,7 +62,7 @@ void AreaTakenGraph::UpdateTopHexagon()
 		img->SetFillOffset(offset);
 		img->SetFillProgress(100.f);
 		img->SetColor({ GetColor(TILE_COLOR::NEUTRAL), 1.f });
-		img->SetLayer(_layer + 1);
+		img->SetLayer(_layer + 3);
 	}
 	else {
 		_topHexagons[idx]->SetActive(false);
@@ -71,7 +86,7 @@ void AreaTakenGraph::UpdateTopHexagon()
 	img->SetFillProgress(_takenPercentage);
 
 	img->SetColor({ GetColor(TILE_COLOR::RED), 1.f });
-	img->SetLayer(_layer + 1);
+	img->SetLayer(_layer + 3);
 
 	if (_takenPercentage < 100.f) {
 		_topHexagons[1]->SetActive(true);
@@ -79,7 +94,7 @@ void AreaTakenGraph::UpdateTopHexagon()
 		img->SetFillOffset(_takenPercentage);
 		img->SetFillProgress(100.f);
 		img->SetColor({ GetColor(TILE_COLOR::NEUTRAL), 1.f });
-		img->SetLayer(_layer + 1);
+		img->SetLayer(_layer + 3);
 	}
 	else {
 		_topHexagons[1]->SetActive(false);
@@ -194,7 +209,7 @@ void AreaTakenGraph::UpdateEdge()
 			Image* img = _edges[idx]->GetComponentInChildren<Image>();
 			Mask* mask = _edges[idx]->GetComponent<Mask>();
 			img->SetColor({ GetColor((TILE_COLOR)(uint8_t)(entity->colorIdx == 0 ? 1 : powf(2.f, (float)(entity->colorIdx)))) * 0.75f, 1.f });
-			img->SetLayer(_layer);
+			img->SetLayer(_layer + 1);
 
 			// FIRST TRIANGLE
 			if (alpha0 < edgeHalfAlpha) {
@@ -261,7 +276,7 @@ void AreaTakenGraph::UpdateEdge()
 
 		img->SetFillProgress(100.f);
 		img->SetColor({ GetColor(TILE_COLOR::NEUTRAL) * 0.75f, 1.f });
-		img->SetLayer(_layer);
+		img->SetLayer(_layer + 1);
 	}
 	else {
 		_edges[idx]->SetActive(false);
@@ -288,7 +303,7 @@ void AreaTakenGraph::UpdateEdge()
 		Image* img = _edges[0]->GetComponentInChildren<Image>();
 		Mask* mask = _edges[0]->GetComponent<Mask>();
 		img->SetColor({ GetColor(TILE_COLOR::RED) * 0.75f, 1.f });
-		img->SetLayer(_layer);
+		img->SetLayer(_layer + 1);
 
 		// FIRST TRIANGLE
 		if (alpha0 < edgeHalfAlpha) {
@@ -351,7 +366,7 @@ void AreaTakenGraph::UpdateEdge()
 
 		img->SetFillProgress(100.f);
 		img->SetColor({ GetColor(TILE_COLOR::NEUTRAL) * 0.75f, 1.f });
-		img->SetLayer(_layer);
+		img->SetLayer(_layer + 1);
 	}
 	else {
 		_edges[1]->SetActive(false);
@@ -384,14 +399,14 @@ void AreaTakenGraph::UpdateTopValueHexagon()
 	if (img != nullptr) {
 		img->SetWidth(200.f);
 		img->SetHeight(200.f);
-		img->SetLayer(_layer + 1);
+		img->SetLayer(_layer + 3);
 		img = nullptr;
 	}
 
 	if (edgeImg != nullptr) {
 		edgeImg->SetWidth(200.f);
 		edgeImg->SetHeight(200.f);
-		edgeImg->SetLayer(_layer);
+		edgeImg->SetLayer(_layer + 1);
 		edgeImg = nullptr;
 	}
 
@@ -414,20 +429,20 @@ void AreaTakenGraph::UpdateTopValueHexagon()
 		}
 	}
 
-	Image* topImg = _topValueHexagon->GetComponent<Image>();
-	topImg->SetLayer(_layer - 1);
-	topImg->SetColor(glm::vec4(glm::vec3(img->GetColor()) * 0.75f, 1.f));
-	topImg->SetFillOffset(img->GetFillOffset());
-	topImg->SetFillProgress(img->GetFillProgress());
-	topImg->SetWidth(220.f);
-	topImg->SetHeight(220.f);
+	Image* bottopImg = _topValueHexagon->GetComponent<Image>();
+	bottopImg->SetLayer(_layer);
+	bottopImg->SetColor(glm::vec4(glm::vec3(img->GetColor()) * 0.75f, 1.f));
+	bottopImg->SetFillOffset(img->GetFillOffset());
+	bottopImg->SetFillProgress(img->GetFillProgress());
+	bottopImg->SetWidth(220.f);
+	bottopImg->SetHeight(220.f);
 
 	img->SetWidth(220.f);
 	img->SetHeight(220.f);
-	img->SetLayer(_layer + 2);
+	img->SetLayer(_layer + 4);
 	edgeImg->SetWidth(220.f);
 	edgeImg->SetHeight(220.f);
-	edgeImg->SetLayer(_layer + 1);
+	edgeImg->SetLayer(_layer + 2);
 	edgeMask->SetWidth(220.f);
 	edgeMask->SetHeight(220.f);
 
@@ -447,9 +462,6 @@ void AreaTakenGraph::UpdateTopValueHexagon()
 	else {
 		_topEdge->SetActive(true);
 	}
-
-	Image* topEdgeImg = _topEdge->GetComponentInChildren<Image>();
-	topEdgeImg->SetColor(glm::vec4(glm::vec3(img->GetColor()) * 0.75f, 1.f));
 
 	const float R1 = GetTransform()->GetGlobalScale().x;
 	const float R2 = GetTransform()->GetGlobalScale().y / 1.143f;
@@ -480,15 +492,27 @@ void AreaTakenGraph::UpdateTopValueHexagon()
 
 	const float edgeHalfAlpha = 0.f;
 	const float edgeEndAlpha = glm::degrees(glm::acos(glm::dot(topVector, edgeEndPoint) / (glm::length(topVector) * glm::length(edgeEndPoint))));
-
 	float alpha0 = 3.6f * img->GetFillOffset();
-	topEdgeImg->SetFillOffset(CalcLeftPercent(alpha0) * 50.f + 50.f);
 	float alpha = 3.6f * img->GetFillProgress();
-	if (alpha <= edgeEndAlpha) {
-		topEdgeImg->SetFillProgress(CalcLeftPercent(alpha) * 50.f + 50.f);
+
+	if (alpha0 <= edgeEndAlpha) {
+		_topEdge->SetActive(true);
+
+		Image* topEdgeImg = _topEdge->GetComponentInChildren<Image>();
+		topEdgeImg->SetColor(glm::vec4(glm::vec3(img->GetColor()) * 0.75f, 1.f));
+		topEdgeImg->SetLayer(_layer + 2);
+
+		topEdgeImg->SetFillOffset(CalcLeftPercent(alpha0) * 50.f + 50.f);
+
+		if (alpha <= edgeEndAlpha) {
+			topEdgeImg->SetFillProgress(CalcLeftPercent(alpha) * 50.f + 50.f);
+		}
+		else {
+			topEdgeImg->SetFillProgress(CalcLeftPercent(edgeEndAlpha) * 50.f + 50.f);
+		}
 	}
 	else {
-		topEdgeImg->SetFillProgress(CalcLeftPercent(edgeEndAlpha) * 50.f + 50.f);
+		_topEdge->SetActive(false);
 	}
 }
 
@@ -580,6 +604,10 @@ void AreaTakenGraph::OnDestroy()
 	_edges.clear();
 	_topEdge = nullptr;
 	_topValueHexagon = nullptr;
+	if (this == _instance)
+	{
+		_instance = nullptr;
+	}
 }
 
 YAML::Node AreaTakenGraph::Serialize() const
@@ -748,4 +776,37 @@ GameObject* AreaTakenGraph::GetTopEdge() const
 GameObject* AreaTakenGraph::GetTopValueHexagon() const
 {
 	return _topValueHexagon;
+}
+
+void AreaTakenGraph::Reset()
+{
+	while (_topHexagons.size() > 1ull) 
+	{
+		SceneManager::DestroyGameObject(_topHexagons[0ull]);
+		_topHexagons.erase(_topHexagons.begin());
+	}
+	//
+	//_topHexagons[0ull]->SetActive(true);
+	//Image* img = _topHexagons[0ull]->GetComponent<Image>();
+	//img->SetFillOffset(0.0f);
+	//img->SetFillProgress(100.f);
+	//img->SetColor({ GetColor(TILE_COLOR::NEUTRAL), 1.f });
+	//img->SetLayer(_layer + 1);
+	//
+	while (_edges.size() > 1ull)
+	{
+		SceneManager::DestroyGameObject(_edges[0ull]);
+		_edges.erase(_edges.begin());
+	}
+
+	//img = _edges[0ull]->GetComponentInChildren<Image>();
+	//img->SetFillOffset(0.f);
+	//img->SetFillProgress(100.f);
+	//img->SetColor({ GetColor(TILE_COLOR::NEUTRAL) * 0.75f, 1.f });
+	//img->SetLayer(_layer);
+	//_topHexagons.clear();
+	//_edges.clear();
+	UpdateTopHexagon();
+	UpdateEdge();
+	UpdateTopValueHexagon();
 }

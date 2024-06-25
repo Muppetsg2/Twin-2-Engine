@@ -65,6 +65,10 @@ private:
     //Twin2Engine::UI::Text* _monthText;
     //Twin2Engine::UI::Text* _yearText;
 
+    std::string _prefabPathShadowingPlane = "res/prefabs/ShadowingHexPlane.prefab";
+    list<Twin2Engine::Core::GameObject*> _shadowedTiles;
+
+
     unsigned int _enemiesNumber = 2u;
     int _mapGenerationEventId = -1;
     Generation::MapGenerator* _mapGenerator;

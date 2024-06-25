@@ -20,28 +20,29 @@ void RadioStation::Initialize()
 
 void RadioStation::Update()
 {
-
-    if (_takingOverTimer > 0.0f)
-    {
-        _takingOverTimer -= Time::GetDeltaTime();
-        if (_takingOverTimer <= 0.0f)
+    if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
+        if (_takingOverTimer > 0.0f)
         {
-            for (HexTile* tile : _takenTiles)
+            _takingOverTimer -= Time::GetDeltaTime();
+            if (_takingOverTimer <= 0.0f)
             {
-                tile->StopTakingOver(_takenPlayable);
+                for (HexTile* tile : _takenTiles)
+                {
+                    tile->StopTakingOver(_takenPlayable);
+                }
+                _takenTiles.clear();
+                _takingOverTimer = 0.0f;
             }
-            _takenTiles.clear();
-            _takingOverTimer = 0.0f;
         }
-    }
-    if (_cooldownTimer > 0.0f)
-    {
-        _cooldownTimer -= Time::GetDeltaTime();
-        _cooldownTimerText->SetText(to_wstring((int) glm::round(_cooldownTimer)));
-        if (_cooldownTimer <= 0.0f)
+        if (_cooldownTimer > 0.0f)
         {
-            _cooldownTimer = 0.0f;
-            _cooldownTimerText->GetGameObject()->SetActive(false);
+            _cooldownTimer -= Time::GetDeltaTime();
+            _cooldownTimerText->SetText(to_wstring((int)glm::round(_cooldownTimer)));
+            if (_cooldownTimer <= 0.0f)
+            {
+                _cooldownTimer = 0.0f;
+                _cooldownTimerText->GetGameObject()->SetActive(false);
+            }
         }
     }
 }
@@ -61,6 +62,11 @@ float RadioStation::GetRemainingCooldownTime() const
 
 void RadioStation::StartTakingOver(Playable* playable, float score)
 {
+    if (_cooldownTimer > 0.f) {
+        SPDLOG_ERROR("Cooldown Timer nie by³ 0");
+        return;
+    }
+
     float usedRadius = score * takingRadius;
 
     _takingOverTimer = _takingOverTime;

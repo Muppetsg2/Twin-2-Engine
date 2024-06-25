@@ -2,7 +2,7 @@
 #include <Enemy.h>
 #include <RadioStation/RadioStation.h>
 
-DecisionTree<std::pair<Enemy*, uint32_t>, bool> RadioStationState::_decisionTree{
+DecisionTree<pair<Enemy*, uint32_t>, bool> RadioStationState::_decisionTree{
 	[&](std::pair<Enemy*, uint32_t> data) -> bool {
 		std::srand(std::time(NULL));
 		return (std::rand() % 101) <= data.first->_noteLuck;

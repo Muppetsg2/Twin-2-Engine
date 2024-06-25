@@ -19,55 +19,33 @@ DecisionTree<Enemy*, bool> TakingOverState::_decisionTree{
 			false,
 			new DecisionTreeDecisionMaker<Enemy*, bool>(
 				[&](Enemy* enemy) -> bool {
-					// money >= ConcertPrice && !ConcertActive && ConcertCooldown <= 0 && FansActive
-					// TODO: Concert Data
-					float concertPrice = 1.f;
-					bool isConcertActive = true;
-					float concertCooldown = 1.f;
-					return enemy->GetGameObject()->GetComponent<MoneyGainFromTiles>()->money >= concertPrice 
-						&& !isConcertActive && concertCooldown <= 0.f && enemy->isFansActive;
+					// money >= AlbumPrice && AlbumCooldown <= 0 && !AlbumActive && GlobalAvg(Enemy) <= 50%
+					// TODO: Add Check if album is ready to buy as Playable func
+					return enemy->GetGameObject()->GetComponent<MoneyGainFromTiles>()->money >= enemy->albumRequiredMoney
+						&& enemy->albumCooldown <= 0.f && !enemy->isAlbumActive && enemy->GlobalAvg() <= 50.f;
 				},
 				{
 					{
 						true,
 						new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
-							ConcertAbility(enemy);
+							AlbumAbility(enemy);
 						})
 					},
 					{
 						false,
 						new DecisionTreeDecisionMaker<Enemy*, bool>(
 							[&](Enemy* enemy) -> bool {
-								// money >= AlbumPrice && AlbumCooldown <= 0 && !AlbumActive && GlobalAvg(Enemy) <= 50%
-								// TODO: Add Check if album is ready to buy as Playable func
-								return enemy->GetGameObject()->GetComponent<MoneyGainFromTiles>()->money >= enemy->albumRequiredMoney 
-									&& enemy->albumCooldown <= 0.f && !enemy->isAlbumActive && enemy->GlobalAvg() <= 50.f;
+								if (enemy->CurrTile == nullptr) return false;
+
+								// (FansActive && LocalAvg(Enemy) >= 75%) || (!FansActive && CurrTilePercent >= 75%)
+								return (enemy->isFansActive && enemy->LocalAvg() >= 75.f) || (!enemy->isFansActive && enemy->CurrTile->percentage >= 75.f);
 							},
 							{
 								{
 									true,
 									new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
-										AlbumAbility(enemy);
+										Move(enemy);
 									})
-								},
-								{
-									false,
-									new DecisionTreeDecisionMaker<Enemy*, bool>(
-										[&](Enemy* enemy) -> bool {
-											if (enemy->CurrTile == nullptr) return false;
-
-											// (FansActive && LocalAvg(Enemy) >= 75%) || (!FansActive && CurrTilePercent >= 75%)
-											return (enemy->isFansActive && enemy->LocalAvg() >= 75.f) || (!enemy->isFansActive && enemy->CurrTile->percentage >= 75.f);
-										},
-										{
-											{
-												true,
-												new DecisionTreeLeaf<Enemy*>([&](Enemy* enemy) -> void {
-													Move(enemy);
-												})
-											}
-										}
-									)
 								}
 							}
 						)
@@ -87,17 +65,6 @@ void TakingOverState::AlbumAbility(Enemy* enemy)
 	SPDLOG_INFO("Album Ability");
 
 	enemy->UseAlbum();
-}
-
-void TakingOverState::ConcertAbility(Enemy* enemy)
-{
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
-	SPDLOG_INFO("Concert Ability");
-
-	// TODO: Use Concert Ability
 }
 
 void TakingOverState::FansMeetingAbility(Enemy* enemy)

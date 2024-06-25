@@ -100,7 +100,6 @@ public:
 	bool minigameActive = false;
 	bool isAlbumActive = false;
 
-	float radioStationCooldown = 3.0f;
 	//Material* tileMaterial;
 	//Outline* outline;
 

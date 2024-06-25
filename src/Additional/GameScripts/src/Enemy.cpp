@@ -22,11 +22,22 @@ void Enemy::ChangeState(State<Enemy*>* newState) {
 
 void Enemy::SetMoveDestination(HexTile* tile)
 {
-    if (CurrTile && CurrTile != tile)
+    if (CurrTile != nullptr && CurrTile != tile)
     {
         CurrTile->StopTakingOver(this);
     }
     _movement->SetDestination(tile);
+}
+
+void Enemy::SetCurrTile(HexTile* tile)
+{
+    if (tile != CurrTile) {
+        for (size_t i = _lastVisitedTiles.size() - 1; i > 0; --i) {
+            _lastVisitedTiles[i] = _lastVisitedTiles[i - 1];
+        }
+        _lastVisitedTiles[0] = CurrTile;
+        CurrTile = tile;
+    }
 }
 
 void Enemy::Initialize()

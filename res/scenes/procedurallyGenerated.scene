@@ -438,7 +438,7 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 71
-    path: res/textures/UI/meeting.png
+    path: res/textures/UI/fanMeeting.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
     sWrapMode: !<MIRRORED_REPEAT> 33648
@@ -699,8 +699,8 @@ Sprites:
     texture: 71
     x: 0
     y: 0
-    width: 150
-    height: 150
+    width: 256
+    height: 256
   - id: 9
     alias: Drum
     texture: 82

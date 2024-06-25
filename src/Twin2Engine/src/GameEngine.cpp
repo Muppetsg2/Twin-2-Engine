@@ -57,6 +57,8 @@ void GameEngine::Deserializers()
     ADD_COMPONENT("SpotLight", SpotLightComponent);
 
     ADD_COMPONENT("Cloud", Cloud);
+
+    ADD_COMPONENT("DistanceFieldGenerator", DistanceFieldGenerator);
 }
 
 void GameEngine::Update()

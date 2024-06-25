@@ -13,10 +13,12 @@ UBO (MAX BINDINGS POINTS 35375 -> LAST 35374):
 3 - LightingData		(std140)
 4 - UICanvas			(std140)
 5 - UIMask				(std140)
+6 - DistanceFieldData	(std140)
 
 TEXTURES:
 0...3 - Dynamic
-4...25 - Wolne
+4...24 - Wolne
+25 - DISTANCE_FIELD
 26 - DEPTH_MAP
 27...30 - SHADOW_MAP
 31 - SSAO

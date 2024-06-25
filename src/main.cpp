@@ -413,6 +413,7 @@ int main(int, char**)
     SceneManager::AddScene("GameWithTutorial", "res/scenes/tutorialScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/tutorialSceneWork2.scene");
     //SceneManager::AddScene("testScene", "res/scenes/SceneToEditPrefabs.scene");
+    //SceneManager::AddScene("testScene", "res/scenes/WaterTest.scene");
     //SceneManager::AddScene("testScene", "res/scenes/Making Game UI.scene");
     //SceneManager::AddScene("testScene", "res/scenes/MenuScene.scene");
     //SceneManager::AddScene("testScene", "res/scenes/quickSavedScene.scene");

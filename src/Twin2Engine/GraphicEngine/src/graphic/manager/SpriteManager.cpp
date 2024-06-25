@@ -226,7 +226,7 @@ void SpriteManager::DrawSpriteEditor(bool* p_open, size_t spriteToEdit) {
 
 	// Tex Data
 	static Texture2D* tex = nullptr;
-	static ImTextureID im_id = 0; 
+	static ImTextureID im_id = 0;
 	static float w = 1.f;
 	static float h = 1.f;
 	static size_t selectedTexture = 0;

@@ -1,0 +1,46 @@
+material:
+  name: Water_2
+  shader: origin/Water_2
+  parameters:
+    - name: shallowColor
+      type: vec4
+      value:
+        - 0
+        - 0.5571654
+        - 0.7735849
+        - 1
+    - name: deepColor
+      type: vec4
+      value:
+        - 0.4232488
+        - 0.1655838
+        - 0.5754717
+        - 1
+    - name: foamColor
+      type: vec4
+      value:
+        - 1
+        - 1
+        - 1
+        - 1
+    - name: foamSpeed
+      type: float
+      value: 0.2
+    - name: foamScale
+      type: float
+      value: 4.58
+    - name: foamDepth
+      type: float
+      value: 1
+    - name: depthFade
+      type: float
+      value: 1
+    - name: waterScale
+      type: float
+      value: 0.3
+    - name: waterHeight
+      type: float
+      value: 1
+    - name: waterSpeed
+      type: float
+      value: 2

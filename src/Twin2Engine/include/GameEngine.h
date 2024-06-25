@@ -40,6 +40,8 @@
 #include <core/PointLightComponent.h>
 #include <core/SpotLightComponent.h>
 #include <core/DirectionalLightComponent.h>
+#include <Clouds/Cloud.h>
+#include<core/DistanceFieldGenerator.h>
 
 // COMPONENTS MAP
 #include <core/ComponentsMap.h>
@@ -59,9 +61,6 @@
 #include <processes/SynchronizedProcess.h>
 #include <processes/ThreadProcess.h>
 #include <processes/TimerProcess.h>
-
-
-#include <Clouds/Cloud.h>
 
 // PLAYER PREFS
 #include <core/PlayerPrefs.h>

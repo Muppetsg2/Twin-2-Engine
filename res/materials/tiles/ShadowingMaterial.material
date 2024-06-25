@@ -1,0 +1,10 @@
+material:
+  name: ShadowingMaterial
+  shader: origin/Basic
+  parameters:
+    - name: color1
+      type: vec4
+      value: [0.2, 0.2, 0.2, 0.35]
+    - name: color2
+      type: vec4
+      value: [0.2, 0.2, 0.2, 0.35]

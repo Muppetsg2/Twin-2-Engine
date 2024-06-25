@@ -749,7 +749,9 @@ void CameraComponent::Render()
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, &_screenIndicies);
 		glBindVertexArray(0);
 
+		ParticleSystemsController::Instance()->RenderUIBack();
 		GraphicEngine::RenderGUI();
+		ParticleSystemsController::Instance()->RenderUIFront();
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		glEnable(GL_DEPTH_TEST);

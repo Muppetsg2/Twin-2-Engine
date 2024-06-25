@@ -1,10 +1,10 @@
 scriptable_object:
   __SO_RegisteredName__: PatronData
-  patronName: "Zuarasiz"
+  patronName: "Patron4"
   patronMusic: 0
-  patronDescription: "Zuarasiz Description"
+  patronDescription: "Patron4 Description"
   patronBonus: 0
-  color: 2
+  color: 4
   soundDown: "res/music/RadioStation/Violin/violin_D4_1_mezzo-forte_arco-normal.mp3"
   soundLeft: "res/music/RadioStation/Violin/violin_E4_1_mezzo-forte_arco-normal.mp3"
   soundRight: "res/music/RadioStation/Violin/violin_F4_1_mezzo-forte_arco-normal.mp3"

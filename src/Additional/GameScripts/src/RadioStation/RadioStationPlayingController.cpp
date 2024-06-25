@@ -55,10 +55,50 @@ void RadioStationPlayingController::PlayNote(NoteType note)
     {
         _notesImages[_currentNote]->SetColor(_correctNoteColor);
         ++_correctCounter;
+
+        switch (note)
+        {
+        case NoteType::DOWN:
+            _audioComponent->SetAudio(_soundDown);
+            break;
+
+        case NoteType::LEFT:
+            _audioComponent->SetAudio(_soundLeft);
+            break;
+
+        case NoteType::RIGHT:
+            _audioComponent->SetAudio(_soundRight);
+            break;
+
+        case NoteType::UP:
+            _audioComponent->SetAudio(_soundUp);
+            break;
+        }
+        _audioComponent->Play();
     }
     else
     {
         _notesImages[_currentNote]->SetColor(_wrongNoteColor);
+
+        switch (note)
+        {
+        case NoteType::DOWN:
+            _audioComponent->SetAudio(_soundDownFalse);
+            break;
+
+        case NoteType::LEFT:
+            _audioComponent->SetAudio(_soundLeftFalse);
+            break;
+
+        case NoteType::RIGHT:
+            _audioComponent->SetAudio(_soundRightFalse);
+            break;
+
+        case NoteType::UP:
+            _audioComponent->SetAudio(_soundUpFalse);
+            break;
+        }
+        _audioComponent->Play();
     }
 
     ++_currentNote;
@@ -150,6 +190,17 @@ void RadioStationPlayingController::Initialize()
 
     GetGameObject()->SetActive(false);
     if (_resultText != nullptr) _resultText->SetActive(false);
+
+    _audioComponent = GetGameObject()->GetComponent<AudioComponent>();
+
+    //_soundDown = AudioManager::LoadAudio("res/music/RadioStation/Violin/violin_D4_1_mezzo-forte_arco-normal.mp3");
+    //_soundLeft = AudioManager::LoadAudio("res/music/RadioStation/Violin/violin_E4_1_mezzo-forte_arco-normal.mp3");
+    //_soundRight = AudioManager::LoadAudio("res/music/RadioStation/Violin/violin_F4_1_mezzo-forte_arco-normal.mp3");
+    //_soundUp = AudioManager::LoadAudio("res/music/RadioStation/Violin/violin_G4_1_mezzo-forte_arco-normal.mp3");
+    //_soundDownFalse = AudioManager::LoadAudio("res/music/RadioStation/Violin/violin-false-sounds.mp3");
+    //_soundLeftFalse = AudioManager::LoadAudio("res/music/RadioStation/Violin/violin-false-sounds.mp3");
+    //_soundRightFalse = AudioManager::LoadAudio("res/music/RadioStation/Violin/violin-false-sounds.mp3");
+    //_soundUpFalse = AudioManager::LoadAudio("res/music/RadioStation/Violin/violin-false-sounds.mp3");
 }
 
 void RadioStationPlayingController::Update()
@@ -280,6 +331,15 @@ void RadioStationPlayingController::Play(RadioStation* radioStation, Playable* p
         _buttonDown->SetInteractable(false);
         _buttonLeft->SetInteractable(false);
         _timeLimitCounter = _timeLimit;
+        
+        _soundDown = AudioManager::LoadAudio(playable->patron->GetSoundDown());
+        _soundLeft = AudioManager::LoadAudio(playable->patron->GetSoundLeft());
+        _soundRight = AudioManager::LoadAudio(playable->patron->GetSoundRight());
+        _soundUp = AudioManager::LoadAudio(playable->patron->GetSoundUp());
+        _soundDownFalse = AudioManager::LoadAudio(playable->patron->GetSoundDownFalse());
+        _soundLeftFalse = AudioManager::LoadAudio(playable->patron->GetSoundLeftFalse());
+        _soundRightFalse = AudioManager::LoadAudio(playable->patron->GetSoundRightFalse());
+        _soundUpFalse = AudioManager::LoadAudio(playable->patron->GetSoundUpFalse());
 
         if (_remainingTimeText != nullptr) {
             _remainingTimeText->SetText(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(std::vformat(

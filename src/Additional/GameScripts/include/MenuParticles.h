@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ParticleGenerator.h>
+#include <UIParticleGenerator.h>
 
 #include <core/Component.h>
 
@@ -12,12 +12,12 @@ using namespace Twin2Engine::Graphic;
 class MenuParticles : public Component{
 private:
 
-	ParticleGenerator* _generator = nullptr;
-	unsigned int _amount = 40;
-	float _height = 10.f;
-	float _particleWidth = 1.f;
-	float _particleHeight = 1.f;
-	float _radius = 10.f;
+	UIParticleGenerator* _generator = nullptr;
+	unsigned int _amount = 14;
+	float _height = 900.f;
+	float _particleWidth = 50.f;
+	float _particleHeight = 50.f;
+	float _radius = 800.f;
 
 	glm::vec4 _startColor = glm::vec4(1.f);
 	glm::vec4 _endColor = glm::vec4(1.f);
@@ -31,18 +31,19 @@ private:
 			_generator = nullptr;
 		}
 
-		_generator = new ParticleGenerator("origin/ParticleShader", "res/textures/particleDefault.png", _amount, _height, 0.0f, 6.0f, 2.0f, _particleWidth, _particleHeight, _radius);
-		_generator->active = true;
+		_generator = new UIParticleGenerator( "origin/UIParticleShader", "res/textures/particleDefault.png", _amount, _height, 0.0f, 6.0f, 2.0f, _particleWidth, _particleHeight, _radius, true);
+		_generator->active = true; 
+		_generator->SetStartPosition(glm::vec3(0.0f, -500.0f, 0.0f));
 	}
 
 public:
 	virtual void Initialize() override {
 		DefineGenerator();
-		_generator->SetStartPosition(GetGameObject()->GetTransform()->GetGlobalPosition());
+		//_generator->SetStartPosition(GetGameObject()->GetTransform()->GetGlobalPosition());
 
-		_onTransformChange = GetGameObject()->GetTransform()->OnEventPositionChanged += [&](Transform* t) -> void {
-			_generator->SetStartPosition(GetGameObject()->GetTransform()->GetGlobalPosition());
-		};
+		//_onTransformChange = GetGameObject()->GetTransform()->OnEventPositionChanged += [&](Transform* t) -> void {
+		//	_generator->SetStartPosition(GetGameObject()->GetTransform()->GetGlobalPosition());
+		//};
 	}
 
 	virtual void Update() override {}

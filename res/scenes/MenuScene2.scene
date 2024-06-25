@@ -47,6 +47,18 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 8
+    path: res\textures\UI\highscore.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 9
+    path: res\textures\UI\tutorial.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites:
   - id: 0
     alias: Title_Screen
@@ -93,6 +105,20 @@ Sprites:
   - id: 6
     alias: SettingsButton
     texture: 4
+    x: 0
+    y: 0
+    width: 200
+    height: 75
+  - id: 7
+    alias: HighscoreButton
+    texture: 8
+    x: 0
+    y: 0
+    width: 200
+    height: 75
+  - id: 8
+    alias: TutorailButton
+    texture: 9
     x: 0
     y: 0
     width: 200
@@ -510,6 +536,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
+        sprite: 7
         color:
           x: 1
           y: 1
@@ -555,28 +582,6 @@ GameObjects:
           w: 1
         displayObjectOnHover: false
         playAudioOnClick: false
-      - id: 47
-        enabled: true
-        type: Text
-        isTransparent: true
-        text: "\x00H\x00I\x00G\x00H\x00S\x00C\x00O\x00R\x00E"
-        font: 0
-        size: 35
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 0
-        height: 0
-        color:
-          x: 0
-          y: 0
-          z: 0
-          w: 0.607843161
-        alignX: !<CENTER> 1
-        alignY: !<BOTTOM> 0
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 2
     children:
       []
   - id: 21
@@ -672,11 +677,11 @@ GameObjects:
       - id: 9
         enabled: false
         type: MenuParticles
-        amount: 40
-        height: 10
-        particleWidth: 1
-        particleHeight: 1
-        radius: 10
+        amount: 20
+        height: 800
+        particleWidth: 40
+        particleHeight: 40
+        radius: 800
         startColor:
           x: 1
           y: 1

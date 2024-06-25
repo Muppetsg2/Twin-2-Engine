@@ -4,6 +4,21 @@ using namespace Twin2Engine::UI;
 
 #define AREA_TAKEN_GRAPH_TEST false
 
+AreaTakenGraph* AreaTakenGraph::_instance = nullptr;
+
+AreaTakenGraph* AreaTakenGraph::Instance()
+{
+	return _instance;
+}
+
+void AreaTakenGraph::Initialize()
+{
+	if (!_instance)
+	{
+		_instance = this;
+	}
+}
+
 void AreaTakenGraph::UpdateTopHexagon()
 {
 	Prefab* topHexagonPrefab = PrefabManager::GetPrefab(_topHexagonPrefabId);
@@ -580,6 +595,10 @@ void AreaTakenGraph::OnDestroy()
 	_edges.clear();
 	_topEdge = nullptr;
 	_topValueHexagon = nullptr;
+	if (this == _instance)
+	{
+		_instance = nullptr;
+	}
 }
 
 YAML::Node AreaTakenGraph::Serialize() const
@@ -748,4 +767,37 @@ GameObject* AreaTakenGraph::GetTopEdge() const
 GameObject* AreaTakenGraph::GetTopValueHexagon() const
 {
 	return _topValueHexagon;
+}
+
+void AreaTakenGraph::Reset()
+{
+	while (_topHexagons.size() > 1ull) 
+	{
+		SceneManager::DestroyGameObject(_topHexagons[0ull]);
+		_topHexagons.erase(_topHexagons.begin());
+	}
+	//
+	//_topHexagons[0ull]->SetActive(true);
+	//Image* img = _topHexagons[0ull]->GetComponent<Image>();
+	//img->SetFillOffset(0.0f);
+	//img->SetFillProgress(100.f);
+	//img->SetColor({ GetColor(TILE_COLOR::NEUTRAL), 1.f });
+	//img->SetLayer(_layer + 1);
+	//
+	while (_edges.size() > 1ull)
+	{
+		SceneManager::DestroyGameObject(_edges[0ull]);
+		_edges.erase(_edges.begin());
+	}
+
+	//img = _edges[0ull]->GetComponentInChildren<Image>();
+	//img->SetFillOffset(0.f);
+	//img->SetFillProgress(100.f);
+	//img->SetColor({ GetColor(TILE_COLOR::NEUTRAL) * 0.75f, 1.f });
+	//img->SetLayer(_layer);
+	//_topHexagons.clear();
+	//_edges.clear();
+	UpdateTopHexagon();
+	UpdateEdge();
+	UpdateTopValueHexagon();
 }

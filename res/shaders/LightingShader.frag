@@ -244,6 +244,6 @@ void main() {
     vec2 textureLookupPos = NDCSpaceFragPos * 0.5 + 0.5;
     float visibility_factor = isSSAO ? texture(occlusionMap, textureLookupPos).r : 1.0;
 
-    FragColor *= vec4(LightColor + AmbientLight * visibility_factor, 1.0);
-	FragColor = vec4(pow(FragColor.rgb, vec3(gamma)), 1.0);
+    FragColor *= vec4(LightColor + AmbientLight * visibility_factor, FragColor.a);
+	FragColor = vec4(pow(FragColor.rgb, vec3(gamma)), FragColor.a);
 }

@@ -1,10 +1,10 @@
-#include "GameManager.h"
 #include <GameManager.h>
 #include <manager/SceneManager.h>
 #include <manager/PrefabManager.h>
 #include <graphic/manager/MaterialsManager.h>
 #include <core/Random.h>
-#include <string>
+
+#include <UIScripts/AreaTakenGraph.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
@@ -212,11 +212,25 @@ void GameManager::Update()
 
             if (_player->move->_pointedTile && Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT))
             {
-                _textChooseStartingPosition->SetActive(false);
-                _player->StartPlayer(_player->move->_pointedTile);
-                gameStartUp = false;
-                _player->move->_pointedTile = nullptr;
-                _player->move->_playerDestinationMarker->SetActive(false);
+                if (_player->move->_pointedTile->GetMapHexTile()->type == MapHexTile::HexTileType::PointOfInterest)
+                {
+                    _textChooseStartingPosition->SetActive(false);
+
+                    for (GameObject* goTile : _shadowedTiles)
+                    {
+                        SceneManager::DestroyGameObject(goTile);
+                    }
+
+                    _player->StartPlayer(_player->move->_pointedTile);
+                    gameStartUp = false;
+                    _player->move->_pointedTile = nullptr;
+                    _player->move->_playerDestinationMarker->SetActive(false);
+                }
+                else
+                {
+                    _player->_audioComponent->SetAudio(_player->move->_soundWrongDestination);
+                    _player->_audioComponent->Play();
+                }
             }
         }
         else
@@ -253,14 +267,20 @@ GameObject* GameManager::GeneratePlayer()
     GameObject* player = Twin2Engine::Manager::SceneManager::CreateGameObject(prefabPlayer);
     Player* p = player->GetComponent<Player>();
     _player = p;
-    int chosen = Random::Range(0ull, _freeColors.size() - 1ull);
+
+    p->GetTransform()->SetGlobalPosition(vec3(0.0f, -5.0f, 0.0f));
+    // p->patron = playersPatron;
+    p->SetPatron(playersPatron);
+
+    int chosenColor = 0;
+    uint8_t color = (uint8_t) playersPatron->GetColor();
+    while (color /= 2) chosenColor++;
+
+    int chosen = chosenColor;// Random::Range(0ull, _freeColors.size() - 1ull);
     // int chosen = 0;
     p->colorIdx = _freeColors[chosen];
     _freeColors.erase(_freeColors.begin() + chosen);
     // p->colorIdx = chosen;
-    p->GetTransform()->SetGlobalPosition(vec3(0.0f, -5.0f, 0.0f));
-    // p->patron = playersPatron;
-    p->SetPatron(playersPatron);
 
     _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), playersPatron));
 
@@ -332,19 +352,31 @@ GameObject* GameManager::GenerateEnemy()
 
     Enemy* e = enemy->GetComponent<Enemy>();
 
-    int chosen = Random::Range(0ull, _freeColors.size() - 1ull);
+    unsigned chosenPatron = Random::Range<unsigned>(0u, _freePatronsData.size() - 1ull);
+    // e->patron = _freePatronsData[chosenPatron];
+    e->SetPatron(_freePatronsData[chosenPatron]);
+    _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), e->patron));
+
+    int chosenColor = 0;
+    uint8_t color = (uint8_t)e->patron->GetColor();
+    while (color /= 2) chosenColor++;
+
+    int chosen = chosenColor; // Random::Range(0ull, _freeColors.size() - 1ull);
     // int chosen = 1;
-    e->colorIdx = _freeColors[chosen];
-    _freeColors.erase(_freeColors.begin() + chosen);
+    //e->colorIdx = _freeColors[chosen];
+    e->colorIdx = chosenColor;
+    for (size_t index = 0ull; index < _freeColors.size(); ++index)
+    {
+        if (_freeColors[index] == chosenColor)
+        {
+            _freeColors.erase(_freeColors.begin() + index);
+        }
+    }
     // e->colorIdx = chosen;
     e->GetGameObject()->GetComponent<MeshRenderer>()->SetMaterial(0ull, _carMaterials[e->colorIdx]);
 
     e->GetTransform()->SetGlobalPosition(vec3(0.0f, -5.0f, 0.0f));
 
-    unsigned chosenPatron = Random::Range<unsigned>(0u, _freePatronsData.size() - 1ull);
-    // e->patron = _freePatronsData[chosenPatron];
-    e->SetPatron(_freePatronsData[chosenPatron]);
-    _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), e->patron));
     /*float h = Random.Range(0f, 1f);
     float s = Random.Range(.7f, 1f);
     float v = 1f;
@@ -458,6 +490,17 @@ void GameManager::StartGame()
 
     _textChooseStartingPosition->SetActive(true);
 
+    Prefab* prefabShadowingHexPlane = PrefabManager::GetPrefab(_prefabPathShadowingPlane);
+    list<MapHexTile*> tiles = _mapGenerator->GetGameObject()->GetComponentsInChildren<MapHexTile>();
+    for (MapHexTile* tile : tiles)
+    {
+        if (tile->type != MapHexTile::HexTileType::Mountain && tile->type != MapHexTile::HexTileType::PointOfInterest)
+        {
+            GameObject* instanced = SceneManager::CreateGameObject(prefabShadowingHexPlane, tile->GetTransform());
+            _shadowedTiles.push_back(instanced);
+        }
+    }
+
     for (unsigned i = 0u; i < _enemiesNumber; ++i)
     {
         GenerateEnemy();
@@ -478,6 +521,7 @@ void GameManager::RestartMapPhase1() {
 
     int key = 0;
     GameObject* go = nullptr;
+
 
     //for (size_t index = 0ull; index < entities.size(); ++index)
     //{
@@ -503,6 +547,8 @@ void GameManager::RestartMapPhase1() {
 }
 
 void GameManager::RestartMapPhase2() {
+    AreaTakenGraph::Instance()->Reset();
+
     _mapGenerator->Clear();
 
     startPhase2 = false;
@@ -539,6 +585,17 @@ void GameManager::RestartMapPhase3() {
     gameStarted = false;
     startPhase3 = false;
     _textChooseStartingPosition->SetActive(true);
+
+    Prefab* prefabShadowingHexPlane = PrefabManager::GetPrefab(_prefabPathShadowingPlane);
+    list<MapHexTile*> tiles = _mapGenerator->GetGameObject()->GetComponentsInChildren<MapHexTile>();
+    for (MapHexTile* tile : tiles)
+    {
+        if (tile->type != MapHexTile::HexTileType::Mountain && tile->type != MapHexTile::HexTileType::PointOfInterest)
+        {
+            GameObject* instanced = SceneManager::CreateGameObject(prefabShadowingHexPlane, tile->GetTransform());
+            _shadowedTiles.push_back(instanced);
+        }
+    }
 }
 
 Player* GameManager::GetPlayer() const

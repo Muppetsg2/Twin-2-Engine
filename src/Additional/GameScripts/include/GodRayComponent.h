@@ -11,9 +11,9 @@ using namespace Twin2Engine::Graphic;
 
 class GodRayComponent : public Component {
 	private:
-		float heigth				= 10.6f;
+		float heigth				= 2.7f;
 		float heigthLowerTreshhold	= 0.1f;
-		float heigthHigherTreshhold	= 10.6f;
+		float heigthHigherTreshhold	= 1.1f;
 		glm::vec3 ray_color			= glm::vec3(1.0f, 0.99f, 0.0f);
 
 		float POS_MULT				= 0.1f;

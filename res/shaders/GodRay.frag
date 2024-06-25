@@ -40,7 +40,7 @@ void main() {
 		alpha2 = FragModelPosY / heigthLowerTreshhold;
 	}
 	if (FragModelPosY > heigthHigherTreshhold) {
-		alpha2 = (FragModelPosY - heigth) / (heigthLowerTreshhold - heigth);
+		alpha2 =  (heigth - FragModelPosY) / (heigth - heigthHigherTreshhold);
 	}
 
 	FragColor = vec4(ray_color, alpha * alpha2 * edgeAlpha);

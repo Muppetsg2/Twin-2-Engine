@@ -168,9 +168,6 @@ void FightingState::Win(Enemy* enemy) {
 #endif
 
 	SPDLOG_INFO("ENEMY WIN");
-	// TODO: Dodac analize ruchu gracza
-	// TODO: Dodac odpowiedz na ruch gracza
-
 	if (enemy->CurrTile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::RadioStation) {
 		enemy->ChangeState(&enemy->_radioStationState);
 	}

@@ -98,7 +98,7 @@ DecisionTree<MovingState::AfterMoveDecisionData&, bool> MovingState::_afterMoveD
 						false,
 						new DecisionTreeDecisionMaker<AfterMoveDecisionData&, bool>(
 							[&](AfterMoveDecisionData& data) -> bool {
-								// Sprawdzenie do kogo nale¿y CurrTile
+								// Sprawdzenie do kogo naleï¿½y CurrTile
 								// (!EnemyTile && (!PlayerTile || (PlayerTile && Percent <= 50)) || (EnemyTile && Percent <= 50)
 								if (data.enemy->CurrTile->ownerEntity == data.enemy) {
 									return data.enemy->CurrTile->percentage <= 50.f;
@@ -133,6 +133,8 @@ DecisionTree<MovingState::AfterMoveDecisionData&, bool> MovingState::_afterMoveD
 		}
 	}
 };
+
+std::unordered_map<Enemy*, bool> MovingState::_afterMove;
 
 void MovingState::DoAfterMoveDecisionTree(Enemy* enemy) {
 	AfterMoveDecisionData data = {
@@ -255,44 +257,57 @@ void MovingState::ChooseTile(Enemy* enemy)
 
 	vec3 tilePosition;
 
-	// priority (distance from own tiles)
-	map<float, vector<HexTile*>> possible;
+	// priority
+	// 1. is last Visited?
+	// 2. is his tiles?
+	// 3. distance from own tiles
+	// 4. distance from him
+	// 5. taken percent
+	map<bool, map<bool, map<float, map<float, map<float, vector<HexTile*>>>>>> possible;
 
 	size_t size = GameManager::instance->Tiles.size();
 	float maxRadius = enemy->GetMaxRadius();
 
 	for (size_t index = 0ull; index < size; ++index)
 	{
-		MapHexTile::HexTileType type = GameManager::instance->Tiles[index]->GetMapHexTile()->type;
-		if (type != MapHexTile::HexTileType::Mountain && type != MapHexTile::HexTileType::None && GameManager::instance->Tiles[index] != enemy->CurrTile)
+		HexTile* tile = GameManager::instance->Tiles[index];
+		MapHexTile::HexTileType type = tile->GetMapHexTile()->type;
+		if (type != MapHexTile::HexTileType::Mountain && tile != enemy->CurrTile)
 		{
-			tilePosition = GameManager::instance->Tiles[index]->GetTransform()->GetGlobalPosition();
+			tilePosition = tile->GetTransform()->GetGlobalPosition();
 			tilePosition.y = .0f;
 			float distance = glm::distance(globalPosition, tilePosition);
 			
-			float dist = INFINITE;
-			for (auto& takenTile : enemy->OwnTiles) {
-				float tempDist = glm::distance((glm::vec2)GameManager::instance->Tiles[index]->GetMapHexTile()->tile->GetPosition(), (glm::vec2)takenTile->GetMapHexTile()->tile->GetPosition());
-				if (tempDist < dist) {
-					dist = tempDist;
-				}
-			}
-			
 			if (distance <= maxRadius)
 			{
-				if (!possible.contains(dist)) possible[dist] = vector<HexTile*>();
-				possible[dist].push_back(GameManager::instance->Tiles[index]);
+				bool isLastVisited = false;
+				for (size_t i = 0; i < enemy->_lastVisitedTiles.size(); ++i) {
+					if (tile == enemy->_lastVisitedTiles[i]) {
+						isLastVisited = true;
+						break;
+					}
+				}
+
+				float dist = INFINITE;
+				for (auto& takenTile : enemy->OwnTiles) {
+					vec3 takenTilePosition = takenTile->GetTransform()->GetGlobalPosition();
+					takenTilePosition.y = 0.f;
+					float tempDist = glm::distance(tilePosition, takenTilePosition);
+					if (tempDist < dist) {
+						dist = tempDist;
+					}
+				}
+
+				bool isEnemyOwner = tile->ownerEntity == enemy;
+				possible[isLastVisited][isEnemyOwner][dist][distance][tile->percentage].push_back(tile);
 			}
 		}
 	}
 
-	SPDLOG_INFO("ENEMY Possible Size: {}", possible.size());
 	if (possible.size() != 0) {
-		for (auto& possiblePair : possible) {
-			HexTile* result = possiblePair.second[Random::Range(0ull, possiblePair.second.size() - 1ull)];
-
-			enemy->SetMoveDestination(result);
-		}
+		auto& tiles = possible.begin()->second.begin()->second.begin()->second.begin()->second.begin()->second;
+		HexTile* result = tiles[Random::Range(0ull, tiles.size() - 1ull)];
+		enemy->SetMoveDestination(result);
 	}
 	else {
 		StartTakingOver(enemy);
@@ -308,10 +323,6 @@ void MovingState::Enter(Enemy* enemy)
 #endif
 
 	SPDLOG_INFO("Enter Moving State");
-
-	if (enemy->CurrTile != nullptr) {
-		enemy->CurrTile->StopTakingOver(enemy);
-	}
 	
 	size_t ofpeId = (enemy->_movement->OnFindPathError += [enemy](GameObject* gameObject, HexTile* tile) {
 		ChooseTile(enemy);
@@ -322,20 +333,22 @@ void MovingState::Enter(Enemy* enemy)
 			ChooseTile(enemy);
 		}
 		else {
-			enemy->CurrTile = tile;
-
+			enemy->SetCurrTile(tile);
 			if (tile->occupyingEntity != nullptr && tile->occupyingEntity != enemy && tile->state == TileState::OCCUPIED) {
 				tile->StartTakingOver(enemy);
 				enemy->ChangeState(&enemy->_fightingState);
 			}
 			else if (tile->GetMapHexTile()->type == MapHexTile::HexTileType::RadioStation) {
-				tile->StartTakingOver(enemy);
-				enemy->ChangeState(&enemy->_radioStationState);
+				SPDLOG_ERROR("XD?");
+				if (tile->radioStationCooldown <= 0.f) {
+					tile->StartTakingOver(enemy);
+					enemy->ChangeState(&enemy->_radioStationState);
+				}
 			}
 			else {
 				tile->StartTakingOver(enemy);
-				DoAfterMoveDecisionTree(enemy);
 			}
+			_afterMove[enemy] = true;
 		}
 	});
 
@@ -351,7 +364,13 @@ void MovingState::Update(Enemy* enemy)
 #endif
 
 	SPDLOG_INFO("Update Moving State");
-	_whileMovingDecisionTree.ProcessNode(enemy);
+	if (!_afterMove.contains(enemy)) {
+		_whileMovingDecisionTree.ProcessNode(enemy);
+	}
+	else {
+		DoAfterMoveDecisionTree(enemy);
+		_afterMove.erase(enemy);
+	}
 }
 
 void MovingState::Exit(Enemy* enemy)
@@ -364,4 +383,5 @@ void MovingState::Exit(Enemy* enemy)
 	enemy->_movement->OnFindPathError -= _eventsIds[enemy].first;
 	enemy->_movement->OnFinishMoving -= _eventsIds[enemy].second;
 	_eventsIds.erase(enemy);
+	_afterMove.erase(enemy);
 }

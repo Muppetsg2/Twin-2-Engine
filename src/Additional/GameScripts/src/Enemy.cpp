@@ -29,6 +29,17 @@ void Enemy::SetMoveDestination(HexTile* tile)
     _movement->SetDestination(tile);
 }
 
+void Enemy::SetCurrTile(HexTile* tile)
+{
+    if (tile != CurrTile) {
+        for (size_t i = _lastVisitedTiles.size() - 1; i > 0; --i) {
+            _lastVisitedTiles[i] = _lastVisitedTiles[i - 1];
+        }
+        _lastVisitedTiles[0] = CurrTile;
+        CurrTile = tile;
+    }
+}
+
 void Enemy::Initialize()
 {
     Playable::Initialize();

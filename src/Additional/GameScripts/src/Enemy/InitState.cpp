@@ -34,7 +34,7 @@ HexTile* InitState::ChooseTile(Enemy* enemy) {
 	}
 	enemy->GetTransform()->SetGlobalPosition(tile->GetTransform()->GetGlobalPosition() + glm::vec3(0.0f, 0.1f, 0.0f));
 
-	enemy->CurrTile = tile;
+	enemy->SetCurrTile(tile);
 	
 	tile->StartTakingOver(enemy);
 	/*if (tile->GetMapHexTile()->type == MapHexTile::HexTileType::RadioStation) {

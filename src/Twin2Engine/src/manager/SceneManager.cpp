@@ -10,6 +10,8 @@
 #include <core/ResourceManagement.h>
 #include <regex>
 
+#include <graphic/manager/MeshRenderingManager.h>
+
 using namespace Twin2Engine::Manager;
 using namespace std;
 using namespace Twin2Engine::Core;
@@ -1170,8 +1172,10 @@ void SceneManager::UnloadCurrent()
 	unloader(_gifsIds, [](size_t id) -> void { GIFManager::Unload(id); });
 	unloader(_audiosIds, [](size_t id) -> void { AudioManager::UnloadAudio(id); });
 	unloader(_materialsIds, [](size_t id) -> void { MaterialsManager::UnloadMaterial(id); });
+	//Twin2Engine::Manager::ShaderManager::UnloadAll();
 	unloader(_modelsIds, [](size_t id) -> void { ModelsManager::UnloadModel(id); });
 	unloader(_prefabsIds, [](size_t id) -> void { PrefabManager::UnloadPrefab(id); });
+	//Twin2Engine::Manager::MeshRenderingManager::UnloadAll();
 }
 
 void SceneManager::UnloadScene(const std::string& name)

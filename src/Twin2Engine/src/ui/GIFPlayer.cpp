@@ -29,6 +29,22 @@ void GIFPlayer::SetCanvas(Canvas* canvas)
 	}
 }
 
+void GIFPlayer::SetMask(Mask* mask)
+{
+	if (_mask != mask) {
+		if (_mask != nullptr) {
+			_mask->GetOnMaskDestroy() -= _onMaskDestroyId;
+			_data.mask = nullptr;
+		}
+
+		_mask = mask;
+		if (_mask != nullptr) {
+			_onMaskDestroyId = (_mask->GetOnMaskDestroy() += [&](Mask* mask) -> void { SetMask(nullptr); });
+			_data.mask = &_mask->_data;
+		}
+	}
+}
+
 void GIFPlayer::Initialize()
 {
 	Transform* tr = GetTransform();
@@ -39,10 +55,14 @@ void GIFPlayer::Initialize()
 		_fillData.rotation = t->GetGlobalRotation().z;
 	});
 	_onParentInHierarchiChangeId = (tr->OnEventInHierarchyParentChanged += [&](Transform* t) -> void {
-		SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
+		GameObject* obj = GetGameObject();
+		SetCanvas(obj->GetComponentInParents<Canvas>());
+		SetMask(obj->GetComponentInParents<Mask>());
 		_data.rectTransform.transform = t->GetTransformMatrix();
 	});
-	SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
+	GameObject* obj = GetGameObject();
+	SetCanvas(obj->GetComponentInParents<Canvas>());
+	SetMask(obj->GetComponentInParents<Mask>());
 
 	if (_autoPlay && !_paused) {
 		Play();
@@ -82,6 +102,7 @@ void GIFPlayer::Render()
 void GIFPlayer::OnDestroy()
 {
 	SetCanvas(nullptr);
+	SetMask(nullptr);
 	Transform* tr = GetTransform();
 	tr->OnEventTransformChanged -= _onTransformChangeId;
 	tr->OnEventRotationChanged -= _onRotationChangeId;

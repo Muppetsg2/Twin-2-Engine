@@ -77,6 +77,7 @@ public:
 	virtual void Initialize() override;
 	virtual void OnEnable() override;
 	virtual void Update() override;
+	//virtual void OnDestroy() override;
 
 	virtual void LostPaperRockScissors(Playable* playable) override;
 	virtual void WonPaperRockScissors(Playable* playable) override;

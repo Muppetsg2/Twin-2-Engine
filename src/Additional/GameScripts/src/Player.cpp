@@ -22,6 +22,7 @@ void Player::Initialize() {
     // CONCERT ABILITY INTIALIZATION
     _concertButtonFrameImage = SceneManager::FindObjectByName("ConcertButtonFrame")->GetComponent<Image>();
     _concertButtonObject = SceneManager::FindObjectByName("ConcertBg");
+    _concertKey = SceneManager::FindObjectByName("KeyConcert")->GetTransform();
     _concertButton = _concertButtonObject->GetComponent<Button>();
     _concertText = SceneManager::FindObjectByName("ConcertCost")->GetComponent<Text>();
 
@@ -50,9 +51,9 @@ void Player::Initialize() {
         _concertCircleImage->SetColor(_abilityActiveColor);
     };
 
-    _concertAbility->OnEventAbilityFinished += [&](Playable* playable) -> void {
-        PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(_concertAbility->GetAdditionalTakingOverSpeed());
-    };
+    //_concertAbility->OnEventAbilityFinished += [&](Playable* playable) -> void {
+    //    PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(_concertAbility->GetAdditionalTakingOverSpeed());
+    //};
 
     _concertAbility->OnEventAbilityCooldownStarted += [&](Playable* playable) -> void {
         _concertCircleImage->SetColor(_abilityCooldownColor);
@@ -68,6 +69,7 @@ void Player::Initialize() {
     // ALBUM ABILITY INTIALIZATION
     _albumButtonFrameImage = SceneManager::FindObjectByName("AlbumButtonFrame")->GetComponent<Image>();
     _albumButtonObject = SceneManager::FindObjectByName("AlbumBg");
+    _albumKey = SceneManager::FindObjectByName("KeyAlbum")->GetTransform();
     _albumButton = _albumButtonObject->GetComponent<Button>();
     _albumText = SceneManager::FindObjectByName("AlbumCost")->GetComponent<Text>();
 
@@ -117,6 +119,7 @@ void Player::Initialize() {
     // FANS MEETING ABILITY INTIALIZATION
     _fansMeetingButtonFrameImage = SceneManager::FindObjectByName("FansMeetingButtonFrame")->GetComponent<Image>();
     _fansMeetingButtonObject = SceneManager::FindObjectByName("FansBg");
+    _fansMeetingKey = SceneManager::FindObjectByName("KeyFansMeeting")->GetTransform();
     _fansMeetingButton = _fansMeetingButtonObject->GetComponent<Button>();
     _fansMeetingText = SceneManager::FindObjectByName("FansCost")->GetComponent<Text>();
 
@@ -161,10 +164,13 @@ void Player::Initialize() {
     _moneyText->SetText(std::wstring(L"Money: ").append(std::to_wstring(static_cast<int>(_money->money))).append(L"$"));
 
     _negativeMoneyText = SceneManager::FindObjectByName("NegativeMoneyText")->GetComponent<Text>();
+    _negativeMoneyText->GetGameObject()->SetActive(false);
 
     move = GetGameObject()->GetComponent<PlayerMovement>();
-    move->OnFinishMoving += [this](GameObject* gameObject, HexTile* tile) { FinishMove(tile); };
-    move->OnStartMoving += [this](GameObject* gameObject, HexTile* tile) { StartMove(tile); };
+    //move->OnFinishMoving += [this](GameObject* gameObject, HexTile* tile) { FinishMove(tile); };
+    move->OnFinishMoving += [this](GameObject* gameObject, HexTile* tile) { _finishMove = tile; };
+    //move->OnStartMoving += [this](GameObject* gameObject, HexTile* tile) { StartMove(tile); };
+    move->OnStartMoving += [this](GameObject* gameObject, HexTile* tile) { _startMove = tile; };
     if (patron && patron->GetPatronBonus() == PatronBonus::MOVE_RANGE) {
         float r = move->radius;
         int s = move->maxSteps;
@@ -180,56 +186,56 @@ void Player::Initialize() {
 }
 void Player::Update() {
 
+    if (_loosingFightPlayable)
+    {
+        GameManager::instance->minigameActive = false;
+        CurrTile->isFighting = false;
+
+        _loosingFightPlayable->LostPaperRockScissors(this);
+
+        if (CurrTile->ownerEntity == _loosingFightPlayable) {
+            CurrTile->ResetTile();
+        }
+
+        //_loosingFightPlayable->CheckIfDead(this);
+
+        FinishMove(CurrTile);
+        fightingPlayable = nullptr;
+        minigameChoice = MinigameRPS_Choice::NONE;
+
+        _loosingFightPlayable = nullptr;
+    }
+
     if (!GameManager::instance->gameStarted && _hexIndicator) _hexIndicator->SetActive(false);
 
     if (!GameManager::instance->gameStarted) return;
 
-    _moneyText->SetText(std::wstring(L"Money: ").append(std::to_wstring(static_cast<int>(_money->money))).append(L"$"));
-
-    if (_negativeMoneyText->GetGameObject()->GetActive())
+    if (_startMove)
     {
-        int value = _money->money;
-        int count = 0;
+        StartMove(_startMove);
+        _startMove = nullptr;
 
-        do {
-            ++count;
-            value /= 10;
-        } while (value);
-        _negativeMoneyText->GetTransform()->SetLocalPosition(vec3(_negativeMoneyTextXOffset + count * _negativeMoneyTextLetterWidth, 0.0f, 0.0f));
+        if (_endFans)
+        {
+            _endFans = false;
 
-        value = _money->money;
-        if (_isHoveringFansMeetingButton)
-        {
-            value -= fansRequiredMoney;
-
+            _fansMeetingCircleImage->SetColor(_abilityCooldownColor);
+            _fansMeetingCircleImage->SetLayer(2);
+            FansExit();
         }
-        else if (_isHoveringConcertButton)
-        {
-            value -= _concertAbility->GetCost();
-        }
-        else if (_isHoveringAlbumButton)
-        {
-            value -= albumRequiredMoney;
-        }
-        else
-        {
-            _negativeMoneyText->GetGameObject()->SetActive(false);
-        }
-
-        if (value >= 0)
-        {
-            _negativeMoneyText->SetColor(_enoughMoneyColor);
-        }
-        else
-        {
-            _negativeMoneyText->SetColor(_notEnoughMoneyColor);
-        }
-        _negativeMoneyText->SetText(std::to_wstring(value).append(L"$"));
-
+    }
+    if (_finishMove)
+    {
+        FinishMove(_finishMove);
+        _finishMove = nullptr;
     }
 
+
     if (!GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
+
         UpdatePrices();
+
+        _moneyText->SetText(std::wstring(L"Money: ").append(std::to_wstring(static_cast<int>(_money->money))).append(L"$"));
 
         if (Input::IsKeyPressed(KEY::Z))
         {
@@ -245,6 +251,50 @@ void Player::Update() {
         {
             SPDLOG_INFO("Using Concert");
             ConcertCall();
+        }
+
+        _negativeMoneyText->GetGameObject()->SetActive(_isHoveringFansMeetingButton || _isHoveringConcertButton || _isHoveringAlbumButton);
+
+        if (_negativeMoneyText->GetGameObject()->GetActive())
+        {
+            int value = _money->money;
+            int count = 0;
+
+            do {
+                ++count;
+                value /= 10;
+            } while (value);
+            _negativeMoneyText->GetTransform()->SetLocalPosition(vec3(_negativeMoneyTextXOffset + count * _negativeMoneyTextLetterWidth, 0.0f, 0.0f));
+
+            value = _money->money;
+            if (_isHoveringFansMeetingButton)
+            {
+                value -= fansRequiredMoney;
+
+            }
+            else if (_isHoveringConcertButton)
+            {
+                value -= _concertAbility->GetCost();
+            }
+            else if (_isHoveringAlbumButton)
+            {
+                value -= albumRequiredMoney;
+            }
+            else
+            {
+                _negativeMoneyText->GetGameObject()->SetActive(false);
+            }
+
+            if (value >= 0)
+            {
+                _negativeMoneyText->SetColor(_enoughMoneyColor);
+            }
+            else
+            {
+                _negativeMoneyText->SetColor(_notEnoughMoneyColor);
+            }
+            _negativeMoneyText->SetText(std::to_wstring(value).append(L"$"));
+
         }
 
         // CONCERT ABILITY UI MANAGEMENT
@@ -295,104 +345,111 @@ void Player::Update() {
             _fansMeetingButton->SetInteractable(true);
         }
 
-        if (GameManager::instance->gameStarted)
+        // FANS MEETING INTERFACE ELEMENT
+        if (_isHoveringFansMeetingButton && !_isShowingFansMeetingAffectedTiles)
         {
-            // FANS MEETING INTERFACE ELEMENT
-            if (_isHoveringFansMeetingButton && !_isShowingFansMeetingAffectedTiles)
-            {
-                ShowAffectedTiles();
+            ShowAffectedTiles();
 
-                _fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
-                _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep2);
+            _fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
+            _fansMeetingKey->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
+            _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep2);
+
+            _negativeMoneyText->GetGameObject()->SetActive(true);
+        }
+        else if (!_isHoveringFansMeetingButton && _isShowingFansMeetingAffectedTiles)
+        {
+            HideAffectedTiles();
+
+            //fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
+            _fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+            _fansMeetingKey->SetLocalPosition(_keyPosition);
+            _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
+
+            //_negativeMoneyText->GetGameObject()->SetActive(false);
+        }
+        _isHoveringFansMeetingButton = false;
+
+        // CONCERT INTERFACE ELEMENT
+        if (!_concertAbility->IsUsed() && !_concertAbility->IsOnCooldown())
+        {
+            if (_isHoveringConcertButton && !_isShowingConcertPossible)
+            {
+                //PopularityGainingBonusBarController::Instance()->AddPossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
+                _isShowingConcertPossible = true;
+
+                _concertButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
+                _audioComponent->SetAudio(_onHoverClickAudio);
+                _audioComponent->Play();
+
+                _concertButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
+                _concertKey->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
+
+                _concertButtonFrameImage->SetSprite(_spriteButtonStep2);
 
                 _negativeMoneyText->GetGameObject()->SetActive(true);
             }
-            else if (!_isHoveringFansMeetingButton && _isShowingFansMeetingAffectedTiles)
+            else if (!_isHoveringConcertButton && _isShowingConcertPossible)
             {
-                HideAffectedTiles();
+                //PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
+                _isShowingConcertPossible = false;
 
-                //fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
-                _fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
-                _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
+                _concertButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
+                _audioComponent->SetAudio(_offHoverClickAudio);
+                _audioComponent->Play();
+
+                _concertButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+                _concertKey->SetLocalPosition(_keyPosition);
+                _concertButtonFrameImage->SetSprite(_spriteButtonStep1);
 
                 //_negativeMoneyText->GetGameObject()->SetActive(false);
             }
-            _isHoveringFansMeetingButton = false;
+            _isHoveringConcertButton = false;
+        }
 
-            // CONCERT INTERFACE ELEMENT
-            if (!_concertAbility->IsUsed() && !_concertAbility->IsOnCooldown())
+        // ALBUM INTERFACE ELEMENT
+        if (currAlbumTime <= 0.0f && currAlbumCooldown <= 0.0f)
+        {
+            if (_isHoveringAlbumButton && !_isShowingAlbumPossible)
             {
-                if (_isHoveringConcertButton && !_isShowingConcertPossible)
+                for (HexTile* tile : OwnTiles)
                 {
-                    PopularityGainingBonusBarController::Instance()->AddPossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
-                    _isShowingConcertPossible = true;
-
-                    _concertButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
-                    _audioComponent->SetAudio(_onHoverClickAudio);
-                    _audioComponent->Play();
-
-                    _concertButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
-                    _concertButtonFrameImage->SetSprite(_spriteButtonStep2);
-
-                    _negativeMoneyText->GetGameObject()->SetActive(true);
+                    tile->EnableAlbumAffected();
                 }
-                else if (!_isHoveringConcertButton && _isShowingConcertPossible)
-                {
-                    PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
-                    _isShowingConcertPossible = false;
+                _isShowingAlbumPossible = true;
 
-                    _concertButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
-                    _audioComponent->SetAudio(_offHoverClickAudio);
-                    _audioComponent->Play();
+                _albumButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
+                _audioComponent->SetAudio(_onHoverClickAudio);
+                _audioComponent->Play();
 
-                    _concertButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
-                    _concertButtonFrameImage->SetSprite(_spriteButtonStep1);
+                _albumButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
+                _albumKey->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
 
-                    //_negativeMoneyText->GetGameObject()->SetActive(false);
-                }
-                _isHoveringConcertButton = false;
+                _albumButtonFrameImage->SetSprite(_spriteButtonStep2);
+
+                _negativeMoneyText->GetGameObject()->SetActive(true);
             }
-
-            // ALBUM INTERFACE ELEMENT
-            if (currAlbumTime <= 0.0f && currAlbumCooldown <= 0.0f)
+            else if (!_isHoveringAlbumButton && _isShowingAlbumPossible)
             {
-                if (_isHoveringAlbumButton && !_isShowingAlbumPossible)
+                for (HexTile* tile : OwnTiles)
                 {
-                    for (HexTile* tile : OwnTiles)
-                    {
-                        tile->EnableAlbumAffected();
-                    }
-                    _isShowingAlbumPossible = true;
-
-                    _albumButtonObject->GetTransform()->SetLocalScale(vec3(1.1f));
-                    _audioComponent->SetAudio(_onHoverClickAudio);
-                    _audioComponent->Play();
-
-                    _albumButtonObject->GetTransform()->Translate(vec3(0.0f, _buttonDeltaYMovement, 0.0f));
-                    _albumButtonFrameImage->SetSprite(_spriteButtonStep2);
-
-                    _negativeMoneyText->GetGameObject()->SetActive(true);
+                    tile->DisableAlbumAffected();
                 }
-                else if (!_isHoveringAlbumButton && _isShowingAlbumPossible)
-                {
-                    for (HexTile* tile : OwnTiles)
-                    {
-                        tile->DisableAlbumAffected();
-                    }
-                    _isShowingAlbumPossible = false;
+                _isShowingAlbumPossible = false;
 
-                    _albumButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
-                    _audioComponent->SetAudio(_offHoverClickAudio);
-                    _audioComponent->Play();
+                _albumButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
+                _albumKey->SetLocalPosition(_keyPosition);
 
-                    //albumButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
-                    _albumButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
-                    _albumButtonFrameImage->SetSprite(_spriteButtonStep1);
+                _audioComponent->SetAudio(_offHoverClickAudio);
+                _audioComponent->Play();
 
-                    //_negativeMoneyText->GetGameObject()->SetActive(false);
-                }
-                _isHoveringAlbumButton = false;
+                //albumButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
+                _albumButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+                _albumKey->SetLocalPosition(_keyPosition);
+                _albumButtonFrameImage->SetSprite(_spriteButtonStep1);
+
+                //_negativeMoneyText->GetGameObject()->SetActive(false);
             }
+            _isHoveringAlbumButton = false;
         }
     }
 }
@@ -474,6 +531,7 @@ void Player::AlbumCall() {
     if (currAlbumTime <= 0.0f && currAlbumCooldown <= 0.0f && _money->SpendMoney(albumRequiredMoney)) {
         currAlbumTime = albumTime;
         _albumButton->SetInteractable(false);
+        _isHoveringAlbumButton = false;
         _albumButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
         UseAlbum();
 
@@ -484,6 +542,7 @@ void Player::AlbumCall() {
         _isShowingAlbumPossible = true;
 
         _albumButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+        _albumKey->SetLocalPosition(_keyPosition);
         _albumButtonFrameImage->SetSprite(_spriteButtonStep1);
     }
     else {
@@ -496,10 +555,12 @@ void Player::FansMeetingCall() {
     if (currFansTime <= 0.0f && currFansCooldown <= 0.0f && _money->SpendMoney(fansRequiredMoney)) {
         currFansTime = fansTime;
         _fansMeetingButton->SetInteractable(false);
+        _isHoveringFansMeetingButton = false;
         _fansMeetingButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
         UseFans();
 
         _fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+        _fansMeetingKey->SetLocalPosition(_keyPosition);
         _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
     }
     else {
@@ -514,12 +575,14 @@ void Player::ConcertCall() {
     {
         _concertButton->SetInteractable(false);
         _concertButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
-        PopularityGainingBonusBarController::Instance()->AddCurrentBonus(_concertAbility->GetAdditionalTakingOverSpeed());
-        PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
+        //PopularityGainingBonusBarController::Instance()->AddCurrentBonus(_concertAbility->GetAdditionalTakingOverSpeed());
+        //PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
         _isShowingConcertPossible = false;
         _isHoveringConcertButton = false;
 
         _concertButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+        _concertButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+        _concertKey->SetLocalPosition(_keyPosition);
         _concertButtonFrameImage->SetSprite(_spriteButtonStep1);
     }
     else {
@@ -599,9 +662,7 @@ void Player::StartMove(HexTile* tile) {
 
     if (isFansActive) {
         if (CurrTile != tileBefore) {
-            _fansMeetingCircleImage->SetColor(_abilityCooldownColor);
-            _fansMeetingCircleImage->SetLayer(2);
-            FansExit();
+            _endFans = true;
         }
     }
 
@@ -641,6 +702,94 @@ void Player::FinishMove(HexTile* tile) {
 
 void Player::MinigameEnd() {}
 
+void Player::ResetOnNewMap() {
+    move->_info.WaitForFinding();
+    move->_checkingInfo.WaitForFinding();
+
+    _concertAbility->Reset();
+
+    move->_showedPathEnabled = false;
+    move->_showedPathDisabled = false;
+
+    move->_checkedTile = nullptr;
+
+    if (move->_path)
+    {
+        delete move->_path;
+        move->_path = nullptr;
+    }
+
+    move->reachEnd = true;
+
+    GetTransform()->SetGlobalPosition(vec3(0.0f, -5.0f, 0.0f));
+
+    // Clearing after abilities
+
+    // Album
+    currAlbumTime = 0.0f;
+    currAlbumCooldown = 0.0f;
+    currFansTime = 0.0f;
+    currFansCooldown = 0.0f;
+
+    isAlbumActive = false;
+
+    albumTakingOverTiles.clear();
+
+    for (size_t index = 0ull; index < albumsIncreasingIntervalsCounter.size(); ++index)
+    {
+        albumsIncreasingIntervalsCounter[index] = 0.0f;
+    }
+    _albumCircleImage->SetFillProgress(00.f);
+
+    // Fans meeting
+    HideAffectedTiles();
+    _fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+    _fansMeetingKey->SetLocalPosition(_keyPosition);
+    _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
+    _isHoveringFansMeetingButton = false;
+
+    isFansActive = false;
+
+    tempFansCollider.clear();
+    _fansMeetingCircleImage->SetFillProgress(00.f);
+
+
+    // Concert
+    PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
+    _isShowingConcertPossible = false;
+
+    _concertButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));
+
+    _concertButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+    _concertKey->SetLocalPosition(_keyPosition);
+    _concertButtonFrameImage->SetSprite(_spriteButtonStep1);
+
+    _concertCircleImage->SetFillProgress(0.0f);
+
+    if (move->_showedPathTiles.size())
+    {
+        size_t showedPathTilesSize = move->_showedPathTiles.size();
+        for (size_t index = 0ull; index < showedPathTilesSize; ++index)
+        {
+            move->_showedPathTiles[index]->DisableAffected();
+        }
+        move->_showedPathTiles.clear();
+    }
+
+    _money->money *= 0.5;
+    if (CurrTile != nullptr) {
+        CurrTile->StopTakingOver(this);
+        CurrTile = nullptr;
+        //move->_pointedTile = nullptr;
+    }
+    tileBefore = nullptr;
+
+    OwnTiles.clear();
+    _affectedTiles.clear();
+
+    GetTransform()->SetGlobalPosition(glm::vec3(0.0, -2.0f, 0.0f));
+}
+
 //void Player::StartPaperRockScissors(Playable* playable) {
 //    GameObject* adjacentTiles[6];
 //    CurrTile->GetMapHexTile()->tile->GetAdjacentGameObjects(adjacentTiles);// HexMetrics::GetNeighboringGameObjects(CurrTile->tilemap, CurrTile->tilemapPosition);
@@ -666,20 +815,7 @@ void Player::MinigameEnd() {}
 //}
 
 void Player::WonPaperRockScissors(Playable* playable) {
-    GameManager::instance->minigameActive = false;
-    CurrTile->isFighting = false;
-
-    playable->LostPaperRockScissors(this);
-
-    if (CurrTile->ownerEntity == playable) {
-        CurrTile->ResetTile();
-    }
-
-    //playable->CheckIfDead(this);
-
-    FinishMove(CurrTile);
-    fightingPlayable = nullptr;
-    minigameChoice = MinigameRPS_Choice::NONE;
+    _loosingFightPlayable = playable;
 }
 
 void Player::LostPaperRockScissors(Playable* playable) {
@@ -691,15 +827,57 @@ void Player::LostPaperRockScissors(Playable* playable) {
 
     GameObject* tiles[6];
     CurrTile->GetMapHexTile()->tile->GetAdjacentGameObjects(tiles);
+    list<size_t> possibleTilesPlayer;
+    list<size_t> possibleTilesNeutral;
+    list<size_t> possibleTilesEnemy;
+
     for (int i = 0; i < 6; ++i) {
         if (tiles[i] != nullptr) {
-            move->reachEnd = true;
-            move->MoveAndSetDestination(tiles[i]->GetComponent<HexTile>());
-            break;
+            HexTile* hexTile = tiles[i]->GetComponent<HexTile>();
+            if (hexTile)
+            {
+                if (hexTile->ownerEntity == this)
+                {
+                    possibleTilesPlayer.push_back(i);
+                }
+                else if (hexTile->ownerEntity == nullptr)
+                {
+                    possibleTilesNeutral.push_back(i);
+                }
+                else
+                {
+                    possibleTilesEnemy.push_back(i);
+                }
+            }
+            //move->reachEnd = true;
+            //move->MoveAndSetDestination(tiles[i]->GetComponent<HexTile>());
+            //break;
         }
     }
     fightingPlayable = nullptr;
     minigameChoice = MinigameRPS_Choice::NONE;
+
+    if (possibleTilesPlayer.size())
+    {
+        size_t drawn = Random::Range(0ull, possibleTilesPlayer.size() - 1ull);
+        auto itr = possibleTilesPlayer.begin();
+        std::advance(itr, drawn);
+        move->MoveAndSetDestination(tiles[(*itr)]->GetComponent<HexTile>());
+    }
+    else if (possibleTilesNeutral.size())
+    {
+        size_t drawn = Random::Range(0ull, possibleTilesNeutral.size() - 1ull);
+        auto itr = possibleTilesNeutral.begin();
+        std::advance(itr, drawn);
+        move->MoveAndSetDestination(tiles[(*itr)]->GetComponent<HexTile>());
+    }
+    else if (possibleTilesEnemy.size())
+    {
+        size_t drawn = Random::Range(0ull, possibleTilesEnemy.size() - 1ull);
+        auto itr = possibleTilesEnemy.begin();
+        std::advance(itr, drawn);
+        move->MoveAndSetDestination(tiles[(*itr)]->GetComponent<HexTile>());
+    }
 }
 
 float Player::GetMaxRadius() const {

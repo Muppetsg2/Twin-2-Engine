@@ -1,0 +1,39 @@
+Textures: ~
+Sprites: ~
+Fonts: ~
+Audio: ~
+Materials:
+  - id: 0
+    path: res/materials/tiles/ShadowingMaterial.material
+Models:
+  - id: 0
+    path: res/models/hexagonalPlane.obj
+Prefabs: ~
+ScriptableObjects: ~
+Root:
+  name: ShadowingHexPlane
+  isStatic: false
+  isActive: true
+  transform:
+    id: 5597
+    position:
+      x: 0
+      y: 0.05
+      z: 0
+    scale:
+      x: 1
+      y: 1
+      z: 1
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+  components:
+    - id: 5598
+      enabled: true
+      type: MeshRenderer
+      isTransparent: true
+      model: 0
+      materials:
+        - 0
+      transparencyPriority: 0

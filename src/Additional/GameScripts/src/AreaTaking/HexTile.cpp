@@ -36,7 +36,8 @@ void HexTile::TakeOver()
 		multiplayer *= _affectingCities[index]->CalculateTakingOverSpeedMultiplier(this);
 	}
 
-	if (ownerEntity)
+	//if (ownerEntity)
+	if (ownerEntity && ownerEntity == (Playable*)GameManager::instance->GetPlayer())
 	{
 		if (multiplayer > 1.0f)
 		{
@@ -67,8 +68,9 @@ void HexTile::TakeOver()
 	if (ownerEntity != nullptr && ownerEntity != occupyingEntity) {
 		percentage -= Time::GetDeltaTime() * takeOverSpeed;
 		if (percentage <= _takingStage1) {
-			percentage = 0.f;
-			SetOwnerEntity(nullptr); 
+			percentage = _takingStage1;
+			//SetOwnerEntity(nullptr); 
+			SetOwnerEntity(occupyingEntity);
 		}
 	}
 	else {
@@ -96,7 +98,7 @@ void HexTile::LoseInfluence()
 	}
 
 
-	if (ownerEntity)
+	if (ownerEntity && ownerEntity == (Playable*)GameManager::instance->GetPlayer())
 	{
 		if (multiplayer < 1.0f)
 		{
@@ -196,7 +198,7 @@ int HexTile::GetStage() const
 
 void HexTile::UpdateBorderColor()
 {
-	TILE_COLOR col = ownerEntity != nullptr ? (TILE_COLOR)(uint8_t)(ownerEntity->colorIdx == 0 ? 1 : powf(2.f, (float)(ownerEntity->colorIdx))) : TILE_COLOR::NEUTRAL;
+	TILE_COLOR col = ownerEntity != nullptr ? (TILE_COLOR)(uint8_t)(1 << ownerEntity->colorIdx) : TILE_COLOR::NEUTRAL;
 	for (auto& b : borders) {
 		MeshRenderer* mr = b->GetComponent<MeshRenderer>();
 		if (mr != nullptr) {
@@ -404,17 +406,18 @@ void HexTile::Initialize()
 	}
 
 	particleGenerator = new ParticleGenerator("origin/ParticleShader", "res/textures/ArrowParticle.png", 3, 0.5f, 0.0f, 6.0f, 2.0f, 0.16f, 0.2f, 0.3f);
-	pgCity = new ParticleGenerator("origin/ParticleShader", TextureManager::GetTexture2D(_textureCityStar)->GetId(), 5, 0.3f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
-	pgCityNegative = new ParticleGenerator("origin/ParticleShader", TextureManager::GetTexture2D(_textureCityBlackStar)->GetId(), 5, -0.3f, 0.0f, 6.0f, 2.0f, 0.12f, 0.12f, 0.4f);
+	pgCity = new ParticleGenerator("origin/ParticleShader", TextureManager::GetTexture2D(_textureCityStar)->GetId(), 3, 0.3f, 0.0f, 6.0f, 2.0f, 0.2f, 0.2f, 0.3f);
+	pgCityNegative = new ParticleGenerator("origin/ParticleShader", TextureManager::GetTexture2D(_textureCityBlackStar)->GetId(), 3, -0.3f, 0.0f, 6.0f, 2.0f, 0.2f, 0.2f, 0.3f);
 }
 
 void HexTile::OnDestroy()
 {
 	if (ConcertRoad::instance != nullptr)
 	{
-		auto found = std::find_if(ConcertRoad::instance->RoadMapPoints.begin(),
-								  ConcertRoad::instance->RoadMapPoints.end(),
-								  [&](const ConcertRoad::ConcertRoadPoint& point) -> bool { return point.hexTile == this; });
+		//auto found = std::find_if(ConcertRoad::instance->RoadMapPoints.begin(),
+		//						  ConcertRoad::instance->RoadMapPoints.end(),
+		//						  [&](const ConcertRoad::ConcertRoadPoint& point) -> bool { return point.hexTile == this; });
+		auto found = std::find(ConcertRoad::instance->RoadMapPoints.begin(), ConcertRoad::instance->RoadMapPoints.end(), this);
 
 		if (found != ConcertRoad::instance->RoadMapPoints.end())
 			ConcertRoad::instance->RoadMapPoints.erase(found);
@@ -502,6 +505,18 @@ void HexTile::ResetTile()
 	UpdateBorders();
 }
 
+void HexTile::ResetTile(Playable* n)
+{
+	percentage = 0.0f;
+	SetOwnerEntity(n);
+	occupyingEntity = n;
+	isFighting = false;
+	state = TileState::NONE;
+	UpdateTileColor();
+	UpdateBorderColor();
+	UpdateBorders();
+}
+
 void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 {
 	if (ownerEntity != newOwnerEntity) {
@@ -531,6 +546,12 @@ void HexTile::SetOwnerEntity(Playable* newOwnerEntity)
 
 		UpdateBorderColor();
 		UpdateTileColor();
+
+		if (_mapHexTile->type == Generation::MapHexTile::HexTileType::PointOfInterest) {
+
+			TILE_COLOR col = ownerEntity != nullptr ? (TILE_COLOR)(uint8_t)(1 << ownerEntity->colorIdx) : TILE_COLOR::NEUTRAL;
+			GetGameObject()->GetComponentInChildren<City>()->SetColor(col);
+		}
 	}
 }
 
@@ -704,7 +725,10 @@ bool HexTile::Deserialize(const YAML::Node& node)
 		return false;
 
 	loseInfluenceSpeed = node["loseInfluenceSpeed"].as<float>();
-	texturesData = dynamic_cast<HexTileTextureData*>(Twin2Engine::Manager::ScriptableObjectManager::Load(node["textuesData"].as<string>()));
+
+	string _texturesDataPath = node["textuesData"].as<string>();
+	texturesData = dynamic_cast<HexTileTextureData*>(Twin2Engine::Manager::ScriptableObjectManager::Load(_texturesDataPath));
+	//Twin2Engine::Manager::ScriptableObjectManager::Unload(_texturesDataPath);
 
 	if (node["borders"]) {
 		borders.clear();

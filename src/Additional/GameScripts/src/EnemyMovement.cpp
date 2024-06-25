@@ -26,14 +26,23 @@ void EnemyMovement::Initialize() {
 
 void EnemyMovement::OnDestroy() {
     //seeker = GetGameObject()->GetComponent<Seeker>();
+    _info.WaitForFinding();
+    _mutexPath.lock();
     if (_path) {
         delete _path;
         _path = nullptr;
     }
-    _info.WaitForFinding();
+    _mutexPath.unlock();
 }
 
 void EnemyMovement::Update() {
+
+    if (_startMovingAgument)
+    {
+        OnStartMoving.Invoke(GetGameObject(), _startMovingAgument);
+        _startMovingAgument = nullptr;
+    }
+
     Transform* transform = GetTransform();
     glm::vec3 position = transform->GetGlobalPosition();
     if (GameManager::instance->gameStarted && !GameManager::instance->minigameActive)
@@ -85,7 +94,7 @@ void EnemyMovement::Update() {
 
 
 void EnemyMovement::OnPathComplete(const AStarPath& p) {
-
+    _mutexPath.lock();
     if (_path) {
         delete _path;
         _path = nullptr;
@@ -96,13 +105,16 @@ void EnemyMovement::OnPathComplete(const AStarPath& p) {
     destination = tempDest;
     destinatedTile = tempDestTile;
     _waypoint = _path->Next();
-    _waypoint.y += 0.5f;
+    //_waypoint.y += 0.5f;
 
     reachEnd = false;
 
-    OnStartMoving.Invoke(GetGameObject(), destinatedTile);
+    _startMovingAgument = destinatedTile;
+    //OnStartMoving.Invoke(GetGameObject(), destinatedTile);
 
     tempDestTile = nullptr;
+
+    _mutexPath.unlock();
 }
 
 void EnemyMovement::OnPathFailure() {
@@ -111,12 +123,14 @@ void EnemyMovement::OnPathFailure() {
 }
 
 void EnemyMovement::EndMoveAction() {
+    _mutexPath.lock();
     reachEnd = true;
     //alreadyChecked = false;
     if (_path) {
         delete _path;
         _path = nullptr;
     }
+    _mutexPath.unlock();
 }
 
 bool EnemyMovement::InCircle(glm::vec3 point) {

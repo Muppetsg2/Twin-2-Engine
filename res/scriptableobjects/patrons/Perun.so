@@ -4,6 +4,7 @@ scriptable_object:
   patronMusic: 1
   patronDescription: "Perun Description"
   patronBonus: 2
+  color: 1
   moneyMultiplier: 1
   controlMultiplier: 1
   additionalMoveRange: 1

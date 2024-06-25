@@ -121,16 +121,20 @@ Material* MaterialsManager::LoadMaterial(const std::string& materialPath)
 		return nullptr;
 	}
 
-	//size_t materialNameHash = _stringHash(materialName);
-	//SPDLOG_INFO("Loading material {}: {}!", materialNameHash, materialName);
 
 	const YAML::Node& materialNode = fileNode["material"];
 
 	std::string name = materialNode["name"].as<std::string>();
 	std::string shader = materialNode["shader"].as<std::string>();
 
+	//size_t materialNameHash = _stringHash(name);
+	SPDLOG_INFO("Loading material {}: {}!", hash, materialPath);
+	SPDLOG_INFO("Used shader: {}", shader);
+
 	//MaterialParameters* materialParameters = new MaterialParameters();
 	MaterialParametersBuilder materialParametersBuilder;
+
+	SPDLOG_INFO("LoadSHPR {}", materialPath);
 
 	for (const auto& parameterNode : materialNode["parameters"]) {
 		std::string parameterName = parameterNode["name"].as<std::string>();
@@ -145,7 +149,6 @@ Material* MaterialsManager::LoadMaterial(const std::string& materialPath)
 			SPDLOG_ERROR("Incorrect parameter type of loaded material. Parameter name: {}", parameterName);
 			break;
 		}
-		SPDLOG_INFO("LoadSHPR {}", materialPath);
 
 		switch (_typeHandleMap.at(parameterTypeHash))
 		{

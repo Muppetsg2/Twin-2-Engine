@@ -27,7 +27,6 @@ Sprites:
     width: 348
     height: 400
 Fonts: ~
-GIFS: ~
 Audio: ~
 Materials: ~
 Models:
@@ -56,21 +55,53 @@ Root:
       y: 0
       z: 0
   components:
-    - id: 5527
+    - id: 5
       enabled: true
-      type: Image
-      isTransparent: true
-      sprite: 0
-      color:
-        x: 0.718146682
-        y: 0.718146682
-        z: 0.718146682
-        w: 1
+      type: Mask
       width: 200
       height: 200
-      layer: 1
       fillEnabled: true
-      fillType: !<HORIZONTAL> 0
-      fillSubType: !<RIGHT> 2
-      fillOffset: 0.487269998
+      fillType: !<CIRCLE> 2
+      fillSubType: !<CW> 0
+      fillOffset: 0
       fillProgress: 1
+GameObjects:
+  - id: 3
+    name: Image
+    isStatic: false
+    isActive: true
+    transform:
+      id: 3
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 4
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 0
+        color:
+          x: 0.717647076
+          y: 0.717647076
+          z: 0.717647076
+          w: 1
+        width: 200
+        height: 200
+        layer: 1
+        fillEnabled: true
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<RIGHT> 2
+        fillOffset: 0
+        fillProgress: 1
+    children:
+      []

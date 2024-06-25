@@ -25,7 +25,7 @@ private:
     // Script Fields
     bool canUse = true;
     //float savedTakingOverSpeed = 0.0f;
-    float cooldownTime = 5.0f;
+    float cooldownTime = 30.0f;
 
     // Performing Concert
     void StartPerformingConcert();
@@ -39,7 +39,7 @@ public:
     Twin2Engine::Tools::EventHandler<Playable*> OnEventAbilityCooldownFinished;
 
     // Component Parameters
-    float lastingTime = 10.0f;
+    float lastingTime = 45.0f;
     float moneyRequired = 10.0f;
     float additionalTakingOverSpeed = 50.0f;
 
@@ -55,6 +55,7 @@ public:
     float GetAdditionalTakingOverSpeed() const;
     bool IsUsed() const;
     bool IsOnCooldown() const;
+    void Reset();
 
     virtual YAML::Node Serialize() const override;
     virtual bool Deserialize(const YAML::Node& node) override;

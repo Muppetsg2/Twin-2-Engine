@@ -1,7 +1,7 @@
 #include <ParticleSystemsController.h>
 
 ParticleSystemsController* ParticleSystemsController::instance = nullptr;
-const int ParticleSystemsController::MAX_NUMBER_OF_PARTICLE = 7;
+const int ParticleSystemsController::MAX_NUMBER_OF_PARTICLE = 10;
 
 ParticleSystemsController* ParticleSystemsController::Instance()
 {
@@ -21,9 +21,19 @@ void ParticleSystemsController::DeleteInstance()
 
 void ParticleSystemsController::Update()
 {
-	int i = 0;
 	for (auto& pg : particlesGenerators) {
-		//SPDLOG_INFO("{}. {} \t StartPos:\t{}\t{}", i++, (unsigned long long)pg, pg->startPosition.x, pg->startPosition.z);
+		if (pg->active) {
+			pg->Update();
+		}
+	}
+
+	for (auto& pg : UIParticlesGeneratorsFront) {
+		if (pg->active) {
+			pg->Update();
+		}
+	}
+
+	for (auto& pg : UIParticlesGeneratorsBack) {
 		if (pg->active) {
 			pg->Update();
 		}
@@ -33,6 +43,24 @@ void ParticleSystemsController::Update()
 void ParticleSystemsController::Render()
 {
 	for (auto& pg : particlesGenerators) {
+		if (pg->active) {
+			pg->Draw();
+		}
+	}
+}
+
+void ParticleSystemsController::RenderUIFront()
+{
+	for (auto& pg : UIParticlesGeneratorsFront) {
+		if (pg->active) {
+			pg->Draw();
+		}
+	}
+}
+
+void ParticleSystemsController::RenderUIBack()
+{
+	for (auto& pg : UIParticlesGeneratorsBack) {
 		if (pg->active) {
 			pg->Draw();
 		}

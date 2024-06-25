@@ -1,0 +1,7 @@
+material:
+  name: city/CityMaterial_Neutral
+  shader: origin/Textured
+  parameters:
+    - name: texture1
+      type: texture2D
+      value: res/textures/cityTextures/neutral.png

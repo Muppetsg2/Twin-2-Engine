@@ -5,6 +5,7 @@
 #include <graphic/manager/SpriteManager.h>
 #include <core/CameraComponent.h>
 #include <ui/Canvas.h>
+#include <ui/Mask.h>
 
 using namespace Twin2Engine;
 using namespace UI;
@@ -31,9 +32,26 @@ void Image::SetCanvas(Canvas* canvas)
 	}
 }
 
+void Image::SetMask(Mask* mask)
+{
+	if (_mask != mask) {
+		if (_mask != nullptr) {
+			_mask->GetOnMaskDestroy() -= _onMaskDestroyId;
+			_data.mask = nullptr;
+		}
+
+		_mask = mask;
+		if (_mask != nullptr) {
+			_onMaskDestroyId = (_mask->GetOnMaskDestroy() += [&](Mask* mask) -> void { SetMask(nullptr); });
+			_data.mask = &_mask->_data;
+		}
+	}
+}
+
 void Image::Initialize()
 {
 	Transform* tr = GetTransform();
+	_data.rectTransform.transform = tr->GetTransformMatrix();
 	_onTransformChangeId = (tr->OnEventTransformChanged += [&](Transform* t) -> void { 
 		_data.rectTransform.transform = t->GetTransformMatrix(); 
 	});
@@ -41,10 +59,14 @@ void Image::Initialize()
 		_data.fill.rotation = t->GetGlobalRotation().z;
 	});
 	_onParentInHierarchiChangeId = (tr->OnEventInHierarchyParentChanged += [&](Transform* t) -> void {
-		SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
+		GameObject* obj = GetGameObject();
+		SetCanvas(obj->GetComponentInParents<Canvas>());
+		SetMask(obj->GetComponentInParents<Mask>());
 		_data.rectTransform.transform = t->GetTransformMatrix();
 	});
-	SetCanvas(GetGameObject()->GetComponentInParents<Canvas>());
+	GameObject* obj = GetGameObject();
+	SetCanvas(obj->GetComponentInParents<Canvas>());
+	SetMask(obj->GetComponentInParents<Mask>());
 }
 
 void Image::Render()
@@ -56,6 +78,7 @@ void Image::Render()
 void Image::OnDestroy()
 {
 	SetCanvas(nullptr);
+	SetMask(nullptr);
 	Transform* tr = GetTransform();
 	tr->OnEventTransformChanged -= _onTransformChangeId;
 	tr->OnEventRotationChanged -= _onRotationChangeId;
@@ -172,36 +195,6 @@ void Image::DrawEditor()
 		}
 
 		names.clear();
-
-		/*
-		spriteNames.insert(std::pair(0, "None"));
-
-		if (!spriteNames.contains(_spriteId)) {
-			_spriteId = 0;
-		}
-
-		if (ImGui::BeginCombo(string("Sprite##").append(id).c_str(), spriteNames[_spriteId].c_str())) {
-
-			bool clicked = false;
-			size_t choosed = _spriteId;
-			for (auto& item : spriteNames) {
-
-				if (ImGui::Selectable(item.second.append("##").append(id).c_str(), item.first == _spriteId)) {
-
-					if (clicked) continue;
-
-					choosed = item.first;
-					clicked = true;
-				}
-			}
-
-			if (clicked) {
-				SetSprite(choosed);
-			}
-
-			ImGui::EndCombo();
-		}
-		*/
 
 		float v = _data.rectTransform.size.x;
 		if (ImGui::DragFloat(string("Width##").append(id).c_str(), &v, 0.1f, 0.f, FLT_MAX)) {

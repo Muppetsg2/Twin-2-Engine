@@ -32,7 +32,8 @@ namespace Generation {
 
 class GameManager : public Component {
 private:
-
+    bool startPhase2 = false;
+    bool startPhase3 = false;
     static size_t _colorsNum;
 
     Twin2Engine::Core::AudioComponent* _audioComponent;
@@ -42,7 +43,7 @@ private:
     std::vector<size_t> _electricBackgroundMusics;
     std::vector<size_t> _popBackgroundMusics;
     std::vector<size_t> _heavyMetalBackgroundMusics;
-    std::vector<size_t> _jazzBackgroundMusics;
+    std::vector<size_t> _classicBackgroundMusics;
     std::vector<size_t> _discoBackgroundMusics;
 
 
@@ -63,6 +64,10 @@ private:
     //Twin2Engine::UI::Text* _dayText;
     //Twin2Engine::UI::Text* _monthText;
     //Twin2Engine::UI::Text* _yearText;
+
+    std::string _prefabPathShadowingPlane = "res/prefabs/ShadowingHexPlane.prefab";
+    list<Twin2Engine::Core::GameObject*> _shadowedTiles;
+
 
     unsigned int _enemiesNumber = 2u;
     int _mapGenerationEventId = -1;
@@ -123,7 +128,12 @@ public:
     void EnemyDied(Enemy* enemy);
     void RestartMap();
 
+    void FreePatron(PatronData* patron);
+
     void StartGame();
+    void RestartMapPhase1();
+    void RestartMapPhase2();
+    void RestartMapPhase3();
     Player* GetPlayer() const;
 
     virtual YAML::Node Serialize() const override;

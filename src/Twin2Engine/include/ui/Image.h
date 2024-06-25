@@ -3,8 +3,11 @@
 #include <core/RenderableComponent.h>
 #include <graphic/Sprite.h>
 
+// TODO: Fix Image
+// TODO: Fix UI
 namespace Twin2Engine::UI {
 	class Canvas;
+	class Mask;
 
 	class Image : public Core::RenderableComponent {
 	private:
@@ -13,7 +16,9 @@ namespace Twin2Engine::UI {
 		size_t _onRotationChangeId = 0;
 		size_t _onParentInHierarchiChangeId = 0;
 		size_t _onCanvasDestroyId = 0;
+		size_t _onMaskDestroyId = 0;
 		Canvas* _canvas = nullptr;
+		Mask* _mask = nullptr;
 		Manager::UIImageData _data = { 
 			nullptr /* canvas */,	
 			nullptr /* mask */, 
@@ -35,6 +40,7 @@ namespace Twin2Engine::UI {
 		};
 
 		void SetCanvas(Canvas* canvas);
+		void SetMask(Mask* mask);
 
 	public:
 		virtual void Initialize() override;

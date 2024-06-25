@@ -1,0 +1,107 @@
+Textures:
+  - id: 0
+    path: res\textures\UI\shape_hexagon.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 1
+    path: res\textures\UI\shape_hexagon_border.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+Sprites:
+  - id: 0
+    alias: HexTileShape
+    texture: 0
+    x: 0
+    y: 0
+    width: 346
+    height: 400
+  - id: 1
+    alias: HexTileShapeBorder
+    texture: 1
+    x: 0
+    y: 0
+    width: 348
+    height: 400
+Fonts: ~
+Audio: ~
+Materials: ~
+Models:
+  - id: 0
+    path: "{Plane}"
+  - id: 1
+    path: "{Sphere}"
+Prefabs: ~
+ScriptableObjects: ~
+Root:
+  name: GraphTopEdge
+  isStatic: false
+  isActive: true
+  transform:
+    id: 28
+    position:
+      x: 0
+      y: 0
+      z: 0
+    scale:
+      x: 1
+      y: 1
+      z: 1
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+  components:
+    - id: 29
+      enabled: true
+      type: Mask
+      width: 220
+      height: 220
+      fillEnabled: true
+      fillType: !<CIRCLE> 2
+      fillSubType: !<CW> 0
+      fillOffset: 0
+      fillProgress: 0.199999988
+GameObjects:
+  - id: 17
+    name: GraphBottomHexagon
+    isStatic: false
+    isActive: true
+    transform:
+      id: 26
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 27
+        enabled: true
+        type: Image
+        isTransparent: true
+        sprite: 0
+        color:
+          x: 0.664499998
+          y: 0.304499984
+          z: 0.232500002
+          w: 1
+        width: 220
+        height: 220
+        layer: 0
+        fillEnabled: true
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0.5
+        fillProgress: 0.983639956
+    children:
+      []

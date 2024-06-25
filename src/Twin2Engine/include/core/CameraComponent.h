@@ -8,7 +8,7 @@
 using namespace glm;
 
 namespace Twin2Engine::Graphic {
-	class InstantiatingModel;
+	class InstantiatingMesh;
 	class Shader;
 }
 
@@ -48,7 +48,11 @@ namespace Twin2Engine::Core {
 		static Tools::STD140Struct _uboCameraDataStruct;
 		static GLuint _uboWindowData;
 		static Tools::STD140Struct _uboWindowDataStruct;
-		static Graphic::InstantiatingModel _screenPlane;
+		static GLuint _screenPlaneVAO;
+		static GLuint _screenPlaneVBO;
+		static GLuint _screenPlaneEBO;
+		static float _screenVerts[];
+		static GLuint _screenIndicies[];
 		static Graphic::Shader* _screenShader;
 		static Graphic::Shader* _ssaoShader;
 		static Graphic::Shader* _ssaoBlurredShader;

@@ -19,7 +19,18 @@ void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
     {
         SPDLOG_INFO("Generating element");
         generator->Generate(targetTilemap);
+        if (_reset)
+        {
+            _reset = false;
+            SPDLOG_INFO("Map Invalid generating again!");
+            //MapGenerator* mapGenerator = GetGameObject()->GetComponent<MapGenerator>();
+            //mapGenerator->Clear();
+            //mapGenerator->Generate();
+            //return;
+        }
     }
+    
+
 
     ivec2 leftBottomPosition = targetTilemap->GetLeftBottomPosition();
     ivec2 rightTopPosition = targetTilemap->GetRightTopPosition();
@@ -39,7 +50,7 @@ void ContentGenerator::GenerateContent(HexagonalTilemap* targetTilemap)
         }
     }
 
-    ConcertRoad::instance->Use();
+    //ConcertRoad::instance->Use();
 }
 
 void ContentGenerator::ClearContent() 
@@ -53,6 +64,12 @@ void ContentGenerator::ClearContent()
         }
     }
 }
+
+void Generation::ContentGenerator::Reset()
+{
+    _reset = true;
+}
+
 
 void ContentGenerator::Initialize()
 {

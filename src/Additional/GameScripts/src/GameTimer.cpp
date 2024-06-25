@@ -1,5 +1,6 @@
 #include <GameTimer.h>
 #include <GameManager.h> // Assuming GameManager is defined somewhere
+#include <core/PlayerPrefs.h>
 
 int GameTimer::highestDaysCounter = 0;
 int GameTimer::highestWeeksCounter = 0;
@@ -36,6 +37,11 @@ void GameTimer::Initialize() {
     //OnWeekTicked.RemoveAllCallbacks();
     //OnMonthTicked.RemoveAllCallbacks();
     //OnYearTicked.RemoveAllCallbacks();
+
+    highestDaysCounter = PlayerPrefs::GetValue<int>("HighestDay");
+    highestWeeksCounter = PlayerPrefs::GetValue<int>("HighestWeek");
+    highestMonthsCounter = PlayerPrefs::GetValue<int>("HighestMonth");
+    highestYearsCounter = PlayerPrefs::GetValue<int>("HighestYear");
 
     SetEnable(false);
 }
@@ -108,6 +114,11 @@ void GameTimer::SaveIfHighest() {
         highestWeeksCounter = weeksCounter - 1;
         highestMonthsCounter = monthsCounter - 1;
         highestYearsCounter = yearsCounter;
+
+        PlayerPrefs::SetValue("HighestDay", highestDaysCounter);
+        PlayerPrefs::SetValue("HighestWeek", highestWeeksCounter);
+        PlayerPrefs::SetValue("HighestMonth", highestMonthsCounter);
+        PlayerPrefs::SetValue("HighestYear", highestYearsCounter);
     }
 }
 

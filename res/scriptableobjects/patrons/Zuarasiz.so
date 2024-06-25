@@ -4,6 +4,7 @@ scriptable_object:
   patronMusic: 0
   patronDescription: "Zuarasiz Description"
   patronBonus: 0
+  color: 2
   moneyMultiplier: 1.1
   controlMultiplier: 1
   additionalMoveRange: 1

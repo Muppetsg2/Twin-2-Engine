@@ -13,9 +13,11 @@ private:
 
     static RadioStationPlayingController* _instance;
     bool _gameStarted = false;
+    bool _playClicked = false;
 
     Twin2Engine::UI::Image* _notesArea = nullptr;
     Twin2Engine::Core::GameObject* _resultText = nullptr;
+    Twin2Engine::Core::GameObject* _playText = nullptr;
     Twin2Engine::UI::Text* _remainingTimeText = nullptr;
 
     // Notes
@@ -58,6 +60,7 @@ private:
     void GenerateNotes();
     void PlayNote(NoteType note);
     void ShowResult();
+    void HideResult();
     void EndPlaying();
 
 public:
@@ -71,6 +74,7 @@ public:
     virtual void OnDestroy() override;
 
     void Play(RadioStation* radioStation, Playable* playable);
+    void PlayClicked();
 
     virtual YAML::Node Serialize() const override;
     virtual bool Deserialize(const YAML::Node& node) override;

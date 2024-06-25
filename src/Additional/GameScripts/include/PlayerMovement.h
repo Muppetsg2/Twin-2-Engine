@@ -30,12 +30,17 @@ namespace AStar
 class Player;
 
 class PlayerMovement : public Component {
+	friend class Player;
+	friend class GameManager;
 	private:
 		Player* _player;
+
+		std::mutex _mutexPath;
 
 		HexTile* _checkedTile = nullptr;
 		Twin2Engine::Core::AudioComponent* _audioComponent = nullptr;
 		size_t _engineSound = 0;
+		size_t _soundWrongDestination = 0;
 
 
 		std::mutex _mutexCheckingPath;
@@ -43,7 +48,6 @@ class PlayerMovement : public Component {
 		bool _showedPathDisabled;
 
 		AStar::AStarNodePath* _showedPath = nullptr;
-		std::vector<HexTile*> _showedPathTiles = std::vector<HexTile*>();
 
 
 		HexTile* destinatedTile = nullptr;
@@ -70,6 +74,7 @@ class PlayerMovement : public Component {
 		void DrawLine(glm::vec3 startPos, glm::vec3 endPos);
 			
 	public:
+		std::vector<HexTile*> _showedPathTiles = std::vector<HexTile*>();
 		Twin2Engine::Core::GameObject* _playerDestinationMarker = nullptr;
 		Twin2Engine::Core::GameObject* _playerWrongDestinationMarker = nullptr;
 		HexTile* _pointedTile = nullptr;

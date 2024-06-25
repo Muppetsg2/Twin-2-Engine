@@ -43,7 +43,19 @@ STD140Struct CameraComponent::_uboWindowDataStruct{
 		STD140Variable<float>("time"),
 		STD140Variable<float>("deltaTime")
 };
-InstantiatingModel CameraComponent::_screenPlane = InstantiatingModel();
+GLuint CameraComponent::_screenPlaneVAO = 0;
+GLuint CameraComponent::_screenPlaneVBO = 0;
+GLuint CameraComponent::_screenPlaneEBO = 0;
+float CameraComponent::_screenVerts[8] = {
+	-1.f, 1.f,  //0.f, 0.f,
+	1.f, 1.f,   //1.f, 0.f,
+	-1.f, -1.f, //0.f, 1.f,
+	1.f, -1.f   //, 1.f, 1.f
+};
+GLuint CameraComponent::_screenIndicies[6] = {
+	2, 1, 0,
+	2, 3, 1
+};
 Shader* CameraComponent::_screenShader = nullptr;
 Shader* CameraComponent::_ssaoShader = nullptr;
 Shader* CameraComponent::_ssaoBlurredShader = nullptr;
@@ -621,7 +633,9 @@ void CameraComponent::Render()
 				_ssaoShader->SetFloat("sampleRadius", _ssaoSampleRadius);
 				_ssaoShader->SetFloat("bias", _ssaoBias);
 
-				_screenPlane.GetMesh(0)->Draw(1);
+				glBindVertexArray(_screenPlaneVAO);
+				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, &_screenIndicies);
+				glBindVertexArray(0);
 
 				glBindTexture(GL_TEXTURE_2D, 0);
 				
@@ -641,7 +655,9 @@ void CameraComponent::Render()
 				glBindTexture(GL_TEXTURE_2D, _ssaoMap);
 				_ssaoBlurredShader->SetInt("ssaoTexture", 0);
 
-				_screenPlane.GetMesh(0)->Draw(1);
+				glBindVertexArray(_screenPlaneVAO);
+				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, &_screenIndicies);
+				glBindVertexArray(0);
 				
 #if TRACY_PROFILER
 				FrameMarkEnd(tracy_BlurSSAOTexture);
@@ -729,9 +745,13 @@ void CameraComponent::Render()
 		_screenShader->SetFloat("brightness", _brightness);
 		_screenShader->SetFloat("contrast", _contrast);
 
-		_screenPlane.GetMesh(0)->Draw(1);
+		glBindVertexArray(_screenPlaneVAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, &_screenIndicies);
+		glBindVertexArray(0);
 
+		ParticleSystemsController::Instance()->RenderUIBack();
 		GraphicEngine::RenderGUI();
+		ParticleSystemsController::Instance()->RenderUIFront();
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		glEnable(GL_DEPTH_TEST);
@@ -812,7 +832,29 @@ void CameraComponent::Initialize()
 
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		_screenPlane = ModelsManager::GetPlane();
+		_screenPlaneVAO;
+		_screenPlaneVBO;
+		_screenPlaneEBO;
+
+		glGenVertexArrays(1, &_screenPlaneVAO);
+		glGenBuffers(1, &_screenPlaneVBO);
+		glGenBuffers(1, &_screenPlaneEBO);
+
+		glBindVertexArray(_screenPlaneVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, _screenPlaneVBO);
+
+		glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), _screenVerts, GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _screenPlaneEBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), _screenIndicies, GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+
 		_screenShader = ShaderManager::GetShaderProgram("origin/ScreenShader");
 		_depthShader = ShaderManager::GetShaderProgram("origin/CameraDepthShader");
 		_ssaoShader = ShaderManager::GetShaderProgram("origin/SSAOShader");
@@ -1013,6 +1055,9 @@ void CameraComponent::OnDestroy()
 		delete _ssaoTextureData;
 		glDeleteBuffers(1, &_uboCameraData);
 		glDeleteBuffers(1, &_uboWindowData);
+		glDeleteBuffers(1, &_screenPlaneEBO);
+		glDeleteBuffers(1, &_screenPlaneVBO);
+		glDeleteVertexArrays(1, &_screenPlaneVAO);
 	}
 }
 

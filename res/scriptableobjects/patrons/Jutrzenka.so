@@ -4,6 +4,7 @@ scriptable_object:
   patronMusic: 2
   patronDescription: "Jurzenka Description"
   patronBonus: 3
+  color: 64
   moneyMultiplier: 1
   controlMultiplier: 1
   additionalMoveRange: 1

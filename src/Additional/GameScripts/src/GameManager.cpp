@@ -1,10 +1,10 @@
-#include "GameManager.h"
 #include <GameManager.h>
 #include <manager/SceneManager.h>
 #include <manager/PrefabManager.h>
 #include <graphic/manager/MaterialsManager.h>
 #include <core/Random.h>
-#include <string>
+
+#include <UIScripts/AreaTakenGraph.h>
 
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
@@ -99,6 +99,7 @@ void GameManager::OnDestroy() {
     if (this == instance)
     {
         instance = nullptr;
+        Twin2Engine::Manager::ScriptableObjectManager::Unload("res/scriptableobjects/HexTileTextureData.so");
     }
 
     if (GameTimer::Instance() != nullptr) {
@@ -194,6 +195,7 @@ void GameManager::Update()
                         _player->move->_playerDestinationMarker->GetTransform()->SetGlobalPosition(
                             _player->move->_pointedTile->GetTransform()->GetGlobalPosition() + vec3(0.0f, _player->move->_destinationMarkerHeightOverSurface, 0.0f));
                         _player->move->_playerDestinationMarker->SetActive(true);
+                        _player->move->_playerWrongDestinationMarker->SetActive(false);
                     }
                     else
                     {
@@ -210,11 +212,25 @@ void GameManager::Update()
 
             if (_player->move->_pointedTile && Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT))
             {
-                _textChooseStartingPosition->SetActive(false);
-                _player->StartPlayer(_player->move->_pointedTile);
-                gameStartUp = false;
-                _player->move->_pointedTile = nullptr;
-                _player->move->_playerDestinationMarker->SetActive(false);
+                if (_player->move->_pointedTile->GetMapHexTile()->type == MapHexTile::HexTileType::PointOfInterest)
+                {
+                    _textChooseStartingPosition->SetActive(false);
+
+                    for (GameObject* goTile : _shadowedTiles)
+                    {
+                        SceneManager::DestroyGameObject(goTile);
+                    }
+
+                    _player->StartPlayer(_player->move->_pointedTile);
+                    gameStartUp = false;
+                    _player->move->_pointedTile = nullptr;
+                    _player->move->_playerDestinationMarker->SetActive(false);
+                }
+                else
+                {
+                    _player->_audioComponent->SetAudio(_player->move->_soundWrongDestination);
+                    _player->_audioComponent->Play();
+                }
             }
         }
         else
@@ -222,6 +238,16 @@ void GameManager::Update()
             _player->move->_pointedTile = nullptr;
             _player->move->_playerDestinationMarker->SetActive(false);
         }
+    }
+
+    if (startPhase3) {
+        RestartMapPhase3();
+    }
+    if (startPhase2) {
+        RestartMapPhase2();
+    }
+    if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::U)) {
+        RestartMapPhase1();
     }
 }
 
@@ -238,19 +264,23 @@ void GameManager::UpdateTiles()
 
 GameObject* GameManager::GeneratePlayer()
 {
-    _textChooseStartingPosition->SetActive(true);
-
     GameObject* player = Twin2Engine::Manager::SceneManager::CreateGameObject(prefabPlayer);
     Player* p = player->GetComponent<Player>();
     _player = p;
-    int chosen = Random::Range(0ull, _freeColors.size() - 1ull);
+
+    p->GetTransform()->SetGlobalPosition(vec3(0.0f, -5.0f, 0.0f));
+    // p->patron = playersPatron;
+    p->SetPatron(playersPatron);
+
+    int chosenColor = 0;
+    uint8_t color = (uint8_t) playersPatron->GetColor();
+    while (color /= 2) chosenColor++;
+
+    int chosen = chosenColor;// Random::Range(0ull, _freeColors.size() - 1ull);
     // int chosen = 0;
     p->colorIdx = _freeColors[chosen];
     _freeColors.erase(_freeColors.begin() + chosen);
     // p->colorIdx = chosen;
-    p->GetTransform()->SetGlobalPosition(vec3(0.0f, -5.0f, 0.0f));
-    // p->patron = playersPatron;
-    p->SetPatron(playersPatron);
 
     _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), playersPatron));
 
@@ -290,8 +320,8 @@ GameObject* GameManager::GeneratePlayer()
 
         break;
 
-    case PatronMusic::JAZZ:
-        _audioComponent->SetAudio(_jazzBackgroundMusics[0ull]);
+    case PatronMusic::CLASSIC:
+        _audioComponent->SetAudio(_classicBackgroundMusics[0ull]);
         _audioComponent->Play();
 
         break;
@@ -322,19 +352,31 @@ GameObject* GameManager::GenerateEnemy()
 
     Enemy* e = enemy->GetComponent<Enemy>();
 
-    int chosen = Random::Range(0ull, _freeColors.size() - 1ull);
+    unsigned chosenPatron = Random::Range<unsigned>(0u, _freePatronsData.size() - 1ull);
+    // e->patron = _freePatronsData[chosenPatron];
+    e->SetPatron(_freePatronsData[chosenPatron]);
+    _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), e->patron));
+
+    int chosenColor = 0;
+    uint8_t color = (uint8_t)e->patron->GetColor();
+    while (color /= 2) chosenColor++;
+
+    int chosen = chosenColor; // Random::Range(0ull, _freeColors.size() - 1ull);
     // int chosen = 1;
-    e->colorIdx = _freeColors[chosen];
-    _freeColors.erase(_freeColors.begin() + chosen);
+    //e->colorIdx = _freeColors[chosen];
+    e->colorIdx = chosenColor;
+    for (size_t index = 0ull; index < _freeColors.size(); ++index)
+    {
+        if (_freeColors[index] == chosenColor)
+        {
+            _freeColors.erase(_freeColors.begin() + index);
+        }
+    }
     // e->colorIdx = chosen;
     e->GetGameObject()->GetComponent<MeshRenderer>()->SetMaterial(0ull, _carMaterials[e->colorIdx]);
 
     e->GetTransform()->SetGlobalPosition(vec3(0.0f, -5.0f, 0.0f));
 
-    unsigned chosenPatron = Random::Range<unsigned>(0u, _freePatronsData.size() - 1ull);
-    // e->patron = _freePatronsData[chosenPatron];
-    e->SetPatron(_freePatronsData[chosenPatron]);
-    _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), e->patron));
     /*float h = Random.Range(0f, 1f);
     float s = Random.Range(.7f, 1f);
     float v = 1f;
@@ -410,7 +452,7 @@ void GameManager::EndMinigame()
 
 void GameManager::GameOver()
 {
-    // GameTimer::Instance->SaveIfHighest();
+    GameTimer::Instance()->SaveIfHighest();
     // gameOverUI.SetActive(true);
     // UIGameOverPanelController::Instance->OpenPanel();
 }
@@ -426,6 +468,8 @@ void GameManager::EnemyDied(Enemy* enemy)
         ++i;
     }
 
+    SceneManager::DestroyGameObject(enemy->GetGameObject());
+
     // ONLY PLAYER
     if (entities.size() == 1) {
         RestartMap();
@@ -437,12 +481,25 @@ void GameManager::RestartMap()
     // TODO: KEEP PLAYER WITH 50% of $
     // TODO: GENERATE NEW MAP
     // TODO: ADD ONE MORE ENEMY
-    SPDLOG_INFO("RESTART MAP");
+    RestartMapPhase1();
 }
 
 void GameManager::StartGame()
 {
     GeneratePlayer();
+
+    _textChooseStartingPosition->SetActive(true);
+
+    Prefab* prefabShadowingHexPlane = PrefabManager::GetPrefab(_prefabPathShadowingPlane);
+    list<MapHexTile*> tiles = _mapGenerator->GetGameObject()->GetComponentsInChildren<MapHexTile>();
+    for (MapHexTile* tile : tiles)
+    {
+        if (tile->type != MapHexTile::HexTileType::Mountain && tile->type != MapHexTile::HexTileType::PointOfInterest)
+        {
+            GameObject* instanced = SceneManager::CreateGameObject(prefabShadowingHexPlane, tile->GetTransform());
+            _shadowedTiles.push_back(instanced);
+        }
+    }
 
     for (unsigned i = 0u; i < _enemiesNumber; ++i)
     {
@@ -456,6 +513,89 @@ void GameManager::StartGame()
 
     GameTimer::Instance()->StartTimer();
     gameStartUp = true;
+}
+
+void GameManager::RestartMapPhase1() {
+    gameStarted = false;
+    _player->ResetOnNewMap();
+
+    int key = 0;
+    GameObject* go = nullptr;
+
+
+    //for (size_t index = 0ull; index < entities.size(); ++index)
+    //{
+    //    if (entities[index] != _player)
+    //    {
+    //        entities[index]->CurrTile = nullptr;
+    //        SceneManager::DestroyGameObject(entities[index]->GetGameObject());
+    //    }
+    //}
+    //entities.clear();
+    //entities.push_back(_player);
+
+
+    _freePatronsData.clear();
+    for (auto& p : _patronsData) {
+        _freePatronsData.push_back(p);
+    }
+    _freePatronsData.erase(find(_freePatronsData.begin(), _freePatronsData.end(), _player->patron));
+    // HexagonalTilemap* tileMap = mapGeneratorGO->GetComponent<HexagonalTilemap>();
+    //Generation::MapGenerator* mapGenerator = SceneManager::FindObjectByName("MapGenerator")->GetComponent<Generation::MapGenerator>();
+    startPhase2 = true;
+    //mapGenerator->Clear();
+}
+
+void GameManager::RestartMapPhase2() {
+    AreaTakenGraph::Instance()->Reset();
+
+    _mapGenerator->Clear();
+
+    startPhase2 = false;
+    startPhase3 = true;
+}
+
+void GameManager::RestartMapPhase3() {
+    _mapGenerator->Clear();
+    _mapGenerator->Generate();
+
+    if (_enemiesNumber < 5) {
+        ++_enemiesNumber;
+    }
+
+    _freeColors = { 0, 1, 2, 3, 4, 5, 6 };
+    _freeColors.erase(find(_freeColors.begin(), _freeColors.end(), _player->colorIdx));
+
+    for (unsigned i = 0u; i < _enemiesNumber; ++i)
+    {
+        GenerateEnemy();
+    }
+
+    for (auto e : entities)
+    {
+        e->SetTileMap(_mapGenerator->tilemap);
+    }
+
+    GameTimer::Instance()->ResetTimer();
+    GameTimer::Instance()->StartTimer();
+    gameStartUp = true;
+
+    
+
+    gameStarted = false;
+    startPhase3 = false;
+    _textChooseStartingPosition->SetActive(true);
+
+    Prefab* prefabShadowingHexPlane = PrefabManager::GetPrefab(_prefabPathShadowingPlane);
+    list<MapHexTile*> tiles = _mapGenerator->GetGameObject()->GetComponentsInChildren<MapHexTile>();
+    for (MapHexTile* tile : tiles)
+    {
+        if (tile->type != MapHexTile::HexTileType::Mountain && tile->type != MapHexTile::HexTileType::PointOfInterest)
+        {
+            GameObject* instanced = SceneManager::CreateGameObject(prefabShadowingHexPlane, tile->GetTransform());
+            _shadowedTiles.push_back(instanced);
+        }
+    }
 }
 
 Player* GameManager::GetPlayer() const
@@ -514,10 +654,10 @@ YAML::Node GameManager::Serialize() const
         node["HeavyMetalBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_heavyMetalBackgroundMusics[index]));
     }
 
-    node["JazzBackgroundMusics"] = vector<size_t>();
-    for (size_t index = 0ull; index < _jazzBackgroundMusics.size(); ++index)
+    node["ClassicBackgroundMusics"] = vector<size_t>();
+    for (size_t index = 0ull; index < _classicBackgroundMusics.size(); ++index)
     {
-        node["JazzBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_jazzBackgroundMusics[index]));
+        node["ClassicBackgroundMusics"].push_back(SceneManager::GetAudioSaveIdx(_classicBackgroundMusics[index]));
     }
 
     node["DiscoBackgroundMusics"] = vector<size_t>();
@@ -538,7 +678,10 @@ YAML::Node GameManager::Serialize() const
 
 bool GameManager::Deserialize(const YAML::Node &node)
 {
-    if (!node["carMaterials"] || !node["enemyPrefab"] || !node["prefabPlayer"] || !node["patronsData"] || !Component::Deserialize(node))
+    if (!node["enemyPrefab"] || !node["prefabPlayer"] || !node["carMaterials"] || !node["patronsData"] || 
+        !node["RockBackgroundMusics"] || !node["ElectricBackgroundMusics"] || !node["PopBackgroundMusics"] || 
+        !node["HeavyMetalBackgroundMusics"] || !node["ClassicBackgroundMusics"] || !node["DiscoBackgroundMusics"] || 
+        !Component::Deserialize(node))
         return false;
 
     size_t size = node["carMaterials"].size();
@@ -672,10 +815,10 @@ bool GameManager::Deserialize(const YAML::Node &node)
     {
         _heavyMetalBackgroundMusics[index] = SceneManager::GetAudio(_heavyMetalBackgroundMusics[index]);
     }
-    _jazzBackgroundMusics = node["JazzBackgroundMusics"].as<vector<size_t>>();
-    for (size_t index = 0ull; index < _jazzBackgroundMusics.size(); ++index)
+    _classicBackgroundMusics = node["ClassicBackgroundMusics"].as<vector<size_t>>();
+    for (size_t index = 0ull; index < _classicBackgroundMusics.size(); ++index)
     {
-        _jazzBackgroundMusics[index] = SceneManager::GetAudio(_jazzBackgroundMusics[index]);
+        _classicBackgroundMusics[index] = SceneManager::GetAudio(_classicBackgroundMusics[index]);
     }
     _discoBackgroundMusics = node["DiscoBackgroundMusics"].as<vector<size_t>>();
     for (size_t index = 0ull; index < _discoBackgroundMusics.size(); ++index)
@@ -710,6 +853,8 @@ void GameManager::DrawEditor()
         Twin2Engine::UI::Text* _monthText;
         Twin2Engine::UI::Text* _yearText;
         */
+
+        ImGui::TextColored(ImVec4(0.5f, 1.f, 1.f, 1.f), "If You Want To Reload Game. Press CTRL+U");
 
         std::map<size_t, string> prefabNames = Twin2Engine::Manager::PrefabManager::GetAllPrefabsNames();
 

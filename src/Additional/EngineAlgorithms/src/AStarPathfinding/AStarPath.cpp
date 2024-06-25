@@ -4,10 +4,7 @@ using namespace AStar;
 using namespace glm;
 using namespace std;
 
-AStarPath::AStarPath()
-{
-
-}
+AStarPath::AStarPath() {}
 
 AStarPath::AStarPath(const vector<vec3>& pathNodes)
 {

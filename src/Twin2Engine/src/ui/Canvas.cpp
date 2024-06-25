@@ -12,12 +12,19 @@ void Canvas::Initialize()
 {
 	Transform* t = GetTransform();
 	_data.rectTransform.transform = t->GetTransformMatrix();
-	_onTransformChangeId = (t->OnEventTransformChanged += [&](Transform* trans) -> void { _data.rectTransform.transform = trans->GetTransformMatrix(); });
+	_onTransformChangeId = (t->OnEventTransformChanged += [&](Transform* trans) -> void { 
+		_data.rectTransform.transform = trans->GetTransformMatrix(); 
+	});
+	_onParentInHierarchiChangeId = (t->OnEventInHierarchyParentChanged += [&](Transform* t) -> void {
+		_data.rectTransform.transform = t->GetTransformMatrix();
+	});
 }
 
 void Canvas::OnDestroy()
 {
-	GetTransform()->OnEventTransformChanged -= _onTransformChangeId;
+	Transform* t = GetTransform();
+	t->OnEventTransformChanged -= _onTransformChangeId;
+	t->OnEventInHierarchyParentChanged -= _onParentInHierarchiChangeId;
 	_OnCanvasDestory(this);
 }
 

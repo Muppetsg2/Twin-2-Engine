@@ -22,7 +22,7 @@ void Enemy::ChangeState(State<Enemy*>* newState) {
 
 void Enemy::SetMoveDestination(HexTile* tile)
 {
-    if (CurrTile && CurrTile != tile)
+    if (CurrTile != nullptr && CurrTile != tile)
     {
         CurrTile->StopTakingOver(this);
     }

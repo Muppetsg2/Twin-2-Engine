@@ -2,6 +2,7 @@
 #include <Enemy.h>
 #include <EnemyMovement.h>
 #include <Abilities/ConcertAbilityController.h>
+#include <RadioStation/RadioStation.h>
 
 DecisionTree<Enemy*, bool> MovingState::_whileMovingDecisionTree{
 	[&](Enemy* enemy) -> bool {
@@ -45,15 +46,18 @@ DecisionTree<Enemy*, bool> MovingState::_whileMovingDecisionTree{
 DecisionTree<MovingState::AfterMoveDecisionData&, bool> MovingState::_afterMoveDecisionTree{
 	[&](AfterMoveDecisionData& data) -> bool {
 		// RadioStationInMoveRange && distFromTaken <= 2 * tilesDist
-		if (data.RadioStationTile != nullptr && data.RadioStationTile->radioStationCooldown <= 0.f) {
-			float dist = INFINITE;
-			for (auto& takenTile : data.enemy->OwnTiles) {
-				float tempDist = glm::distance((glm::vec2)data.RadioStationTile->GetMapHexTile()->tile->GetPosition(), (glm::vec2)takenTile->GetMapHexTile()->tile->GetPosition());
-				if (tempDist < dist) {
-					dist = tempDist;
+		if (data.RadioStationTile != nullptr) {
+			RadioStation* radioStation = data.RadioStationTile->GetGameObject()->GetComponentInChildren<RadioStation>();
+			if (radioStation->GetRemainingCooldownTime() <= 0.f) {
+				float dist = INFINITE;
+				for (auto& takenTile : data.enemy->OwnTiles) {
+					float tempDist = glm::distance((glm::vec2)data.RadioStationTile->GetMapHexTile()->tile->GetPosition(), (glm::vec2)takenTile->GetMapHexTile()->tile->GetPosition());
+					if (tempDist < dist) {
+						dist = tempDist;
+					}
 				}
+				return dist <= data.enemy->_tilemap->GetDistanceBetweenTiles() * 2;
 			}
-			return dist <= data.enemy->_tilemap->GetDistanceBetweenTiles() * 2;
 		}
 		return false;
 
@@ -65,7 +69,7 @@ DecisionTree<MovingState::AfterMoveDecisionData&, bool> MovingState::_afterMoveD
 			true,
 			new DecisionTreeLeaf<AfterMoveDecisionData&>([&](AfterMoveDecisionData& data) -> void {
 				// IDZIE DO RADIO STACJI
-				RadioStation(data.enemy, data.RadioStationTile);
+				MoveToRadioStation(data.enemy, data.RadioStationTile);
 			})
 		},
 		{
@@ -91,7 +95,7 @@ DecisionTree<MovingState::AfterMoveDecisionData&, bool> MovingState::_afterMoveD
 						true,
 						new DecisionTreeLeaf<AfterMoveDecisionData&>([&](AfterMoveDecisionData& data) -> void {
 							// IDZIE DO WALKI
-							Fight(data.enemy, data.playerTile);
+							MoveToFight(data.enemy, data.playerTile);
 						})
 					},
 					{
@@ -173,9 +177,12 @@ void MovingState::DoAfterMoveDecisionTree(Enemy* enemy) {
 		}
 
 		// Radio Station
-		if (tile->GetMapHexTile()->type == MapHexTile::HexTileType::RadioStation && tile->radioStationCooldown <= 0.f) {
-			data.RadioStationTile = tile;
-			break;
+		if (tile->GetMapHexTile()->type == MapHexTile::HexTileType::RadioStation) {
+			RadioStation* radioStation = tile->GetGameObject()->GetComponentInChildren<RadioStation>();
+			if (radioStation->GetRemainingCooldownTime() <= 0.f) {
+				data.RadioStationTile = tile;
+				break;
+			}
 		}
 	}
 
@@ -192,7 +199,7 @@ void MovingState::StartTakingOver(Enemy* enemy)
 	enemy->ChangeState(&enemy->_takingOverState);
 }
 
-void MovingState::Fight(Enemy* enemy, HexTile* playerTile)
+void MovingState::MoveToFight(Enemy* enemy, HexTile* playerTile)
 {
 #if TRACY_PROFILER
 	ZoneScoped;
@@ -204,7 +211,7 @@ void MovingState::Fight(Enemy* enemy, HexTile* playerTile)
 	enemy->SetMoveDestination(playerTile);
 }
 
-void MovingState::RadioStation(Enemy* enemy, HexTile* radioStationTile)
+void MovingState::MoveToRadioStation(Enemy* enemy, HexTile* radioStationTile)
 {
 #if TRACY_PROFILER
 	ZoneScoped;
@@ -339,10 +346,13 @@ void MovingState::Enter(Enemy* enemy)
 				enemy->ChangeState(&enemy->_fightingState);
 			}
 			else if (tile->GetMapHexTile()->type == MapHexTile::HexTileType::RadioStation) {
-				SPDLOG_ERROR("XD?");
-				if (tile->radioStationCooldown <= 0.f) {
+				RadioStation* radioStation = tile->GetGameObject()->GetComponentInChildren<RadioStation>();
+				if (radioStation->GetRemainingCooldownTime() <= 0.f) {
 					tile->StartTakingOver(enemy);
 					enemy->ChangeState(&enemy->_radioStationState);
+				}
+				else {
+					tile->StartTakingOver(enemy);
 				}
 			}
 			else {

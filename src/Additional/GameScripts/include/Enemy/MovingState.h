@@ -28,8 +28,8 @@ private:
 	static void DoAfterMoveDecisionTree(Enemy* enemy);
 
 	static void StartTakingOver(Enemy* enemy);
-	static void Fight(Enemy* enemy, HexTile* playerTile);
-	static void RadioStation(Enemy* enemy, HexTile* radioStationTile);
+	static void MoveToFight(Enemy* enemy, HexTile* playerTile);
+	static void MoveToRadioStation(Enemy* enemy, HexTile* radioStationTile);
 	static void AlbumAbility(Enemy* enemy);
 	static void ConcertAbility(Enemy* enemy);
 	static void Move(Enemy* enemy);

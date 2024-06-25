@@ -24,22 +24,23 @@ HexTile* InitState::ChooseTile(Enemy* enemy) {
 
 	std::srand(std::time(NULL));
 	vector<HexTile*> tiles = GameManager::instance->Tiles;
+	// Zmniejsz liczbê mo¿liwych tile-i
+	for (size_t i = 0, deleted = 0; i < tiles.size();) {
+		HexTile* tile = tiles[i];
+		if (tile->occupyingEntity != nullptr || tile->GetMapHexTile()->type != MapHexTile::HexTileType::PointOfInterest) {
+			tiles.erase(tiles.begin() + i);
+		}
+		else {
+			++i;
+		}
+	}
 	size_t idx = std::rand() % tiles.size();
 	HexTile* tile = tiles[idx];
-	while (tile->occupyingEntity != nullptr || tile->GetMapHexTile()->type == MapHexTile::HexTileType::Mountain || tile->GetMapHexTile()->type == MapHexTile::HexTileType::RadioStation) {
-		tiles.erase(tiles.begin() + idx);
 
-		idx = std::rand() % tiles.size();
-		tile = tiles[idx];
-	}
-	enemy->GetTransform()->SetGlobalPosition(tile->GetTransform()->GetGlobalPosition() + glm::vec3(0.0f, 0.1f, 0.0f));
-
+	enemy->GetTransform()->SetGlobalPosition(tile->GetTransform()->GetGlobalPosition());
 	enemy->SetCurrTile(tile);
 	
 	tile->StartTakingOver(enemy);
-	/*if (tile->GetMapHexTile()->type == MapHexTile::HexTileType::RadioStation) {
-		enemy->ChangeState(&enemy->_radioStationState);
-	}*/
 
 	return tile;
 }

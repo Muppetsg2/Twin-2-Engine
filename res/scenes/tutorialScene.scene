@@ -438,7 +438,7 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 71
-    path: res/textures/UI/meeting.png
+    path: res/textures/UI/fanMeeting.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
     sWrapMode: !<MIRRORED_REPEAT> 33648
@@ -799,8 +799,8 @@ Sprites:
     texture: 71
     x: 0
     y: 0
-    width: 150
-    height: 150
+    width: 256
+    height: 256
   - id: 9
     alias: Drum
     texture: 82
@@ -1430,7 +1430,7 @@ GameObjects:
         ssaoBias: 0.00999999978
         blurMSize: 5
       - id: 3
-        enabled: false
+        enabled: true
         type: MovementController
         DragControl: true
         DragScale: 0.00999999978
@@ -1473,6 +1473,7 @@ GameObjects:
           - res/scriptableobjects/MountainsGenerator.so
           - res/scriptableobjects/CityGenerator.so
           - res/scriptableobjects/RadioStationGeneratorSectorBased.so
+          - res/scriptableobjects/MapValidator.so
       - id: 7
         enabled: true
         type: MapGenerator
@@ -5281,6 +5282,13 @@ GameObjects:
         buttonRight: 5395
         buttonDown: 5397
         buttonLeft: 5399
+      - id: 5407
+        enabled: true
+        type: Audio
+        audio: 0
+        loop: false
+        volume: 1
+        playOnStart: false
     children:
       - 40
       - 41
@@ -6335,6 +6343,183 @@ GameObjects:
         layer: 1
     children:
       []
+  - id: 101
+    name: KeyAlbum
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5064
+      position:
+        x: -45
+        y: 45
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5065
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 53
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 20
+        height: 20
+        layer: 0
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 5066
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00Z"
+        font: 0
+        size: 20
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+  - id: 102
+    name: KeyFansMeeting
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5067
+      position:
+        x: -45
+        y: 45
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5068
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 53
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 20
+        height: 20
+        layer: 0
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 5069
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00X"
+        font: 0
+        size: 20
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+  - id: 103
+    name: KeyConcert
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5070
+      position:
+        x: -45
+        y: 45
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5071
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 53
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 20
+        height: 20
+        layer: 0
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 5072
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00C"
+        font: 0
+        size: 20
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
   - id: 467
     name: TutorialsCanvas
     isStatic: false

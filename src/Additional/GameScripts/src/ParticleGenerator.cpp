@@ -159,6 +159,9 @@ void ParticleGenerator::Update()
 {
     Particle* p;
     float dt = Time::GetDeltaTime();
+    if (dt >= 0.1) {
+        dt = 0.1;
+    }
     glm::vec4 randOffset(0.0f);
     float randAngle = 0.0f;
     float randRadius = 0.0f;

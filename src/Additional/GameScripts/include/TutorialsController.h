@@ -17,10 +17,10 @@ using namespace Twin2Engine::Core;
 class TutorialsController : public Component {
 	public:
 		bool RadioStationTutUsed = true;
-		bool ConcertRoadTutUsed = true;
+		//bool ConcertRoadTutUsed = true;
 		GameObject* AlbumTutorial = nullptr;
 		GameObject* RadioStationTutorial = nullptr;
-		GameObject* ConcertRoadTutorial = nullptr;
+		//GameObject* ConcertRoadTutorial = nullptr;
 		float sqrDistanceToTrigerTut = 1.1f;
 		std::vector<glm::vec3> radiostadionPosition;
 		bool abilitiesTriggered = false;
@@ -34,7 +34,7 @@ class TutorialsController : public Component {
 			{
 				instance = this;
 				RadioStationTutorial = SceneManager::FindObjectByName("RadioStationTutorial");
-				ConcertRoadTutorial = SceneManager::FindObjectByName("ConcertRoadTut");
+				//ConcertRoadTutorial = SceneManager::FindObjectByName("ConcertRoadTut");
 				AlbumTutorial = SceneManager::FindObjectByName("AlbumTutorial");
 				
 				GetGameObject()->OnActiveChangedEvent.AddCallback([&](GameObject* go) {
@@ -63,21 +63,22 @@ class TutorialsController : public Component {
 					AlbumTutorial->SetActive(true);
 					abilitiesTriggered = true;
 					RadioStationTutUsed = false;
-					ConcertRoadTutUsed = false;
+					//ConcertRoadTutUsed = false;
 				}
 			}
 
-			if (!ConcertRoadTutUsed && (!RadioStationTutorial->GetActive()) && (!AlbumTutorial->GetActive())) {
-				for (auto& rmp : ConcertRoad::instance->RoadMapPoints) {
-					distance = rmp->GetTransform()->GetGlobalPosition() - playerPos;
-					if (glm::dot(distance, distance) <= sqrDistanceToTrigerTut) {
-						ConcertRoadTutorial->SetActive(true);
-						ConcertRoadTutUsed = true;
-					}
-				}
-			}
+			//if (!ConcertRoadTutUsed && (!RadioStationTutorial->GetActive()) && (!AlbumTutorial->GetActive())) {
+			//	for (auto& rmp : ConcertRoad::instance->RoadMapPoints) {
+			//		distance = rmp->GetTransform()->GetGlobalPosition() - playerPos;
+			//		if (glm::dot(distance, distance) <= sqrDistanceToTrigerTut) {
+			//			ConcertRoadTutorial->SetActive(true);
+			//			ConcertRoadTutUsed = true;
+			//		}
+			//	}
+			//}
 
-			if (!RadioStationTutUsed && (!ConcertRoadTutorial->GetActive()) && (!AlbumTutorial->GetActive())) {
+			//if (!RadioStationTutUsed && (!ConcertRoadTutorial->GetActive()) && (!AlbumTutorial->GetActive())) {
+			if (!RadioStationTutUsed && (!AlbumTutorial->GetActive())) {
 				for (auto& rs : radiostadionPosition) {
 					distance = rs - playerPos;
 					if (glm::dot(distance, distance) <= sqrDistanceToTrigerTut) {
@@ -87,7 +88,8 @@ class TutorialsController : public Component {
 				}
 			}
 
-			if (ConcertRoadTutUsed && RadioStationTutUsed && abilitiesTriggered) {
+			//if (ConcertRoadTutUsed && RadioStationTutUsed && abilitiesTriggered) {
+			if (RadioStationTutUsed && abilitiesTriggered) {
 				GetGameObject()->SetActive(false);
 			}
 		}

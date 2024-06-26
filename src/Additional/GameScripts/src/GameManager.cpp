@@ -486,7 +486,12 @@ void GameManager::GameOver()
     PlayerPrefs::SetValue("totalEnemiesKilled", PlayerPrefs::GetValue<uint32_t>("totalEnemiesKilled") + _player->enemiesKilled);
     PlayerPrefs::SetValue("totalIslandsWon", PlayerPrefs::GetValue<uint32_t>("totalIslandsWon") + _player->islandsWon);
 
-    GameOverManager::instance->Open();
+    if (GameOverManager::instance != nullptr) {
+        GameOverManager::instance->Open();
+    }
+    else {
+        SceneManager::LoadScene("Menu");
+    }
 }
 
 void GameManager::EnemyDied(Enemy* enemy)

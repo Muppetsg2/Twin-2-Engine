@@ -376,13 +376,15 @@ void MovingState::Update(Enemy* enemy)
 	ZoneScoped;
 #endif
 
-	SPDLOG_INFO("Update Moving State");
-	if (!_afterMove.contains(enemy)) {
-		_whileMovingDecisionTree.ProcessNode(enemy);
-	}
-	else {
-		DoAfterMoveDecisionTree(enemy);
-		_afterMove.erase(enemy);
+	if (!GameManager::instance->minigameActive) {
+		SPDLOG_INFO("Update Moving State");
+		if (!_afterMove.contains(enemy)) {
+			_whileMovingDecisionTree.ProcessNode(enemy);
+		}
+		else {
+			DoAfterMoveDecisionTree(enemy);
+			_afterMove.erase(enemy);
+		}
 	}
 }
 

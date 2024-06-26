@@ -192,7 +192,7 @@ void Player::Update() {
     if (_loosingFightPlayable)
     {
         GameManager::instance->minigameActive = false;
-        CurrTile->isFighting = false;
+        //CurrTile->isFighting = false;
 
         _loosingFightPlayable->LostPaperRockScissors(this);
 
@@ -888,7 +888,7 @@ void Player::WonPaperRockScissors(Playable* playable) {
 
 void Player::LostPaperRockScissors(Playable* playable) {
     GameManager::instance->minigameActive = false;
-    CurrTile->isFighting = false;
+    //CurrTile->isFighting = false;
 
     CurrTile->StopTakingOver(this);
     //lost = true;

@@ -199,7 +199,11 @@ void GameManager::Update()
                 {
                     MapHexTile* mapHexTile = hexTile->GetMapHexTile();
 
-                    if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && hexTile->currCooldown > 0.0f) && !hexTile->isFighting)
+                    if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain 
+                        && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation 
+                            && hexTile->currCooldown > 0.0f) 
+                        )
+                        //&& !hexTile->isFighting)
                     {
                         _player->move->_pointedTile = hexTile;
                         _player->move->_playerDestinationMarker->GetTransform()->SetGlobalPosition(

@@ -175,7 +175,8 @@ void PlayerMovement::Update() {
                             mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain 
                             && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation 
                                 && hexTile->currCooldown > 0.0f) 
-                            && !hexTile->isFighting)
+                            )
+                            //&& !hexTile->isFighting)
                         {
                             CheckDestination(hexTile);
                             //_pointedTile = hexTile;
@@ -322,7 +323,11 @@ void PlayerMovement::MoveAndSetDestination(HexTile* dest) {
     if (reachEnd && !GameManager::instance->minigameActive)
     {
         MapHexTile* mapHexTile = dest->GetMapHexTile();
-        if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && dest->currCooldown > 0.0f) && !dest->isFighting)
+        if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain 
+            && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation 
+                && dest->currCooldown > 0.0f) 
+            )
+            //&& !dest->isFighting)
         {
             SetDestination(dest);
         }

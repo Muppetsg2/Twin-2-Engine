@@ -49,7 +49,7 @@ public:
 	ParticleGenerator* pgCity = nullptr;
 	ParticleGenerator* pgCityNegative = nullptr;
 
-	bool isFighting = false;
+	//bool isFighting = false;
 
 	Playable* occupyingEntity = nullptr;
 	//std::vector<float> remoteMultipliers;

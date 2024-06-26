@@ -475,7 +475,13 @@ void HexTile::Update()
 {
 	if (GameManager::instance == nullptr) return;
 
-	if (!minigameActive && !GameManager::instance->minigameActive && _mapHexTile->type != MapHexTile::HexTileType::Mountain && _mapHexTile->type != MapHexTile::HexTileType::Water && !isFighting && GameManager::instance->gameStarted && !GameManager::instance->gameOver)
+	if (!minigameActive 
+		&& !GameManager::instance->minigameActive 
+		&& _mapHexTile->type != MapHexTile::HexTileType::Mountain 
+		&& _mapHexTile->type != MapHexTile::HexTileType::Water 
+		//&& !isFighting 
+		&& GameManager::instance->gameStarted 
+		&& !GameManager::instance->gameOver)
 	{
 		if (state == TileState::OCCUPIED || state == TileState::REMOTE_OCCUPYING)
 		{
@@ -529,7 +535,7 @@ void HexTile::ResetTile()
 	percentage = 0.0f;
 	SetOwnerEntity(nullptr);
 	occupyingEntity = nullptr;
-	isFighting = false;
+	//isFighting = false;
 	state = TileState::NONE;
 	UpdateTileColor();
 	UpdateBorderColor();
@@ -541,7 +547,7 @@ void HexTile::ResetTile(Playable* n)
 	percentage = 0.0f;
 	SetOwnerEntity(n);
 	occupyingEntity = n;
-	isFighting = false;
+	//isFighting = false;
 	state = TileState::NONE;
 	UpdateTileColor();
 	UpdateBorderColor();
@@ -668,9 +674,10 @@ void HexTile::StartTakingOver(Playable* entity) {
 			}
 		}
 	}
-	else if (occupyingEntity != entity && !isFighting && entity != nullptr) {
+	//else if (occupyingEntity != entity && !isFighting && entity != nullptr) {
+	else if (occupyingEntity != entity && entity != nullptr) {
 		GameManager::instance->minigameActive = true;
-		isFighting = true;
+		//isFighting = true;
 		MinigameManager::GetInstance()->StartMinigame(entity, occupyingEntity);
 	}
 }
@@ -798,7 +805,7 @@ void HexTile::DrawEditor()
 		if (Component::DrawInheritedFields()) return;
 
 		ImGui::BeginDisabled();
-		ImGui::Checkbox("IsFighting", &isFighting);
+		//ImGui::Checkbox("IsFighting", &isFighting);
 		ImGui::EndDisabled();
 
 		ImGui::TextUnformatted("OwnerEntity: ");

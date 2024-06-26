@@ -582,7 +582,7 @@ void CameraComponent::Render()
 #endif
 
 		GraphicEngine::UpdateBeforeRendering();
-		LightingController::Instance()->RenderDynamicShadowMaps();
+		GraphicEngine::RenderShadow();
 
 #if TRACY_PROFILER
 		FrameMarkEnd(tracy_UpdateRenderingQueues);
@@ -618,6 +618,7 @@ void CameraComponent::Render()
 			glClear(GL_COLOR_BUFFER_BIT);
 			glViewport(0, 0, wSize.x / 2, wSize.y / 2);
 			glDisable(GL_DEPTH_TEST);
+			glDisable(GL_CULL_FACE);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 #if TRACY_PROFILER
@@ -714,6 +715,7 @@ void CameraComponent::Render()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glViewport(0, 0, wSize.x, wSize.y);
 		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_CULL_FACE);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		BindRenderTexture(0);
 		BindDepthTexture(1);
@@ -755,6 +757,7 @@ void CameraComponent::Render()
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
 		
 #if TRACY_PROFILER
 		FrameMarkEnd(tracy_OnScreenFramebuffer);
@@ -866,6 +869,8 @@ void CameraComponent::Initialize()
 
 		TransformChangeEventId = GetTransform()->OnEventTransformChanged += [](Transform* transform) {
 			LightingController::Instance()->UpdateOnTransformChange();
+			glm::vec3 pos = transform->GetGlobalPosition();
+			LightingController::Instance()->SetViewerPosition(pos);
 		};
 	}
 

@@ -215,6 +215,7 @@ void GameManager::Update()
                 if (_player->move->_pointedTile->GetMapHexTile()->type == MapHexTile::HexTileType::PointOfInterest)
                 {
                     _textChooseStartingPosition->SetActive(false);
+                    DeleteGodRaysInCities();
 
                     for (GameObject* goTile : _shadowedTiles)
                     {
@@ -484,11 +485,36 @@ void GameManager::RestartMap()
     RestartMapPhase1();
 }
 
+
+void GameManager::SpawnGodRaysInCities() {
+    Prefab* gorRayP = PrefabManager::GetPrefab("res/prefabs/GodRay.prefab");
+    for (auto& tile : SceneManager::FindObjectByName("MapGenerator")->GetComponentsInChildren<HexTile>())
+    {
+        MapHexTile* mapHexTile = tile->GetMapHexTile();
+        if (mapHexTile->type == Generation::MapHexTile::HexTileType::PointOfInterest)
+        {
+            godRays.insert(SceneManager::CreateGameObject(gorRayP, tile->GetTransform()));
+        }
+    }
+}
+
+void GameManager::DeleteGodRaysInCities() {
+    GameObject* gr = nullptr;
+
+    while (godRays.size() > 0) {
+        gr = *godRays.begin();
+        godRays.erase(gr);
+        SceneManager::DestroyGameObject(gr);
+    }
+}
+
+
 void GameManager::StartGame()
 {
     GeneratePlayer();
 
     _textChooseStartingPosition->SetActive(true);
+    SpawnGodRaysInCities();
 
     Prefab* prefabShadowingHexPlane = PrefabManager::GetPrefab(_prefabPathShadowingPlane);
     list<MapHexTile*> tiles = _mapGenerator->GetGameObject()->GetComponentsInChildren<MapHexTile>();
@@ -585,6 +611,7 @@ void GameManager::RestartMapPhase3() {
     gameStarted = false;
     startPhase3 = false;
     _textChooseStartingPosition->SetActive(true);
+    SpawnGodRaysInCities();
 
     Prefab* prefabShadowingHexPlane = PrefabManager::GetPrefab(_prefabPathShadowingPlane);
     list<MapHexTile*> tiles = _mapGenerator->GetGameObject()->GetComponentsInChildren<MapHexTile>();

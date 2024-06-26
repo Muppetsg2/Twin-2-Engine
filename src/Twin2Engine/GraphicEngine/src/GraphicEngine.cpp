@@ -136,6 +136,7 @@ void GraphicEngine::Render()
 #endif
 
 	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 	glDepthFunc(GL_LESS);
 
 	MeshRenderingManager::Render();
@@ -183,4 +184,10 @@ void GraphicEngine::PreRender()
 #if TRACY_PROFILER
 	FrameMarkEnd(tracy_PreRenderName);
 #endif
+}
+
+void GraphicEngine::RenderShadow()
+{
+	LightingController::Instance()->RenderDynamicShadowMaps();
+	MeshRenderingManager::PreRenderShadow();
 }

@@ -339,7 +339,7 @@ void LightingController::SetViewerPosition(glm::vec3& viewerPosition) {
 	glBufferSubData(GL_UNIFORM_BUFFER, offsetof(LightingData, viewerPosition), sizeof(glm::vec3), &viewerPosition);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-	UpdateOnTransformChange();
+	//UpdateOnTransformChange();
 }
 
 void LightingController::SetShadingType(int type) {

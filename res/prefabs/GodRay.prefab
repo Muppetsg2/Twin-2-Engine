@@ -24,7 +24,7 @@ Root:
       z: 0
     scale:
       x: 1
-      y: 5
+      y: 2.5
       z: 1
     rotation:
       x: 0
@@ -35,6 +35,7 @@ Root:
       enabled: true
       type: MeshRenderer
       isTransparent: true
+      transparencyPriority: 2
       model: 0
       materials:
         - 0

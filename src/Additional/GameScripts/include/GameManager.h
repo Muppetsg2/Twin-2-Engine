@@ -75,6 +75,8 @@ private:
     
     //ParticleGenerator* particleGenerator;
     Player* _player;
+
+    std::unordered_set<GameObject*> godRays;
 public:
     static GameManager* instance;
 
@@ -128,7 +130,9 @@ public:
     void EnemyDied(Enemy* enemy);
     void RestartMap();
 
-    void FreePatron(PatronData* patron);
+    //void FreePatron(PatronData* patron);
+    void SpawnGodRaysInCities();
+    void DeleteGodRaysInCities();
 
     void StartGame();
     void RestartMapPhase1();

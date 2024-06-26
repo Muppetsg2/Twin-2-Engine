@@ -742,7 +742,7 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 123
-    path: res/textures/UI/ZoryaPrototype2.png
+    path: res/textures/UI/ZoryaPrototype.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
     sWrapMode: !<MIRRORED_REPEAT> 33648

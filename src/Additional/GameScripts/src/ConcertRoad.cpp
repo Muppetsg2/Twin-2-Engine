@@ -107,22 +107,23 @@ void ConcertRoad::Update()
     //    }
     //}
 
-    Player* player = GameManager::instance->GetPlayer();
-    float bonus = 0.0f;
 
-    for (auto& point : RoadMapPoints)
-    {
-        if (point->ownerEntity == player) {
-            bonus += bonusesPerStage[point->GetStage()];
+    Player* player = GameManager::instance->GetPlayer();
+    if (player != nullptr && !isPerforming) {
+        if (player->TakeOverSpeed > 30.0f) {
+            PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(bonusDecreseCoef * Time::GetDeltaTime());
+            player->TakeOverSpeed -= bonusDecreseCoef * Time::GetDeltaTime();
         }
     }
-    PopularityGainingBonusBarController::Instance()->SetPossibleBonus(bonus);
-
-    if (GameManager::instance->GetPlayer() != nullptr && !isPerforming) {
-        if (GameManager::instance->GetPlayer()->TakeOverSpeed > 30.0f) {
-            PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(bonusDecreseCoef * Time::GetDeltaTime());
-            GameManager::instance->GetPlayer()->TakeOverSpeed -= bonusDecreseCoef * Time::GetDeltaTime();
+    if (player != nullptr && isPerforming) {
+        float bonus = 0.0f;
+        for (auto& point : RoadMapPoints)
+        {
+            if (point->ownerEntity == player) {
+                bonus += bonusesPerStage[point->GetStage()];
+            }
         }
+        PopularityGainingBonusBarController::Instance()->SetPossibleBonus(bonus);
     }
 }
 
@@ -203,7 +204,7 @@ void ConcertRoad::Begin()
                 break;
 
             case 6:
-                lightColor = glm::vec3(1.0f, 0.75f, 0.8f);
+                lightColor = glm::vec3(1.0f, 0.0f, 0.6f);
                 break;
         }
         concertRoadMarkers[0]->GetComponent<CityLightsComponent>()->cityLightsShader->SetVec3("light_color", lightColor);

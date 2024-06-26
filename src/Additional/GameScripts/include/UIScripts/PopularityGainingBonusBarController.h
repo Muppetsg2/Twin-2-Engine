@@ -44,5 +44,6 @@ public:
 	void RemoveCurrentBonus(float removedCurrentBonus);
 
 	void AddPossibleBonus(float additionalPossibleBonus);
+	void SetPossibleBonus(float bonus);
 	void RemovePossibleBonus(float removedPossibleBonus);
 };

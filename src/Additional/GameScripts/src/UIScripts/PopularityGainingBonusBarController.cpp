@@ -43,15 +43,50 @@ void PopularityGainingBonusBarController::SetColor(glm::vec3 color) {
 void PopularityGainingBonusBarController::SetCurrentBonus(float bonus)
 {
 	_currentBonus = bonus;
-	_currentBonusBar->SetFillProgress(100.0f * _currentBonus / _maxBonus);
-	_possibleBonusBar->SetFillProgress(100.0f * (_currentBonus + _possibleBonus) / _maxBonus);
+	//_currentBonusBar->SetFillProgress(100.0f * _currentBonus / _maxBonus);
+	//_possibleBonusBar->SetFillProgress(100.0f * (_currentBonus + _possibleBonus) / _maxBonus);
+	float v = 100.0f * _currentBonus / _maxBonus;
+	if (v > 100.0f) {
+		_currentBonus = _maxBonus;
+		_currentBonusBar->SetFillProgress(100.0f);
+	}
+	else {
+		_currentBonusBar->SetFillProgress(v);
+	}
+
+	v = 100.0f * (_currentBonus + _possibleBonus) / _maxBonus;
+	if (v > 100.0f) {
+		_possibleBonus = _maxBonus - _currentBonus;
+		_possibleBonusBar->SetFillProgress(100.0f);
+	}
+	else {
+		_possibleBonusBar->SetFillProgress(v);
+	}
 }
 
 void PopularityGainingBonusBarController::AddCurrentBonus(float additionalCurrentBonus)
 {
 	_currentBonus += additionalCurrentBonus;
-	_currentBonusBar->SetFillProgress(100.0f * _currentBonus / _maxBonus);
-	_possibleBonusBar->SetFillProgress(100.0f * (_currentBonus + _possibleBonus) / _maxBonus);
+	//_currentBonusBar->SetFillProgress(100.0f * _currentBonus / _maxBonus);
+	//_possibleBonusBar->SetFillProgress(100.0f * (_currentBonus + _possibleBonus) / _maxBonus);
+
+	float v = 100.0f * _currentBonus / _maxBonus;
+	if (v > 100.0f) {
+		_currentBonus = _maxBonus;
+		_currentBonusBar->SetFillProgress(100.0f);
+	}
+	else {
+		_currentBonusBar->SetFillProgress(v);
+	}
+
+	v = 100.0f * (_currentBonus + _possibleBonus) / _maxBonus;
+	if (v > 100.0f) {
+		_possibleBonus = _maxBonus - _currentBonus;
+		_possibleBonusBar->SetFillProgress(100.0f);
+	}
+	else {
+		_possibleBonusBar->SetFillProgress(v);
+	}
 }
 
 void PopularityGainingBonusBarController::RemoveCurrentBonus(float removedCurrentBonus)
@@ -65,7 +100,28 @@ void PopularityGainingBonusBarController::RemoveCurrentBonus(float removedCurren
 void PopularityGainingBonusBarController::AddPossibleBonus(float additionalPossibleBonus)
 {
 	_possibleBonus += additionalPossibleBonus;
-	_possibleBonusBar->SetFillProgress(100.0f * (_currentBonus + _possibleBonus) / _maxBonus);
+	//_possibleBonusBar->SetFillProgress(100.0f * (_currentBonus + _possibleBonus) / _maxBonus);
+	float v = 100.0f * (_currentBonus + _possibleBonus) / _maxBonus;
+	if (v > 100.0f) {
+		_possibleBonus = _maxBonus - _currentBonus;
+		_possibleBonusBar->SetFillProgress(100.0f);
+	}
+	else {
+		_possibleBonusBar->SetFillProgress(v);
+	}
+}
+
+void PopularityGainingBonusBarController::SetPossibleBonus(float bonus) 
+{
+	_possibleBonus = bonus;
+	float v = 100.0f * (_currentBonus + _possibleBonus) / _maxBonus;
+	if (v > 100.0f) {
+		_possibleBonus = _maxBonus - _currentBonus;
+		_possibleBonusBar->SetFillProgress(100.0f);
+	}
+	else {
+		_possibleBonusBar->SetFillProgress(v);
+	}
 }
 
 void PopularityGainingBonusBarController::RemovePossibleBonus(float removedPossibleBonus)

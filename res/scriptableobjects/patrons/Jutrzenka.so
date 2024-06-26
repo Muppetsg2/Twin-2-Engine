@@ -16,6 +16,6 @@ scriptable_object:
   moneyMultiplier: 1
   controlMultiplier: 1
   additionalMoveRange: 1
-  additionalAbilitiesRange: 1.5
+  additionalAbilitiesRange: 1
   abilitiesCooldownPercent: 50
   abilitiesPriceDiscount: 30

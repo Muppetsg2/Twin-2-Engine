@@ -15,7 +15,7 @@ scriptable_object:
   soundUpFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
   moneyMultiplier: 1
   controlMultiplier: 1
-  additionalMoveRange: 1.5
+  additionalMoveRange: 1
   additionalAbilitiesRange: 0
   abilitiesCooldownPercent: 50
   abilitiesPriceDiscount: 30

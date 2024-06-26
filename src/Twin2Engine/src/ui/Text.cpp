@@ -151,9 +151,10 @@ void Text::UpdateTextMesh()
 						break;
 					}
 
+					// TODO: TextWrapping
 					if (_textWrapping && charPos.x + w * .5f > _width * .5f) {
 						if (wasSpaceInLine) {
-							lastIdx = i;
+							lastIdx = i - newLineCount;
 							i = spaceCharIdx;
 							for (size_t idx = i; idx < lastIdx; ++idx) {
 								lineWidth -= _textCharCache[idx].character->Advance >> 6;

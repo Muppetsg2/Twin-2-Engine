@@ -2,7 +2,7 @@ scriptable_object:
   __SO_RegisteredName__: PatronData
   patronName: "Jurzenka"
   patronMusic: 3
-  patronDescription: "Jurzenka Description"
+  patronDescription: "Let classical music wake you from sleep"
   patronBonus: 3
   color: 64
   soundDown: "res/music/RadioStation/Classic/classic_sound1.mp3"
@@ -16,6 +16,6 @@ scriptable_object:
   moneyMultiplier: 1
   controlMultiplier: 1
   additionalMoveRange: 1
-  additionalAbilitiesRange: 1
+  additionalAbilitiesRange: 1.5
   abilitiesCooldownPercent: 50
   abilitiesPriceDiscount: 30

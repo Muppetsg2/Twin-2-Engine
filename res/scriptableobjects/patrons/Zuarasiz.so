@@ -2,7 +2,7 @@ scriptable_object:
   __SO_RegisteredName__: PatronData
   patronName: "Zuarasiz"
   patronMusic: 0
-  patronDescription: "Zuarasiz Description"
+  patronDescription: "Let rock set your heart on fire"
   patronBonus: 0
   color: 2
   soundDown: "res/music/RadioStation/Rock/rock_sound1.mp3"
@@ -13,7 +13,7 @@ scriptable_object:
   soundLeftFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
   soundRightFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
   soundUpFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
-  moneyMultiplier: 1.1
+  moneyMultiplier: 2
   controlMultiplier: 1
   additionalMoveRange: 1
   additionalAbilitiesRange: 0

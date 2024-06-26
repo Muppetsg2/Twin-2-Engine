@@ -4,7 +4,7 @@ scriptable_object:
   patronMusic: 0
   patronDescription: "Zuarasiz Description"
   patronBonus: 0
-  color: 1
+  color: 2
   soundDown: "res/music/RadioStation/Rock/rock_sound1.mp3"
   soundLeft: "res/music/RadioStation/Rock/rock_sound2.mp3"
   soundRight: "res/music/RadioStation/Rock/rock_sound3.mp3"

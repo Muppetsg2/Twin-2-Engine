@@ -4,7 +4,7 @@ scriptable_object:
   patronMusic: 2
   patronDescription: "Rusalka Description"
   patronBonus: 0
-  color: 0
+  color: 1
   soundDown: "res/music/RadioStation/Pop/pop_sound1.mp3"
   soundLeft: "res/music/RadioStation/Pop/pop_sound2.mp3"
   soundRight: "res/music/RadioStation/Pop/pop_sound3.mp3"

@@ -199,7 +199,11 @@ void GameManager::Update()
                 {
                     MapHexTile* mapHexTile = hexTile->GetMapHexTile();
 
-                    if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation && hexTile->currCooldown > 0.0f) && !hexTile->isFighting)
+                    if (mapHexTile->type != Generation::MapHexTile::HexTileType::Mountain 
+                        && !(mapHexTile->type == Generation::MapHexTile::HexTileType::RadioStation 
+                            && hexTile->currCooldown > 0.0f) 
+                        )
+                        //&& !hexTile->isFighting)
                     {
                         _player->move->_pointedTile = hexTile;
                         _player->move->_playerDestinationMarker->GetTransform()->SetGlobalPosition(
@@ -534,7 +538,7 @@ void GameManager::StartGame()
     list<MapHexTile*> tiles = _mapGenerator->GetGameObject()->GetComponentsInChildren<MapHexTile>();
     for (MapHexTile* tile : tiles)
     {
-        if (tile->type != MapHexTile::HexTileType::Mountain && tile->type != MapHexTile::HexTileType::PointOfInterest)
+        if (tile->type != MapHexTile::HexTileType::Mountain && tile->type != MapHexTile::HexTileType::Water && tile->type != MapHexTile::HexTileType::PointOfInterest)
         {
             GameObject* instanced = SceneManager::CreateGameObject(prefabShadowingHexPlane, tile->GetTransform());
             _shadowedTiles.push_back(instanced);

@@ -4,7 +4,7 @@ scriptable_object:
   patronMusic: 3
   patronDescription: "Jurzenka Description"
   patronBonus: 3
-  color: 6
+  color: 64
   soundDown: "res/music/RadioStation/Classic/classic_sound1.mp3"
   soundLeft: "res/music/RadioStation/Classic/classic_sound2.mp3"
   soundRight: "res/music/RadioStation/Classic/classic_sound3.mp3"

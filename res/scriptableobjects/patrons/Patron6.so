@@ -4,7 +4,7 @@ scriptable_object:
   patronMusic: 5
   patronDescription: "Patron6 Description"
   patronBonus: 5
-  color: 5
+  color: 32
   soundDown: "res/music/RadioStation/Metal/metal_sound1.mp3"
   soundLeft: "res/music/RadioStation/Metal/metal_sound2.mp3"
   soundRight: "res/music/RadioStation/Metal/metal_sound3.mp3"

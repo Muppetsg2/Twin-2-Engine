@@ -75,7 +75,10 @@ void Enemy::Update()
         //    enemy->LostPaperRockScissors(this);
         //    CurrTile->isFighting = false;
         //}
-        CurrTile->isFighting = false;
+        //if (CurrTile)
+        //{
+        //    //CurrTile->isFighting = false;
+        //}
         GameManager::instance->minigameActive = false;
 
         fightingPlayable = nullptr;

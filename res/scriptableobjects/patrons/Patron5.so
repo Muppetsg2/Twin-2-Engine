@@ -4,7 +4,7 @@ scriptable_object:
   patronMusic: 4
   patronDescription: "Patron5 Description"
   patronBonus: 0
-  color: 2
+  color: 4
   soundDown: "res/music/RadioStation/Disco/disco_sound1.mp3"
   soundLeft: "res/music/RadioStation/Disco/disco_sound2.mp3"
   soundRight: "res/music/RadioStation/Disco/disco_sound3.mp3"

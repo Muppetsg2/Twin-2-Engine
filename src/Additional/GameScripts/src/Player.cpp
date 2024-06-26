@@ -192,7 +192,7 @@ void Player::Update() {
     if (_loosingFightPlayable)
     {
         GameManager::instance->minigameActive = false;
-        CurrTile->isFighting = false;
+        //CurrTile->isFighting = false;
 
         _loosingFightPlayable->LostPaperRockScissors(this);
 
@@ -888,7 +888,7 @@ void Player::WonPaperRockScissors(Playable* playable) {
 
 void Player::LostPaperRockScissors(Playable* playable) {
     GameManager::instance->minigameActive = false;
-    CurrTile->isFighting = false;
+    //CurrTile->isFighting = false;
 
     CurrTile->StopTakingOver(this);
     //lost = true;
@@ -902,7 +902,7 @@ void Player::LostPaperRockScissors(Playable* playable) {
     for (int i = 0; i < 6; ++i) {
         if (tiles[i] != nullptr) {
             HexTile* hexTile = tiles[i]->GetComponent<HexTile>();
-            if (hexTile)
+            if (hexTile && hexTile->GetMapHexTile()->type != MapHexTile::HexTileType::Mountain && hexTile->GetMapHexTile()->type != MapHexTile::HexTileType::Water)
             {
                 if (hexTile->ownerEntity == this)
                 {

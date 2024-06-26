@@ -4,7 +4,7 @@ scriptable_object:
   patronMusic: 1
   patronDescription: "Perun Description"
   patronBonus: 2
-  color: 4
+  color: 16
   soundDown: "res/music/RadioStation/Electric/electric_guitar1.mp3"
   soundLeft: "res/music/RadioStation/Electric/electric_guitar2.mp3"
   soundRight: "res/music/RadioStation/Electric/electric_guitar3.mp3"

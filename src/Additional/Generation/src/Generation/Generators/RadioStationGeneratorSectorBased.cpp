@@ -16,12 +16,14 @@ SCRIPTABLE_OBJECT_SOURCE_CODE(RadioStationGeneratorSectorBased, Generation::Gene
 SO_SERIALIZATION_BEGIN(RadioStationGeneratorSectorBased, AMapElementGenerator)
 SO_SERIALIZE_FIELD_F(prefabRadioStation, PrefabManager::GetPrefabPath)
 SO_SERIALIZE_FIELD(densityFactorPerSector)
+SO_SERIALIZE_FIELD(maxNumber)
 SO_SERIALIZATION_END()
 
 SO_DESERIALIZATION_BEGIN(RadioStationGeneratorSectorBased, AMapElementGenerator)
 SO_DESERIALIZE_FIELD_R("prefabRadioStation", prefabPath)
 SO_DESERIALIZE_FIELD_F_T(prefabRadioStation, PrefabManager::LoadPrefab, string)
 SO_DESERIALIZE_FIELD(densityFactorPerSector)
+SO_DESERIALIZE_FIELD(maxNumber)
 SO_DESERIALIZATION_END()
 
 
@@ -187,9 +189,14 @@ void RadioStationGeneratorSectorBased::Generate(Tilemap::HexagonalTilemap* tilem
         }
     }
 
-    size_t toRemoveNumber = sectors.size() - static_cast<int>(densityFactorPerSector * sectors.size() + 0.5f);
+    int remaining = static_cast<int>(densityFactorPerSector * sectors.size() + 0.5f);
+    if (remaining > maxNumber)
+    {
+        remaining = maxNumber;
+    }
+    long long toRemoveNumber = sectors.size() - remaining;
 
-    while (toRemoveNumber > 0ull)
+    while (toRemoveNumber > 0ll)
     {
         float shortest = std::numeric_limits<float>::max();
         MapHexTile* shortestTile = nullptr;

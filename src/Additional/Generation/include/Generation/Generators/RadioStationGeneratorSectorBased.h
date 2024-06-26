@@ -17,6 +17,7 @@ namespace Generation::Generators
 		std::string prefabPath = "";
 		Twin2Engine::Core::Prefab* prefabRadioStation;
 		float densityFactorPerSector = 1.0f;
+        int maxNumber = 3;
 
 		virtual void Generate(Tilemap::HexagonalTilemap* tilemap) override;
 		virtual void Clear() override;

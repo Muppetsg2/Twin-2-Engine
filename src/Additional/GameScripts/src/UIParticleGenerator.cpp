@@ -175,6 +175,9 @@ void UIParticleGenerator::Update()
     glm::vec2 randOffset(0.0f);
     float randAngle = 0.0f;
     float randRadius = 0.0f;
+    if (dt >= 0.1) {
+        dt = 0.1;
+    }
 
     for (unsigned int i = 0; i < amount; ++i)
     {

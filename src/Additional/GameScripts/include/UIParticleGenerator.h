@@ -43,6 +43,13 @@ class UIParticleGenerator
         // render all particles
         void Draw();
     private:
+        // Represents a single particle and its state
+        struct Particle {
+            //glm::vec4 Position;
+            glm::vec3 Velocity;
+            float     Life;
+            //glm::vec4 Color;
+        };
         // state
         std::vector<Particle*> particles;
         std::vector<glm::vec2> particlesPos;

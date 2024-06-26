@@ -6631,6 +6631,9 @@ GameObjects:
           - 132
           - 133
           - 907
+      - id: 10502
+        enabled: true
+        type: BlockStartSelTut
     children:
       - 128
       - 129
@@ -8636,6 +8639,9 @@ GameObjects:
         type: TutorialSeries
         tutorialsIds:
           - 907
+      - id: 10501
+        enabled: true
+        type: BlockStartSelTut
     children:
       - 908
       - 909

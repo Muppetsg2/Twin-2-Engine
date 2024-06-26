@@ -271,6 +271,7 @@ bool DistanceFieldGenerator::Deserialize(const YAML::Node& node)
 	return true;
 }
 
+#if _DEBUG
 void DistanceFieldGenerator::DrawEditor()
 {
 	string id = string(std::to_string(this->GetId()));
@@ -347,6 +348,7 @@ void DistanceFieldGenerator::DrawEditor()
 		}
 	}
 }
+#endif
 
 void DistanceFieldGenerator::UseTexture(unsigned int i)
 {

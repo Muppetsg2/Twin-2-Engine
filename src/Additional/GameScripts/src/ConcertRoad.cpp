@@ -110,9 +110,13 @@ void ConcertRoad::Update()
 
     Player* player = GameManager::instance->GetPlayer();
     if (player != nullptr && !isPerforming) {
-        if (player->TakeOverSpeed > 30.0f) {
+        if (player->TakeOverSpeed > 10.0f) {
             PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(bonusDecreseCoef * Time::GetDeltaTime());
             player->TakeOverSpeed -= bonusDecreseCoef * Time::GetDeltaTime();
+            if (player->TakeOverSpeed <= 10.0f)
+            {
+                player->TakeOverSpeed = 10.0f;
+            }
         }
     }
     if (player != nullptr && isPerforming) {
@@ -222,14 +226,12 @@ void ConcertRoad::Finish()
 
     for (auto& point : RoadMapPoints)
     {
+        point->GetGameObject()->GetComponentInChildren<City>()->SetConcertRoadCity(false);
+
         if (point->ownerEntity == player) {
             stage = point->GetStage();
             point->ownerEntity->TakeOverSpeed += bonusesPerStage[stage];
             PopularityGainingBonusBarController::Instance()->AddCurrentBonus(bonusesPerStage[stage]);
-            City* city = point->GetGameObject()->GetComponent<City>();
-            if (city) {
-                city->SetConcertRoadCity(false);
-            }
                 
 
             if (point->ownerEntity->TakeOverSpeed > 100.0f) {

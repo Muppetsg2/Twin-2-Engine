@@ -60,20 +60,19 @@ void City::SetConcertRoadCity(bool isConcertRoadCity)
 
 		if (_isConcertRoadCity)
 		{
-			for (size_t index = 0ull; index < _affectedTiles.size(); ++index)
-			{
-				_affectedTiles[index]->RemoveAffectingCity(this);
-			}
-			_affectedTiles.clear();
+			//for (size_t index = 0ull; index < _affectedTiles.size(); ++index)
+			//{
+			//	_affectedTiles[index]->RemoveAffectingCity(this);
+			//}
+			//_affectedTiles.clear();
 			_imagePictogram->GetTransform()->GetParent()->GetGameObject()->SetActive(true);
 			_imagePictogram->SetSprite(_concertRoadCityPictogramSpriteId);
 		}
 		else
 		{
-			StartAffectingTiles(_occupiedHexTile);
+			//StartAffectingTiles(_occupiedHexTile);
 			_imagePictogram->GetTransform()->GetParent()->GetGameObject()->SetActive(false);
 			_imagePictogram->SetSprite(_cityPictogramSpriteId);
-			_imagePictogram->GetGameObject()->SetActive(false);
 		}
 	}
 }

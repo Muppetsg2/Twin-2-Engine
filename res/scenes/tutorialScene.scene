@@ -1175,6 +1175,8 @@ Audio:
     path: res\music\Classic\Empires_Collide_On_Streets.mp3
   - id: 11
     path: res\music\Classic\Urban_Strings_Symphony.mp3
+  - id: 12
+    path: res\music\Disco\80s-disco-beats.mp3
 Materials:
   - id: 0
     path: res/materials/tiles/normal/yellow/YellowHexTileStage3.material
@@ -1618,7 +1620,7 @@ GameObjects:
           - 10
           - 11
         DiscoBackgroundMusics:
-          []
+          - 12
       - id: 162
         enabled: true
         type: Audio
@@ -6002,7 +6004,7 @@ GameObjects:
       - id: 5466
         enabled: true
         type: Canvas
-        layer: 3
+        layer: 4
         size:
           x: 1920
           y: 1080
@@ -6040,7 +6042,7 @@ GameObjects:
           w: 1
         width: 100
         height: 100
-        layer: 0
+        layer: 10
         fillEnabled: false
         fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0

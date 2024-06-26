@@ -268,6 +268,7 @@ GameObjects:
         settingsButtonId: 52
         settingsBackButtonId: 58
         exitButtonId: 15
+        tutorialButtonId: 93
         menuCanvas: 2
         creditsCanvas: 7
         highscoreCanvas: 15
@@ -289,6 +290,7 @@ GameObjects:
       - 13
       - 19
       - 21
+      - 30
   - id: 3
     name: Background
     isStatic: false
@@ -335,7 +337,7 @@ GameObjects:
     transform:
       id: 10
       position:
-        x: 0
+        x: -125
         y: 55
         z: 0
       scale:
@@ -407,7 +409,7 @@ GameObjects:
       id: 13
       position:
         x: 0
-        y: -345
+        y: -245
         z: 0
       scale:
         x: 1
@@ -548,8 +550,8 @@ GameObjects:
     transform:
       id: 43
       position:
-        x: 0
-        y: -245
+        x: 125
+        y: -45
         z: 0
       scale:
         x: 1
@@ -619,7 +621,7 @@ GameObjects:
     transform:
       id: 46
       position:
-        x: 0
+        x: -125
         y: -45
         z: 0
       scale:
@@ -1639,8 +1641,8 @@ GameObjects:
     transform:
       id: 91
       position:
-        x: 100
-        y: -45
+        x: 125
+        y: 55
         z: 0
       scale:
         x: 1

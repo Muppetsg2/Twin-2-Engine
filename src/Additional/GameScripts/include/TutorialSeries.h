@@ -78,6 +78,10 @@ class TutorialSeries : public Component {
 			}
 		}
 
+		virtual void OnDestroy() override {
+			Time::_timeMultiplier = 1.0f;
+		}
+
 		virtual YAML::Node Serialize() const override {
 			YAML::Node node = Component::Serialize();
 			node["type"] = "TutorialSeries";

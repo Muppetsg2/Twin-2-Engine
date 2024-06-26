@@ -346,6 +346,11 @@ void PlayerMovement::StartUp(HexTile* startUpTile)
     //player->CurrTile = dest;
     //dest->StartTakingOver(player);
     OnFinishMoving(GetGameObject(), startUpTile);
+    maxSteps = originMaxSteps;
+    if (_player->patron->GetPatronBonus() == PatronBonus::MOVE_RANGE)
+    {
+        maxSteps += _player->patron->GetAdditionalMoveRange();
+    }
 }
 
 bool PlayerMovement::InCircle(glm::vec3 point) {
@@ -432,7 +437,7 @@ YAML::Node PlayerMovement::Serialize() const
     YAML::Node node = Component::Serialize();
     node["type"] = "PlayerMovement";
     node["speed"] = speed;
-    node["maxSteps"] = maxSteps;
+    node["maxSteps"] = originMaxSteps;
     node["nextWaypointDistance"] = nextWaypointDistance;
     node["heightOverSurface"] = _heightOverSurface;
 
@@ -454,7 +459,7 @@ bool PlayerMovement::Deserialize(const YAML::Node& node)
         return false;
 
     speed = node["speed"].as<float>();
-    maxSteps = node["maxSteps"].as<size_t>();
+    originMaxSteps = node["maxSteps"].as<size_t>();
     nextWaypointDistance = node["nextWaypointDistance"].as<float>();
     _heightOverSurface = node["heightOverSurface"].as<float>();
 

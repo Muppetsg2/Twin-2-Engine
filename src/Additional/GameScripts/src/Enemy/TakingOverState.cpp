@@ -103,8 +103,10 @@ void TakingOverState::Update(Enemy* enemy)
 	ZoneScoped;
 #endif
 
-	SPDLOG_INFO("Update Taking Over State");
-	_decisionTree.ProcessNode(enemy);
+	if (!GameManager::instance->minigameActive) {
+		SPDLOG_INFO("Update Taking Over State");
+		_decisionTree.ProcessNode(enemy);
+	}
 }
 
 void TakingOverState::Exit(Enemy* enemy)

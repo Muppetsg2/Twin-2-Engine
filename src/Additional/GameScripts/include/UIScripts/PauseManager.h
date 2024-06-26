@@ -71,7 +71,14 @@ public:
 		if (_pauseCanvas != nullptr) _pauseCanvas->SetActive(false);
 	}
 
-	virtual void Update() override {}
+	virtual void Update() override {
+#if !_DEBUG
+		if (Input::IsKeyPressed(KEY::ESCAPE))
+		{
+			Pause();
+		}
+#endif
+	}
 
 	virtual void OnDestroy() override {
 		if (_pause != nullptr && _pauseButtonEvent != -1) {

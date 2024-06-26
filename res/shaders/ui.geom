@@ -90,6 +90,7 @@ const uint maxUIElements = 8;
 layout (std140, binding = 3) buffer UIElementsBuffer {
 	UIElement uiElements[maxUIElements];
 	Texture elementTexture;
+	int elementLayer;
 };
 
 in VS_OUT {
@@ -131,7 +132,7 @@ void main() {
 	vec2 elemPos = (pointPos + vec2(-0.5, -0.5)) * element.rect.size;
 	gs_out.canvasPos = vec2(invCanvasTransform * element.rect.transform * vec4(elemPos, 0.0, 1.0));
 	if (canvasIsInWorldSpace && canvasIsActive) {
-		gs_out.worldPos = canvasTransform * vec4(gs_out.canvasPos, 0.0, 1.0);
+		gs_out.worldPos = canvasTransform * vec4(gs_out.canvasPos, 0.01 * elementLayer, 1.0);
 		gl_Position = projection * view * gs_out.worldPos;
 	}
 	else {
@@ -145,7 +146,7 @@ void main() {
 	elemPos = (pointPos + vec2(0.5, -0.5)) * element.rect.size;
 	gs_out.canvasPos = vec2(invCanvasTransform * element.rect.transform * vec4(elemPos, 0.0, 1.0));
 	if (canvasIsInWorldSpace && canvasIsActive) {
-		gs_out.worldPos = canvasTransform * vec4(gs_out.canvasPos, 0.0, 1.0);
+		gs_out.worldPos = canvasTransform * vec4(gs_out.canvasPos, 0.01 * elementLayer, 1.0);
 		gl_Position = projection * view * gs_out.worldPos;
 	}
 	else {
@@ -159,7 +160,7 @@ void main() {
 	elemPos = (pointPos + vec2(-0.5, 0.5)) * element.rect.size;
 	gs_out.canvasPos = vec2(invCanvasTransform * element.rect.transform * vec4(elemPos, 0.0, 1.0));
 	if (canvasIsInWorldSpace && canvasIsActive) {
-		gs_out.worldPos = canvasTransform * vec4(gs_out.canvasPos, 0.0, 1.0);
+		gs_out.worldPos = canvasTransform * vec4(gs_out.canvasPos, 0.01 * elementLayer, 1.0);
 		gl_Position = projection * view * gs_out.worldPos;
 	}
 	else {
@@ -173,7 +174,7 @@ void main() {
 	elemPos = (pointPos + vec2(0.5, 0.5)) * element.rect.size;
 	gs_out.canvasPos = vec2(invCanvasTransform * element.rect.transform * vec4(elemPos, 0.0, 1.0));
 	if (canvasIsInWorldSpace && canvasIsActive) {
-		gs_out.worldPos = canvasTransform * vec4(gs_out.canvasPos, 0.0, 1.0);
+		gs_out.worldPos = canvasTransform * vec4(gs_out.canvasPos, 0.01 * elementLayer, 1.0);
 		gl_Position = projection * view * gs_out.worldPos;
 	}
 	else {

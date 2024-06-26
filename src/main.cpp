@@ -504,6 +504,7 @@ int main(int, char**)
 
 void input()
 {
+#if _DEBUG
     if (Input::IsKeyPressed(KEY::ESCAPE))
     {
         window->Close();
@@ -512,7 +513,6 @@ void input()
 
     CameraComponent* c = CameraComponent::GetMainCamera();
 
-#if _DEBUG
     if (Input::IsKeyDown(KEY::W) && Input::GetCursorState() == CURSOR_STATE::DISABLED)
     {
         Camera->GetTransform()->SetGlobalPosition(Camera->GetTransform()->GetGlobalPosition() + c->GetFrontDir() * cameraSpeed * Time::GetDeltaTime());

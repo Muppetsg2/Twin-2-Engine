@@ -76,8 +76,10 @@ void InitState::Update(Enemy* enemy) {
 	ZoneScoped;
 #endif
 
-	SPDLOG_INFO("Init State Update");
-	_decisionTree.ProcessNode(enemy);
+	if (!GameManager::instance->minigameActive) {
+		SPDLOG_INFO("Init State Update");
+		_decisionTree.ProcessNode(enemy);
+	}
 }
 
 void InitState::Exit(Enemy* enemy) {

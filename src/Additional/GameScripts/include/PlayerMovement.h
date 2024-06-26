@@ -84,6 +84,7 @@ class PlayerMovement : public Component {
 		bool reachEnd = true;
 		glm::vec3 destination;
 		float speed = 0.7f;
+		size_t originMaxSteps = 5;
 		size_t maxSteps = 5;
 		float nextWaypointDistance = 0.05f;
 		

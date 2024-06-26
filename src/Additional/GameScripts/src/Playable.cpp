@@ -53,8 +53,8 @@ void Playable::UpdatePrices() {
         albumRequiredMoney = moneyFunction->GetValue(OwnTiles.size() - 1, albumStartMoney);
 
         if (patron->GetPatronBonus() == PatronBonus::ABILITIES_PRICE) {
-            fansRequiredMoney *= (1.0f - patron->GetBonus() / 100.0f);
-            albumRequiredMoney *= (1.0f - patron->GetBonus() / 100.0f);
+            fansRequiredMoney *= (1.0f - patron->GetAbilitiesPriceDiscount() / 100.0f);
+            albumRequiredMoney *= (1.0f - patron->GetAbilitiesPriceDiscount() / 100.0f);
         }
     }
 }

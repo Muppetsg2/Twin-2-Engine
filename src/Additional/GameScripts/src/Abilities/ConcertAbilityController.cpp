@@ -96,7 +96,7 @@ void ConcertAbilityController::StopPerformingConcert()
 float ConcertAbilityController::GetCost() const
 {
     if (playable->patron->GetPatronBonus() == PatronBonus::ABILITIES_PRICE) {
-        return usedMoneyRequired * (1.0f - playable->patron->GetBonus() / 100.0f);
+        return usedMoneyRequired * (1.0f - playable->patron->GetAbilitiesPriceDiscount() / 100.0f);
     }
     return usedMoneyRequired;
 }

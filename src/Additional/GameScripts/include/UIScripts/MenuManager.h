@@ -153,6 +153,14 @@ public:
 
 	virtual void Update() override {
 		
+#if !_DEBUG
+		if (Input::IsKeyPressed(KEY::ESCAPE))
+		{
+			Window::GetInstance()->Close();
+			return;
+		}
+#endif
+
 		if (_loadScene) {
 			_loadSceneCounter -= Time::GetDeltaTime();
 

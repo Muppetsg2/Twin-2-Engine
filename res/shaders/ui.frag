@@ -79,6 +79,7 @@ const uint maxUIElements = 8;
 layout (std140, binding = 3) buffer UIElementsBuffer {
 	UIElement uiElements[maxUIElements];
     Texture elementTexture;
+    int elementLayer;
 };
 
 in GS_OUT {

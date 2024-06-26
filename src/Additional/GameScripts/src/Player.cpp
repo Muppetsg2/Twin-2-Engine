@@ -52,9 +52,11 @@ void Player::Initialize() {
         _concertCircleImage->SetColor(_abilityActiveColor);
     };
 
-    //_concertAbility->OnEventAbilityFinished += [&](Playable* playable) -> void {
-    //    PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(_concertAbility->GetAdditionalTakingOverSpeed());
-    //};
+    _concertAbility->OnEventAbilityFinished += [&](Playable* playable) -> void {
+        //PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(_concertAbility->GetAdditionalTakingOverSpeed());
+        _audioComponent->SetAudio(_abilitiesEndAudio);
+        _audioComponent->Play();
+    };
 
     _concertAbility->OnEventAbilityCooldownStarted += [&](Playable* playable) -> void {
         _concertCircleImage->SetColor(_abilityCooldownColor);
@@ -105,6 +107,9 @@ void Player::Initialize() {
             tile->DisableAlbumAffected();
         }
         _isShowingAlbumPossible = false;
+
+        _audioComponent->SetAudio(_abilitiesEndAudio);
+        _audioComponent->Play();
     };
 
     OnEventAlbumCooldownStarted += [&](Playable* playable) -> void {
@@ -149,6 +154,11 @@ void Player::Initialize() {
         _audioComponent->Play();
         _fansMeetingCircleImage->SetLayer(0);
         _fansMeetingCircleImage->SetColor(_abilityActiveColor);
+    };
+
+    OnEventFansMeetingFinished += [&](Playable* playable) -> void {
+        _audioComponent->SetAudio(_abilitiesEndAudio);
+        _audioComponent->Play();
     };
     
     OnEventFansMeetingCooldownStarted += [&](Playable* playable) -> void {
@@ -225,6 +235,9 @@ void Player::Update() {
             _fansMeetingCircleImage->SetColor(_abilityCooldownColor);
             _fansMeetingCircleImage->SetLayer(2);
             FansExit();
+
+            _audioComponent->SetAudio(_abilitiesEndAudio);
+            _audioComponent->Play();
         }
     }
     if (_finishMove)
@@ -979,6 +992,7 @@ YAML::Node Player::Serialize() const
     node["onHoverClickAudio"] = SceneManager::GetAudioSaveIdx(_onHoverClickAudio);
     node["offHoverClickAudio"] = SceneManager::GetAudioSaveIdx(_offHoverClickAudio);
     node["abilitiesUseAudio"] = SceneManager::GetAudioSaveIdx(_abilitiesUseAudio);
+    node["abilitiesEndAudio"] = SceneManager::GetAudioSaveIdx(_abilitiesEndAudio);
     node["cooldownEndAudio"] = SceneManager::GetAudioSaveIdx(_cooldownEndAudio);
     node["notEnoughResAudio"] = SceneManager::GetAudioSaveIdx(_notEnoughResAudio);
 
@@ -1008,6 +1022,7 @@ bool Player::Deserialize(const YAML::Node& node)
     _onHoverClickAudio = SceneManager::GetAudio(node["onHoverClickAudio"].as<size_t>());
     _offHoverClickAudio = SceneManager::GetAudio(node["offHoverClickAudio"].as<size_t>());
     _abilitiesUseAudio = SceneManager::GetAudio(node["abilitiesUseAudio"].as<size_t>());
+    _abilitiesEndAudio = SceneManager::GetAudio(node["abilitiesEndAudio"].as<size_t>());
     _cooldownEndAudio = SceneManager::GetAudio(node["cooldownEndAudio"].as<size_t>());
     _notEnoughResAudio = SceneManager::GetAudio(node["notEnoughResAudio"].as<size_t>());
 

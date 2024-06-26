@@ -40,6 +40,7 @@ private:
     size_t _onHoverClickAudio = 0;
     size_t _offHoverClickAudio = 0;
     size_t _abilitiesUseAudio = 0;
+    size_t _abilitiesEndAudio = 0;
     size_t _cooldownEndAudio = 0;
     size_t _notEnoughResAudio = 0;
 

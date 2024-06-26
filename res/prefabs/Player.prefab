@@ -51,6 +51,8 @@ Audio:
     path: res/music/mixkit-fast-car-drive-by-1538.mp3
   - id: 6
     path: res/music/Abilities/NotEnoughtRes.mp3
+  - id: 7
+    path: res/music/Abilities/ooh_sound.mp3
 Materials:
   - id: 0
     path: res/materials/car/CarMaterial_Blue.material
@@ -133,6 +135,7 @@ Root:
       onHoverClickAudio: 0
       offHoverClickAudio: 1
       abilitiesUseAudio: 2
+      abilitiesEndAudio: 7
       cooldownEndAudio: 3
       notEnoughResAudio: 4
     - id: 3

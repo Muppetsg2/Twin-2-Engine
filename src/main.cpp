@@ -129,6 +129,7 @@ using namespace Generation::Generators;
 #include <UIScripts/MenuManager.h>
 #include <UIScripts/PauseManager.h>
 #include <UIScripts/SettingsManager.h>
+#include <UIScripts/GameOverManager.h>
 
 using namespace GameScripts;
 
@@ -393,6 +394,7 @@ int main(int, char**)
     ADD_COMPONENT("SettingsManager", SettingsManager);
     ADD_COMPONENT("TutorialsController", TutorialsController);
     ADD_COMPONENT("BlockStartSelTut", BlockStartSelTut);
+    ADD_COMPONENT("GameOverManager", GameOverManager);
 
 #pragma endregion
 
@@ -427,9 +429,9 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/HexTileEditScene.scene");
     //SceneManager::AddScene("testScene", new Scene());
     //SceneManager::LoadScene("testScene");
-    //SceneManager::LoadScene("Menu");
+    SceneManager::LoadScene("Menu");
     //SceneManager::LoadScene("Game");
-    SceneManager::LoadScene("GameWithTutorial");
+    //SceneManager::LoadScene("GameWithTutorial");
     SceneManager::Update();
 
 #if DISPLAY_SPLASH_SCREEN

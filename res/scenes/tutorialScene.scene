@@ -31,7 +31,7 @@ Textures:
     magFilterMode: !<LINEAR> 9729
   - id: 5
     path: res/textures/patrons/Jutrzenka.png
-    fileFormat: !<SRGBA> 35906
+    fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
@@ -81,7 +81,7 @@ Textures:
     magFilterMode: !<LINEAR> 9729
   - id: 13
     path: res/textures/patrons/Perun.png
-    fileFormat: !<SRGBA> 35906
+    fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
@@ -637,6 +637,32 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 103
+    path: res/textures/UI/HexBar.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 104
+    path: res/textures/UI/HexBarFill.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 105
+    path: res/textures/patrons/Rusalka.png
+    fileFormat: !<RGBA> 6408
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 106
+    path: res/textures/UI/patron_base.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
   - id: 109
     path: res/textures/UI/HexBar.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
@@ -742,7 +768,7 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 123
-    path: res/textures/UI/ZoryaPrototype.png
+    path: res/textures/UI/Zorza.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
     sWrapMode: !<MIRRORED_REPEAT> 33648
@@ -832,8 +858,8 @@ Sprites:
     texture: 13
     x: 0
     y: 0
-    width: 664
-    height: 742
+    width: 700
+    height: 700
   - id: 12
     alias: MiniGame_VS
     texture: 60
@@ -1079,6 +1105,20 @@ Sprites:
     y: 0
     width: 735
     height: 35
+  - id: 47
+    alias: Rusalka
+    texture: 105
+    x: 0
+    y: 0
+    width: 700
+    height: 700
+  - id: 48
+    alias: PatronsBackground
+    texture: 106
+    x: 0
+    y: 0
+    width: 200
+    height: 300
   - id: 61
     alias: TakingOverTut
     texture: 114
@@ -1147,8 +1187,8 @@ Sprites:
     texture: 123
     x: 0
     y: 0
-    width: 340
-    height: 380
+    width: 700
+    height: 700
   - id: 71
     alias: popup_base
     texture: 111
@@ -1629,10 +1669,8 @@ GameObjects:
         patronsData:
           - res/scriptableobjects/patrons/Perun.so
           - res/scriptableobjects/patrons/Jutrzenka.so
+          - res/scriptableobjects/patrons/Rusalka.so
           - res/scriptableobjects/patrons/Zuarasiz.so
-          - res/scriptableobjects/patrons/Patron4.so
-          - res/scriptableobjects/patrons/Patron5.so
-          - res/scriptableobjects/patrons/Patron6.so
         RockBackgroundMusics:
           - 2
         ElectricBackgroundMusics:
@@ -3710,17 +3748,13 @@ GameObjects:
         patrons:
           - res/scriptableobjects/patrons/Perun.so
           - res/scriptableobjects/patrons/Jutrzenka.so
+          - res/scriptableobjects/patrons/Rusalka.so
           - res/scriptableobjects/patrons/Zuarasiz.so
-          - res/scriptableobjects/patrons/Patron4.so
-          - res/scriptableobjects/patrons/Patron5.so
-          - res/scriptableobjects/patrons/Patron6.so
         patronsButtons:
           - 116
           - 125
-          - 134
           - 5518
-          - 5517
-          - 5516
+          - 134
     children:
       - 34
       - 48
@@ -3776,7 +3810,7 @@ GameObjects:
     transform:
       id: 114
       position:
-        x: -686
+        x: -411
         y: 0
         z: 0
       scale:
@@ -3792,7 +3826,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 40
+        sprite: 48
         color:
           x: 1
           y: 1
@@ -3995,9 +4029,9 @@ GameObjects:
         isTransparent: false
         sprite: 40
         color:
-          x: 0.0734632313
-          y: 0
-          z: 0.432432413
+          x: 1
+          y: 1
+          z: 0
           w: 1
         width: 200
         height: 300
@@ -4016,7 +4050,7 @@ GameObjects:
     transform:
       id: 123
       position:
-        x: -412
+        x: -137
         y: 0
         z: 0
       scale:
@@ -4032,7 +4066,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 40
+        sprite: 48
         color:
           x: 1
           y: 1
@@ -4234,9 +4268,9 @@ GameObjects:
         type: Image
         isTransparent: false
         color:
-          x: 0.486486256
+          x: 1
           y: 0
-          z: 0.486486495
+          z: 0.6
           w: 1
         width: 200
         height: 300
@@ -4249,13 +4283,13 @@ GameObjects:
     children:
       []
   - id: 56
-    name: Patron_3
+    name: Patron_4
     isStatic: false
     isActive: true
     transform:
       id: 132
       position:
-        x: -138
+        x: 411
         y: 0
         z: 0
       scale:
@@ -4271,7 +4305,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 40
+        sprite: 48
         color:
           x: 1
           y: 1
@@ -4474,7 +4508,7 @@ GameObjects:
         isTransparent: false
         sprite: 40
         color:
-          x: 0.576470613
+          x: 1
           y: 0
           z: 0
           w: 1
@@ -4489,13 +4523,13 @@ GameObjects:
     children:
       []
   - id: 35
-    name: Patron_4
+    name: Patron_3
     isStatic: false
     isActive: true
     transform:
       id: 5510
       position:
-        x: 138
+        x: 137
         y: 0
         z: 0
       scale:
@@ -4511,7 +4545,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 40
+        sprite: 48
         color:
           x: 1
           y: 1
@@ -4587,7 +4621,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 11
+        sprite: 47
         color:
           x: 1
           y: 1
@@ -4714,9 +4748,9 @@ GameObjects:
         isTransparent: false
         sprite: 40
         color:
-          x: 0.0745098069
+          x: 0
           y: 0
-          z: 0.431372553
+          z: 1
           w: 1
         width: 200
         height: 300
@@ -4731,7 +4765,7 @@ GameObjects:
   - id: 36
     name: Patron_5
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 5511
       position:
@@ -4971,7 +5005,7 @@ GameObjects:
   - id: 37
     name: Patron_6
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 5512
       position:

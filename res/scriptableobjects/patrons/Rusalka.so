@@ -1,14 +1,14 @@
 scriptable_object:
   __SO_RegisteredName__: PatronData
-  patronName: "Patron4"
-  patronMusic: 3
-  patronDescription: "Patron4 Description"
+  patronName: "Rusalka"
+  patronMusic: 2
+  patronDescription: "Rusalka Description"
   patronBonus: 0
-  color: 4
-  soundDown: "res/music/RadioStation/Classic/classic_sound1.mp3"
-  soundLeft: "res/music/RadioStation/Classic/classic_sound2.mp3"
-  soundRight: "res/music/RadioStation/Classic/classic_sound3.mp3"
-  soundUp: "res/music/RadioStation/Classic/classic_sound4.mp3"
+  color: 0
+  soundDown: "res/music/RadioStation/Pop/pop_sound1.mp3"
+  soundLeft: "res/music/RadioStation/Pop/pop_sound2.mp3"
+  soundRight: "res/music/RadioStation/Pop/pop_sound3.mp3"
+  soundUp: "res/music/RadioStation/Pop/pop_sound4.mp3"
   soundDownFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
   soundLeftFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
   soundRightFalse: "res/music/RadioStation/Electric/wrongsound.mp3"

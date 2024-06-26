@@ -774,7 +774,6 @@ void Player::ResetOnNewMap() {
     move->_info.WaitForFinding();
     move->_checkingInfo.WaitForFinding();
 
-    _concertAbility->Reset();
 
     move->_showedPathEnabled = false;
     move->_showedPathDisabled = false;
@@ -807,7 +806,7 @@ void Player::ResetOnNewMap() {
     {
         albumsIncreasingIntervalsCounter[index] = 0.0f;
     }
-    _albumCircleImage->SetFillProgress(00.f);
+    _albumCircleImage->SetFillProgress(0.0f);
 
     // Fans meeting
     HideAffectedTiles();
@@ -823,7 +822,10 @@ void Player::ResetOnNewMap() {
 
 
     // Concert
-    PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
+    _concertAbility->Reset();
+    //PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
+    PopularityGainingBonusBarController::Instance()->SetCurrentBonus(TakeOverSpeed);
+    PopularityGainingBonusBarController::Instance()->SetPossibleBonus(0.0f);
     _isShowingConcertPossible = false;
 
     _concertButtonObject->GetTransform()->SetLocalScale(vec3(1.0f));

@@ -223,6 +223,8 @@ void GameManager::Update()
                     }
                     _shadowedTiles.clear();
 
+                    _player->OwnTiles.clear();
+
                     _player->StartPlayer(_player->move->_pointedTile);
                     gameStartUp = false;
                     _player->move->_pointedTile = nullptr;

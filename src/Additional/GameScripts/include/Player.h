@@ -70,12 +70,13 @@ private:
     bool _isShowingAlbumPossible = false;
 
     // FansMeeting
-    Twin2Engine::UI::Text* _fansMeetingText;
-    Twin2Engine::UI::Button* _fansMeetingButton;
-    Twin2Engine::Core::GameObject* _fansMeetingButtonObject;
-    Twin2Engine::Core::Transform* _fansMeetingKey;
-    Twin2Engine::UI::Image* _fansMeetingButtonFrameImage;
-    Twin2Engine::UI::Image* _fansMeetingCircleImage;
+    Twin2Engine::UI::Text* _fansMeetingText = nullptr;
+    Twin2Engine::UI::Button* _fansMeetingButton = nullptr;
+    Twin2Engine::Core::GameObject* _fansMeetingButtonObject = nullptr;
+    Twin2Engine::Core::Transform* _fansMeetingKey = nullptr;
+    Twin2Engine::UI::Image* _fansMeetingButtonFrameImage = nullptr;
+    Twin2Engine::UI::Image* _fansMeetingCircleImage = nullptr;
+    Twin2Engine::UI::Image* _fansImage = nullptr;
     int _fansMeetingButtonEventHandleId = -1;
     int _fansMeetingButtonHoveringEventHandleId = -1;
     int _fansMeetingButtonDestroyedEventHandleId = -1;

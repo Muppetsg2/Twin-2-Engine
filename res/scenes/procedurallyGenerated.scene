@@ -2396,7 +2396,7 @@ GameObjects:
   - id: 64
     name: PossibleBonusBar
     isStatic: false
-    isActive: false
+    isActive: true
     transform:
       id: 151
       position:

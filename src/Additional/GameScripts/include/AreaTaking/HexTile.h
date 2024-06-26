@@ -52,8 +52,7 @@ public:
 	bool isFighting = false;
 
 	Playable* occupyingEntity = nullptr;
-	std::vector<Playable*> remotelyOccupyingEntities;
-	std::vector<float> remoteMultipliers;
+	//std::vector<float> remoteMultipliers;
 	float remoteMultiplier = 1.0f;
 	Playable* ownerEntity = nullptr;
 	float percentage = 0.0f;

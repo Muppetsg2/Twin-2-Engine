@@ -36,6 +36,7 @@ void HexTile::TakeOver()
 		multiplayer *= _affectingCities[index]->CalculateTakingOverSpeedMultiplier(this);
 	}
 
+
 	//if (ownerEntity)
 	if (ownerEntity && ownerEntity == (Playable*)GameManager::instance->GetPlayer())
 	{
@@ -61,6 +62,22 @@ void HexTile::TakeOver()
 	{
 		pgCity->active = false;
 		pgCityNegative->active = false;
+	}
+
+	// Na razie musi byæw takiej kolejnoœæ, po tym co jest i przed tym co jest.
+	if (ownerEntity)
+	{
+		if (ownerEntity->IsUsingAlbum())
+		{
+			if (occupyingEntity == ownerEntity)
+			{
+				multiplayer *= ownerEntity->albumTakeOverSpeedBuff;
+			}
+			else
+			{
+				multiplayer *= ownerEntity->albumTakeOverSpeedDebuff;
+			}
+		}
 	}
 
 	takeOverSpeed *= multiplayer;
@@ -120,6 +137,14 @@ void HexTile::LoseInfluence()
 	{
 		pgCity->active = false;
 		pgCityNegative->active = false;
+	}
+
+	if (ownerEntity)
+	{
+		if (ownerEntity->IsUsingAlbum())
+		{
+			multiplayer *= ownerEntity->albumLooseInterestDebuff;
+		}
 	}
 
 	percentage -= multiplayer * Time::GetDeltaTime();
@@ -425,6 +450,12 @@ void HexTile::OnDestroy()
 	else 
 		SPDLOG_WARN("Concert Road Instance was nullptr!");
 	texturesData = nullptr;
+
+	_adjacentTiles.clear();
+	_affectingCities.clear();
+
+	borders.clear();
+	borderJoints.clear();
 
 	if (particleGenerator) {
 		delete particleGenerator;

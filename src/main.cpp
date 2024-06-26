@@ -117,6 +117,7 @@ using namespace Generation::Generators;
 #include <TutorialsController.h>
 #include <CityLightsComponent.h>
 #include <MenuParticles.h>
+#include <BlockStartSelTut.h>
 #include <Abilities/ConcertAbilityController.h>
 
 #include <RadioStation/RadioStation.h>
@@ -391,6 +392,7 @@ int main(int, char**)
     ADD_COMPONENT("PauseManager", PauseManager);
     ADD_COMPONENT("SettingsManager", SettingsManager);
     ADD_COMPONENT("TutorialsController", TutorialsController);
+    ADD_COMPONENT("BlockStartSelTut", BlockStartSelTut);
 
 #pragma endregion
 
@@ -425,9 +427,9 @@ int main(int, char**)
     //SceneManager::AddScene("testScene", "res/scenes/HexTileEditScene.scene");
     //SceneManager::AddScene("testScene", new Scene());
     //SceneManager::LoadScene("testScene");
-    SceneManager::LoadScene("Menu");
+    //SceneManager::LoadScene("Menu");
     //SceneManager::LoadScene("Game");
-    //SceneManager::LoadScene("GameWithTutorial");
+    SceneManager::LoadScene("GameWithTutorial");
     SceneManager::Update();
 
 #if DISPLAY_SPLASH_SCREEN

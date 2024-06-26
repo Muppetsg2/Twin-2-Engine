@@ -525,6 +525,40 @@ void Player::StartPlayer(HexTile* startUpTile)
     }
 
     PopularityGainingBonusBarController::Instance()->AddCurrentBonus(TakeOverSpeed);
+
+    //PopularituGainMultiplier Bar Setting
+    glm::vec3 barColor(0.0f);
+    switch (colorIdx) // { "Blue", "Red", "Green", "Purple", "Yellow", "Cyan", "Pink" };
+    {
+    case 0:
+        barColor = glm::vec3(0.0f, 0.0f, 1.0f);
+        break;
+
+    case 1:
+        barColor = glm::vec3(1.0f, 0.0f, 0.0f);
+        break;
+
+    case 2:
+        barColor = glm::vec3(0.0f, 1.0f, 0.0f);
+        break;
+
+    case 3:
+        barColor = glm::vec3(1.0f, 0.0f, 1.0f);
+        break;
+
+    case 4:
+        barColor = glm::vec3(1.0f, 1.0f, 0.0f);
+        break;
+
+    case 5:
+        barColor = glm::vec3(0.0f, 1.0f, 1.0f);
+        break;
+
+    case 6:
+        barColor = glm::vec3(1.0f, 0.0f, 0.6f);
+        break;
+    }
+    PopularityGainingBonusBarController::Instance()->SetColor(barColor);
 }
 
 void Player::AlbumCall() {

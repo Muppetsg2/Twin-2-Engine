@@ -38,7 +38,7 @@ protected:
 public:
 	virtual void DrawEditor() override;
 #endif
-
+	void SetColor(glm::vec3 color);
 	void SetCurrentBonus(float bonus);
 	void AddCurrentBonus(float additionalCurrentBonus);
 	void RemoveCurrentBonus(float removedCurrentBonus);

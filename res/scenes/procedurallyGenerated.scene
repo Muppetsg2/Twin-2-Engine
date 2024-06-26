@@ -637,6 +637,18 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 103
+    path: res/textures/UI/HexBar.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 104
+    path: res/textures/UI/HexBarFill.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites:
   - id: 0
     alias: MiniGame_Blue_Top
@@ -953,6 +965,20 @@ Sprites:
     y: 0
     width: 256
     height: 256
+  - id: 45
+    alias: HexBar
+    texture: 103
+    x: 0
+    y: 0
+    width: 750
+    height: 45
+  - id: 46
+    alias: HexBarFill
+    texture: 104
+    x: 0
+    y: 0
+    width: 735
+    height: 35
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
@@ -2271,8 +2297,8 @@ GameObjects:
     transform:
       id: 145
       position:
-        x: 580
-        y: -371
+        x: 0
+        y: -267
         z: 0
       scale:
         x: 1
@@ -2287,14 +2313,14 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 40
+        sprite: 45
         color:
-          x: 0.196911216
-          y: 0.196911216
-          z: 0.196911216
+          x: 1
+          y: 1
+          z: 1
           w: 1
-        width: 300
-        height: 50
+        width: 750
+        height: 45
         layer: 0
         fillEnabled: false
         fillType: !<HORIZONTAL> 0
@@ -2305,15 +2331,15 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 40
+        sprite: 46
         color:
-          x: 0.35135138
-          y: 0.35135138
-          z: 0.35135138
+          x: 1
+          y: 1
+          z: 1
           w: 1
-        width: 280
-        height: 30
-        layer: 0
+        width: 735
+        height: 35
+        layer: 1
         fillEnabled: false
         fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
@@ -2351,15 +2377,15 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 40
+        sprite: 46
         color:
           x: 1
           y: 0
           z: 0
           w: 1
-        width: 280
-        height: 30
-        layer: 0
+        width: 736
+        height: 35
+        layer: 2
         fillEnabled: true
         fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
@@ -2370,7 +2396,7 @@ GameObjects:
   - id: 64
     name: PossibleBonusBar
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 151
       position:
@@ -2390,26 +2416,26 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 40
+        sprite: 46
         color:
           x: 1
           y: 0
           z: 0
           w: 0.431372553
-        width: 280
-        height: 30
-        layer: 0
+        width: 735
+        height: 35
+        layer: 2
         fillEnabled: true
         fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
         fillOffset: 0
-        fillProgress: 0.209999993
+        fillProgress: 0.0
     children:
       []
   - id: 91
     name: PopularityGainingPictogram
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 169
       position:

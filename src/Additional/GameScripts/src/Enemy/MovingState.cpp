@@ -196,6 +196,7 @@ void MovingState::StartTakingOver(Enemy* enemy)
 #endif
 
 	SPDLOG_INFO("Start Taking Over");
+	enemy->CurrTile->StartTakingOver(enemy);
 	enemy->ChangeState(&enemy->_takingOverState);
 }
 
@@ -316,11 +317,6 @@ void MovingState::ChooseTile(Enemy* enemy)
 	if (possible.size() != 0) {
 		auto& tiles = possible.begin()->second.begin()->second.begin()->second.begin()->second.begin()->second;
 		HexTile* result = tiles[Random::Range(0ull, tiles.size() - 1ull)];
-
-		if (enemy->CurrTile != nullptr) {
-			enemy->CurrTile->StopTakingOver(enemy);
-			enemy->SetCurrTile(nullptr);
-		}
 		enemy->SetMoveDestination(result);
 	}
 	else {

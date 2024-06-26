@@ -1377,6 +1377,34 @@ Audio:
     path: res\music\Classic\Empires_Collide_On_Streets.mp3
   - id: 12
     path: res/music/Pop/Twilight_Whispers_Embrace.mp3
+  - id: 21
+    path: res/music/voice-lines/first_step_1.mp3
+  - id: 22
+    path: res/music/voice-lines/first_step_2.mp3
+  - id: 23
+    path: res/music/voice-lines/first_step_3.mp3
+  - id: 24
+    path: res/music/voice-lines/first_step_4.mp3
+  - id: 25
+    path: res/music/voice-lines/Introduction_1.mp3
+  - id: 26
+    path: res/music/voice-lines/Introduction_2.mp3
+  - id: 27
+    path: res/music/voice-lines/patrons_1.mp3
+  - id: 28
+    path: res/music/voice-lines/patrons_2.mp3
+  - id: 29
+    path: res/music/voice-lines/album_1.mp3
+  - id: 29
+    path: res/music/voice-lines/album_2.mp3
+  - id: 30
+    path: res/music/voice-lines/concert_1.mp3
+  - id: 31
+    path: res/music/voice-lines/fan_meeting_1.mp3
+  - id: 32
+    path: res/music/voice-lines/fan_meeting_2.mp3
+  - id: 33
+    path: res/music/voice-lines/radio_tower_1.mp3
 Materials:
   - id: 0
     path: res/materials/tiles/daltonist/yellow/YellowHexTileStage3.material
@@ -7705,6 +7733,13 @@ GameObjects:
         y: 0
         z: 0
     components:
+      - id: 4991
+        enabled: true
+        type: Audio
+        audio: 3
+        loop: false
+        volume: 1.5
+        playOnStart: false
       - id: 4990
         enabled: true
         type: Canvas
@@ -7789,6 +7824,11 @@ GameObjects:
       - id: 5927
         enabled: true
         type: TutorialSeries
+        tutorialsVoiceIds:
+          - 21
+          - 22
+          - 23
+          - 24
         tutorialsIds:
           - 130
           - 131
@@ -7869,7 +7909,7 @@ GameObjects:
         type: Text
         isTransparent: true
         text: "\x00Z\x00O\x00R\x00Y\x00A"
-        font: 0
+        font: 1
         size: 40
         autoSize: false
         minSize: 0
@@ -7882,7 +7922,7 @@ GameObjects:
           z: 0
           w: 1
         alignX: !<LEFT> 0
-        alignY: !<CENTER> 1
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 8
@@ -8156,6 +8196,9 @@ GameObjects:
       - id: 5926
         enabled: true
         type: TutorialSeries
+        tutorialsVoiceIds:
+          - 25
+          - 26
         tutorialsIds:
           - 137
           - 138
@@ -8229,7 +8272,7 @@ GameObjects:
         type: Text
         isTransparent: true
         text: "\x00Z\x00O\x00R\x00Y\x00A"
-        font: 0
+        font: 1
         size: 40
         autoSize: false
         minSize: 0
@@ -8242,7 +8285,7 @@ GameObjects:
           z: 0
           w: 1
         alignX: !<LEFT> 0
-        alignY: !<CENTER> 1
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 8
@@ -8353,7 +8396,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00A\x00h\x00,\x00 \x00I\x00'\x00m\x00 \x00s\x00o\x00r\x00r\x00y\x00,\x00 \x00I\x00 \x00f\x00o\x00r\x00g\x00o\x00t\x00 \x00t\x00o\x00 \x00i\x00n\x00t\x00r\x00o\x00d\x00u\x00c\x00e\x00 \x00m\x00y\x00s\x00e\x00l\x00f\x00.\x00 \x00M\x00y\x00 \x00n\x00a\x00m\x00e\x00 \x00i\x00s\x00 \x00\n\x00Z\x00o\x00r\x00z\x00a\x00,\x00 \x00b\x00u\x00t\x00 \x00y\x00o\x00u\x00 \x00c\x00a\x00n\x00 \x00c\x00a\x00l\x00l\x00 \x00m\x00e\x00 \x00Z\x00o\x00r\x00y\x00a\x00/\x00D\x00a\x00w\x00n\x00.\x00 \x00I\x00'\x00m\x00 \x00o\x00n\x00e\x00 \x00o\x00f\x00 \x00\n\x00t\x00h\x00e\x00 \x00o\x00l\x00d\x00 \x00g\x00o\x00d\x00s\x00 \x00a\x00n\x00d\x00 \x00I\x00 \x00w\x00a\x00n\x00t\x00 \x00t\x00o\x00 \x00h\x00e\x00l\x00p\x00 \x00y\x00o\x00u\x00 \x00i\x00n\x00 \x00y\x00o\x00u\x00r\x00 \x00j\x00o\x00u\x00r\x00n\x00e\x00y\x00."
+        text: "\x00A\x00h\x00,\x00 \x00I\x00'\x00m\x00 \x00s\x00o\x00r\x00r\x00y\x00,\x00 \x00I\x00 \x00f\x00o\x00r\x00g\x00o\x00t\x00 \x00t\x00o\x00 \x00i\x00n\x00t\x00r\x00o\x00d\x00u\x00c\x00e\x00 \x00m\x00y\x00s\x00e\x00l\x00f\x00.\x00 \x00M\x00y\x00 \x00n\x00a\x00m\x00e\x00 \x00i\x00s\x00 \x00\n\x00Z\x00o\x00r\x00y\x00a\x00,\x00 \x00I\x00'\x00m\x00 \x00o\x00n\x00e\x00 \x00o\x00f\x00 \x00 \x00t\x00h\x00e\x00 \x00o\x00l\x00d\x00 \x00g\x00o\x00d\x00s\x00 \x00a\x00n\x00d\x00 \x00I\x00 \x00w\x00a\x00n\x00t\x00 \x00t\x00o\x00 \x00h\x00e\x00l\x00p\x00 \x00y\x00o\x00u\x00 \x00\n\x00i\x00n\x00 \x00y\x00o\x00u\x00r\x00 \x00j\x00o\x00u\x00r\x00n\x00e\x00y\x00."
         font: 0
         size: 30
         autoSize: false
@@ -8430,6 +8473,8 @@ GameObjects:
       - id: 5925
         enabled: true
         type: TutorialSeries
+        tutorialsVoiceIds:
+          - 34
         tutorialsIds:
           - 142
           - 143
@@ -8503,7 +8548,7 @@ GameObjects:
         type: Text
         isTransparent: true
         text: "\x00Z\x00O\x00R\x00Y\x00A"
-        font: 0
+        font: 1
         size: 40
         autoSize: false
         minSize: 0
@@ -8516,7 +8561,7 @@ GameObjects:
           z: 0
           w: 1
         alignX: !<LEFT> 0
-        alignY: !<CENTER> 1
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 8
@@ -8704,11 +8749,13 @@ GameObjects:
       - id: 5924
         enabled: true
         type: TutorialSeries
+        tutorialsVoiceIds:
+          - 27
+          - 28
         closeOnLast: true
         tutorialsIds:
           - 147
           - 148
-          - 149
           - 19
     children:
       - 145
@@ -8780,7 +8827,7 @@ GameObjects:
         type: Text
         isTransparent: true
         text: "\x00Z\x00O\x00R\x00Y\x00A"
-        font: 0
+        font: 1
         size: 40
         autoSize: false
         minSize: 0
@@ -8793,7 +8840,7 @@ GameObjects:
           z: 0
           w: 1
         alignX: !<LEFT> 0
-        alignY: !<CENTER> 1
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 8
@@ -8861,9 +8908,9 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00N\x00o\x00w\x00,\x00 \x00m\x00y\x00 \x00p\x00r\x00o\x00t\x00e\x00g\x00e\x00,\x00 \x00t\x00h\x00e\x00 \x00t\x00i\x00m\x00e\x00 \x00h\x00a\x00s\x00 \x00c\x00o\x00m\x00e\x00 \x00t\x00o\x00 \x00c\x00h\x00o\x00o\x00s\x00e\x00 \x00y\x00o\x00u\x00r\x00 \x00d\x00i\x00v\x00i\x00n\x00e\x00 \x00\n\x00b\x00e\x00n\x00e\x00f\x00a\x00c\x00t\x00o\x00r\x00.\x00 \x00T\x00h\x00r\x00e\x00e\x00 \x00g\x00o\x00d\x00s\x00 \x00s\x00t\x00a\x00n\x00d\x00 \x00b\x00e\x00f\x00o\x00r\x00e\x00 \x00y\x00o\x00u\x00,\x00 \x00e\x00a\x00c\x00h\x00 \x00o\x00f\x00f\x00e\x00r\x00i\x00n\x00g\x00 \x00\n\x00t\x00h\x00e\x00i\x00r\x00 \x00b\x00l\x00e\x00s\x00s\x00i\x00n\x00g\x00 \x00t\x00o\x00 \x00a\x00i\x00d\x00 \x00y\x00o\x00u\x00 \x00o\x00n\x00 \x00y\x00o\x00u\x00r\x00 \x00j\x00o\x00u\x00r\x00n\x00e\x00y\x00.\x00 \x00T\x00o\x00o\x00k\x00 \x00m\x00e\x00 \x00s\x00o\x00m\x00e\x00 \x00\n\x00t\x00i\x00m\x00e\x00 \x00t\x00o\x00 \x00c\x00o\x00n\x00v\x00i\x00n\x00c\x00e\x00 \x00t\x00h\x00e\x00m\x00,\x00 \x00b\x00u\x00t\x00 \x00h\x00e\x00r\x00e\x00 \x00t\x00h\x00e\x00y\x00 \x00a\x00r\x00e\x00 \x00j\x00u\x00s\x00t\x00 \x00f\x00o\x00r\x00 \x00y\x00o\x00u\x00."
+        text: "\x00N\x00o\x00w\x00,\x00 \x00m\x00y\x00 \x00p\x00r\x00o\x00t\x00e\x00g\x00e\x00,\x00 \x00t\x00h\x00e\x00 \x00t\x00i\x00m\x00e\x00 \x00h\x00a\x00s\x00 \x00c\x00o\x00m\x00e\x00 \x00t\x00o\x00 \x00c\x00h\x00o\x00o\x00s\x00e\x00 \x00y\x00o\x00u\x00r\x00 \x00d\x00i\x00v\x00i\x00n\x00e\x00 \x00\n\x00b\x00e\x00n\x00e\x00f\x00a\x00c\x00t\x00o\x00r\x00.\x00 \x00T\x00h\x00o\x00s\x00e\x00 \x00P\x00a\x00t\x00r\x00o\x00n\x00s\x00 \x00s\x00t\x00a\x00n\x00d\x00 \x00b\x00e\x00f\x00o\x00r\x00e\x00 \x00y\x00o\x00u\x00,\x00 \x00e\x00a\x00c\x00h\x00 \x00o\x00f\x00f\x00e\x00r\x00i\x00n\x00g\x00 \x00\n\x00t\x00h\x00e\x00i\x00r\x00 \x00b\x00l\x00e\x00s\x00s\x00i\x00n\x00g\x00 \x00t\x00o\x00 \x00a\x00i\x00d\x00 \x00y\x00o\x00u\x00 \x00o\x00n\x00 \x00y\x00o\x00u\x00r\x00 \x00j\x00o\x00u\x00r\x00n\x00e\x00y\x00.\x00 \x00T\x00o\x00o\x00k\x00 \x00m\x00e\x00 \x00s\x00o\x00m\x00e\x00 \x00\n\x00t\x00i\x00m\x00e\x00 \x00t\x00o\x00 \x00c\x00o\x00n\x00v\x00i\x00n\x00c\x00e\x00 \x00t\x00h\x00e\x00m\x00,\x00 \x00b\x00u\x00t\x00 \x00h\x00e\x00r\x00e\x00 \x00t\x00h\x00e\x00y\x00 \x00a\x00r\x00e\x00 \x00j\x00u\x00s\x00t\x00 \x00f\x00o\x00r\x00 \x00y\x00o\x00u\x00."
         font: 0
-        size: 30
+        size: 29
         autoSize: false
         minSize: 0
         maxSize: 0
@@ -8904,7 +8951,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00W\x00i\x00l\x00l\x00 \x00y\x00o\x00u\x00 \x00s\x00e\x00e\x00k\x00 \x00t\x00h\x00e\x00 \x00w\x00i\x00s\x00d\x00o\x00m\x00 \x00o\x00f\x00 \x00W\x00e\x00l\x00e\x00s\x00,\x00 \x00t\x00h\x00e\x00 \x00g\x00u\x00i\x00d\x00a\x00n\x00c\x00e\x00 \x00o\x00f\x00 \x00\n\x00D\x00o\x00l\x00a\x00 \x00-\x00 \x00L\x00a\x00d\x00y\x00 \x00o\x00f\x00 \x00F\x00a\x00t\x00e\x00,\x00 \x00o\x00r\x00 \x00t\x00h\x00e\x00 \x00s\x00t\x00r\x00e\x00n\x00g\x00t\x00h\x00 \x00o\x00f\x00 \x00P\x00e\x00r\x00u\x00n\x00?\x00 \x00C\x00h\x00o\x00o\x00s\x00e\x00 \x00\n\x00w\x00i\x00s\x00e\x00l\x00y\x00,\x00 \x00f\x00o\x00r\x00 \x00y\x00o\x00u\x00r\x00 \x00p\x00a\x00t\x00r\x00o\x00n\x00 \x00s\x00h\x00a\x00l\x00l\x00 \x00s\x00h\x00a\x00p\x00e\x00 \x00t\x00h\x00e\x00 \x00v\x00e\x00r\x00y\x00 \x00e\x00s\x00s\x00e\x00n\x00c\x00e\x00 \x00o\x00f\x00 \x00\n\x00y\x00o\x00u\x00r\x00 \x00d\x00e\x00s\x00t\x00i\x00n\x00y\x00."
+        text: "\x00T\x00h\x00e\x00 \x00s\x00t\x00a\x00g\x00e\x00 \x00i\x00s\x00 \x00s\x00e\x00t\x00,\x00 \x00a\x00n\x00d\x00 \x00t\x00h\x00e\x00 \x00a\x00u\x00d\x00i\x00e\x00n\x00c\x00e\x00 \x00a\x00w\x00a\x00i\x00t\x00s\x00.\x00 \x00E\x00m\x00b\x00r\x00a\x00c\x00e\x00 \x00\n\x00y\x00o\x00u\x00r\x00 \x00f\x00a\x00t\x00e\x00,\x00 \x00a\x00n\x00d\x00 \x00l\x00e\x00t\x00 \x00t\x00h\x00e\x00 \x00e\x00c\x00h\x00o\x00e\x00s\x00 \x00o\x00f\x00 \x00f\x00a\x00m\x00e\x00 \x00g\x00u\x00i\x00d\x00e\x00 \x00y\x00o\x00u\x00 \x00\n\x00t\x00o\x00 \x00g\x00r\x00e\x00a\x00t\x00n\x00e\x00s\x00s\x00."
         font: 0
         size: 30
         autoSize: false
@@ -9024,6 +9071,9 @@ GameObjects:
       - id: 5923
         enabled: true
         type: TutorialSeries
+        tutorialsVoiceIds:
+          - 32
+          - 33
         tutorialsIds:
           - 153
           - 154
@@ -9097,7 +9147,7 @@ GameObjects:
         type: Text
         isTransparent: true
         text: "\x00Z\x00O\x00R\x00Y\x00A"
-        font: 0
+        font: 1
         size: 40
         autoSize: false
         minSize: 0
@@ -9110,7 +9160,7 @@ GameObjects:
           z: 0
           w: 1
         alignX: !<LEFT> 0
-        alignY: !<CENTER> 1
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 8
@@ -9298,6 +9348,9 @@ GameObjects:
       - id: 5922
         enabled: true
         type: TutorialSeries
+        tutorialsVoiceIds:
+          - 29
+          - 30
         tutorialsIds:
           - 158
           - 159
@@ -9371,7 +9424,7 @@ GameObjects:
         type: Text
         isTransparent: true
         text: "\x00Z\x00O\x00R\x00Y\x00A"
-        font: 0
+        font: 1
         size: 40
         autoSize: false
         minSize: 0
@@ -9384,7 +9437,7 @@ GameObjects:
           z: 0
           w: 1
         alignX: !<LEFT> 0
-        alignY: !<CENTER> 1
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 8
@@ -9572,6 +9625,8 @@ GameObjects:
       - id: 5921
         enabled: true
         type: TutorialSeries
+        tutorialsVoiceIds:
+          - 31
         tutorialsIds:
           - 163
           - 657
@@ -9604,7 +9659,7 @@ GameObjects:
         type: Text
         isTransparent: true
         text: "\x00Z\x00O\x00R\x00Y\x00A"
-        font: 0
+        font: 1
         size: 40
         autoSize: false
         minSize: 0
@@ -9617,7 +9672,7 @@ GameObjects:
           z: 0
           w: 1
         alignX: !<LEFT> 0
-        alignY: !<CENTER> 1
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 8

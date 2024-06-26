@@ -48,14 +48,23 @@ bool CityTextureData::Deserialize(const YAML::Node& node)
 		!node["greenMaterialName"] || !node["yellowMaterialName"] || !node["redMaterialName"] || 
 		!node["pinkMaterialName"] || !node["purpleMaterialName"] || !ScriptableObject::Deserialize(node)) return false;
 
-	_neutralMaterial = MaterialsManager::GetMaterial(node["neutralMaterialName"].as<string>());
-	_blueMaterial = MaterialsManager::GetMaterial(node["blueMaterialName"].as<string>());
-	_cyanMaterial = MaterialsManager::GetMaterial(node["cyanMaterialName"].as<string>());
-	_greenMaterial = MaterialsManager::GetMaterial(node["greenMaterialName"].as<string>());
-	_yellowMaterial = MaterialsManager::GetMaterial(node["yellowMaterialName"].as<string>());
-	_redMaterial = MaterialsManager::GetMaterial(node["redMaterialName"].as<string>());
-	_pinkMaterial = MaterialsManager::GetMaterial(node["pinkMaterialName"].as<string>());
-	_purpleMaterial = MaterialsManager::GetMaterial(node["purpleMaterialName"].as<string>());
+	_neutralMaterialPath = node["neutralMaterialName"].as<string>();
+	_blueMaterialPath = node["blueMaterialName"].as<string>();
+	_redMaterialPath = node["redMaterialName"].as<string>();
+	_greenMaterialPath = node["greenMaterialName"].as<string>();
+	_purpleMaterialPath = node["purpleMaterialName"].as<string>();
+	_yellowMaterialPath = node["yellowMaterialName"].as<string>();
+	_cyanMaterialPath = node["cyanMaterialName"].as<string>();
+	_pinkMaterialPath = node["pinkMaterialName"].as<string>();
+
+	_neutralMaterial = MaterialsManager::GetMaterial(_neutralMaterialPath);
+	_blueMaterial = MaterialsManager::GetMaterial(_blueMaterialPath);
+	_cyanMaterial = MaterialsManager::GetMaterial(_cyanMaterialPath);
+	_greenMaterial = MaterialsManager::GetMaterial(_greenMaterialPath);
+	_yellowMaterial = MaterialsManager::GetMaterial(_yellowMaterialPath);
+	_redMaterial = MaterialsManager::GetMaterial(_redMaterialPath);
+	_pinkMaterial = MaterialsManager::GetMaterial(_pinkMaterialPath);
+	_purpleMaterial = MaterialsManager::GetMaterial(_purpleMaterialPath);
 
 	return true;
 }
@@ -64,21 +73,61 @@ Material* CityTextureData::GetMaterial(TILE_COLOR color)
 {
 	switch (color) {
 	case TILE_COLOR::NEUTRAL:
+		if (!_neutralMaterial)
+		{
+			_neutralMaterial = MaterialsManager::GetMaterial(_neutralMaterialPath);
+		}
 		return _neutralMaterial;
+
 	case TILE_COLOR::BLUE:
+		if (!_blueMaterial)
+		{
+			_blueMaterial = MaterialsManager::GetMaterial(_blueMaterialPath);
+		}
 		return _blueMaterial;
+
 	case TILE_COLOR::RED:
+		if (!_redMaterial)
+		{
+			_redMaterial = MaterialsManager::GetMaterial(_redMaterialPath);
+		}
 		return _redMaterial;
+
 	case TILE_COLOR::GREEN:
+		if (!_greenMaterial)
+		{
+			_greenMaterial = MaterialsManager::GetMaterial(_greenMaterialPath);
+		}
 		return _greenMaterial;
+
 	case TILE_COLOR::PURPLE:
+		if (!_purpleMaterial)
+		{
+			_purpleMaterial = MaterialsManager::GetMaterial(_purpleMaterialPath);
+		}
 		return _purpleMaterial;
+
 	case TILE_COLOR::YELLOW:
+		if (!_yellowMaterial)
+		{
+			_yellowMaterial = MaterialsManager::GetMaterial(_yellowMaterialPath);
+		}
 		return _yellowMaterial;
+
 	case TILE_COLOR::CYAN:
+		if (!_cyanMaterial)
+		{
+			_cyanMaterial = MaterialsManager::GetMaterial(_cyanMaterialPath);
+		}
 		return _cyanMaterial;
+
 	case TILE_COLOR::PINK:
+		if (!_pinkMaterial)
+		{
+			_pinkMaterial = MaterialsManager::GetMaterial(_pinkMaterialPath);
+		}
 		return _pinkMaterial;
+
 	default:
 		return nullptr;
 	}

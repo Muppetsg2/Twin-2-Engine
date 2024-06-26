@@ -429,7 +429,7 @@ Root:
         - 31
         - 30
 GameObjects:
-  - id: 41
+  - id: 1
     name: AffectedMark
     isStatic: false
     isActive: false

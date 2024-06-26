@@ -53,6 +53,9 @@ Root:
       fansRadius: 2
       fansStartMoney: 12
       albumStartMoney: 8
+      albumTakeOverSpeedBuff: 1.2
+      albumTakeOverSpeedDebuff: 0.8
+      albumLooseInterestDebuff: 0.0
     - id: 3
       enabled: true
       type: EnemyMovement

@@ -180,6 +180,11 @@ void Playable::UseAlbum() {
     OnEventAlbumStarted(this);
 }
 
+bool Playable::IsUsingAlbum() const
+{
+    return currAlbumTime > 0.0f;
+}
+
 void Playable::EndUsingAlbum() {
 
     isAlbumActive = false;
@@ -335,9 +340,9 @@ void Playable::CheckIfDead(Playable* playable) {
 
 void Playable::RemoveOwnTile(HexTile* tileToRemove, Playable* taker)
 {
-    SPDLOG_WARN("RemoveOwnTile1");
+    //SPDLOG_WARN("RemoveOwnTile1");
     if (!OwnTiles.empty()) {
-        SPDLOG_WARN("RemoveOwnTile2");
+        //SPDLOG_WARN("RemoveOwnTile2");
         OwnTiles.remove(tileToRemove);
         CheckIfDead(taker);
     }
@@ -575,6 +580,9 @@ YAML::Node Playable::Serialize() const
     node["fansRadius"] = fansRadius;
     node["fansStartMoney"] = fansStartMoney;
     node["albumStartMoney"] = albumStartMoney;
+    node["albumTakeOverSpeedBuff"] = albumTakeOverSpeedBuff;
+    node["albumTakeOverSpeedDebuff"] = albumTakeOverSpeedDebuff;
+    node["albumLooseInterestDebuff"] = albumLooseInterestDebuff;
 
     return node;
 }
@@ -588,6 +596,9 @@ bool Playable::Deserialize(const YAML::Node& node)
     fansRadius = node["fansRadius"].as<float>();
     fansStartMoney = node["fansStartMoney"].as<float>();
     albumStartMoney = node["albumStartMoney"].as<float>();
+    albumTakeOverSpeedBuff = node["albumTakeOverSpeedBuff"].as<float>();
+    albumTakeOverSpeedDebuff = node["albumTakeOverSpeedDebuff"].as<float>();
+    albumLooseInterestDebuff = node["albumLooseInterestDebuff"].as<float>();
 
     return true;
 }
@@ -597,6 +608,9 @@ bool Playable::DrawInheritedFields()
     if (Component::DrawInheritedFields()) return true;
 
     ImGui::Text("TakingOverSpeed: %f", TakeOverSpeed);
+    ImGui::Text("albumTakeOverSpeedBuff: %f", albumTakeOverSpeedBuff);
+    ImGui::Text("albumTakeOverSpeedDebuff: %f", albumTakeOverSpeedDebuff);
+    ImGui::Text("albumLooseInterestDebuff: %f", albumLooseInterestDebuff);
 
     return false;
 }

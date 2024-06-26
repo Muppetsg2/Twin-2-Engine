@@ -53,6 +53,10 @@ public:
 private:
     float albumCooldown = 5.0f; // parameter
 public:
+    float albumTakeOverSpeedBuff = 1.2f;
+    float albumTakeOverSpeedDebuff = 0.8f;
+    float albumLooseInterestDebuff = 0.0f;
+
     float usedAlbumCooldown = 5.0f; // parameter
     float currAlbumTime;
     float currAlbumCooldown;
@@ -129,6 +133,7 @@ public:
 
 #pragma region AlbumAbility
     void UseAlbum();
+    bool IsUsingAlbum() const;
     void EndUsingAlbum();
     HexTile* GetAlbumTile();
     void AlbumUpdate();

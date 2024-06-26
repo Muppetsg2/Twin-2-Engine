@@ -1373,9 +1373,9 @@ GameObjects:
         y: -0.349999994
         z: 0
       scale:
-        x: 55
+        x: 63
         y: 1
-        z: 55
+        z: 63
       rotation:
         x: 0
         y: 0

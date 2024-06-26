@@ -121,6 +121,7 @@ void Player::Initialize() {
     _fansMeetingButtonObject = SceneManager::FindObjectByName("FansBg");
     _fansMeetingKey = SceneManager::FindObjectByName("KeyFansMeeting")->GetTransform();
     _fansMeetingButton = _fansMeetingButtonObject->GetComponent<Button>();
+    _fansImage = SceneManager::FindObjectByName("Fans")->GetComponent<Image>();
     _fansMeetingText = SceneManager::FindObjectByName("FansCost")->GetComponent<Text>();
 
     _fansMeetingCircleImage = SceneManager::FindObjectByName("FansBg")->GetComponent<Image>();
@@ -346,7 +347,7 @@ void Player::Update() {
         }
 
         // FANS MEETING INTERFACE ELEMENT
-        if (_isHoveringFansMeetingButton && !_isShowingFansMeetingAffectedTiles)
+        if (_isHoveringFansMeetingButton && !_isShowingFansMeetingAffectedTiles && move->reachEnd)
         {
             ShowAffectedTiles();
 
@@ -360,12 +361,15 @@ void Player::Update() {
         {
             HideAffectedTiles();
 
-            //fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
-            _fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
-            _fansMeetingKey->SetLocalPosition(_keyPosition);
-            _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
+            if (move->reachEnd)
+            {
+                //fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
+                _fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+                _fansMeetingKey->SetLocalPosition(_keyPosition);
+                _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
 
-            //_negativeMoneyText->GetGameObject()->SetActive(false);
+                //_negativeMoneyText->GetGameObject()->SetActive(false);
+            }
         }
         _isHoveringFansMeetingButton = false;
 
@@ -586,7 +590,7 @@ void Player::AlbumCall() {
 }
 
 void Player::FansMeetingCall() {
-    if (currFansTime <= 0.0f && currFansCooldown <= 0.0f && _money->SpendMoney(fansRequiredMoney)) {
+    if (move->reachEnd && currFansTime <= 0.0f && currFansCooldown <= 0.0f && _money->SpendMoney(fansRequiredMoney)) {
         currFansTime = fansTime;
         _fansMeetingButton->SetInteractable(false);
         _isHoveringFansMeetingButton = false;
@@ -694,6 +698,9 @@ void Player::StartMove(HexTile* tile) {
 
     GameManager::instance->changeTile = true;
 
+    glm::vec4 _abilityInactiveColor = glm::vec4(0.2, 0.2, 0.2, 1.0f);
+    _fansImage->SetColor(_abilityInactiveColor);
+    
     if (isFansActive) {
         if (CurrTile != tileBefore) {
             _endFans = true;
@@ -716,6 +723,7 @@ void Player::FinishMove(HexTile* tile) {
     if (CurrTile == nullptr) {
         return;
     }
+    _fansImage->SetColor(vec4(1.0f));
 
     if (_hexIndicator)
     {

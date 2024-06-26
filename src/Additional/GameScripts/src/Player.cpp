@@ -698,7 +698,6 @@ void Player::StartMove(HexTile* tile) {
 
     GameManager::instance->changeTile = true;
 
-    glm::vec4 _abilityInactiveColor = glm::vec4(0.2, 0.2, 0.2, 1.0f);
     _fansImage->SetColor(_abilityInactiveColor);
     
     if (isFansActive) {
@@ -938,6 +937,7 @@ YAML::Node Player::Serialize() const
     node["abilityCooldownColor"] = _abilityCooldownColor;
     node["enoughMoneyColor"] = _enoughMoneyColor;
     node["notEnoughMoneyColor"] = _notEnoughMoneyColor;
+    node["abilityInactiveColor"] = _abilityInactiveColor;
     node["negativeMoneyTextXOffset"] = _negativeMoneyTextXOffset;
     node["negativeMoneyTextLetterWidth"] = _negativeMoneyTextLetterWidth;
     if (_starPrefab != nullptr) {
@@ -966,6 +966,7 @@ bool Player::Deserialize(const YAML::Node& node)
     _abilityCooldownColor = node["abilityCooldownColor"].as<vec4>();
     _enoughMoneyColor = node["enoughMoneyColor"].as<vec4>();
     _notEnoughMoneyColor = node["notEnoughMoneyColor"].as<vec4>();
+    _abilityInactiveColor = node["abilityInactiveColor"].as<vec4>();
     _negativeMoneyTextXOffset = node["negativeMoneyTextXOffset"].as<float>();
     _negativeMoneyTextLetterWidth = node["negativeMoneyTextLetterWidth"].as<float>();
 

@@ -56,6 +56,8 @@ private:
     Playable* _loosingFightPlayable = nullptr;
 
     // Player UI
+    glm::vec4 _abilityInactiveColor = glm::vec4(0.2, 0.2, 0.2, 1.0f);
+
     // Album
     Twin2Engine::UI::Text* _albumText;
     Twin2Engine::UI::Button* _albumButton;

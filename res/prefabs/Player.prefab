@@ -121,6 +121,11 @@ Root:
         y: 0
         z: 0
         w: 1
+      abilityInactiveColor:
+        x: 0.4
+        y: 0.4
+        z: 0.4
+        w: 1
       negativeMoneyTextXOffset: 140
       negativeMoneyTextLetterWidth: 15
       spriteButtonStep1: 0

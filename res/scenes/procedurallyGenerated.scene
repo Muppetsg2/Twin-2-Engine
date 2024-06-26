@@ -24,12 +24,30 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 4
-    path: res/textures/tiles/white2.png
+    path: res/textures/tiles/tile_regress/red2_2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 5
+    path: res/textures/tiles/white2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 6
+    path: res/textures/tiles/pink1d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 7
+    path: res/textures/tiles/tile_regress/purple2_2d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 8
     path: res/textures/patrons/Jutrzenka.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
@@ -37,49 +55,67 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 6
+  - id: 9
     path: res/textures/tiles/pink1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 7
-    path: res\textures\UI\continue.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 8
-    path: res\textures\UI\you_won_2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 9
-    path: res/textures/tiles/tile_regress/blue1_2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
   - id: 10
-    path: res/textures/UI/ButtonFrame.png
+    path: res/textures/tiles/tile_regress/cyan1_2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 11
-    path: res/textures/UI/player_colour/blueT.png
+    path: res\textures\UI\continue.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 12
-    path: res/textures/tiles/tile_regress/cyan2_2.png
+    path: res/textures/tiles/tile_regress/cyan2_2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 13
+    path: res\textures\UI\you_won_2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 14
+    path: res/textures/tiles/tile_regress/blue1_2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 15
+    path: res/textures/UI/ButtonFrame.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 16
+    path: res/textures/UI/player_colour/blueT.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 17
+    path: res/textures/UI/HexBar.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 18
+    path: res/textures/tiles/tile_regress/cyan2_2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 19
     path: res/textures/patrons/Perun.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
@@ -87,7 +123,7 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 14
+  - id: 20
     path: res/textures/UI/abilities.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -95,121 +131,151 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 15
-    path: res/textures/UI/player_colour/redT.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 16
-    path: res/textures/UI/player_colour/yellowB.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 17
-    path: res/textures/UI/player_colour/purpleB.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 18
-    path: res/textures/UI/player_colour/greenT.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 19
-    path: res/textures/tiles/tile_regress/green1_2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 20
-    path: res/textures/tiles/green2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
   - id: 21
-    path: res/textures/tiles/tile_regress/red1_2.png
+    path: res/textures/tiles/red2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 22
-    path: res/textures/tiles/red1.png
+    path: res/textures/UI/player_colour/redT.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 23
-    path: res/textures/UI/title.png
+    path: res/textures/UI/player_colour/yellowB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 24
-    path: res/textures/UI/player_colour/pinkT.png
+    path: res/textures/UI/player_colour/purpleB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 25
-    path: res/textures/carTextures/red.png
+    path: res/textures/UI/player_colour/greenT.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 26
-    path: res/textures/pictograms/PopularityGainingSpeedPictogram.png
+    path: res/textures/tiles/tile_regress/green1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 27
-    path: res/textures/tiles/pink2.png
+    path: res/textures/tiles/green2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 28
-    path: res/textures/radioTowerBuildingTexture.png
+    path: res/textures/tiles/tile_regress/purple1_2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 29
-    path: res/textures/cityTextures/yellow.png
+    path: res/textures/tiles/blue3d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 30
-    path: res/textures/UI/player_colour/yellowT.png
+    path: res/textures/tiles/tile_regress/red1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 31
-    path: res/textures/tiles/blue3.png
+    path: res/textures/tiles/red1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 32
-    path: res/textures/particle.png
+    path: res/textures/UI/title.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 33
-    path: res/textures/cityTextures/blue.png
+    path: res/textures/UI/player_colour/pinkT.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 34
+    path: res/textures/carTextures/red.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 35
+    path: res/textures/particles/shield2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 36
+    path: res/textures/pictograms/PopularityGainingSpeedPictogram.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 37
+    path: res/textures/tiles/pink2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 38
+    path: res/textures/radioTowerBuildingTexture.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 39
+    path: res/textures/cityTextures/yellow.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 40
+    path: res/textures/UI/player_colour/yellowT.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 41
+    path: res/textures/tiles/blue3.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 42
+    path: res/textures/particle.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 43
+    path: res/textures/cityTextures/blue.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 44
+    path: res/textures/particles/brokenShield.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 45
     path: res/textures/UI/concert.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -217,227 +283,31 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 35
+  - id: 46
     path: res/textures/tiles/cyan2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 36
-    path: res/textures/tiles/red2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 37
-    path: res/textures/tiles/purple2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 38
-    path: res/textures/tiles/cyan3.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 39
-    path: res/textures/tiles/tile_regress/cyan1_2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 40
-    path: res/textures/particles/starParticle.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 41
-    path: res/textures/UI/graph.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 42
-    path: res\textures\UI\title2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 43
-    path: res/textures/tiles/tile_regress/blue2_2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 44
-    path: res\textures\UI\shape_hexagon.png
-    fileFormat: !<SRGBA> 35906
-    engineFormat: !<RGBA> 6408
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 45
-    path: res/textures/UI/player_colour/blueB.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 46
-    path: res/textures/tiles/purple1.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
   - id: 47
-    path: res/textures/carTextures/green.png
+    path: res\textures\UI\new_game.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 48
-    path: res/textures/UI/player_colour/cyanT.png
+    path: res/textures/tiles/red2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 49
-    path: res/textures/UI/player_colour/pinkB.png
+    path: res/textures/tiles/purple2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 50
-    path: res/textures/UI/guitar.png
-    fileFormat: !<SRGBA> 35906
-    engineFormat: !<RGBA> 6408
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 51
-    path: res/textures/tiles/yellow2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 52
-    path: res/textures/tiles/tile_regress/red2_2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 53
-    path: res\textures\white_circle.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 54
-    path: res/textures/tiles/pink3.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 55
-    path: res/textures/cityTextures/purple.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 56
-    path: res/textures/ArrowParticle.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 57
-    path: res/textures/mountainTex2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 58
-    path: res/textures/tiles/tile_regress/purple2_2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 59
-    path: res/textures/cityTextures/neutral.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 60
-    path: res/textures/UI/vs2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 61
-    path: res/textures/tiles/purple3.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 62
-    path: res/textures/UI/pure_background.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 63
-    path: res/textures/carTextures/cyan.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 64
-    path: res/textures/cityTextureColour.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 65
-    path: res\textures\UI\shape_hexagon_border.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 66
-    path: res/textures/cityTextures/green.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 67
-    path: res\textures\white.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 68
-    path: res/textures/tiles/tile_regress/green2_2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 69
-    path: res/textures/tiles/cyan1.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 70
-    path: res/textures/tiles/red3.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 71
     path: res/textures/UI/fanMeeting.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -445,13 +315,323 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 51
+    path: res/textures/tiles/cyan3.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 52
+    path: res/textures/tiles/tile_regress/cyan1_2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 53
+    path: res/textures/tiles/tile_regress/red1_2d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 54
+    path: res/textures/particles/starParticle.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 55
+    path: res/textures/UI/graph.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 56
+    path: res\textures\UI\title2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 57
+    path: res/textures/tiles/pink2d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 58
+    path: res/textures/tiles/tile_regress/blue2_2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 59
+    path: res/textures/tiles/blue2d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 60
+    path: res\textures\UI\shape_hexagon.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 61
+    path: res/textures/UI/player_colour/blueB.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 62
+    path: res/textures/tiles/pink3d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 63
+    path: res/textures/tiles/purple1.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 64
+    path: res/textures/carTextures/green.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 65
+    path: res/textures/UI/player_colour/cyanT.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 66
+    path: res/textures/UI/player_colour/pinkB.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 67
+    path: res/textures/tiles/purple1d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 68
+    path: res/textures/UI/guitar.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 69
+    path: res/textures/tiles/yellow2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 70
+    path: res/textures/tiles/tile_regress/red2_2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 71
+    path: res/textures/tiles/green3d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
   - id: 72
-    path: res/textures/UI/player_colour/redB.png
+    path: res/textures/tiles/cyan3d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 73
+    path: res/textures/tiles/purple3d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 74
+    path: res/textures/tiles/green2d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 75
+    path: res\textures\white_circle.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 76
+    path: res/textures/tiles/pink3.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 77
+    path: res/textures/tiles/yellow2d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 78
+    path: res/textures/cityTextures/purple.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 79
+    path: res/textures/ArrowParticle.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 80
+    path: res/textures/tiles/yellow3d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 81
+    path: res/textures/tiles/red3d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 82
+    path: res/textures/mountainTex2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 83
+    path: res/textures/tiles/tile_regress/purple2_2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 84
+    path: res/textures/cityTextures/neutral.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 85
+    path: res/textures/UI/vs2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 86
+    path: res/textures/UI/HexBarFill.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 87
+    path: res/textures/tiles/tile_regress/blue1_2d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 88
+    path: res/textures/tiles/purple3.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 89
+    path: res/textures/UI/pure_background.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 90
+    path: res/textures/tiles/purple2d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 91
+    path: res/textures/carTextures/cyan.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 92
+    path: res/textures/cityTextureColour.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 93
+    path: res\textures\UI\shape_hexagon_border.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 94
+    path: res/textures/tiles/cyan2d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 95
+    path: res/textures/cityTextures/green.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 96
+    path: res\textures\white.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 97
+    path: res/textures/tiles/tile_regress/green2_2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 98
+    path: res/textures/tiles/blue1d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 99
+    path: res/textures/tiles/cyan1.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 100
+    path: res/textures/tiles/red3.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 101
+    path: res/textures/tiles/green1d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 102
+    path: res/textures/UI/player_colour/redB.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 103
     path: res/textures/UI/launchpad.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -459,55 +639,61 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 74
+  - id: 104
     path: res/textures/UI/player_colour/greenB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 75
+  - id: 105
+    path: res/textures/tiles/tile_regress/pink2_2d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 106
     path: res/textures/tiles/tile_regress/pink1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 76
+  - id: 107
     path: res/textures/UI/you_lost.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 77
+  - id: 108
     path: res/textures/particles/blackStarParticle.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 78
+  - id: 109
     path: res/textures/tiles/blue1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 79
+  - id: 110
     path: res\textures\UI\arrows.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 80
+  - id: 111
     path: res/textures/tiles/yellow1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 81
+  - id: 112
     path: res/textures/UI/player_colour/cyanB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 82
+  - id: 113
     path: res/textures/UI/drum.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -515,91 +701,133 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 83
+  - id: 114
     path: res/textures/carTextures/blue.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 84
+  - id: 115
     path: res/textures/tiles/tile_regress/pink2_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 85
+  - id: 116
     path: res/textures/tiles/yellow3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 86
+  - id: 117
+    path: res/textures/tiles/tile_regress/green2_2d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 118
     path: res/textures/UI/you_won.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 87
+  - id: 119
+    path: res/textures/tiles/tile_regress/yellow1_2d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 120
+    path: res/textures/tiles/yellow1d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 121
     path: res\textures\UI\menu.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 88
+  - id: 122
+    path: res/textures/tiles/tile_regress/green1_2d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 123
     path: res/textures/cityTextures/pink.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 89
+  - id: 124
     path: res/textures/carTextures/yellow.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 90
+  - id: 125
+    path: res/textures/tiles/tile_regress/blue2_2d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 126
     path: res\textures\UI\graphArrow.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 91
+  - id: 127
+    path: res/textures/tiles/tile_regress/yellow2_2d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 128
     path: res/textures/tiles/green3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 92
+  - id: 129
+    path: res/textures/tiles/tile_regress/pink1_2d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 130
     path: res/textures/carTextures/pink.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 93
+  - id: 131
     path: res/textures/tiles/tile_regress/yellow1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 94
+  - id: 132
     path: res/textures/radioTowerTexture.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 95
+  - id: 133
     path: res\textures\UI\pause.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 96
+  - id: 134
     path: res/textures/cityTextures/red.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 97
+  - id: 135
     path: res\textures\UI\album.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -607,49 +835,49 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 98
+  - id: 136
+    path: res/textures/tiles/cyan1d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 137
     path: res\textures\UI\you_lost_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 99
+  - id: 138
+    path: res/textures/tiles/red1d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 139
     path: res/textures/carTextures/purple.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 100
+  - id: 140
     path: res/textures/tiles/tile_regress/purple1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 101
+  - id: 141
     path: res/textures/UI/player_colour/purpleT.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 102
+  - id: 142
     path: res/textures/cityTextures/cyan.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 103
-    path: res/textures/UI/HexBar.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 104
-    path: res/textures/UI/HexBarFill.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 105
+  - id: 145
     path: res/textures/patrons/Rusalka.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
@@ -657,7 +885,7 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 106
+  - id: 146
     path: res/textures/UI/patron_base.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
@@ -666,343 +894,352 @@ Textures:
 Sprites:
   - id: 0
     alias: MiniGame_Blue_Top
-    texture: 11
+    texture: 16
     x: 0
     y: 0
     width: 200
     height: 540
   - id: 1
     alias: ArrowLeft
-    texture: 79
+    texture: 110
     x: 512
     y: 0
     width: 256
     height: 256
   - id: 2
     alias: Pause
-    texture: 95
+    texture: 133
     x: 0
     y: 0
     width: 75
     height: 75
   - id: 3
     alias: MiniGame_Red_Back
-    texture: 72
+    texture: 102
     x: 0
     y: 0
     width: 310
     height: 540
   - id: 4
     alias: MiniGame_You_Won
-    texture: 8
+    texture: 13
     x: 0
     y: 0
     width: 640
     height: 134
   - id: 5
     alias: MiniGame_Purple_Back
-    texture: 17
+    texture: 24
     x: 0
     y: 0
     width: 310
     height: 540
   - id: 6
     alias: MiniGame_Red_Top
-    texture: 15
+    texture: 22
     x: 0
     y: 0
     width: 200
     height: 540
   - id: 7
     alias: Launchpad
-    texture: 73
+    texture: 103
     x: 0
     y: 0
     width: 256
     height: 256
   - id: 8
     alias: Fans
-    texture: 71
+    texture: 50
     x: 0
     y: 0
     width: 256
     height: 256
   - id: 9
     alias: Drum
-    texture: 82
+    texture: 113
     x: 0
     y: 0
     width: 256
     height: 256
   - id: 10
     alias: Guitar
-    texture: 50
+    texture: 68
     x: 0
     y: 0
     width: 256
     height: 256
   - id: 11
     alias: PerunImage
-    texture: 13
+    texture: 19
     x: 0
     y: 0
-    width: 664
-    height: 742
+    width: 700
+    height: 700
   - id: 12
     alias: MiniGame_VS
-    texture: 60
+    texture: 85
     x: 0
     y: 0
     width: 750
     height: 540
   - id: 13
     alias: ArrowDown
-    texture: 79
+    texture: 110
     x: 256
     y: 0
     width: 256
     height: 256
   - id: 14
     alias: MiniGame_You_Lost
-    texture: 98
+    texture: 137
     x: 0
     y: 0
     width: 640
     height: 134
   - id: 15
     alias: CityPictogram
-    texture: 26
+    texture: 36
     x: 0
     y: 0
     width: 64
     height: 64
   - id: 16
     alias: MiniGame_Purple_Top
-    texture: 101
+    texture: 141
     x: 0
     y: 0
     width: 200
     height: 540
   - id: 17
     alias: HexTileShape
-    texture: 44
+    texture: 60
     x: 0
     y: 0
     width: 346
     height: 400
   - id: 18
     alias: HexTileShapeBorder
-    texture: 65
+    texture: 93
     x: 0
     y: 0
     width: 348
     height: 400
   - id: 19
+    alias: HexBar
+    texture: 17
+    x: 0
+    y: 0
+    width: 750
+    height: 45
+  - id: 20
     alias: ButtonFrame
-    texture: 10
+    texture: 15
     x: 0
     y: 0
     width: 144
     height: 153
-  - id: 20
+  - id: 21
     alias: MiniGame_Yellow_Top
-    texture: 30
+    texture: 40
     x: 0
     y: 0
     width: 200
     height: 540
-  - id: 21
+  - id: 22
     alias: MiniGame_Title
-    texture: 42
+    texture: 56
     x: 0
     y: 0
     width: 640
     height: 100
-  - id: 22
+  - id: 23
     alias: ArrowRight
-    texture: 79
+    texture: 110
     x: 768
     y: 0
     width: 256
     height: 256
-  - id: 23
+  - id: 24
     alias: MenuButton
-    texture: 87
+    texture: 121
     x: 0
     y: 0
     width: 200
     height: 75
-  - id: 24
-    alias: MiniGame_Cyan_Top
-    texture: 48
-    x: 0
-    y: 0
-    width: 200
-    height: 540
   - id: 25
-    alias: HexagonSprite
-    texture: 44
+    alias: HexBarFill
+    texture: 86
     x: 0
     y: 0
-    width: 256
-    height: 256
+    width: 735
+    height: 35
   - id: 26
-    alias: MiniGame_Pink_Top
-    texture: 24
+    alias: MiniGame_Cyan_Top
+    texture: 65
     x: 0
     y: 0
     width: 200
     height: 540
   - id: 27
-    alias: GraphArrow
-    texture: 90
-    x: 0
-    y: 0
-    width: 72
-    height: 100
-  - id: 28
-    alias: Concert
-    texture: 34
+    alias: HexagonSprite
+    texture: 60
     x: 0
     y: 0
     width: 256
     height: 256
+  - id: 28
+    alias: MiniGame_Pink_Top
+    texture: 33
+    x: 0
+    y: 0
+    width: 200
+    height: 540
   - id: 29
+    alias: GraphArrow
+    texture: 126
+    x: 0
+    y: 0
+    width: 72
+    height: 100
+  - id: 30
+    alias: Concert
+    texture: 45
+    x: 0
+    y: 0
+    width: 256
+    height: 256
+  - id: 31
     alias: Abilities
-    texture: 14
+    texture: 20
     x: 0
     y: 0
     width: 800
     height: 225
-  - id: 30
-    alias: MiniGame_Cyan_Back
-    texture: 81
-    x: 0
-    y: 0
-    width: 310
-    height: 540
-  - id: 31
-    alias: MiniGame_Background
-    texture: 62
-    x: 0
-    y: 0
-    width: 640
-    height: 540
   - id: 32
-    alias: MiniGame_Yellow_Back
-    texture: 16
+    alias: MiniGame_Cyan_Back
+    texture: 112
     x: 0
     y: 0
     width: 310
     height: 540
   - id: 33
-    alias: MiniGame_Green_Top
-    texture: 18
-    x: 0
-    y: 0
-    width: 200
-    height: 540
-  - id: 34
-    alias: ContinueButton
-    texture: 7
+    alias: NewGameButton
+    texture: 47
     x: 0
     y: 0
     width: 200
     height: 75
+  - id: 34
+    alias: MiniGame_Background
+    texture: 89
+    x: 0
+    y: 0
+    width: 640
+    height: 540
   - id: 35
-    alias: MiniGame_Blue_Back
-    texture: 45
+    alias: MiniGame_Yellow_Back
+    texture: 23
     x: 0
     y: 0
     width: 310
     height: 540
   - id: 36
-    alias: MiniGame_Green_Back
-    texture: 74
+    alias: MiniGame_Green_Top
+    texture: 25
+    x: 0
+    y: 0
+    width: 200
+    height: 540
+  - id: 37
+    alias: ContinueButton
+    texture: 11
+    x: 0
+    y: 0
+    width: 200
+    height: 75
+  - id: 38
+    alias: MiniGame_Blue_Back
+    texture: 61
     x: 0
     y: 0
     width: 310
     height: 540
-  - id: 37
+  - id: 39
+    alias: MiniGame_Green_Back
+    texture: 104
+    x: 0
+    y: 0
+    width: 310
+    height: 540
+  - id: 40
     alias: Album
-    texture: 97
+    texture: 135
     x: 0
     y: 0
     width: 256
     height: 256
-  - id: 38
+  - id: 41
     alias: PopularityGainingSpeedPictogram
-    texture: 26
+    texture: 36
     x: 0
     y: 0
     width: 64
     height: 64
-  - id: 39
-    alias: White_Circle
-    texture: 53
-    x: 0
-    y: 0
-    width: 100
-    height: 100
-  - id: 40
-    alias: White_Box
-    texture: 67
-    x: 0
-    y: 0
-    width: 100
-    height: 100
-  - id: 41
-    alias: MiniGame_StrengthGraph
-    texture: 41
-    x: 0
-    y: 0
-    width: 256
-    height: 256
   - id: 42
-    alias: MiniGame_Pink_Back
-    texture: 49
+    alias: White_Circle
+    texture: 75
     x: 0
     y: 0
-    width: 310
-    height: 540
+    width: 100
+    height: 100
   - id: 43
-    alias: JutrzenkaImage
-    texture: 5
+    alias: White_Box
+    texture: 96
     x: 0
     y: 0
-    width: 700
-    height: 700
+    width: 100
+    height: 100
   - id: 44
-    alias: ArrowUp
-    texture: 79
+    alias: MiniGame_StrengthGraph
+    texture: 55
     x: 0
     y: 0
     width: 256
     height: 256
   - id: 45
-    alias: HexBar
-    texture: 103
+    alias: MiniGame_Pink_Back
+    texture: 66
     x: 0
     y: 0
-    width: 750
-    height: 45
+    width: 310
+    height: 540
   - id: 46
-    alias: HexBarFill
-    texture: 104
-    x: 0
-    y: 0
-    width: 735
-    height: 35
-  - id: 47
-    alias: Rusalka
-    texture: 105
+    alias: JutrzenkaImage
+    texture: 8
     x: 0
     y: 0
     width: 700
     height: 700
+    width: 727
+    height: 726
+  - id: 47
+    alias: ArrowUp
+    texture: 110
+    x: 0
+    y: 0
+    width: 256
+    height: 256
   - id: 48
+    alias: Rusalka
+    texture: 145
+    x: 0
+    y: 0
+    width: 700
+    height: 700
+  - id: 49
     alias: PatronsBackground
-    texture: 106
+    texture: 146
     x: 0
     y: 0
     width: 200
@@ -1031,153 +1268,223 @@ Audio:
   - id: 7
     path: res/music/Minigame/Launchpad.mp3
   - id: 8
-    path: res/music/Minigame/Defeat.mp3
-  - id: 9
-    path: res/music/Pop/Twilight_Whispers_Embrace.mp3
-  - id: 10
-    path: res\music\Classic\Empires_Collide_On_Streets.mp3
-  - id: 11
     path: res\music\Classic\Urban_Strings_Symphony.mp3
-  - id: 12
+  - id: 9
+    path: res/music/Minigame/Defeat.mp3
+  - id: 10
     path: res\music\Disco\80s-disco-beats.mp3
+  - id: 11
+    path: res\music\Classic\Empires_Collide_On_Streets.mp3
+  - id: 12
+    path: res/music/Pop/Twilight_Whispers_Embrace.mp3
 Materials:
   - id: 0
-    path: res/materials/tiles/normal/yellow/YellowHexTileStage3.material
+    path: res/materials/tiles/daltonist/yellow/YellowHexTileStage3.material
   - id: 1
-    path: res/materials/tiles/normal/green/GreenHexTileRegressStage1.material
+    path: res/materials/tiles/normal/yellow/YellowHexTileStage3.material
   - id: 2
-    path: res/materials/tiles/normal/cyan/CyanHexTileStage2.material
+    path: res/materials/tiles/normal/green/GreenHexTileRegressStage1.material
   - id: 3
-    path: res/materials/car/CarMaterial_Blue.material
+    path: res/materials/tiles/normal/cyan/CyanHexTileStage2.material
   - id: 4
-    path: res/materials/tiles/normal/red/RedHexTileRegressStage1.material
+    path: res/materials/car/CarMaterial_Blue.material
   - id: 5
-    path: res/materials/city/CityMaterial_Blue.material
+    path: res/materials/tiles/normal/red/RedHexTileRegressStage1.material
   - id: 6
-    path: res/materials/tiles/normal/pink/PinkHexTileRegressStage2.material
+    path: res/materials/city/CityMaterial_Blue.material
   - id: 7
-    path: res/materials/tiles/normal/green/GreenHexTileStage3.material
+    path: res/materials/tiles/normal/pink/PinkHexTileRegressStage2.material
   - id: 8
-    path: res/materials/city/CityMaterial_Neutral.material
+    path: res/materials/tiles/daltonist/purple/PurpleHexTileStage2.material
   - id: 9
-    path: res/materials/tiles/normal/green/GreenHexTileRegressStage2.material
+    path: res/materials/tiles/daltonist/cyan/CyanHexTileRegressStage2.material
   - id: 10
-    path: res/materials/enviroment/CloudMaterial.material
+    path: res/materials/tiles/normal/green/GreenHexTileStage3.material
   - id: 11
-    path: res/materials/Water.material
+    path: res/materials/city/CityMaterial_Neutral.material
   - id: 12
-    path: res/materials/tiles/normal/blue/BlueHexTileStage3.material
+    path: res/materials/tiles/daltonist/cyan/CyanHexTileStage3.material
   - id: 13
-    path: res/materials/tiles/normal/pink/PinkHexTileRegressStage1.material
+    path: res/materials/tiles/normal/green/GreenHexTileRegressStage2.material
   - id: 14
-    path: res/materials/Basic2.material
+    path: res/materials/tiles/daltonist/cyan/CyanHexTileStage2.material
   - id: 15
-    path: res/materials/tiles/borders/blue/BlueHexTileBorder.material
+    path: res/materials/enviroment/CloudMaterial.material
   - id: 16
-    path: res/materials/MountainsUnlit.material
+    path: res/materials/Water.material
   - id: 17
-    path: res/materials/tiles/normal/yellow/YellowHexTileRegressStage1.material
+    path: res/materials/tiles/daltonist/cyan/CyanHexTileStage1.material
   - id: 18
-    path: res/materials/CityLights.material
+    path: res/materials/tiles/normal/blue/BlueHexTileStage3.material
   - id: 19
-    path: res/materials/city/CityMaterial_Purple.material
+    path: res/materials/tiles/normal/pink/PinkHexTileRegressStage1.material
   - id: 20
-    path: res/materials/city/CityMaterial_Cyan.material
+    path: res/materials/tiles/daltonist/blue/BlueHexTileStage1.material
   - id: 21
-    path: res/materials/tiles/borders/green/GreenHexTileBorder.material
+    path: res/materials/Basic2.material
   - id: 22
-    path: res/materials/tiles/normal/red/RedHexTileStage1.material
+    path: res/materials/tiles/borders/blue/BlueHexTileBorder.material
   - id: 23
-    path: res/materials/tiles/borders/yellow/YellowHexTileBorder.material
+    path: res/materials/MountainsUnlit.material
   - id: 24
-    path: res/materials/YellowBasic.material
+    path: res/materials/tiles/normal/yellow/YellowHexTileRegressStage1.material
   - id: 25
-    path: res/materials/tiles/normal/purple/PurpleHexTileRegressStage2.material
+    path: res/materials/tiles/daltonist/red/RedHexTileStage2.material
   - id: 26
-    path: res/materials/tiles/normal/pink/PinkHexTileStage3.material
+    path: res/materials/CityLights.material
   - id: 27
-    path: res/materials/RadioTowerBuilding.material
+    path: res/materials/tiles/daltonist/yellow/YellowHexTileStage1.material
   - id: 28
-    path: res/materials/tiles/normal/purple/PurpleHexTileStage3.material
+    path: res/materials/city/CityMaterial_Purple.material
   - id: 29
-    path: res/materials/tiles/normal/purple/PurpleHexTileStage2.material
+    path: res/materials/tiles/daltonist/blue/BlueHexTileStage2.material
   - id: 30
-    path: res/materials/tiles/normal/red/RedHexTileStage2.material
+    path: res/materials/tiles/daltonist/red/RedHexTileStage3.material
   - id: 31
-    path: res/materials/tiles/normal/yellow/YellowHexTileStage2.material
+    path: res/materials/city/CityMaterial_Cyan.material
   - id: 32
-    path: res/materials/tiles/normal/cyan/CyanHexTileRegressStage2.material
+    path: res/materials/tiles/borders/green/GreenHexTileBorder.material
   - id: 33
-    path: res/materials/tiles/normal/yellow/YellowHexTileStage1.material
+    path: res/materials/tiles/daltonist/red/RedHexTileStage1.material
   - id: 34
-    path: res/materials/city/CityMaterial_Yellow.material
+    path: res/materials/tiles/normal/red/RedHexTileStage1.material
   - id: 35
-    path: res/materials/tiles/normal/red/RedHexTileRegressStage2.material
+    path: res/materials/tiles/daltonist/purple/PurpleHexTileRegressStage1.material
   - id: 36
-    path: res/materials/tiles/borders/cyan/CyanHexTileBorder.material
+    path: res/materials/tiles/borders/yellow/YellowHexTileBorder.material
   - id: 37
-    path: res/materials/car/CarMaterial_Purple.material
+    path: res/materials/YellowBasic.material
   - id: 38
-    path: res/materials/tiles/normal/cyan/CyanHexTileStage1.material
+    path: res/materials/tiles/normal/purple/PurpleHexTileRegressStage2.material
   - id: 39
-    path: res/materials/city/CityMaterial_Green.material
+    path: res/materials/tiles/normal/pink/PinkHexTileStage3.material
   - id: 40
-    path: res/materials/tiles/normal/green/GreenHexTileStage1.material
+    path: res/materials/RadioTowerBuilding.material
   - id: 41
-    path: res/materials/tiles/borders/neutral/NeutralHexTileBorder.material
+    path: res/materials/tiles/daltonist/green/GreenHexTileStage2.material
   - id: 42
-    path: res/materials/car/CarMaterial_Red.material
+    path: res/materials/tiles/daltonist/purple/PurpleHexTileStage1.material
   - id: 43
-    path: res/materials/tiles/normal/blue/BlueHexTileStage1.material
+    path: res/materials/tiles/normal/purple/PurpleHexTileStage3.material
   - id: 44
-    path: res/materials/tiles/borders/red/RedHexTileBorder.material
+    path: res/materials/tiles/daltonist/yellow/YellowHexTileStage2.material
   - id: 45
-    path: res/materials/city/CityMaterial_Red.material
+    path: res/materials/tiles/normal/purple/PurpleHexTileStage2.material
   - id: 46
-    path: res/materials/tiles/normal/neutral/NeutralHexTile.material
+    path: res/materials/tiles/daltonist/blue/BlueHexTileStage3.material
   - id: 47
-    path: res/materials/tiles/normal/green/GreenHexTileStage2.material
+    path: res/materials/tiles/normal/red/RedHexTileStage2.material
   - id: 48
-    path: res/materials/tiles/borders/purple/PurpleHexTileBorder.material
+    path: res/materials/tiles/normal/yellow/YellowHexTileStage2.material
   - id: 49
-    path: res/materials/car/CarMaterial_Yellow.material
+    path: res/materials/tiles/normal/cyan/CyanHexTileRegressStage2.material
   - id: 50
-    path: res/materials/tiles/normal/yellow/YellowHexTileRegressStage2.material
+    path: res/materials/tiles/daltonist/pink/PinkHexTileStage2.material
   - id: 51
-    path: res/materials/tiles/BlueAffectedHexTile.material
+    path: res/materials/tiles/normal/yellow/YellowHexTileStage1.material
   - id: 52
-    path: res/materials/car/CarMaterial_Green.material
+    path: res/materials/city/CityMaterial_Yellow.material
   - id: 53
-    path: res/materials/tiles/normal/purple/PurpleHexTileRegressStage1.material
+    path: res/materials/tiles/normal/red/RedHexTileRegressStage2.material
   - id: 54
-    path: res/materials/tiles/normal/cyan/CyanHexTileStage3.material
+    path: res/materials/tiles/borders/cyan/CyanHexTileBorder.material
   - id: 55
-    path: res/materials/tiles/normal/blue/BlueHexTileRegressStage2.material
+    path: res/materials/tiles/daltonist/yellow/YellowHexTileRegressStage1.material
   - id: 56
-    path: res/materials/tiles/normal/pink/PinkHexTileStage1.material
+    path: res/materials/car/CarMaterial_Purple.material
   - id: 57
-    path: res/materials/car/CarMaterial_Pink.material
+    path: res/materials/tiles/daltonist/green/GreenHexTileStage1.material
   - id: 58
-    path: res/materials/tiles/borders/pink/PinkHexTileBorder.material
+    path: res/materials/tiles/daltonist/purple/PurpleHexTileStage3.material
   - id: 59
-    path: res/materials/RadioTower.material
+    path: res/materials/tiles/normal/cyan/CyanHexTileStage1.material
   - id: 60
-    path: res/materials/tiles/normal/blue/BlueHexTileStage2.material
+    path: res/materials/city/CityMaterial_Green.material
   - id: 61
-    path: res/materials/tiles/normal/blue/BlueHexTileRegressStage1.material
+    path: res/materials/tiles/normal/green/GreenHexTileStage1.material
   - id: 62
-    path: res/materials/tiles/normal/purple/PurpleHexTileStage1.material
+    path: res/materials/tiles/daltonist/blue/BlueHexTileRegressStage1.material
   - id: 63
-    path: res/materials/CityMaterial.material
+    path: res/materials/tiles/borders/neutral/NeutralHexTileBorder.material
   - id: 64
-    path: res/materials/tiles/normal/red/RedHexTileStage3.material
+    path: res/materials/car/CarMaterial_Red.material
   - id: 65
-    path: res/materials/city/CityMaterial_Pink.material
+    path: res/materials/tiles/normal/blue/BlueHexTileStage1.material
   - id: 66
-    path: res/materials/tiles/normal/cyan/CyanHexTileRegressStage1.material
+    path: res/materials/tiles/borders/red/RedHexTileBorder.material
   - id: 67
-    path: res/materials/car/CarMaterial_Cyan.material
+    path: res/materials/city/CityMaterial_Red.material
   - id: 68
+    path: res/materials/tiles/daltonist/pink/PinkHexTileRegressStage2.material
+  - id: 69
+    path: res/materials/tiles/normal/neutral/NeutralHexTile.material
+  - id: 70
+    path: res/materials/tiles/normal/green/GreenHexTileStage2.material
+  - id: 71
+    path: res/materials/tiles/borders/purple/PurpleHexTileBorder.material
+  - id: 72
+    path: res/materials/tiles/daltonist/pink/PinkHexTileRegressStage1.material
+  - id: 73
+    path: res/materials/car/CarMaterial_Yellow.material
+  - id: 74
+    path: res/materials/tiles/normal/yellow/YellowHexTileRegressStage2.material
+  - id: 75
+    path: res/materials/tiles/BlueAffectedHexTile.material
+  - id: 76
+    path: res/materials/car/CarMaterial_Green.material
+  - id: 77
+    path: res/materials/tiles/daltonist/pink/PinkHexTileStage1.material
+  - id: 78
+    path: res/materials/tiles/daltonist/green/GreenHexTileStage3.material
+  - id: 79
+    path: res/materials/tiles/normal/purple/PurpleHexTileRegressStage1.material
+  - id: 80
+    path: res/materials/tiles/normal/cyan/CyanHexTileStage3.material
+  - id: 81
+    path: res/materials/tiles/daltonist/purple/PurpleHexTileRegressStage2.material
+  - id: 82
+    path: res/materials/tiles/normal/blue/BlueHexTileRegressStage2.material
+  - id: 83
+    path: res/materials/tiles/daltonist/green/GreenHexTileRegressStage2.material
+  - id: 84
+    path: res/materials/tiles/normal/pink/PinkHexTileStage1.material
+  - id: 85
+    path: res/materials/car/CarMaterial_Pink.material
+  - id: 86
+    path: res/materials/tiles/daltonist/blue/BlueHexTileRegressStage2.material
+  - id: 87
+    path: res/materials/tiles/borders/pink/PinkHexTileBorder.material
+  - id: 88
+    path: res/materials/tiles/daltonist/red/RedHexTileRegressStage2.material
+  - id: 89
+    path: res/materials/RadioTower.material
+  - id: 90
+    path: res/materials/tiles/daltonist/green/GreenHexTileRegressStage1.material
+  - id: 91
+    path: res/materials/tiles/normal/blue/BlueHexTileStage2.material
+  - id: 92
+    path: res/materials/tiles/daltonist/red/RedHexTileRegressStage1.material
+  - id: 93
+    path: res/materials/tiles/daltonist/yellow/YellowHexTileRegressStage2.material
+  - id: 94
+    path: res/materials/tiles/normal/blue/BlueHexTileRegressStage1.material
+  - id: 95
+    path: res/materials/tiles/normal/purple/PurpleHexTileStage1.material
+  - id: 96
+    path: res/materials/CityMaterial.material
+  - id: 97
+    path: res/materials/tiles/daltonist/cyan/CyanHexTileRegressStage1.material
+  - id: 98
+    path: res/materials/tiles/normal/red/RedHexTileStage3.material
+  - id: 99
+    path: res/materials/tiles/daltonist/pink/PinkHexTileStage3.material
+  - id: 100
+    path: res/materials/city/CityMaterial_Pink.material
+  - id: 101
+    path: res/materials/tiles/normal/cyan/CyanHexTileRegressStage1.material
+  - id: 102
+    path: res/materials/car/CarMaterial_Cyan.material
+  - id: 103
     path: res/materials/tiles/normal/pink/PinkHexTileStage2.material
 Models:
   - id: 0
@@ -1416,7 +1723,7 @@ GameObjects:
         rows: 82
         columns: 82
         materials:
-          - 11
+          - 16
         transparencyPriority: -1
     children:
       []
@@ -1456,13 +1763,13 @@ GameObjects:
         enemyPrefab: 2
         prefabPlayer: 11
         carMaterials:
-          - 3
-          - 42
-          - 52
-          - 37
-          - 49
-          - 67
-          - 57
+          - 4
+          - 64
+          - 76
+          - 56
+          - 73
+          - 102
+          - 85
         patronsData:
           - res/scriptableobjects/patrons/Perun.so
           - res/scriptableobjects/patrons/Jutrzenka.so
@@ -1474,14 +1781,14 @@ GameObjects:
           - 5
         PopBackgroundMusics:
           - 0
-          - 9
+          - 12
         HeavyMetalBackgroundMusics:
           - 1
         ClassicBackgroundMusics:
-          - 10
           - 11
+          - 8
         DiscoBackgroundMusics:
-          - 12
+          - 10
       - id: 162
         enabled: true
         type: Audio
@@ -1546,7 +1853,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 29
+        sprite: 31
         color:
           x: 1
           y: 1
@@ -1592,7 +1899,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 19
+        sprite: 20
         color:
           x: 1
           y: 1
@@ -1632,7 +1939,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 40
+        sprite: 43
         color:
           x: 1
           y: 1
@@ -1719,6 +2026,49 @@ GameObjects:
         fillProgress: 1
     children:
       []
+  - id: 102
+    name: KeyFansMeeting
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5067
+      position:
+        x: -45
+        y: 45
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5069
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00X"
+        font: 1
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0
+          y: 1
+          z: 0.409266233
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
   - id: 26
     name: FansCost
     isStatic: false
@@ -1785,7 +2135,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 19
+        sprite: 20
         color:
           x: 1
           y: 1
@@ -1825,7 +2175,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 40
+        sprite: 43
         color:
           x: 1
           y: 1
@@ -1896,7 +2246,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 28
+        sprite: 30
         color:
           x: 1
           y: 1
@@ -1935,7 +2285,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 38
+        sprite: 41
         color:
           x: 1
           y: 1
@@ -1949,6 +2299,49 @@ GameObjects:
         fillSubType: !<CW> 0
         fillOffset: 0
         fillProgress: 0
+    children:
+      []
+  - id: 103
+    name: KeyConcert
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5070
+      position:
+        x: -45
+        y: 40
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5072
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00C"
+        font: 1
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0
+          y: 1
+          z: 0.407843143
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
     children:
       []
   - id: 29
@@ -2017,7 +2410,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 19
+        sprite: 20
         color:
           x: 1
           y: 1
@@ -2057,7 +2450,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 40
+        sprite: 43
         color:
           x: 1
           y: 1
@@ -2128,7 +2521,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 37
+        sprite: 40
         color:
           x: 1
           y: 1
@@ -2142,6 +2535,49 @@ GameObjects:
         fillSubType: !<CW> 0
         fillOffset: 0
         fillProgress: 1
+    children:
+      []
+  - id: 101
+    name: KeyAlbum
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5064
+      position:
+        x: -45
+        y: 45
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5066
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00Z"
+        font: 1
+        size: 30
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0
+          y: 1
+          z: 0.407843143
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<CENTER> 1
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
     children:
       []
   - id: 39
@@ -2339,7 +2775,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 45
+        sprite: 19
         color:
           x: 1
           y: 1
@@ -2357,7 +2793,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 46
+        sprite: 25
         color:
           x: 1
           y: 1
@@ -2403,7 +2839,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 46
+        sprite: 25
         color:
           x: 1
           y: 0
@@ -2442,7 +2878,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 46
+        sprite: 25
         color:
           x: 1
           y: 0
@@ -2455,7 +2891,7 @@ GameObjects:
         fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
         fillOffset: 0
-        fillProgress: 0.0
+        fillProgress: 0
     children:
       []
   - id: 91
@@ -2481,7 +2917,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 38
+        sprite: 41
         color:
           x: 1
           y: 1
@@ -2637,7 +3073,7 @@ GameObjects:
         ArrowDGGameObject: 15
         ArrowGLGameObject: 16
         WinSound: 6
-        DefeatSound: 8
+        DefeatSound: 9
         LaunchpadSound: 7
         GuitarSound: 4
         DrumSound: 3
@@ -2682,7 +3118,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 31
+        sprite: 34
         color:
           x: 1
           y: 1
@@ -2721,7 +3157,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 21
+        sprite: 22
         color:
           x: 1
           y: 1
@@ -2760,7 +3196,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 40
+        sprite: 43
         color:
           x: 0.34117648
           y: 0.34117648
@@ -2838,7 +3274,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 40
+        sprite: 43
         color:
           x: 0.34117648
           y: 0.34117648
@@ -2955,7 +3391,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 35
+        sprite: 38
         color:
           x: 1
           y: 1
@@ -3207,7 +3643,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 41
+        sprite: 44
         color:
           x: 1
           y: 1
@@ -3246,7 +3682,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 27
+        sprite: 29
         color:
           x: 1
           y: 1
@@ -3285,7 +3721,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 27
+        sprite: 29
         color:
           x: 1
           y: 1
@@ -3324,7 +3760,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 27
+        sprite: 29
         color:
           x: 1
           y: 1
@@ -3584,7 +4020,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 40
+        sprite: 43
         color:
           x: 0
           y: 0
@@ -3623,7 +4059,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 48
+        sprite: 49
         color:
           x: 1
           y: 1
@@ -3824,7 +4260,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 40
+        sprite: 43
         color:
           x: 1
           y: 1
@@ -3863,7 +4299,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 48
+        sprite: 49
         color:
           x: 1
           y: 1
@@ -3939,7 +4375,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 43
+        sprite: 46
         color:
           x: 1
           y: 1
@@ -4102,7 +4538,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 48
+        sprite: 49
         color:
           x: 1
           y: 1
@@ -4303,7 +4739,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 40
+        sprite: 43
         color:
           x: 1
           y: 0
@@ -4342,7 +4778,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 48
+        sprite: 49
         color:
           x: 1
           y: 1
@@ -4418,7 +4854,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 47
+        sprite: 48
         color:
           x: 1
           y: 1
@@ -4457,9 +4893,9 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00P\x00e\x00r\x00u\x00n\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00M\x00o\x00v\x00e\x00 \x00R\x00a\x00n\x00g\x00e\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00+\x001\x00.\x000\x000\x000\x000\x000\x000"
+        text: "\x00P\x00a\x00t\x00r\x00o\x00n\x004\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00M\x00o\x00n\x00e\x00y\x00 \x00G\x00a\x00i\x00n\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00x\x001\x00.\x001\x000\x000\x000\x000\x000"
         font: 1
-        size: 16
+        size: 14
         autoSize: true
         minSize: 5
         maxSize: 20
@@ -4500,7 +4936,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00P\x00e\x00r\x00u\x00n"
+        text: "\x00P\x00a\x00t\x00r\x00o\x00n\x004"
         font: 1
         size: 30
         autoSize: true
@@ -4543,7 +4979,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 40
+        sprite: 43
         color:
           x: 0
           y: 0
@@ -4582,7 +5018,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 48
+        sprite: 49
         color:
           x: 1
           y: 1
@@ -4658,7 +5094,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 43
+        sprite: 46
         color:
           x: 1
           y: 1
@@ -4697,7 +5133,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00J\x00u\x00r\x00z\x00e\x00n\x00k\x00a\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00A\x00b\x00i\x00l\x00i\x00t\x00i\x00e\x00s\x00 \x00R\x00a\x00n\x00g\x00e\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00+\x001\x00.\x000\x000\x000\x000\x000\x000"
+        text: "\x00P\x00a\x00t\x00r\x00o\x00n\x005\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00M\x00o\x00n\x00e\x00y\x00 \x00G\x00a\x00i\x00n\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00x\x001\x00.\x001\x000\x000\x000\x000\x000"
         font: 1
         size: 14
         autoSize: true
@@ -4740,7 +5176,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00J\x00u\x00r\x00z\x00e\x00n\x00k\x00a"
+        text: "\x00P\x00a\x00t\x00r\x00o\x00n\x005"
         font: 1
         size: 30
         autoSize: true
@@ -4783,7 +5219,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 40
+        sprite: 43
         color:
           x: 0.486274511
           y: 0
@@ -4822,7 +5258,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 48
+        sprite: 49
         color:
           x: 1
           y: 1
@@ -4937,7 +5373,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00Z\x00u\x00a\x00r\x00a\x00s\x00i\x00z\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00M\x00o\x00n\x00e\x00y\x00 \x00G\x00a\x00i\x00n\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00x\x001\x00.\x001\x000\x000\x000\x000\x000"
+        text: "\x00P\x00a\x00t\x00r\x00o\x00n\x006\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00A\x00b\x00i\x00l\x00i\x00t\x00i\x00e\x00s\x00 \x00P\x00r\x00i\x00c\x00e\x00 \x00D\x00i\x00s\x00c\x00o\x00u\x00n\x00t\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00-\x003\x000\x00%"
         font: 1
         size: 13
         autoSize: true
@@ -4980,7 +5416,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00Z\x00u\x00a\x00r\x00a\x00s\x00i\x00z"
+        text: "\x00P\x00a\x00t\x00r\x00o\x00n\x006"
         font: 1
         size: 30
         autoSize: true
@@ -5023,7 +5459,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 40
+        sprite: 43
         color:
           x: 0.576470613
           y: 0
@@ -5129,8 +5565,8 @@ GameObjects:
           z: 0.141176477
           w: 1
         notesSpritesIds:
-          - 44
-          - 22
+          - 47
+          - 23
           - 13
           - 1
         playTextObjectId: 98
@@ -5181,7 +5617,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 40
+        sprite: 43
         color:
           x: 0
           y: 0
@@ -5220,7 +5656,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 44
+        sprite: 47
         color:
           x: 1
           y: 1
@@ -5334,7 +5770,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 22
+        sprite: 23
         color:
           x: 1
           y: 1
@@ -5719,7 +6155,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 40
+        sprite: 43
         color:
           x: 1
           y: 1
@@ -5780,7 +6216,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 40
+        sprite: 43
         color:
           x: 0.030888021
           y: 0.030888021
@@ -6001,7 +6437,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 40
+        sprite: 43
         color:
           x: 0
           y: 0
@@ -6040,7 +6476,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 34
+        sprite: 37
         color:
           x: 1
           y: 1
@@ -6111,7 +6547,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 23
+        sprite: 24
         color:
           x: 1
           y: 1
@@ -6202,15 +6638,15 @@ GameObjects:
         layer: 1
     children:
       []
-  - id: 101
-    name: KeyAlbum
+  - id: 104
+    name: GameOverCanvas
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
-      id: 5064
+      id: 5576
       position:
-        x: -45
-        y: 45
+        x: 0
+        y: 0
         z: 0
       scale:
         x: 1
@@ -6221,55 +6657,32 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 5065
+      - id: 5577
         enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 53
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 20
-        height: 20
-        layer: 0
-        fillEnabled: false
-        fillType: !<HORIZONTAL> 0
-        fillSubType: !<LEFT> 0
-        fillOffset: 0
-        fillProgress: 1
-      - id: 5066
-        enabled: true
-        type: Text
-        isTransparent: false
-        text: "\x00Z"
-        font: 0
-        size: 20
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 0
-        height: 0
-        color:
-          x: 0
-          y: 0
-          z: 0
-          w: 1
-        alignX: !<CENTER> 1
-        alignY: !<CENTER> 1
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 1
-  - id: 102
-    name: KeyFansMeeting
+        type: Canvas
+        layer: 5
+        size:
+          x: 1920
+          y: 1080
+        worldSpace: false
+    children:
+      - 105
+      - 106
+      - 107
+      - 109
+      - 108
+      - 122
+      - 123
+      - 124
+  - id: 105
+    name: Background
     isStatic: false
     isActive: true
     transform:
-      id: 5067
+      id: 5578
       position:
-        x: -45
-        y: 45
+        x: 0
+        y: 0
         z: 0
       scale:
         x: 1
@@ -6280,55 +6693,35 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 5068
+      - id: 5579
         enabled: true
         type: Image
-        isTransparent: false
-        sprite: 53
+        isTransparent: true
+        sprite: 43
         color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 20
-        height: 20
+          x: 0
+          y: 0
+          z: 0
+          w: 0.564705908
+        width: 1920
+        height: 1080
         layer: 0
         fillEnabled: false
         fillType: !<HORIZONTAL> 0
         fillSubType: !<LEFT> 0
         fillOffset: 0
         fillProgress: 1
-      - id: 5069
-        enabled: true
-        type: Text
-        isTransparent: false
-        text: "\x00X"
-        font: 0
-        size: 20
-        autoSize: false
-        minSize: 0
-        maxSize: 0
-        width: 0
-        height: 0
-        color:
-          x: 0
-          y: 0
-          z: 0
-          w: 1
-        alignX: !<CENTER> 1
-        alignY: !<CENTER> 1
-        textWrapping: false
-        overflow: !<Overflow> 0
-        layer: 1
-  - id: 103
-    name: KeyConcert
+    children:
+      []
+  - id: 106
+    name: GameOverText
     isStatic: false
     isActive: true
     transform:
-      id: 5070
+      id: 5580
       position:
-        x: -45
-        y: 45
+        x: 0
+        y: 313
         z: 0
       scale:
         x: 1
@@ -6339,38 +6732,20 @@ GameObjects:
         y: 0
         z: 0
     components:
-      - id: 5071
-        enabled: true
-        type: Image
-        isTransparent: false
-        sprite: 53
-        color:
-          x: 1
-          y: 1
-          z: 1
-          w: 1
-        width: 20
-        height: 20
-        layer: 0
-        fillEnabled: false
-        fillType: !<HORIZONTAL> 0
-        fillSubType: !<LEFT> 0
-        fillOffset: 0
-        fillProgress: 1
-      - id: 5072
+      - id: 5581
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00C"
-        font: 0
-        size: 20
+        text: "\x00G\x00A\x00M\x00E\x00 \x00O\x00V\x00E\x00R\x00!"
+        font: 1
+        size: 150
         autoSize: false
         minSize: 0
         maxSize: 0
         width: 0
         height: 0
         color:
-          x: 0
+          x: 1
           y: 0
           z: 0
           w: 1
@@ -6379,3 +6754,835 @@ GameObjects:
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 1
+    children:
+      []
+  - id: 107
+    name: AlbumText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5582
+      position:
+        x: -237
+        y: 64
+        z: 0
+      scale:
+        x: 0.699999988
+        y: 0.699999988
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      []
+    children:
+      - 110
+      - 111
+      - 112
+      - 119
+  - id: 110
+    name: Text1
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5588
+      position:
+        x: -462
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5589
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00Y\x00o\x00u\x00 \x00r\x00e\x00l\x00e\x00a\x00s\x00e\x00d\x00 "
+        font: 1
+        size: 50
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 111
+    name: Number
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5590
+      position:
+        x: -21
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5591
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x001\x000\x000\x000\x000\x000\x000"
+        font: 1
+        size: 60
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0.123552203
+          y: 1
+          z: 0
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 112
+    name: Text2
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5592
+      position:
+        x: 104
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5593
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00a\x00l\x00b\x00u\x00m\x00s\x00!"
+        font: 1
+        size: 50
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 119
+    name: Image
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5606
+      position:
+        x: -524
+        y: 13
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5607
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 40
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 1
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+    children:
+      []
+  - id: 109
+    name: FansText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5586
+      position:
+        x: -239
+        y: -123
+        z: 0
+      scale:
+        x: 0.699999988
+        y: 0.699999988
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      []
+    children:
+      - 113
+      - 114
+      - 115
+      - 120
+  - id: 113
+    name: Text1
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5594
+      position:
+        x: -462
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5597
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00Y\x00o\x00u\x00 \x00o\x00r\x00g\x00a\x00n\x00i\x00z\x00e\x00d\x00 \x00f\x00a\x00n\x00 \x00m\x00e\x00e\x00t\x00i\x00n\x00g\x00s\x00 "
+        font: 1
+        size: 50
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 114
+    name: Number
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5595
+      position:
+        x: 251
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5598
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x001\x000\x000\x000\x000\x000\x000"
+        font: 1
+        size: 60
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 1
+          y: 0.880308867
+          z: 0
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 115
+    name: Text
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5596
+      position:
+        x: 489
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5599
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00t\x00i\x00m\x00e\x00s\x00!"
+        font: 1
+        size: 50
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 120
+    name: Image
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5608
+      position:
+        x: -524
+        y: 22
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5609
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 8
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 1
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+    children:
+      []
+  - id: 108
+    name: ConcertText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5584
+      position:
+        x: -240
+        y: -30
+        z: 0
+      scale:
+        x: 0.699999988
+        y: 0.699999988
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      []
+    children:
+      - 116
+      - 117
+      - 118
+      - 121
+  - id: 116
+    name: Text1
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5600
+      position:
+        x: -462
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5601
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00Y\x00o\x00u\x00 \x00p\x00l\x00a\x00y\x00e\x00d\x00 "
+        font: 1
+        size: 50
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 117
+    name: Number
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5602
+      position:
+        x: -178
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5604
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x001\x000\x000\x000\x000\x000\x000"
+        font: 1
+        size: 60
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0.673812091
+          y: 0
+          z: 0.872586846
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 118
+    name: Text2
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5603
+      position:
+        x: 63
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5605
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00c\x00o\x00n\x00c\x00e\x00r\x00t\x00s\x00!"
+        font: 1
+        size: 50
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 121
+    name: Image
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5610
+      position:
+        x: -501
+        y: 11
+        z: 0
+      scale:
+        x: 0.850000024
+        y: 0.850000024
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5611
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 30
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 100
+        height: 100
+        layer: 1
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+    children:
+      []
+  - id: 122
+    name: NewGameButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5612
+      position:
+        x: 0
+        y: -231
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5613
+        enabled: true
+        type: Button
+        width: 200
+        height: 75
+        interactable: true
+        onHoverPresetEvents: true
+        animTimeFactor: 2
+        scaleFunc: 9
+        scaleFuncType: 2
+        scaleStart:
+          x: 1
+          y: 1
+          z: 1
+        scaleEnd:
+          x: 1.10000002
+          y: 1.10000002
+          z: 1
+        colorFunc: 0
+        colorFuncType: 0
+        colorStart:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        colorEnd:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        displayObjectOnHover: false
+        playAudioOnClick: false
+      - id: 5614
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 33
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 200
+        height: 75
+        layer: 1
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+    children:
+      []
+  - id: 123
+    name: MenuButton
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5615
+      position:
+        x: 0
+        y: -327
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5616
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 24
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 200
+        height: 75
+        layer: 1
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+      - id: 5617
+        enabled: true
+        type: Button
+        width: 200
+        height: 75
+        interactable: true
+        onHoverPresetEvents: true
+        animTimeFactor: 2
+        scaleFunc: 9
+        scaleFuncType: 2
+        scaleStart:
+          x: 1
+          y: 1
+          z: 1
+        scaleEnd:
+          x: 1.10000002
+          y: 1.10000002
+          z: 1
+        colorFunc: 0
+        colorFuncType: 0
+        colorStart:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        colorEnd:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        displayObjectOnHover: false
+        playAudioOnClick: false
+    children:
+      []
+  - id: 124
+    name: TimeLivedText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5618
+      position:
+        x: -84
+        y: 187
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      []
+    children:
+      - 125
+      - 126
+  - id: 125
+    name: Text1
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5620
+      position:
+        x: -395
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5621
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00Y\x00o\x00u\x00r\x00 \x00t\x00e\x00a\x00m\x00 \x00l\x00a\x00s\x00t\x00e\x00d\x00:"
+        font: 1
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 126
+    name: TimeText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5622
+      position:
+        x: -23
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5623
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x001\x000\x000\x000\x00 \x00y\x00e\x00a\x00r\x00s\x00 \x003\x00 \x00m\x00o\x00n\x00t\x00h\x00s\x00 \x00a\x00n\x00d\x00 \x001\x00 \x00d\x00a\x00y"
+        font: 1
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0.720412612
+          y: 1
+          z: 0.532818556
+          w: 1
+        alignX: !<LEFT> 0
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []

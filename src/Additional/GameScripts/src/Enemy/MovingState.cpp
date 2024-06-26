@@ -317,8 +317,10 @@ void MovingState::ChooseTile(Enemy* enemy)
 		auto& tiles = possible.begin()->second.begin()->second.begin()->second.begin()->second.begin()->second;
 		HexTile* result = tiles[Random::Range(0ull, tiles.size() - 1ull)];
 
-		enemy->CurrTile->StopTakingOver(enemy);
-		enemy->SetCurrTile(nullptr);
+		if (enemy->CurrTile != nullptr) {
+			enemy->CurrTile->StopTakingOver(enemy);
+			enemy->SetCurrTile(nullptr);
+		}
 		enemy->SetMoveDestination(result);
 	}
 	else {

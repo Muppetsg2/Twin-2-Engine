@@ -7,6 +7,8 @@
 
 #include <UI/Button.h>
 
+extern Twin2Engine::Graphic::Window* window;
+
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
 

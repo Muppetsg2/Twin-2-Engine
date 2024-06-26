@@ -16,6 +16,8 @@ class HexTile;
 
 class City : public Twin2Engine::Core::Component
 {
+	static int _citiesCount;
+
 	HexTile* _occupiedHexTile = nullptr;
 	Twin2Engine::UI::Image* _imagePictogram = nullptr;
 

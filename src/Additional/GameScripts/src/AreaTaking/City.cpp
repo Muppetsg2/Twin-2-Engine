@@ -11,6 +11,7 @@ using namespace std;
 using namespace glm;
 
 
+int City::_citiesCount = 0;
 
 void City::Initialize()
 {
@@ -21,6 +22,8 @@ void City::Initialize()
 	if (mesh != nullptr && _texturesData != nullptr) {
 		mesh->SetMaterial(0, _texturesData->GetMaterial(_color));
 	}
+
+	++_citiesCount;
 }
 
 void City::Update()
@@ -30,6 +33,13 @@ void City::Update()
 
 void City::OnDestroy()
 {
+	--_citiesCount;
+
+	if (_citiesCount == 0)
+	{
+		_texturesData->Clear();
+	}
+
 	for (size_t index = 0ull; index < _affectedTiles.size(); ++index)
 	{
 		//_affectedTiles[index]->RemoveAffectingCity(this);

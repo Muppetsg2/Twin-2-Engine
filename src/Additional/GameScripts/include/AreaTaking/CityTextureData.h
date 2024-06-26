@@ -11,21 +11,22 @@ class CityTextureData : public Twin2Engine::Core::ScriptableObject
 
 private:
     Twin2Engine::Graphic::Material* _neutralMaterial;
-
     Twin2Engine::Graphic::Material* _blueMaterial;
-
     Twin2Engine::Graphic::Material* _redMaterial;
-
     Twin2Engine::Graphic::Material* _greenMaterial;
-
     Twin2Engine::Graphic::Material* _purpleMaterial;
-
     Twin2Engine::Graphic::Material* _yellowMaterial;
-
     Twin2Engine::Graphic::Material* _cyanMaterial;
-
     Twin2Engine::Graphic::Material* _pinkMaterial;
 
+    std::string _neutralMaterialPath;
+    std::string _blueMaterialPath;
+    std::string _redMaterialPath;
+    std::string _greenMaterialPath;
+    std::string _purpleMaterialPath;
+    std::string _yellowMaterialPath;
+    std::string _cyanMaterialPath;
+    std::string _pinkMaterialPath;
 public:
 
     SO_SERIALIZE()

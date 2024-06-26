@@ -221,6 +221,7 @@ void GameManager::Update()
                     {
                         SceneManager::DestroyGameObject(goTile);
                     }
+                    _shadowedTiles.clear();
 
                     _player->StartPlayer(_player->move->_pointedTile);
                     gameStartUp = false;

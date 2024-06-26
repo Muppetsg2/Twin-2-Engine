@@ -87,21 +87,19 @@ void Enemy::Update()
             _loosingFightPlayable = nullptr;
         }
 
-        if (!GameManager::instance->minigameActive) {
-            UpdatePrices();
-            if (_nextState != nullptr) {
-                State<Enemy*>* oldState = _nextState;
-                _stateMachine.ChangeState(this, _nextState);
-                if (oldState == _nextState) {
-                    _nextState = nullptr;
-                }
+        UpdatePrices();
+        if (_nextState != nullptr) {
+            State<Enemy*>* oldState = _nextState;
+            _stateMachine.ChangeState(this, _nextState);
+            if (oldState == _nextState) {
+                _nextState = nullptr;
             }
+        }
 
-            _currThinkingTime -= Time::GetDeltaTime();
-            if (_currThinkingTime <= 0.f) {
-                _stateMachine.Update(this);
-                _currThinkingTime = _timeToThink;
-            }
+        _currThinkingTime -= Time::GetDeltaTime();
+        if (_currThinkingTime <= 0.f) {
+            _stateMachine.Update(this);
+            _currThinkingTime = _timeToThink;
         }
     }
 }

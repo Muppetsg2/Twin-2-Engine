@@ -107,6 +107,17 @@ void ConcertRoad::Update()
     //    }
     //}
 
+    Player* player = GameManager::instance->GetPlayer();
+    float bonus = 0.0f;
+
+    for (auto& point : RoadMapPoints)
+    {
+        if (point->ownerEntity == player) {
+            bonus += bonusesPerStage[point->GetStage()];
+        }
+    }
+    PopularityGainingBonusBarController::Instance()->SetPossibleBonus(bonus);
+
     if (GameManager::instance->GetPlayer() != nullptr && !isPerforming) {
         if (GameManager::instance->GetPlayer()->TakeOverSpeed > 30.0f) {
             PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(bonusDecreseCoef * Time::GetDeltaTime());
@@ -222,9 +233,11 @@ void ConcertRoad::Finish()
 
             if (point->ownerEntity->TakeOverSpeed > 100.0f) {
                 point->ownerEntity->TakeOverSpeed = 100.0f;
+                PopularityGainingBonusBarController::Instance()->SetCurrentBonus(100.0f);
             }
         }
     }
+    PopularityGainingBonusBarController::Instance()->SetPossibleBonus(0.0f);
 
     GameObject* go = nullptr;
     while (concertRoadMarkers.size() > 0) {

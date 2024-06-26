@@ -16,14 +16,21 @@ using namespace Twin2Engine::Core;
 
 class TutorialsController : public Component {
 	public:
-		bool RadioStationTutUsed = true;
+		bool RadioStationTutUsed = false;
 		//bool ConcertRoadTutUsed = true;
 		GameObject* AlbumTutorial = nullptr;
+		GameObject* MeetingTutorial = nullptr;
+		GameObject* ConcertTutorial = nullptr;
+		GameObject* AlbumTut = nullptr;
+		GameObject* MeetingTut = nullptr;
+		GameObject* ConcertTut = nullptr;
+		GameObject* ConcertTut2 = nullptr;
 		GameObject* RadioStationTutorial = nullptr;
 		//GameObject* ConcertRoadTutorial = nullptr;
 		float sqrDistanceToTrigerTut = 1.1f;
 		std::vector<glm::vec3> radiostadionPosition;
 		bool abilitiesTriggered = false;
+		bool abilitiesTutComplited = false;
 		glm::vec3 startUpPlayerPos;
 
 		static TutorialsController* instance;
@@ -36,6 +43,12 @@ class TutorialsController : public Component {
 				RadioStationTutorial = SceneManager::FindObjectByName("RadioStationTutorial");
 				//ConcertRoadTutorial = SceneManager::FindObjectByName("ConcertRoadTut");
 				AlbumTutorial = SceneManager::FindObjectByName("AlbumTutorial");
+				MeetingTutorial = SceneManager::FindObjectByName("MeetingTutorial");
+				ConcertTutorial = SceneManager::FindObjectByName("ConcertTutorial");
+				AlbumTut = SceneManager::FindObjectByName("AlbumTut");
+				MeetingTut = SceneManager::FindObjectByName("MeetingTut");
+				ConcertTut = SceneManager::FindObjectByName("ConcertTut");
+				ConcertTut2 = SceneManager::FindObjectByName("ConcertTut2");
 				
 				GetGameObject()->OnActiveChangedEvent.AddCallback([&](GameObject* go) {
 						if (go->GetActive()) {
@@ -62,11 +75,20 @@ class TutorialsController : public Component {
 				if (glm::dot(distance, distance) >= 0.5) {
 					AlbumTutorial->SetActive(true);
 					abilitiesTriggered = true;
-					RadioStationTutUsed = false;
+					//RadioStationTutUsed = false;
 					//ConcertRoadTutUsed = false;
 				}
 			}
 
+			if (abilitiesTriggered && !abilitiesTutComplited) {
+				abilitiesTutComplited = !(AlbumTutorial->GetActive() ||
+										  MeetingTutorial->GetActive() ||
+										  ConcertTutorial->GetActive() ||
+										  AlbumTut->GetActive() ||
+										  MeetingTut->GetActive() ||
+										  ConcertTut->GetActive() ||
+										  ConcertTut2->GetActive());
+			}
 			//if (!ConcertRoadTutUsed && (!RadioStationTutorial->GetActive()) && (!AlbumTutorial->GetActive())) {
 			//	for (auto& rmp : ConcertRoad::instance->RoadMapPoints) {
 			//		distance = rmp->GetTransform()->GetGlobalPosition() - playerPos;
@@ -78,7 +100,7 @@ class TutorialsController : public Component {
 			//}
 
 			//if (!RadioStationTutUsed && (!ConcertRoadTutorial->GetActive()) && (!AlbumTutorial->GetActive())) {
-			if (!RadioStationTutUsed && (!AlbumTutorial->GetActive())) {
+			if (!RadioStationTutUsed && abilitiesTutComplited) {
 				for (auto& rs : radiostadionPosition) {
 					distance = rs - playerPos;
 					if (glm::dot(distance, distance) <= sqrDistanceToTrigerTut) {
@@ -89,7 +111,7 @@ class TutorialsController : public Component {
 			}
 
 			//if (ConcertRoadTutUsed && RadioStationTutUsed && abilitiesTriggered) {
-			if (RadioStationTutUsed && abilitiesTriggered) {
+			if (RadioStationTutUsed && abilitiesTutComplited) {
 				GetGameObject()->SetActive(false);
 			}
 		}

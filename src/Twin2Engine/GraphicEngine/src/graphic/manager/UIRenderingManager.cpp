@@ -60,7 +60,8 @@ STD140Struct UIRenderingManager::MaskStruct{
 
 STD140Struct UIRenderingManager::UIElementsBufferStruct{
 	STD140Variable<STD140Offsets>("uiElements", UIRenderingManager::UIElementOffsets, UIRenderingManager::maxUIElementsPerRender),
-	STD140Variable<STD140Offsets>("elementTexture", UIRenderingManager::TextureOffsets)
+	STD140Variable<STD140Offsets>("elementTexture", UIRenderingManager::TextureOffsets),
+	STD140Variable<int>("elementLayer")
 };
 
 // QUEUE
@@ -202,6 +203,8 @@ void UIRenderingManager::RenderUI(map<int32_t, unordered_map<CanvasData*, map<in
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, CanvasStruct.GetSize(), CanvasStruct.GetData().data());
 
 			for (const auto& layer : canvas.second) {
+				UIElementsBufferStruct.Set("elementLayer", layer.first);
+
 				for (const auto& mask : layer.second) {
 
 					MaskData* maskData = mask.first;
@@ -332,7 +335,7 @@ void UIRenderingManager::RenderUI(map<int32_t, unordered_map<CanvasData*, map<in
 							string lastElemName = vformat(_uiBufforElemFormat, make_format_args(i));
 							glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, UIElementsBufferStruct.GetOffset(lastElemName), UIElementsBufferStruct.GetData().data());
 							size_t textureOffset = UIElementsBufferStruct.GetOffset("elementTexture");
-							glBufferSubData(GL_SHADER_STORAGE_BUFFER, textureOffset, TextureOffsets.GetSize(), UIElementsBufferStruct.GetData().data() + textureOffset);
+							glBufferSubData(GL_SHADER_STORAGE_BUFFER, textureOffset, UIElementsBufferStruct.GetSize() - textureOffset, UIElementsBufferStruct.GetData().data() + textureOffset);
 							//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, UIElementsBufferStruct.GetSize(), UIElementsBufferStruct.GetData().data());
 							glDrawArraysInstanced(GL_POINTS, 0, 1, i);
 						}

@@ -7,8 +7,6 @@
 
 #include <UI/Button.h>
 
-extern Twin2Engine::Graphic::Window* window;
-
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::UI;
 
@@ -158,7 +156,7 @@ public:
 #if !_DEBUG
 		if (Input::IsKeyPressed(KEY::ESCAPE))
 		{
-			window->Close();
+			Window::GetInstance()->Close();
 			return;
 		}
 #endif

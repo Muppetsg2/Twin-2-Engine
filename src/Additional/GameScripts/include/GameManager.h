@@ -72,6 +72,11 @@ private:
     unsigned int _enemiesNumber = 2u;
     int _mapGenerationEventId = -1;
     Generation::MapGenerator* _mapGenerator;
+
+    // Background Music Managemet
+    bool _settingBackgroundMusicVolume = false;
+    float _targetVolume = 0.5f;
+    float _turningBackgroundMusicFactor = 0.5f;
     
     //ParticleGenerator* particleGenerator;
     Player* _player;
@@ -139,6 +144,8 @@ public:
     void RestartMapPhase2();
     void RestartMapPhase3();
     Player* GetPlayer() const;
+
+    void SetBackgrounMusicVolumeSmooth(float volume, float factor);
 
     virtual YAML::Node Serialize() const override;
     virtual bool Deserialize(const YAML::Node& node) override;

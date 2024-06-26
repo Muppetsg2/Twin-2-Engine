@@ -159,6 +159,16 @@ void GameManager::Update()
         }
     }
 
+    if (_settingBackgroundMusicVolume)
+    {
+        _audioComponent->SetVolume((1.0f - _turningBackgroundMusicFactor) * _audioComponent->GetVolume() + _turningBackgroundMusicFactor * _targetVolume);
+        if (glm::abs(_targetVolume - _audioComponent->GetVolume()) < 0.01)
+        {
+            _audioComponent->SetVolume(_targetVolume);
+            _settingBackgroundMusicVolume = false;
+        }
+    }
+
 
     //if (gameStartUp && Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::LEFT))
     if (gameStartUp)
@@ -631,6 +641,13 @@ void GameManager::RestartMapPhase3() {
 Player* GameManager::GetPlayer() const
 {
     return _player;
+}
+
+void GameManager::SetBackgrounMusicVolumeSmooth(float volume, float factor)
+{
+    _targetVolume = volume;
+    _turningBackgroundMusicFactor = factor;
+    _settingBackgroundMusicVolume = true;
 }
 
 YAML::Node GameManager::Serialize() const

@@ -164,6 +164,8 @@ void RadioStationPlayingController::EndPlaying()
 
     _score = (float)_correctCounter / (float)_notesImages.size();
 
+    GameManager::instance->SetBackgrounMusicVolumeSmooth(0.5f, 0.1f);
+
     ShowResult();
 }
 
@@ -322,6 +324,8 @@ void RadioStationPlayingController::Play(RadioStation* radioStation, Playable* p
         _score = 0.f;
 
         GameManager::instance->minigameActive = true;
+        GameManager::instance->SetBackgrounMusicVolumeSmooth(0.1f, 0.1f);
+
         OnEventPlayerStartedPlaying((Player*)playable, radioStation);
 
         GetGameObject()->SetActive(true);

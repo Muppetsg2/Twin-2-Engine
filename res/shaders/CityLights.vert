@@ -30,5 +30,5 @@ void main() {
     //FragModelPos = aPos;
     fPos = vec3(instanceData.transform[instanceId] * vec4(aPos, 1.0));
     fNormal = mat3(transpose(inverse(instanceData.transform[instanceId]))) * aNormal;
-    gl_Position = projection * view * fPos;
+    gl_Position = projection * view * vec4(fPos, 1.0);
 }

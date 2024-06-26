@@ -84,6 +84,11 @@ void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
                 canPlaceMountain = false;
                 break;
             }
+            else if (adjacentSectors[index2]->GetAdjacentSectors().size() == 1)
+            {
+                canPlaceMountain = false;
+                break;
+            }
         }
 
         if (canPlaceMountain)

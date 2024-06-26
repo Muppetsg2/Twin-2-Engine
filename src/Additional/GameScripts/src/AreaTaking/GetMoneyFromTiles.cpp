@@ -55,6 +55,11 @@ bool MoneyGainFromTiles::SpendMoney(float amount) {
     return false;
 }
 
+bool MoneyGainFromTiles::CheckCanSpendMoney(float amount) 
+{
+    return (amount >= 0 && amount <= money);
+}
+
 
 YAML::Node MoneyGainFromTiles::Serialize() const
 {

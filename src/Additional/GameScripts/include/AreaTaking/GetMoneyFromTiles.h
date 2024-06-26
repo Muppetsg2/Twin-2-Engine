@@ -23,6 +23,7 @@ public:
     virtual void Update() override;
     virtual void OnDestroy() override;
     bool SpendMoney(float amount);
+    bool CheckCanSpendMoney(float amount);
 
 private:
     Playable* playable;

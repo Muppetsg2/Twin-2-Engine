@@ -113,7 +113,9 @@ void Enemy::LostPaperRockScissors(Playable* playable)
 {
     fightingPlayable = nullptr;
     minigameChoice = MinigameRPS_Choice::NONE;
-    CurrTile->StopTakingOver(this);
+    if (CurrTile != nullptr) {
+        CurrTile->StopTakingOver(this);
+    }
 }
 
 void Enemy::WonPaperRockScissors(Playable* playable)

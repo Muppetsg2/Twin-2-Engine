@@ -47,6 +47,7 @@ class TutorialSeries : public Component {
 				audioComponent->SetAudio(voiceLinesAudioIds[0]);
 				audioComponent->Play();
 				performAudioOnStart = false;
+				GameManager::instance->SetBackgrounMusicVolumeSmooth(0.25f, 0.1f);
 			}
 			if (Input::IsMouseButtonPressed(Input::GetMainWindow(), Twin2Engine::Core::MOUSE_BUTTON::RIGHT)) {
 				if (!block) {
@@ -61,6 +62,7 @@ class TutorialSeries : public Component {
 							//GameManager::instance->gameStartUp = true;
 							tutorials[0]->SetActive(true);
 							displayIndex = 0;
+							GameManager::instance->SetBackgrounMusicVolumeSmooth(0.5f, 0.1f);
 							GetGameObject()->SetActive(false);
 						}
 						else {
@@ -78,6 +80,7 @@ class TutorialSeries : public Component {
 									//GameManager::instance->gameStartUp = true;
 									tutorials[0]->SetActive(true);
 									displayIndex = 0;
+									GameManager::instance->SetBackgrounMusicVolumeSmooth(0.5f, 0.1f);
 									GetGameObject()->SetActive(false);
 								}
 								else if (closeOnLast) {
@@ -85,6 +88,7 @@ class TutorialSeries : public Component {
 									//GameManager::instance->gameStartUp = true;
 									tutorials[0]->SetActive(true);
 									displayIndex = 0;
+									GameManager::instance->SetBackgrounMusicVolumeSmooth(0.5f, 0.1f);
 									GetGameObject()->SetActive(false);
 								}
 							}
@@ -93,6 +97,7 @@ class TutorialSeries : public Component {
 					else {
 						Time::_timeMultiplier = 1.0f;
 						//GameManager::instance->gameStartUp = true;
+						GameManager::instance->SetBackgrounMusicVolumeSmooth(0.5f, 0.1f);
 						GetGameObject()->SetActive(false);
 						//if (displayIndex == 1) {
 						//	displayIndex = 0;

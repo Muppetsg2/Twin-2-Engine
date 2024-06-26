@@ -1403,6 +1403,8 @@ Audio:
     path: res/music/voice-lines/fan_meeting_2.mp3
   - id: 34
     path: res/music/voice-lines/radio_tower_1.mp3
+  - id: 35
+    path: res/music/voice-lines/radio_tower_2.mp3
 Materials:
   - id: 0
     path: res/materials/tiles/daltonist/yellow/YellowHexTileStage3.material
@@ -7998,7 +8000,7 @@ GameObjects:
         type: Audio
         audio: 3
         loop: false
-        volume: 1.5
+        volume: 2
         playOnStart: false
       - id: 4990
         enabled: true
@@ -8735,6 +8737,7 @@ GameObjects:
         type: TutorialSeries
         tutorialsVoiceIds:
           - 34
+          - 35
         tutorialsIds:
           - 142
           - 143
@@ -10231,7 +10234,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00S\x00e\x00l\x00e\x00c\x00t\x00 \x00t\x00i\x00l\x00e\x00,\x00 \x00w\x00h\x00i\x00c\x00h\x00 \x00b\x00e\x00c\x00o\x00m\x00 \x00s\x00t\x00a\x00r\x00t\x00i\x00n\x00g\x00 \x00p\x00l\x00a\x00c\x00e\x00 \x00o\x00f\x00 \x00y\x00o\x00u\x00r\x00 \x00\n\x00j\x00o\x00u\x00r\x00n\x00e\x00y\x00."
+        text: "\x00S\x00e\x00l\x00e\x00c\x00t\x00 \x00t\x00i\x00l\x00e\x00 \x00w\x00h\x00i\x00c\x00h\x00 \x00b\x00e\x00c\x00o\x00m\x00e\x00 \x00s\x00t\x00a\x00r\x00t\x00i\x00n\x00g\x00 \x00p\x00l\x00a\x00c\x00e\x00 \x00o\x00f\x00 \x00y\x00o\x00u\x00r\x00 \x00\n\x00j\x00o\x00u\x00r\x00n\x00e\x00y\x00."
         font: 0
         size: 33
         autoSize: false

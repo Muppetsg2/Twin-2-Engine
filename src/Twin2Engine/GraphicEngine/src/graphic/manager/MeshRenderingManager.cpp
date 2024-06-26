@@ -1552,6 +1552,14 @@ void MeshRenderingManager::UpdateTransparentQueues()
 #endif
 }
 
+void MeshRenderingManager::PreRenderShadow()
+{
+	if (_flags.IsStaticChanged) {
+		Twin2Engine::Graphic::LightingController::Instance()->RenderShadowMaps();
+		_flags.IsStaticChanged = false;
+	}
+}
+
 #if TRACY_PROFILER
 const char* const tracey_PrerenderStatic = "PrerenderStaticMeshes";
 const char* const tracey_PrerenderDynamic = "PrerenderDynamicMeshes";
@@ -1564,11 +1572,6 @@ void MeshRenderingManager::PreRender()
 #endif
 
 	glDisable(GL_BLEND);
-
-	if (_flags.IsStaticChanged) {
-		Twin2Engine::Graphic::LightingController::Instance()->RenderShadowMaps();
-		_flags.IsStaticChanged = false;
-	}
 
 	size_t instanceIndex = 0;
 	size_t remaining = MAX_INSTANCE_NUMBER_PER_DRAW;

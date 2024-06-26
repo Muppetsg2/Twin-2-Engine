@@ -32,7 +32,7 @@ class ConcertRoad : public Component {
 	public:
         bool isPerforming = false;
         std::vector<GameObject*> concertRoadMarkers;
-        float bonusDecreseCoef = 1.0f;
+        float bonusDecreseCoef = 1.1f;
         static ConcertRoad* instance;
 
         //struct ConcertRoadPoint

@@ -56,13 +56,16 @@ private:
     Playable* _loosingFightPlayable = nullptr;
 
     // Player UI
+    glm::vec4 _abilityInactiveColor = glm::vec4(0.2, 0.2, 0.2, 1.0f);
+
     // Album
-    Twin2Engine::UI::Text* _albumText;
-    Twin2Engine::UI::Button* _albumButton;
-    Twin2Engine::Core::GameObject* _albumButtonObject;
-    Twin2Engine::Core::Transform* _albumKey;
-    Twin2Engine::UI::Image* _albumButtonFrameImage;
-    Twin2Engine::UI::Image* _albumCircleImage;
+    Twin2Engine::UI::Text* _albumText = nullptr;
+    Twin2Engine::UI::Button* _albumButton = nullptr;
+    Twin2Engine::Core::GameObject* _albumButtonObject = nullptr;
+    Twin2Engine::Core::Transform* _albumKey = nullptr;
+    Twin2Engine::UI::Image* _albumButtonFrameImage = nullptr;
+    Twin2Engine::UI::Image* _albumCircleImage = nullptr;
+    Twin2Engine::UI::Image* _albumImage = nullptr;
     int _albumButtonEventHandleId = -1;
     int _albumButtonDestroyedEventHandleId = -1;
     int _albumButtonHoveringEventHandleId = -1;
@@ -70,12 +73,13 @@ private:
     bool _isShowingAlbumPossible = false;
 
     // FansMeeting
-    Twin2Engine::UI::Text* _fansMeetingText;
-    Twin2Engine::UI::Button* _fansMeetingButton;
-    Twin2Engine::Core::GameObject* _fansMeetingButtonObject;
-    Twin2Engine::Core::Transform* _fansMeetingKey;
-    Twin2Engine::UI::Image* _fansMeetingButtonFrameImage;
-    Twin2Engine::UI::Image* _fansMeetingCircleImage;
+    Twin2Engine::UI::Text* _fansMeetingText = nullptr;
+    Twin2Engine::UI::Button* _fansMeetingButton = nullptr;
+    Twin2Engine::Core::GameObject* _fansMeetingButtonObject = nullptr;
+    Twin2Engine::Core::Transform* _fansMeetingKey = nullptr;
+    Twin2Engine::UI::Image* _fansMeetingButtonFrameImage = nullptr;
+    Twin2Engine::UI::Image* _fansMeetingCircleImage = nullptr;
+    Twin2Engine::UI::Image* _fansImage = nullptr;
     int _fansMeetingButtonEventHandleId = -1;
     int _fansMeetingButtonHoveringEventHandleId = -1;
     int _fansMeetingButtonDestroyedEventHandleId = -1;
@@ -87,12 +91,13 @@ private:
     glm::vec3 _keyPosition = glm::vec3(-45.0f, 45.0f, 0.0f);
 
     //Concert
-    Twin2Engine::UI::Text* _concertText;
-    Twin2Engine::UI::Button* _concertButton;
-    Twin2Engine::Core::GameObject* _concertButtonObject;
-    Twin2Engine::Core::Transform* _concertKey;
-    Twin2Engine::UI::Image* _concertButtonFrameImage;
-    Twin2Engine::UI::Image* _concertCircleImage; 
+    Twin2Engine::UI::Text* _concertText = nullptr;
+    Twin2Engine::UI::Button* _concertButton = nullptr;
+    Twin2Engine::Core::GameObject* _concertButtonObject = nullptr;
+    Twin2Engine::Core::Transform* _concertKey = nullptr;
+    Twin2Engine::UI::Image* _concertButtonFrameImage = nullptr;
+    Twin2Engine::UI::Image* _concertCircleImage = nullptr;
+    Twin2Engine::UI::Image* _concertImage = nullptr;
     int _concertButtonEventHandleId = -1;
     int _concertButtonDestroyedEventHandleId = -1;
     int _concertButtonHoveringEventHandleId = -1;

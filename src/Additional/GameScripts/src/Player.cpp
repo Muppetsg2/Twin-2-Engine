@@ -25,6 +25,7 @@ void Player::Initialize() {
     _concertKey = SceneManager::FindObjectByName("KeyConcert")->GetTransform();
     _concertButton = _concertButtonObject->GetComponent<Button>();
     _concertText = SceneManager::FindObjectByName("ConcertCost")->GetComponent<Text>();
+    _concertImage = SceneManager::FindObjectByName("Concert")->GetComponent<Image>();
 
     _concertCircleImage = SceneManager::FindObjectByName("ConcertBg")->GetComponent<Image>();
 
@@ -72,6 +73,7 @@ void Player::Initialize() {
     _albumKey = SceneManager::FindObjectByName("KeyAlbum")->GetTransform();
     _albumButton = _albumButtonObject->GetComponent<Button>();
     _albumText = SceneManager::FindObjectByName("AlbumCost")->GetComponent<Text>();
+    _albumImage = SceneManager::FindObjectByName("Album")->GetComponent<Image>();
 
     _albumCircleImage = SceneManager::FindObjectByName("AlbumBg")->GetComponent<Image>();
 
@@ -121,6 +123,7 @@ void Player::Initialize() {
     _fansMeetingButtonObject = SceneManager::FindObjectByName("FansBg");
     _fansMeetingKey = SceneManager::FindObjectByName("KeyFansMeeting")->GetTransform();
     _fansMeetingButton = _fansMeetingButtonObject->GetComponent<Button>();
+    _fansImage = SceneManager::FindObjectByName("Fans")->GetComponent<Image>();
     _fansMeetingText = SceneManager::FindObjectByName("FansCost")->GetComponent<Text>();
 
     _fansMeetingCircleImage = SceneManager::FindObjectByName("FansBg")->GetComponent<Image>();
@@ -255,6 +258,31 @@ void Player::Update() {
 
         _negativeMoneyText->GetGameObject()->SetActive(_isHoveringFansMeetingButton || _isHoveringConcertButton || _isHoveringAlbumButton);
 
+        if (move->reachEnd && _money->CheckCanSpendMoney(fansRequiredMoney))
+        {
+            _fansImage->SetColor(vec4(1.0f));
+        }
+        else
+        {
+            _fansImage->SetColor(_abilityInactiveColor);
+        }
+        if (_money->CheckCanSpendMoney(albumRequiredMoney))
+        {
+            _albumImage->SetColor(vec4(1.0f));
+        }
+        else
+        {
+            _albumImage->SetColor(_abilityInactiveColor);
+        }
+        if (_money->CheckCanSpendMoney(_concertAbility->GetCost()))
+        {
+            _concertImage->SetColor(vec4(1.0f));
+        }
+        else
+        {
+            _concertImage->SetColor(_abilityInactiveColor);
+        }
+
         if (_negativeMoneyText->GetGameObject()->GetActive())
         {
             int value = _money->money;
@@ -346,7 +374,7 @@ void Player::Update() {
         }
 
         // FANS MEETING INTERFACE ELEMENT
-        if (_isHoveringFansMeetingButton && !_isShowingFansMeetingAffectedTiles)
+        if (_isHoveringFansMeetingButton && !_isShowingFansMeetingAffectedTiles && move->reachEnd)
         {
             ShowAffectedTiles();
 
@@ -360,12 +388,15 @@ void Player::Update() {
         {
             HideAffectedTiles();
 
-            //fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
-            _fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
-            _fansMeetingKey->SetLocalPosition(_keyPosition);
-            _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
+            if (move->reachEnd)
+            {
+                //fansMeetingButtonObject->GetTransform()->Translate(vec3(0.0f, -_buttonDeltaYMovement, 0.0f));
+                _fansMeetingButtonObject->GetTransform()->SetLocalPosition(vec3(0.0f, 0.0f, 0.0f));
+                _fansMeetingKey->SetLocalPosition(_keyPosition);
+                _fansMeetingButtonFrameImage->SetSprite(_spriteButtonStep1);
 
-            //_negativeMoneyText->GetGameObject()->SetActive(false);
+                //_negativeMoneyText->GetGameObject()->SetActive(false);
+            }
         }
         _isHoveringFansMeetingButton = false;
 
@@ -586,7 +617,7 @@ void Player::AlbumCall() {
 }
 
 void Player::FansMeetingCall() {
-    if (currFansTime <= 0.0f && currFansCooldown <= 0.0f && _money->SpendMoney(fansRequiredMoney)) {
+    if (move->reachEnd && currFansTime <= 0.0f && currFansCooldown <= 0.0f && _money->SpendMoney(fansRequiredMoney)) {
         currFansTime = fansTime;
         _fansMeetingButton->SetInteractable(false);
         _isHoveringFansMeetingButton = false;
@@ -694,6 +725,8 @@ void Player::StartMove(HexTile* tile) {
 
     GameManager::instance->changeTile = true;
 
+    //_fansImage->SetColor(_abilityInactiveColor);
+    
     if (isFansActive) {
         if (CurrTile != tileBefore) {
             _endFans = true;
@@ -716,6 +749,7 @@ void Player::FinishMove(HexTile* tile) {
     if (CurrTile == nullptr) {
         return;
     }
+    //_fansImage->SetColor(vec4(1.0f));
 
     if (_hexIndicator)
     {
@@ -930,6 +964,7 @@ YAML::Node Player::Serialize() const
     node["abilityCooldownColor"] = _abilityCooldownColor;
     node["enoughMoneyColor"] = _enoughMoneyColor;
     node["notEnoughMoneyColor"] = _notEnoughMoneyColor;
+    node["abilityInactiveColor"] = _abilityInactiveColor;
     node["negativeMoneyTextXOffset"] = _negativeMoneyTextXOffset;
     node["negativeMoneyTextLetterWidth"] = _negativeMoneyTextLetterWidth;
     if (_starPrefab != nullptr) {
@@ -958,6 +993,7 @@ bool Player::Deserialize(const YAML::Node& node)
     _abilityCooldownColor = node["abilityCooldownColor"].as<vec4>();
     _enoughMoneyColor = node["enoughMoneyColor"].as<vec4>();
     _notEnoughMoneyColor = node["notEnoughMoneyColor"].as<vec4>();
+    _abilityInactiveColor = node["abilityInactiveColor"].as<vec4>();
     _negativeMoneyTextXOffset = node["negativeMoneyTextXOffset"].as<float>();
     _negativeMoneyTextLetterWidth = node["negativeMoneyTextLetterWidth"].as<float>();
 

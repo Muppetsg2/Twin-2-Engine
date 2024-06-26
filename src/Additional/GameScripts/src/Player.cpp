@@ -25,6 +25,7 @@ void Player::Initialize() {
     _concertKey = SceneManager::FindObjectByName("KeyConcert")->GetTransform();
     _concertButton = _concertButtonObject->GetComponent<Button>();
     _concertText = SceneManager::FindObjectByName("ConcertCost")->GetComponent<Text>();
+    _concertImage = SceneManager::FindObjectByName("Concert")->GetComponent<Image>();
 
     _concertCircleImage = SceneManager::FindObjectByName("ConcertBg")->GetComponent<Image>();
 
@@ -72,6 +73,7 @@ void Player::Initialize() {
     _albumKey = SceneManager::FindObjectByName("KeyAlbum")->GetTransform();
     _albumButton = _albumButtonObject->GetComponent<Button>();
     _albumText = SceneManager::FindObjectByName("AlbumCost")->GetComponent<Text>();
+    _albumImage = SceneManager::FindObjectByName("Album")->GetComponent<Image>();
 
     _albumCircleImage = SceneManager::FindObjectByName("AlbumBg")->GetComponent<Image>();
 
@@ -255,6 +257,31 @@ void Player::Update() {
         }
 
         _negativeMoneyText->GetGameObject()->SetActive(_isHoveringFansMeetingButton || _isHoveringConcertButton || _isHoveringAlbumButton);
+
+        if (move->reachEnd && _money->CheckCanSpendMoney(fansRequiredMoney))
+        {
+            _fansImage->SetColor(vec4(1.0f));
+        }
+        else
+        {
+            _fansImage->SetColor(_abilityInactiveColor);
+        }
+        if (_money->CheckCanSpendMoney(albumRequiredMoney))
+        {
+            _albumImage->SetColor(vec4(1.0f));
+        }
+        else
+        {
+            _albumImage->SetColor(_abilityInactiveColor);
+        }
+        if (_money->CheckCanSpendMoney(_concertAbility->GetCost()))
+        {
+            _concertImage->SetColor(vec4(1.0f));
+        }
+        else
+        {
+            _concertImage->SetColor(_abilityInactiveColor);
+        }
 
         if (_negativeMoneyText->GetGameObject()->GetActive())
         {
@@ -698,7 +725,7 @@ void Player::StartMove(HexTile* tile) {
 
     GameManager::instance->changeTile = true;
 
-    _fansImage->SetColor(_abilityInactiveColor);
+    //_fansImage->SetColor(_abilityInactiveColor);
     
     if (isFansActive) {
         if (CurrTile != tileBefore) {
@@ -722,7 +749,7 @@ void Player::FinishMove(HexTile* tile) {
     if (CurrTile == nullptr) {
         return;
     }
-    _fansImage->SetColor(vec4(1.0f));
+    //_fansImage->SetColor(vec4(1.0f));
 
     if (_hexIndicator)
     {

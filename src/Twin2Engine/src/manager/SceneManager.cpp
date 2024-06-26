@@ -127,9 +127,12 @@ void SceneManager::DrawGameObjectEditor(const Core::GameObject* obj)
 				{
 					size_t payload_n = *(const size_t*)payload->Data;
 					Transform* t = SceneManager::GetGameObjectWithId(payload_n)->GetTransform();
-					if (objT->GetChildAt(i) != t) {
+					if (i < objT->GetChildCount() && objT->GetChildAt(i) != t) {
 						t->SetParent(objT->GetChildAt(i));
 						_selected = objT->GetChildAt(i)->GetGameObject()->Id();
+					}
+					else if (i >= objT->GetChildCount()) {
+						_selected = 0;
 					}
 				}
 

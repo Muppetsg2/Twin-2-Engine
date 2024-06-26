@@ -26,6 +26,7 @@ private:
 	Twin2Engine::UI::Button* _settings = nullptr;
 	Twin2Engine::UI::Button* _settingsBack = nullptr;
 	Twin2Engine::UI::Button* _exit = nullptr;
+	Twin2Engine::UI::Button* _tutorial = nullptr;
 
 	Twin2Engine::UI::Text* _highscoreText = nullptr;
 
@@ -40,8 +41,10 @@ private:
 	int _settingsButtonEvent = -1;
 	int _settingsBackButtonEvent = -1;
 	int _exitButtonEvent = -1;
+	int _tutorialButtonEvent = -1;
 
 	bool _loadScene = false;
+	bool _loadTutorialScene = false;
 	float _loadSceneCounter = 0.f;
 	float _loadSceneTime = 2.f;
 
@@ -55,6 +58,20 @@ private:
 		if (_highscore != nullptr) _highscore->SetInteractable(false);
 		if (_settings != nullptr) _settings->SetInteractable(false);
 		if (_exit != nullptr) _exit->SetInteractable(false);
+		if (_tutorial != nullptr) _tutorial->SetInteractable(false);
+	}
+
+	void StartTutorial() {
+		_loadTutorialScene = true;
+		_loadSceneCounter = _loadSceneTime;
+		//SceneManager::LoadScene("Game");
+
+		if (_start != nullptr) _start->SetInteractable(false);
+		if (_credits != nullptr) _credits->SetInteractable(false);
+		if (_highscore != nullptr) _highscore->SetInteractable(false);
+		if (_settings != nullptr) _settings->SetInteractable(false);
+		if (_exit != nullptr) _exit->SetInteractable(false);
+		if (_tutorial != nullptr) _tutorial->SetInteractable(false);
 	}
 
 	void Credits() {
@@ -112,6 +129,7 @@ private:
 		if (_settingsButtonEvent == -1 && _settings != nullptr) _settingsButtonEvent = _settings->GetOnClickEvent() += [&]() -> void { Settings(); };
 		if (_settingsBackButtonEvent == -1 && _settingsBack != nullptr) _settingsBackButtonEvent = _settingsBack->GetOnClickEvent() += [&]() -> void { SettingsBack(); };
 		if (_exitButtonEvent == -1 && _exit != nullptr) _exitButtonEvent = _exit->GetOnClickEvent() += [&]() -> void { Exit(); };
+		if (_tutorialButtonEvent == -1 && _tutorial != nullptr) _tutorialButtonEvent = _tutorial->GetOnClickEvent() += [&]() -> void { StartTutorial(); };
 	}
 
 public:
@@ -130,6 +148,7 @@ public:
 		}
 
 		_loadScene = false;
+		_loadTutorialScene = false;
 	}
 
 	virtual void Update() override {
@@ -141,6 +160,16 @@ public:
 
 			if (_loadSceneCounter <= 0.f) {
 				SceneManager::LoadScene("Game");
+			}
+		}
+
+		if (_loadTutorialScene) {
+			_loadSceneCounter -= Time::GetDeltaTime();
+
+			if (_audio != nullptr) _audio->SetVolume(_loadSceneCounter / _loadSceneTime);
+
+			if (_loadSceneCounter <= 0.f) {
+				SceneManager::LoadScene("GameWithTutorial");
 			}
 		}
 	}
@@ -185,6 +214,11 @@ public:
 			_exit->GetOnClickEvent() -= _exitButtonEvent;
 			_exitButtonEvent = -1;
 		}
+
+		if (_tutorial != nullptr && _tutorialButtonEvent != -1) {
+			_tutorial->GetOnClickEvent() -= _tutorialButtonEvent;
+			_tutorialButtonEvent = -1;
+		}
 	}
 
 	virtual YAML::Node Serialize() const override {
@@ -199,6 +233,7 @@ public:
 		node["settingsButtonId"] = _settings != nullptr ? _settings->GetId() : 0;
 		node["settingsBackButtonId"] = _settingsBack != nullptr ? _settingsBack->GetId() : 0;
 		node["exitButtonId"] = _exit != nullptr ? _exit->GetId() : 0;
+		node["tutorialButtonId"] = _tutorial != nullptr ? _tutorial->GetId() : 0;
 
 		node["menuCanvas"] = _menuCanvas != nullptr ? _menuCanvas->Id() : 0;
 		node["creditsCanvas"] = _creditsCanvas != nullptr ? _creditsCanvas->Id() : 0;
@@ -220,7 +255,7 @@ public:
 	virtual bool Deserialize(const YAML::Node& node) override {
 		if (!node["loadSceneTime"] || !node["startButtonId"] || !node["creditsButtonId"] || !node["creditsBackButtonId"] || 
 			!node["highscoreButtonId"] || !node["highscoreBackButtonId"] || !node["settingsButtonId"] || !node["settingsBackButtonId"] || 
-			!node["exitButtonId"] || !node["menuCanvas"] || !node["creditsCanvas"] || !node["highscoreCanvas"] || 
+			!node["exitButtonId"] || !node["tutorialButtonId"] || !node["menuCanvas"] || !node["creditsCanvas"] || !node["highscoreCanvas"] ||
 			!node["settingsCanvas"] || !node["highscoreText"] ||
 			!node["audioId"] || !node["audios"] || !Component::Deserialize(node))
 			return false;
@@ -250,6 +285,9 @@ public:
 
 		id = node["exitButtonId"].as<size_t>();
 		_exit = id != 0 ? (Button*)SceneManager::GetComponentWithId(id) : nullptr;
+
+		id = node["tutorialButtonId"].as<size_t>();
+		_tutorial = id != 0 ? (Button*)SceneManager::GetComponentWithId(id) : nullptr;
 
 		id = node["menuCanvas"].as<size_t>();
 		_menuCanvas = id != 0 ? SceneManager::GetGameObjectWithId(id) : nullptr;

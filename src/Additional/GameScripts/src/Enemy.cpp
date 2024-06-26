@@ -67,48 +67,42 @@ void Enemy::OnEnable()
 
 void Enemy::Update()
 {
-    if (_loosingFightPlayable)
-    {
-        //Enemy* enemy = dynamic_cast<Enemy*>(playable);
-        //if (enemy != nullptr)
-        //{
-        //    enemy->LostPaperRockScissors(this);
-        //    CurrTile->isFighting = false;
-        //}
-        //if (CurrTile)
-        //{
-        //    //CurrTile->isFighting = false;
-        //}
-        GameManager::instance->minigameActive = false;
+    if (GameManager::instance->gameStarted && !GameManager::instance->gameOver) {
+        if (_loosingFightPlayable)
+        {
+            GameManager::instance->minigameActive = false;
 
-        fightingPlayable = nullptr;
-        minigameChoice = MinigameRPS_Choice::NONE;
+            fightingPlayable = nullptr;
+            minigameChoice = MinigameRPS_Choice::NONE;
 
-        _loosingFightPlayable->LostPaperRockScissors(this);
+            _loosingFightPlayable->LostPaperRockScissors(this);
 
-        if (CurrTile->ownerEntity == _loosingFightPlayable) {
-            CurrTile->ResetTile();
+            if (CurrTile->ownerEntity == _loosingFightPlayable) {
+                CurrTile->ResetTile();
+            }
+
+            //playable->CheckIfDead(this);
+            CurrTile->StartTakingOver(this);
+
+            _loosingFightPlayable = nullptr;
         }
 
-        //playable->CheckIfDead(this);
-        CurrTile->StartTakingOver(this);
+        if (!GameManager::instance->minigameActive) {
+            UpdatePrices();
+            if (_nextState != nullptr) {
+                State<Enemy*>* oldState = _nextState;
+                _stateMachine.ChangeState(this, _nextState);
+                if (oldState == _nextState) {
+                    _nextState = nullptr;
+                }
+            }
 
-        _loosingFightPlayable = nullptr;
-    }
-
-    UpdatePrices();
-    if (_nextState != nullptr) {
-        State<Enemy*>* oldState = _nextState;
-        _stateMachine.ChangeState(this, _nextState);
-        if (oldState == _nextState) {
-            _nextState = nullptr;
+            _currThinkingTime -= Time::GetDeltaTime();
+            if (_currThinkingTime <= 0.f) {
+                _stateMachine.Update(this);
+                _currThinkingTime = _timeToThink;
+            }
         }
-    }
-
-    _currThinkingTime -= Time::GetDeltaTime();
-    if (_currThinkingTime <= 0.f) {
-        _stateMachine.Update(this);
-        _currThinkingTime = _timeToThink;
     }
 }
 

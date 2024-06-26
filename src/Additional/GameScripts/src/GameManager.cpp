@@ -3,6 +3,8 @@
 #include <manager/PrefabManager.h>
 #include <graphic/manager/MaterialsManager.h>
 #include <core/Random.h>
+#include <core/PlayerPrefs.h>
+#include <UIScripts/GameOverManager.h>
 
 #include <UIScripts/AreaTakenGraph.h>
 
@@ -267,6 +269,10 @@ void GameManager::Update()
     if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::U)) {
         RestartMapPhase1();
     }
+
+    if (Input::IsKeyDown(KEY::LEFT_CONTROL) && Input::IsKeyPressed(KEY::O)) {
+        GameOver();
+    }
 }
 
 void GameManager::UpdateEnemies(int colorIdx)
@@ -471,9 +477,21 @@ void GameManager::EndMinigame()
 void GameManager::GameOver()
 {
     gameOver = true;
+    
+    // SAVING
     GameTimer::Instance()->SaveIfHighest();
-    // gameOverUI.SetActive(true);
-    // UIGameOverPanelController::Instance->OpenPanel();
+    PlayerPrefs::SetValue("totalAlbums", PlayerPrefs::GetValue<uint32_t>("totalAlbums") + _player->albumUsed);
+    PlayerPrefs::SetValue("totalConcerts", PlayerPrefs::GetValue<uint32_t>("totalConcerts") + _player->concertUsed);
+    PlayerPrefs::SetValue("totalFans", PlayerPrefs::GetValue<uint32_t>("totalFans") + _player->fansUsed);
+    PlayerPrefs::SetValue("totalEnemiesKilled", PlayerPrefs::GetValue<uint32_t>("totalEnemiesKilled") + _player->enemiesKilled);
+    PlayerPrefs::SetValue("totalIslandsWon", PlayerPrefs::GetValue<uint32_t>("totalIslandsWon") + _player->islandsWon);
+
+    if (GameOverManager::instance != nullptr) {
+        GameOverManager::instance->Open();
+    }
+    else {
+        SceneManager::LoadScene("Menu");
+    }
 }
 
 void GameManager::EnemyDied(Enemy* enemy)
@@ -907,6 +925,7 @@ void GameManager::DrawEditor()
         */
 
         ImGui::TextColored(ImVec4(0.5f, 1.f, 1.f, 1.f), "If You Want To Reload Game. Press CTRL+U");
+        ImGui::TextColored(ImVec4(0.5f, 1.f, 1.f, 1.f), "If You Want To Game Over. Press CTRL+O");
 
         std::map<size_t, string> prefabNames = Twin2Engine::Manager::PrefabManager::GetAllPrefabsNames();
 

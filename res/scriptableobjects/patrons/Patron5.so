@@ -1,18 +1,18 @@
 scriptable_object:
   __SO_RegisteredName__: PatronData
   patronName: "Patron5"
-  patronMusic: 0
+  patronMusic: 4
   patronDescription: "Patron5 Description"
   patronBonus: 0
   color: 16
-  soundDown: "res/music/RadioStation/Violin/violin_D4_1_mezzo-forte_arco-normal.mp3"
-  soundLeft: "res/music/RadioStation/Violin/violin_E4_1_mezzo-forte_arco-normal.mp3"
-  soundRight: "res/music/RadioStation/Violin/violin_F4_1_mezzo-forte_arco-normal.mp3"
-  soundUp: "res/music/RadioStation/Violin/violin_G4_1_mezzo-forte_arco-normal.mp3"
-  soundDownFalse: "res/music/RadioStation/Violin/violin-false-sounds.mp3"
-  soundLeftFalse: "res/music/RadioStation/Violin/violin-false-sounds.mp3"
-  soundRightFalse: "res/music/RadioStation/Violin/violin-false-sounds.mp3"
-  soundUpFalse: "res/music/RadioStation/Violin/violin-false-sounds.mp3"
+  soundDown: "res/music/RadioStation/Disco/disco_sound1.mp3"
+  soundLeft: "res/music/RadioStation/Disco/disco_sound2.mp3"
+  soundRight: "res/music/RadioStation/Disco/disco_sound3.mp3"
+  soundUp: "res/music/RadioStation/Disco/disco_sound4.mp3"
+  soundDownFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
+  soundLeftFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
+  soundRightFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
+  soundUpFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
   moneyMultiplier: 1.1
   controlMultiplier: 1
   additionalMoveRange: 1

@@ -8,7 +8,7 @@ scriptable_object:
   soundDown: "res/music/RadioStation/Rock/rock_sound1.mp3"
   soundLeft: "res/music/RadioStation/Rock/rock_sound2.mp3"
   soundRight: "res/music/RadioStation/Rock/rock_sound3.mp3"
-  soundUp: "res/music/RadioStation/Rock/vrock_sound4.mp3"
+  soundUp: "res/music/RadioStation/Rock/rock_sound4.mp3"
   soundDownFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
   soundLeftFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
   soundRightFalse: "res/music/RadioStation/Electric/wrongsound.mp3"

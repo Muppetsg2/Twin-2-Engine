@@ -475,7 +475,7 @@ void HexTile::Update()
 {
 	if (GameManager::instance == nullptr) return;
 
-	if (!minigameActive && !GameManager::instance->minigameActive && _mapHexTile->type != MapHexTile::HexTileType::Mountain && !isFighting && GameManager::instance->gameStarted && !GameManager::instance->gameOver)
+	if (!minigameActive && !GameManager::instance->minigameActive && _mapHexTile->type != MapHexTile::HexTileType::Mountain && _mapHexTile->type != MapHexTile::HexTileType::Water && !isFighting && GameManager::instance->gameStarted && !GameManager::instance->gameOver)
 	{
 		if (state == TileState::OCCUPIED || state == TileState::REMOTE_OCCUPYING)
 		{

@@ -73,6 +73,7 @@ void City::SetConcertRoadCity(bool isConcertRoadCity)
 			StartAffectingTiles(_occupiedHexTile);
 			_imagePictogram->GetTransform()->GetParent()->GetGameObject()->SetActive(false);
 			_imagePictogram->SetSprite(_cityPictogramSpriteId);
+			_imagePictogram->GetGameObject()->SetActive(false);
 		}
 	}
 }

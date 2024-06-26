@@ -533,7 +533,7 @@ void GameManager::StartGame()
     list<MapHexTile*> tiles = _mapGenerator->GetGameObject()->GetComponentsInChildren<MapHexTile>();
     for (MapHexTile* tile : tiles)
     {
-        if (tile->type != MapHexTile::HexTileType::Mountain && tile->type != MapHexTile::HexTileType::PointOfInterest)
+        if (tile->type != MapHexTile::HexTileType::Mountain && tile->type != MapHexTile::HexTileType::Water && tile->type != MapHexTile::HexTileType::PointOfInterest)
         {
             GameObject* instanced = SceneManager::CreateGameObject(prefabShadowingHexPlane, tile->GetTransform());
             _shadowedTiles.push_back(instanced);

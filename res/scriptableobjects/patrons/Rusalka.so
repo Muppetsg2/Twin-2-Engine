@@ -2,8 +2,8 @@ scriptable_object:
   __SO_RegisteredName__: PatronData
   patronName: "Rusalka"
   patronMusic: 2
-  patronDescription: "Rusalka Description"
-  patronBonus: 0
+  patronDescription: "Immerse yourself in the sounds of pop music"
+  patronBonus: 5
   color: 1
   soundDown: "res/music/RadioStation/Pop/pop_sound1.mp3"
   soundLeft: "res/music/RadioStation/Pop/pop_sound2.mp3"
@@ -13,7 +13,7 @@ scriptable_object:
   soundLeftFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
   soundRightFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
   soundUpFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
-  moneyMultiplier: 1.1
+  moneyMultiplier: 1
   controlMultiplier: 1
   additionalMoveRange: 1
   additionalAbilitiesRange: 0

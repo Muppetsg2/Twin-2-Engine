@@ -2,7 +2,7 @@ scriptable_object:
   __SO_RegisteredName__: PatronData
   patronName: "Perun"
   patronMusic: 1
-  patronDescription: "Perun Description"
+  patronDescription: "Let yourself be blasted by the lightning bolt of electronic music"
   patronBonus: 2
   color: 16
   soundDown: "res/music/RadioStation/Electric/electric_guitar1.mp3"
@@ -15,7 +15,7 @@ scriptable_object:
   soundUpFalse: "res/music/RadioStation/Electric/wrongsound.mp3"
   moneyMultiplier: 1
   controlMultiplier: 1
-  additionalMoveRange: 1
+  additionalMoveRange: 1.5
   additionalAbilitiesRange: 0
   abilitiesCooldownPercent: 50
   abilitiesPriceDiscount: 30

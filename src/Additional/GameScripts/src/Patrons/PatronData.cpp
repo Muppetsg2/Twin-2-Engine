@@ -92,17 +92,17 @@ float PatronData::GetBonus() const {
 std::string PatronData::GetBonusAsString() const {
     switch (patronBonus) {
     case PatronBonus::MONEY_GAIN:
-        return "Money Gain\nBonus: x" + std::to_string(moneyMultiplier);
+        return std::vformat(std::string("Money Gain\nBonus: x{:.2f}"), std::make_format_args(moneyMultiplier));
     case PatronBonus::CONTROL_MULTIPLIER:
-        return "Tile Taking\nBonus: x" + std::to_string(controlMultiplier);
+        return std::vformat(std::string("Tile Taking\nBonus: x{:.2f}"), std::make_format_args(controlMultiplier));
     case PatronBonus::MOVE_RANGE:
-        return "Move Range\nBonus: +" + std::to_string(additionalMoveRange);
+        return std::vformat(std::string("Move Range\nBonus: +{:.2f}"), std::make_format_args(additionalMoveRange));
     case PatronBonus::ABILITIES_RANGE:
-        return "Abilities Range\nBonus: +" + std::to_string(additionalAbilitiesRange);
+        return std::vformat(std::string("Abilities Range\nBonus: +{:.2f}"), std::make_format_args(additionalAbilitiesRange));
     case PatronBonus::ABILITIES_COOLDOWN:
-        return "Abilities Cooldown Reduce\nBonus: -" + std::to_string(static_cast<int>(abilitiesCooldownPercent)) + "%";
+        return std::vformat(std::string("Abilities Cooldown Reduce\nBonus: -{:.2f}%"), std::make_format_args(abilitiesCooldownPercent));
     case PatronBonus::ABILITIES_PRICE:
-        return "Abilities Price Discount\nBonus: -" + std::to_string(static_cast<int>(abilitiesPriceDiscount)) + "%";
+        return std::vformat(std::string("Abilities Price Discount\nBonus: -{:.2f}%"), std::make_format_args(abilitiesPriceDiscount));
     default:
         return "";
     }

@@ -2,7 +2,7 @@ scriptable_object:
   __SO_RegisteredName__: PatronData
   patronName: "Patron6"
   patronMusic: 5
-  patronDescription: "Patron6 Description"
+  patronDescription: ""
   patronBonus: 5
   color: 32
   soundDown: "res/music/RadioStation/Metal/metal_sound1.mp3"

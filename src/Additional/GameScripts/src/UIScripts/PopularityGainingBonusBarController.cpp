@@ -35,6 +35,11 @@ void PopularityGainingBonusBarController::OnDestroy()
 	}
 }
 
+void PopularityGainingBonusBarController::SetColor(glm::vec3 color) {
+	_currentBonusBar->SetColor(glm::vec4(color, 1.0f));
+	_possibleBonusBar->SetColor(glm::vec4(color, 0.45f));
+}
+
 void PopularityGainingBonusBarController::SetCurrentBonus(float bonus)
 {
 	_currentBonus = bonus;

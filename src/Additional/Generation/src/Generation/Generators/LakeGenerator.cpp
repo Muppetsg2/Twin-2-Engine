@@ -69,6 +69,16 @@ void LakeGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
     {
         for (MapRegion* region : waterRegions)
         {
+            region->type = MapRegion::RegionType::Water;
+            for (MapSector* sector : region->GetSectors())
+            {
+                sector->type = MapSector::SectorType::Water;
+                for (MapHexTile* tile : sector->GetTiles())
+                {
+                    tile->type = MapHexTile::HexTileType::Water;
+                }
+            }
+
             region->GetTransform()->SetParent(nullptr);
             //tilemap->RemoveTile();
             SceneManager::DestroyGameObject(region->GetGameObject());

@@ -902,7 +902,7 @@ void Player::LostPaperRockScissors(Playable* playable) {
     for (int i = 0; i < 6; ++i) {
         if (tiles[i] != nullptr) {
             HexTile* hexTile = tiles[i]->GetComponent<HexTile>();
-            if (hexTile)
+            if (hexTile && hexTile->GetMapHexTile()->type != MapHexTile::HexTileType::Mountain && hexTile->GetMapHexTile()->type != MapHexTile::HexTileType::Water)
             {
                 if (hexTile->ownerEntity == this)
                 {

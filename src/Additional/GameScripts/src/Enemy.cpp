@@ -57,13 +57,55 @@ void Enemy::OnEnable()
 }
 
 
-//void Enemy::OnDestroy()
-//{
-//    Playable::OnDestroy();
-//    if (patron != nullptr) {
-//        GameManager::instance->FreePatron(patron);
-//    }
-//}
+void Enemy::OnDestroy()
+{
+    Playable::OnDestroy();
+    //if (patron != nullptr) {
+    //    GameManager::instance->FreePatron(patron);
+    //}
+    _movement->_info.WaitForFinding();
+
+
+    if (_movement->_path)
+    {
+        delete _movement->_path;
+        _movement->_path = nullptr;
+    }
+
+    _movement->reachEnd = true;
+
+    currAlbumTime = 0.0f;
+    currAlbumCooldown = 0.0f;
+    currFansTime = 0.0f;
+    currFansCooldown = 0.0f;
+
+    isAlbumActive = false;
+
+    albumTakingOverTiles.clear();
+
+    for (size_t index = 0ull; index < albumsIncreasingIntervalsCounter.size(); ++index)
+    {
+        albumsIncreasingIntervalsCounter[index] = 0.0f;
+    }
+
+    isFansActive = false;
+
+
+    //for (HexTile* tile : tempFansCollider)
+    //{
+    //    tile->StopTakingOver(this);
+    //}
+    tempFansCollider.clear();
+
+    //if (CurrTile != nullptr) {
+    //    CurrTile->StopTakingOver(this);
+    //    CurrTile = nullptr;
+    //    //move->_pointedTile = nullptr;
+    //}
+    tileBefore = nullptr;
+
+    OwnTiles.clear();
+}
 
 void Enemy::Update()
 {

@@ -837,6 +837,7 @@ void Player::ResetOnNewMap() {
     // Concert
     _concertAbility->Reset();
     //PopularityGainingBonusBarController::Instance()->RemovePossibleBonus(_concertAbility->GetAdditionalTakingOverSpeed());
+    TakeOverSpeed = 10.0f;
     PopularityGainingBonusBarController::Instance()->SetCurrentBonus(TakeOverSpeed);
     PopularityGainingBonusBarController::Instance()->SetPossibleBonus(0.0f);
     _isShowingConcertPossible = false;

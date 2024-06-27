@@ -849,6 +849,14 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
+  - id: 138
+    path: res/textures/patrons/Swarozyc.png
+    fileFormat: !<RGBA> 6408
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
 Sprites:
   - id: 0
     alias: ArrowLeft
@@ -1151,6 +1159,13 @@ Sprites:
     y: 0
     width: 256
     height: 256
+  - id: 43
+    alias: Swarozyc
+    texture: 138
+    x: 0
+    y: 0
+    width: 700
+    height: 700
 Fonts:
   - id: 0
     path: res/fonts/Caveat-Regular.ttf
@@ -4525,7 +4540,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 9
+        sprite: 43
         color:
           x: 1
           y: 1

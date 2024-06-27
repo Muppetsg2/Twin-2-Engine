@@ -156,7 +156,7 @@ public:
 #if !_DEBUG
 		if (Input::IsKeyPressed(KEY::ESCAPE))
 		{
-			window->Close();
+			Window::GetInstance()->Close();
 			return;
 		}
 #endif

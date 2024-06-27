@@ -130,6 +130,7 @@ using namespace Generation::Generators;
 #include <UIScripts/PauseManager.h>
 #include <UIScripts/SettingsManager.h>
 #include <UIScripts/ConcertRoadAnimation.h>
+#include <UIScripts/GameOverManager.h>
 
 using namespace GameScripts;
 
@@ -395,6 +396,7 @@ int main(int, char**)
     ADD_COMPONENT("TutorialsController", TutorialsController);
     ADD_COMPONENT("BlockStartSelTut", BlockStartSelTut);
     ADD_COMPONENT("ConcertRoadAnimation", ConcertRoadAnimation);
+    ADD_COMPONENT("GameOverManager", GameOverManager);
 
 #pragma endregion
 

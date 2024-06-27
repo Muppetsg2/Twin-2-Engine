@@ -48,6 +48,12 @@ Textures:
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
   - id: 8
+    path: res/textures/UI/patron_base.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 9
     path: res/textures/patrons/Jutrzenka.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
@@ -55,61 +61,61 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 9
+  - id: 10
     path: res/textures/tiles/pink1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 10
+  - id: 11
     path: res/textures/tiles/tile_regress/cyan1_2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 11
+  - id: 12
     path: res\textures\UI\continue.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 12
+  - id: 13
     path: res/textures/tiles/tile_regress/cyan2_2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 13
+  - id: 14
     path: res\textures\UI\you_won_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 14
+  - id: 15
     path: res/textures/tiles/tile_regress/blue1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 15
+  - id: 16
     path: res/textures/UI/ButtonFrame.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 16
+  - id: 17
     path: res/textures/UI/HexBar.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 17
+  - id: 18
     path: res/textures/tiles/tile_regress/cyan2_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 18
+  - id: 19
     path: res/textures/patrons/Perun.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
@@ -117,7 +123,7 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 19
+  - id: 20
     path: res/textures/UI/abilities.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -125,127 +131,127 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 20
+  - id: 21
     path: res/textures/tiles/red2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 21
+  - id: 22
     path: res/textures/UI/player_colour/yellowB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 22
+  - id: 23
     path: res/textures/UI/player_colour/purpleB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 23
+  - id: 24
     path: res/textures/tiles/tile_regress/green1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 24
+  - id: 25
     path: res/textures/tiles/green2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 25
+  - id: 26
     path: res/textures/tiles/tile_regress/purple1_2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 26
+  - id: 27
     path: res/textures/tiles/blue3d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 27
+  - id: 28
     path: res/textures/tiles/tile_regress/red1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 28
+  - id: 29
     path: res/textures/tiles/red1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 29
+  - id: 30
     path: res/textures/UI/title.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 30
+  - id: 31
     path: res/textures/carTextures/red.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 31
+  - id: 32
     path: res/textures/particles/shield2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 32
+  - id: 33
     path: res/textures/pictograms/PopularityGainingSpeedPictogram.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 33
+  - id: 34
     path: res/textures/tiles/pink2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 34
+  - id: 35
     path: res/textures/radioTowerBuildingTexture.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 35
+  - id: 36
     path: res/textures/cityTextures/yellow.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 36
+  - id: 37
     path: res/textures/tiles/blue3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 37
+  - id: 38
     path: res/textures/particle.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 38
+  - id: 39
     path: res/textures/cityTextures/blue.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 39
+  - id: 40
     path: res/textures/particles/brokenShield.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 40
+  - id: 41
     path: res/textures/UI/concert.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -253,31 +259,31 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 41
+  - id: 42
     path: res/textures/tiles/cyan2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 42
+  - id: 43
     path: res\textures\UI\new_game.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 43
+  - id: 44
     path: res/textures/tiles/red2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 44
+  - id: 45
     path: res/textures/tiles/purple2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 45
+  - id: 46
     path: res/textures/UI/fanMeeting.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -285,61 +291,61 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 46
+  - id: 47
     path: res/textures/tiles/cyan3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 47
+  - id: 48
     path: res/textures/tiles/tile_regress/cyan1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 48
+  - id: 49
     path: res/textures/tiles/tile_regress/red1_2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 49
+  - id: 50
     path: res/textures/particles/starParticle.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 50
+  - id: 51
     path: res/textures/UI/graph.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 51
+  - id: 52
     path: res\textures\UI\title2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 52
+  - id: 53
     path: res/textures/tiles/pink2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 53
+  - id: 54
     path: res/textures/tiles/tile_regress/blue2_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 54
+  - id: 55
     path: res/textures/tiles/blue2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 55
+  - id: 56
     path: res\textures\UI\shape_hexagon.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -347,43 +353,43 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 56
+  - id: 57
     path: res/textures/UI/player_colour/blueB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 57
+  - id: 58
     path: res/textures/tiles/pink3d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 58
+  - id: 59
     path: res/textures/tiles/purple1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 59
+  - id: 60
     path: res/textures/carTextures/green.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 60
+  - id: 61
     path: res/textures/UI/player_colour/pinkB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 61
+  - id: 62
     path: res/textures/tiles/purple1d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 62
+  - id: 63
     path: res/textures/UI/guitar.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -391,211 +397,211 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 63
+  - id: 64
     path: res/textures/tiles/yellow2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 64
+  - id: 65
     path: res/textures/tiles/tile_regress/red2_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 65
+  - id: 66
     path: res/textures/tiles/green3d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 66
+  - id: 67
     path: res/textures/tiles/cyan3d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 67
+  - id: 68
     path: res/textures/tiles/purple3d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 68
+  - id: 69
     path: res/textures/tiles/green2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 69
+  - id: 70
     path: res\textures\white_circle.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 70
+  - id: 71
     path: res/textures/tiles/pink3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 71
+  - id: 72
     path: res/textures/tiles/yellow2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 72
+  - id: 73
     path: res/textures/cityTextures/purple.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 73
+  - id: 74
     path: res/textures/ArrowParticle.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 74
+  - id: 75
     path: res/textures/tiles/yellow3d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 75
+  - id: 76
     path: res/textures/tiles/red3d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 76
+  - id: 77
     path: res/textures/mountainTex2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 77
+  - id: 78
     path: res/textures/tiles/tile_regress/purple2_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 78
+  - id: 79
     path: res/textures/cityTextures/neutral.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 79
+  - id: 80
     path: res/textures/UI/vs2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 80
+  - id: 81
     path: res/textures/UI/HexBarFill.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 81
+  - id: 82
     path: res/textures/tiles/tile_regress/blue1_2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 82
+  - id: 83
     path: res/textures/tiles/purple3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 83
+  - id: 84
     path: res/textures/UI/pure_background.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 84
+  - id: 85
     path: res/textures/tiles/purple2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 85
+  - id: 86
     path: res/textures/carTextures/cyan.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 86
+  - id: 87
     path: res/textures/cityTextureColour.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 87
+  - id: 88
     path: res\textures\UI\shape_hexagon_border.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 88
+  - id: 89
     path: res/textures/tiles/cyan2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 89
+  - id: 90
     path: res/textures/cityTextures/green.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 90
+  - id: 91
     path: res\textures\white.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 91
+  - id: 92
     path: res/textures/tiles/tile_regress/green2_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 92
+  - id: 93
     path: res/textures/tiles/blue1d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 93
+  - id: 94
     path: res/textures/tiles/cyan1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 94
+  - id: 95
     path: res/textures/tiles/red3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 95
+  - id: 96
     path: res/textures/tiles/green1d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 96
+  - id: 97
     path: res/textures/UI/player_colour/redB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 97
+  - id: 98
     path: res/textures/UI/launchpad.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -603,61 +609,61 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 98
+  - id: 99
     path: res/textures/UI/player_colour/greenB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 99
+  - id: 100
     path: res/textures/tiles/tile_regress/pink2_2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 100
+  - id: 101
     path: res/textures/tiles/tile_regress/pink1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 101
+  - id: 102
     path: res/textures/UI/you_lost.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 102
+  - id: 103
     path: res/textures/particles/blackStarParticle.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 103
+  - id: 104
     path: res/textures/tiles/blue1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 104
+  - id: 105
     path: res\textures\UI\arrows.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 105
+  - id: 106
     path: res/textures/tiles/yellow1.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 106
+  - id: 107
     path: res/textures/UI/player_colour/cyanB.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 107
+  - id: 108
     path: res/textures/UI/drum.png
     fileFormat: !<SRGBA> 35906
     engineFormat: !<RGBA> 6408
@@ -665,177 +671,133 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 108
+  - id: 109
     path: res/textures/carTextures/blue.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 109
+  - id: 110
     path: res/textures/tiles/tile_regress/pink2_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 110
+  - id: 111
     path: res/textures/tiles/yellow3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 111
+  - id: 112
     path: res/textures/tiles/tile_regress/green2_2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 112
+  - id: 113
     path: res/textures/UI/you_won.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 113
+  - id: 114
     path: res/textures/tiles/tile_regress/yellow1_2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 114
+  - id: 115
     path: res/textures/tiles/yellow1d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 115
+  - id: 116
     path: res\textures\UI\menu.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 116
+  - id: 117
     path: res/textures/tiles/tile_regress/green1_2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 117
+  - id: 118
     path: res/textures/cityTextures/pink.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 118
+  - id: 119
     path: res/textures/carTextures/yellow.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 119
+  - id: 120
     path: res/textures/tiles/tile_regress/blue2_2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 120
+  - id: 121
     path: res\textures\UI\graphArrow.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 121
+  - id: 122
     path: res/textures/tiles/tile_regress/yellow2_2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 122
+  - id: 123
     path: res/textures/tiles/green3.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 123
+  - id: 124
     path: res/textures/tiles/tile_regress/pink1_2d.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 124
+  - id: 125
     path: res/textures/carTextures/pink.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 125
+  - id: 126
     path: res/textures/tiles/tile_regress/yellow1_2.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 126
+  - id: 127
     path: res/textures/radioTowerTexture.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 127
+  - id: 128
     path: res\textures\UI\pause.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 128
+  - id: 129
     path: res/textures/cityTextures/red.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 129
-    path: res\textures\UI\album.png
-    fileFormat: !<SRGBA> 35906
-    engineFormat: !<RGBA> 6408
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
   - id: 130
-    path: res/textures/tiles/cyan1d.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 131
-    path: res\textures\UI\you_lost_2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 132
-    path: res/textures/tiles/red1d.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 133
-    path: res/textures/carTextures/purple.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 134
-    path: res/textures/tiles/tile_regress/purple1_2.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 135
-    path: res/textures/cityTextures/cyan.png
-    sWrapMode: !<MIRRORED_REPEAT> 33648
-    tWrapMode: !<MIRRORED_REPEAT> 33648
-    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
-    magFilterMode: !<LINEAR> 9729
-  - id: 145
     path: res/textures/patrons/Rusalka.png
     fileFormat: !<RGBA> 6408
     engineFormat: !<RGBA> 6408
@@ -843,8 +805,46 @@ Textures:
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
     magFilterMode: !<LINEAR> 9729
-  - id: 146
-    path: res/textures/UI/patron_base.png
+  - id: 131
+    path: res\textures\UI\album.png
+    fileFormat: !<SRGBA> 35906
+    engineFormat: !<RGBA> 6408
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 132
+    path: res/textures/tiles/cyan1d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 133
+    path: res\textures\UI\you_lost_2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 134
+    path: res/textures/tiles/red1d.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 135
+    path: res/textures/carTextures/purple.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 136
+    path: res/textures/tiles/tile_regress/purple1_2.png
+    sWrapMode: !<MIRRORED_REPEAT> 33648
+    tWrapMode: !<MIRRORED_REPEAT> 33648
+    minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
+    magFilterMode: !<LINEAR> 9729
+  - id: 137
+    path: res/textures/cityTextures/cyan.png
     sWrapMode: !<MIRRORED_REPEAT> 33648
     tWrapMode: !<MIRRORED_REPEAT> 33648
     minFilterMode: !<NEAREST_MIPMAP_LINEAR> 9986
@@ -952,307 +952,305 @@ Textures:
 Sprites:
   - id: 0
     alias: ArrowLeft
-    texture: 104
+    texture: 105
     x: 512
     y: 0
     width: 256
     height: 256
   - id: 1
     alias: Pause
-    texture: 127
+    texture: 128
     x: 0
     y: 0
     width: 75
     height: 75
   - id: 2
     alias: MiniGame_Red_Back
-    texture: 96
+    texture: 97
     x: 0
     y: 0
     width: 310
     height: 540
   - id: 3
     alias: MiniGame_You_Won
-    texture: 13
+    texture: 14
     x: 0
     y: 0
     width: 640
     height: 134
   - id: 4
     alias: MiniGame_Purple_Back
-    texture: 22
+    texture: 23
     x: 0
     y: 0
     width: 310
     height: 540
   - id: 5
     alias: Launchpad
-    texture: 97
+    texture: 98
     x: 0
     y: 0
     width: 256
     height: 256
   - id: 6
     alias: Fans
-    texture: 45
+    texture: 46
     x: 0
     y: 0
     width: 256
     height: 256
   - id: 7
     alias: Drum
-    texture: 107
+    texture: 108
     x: 0
     y: 0
     width: 256
     height: 256
   - id: 8
     alias: Guitar
-    texture: 62
+    texture: 63
     x: 0
     y: 0
     width: 256
     height: 256
   - id: 9
     alias: PerunImage
-    texture: 18
+    texture: 19
     x: 0
     y: 0
     width: 700
     height: 700
   - id: 10
     alias: MiniGame_VS
-    texture: 79
+    texture: 80
     x: 0
     y: 0
     width: 750
     height: 540
   - id: 11
     alias: ArrowDown
-    texture: 104
+    texture: 105
     x: 256
     y: 0
     width: 256
     height: 256
   - id: 12
     alias: MiniGame_You_Lost
-    texture: 131
+    texture: 133
     x: 0
     y: 0
     width: 640
     height: 134
   - id: 13
     alias: CityPictogram
-    texture: 32
+    texture: 33
     x: 0
     y: 0
     width: 64
     height: 64
   - id: 14
     alias: HexTileShape
-    texture: 55
+    texture: 56
     x: 0
     y: 0
     width: 346
     height: 400
   - id: 15
     alias: HexTileShapeBorder
-    texture: 87
+    texture: 88
     x: 0
     y: 0
     width: 348
     height: 400
   - id: 16
     alias: HexBar
-    texture: 16
+    texture: 17
     x: 0
     y: 0
     width: 750
     height: 45
   - id: 17
     alias: ButtonFrame
-    texture: 15
+    texture: 16
     x: 0
     y: 0
     width: 144
     height: 153
   - id: 18
     alias: MiniGame_Title
-    texture: 51
+    texture: 52
     x: 0
     y: 0
     width: 640
     height: 100
   - id: 19
     alias: ArrowRight
-    texture: 104
+    texture: 105
     x: 768
     y: 0
     width: 256
     height: 256
   - id: 20
     alias: MenuButton
-    texture: 115
+    texture: 116
     x: 0
     y: 0
     width: 200
     height: 75
   - id: 21
     alias: HexBarFill
-    texture: 80
+    texture: 81
     x: 0
     y: 0
     width: 735
     height: 35
   - id: 22
     alias: HexagonSprite
-    texture: 55
+    texture: 56
     x: 0
     y: 0
     width: 256
     height: 256
   - id: 23
     alias: GraphArrow
-    texture: 120
+    texture: 121
     x: 0
     y: 0
     width: 72
     height: 100
   - id: 24
     alias: Concert
-    texture: 40
+    texture: 41
     x: 0
     y: 0
     width: 256
     height: 256
   - id: 25
     alias: Abilities
-    texture: 19
+    texture: 20
     x: 0
     y: 0
     width: 800
     height: 225
   - id: 26
     alias: MiniGame_Cyan_Back
-    texture: 106
+    texture: 107
     x: 0
     y: 0
     width: 310
     height: 540
   - id: 27
+    alias: Rusalka
+    texture: 130
+    x: 0
+    y: 0
+    width: 700
+    height: 700
+  - id: 28
     alias: NewGameButton
-    texture: 42
+    texture: 43
     x: 0
     y: 0
     width: 200
     height: 75
-  - id: 28
+  - id: 29
     alias: MiniGame_Background
-    texture: 83
+    texture: 84
     x: 0
     y: 0
     width: 640
     height: 540
-  - id: 29
+  - id: 30
     alias: MiniGame_Yellow_Back
-    texture: 21
+    texture: 22
     x: 0
     y: 0
     width: 310
     height: 540
-  - id: 30
+  - id: 31
     alias: ContinueButton
-    texture: 11
+    texture: 12
     x: 0
     y: 0
     width: 200
     height: 75
-  - id: 31
-    alias: MiniGame_Blue_Back
-    texture: 56
-    x: 0
-    y: 0
-    width: 310
-    height: 540
   - id: 32
-    alias: MiniGame_Green_Back
-    texture: 98
+    alias: MiniGame_Blue_Back
+    texture: 57
     x: 0
     y: 0
     width: 310
     height: 540
   - id: 33
-    alias: Album
-    texture: 129
-    x: 0
-    y: 0
-    width: 256
-    height: 256
-  - id: 34
-    alias: PopularityGainingSpeedPictogram
-    texture: 32
-    x: 0
-    y: 0
-    width: 64
-    height: 64
-  - id: 35
-    alias: White_Circle
-    texture: 69
-    x: 0
-    y: 0
-    width: 100
-    height: 100
-  - id: 36
-    alias: White_Box
-    texture: 90
-    x: 0
-    y: 0
-    width: 100
-    height: 100
-  - id: 37
-    alias: MiniGame_StrengthGraph
-    texture: 50
-    x: 0
-    y: 0
-    width: 256
-    height: 256
-  - id: 38
-    alias: MiniGame_Pink_Back
-    texture: 60
+    alias: MiniGame_Green_Back
+    texture: 99
     x: 0
     y: 0
     width: 310
     height: 540
-  - id: 39
-    alias: JutrzenkaImage
-    texture: 8
-    x: 0
-    y: 0
-    width: 700
-    height: 700
-    width: 727
-    height: 726
-  - id: 40
-    alias: ArrowUp
-    texture: 104
+  - id: 34
+    alias: Album
+    texture: 131
     x: 0
     y: 0
     width: 256
     height: 256
-  - id: 48
-    alias: Rusalka
-    texture: 145
+  - id: 35
+    alias: PatronsBackground
+    texture: 8
+    x: 0
+    y: 0
+    width: 200
+    height: 300
+  - id: 36
+    alias: PopularityGainingSpeedPictogram
+    texture: 33
+    x: 0
+    y: 0
+    width: 64
+    height: 64
+  - id: 37
+    alias: White_Circle
+    texture: 70
+    x: 0
+    y: 0
+    width: 100
+    height: 100
+  - id: 38
+    alias: White_Box
+    texture: 91
+    x: 0
+    y: 0
+    width: 100
+    height: 100
+  - id: 39
+    alias: MiniGame_StrengthGraph
+    texture: 51
+    x: 0
+    y: 0
+    width: 256
+    height: 256
+  - id: 40
+    alias: MiniGame_Pink_Back
+    texture: 61
+    x: 0
+    y: 0
+    width: 310
+    height: 540
+  - id: 41
+    alias: JutrzenkaImage
+    texture: 9
     x: 0
     y: 0
     width: 700
     height: 700
-  - id: 49
-    alias: PatronsBackground
-    texture: 146
+  - id: 42
+    alias: ArrowUp
+    texture: 105
     x: 0
     y: 0
-    width: 200
-    height: 300	
+    width: 256
+    height: 256
   - id: 61
     alias: TakingOverTut
     texture: 164
@@ -1377,6 +1375,34 @@ Audio:
     path: res\music\Classic\Empires_Collide_On_Streets.mp3
   - id: 12
     path: res/music/Pop/Twilight_Whispers_Embrace.mp3
+  - id: 21
+    path: res/music/voice-lines/first_step_1.mp3
+  - id: 22
+    path: res/music/voice-lines/first_step_2.mp3
+  - id: 23
+    path: res/music/voice-lines/first_step_3.mp3
+  - id: 24
+    path: res/music/voice-lines/first_step_4.mp3
+  - id: 25
+    path: res/music/voice-lines/Introduction_1.mp3
+  - id: 26
+    path: res/music/voice-lines/Introduction_2.mp3
+  - id: 27
+    path: res/music/voice-lines/patrons_1.mp3
+  - id: 28
+    path: res/music/voice-lines/patrons_2.mp3
+  - id: 29
+    path: res/music/voice-lines/album_1.mp3
+  - id: 30
+    path: res/music/voice-lines/album_2.mp3
+  - id: 31
+    path: res/music/voice-lines/concert_1.mp3
+  - id: 32
+    path: res/music/voice-lines/fan_meeting_1.mp3
+  - id: 33
+    path: res/music/voice-lines/fan_meeting_2.mp3
+  - id: 34
+    path: res/music/voice-lines/radio_tower_1.mp3
 Materials:
   - id: 0
     path: res/materials/tiles/daltonist/yellow/YellowHexTileStage3.material
@@ -1702,7 +1728,7 @@ GameObjects:
         ssaoBias: 0.00999999978
         blurMSize: 5
       - id: 3
-        enabled: true
+        enabled: false
         type: MovementController
         DragControl: true
         DragScale: 0.00999999978
@@ -2039,7 +2065,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 1
@@ -2275,7 +2301,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 1
@@ -2385,7 +2411,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 34
+        sprite: 36
         color:
           x: 1
           y: 1
@@ -2550,7 +2576,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 1
@@ -2621,7 +2647,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 33
+        sprite: 34
         color:
           x: 1
           y: 1
@@ -3017,7 +3043,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 34
+        sprite: 36
         color:
           x: 1
           y: 1
@@ -3218,7 +3244,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 28
+        sprite: 29
         color:
           x: 1
           y: 1
@@ -3296,7 +3322,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 0.34117648
           y: 0.34117648
@@ -3374,7 +3400,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 0.34117648
           y: 0.34117648
@@ -3491,7 +3517,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 31
+        sprite: 32
         color:
           x: 1
           y: 1
@@ -3743,7 +3769,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 37
+        sprite: 39
         color:
           x: 1
           y: 1
@@ -4120,7 +4146,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 0
           y: 0
@@ -4159,7 +4185,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 49
+        sprite: 35
         color:
           x: 1
           y: 1
@@ -4258,8 +4284,8 @@ GameObjects:
     transform:
       id: 119
       position:
-        x: -20
-        y: -70
+        x: 0
+        y: -83
         z: 0
       scale:
         x: 1
@@ -4274,20 +4300,20 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00P\x00e\x00r\x00u\x00n\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00M\x00o\x00v\x00e\x00 \x00R\x00a\x00n\x00g\x00e\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00+\x001\x00.\x000\x000\x000\x000\x000\x000"
+        text: "\x00M\x00o\x00v\x00e\x00 \x00R\x00a\x00n\x00g\x00e\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00+\x001\x00.\x005\x000"
         font: 1
-        size: 16
-        autoSize: true
+        size: 24
+        autoSize: false
         minSize: 5
         maxSize: 20
         width: 150
         height: 100
         color:
-          x: 0
-          y: 0
+          x: 0.864864886
+          y: 0.864864886
           z: 0
           w: 1
-        alignX: !<LEFT> 0
+        alignX: !<CENTER> 1
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
@@ -4360,7 +4386,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 1
@@ -4399,7 +4425,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 49
+        sprite: 35
         color:
           x: 1
           y: 1
@@ -4475,7 +4501,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 39
+        sprite: 41
         color:
           x: 1
           y: 1
@@ -4498,8 +4524,8 @@ GameObjects:
     transform:
       id: 128
       position:
-        x: -20
-        y: -70
+        x: 0
+        y: -83
         z: 0
       scale:
         x: 1
@@ -4514,20 +4540,20 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00J\x00u\x00r\x00z\x00e\x00n\x00k\x00a\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00A\x00b\x00i\x00l\x00i\x00t\x00i\x00e\x00s\x00 \x00R\x00a\x00n\x00g\x00e\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00+\x001\x00.\x000\x000\x000\x000\x000\x000"
+        text: "\x00A\x00b\x00i\x00l\x00i\x00t\x00i\x00e\x00s\x00 \x00R\x00a\x00n\x00g\x00e\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00+\x001\x00.\x005\x000"
         font: 1
-        size: 14
-        autoSize: true
+        size: 24
+        autoSize: false
         minSize: 5
         maxSize: 20
         width: 150
         height: 100
         color:
-          x: 0
-          y: 0
-          z: 0
+          x: 0.876447856
+          y: 0.00338397408
+          z: 0.527222633
           w: 1
-        alignX: !<LEFT> 0
+        alignX: !<CENTER> 1
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
@@ -4603,7 +4629,7 @@ GameObjects:
         color:
           x: 1
           y: 0
-          z: 0.6
+          z: 0.600000024
           w: 1
         width: 200
         height: 300
@@ -4638,7 +4664,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 49
+        sprite: 35
         color:
           x: 1
           y: 1
@@ -4737,8 +4763,8 @@ GameObjects:
     transform:
       id: 137
       position:
-        x: -20
-        y: -70
+        x: 0
+        y: -83
         z: 0
       scale:
         x: 1
@@ -4753,20 +4779,20 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00Z\x00u\x00a\x00r\x00a\x00s\x00i\x00z\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00M\x00o\x00n\x00e\x00y\x00 \x00G\x00a\x00i\x00n\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00x\x001\x00.\x001\x000\x000\x000\x000\x000"
+        text: "\x00M\x00o\x00n\x00e\x00y\x00 \x00G\x00a\x00i\x00n\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00x\x002\x00.\x000\x000"
         font: 1
-        size: 13
-        autoSize: true
+        size: 24
+        autoSize: false
         minSize: 5
         maxSize: 20
         width: 150
         height: 100
         color:
-          x: 0
+          x: 0.806949794
           y: 0
           z: 0
           w: 1
-        alignX: !<LEFT> 0
+        alignX: !<CENTER> 1
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
@@ -4839,7 +4865,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 0
@@ -4878,7 +4904,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 49
+        sprite: 35
         color:
           x: 1
           y: 1
@@ -4954,7 +4980,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 48
+        sprite: 27
         color:
           x: 1
           y: 1
@@ -4977,8 +5003,8 @@ GameObjects:
     transform:
       id: 5525
       position:
-        x: -20
-        y: -70
+        x: 0
+        y: -83
         z: 0
       scale:
         x: 1
@@ -4993,10 +5019,10 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00P\x00a\x00t\x00r\x00o\x00n\x004\x00 \x00D\x00e\x00s\x00c\x00r\x00i\x00p\x00t\x00i\x00o\x00n\x00\n\x00M\x00o\x00n\x00e\x00y\x00 \x00G\x00a\x00i\x00n\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00x\x001\x00.\x001\x000\x000\x000\x000\x000"
+        text: "\x00A\x00b\x00i\x00l\x00i\x00t\x00i\x00e\x00s\x00 \x00P\x00r\x00i\x00c\x00e\x00 \x00D\x00i\x00s\x00c\x00o\x00u\x00n\x00t\x00\n\x00B\x00o\x00n\x00u\x00s\x00:\x00 \x00-\x003\x000\x00.\x000\x000\x00%"
         font: 1
-        size: 14
-        autoSize: true
+        size: 15
+        autoSize: false
         minSize: 5
         maxSize: 20
         width: 150
@@ -5004,9 +5030,9 @@ GameObjects:
         color:
           x: 0
           y: 0
-          z: 0
+          z: 1
           w: 1
-        alignX: !<LEFT> 0
+        alignX: !<CENTER> 1
         alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
@@ -5036,7 +5062,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00P\x00a\x00t\x00r\x00o\x00n\x004"
+        text: "\x00R\x00u\x00s\x00a\x00l\x00k\x00a"
         font: 1
         size: 30
         autoSize: true
@@ -5079,7 +5105,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 36
+        sprite: 38
         color:
           x: 0
           y: 0
@@ -5118,7 +5144,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 49
+        sprite: 35
         color:
           x: 1
           y: 1
@@ -5194,7 +5220,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 39
+        sprite: 41
         color:
           x: 1
           y: 1
@@ -5319,7 +5345,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 36
+        sprite: 38
         color:
           x: 0.486274511
           y: 0
@@ -5358,7 +5384,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 49
+        sprite: 35
         color:
           x: 1
           y: 1
@@ -5559,7 +5585,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 36
+        sprite: 38
         color:
           x: 0.576470613
           y: 0
@@ -5665,7 +5691,7 @@ GameObjects:
           z: 0.141176477
           w: 1
         notesSpritesIds:
-          - 40
+          - 42
           - 19
           - 11
           - 0
@@ -5717,7 +5743,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 0
           y: 0
@@ -5756,7 +5782,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 40
+        sprite: 42
         color:
           x: 1
           y: 1
@@ -6255,7 +6281,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 1
           y: 1
@@ -6316,7 +6342,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 36
+        sprite: 38
         color:
           x: 0.030888021
           y: 0.030888021
@@ -6537,7 +6563,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 0
           y: 0
@@ -6576,7 +6602,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 30
+        sprite: 31
         color:
           x: 1
           y: 1
@@ -6797,7 +6823,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: true
-        sprite: 36
+        sprite: 38
         color:
           x: 0
           y: 0
@@ -7033,7 +7059,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 33
+        sprite: 34
         color:
           x: 1
           y: 1
@@ -7490,7 +7516,7 @@ GameObjects:
         enabled: true
         type: Image
         isTransparent: false
-        sprite: 27
+        sprite: 28
         color:
           x: 1
           y: 1
@@ -7686,6 +7712,268 @@ GameObjects:
         layer: 1
     children:
       []
+  - id: 749
+    name: ConcertCanvas
+    isStatic: false
+    isActive: false
+    transform:
+      id: 5408
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5409
+        enabled: true
+        type: Canvas
+        layer: 0
+        size:
+          x: 1920
+          y: 1080
+        worldSpace: false
+    children:
+      - 750
+      - 751
+      - 754
+      - 755
+  - id: 750
+    name: BG
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5410
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5411
+        enabled: true
+        type: Image
+        isTransparent: true
+        sprite: 38
+        color:
+          x: 0.131274104
+          y: 0.131274104
+          z: 0.131274104
+          w: 0.768627465
+        width: 700
+        height: 200
+        layer: 0
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+    children:
+      []
+  - id: 751
+    name: CountObj
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5412
+      position:
+        x: 0
+        y: -59
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      []
+    children:
+      - 752
+      - 753
+  - id: 752
+    name: CountText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5413
+      position:
+        x: -47
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5414
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x000\x00 \x00/\x00 \x003"
+        font: 1
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 753
+    name: CountImage
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5415
+      position:
+        x: 39
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5416
+        enabled: true
+        type: Image
+        isTransparent: false
+        sprite: 34
+        color:
+          x: 1
+          y: 1
+          z: 1
+          w: 1
+        width: 75
+        height: 75
+        layer: 1
+        fillEnabled: false
+        fillType: !<HORIZONTAL> 0
+        fillSubType: !<LEFT> 0
+        fillOffset: 0
+        fillProgress: 1
+    children:
+      []
+  - id: 754
+    name: ExplenationText
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5417
+      position:
+        x: 0
+        y: 0
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5418
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x00P\x00l\x00a\x00y\x00 \x00c\x00o\x00n\x00c\x00e\x00r\x00t\x00 \x00i\x00n\x00 \x003\x00 \x00c\x00o\x00n\x00c\x00e\x00r\x00t\x00 \x00c\x00i\x00t\x00i\x00e\x00s"
+        font: 1
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 0.230885029
+          y: 0.934362948
+          z: 0.388420641
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
+  - id: 755
+    name: TextTime
+    isStatic: false
+    isActive: true
+    transform:
+      id: 5419
+      position:
+        x: 0
+        y: 50
+        z: 0
+      scale:
+        x: 1
+        y: 1
+        z: 1
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+    components:
+      - id: 5420
+        enabled: true
+        type: Text
+        isTransparent: false
+        text: "\x005\x00.\x000\x000\x00s"
+        font: 1
+        size: 40
+        autoSize: false
+        minSize: 0
+        maxSize: 0
+        width: 0
+        height: 0
+        color:
+          x: 1
+          y: 0.500678301
+          z: 0.108108103
+          w: 1
+        alignX: !<CENTER> 1
+        alignY: !<BOTTOM> 0
+        textWrapping: false
+        overflow: !<Overflow> 0
+        layer: 1
+    children:
+      []
   - id: 467
     name: TutorialsCanvas
     isStatic: false
@@ -7705,6 +7993,13 @@ GameObjects:
         y: 0
         z: 0
     components:
+      - id: 4991
+        enabled: true
+        type: Audio
+        audio: 3
+        loop: false
+        volume: 1.5
+        playOnStart: false
       - id: 4990
         enabled: true
         type: Canvas
@@ -7789,6 +8084,11 @@ GameObjects:
       - id: 5927
         enabled: true
         type: TutorialSeries
+        tutorialsVoiceIds:
+          - 21
+          - 22
+          - 23
+          - 24
         tutorialsIds:
           - 130
           - 131
@@ -7869,7 +8169,7 @@ GameObjects:
         type: Text
         isTransparent: true
         text: "\x00Z\x00O\x00R\x00Y\x00A"
-        font: 0
+        font: 1
         size: 40
         autoSize: false
         minSize: 0
@@ -7882,7 +8182,7 @@ GameObjects:
           z: 0
           w: 1
         alignX: !<LEFT> 0
-        alignY: !<CENTER> 1
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 8
@@ -8156,6 +8456,9 @@ GameObjects:
       - id: 5926
         enabled: true
         type: TutorialSeries
+        tutorialsVoiceIds:
+          - 25
+          - 26
         tutorialsIds:
           - 137
           - 138
@@ -8229,7 +8532,7 @@ GameObjects:
         type: Text
         isTransparent: true
         text: "\x00Z\x00O\x00R\x00Y\x00A"
-        font: 0
+        font: 1
         size: 40
         autoSize: false
         minSize: 0
@@ -8242,7 +8545,7 @@ GameObjects:
           z: 0
           w: 1
         alignX: !<LEFT> 0
-        alignY: !<CENTER> 1
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 8
@@ -8353,7 +8656,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00A\x00h\x00,\x00 \x00I\x00'\x00m\x00 \x00s\x00o\x00r\x00r\x00y\x00,\x00 \x00I\x00 \x00f\x00o\x00r\x00g\x00o\x00t\x00 \x00t\x00o\x00 \x00i\x00n\x00t\x00r\x00o\x00d\x00u\x00c\x00e\x00 \x00m\x00y\x00s\x00e\x00l\x00f\x00.\x00 \x00M\x00y\x00 \x00n\x00a\x00m\x00e\x00 \x00i\x00s\x00 \x00\n\x00Z\x00o\x00r\x00z\x00a\x00,\x00 \x00b\x00u\x00t\x00 \x00y\x00o\x00u\x00 \x00c\x00a\x00n\x00 \x00c\x00a\x00l\x00l\x00 \x00m\x00e\x00 \x00Z\x00o\x00r\x00y\x00a\x00/\x00D\x00a\x00w\x00n\x00.\x00 \x00I\x00'\x00m\x00 \x00o\x00n\x00e\x00 \x00o\x00f\x00 \x00\n\x00t\x00h\x00e\x00 \x00o\x00l\x00d\x00 \x00g\x00o\x00d\x00s\x00 \x00a\x00n\x00d\x00 \x00I\x00 \x00w\x00a\x00n\x00t\x00 \x00t\x00o\x00 \x00h\x00e\x00l\x00p\x00 \x00y\x00o\x00u\x00 \x00i\x00n\x00 \x00y\x00o\x00u\x00r\x00 \x00j\x00o\x00u\x00r\x00n\x00e\x00y\x00."
+        text: "\x00A\x00h\x00,\x00 \x00I\x00'\x00m\x00 \x00s\x00o\x00r\x00r\x00y\x00,\x00 \x00I\x00 \x00f\x00o\x00r\x00g\x00o\x00t\x00 \x00t\x00o\x00 \x00i\x00n\x00t\x00r\x00o\x00d\x00u\x00c\x00e\x00 \x00m\x00y\x00s\x00e\x00l\x00f\x00.\x00 \x00M\x00y\x00 \x00n\x00a\x00m\x00e\x00 \x00i\x00s\x00 \x00\n\x00Z\x00o\x00r\x00y\x00a\x00,\x00 \x00I\x00'\x00m\x00 \x00o\x00n\x00e\x00 \x00o\x00f\x00 \x00 \x00t\x00h\x00e\x00 \x00o\x00l\x00d\x00 \x00g\x00o\x00d\x00s\x00 \x00a\x00n\x00d\x00 \x00I\x00 \x00w\x00a\x00n\x00t\x00 \x00t\x00o\x00 \x00h\x00e\x00l\x00p\x00 \x00y\x00o\x00u\x00 \x00\n\x00i\x00n\x00 \x00y\x00o\x00u\x00r\x00 \x00j\x00o\x00u\x00r\x00n\x00e\x00y\x00."
         font: 0
         size: 30
         autoSize: false
@@ -8430,6 +8733,8 @@ GameObjects:
       - id: 5925
         enabled: true
         type: TutorialSeries
+        tutorialsVoiceIds:
+          - 34
         tutorialsIds:
           - 142
           - 143
@@ -8503,7 +8808,7 @@ GameObjects:
         type: Text
         isTransparent: true
         text: "\x00Z\x00O\x00R\x00Y\x00A"
-        font: 0
+        font: 1
         size: 40
         autoSize: false
         minSize: 0
@@ -8516,7 +8821,7 @@ GameObjects:
           z: 0
           w: 1
         alignX: !<LEFT> 0
-        alignY: !<CENTER> 1
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 8
@@ -8704,11 +9009,13 @@ GameObjects:
       - id: 5924
         enabled: true
         type: TutorialSeries
+        tutorialsVoiceIds:
+          - 27
+          - 28
         closeOnLast: true
         tutorialsIds:
           - 147
           - 148
-          - 149
           - 19
     children:
       - 145
@@ -8780,7 +9087,7 @@ GameObjects:
         type: Text
         isTransparent: true
         text: "\x00Z\x00O\x00R\x00Y\x00A"
-        font: 0
+        font: 1
         size: 40
         autoSize: false
         minSize: 0
@@ -8793,7 +9100,7 @@ GameObjects:
           z: 0
           w: 1
         alignX: !<LEFT> 0
-        alignY: !<CENTER> 1
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 8
@@ -8861,9 +9168,9 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00N\x00o\x00w\x00,\x00 \x00m\x00y\x00 \x00p\x00r\x00o\x00t\x00e\x00g\x00e\x00,\x00 \x00t\x00h\x00e\x00 \x00t\x00i\x00m\x00e\x00 \x00h\x00a\x00s\x00 \x00c\x00o\x00m\x00e\x00 \x00t\x00o\x00 \x00c\x00h\x00o\x00o\x00s\x00e\x00 \x00y\x00o\x00u\x00r\x00 \x00d\x00i\x00v\x00i\x00n\x00e\x00 \x00\n\x00b\x00e\x00n\x00e\x00f\x00a\x00c\x00t\x00o\x00r\x00.\x00 \x00T\x00h\x00r\x00e\x00e\x00 \x00g\x00o\x00d\x00s\x00 \x00s\x00t\x00a\x00n\x00d\x00 \x00b\x00e\x00f\x00o\x00r\x00e\x00 \x00y\x00o\x00u\x00,\x00 \x00e\x00a\x00c\x00h\x00 \x00o\x00f\x00f\x00e\x00r\x00i\x00n\x00g\x00 \x00\n\x00t\x00h\x00e\x00i\x00r\x00 \x00b\x00l\x00e\x00s\x00s\x00i\x00n\x00g\x00 \x00t\x00o\x00 \x00a\x00i\x00d\x00 \x00y\x00o\x00u\x00 \x00o\x00n\x00 \x00y\x00o\x00u\x00r\x00 \x00j\x00o\x00u\x00r\x00n\x00e\x00y\x00.\x00 \x00T\x00o\x00o\x00k\x00 \x00m\x00e\x00 \x00s\x00o\x00m\x00e\x00 \x00\n\x00t\x00i\x00m\x00e\x00 \x00t\x00o\x00 \x00c\x00o\x00n\x00v\x00i\x00n\x00c\x00e\x00 \x00t\x00h\x00e\x00m\x00,\x00 \x00b\x00u\x00t\x00 \x00h\x00e\x00r\x00e\x00 \x00t\x00h\x00e\x00y\x00 \x00a\x00r\x00e\x00 \x00j\x00u\x00s\x00t\x00 \x00f\x00o\x00r\x00 \x00y\x00o\x00u\x00."
+        text: "\x00N\x00o\x00w\x00,\x00 \x00m\x00y\x00 \x00p\x00r\x00o\x00t\x00e\x00g\x00e\x00,\x00 \x00t\x00h\x00e\x00 \x00t\x00i\x00m\x00e\x00 \x00h\x00a\x00s\x00 \x00c\x00o\x00m\x00e\x00 \x00t\x00o\x00 \x00c\x00h\x00o\x00o\x00s\x00e\x00 \x00y\x00o\x00u\x00r\x00 \x00d\x00i\x00v\x00i\x00n\x00e\x00 \x00\n\x00b\x00e\x00n\x00e\x00f\x00a\x00c\x00t\x00o\x00r\x00.\x00 \x00T\x00h\x00o\x00s\x00e\x00 \x00P\x00a\x00t\x00r\x00o\x00n\x00s\x00 \x00s\x00t\x00a\x00n\x00d\x00 \x00b\x00e\x00f\x00o\x00r\x00e\x00 \x00y\x00o\x00u\x00,\x00 \x00e\x00a\x00c\x00h\x00 \x00o\x00f\x00f\x00e\x00r\x00i\x00n\x00g\x00 \x00\n\x00t\x00h\x00e\x00i\x00r\x00 \x00b\x00l\x00e\x00s\x00s\x00i\x00n\x00g\x00 \x00t\x00o\x00 \x00a\x00i\x00d\x00 \x00y\x00o\x00u\x00 \x00o\x00n\x00 \x00y\x00o\x00u\x00r\x00 \x00j\x00o\x00u\x00r\x00n\x00e\x00y\x00.\x00 \x00T\x00o\x00o\x00k\x00 \x00m\x00e\x00 \x00s\x00o\x00m\x00e\x00 \x00\n\x00t\x00i\x00m\x00e\x00 \x00t\x00o\x00 \x00c\x00o\x00n\x00v\x00i\x00n\x00c\x00e\x00 \x00t\x00h\x00e\x00m\x00,\x00 \x00b\x00u\x00t\x00 \x00h\x00e\x00r\x00e\x00 \x00t\x00h\x00e\x00y\x00 \x00a\x00r\x00e\x00 \x00j\x00u\x00s\x00t\x00 \x00f\x00o\x00r\x00 \x00y\x00o\x00u\x00."
         font: 0
-        size: 30
+        size: 29
         autoSize: false
         minSize: 0
         maxSize: 0
@@ -8904,7 +9211,7 @@ GameObjects:
         enabled: true
         type: Text
         isTransparent: false
-        text: "\x00W\x00i\x00l\x00l\x00 \x00y\x00o\x00u\x00 \x00s\x00e\x00e\x00k\x00 \x00t\x00h\x00e\x00 \x00w\x00i\x00s\x00d\x00o\x00m\x00 \x00o\x00f\x00 \x00W\x00e\x00l\x00e\x00s\x00,\x00 \x00t\x00h\x00e\x00 \x00g\x00u\x00i\x00d\x00a\x00n\x00c\x00e\x00 \x00o\x00f\x00 \x00\n\x00D\x00o\x00l\x00a\x00 \x00-\x00 \x00L\x00a\x00d\x00y\x00 \x00o\x00f\x00 \x00F\x00a\x00t\x00e\x00,\x00 \x00o\x00r\x00 \x00t\x00h\x00e\x00 \x00s\x00t\x00r\x00e\x00n\x00g\x00t\x00h\x00 \x00o\x00f\x00 \x00P\x00e\x00r\x00u\x00n\x00?\x00 \x00C\x00h\x00o\x00o\x00s\x00e\x00 \x00\n\x00w\x00i\x00s\x00e\x00l\x00y\x00,\x00 \x00f\x00o\x00r\x00 \x00y\x00o\x00u\x00r\x00 \x00p\x00a\x00t\x00r\x00o\x00n\x00 \x00s\x00h\x00a\x00l\x00l\x00 \x00s\x00h\x00a\x00p\x00e\x00 \x00t\x00h\x00e\x00 \x00v\x00e\x00r\x00y\x00 \x00e\x00s\x00s\x00e\x00n\x00c\x00e\x00 \x00o\x00f\x00 \x00\n\x00y\x00o\x00u\x00r\x00 \x00d\x00e\x00s\x00t\x00i\x00n\x00y\x00."
+        text: "\x00T\x00h\x00e\x00 \x00s\x00t\x00a\x00g\x00e\x00 \x00i\x00s\x00 \x00s\x00e\x00t\x00,\x00 \x00a\x00n\x00d\x00 \x00t\x00h\x00e\x00 \x00a\x00u\x00d\x00i\x00e\x00n\x00c\x00e\x00 \x00a\x00w\x00a\x00i\x00t\x00s\x00.\x00 \x00E\x00m\x00b\x00r\x00a\x00c\x00e\x00 \x00\n\x00y\x00o\x00u\x00r\x00 \x00f\x00a\x00t\x00e\x00,\x00 \x00a\x00n\x00d\x00 \x00l\x00e\x00t\x00 \x00t\x00h\x00e\x00 \x00e\x00c\x00h\x00o\x00e\x00s\x00 \x00o\x00f\x00 \x00f\x00a\x00m\x00e\x00 \x00g\x00u\x00i\x00d\x00e\x00 \x00y\x00o\x00u\x00 \x00\n\x00t\x00o\x00 \x00g\x00r\x00e\x00a\x00t\x00n\x00e\x00s\x00s\x00."
         font: 0
         size: 30
         autoSize: false
@@ -9024,6 +9331,9 @@ GameObjects:
       - id: 5923
         enabled: true
         type: TutorialSeries
+        tutorialsVoiceIds:
+          - 32
+          - 33
         tutorialsIds:
           - 153
           - 154
@@ -9097,7 +9407,7 @@ GameObjects:
         type: Text
         isTransparent: true
         text: "\x00Z\x00O\x00R\x00Y\x00A"
-        font: 0
+        font: 1
         size: 40
         autoSize: false
         minSize: 0
@@ -9110,7 +9420,7 @@ GameObjects:
           z: 0
           w: 1
         alignX: !<LEFT> 0
-        alignY: !<CENTER> 1
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 8
@@ -9298,6 +9608,9 @@ GameObjects:
       - id: 5922
         enabled: true
         type: TutorialSeries
+        tutorialsVoiceIds:
+          - 29
+          - 30
         tutorialsIds:
           - 158
           - 159
@@ -9371,7 +9684,7 @@ GameObjects:
         type: Text
         isTransparent: true
         text: "\x00Z\x00O\x00R\x00Y\x00A"
-        font: 0
+        font: 1
         size: 40
         autoSize: false
         minSize: 0
@@ -9384,7 +9697,7 @@ GameObjects:
           z: 0
           w: 1
         alignX: !<LEFT> 0
-        alignY: !<CENTER> 1
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 8
@@ -9572,6 +9885,8 @@ GameObjects:
       - id: 5921
         enabled: true
         type: TutorialSeries
+        tutorialsVoiceIds:
+          - 31
         tutorialsIds:
           - 163
           - 657
@@ -9604,7 +9919,7 @@ GameObjects:
         type: Text
         isTransparent: true
         text: "\x00Z\x00O\x00R\x00Y\x00A"
-        font: 0
+        font: 1
         size: 40
         autoSize: false
         minSize: 0
@@ -9617,7 +9932,7 @@ GameObjects:
           z: 0
           w: 1
         alignX: !<LEFT> 0
-        alignY: !<CENTER> 1
+        alignY: !<BOTTOM> 0
         textWrapping: false
         overflow: !<Overflow> 0
         layer: 8

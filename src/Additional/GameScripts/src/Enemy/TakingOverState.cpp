@@ -35,7 +35,7 @@ DecisionTree<Enemy*, bool> TakingOverState::_decisionTree{
 						false,
 						new DecisionTreeDecisionMaker<Enemy*, bool>(
 							[&](Enemy* enemy) -> bool {
-								if (enemy->CurrTile == nullptr) return false;
+								if (enemy->CurrTile == nullptr) return true;
 
 								// (FansActive && LocalAvg(Enemy) >= 75%) || (!FansActive && CurrTilePercent >= 75%)
 								return (enemy->isFansActive && enemy->LocalAvg() >= 75.f) || (!enemy->isFansActive && enemy->CurrTile->percentage >= 75.f);

@@ -93,7 +93,10 @@ void ConcertAbilityController::StopPerformingConcert()
 
     OnEventAbilityFinished.Invoke(playable); 
     _cityLights->SetActive(false);
-    _animHolder->Exit();
+    if (_animHolder)
+    {
+        _animHolder->Exit();
+    }
     ConcertRoad::instance->Finish();
     _animHolder = nullptr;
     StartCooldown();

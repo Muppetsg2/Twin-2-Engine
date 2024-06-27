@@ -97,11 +97,11 @@ void Enemy::OnDestroy()
     //}
     tempFansCollider.clear();
 
-    if (CurrTile != nullptr) {
-        CurrTile->StopTakingOver(this);
-        CurrTile = nullptr;
-        //move->_pointedTile = nullptr;
-    }
+    //if (CurrTile != nullptr) {
+    //    CurrTile->StopTakingOver(this);
+    //    CurrTile = nullptr;
+    //    //move->_pointedTile = nullptr;
+    //}
     tileBefore = nullptr;
 
     OwnTiles.clear();

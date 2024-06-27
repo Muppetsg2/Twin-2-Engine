@@ -64,6 +64,8 @@ Prefabs:
     path: res/prefabs/PlayerDestinationMarker.prefab
   - id: 1
     path: res/prefabs/Star.prefab
+  - id: 2
+    path: res/prefabs/ConcertCanvas.prefab
 ScriptableObjects: ~
 Root:
   name: Player
@@ -157,6 +159,7 @@ Root:
       cooldownTime: 35
       additionalTakingOverSpeed: 30
       moneyFunction: res/scriptableobjects/MoneyFunctionData.so
+      animation: 2
     - id: 5
       enabled: true
       type: MoneyGainFromTiles

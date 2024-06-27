@@ -32,7 +32,7 @@ class ConcertRoad : public Component {
 	public:
         bool isPerforming = false;
         std::vector<GameObject*> concertRoadMarkers;
-        float bonusDecreseCoef = 1.1f;
+        float bonusDecreseCoef = 0.9f;
         static ConcertRoad* instance;
 
         //struct ConcertRoadPoint
@@ -46,6 +46,8 @@ class ConcertRoad : public Component {
         std::vector<HexTile*> RoadMapPoints;
         //std::vector<HexTile*> RoadMapPoints;
         int NumberOfPoints = 3;
+
+        int playerCount = 0;
 
         bool ConsiderInfluenced = false;
 

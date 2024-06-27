@@ -119,11 +119,13 @@ void ConcertRoad::Update()
             }
         }
     }
+    playerCount = 0;
     if (player != nullptr && isPerforming) {
         float bonus = 0.0f;
         for (auto& point : RoadMapPoints)
         {
             if (point->ownerEntity == player) {
+                playerCount += 1;
                 bonus += bonusesPerStage[point->GetStage()];
             }
         }
@@ -249,6 +251,7 @@ void ConcertRoad::Finish()
         SceneManager::DestroyGameObject(go);
     }
 
+    playerCount = 0;
     isPerforming = false;
 }
 

@@ -17,7 +17,9 @@ Materials:
 Models:
   - id: 0
     path: res/models/car.obj
-Prefabs: ~
+Prefabs:
+  - id: 0
+    path: res/prefabs/ConcertCanvas.prefab
 ScriptableObjects: ~
 Root:
   name: Enemy
@@ -71,6 +73,7 @@ Root:
       cooldownTime: 5
       additionalTakingOverSpeed: 30
       moneyFunction: res/scriptableobjects/MoneyFunctionData.so
+      animation: 1
     - id: 5
       enabled: true
       type: MoneyGainFromTiles

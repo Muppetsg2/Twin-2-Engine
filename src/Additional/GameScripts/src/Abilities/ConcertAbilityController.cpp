@@ -1,6 +1,8 @@
 #include <Abilities/ConcertAbilityController.h>
 #include <ConcertRoad.h>
 
+#include <UIScripts/ConcertRoadAnimation.h>
+
 using namespace Twin2Engine::Core;
 using namespace Twin2Engine::Manager;
 
@@ -81,6 +83,8 @@ void ConcertAbilityController::StartPerformingConcert()
     //savedTakingOverSpeed = playable->TakeOverSpeed;
     //playable->TakeOverSpeed += additionalTakingOverSpeed;
     ConcertRoad::instance->Use();
+    _animHolder = SceneManager::CreateGameObject(_animation)->GetComponent<ConcertRoadAnimation>();
+    _animHolder->Start(this);
 }
 
 void ConcertAbilityController::StopPerformingConcert()
@@ -89,7 +93,9 @@ void ConcertAbilityController::StopPerformingConcert()
 
     OnEventAbilityFinished.Invoke(playable); 
     _cityLights->SetActive(false);
+    _animHolder->Exit();
     ConcertRoad::instance->Finish();
+    _animHolder = nullptr;
     StartCooldown();
 }
 
@@ -145,13 +151,14 @@ YAML::Node ConcertAbilityController::Serialize() const
     node["moneyRequired"] = moneyRequired;
     node["additionalTakingOverSpeed"] = additionalTakingOverSpeed;
     node["moneyFunction"] = ScriptableObjectManager::GetPath(moneyFunction->GetId());
+    node["animation"] = _animation != nullptr ? SceneManager::GetPrefabSaveIdx(_animation->GetId()) : 0;
 
     return node;
 }
 
 bool ConcertAbilityController::Deserialize(const YAML::Node& node)
 {
-    if (!node["lastingTime"] && !node["cooldownTime"] && !node["moneyRequired"] && !node["additionalTakingOverSpeed"] && !Component::Deserialize(node))
+    if (!node["lastingTime"] && !node["cooldownTime"] && !node["moneyRequired"] && !node["additionalTakingOverSpeed"] && !node["animation"] && !Component::Deserialize(node))
         return false;
 
     lastingTime = node["lastingTime"].as<float>();
@@ -164,6 +171,8 @@ bool ConcertAbilityController::Deserialize(const YAML::Node& node)
     _cityLights->SetActive(false);
     _cityLights->GetTransform()->SetLocalScale(glm::vec3(4.0f));
     _cityLights->GetTransform()->SetLocalPosition(glm::vec3(0.0f));
+
+    _animation = PrefabManager::GetPrefab(SceneManager::GetPrefab(node["animation"].as<size_t>()));
 
     return true;
 }

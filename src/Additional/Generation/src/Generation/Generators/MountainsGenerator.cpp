@@ -84,10 +84,56 @@ void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
                 canPlaceMountain = false;
                 break;
             }
-            else if (adjacentSectors[index2]->GetAdjacentSectors().size() == 1)
+            vector<MapSector*> adjacentSectorsToAdjacent = adjacentSectors[index2]->GetAdjacentSectors();
+            if (adjacentSectorsToAdjacent.size() == 1)
             {
                 canPlaceMountain = false;
                 break;
+            }
+            if (adjacentSectorsToAdjacent.size() == 2)
+            {
+                if (adjacentSectorsToAdjacent[0ull] == sector)
+                {
+                    vector<MapSector*> adjacentSectorsToAdjacentToAdjacent = adjacentSectorsToAdjacent[1ull]->GetAdjacentSectors();
+
+                    if (adjacentSectorsToAdjacentToAdjacent.size() == 1)
+                    {
+                        canPlaceMountain = false;
+                        break;
+                    }
+                    else if (adjacentSectorsToAdjacentToAdjacent.size() == 2)
+                    {
+                        if ((adjacentSectorsToAdjacentToAdjacent[0ull] == sector
+                                && adjacentSectorsToAdjacentToAdjacent[1ull] == adjacentSectorsToAdjacent[1ull])
+                            || (adjacentSectorsToAdjacentToAdjacent[0ull] == sector
+                                && adjacentSectorsToAdjacentToAdjacent[1ull] == adjacentSectorsToAdjacent[1ull]))
+                        {
+                            canPlaceMountain = false;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    vector<MapSector*> adjacentSectorsToAdjacentToAdjacent = adjacentSectorsToAdjacent[0ull]->GetAdjacentSectors();
+
+                    if (adjacentSectorsToAdjacentToAdjacent.size() == 1)
+                    {
+                        canPlaceMountain = false;
+                        break;
+                    }
+                    else if (adjacentSectorsToAdjacentToAdjacent.size() == 2)
+                    {
+                        if ((adjacentSectorsToAdjacentToAdjacent[0ull] == sector
+                            && adjacentSectorsToAdjacentToAdjacent[1ull] == adjacentSectorsToAdjacent[0ull])
+                            || (adjacentSectorsToAdjacentToAdjacent[0ull] == sector
+                                && adjacentSectorsToAdjacentToAdjacent[1ull] == adjacentSectorsToAdjacent[0ull]))
+                        {
+                            canPlaceMountain = false;
+                            break;
+                        }
+                    }
+                }
             }
         }
 

@@ -585,16 +585,16 @@ void GameManager::RestartMapPhase1() {
     GameObject* go = nullptr;
 
 
-    //for (size_t index = 0ull; index < entities.size(); ++index)
-    //{
-    //    if (entities[index] != _player)
-    //    {
-    //        entities[index]->CurrTile = nullptr;
-    //        SceneManager::DestroyGameObject(entities[index]->GetGameObject());
-    //    }
-    //}
-    //entities.clear();
-    //entities.push_back(_player);
+    for (size_t index = 0ull; index < entities.size(); ++index)
+    {
+        if (entities[index] != _player)
+        {
+            entities[index]->CurrTile = nullptr;
+            SceneManager::DestroyGameObject(entities[index]->GetGameObject());
+        }
+    }
+    entities.clear();
+    entities.push_back(_player);
 
 
     _freePatronsData.clear();

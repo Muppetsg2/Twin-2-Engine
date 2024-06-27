@@ -1701,6 +1701,8 @@ GameObjects:
           - res/scriptableobjects/patrons/Jutrzenka.so
           - res/scriptableobjects/patrons/Rusalka.so
           - res/scriptableobjects/patrons/Zuarasiz.so
+          - res/scriptableobjects/patrons/Patron5.so
+          - res/scriptableobjects/patrons/Patron6.so
         RockBackgroundMusics:
           - 2
         ElectricBackgroundMusics:

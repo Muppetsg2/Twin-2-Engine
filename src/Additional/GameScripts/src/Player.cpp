@@ -564,7 +564,7 @@ void Player::StartPlayer(HexTile* startUpTile)
     move->StartUp(startUpTile);
 
     GameObject* MovingAroundTut = SceneManager::FindObjectByName("MovingAroundTut");
-    if (MovingAroundTut != nullptr) {
+    if (MovingAroundTut != nullptr && GameManager::instance->entities.size() <= 3) {
         MovingAroundTut->SetActive(true);
     }
 

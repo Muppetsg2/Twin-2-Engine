@@ -15,11 +15,11 @@ void ConcertAbilityController::OnDestroy() {
 }
 
 void ConcertAbilityController::Reset() {
+    StopPerformingConcert();
+    currTimerTime = 0.0f;
     currCooldown = 0.0f;
     canUse = true;
     OnEventAbilityCooldownFinished.Invoke(playable);
-    currTimerTime = 0.0f;
-    StopPerformingConcert();
 }
 
 void ConcertAbilityController::Update() {

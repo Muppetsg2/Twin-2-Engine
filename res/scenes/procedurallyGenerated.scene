@@ -2191,7 +2191,7 @@ GameObjects:
   - id: 90
     name: PopularityGainingPictogram
     isStatic: false
-    isActive: true
+    isActive: false
     transform:
       id: 167
       position:

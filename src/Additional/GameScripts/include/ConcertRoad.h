@@ -47,6 +47,8 @@ class ConcertRoad : public Component {
         //std::vector<HexTile*> RoadMapPoints;
         int NumberOfPoints = 3;
 
+        int playerCount = 0;
+
         bool ConsiderInfluenced = false;
 
         //TextMeshProUGUI textField;

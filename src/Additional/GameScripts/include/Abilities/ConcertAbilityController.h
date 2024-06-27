@@ -5,11 +5,15 @@
 #include <Playable.h>
 #include <AreaTaking/GetMoneyFromTiles.h>
 
+class ConcertRoadAnimation;
+
 class ConcertAbilityController : public Twin2Engine::Core::Component {
 private:
 
     GameObject* _cityLights = nullptr;
     MoneyFunctionData* moneyFunction;
+    Prefab* _animation = nullptr;
+    ConcertRoadAnimation* _animHolder = nullptr;
 
     float currTimerTime = 0.0f;
     float currCooldown = 0.0f;

@@ -107,29 +107,30 @@ void ConcertRoad::Update()
     //    }
     //}
 
-
-    Player* player = GameManager::instance->GetPlayer();
-    if (player != nullptr && !isPerforming) {
-        if (player->TakeOverSpeed > 10.0f) {
-            PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(bonusDecreseCoef * Time::GetDeltaTime());
-            player->TakeOverSpeed -= bonusDecreseCoef * Time::GetDeltaTime();
-            if (player->TakeOverSpeed <= 10.0f)
+    if (!GameManager::instance->minigameActive && !GameManager::instance->gameOver) {
+        Player* player = GameManager::instance->GetPlayer();
+        if (player != nullptr && !isPerforming) {
+            if (player->TakeOverSpeed > 10.0f) {
+                PopularityGainingBonusBarController::Instance()->RemoveCurrentBonus(bonusDecreseCoef * Time::GetDeltaTime());
+                player->TakeOverSpeed -= bonusDecreseCoef * Time::GetDeltaTime();
+                if (player->TakeOverSpeed <= 10.0f)
+                {
+                    player->TakeOverSpeed = 10.0f;
+                }
+            }
+        }
+        playerCount = 0;
+        if (player != nullptr && isPerforming) {
+            float bonus = 0.0f;
+            for (auto& point : RoadMapPoints)
             {
-                player->TakeOverSpeed = 10.0f;
+                if (point->ownerEntity == player) {
+                    playerCount += 1;
+                    bonus += bonusesPerStage[point->GetStage()];
+                }
             }
+            PopularityGainingBonusBarController::Instance()->SetPossibleBonus(bonus);
         }
-    }
-    playerCount = 0;
-    if (player != nullptr && isPerforming) {
-        float bonus = 0.0f;
-        for (auto& point : RoadMapPoints)
-        {
-            if (point->ownerEntity == player) {
-                playerCount += 1;
-                bonus += bonusesPerStage[point->GetStage()];
-            }
-        }
-        PopularityGainingBonusBarController::Instance()->SetPossibleBonus(bonus);
     }
 }
 

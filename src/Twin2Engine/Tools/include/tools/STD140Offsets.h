@@ -63,10 +63,6 @@ namespace Twin2Engine::Tools {
 
 		template<class T, class... Ts>
 		void _AddMultiple(const STD140Variable<T>& var, const STD140Variable<Ts>&... vars) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
-
 			if constexpr (std::is_same_v<T, STD140Offsets>) {
 				if (var.array_size == 0) {
 					Add(var.var_name, var.struct_offsets);
@@ -122,9 +118,6 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T, size_t>
 		Add(const std::string& name) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			if (_CheckVariable(name)) {
 				return 0;
 			}
@@ -150,9 +143,6 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T, std::vector<size_t>>
 		Add(const std::string& name, size_t size) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			if (size == 0) {
 				return std::vector<size_t>();
 			}
@@ -185,9 +175,6 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L, size_t>
 		Add(const std::string& name) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			if (_CheckVariable(name)) {
 				return 0;
 			}
@@ -231,9 +218,6 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L, std::vector<size_t>>
 		Add(const std::string& name, size_t size) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			if (size == 0) {
 				return std::vector<size_t>();
 			}
@@ -284,10 +268,6 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R, size_t>
 		Add(const std::string& name) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
-
 			if (_CheckVariable(name)) {
 				return 0;
 			}
@@ -347,10 +327,6 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R, std::vector<size_t>>
 		Add(const std::string& name, size_t size) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
-
 			if (size == 0) {
 				return std::vector<size_t>();
 			}
@@ -431,10 +407,6 @@ namespace Twin2Engine::Tools {
 
 #pragma region ADD_STRUCT
 		size_t Add(const std::string& name, const STD140Offsets& structTemplate) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
-			
 			if (_CheckVariable(name)) {
 				return 0;
 			}
@@ -466,10 +438,6 @@ namespace Twin2Engine::Tools {
 
 #pragma region ADD_STRUCT_ARRAY
 		std::vector<size_t> Add(const std::string& name, const STD140Offsets& structTemplate, size_t size) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
-
 			if (size == 0) {
 				return std::vector<size_t>();
 			}

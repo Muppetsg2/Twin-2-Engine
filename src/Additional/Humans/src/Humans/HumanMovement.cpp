@@ -31,7 +31,6 @@ const char* const tracy_HumanMovementUpdate = "HumanMovementUpdate";
 void HumanMovement::Update()
 {
 #if TRACY_PROFILER
-    ZoneScoped;
     FrameMarkStart(tracy_HumanMovementUpdate);
 #endif
 

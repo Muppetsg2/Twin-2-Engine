@@ -21,10 +21,6 @@ inline DecisionTreeLeaf<_Entity>::DecisionTreeLeaf(const LeafAction& action) : _
 
 template<class _Entity>
 inline void DecisionTreeLeaf<_Entity>::ProcessNode(_Entity entity) {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	_action(entity);
 }
 

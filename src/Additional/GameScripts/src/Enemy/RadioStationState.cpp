@@ -27,10 +27,6 @@ DecisionTree<pair<Enemy*, uint32_t>, bool> RadioStationState::_decisionTree{
 
 void RadioStationState::Score(Enemy* enemy, uint32_t score)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Radio Station Score {0}", score);
 
 	if (enemy->CurrTile->GetGameObject() == nullptr) {
@@ -51,10 +47,6 @@ void RadioStationState::Score(Enemy* enemy, uint32_t score)
 
 void RadioStationState::Enter(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Enter Radio Station State");
 
 	_decisionTree.ProcessNode({ enemy, 0 });
@@ -62,18 +54,10 @@ void RadioStationState::Enter(Enemy* enemy)
 
 void RadioStationState::Update(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Update Radio Station State");
 }
 
 void RadioStationState::Exit(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Exit Radio Station State");
 }

@@ -58,10 +58,6 @@ DecisionTree<Enemy*, bool> TakingOverState::_decisionTree{
 
 void TakingOverState::AlbumAbility(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Album Ability");
 
 	enemy->UseAlbum();
@@ -69,10 +65,6 @@ void TakingOverState::AlbumAbility(Enemy* enemy)
 
 void TakingOverState::FansMeetingAbility(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Fans Meeting Ability");
 
 	enemy->UseFans();
@@ -80,29 +72,17 @@ void TakingOverState::FansMeetingAbility(Enemy* enemy)
 
 void TakingOverState::Move(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Move");
 	enemy->ChangeState(&enemy->_movingState);
 }
 
 void TakingOverState::Enter(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Enter Taking Over State");
 }
 
 void TakingOverState::Update(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	if (!GameManager::instance->minigameActive) {
 		SPDLOG_INFO("Update Taking Over State");
 		_decisionTree.ProcessNode(enemy);
@@ -111,9 +91,5 @@ void TakingOverState::Update(Enemy* enemy)
 
 void TakingOverState::Exit(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Exit Taking Over State");
 }

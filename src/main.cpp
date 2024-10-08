@@ -18,6 +18,28 @@ extern "C" {
 #if TRACY_PROFILER
 const char* const tracy_ImGuiDrawingConsole = "ImGuiDrawingConsole";
 const char* const tracy_RenderingImGui = "RenderingImGui";
+
+void* operator new(size_t size) throw(std::bad_alloc) {
+    void* ptr = tracy::tracy_malloc(size);
+    TracyAlloc(ptr, size);
+    return ptr;
+}
+
+void* operator new[](size_t size) throw(std::bad_alloc) {
+    void* ptr = tracy::tracy_malloc(size);
+    TracyAlloc(ptr, size);
+    return ptr;
+}
+
+void operator delete(void* ptr) throw() {
+    TracyFree(ptr);
+    tracy::tracy_free(ptr);
+}
+
+void operator delete[](void* ptr) throw() {
+    TracyFree(ptr);
+    tracy::tracy_free(ptr);
+}
 #endif
 
 #if _DEBUG

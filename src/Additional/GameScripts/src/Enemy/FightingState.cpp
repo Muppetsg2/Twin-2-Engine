@@ -92,10 +92,6 @@ DecisionTree<Enemy*, FightingState::FightResult> FightingState::_decisionTree{
 };
 
 float FightingState::Score(Enemy* enemy, Playable* entity) {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	std::srand(std::time(NULL));
 	float rnd = std::rand() % 101;
 	// clamp(rand(0, 100) + map(fightPowerScore(player) - fightPowerScore(enemy), -100, 100, -50, 50), 0, 100)
@@ -103,18 +99,10 @@ float FightingState::Score(Enemy* enemy, Playable* entity) {
 }
 
 void FightingState::Draw(Enemy* enemy) {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("ENEMY DRAW");
 }
 
 void FightingState::Win(Enemy* enemy) {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("ENEMY WIN");
 	if (enemy->CurrTile->GetMapHexTile()->type == Generation::MapHexTile::HexTileType::RadioStation) {
 		RadioStation* radioStation = enemy->CurrTile->GetGameObject()->GetComponentInChildren<RadioStation>();
@@ -131,38 +119,22 @@ void FightingState::Win(Enemy* enemy) {
 }
 
 void FightingState::Lose(Enemy* enemy) {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("ENEMY LOSE");
 	enemy->ChangeState(&enemy->_movingState);
 }
 
 void FightingState::Enter(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Fighting State Enter");
 }
 
 void FightingState::Update(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Fighting State Update");
 	_decisionTree.ProcessNode(enemy);
 }
 
 void FightingState::Exit(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Fighting State Exit");
 }

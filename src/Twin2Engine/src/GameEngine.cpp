@@ -153,6 +153,7 @@ void GameEngine::Loop()
     while (!Window::GetInstance()->IsClosed())
     {
 #if TRACY_PROFILER
+        TracyGpuZone("Frame")
         FrameMarkNamed(tracy_FrameName);
         // Process I/O operations here
         FrameMarkStart(tracy_OnInputFrameName);
@@ -188,6 +189,7 @@ void GameEngine::Loop()
         EndFrame();
 
 #if TRACY_PROFILER
+        TracyGpuCollect
         FrameMarkEnd(tracy_EndFrameName);
 #endif
     }

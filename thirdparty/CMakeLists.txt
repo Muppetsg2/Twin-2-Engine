@@ -55,13 +55,13 @@ else()
 endif()
 
 # other
-CPMAddPackage("gh:assimp/assimp@5.4.1")
+CPMAddPackage("gh:assimp/assimp@5.4.3")
 CPMAddPackage("gh:glfw/glfw#3.4")
 #CPMAddPackage("gh:syoyo/tinygltf@2.8.21")
 CPMAddPackage("gh:g-truc/glm#1.0.1")
 CPMAddPackage("gh:gabime/spdlog@1.14.1")
 CPMAddPackage("gh:jbeder/yaml-cpp#0.8.0")
-CPMAddPackage("gh:freetype/freetype#VER-2-13-2")
+CPMAddPackage("gh:freetype/freetype#VER-2-13-3")
 
 set_target_properties(glad
                       stb_image 
@@ -75,7 +75,7 @@ set_target_properties(glad
 
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
 
-    CPMAddPackage("gh:ocornut/imgui@1.90.8-docking")
+    CPMAddPackage("gh:ocornut/imgui@1.91.3-docking")
 
     set(imgui_SOURCE_DIR ${imgui_SOURCE_DIR} CACHE INTERNAL "")
     add_library(imgui STATIC ${imgui_SOURCE_DIR}/imgui.cpp
@@ -102,7 +102,7 @@ if (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 
 if(TRACY_PROFILER)
-    CPMAddPackage("gh:wolfpld/tracy@0.10")
+    CPMAddPackage("gh:wolfpld/tracy@0.11.1")
     set_target_properties(TracyClient PROPERTIES FOLDER "thirdparty")
 endif()
 

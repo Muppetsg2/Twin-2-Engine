@@ -1,4 +1,4 @@
-#define TWIN2_VERSION "1.2"
+#define TWIN2_VERSION "1.2.2"
 
 #define USE_IMGUI_CONSOLE_OUTPUT true
 #define USE_WINDOWS_CONSOLE_OUTPUT false
@@ -11,7 +11,7 @@
 #endif
 
 extern "C" {
-    _declspec(dllexport) DWORD NvOptimusEnablement = 1;
+    _declspec(dllexport) unsigned long NvOptimusEnablement = 1;
     _declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
 
@@ -167,7 +167,7 @@ void end_imgui();
 constexpr const char* WINDOW_NAME = "Echoes Of Fame";
 constexpr int32_t WINDOW_WIDTH  = 1920;
 constexpr int32_t WINDOW_HEIGHT = 1080;
-constexpr bool WINDOW_FULLSCREEN = true;
+constexpr bool WINDOW_FULLSCREEN = false;
 
 #if DISPLAY_SPLASH_SCREEN
 constexpr const char* SPLASH_SCREEN_TEXTURE = "res/textures/splashScreen2.png";

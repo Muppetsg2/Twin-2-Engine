@@ -133,6 +133,7 @@ void GraphicEngine::Render()
 #if TRACY_PROFILER
 	ZoneScoped;
 	FrameMarkStart(tracy_RenderMeshesName);
+	TracyGpuZone("GraphicEngine Render")
 #endif
 
 	glEnable(GL_CULL_FACE);
@@ -157,6 +158,7 @@ void GraphicEngine::RenderGUI()
 #if TRACY_PROFILER
 	ZoneScoped;
 	FrameMarkStart(tracy_RenderUIName);
+	TracyGpuZone("GraphicEngine RenderGUI")
 #endif
 
 	glDisable(GL_CULL_FACE);
@@ -174,6 +176,7 @@ void GraphicEngine::PreRender()
 #if TRACY_PROFILER
 	ZoneScoped;
 	FrameMarkStart(tracy_PreRenderName);
+	TracyGpuZone("PreRender")
 #endif
 
 	glEnable(GL_CULL_FACE);

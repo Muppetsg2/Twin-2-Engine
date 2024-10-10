@@ -154,6 +154,7 @@ void UIRenderingManager::RenderWorldSpace()
 {
 #if TRACY_PROFILER
 	ZoneScoped;
+	TracyGpuZone("UIRenderer RenderWorldSpace")
 #endif
 
 	if (_uiShader == nullptr) return;
@@ -167,6 +168,7 @@ void UIRenderingManager::RenderScreenSpace()
 {
 #if TRACY_PROFILER
 	ZoneScoped;
+	TracyGpuZone("UIRenderer RenderScreenSpace")
 #endif
 
 	if (_uiShader == nullptr) return;

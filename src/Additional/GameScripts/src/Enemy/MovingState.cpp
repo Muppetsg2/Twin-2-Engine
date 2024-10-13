@@ -191,10 +191,6 @@ void MovingState::DoAfterMoveDecisionTree(Enemy* enemy) {
 
 void MovingState::StartTakingOver(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Start Taking Over");
 	enemy->CurrTile->StartTakingOver(enemy);
 	enemy->ChangeState(&enemy->_takingOverState);
@@ -202,10 +198,6 @@ void MovingState::StartTakingOver(Enemy* enemy)
 
 void MovingState::MoveToFight(Enemy* enemy, HexTile* playerTile)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Fight");
 
 	// Move to tile with desired player
@@ -214,10 +206,6 @@ void MovingState::MoveToFight(Enemy* enemy, HexTile* playerTile)
 
 void MovingState::MoveToRadioStation(Enemy* enemy, HexTile* radioStationTile)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Radio Station");
 
 	// Move to tile with desired radioStation
@@ -226,10 +214,6 @@ void MovingState::MoveToRadioStation(Enemy* enemy, HexTile* radioStationTile)
 
 void MovingState::AlbumAbility(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Album Ability");
 
 	// Use Album Ability
@@ -238,10 +222,6 @@ void MovingState::AlbumAbility(Enemy* enemy)
 
 void MovingState::ConcertAbility(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Concert Ability");
 
 	// TODO: Use Concert Ability
@@ -249,10 +229,6 @@ void MovingState::ConcertAbility(Enemy* enemy)
 
 void MovingState::Move(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Move");
 	// Move to other tile
 	enemy->ChangeState(&enemy->_movingState);
@@ -328,10 +304,6 @@ std::unordered_map<Enemy*, std::pair<size_t, size_t>> MovingState::_eventsIds;
 
 void MovingState::Enter(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Enter Moving State");
 	
 	size_t ofpeId = (enemy->_movement->OnFindPathError += [enemy](GameObject* gameObject, HexTile* tile) {
@@ -372,10 +344,6 @@ void MovingState::Enter(Enemy* enemy)
 
 void MovingState::Update(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	if (!GameManager::instance->minigameActive) {
 		SPDLOG_INFO("Update Moving State");
 		if (!_afterMove.contains(enemy)) {
@@ -390,10 +358,6 @@ void MovingState::Update(Enemy* enemy)
 
 void MovingState::Exit(Enemy* enemy)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Exit Moving State");
 	enemy->_movement->OnFindPathError -= _eventsIds[enemy].first;
 	enemy->_movement->OnFinishMoving -= _eventsIds[enemy].second;

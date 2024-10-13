@@ -539,6 +539,7 @@ void CameraComponent::Render()
 {
 #if TRACY_PROFILER
 	ZoneScoped;
+	TracyGpuZone("Camera")
 #endif
 	if (!IsEnable() || !GetGameObject()->GetActive()) {
 		return;

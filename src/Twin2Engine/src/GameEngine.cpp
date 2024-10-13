@@ -111,6 +111,7 @@ void GameEngine::EndFrame()
     // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
     // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
     FrameMarkStart(tracy_SceneManagerUpdateName);
+    TracyGpuZone("EndFrame")
 #endif
 
     SceneManager::Update();
@@ -153,6 +154,7 @@ void GameEngine::Loop()
     while (!Window::GetInstance()->IsClosed())
     {
 #if TRACY_PROFILER
+        TracyGpuZone("Frame");
         FrameMarkNamed(tracy_FrameName);
         // Process I/O operations here
         FrameMarkStart(tracy_OnInputFrameName);
@@ -188,6 +190,11 @@ void GameEngine::Loop()
         EndFrame();
 
 #if TRACY_PROFILER
+        TracyGpuCollect;
+        float fps = 1000.f / (Time::GetDeltaTime() * 1000.f);
+        fps = std::max(std::min(fps, (float)Window::GetInstance()->GetRefreshRate()), 0.f);
+        TracyPlot("FPS", fps);
+        TracyPlot("Delta Time (ms)", Time::GetDeltaTime() * 1000.f);
         FrameMarkEnd(tracy_EndFrameName);
 #endif
     }

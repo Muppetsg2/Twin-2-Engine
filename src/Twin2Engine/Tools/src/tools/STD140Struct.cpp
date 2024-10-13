@@ -5,10 +5,6 @@ using namespace std;
 
 size_t STD140Struct::_GetArrayElemSize(const vector<size_t>& offsets) const
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	if (offsets.size() > 1) {
 		return offsets[1] - offsets[0];
 	}
@@ -19,10 +15,6 @@ size_t STD140Struct::_GetArrayElemSize(const vector<size_t>& offsets) const
 
 void STD140Struct::_AddStruct(const string& name, const STD140Struct& value)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	// ADD TO OFFSETS
 	size_t valueOffset = _dataOffsets.Add(name, value._dataOffsets);
 
@@ -51,10 +43,6 @@ void STD140Struct::_AddStruct(const string& name, const STD140Struct& value)
 
 void STD140Struct::_AddStructArray(const string& name, const STD140Offsets& structOffsets, const vector<vector<char>>& values)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	// CHECK SIZE
 	if (values.size() == 0) return;
 
@@ -92,9 +80,6 @@ void STD140Struct::_AddStructArray(const string& name, const STD140Offsets& stru
 
 bool STD140Struct::_SetStruct(const string& name, const STD140Struct& value)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
 	// CHECK VARIABLE
 	if (!_dataOffsets.Contains(name)) {
 		SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
@@ -112,9 +97,6 @@ bool STD140Struct::_SetStruct(const string& name, const STD140Struct& value)
 
 bool STD140Struct::_SetStructArray(const string& name, const STD140Offsets& structOffsets, const vector<vector<char>>& values)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
 	// CHECK SIZE
 	if (values.size() == 0) return false;
 
@@ -154,10 +136,6 @@ bool STD140Struct::_SetStructArray(const string& name, const STD140Offsets& stru
 
 STD140Struct STD140Struct::_GetStruct(const string& name, const STD140Offsets& structOffsets) const
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	// CHECK VARIABLE
 	if (!_dataOffsets.Contains(name)) {
 		SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
@@ -182,10 +160,6 @@ STD140Struct STD140Struct::_GetStruct(const string& name, const STD140Offsets& s
 
 vector<STD140Struct> STD140Struct::_GetStructArray(const string& name, const STD140Offsets& structOffsets) const
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	// CHECK VARIABLE
 	if (!_dataOffsets.Contains(name)) {
 		SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
@@ -226,10 +200,6 @@ vector<STD140Struct> STD140Struct::_GetStructArray(const string& name, const STD
 
 STD140Struct::STD140Struct(const STD140Offsets& structOffsets, const vector<char>& data)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	_dataOffsets = structOffsets;
 	_data.reserve(_dataOffsets.GetSize());
 	_data.insert(_data.begin(), data.begin(), data.begin() + std::min(data.size(), _data.capacity()));
@@ -239,52 +209,28 @@ STD140Struct::STD140Struct(const STD140Offsets& structOffsets, const vector<char
 }
 
 STD140Struct::STD140Struct(STD140Struct& std140s) {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	std140s.CloneTo(this);
 }
 
 STD140Struct::STD140Struct(const STD140Struct& std140s) {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	std140s.CloneTo(this);
 }
 
 STD140Struct::STD140Struct(STD140Struct&& std140s) {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	std140s.CloneTo(this);
 }
 
 STD140Struct& STD140Struct::operator=(STD140Struct& std140s) {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	std140s.CloneTo(this);
 	return *this;
 }
 
 STD140Struct& STD140Struct::operator=(const STD140Struct& std140s) {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	std140s.CloneTo(this);
 	return *this;
 }
 
 STD140Struct& STD140Struct::operator=(STD140Struct&& std140s) {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	std140s.CloneTo(this);
 	return *this;
 }
@@ -293,28 +239,16 @@ CloneFuncDefinition(Twin2Engine::Tools::STD140Struct, StandardClone(_dataOffsets
 
 STD140Struct::~STD140Struct()
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	Clear();
 }
 
 void STD140Struct::Add(const string& name, const STD140Struct& value)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	_AddStruct(name, value);
 }
 
 void STD140Struct::Add(const string& name, const STD140Offsets& structOffsets, const vector<char>*& values, size_t size)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	_ConvertArray<vector<char>, vector<char>, const vector<char>*&, void>(name, values, size,
 		[&](const string& name, const vector<vector<char>>& convs) -> void {
 			_AddStructArray(name, structOffsets, convs);
@@ -323,28 +257,16 @@ void STD140Struct::Add(const string& name, const STD140Offsets& structOffsets, c
 
 void STD140Struct::Add(const string& name, const STD140Offsets& structOffsets, const vector<vector<char>>& values)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	_AddStructArray(name, structOffsets, values);
 }
 
 bool STD140Struct::Set(const string& name, const STD140Struct& value)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	return _SetStruct(name, value);
 }
 
 bool STD140Struct::Set(const string& name, const STD140Offsets& structOffsets, const vector<char>*& values, size_t size)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	return _ConvertArray<vector<char>, vector<char>, const vector<char>*&, bool>(name, values, size,
 		[&](const string& name, const vector<vector<char>>& values) -> bool {
 			return _SetStructArray(name, structOffsets, values);
@@ -353,19 +275,11 @@ bool STD140Struct::Set(const string& name, const STD140Offsets& structOffsets, c
 
 bool STD140Struct::Set(const string& name, const STD140Offsets& structOffsets, const vector<vector<char>>& values)
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	return _SetStructArray(name, structOffsets, values);
 }
 
 STD140Offsets STD140Struct::GetOffsets() const
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	return _dataOffsets;
 }
 
@@ -382,63 +296,36 @@ vector<size_t> STD140Struct::GetArrayOffsets(const string& name) const
 #if _DEBUG
 const ValueType* STD140Struct::GetType(const string& name) const
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	return _dataOffsets.GetType(name);
 }
 
 std::vector<std::string> STD140Struct::GetNames() const
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	return _dataOffsets.GetNames();
 }
 #endif
 
 vector<char> STD140Struct::GetData() const
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	return _data;
 }
 
 size_t STD140Struct::GetBaseAligement() const
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	return _dataOffsets.GetBaseAligement();
 }
 
 size_t STD140Struct::GetSize() const
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	return _data.size();
 }
 
 void STD140Struct::ClearData() {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
 	memset(_data.data(), 0, _data.size());
 }
 
 void STD140Struct::Clear()
 {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	_dataOffsets.Clear();
 	_data.clear();
 }

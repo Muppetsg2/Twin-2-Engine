@@ -16,10 +16,6 @@ DecisionTree<Enemy*, bool> InitState::_decisionTree{
 };
 
 HexTile* InitState::ChooseTile(Enemy* enemy) {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Init State Choose Tile");
 
 	std::srand(std::time(NULL));
@@ -46,10 +42,6 @@ HexTile* InitState::ChooseTile(Enemy* enemy) {
 }
 
 void InitState::Begin(Enemy* enemy) {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Init State Begin");
 	
 	HexTile* tile = ChooseTile(enemy);
@@ -63,19 +55,11 @@ void InitState::Begin(Enemy* enemy) {
 }
 
 void InitState::Enter(Enemy* enemy) {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Init State Enter");
 	enemy->GetGameObject()->GetComponent<MeshRenderer>()->SetEnable(false);
 }
 
 void InitState::Update(Enemy* enemy) {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	if (!GameManager::instance->minigameActive) {
 		SPDLOG_INFO("Init State Update");
 		_decisionTree.ProcessNode(enemy);
@@ -83,9 +67,5 @@ void InitState::Update(Enemy* enemy) {
 }
 
 void InitState::Exit(Enemy* enemy) {
-#if TRACY_PROFILER
-	ZoneScoped;
-#endif
-
 	SPDLOG_INFO("Init State Exit");
 }

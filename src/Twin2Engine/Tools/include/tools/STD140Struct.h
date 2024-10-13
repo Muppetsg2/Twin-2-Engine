@@ -55,9 +55,6 @@ namespace Twin2Engine::Tools {
 
 		template<class T> 
 		std::vector<char> _GetValueData(const T& value) const {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			const char* valueDataPtr = reinterpret_cast<const char*>(&value);
 			return std::vector<char>(valueDataPtr, valueDataPtr + sizeof(T));
 		}
@@ -66,10 +63,6 @@ namespace Twin2Engine::Tools {
 
 		template<class S, class C, class T, class R>
 		R _ConvertArray(const std::string& name, const T& values, size_t size, const Func<R, const std::string&, const std::vector<C>&>& arrayFunc) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
-
 			if constexpr (std::is_same_v<T, std::vector<S>> && std::is_same_v<S, C>) {
 				if constexpr (std::is_void_v<R>) {
 					arrayFunc(name, values);
@@ -118,10 +111,6 @@ namespace Twin2Engine::Tools {
 		}*/
 
 		template<class T> void _Add(const std::string& name, const T& value) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
-
 			// ADD TO OFFSETS
 			size_t valueOffset = std::move(_dataOffsets.Add<T>(name));
 
@@ -155,10 +144,6 @@ namespace Twin2Engine::Tools {
 		}
 
 		template<class T> void _AddArray(const std::string& name, const std::vector<T>& values) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
-
 			// CHECK SIZE
 			if (values.size() == 0) {
 				return;
@@ -212,10 +197,6 @@ namespace Twin2Engine::Tools {
 #pragma region SET
 
 		template<class T> bool _Set(const std::string& name, const T& value) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
-
 			// CHECK VARIABLE
 			if (!_dataOffsets.Contains(name)) {
 				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
@@ -238,10 +219,6 @@ namespace Twin2Engine::Tools {
 		}
 
 		template<class T> bool _SetArray(const std::string& name, const std::vector<T>& values) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
-
 			// CHECK SIZE
 			if (values.size() == 0) {
 				return false;
@@ -294,10 +271,6 @@ namespace Twin2Engine::Tools {
 #pragma region GET
 
 		template<class T> T _Get(const std::string& name) const {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
-
 			// CHECK VARIABLE
 			if (!_dataOffsets.Contains(name)) {
 				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
@@ -332,10 +305,6 @@ namespace Twin2Engine::Tools {
 		}
 
 		template<class T> std::vector<T> _GetArray(const std::string& name) const {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
-
 			// CHECK VARIABLE
 			if (!_dataOffsets.Contains(name)) {
 				SPDLOG_ERROR("No value called '{0}' was added to this structure", name);
@@ -391,10 +360,6 @@ namespace Twin2Engine::Tools {
 
 		template<class S, class C>
 		std::vector<C> _GetArray(const std::string& name, const Func<std::vector<S>, const std::string&>& getArrayFunc) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
-
 			if (std::is_same_v<S, C>) {
 				return getArrayFunc(name);
 			}
@@ -417,10 +382,6 @@ namespace Twin2Engine::Tools {
 		STD140Struct(const STD140Offsets& structOffsets, const std::vector<char>& data = std::vector<char>());
 		template<class... Args>
 		STD140Struct(const STD140Variable<Args>&... vars) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
-
 			_dataOffsets = STD140Offsets(vars...);
 			_data.resize(_dataOffsets.GetSize());
 		}
@@ -440,9 +401,6 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T>
 		Add(const std::string& name, const T& value) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			if constexpr (std::is_same_v<T, bool>) {
 				_Add(name, (unsigned int)value);
 			}
@@ -455,9 +413,6 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T>
 		Add(const std::string& name, const T*& values, size_t size) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
 			_ConvertArray<T, type>(name, values, size, [&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
 		}
@@ -465,9 +420,6 @@ namespace Twin2Engine::Tools {
 		template<class T, size_t N>
 		typename scalar_enable_if_t<T>
 		Add(const std::string& name, const T(&values)[N]) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
 			_ConvertArray<T, type>(name, values, N, [&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
 		}
@@ -475,9 +427,6 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T>
 		Add(const std::string& name, const std::vector<T>& values) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
 			_ConvertArray<T, type>(name, values, values.size(),
 				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
@@ -490,9 +439,6 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L>
 		Add(const std::string& name, const V& value) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			if constexpr (std::is_same_v<T, bool>) {
 				using type = glm::vec<L, unsigned int>;
 				_Add(name, (type)value);
@@ -506,9 +452,6 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L>
 		Add(const std::string& name, const V*& values, size_t size) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			_ConvertArray<V, type>(name, values, size, 
 				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
@@ -517,9 +460,6 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type, size_t L = V::length(), size_t N>
 		typename vec_enable_if_t<V, T, L>
 		Add(const std::string& name, const V(&values)[N]) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			_ConvertArray<V, type>(name, values, N, 
 				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
@@ -528,9 +468,6 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L>
 		Add(const std::string& name, const std::vector<V>& values) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			_ConvertArray<V, type>(name, values, values.size(),
 				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
@@ -543,9 +480,6 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R>
 		Add(const std::string& name, const M& value) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			if constexpr (std::is_same_v<T, bool>) {
 				using type = glm::mat<C, R, unsigned int>;
 				_Add(name, (type)value);
@@ -559,9 +493,6 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R>
 		Add(const std::string& name, const M*& values, size_t size) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			_ConvertArray<M, type>(name, values, size, 
 				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
@@ -570,9 +501,6 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length(), size_t N>
 		typename mat_enable_if_t<M, T, C, R>
 		Add(const std::string& name, const M(&values)[N]) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			_ConvertArray<M, type>(name, values, N, 
 				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
@@ -581,9 +509,6 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, typename M::value_type, M::row_type::length(), M::column_type::length()>
 		Add(const std::string& name, const std::vector<M>& values) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			_ConvertArray<M, type>(name, values, values.size(),
 				[&](const std::string& name, const std::vector<type>& values) -> void { _AddArray(name, values); });
@@ -599,9 +524,6 @@ namespace Twin2Engine::Tools {
 		void Add(const std::string& name, const STD140Offsets& structOffsets, const std::vector<char>*& values, size_t size);
 
 		template<size_t N> void Add(const std::string& name, const STD140Offsets& structOffsets, const std::vector<char>(&values)[N]) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			_ConvertArray<std::vector<char>, std::vector<char>>(name, values, N,
 				[&](const std::string& name, const std::vector<std::vector<char>>& convs) -> void {
 					_AddStructArray(name, structOffsets, convs);
@@ -619,9 +541,6 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T, bool>
 		Set(const std::string& name, const T& value) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			if constexpr (std::is_same_v<T, bool>) {
 				return _Set(name, (unsigned int)value);
 			}
@@ -634,9 +553,6 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T, bool>
 		Set(const std::string& name, const T*& values, size_t size) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
 			return _ConvertArray<T, type>(name, values, size, 
 				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
@@ -645,9 +561,6 @@ namespace Twin2Engine::Tools {
 		template<class T, size_t N>
 		typename scalar_enable_if_t<T, bool>
 		Set(const std::string& name, const T(&values)[N]) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
 			return _ConvertArray<T, type>(name, values, N, 
 				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
@@ -656,9 +569,6 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T, bool>
 		Set(const std::string& name, const std::vector<T>& values) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = type_test_t<std::is_same_v<T, bool>, unsigned int, T>;
 			return _ConvertArray<T, type>(name, values, values.size(),
 				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
@@ -671,9 +581,6 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L, bool>
 		Set(const std::string& name, const V& value) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			if constexpr (std::is_same_v<T, bool>) {
 				using type = glm::vec<L, unsigned int>;
 				return _Set(name, (type)value);
@@ -687,9 +594,6 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L, bool>
 		Set(const std::string& name, const V*& values, size_t size) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			return _ConvertArray<V, type>(name, values, size, 
 				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
@@ -698,9 +602,6 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type, size_t L = V::length(), size_t N>
 		typename vec_enable_if_t<V, T, L, bool>
 		Set(const std::string& name, const V(&values)[N]) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			return _ConvertArray<V, type>(name, values, N, 
 				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
@@ -709,9 +610,6 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L, bool>
 		Set(const std::string& name, const std::vector<V>& values) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = glm::vec<L, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			return _ConvertArray<V, type>(name, values, values.size(),
 				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
@@ -724,9 +622,6 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R, bool>
 		Set(const std::string& name, const M& value) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			if constexpr (std::is_same_v<T, bool>) {
 				using type = glm::mat<C, R, unsigned int>;
 				return _Set(name, (type)value);
@@ -740,9 +635,6 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R, bool>
 		Set(const std::string& name, const M*& values, size_t size) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = glm::mat<C, R, type_test_t<std::is_same_v<T, bool>, unsigned int, T>>;
 			return _ConvertArray<M, type>(name, values, size, 
 				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
@@ -751,9 +643,6 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length(), size_t N>
 		typename mat_enable_if_t<M, T, C, R, bool>
 		Set(const std::string& name, const M(&values)[N]) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = glm::mat<C, R, type_test_t<std::is_same<T, bool>, unsigned int, T>>;
 			return _ConvertArray<M, type>(name, values, N, 
 				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
@@ -762,9 +651,6 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R, bool>
 		Set(const std::string& name, const std::vector<M>& values) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			using type = glm::mat<C, R, type_test_t<std::is_same<T, bool>, unsigned int, T>>;
 			return _ConvertArray<M, type>(name, values, values.size(),
 				[&](const std::string& name, const std::vector<type>& values) -> bool { return _SetArray(name, values); });
@@ -780,9 +666,6 @@ namespace Twin2Engine::Tools {
 		bool Set(const std::string& name, const STD140Offsets& structOffsets, const std::vector<char>*& values, size_t size);
 
 		template<size_t N> bool Set(const std::string& name, const STD140Offsets& structOffsets, const std::vector<char>(&values)[N]) {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			return _ConvertArray<std::vector<char>, std::vector<char>>(name, values, N, 
 				[&](const std::string& name, const std::vector<std::vector<char>>& values) -> bool { 
 					return _SetStructArray(name, structOffsets, values);
@@ -798,9 +681,6 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T, T>
 		Get(const std::string& name) const {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			if constexpr (std::is_same_v<T, bool>) {
 				return (T)_Get<unsigned int>(name);
 			}
@@ -813,9 +693,6 @@ namespace Twin2Engine::Tools {
 		template<class T>
 		typename scalar_enable_if_t<T>
 		Get(const std::string& name, T*& valuesDest, size_t size) const {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			std::vector<T> values;
 			if constexpr (std::is_same_v<T, bool>) {
 				values = _GetArray<unsigned int, T>(name, [&](const std::string& name) -> std::vector<T> { return _GetArray<unsigned int>(name); });
@@ -830,9 +707,6 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type>
 		typename get_vector_enable_if_t<V, T, type_check_v<T>, V>
 		Get(const std::string& name) const {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			if constexpr (std::is_same_v<T, bool>) {
 				return _GetArray<unsigned int, T>(name, [&](const std::string& name) -> std::vector<T> { return _GetArray<unsigned int>(name); });
 			}
@@ -848,9 +722,6 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L, V>
 		Get(const std::string& name) const {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			if (std::is_same_v<T, bool>) {
 				using type = glm::vec<L, unsigned int>;
 				return (V)_Get<type>(name);
@@ -864,9 +735,6 @@ namespace Twin2Engine::Tools {
 		template<class V, class T = V::value_type, size_t L = V::length()>
 		typename vec_enable_if_t<V, T, L>
 		Get(const std::string& name, V*& valuesDest, size_t size) const {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			std::vector<V> values;
 			if constexpr (std::is_same_v<T, bool>) {
 				using type = glm::vec<L, unsigned int>;
@@ -884,9 +752,6 @@ namespace Twin2Engine::Tools {
 		template<class Vec, class V = Vec::value_type, class T = V::value_type, size_t L = V::length()>
 		typename get_vector_enable_if_t<Vec, V, vec_check_v<V, T, L>, Vec>
 		Get(const std::string& name) const {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			if constexpr (std::is_same_v<T, bool>) {
 				using type = glm::vec<L, unsigned int>;
 				return _GetArray<type, V>(name, [&](const std::string& name) -> std::vector<type> {
@@ -905,9 +770,6 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R, M>
 		Get(const std::string& name) const {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			if constexpr (std::is_same_v<T, bool>) {
 				using type = glm::mat<C, R, unsigned int>;
 				return (M)_Get<type>(name);
@@ -921,9 +783,6 @@ namespace Twin2Engine::Tools {
 		template<class M, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename mat_enable_if_t<M, T, C, R>
 		Get(const std::string& name, M*& valuesDest, size_t size) const {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			std::vector<M> values;
 			if constexpr (std::is_same_v<T, bool>) {
 				using type = glm::mat<C, R, unsigned int>;
@@ -941,9 +800,6 @@ namespace Twin2Engine::Tools {
 		template<class Vec, class M = Vec::value_type, class T = M::value_type, size_t C = M::row_type::length(), size_t R = M::col_type::length()>
 		typename get_vector_enable_if_t<Vec, M, mat_check_v<M, T, C, R>, Vec>
 		Get(const std::string& name) const {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			if constexpr (std::is_same_v<T, bool>) {
 				using type = glm::mat<C, R, unsigned int>;
 				return _GetArray<type, M>(name, [&](const std::string& name) -> std::vector<type> {
@@ -962,9 +818,6 @@ namespace Twin2Engine::Tools {
 		template<class S>
 		typename std::enable_if_t<std::is_same_v<S, STD140Struct>, S>
 		Get(const std::string& name, const STD140Offsets& structOffsets) const {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			return _GetStruct(name, structOffsets);
 		}
 
@@ -972,9 +825,6 @@ namespace Twin2Engine::Tools {
 		template<class S>
 		typename std::enable_if_t<std::is_same_v<S, STD140Struct>>
 		Get(const std::string& name, const STD140Offsets& structOffsets, STD140Struct*& valueDest, size_t size) const {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			std::vector<STD140Struct> values = _GetStructArray(name, structOffsets);
 			memcpy(valueDest, values.data(), glm::min(values.size(), size));
 		}
@@ -982,9 +832,6 @@ namespace Twin2Engine::Tools {
 		template<class V, class S = V::value_type>
 		typename get_vector_enable_if_t<V, S, std::is_same_v<S, STD140Struct>, V>
 		Get(const std::string& name, const STD140Offsets& structTemplate) const {
-#if TRACY_PROFILER
-			ZoneScoped;
-#endif
 			return _GetStructArray(name, structTemplate);
 		}
 

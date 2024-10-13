@@ -24,17 +24,9 @@ void HumanMovement::OnDestroy()
 
     _pathfindingInfo.WaitForFinding();
 }
-#if TRACY_PROFILER
-const char* const tracy_HumanMovementUpdate = "HumanMovementUpdate";
-#endif
 
 void HumanMovement::Update()
 {
-#if TRACY_PROFILER
-    ZoneScoped;
-    FrameMarkStart(tracy_HumanMovementUpdate);
-#endif
-
     if (_foundPath)
     {
         glm::vec3 globalPosition = GetTransform()->GetGlobalPosition();
@@ -72,14 +64,6 @@ void HumanMovement::Update()
             GetTransform()->SetGlobalPosition(globalPosition);
         }
     }
-
-
-
-
-
-#if TRACY_PROFILER
-    FrameMarkEnd(tracy_HumanMovementUpdate);
-#endif
 }
 
 void HumanMovement::PathFindingSuccess(const AStarPath& path)

@@ -1569,6 +1569,7 @@ void MeshRenderingManager::PreRender()
 {
 #if TRACY_PROFILER
 	ZoneScoped;
+	TracyGpuZone("MeshRenderer PreRender")
 #endif
 
 	glDisable(GL_BLEND);
@@ -1864,6 +1865,7 @@ void MeshRenderingManager::Render()
 {
 #if TRACY_PROFILER
 	ZoneScoped;
+	TracyGpuZone("MeshRenderer Render")
 #endif
 
 	glDisable(GL_BLEND);
@@ -2266,6 +2268,7 @@ void MeshRenderingManager::RenderTransparent()
 {
 #if TRACY_PROFILER
 	ZoneScoped;
+	TracyGpuZone("MeshRenderer RenderTransparent")
 #endif
 
 	//glDepthFunc(GL_LEQUAL);

@@ -354,19 +354,11 @@ void Playable::AddOwnTile(HexTile* tileToAdd)
 }
 
 float Playable::GetMaxRadius() const {
-#if TRACY_PROFILER
-    ZoneScoped;
-#endif
-
     return 0.f;
 }
 
 float Playable::GlobalAvg() const
 {
-#if TRACY_PROFILER
-    ZoneScoped;
-#endif
-
     if (OwnTiles.size() == 0) {
         return 0.f;
     }
@@ -381,10 +373,6 @@ float Playable::GlobalAvg() const
 
 float Playable::LocalAvg() const
 {
-#if TRACY_PROFILER
-    ZoneScoped;
-#endif
-
     if (CurrTile == nullptr) {
         return 0.f;
     }
@@ -413,10 +401,6 @@ float Playable::LocalAvg() const
 
 float Playable::FansRangeAvg() const
 {
-#if TRACY_PROFILER
-    ZoneScoped;
-#endif
-
     float res = 0.f;
     std::vector<HexTile*> inFansRangeTiles = GetFansRangeTiles();
     for (auto& tile : inFansRangeTiles) {
@@ -435,19 +419,11 @@ float Playable::FansRangeAvg() const
 }
 
 float Playable::FightPowerScore() const {
-#if TRACY_PROFILER
-    ZoneScoped;
-#endif
-
     // clamp(GlobalAvg(entity) * 0.25 + LocalAvg(entity) * 0.75, 0, 100)
     return std::clamp(GlobalAvg() * 0.25f + LocalAvg() * 0.75f, 0.f, 100.f);
 }
 
 std::vector<HexTile*> Playable::GetLocalTiles() const {
-#if TRACY_PROFILER
-    ZoneScoped;
-#endif
-
     std::vector<HexTile*> tiles;
 
     if (CurrTile == nullptr) {
@@ -470,10 +446,6 @@ std::vector<HexTile*> Playable::GetLocalTiles() const {
 
 std::vector<HexTile*> Playable::GetLocalTakenTiles() const
 {
-#if TRACY_PROFILER
-    ZoneScoped;
-#endif
-
     std::vector<HexTile*> tiles;
 
     if (CurrTile == nullptr) {
@@ -499,28 +471,16 @@ std::vector<HexTile*> Playable::GetLocalTakenTiles() const
 
 std::vector<HexTile*> Playable::GetInMoveRangeTiles() const
 {
-#if TRACY_PROFILER
-    ZoneScoped;
-#endif
-
     return GetInRangeTiles(CurrTile, GetMaxRadius());
 }
 
 std::vector<HexTile*> Playable::GetFansRangeTiles() const
 {
-#if TRACY_PROFILER
-    ZoneScoped;
-#endif
-
     return GetInRangeTiles(CurrTile, fansRadius);
 }
 
 std::vector<HexTile*> Playable::GetInRangeTiles(HexTile* centerTile, float range)
 {
-#if TRACY_PROFILER
-    ZoneScoped;
-#endif
-
     if (centerTile == nullptr) {
         return std::vector<HexTile*>();
     }

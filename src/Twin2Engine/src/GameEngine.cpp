@@ -190,8 +190,10 @@ void GameEngine::Loop()
         EndFrame();
 
 #if TRACY_PROFILER
-        TracyGpuCollect
-        TracyPlot("FPS", 1000.f / (Time::GetDeltaTime() * 1000.f));
+        TracyGpuCollect;
+        float fps = 1000.f / (Time::GetDeltaTime() * 1000.f);
+        fps = std::max(std::min(fps, (float)Window::GetInstance()->GetRefreshRate()), 0.f);
+        TracyPlot("FPS", fps);
         TracyPlot("Delta Time (ms)", Time::GetDeltaTime() * 1000.f);
         FrameMarkEnd(tracy_EndFrameName);
 #endif

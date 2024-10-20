@@ -118,7 +118,7 @@ void RegionsBySectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
                 }
             }
             auto chosenItr = smallest.begin();
-            std::advance(chosenItr, Random::Range(0ull, smallest.size() - 1));
+            std::advance(chosenItr, Random::Range<size_t>(0, smallest.size() - 1));
             chosenRegion = *chosenItr;
 
             vector<MapRegion*> neighbouringRegions = chosenRegion->GetAdjacentRegions();
@@ -151,7 +151,7 @@ void RegionsBySectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
                 }
             }
             auto chosenItr = smallest.begin();
-            std::advance(chosenItr, Random::Range(0ull, smallest.size() - 1));
+            std::advance(chosenItr, Random::Range<size_t>(0, smallest.size() - 1));
             chosenRegion = *chosenItr;
 
             vector<MapRegion*> neighbouringRegions(chosenRegion->GetAdjacentRegions());
@@ -170,7 +170,7 @@ void RegionsBySectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
             //chosenRegion = foundOnes[Random::Range(0ull, foundOnes.size() - 1)];
         }
         auto foundOneItr = foundOnes.begin();
-        advance(foundOneItr, Random::Range(0ull, foundOnes.size() - 1));
+        advance(foundOneItr, Random::Range<size_t>(0, foundOnes.size() - 1));
         MapRegion* chosen = *foundOneItr;
 
         chosen->JoinRegion(chosenRegion);

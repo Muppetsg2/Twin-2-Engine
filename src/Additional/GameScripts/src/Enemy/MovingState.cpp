@@ -292,7 +292,7 @@ void MovingState::ChooseTile(Enemy* enemy)
 
 	if (possible.size() != 0) {
 		auto& tiles = possible.begin()->second.begin()->second.begin()->second.begin()->second.begin()->second;
-		HexTile* result = tiles[Random::Range(0ull, tiles.size() - 1ull)];
+		HexTile* result = tiles[Random::Range<size_t>(0, tiles.size() - 1)];
 		enemy->SetMoveDestination(result);
 	}
 	else {

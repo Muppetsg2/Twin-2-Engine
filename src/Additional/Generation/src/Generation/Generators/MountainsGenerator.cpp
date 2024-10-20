@@ -67,7 +67,7 @@ void MountainsGenerator::Generate(HexagonalTilemap* tilemap)
     int placedMountainsNumber = 0;
     for (; sectors.size() && placedMountainsNumber < mountainsNumber; )
     {
-        size_t index = Random::Range(0ull, sectors.size() - 1);
+        size_t index = Random::Range<size_t>(0, sectors.size() - 1);
 
         list<MapSector*>::iterator itr = sectors.begin();
         std::advance(itr, index);

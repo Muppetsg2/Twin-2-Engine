@@ -1,5 +1,6 @@
 #pragma once
 
+#if _DEBUG
 #include <manager/ScriptableObjectManager.h>
 
 namespace Editor::Common
@@ -42,3 +43,4 @@ namespace Editor::Common
 		static void Draw();
 	};
 }
+#endif

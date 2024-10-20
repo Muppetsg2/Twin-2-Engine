@@ -89,7 +89,7 @@ HexTile* Playable::GetAlbumTile() {
         return tile1->percentage < tile2->percentage;
         });
 
-    int index = Random::Range(0ull, (size_t)std::floor(takingIntoAttentionFactor * tiles.size()));
+    int index = Random::Range<size_t>(0, (size_t)std::floor(takingIntoAttentionFactor * tiles.size()));
     return tiles[index];
 }
 

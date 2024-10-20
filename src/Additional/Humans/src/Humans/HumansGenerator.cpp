@@ -40,7 +40,7 @@ void HumansGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
 
     for (unsigned int i = 0; i < number; ++i)
     {
-        GameObject* city = cities[Random::Range(0ull, cities.size() - 1ull)];
+        GameObject* city = cities[Random::Range<size_t>(0, cities.size() - 1)];
 
         GameObject* human = nullptr;
         if (PrefabManager::GetPrefab(prefabHuman->GetId()) != nullptr) {

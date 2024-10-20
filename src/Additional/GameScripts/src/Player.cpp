@@ -943,21 +943,21 @@ void Player::LostPaperRockScissors(Playable* playable) {
 
     if (possibleTilesPlayer.size())
     {
-        size_t drawn = Random::Range(0ull, possibleTilesPlayer.size() - 1ull);
+        size_t drawn = Random::Range<size_t>(0, possibleTilesPlayer.size() - 1);
         auto itr = possibleTilesPlayer.begin();
         std::advance(itr, drawn);
         move->MoveAndSetDestination(tiles[(*itr)]->GetComponent<HexTile>());
     }
     else if (possibleTilesNeutral.size())
     {
-        size_t drawn = Random::Range(0ull, possibleTilesNeutral.size() - 1ull);
+        size_t drawn = Random::Range<size_t>(0, possibleTilesNeutral.size() - 1);
         auto itr = possibleTilesNeutral.begin();
         std::advance(itr, drawn);
         move->MoveAndSetDestination(tiles[(*itr)]->GetComponent<HexTile>());
     }
     else if (possibleTilesEnemy.size())
     {
-        size_t drawn = Random::Range(0ull, possibleTilesEnemy.size() - 1ull);
+        size_t drawn = Random::Range<size_t>(0, possibleTilesEnemy.size() - 1);
         auto itr = possibleTilesEnemy.begin();
         std::advance(itr, drawn);
         move->MoveAndSetDestination(tiles[(*itr)]->GetComponent<HexTile>());

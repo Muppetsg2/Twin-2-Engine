@@ -1,6 +1,7 @@
 #include <Editor/Common/ScriptableObjectEditorManager.h>
 #include <core/ScriptableObject.h>
 
+#if _DEBUG
 using namespace Editor::Common;
 using namespace std;
 using namespace Twin2Engine::Core;
@@ -318,3 +319,4 @@ void ScriptableObjectEditorManager::DrawNode(ScriptableObjectRecordNode* node, c
         ImGui::TreePop();
     }
 }
+#endif

@@ -1,5 +1,7 @@
 #pragma once
 
+#if _DEBUG
+
 #define MAX_LOG_DRAW 500
 #define COLLAPSE 2
 
@@ -409,3 +411,5 @@ namespace Editor::Common
     std::vector<ImGuiLogMessage> MessageHolder::logMessages;
     std::ofstream MessageHolder::logFile;
 }
+
+#endif

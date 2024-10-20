@@ -78,7 +78,7 @@ void RadioStationGeneratorRegionBased::Generate(Tilemap::HexagonalTilemap* tilem
                 regionWithStation[instantiatedCounter] = regions[i];
                 instantiatedCounter++;
 
-                size_t randomIndex = Random::Range(0ull, foundOnes.size() - 1);
+                size_t randomIndex = Random::Range<size_t>(0, foundOnes.size() - 1);
                 GameObject* tile = foundOnes[randomIndex];
                 tile->GetComponent<MapHexTile>()->type = MapHexTile::HexTileType::RadioStation;
 

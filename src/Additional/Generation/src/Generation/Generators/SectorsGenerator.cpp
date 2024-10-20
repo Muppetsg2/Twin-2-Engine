@@ -207,7 +207,7 @@ void SectorsGenerator::Generate(Tilemap::HexagonalTilemap* tilemap)
         std::copy_if(adjacentSectors.begin(), adjacentSectors.end(), back_inserter(foundOnes), [minCount](const MapSector* sector) { return sector->GetTilesCount() == minCount; });
     
         auto chosenItr = foundOnes.begin();
-        advance(chosenItr, Random::Range(0ull, foundOnes.size() - 1));
+        advance(chosenItr, Random::Range<size_t>(0, foundOnes.size() - 1));
         MapSector* chosen = *chosenItr;
     
         chosen->JoinSector(smallSectors.front());

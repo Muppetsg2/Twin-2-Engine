@@ -41,7 +41,7 @@ void Human::FinishedMoving(HumanMovement* movement)
         vector<GameObject*> possibleTargetCities = CitiesManager::GetConnectedCities(_targetCity);
         if (possibleTargetCities.size() > 0)
         {
-            _targetCity = possibleTargetCities[Random::Range(0ull, possibleTargetCities.size() - 1ull)];
+            _targetCity = possibleTargetCities[Random::Range<size_t>(0, possibleTargetCities.size() - 1)];
             vec3 destination = _targetCity->GetTransform()->GetGlobalPosition();
             //destination.y = 0.0f;
             //SPDLOG_ERROR("{}destination: {} {} {}", GetGameObject()->Id(), destination.x, destination.y, destination.z);

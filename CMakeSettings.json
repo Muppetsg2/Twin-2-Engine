@@ -114,6 +114,29 @@
           "type": "BOOL"
         }
       ]
+    },
+    {
+      "name": "x86-Release-Tracy",
+      "generator": "Ninja",
+      "configurationType": "RelWithDebInfo",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x86" ],
+      "variables": [
+        {
+          "name": "FIND_MEMORY_LEAKS",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "TRACY_PROFILER",
+          "value": "True",
+          "type": "BOOL"
+        }
+      ]
     }
   ]
 }

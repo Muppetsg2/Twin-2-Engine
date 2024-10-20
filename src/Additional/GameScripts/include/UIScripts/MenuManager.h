@@ -143,7 +143,7 @@ public:
 
 		if (_audio != nullptr && _audios.size() != 0) {
 			_audio->Stop();
-			_audio->SetAudio(_audios[Twin2Engine::Core::Random::Range(0ull, _audios.size() - 1)]);
+			_audio->SetAudio(_audios[Twin2Engine::Core::Random::Range<size_t>(0, _audios.size() - 1)]);
 			_audio->Play();
 		}
 

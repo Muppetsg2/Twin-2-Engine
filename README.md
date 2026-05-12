@@ -54,3 +54,17 @@ Our game and its engine advanced to the finals of the [ZTGK 2024](https://gry.it
 | Mateusz Gapiński | https://github.com/mateusz-gapinski | Rendering Lead |
 | Maja Ochmańska | https://github.com/Maikomi | Art Lead |
 | Tanuki | 🐾 |  Voice Acting |
+
+## License
+
+### Code
+
+The source code in this repository is licensed under the **MIT License**.
+
+See the [LICENSE](./LICENSE) file for more information.
+
+### Assets
+
+All visual assets and audio assets, including graphics, sprites, textures, illustrations and sounds, are protected by full copyright and remain the property of their respective author(s).
+
+These assets may not be reused, redistributed, modified, or used commercially without explicit permission from the author.

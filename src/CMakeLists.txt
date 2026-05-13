@@ -26,9 +26,6 @@ if (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
 
         target_link_libraries(${PROJECT_NAME} PRIVATE tracey_leak)
     endif()
-    
-else()
-    target_compile_options(${PROJECT_NAME} PUBLIC "-O2")
 endif()
 
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog)
@@ -43,11 +40,37 @@ file(CREATE_LINK ${CMAKE_SOURCE_DIR}/res ${CMAKE_CURRENT_BINARY_DIR}/res SYMBOLI
 
 if(MSVC)
     target_compile_definitions(${PROJECT_NAME} PUBLIC NOMINMAX)
-    target_compile_options(${PROJECT_NAME} PUBLIC "/Zc:preprocessor")
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Generation)
 target_link_libraries(${PROJECT_NAME} PRIVATE GameScripts)
+
+target_compile_options(${PROJECT_NAME} PRIVATE
+	$<$<OR:$<CXX_COMPILER_ID:MSVC>,$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>>>:
+		$<$<CONFIG:Release>:/O2>
+		$<$<CONFIG:Release>:/GL>
+		$<$<CONFIG:Release>:/Zc:preprocessor>
+		$<$<CONFIG:Release>:/fp:fast>
+		$<$<CONFIG:Debug>:/RTC1>
+	>
+	$<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:AppleClang>,$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:GNU>>>:
+		$<$<CONFIG:Release>:-O3>
+		$<$<CONFIG:Release>:-flto=auto>
+	>
+)
+
+target_link_options(${PROJECT_NAME} PRIVATE
+	$<$<OR:$<CXX_COMPILER_ID:MSVC>,$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>>>:
+		$<$<CONFIG:Release>:/LTCG>
+		$<$<CONFIG:Release>:/O2>
+	>
+	$<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:AppleClang>,$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:GNU>>>:
+		$<$<CONFIG:Release>:-flto=auto>
+		$<$<CONFIG:Release>:-O3>
+		$<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:Clang>>:-fuse-ld=lld>
+		-static
+	>
+)
 
 # Set the directory paths
 #set(SHADERS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/res/shaders/SPIRV")

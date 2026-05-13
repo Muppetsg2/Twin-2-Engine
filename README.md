@@ -1,7 +1,7 @@
 <h1 align="center"><b>Echoes Of Fame</b></h3>
 
 <p align="center">
-  <img src="readme_files/banner.png" width="500"/>
+  <img src=".git_images/banner.png" width="500"/>
 </p>
 
 ## What is it?
@@ -11,6 +11,12 @@
 ## Overview
 
 **Echoes of Fame** is an area control strategy game in which we play the role of a music band wanting to conquer the world with their music. Apart from the player himself, there are opponents who have the same goal as us. This leads to a constant fight for influence between teams. However, we are not alone in these struggles. One of the ancient deities helps us in battle and protects us. Keep it up and don't let others drown out your music.
+
+## Gameplay
+
+<p align="center">
+  <img src=".git_images/gameplay.gif" alt="Echoes Of Fame Gameplay" width="560">
+</p>
 
 ## How do I build and run this?
 

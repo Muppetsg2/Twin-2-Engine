@@ -60,8 +60,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC	${Twin2Engine_INCLUDE_DIR}
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
 	 target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
 	 target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
-else()
-    target_compile_options(${PROJECT_NAME} PUBLIC "-O2")
 endif()
 
 if(IS_MINI_AUDIO)
@@ -79,3 +77,30 @@ target_link_libraries(${PROJECT_NAME} PUBLIC glfw
 										#Generation
 										GameScripts
 										Tools)
+										
+target_compile_options(${PROJECT_NAME} PRIVATE
+	$<$<OR:$<CXX_COMPILER_ID:MSVC>,$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>>>:
+		$<$<CONFIG:Release>:/O2>
+		$<$<CONFIG:Release>:/GL>
+		$<$<CONFIG:Release>:/Zc:preprocessor>
+		$<$<CONFIG:Release>:/fp:fast>
+		$<$<CONFIG:Debug>:/RTC1>
+	>
+	$<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:AppleClang>,$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:GNU>>>:
+		$<$<CONFIG:Release>:-O3>
+		$<$<CONFIG:Release>:-flto=auto>
+	>
+)
+
+target_link_options(${PROJECT_NAME} PRIVATE
+	$<$<OR:$<CXX_COMPILER_ID:MSVC>,$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>>>:
+		$<$<CONFIG:Release>:/LTCG>
+		$<$<CONFIG:Release>:/O2>
+	>
+	$<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:AppleClang>,$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:GNU>>>:
+		$<$<CONFIG:Release>:-flto=auto>
+		$<$<CONFIG:Release>:-O3>
+		$<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:Clang>>:-fuse-ld=lld>
+		-static
+	>
+)

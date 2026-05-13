@@ -12,10 +12,10 @@ ShadersOrigin
 bin
 
 [Bb]uild/
-/[Oo]ut/
+[Oo]ut/
 #/[Ll]ogs/
 #/[Tt]ools/
 CompiledShaders/
 
-/\.vs/
-/res/logs/
+.vs/
+res/logs/
